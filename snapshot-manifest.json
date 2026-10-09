@@ -1770,8 +1770,8 @@
     },
     {
       "path": "tests/test_public_solver_environment.py",
-      "sha256": "9109eafb4101419c719988a965ce76987919a579af09eb46a8fa21dbed6b928b",
-      "bytes": 5828
+      "sha256": "ac8a9a29cf1925523a6d323818f46e954d58a97c9afa4301e4017b3fce2df8f5",
+      "bytes": 5948
     },
     {
       "path": "tests/test_public_validation_fixtures.py",
@@ -1807,6 +1807,14 @@
       "path": "tools/verify_snapshot.py",
       "sha256": "968e535c435a0362bf317db8c7671da0d6875294932849ea155f1c3db15a749b",
       "bytes": 17016
+    }
+  ],
+  "public_patches": [
+    {
+      "base_commit": "3a192efff9dce28c28b8911c958200393e7578c5",
+      "path": "tests/test_public_solver_environment.py",
+      "source_sha256": "9109eafb4101419c719988a965ce76987919a579af09eb46a8fa21dbed6b928b",
+      "reason": "Accept Windows environment-key casing in the isolation test."
     }
   ]
 }
