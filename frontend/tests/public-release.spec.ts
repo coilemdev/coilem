@@ -84,6 +84,9 @@ test.describe('public developer preview release rehearsal', () => {
   });
 
   test('reopens a design, completes Standard sine and six-step runs, exports and compares them, then cancels safely', async ({ page }, info) => {
+    // Both real Standard solves and their exports share this scenario's budget.
+    // Allow their combined duration on the two-core CI runner.
+    test.setTimeout(30 * 60_000);
     const pageErrors: string[] = [];
     const duplicateKeyWarnings: string[] = [];
     const nonLocalRequests: string[] = [];
