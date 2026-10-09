@@ -1,0 +1,56 @@
+{
+  "kind": "halbach_array_config",
+  "version": "1.0",
+  "units": {
+    "length": "mm",
+    "angle": "deg"
+  },
+  "geometry": {
+    "inner_radius": 20.0,
+    "outer_radius": 38.0,
+    "axial_length": 80.0,
+    "segment_count": 9,
+    "segment_gap_angle": 0.4,
+    "segment_start_angle": 5.0
+  },
+  "array": {
+    "field_mode": "internal",
+    "multipole_order": 1,
+    "field_direction": 30.0
+  },
+  "magnet": {
+    "source": "custom",
+    "name": "Supplier grade X",
+    "remanence_t": 1.31,
+    "relative_permeability": 1.05,
+    "intrinsic_coercivity_a_per_m": 955000.0,
+    "density_kg_per_m3": 7450.0,
+    "reference_temperature_c": 20.0,
+    "temperature_c": 80.0,
+    "alpha_br_per_k": -0.0012,
+    "alpha_hcj_per_k": -0.0055,
+    "source_note": "Supplier datasheet revision 3"
+  },
+  "sample_region": {
+    "radius": 15.0,
+    "radial_samples": 17,
+    "angular_samples": 48,
+    "leakage_probe_radius": 55.0
+  },
+  "solve": {
+    "quality": "quick",
+    "mesh": {
+      "density": "coarse",
+      "outer_boundary_radius_factor": 3.0,
+      "minimum_elements_across_magnet": 3,
+      "corner_refinement": true
+    },
+    "linear": {
+      "solver": "direct",
+      "pcg_preconditioner": "incomplete_cholesky",
+      "tolerance": 1e-7,
+      "max_iterations": 5000
+    },
+    "field_line_count": 12
+  }
+}

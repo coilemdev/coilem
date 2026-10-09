@@ -1,0 +1,196 @@
+{
+  "schema_version": "coilem.m350_launch_benchmark_spec/v1",
+  "status": "preregistered",
+  "title": "coilEM M350-50A public-native launch benchmark",
+  "protocol": {
+    "schema_version": "openem.m350_solver_parity/v1",
+    "sha256": "b0c917caa190dc1d6b6abcf17821506366a3bf965dd8dc92f3505a3896cfd490"
+  },
+  "material_contract": {
+    "material_key": "M350-50A",
+    "curve_path": "materials/electrical-steel/M350-50A.csv",
+    "curve_sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+    "point_count": 252,
+    "b_range_T": [
+      0.0,
+      2.5
+    ],
+    "source": {
+      "model_url": "https://github.com/modelica/ModelicaStandardLibrary/blob/master/Modelica/Magnetic/FluxTubes/Material/SoftMagnetic/ElectricSheet/M350_50A.mo",
+      "formula_url": "https://github.com/modelica/ModelicaStandardLibrary/blob/master/Modelica/Magnetic/FluxTubes/Material/SoftMagnetic/mu_rApprox.mo",
+      "license": "BSD-3-Clause",
+      "notice_path": "THIRD_PARTY_NOTICES.md"
+    }
+  },
+  "candidate_lane": {
+    "solver": "Magneto2D",
+    "magneto2d_version": "0.3.2",
+    "mesh_source": "native",
+    "mesher": "gmsh",
+    "mesh_density": "normal",
+    "corner_refinement": true,
+    "rotor_rotation_model": "remesh_per_step",
+    "nonlinear_solver": "picard",
+    "torque_method": "weighted_stress"
+  },
+  "reference_lane": {
+    "solver": "FEMM",
+    "availability": "private_reference_generation_only",
+    "reference_mode": "local_ordered_m350_50a_bh_points",
+    "material_identity_required": true,
+    "mesh_source": "femm",
+    "smart_mesh": true,
+    "problem_precision": 1e-08
+  },
+  "angle_grid": {
+    "coordinate": "electrical_deg",
+    "start_inclusive": 0.0,
+    "stop_exclusive": 360.0,
+    "step": 3.75,
+    "sample_count": 96,
+    "same_grid_required": true
+  },
+  "operating_points": [
+    {
+      "id": "no_load",
+      "current_amplitude_A": 0.0
+    },
+    {
+      "id": "rated_load",
+      "current_amplitude": "fixture_value"
+    },
+    {
+      "id": "saturation_stress",
+      "current_amplitude": "1.5_x_fixture_value"
+    }
+  ],
+  "gates": [
+    {
+      "metric": "loaded_average_torque_delta_pct",
+      "pass_max": 8.0,
+      "yellow_max": 15.0
+    },
+    {
+      "metric": "loaded_average_torque_delta_Nm",
+      "pass_max": 0.01,
+      "yellow_max": 0.02
+    },
+    {
+      "metric": "loaded_shared_harmonic_delta_pct",
+      "pass_max": 20.0,
+      "yellow_max": 30.0
+    },
+    {
+      "metric": "torque_waveform_phase_delta_deg",
+      "pass_max": 3.75,
+      "yellow_max": 7.5
+    },
+    {
+      "metric": "airgap_Br_rms_delta_pct",
+      "pass_max": 10.0,
+      "yellow_max": 20.0
+    },
+    {
+      "metric": "airgap_Bt_rms_delta_pct",
+      "pass_max": 10.0,
+      "yellow_max": 20.0
+    },
+    {
+      "metric": "back_emf_fundamental_delta_pct",
+      "pass_max": 10.0,
+      "yellow_max": 15.0
+    },
+    {
+      "metric": "back_emf_peak_delta_pct",
+      "pass_max": 10.0,
+      "yellow_max": 15.0
+    },
+    {
+      "metric": "back_emf_thd_absolute_delta_percentage_points",
+      "pass_max": 2.0,
+      "yellow_max": 4.0
+    }
+  ],
+  "rows": [
+    {
+      "id": "spm_4p12s_m350_launch",
+      "topology": "SPM",
+      "fixture": "benchmarks/m350-launch/fixtures/spm_4p12s_m350_launch.json",
+      "fixture_sha256": "a284059fe84f8c89a0d460ffe2b391cdb055415165c96edf721eda0079e0c0d9",
+      "material_key": "M350-50A",
+      "scope": "three_corner",
+      "corners": [
+        "baseline",
+        "high_current"
+      ],
+      "checks": [
+        "loaded_parity",
+        "noload_parity"
+      ],
+      "public_reproduction_command": "python tools/run_public_benchmark.py --row spm_4p12s_m350_launch --out-dir benchmark-output",
+      "private_reference_command": "python scripts/run_m350_launch_benchmark.py --row spm_4p12s_m350_launch --out-dir benchmark-output"
+    },
+    {
+      "id": "spm_8p12s_m350_launch",
+      "topology": "SPM",
+      "fixture": "benchmarks/m350-launch/fixtures/spm_8p12s_m350_launch.json",
+      "fixture_sha256": "85312895c5aa54d65ed89e1b6569bccd8a11b9f1dafb0ae3ce280416efb9e8ea",
+      "material_key": "M350-50A",
+      "scope": "three_corner",
+      "corners": [
+        "baseline",
+        "high_current"
+      ],
+      "checks": [
+        "loaded_parity",
+        "noload_parity"
+      ],
+      "public_reproduction_command": "python tools/run_public_benchmark.py --row spm_8p12s_m350_launch --out-dir benchmark-output",
+      "private_reference_command": "python scripts/run_m350_launch_benchmark.py --row spm_8p12s_m350_launch --out-dir benchmark-output"
+    }
+  ],
+  "exclusions": [
+    {
+      "group": "historical_phase_a",
+      "count": 4,
+      "material": "M19",
+      "lane": "native_magneto2d_gmsh_vs_private_femm",
+      "disposition": "historical_only",
+      "reason": "The frozen regression fixtures and v0.1.12 evidence predate the M350 launch contract."
+    },
+    {
+      "group": "phase_b_ipm",
+      "count": 12,
+      "material": "M19",
+      "lane": "femm_mesh_imported_physics_vs_private_femm",
+      "disposition": "excluded",
+      "reason": "Imported reference meshing and physics are not the public-native Magneto2D/Gmsh lane."
+    },
+    {
+      "group": "phase_c_distributed_and_prius",
+      "count": 5,
+      "material": "M19",
+      "lane": "private_femm_only",
+      "disposition": "excluded",
+      "reason": "No public-native candidate result exists for these rows."
+    }
+  ],
+  "limitations": [
+    "Only concentrated-winding SPM rows are eligible for launch promotion.",
+    "The public command reproduces the candidate side without private tooling.",
+    "Reference generation is private and is not required to build or run coilEM.",
+    "No row is promoted until a completed run manifest records all required provenance and passes or receives an explicitly accepted yellow verdict."
+  ],
+  "required_runtime_provenance": [
+    "fixture_sha256",
+    "material_key",
+    "curve_sha256",
+    "curve_source",
+    "magneto2d_version",
+    "femm_reference_mode",
+    "mesh_source",
+    "commit",
+    "platform",
+    "exact_command"
+  ]
+}

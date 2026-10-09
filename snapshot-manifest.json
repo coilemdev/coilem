@@ -1,0 +1,1812 @@
+{
+  "schema_version": 1,
+  "source_commit": "c45d5c69f35a2a699ef1909c2084811760035163",
+  "history_transferred": false,
+  "files": [
+    {
+      "path": ".gitattributes",
+      "sha256": "d60f352d0db1404c70afb4bb8b2ca3fd1c610572aa40720e8a0b7baa7885418c",
+      "bytes": 19
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "e6b6df0ac569dca54f0556d76667d3518066b2fc8969562499d8a5d3cfbd397f",
+      "bytes": 4583
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "6ff3b9f4fd21a3cbe285ebb9fcf1a36f03ea652f59062a5391ef62e82d4a43e9",
+      "bytes": 230
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "d8a6cc31abc16b6748c7a21f21611f5a1ec33f67d22ca23d7da1c19b95496bee",
+      "bytes": 34020
+    },
+    {
+      "path": "MATERIALS.md",
+      "sha256": "f3b04c4b82192f80493b3f8e237f980cb6e277aded778b07981036603cc50aa1",
+      "bytes": 7287
+    },
+    {
+      "path": "PUBLICATION_STATUS.md",
+      "sha256": "995b6e8a6c405e4480daf90f1abe7bc8e5d11170ee3d2db9a18d17ec742cbd7d",
+      "bytes": 1072
+    },
+    {
+      "path": "README.md",
+      "sha256": "0a681b1e02ec20a852c43b43407efdfc93c4b6957541b78ac838b4a1136fdd16",
+      "bytes": 4477
+    },
+    {
+      "path": "RELEASE_NOTES.md",
+      "sha256": "0b19c902195499d3bd8851d63f4441cf5848509b4b20a2c257b1428dab3c5896",
+      "bytes": 4829
+    },
+    {
+      "path": "SECURITY.md",
+      "sha256": "64eb208bcde4a39932c48b5e981e69afe36698922c98b985c4b756fb7e5769c1",
+      "bytes": 1339
+    },
+    {
+      "path": "SUPPORT.md",
+      "sha256": "978089239ff3aa64a651f9e96612b431c278e53a15f554720cc5eb820952135a",
+      "bytes": 836
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "sha256": "f045aca3a5fd303d2694c5df32b3b4458ffdebe7f5efce6fc6f3e952eae2f34d",
+      "bytes": 15448
+    },
+    {
+      "path": "TRADEMARKS.md",
+      "sha256": "84469bff0506ee0358612c0af96bf7dce33a32ff50a875247e8e3a9e6cfa5312",
+      "bytes": 686
+    },
+    {
+      "path": "backend/__init__.py",
+      "sha256": "b24287232a229607997fdf457a58b4691a3a7befa611d1e9d8cc58a3852e0730",
+      "bytes": 53
+    },
+    {
+      "path": "backend/airgap_sampling.py",
+      "sha256": "958520a6b21d7f31245b3b6bd1c47d3f66f5e13c090557cc4330ae2199602a46",
+      "bytes": 6771
+    },
+    {
+      "path": "backend/back_emf_harmonics.py",
+      "sha256": "2e0e5538312c31d0dbe101a2a8887163deaab6e4e0d81925a21ae8b5af451c11",
+      "bytes": 5901
+    },
+    {
+      "path": "backend/custom_materials.py",
+      "sha256": "792f6f66531abab3c10108f8f2809a9525520b7eeb69601b31252ecdf2fec161",
+      "bytes": 6306
+    },
+    {
+      "path": "backend/elmer/__init__.py",
+      "sha256": "f0fd39fb911a0878c30cc907f91f27ffe17cb609ef77707e824b13cfb4100b4c",
+      "bytes": 837
+    },
+    {
+      "path": "backend/elmer/adapter.py",
+      "sha256": "181236b39846057c46892ac4ee698e30846683b35ad323f063d6fc61f7c24808",
+      "bytes": 41266
+    },
+    {
+      "path": "backend/elmer/capabilities.py",
+      "sha256": "4571beb2c320664896b3646b52d3495a2060f6bd8dc8e624558558bbb7784b65",
+      "bytes": 9686
+    },
+    {
+      "path": "backend/elmer/case.py",
+      "sha256": "fb9d97688575fa15c412c91bb1d79ccf8ed792bbc0b46690f8a40c7e52a92823",
+      "bytes": 12672
+    },
+    {
+      "path": "backend/elmer/errors.py",
+      "sha256": "7e5756105e1f7c27b888066f3887d4d8b651807e890433716d02750e6bd5d8fb",
+      "bytes": 986
+    },
+    {
+      "path": "backend/elmer/mesh.py",
+      "sha256": "c8f69bd52341532a6145b873f7fe056b3547491ac25e8ddf13c9c37f408487b0",
+      "bytes": 16660
+    },
+    {
+      "path": "backend/elmer/process.py",
+      "sha256": "5c6f50c6e7adcdbe23fc70e0c91d52ca440ca109618c46fd0356705276112212",
+      "bytes": 9610
+    },
+    {
+      "path": "backend/elmer/profile.py",
+      "sha256": "5c5c8aca61a0b00ec2ac2817328ac429d7210de8087e9f8f46b0590d08eaf31b",
+      "bytes": 585
+    },
+    {
+      "path": "backend/elmer/profiles/v1.json",
+      "sha256": "43db6e832fe8eed5e9c634201ab286bce645bd837b0245659659ff21e69cdbb2",
+      "bytes": 737
+    },
+    {
+      "path": "backend/elmer/results.py",
+      "sha256": "93c53df13df80ed5b2fac7cf0f1443c47296a10e100988ce1b2802eba908998b",
+      "bytes": 13092
+    },
+    {
+      "path": "backend/excitation.py",
+      "sha256": "a6e200494865dfc4147615d7187760025605376752fb53661c040018776388c6",
+      "bytes": 7897
+    },
+    {
+      "path": "backend/export_safety.py",
+      "sha256": "c8da6bc46751002c6403d063034df03d7d5c0e7372fa4c567241db4dae869890",
+      "bytes": 458
+    },
+    {
+      "path": "backend/field_artifacts.py",
+      "sha256": "5ce907bd5ab6d8dbc8fa4022c237cca7cbf86b83d2ba8b385250ef02c42e5e80",
+      "bytes": 10851
+    },
+    {
+      "path": "backend/field_composition.py",
+      "sha256": "94f1392d7bbd1772042282c76f627289528004afb611ce67cb33e6308d85f9db",
+      "bytes": 12511
+    },
+    {
+      "path": "backend/field_lines.py",
+      "sha256": "446bf8187168693fadf848db3ef8809b54d60b6b52a3f2457e6c1ac82af5d1f1",
+      "bytes": 15672
+    },
+    {
+      "path": "backend/geometry.py",
+      "sha256": "f227703284c55f986a54b56400aff00eeea36d005281e3c9c680ca64dce8db26",
+      "bytes": 56777
+    },
+    {
+      "path": "backend/geometry_drawer.py",
+      "sha256": "8185274e9c4df280bf8330016553dbfde1b611fcae56376853c04be698d03a8f",
+      "bytes": 52547
+    },
+    {
+      "path": "backend/geometry_ir.py",
+      "sha256": "be5a4cd8eb1c23dbd68a10c6aac22fd5ff38c1b1bef2df56b813d75a3a004c15",
+      "bytes": 51943
+    },
+    {
+      "path": "backend/geometry_ir_tessellation.py",
+      "sha256": "4efd902bad677863c27ab2c379b480affe880a690bb8c59efef5c506ee4abfec",
+      "bytes": 3942
+    },
+    {
+      "path": "backend/gmsh_mesh_rotation.py",
+      "sha256": "d6f99020cb7adeb975d2f66e15270d194d7a5638d9f438540602db8eba20f741",
+      "bytes": 25644
+    },
+    {
+      "path": "backend/gmsh_solver.py",
+      "sha256": "fec4d99e74568ab88cc6c514e561cd70df194fd1817e830da44616d3c6221c1e",
+      "bytes": 73327
+    },
+    {
+      "path": "backend/halbach/__init__.py",
+      "sha256": "4589f3c4384db0bc139c83db732036e87ccdbe9f7d7e1e98f67b20a5806d7d69",
+      "bytes": 1587
+    },
+    {
+      "path": "backend/halbach/exports.py",
+      "sha256": "cad215ba9cb9b28d50ce184e4e2db097f3a67b07f3b534165222f4af21ea628b",
+      "bytes": 14972
+    },
+    {
+      "path": "backend/halbach/geometry.py",
+      "sha256": "980f8092b696faefc22be7cccf60fb76c7d69bdd51f9d0a961c83358e52beb3a",
+      "bytes": 10977
+    },
+    {
+      "path": "backend/halbach/gmsh_adapter.py",
+      "sha256": "50186517357c9a64f9c1d8d74008770094f7a1125eff33cdd23de0085d801690",
+      "bytes": 27851
+    },
+    {
+      "path": "backend/halbach/linear_geometry.py",
+      "sha256": "cf97f7fa5a0b3bc41763f1d0fa48fb5574f336223cef69e476c9232284cb9f0c",
+      "bytes": 9927
+    },
+    {
+      "path": "backend/halbach/linear_gmsh_adapter.py",
+      "sha256": "5383dc45c7dc06ff3f358300f2c846f46b08b19a56f11a065a12f34a4536859d",
+      "bytes": 27163
+    },
+    {
+      "path": "backend/halbach/linear_models.py",
+      "sha256": "597d8ab510715af4fa90915e646b99435fbfb4c390f5257f697c04cd1d0fc9e9",
+      "bytes": 7972
+    },
+    {
+      "path": "backend/halbach/linear_postprocess.py",
+      "sha256": "7c6707110fbbe5f61e715d69cbdec15d393bf5daac2905f154d9129ba6486469",
+      "bytes": 12876
+    },
+    {
+      "path": "backend/halbach/linear_solver.py",
+      "sha256": "89b1c709ef2d82accddeb5f10a4b0b3b582697e2bc5160104691b0ea75548e98",
+      "bytes": 9285
+    },
+    {
+      "path": "backend/halbach/materials.py",
+      "sha256": "0e2f21fac1daf437945eadb49e4300f7a1fca14160bce07143bb65e9fd6e81c0",
+      "bytes": 10100
+    },
+    {
+      "path": "backend/halbach/models.py",
+      "sha256": "08491dddf0ea35359273737cf10e73fd3c6f30dfd4cd8df29ec608e179420874",
+      "bytes": 12486
+    },
+    {
+      "path": "backend/halbach/postprocess.py",
+      "sha256": "5222ee6dd5673a6d5884ae58d0a18cc88a1eace82dbfb36f71ac41dee3317d7a",
+      "bytes": 25074
+    },
+    {
+      "path": "backend/halbach/solver.py",
+      "sha256": "8b7f54de96674feda1b129073761f4b92fa562a23e09c298c588a18c91b26ec7",
+      "bytes": 12969
+    },
+    {
+      "path": "backend/local_file_safety.py",
+      "sha256": "9d6430cac80c866ab54e2cdcaeaf2a08435265a23ba75f365925e84b1e7083ac",
+      "bytes": 1140
+    },
+    {
+      "path": "backend/logging_utils.py",
+      "sha256": "a0f4f289c013d2697e56f2fd9a5ca21e1a119cfb2d93bb490d499319278a9ea6",
+      "bytes": 776
+    },
+    {
+      "path": "backend/machine_constants.py",
+      "sha256": "c5bc059993b475228cf9d60a5fc51bee4f8814bc8b0412202aa39ff34a3f1437",
+      "bytes": 4614
+    },
+    {
+      "path": "backend/magneto2d_adapter/__init__.py",
+      "sha256": "22b5093176d34a940e82860ceb2a862ce651d62f5d0a50729b51ea0ddac3cb18",
+      "bytes": 67261
+    },
+    {
+      "path": "backend/magneto2d_adapter/_state.py",
+      "sha256": "3310a6731d09435927704204269279f98e02e0a1ec71662c86894b352eb03ba0",
+      "bytes": 1694
+    },
+    {
+      "path": "backend/magneto2d_adapter/streaming.py",
+      "sha256": "2622b8a1f7bec529e168030f43971070b5396520e3391cd45e89de1d0d3e9b19",
+      "bytes": 11946
+    },
+    {
+      "path": "backend/material_catalog.py",
+      "sha256": "7af93ae3ec8f29a1e3a8bc219be5ecec91c092eb2d5d675d6e58c52b26bd979d",
+      "bytes": 4026
+    },
+    {
+      "path": "backend/material_contract.py",
+      "sha256": "eb33c7d60407ce520bd223392118131278d6fc3ba241c1e51d27f29e0e6f830d",
+      "bytes": 8287
+    },
+    {
+      "path": "backend/mesh_evidence.py",
+      "sha256": "96543c8aa3f7012126a1e8b08a532a251c6d75d89efc983f56f2470853ebfd5f",
+      "bytes": 4890
+    },
+    {
+      "path": "backend/mesh_profiles/gmsh_profiles.json",
+      "sha256": "6331458dde4128949058dfe3c80850aa42e98d1edc159a4b28266ff9161f4ab0",
+      "bytes": 1511
+    },
+    {
+      "path": "backend/models/__init__.py",
+      "sha256": "e004067980b6a61c9811f74e5a1e337f827673c95128e986883d81a69b9f4128",
+      "bytes": 1958
+    },
+    {
+      "path": "backend/models/config.py",
+      "sha256": "2f72ed2cfb85bb75f376fea2b0af363302db9cfb2d8b7b1f1e9aac737882af09",
+      "bytes": 28380
+    },
+    {
+      "path": "backend/models/errors.py",
+      "sha256": "a31f9c3683f9eee4a2c9490f6d7f468590815903a00c4330b2f6c5cfbc5f18b9",
+      "bytes": 740
+    },
+    {
+      "path": "backend/models/field.py",
+      "sha256": "d5a16aa60ee1cfdf3802dc90d10b404a35cff7c81d9f1fc4b6bad292cc31e7a4",
+      "bytes": 14614
+    },
+    {
+      "path": "backend/models/geometry.py",
+      "sha256": "ad7ee8acb567b9aa22a73329523734f0f67e7f98a4f349da4bc0ad387758ab0c",
+      "bytes": 3166
+    },
+    {
+      "path": "backend/models/mesh.py",
+      "sha256": "b739ab587d7db3b300994926eb59932c4e1992660bb7fe8950bf1940528b082e",
+      "bytes": 2349
+    },
+    {
+      "path": "backend/models/result.py",
+      "sha256": "1f3822b5881ec887e8987402ea8bf4ca85dca5f9b167a5949b90badcb8462dd3",
+      "bytes": 4083
+    },
+    {
+      "path": "backend/models/waveforms.py",
+      "sha256": "c1a0ed0f29043b8a4cf6c2d4a9667726c8c71f59bf75aab6b7ed9fbcab334b70",
+      "bytes": 5817
+    },
+    {
+      "path": "backend/platform_info.py",
+      "sha256": "66e0561fb3bd6c4de9e5287a5546db5da5d7b0bcc9f2582fb8cbcb9c8f5bad01",
+      "bytes": 1133
+    },
+    {
+      "path": "backend/preview.py",
+      "sha256": "b9c9afabb72694134e92ddea71cd735de7f5c6352d9f5bef3faeea7520208eb6",
+      "bytes": 40014
+    },
+    {
+      "path": "backend/preview_from_ir.py",
+      "sha256": "7a0821b726191891af18b9fa38035b0db60274a52e6076f81a1dd3deafff364a",
+      "bytes": 8588
+    },
+    {
+      "path": "backend/public_field_playback.py",
+      "sha256": "4c7a82bcb7c8951fc04c3eff96bbc3ad246ac7c3e9fdfb98e9fbcdbe6f63ddaa",
+      "bytes": 25323
+    },
+    {
+      "path": "backend/public_field_playback_contract.py",
+      "sha256": "71f783078b67b2eba53e473f0813b1322510953ff64d9fdc0bb736d6d23354f8",
+      "bytes": 16879
+    },
+    {
+      "path": "backend/public_main.py",
+      "sha256": "3ef306a4b36a819cfdfbbb72674cd8083ecaff206da45cffb29ace04547ef3c4",
+      "bytes": 8120
+    },
+    {
+      "path": "backend/public_material_catalog.py",
+      "sha256": "645fc7b73dfeac2ca5226269c89a3580b1e7606264392d230d0f198a52cc6348",
+      "bytes": 9521
+    },
+    {
+      "path": "backend/public_policy.py",
+      "sha256": "331ae45fc61c2d248eb768fa407a433708eca6347f68343b8a920fa9e2bcc939",
+      "bytes": 9913
+    },
+    {
+      "path": "backend/public_report.py",
+      "sha256": "1f0dbc024dc6645ce955ecdd21bf3e74bbd16ee0f27eeaaed2ef56e0833e1054",
+      "bytes": 40215
+    },
+    {
+      "path": "backend/public_routes/__init__.py",
+      "sha256": "9d618f4d5ce4533d14c318f65d071363e32de63c7089a92f91871fa2ccb50ff6",
+      "bytes": 58
+    },
+    {
+      "path": "backend/public_routes/halbach.py",
+      "sha256": "b5af7c81488e4dacd69e266641fb4f29574934fd9a50d933263f5073d886b352",
+      "bytes": 20336
+    },
+    {
+      "path": "backend/public_routes/preview.py",
+      "sha256": "0504b07ba202c130ccb641c15d1ec8bb9956f95043e63131dff10163812ede77",
+      "bytes": 5887
+    },
+    {
+      "path": "backend/public_routes/runs.py",
+      "sha256": "f9270bed900c9deb9748f014e0fcafd25b34eb2968696e5a9e0474e88d34c894",
+      "bytes": 5743
+    },
+    {
+      "path": "backend/public_routes/solve.py",
+      "sha256": "59d4e64caeb4bf2ea8bf3bafd8a739c0be2da7094020ebab5d317120c7b8019c",
+      "bytes": 47249
+    },
+    {
+      "path": "backend/public_routes/tutorials.py",
+      "sha256": "8643f13081e4b0bd46ea157e06f6cf8db4fb25f8d2354ee48084ce52ea7d47d6",
+      "bytes": 35530
+    },
+    {
+      "path": "backend/public_security.py",
+      "sha256": "b89080f3995c0f40085c0df1cb4374c25414c30f6f08229aaa98e22a51423431",
+      "bytes": 2360
+    },
+    {
+      "path": "backend/solve_workspace.py",
+      "sha256": "19a175a252436d2b1279d097ac4ce9916344c4aba603eb0cc77d12631ca0f7b4",
+      "bytes": 40955
+    },
+    {
+      "path": "backend/solver/__init__.py",
+      "sha256": "66a98de53b28df0738b1367196c93663e4c79d48d92841e68dc4d2841e3b0305",
+      "bytes": 132514
+    },
+    {
+      "path": "backend/solver/_helpers.py",
+      "sha256": "a5efc69c9cdb751c5bb5e58d61c19482a5b340f69a74fdc5808e445357a195d7",
+      "bytes": 60569
+    },
+    {
+      "path": "backend/solver_contract.py",
+      "sha256": "fcc680bdfb83c9a1a960c71f9a0f20c9d4149b09d5931c320a0e7d51f65c5046",
+      "bytes": 844
+    },
+    {
+      "path": "backend/solver_environment.py",
+      "sha256": "c60730f29ae37c8bb93f87b7537675205fbc39d26731ca781ab3f6f4d54fc9b1",
+      "bytes": 1682
+    },
+    {
+      "path": "backend/steel_flux_metrics.py",
+      "sha256": "8e2a9d89aa3b50272ad40d60e69d34da321e10bbf1860bf4b0a426601d59ea69",
+      "bytes": 7570
+    },
+    {
+      "path": "backend/sweep_planning.py",
+      "sha256": "82c016bffb5b708b5c0bac58c504e09b18ed3b171677969f93f1f67cd5315cf9",
+      "bytes": 4514
+    },
+    {
+      "path": "backend/topology_provenance.py",
+      "sha256": "3d774b03589697c2d7b96989d4d758190fb0c04e2cbaeffd4276da5ad9b26b51",
+      "bytes": 8086
+    },
+    {
+      "path": "backend/torque_metrics.py",
+      "sha256": "1174aded8f337de4105cd0d1f3b03a38f8256f9aa868b129539637ff3c419e68",
+      "bytes": 1684
+    },
+    {
+      "path": "backend/tutorial_fields.py",
+      "sha256": "b26d208a33606ecf4be3bf1f05f63e0b0c68e5db65d09f2aa00083fc994e5844",
+      "bytes": 135144
+    },
+    {
+      "path": "backend/winding_utils.py",
+      "sha256": "bad70a57f91e9ea6074a39975b80e847e492f8d07a6738c5fe41ed5f430e690e",
+      "bytes": 15116
+    },
+    {
+      "path": "benchmarks/m350-launch/benchmark_spec.json",
+      "sha256": "ac22a655f5db21bcb625fca58369ad1e069e9120f927c5ba10aa0eca3f1faa75",
+      "bytes": 6065
+    },
+    {
+      "path": "benchmarks/m350-launch/fixtures/spm_4p12s_m350_launch.json",
+      "sha256": "a284059fe84f8c89a0d460ffe2b391cdb055415165c96edf721eda0079e0c0d9",
+      "bytes": 1451
+    },
+    {
+      "path": "benchmarks/m350-launch/fixtures/spm_8p12s_m350_launch.json",
+      "sha256": "85312895c5aa54d65ed89e1b6569bccd8a11b9f1dafb0ae3ce280416efb9e8ea",
+      "bytes": 1498
+    },
+    {
+      "path": "benchmarks/preview-evidence/results.json",
+      "sha256": "896b1de19e360dfc8ef762095e6c9c15c8c128c5b87e2def15794d7bfe0e02bc",
+      "bytes": 763480
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "sha256": "0d03b1213dabbb31ab9474d5ee5460f0e66796565a165afd84975b36e95f2245",
+      "bytes": 10197
+    },
+    {
+      "path": "docs/ELMER.md",
+      "sha256": "b0cbe505cb8947a952dc0330a45e1e4c2a5da0cb971c86874c60f0d84ba32fb6",
+      "bytes": 5066
+    },
+    {
+      "path": "docs/FIELD_PLAYBACK_V2.md",
+      "sha256": "f28e21a8c468d42cba7ddd7db8644f8f820cbf31bfcb8248063dc8f392243e63",
+      "bytes": 4686
+    },
+    {
+      "path": "docs/GENERIC_MAGNETOSTATIC.md",
+      "sha256": "299c5fedf17e58a8678f57611d99f2bf43d4fd9d65b08d3ce385c5dea563a0dc",
+      "bytes": 14521
+    },
+    {
+      "path": "docs/GETTING_STARTED.md",
+      "sha256": "86462c89b1656c9e5a5c98e664d885ecedaeae2eebe33a788250921656697d5b",
+      "bytes": 12444
+    },
+    {
+      "path": "docs/HALBACH_ARRAY.md",
+      "sha256": "6e7f069c362f36be0870bf88792578a36c80622fb26bd2c260ed82b892c610c7",
+      "bytes": 8236
+    },
+    {
+      "path": "docs/MAGNETO2D.md",
+      "sha256": "cf51dfcff3fc96103e5dd2216a4d6a412e7dacca3bc22b6eb9b62c4d2a8ec4b6",
+      "bytes": 44715
+    },
+    {
+      "path": "docs/NUMERICAL_EVIDENCE.md",
+      "sha256": "4dcacba628c34896f84dbd5ead4589db963a7151a5f802d74d5a1e8e9f4eea04",
+      "bytes": 7938
+    },
+    {
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "sha256": "d63278db1d8a2c36ff5acc912e56b56132247607e051de3faffb95edcf504526",
+      "bytes": 7823
+    },
+    {
+      "path": "docs/RUNTIME_SETTINGS.md",
+      "sha256": "c66a6f1acd7414f2c627faa529baaddf018e6b4dc3efcbc785aaaa9c31f5eb41",
+      "bytes": 2332
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "sha256": "150ce9b114fe086926a02311b8205e771c3c819383d61a5166cbb8183cca807a",
+      "bytes": 5373
+    },
+    {
+      "path": "docs/VERIFICATION.md",
+      "sha256": "59a136456899fdf1abcfc75f77640ec92f350122fd01c8ec1f3c72ae79546ae9",
+      "bytes": 3853
+    },
+    {
+      "path": "docs/examples/follow-flux-magnet-iron-report.json",
+      "sha256": "25bbe57352a4307d176d0dcc8c22f1c1466922dcad4092bff63c5f14b2d901d3",
+      "bytes": 2897435
+    },
+    {
+      "path": "docs/images/coilem-landing-page.png",
+      "sha256": "08fde6e6600d37f8ac2fdda79a2cbfb52a6a8ad651b49477e3c42d7ca36a1eba",
+      "bytes": 573781
+    },
+    {
+      "path": "docs/images/magneto2d-follow-flux-fields.png",
+      "sha256": "47c522c43bfbe07c74cb0644244869baad5f824b2dc7dd530a266995fe9cbef0",
+      "bytes": 997263
+    },
+    {
+      "path": "docs/images/magneto2d-p1-element.png",
+      "sha256": "820ee3042847f8406324647f86327652ac7a522b0b68434a6a3def733527bb4e",
+      "bytes": 304393
+    },
+    {
+      "path": "docs/images/torque-comparisons.svg",
+      "sha256": "4fc639ac41dee9c82af11d50409f3582c64335b9744cbc9fd92b4c60ffec014e",
+      "bytes": 87275
+    },
+    {
+      "path": "docs/local_solve_workspace.md",
+      "sha256": "14c27bb25eff955f4da4a250e3b67614cba950b889319fde402a602c24d2d6fe",
+      "bytes": 3726
+    },
+    {
+      "path": "frontend/package-lock.json",
+      "sha256": "e791b180125a2046fffbc1d54940cc097aba71ce83c88f84becc8f58263da5ab",
+      "bytes": 63981
+    },
+    {
+      "path": "frontend/package.json",
+      "sha256": "b8915bd2f6a38272168e2b1755b5607bc43759fd3acbc4dea92f52cff3c9cb57",
+      "bytes": 1533
+    },
+    {
+      "path": "frontend/playwright.public.config.ts",
+      "sha256": "ba3e5d2b00964b5f147a4d32f22b2385d7b9246c3f1c5a16916b7ed6bddf9fcb",
+      "bytes": 2191
+    },
+    {
+      "path": "frontend/public/brand/coilem-mark.svg",
+      "sha256": "da26ccce60372854b864ba0b8b11f7c1606314162510d89c1944e876964cbc5e",
+      "bytes": 1093
+    },
+    {
+      "path": "frontend/public/materials/sample-custom-steel.csv",
+      "sha256": "8a7f5c648bf42ef3cf107d4542610e0c7b2f9d4728a00bb45434a15e49b2906d",
+      "bytes": 1099
+    },
+    {
+      "path": "frontend/scripts/import-typescript-module.mjs",
+      "sha256": "0b0494fca09b8be2eaedddba5a61e1a61e9fc92fc26cac1dd9a676cd72ab1ea8",
+      "bytes": 1636
+    },
+    {
+      "path": "frontend/scripts/test-bldc-chart-paths.mjs",
+      "sha256": "1d7a2c25dbdf42708728e2066ea15ce50e9832321c8f03fcd51e31f2ec82e709",
+      "bytes": 5104
+    },
+    {
+      "path": "frontend/scripts/test-custom-steel.mjs",
+      "sha256": "206e0c3c63ddf9e11d28f6d4a60d4227eaac4757d0fb06ab538fd8b1d4db6e3f",
+      "bytes": 2006
+    },
+    {
+      "path": "frontend/scripts/test-flat-ipm-burial-health.mjs",
+      "sha256": "7c6b67897ce144407844dbba3a9ec0ed7f55193d647b3879a1ff99b639b33f36",
+      "bytes": 4955
+    },
+    {
+      "path": "frontend/scripts/test-lesson-ten-bemf.mjs",
+      "sha256": "61e991f0823f2ca6aeeccf5f14950ef350d9d3d5e826ba552864f9bcd7e2651d",
+      "bytes": 3646
+    },
+    {
+      "path": "frontend/scripts/test-mesh-quality.mjs",
+      "sha256": "2d72189fd47da95a306099e9f23b5495291eae9603f51ba17a104ea172df429f",
+      "bytes": 3216
+    },
+    {
+      "path": "frontend/scripts/test-public-airgap-ux.mjs",
+      "sha256": "63dc2966cb3e82fbbdcab31d29110cef55c05352ef5254353e4a9ffeb653d282",
+      "bytes": 2732
+    },
+    {
+      "path": "frontend/scripts/test-public-backend-monitor.mjs",
+      "sha256": "c73911a9d955baf5df3dbf7c1f50e78d984d0920ebff518b67a4d10885d4eb8f",
+      "bytes": 4162
+    },
+    {
+      "path": "frontend/scripts/test-public-boundary.mjs",
+      "sha256": "f73074a8e8cf1d6926d06274f9684120d673814623f18c66279f378b3b3fde29",
+      "bytes": 5352
+    },
+    {
+      "path": "frontend/scripts/test-public-bundle.mjs",
+      "sha256": "398e7f4ae43445ad1f88b39254c5dc53040657ec30428585927ba9ac872dcc37",
+      "bytes": 1251
+    },
+    {
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "sha256": "6fc3ae5ff1f882caa8897032af6c783b421f39bbd0e1087d9a865ec24432f5fa",
+      "bytes": 95446
+    },
+    {
+      "path": "frontend/src/api/projectSchema.ts",
+      "sha256": "9ef3ad99a63e25fbcc28cf2624f44c6dc52cecfd95a6f7b97101ce04de13f602",
+      "bytes": 12346
+    },
+    {
+      "path": "frontend/src/api/statorDefaults.ts",
+      "sha256": "2761b9e54dbf2765f8ad3d0e9306cdaf136884b33cc682be994d598497c74c4c",
+      "bytes": 2931
+    },
+    {
+      "path": "frontend/src/components/LandingWorkflowHero.tsx",
+      "sha256": "aa3961c206fedef4591c5e7c41d34fb7012a52f1272ccf299e1325df98ccf8eb",
+      "bytes": 4630
+    },
+    {
+      "path": "frontend/src/components/landing-3d/Landing3DPreview.tsx",
+      "sha256": "fd65fb732a4dce0cc89955b8c025fd3889267c533dc0ed1e6c77e153505fd29b",
+      "bytes": 62936
+    },
+    {
+      "path": "frontend/src/components/landing-3d/LandingHalbachPreview.tsx",
+      "sha256": "49fdb9ab6b24272e7140c6b2d525dffb71dc410b51e8d244ba26302d82e7a8ce",
+      "bytes": 7448
+    },
+    {
+      "path": "frontend/src/components/landing-3d/LandingPreviewModeControl.tsx",
+      "sha256": "3b400562c47978fa4bedab65440d16cf05011d5da2605fddfde1ad5eb164bd03",
+      "bytes": 1365
+    },
+    {
+      "path": "frontend/src/components/landing-3d/hero_b_heatmap_8p12s.compact.json",
+      "sha256": "2ebe4583e7b82a290a01c1859bac3b1c7e161dc45629d6759271736f3909447e",
+      "bytes": 4196947
+    },
+    {
+      "path": "frontend/src/components/landing-3d/hero_field_8p12s.compact.json",
+      "sha256": "09807fbfdd4a66185dccf015d62ce521ba0798db9fbefe183608961c64fe0c63",
+      "bytes": 1118630
+    },
+    {
+      "path": "frontend/src/components/landing-3d/hero_linear_halbach_field.magneto2d.json",
+      "sha256": "40bc02aeb279a798e85eb2d8edbdd3186964508ea6bbc35628308cb71a9890d0",
+      "bytes": 1253137
+    },
+    {
+      "path": "frontend/src/components/landing-3d/hero_linear_halbach_mesh.gmsh.json",
+      "sha256": "99e87c2da06a1f2d6ed71c450e36635ef4e2cf7826050ada237686ac9958e641",
+      "bytes": 622459
+    },
+    {
+      "path": "frontend/src/components/landing-3d/hero_mesh_8p12s.compact.json",
+      "sha256": "d99ccbd346bde8c87c685b0d4e18eaf2447ebf1f6c8614f94f0418eec2ef66bd",
+      "bytes": 311289
+    },
+    {
+      "path": "frontend/src/components/landing-3d/hero_motor_8p12s_200mm.json",
+      "sha256": "d33d6a9dbdcb1b89a24c19eb06f24d182f084b96ffeada90be8131204e2b680b",
+      "bytes": 1506
+    },
+    {
+      "path": "frontend/src/components/landing-3d/hero_report_8p12s.compact.json",
+      "sha256": "7940d482c54d374480aaff75cae53ca340758b35453610d96e6ab7e29f25e71f",
+      "bytes": 5032
+    },
+    {
+      "path": "frontend/src/components/landing-3d/solvedPlayback.ts",
+      "sha256": "42b2496b22f17dfcb6ee493a312f3dcac19a014901b689391fb1858adbba4abe",
+      "bytes": 1293
+    },
+    {
+      "path": "frontend/src/components/tutorials/AirgapFluxGauge.tsx",
+      "sha256": "8cffb37225ae046b45738a5d1d86aa6401a6ecd61fa3386e169ea130e2cd57a0",
+      "bytes": 2798
+    },
+    {
+      "path": "frontend/src/components/tutorials/ChapterOneLinearMotorCapstone.tsx",
+      "sha256": "341949aadd03aa09b2aa9379a195239d3b0b71a1e31ed1d3b9bd72638b16419b",
+      "bytes": 30325
+    },
+    {
+      "path": "frontend/src/components/tutorials/CurrentConductor3D.tsx",
+      "sha256": "14a45ff0e86ca8c61a571af62238d7bd007852a92abdb8d562381999b910232f",
+      "bytes": 11121
+    },
+    {
+      "path": "frontend/src/components/tutorials/FieldForce3D.tsx",
+      "sha256": "15c040aefa43696c18a5e0192ee36441fb4934238ba07d3868d214a54559a9a0",
+      "bytes": 16170
+    },
+    {
+      "path": "frontend/src/components/tutorials/FluxPathLegend.tsx",
+      "sha256": "221526c6659221703810306f03620542c5d49c3c30a93d387c2dd217129ea651",
+      "bytes": 1689
+    },
+    {
+      "path": "frontend/src/components/tutorials/FollowFluxDepth3D.tsx",
+      "sha256": "5728f75b6eca24bef494772de3736710b7c12a17414c11a0a040ccbdaebf5584",
+      "bytes": 16830
+    },
+    {
+      "path": "frontend/src/components/tutorials/KnowledgeCheck.tsx",
+      "sha256": "72174e0f74e6fe11a25fe41c689ff094c02b7c1a93d2987bfcfc3934be42124f",
+      "bytes": 2497
+    },
+    {
+      "path": "frontend/src/components/tutorials/LearningLessonOneFollowFlux.tsx",
+      "sha256": "ccde6e1fd21ddf3ad623b55c18d4a28ab3fd87b1c9ab58795504dd12846a44e9",
+      "bytes": 111713
+    },
+    {
+      "path": "frontend/src/components/tutorials/LessonCatalog.tsx",
+      "sha256": "58899ef93fa5258f477449c9ecb30a076bd039475964cde46654f2ece98e595f",
+      "bytes": 15494
+    },
+    {
+      "path": "frontend/src/components/tutorials/LessonCompleteButton.tsx",
+      "sha256": "65293da81c783516fb0df2054d2aead9a276b3991e41307f71db8f74af86dcfe",
+      "bytes": 1016
+    },
+    {
+      "path": "frontend/src/components/tutorials/LessonEightThreePhaseMotor.tsx",
+      "sha256": "02ce8d26484c8c958bee291977a4549f142157ea7ae69bf9a4318806b1ea16c5",
+      "bytes": 53434
+    },
+    {
+      "path": "frontend/src/components/tutorials/LessonFiveFieldForce.tsx",
+      "sha256": "7ee4854838fdcd2248d3375cde322b0bc57d134c76000efad200420ca3c24d2f",
+      "bytes": 119622
+    },
+    {
+      "path": "frontend/src/components/tutorials/LessonFourIronSaturation.tsx",
+      "sha256": "b63b90cec9173c80d7419824c7664dd933e8a03ff0ce18e844e6d15590bbf20b",
+      "bytes": 68085
+    },
+    {
+      "path": "frontend/src/components/tutorials/LessonGlyph.tsx",
+      "sha256": "bcc2724ec4adc812fa3ce5870bd06b60a9b5915578783aa709712cbfe4f50b82",
+      "bytes": 11174
+    },
+    {
+      "path": "frontend/src/components/tutorials/LessonMotorDiagram.tsx",
+      "sha256": "8d172243875e304adc1400382ea993dd7fe19f8ad5780c7411c82515309c4776",
+      "bytes": 13683
+    },
+    {
+      "path": "frontend/src/components/tutorials/LessonProgressStepper.tsx",
+      "sha256": "be8758de7ae21402e5ebd144789cbca8b2f5d8183e1d3885296f41a17a5cdf17",
+      "bytes": 1403
+    },
+    {
+      "path": "frontend/src/components/tutorials/LessonSevenRotatingField.tsx",
+      "sha256": "2f699dbde2a4e7c3011c3e49c5ac8f1ae6e636a10040e62e27b371ccff72bfe0",
+      "bytes": 70117
+    },
+    {
+      "path": "frontend/src/components/tutorials/LessonSixRotorChase.tsx",
+      "sha256": "3c2991bc8f1b00878a4509bc8fb58f3749484adfc78bde69f53091ba46324c64",
+      "bytes": 120923
+    },
+    {
+      "path": "frontend/src/components/tutorials/LessonThreeBackEmf.tsx",
+      "sha256": "6a49a6dfba9dc6a12c48094665fc29f7f49706a20460d8d462616e8e6aa43dd4",
+      "bytes": 37256
+    },
+    {
+      "path": "frontend/src/components/tutorials/LessonThreeCurrentField.tsx",
+      "sha256": "439ee27e2d7204e999494dc36feb3a523ed6474c511f39c45c74fb698867ad01",
+      "bytes": 31998
+    },
+    {
+      "path": "frontend/src/components/tutorials/LessonTwoAirgapTax.tsx",
+      "sha256": "4dc5456b9eaaab2dd93f9ad04321180ba3fa336ce051d897b2e205e7ab096afd",
+      "bytes": 36902
+    },
+    {
+      "path": "frontend/src/components/tutorials/LessonTwoMagneticCircuit.tsx",
+      "sha256": "f489ce26093a0aaeb3998f23572c1c93354e4782feec14ef66b998ccd1b816a4",
+      "bytes": 58447
+    },
+    {
+      "path": "frontend/src/components/tutorials/LinearMotorCapstone3D.tsx",
+      "sha256": "4d789633f3601b6ab99cfc106fb1b51243e809894192b4bee2d723946a0fd0d7",
+      "bytes": 23872
+    },
+    {
+      "path": "frontend/src/components/tutorials/MeshViewer.tsx",
+      "sha256": "e75dad92e38872d1cd5eaaba084d98c3af16c1d8675af8f5ce30dec27e2c22c5",
+      "bytes": 108747
+    },
+    {
+      "path": "frontend/src/components/tutorials/MotorEffectLoop3D.tsx",
+      "sha256": "782d9d69ca638da8ffad1e48552ef337533dce3b0c8d75c4fc0e68b877230fdb",
+      "bytes": 13307
+    },
+    {
+      "path": "frontend/src/components/tutorials/MotorTooth3D.tsx",
+      "sha256": "0d5953d1dc59683a96865bf6ed1d594c30cba0dade9062f9972882981e4a1ae4",
+      "bytes": 11827
+    },
+    {
+      "path": "frontend/src/components/tutorials/ReluctanceBudget.tsx",
+      "sha256": "d588225dc3e98542b48491a8a346cd73ca92b43cfd6187097e3d184f0eec7c59",
+      "bytes": 9550
+    },
+    {
+      "path": "frontend/src/components/tutorials/RotatingFieldCoils3D.tsx",
+      "sha256": "e13d53de9a9beda167d3f23021c9db673e97f02880bf83fd8e60055c0221d113",
+      "bytes": 10343
+    },
+    {
+      "path": "frontend/src/components/tutorials/RotorChase3D.tsx",
+      "sha256": "a3c27c327d65602d045ce86d9e029b5bfc3a0493f99f5aa275e51d8d66dac3aa",
+      "bytes": 16691
+    },
+    {
+      "path": "frontend/src/components/tutorials/SaturationField.tsx",
+      "sha256": "c17b781756dcb2a42c865340bb8752f0377042da5af2a04fbfc48e12dcb3233e",
+      "bytes": 6287
+    },
+    {
+      "path": "frontend/src/components/tutorials/ThreePhaseMotor3D.tsx",
+      "sha256": "891361b023b715074849111c34d01405c6ce0db38c92da10585fbed15a164802",
+      "bytes": 19727
+    },
+    {
+      "path": "frontend/src/components/tutorials/TwoPhaseMotor3D.tsx",
+      "sha256": "0902b9529e3613f69d3b1d2896baab766fcf4650025ca90313ba3beb3220055f",
+      "bytes": 15249
+    },
+    {
+      "path": "frontend/src/components/tutorials/airgap-tax.css",
+      "sha256": "cd604278adbbff45de13b10448265a5d2d017ab64addded108cb0a5de3bf1533",
+      "bytes": 27841
+    },
+    {
+      "path": "frontend/src/components/tutorials/current-conductor-three.css",
+      "sha256": "78624f2cb824bbfbe53ed64781ed02990d172bfff77c0a7cafb892d9ab198014",
+      "bytes": 2162
+    },
+    {
+      "path": "frontend/src/components/tutorials/current-field.css",
+      "sha256": "b435a1dfa5a3f31f7f354d266a353906efd15d38f82e894d6ae9ad26cb77dd74",
+      "bytes": 28492
+    },
+    {
+      "path": "frontend/src/components/tutorials/field-force.css",
+      "sha256": "9cc0bd502c3cd18157bed86e1dd5ec8fb9363797537aad05710005a871df4a3b",
+      "bytes": 64008
+    },
+    {
+      "path": "frontend/src/components/tutorials/fieldLineStitching.ts",
+      "sha256": "5120d43f910ee03049c4830270124bd54cd3bdf7ccfc03da23fa0a2614d1f7fd",
+      "bytes": 12302
+    },
+    {
+      "path": "frontend/src/components/tutorials/fieldLineStyle.ts",
+      "sha256": "ac5076de91181bce9fcf659e9e99b03ad074304ac3a759dad65a2244d3828e3d",
+      "bytes": 747
+    },
+    {
+      "path": "frontend/src/components/tutorials/fieldPolarityCues.ts",
+      "sha256": "214682e372a4b8b473b570b262a31bf05e4d8a9aa4bc51c8380ee085c7e0f070",
+      "bytes": 2131
+    },
+    {
+      "path": "frontend/src/components/tutorials/follow-flux-three.css",
+      "sha256": "02adacea0d32df38a4b5f27a30b1d2d2bda5a2a71cd1d1b9d2794a958f0a271c",
+      "bytes": 4772
+    },
+    {
+      "path": "frontend/src/components/tutorials/follow-the-flux.css",
+      "sha256": "d695b0b556ee71a0f12dcc2c6ad108b422cedc3c3449059415d0236b53106b40",
+      "bytes": 50908
+    },
+    {
+      "path": "frontend/src/components/tutorials/index.ts",
+      "sha256": "9d534184939fc99e5728c1059e41ded070ba19a7a99a97bfb36bd85b4e0b392b",
+      "bytes": 912
+    },
+    {
+      "path": "frontend/src/components/tutorials/iron-saturation.css",
+      "sha256": "9cfa95964a551f55f42948172c351382e5ef7514dabd24eb476669dbd1f9aa36",
+      "bytes": 25675
+    },
+    {
+      "path": "frontend/src/components/tutorials/learning.css",
+      "sha256": "039eb7247c1625fa9cb9a7be09e0e53ebc9821b92bae080fd3ac80fe08b13810",
+      "bytes": 74530
+    },
+    {
+      "path": "frontend/src/components/tutorials/lesson-three-bemf.css",
+      "sha256": "5176921e148f8373340f0a816c1410a675a5f2bd54c322ad224b94498e2c26e3",
+      "bytes": 13789
+    },
+    {
+      "path": "frontend/src/components/tutorials/lesson-two.css",
+      "sha256": "9451e9f40eece88b37f0b28edc1e59ec5863df98df82a465086df654235ba893",
+      "bytes": 32491
+    },
+    {
+      "path": "frontend/src/components/tutorials/lessonOneOpenAirField.ts",
+      "sha256": "b45b9916ff0a87ec8f8fbdf8e64d4c01baa9991a29dabea9b2d0339374f59c60",
+      "bytes": 11301
+    },
+    {
+      "path": "frontend/src/components/tutorials/lessonSolveClient.ts",
+      "sha256": "7aa78c3c289bf6bc919ebf411ce7951101f2a5cb9f9f313ea66f15e5e418863a",
+      "bytes": 4839
+    },
+    {
+      "path": "frontend/src/components/tutorials/lessonSolveTypes.ts",
+      "sha256": "bade08a56f541eb07cd84f145ddca8d2e1bf0adf16d02a342d3fd4d623e6192e",
+      "bytes": 15985
+    },
+    {
+      "path": "frontend/src/components/tutorials/lessonStage.ts",
+      "sha256": "f1f72cba45af7f4ec75b537188255a9e9518220b68dc4604f03d714e413d40e6",
+      "bytes": 720
+    },
+    {
+      "path": "frontend/src/components/tutorials/lessonTenBackEmf.ts",
+      "sha256": "69a7df1b036dd1affa1d95c62a4b63eccf9324011caa1d0fa04193a9e975b309",
+      "bytes": 3973
+    },
+    {
+      "path": "frontend/src/components/tutorials/linear-motor-capstone.css",
+      "sha256": "c4bcbb1ccf4934ccc5e3f75326af436f647cc84da99b9298fef2f55114cb2ebc",
+      "bytes": 24793
+    },
+    {
+      "path": "frontend/src/components/tutorials/magnetPoleFills.ts",
+      "sha256": "2d5bc9835f9c10d5461e1feb36110229495a022da361fa0c2081fd79c73d3ace",
+      "bytes": 1538
+    },
+    {
+      "path": "frontend/src/components/tutorials/magneticCircuit.ts",
+      "sha256": "893586729faaa28e4009fbd7a32ac223a76aaf744f20767f548cd078da9bcfb1",
+      "bytes": 12067
+    },
+    {
+      "path": "frontend/src/components/tutorials/meshviewer.css",
+      "sha256": "760f415567f763836dc72f2ac2ad4a9eadc7ec7e502bddf8955a3b311d5f3b6c",
+      "bytes": 13168
+    },
+    {
+      "path": "frontend/src/components/tutorials/phaseColors.ts",
+      "sha256": "10e7ea93c38a41d79a122b533bcebd73ef44f773162ab1d1d94edf64bafd5b8e",
+      "bytes": 527
+    },
+    {
+      "path": "frontend/src/components/tutorials/rotating-field.css",
+      "sha256": "3f36f769d6162bffb029216e712bd6cf99758d4c9d2d7c1d2b87157dfb507ced",
+      "bytes": 47496
+    },
+    {
+      "path": "frontend/src/components/tutorials/rotor-chase.css",
+      "sha256": "55d39d9abd042c436a6a08d879220b515d40a978948b31b04fe3c62999067f91",
+      "bytes": 53663
+    },
+    {
+      "path": "frontend/src/components/tutorials/three-phase-motor.css",
+      "sha256": "fd1380eccb1564586ca521fa77a2c7697591cff36f87b8c5f4698e641fce44a0",
+      "bytes": 26073
+    },
+    {
+      "path": "frontend/src/components/tutorials/useLearningProgress.ts",
+      "sha256": "5e182551ce1f4006df139a61895d8fc2b772552817b062532d0a0f0070ec5071",
+      "bytes": 2224
+    },
+    {
+      "path": "frontend/src/public/App.tsx",
+      "sha256": "c5e8214d7fac9729657a70a075a346e0d99e08d684ad91c501480e62a1ffc969",
+      "bytes": 66155
+    },
+    {
+      "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
+      "sha256": "ef1b7cc5f042d6b23e95fb0d6649655b3d860da552408c00190e49dae2fa5db6",
+      "bytes": 8962
+    },
+    {
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "sha256": "d911876ae3c7238bd0767177c027e264cd9becc2f4200ddd682f13b0997a632b",
+      "bytes": 174002
+    },
+    {
+      "path": "frontend/src/public/CustomSteelImport.tsx",
+      "sha256": "eeda67dc260b2b9cf81b079c4c54b23a5a37abf51b241236d5b35228c1126572",
+      "bytes": 5368
+    },
+    {
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "sha256": "739947601c14b547e72c3405b42a625026a74290491fe23c1cb7e164ec041447",
+      "bytes": 38395
+    },
+    {
+      "path": "frontend/src/public/GuidedSetup.tsx",
+      "sha256": "42aa135f1f441f419ae1f61978db7be6a572e6b7a57d22baafe82d70421440d0",
+      "bytes": 14887
+    },
+    {
+      "path": "frontend/src/public/MaterialWorkspace.tsx",
+      "sha256": "66a72b7c2b672bc5edeb2b66532838ad37c0a8b5a6f0284412995c7885074528",
+      "bytes": 28281
+    },
+    {
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "sha256": "a91aa0b2ecb6b7d256e880680c528f7590a6bc2bc853613b658c095cde31d121",
+      "bytes": 52933
+    },
+    {
+      "path": "frontend/src/public/PublicLanding.tsx",
+      "sha256": "f5b43aa04183486a4d508563945ddf782f54422952ab0b032b822dbdea8abfd4",
+      "bytes": 933
+    },
+    {
+      "path": "frontend/src/public/PublicMotor3D.tsx",
+      "sha256": "c4ac73517c4cad3fb13390233ec9e4fce7f8917b61f431ca38b10ab53f932c98",
+      "bytes": 77450
+    },
+    {
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
+      "bytes": 22948
+    },
+    {
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "sha256": "ea515f1908e0b5f117ba7e40d48133e078a31f0233152747455f725e44dfc249",
+      "bytes": 42251
+    },
+    {
+      "path": "frontend/src/public/ViewportNavigation.tsx",
+      "sha256": "5724654d93fd4f95851948f589a5d72f60d47c3c0850440b38121511a0c5364e",
+      "bytes": 6246
+    },
+    {
+      "path": "frontend/src/public/WaveformChart.tsx",
+      "sha256": "8c29e4a1ddf38109f8d48fd1439bbb203d9450796db5e3358ab8ebb92cb8a8bd",
+      "bytes": 8133
+    },
+    {
+      "path": "frontend/src/public/WindingLayoutView.tsx",
+      "sha256": "2e3fc465fcebe43ea8a2f08690d2b5f15e07bae74ae8de381a776e12bdd7b3dd",
+      "bytes": 17517
+    },
+    {
+      "path": "frontend/src/public/api.ts",
+      "sha256": "196d3a7cf75e28c24af479ea9ae8ecb105478d730ee3bed9792380e47dc4e91b",
+      "bytes": 10529
+    },
+    {
+      "path": "frontend/src/public/backendMonitor.ts",
+      "sha256": "590349d77d3550976f66f2531bad2ed797df1cf74dc0d94799056372fda91166",
+      "bytes": 1913
+    },
+    {
+      "path": "frontend/src/public/bldcChartPaths.ts",
+      "sha256": "5630590265b8d02821ba60706eb007447568abf83a66ca92730fe08528f69a78",
+      "bytes": 1151
+    },
+    {
+      "path": "frontend/src/public/coil3d.ts",
+      "sha256": "9cad7de5a93294d077a6dddaeb06a945e1322ed00a05042a2a885adab30b9a43",
+      "bytes": 16402
+    },
+    {
+      "path": "frontend/src/public/customSteel.css",
+      "sha256": "fe688fcf564f8d7e8918529ab1dd165c5a8e146a6ba245eec18f3b0c032d7084",
+      "bytes": 1888
+    },
+    {
+      "path": "frontend/src/public/customSteel.ts",
+      "sha256": "77326cc259e5da071304f72c1f3aff4e1a208f10705bf959a74af58b1ecf62c6",
+      "bytes": 4524
+    },
+    {
+      "path": "frontend/src/public/designFile.ts",
+      "sha256": "1b27329953dc56fd2bd4d4353b752b8e70ac74bcac54492ec441664083c134d9",
+      "bytes": 9790
+    },
+    {
+      "path": "frontend/src/public/dimensionAnnotations.ts",
+      "sha256": "e5d90d547e15be58f8bdd6653960aa3696f4a5ab4421430cfdb40b64aa06c536",
+      "bytes": 14117
+    },
+    {
+      "path": "frontend/src/public/exampleDesigns.ts",
+      "sha256": "76e48914382200534d2177f174625cfa9d2984a18ebd78ba13b5df82091efd17",
+      "bytes": 1685
+    },
+    {
+      "path": "frontend/src/public/examples/validation_ipm_10p_v_shape_medium.openem",
+      "sha256": "ca41ae832d8d1849ff8097639e595f7abd61a2dba2e7d3ecaaf9d01d42accd06",
+      "bytes": 1952
+    },
+    {
+      "path": "frontend/src/public/examples/validation_ipm_14p_flat_buried_large.openem",
+      "sha256": "2694576ac799842fc4054541feb9356da1bc4ae04afc1f7f9b6b21fd836017c9",
+      "bytes": 1963
+    },
+    {
+      "path": "frontend/src/public/examples/validation_spm_24p_small.openem",
+      "sha256": "2b0e660e31d01ff8bbbcbde6dcfb2f6e726b5d98e6d0fe6087819ce5206a4082",
+      "bytes": 1934
+    },
+    {
+      "path": "frontend/src/public/excitationDrafts.ts",
+      "sha256": "cc74a4cca94a23ac0da8ca51f047d613b5d93de3e1a882058bbecb7ab1a9e925",
+      "bytes": 2575
+    },
+    {
+      "path": "frontend/src/public/fieldPlaybackContract.ts",
+      "sha256": "27c348879936e491fa8bc5bef40de065661711b96b393954cd9a827a2bfa231d",
+      "bytes": 5338
+    },
+    {
+      "path": "frontend/src/public/fieldPlaybackRasterizer.ts",
+      "sha256": "6a6fe9e37da8387d34d7fbffdab15067ea6609703a2efa3d58bff9f89eedc861",
+      "bytes": 5266
+    },
+    {
+      "path": "frontend/src/public/fieldPlaybackTiming.ts",
+      "sha256": "5f55f904650c7577ecb09c71d56f3e3d06d038136b13940146213110bf4e6e6e",
+      "bytes": 6002
+    },
+    {
+      "path": "frontend/src/public/fieldPlaybackWorker.ts",
+      "sha256": "782cb67c29ba7831df1fbdf13873d8cb85d7fe15b3a2405001f43cdf3d046e26",
+      "bytes": 8155
+    },
+    {
+      "path": "frontend/src/public/fieldViewportRange.ts",
+      "sha256": "c89d39a926f8ef2e2c9daeed16e9f723bc71456be54456d14f56bd97c2962848",
+      "bytes": 1973
+    },
+    {
+      "path": "frontend/src/public/flatIpmBurialHealth.ts",
+      "sha256": "d4bc22c1a84c98342a5daf0195ca8d2d5416b0e48b5f41bc38262a79e28d2a7b",
+      "bytes": 4253
+    },
+    {
+      "path": "frontend/src/public/guidedConfigRepair.ts",
+      "sha256": "5e849143ae9c6e6ba9a92f061a320bab2b919737ec507d7066a30dc4c8720677",
+      "bytes": 10140
+    },
+    {
+      "path": "frontend/src/public/halbach/Halbach2DViewport.tsx",
+      "sha256": "4359f1ee94cfad59161a6f4f563ab3711ea3d7f6e3b3114d04b7970a9c50a731",
+      "bytes": 30844
+    },
+    {
+      "path": "frontend/src/public/halbach/Halbach3DViewer.tsx",
+      "sha256": "e71ee9adb3f09fb1ed71cc2c832a352436f4c7fb055cb82f58f13dd30ca6f93b",
+      "bytes": 13679
+    },
+    {
+      "path": "frontend/src/public/halbach/HalbachWorkspace.tsx",
+      "sha256": "d0102bc1f8a217847eb1ad3a039c86346f8a9ba4e4fe207cc9a1fccb7c02fc3f",
+      "bytes": 56440
+    },
+    {
+      "path": "frontend/src/public/halbach/LinearHalbach2DViewport.tsx",
+      "sha256": "48a2fb5600075c1ce7003bee80ebe5a78e17671a45cf0932278225f4f1b9fdfc",
+      "bytes": 32447
+    },
+    {
+      "path": "frontend/src/public/halbach/LinearHalbach3DViewer.tsx",
+      "sha256": "677f8bcbc033e09c3edf5c299b51dbe47550aaa9558c22b30f8f9f50c384de0d",
+      "bytes": 31106
+    },
+    {
+      "path": "frontend/src/public/halbach/LinearHalbachWorkspace.tsx",
+      "sha256": "7419fdbdecbdf78f50bda5098439aa64cde4ca5c7a78cf9e2df5e6c645c4a3ac",
+      "bytes": 55750
+    },
+    {
+      "path": "frontend/src/public/halbach/api.ts",
+      "sha256": "f345afebbeac04bbf9d6fd7083a51341064ae6368d8eb13852ac4b24a266cdca",
+      "bytes": 6757
+    },
+    {
+      "path": "frontend/src/public/halbach/geometry.ts",
+      "sha256": "8de94f444926a2e6da2ab4805b4b5eb290bb3ea81c2b28a2d7f4df055ea134ad",
+      "bytes": 1066
+    },
+    {
+      "path": "frontend/src/public/halbach/halbach.css",
+      "sha256": "f475261f372283564b8113ba5107f160af273377b26c9b850a8153fe64ccf3ec",
+      "bytes": 39035
+    },
+    {
+      "path": "frontend/src/public/halbach/poleRendering.ts",
+      "sha256": "373dff8a8293297a74b497912d2cebf2d108d3a257aa8d5b95878db2eaffe500",
+      "bytes": 2462
+    },
+    {
+      "path": "frontend/src/public/halbach/types.ts",
+      "sha256": "611dce661b9f58ae88e7c5160896f57fc062c58546ea1833b3842c1b630bda85",
+      "bytes": 14465
+    },
+    {
+      "path": "frontend/src/public/index.html",
+      "sha256": "43fe2fc0a36e1d265b94dc17cee4c5c79ac13c19a07e129588b5d5a14d55c213",
+      "bytes": 489
+    },
+    {
+      "path": "frontend/src/public/magnetPoleFaces.ts",
+      "sha256": "fbd5c3f5569b29b6a7188d8a302b8938cced26ff348c0bbca76fb06308203642",
+      "bytes": 6918
+    },
+    {
+      "path": "frontend/src/public/main.tsx",
+      "sha256": "f512ccf4db09afe8b87248f7d6c93482455db7de499e369e449e9a5998140984",
+      "bytes": 425
+    },
+    {
+      "path": "frontend/src/public/meshQuality.ts",
+      "sha256": "19cc4ec849519eb4aa8a615a6d5b8773e52ccde85380060da361821bb3ebcc7d",
+      "bytes": 3018
+    },
+    {
+      "path": "frontend/src/public/model.ts",
+      "sha256": "3b546a883694b1f823e8273aa4adecc31ae74617979efba41044e7ac5a6e18ec",
+      "bytes": 16996
+    },
+    {
+      "path": "frontend/src/public/motorAirgap.ts",
+      "sha256": "09272f817b5257cd841d5bae00fac5770ae1c1371a2509da6e41a6469472e390",
+      "bytes": 4361
+    },
+    {
+      "path": "frontend/src/public/motorPalette.ts",
+      "sha256": "40d69d324708b41486ee891c31d9a43e2e4bef0b00d2cc10f3bf96a92e737072",
+      "bytes": 2646
+    },
+    {
+      "path": "frontend/src/public/solvePlan.ts",
+      "sha256": "86b49e2085d08edd7c34fdb2eeef5a22ddb96573d4732ed4141df635e1b2c211",
+      "bytes": 2018
+    },
+    {
+      "path": "frontend/src/public/solveProgress.ts",
+      "sha256": "a4dcf62f4f159ee5f257ad672392044066dc6f54694b17fa8a0f18e8a882a639",
+      "bytes": 850
+    },
+    {
+      "path": "frontend/src/public/styles.css",
+      "sha256": "461f0ac1f79b7bc206b3531657cc48e69275f8e5465bb2922ae3ba8c4850bd9e",
+      "bytes": 220619
+    },
+    {
+      "path": "frontend/src/public/tutorials/PublicTutorials.tsx",
+      "sha256": "aa2f863b7be9ccdde58572cf76e58644df24a6ad854de33b6ed85c9dcc9f06f7",
+      "bytes": 9207
+    },
+    {
+      "path": "frontend/src/public/tutorials/lessonRoutes.ts",
+      "sha256": "951722da105ab160b2b67862da176d7dcc6bc201d0213e2717736faf762e4e40",
+      "bytes": 2902
+    },
+    {
+      "path": "frontend/src/public/tutorials/publicLessonSolveClient.ts",
+      "sha256": "be5df38663db208ee5fd80576c4a9d46916247fe92be6cbeb72cc59212f2d9f3",
+      "bytes": 14808
+    },
+    {
+      "path": "frontend/src/styles/templateselector.css",
+      "sha256": "9df405c4bbcc5fb3fbe85f1418c85789d804aca87b155c8d22c6c31960530b0d",
+      "bytes": 35185
+    },
+    {
+      "path": "frontend/src/styles/variables.css",
+      "sha256": "592e41d3331bcca73085d3bdffbc63e853740fe8f80c78dc0e7c35a5b077192f",
+      "bytes": 6180
+    },
+    {
+      "path": "frontend/tests/public-release.spec.ts",
+      "sha256": "c364cabdc8fccdd40882f6cfe3d5b614cabc0479382db0ec6b0df28ed2943721",
+      "bytes": 12785
+    },
+    {
+      "path": "frontend/tsconfig.public.json",
+      "sha256": "9e758a1d2d160ea9e7241b7d0e4527d1d642ddf39e0751945a7c8f1d07343f96",
+      "bytes": 492
+    },
+    {
+      "path": "frontend/vite.public.config.ts",
+      "sha256": "161e69c09483ff8f02ce9ca4e6ac17fb0411f4024b5969e8b12589596a896650",
+      "bytes": 677
+    },
+    {
+      "path": "materials/electrical-steel/M350-50A.csv",
+      "sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+      "bytes": 6672
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "6b79ae093f85636b8ac68c589a70649215e7215a84b1d1ab64ea0b6179c7a039",
+      "bytes": 1228
+    },
+    {
+      "path": "references/benchmark_configs/validation_ipm_10p_v_shape_medium.openem",
+      "sha256": "ca41ae832d8d1849ff8097639e595f7abd61a2dba2e7d3ecaaf9d01d42accd06",
+      "bytes": 1952
+    },
+    {
+      "path": "references/benchmark_configs/validation_ipm_14p_flat_buried_large.openem",
+      "sha256": "2694576ac799842fc4054541feb9356da1bc4ae04afc1f7f9b6b21fd836017c9",
+      "bytes": 1963
+    },
+    {
+      "path": "references/benchmark_configs/validation_spm_24p_small.openem",
+      "sha256": "2b0e660e31d01ff8bbbcbde6dcfb2f6e726b5d98e6d0fe6087819ce5206a4082",
+      "bytes": 1934
+    },
+    {
+      "path": "requirements.lock",
+      "sha256": "fbe29d3d5586f557467c04cc91c0fd03007709d7936aa791a2b00f0b484c6397",
+      "bytes": 765
+    },
+    {
+      "path": "schemas/v1/examples/field_current_square.json",
+      "sha256": "cc23a2c7c309d17cc06f27e61ac60568a997ef9adc90676244bf43313f26878a",
+      "bytes": 817
+    },
+    {
+      "path": "schemas/v1/examples/field_nonlinear_square.json",
+      "sha256": "e367236e60caec5345acfcdfb4a8ccabf9f09c3af4f0faaa6ea995d34fe042ca",
+      "bytes": 1340
+    },
+    {
+      "path": "schemas/v1/examples/halbach_array_16_segment.json",
+      "sha256": "5a30c87e9e5b11b19daa5f65371a02dd2a5c83735122cfd14c7c6c2e66f55d53",
+      "bytes": 1015
+    },
+    {
+      "path": "schemas/v1/examples/halbach_array_custom_magnet.json",
+      "sha256": "c3b4f4609b10ffed88e692e8027fdb34f9c8b8e7ebd9bab5c46e572c90dba8ce",
+      "bytes": 1313
+    },
+    {
+      "path": "schemas/v1/examples/invalid/halbach_gap_too_large.json",
+      "sha256": "bc4fadbe1486e29386fbfae6fafdc9df470d2cababf60682990e80e13f19f465",
+      "bytes": 869
+    },
+    {
+      "path": "schemas/v1/examples/linear_halbach_array_4_period.json",
+      "sha256": "3f85ab702f08c2a6013abb7717c25ec2c8baad0609cba5f2c67741c1e45bf8d1",
+      "bytes": 930
+    },
+    {
+      "path": "schemas/v1/field_solution_report.schema.json",
+      "sha256": "d90f76f73d640a874ce9fcdac56b4f171b751bd6acae729e676026c898d678d7",
+      "bytes": 2019
+    },
+    {
+      "path": "schemas/v1/halbach_array_config.schema.json",
+      "sha256": "a010098a056e29e6884c4be47fd6bea533f9e92920d0f50ac837a452720bdd29",
+      "bytes": 4914
+    },
+    {
+      "path": "schemas/v1/halbach_solution_report.schema.json",
+      "sha256": "27203459c471badf35fdbc7b04b4b9cb88c9274918424823df6852094286dbb0",
+      "bytes": 4143
+    },
+    {
+      "path": "schemas/v1/linear_halbach_array_config.schema.json",
+      "sha256": "2991c6cf76ffdc53fabc3dc78203148ba5f8569b96ae5b5e05bc98146f8fdfad",
+      "bytes": 5670
+    },
+    {
+      "path": "schemas/v1/linear_halbach_solution_report.schema.json",
+      "sha256": "c53ffb040940020b1d192e3dcf032a9802d83adb664391e892a99300dce089ae",
+      "bytes": 7538
+    },
+    {
+      "path": "schemas/v1/magnetostatic_problem.schema.json",
+      "sha256": "811d8f567e57980a5d4fe04d56fee78c836f93aa629bf1db3929d07b819e81cd",
+      "bytes": 7587
+    },
+    {
+      "path": "solvers/magneto2d/Cargo.lock",
+      "sha256": "030474034e939fd3316d90bcc8ee2dff6bf4b3e803a5ccf3fb1aedfd40ae6dcc",
+      "bytes": 28550
+    },
+    {
+      "path": "solvers/magneto2d/Cargo.toml",
+      "sha256": "d2092ad759105eef2aba7fdf781138338d4b3e41f09bd29383eb5a16ffbe7a6e",
+      "bytes": 522
+    },
+    {
+      "path": "solvers/magneto2d/build.rs",
+      "sha256": "848c460dc00744ddd9392d4f0439eec3359464d664a5b0cfb59842dd5f4397bc",
+      "bytes": 1131
+    },
+    {
+      "path": "solvers/magneto2d/src/assembly.rs",
+      "sha256": "206c5cb2be4467ee9bfa1b537f3fdb8ecab115bb608f389fe1f2dd3e79439327",
+      "bytes": 61931
+    },
+    {
+      "path": "solvers/magneto2d/src/field.rs",
+      "sha256": "3f21a82ed7c0c93ac452fa2fd00cd0570077aabc976e666f974427e87dfd8786",
+      "bytes": 78994
+    },
+    {
+      "path": "solvers/magneto2d/src/lib.rs",
+      "sha256": "a011f8e1d4cdd25479f1c4e83759c4fbb3ba64e31f8deadd301cf92e79471148",
+      "bytes": 6761
+    },
+    {
+      "path": "solvers/magneto2d/src/magnet_fraction.rs",
+      "sha256": "095c7ac9c8eb2d00c4c268855f4a1e61a1500b0b6a69ebbe8f0ece48e58edc2a",
+      "bytes": 13101
+    },
+    {
+      "path": "solvers/magneto2d/src/main.rs",
+      "sha256": "48f811c7b0175cb84568c4997ed678244c0b6323f5407817a579a09b8fcabe4a",
+      "bytes": 105
+    },
+    {
+      "path": "solvers/magneto2d/src/materials.rs",
+      "sha256": "506328a402dba389cdcf0059225f48074aa615f7f330556f641541aca029e096",
+      "bytes": 31498
+    },
+    {
+      "path": "solvers/magneto2d/src/mesh.rs",
+      "sha256": "f6cc1bf9fa850668e2eaeaf409d51547837a34a774f0ed77dab194d835f2cac3",
+      "bytes": 4902
+    },
+    {
+      "path": "solvers/magneto2d/src/motor.rs",
+      "sha256": "972bdac9599d05d1aba2ea8b5a958776df9151d2c85bbfe0d2ba530dd52fbab9",
+      "bytes": 9323
+    },
+    {
+      "path": "solvers/magneto2d/src/postprocess.rs",
+      "sha256": "9db0af77263e23d293e86bb2aff2acc0b3b8f816650b6c5442f9e230d29618bc",
+      "bytes": 18819
+    },
+    {
+      "path": "solvers/magneto2d/src/postprocess/summary.rs",
+      "sha256": "f7ecbec16be20dc83399bea94a576e95cc018c1ba1b7ae61929b4bda521e1460",
+      "bytes": 67442
+    },
+    {
+      "path": "solvers/magneto2d/src/postprocess/tests.rs",
+      "sha256": "d7e399a4dbb39eeb695c5ddb19920ada3a7d12add172c8bfbb62d91f193d8a17",
+      "bytes": 42184
+    },
+    {
+      "path": "solvers/magneto2d/src/postprocess/torque/env_flags.rs",
+      "sha256": "bb48c6944a22c0566815f9dfe67485e8a3c53836501dbc2e971a7c9118467a4b",
+      "bytes": 12240
+    },
+    {
+      "path": "solvers/magneto2d/src/postprocess/torque/localization.rs",
+      "sha256": "fc850cee925b0158be741b3d3e2a616144218ff563d00e180fbc09fe0fb4d5c8",
+      "bytes": 8216
+    },
+    {
+      "path": "solvers/magneto2d/src/postprocess/torque/mod.rs",
+      "sha256": "34c26821199e6d1c49d1be34e4db3b89627dd41676960ec1b8f20e00816410ba",
+      "bytes": 113403
+    },
+    {
+      "path": "solvers/magneto2d/src/run_config.rs",
+      "sha256": "7a588d6e47cacbfbf2ecf046f0b8fb0d028cd5b5bc85d39c3fa08fc528c66e54",
+      "bytes": 26385
+    },
+    {
+      "path": "solvers/magneto2d/src/schema.rs",
+      "sha256": "81a2b611c15736cb7851af8dd33f0260c48a3e2e1103bf21b6a17e8640cf83cd",
+      "bytes": 18044
+    },
+    {
+      "path": "solvers/magneto2d/src/solve/context.rs",
+      "sha256": "358956e298d85d2ba6ff8c896f3d1a429d746b8d840c6ad2f715486629480bdc",
+      "bytes": 8354
+    },
+    {
+      "path": "solvers/magneto2d/src/solve/mesh_metadata.rs",
+      "sha256": "381f2e4e885605c63bd42ae8fa00e88e90ba53f3fa56e2e133814a732fb97260",
+      "bytes": 19685
+    },
+    {
+      "path": "solvers/magneto2d/src/solve/metrics.rs",
+      "sha256": "cde1d765e21376773d93f8f7541954a82e8e6fffc08dcfb94cd74f683139be60",
+      "bytes": 13386
+    },
+    {
+      "path": "solvers/magneto2d/src/solve/mod.rs",
+      "sha256": "a4c9961ac5c3cf63f5e6b5e872b335b7df7ca60a231e2f67588336bd265fc55e",
+      "bytes": 150986
+    },
+    {
+      "path": "solvers/magneto2d/src/solve/model/ipm.rs",
+      "sha256": "4c48ee72bf5964fd89de9ac5db8af4bd973f6e3ebfa46310edb84b30e398a6e0",
+      "bytes": 2871
+    },
+    {
+      "path": "solvers/magneto2d/src/solve/model/mod.rs",
+      "sha256": "714736b57d6ef1d2ec77f2e07846b10bb7fe29957e195a4e9f5e2af1576cad91",
+      "bytes": 5240
+    },
+    {
+      "path": "solvers/magneto2d/src/solve/model/spm.rs",
+      "sha256": "7f7d1009a5b84672e155475e99ae3e07c7956d9e0b9d976ad9e474019589ffd3",
+      "bytes": 6288
+    },
+    {
+      "path": "solvers/magneto2d/src/solve/newton.rs",
+      "sha256": "045ab39fcf590e2fc6817698eea063325d356591d27922e65fc9df467f39ef4d",
+      "bytes": 25628
+    },
+    {
+      "path": "solvers/magneto2d/src/solve/nonlinear.rs",
+      "sha256": "f1c1880d9e330b427f077ec5f82b327db0532bc0eb64013c29316d3a2504f320",
+      "bytes": 16712
+    },
+    {
+      "path": "solvers/magneto2d/src/solve/picard.rs",
+      "sha256": "79fffb31bb73ba160c13454e800ba03bc0dd2c306f425c60c15b541c7d6ddd9d",
+      "bytes": 14293
+    },
+    {
+      "path": "solvers/magneto2d/src/solve/problem.rs",
+      "sha256": "f75bd491644164d18ad5bee577bb441b6607322db680dc1b50ea9c1eb8f7989a",
+      "bytes": 12647
+    },
+    {
+      "path": "solvers/magneto2d/src/solve/tests.rs",
+      "sha256": "68f00d7122fd7a40d19d6246a0c1a95a42159bdd10d1bef67567da9f8bd08aaa",
+      "bytes": 94054
+    },
+    {
+      "path": "solvers/magneto2d/src/solve/types.rs",
+      "sha256": "cebe1b569d8711565c2dc8ab480ff9a4c704bc4afe38a3378a7d488acb472d57",
+      "bytes": 14473
+    },
+    {
+      "path": "solvers/magneto2d/src/sources.rs",
+      "sha256": "8c32aea119fc7cb08aad16ae2ecf3962a94255674bd2f80f0ebec19771ff5b50",
+      "bytes": 54377
+    },
+    {
+      "path": "solvers/magneto2d/src/sparse.rs",
+      "sha256": "2132d3a32c12581cd2279c71372aca880efc50d06653d37c32de5eaad49dea3f",
+      "bytes": 49332
+    },
+    {
+      "path": "solvers/magneto2d/src/teaching.rs",
+      "sha256": "de04ac6fb39d83b8c27d81894cd4ad2035f2f1be4eed1fb6d20c67072ef266cd",
+      "bytes": 126962
+    },
+    {
+      "path": "solvers/magneto2d/src/thermal/assembly.rs",
+      "sha256": "6aabcdf62cac02d5fddd7fcb814476a035b3736dbe3632047c1d14a924b9076c",
+      "bytes": 3629
+    },
+    {
+      "path": "solvers/magneto2d/src/thermal/bc.rs",
+      "sha256": "412e794c98e336c3392c05af404b928f858e4a1827cb21a42f58df8c4dcaf90e",
+      "bytes": 13227
+    },
+    {
+      "path": "solvers/magneto2d/src/thermal/contacts.rs",
+      "sha256": "eeb807390c2950403d7c678b102b926a9b75f5e1700cb8b061868b35596f5196",
+      "bytes": 6077
+    },
+    {
+      "path": "solvers/magneto2d/src/thermal/energy.rs",
+      "sha256": "d04b3c421ff139df54eb52f1e0c46c59a83e6769221397f97bdd15d783fc6bcf",
+      "bytes": 7030
+    },
+    {
+      "path": "solvers/magneto2d/src/thermal/materials.rs",
+      "sha256": "6707c82ed221f2309adf29d3dbbcea29215be77bd431852e8de96c65725bb649",
+      "bytes": 5105
+    },
+    {
+      "path": "solvers/magneto2d/src/thermal/mod.rs",
+      "sha256": "f13a19917f6ab1c8ecb5e81cd5770b1baa792a9133d4604ebb7490958263442f",
+      "bytes": 485
+    },
+    {
+      "path": "solvers/magneto2d/src/thermal/solve.rs",
+      "sha256": "27d8ed386732808fac671b0b93663d10c825dccbef7c14771bfa3b0b7c019b13",
+      "bytes": 10181
+    },
+    {
+      "path": "solvers/magneto2d/src/thermal/sources.rs",
+      "sha256": "9ed205522bc6308891e17a2cfab5ad2e1ab0229f318cc4d90308ce5eac4d24cf",
+      "bytes": 865
+    },
+    {
+      "path": "solvers/magneto2d/src/thermal/tests.rs",
+      "sha256": "23889bba470c7af08208916b23ccca15306afd8456ef32c334db32f5d9bc631e",
+      "bytes": 49407
+    },
+    {
+      "path": "solvers/magneto2d/src/thermal/types.rs",
+      "sha256": "f2c6d76d589e03e71cf49d38a68b5eb25b3c001e863bdc6b0191c1e41a6c49af",
+      "bytes": 1564
+    },
+    {
+      "path": "solvers/magneto2d/tests/fixtures/n35_material_contract.json",
+      "sha256": "0c1a75c56106e16f80994f6d6efd0ce4449e1d9b8d71f6bb5583b35313f3503c",
+      "bytes": 77
+    },
+    {
+      "path": "tests/fixtures/bldc_six_step_golden_vectors.json",
+      "sha256": "0914644d93f05fa5738534c518e2ecffeca2d129d8a38fbe8b8df2f65c695b86",
+      "bytes": 6207
+    },
+    {
+      "path": "tests/fixtures/spm_4p12s_simple.json",
+      "sha256": "26864b8f7e6fa62d8cf78e48bea82c6e94cac4f1c38addcc8f37c82b1d806e83",
+      "bytes": 1173
+    },
+    {
+      "path": "tests/fixtures/spm_8p12s_concentrated.json",
+      "sha256": "bb0d567682cbdb3d53093dcce85f7d4f06bb6ae2a99896a4a471fd3d75393287",
+      "bytes": 1165
+    },
+    {
+      "path": "tests/test_halbach_api.py",
+      "sha256": "c121c79c2bb017d8601c611ca0217059d0061dae30e9d0525f1b24c49f70a9d4",
+      "bytes": 11374
+    },
+    {
+      "path": "tests/test_halbach_contract.py",
+      "sha256": "3b27124f1b3f4ca82252a5372a6d55df47e9cc7a217d704000bb41ae54d996d7",
+      "bytes": 12711
+    },
+    {
+      "path": "tests/test_halbach_mesh.py",
+      "sha256": "e07c0618458429a6f3226046cb2cc1fc252580d8eaa747171eca740d2b1c7c8f",
+      "bytes": 5918
+    },
+    {
+      "path": "tests/test_halbach_solver.py",
+      "sha256": "25a2dd6d2096095b4a246b7fcfc13b5d0b05b2e7ad888ce9c80b24e3e0d85d81",
+      "bytes": 13629
+    },
+    {
+      "path": "tests/test_linear_halbach_analytical.py",
+      "sha256": "79a4b03ca91953f6f863bb009546ec5bd05489d2648593fc65b568fe4537fd98",
+      "bytes": 14686
+    },
+    {
+      "path": "tests/test_linear_halbach_api.py",
+      "sha256": "2f6272b4bceca60b841416b2f34e191b622d173d1434e47518c6024c2449e366",
+      "bytes": 4844
+    },
+    {
+      "path": "tests/test_linear_halbach_contract.py",
+      "sha256": "eacbc6eb4d96d817fec5bcfc0a703d5c9a0f53db951884f2fd22c48f2d1696d1",
+      "bytes": 5289
+    },
+    {
+      "path": "tests/test_linear_halbach_mesh.py",
+      "sha256": "e57e38627e721fa94061d0bc8d9f780f618b76ff1e1c9bc46b2645355bd3a4b2",
+      "bytes": 4118
+    },
+    {
+      "path": "tests/test_linear_halbach_solver.py",
+      "sha256": "1898ba2de6e96a98de61e2924bb558290c78b7284be73f82de191331366b512f",
+      "bytes": 3731
+    },
+    {
+      "path": "tests/test_magneto2d_cli_precision.py",
+      "sha256": "77051b351b4d60f6283ae32ef84cced3a0ed2fbd11e7a062f2ec128089f07edc",
+      "bytes": 1757
+    },
+    {
+      "path": "tests/test_public_cancellation.py",
+      "sha256": "9af6ecb663d4a045a1754b6fa706c9adc664e082871d3287928f0e37364d5d51",
+      "bytes": 13911
+    },
+    {
+      "path": "tests/test_public_candidate.py",
+      "sha256": "b2e2881b6ad5583ee743cd6a7e25394d72e2199e969c2221cc2e5220248882a9",
+      "bytes": 19747
+    },
+    {
+      "path": "tests/test_public_field_playback.py",
+      "sha256": "068d919cfa2fe96f4ae6c91d40afb14aa90d0d630c8eb847da272e2f5def812e",
+      "bytes": 12831
+    },
+    {
+      "path": "tests/test_public_report_exports.py",
+      "sha256": "d2312bfb3a983ffc90dd02d09e97b6a7c3537a4c6d79db4907d182d47975a732",
+      "bytes": 17545
+    },
+    {
+      "path": "tests/test_public_security.py",
+      "sha256": "01234a2230e350633aba3b841f2e965c3085ea052e4b706c51056925292e962b",
+      "bytes": 4365
+    },
+    {
+      "path": "tests/test_public_solver_environment.py",
+      "sha256": "9109eafb4101419c719988a965ce76987919a579af09eb46a8fa21dbed6b928b",
+      "bytes": 5828
+    },
+    {
+      "path": "tests/test_public_validation_fixtures.py",
+      "sha256": "0d46d2e74c5bb7f94e25e822189f4664ee983ecca4e521408ce1a9ac542642a9",
+      "bytes": 2227
+    },
+    {
+      "path": "tests/test_solve_workspace.py",
+      "sha256": "61da6308e63dd608c4b974b456deac05fe2543e594ccb9e1598995663a853ac4",
+      "bytes": 16205
+    },
+    {
+      "path": "tools/generate_m350_50a_bh.py",
+      "sha256": "f4dac661f48b35b86299ea7c2d5da935b0880c5ad141637a0de58e786ca7f256",
+      "bytes": 3369
+    },
+    {
+      "path": "tools/replay_numerical_case.py",
+      "sha256": "259f3476758b6bbc6eddae5269799b2d1c8c9628d1ba67c5ca06d51b6845e2ba",
+      "bytes": 3436
+    },
+    {
+      "path": "tools/run_public_benchmark.py",
+      "sha256": "2cd224b20c7681a6baae705c29ccc7ce9bdc8b26d0e23592a22c0a494b4f5cd9",
+      "bytes": 5790
+    },
+    {
+      "path": "tools/smoke_public_runtime.py",
+      "sha256": "1e0ff7e1edb94c0cbb64cb1e2c1be53ccf38e03ee4dd31bed20ef0cc55d607e9",
+      "bytes": 7397
+    },
+    {
+      "path": "tools/verify_snapshot.py",
+      "sha256": "968e535c435a0362bf317db8c7671da0d6875294932849ea155f1c3db15a749b",
+      "bytes": 17016
+    }
+  ]
+}

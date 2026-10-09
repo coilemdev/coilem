@@ -1,0 +1,2460 @@
+.follow-flux-shell {
+  --learning-control-panel-width: 320px;
+  --learning-main-stage-min-width: 560px;
+  grid-template-areas: "lab stage status";
+  grid-template-columns: 320px minmax(var(--learning-main-stage-min-width), 1fr) var(--learning-control-panel-width);
+}
+
+.follow-flux-shell.is-solve-stage {
+  --learning-control-panel-width: 320px;
+  --learning-main-stage-min-width: 560px;
+}
+
+.follow-flux-shell .learning-step-rail {
+  grid-area: status;
+  border-right: 0;
+  border-left: 1px solid var(--border-default);
+}
+
+.follow-flux-shell .learning-control-panel {
+  grid-area: lab;
+  border-left: 0;
+  border-right: 1px solid var(--border-default);
+}
+
+.follow-flux-shell .follow-flux-main {
+  grid-area: stage;
+}
+
+.follow-flux-stage-list .learning-step-item > button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.follow-flux-stage-list .learning-step-item.is-complete > button > span {
+  border-color: rgba(34, 197, 94, 0.48);
+  background: rgba(34, 197, 94, 0.12);
+  color: #86efac;
+}
+
+.follow-flux-complete {
+  grid-column: 1 / -1;
+  padding: 9px 12px;
+  border: 1px solid rgba(132, 204, 22, 0.42);
+  border-radius: 6px;
+  background: rgba(132, 204, 22, 0.08);
+  color: #bef264;
+  font: 800 12px var(--font-mono);
+  text-align: center;
+}
+
+.follow-flux-main {
+  display: block;
+  min-height: 0;
+  overflow: auto;
+}
+
+.follow-flux-concept,
+.follow-flux-empty-stage {
+  position: relative;
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  padding: 36px;
+}
+
+.follow-flux-stage-badge {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  display: flex;
+  gap: 10px;
+  padding: 9px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: rgba(10, 15, 26, 0.9);
+  font: 700 12px var(--font-mono);
+}
+
+.follow-flux-stage-badge span {
+  color: var(--text-muted);
+}
+
+.follow-flux-start-hint {
+  position: absolute;
+  top: 24px;
+  right: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid rgba(34, 211, 238, 0.42);
+  border-radius: 6px;
+  background: rgba(8, 47, 73, 0.88);
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.08);
+  color: #cffafe;
+  font: 700 12px var(--font-sans);
+}
+
+.follow-flux-start-hint span {
+  color: #67e8f9;
+  font: 800 10px var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.follow-flux-start-hint b {
+  color: #67e8f9;
+  font-size: 18px;
+  animation: follow-flux-nudge-left 1.2s ease-in-out infinite;
+}
+
+@keyframes follow-flux-nudge-left {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-4px); }
+}
+
+.follow-flux-concept-svg {
+  width: min(100%, 760px);
+  max-height: 50vh;
+}
+
+.follow-flux-pole {
+  fill: #fff;
+  font: 900 34px var(--font-mono);
+}
+
+.follow-flux-question-line {
+  fill: none;
+  stroke: rgba(103, 232, 249, 0.54);
+  stroke-width: 4;
+  stroke-dasharray: 10 10;
+}
+
+.follow-flux-question {
+  fill: #cffafe;
+  font: 800 18px var(--font-sans);
+}
+
+.follow-flux-arrowhead {
+  fill: none;
+  stroke: #67e8f9;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.follow-flux-prediction-field {
+  fill: none;
+  stroke: rgba(103, 232, 249, 0.76);
+  stroke-width: 2.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: follow-flux-field-reveal 320ms ease-out both;
+}
+
+.follow-flux-prediction-field .follow-flux-internal-field {
+  stroke: rgba(207, 250, 254, 0.76);
+  stroke-width: 2;
+}
+
+/* Solved iso-Az field lines. Thinner than the old hand-drawn loops because there
+   are 22 of them, and drawn over the magnet body so each line reads as one
+   closed loop rather than stopping at the pole face. */
+.follow-flux-prediction-field.is-solved path {
+  stroke-width: 1.5;
+  stroke: rgba(103, 232, 249, 0.6);
+}
+
+/* Direction arrowheads are filled triangles, not strokes. */
+.follow-flux-prediction-field.is-solved .follow-flux-field-arrow {
+  fill: rgba(165, 243, 252, 0.95);
+  stroke: none;
+}
+
+/* The pole letters are re-stamped inside this group so the field lines pass
+   behind them rather than through the glyphs. */
+.follow-flux-prediction-field.is-solved .follow-flux-pole {
+  paint-order: stroke;
+  stroke: rgba(11, 15, 23, 0.55);
+  stroke-width: 4;
+}
+
+.follow-flux-prediction-field .follow-flux-flow-chevron {
+  stroke: rgba(103, 232, 249, 0.96);
+  stroke-width: 2.25;
+}
+
+.follow-flux-prediction-field .follow-flux-flow-chevron.is-internal {
+  stroke: rgba(207, 250, 254, 0.9);
+  stroke-width: 2;
+}
+
+.follow-flux-prediction-field.is-stopped {
+  stroke-dasharray: 8 7;
+  stroke: rgba(245, 158, 11, 0.78);
+}
+
+.follow-flux-prediction-field.is-stopped circle {
+  fill: #0b0f17;
+  stroke: #f59e0b;
+  stroke-width: 3;
+}
+
+.follow-flux-prediction-field.is-straight {
+  stroke: rgba(245, 158, 11, 0.78);
+}
+
+@keyframes follow-flux-field-reveal {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.follow-flux-concept-copy {
+  max-width: 660px;
+  margin-top: -26px;
+  text-align: center;
+}
+
+.follow-flux-concept-copy h2,
+.follow-flux-empty-stage h2,
+.follow-flux-quiz-stage h2,
+.follow-flux-status-comparison h2 {
+  margin: 0;
+}
+
+.follow-flux-concept-copy > p:last-child,
+.follow-flux-empty-stage p,
+.follow-flux-quiz-stage header > p:last-child {
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.follow-flux-control-panel {
+  width: auto;
+}
+
+.follow-flux-control-panel h2 {
+  margin: 0 0 16px;
+}
+
+.follow-flux-status-panel {
+  background: var(--bg-surface-1);
+}
+
+.follow-flux-status-panel .learning-step-header {
+  padding-bottom: 14px;
+}
+
+.follow-flux-inspector-header {
+  display: grid;
+  gap: 6px;
+}
+
+.follow-flux-inspector-header .learning-kicker,
+.follow-flux-inspector-header h1,
+.follow-flux-inspector-header p {
+  margin: 0;
+}
+
+.follow-flux-inspector-header h1 {
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+.follow-flux-inspector-header > p:last-child {
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.follow-flux-status-results,
+.follow-flux-status-comparison,
+.follow-flux-inspector-details {
+  margin: 14px;
+  padding: 14px;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  background: var(--bg-surface-2);
+}
+
+.follow-flux-lab-goal {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+  margin: 0 0 16px;
+  padding: 11px;
+  border: 1px solid rgba(34, 211, 238, 0.28);
+  border-left: 3px solid #22d3ee;
+  border-radius: 7px;
+  background: linear-gradient(135deg, rgba(8, 47, 73, 0.42), rgba(20, 24, 33, 0.94));
+}
+
+.follow-flux-lab-goal > span {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(34, 211, 238, 0.42);
+  border-radius: 50%;
+  color: #67e8f9;
+  font: 800 10px var(--font-mono);
+}
+
+.follow-flux-lab-goal > div {
+  min-width: 0;
+}
+
+.follow-flux-lab-goal p {
+  margin: 0;
+  color: #67e8f9;
+  font: 800 9px var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.follow-flux-lab-goal strong {
+  display: block;
+  margin-top: 3px;
+  color: var(--text-primary);
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.follow-flux-lab-goal small {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.follow-flux-pair-sequence {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.follow-flux-pair-sequence li {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: start;
+  gap: 7px;
+  padding: 8px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: var(--bg-surface-2);
+}
+
+.follow-flux-pair-sequence li > span {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 50%;
+  color: var(--text-muted);
+  font: 800 9px var(--font-mono);
+}
+
+.follow-flux-pair-sequence strong,
+.follow-flux-pair-sequence small {
+  display: block;
+}
+
+.follow-flux-pair-sequence strong {
+  color: var(--text-primary);
+  font-size: 10px;
+  line-height: 1.25;
+}
+
+.follow-flux-pair-sequence small {
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-size: 8px;
+  line-height: 1.3;
+}
+
+.follow-flux-pair-sequence li.is-active {
+  border-color: rgba(245, 158, 11, 0.5);
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.follow-flux-pair-sequence li.is-active > span {
+  border-color: rgba(245, 158, 11, 0.56);
+  color: #fbbf24;
+}
+
+.follow-flux-pair-sequence li.is-complete > span {
+  border-color: rgba(34, 197, 94, 0.45);
+  background: rgba(34, 197, 94, 0.1);
+  color: #86efac;
+}
+
+.follow-flux-status-results .follow-flux-live-metrics {
+  margin-top: 4px;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.follow-flux-status-results .follow-flux-gate-readout {
+  margin-top: 12px;
+}
+
+.follow-flux-status-results.is-awaiting h2 {
+  margin: 4px 0 8px;
+  font-size: 16px;
+}
+
+.follow-flux-status-results.is-awaiting > p:last-child {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.follow-flux-inspector-details {
+  margin-top: auto;
+  color: var(--text-secondary);
+}
+
+.follow-flux-inspector-next {
+  position: sticky;
+  z-index: 3;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 16px -16px 0;
+  padding: 12px 16px;
+  border-top: 1px solid rgba(71, 85, 105, 0.62);
+  background: rgba(15, 18, 25, 0.97);
+}
+
+.follow-flux-inspector-next span {
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.follow-flux-inspector-next button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid rgba(245, 158, 11, 0.65);
+  border-radius: 10px;
+  background: linear-gradient(135deg, #fbbf24, #f97316);
+  color: #171006;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.follow-flux-inspector-details summary {
+  cursor: pointer;
+  color: var(--text-primary);
+  font: 800 10px var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.follow-flux-inspector-details > div {
+  display: grid;
+  gap: 10px;
+  padding-top: 10px;
+}
+
+.follow-flux-inspector-details p {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.follow-flux-inspector-details .follow-flux-gate-readout {
+  margin: 0;
+}
+
+.follow-flux-panel-kicker {
+  margin: 0 0 6px;
+  color: #67e8f9;
+  font: 800 11px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.follow-flux-predictions {
+  display: grid;
+  gap: 10px;
+}
+
+.follow-flux-predictions > p:first-child {
+  margin: 0 0 4px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.follow-flux-predictions button {
+  padding: 13px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: var(--bg-surface-2);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font: 700 13px/1.4 var(--font-sans);
+  text-align: left;
+}
+
+.follow-flux-predictions button:hover,
+.follow-flux-predictions button.is-selected {
+  border-color: rgba(34, 211, 238, 0.48);
+  color: var(--text-primary);
+}
+
+.follow-flux-predictions button.is-correct {
+  border-color: rgba(34, 197, 94, 0.48);
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.follow-flux-feedback {
+  margin: 2px 0 0;
+  padding: 10px;
+  border-left: 3px solid #f59e0b;
+  background: rgba(245, 158, 11, 0.08);
+  color: #fde68a;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.follow-flux-feedback.is-correct {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.08);
+  color: #bbf7d0;
+}
+
+.follow-flux-steel-insight-check {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0;
+  padding: 12px;
+  border: 1px solid rgba(245, 158, 11, 0.36);
+  border-radius: 8px;
+  background: linear-gradient(145deg, rgba(69, 45, 12, 0.28), rgba(15, 18, 25, 0.96));
+}
+
+.follow-flux-steel-insight-check .learning-kicker,
+.follow-flux-steel-insight-check h3,
+.follow-flux-steel-insight-check > p {
+  margin: 0;
+}
+
+.follow-flux-steel-insight-check .learning-kicker {
+  color: #fbbf24;
+  font-size: 9px;
+}
+
+.follow-flux-steel-insight-check h3 {
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.follow-flux-steel-insight-check > p:not(.learning-kicker):not(.follow-flux-feedback) {
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.follow-flux-steel-insight-check .follow-flux-predictions {
+  gap: 7px;
+}
+
+.follow-flux-steel-insight-check .follow-flux-predictions button {
+  padding: 10px;
+  font-size: 11px;
+}
+
+.follow-flux-insight-complete {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  margin: 14px 0;
+  padding: 10px;
+  border: 1px solid rgba(34, 197, 94, 0.34);
+  border-radius: 8px;
+  background: rgba(34, 197, 94, 0.07);
+}
+
+.follow-flux-insight-complete > span {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.16);
+  color: #86efac;
+  font-weight: 900;
+}
+
+.follow-flux-insight-complete small,
+.follow-flux-insight-complete strong {
+  display: block;
+}
+
+.follow-flux-insight-complete small {
+  color: #86efac;
+  font: 800 8px var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.follow-flux-insight-complete strong {
+  margin-top: 3px;
+  color: var(--text-primary);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.follow-flux-instructions {
+  display: grid;
+  gap: 10px;
+}
+
+.follow-flux-step-number,
+.follow-flux-lab-steps li > span {
+  width: 30px;
+  height: 30px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid rgba(34, 211, 238, 0.42);
+  border-radius: 999px;
+  color: #67e8f9;
+  font: 800 12px var(--font-mono);
+}
+
+.follow-flux-instructions > p,
+.follow-flux-lab-steps p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.follow-flux-instructions dl,
+.follow-flux-live-metrics {
+  display: grid;
+  gap: 8px;
+  margin: 8px 0 0;
+}
+
+.follow-flux-instructions dl > div,
+.follow-flux-live-metrics > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.follow-flux-instructions dt,
+.follow-flux-live-metrics dt {
+  color: var(--text-muted);
+}
+
+.follow-flux-instructions dd,
+.follow-flux-live-metrics dd {
+  margin: 0;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  text-align: right;
+}
+
+.follow-flux-empty-stage {
+  text-align: center;
+}
+
+.follow-flux-empty-stage p {
+  max-width: 520px;
+}
+
+.follow-flux-mesh-icon,
+.follow-flux-solve-icon {
+  width: 82px;
+  height: 82px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 18px;
+  border: 1px solid rgba(34, 211, 238, 0.4);
+  border-radius: 50%;
+  background: rgba(34, 211, 238, 0.08);
+  color: #67e8f9;
+  font: 800 34px var(--font-mono);
+}
+
+.follow-flux-visual-stack {
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  align-content: stretch;
+  overflow: hidden;
+}
+
+.follow-flux-viewer {
+  position: relative;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  padding: 0;
+  overflow: hidden;
+}
+
+.follow-flux-viewer .mesh-viewer-embedded-shell,
+.follow-flux-viewer .mesh-viewer-container-embedded {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.follow-flux-viewer .mesh-viewer-container-embedded {
+  border: 0;
+  border-radius: 0;
+  background: #0a0f1a;
+}
+
+.follow-flux-viewer .mesh-viewer-header {
+  min-height: 42px;
+  padding: 8px 14px;
+}
+
+.follow-flux-visual-header {
+  gap: 12px;
+}
+
+.follow-flux-viewer .mesh-viewer-title {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.follow-flux-viewer .mesh-viewer-title h3 {
+  flex: 0 0 auto;
+}
+
+.follow-flux-viewer .mesh-viewer-subtitle {
+  min-width: 0;
+  margin-top: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.follow-flux-viewer .mesh-viewer-toolbar {
+  min-height: 54px;
+}
+
+.follow-flux-field-mode-toggle {
+  flex: 0 0 auto;
+  display: inline-flex;
+  gap: 3px;
+  padding: 2px;
+  border: 1px solid rgba(71, 85, 105, 0.58);
+  border-radius: 6px;
+  background: rgba(3, 7, 18, 0.62);
+}
+
+.follow-flux-field-mode-toggle button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 30px;
+  padding: 5px 9px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-secondary);
+  font: 750 12px var(--font-sans);
+  cursor: pointer;
+}
+
+.follow-flux-field-mode-toggle button:hover {
+  color: var(--text-primary);
+  background: rgba(30, 41, 59, 0.72);
+}
+
+.follow-flux-field-mode-toggle button.is-active {
+  border-color: rgba(34, 211, 238, 0.42);
+  background: rgba(34, 211, 238, 0.12);
+  color: #a5f3fc;
+}
+
+.follow-flux-field-mode-toggle button > span {
+  width: 11px;
+  height: 11px;
+  flex: 0 0 auto;
+}
+
+.follow-flux-field-mode-toggle .is-line-swatch {
+  border-radius: 50%;
+  background: #67e8f9;
+  box-shadow: 0 0 7px rgba(34, 211, 238, 0.45);
+}
+
+.follow-flux-field-mode-toggle .is-density-swatch {
+  border-radius: 3px;
+  background: linear-gradient(135deg, #4145ab 5%, #1bcdd4 48%, #f8ca25 72%, #e64c02 100%);
+}
+
+.follow-flux-field-mode-toggle .is-mesh-swatch {
+  border: 1px solid rgba(148, 163, 184, 0.85);
+  border-radius: 2px;
+  background:
+    linear-gradient(30deg, transparent 46%, rgba(148, 163, 184, 0.8) 48% 52%, transparent 54%),
+    linear-gradient(150deg, transparent 46%, rgba(148, 163, 184, 0.8) 48% 52%, transparent 54%);
+}
+
+.follow-flux-field-mode-toggle .is-depth-swatch {
+  position: relative;
+  width: 10px;
+  height: 9px;
+  border: 1px solid #67e8f9;
+  border-radius: 1px;
+  transform: skewY(-18deg);
+}
+
+.follow-flux-field-mode-toggle .is-depth-swatch::after {
+  content: '';
+  position: absolute;
+  inset: -4px -4px 3px 3px;
+  border: 1px solid rgba(103, 232, 249, 0.62);
+  border-left: 0;
+  border-bottom: 0;
+}
+
+.follow-flux-depth-inset {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  box-sizing: border-box;
+  padding: 14px 18px 16px;
+  border: 1px solid rgba(34, 211, 238, 0.58);
+  border-radius: 6px;
+  background:
+    radial-gradient(circle at 56% 42%, rgba(14, 116, 144, 0.12), transparent 35%),
+    #07101f;
+  color: var(--text-primary);
+}
+
+.follow-flux-depth-inset > header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.follow-flux-depth-inset > header > div {
+  display: grid;
+  gap: 2px;
+}
+
+.follow-flux-depth-inset > header strong {
+  font-size: 13px;
+}
+
+.follow-flux-depth-inset > header span {
+  color: #67e8f9;
+  font: 700 8px var(--font-mono);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.follow-flux-depth-inset > header em {
+  padding: 3px 5px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 3px;
+  color: var(--text-muted);
+  font: 700 7px var(--font-mono);
+  font-style: normal;
+  white-space: nowrap;
+}
+
+.follow-flux-depth-inset > svg {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: block;
+  overflow: visible;
+}
+
+.follow-flux-depth-inset marker path {
+  fill: #67e8f9;
+}
+
+.follow-flux-depth-inset marker .is-field-marker {
+  fill: #93c5fd;
+}
+
+.follow-flux-depth-field-lines path {
+  fill: none;
+  pointer-events: none;
+}
+
+.follow-flux-depth-field-lines .is-depth-field-line {
+  stroke: #3b82f6;
+  stroke-width: 1.15;
+}
+
+.follow-flux-depth-field-lines .is-depth-field-line.is-front-plane {
+  opacity: 0.78;
+}
+
+.follow-flux-depth-field-lines .is-depth-field-line.is-back-plane {
+  opacity: 0.4;
+  stroke: #60a5fa;
+}
+
+.follow-flux-depth-field-lines .is-depth-field-flow {
+  stroke: #a5f3fc;
+  stroke-width: 1.25;
+  stroke-dasharray: 2 18;
+  stroke-linecap: round;
+  animation: follow-flux-depth-flow 7s linear infinite;
+}
+
+.follow-flux-depth-field-lines .is-depth-field-flow.is-back-plane {
+  opacity: 0.46;
+}
+
+.follow-flux-depth-field-lines .is-depth-field-flow.is-front-plane {
+  opacity: 0.82;
+}
+
+@keyframes follow-flux-depth-flow {
+  to {
+    stroke-dashoffset: -80;
+  }
+}
+
+.follow-flux-depth-inset .is-magnet-front,
+.follow-flux-depth-inset .is-magnet-top,
+.follow-flux-depth-inset .is-magnet-side {
+  stroke: rgba(226, 232, 240, 0.58);
+  stroke-width: 1;
+}
+
+.follow-flux-depth-inset .is-magnet-front.is-south {
+  fill: #2563eb;
+}
+
+.follow-flux-depth-inset .is-magnet-front.is-north {
+  fill: #ef4444;
+}
+
+.follow-flux-depth-inset .is-magnet-top.is-south {
+  fill: #1d4ed8;
+}
+
+.follow-flux-depth-inset .is-magnet-top.is-north {
+  fill: #b91c1c;
+}
+
+.follow-flux-depth-inset .is-magnet-side {
+  fill: #1e40af;
+}
+
+.follow-flux-depth-inset .is-pole-label {
+  fill: #fff;
+  font: 800 14px var(--font-sans);
+  text-anchor: middle;
+}
+
+.follow-flux-depth-inset .is-flux-surface {
+  fill: rgba(34, 211, 238, 0.3);
+  stroke: #67e8f9;
+  stroke-width: 2;
+}
+
+.follow-flux-depth-inset .is-b-arrow {
+  stroke: #67e8f9;
+  stroke-width: 1.6;
+}
+
+.follow-flux-depth-inset .is-surface-label,
+.follow-flux-depth-inset .is-depth-label,
+.follow-flux-depth-inset .is-dimension-label,
+.follow-flux-depth-axes text {
+  fill: #cbd5e1;
+  font: 700 8px var(--font-mono);
+}
+
+.follow-flux-depth-inset .is-surface-label {
+  fill: #67e8f9;
+  font-size: 10px;
+}
+
+.follow-flux-depth-inset .is-flux-surface-callout line {
+  stroke: rgba(103, 232, 249, 0.75);
+  stroke-width: 1;
+  stroke-dasharray: 2 2;
+}
+
+.follow-flux-depth-inset .is-flux-surface-callout rect {
+  fill: rgba(8, 47, 73, 0.94);
+  stroke: rgba(103, 232, 249, 0.78);
+  stroke-width: 0.8;
+}
+
+.follow-flux-depth-inset .is-flux-surface-callout text {
+  fill: #cffafe;
+  font: 800 7px var(--font-mono);
+  text-anchor: middle;
+}
+
+.follow-flux-depth-axes line {
+  stroke: #67e8f9;
+  stroke-width: 1.3;
+}
+
+.follow-flux-depth-slider {
+  display: grid;
+  gap: 4px;
+}
+
+.follow-flux-depth-slider > span,
+.follow-flux-depth-slider > small {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.follow-flux-depth-slider > span {
+  color: var(--text-secondary);
+  font-size: 10px;
+}
+
+.follow-flux-depth-slider em {
+  color: #67e8f9;
+  font: 750 10px var(--font-mono);
+  font-style: normal;
+}
+
+.follow-flux-depth-slider input {
+  width: 100%;
+  margin: 0;
+  accent-color: #22d3ee;
+}
+
+.follow-flux-depth-slider > small {
+  color: var(--text-muted);
+  font: 650 7px var(--font-mono);
+}
+
+.follow-flux-depth-result {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.follow-flux-depth-result span {
+  padding: 5px 4px;
+  border: 1px solid rgba(71, 85, 105, 0.58);
+  border-radius: 3px;
+  background: rgba(15, 23, 42, 0.78);
+  color: var(--text-secondary);
+  font: 650 8px var(--font-mono);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.follow-flux-depth-result b {
+  color: #67e8f9;
+}
+
+.follow-flux-viewer .mesh-viewer-intensity-legend {
+  left: 140px;
+}
+
+.follow-flux-viewer .mesh-field-direction-arrow.is-flowing {
+  animation-duration: 3s;
+}
+
+.follow-flux-geometry-preview {
+  min-height: 0;
+  padding: 0;
+}
+
+.follow-flux-geometry-card {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background: #0a0f1a;
+}
+
+.follow-flux-geometry-card header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-default);
+  background: var(--bg-surface-2);
+}
+
+.follow-flux-geometry-card h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.follow-flux-geometry-card header span {
+  display: block;
+  margin-top: 3px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.follow-flux-geometry-canvas {
+  min-height: 0;
+  flex: 1;
+  padding: 16px;
+}
+
+.follow-flux-geometry-canvas svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  user-select: none;
+}
+
+.follow-flux-draggable-object {
+  cursor: move;
+  filter: drop-shadow(0 0 0 rgba(34, 211, 238, 0));
+  transition: filter 140ms ease;
+}
+
+.follow-flux-draggable-object:hover,
+.follow-flux-draggable-object.is-dragging {
+  filter: drop-shadow(0 0 1.4px rgba(34, 211, 238, 0.9));
+}
+
+.follow-flux-draggable-object.is-dragging {
+  cursor: grabbing;
+}
+
+.follow-flux-domain-fill {
+  fill: #0b1220;
+  stroke: rgba(71, 85, 105, 0.8);
+  stroke-width: 0.2;
+}
+
+.follow-flux-domain-axis {
+  stroke: rgba(51, 65, 85, 0.34);
+  stroke-width: 0.12;
+  stroke-dasharray: 1.2 1.8;
+}
+
+.follow-flux-magnet-outline {
+  fill: none;
+  stroke: rgba(226, 232, 240, 0.72);
+  stroke-width: 0.24;
+}
+
+.follow-flux-domain-pole {
+  fill: #fff;
+  font: 900 3.2px var(--font-mono);
+  pointer-events: none;
+}
+
+/* Sits on the pole boundary, so it needs its own contrast against both halves. */
+.follow-flux-magnet-badge {
+  fill: rgba(255, 255, 255, 0.92);
+  font: 900 3.4px var(--font-mono);
+  paint-order: stroke;
+  stroke: rgba(15, 23, 42, 0.75);
+  stroke-width: 0.7;
+  pointer-events: none;
+}
+
+.follow-flux-rotation-stem {
+  stroke: rgba(103, 232, 249, 0.9);
+  stroke-width: 0.34;
+  pointer-events: none;
+}
+
+.follow-flux-rotation-handle {
+  fill: #0e7490;
+  stroke: #a5f3fc;
+  stroke-width: 0.34;
+  cursor: grab;
+  filter: drop-shadow(0 0 1.4px rgba(34, 211, 238, 0.75));
+}
+
+.follow-flux-rotation-handle:hover {
+  fill: #22d3ee;
+  stroke: #ecfeff;
+}
+
+.follow-flux-steel-object {
+  fill: #64748b;
+  stroke: #cbd5e1;
+  stroke-width: 0.24;
+}
+
+.follow-flux-steel-label {
+  fill: #f8fafc;
+  font: 800 1.8px var(--font-mono);
+  pointer-events: none;
+}
+
+.follow-flux-drag-note {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.follow-flux-dimension-line,
+.follow-flux-dimension-tick {
+  stroke: rgba(148, 163, 184, 0.8);
+  stroke-width: 0.18;
+}
+
+.follow-flux-dimension-label {
+  fill: #cbd5e1;
+  font: 700 2.2px var(--font-mono);
+}
+
+.follow-flux-view-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+}
+
+.follow-flux-view-toggle button {
+  min-height: 38px;
+  border: 0;
+  border-right: 1px solid var(--border-default);
+  background: var(--bg-surface-2);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.follow-flux-view-toggle button:last-child {
+  border-right: 0;
+}
+
+.follow-flux-view-toggle button.is-active {
+  background: rgba(245, 158, 11, 0.14);
+  color: #fbbf24;
+}
+
+.follow-flux-view-toggle button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.follow-flux-lab-steps {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.follow-flux-lab-steps li {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 10px;
+  opacity: 0.52;
+}
+
+.follow-flux-lab-steps li.is-active,
+.follow-flux-lab-steps li.is-done {
+  opacity: 1;
+}
+
+.follow-flux-lab-steps li.is-done > span {
+  border-color: rgba(34, 197, 94, 0.48);
+  background: rgba(34, 197, 94, 0.1);
+  color: #86efac;
+}
+
+.follow-flux-lab-steps strong {
+  display: block;
+  margin-bottom: 3px;
+}
+
+.follow-flux-steel-controls {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 14px 0 4px;
+  border-top: 1px solid var(--border-default);
+}
+
+.follow-flux-steel-controls-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.follow-flux-steel-controls-heading > span {
+  color: var(--text-primary);
+  font: 700 11px var(--font-mono);
+}
+
+.follow-flux-direct-manipulation-hint {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 11px;
+  align-items: center;
+  padding: 11px;
+  border: 1px solid rgba(34, 211, 238, 0.28);
+  border-radius: 9px;
+  background: rgba(8, 47, 73, 0.18);
+}
+
+.follow-flux-direct-manipulation-hint > span {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(34, 211, 238, 0.42);
+  border-radius: 50%;
+  color: #67e8f9;
+  font-size: 19px;
+}
+
+.follow-flux-direct-manipulation-hint strong,
+.follow-flux-direct-manipulation-hint small {
+  display: block;
+}
+
+.follow-flux-direct-manipulation-hint strong {
+  color: var(--text-primary);
+  font-size: 12px;
+}
+
+.follow-flux-direct-manipulation-hint small {
+  margin-top: 3px;
+  color: var(--text-secondary);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.follow-flux-object-selector {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+  padding: 4px;
+  border: 1px solid var(--border-default);
+  border-radius: 9px;
+  background: rgba(7, 10, 16, 0.52);
+}
+
+.follow-flux-object-selector button {
+  min-height: 34px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.follow-flux-object-selector button.is-active {
+  border-color: rgba(34, 211, 238, 0.34);
+  background: rgba(34, 211, 238, 0.1);
+  color: #a5f3fc;
+}
+
+.follow-flux-shape-control {
+  display: grid;
+  gap: 7px;
+}
+
+.follow-flux-shape-control > span {
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.follow-flux-shape-selector {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+}
+
+.follow-flux-shape-selector button {
+  min-height: 34px;
+  padding: 5px 7px;
+  border: 0;
+  border-right: 1px solid var(--border-default);
+  background: var(--bg-surface-2);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.follow-flux-shape-selector button:last-child {
+  border-right: 0;
+}
+
+.follow-flux-shape-selector button.is-active {
+  background: rgba(34, 211, 238, 0.12);
+  color: #67e8f9;
+}
+
+.follow-flux-shape-selector button:disabled {
+  cursor: wait;
+  opacity: 0.52;
+}
+
+.follow-flux-precision-controls {
+  border: 1px solid var(--border-default);
+  border-radius: 9px;
+  background: rgba(7, 10, 16, 0.38);
+}
+
+.follow-flux-precision-controls summary {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.follow-flux-precision-controls summary::marker {
+  color: #67e8f9;
+}
+
+.follow-flux-precision-controls summary strong {
+  color: var(--text-primary);
+  font: 700 9px var(--font-mono);
+  white-space: nowrap;
+}
+
+.follow-flux-precision-controls[open] summary {
+  border-bottom: 1px solid var(--border-default);
+}
+
+.follow-flux-precision-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  padding: 12px 12px 8px;
+}
+
+.follow-flux-precision-grid label {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.follow-flux-precision-grid label > span {
+  color: var(--text-muted);
+  font: 800 9px var(--font-mono);
+  text-transform: uppercase;
+}
+
+.follow-flux-precision-grid label > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  min-height: 34px;
+  padding-right: 7px;
+  overflow: hidden;
+  border: 1px solid rgba(71, 85, 105, 0.72);
+  border-radius: 6px;
+  background: var(--bg-surface-2);
+}
+
+.follow-flux-precision-grid input {
+  min-width: 0;
+  width: 100%;
+  height: 32px;
+  padding: 0 4px 0 8px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font: 700 11px var(--font-mono);
+}
+
+.follow-flux-precision-grid input:focus {
+  box-shadow: inset 0 0 0 1px rgba(34, 211, 238, 0.58);
+}
+
+.follow-flux-precision-grid input:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.follow-flux-precision-grid em {
+  color: var(--text-muted);
+  font: 700 9px var(--font-mono);
+  font-style: normal;
+}
+
+.follow-flux-reset-position {
+  margin: 0 12px 12px;
+  padding: 6px 0;
+  border: 0;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.follow-flux-reset-position:hover {
+  color: #e2e8f0;
+}
+
+.follow-flux-reset-position:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.follow-flux-placement-error,
+.follow-flux-placement-note {
+  margin: 0;
+  padding: 9px;
+  border-radius: 6px;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.follow-flux-placement-error {
+  border: 1px solid rgba(248, 113, 113, 0.38);
+  background: rgba(248, 113, 113, 0.08);
+  color: #fecaca;
+}
+
+.follow-flux-placement-note {
+  border: 1px solid rgba(34, 211, 238, 0.3);
+  background: rgba(34, 211, 238, 0.07);
+  color: var(--text-secondary);
+}
+
+/* Pair phase: controlled polarity flip and the attract/repel verdict. */
+.follow-flux-pair-flip-prompt {
+  padding: 9px;
+  border: 1px solid rgba(245, 158, 11, 0.38);
+  border-radius: 6px;
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.follow-flux-pair-flip-prompt.is-flipped {
+  border-color: rgba(34, 211, 238, 0.36);
+  background: rgba(34, 211, 238, 0.07);
+}
+
+.follow-flux-pair-flip-prompt strong {
+  color: #fbbf24;
+  font-size: 11px;
+}
+
+.follow-flux-pair-flip-prompt.is-flipped strong {
+  color: #67e8f9;
+}
+
+.follow-flux-pair-flip-prompt p {
+  margin: 4px 0 0;
+  color: var(--text-secondary);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.follow-flux-pair-readout {
+  display: grid;
+  gap: 5px;
+  padding: 10px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: var(--bg-surface-2);
+}
+
+.follow-flux-pair-readout strong {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+.follow-flux-pair-readout p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.follow-flux-pair-readout span {
+  color: var(--text-muted);
+  font: 700 10px var(--font-mono);
+}
+
+.follow-flux-pair-readout.is-attract {
+  border-color: rgba(74, 222, 128, 0.4);
+  background: rgba(74, 222, 128, 0.08);
+}
+
+.follow-flux-pair-readout.is-attract strong {
+  color: #86efac;
+}
+
+.follow-flux-pair-readout.is-repel {
+  border-color: rgba(251, 146, 60, 0.42);
+  background: rgba(251, 146, 60, 0.09);
+}
+
+.follow-flux-pair-readout.is-repel strong {
+  color: #fdba74;
+}
+
+.follow-flux-live-metrics {
+  margin-top: 18px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-default);
+}
+
+.follow-flux-gate-readout {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 12px;
+  border: 1px solid rgba(34, 211, 238, 0.36);
+  border-radius: 6px;
+  background: linear-gradient(145deg, rgba(8, 47, 73, 0.34), rgba(15, 23, 42, 0.68));
+}
+
+.follow-flux-gate-readout > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.follow-flux-gate-readout > header > div {
+  display: grid;
+  gap: 2px;
+}
+
+.follow-flux-gate-readout > header span {
+  color: #67e8f9;
+  font: 700 10px var(--font-mono);
+  text-transform: uppercase;
+}
+
+.follow-flux-gate-readout code {
+  padding: 5px 7px;
+  border: 1px solid rgba(34, 211, 238, 0.24);
+  border-radius: 4px;
+  background: rgba(2, 6, 23, 0.56);
+  color: #cffafe;
+  font-size: 11px;
+}
+
+.follow-flux-gate-equation {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 6px;
+}
+
+.follow-flux-gate-equation > div {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+  padding: 8px;
+  border: 1px solid rgba(71, 85, 105, 0.58);
+  border-radius: 5px;
+  background: rgba(15, 23, 42, 0.66);
+}
+
+.follow-flux-gate-equation > div.is-total {
+  border-color: rgba(34, 211, 238, 0.48);
+  background: rgba(34, 211, 238, 0.09);
+}
+
+.follow-flux-gate-equation span {
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.follow-flux-gate-equation strong {
+  color: var(--text-primary);
+  font: 750 10px var(--font-mono);
+  white-space: nowrap;
+}
+
+.follow-flux-gate-equation > b {
+  color: #67e8f9;
+  font: 800 12px var(--font-mono);
+}
+
+.follow-flux-gate-readout > p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.follow-flux-comparison-metrics {
+  display: grid;
+  margin: 0;
+}
+
+.follow-flux-comparison-metric {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(88px, 1fr) minmax(126px, 1.35fr) 40px;
+  gap: 8px;
+  align-items: center;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.follow-flux-comparison-metric:first-child {
+  padding-top: 0;
+}
+
+.follow-flux-comparison-metric-heading {
+  min-width: 0;
+}
+
+.follow-flux-comparison-metric-heading strong {
+  display: block;
+  color: var(--text-primary);
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.follow-flux-comparison-change {
+  justify-self: end;
+  padding: 2px 5px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  font: 800 9px var(--font-mono);
+}
+
+.follow-flux-comparison-change.is-favorable {
+  border-color: rgba(34, 211, 238, 0.32);
+  background: rgba(8, 145, 178, 0.09);
+  color: #67e8f9;
+}
+
+.follow-flux-comparison-values {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.follow-flux-comparison-values > div {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.follow-flux-comparison-values span {
+  color: var(--text-muted);
+  font-size: 9px;
+}
+
+.follow-flux-comparison-values strong {
+  color: var(--text-primary);
+  font: 800 10px var(--font-mono);
+  white-space: nowrap;
+}
+
+.follow-flux-comparison-values .is-steel strong {
+  color: #67e8f9;
+}
+
+.follow-flux-inspector-takeaway {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+  padding: 11px 12px;
+  border: 1px solid rgba(34, 211, 238, 0.28);
+  border-left: 3px solid #22d3ee;
+  border-radius: 6px;
+  background: rgba(8, 47, 73, 0.22);
+}
+
+.follow-flux-inspector-takeaway span {
+  color: #67e8f9;
+  font: 800 8px var(--font-mono);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.follow-flux-inspector-takeaway strong {
+  color: var(--text-primary);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.follow-flux-quiz-stage {
+  width: min(760px, calc(100% - 48px));
+  height: 100%;
+  margin: 0 auto;
+  padding: 34px 0 48px;
+  box-sizing: border-box;
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+
+.follow-flux-quiz-stage header {
+  margin-bottom: 20px;
+}
+
+.follow-flux-quiz-stage .follow-flux-inline-quiz-reference {
+  margin: 0 0 20px;
+}
+
+.follow-flux-completion-card {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid rgba(132, 204, 22, 0.45);
+  border-radius: 6px;
+  background: rgba(132, 204, 22, 0.08);
+}
+
+.follow-flux-completion-card span {
+  color: var(--text-secondary);
+}
+
+.follow-flux-completion-card button {
+  justify-self: start;
+  margin-top: 4px;
+}
+
+@media (max-width: 1240px) {
+  .follow-flux-shell,
+  .follow-flux-shell.is-solve-stage {
+    --learning-control-panel-width: 300px;
+    --learning-main-stage-min-width: 460px;
+    grid-template-columns: 300px minmax(var(--learning-main-stage-min-width), 1fr) var(--learning-control-panel-width);
+  }
+
+}
+
+@media (max-width: 1080px) {
+  .follow-flux-shell,
+  .follow-flux-shell.is-solve-stage {
+    grid-template-areas:
+      "lab stage"
+      "status status";
+    grid-template-columns: 300px minmax(0, 1fr);
+  }
+
+  .follow-flux-control-panel {
+    grid-column: auto;
+    display: block;
+    grid-template-columns: none;
+  }
+
+  .follow-flux-status-panel {
+    display: block;
+    border-top: 1px solid var(--border-default);
+    border-left: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .follow-flux-shell,
+  .follow-flux-shell.is-solve-stage {
+    grid-template-areas:
+      "lab"
+      "stage"
+      "status";
+    grid-template-columns: 1fr;
+  }
+
+  .follow-flux-control-panel {
+    display: block;
+    grid-template-columns: 1fr;
+  }
+
+  .follow-flux-status-panel {
+    display: block;
+  }
+
+  .follow-flux-visual-stack {
+    height: auto;
+    grid-template-rows: 480px;
+    overflow: visible;
+  }
+
+  .follow-flux-field-mode-toggle {
+    gap: 1px;
+  }
+
+  .follow-flux-field-mode-toggle button {
+    gap: 5px;
+    padding-inline: 7px;
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .follow-flux-start-hint b,
+  .follow-flux-depth-field-lines .is-depth-field-flow {
+    animation: none;
+  }
+}
+
+/* Live re-solve. The previous field stays on screen while a moved body is
+   re-solved (~0.5 s) rather than the canvas dropping back to the placement
+   view, so the field is dimmed to show it no longer matches the geometry. */
+.follow-flux-viewer.is-stale .mesh-viewer-surface,
+.follow-flux-viewer.is-stale svg {
+  opacity: 0.45;
+  transition: opacity 140ms ease-out;
+}
+
+.follow-flux-resolving {
+  position: absolute;
+  z-index: 6;
+  top: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 5px 12px;
+  border: 1px solid rgba(103, 232, 249, 0.4);
+  border-radius: 999px;
+  background: rgba(8, 14, 22, 0.9);
+  color: rgba(207, 250, 254, 0.95);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* Stale, but no solve is coming: read as a warning, not as progress. */
+.follow-flux-resolving.is-blocked {
+  border-color: rgba(248, 113, 113, 0.45);
+  color: #fecaca;
+}
+
+/* --------------------------------------------------------------------------
+   Lesson 1 focus mode
+
+   The lesson used to present navigation, controls, the field, measurements,
+   vocabulary, and the next action at the same visual weight. Focus mode keeps
+   the numerical model intact, but reveals it in layers: idea, experiment, then
+   evidence. The field owns the default frame; controls and evidence are drawers.
+   -------------------------------------------------------------------------- */
+
+.follow-flux-predict-shell {
+  display: block;
+  overflow: auto;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(34, 211, 238, 0.055), transparent 33%),
+    #090b10;
+}
+
+.follow-flux-predict-experience {
+  width: min(980px, calc(100% - 48px));
+  min-height: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-rows: auto minmax(260px, 1fr) auto auto auto auto;
+  place-items: center;
+  align-content: center;
+  gap: 18px;
+  padding: clamp(32px, 5vh, 64px) 0 24px;
+  box-sizing: border-box;
+}
+
+.follow-flux-predict-heading {
+  max-width: 720px;
+  text-align: center;
+}
+
+.follow-flux-predict-heading .learning-kicker {
+  margin: 0 0 12px;
+  color: #fbbf24;
+}
+
+.follow-flux-predict-heading h1 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: clamp(34px, 4.4vw, 64px);
+  font-weight: 780;
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+}
+
+.follow-flux-predict-heading > p:last-child {
+  margin: 16px 0 0;
+  color: #9ca3af;
+  font-size: clamp(15px, 1.35vw, 19px);
+  line-height: 1.45;
+}
+
+.follow-flux-predict-visual {
+  width: min(720px, 100%);
+  min-height: 260px;
+  display: grid;
+  place-items: center;
+}
+
+.follow-flux-predict-visual .follow-flux-concept-svg {
+  width: 100%;
+  max-height: 34vh;
+  filter: drop-shadow(0 22px 44px rgba(0, 0, 0, 0.32));
+}
+
+.follow-flux-predict-options {
+  width: min(900px, 100%);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.follow-flux-predict-options button {
+  min-width: 0;
+  min-height: 84px;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid rgba(71, 85, 105, 0.52);
+  border-radius: 14px;
+  background: rgba(18, 22, 30, 0.78);
+  color: #d1d5db;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
+}
+
+.follow-flux-predict-options button:hover {
+  border-color: rgba(148, 163, 184, 0.72);
+  background: rgba(26, 31, 41, 0.92);
+  transform: translateY(-1px);
+}
+
+.follow-flux-predict-options button > span {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(100, 116, 139, 0.64);
+  border-radius: 50%;
+  color: #94a3b8;
+  font: 800 11px var(--font-mono);
+}
+
+.follow-flux-predict-options button strong {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.follow-flux-predict-options button.is-selected {
+  border-color: rgba(245, 158, 11, 0.8);
+  background: rgba(245, 158, 11, 0.09);
+  color: #f8fafc;
+}
+
+.follow-flux-predict-options button.is-selected > span {
+  border-color: rgba(245, 158, 11, 0.82);
+  background: #f59e0b;
+  color: #111827;
+}
+
+.follow-flux-predict-options button.is-correct {
+  border-color: rgba(34, 197, 94, 0.62);
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.follow-flux-predict-response {
+  min-height: 24px;
+  color: #fbbf24;
+  text-align: center;
+}
+
+.follow-flux-predict-response p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.follow-flux-predict-response p.is-correct {
+  color: #86efac;
+}
+
+.follow-flux-reveal-button {
+  min-width: 220px;
+  min-height: 48px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.follow-flux-predict-footer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 4px;
+  color: #64748b;
+  font: 700 10px var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.follow-flux-predict-footer button {
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
+  color: #94a3b8;
+  font: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.follow-flux-predict-footer button:hover {
+  color: #f8fafc;
+}
+
+.follow-flux-shell,
+.follow-flux-shell.is-solve-stage {
+  --follow-flux-drawer-top: 60px;
+  position: relative;
+  display: block;
+  grid-template-columns: none;
+  overflow: hidden;
+  background: #090c13;
+}
+
+.follow-flux-shell.is-placement-preview {
+  --follow-flux-drawer-top: 76px;
+}
+
+.follow-flux-shell .follow-flux-main {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding-bottom: 108px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.follow-flux-shell .follow-flux-main.is-quiz-open {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  padding-bottom: 0;
+  overflow: hidden;
+}
+
+.follow-flux-shell .follow-flux-control-panel,
+.follow-flux-shell .follow-flux-status-panel {
+  position: absolute;
+  z-index: 40;
+  top: var(--follow-flux-drawer-top);
+  bottom: 112px;
+  width: min(380px, calc(100% - 32px));
+  border: 1px solid rgba(71, 85, 105, 0.66);
+  border-radius: 18px;
+  background: rgba(15, 18, 25, 0.96);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(20px);
+  overflow: auto;
+}
+
+.follow-flux-shell .follow-flux-control-panel {
+  left: 16px;
+  border-right: 1px solid rgba(71, 85, 105, 0.66);
+}
+
+.follow-flux-shell .follow-flux-status-panel {
+  right: 16px;
+  border-left: 1px solid rgba(71, 85, 105, 0.66);
+}
+
+.follow-flux-drawer-close {
+  position: absolute;
+  z-index: 5;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(71, 85, 105, 0.7);
+  border-radius: 50%;
+  background: rgba(15, 18, 25, 0.92);
+  color: #cbd5e1;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.follow-flux-drawer-close:hover {
+  border-color: rgba(245, 158, 11, 0.7);
+  color: #f8fafc;
+}
+
+.follow-flux-shell .follow-flux-status-panel .learning-step-header,
+.follow-flux-shell .follow-flux-control-panel .learning-control-section {
+  padding-right: 56px;
+}
+
+.follow-flux-lesson-dock {
+  position: absolute;
+  z-index: 30;
+  left: 50%;
+  bottom: 16px;
+  width: min(1080px, calc(100% - 32px));
+  min-height: 76px;
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+  padding: 12px 14px 12px 18px;
+  border: 1px solid rgba(71, 85, 105, 0.7);
+  border-radius: 18px;
+  background: rgba(14, 17, 23, 0.94);
+  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(20px);
+  transform: translateX(-50%);
+  box-sizing: border-box;
+}
+
+.follow-flux-main.is-quiz-open .follow-flux-quiz-dock {
+  position: relative;
+  left: auto;
+  bottom: auto;
+  width: min(1080px, calc(100% - 32px));
+  margin: 12px auto 16px;
+  transform: none;
+}
+
+.follow-flux-dock-insight {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.follow-flux-dock-insight > span {
+  color: #fbbf24;
+  font: 800 9px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.follow-flux-dock-insight > strong {
+  max-width: 620px;
+  overflow: hidden;
+  color: #f1f5f9;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.follow-flux-dock-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.follow-flux-dock-button {
+  min-height: 42px;
+  padding: 0 14px;
+  border: 1px solid rgba(71, 85, 105, 0.68);
+  border-radius: 10px;
+  background: rgba(30, 35, 45, 0.82);
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 720;
+  cursor: pointer;
+}
+
+.follow-flux-dock-button:hover,
+.follow-flux-dock-button[aria-expanded="true"] {
+  border-color: rgba(148, 163, 184, 0.72);
+  color: #f8fafc;
+}
+
+.follow-flux-dock-primary {
+  min-width: 170px;
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+@media (max-height: 800px) and (min-width: 601px) {
+  .follow-flux-predict-experience {
+    grid-template-rows: auto minmax(190px, 1fr) auto auto auto auto;
+    gap: 10px;
+    padding: 22px 0 14px;
+  }
+
+  .follow-flux-predict-heading .learning-kicker {
+    margin-bottom: 7px;
+  }
+
+  .follow-flux-predict-heading h1 {
+    font-size: clamp(36px, 4vw, 50px);
+  }
+
+  .follow-flux-predict-heading > p:last-child {
+    margin-top: 10px;
+  }
+
+  .follow-flux-predict-visual {
+    min-height: 190px;
+  }
+
+  .follow-flux-predict-visual .follow-flux-concept-svg {
+    max-height: 28vh;
+  }
+
+  .follow-flux-predict-options button {
+    min-height: 70px;
+    padding-block: 12px;
+  }
+
+  .follow-flux-predict-footer {
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .follow-flux-predict-experience {
+    width: min(720px, calc(100% - 32px));
+    grid-template-rows: auto minmax(220px, 1fr) auto auto auto auto;
+  }
+
+  .follow-flux-predict-options {
+    grid-template-columns: 1fr;
+  }
+
+  .follow-flux-predict-options button {
+    min-height: 64px;
+  }
+
+  .follow-flux-lesson-dock {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .follow-flux-dock-insight > strong {
+    white-space: normal;
+  }
+
+  .follow-flux-dock-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .follow-flux-dock-primary {
+    min-width: 0;
+  }
+
+  .follow-flux-shell .follow-flux-main {
+    padding-bottom: 146px;
+  }
+
+  .follow-flux-shell .follow-flux-control-panel,
+  .follow-flux-shell .follow-flux-status-panel {
+    top: var(--follow-flux-drawer-top);
+    right: 10px;
+    bottom: 152px;
+    left: 10px;
+    width: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .follow-flux-predict-experience {
+    width: calc(100% - 24px);
+    gap: 12px;
+    padding-top: 24px;
+  }
+
+  .follow-flux-predict-heading h1 {
+    font-size: 38px;
+  }
+
+  .follow-flux-predict-visual {
+    min-height: 190px;
+  }
+
+  .follow-flux-predict-visual .follow-flux-concept-svg {
+    max-height: 26vh;
+  }
+
+  .follow-flux-predict-options button {
+    min-height: 56px;
+    padding: 11px 13px;
+  }
+
+  .follow-flux-dock-insight {
+    display: none;
+  }
+
+  .follow-flux-lesson-dock {
+    bottom: 8px;
+    width: calc(100% - 16px);
+    min-height: 0;
+    padding: 8px;
+    border-radius: 14px;
+  }
+
+  .follow-flux-dock-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .follow-flux-dock-primary {
+    grid-column: 1 / -1;
+  }
+
+  .follow-flux-shell .follow-flux-main {
+    padding-bottom: 114px;
+  }
+
+  .follow-flux-shell .follow-flux-control-panel,
+  .follow-flux-shell .follow-flux-status-panel {
+    bottom: 120px;
+  }
+
+}

@@ -1,0 +1,278 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://coilem.com/schemas/v1/linear_halbach_solution_report.schema.json",
+  "title": "Linear Halbach array solution report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "openem_schema_kind",
+    "openem_schema_version",
+    "model",
+    "configuration",
+    "geometry",
+    "mesh",
+    "artifacts",
+    "working_field",
+    "leakage_field",
+    "one_sidedness",
+    "magnet",
+    "energy",
+    "timings_ms",
+    "peak_memory_bytes",
+    "samples",
+    "field_data",
+    "magnetostatic_problem",
+    "generic_field_report",
+    "warnings"
+  ],
+  "properties": {
+    "openem_schema_kind": {
+      "const": "linear_halbach_solution_report"
+    },
+    "openem_schema_version": {"const": "1.0"},
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dimensionality",
+        "formulation",
+        "assumption",
+        "finite_array_end_fringing_modeled",
+        "out_of_plane_end_effects_modeled",
+        "out_of_plane_depth_usage",
+        "notice"
+      ],
+      "properties": {
+        "dimensionality": {"const": "2d"},
+        "formulation": {"const": "planar_az"},
+        "assumption": {"const": "finite_xy_infinite_out_of_plane"},
+        "finite_array_end_fringing_modeled": {"const": true},
+        "out_of_plane_end_effects_modeled": {"const": false},
+        "out_of_plane_depth_usage": {
+          "type": "array",
+          "contains": {"const": "extruded_2d_estimates"}
+        },
+        "notice": {"type": "string", "minLength": 1}
+      }
+    },
+    "configuration": {
+      "$ref": "linear_halbach_array_config.schema.json"
+    },
+    "geometry": {"type": "object"},
+    "mesh": {"type": "object"},
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "magnetostatic_problem_sha256",
+        "generic_field_report_input_sha256",
+        "geometry_hash",
+        "mesh_hash"
+      ],
+      "properties": {
+        "magnetostatic_problem_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "generic_field_report_input_sha256": {
+          "type": ["string", "null"]
+        },
+        "geometry_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "mesh_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "working_field": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "b_magnitude_t",
+        "bx_t",
+        "by_t",
+        "headline",
+        "strong_side",
+        "line_y_mm",
+        "x_start_mm",
+        "x_end_mm",
+        "probe_offset_mm",
+        "edge_exclusion_periods",
+        "sample_count",
+        "ripple_ppm",
+        "convergence"
+      ],
+      "properties": {
+        "b_magnitude_t": {"$ref": "#/$defs/statistics"},
+        "bx_t": {"$ref": "#/$defs/statistics"},
+        "by_t": {"$ref": "#/$defs/statistics"},
+        "headline": {"type": "string"},
+        "strong_side": {"enum": ["positive_y", "negative_y"]},
+        "line_y_mm": {"type": "number"},
+        "x_start_mm": {"type": "number"},
+        "x_end_mm": {"type": "number"},
+        "probe_offset_mm": {"type": "number", "exclusiveMinimum": 0},
+        "edge_exclusion_periods": {"type": "integer", "minimum": 0},
+        "sample_count": {"type": "integer", "minimum": 2},
+        "ripple_ppm": {"type": ["number", "null"], "minimum": 0},
+        "convergence": {"type": "object"}
+      }
+    },
+    "leakage_field": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "b_magnitude_t",
+        "bx_t",
+        "by_t",
+        "headline",
+        "line_y_mm",
+        "x_start_mm",
+        "x_end_mm",
+        "probe_offset_mm",
+        "edge_exclusion_periods",
+        "sample_count"
+      ],
+      "properties": {
+        "b_magnitude_t": {"$ref": "#/$defs/statistics"},
+        "bx_t": {"$ref": "#/$defs/statistics"},
+        "by_t": {"$ref": "#/$defs/statistics"},
+        "headline": {"type": "string"},
+        "line_y_mm": {"type": "number"},
+        "x_start_mm": {"type": "number"},
+        "x_end_mm": {"type": "number"},
+        "probe_offset_mm": {"type": "number", "exclusiveMinimum": 0},
+        "edge_exclusion_periods": {"type": "integer", "minimum": 0},
+        "sample_count": {"type": "integer", "minimum": 2}
+      }
+    },
+    "one_sidedness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "leakage_ratio_rms",
+        "suppression_ratio",
+        "ratio_definition",
+        "suppression_definition"
+      ],
+      "properties": {
+        "leakage_ratio_rms": {
+          "type": ["number", "null"],
+          "minimum": 0
+        },
+        "suppression_ratio": {
+          "type": ["number", "null"],
+          "minimum": 0
+        },
+        "ratio_definition": {"type": "string"},
+        "suppression_definition": {"type": "string"}
+      }
+    },
+    "magnet": {
+      "type": "object",
+      "required": [
+        "area_mm2",
+        "volume_m3",
+        "mass_kg",
+        "material",
+        "blocks",
+        "demagnetization_screening"
+      ]
+    },
+    "energy": {
+      "type": "object",
+      "required": [
+        "energy_per_unit_depth_j_per_m",
+        "magnetic_energy_extruded_2d_estimate_j",
+        "label"
+      ]
+    },
+    "timings_ms": {"type": "object"},
+    "peak_memory_bytes": {
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "samples": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["working", "leakage"],
+      "properties": {
+        "working": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"$ref": "#/$defs/sample"}
+        },
+        "leakage": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"$ref": "#/$defs/sample"}
+        }
+      }
+    },
+    "field_data": {
+      "type": "object",
+      "required": [
+        "nodes_mm",
+        "triangles",
+        "region_ids",
+        "az_nodal_t_m",
+        "element_fields_t",
+        "contours",
+        "available_views"
+      ]
+    },
+    "magnetostatic_problem": {
+      "$ref": "magnetostatic_problem.schema.json"
+    },
+    "generic_field_report": {"type": "object"},
+    "warnings": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  },
+  "$defs": {
+    "statistics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mean",
+        "rms",
+        "standard_deviation",
+        "minimum",
+        "maximum",
+        "peak_to_peak"
+      ],
+      "properties": {
+        "mean": {"type": "number"},
+        "rms": {"type": "number", "minimum": 0},
+        "standard_deviation": {"type": "number", "minimum": 0},
+        "minimum": {"type": "number"},
+        "maximum": {"type": "number"},
+        "peak_to_peak": {"type": "number", "minimum": 0}
+      }
+    },
+    "sample": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "x_mm",
+        "y_mm",
+        "element_index",
+        "bx_t",
+        "by_t",
+        "b_magnitude_t"
+      ],
+      "properties": {
+        "x_mm": {"type": "number"},
+        "y_mm": {"type": "number"},
+        "element_index": {"type": "integer", "minimum": 0},
+        "bx_t": {"type": "number"},
+        "by_t": {"type": "number"},
+        "b_magnitude_t": {"type": "number", "minimum": 0}
+      }
+    }
+  }
+}

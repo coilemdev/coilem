@@ -1,0 +1,1422 @@
+/* TemplateSelector — homepage that sits below the shared TopBar */
+
+.template-selector-overlay {
+  /* Fills the area below the TopBar inside the shared app shell. No
+     longer a fixed full-screen overlay — the TopBar sits above and the
+     workspace shell wraps both this and the design surface. */
+  height: calc(100vh - var(--topbar-height));
+  background: linear-gradient(135deg, var(--bg) 0%, var(--bg-raised) 100%);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-y: auto;
+}
+
+.template-selector-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: min(1240px, 100%);
+  min-height: 100%;
+  margin: 0 auto;
+  padding: 48px 32px;
+  justify-content: center;
+  /* Safety clip so a too-wide child (e.g. the embedded wizard's internal
+     2-card grid at narrow viewports) can never push the page into
+     horizontal scroll. The grid columns use minmax(0, …) so children
+     should shrink first, but this guarantees no overflow ever leaks. */
+  overflow-x: hidden;
+  min-width: 0;
+}
+
+.selector-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 440px);
+  gap: 36px;
+  align-items: center;
+}
+
+/* When the inline guided-setup wizard takes over, the grid itself becomes
+   the shared panel. The wizard owns the wide left side, the live motor
+   preview sits on the right, and a single divider replaces the previous
+   pair of independent bordered cards. */
+.selector-hero-onboarding {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 350px);
+  gap: 0;
+  align-items: stretch;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+  overflow: hidden;
+}
+
+/* The flex-column wizard wrapper needs `min-width: 0` so its children
+   (the wizard's 2-card grid, action row, subtitle) actually wrap and
+   shrink within the grid column instead of forcing the column wider.
+   Without this, the wizard panel pushed itself past the column edge,
+   which is what was causing the right side to clip off the page. */
+.selector-wizard {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.onboarding-wizard-embedded {
+  min-width: 0;
+}
+
+/* Stretch the preview card to fill the wizard's height in onboarding mode
+   and let its inner visual area absorb the extra room so the motor stays
+   roughly centered vertically. */
+.selector-hero-onboarding .selector-preview-card {
+  height: 100%;
+  min-width: 0;
+}
+
+.selector-hero-onboarding .card-visual {
+  flex: 1;
+  height: auto;
+  min-height: 240px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+
+/* Live geometry preview — same backend regions as the Design workspace. */
+.onboarding-geometry-preview {
+  display: flex;
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.onboarding-geometry-preview > .viewport {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.onboarding-geometry-preview > .viewport.viewport-design-preview {
+  background:
+    radial-gradient(circle at 50% 40%, rgba(245, 158, 11, 0.14), transparent 42%),
+    radial-gradient(circle at 50% 68%, rgba(59, 130, 246, 0.04), transparent 36%),
+    linear-gradient(180deg, rgba(12, 14, 20, 0.98), rgba(8, 10, 14, 0.99));
+}
+
+.onboarding-geometry-preview .motor-svg {
+  filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.38));
+}
+
+.onboarding-geometry-preview .viewport-preview-error-banner {
+  display: none;
+}
+
+/* Drop to single column slightly earlier than the default 960 breakpoint
+   when the wizard is in: it needs more horizontal room than the static
+   hero copy does, so let it have the full width below ~1080 viewport. */
+@media (max-width: 1080px) {
+  .selector-hero-onboarding {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .selector-hero-onboarding .selector-preview-card {
+    max-width: none;
+  }
+}
+
+.selector-wizard {
+  /* Acts as the surface the embedded wizard sits on, replacing the
+     overlay/modal styling it normally relies on. */
+  min-width: 0;
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+  overflow: hidden;
+}
+
+.selector-hero-onboarding .selector-wizard {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.onboarding-wizard-embedded {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: none;
+  max-height: none;
+  min-width: 0;
+}
+
+.onboarding-wizard-embedded .onboarding-content {
+  /* The modal version of the wizard pads at 40px; tighten it slightly
+     when embedded since the surface around it is already padded. */
+  min-width: 0;
+  padding: 24px;
+  gap: 20px;
+}
+
+.onboarding-wizard-embedded .wizard-stepper {
+  justify-content: center;
+  gap: 6px;
+  padding: 16px 24px 10px;
+}
+
+.onboarding-wizard-embedded .wizard-step-pill {
+  gap: 6px;
+  padding: 5px 10px;
+}
+
+.onboarding-wizard-embedded .onboarding-title {
+  font-size: 24px;
+  align-self: center;
+  text-align: center;
+}
+
+.onboarding-wizard-embedded .onboarding-subtitle {
+  align-self: center;
+  max-width: 960px;
+  text-align: center;
+}
+
+.onboarding-wizard-embedded .onboarding-step {
+  gap: 12px;
+  padding: 12px;
+}
+
+.onboarding-wizard-embedded .step-number {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+}
+
+.onboarding-wizard-embedded .step-description {
+  line-height: 1.35;
+}
+
+.selector-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.selector-open-source-badge {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 7px;
+  padding: 5px 9px;
+  color: var(--text-dim);
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 999px;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.selector-open-source-badge > span {
+  width: 6px;
+  height: 6px;
+  background: var(--success, #4ade80);
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.45);
+}
+
+.selector-copy h1 {
+  max-width: 640px;
+  font-size: clamp(34px, 5vw, 58px);
+  line-height: 0.98;
+  font-weight: 800;
+  margin: 0;
+  color: var(--text);
+  letter-spacing: 0;
+}
+
+.selector-copy h1 em {
+  font-style: normal;
+  background: linear-gradient(120deg, #fbbf24, #f59e0b 55%, #ea580c);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.selector-copy p {
+  max-width: 620px;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--text-dim);
+  margin: 0;
+}
+
+.selector-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 4px;
+}
+
+.selector-proof-points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+  padding-top: 2px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.selector-proof-points span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.selector-proof-points span::before {
+  content: '✓';
+  color: #f59e0b;
+  font-weight: 800;
+}
+
+.landing-workflow-hero {
+  width: 100%;
+}
+
+.landing-workflow-switch {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.035);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+
+.landing-workflow-switch > span {
+  padding: 0 8px;
+  color: var(--text-muted);
+  font: 700 9px/1 var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.landing-workflow-switch button {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0 12px;
+  color: var(--text-muted);
+  background: transparent;
+  font-size: 11px;
+  font-weight: 700;
+  transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease;
+}
+
+.landing-workflow-switch button:hover {
+  color: var(--text-primary, var(--text));
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.landing-workflow-switch button.active {
+  color: var(--text-primary, var(--text));
+  border-color: rgba(245, 158, 11, 0.32);
+  background: rgba(245, 158, 11, 0.11);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+}
+
+.landing-workflow-switch i {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  display: inline-block;
+}
+
+.landing-workflow-motor-mark {
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 3px var(--bg-raised, #15161b);
+}
+
+.landing-workflow-motor-mark::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.landing-workflow-halbach-mark {
+  border: 3px dashed currentColor;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px var(--bg-raised, #15161b);
+}
+
+.landing-workflow-halbach-mark::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: var(--bg-raised, #15161b);
+}
+
+.landing-workflow-preview .card-visual {
+  overflow: visible;
+}
+
+.landing-halbach-preview {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+}
+
+.landing-halbach-preview::before {
+  content: '';
+  position: absolute;
+  inset: 8% 5% 2%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(42, 121, 151, 0.14), rgba(245, 158, 11, 0.035) 42%, transparent 70%);
+  filter: blur(14px);
+}
+
+.landing-halbach-preview .linear-halbach-3d-viewer.is-hero-presentation {
+  width: 100%;
+  height: 300px;
+  min-height: 300px;
+  margin: 0;
+  display: block;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  filter: drop-shadow(0 18px 32px rgba(0, 0, 0, 0.4));
+}
+
+.landing-halbach-preview .linear-halbach-3d-canvas {
+  width: 100%;
+  height: 300px;
+  min-height: 300px;
+  cursor: grab;
+}
+
+.landing-halbach-preview .linear-halbach-3d-canvas:active {
+  cursor: grabbing;
+}
+
+.landing-halbach-preview .linear-halbach-3d-canvas canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 18px;
+}
+
+.landing-preview-mode-control {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  z-index: 8;
+  display: inline-flex;
+  gap: 2px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 999px;
+  padding: 3px;
+  background: rgba(15, 17, 23, 0.82);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(12px);
+  transform: translateX(-50%);
+}
+
+.landing-preview-mode-control button {
+  min-width: 0;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 7px 12px;
+  color: var(--text-muted);
+  background: transparent;
+  font: 700 9px/1.2 var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  letter-spacing: 0.035em;
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.landing-preview-mode-control button:hover,
+.landing-preview-mode-control button:focus-visible {
+  color: var(--text-primary, var(--text));
+  outline: none;
+}
+
+.landing-preview-mode-control button:focus-visible {
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.42);
+}
+
+.landing-preview-mode-control button.is-active {
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.34);
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.landing-preview-mode-control button:disabled {
+  cursor: default;
+  opacity: 0.34;
+}
+
+.landing-part-visibility-control {
+  position: absolute;
+  top: 10px;
+  left: calc(50% - 24px);
+  bottom: auto;
+  z-index: 8;
+  display: flex;
+  max-width: calc(100% - 48px);
+  gap: 2px;
+  padding: 3px;
+  overflow-x: auto;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 999px;
+  background: rgba(15, 17, 23, 0.82);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  scrollbar-width: none;
+  backdrop-filter: blur(12px);
+  transform: translateX(-50%);
+}
+
+.landing-part-visibility-control::-webkit-scrollbar { display: none; }
+.landing-part-visibility-control button { display: inline-flex; align-items: center; gap: 6px; min-width: max-content; padding: 6px 9px; border: 1px solid transparent; border-radius: 999px; color: var(--text-muted); background: transparent; font: 650 8.5px/1.2 var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace); letter-spacing: 0.025em; cursor: pointer; }
+.landing-part-visibility-control button > span { width: 7px; height: 7px; border: 1px solid currentColor; border-radius: 50%; background: transparent; }
+.landing-part-visibility-control button.is-visible { color: var(--text-primary, var(--text)); background: rgba(255, 255, 255, 0.035); }
+.landing-part-visibility-control button.is-visible > span { border-color: #fbbf24; background: #fbbf24; box-shadow: 0 0 8px rgba(251, 191, 36, 0.38); }
+.landing-part-visibility-control button:hover:not(:disabled),
+.landing-part-visibility-control button:focus-visible { color: #fff; outline: none; }
+.landing-part-visibility-control button:focus-visible { box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.42); }
+.landing-part-visibility-control button:disabled { cursor: default; opacity: 0.3; }
+
+@media (orientation: landscape) and (max-height: 600px) {
+  .landing-3d-preview.is-immersive .landing-part-visibility-control,
+  .landing-3d-stage:fullscreen .landing-part-visibility-control {
+    top: max(12px, env(safe-area-inset-top));
+    bottom: auto;
+  }
+  .landing-3d-preview.is-immersive .landing-preview-mode-control,
+  .landing-3d-stage:fullscreen .landing-preview-mode-control {
+    top: auto;
+    bottom: max(10px, env(safe-area-inset-bottom));
+  }
+  .landing-preview-mode-control button,
+  .landing-part-visibility-control button { min-height: 40px; }
+}
+
+@media (max-width: 620px) {
+  .landing-workflow-switch {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .landing-workflow-switch > span {
+    width: 100%;
+    padding: 5px 8px 2px;
+  }
+
+  .landing-workflow-switch button {
+    flex: 1 1 140px;
+    justify-content: center;
+  }
+
+  .landing-3d-stage > canvas {
+    touch-action: pan-y pinch-zoom !important;
+  }
+
+  .landing-part-visibility-control {
+    top: 68px;
+    left: 50%;
+    width: calc(100% - 16px);
+    max-width: none;
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-workflow-switch button,
+  .landing-preview-mode-control button,
+  .landing-part-visibility-control button {
+    transition: none;
+  }
+}
+
+.selector-preview-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px;
+  /* Background, border, and shadow are intentionally absent so the preview
+     blends into the page gradient (see .template-selector-overlay) and the
+     hero reads as a single uninterrupted surface — text on the left and
+     motor on the right share the same backdrop. */
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.selector-hero-onboarding .selector-preview-card {
+  height: 100%;
+  min-width: 0;
+  padding: 22px;
+  background: transparent;
+  border: 0;
+  border-left: 1px solid var(--border);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+@media (max-width: 1080px) {
+  .selector-hero-onboarding .selector-preview-card {
+    border-left: 0;
+    border-top: 1px solid var(--border);
+  }
+}
+
+.card-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Sized to give the workspace-style preview enough room to read as a
+     real motor rather than a logo. The visual sits directly on the panel
+     surface so the preview reads as one unified panel (matching the
+     onboarding hero), not a card-within-a-card. Height tuned so the
+     overall landing hero matches the onboarding hero's visual height
+     instead of running noticeably taller. */
+  height: 300px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+
+.topology-svg {
+  width: 100%;
+  height: 100%;
+  max-width: 300px;
+  max-height: 300px;
+}
+
+.selector-hero-onboarding .card-visual {
+  flex: 1;
+  height: auto;
+  min-height: 240px;
+}
+
+/* HeroMotor's rotor rotation is driven by React state so the live RPM badge
+   and the visible motor motion stay in sync during onboarding step changes. */
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  /* Text header (preview caption, title, stat chips) sits ABOVE the motor
+     visual in both the landing-page hero and the onboarding hero, so the
+     preview reads top-down: identity → spec chips → live drawing. */
+  order: -1;
+  /* Center the text block so it visually aligns with the motor below,
+     which is itself centered inside .card-visual. Without this, the
+     left-aligned text floated off-axis from the centered motor. */
+  align-items: center;
+  text-align: center;
+}
+
+.card-content h2 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text);
+}
+
+.card-content p {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Mono caption above the card heading — mirrors the workspace's
+   "DESIGN PREVIEW — SPM 8P/12S · OD 200.0 MM · ROTOR 108.0 MM" label
+   so the hero card reads as a workspace surface, not a marketing tile. */
+.card-meta {
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.card-preview-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.card-preview-stats span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  padding: 3px 7px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-muted);
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ─── Landing-page carousel ─────────────────────────────────────────────
+ * Replaces the static motor inside .card-visual on the landing hero.
+ * Layout: a vertical step list on the left + a stage on the right whose
+ * panels cross-fade between Design / Mesh / Solve / Report.
+ *
+ * The component sets its own width:100%/height:100% so it fills whatever
+ * .card-visual gives it (currently 300px tall), without needing the parent
+ * to switch off its flex-centering rule. */
+
+.landing-carousel {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  font-family: var(--font-family);
+}
+
+.landing-carousel-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  flex: 0 0 86px;
+}
+
+.landing-carousel-step {
+  margin: 0;
+}
+
+.landing-carousel-step-button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 8px 10px;
+  background: transparent;
+  border: 0;
+  border-left: 2px solid transparent;
+  color: var(--text-dim);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: color 140ms ease, border-color 140ms ease, background-color 140ms ease;
+}
+
+.landing-carousel-step-button:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.landing-carousel-step.is-active .landing-carousel-step-button {
+  color: var(--text);
+  border-left-color: var(--accent, #f59e0b);
+  background: rgba(245, 158, 11, 0.08);
+}
+
+/* Steps the carousel has already played through read as "completed" —
+   green left bar + green-tinted label. Pairs with the amber "active"
+   treatment so a glance at the column tells you what's done, what's
+   running, and what's queued. */
+.landing-carousel-step.is-completed .landing-carousel-step-button {
+  color: var(--success, #22c55e);
+  border-left-color: var(--success, #22c55e);
+}
+
+.landing-carousel-step.is-completed .landing-carousel-step-button:hover {
+  background: rgba(34, 197, 94, 0.06);
+}
+
+.landing-carousel-step-label {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.landing-carousel-stage {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.landing-carousel-panel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+
+.landing-carousel-panel.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* The motor SVG inside a panel — both the HeroMotor render and any
+   overlay (mesh wedges, flux-line arcs) share this stack so they
+   register pixel-perfect on each other. */
+.landing-carousel-motor-stack {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 280px;
+  max-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.landing-carousel-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.landing-carousel-motor-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.35));
+}
+
+.landing-carousel-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.landing-carousel-winding-overlay {
+  fill: rgba(245, 158, 11, 0.34);
+  stroke: rgba(251, 191, 36, 0.18);
+  stroke-width: 0.08;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.18));
+}
+
+.landing-carousel-mesh-overlay {
+  stroke: rgba(203, 213, 225, 0.32);
+  stroke-width: 0.22;
+}
+
+.landing-carousel-flux-overlay {
+  filter: drop-shadow(0 0 1.6px rgba(96, 165, 250, 0.42));
+}
+
+/* Report panel: torque, back-EMF, and flux-density previews. */
+.landing-carousel-report {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.12fr);
+  align-content: center;
+  gap: 8px;
+  padding: 4px 2px;
+}
+
+.landing-mini-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-height: 0;
+  padding: 7px;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(59, 130, 246, 0.09), transparent 42%),
+    rgba(12, 15, 22, 0.62);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045);
+}
+
+.landing-mini-chart-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 8.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.landing-mini-chart-title {
+  color: var(--text-dim);
+}
+
+.landing-mini-chart-unit {
+  color: var(--text-muted, var(--text-dim));
+  opacity: 0.65;
+}
+
+.landing-mini-chart svg {
+  display: block;
+  overflow: visible;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.18));
+}
+
+.landing-flux-map {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 84px;
+  grid-template-rows: auto minmax(0, 1fr);
+  column-gap: 8px;
+  align-items: center;
+  padding: 7px;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 75% 45%, rgba(45, 212, 191, 0.14), transparent 46%),
+    rgba(12, 15, 22, 0.62);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045);
+}
+
+.landing-flux-map .landing-mini-chart-header {
+  grid-column: 1 / -1;
+}
+
+.landing-flux-map svg {
+  grid-row: 2;
+  grid-column: 2;
+  width: 84px;
+  height: 84px;
+  filter: drop-shadow(0 0 12px rgba(45, 212, 191, 0.14));
+}
+
+.landing-flux-map-scale {
+  grid-row: 2;
+  grid-column: 1;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 4px 0;
+  color: var(--text-muted, var(--text-dim));
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 8.5px;
+  letter-spacing: 0.04em;
+}
+
+.landing-flux-map-scale span {
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-carousel-panel {
+    transition: none;
+  }
+}
+
+.recent-projects-panel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.recent-projects-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+/* Recent projects grid — Variant B layout: each entry shows a HeroMotor
+   thumbnail next to a use-case eyebrow + pole/slot title, with OD and RPM
+   chips underneath. Falls back to a "Draft / Untitled" state when the
+   snapshot has no resolvable geometry. */
+.recent-projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.recent-project-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.recent-project-card:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-focus);
+}
+
+.recent-project-card.is-draft {
+  border-style: dashed;
+}
+
+.recent-project-card-autosave {
+  border-style: dashed;
+  color: var(--accent);
+}
+
+.recent-project-card-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.recent-project-thumb {
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #171a1f;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.recent-project-thumb svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.recent-project-thumb-autosave {
+  background: transparent;
+  border-style: dashed;
+  color: var(--accent);
+}
+
+.recent-project-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.recent-project-card-eyebrow {
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.recent-project-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recent-project-card-title.is-draft-title {
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.recent-project-card-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.recent-project-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 18px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-muted);
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.recent-project-chip-muted {
+  color: var(--text-dim);
+  opacity: 0.85;
+}
+
+.btn-sample {
+  padding: 11px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-family);
+}
+
+.btn-sample:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-focus);
+  color: var(--text);
+}
+
+.btn-sample:active {
+  background: var(--bg-raised);
+}
+
+.btn-sample-primary {
+  background: rgba(79, 143, 247, 0.18);
+  border-color: var(--border-focus);
+}
+
+.btn-sample-primary:hover {
+  background: rgba(79, 143, 247, 0.28);
+}
+
+.btn-sample-light {
+  background: rgba(255, 255, 255, 0.9);
+  color: #24262d;
+}
+
+.btn-sample-light:hover {
+  background: #ffffff;
+  color: #17181d;
+}
+
+.btn-link-quiet {
+  padding: 11px 6px;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 13px;
+  font-family: var(--font-family);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-link-quiet:hover {
+  color: var(--text);
+  text-decoration-color: currentColor;
+}
+
+/* Alternate Three.js landing hero. The previous 2D carousel styles remain
+   above so the legacy component can still be mounted for comparison. */
+.selector-hero:not(.selector-hero-onboarding) {
+  grid-template-columns: minmax(0, 1fr) minmax(430px, 560px);
+  gap: 44px;
+}
+
+.selector-hero:not(.selector-hero-onboarding) .selector-preview-card {
+  gap: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.selector-hero:not(.selector-hero-onboarding) .card-visual {
+  height: 620px;
+  min-width: 0;
+}
+
+.selector-action-row .btn-sample {
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.selector-action-row .selector-github-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.selector-github-link svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  flex: none;
+}
+
+.selector-action-row .btn-sample-primary {
+  color: #1a1206;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b 55%, #ea580c);
+  border-color: rgba(245, 158, 11, 0.6);
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.22);
+}
+
+.selector-action-row .btn-sample-primary:hover {
+  color: #1a1206;
+  background: linear-gradient(135deg, #fcd34d, #f59e0b 55%, #f97316);
+  box-shadow: 0 10px 28px rgba(245, 158, 11, 0.32);
+}
+
+.landing-3d-preview {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-family: var(--font-family);
+}
+
+.landing-3d-model-label {
+  min-height: 20px;
+  padding: 0 8px 8px;
+  color: var(--text-muted);
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.landing-3d-body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+
+.landing-3d-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: visible;
+  background: radial-gradient(circle at 56% 42%, rgba(74, 91, 116, 0.16), transparent 58%);
+}
+
+.landing-3d-stage > canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+.landing-fullscreen-button {
+  position: absolute;
+  top: 10px;
+  right: 0;
+  z-index: 10;
+  display: grid;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 11px;
+  color: var(--text-primary, #eef1f6);
+  background: rgba(15, 17, 23, 0.82);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.24);
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+}
+
+.landing-fullscreen-button svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.landing-fullscreen-button:hover { border-color: rgba(245, 158, 11, 0.46); color: #fff; }
+.landing-fullscreen-button:focus-visible { outline: 2px solid rgba(251, 191, 36, 0.9); outline-offset: 3px; }
+
+.landing-explode-control {
+  position: absolute;
+  top: 64px;
+  right: 12px;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: auto minmax(92px, 1fr) 32px;
+  gap: 10px;
+  align-items: center;
+  width: min(230px, calc(100% - 24px));
+  padding: 10px 12px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 11px;
+  color: var(--text-primary, #eef1f6);
+  background: rgba(15, 17, 23, 0.84);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.24);
+  font: 700 9px/1 var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+}
+
+.landing-explode-control input { width: 100%; accent-color: #fbbf24; cursor: ew-resize; touch-action: none; }
+.landing-explode-control output { color: #fbbf24; text-align: right; }
+.landing-explode-control:focus-within { border-color: rgba(245, 158, 11, 0.48); box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.18); }
+
+.landing-3d-preview.is-immersive {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  width: 100dvw;
+  height: 100dvh;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  background: radial-gradient(circle at 55% 42%, #172137 0, #090c12 58%, #05070a 100%);
+}
+
+.landing-3d-preview.is-immersive .landing-3d-body,
+.landing-3d-preview.is-immersive .landing-3d-stage { width: 100%; height: 100%; }
+.landing-3d-preview.is-immersive .landing-3d-stage { overflow: hidden; }
+.landing-3d-preview.is-immersive .landing-3d-model-label { padding: 18px; }
+.landing-3d-preview.is-immersive .landing-fullscreen-button,
+.landing-3d-stage:fullscreen .landing-fullscreen-button { top: max(18px, env(safe-area-inset-top)); right: max(18px, env(safe-area-inset-right)); }
+.landing-3d-preview.is-immersive .landing-explode-control,
+.landing-3d-stage:fullscreen .landing-explode-control { top: max(72px, calc(env(safe-area-inset-top) + 66px)); right: max(18px, env(safe-area-inset-right)); }
+.landing-3d-preview.is-immersive .landing-part-visibility-control,
+.landing-3d-stage:fullscreen .landing-part-visibility-control { top: max(18px, env(safe-area-inset-top)); left: 50%; bottom: auto; max-width: calc(100% - 36px); }
+.landing-3d-preview.is-immersive .landing-preview-mode-control,
+.landing-3d-stage:fullscreen .landing-preview-mode-control { bottom: max(18px, env(safe-area-inset-bottom)); }
+.landing-3d-preview.is-immersive .landing-3d-stage > canvas,
+.landing-3d-stage:fullscreen > canvas { touch-action: none !important; }
+.landing-3d-stage:fullscreen { width: 100vw; height: 100vh; overflow: hidden; background: radial-gradient(circle at 55% 42%, #172137 0, #090c12 58%, #05070a 100%); }
+
+.landing-3d-error {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+@media (orientation: landscape) and (max-height: 600px) {
+  .landing-fullscreen-button {
+    top: 10px;
+    width: 48px;
+    height: 48px;
+  }
+}
+
+@media (max-width: 620px) {
+  .landing-fullscreen-button {
+    right: 8px;
+    width: 44px;
+    height: 44px;
+  }
+
+  .landing-3d-preview.is-immersive .landing-part-visibility-control,
+  .landing-3d-stage:fullscreen .landing-part-visibility-control {
+    top: max(134px, calc(env(safe-area-inset-top) + 128px));
+    bottom: auto;
+  }
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+  .selector-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .selector-preview-card {
+    max-width: 560px;
+  }
+
+  .selector-hero:not(.selector-hero-onboarding) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .selector-hero:not(.selector-hero-onboarding) .card-visual {
+    height: 540px;
+  }
+}
+
+@media (max-width: 768px) {
+  .template-selector-container {
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .selector-copy h1 {
+    font-size: 34px;
+  }
+
+  .selector-copy p {
+    font-size: 14px;
+  }
+
+  .card-visual {
+    height: 260px;
+  }
+
+  .selector-hero:not(.selector-hero-onboarding) .card-visual {
+    height: 500px;
+  }
+
+  .landing-carousel-report {
+    gap: 8px;
+    padding: 4px 0;
+  }
+
+  .landing-mini-chart {
+    padding: 6px;
+  }
+}

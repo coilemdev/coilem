@@ -1,0 +1,34 @@
+{
+  "name": "coilem-public-boundary",
+  "private": true,
+  "version": "0.2.0",
+  "license": "AGPL-3.0-or-later",
+  "repository": "https://github.com/coilemdev/coilem",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --config vite.public.config.ts",
+    "test:public-boundary": "node scripts/test-public-boundary.mjs",
+    "test:public-bundle": "node scripts/test-public-bundle.mjs",
+    "test:public-airgap": "node scripts/test-public-airgap-ux.mjs",
+    "test:public-ui": "node scripts/test-public-ui-contract.mjs && node scripts/test-bldc-chart-paths.mjs && node scripts/test-public-backend-monitor.mjs && node scripts/test-flat-ipm-burial-health.mjs && node scripts/test-custom-steel.mjs",
+    "typecheck": "tsc --project tsconfig.public.json",
+    "test:browser": "playwright test --config playwright.public.config.ts",
+    "test:lesson-ten-bemf": "node scripts/test-lesson-ten-bemf.mjs",
+    "build": "npm run test:public-boundary && npm run test:public-ui && npm run test:public-airgap && npm run test:lesson-ten-bemf && npm run typecheck && vite build --config vite.public.config.ts && npm run test:public-bundle",
+    "preview": "vite preview --config vite.public.config.ts"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "three": "0.183.2"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.60.0",
+    "@types/react": "18.3.28",
+    "@types/react-dom": "18.3.7",
+    "@types/three": "0.183.1",
+    "@vitejs/plugin-react": "4.7.0",
+    "typescript": "5.6.3",
+    "vite": "6.4.3"
+  }
+}

@@ -1,0 +1,1296 @@
+.halbach-app {
+  --halbach-deep: #07110f;
+  --halbach-ink: #172520;
+  --halbach-muted: #64766f;
+  --halbach-line: #d6e1dd;
+  --halbach-paper: #f7faf9;
+  --halbach-panel: #edf4f1;
+  --halbach-green: #174b40;
+  --halbach-mint: #65cfad;
+  --halbach-gold: #e9ae48;
+  --halbach-pole-north: #cf4d51;
+  --halbach-pole-south: #3978ad;
+  min-height: 100vh;
+  color: var(--halbach-ink);
+  background: var(--halbach-paper);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.halbach-app *,
+.halbach-app *::before,
+.halbach-app *::after { box-sizing: border-box; }
+
+.halbach-app button,
+.halbach-app input,
+.halbach-app select { font: inherit; }
+
+.halbach-app button:focus-visible,
+.halbach-app input:focus-visible,
+.halbach-app select:focus-visible,
+.halbach-app summary:focus-visible,
+.halbach-app canvas:focus-visible {
+  outline: 3px solid rgba(34, 135, 109, .36);
+  outline-offset: 2px;
+}
+
+.halbach-topbar {
+  min-height: 66px;
+  display: grid;
+  grid-template-columns: minmax(220px, auto) minmax(160px, 1fr) auto auto;
+  align-items: center;
+  gap: 20px;
+  padding: 9px 22px;
+  color: #edf9f5;
+  background: var(--halbach-deep);
+  border-bottom: 1px solid rgba(255, 255, 255, .1);
+}
+
+.halbach-brand { display: flex; align-items: center; gap: 10px; }
+.halbach-brand strong { display: block; font-size: 20px; letter-spacing: -.04em; }
+.halbach-brand strong span { color: var(--halbach-mint); }
+.halbach-brand small {
+  display: block;
+  color: #8da49c;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .11em;
+}
+.halbach-home {
+  width: 34px;
+  height: 34px;
+  border: 1px solid #29433c;
+  border-radius: 9px;
+  color: #dff6ee;
+  background: #10231e;
+}
+.halbach-project-name {
+  width: min(100%, 340px);
+  border: 1px solid #29433c;
+  border-radius: 8px;
+  padding: 8px 11px;
+  color: #f4fbf8;
+  background: #0d1e1a;
+}
+
+.halbach-workflow { display: flex; gap: 5px; }
+.halbach-workflow button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  border-radius: 8px;
+  padding: 7px 10px;
+  color: #8fa49d;
+  background: transparent;
+  text-transform: capitalize;
+  font-size: 12px;
+  font-weight: 700;
+}
+.halbach-workflow button span {
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #37524a;
+  border-radius: 50%;
+}
+.halbach-workflow button.active {
+  color: #eafff7;
+  background: rgba(101, 207, 173, .12);
+}
+.halbach-workflow button.active span {
+  color: #092019;
+  background: var(--halbach-mint);
+  border-color: var(--halbach-mint);
+}
+
+.halbach-file-actions { display: flex; gap: 6px; }
+.halbach-file-actions button,
+.halbach-3d-toolbar button,
+.halbach-exports button {
+  border: 1px solid #315047;
+  border-radius: 7px;
+  padding: 7px 9px;
+  color: #dff6ee;
+  background: #10241e;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.halbach-model-notice {
+  min-height: 28px;
+  display: grid;
+  place-items: center;
+  padding: 5px 18px;
+  color: #614214;
+  background: #fff4d9;
+  border-bottom: 1px solid #efd8a0;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.halbach-workspace {
+  height: calc(100vh - 94px);
+  min-height: 520px;
+  display: grid;
+  grid-template-columns: 325px minmax(460px, 1fr) 310px;
+}
+
+.halbach-config-panel,
+.halbach-run-panel {
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #b8cac3 transparent;
+  background: var(--halbach-paper);
+}
+.halbach-config-panel { padding: 22px 19px 40px; border-right: 1px solid var(--halbach-line); }
+.halbach-run-panel { padding: 22px 19px 40px; border-left: 1px solid var(--halbach-line); }
+.halbach-stage-panel { min-width: 0; min-height: 0; display: flex; flex-direction: column; background: #dfe9e5; }
+
+.halbach-panel-title { margin-bottom: 16px; }
+.halbach-panel-title .eyebrow {
+  display: block;
+  margin-bottom: 4px;
+  color: #73857f;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.halbach-panel-title h1,
+.halbach-panel-title h2 { margin: 0; font-size: 19px; letter-spacing: -.03em; }
+.halbach-panel-title p { margin: 5px 0 0; color: var(--halbach-muted); font-size: 11px; line-height: 1.5; }
+
+.halbach-parameter-group { border-top: 1px solid #dce6e2; }
+.halbach-parameter-group summary {
+  padding: 14px 2px;
+  color: #2d4039;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+}
+.halbach-parameter-body { display: grid; gap: 10px; padding: 0 1px 14px; }
+.halbach-field { display: grid; grid-template-columns: minmax(0, 1fr) 138px; align-items: center; gap: 10px; }
+.halbach-field > span:first-child { color: #53665f; font-size: 11px; font-weight: 650; }
+.halbach-field input,
+.halbach-field select {
+  width: 100%;
+  min-height: 34px;
+  border: 1px solid #cbd9d4;
+  border-radius: 7px;
+  padding: 7px 8px;
+  color: #172520;
+  background: #fff;
+  font-size: 11px;
+}
+.halbach-input-shell { position: relative; display: flex; align-items: center; }
+.halbach-input-shell input { padding-right: 48px; }
+.halbach-input-shell small {
+  position: absolute;
+  right: 8px;
+  max-width: 43px;
+  color: #7b8b85;
+  overflow: hidden;
+  font-size: 9px;
+  pointer-events: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.halbach-check { display: flex; align-items: center; gap: 8px; color: #53665f; font-size: 11px; font-weight: 650; }
+.halbach-check input { width: 16px; height: 16px; accent-color: var(--halbach-green); }
+.halbach-help { margin: 0; color: var(--halbach-muted); font-size: 10px; line-height: 1.55; }
+
+.halbach-material-summary,
+.halbach-health-grid,
+.halbach-mesh-summary,
+.halbach-report-metrics { margin: 4px 0 0; }
+.halbach-material-summary > div,
+.halbach-mesh-summary > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px dashed #d7e1dd;
+  font-size: 10px;
+}
+.halbach-material-summary dt,
+.halbach-mesh-summary dt { color: var(--halbach-muted); }
+.halbach-material-summary dd,
+.halbach-mesh-summary dd { margin: 0; max-width: 130px; font-weight: 750; text-align: right; overflow-wrap: anywhere; }
+
+.halbach-primary-action,
+.halbach-secondary-action {
+  width: 100%;
+  min-height: 42px;
+  margin-top: 14px;
+  border-radius: 9px;
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 800;
+}
+.halbach-primary-action {
+  border: 1px solid #0f3c32;
+  color: #effcf7;
+  background: var(--halbach-green);
+}
+.halbach-secondary-action {
+  border: 1px solid #b9cbc4;
+  color: var(--halbach-green);
+  background: #fff;
+}
+.halbach-primary-action:disabled,
+.halbach-secondary-action:disabled { cursor: not-allowed; opacity: .45; }
+
+.halbach-view-toolbar {
+  min-height: 51px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  background: #f5f9f7;
+  border-bottom: 1px solid var(--halbach-line);
+}
+.halbach-view-toolbar [role="tablist"] { display: flex; border: 1px solid #c9d8d3; border-radius: 8px; padding: 2px; background: #e5eeeb; }
+.halbach-view-toolbar [role="tab"] {
+  min-width: 48px;
+  border: 0;
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: #64766f;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 800;
+}
+.halbach-view-toolbar [role="tab"].active { color: var(--halbach-green); background: #fff; box-shadow: 0 1px 5px rgba(21, 62, 51, .12); }
+.halbach-view-toolbar > label { display: flex; align-items: center; gap: 7px; color: #62746d; font-size: 10px; font-weight: 700; }
+.halbach-view-toolbar select { border: 1px solid #c9d8d3; border-radius: 6px; padding: 5px 7px; background: #fff; }
+.selected-segment {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #594116;
+  background: #fff4d9;
+  border: 1px solid #efd8a0;
+  border-radius: 999px;
+  padding: 5px 9px;
+  font-size: 10px;
+  font-weight: 750;
+}
+.selected-segment button { border: 0; color: inherit; background: transparent; font-size: 16px; line-height: 1; }
+
+.halbach-viewport-shell { flex: 1; min-height: 0; display: grid; place-items: stretch; padding: 14px; }
+.halbach-viewport {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: #dceae5;
+  background: var(--halbach-deep);
+  border: 1px solid #2a403a;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(7, 17, 15, .18);
+}
+.halbach-viewport-2d canvas { width: 100%; height: min(100%, 720px); min-height: 380px; object-fit: contain; cursor: crosshair; }
+.halbach-viewport figcaption {
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 7px 12px;
+  color: #9cb0a9;
+  background: #0b1b17;
+  border-top: 1px solid #20352f;
+  font-size: 9px;
+  text-align: center;
+}
+.legend-dot { width: 9px; height: 9px; display: inline-block; margin-right: 4px; border: 2px dashed currentColor; border-radius: 50%; }
+.legend-dot.roi { color: #67e8f9; }
+.legend-dot.leakage { color: #f0a35b; }
+.legend-arrow::before { content: "→"; margin-right: 4px; color: #fff; font-size: 15px; }
+
+.halbach-viewport-3d { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
+.halbach-3d-canvas { min-height: 390px; }
+.halbach-3d-canvas canvas { width: 100%; height: 100%; display: block; }
+.halbach-3d-toolbar {
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 10px;
+  color: #c8d9d3;
+  background: #0b1b17;
+  border-bottom: 1px solid #20352f;
+  font-size: 10px;
+  font-weight: 700;
+}
+.halbach-3d-toolbar label { display: flex; align-items: center; gap: 6px; }
+.halbach-3d-toolbar input { accent-color: var(--halbach-mint); }
+.explode-control { margin-left: auto; }
+.explode-control input { width: 110px; }
+.field-extrusion-badge {
+  position: absolute;
+  top: 56px;
+  right: 12px;
+  z-index: 3;
+  border: 1px solid #efd8a0;
+  border-radius: 999px;
+  padding: 5px 9px;
+  color: #5f4112;
+  background: #fff4d9;
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.halbach-issue {
+  margin-bottom: 9px;
+  display: grid;
+  gap: 3px;
+  border-left: 3px solid;
+  border-radius: 7px;
+  padding: 8px 10px;
+  font-size: 10px;
+  line-height: 1.45;
+}
+.halbach-issue strong { text-transform: capitalize; }
+.halbach-issue.error { color: #772c2c; border-color: #c84f4f; background: #fff0f0; }
+.halbach-issue.warning { color: #694513; border-color: #d89a39; background: #fff6df; }
+.halbach-health-grid,
+.halbach-report-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.halbach-health-grid > div,
+.halbach-report-metrics > div {
+  min-width: 0;
+  border: 1px solid var(--halbach-line);
+  border-radius: 8px;
+  padding: 9px;
+  background: #fff;
+}
+.halbach-health-grid dt,
+.halbach-report-metrics dt { color: var(--halbach-muted); font-size: 9px; }
+.halbach-health-grid dd,
+.halbach-report-metrics dd { margin: 4px 0 0; color: #1f3f36; font-size: 13px; font-weight: 850; overflow-wrap: anywhere; }
+.halbach-report-metrics .hero { grid-column: 1 / -1; color: #effcf7; background: var(--halbach-green); border-color: var(--halbach-green); }
+.halbach-report-metrics .hero dt { color: #b9ded2; }
+.halbach-report-metrics .hero dd { color: #fff; font-size: 25px; }
+
+.halbach-output-list { display: grid; gap: 7px; margin: 14px 0; color: #496059; font-size: 10px; }
+.halbach-output-list span::first-letter { color: #188460; }
+.halbach-run-panel progress { width: 100%; height: 9px; margin-top: 16px; accent-color: var(--halbach-mint); }
+.halbach-progress { color: var(--halbach-muted); font-size: 10px; }
+.halbach-fidelity-card {
+  margin-top: 15px;
+  border: 1px solid #efd8a0;
+  border-radius: 8px;
+  padding: 10px;
+  color: #654713;
+  background: #fff5dc;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.halbach-report-details { margin-top: 14px; border-top: 1px solid var(--halbach-line); border-bottom: 1px solid var(--halbach-line); }
+.halbach-report-details summary { padding: 10px 1px; cursor: pointer; color: #384e46; font-size: 11px; font-weight: 800; }
+.halbach-report-details > div { display: flex; justify-content: space-between; gap: 8px; padding: 5px 1px; color: var(--halbach-muted); font-size: 9px; }
+.halbach-report-details strong { color: #243a33; }
+.halbach-exports { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 14px; }
+.halbach-exports button { color: var(--halbach-green); background: #fff; border-color: #c5d5d0; }
+.halbach-error-banner {
+  margin-top: 12px;
+  border: 1px solid #e4a2a2;
+  border-radius: 8px;
+  padding: 9px;
+  color: #7e2c2c;
+  background: #fff0f0;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+/* Shared coilEM amber/charcoal product skin.
+   Halbach keeps its application-specific controls and scientific overlays,
+   but consumes the same visual hierarchy as the motor workspace. */
+.halbach-app {
+  --halbach-deep: var(--bg-app, #0b0b0f);
+  --halbach-ink: var(--text-primary, #f3f5f7);
+  --halbach-muted: var(--text-muted, #8792a2);
+  --halbach-line: var(--border-default, rgba(255, 255, 255, .1));
+  --halbach-paper: var(--bg-surface-1, #15161b);
+  --halbach-panel: var(--bg-surface-2, #1a1c22);
+  --halbach-green: var(--accent-primary, #f59e0b);
+  --halbach-mint: var(--accent-primary-hover, #fbbf24);
+  --halbach-gold: var(--accent-primary, #f59e0b);
+  color-scheme: dark;
+  color: var(--text-primary, #f3f5f7);
+  background: var(--bg-app, #0b0b0f);
+}
+
+.halbach-app button:focus-visible,
+.halbach-app input:focus-visible,
+.halbach-app select:focus-visible,
+.halbach-app summary:focus-visible,
+.halbach-app canvas:focus-visible {
+  outline-color: var(--focus-ring, rgba(251, 191, 36, .42));
+}
+
+.halbach-topbar {
+  min-height: 76px;
+  color: var(--text-primary, #f3f5f7);
+  background: #0d0e14;
+  border-color: var(--border-subtle, rgba(255, 255, 255, .06));
+  box-shadow: 0 6px 22px rgba(0, 0, 0, .28);
+}
+.halbach-brand strong { color: var(--text-primary, #f3f5f7); }
+.halbach-brand strong span { color: var(--accent-primary, #f59e0b); }
+.halbach-brand small { color: var(--text-muted, #8792a2); }
+.halbach-brand-mark {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  border: 2px solid var(--text-secondary, #c6cdd8);
+  border-radius: 50%;
+  box-shadow:
+    0 -9px 0 -7px var(--accent-primary, #f59e0b),
+    0 9px 0 -7px var(--accent-primary, #f59e0b),
+    9px 0 0 -7px var(--accent-primary, #f59e0b),
+    -9px 0 0 -7px var(--accent-primary, #f59e0b);
+}
+.halbach-brand-mark::before,
+.halbach-brand-mark::after {
+  content: "";
+  position: absolute;
+  inset: 9px -6px;
+  height: 2px;
+  background: var(--accent-primary, #f59e0b);
+}
+.halbach-brand-mark::after { transform: rotate(90deg); }
+.halbach-brand-mark i {
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: var(--info, #22d3ee);
+}
+.halbach-home,
+.halbach-project-name,
+.halbach-file-actions button,
+.halbach-3d-toolbar button,
+.halbach-exports button {
+  color: var(--text-secondary, #c6cdd8);
+  background: var(--bg-surface-2, #1a1c22);
+  border-color: var(--border-default, rgba(255, 255, 255, .1));
+}
+.halbach-home:hover,
+.halbach-file-actions button:hover,
+.halbach-3d-toolbar button:hover,
+.halbach-exports button:hover:not(:disabled) {
+  color: var(--text-accent, #fbbf24);
+  border-color: var(--border-accent, rgba(245, 158, 11, .6));
+  background: var(--accent-soft, rgba(245, 158, 11, .12));
+}
+.halbach-project-name {
+  color: var(--text-primary, #f3f5f7);
+  background: rgba(8, 10, 14, .78);
+}
+.halbach-workflow button { color: var(--text-disabled, #697386); }
+.halbach-workflow button span {
+  border-color: var(--border-default, rgba(255, 255, 255, .1));
+  background: rgba(8, 10, 14, .42);
+}
+.halbach-workflow button.active {
+  color: var(--text-accent, #fbbf24);
+  background: var(--accent-soft, rgba(245, 158, 11, .12));
+  box-shadow: inset 0 0 0 1px var(--border-accent, rgba(245, 158, 11, .6));
+}
+.halbach-workflow button.active span {
+  color: var(--accent-ink, #1b1205);
+  background: var(--accent-primary, #f59e0b);
+  border-color: var(--accent-primary, #f59e0b);
+}
+
+.halbach-model-notice {
+  color: #f6c453;
+  background: #17140e;
+  border-color: rgba(245, 158, 11, .25);
+}
+.halbach-workspace {
+  height: calc(100vh - 104px);
+  background: var(--bg-canvas, #101014);
+}
+.halbach-config-panel,
+.halbach-run-panel {
+  scrollbar-color: rgba(255, 255, 255, .16) transparent;
+  background: var(--bg-surface-1, #15161b);
+}
+.halbach-config-panel {
+  border-color: var(--border-subtle, rgba(255, 255, 255, .06));
+  box-shadow: 8px 0 28px rgba(0, 0, 0, .18);
+}
+.halbach-run-panel {
+  border-color: var(--border-subtle, rgba(255, 255, 255, .06));
+  box-shadow: -8px 0 28px rgba(0, 0, 0, .18);
+}
+.halbach-stage-panel {
+  background:
+    linear-gradient(rgba(255, 255, 255, .025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .025) 1px, transparent 1px),
+    radial-gradient(ellipse 55% 45% at 50% 42%, rgba(245, 158, 11, .035), transparent 72%),
+    var(--bg-canvas, #101014);
+  background-size: 40px 40px, 40px 40px, auto, auto;
+}
+.halbach-panel-title .eyebrow { color: var(--text-muted, #8792a2); font-family: var(--font-mono, monospace); }
+.halbach-panel-title h1,
+.halbach-panel-title h2 { color: var(--text-primary, #f3f5f7); }
+.halbach-panel-title p { color: var(--text-secondary, #c6cdd8); }
+
+.halbach-parameter-group { border-color: var(--border-subtle, rgba(255, 255, 255, .06)); }
+.halbach-parameter-group summary {
+  color: var(--text-primary, #f3f5f7);
+  background: linear-gradient(90deg, rgba(245, 158, 11, .035), transparent 65%);
+}
+.halbach-parameter-group summary:hover { color: var(--text-accent, #fbbf24); }
+.halbach-parameter-body { background: rgba(8, 10, 14, .14); }
+.halbach-field > span:first-child,
+.halbach-check { color: var(--text-secondary, #c6cdd8); }
+.halbach-field input,
+.halbach-field select,
+.halbach-view-toolbar select {
+  color: var(--text-primary, #f3f5f7);
+  background: rgba(8, 10, 14, .7);
+  border-color: var(--border-default, rgba(255, 255, 255, .1));
+}
+.halbach-field input:hover,
+.halbach-field select:hover { border-color: var(--border-strong, rgba(255, 255, 255, .18)); }
+.halbach-input-shell small,
+.halbach-help,
+.halbach-material-summary dt,
+.halbach-mesh-summary dt { color: var(--text-muted, #8792a2); }
+.halbach-check input { accent-color: var(--accent-primary, #f59e0b); }
+.halbach-material-summary > div,
+.halbach-mesh-summary > div { border-color: var(--border-subtle, rgba(255, 255, 255, .06)); }
+.halbach-material-summary dd,
+.halbach-mesh-summary dd { color: var(--text-primary, #f3f5f7); }
+
+.halbach-primary-action {
+  color: var(--accent-ink, #1b1205);
+  background: var(--accent-gradient, linear-gradient(135deg, #f59e0b, #f97316));
+  border-color: var(--border-accent, rgba(245, 158, 11, .6));
+  box-shadow: var(--glow-amber-sm, 0 0 14px rgba(245, 158, 11, .1));
+}
+.halbach-primary-action:hover:not(:disabled) { filter: brightness(1.08); }
+.halbach-secondary-action {
+  color: var(--text-accent, #fbbf24);
+  background: var(--bg-surface-2, #1a1c22);
+  border-color: var(--border-accent, rgba(245, 158, 11, .6));
+}
+
+.halbach-view-toolbar {
+  color: var(--text-secondary, #c6cdd8);
+  background: rgba(21, 22, 27, .94);
+  border-color: var(--border-subtle, rgba(255, 255, 255, .06));
+}
+.halbach-view-toolbar [role="tablist"] {
+  background: rgba(8, 10, 14, .62);
+  border-color: var(--border-default, rgba(255, 255, 255, .1));
+}
+.halbach-view-toolbar [role="tab"] { color: var(--text-muted, #8792a2); }
+.halbach-view-toolbar [role="tab"].active {
+  color: var(--text-accent, #fbbf24);
+  background: var(--accent-soft, rgba(245, 158, 11, .12));
+  box-shadow: inset 0 0 0 1px var(--border-accent, rgba(245, 158, 11, .6));
+}
+.halbach-view-toolbar > label { color: var(--text-secondary, #c6cdd8); }
+.selected-segment,
+.field-extrusion-badge {
+  color: #f8ca66;
+  background: rgba(46, 31, 7, .92);
+  border-color: rgba(245, 158, 11, .55);
+}
+.halbach-viewport-shell { padding: 12px; }
+.halbach-viewport {
+  color: var(--text-secondary, #c6cdd8);
+  background: var(--bg-canvas, #101014);
+  border-color: var(--border-default, rgba(255, 255, 255, .1));
+  border-radius: 12px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .5);
+}
+.halbach-viewport figcaption,
+.halbach-3d-toolbar {
+  color: var(--text-muted, #8792a2);
+  background: rgba(13, 15, 20, .96);
+  border-color: var(--border-subtle, rgba(255, 255, 255, .06));
+}
+.halbach-3d-toolbar input { accent-color: var(--accent-primary, #f59e0b); }
+
+.halbach-issue.error,
+.halbach-error-banner {
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, .65);
+  background: rgba(127, 29, 29, .18);
+}
+.halbach-ready-card {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin: -5px 0 14px;
+  border-left: 3px solid;
+  border-radius: 10px;
+  padding: 13px;
+  background: rgba(26, 28, 34, .78);
+}
+.halbach-ready-card > span {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  flex: 0 0 38px;
+  place-items: center;
+  border-radius: 50%;
+  color: #07150c;
+  font-size: 20px;
+  font-weight: 900;
+}
+.halbach-ready-card div { display: grid; gap: 3px; }
+.halbach-ready-card strong { color: var(--text-primary, #f3f5f7); font-size: 14px; }
+.halbach-ready-card small { color: var(--text-secondary, #c6cdd8); font-size: 9px; }
+.halbach-ready-card.ready { border-color: var(--success, #22c55e); background: rgba(34, 197, 94, .075); }
+.halbach-ready-card.ready > span { background: var(--success, #22c55e); }
+.halbach-ready-card.blocked { border-color: var(--warning, #facc15); background: rgba(250, 204, 21, .075); }
+.halbach-ready-card.blocked > span { background: var(--warning, #facc15); }
+.halbach-issue.warning,
+.halbach-fidelity-card {
+  color: #f8ca66;
+  border-color: rgba(245, 158, 11, .52);
+  background: rgba(120, 78, 10, .16);
+}
+.halbach-health-grid > div,
+.halbach-report-metrics > div {
+  color: var(--text-primary, #f3f5f7);
+  background: var(--bg-surface-2, #1a1c22);
+  border-color: var(--border-default, rgba(255, 255, 255, .1));
+}
+.halbach-health-grid dt,
+.halbach-report-metrics dt { color: var(--text-muted, #8792a2); }
+.halbach-health-grid dd,
+.halbach-report-metrics dd { color: var(--text-primary, #f3f5f7); }
+.halbach-report-metrics .hero {
+  color: var(--accent-ink, #1b1205);
+  background: var(--accent-gradient, linear-gradient(135deg, #f59e0b, #f97316));
+  border-color: var(--accent-primary, #f59e0b);
+}
+.halbach-report-metrics .hero dt,
+.halbach-report-metrics .hero dd { color: var(--accent-ink, #1b1205); }
+.halbach-output-list { color: var(--text-secondary, #c6cdd8); }
+.halbach-output-list span::first-letter { color: var(--success, #22c55e); }
+.halbach-run-panel progress { accent-color: var(--accent-primary, #f59e0b); }
+.halbach-progress { color: var(--text-muted, #8792a2); }
+.halbach-report-details { border-color: var(--border-subtle, rgba(255, 255, 255, .06)); }
+.halbach-report-details summary,
+.halbach-report-details strong { color: var(--text-primary, #f3f5f7); }
+.halbach-report-details > div { color: var(--text-muted, #8792a2); }
+.halbach-exports button {
+  color: var(--text-secondary, #c6cdd8);
+  background: var(--bg-surface-2, #1a1c22);
+  border-color: var(--border-default, rgba(255, 255, 255, .1));
+}
+
+/* Halbach consumes the same workspace chrome, type scale, and viewport
+   composition as the motor workflow. */
+.halbach-app {
+  font-family: var(--font-family, var(--font-ui, Inter, sans-serif));
+}
+.halbach-app .halbach-topbar {
+  height: 68px;
+  min-height: 68px;
+  margin: 0 12px;
+  padding: 0 14px 0 16px;
+  color: var(--text-primary, #f3f5f7);
+  background: rgba(15, 17, 23, .9);
+  border: 1px solid rgba(255, 255, 255, .07);
+  border-radius: 16px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, .5), 0 2px 8px rgba(0, 0, 0, .35);
+}
+.halbach-app .halbach-model-notice {
+  min-height: 28px;
+  margin-top: 0;
+  font: 700 10px var(--font-mono, monospace);
+}
+.halbach-app .halbach-workspace {
+  height: calc(100vh - 106px);
+  grid-template-columns: 312px minmax(460px, 1fr) 312px;
+  gap: 12px;
+  padding: 12px;
+}
+.halbach-app .halbach-config-panel,
+.halbach-app .halbach-run-panel,
+.halbach-app .halbach-stage-panel {
+  border: 1px solid rgba(255, 255, 255, .07);
+  border-radius: 16px;
+  background: rgba(18, 20, 27, .88);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, .42);
+}
+.halbach-app .halbach-config-panel,
+.halbach-app .halbach-run-panel {
+  padding: 18px 16px 28px;
+}
+.halbach-app .halbach-stage-panel { overflow: hidden; }
+.halbach-app .halbach-panel-title .eyebrow {
+  font: 700 9px var(--font-mono, monospace);
+  letter-spacing: .1em;
+}
+.halbach-app .halbach-panel-title h1,
+.halbach-app .halbach-panel-title h2 {
+  font-family: var(--font-ui, Inter, sans-serif);
+  font-size: 20px;
+  font-weight: 750;
+}
+.halbach-app .halbach-panel-title p {
+  color: var(--text-muted, #8792a2);
+  font-size: 11px;
+}
+.halbach-app .halbach-parameter-group summary {
+  min-height: 45px;
+  display: flex;
+  align-items: center;
+  font-family: var(--font-ui, Inter, sans-serif);
+  font-size: 12px;
+  font-weight: 700;
+}
+.halbach-app .halbach-field > span:first-child,
+.halbach-app .halbach-check {
+  font-family: var(--font-ui, Inter, sans-serif);
+  font-size: 11px;
+}
+.halbach-app .halbach-field input,
+.halbach-app .halbach-field select,
+.halbach-app .halbach-result-view-control select {
+  font: 10px var(--font-mono, monospace);
+}
+.halbach-app .halbach-material-summary,
+.halbach-app .halbach-mesh-summary,
+.halbach-app .halbach-health-grid,
+.halbach-app .halbach-report-metrics {
+  font-family: var(--font-mono, monospace);
+}
+.halbach-solve-setup {
+  display: grid;
+  gap: 12px;
+}
+.halbach-solve-setup .halbach-panel-title { margin-bottom: 2px; }
+.halbach-cancel-action {
+  min-height: 38px;
+  border: 1px solid rgba(239, 68, 68, .45);
+  border-radius: 8px;
+  color: #fca5a5;
+  background: rgba(127, 29, 29, .14);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.halbach-app .halbach-viewport-shell {
+  --halbach-viewport-shell-padding: 12px;
+  --halbach-viewport-control-edge: 14px;
+  --halbach-zoom-control-width: 141px;
+  --halbach-viewport-control-gap: 10px;
+  position: relative;
+  padding: var(--halbach-viewport-shell-padding);
+  overflow: hidden;
+}
+.halbach-app .halbach-viewport {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+}
+.halbach-viewport-navigation-content {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+.halbach-viewport-navigation-content > canvas,
+.halbach-viewport-navigation-content > svg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.halbach-requested-field-overlay {
+  overflow: visible;
+  pointer-events: none;
+}
+.halbach-requested-field-arrow .is-glow {
+  fill: none;
+  stroke: rgba(245, 158, 11, .28);
+  stroke-width: .95;
+  stroke-linecap: round;
+}
+.halbach-requested-field-arrow .is-core {
+  fill: none;
+  stroke: #f59e0b;
+  stroke-width: .5;
+  stroke-linecap: round;
+}
+.halbach-requested-field-arrow .is-head {
+  fill: #f59e0b;
+  stroke: #ffc04d;
+  stroke-width: .12;
+  stroke-linejoin: round;
+}
+.halbach-requested-field-label {
+  position: absolute;
+  z-index: 3;
+  color: #f8fafc;
+  font: 650 12px var(--font-sans, Inter, system-ui, sans-serif);
+  letter-spacing: .01em;
+  line-height: 1;
+  text-shadow:
+    -1px -1px 0 rgba(10, 12, 17, .96),
+    1px -1px 0 rgba(10, 12, 17, .96),
+    -1px 1px 0 rgba(10, 12, 17, .96),
+    1px 1px 0 rgba(10, 12, 17, .96),
+    0 2px 6px rgba(0, 0, 0, .52);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.halbach-field-line-canvas,
+.halbach-field-arrow-canvas {
+  pointer-events: none;
+}
+.halbach-app .halbach-viewport-2d canvas {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: contain;
+  cursor: crosshair;
+}
+.halbach-app .halbach-viewport .public-viewport-nav-controls {
+  top: 14px;
+  right: var(--halbach-viewport-control-edge);
+}
+.halbach-viewport-mode-tabs {
+  position: absolute;
+  z-index: 15;
+  top: 24px;
+  left: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--border-default, rgba(255, 255, 255, .1));
+  border-radius: 10px;
+  background: rgba(15, 17, 23, .94);
+  box-shadow: var(--shadow-md, 0 8px 22px rgba(0, 0, 0, .34));
+}
+.halbach-viewport-mode-tabs button {
+  min-height: 30px;
+  padding: 0 11px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  color: var(--text-muted, #8792a2);
+  background: transparent;
+  font: 9px var(--font-family, Inter, system-ui, sans-serif);
+  white-space: nowrap;
+}
+.halbach-viewport-mode-tabs button:hover:not(:disabled) {
+  color: var(--text-secondary, #c6cdd8);
+  background: rgba(255, 255, 255, .035);
+}
+.halbach-viewport-mode-tabs button.is-active {
+  color: var(--text-accent, #fbbf24);
+  border-color: var(--border-accent, rgba(245, 158, 11, .6));
+  background: var(--accent-soft, rgba(245, 158, 11, .12));
+}
+.halbach-viewport-mode-tabs button:disabled {
+  color: var(--text-disabled, #596170);
+  cursor: not-allowed;
+  opacity: .58;
+}
+.halbach-field-layer-menu {
+  position: absolute;
+  z-index: 22;
+  top: 24px;
+  right: calc(
+    var(--halbach-viewport-shell-padding)
+    + var(--halbach-viewport-control-edge)
+    + var(--halbach-zoom-control-width)
+    + var(--halbach-viewport-control-gap)
+  );
+}
+.halbach-field-layer-menu > summary {
+  display: grid;
+  min-width: 88px;
+  min-height: 34px;
+  place-items: center;
+  padding: 0 12px;
+  border: 1px solid var(--border-default, rgba(255, 255, 255, .1));
+  border-radius: 9px;
+  color: var(--text-muted, #8792a2);
+  background: rgba(15, 17, 23, .94);
+  box-shadow: var(--shadow-md, 0 8px 22px rgba(0, 0, 0, .34));
+  font: 9px var(--font-mono, monospace);
+  cursor: pointer;
+  list-style: none;
+}
+.halbach-field-layer-menu > summary::-webkit-details-marker { display: none; }
+.halbach-field-layer-menu[open] > summary {
+  color: var(--text-accent, #fbbf24);
+  border-color: var(--border-accent, rgba(245, 158, 11, .6));
+}
+.halbach-field-layer-controls {
+  position: absolute;
+  top: calc(100% + 7px);
+  right: 0;
+  display: grid;
+  width: 180px;
+  gap: 5px;
+  padding: 7px;
+  border: 1px solid var(--border-default, rgba(255, 255, 255, .1));
+  border-radius: 10px;
+  background: rgba(10, 12, 17, .98);
+  box-shadow: var(--shadow-md, 0 8px 22px rgba(0, 0, 0, .34));
+}
+.halbach-field-layer-controls > button {
+  display: flex;
+  min-height: 32px;
+  align-items: center;
+  gap: 7px;
+  padding: 0 10px;
+  border: 1px solid rgba(148, 163, 184, .14);
+  border-radius: 999px;
+  color: var(--text-muted, #8792a2);
+  background: rgba(10, 12, 17, .62);
+  font: 9px var(--font-mono, monospace);
+  text-align: left;
+}
+.halbach-field-layer-controls > button i {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  border: 1px solid var(--text-muted, #8792a2);
+  border-radius: 50%;
+  background: transparent;
+}
+.halbach-field-layer-controls > button[aria-pressed="true"] {
+  color: var(--text-secondary, #c6cdd8);
+  border-color: rgba(148, 163, 184, .22);
+}
+.halbach-field-layer-controls > button[aria-pressed="true"] i {
+  border-color: var(--text-accent, #fbbf24);
+  background: var(--text-accent, #fbbf24);
+}
+.halbach-field-density-control {
+  display: grid;
+  gap: 5px;
+  padding: 7px 8px 4px;
+  border-top: 1px solid var(--border-subtle, rgba(255, 255, 255, .06));
+  color: var(--text-muted, #8792a2);
+  font: 8px var(--font-mono, monospace);
+}
+.halbach-field-density-control input {
+  width: 100%;
+  accent-color: var(--accent-primary, #f59e0b);
+}
+.halbach-field-density-control small {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-faint, #596170);
+  font-size: 7px;
+}
+.halbach-field-legend {
+  position: absolute;
+  z-index: 12;
+  top: 112px;
+  right: 14px;
+  bottom: 76px;
+  width: 10px;
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px rgba(148, 163, 184, .16), var(--shadow-sm);
+  color: var(--text-muted, #8792a2);
+  font: 9px var(--font-mono, monospace);
+  pointer-events: none;
+}
+.halbach-field-legend > strong {
+  position: absolute;
+  right: -1px;
+  bottom: calc(100% + 29px);
+  width: 138px;
+  color: var(--text-secondary, #c6cdd8);
+  font: 700 7px var(--font-mono, monospace);
+  letter-spacing: .08em;
+  text-align: right;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.halbach-field-legend > strong span {
+  color: var(--text-muted, #8792a2);
+  font-weight: 500;
+}
+.halbach-field-legend > span {
+  position: absolute;
+  right: 14px;
+  padding: 3px 5px;
+  border: 1px solid rgba(148, 163, 184, .14);
+  border-radius: 5px;
+  background: rgba(7, 9, 14, .82);
+  white-space: nowrap;
+}
+.halbach-field-legend .is-min { bottom: 0; }
+.halbach-field-legend .is-mid { top: 50%; transform: translateY(-50%); }
+.halbach-field-legend .is-max { top: 0; }
+.halbach-field-legend > i {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(to top, #142a61 0%, #1855a7 14%, #1b8eb7 28%, #2ab673 42%, #a7c83a 57%, #f1c232 71%, #f58b24 85%, #dc3d3d 100%);
+}
+.halbach-field-legend.is-diverging > i {
+  background: linear-gradient(to top, #1d4ed8 0%, #38bdf8 28%, #18212d 50%, #facc15 72%, #dc2626 100%);
+}
+.halbach-pole-legend {
+  position: absolute;
+  z-index: 17;
+  top: 68px;
+  left: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 28px;
+  padding: 0 9px;
+  border: 1px solid var(--border-default, rgba(255, 255, 255, .1));
+  border-radius: 8px;
+  color: var(--text-secondary, #c6cdd8);
+  background: rgba(10, 12, 17, .88);
+  box-shadow: var(--shadow-sm, 0 3px 10px rgba(0, 0, 0, .28));
+  font: 8px var(--font-mono, monospace);
+  pointer-events: none;
+}
+.halbach-pole-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+.halbach-pole-legend i {
+  width: 8px;
+  height: 8px;
+  border: 1px solid rgba(255, 255, 255, .32);
+  border-radius: 2px;
+}
+.halbach-pole-legend .is-north { background: var(--halbach-pole-north); }
+.halbach-pole-legend .is-south { background: var(--halbach-pole-south); }
+.halbach-viewport-3d .halbach-pole-legend {
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.halbach-viewport-bottom-bar {
+  position: absolute;
+  z-index: 14;
+  right: 24px;
+  bottom: 24px;
+  left: 24px;
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  pointer-events: none;
+}
+.halbach-bottom-controls {
+  display: flex;
+  min-width: 0;
+  max-width: calc(100% - 150px);
+  align-items: center;
+  gap: 7px;
+  overflow-x: auto;
+  padding: 5px;
+  border: 1px solid var(--border-default, rgba(255, 255, 255, .1));
+  border-radius: 10px;
+  background: rgba(15, 17, 23, .92);
+  box-shadow: var(--shadow-md, 0 8px 22px rgba(0, 0, 0, .34));
+  pointer-events: auto;
+  scrollbar-width: thin;
+}
+.halbach-control-group {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 2px;
+  padding-right: 6px;
+  border-right: 1px solid var(--border-subtle, rgba(255, 255, 255, .06));
+}
+.halbach-control-group:last-child { border-right: 0; padding-right: 0; }
+.halbach-bottom-controls button {
+  min-width: 30px;
+  height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  color: var(--text-muted, #8792a2);
+  background: transparent;
+  font: 9px var(--font-mono, monospace);
+  white-space: nowrap;
+}
+.halbach-bottom-controls button:hover,
+.halbach-bottom-controls button.is-active {
+  color: var(--text-accent, #fbbf24);
+  background: var(--accent-soft, rgba(245, 158, 11, .12));
+}
+.halbach-result-view-control {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 7px;
+  padding-right: 7px;
+  border-right: 1px solid var(--border-subtle, rgba(255, 255, 255, .06));
+  color: var(--text-muted, #8792a2);
+  font: 8px var(--font-mono, monospace);
+  white-space: nowrap;
+}
+.halbach-result-view-control select {
+  height: 28px;
+  border: 1px solid var(--border-default, rgba(255, 255, 255, .1));
+  border-radius: 6px;
+  padding: 0 8px;
+  color: var(--text-secondary, #c6cdd8);
+  background: rgba(7, 9, 13, .84);
+}
+.halbach-viewport-status {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 9px;
+  border: 1px solid var(--border-default, rgba(255, 255, 255, .1));
+  border-radius: 8px;
+  color: var(--text-muted, #8792a2);
+  background: rgba(15, 17, 23, .9);
+  box-shadow: var(--shadow-md, 0 8px 22px rgba(0, 0, 0, .34));
+  font: 8px var(--font-mono, monospace);
+  pointer-events: auto;
+}
+.halbach-viewport-status button {
+  border: 0;
+  color: var(--text-accent, #fbbf24);
+  background: transparent;
+}
+
+.halbach-app .halbach-viewport-3d {
+  position: relative;
+  display: block;
+}
+.halbach-app .halbach-3d-canvas {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+.halbach-app .halbach-3d-toolbar {
+  position: absolute;
+  z-index: 13;
+  right: 16px;
+  bottom: 62px;
+  left: 16px;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  overflow-x: auto;
+  border: 1px solid var(--border-default, rgba(255, 255, 255, .1));
+  border-radius: 9px;
+  color: var(--text-secondary, #c6cdd8);
+  background: rgba(15, 17, 23, .92);
+  box-shadow: var(--shadow-md, 0 8px 22px rgba(0, 0, 0, .34));
+  font: 9px var(--font-mono, monospace);
+}
+.halbach-app .field-extrusion-badge {
+  top: 68px;
+  right: auto;
+  left: 16px;
+}
+
+@media (max-width: 1180px) {
+  .halbach-workspace { grid-template-columns: 290px minmax(400px, 1fr) 270px; }
+  .halbach-topbar { grid-template-columns: auto minmax(120px, 1fr) auto; }
+  .halbach-file-actions { display: none; }
+}
+
+@media (max-width: 880px) {
+  .halbach-app { min-height: 100vh; overflow: auto; }
+  .halbach-topbar { position: sticky; top: 0; z-index: 10; grid-template-columns: 1fr auto; }
+  .halbach-project-name { display: none; }
+  .halbach-workflow { grid-column: 1 / -1; justify-content: center; }
+  .halbach-workspace { height: auto; display: flex; flex-direction: column; }
+  .halbach-config-panel,
+  .halbach-run-panel { overflow: visible; border: 0; }
+  .halbach-stage-panel { order: -1; min-height: 560px; }
+  .halbach-config-panel { border-top: 1px solid var(--halbach-line); }
+  .halbach-run-panel { border-top: 1px solid var(--halbach-line); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .halbach-app * { scroll-behavior: auto !important; transition: none !important; }
+}
+
+/* Linear Halbach 3D planar-extrusion viewer */
+.linear-halbach-3d-viewer {
+  position: relative;
+}
+
+.linear-halbach-3d-canvas {
+  min-height: 0;
+}
+
+.linear-halbach-3d-toolbar {
+  align-items: center;
+}
+
+.linear-halbach-3d-inplane-note {
+  margin-left: auto;
+  color: var(--text-muted, #8792a2);
+  white-space: nowrap;
+}
+
+.linear-halbach-3d-model-badge {
+  max-width: min(470px, calc(100% - 32px));
+  line-height: 1.35;
+  white-space: normal;
+}
+
+.linear-halbach-3d-side-label {
+  position: absolute;
+  z-index: 12;
+  top: 108px;
+  left: 16px;
+  min-height: 26px;
+  padding: 6px 9px;
+  border: 1px solid rgba(245, 158, 11, .32);
+  border-radius: 7px;
+  color: var(--text-accent, #fbbf24);
+  background: rgba(7, 9, 13, .82);
+  box-shadow: var(--shadow-sm, 0 3px 10px rgba(0, 0, 0, .24));
+  font: 8px var(--font-mono, monospace);
+  letter-spacing: .035em;
+  pointer-events: none;
+}
+
+.linear-halbach-3d-field-legend {
+  top: 142px;
+  bottom: 104px;
+}
+
+@media (max-width: 720px) {
+  .linear-halbach-3d-inplane-note {
+    display: none;
+  }
+
+  .linear-halbach-3d-model-badge {
+    right: 16px;
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://coilem.com/schemas/v1/halbach_solution_report.schema.json",
+  "title": "Cylindrical Halbach array solution report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "openem_schema_kind",
+    "openem_schema_version",
+    "model",
+    "configuration",
+    "geometry",
+    "mesh",
+    "artifacts",
+    "bore_field",
+    "external_leakage",
+    "magnet",
+    "energy",
+    "timings_ms",
+    "peak_memory_bytes",
+    "samples",
+    "field_data",
+    "magnetostatic_problem",
+    "generic_field_report",
+    "warnings"
+  ],
+  "properties": {
+    "openem_schema_kind": {"const": "halbach_solution_report"},
+    "openem_schema_version": {"const": "1.0"},
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "formulation",
+        "assumption",
+        "axial_end_effects_modeled",
+        "axial_length_usage",
+        "notice"
+      ],
+      "properties": {
+        "formulation": {"const": "planar_az"},
+        "assumption": {"const": "infinite_length_extruded_2d"},
+        "axial_end_effects_modeled": {"const": false},
+        "axial_length_usage": {
+          "type": "array",
+          "contains": {"const": "extruded_2d_estimates"}
+        },
+        "notice": {"type": "string", "minLength": 1}
+      }
+    },
+    "configuration": {"$ref": "halbach_array_config.schema.json"},
+    "geometry": {"type": "object"},
+    "mesh": {"type": "object"},
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "magnetostatic_problem_sha256",
+        "generic_field_report_input_sha256",
+        "geometry_hash",
+        "mesh_hash"
+      ],
+      "properties": {
+        "magnetostatic_problem_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "generic_field_report_input_sha256": {"type": ["string", "null"]},
+        "geometry_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "mesh_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "bore_field": {
+      "type": "object",
+      "required": [
+        "headline",
+        "requested_field_direction_deg",
+        "mean_bx_t",
+        "mean_by_t",
+        "mean_field_direction_error_deg",
+        "center",
+        "b_parallel_t",
+        "b_perpendicular_rms_t",
+        "b_perpendicular_max_abs_t",
+        "b_magnitude_t",
+        "uniformity_ppm",
+        "roi_radius_mm",
+        "roi_area_mm2",
+        "sample_count",
+        "sampling_rule",
+        "radial_samples",
+        "angular_samples",
+        "ideal_continuous_estimate_t",
+        "segmentation_factor",
+        "angular_coverage",
+        "segmented_analytical_estimate_t",
+        "solved_vs_segmented_delta_pct",
+        "convergence"
+      ]
+    },
+    "external_leakage": {
+      "type": "object",
+      "required": [
+        "probe_radius_mm",
+        "sample_count",
+        "rms_b_t",
+        "max_b_t",
+        "dominant_field_direction_deg",
+        "leakage_ratio_rms"
+      ]
+    },
+    "magnet": {
+      "type": "object",
+      "required": ["area_mm2", "volume_m3", "mass_kg", "material", "segments", "demagnetization_screening"]
+    },
+    "energy": {
+      "type": "object",
+      "required": ["energy_per_unit_depth_j_per_m", "magnetic_energy_extruded_2d_estimate_j", "label"]
+    },
+    "timings_ms": {"type": "object"},
+    "peak_memory_bytes": {"type": ["integer", "null"], "minimum": 0},
+    "samples": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bore", "leakage"],
+      "properties": {
+        "bore": {"type": "array"},
+        "leakage": {"type": "array"}
+      }
+    },
+    "field_data": {
+      "type": "object",
+      "required": [
+        "nodes_mm",
+        "triangles",
+        "region_ids",
+        "az_nodal_t_m",
+        "element_fields_t",
+        "contours",
+        "available_views"
+      ]
+    },
+    "magnetostatic_problem": {"$ref": "magnetostatic_problem.schema.json"},
+    "generic_field_report": {"type": "object"},
+    "warnings": {"type": "array", "items": {"type": "string"}}
+  }
+}

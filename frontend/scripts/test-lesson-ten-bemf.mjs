@@ -1,0 +1,62 @@
+import assert from 'node:assert/strict';
+import { importTypeScriptModule } from './import-typescript-module.mjs';
+
+const lab = await importTypeScriptModule(new URL('../src/components/tutorials/lessonTenBackEmf.ts', import.meta.url));
+const baseline = lab.BEMF_LAB_BASELINE;
+const model = lab.calculateBackEmfState(baseline);
+const near = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1e-8, `${actual} != ${expected}`);
+near(model.bemfV, 23.52);
+near(model.inverterLineLineRmsV, 48 / Math.sqrt(2));
+near(model.reservedLineLineRmsV, 48 / Math.sqrt(2) * 0.85);
+assert.equal(model.status, 'headroom-ok');
+const doubled = lab.calculateBackEmfState({ ...baseline, rpm: baseline.rpm * 2 });
+near(doubled.bemfV, model.bemfV * 2);
+near(lab.backEmfPhaseVoltage(0, 0, model.phasePeakV), 0);
+near(lab.backEmfPhaseVoltage(90, 0, model.phasePeakV), model.phasePeakV);
+near(lab.backEmfPhaseVoltage(180, 0, model.phasePeakV), 0);
+// Balanced instantaneous phase voltages, independent of the fixed RMS amplitude.
+for (const angle of [0, 90, 180]) {
+  near([0, -120, 120].reduce((sum, shift) => sum + lab.backEmfPhaseVoltage(angle, shift, model.phasePeakV), 0), 0);
+}
+assert.equal(lab.calculateBackEmfState({ ...baseline, rpm: 5000 }).status, 'low-headroom');
+assert.equal(lab.calculateBackEmfState({ ...baseline, rpm: model.baseSpeedRpm }).status, 'reserve-exhausted');
+assert.equal(lab.calculateBackEmfState({ ...baseline, rpm: 5200 }).status, 'reserve-exhausted');
+assert.equal(lab.calculateBackEmfState({ ...baseline, rpm: 6400 }).status, 'inverter-exceeded');
+assert.equal(lab.calculateBackEmfState({ ...baseline, rpm: model.inverterLimitRpm }).status, 'reserve-exhausted');
+
+let progress = lab.createBackEmfLabProgress();
+const reduce = (action) => { progress = lab.backEmfLabReducer(progress, action); };
+const speed = (inputs) => reduce({ type: 'speed', inputs });
+const match = (inputs) => reduce({ type: 'match', inputs });
+const recovery = { ...baseline, rpm: lab.BEMF_RECOVERY_RPM };
+speed({ ...baseline, rpm: 5200 });
+match({ ...recovery, dcBusV: 96 });
+assert.equal(lab.backEmfLabComplete(progress), false);
+for (const angleDeg of [0, 90, 180]) reduce({ type: 'angle', angleDeg, source: 'playback' });
+assert.deepEqual(progress.inspectedAngles, []);
+for (const angleDeg of [0, 90]) reduce({ type: 'angle', angleDeg, source: 'user' });
+assert.equal(lab.backEmfAnglesInspected(progress), false);
+reduce({ type: 'angle', angleDeg: 180, source: 'user' });
+assert.equal(lab.backEmfAnglesInspected(progress), true);
+reduce({ type: 'angle', angleDeg: 360, source: 'user' });
+assert.equal(progress.inspectedAngles.length, 3);
+speed({ ...baseline, rpm: 5000 });
+speed({ ...baseline, rpm: 5200, reservePct: 35 });
+speed({ ...baseline, rpm: 5200, dcBusV: 24 });
+assert.equal(progress.reserveCrossed, false);
+speed({ ...baseline, rpm: 5200 });
+assert.equal(progress.reserveCrossed, true);
+match(recovery);
+match({ ...baseline, rpm: 4200 });
+match({ ...recovery, reservePct: 0, dcBusV: 96 });
+match({ ...recovery, dcBusV: NaN });
+assert.equal(progress.recovered, false);
+const crossed = progress;
+match({ ...recovery, dcBusV: 96 });
+assert.equal(lab.backEmfLabComplete(progress), true);
+assert.ok(lab.calculateBackEmfState({ ...recovery, dcBusV: 96 }).headroomV > 0);
+assert.equal(lab.backEmfLabReducer(crossed, { type: 'match', inputs: { ...recovery, keVPerKrpm: 3.4 } }).recovered, true);
+reduce({ type: 'reset' });
+assert.deepEqual(progress, lab.createBackEmfLabProgress());
+assert.equal(lab.backEmfLabComplete(progress), false);
+console.log('Lesson 10 physics, thresholds, ordered exercises, playback exclusion, recovery, and reset passed.');

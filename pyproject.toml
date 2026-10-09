@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coilem"
+version = "0.2.0"
+description = "Local, open-source motor design with Magneto2D and optional Elmer analysis"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "AGPL-3.0-or-later"
+license-files = ["LICENSE"]
+authors = [
+    { name = "coilEM contributors" },
+]
+dependencies = [
+    "fastapi>=0.104.0,<1",
+    "uvicorn>=0.24.0,<1",
+    "pydantic>=2.0.0,<3",
+    "numpy>=1.24.0,<3",
+    "gmsh>=4.10,<5",
+    "meshio>=5.3,<6",
+    "jsonschema>=4.20,<5",
+    "pillow>=12.3.0,<13",
+    "reportlab>=4.0,<5",
+]
+
+[project.urls]
+Repository = "https://github.com/coilemdev/coilem"
+
+[project.optional-dependencies]
+dev = [
+    "httpx>=0.24.0,<1",
+    "pypdf>=5,<7",
+    "pytest>=7.0,<10",
+    "ruff>=0.1.0",
+]
+
+[project.scripts]
+coilem-serve = "backend.public_main:start"
+
+[tool.setuptools.packages.find]
+include = ["backend*"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 150
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["backend"]
+
+[tool.pytest.ini_options]
+markers = [
+    "pr: lightweight regression coverage",
+    "weekly: extended native mesh coverage",
+]

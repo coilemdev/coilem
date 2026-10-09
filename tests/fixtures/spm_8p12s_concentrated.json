@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "topology": "SPM",
+  "stator": {
+    "OD_mm": 100.0,
+    "ID_mm": 60.0,
+    "slot_count": 12,
+    "stack_length_mm": 50.0,
+    "slot_opening_mm": 2.0,
+    "tooth_width_mm": 9.0,
+    "yoke_thickness_mm": 8.0
+  },
+  "rotor": {
+    "OD_mm": 54.0,
+    "magnet_thickness_mm": 2.5,
+    "magnet_width_mm": 16.5,
+    "pole_count": 8,
+    "magnet_embrace": 0.833,
+    "bridge_thickness_mm": 0.8,
+    "flux_barrier_count": null,
+    "barrier_widths_mm": null
+  },
+  "winding": {
+    "type": "concentrated",
+    "turns_per_coil": 12,
+    "layers": 1,
+    "parallel_paths": 1
+  },
+  "materials": {
+    "stator_steel": "M19",
+    "rotor_steel": "M19",
+    "magnet_grade": "N42",
+    "conductor": "copper"
+  },
+  "solve_params": {
+    "solve_quality": "standard",
+    "rotor_sweep_range_deg": 90,
+    "rotor_step_deg": 7.5,
+    "mesh_density": "fine",
+    "mesh_source": "native",
+    "mesher": "gmsh",
+    "rotor_rotation_model": "remesh_per_step",
+    "torque_method": "contour",
+    "current_amplitude_A": 20.0,
+    "current_amplitude_convention": "peak",
+    "current_angle_deg": 0.0,
+    "rated_speed_rpm": 3000
+  },
+  "solve_options": null
+}

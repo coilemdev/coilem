@@ -1,0 +1,60 @@
+{
+  "kind": "magnetostatic_problem",
+  "version": "1.0",
+  "units": {
+    "length": "mm"
+  },
+  "mesh": {
+    "nodes": [
+      [-10.0, -10.0],
+      [10.0, -10.0],
+      [10.0, 10.0],
+      [-10.0, 10.0],
+      [0.0, 0.0]
+    ],
+    "triangles": [
+      [0, 1, 4],
+      [1, 2, 4],
+      [2, 3, 4],
+      [3, 0, 4]
+    ]
+  },
+  "materials": [
+    {
+      "kind": "nonlinear",
+      "bh_curve": {
+        "points": [
+          {"b_t": 0.0, "h_a_per_m": 0.0},
+          {"b_t": 0.2, "h_a_per_m": 80.0},
+          {"b_t": 0.8, "h_a_per_m": 400.0},
+          {"b_t": 1.4, "h_a_per_m": 2000.0},
+          {"b_t": 1.8, "h_a_per_m": 12000.0},
+          {"b_t": 2.1, "h_a_per_m": 60000.0}
+        ],
+        "mu_r_min": 1.0,
+        "mu_r_max": 10000.0
+      }
+    }
+  ],
+  "elements": [
+    {"material_id": 0, "current_density_z_a_per_m2": 3000000.0},
+    {"material_id": 0, "current_density_z_a_per_m2": 3000000.0},
+    {"material_id": 0, "current_density_z_a_per_m2": 3000000.0},
+    {"material_id": 0, "current_density_z_a_per_m2": 3000000.0}
+  ],
+  "boundaries": {
+    "dirichlet_az_zero_nodes": [0, 1, 2, 3]
+  },
+  "options": {
+    "linear": {
+      "solver": "direct"
+    },
+    "nonlinear": {
+      "algorithm": "picard",
+      "max_iterations": 100,
+      "tolerance": 0.05,
+      "relaxation": 0.1,
+      "mu_r_step_cap": 1.5
+    }
+  }
+}

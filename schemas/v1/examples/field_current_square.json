@@ -1,0 +1,42 @@
+{
+  "kind": "magnetostatic_problem",
+  "version": "1.0",
+  "units": {
+    "length": "mm"
+  },
+  "mesh": {
+    "nodes": [
+      [-10.0, -10.0],
+      [10.0, -10.0],
+      [10.0, 10.0],
+      [-10.0, 10.0],
+      [0.0, 0.0]
+    ],
+    "triangles": [
+      [0, 1, 4],
+      [1, 2, 4],
+      [2, 3, 4],
+      [3, 0, 4]
+    ]
+  },
+  "materials": [
+    {
+      "kind": "linear",
+      "mu_r": 1.0
+    }
+  ],
+  "elements": [
+    {"material_id": 0, "current_density_z_a_per_m2": 1000000.0},
+    {"material_id": 0, "current_density_z_a_per_m2": 1000000.0},
+    {"material_id": 0, "current_density_z_a_per_m2": 1000000.0},
+    {"material_id": 0, "current_density_z_a_per_m2": 1000000.0}
+  ],
+  "boundaries": {
+    "dirichlet_az_zero_nodes": [0, 1, 2, 3]
+  },
+  "options": {
+    "linear": {
+      "solver": "direct"
+    }
+  }
+}

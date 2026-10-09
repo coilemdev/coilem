@@ -1,0 +1,672 @@
+/* Tier 1 - Lesson 10: BEMF and voltage headroom.
+   Analytic motor action widgets layered on the shared learning lesson shell. */
+
+.bemf-shell,
+.bemf-shell.is-solve-stage {
+  --learning-control-panel-width: 480px;
+  --learning-main-stage-min-width: 600px;
+  grid-template-columns: 340px minmax(var(--learning-main-stage-min-width), 1fr) var(--learning-control-panel-width);
+}
+
+.bemf-shell > .learning-control-panel {
+  grid-column: 1;
+  grid-row: 1;
+  overflow: auto;
+  border-right: 1px solid var(--border-default);
+}
+
+.bemf-shell > .learning-main-stage {
+  grid-column: 2 / 4;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: minmax(var(--learning-main-stage-min-width), 1fr) var(--learning-control-panel-width);
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.bemf-shell > .learning-main-stage > .learning-motor-viewport {
+  grid-column: 1;
+  grid-row: 1;
+  align-items: start;
+  overflow: auto;
+  padding: 52px 18px 20px;
+}
+
+.bemf-shell > .learning-main-stage > .learning-plot-row {
+  grid-column: 2;
+  grid-row: 1;
+  display: block;
+  min-width: 0;
+  overflow: auto;
+  padding: 22px 18px;
+  border-left: 1px solid var(--border-default);
+  background: var(--bg-surface-1);
+}
+
+.bemf-shell > .learning-main-stage > .learning-plot-row::before {
+  content: "SOLVED OUTPUT";
+  display: block;
+  margin-bottom: 14px;
+  color: var(--text-muted);
+  font: 900 11px var(--font-mono);
+  letter-spacing: 0.12em;
+}
+
+.bemf-shell > .learning-main-stage > .learning-plot-row > * + * {
+  margin-top: 16px;
+}
+
+.bemf-shell {
+  --bemf-ok: #4ade80;
+  --bemf-warn: #fbbf24;
+  --bemf-danger: #f87171;
+  --bemf-phase-a: #f87171;
+  --bemf-phase-b: #60a5fa;
+  --bemf-phase-c: #4ade80;
+}
+
+.bemf-hero-panel {
+  width: min(100%, 1040px);
+  min-height: 390px;
+  display: grid;
+  grid-template-columns: minmax(260px, 330px) minmax(420px, 1fr);
+  grid-template-rows: minmax(290px, 1fr) auto;
+  gap: 14px;
+  align-items: stretch;
+}
+
+.bemf-motor-action,
+.bemf-waveform-panel,
+.bemf-action-readouts {
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: rgba(11, 11, 15, 0.84);
+  box-shadow: var(--shadow-sm);
+}
+
+.bemf-motor-action {
+  min-width: 0;
+  margin: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  place-items: center;
+  padding: 14px 14px 12px;
+}
+
+.bemf-playback-controls {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.bemf-playback-controls > span { color: var(--text-secondary); font-size: 12px; }
+.bemf-playback-controls button { min-height: 36px; }
+.bemf-playback-controls button:focus-visible { outline: 2px solid #22d3ee; outline-offset: 3px; }
+
+.bemf-motor-svg {
+  width: min(100%, 300px);
+  aspect-ratio: 1;
+  display: block;
+  filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.34));
+}
+
+.bemf-stator-outer {
+  fill: rgba(30, 41, 59, 0.92);
+  stroke: rgba(148, 163, 184, 0.5);
+  stroke-width: 3;
+}
+
+.bemf-stator-bore {
+  fill: #080b10;
+  stroke: rgba(148, 163, 184, 0.38);
+  stroke-width: 2;
+}
+
+.bemf-stator-teeth line {
+  stroke: rgba(203, 213, 225, 0.34);
+  stroke-width: 9;
+  stroke-linecap: round;
+}
+
+.bemf-phase-coils rect {
+  opacity: 0.88;
+  stroke: rgba(248, 250, 252, 0.28);
+  stroke-width: 1.4;
+}
+
+.bemf-phase-coils text {
+  fill: #0b0b0f;
+  font: 900 12px var(--font-ui);
+  text-anchor: middle;
+}
+
+.bemf-rotor-core {
+  fill: #1e293b;
+  stroke: rgba(226, 232, 240, 0.42);
+  stroke-width: 2;
+}
+
+.bemf-magnet-n {
+  fill: #ef4444;
+  filter: url(#bemfMotorGlow);
+}
+
+.bemf-magnet-s {
+  fill: #2563eb;
+  filter: url(#bemfMotorGlow);
+}
+
+.bemf-rotor-axis {
+  stroke: #f8fafc;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.bemf-magnet-label {
+  fill: #f8fafc;
+  font: 900 18px var(--font-ui);
+  paint-order: stroke;
+  stroke: rgba(15, 23, 42, 0.7);
+  stroke-width: 4;
+}
+
+.bemf-shaft {
+  fill: #0f172a;
+  stroke: rgba(226, 232, 240, 0.5);
+  stroke-width: 2;
+}
+
+.bemf-airgap {
+  fill: none;
+  stroke: rgba(34, 211, 238, 0.45);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 8;
+}
+
+.bemf-motor-action figcaption {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.bemf-motor-action figcaption strong,
+.bemf-motor-action figcaption span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bemf-motor-action figcaption strong {
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+}
+
+.bemf-waveform-panel {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  padding: 14px 16px 10px;
+}
+
+.bemf-waveform-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.bemf-waveform-head div {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.bemf-waveform-head span,
+.bemf-action-readouts span {
+  color: var(--text-muted);
+  font: 800 11px var(--font-mono);
+  text-transform: uppercase;
+}
+
+.bemf-waveform-head strong {
+  color: var(--text-primary);
+  font-size: 20px;
+  line-height: 1.1;
+}
+
+.bemf-waveform-head em {
+  font-style: normal;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.bemf-waveform-head em.is-ok,
+.bemf-status.is-ok,
+.learning-metrics dd.is-ok,
+.bemf-action-readouts strong.is-ok {
+  color: var(--bemf-ok);
+}
+
+.bemf-waveform-head em.is-warning,
+.bemf-status.is-warning,
+.learning-metrics dd.is-warning,
+.bemf-action-readouts strong.is-warning {
+  color: var(--bemf-warn);
+}
+
+.bemf-waveform-head em.is-danger,
+.bemf-status.is-danger,
+.learning-metrics dd.is-danger,
+.bemf-action-readouts strong.is-danger {
+  color: var(--bemf-danger);
+}
+
+.bemf-waveform-svg {
+  width: 100%;
+  height: 100%;
+  min-height: 230px;
+  display: block;
+}
+
+.bemf-wave-grid {
+  stroke: rgba(148, 163, 184, 0.28);
+  stroke-width: 1;
+}
+
+.bemf-wave-grid.is-muted {
+  stroke: rgba(148, 163, 184, 0.12);
+}
+
+.bemf-wave-limit {
+  stroke: #22d3ee;
+  stroke-width: 2;
+}
+
+.bemf-wave-reserve {
+  stroke: #fbbf24;
+  stroke-width: 2;
+  stroke-dasharray: 7 6;
+}
+
+.bemf-wave-phase {
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.bemf-wave-marker-line {
+  stroke: rgba(248, 250, 252, 0.75);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 5;
+}
+
+.bemf-wave-marker {
+  stroke: #0b0b0f;
+  stroke-width: 2;
+}
+
+.bemf-wave-label {
+  fill: #67e8f9;
+  font: 800 12px var(--font-ui);
+}
+
+.bemf-wave-label.is-reserve {
+  fill: #fbbf24;
+}
+
+.bemf-wave-label.is-live {
+  fill: #f8fafc;
+}
+
+.bemf-wave-axis {
+  fill: var(--text-muted);
+  font: 800 10px var(--font-mono);
+}
+
+.bemf-wave-legend text {
+  fill: var(--text-secondary);
+  font: 800 11px var(--font-ui);
+}
+
+.bemf-action-readouts {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  background: var(--border-default);
+}
+
+.bemf-action-readouts div {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+  padding: 11px 13px;
+  background: rgba(11, 11, 15, 0.9);
+}
+
+.bemf-action-readouts strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bemf-chart {
+  width: 100%;
+  height: 210px;
+  display: block;
+  margin-top: 8px;
+}
+
+.bemf-chart-grid {
+  stroke: rgba(148, 163, 184, 0.28);
+  stroke-width: 1;
+}
+
+.bemf-chart-grid.is-muted {
+  stroke: rgba(148, 163, 184, 0.12);
+}
+
+.bemf-chart-danger {
+  fill: rgba(248, 113, 113, 0.08);
+}
+
+.bemf-chart-line {
+  fill: none;
+  stroke: #f59e0b;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.bemf-chart-voltage {
+  stroke: #22d3ee;
+  stroke-width: 2.5;
+}
+
+.bemf-chart-reserve {
+  stroke: #fbbf24;
+  stroke-width: 2;
+  stroke-dasharray: 7 6;
+}
+
+.bemf-chart-marker-line {
+  stroke: #e2e8f0;
+  stroke-width: 1.5;
+  stroke-dasharray: 5 5;
+  opacity: 0.68;
+}
+
+.bemf-chart-marker {
+  fill: #f8fafc;
+  stroke: #f59e0b;
+  stroke-width: 3;
+}
+
+.bemf-chart-label {
+  fill: #67e8f9;
+  font: 800 12px var(--font-ui);
+}
+
+.bemf-chart-label.is-reserve {
+  fill: #fbbf24;
+}
+
+.bemf-chart-label.is-live {
+  fill: #f8fafc;
+}
+
+.bemf-chart-axis {
+  fill: var(--text-muted);
+  font: 800 10px var(--font-mono);
+}
+
+.bemf-segmented-four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.bemf-rail-control {
+  margin-top: 12px;
+}
+
+.bemf-settings-summary {
+  cursor: default;
+}
+
+.bemf-readonly-summary {
+  margin-top: 14px;
+}
+
+.bemf-readonly-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.bemf-readonly-list div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-2);
+}
+
+.bemf-readonly-list span {
+  min-width: 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.bemf-readonly-list strong {
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.bemf-exercise > p,
+.bemf-explore p,
+.bemf-checklist p,
+.bemf-model-note {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.bemf-angle-checkpoints,
+.bemf-phase-values {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.bemf-angle-checkpoints button {
+  padding: 10px 4px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-2);
+  color: var(--text-primary);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.bemf-angle-checkpoints button.is-complete {
+  border-color: var(--bemf-ok);
+  color: var(--bemf-ok);
+}
+
+.bemf-exercise button:focus-visible,
+.bemf-explore summary:focus-visible,
+.bemf-explore button:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: 3px;
+}
+
+.bemf-exercise .learning-primary-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.bemf-exercise .learning-segmented-control small {
+  display: block;
+  margin-top: 4px;
+  font-size: 10px;
+}
+
+.bemf-exercise-nav {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.bemf-exercise .bemf-task-feedback {
+  padding: 10px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-2);
+}
+
+.bemf-exercise .bemf-task-feedback.is-complete,
+.bemf-checklist .is-complete {
+  color: var(--bemf-ok);
+}
+
+.bemf-live-status.is-ok { color: var(--bemf-ok); }
+.bemf-live-status.is-warning { color: var(--bemf-warn); }
+.bemf-live-status.is-danger { color: var(--bemf-danger); }
+
+.bemf-phase-values div {
+  display: grid;
+  gap: 4px;
+  padding: 8px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+}
+
+.bemf-phase-values output { color: var(--text-primary); font-family: var(--font-mono); }
+.bemf-phase-values span { font-weight: 800; }
+
+.bemf-checklist > div {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-default);
+  font-size: 12px;
+}
+
+.bemf-thresholds { margin: 0; font-size: 12px; }
+.bemf-thresholds > div { display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; }
+.bemf-thresholds dt { color: #fbbf24; }
+.bemf-thresholds > div + div dt { color: #67e8f9; }
+.bemf-thresholds dd { margin: 0; font-family: var(--font-mono); }
+.bemf-explore summary { cursor: pointer; font-size: 13px; font-weight: 800; }
+.bemf-explore fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+.bemf-explore fieldset:disabled { opacity: 0.45; }
+
+@media (min-width: 761px) and (max-width: 1500px) {
+  .bemf-shell,
+  .bemf-shell.is-solve-stage {
+    --learning-control-panel-width: 420px;
+    --learning-main-stage-min-width: 420px;
+    grid-template-columns: 300px minmax(420px, 1fr) var(--learning-control-panel-width);
+  }
+}
+
+@media (min-width: 761px) and (max-width: 1799px) {
+  .bemf-hero-panel { grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
+  .bemf-motor-action { padding: 8px; }
+  .bemf-motor-svg { width: min(100%, 210px); }
+}
+
+@media (max-width: 1240px) {
+  .bemf-waveform-head strong {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 1180px) {
+  .bemf-shell,
+  .bemf-shell.is-solve-stage {
+    grid-template-columns: 300px minmax(0, 1fr);
+  }
+
+  .bemf-shell > .learning-main-stage {
+    grid-column: 2;
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(520px, 1fr) auto;
+    overflow: auto;
+  }
+
+  .bemf-shell > .learning-main-stage > .learning-motor-viewport {
+    grid-column: 1;
+    grid-row: 1;
+    min-height: 520px;
+  }
+
+  .bemf-shell > .learning-main-stage > .learning-plot-row {
+    grid-column: 1;
+    grid-row: 2;
+    max-height: 540px;
+    border-top: 1px solid var(--border-default);
+    border-left: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .bemf-shell,
+  .bemf-shell.is-solve-stage {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+  }
+
+  .bemf-shell > .learning-control-panel,
+  .bemf-shell > .learning-main-stage {
+    width: 100%;
+    overflow: visible;
+    flex-shrink: 0;
+  }
+
+  .bemf-shell > .learning-control-panel { order: -1; }
+  .bemf-shell > .learning-main-stage { display: block; }
+  .bemf-shell > .learning-main-stage > .learning-motor-viewport { overflow: visible; min-height: 0; }
+  .bemf-shell > .learning-main-stage > .learning-plot-row { max-height: none; overflow: visible; }
+
+  .bemf-hero-panel {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    min-height: auto;
+  }
+
+  .bemf-waveform-svg {
+    min-height: 260px;
+  }
+
+  .bemf-action-readouts {
+    grid-template-columns: 1fr;
+  }
+
+  .bemf-shell .learning-metrics dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .bemf-shell .learning-metrics dl > div { margin: 0; }
+}

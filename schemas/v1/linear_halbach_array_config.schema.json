@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://coilem.com/schemas/v1/linear_halbach_array_config.schema.json",
+  "title": "Linear Halbach array configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["geometry", "magnet"],
+  "properties": {
+    "kind": {"const": "linear_halbach_array_config"},
+    "version": {"const": "1.0"},
+    "units": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["length", "angle"],
+      "properties": {
+        "length": {"const": "mm"},
+        "angle": {"const": "deg"}
+      }
+    },
+    "geometry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "block_width",
+        "magnet_height",
+        "out_of_plane_depth"
+      ],
+      "properties": {
+        "block_width": {"type": "number", "exclusiveMinimum": 0},
+        "magnet_height": {"type": "number", "exclusiveMinimum": 0},
+        "out_of_plane_depth": {"type": "number", "exclusiveMinimum": 0},
+        "period_count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16,
+          "default": 4
+        },
+        "block_gap": {"type": "number", "minimum": 0, "default": 0}
+      }
+    },
+    "array": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "strong_side": {
+          "enum": ["positive_y", "negative_y"],
+          "default": "positive_y"
+        },
+        "phase_deg": {"type": "number", "default": 0}
+      }
+    },
+    "magnet": {
+      "oneOf": [
+        {"$ref": "#/$defs/catalogMagnet"},
+        {"$ref": "#/$defs/customMagnet"}
+      ]
+    },
+    "sample_region": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "probe_offset": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "default": 5
+        },
+        "edge_exclusion_periods": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7,
+          "default": 1
+        },
+        "samples_per_period": {
+          "type": "integer",
+          "minimum": 8,
+          "maximum": 512,
+          "default": 64
+        }
+      }
+    },
+    "solve": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "quality": {
+          "enum": ["quick", "standard", "fine", "custom"],
+          "default": "standard"
+        },
+        "mesh": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "density": {
+              "enum": ["coarse", "normal", "fine"],
+              "default": "normal"
+            },
+            "outer_padding_factor": {
+              "type": "number",
+              "minimum": 0.5,
+              "maximum": 10,
+              "default": 2.5
+            },
+            "minimum_elements_across_magnet": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 40,
+              "default": 6
+            },
+            "corner_refinement": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        },
+        "linear": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "solver": {
+              "enum": ["direct", "pcg"],
+              "default": "direct"
+            },
+            "pcg_preconditioner": {
+              "enum": ["incomplete_cholesky", "jacobi"],
+              "default": "incomplete_cholesky"
+            },
+            "tolerance": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "exclusiveMaximum": 1,
+              "default": 1e-8
+            },
+            "max_iterations": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000000,
+              "default": 5000
+            }
+          }
+        },
+        "field_line_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 200,
+          "default": 18
+        }
+      }
+    }
+  },
+  "$defs": {
+    "catalogMagnet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source"],
+      "properties": {
+        "source": {"const": "catalog"},
+        "grade": {
+          "default": "N42",
+          "enum": [
+            "N35",
+            "N42",
+            "N48",
+            "N52",
+            "N48SH",
+            "Ferrite_Y30",
+            "Prius_2004_NdFeB"
+          ]
+        },
+        "temperature_c": {
+          "type": "number",
+          "minimum": -40,
+          "maximum": 250,
+          "default": 20
+        }
+      }
+    },
+    "customMagnet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "name", "remanence_t", "source_note"],
+      "properties": {
+        "source": {"const": "custom"},
+        "name": {"type": "string", "minLength": 1, "maxLength": 160},
+        "remanence_t": {"type": "number", "exclusiveMinimum": 0},
+        "relative_permeability": {
+          "type": "number",
+          "minimum": 1,
+          "default": 1.05
+        },
+        "intrinsic_coercivity_a_per_m": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "density_kg_per_m3": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "reference_temperature_c": {"type": "number"},
+        "temperature_c": {"type": "number"},
+        "alpha_br_per_k": {"type": "number"},
+        "alpha_hcj_per_k": {"type": "number"},
+        "source_note": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        }
+      }
+    }
+  }
+}

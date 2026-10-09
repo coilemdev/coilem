@@ -1,0 +1,73 @@
+{
+  "openem_schema_version": 4,
+  "openem_version": "0.1.4",
+  "name": "Validation IPM 10p V-shape — Medium",
+  "description": "Medium-frame 10-pole, 12-slot V-shape IPM fixture for public Magneto2D validation.",
+  "schema_version": "1.0",
+  "topology": "IPM",
+  "stator": {
+    "OD_mm": 180.0,
+    "ID_mm": 110.0,
+    "slot_count": 12,
+    "stack_length_mm": 90.0,
+    "slot_opening_mm": 4.8,
+    "tooth_width_mm": 22.0,
+    "yoke_thickness_mm": 16.0
+  },
+  "rotor": {
+    "OD_mm": 108.0,
+    "ID_mm": 32.0,
+    "magnet_thickness_mm": 4.0,
+    "magnet_width_mm": 14.0,
+    "pole_count": 10,
+    "magnet_embrace": 0.76,
+    "bridge_thickness_mm": 1.5,
+    "ipm_topology": "v_shape",
+    "side_bridge_thickness_mm": 1.5,
+    "pocket_clearance_mm": 0.35,
+    "magnet_angle_deg": 0.0,
+    "v_angle_deg": 65.0,
+    "v_depth_mm": 18.0,
+    "inner_web_thickness_mm": 6.0,
+    "outer_bridge_thickness_mm": 1.5,
+    "flux_barrier_count": null,
+    "barrier_widths_mm": null
+  },
+  "winding": {
+    "type": "concentrated",
+    "turns_per_coil": 12,
+    "layers": 1,
+    "parallel_paths": 2
+  },
+  "materials": {
+    "stator_steel": "M350-50A",
+    "rotor_steel": "M350-50A",
+    "magnet_grade": "N42",
+    "conductor": "copper"
+  },
+  "solve_params": {
+    "solve_quality": "quick",
+    "rotor_sweep_range_deg": 60.0,
+    "rotor_step_deg": 15.0,
+    "mesh_density": "coarse",
+    "mesh_source": "native",
+    "mesher": "gmsh",
+    "corner_refinement": true,
+    "rotor_rotation_model": "remesh_per_step",
+    "torque_method": "weighted_stress",
+    "nonlinear_solver": "picard",
+    "linear_solver_preconditioner": "direct",
+    "current_amplitude_A": 35.0,
+    "current_amplitude_convention": "rms",
+    "current_angle_deg": 20.0,
+    "rated_speed_rpm": 3000.0
+  },
+  "solve_options": {
+    "torque_sweep": true,
+    "back_emf": true,
+    "flux_density": true,
+    "cogging_torque": false,
+    "torque_speed_envelope": false,
+    "thd_analysis": false
+  }
+}

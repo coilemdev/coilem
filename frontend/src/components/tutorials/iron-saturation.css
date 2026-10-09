@@ -1,0 +1,1019 @@
+.iron-saturation-shell,
+.iron-saturation-shell.is-solve-stage {
+  --iron-saturation-drawer-top: 62px;
+  position: relative;
+  display: block;
+  grid-template-columns: none;
+  height: calc(100vh - var(--topbar-height));
+  min-height: 0;
+  overflow: hidden;
+}
+
+.iron-saturation-main {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  min-width: 0;
+  min-height: 0;
+  padding-bottom: 108px;
+  overflow: hidden;
+  border: 0;
+  box-sizing: border-box;
+}
+
+.iron-saturation-shell.is-design-stage .iron-saturation-main,
+.iron-saturation-shell.is-quiz-open .iron-saturation-main { padding-bottom: 0; }
+
+.iron-saturation-shell.is-quiz-open .iron-saturation-main {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.iron-saturation-control-panel,
+.iron-saturation-context {
+  position: absolute;
+  z-index: 40;
+  top: var(--iron-saturation-drawer-top);
+  bottom: 112px;
+  width: min(410px, calc(100% - 32px));
+  min-width: 0;
+  overflow: auto;
+  padding: 0;
+  border: 1px solid rgba(71, 85, 105, 0.68);
+  border-radius: 18px;
+  background: rgba(14, 17, 23, 0.97);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(22px);
+  box-sizing: border-box;
+}
+
+.iron-saturation-control-panel {
+  left: 16px;
+  bottom: auto;
+  max-height: calc(100% - var(--iron-saturation-drawer-top) - 128px);
+}
+
+.iron-saturation-context { right: 16px; }
+
+.iron-saturation-panel-kicker {
+  margin: 0 0 8px;
+  color: #67e8f9;
+  font: 800 11px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.iron-saturation-control-panel .learning-control-section > h2 {
+  margin: 0;
+  font-size: 19px;
+}
+
+.iron-saturation-drawer-close {
+  position: absolute;
+  z-index: 5;
+  top: 14px;
+  right: 14px;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(71, 85, 105, 0.72);
+  border-radius: 50%;
+  background: rgba(14, 17, 23, 0.92);
+  color: #cbd5e1;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.iron-saturation-control-panel .learning-control-section,
+.iron-saturation-status-header { padding-right: 66px; }
+
+.iron-saturation-control-intro {
+  margin: 18px 0 12px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.iron-saturation-lab-goal {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid rgba(34, 211, 238, 0.26);
+  border-left: 3px solid #22d3ee;
+  border-radius: 8px;
+  background: rgba(8, 47, 73, 0.2);
+}
+
+.iron-saturation-lab-goal > span {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(34, 211, 238, 0.5);
+  border-radius: 50%;
+  color: #67e8f9;
+  font: 800 12px var(--font-mono);
+}
+
+.iron-saturation-lab-goal p {
+  margin: 0 0 3px;
+  color: var(--text-muted);
+  font: 800 10px var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.iron-saturation-lab-goal strong,
+.iron-saturation-lab-goal small {
+  display: block;
+}
+
+.iron-saturation-lab-goal strong {
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.iron-saturation-lab-goal small {
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.iron-saturation-status-header {
+  padding: 20px 18px 16px;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.iron-saturation-status-header h1 {
+  margin: 6px 0 8px;
+  font-size: 22px;
+}
+
+.iron-saturation-status-header > p:not(.learning-kicker) {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.iron-saturation-status-header .learning-progress {
+  margin-top: 14px;
+}
+
+.iron-saturation-complete {
+  grid-column: 1 / -1;
+  padding: 9px 12px;
+  border: 1px solid rgba(132, 204, 22, 0.42);
+  border-radius: 6px;
+  background: rgba(132, 204, 22, 0.08);
+  color: #bef264;
+  font: 800 12px var(--font-mono);
+  text-align: center;
+}
+
+.iron-saturation-next-lesson {
+  display: grid;
+  place-items: center;
+  color: var(--accent-ink);
+  text-align: center;
+  text-decoration: none;
+}
+
+.iron-saturation-predict-stage,
+.iron-saturation-empty-stage {
+  position: relative;
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 12px;
+  padding: 52px 28px 30px;
+}
+
+.iron-saturation-predict-stage .learning-stage-badge,
+.iron-saturation-empty-stage .learning-stage-badge {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  display: flex;
+  gap: 10px;
+  padding: 9px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: rgba(10, 15, 26, 0.92);
+  font: 700 12px var(--font-mono);
+}
+
+.iron-saturation-predict-stage .learning-stage-badge span,
+.iron-saturation-empty-stage .learning-stage-badge span {
+  color: var(--text-muted);
+}
+
+.iron-saturation-prediction {
+  width: min(100%, 760px);
+  max-height: 54vh;
+  overflow: visible;
+}
+
+.iron-tooth-diagram {
+  width: min(100%, 760px);
+  max-height: 54vh;
+  overflow: visible;
+}
+
+.iron-saturation-ring { fill: none; stroke: #64748b; stroke-width: 64; }
+.iron-saturation-ring-hole { fill: #0a0f1a; stroke: rgba(148, 163, 184, 0.4); stroke-width: 2; }
+.iron-saturation-orbit { fill: none; stroke: #67e8f9; stroke-width: 4; }
+.iron-saturation-wire { fill: #b45309; stroke: #fbbf24; stroke-width: 4; }
+.iron-saturation-current-label { fill: #fef3c7; font: 900 38px var(--font-mono); text-anchor: middle; }
+.iron-saturation-current-direction-label { fill: #67e8f9; font: 800 11px var(--font-mono); text-anchor: middle; letter-spacing: 0.06em; }
+.iron-saturation-material-label { fill: #94a3b8; font: 800 13px var(--font-mono); text-anchor: middle; letter-spacing: 0.07em; }
+.iron-tooth-stator { fill: #64748b; stroke: #94a3b8; stroke-width: 3; stroke-linejoin: round; }
+.iron-tooth-rotor { fill: #475569; stroke: #94a3b8; stroke-width: 3; }
+.iron-tooth-coil { fill: rgba(217, 119, 6, 0.88); stroke: #f59e0b; stroke-width: 3; }
+.iron-tooth-current-glyph { fill: #fff7ed; font: 900 34px var(--font-mono); text-anchor: middle; }
+.iron-tooth-label { fill: #e2e8f0; font: 800 12px var(--font-mono); text-anchor: middle; letter-spacing: 0.06em; }
+.iron-tooth-gap-label { fill: #67e8f9; font: 850 12px var(--font-mono); text-anchor: middle; letter-spacing: 0.06em; }
+.iron-tooth-flux-path { fill: none; stroke: #67e8f9; stroke-width: 4; stroke-dasharray: 8 6; }
+
+.iron-saturation-stage-copy,
+.iron-saturation-empty-stage > div:last-child {
+  max-width: 780px;
+  text-align: center;
+}
+
+.iron-saturation-stage-copy h2,
+.iron-saturation-empty-stage h2 {
+  margin: 0;
+  font-size: clamp(22px, 2.1vw, 32px);
+}
+
+.iron-saturation-stage-copy p:not(.learning-kicker),
+.iron-saturation-empty-stage p {
+  margin: 8px 0 0;
+  color: var(--text-secondary);
+}
+
+.iron-saturation-predictions {
+  display: grid;
+  gap: 9px;
+}
+
+.iron-saturation-predictions button {
+  display: grid;
+  gap: 4px;
+  padding: 13px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: var(--bg-surface-2);
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+}
+
+.iron-saturation-predictions button span {
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.iron-saturation-predictions button.is-selected { border-color: rgba(245, 158, 11, 0.65); }
+.iron-saturation-predictions button.is-correct { border-color: #22c55e; background: rgba(34, 197, 94, 0.09); }
+
+.iron-saturation-feedback {
+  padding: 11px 12px;
+  border-left: 3px solid #f59e0b;
+  background: rgba(245, 158, 11, 0.08);
+  color: #fde68a !important;
+  font-size: 12px;
+}
+
+.iron-saturation-feedback.is-correct {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.09);
+  color: #bbf7d0 !important;
+}
+
+.iron-saturation-vocabulary {
+  margin-top: 16px;
+  padding: 13px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: var(--bg-surface-2);
+}
+
+.iron-saturation-vocabulary strong { color: #67e8f9; }
+.iron-saturation-vocabulary p { margin: 7px 0 0; color: var(--text-secondary); font-size: 11px; line-height: 1.5; }
+
+.iron-saturation-viewer {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
+  background: #0a0f1a;
+}
+
+.iron-saturation-viewer .mesh-viewer-embedded-shell,
+.iron-saturation-viewer .mesh-viewer-container-embedded {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.iron-saturation-visual-header {
+  min-height: 46px;
+  padding: 8px 14px;
+  gap: 12px;
+}
+
+.iron-saturation-visual-header .mesh-viewer-title {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.iron-saturation-view-toggle {
+  flex: 0 0 auto;
+  display: inline-flex;
+  gap: 3px;
+  padding: 2px;
+  border: 1px solid rgba(71, 85, 105, 0.58);
+  border-radius: 6px;
+  background: rgba(3, 7, 18, 0.62);
+}
+
+.iron-saturation-view-toggle button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 5px 9px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-secondary);
+  font: 750 12px var(--font-sans);
+  cursor: pointer;
+}
+
+.iron-saturation-view-toggle button:hover { color: var(--text-primary); background: rgba(30, 41, 59, 0.72); }
+.iron-saturation-view-toggle button.is-active { border-color: rgba(34, 211, 238, 0.44); background: rgba(34, 211, 238, 0.12); color: #a5f3fc; }
+.iron-saturation-view-toggle button span { width: 11px; height: 11px; border-radius: 50%; background: #67e8f9; }
+.iron-saturation-view-toggle .is-density { background: linear-gradient(135deg, #2563eb, #22d3ee, #fde047, #ef4444); }
+.iron-saturation-view-toggle .is-mesh { border: 1px solid #94a3b8; border-radius: 2px; background: transparent; }
+.iron-saturation-view-toggle .is-three {
+  border: 1px solid #67e8f9;
+  border-radius: 1px;
+  background: rgba(34, 211, 238, 0.08);
+  transform: rotate(30deg) skewY(-16deg) scale(0.8);
+}
+
+.iron-saturation-lesson-dock {
+  position: absolute;
+  z-index: 30;
+  left: 50%;
+  bottom: 16px;
+  width: min(1120px, calc(100% - 32px));
+  min-height: 76px;
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+  padding: 12px 14px 12px 18px;
+  border: 1px solid rgba(71, 85, 105, 0.72);
+  border-radius: 18px;
+  background: rgba(14, 17, 23, 0.95);
+  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(20px);
+  transform: translateX(-50%);
+  box-sizing: border-box;
+}
+
+.iron-saturation-dock-insight { min-width: 0; display: grid; gap: 5px; }
+.iron-saturation-dock-insight span { color: #fbbf24; font: 800 9px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.iron-saturation-dock-insight strong { max-width: 680px; overflow: hidden; color: #f1f5f9; font-size: 14px; font-weight: 650; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
+.iron-saturation-dock-actions { display: flex; align-items: center; gap: 8px; }
+.iron-saturation-dock-button { min-height: 42px; padding: 0 14px; border: 1px solid rgba(71, 85, 105, 0.7); border-radius: 10px; background: rgba(30, 35, 45, 0.84); color: #cbd5e1; font-size: 12px; font-weight: 720; cursor: pointer; }
+.iron-saturation-dock-button[aria-expanded="true"] { border-color: rgba(148, 163, 184, 0.74); color: #f8fafc; }
+.iron-saturation-dock-primary { min-width: 190px; min-height: 42px; border-radius: 10px; }
+
+.iron-saturation-shell.is-quiz-open .iron-saturation-main {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  overflow: hidden;
+}
+
+.iron-saturation-shell.is-quiz-open .iron-saturation-quiz-stage {
+  width: min(800px, calc(100% - 48px));
+  height: 100%;
+  min-height: 0;
+  margin: 0 auto;
+  padding: 34px 0 48px;
+  box-sizing: border-box;
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+
+.iron-saturation-shell.is-quiz-open .iron-saturation-quiz-dock {
+  position: relative;
+  left: auto;
+  bottom: auto;
+  width: min(1120px, calc(100% - 32px));
+  margin: 12px auto 16px;
+  transform: none;
+}
+
+.iron-tooth-three {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 54% 42%, rgba(30, 64, 175, 0.12), transparent 38%),
+    #080d16;
+}
+
+.iron-tooth-three-canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.iron-tooth-three-legend {
+  position: absolute;
+  z-index: 2;
+  top: 15px;
+  left: 16px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  max-width: calc(100% - 32px);
+  color: #cbd5e1;
+  font: 800 10px var(--font-mono);
+  pointer-events: none;
+}
+
+.iron-tooth-three-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.iron-tooth-three-legend span::before {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  content: '';
+}
+
+.iron-tooth-three-legend .is-steel::before { background: #64748b; }
+.iron-tooth-three-legend .is-magnet::before { background: #ef4444; }
+.iron-tooth-three-legend .is-copper::before { background: #f59e0b; }
+.iron-tooth-three-legend .is-flux::before { border-radius: 50%; background: #67e8f9; }
+.iron-tooth-three-legend .is-tooth::before { background: #94a3b8; }
+.iron-tooth-three-legend .is-saturated { color: #fecdd3; }
+.iron-tooth-three-legend .is-saturated::before { background: #b4534b; }
+
+.iron-spm-magnet {
+  fill: #ef4444;
+  stroke: #fca5a5;
+  stroke-width: 3;
+}
+
+.iron-spm-pole-label {
+  fill: #fff7ed;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-anchor: middle;
+}
+
+.iron-spm-control-card .iron-tooth-winding-summary {
+  border-color: rgba(239, 68, 68, 0.42);
+  background: linear-gradient(135deg, rgba(127, 29, 29, 0.22), rgba(15, 23, 42, 0.5));
+}
+
+.iron-spm-insight {
+  border-color: rgba(239, 68, 68, 0.32);
+}
+
+.iron-tooth-three-legend em {
+  color: #64748b;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.iron-tooth-three-hint {
+  position: absolute;
+  z-index: 2;
+  right: 16px;
+  bottom: 14px;
+  padding: 6px 8px;
+  border: 1px solid rgba(51, 65, 85, 0.58);
+  border-radius: 5px;
+  background: rgba(3, 7, 18, 0.72);
+  color: #94a3b8;
+  font: 700 9px var(--font-mono);
+  pointer-events: none;
+}
+
+.iron-saturation-results {
+  margin: 14px;
+  padding: 14px;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  background: var(--bg-surface-2);
+}
+
+.iron-saturation-results > header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.iron-saturation-results h2 {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.3;
+}
+
+.iron-saturation-results > header > span {
+  color: #67e8f9;
+  font: 700 12px var(--font-mono);
+}
+
+.iron-tooth-results {
+  margin: 14px;
+  padding: 14px;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  background: var(--bg-surface-2);
+}
+
+.iron-tooth-results > header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.iron-tooth-results > header h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.iron-tooth-results > header > span {
+  color: #67e8f9;
+  font: 700 12px var(--font-mono);
+}
+
+.iron-tooth-readout {
+  margin-top: 13px;
+  padding: 11px;
+}
+
+.iron-tooth-run-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.iron-tooth-run-selector button {
+  display: grid;
+  gap: 3px;
+  padding: 9px;
+  border: 1px solid var(--border-default);
+  border-radius: 5px;
+  background: rgba(15, 23, 42, 0.72);
+  color: var(--text-secondary);
+  text-align: left;
+  cursor: pointer;
+}
+
+.iron-tooth-run-selector button.is-active {
+  border-color: rgba(34, 211, 238, 0.55);
+  background: rgba(34, 211, 238, 0.09);
+  color: #a5f3fc;
+}
+
+.iron-tooth-run-selector span {
+  font: 800 11px var(--font-mono);
+}
+
+.iron-tooth-run-selector strong {
+  font-size: 11px;
+}
+
+.iron-tooth-insight {
+  margin-top: 12px;
+  padding: 13px;
+  border: 1px solid rgba(245, 158, 11, 0.32);
+  border-left: 3px solid #f59e0b;
+  border-radius: 6px;
+  background: rgba(120, 53, 15, 0.12);
+}
+
+.iron-tooth-insight h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.iron-tooth-insight > div {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 11px;
+}
+
+.iron-tooth-insight > div span {
+  display: grid;
+  gap: 2px;
+  padding: 8px 5px;
+  border: 1px solid rgba(71, 85, 105, 0.5);
+  border-radius: 5px;
+  color: var(--text-muted);
+  font-size: 9px;
+  text-align: center;
+}
+
+.iron-tooth-insight > div b {
+  color: #fbbf24;
+  font: 850 15px var(--font-mono);
+}
+
+.iron-tooth-insight > p:last-child {
+  margin: 11px 0 0;
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.iron-tooth-insight.is-pending {
+  border-color: rgba(34, 211, 238, 0.28);
+  border-left-color: #22d3ee;
+  background: rgba(8, 47, 73, 0.16);
+}
+
+.iron-saturation-plot-wrap {
+  margin-top: 12px;
+  padding: 8px 8px 6px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.66);
+}
+
+.iron-saturation-plot-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px 11px;
+  min-height: 18px;
+  padding: 0 4px;
+  color: var(--text-secondary);
+  font: 700 8px var(--font-mono);
+}
+
+.iron-saturation-plot-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.iron-saturation-plot-legend span::before { width: 18px; border-top: 3px solid #f59e0b; content: ''; }
+.iron-saturation-plot-legend .is-linear::before { border-color: #94a3b8; border-top-style: dashed; }
+.iron-saturation-plot-legend .is-fem::before { border-color: #22d3ee; }
+.iron-saturation-plot { display: block; width: 100%; min-height: 190px; overflow: visible; }
+.iron-saturation-plot-grid line { stroke: rgba(71, 85, 105, 0.42); stroke-width: 1; stroke-dasharray: 3 6; }
+.iron-saturation-plot-axes line { stroke: #64748b; stroke-width: 1.5; }
+.iron-saturation-plot-ticks,
+.iron-saturation-axis-title,
+.iron-saturation-points text { fill: #94a3b8; font: 700 11px var(--font-mono); }
+.iron-saturation-axis-title { fill: #cbd5e1; font-size: 11px; }
+.iron-saturation-material-curve { fill: none; stroke: #f59e0b; stroke-width: 4; }
+.iron-saturation-linear-line { stroke: #94a3b8; stroke-width: 3; stroke-dasharray: 7 6; }
+.iron-saturation-fem-line { fill: none; stroke: #22d3ee; stroke-width: 2; }
+.iron-saturation-points > g { cursor: pointer; outline: none; }
+.iron-saturation-point-hit { fill: transparent; }
+.iron-saturation-point-dot { fill: #22d3ee; stroke: #cffafe; stroke-width: 2; }
+.iron-saturation-points > g:hover .iron-saturation-point-dot,
+.iron-saturation-points > g:focus .iron-saturation-point-dot,
+.iron-saturation-points > g.is-active .iron-saturation-point-dot { fill: #f59e0b; stroke: #fde68a; }
+.iron-saturation-points > g.is-active text { fill: #67e8f9; }
+.iron-saturation-knee-callout circle { fill: rgba(245, 158, 11, 0.08); stroke: #f59e0b; stroke-width: 1.5; stroke-dasharray: 3 3; }
+.iron-saturation-knee-callout text { fill: #fbbf24; font: 800 10px var(--font-mono); }
+
+.iron-saturation-control-card,
+.iron-saturation-equation-card,
+.iron-saturation-readout {
+  margin-top: 18px;
+  padding: 15px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: var(--bg-surface-2);
+}
+
+.iron-saturation-control-card label,
+.iron-saturation-equation-card header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.iron-saturation-control-card label span,
+.iron-saturation-equation-card header span {
+  color: var(--text-secondary);
+  font-weight: 800;
+}
+
+.iron-saturation-control-card label strong,
+.iron-saturation-equation-card header strong,
+.iron-saturation-readout strong {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.iron-saturation-control-card input {
+  width: 100%;
+  margin: 16px 0 4px;
+  accent-color: #22d3ee;
+}
+
+.iron-tooth-winding-summary {
+  display: grid;
+  gap: 4px;
+  margin: -2px 0 16px;
+  padding: 11px;
+  border: 1px solid rgba(34, 211, 238, 0.28);
+  border-radius: 6px;
+  background: rgba(8, 47, 73, 0.18);
+}
+
+.iron-tooth-winding-summary span {
+  color: #67e8f9;
+  font: 800 11px var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.iron-tooth-winding-summary strong {
+  font-size: 13px;
+}
+
+.iron-tooth-winding-summary small {
+  color: var(--text-muted);
+  font: 700 10px var(--font-mono);
+}
+
+.iron-saturation-scale {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-muted);
+  font: 700 10px var(--font-mono);
+}
+
+.iron-saturation-control-card > button,
+.iron-saturation-control-card .iron-saturation-explore-actions button {
+  width: 100%;
+  min-height: 40px;
+  margin-top: 11px;
+  border: 1px solid rgba(34, 211, 238, 0.42);
+  border-radius: 6px;
+  background: rgba(34, 211, 238, 0.09);
+  color: #a5f3fc;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.iron-saturation-control-card .iron-saturation-guide-button {
+  min-height: 42px;
+  border-color: rgba(245, 158, 11, 0.55);
+  background: var(--accent-gradient);
+  color: var(--accent-ink);
+}
+
+.iron-saturation-control-card button:disabled {
+  opacity: 0.54;
+  cursor: not-allowed;
+}
+
+.iron-saturation-explore-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 11px;
+}
+
+.iron-saturation-control-card .iron-saturation-explore-actions button {
+  margin-top: 0;
+}
+
+.iron-saturation-error {
+  margin: 10px 0 0 !important;
+  color: #fca5a5 !important;
+  font-size: 12px;
+}
+
+.iron-saturation-rail-hint {
+  margin: 14px 0 0;
+  padding: 11px 12px;
+  border-left: 3px solid #22d3ee;
+  background: rgba(34, 211, 238, 0.06);
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.iron-saturation-equation-card header {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+
+.iron-saturation-equation-card header span { color: #67e8f9; }
+.iron-saturation-equation-card header strong { color: var(--text-muted); }
+
+.iron-saturation-equation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  margin: 18px 0;
+  color: var(--text-primary);
+  font: 800 24px var(--font-mono);
+}
+
+.iron-saturation-fraction {
+  display: grid;
+  min-width: 76px;
+}
+
+.iron-saturation-fraction i {
+  padding: 2px 8px;
+  font-style: normal;
+  text-align: center;
+}
+
+.iron-saturation-fraction i:first-child {
+  border-bottom: 1px solid #94a3b8;
+}
+
+.iron-saturation-equation-card > p {
+  margin: 11px 0 0 !important;
+  color: var(--text-muted) !important;
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.iron-saturation-context .iron-saturation-equation-card {
+  margin: 0 14px 14px;
+}
+
+.iron-saturation-readout {
+  display: grid;
+  gap: 9px;
+}
+
+.iron-saturation-results .iron-saturation-readout {
+  margin-top: 12px;
+  padding: 10px;
+}
+
+.iron-saturation-readout div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.iron-saturation-readout span {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.iron-saturation-readout strong.is-hot {
+  color: #fca5a5;
+}
+
+.iron-saturation-status-empty {
+  margin: 14px;
+  padding: 16px;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  background: var(--bg-surface-2);
+}
+
+.iron-saturation-status-empty h2 {
+  margin: 5px 0 8px;
+  font-size: 16px;
+}
+
+.iron-saturation-status-empty > p:not(.learning-kicker) {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.iron-saturation-status-empty ol {
+  display: grid;
+  gap: 9px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.iron-saturation-status-empty li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.iron-saturation-status-empty li span {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border-default);
+  border-radius: 50%;
+  color: #67e8f9;
+  font: 700 10px var(--font-mono);
+}
+
+.iron-saturation-takeaway {
+  margin: 0 14px 14px;
+  padding: 14px;
+  border: 1px solid rgba(34, 211, 238, 0.28);
+  border-left: 3px solid #22d3ee;
+  border-radius: 8px;
+  background: rgba(8, 47, 73, 0.22);
+}
+
+.iron-saturation-takeaway h2 {
+  margin: 0;
+  font-size: 19px;
+}
+
+.iron-saturation-takeaway p:not(.learning-kicker) {
+  margin: 12px 0 0;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.iron-saturation-quiz-stage {
+  min-height: 100%;
+  padding: 44px clamp(24px, 6vw, 80px);
+}
+
+.iron-saturation-quiz-stage > h2 {
+  margin: 0;
+  font-size: clamp(28px, 3vw, 40px);
+}
+
+.iron-saturation-quiz-stage > p:not(.learning-kicker) {
+  margin: 10px 0 24px;
+  color: var(--text-secondary);
+}
+
+.iron-saturation-quiz-stage .tutorial-knowledge-check {
+  max-width: 920px;
+}
+
+@media (max-width: 1250px) {
+  .iron-saturation-control-panel,
+  .iron-saturation-context { width: min(380px, calc(100% - 32px)); }
+}
+
+@media (max-width: 980px) {
+  .iron-saturation-lesson-dock { grid-template-columns: 1fr; gap: 10px; }
+  .iron-saturation-dock-insight strong { white-space: normal; }
+  .iron-saturation-dock-actions { justify-content: flex-end; }
+  .iron-saturation-main { padding-bottom: 146px; }
+  .iron-saturation-control-panel,
+  .iron-saturation-context { right: 10px; bottom: 152px; left: 10px; width: auto; }
+  .iron-saturation-control-panel { bottom: auto; max-height: calc(100% - 162px); }
+}
+
+@media (max-width: 600px) {
+  .iron-saturation-dock-insight { display: none; }
+  .iron-saturation-lesson-dock { bottom: 8px; width: calc(100% - 16px); min-height: 0; padding: 8px; border-radius: 14px; }
+  .iron-saturation-dock-actions { display: grid; grid-template-columns: 1fr 1fr; }
+  .iron-saturation-dock-primary { grid-column: 1 / -1; min-width: 0; }
+  .iron-saturation-main { padding-bottom: 114px; }
+  .iron-saturation-control-panel,
+  .iron-saturation-context { bottom: 120px; }
+}

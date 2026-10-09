@@ -1,0 +1,45 @@
+{
+  "kind": "linear_halbach_array_config",
+  "version": "1.0",
+  "units": {
+    "length": "mm",
+    "angle": "deg"
+  },
+  "geometry": {
+    "block_width": 10.0,
+    "magnet_height": 10.0,
+    "out_of_plane_depth": 100.0,
+    "period_count": 4,
+    "block_gap": 0.0
+  },
+  "array": {
+    "strong_side": "positive_y",
+    "phase_deg": 0.0
+  },
+  "magnet": {
+    "source": "catalog",
+    "grade": "N42",
+    "temperature_c": 20.0
+  },
+  "sample_region": {
+    "probe_offset": 5.0,
+    "edge_exclusion_periods": 1,
+    "samples_per_period": 64
+  },
+  "solve": {
+    "quality": "standard",
+    "mesh": {
+      "density": "normal",
+      "outer_padding_factor": 2.5,
+      "minimum_elements_across_magnet": 6,
+      "corner_refinement": true
+    },
+    "linear": {
+      "solver": "direct",
+      "pcg_preconditioner": "incomplete_cholesky",
+      "tolerance": 1e-8,
+      "max_iterations": 5000
+    },
+    "field_line_count": 18
+  }
+}

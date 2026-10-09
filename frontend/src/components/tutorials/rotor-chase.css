@@ -1,0 +1,2423 @@
+.rotor-chase-shell,
+.rotor-chase-shell.is-solve-stage {
+  --rotor-chase-context-width: 390px;
+  --learning-control-panel-width: var(--rotor-chase-context-width);
+  --learning-main-stage-min-width: 560px;
+  grid-template-columns: 330px minmax(var(--learning-main-stage-min-width), 1fr) var(--rotor-chase-context-width);
+  background: #0b0d12;
+}
+
+.rotor-chase-main {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  min-height: 0;
+  display: block;
+  align-content: start;
+  overflow: hidden;
+  border: 0;
+  background:
+    linear-gradient(rgba(30, 41, 59, 0.24) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 41, 59, 0.24) 1px, transparent 1px),
+    #090c11;
+  background-size: 42px 42px;
+}
+
+.rotor-chase-shell.is-solve-stage .rotor-chase-main {
+  display: block;
+}
+
+.rotor-chase-shell.is-quiz-open .rotor-chase-main {
+  display: block;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.rotor-chase-control-panel {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  overflow-y: auto;
+  border-right: 1px solid var(--border-default);
+  border-left: 0;
+  background: var(--bg-surface-1);
+}
+
+.rotor-chase-context {
+  grid-column: 3;
+  grid-row: 1;
+  min-width: 0;
+  padding: 0;
+  border-left: 1px solid var(--border-default);
+  background: var(--bg-surface-1);
+  overflow-y: auto;
+}
+
+.rotor-chase-context-resizer {
+  position: relative;
+  z-index: 12;
+  grid-column: 3;
+  grid-row: 1;
+  width: 14px;
+  height: 100%;
+  min-height: 0;
+  align-self: stretch;
+  justify-self: start;
+  border: 0;
+  outline: none;
+  background: transparent;
+  cursor: col-resize;
+  touch-action: none;
+  transform: translateX(-50%);
+}
+
+.rotor-chase-context-resizer::before,
+.rotor-chase-context-resizer::after {
+  position: absolute;
+  left: 50%;
+  content: '';
+  transform: translateX(-50%);
+  transition: background 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+}
+
+.rotor-chase-context-resizer::before {
+  inset-block: 0;
+  width: 2px;
+  background: rgba(71, 85, 105, 0.72);
+}
+
+.rotor-chase-context-resizer::after {
+  top: 50%;
+  width: 5px;
+  height: 46px;
+  border-radius: 999px;
+  background: #64748b;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.86);
+  opacity: 0;
+}
+
+.rotor-chase-context-resizer:hover::before,
+.rotor-chase-context-resizer:focus-visible::before,
+.rotor-chase-shell.is-resizing-context .rotor-chase-context-resizer::before {
+  background: #22d3ee;
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.46);
+}
+
+.rotor-chase-context-resizer:hover::after,
+.rotor-chase-context-resizer:focus-visible::after,
+.rotor-chase-shell.is-resizing-context .rotor-chase-context-resizer::after {
+  background: #67e8f9;
+  opacity: 1;
+}
+
+.rotor-chase-shell.is-resizing-context {
+  cursor: col-resize;
+  user-select: none;
+}
+
+.rotor-chase-control-header {
+  padding: 18px;
+}
+
+.rotor-chase-panel-kicker {
+  margin: 0 0 8px;
+  color: #67e8f9;
+  font: 800 11px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.rotor-chase-control-header > h2 {
+  margin: 0;
+  font-size: 19px;
+}
+
+.rotor-chase-lab-goal {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid rgba(34, 211, 238, 0.26);
+  border-left: 3px solid #22d3ee;
+  border-radius: 8px;
+  background: rgba(8, 47, 73, 0.2);
+}
+
+.rotor-chase-lab-goal > span {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(34, 211, 238, 0.5);
+  border-radius: 50%;
+  color: #67e8f9;
+  font: 800 12px var(--font-mono);
+}
+
+.rotor-chase-lab-goal p {
+  margin: 0 0 3px;
+  color: var(--text-muted);
+  font: 800 10px var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.rotor-chase-lab-goal strong,
+.rotor-chase-lab-goal small {
+  display: block;
+}
+
+.rotor-chase-lab-goal strong {
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.rotor-chase-lab-goal small {
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.rotor-chase-control-panel > h2,
+.rotor-chase-control-panel > p,
+.rotor-chase-control-panel > .rotor-chase-predictions,
+.rotor-chase-control-panel > .rotor-chase-feedback,
+.rotor-chase-control-panel > .rotor-chase-solve-card,
+.rotor-chase-control-panel > .rotor-chase-controls-card,
+.rotor-chase-control-panel > .rotor-chase-takeaway,
+.rotor-chase-control-panel > .rotor-chase-error {
+  margin-right: 18px;
+  margin-left: 18px;
+}
+
+.rotor-chase-control-panel > h2 {
+  margin-top: 18px;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.rotor-chase-control-panel > p {
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.rotor-chase-stage-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 14px 0;
+  list-style: none;
+}
+
+.rotor-chase-progress-step {
+  appearance: none;
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  width: 100%;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: #94a3b8;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.rotor-chase-progress-step:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.rotor-chase-stage-list li.is-active .rotor-chase-progress-step {
+  border-color: rgba(245, 158, 11, 0.52);
+  background: rgba(245, 158, 11, 0.08);
+  color: #f8fafc;
+}
+
+.rotor-chase-stage-list li.is-complete .rotor-chase-progress-step { color: #86efac; }
+
+.rotor-chase-progress-step > span {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(71, 85, 105, 0.64);
+  border-radius: 50%;
+  font: 800 10px var(--font-mono);
+}
+
+.rotor-chase-stage-list strong { display: block; color: currentColor; }
+.rotor-chase-stage-list p { margin: 3px 0 0; color: #7f8a9d; font-size: 11px; }
+
+.rotor-chase-complete {
+  display: block;
+  padding: 10px;
+  border: 1px solid rgba(132, 204, 22, 0.45);
+  border-radius: 7px;
+  color: #a3e635;
+  font: 800 11px var(--font-mono);
+  text-align: center;
+}
+
+.rotor-chase-next-lesson { display: flex; text-align: center; }
+
+.rotor-chase-panel-action {
+  display: flex;
+  width: 100%;
+  margin-top: 12px;
+}
+
+.rotor-chase-control-panel > .rotor-chase-panel-action {
+  width: auto;
+  margin-right: 18px;
+  margin-left: 18px;
+}
+
+.rotor-chase-context-footer {
+  display: grid;
+  gap: 12px;
+  margin: 20px 18px 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(51, 65, 85, 0.72);
+}
+
+.rotor-chase-completion-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.rotor-chase-context-navigation {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.rotor-chase-context-navigation button {
+  min-height: 40px;
+}
+
+.rotor-chase-predict-stage,
+.rotor-chase-empty-stage {
+  position: relative;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 12px;
+  min-height: 100%;
+  align-content: stretch;
+  justify-items: center;
+  padding: 54px 46px 18px;
+}
+
+.rotor-chase-predict-stage .learning-stage-badge,
+.rotor-chase-empty-stage .learning-stage-badge {
+  position: absolute;
+  top: 28px;
+  left: 32px;
+  display: flex;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid rgba(51, 65, 85, 0.72);
+  border-radius: 7px;
+  background: rgba(3, 7, 18, 0.78);
+  font: 800 11px var(--font-mono);
+}
+
+.rotor-chase-predict-stage .learning-stage-badge span,
+.rotor-chase-empty-stage .learning-stage-badge span { color: #94a3b8; }
+
+.rotor-chase-prediction {
+  display: block;
+  width: min(100%, 940px);
+  height: 100%;
+  min-height: 0;
+  max-height: 560px;
+}
+
+.rotor-chase-source-s { fill: #2563eb; }
+.rotor-chase-source-n { fill: #ef4444; }
+.rotor-chase-source-outline { fill: none; stroke: rgba(255, 255, 255, 0.52); stroke-width: 3; }
+.rotor-chase-source-label { font: 900 38px var(--font-sans); text-anchor: middle; }
+.rotor-chase-source-label.is-s { fill: #60a5fa; }
+.rotor-chase-source-label.is-n { fill: #f87171; }
+.rotor-chase-rotor-s { fill: #2563eb; }
+.rotor-chase-rotor-n { fill: #ef4444; }
+.rotor-chase-rotor-label { fill: white; font: 900 22px var(--font-sans); text-anchor: middle; }
+.rotor-chase-field-arrow { stroke: #67e8f9; stroke-width: 11; }
+.rotor-chase-torque-arc { fill: none; stroke: #f59e0b; stroke-width: 5; stroke-dasharray: 10 8; }
+.rotor-chase-diagram-title,
+.rotor-chase-diagram-caption { fill: #94a3b8; font: 800 14px var(--font-mono); text-anchor: middle; letter-spacing: 1px; }
+.rotor-chase-diagram-caption { fill: #e2e8f0; font-size: 16px; letter-spacing: 0; }
+
+.rotor-chase-stage-copy {
+  max-width: 880px;
+  margin-top: 0;
+  text-align: center;
+}
+
+.rotor-chase-stage-copy h2 { margin: 4px 0 0; font-size: clamp(24px, 2.7vw, 42px); }
+.rotor-chase-stage-copy p:not(.learning-kicker) { margin: 8px 0 0; color: #b3bbc9; }
+
+.rotor-chase-predictions { display: grid; gap: 9px; }
+
+.rotor-chase-predictions button {
+  display: grid;
+  gap: 5px;
+  padding: 13px;
+  border: 1px solid #343b47;
+  border-radius: 7px;
+  background: #1a1d24;
+  color: #f1f5f9;
+  text-align: left;
+}
+
+.rotor-chase-predictions button span { color: #8d98aa; font-size: 11px; }
+.rotor-chase-predictions button.is-selected { border-color: rgba(245, 158, 11, 0.65); }
+.rotor-chase-predictions button.is-correct { border-color: #22c55e; background: rgba(34, 197, 94, 0.09); }
+
+.rotor-chase-feedback {
+  padding: 12px;
+  border-left: 3px solid #f59e0b;
+  background: rgba(245, 158, 11, 0.08);
+  color: #fde68a;
+}
+
+.rotor-chase-feedback.is-correct {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.08);
+  color: #bbf7d0;
+}
+
+.rotor-chase-concept-card,
+.rotor-chase-solve-card,
+.rotor-chase-readout-card,
+.rotor-chase-controls-card,
+.rotor-chase-takeaway {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #343b47;
+  border-radius: 7px;
+  background: #191c22;
+}
+
+.rotor-chase-concept-card > span,
+.rotor-chase-solve-card > span,
+.rotor-chase-controls-card > span {
+  color: #67e8f9;
+  font: 900 10px var(--font-mono);
+  letter-spacing: 1.1px;
+}
+
+.rotor-chase-concept-card h3,
+.rotor-chase-solve-card h3 { margin: 8px 0; font-size: 16px; }
+
+.rotor-chase-concept-card p,
+.rotor-chase-solve-card p,
+.rotor-chase-controls-card p,
+.rotor-chase-takeaway p { margin: 8px 0 0; color: #9aa5b7; line-height: 1.5; }
+
+.rotor-chase-solve-card button,
+.rotor-chase-controls-card button {
+  min-height: 40px;
+  border: 1px solid rgba(34, 211, 238, 0.5);
+  border-radius: 7px;
+  background: rgba(34, 211, 238, 0.08);
+  color: #67e8f9;
+  font-weight: 800;
+}
+
+.rotor-chase-solve-card button { width: 100%; margin-top: 13px; }
+.rotor-chase-error { color: #fca5a5 !important; }
+
+.rotor-chase-viewer {
+  position: relative;
+  container-type: inline-size;
+  height: 100%;
+  min-height: 480px;
+  background: #080b10;
+}
+
+.rotor-chase-viewer .mesh-viewer,
+.rotor-chase-viewer .mesh-viewer-viewport { height: 100%; }
+
+.rotor-chase-viewer .mesh-viewer-header {
+  min-height: 66px;
+  padding-right: 548px;
+}
+
+.rotor-chase-viewer .mesh-viewer-title {
+  min-width: 0;
+}
+
+.rotor-chase-viewer .mesh-viewer-title h3 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rotor-chase-viewer .mesh-viewer-subtitle:empty {
+  display: none;
+}
+
+.rotor-chase-electromagnet-loading-stage {
+  min-height: clamp(480px, 54vh, 600px);
+  border-bottom: 1px solid rgba(51, 65, 85, 0.58);
+  background:
+    radial-gradient(circle at 50% 48%, rgba(34, 211, 238, 0.08), transparent 34%),
+    #080b10;
+}
+
+.rotor-chase-electromagnet-loading-stage > header {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 13px 18px;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.72);
+  background: #15171d;
+}
+
+.rotor-chase-electromagnet-loading-stage > header h3 {
+  margin: 0;
+  color: #e2e8f0;
+  font-size: 15px;
+}
+
+.rotor-chase-electromagnet-loading-stage > header p {
+  margin: 5px 0 0;
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.rotor-chase-electromagnet-loading-stage > header > span {
+  padding: 6px 9px;
+  border: 1px solid rgba(34, 211, 238, 0.48);
+  border-radius: 999px;
+  color: #67e8f9;
+  font: 850 9px var(--font-mono);
+  letter-spacing: 0.12em;
+}
+
+.rotor-chase-electromagnet-loading-body {
+  min-height: 400px;
+  display: flex;
+  max-width: 560px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 42px;
+  text-align: center;
+}
+
+.rotor-chase-electromagnet-loading-body > i {
+  width: 54px;
+  height: 54px;
+  margin-bottom: 20px;
+  border: 4px solid rgba(34, 211, 238, 0.18);
+  border-top-color: #22d3ee;
+  border-radius: 50%;
+}
+
+.rotor-chase-electromagnet-loading-body > i.is-spinning {
+  animation: rotor-chase-solver-spin 900ms linear infinite;
+}
+
+.rotor-chase-electromagnet-loading-body > i.has-error {
+  border-color: rgba(248, 113, 113, 0.48);
+}
+
+.rotor-chase-electromagnet-loading-body h2 {
+  margin: 8px 0 0;
+  color: #f8fafc;
+  font-size: 25px;
+}
+
+.rotor-chase-electromagnet-loading-body > p:not(.learning-kicker) {
+  margin: 10px 0 20px;
+  color: #94a3b8;
+  line-height: 1.55;
+}
+
+.rotor-chase-electromagnet-loading-body > strong {
+  margin-top: 10px;
+  color: #67e8f9;
+  font: 800 10px var(--font-mono);
+}
+
+.rotor-chase-solve-progress {
+  width: 100%;
+  height: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(71, 85, 105, 0.8);
+  border-radius: 999px;
+  background: #0b1220;
+}
+
+.rotor-chase-solve-progress > b {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #0891b2, #22d3ee);
+  transition: width 180ms ease;
+}
+
+@keyframes rotor-chase-solver-spin {
+  to { transform: rotate(360deg); }
+}
+
+.rotor-chase-drawer-launcher {
+  position: absolute;
+  z-index: 8;
+  top: 64px;
+  left: 18px;
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px;
+  border: 1px solid rgba(34, 211, 238, 0.58);
+  border-radius: 7px;
+  background: rgba(3, 7, 18, 0.92);
+  color: #a5f3fc;
+  font: 850 9px var(--font-mono);
+  letter-spacing: 0.06em;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.rotor-chase-drawer-launcher:hover {
+  background: rgba(8, 47, 73, 0.92);
+}
+
+.rotor-chase-drawer-launcher:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: 2px;
+}
+
+.rotor-chase-viewer-drawers {
+  position: absolute;
+  z-index: 8;
+  top: 64px;
+  left: 18px;
+  display: grid;
+  width: min(440px, calc(100% - 36px));
+  gap: 6px;
+}
+
+.rotor-chase-drawer-toolbar {
+  display: flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 7px 6px 11px;
+  border: 1px solid rgba(34, 211, 238, 0.48);
+  border-radius: 7px;
+  background: rgba(3, 7, 18, 0.94);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.rotor-chase-drawer-toolbar span {
+  color: #67e8f9;
+  font: 900 9px var(--font-mono);
+  letter-spacing: 0.1em;
+}
+
+.rotor-chase-drawer-toolbar button {
+  display: inline-grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border: 1px solid rgba(71, 85, 105, 0.78);
+  border-radius: 5px;
+  background: rgba(15, 23, 42, 0.72);
+  color: #cbd5e1;
+  font: 900 13px/1 var(--font-mono);
+}
+
+.rotor-chase-drawer-toolbar button:hover {
+  border-color: rgba(34, 211, 238, 0.6);
+  color: #67e8f9;
+}
+
+.rotor-chase-viewer-drawer {
+  overflow: hidden;
+  border: 1px solid rgba(51, 65, 85, 0.8);
+  border-radius: 7px;
+  background: rgba(3, 7, 18, 0.92);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.rotor-chase-part-badge {
+  border: 1px solid rgba(245, 158, 11, 0.6);
+}
+
+.rotor-chase-electromagnet-badge {
+  border-color: rgba(34, 211, 238, 0.58);
+}
+
+.rotor-chase-viewer-drawer.is-open {
+  background: rgba(3, 7, 18, 0.96);
+}
+
+.rotor-chase-drawer-trigger {
+  display: grid;
+  width: 100%;
+  min-height: 42px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  border: 0;
+  background: transparent;
+  color: #e2e8f0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.rotor-chase-drawer-trigger:hover {
+  background: rgba(148, 163, 184, 0.07);
+}
+
+.rotor-chase-drawer-trigger:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: -2px;
+}
+
+.rotor-chase-drawer-label {
+  color: #94a3b8;
+  font: 900 9px var(--font-mono);
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.rotor-chase-part-badge .rotor-chase-drawer-label {
+  color: #fbbf24;
+}
+
+.rotor-chase-electromagnet-badge .rotor-chase-drawer-label {
+  color: #67e8f9;
+}
+
+.rotor-chase-drawer-trigger strong {
+  overflow: hidden;
+  color: #e2e8f0;
+  font: 800 11px var(--font-sans);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rotor-chase-drawer-chevron {
+  display: inline-grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  border: 1px solid rgba(71, 85, 105, 0.78);
+  border-radius: 5px;
+  color: #94a3b8;
+  font: 900 13px/1 var(--font-mono);
+}
+
+.rotor-chase-viewer-drawer.is-open .rotor-chase-drawer-chevron {
+  border-color: rgba(34, 211, 238, 0.6);
+  color: #67e8f9;
+}
+
+.rotor-chase-drawer-panel {
+  padding: 9px 11px 11px;
+  border-top: 1px solid rgba(51, 65, 85, 0.68);
+}
+
+.rotor-chase-drawer-panel[hidden] {
+  display: none;
+}
+
+.rotor-chase-part-detail p {
+  margin: 0;
+  color: #cbd5e1;
+  font: 650 10px/1.5 var(--font-mono);
+}
+
+.rotor-chase-source-toggle {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.rotor-chase-source-toggle button {
+  min-height: 34px;
+  padding: 7px 8px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.56);
+  color: #94a3b8;
+  font: 800 9px var(--font-mono);
+}
+
+.rotor-chase-source-toggle button.is-active {
+  border-color: rgba(34, 211, 238, 0.58);
+  background: rgba(34, 211, 238, 0.1);
+  color: #a5f3fc;
+}
+
+.rotor-chase-source-toggle button:disabled { opacity: 0.58; }
+
+.rotor-chase-electromagnet-detail {
+  display: grid;
+  gap: 6px;
+}
+
+.rotor-chase-material-key,
+.rotor-chase-current-key {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  color: #cbd5e1;
+  font: 800 8px var(--font-mono);
+}
+
+.rotor-chase-material-key span,
+.rotor-chase-current-key span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.rotor-chase-material-key i {
+  width: 10px;
+  height: 10px;
+  border: 1px solid rgba(226, 232, 240, 0.72);
+  border-radius: 2px;
+}
+
+.rotor-chase-material-key i.is-copper { background: #d97706; }
+.rotor-chase-material-key i.is-iron { background: #4b5563; }
+
+.rotor-chase-current-key {
+  padding-top: 4px;
+  border-top: 1px solid rgba(51, 65, 85, 0.72);
+  color: #94a3b8;
+}
+
+.rotor-chase-current-key i {
+  display: inline-grid;
+  width: 15px;
+  height: 15px;
+  place-items: center;
+  border: 1px solid rgba(217, 119, 6, 0.9);
+  border-radius: 50%;
+  color: #f8fafc;
+  font: 900 11px/1 var(--font-mono);
+  font-style: normal;
+}
+
+.rotor-chase-viewer-toolbar {
+  position: absolute;
+  z-index: 7;
+  top: 10px;
+  right: 18px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.rotor-chase-field-source-toggle,
+.rotor-chase-view-toggle {
+  display: flex;
+  padding: 5px;
+  border: 1px solid rgba(51, 65, 85, 0.78);
+  border-radius: 7px;
+  background: rgba(3, 7, 18, 0.9);
+}
+
+.rotor-chase-field-source-toggle button,
+.rotor-chase-view-toggle button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 8px 9px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: #aab2c1;
+  font-weight: 800;
+}
+
+.rotor-chase-field-source-toggle button {
+  font-size: 11px;
+}
+
+.rotor-chase-field-source-toggle button.is-active,
+.rotor-chase-view-toggle button.is-active {
+  border-color: rgba(34, 211, 238, 0.58);
+  background: rgba(34, 211, 238, 0.09);
+  color: #a5f3fc;
+}
+
+.rotor-chase-field-source-toggle button:disabled {
+  opacity: 0.58;
+}
+
+.rotor-chase-view-toggle button > span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #67e8f9;
+}
+
+.rotor-chase-view-toggle button > span.is-density {
+  background: linear-gradient(135deg, #30123b, #1bcdd4, #f8ca25, #e64c02);
+}
+
+.rotor-chase-view-toggle button > span.is-mesh {
+  border: 1px solid #94a3b8;
+  border-radius: 2px;
+  background: transparent;
+}
+
+.rotor-chase-view-toggle button > span.is-three {
+  border: 1px solid #67e8f9;
+  border-radius: 1px;
+  background: rgba(34, 211, 238, 0.08);
+  transform: rotate(30deg) skewY(-16deg) scale(0.8);
+}
+
+@container (max-width: 700px) {
+  .rotor-chase-viewer .mesh-viewer-header {
+    min-height: 66px;
+    align-items: center;
+    padding-right: 448px;
+  }
+
+  .rotor-chase-viewer-toolbar {
+    top: 9px;
+    right: 10px;
+    left: auto;
+    gap: 4px;
+    justify-content: flex-end;
+  }
+
+  .rotor-chase-field-source-toggle,
+  .rotor-chase-view-toggle {
+    padding: 3px;
+  }
+
+  .rotor-chase-field-source-toggle button,
+  .rotor-chase-view-toggle button {
+    min-height: 34px;
+    padding: 6px;
+    font-size: 10px;
+  }
+}
+
+.rotor-chase-three {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 54% 42%, rgba(30, 64, 175, 0.14), transparent 40%),
+    #080d16;
+}
+
+.rotor-chase-three-canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.rotor-chase-three-title {
+  position: absolute;
+  z-index: 2;
+  top: 14px;
+  left: 18px;
+  max-width: min(48%, 520px);
+  pointer-events: none;
+}
+
+.rotor-chase-three-title h3 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 15px;
+}
+
+.rotor-chase-three-title p {
+  margin: 5px 0 0;
+  color: #94a3b8;
+  font: 700 9px var(--font-mono);
+}
+
+.rotor-chase-three-legend {
+  position: absolute;
+  z-index: 2;
+  left: 16px;
+  bottom: 42px;
+  display: flex;
+  max-width: calc(100% - 32px);
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  color: #cbd5e1;
+  font: 800 9px var(--font-mono);
+  pointer-events: none;
+}
+
+.rotor-chase-three-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rotor-chase-three-legend span::before {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  content: '';
+}
+
+.rotor-chase-three-legend .is-source::before {
+  background: linear-gradient(90deg, #2563eb 50%, #ef4444 50%);
+}
+
+.rotor-chase-three.is-electromagnet .rotor-chase-three-legend .is-source::before {
+  background: linear-gradient(90deg, #64748b 46%, #d97706 46% 54%, #64748b 54%);
+}
+
+.rotor-chase-three-legend .is-rotor::before {
+  border-radius: 50%;
+  background: linear-gradient(90deg, #2563eb 50%, #ef4444 50%);
+}
+
+.rotor-chase-three-legend .is-target::before {
+  height: 3px;
+  border-radius: 2px;
+  background: #67e8f9;
+}
+
+.rotor-chase-three-legend em {
+  color: #64748b;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.rotor-chase-three-axis {
+  position: absolute;
+  z-index: 2;
+  left: 16px;
+  bottom: 14px;
+  display: flex;
+  gap: 8px;
+  color: #94a3b8;
+  font: 800 9px var(--font-mono);
+  pointer-events: none;
+}
+
+.rotor-chase-three-axis b {
+  color: #67e8f9;
+}
+
+.rotor-chase-three-hint {
+  position: absolute;
+  z-index: 2;
+  right: 16px;
+  bottom: 14px;
+  padding: 6px 8px;
+  border: 1px solid rgba(51, 65, 85, 0.58);
+  border-radius: 5px;
+  background: rgba(3, 7, 18, 0.72);
+  color: #94a3b8;
+  font: 700 9px var(--font-mono);
+  pointer-events: none;
+}
+
+.rotor-chase-results {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: 16px;
+  padding: 18px;
+  background: transparent;
+}
+
+.rotor-chase-result-copy h2 { margin: 4px 0 8px; font-size: 22px; }
+.rotor-chase-result-copy p:last-child { color: #96a2b5; line-height: 1.5; }
+
+.rotor-chase-status-header {
+  padding: 20px 18px 16px;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.rotor-chase-status-header h1 {
+  margin: 6px 0 8px;
+  font-size: 22px;
+  line-height: 1.18;
+}
+
+.rotor-chase-status-header > p:not(.learning-kicker) {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.rotor-chase-status-header .learning-progress {
+  margin-top: 14px;
+}
+
+.rotor-chase-status-empty {
+  margin: 18px;
+  padding: 16px;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  background: var(--bg-surface-2);
+}
+
+.rotor-chase-status-empty h2 {
+  margin: 6px 0 8px;
+  font-size: 19px;
+}
+
+.rotor-chase-status-empty > p:not(.learning-kicker) {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.rotor-chase-status-empty ol {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rotor-chase-status-empty li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.rotor-chase-status-empty li span {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  flex: 0 0 24px;
+  place-items: center;
+  border: 1px solid var(--border-default);
+  border-radius: 50%;
+  color: var(--text-muted);
+  font: 800 10px var(--font-mono);
+}
+
+.rotor-chase-context > .rotor-chase-concept-card,
+.rotor-chase-context > .rotor-chase-takeaway {
+  margin: 18px;
+}
+
+.rotor-chase-dc-comparison {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  min-width: 0;
+}
+
+.rotor-chase-dc-comparison article {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  min-height: 106px;
+  padding: 12px;
+  border: 1px solid rgba(51, 65, 85, 0.72);
+  border-radius: 7px;
+  background: rgba(8, 15, 27, 0.72);
+}
+
+.rotor-chase-dc-comparison article.is-active {
+  border-color: rgba(34, 211, 238, 0.72);
+  background: rgba(34, 211, 238, 0.08);
+}
+
+.rotor-chase-dc-comparison span {
+  color: #67e8f9;
+  font: 900 11px var(--font-mono);
+}
+
+.rotor-chase-dc-comparison strong {
+  color: #f8fafc;
+  font-size: 12px;
+}
+
+.rotor-chase-dc-comparison p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.rotor-chase-force-current-panel {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid rgba(34, 211, 238, 0.42);
+  border-radius: 7px;
+  background:
+    linear-gradient(145deg, rgba(34, 211, 238, 0.08), transparent 56%),
+    rgba(8, 15, 27, 0.82);
+}
+
+.rotor-chase-force-current-panel > header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rotor-chase-force-current-panel > header div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.rotor-chase-force-current-panel > header span {
+  color: #67e8f9;
+  font: 900 10px var(--font-mono);
+  letter-spacing: 0.08em;
+}
+
+.rotor-chase-force-current-panel > header h3 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.rotor-chase-force-current-panel > header > strong {
+  flex: 0 0 auto;
+  color: #fbbf24;
+  font: 850 10px var(--font-mono);
+}
+
+.rotor-chase-force-current-panel > p {
+  margin: 0;
+  color: #94a3b8;
+  font: 650 9px/1.48 var(--font-mono);
+}
+
+.rotor-chase-force-current-plot {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(51, 65, 85, 0.68);
+  border-radius: 7px;
+  background: #0c1220;
+}
+
+.rotor-chase-force-current-plot line {
+  stroke: rgba(71, 85, 105, 0.46);
+  stroke-width: 1;
+}
+
+.rotor-chase-force-current-plot line.is-guide {
+  stroke-width: 2;
+  stroke-dasharray: 6 5;
+  opacity: 0.38;
+}
+
+.rotor-chase-force-current-plot line.is-guide.is-north { stroke: #22d3ee; }
+.rotor-chase-force-current-plot line.is-guide.is-south { stroke: #f59e0b; }
+
+.rotor-chase-force-current-plot polyline {
+  fill: none;
+  stroke-width: 3;
+}
+
+.rotor-chase-force-current-plot polyline.is-north { stroke: #22d3ee; }
+.rotor-chase-force-current-plot polyline.is-south { stroke: #f59e0b; }
+
+.rotor-chase-force-current-plot circle.is-sample {
+  stroke: #0c1220;
+  stroke-width: 2;
+}
+
+.rotor-chase-force-current-plot circle.is-sample.is-north { fill: #22d3ee; }
+.rotor-chase-force-current-plot circle.is-sample.is-south { fill: #f59e0b; }
+
+.rotor-chase-force-current-plot line.is-live-current {
+  stroke: rgba(248, 250, 252, 0.72);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 4;
+}
+
+.rotor-chase-force-current-plot circle.is-live {
+  fill: #0c1220;
+  stroke-width: 2.5;
+}
+
+.rotor-chase-force-current-plot circle.is-live.is-north { stroke: #67e8f9; }
+.rotor-chase-force-current-plot circle.is-live.is-south { stroke: #fbbf24; }
+
+.rotor-chase-force-current-plot text {
+  fill: #94a3b8;
+  font: 700 10px var(--font-mono);
+  text-anchor: middle;
+}
+
+.rotor-chase-force-current-plot text.is-y-tick { text-anchor: end; }
+.rotor-chase-force-current-plot text.is-axis-label {
+  fill: #cbd5e1;
+  font-size: 9px;
+}
+
+.rotor-chase-force-current-plot text.is-legend {
+  font-size: 9px;
+  text-anchor: start;
+}
+
+.rotor-chase-force-current-plot text.is-legend.is-north { fill: #67e8f9; }
+.rotor-chase-force-current-plot text.is-legend.is-south { fill: #fbbf24; }
+
+.rotor-chase-force-current-readout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.rotor-chase-force-current-readout article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 3px 8px;
+  padding: 8px 9px;
+  border: 1px solid rgba(51, 65, 85, 0.7);
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.68);
+}
+
+.rotor-chase-force-current-readout span,
+.rotor-chase-force-current-readout small {
+  color: #94a3b8;
+  font: 700 8px var(--font-mono);
+}
+
+.rotor-chase-force-current-readout small { grid-column: 1 / -1; }
+.rotor-chase-force-current-readout strong { font: 900 11px var(--font-mono); }
+.rotor-chase-force-current-readout article.is-north strong { color: #67e8f9; }
+.rotor-chase-force-current-readout article.is-south strong { color: #fbbf24; }
+
+.rotor-chase-force-current-method {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px;
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.7);
+  color: #94a3b8;
+  font: 750 8px var(--font-mono);
+  text-align: center;
+}
+
+.rotor-chase-force-current-method b:first-child { color: #fbbf24; }
+.rotor-chase-force-current-method b:last-child { color: #67e8f9; }
+
+.rotor-chase-force-current-loading {
+  padding: 12px;
+  border: 1px dashed rgba(71, 85, 105, 0.72);
+  border-radius: 6px;
+}
+
+.rotor-chase-force-current-loading strong {
+  color: #e2e8f0;
+  font-size: 11px;
+}
+
+.rotor-chase-force-current-loading p {
+  margin: 5px 0 0;
+  color: #94a3b8;
+  font-size: 9px;
+}
+
+.rotor-chase-ac-plot {
+  display: block;
+  width: 100%;
+  max-height: 190px;
+  min-width: 0;
+  border: 1px solid rgba(51, 65, 85, 0.62);
+  border-radius: 7px;
+  background: #0c1220;
+}
+
+.rotor-chase-ac-plot line {
+  stroke: rgba(71, 85, 105, 0.5);
+  stroke-width: 1;
+}
+
+.rotor-chase-ac-plot polyline {
+  fill: none;
+  stroke: #22d3ee;
+  stroke-width: 3;
+}
+
+.rotor-chase-ac-plot text {
+  fill: #94a3b8;
+  font: 700 10px var(--font-mono);
+  text-anchor: middle;
+}
+
+.rotor-chase-ac-plot line.is-live {
+  stroke: #f59e0b;
+  stroke-width: 2;
+}
+
+.rotor-chase-ac-plot circle.is-live {
+  fill: #f59e0b;
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+.rotor-chase-ac-plot .is-equation {
+  fill: #67e8f9;
+  text-anchor: start;
+}
+
+.rotor-chase-ac-plot .is-live-value {
+  fill: #fbbf24;
+  text-anchor: end;
+}
+
+.rotor-chase-torque-plot,
+.rotor-chase-tracking-plot {
+  display: block;
+  width: 100%;
+  max-height: 210px;
+  min-width: 0;
+  border: 1px solid rgba(51, 65, 85, 0.62);
+  border-radius: 7px;
+  background: #0c1220;
+}
+
+.rotor-chase-torque-plot line,
+.rotor-chase-tracking-plot line { stroke: rgba(71, 85, 105, 0.5); }
+.rotor-chase-torque-plot polyline { fill: none; }
+.rotor-chase-torque-plot polyline.is-analytic { stroke: #22d3ee; stroke-width: 3; }
+.rotor-chase-torque-plot polyline.is-fem {
+  stroke: #f59e0b;
+  stroke-width: 2.5;
+  stroke-dasharray: 7 5;
+}
+.rotor-chase-torque-plot circle.is-fem-sample {
+  fill: #f59e0b;
+  stroke: #0c1220;
+  stroke-width: 1.5;
+}
+.rotor-chase-torque-plot circle.is-live-analytic {
+  fill: #22d3ee;
+  stroke: #fff;
+  stroke-width: 2;
+}
+.rotor-chase-torque-plot circle.is-live-fem {
+  fill: #f59e0b;
+  stroke: #fff;
+  stroke-width: 2;
+}
+.rotor-chase-torque-plot text,
+.rotor-chase-tracking-plot text { fill: #94a3b8; font: 700 10px var(--font-mono); text-anchor: middle; }
+.rotor-chase-torque-plot .rotor-chase-plot-label { text-anchor: start; }
+.rotor-chase-torque-plot .rotor-chase-plot-label.is-analytic { fill: #67e8f9; }
+.rotor-chase-torque-plot .rotor-chase-plot-label.is-fem { fill: #fbbf24; }
+.rotor-chase-torque-plot .rotor-chase-live-value {
+  fill: #e2e8f0;
+  font-size: 9px;
+  text-anchor: end;
+}
+.rotor-chase-torque-plot .rotor-chase-y-tick { text-anchor: end; }
+.rotor-chase-torque-plot .rotor-chase-axis-label {
+  fill: #cbd5e1;
+  font-size: 9px;
+}
+
+.rotor-chase-torque-panel {
+  display: grid;
+  min-width: 0;
+  gap: 8px;
+}
+
+.rotor-chase-inline-torque-readout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 7px;
+}
+
+.rotor-chase-inline-torque-readout > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 10px;
+  min-width: 0;
+  padding: 7px 9px;
+  border: 1px solid rgba(51, 65, 85, 0.7);
+  border-radius: 6px;
+  background: rgba(8, 15, 27, 0.72);
+}
+
+.rotor-chase-inline-torque-readout span {
+  grid-column: 1 / -1;
+  color: #94a3b8;
+  font: 800 8px var(--font-mono);
+  letter-spacing: 0.08em;
+}
+
+.rotor-chase-inline-torque-readout b,
+.rotor-chase-inline-torque-readout strong {
+  white-space: nowrap;
+  font: 800 9px var(--font-mono);
+}
+
+.rotor-chase-inline-torque-readout b { color: #cbd5e1; }
+.rotor-chase-inline-torque-readout strong { color: #f8fafc; }
+.rotor-chase-inline-torque-readout .is-analytic { border-color: rgba(34, 211, 238, 0.35); }
+.rotor-chase-inline-torque-readout .is-analytic span,
+.rotor-chase-inline-torque-readout .is-analytic strong { color: #67e8f9; }
+.rotor-chase-inline-torque-readout .is-fem { border-color: rgba(245, 158, 11, 0.35); }
+.rotor-chase-inline-torque-readout .is-fem span,
+.rotor-chase-inline-torque-readout .is-fem strong { color: #fbbf24; }
+
+.rotor-chase-tracking-plot polyline { fill: none; stroke-width: 3; }
+.rotor-chase-tracking-plot polyline.is-source { stroke: #22d3ee; }
+.rotor-chase-tracking-plot polyline.is-rotor { stroke: #f59e0b; }
+.rotor-chase-tracking-plot text.is-source { fill: #67e8f9; text-anchor: start; }
+.rotor-chase-tracking-plot text.is-rotor { fill: #fbbf24; text-anchor: start; }
+
+.rotor-chase-readout-card header,
+.rotor-chase-readout-card > div:not(.rotor-chase-equation) {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.55);
+}
+
+.rotor-chase-readout-card header span { color: #67e8f9; font: 900 10px var(--font-mono); }
+.rotor-chase-readout-card b,
+.rotor-chase-readout-card strong { color: #f8fafc; font: 800 12px var(--font-mono); }
+
+.rotor-chase-force-couple-card {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid rgba(245, 158, 11, 0.52);
+  border-radius: 7px;
+  background:
+    linear-gradient(135deg, rgba(245, 158, 11, 0.09), transparent 54%),
+    rgba(8, 15, 27, 0.82);
+}
+
+.rotor-chase-force-couple-card > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rotor-chase-force-couple-card > header span {
+  color: #67e8f9;
+  font: 900 10px var(--font-mono);
+  letter-spacing: 0.09em;
+}
+
+.rotor-chase-force-couple-card > header strong {
+  color: #fbbf24;
+  font: 900 11px var(--font-mono);
+}
+
+.rotor-chase-force-couple-card h3 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.rotor-chase-force-couple-card > p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 11px;
+  line-height: 1.52;
+}
+
+.rotor-chase-force-couple-equation {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: stretch;
+  gap: 5px;
+}
+
+.rotor-chase-force-couple-equation > span {
+  align-self: center;
+  color: #64748b;
+  font: 900 13px var(--font-mono);
+}
+
+.rotor-chase-force-couple-equation article {
+  display: grid;
+  align-content: center;
+  gap: 3px;
+  min-width: 0;
+  padding: 8px 6px;
+  border: 1px solid rgba(34, 211, 238, 0.28);
+  border-radius: 5px;
+  background: rgba(34, 211, 238, 0.05);
+  text-align: center;
+}
+
+.rotor-chase-force-couple-equation article.is-torque {
+  border-color: rgba(245, 158, 11, 0.46);
+  background: rgba(245, 158, 11, 0.09);
+}
+
+.rotor-chase-force-couple-equation small,
+.rotor-chase-force-couple-equation i {
+  overflow: hidden;
+  color: #94a3b8;
+  font: 750 8px var(--font-mono);
+  font-style: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rotor-chase-force-couple-equation b {
+  color: #a5f3fc;
+  font: 900 9px var(--font-mono);
+  white-space: nowrap;
+}
+
+.rotor-chase-force-couple-equation article.is-torque b { color: #fbbf24; }
+
+.rotor-chase-force-balance {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.rotor-chase-force-balance span {
+  display: grid;
+  gap: 2px;
+  padding: 7px 9px;
+  border-left: 2px solid #475569;
+  background: rgba(15, 23, 42, 0.62);
+}
+
+.rotor-chase-force-balance span:last-child { border-left-color: #f59e0b; }
+.rotor-chase-force-balance b { color: #e2e8f0; font: 850 10px var(--font-mono); }
+.rotor-chase-force-balance small { color: #94a3b8; font: 650 8px var(--font-mono); }
+
+.rotor-chase-force-sweep-controls {
+  display: grid;
+  gap: 9px;
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid rgba(34, 211, 238, 0.42);
+  border-radius: 7px;
+  background: rgba(8, 15, 27, 0.72);
+}
+
+.rotor-chase-force-sweep-controls > header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.rotor-chase-force-sweep-controls > header span {
+  color: #67e8f9;
+  font: 900 9px var(--font-mono);
+  letter-spacing: 0.06em;
+}
+
+.rotor-chase-force-sweep-controls > header strong {
+  color: #f8fafc;
+  font: 900 12px var(--font-mono);
+}
+
+.rotor-chase-force-sweep-controls > p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.rotor-chase-controls-card .rotor-chase-force-sweep-controls input {
+  margin-top: 2px;
+}
+
+.rotor-chase-force-sweep-scale {
+  display: flex;
+  justify-content: space-between;
+  color: #94a3b8;
+  font: 700 8px var(--font-mono);
+}
+
+.rotor-chase-force-sweep-readout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.rotor-chase-force-sweep-readout article {
+  display: grid;
+  gap: 3px;
+  padding: 7px 8px;
+  border-left: 2px solid #22d3ee;
+  background: rgba(15, 23, 42, 0.72);
+}
+
+.rotor-chase-force-sweep-readout article:last-child { border-left-color: #f59e0b; }
+.rotor-chase-force-sweep-readout span { color: #94a3b8; font: 700 8px var(--font-mono); }
+.rotor-chase-force-sweep-readout b { color: #f8fafc; font: 900 11px var(--font-mono); }
+
+.rotor-chase-controls-card .rotor-chase-plot-force-button {
+  width: 100%;
+  margin: 0;
+}
+
+.rotor-chase-controls-card .rotor-chase-plot-force-button:disabled {
+  border-color: rgba(34, 211, 238, 0.28);
+  background: rgba(34, 211, 238, 0.08);
+  color: #67e8f9;
+}
+
+.rotor-chase-torque-derivation > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 3px;
+  margin-top: 10px;
+  padding: 9px 10px;
+  border: 1px solid rgba(51, 65, 85, 0.7);
+  border-radius: 6px;
+  background: rgba(8, 15, 27, 0.65);
+}
+
+.rotor-chase-torque-derivation b {
+  color: #e2e8f0;
+  font: 800 12px var(--font-mono);
+}
+
+.rotor-chase-torque-derivation i {
+  color: #94a3b8;
+  font: 600 10px var(--font-mono);
+  font-style: normal;
+}
+
+.rotor-chase-equation {
+  margin-top: 12px;
+  padding: 10px;
+  border-radius: 6px;
+  background: #0d1422;
+  color: #fbbf24;
+  font: 800 11px var(--font-mono);
+  text-align: center;
+}
+
+.rotor-chase-source-match-note {
+  margin: 9px 0 0;
+  color: #94a3b8;
+  font: 650 10px/1.5 var(--font-mono);
+}
+
+.rotor-chase-controls-card > div,
+.rotor-chase-playback-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 13px;
+}
+
+.rotor-chase-playback-buttons { grid-template-columns: repeat(3, 1fr) !important; }
+.rotor-chase-dc-buttons { grid-template-columns: repeat(3, 1fr) !important; }
+.rotor-chase-controls-card button.is-primary { background: #f59e0b; border-color: #f59e0b; color: #111827; }
+.rotor-chase-continue-button,
+.rotor-chase-reverse-button { width: 100%; margin-top: 9px; }
+.rotor-chase-controls-card input { width: 100%; margin-top: 16px; accent-color: #22d3ee; }
+.rotor-chase-travel { color: #67e8f9 !important; font: 800 10px var(--font-mono); text-align: center; }
+
+.rotor-chase-solver-status h3 {
+  margin: 13px 0 0;
+  color: #f8fafc;
+  font-size: 16px;
+}
+
+.rotor-chase-solver-status .rotor-chase-solve-progress {
+  margin-top: 16px;
+}
+
+.rotor-chase-controls-card .rotor-chase-motion-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-top: 14px;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.rotor-chase-motion-toggle > i {
+  position: relative;
+  width: 38px;
+  height: 22px;
+  flex: 0 0 38px;
+  border: 1px solid #475569;
+  border-radius: 999px;
+  background: #0f172a;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+
+.rotor-chase-motion-toggle > i > b {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #94a3b8;
+  transition: transform 150ms ease, background 150ms ease;
+}
+
+.rotor-chase-motion-toggle > span {
+  display: grid;
+  gap: 2px;
+}
+
+.rotor-chase-motion-toggle strong { color: #e2e8f0; font-size: 12px; }
+.rotor-chase-motion-toggle small { color: #94a3b8; font: 650 9px/1.4 var(--font-mono); }
+.rotor-chase-motion-toggle.is-active {
+  border-color: #22d3ee;
+  background: rgba(34, 211, 238, 0.12);
+}
+.rotor-chase-motion-toggle.is-active > i {
+  border-color: #22d3ee;
+  background: rgba(34, 211, 238, 0.28);
+}
+.rotor-chase-motion-toggle.is-active > i > b {
+  transform: translateX(16px);
+  background: #67e8f9;
+}
+.rotor-chase-motion-note {
+  color: #94a3b8 !important;
+  font: 650 9px/1.45 var(--font-mono);
+}
+
+.rotor-chase-empty-stage > div:last-child { max-width: 800px; text-align: center; }
+.rotor-chase-empty-stage h2 { margin: 0; font-size: 30px; }
+.rotor-chase-empty-stage p { color: #aab2c1; }
+
+.rotor-chase-quiz-stage {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 50px 42px 72px;
+}
+
+.rotor-chase-quiz-stage h2 { margin: 5px 0; font-size: 30px; }
+.rotor-chase-quiz-stage > p:not(.learning-kicker) { color: #aab2c1; }
+
+@media (max-width: 1280px) {
+  .rotor-chase-shell,
+  .rotor-chase-shell.is-solve-stage {
+    --learning-control-panel-width: var(--rotor-chase-context-width);
+    --learning-main-stage-min-width: 480px;
+    grid-template-columns: 300px minmax(var(--learning-main-stage-min-width), 1fr) var(--rotor-chase-context-width);
+  }
+}
+
+@media (max-width: 1080px) {
+  .rotor-chase-shell,
+  .rotor-chase-shell.is-solve-stage {
+    height: auto;
+    min-height: calc(100vh - var(--topbar-height));
+    grid-template-columns: minmax(0, 1fr);
+    overflow: visible;
+  }
+
+  .rotor-chase-control-panel {
+    grid-column: 1;
+    grid-row: 1;
+    display: block;
+    max-height: none;
+    border-right: 0;
+    border-bottom: 1px solid var(--border-default);
+  }
+
+  .rotor-chase-main {
+    grid-column: 1;
+    grid-row: 2;
+    min-height: 560px;
+  }
+
+  .rotor-chase-context {
+    grid-column: 1;
+    grid-row: 3;
+    max-height: none;
+    border-top: 1px solid var(--border-default);
+    border-left: 0;
+  }
+
+  .rotor-chase-context-resizer {
+    display: none;
+  }
+
+  .rotor-chase-viewer {
+    height: 560px;
+    min-height: 560px;
+  }
+}
+
+@media (max-width: 680px) {
+  .rotor-chase-main {
+    min-height: 500px;
+  }
+
+  .rotor-chase-viewer {
+    height: 500px;
+    min-height: 500px;
+  }
+
+  .rotor-chase-viewer-toolbar {
+    overflow-x: auto;
+    justify-content: flex-start;
+  }
+
+  .rotor-chase-field-source-toggle,
+  .rotor-chase-view-toggle {
+    flex: 0 0 auto;
+  }
+
+  .rotor-chase-field-source-toggle button,
+  .rotor-chase-view-toggle button {
+    flex: 1 0 auto;
+  }
+
+  .rotor-chase-context-navigation {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Lesson 6 studio layout: one field stage, optional setup/evidence drawers, one action dock. */
+.rotor-chase-shell,
+.rotor-chase-shell.is-solve-stage {
+  --rotor-chase-drawer-top: 66px;
+  position: relative;
+  display: block;
+  grid-template-columns: none;
+  height: calc(100vh - var(--topbar-height));
+  min-height: 0;
+  overflow: hidden;
+}
+
+.rotor-chase-main,
+.rotor-chase-shell.is-solve-stage .rotor-chase-main {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  min-width: 0;
+  min-height: 0;
+  padding: var(--rotor-chase-drawer-top) 0 112px;
+  overflow: hidden;
+  border: 0;
+  box-sizing: border-box;
+}
+
+.rotor-chase-shell.is-design-stage .rotor-chase-main,
+.rotor-chase-shell.is-quiz-open .rotor-chase-main {
+  padding: 0;
+}
+
+.rotor-chase-shell.is-quiz-open .rotor-chase-main {
+  display: block;
+  overflow-y: auto;
+  padding-bottom: 112px;
+}
+
+.rotor-chase-control-panel,
+.rotor-chase-context {
+  position: absolute;
+  z-index: 40;
+  top: calc(var(--rotor-chase-drawer-top) + 12px);
+  bottom: 124px;
+  width: min(370px, calc(100% - 32px));
+  min-width: 0;
+  max-height: calc(100% - var(--rotor-chase-drawer-top) - 142px);
+  overflow: auto;
+  padding: 0;
+  border: 1px solid rgba(71, 85, 105, 0.68);
+  border-radius: 18px;
+  background: rgba(14, 17, 23, 0.97);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.52);
+  backdrop-filter: blur(22px);
+  box-sizing: border-box;
+}
+
+.rotor-chase-control-panel {
+  left: 16px;
+  bottom: auto;
+}
+
+.rotor-chase-context {
+  right: 16px;
+  width: min(430px, calc(100% - 32px));
+}
+
+.rotor-chase-context-resizer {
+  display: none;
+}
+
+.rotor-chase-panel-close {
+  position: absolute;
+  z-index: 5;
+  top: 14px;
+  right: 14px;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(71, 85, 105, 0.72);
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.74);
+  color: #cbd5e1;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.rotor-chase-panel-close:hover,
+.rotor-chase-panel-close:focus-visible {
+  border-color: rgba(245, 158, 11, 0.75);
+  color: #f8fafc;
+}
+
+.rotor-chase-control-header,
+.rotor-chase-status-header.is-compact {
+  padding-right: 68px;
+}
+
+.rotor-chase-status-header.is-compact h1 {
+  margin-bottom: 12px;
+  font-size: 24px;
+}
+
+.rotor-chase-visual-header {
+  position: absolute;
+  z-index: 12;
+  top: 0;
+  right: 0;
+  left: 0;
+  min-height: var(--rotor-chase-drawer-top);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 14px;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.78);
+  background: rgba(20, 23, 30, 0.96);
+  box-sizing: border-box;
+}
+
+.rotor-chase-visual-context {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.rotor-chase-visual-context h2 {
+  margin: 0;
+  overflow: hidden;
+  color: #e5e7eb;
+  font-size: 15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rotor-chase-visual-context span {
+  overflow: hidden;
+  color: #8c96a8;
+  font: 750 10px var(--font-mono);
+  letter-spacing: 0.05em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.rotor-chase-studio-tools {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rotor-chase-studio-tools .rotor-chase-field-source-toggle,
+.rotor-chase-studio-tools .rotor-chase-view-toggle {
+  flex: 0 0 auto;
+}
+
+.rotor-chase-studio-tools .rotor-chase-field-source-toggle button,
+.rotor-chase-studio-tools .rotor-chase-view-toggle button {
+  min-height: 34px;
+  padding: 6px 9px;
+}
+
+.rotor-chase-viewer,
+.rotor-chase-empty-stage,
+.rotor-chase-electromagnet-loading-stage {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.rotor-chase-viewer .mesh-viewer-header {
+  display: none;
+}
+
+.rotor-chase-drawer-launcher,
+.rotor-chase-viewer-drawers {
+  top: 18px;
+}
+
+.rotor-chase-predict-experience {
+  width: min(1120px, calc(100% - 48px));
+  height: 100%;
+  min-height: 0;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+  grid-template-rows: auto minmax(380px, 1fr) auto;
+  gap: 16px 32px;
+  align-items: start;
+  padding: 30px 0 18px;
+  overflow: auto;
+  box-sizing: border-box;
+  scrollbar-gutter: stable;
+}
+
+.rotor-chase-predict-heading {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+.rotor-chase-predict-heading h1 {
+  margin: 5px 0 0;
+  color: #f8fafc;
+  font-size: clamp(34px, 4.2vw, 52px);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+}
+
+.rotor-chase-predict-heading > p:last-child {
+  margin: 7px 0 0;
+  color: #aab2c1;
+  font-size: 15px;
+}
+
+.rotor-chase-predict-visual {
+  position: relative;
+  min-height: 360px;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(51, 65, 85, 0.58);
+  border-radius: 20px;
+  background: rgba(7, 12, 21, 0.7);
+}
+
+.rotor-chase-predict-visual .learning-stage-badge {
+  position: absolute;
+  z-index: 2;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  gap: 10px;
+  padding: 8px 11px;
+  border: 1px solid rgba(51, 65, 85, 0.72);
+  border-radius: 8px;
+  background: rgba(3, 7, 18, 0.78);
+  color: #e2e8f0;
+  font: 800 10px var(--font-mono);
+}
+
+.rotor-chase-predict-visual .learning-stage-badge span {
+  color: #67e8f9;
+}
+
+.rotor-chase-predict-visual .rotor-chase-prediction {
+  width: 94%;
+  max-height: min(48vh, 510px);
+}
+
+.rotor-chase-predict-question {
+  display: grid;
+  gap: 8px;
+}
+
+.rotor-chase-predict-question h2 {
+  margin: 0 0 3px;
+  color: #f8fafc;
+  font-size: clamp(21px, 2.1vw, 27px);
+  line-height: 1.15;
+}
+
+.rotor-chase-predict-experience .rotor-chase-predictions button {
+  min-height: 62px;
+  grid-template-columns: 32px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  border-radius: 12px;
+}
+
+.rotor-chase-predict-experience .rotor-chase-predictions button > span:last-child {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.rotor-chase-predict-experience .rotor-chase-predictions small {
+  color: #8c96a8;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.rotor-chase-prediction-number {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(71, 85, 105, 0.76);
+  border-radius: 50%;
+  color: #cbd5e1;
+  font: 800 11px var(--font-mono);
+}
+
+.rotor-chase-predict-experience .rotor-chase-feedback {
+  min-height: 38px;
+  margin: 0;
+  display: grid;
+  align-items: center;
+  font-size: 12px;
+}
+
+.rotor-chase-predict-primary {
+  min-height: 48px;
+  justify-content: center;
+}
+
+.rotor-chase-predict-footer {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: #727d90;
+  font: 800 10px var(--font-mono);
+}
+
+.rotor-chase-predict-footer > div {
+  display: flex;
+  gap: 10px;
+}
+
+.rotor-chase-predict-footer button {
+  min-height: 36px;
+}
+
+.rotor-chase-lesson-dock {
+  position: absolute;
+  z-index: 30;
+  left: 50%;
+  bottom: 16px;
+  width: min(1120px, calc(100% - 32px));
+  min-height: 78px;
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+  padding: 12px 14px 12px 18px;
+  border: 1px solid rgba(71, 85, 105, 0.72);
+  border-radius: 18px;
+  background: rgba(14, 17, 23, 0.95);
+  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.52);
+  backdrop-filter: blur(20px);
+  transform: translateX(-50%);
+  box-sizing: border-box;
+}
+
+.rotor-chase-dock-insight {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.rotor-chase-dock-insight > span {
+  color: #fbbf24;
+  font: 800 9px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.rotor-chase-dock-insight > strong {
+  max-width: 650px;
+  overflow: hidden;
+  color: #f1f5f9;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rotor-chase-dock-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rotor-chase-dock-actions > button,
+.rotor-chase-dock-actions > a {
+  min-height: 46px;
+  padding: 0 16px;
+  border-radius: 11px;
+  white-space: nowrap;
+}
+
+.rotor-chase-dock-actions > .learning-ghost-button[aria-expanded="true"] {
+  border-color: rgba(148, 163, 184, 0.78);
+  color: #f8fafc;
+}
+
+.rotor-chase-dock-primary {
+  min-width: 200px;
+  justify-content: center;
+}
+
+.rotor-chase-control-panel .rotor-chase-continue-button {
+  display: none;
+}
+
+@media (max-width: 980px) {
+  .rotor-chase-studio-tools {
+    max-width: 68%;
+    overflow-x: auto;
+  }
+
+  .rotor-chase-predict-experience {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(240px, 42vh) auto auto;
+    gap: 16px;
+  }
+
+  .rotor-chase-predict-heading,
+  .rotor-chase-predict-footer {
+    grid-column: 1;
+  }
+
+  .rotor-chase-lesson-dock {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .rotor-chase-dock-insight > strong {
+    white-space: normal;
+  }
+
+  .rotor-chase-main,
+  .rotor-chase-shell.is-solve-stage .rotor-chase-main {
+    padding-bottom: 154px;
+  }
+
+  .rotor-chase-control-panel,
+  .rotor-chase-context {
+    bottom: 166px;
+  }
+}
+
+@media (max-width: 700px) {
+  .rotor-chase-shell,
+  .rotor-chase-shell.is-solve-stage {
+    height: calc(100vh - var(--topbar-height));
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .rotor-chase-visual-header {
+    align-items: flex-start;
+    overflow-x: auto;
+  }
+
+  .rotor-chase-visual-context {
+    display: none;
+  }
+
+  .rotor-chase-studio-tools {
+    max-width: none;
+  }
+
+  .rotor-chase-control-panel,
+  .rotor-chase-context {
+    top: 74px;
+    right: 8px;
+    left: 8px;
+    width: auto;
+    max-height: calc(100% - 240px);
+  }
+
+  .rotor-chase-predict-experience {
+    width: calc(100% - 24px);
+    padding-top: 20px;
+  }
+
+  .rotor-chase-predict-heading h1 {
+    font-size: 37px;
+  }
+
+  .rotor-chase-predict-footer {
+    align-items: flex-start;
+  }
+
+  .rotor-chase-dock-insight {
+    display: none;
+  }
+
+  .rotor-chase-lesson-dock {
+    bottom: 8px;
+    width: calc(100% - 16px);
+    min-height: 0;
+    padding: 8px;
+    border-radius: 14px;
+  }
+
+  .rotor-chase-dock-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .rotor-chase-dock-actions > button,
+  .rotor-chase-dock-actions > a {
+    min-width: 0;
+    padding: 0 8px;
+    white-space: normal;
+  }
+
+  .rotor-chase-dock-primary {
+    grid-column: 1 / -1;
+  }
+}

@@ -1,0 +1,269 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://coilem.com/schemas/v1/magnetostatic_problem.schema.json",
+  "title": "Magneto2D generic magnetostatic problem",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "version",
+    "units",
+    "mesh",
+    "materials",
+    "elements",
+    "boundaries"
+  ],
+  "properties": {
+    "kind": {
+      "const": "magnetostatic_problem"
+    },
+    "version": {
+      "const": "1.0"
+    },
+    "units": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["length"],
+      "properties": {
+        "length": {
+          "enum": ["m", "mm", "cm"]
+        }
+      }
+    },
+    "mesh": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nodes", "triangles"],
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "type": "array",
+            "prefixItems": [{"type": "number"}, {"type": "number"}],
+            "items": false
+          }
+        },
+        "triangles": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "array",
+            "prefixItems": [
+              {"type": "integer", "minimum": 0},
+              {"type": "integer", "minimum": 0},
+              {"type": "integer", "minimum": 0}
+            ],
+            "items": false
+          }
+        }
+      }
+    },
+    "materials": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind", "mu_r"],
+            "properties": {
+              "kind": {"const": "linear"},
+              "mu_r": {"type": "number", "minimum": 1}
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind", "bh_curve"],
+            "properties": {
+              "kind": {"const": "nonlinear"},
+              "bh_curve": {"$ref": "#/$defs/bhCurve"}
+            }
+          }
+        ]
+      }
+    },
+    "elements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["material_id"],
+        "properties": {
+          "material_id": {"type": "integer", "minimum": 0},
+          "current_density_z_a_per_m2": {"type": "number", "default": 0},
+          "remanence_t": {
+            "type": "array",
+            "prefixItems": [{"type": "number"}, {"type": "number"}],
+            "items": false,
+            "default": [0, 0]
+          },
+          "pm_source_scale": {"type": "number", "minimum": 0, "default": 1}
+        }
+      }
+    },
+    "boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dirichlet_az_zero_nodes"],
+      "properties": {
+        "dirichlet_az_zero_nodes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "integer", "minimum": 0}
+        },
+        "paired_nodes": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["nodes", "kind"],
+            "properties": {
+              "nodes": {
+                "type": "array",
+                "prefixItems": [
+                  {"type": "integer", "minimum": 0},
+                  {"type": "integer", "minimum": 0}
+                ],
+                "items": false
+              },
+              "kind": {"enum": ["periodic", "anti_periodic"]}
+            }
+          }
+        },
+        "periodic_penalty": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "default": 10000000000
+        }
+      }
+    },
+    "options": {"$ref": "#/$defs/solveOptions"},
+    "warm_start": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "az_nodal": {
+          "type": "array",
+          "items": {"type": "number"}
+        },
+        "mu_r_by_element": {
+          "type": "array",
+          "items": {"type": "number", "minimum": 1}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "bhCurve": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["points"],
+      "properties": {
+        "points": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["b_t", "h_a_per_m"],
+            "properties": {
+              "b_t": {"type": "number", "minimum": 0},
+              "h_a_per_m": {"type": "number", "minimum": 0}
+            }
+          }
+        },
+        "mu_r_min": {"type": "number", "minimum": 1, "default": 1},
+        "mu_r_max": {"type": "number", "minimum": 1, "default": 10000}
+      }
+    },
+    "solveOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "linear": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "solver": {"enum": ["direct", "pcg"], "default": "direct"},
+            "pcg_preconditioner": {
+              "enum": ["incomplete_cholesky", "jacobi"],
+              "default": "incomplete_cholesky"
+            },
+            "pcg_parallel": {"type": "boolean", "default": false},
+            "pcg_residual_check_interval": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 8
+            },
+            "tolerance": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "exclusiveMaximum": 1,
+              "default": 1e-8
+            },
+            "max_iterations": {"type": "integer", "minimum": 1, "default": 5000}
+          }
+        },
+        "nonlinear": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "algorithm": {
+              "type": "string",
+              "enum": ["picard", "newton"],
+              "default": "picard"
+            },
+            "max_iterations": {"type": "integer", "minimum": 1, "default": 100},
+            "tolerance": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "exclusiveMaximum": 1,
+              "default": 0.05
+            },
+            "relaxation": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 1,
+              "default": 0.1
+            },
+            "mu_r_step_cap": {"type": "number", "minimum": 1, "default": 1.5},
+            "newton_initial_damping": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 1,
+              "default": 1
+            },
+            "newton_min_damping": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 1,
+              "default": 0.015625
+            },
+            "newton_line_search_shrink": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "exclusiveMaximum": 1,
+              "default": 0.5
+            },
+            "newton_line_search_accept_ratio": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 1,
+              "default": 0.999
+            },
+            "newton_fallback_to_picard": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        }
+      }
+    }
+  }
+}

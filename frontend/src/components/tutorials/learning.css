@@ -1,0 +1,3204 @@
+.learning-shell {
+  min-height: calc(100vh - var(--topbar-height));
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 220px),
+    var(--bg-app);
+  color: var(--text-primary);
+}
+
+/* Shared tutorial studio chrome used by the later FEM lessons. */
+.tutorial-studio-strip {
+  position: absolute;
+  z-index: 20;
+  inset: 0 0 auto;
+  display: flex;
+  align-items: center;
+  padding: 0 22px;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.78);
+  background: rgba(15, 18, 24, 0.96);
+  box-sizing: border-box;
+}
+
+.tutorial-studio-strip > div {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.tutorial-studio-strip strong {
+  color: #e5e7eb;
+  font-size: 15px;
+}
+
+.tutorial-studio-strip span {
+  overflow: hidden;
+  color: #8792a5;
+  font: 800 10px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tutorial-studio-panel-close {
+  position: absolute;
+  z-index: 5;
+  top: 14px;
+  right: 14px;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(71, 85, 105, 0.72);
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.74);
+  color: #cbd5e1;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.tutorial-studio-panel-close:hover,
+.tutorial-studio-panel-close:focus-visible {
+  border-color: rgba(245, 158, 11, 0.75);
+  color: #f8fafc;
+}
+
+.tutorial-studio-dock {
+  position: absolute;
+  z-index: 50;
+  left: 50%;
+  bottom: 16px;
+  width: min(1120px, calc(100% - 32px));
+  min-height: 78px;
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+  padding: 12px 14px 12px 18px;
+  border: 1px solid rgba(71, 85, 105, 0.72);
+  border-radius: 18px;
+  background: rgba(14, 17, 23, 0.95);
+  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.52);
+  backdrop-filter: blur(20px);
+  transform: translateX(-50%);
+  box-sizing: border-box;
+}
+
+.tutorial-studio-dock > div:first-child {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.tutorial-studio-dock > div:first-child > span {
+  color: #fbbf24;
+  font: 800 9px var(--font-mono);
+  letter-spacing: 0.09em;
+}
+
+.tutorial-studio-dock > div:first-child > strong {
+  overflow: hidden;
+  color: #f1f5f9;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tutorial-studio-dock-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tutorial-studio-dock-actions > button,
+.tutorial-studio-dock-actions > a {
+  min-height: 46px;
+  padding: 0 16px;
+  border-radius: 11px;
+  white-space: nowrap;
+}
+
+.tutorial-studio-dock-actions > button:not(.learning-primary-button) {
+  border: 1px solid rgba(71, 85, 105, 0.76);
+  background: rgba(24, 29, 38, 0.94);
+  color: #cbd5e1;
+  font-weight: 750;
+}
+
+.tutorial-studio-dock-actions > button.is-active {
+  border-color: rgba(103, 232, 249, 0.55);
+  color: #f8fafc;
+}
+
+.tutorial-studio-dock-actions > .learning-primary-button {
+  min-width: 200px;
+  justify-content: center;
+}
+
+@media (max-width: 980px) {
+  .tutorial-studio-dock { grid-template-columns: 1fr; gap: 9px; }
+  .tutorial-studio-dock > div:first-child > strong { white-space: normal; }
+}
+
+@media (max-width: 700px) {
+  .tutorial-studio-dock > div:first-child { display: none; }
+  .tutorial-studio-dock { bottom: 8px; width: calc(100% - 16px); min-height: 0; }
+  .tutorial-studio-dock-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tutorial-studio-dock-actions > button,
+  .tutorial-studio-dock-actions > a { min-width: 0; padding: 0 10px; }
+}
+
+.learning-kicker {
+  margin: 0 0 10px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.learning-catalog-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 54px min(5vw, 72px);
+}
+
+.learning-catalog-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.learning-catalog-hero h1 {
+  max-width: 720px;
+  margin: 0;
+  font-size: clamp(34px, 4.8vw, 58px);
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+.learning-catalog-hero p:not(.learning-kicker) {
+  max-width: 680px;
+  margin: 16px 0 0;
+  color: var(--text-secondary);
+  font-size: 16px;
+}
+
+.learning-catalog-hero-actions {
+  display: grid;
+  gap: 8px;
+  flex: 0 0 auto;
+  min-width: 190px;
+}
+
+/* Course-level progress. The per-card badges show which lessons are done; this
+   shows how far through the primer the learner is overall. */
+.learning-catalog-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 420px;
+  margin: 20px 0 0;
+}
+
+.learning-catalog-progress-track {
+  position: relative;
+  flex: 1 1 auto;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.learning-catalog-progress-track > span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent-gradient);
+  transition: width 220ms ease;
+}
+
+.learning-catalog-progress-label {
+  flex: 0 0 auto;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Secondary entry path — the guided tour of the real workspace. Deliberately
+   lighter than a lesson card so the ten lessons stay the primary surface. */
+.learning-track-secondary .learning-track-header h2 {
+  font-size: clamp(18px, 2vw, 22px);
+  color: var(--text-secondary);
+}
+
+.learning-alt-paths {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.learning-alt-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 18px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-primary);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.learning-alt-card:hover {
+  border-color: var(--border-accent);
+  background: var(--bg-surface-1);
+}
+
+.learning-alt-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .learning-alt-paths {
+    grid-template-columns: 1fr;
+  }
+
+  .learning-catalog-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .learning-catalog-hero-actions {
+    width: 100%;
+    grid-auto-flow: column;
+  }
+}
+
+.learning-ghost-button,
+.learning-primary-button,
+.learning-icon-button {
+  min-height: 38px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.learning-ghost-button {
+  padding: 0 14px;
+  border: 1px solid var(--border-default);
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--text-secondary);
+}
+
+.learning-ghost-button:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+  background: var(--hover);
+}
+
+.learning-primary-button {
+  padding: 0 16px;
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  background: var(--accent-gradient);
+  color: var(--accent-ink);
+}
+
+.tutorial-lesson-page {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.tutorial-lesson-page > .learning-lesson-shell {
+  flex: 1 1 0;
+  height: auto;
+  min-height: 0;
+}
+
+.tutorial-replay-banner {
+  margin: 12px 18px 0;
+  padding: 12px 16px;
+  border: 1px solid rgba(78, 145, 126, 0.46);
+  border-radius: 12px;
+  background: rgba(15, 38, 34, 0.94);
+  color: var(--learning-text, #f5f5f4);
+}
+
+.tutorial-replay-banner > div {
+  min-width: 0;
+}
+
+.tutorial-replay-banner strong {
+  display: block;
+  color: #9ce4ca;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+
+.tutorial-replay-banner span {
+  display: block;
+  margin-top: 3px;
+  color: var(--learning-muted, #a4acb9);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.tutorial-replay-dock {
+  position: fixed;
+  z-index: 80;
+  left: 50%;
+  bottom: 16px;
+  width: min(1080px, calc(100% - 32px));
+  min-height: 76px;
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+  padding: 12px 14px 12px 18px;
+  border: 1px solid rgba(71, 85, 105, 0.7);
+  border-radius: 18px;
+  background: rgba(14, 17, 23, 0.94);
+  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(20px);
+  transform: translateX(-50%);
+  box-sizing: border-box;
+}
+
+.tutorial-replay-dock-copy {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.tutorial-replay-dock-copy span {
+  color: #7ee2bd;
+  font: 800 9px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tutorial-replay-dock-copy strong {
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tutorial-replay-dock > div:last-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tutorial-replay-dock button {
+  min-height: 42px;
+}
+
+.tutorial-replay-mode .learning-main-stage {
+  padding-bottom: 112px !important;
+  box-sizing: border-box;
+}
+
+.tutorial-replay-mode .learning-panel-footer,
+.tutorial-replay-mode .follow-flux-quiz-dock,
+.tutorial-replay-mode .tutorial-studio-dock {
+  display: none !important;
+}
+
+.tutorial-replay-mode [aria-label="Lesson progress"] > li {
+  position: relative;
+}
+
+.tutorial-replay-mode [aria-label="Lesson progress"] > li::after {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  content: "✓";
+  color: #7ee2bd;
+  font-weight: 800;
+  pointer-events: none;
+}
+
+.tutorial-replay-mode .field-force-next-lesson,
+.tutorial-replay-mode .rotor-chase-next-lesson {
+  display: none !important;
+}
+
+@media (max-width: 600px) {
+  .tutorial-replay-dock {
+    bottom: 8px;
+    width: calc(100% - 16px);
+    min-height: 0;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 14px;
+  }
+
+  .tutorial-replay-dock-copy {
+    display: none;
+  }
+
+  .tutorial-replay-dock > div:last-child {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .tutorial-replay-dock button {
+    min-width: 0;
+    padding-inline: 10px;
+  }
+}
+
+.learning-icon-button {
+  padding: 0 12px;
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface-2);
+  color: var(--text-primary);
+}
+
+.learning-lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* The lesson grid is an <ol> so the 1..10 order is real structure, not just
+   a rendered number. The list markers are suppressed; the numbered badge in
+   each card carries the ordinal visually. */
+.learning-lesson-grid.is-primer {
+  list-style: none;
+  padding: 0;
+}
+
+.learning-lesson-slot {
+  display: flex;
+}
+
+.learning-lesson-card {
+  min-height: 236px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-1);
+  color: var(--text-primary);
+  text-align: left;
+}
+
+.learning-lesson-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* Physics glyph: one diagram per lesson so the catalog is scannable by picture.
+   Sits opposite the ordinal badge and dims with the card when unavailable. */
+.learning-lesson-glyph {
+  width: 66px;
+  height: 48px;
+  flex: 0 0 auto;
+  color: var(--text-secondary);
+  opacity: 0.9;
+}
+
+.learning-lesson-card.is-available:hover .learning-lesson-glyph {
+  opacity: 1;
+}
+
+/* The lesson the learner would resume at. */
+.learning-lesson-card.is-next {
+  border-color: var(--border-accent);
+  box-shadow: var(--glow-amber-sm);
+}
+
+/* Section review card: closes each part of the primer. Not built yet, so it is
+   a plain div rather than a button — dashed and unlit to read as a milestone in
+   the sequence rather than something you can click. */
+.learning-lesson-card.is-review {
+  border-style: dashed;
+  background: transparent;
+  box-shadow: none;
+  opacity: 0.72;
+}
+
+.learning-lesson-number.is-review {
+  width: auto;
+  min-width: 36px;
+  padding: 0 10px;
+  border-style: dashed;
+  border-color: var(--border-default);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.learning-lesson-card.is-review .learning-lesson-glyph {
+  color: var(--text-muted);
+  opacity: 0.75;
+}
+
+/* Each part gets its own header + grid, so the two tracks need separating. */
+.learning-lesson-section + .learning-lesson-section {
+  margin-top: 12px;
+}
+
+.learning-lesson-card.is-complete .learning-lesson-number {
+  border-color: rgba(132, 204, 22, 0.5);
+  background: rgba(132, 204, 22, 0.12);
+  color: #a3e635;
+}
+
+.learning-lesson-card.is-available {
+  cursor: pointer;
+  box-shadow: var(--glow-amber-sm);
+}
+
+.learning-lesson-card.is-available:hover {
+  border-color: var(--border-accent);
+  background: var(--bg-surface-2);
+}
+
+.learning-lesson-card.is-planned {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.learning-lesson-number {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--accent-primary-hover);
+  font-family: var(--font-mono);
+  font-weight: 800;
+}
+
+.learning-lesson-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.learning-lesson-status,
+.learning-lesson-meta {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.learning-lesson-title {
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.learning-lesson-summary {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.42;
+}
+
+.learning-lesson-shell {
+  --learning-control-panel-width: 332px;
+  --learning-main-stage-min-width: 600px;
+  display: grid;
+  grid-template-columns: 320px minmax(var(--learning-main-stage-min-width), 1fr) var(--learning-control-panel-width);
+  height: calc(100vh - var(--topbar-height));
+  min-height: calc(100vh - var(--topbar-height));
+  overflow: hidden;
+}
+
+.learning-lesson-shell.is-solve-stage {
+  /* Match LiveSolveViewer's default analysis-side width. */
+  --learning-control-panel-width: 560px;
+  --learning-main-stage-min-width: 300px;
+}
+
+.learning-step-rail,
+.learning-control-panel {
+  min-width: 0;
+  background: var(--bg-surface-1);
+}
+
+.tutorial-studio-goal {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  margin: 20px 18px 6px;
+  padding: 16px;
+  border: 1px solid rgba(34, 211, 238, 0.3);
+  border-left: 4px solid #22d3ee;
+  border-radius: var(--radius-sm);
+  background: rgba(8, 47, 73, 0.2);
+}
+
+.tutorial-studio-goal > span {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(34, 211, 238, 0.55);
+  border-radius: 50%;
+  color: #67e8f9;
+  font: 900 13px var(--font-mono);
+}
+
+.tutorial-studio-goal .learning-kicker {
+  margin: 0 0 5px;
+}
+
+.tutorial-studio-goal h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 16px;
+  line-height: 1.32;
+}
+
+.learning-step-rail {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  border-right: 1px solid var(--border-default);
+}
+
+.learning-step-header {
+  padding: 20px 18px 16px;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.learning-step-header h1 {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.16;
+}
+
+.learning-step-header p:not(.learning-kicker) {
+  margin: 12px 0 0;
+  color: var(--text-secondary);
+}
+
+.learning-progress {
+  height: 6px;
+  margin-top: 16px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--bg-surface-3);
+}
+
+.learning-progress span {
+  display: block;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-primary), var(--info));
+}
+
+.learning-step-list {
+  list-style: none;
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 14px 10px;
+}
+
+.learning-step-item {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 10px;
+  padding: 10px 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+}
+
+.learning-stage-list {
+  padding-top: 10px;
+}
+
+.learning-stage-list .learning-step-item {
+  display: block;
+}
+
+.learning-step-item > button {
+  all: unset;
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 10px;
+  width: 100%;
+  cursor: pointer;
+}
+
+.learning-step-item > button:disabled {
+  cursor: not-allowed;
+  opacity: 0.46;
+}
+
+.learning-control-panel.is-quiz-open > :not(.learning-quiz-reference):not(.learning-panel-footer) {
+  display: none;
+}
+
+.learning-quiz-reference {
+  margin: 18px;
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--bg-surface-2) 86%, transparent);
+  color: var(--text-secondary);
+}
+
+.learning-quiz-reference summary {
+  padding: 14px 16px;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.learning-quiz-reference > div {
+  display: grid;
+  gap: 10px;
+  padding: 0 16px 16px;
+}
+
+.learning-quiz-reference p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.learning-quiz-reference dl {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.learning-quiz-reference dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.learning-quiz-reference dt,
+.learning-quiz-reference dd {
+  margin: 0;
+}
+
+.learning-step-item.is-active {
+  border-color: rgba(245, 158, 11, 0.36);
+  background: rgba(245, 158, 11, 0.08);
+  color: var(--text-primary);
+}
+
+.learning-step-item > span,
+.learning-step-item > button > span {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-default);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-weight: 800;
+}
+
+.learning-step-item.is-done > span,
+.learning-step-item.is-done > button > span {
+  border-color: rgba(34, 197, 94, 0.42);
+  background: rgba(34, 197, 94, 0.12);
+  color: #86efac;
+}
+
+.learning-step-item strong {
+  display: block;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.learning-step-item p {
+  margin: 3px 0 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.learning-settings-drawer {
+  margin: 10px 18px 6px;
+}
+
+.learning-settings-drawer-toggle {
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-2);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.learning-settings-drawer-toggle span {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+  text-align: left;
+}
+
+.learning-settings-drawer-toggle strong {
+  font-size: 12px;
+}
+
+.learning-settings-drawer-toggle em {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-style: normal;
+}
+
+.learning-settings-drawer-toggle i {
+  width: 22px;
+  height: 22px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--border-default);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.learning-settings-drawer.is-open .learning-settings-drawer-toggle {
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.learning-settings-list {
+  display: grid;
+  gap: 1px;
+  margin: 6px 0 0;
+  padding: 0;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--border-default);
+}
+
+.learning-settings-list div {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--bg-surface-1);
+}
+
+.learning-settings-list dt {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.learning-settings-list dd {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: right;
+}
+
+/* ---------------------------------------------------------------------------
+   Right control panel: the lab workflow.
+
+   The left rail is navigation only (step header + step list); every control that
+   DOES something — the primary CTA, the stage Back button, solver errors, lesson
+   completion and the catalog/home links — lives at the foot of the lesson's third
+   column. These classes are shared by every lesson so the CTA lands in the same
+   place no matter which one you open. Lesson-specific panels only supply padding
+   and background; they must not re-position these.
+   --------------------------------------------------------------------------- */
+
+.learning-panel-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 0.84fr) minmax(0, 1.16fr);
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.learning-panel-actions.is-single {
+  grid-template-columns: 1fr;
+}
+
+.learning-panel-actions .learning-primary-button,
+.learning-panel-actions .learning-ghost-button {
+  width: 100%;
+}
+
+.learning-panel-footer {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-default);
+}
+
+.learning-panel-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.learning-panel-footer .learning-lesson-complete,
+.learning-panel-footer .learning-next-lesson {
+  width: 100%;
+  text-align: center;
+}
+
+.learning-panel-footer .learning-next-lesson {
+  display: block;
+  line-height: 38px;
+  text-decoration: none;
+  color: var(--accent-ink);
+}
+
+/* .learning-control-panel carries no padding of its own — its children
+   (.learning-control-section, .learning-metrics, .learning-explain-panel) each
+   bring their own 18px. The workflow blocks moved out of the left rail are
+   direct children too, so they need the same gutter or they sit flush against
+   the panel's border-left. Context panels (.learning-context-panel) are padded
+   by their per-lesson rule and are deliberately not matched here. */
+.learning-control-panel > .learning-panel-actions,
+.learning-control-panel > .learning-panel-footer {
+  margin-inline: 18px;
+}
+
+.learning-control-panel > .learning-panel-footer {
+  margin-bottom: 18px;
+}
+
+/* Legacy left-rail action containers. Retained because the shared button
+   primitives above still reference them; no lesson renders them in the rail. */
+.learning-rail-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: auto;
+  padding: 14px 18px 18px;
+  border-top: 1px solid var(--border-default);
+}
+
+.learning-stage-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 0.84fr) minmax(0, 1.16fr);
+  gap: 8px;
+  padding: 4px 18px 14px;
+}
+
+.learning-rail-design-settings,
+.learning-rail-solve-settings {
+  margin: 0 18px 12px;
+  padding: 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-2);
+}
+
+.learning-rail-design-settings h2,
+.learning-rail-solve-settings h2 {
+  margin: 0 0 2px;
+  font-size: 13px;
+}
+
+.learning-setting-field {
+  display: grid;
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.learning-setting-field > span {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.learning-setting-field > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.learning-setting-field input {
+  width: 100%;
+  min-width: 0;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-1);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.learning-setting-field input:focus {
+  outline: 2px solid rgba(245, 158, 11, 0.35);
+  outline-offset: 1px;
+  border-color: rgba(245, 158, 11, 0.6);
+}
+
+.learning-setting-field input:disabled {
+  opacity: 0.58;
+  cursor: wait;
+}
+
+.learning-setting-field input.learning-setting-range {
+  height: 4px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  accent-color: var(--accent-primary);
+}
+
+.learning-setting-field input.learning-setting-range:focus {
+  outline-offset: 5px;
+}
+
+.learning-setting-field em {
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.learning-stage-actions.is-single {
+  grid-template-columns: 1fr;
+}
+
+.learning-stage-actions .learning-primary-button,
+.learning-stage-actions .learning-ghost-button {
+  width: 100%;
+}
+
+.learning-nav-error {
+  margin: 0 18px 14px;
+  padding: 9px 10px;
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  border-radius: var(--radius-sm);
+  background: rgba(248, 113, 113, 0.08);
+  color: #fecaca;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.learning-main-stage {
+  --learning-visual-row-height: clamp(416px, calc(48vh + 96px), 560px);
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: minmax(300px, 1fr) clamp(240px, 34vh, 360px);
+  background:
+    linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(180deg, var(--grid-minor) 1px, transparent 1px),
+    var(--bg-canvas);
+  background-size: 32px 32px;
+}
+
+.learning-main-stage.is-design-stage,
+.learning-main-stage.is-mesh-stage,
+.learning-main-stage.is-solve-stage {
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.learning-main-stage.is-solve-stage {
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.learning-main-stage.is-mesh-ready {
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.learning-motor-viewport {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: 20px;
+}
+
+.learning-main-stage.is-mesh-ready .learning-motor-viewport {
+  align-items: start;
+  padding: 12px 20px 0;
+}
+
+.learning-main-stage.is-mesh-stage .learning-motor-viewport,
+.learning-main-stage.is-solve-stage .learning-motor-viewport {
+  align-items: start;
+  padding: 12px 20px 0;
+}
+
+.learning-main-stage.is-design-stage .learning-motor-viewport {
+  padding: 18px 76px 24px 22px;
+}
+
+.learning-main-stage.is-mesh-stage .learning-motor-viewport {
+  align-items: stretch;
+  padding: 18px 22px 22px;
+}
+
+.learning-main-stage.is-solve-stage .learning-motor-viewport {
+  align-items: stretch;
+  /* Preserve the control-clear canvas size while centering it in the stage. */
+  padding: 50px 49px;
+}
+
+.learning-main-stage.is-mesh-stage .mesh-viewer-embedded-shell,
+.learning-main-stage.is-mesh-stage .mesh-viewer-container-embedded,
+.learning-main-stage.is-solve-stage .mesh-viewer-embedded-shell,
+.learning-main-stage.is-solve-stage .mesh-viewer-container-embedded {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.learning-motor-control-dock {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100% - 28px);
+  padding: 7px 8px;
+  border: 1px solid rgba(71, 85, 105, 0.42);
+  border-radius: 10px;
+  background: rgba(10, 15, 25, 0.9);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.38);
+  backdrop-filter: blur(12px);
+  transform: translateX(-50%);
+}
+
+.learning-winding-current-state {
+  position: absolute;
+  bottom: 68px;
+  left: 18px;
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border: 1px solid rgba(71, 85, 105, 0.48);
+  border-radius: 8px;
+  background: rgba(8, 15, 27, 0.88);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+}
+
+.learning-winding-current-phases {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.learning-winding-current-phases > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 61px;
+  padding: 3px 5px;
+  border: 1px solid color-mix(in srgb, var(--phase-color) 62%, transparent);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--phase-color) 12%, rgba(15, 23, 42, 0.9));
+  color: #e2e8f0;
+  font: 700 10px var(--font-mono);
+}
+
+.learning-winding-current-phases b {
+  color: var(--phase-color);
+  font-size: 11px;
+}
+
+.learning-winding-current-phases strong {
+  color: #f8fafc;
+  font-weight: 800;
+}
+
+.learning-winding-current-state small {
+  color: #94a3b8;
+  font: 700 9px var(--font-mono);
+  white-space: nowrap;
+}
+
+.learning-winding-current-state small b {
+  color: #f8fafc;
+  font-size: 12px;
+}
+
+.learning-winding-current-state.is-muted .learning-winding-current-phases > span {
+  border-color: rgba(100, 116, 139, 0.48);
+  background: rgba(30, 41, 59, 0.72);
+  color: #94a3b8;
+}
+
+.learning-winding-current-state.is-muted .learning-winding-current-phases b,
+.learning-winding-current-state.is-muted .learning-winding-current-phases strong {
+  color: #94a3b8;
+}
+
+.learning-motor-playback-controls,
+.learning-motor-zoom-controls,
+.learning-motor-field-source {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.learning-motor-icon-button,
+.learning-motor-zoom-controls button,
+.learning-motor-field-source button {
+  display: inline-grid;
+  place-items: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid rgba(100, 116, 139, 0.48);
+  border-radius: 7px;
+  background: rgba(20, 28, 43, 0.92);
+  color: var(--text-secondary);
+  font: 800 15px var(--font-ui);
+  cursor: pointer;
+}
+
+.learning-motor-icon-button:hover:not(:disabled),
+.learning-motor-zoom-controls button:hover:not(:disabled),
+.learning-motor-icon-button.is-active,
+.learning-motor-field-source button:hover:not(:disabled),
+.learning-motor-field-source button.is-active {
+  border-color: rgba(245, 158, 11, 0.62);
+  background: rgba(245, 158, 11, 0.14);
+  color: #fbbf24;
+}
+
+.learning-motor-icon-button:focus-visible,
+.learning-motor-zoom-controls button:focus-visible,
+.learning-motor-field-source button:focus-visible,
+.learning-motor-rpm-control input:focus-visible {
+  outline: 2px solid #67e8f9;
+  outline-offset: 2px;
+}
+
+.learning-motor-icon-button:disabled,
+.learning-motor-zoom-controls button:disabled,
+.learning-motor-field-source button:disabled,
+.learning-motor-rpm-control input:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.learning-play-icon {
+  width: 0;
+  height: 0;
+  margin-left: 2px;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 10px solid currentColor;
+}
+
+.learning-pause-icon {
+  width: 11px;
+  height: 12px;
+  border-right: 4px solid currentColor;
+  border-left: 4px solid currentColor;
+}
+
+.learning-stop-icon {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: currentColor;
+}
+
+.learning-motor-rpm-control {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 132px;
+  margin-left: 3px;
+  color: var(--text-muted);
+  font: 700 11px var(--font-mono);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.learning-motor-rpm-control input {
+  width: 70px;
+  height: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--accent-primary, #f59e0b) 0%,
+    var(--accent-primary, #f59e0b) var(--learning-rpm-progress, 0%),
+    rgba(148, 163, 184, 0.28) var(--learning-rpm-progress, 0%),
+    rgba(148, 163, 184, 0.28) 100%
+  );
+  cursor: pointer;
+}
+
+.learning-motor-rpm-control input::-webkit-slider-thumb {
+  width: 14px;
+  height: 14px;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 2px solid rgba(10, 15, 26, 0.94);
+  border-radius: 50%;
+  background: var(--accent-primary, #f59e0b);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+}
+
+.learning-motor-rpm-control input::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(10, 15, 26, 0.94);
+  border-radius: 50%;
+  background: var(--accent-primary, #f59e0b);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+}
+
+.learning-motor-control-divider {
+  width: 1px;
+  align-self: stretch;
+  background: rgba(100, 116, 139, 0.36);
+}
+
+.learning-motor-field-source button {
+  width: auto;
+  min-width: 70px;
+  padding: 0 10px;
+  font-size: 11px;
+}
+
+.learning-rotor-angle-scrubber {
+  position: absolute;
+  top: 28px;
+  right: 17px;
+  bottom: 86px;
+  z-index: 6;
+  display: grid;
+  grid-template-rows: auto minmax(140px, 1fr) auto auto;
+  justify-items: center;
+  gap: 7px;
+  min-height: 220px;
+  padding: 9px 7px;
+  border: 1px solid rgba(71, 85, 105, 0.42);
+  border-radius: 10px;
+  background: rgba(10, 15, 25, 0.86);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.3);
+  color: var(--text-muted);
+  font: 700 10px var(--font-mono);
+  backdrop-filter: blur(10px);
+}
+
+.learning-rotor-angle-scrubber input {
+  width: 18px;
+  height: 100%;
+  min-height: 140px;
+  margin: 0;
+  writing-mode: vertical-rl;
+  direction: ltr;
+  accent-color: var(--accent-primary);
+  cursor: ns-resize;
+}
+
+.learning-rotor-angle-scrubber output {
+  min-width: 44px;
+  padding: 4px 5px;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 6px;
+  background: rgba(245, 158, 11, 0.12);
+  color: #fbbf24;
+  text-align: center;
+}
+
+.learning-rotor-angle-scrubber input:focus-visible {
+  outline: 2px solid #67e8f9;
+  outline-offset: 4px;
+}
+
+.learning-rotor-angle-scrubber.is-design {
+  bottom: 28px;
+}
+
+.learning-motor-zoom-controls .learning-motor-zoom-reset {
+  min-width: 50px;
+  padding: 0 6px;
+  font: 700 10px var(--font-mono);
+}
+
+.learning-stage-badge {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: rgba(11, 11, 15, 0.84);
+  box-shadow: var(--shadow-sm);
+}
+
+.learning-stage-badge span {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.learning-stage-badge strong {
+  color: var(--text-primary);
+  font-size: 12px;
+}
+
+.learning-solve-progress {
+  position: fixed;
+  top: calc(var(--topbar-height) + 12px);
+  left: calc(320px + 18px);
+  right: calc(var(--learning-control-panel-width) + 18px);
+  z-index: 69;
+  display: grid;
+  gap: 8px;
+  min-height: 56px;
+  padding: 10px 12px;
+  border: 1px solid rgba(34, 211, 238, 0.34);
+  border-radius: var(--radius-sm);
+  background: rgba(11, 11, 15, 0.9);
+  box-shadow: var(--shadow-sm);
+}
+
+.learning-solve-progress-copy {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+}
+
+.learning-solve-progress-copy span {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.learning-solve-progress-copy strong {
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.learning-solve-progress-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.learning-solve-cancel-button {
+  height: 28px;
+  padding: 0 11px;
+  border: 1px solid rgba(248, 113, 113, 0.38);
+  border-radius: var(--radius-sm);
+  background: rgba(248, 113, 113, 0.1);
+  color: #fecaca;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.learning-solve-cancel-button:hover {
+  border-color: rgba(248, 113, 113, 0.62);
+  background: rgba(248, 113, 113, 0.18);
+  color: #fff1f2;
+}
+
+.learning-solve-progress-track {
+  height: 5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.2);
+}
+
+.learning-solve-progress-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent-primary), #22d3ee);
+  transition: width 0.25s ease;
+}
+
+.learning-motor-svg {
+  width: min(100%, 620px);
+  max-height: min(100%, 620px);
+  aspect-ratio: 1;
+  display: block;
+  filter: drop-shadow(0 18px 32px rgba(0, 0, 0, 0.34));
+}
+
+.learning-main-stage.is-design-stage .learning-motor-svg {
+  width: min(100%, 680px);
+  max-height: 100%;
+}
+
+.learning-interactive-motor {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid rgba(71, 85, 105, 0.34);
+  border-radius: 12px;
+  background: rgba(8, 12, 20, 0.72);
+}
+
+.learning-interactive-motor > .viewport {
+  width: 100%;
+  height: 100%;
+}
+
+/* The lesson already supplies its own "Design 2p/6s SPM" stage badge. */
+.learning-interactive-motor.is-design-view .viewport-label {
+  display: none;
+}
+
+.learning-interactive-motor .motor-view-mode-switch button:nth-child(n + 3) {
+  display: none;
+}
+
+.learning-interactive-motor .motor-view-mode-switch button:nth-child(2) {
+  border-right: 0;
+  border-radius: 0 9px 9px 0;
+}
+
+.learning-interactive-motor .viewport-bottom-bar-cad {
+  display: none;
+}
+
+.learning-interactive-motor .viewport-has-cad-chrome {
+  padding-bottom: 18px;
+}
+
+.learning-interactive-motor.is-mesh-view .viewport-has-rotor-scrub {
+  padding-right: 70px;
+}
+
+.learning-motor-view-switch {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  z-index: 20;
+  display: flex;
+  overflow: hidden;
+  border: 1px solid rgba(245, 158, 11, 0.42);
+  border-radius: 8px;
+  background: rgba(10, 15, 26, 0.88);
+  backdrop-filter: blur(8px);
+}
+
+.learning-motor-view-switch button {
+  min-width: 72px;
+  padding: 8px 12px;
+  border: 0;
+  border-right: 1px solid rgba(71, 85, 105, 0.5);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font: 700 12px var(--font-mono);
+}
+
+.learning-motor-view-switch button:last-child {
+  border-right: 0;
+}
+
+.learning-motor-view-switch button:hover,
+.learning-motor-view-switch button.is-active {
+  background: rgba(245, 158, 11, 0.14);
+  color: #fff;
+}
+
+.learning-real-mesh-stage {
+  box-sizing: border-box;
+  width: min(100%, 760px);
+  max-width: 100%;
+  height: min(calc(100% - 56px), 560px);
+  min-height: 280px;
+  min-width: 0;
+  margin-top: 40px;
+  overflow: hidden;
+}
+
+.learning-main-stage.is-mesh-ready .learning-real-mesh-stage {
+  height: calc(var(--learning-visual-row-height) - 50px);
+  min-height: 0;
+  margin-top: 38px;
+}
+
+.learning-main-stage.is-mesh-stage .learning-real-mesh-stage,
+.learning-main-stage.is-solve-stage .learning-real-mesh-stage {
+  height: calc(var(--learning-visual-row-height) - 50px);
+  min-height: 0;
+  margin-top: 38px;
+}
+
+.learning-main-stage.is-mesh-ready .learning-real-mesh-stage .mesh-viewer-embedded-shell,
+.learning-main-stage.is-mesh-ready .learning-real-mesh-stage .mesh-viewer-container-embedded {
+  height: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.learning-main-stage.is-mesh-stage .learning-real-mesh-stage .mesh-viewer-embedded-shell,
+.learning-main-stage.is-mesh-stage .learning-real-mesh-stage .mesh-viewer-container-embedded,
+.learning-main-stage.is-solve-stage .learning-real-mesh-stage .mesh-viewer-embedded-shell,
+.learning-main-stage.is-solve-stage .learning-real-mesh-stage .mesh-viewer-container-embedded {
+  height: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.learning-main-stage.is-mesh-stage .learning-real-mesh-stage .mesh-viewer-viewport,
+.learning-main-stage.is-solve-stage .learning-real-mesh-stage .mesh-viewer-viewport {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.learning-real-mesh-stage .mesh-viewer-container-embedded {
+  background: rgba(10, 15, 26, 0.96);
+}
+
+.learning-real-mesh-stage .mesh-viewer-toolbar {
+  min-width: 0;
+  overflow: hidden;
+  flex-wrap: nowrap;
+  gap: 8px;
+}
+
+.learning-real-mesh-stage .mesh-viewer-controls {
+  flex: 0 0 auto;
+}
+
+.learning-real-mesh-stage .mesh-viewer-legend {
+  min-width: 0;
+  justify-content: flex-start;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  scrollbar-width: none;
+}
+
+.learning-real-mesh-stage .mesh-viewer-legend::-webkit-scrollbar {
+  display: none;
+}
+
+.learning-real-mesh-stage .mesh-legend-item {
+  flex: 0 0 auto;
+}
+
+.learning-real-mesh-stage .mesh-viewer-symmetry {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.learning-solve-mesh-stage {
+  position: relative;
+}
+
+.learning-solve-status-card {
+  z-index: 1200;
+}
+
+.learning-mesh-placeholder {
+  position: relative;
+  width: min(100%, 620px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+
+.learning-mesh-status-card {
+  position: absolute;
+  left: 22px;
+  bottom: 22px;
+  width: min(280px, calc(100% - 44px));
+  padding: 10px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: rgba(11, 11, 15, 0.86);
+  box-shadow: var(--shadow-md);
+}
+
+.learning-mesh-status-card span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.learning-mesh-status-card strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.learning-mesh-status-card.is-error {
+  border-color: rgba(248, 113, 113, 0.35);
+  background: rgba(127, 29, 29, 0.28);
+}
+
+.learning-mesh-layer circle,
+.learning-mesh-layer line {
+  stroke: rgba(226, 232, 240, 0.18);
+  stroke-width: 0.75;
+  vector-effect: non-scaling-stroke;
+}
+
+.learning-flux-layer {
+  mix-blend-mode: screen;
+}
+
+.learning-vector-layer {
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.28));
+}
+
+.learning-vector-readout {
+  position: absolute;
+  left: 22px;
+  bottom: 22px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: rgba(11, 11, 15, 0.86);
+  box-shadow: var(--shadow-md);
+}
+
+.learning-vector-readout span {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.learning-vector-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.learning-vector-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.learning-vector-legend i {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+
+.learning-vector-legend .is-stator {
+  background: var(--info);
+}
+
+.learning-vector-legend .is-rotor {
+  background: var(--accent-primary);
+}
+
+.learning-vector-legend .is-torque {
+  background: #84cc16;
+}
+
+.learning-vector-legend .is-field {
+  background: #67e8f9;
+}
+
+.learning-vector-legend .is-mesh {
+  background: #94a3b8;
+}
+
+.learning-vector-legend .is-mmf {
+  background: #f59e0b;
+}
+
+.learning-vector-legend .is-force {
+  background: #f97316;
+  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.18);
+}
+
+.learning-vector-legend .is-stator-pole {
+  background: linear-gradient(90deg, #ef4444 0 50%, #3b82f6 50% 100%);
+}
+
+.learning-svg-label {
+  fill: var(--text-secondary);
+  font: 700 12px var(--font-ui);
+}
+
+.learning-svg-axis-label {
+  fill: var(--text-muted);
+  font: 800 10px var(--font-mono);
+}
+
+.learning-svg-pole-label {
+  fill: #f8fafc;
+  font: 900 17px var(--font-ui);
+  letter-spacing: 0.04em;
+}
+
+.learning-svg-small {
+  fill: var(--text-muted);
+  font: 700 11px var(--font-ui);
+}
+
+.learning-plot-row {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 224px;
+  border-top: 1px solid var(--border-default);
+  background: var(--bg-surface-1);
+}
+
+.learning-plot-panel,
+.learning-knowledge-panel {
+  min-width: 0;
+  padding: 16px 18px;
+}
+
+.learning-plot-panel {
+  border-right: 1px solid var(--border-default);
+}
+
+.learning-torque-side-panel {
+  padding: 16px 14px;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.learning-check-side-panel {
+  padding: 16px 14px;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.learning-check-side-panel h2 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.learning-check-summary {
+  display: grid;
+  gap: 5px;
+  margin-top: 10px;
+  padding: 10px 11px;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 8px;
+  background: rgba(34, 197, 94, 0.06);
+}
+
+.learning-check-summary strong {
+  color: var(--text-primary);
+  font-size: 12px;
+}
+
+.learning-check-summary span {
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.42;
+}
+
+.learning-selection-dimensions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 3px;
+}
+
+.learning-selection-dimensions em {
+  padding: 3px 6px;
+  border: 1px solid rgba(103, 232, 249, 0.2);
+  border-radius: 999px;
+  background: rgba(8, 145, 178, 0.1);
+  color: #bae6fd;
+  font: 700 10px var(--font-mono);
+  font-style: normal;
+}
+
+.learning-plot-panel.is-compact {
+  padding: 0;
+  border: 0;
+}
+
+.learning-plot-panel.is-compact .learning-panel-heading {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.learning-plot-panel.is-compact .learning-chart-actions {
+  width: 100%;
+  justify-content: space-between;
+}
+
+.learning-plot-panel.is-compact .learning-provenance {
+  min-height: 21px;
+  font-size: 10px;
+}
+
+.learning-plot-panel.is-compact .learning-chart-mode-control button {
+  min-width: 42px;
+  height: 22px;
+  font-size: 10px;
+}
+
+.learning-plot-panel.is-compact .learning-phase-current-toolbar {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.learning-plot-panel.is-compact .learning-plot-svg {
+  height: auto;
+  margin-top: 8px;
+}
+
+.learning-average-torque-compact {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  gap: 3px 9px;
+  margin-top: 9px;
+  padding: 8px 10px;
+  border: 1px solid rgba(34, 211, 238, 0.28);
+  border-radius: 8px;
+  background: rgba(34, 211, 238, 0.06);
+}
+
+.learning-average-torque-compact span,
+.learning-average-torque-compact small {
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.learning-average-torque-compact strong {
+  color: var(--text-primary);
+  font: 800 18px var(--font-mono);
+  text-align: right;
+}
+
+.learning-average-torque-compact small {
+  grid-column: 1 / -1;
+  font-weight: 700;
+  text-align: right;
+  text-transform: none;
+}
+
+.learning-panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.learning-chart-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: 0;
+}
+
+.learning-chart-actions .learning-provenance {
+  padding: 0 7px;
+  font-size: 11px;
+}
+
+.learning-chart-mode-control {
+  display: inline-grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid var(--border-default);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.58);
+}
+
+.learning-chart-mode-control button {
+  min-width: 46px;
+  height: 24px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-secondary);
+  font: 800 11px var(--font-ui);
+  cursor: pointer;
+}
+
+.learning-chart-mode-control button:hover {
+  color: var(--text-primary);
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.learning-chart-mode-control button.is-active {
+  color: var(--text-primary);
+  border-color: rgba(245, 158, 11, 0.5);
+  background: rgba(245, 158, 11, 0.15);
+}
+
+.learning-phase-current-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  margin-top: 6px;
+}
+
+.learning-phase-current-toggle,
+.learning-phase-current-chip {
+  border: 1px solid var(--border-default);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.58);
+  color: var(--text-muted);
+  font: 800 11px var(--font-ui);
+  cursor: pointer;
+}
+
+.learning-phase-current-toggle {
+  height: 26px;
+  padding: 0 10px;
+}
+
+.learning-phase-current-toggle:hover,
+.learning-phase-current-toggle.is-active {
+  border-color: rgba(245, 158, 11, 0.56);
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.learning-phase-current-selector {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.learning-phase-current-chip {
+  width: 27px;
+  height: 26px;
+  padding: 0;
+  font-family: var(--font-mono);
+}
+
+.learning-phase-current-chip:hover,
+.learning-phase-current-chip.is-active {
+  border-color: color-mix(in srgb, var(--phase-color) 72%, var(--border-default));
+  color: var(--phase-color);
+  background: color-mix(in srgb, var(--phase-color) 16%, rgba(15, 23, 42, 0.76));
+}
+
+.learning-phase-current-paths {
+  opacity: 0.86;
+}
+
+.learning-panel-heading h2,
+.learning-knowledge-panel h2,
+.learning-control-section h2,
+.learning-metrics h2,
+.learning-explain-panel h2 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.learning-plot-panel .learning-panel-heading h2 {
+  white-space: nowrap;
+}
+
+.learning-provenance {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 9px;
+  border: 1px solid rgba(132, 204, 22, 0.24);
+  border-radius: 999px;
+  background: rgba(132, 204, 22, 0.08);
+  color: #bef264;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.learning-provenance.is-solved {
+  border-color: rgba(34, 211, 238, 0.3);
+  background: rgba(34, 211, 238, 0.08);
+  color: #67e8f9;
+}
+
+.learning-plot-svg {
+  width: 100%;
+  height: 192px;
+  display: block;
+  margin-top: 8px;
+}
+
+.learning-mmf-chart-hints {
+  opacity: 0.82;
+}
+
+.learning-mmf-selected-sector {
+  fill: rgba(34, 211, 238, 0.07);
+  stroke: rgba(34, 211, 238, 0.2);
+  stroke-width: 1;
+}
+
+.learning-mmf-slot-axis {
+  fill: #93c5fd;
+  font-size: 9px;
+  font-family: var(--font-mono);
+}
+
+.learning-mmf-sector-readout {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  align-items: center;
+  gap: 5px 9px;
+  min-height: 31px;
+  margin-top: 3px;
+  padding: 6px 9px;
+  border: 1px solid rgba(34, 211, 238, 0.22);
+  border-radius: 7px;
+  background: rgba(34, 211, 238, 0.055);
+}
+
+.learning-mmf-sector-readout span,
+.learning-mmf-sector-readout small {
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.learning-mmf-sector-readout strong {
+  color: #67e8f9;
+  font: 850 12px var(--font-mono);
+  white-space: nowrap;
+}
+
+.learning-mmf-sector-readout small {
+  min-width: 0;
+  text-align: right;
+}
+
+.learning-knowledge-panel p {
+  margin: 12px 0 0;
+  color: var(--text-primary);
+}
+
+.learning-answer-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.learning-answer-list span,
+.learning-answer-list strong {
+  display: block;
+  padding: 9px 10px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-2);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.learning-answer-list strong {
+  border-color: rgba(34, 197, 94, 0.42);
+  background: rgba(34, 197, 94, 0.08);
+  color: var(--text-primary);
+}
+
+.learning-average-torque-card {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid rgba(34, 211, 238, 0.34);
+  border-radius: var(--radius-sm);
+  background: rgba(34, 211, 238, 0.08);
+}
+
+.learning-average-torque-card strong {
+  font-family: var(--font-mono);
+  font-size: 26px;
+  line-height: 1.05;
+}
+
+.learning-average-torque-card span {
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+
+.learning-control-panel {
+  min-height: 0;
+  overflow: auto;
+  border-left: 1px solid var(--border-default);
+}
+
+.learning-control-section,
+.learning-metrics,
+.learning-explain-panel {
+  padding: 18px;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.learning-slider {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.learning-slider span {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--text-secondary);
+}
+
+.learning-slider strong {
+  font-weight: 800;
+}
+
+.learning-slider em {
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-style: normal;
+}
+
+.learning-slider input {
+  width: 100%;
+  accent-color: var(--accent-primary);
+}
+
+.learning-control-buttons {
+  display: grid;
+  grid-template-columns: 86px 1fr;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.learning-control-buttons-single {
+  grid-template-columns: 1fr;
+}
+
+.learning-response-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.learning-response-controls .learning-primary-button,
+.learning-response-controls .learning-ghost-button {
+  width: 100%;
+  min-width: 0;
+}
+
+.learning-rotor-hold-toggle {
+  min-width: 0;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 12px;
+  border: 1px solid rgba(245, 158, 11, 0.34);
+  border-radius: var(--radius-sm);
+  background: rgba(245, 158, 11, 0.08);
+  color: var(--text-primary);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.learning-rotor-hold-toggle input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: var(--accent-primary);
+}
+
+.learning-rotor-hold-toggle:has(input:not(:checked)) {
+  border-color: var(--border-default);
+  background: var(--bg-surface-2);
+  color: var(--text-secondary);
+}
+
+.learning-rotor-hold-toggle:has(input:disabled) {
+  opacity: 0.58;
+  cursor: wait;
+}
+
+.learning-overlay-selector {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.learning-overlay-selector > span {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.learning-field-source-status {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  max-width: min(420px, calc(100% - 32px));
+  padding: 8px 13px;
+  border: 1px solid rgba(56, 189, 248, 0.38);
+  border-radius: 9px;
+  background: rgba(8, 15, 28, 0.92);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.42);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+  transform: translateX(-50%);
+  backdrop-filter: blur(10px);
+}
+
+.learning-field-source-spinner {
+  flex: 0 0 auto;
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(56, 189, 248, 0.24);
+  border-top-color: #38bdf8;
+  border-radius: 50%;
+  animation: learning-field-source-spin 0.9s linear infinite;
+}
+
+@keyframes learning-field-source-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.learning-field-source-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  border-radius: var(--radius-sm);
+  background: rgba(127, 29, 29, 0.18);
+  color: #fca5a5;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.learning-field-intensity-toggle {
+  margin-top: 12px;
+}
+
+.learning-segmented-control {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: rgba(15, 23, 42, 0.52);
+}
+
+.learning-segmented-control button {
+  min-width: 0;
+  height: 32px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font: 800 12px var(--font-ui);
+  cursor: pointer;
+}
+
+.learning-segmented-control button:hover {
+  color: var(--text-primary);
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.learning-segmented-control button.is-active {
+  color: var(--text-primary);
+  border-color: rgba(245, 158, 11, 0.48);
+  background: rgba(245, 158, 11, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.12);
+}
+
+.learning-primary-button:disabled,
+.learning-icon-button:disabled,
+.learning-ghost-button:disabled {
+  opacity: 0.58;
+  cursor: wait;
+}
+
+.learning-stage-copy {
+  display: grid;
+  gap: 6px;
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-2);
+}
+
+.learning-stage-copy strong {
+  font-size: 13px;
+}
+
+.learning-stage-copy p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.learning-metrics dl {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0 0;
+}
+
+.learning-metrics dl div,
+.learning-explain-panel div {
+  padding: 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-2);
+}
+
+.learning-metrics dt,
+.learning-explain-panel h3 {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.learning-metrics dd {
+  margin: 4px 0 0;
+  font-family: var(--font-mono);
+  font-size: 20px;
+}
+
+.learning-explain-panel {
+  display: grid;
+  gap: 10px;
+}
+
+.learning-explain-panel p {
+  margin: 7px 0 0;
+  color: var(--text-primary);
+  line-height: 1.45;
+}
+
+@media (max-width: 1240px) {
+  .learning-lesson-shell {
+    --learning-control-panel-width: 312px;
+    --learning-main-stage-min-width: 520px;
+    grid-template-columns: 300px minmax(var(--learning-main-stage-min-width), 1fr) var(--learning-control-panel-width);
+  }
+
+  .learning-lesson-shell.is-solve-stage {
+    --learning-control-panel-width: 560px;
+    --learning-main-stage-min-width: 300px;
+  }
+
+  .learning-solve-progress {
+    left: calc(300px + 18px);
+    right: calc(var(--learning-control-panel-width) + 18px);
+  }
+}
+
+@media (max-width: 1080px) {
+  .learning-lesson-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .learning-lesson-shell {
+    height: auto;
+    min-height: auto;
+    overflow: visible;
+    grid-template-columns: 300px minmax(0, 1fr);
+  }
+
+  .learning-control-panel {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 320px 260px minmax(0, 1fr);
+    border-left: 0;
+    border-top: 1px solid var(--border-default);
+  }
+
+  /* Below this breakpoint the control panel becomes a multi-column grid, which
+     was written when it held exactly the two padded sections. The blocks moved
+     out of the left rail are additional direct children and would otherwise
+     auto-place into columns — the primary CTA landing beside the copy it acts
+     on, the footer's divider spanning half the panel. They are full-width rows. */
+  .learning-control-panel > .learning-settings-drawer,
+  .learning-control-panel > .learning-rail-design-settings,
+  .learning-control-panel > .learning-nav-error,
+  .learning-control-panel > .learning-panel-actions,
+  .learning-control-panel > .learning-panel-footer {
+    grid-column: 1 / -1;
+  }
+
+  .learning-solve-progress {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    right: 18px;
+    z-index: 1200;
+  }
+}
+
+@media (max-width: 760px) {
+  .learning-catalog-shell {
+    padding: 28px 18px;
+  }
+
+  .learning-catalog-hero {
+    display: grid;
+    align-items: start;
+  }
+
+  .learning-lesson-grid,
+  .learning-lesson-shell,
+  .learning-main-stage,
+  .learning-plot-row,
+  .learning-control-panel {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .learning-step-rail,
+  .learning-control-panel,
+  .learning-plot-panel {
+    border: 0;
+  }
+
+  .learning-motor-control-dock {
+    bottom: 8px;
+    gap: 6px;
+    max-width: calc(100% - 16px);
+    padding: 6px;
+  }
+
+  .learning-motor-rpm-control {
+    min-width: 100px;
+  }
+
+  .learning-motor-rpm-control input {
+    width: 46px;
+  }
+}
+
+/* Learning tracks (catalog revamp) */
+
+/* Catalog path: one primary action followed by a calm, numbered curriculum.
+   Lesson pages retain their denser lab UI below this section. */
+.learning-catalog-shell {
+  gap: 64px;
+  padding: 48px min(6vw, 88px) 96px;
+}
+
+.learning-path-hero,
+.learning-path-chapter,
+.learning-path-secondary {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.learning-path-hero {
+  display: grid;
+  gap: 22px;
+}
+
+.learning-path-intro { max-width: 900px; }
+.learning-path-intro h1 {
+  max-width: 880px;
+  margin: 0;
+  font-size: clamp(38px, 4.2vw, 58px);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+}
+.learning-path-intro > p:last-child {
+  max-width: 720px;
+  margin: 18px 0 0;
+  color: var(--text-secondary);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.learning-continue-card {
+  display: grid;
+  grid-template-columns: 54px 72px minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  width: 100%;
+  min-height: 136px;
+  padding: 22px 24px;
+  border: 1px solid rgba(245, 158, 11, 0.52);
+  border-radius: 18px;
+  color: var(--text-primary);
+  background:
+    linear-gradient(100deg, rgba(245, 158, 11, 0.12), rgba(245, 158, 11, 0.025) 48%, transparent),
+    var(--bg-surface-1);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.22), inset 0 1px rgba(255, 255, 255, 0.035);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+.learning-continue-card:hover {
+  border-color: var(--accent-primary-hover);
+  background:
+    linear-gradient(100deg, rgba(245, 158, 11, 0.17), rgba(245, 158, 11, 0.04) 52%, transparent),
+    var(--bg-surface-2);
+  transform: translateY(-2px);
+}
+.learning-continue-card.is-complete { border-color: rgba(132, 204, 22, 0.48); }
+.learning-continue-number {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(245, 158, 11, 0.42);
+  border-radius: 50%;
+  color: var(--accent-primary-hover);
+  background: rgba(245, 158, 11, 0.1);
+  font: 800 14px var(--font-mono);
+}
+.learning-continue-card.is-complete .learning-continue-number {
+  border-color: rgba(132, 204, 22, 0.5);
+  color: #a3e635;
+  background: rgba(132, 204, 22, 0.1);
+}
+.learning-continue-glyph { width: 72px; height: 58px; color: var(--text-secondary); }
+.learning-continue-copy { display: grid; min-width: 0; gap: 6px; }
+.learning-continue-kicker {
+  color: var(--accent-primary-hover);
+  font: 800 10px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.learning-continue-copy strong { font-size: 23px; line-height: 1.15; }
+.learning-continue-copy > span:last-child {
+  max-width: 720px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.learning-continue-action {
+  display: grid;
+  min-width: 132px;
+  gap: 8px;
+  justify-items: end;
+}
+.learning-continue-action span { color: var(--text-muted); font: 700 10px var(--font-mono); text-transform: uppercase; }
+.learning-continue-action strong { color: var(--accent-primary-hover); font-size: 14px; }
+
+.learning-path-progress { display: flex; align-items: center; gap: 14px; }
+.learning-path-progress-track {
+  flex: 1 1 auto;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+.learning-path-progress-track > span { display: block; height: 100%; border-radius: inherit; background: var(--accent-gradient); }
+.learning-path-progress > span { flex: 0 0 auto; color: var(--text-muted); font: 700 10px var(--font-mono); text-transform: uppercase; }
+
+.learning-path-roadmap { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.learning-roadmap-chapter {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 16px;
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.018);
+}
+.learning-roadmap-chapter.is-active { border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.055); }
+.learning-roadmap-index {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border-default);
+  border-radius: 50%;
+  color: var(--text-muted);
+  font: 800 11px var(--font-mono);
+}
+.learning-roadmap-chapter.is-active .learning-roadmap-index { border-color: rgba(245, 158, 11, 0.45); color: var(--accent-primary-hover); }
+.learning-roadmap-chapter.is-complete .learning-roadmap-index { border-color: rgba(132, 204, 22, 0.45); color: #a3e635; }
+.learning-roadmap-chapter > span:nth-child(2) { display: grid; gap: 3px; }
+.learning-roadmap-chapter small { color: var(--text-muted); font: 700 9px var(--font-mono); text-transform: uppercase; }
+.learning-roadmap-chapter strong { font-size: 14px; }
+.learning-roadmap-chapter em { color: var(--text-muted); font: normal 10px var(--font-mono); }
+
+.learning-path-chapter { display: grid; gap: 18px; }
+.learning-path-chapter-header {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: end;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-default);
+}
+.learning-path-chapter-number { color: rgba(245, 158, 11, 0.72); font: 500 36px/1 var(--font-mono); }
+.learning-path-chapter-header .learning-kicker { margin-bottom: 6px; }
+.learning-path-chapter-header h2 { margin: 0; font-size: clamp(26px, 3vw, 36px); letter-spacing: -0.035em; }
+.learning-path-chapter-header p:last-child { margin: 7px 0 0; color: var(--text-secondary); font-size: 14px; }
+.learning-path-chapter-progress { color: var(--text-muted); font: 700 10px var(--font-mono); text-transform: uppercase; }
+
+.learning-path-lessons { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.learning-path-lesson {
+  display: grid;
+  grid-template-columns: 42px 58px minmax(0, 1fr) 92px 22px;
+  gap: 16px;
+  align-items: center;
+  width: 100%;
+  min-height: 92px;
+  padding: 12px 16px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  color: var(--text-primary);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+}
+.learning-path-lesson:hover { border-color: var(--border-default); background: var(--bg-surface-1); transform: translateX(3px); }
+.learning-path-lesson.is-next { border-color: rgba(245, 158, 11, 0.42); background: rgba(245, 158, 11, 0.055); }
+.learning-path-lesson.is-complete { background: rgba(132, 204, 22, 0.025); }
+.learning-path-lesson.is-planned { cursor: not-allowed; opacity: 0.45; }
+.learning-path-lesson-number {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border-default);
+  border-radius: 50%;
+  color: var(--text-muted);
+  font: 800 11px var(--font-mono);
+}
+.learning-path-lesson.is-next .learning-path-lesson-number { border-color: rgba(245, 158, 11, 0.46); color: var(--accent-primary-hover); }
+.learning-path-lesson.is-complete .learning-path-lesson-number { border-color: rgba(132, 204, 22, 0.46); color: #a3e635; }
+.learning-path-lesson-glyph { width: 54px; height: 42px; color: var(--text-secondary); opacity: 0.82; }
+.learning-path-lesson:hover .learning-path-lesson-glyph { opacity: 1; }
+.learning-path-lesson-copy { display: grid; min-width: 0; gap: 5px; }
+.learning-path-lesson-copy strong { font-size: 16px; }
+.learning-path-lesson-copy span { overflow: hidden; color: var(--text-secondary); font-size: 12.5px; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
+.learning-path-lesson-state { display: grid; gap: 5px; justify-items: end; }
+.learning-path-lesson-state small { color: var(--text-muted); font: 700 9px var(--font-mono); text-transform: uppercase; }
+.learning-path-lesson-state strong { color: var(--text-muted); font-size: 11px; }
+.learning-path-lesson-state.is-next strong { color: var(--accent-primary-hover); }
+.learning-path-lesson-state.is-complete strong { color: #a3e635; }
+.learning-path-lesson-arrow { color: var(--text-muted); font-size: 17px; transition: color 140ms ease, transform 140ms ease; }
+.learning-path-lesson:hover .learning-path-lesson-arrow { color: var(--accent-primary-hover); transform: translateX(2px); }
+
+.learning-path-coming-next {
+  display: grid;
+  grid-template-columns: 46px minmax(220px, 0.62fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  margin-top: 4px;
+  padding: 14px 16px;
+  border-top: 1px dashed var(--border-default);
+  border-right: 0;
+  border-bottom: 0;
+  border-left: 0;
+  width: 100%;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  text-align: left;
+  opacity: 0.62;
+}
+.learning-path-coming-next:disabled { cursor: not-allowed; }
+.learning-path-coming-next.is-available {
+  grid-template-columns: 46px minmax(220px, 0.62fr) minmax(0, 1fr) auto;
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  border-radius: 12px;
+  background: rgba(245, 158, 11, 0.045);
+  opacity: 1;
+  cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+}
+.learning-path-coming-next.is-available:hover {
+  border-color: rgba(245, 158, 11, 0.52);
+  background: rgba(245, 158, 11, 0.08);
+  transform: translateX(3px);
+}
+.learning-path-coming-next.is-complete { border-color: rgba(132, 204, 22, 0.36); }
+.learning-path-review-glyph { width: 42px; height: 32px; }
+.learning-path-coming-next > span { display: grid; gap: 4px; }
+.learning-path-coming-next small { font: 700 9px var(--font-mono); text-transform: uppercase; }
+.learning-path-coming-next strong { color: var(--text-secondary); font-size: 13px; }
+.learning-path-coming-next p { margin: 0; font-size: 11.5px; line-height: 1.45; }
+.learning-path-coming-next em {
+  color: var(--accent-primary-hover);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.learning-path-secondary { display: grid; gap: 14px; padding-top: 28px; border-top: 1px solid var(--border-default); }
+.learning-path-secondary h2 { margin: 0; color: var(--text-secondary); font-size: 22px; }
+.learning-path-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-default);
+  color: var(--text-muted);
+  font-size: 11px;
+}
+.learning-path-footer button {
+  padding: 0;
+  border: 0;
+  color: var(--text-muted);
+  background: transparent;
+  cursor: pointer;
+  font: 700 10px var(--font-mono);
+  text-transform: uppercase;
+}
+.learning-path-footer button:hover { color: var(--text-primary); }
+
+@media (max-width: 820px) {
+  .learning-catalog-shell { gap: 44px; padding: 32px 18px 64px; }
+  .learning-path-intro h1 { font-size: clamp(34px, 10vw, 48px); }
+  .learning-continue-card { grid-template-columns: 48px minmax(0, 1fr); padding: 18px; }
+  .learning-continue-glyph { display: none; }
+  .learning-continue-action { grid-column: 2; display: flex; width: 100%; justify-content: space-between; justify-items: initial; }
+  .learning-path-roadmap { grid-template-columns: 1fr; }
+  .learning-path-chapter-header { grid-template-columns: 46px minmax(0, 1fr); align-items: start; }
+  .learning-path-chapter-progress { grid-column: 2; }
+  .learning-path-lesson { grid-template-columns: 38px 1fr 18px; gap: 12px; }
+  .learning-path-lesson-glyph { display: none; }
+  .learning-path-lesson-state { grid-column: 2; grid-row: 2; display: flex; justify-content: space-between; justify-items: initial; }
+  .learning-path-lesson-arrow { grid-column: 3; grid-row: 1 / 3; }
+  .learning-path-lesson-copy span { white-space: normal; }
+  .learning-path-coming-next,
+  .learning-path-coming-next.is-available { grid-template-columns: 38px 1fr; }
+  .learning-path-coming-next p { grid-column: 2; }
+  .learning-path-coming-next em { grid-column: 2; }
+  .learning-path-footer { align-items: flex-start; flex-direction: column; }
+}
+
+.learning-track {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.learning-track-header h2 {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+.learning-track-header p:not(.learning-kicker) {
+  max-width: 680px;
+  margin: 10px 0 0;
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+.learning-track-progress {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 12px;
+  padding: 4px 10px;
+  border: 1px solid var(--border-default);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.learning-lesson-grid.is-single,
+.learning-lesson-grid.is-primer {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.learning-lesson-card.is-complete {
+  border-color: rgba(132, 204, 22, 0.45);
+}
+
+.learning-lesson-status.is-complete {
+  color: #a3e635;
+}
+
+.learning-complete-button {
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid rgba(132, 204, 22, 0.45);
+  border-radius: var(--radius-sm);
+  background: rgba(132, 204, 22, 0.08);
+  color: #a3e635;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.learning-complete-button:hover {
+  border-color: #84cc16;
+  background: rgba(132, 204, 22, 0.14);
+}
+
+.learning-complete-button.is-complete {
+  background: rgba(132, 204, 22, 0.18);
+}
+.learning-complete-button.is-complete {
+  background: rgba(132, 204, 22, 0.18);
+}
+
+/* Dev crash course track */
+
+@media (max-width: 1080px) {
+  .learning-lesson-grid.is-single,
+  .learning-lesson-grid.is-primer {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .learning-lesson-grid.is-single,
+  .learning-lesson-grid.is-primer {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+/* --- Shared lesson step copy --- */
+.tutorial-observe {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #67e8f9;
+}
+
+.learning-step-card-kicker {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #67e8f9;
+}
+
+/* --- Shared knowledge check (used by Lessons 1, 2, 3) --- */
+.tutorial-knowledge-check {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.tutorial-knowledge-question {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.tutorial-knowledge-question legend {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  padding: 0;
+}
+
+.tutorial-knowledge-number {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #0b1220;
+  background: #cbd5e1;
+}
+
+.tutorial-knowledge-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tutorial-knowledge-option {
+  text-align: left;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #e2e8f0;
+  background: rgba(148, 163, 184, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.tutorial-knowledge-option:hover {
+  background: rgba(148, 163, 184, 0.16);
+}
+
+.tutorial-knowledge-option.is-correct {
+  background: rgba(34, 197, 94, 0.18);
+  border-color: rgba(34, 197, 94, 0.6);
+}
+
+.tutorial-knowledge-option.is-wrong {
+  background: rgba(248, 113, 113, 0.16);
+  border-color: rgba(248, 113, 113, 0.55);
+}
+
+.tutorial-knowledge-feedback {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.tutorial-knowledge-feedback.is-correct { color: #4ade80; }
+.tutorial-knowledge-feedback.is-wrong { color: #fca5a5; }
+
+.tutorial-knowledge-result {
+  margin: 4px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--learning-muted, #94a3b8);
+}
+
+.tutorial-knowledge-result.is-passed { color: #4ade80; }
+
+/* --- Lesson 1 parts explorer checklist --- */
+.learning-parts-checklist {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.learning-parts-progress {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.learning-parts-progress.is-complete {
+  color: #4ade80;
+}
+
+.learning-parts-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.learning-parts-chip {
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: rgba(148, 163, 184, 0.1);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+.learning-parts-chip.is-visited {
+  color: #bbf7d0;
+  background: rgba(34, 197, 94, 0.14);
+  border-color: rgba(34, 197, 94, 0.45);
+}

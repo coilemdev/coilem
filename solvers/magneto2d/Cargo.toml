@@ -1,0 +1,19 @@
+[package]
+name = "magneto2d"
+version = "0.3.2"
+edition = "2021"
+description = "Minimal 2D magnetostatic FEM solver for motor cross-sections"
+license = "AGPL-3.0-or-later"
+authors = ["coilEM contributors"]
+repository = "https://github.com/coilemdev/coilem"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+rayon = "1.10"
+faer = { version = "0.24", default-features = false, features = ["std", "sparse-linalg", "rayon"] }
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+panic = "abort"

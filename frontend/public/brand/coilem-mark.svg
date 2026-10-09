@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">coilEM mark</title>
+  <desc id="desc">A compact electric motor cross-section with six stator coils and a two-pole rotor.</desc>
+
+  <circle cx="128" cy="128" r="104" fill="#0d1016" stroke="#272d38" stroke-width="8" />
+
+  <circle
+    cx="128"
+    cy="128"
+    r="76"
+    fill="none"
+    stroke="#687386"
+    stroke-width="24"
+    stroke-linecap="round"
+    stroke-dasharray="51 28.6"
+    transform="rotate(-11 128 128)"
+  />
+  <circle
+    cx="128"
+    cy="128"
+    r="89"
+    fill="none"
+    stroke="#f59e0b"
+    stroke-width="10"
+    stroke-linecap="round"
+    stroke-dasharray="25 68.2"
+    transform="rotate(-2 128 128)"
+  />
+
+  <circle cx="128" cy="128" r="49" fill="#11151d" stroke="#303846" stroke-width="6" />
+  <g transform="rotate(-32 128 128)">
+    <path d="M128 96a32 32 0 0 0 0 64z" fill="#f59e0b" />
+    <path d="M128 96a32 32 0 0 1 0 64z" fill="#22b8d6" />
+  </g>
+  <circle cx="128" cy="128" r="11" fill="#0b0e14" stroke="#d5dbe5" stroke-width="5" />
+</svg>

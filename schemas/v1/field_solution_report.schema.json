@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://coilem.com/schemas/v1/field_solution_report.schema.json",
+  "title": "Magneto2D generic field solution report",
+  "type": "object",
+  "required": [
+    "openem_schema_version",
+    "openem_schema_kind",
+    "openem_provenance",
+    "problem_kind",
+    "problem_version",
+    "normalized_length_unit",
+    "solution"
+  ],
+  "properties": {
+    "openem_schema_version": {"const": "1.0"},
+    "openem_schema_kind": {"const": "field_solution_report"},
+    "openem_provenance": {"type": "object"},
+    "problem_kind": {"const": "magnetostatic_problem"},
+    "problem_version": {"const": "1.0"},
+    "normalized_length_unit": {"const": "m"},
+    "solution": {
+      "type": "object",
+      "required": [
+        "az_nodal",
+        "element_fields",
+        "final_material_state",
+        "convergence",
+        "timings",
+        "profile",
+        "energy_per_unit_depth"
+      ],
+      "properties": {
+        "az_nodal": {"type": "array", "items": {"type": "number"}},
+        "element_fields": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["bx", "by", "b_mag"],
+            "properties": {
+              "bx": {"type": "number"},
+              "by": {"type": "number"},
+              "b_mag": {"type": "number"}
+            }
+          }
+        },
+        "final_material_state": {"type": "array"},
+        "convergence": {
+          "type": "object",
+          "required": [
+            "converged",
+            "nonlinear",
+            "nonlinear_algorithm",
+            "nonlinear_iterations",
+            "nonlinear_residual_history",
+            "linear_solver"
+          ]
+        },
+        "timings": {"type": "object"},
+        "profile": {"type": "object"},
+        "energy_per_unit_depth": {
+          "type": "object",
+          "required": ["magnetic_field_j_per_m"]
+        },
+        "warnings": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

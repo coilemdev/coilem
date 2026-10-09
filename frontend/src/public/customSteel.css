@@ -1,0 +1,25 @@
+.custom-steel-import { margin: 14px 0; }
+.custom-steel-import button, .custom-steel-form input, .custom-steel-form select {
+  padding: 10px 12px; border: 1px solid var(--border-color, #343943); border-radius: 8px;
+  color: inherit; background: var(--bg-secondary, #171b21); font: inherit; max-width: 100%;
+}
+.custom-steel-import button { cursor: pointer; }
+.custom-steel-import button:disabled { opacity: .5; cursor: default; }
+.custom-steel-form { display: grid; gap: 12px; margin-top: 14px; }
+.custom-steel-form label { display: grid; gap: 6px; font-size: 13px; }
+.custom-steel-form input, .custom-steel-form select { width: 100%; box-sizing: border-box; min-width: 0; }
+.custom-steel-form p, .custom-steel-form small { font-size: 12px; line-height: 1.5; margin: 0; }
+.custom-steel-form a { color: #ffbf35; }
+.custom-steel-form .custom-steel-error { color: #ffb3b3; }
+.custom-steel-preview { display: grid; gap: 12px; min-width: 0; }
+.custom-steel-preview .public-material-chart-shell { min-width: 0; }
+.custom-steel-preview .public-material-chart-shell svg { width: 100%; height: auto; min-height: 0; }
+.custom-steel-preview .public-material-chart-toolbar { flex-wrap: wrap; }
+.custom-steel-preview .public-material-chart-grid text,
+.custom-steel-preview .public-material-chart-axis-label { font-size: 12px; }
+.custom-steel-preview .public-material-extrapolation text,
+.custom-steel-preview .public-material-source-limit text { display: none; }
+.custom-steel-preview .public-material-chart-readout,
+.custom-steel-preview .public-material-chart-contract { flex-wrap: wrap; justify-content: flex-start; gap: 6px; font-size: 10px; }
+.custom-steel-preview .public-material-axis-toggle button { font-size: 11px; }
+.custom-steel-form input:focus-visible, .custom-steel-form select:focus-visible, .custom-steel-import button:focus-visible { outline: 2px solid #ffbf35; outline-offset: 2px; }

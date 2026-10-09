@@ -1,0 +1,25 @@
+{
+  "schema_version": "openem_elmer_numerical_profile/v1",
+  "physics_contract_version": "openem_elmer_motor_2d/v1",
+  "qualified_source_release": "26.2",
+  "qualified_runtime_release": "26.2",
+  "mesh_format": "gmsh-2.2-ascii",
+  "mesh_converter": "ElmerGrid 14 2 -autoclean",
+  "linear_solver": {
+    "type": "Direct",
+    "method": "UMFPACK",
+    "convergence_tolerance": 1e-10
+  },
+  "nonlinear_solver": {
+    "max_iterations": 100,
+    "convergence_tolerance": 1e-7,
+    "relaxation_factor": 0.5,
+    "abort_not_converged": true
+  },
+  "position_timeout_seconds": 180,
+  "run_timeout_seconds": 1800,
+  "max_log_bytes": 2097152,
+  "minimum_airgap_radial_layers": 2,
+  "torque_method": "arkkio",
+  "motion_model": "remesh_per_step"
+}

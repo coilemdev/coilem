@@ -1,0 +1,137 @@
+name: coilEM public candidate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: public-candidate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  runtime:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      COILEM_BUILD_COMMIT: ${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install Linux mesh system library
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libglu1-mesa
+      - name: Install the documented backend environment
+        run: |
+          python -m pip install -r requirements.lock
+          python -m pip install -e ".[dev]"
+          python -m pip check
+      - name: Verify the exported snapshot and publication contents
+        run: python tools/verify_snapshot.py --publication
+      - name: Build the bundled native solver
+        run: cargo build --release --locked --manifest-path solvers/magneto2d/Cargo.toml
+      - name: Lint exported Python
+        run: python -m ruff check backend tools tests
+      - name: Test the native solver
+        run: cargo test --locked --manifest-path solvers/magneto2d/Cargo.toml
+      - name: Run exported Python tests
+        env:
+          COILEM_USER_DATA_ROOT: ${{ runner.temp }}/coilem-public-ci
+        run: python -m pytest -q tests
+      - name: Exercise real native mesh and sinusoidal and six-step solves
+        env:
+          COILEM_USER_DATA_ROOT: ${{ runner.temp }}/coilem-public-ci
+        run: python tools/smoke_public_runtime.py
+
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install locked frontend dependencies
+        working-directory: frontend
+        run: npm ci
+      - name: Check contracts, types, and the production bundle
+        working-directory: frontend
+        run: npm run build
+      - name: Audit locked frontend dependencies
+        working-directory: frontend
+        run: npm audit --audit-level=high
+
+  public-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install native mesh system library
+        run: sudo apt-get update && sudo apt-get install -y libglu1-mesa
+      - name: Install the public backend
+        run: |
+          python -m pip install -r requirements.lock
+          python -m pip install -e ".[dev]"
+      - name: Build the native solver
+        run: cargo build --release --locked --manifest-path solvers/magneto2d/Cargo.toml
+      - name: Install browser test tools
+        working-directory: frontend
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Exercise real Standard motor workflows in Chromium
+        working-directory: frontend
+        run: npm run test:browser
+      - name: Retain browser screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-browser-screenshots
+          path: frontend/test-results/**/*.png
+
+  dependency-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Audit exact Python requirements
+        run: |
+          python -m pip install pip-audit
+          pip-audit -r requirements.lock --no-deps --disable-pip
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Audit locked Rust dependencies
+        run: |
+          cargo install cargo-audit --version 0.22.2 --locked
+          cargo audit --file solvers/magneto2d/Cargo.lock
+
+  native-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Test the exported native solver
+        run: cargo test --locked --manifest-path solvers/magneto2d/Cargo.toml

@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://coilem.com/schemas/v1/halbach_array_config.schema.json",
+  "title": "Cylindrical Halbach array configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["geometry", "magnet"],
+  "properties": {
+    "kind": {"const": "halbach_array_config"},
+    "version": {"const": "1.0"},
+    "units": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["length", "angle"],
+      "properties": {
+        "length": {"const": "mm"},
+        "angle": {"const": "deg"}
+      }
+    },
+    "geometry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["inner_radius", "outer_radius", "axial_length"],
+      "properties": {
+        "inner_radius": {"type": "number", "exclusiveMinimum": 0},
+        "outer_radius": {"type": "number", "exclusiveMinimum": 0},
+        "axial_length": {"type": "number", "exclusiveMinimum": 0},
+        "segment_count": {"type": "integer", "minimum": 4, "maximum": 64, "default": 16},
+        "segment_gap_angle": {"type": "number", "minimum": 0, "default": 0},
+        "segment_start_angle": {"type": "number", "default": 0}
+      }
+    },
+    "array": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "field_mode": {"const": "internal"},
+        "multipole_order": {"const": 1},
+        "field_direction": {"type": "number", "default": 0}
+      }
+    },
+    "magnet": {
+      "oneOf": [
+        {"$ref": "#/$defs/catalogMagnet"},
+        {"$ref": "#/$defs/customMagnet"}
+      ]
+    },
+    "sample_region": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "radius": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Defaults at runtime to 0.8 * geometry.inner_radius."
+        },
+        "radial_samples": {"type": "integer", "minimum": 5, "maximum": 201, "default": 31},
+        "angular_samples": {"type": "integer", "minimum": 16, "maximum": 720, "default": 96},
+        "leakage_probe_radius": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Defaults at runtime to 1.5 * geometry.outer_radius."
+        }
+      }
+    },
+    "solve": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "quality": {"enum": ["quick", "standard", "fine", "custom"], "default": "standard"},
+        "mesh": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "density": {"enum": ["coarse", "normal", "fine"], "default": "normal"},
+            "outer_boundary_radius_factor": {"type": "number", "minimum": 2, "maximum": 12, "default": 4},
+            "minimum_elements_across_magnet": {"type": "integer", "minimum": 2, "maximum": 40, "default": 6},
+            "corner_refinement": {"type": "boolean", "default": true}
+          }
+        },
+        "linear": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "solver": {"enum": ["direct", "pcg"], "default": "direct"},
+            "pcg_preconditioner": {"enum": ["incomplete_cholesky", "jacobi"], "default": "incomplete_cholesky"},
+            "tolerance": {"type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1, "default": 1e-8},
+            "max_iterations": {"type": "integer", "minimum": 1, "default": 5000}
+          }
+        },
+        "field_line_count": {"type": "integer", "minimum": 0, "maximum": 200, "default": 18}
+      }
+    }
+  },
+  "$defs": {
+    "catalogMagnet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source"],
+      "properties": {
+        "source": {"const": "catalog"},
+        "grade": {
+          "default": "N42",
+          "enum": ["N35", "N42", "N48", "N52", "N48SH", "Ferrite_Y30", "Prius_2004_NdFeB"]
+        },
+        "temperature_c": {"type": "number", "minimum": -40, "maximum": 250, "default": 20}
+      }
+    },
+    "customMagnet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "name", "remanence_t", "source_note"],
+      "properties": {
+        "source": {"const": "custom"},
+        "name": {"type": "string", "minLength": 1, "maxLength": 160},
+        "remanence_t": {"type": "number", "exclusiveMinimum": 0},
+        "relative_permeability": {"type": "number", "minimum": 1, "default": 1.05},
+        "intrinsic_coercivity_a_per_m": {"type": "number", "exclusiveMinimum": 0},
+        "density_kg_per_m3": {"type": "number", "exclusiveMinimum": 0},
+        "reference_temperature_c": {"type": "number"},
+        "temperature_c": {"type": "number"},
+        "alpha_br_per_k": {"type": "number"},
+        "alpha_hcj_per_k": {"type": "number"},
+        "source_note": {"type": "string", "minLength": 1, "maxLength": 1000}
+      }
+    }
+  }
+}
