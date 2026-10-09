@@ -102,12 +102,17 @@ jobs:
       - name: Exercise real Standard motor workflows in Chromium
         working-directory: frontend
         run: npm run test:browser
-      - name: Retain browser screenshots on failure
+      - name: Retain browser diagnostics on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: public-browser-screenshots
-          path: frontend/test-results/**/*.png
+          name: public-browser-diagnostics
+          retention-days: 7
+          path: |
+            frontend/test-results/**/*.png
+            frontend/test-results/**/trace.zip
+            frontend/test-results/**/error-context.md
+            frontend/test-results/public-release.json
 
   dependency-audit:
     runs-on: ubuntu-latest

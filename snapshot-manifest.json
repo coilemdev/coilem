@@ -10,8 +10,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "sha256": "e6b6df0ac569dca54f0556d76667d3518066b2fc8969562499d8a5d3cfbd397f",
-      "bytes": 4583
+      "sha256": "c4830b65d4953e899bf48233d88af713d06cd13ed16111fe10df2650a80e23d0",
+      "bytes": 4780
     },
     {
       "path": ".gitignore",
@@ -600,8 +600,8 @@
     },
     {
       "path": "frontend/playwright.public.config.ts",
-      "sha256": "ba3e5d2b00964b5f147a4d32f22b2385d7b9246c3f1c5a16916b7ed6bddf9fcb",
-      "bytes": 2191
+      "sha256": "7500aeb5ddabb5d84a13ee33b29c33fc3b91997064ff2ceadaf7a2ffaadee056",
+      "bytes": 2371
     },
     {
       "path": "frontend/public/brand/coilem-mark.svg",
@@ -1815,6 +1815,18 @@
       "path": "tests/test_public_solver_environment.py",
       "source_sha256": "9109eafb4101419c719988a965ce76987919a579af09eb46a8fa21dbed6b928b",
       "reason": "Accept Windows environment-key casing in the isolation test."
+    },
+    {
+      "base_commit": "3a192efff9dce28c28b8911c958200393e7578c5",
+      "path": "frontend/playwright.public.config.ts",
+      "source_sha256": "ba3e5d2b00964b5f147a4d32f22b2385d7b9246c3f1c5a16916b7ed6bddf9fcb",
+      "reason": "Use full Chromium headless mode for the WebGL release rehearsal."
+    },
+    {
+      "base_commit": "3a192efff9dce28c28b8911c958200393e7578c5",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "e6b6df0ac569dca54f0556d76667d3518066b2fc8969562499d8a5d3cfbd397f",
+      "reason": "Retain browser traces and error context when the release rehearsal fails."
     }
   ]
 }

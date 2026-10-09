@@ -37,7 +37,9 @@ export default defineConfig({
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'], viewport: { width: 1753, height: 980 } } }],
+  // Exercise the full Chromium headless browser used by current Chrome, rather
+  // than the separate headless shell, for the interactive WebGL landing page.
+  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'], channel: 'chromium', viewport: { width: 1753, height: 980 } } }],
   webServer: [
     {
       command: `${shellQuote(process.env.COILEM_TEST_PYTHON || 'python')} -m uvicorn backend.public_main:app --host 127.0.0.1 --port 58000`,
