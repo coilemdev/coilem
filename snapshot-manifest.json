@@ -35,8 +35,8 @@
     },
     {
       "path": "CITATION.cff",
-      "sha256": "4db2e23252e74091821a2f68592a790047216607b5bfb15085f11d93d111d923",
-      "bytes": 554
+      "sha256": "921684be914a8ff021785cc3c52a9c95be5e13fb68f91f86895ad3b35e25d338",
+      "bytes": 580
     },
     {
       "path": "LICENSE",
@@ -55,8 +55,8 @@
     },
     {
       "path": "README.md",
-      "sha256": "cfa07ac1bf886f04b137b6fcedfa336b1671fc1b025668a78d0346a61bf9d5ed",
-      "bytes": 4685
+      "sha256": "38dad8458c732516b706ccba3d14c141eed9d249abced842aadec309303385a1",
+      "bytes": 4728
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -1385,8 +1385,8 @@
     },
     {
       "path": "pyproject.toml",
-      "sha256": "6b79ae093f85636b8ac68c589a70649215e7215a84b1d1ab64ea0b6179c7a039",
-      "bytes": 1228
+      "sha256": "6a7e7aeaf3aed2f40bb13a645f4f7b865975203b0349f35548d644ff8a98013a",
+      "bytes": 1260
     },
     {
       "path": "references/benchmark_configs/validation_ipm_10p_v_shape_medium.openem",
@@ -2183,6 +2183,18 @@
       "path": "CITATION.cff",
       "source_sha256": null,
       "reason": "Public repository discoverability: add issue templates and citation metadata; point usage questions to Discussions; remove the satisfied pre-publication note about private vulnerability reporting. No runtime changes."
+    },
+    {
+      "base_commit": "021cbea09f54f57c91a046b5594605266f477790",
+      "path": "README.md",
+      "source_sha256": "cfa07ac1bf886f04b137b6fcedfa336b1671fc1b025668a78d0346a61bf9d5ed",
+      "reason": "Public repository discoverability: link the project website (coilem.com) from the README, package metadata and citation metadata. No runtime changes."
+    },
+    {
+      "base_commit": "021cbea09f54f57c91a046b5594605266f477790",
+      "path": "pyproject.toml",
+      "source_sha256": "6b79ae093f85636b8ac68c589a70649215e7215a84b1d1ab64ea0b6179c7a039",
+      "reason": "Public repository discoverability: link the project website (coilem.com) from the README, package metadata and citation metadata. No runtime changes."
     }
   ]
 }

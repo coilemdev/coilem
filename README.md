@@ -5,6 +5,8 @@ fields. Edit a motor, inspect its geometry and mesh, run the bundled Magneto2D
 solver, and compare saved results with field playback and PDF/CSV exports.
 Everything runs on your computer.
 
+Website: [coilem.com](https://coilem.com)
+
 ![coilEM workspace](docs/images/coilem-landing-page.png)
 
 **Experimental developer preview:** motor accuracy qualification is pending.

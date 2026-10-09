@@ -11,6 +11,7 @@ authors:
 version: 0.2.0
 license: AGPL-3.0-or-later
 repository-code: "https://github.com/coilemdev/coilem"
+url: "https://coilem.com"
 keywords:
   - electric motor
   - motor design
