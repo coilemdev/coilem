@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use coilEM in your work, please cite it using these metadata."
+title: coilEM
+type: software
+abstract: >-
+  coilEM is an open-source application for designing electric motors and
+  exploring magnetic fields locally, with the bundled Magneto2D 2D
+  finite-element solver.
+authors:
+  - name: coilEM contributors
+version: 0.2.0
+license: AGPL-3.0-or-later
+repository-code: "https://github.com/coilemdev/coilem"
+keywords:
+  - electric motor
+  - motor design
+  - finite element method
+  - electromagnetics
+  - magnetostatics

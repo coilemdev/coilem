@@ -9,6 +9,21 @@
       "bytes": 19
     },
     {
+      "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
+      "sha256": "67ccb96a9562ca0db27046e69b94e2f0559d8a4c4c8507c3b2b1e5a4875d186a",
+      "bytes": 1439
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/config.yml",
+      "sha256": "19731240a775bf00d82889caf6418916843afaa601e2c344eeb21a482f324f2b",
+      "bytes": 392
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature_request.yml",
+      "sha256": "8c18af8cf3a6a6dd7dafc2bc34106e82c052ac13287c79178cb637eb6057d012",
+      "bytes": 506
+    },
+    {
       "path": ".github/workflows/ci.yml",
       "sha256": "c4830b65d4953e899bf48233d88af713d06cd13ed16111fe10df2650a80e23d0",
       "bytes": 4780
@@ -17,6 +32,11 @@
       "path": ".gitignore",
       "sha256": "6ff3b9f4fd21a3cbe285ebb9fcf1a36f03ea652f59062a5391ef62e82d4a43e9",
       "bytes": 230
+    },
+    {
+      "path": "CITATION.cff",
+      "sha256": "4db2e23252e74091821a2f68592a790047216607b5bfb15085f11d93d111d923",
+      "bytes": 554
     },
     {
       "path": "LICENSE",
@@ -45,13 +65,13 @@
     },
     {
       "path": "SECURITY.md",
-      "sha256": "64eb208bcde4a39932c48b5e981e69afe36698922c98b985c4b756fb7e5769c1",
-      "bytes": 1339
+      "sha256": "d2656b97690cc6b7a1c92b09715bedf7b8b741cadd51820756c22284a40a442f",
+      "bytes": 1330
     },
     {
       "path": "SUPPORT.md",
-      "sha256": "978089239ff3aa64a651f9e96612b431c278e53a15f554720cc5eb820952135a",
-      "bytes": 836
+      "sha256": "232db88eac38a2c1d86ec52d80190a1ed64b3b56bfae96373dcc75a7d4541bc2",
+      "bytes": 984
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -2127,6 +2147,42 @@
       "path": "docs/local_solve_workspace.md",
       "source_sha256": "c2cf7e29a4b75039e446efbf3674acc4f26b1f78b88959fdfe21a1165410fc7e",
       "reason": "Public PR #4 documentation follow-up: correct material, storage, playback, UI guidance and evidence/provenance descriptions; no runtime changes."
+    },
+    {
+      "base_commit": "021cbea09f54f57c91a046b5594605266f477790",
+      "path": "SECURITY.md",
+      "source_sha256": "64eb208bcde4a39932c48b5e981e69afe36698922c98b985c4b756fb7e5769c1",
+      "reason": "Public repository discoverability: add issue templates and citation metadata; point usage questions to Discussions; remove the satisfied pre-publication note about private vulnerability reporting. No runtime changes."
+    },
+    {
+      "base_commit": "021cbea09f54f57c91a046b5594605266f477790",
+      "path": "SUPPORT.md",
+      "source_sha256": "978089239ff3aa64a651f9e96612b431c278e53a15f554720cc5eb820952135a",
+      "reason": "Public repository discoverability: add issue templates and citation metadata; point usage questions to Discussions; remove the satisfied pre-publication note about private vulnerability reporting. No runtime changes."
+    },
+    {
+      "base_commit": "021cbea09f54f57c91a046b5594605266f477790",
+      "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
+      "source_sha256": null,
+      "reason": "Public repository discoverability: add issue templates and citation metadata; point usage questions to Discussions; remove the satisfied pre-publication note about private vulnerability reporting. No runtime changes."
+    },
+    {
+      "base_commit": "021cbea09f54f57c91a046b5594605266f477790",
+      "path": ".github/ISSUE_TEMPLATE/config.yml",
+      "source_sha256": null,
+      "reason": "Public repository discoverability: add issue templates and citation metadata; point usage questions to Discussions; remove the satisfied pre-publication note about private vulnerability reporting. No runtime changes."
+    },
+    {
+      "base_commit": "021cbea09f54f57c91a046b5594605266f477790",
+      "path": ".github/ISSUE_TEMPLATE/feature_request.yml",
+      "source_sha256": null,
+      "reason": "Public repository discoverability: add issue templates and citation metadata; point usage questions to Discussions; remove the satisfied pre-publication note about private vulnerability reporting. No runtime changes."
+    },
+    {
+      "base_commit": "021cbea09f54f57c91a046b5594605266f477790",
+      "path": "CITATION.cff",
+      "source_sha256": null,
+      "reason": "Public repository discoverability: add issue templates and citation metadata; point usage questions to Discussions; remove the satisfied pre-publication note about private vulnerability reporting. No runtime changes."
     }
   ]
 }

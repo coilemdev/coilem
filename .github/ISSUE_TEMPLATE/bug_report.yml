@@ -1,0 +1,53 @@
+name: Bug report
+description: Report a reproducible defect in coilEM.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        GitHub Issues is public. Report suspected vulnerabilities privately as
+        described in [SECURITY.md](https://github.com/coilemdev/coilem/blob/main/SECURITY.md).
+        Do not attach private designs unless you are comfortable making them public.
+  - type: input
+    id: version
+    attributes:
+      label: coilEM version and commit
+      placeholder: "0.2.0 @ 021cbea"
+    validations:
+      required: true
+  - type: input
+    id: platform
+    attributes:
+      label: Operating system and architecture
+      placeholder: "macOS 15.6, arm64"
+    validations:
+      required: true
+  - type: input
+    id: toolchain
+    attributes:
+      label: Python, Node, Rust and Gmsh versions
+      placeholder: "Python 3.12.4, Node 24.1.0, Rust 1.88.0, Gmsh 4.13.1"
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Exact command or UI path, with sanitized input when possible.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      render: shell
