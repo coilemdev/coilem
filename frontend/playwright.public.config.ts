@@ -34,7 +34,10 @@ export default defineConfig({
     baseURL: uiUrl,
     actionTimeout: 60_000,
     navigationTimeout: 60_000,
-    trace: 'retain-on-failure',
+    // Continuous trace screenshots force ReadPixels on every animated WebGL
+    // frame and stall software-rendered CI. Keep DOM/network traces and the
+    // explicit landing/failure screenshots without continuous pixel readbacks.
+    trace: { mode: 'retain-on-failure', screenshots: false, snapshots: true, sources: true },
     screenshot: 'only-on-failure',
   },
   // Exercise the full Chromium headless browser used by current Chrome, rather

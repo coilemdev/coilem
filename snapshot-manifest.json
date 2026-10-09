@@ -600,8 +600,8 @@
     },
     {
       "path": "frontend/playwright.public.config.ts",
-      "sha256": "7500aeb5ddabb5d84a13ee33b29c33fc3b91997064ff2ceadaf7a2ffaadee056",
-      "bytes": 2371
+      "sha256": "18c86f9e40ca214c555ba162b82e8ca11b39a5d3176f5b155cd0ce9c44c98a50",
+      "bytes": 2667
     },
     {
       "path": "frontend/public/brand/coilem-mark.svg",
@@ -1820,7 +1820,7 @@
       "base_commit": "3a192efff9dce28c28b8911c958200393e7578c5",
       "path": "frontend/playwright.public.config.ts",
       "source_sha256": "ba3e5d2b00964b5f147a4d32f22b2385d7b9246c3f1c5a16916b7ed6bddf9fcb",
-      "reason": "Use full Chromium headless mode for the WebGL release rehearsal."
+      "reason": "Use full Chromium with DOM/network tracing that avoids continuous WebGL screenshot readbacks."
     },
     {
       "base_commit": "3a192efff9dce28c28b8911c958200393e7578c5",
