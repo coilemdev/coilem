@@ -687,7 +687,7 @@ export function App() {
     setBlankDesign(false);
     invalidateGeometryPreview();
     resetComputedState();
-    setNotice('Converted this working copy to M350-50A. The steel model and predicted results can change; save a new .openem file to preserve the conversion.');
+    setNotice('Converted this working copy to M350-50A. The steel model and predicted results can change; save a new .coilem file to preserve the conversion.');
   }, [invalidateGeometryPreview, resetComputedState]);
 
   const importSteel = useCallback((material: CustomSteel, target: SteelTarget) => {

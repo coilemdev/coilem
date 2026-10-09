@@ -98,7 +98,7 @@ The following source datasets remain deliberately excluded:
 In Design → Materials, choose **Import steel material**. Select a UTF-8 CSV,
 enter its name and source/measurement conditions, and optionally record the
 lamination thickness. Choose **Validate curve**, review the B-H plot, and assign
-the material to the stator, rotor, or both. Save the `.openem` project to preserve
+the material to the stator, rotor, or both. Save the `.coilem` project to preserve
 its exact curve and assignments; no shared material database is modified.
 
 The CSV header must be `B_T,H_A_per_m` or `H_A_per_m,B_T`. Values use tesla and

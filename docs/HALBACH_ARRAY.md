@@ -186,7 +186,7 @@ components, `A_z`, contours, field lines, and vectors.
 
 Downloads include:
 
-- `.openem` project input;
+- `.coilem` project input (legacy `.openem` files also open);
 - Halbach solution-report JSON;
 - replayable generic problem JSON;
 - generic field-solution JSON;

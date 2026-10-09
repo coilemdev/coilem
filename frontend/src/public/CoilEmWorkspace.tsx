@@ -12,6 +12,7 @@ import {
   type Ref,
 } from 'react';
 import type { PublicApiError } from './api';
+import { DESIGN_FILE_ACCEPT, DESIGN_FILE_EXTENSION } from './designFile';
 
 import {
   MotorCanvas,
@@ -548,10 +549,10 @@ export function CoilEmTopBar({
               </div>
               <span className="menu-divider" aria-hidden="true" />
               <button type="button" role="menuitem" onClick={closeMenuThen(() => designFileInputRef.current?.click())}>
-                Open design file… (.openem)
+                Open design file… ({DESIGN_FILE_EXTENSION})
               </button>
               <button type="button" role="menuitem" disabled={!onSaveDesign} onClick={closeMenuThen(onSaveDesign)}>
-                Save design file (.openem)
+                Save design file ({DESIGN_FILE_EXTENSION})
               </button>
               <span className="menu-divider" aria-hidden="true" />
               <button type="button" role="menuitem" disabled={!onResetDesign} onClick={closeMenuThen(onResetDesign)}>
@@ -566,7 +567,7 @@ export function CoilEmTopBar({
           <input
             ref={designFileInputRef}
             type="file"
-            accept=".openem,.json,application/json"
+            accept={DESIGN_FILE_ACCEPT}
             hidden
             onChange={(event) => {
               const file = event.target.files?.[0];

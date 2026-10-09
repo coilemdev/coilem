@@ -25,7 +25,7 @@
     },
     {
       "path": "MATERIALS.md",
-      "sha256": "f3b04c4b82192f80493b3f8e237f980cb6e277aded778b07981036603cc50aa1",
+      "sha256": "9e1031420804470d5b13ede56709670a71f1c0a762f426ed3aafcd9fd21257aa",
       "bytes": 7287
     },
     {
@@ -35,8 +35,8 @@
     },
     {
       "path": "README.md",
-      "sha256": "0a681b1e02ec20a852c43b43407efdfc93c4b6957541b78ac838b4a1136fdd16",
-      "bytes": 4477
+      "sha256": "15e36301723b85815c6d6a965918f673b0e9b8e3c4dde6136b15bafdd660d925",
+      "bytes": 4538
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -425,8 +425,8 @@
     },
     {
       "path": "backend/solve_workspace.py",
-      "sha256": "19a175a252436d2b1279d097ac4ce9916344c4aba603eb0cc77d12631ca0f7b4",
-      "bytes": 40955
+      "sha256": "9cd3b941c0d48cdc80f0f25ebad6ae9cfa681a93a50777eaccfe0309e7ef2ae6",
+      "bytes": 41405
     },
     {
       "path": "backend/solver/__init__.py",
@@ -520,13 +520,13 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "sha256": "86462c89b1656c9e5a5c98e664d885ecedaeae2eebe33a788250921656697d5b",
+      "sha256": "dbcee9f9c6ab0a548c5156b56f805b277a45ef3e075bf7b47cd40297d742b6fc",
       "bytes": 12444
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
-      "sha256": "6e7f069c362f36be0870bf88792578a36c80622fb26bd2c260ed82b892c610c7",
-      "bytes": 8236
+      "sha256": "cd0dfc2ee973eb1a34c5277e04b2b7a7586a3ffa71be9c6cc03b2b4edda8c254",
+      "bytes": 8271
     },
     {
       "path": "docs/MAGNETO2D.md",
@@ -545,8 +545,8 @@
     },
     {
       "path": "docs/RUNTIME_SETTINGS.md",
-      "sha256": "c66a6f1acd7414f2c627faa529baaddf018e6b4dc3efcbc785aaaa9c31f5eb41",
-      "bytes": 2332
+      "sha256": "546b92a44af401343999190f0d414f28f90ef010bb222dc55488a5d7b1fd5d88",
+      "bytes": 2350
     },
     {
       "path": "docs/VALIDATION.md",
@@ -585,8 +585,8 @@
     },
     {
       "path": "docs/local_solve_workspace.md",
-      "sha256": "14c27bb25eff955f4da4a250e3b67614cba950b889319fde402a602c24d2d6fe",
-      "bytes": 3726
+      "sha256": "c2c55daeb4391c7dd50e4aeb903068ce8dee85130adbaa0b9a0f6560edf2c1b3",
+      "bytes": 3824
     },
     {
       "path": "frontend/package-lock.json",
@@ -665,7 +665,7 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "sha256": "6fc3ae5ff1f882caa8897032af6c783b421f39bbd0e1087d9a865ec24432f5fa",
+      "sha256": "6294ee84ce72029204ce0318059c69a9d0d4bf2b1657628cda54590bc7578948",
       "bytes": 95446
     },
     {
@@ -1040,7 +1040,7 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "sha256": "c5e8214d7fac9729657a70a075a346e0d99e08d684ad91c501480e62a1ffc969",
+      "sha256": "1aa5b6f1900d572804239d332f4a7e687e5dee9049e720870736074b8c860b73",
       "bytes": 66155
     },
     {
@@ -1050,8 +1050,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "sha256": "d911876ae3c7238bd0767177c027e264cd9becc2f4200ddd682f13b0997a632b",
-      "bytes": 174002
+      "sha256": "ad4bd6cd3eae26509b9ff032f843f538a96ab6d265103536a779a0b7de999b26",
+      "bytes": 174096
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -1145,8 +1145,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "sha256": "1b27329953dc56fd2bd4d4353b752b8e70ac74bcac54492ec441664083c134d9",
-      "bytes": 9790
+      "sha256": "e65e29526ed2b4e5d14f369143ceb0d075b910a013b440be8be17711734213a7",
+      "bytes": 9947
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -1225,8 +1225,8 @@
     },
     {
       "path": "frontend/src/public/halbach/HalbachWorkspace.tsx",
-      "sha256": "d0102bc1f8a217847eb1ad3a039c86346f8a9ba4e4fe207cc9a1fccb7c02fc3f",
-      "bytes": 56440
+      "sha256": "5a225080cb497fac1d5cf681e4dbcf6c2acbc880c92e2a09b17c9f6efa0b0b9e",
+      "bytes": 56583
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbach2DViewport.tsx",
@@ -1240,8 +1240,8 @@
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbachWorkspace.tsx",
-      "sha256": "7419fdbdecbdf78f50bda5098439aa64cde4ca5c7a78cf9e2df5e6c645c4a3ac",
-      "bytes": 55750
+      "sha256": "6280112b6b1b9265302ee5e4b1a07ff008199e5fd82546e3dfe648905818b92a",
+      "bytes": 55893
     },
     {
       "path": "frontend/src/public/halbach/api.ts",
@@ -1345,8 +1345,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "sha256": "f8efbc569e14ae113c6ff22e2facc27d94d206c2e0ad5bc061d8210804540c4f",
-      "bytes": 12964
+      "sha256": "e1b6aacedfa24c9dd1e33e873252a9117cae67eeb9ad108b540718e4aee83ab7",
+      "bytes": 13211
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -1760,7 +1760,7 @@
     },
     {
       "path": "tests/test_public_report_exports.py",
-      "sha256": "d2312bfb3a983ffc90dd02d09e97b6a7c3537a4c6d79db4907d182d47975a732",
+      "sha256": "068504766ea4e311d175c1479efa4c2f70fe1f130902fa6f7221e601d4445fb8",
       "bytes": 17545
     },
     {
@@ -1780,8 +1780,8 @@
     },
     {
       "path": "tests/test_solve_workspace.py",
-      "sha256": "61da6308e63dd608c4b974b456deac05fe2543e594ccb9e1598995663a853ac4",
-      "bytes": 16205
+      "sha256": "6613367f5dc8dd4cd2800de671854d5231cfe36d2218b7226cf835faaa3084cc",
+      "bytes": 17503
     },
     {
       "path": "tools/generate_m350_50a_bh.py",
