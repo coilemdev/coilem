@@ -170,8 +170,8 @@
     },
     {
       "path": "backend/field_composition.py",
-      "sha256": "94f1392d7bbd1772042282c76f627289528004afb611ce67cb33e6308d85f9db",
-      "bytes": 12511
+      "sha256": "a3004702506189d0bb2ea27a9fc84f12c60311825c112efbcc71dfce3f52ae10",
+      "bytes": 13760
     },
     {
       "path": "backend/field_lines.py",
@@ -1800,8 +1800,8 @@
     },
     {
       "path": "tests/test_solve_workspace.py",
-      "sha256": "b73eac3568d34df7fe582596e06239f0ab031a37f7c2d6a0bba98ce431f66cd0",
-      "bytes": 20138
+      "sha256": "db3ad88a797164357e4bcf96ca6b3e89438c2b00c1fe4c15263439dcc5752961",
+      "bytes": 22220
     },
     {
       "path": "tools/generate_m350_50a_bh.py",
@@ -2296,13 +2296,19 @@
       "base_commit": "033b36ae092e0fdb2ef9787edab0826dedcb44d1",
       "path": "tests/test_solve_workspace.py",
       "source_sha256": "6613367f5dc8dd4cd2800de671854d5231cfe36d2218b7226cf835faaa3084cc",
-      "reason": "Solver robustness: cover the solver-cache location and its count and byte pruning."
+      "reason": "Solver robustness: cover the solver-cache location and its count and byte pruning; re-solve a cached stator-current or PM-only field response when solve-cache cleanup has removed its frame artifacts, instead of serving broken frame references."
     },
     {
       "base_commit": "033b36ae092e0fdb2ef9787edab0826dedcb44d1",
       "path": "tools/verify_snapshot.py",
       "source_sha256": "968e535c435a0362bf317db8c7671da0d6875294932849ea155f1c3db15a749b",
       "reason": "Ignore macOS .DS_Store Finder metadata in git and in the publication check. No runtime changes."
+    },
+    {
+      "base_commit": "033b36ae092e0fdb2ef9787edab0826dedcb44d1",
+      "path": "backend/field_composition.py",
+      "source_sha256": "94f1392d7bbd1772042282c76f627289528004afb611ce67cb33e6308d85f9db",
+      "reason": "Solver robustness: re-solve a cached stator-current or PM-only field response when solve-cache cleanup has removed its frame artifacts, instead of serving broken frame references."
     }
   ]
 }

@@ -4,12 +4,20 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 from copy import deepcopy
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
 from backend import field_artifacts
+from backend.field_composition import (
+    clear_armature_field_cache,
+    clear_pm_field_cache,
+    solve_armature_field_sweep,
+    solve_pm_field_sweep,
+)
 from backend.models import MotorConfig
 from backend.solve_workspace import (
     RUN_ARTIFACT_PREFIX,
@@ -136,6 +144,54 @@ def test_solver_cache_pruning_keeps_at_most_ten_dirs(
     _prune_solve_cache(root)
 
     assert sorted(path.name for path in root.iterdir()) == [f"magneto2d-{index:02d}" for index in range(2, 12)]
+
+
+@pytest.fixture
+def empty_field_composition_caches():
+    clear_armature_field_cache()
+    clear_pm_field_cache()
+    yield
+    clear_armature_field_cache()
+    clear_pm_field_cache()
+
+
+@pytest.mark.parametrize("solve_sweep", [solve_armature_field_sweep, solve_pm_field_sweep])
+def test_field_composition_cache_recomputes_after_its_artifacts_are_pruned(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    empty_field_composition_caches: None,
+    solve_sweep,
+) -> None:
+    monkeypatch.setenv("COILEM_USER_DATA_ROOT", str(tmp_path / "data"))
+    config = MotorConfig.model_validate(VALID_CONFIG)
+    cache_dirs: list[Path] = []
+
+    class FrameWritingSolver:
+        def solve(self, _config, **_kwargs):
+            cache_dir = Magneto2DSolver._prepare_solve_cache_dir()
+            assert cache_dir is not None
+            cache_dirs.append(cache_dir)
+            frame = {"angle_deg": 0.0, "contour_levels": [{"segments_mm": [[[0.0, 0.0], [1.0, 1.0]]]}]}
+            frame["field_frame_artifact"] = field_artifacts.write_field_line_frame_artifact(
+                frame,
+                cache_dir,
+                pos_idx=0,
+                elec_angle_deg=0.0,
+            )
+            return SimpleNamespace(field_line_frames=[frame])
+
+    assert solve_sweep(config, solver_factory=FrameWritingSolver)["cache_hit"] is False
+    assert solve_sweep(config, solver_factory=FrameWritingSolver)["cache_hit"] is True
+    assert len(cache_dirs) == 1
+
+    # Rolling solve-cache cleanup removes whole magneto2d-* directories.
+    shutil.rmtree(cache_dirs[0])
+    refreshed = solve_sweep(config, solver_factory=FrameWritingSolver)
+
+    assert refreshed["cache_hit"] is False
+    assert len(cache_dirs) == 2
+    artifact_id = refreshed["frames"][0]["field_frame_artifact"]["artifact_id"]
+    assert field_artifacts.resolve_solve_cache_artifact_id(artifact_id).is_file()
 
 
 @pytest.mark.parametrize("linked_level", ["project", "solves"])
