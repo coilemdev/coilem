@@ -564,6 +564,7 @@ export function PublicMotor3D({
   const rotorRef = useRef<THREE.Group | null>(null);
   const bearingRigsRef = useRef<BearingAnimationRig[]>([]);
   const resetCameraRef = useRef<(() => void) | null>(null);
+  const requestRenderRef = useRef<(() => void) | null>(null);
   const explodedAmountRef = useRef(explodedAmount);
   const introProgressRef = useRef(introProgress);
   const onInteractionRef = useRef(onInteraction);
@@ -588,6 +589,7 @@ export function PublicMotor3D({
   useEffect(() => {
     hiddenPartsRef.current = hiddenParts;
     applyPartVisibilityRef.current?.(hiddenParts);
+    requestRenderRef.current?.();
   }, [hiddenParts]);
 
   useEffect(() => {
@@ -600,6 +602,7 @@ export function PublicMotor3D({
 
   useEffect(() => {
     introProgressRef.current = introProgress;
+    requestRenderRef.current?.();
   }, [introProgress]);
 
   useEffect(() => {
@@ -616,6 +619,15 @@ export function PublicMotor3D({
       return undefined;
     }
     setFailed(false);
+    const gl = renderer.getContext();
+    const rendererInfo = gl.getExtension('WEBGL_debug_renderer_info');
+    const softwareRendering = rendererInfo !== null && /swiftshader|llvmpipe|softpipe|software/i.test(
+      gl.getParameter(rendererInfo.UNMASKED_RENDERER_WEBGL) as string,
+    );
+    // Idle software WebGL redraws can stall input when this scene mounts.
+    // Render changes on demand while preserving animation on hardware GPUs.
+    const renderContinuously = !softwareRendering
+      && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -626,7 +638,7 @@ export function PublicMotor3D({
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 5_000);
     const controls = new OrbitControls(camera, canvas);
-    controls.enableDamping = true;
+    controls.enableDamping = renderContinuously;
     controls.dampingFactor = 0.07;
     controls.enablePan = false;
     const raycaster = new THREE.Raycaster();
@@ -1663,6 +1675,7 @@ export function PublicMotor3D({
         selectionHelper = new THREE.BoxHelper(selected.object, 0x22d3ee);
         scene.add(selectionHelper);
       }
+      requestRenderRef.current?.();
       onComponentSelectRef.current?.(selected?.selection ?? null);
     };
     canvas.addEventListener('pointerdown', onPointerDown);
@@ -1676,17 +1689,18 @@ export function PublicMotor3D({
       renderer.setSize(width, height, false);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
+      requestRenderRef.current?.();
     };
     const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(host);
     resize();
 
     const render = () => {
-      animationFrame = window.requestAnimationFrame(render);
+      animationFrame = renderContinuously ? window.requestAnimationFrame(render) : 0;
       displayedExplosion = THREE.MathUtils.lerp(
         displayedExplosion,
         explodedAmountRef.current,
-        0.095,
+        renderContinuously ? 0.095 : 1,
       );
       if (Math.abs(displayedExplosion - explodedAmountRef.current) < 0.001) {
         displayedExplosion = explodedAmountRef.current;
@@ -1706,11 +1720,18 @@ export function PublicMotor3D({
       selectionHelper?.update();
       renderer.render(scene, camera);
     };
-    render();
+    const requestRender = () => {
+      if (!animationFrame) animationFrame = window.requestAnimationFrame(render);
+    };
+    requestRenderRef.current = requestRender;
+    controls.addEventListener('change', requestRender);
+    requestRender();
 
     return () => {
       window.cancelAnimationFrame(animationFrame);
+      requestRenderRef.current = null;
       resizeObserver.disconnect();
+      controls.removeEventListener('change', requestRender);
       controls.dispose();
       canvas.removeEventListener('pointerdown', onPointerDown);
       canvas.removeEventListener('pointerup', onPointerUp);
@@ -1743,14 +1764,19 @@ export function PublicMotor3D({
     if (!rotorRef.current) return;
     rotorRef.current.rotation.z = -rotorAngleDeg * Math.PI / 180;
     syncBearingKinematics(bearingRigsRef.current, rotorRef.current.rotation.z);
+    requestRenderRef.current?.();
   }, [rotorAngleDeg]);
 
   useEffect(() => {
     explodedAmountRef.current = explodedAmount;
+    requestRenderRef.current?.();
   }, [explodedAmount]);
 
   useEffect(() => {
-    if (resetSignal > 0) resetCameraRef.current?.();
+    if (resetSignal > 0) {
+      resetCameraRef.current?.();
+      requestRenderRef.current?.();
+    }
   }, [resetSignal]);
 
   return (
