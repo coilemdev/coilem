@@ -1252,8 +1252,8 @@ function CylindricalHalbachWorkspace({
                   ['problem', 'Problem JSON'],
                   ['field', 'Field JSON'],
                   ['csv', 'Samples CSV'],
-                  ['svg', 'Field SVG'],
-                  ['png', 'Field PNG'],
+                  ['svg', 'Design SVG'],
+                  ['png', 'Design PNG'],
                   ['pdf', 'Report PDF'],
                 ] as Array<[HalbachExportKind, string]>).map(([kind, label]) => (
                   <button

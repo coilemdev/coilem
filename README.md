@@ -59,7 +59,8 @@ The backend must stay bound to loopback.
 - Preview, Standard and High accuracy mesh/solve presets. These names describe
   resolution and sampling; they do not certify accuracy.
 - Saved runs, comparison, project save/reopen, PDF, CSV and replay downloads.
-- Solver-backed electromagnetics lessons and a cylindrical Halbach workspace.
+- Solver-backed electromagnetics lessons and cylindrical and linear
+  [Halbach workspaces](docs/HALBACH_ARRAY.md).
 
 ## Limits to understand
 

@@ -5,10 +5,10 @@ geometry review, mesh preparation, a local Magneto2D solve, and an immutable
 report export.
 
 The application in this guide is coilEM 0.2.0 and the bundled solver is
-Magneto2D 0.3.2. coilEM requires Python 3.11 or newer, Node.js with npm, a Rust
+Magneto2D 0.3.2. coilEM requires Python 3.11 or newer, Node.js 24 with npm, a Rust
 toolchain with Cargo, and Git. The platform-specific commands below are setup
-guidance, not a broad operating-system support guarantee. The exact system used
-for the release-candidate walkthrough is recorded with the release evidence.
+guidance, not a broad operating-system support guarantee. Record the exact
+system used for the final release-candidate walkthrough with its evidence.
 
 Use a stable Python release for preview validation. The public CI runtime
 check uses Python 3.11 and the frontend check uses Node.js 24. See

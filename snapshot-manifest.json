@@ -35,13 +35,13 @@
     },
     {
       "path": "README.md",
-      "sha256": "15e36301723b85815c6d6a965918f673b0e9b8e3c4dde6136b15bafdd660d925",
-      "bytes": 4538
+      "sha256": "bafb6b86ba32f099b3341dd90bbabd721f55b2bc577b8bd7d1900d0d335f8c3e",
+      "bytes": 4575
     },
     {
       "path": "RELEASE_NOTES.md",
-      "sha256": "0b19c902195499d3bd8851d63f4441cf5848509b4b20a2c257b1428dab3c5896",
-      "bytes": 4829
+      "sha256": "14f53040124c826db3eb7981465dee1a966f28c28a6359eb2333790f664d5f65",
+      "bytes": 5285
     },
     {
       "path": "SECURITY.md",
@@ -500,13 +500,13 @@
     },
     {
       "path": "docs/ARCHITECTURE.md",
-      "sha256": "0d03b1213dabbb31ab9474d5ee5460f0e66796565a165afd84975b36e95f2245",
-      "bytes": 10197
+      "sha256": "07872e278125831bd7812fe5013b0df004609dda8bc91252b803b0e2a4817e9c",
+      "bytes": 11094
     },
     {
       "path": "docs/ELMER.md",
-      "sha256": "b0cbe505cb8947a952dc0330a45e1e4c2a5da0cb971c86874c60f0d84ba32fb6",
-      "bytes": 5066
+      "sha256": "de947889753159f0c8383d6eddcc528c54c544d8eefd05e23ea528db4559176b",
+      "bytes": 5955
     },
     {
       "path": "docs/FIELD_PLAYBACK_V2.md",
@@ -515,23 +515,23 @@
     },
     {
       "path": "docs/GENERIC_MAGNETOSTATIC.md",
-      "sha256": "299c5fedf17e58a8678f57611d99f2bf43d4fd9d65b08d3ce385c5dea563a0dc",
-      "bytes": 14521
+      "sha256": "4a4497a84329d0a77d4787673ea9688669f85af91588780be1df8e07849a2164",
+      "bytes": 14531
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "sha256": "dbcee9f9c6ab0a548c5156b56f805b277a45ef3e075bf7b47cd40297d742b6fc",
-      "bytes": 12444
+      "sha256": "21f4d74a15bf81eaf43b97308cf3c591b184855f8ed7bfbb93766d865b70ad82",
+      "bytes": 12440
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
-      "sha256": "cd0dfc2ee973eb1a34c5277e04b2b7a7586a3ffa71be9c6cc03b2b4edda8c254",
-      "bytes": 8271
+      "sha256": "ed709abf6d73de76b5ccf39daaac1f71a4a52ecafcea12cb960066c3074d744d",
+      "bytes": 11897
     },
     {
       "path": "docs/MAGNETO2D.md",
-      "sha256": "cf51dfcff3fc96103e5dd2216a4d6a412e7dacca3bc22b6eb9b62c4d2a8ec4b6",
-      "bytes": 44715
+      "sha256": "4e363a9330f35d7b0717a8d1de346a7cd4ff40af56dc55f49cd9b776aec2d4a4",
+      "bytes": 45340
     },
     {
       "path": "docs/NUMERICAL_EVIDENCE.md",
@@ -540,13 +540,13 @@
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
-      "sha256": "d63278db1d8a2c36ff5acc912e56b56132247607e051de3faffb95edcf504526",
-      "bytes": 7823
+      "sha256": "2ec3218e15c9b328f479b88e8f3618383922784d29f28ddacdee00a1dd266039",
+      "bytes": 8308
     },
     {
       "path": "docs/RUNTIME_SETTINGS.md",
-      "sha256": "546b92a44af401343999190f0d414f28f90ef010bb222dc55488a5d7b1fd5d88",
-      "bytes": 2350
+      "sha256": "a89034f3e6c83f73f273c077170720010055331275b66551595dc7e06d8a50b6",
+      "bytes": 2898
     },
     {
       "path": "docs/VALIDATION.md",
@@ -555,8 +555,8 @@
     },
     {
       "path": "docs/VERIFICATION.md",
-      "sha256": "59a136456899fdf1abcfc75f77640ec92f350122fd01c8ec1f3c72ae79546ae9",
-      "bytes": 3853
+      "sha256": "775e287bce99f86bce7e8c739f5d445ed6390e881768393b7d7b1ac188ff0eeb",
+      "bytes": 5577
     },
     {
       "path": "docs/examples/follow-flux-magnet-iron-report.json",
@@ -585,8 +585,8 @@
     },
     {
       "path": "docs/local_solve_workspace.md",
-      "sha256": "c2c55daeb4391c7dd50e4aeb903068ce8dee85130adbaa0b9a0f6560edf2c1b3",
-      "bytes": 3824
+      "sha256": "c2cf7e29a4b75039e446efbf3674acc4f26b1f78b88959fdfe21a1165410fc7e",
+      "bytes": 4107
     },
     {
       "path": "frontend/package-lock.json",
@@ -665,8 +665,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "sha256": "6294ee84ce72029204ce0318059c69a9d0d4bf2b1657628cda54590bc7578948",
-      "bytes": 95446
+      "sha256": "163f12c0c4ddbf19539b9d98511064e829341a64df2a3b6e8f2bfa11bade1e4f",
+      "bytes": 95448
     },
     {
       "path": "frontend/src/api/projectSchema.ts",
@@ -1225,8 +1225,8 @@
     },
     {
       "path": "frontend/src/public/halbach/HalbachWorkspace.tsx",
-      "sha256": "5a225080cb497fac1d5cf681e4dbcf6c2acbc880c92e2a09b17c9f6efa0b0b9e",
-      "bytes": 56583
+      "sha256": "92183188b170a4fa252625c0e5f0490b1689d184f2c3d5bcd998e41d56a5a69a",
+      "bytes": 56585
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbach2DViewport.tsx",

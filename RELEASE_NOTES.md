@@ -29,10 +29,17 @@ The preview includes:
   High accuracy; Preview intentionally omits an under-sampled THD value;
 - immutable local runs with PDF, CSV, and replay-package exports;
 - explicit storage usage and confirmed deletion of one saved or incomplete
-  run; and
-- descriptive comparison of two saved Magneto2D runs.
+  run;
+- descriptive comparison of two saved Magneto2D runs; and
 - visually distinct sinusoidal and six-step run-plan previews, plus aligned
   torque/current results for the guided ideal six-step workflow.
+
+Experimental non-motor workflows include solver-backed lessons and cylindrical
+and linear Halbach arrays. Halbach workspaces save/reopen design files and show
+reports in the current browser session. Cylindrical arrays additionally export
+report/problem/field JSON, sample CSV, design SVG/PNG, and PDF. These workflows
+are separate from motor saved-run history; the linear UI currently has no
+report downloads. See [Halbach arrays](docs/HALBACH_ARRAY.md).
 
 ## Reliability and reporting updates
 

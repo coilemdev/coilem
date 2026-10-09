@@ -11,6 +11,11 @@ end in `.coilem`. Existing `.openem` files and lower-case schema keys remain com
 | `VITE_COILEM_LOCAL_API_BASE` | Select a loopback backend URL for the frontend build/dev server. |
 | `COILEM_LOCAL_UI_ORIGIN` | Allow one additional HTTP loopback UI origin with an explicit port. |
 | `COILEM_ENABLE_ELMER` | Enable the optional external Elmer development lane when set to `1`. |
+| `COILEM_ELMER_HOME` | Pin Elmer discovery to an installation root or executable directory. |
+| `COILEM_ELMER_RETAIN_ARTIFACTS` | Retain successful raw Elmer cases for diagnostics when set to `1`. |
+| `COILEM_ELMER_RUN_ROOT` | Override the raw Elmer case directory, which has rolling retention. |
+| `COILEM_ELMER_ANGLE_WORKERS` | Set development-lane parallel positions; positive integer, capped at 16. |
+| `COILEM_ELMER_ALLOW_UNQUALIFIED` | Bypass Elmer version qualification for development diagnostics when set to `1`; see [Elmer](ELMER.md). |
 | `COILEM_BUILD_COMMIT` | Supply the application build identity. |
 | `COILEM_TEST_PYTHON` | Select the Python interpreter for browser tests. |
 

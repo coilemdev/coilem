@@ -1,6 +1,6 @@
 # Local solve workspace
 
-coilEM stores completed public solves separately from its disposable solver
+coilEM stores completed public motor solves separately from its disposable solver
 cache. The default root follows the host operating system:
 
 - macOS: `~/Library/Application Support/coilEM`
@@ -49,6 +49,11 @@ tampered exports fail their integrity check; an older manifest directs the user
 to reopen its project and explicitly create a current run.
 Existing runs containing `project.openem` remain readable and retain their
 original export bytes.
+
+Halbach workspaces keep design drafts locally in the browser and support
+design-file save/reopen. Their solved reports stay in the current browser
+session and are not published to this motor-run workspace. Cylindrical
+Halbach exports are generated separately from the report.
 
 ## Retention
 

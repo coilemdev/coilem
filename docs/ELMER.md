@@ -12,23 +12,33 @@ field-result files after the override is deliberately enabled.
 The adapter accepts Elmer 26.2. Set `COILEM_ENABLE_ELMER=1` before starting
 `backend.public_main`; otherwise discovery is skipped, the solver selector
 stays hidden, and direct Elmer requests are rejected. When the override is
-enabled, discovery looks for both executable files in this order:
+enabled, discovery selects both executable files as follows:
 
-1. `COILEM_ELMER_HOME`, when set; its `bin` directory must contain
-   `ElmerSolver` and `ElmerGrid`;
+1. `COILEM_ELMER_HOME`, when set; it searches `bin` and then the supplied
+   directory itself for `ElmerSolver` and `ElmerGrid`;
 2. the conventional user-local directory
    `~/.local/openem-elmer/26.2/bin`; and
 3. `ElmerSolver` and `ElmerGrid` on `PATH`.
 
+An explicit home pins discovery to that directory. If either binary is found
+in the conventional directory, that directory is also pinned; a missing
+partner is reported rather than combined with a binary from `PATH`.
+
 Both programs must report release 26.2. The local `/health` response exposes
-availability, qualification, versions, platform, and an actionable reason,
-but not executable paths or hashes. The Solve screen uses that capability:
+availability, qualification, versions, platform, and an actionable reason.
+Dedicated executable-path and hash fields are omitted. Discovery failure
+reasons can include the configured installation directory. The Solve screen uses that capability:
 
 - **Magneto2D** remains the default;
 - **Elmer FEM** is enabled only when the override is set and discovery succeeds;
   and
 - with the override set, a missing or unqualified runtime leaves Elmer visible
   but disabled with an actionable reason.
+
+For development diagnostics, `COILEM_ELMER_ALLOW_UNQUALIFIED=1` bypasses the
+version qualification check. The capability's `qualified` flag then reflects
+that override, not independently validated accuracy. It does not qualify the
+runtime for release.
 
 Changing solver does not reuse or overwrite a previous result. Every solve is
 stored as a new immutable run. The launch comparison screen intentionally lists
@@ -65,6 +75,10 @@ Successful raw Elmer case directories are deleted by default. Failed cases are
 kept under the OS temporary directory and pruned to the ten most recent runs.
 For local diagnostics, set `COILEM_ELMER_RETAIN_ARTIFACTS=1` before starting
 the backend to retain successful meshes, SIF files, VTUs, and logs as well.
+`COILEM_ELMER_RUN_ROOT` selects a different raw-case root; these cases remain
+subject to the rolling retention limit. `COILEM_ELMER_ANGLE_WORKERS` sets a
+positive worker count capped at 16 and the number of positions. The adaptive
+default uses at most half the logical CPUs, capped at four workers.
 
 ## Development adapter boundary
 

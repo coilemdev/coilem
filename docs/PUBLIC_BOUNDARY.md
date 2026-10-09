@@ -98,7 +98,7 @@ sources, thermal requests, and internal debug diagnostics. The service binds to
 `127.0.0.1`; the TypeScript client accepts only loopback API hosts. Completed
 solves package actual solved positions into
 a generic `coilem.field_playback.v2` layered-WebP manifest while retaining one
-exact numerical snapshot. The v2 timeline supports angle, time, phase, and
+exact numerical snapshot per solved position. The v2 timeline supports angle, time, phase, and
 instructional-step sequences; its catalogs use content-defined composition and
 layer IDs with semantic roles. Existing v1 manifests remain readable through
 the frontend compatibility adapter. See `docs/FIELD_PLAYBACK_V2.md`. The image
@@ -109,7 +109,7 @@ results; PM-only frames come from the normal Magneto2D solve's exact
 zero-current sweep. When the testing override is enabled, Elmer result
 visualization remains resultant-field only.
 
-Completed public solves are published to the local solve workspace only after
+Completed public motor solves are published to the local solve workspace only after
 the project, resolved request, material/build provenance, result, artifacts,
 and report exports are durable. The `/runs` routes load immutable run evidence,
 serve its existing PDF/CSV/replay exports, retrieve a compact comparison record,
@@ -117,6 +117,13 @@ reveal its local folder, or delete one explicitly confirmed run. The run list
 reports storage usage and each record's size/status; deletion returns refreshed
 storage totals. Loading, comparing, or downloading a run never starts a solver,
 and completed runs are never silently pruned.
+
+Halbach solves return their reports to the browser session and are not added
+to `/runs`. Cylindrical Halbach downloads are generated from the submitted
+report through `/halbach/export/{export_kind}`. The linear Halbach UI provides
+design-file save/reopen and an in-session report; it has no report-download
+route. Disconnecting a Halbach stream does not cancel its backend worker, and
+`POST /solve/cancel` applies to the motor and teaching solve controller.
 
 The visual application is rooted at `frontend/src/public/index.html` and
 `frontend/src/public/main.tsx`. Its source/import audit recursively permits
