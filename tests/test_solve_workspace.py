@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import json
+import os
 from copy import deepcopy
 from pathlib import Path
 
 import pytest
 
+from backend import field_artifacts
 from backend.models import MotorConfig
 from backend.solve_workspace import (
     RUN_ARTIFACT_PREFIX,
@@ -18,6 +20,7 @@ from backend.solve_workspace import (
     resolve_run_artifact_id,
     user_data_root,
 )
+from backend.solver import Magneto2DSolver, _prune_solve_cache
 
 VALID_CONFIG = json.loads(Path("tests/fixtures/spm_4p12s_simple.json").read_text(encoding="utf-8"))
 
@@ -62,6 +65,77 @@ def test_user_data_root_honors_explicit_override(
     monkeypatch.setenv("COILEM_USER_DATA_ROOT", str(configured))
 
     assert user_data_root() == configured.resolve()
+
+
+def test_solver_cache_lives_under_the_user_data_root(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.setenv("COILEM_USER_DATA_ROOT", str(tmp_path / "data"))
+
+    cache_dir = Magneto2DSolver._prepare_solve_cache_dir()
+    assert cache_dir is not None
+    assert cache_dir.parent == (tmp_path / "data" / "solve_cache").resolve()
+
+    artifact = field_artifacts.write_field_line_frame_artifact(
+        {"angle_deg": 0.0},
+        cache_dir,
+        pos_idx=0,
+        elec_angle_deg=0.0,
+    )
+    assert artifact is not None
+    resolved = field_artifacts.resolve_solve_cache_artifact_id(artifact["artifact_id"])
+    assert resolved.is_file()
+    assert artifact["relative_path"] == resolved.relative_to(cache_dir.parent).as_posix()
+
+
+def _write_cache_dir(root: Path, name: str, size: int, mtime: int) -> Path:
+    cache_dir = root / name
+    cache_dir.mkdir(parents=True)
+    (cache_dir / "sweep_report.json").write_bytes(b"x" * size)
+    os.utime(cache_dir, (mtime, mtime))
+    return cache_dir
+
+
+def test_solver_cache_pruning_honors_byte_budget_and_keeps_newest(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "solve_cache"
+    newest = _write_cache_dir(root, "magneto2d-4", 300, 4_000)
+    second = _write_cache_dir(root, "magneto2d-3", 300, 3_000)
+    third = _write_cache_dir(root, "magneto2d-2", 300, 2_000)
+    small_oldest = _write_cache_dir(root, "magneto2d-1", 50, 1_000)
+    unrelated = _write_cache_dir(root, "other-cache", 5_000, 500)
+
+    monkeypatch.setenv("COILEM_SOLVE_CACHE_MAX_BYTES", "700")
+    _prune_solve_cache(root)
+    assert {path.name for path in root.iterdir()} == {
+        newest.name,
+        second.name,
+        small_oldest.name,
+        unrelated.name,
+    }
+    assert not third.exists()
+
+    # The newest dir survives even when it alone exceeds the budget.
+    monkeypatch.setenv("COILEM_SOLVE_CACHE_MAX_BYTES", "100")
+    _prune_solve_cache(root)
+    assert {path.name for path in root.iterdir()} == {newest.name, unrelated.name}
+
+
+def test_solver_cache_pruning_keeps_at_most_ten_dirs(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "solve_cache"
+    for index in range(12):
+        _write_cache_dir(root, f"magneto2d-{index:02d}", 1, 1_000 + index)
+    monkeypatch.delenv("COILEM_SOLVE_CACHE_MAX_BYTES", raising=False)
+
+    _prune_solve_cache(root)
+
+    assert sorted(path.name for path in root.iterdir()) == [f"magneto2d-{index:02d}" for index in range(2, 12)]
 
 
 @pytest.mark.parametrize("linked_level", ["project", "solves"])

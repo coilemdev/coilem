@@ -9,10 +9,21 @@ import math
 from pathlib import Path
 from typing import Any
 
-SOLVE_CACHE_ROOT = Path.home() / ".openem" / "solve_cache"
 AIRGAP_RECORD_ARTIFACT_SCHEMA = "openem.airgap_field_records.v1"
 FIELD_LINE_FRAME_ARTIFACT_SCHEMA = "openem.field_line_frame.v1"
 DISPLAY_AIRGAP_RECORD_LIMIT = 720
+
+
+def solve_cache_root() -> Path:
+    """Return the disposable solver-cache root under the coilEM user-data root.
+
+    Resolved on each call so ``COILEM_USER_DATA_ROOT`` also isolates the cache.
+    """
+
+    # Imported here because solve_workspace imports this module.
+    from backend.solve_workspace import user_data_root
+
+    return user_data_root() / "solve_cache"
 
 
 def _b64url_encode(value: str) -> str:
@@ -27,7 +38,7 @@ def _b64url_decode(value: str) -> str:
 def encode_solve_cache_artifact_id(path: Path) -> str:
     """Return an opaque id for a file under the solve-cache root."""
 
-    root = SOLVE_CACHE_ROOT.expanduser().resolve()
+    root = solve_cache_root().resolve()
     resolved = path.expanduser().resolve()
     rel = resolved.relative_to(root)
     return _b64url_encode(rel.as_posix())
@@ -43,7 +54,7 @@ def resolve_solve_cache_artifact_id(artifact_id: str) -> Path:
     rel = Path(rel_text)
     if rel.is_absolute() or ".." in rel.parts:
         raise ValueError("artifact id escapes solve cache")
-    root = SOLVE_CACHE_ROOT.expanduser().resolve()
+    root = solve_cache_root().resolve()
     resolved = (root / rel).resolve()
     if root not in resolved.parents and resolved != root:
         raise ValueError("artifact id escapes solve cache")
@@ -236,7 +247,7 @@ def write_airgap_records_artifact(
             "schema_version": AIRGAP_RECORD_ARTIFACT_SCHEMA,
             "record_count": int(stats["count"]),
             "byte_count": path.stat().st_size,
-            "relative_path": path.resolve().relative_to(SOLVE_CACHE_ROOT.expanduser().resolve()).as_posix(),
+            "relative_path": path.resolve().relative_to(solve_cache_root().resolve()).as_posix(),
         }
     except Exception:
         return None
@@ -302,7 +313,7 @@ def write_field_line_frame_artifact(
             "schema_version": FIELD_LINE_FRAME_ARTIFACT_SCHEMA,
             "record_count": record_count,
             "byte_count": path.stat().st_size,
-            "relative_path": path.resolve().relative_to(SOLVE_CACHE_ROOT.expanduser().resolve()).as_posix(),
+            "relative_path": path.resolve().relative_to(solve_cache_root().resolve()).as_posix(),
         }
     except Exception:
         return None

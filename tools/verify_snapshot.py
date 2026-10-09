@@ -135,6 +135,8 @@ def main() -> int:
         )
         and not any(part.endswith(".egg-info") for part in path.relative_to(root).parts)
         and path.name != "snapshot-manifest.json"
+        # macOS Finder metadata: ignored by git, so it can never be published.
+        and path.name != ".DS_Store"
     }
     failures = []
     if set(actual) != set(expected):

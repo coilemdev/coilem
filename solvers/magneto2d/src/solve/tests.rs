@@ -10,8 +10,8 @@ use super::{
     cap_mu_rel_step, centered_endpoint_period_waveform, centered_no_load_cogging_waveform,
     cogging_period_electrical_deg, cogging_torque_method, compute_energy_functional_summary,
     covers_integer_cogging_period, default_nonlinear_tol_for_quality, effective_magnet_embrace,
-    finite_difference_waveform, first_harmonic_peak, harmonic_peak, motor_boundary_set,
-    outer_dirichlet_boundary_nodes, parse_pm_source_work_scale,
+    ensure_finite_solution, finite_difference_waveform, first_harmonic_peak, harmonic_peak,
+    motor_boundary_set, outer_dirichlet_boundary_nodes, parse_pm_source_work_scale,
     pm_sidewall_quadrature_diagnostic_config, resolve_operating_point, rotated_rotor_regions,
     rotor_electrical_angle_deg, setup_context, sextant_phase_map, single_angle_context_artifact,
     synced_current_angle_deg, torque_ripple_pct, uses_cogging_remesh_per_step, CoggingTorqueMethod,
@@ -775,6 +775,94 @@ fn mesh_metadata_validation_rejects_wrong_length_region_ids() {
             expected: 1,
             actual: 2,
         }
+    );
+}
+
+#[test]
+fn mesh_metadata_validation_rejects_out_of_range_triangle_nodes() {
+    let mut artifact = metadata_test_artifact(vec![Region::Magnet], None);
+    artifact.mesh.triangles[0] = [0, 1, 99];
+
+    let err = validate_mesh_metadata(&artifact)
+        .expect_err("a triangle must not reference a missing node");
+
+    assert_eq!(
+        err,
+        MeshMetadataError::InvalidTopology(
+            "triangle 0 references node 99, but the mesh has 3 nodes".to_string()
+        )
+    );
+}
+
+#[test]
+fn mesh_metadata_validation_rejects_repeated_triangle_nodes() {
+    let mut artifact = metadata_test_artifact(vec![Region::Magnet], None);
+    artifact.mesh.triangles[0] = [0, 1, 1];
+
+    let err =
+        validate_mesh_metadata(&artifact).expect_err("a triangle must use three distinct nodes");
+
+    assert!(matches!(err, MeshMetadataError::InvalidTopology(_)));
+}
+
+#[test]
+fn mesh_metadata_validation_rejects_non_finite_nodes_and_empty_meshes() {
+    let mut artifact = metadata_test_artifact(vec![Region::Magnet], None);
+    artifact.mesh.nodes[2] = [f64::NAN, 0.0];
+    assert!(matches!(
+        validate_mesh_metadata(&artifact),
+        Err(MeshMetadataError::InvalidTopology(_))
+    ));
+
+    let mut artifact = metadata_test_artifact(vec![Region::Magnet], None);
+    artifact.mesh.triangles.clear();
+    artifact.mesh.regions.clear();
+    assert!(matches!(
+        validate_mesh_metadata(&artifact),
+        Err(MeshMetadataError::InvalidTopology(_))
+    ));
+}
+
+#[test]
+fn setup_context_rejects_out_of_range_triangle_nodes_without_panicking() {
+    let config = compact_4p12s_config("SPM");
+    let mut artifact = metadata_test_artifact(vec![Region::Magnet], None);
+    artifact.mesh.triangles[0] = [0, 1, 99];
+
+    let err = match setup_context(&config, Some(artifact)) {
+        Ok(_) => panic!("an invalid mesh must not reach the solve context"),
+        Err(err) => err,
+    };
+
+    assert!(err.contains("references node 99"), "{err}");
+}
+
+#[test]
+fn finite_solution_gate_rejects_nan_potential_and_flux_density() {
+    let finite_field = ElementField {
+        bx: 0.1,
+        by: 0.2,
+        b_mag: 0.25,
+    };
+    let finite_fields = std::slice::from_ref(&finite_field);
+    assert!(ensure_finite_solution(&[0.0, 1.0e-3], finite_fields, 0.0).is_ok());
+
+    let err = ensure_finite_solution(&[0.0, f64::NAN], finite_fields, 0.0)
+        .expect_err("a NaN vector potential must fail the solve");
+    assert!(
+        err.contains("non-finite vector potential at node 1"),
+        "{err}"
+    );
+
+    let infinite_field = ElementField {
+        b_mag: f64::INFINITY,
+        ..finite_field
+    };
+    let err = ensure_finite_solution(&[0.0, 1.0e-3], &[infinite_field], 0.0)
+        .expect_err("an infinite flux density must fail the solve");
+    assert!(
+        err.contains("non-finite flux density in element 0"),
+        "{err}"
     );
 }
 

@@ -34,8 +34,8 @@ use crate::sources::{
     source_phase_currents_for_excitation,
 };
 use crate::sparse::{
-    pcg_solve_with_guess_options, pcg_solve_with_guess_options_profiled, CooMatrix,
-    ElementCsrAssemblyPattern, PcgExecution, PcgOptions, PcgPreconditionerKind,
+    pcg_solve_with_guess_options_profiled, CooMatrix, ElementCsrAssemblyPattern, PcgExecution,
+    PcgOptions, PcgPreconditionerKind,
 };
 
 mod context;
@@ -687,29 +687,51 @@ fn solve_linear_system(
     }
 
     let max_linear_iterations = if n_pole_pitches > 1 { 5000 } else { 2000 };
-    let az = if let Some(profile) = profile.as_deref_mut() {
-        let (az, pcg_profile) = pcg_solve_with_guess_options_profiled(
-            &k_csr,
-            &f,
-            max_linear_iterations,
-            linear_tol,
-            initial_az_guess,
-            linear_policy.pcg,
-        )?;
+    let (az, pcg_profile) = pcg_solve_with_guess_options_profiled(
+        &k_csr,
+        &f,
+        max_linear_iterations,
+        linear_tol,
+        initial_az_guess,
+        linear_policy.pcg,
+    )?;
+    if let Some(profile) = profile {
         profile.pcg.add_assign(&pcg_profile);
-        az
-    } else {
-        pcg_solve_with_guess_options(
-            &k_csr,
-            &f,
-            max_linear_iterations,
-            linear_tol,
-            initial_az_guess,
-            linear_policy.pcg,
-        )?
-    };
+    }
+    // Loose inner Picard solves may stop at the cap: a tight solve follows
+    // them. A capped tight solve would feed unconverged fields to results.
+    if pcg_profile.max_iter_calls > 0 && linear_tol <= LINEAR_SOLVE_TIGHT_TOL {
+        return Err(format!(
+            "motor field PCG failed to converge within {max_linear_iterations} iterations \
+             at relative tolerance {linear_tol:.3e}"
+        ));
+    }
     let solve_ms = solve_start.elapsed().as_millis() as u64;
     Ok((az, asm_ms, solve_ms))
+}
+
+pub(super) fn ensure_finite_solution(
+    az: &[f64],
+    fields: &[ElementField],
+    rotor_angle_rad: f64,
+) -> Result<(), String> {
+    if let Some(node) = az.iter().position(|value| !value.is_finite()) {
+        return Err(format!(
+            "motor field solve produced a non-finite vector potential at node {node} \
+             (rotor_angle_deg={:.3})",
+            rotor_angle_rad.to_degrees()
+        ));
+    }
+    if let Some(element) = fields.iter().position(|field| {
+        !(field.bx.is_finite() && field.by.is_finite() && field.b_mag.is_finite())
+    }) {
+        return Err(format!(
+            "motor field solve produced a non-finite flux density in element {element} \
+             (rotor_angle_deg={:.3})",
+            rotor_angle_rad.to_degrees()
+        ));
+    }
+    Ok(())
 }
 
 fn apply_model_constraints(
@@ -1829,6 +1851,9 @@ fn solve_at_angle(
 
     let last_az = last_az.ok_or_else(|| "solver did not produce an A_z solution".to_string())?;
     let fields = last_fields.ok_or_else(|| "solver did not produce element fields".to_string())?;
+    // serde_json writes NaN/Inf as null, so a broken solve must stop here
+    // rather than surface as a report with silently missing values.
+    ensure_finite_solution(&last_az, &fields, rotor_angle_rad)?;
     let nonlinear_iterations = if nonlinear_enabled {
         residual_history.len().max(1)
     } else {

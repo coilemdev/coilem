@@ -163,6 +163,97 @@ pub struct SolveOptions {
     pub thd_analysis: Option<bool>,
 }
 
+impl MotorConfig {
+    /// Reject values that would panic or silently produce a meaningless solve.
+    ///
+    /// The backend applies tighter engineering ranges; this is the native
+    /// boundary's guard against inputs that bypass it.
+    pub fn validate(&self) -> Result<(), String> {
+        let positive = [
+            ("stator.OD_mm", self.stator.od_mm),
+            ("stator.ID_mm", self.stator.id_mm),
+            ("stator.stack_length_mm", self.stator.stack_length_mm),
+            ("stator.tooth_width_mm", self.stator.tooth_width_mm),
+            ("stator.yoke_thickness_mm", self.stator.yoke_thickness_mm),
+            ("rotor.OD_mm", self.rotor.od_mm),
+            ("rotor.magnet_thickness_mm", self.rotor.magnet_thickness_mm),
+            ("rotor.magnet_width_mm", self.rotor.magnet_width_mm),
+        ];
+        for (name, value) in positive {
+            if !(value.is_finite() && value > 0.0) {
+                return Err(format!(
+                    "{name} must be a finite positive number, got {value}"
+                ));
+            }
+        }
+        let non_negative = [
+            ("stator.slot_opening_mm", Some(self.stator.slot_opening_mm)),
+            ("rotor.ID_mm", self.rotor.id_mm),
+            ("rotor.bridge_thickness_mm", self.rotor.bridge_thickness_mm),
+        ];
+        for (name, value) in non_negative {
+            if let Some(value) = value {
+                if !(value.is_finite() && value >= 0.0) {
+                    return Err(format!(
+                        "{name} must be a finite non-negative number, got {value}"
+                    ));
+                }
+            }
+        }
+        if let Some(embrace) = self.rotor.magnet_embrace {
+            if !(embrace.is_finite() && (0.0..=1.0).contains(&embrace)) {
+                return Err(format!(
+                    "rotor.magnet_embrace must be between 0 and 1, got {embrace}"
+                ));
+            }
+        }
+        if self.stator.slot_count == 0 {
+            return Err("stator.slot_count must be at least 1".to_string());
+        }
+        if self.rotor.pole_count < 2 {
+            return Err(format!(
+                "rotor.pole_count must be at least 2, got {}",
+                self.rotor.pole_count
+            ));
+        }
+        let counts = [
+            ("winding.turns_per_coil", self.winding.turns_per_coil),
+            ("winding.layers", self.winding.layers),
+            ("winding.parallel_paths", self.winding.parallel_paths),
+            ("winding.coil_span", self.winding.coil_span.unwrap_or(1)),
+        ];
+        for (name, value) in counts {
+            if value == 0 {
+                return Err(format!("{name} must be at least 1"));
+            }
+        }
+        if let Some(params) = self.solve_params.as_ref() {
+            let finite = [
+                (
+                    "solve_params.current_amplitude_a",
+                    params.requested_current_a(),
+                ),
+                ("solve_params.current_angle_deg", params.current_angle_deg),
+                (
+                    "solve_params.commutation_advance_deg",
+                    params.commutation_advance_deg,
+                ),
+            ];
+            for (name, value) in finite {
+                if let Some(value) = value {
+                    if !value.is_finite() {
+                        return Err(format!("{name} must be finite, got {value}"));
+                    }
+                }
+            }
+            if params.max_nonlinear_iterations == Some(0) {
+                return Err("solve_params.max_nonlinear_iterations must be at least 1".to_string());
+            }
+        }
+        Ok(())
+    }
+}
+
 impl SolveParams {
     pub fn current_a(&self) -> f64 {
         self.current_amplitude_a
@@ -200,13 +291,82 @@ impl SolveParams {
 
 #[cfg(test)]
 mod tests {
-    use super::SolveParams;
+    use super::{MotorConfig, SolveParams};
+    use serde_json::json;
 
     #[test]
     fn solve_params_deserializes_corner_refinement() {
         let params: SolveParams = serde_json::from_str(r#"{"corner_refinement":true}"#).unwrap();
 
         assert_eq!(params.corner_refinement, Some(true));
+    }
+
+    fn valid_config() -> serde_json::Value {
+        json!({
+            "schema_version": "1.0",
+            "topology": "SPM",
+            "stator": {
+                "OD_mm": 50.0, "ID_mm": 34.0, "slot_count": 12, "stack_length_mm": 40.0,
+                "slot_opening_mm": 2.5, "tooth_width_mm": 4.5, "yoke_thickness_mm": 4.5
+            },
+            "rotor": {
+                "OD_mm": 25.0, "magnet_thickness_mm": 3.0, "magnet_width_mm": 16.5,
+                "pole_count": 4, "magnet_embrace": 0.85
+            },
+            "winding": {"type": "concentrated", "turns_per_coil": 10, "layers": 1, "parallel_paths": 1},
+            "materials": {
+                "stator_steel": "M19", "rotor_steel": "M19", "magnet_grade": "N42", "conductor": "copper"
+            },
+            "solve_params": {"current_amplitude_a": 0.0, "current_angle_deg": 0.0, "max_nonlinear_iterations": 30}
+        })
+    }
+
+    fn validate(value: serde_json::Value) -> Result<(), String> {
+        serde_json::from_value::<MotorConfig>(value)
+            .unwrap()
+            .validate()
+    }
+
+    #[test]
+    fn motor_config_validation_accepts_a_valid_design() {
+        assert_eq!(validate(valid_config()), Ok(()));
+    }
+
+    #[test]
+    fn motor_config_validation_rejects_values_that_would_panic_or_mislead() {
+        let cases = [
+            ("/rotor/pole_count", json!(0), "rotor.pole_count"),
+            ("/rotor/pole_count", json!(1), "rotor.pole_count"),
+            ("/stator/slot_count", json!(0), "stator.slot_count"),
+            (
+                "/stator/stack_length_mm",
+                json!(-40.0),
+                "stator.stack_length_mm",
+            ),
+            ("/stator/OD_mm", json!(0.0), "stator.OD_mm"),
+            ("/rotor/magnet_embrace", json!(1.5), "rotor.magnet_embrace"),
+            (
+                "/stator/slot_opening_mm",
+                json!(-1.0),
+                "stator.slot_opening_mm",
+            ),
+            (
+                "/winding/parallel_paths",
+                json!(0),
+                "winding.parallel_paths",
+            ),
+            (
+                "/solve_params/max_nonlinear_iterations",
+                json!(0),
+                "solve_params.max_nonlinear_iterations",
+            ),
+        ];
+        for (pointer, value, field) in cases {
+            let mut config = valid_config();
+            *config.pointer_mut(pointer).unwrap() = value;
+            let err = validate(config).expect_err(pointer);
+            assert!(err.starts_with(field), "{pointer}: {err}");
+        }
     }
 }
 

@@ -24,6 +24,8 @@ import { parseCustomSteels } from './customSteel';
 export const DESIGN_FILE_EXTENSION = '.coilem';
 export const DESIGN_FILE_ACCEPT = `${DESIGN_FILE_EXTENSION},.openem,.json,application/json`;
 export const DESIGN_FILE_SCHEMA_VERSION = COILEM_SCHEMA_VERSION;
+/** Application version stamped into saved designs; tests/test_public_candidate.py keeps it in sync. */
+export const COILEM_APP_VERSION = '0.2.0';
 
 export interface ParsedDesignFile {
   name: string | null;
@@ -167,7 +169,7 @@ export function serializeDesignFile(config: MotorConfig, name: string): string {
   return `${JSON.stringify(
     {
       openem_schema_version: DESIGN_FILE_SCHEMA_VERSION,
-      openem_version: '0.1.1',
+      openem_version: COILEM_APP_VERSION,
       name: designFileBaseName(name),
       ...applyPublicSolverSettings(config),
     },

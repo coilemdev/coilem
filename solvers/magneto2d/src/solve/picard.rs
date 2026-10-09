@@ -223,6 +223,17 @@ pub(super) fn run_picard_nonlinear_loop(
         }
     }
 
+    // A backtrack reject on the final iteration `continue`s past the
+    // max-iteration check above, so the loop can also end unconverged here.
+    if nonlinear_enabled && !converged {
+        return Err(format!(
+            "nonlinear solve failed to converge after {} iterations at rotor_angle_deg={:.3}; residual_history={:?}",
+            nonlinear_config.max_iterations,
+            rotor_angle_rad.to_degrees(),
+            residual_history,
+        ));
+    }
+
     // Final tight solve: the loop's last iterate was solved at the loose
     // tolerance, so polish it to LINEAR_SOLVE_TIGHT_TOL with the converged
     // A_z as warm start — typically a handful of PCG iterations — and

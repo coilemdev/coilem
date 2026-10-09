@@ -648,9 +648,9 @@ fn lower_row_dot(
 
 /// Preconditioned Conjugate Gradient solver for Ax = b.
 ///
-/// Returns the best iterate at `max_iter` for legacy motor compatibility.
-/// Profiled generic callers inspect `PcgProfile::max_iter_calls` and reject an
-/// iteration-capped result at their contract boundary.
+/// Returns the best iterate at `max_iter`. Profiled callers (the generic field
+/// API and tight motor solves) inspect `PcgProfile::max_iter_calls` and reject
+/// an iteration-capped result at their contract boundary.
 pub fn pcg_solve(a: &CsrMatrix, b: &[f64], max_iter: usize, tol: f64) -> Result<Vec<f64>, String> {
     pcg_solve_with_guess(a, b, max_iter, tol, None)
 }
@@ -894,13 +894,27 @@ fn pcg_solve_with_guess_inner(
         |profile, elapsed| profile.final_residual_us += elapsed,
         || residual_norm_with_execution(&final_res, b, execution),
     );
-    if let Some(profile) = profile.as_deref_mut() {
-        profile.max_iter_calls += 1;
+    // The p·Ap breakdown exit lands here too; only an iterate that misses the
+    // tolerance counts as capped.
+    let converged = res_norm / b_norm < tol;
+    if let Some(profile) = profile {
+        if converged {
+            profile.converged_calls += 1;
+        } else {
+            profile.max_iter_calls += 1;
+        }
     }
-    eprintln!(
-        "  pcg: max iterations reached (rel_residual={:.2e})",
-        res_norm / b_norm
-    );
+    if converged {
+        eprintln!(
+            "  pcg: converged at breakdown (rel_residual={:.2e})",
+            res_norm / b_norm
+        );
+    } else {
+        eprintln!(
+            "  pcg: max iterations reached (rel_residual={:.2e})",
+            res_norm / b_norm
+        );
+    }
     Ok(x) // return best approximation
 }
 

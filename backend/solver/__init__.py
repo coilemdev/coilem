@@ -9,7 +9,6 @@ import os
 import platform
 import shutil
 import sys
-import tempfile
 import threading
 import time
 from collections import OrderedDict
@@ -158,6 +157,53 @@ def _magneto2d_persist_summary_artifacts() -> bool:
 
 def _magneto2d_prepare_cache_dir() -> bool:
     return _magneto2d_persist_raw_artifacts() or _magneto2d_persist_summary_artifacts()
+
+
+SOLVE_CACHE_DIR_PREFIX = "magneto2d-"
+SOLVE_CACHE_KEEP_LATEST = 10
+DEFAULT_SOLVE_CACHE_MAX_BYTES = 2 * 1024 * 1024 * 1024
+
+
+def _solve_cache_max_bytes() -> int:
+    configured = os.environ.get("COILEM_SOLVE_CACHE_MAX_BYTES")
+    try:
+        parsed = int(configured) if configured else DEFAULT_SOLVE_CACHE_MAX_BYTES
+    except ValueError:
+        return DEFAULT_SOLVE_CACHE_MAX_BYTES
+    return parsed if parsed > 0 else DEFAULT_SOLVE_CACHE_MAX_BYTES
+
+
+def _cache_dir_size_bytes(path: Path) -> int:
+    total = 0
+    for candidate in path.rglob("*"):
+        try:
+            if candidate.is_file() and not candidate.is_symlink():
+                total += candidate.stat().st_size
+        except OSError:
+            continue
+    return total
+
+
+def _prune_solve_cache(cache_root: Path) -> None:
+    """Trim old Magneto2D cache dirs to the count and byte budgets.
+
+    The newest dir is always kept: a failed or cancelled solve restores the
+    previous result in the UI, and its field frames still live there.
+    """
+
+    caches = sorted(
+        (path for path in cache_root.iterdir() if path.is_dir() and path.name.startswith(SOLVE_CACHE_DIR_PREFIX)),
+        key=lambda path: path.stat().st_mtime,
+        reverse=True,
+    )
+    budget = _solve_cache_max_bytes()
+    retained_bytes = 0
+    for index, cache_dir in enumerate(caches):
+        size = _cache_dir_size_bytes(cache_dir)
+        if index == 0 or (index < SOLVE_CACHE_KEEP_LATEST and retained_bytes + size <= budget):
+            retained_bytes += size
+            continue
+        shutil.rmtree(cache_dir, ignore_errors=True)
 
 
 def _magneto2d_raw_cache_dir(solve_cache_dir: Path | None) -> Path | None:
@@ -3113,29 +3159,15 @@ class Magneto2DSolver(Solver):
 
     @staticmethod
     def _prepare_solve_cache_dir() -> Path | None:
-        prefix = "magneto2d-"
-        cache_roots = (
-            field_artifacts.SOLVE_CACHE_ROOT,
-            Path(tempfile.gettempdir()) / "openem" / "solve_cache",
-        )
-        for solve_cache_base in cache_roots:
-            try:
-                if solve_cache_base.exists():
-                    caches = sorted(
-                        (path for path in solve_cache_base.iterdir() if path.is_dir() and path.name.startswith(prefix)),
-                        key=lambda path: path.stat().st_mtime,
-                        reverse=True,
-                    )
-                    for stale in caches[10:]:
-                        try:
-                            shutil.rmtree(stale)
-                        except Exception:
-                            continue
-
-                timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H-%M-%S-%fZ")
-                candidate = solve_cache_base / f"{prefix}{timestamp}"
-                candidate.mkdir(parents=True, exist_ok=True)
-                return candidate
-            except Exception:
-                continue
-        return None
+        # Artifact ids are encoded relative to solve_cache_root(), so a cache
+        # anywhere else could not serve field frames; no fallback root.
+        try:
+            solve_cache_base = field_artifacts.solve_cache_root()
+            if solve_cache_base.exists():
+                _prune_solve_cache(solve_cache_base)
+            timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H-%M-%S-%fZ")
+            candidate = solve_cache_base / f"{SOLVE_CACHE_DIR_PREFIX}{timestamp}"
+            candidate.mkdir(parents=True, exist_ok=True)
+            return candidate
+        except Exception:
+            return None

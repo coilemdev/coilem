@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use std::fmt;
 
 use crate::materials::{legacy_element_magnetization_enabled, spm_magnetization_angle_rad};
-use crate::mesh::{MeshSource, Region};
+use crate::mesh::{MeshSource, Region, TriMesh};
 use crate::motor::MotorConfig;
 
 use super::types::ImportedPhysicsRegion;
@@ -15,6 +15,7 @@ const IMPORTED_PHYSICS_CONTRACT_VERSION: &str = "magneto2d_imported_physics/v0";
 #[derive(Debug, Clone, PartialEq)]
 pub(super) enum MeshMetadataError {
     InvalidCustomMaterial(String),
+    InvalidTopology(String),
     LengthMismatch {
         field: &'static str,
         expected: usize,
@@ -69,6 +70,7 @@ impl fmt::Display for MeshMetadataError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             MeshMetadataError::InvalidCustomMaterial(message) => write!(f, "invalid custom material: {message}"),
+            MeshMetadataError::InvalidTopology(message) => write!(f, "invalid solve mesh: {message}"),
             MeshMetadataError::LengthMismatch {
                 field,
                 expected,
@@ -155,6 +157,7 @@ impl fmt::Display for MeshMetadataError {
 pub(super) fn validate_mesh_metadata(
     artifact: &SolveMeshArtifact,
 ) -> Result<(), MeshMetadataError> {
+    validate_mesh_topology(&artifact.mesh)?;
     let expected = artifact.mesh.triangles.len();
     if artifact.mesh.regions.len() != expected {
         return Err(MeshMetadataError::LengthMismatch {
@@ -191,6 +194,38 @@ pub(super) fn validate_mesh_metadata(
         }
     }
     validate_physics_contract_metadata(artifact)?;
+    Ok(())
+}
+
+/// Reject meshes that would otherwise index out of bounds before the full
+/// field-problem validation runs. The solver aborts on panic, so these must
+/// be clean errors.
+fn validate_mesh_topology(mesh: &TriMesh) -> Result<(), MeshMetadataError> {
+    let invalid = |message: String| Err(MeshMetadataError::InvalidTopology(message));
+    if mesh.nodes.len() < 3 {
+        return invalid("mesh must contain at least three nodes".to_string());
+    }
+    if mesh.triangles.is_empty() {
+        return invalid("mesh must contain at least one triangle".to_string());
+    }
+    if let Some(node) = mesh
+        .nodes
+        .iter()
+        .position(|node| !(node[0].is_finite() && node[1].is_finite()))
+    {
+        return invalid(format!("node {node} has a non-finite coordinate"));
+    }
+    let node_count = mesh.nodes.len();
+    for (element, triangle) in mesh.triangles.iter().enumerate() {
+        if let Some(node) = triangle.iter().find(|node| **node >= node_count) {
+            return invalid(format!(
+                "triangle {element} references node {node}, but the mesh has {node_count} nodes"
+            ));
+        }
+        if triangle[0] == triangle[1] || triangle[1] == triangle[2] || triangle[0] == triangle[2] {
+            return invalid(format!("triangle {element} repeats a node index"));
+        }
+    }
     Ok(())
 }
 
