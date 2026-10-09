@@ -7,8 +7,12 @@ included in [the machine-readable evidence](../benchmarks/preview-evidence/resul
 Local unpublished candidate commit: `3f5e2722fdf1eb5198d5b225d037d158b45a6497`. Native executable SHA-256:
 `bb2e3c54f9b94da67a7e1efca324b880e7a65185a4a9f4b7229d5b12a4547b84`.
 
-The current source includes subsequent environment and UI fixes. This is supporting
-evidence for the frozen snapshot, not qualification of the final release commit.
+The current source includes subsequent native solver, environment and UI
+changes. Twenty Rust source files differ from each of the three recorded
+runtime file sets, including assembly, mesh, solve and torque postprocessing.
+The executable identified by `bb2e3c…` is the historical measured binary, not
+the final release binary. This is supporting evidence for the recorded
+snapshots, not qualification of the final release commit.
 Runtime file hashes distinguish the measured snapshot from later changes.
 Source revisions cited below belong to the private development repository;
 they are provenance identifiers, not commits available in this public repository.

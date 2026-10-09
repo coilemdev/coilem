@@ -6,7 +6,7 @@ report export.
 
 The application in this guide is coilEM 0.2.0 and the bundled solver is
 Magneto2D 0.3.2. coilEM requires Python 3.11 or newer, Node.js 24 with npm, a Rust
-toolchain with Cargo, and Git. The platform-specific commands below are setup
+toolchain with Cargo (the locked `faer` dependency requires Rust 1.84+), and Git. The platform-specific commands below are setup
 guidance, not a broad operating-system support guarantee. Record the exact
 system used for the final release-candidate walkthrough with its evidence.
 
@@ -100,12 +100,12 @@ npm run dev
 ```
 
 Open [http://127.0.0.1:5173](http://127.0.0.1:5173). Wait for the connection
-indicator to show that the local backend is online before starting the solve.
+indicator to show **Local: ready** before starting the solve.
 Starting the frontend first is safe: it keeps retrying the loopback health check
 and reconnects after the backend starts.
 
-To run the non-motor workflow instead, choose **Magnetic field applications →
-Cylindrical Halbach array**. Its Design stage starts with a 16-segment N42
+To run the non-motor workflow instead, select **Halbach arrays →
+Design a Halbach array**. **Cylindrical** is selected by default. Its Design stage starts with a 16-segment N42
 example; review the ROI and leakage circles, continue to Solve, generate a mesh
 preview, and run Magneto2D. The permanent finite-length limitation and all
 Halbach exports are described in [Cylindrical Halbach array](HALBACH_ARRAY.md).
@@ -148,11 +148,12 @@ dead time, startup, or ESC dynamics.
 ## 7. Prepare and inspect the mesh
 
 The Solve stage begins preparing a mesh when it does not already have one.
-You can also select **Prepare mesh** explicitly.
+You can also open **Advanced options → Mesh preparation** and select
+**Prepare mesh** explicitly.
 
-For the first run, keep the **Standard** solve plan:
+For the first run, keep **Accuracy plan → Standard**:
 
-- normal mesh density;
+- **Medium** mesh density (the `normal` configuration value);
 - corner refinement enabled;
 - weighted-stress torque;
 - Picard nonlinear iteration; and
@@ -165,8 +166,8 @@ When meshing completes, confirm:
 - the minimum-quality row says **Pass**; and
 - the solver gate reports no weak-element blocker.
 
-If you change mesh density or refinement, select **Regenerate mesh** before
-running the analysis.
+If you change mesh density or refinement, select **Regenerate mesh** under
+**Advanced options → Mesh preparation** before running the analysis.
 
 ## 8. Run the electromagnetic analysis
 
@@ -208,15 +209,15 @@ performance page summarizes:
 - the exact material, operating point, solver, torque method, mesh, and rotor
   position provenance.
 
-Use the plot tabs to inspect loaded torque, Back-EMF, harmonics when available,
-and the field map. A dedicated cogging-torque result view is not part of this
+Use the plot tabs to inspect loaded torque, Back-EMF and the field map.
+The harmonic spectrum, when available, is inside the **Back EMF** tab. A dedicated cogging-torque result view is not part of this
 preview. A plausible-looking plot is not by itself a validation result: check
 units, operating point, mesh quality, angular sampling, and material assumptions
 before using a result in a design decision.
 
 ## 10. Compare two saved runs
 
-Open **Previous runs** after completing a second Magneto2D solve. Select one run
+Select **Manage previous runs** after completing a second Magneto2D solve. Select one run
 as the baseline and another as the candidate to compare their stored design,
 operating-point, mesh, and headline result values. Comparison is descriptive:
 it does not rerun either solver, establish cross-solver parity, or certify a
@@ -279,8 +280,12 @@ retention, cleanup, and `COILEM_USER_DATA_ROOT` override details.
 
 ## Optional command-line smoke test
 
-The included smoke tool runs a real coarse Gmsh mesh and Magneto2D solve
-through the same public FastAPI application:
+The included smoke tool runs real coarse Gmsh meshes and Magneto2D motor
+(sinusoidal and six-step) and cylindrical Halbach solves through the public
+FastAPI application. Motor runs are saved in your normal Previous runs storage
+and count toward its budget. Set `COILEM_USER_DATA_ROOT` to a separate test
+directory before invoking the tool if you want separate motor-run history;
+the solver cache remains separate and is not redirected by that setting:
 
 On Windows:
 
@@ -299,7 +304,7 @@ report.
 
 ## Troubleshooting
 
-### The frontend says the backend is offline
+### The frontend says Local: not running
 
 Confirm the backend terminal is still running and that
 `http://127.0.0.1:8000/health` responds. Use the documented loopback host and
@@ -333,7 +338,7 @@ valid.
 ### The run cannot be published
 
 coilEM refuses to publish incomplete evidence or exceed the configured solve
-workspace limit. Open **Previous runs** from the error action, review the storage
+workspace limit. Select **Manage previous runs** from the error action, review the storage
 meter, and explicitly delete an older completed run or retained incomplete
 diagnostic that you no longer need. The meter and list refresh immediately;
 then retry the analysis. coilEM never silently deletes a completed run.

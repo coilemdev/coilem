@@ -1,7 +1,9 @@
 # Generic magnetostatic field solver
 
 Magneto2D's field mode is a lower-level interface for solving a prepared 2D
-planar magnetostatic finite-element problem without a motor configuration. It
+planar magnetostatic finite-element problem without a motor configuration.
+This is an experimental interface; its regression tests do not establish
+release-qualified accuracy or engineering certification. It
 accepts a versioned JSON document containing a P1 triangular mesh, materials,
 per-element sources, boundary conditions, solver options, and optional warm
 starts.

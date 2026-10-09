@@ -5,8 +5,8 @@ end in `.coilem`. Existing `.openem` files and lower-case schema keys remain com
 
 | Setting | Purpose |
 | --- | --- |
-| `COILEM_USER_DATA_ROOT` | Override the local solve storage directory. |
-| `COILEM_SOLVE_WORKSPACE_MAX_BYTES` | Set the workspace storage budget. |
+| `COILEM_USER_DATA_ROOT` | Override durable motor-run storage; excludes the solver cache. |
+| `COILEM_SOLVE_WORKSPACE_MAX_BYTES` | Set the durable workspace budget; excludes the solver cache. |
 | `COILEM_LOCAL_API_PORT` | Select the loopback port when using the `coilem-serve` entry point. |
 | `VITE_COILEM_LOCAL_API_BASE` | Select a loopback backend URL for the frontend build/dev server. |
 | `COILEM_LOCAL_UI_ORIGIN` | Allow one additional HTTP loopback UI origin with an explicit port. |
@@ -18,10 +18,16 @@ end in `.coilem`. Existing `.openem` files and lower-case schema keys remain com
 | `COILEM_ELMER_ALLOW_UNQUALIFIED` | Bypass Elmer version qualification for development diagnostics when set to `1`; see [Elmer](ELMER.md). |
 | `COILEM_BUILD_COMMIT` | Supply the application build identity. |
 | `COILEM_TEST_PYTHON` | Select the Python interpreter for browser tests. |
+| `COILEM_MAGNETO2D_BUILD_RUSTFLAGS` | Override Rust flags used when the backend builds Magneto2D. |
+| `CARGO` | Select the Cargo executable for backend build-tool discovery. |
+
+The separate cache path and retention policy are documented in
+[Local solve workspace](local_solve_workspace.md#retention).
 
 ## Native solve isolation
 
-The public application's motor, teaching and Halbach processes inherit only
+The public application's Magneto2D processes for motor, teaching and Halbach
+solves inherit only
 `PATH`, `SYSTEMROOT`, `WINDIR`, `TEMP`, `TMP`, `TMPDIR`, `LANG`, `LC_ALL` and
 `TZ`. Runtime library injection variables and arbitrary shell variables are
 excluded. Numerical options are generated from the request; setting a native
@@ -29,6 +35,10 @@ solver debug variable in your shell does not change an application solve.
 Python orchestration and shaft material selection also use fixed defaults instead
 of inherited diagnostic switches. Gmsh initialization skips machine-local
 configuration files; mesh options come from the application and request. Build-tool discovery is separate from solver execution.
+
+The optional Elmer development lane does not use this environment allowlist:
+its processes inherit the parent environment, with additional runtime-path
+setup on Windows. Do not apply the Magneto2D isolation guarantee to Elmer.
 
 New motor results include `solve_metadata.solver_environment`, with policy
 `request-only-v1` and explicit native options. Raw motor input/report artifacts

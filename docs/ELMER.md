@@ -33,7 +33,8 @@ reasons can include the configured installation directory. The Solve screen uses
 - **Elmer FEM** is enabled only when the override is set and discovery succeeds;
   and
 - with the override set, a missing or unqualified runtime leaves Elmer visible
-  but disabled with an actionable reason.
+  but disabled with an actionable reason; and
+- ideal six-step excitation disables Elmer selection even when the runtime is available.
 
 For development diagnostics, `COILEM_ELMER_ALLOW_UNQUALIFIED=1` bypasses the
 version qualification check. The capability's `qualified` flag then reflects
@@ -117,4 +118,4 @@ Elmer license, notice, and corresponding-source requirements. See
 `THIRD_PARTY_NOTICES.md` and the upstream
 [Elmer license policy](https://github.com/ElmerCSC/elmerfem/blob/devel/license_texts/ElmerLicensePolicy.md),
 [Elmer 26.2 release](https://github.com/ElmerCSC/elmerfem/releases/tag/release-26.2),
-and [build documentation](https://github.com/ElmerCSC/elmerfem/blob/devel/BUILD.md).
+and [build documentation](https://github.com/ElmerCSC/elmerfem/tree/devel/compilation_instructions).

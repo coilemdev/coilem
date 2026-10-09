@@ -13,12 +13,10 @@ conditions.
 
 Source: [Arnold Magnetic Technologies — Neodymium Iron Boron Magnets](https://www.arnoldmagnetics.com/products/neodymium-iron-boron-magnets/)
 
-| Solver grade | Br (T) | Relative permeability |
+| Public motor grade | Br (T) | Relative permeability |
 | --- | ---: | ---: |
 | N35 | 1.230 | 1.05 |
-| N38 | 1.260 | 1.05 |
 | N42 | 1.315 | 1.05 |
-| N45 | 1.350 | 1.05 |
 | N48 | 1.400 | 1.05 |
 | N48SH | 1.390 | 1.05 |
 | N52 | 1.450 | 1.05 |
@@ -42,9 +40,21 @@ those properties.
 
 ### Halbach coercivity and temperature policy
 
-The Halbach workspace resolves the same public Br and relative-permeability
-models. Its Br(T) and Hcj(T) temperature coefficients are independent records
-with explicit reference temperatures and provenance.
+Cylindrical and linear Halbach workspaces resolve magnets from the legacy
+`backend/material_catalog.py` table. The optional Elmer case builder also uses
+that table. These inputs differ from the public Magneto2D motor catalog above:
+
+| Grade | Public motor Br (T) / relative permeability | Legacy Br (T) / relative permeability |
+| --- | --- | --- |
+| N42 | 1.315 / 1.05 | 1.300 / 1.05 |
+| N52 | 1.450 / 1.05 | 1.470 / 1.05 |
+| N48SH | 1.390 / 1.05 | 1.380 / 1.05 |
+| Ferrite_Y30 | 0.400 / 1.05 | 0.390 / 1.10 |
+
+N35, N48 and Prius_2004_NdFeB have matching Br and relative permeability in
+both tables. Halbach Br(T) and Hcj(T) temperature coefficients are independent
+records with explicit reference temperatures and provenance. Compare the
+resolved material inputs, not only grade names, when comparing workflows.
 
 The legacy magnet catalog's coercivity field does not unambiguously identify
 normal versus intrinsic coercivity. Every current selectable catalog row is
@@ -127,8 +137,10 @@ not provided by this import. Optional Elmer execution rejects custom steels.
 ## Core loss
 
 The 50 Hz description of the source magnetization curve does not provide a
-grade-specific core-loss model. The public launch build contains no Steinmetz
-coefficients and does not predict steel core loss. Schema fields retained for
+grade-specific core-loss model. The public result surface does not provide a usable steel
+core-loss prediction. Legacy Steinmetz coefficients remain in the source, and
+the material UI currently shows a generic loss-estimate badge; that badge does
+not establish a supported loss result. Schema fields retained for
 compatibility are zero-valued and mean "unavailable," not "lossless." Do not
 use them for efficiency, heat, or thermal calculations.
 

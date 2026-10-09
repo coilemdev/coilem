@@ -32,6 +32,21 @@ replace final-public-commit numerical qualification, hosted CI evidence, or
 the remaining interactive walkthrough. Historical numerical measurements below
 and in [Numerical evidence](NUMERICAL_EVIDENCE.md) retain their original identities.
 
+## Documentation follow-up on 2026-10-09
+
+A documentation-only follow-up to public commit `5dde7d2` checked remaining
+review feedback against the implementation. It corrected navigation labels,
+material-catalog differences, cache/storage scope, playback encodings,
+public import boundaries, and historical evidence wording. It also restored
+public patch provenance in the snapshot manifest. Runtime and UI behavior
+were not changed by this follow-up.
+
+Local checks covered all 21 root and `docs/` Markdown documents: relative
+links and anchors, documented API methods/paths against the application,
+and the playback JSON example against its runtime validator. The snapshot
+and publication-content checks passed. These documentation checks do not
+constitute a new browser rehearsal or numerical qualification.
+
 ## Earlier local release rehearsal
 
 The 2026-10-09 UTC rehearsal used macOS 15.7.3 arm64, Python 3.12.13,
@@ -76,7 +91,11 @@ check. Build and browser tests do not establish motor accuracy.
 
 The source revisions in this record belong to the private development repository;
 they identify provenance and are not available as public Git commits.
-The main browser rehearsal used the runtime exported from source `763b9d25`.
+The main browser rehearsal used the runtime exported from source `763b9d25`
+and predates public PRs #1 and #2, including the Chromium harness, timeout and
+3D-rendering changes. Its “2 passed” result is historical evidence, not a run
+of the current public candidate. Hosted CI must be associated with its exact
+public commit rather than substituted into that local result.
 The recovery rehearsals include the direct-API storage correction from
 `c63dd8bf`. The final Python suite covers the CLI precision fix from `65c340f5`,
 with a subsequent test-only fixture correction to use the public bundled steel.

@@ -49,7 +49,7 @@ report downloads. See [Halbach arrays](docs/HALBACH_ARRAY.md).
   solved flux-density heatmap. Existing immutable reports retain their
   original content.
 - Narrow windows retain access to solve progress and completed reports, with
-  a visible **View results** action.
+  a visible **View Results** action.
 - A failed geometry preview recovers after the local backend reconnects,
   preserving the latest draft. **Retry geometry preview** is also available.
 - Timing labels separate approximate solver estimates, solver timing, and
@@ -58,8 +58,10 @@ report downloads. See [Halbach arrays](docs/HALBACH_ARRAY.md).
   results.
 - Reports identify the requested torque method and the method actually used;
   missing provenance is shown as not recorded.
-- The permanent-magnet catalog agrees with the bundled native solver inputs.
-- Public CI builds and checks the exported source using locked dependencies.
+- The public motor permanent-magnet catalog agrees with the bundled native
+  motor solver inputs; Halbach and Elmer use a separate legacy table described
+  in [Materials](MATERIALS.md).
+- Public CI builds and checks the exported source using locked runtime dependencies; development tools and the Rust toolchain are not fully pinned.
 
 ## Known limitations
 
@@ -89,7 +91,7 @@ report downloads. See [Halbach arrays](docs/HALBACH_ARRAY.md).
 ## Data and support
 
 Completed and incomplete run records are user-owned and are never silently
-deleted. Use **Previous runs** to inspect storage and explicitly delete one run
+deleted. Use **Manage previous runs** to inspect storage and explicitly delete one run
 when the workspace is full. Reopening or comparing a run never starts a solver.
 
 Use [GitHub Issues](https://github.com/coilemdev/coilem/issues) for reproducible

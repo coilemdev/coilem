@@ -32,8 +32,8 @@ hysteresis.
 
 ## Start a design
 
-On the landing page, open **Magnetic field applications**, then choose
-**Cylindrical Halbach array**. This opens its own Design → Solve → Report
+On the landing page, select **Halbach arrays**, then **Design a Halbach array**.
+**Cylindrical** is selected by default. This opens its own Design → Solve → Report
 workspace without changing the SPM/IPM motor topology flow.
 
 The Design stage has five groups:
@@ -124,8 +124,10 @@ The complete catalog and custom examples are under `schemas/v1/examples/`.
 
 ## Material semantics
 
-Catalog Br and relative permeability values use the documented public magnet
-models. Br(T) is independently derated from its reference temperature. The
+Catalog Br and relative permeability come from the legacy magnet table, which
+differs from the public motor catalog for several grades; see the comparison in
+[Materials](../MATERIALS.md#halbach-coercivity-and-temperature-policy). Br(T) is
+independently derated from its reference temperature. The
 legacy catalog coercivity field does not identify normal coercivity versus
 intrinsic coercivity unambiguously, so every current catalog grade is audited
 as `unknown`: its value is retained as metadata but cannot produce a
@@ -162,11 +164,12 @@ Generating Gmsh mesh
 Assigning segment magnetization
 Solving Magneto2D field
 Sampling bore and leakage fields
+Checking outer-boundary sensitivity (fine quality only)
 Preparing report
 ```
 
-Quick, standard, and fine presets change mesh resolution without changing the
-physics contract. The report retains Gmsh CAD/mesh time, generic preparation,
+Quick, standard, and fine presets change mesh resolution, outer-boundary size,
+solver tolerance and sample counts without changing the physics contract. The report retains Gmsh CAD/mesh time, generic preparation,
 assembly, linear solution, recovery, application postprocessing, total time,
 and peak process memory separately.
 Peak-memory measurement is best-effort and may be unavailable on the host.
@@ -181,10 +184,11 @@ The Report stage leads with:
 - direction error and ROI uniformity;
 - external leakage and leakage-to-bore ratio;
 - magnet volume and optional mass;
-- analytical continuous and segmented estimates;
-- reverse-field screening;
 - timing and material/artifact provenance; and
 - the model-fidelity notice.
+
+Analytical continuous/segmented estimates and reverse-field screening are
+available in the exported PDF and report JSON, rather than the in-app Report panel.
 
 The 2D result viewer provides `|B|`, the requested-direction and transverse
 components, `A_z`, contours, field lines, and vectors.
@@ -209,7 +213,7 @@ Halbach project files use:
 
 ```json
 {
-  "openem_schema_version": 3,
+  "openem_schema_version": 4,
   "project_kind": "halbach_array",
   "halbach_config": {"kind": "halbach_array_config", "version": "1.0"}
 }

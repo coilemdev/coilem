@@ -143,7 +143,7 @@ can show:
 - phase Back-EMF and its fundamental;
 - torque and Back-EMF waveforms;
 - peak tooth and yoke flux density;
-- torque and Back-EMF constants;
+- torque constant;
 - solver, mesh, material, and operating-point provenance; and
 - solved magnetic field views and playback when requested.
 
@@ -217,8 +217,10 @@ hashes. Downloads are served from this stored run and do not start a solver.
 
 ```text
 frontend/src/public/          Public React application and API client
+frontend/src/components/      Shared landing preview, workflow hero, and tutorials
 backend/public_main.py        Loopback FastAPI entry point and route allowlist
 backend/public_routes/        Preview, solve, stored-run, and tutorial routes
+backend/public_routes/halbach.py  Cylindrical and linear Halbach API routes
 backend/public_policy.py      Fail-closed launch configuration policy
 backend/gmsh_solver.py        Native Gmsh mesh production and mesh QA
 backend/halbach/              Non-motor geometry, mesh lowering, solve adapter, metrics, and exports

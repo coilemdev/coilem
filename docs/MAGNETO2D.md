@@ -26,7 +26,7 @@ limitations.
 | Mesh producer | Native Gmsh only |
 | Concentrated windings | Single layer |
 | Distributed windings | Balanced one- or two-layer star-of-slots layouts with `q >= 1`; explicit short pitch is limited to supported integer-`q` layouts |
-| Electrical steel | Bundled M350-50A nonlinear reference model or project-local imported B-H curves |
+| Electrical steel | Bundled M350-50A nonlinear reference model or project-local imported B-H curves (Magneto2D only) |
 | Preview result surface | Loaded torque, torque ripple, flux linkage, Back-EMF, field values/plots, and solver/mesh provenance |
 | Harmonic tiers | Preview: waveform only; Standard: THD and H1-H12; High accuracy (`fine`): THD and H1-H24 |
 | Saved-run comparison | Descriptive comparison of two Magneto2D runs; no parity or certification claim |
@@ -615,8 +615,9 @@ the symbolic analysis, performs a new numeric factorization, and executes the
 two triangular solves.
 
 If sparse Cholesky is unavailable for a matrix or its numeric factorization
-fails, Magneto2D transparently falls back to PCG. Setting
-`MAGNETO2D_LINEAR_SOLVER=pcg` explicitly selects PCG instead.
+fails, Magneto2D transparently falls back to PCG. For direct CLI use, setting
+`MAGNETO2D_LINEAR_SOLVER=pcg` explicitly selects PCG instead. The public app
+ignores this inherited switch; see [Runtime settings](RUNTIME_SETTINGS.md).
 
 ### 8. Preconditioned Conjugate Gradient (PCG)
 
@@ -689,7 +690,7 @@ have a deliberately smaller solve path:
 | Follow the Flux, including magnet plus iron bar | Linear; the iron return uses fixed `mu_r = 1000` | PCG once, maximum 8,000 iterations, tolerance `1e-10` |
 | Iron Saturation | Relaxed B-H material loop, maximum 60 iterations | PCG once per material iteration, tolerance `1e-10` |
 
-Therefore the magnet-and-iron tutorial command shown earlier does **not** run
+The magnet-and-iron teaching fixture does **not** run
 the production motor Picard/Newton loop or Direct Cholesky. It assembles one
 linear teaching FEM system, solves it with PCG, computes `B`, and returns the
 teaching report. The dedicated Iron Saturation lesson is the teaching fixture
@@ -855,7 +856,10 @@ Worker selection precedence is `--workers`, then
 
 Nonlinear method, linear solver/preconditioner, torque method, current
 convention, mesh density, and requested outputs are normally selected through
-the motor configuration so that they are preserved in result provenance.
+the motor configuration so that they are preserved in result provenance. The
+Python backend translates linear solver/preconditioner and torque selections
+into per-process environment options; the direct Rust CLI reads those options
+from its environment rather than those motor-config fields.
 
 ## Configuration semantics that matter
 
@@ -901,6 +905,8 @@ Magneto2D emits one of these envelope kinds:
 | Sweep | `sweep_report` |
 | Imported batch | `batch_solve_reports` |
 | Teaching fixture | Direct `TeachingReport` object |
+| Generic field | `field_solution_report` |
+| Thermal (runtime opt-in; outside public scope) | `thermal_solve_report` |
 
 Production-motor JSON includes schema identity and provenance alongside the
 numerical payload. Teaching mode returns the `TeachingReport` directly.
@@ -1162,8 +1168,9 @@ versioned generic solve-ready mesh contract documented in
 supports the small self-contained field problems used by the local tutorials
 and does not accept sweep, batch, or imported-mesh inputs.
 
-The source tree contains a feature-gated thermal CLI path for future work, but
-the public API rejects thermal requests and thermal analysis is not a launch
+The source tree contains a thermal CLI path gated at runtime by
+`COILEM_THERMAL_ENABLED=1`, not by a Cargo feature. The public API rejects
+thermal requests and thermal analysis is not a launch
 capability. Do not use it for public results.
 
 ## Verification commands

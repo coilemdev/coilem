@@ -97,12 +97,14 @@ substitutes solvers automatically. It rejects FEMM selection, non-native mesh
 sources, thermal requests, and internal debug diagnostics. The service binds to
 `127.0.0.1`; the TypeScript client accepts only loopback API hosts. Completed
 solves package actual solved positions into
-a generic `coilem.field_playback.v2` layered-WebP manifest while retaining one
+a generic `coilem.field_playback.v2` layered-raster manifest while retaining one
 exact numerical snapshot per solved position. The v2 timeline supports angle, time, phase, and
-instructional-step sequences; its catalogs use content-defined composition and
-layer IDs with semantic roles. Existing v1 manifests remain readable through
+instructional-step sequences at the contract level; the shipped motor producer
+and viewer use angle timelines. The current encoding is `layered-raster-v1`
+with 1536 px PNG geometry/flux/mesh layers and WebP field lines. Catalogs use
+content-defined composition and layer IDs with semantic roles. Existing v1 manifests remain readable through
 the frontend compatibility adapter. See `docs/FIELD_PLAYBACK_V2.md`. The image
-route serves only those local WebP layers; the numerical
+route serves only those local PNG/WebP layers; the numerical
 field-frame route remains the format fallback and inspection path. The
 composition route computes an exact Br=0 stator-current sweep for Magneto2D
 results; PM-only frames come from the normal Magneto2D solve's exact
@@ -127,16 +129,25 @@ route. Disconnecting a Halbach stream does not cancel its backend worker, and
 
 The visual application is rooted at `frontend/src/public/index.html` and
 `frontend/src/public/main.tsx`. Its source/import audit recursively permits
-only that directory plus the explicitly allowlisted landing preview and two
-shared style sheets. It screens every allowed source and the production bundle
+`src/public/`, `src/components/landing-3d/`, and `src/components/tutorials/`,
+plus these shared files:
+
+- `src/components/LandingWorkflowHero.tsx`;
+- `src/api/projectSchema.ts` and `src/api/statorDefaults.ts`; and
+- `src/styles/variables.css` and `src/styles/templateselector.css`.
+
+Paths above are relative to `frontend/`. The audit screens every allowed
+source and the production bundle
 for excluded product surfaces. Development and preview use only
 `127.0.0.1:5173` and `127.0.0.1:4173` by default, with their `localhost`
 equivalents and the explicit loopback override described above.
 
 The landing preview's compact geometry, mesh, field, and report assets are
-self-authored outputs generated from the included 8-pole/12-slot example with
-Magneto2D and Gmsh. Their source and solver metadata are embedded in the JSON
-files. They are presentation source assets, not external reference data.
+self-authored outputs from the included 8-pole/12-slot motor example and a
+linear Halbach example, generated with Magneto2D and Gmsh. Their source and
+solver metadata are embedded in the JSON files. The two `hero_linear_halbach_*`
+assets cite `scripts/generate_linear_halbach_landing_assets.py` as their
+generator; that script is not included in this source snapshot. They are presentation source assets, not external reference data.
 
 Cloud backends/workers, databases/migrations, identity, billing/quota,
 administration/support, telemetry, private solver implementations, private
