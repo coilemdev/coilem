@@ -325,6 +325,7 @@ export const Landing3DPreview: React.FC = () => {
     const initialize = async () => {
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      const gl = renderer.getContext() as WebGL2RenderingContext;
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -1126,6 +1127,7 @@ export const Landing3DPreview: React.FC = () => {
       timer.connect(document);
       let idleOrbitDirection = 1;
       let animationFrame = 0;
+      let pendingFrame: WebGLSync | null = null;
       let isStageVisible = true;
       const materialVisibilityScale = (material: THREE.Material) => {
         const partId = material.userData.landingPart as LandingPartId | undefined;
@@ -1144,6 +1146,14 @@ export const Landing3DPreview: React.FC = () => {
         animationFrame = 0;
         if (!isStageVisible || document.visibilityState !== 'visible') return;
         animationFrame = window.requestAnimationFrame(renderFrame);
+        // render() submits GPU work without waiting for it to finish. Keep only
+        // one frame in flight so software WebGL cannot build a queue that stalls
+        // the compositor, screenshots, and input. Poll with a zero wait timeout.
+        if (pendingFrame) {
+          if (gl.clientWaitSync(pendingFrame, 0, 0) === gl.TIMEOUT_EXPIRED) return;
+          gl.deleteSync(pendingFrame);
+          pendingFrame = null;
+        }
         timer.update(timestamp);
         const deltaSeconds = Math.min(timer.getDelta(), 0.04);
         const target = VIEW_STATES[activeStepRef.current];
@@ -1260,6 +1270,8 @@ export const Landing3DPreview: React.FC = () => {
         }
         controls.update(deltaSeconds);
         renderer.render(scene, camera);
+        pendingFrame = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
+        gl.flush();
       };
       const resumeRendering = () => {
         if (animationFrame || !isStageVisible || document.visibilityState !== 'visible') return;
@@ -1288,6 +1300,7 @@ export const Landing3DPreview: React.FC = () => {
 
       disposeScene = () => {
         if (animationFrame) window.cancelAnimationFrame(animationFrame);
+        if (pendingFrame) gl.deleteSync(pendingFrame);
         visibilityObserver.disconnect();
         document.removeEventListener('visibilitychange', handleVisibilityChange);
         resizeObserver.disconnect();

@@ -685,8 +685,8 @@
     },
     {
       "path": "frontend/src/components/landing-3d/Landing3DPreview.tsx",
-      "sha256": "fd65fb732a4dce0cc89955b8c025fd3889267c533dc0ed1e6c77e153505fd29b",
-      "bytes": 62936
+      "sha256": "07fb563e1bf3830bb6bb6e49d82e244a54929a6630a748a2311cef5afb52dcb6",
+      "bytes": 63634
     },
     {
       "path": "frontend/src/components/landing-3d/LandingHalbachPreview.tsx",
