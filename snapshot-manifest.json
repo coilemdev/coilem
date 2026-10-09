@@ -685,8 +685,8 @@
     },
     {
       "path": "frontend/src/components/landing-3d/Landing3DPreview.tsx",
-      "sha256": "fd65fb732a4dce0cc89955b8c025fd3889267c533dc0ed1e6c77e153505fd29b",
-      "bytes": 62936
+      "sha256": "fcebb1ffc029a128a07913b5bb48e1acb2bbbd3a92565cd86ce32b8b637e5adf",
+      "bytes": 64107
     },
     {
       "path": "frontend/src/components/landing-3d/LandingHalbachPreview.tsx",
@@ -1085,8 +1085,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "sha256": "c4ac73517c4cad3fb13390233ec9e4fce7f8917b61f431ca38b10ab53f932c98",
-      "bytes": 77450
+      "sha256": "72b019b0acf6fd01c9ad99ff0f792e16e6b4922dd7a2be8a1023f6b3f33bd18c",
+      "bytes": 78731
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
@@ -1345,8 +1345,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "sha256": "c364cabdc8fccdd40882f6cfe3d5b614cabc0479382db0ec6b0df28ed2943721",
-      "bytes": 12785
+      "sha256": "f8efbc569e14ae113c6ff22e2facc27d94d206c2e0ad5bc061d8210804540c4f",
+      "bytes": 12964
     },
     {
       "path": "frontend/tsconfig.public.json",
