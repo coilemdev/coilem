@@ -177,6 +177,7 @@ export const Landing3DPreview: React.FC = () => {
   const lastTouchTapRef = React.useRef(0);
   const suppressDoubleClickUntilRef = React.useRef(0);
   const activeStepRef = React.useRef(0);
+  const requestRenderRef = React.useRef<(() => void) | null>(null);
   const partVisibilityRef = React.useRef<Record<LandingPartId, boolean>>(createDefaultPartVisibility());
   const assetLoaderRef = React.useRef<{
     mesh: () => void;
@@ -196,18 +197,22 @@ export const Landing3DPreview: React.FC = () => {
 
   React.useEffect(() => {
     activeStepRef.current = activeStep;
+    requestRenderRef.current?.();
   }, [activeStep]);
 
   React.useEffect(() => {
     partVisibilityRef.current = partVisibility;
+    requestRenderRef.current?.();
   }, [partVisibility]);
 
   React.useEffect(() => {
     immersiveRef.current = isImmersive;
+    requestRenderRef.current?.();
   }, [isImmersive]);
 
   React.useEffect(() => {
     explodeAmountRef.current = explodeAmount;
+    requestRenderRef.current?.();
   }, [explodeAmount]);
 
   React.useEffect(() => {
@@ -325,7 +330,14 @@ export const Landing3DPreview: React.FC = () => {
     const initialize = async () => {
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-      const gl = renderer.getContext() as WebGL2RenderingContext;
+      const gl = renderer.getContext();
+      const rendererInfo = gl.getExtension('WEBGL_debug_renderer_info');
+      const softwareRendering = rendererInfo !== null && /swiftshader|llvmpipe|softpipe|software/i.test(
+        gl.getParameter(rendererInfo.UNMASKED_RENDERER_WEBGL) as string,
+      );
+      // Software WebGL redraws can stall the entire browser, including input.
+      // Keep that preview interactive on demand; animate on hardware GPUs only.
+      const renderContinuously = !reducedMotion && !softwareRendering;
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -349,14 +361,14 @@ export const Landing3DPreview: React.FC = () => {
       );
 
       const controls = new OrbitControls(camera, canvas);
-      controls.enableDamping = true;
+      controls.enableDamping = renderContinuously;
       controls.dampingFactor = 0.06;
       controls.enablePan = false;
       controls.minDistance = 72;
       controls.maxDistance = 280;
       controls.minAzimuthAngle = -IDLE_ORBIT_LIMIT_RAD;
       controls.maxAzimuthAngle = IDLE_ORBIT_LIMIT_RAD;
-      controls.autoRotate = !reducedMotion;
+      controls.autoRotate = renderContinuously;
       controls.autoRotateSpeed = IDLE_ORBIT_SPEED;
 
       scene.add(new THREE.AmbientLight(0xffe4c4, 0.30));
@@ -855,6 +867,7 @@ export const Landing3DPreview: React.FC = () => {
             };
             femGroup.add(createMeshEdges(statorMeshVertices));
             rotorFemGroup.add(createMeshEdges(rotorMeshVertices));
+            requestRenderRef.current?.();
           })
           .catch(markAssetLoadError);
         return meshAssetsPromise;
@@ -1050,6 +1063,7 @@ export const Landing3DPreview: React.FC = () => {
               }
             };
             updateSolvedFieldPlayback(rotorGroup.rotation.z);
+            requestRenderRef.current?.();
           })
           .catch(markAssetLoadError);
         return fieldAssetsPromise;
@@ -1117,17 +1131,19 @@ export const Landing3DPreview: React.FC = () => {
         renderer.setSize(width, height, false);
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
+        requestRenderRef.current?.();
       };
       const resizeObserver = new ResizeObserver(resize);
       resizeObserver.observe(stage);
       resize();
 
-      const lerp = (current: number, target: number, factor: number) => current + (target - current) * factor;
+      const lerp = (current: number, target: number, factor: number) => (
+        renderContinuously ? current + (target - current) * factor : target
+      );
       const timer = new THREE.Timer();
       timer.connect(document);
       let idleOrbitDirection = 1;
       let animationFrame = 0;
-      let pendingFrame: WebGLSync | null = null;
       let isStageVisible = true;
       const materialVisibilityScale = (material: THREE.Material) => {
         const partId = material.userData.landingPart as LandingPartId | undefined;
@@ -1145,15 +1161,7 @@ export const Landing3DPreview: React.FC = () => {
       const renderFrame = (timestamp?: number) => {
         animationFrame = 0;
         if (!isStageVisible || document.visibilityState !== 'visible') return;
-        animationFrame = window.requestAnimationFrame(renderFrame);
-        // render() submits GPU work without waiting for it to finish. Keep only
-        // one frame in flight so software WebGL cannot build a queue that stalls
-        // the compositor, screenshots, and input. Poll with a zero wait timeout.
-        if (pendingFrame) {
-          if (gl.clientWaitSync(pendingFrame, 0, 0) === gl.TIMEOUT_EXPIRED) return;
-          gl.deleteSync(pendingFrame);
-          pendingFrame = null;
-        }
+        if (renderContinuously) animationFrame = window.requestAnimationFrame(renderFrame);
         timer.update(timestamp);
         const deltaSeconds = Math.min(timer.getDelta(), 0.04);
         const target = VIEW_STATES[activeStepRef.current];
@@ -1200,7 +1208,7 @@ export const Landing3DPreview: React.FC = () => {
         wireGroup.visible = wireMats.some((material) => material.visible && material.opacity > 0.02);
         femGroup.visible = (meshMats[0]?.opacity ?? 0) > 0.02;
 
-        if (!reducedMotion) {
+        if (renderContinuously) {
           rotorGroup.rotation.z -= ROTOR_SPIN_RADIANS_PER_SECOND * deltaSeconds;
         }
         wireRotorGroup.rotation.z = rotorGroup.rotation.z;
@@ -1258,7 +1266,7 @@ export const Landing3DPreview: React.FC = () => {
           : 280;
         controls.minAzimuthAngle = immersiveRef.current ? -Infinity : -IDLE_ORBIT_LIMIT_RAD;
         controls.maxAzimuthAngle = immersiveRef.current ? Infinity : IDLE_ORBIT_LIMIT_RAD;
-        controls.autoRotate = !reducedMotion && !immersiveRef.current;
+        controls.autoRotate = renderContinuously && !immersiveRef.current;
         if (controls.autoRotate) {
           const azimuthAngle = controls.getAzimuthalAngle();
           if (azimuthAngle <= controls.minAzimuthAngle + IDLE_ORBIT_EDGE_EPSILON_RAD) {
@@ -1270,13 +1278,13 @@ export const Landing3DPreview: React.FC = () => {
         }
         controls.update(deltaSeconds);
         renderer.render(scene, camera);
-        pendingFrame = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
-        gl.flush();
       };
       const resumeRendering = () => {
         if (animationFrame || !isStageVisible || document.visibilityState !== 'visible') return;
         animationFrame = window.requestAnimationFrame(renderFrame);
       };
+      requestRenderRef.current = resumeRendering;
+      controls.addEventListener('change', resumeRendering);
       const visibilityObserver = new IntersectionObserver(([entry]) => {
         isStageVisible = entry?.isIntersecting ?? false;
         if (isStageVisible) {
@@ -1300,7 +1308,8 @@ export const Landing3DPreview: React.FC = () => {
 
       disposeScene = () => {
         if (animationFrame) window.cancelAnimationFrame(animationFrame);
-        if (pendingFrame) gl.deleteSync(pendingFrame);
+        requestRenderRef.current = null;
+        controls.removeEventListener('change', resumeRendering);
         visibilityObserver.disconnect();
         document.removeEventListener('visibilitychange', handleVisibilityChange);
         resizeObserver.disconnect();
