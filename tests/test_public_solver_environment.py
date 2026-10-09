@@ -30,7 +30,8 @@ def test_public_policy_is_fixed_and_filters_shell_settings(monkeypatch):
     monkeypatch.setenv("SystemRoot", "test-windows-root")
     child = policy.solver_process_environment({"COILEM_MAGNET_BR_SCALE": "1"})
     assert child["COILEM_MAGNET_BR_SCALE"] == "1"
-    assert child["SystemRoot"] == "test-windows-root"
+    # Windows uppercases os.environ keys; Unix preserves their spelling.
+    assert {key.upper(): value for key, value in child.items()}["SYSTEMROOT"] == "test-windows-root"
     assert not {"MAGNETO2D_NONLINEAR_TOL", "RAYON_NUM_THREADS", "LD_PRELOAD", "UNRELATED_CREDENTIAL"} & child.keys()
     assert gmsh_mesh_reuse_enabled()
 

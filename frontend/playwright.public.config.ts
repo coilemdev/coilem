@@ -34,10 +34,15 @@ export default defineConfig({
     baseURL: uiUrl,
     actionTimeout: 60_000,
     navigationTimeout: 60_000,
-    trace: 'retain-on-failure',
+    // Continuous trace screenshots force ReadPixels on every animated WebGL
+    // frame and stall software-rendered CI. Keep DOM/network traces and the
+    // explicit landing/failure screenshots without continuous pixel readbacks.
+    trace: { mode: 'retain-on-failure', screenshots: false, snapshots: true, sources: true },
     screenshot: 'only-on-failure',
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'], viewport: { width: 1753, height: 980 } } }],
+  // Exercise the full Chromium headless browser used by current Chrome, rather
+  // than the separate headless shell, for the interactive WebGL landing page.
+  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'], channel: 'chromium', viewport: { width: 1753, height: 980 } } }],
   webServer: [
     {
       command: `${shellQuote(process.env.COILEM_TEST_PYTHON || 'python')} -m uvicorn backend.public_main:app --host 127.0.0.1 --port 58000`,
