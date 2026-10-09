@@ -1,7 +1,7 @@
 # Runtime settings
 
-Application environment variables use the `COILEM_` prefix. Project filenames
-ending in `.openem` and existing lower-case schema keys remain compatible.
+Application environment variables use the `COILEM_` prefix. New project filenames
+end in `.coilem`. Existing `.openem` files and lower-case schema keys remain compatible.
 
 | Setting | Purpose |
 | --- | --- |

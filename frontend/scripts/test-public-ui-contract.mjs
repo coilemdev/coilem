@@ -224,7 +224,7 @@ assert.match(workspaceSource, /Material not supported/);
 assert.match(appSource, /const convertProjectSteelToM350 = useCallback/);
 assert.match(appSource, /stator_steel: 'M350-50A'/);
 assert.match(appSource, /rotor_steel: 'M350-50A'/);
-assert.match(appSource, /save a new \.openem file to preserve the conversion/);
+assert.match(appSource, /save a new \.coilem file to preserve the conversion/);
 assert.match(workspaceSource, /public-solve-workspace\$\{resizingRunPlan[\s\S]*?solveViewportExpanded/);
 assert.match(workspaceSource, /className="public-solve-setup-scroll"/);
 assert.match(workspaceSource, /className="public-solve-footer"/);

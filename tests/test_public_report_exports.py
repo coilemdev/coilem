@@ -168,7 +168,7 @@ def _complete_run(
     monkeypatch.setenv("COILEM_BUILD_COMMIT", "a" * 40)
     workspace = SolveWorkspace(tmp_path / "data")
     writer = workspace.begin_run(
-        project_name="M350 launch motor.openem",
+        project_name="M350 launch motor.coilem",
         config=CONFIG,
         submitted_request={"config": CONFIG, "project_name": "M350 launch motor"},
     )
@@ -283,7 +283,7 @@ def test_stored_pdf_csv_and_package_are_bound_to_one_immutable_run(
 
     text = "\n".join(page.extract_text() or "" for page in pypdf.PdfReader(io.BytesIO(pdf_bytes)).pages)
     for expected in (
-        "M350 launch motor.openem",
+        "M350 launch motor.coilem",
         location.run_id,
         manifest["completed_at"],
         "M350-50A",
@@ -326,7 +326,7 @@ def test_stored_pdf_csv_and_package_are_bound_to_one_immutable_run(
     with zipfile.ZipFile(package_path) as archive:
         assert {
             "manifest.json",
-            "project.openem",
+            "project.coilem",
             "request.json",
             "result.json",
             "material.json",
@@ -338,7 +338,7 @@ def test_stored_pdf_csv_and_package_are_bound_to_one_immutable_run(
         expected_packaged_manifest = deepcopy(manifest)
         expected_packaged_manifest["exports"]["package_sha256"] = None
         assert packaged_manifest == expected_packaged_manifest
-        assert json.loads(archive.read("project.openem")) == project
+        assert json.loads(archive.read("project.coilem")) == project
         assert archive.read("report/report.pdf") == pdf_bytes
         assert archive.read("report/report.csv") == csv_bytes
 
@@ -387,7 +387,7 @@ def test_six_step_exports_preserve_drive_identity_waveforms_and_limits(
     )
     workspace = SolveWorkspace(tmp_path / "data")
     writer = workspace.begin_run(
-        project_name="six-step.openem",
+        project_name="six-step.coilem",
         config=config,
         submitted_request={"config": config, "project_name": "six-step"},
     )

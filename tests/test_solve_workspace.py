@@ -97,9 +97,11 @@ def test_begin_run_rejects_workspace_symlink_escape_without_writing_outside(
     assert link.is_symlink()
 
 
+@pytest.mark.parametrize("project_extension", [".coilem", ".openem"])
 def test_complete_run_is_atomic_replayable_and_integrity_bound(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
+    project_extension: str,
 ) -> None:
     cache_artifact = tmp_path / "cache" / "field_line_frames" / "frame.json.gz"
     cache_artifact.parent.mkdir(parents=True)
@@ -115,7 +117,7 @@ def test_complete_run_is_atomic_replayable_and_integrity_bound(
     }
 
     writer = workspace.begin_run(
-        project_name="My Motor.openem",
+        project_name=f"My Motor{project_extension}",
         config=VALID_CONFIG,
         submitted_request=request,
     )
@@ -137,7 +139,7 @@ def test_complete_run_is_atomic_replayable_and_integrity_bound(
     assert not writer.partial_path.exists()
     assert {
         "manifest.json",
-        "project.openem",
+        "project.coilem",
         "request.json",
         "result.json",
         "material.json",
@@ -165,7 +167,7 @@ def test_complete_run_is_atomic_replayable_and_integrity_bound(
         location.project_slug,
         location.run_id,
     )
-    assert comparison["project_name"] == "My Motor.openem"
+    assert comparison["project_name"] == f"My Motor{project_extension}"
     assert "parity_identity" not in comparison
     assert comparison["result"]["summary"]["avg_torque_Nm"] == 4.25
     assert comparison["result"]["torque_waveform"] == {
@@ -183,6 +185,9 @@ def test_complete_run_is_atomic_replayable_and_integrity_bound(
     assert loaded["saved_run"]["completed_at"] == loaded["manifest"]["completed_at"]
 
     project = loaded["project"]
+    assert project["name"] == "My Motor"
+    assert location.project_slug == "my-motor"
+    assert loaded["manifest"]["files"]["project"] == "project.coilem"
     assert project["openem_schema_version"] == 4
     replayed = MotorConfig.model_validate(project)
     resolved = MotorConfig.model_validate(loaded["request"]["resolved_config"])
@@ -193,6 +198,29 @@ def test_complete_run_is_atomic_replayable_and_integrity_bound(
     assert retained["relative_path"].startswith("artifacts/")
     monkeypatch.setenv("COILEM_USER_DATA_ROOT", str(tmp_path / "data"))
     assert resolve_run_artifact_id(retained["artifact_id"]).read_bytes() == (b"durable-field-frame")
+
+
+def test_load_run_keeps_legacy_openem_projects_replayable(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    workspace = SolveWorkspace(tmp_path / "data")
+    # Create an immutable run with the previous writer's filename and package.
+    with monkeypatch.context() as legacy_writer:
+        legacy_writer.setattr("backend.solve_workspace.PROJECT_FILE_NAME", "project.openem")
+        writer = workspace.begin_run(
+            project_name="Legacy motor.openem",
+            config=VALID_CONFIG,
+            submitted_request={"config": VALID_CONFIG},
+        )
+        location = writer.complete(_result())
+
+    loaded = SolveWorkspace(tmp_path / "data").load_run(location.project_slug, location.run_id)
+    assert loaded["project"]["name"] == "Legacy motor"
+    assert loaded["manifest"]["files"]["project"] == "project.openem"
+    assert loaded["integrity"]["valid"] is True
+    assert (location.path / "project.openem").is_file()
+    assert not (location.path / "project.coilem").exists()
 
 
 def test_comparison_loads_pre_v4_run_without_parity_migration(

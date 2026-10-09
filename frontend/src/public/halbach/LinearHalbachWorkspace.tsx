@@ -14,6 +14,7 @@ import {
   validateLinearHalbach,
 } from './api';
 import { migrateProjectFile, COILEM_SCHEMA_VERSION } from '../../api/projectSchema';
+import { DESIGN_FILE_ACCEPT, DESIGN_FILE_EXTENSION, designFileBaseName } from '../designFile';
 import {
   LinearHalbach2DViewport,
   type LinearHalbachResultView,
@@ -445,8 +446,8 @@ export function LinearHalbachWorkspace({
       halbach_config: config,
     };
     const payload = JSON.stringify(project, null, 2) + '\n';
-    const basename = projectName.trim().replace(/[^a-z0-9_-]+/gi, '-') || 'linear-halbach-array';
-    downloadBlob(payload, `${basename}.openem`, 'application/json');
+    const basename = designFileBaseName(projectName, 'linear-halbach-array').replace(/[^a-z0-9_-]+/gi, '-');
+    downloadBlob(payload, `${basename}${DESIGN_FILE_EXTENSION}`, 'application/json');
   };
 
   const openProject = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -472,7 +473,7 @@ export function LinearHalbachWorkspace({
       setProjectName(
         typeof payload.name === 'string'
           ? payload.name
-          : file.name.replace(/\.openem$/i, ''),
+          : designFileBaseName(file.name),
       );
       changeConfig(structuredClone(payload.halbach_config));
     } catch (reason) {
@@ -524,13 +525,13 @@ export function LinearHalbachWorkspace({
                   setProjectMenuOpen(false);
                   fileInputRef.current?.click();
                 }}>
-                  Open design file… (.openem)
+                  Open design file… ({DESIGN_FILE_EXTENSION})
                 </button>
                 <button type="button" role="menuitem" onClick={() => {
                   setProjectMenuOpen(false);
                   saveProject();
                 }}>
-                  Save design file (.openem)
+                  Save design file ({DESIGN_FILE_EXTENSION})
                 </button>
                 <span className="menu-divider" aria-hidden="true" />
                 <button type="button" role="menuitem" onClick={() => {
@@ -547,7 +548,7 @@ export function LinearHalbachWorkspace({
             <input
               ref={fileInputRef}
               type="file"
-              accept=".openem,application/json"
+              accept={DESIGN_FILE_ACCEPT}
               hidden
               onChange={(event) => void openProject(event)}
             />

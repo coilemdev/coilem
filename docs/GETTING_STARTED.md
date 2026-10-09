@@ -256,7 +256,7 @@ solves/
   <project>/
     <run-id>/
       manifest.json
-      project.openem
+      project.coilem
       request.json
       result.json
       material.json

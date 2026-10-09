@@ -37,6 +37,7 @@ from backend.public_report import (
 RUN_MANIFEST_SCHEMA = "coilem.solve_run.v2"
 RUN_REQUEST_SCHEMA = "coilem.solve_request.v1"
 PROJECT_SCHEMA_VERSION = 4
+PROJECT_FILE_NAME = "project.coilem"
 RUN_ARTIFACT_PREFIX = "run."
 DEFAULT_RETENTION_RUNS_PER_PROJECT = 25
 DEFAULT_WORKSPACE_MAX_BYTES = 10 * 1024 * 1024 * 1024
@@ -232,11 +233,15 @@ def _material_records(config: Mapping[str, Any]) -> list[dict[str, object]]:
     return records
 
 
+def _project_base_name(project_name: str) -> str:
+    return re.sub(r"\.(?:coilem|openem)$", "", project_name, flags=re.IGNORECASE)
+
+
 def _project_payload(config: Mapping[str, Any], project_name: str) -> dict[str, Any]:
     return {
         "openem_schema_version": PROJECT_SCHEMA_VERSION,
         "openem_version": __version__,
-        "name": project_name.removesuffix(".openem"),
+        "name": _project_base_name(project_name),
         **deepcopy(dict(config)),
     }
 
@@ -294,7 +299,7 @@ class SolveRunWriter:
     ) -> None:
         self.workspace = workspace
         self.project_name = project_name.strip() or "Untitled"
-        self.project_slug = _slug(self.project_name.removesuffix(".openem"), fallback="untitled")
+        self.project_slug = _slug(_project_base_name(self.project_name), fallback="untitled")
         self.config = deepcopy(dict(config))
         self.submitted_request = deepcopy(dict(submitted_request))
         self.started_at = _utc_text()
@@ -311,7 +316,7 @@ class SolveRunWriter:
                 self._manifest(status="running"),
             )
             _atomic_write_json(
-                self.partial_path / "project.openem",
+                self.partial_path / PROJECT_FILE_NAME,
                 _project_payload(self.config, self.project_name),
             )
             _atomic_write_json(
@@ -388,7 +393,7 @@ class SolveRunWriter:
             "started_at": self.started_at,
             "completed_at": (completed_at or _utc_text() if status == "complete" else None),
             "files": {
-                "project": "project.openem",
+                "project": PROJECT_FILE_NAME,
                 "request": "request.json",
                 "result": "result.json" if result is not None else None,
                 "material": "material.json" if material_records else None,
@@ -725,7 +730,11 @@ class SolveWorkspace:
         manifest = read_json("manifest.json")
         if manifest.get("status") != "complete":
             raise SolveWorkspaceError("solve run is not complete")
-        project = read_json("project.openem")
+        files = manifest.get("files")
+        project_file = files.get("project", "project.openem") if isinstance(files, Mapping) else "project.openem"
+        if project_file not in (PROJECT_FILE_NAME, "project.openem"):
+            raise SolveWorkspaceError("invalid project file name")
+        project = read_json(project_file)
         request = read_json("request.json")
         result = read_json("result.json")
         material = read_json("material.json")

@@ -85,7 +85,8 @@ Elmer is an optional development-only lane; see [its setup](docs/ELMER.md).
 The public application ignores inherited numerical solver switches. It derives
 native options from the request and records its environment policy and options
 in new motor results. [Runtime settings](docs/RUNTIME_SETTINGS.md) lists public
-configuration names. The `.openem` project format remains compatible.
+configuration names. New design files use `.coilem`; existing `.openem` files
+remain compatible with the same JSON project format.
 
 Completed runs live outside the checkout in your OS user-data directory and
 retain requests, results and hashes. See [local storage](docs/local_solve_workspace.md).

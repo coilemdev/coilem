@@ -4,7 +4,7 @@ import type { MotorConfig } from './model';
 import { parseCustomSteels } from './customSteel';
 
 /**
- * Local `.openem` design files.
+ * Local `.coilem` design files, with legacy `.openem` import compatibility.
  *
  * The payload is the same plain JSON the desktop workflow writes:
  * `{ openem_schema_version, openem_version, name, ...config }`. Loading is
@@ -21,7 +21,8 @@ import { parseCustomSteels } from './customSteel';
  * migrated at all.
  */
 
-export const DESIGN_FILE_EXTENSION = '.openem';
+export const DESIGN_FILE_EXTENSION = '.coilem';
+export const DESIGN_FILE_ACCEPT = `${DESIGN_FILE_EXTENSION},.openem,.json,application/json`;
 export const DESIGN_FILE_SCHEMA_VERSION = COILEM_SCHEMA_VERSION;
 
 export interface ParsedDesignFile {
@@ -158,8 +159,8 @@ export function parseDesignFile(text: string): ParsedDesignFile {
   };
 }
 
-export function designFileBaseName(name: string): string {
-  return name.replace(/\.openem$/i, '').replace(/\.json$/i, '').trim() || 'coilem-design';
+export function designFileBaseName(name: string, fallback = 'coilem-design'): string {
+  return name.trim().replace(/\.(?:coilem|openem|json)$/i, '').trim() || fallback;
 }
 
 export function serializeDesignFile(config: MotorConfig, name: string): string {

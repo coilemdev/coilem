@@ -15,7 +15,7 @@ solves/
   <project>/
     <run-id>/
       manifest.json
-      project.openem
+      project.coilem
       request.json
       result.json
       material.json
@@ -43,10 +43,12 @@ explicitly start a new solve.
 PDF, CSV, and replay-package downloads are generated once from those stored
 files before the run is published. Downloading after an application restart
 serves the same bytes and never reads unsaved form state or starts a solver.
-The replay package contains the manifest, `.openem` project, resolved request,
+The replay package contains the manifest, `.coilem` project, resolved request,
 material contract, result, report exports, and retained artifacts. Missing or
 tampered exports fail their integrity check; an older manifest directs the user
 to reopen its project and explicitly create a current run.
+Existing runs containing `project.openem` remain readable and retain their
+original export bytes.
 
 ## Retention
 
