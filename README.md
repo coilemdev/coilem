@@ -14,8 +14,8 @@ for measured evidence and remaining checks.
 
 ## Start from source
 
-You need Python 3.11+, Node.js 24 with npm, and Rust with Cargo. Use a fresh
-checkout and virtual environment. On Ubuntu/Debian, install the Gmsh system
+You need Python 3.11+, Node.js 24 with npm, and stable Rust with Cargo
+(the locked `faer` dependency requires Rust 1.84 or newer). Use a fresh checkout and virtual environment. On Ubuntu/Debian, install the Gmsh system
 library first: `sudo apt-get install libglu1-mesa`.
 
 Windows PowerShell:
@@ -59,7 +59,8 @@ The backend must stay bound to loopback.
 - Preview, Standard and High accuracy mesh/solve presets. These names describe
   resolution and sampling; they do not certify accuracy.
 - Saved runs, comparison, project save/reopen, PDF, CSV and replay downloads.
-- Solver-backed electromagnetics lessons and a cylindrical Halbach workspace.
+- Solver-backed electromagnetics lessons and cylindrical and linear
+  [Halbach workspaces](docs/HALBACH_ARRAY.md).
 
 ## Limits to understand
 
@@ -82,7 +83,7 @@ Elmer is an optional development-only lane; see [its setup](docs/ELMER.md).
 
 ## Reproducibility and contributing
 
-The public application ignores inherited numerical solver switches. It derives
+The public Magneto2D path ignores inherited numerical solver switches. It derives
 native options from the request and records its environment policy and options
 in new motor results. [Runtime settings](docs/RUNTIME_SETTINGS.md) lists public
 configuration names. New design files use `.coilem`; existing `.openem` files
@@ -90,7 +91,8 @@ remain compatible with the same JSON project format.
 
 Completed runs live outside the checkout in your OS user-data directory and
 retain requests, results and hashes. See [local storage](docs/local_solve_workspace.md).
-The root snapshot manifest records source provenance and file hashes. It is an
+The root snapshot manifest records the original source export, listed public
+patches, and current file hashes. It is an
 integrity record, not evidence of numerical accuracy.
 
 See [Architecture](docs/ARCHITECTURE.md), [Magneto2D](docs/MAGNETO2D.md),

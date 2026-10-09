@@ -2,26 +2,34 @@
 
 `coilem.field_playback.v2` is the solver-neutral visualization contract for
 cached 2D field sequences. It separates the sequence description from the
-`layered-webp-v1` storage encoding so a future binary transport can be added
-without changing tutorial or playback semantics.
+storage encoding so a future binary transport can be added without changing
+timeline semantics. The contract accepts legacy `layered-webp-v1` and current
+`layered-raster-v1`. The shipped motor producer writes 1536 px PNG geometry,
+flux-density and mesh layers, with WebP field-line layers.
 
 The contract is suitable for rotating-machine results and tutorial scenes such
 as permanent magnets, energized conductors, phase fields, and precomputed
 transient induction examples. It does not prescribe how a solver produces the
-frames.
+frames. These tutorial/transient examples describe contract capabilities, not
+shipped v2 producers. Currently only motor solves produce v2 playback, and
+the public viewer uses angle timelines.
 
 ## Manifest structure
+
+This illustrative manifest uses the current encoding with placeholder artifact
+IDs. The motor producer supplies its own composition catalog and frame count.
 
 ```json
 {
   "schema_version": "coilem.field_playback.v2",
-  "encoding": "layered-webp-v1",
-  "width_px": 768,
-  "height_px": 768,
+  "encoding": "layered-raster-v1",
+  "renderer_revision": "example-renderer-revision",
+  "width_px": 1536,
+  "height_px": 1536,
   "frame_count": 1,
   "timeline": {
-    "kind": "time",
-    "unit": "ms",
+    "kind": "angle",
+    "unit": "deg_electrical",
     "loop": true,
     "direction": "increasing"
   },
@@ -30,14 +38,14 @@ frames.
       "id": "geometry",
       "label": "Geometry",
       "role": "geometry",
-      "media_type": "image/webp",
+      "media_type": "image/png",
       "default_visible": true
     },
     {
       "id": "flux_density",
       "label": "Flux density",
       "role": "scalar",
-      "media_type": "image/webp",
+      "media_type": "image/png",
       "default_visible": true,
       "quantity": "magnetic_flux_density",
       "unit": "T"
@@ -51,8 +59,6 @@ frames.
     }
   ],
   "compositions": [
-    {"id": "magnet_a", "label": "Magnet A"},
-    {"id": "conductor", "label": "Conductor"},
     {"id": "resultant", "label": "Resultant"}
   ],
   "frames": [
@@ -64,8 +70,18 @@ frames.
           "layers": {
             "geometry": {
               "artifact_id": "opaque-id",
-              "media_type": "image/webp",
+              "media_type": "image/png",
               "byte_count": 123
+            },
+            "flux_density": {
+              "artifact_id": "opaque-flux-id",
+              "media_type": "image/png",
+              "byte_count": 456
+            },
+            "field_lines": {
+              "artifact_id": "opaque-lines-id",
+              "media_type": "image/webp",
+              "byte_count": 789
             }
           },
           "view_box": "-10 -10 20 20",
@@ -89,6 +105,7 @@ frames.
       }
     }
   ],
+  "manifest_artifact_id": "opaque-manifest-id",
   "annotations": [],
   "numerical_snapshots": [
     {
@@ -98,6 +115,14 @@ frames.
   ]
 }
 ```
+
+`renderer_revision` identifies the producer's raster implementation; the motor
+cache checks it before reusing playback. `manifest_artifact_id` locates the
+stored manifest. The contract also accepts optional `detail_width_px` and
+`detail_height_px` together, and per-visual `detail_layers` with the same layer
+IDs as `layers`. These describe a separate higher-resolution raster set when
+provided; the current motor producer emits one 1536 px set and exact snapshots
+rather than a separate detail set.
 
 ## Timeline
 
@@ -123,7 +148,7 @@ role: `geometry`, `scalar`, `contours`, `vectors`, or `annotations`. This lets a
 player discover how to render a layer without relying on names such as
 `flux_density`.
 
-Composition IDs are also content-defined. A permanent-magnet lesson may expose
+Composition IDs are also content-defined. A future permanent-magnet lesson could expose
 `magnet_a`, `magnet_b`, `conductor`, and `resultant`; a two-phase lesson may
 expose `phase_a`, `phase_b`, and `resultant`.
 
@@ -133,7 +158,7 @@ Each visual may include a compact `vector_cues` array. A cue contains a point
 vectors for static or animated direction arrows without retaining the full
 numerical mesh. Producers must not infer field direction from contour traversal
 order. The public motor packager samples at most a few dozen exact B-vector
-cues per composition and frame, while tutorial producers can provide the same
+cues per composition and frame. Future tutorial producers could provide the same
 generic cue shape for magnets, conductors, induction examples, or other 2D
 vector fields.
 
@@ -145,4 +170,4 @@ adapter so existing cached motor solves remain viewable.
 Tutorial narration, quizzes, and lesson navigation belong in a separate lesson
 manifest that references a field-playback manifest. Keeping those concerns
 separate lets the same solved sequence appear in a tutorial, report, or design
-workspace.
+workspace. No separate lesson-manifest producer is shipped in this checkout.

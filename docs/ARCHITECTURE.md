@@ -3,6 +3,8 @@
 This document describes the public, local-only coilEM application at a high
 level. It covers the paths from both motor and non-motor Halbach definitions
 in the browser to electromagnetic reports.
+The diagram below describes motor solves and their durable run storage;
+Halbach reports follow the separate session-based path described below.
 
 For solver command lines and physics boundaries, see
 [Magneto2D](MAGNETO2D.md) and [Elmer FEM](ELMER.md). The solve-ready non-motor JSON interface is
@@ -47,7 +49,7 @@ flowchart LR
     Policy --> Mesh
     Mesh -->|"SolveMeshArtifact JSON"| Orchestrator
     Orchestrator -->|"config + per-angle mesh artifacts"| M2D
-    Orchestrator -.->|"explicit Elmer selection"| Elmer
+    Orchestrator -.->|"development opt-in + explicit Elmer selection"| Elmer
     M2D -->|"enveloped JSON reports"| Mapper
     Elmer -.->|"result files"| Mapper
     Mapper --> UI
@@ -59,9 +61,10 @@ flowchart LR
 The frontend does not run finite-element code. The Python service owns input
 validation, geometry, meshing, process control, and durable storage.
 Magneto2D owns its magnetostatic finite-element assembly, nonlinear solve, and
-electromagnetic postprocessing. When explicitly selected, the optional Elmer
+electromagnetic postprocessing. With `COILEM_ENABLE_ELMER=1` and explicit selection, the optional Elmer
 adapter produces Elmer cases, launches separately installed executables, and
-maps their result files into the same public result contract.
+maps their result files into the same public result contract. Elmer is disabled,
+hidden, and not probed by default; it is a development lane outside the release claim.
 
 ## Component responsibilities
 
@@ -72,20 +75,24 @@ maps their result files into the same public result contract.
 | Geometry and Gmsh layer | Converts the motor definition into solver geometry, generates triangular meshes, tags physical regions, and rejects meshes that fail QA. |
 | Python solver orchestration | Selects the rotor-angle plan, routes the explicit solver choice, produces mesh artifacts, handles progress/cancellation, and maps raw reports into the application result. |
 | Magneto2D | Assembles and solves the 2D magnetostatic FEM system, iterates nonlinear steel, and computes torque, flux linkage, Back-EMF, and field outputs. |
-| Optional Elmer adapter | Detects qualified user-installed executables, remeshes each rotor position, converts Gmsh meshes with ElmerGrid, runs ElmerSolver, and maps results without bundling or linking Elmer. |
+| Optional Elmer adapter | With the development opt-in, detects qualified user-installed executables, remeshes each rotor position, converts Gmsh meshes with ElmerGrid, runs ElmerSolver, and maps results without bundling or linking Elmer. |
 | Solve workspace | Publishes a completed run atomically with inputs, provenance, immutable results, retained artifacts, PDF, CSV, and replay package. |
 
 ## A Halbach solve from end to end
 
-The Halbach workspace validates `halbach_array_config` v1, creates a non-motor
-planar artifact, and lowers it through a feature-tag-driven Gmsh adapter. The
+Cylindrical and linear Halbach workspaces validate `halbach_array_config` v1 or
+`linear_halbach_array_config` v1, create a non-motor planar artifact, and lower
+it through a feature-tag-driven Gmsh adapter. The
 adapter assigns every triangle one material and remanence source, then emits
 the unchanged generic `magnetostatic_problem` v1 contract.
 
 Magneto2D field mode solves that document without learning Halbach geometry or
-report policy. Python samples bore and leakage regions, calculates
-Halbach-specific metrics, embeds the complete generic field report, and keeps
-the replayable problem/hash. See [Cylindrical Halbach array](HALBACH_ARRAY.md).
+report policy. Python samples the bore/leakage regions or linear probe lines,
+calculates Halbach-specific metrics, and embeds the complete generic field
+report and replayable problem/hash in the returned report. The browser retains
+that result for the session; these solves do not publish motor-run manifests
+or enter saved-run comparison. Cylindrical exports are generated from the
+submitted report. See [Halbach arrays](HALBACH_ARRAY.md).
 
 ## A motor solve from end to end
 
@@ -122,10 +129,10 @@ The application normally uses `POST /solve/stream`. The response is a
 server-sent event stream with progress, followed by either a completed result
 or a typed error. `POST /solve/cancel` stops the active local solve.
 
-For rotor motion, the public launch lanes use native Gmsh meshes. Magneto2D
-uses the normal public mesh policy. Elmer uses a fixed qualified profile with
-remesh-per-position motion, Arkkio torque, and direct UMFPACK. Solver selection
-is explicit; an unavailable Elmer runtime is reported before a solve starts.
+For rotor motion, the public motor path uses native Gmsh meshes and Magneto2D.
+The optional Elmer development lane uses a fixed profile with remesh-per-position
+motion, Arkkio torque, and direct UMFPACK. Solver selection is explicit;
+disabled or unavailable Elmer requests are rejected before a solve starts.
 
 ### 4. Result mapping and report
 
@@ -136,7 +143,7 @@ can show:
 - phase Back-EMF and its fundamental;
 - torque and Back-EMF waveforms;
 - peak tooth and yoke flux density;
-- torque and Back-EMF constants;
+- torque constant;
 - solver, mesh, material, and operating-point provenance; and
 - solved magnetic field views and playback when requested.
 
@@ -151,16 +158,16 @@ retention policy, integrity checks, and replay behavior.
 
 ## Public API surface
 
-The API is grouped into five small surfaces:
+The API is grouped into six surfaces:
 
 | Surface | Representative paths |
 | --- | --- |
 | Runtime facts | `GET /health`, `GET /materials`, `GET /openapi.json` |
-| Design and mesh | Motor `/preview` and `/solver/mesh-preview`; Halbach `/halbach/preview` and `/halbach/mesh-preview` |
+| Design and mesh | Motor `/preview` and `/solver/mesh-preview`; cylindrical `/halbach/preview` and `/halbach/mesh-preview`; linear `/halbach/linear/preview` and `/halbach/linear/mesh-preview` |
 | Solve | `POST /solve/validate`, `POST /solve/stream`, `POST /solve`, `POST /solve/cancel` |
 | Stored runs | `GET /runs`, run loading, PDF/CSV/package downloads, folder reveal, and explicit deletion |
 | Tutorials | Local, solver-backed `/tutorials/*` lesson routes |
-| Halbach application | `/halbach/solve/validate`, `/halbach/solve/stream`, and `/halbach/export/{kind}` |
+| Halbach application | Cylindrical `/halbach/solve/validate`, `/halbach/solve/stream`, and `/halbach/export/{export_kind}`; linear `/halbach/linear/solve/validate` and `/halbach/linear/solve/stream` |
 
 The exact launch allowlist is documented in
 [Public runtime boundary](PUBLIC_BOUNDARY.md).
@@ -182,9 +189,9 @@ before assembly.
 
 ### Magneto2D report envelope
 
-Magneto2D emits a `solve_report`, `sweep_report`, or `batch_solve_reports`
-envelope. The envelope records schema kind and provenance in addition to the
-numerical payload.
+Motor mode emits a `solve_report`, `sweep_report`, or `batch_solve_reports`
+envelope; generic field mode emits `field_solution_report`. The envelope
+records schema kind and provenance in addition to the numerical payload.
 
 ### Durable run manifest
 
@@ -198,8 +205,9 @@ hashes. Downloads are served from this stored run and do not start a solver.
 - The public frontend accepts only loopback API addresses.
 - Browser origins are limited to the documented local development and preview
   ports.
-- The launch configuration policy accepts Magneto2D with native Gmsh meshes,
-  plus explicit Elmer when qualified Elmer 26.2 executables are detected.
+- The launch configuration policy accepts Magneto2D with native Gmsh meshes.
+  Elmer discovery and selection require `COILEM_ENABLE_ELMER=1` and a qualified
+  user-installed runtime; this development opt-in does not expand the release claim.
 - Cloud services, identity, billing, telemetry, FEMM, internal diagnostics,
   and thermal requests are outside the public launch runtime.
 - The launch material set and its interpretation limits are documented in
@@ -209,8 +217,10 @@ hashes. Downloads are served from this stored run and do not start a solver.
 
 ```text
 frontend/src/public/          Public React application and API client
+frontend/src/components/      Shared landing preview, workflow hero, and tutorials
 backend/public_main.py        Loopback FastAPI entry point and route allowlist
 backend/public_routes/        Preview, solve, stored-run, and tutorial routes
+backend/public_routes/halbach.py  Cylindrical and linear Halbach API routes
 backend/public_policy.py      Fail-closed launch configuration policy
 backend/gmsh_solver.py        Native Gmsh mesh production and mesh QA
 backend/halbach/              Non-motor geometry, mesh lowering, solve adapter, metrics, and exports

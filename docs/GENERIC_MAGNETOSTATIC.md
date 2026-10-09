@@ -1,7 +1,9 @@
 # Generic magnetostatic field solver
 
 Magneto2D's field mode is a lower-level interface for solving a prepared 2D
-planar magnetostatic finite-element problem without a motor configuration. It
+planar magnetostatic finite-element problem without a motor configuration.
+This is an experimental interface; its regression tests do not establish
+release-qualified accuracy or engineering certification. It
 accepts a versioned JSON document containing a P1 triangular mesh, materials,
 per-element sources, boundary conditions, solver options, and optional warm
 starts.
@@ -64,12 +66,12 @@ linear-solver preparation, but motor geometry, winding synthesis, material
 catalog lookup, rotor motion, torque, flux linkage, Back-EMF, and motor report
 schemas remain outside the generic core.
 
-The cylindrical Halbach application is another producer of this contract. Its
-Python layer owns segmented annular geometry, catalog/custom magnet semantics,
-feature-tag-driven Gmsh meshing, bore/leakage sampling, demagnetization
-screening policy, persistence, and exports. It passes only a prepared
+The cylindrical and linear Halbach applications also produce this contract.
+Their Python layer owns array geometry, catalog/custom magnet semantics,
+feature-tag-driven Gmsh meshing, application-specific sampling and reports,
+and cylindrical demagnetization screening and exports. They pass only a prepared
 `magnetostatic_problem` to the generic core. See
-[Cylindrical Halbach array](HALBACH_ARRAY.md).
+[Halbach arrays](HALBACH_ARRAY.md).
 
 Field mode does not generate a mesh. It does not accept a motor
 `SolveMeshArtifact`, `--mesh-input`, `--sweep`, or `--batch-input`.
@@ -359,13 +361,9 @@ the problem.
 
 ## Verification
 
-Validate both checked-in inputs and solve them through the real binary:
-
-```text
-python -m pytest -q tests/test_generic_magnetostatic_contract.py
-```
-
-Run the Rust field-core unit suite:
+Run the two Quick start commands above to solve the checked-in inputs through
+the real binary. Run the shipped Rust field-core suite for contract validation,
+field solutions, and convergence behavior:
 
 ```text
 cargo test --locked --manifest-path solvers/magneto2d/Cargo.toml field::tests

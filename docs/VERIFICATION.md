@@ -1,5 +1,54 @@
 # Local verification record
 
+## Documentation sweep on 2026-10-09
+
+The working tree based on public commit `ba251ba` was checked against the
+implemented frontend, API, schemas, solver, storage, and CI configuration.
+The sweep covered all 21 root and `docs/` Markdown documents. It corrected
+the premature SPM qualification claim, Elmer development-gate wording,
+Halbach storage/export scope, playback snapshot retention, and an unshipped
+generic-field test command. It also documented the implemented linear Halbach
+workflow and renamed cylindrical image downloads to **Design SVG/PNG** to
+match their geometry-only content.
+
+On Windows AMD64 with Python 3.12.14, Node.js 24.19.0, Cargo 1.95.0, and
+Gmsh 4.15.2:
+
+- 146 targeted Python API, material, Halbach contract, playback, environment,
+  storage, and export checks passed;
+- 12 linear Halbach analytical and real-solver checks passed, including both
+  strong-side directions;
+- 17 Rust generic-field checks passed;
+- frontend contracts, type checking, production build, and bundle audit passed;
+- all local Markdown links and referenced source/test files resolved;
+- all 54 documented public API method/path pairs matched OpenAPI;
+- the cylindrical configuration in the guide passed schema and runtime validation;
+  and
+- both documented generic-field examples solved with the real native binary
+  and produced schema-valid, converged reports.
+
+This is a documentation and behavior check of the working tree. It does not
+replace final-public-commit numerical qualification, hosted CI evidence, or
+the remaining interactive walkthrough. Historical numerical measurements below
+and in [Numerical evidence](NUMERICAL_EVIDENCE.md) retain their original identities.
+
+## Documentation follow-up on 2026-10-09
+
+A documentation-only follow-up to public commit `5dde7d2` checked remaining
+review feedback against the implementation. It corrected navigation labels,
+material-catalog differences, cache/storage scope, playback encodings,
+public import boundaries, and historical evidence wording. It also restored
+public patch provenance in the snapshot manifest. Runtime and UI behavior
+were not changed by this follow-up.
+
+Local checks covered all 21 root and `docs/` Markdown documents: relative
+links and anchors, documented API methods/paths against the application,
+and the playback JSON example against its runtime validator. The snapshot
+and publication-content checks passed. These documentation checks do not
+constitute a new browser rehearsal or numerical qualification.
+
+## Earlier local release rehearsal
+
 The 2026-10-09 UTC rehearsal used macOS 15.7.3 arm64, Python 3.12.13,
 Node.js 25.2.1, Rust/Cargo 1.94.0 and Gmsh 4.15.2. This is one tested local
 platform; it does not establish support for every operating system.
@@ -42,7 +91,11 @@ check. Build and browser tests do not establish motor accuracy.
 
 The source revisions in this record belong to the private development repository;
 they identify provenance and are not available as public Git commits.
-The main browser rehearsal used the runtime exported from source `763b9d25`.
+The main browser rehearsal used the runtime exported from source `763b9d25`
+and predates public PRs #1 and #2, including the Chromium harness, timeout and
+3D-rendering changes. Its “2 passed” result is historical evidence, not a run
+of the current public candidate. Hosted CI must be associated with its exact
+public commit rather than substituted into that local result.
 The recovery rehearsals include the direct-API storage correction from
 `c63dd8bf`. The final Python suite covers the CLI precision fix from `65c340f5`,
 with a subsequent test-only fixture correction to use the public bundled steel.

@@ -10,8 +10,10 @@ These records keep their tested runtime identities and remaining gates explicit.
 
 ## Candidate identity
 
-`snapshot-manifest.json` records the source commit and SHA-256 of every exported
-file. The public repository has its own commit history; private source history
+`snapshot-manifest.json` records the original source export, the listed public
+patches, and the current SHA-256 and byte count of each distributed file. Each
+patch entry identifies its public base commit and the file hash before that
+patch; Git history records the corresponding changes. The public repository has its own commit history; private source history
 is not transferred. A release must pin the public commit as well as this
 manifest. Source archives and their checksums must be generated from that
 same public commit.
@@ -47,14 +49,17 @@ npm run test:browser
 ```
 
 Activate the backend virtual environment first, or set `COILEM_TEST_PYTHON` to
-its Python executable. The suite starts its own loopback servers on ports
-54173 and 58000 and writes disposable results below `frontend/test-results`.
+its Python executable. On Linux, install browser system dependencies with
+`npx playwright install --with-deps chromium`, as CI does. The suite starts its own loopback servers on ports
+54173 and 58000, writes disposable results below `frontend/test-results`, and
+writes its HTML report below `frontend/playwright-report`.
 The automated rehearsal covers part of the walkthrough below; it does not
 replace numerical reference comparisons or manual recovery checks.
 
 `verify_snapshot.py --publication` is a content check. It verifies the manifest
 and the publication rules encoded in the tool; it does not inspect Git history,
-enable private vulnerability reporting, perform numerical qualification, or
+validate the completeness of `public_patches`, enable private vulnerability
+reporting, perform numerical qualification, or
 grant release signoff. Those checks require separate evidence.
 
 ## Numerical and interactive release checks
@@ -62,7 +67,12 @@ grant release signoff. Those checks require separate evidence.
 The intended qualification path is the included 8-pole/12-slot inner-rotor
 SPM example, M350-50A steel, native Gmsh meshing, Standard quality, and local
 Magneto2D. Both sinusoidal and ideal wye-connected 120-degree six-step
-excitation must be exercised from the pinned candidate.
+excitation must be exercised from the pinned candidate. Standard describes
+the interactive walkthrough. The preregistered numerical comparison in
+`benchmarks/m350-launch/benchmark_spec.json` uses a custom full-electrical-cycle
+grid: 96 positions at 3.75° over [0°, 360°). It is not the sinusoidal Standard
+preset's base 180°/7.5° grid; the adapter promotes Standard Back-EMF/THD
+runs to a full cycle when required.
 
 Until numerical qualification is completed and recorded, all motor outputs are
 experimental estimates and no motor path is release-qualified.

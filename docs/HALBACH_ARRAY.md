@@ -1,11 +1,13 @@
-# Cylindrical Halbach array
+# Halbach arrays
 
 coilEM includes a non-motor magnetic-field workspace for designing and solving
-an internal-field cylindrical Halbach array. It uses the same production
+an internal-field cylindrical Halbach array or a finite linear array. Both use the same
 generic Magneto2D field core as the lower-level
 [`magnetostatic_problem` interface](GENERIC_MAGNETOSTATIC.md).
+Both workflows are experimental; the available regression checks do not
+establish release-qualified Halbach accuracy.
 
-## V1 support boundary
+## Cylindrical V1 support boundary
 
 V1 models:
 
@@ -20,7 +22,7 @@ V1 models:
 The field solve is two-dimensional and assumes infinite axial length. The
 configured axial length is used only to extrude the 3D design view, calculate
 magnet volume and mass, and scale explicitly labeled extruded-2D energy.
-Every report and export carries this permanent limitation:
+The Halbach report, sample CSV, design images, and PDF carry this permanent limitation:
 
 > 2D cross-section extruded over the design length — axial end effects are not included.
 
@@ -30,8 +32,8 @@ hysteresis.
 
 ## Start a design
 
-On the landing page, open **Magnetic field applications**, then choose
-**Cylindrical Halbach array**. This opens its own Design → Solve → Report
+On the landing page, select **Halbach arrays**, then **Design a Halbach array**.
+**Cylindrical** is selected by default. This opens its own Design → Solve → Report
 workspace without changing the SPM/IPM motor topology flow.
 
 The Design stage has five groups:
@@ -122,8 +124,10 @@ The complete catalog and custom examples are under `schemas/v1/examples/`.
 
 ## Material semantics
 
-Catalog Br and relative permeability values use the documented public magnet
-models. Br(T) is independently derated from its reference temperature. The
+Catalog Br and relative permeability come from the legacy magnet table, which
+differs from the public motor catalog for several grades; see the comparison in
+[Materials](../MATERIALS.md#halbach-coercivity-and-temperature-policy). Br(T) is
+independently derated from its reference temperature. The
 legacy catalog coercivity field does not identify normal coercivity versus
 intrinsic coercivity unambiguously, so every current catalog grade is audited
 as `unknown`: its value is retained as metadata but cannot produce a
@@ -160,13 +164,17 @@ Generating Gmsh mesh
 Assigning segment magnetization
 Solving Magneto2D field
 Sampling bore and leakage fields
+Checking outer-boundary sensitivity (fine quality only)
 Preparing report
 ```
 
-Quick, standard, and fine presets change mesh resolution without changing the
-physics contract. The report retains Gmsh CAD/mesh time, generic preparation,
+Quick, standard, and fine presets change mesh resolution, outer-boundary size,
+solver tolerance and sample counts without changing the physics contract. The report retains Gmsh CAD/mesh time, generic preparation,
 assembly, linear solution, recovery, application postprocessing, total time,
 and peak process memory separately.
+Peak-memory measurement is best-effort and may be unavailable on the host.
+Fine quality also solves an enlarged outer boundary and records sensitivity;
+quick and standard runs do not perform that extra solve.
 
 ## Results and exports
 
@@ -176,10 +184,11 @@ The Report stage leads with:
 - direction error and ROI uniformity;
 - external leakage and leakage-to-bore ratio;
 - magnet volume and optional mass;
-- analytical continuous and segmented estimates;
-- reverse-field screening;
 - timing and material/artifact provenance; and
 - the model-fidelity notice.
+
+Analytical continuous/segmented estimates and reverse-field screening are
+available in the exported PDF and report JSON, rather than the in-app Report panel.
 
 The 2D result viewer provides `|B|`, the requested-direction and transverse
 components, `A_z`, contours, field lines, and vectors.
@@ -191,14 +200,20 @@ Downloads include:
 - replayable generic problem JSON;
 - generic field-solution JSON;
 - bore/leakage sample CSV;
-- SVG and PNG field/design images; and
+- SVG and PNG design diagrams with magnetization arrows; and
 - PDF report.
+
+The SVG/PNG diagrams show geometry and magnetization, without solved-field
+heatmaps or contours. The problem and generic field JSON exports use their
+application-neutral schemas; retain the Halbach report alongside them for the
+model notice and application metrics. Downloads are generated from the report
+in the current session. Halbach solves do not enter motor saved-run history.
 
 Halbach project files use:
 
 ```json
 {
-  "openem_schema_version": 3,
+  "openem_schema_version": 4,
   "project_kind": "halbach_array",
   "halbach_config": {"kind": "halbach_array_config", "version": "1.0"}
 }
@@ -215,13 +230,59 @@ For old project files, an absent `project_kind` still means `motor`.
 | `POST /halbach/solve/validate` | Field-addressable validation and warnings |
 | `POST /halbach/solve/stream` | Progress SSE followed by the report |
 | `POST /halbach/solve` | Synchronous report |
-| `POST /halbach/export/{kind}` | Report/problem/field JSON, CSV, SVG, or PDF |
+| `POST /halbach/export/{export_kind}` | Report/problem/field JSON, CSV, design SVG/PNG, or PDF |
 
 `GET /health` advertises `capabilities.halbach_array_2d`.
 
-## Validation evidence
+## Linear Halbach workflow
 
-The release gates include:
+In the Halbach Design workspace, select **Linear**. The included N42 example
+has four periods, four rectangular magnets per period, 10 mm magnet width and
+height, zero gaps, and 100 mm out-of-plane depth. It uses a 5 mm probe offset
+and excludes one period at each end from the headline metrics.
+
+The implemented v1 boundary includes:
+
+- 1–16 periods, with four blocks per period;
+- positive-y or negative-y strong-side selection and magnetization phase;
+- non-negative gaps smaller than the block width;
+- catalog or custom linear-recoil magnets;
+- centered working-side and weak-side probe lines; and
+- quick, standard, fine, and custom mesh/solve settings.
+
+The wavelength is `4 * (block_width + block_gap)`. Edge exclusion must leave
+at least one complete period, and probe lines must remain inside the modeled
+outer boundary. Fine quality performs an enlarged-boundary sensitivity solve.
+
+The Report stage shows working-line RMS/mean/peak field and ripple, weak-side
+RMS field, leakage and suppression ratios, magnet volume, optional mass, and
+timing/provenance. The solve resolves finite-array end fringing in the x-y
+plane. Out-of-plane depth scales extrusion, volume, mass, and extruded energy;
+out-of-plane end effects are not modeled. The 3D view is labeled:
+
+> 2D Magneto2D field extruded for visualization · not a 3D FEM result
+
+Save/reopen a `.coilem` design with `project_kind = linear_halbach_array` and
+`halbach_config.kind = linear_halbach_array_config`. The linear UI keeps the
+solved report in the browser session and currently offers design-file downloads
+only. The cylindrical report/PDF/CSV/image exporter accepts cylindrical reports.
+
+| Route | Purpose |
+| --- | --- |
+| `POST /halbach/linear/preview` | Geometry, resolved material, and design health |
+| `POST /halbach/linear/mesh-preview` | Mesh QA and generic problem hash |
+| `POST /halbach/linear/solve/validate` | Validation and warnings |
+| `POST /halbach/linear/solve/stream` | Progress SSE followed by the report |
+| `POST /halbach/linear/solve` | Synchronous report |
+
+The configuration, report schema, and example are under `schemas/v1/`:
+[`linear_halbach_array_config.schema.json`](../schemas/v1/linear_halbach_array_config.schema.json),
+[`linear_halbach_solution_report.schema.json`](../schemas/v1/linear_halbach_solution_report.schema.json),
+and [`linear_halbach_array_4_period.json`](../schemas/v1/examples/linear_halbach_array_4_period.json).
+
+## Verification scope
+
+The shipped cylindrical regression tests cover:
 
 - strict schema examples and unknown-field rejection;
 - area closure, CCW loops, odd/even counts, gaps, physical groups, neutral
@@ -229,9 +290,15 @@ The release gates include:
 - analytical 8-, 16-, and 32-segment fixtures;
 - rotation covariance, scale invariance, and Br linearity;
 - mesh and outer-boundary convergence;
-- independent reference comparisons when the reference solver is available;
-- unchanged motor project compatibility corpus and generic-field tests; and
-- public snapshot, boundary, UI-contract, bundle, and runtime smoke gates.
+- strict report provenance and retained generic problem hashes.
 
-Measured canonical values and release-machine timing are published with each
-release rather than presented as universal performance guarantees.
+Linear tests cover configuration, geometry and meshing, an independent
+rectangular-magnet analytical oracle, strong-side selection, and report/API
+contracts. Solver tests require Gmsh and the built native binary and may skip
+when those are unavailable. Public snapshot, boundary, and frontend contract
+checks also include these workspaces.
+
+Independent external-solver comparisons and final-candidate Halbach numerical
+qualification are not recorded in this checkout. Per-run timings and analytical
+estimates are diagnostics, not release-machine performance guarantees. See
+[Validation](VALIDATION.md) for the separate motor qualification requirements.

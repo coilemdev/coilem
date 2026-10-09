@@ -14,7 +14,8 @@ The source distribution includes no hosted service or FEMM implementation.
 Elmer is disabled by default and requires a separately installed runtime and
 an explicit development opt-in. Motor thermal requests are excluded.
 
-The manifest records file hashes and source provenance. It does not certify
+The manifest records the original source export, listed public patches, and
+current file hashes. It does not certify
 numerical correctness or inspect repository history. Final publication requires
 maintainer review of the numerical evidence, platform checks, security reporting
 route and the actual public commit.

@@ -29,10 +29,17 @@ The preview includes:
   High accuracy; Preview intentionally omits an under-sampled THD value;
 - immutable local runs with PDF, CSV, and replay-package exports;
 - explicit storage usage and confirmed deletion of one saved or incomplete
-  run; and
-- descriptive comparison of two saved Magneto2D runs.
+  run;
+- descriptive comparison of two saved Magneto2D runs; and
 - visually distinct sinusoidal and six-step run-plan previews, plus aligned
   torque/current results for the guided ideal six-step workflow.
+
+Experimental non-motor workflows include solver-backed lessons and cylindrical
+and linear Halbach arrays. Halbach workspaces save/reopen design files and show
+reports in the current browser session. Cylindrical arrays additionally export
+report/problem/field JSON, sample CSV, design SVG/PNG, and PDF. These workflows
+are separate from motor saved-run history; the linear UI currently has no
+report downloads. See [Halbach arrays](docs/HALBACH_ARRAY.md).
 
 ## Reliability and reporting updates
 
@@ -42,7 +49,7 @@ The preview includes:
   solved flux-density heatmap. Existing immutable reports retain their
   original content.
 - Narrow windows retain access to solve progress and completed reports, with
-  a visible **View results** action.
+  a visible **View Results** action.
 - A failed geometry preview recovers after the local backend reconnects,
   preserving the latest draft. **Retry geometry preview** is also available.
 - Timing labels separate approximate solver estimates, solver timing, and
@@ -51,8 +58,10 @@ The preview includes:
   results.
 - Reports identify the requested torque method and the method actually used;
   missing provenance is shown as not recorded.
-- The permanent-magnet catalog agrees with the bundled native solver inputs.
-- Public CI builds and checks the exported source using locked dependencies.
+- The public motor permanent-magnet catalog agrees with the bundled native
+  motor solver inputs; Halbach and Elmer use a separate legacy table described
+  in [Materials](MATERIALS.md).
+- Public CI builds and checks the exported source using locked runtime dependencies; development tools and the Rust toolchain are not fully pinned.
 
 ## Known limitations
 
@@ -82,7 +91,7 @@ The preview includes:
 ## Data and support
 
 Completed and incomplete run records are user-owned and are never silently
-deleted. Use **Previous runs** to inspect storage and explicitly delete one run
+deleted. Use **Manage previous runs** to inspect storage and explicitly delete one run
 when the workspace is full. Reopening or comparing a run never starts a solver.
 
 Use [GitHub Issues](https://github.com/coilemdev/coilem/issues) for reproducible
