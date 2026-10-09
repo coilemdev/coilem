@@ -30,8 +30,8 @@
     },
     {
       "path": ".gitignore",
-      "sha256": "6ff3b9f4fd21a3cbe285ebb9fcf1a36f03ea652f59062a5391ef62e82d4a43e9",
-      "bytes": 230
+      "sha256": "066ee5b6c1919e7075b4d1dbc592b271ba05843d340a7ac687e6c577e1551c7a",
+      "bytes": 240
     },
     {
       "path": "CITATION.cff",
@@ -165,13 +165,13 @@
     },
     {
       "path": "backend/field_artifacts.py",
-      "sha256": "5ce907bd5ab6d8dbc8fa4022c237cca7cbf86b83d2ba8b385250ef02c42e5e80",
-      "bytes": 10851
+      "sha256": "35b03a2e6c41fddb794f6954335ad4c7e3beaf2ffa447aa15930f0325788d472",
+      "bytes": 11117
     },
     {
       "path": "backend/field_composition.py",
-      "sha256": "94f1392d7bbd1772042282c76f627289528004afb611ce67cb33e6308d85f9db",
-      "bytes": 12511
+      "sha256": "a3004702506189d0bb2ea27a9fc84f12c60311825c112efbcc71dfce3f52ae10",
+      "bytes": 13760
     },
     {
       "path": "backend/field_lines.py",
@@ -450,8 +450,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "sha256": "66a98de53b28df0738b1367196c93663e4c79d48d92841e68dc4d2841e3b0305",
-      "bytes": 132514
+      "sha256": "8eff648ce5cf9b47862369019b4f2e3f53aafd161c440c6d2cf8648f27e1ec89",
+      "bytes": 133619
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -540,8 +540,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "sha256": "0916da9bdb5186925208f50ecda2392a39ae1a27c537b5726e5875ee94961297",
-      "bytes": 13032
+      "sha256": "a68bfcaf0ad0f3cb4ec357d23ad611ec076fa5fbdc7df9170f0490a8a9d52a8b",
+      "bytes": 13001
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -565,8 +565,8 @@
     },
     {
       "path": "docs/RUNTIME_SETTINGS.md",
-      "sha256": "e027001b569136ddc84752514b53e981fd9673ce9a6a7632442045b303fbe378",
-      "bytes": 3495
+      "sha256": "303e609c32db4ae8639501ee8b5b130741fe4b6f8a3b377a7806840927643cc6",
+      "bytes": 3603
     },
     {
       "path": "docs/VALIDATION.md",
@@ -605,8 +605,8 @@
     },
     {
       "path": "docs/local_solve_workspace.md",
-      "sha256": "cc375276c3479c594162e79e9a28de1961ce387669027a94c29eb405459fc0de",
-      "bytes": 4696
+      "sha256": "c3c01a9d17700f7240ceecbf3485092bfe48df014462fb8b2e86247eee49c789",
+      "bytes": 4890
     },
     {
       "path": "frontend/package-lock.json",
@@ -1070,8 +1070,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "sha256": "ad4bd6cd3eae26509b9ff032f843f538a96ab6d265103536a779a0b7de999b26",
-      "bytes": 174096
+      "sha256": "6e7f506bc2d96fce4b1bfbb8641e1d000ec96b56a716f9eced9275c4ee4ff9f9",
+      "bytes": 174204
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -1165,8 +1165,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "sha256": "e65e29526ed2b4e5d14f369143ceb0d075b910a013b440be8be17711734213a7",
-      "bytes": 9947
+      "sha256": "c5bd08e23d7843f42ae1331120adddb12133d63e9b923d1060d6bfb380ed34ba",
+      "bytes": 10105
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -1495,8 +1495,8 @@
     },
     {
       "path": "solvers/magneto2d/src/lib.rs",
-      "sha256": "a011f8e1d4cdd25479f1c4e83759c4fbb3ba64e31f8deadd301cf92e79471148",
-      "bytes": 6761
+      "sha256": "8969b5f87342662624715f873cbfbcd63e1bdd360313d788c631d2ec26491b04",
+      "bytes": 6785
     },
     {
       "path": "solvers/magneto2d/src/magnet_fraction.rs",
@@ -1520,8 +1520,8 @@
     },
     {
       "path": "solvers/magneto2d/src/motor.rs",
-      "sha256": "972bdac9599d05d1aba2ea8b5a958776df9151d2c85bbfe0d2ba530dd52fbab9",
-      "bytes": 9323
+      "sha256": "0aa189fb0ca601ebe1b9069609965931d4860d6ac5bafc06a8431f88f8b11840",
+      "bytes": 15578
     },
     {
       "path": "solvers/magneto2d/src/postprocess.rs",
@@ -1570,8 +1570,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/mesh_metadata.rs",
-      "sha256": "381f2e4e885605c63bd42ae8fa00e88e90ba53f3fa56e2e133814a732fb97260",
-      "bytes": 19685
+      "sha256": "78fe2e172fbb184d1957cf6711f34f7aa3764b54307252800a8fdb7d9f128b1e",
+      "bytes": 21216
     },
     {
       "path": "solvers/magneto2d/src/solve/metrics.rs",
@@ -1580,8 +1580,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/mod.rs",
-      "sha256": "a4c9961ac5c3cf63f5e6b5e872b335b7df7ca60a231e2f67588336bd265fc55e",
-      "bytes": 150986
+      "sha256": "c84c827dac02063f9192388d92702740504534169cece119bd7877a79407a158",
+      "bytes": 152104
     },
     {
       "path": "solvers/magneto2d/src/solve/model/ipm.rs",
@@ -1610,8 +1610,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/picard.rs",
-      "sha256": "79fffb31bb73ba160c13454e800ba03bc0dd2c306f425c60c15b541c7d6ddd9d",
-      "bytes": 14293
+      "sha256": "2bcd58d6609db9f059263dfd429ea5f024e2bc94ee922cb18666229012e3d5fe",
+      "bytes": 14763
     },
     {
       "path": "solvers/magneto2d/src/solve/problem.rs",
@@ -1620,8 +1620,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/tests.rs",
-      "sha256": "68f00d7122fd7a40d19d6246a0c1a95a42159bdd10d1bef67567da9f8bd08aaa",
-      "bytes": 94054
+      "sha256": "8b77f595d185cfc0b3a051ab5c680dec9690caa32b6178bc9f0a39d985f14e55",
+      "bytes": 96934
     },
     {
       "path": "solvers/magneto2d/src/solve/types.rs",
@@ -1635,8 +1635,8 @@
     },
     {
       "path": "solvers/magneto2d/src/sparse.rs",
-      "sha256": "2132d3a32c12581cd2279c71372aca880efc50d06653d37c32de5eaad49dea3f",
-      "bytes": 49332
+      "sha256": "b4caa680a8665afc39e77f320eca1836261add97b22b6533919a1dda54048ac9",
+      "bytes": 49762
     },
     {
       "path": "solvers/magneto2d/src/teaching.rs",
@@ -1770,8 +1770,8 @@
     },
     {
       "path": "tests/test_public_candidate.py",
-      "sha256": "b2e2881b6ad5583ee743cd6a7e25394d72e2199e969c2221cc2e5220248882a9",
-      "bytes": 19747
+      "sha256": "e7349e41879313dec6c343a636b112c90b359f45e2b59b1184e61fc5707302d2",
+      "bytes": 19912
     },
     {
       "path": "tests/test_public_field_playback.py",
@@ -1800,8 +1800,8 @@
     },
     {
       "path": "tests/test_solve_workspace.py",
-      "sha256": "6613367f5dc8dd4cd2800de671854d5231cfe36d2218b7226cf835faaa3084cc",
-      "bytes": 17503
+      "sha256": "db3ad88a797164357e4bcf96ca6b3e89438c2b00c1fe4c15263439dcc5752961",
+      "bytes": 22220
     },
     {
       "path": "tools/generate_m350_50a_bh.py",
@@ -1825,8 +1825,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "sha256": "968e535c435a0362bf317db8c7671da0d6875294932849ea155f1c3db15a749b",
-      "bytes": 17016
+      "sha256": "11bdf4ae5e1d8f5bc6738f2578aba90d5d62f57b9c482913371d80e59e29fe84",
+      "bytes": 17132
     }
   ],
   "public_patches": [
@@ -2195,6 +2195,120 @@
       "path": "pyproject.toml",
       "source_sha256": "6b79ae093f85636b8ac68c589a70649215e7215a84b1d1ab64ea0b6179c7a039",
       "reason": "Public repository discoverability: link the project website (coilem.com) from the README, package metadata and citation metadata. No runtime changes."
+    },
+    {
+      "base_commit": "033b36ae092e0fdb2ef9787edab0826dedcb44d1",
+      "path": ".gitignore",
+      "source_sha256": "6ff3b9f4fd21a3cbe285ebb9fcf1a36f03ea652f59062a5391ef62e82d4a43e9",
+      "reason": "Ignore macOS .DS_Store Finder metadata in git and in the publication check. No runtime changes."
+    },
+    {
+      "base_commit": "033b36ae092e0fdb2ef9787edab0826dedcb44d1",
+      "path": "backend/field_artifacts.py",
+      "source_sha256": "5ce907bd5ab6d8dbc8fa4022c237cca7cbf86b83d2ba8b385250ef02c42e5e80",
+      "reason": "Solver robustness: keep the disposable solver cache under the coilEM user-data root, so COILEM_USER_DATA_ROOT also isolates it, instead of ~/.openem; prune it by a byte budget as well as a count; and drop the temporary-directory fallback, whose artifact ids could never resolve."
+    },
+    {
+      "base_commit": "033b36ae092e0fdb2ef9787edab0826dedcb44d1",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "66a98de53b28df0738b1367196c93663e4c79d48d92841e68dc4d2841e3b0305",
+      "reason": "Solver robustness: keep the disposable solver cache under the coilEM user-data root, so COILEM_USER_DATA_ROOT also isolates it, instead of ~/.openem; prune it by a byte budget as well as a count; and drop the temporary-directory fallback, whose artifact ids could never resolve."
+    },
+    {
+      "base_commit": "033b36ae092e0fdb2ef9787edab0826dedcb44d1",
+      "path": "docs/GETTING_STARTED.md",
+      "source_sha256": "0916da9bdb5186925208f50ecda2392a39ae1a27c537b5726e5875ee94961297",
+      "reason": "Solver robustness: document the solver cache under the user-data root and its byte budget."
+    },
+    {
+      "base_commit": "033b36ae092e0fdb2ef9787edab0826dedcb44d1",
+      "path": "docs/RUNTIME_SETTINGS.md",
+      "source_sha256": "e027001b569136ddc84752514b53e981fd9673ce9a6a7632442045b303fbe378",
+      "reason": "Solver robustness: document the solver cache under the user-data root and its byte budget."
+    },
+    {
+      "base_commit": "033b36ae092e0fdb2ef9787edab0826dedcb44d1",
+      "path": "docs/local_solve_workspace.md",
+      "source_sha256": "cc375276c3479c594162e79e9a28de1961ce387669027a94c29eb405459fc0de",
+      "reason": "Solver robustness: document the solver cache under the user-data root and its byte budget."
+    },
+    {
+      "base_commit": "033b36ae092e0fdb2ef9787edab0826dedcb44d1",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "ad4bd6cd3eae26509b9ff032f843f538a96ab6d265103536a779a0b7de999b26",
+      "reason": "Use solver-neutral solve-progress labels so Magneto2D solves no longer show Elmer stage names, and label the cogging sweep stage."
+    },
+    {
+      "base_commit": "033b36ae092e0fdb2ef9787edab0826dedcb44d1",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "e65e29526ed2b4e5d14f369143ceb0d075b910a013b440be8be17711734213a7",
+      "reason": "Stamp saved design files with the application version instead of a stale 0.1.1, and keep it aligned with the release-version test."
+    },
+    {
+      "base_commit": "033b36ae092e0fdb2ef9787edab0826dedcb44d1",
+      "path": "solvers/magneto2d/src/lib.rs",
+      "source_sha256": "a011f8e1d4cdd25479f1c4e83759c4fbb3ba64e31f8deadd301cf92e79471148",
+      "reason": "Solver robustness: reject invalid motor configurations and out-of-range mesh topology with clean errors instead of panics, and fail unconverged tight PCG, unconverged Picard and non-finite motor solves instead of reporting them as results. Converged results are unchanged."
+    },
+    {
+      "base_commit": "033b36ae092e0fdb2ef9787edab0826dedcb44d1",
+      "path": "solvers/magneto2d/src/motor.rs",
+      "source_sha256": "972bdac9599d05d1aba2ea8b5a958776df9151d2c85bbfe0d2ba530dd52fbab9",
+      "reason": "Solver robustness: reject invalid motor configurations and out-of-range mesh topology with clean errors instead of panics, and fail unconverged tight PCG, unconverged Picard and non-finite motor solves instead of reporting them as results. Converged results are unchanged."
+    },
+    {
+      "base_commit": "033b36ae092e0fdb2ef9787edab0826dedcb44d1",
+      "path": "solvers/magneto2d/src/solve/mesh_metadata.rs",
+      "source_sha256": "381f2e4e885605c63bd42ae8fa00e88e90ba53f3fa56e2e133814a732fb97260",
+      "reason": "Solver robustness: reject invalid motor configurations and out-of-range mesh topology with clean errors instead of panics, and fail unconverged tight PCG, unconverged Picard and non-finite motor solves instead of reporting them as results. Converged results are unchanged."
+    },
+    {
+      "base_commit": "033b36ae092e0fdb2ef9787edab0826dedcb44d1",
+      "path": "solvers/magneto2d/src/solve/mod.rs",
+      "source_sha256": "a4c9961ac5c3cf63f5e6b5e872b335b7df7ca60a231e2f67588336bd265fc55e",
+      "reason": "Solver robustness: reject invalid motor configurations and out-of-range mesh topology with clean errors instead of panics, and fail unconverged tight PCG, unconverged Picard and non-finite motor solves instead of reporting them as results. Converged results are unchanged."
+    },
+    {
+      "base_commit": "033b36ae092e0fdb2ef9787edab0826dedcb44d1",
+      "path": "solvers/magneto2d/src/solve/picard.rs",
+      "source_sha256": "79fffb31bb73ba160c13454e800ba03bc0dd2c306f425c60c15b541c7d6ddd9d",
+      "reason": "Solver robustness: reject invalid motor configurations and out-of-range mesh topology with clean errors instead of panics, and fail unconverged tight PCG, unconverged Picard and non-finite motor solves instead of reporting them as results. Converged results are unchanged."
+    },
+    {
+      "base_commit": "033b36ae092e0fdb2ef9787edab0826dedcb44d1",
+      "path": "solvers/magneto2d/src/solve/tests.rs",
+      "source_sha256": "68f00d7122fd7a40d19d6246a0c1a95a42159bdd10d1bef67567da9f8bd08aaa",
+      "reason": "Solver robustness: reject invalid motor configurations and out-of-range mesh topology with clean errors instead of panics, and fail unconverged tight PCG, unconverged Picard and non-finite motor solves instead of reporting them as results. Converged results are unchanged."
+    },
+    {
+      "base_commit": "033b36ae092e0fdb2ef9787edab0826dedcb44d1",
+      "path": "solvers/magneto2d/src/sparse.rs",
+      "source_sha256": "2132d3a32c12581cd2279c71372aca880efc50d06653d37c32de5eaad49dea3f",
+      "reason": "Solver robustness: reject invalid motor configurations and out-of-range mesh topology with clean errors instead of panics, and fail unconverged tight PCG, unconverged Picard and non-finite motor solves instead of reporting them as results. Converged results are unchanged."
+    },
+    {
+      "base_commit": "033b36ae092e0fdb2ef9787edab0826dedcb44d1",
+      "path": "tests/test_public_candidate.py",
+      "source_sha256": "b2e2881b6ad5583ee743cd6a7e25394d72e2199e969c2221cc2e5220248882a9",
+      "reason": "Stamp saved design files with the application version instead of a stale 0.1.1, and keep it aligned with the release-version test."
+    },
+    {
+      "base_commit": "033b36ae092e0fdb2ef9787edab0826dedcb44d1",
+      "path": "tests/test_solve_workspace.py",
+      "source_sha256": "6613367f5dc8dd4cd2800de671854d5231cfe36d2218b7226cf835faaa3084cc",
+      "reason": "Solver robustness: cover the solver-cache location and its count and byte pruning; re-solve a cached stator-current or PM-only field response when solve-cache cleanup has removed its frame artifacts, instead of serving broken frame references."
+    },
+    {
+      "base_commit": "033b36ae092e0fdb2ef9787edab0826dedcb44d1",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "968e535c435a0362bf317db8c7671da0d6875294932849ea155f1c3db15a749b",
+      "reason": "Ignore macOS .DS_Store Finder metadata in git and in the publication check. No runtime changes."
+    },
+    {
+      "base_commit": "033b36ae092e0fdb2ef9787edab0826dedcb44d1",
+      "path": "backend/field_composition.py",
+      "source_sha256": "94f1392d7bbd1772042282c76f627289528004afb611ce67cb33e6308d85f9db",
+      "reason": "Solver robustness: re-solve a cached stator-current or PM-only field response when solve-cache cleanup has removed its frame artifacts, instead of serving broken frame references."
     }
   ]
 }

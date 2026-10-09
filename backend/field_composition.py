@@ -9,7 +9,7 @@ import threading
 import time
 from collections import OrderedDict
 from concurrent.futures import Future
-from typing import Any, Callable
+from typing import Any, Callable, Iterator
 
 from backend.field_artifacts import resolve_solve_cache_artifact_id
 from backend.models import MotorConfig, SolveOptionsConfig
@@ -188,6 +188,34 @@ def _slim_armature_frame(frame: Any) -> dict[str, Any]:
     return payload
 
 
+def _artifact_ids(value: Any) -> Iterator[str]:
+    if isinstance(value, dict):
+        artifact_id = value.get("artifact_id")
+        if isinstance(artifact_id, str) and artifact_id:
+            yield artifact_id
+        for child in value.values():
+            yield from _artifact_ids(child)
+    elif isinstance(value, list):
+        for child in value:
+            yield from _artifact_ids(child)
+
+
+def _cached_artifacts_available(response: dict[str, Any]) -> bool:
+    """Whether every solve-cache file a cached response references still exists.
+
+    Rolling solve-cache cleanup can delete a directory these in-memory
+    responses still point at; such an entry must be recomputed, not served.
+    """
+
+    for artifact_id in _artifact_ids(response.get("frames")):
+        try:
+            if not resolve_solve_cache_artifact_id(artifact_id).is_file():
+                return False
+        except ValueError:
+            return False
+    return True
+
+
 def clear_armature_field_cache() -> None:
     """Clear the small in-memory response cache (used by focused tests)."""
 
@@ -222,6 +250,9 @@ def solve_armature_field_sweep(
     owns_solve = False
     with _armature_cache_lock:
         cached = _armature_cache.get(cache_key)
+        if cached is not None and not _cached_artifacts_available(cached):
+            del _armature_cache[cache_key]
+            cached = None
         if cached is not None:
             _armature_cache.move_to_end(cache_key)
             return {**cached, "cache_hit": True}
@@ -288,6 +319,9 @@ def solve_pm_field_sweep(
     owns_solve = False
     with _pm_cache_lock:
         cached = _pm_cache.get(cache_key)
+        if cached is not None and not _cached_artifacts_available(cached):
+            del _pm_cache[cache_key]
+            cached = None
         if cached is not None:
             _pm_cache.move_to_end(cache_key)
             return {**cached, "cache_hit": True}

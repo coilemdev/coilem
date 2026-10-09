@@ -285,7 +285,7 @@ The included smoke tool runs real coarse Gmsh meshes and Magneto2D motor
 FastAPI application. Motor runs are saved in your normal Previous runs storage
 and count toward its budget. Set `COILEM_USER_DATA_ROOT` to a separate test
 directory before invoking the tool if you want separate motor-run history;
-the solver cache remains separate and is not redirected by that setting:
+the solver cache moves with that setting:
 
 On Windows:
 

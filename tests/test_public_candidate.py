@@ -203,6 +203,8 @@ def test_release_versions_align() -> None:
     assert 'version = "0.2.0"' in pyproject
     assert package["version"] == "0.2.0"
     assert lock["version"] == "0.2.0"
+    design_file = (REPO_ROOT / "frontend" / "src" / "public" / "designFile.ts").read_text(encoding="utf-8")
+    assert "COILEM_APP_VERSION = '0.2.0'" in design_file
     magneto2d = (REPO_ROOT / "solvers" / "magneto2d" / "Cargo.toml").read_text(
         encoding="utf-8"
     )

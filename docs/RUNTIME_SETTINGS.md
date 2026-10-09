@@ -5,8 +5,9 @@ end in `.coilem`. Existing `.openem` files and lower-case schema keys remain com
 
 | Setting | Purpose |
 | --- | --- |
-| `COILEM_USER_DATA_ROOT` | Override durable motor-run storage; excludes the solver cache. |
+| `COILEM_USER_DATA_ROOT` | Override durable motor-run storage and the solver cache. |
 | `COILEM_SOLVE_WORKSPACE_MAX_BYTES` | Set the durable workspace budget; excludes the solver cache. |
+| `COILEM_SOLVE_CACHE_MAX_BYTES` | Set the solver-cache byte budget used by rolling cleanup; defaults to 2 GiB. |
 | `COILEM_LOCAL_API_PORT` | Select the loopback port when using the `coilem-serve` entry point. |
 | `VITE_COILEM_LOCAL_API_BASE` | Select a loopback backend URL for the frontend build/dev server. |
 | `COILEM_LOCAL_UI_ORIGIN` | Allow one additional HTTP loopback UI origin with an explicit port. |

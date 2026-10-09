@@ -122,6 +122,7 @@ where
 
     let raw = fs::read_to_string(&options.input_path)?;
     let config: MotorConfig = serde_json::from_str(&raw)?;
+    config.validate()?;
     run_config::apply_config_refinement_flags(&config);
     let solve_mesh_artifact = if let Some(path) = options.mesh_input_path.as_deref() {
         let mesh_raw = fs::read_to_string(path)?;

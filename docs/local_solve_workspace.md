@@ -1,17 +1,19 @@
 # Local solve workspace
 
-coilEM stores completed public motor solves separately from its disposable solver
-cache. The default root follows the host operating system:
+coilEM stores completed public motor solves and its disposable solver cache under
+one user-data root. The default root follows the host operating system:
 
 - macOS: `~/Library/Application Support/coilEM`
 - Windows: `%LOCALAPPDATA%\coilEM`
 - Linux: `$XDG_DATA_HOME/coilem`, or `~/.local/share/coilem`
 
 `COILEM_USER_DATA_ROOT` may override the root for a portable installation or
-test environment. This override applies to durable runs, not the separate
-solver cache described below. The application creates:
+test environment. This override moves both durable runs and the solver cache
+described below. The application creates:
 
 ```text
+solve_cache/
+  magneto2d-<timestamp>/
 solves/
   <project>/
     <run-id>/
@@ -76,14 +78,16 @@ older completed run or retained incomplete diagnostic and retry without finding
 the data directory manually. The refreshed storage total is returned after
 deletion. coilEM never silently prunes a completed run.
 
-The separate solver cache contains disposable meshing and field-solve
-intermediates at `~/.openem/solve_cache`, with `<system-temp>/openem/solve_cache`
-as the motor solver's fallback if that directory cannot be created. Neither
-`COILEM_USER_DATA_ROOT` nor the durable workspace's 10 GiB budget covers this
-cache, and it is excluded from the storage meter. Before creating a new
-`magneto2d-*` directory, cleanup keeps the ten newest existing matching
-directories; the new run can bring that count to eleven. This is a count
-limit, not a byte limit. Its rolling cleanup does not remove durable run files.
+The solver cache contains disposable meshing and field-solve intermediates in
+`solve_cache/` under the same root. The durable workspace's 10 GiB budget does
+not cover it, and it is excluded from the storage meter. Before creating a new
+`magneto2d-*` directory, cleanup keeps at most the ten newest existing matching
+directories whose combined size fits `COILEM_SOLVE_CACHE_MAX_BYTES` (2 GiB by
+default). The newest existing directory is always kept, because a failed or
+cancelled solve restores the previous result, and the new run can exceed the
+budget until the next cleanup. Its rolling cleanup does not remove durable run
+files. Earlier releases wrote this cache to `~/.openem/solve_cache`; coilEM no
+longer uses that directory, and it can be deleted.
 Heavy artifacts referenced by a completed public result are copied into that
 run and addressed by root-confined opaque IDs, so clearing the cache does not
 break an archived run.
