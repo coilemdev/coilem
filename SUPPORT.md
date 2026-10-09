@@ -15,6 +15,9 @@ Python/Node/Rust/Gmsh versions, exact command or UI path, sanitized input when
 possible, expected result, actual result, and relevant logs. Do not attach
 private designs unless you are comfortable making them public.
 
-GitHub Issues is public. Suspected vulnerabilities must instead use the private
+Use [GitHub Discussions](https://github.com/coilemdev/coilem/discussions) for
+usage questions, ideas, and sharing what you built.
+
+GitHub Issues and Discussions are public. Suspected vulnerabilities must instead use the private
 route in [SECURITY.md](SECURITY.md). There is no guaranteed first-response or
 fix deadline.

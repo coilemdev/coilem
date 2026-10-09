@@ -26,6 +26,7 @@ dependencies = [
 ]
 
 [project.urls]
+Homepage = "https://coilem.com"
 Repository = "https://github.com/coilemdev/coilem"
 
 [project.optional-dependencies]
