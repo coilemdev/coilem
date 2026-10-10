@@ -2310,8 +2310,8 @@
     },
     {
       "path": "tests/test_benchmark_suite.py",
-      "bytes": 15034,
-      "sha256": "4eb4d7eba556b9d0f7e3ed6afad5bc24a863ec5fd9f2120528505428d28abb13"
+      "bytes": 15212,
+      "sha256": "a9894da54d69dca07ee5842188560bea84bc8164f872fd166bd635422c5c2f24"
     },
     {
       "path": "tests/test_halbach_api.py",
@@ -2420,8 +2420,8 @@
     },
     {
       "path": "tools/benchmark_suite/cli.py",
-      "bytes": 15634,
-      "sha256": "cc8375dbf3e83231eecc0e0416ab18607a68affbbac5df1ce9e3e83d5ce7dca3"
+      "bytes": 15945,
+      "sha256": "2cafd97e1c3886470fb3780427679295ddea56d49468ee516e51fbd41b2a04d5"
     },
     {
       "path": "tools/benchmark_suite/contract.py",
