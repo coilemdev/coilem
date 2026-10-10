@@ -14,6 +14,8 @@ Fresh public native measurements use the OpenEM v0.2.5 matrix geometry and opera
 | C - Distributed Winding | 1 UNSUPPORTED, 4 PASS |
 | D - BLDC | 3 PASS; 42 / 42 gates |
 
+Phase summary colors: green for all PASS; yellow for mixed results or missing coverage; red when more than 50% of recorded fixtures FAIL. These colors retain the recorded numerical verdicts.
+
 ## Comparison policy
 
 Historical pairwise bands: mean torque 8% PASS / 15% YELLOW; Back-EMF fundamental and peak 10% PASS / 15% YELLOW. For reference mean torque below 0.01 N m, use 0.01 / 0.02 N m absolute bands. Missing values make a row incomplete. Actual WST, native meshing and matching angular grids are required. Waveform NRMSE/correlation are diagnostics. Declared reference mapping: angle = -angle modulo 360; torque = -torque; omega_FEMM = -omega_public; voltage = -voltage at the reflected angle; gamma_internal = 180 - gamma_public. Voltage polarity follows the speed transformation. Partial native grids use matching samples from the full reference cycle.

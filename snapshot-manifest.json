@@ -521,22 +521,22 @@
     {
       "path": "benchmarks/main-20261009-bad71d9/artifact_manifest.json",
       "bytes": 15433,
-      "sha256": "64a442e78d9da1b48fec8a65f0d94a39e5947c8c4caccaaec218d396f154eee0"
+      "sha256": "79ddbce02b693e3ef16d9c8d173ad7a443046a0d8afa87c1e1289774368423ed"
     },
     {
       "path": "benchmarks/main-20261009-bad71d9/benchmark_report.md",
-      "bytes": 14696,
-      "sha256": "b48421f451119b82e3cbf1c25dea7db9ced7083856e11615d2c266ce9afca570"
+      "bytes": 14888,
+      "sha256": "c3b60d29df09a42218c05306884ffa8143a23d13c5db0671d9d4f0e5652867c6"
     },
     {
       "path": "benchmarks/main-20261009-bad71d9/benchmark_summary.json",
-      "bytes": 1049458,
-      "sha256": "4b9e6e06259c45f61ba6ae3733e315006df67303ccf70ed5cd0fb72e79592859"
+      "bytes": 1049727,
+      "sha256": "6c5c7c63c0f2f6e89b9b02425390b66d570adc0f6b73104099af8b9303e5267a"
     },
     {
       "path": "benchmarks/main-20261009-bad71d9/coilem_benchmark_report.html",
-      "bytes": 294138,
-      "sha256": "b70068ee04e9ca7b45db4db71fa513dbb9c4294a62bb46488e0e5b2c1318a82c"
+      "bytes": 294440,
+      "sha256": "b77ecd12a93dfc0c2498e8ad47ab8bcfedc3c7c13f7bd45d9e1a8f30fc6ed4ca"
     },
     {
       "path": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_14p12s_high_pole.json",
@@ -790,8 +790,8 @@
     },
     {
       "path": "benchmarks/main-20261009-bad71d9/publication.json",
-      "bytes": 862,
-      "sha256": "cd0e22f9607c16950a52ac85a624d56676d3f116e08866ba23a9f0e67cadf7b2"
+      "bytes": 960,
+      "sha256": "7e5c52f827d2c40eda16dc45a91376e0bf4c32d19563a26e0a3dac4b08ef8548"
     },
     {
       "path": "benchmarks/main-20261009-bad71d9/reference_conventions.md",

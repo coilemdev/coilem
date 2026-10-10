@@ -30796,7 +30796,8 @@
       "local path/environment label aliases",
       "omit machine-specific launch commands and PIDs",
       "Phase D labels the completed BLDC suite; thermal is a separate unsupported capability",
-      "Consistent A/B/C/D naming and phase topology labels"
+      "Consistent A/B/C/D naming and phase topology labels",
+      "Phase summary colors use all-pass/mixed/majority-fail rules; Phase D section follows A/B/C"
     ],
     "numerical_values_and_verdicts_changed": false,
     "scripts_included": false,
@@ -30817,5 +30818,17 @@
     "B": "B - IPM",
     "C": "C - Distributed Winding",
     "D": "D - BLDC"
+  },
+  "phase_order": [
+    "A",
+    "B",
+    "C",
+    "D"
+  ],
+  "phase_summary_presentation": {
+    "A": "PASS",
+    "B": "YELLOW",
+    "C": "YELLOW",
+    "D": "PASS"
   }
 }
