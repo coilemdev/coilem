@@ -1,0 +1,22 @@
+{
+  "report_version": "1.1",
+  "measured_application_version": "0.2.0",
+  "measured_commit": "bad71d9cbcb10bf2daa293c5577f9d9e26778a12",
+  "reference_commit": "8b95decda27d475ddbb75e99d92744ebc8e53b28",
+  "packaged_at": "2026-10-10T12:53:21.244449+00:00",
+  "original_report_artifact_manifest_sha256": "face3e0b9080c97d8674866697e8e4aa428cfe998b90cec0850998240a5f177a",
+  "changes": [
+    "report revision label",
+    "portable fixture links",
+    "local path/environment label aliases",
+    "omit machine-specific launch commands and PIDs",
+    "Phase D labels the completed BLDC suite; thermal is a separate unsupported capability"
+  ],
+  "numerical_values_and_verdicts_changed": false,
+  "scripts_included": false,
+  "local_only_formats": [
+    "PDF",
+    "CSV"
+  ],
+  "phase_labels_changed": true
+}

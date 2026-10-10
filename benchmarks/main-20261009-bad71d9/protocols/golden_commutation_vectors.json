@@ -1,0 +1,64 @@
+{
+  "schema": "openem.bldc_six_step_golden_vectors/v1",
+  "rotation_convention": "public_clockwise_positive",
+  "phase_connection": "wye",
+  "current_definition": "conducting_phase_plateau_A",
+  "plateau_current_A": 10.0,
+  "boundary_epsilon_deg": 1e-9,
+  "resolver": "sector=floor(wrap_360(rotor_electrical_angle_deg+commutation_advance_deg)/60)",
+  "sector_table_A": [
+    [10.0, -10.0, 0.0],
+    [0.0, -10.0, 10.0],
+    [-10.0, 0.0, 10.0],
+    [-10.0, 10.0, 0.0],
+    [0.0, 10.0, -10.0],
+    [10.0, 0.0, -10.0]
+  ],
+  "vectors": [
+    {"id": "center_0", "rotor_electrical_angle_deg": 30.0, "commutation_advance_deg": 0.0, "sector": 0, "phase_current_A": [10.0, -10.0, 0.0]},
+    {"id": "center_1", "rotor_electrical_angle_deg": 90.0, "commutation_advance_deg": 0.0, "sector": 1, "phase_current_A": [0.0, -10.0, 10.0]},
+    {"id": "center_2", "rotor_electrical_angle_deg": 150.0, "commutation_advance_deg": 0.0, "sector": 2, "phase_current_A": [-10.0, 0.0, 10.0]},
+    {"id": "center_3", "rotor_electrical_angle_deg": 210.0, "commutation_advance_deg": 0.0, "sector": 3, "phase_current_A": [-10.0, 10.0, 0.0]},
+    {"id": "center_4", "rotor_electrical_angle_deg": 270.0, "commutation_advance_deg": 0.0, "sector": 4, "phase_current_A": [0.0, 10.0, -10.0]},
+    {"id": "center_5", "rotor_electrical_angle_deg": 330.0, "commutation_advance_deg": 0.0, "sector": 5, "phase_current_A": [10.0, 0.0, -10.0]},
+
+    {"id": "boundary_0_before", "rotor_electrical_angle_deg": -1e-9, "commutation_advance_deg": 0.0, "sector": 5, "phase_current_A": [10.0, 0.0, -10.0]},
+    {"id": "boundary_0_exact", "rotor_electrical_angle_deg": 0.0, "commutation_advance_deg": 0.0, "sector": 0, "phase_current_A": [10.0, -10.0, 0.0]},
+    {"id": "boundary_0_after", "rotor_electrical_angle_deg": 1e-9, "commutation_advance_deg": 0.0, "sector": 0, "phase_current_A": [10.0, -10.0, 0.0]},
+
+    {"id": "boundary_60_before", "rotor_electrical_angle_deg": 59.999999999, "commutation_advance_deg": 0.0, "sector": 0, "phase_current_A": [10.0, -10.0, 0.0]},
+    {"id": "boundary_60_exact", "rotor_electrical_angle_deg": 60.0, "commutation_advance_deg": 0.0, "sector": 1, "phase_current_A": [0.0, -10.0, 10.0]},
+    {"id": "boundary_60_after", "rotor_electrical_angle_deg": 60.000000001, "commutation_advance_deg": 0.0, "sector": 1, "phase_current_A": [0.0, -10.0, 10.0]},
+
+    {"id": "boundary_120_before", "rotor_electrical_angle_deg": 119.999999999, "commutation_advance_deg": 0.0, "sector": 1, "phase_current_A": [0.0, -10.0, 10.0]},
+    {"id": "boundary_120_exact", "rotor_electrical_angle_deg": 120.0, "commutation_advance_deg": 0.0, "sector": 2, "phase_current_A": [-10.0, 0.0, 10.0]},
+    {"id": "boundary_120_after", "rotor_electrical_angle_deg": 120.000000001, "commutation_advance_deg": 0.0, "sector": 2, "phase_current_A": [-10.0, 0.0, 10.0]},
+
+    {"id": "boundary_180_before", "rotor_electrical_angle_deg": 179.999999999, "commutation_advance_deg": 0.0, "sector": 2, "phase_current_A": [-10.0, 0.0, 10.0]},
+    {"id": "boundary_180_exact", "rotor_electrical_angle_deg": 180.0, "commutation_advance_deg": 0.0, "sector": 3, "phase_current_A": [-10.0, 10.0, 0.0]},
+    {"id": "boundary_180_after", "rotor_electrical_angle_deg": 180.000000001, "commutation_advance_deg": 0.0, "sector": 3, "phase_current_A": [-10.0, 10.0, 0.0]},
+
+    {"id": "boundary_240_before", "rotor_electrical_angle_deg": 239.999999999, "commutation_advance_deg": 0.0, "sector": 3, "phase_current_A": [-10.0, 10.0, 0.0]},
+    {"id": "boundary_240_exact", "rotor_electrical_angle_deg": 240.0, "commutation_advance_deg": 0.0, "sector": 4, "phase_current_A": [0.0, 10.0, -10.0]},
+    {"id": "boundary_240_after", "rotor_electrical_angle_deg": 240.000000001, "commutation_advance_deg": 0.0, "sector": 4, "phase_current_A": [0.0, 10.0, -10.0]},
+
+    {"id": "boundary_300_before", "rotor_electrical_angle_deg": 299.999999999, "commutation_advance_deg": 0.0, "sector": 4, "phase_current_A": [0.0, 10.0, -10.0]},
+    {"id": "boundary_300_exact", "rotor_electrical_angle_deg": 300.0, "commutation_advance_deg": 0.0, "sector": 5, "phase_current_A": [10.0, 0.0, -10.0]},
+    {"id": "boundary_300_after", "rotor_electrical_angle_deg": 300.000000001, "commutation_advance_deg": 0.0, "sector": 5, "phase_current_A": [10.0, 0.0, -10.0]},
+
+    {"id": "boundary_360_before", "rotor_electrical_angle_deg": 359.999999999, "commutation_advance_deg": 0.0, "sector": 5, "phase_current_A": [10.0, 0.0, -10.0]},
+    {"id": "boundary_360_exact", "rotor_electrical_angle_deg": 360.0, "commutation_advance_deg": 0.0, "sector": 0, "phase_current_A": [10.0, -10.0, 0.0]},
+    {"id": "boundary_360_after", "rotor_electrical_angle_deg": 360.000000001, "commutation_advance_deg": 0.0, "sector": 0, "phase_current_A": [10.0, -10.0, 0.0]},
+
+    {"id": "negative_wrapped", "rotor_electrical_angle_deg": -60.0, "commutation_advance_deg": 0.0, "sector": 5, "phase_current_A": [10.0, 0.0, -10.0]},
+    {"id": "multi_turn_wrapped", "rotor_electrical_angle_deg": 750.0, "commutation_advance_deg": 0.0, "sector": 0, "phase_current_A": [10.0, -10.0, 0.0]},
+
+    {"id": "positive_advance_before", "rotor_electrical_angle_deg": 49.999999999, "commutation_advance_deg": 10.0, "sector": 0, "phase_current_A": [10.0, -10.0, 0.0]},
+    {"id": "positive_advance_exact", "rotor_electrical_angle_deg": 50.0, "commutation_advance_deg": 10.0, "sector": 1, "phase_current_A": [0.0, -10.0, 10.0]},
+    {"id": "positive_advance_after", "rotor_electrical_angle_deg": 50.000000001, "commutation_advance_deg": 10.0, "sector": 1, "phase_current_A": [0.0, -10.0, 10.0]},
+    {"id": "negative_advance_before", "rotor_electrical_angle_deg": 69.999999999, "commutation_advance_deg": -10.0, "sector": 0, "phase_current_A": [10.0, -10.0, 0.0]},
+    {"id": "negative_advance_exact", "rotor_electrical_angle_deg": 70.0, "commutation_advance_deg": -10.0, "sector": 1, "phase_current_A": [0.0, -10.0, 10.0]},
+    {"id": "positive_advance_wrap", "rotor_electrical_angle_deg": 355.0, "commutation_advance_deg": 10.0, "sector": 0, "phase_current_A": [10.0, -10.0, 0.0]},
+    {"id": "negative_advance_wrap", "rotor_electrical_angle_deg": 5.0, "commutation_advance_deg": -10.0, "sector": 5, "phase_current_A": [10.0, 0.0, -10.0]}
+  ]
+}
