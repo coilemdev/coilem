@@ -226,7 +226,7 @@ def execute(args):
             job.update(status="RUNNING", started_at=now())
             write(path, manifest)
             print(f"{job['phase']} / {job['case_id']} / {job['stage']}: starting native solve", flush=True)
-            env = dict(os.environ, PYTHONUNBUFFERED="1", PYTHONUTF8="1")
+            env = dict(os.environ, PYTHONUNBUFFERED="1", PYTHONUTF8="1", COILEM_USER_DATA_ROOT=str(directory / "native-runtime"))
             env.pop("PYTHONPATH", None)
             with (directory / "worker.log").open("ab") as log:
                 process = subprocess.Popen(

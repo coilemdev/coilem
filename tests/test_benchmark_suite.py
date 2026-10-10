@@ -25,6 +25,22 @@ def historical(case):
     return read(HISTORICAL / (prefix + case["id"] + ".json"))
 
 
+def assert_same_metrics(actual, expected):
+    """Allow platform rounding in derived metrics, never in verdicts or limits."""
+    if isinstance(expected, float):
+        assert actual == pytest.approx(expected, rel=1e-12, abs=1e-12)
+    elif isinstance(expected, dict):
+        assert actual.keys() == expected.keys()
+        for key in expected:
+            assert_same_metrics(actual[key], expected[key])
+    elif isinstance(expected, list):
+        assert len(actual) == len(expected)
+        for value, stored in zip(actual, expected, strict=True):
+            assert_same_metrics(value, stored)
+    else:
+        assert actual == expected
+
+
 @pytest.mark.parametrize("case", SPECIFICATION["cases"], ids=lambda c: c["id"])
 def test_historical_verdicts_and_gates(case):
     recorded = historical(case)
@@ -32,8 +48,10 @@ def test_historical_verdicts_and_gates(case):
         raw = {k: {"result": v} for k, v in recorded["measurements"].items()}
         evaluated = evaluate_bldc(PROTOCOLS[case["id"]], raw, GOLDEN)
         assert len(evaluated["gates"]) == 14
-        assert evaluated["gates"] == recorded["evaluation"]["gates"]
-        assert evaluated["results"] == recorded["evaluation"]["results"]
+        for gate, stored in zip(evaluated["gates"], recorded["evaluation"]["gates"], strict=True):
+            assert {k: v for k, v in gate.items() if k != "value"} == {k: v for k, v in stored.items() if k != "value"}
+            assert_same_metrics(gate["value"], stored["value"])
+        assert_same_metrics(evaluated["results"], recorded["evaluation"]["results"])
         assert evaluated["status"] == "PASS"
     elif not recorded.get("candidate"):
         from backend.public_policy import PublicConfigError, parse_public_solve_request
@@ -46,7 +64,7 @@ def test_historical_verdicts_and_gates(case):
         assert evaluated["gates"] == recorded["comparison"]["gates"]
         assert evaluated["status"] == recorded["comparison"]["status"]
         for name in ("average_delta_pct", "bemf_fundamental_delta_pct", "bemf_peak_delta_pct", "torque_waveform", "bemf_waveform"):
-            assert evaluated[name] == recorded["comparison"][name]
+            assert_same_metrics(evaluated[name], recorded["comparison"][name])
 
 
 def test_frozen_bundle_matches_all_inputs():
@@ -267,6 +285,7 @@ def test_orchestrator_resume_and_report_only_preserve_completed_jobs(tmp_path, m
             launches.append(command)
             request_path = Path(command[command.index("--request") + 1])
             output_path = Path(command[command.index("--output") + 1])
+            assert kwargs["env"]["COILEM_USER_DATA_ROOT"] == str(output_path.parent / "native-runtime")
             request = read(request_path)
             if phase == "A":
                 result = recorded["candidate"]

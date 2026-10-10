@@ -34,7 +34,6 @@ def measure(args):
     start = time.perf_counter()
     data = {"schema": "coilem.native_measurement/v1", "started_at": now(), "request_sha256": sha(args.request)}
     try:
-        from backend import field_artifacts
         from backend.public_policy import parse_public_solve_request
         from backend.solver import Magneto2DSolver
         from backend.solver_environment import ISOLATED_RUNTIME
@@ -48,7 +47,6 @@ def measure(args):
         config, _, solver = parse_public_solve_request(request["config"])
         if solver != "magneto2d":
             raise ValueError("This suite measures only public Magneto2D")
-        field_artifacts.SOLVE_CACHE_ROOT = args.output.parent / "native-cache"
         measured = Magneto2DSolver(launch_surface=True).solve(config, on_progress=lambda *a, **k: print(*a[:4], flush=True))
         data["result"] = measured.model_dump(
             mode="json", include={"summary", "torque_waveform", "back_emf_waveform", "phase_current_waveform", "solve_metadata"}
