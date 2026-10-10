@@ -12,20 +12,30 @@ These records keep their tested runtime identities explicit.
 ## Qualification status
 
 The maintainers accept [benchmark report v1.1](../benchmarks/main-20261009-bad71d9/benchmark_report.md)
-as the numerical qualification record for this preview. A motor family is
-qualified when every registered v1.1 fixture of that family passes its FEMM
-parity gates. Failed and unsupported outcomes remain visible and are not
+as the numerical qualification record for this preview. Qualification
+applies to the tested combinations of rotor, winding and excitation below. A
+combination is qualified when every registered v1.1 fixture for it passes its
+FEMM parity gates. Failed and unsupported outcomes remain visible and are not
 waived by the aggregate pass count.
 
-| Motor family | v1.1 fixtures | Outcome | Status |
-| --- | --- | --- | --- |
-| SPM, concentrated winding, sinusoidal current | Phase A: ten operating points on 4-pole/12-slot and 8-pole/12-slot designs | 10 PASS | Qualified |
-| SPM, ideal six-step 120-degree wye (BLDC) | Phase D: 4-pole, 8-pole and 14-pole 12-slot designs | 3 PASS; 42/42 gates | Qualified |
-| SPM, distributed and chorded windings | Phase C: 8p/24s, 8p/48s, 8p/48s 5/6-chorded, 12p/36s | 4 PASS | Qualified |
-| IPM, flat buried | Phase B: six fixtures | 6 PASS | Qualified |
-| IPM, V-shape | Phase B: six fixtures | 4 PASS, 2 FAIL | Experimental |
-| Multi-layer IPM (Prius 2004 fixture) | Phase C | Rejected by the public policy | Unsupported |
-| Halbach, lessons and generic field mode | Outside A/B/C/D | Not measured | Experimental |
+| Rotor | Winding | Excitation | v1.1 fixtures | Outcome | Status |
+| --- | --- | --- | --- | --- | --- |
+| SPM | Single-layer concentrated | Sinusoidal | Phase A: ten operating points on 4-pole/12-slot and 8-pole/12-slot designs | 10 PASS | Qualified |
+| SPM | Single-layer concentrated | Ideal six-step 120-degree wye (BLDC) | Phase D: 4-pole, 8-pole and 14-pole 12-slot designs | 3 PASS; 42/42 gates | Qualified |
+| SPM | Two-layer distributed, full pitch or 5/6 short pitch | Sinusoidal | Phase C: 8p/24s, 8p/48s, 8p/48s 5/6-chorded, 12p/36s | 4 PASS | Qualified |
+| Flat-buried IPM | Single-layer concentrated | Sinusoidal | Phase B: six fixtures | 6 PASS | Qualified |
+| V-shape IPM | Single-layer concentrated | Sinusoidal | Phase B: six fixtures | 4 PASS, 2 FAIL | Experimental |
+| Multi-layer IPM (Prius 2004 fixture) | - | - | Phase C | Rejected by the public policy | Unsupported |
+
+The application also accepts combinations that v1.1 did not measure. They are
+experimental:
+
+- SPM with distributed windings under ideal six-step excitation;
+- SPM with single-layer distributed windings;
+- flat-buried or V-shape IPM with distributed windings; and
+- Halbach, lessons and generic field mode, which are outside A/B/C/D.
+
+Ideal six-step excitation is available for SPM only.
 
 Qualified means agreement with FEMM within the registered gates for the
 measured fixtures, under these conditions: Magneto2D 0.3.2, native Gmsh meshes
@@ -37,10 +47,11 @@ near-zero references) and Back-EMF fundamental and peak within 10%. The BLDC
 fixtures pass fourteen gates each, covering torque parity, commanded currents,
 commutation sequence, angular refinement and low-current power balance.
 
-The bundled **Example SPM 8p/12s** design belongs to the qualified
-concentrated-winding SPM family; it is not itself a registered fixture.
-Designs in a qualified family but outside the measured geometry range use the
-same solver path, but their accuracy has not been measured individually. Check
+The bundled **Example SPM 8p/12s** design uses a qualified combination
+(SPM with a single-layer concentrated winding, under sinusoidal or six-step
+excitation); it is not itself a registered fixture. Designs in a qualified
+combination but outside the measured geometry range use the same solver path,
+but their accuracy has not been measured individually. Check
 mesh and angular convergence before relying on small differences.
 
 The deep-apex V-shape fixture fails mean-torque parity (36.02% difference).
@@ -71,6 +82,11 @@ A/B/C/D. See [Numerical evidence](NUMERICAL_EVIDENCE.md#public-main-snapshot-ben
 for the measured values and interpretation limits.
 
 ### Rerun on public main `45e0a5c`
+
+The [rerun evidence package](../benchmarks/main-20261010-45e0a5c-rerun/README.md)
+publishes this run's per-fixture results, gates, native inputs and runtime
+identity, including the source and Magneto2D binary hashes. The v1.1 package
+is unchanged.
 
 On 2026-10-10 the same harness and protocol (1.0.0) measured public main
 `45e0a5c7662ade04a4be5519b7e5bac771a6122f` on macOS 15.7.3 arm64 (Python

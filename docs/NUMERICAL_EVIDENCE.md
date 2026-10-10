@@ -9,9 +9,10 @@ native Gmsh meshes and weighted-stress torque. The separately pinned reference
 commit is `8b95decda27d475ddbb75e99d92744ebc8e53b28`. The candidate and
 reference are distinct runtime identities. This report is the numerical
 qualification record for the 0.2.0 developer preview; [Validation](VALIDATION.md#qualification-status)
-lists the qualified motor families and their limits. A rerun of the same protocol on public
+lists the qualified rotor, winding and excitation combinations and their limits. A rerun of the same protocol on public
 main `45e0a5c` against the retained references reproduced every verdict; see
-[the rerun record](VALIDATION.md#rerun-on-public-main-45e0a5c).
+[the rerun record](VALIDATION.md#rerun-on-public-main-45e0a5c) and its
+[evidence package](../benchmarks/main-20261010-45e0a5c-rerun/README.md).
 
 Read the [HTML report](../benchmarks/main-20261009-bad71d9/coilem_benchmark_report.html)
 (download and open locally for its plots), [machine-readable summary](../benchmarks/main-20261009-bad71d9/benchmark_summary.json),

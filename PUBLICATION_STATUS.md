@@ -2,8 +2,9 @@
 
 The release is **coilEM 0.2.0 Developer Preview**, with **Magneto2D 0.3.2**.
 Its numerical qualification is the published [A/B/C/D benchmark report
-v1.1](benchmarks/main-20261009-bad71d9/benchmark_report.md): SPM and
-flat-buried IPM motors are qualified, and V-shape IPM remains experimental.
+v1.1](benchmarks/main-20261009-bad71d9/benchmark_report.md). It qualifies the
+tested SPM and flat-buried IPM combinations listed in [Validation](docs/VALIDATION.md#qualification-status);
+V-shape IPM and untested combinations remain experimental.
 It is source software without an installer. Passing CI does not establish
 engineering accuracy or a supported operating-system matrix.
 

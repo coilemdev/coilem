@@ -21,8 +21,8 @@ limitations.
 | Area | Developer-preview boundary |
 | --- | --- |
 | Physics | 2D magnetostatic FEM with nonlinear electrical steel |
-| Qualified motor paths | SPM (concentrated or distributed windings; sinusoidal or ideal six-step) and flat-buried IPM, per [benchmark report v1.1](../benchmarks/main-20261009-bad71d9/benchmark_report.md) |
-| Experimental motor paths | V-shape IPM (two of six v1.1 fixtures fail) |
+| Qualified motor paths | Per [benchmark report v1.1](../benchmarks/main-20261009-bad71d9/benchmark_report.md): SPM with concentrated windings under sinusoidal or ideal six-step current; SPM with two-layer distributed windings under sinusoidal current; flat-buried IPM with concentrated windings under sinusoidal current |
+| Experimental motor paths | V-shape IPM (two of six v1.1 fixtures fail), and accepted combinations v1.1 did not measure, such as six-step with distributed windings or IPM with distributed windings |
 | Mesh producer | Native Gmsh only |
 | Concentrated windings | Single layer |
 | Distributed windings | Balanced one- or two-layer star-of-slots layouts with `q >= 1`; explicit short pitch is limited to supported integer-`q` layouts |

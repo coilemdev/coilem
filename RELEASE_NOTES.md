@@ -12,12 +12,20 @@ Magneto2D with fresh, matched FEMM references across 30 fixtures: 27 PASS,
 2 FAIL and 1 unsupported. See [Validation](docs/VALIDATION.md#qualification-status)
 for the gates and limits.
 
-- **Qualified:** SPM motors with concentrated or distributed windings, under
-  sinusoidal current or ideal six-step excitation, and flat-buried IPM motors.
-  Every v1.1 fixture in these families passes, using M350-50A steel, native
-  Gmsh meshing and local Magneto2D execution.
-- **Experimental:** V-shape IPM (two of six fixtures fail), and Halbach,
-  tutorial and generic-field workflows, which the benchmark does not measure.
+- **Qualified:** these tested combinations, each with every v1.1 fixture
+  passing, using M350-50A steel, native Gmsh meshing and local Magneto2D:
+  - SPM with single-layer concentrated windings, under sinusoidal current
+    (Phase A) or ideal six-step excitation (Phase D);
+  - SPM with two-layer distributed windings, full pitch or 5/6 short pitch,
+    under sinusoidal current (Phase C); and
+  - flat-buried IPM with single-layer concentrated windings, under sinusoidal
+    current (Phase B).
+- **Experimental:**
+  - V-shape IPM (two of six fixtures fail);
+  - accepted combinations the benchmark did not measure: six-step with
+    distributed windings, single-layer distributed windings, and IPM with
+    distributed windings; and
+  - Halbach, tutorial and generic-field workflows.
 - **Unsupported:** multi-layer IPM rotors such as the Prius 2004 fixture.
 
 The guided SPM path includes both balanced sinusoidal current and ideal

@@ -9,12 +9,17 @@ Website: [coilem.com](https://coilem.com)
 
 ![coilEM workspace](docs/images/coilem-landing-page.png)
 
-**Developer preview:** SPM motors and flat-buried IPM motors are qualified
-against matched FEMM references by the published [A/B/C/D benchmark report
-v1.1](benchmarks/main-20261009-bad71d9/benchmark_report.md) (27 PASS, 2 FAIL,
-1 unsupported). V-shape IPM remains experimental. There is no installer or
-supported operating-system matrix yet. See [Validation](docs/VALIDATION.md)
-for the qualified scope and its limits.
+**Developer preview:** the published [A/B/C/D benchmark report
+v1.1](benchmarks/main-20261009-bad71d9/benchmark_report.md) qualifies these
+tested combinations against matched FEMM references:
+- SPM with concentrated windings, under sinusoidal or ideal six-step current;
+- SPM with two-layer distributed windings, under sinusoidal current; and
+- flat-buried IPM with concentrated windings, under sinusoidal current.
+
+V-shape IPM and untested combinations, such as six-step with distributed
+windings, are experimental. There is no installer or supported
+operating-system matrix yet. See [Validation](docs/VALIDATION.md) for the
+qualified scope and its limits.
 
 ## Start from source
 
@@ -71,10 +76,9 @@ The backend must stay bound to loopback.
 
 Qualification means agreement with FEMM, a reference 2D finite-element solver,
 on the measured benchmark fixtures: mean torque within 8%, Back-EMF fundamental
-and peak within 10%, plus fourteen six-step gates for BLDC. It covers SPM motors
-(concentrated or distributed windings, sinusoidal or ideal six-step) and
-flat-buried IPM motors with M350-50A steel. Two of six V-shape IPM fixtures fail,
-so V-shape results are experimental. Cogging, THD, airgap harmonics, losses and
+and peak within 10%, plus fourteen six-step gates for BLDC. It covers only the
+tested combinations listed above, with M350-50A steel. Two of six V-shape IPM
+fixtures fail, so V-shape results are experimental. Cogging, THD, airgap harmonics, losses and
 thermal behavior are not covered. It is not a hardware measurement.
 
 Motor sweeps use per-angle meshes, with symmetry-based reuse where applicable,
