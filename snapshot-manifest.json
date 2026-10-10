@@ -500,8 +500,8 @@
     },
     {
       "path": "benchmarks/abcd-v1/README.md",
-      "bytes": 8122,
-      "sha256": "3875add0768cbae43411d6202b9c4430d66b64970984f118166dcf1b88774c47"
+      "bytes": 8386,
+      "sha256": "c400adcac2fb243764ed3021f232d87fdd93c043df781da77715526d08a50615"
     },
     {
       "path": "benchmarks/abcd-v1/benchmark_spec.json",
@@ -2310,8 +2310,8 @@
     },
     {
       "path": "tests/test_benchmark_suite.py",
-      "bytes": 14046,
-      "sha256": "8c179fcf645de20505a0283b314b0711d05e0bca6ef13bdd2412f5d10ea7feff"
+      "bytes": 15034,
+      "sha256": "4eb4d7eba556b9d0f7e3ed6afad5bc24a863ec5fd9f2120528505428d28abb13"
     },
     {
       "path": "tests/test_halbach_api.py",
@@ -2420,8 +2420,8 @@
     },
     {
       "path": "tools/benchmark_suite/cli.py",
-      "bytes": 15577,
-      "sha256": "a6e69a8dbde4898906668cfab7e871fde4531e576148316488dfd8405a161d0e"
+      "bytes": 15634,
+      "sha256": "cc8375dbf3e83231eecc0e0416ab18607a68affbbac5df1ce9e3e83d5ce7dca3"
     },
     {
       "path": "tools/benchmark_suite/contract.py",
@@ -2445,8 +2445,8 @@
     },
     {
       "path": "tools/benchmark_suite/worker.py",
-      "bytes": 4080,
-      "sha256": "ff31ecf5ccfae3ff131a99b65ee502af1225594188a219d9d3b62fd7e69ce711"
+      "bytes": 3957,
+      "sha256": "d0253e582776c4e8cc0d81f8a9997c951295e691a36d2e52a212edd46e55a0b1"
     },
     {
       "path": "tools/generate_m350_50a_bh.py",
