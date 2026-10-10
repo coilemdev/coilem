@@ -85,6 +85,12 @@ Elmer is an optional development-only lane; see [its setup](docs/ELMER.md).
 
 ## Reproducibility and contributing
 
+Run the versioned A/B/C/D suite (SPM, IPM, Distributed Winding and BLDC) from the
+checkout with `python -m tools.run_benchmarks --out-dir ../benchmark-output/my-run --pdf`.
+It measures the current public native solver against saved FEMM data, with no
+reference solver installation or adapter required. See the [benchmark commands,
+reference compatibility and version policy](benchmarks/abcd-v1/README.md).
+
 The public Magneto2D path ignores inherited numerical solver switches. It derives
 native options from the request and records its environment policy and options
 in new motor results. [Runtime settings](docs/RUNTIME_SETTINGS.md) lists public
