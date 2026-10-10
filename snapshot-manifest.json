@@ -1150,8 +1150,8 @@
     },
     {
       "path": "docs/NUMERICAL_EVIDENCE.md",
-      "bytes": 8900,
-      "sha256": "af0b6544e84665afc9fae39d50f2b10e527c220f2db747071034ea09fdb1b43f"
+      "bytes": 12897,
+      "sha256": "4a7eae684651bf192154fd1e77a8680089123a744a19ee81766712b5f41d1cac"
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
@@ -1165,8 +1165,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "sha256": "33d215fb182ff04752ebeaddc5fc7790f313564589e9c8059b3a26749ae8ed80",
-      "bytes": 6155
+      "sha256": "56219e8c009ca89688177e104289b0ebe48ea81844647f1e29e20b53fc15e9a2",
+      "bytes": 8517
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -2959,6 +2959,18 @@
       "path": "backend/field_composition.py",
       "source_sha256": "94f1392d7bbd1772042282c76f627289528004afb611ce67cb33e6308d85f9db",
       "reason": "Solver robustness: re-solve a cached stator-current or PM-only field response when solve-cache cleanup has removed its frame artifacts, instead of serving broken frame references."
+    },
+    {
+      "base_commit": "55ab6b4460d09f27ee1487327b57b4a40a2b88ad",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "33d215fb182ff04752ebeaddc5fc7790f313564589e9c8059b3a26749ae8ed80",
+      "reason": "Link the completed public snapshot benchmark v1.1, retain failed and unsupported outcomes, and document versioned A/B/C/D reruns against saved references."
+    },
+    {
+      "base_commit": "55ab6b4460d09f27ee1487327b57b4a40a2b88ad",
+      "path": "docs/NUMERICAL_EVIDENCE.md",
+      "source_sha256": "af0b6544e84665afc9fae39d50f2b10e527c220f2db747071034ea09fdb1b43f",
+      "reason": "Link the completed public snapshot benchmark v1.1, retain failed and unsupported outcomes, and document versioned A/B/C/D reruns against saved references."
     }
   ]
 }
