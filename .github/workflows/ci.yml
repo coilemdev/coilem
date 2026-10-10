@@ -53,6 +53,16 @@ jobs:
         env:
           COILEM_USER_DATA_ROOT: ${{ runner.temp }}/coilem-public-ci
         run: python tools/smoke_public_runtime.py
+      - name: Exercise the A B C D benchmark command without FEMM
+        env:
+          COILEM_USER_DATA_ROOT: ${{ runner.temp }}/coilem-public-ci
+        run: >-
+          python -m tools.run_benchmarks --phases A B C D
+          --case spm_4p12s_simple__baseline
+          --case ipm_flat_4p12s_micro_contract
+          --case spm_8p24s_distributed_femm_validation
+          --case spm_4p12s_small --smoke
+          --out-dir "${{ runner.temp }}/coilem-abcd-smoke" --pdf
 
   frontend:
     runs-on: ubuntu-latest
