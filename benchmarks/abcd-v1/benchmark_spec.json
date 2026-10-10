@@ -1,0 +1,425 @@
+{
+  "schema": "coilem.benchmark_spec/v1",
+  "protocol_version": "1.0.0",
+  "convention": "public-clockwise-v2",
+  "material_contract": {
+    "steel_grade": "M350-50A",
+    "curve_sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+    "magnets": {
+      "N42": {
+        "Br_T": 1.315,
+        "mu_r": 1.05
+      },
+      "N35": {
+        "Br_T": 1.23,
+        "mu_r": 1.05
+      }
+    }
+  },
+  "golden": "benchmarks/main-20261009-bad71d9/protocols/golden_commutation_vectors.json",
+  "golden_sha256": "0914644d93f05fa5738534c518e2ecffeca2d129d8a38fbe8b8df2f65c695b86",
+  "cases": [
+    {
+      "id": "spm_4p12s_simple__baseline",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple__baseline.json",
+          "fixture_sha256": "8683cfb2785aab77e2627428e1d85e9d339656b832cc1d28f0f9c71b2376ba44",
+          "input_sha256": "8ac64a2b2f44e6c535bac1a67d900047a4c9f6ec6fea5f7d9ee26e429f4dd27b"
+        }
+      ]
+    },
+    {
+      "id": "spm_4p12s_simple__high_current",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple__high_current.json",
+          "fixture_sha256": "0aa890a7f91080d325531249fe35db5e83a1188f7c4d2a924e8dd7aca58255c2",
+          "input_sha256": "cd897180782c144ca2796abef4e94f46591f3f619dfcdb0bad20f95624ff9cd9"
+        }
+      ]
+    },
+    {
+      "id": "spm_4p12s_simple__tight_airgap",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple__tight_airgap.json",
+          "fixture_sha256": "8ac45848dd6e64b1056d6126dd8cc581e662b4a944fd2c505382b1c8feeedcda",
+          "input_sha256": "42dd5d5a40a226a5cf1c9692e8d6b41b5865ceefc5fa2b8d0798866a6aeec5d1"
+        }
+      ]
+    },
+    {
+      "id": "spm_4p12s_simple_noload__baseline",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple_noload__baseline.json",
+          "fixture_sha256": "a2ea56eb54efd8121ba18bd56cf2aebb8cdee00fc45a34bf3b6a9279fe9d6441",
+          "input_sha256": "f7a1e9d89d541798352fa7ef6e5b7191559b2f41cd9b000be3b87201c367e03f"
+        }
+      ]
+    },
+    {
+      "id": "spm_4p12s_simple_noload__high_current",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple_noload__high_current.json",
+          "fixture_sha256": "eb6ac4ab542644145605bc75689c5f59ff2a11bb44d48010fd2e469414cc5c38",
+          "input_sha256": "7031ccabb86b8072fd7df2cc0adcd25ea792c62d1d08320d8c9feb3742382b0a"
+        }
+      ]
+    },
+    {
+      "id": "spm_4p12s_simple_noload__tight_airgap",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple_noload__tight_airgap.json",
+          "fixture_sha256": "e0ab8c2b89bd7f562c9c797763c6155f2c27f122fe6c177f5c69e8e4db021697",
+          "input_sha256": "68986a13cb1beaceff8634f205838b60b30a97e0c8768de5e02ea3d027c79d7b"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__baseline",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p12s_concentrated__baseline.json",
+          "fixture_sha256": "e63edcc854d01e6c7ddb0c9ef83e6c6212bbb5ee10cf60de2e8f395219c342c7",
+          "input_sha256": "0fad5d88fdbc263496008238a1ac95bf9644cafa212164364ac400a880bfb189"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__high_current",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p12s_concentrated__high_current.json",
+          "fixture_sha256": "09f98ac8d479dfb1d5df1d44123ce498d37a7b43a769c4bdfa5c765044669dd9",
+          "input_sha256": "ae9364321c17f4dbeaffa73b919ea34329f1ebbe0d60e671a095c3e3489e8d66"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__tight_airgap",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p12s_concentrated__tight_airgap.json",
+          "fixture_sha256": "d0a534dfba20d13a3a0ea96ac7a0e4640a9261dcb68dd095f86233a74c2a2969",
+          "input_sha256": "8c71b0116931037a5f0c04b041e70d2bf18dc58d582e9da2ac841fc4a2c534ae"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_reference_angle30__baseline",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p12s_reference_angle30__baseline.json",
+          "fixture_sha256": "e9188508875a6b9b900229cec0dce6f8bfff862433bcd48eae666b1d26deeefd",
+          "input_sha256": "640c03a944a039ab5770d7fa44b1ae4b5458fa3fe7f005c51a3c30343cfb6c95"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_12s10p_fscw_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_flat_12s10p_fscw_contract.json",
+          "fixture_sha256": "74358dbc72618a8d79432bbd8420a5ff5ad1936c8419ca3ceacfaa42642fa680",
+          "input_sha256": "86f59356d594916ae7f774e1be77f16821c48c1c29e13ba241d308efe3bc655c"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_24s16p_industrial_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_flat_24s16p_industrial_contract.json",
+          "fixture_sha256": "e7b4bf9b187c57976de7ef7851e62db63dbb0ff90196060f1d927cac32203402",
+          "input_sha256": "7a935a36d5c17e76bbfd97dc74de720a10c40190d5e77eecce75122da3ab46c3"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_4p12s_micro_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_flat_4p12s_micro_contract.json",
+          "fixture_sha256": "907592fae67a43464976f9c8153a0a82f7abbac51cb5fd5e4d489dbe79a70119",
+          "input_sha256": "3dfc832ffcce6cb300967c83dd611e27d10dac8bb3004ccdb7ffd1e8c259194b"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract.json",
+          "fixture_sha256": "b1b664d37b65facde4941cd362b2fe1a3fbcbba94677a2e15ab2b6a6e85e874b",
+          "input_sha256": "b6bff40deb14d9f1587e971bea08f0408ff77059dc3f86668793da87fe4f027b"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_flat_8p12s_fsae_contract.json",
+          "fixture_sha256": "8070cb6d1281f900beed45ca729211327534b263db6ca28e4d9d2b58d2c15904",
+          "input_sha256": "131abdcb3b9e19371b7f1b53e2b6e462c31a876a8b7540b2566d772a20aaa74b"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract.json",
+          "fixture_sha256": "3d02199dc695dd6fd6d985ae9be5f66b10015ff1c45ecdf21015ba92ee30bef5",
+          "input_sha256": "1d6748db16adfad0e56329248de6fb30fea79875a0ed002f0ce0f283cb20ca63"
+        }
+      ]
+    },
+    {
+      "id": "ipm_vshape_8p12s_baseline_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_vshape_8p12s_baseline_contract.json",
+          "fixture_sha256": "0b74642e6e9cccd3b6cc4db05e934a4fccce8b0929cbf646d91d97b16d51a96f",
+          "input_sha256": "29ecdb6f3f070930fc3e8ae71642950bd2852513ca6795d9f7eebcb4d848dce1"
+        }
+      ]
+    },
+    {
+      "id": "ipm_vshape_8p12s_deep_apex_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_vshape_8p12s_deep_apex_contract.json",
+          "fixture_sha256": "a59bfb2c176963c2c36d0e20e688c6825064addd06141c7f7b6a908ca19aa359",
+          "input_sha256": "13ac1324e792c266163fa7570a5fedfbbb45cf9d7da8b20a9f9ecf9405f676b3"
+        }
+      ]
+    },
+    {
+      "id": "ipm_vshape_8p12s_narrow_angle_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_vshape_8p12s_narrow_angle_contract.json",
+          "fixture_sha256": "ba4e05a68783179e905416912dfcf1be03c757bd7ff13ea7f413b37617534441",
+          "input_sha256": "921ccc975000bd3c6bcb07626ae5ce6cc899173c026ed97071f64492248c20fa"
+        }
+      ]
+    },
+    {
+      "id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_vshape_8p12s_pocket_offset_contract.json",
+          "fixture_sha256": "63de352f24f9a62eeb4de789758217e66f37ce09743373e45028865fb0dc559f",
+          "input_sha256": "8e294a68dc235fa1f930db1f614f1c75107f1f7653a02ec4505d6aa7e0948ea9"
+        }
+      ]
+    },
+    {
+      "id": "ipm_vshape_8p12s_thin_bridge_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_vshape_8p12s_thin_bridge_contract.json",
+          "fixture_sha256": "69366d5331fbd7f54c8f5c718ec3fb582609908be3a56f622d041cb70fd0bd5e",
+          "input_sha256": "7f6e11619eb08fc65478147423811b9046dd4ef5ce2447258fe8f38270f001a6"
+        }
+      ]
+    },
+    {
+      "id": "ipm_vshape_8p12s_wide_angle_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_vshape_8p12s_wide_angle_contract.json",
+          "fixture_sha256": "80bf5d3e593d30b1a9c01e2c9beeb6334762cafb36eb073661ff59e4efde1881",
+          "input_sha256": "d21625440f6a59ebe6209ea4afb8e335259bde7d5569f1027eda00a56295fa0b"
+        }
+      ]
+    },
+    {
+      "id": "ornl_prius_2004_ipm",
+      "phase": "C",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ornl_prius_2004_ipm.json",
+          "fixture_sha256": "d5d666befcf699b6e6a9515d6fc6926f8a10b2db5a912513e0b6f7f69c2a3337",
+          "input_sha256": "3194f514ad150be4e8b23ecd693a00276d8b61237de044fc23516c55ddf1ae1b"
+        }
+      ]
+    },
+    {
+      "id": "spm_12p36s_distributed_femm_validation",
+      "phase": "C",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_12p36s_distributed_femm_validation.json",
+          "fixture_sha256": "75f68857d14aba7bb1d92d3388185ac91a692ae4d0adf6d3dc5b5fccfb5b0fea",
+          "input_sha256": "3610eb62a7a9398d7247e8723e804216bcdeab41fe7f86dda782cf5da5524796"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p24s_distributed_femm_validation",
+      "phase": "C",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p24s_distributed_femm_validation.json",
+          "fixture_sha256": "394869d4f25cad92342e5d29c438ae742728ff459934f1dddb5e63f479fc2125",
+          "input_sha256": "393f55527b8bd46528a703b3d4e20b28b5df635904c3a8a4037a5eb1f4c8754c"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p48s_chorded_5_6",
+      "phase": "C",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p48s_chorded_5_6.json",
+          "fixture_sha256": "06a5da2f2fdf8368daf988fa8d9311f3526ac3adc6c0e29e2882f31e9dc56e8f",
+          "input_sha256": "51ae710cb7722870b32b7b87c58fceeb24ef9b716c2bd34e27f7afe5c4cb44a1"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p48s_distributed_femm_validation",
+      "phase": "C",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p48s_distributed_femm_validation.json",
+          "fixture_sha256": "0020b4a8084c251f6b17cbc6fb1f4d3293bbc057502b846da0f10481689e5090",
+          "input_sha256": "24a803fcea4ef95c95411b33863d6abe0af7e328786f8d6cc6c26560bf870c34"
+        }
+      ]
+    },
+    {
+      "id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "jobs": [
+        {
+          "stage": "native-standard",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_14p12s_high_pole_native-standard.json",
+          "fixture_sha256": "2da4d771bdf7a367b4dd6c88bc4ccb41c1d03dd163d341fc99ec3b6aa3016d00",
+          "input_sha256": "715fd362ac31d3801c0c4eb084f1b64959b3a7128d75966671a890a3960aa8bc"
+        },
+        {
+          "stage": "native-fine",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_14p12s_high_pole_native-fine.json",
+          "fixture_sha256": "aa2da80d9b7c2cc4b697bf829099906ea1d3d96709663b95c1f976fd218d7480",
+          "input_sha256": "7c6562bfed2373fdd7babc647ac3f46395af444fcfc6201dd0bbfa4260c7d19b"
+        },
+        {
+          "stage": "analytical",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_14p12s_high_pole_analytical.json",
+          "fixture_sha256": "18ddea5035192f409c54c59a99f682aa6ca8aafa58947b08ad310ea6c2e00806",
+          "input_sha256": "f5093f8337c178e31ac53bd512e6793eb7bc390447b60595973ca19eb0b013c6"
+        }
+      ],
+      "protocol": "benchmarks/main-20261009-bad71d9/protocols/spm_14p12s_high_pole_refined.json",
+      "protocol_sha256": "10170a6cf48f89aa9c86337722fd1086abe98109d7751b6860c2f4249f161c59"
+    },
+    {
+      "id": "spm_4p12s_small",
+      "phase": "D",
+      "jobs": [
+        {
+          "stage": "native-standard",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_4p12s_small_native-standard.json",
+          "fixture_sha256": "7b14bb32c5c46f0fdb2652b6306bad65093eebb073180d4cd932e5923377dc45",
+          "input_sha256": "0d905ab6916a5f956f88b185a7c1514623db69138aa242102b4ab2b9c469261b"
+        },
+        {
+          "stage": "native-fine",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_4p12s_small_native-fine.json",
+          "fixture_sha256": "3f6ab9ebc78cde63f9f1a61af4d69f93c90206a5e71187c1cc576f6ee22a5325",
+          "input_sha256": "03d9e9e35632f35121e0937dfacf2261db9cb772ade997ad804631ecc9daef5f"
+        },
+        {
+          "stage": "analytical",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_4p12s_small_analytical.json",
+          "fixture_sha256": "87944a94e259d955d77bff1971f46790f864719bd00b4773ca81667907be26f8",
+          "input_sha256": "97c397f6da70739aa8936a122ad2f458be761293fd67af3b28c573cc04836c91"
+        }
+      ],
+      "protocol": "benchmarks/main-20261009-bad71d9/protocols/spm_4p12s_small.json",
+      "protocol_sha256": "bba51d89538650dbbe3d3e600e198f6aa5b5cac7ca2345241ebdfea671634d2f"
+    },
+    {
+      "id": "spm_8p12s_reference",
+      "phase": "D",
+      "jobs": [
+        {
+          "stage": "native-standard",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_8p12s_reference_native-standard.json",
+          "fixture_sha256": "c7c0657f31d62e1ddb62edcc07fa6838370a937aa6cdc4580d3cd443b6f0808c",
+          "input_sha256": "27d44ba712a94358558622addf3281b66933b5abc89792d3d6aab0a3fcfe6e36"
+        },
+        {
+          "stage": "native-fine",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_8p12s_reference_native-fine.json",
+          "fixture_sha256": "95d7a030314366852c1b924d1c91895c945da92b52080a7f81ffb268c2919001",
+          "input_sha256": "ab957086804826f14bae075d7c1468bdbb9c5aa7a3f814688c218ca67cb05fa7"
+        },
+        {
+          "stage": "analytical",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_8p12s_reference_analytical.json",
+          "fixture_sha256": "df88c4f821d8130c644244189a84e19841855c342c5cd3c4044bf3281c40ad8e",
+          "input_sha256": "9c092c2c01617f6ef20b8a1246d45b7167a3c101df077950359c29ef2a1f4bb3"
+        }
+      ],
+      "protocol": "benchmarks/main-20261009-bad71d9/protocols/spm_8p12s_reference.json",
+      "protocol_sha256": "04cc1a160aba2940152c1a5d7fdf9d47f8a5a7398f9cbaad91b5bae635757bda"
+    }
+  ]
+}
