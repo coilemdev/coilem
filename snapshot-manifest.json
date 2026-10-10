@@ -50,18 +50,18 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "sha256": "07336125907204f3fe261e370a73718e20c76091e515be16926a6e58e7fdf912",
-      "bytes": 1113
+      "sha256": "6944684215f4a36457d3d1476f31c212a0ff6ae93080d6ea79f96d74b897b60b",
+      "bytes": 1403
     },
     {
       "path": "README.md",
-      "bytes": 5135,
-      "sha256": "f4b931dcbc8c07513753a7b6d6d1dc13021fc9893926e9d502b68e8f3c1e6b15"
+      "bytes": 5799,
+      "sha256": "8c3c3c06289f9d48cf539dea552b039d30bf8442310496352283e0fe3c647bf3"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "sha256": "73b9a4ab384b12b44791103c759015fb152aa8cba3dbd4c3cb828a11981cfa66",
-      "bytes": 5472
+      "sha256": "462408771e7a1bdd9bf6e21181ae55b9b7e40b54837808c6e310106e6f3d0ef6",
+      "bytes": 6269
     },
     {
       "path": "SECURITY.md",
@@ -510,8 +510,8 @@
     },
     {
       "path": "benchmarks/m350-launch/benchmark_spec.json",
-      "sha256": "ac22a655f5db21bcb625fca58369ad1e069e9120f927c5ba10aa0eca3f1faa75",
-      "bytes": 6065
+      "sha256": "2f441b418bdf4570cfac32f3845987e9a059ae973d71fd2adc95298f297fd40f",
+      "bytes": 6554
     },
     {
       "path": "benchmarks/m350-launch/fixtures/spm_4p12s_m350_launch.json",
@@ -959,9 +959,219 @@
       "sha256": "cab67b466111f247ca2338eea74dc03da030710cf8b90e8b0561a26e350ada96"
     },
     {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/README.md",
+      "bytes": 6674,
+      "sha256": "99331cae9d1396f4d0ba7bd7ee2c9b15392db1431960764cfa2a9ebdf8e8085d"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/artifact_manifest.json",
+      "bytes": 7669,
+      "sha256": "bff648967f9cc9ed5b9c778301f725d0ad74ebffe12803eabdffe7f6a2afdeef"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/benchmark_report.md",
+      "bytes": 3592,
+      "sha256": "965e89e10c5ce5b511ba1008a03c79da60e6f02f550ba73ebed16e032827af6a"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/benchmark_summary.json",
+      "bytes": 1753006,
+      "sha256": "4185d9dacbc44331cc895863ed9477dcd6e954b07110ae345f96b6c293edfb6d"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/coilem_benchmark_report.html",
+      "bytes": 394995,
+      "sha256": "953e75ae1bc958c236997fca1a54f793c2ee3bad8282f6d701f8733256053548"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/ipm_vshape_8p12s_deep_apex_contract__native.json",
+      "bytes": 2526,
+      "sha256": "f009970acadbb46c81a7280a5e2bc54fd270377f850f4f5692be6c7e47b1e398"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/ipm_vshape_8p12s_wide_angle_contract__native.json",
+      "bytes": 2526,
+      "sha256": "bb252a41fc10e37092af555cb6939bc8f4748fb5a119c790c6526ae89b8e4a51"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1604,
+      "sha256": "15423a47ebbf8509a7935c60d5c45404b8ee186f37dd266dec9e3f2a01560e34"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1607,
+      "sha256": "e328650573ad963181a7cf2292f6fe924d866c792d79c2a32137da2f9522fae0"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1606,
+      "sha256": "68b4e61d69cbc4673eba7ec92d0609862b1cf0283fa8391bf174b8d6c55b7c59"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2503,
+      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2503,
+      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2503,
+      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2502,
+      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2502,
+      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2502,
+      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1594,
+      "sha256": "3d78ae3d4175a933e18d04b9d45c7bddaff1db6e8355c21675dbe4da2934392c"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1596,
+      "sha256": "2081d6ab448377574d76cdd8c86724d07368fd09093bab02d111bfb589d5d709"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1595,
+      "sha256": "a77a7fbd94ed2a06659067f6501b029f612f09877128361268c76c5f9e268604"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2506,
+      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2506,
+      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1640,
+      "sha256": "dd91d0757a826b34c3fde5e813bdfdc385bc048ce477a172c5bfbf292ff6703b"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1642,
+      "sha256": "4e53c05733eb4d81cc3205e743f12fb473065142827f4e38327bd035caf7545c"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1641,
+      "sha256": "1825fe88e7ddf36234aa984f0fbbd30e894bfb34a6030fc02a348c883bf18ffa"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2550,
+      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/publication.json",
+      "bytes": 6179,
+      "sha256": "224a79d5d133398f0810eb798b8bd13be042f240255b81290458fba1ef36d1e0"
+    },
+    {
       "path": "benchmarks/preview-evidence/results.json",
-      "sha256": "896b1de19e360dfc8ef762095e6c9c15c8c128c5b87e2def15794d7bfe0e02bc",
-      "bytes": 763480
+      "sha256": "324e8d5a482e9d5c94abf5f7af6e23f8cd7a6422cee1452fbf54f90fa427ce0f",
+      "bytes": 764856
     },
     {
       "path": "benchmarks/reference-baselines/main-bad71d9/ipm_flat_12s10p_fscw_contract.json",
@@ -1135,8 +1345,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "sha256": "a68bfcaf0ad0f3cb4ec357d23ad611ec076fa5fbdc7df9170f0490a8a9d52a8b",
-      "bytes": 13001
+      "sha256": "024bd90b5085e81aefbbaeb1026908715c95911f387548beda495ec89fc096f0",
+      "bytes": 12990
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -1145,13 +1355,13 @@
     },
     {
       "path": "docs/MAGNETO2D.md",
-      "sha256": "283e5868c3a30b3fde52d6a0004359985d4347127bb20c5f0f03a2b0ea2bd543",
-      "bytes": 45820
+      "sha256": "0821100286b8d9e829668c81a8620b809bd337b87297e93e372d916c88d4a13a",
+      "bytes": 46156
     },
     {
       "path": "docs/NUMERICAL_EVIDENCE.md",
-      "bytes": 12901,
-      "sha256": "9d8ba1ef1f342683da9cb6f2341baa53421627d4eef8e6348202d6ee5417424f"
+      "bytes": 14518,
+      "sha256": "5cad6d41c243b95b670fcd1869ba6daf02f9e84edcdb96f3ee626a314e4409fc"
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
@@ -1165,13 +1375,13 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "sha256": "56219e8c009ca89688177e104289b0ebe48ea81844647f1e29e20b53fc15e9a2",
-      "bytes": 8517
+      "sha256": "b020325eb21856d7935fe8914b0554fac721269834ad5f890ab264f27c31ab19",
+      "bytes": 12410
     },
     {
       "path": "docs/VERIFICATION.md",
-      "sha256": "13a2d8acdfd4dba9b5db138f640d021fa8887efffbb582ea51af4e768a805c7a",
-      "bytes": 6686
+      "sha256": "5c7af266b312e426ca41a4ccedc7935f129aef53d2eb51a823d66d44286135ab",
+      "bytes": 6746
     },
     {
       "path": "docs/examples/follow-flux-magnet-iron-report.json",
@@ -2977,6 +3187,114 @@
       "path": "docs/NUMERICAL_EVIDENCE.md",
       "source_sha256": "4a7eae684651bf192154fd1e77a8680089123a744a19ee81766712b5f41d1cac",
       "reason": "Link the completed public snapshot benchmark v1.1, retain failed and unsupported outcomes, and document versioned A/B/C/D reruns against saved references."
+    },
+    {
+      "base_commit": "45e0a5c7662ade04a4be5519b7e5bac771a6122f",
+      "path": "PUBLICATION_STATUS.md",
+      "source_sha256": "07336125907204f3fe261e370a73718e20c76091e515be16926a6e58e7fdf912",
+      "reason": "State the v1.1 qualification record and the remaining tagging steps; private vulnerability reporting is enabled."
+    },
+    {
+      "base_commit": "45e0a5c7662ade04a4be5519b7e5bac771a6122f",
+      "path": "README.md",
+      "source_sha256": "f4b931dcbc8c07513753a7b6d6d1dc13021fc9893926e9d502b68e8f3c1e6b15",
+      "reason": "Record benchmark report v1.1 as the developer-preview numerical qualification: SPM and flat-buried IPM qualified, V-shape IPM experimental."
+    },
+    {
+      "base_commit": "45e0a5c7662ade04a4be5519b7e5bac771a6122f",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "73b9a4ab384b12b44791103c759015fb152aa8cba3dbd4c3cb828a11981cfa66",
+      "reason": "Replace the pending qualification path with the v1.1 qualification scope, outcomes and limits."
+    },
+    {
+      "base_commit": "45e0a5c7662ade04a4be5519b7e5bac771a6122f",
+      "path": "benchmarks/m350-launch/benchmark_spec.json",
+      "source_sha256": "ac22a655f5db21bcb625fca58369ad1e069e9120f927c5ba10aa0eca3f1faa75",
+      "reason": "Mark the never-completed preregistered M350 comparison as superseded by benchmark report v1.1."
+    },
+    {
+      "base_commit": "45e0a5c7662ade04a4be5519b7e5bac771a6122f",
+      "path": "benchmarks/preview-evidence/results.json",
+      "source_sha256": "896b1de19e360dfc8ef762095e6c9c15c8c128c5b87e2def15794d7bfe0e02bc",
+      "reason": "Mark the six reference-less sinusoidal rows SUPERSEDED with their v1.1 fixtures and outcomes; measured values are unchanged."
+    },
+    {
+      "base_commit": "45e0a5c7662ade04a4be5519b7e5bac771a6122f",
+      "path": "docs/GETTING_STARTED.md",
+      "source_sha256": "a68bfcaf0ad0f3cb4ec357d23ad611ec076fa5fbdc7df9170f0490a8a9d52a8b",
+      "reason": "Point to the v1.1 qualified scope instead of remaining release checks."
+    },
+    {
+      "base_commit": "45e0a5c7662ade04a4be5519b7e5bac771a6122f",
+      "path": "docs/MAGNETO2D.md",
+      "source_sha256": "283e5868c3a30b3fde52d6a0004359985d4347127bb20c5f0f03a2b0ea2bd543",
+      "reason": "Replace the pending qualification target with the v1.1 qualified and experimental motor paths."
+    },
+    {
+      "base_commit": "45e0a5c7662ade04a4be5519b7e5bac771a6122f",
+      "path": "docs/NUMERICAL_EVIDENCE.md",
+      "source_sha256": "9d8ba1ef1f342683da9cb6f2341baa53421627d4eef8e6348202d6ee5417424f",
+      "reason": "Make v1.1 the qualification record and map the six reference-less historical sinusoidal rows to their v1.1 counterparts."
+    },
+    {
+      "base_commit": "45e0a5c7662ade04a4be5519b7e5bac771a6122f",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "56219e8c009ca89688177e104289b0ebe48ea81844647f1e29e20b53fc15e9a2",
+      "reason": "Add the v1.1 qualification status by motor family, its gates and limits, and mark the unfinished preregistered M350 comparison as superseded."
+    },
+    {
+      "base_commit": "45e0a5c7662ade04a4be5519b7e5bac771a6122f",
+      "path": "docs/VERIFICATION.md",
+      "source_sha256": "13a2d8acdfd4dba9b5db138f640d021fa8887efffbb582ea51af4e768a805c7a",
+      "reason": "Reference the v1.1 qualification record instead of pending numerical qualification."
+    },
+    {
+      "base_commit": "a1be54923c2cef60ab00a03b87453c73f7703300",
+      "path": "docs/NUMERICAL_EVIDENCE.md",
+      "source_sha256": "f3faba570fd5115f561f7738073ba90c8d5612585eb292c5a65970bdeaed0fb9",
+      "reason": "Link the v1.1 qualification record to the reproduced-verdict rerun on public main 45e0a5c."
+    },
+    {
+      "base_commit": "a1be54923c2cef60ab00a03b87453c73f7703300",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "78f119baf5fbfc0e443fa367495a20f97f97c464a0007cd6db681483d2d07310",
+      "reason": "Record the A/B/C/D rerun on public main 45e0a5c against the retained v1.1 references: every verdict reproduced."
+    },
+    {
+      "base_commit": "5d32721a0cfc6a23cdc779258d3a530bfb1725b5",
+      "path": "PUBLICATION_STATUS.md",
+      "source_sha256": "278ec08f7396d60034663c5cdd988192117e851580772ea6c598193802342774",
+      "reason": "Point to the qualified combinations instead of whole motor families."
+    },
+    {
+      "base_commit": "5d32721a0cfc6a23cdc779258d3a530bfb1725b5",
+      "path": "README.md",
+      "source_sha256": "e2de8f3d3a339a79329a82afecc49345ee8c3402944031a7a82a8aa2037f0eb9",
+      "reason": "State the tested rotor, winding and excitation combinations that v1.1 qualifies; untested combinations are experimental."
+    },
+    {
+      "base_commit": "5d32721a0cfc6a23cdc779258d3a530bfb1725b5",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "0dae0a2452c7b7d8b878dc68f0c1aaac590fdec33d7f562aa33dacd4885cb3fd",
+      "reason": "List the qualified combinations by phase and name the untested combinations as experimental."
+    },
+    {
+      "base_commit": "5d32721a0cfc6a23cdc779258d3a530bfb1725b5",
+      "path": "docs/MAGNETO2D.md",
+      "source_sha256": "5051c99c2158975bc324b5f194ea5ed9a3771fa9f1b26646fcd6ebdf6c7c6545",
+      "reason": "Name the qualified and experimental winding and excitation combinations."
+    },
+    {
+      "base_commit": "5d32721a0cfc6a23cdc779258d3a530bfb1725b5",
+      "path": "docs/NUMERICAL_EVIDENCE.md",
+      "source_sha256": "f1ea5e0a4fbf0c4324a41f77f64bd5e0eac0885ec182a9588eed37511da5d6c3",
+      "reason": "Link the 45e0a5c rerun evidence package and describe qualification by tested combination."
+    },
+    {
+      "base_commit": "5d32721a0cfc6a23cdc779258d3a530bfb1725b5",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "40fee1298b013659037932f31b5782986808737531518a7f56876308645c69cd",
+      "reason": "Qualify tested rotor, winding and excitation combinations explicitly and link the published 45e0a5c rerun evidence package."
     }
   ]
 }

@@ -27,10 +27,10 @@ Gmsh 4.15.2:
 - both documented generic-field examples solved with the real native binary
   and produced schema-valid, converged reports.
 
-This is a documentation and behavior check of the working tree. It does not
-replace final-public-commit numerical qualification, hosted CI evidence, or
-the remaining interactive walkthrough. Historical numerical measurements below
-and in [Numerical evidence](NUMERICAL_EVIDENCE.md) retain their original identities.
+This is a documentation and behavior check of the working tree. It is not
+numerical evidence, hosted CI evidence, or an interactive walkthrough.
+Historical numerical measurements below and in [Numerical evidence](NUMERICAL_EVIDENCE.md)
+retain their original identities.
 
 ## Documentation follow-up on 2026-10-09
 
@@ -106,9 +106,11 @@ hashes are not interchangeable qualification records.
 Before publishing a release, pin the actual public commit and verify its new
 repository metadata, private vulnerability-reporting route and hosted CI runs.
 CI specifies Python 3.11 and Node 24 and includes Windows, macOS and Linux jobs;
-those hosted runs are separate from this local record. The complete interactive walkthrough and full numerical qualification remain
-pending; the automated recovery checks above cover backend reconnection and
-configured workspace-capacity recovery.
+those hosted runs are separate from this local record. Numerical qualification
+is the published A/B/C/D benchmark report v1.1; see [Validation](VALIDATION.md#qualification-status).
+Record the complete interactive walkthrough on the tagged commit; the automated
+recovery checks above cover backend reconnection and configured
+workspace-capacity recovery.
 
 The original high-pole comparison exposed truncated CLI angles at exact
 six-step commutation boundaries. The adapter now preserves full floating-point

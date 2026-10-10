@@ -9,10 +9,17 @@ Website: [coilem.com](https://coilem.com)
 
 ![coilEM workspace](docs/images/coilem-landing-page.png)
 
-**Experimental developer preview:** motor accuracy qualification is pending.
-Use results for exploration and independent comparison. There is no installer
-or supported operating-system matrix yet. See [Validation](docs/VALIDATION.md)
-for measured evidence and remaining checks.
+**Developer preview:** the published [A/B/C/D benchmark report
+v1.1](benchmarks/main-20261009-bad71d9/benchmark_report.md) qualifies these
+tested combinations against matched FEMM references:
+- SPM with concentrated windings, under sinusoidal or ideal six-step current;
+- SPM with two-layer distributed windings, under sinusoidal current; and
+- flat-buried IPM with concentrated windings, under sinusoidal current.
+
+V-shape IPM and untested combinations, such as six-step with distributed
+windings, are experimental. There is no installer or supported
+operating-system matrix yet. See [Validation](docs/VALIDATION.md) for the
+qualified scope and its limits.
 
 ## Start from source
 
@@ -55,8 +62,9 @@ The backend must stay bound to loopback.
 
 ## What you can explore
 
-- Radial-flux SPM motor geometry, native Gmsh meshes, sinusoidal current and
-  ideal wye-connected 120-degree six-step excitation.
+- Radial-flux SPM and IPM (flat-buried and V-shape) motor geometry, native
+  Gmsh meshes, sinusoidal current, and ideal wye-connected 120-degree six-step
+  excitation for SPM.
 - Loaded torque, phase and line Back-EMF, field plots, and harmonic spectra.
 - Preview, Standard and High accuracy mesh/solve presets. These names describe
   resolution and sampling; they do not certify accuracy.
@@ -66,10 +74,12 @@ The backend must stay bound to loopback.
 
 ## Limits to understand
 
-The intended motor qualification is the included 8-pole/12-slot inner-rotor
-SPM example using M350-50A steel. No motor path is release-qualified until the
-exact-candidate numerical report passes. Other accepted geometries are
-experimental.
+Qualification means agreement with FEMM, a reference 2D finite-element solver,
+on the measured benchmark fixtures: mean torque within 8%, Back-EMF fundamental
+and peak within 10%, plus fourteen six-step gates for BLDC. It covers only the
+tested combinations listed above, with M350-50A steel. Two of six V-shape IPM
+fixtures fail, so V-shape results are experimental. Cogging, THD, airgap harmonics, losses and
+thermal behavior are not covered. It is not a hardware measurement.
 
 Motor sweeps use per-angle meshes, with symmetry-based reuse where applicable,
 without a sliding-band interface. Mesh changes can introduce numerical noise

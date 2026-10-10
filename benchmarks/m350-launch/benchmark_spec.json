@@ -1,6 +1,10 @@
 {
   "schema_version": "coilem.m350_launch_benchmark_spec/v1",
-  "status": "preregistered",
+  "status": "superseded",
+  "superseded_by": {
+    "report": "benchmarks/main-20261009-bad71d9/benchmark_report.md",
+    "note": "Not completed: FEMM references were never generated. Benchmark report v1.1 is the qualification record. Phase A measured the 4p12s no-load, rated-load and 1.5x current points and the 8p12s rated-load point with identical geometry, current and steel on a 7.5 degree grid (all PASS). The 8p12s no-load and 1.5x current points and the airgap, THD and harmonic gates were not measured."
+  },
   "title": "coilEM M350-50A public-native launch benchmark",
   "protocol": {
     "schema_version": "openem.m350_solver_parity/v1",
