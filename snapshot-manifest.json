@@ -50,18 +50,18 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "sha256": "07336125907204f3fe261e370a73718e20c76091e515be16926a6e58e7fdf912",
-      "bytes": 1113
+      "sha256": "278ec08f7396d60034663c5cdd988192117e851580772ea6c598193802342774",
+      "bytes": 1302
     },
     {
       "path": "README.md",
-      "bytes": 5135,
-      "sha256": "f4b931dcbc8c07513753a7b6d6d1dc13021fc9893926e9d502b68e8f3c1e6b15"
+      "bytes": 5624,
+      "sha256": "e2de8f3d3a339a79329a82afecc49345ee8c3402944031a7a82a8aa2037f0eb9"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "sha256": "73b9a4ab384b12b44791103c759015fb152aa8cba3dbd4c3cb828a11981cfa66",
-      "bytes": 5472
+      "sha256": "0dae0a2452c7b7d8b878dc68f0c1aaac590fdec33d7f562aa33dacd4885cb3fd",
+      "bytes": 5912
     },
     {
       "path": "SECURITY.md",
@@ -510,8 +510,8 @@
     },
     {
       "path": "benchmarks/m350-launch/benchmark_spec.json",
-      "sha256": "ac22a655f5db21bcb625fca58369ad1e069e9120f927c5ba10aa0eca3f1faa75",
-      "bytes": 6065
+      "sha256": "2f441b418bdf4570cfac32f3845987e9a059ae973d71fd2adc95298f297fd40f",
+      "bytes": 6554
     },
     {
       "path": "benchmarks/m350-launch/fixtures/spm_4p12s_m350_launch.json",
@@ -960,8 +960,8 @@
     },
     {
       "path": "benchmarks/preview-evidence/results.json",
-      "sha256": "896b1de19e360dfc8ef762095e6c9c15c8c128c5b87e2def15794d7bfe0e02bc",
-      "bytes": 763480
+      "sha256": "324e8d5a482e9d5c94abf5f7af6e23f8cd7a6422cee1452fbf54f90fa427ce0f",
+      "bytes": 764856
     },
     {
       "path": "benchmarks/reference-baselines/main-bad71d9/ipm_flat_12s10p_fscw_contract.json",
@@ -1135,8 +1135,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "sha256": "a68bfcaf0ad0f3cb4ec357d23ad611ec076fa5fbdc7df9170f0490a8a9d52a8b",
-      "bytes": 13001
+      "sha256": "024bd90b5085e81aefbbaeb1026908715c95911f387548beda495ec89fc096f0",
+      "bytes": 12990
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -1145,13 +1145,13 @@
     },
     {
       "path": "docs/MAGNETO2D.md",
-      "sha256": "283e5868c3a30b3fde52d6a0004359985d4347127bb20c5f0f03a2b0ea2bd543",
-      "bytes": 45820
+      "sha256": "5051c99c2158975bc324b5f194ea5ed9a3771fa9f1b26646fcd6ebdf6c7c6545",
+      "bytes": 45915
     },
     {
       "path": "docs/NUMERICAL_EVIDENCE.md",
-      "bytes": 12901,
-      "sha256": "9d8ba1ef1f342683da9cb6f2341baa53421627d4eef8e6348202d6ee5417424f"
+      "bytes": 14230,
+      "sha256": "f3faba570fd5115f561f7738073ba90c8d5612585eb292c5a65970bdeaed0fb9"
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
@@ -1165,13 +1165,13 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "sha256": "56219e8c009ca89688177e104289b0ebe48ea81844647f1e29e20b53fc15e9a2",
-      "bytes": 8517
+      "sha256": "78f119baf5fbfc0e443fa367495a20f97f97c464a0007cd6db681483d2d07310",
+      "bytes": 10552
     },
     {
       "path": "docs/VERIFICATION.md",
-      "sha256": "13a2d8acdfd4dba9b5db138f640d021fa8887efffbb582ea51af4e768a805c7a",
-      "bytes": 6686
+      "sha256": "5c7af266b312e426ca41a4ccedc7935f129aef53d2eb51a823d66d44286135ab",
+      "bytes": 6746
     },
     {
       "path": "docs/examples/follow-flux-magnet-iron-report.json",
@@ -2977,6 +2977,66 @@
       "path": "docs/NUMERICAL_EVIDENCE.md",
       "source_sha256": "4a7eae684651bf192154fd1e77a8680089123a744a19ee81766712b5f41d1cac",
       "reason": "Link the completed public snapshot benchmark v1.1, retain failed and unsupported outcomes, and document versioned A/B/C/D reruns against saved references."
+    },
+    {
+      "base_commit": "45e0a5c7662ade04a4be5519b7e5bac771a6122f",
+      "path": "PUBLICATION_STATUS.md",
+      "source_sha256": "07336125907204f3fe261e370a73718e20c76091e515be16926a6e58e7fdf912",
+      "reason": "State the v1.1 qualification record and the remaining tagging steps; private vulnerability reporting is enabled."
+    },
+    {
+      "base_commit": "45e0a5c7662ade04a4be5519b7e5bac771a6122f",
+      "path": "README.md",
+      "source_sha256": "f4b931dcbc8c07513753a7b6d6d1dc13021fc9893926e9d502b68e8f3c1e6b15",
+      "reason": "Record benchmark report v1.1 as the developer-preview numerical qualification: SPM and flat-buried IPM qualified, V-shape IPM experimental."
+    },
+    {
+      "base_commit": "45e0a5c7662ade04a4be5519b7e5bac771a6122f",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "73b9a4ab384b12b44791103c759015fb152aa8cba3dbd4c3cb828a11981cfa66",
+      "reason": "Replace the pending qualification path with the v1.1 qualification scope, outcomes and limits."
+    },
+    {
+      "base_commit": "45e0a5c7662ade04a4be5519b7e5bac771a6122f",
+      "path": "benchmarks/m350-launch/benchmark_spec.json",
+      "source_sha256": "ac22a655f5db21bcb625fca58369ad1e069e9120f927c5ba10aa0eca3f1faa75",
+      "reason": "Mark the never-completed preregistered M350 comparison as superseded by benchmark report v1.1."
+    },
+    {
+      "base_commit": "45e0a5c7662ade04a4be5519b7e5bac771a6122f",
+      "path": "benchmarks/preview-evidence/results.json",
+      "source_sha256": "896b1de19e360dfc8ef762095e6c9c15c8c128c5b87e2def15794d7bfe0e02bc",
+      "reason": "Mark the six reference-less sinusoidal rows SUPERSEDED with their v1.1 fixtures and outcomes; measured values are unchanged."
+    },
+    {
+      "base_commit": "45e0a5c7662ade04a4be5519b7e5bac771a6122f",
+      "path": "docs/GETTING_STARTED.md",
+      "source_sha256": "a68bfcaf0ad0f3cb4ec357d23ad611ec076fa5fbdc7df9170f0490a8a9d52a8b",
+      "reason": "Point to the v1.1 qualified scope instead of remaining release checks."
+    },
+    {
+      "base_commit": "45e0a5c7662ade04a4be5519b7e5bac771a6122f",
+      "path": "docs/MAGNETO2D.md",
+      "source_sha256": "283e5868c3a30b3fde52d6a0004359985d4347127bb20c5f0f03a2b0ea2bd543",
+      "reason": "Replace the pending qualification target with the v1.1 qualified and experimental motor paths."
+    },
+    {
+      "base_commit": "45e0a5c7662ade04a4be5519b7e5bac771a6122f",
+      "path": "docs/NUMERICAL_EVIDENCE.md",
+      "source_sha256": "9d8ba1ef1f342683da9cb6f2341baa53421627d4eef8e6348202d6ee5417424f",
+      "reason": "Make v1.1 the qualification record and map the six reference-less historical sinusoidal rows to their v1.1 counterparts."
+    },
+    {
+      "base_commit": "45e0a5c7662ade04a4be5519b7e5bac771a6122f",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "56219e8c009ca89688177e104289b0ebe48ea81844647f1e29e20b53fc15e9a2",
+      "reason": "Add the v1.1 qualification status by motor family, its gates and limits, and mark the unfinished preregistered M350 comparison as superseded."
+    },
+    {
+      "base_commit": "45e0a5c7662ade04a4be5519b7e5bac771a6122f",
+      "path": "docs/VERIFICATION.md",
+      "source_sha256": "13a2d8acdfd4dba9b5db138f640d021fa8887efffbb582ea51af4e768a805c7a",
+      "reason": "Reference the v1.1 qualification record instead of pending numerical qualification."
     }
   ]
 }

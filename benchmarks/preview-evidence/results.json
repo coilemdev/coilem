@@ -524,6 +524,7 @@
     }
   ],
   "release_qualified": false,
+  "qualification_record": "benchmarks/main-20261009-bad71d9/benchmark_report.md",
   "scope": "Torque comparisons and native power/Back-EMF consistency checks for the specified requests; sinusoidal references and full airgap/harmonic qualification are separate.",
   "note": "Frozen custom protocol grids; these are not a qualification of all default UI settings or arbitrary motors.",
   "cases": [
@@ -14944,7 +14945,12 @@
     },
     {
       "case": "sine_spm_4p12s_m350_launch_no_load",
-      "status": "PENDING",
+      "status": "SUPERSEDED",
+      "superseded_by": {
+        "report": "benchmarks/main-20261009-bad71d9/benchmark_report.md",
+        "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple_noload__baseline.json",
+        "outcome": "PASS"
+      },
       "lanes": {
         "native": {
           "request": {
@@ -15444,7 +15450,12 @@
     },
     {
       "case": "sine_spm_4p12s_m350_launch_rated_load",
-      "status": "PENDING",
+      "status": "SUPERSEDED",
+      "superseded_by": {
+        "report": "benchmarks/main-20261009-bad71d9/benchmark_report.md",
+        "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple__baseline.json",
+        "outcome": "PASS"
+      },
       "lanes": {
         "native": {
           "request": {
@@ -15944,7 +15955,12 @@
     },
     {
       "case": "sine_spm_4p12s_m350_launch_saturation_stress",
-      "status": "PENDING",
+      "status": "SUPERSEDED",
+      "superseded_by": {
+        "report": "benchmarks/main-20261009-bad71d9/benchmark_report.md",
+        "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple__high_current.json",
+        "outcome": "PASS"
+      },
       "lanes": {
         "native": {
           "request": {
@@ -16444,7 +16460,12 @@
     },
     {
       "case": "sine_spm_8p12s_m350_launch_no_load",
-      "status": "PENDING",
+      "status": "SUPERSEDED",
+      "superseded_by": {
+        "report": "benchmarks/main-20261009-bad71d9/benchmark_report.md",
+        "fixture": null,
+        "outcome": "NOT_MEASURED"
+      },
       "lanes": {
         "native": {
           "request": {
@@ -16944,7 +16965,12 @@
     },
     {
       "case": "sine_spm_8p12s_m350_launch_rated_load",
-      "status": "PENDING",
+      "status": "SUPERSEDED",
+      "superseded_by": {
+        "report": "benchmarks/main-20261009-bad71d9/benchmark_report.md",
+        "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p12s_reference_angle30__baseline.json",
+        "outcome": "PASS"
+      },
       "lanes": {
         "native": {
           "request": {
@@ -17444,7 +17470,12 @@
     },
     {
       "case": "sine_spm_8p12s_m350_launch_saturation_stress",
-      "status": "PENDING",
+      "status": "SUPERSEDED",
+      "superseded_by": {
+        "report": "benchmarks/main-20261009-bad71d9/benchmark_report.md",
+        "fixture": null,
+        "outcome": "NOT_MEASURED"
+      },
       "lanes": {
         "native": {
           "request": {

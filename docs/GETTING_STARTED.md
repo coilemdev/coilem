@@ -12,7 +12,7 @@ system used for the final release-candidate walkthrough with its evidence.
 
 Use a stable Python release for preview validation. The public CI runtime
 check uses Python 3.11 and the frontend check uses Node.js 24. See
-[Validation](VALIDATION.md) for the remaining release checks and evidence scope.
+[Validation](VALIDATION.md) for the qualified scope and its evidence.
 
 ## 1. Get the source
 

@@ -21,8 +21,8 @@ limitations.
 | Area | Developer-preview boundary |
 | --- | --- |
 | Physics | 2D magnetostatic FEM with nonlinear electrical steel |
-| Motor qualification target | Included 8-pole/12-slot surface-PM example, Standard plan; qualification pending |
-| Other accepted motor paths | Preview capabilities only; not launch-validated accuracy claims |
+| Qualified motor paths | SPM (concentrated or distributed windings; sinusoidal or ideal six-step) and flat-buried IPM, per [benchmark report v1.1](../benchmarks/main-20261009-bad71d9/benchmark_report.md) |
+| Experimental motor paths | V-shape IPM (two of six v1.1 fixtures fail) |
 | Mesh producer | Native Gmsh only |
 | Concentrated windings | Single layer |
 | Distributed windings | Balanced one- or two-layer star-of-slots layouts with `q >= 1`; explicit short pitch is limited to supported integer-`q` layouts |
@@ -39,7 +39,7 @@ rejected when its topology, winding, mesh source, or material lies outside
 this boundary. A dedicated cogging-torque results view is not included in the
 0.2.0 preview. Field mode has its own versioned, solve-ready contract and does
 not imply public support for a new motor topology.
-No motor path is release-qualified; see [Validation](VALIDATION.md).
+See [Validation](VALIDATION.md#qualification-status) for the qualified scope and its limits.
 The public API rejects requests with `solve_options.cogging_torque = true`.
 
 ## Solver pipeline

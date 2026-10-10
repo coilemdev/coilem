@@ -7,8 +7,9 @@ records fresh A/B/C/D measurements of public Coilem commit
 `bad71d9cbcb10bf2daa293c5577f9d9e26778a12`, using its public native defaults,
 native Gmsh meshes and weighted-stress torque. The separately pinned reference
 commit is `8b95decda27d475ddbb75e99d92744ebc8e53b28`. The candidate and
-reference are distinct runtime identities. These results measure the October 9
-snapshot, not later `main`; numerical release qualification remains pending.
+reference are distinct runtime identities. This report is the numerical
+qualification record for the 0.2.0 developer preview; [Validation](VALIDATION.md#qualification-status)
+lists the qualified motor families and their limits.
 
 Read the [HTML report](../benchmarks/main-20261009-bad71d9/coilem_benchmark_report.html)
 (download and open locally for its plots), [machine-readable summary](../benchmarks/main-20261009-bad71d9/benchmark_summary.json),
@@ -34,8 +35,10 @@ one UNSUPPORTED outcome:
 A/B/C retain their registered torque gates (8% PASS / 15% YELLOW, with
 absolute limits for near-zero reference torque) and Back-EMF H1/peak gates
 (10% PASS / 15% YELLOW). Signed waveform agreement is diagnostic. These
-failures are not waived by the aggregate pass count. The Prius request is
-rejected by the public policy and receives no numerical PASS.
+failures are not waived by the aggregate pass count, and V-shape IPM remains
+experimental. The other four V-shape fixtures and all six flat-buried IPM
+fixtures pass. The Prius request is rejected by the public policy and
+receives no numerical PASS.
 
 ### BLDC coverage and reference conventions
 
@@ -78,11 +81,12 @@ against retained references from the original fresh FEMM benchmark.
 ## Historical developer-preview evidence
 
 The earlier measurements below belong to different candidate identities and
-protocols. Their pending rows do not describe the completed v1.1 matrix above.
+protocols. They are supporting evidence; the qualification record is the v1.1
+report above.
 
-**Experimental; not release-qualified.** These results were collected from a frozen,
-isolated local publication candidate. All completed and failed comparison gates are
-included in [the machine-readable evidence](../benchmarks/preview-evidence/results.json).
+These results were collected from a frozen, isolated local publication
+candidate. All completed and failed
+comparison gates are included in [the machine-readable evidence](../benchmarks/preview-evidence/results.json).
 
 Local unpublished candidate commit: `3f5e2722fdf1eb5198d5b225d037d158b45a6497`. Native executable SHA-256:
 `bb2e3c54f9b94da67a7e1efca324b880e7a65185a4a9f4b7229d5b12a4547b84`.
@@ -92,7 +96,7 @@ changes: twenty Rust source files differed from each of the three recorded
 runtime file sets, including assembly, mesh, solve and torque postprocessing.
 The executable identified by `bb2e3c…` is the historical measured binary, not
 the final release binary. This is supporting evidence for the recorded
-snapshots, not qualification of the final release commit.
+snapshots.
 Runtime file hashes distinguish the measured snapshot from later changes.
 Source revisions cited below belong to the private development repository;
 they are provenance identifiers, not commits available in this public repository.
@@ -109,12 +113,6 @@ in the JSON. Results contain no reference-machine paths or personal identities.
 | bldc_spm_4p12s_small | 0.287059 | 0.286498 | 0.196% | 0.5072% | PASS |
 | bldc_spm_8p12s_reference | 8.72867 | 8.80225 | 0.836% | 1.289% | PASS |
 | bldc_spm_14p12s_high_pole | 1.63958 | 1.63999 | 0.02508% | 0.864% | FAIL ([corrected PASS below](#high-pole-correction-and-fresh-measurements)) |
-| sine_spm_4p12s_m350_launch_no_load | 2.61625e-05 | Pending | Pending | Pending | PENDING |
-| sine_spm_4p12s_m350_launch_rated_load | 0.478238 | Pending | Pending | Pending | PENDING |
-| sine_spm_4p12s_m350_launch_saturation_stress | 0.717175 | Pending | Pending | Pending | PENDING |
-| sine_spm_8p12s_m350_launch_no_load | 0.00337772 | Pending | Pending | Pending | PENDING |
-| sine_spm_8p12s_m350_launch_rated_load | 19.1488 | Pending | Pending | Pending | PENDING |
-| sine_spm_8p12s_m350_launch_saturation_stress | 28.7208 | Pending | Pending | Pending | PENDING |
 
 For the six-step motor comparisons, the frozen limits are 5% mean-torque
 difference and 10% waveform NRMSE. NRMSE is normalized by reference RMS torque.
@@ -130,6 +128,30 @@ the normal mesh-density setting; it does not establish spatial mesh convergence.
 | bldc_spm_4p12s_small | 0.2058% | 1.062 |
 | bldc_spm_8p12s_reference | 0.1405% | 2.753 |
 | bldc_spm_14p12s_high_pole | 0.4063% | 3.448 |
+
+v1.1 Phase D re-measured all three BLDC fixtures against fresh FEMM references
+from a public commit; all three pass.
+
+### Superseded sinusoidal rows
+
+This candidate also recorded native results for six preregistered M350-50A
+sinusoidal rows on a 3.75° grid. Their FEMM references were never generated,
+so these rows have no parity verdict. They are superseded by v1.1: Phase A
+measured four of the same operating points, with identical geometry, current
+and steel, on a 7.5° grid against fresh FEMM references. The three loaded
+v1.1 native torques agree with the historical native values to within 0.13%.
+
+| Historical row | Historical native mean torque (N m) | v1.1 fixture | v1.1 native / FEMM mean torque (N m) | v1.1 outcome |
+| --- | ---: | --- | ---: | --- |
+| sine_spm_4p12s_m350_launch_no_load | 2.61625e-05 | [spm_4p12s_simple_noload__baseline](../benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple_noload__baseline.json) | 5.46e-06 / -0.00206 | PASS (0.00206 N m absolute) |
+| sine_spm_4p12s_m350_launch_rated_load | 0.478238 | [spm_4p12s_simple__baseline](../benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple__baseline.json) | 0.478280 / 0.477514 | PASS (0.16%) |
+| sine_spm_4p12s_m350_launch_saturation_stress | 0.717175 | [spm_4p12s_simple__high_current](../benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple__high_current.json) | 0.717238 / 0.716397 | PASS (0.12%) |
+| sine_spm_8p12s_m350_launch_no_load | 0.00337772 | Not measured in v1.1 | - | - |
+| sine_spm_8p12s_m350_launch_rated_load | 19.1488 | [spm_8p12s_reference_angle30__baseline](../benchmarks/main-20261009-bad71d9/fixtures/spm_8p12s_reference_angle30__baseline.json) | 19.1731 / 19.2347 | PASS (0.32%) |
+| sine_spm_8p12s_m350_launch_saturation_stress | 28.7208 | Not measured in v1.1 | - | - |
+
+The preregistered airgap Br/Bt, THD and shared-harmonic gates were not
+measured by v1.1.
 
 ## High-pole correction and fresh measurements
 
@@ -151,7 +173,8 @@ raw-result hashes, waveforms and current-sequence checks.
 | 0.02508% | 0.864% | PASS |
 
 The high-pole plot below uses this corrected run. These follow-up measurements
-do not replace final release-commit qualification or the pending sinusoidal references.
+are supporting evidence; v1.1 Phase D re-measured the high-pole fixture from a
+public commit and it passed all fourteen gates.
 
 ## Replay after runtime hardening
 
@@ -170,12 +193,10 @@ The JSON retains both runtime file sets and replay-record hashes.
 - `bldc_spm_14p12s_high_pole` / `native-standard_golden_current_sequence`: **FAIL**, value `native-standard: current phase sequence differs from golden table at 60.0 degrees`, limit `see JSON`.
 - `bldc_spm_14p12s_high_pole` / `native-fine_golden_current_sequence`: **FAIL**, value `native-fine: current phase sequence differs from golden table at 60.0 degrees`, limit `see JSON`.
 - `bldc_spm_14p12s_high_pole` / `analytical_golden_current_sequence`: **FAIL**, value `analytical: current phase sequence differs from golden table at 60.0 degrees`, limit `see JSON`.
-- `sine_spm_4p12s_m350_launch_no_load`: **PENDING**.
-- `sine_spm_4p12s_m350_launch_rated_load`: **PENDING**.
-- `sine_spm_4p12s_m350_launch_saturation_stress`: **PENDING**.
-- `sine_spm_8p12s_m350_launch_no_load`: **PENDING**.
-- `sine_spm_8p12s_m350_launch_rated_load`: **PENDING**.
-- `sine_spm_8p12s_m350_launch_saturation_stress`: **PENDING**.
+
+These three failures belong to the original high-pole run; the corrected run
+above passes them. The six sinusoidal rows had no reference and are listed
+under [Superseded sinusoidal rows](#superseded-sinusoidal-rows).
 
 ## Independent analytical field check
 
@@ -216,8 +237,8 @@ reverses reference torque sign.
 
 Inspect waveform and convergence gates as well as mean torque. A small mean difference
 does not establish ripple accuracy. Rotor sweeps remesh or reuse symmetry-equivalent
-meshes without a sliding band. Full sinusoidal airgap/harmonic diagnostics and final
-release-commit qualification remain separate gates. No hardware measurement or
-broad operating-system certification is implied.
+meshes without a sliding band. Airgap field, THD and harmonic parity and spatial mesh
+convergence are not gated by v1.1. No hardware measurement or broad operating-system
+certification is implied.
 
 ![Torque comparisons](images/torque-comparisons.svg)

@@ -4,16 +4,21 @@ coilEM 0.2.0 is a source-built developer preview of the local motor-design
 application. It bundles Magneto2D 0.3.2 as its field solver; the application
 and solver use separate version numbers.
 
-## Proposed qualification path
+## Qualification
 
-This is the proposed release scope. Publication and exact-candidate numerical
-and interactive signoff remain pending; see [Validation](docs/VALIDATION.md).
+Numerical qualification for this preview is the published [A/B/C/D benchmark
+report v1.1](benchmarks/main-20261009-bad71d9/benchmark_report.md). It compares
+Magneto2D with fresh, matched FEMM references across 30 fixtures: 27 PASS,
+2 FAIL and 1 unsupported. See [Validation](docs/VALIDATION.md#qualification-status)
+for the gates and limits.
 
-The qualification target is the included 8-pole/12-slot radial-flux SPM example
-with M350-50A steel, native Gmsh meshing, the Standard solve plan, and local
-Magneto2D execution. Numerical qualification remains pending; no motor path is
-yet release-qualified. Other configurations accepted by the runtime are
-experimental capabilities.
+- **Qualified:** SPM motors with concentrated or distributed windings, under
+  sinusoidal current or ideal six-step excitation, and flat-buried IPM motors.
+  Every v1.1 fixture in these families passes, using M350-50A steel, native
+  Gmsh meshing and local Magneto2D execution.
+- **Experimental:** V-shape IPM (two of six fixtures fail), and Halbach,
+  tutorial and generic-field workflows, which the benchmark does not measure.
+- **Unsupported:** multi-layer IPM rotors such as the Prius 2004 fixture.
 
 The guided SPM path includes both balanced sinusoidal current and ideal
 wye-connected 120-degree six-step excitation. Six-step runs preserve exact
@@ -70,9 +75,11 @@ report downloads. See [Halbach arrays](docs/HALBACH_ARRAY.md).
 - No broad Windows, macOS, or Linux support matrix is claimed. The exact system
   used for the release-candidate walkthrough must be recorded with its evidence;
   reports from other systems are welcome.
-- The planned numerical qualification covers one SPM path and remains pending.
-  IPM, distributed-winding, Halbach, tutorial, and generic-field surfaces may
-  be available, but they are not certified or launch-validated accuracy claims.
+- Qualification is agreement with FEMM, a reference 2D finite-element solver,
+  on the measured fixtures. It is not a hardware measurement or an engineering
+  certification, and it does not cover cogging, THD, airgap harmonics, losses
+  or thermal behavior. V-shape IPM, Halbach, tutorial, and generic-field
+  surfaces are experimental.
 - A dedicated cogging-torque results view is not included.
 - Compare is descriptive; it is not cross-solver parity, statistical
   validation, or an engineering certification.
