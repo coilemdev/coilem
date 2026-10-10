@@ -4,18 +4,18 @@
   "files": [
     {
       "path": "benchmark_report.md",
-      "bytes": 14662,
-      "sha256": "c50e0ab803dbc151ef79993d6fd92b0c9e2baa105a768c4f9e221b4112e3bce5"
+      "bytes": 14696,
+      "sha256": "b48421f451119b82e3cbf1c25dea7db9ced7083856e11615d2c266ce9afca570"
     },
     {
       "path": "benchmark_summary.json",
-      "bytes": 1049276,
-      "sha256": "eb4acbe7c6fc44f98b76d5f410e5825b9ffb523c63fe5a81e9c2bed2ea561fac"
+      "bytes": 1049458,
+      "sha256": "4b9e6e06259c45f61ba6ae3733e315006df67303ccf70ed5cd0fb72e79592859"
     },
     {
       "path": "coilem_benchmark_report.html",
-      "bytes": 294070,
-      "sha256": "545d390e265e49875093c960d45a13d36af25e205724b67e5c6e992ab2d8694b"
+      "bytes": 294138,
+      "sha256": "b70068ee04e9ca7b45db4db71fa513dbb9c4294a62bb46488e0e5b2c1318a82c"
     },
     {
       "path": "fixtures/bldc_spm_14p12s_high_pole.json",
@@ -269,13 +269,13 @@
     },
     {
       "path": "publication.json",
-      "bytes": 803,
-      "sha256": "b0939ca4f0c2b5da95a734fae9dff1d1bd108fc29ec54433c21a5a0d4dbfaca1"
+      "bytes": 862,
+      "sha256": "cd0e22f9607c16950a52ac85a624d56676d3f116e08866ba23a9f0e67cadf7b2"
     },
     {
       "path": "README.md",
-      "bytes": 3733,
-      "sha256": "3c6bfff922dc4d305f0cc2d0c1195ada5dfde387386289ad2bfeb8974605345e"
+      "bytes": 3726,
+      "sha256": "cf01f8cc07f7f24dcc418fd323f662f89e3d8a1527485a58b51ec3ab94d0a1b9"
     },
     {
       "path": "reference_conventions.md",

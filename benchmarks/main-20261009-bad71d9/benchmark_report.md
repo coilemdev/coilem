@@ -9,9 +9,9 @@ Fresh public native measurements use the OpenEM v0.2.5 matrix geometry and opera
 
 | Phase | Outcomes |
 | --- | --- |
-| A | 10 PASS |
-| B | 10 PASS, 2 FAIL |
-| C | 1 UNSUPPORTED, 4 PASS |
+| A - SPM | 10 PASS |
+| B - IPM | 10 PASS, 2 FAIL |
+| C - Distributed Winding | 1 UNSUPPORTED, 4 PASS |
 | D - BLDC | 3 PASS; 42 / 42 gates |
 
 ## Comparison policy

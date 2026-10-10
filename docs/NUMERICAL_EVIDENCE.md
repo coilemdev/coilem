@@ -3,7 +3,7 @@
 ## Public main snapshot benchmark report v1.1
 
 The [October 9 main snapshot report](../benchmarks/main-20261009-bad71d9/README.md) adds fresh
-A/B/C and BLDC measurements of public Coilem commit `bad71d9`, using public
+A/B/C/D measurements of public Coilem commit `bad71d9`, using public
 native defaults and matched FEMM references. The completed comparison has
 27 PASS, two Phase B IPM FAIL and one unsupported Prius fixture. Phase D
 reports BLDC: all three fixtures passed all fourteen gates (42/42). Thermal

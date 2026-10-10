@@ -30795,7 +30795,8 @@
       "portable fixture links",
       "local path/environment label aliases",
       "omit machine-specific launch commands and PIDs",
-      "Phase D labels the completed BLDC suite; thermal is a separate unsupported capability"
+      "Phase D labels the completed BLDC suite; thermal is a separate unsupported capability",
+      "Consistent A/B/C/D naming and phase topology labels"
     ],
     "numerical_values_and_verdicts_changed": false,
     "scripts_included": false,
@@ -30810,5 +30811,11 @@
       "status": "UNSUPPORTED",
       "reason": "Thermal coverage is unsupported by the public API and is outside the A-D benchmark matrix."
     }
+  },
+  "phase_labels": {
+    "A": "A - SPM",
+    "B": "B - IPM",
+    "C": "C - Distributed Winding",
+    "D": "D - BLDC"
   }
 }

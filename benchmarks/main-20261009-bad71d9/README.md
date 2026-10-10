@@ -1,6 +1,6 @@
 # Coilem main benchmark report v1.1
 
-Report revision **1.1** publishes the completed A/B/C and BLDC benchmark
+Report revision **1.1** publishes the completed A/B/C/D benchmark
 of Coilem **0.2.0**, Magneto2D **0.3.2**, at public commit
 `bad71d9cbcb10bf2daa293c5577f9d9e26778a12` captured on October 9, 2026.
 This report revision does not change the measured application version or claim
