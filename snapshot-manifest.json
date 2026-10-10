@@ -1150,8 +1150,8 @@
     },
     {
       "path": "docs/NUMERICAL_EVIDENCE.md",
-      "bytes": 12897,
-      "sha256": "4a7eae684651bf192154fd1e77a8680089123a744a19ee81766712b5f41d1cac"
+      "bytes": 12901,
+      "sha256": "9d8ba1ef1f342683da9cb6f2341baa53421627d4eef8e6348202d6ee5417424f"
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
@@ -2970,6 +2970,12 @@
       "base_commit": "55ab6b4460d09f27ee1487327b57b4a40a2b88ad",
       "path": "docs/NUMERICAL_EVIDENCE.md",
       "source_sha256": "af0b6544e84665afc9fae39d50f2b10e527c220f2db747071034ea09fdb1b43f",
+      "reason": "Link the completed public snapshot benchmark v1.1, retain failed and unsupported outcomes, and document versioned A/B/C/D reruns against saved references."
+    },
+    {
+      "base_commit": "e779a2c6962914deea0de4f53b93339e938117e8",
+      "path": "docs/NUMERICAL_EVIDENCE.md",
+      "source_sha256": "4a7eae684651bf192154fd1e77a8680089123a744a19ee81766712b5f41d1cac",
       "reason": "Link the completed public snapshot benchmark v1.1, retain failed and unsupported outcomes, and document versioned A/B/C/D reruns against saved references."
     }
   ]
