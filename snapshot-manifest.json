@@ -5,8 +5,8 @@
   "files": [
     {
       "path": ".gitattributes",
-      "sha256": "d60f352d0db1404c70afb4bb8b2ca3fd1c610572aa40720e8a0b7baa7885418c",
-      "bytes": 19
+      "bytes": 176,
+      "sha256": "d4911618dbef736d25c95c488e2bbdbe509bded33a3c559c61521e21949e8254"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -514,6 +514,441 @@
       "bytes": 1498
     },
     {
+      "path": "benchmarks/main-20261009-bad71d9/README.md",
+      "bytes": 3726,
+      "sha256": "cf01f8cc07f7f24dcc418fd323f662f89e3d8a1527485a58b51ec3ab94d0a1b9"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/artifact_manifest.json",
+      "bytes": 15433,
+      "sha256": "79ddbce02b693e3ef16d9c8d173ad7a443046a0d8afa87c1e1289774368423ed"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/benchmark_report.md",
+      "bytes": 14888,
+      "sha256": "c3b60d29df09a42218c05306884ffa8143a23d13c5db0671d9d4f0e5652867c6"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/benchmark_summary.json",
+      "bytes": 1049727,
+      "sha256": "6c5c7c63c0f2f6e89b9b02425390b66d570adc0f6b73104099af8b9303e5267a"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/coilem_benchmark_report.html",
+      "bytes": 294440,
+      "sha256": "b77ecd12a93dfc0c2498e8ad47ab8bcfedc3c7c13f7bd45d9e1a8f30fc6ed4ca"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_14p12s_high_pole.json",
+      "bytes": 1670,
+      "sha256": "2da4d771bdf7a367b4dd6c88bc4ccb41c1d03dd163d341fc99ec3b6aa3016d00"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_14p12s_high_pole_analytical.json",
+      "bytes": 1668,
+      "sha256": "18ddea5035192f409c54c59a99f682aa6ca8aafa58947b08ad310ea6c2e00806"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_14p12s_high_pole_femm-standard.json",
+      "bytes": 1670,
+      "sha256": "2da4d771bdf7a367b4dd6c88bc4ccb41c1d03dd163d341fc99ec3b6aa3016d00"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_14p12s_high_pole_native-fine.json",
+      "bytes": 1671,
+      "sha256": "aa2da80d9b7c2cc4b697bf829099906ea1d3d96709663b95c1f976fd218d7480"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_14p12s_high_pole_native-standard.json",
+      "bytes": 1670,
+      "sha256": "2da4d771bdf7a367b4dd6c88bc4ccb41c1d03dd163d341fc99ec3b6aa3016d00"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_4p12s_small.json",
+      "bytes": 1659,
+      "sha256": "7b14bb32c5c46f0fdb2652b6306bad65093eebb073180d4cd932e5923377dc45"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_4p12s_small_analytical.json",
+      "bytes": 1658,
+      "sha256": "87944a94e259d955d77bff1971f46790f864719bd00b4773ca81667907be26f8"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_4p12s_small_femm-standard.json",
+      "bytes": 1659,
+      "sha256": "7b14bb32c5c46f0fdb2652b6306bad65093eebb073180d4cd932e5923377dc45"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_4p12s_small_native-fine.json",
+      "bytes": 1660,
+      "sha256": "3f6ab9ebc78cde63f9f1a61af4d69f93c90206a5e71187c1cc576f6ee22a5325"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_4p12s_small_native-standard.json",
+      "bytes": 1659,
+      "sha256": "7b14bb32c5c46f0fdb2652b6306bad65093eebb073180d4cd932e5923377dc45"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_8p12s_reference.json",
+      "bytes": 1705,
+      "sha256": "c7c0657f31d62e1ddb62edcc07fa6838370a937aa6cdc4580d3cd443b6f0808c"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_8p12s_reference_analytical.json",
+      "bytes": 1704,
+      "sha256": "df88c4f821d8130c644244189a84e19841855c342c5cd3c4044bf3281c40ad8e"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_8p12s_reference_femm-standard.json",
+      "bytes": 1705,
+      "sha256": "c7c0657f31d62e1ddb62edcc07fa6838370a937aa6cdc4580d3cd443b6f0808c"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_8p12s_reference_native-fine.json",
+      "bytes": 1706,
+      "sha256": "95d7a030314366852c1b924d1c91895c945da92b52080a7f81ffb268c2919001"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_8p12s_reference_native-standard.json",
+      "bytes": 1705,
+      "sha256": "c7c0657f31d62e1ddb62edcc07fa6838370a937aa6cdc4580d3cd443b6f0808c"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/ipm_flat_12s10p_fscw_contract.json",
+      "bytes": 2600,
+      "sha256": "74358dbc72618a8d79432bbd8420a5ff5ad1936c8419ca3ceacfaa42642fa680"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/ipm_flat_24s16p_industrial_contract.json",
+      "bytes": 2641,
+      "sha256": "e7b4bf9b187c57976de7ef7851e62db63dbb0ff90196060f1d927cac32203402"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/ipm_flat_4p12s_micro_contract.json",
+      "bytes": 2593,
+      "sha256": "907592fae67a43464976f9c8153a0a82f7abbac51cb5fd5e4d489dbe79a70119"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract.json",
+      "bytes": 2627,
+      "sha256": "b1b664d37b65facde4941cd362b2fe1a3fbcbba94677a2e15ab2b6a6e85e874b"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/ipm_flat_8p12s_fsae_contract.json",
+      "bytes": 2640,
+      "sha256": "8070cb6d1281f900beed45ca729211327534b263db6ca28e4d9d2b58d2c15904"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract.json",
+      "bytes": 2639,
+      "sha256": "3d02199dc695dd6fd6d985ae9be5f66b10015ff1c45ecdf21015ba92ee30bef5"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/ipm_vshape_8p12s_baseline_contract.json",
+      "bytes": 2621,
+      "sha256": "0b74642e6e9cccd3b6cc4db05e934a4fccce8b0929cbf646d91d97b16d51a96f"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/ipm_vshape_8p12s_deep_apex_contract.json",
+      "bytes": 2620,
+      "sha256": "a59bfb2c176963c2c36d0e20e688c6825064addd06141c7f7b6a908ca19aa359"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/ipm_vshape_8p12s_narrow_angle_contract.json",
+      "bytes": 2621,
+      "sha256": "ba4e05a68783179e905416912dfcf1be03c757bd7ff13ea7f413b37617534441"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/ipm_vshape_8p12s_pocket_offset_contract.json",
+      "bytes": 2621,
+      "sha256": "63de352f24f9a62eeb4de789758217e66f37ce09743373e45028865fb0dc559f"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/ipm_vshape_8p12s_thin_bridge_contract.json",
+      "bytes": 2621,
+      "sha256": "69366d5331fbd7f54c8f5c718ec3fb582609908be3a56f622d041cb70fd0bd5e"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/ipm_vshape_8p12s_wide_angle_contract.json",
+      "bytes": 2620,
+      "sha256": "80bf5d3e593d30b1a9c01e2c9beeb6334762cafb36eb073661ff59e4efde1881"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/ornl_prius_2004_ipm.json",
+      "bytes": 2624,
+      "sha256": "d5d666befcf699b6e6a9515d6fc6926f8a10b2db5a912513e0b6f7f69c2a3337"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/source_spm_14p12s_high_pole.json",
+      "bytes": 1462,
+      "sha256": "68a8299c99c67dde26a48b315fc9b2925f2d8cb7317d0e0b3cb5198a4dbe73c7"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/source_spm_4p12s_small.json",
+      "bytes": 1452,
+      "sha256": "13ba8c8a3a42a0e15a77a2636c881f0e5dfa349fecf05aa0ed89d195661d7a6b"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/source_spm_8p12s_reference.json",
+      "bytes": 1498,
+      "sha256": "85312895c5aa54d65ed89e1b6569bccd8a11b9f1dafb0ae3ce280416efb9e8ea"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/spm_12p36s_distributed_femm_validation.json",
+      "bytes": 2599,
+      "sha256": "75f68857d14aba7bb1d92d3388185ac91a692ae4d0adf6d3dc5b5fccfb5b0fea"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple__baseline.json",
+      "bytes": 2597,
+      "sha256": "8683cfb2785aab77e2627428e1d85e9d339656b832cc1d28f0f9c71b2376ba44"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple__high_current.json",
+      "bytes": 2597,
+      "sha256": "0aa890a7f91080d325531249fe35db5e83a1188f7c4d2a924e8dd7aca58255c2"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple__tight_airgap.json",
+      "bytes": 2597,
+      "sha256": "8ac45848dd6e64b1056d6126dd8cc581e662b4a944fd2c505382b1c8feeedcda"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple_noload__baseline.json",
+      "bytes": 2596,
+      "sha256": "a2ea56eb54efd8121ba18bd56cf2aebb8cdee00fc45a34bf3b6a9279fe9d6441"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple_noload__high_current.json",
+      "bytes": 2596,
+      "sha256": "eb6ac4ab542644145605bc75689c5f59ff2a11bb44d48010fd2e469414cc5c38"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple_noload__tight_airgap.json",
+      "bytes": 2596,
+      "sha256": "e0ab8c2b89bd7f562c9c797763c6155f2c27f122fe6c177f5c69e8e4db021697"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p12s_concentrated__baseline.json",
+      "bytes": 2600,
+      "sha256": "e63edcc854d01e6c7ddb0c9ef83e6c6212bbb5ee10cf60de2e8f395219c342c7"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p12s_concentrated__high_current.json",
+      "bytes": 2600,
+      "sha256": "09f98ac8d479dfb1d5df1d44123ce498d37a7b43a769c4bdfa5c765044669dd9"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p12s_concentrated__tight_airgap.json",
+      "bytes": 2600,
+      "sha256": "d0a534dfba20d13a3a0ea96ac7a0e4640a9261dcb68dd095f86233a74c2a2969"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p12s_reference_angle30__baseline.json",
+      "bytes": 2644,
+      "sha256": "e9188508875a6b9b900229cec0dce6f8bfff862433bcd48eae666b1d26deeefd"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p24s_distributed_femm_validation.json",
+      "bytes": 2600,
+      "sha256": "394869d4f25cad92342e5d29c438ae742728ff459934f1dddb5e63f479fc2125"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p48s_chorded_5_6.json",
+      "bytes": 2595,
+      "sha256": "06a5da2f2fdf8368daf988fa8d9311f3526ac3adc6c0e29e2882f31e9dc56e8f"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p48s_distributed_femm_validation.json",
+      "bytes": 2598,
+      "sha256": "0020b4a8084c251f6b17cbc6fb1f4d3293bbc057502b846da0f10481689e5090"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/protocols/bldc_matrix.json",
+      "bytes": 742,
+      "sha256": "453327780d9a82f97e33d141bdd8cb6c9158500a10c1fbb0d4cbfccc7503e17e"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/protocols/golden_commutation_vectors.json",
+      "bytes": 6207,
+      "sha256": "0914644d93f05fa5738534c518e2ecffeca2d129d8a38fbe8b8df2f65c695b86"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/protocols/spm_14p12s_high_pole_refined.json",
+      "bytes": 3859,
+      "sha256": "10170a6cf48f89aa9c86337722fd1086abe98109d7751b6860c2f4249f161c59"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/protocols/spm_4p12s_small.json",
+      "bytes": 3380,
+      "sha256": "bba51d89538650dbbe3d3e600e198f6aa5b5cac7ca2345241ebdfea671634d2f"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/protocols/spm_8p12s_reference.json",
+      "bytes": 3385,
+      "sha256": "04cc1a160aba2940152c1a5d7fdf9d47f8a5a7398f9cbaad91b5bae635757bda"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/publication.json",
+      "bytes": 960,
+      "sha256": "7e5c52f827d2c40eda16dc45a91376e0bf4c32d19563a26e0a3dac4b08ef8548"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/reference_conventions.md",
+      "bytes": 3840,
+      "sha256": "0ce32789c93bbbd5b34b007fd5b0d94bb9b2facb11d254290c0150f224c029a8"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/bldc_spm_14p12s_high_pole.json",
+      "bytes": 76726,
+      "sha256": "220412fd547e8dbb89bf2b016abcba73d3950ba95c69425d2680a9a12232ef30"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/bldc_spm_4p12s_small.json",
+      "bytes": 55759,
+      "sha256": "af3f4cacf1a7daa28411698c239f31958965bc9fd8f59d6dbe3328f78b0a26a4"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/bldc_spm_8p12s_reference.json",
+      "bytes": 55568,
+      "sha256": "623c6389709e8e3d3a834c1518a8145c986255476529fb02b8b669998c5b0ef0"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/ipm_flat_12s10p_fscw_contract.json",
+      "bytes": 57419,
+      "sha256": "eeb0aa4e88f99c9d86c113b06a3184558a6af3b3eaec4bde17f2000fb452e7ae"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/ipm_flat_24s16p_industrial_contract.json",
+      "bytes": 75077,
+      "sha256": "2d0cdb39ece67197e4c02990f5168c665145780edd2bdb8dfd3b41d480a1e7c1"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/ipm_flat_4p12s_micro_contract.json",
+      "bytes": 58238,
+      "sha256": "bd37330f2cf696d71dc03e8a3792b126ef09073c4bd19944f4e78991258fe7dc"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/ipm_flat_8p12s_fsae_angled_pocket_contract.json",
+      "bytes": 57446,
+      "sha256": "b1b44fa14a9de46ab6e63cf92c566d4c24ea06c5330efafbd8c3c63d1314144e"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/ipm_flat_8p12s_fsae_contract.json",
+      "bytes": 57385,
+      "sha256": "21fa43e57ef30082e08bc1d5ed7b1c52d177cb2f718b080d91c3c1773569963a"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/ipm_flat_8p12s_fsae_thin_bridge_contract.json",
+      "bytes": 57388,
+      "sha256": "d448573853aa4b2664deb38d9f5a99fb416e219f4117ad51d3bec8b89426dde6"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/ipm_vshape_8p12s_baseline_contract.json",
+      "bytes": 57563,
+      "sha256": "f9bda94d44471fde822afe9d9c9aedacb33a68f1d29833f6327e22178fd76b10"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/ipm_vshape_8p12s_deep_apex_contract.json",
+      "bytes": 58485,
+      "sha256": "c0c8ada1722dba24509bc23b7ce2111217f7e645dfb266198db8b479408e0871"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/ipm_vshape_8p12s_narrow_angle_contract.json",
+      "bytes": 57600,
+      "sha256": "26c600f5e9cbea5a09b1130ffd3ef2cd6b994072cae0b0e28f203755ed306db5"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/ipm_vshape_8p12s_pocket_offset_contract.json",
+      "bytes": 57578,
+      "sha256": "c386f28fa73f6fa3cec114e05759aaa0a2dbeb9dfe1f4617a63195121681b5d4"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/ipm_vshape_8p12s_thin_bridge_contract.json",
+      "bytes": 57397,
+      "sha256": "0fd7124a4930edff5e3f1b0ce08877d9fb83e485166297b669e80292e9e3336d"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/ipm_vshape_8p12s_wide_angle_contract.json",
+      "bytes": 58106,
+      "sha256": "e4eb41a2cf351a9a1b09ddc6754ccb8f4ed91c7fd0df970ce60668a3213c152d"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/ornl_prius_2004_ipm.json",
+      "bytes": 6063,
+      "sha256": "5cdcce0c00c95b72390b43d2b7027e550b383d5998414d2e604623b165c84e05"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/spm_12p36s_distributed_femm_validation.json",
+      "bytes": 92127,
+      "sha256": "4c49a767fdb9bd9b0d364b8e1c898f08b493ba22e66cdedd2c60161fbbb9c965"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/spm_4p12s_simple__baseline.json",
+      "bytes": 66334,
+      "sha256": "dcfbbe1856a9a4f4b5fa26ed1dbbfc6a3e2426fdd832ef520169e54845b9570b"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/spm_4p12s_simple__high_current.json",
+      "bytes": 66481,
+      "sha256": "e18858ba72bc1df2070a4a2b6044f6a9d13cc7d3031164aa964afa45f5e59fab"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/spm_4p12s_simple__tight_airgap.json",
+      "bytes": 66204,
+      "sha256": "1f57d9863c2049490dbb215e632fc8c3b3a666114c911c77b5e1e008348e3a8b"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/spm_4p12s_simple_noload__baseline.json",
+      "bytes": 64554,
+      "sha256": "3f5e993599f4a98d94caeebec89877fc08ddeffc20c47ac390a3b61504929ecc"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/spm_4p12s_simple_noload__high_current.json",
+      "bytes": 66502,
+      "sha256": "948bec77a7382cde08bf817627e75b2b978e709f659f413775ff680251a4c37d"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/spm_4p12s_simple_noload__tight_airgap.json",
+      "bytes": 64485,
+      "sha256": "1f4f6566fd4a906c4bf3f364d62845adb9a938ddcc75989df8abe6de8e74970e"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/spm_8p12s_concentrated__baseline.json",
+      "bytes": 66165,
+      "sha256": "3246f67e77730be1beed0840ab788d06a689e72ac8f08570d3b4581ba2eda6b4"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/spm_8p12s_concentrated__high_current.json",
+      "bytes": 66159,
+      "sha256": "18b2c36adeeedba0c68e273be10c01664c35fbfbd69088fb2a815f1bab45bf43"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/spm_8p12s_concentrated__tight_airgap.json",
+      "bytes": 65998,
+      "sha256": "a41a295de242ea59d896f659722a1c532404a947f4740278f8667eb1640a56fc"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/spm_8p12s_reference_angle30__baseline.json",
+      "bytes": 66078,
+      "sha256": "86143fa32f1cb6adc6029d1ba89375a020a82eedbc05227d060d3a6ba7b0e6cd"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/spm_8p24s_distributed_femm_validation.json",
+      "bytes": 75064,
+      "sha256": "e66ea8867125a83c46f93dce7fd5b2311f29e1adea6d6ec2170190c894b4247b"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/spm_8p48s_chorded_5_6.json",
+      "bytes": 133518,
+      "sha256": "d8b72260371066e46c6bf5875faba348caf1b6652e51b23a9c6332c317ee614f"
+    },
+    {
+      "path": "benchmarks/main-20261009-bad71d9/rows/spm_8p48s_distributed_femm_validation.json",
+      "bytes": 110120,
+      "sha256": "cab67b466111f247ca2338eea74dc03da030710cf8b90e8b0561a26e350ada96"
+    },
+    {
       "path": "benchmarks/preview-evidence/results.json",
       "sha256": "896b1de19e360dfc8ef762095e6c9c15c8c128c5b87e2def15794d7bfe0e02bc",
       "bytes": 763480
@@ -555,8 +990,8 @@
     },
     {
       "path": "docs/NUMERICAL_EVIDENCE.md",
-      "sha256": "3338a2420813929642c30bfb75f799f2de86a9a57607ac69bea45b730436a3c3",
-      "bytes": 8206
+      "bytes": 8900,
+      "sha256": "af0b6544e84665afc9fae39d50f2b10e527c220f2db747071034ea09fdb1b43f"
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",

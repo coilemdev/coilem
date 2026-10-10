@@ -1,0 +1,83 @@
+{
+  "schema": "openem.bldc_s57_validation_protocol/v1",
+  "registered_date": "2026-09-24",
+  "registered_before_full_evidence": true,
+  "fixture": {
+    "path": "benchmarks/bldc_release/fixtures/spm_4p12s_small.json",
+    "sha256": "13ba8c8a3a42a0e15a77a2636c881f0e5dfa349fecf05aa0ed89d195661d7a6b",
+    "topology": "SPM",
+    "slots": 12,
+    "poles": 4,
+    "stator_steel": "M350-50A",
+    "rotor_steel": "M350-50A",
+    "electrical_steel_curve_path": "materials/electrical-steel/M350-50A.csv",
+    "electrical_steel_curve_sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d"
+  },
+  "excitation": {
+    "mode": "ideal_six_step_120",
+    "connection": "wye",
+    "current_definition": "conducting_phase_plateau_A",
+    "product_current_A": 15.0,
+    "analytical_current_A": 1.5,
+    "commutation_advance_deg": 0.0,
+    "rotation_convention": "public_clockwise_positive",
+    "current_table_path": "validation/s54_bldc_six_step_convention/golden_vectors.json",
+    "current_table_sha256": "0914644d93f05fa5738534c518e2ecffeca2d129d8a38fbe8b8df2f65c695b86"
+  },
+  "matrix": {
+    "cross_lane_product": {
+      "solvers": [
+        "Magneto2D",
+        "FEMM"
+      ],
+      "mesh_policy": {
+        "Magneto2D": "native Gmsh normal remesh-per-step",
+        "FEMM": "native FEMM mesh"
+      },
+      "electrical_angle_start_deg": 0.0,
+      "electrical_angle_stop_exclusive_deg": 360.0,
+      "electrical_angle_step_deg": 7.5,
+      "sample_count": 48
+    },
+    "native_fine_convergence": {
+      "solver": "Magneto2D",
+      "mesh_policy": "native Gmsh normal remesh-per-step",
+      "electrical_angle_start_deg": 0.0,
+      "electrical_angle_stop_exclusive_deg": 360.0,
+      "electrical_angle_step_deg": 3.75,
+      "sample_count": 96
+    },
+    "low_current_power_discriminator": {
+      "solver": "Magneto2D",
+      "mesh_policy": "native Gmsh normal remesh-per-step",
+      "electrical_angle_start_deg": 0.0,
+      "electrical_angle_stop_exclusive_deg": 360.0,
+      "electrical_angle_step_deg": 3.75,
+      "sample_count": 96,
+      "rated_speed_rpm": 6000.0,
+      "relation": "mean(e_a*i_a + e_b*i_b + e_c*i_c) / omega_mech equals mean electromagnetic torque",
+      "expected_sign": "positive_motoring"
+    }
+  },
+  "metrics": {
+    "mean_torque_delta_pct": "abs(mean_m2d - mean_femm) / abs(mean_femm) * 100",
+    "torque_waveform_nrmse_pct": "rms(m2d - femm) / rms(femm) * 100 on the exact aligned public-angle grid",
+    "torque_ripple_pct": "(max(torque) - min(torque)) / abs(mean(torque)) * 100",
+    "power_torque_delta_pct": "abs(mean(sum(e_phase*i_phase))/omega_mech - mean_torque) / abs(mean_torque) * 100"
+  },
+  "gates": {
+    "current_zero_sum_abs_A_max": 1e-09,
+    "current_plateau_abs_A_max": 1e-09,
+    "mean_torque_delta_pct_max": 5.0,
+    "torque_waveform_nrmse_pct_max": 10.0,
+    "commutation_transition_delta_samples_max": 1,
+    "power_torque_delta_pct_max": 10.0,
+    "native_standard_to_fine_mean_torque_delta_pct_max": 2.0,
+    "native_standard_to_fine_ripple_delta_percentage_points_max": 5.0,
+    "sine_regression_policy": "bit-identical selected golden values and all existing suite tolerances green"
+  },
+  "decision_policy": {
+    "pass": "all gates pass and no unresolved P0 scientific defect remains",
+    "fail": "any missing or failed gate produces NOT PROMOTABLE; thresholds are not widened after evidence"
+  }
+}

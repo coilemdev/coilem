@@ -1,0 +1,20 @@
+{
+  "schema": "openem.bldc_release_matrix/v1",
+  "cases": [
+    {
+      "id": "spm_4p12s_small",
+      "protocol_path": "benchmarks/bldc_release/protocols/spm_4p12s_small.json",
+      "protocol_sha256": "8f74e1521bfceafd081b97e793dcccef5608124bdbde8d9927516121d7c9966d"
+    },
+    {
+      "id": "spm_8p12s_reference",
+      "protocol_path": "benchmarks/bldc_release/protocols/spm_8p12s_reference.json",
+      "protocol_sha256": "21dc7c1d97602600966cb311abde4388b192392373f8b1029ecb8ced29d0e178"
+    },
+    {
+      "id": "spm_14p12s_high_pole",
+      "protocol_path": "benchmarks/bldc_release/protocols/spm_14p12s_high_pole_refined.json",
+      "protocol_sha256": "b4d2b5181b636434b767d2535ffa90d47b212928e663e50815132a61759de93c"
+    }
+  ]
+}
