@@ -1150,8 +1150,8 @@
     },
     {
       "path": "docs/NUMERICAL_EVIDENCE.md",
-      "bytes": 14230,
-      "sha256": "f3faba570fd5115f561f7738073ba90c8d5612585eb292c5a65970bdeaed0fb9"
+      "bytes": 14410,
+      "sha256": "f1ea5e0a4fbf0c4324a41f77f64bd5e0eac0885ec182a9588eed37511da5d6c3"
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
@@ -1165,8 +1165,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "sha256": "78f119baf5fbfc0e443fa367495a20f97f97c464a0007cd6db681483d2d07310",
-      "bytes": 10552
+      "sha256": "40fee1298b013659037932f31b5782986808737531518a7f56876308645c69cd",
+      "bytes": 11541
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -3037,6 +3037,18 @@
       "path": "docs/VERIFICATION.md",
       "source_sha256": "13a2d8acdfd4dba9b5db138f640d021fa8887efffbb582ea51af4e768a805c7a",
       "reason": "Reference the v1.1 qualification record instead of pending numerical qualification."
+    },
+    {
+      "base_commit": "a1be54923c2cef60ab00a03b87453c73f7703300",
+      "path": "docs/NUMERICAL_EVIDENCE.md",
+      "source_sha256": "f3faba570fd5115f561f7738073ba90c8d5612585eb292c5a65970bdeaed0fb9",
+      "reason": "Link the v1.1 qualification record to the reproduced-verdict rerun on public main 45e0a5c."
+    },
+    {
+      "base_commit": "a1be54923c2cef60ab00a03b87453c73f7703300",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "78f119baf5fbfc0e443fa367495a20f97f97c464a0007cd6db681483d2d07310",
+      "reason": "Record the A/B/C/D rerun on public main 45e0a5c against the retained v1.1 references: every verdict reproduced."
     }
   ]
 }

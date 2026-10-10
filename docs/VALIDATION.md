@@ -70,6 +70,27 @@ Phase D covers ideal six-step 120-degree wye BLDC; thermal analysis is outside
 A/B/C/D. See [Numerical evidence](NUMERICAL_EVIDENCE.md#public-main-snapshot-benchmark-report-v11)
 for the measured values and interpretation limits.
 
+### Rerun on public main `45e0a5c`
+
+On 2026-10-10 the same harness and protocol (1.0.0) measured public main
+`45e0a5c7662ade04a4be5519b7e5bac771a6122f` on macOS 15.7.3 arm64 (Python
+3.12.13, Gmsh 4.15.2) against the retained v1.1 FEMM references. It
+reproduced every v1.1 verdict:
+
+| Phase | v1.1 at `bad71d9` | Rerun at `45e0a5c` |
+| --- | --- | --- |
+| A - SPM | 10 PASS | 10 PASS |
+| B - IPM | 10 PASS, 2 FAIL | 10 PASS, 2 FAIL (same fixtures) |
+| C - Distributed Winding | 4 PASS, 1 UNSUPPORTED | 4 PASS, 1 UNSUPPORTED |
+| D - BLDC | 3 PASS; 42/42 gates | 3 PASS; 42/42 gates |
+
+Across passing A/B/C fixtures, the gated torque and Back-EMF differences
+moved by at most 0.17 percentage points. The failing V-shape metrics moved by
+at most 0.9 points: wide-angle mean torque went from 12.41% to 13.28% (still
+YELLOW), and its Back-EMF peak from 25.16% to 25.78%. This is new native
+evidence against retained references, not a regenerated FEMM baseline; the
+command above reproduces it.
+
 To measure a new checkout against the saved, audited FEMM data after the
 documented Python and Rust setup:
 
