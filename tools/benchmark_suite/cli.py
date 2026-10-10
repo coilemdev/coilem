@@ -30,6 +30,14 @@ from tools.benchmark_suite.report import build
 from tools.benchmark_suite.worker import compact
 
 
+def native_runtime_root(directory):
+    path = str((directory / "native-runtime").resolve())
+    if os.name == "nt":
+        # Persisted mesh/frame filenames can exceed Windows' legacy 260-character limit.
+        return "\\\\?\\UNC\\" + path[2:] if path.startswith("\\\\") else "\\\\?\\" + path
+    return path
+
+
 def inputs(spec, selected):
     golden = checked_json(ROOT, spec["golden"], spec["golden_sha256"])
     configs, protocols = {}, {}
@@ -226,7 +234,7 @@ def execute(args):
             job.update(status="RUNNING", started_at=now())
             write(path, manifest)
             print(f"{job['phase']} / {job['case_id']} / {job['stage']}: starting native solve", flush=True)
-            env = dict(os.environ, PYTHONUNBUFFERED="1", PYTHONUTF8="1", COILEM_USER_DATA_ROOT=str(directory / "native-runtime"))
+            env = dict(os.environ, PYTHONUNBUFFERED="1", PYTHONUTF8="1", COILEM_USER_DATA_ROOT=native_runtime_root(directory))
             env.pop("PYTHONPATH", None)
             with (directory / "worker.log").open("ab") as log:
                 process = subprocess.Popen(

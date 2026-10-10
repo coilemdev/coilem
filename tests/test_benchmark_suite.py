@@ -1,6 +1,7 @@
 """Regression coverage for frozen-reference reuse and unchanged numerical gates."""
 
 import copy
+import os
 import subprocess
 import sys
 from collections import Counter
@@ -285,7 +286,11 @@ def test_orchestrator_resume_and_report_only_preserve_completed_jobs(tmp_path, m
             launches.append(command)
             request_path = Path(command[command.index("--request") + 1])
             output_path = Path(command[command.index("--output") + 1])
-            assert kwargs["env"]["COILEM_USER_DATA_ROOT"] == str(output_path.parent / "native-runtime")
+            cache_root = kwargs["env"]["COILEM_USER_DATA_ROOT"]
+            if os.name == "nt":
+                assert cache_root.startswith("\\\\?\\")
+                cache_root = cache_root[4:]
+            assert cache_root == str(output_path.parent / "native-runtime")
             request = read(request_path)
             if phase == "A":
                 result = recorded["candidate"]
