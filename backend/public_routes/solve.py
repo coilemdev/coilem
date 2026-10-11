@@ -38,6 +38,7 @@ from backend.public_policy import (
     public_config_support_error,
 )
 from backend.qualification import classify_qualification
+from backend.solve_estimate import estimate_solve, prepared_mesh_elements
 from backend.solve_workspace import (
     RUN_ARTIFACT_PREFIX,
     SolveRunWriter,
@@ -1060,7 +1061,7 @@ async def validate_solve(body: dict[str, Any]) -> dict[str, Any]:
     """Validate the launch-supported solve and return local estimates."""
 
     try:
-        config, _, solver_id, _ = _validated_solve_request(body)
+        config, solve_mesh_key, solver_id, _ = _validated_solve_request(body)
     except PublicConfigError as exc:
         raise _public_config_http_error(exc) from exc
 
@@ -1075,38 +1076,28 @@ async def validate_solve(body: dict[str, Any]) -> dict[str, Any]:
     ]
     solve_params = config.solve_params
     assert solve_params is not None
-    pole_pairs = config.rotor.pole_count // 2
-    include_no_load = (
-        True
-        if config.solve_options is None
-        else bool(config.solve_options.back_emf or config.solve_options.thd_analysis)
-    )
     sweep_positions, _ = loaded_sweep_plan(config)
-    estimated_time_s = solve_params.estimate_solve_time_s(
-        pole_pairs,
-        include_no_load=include_no_load,
-    )
-    if solver_id == "elmer":
-        estimated_time_s *= 3.0
-    estimated_elements = (
-        config.stator.slot_count * 500
-        + config.rotor.pole_count * 200
-        + 5000
+    estimate = estimate_solve(
+        config,
+        mesh_elements=prepared_mesh_elements(solve_mesh_key, config),
+        solver_id=solver_id,
     )
     warnings = winding_feasibility_warnings(config)
-    if estimated_time_s > 120:
+    if estimate.seconds > 120 and solve_params.solve_quality != "quick":
         warnings.append(
-            "Estimated solve time exceeds two minutes; use quick quality for iteration.",
+            "Estimated solve time exceeds two minutes; use the Preview plan for iteration.",
         )
-    if estimated_elements > 100000:
+    if estimate.mesh_elements > 100000:
         warnings.append("Estimated mesh exceeds 100,000 elements and may be slow.")
 
     return {
         "valid": not error_list,
         "errors": error_list,
         "warnings": warnings,
-        "estimated_solve_time_s": round(estimated_time_s, 1),
-        "estimated_mesh_elements": estimated_elements,
+        "estimated_solve_time_s": round(estimate.seconds, 1),
+        "estimated_solve_time_range_s": [round(estimate.low_s), round(estimate.high_s)],
+        "estimated_mesh_elements": estimate.mesh_elements,
+        "estimated_mesh_elements_source": estimate.mesh_elements_source,
         "solve_quality": solve_params.solve_quality,
         "step_deg": solve_params.effective_step_deg(),
         "sweep_positions": sweep_positions,

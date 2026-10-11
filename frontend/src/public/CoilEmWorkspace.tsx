@@ -2159,6 +2159,18 @@ function defaultRunPlanWidth(): number {
   return Math.min(RUN_PLAN_COMFORT_MAX_WIDTH, Math.max(RUN_PLAN_MIN_WIDTH, Math.round(window.innerWidth * 0.175)));
 }
 
+/** "about 30–55 s" or "about 2–4 min": a range, because run time varies by computer. */
+function formatRunTimeRange(validation: SolveValidation): string {
+  const [low, high] = validation.estimated_solve_time_range_s
+    ?? [validation.estimated_solve_time_s, validation.estimated_solve_time_s];
+  if (high < 90) {
+    const lowS = Math.max(5, Math.floor(low / 5) * 5);
+    return `about ${lowS}–${Math.max(lowS + 5, Math.ceil(high / 5) * 5)} s`;
+  }
+  const lowMin = Math.max(1, Math.floor(low / 60));
+  return `about ${lowMin}–${Math.max(lowMin + 1, Math.ceil(high / 60))} min`;
+}
+
 function solveStageLabel(progress: PublicSolveProgress | null, busy: PublicBusyAction): string {
   if (busy === 'mesh') return 'Preparing mesh';
   const stage = progress?.stage;
@@ -2474,7 +2486,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
     : solvePlans.find((plan) => plan.value === config.solve_params.solve_quality)?.label
       ?? config.solve_params.solve_quality;
   const estimatedTimeText = validation
-    ? `~${formatNumber(validation.estimated_solve_time_s, 0)} s solver`
+    ? formatRunTimeRange(validation)
     : validationChecking
       ? 'Calculating…'
       : 'Estimate unavailable';
@@ -2888,7 +2900,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
             <p className="public-plan-advisory">Preview is intended for iteration, not final result sign-off.</p>
           )}
         </div>
-        <p className="public-timing-note">Solver estimate only. Playback and saving add time; total duration varies by computer.</p>
+        <p className="public-timing-note">Run-time estimate covering meshing, solving, playback and saving, from the prepared mesh. It varies by computer.</p>
         <details ref={advancedOptionsRef} className="public-advanced-options" open={advancedOpen} onToggle={(event) => setAdvancedOpen(event.currentTarget.open)}>
           <summary>
             <span>Advanced options</span>
@@ -3076,7 +3088,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               </div>
               <div><dt>Corner refinement</dt><dd className={mesh && appliedRefinement ? 'pass' : ''}>{mesh ? (appliedRefinement ? 'Applied' : 'Off') : 'Pending'}</dd></div>
               <div><dt>Positions</dt><dd>{validationChecking ? 'Calculating…' : validation?.sweep_positions ?? 'Unavailable'}</dd></div>
-              <div><dt>Solver estimate</dt><dd>{estimatedTimeText}</dd></div>
+              <div><dt>Run-time estimate</dt><dd>{estimatedTimeText}</dd></div>
               <div><dt>Qualification</dt><dd>{validationQualification ? QUALIFICATION_LABELS[validationQualification.status] : validationChecking ? 'Calculating…' : 'Unavailable'}</dd></div>
             </dl>
           </div>

@@ -1,0 +1,380 @@
+{
+ "description": "Wall-clock /solve/stream times for the bundled examples, measured through the local API the way the UI runs them (mesh preview, validate, stream). designs holds each design at the Standard plan; tests apply the other plans' settings. mesh_elements is the prepared mesh's triangle count.",
+ "measured_with": {
+  "coilem": "0.2.0",
+  "magneto2d": "0.3.2",
+  "machine": "Apple silicon laptop, 10 cores, macOS 15",
+  "date": "2026-10-11",
+  "gmsh_producer_workers": 8
+ },
+ "designs": {
+  "spm_8p12s": {
+   "schema_version": "1.0",
+   "topology": "SPM",
+   "stator": {
+    "OD_mm": 200,
+    "ID_mm": 120,
+    "slot_count": 12,
+    "stack_length_mm": 100,
+    "slot_opening_mm": 6,
+    "tooth_width_mm": 26.2,
+    "yoke_thickness_mm": 18,
+    "tooth_shoe_enabled": true,
+    "tooth_shoe_height_mm": 2.5,
+    "tooth_shoe_overhang_mm": 1.5
+   },
+   "rotor": {
+    "OD_mm": 110,
+    "ID_mm": 30,
+    "magnet_thickness_mm": 4,
+    "magnet_width_mm": 31.4,
+    "pole_count": 8,
+    "magnet_embrace": 0.7,
+    "bridge_thickness_mm": 1,
+    "ipm_topology": "flat_buried",
+    "flat_buried_magnet_shape": "straight",
+    "side_bridge_thickness_mm": 1.2,
+    "pocket_clearance_mm": 0.25,
+    "magnet_angle_deg": 0,
+    "v_angle_deg": 60,
+    "v_depth_mm": 8,
+    "inner_web_thickness_mm": 2,
+    "outer_bridge_thickness_mm": 1.5
+   },
+   "winding": {
+    "type": "concentrated",
+    "turns_per_coil": 15,
+    "layers": 1,
+    "parallel_paths": 2
+   },
+   "materials": {
+    "stator_steel": "M350-50A",
+    "rotor_steel": "M350-50A",
+    "magnet_grade": "N42",
+    "conductor": "copper"
+   },
+   "solve_params": {
+    "solve_quality": "standard",
+    "rotor_sweep_range_deg": 60,
+    "rotor_step_deg": 15,
+    "mesh_density": "normal",
+    "mesh_source": "native",
+    "mesher": "gmsh",
+    "corner_refinement": true,
+    "rotor_rotation_model": "remesh_per_step",
+    "torque_method": "weighted_stress",
+    "nonlinear_solver": "picard",
+    "linear_solver_preconditioner": "direct",
+    "current_amplitude_A": 30,
+    "current_amplitude_convention": "rms",
+    "current_angle_deg": 0,
+    "excitation_mode": "sinusoidal",
+    "commutation_advance_deg": 0,
+    "phase_connection": "wye",
+    "rated_speed_rpm": 2400
+   },
+   "solve_options": {
+    "torque_sweep": true,
+    "back_emf": true,
+    "flux_density": true,
+    "cogging_torque": false,
+    "torque_speed_envelope": false,
+    "thd_analysis": true
+   }
+  },
+  "ipm_10p_v": {
+   "schema_version": "1.0",
+   "topology": "IPM",
+   "stator": {
+    "OD_mm": 180,
+    "ID_mm": 110,
+    "slot_count": 12,
+    "stack_length_mm": 90,
+    "slot_opening_mm": 4.8,
+    "tooth_width_mm": 22,
+    "yoke_thickness_mm": 16,
+    "tooth_shoe_enabled": false,
+    "tooth_shoe_height_mm": 1.5,
+    "tooth_shoe_overhang_mm": 1.5
+   },
+   "rotor": {
+    "OD_mm": 108,
+    "ID_mm": 32,
+    "magnet_thickness_mm": 4,
+    "magnet_width_mm": 14,
+    "pole_count": 10,
+    "magnet_embrace": 0.76,
+    "bridge_thickness_mm": 1.5,
+    "ipm_topology": "v_shape",
+    "flat_buried_magnet_shape": "straight",
+    "side_bridge_thickness_mm": 1.5,
+    "pocket_clearance_mm": 0.35,
+    "magnet_angle_deg": 0,
+    "v_angle_deg": 65,
+    "v_depth_mm": 18,
+    "inner_web_thickness_mm": 6,
+    "outer_bridge_thickness_mm": 1.5
+   },
+   "winding": {
+    "type": "concentrated",
+    "turns_per_coil": 12,
+    "layers": 1,
+    "parallel_paths": 2
+   },
+   "materials": {
+    "stator_steel": "M350-50A",
+    "rotor_steel": "M350-50A",
+    "magnet_grade": "N42",
+    "conductor": "copper"
+   },
+   "solve_params": {
+    "solve_quality": "standard",
+    "rotor_sweep_range_deg": 60,
+    "rotor_step_deg": 15,
+    "mesh_density": "normal",
+    "mesh_source": "native",
+    "mesher": "gmsh",
+    "corner_refinement": true,
+    "rotor_rotation_model": "remesh_per_step",
+    "torque_method": "weighted_stress",
+    "nonlinear_solver": "picard",
+    "linear_solver_preconditioner": "direct",
+    "current_amplitude_A": 35,
+    "current_amplitude_convention": "rms",
+    "current_angle_deg": 20,
+    "excitation_mode": "sinusoidal",
+    "commutation_advance_deg": 0,
+    "phase_connection": "wye",
+    "rated_speed_rpm": 3000
+   },
+   "solve_options": {
+    "torque_sweep": true,
+    "back_emf": true,
+    "flux_density": true,
+    "cogging_torque": false,
+    "torque_speed_envelope": false,
+    "thd_analysis": true
+   }
+  },
+  "ipm_14p_flat": {
+   "schema_version": "1.0",
+   "topology": "IPM",
+   "stator": {
+    "OD_mm": 320,
+    "ID_mm": 210,
+    "slot_count": 18,
+    "stack_length_mm": 180,
+    "slot_opening_mm": 6,
+    "tooth_width_mm": 28,
+    "yoke_thickness_mm": 26,
+    "tooth_shoe_enabled": false,
+    "tooth_shoe_height_mm": 1.5,
+    "tooth_shoe_overhang_mm": 1.5
+   },
+   "rotor": {
+    "OD_mm": 208,
+    "ID_mm": 70,
+    "magnet_thickness_mm": 7,
+    "magnet_width_mm": 34,
+    "pole_count": 14,
+    "magnet_embrace": 0.74,
+    "bridge_thickness_mm": 2,
+    "ipm_topology": "flat_buried",
+    "flat_buried_magnet_shape": "straight",
+    "side_bridge_thickness_mm": 2,
+    "pocket_clearance_mm": 0.4,
+    "magnet_angle_deg": 0,
+    "v_angle_deg": 60,
+    "v_depth_mm": 18,
+    "inner_web_thickness_mm": 6,
+    "outer_bridge_thickness_mm": 2
+   },
+   "winding": {
+    "type": "concentrated",
+    "turns_per_coil": 10,
+    "layers": 1,
+    "parallel_paths": 3
+   },
+   "materials": {
+    "stator_steel": "M350-50A",
+    "rotor_steel": "M350-50A",
+    "magnet_grade": "N42",
+    "conductor": "copper"
+   },
+   "solve_params": {
+    "solve_quality": "standard",
+    "rotor_sweep_range_deg": 45,
+    "rotor_step_deg": 11.25,
+    "mesh_density": "normal",
+    "mesh_source": "native",
+    "mesher": "gmsh",
+    "corner_refinement": true,
+    "rotor_rotation_model": "remesh_per_step",
+    "torque_method": "weighted_stress",
+    "nonlinear_solver": "picard",
+    "linear_solver_preconditioner": "direct",
+    "current_amplitude_A": 80,
+    "current_amplitude_convention": "rms",
+    "current_angle_deg": 25,
+    "excitation_mode": "sinusoidal",
+    "commutation_advance_deg": 0,
+    "phase_connection": "wye",
+    "rated_speed_rpm": 1800
+   },
+   "solve_options": {
+    "torque_sweep": true,
+    "back_emf": true,
+    "flux_density": true,
+    "cogging_torque": false,
+    "torque_speed_envelope": false,
+    "thd_analysis": true
+   }
+  },
+  "spm_24p": {
+   "schema_version": "1.0",
+   "topology": "SPM",
+   "stator": {
+    "OD_mm": 90,
+    "ID_mm": 56,
+    "slot_count": 27,
+    "stack_length_mm": 35,
+    "slot_opening_mm": 2.1,
+    "tooth_width_mm": 4.6,
+    "yoke_thickness_mm": 5,
+    "tooth_shoe_enabled": false,
+    "tooth_shoe_height_mm": 1.5,
+    "tooth_shoe_overhang_mm": 1.5
+   },
+   "rotor": {
+    "OD_mm": 48,
+    "ID_mm": 12,
+    "magnet_thickness_mm": 3,
+    "magnet_width_mm": 5.2,
+    "pole_count": 24,
+    "magnet_embrace": 0.78,
+    "bridge_thickness_mm": 1,
+    "ipm_topology": "flat_buried",
+    "flat_buried_magnet_shape": "straight",
+    "side_bridge_thickness_mm": 1,
+    "pocket_clearance_mm": 0.2,
+    "magnet_angle_deg": 0,
+    "v_angle_deg": 60,
+    "v_depth_mm": 6,
+    "inner_web_thickness_mm": 2,
+    "outer_bridge_thickness_mm": 1
+   },
+   "winding": {
+    "type": "concentrated",
+    "turns_per_coil": 18,
+    "layers": 1,
+    "parallel_paths": 3
+   },
+   "materials": {
+    "stator_steel": "M350-50A",
+    "rotor_steel": "M350-50A",
+    "magnet_grade": "N42",
+    "conductor": "copper"
+   },
+   "solve_params": {
+    "solve_quality": "standard",
+    "rotor_sweep_range_deg": 30,
+    "rotor_step_deg": 7.5,
+    "mesh_density": "normal",
+    "mesh_source": "native",
+    "mesher": "gmsh",
+    "corner_refinement": true,
+    "rotor_rotation_model": "remesh_per_step",
+    "torque_method": "weighted_stress",
+    "nonlinear_solver": "picard",
+    "linear_solver_preconditioner": "direct",
+    "current_amplitude_A": 8,
+    "current_amplitude_convention": "rms",
+    "current_angle_deg": 0,
+    "excitation_mode": "sinusoidal",
+    "commutation_advance_deg": 0,
+    "phase_connection": "wye",
+    "rated_speed_rpm": 6000
+   },
+   "solve_options": {
+    "torque_sweep": true,
+    "back_emf": true,
+    "flux_density": true,
+    "cogging_torque": false,
+    "torque_speed_envelope": false,
+    "thd_analysis": true
+   }
+  }
+ },
+ "runs": [
+  {
+   "design": "spm_8p12s",
+   "plan": "quick",
+   "mesh_elements": 13948,
+   "measured_s": 41.35,
+   "previous_estimate_s": 71.4
+  },
+  {
+   "design": "ipm_10p_v",
+   "plan": "quick",
+   "mesh_elements": 15860,
+   "measured_s": 50.05,
+   "previous_estimate_s": 71.4
+  },
+  {
+   "design": "ipm_14p_flat",
+   "plan": "quick",
+   "mesh_elements": 18654,
+   "measured_s": 119.15,
+   "previous_estimate_s": 54.6
+  },
+  {
+   "design": "spm_24p",
+   "plan": "quick",
+   "mesh_elements": 23896,
+   "measured_s": 91.9,
+   "previous_estimate_s": 37.8
+  },
+  {
+   "design": "spm_8p12s",
+   "plan": "standard",
+   "mesh_elements": 29240,
+   "measured_s": 101.41,
+   "previous_estimate_s": 105.0
+  },
+  {
+   "design": "ipm_10p_v",
+   "plan": "standard",
+   "mesh_elements": 35006,
+   "measured_s": 129.67,
+   "previous_estimate_s": 105.0
+  },
+  {
+   "design": "ipm_14p_flat",
+   "plan": "standard",
+   "mesh_elements": 33572,
+   "measured_s": 223.72,
+   "previous_estimate_s": 105.0
+  },
+  {
+   "design": "spm_24p",
+   "plan": "standard",
+   "mesh_elements": 43858,
+   "measured_s": 256.38,
+   "previous_estimate_s": 105.0
+  },
+  {
+   "design": "spm_8p12s",
+   "plan": "fine",
+   "mesh_elements": 30120,
+   "measured_s": 207.21,
+   "previous_estimate_s": 403.2
+  },
+  {
+   "design": "ipm_10p_v",
+   "plan": "fine",
+   "mesh_elements": 36090,
+   "measured_s": 277.35,
+   "previous_estimate_s": 403.2
+  }
+ ]
+}
