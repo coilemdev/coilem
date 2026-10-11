@@ -1271,15 +1271,18 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         {/* Names which part is wrong. "Fix validation errors" left the reader to
             work out whether it was the geometry or the winding, and a winding fault
             used to leave this reading "Geometry valid — ready to solve" outright,
-            because nothing validated parallel paths on a concentrated layout. */}
+            because nothing validated parallel paths on a concentrated layout.
+            Schema errors lead with their location, such as "solve_params.…". */}
         {error && (
           <div className="validation-ok has-error">
             <StatusGlyph tone="warning" />
             {/material|steel|M350-50A/i.test(error)
               ? 'Material not supported'
-              : /winding|parallel_path|turns|coil|phase/i.test(error)
-                ? 'Winding needs attention'
-                : 'Geometry needs attention'}
+              : /^solve_(params|options)\b/.test(error)
+                ? 'Solve settings need attention'
+                : /winding|parallel_path|turns|coil|phase/i.test(error)
+                  ? 'Winding needs attention'
+                  : 'Geometry needs attention'}
           </div>
         )}
         <button type="button" className={`panel-next-btn ${error || blankDesign ? 'is-blocked' : 'is-ready'}`} disabled={Boolean(error) || blankDesign || disabled} onClick={onNext}>Continue to Solve</button>
