@@ -47,15 +47,6 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _tree_sha256(root: Path) -> str:
-    lines = (
-        f"{path.relative_to(root).as_posix()} {_sha256(path)}\n"
-        for path in sorted(root.rglob("*"))
-        if path.is_file()
-    )
-    return hashlib.sha256("".join(lines).encode("utf-8")).hexdigest()
-
-
 def _require_checkout(path: Path, override: str) -> None:
     if not path.exists():
         raise SystemExit(
@@ -179,7 +170,7 @@ def stage_runtime_files(package: Path, version: str) -> None:
         "magneto2d_version": binary_record["magneto2d_version"],
         "magneto2d_target": binary_record["target"],
         "magneto2d_sha256": _sha256(packaged_binary),
-        "ui_bundle_sha256": _tree_sha256(ui),
+        "ui_bundle_sha256": resources.directory_sha256(ui),
         "toolchain": {**binary_record["toolchain"], **ui_toolchain},
     }
     (package / resources.BUILD_INFO_FILE).write_text(json.dumps(build_info, indent=2) + "\n", encoding="utf-8")

@@ -460,8 +460,8 @@
     },
     {
       "path": "backend/resources.py",
-      "sha256": "99fac1fa9cf8458f543aabce5df8fe32649377916344ee9b4ee7550981fd72ea",
-      "bytes": 6179
+      "sha256": "f643d73b09ba46c4ed51a9ef667ca5fd4221df82fbefdaec5f4f82fe8e1027a9",
+      "bytes": 6860
     },
     {
       "path": "backend/solve_workspace.py",
@@ -2560,8 +2560,8 @@
     },
     {
       "path": "setup.py",
-      "sha256": "cb9e601611ced87c885eff13e4dc41f34c1ca293b0826b7f758d6bcbb7e4a268",
-      "bytes": 9373
+      "sha256": "dee796be7c8d58cbe9527a4992c69dc99dcda5be6f439be95fbf747abc330043",
+      "bytes": 9123
     },
     {
       "path": "solvers/magneto2d/Cargo.lock",
@@ -2920,8 +2920,8 @@
     },
     {
       "path": "tests/test_release_tools.py",
-      "sha256": "12a55efd30ae3f1c7a7e9408c6a307996d08401c71b23554b34e2b3f8b0db5da",
-      "bytes": 13759
+      "sha256": "7eb370dd5c8b7600b177f2fd1858bee5078c11a5ec75e3b5805ae02015decb03",
+      "bytes": 14613
     },
     {
       "path": "tests/test_solve_workspace.py",
@@ -2990,8 +2990,8 @@
     },
     {
       "path": "tools/release/artifacts.py",
-      "sha256": "2c52427246b94aa83adb221fbffd363536aa16f1767bc42d3cb5eb3bfa17ba7c",
-      "bytes": 6025
+      "sha256": "781b9d3c26a50d4fc6903eb2ca82d12434bc89b697b4a7f4e2cd2348105b6549",
+      "bytes": 5768
     },
     {
       "path": "tools/release/native_deps.py",
@@ -3010,8 +3010,8 @@
     },
     {
       "path": "tools/release/verify_wheel.py",
-      "sha256": "1eea420d4eed811189ba787d09d4e135b3e47929da0abe94c0dc1a833acfce30",
-      "bytes": 8245
+      "sha256": "2afdf9b081b52132ba4c6de12fb4774d4e5723374ba775125da41410b3e0b771",
+      "bytes": 8131
     },
     {
       "path": "tools/replay_numerical_case.py",

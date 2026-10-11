@@ -115,12 +115,8 @@ def check_wheel(path: Path, *, platform_tag: str | None = None, require_commit: 
         if build.get("magneto2d_sha256") != hashlib.sha256(archive.read(binary_name)).hexdigest():
             problems.append("build info magneto2d_sha256 does not match the packaged binary")
         prefix = f"backend/{resources.PACKAGED_UI_DIR}/"
-        ui_lines = "".join(
-            f"{entry.removeprefix(prefix)} {hashlib.sha256(archive.read(entry)).hexdigest()}\n"
-            for entry in sorted(names)
-            if entry.startswith(prefix) and not entry.endswith("/")
-        )
-        if build.get("ui_bundle_sha256") != hashlib.sha256(ui_lines.encode("utf-8")).hexdigest():
+        ui_files = ((entry.removeprefix(prefix), archive.read(entry)) for entry in names if entry.startswith(prefix) and not entry.endswith("/"))
+        if build.get("ui_bundle_sha256") != resources.bundle_sha256(ui_files):
             problems.append("build info ui_bundle_sha256 does not match the packaged UI")
         toolchain = build.get("toolchain") or {}
         for tool in ("rustc", "cargo", "node", "npm"):

@@ -25,6 +25,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+from backend.resources import directory_sha256
 from tools.release import rust_licenses
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -40,13 +41,6 @@ class ArtifactError(Exception):
 
 def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
-def tree_sha256(root: Path) -> str:
-    """Hash of every file's relative path and content; matches setup.py."""
-
-    lines = (f"{path.relative_to(root).as_posix()} {sha256(path)}\n" for path in sorted(root.rglob("*")) if path.is_file())
-    return hashlib.sha256("".join(lines).encode("utf-8")).hexdigest()
 
 
 def tool_version(*command: str) -> str:
@@ -116,7 +110,7 @@ def build_ui(out: Path) -> Path:
     shutil.rmtree(bundle, ignore_errors=True)
     shutil.copytree(ROOT / "frontend" / "dist-public-boundary", bundle)
     sidecar = {
-        "sha256": tree_sha256(bundle),
+        "sha256": directory_sha256(bundle),
         "toolchain": {"node": tool_version("node", "--version"), "npm": tool_version(npm, "--version")},
     }
     (out / "ui.build.json").write_text(json.dumps(sidecar, indent=2) + "\n", encoding="utf-8")

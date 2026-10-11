@@ -196,7 +196,7 @@ def test_native_dependency_parsers_and_rules(tmp_path: Path) -> None:
 
 def _write_wheel(path: Path, *, requires: list[str], binary: bytes = b"binary", stamp_binary: bytes | None = None) -> Path:
     dist_info = "coilem-0.2.0.dist-info"
-    ui = {"index.html": b"<!doctype html>", "assets/index-AbCd1234.js": b"export {};"}
+    ui = {"index.html": b"<!doctype html>", "assets/index-AbCd1234.js": b"export {};", "assets/Lesson-AbCd1234.js": b"export {};"}
     ui_hash = hashlib.sha256(
         "".join(f"{name} {hashlib.sha256(data).hexdigest()}\n" for name, data in sorted(ui.items())).encode()
     ).hexdigest()
@@ -232,6 +232,18 @@ def _write_wheel(path: Path, *, requires: list[str], binary: bytes = b"binary", 
         for relative in resources.PACKAGE_DATA_FILES:
             archive.writestr(relative, (REPO_ROOT / relative).read_bytes())
     return path
+
+
+def test_bundle_hash_orders_paths_the_same_on_every_os(tmp_path: Path) -> None:
+    files = {"index.html": b"index", "assets/index-AbCd1234.js": b"lower", "assets/Lesson-AbCd1234.js": b"upper"}
+    for name, data in files.items():
+        (tmp_path / name).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / name).write_bytes(data)
+    # Code-point order puts upper case first; Windows orders Path objects without case.
+    order = ["assets/Lesson-AbCd1234.js", "assets/index-AbCd1234.js", "index.html"]
+    lines = "".join(f"{name} {hashlib.sha256(files[name]).hexdigest()}\n" for name in order)
+    assert resources.directory_sha256(tmp_path) == hashlib.sha256(lines.encode()).hexdigest()
+    assert resources.bundle_sha256(reversed(list(files.items()))) == resources.directory_sha256(tmp_path)
 
 
 def test_wheel_checks(tmp_path: Path) -> None:

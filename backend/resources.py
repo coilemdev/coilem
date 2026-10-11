@@ -12,10 +12,12 @@ share the packaged-file list and the build-identity derivation.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
 import subprocess
+from collections.abc import Iterable
 from functools import reduce
 from importlib import resources
 from importlib.resources.abc import Traversable
@@ -126,6 +128,21 @@ BUILD_IDENTITY_FIELDS = (
     "ui_bundle_sha256",
     "toolchain",
 )
+
+
+def bundle_sha256(files: Iterable[tuple[str, bytes]]) -> str:
+    """Hash a file tree from ``(relative POSIX path, content)`` pairs.
+
+    The build info's ``ui_bundle_sha256``. Files are ordered by their path
+    string, so every OS agrees: Windows orders ``Path`` objects without case.
+    """
+
+    lines = "".join(f"{path} {hashlib.sha256(data).hexdigest()}\n" for path, data in sorted(files))
+    return hashlib.sha256(lines.encode("utf-8")).hexdigest()
+
+
+def directory_sha256(root: Path) -> str:
+    return bundle_sha256((path.relative_to(root).as_posix(), path.read_bytes()) for path in root.rglob("*") if path.is_file())
 
 
 def build_identity() -> dict[str, Any]:
