@@ -177,6 +177,10 @@ const selectSolverBlock = appSource.slice(
 );
 assert.doesNotMatch(selectSolverBlock, /setConfig/, 'Solver selection must not overwrite project settings');
 assert.match(workspaceSource, /aria-pressed=\{config\.topology === topology\}/);
+// Hovering opens the Examples submenu; a click must not toggle it closed again (#22).
+assert.match(workspaceSource, /onMouseEnter=\{\(\) => setExamplesMenuOpen\(true\)\}/);
+assert.match(workspaceSource, /onClick=\{\(\) => setExamplesMenuOpen\(true\)\}/);
+assert.doesNotMatch(workspaceSource, /setExamplesMenuOpen\(\(open\) => !open\)/);
 assert.match(workspaceSource, /className="workflow-stepper workflow-stepper-inline"/);
 assert.match(workspaceSource, /design-workspace workflow-stage-content\$\{designViewportExpanded/);
 assert.match(workspaceSource, /className="design-workspace-main"/);

@@ -512,7 +512,10 @@ export function CoilEmTopBar({
                   role="menuitem"
                   aria-haspopup="menu"
                   aria-expanded={examplesMenuOpen}
-                  onClick={() => setExamplesMenuOpen((open) => !open)}
+                  // Open, never toggle: with a mouse, hovering has already opened
+                  // the submenu, so a toggle would close it. Escape, leaving it,
+                  // choosing an example or clicking outside closes it.
+                  onClick={() => setExamplesMenuOpen(true)}
                 >
                   <span>Examples</span><span aria-hidden="true">›</span>
                 </button>
