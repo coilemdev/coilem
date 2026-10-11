@@ -2,10 +2,18 @@ name: coilEM release wheels
 
 # Builds one py3-none-<platform> wheel per supported platform, checks it, and
 # runs the installed-package acceptance test on every platform and supported
-# Python version. Publishing is a separate step.
+# Python version. A manual run with `publish: testpypi` then uploads the wheels
+# to TestPyPI as a unique .devN rehearsal version and repeats the acceptance
+# test against the TestPyPI install. Nothing here uploads to PyPI.
 
 on:
   workflow_dispatch:
+    inputs:
+      publish:
+        description: Upload the wheels after every check passes
+        type: choice
+        options: [none, testpypi]
+        default: none
   push:
     tags: ["v*"]
   pull_request:
@@ -33,6 +41,8 @@ env:
   NODE_VERSION: "24"
   BUILD_PYTHON: "3.12"
   COILEM_BUILD_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+  # TestPyPI never accepts a version twice; rehearsals publish 0.2.0.dev<run><attempt>.
+  COILEM_VERSION_SUFFIX: ${{ inputs.publish == 'testpypi' && format('.dev{0}{1}', github.run_id, github.run_attempt) || '' }}
 
 defaults:
   run:
@@ -44,11 +54,20 @@ jobs:
     runs-on: ubuntu-24.04
     outputs:
       policy: ${{ steps.policy.outputs.policy }}
+      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.BUILD_PYTHON }}
+      - name: Resolve the package version; a release tag must match it
+        id: version
+        run: |
+          args=()
+          if [ "$GITHUB_REF_TYPE" = tag ]; then args=(--tag "$GITHUB_REF_NAME"); fi
+          version=$(python -m tools.release.version "${args[@]}")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Package version: $version"
       - run: python -m pip install packaging
       - name: Compute platform floors from the pinned runtime wheels
         id: policy
@@ -253,3 +272,74 @@ jobs:
           cp tools/release/acceptance.py "$RUNNER_TEMP/"
           cd "$RUNNER_TEMP"
           python -I acceptance.py --install "$wheel"
+
+  publish-testpypi:
+    name: Publish to TestPyPI
+    needs: [policy, acceptance]
+    if: inputs.publish == 'testpypi'
+    runs-on: ubuntu-24.04
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/project/coilem/${{ needs.policy.outputs.version }}/
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: wheel-*
+          path: dist
+          merge-multiple: true
+      - name: Check that every platform's wheel has the rehearsal version
+        env:
+          VERSION: ${{ needs.policy.outputs.version }}
+        run: |
+          ls -l dist
+          test "$(ls dist/*.whl | wc -l)" -eq 4
+          for wheel in dist/*.whl; do
+            case "$(basename "$wheel")" in "coilem-$VERSION-py3-none-"*) ;; *) echo "unexpected wheel: $wheel"; exit 1 ;; esac
+          done
+      - name: Upload with trusted publishing
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+        with:
+          repository-url: https://test.pypi.org/legacy/
+
+  testpypi-acceptance:
+    name: TestPyPI install (${{ matrix.target }})
+    needs: [policy, publish-testpypi]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: linux-x86_64
+            runner: ubuntu-22.04
+          - target: macos-arm64
+            runner: macos-15
+          - target: macos-x86_64
+            runner: macos-15-intel
+          - target: windows-amd64
+            runner: windows-2022
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/release/acceptance.py
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.BUILD_PYTHON }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: wheel-${{ matrix.target }}
+          path: wheels
+      - name: Install the documented Linux prerequisite
+        if: matrix.target == 'linux-x86_64'
+        run: sudo apt-get update && sudo apt-get install -y libglu1-mesa
+      - name: Install from TestPyPI and run the acceptance test
+        env:
+          VERSION: ${{ needs.policy.outputs.version }}
+        run: |
+          built=$(python -c 'import glob, hashlib; print(hashlib.sha256(open(glob.glob("wheels/*.whl")[0], "rb").read()).hexdigest())')
+          cp tools/release/acceptance.py "$RUNNER_TEMP/"
+          cd "$RUNNER_TEMP"
+          python -I acceptance.py --install "coilem==$VERSION" --index-url https://test.pypi.org/simple/ --expect-sha256 "$built"

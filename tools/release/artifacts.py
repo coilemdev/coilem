@@ -85,9 +85,11 @@ def build_magneto2d(target: str, out: Path, macos_deployment_target: str | None)
     binary = out / name
     shutil.copyfile(CRATE / "target" / target / "release" / name, binary)
     binary.chmod(0o755)
-    (out / "magneto2d.licenses.txt").write_text(
-        rust_licenses.render(rust_licenses.collect(target, cargo=cargo), target), encoding="utf-8"
-    )
+    try:
+        crates = rust_licenses.collect(target, cargo=cargo)
+    except rust_licenses.RustLicenseError as exc:
+        raise ArtifactError(str(exc)) from exc
+    (out / "magneto2d.licenses.txt").write_text(rust_licenses.render(crates, target), encoding="utf-8")
     sidecar = {
         "magneto2d_version": crate_version(),
         "target": target,

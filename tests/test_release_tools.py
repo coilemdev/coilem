@@ -5,6 +5,8 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import shutil
+import subprocess
 import zipfile
 from pathlib import Path
 
@@ -13,8 +15,8 @@ import tomllib
 from packaging.specifiers import SpecifierSet
 from packaging.tags import Tag
 
-from backend import resources
-from tools.release import artifacts, native_deps, policy, rust_licenses, verify_wheel
+from backend import __version__, resources
+from tools.release import artifacts, native_deps, policy, rust_licenses, verify_wheel, version
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 GMSH = [
@@ -102,7 +104,7 @@ def test_requires_python_covers_exactly_the_supported_versions() -> None:
     major, minor = policy.SUPPORTED_PYTHONS[-1].split(".")
     assert f"{major}.{int(minor) + 1}" not in specifier
     assert f"{major}.{int(policy.SUPPORTED_PYTHONS[0].split('.')[1]) - 1}" not in specifier
-    assert project["dynamic"] == ["dependencies"]
+    assert project["dynamic"] == ["version", "dependencies"]
     assert tomllib.loads((REPO_ROOT / "pyproject.toml").read_text())["tool"]["setuptools"]["dynamic"]["dependencies"] == {
         "file": ["requirements.lock"]
     }
@@ -121,18 +123,48 @@ def test_release_build_refuses_cpu_specific_or_ad_hoc_flags() -> None:
     assert "RUSTFLAGS" not in artifacts.release_environment("x86_64-unknown-linux-gnu", {}, None)
 
 
-def test_crate_license_report_dedupes_texts_and_lists_crates_without_files() -> None:
+def test_crate_license_report_dedupes_texts() -> None:
     mit = "MIT License\n\nCopyright (c) Example"
     crates = [
         rust_licenses.Crate("alpha", "1.0.0", "MIT OR Apache-2.0", "https://example.com/alpha", {"LICENSE-MIT": mit, "LICENSE-APACHE": "Apache"}),
         rust_licenses.Crate("beta", "2.0.0", "MIT OR Apache-2.0", "", {"LICENSE-APACHE": "Apache"}),
-        rust_licenses.Crate("gamma", "0.1.0", "MIT", "https://example.com/gamma"),
     ]
     text = rust_licenses.render(crates, "x86_64-unknown-linux-gnu")
     assert "built for x86_64-unknown-linux-gnu" in text
     assert text.count("\nApache\n") == 1
     assert "Used by: alpha 1.0.0 (LICENSE-APACHE), beta 2.0.0 (LICENSE-APACHE)" in text
-    assert "Crates without license files" in text and "gamma 0.1.0: MIT (https://example.com/gamma)" in text
+    assert verify_wheel.crates_without_license_text(text) == []
+    uncovered = text.replace("Used by: alpha 1.0.0 (LICENSE-APACHE), beta 2.0.0 (LICENSE-APACHE)", "Used by: alpha 1.0.0 (LICENSE-APACHE)")
+    assert verify_wheel.crates_without_license_text(uncovered) == ["beta 2.0.0"]
+
+
+def test_crates_without_their_own_license_get_the_recorded_upstream_notice() -> None:
+    faer = rust_licenses.Crate("faer", "0.24.0", "MIT", "", {"COPYING.SUITE_SPARSE.AMD.BSD": "AMD notice"})
+    assert not rust_licenses.has_own_license(faer)
+    assert rust_licenses.add_upstream_notice(faer)
+    upstream = [name for name in faer.license_files if name.startswith("LICENSE from https://codeberg.org/sarah-quinones/faer/")]
+    assert upstream and faer.license_files[upstream[0]].startswith("MIT License")
+    assert "COPYING.SUITE_SPARSE.AMD.BSD" in faer.license_files
+    shipped = rust_licenses.Crate("memchr", "2.8.0", "Unlicense OR MIT", "", {"COPYING": "x", "UNLICENSE": "y"})
+    assert rust_licenses.add_upstream_notice(shipped) and set(shipped.license_files) == {"COPYING", "UNLICENSE"}
+    assert not rust_licenses.add_upstream_notice(rust_licenses.Crate("unknown", "1.0.0", "MIT", ""))
+    for filename, source in set(rust_licenses.UPSTREAM_NOTICES.values()):
+        text = (rust_licenses.CRATE_NOTICES / filename).read_text(encoding="utf-8")
+        assert text.startswith("MIT License") and "Copyright (c)" in text, filename
+        assert source.startswith("https://") and source.endswith("/LICENSE")
+
+
+@pytest.mark.skipif(shutil.which("cargo") is None, reason="needs Cargo and the locked crate sources")
+@pytest.mark.parametrize("target", ["x86_64-unknown-linux-gnu", "aarch64-apple-darwin", "x86_64-apple-darwin", "x86_64-pc-windows-msvc"])
+def test_every_linked_crate_carries_a_license_text(target: str) -> None:
+    try:
+        crates = rust_licenses.collect(target)
+    except subprocess.CalledProcessError as exc:
+        pytest.skip(f"cargo metadata is unavailable here: {exc.stderr.strip()[:200]}")
+    upstream = [crate for crate in crates if any(name.startswith("LICENSE from ") for name in crate.license_files)]
+    noticed = [crate for crate in crates if rust_licenses.has_own_license(crate) or crate in upstream]
+    assert crates and noticed == crates
+    assert verify_wheel.crates_without_license_text(rust_licenses.render(crates, target)) == []
 
 
 OTOOL_L = """/tmp/magneto2d:
@@ -225,7 +257,10 @@ def _write_wheel(path: Path, *, requires: list[str], binary: bytes = b"binary", 
         archive.writestr(executable, binary)
         for name, data in ui.items():
             archive.writestr(f"backend/_ui/{name}", data)
-        archive.writestr("backend/_licenses/magneto2d-rust-crates.txt", "faer 0.24.0: MIT\nUsed by: faer 0.24.0 (COPYING.SUITE_SPARSE.AMD.BSD)")
+        archive.writestr(
+            "backend/_licenses/magneto2d-rust-crates.txt",
+            "Header\n\nCrates\n------\nfaer 0.24.0: MIT\n\nLicense texts\n-------------\n\nUsed by: faer 0.24.0 (COPYING.SUITE_SPARSE.AMD.BSD)\n",
+        )
         archive.writestr("backend/_build_info.json", json.dumps(build))
         for relative in resources.PACKAGED_DATA_FILES:
             archive.writestr(f"backend/_data/{relative}", (REPO_ROOT / relative).read_bytes())
@@ -272,3 +307,28 @@ def test_acceptance_test_is_self_contained_with_current_inputs() -> None:
     source = (REPO_ROOT / "tools/release/acceptance.py").read_text().splitlines()
     imports = {line.split()[1].split(".")[0] for line in source if line.startswith(("import ", "from "))}
     assert not imports & {"backend", "tools", "packaging", "pytest"}
+
+
+def test_rehearsal_versions_and_release_tags() -> None:
+    assert version.package_version({}) == __version__
+    assert version.package_version({"COILEM_VERSION_SUFFIX": ".dev3816"}) == f"{__version__}.dev3816"
+    for suffix in ("rc1", ".dev", "+local", ".post1", "-dev1", ".dev1.dev2"):
+        with pytest.raises(version.VersionError, match="development suffix"):
+            version.package_version({"COILEM_VERSION_SUFFIX": suffix})
+    version.check_tag(f"v{__version__}", __version__)
+    with pytest.raises(version.VersionError, match="does not match"):
+        version.check_tag("v9.9.9", __version__)
+    with pytest.raises(version.VersionError, match="does not match"):
+        version.check_tag(f"v{__version__}", f"{__version__}.dev1")
+
+
+def test_release_workflow_uploads_only_to_testpypi_after_acceptance() -> None:
+    workflow = (REPO_ROOT / ".github/workflows/release-wheels.yml").read_text()
+    assert "upload.pypi.org" not in workflow
+    assert workflow.count("pypa/gh-action-pypi-publish@") == 1
+    publish = workflow.split("\n  publish-testpypi:\n", 1)[1].split("\n  testpypi-acceptance:\n", 1)[0]
+    assert "needs: [policy, acceptance]" in publish
+    assert "if: inputs.publish == 'testpypi'" in publish
+    assert "repository-url: https://test.pypi.org/legacy/" in publish
+    assert "id-token: write" in publish and "name: testpypi" in publish
+    assert "--index-url https://test.pypi.org/simple/ --expect-sha256" in workflow

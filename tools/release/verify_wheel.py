@@ -34,6 +34,20 @@ def _requirement_key(requirement: Requirement) -> tuple[str, str, str]:
     return canonicalize_name(requirement.name), str(requirement.specifier), str(requirement.marker or "")
 
 
+def crates_without_license_text(report: str) -> list[str]:
+    """Crates listed in a rust_licenses report that no license text names."""
+
+    listed_block = report.split("\nCrates\n------\n", 1)[1].split("\n\n", 1)[0] if "\nCrates\n------\n" in report else ""
+    listed = [line.split(":", 1)[0] for line in listed_block.splitlines() if line.strip()]
+    covered = {
+        entry.rsplit(" (", 1)[0]
+        for line in report.splitlines()
+        if line.startswith("Used by: ")
+        for entry in line.removeprefix("Used by: ").split(", ")
+    }
+    return [crate for crate in listed if crate not in covered]
+
+
 def check_wheel(path: Path, *, platform_tag: str | None = None, require_commit: bool = False, lock: Path = ROOT / "requirements.lock") -> list[str]:
     problems: list[str] = []
     name, parsed_version, _, tags = parse_wheel_filename(path.name)
@@ -103,6 +117,9 @@ def check_wheel(path: Path, *, platform_tag: str | None = None, require_commit: 
         crate_licenses = archive.read(f"backend/{resources.PACKAGED_LICENSES_DIR}/{resources.MAGNETO2D_LICENSES_FILE}").decode("utf-8")
         if "faer " not in crate_licenses or "COPYING.SUITE_SPARSE.AMD.BSD" not in crate_licenses:
             problems.append("the crate license file does not cover faer and its incorporated notices")
+        uncovered = crates_without_license_text(crate_licenses)
+        if uncovered:
+            problems.append(f"crates without a license text in the crate license file: {', '.join(uncovered)}")
 
         build = json.loads(archive.read(f"backend/{resources.BUILD_INFO_FILE}"))
         for field in resources.BUILD_IDENTITY_FIELDS:

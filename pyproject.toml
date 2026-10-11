@@ -4,7 +4,6 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "coilem"
-version = "0.2.0"
 description = "Local, open-source motor design with Magneto2D and optional Elmer analysis"
 readme = "README.md"
 # Every supported version must have wheels for all locked runtime pins; see
@@ -15,9 +14,10 @@ license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
 authors = [
     { name = "coilEM contributors" },
 ]
-# The audited runtime lock is the dependency list: an installed coilEM gets
-# exactly the versions that were reviewed and tested.
-dynamic = ["dependencies"]
+# setup.py takes the version from backend/__init__.py (see
+# tools/release/version.py). The audited runtime lock is the dependency list:
+# an installed coilEM gets exactly the versions that were reviewed and tested.
+dynamic = ["version", "dependencies"]
 
 [project.urls]
 Homepage = "https://coilem.com"

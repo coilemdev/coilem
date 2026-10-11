@@ -8,7 +8,8 @@ published: building from source needs Rust and Node.js, so there is no sdist.
 
 The `coilEM release wheels` workflow (`.github/workflows/release-wheels.yml`)
 builds and tests the wheels for version tags, manual runs and pull requests
-that change packaging. Publishing is a separate step.
+that change packaging. A manual run can also rehearse publishing on TestPyPI;
+see below. Nothing in the workflow uploads to PyPI yet.
 
 ## Compatibility policy
 
@@ -59,7 +60,10 @@ The wheel's `.dist-info/licenses/` holds `LICENSE` and
 `THIRD_PARTY_NOTICES.md`; the latter carries the frontend runtime notices for
 the bundled UI. `backend/_licenses/magneto2d-rust-crates.txt` lists the Rust
 crates linked into that wheel's Magneto2D executable, resolved from
-`Cargo.lock` for its target, with each crate's license files.
+`Cargo.lock` for its target, with each crate's license files. Crates
+published without their own license file get their upstream LICENSE from
+`tools/release/crate_notices/`; a linked crate with neither stops the build,
+and `verify_wheel.py` checks that every listed crate has a license text.
 
 ## Building and checking locally
 
@@ -86,3 +90,47 @@ cannot be found, then exercises the installed `coilem` through HTTP:
 ```sh
 python -I acceptance.py --install path/to/coilem-0.2.0-py3-none-macosx_12_0_arm64.whl
 ```
+
+## TestPyPI rehearsal
+
+A rehearsal publishes the wheels to [TestPyPI](https://test.pypi.org), a
+separate index for trying out releases, and tests the installed result. It
+uses trusted publishing, so no token is stored in the repository.
+
+One-time setup, done by the project owner:
+
+1. Create a TestPyPI account (separate from PyPI) and enable two-factor
+   authentication.
+2. Under *Your account → Publishing*, add a pending trusted publisher for the
+   project `coilem`: owner `coilemdev`, repository `coilem`, workflow
+   `release-wheels.yml`, environment `testpypi`. A pending publisher does not
+   reserve the name; the first upload creates the project.
+3. In the GitHub repository settings, create the environment `testpypi`.
+   Optionally require a reviewer, so each upload waits for approval.
+
+To rehearse, open *Actions → coilEM release wheels → Run workflow* and choose
+`publish: testpypi`. The workflow must exist on the default branch for that
+button to appear; the run can target another branch. The run:
+
+1. sets a unique development version, `<version>.dev<run id><attempt>`,
+   because TestPyPI never accepts the same version twice;
+2. builds, checks and accepts the wheels exactly as for any other run;
+3. uploads the four wheels to TestPyPI only if every acceptance job passed;
+4. on each platform, downloads the wheel from TestPyPI, checks it is
+   byte-identical to the wheel CI built, installs it with its dependencies
+   from PyPI, and repeats the acceptance test.
+
+To try a rehearsal build by hand, download the wheel from TestPyPI and install
+that file. Its dependencies then come from PyPI:
+
+```sh
+python -m pip download --no-deps --index-url https://test.pypi.org/simple/ coilem==0.2.0.devN -d coilem-wheel
+pipx install coilem-wheel/coilem-0.2.0.devN-*.whl
+```
+
+Do not install with `--extra-index-url https://test.pypi.org/simple/`: anyone
+can upload to TestPyPI, so its copies of coilEM's dependencies are untrusted.
+
+A release tag must match the version in `backend/__init__.py` (for example
+`v0.2.0`); `python -m tools.release.version --tag v0.2.0` checks it.
+

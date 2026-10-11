@@ -200,7 +200,8 @@ def test_release_versions_align() -> None:
     package = json.loads((REPO_ROOT / "frontend" / "package.json").read_text(encoding="utf-8"))
     lock = json.loads((REPO_ROOT / "frontend" / "package-lock.json").read_text(encoding="utf-8"))
     assert __version__ == "0.2.0"
-    assert 'version = "0.2.0"' in pyproject
+    assert 'dynamic = ["version", "dependencies"]' in pyproject
+    assert "release_version.package_version()" in (REPO_ROOT / "setup.py").read_text(encoding="utf-8")
     assert package["version"] == "0.2.0"
     assert lock["version"] == "0.2.0"
     design_file = (REPO_ROOT / "frontend" / "src" / "public" / "designFile.ts").read_text(encoding="utf-8")

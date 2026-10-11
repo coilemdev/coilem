@@ -30,8 +30,8 @@
     },
     {
       "path": ".github/workflows/release-wheels.yml",
-      "sha256": "b9150556367ffe78c5dea5008baa51d90e40713cebb2de43ce9f57b578665f27",
-      "bytes": 9810
+      "sha256": "b1d42ab842c08d9cb095d1392cd2ac142c818a38bb3b819d1e5a5f35ba57cfb2",
+      "bytes": 13412
     },
     {
       "path": ".gitignore",
@@ -80,8 +80,8 @@
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
-      "bytes": 15866,
-      "sha256": "bed8cc15684fdb2a354d751606a76fe5f4999c7c51e0e9e7dd1b3d3fc80bfcf9"
+      "bytes": 16294,
+      "sha256": "319f8c048ee7cd995ed1b0762b61439e27e9462638b1fd184e8454ae12914c36"
     },
     {
       "path": "TRADEMARKS.md",
@@ -1650,13 +1650,13 @@
     },
     {
       "path": "docs/RELEASING.md",
-      "sha256": "967b2fea22caf4265e2e71a28359750006198585f025df4f95e1a07a0c6dd03f",
-      "bytes": 5115
+      "sha256": "59aeb73ea81fbf9df1853acde5fcd52c67e55c2675d1bd29d1480b574fdbc990",
+      "bytes": 7521
     },
     {
       "path": "docs/RUNTIME_SETTINGS.md",
-      "bytes": 6263,
-      "sha256": "783aa232b67000460192f8d8270ef4c7503d367a6e250b69d04e95a4a4e7a76c"
+      "bytes": 6366,
+      "sha256": "2e48fb0e6b4751b19bc7b758fde8f42afc269ac12f6fcc095f30782fc16774cd"
     },
     {
       "path": "docs/VALIDATION.md",
@@ -2475,8 +2475,8 @@
     },
     {
       "path": "pyproject.toml",
-      "bytes": 1663,
-      "sha256": "85c526f48285059f0eff1422f742d6a16df3a5cba16fe57ea72c7fbd8886aef7"
+      "bytes": 1742,
+      "sha256": "aa7e6f4f114d7282619850f3c46b7cd420a281f3409a52c8b3c0cfb9efc976d2"
     },
     {
       "path": "references/benchmark_configs/validation_ipm_10p_v_shape_medium.openem",
@@ -2560,8 +2560,8 @@
     },
     {
       "path": "setup.py",
-      "sha256": "dee796be7c8d58cbe9527a4992c69dc99dcda5be6f439be95fbf747abc330043",
-      "bytes": 9123
+      "sha256": "14e4a6ced5e72405a41147cc22f42e279043001864226b4d117a23cba9f4192d",
+      "bytes": 9619
     },
     {
       "path": "solvers/magneto2d/Cargo.lock",
@@ -2885,8 +2885,8 @@
     },
     {
       "path": "tests/test_public_candidate.py",
-      "bytes": 19912,
-      "sha256": "e7349e41879313dec6c343a636b112c90b359f45e2b59b1184e61fc5707302d2"
+      "bytes": 20035,
+      "sha256": "93749b3fce4c8ea47f3605f3a5e9b29fbdf2b36c6acfef821d7080c86a3237d8"
     },
     {
       "path": "tests/test_public_field_playback.py",
@@ -2920,8 +2920,8 @@
     },
     {
       "path": "tests/test_release_tools.py",
-      "sha256": "7eb370dd5c8b7600b177f2fd1858bee5078c11a5ec75e3b5805ae02015decb03",
-      "bytes": 14613
+      "sha256": "89df2f2cdf2d0154bb9d5c649c2d004cca29a986e1b7f95101c067c07043a13a",
+      "bytes": 18378
     },
     {
       "path": "tests/test_solve_workspace.py",
@@ -2985,13 +2985,33 @@
     },
     {
       "path": "tools/release/acceptance.py",
-      "sha256": "fd2feedadf68b6da98891b049c5553a1af55bac993733db6c12fa401ac5bc0af",
-      "bytes": 14894
+      "sha256": "7ca7fff1879e37cb924efa4b45afd3a0fc163dca2d89fc7da459546bd8fafb45",
+      "bytes": 16807
     },
     {
       "path": "tools/release/artifacts.py",
-      "sha256": "781b9d3c26a50d4fc6903eb2ca82d12434bc89b697b4a7f4e2cd2348105b6549",
-      "bytes": 5768
+      "sha256": "7a7490cd144fceac001d01bc173e05512db98cc30b400e35a6956c9fc1d00506",
+      "bytes": 5884
+    },
+    {
+      "path": "tools/release/crate_notices/equator.LICENSE",
+      "sha256": "97d3424e347e8fa236806725ce9837bb453d4dfc9ce1d4733fd6023a8038000a",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/release/crate_notices/faer.LICENSE",
+      "sha256": "1f6b7e2a30afc2f5f253cb3535e041f91de1e1f9815b38714dfd94e53e61d972",
+      "bytes": 1083
+    },
+    {
+      "path": "tools/release/crate_notices/nano-gemm.LICENSE",
+      "sha256": "310b7323adcc27fc94c45d1155b6c89c17986576d790f766a04c855662428a7c",
+      "bytes": 1073
+    },
+    {
+      "path": "tools/release/crate_notices/pulp.LICENSE",
+      "sha256": "d64f878c89bd5f1e5ada7e4aad57690b122727cf5229b7b87ea1980c188da1d9",
+      "bytes": 1062
     },
     {
       "path": "tools/release/native_deps.py",
@@ -3005,13 +3025,18 @@
     },
     {
       "path": "tools/release/rust_licenses.py",
-      "sha256": "aa922ce1c12d325b192d78b8f771a1968ef6268eac240c346a87ebe17ba1bfd0",
-      "bytes": 5578
+      "sha256": "09c0d0d0bf18890d179608716f4a3b40d8b721651b16d05f0f142a25b77df687",
+      "bytes": 7673
     },
     {
       "path": "tools/release/verify_wheel.py",
-      "sha256": "2afdf9b081b52132ba4c6de12fb4774d4e5723374ba775125da41410b3e0b771",
-      "bytes": 8131
+      "sha256": "24381576ec3eadf8ff6734921d93a8f1a8e9ddf608a44d1f2003fa5710b9b5e5",
+      "bytes": 8944
+    },
+    {
+      "path": "tools/release/version.py",
+      "sha256": "1566604a291df98048330d29d214a24b1f5abc33971397714e5ea1badfe00f76",
+      "bytes": 2035
     },
     {
       "path": "tools/replay_numerical_case.py",
@@ -3975,6 +4000,78 @@
       "path": "tests/test_launcher.py",
       "source_sha256": "daeedb449e75809c3974745c4805342726fb8fe57c8989b1219a3b02e2f024da",
       "reason": "Cover the Linux GLU check and Ctrl+Break handling."
+    },
+    {
+      "base_commit": "02d75228845f68f33a0141d8194c05661fd66bbe",
+      "path": ".github/workflows/release-wheels.yml",
+      "source_sha256": "b9150556367ffe78c5dea5008baa51d90e40713cebb2de43ce9f57b578665f27",
+      "reason": "Rehearse publishing: upload to TestPyPI after every acceptance job passes, then run acceptance against the TestPyPI install."
+    },
+    {
+      "base_commit": "02d75228845f68f33a0141d8194c05661fd66bbe",
+      "path": "THIRD_PARTY_NOTICES.md",
+      "source_sha256": "bed8cc15684fdb2a354d751606a76fe5f4999c7c51e0e9e7dd1b3d3fc80bfcf9",
+      "reason": "Record the crates published without their own license file and where their upstream notices are kept."
+    },
+    {
+      "base_commit": "02d75228845f68f33a0141d8194c05661fd66bbe",
+      "path": "docs/RELEASING.md",
+      "source_sha256": "967b2fea22caf4265e2e71a28359750006198585f025df4f95e1a07a0c6dd03f",
+      "reason": "Document the TestPyPI rehearsal, its one-time setup and the upstream crate notices."
+    },
+    {
+      "base_commit": "02d75228845f68f33a0141d8194c05661fd66bbe",
+      "path": "docs/RUNTIME_SETTINGS.md",
+      "source_sha256": "783aa232b67000460192f8d8270ef4c7503d367a6e250b69d04e95a4a4e7a76c",
+      "reason": "Document COILEM_VERSION_SUFFIX."
+    },
+    {
+      "base_commit": "02d75228845f68f33a0141d8194c05661fd66bbe",
+      "path": "pyproject.toml",
+      "source_sha256": "85c526f48285059f0eff1422f742d6a16df3a5cba16fe57ea72c7fbd8886aef7",
+      "reason": "Take the package version from backend/__init__.py so rehearsals can add a .devN suffix."
+    },
+    {
+      "base_commit": "02d75228845f68f33a0141d8194c05661fd66bbe",
+      "path": "setup.py",
+      "source_sha256": "dee796be7c8d58cbe9527a4992c69dc99dcda5be6f439be95fbf747abc330043",
+      "reason": "Set the distribution version from tools/release/version.py and stop the build when a linked crate has no license notice."
+    },
+    {
+      "base_commit": "02d75228845f68f33a0141d8194c05661fd66bbe",
+      "path": "tests/test_public_candidate.py",
+      "source_sha256": "e7349e41879313dec6c343a636b112c90b359f45e2b59b1184e61fc5707302d2",
+      "reason": "Check the version now comes from backend/__init__.py through setup.py."
+    },
+    {
+      "base_commit": "02d75228845f68f33a0141d8194c05661fd66bbe",
+      "path": "tests/test_release_tools.py",
+      "source_sha256": "7eb370dd5c8b7600b177f2fd1858bee5078c11a5ec75e3b5805ae02015decb03",
+      "reason": "Cover rehearsal versions, tag checks, the TestPyPI-only upload job and complete crate license texts."
+    },
+    {
+      "base_commit": "02d75228845f68f33a0141d8194c05661fd66bbe",
+      "path": "tools/release/acceptance.py",
+      "source_sha256": "fd2feedadf68b6da98891b049c5553a1af55bac993733db6c12fa401ac5bc0af",
+      "reason": "Download a published wheel from an index, check it matches the built wheel, and install it with dependencies from PyPI."
+    },
+    {
+      "base_commit": "02d75228845f68f33a0141d8194c05661fd66bbe",
+      "path": "tools/release/artifacts.py",
+      "source_sha256": "781b9d3c26a50d4fc6903eb2ca82d12434bc89b697b4a7f4e2cd2348105b6549",
+      "reason": "Fail the release binary build when a linked crate has no license notice."
+    },
+    {
+      "base_commit": "02d75228845f68f33a0141d8194c05661fd66bbe",
+      "path": "tools/release/rust_licenses.py",
+      "source_sha256": "aa922ce1c12d325b192d78b8f771a1968ef6268eac240c346a87ebe17ba1bfd0",
+      "reason": "Include recorded upstream LICENSE files for crates published without their own, and fail on any crate with neither."
+    },
+    {
+      "base_commit": "02d75228845f68f33a0141d8194c05661fd66bbe",
+      "path": "tools/release/verify_wheel.py",
+      "source_sha256": "2afdf9b081b52132ba4c6de12fb4774d4e5723374ba775125da41410b3e0b771",
+      "reason": "Check that every crate in the crate license file has a license text."
     }
   ]
 }
