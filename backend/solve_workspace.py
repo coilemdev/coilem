@@ -28,11 +28,13 @@ from backend import __version__
 from backend.custom_materials import CustomSteel
 from backend.field_artifacts import resolve_solve_cache_artifact_id
 from backend.material_contract import electrical_steel_preflight_records
+from backend.models import MotorConfig
 from backend.public_report import (
     build_public_run_csv,
     build_public_run_pdf,
     write_replayable_run_package,
 )
+from backend.qualification import classify_qualification
 from backend.resources import application_commit as _application_commit
 from backend.resources import build_identity
 
@@ -269,6 +271,16 @@ class RunLocation:
         }
 
 
+def _qualification(config: Mapping[str, Any]) -> dict[str, Any] | None:
+    """The run's qualification status (backend/qualification.py), or None
+    for a configuration that no longer validates."""
+
+    try:
+        return dict(classify_qualification(MotorConfig.model_validate(config)))
+    except ValueError:
+        return None
+
+
 class SolveRunWriter:
     """Build one run in a hidden partial directory, then publish atomically."""
 
@@ -392,6 +404,7 @@ class SolveRunWriter:
                 "build": build_identity(),
                 "solver_name": solver_name or None,
                 "excitation": excitation_provenance,
+                "qualification": _qualification(self.config),
                 "platform": {
                     "system": platform.system(),
                     "machine": platform.machine(),

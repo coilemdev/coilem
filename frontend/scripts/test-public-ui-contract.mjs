@@ -227,6 +227,13 @@ assert.match(workspaceSource, />Convert project to M350-50A</);
 assert.match(workspaceSource, /Material not supported/);
 // Schema errors lead with their location; solve settings are not geometry (#19).
 assert.match(workspaceSource, /\/\^solve_\(params\|options\)\\b\/\.test\(error\)\s*\?\s*'Solve settings need attention'/);
+// Every stage shows the benchmark qualification the backend computed (#20).
+assert.match(workspaceSource, /function readQualification\(value: unknown\): PublicQualification \| null/);
+assert.match(workspaceSource, /docs\/VALIDATION\.md#qualification-status/);
+assert.match(workspaceSource, /readQualification\(geometry\?\.metadata\?\.qualification\)/);
+assert.match(workspaceSource, /readQualification\(validation\?\.qualification\)/);
+assert.match(workspaceSource, /readQualification\(result\.qualification\)/);
+assert.equal((workspaceSource.match(/<QualificationNote qualification=/g) ?? []).length, 2, 'Solve and Results show the qualification note');
 assert.match(appSource, /const convertProjectSteelToM350 = useCallback/);
 assert.match(appSource, /stator_steel: 'M350-50A'/);
 assert.match(appSource, /rotor_steel: 'M350-50A'/);

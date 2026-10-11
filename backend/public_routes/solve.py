@@ -37,6 +37,7 @@ from backend.public_policy import (
     parse_public_solve_request,
     public_config_support_error,
 )
+from backend.qualification import classify_qualification
 from backend.solve_workspace import (
     RUN_ARTIFACT_PREFIX,
     SolveRunWriter,
@@ -281,6 +282,7 @@ def _store_public_result(
     stored = workspace.load_run(location.project_slug, location.run_id)
     result = stored["result"]
     result["saved_run"] = stored["saved_run"]
+    result["qualification"] = stored["manifest"].get("provenance", {}).get("qualification")
     return result
 
 
@@ -1108,6 +1110,7 @@ async def validate_solve(body: dict[str, Any]) -> dict[str, Any]:
         "solve_quality": solve_params.solve_quality,
         "step_deg": solve_params.effective_step_deg(),
         "sweep_positions": sweep_positions,
+        "qualification": classify_qualification(config),
         "solver_lane": {
             "native_supported": True,
             "reason": None,

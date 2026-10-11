@@ -45,6 +45,10 @@ for the gates and limits.
   - Halbach, tutorial and generic-field workflows.
 - **Unsupported:** multi-layer IPM rotors such as the Prius 2004 fixture.
 
+The app shows the current design's status, with its reason, in Design health
+and on the Solve and Results pages, and saved runs record it in their PDF and
+CSV reports.
+
 The guided SPM path includes both balanced sinusoidal current and ideal
 wye-connected 120-degree six-step excitation. Six-step runs preserve exact
 commanded phase currents on the torque grid, show the six commutation sectors,

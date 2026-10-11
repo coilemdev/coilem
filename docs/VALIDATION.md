@@ -77,6 +77,14 @@ experimental:
 
 Ideal six-step excitation is available for SPM only.
 
+The application applies this table to every design. `backend/qualification.py`
+classifies the topology, IPM rotor, winding type, layers and pitch, excitation
+and steel, and returns the status with a one-sentence reason. Design health,
+the Solve page and the Results page show it, and each saved run records it in
+its provenance, PDF and CSV. A qualified combination using custom steel is
+experimental, because qualification used the bundled M350-50A curve. A
+Preview run notes that its coarse mesh was not part of qualification.
+
 Qualified means agreement with FEMM within the registered gates for the
 measured fixtures, under these conditions: Magneto2D 0.3.2, native Gmsh meshes
 at the normal density used by the Standard plan, weighted-stress torque, the

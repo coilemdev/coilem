@@ -65,8 +65,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 7104,
-      "sha256": "f706215a7802e4ee1c2ca5173fadb33a140d5ad49a07732fafe727e40c772efa"
+      "bytes": 7273,
+      "sha256": "a92d16f10e88c6fcd2bd3a11da9a3dea245e9f7d8f4625413e09ae3d307dfe07"
     },
     {
       "path": "SECURITY.md",
@@ -380,8 +380,8 @@
     },
     {
       "path": "backend/preview.py",
-      "bytes": 40014,
-      "sha256": "b9c9afabb72694134e92ddea71cd735de7f5c6352d9f5bef3faeea7520208eb6"
+      "bytes": 40134,
+      "sha256": "f3bf857b92a42350ecf080e34857349734aea1d4c054346f3a636afd658cb5a2"
     },
     {
       "path": "backend/preview_from_ir.py",
@@ -415,8 +415,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 40749,
-      "sha256": "4e6c1e9f74bb6d9466ae931bebd9594f04ac2822d9f52f17ca6a2830c72cbb66"
+      "bytes": 42159,
+      "sha256": "7eecbe6c88396b066c42578294ffd823f655603f48a1012bfd72ec0ca18bc17e"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -440,8 +440,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 47554,
-      "sha256": "fa061c7c8d744f5e2d84d93a1a12ede03e32053a956ae85322962a15be4abe47"
+      "bytes": 47760,
+      "sha256": "bde2a02701b44b43f9fbdb2899af2b1d901e5f9e63625a402966b21d6dd6baf2"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -459,14 +459,19 @@
       "bytes": 5363
     },
     {
+      "path": "backend/qualification.py",
+      "sha256": "a88792ed792405de022197cb43a22e82b6d8cb6a999bf325e949bd433456e279",
+      "bytes": 5027
+    },
+    {
       "path": "backend/resources.py",
       "sha256": "f643d73b09ba46c4ed51a9ef667ca5fd4221df82fbefdaec5f4f82fe8e1027a9",
       "bytes": 6860
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 40815,
-      "sha256": "14c08f399771fb23d1a4afe817a627636dc6aadce8f2fca60cec09ec09109c82"
+      "bytes": 41307,
+      "sha256": "fdd8af4de0af01d7a8c2249fb080b553f7c9128268ac00e81d5e501a69c757a5"
     },
     {
       "path": "backend/solver/__init__.py",
@@ -1660,8 +1665,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 14554,
-      "sha256": "33f8b6b9f9c7057f10a52669dd945d1ae2f72c77056dfbf584d9b310c57e1e59"
+      "bytes": 15084,
+      "sha256": "3330ab5b82846589b02f089b6c94ad318ea556df5668395e6af3d692551cbc28"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -1780,8 +1785,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 95991,
-      "sha256": "3b0bdaf8a65debaf196af3ceda2543e5ed6757b7b7e2c9bd6dc89c114b428884"
+      "bytes": 96647,
+      "sha256": "7a94e44c9d0cde4e0c5ba2cb804a2fbcfa1eeb0e733e397532c81b1c2f92b2d3"
     },
     {
       "path": "frontend/src/api/projectSchema.ts",
@@ -2165,8 +2170,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 174622,
-      "sha256": "ea3f1d13853f3cfcac4ccbdd290ae077150fa175d8250b969447b30469a209ba"
+      "bytes": 177372,
+      "sha256": "9b20f52fe9d4fa461d14bee1bd638b473d84564571999884c6b477208830e541"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -2405,8 +2410,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 16996,
-      "sha256": "3b546a883694b1f823e8273aa4adecc31ae74617979efba41044e7ac5a6e18ec"
+      "bytes": 17423,
+      "sha256": "21b91449cd6b3326b20ea9426f2452ddc76f7111300754a99fcba1aecf415d2c"
     },
     {
       "path": "frontend/src/public/motorAirgap.ts",
@@ -2430,8 +2435,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 220619,
-      "sha256": "461f0ac1f79b7bc206b3531657cc48e69275f8e5465bb2922ae3ba8c4850bd9e"
+      "bytes": 221872,
+      "sha256": "fb99c0c7b0825533f372d55beda15b4e3b86621c57939394e74164e3d022a1fc"
     },
     {
       "path": "frontend/src/public/tutorials/PublicTutorials.tsx",
@@ -2460,8 +2465,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 14822,
-      "sha256": "8f85717fcf9ef9b6345b7e25d17626fe9d48748c42afb9104697dfdfeb620e5b"
+      "bytes": 15140,
+      "sha256": "c7432c0278becd2dc4a3b5f56e12d586c8dfd16ed68e42f2a9266f91375daeb5"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -2927,6 +2932,11 @@
       "path": "tests/test_public_validation_fixtures.py",
       "bytes": 3130,
       "sha256": "fcd5bd4017a410bd7a7802c0a3bfd723bf0594156770ce810578336638579f60"
+    },
+    {
+      "path": "tests/test_qualification.py",
+      "sha256": "102e1e5334233bf292b86294fabeac95de65b97c01bf13d24e6214b9d4cbb68d",
+      "bytes": 8235
     },
     {
       "path": "tests/test_release_tools.py",
@@ -4154,6 +4164,72 @@
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
       "source_sha256": "bdd9ebde9bf5f26d170124aba64624f9ae1cb0ec2d75de5b41b41cac081fc557",
       "reason": "Label solve-settings validation errors as solve settings rather than geometry."
+    },
+    {
+      "base_commit": "fa1b273ca297d5502cd5ec6ed92c06ed67cdd6f4",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "f706215a7802e4ee1c2ca5173fadb33a140d5ad49a07732fafe727e40c772efa",
+      "reason": "Note that the app and saved reports show each design's qualification status."
+    },
+    {
+      "base_commit": "fa1b273ca297d5502cd5ec6ed92c06ed67cdd6f4",
+      "path": "backend/preview.py",
+      "source_sha256": "b9c9afabb72694134e92ddea71cd735de7f5c6352d9f5bef3faeea7520208eb6",
+      "reason": "Return the design's benchmark qualification status in preview metadata."
+    },
+    {
+      "base_commit": "fa1b273ca297d5502cd5ec6ed92c06ed67cdd6f4",
+      "path": "backend/public_report.py",
+      "source_sha256": "4e6c1e9f74bb6d9466ae931bebd9594f04ac2822d9f52f17ca6a2830c72cbb66",
+      "reason": "Show the run's qualification status in the PDF header and list experimental reasons and caveats as known limitations in the PDF and CSV."
+    },
+    {
+      "base_commit": "fa1b273ca297d5502cd5ec6ed92c06ed67cdd6f4",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "fa061c7c8d744f5e2d84d93a1a12ede03e32053a956ae85322962a15be4abe47",
+      "reason": "Return the qualification status from solve validation and with completed results."
+    },
+    {
+      "base_commit": "fa1b273ca297d5502cd5ec6ed92c06ed67cdd6f4",
+      "path": "backend/solve_workspace.py",
+      "source_sha256": "14c08f399771fb23d1a4afe817a627636dc6aadce8f2fca60cec09ec09109c82",
+      "reason": "Record the qualification status in each saved run's provenance."
+    },
+    {
+      "base_commit": "fa1b273ca297d5502cd5ec6ed92c06ed67cdd6f4",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "33f8b6b9f9c7057f10a52669dd945d1ae2f72c77056dfbf584d9b310c57e1e59",
+      "reason": "Document how the application applies the qualification table."
+    },
+    {
+      "base_commit": "fa1b273ca297d5502cd5ec6ed92c06ed67cdd6f4",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "3b0bdaf8a65debaf196af3ceda2543e5ed6757b7b7e2c9bd6dc89c114b428884",
+      "reason": "Check that every stage reads and shows the qualification status."
+    },
+    {
+      "base_commit": "fa1b273ca297d5502cd5ec6ed92c06ed67cdd6f4",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "ea3f1d13853f3cfcac4ccbdd290ae077150fa175d8250b969447b30469a209ba",
+      "reason": "Show the qualification status in Design health and on the Solve and Results pages."
+    },
+    {
+      "base_commit": "fa1b273ca297d5502cd5ec6ed92c06ed67cdd6f4",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "3b546a883694b1f823e8273aa4adecc31ae74617979efba41044e7ac5a6e18ec",
+      "reason": "Type the qualification status on validations and results."
+    },
+    {
+      "base_commit": "fa1b273ca297d5502cd5ec6ed92c06ed67cdd6f4",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "461f0ac1f79b7bc206b3531657cc48e69275f8e5465bb2922ae3ba8c4850bd9e",
+      "reason": "Style the qualification note."
+    },
+    {
+      "base_commit": "fa1b273ca297d5502cd5ec6ed92c06ed67cdd6f4",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "8f85717fcf9ef9b6345b7e25d17626fe9d48748c42afb9104697dfdfeb620e5b",
+      "reason": "Check in the browser that the starter motor shows as qualified in Design health and on the Results page."
     }
   ]
 }
