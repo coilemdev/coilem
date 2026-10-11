@@ -4,6 +4,10 @@
 [JSON numerical records](benchmark_summary.json), [artifact hashes](artifact_manifest.json)
 and [run commands](../abcd-v1.1/README.md).
 
+See the [benchmark index](../README.md) for archived runs and the
+[IPM diagnosis](../../docs/IPM_BENCHMARK_DIAGNOSIS.md) for the failure causes,
+fixture decision and open convergence issues.
+
 This is a compilation of recorded evidence for the new default matrix, not a
 fresh full sweep at one candidate. The unchanged cases retain the
 [October 10 macOS rerun](../main-20261010-45e0a5c-rerun/README.md) at `45e0a5c`.

@@ -9,6 +9,10 @@ See [Numerical evidence](NUMERICAL_EVIDENCE.md) for measured comparisons and
 [Local verification](VERIFICATION.md) for the build, browser and audit record.
 These records keep their tested runtime identities explicit.
 
+The [benchmark index](../benchmarks/README.md) identifies the current selection
+and archived evidence. The [IPM diagnosis](IPM_BENCHMARK_DIAGNOSIS.md) explains
+the fixture replacement and the solver/convergence work that remains open.
+
 ## Next-release benchmark selection
 
 [Baseline report v1.2](../benchmarks/release-baseline-20261011-v1.2/benchmark_report.md)

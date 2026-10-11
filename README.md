@@ -7,6 +7,12 @@ Everything runs on your computer.
 
 Website: [coilem.com](https://coilem.com)
 
+The current next-release [benchmark baseline v1.2](benchmarks/release-baseline-20261011-v1.2/README.md)
+uses higher-output deep-apex and wide-angle IPM fixtures: 29 PASS and one planned
+coverage item (numerical status UNSUPPORTED). It compiles explicitly identified
+measured candidates. The [benchmark index](benchmarks/README.md) separates this
+default selection from archived runs and the preview qualification record.
+
 ![coilEM workspace](docs/images/coilem-landing-page.png)
 
 **Developer preview:** the published [A/B/C/D benchmark report
@@ -120,8 +126,3 @@ Report bugs through [Support](SUPPORT.md), and vulnerabilities privately through
 [Security](SECURITY.md). Source is licensed under AGPL-3.0-or-later; see
 [LICENSE](LICENSE), [third-party notices](THIRD_PARTY_NOTICES.md) and
 [trademark terms](TRADEMARKS.md).
-
-The next-release [benchmark baseline v1.2](benchmarks/release-baseline-20261011-v1.2/benchmark_report.md)
-uses higher-output deep-apex and wide-angle IPM fixtures. Its 29 PASS / one planned coverage item
-(numerical state UNSUPPORTED) compile explicitly identified measured candidates; the
-original low-output failures remain archived.

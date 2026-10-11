@@ -1,5 +1,9 @@
 # Numerical evidence for the developer preview
 
+Use the [benchmark index](../benchmarks/README.md) to distinguish the current
+default selection from archived runs. The [IPM diagnosis](IPM_BENCHMARK_DIAGNOSIS.md)
+links the fixture decision to the open nonlinear-convergence and reporting issues.
+
 ## Next-release benchmark baseline v1.2
 
 The [report v1.2](../benchmarks/release-baseline-20261011-v1.2/benchmark_report.md),

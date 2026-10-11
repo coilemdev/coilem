@@ -1,5 +1,11 @@
 # Coilem main benchmark report v1.1
 
+**Archived benchmark selection.** Start with the [current baseline v1.2](../release-baseline-20261011-v1.2/README.md)
+or [benchmark index](../README.md). This package remains the fresh-reference
+record and preview qualification evidence at `bad71d9`. Its fixtures, BLDC
+protocols and golden vectors are still used by the default runner; the measured
+reports and original FAIL verdicts are unchanged.
+
 Report revision **1.1** publishes the completed A/B/C/D benchmark
 of Coilem **0.2.0**, Magneto2D **0.3.2**, at public commit
 `bad71d9cbcb10bf2daa293c5577f9d9e26778a12` captured on October 9, 2026.

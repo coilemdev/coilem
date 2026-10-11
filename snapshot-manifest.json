@@ -55,8 +55,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 6137,
-      "sha256": "0fbc40fbfdd08b72b2cc2c2d48de1ac174dc78881e1dee8c58ed190c6921090d"
+      "bytes": 6223,
+      "sha256": "d01f99340e30f73ece44ebb990b065a582c7a1011ff5db48bdcfeda16778c1af"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -499,6 +499,11 @@
       "sha256": "bad70a57f91e9ea6074a39975b80e847e492f8d07a6738c5fe41ed5f430e690e"
     },
     {
+      "path": "benchmarks/README.md",
+      "bytes": 2315,
+      "sha256": "4c391e9960ce6e306c7c12687726b45ad864d003ec0d27fae326c2ff98be6388"
+    },
+    {
       "path": "benchmarks/abcd-v1.1/README.md",
       "bytes": 6006,
       "sha256": "0334fa66badca568e5f130db6020c73ddf63344f84051e2b39745ddb9929c060"
@@ -600,13 +605,13 @@
     },
     {
       "path": "benchmarks/main-20261009-bad71d9/README.md",
-      "bytes": 3726,
-      "sha256": "cf01f8cc07f7f24dcc418fd323f662f89e3d8a1527485a58b51ec3ab94d0a1b9"
+      "bytes": 4127,
+      "sha256": "37f6a305865657b5187fbdc37a1a640e2e2ae9821269b30b393c68ae13e014df"
     },
     {
       "path": "benchmarks/main-20261009-bad71d9/artifact_manifest.json",
       "bytes": 15433,
-      "sha256": "79ddbce02b693e3ef16d9c8d173ad7a443046a0d8afa87c1e1289774368423ed"
+      "sha256": "cc6ccba5c47bd8320c87d906620f3533ca84dc293bf5adaa9d914b65185c9629"
     },
     {
       "path": "benchmarks/main-20261009-bad71d9/benchmark_report.md",
@@ -1035,13 +1040,13 @@
     },
     {
       "path": "benchmarks/main-20261010-45e0a5c-rerun/README.md",
-      "bytes": 6674,
-      "sha256": "99331cae9d1396f4d0ba7bd7ee2c9b15392db1431960764cfa2a9ebdf8e8085d"
+      "bytes": 7518,
+      "sha256": "427b7b9c013df0b34b8a028d7eb7ce6321c56d3fa0febbf8549007efcb8bbc50"
     },
     {
       "path": "benchmarks/main-20261010-45e0a5c-rerun/artifact_manifest.json",
       "bytes": 7669,
-      "sha256": "bff648967f9cc9ed5b9c778301f725d0ad74ebffe12803eabdffe7f6a2afdeef"
+      "sha256": "bf932ff4e65f7ac1946e52e216baf093ad901ad79a73d434e724625f348fb227"
     },
     {
       "path": "benchmarks/main-20261010-45e0a5c-rerun/benchmark_report.md",
@@ -1550,13 +1555,13 @@
     },
     {
       "path": "benchmarks/release-baseline-20261011-v1.2/README.md",
-      "bytes": 2245,
-      "sha256": "037d4b92a3a3819de78fcfcccb5ed741dc76522152b261cec57e1285da206275"
+      "bytes": 2437,
+      "sha256": "6751ddd7cef75704f981050b38891d8b6b560d886c373e345325a1cee4d1fcf7"
     },
     {
       "path": "benchmarks/release-baseline-20261011-v1.2/artifact_manifest.json",
       "bytes": 377,
-      "sha256": "845562916551e7b15d0026790d3871348ec8bc7d9f737a1685048013aa243c51"
+      "sha256": "82ed9485c312ff897e86436c73e43d6a9c45cc457720de683e07a3ca6f73beba"
     },
     {
       "path": "benchmarks/release-baseline-20261011-v1.2/benchmark_report.md",
@@ -1604,14 +1609,19 @@
       "sha256": "31e075b03e973d6b388c1fe97d15ad2f9f666f05a6df4b3d09dcd3ecdd686241"
     },
     {
+      "path": "docs/IPM_BENCHMARK_DIAGNOSIS.md",
+      "bytes": 6351,
+      "sha256": "b48eaab4fabbc7ed03901828b7a2c16a471ced671c7f6cd6fba3c45dbd2cfa2a"
+    },
+    {
       "path": "docs/MAGNETO2D.md",
       "bytes": 46156,
       "sha256": "0821100286b8d9e829668c81a8620b809bd337b87297e93e372d916c88d4a13a"
     },
     {
       "path": "docs/NUMERICAL_EVIDENCE.md",
-      "bytes": 17507,
-      "sha256": "ea8384603385046008c21a4efe43a383a8660abf2c2394ec0dd9ccaf998e0569"
+      "bytes": 17755,
+      "sha256": "4d432dffb5173f05d3e414445b8aa8fb5f8c09a556e4c965cd2d4fd46ae0c8c8"
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
@@ -1625,8 +1635,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 14318,
-      "sha256": "4559afd83f0253e5aa1ff38839030db7c43826f4d326a00f0231a7cbb3a175ab"
+      "bytes": 14554,
+      "sha256": "33f8b6b9f9c7057f10a52669dd945d1ae2f72c77056dfbf584d9b310c57e1e59"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -3616,6 +3626,30 @@
       "base_commit": "5c1faedc9f655fc46cc4a5eba9d90cb56912cfdc",
       "path": "tools/benchmark_suite/report.py",
       "source_sha256": "59f352a8d5dc6773a0c1ed91c975dbc2be23246d28b56a1fe864cdc911c13a3e",
+      "reason": "Select two qualified higher-output IPM geometries for the next-release benchmark; retain archived failures, unchanged requests, references and gates; publish report v1.2 with distinct measured candidates and support legacy protocol selection."
+    },
+    {
+      "base_commit": "5c1faedc9f655fc46cc4a5eba9d90cb56912cfdc",
+      "path": "benchmarks/main-20261009-bad71d9/README.md",
+      "source_sha256": "cf01f8cc07f7f24dcc418fd323f662f89e3d8a1527485a58b51ec3ab94d0a1b9",
+      "reason": "Select two qualified higher-output IPM geometries for the next-release benchmark; retain archived failures, unchanged requests, references and gates; publish report v1.2 with distinct measured candidates and support legacy protocol selection."
+    },
+    {
+      "base_commit": "5c1faedc9f655fc46cc4a5eba9d90cb56912cfdc",
+      "path": "benchmarks/main-20261009-bad71d9/artifact_manifest.json",
+      "source_sha256": "79ddbce02b693e3ef16d9c8d173ad7a443046a0d8afa87c1e1289774368423ed",
+      "reason": "Select two qualified higher-output IPM geometries for the next-release benchmark; retain archived failures, unchanged requests, references and gates; publish report v1.2 with distinct measured candidates and support legacy protocol selection."
+    },
+    {
+      "base_commit": "5c1faedc9f655fc46cc4a5eba9d90cb56912cfdc",
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/README.md",
+      "source_sha256": "99331cae9d1396f4d0ba7bd7ee2c9b15392db1431960764cfa2a9ebdf8e8085d",
+      "reason": "Select two qualified higher-output IPM geometries for the next-release benchmark; retain archived failures, unchanged requests, references and gates; publish report v1.2 with distinct measured candidates and support legacy protocol selection."
+    },
+    {
+      "base_commit": "5c1faedc9f655fc46cc4a5eba9d90cb56912cfdc",
+      "path": "benchmarks/main-20261010-45e0a5c-rerun/artifact_manifest.json",
+      "source_sha256": "bff648967f9cc9ed5b9c778301f725d0ad74ebffe12803eabdffe7f6a2afdeef",
       "reason": "Select two qualified higher-output IPM geometries for the next-release benchmark; retain archived failures, unchanged requests, references and gates; publish report v1.2 with distinct measured candidates and support legacy protocol selection."
     }
   ]
