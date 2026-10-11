@@ -13,6 +13,14 @@ at the packaged origin. Browser-saved state also stays with its original port
 when the launcher falls back to another port. Saved motor runs remain in the
 user-data folder.
 
+## Design file loading (unreleased)
+
+Bundled examples and design files that leave out the tooth-shoe settings now
+load without tooth shoes, as the backend reads them. They used to inherit the
+starter motor's shoes: the SPM 24p example then failed geometry validation,
+and the two IPM examples solved with narrower slot mouths than their files
+define. Saved runs keep the geometry they were solved with.
+
 ## Qualification
 
 Numerical qualification for this preview is the published [A/B/C/D benchmark

@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
 
 from backend.geometry import validate_geometry
-from backend.models import MotorConfig
+from backend.models import MotorConfig, StatorConfig
 from backend.public_main import app
 from backend.public_policy import public_config_support_error
 
@@ -59,3 +60,20 @@ def test_public_validation_fixture_sizes_are_deliberately_distinct() -> None:
     ].stator.OD_mm < configs[
         "validation_ipm_14p_flat_buried_large.openem"
     ].stator.OD_mm
+
+
+def test_frontend_loader_fills_absent_stator_fields_with_backend_defaults() -> None:
+    """The UI loads these fixtures through parseDesignFile, which fills absent
+    fields from the starter motor. Where the two differ, it must use the
+    backend's defaults, or the loaded design is not the fixture: the starter
+    motor's tooth shoes closed the SPM 24p slot mouth."""
+
+    source = Path("frontend/src/public/designFile.ts").read_text(encoding="utf-8")
+    block = re.search(r"export const LOADED_STATOR_FALLBACKS = \{(.*?)\};", source, re.S)
+    assert block is not None
+    fallbacks = {
+        key: json.loads(value) for key, value in re.findall(r"(\w+): ([^,\n]+),", block.group(1))
+    }
+    assert fallbacks, "no fallbacks parsed"
+    assert fallbacks == {key: StatorConfig.model_fields[key].default for key in fallbacks}
+    assert "tooth_shoe_enabled" in fallbacks

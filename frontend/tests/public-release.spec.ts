@@ -83,6 +83,27 @@ test.describe('public developer preview release rehearsal', () => {
     expect((await after.json()).runs).toEqual([]);
   });
 
+  test('loads every bundled example as the geometry its file describes', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('status').filter({ hasText: 'Local: ready' })).toBeVisible();
+    await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+    // The files define no tooth shoes, so none may be inherited from the starter motor.
+    for (const [label, slots] of [['IPM 10p V-shape', 12], ['IPM 14p flat buried', 18], ['SPM 24p', 27]] as const) {
+      await page.getByRole('button', { name: 'Design file menu', exact: true }).click();
+      await page.getByRole('menuitem', { name: 'Examples', exact: true }).hover();
+      const previewed = page.waitForResponse((response) => (
+        response.request().method() === 'POST'
+        && new URL(response.url()).pathname === '/preview'
+        && response.request().postDataJSON()?.stator?.slot_count === slots
+      ));
+      await page.getByRole('menuitem', { name: new RegExp(`^${label}`) }).click();
+      const response = await previewed;
+      expect(response.status(), `${label}: ${await response.text()}`).toBe(200);
+      expect(response.request().postDataJSON().stator.tooth_shoe_enabled, label).toBe(false);
+      await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeEnabled();
+    }
+  });
+
   test('reopens a design, completes Standard sine and six-step runs, exports and compares them, then cancels safely', async ({ page }, info) => {
     // Both real Standard solves and their exports share this scenario's budget.
     // Allow their combined duration on the two-core CI runner.

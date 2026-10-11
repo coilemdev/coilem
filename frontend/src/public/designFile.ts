@@ -9,9 +9,10 @@ import { parseCustomSteels } from './customSteel';
  * The payload is the same plain JSON the desktop workflow writes:
  * `{ openem_schema_version, openem_version, name, ...config }`. Loading is
  * shape-tolerant on purpose: unknown keys are ignored, missing sections fall
- * back to the example design, legacy solver choices normalize to the
- * supported Gmsh-native path, and files stamped by a newer schema still load
- * with their unknown settings dropped.
+ * back to the example design, a stator without tooth-shoe settings loads
+ * without shoes (`LOADED_STATOR_FALLBACKS`), legacy solver choices normalize
+ * to the supported Gmsh-native path, and files stamped by a newer schema
+ * still load with their unknown settings dropped.
  *
  * It is the *same* format the desktop workflow reads, so the version and the
  * migrations come from `api/projectSchema` rather than being restated here.
@@ -47,6 +48,21 @@ const MESH_DENSITIES = new Set(['coarse', 'normal', 'fine', 'very_fine']);
 const NONLINEAR_SOLVERS = new Set(['picard', 'newton']);
 const CURRENT_CONVENTIONS = new Set(['rms', 'peak', 'plateau']);
 const EXCITATION_MODES = new Set(['sinusoidal', 'ideal_six_step_120']);
+
+/**
+ * Backend defaults for stator fields that the starter motor sets differently.
+ * A loaded file means what the backend reads from it, so a field the file
+ * leaves out takes the backend default rather than the starter motor's value.
+ * Bundled examples and designs saved before tooth shoes existed carry no shoe
+ * settings and describe stators without shoes; inheriting the starter motor's
+ * shoes narrowed their slot mouths, or closed them, as in the SPM 24p example.
+ * tests/test_public_validation_fixtures.py keeps them equal to the backend's.
+ */
+export const LOADED_STATOR_FALLBACKS = {
+  tooth_shoe_enabled: false,
+  tooth_shoe_height_mm: 1.5,
+  tooth_shoe_overhang_mm: 1.5,
+};
 
 /** Merge one config section onto its defaults, keeping only known keys whose
  * incoming value matches the default's primitive type. */
@@ -96,7 +112,10 @@ export function parseDesignFile(text: string): ParsedDesignFile {
   const config: MotorConfig = {
     ...defaults,
     topology: source.topology === 'IPM' ? 'IPM' : 'SPM',
-    stator: mergeSection(defaults.stator, source.stator),
+    stator: mergeSection(
+      isRecord(source.stator) ? { ...defaults.stator, ...LOADED_STATOR_FALLBACKS } : defaults.stator,
+      source.stator,
+    ),
     rotor: mergeSection(defaults.rotor, source.rotor),
     winding: mergeSection(defaults.winding, source.winding),
     materials: mergeSection(defaults.materials, source.materials),
