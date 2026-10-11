@@ -1,6 +1,7 @@
 """Regression coverage for frozen-reference reuse and unchanged numerical gates."""
 
 import copy
+import csv
 import os
 import subprocess
 import sys
@@ -15,9 +16,11 @@ from tools.benchmark_suite.metrics import evaluate_abc, evaluate_bldc
 from tools.benchmark_suite.references import load_bundle, load_suite
 from tools.benchmark_suite.report import build, phase_display_status
 
-SPECIFICATION = load_suite(SPEC)
+HISTORICAL_SPEC = ROOT / "benchmarks/abcd-v1/benchmark_spec.json"
+HISTORICAL_BUNDLE = ROOT / "benchmarks/reference-baselines/main-bad71d9"
+SPECIFICATION = load_suite(HISTORICAL_SPEC)
 CONFIGS, PROTOCOLS, GOLDEN = inputs(SPECIFICATION, SPECIFICATION["cases"])
-_, REFERENCES, _ = load_bundle(DEFAULT_BUNDLE, SPECIFICATION)
+_, REFERENCES, _ = load_bundle(HISTORICAL_BUNDLE, SPECIFICATION)
 HISTORICAL = ROOT / "benchmarks/main-20261009-bad71d9/rows"
 
 
@@ -69,7 +72,7 @@ def test_historical_verdicts_and_gates(case):
 
 
 def test_frozen_bundle_matches_all_inputs():
-    manifest, refs, digest = load_bundle(DEFAULT_BUNDLE, SPECIFICATION)
+    manifest, refs, digest = load_bundle(HISTORICAL_BUNDLE, SPECIFICATION)
     assert len(refs) == 29
     assert len(digest) == 64
     assert manifest["reference_commit"] != manifest["origin_candidate_commit"]
@@ -81,7 +84,7 @@ def test_reference_contract_rejects_mismatches(tmp_path, change):
     import shutil
 
     bundle = tmp_path / "bundle"
-    shutil.copytree(DEFAULT_BUNDLE, bundle)
+    shutil.copytree(HISTORICAL_BUNDLE, bundle)
     manifest = read(bundle / "manifest.json")
     if change == "material":
         manifest["material_contract"]["magnets"]["N42"]["Br_T"] = 1.2
@@ -247,6 +250,45 @@ def test_report_orders_phases_and_retains_hashed_input_copies(tmp_path):
             assert read(fixture) == row["configurations"][stage]
 
 
+def test_prius_planned_label_preserves_policy_rejection_and_numerical_status(tmp_path):
+    from backend.magneto2d_adapter import get_magneto2d_winding_support_error
+    from backend.models import MotorConfig
+    from backend.public_policy import PublicConfigError, parse_public_solve_request
+    from tools.benchmark_suite.report import display_outcome
+
+    cid = "ornl_prius_2004_ipm"
+    config = CONFIGS[cid, "native"]
+    assert get_magneto2d_winding_support_error(MotorConfig.model_validate(config)) is None
+    with pytest.raises(PublicConfigError) as caught:
+        parse_public_solve_request(config)
+    assert caught.value.field == "rotor.ipm_topology"
+    row = {"id": cid, "phase": "C", "fixture": next(c for c in SPECIFICATION["cases"] if c["id"] == cid)["jobs"][0]["fixture"],
+           "status": "UNSUPPORTED", "evaluation": {"status": "UNSUPPORTED", "reason": str(caught.value), "gates": []},
+           "measurements": {}, "configurations": {"native": config}}
+    manifest = {"identity": {"harness_version": "1.2.1", "protocol_version": "1.1.0", "commit": "candidate"},
+                "smoke": False, "reference_mode": "FROZEN_REFERENCE"}
+    assert build(tmp_path, manifest, [row]) == "PASS_WITH_UNSUPPORTED"
+    summary = read(tmp_path / "report/benchmark_summary.json")
+    assert summary["counts"] == {"UNSUPPORTED": 1}
+    assert summary["rows"][0]["status"] == summary["rows"][0]["evaluation"]["status"] == "UNSUPPORTED"
+    assert summary["phase_summary_presentation"]["C"] == "YELLOW"
+    assert summary["planned_coverage"][cid]["numerical_status"] == "UNSUPPORTED"
+    assert display_outcome(row) == "Planned coverage (not yet supported)"
+    for name in ("coilem_benchmark_report.html", "benchmark_report.md"):
+        content = (tmp_path / "report" / name).read_text(encoding="utf-8")
+        assert "Planned coverage (not yet supported)" in content
+        assert "HoleM50" in content
+        assert "no comparison was performed" in content
+    with (tmp_path / "report/benchmark_results.csv").open(newline="", encoding="utf-8") as stream:
+        record = next(csv.DictReader(stream))
+    assert record["status"] == "UNSUPPORTED"
+    assert record["coverage_label"] == "Planned coverage (not yet supported)"
+    # The roadmap label must not hide other outcomes or imply arbitrary unsupported cases are planned.
+    for status in ("PASS", "FAIL", "INCOMPLETE", "NOT_COMPARED"):
+        assert display_outcome({"id": cid, "status": status}) == status
+    assert display_outcome({"id": "other", "status": "UNSUPPORTED"}) == "UNSUPPORTED"
+
+
 def test_canonical_request_hash_includes_speed_and_geometry():
     config = copy.deepcopy(next(iter(CONFIGS.values())))
     original = canonical(config)
@@ -275,7 +317,7 @@ def test_orchestrator_resume_and_report_only_preserve_completed_jobs(tmp_path, m
     case = next(c for c in SPECIFICATION["cases"] if c["phase"] == phase)
     recorded = historical(case)
     runtime = {"commit": "test-candidate", "dirty": False, "harness_version": "1.0.0", "protocol_version": "1.0.0"}
-    monkeypatch.setattr(cli, "identity", lambda _: runtime)
+    monkeypatch.setattr(cli, "identity", lambda _, **kwargs: runtime)
     monkeypatch.setattr(magneto2d_adapter, "ensure_magneto2d_binary", lambda: ROOT / "solvers/magneto2d/Cargo.toml")
     launches = []
 
@@ -322,7 +364,8 @@ def test_orchestrator_resume_and_report_only_preserve_completed_jobs(tmp_path, m
         out_dir=tmp_path,
         no_reference=False,
         smoke=False,
-        reference_bundle=DEFAULT_BUNDLE,
+        suite=HISTORICAL_SPEC,
+        reference_bundle=HISTORICAL_BUNDLE,
         report_only=False,
         allow_dirty=False,
         resume=False,
@@ -342,6 +385,145 @@ def test_orchestrator_resume_and_report_only_preserve_completed_jobs(tmp_path, m
     assert cli.execute(args) == 0
     args.resume, args.report_only = True, False
     monkeypatch.setattr(magneto2d_adapter, "ensure_magneto2d_binary", lambda: ROOT / "solvers/magneto2d/Cargo.toml")
-    monkeypatch.setattr(cli, "identity", lambda _: {**runtime, "commit": "changed"})
+    monkeypatch.setattr(cli, "identity", lambda _, **kwargs: {**runtime, "commit": "changed"})
     with pytest.raises(ValueError, match="Resume refused"):
         cli.execute(args)
+
+
+def test_release_suite_replaces_only_two_requests_and_preserves_archives():
+    current = load_suite(SPEC)
+    configurations, _, _ = inputs(current, current["cases"])
+    manifest, refs, _ = load_bundle(DEFAULT_BUNDLE, current)
+    assert current["protocol_version"] == "1.1.0"
+    assert Counter(c["phase"] for c in current["cases"]) == {"A": 10, "B": 12, "C": 5, "D": 3}
+    assert len(refs) == 29
+    current_cases = {c["id"]: c for c in current["cases"]}
+    historical_manifest = read(HISTORICAL_BUNDLE / "manifest.json")
+    replaced = set(current["extension"]["replacements"])
+    assert replaced == {"ipm_vshape_8p12s_deep_apex_contract", "ipm_vshape_8p12s_wide_angle_contract"}
+    assert replaced.isdisjoint(current_cases)
+    for case in SPECIFICATION["cases"]:
+        if case["id"] in replaced:
+            assert historical(case)["comparison"]["status"] == "FAIL"
+        else:
+            assert current_cases[case["id"]] == case
+    for cid, entry in historical_manifest["records"].items():
+        if cid in replaced:
+            assert cid not in manifest["records"]
+            continue
+        assert manifest["records"][cid] == entry
+        assert sha(DEFAULT_BUNDLE / entry["file"]) == sha(HISTORICAL_BUNDLE / entry["file"])
+    added = [c for c in current["cases"] if c["id"] not in {c["id"] for c in SPECIFICATION["cases"]}]
+    assert len(added) == 2
+    for case in added:
+        from backend.public_policy import parse_public_solve_request
+
+        config = configurations[case["id"], "native"]
+        parse_public_solve_request(config)
+        reference = refs[case["id"]]
+        assert reference["summary"]["avg_torque_Nm"] >= 0.5
+        name = "deep_apex" if "deep_apex" in case["id"] else "wide_angle"
+        original = copy.deepcopy(CONFIGS[f"ipm_vshape_8p12s_{name}_contract", "native"])
+        original["rotor"]["magnet_width_mm"] = 12 if name == "deep_apex" else 10
+        assert config == original
+        source = read(ROOT / "benchmarks/ipm-high-output-20261011-af56962/rows" / (case["id"] + ".json"))
+        evaluation = evaluate_abc(source["candidate"], reference, config)
+        assert_same_metrics(evaluation, source["comparison"])
+        assert evaluation["status"] == "PASS"
+        assert source["native_runtime_before"] == source["native_runtime_after"]
+        assert source["reference_runtime_before"] == source["reference_runtime_after"]
+        assert source["candidate_commit"] != source["reference_commit"]
+
+
+def test_protocol_selection_is_recorded_and_unknown_protocols_rejected(tmp_path):
+    from tools.benchmark_suite.contract import identity
+
+    binary = ROOT / "solvers/magneto2d/Cargo.toml"
+    assert identity(binary)["protocol_version"] == "1.1.0"
+    assert identity(binary, protocol_version="1.0.0")["protocol_version"] == "1.0.0"
+    with pytest.raises(ValueError, match="Unsupported suite protocol"):
+        identity(binary, protocol_version="2.0.0")
+    invalid = copy.deepcopy(SPECIFICATION)
+    invalid["protocol_version"] = "2.0.0"
+    write(tmp_path / "spec.json", invalid)
+    with pytest.raises(ValueError, match="Unsupported suite protocol"):
+        load_suite(tmp_path / "spec.json")
+
+
+def test_release_baseline_retains_actual_measured_candidates_and_unaffected_evidence():
+    package = ROOT / "benchmarks/release-baseline-20261011-v1.2"
+    baseline = read(package / "benchmark_summary.json")
+    prior_package = ROOT / "benchmarks/main-20261010-45e0a5c-rerun"
+    prior = read(prior_package / "benchmark_summary.json")
+    current = load_suite(SPEC)
+    original_rows = {row["id"]: row for row in prior["rows"]}
+    replacements = set(current["extension"]["replacements"].values())
+    assert [row["id"] for row in baseline["rows"]] == [case["id"] for case in current["cases"]]
+    assert baseline["counts"] == {"PASS": 29, "UNSUPPORTED": 1}
+    assert baseline["status"] == "PASS_WITH_UNSUPPORTED"
+    assert baseline["planned_coverage"]["ornl_prius_2004_ipm"]["label"] == "Planned coverage (not yet supported)"
+    assert baseline["planned_coverage"]["ornl_prius_2004_ipm"]["numerical_status"] == "UNSUPPORTED"
+    assert baseline["phase_order"] == ["A", "B", "C", "D"]
+    assert baseline["phase_summary_presentation"] == {"A": "PASS", "B": "PASS", "C": "YELLOW", "D": "PASS"}
+    assert baseline["evidence_kind"] == "COMPILED_MEASURED_BASELINE; NOT_A_NEW_SINGLE_CANDIDATE_RUN"
+    for row in baseline["rows"]:
+        origin = row["measurement_provenance"]
+        assert sha(package / origin["source_record"]) == origin["source_record_sha256"]
+        assert origin["candidate_commit"] != origin["reference_commit"]
+        if row["id"] in replacements:
+            source = read(package / origin["source_record"])
+            assert origin["candidate_commit"] == source["candidate_commit"]
+            assert row["measurements"]["native"] == source["candidate"]
+            assert row["reference"] == source["reference"]
+            assert row["evaluation"] == source["comparison"]
+        else:
+            assert origin["candidate_commit"] == prior["run"]["identity"]["commit"]
+            for key, value in original_rows[row["id"]].items():
+                if key != "fixture_files":
+                    assert row[key] == value
+            assert row["fixture_files"] == {
+                stage: (Path("../main-20261010-45e0a5c-rerun") / path).as_posix()
+                for stage, path in original_rows[row["id"]]["fixture_files"].items()
+            }
+    gates = [gate for row in baseline["rows"] if row["phase"] == "D" for gate in row["evaluation"]["gates"]]
+    assert len(gates) == 42 and all(gate["status"] == "PASS" for gate in gates)
+    for name in ("release-baseline-20261011-v1.2", "ipm-high-output-20261011-af56962"):
+        root = ROOT / "benchmarks" / name
+        for file, digest in read(root / "artifact_manifest.json").items():
+            assert sha(root / file) == digest
+
+
+@pytest.mark.parametrize("protocol_version", ["1.0.0", "1.1.0"])
+def test_worker_preserves_selected_protocol_for_runtime_verification(tmp_path, monkeypatch, protocol_version):
+    """Legacy jobs must not be checked against the new default protocol identity."""
+    from argparse import Namespace
+
+    from backend import solver
+    from tools.benchmark_suite.contract import identity
+    from tools.benchmark_suite.worker import measure
+
+    case = SPECIFICATION["cases"][0]
+    config = CONFIGS[case["id"], "native"]
+    result = historical(case)["candidate"]
+
+    class RecordedMeasurement:
+        def model_dump(self, **kwargs):
+            return copy.deepcopy(result)
+
+    class RecordedSolver:
+        def __init__(self, *, launch_surface):
+            assert launch_surface is True
+
+        def solve(self, parsed, **kwargs):
+            return RecordedMeasurement()
+
+    monkeypatch.setattr(solver, "Magneto2DSolver", RecordedSolver)
+    binary = ROOT / "solvers/magneto2d/Cargo.toml"
+    runtime = identity(binary, protocol_version=protocol_version)
+    request = tmp_path / "request.json"
+    output = tmp_path / "result.json"
+    write(request, {"identity": runtime, "binary": binary.relative_to(ROOT).as_posix(), "config": config, "config_sha256": canonical(config)})
+    assert measure(Namespace(request=request, output=output)) == 0
+    measured = read(output)
+    assert measured["identity_before"] == measured["identity_after"] == runtime
+    assert measured["identity_before"]["protocol_version"] == protocol_version

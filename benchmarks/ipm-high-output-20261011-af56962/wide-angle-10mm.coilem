@@ -1,0 +1,77 @@
+{
+  "openem_schema_version": 4,
+  "openem_version": "0.2.0",
+  "name": "IPM wide angle — 75° V, 10 mm magnet legs",
+  "schema_version": "1.0",
+  "topology": "IPM",
+  "stator": {
+    "OD_mm": 160,
+    "ID_mm": 96,
+    "slot_count": 12,
+    "stack_length_mm": 100,
+    "slot_opening_mm": 7.5398223686155035,
+    "tooth_width_mm": 11.309733552923255,
+    "yoke_thickness_mm": 19.2,
+    "tooth_shoe_enabled": false,
+    "tooth_shoe_height_mm": 1.5,
+    "tooth_shoe_overhang_mm": 1.5
+  },
+  "rotor": {
+    "OD_mm": 94,
+    "ID_mm": 18.8,
+    "magnet_thickness_mm": 3,
+    "magnet_width_mm": 10,
+    "pole_count": 8,
+    "magnet_embrace": 0.8,
+    "bridge_thickness_mm": 1,
+    "ipm_topology": "v_shape",
+    "flat_buried_magnet_shape": "straight",
+    "side_bridge_thickness_mm": 1.2,
+    "pocket_clearance_mm": 0.6,
+    "magnet_angle_deg": 0,
+    "v_angle_deg": 75,
+    "v_depth_mm": 13.5,
+    "inner_web_thickness_mm": 5.5,
+    "outer_bridge_thickness_mm": 1.1
+  },
+  "winding": {
+    "type": "concentrated",
+    "turns_per_coil": 8,
+    "layers": 1,
+    "parallel_paths": 1
+  },
+  "materials": {
+    "stator_steel": "M350-50A",
+    "rotor_steel": "M350-50A",
+    "magnet_grade": "N42",
+    "conductor": "copper"
+  },
+  "solve_params": {
+    "solve_quality": "custom",
+    "rotor_sweep_range_deg": 360,
+    "rotor_step_deg": 7.5,
+    "mesh_density": "normal",
+    "mesh_source": "native",
+    "mesher": "gmsh",
+    "corner_refinement": false,
+    "rotor_rotation_model": "remesh_per_step",
+    "torque_method": "weighted_stress",
+    "nonlinear_solver": "newton",
+    "linear_solver_preconditioner": "direct",
+    "current_amplitude_A": 50,
+    "current_amplitude_convention": "peak",
+    "current_angle_deg": 0,
+    "excitation_mode": "sinusoidal",
+    "commutation_advance_deg": 0,
+    "phase_connection": "wye",
+    "rated_speed_rpm": 3000
+  },
+  "solve_options": {
+    "torque_sweep": true,
+    "back_emf": true,
+    "flux_density": false,
+    "cogging_torque": false,
+    "torque_speed_envelope": false,
+    "thd_analysis": false
+  }
+}

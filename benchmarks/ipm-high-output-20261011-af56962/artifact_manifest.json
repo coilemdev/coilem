@@ -1,0 +1,14 @@
+{
+  "benchmark_report.md": "2f38cbf9ed400bdaf09a587f17544b4667c7a3ec322895efe0559322868a8e7a",
+  "benchmark_summary.json": "4f586cabe1e22819f34ab7332e1ef7d4414082a593f9fbdc4122f366e77828a0",
+  "coilem_benchmark_report.html": "8ecef6ab132eac6c613f3aaeb34e65e73e500103f973680644e6327c962e2ba8",
+  "deep-apex-12mm.coilem": "27bd492d2cdeeb8e820c8be6684fb2421e348e1c0f693ccff27be8f58fc84e1f",
+  "fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1.json": "5c0ce6a13157f4b509278fd7ce6497ae50f813419f0469303d01b468053ad579",
+  "fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1.json": "4b64ba12009d85110f08bb03804b96d17f6e79a751c088298ac17123680f77c4",
+  "ipm_vshape_8p12s_deep_apex_high_output_v1.svg": "33addb71c4e3f5fbca22af5cb4f0a191e0d497a1ac559591be819ea2fdc0c088",
+  "ipm_vshape_8p12s_wide_angle_high_output_v1.svg": "487d9cec356fb909cb957bd852e142315bdd40a5709485d389367053f20d0ed5",
+  "README.md": "dcf665e6f469787ee37838d07d06acdd042a5b03bdb45d5540ec0778f5776614",
+  "rows/ipm_vshape_8p12s_deep_apex_high_output_v1.json": "6bfdb6c4af8b6f271a7601554e36319ce3fe1e8a1428c025387f846b6b5f12fb",
+  "rows/ipm_vshape_8p12s_wide_angle_high_output_v1.json": "810e49b9246f08a5811e336e3dd3e18bc580c1386b5fc851a27a073da869297f",
+  "wide-angle-10mm.coilem": "794cb43eae03c8fd5f4ccca33c5ea89ded8b0e8aeb1934ad2b69f8920c51f564"
+}

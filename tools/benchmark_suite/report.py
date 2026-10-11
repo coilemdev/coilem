@@ -12,6 +12,37 @@ from collections import Counter
 from tools.benchmark_suite import PHASE_LABELS
 from tools.benchmark_suite.contract import ROOT, read, sha, write
 
+PLANNED_COVERAGE = {
+    "ornl_prius_2004_ipm": {
+        "label": "Planned coverage (not yet supported)",
+        "reason": "The Prius fixture uses HoleM50 rotor geometry; the public API currently accepts flat-buried and V-shape IPM only.",
+        "next_step": "Qualify the Prius geometry, native mesh and field solves against matched FEMM evidence before enabling public support.",
+    },
+}
+
+
+def coverage_plan(row):
+    """A roadmap label applies only to an explicitly planned, rejected case."""
+    return PLANNED_COVERAGE.get(row["id"]) if row["status"] == "UNSUPPORTED" else None
+
+
+def display_outcome(row):
+    plan = coverage_plan(row)
+    return plan["label"] if plan else row["status"]
+
+
+def phase_outcomes(rows):
+    return ", ".join(f"{n} {label}" for label, n in sorted(Counter(display_outcome(row) for row in rows).items()))
+
+
+def display_overall(status, rows):
+    rejected = [row for row in rows if row["status"] == "UNSUPPORTED"]
+    if status == "PASS_WITH_UNSUPPORTED" and rejected and all(coverage_plan(row) for row in rejected):
+        if len(rejected) == len(rows):
+            return "Planned coverage (not yet supported)"
+        return "PASS with planned coverage (not yet supported)"
+    return status
+
 
 def phase_display_status(outcomes):
     """Presentation only: all PASS green, majority FAIL red, mixed/partial yellow."""
@@ -189,6 +220,7 @@ def build(output, manifest, rows, *, pdf=False):
         },
         "run": manifest,
         "rows": rows,
+        "planned_coverage": {row["id"]: {**coverage_plan(row), "numerical_status": row["status"]} for row in rows if coverage_plan(row)},
         "unsupported_capabilities": {"thermal": "No public thermal benchmark in this A/B/C/D protocol"},
     }
     write(report / "benchmark_summary.json", summary)
@@ -203,7 +235,7 @@ def build(output, manifest, rows, *, pdf=False):
     title = "Coilem A/B/C/D benchmark"
     parts = [
         f'<!doctype html><html lang="en"><meta charset="utf-8"><title>{title}</title><style>{styles}</style><body><h1>{title}</h1>',
-        f'<p class="{overall}">Outcome: {overall}</p><p>Harness {manifest["identity"]["harness_version"]}; '
+        f'<p class="{overall}">Outcome: {display_overall(overall, rows)}</p><p>Harness {manifest["identity"]["harness_version"]}; '
         f"protocol {manifest['identity']['protocol_version']}; Coilem commit {html.escape(manifest['identity']['commit'])}.</p>",
         "<p>Orange solid = Coilem. Blue dashed = saved FEMM reference, drawn last so overlaps remain visible. "
         "Residual plots show small differences. Reference data is already in public clockwise coordinates.</p>",
@@ -213,7 +245,7 @@ def build(output, manifest, rows, *, pdf=False):
     markdown = [
         f"# {title}",
         "",
-        f"Outcome: **{overall}**",
+        f"Outcome: **{display_overall(overall, rows)}**",
         "",
         f"Harness {manifest['identity']['harness_version']}; protocol {manifest['identity']['protocol_version']}.",
         f"Candidate commit: `{manifest['identity']['commit']}`. Reference mode: `{manifest['reference_mode']}`.",
@@ -226,7 +258,7 @@ def build(output, manifest, rows, *, pdf=False):
         selected = [r for r in rows if r["phase"] == phase]
         if not selected:
             continue
-        text = ", ".join(f"{n} {s}" for s, n in sorted(Counter(r["status"] for r in selected).items()))
+        text = phase_outcomes(selected)
         display_status = summary["phase_summary_presentation"][phase]
         parts.append(f'<tr class="{display_status}"><td>{phase} – {label}</td><td>{text}</td></tr>')
         markdown.append(f"| {phase} – {label} | {text} |")
@@ -244,9 +276,12 @@ def build(output, manifest, rows, *, pdf=False):
             link = next(iter(row["fixture_files"].values()))
             parts.append(
                 f'<tr class="{row["status"]}"><td><a href="{html.escape(link, quote=True)}">{html.escape(row["id"])}</a></td>'
-                f"<td>{row['status']}</td></tr>"
+                f"<td>{display_outcome(row)}</td></tr>"
             )
-            markdown.extend(["", f"- [{row['id']}]({link}): **{row['status']}**"])
+            markdown.extend(["", f"- [{row['id']}]({link}): **{display_outcome(row)}**"])
+            plan = coverage_plan(row)
+            if plan:
+                markdown.extend(["", f"{plan['reason']} {plan['next_step']} Numerical status remains UNSUPPORTED; no comparison was performed."])
         parts.append("</table>")
         for row in selected:
             parts.extend(
@@ -255,6 +290,13 @@ def build(output, manifest, rows, *, pdf=False):
                     "<p>Frozen inputs: "
                     + ", ".join(f'<a href="{html.escape(link, quote=True)}">{html.escape(stage)}</a>' for stage, link in row["fixture_files"].items())
                     + "</p>",
+                    f"<p>{html.escape(display_outcome(row))}</p>",
+                    (
+                        f"<p>{html.escape(coverage_plan(row)['reason'])} {html.escape(coverage_plan(row)['next_step'])} "
+                        "Numerical status: UNSUPPORTED; no comparison was performed.</p>"
+                        if coverage_plan(row)
+                        else ""
+                    ),
                     charts(row),
                     gate_table(row["evaluation"]),
                     "<details><summary>Metrics and diagnostics</summary><pre>"
@@ -266,7 +308,7 @@ def build(output, manifest, rows, *, pdf=False):
     (report / "benchmark_report.md").write_text("\n".join(markdown) + "\n", encoding="utf-8", newline="\n")
     with (report / "benchmark_results.csv").open("w", encoding="utf-8", newline="") as stream:
         writer = csv.writer(stream)
-        writer.writerow(["phase", "topology", "fixture", "status", "gate", "gate_status", "value"])
+        writer.writerow(["phase", "topology", "fixture", "status", "coverage_label", "gate", "gate_status", "value"])
         for row in rows:
             gates = row["evaluation"].get("gates", [])
             if isinstance(gates, dict):
@@ -278,6 +320,7 @@ def build(output, manifest, rows, *, pdf=False):
                         PHASE_LABELS[row["phase"]],
                         row["id"],
                         row["status"],
+                        display_outcome(row),
                         gate.get("id", ""),
                         gate.get("status", ""),
                         gate.get("value", ""),
@@ -320,7 +363,10 @@ def export_pdf(report, summary):
     from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
     styles = getSampleStyleSheet()
-    story = [Paragraph("Coilem A/B/C/D benchmark", styles["Title"]), Paragraph(summary["status"], styles["Heading2"])]
+    story = [
+        Paragraph("Coilem A/B/C/D benchmark", styles["Title"]),
+        Paragraph(display_overall(summary["status"], summary["rows"]), styles["Heading2"]),
+    ]
     run = summary["run"]
     for text in (
         f"Harness {run['identity']['harness_version']}; protocol {run['identity']['protocol_version']}.",
@@ -350,7 +396,7 @@ def export_pdf(report, summary):
         selected = [r for r in summary["rows"] if r["phase"] == phase]
         if selected:
             counts = Counter(r["status"] for r in selected)
-            overview.append([f"{phase} – {label}", ", ".join(f"{n} {s}" for s, n in sorted(counts.items()))])
+            overview.append([f"{phase} – {label}", phase_outcomes(selected)])
             presentation.append(phase_display_status(counts))
     story.append(table(overview, presentation))
     story.append(
@@ -360,7 +406,7 @@ def export_pdf(report, summary):
         rows = [r for r in summary["rows"] if r["phase"] == phase]
         if rows and phase != "D":
             story.append(Paragraph(f"Phase {phase} – {label} results", styles["Heading2"]))
-            story.append(table([["Fixture", "Outcome"], *[[r["id"], r["status"]] for r in rows]], [r["status"] for r in rows]))
+            story.append(table([["Fixture", "Outcome"], *[[r["id"], display_outcome(r)] for r in rows]], [r["status"] for r in rows]))
     phase_d_shown = False
     for row in summary["rows"]:
         first_phase_d = row["phase"] == "D" and not phase_d_shown
@@ -370,7 +416,7 @@ def export_pdf(report, summary):
                 [
                     PageBreak(),
                     Paragraph("Phase D – BLDC results", styles["Heading2"]),
-                    table([["Fixture", "Outcome"], *[[r["id"], r["status"]] for r in drows]], [r["status"] for r in drows]),
+                    table([["Fixture", "Outcome"], *[[r["id"], display_outcome(r)] for r in drows]], [r["status"] for r in drows]),
                 ]
             )
             phase_d_shown = True
@@ -381,6 +427,10 @@ def export_pdf(report, summary):
             fixture_url = html.escape((report / name).as_uri(), quote=True)
             story.append(Paragraph(f'<a href="{fixture_url}" color="blue">Frozen {html.escape(stage)} fixture JSON</a>', styles["BodyText"]))
         story.append(Spacer(1, 8))
+        plan = coverage_plan(row)
+        if plan:
+            note = f"{plan['label']}. {plan['reason']} {plan['next_step']} Numerical status: UNSUPPORTED; no comparison was performed."
+            story.append(Paragraph(html.escape(note), styles["BodyText"]))
         for svg in ET.fromstring("<root>" + charts(row) + "</root>"):
             drawing = Drawing(540, 230)
             for element in svg:

@@ -1,5 +1,54 @@
 # Numerical evidence for the developer preview
 
+Use the [benchmark index](../benchmarks/README.md) to distinguish the current
+default selection from archived runs. The [IPM diagnosis](IPM_BENCHMARK_DIAGNOSIS.md)
+links the fixture decision to the open nonlinear-convergence and reporting issues.
+
+## Next-release benchmark baseline v1.2
+
+The [report v1.2](../benchmarks/release-baseline-20261011-v1.2/benchmark_report.md),
+[HTML plots](../benchmarks/release-baseline-20261011-v1.2/coilem_benchmark_report.html)
+and [JSON evidence](../benchmarks/release-baseline-20261011-v1.2/benchmark_summary.json)
+use the default protocol 1.1.0 matrix: **29 PASS, one planned coverage item (numerical state UNSUPPORTED)**.
+A - SPM: 10 PASS; B - IPM: 12 PASS; C - Distributed Winding: 4 PASS and one
+planned coverage (not yet supported); D - BLDC: 3 PASS, 42/42 gates. All numerical gates are unchanged.
+
+This is a compiled baseline for the next release. It retains unchanged native
+measurements from the October 10 macOS rerun at
+`45e0a5c7662ade04a4be5519b7e5bac771a6122f` and uses two new October 11 designs
+measured at `af56962e690ade4816e48f562e380249aac7542e`. Every row binds its actual
+candidate, fixture and source evidence. It does not claim a full sweep of the
+current or future release commit. Unchanged cases reuse saved FEMM data; the new
+designs have fresh matched references from `8b95decda27d475ddbb75e99d92744ebc8e53b28`.
+
+| Replacement | Magnet leg length | Native / FEMM mean (N m) | Torque gap | BEMF H1 / peak gap | Outcome |
+| --- | --- | ---: | ---: | ---: | --- |
+| Deep apex | 9 -> 12 mm | 0.625690 / 0.582518 | 7.41% | 3.35% / 3.95% | PASS |
+| Wide angle | 9 -> 10 mm | 0.789964 / 0.737758 | 7.08% | 3.49% / 3.95% | PASS |
+
+Both measured means exceed 0.5 N m. Only magnet leg length changes: the deep
+60-degree V / 17 mm apex and wide 75-degree V / 13.5 mm apex, current, winding,
+stack, materials and public numerical defaults are retained. Normal spatial
+meshes, 13 loaded points over 0-90 degrees and 48 Back-EMF points are used.
+[Qualification evidence and openable designs](../benchmarks/ipm-high-output-20261011-af56962/README.md)
+retain before/after source, binary, imported-backend and field artifact hashes.
+
+The old low-output geometries are removed from the default matrix, with their
+original FAIL verdicts preserved below and in historical protocol 1.0.0. Their
+N m units were correct (deep apex: 11.99 / 18.74 mN m, absolute gap 6.75 mN m).
+Changing units does not change relative error. Selecting new geometries does not
+fix the original discrepancy or prove spatial convergence. Existing preview
+qualification remains scoped to the measured records; broad V-shape accuracy
+and a full next-release run remain separate from this matrix update.
+
+### Planned ORNL Prius coverage
+
+The planned item is ORNL Prius 2004: its HoleM50 rotor geometry is outside the
+public flat-buried/V-shape IPM policy. Geometry helpers exist, but native
+meshing/field solves and matched FEMM qualification are needed before enabling
+public support. Numerical status remains UNSUPPORTED; no comparison was
+performed and no delivery date is claimed.
+
 ## Public main snapshot benchmark report v1.1
 
 The completed [benchmark report v1.1](../benchmarks/main-20261009-bad71d9/benchmark_report.md)
@@ -70,8 +119,9 @@ After installing the normal Python dependencies and Rust toolchain, run:
 python -m tools.run_benchmarks --phases A B C D --out-dir ../benchmark-output/my-run --pdf
 ```
 
-The [benchmark harness and protocol](../benchmarks/abcd-v1/README.md) are both
-versioned as 1.0.0. The command builds and measures the current checkout's
+The [benchmark harness and protocol](../benchmarks/abcd-v1.1/README.md) are
+versioned as 1.2.1 and 1.1.0. The default selects the replacement designs;
+the archived protocol 1.0.0 and its reference bundle remain explicitly selectable. The command builds and measures the current checkout's
 public Magneto2D solver, verifies saved reference and request hashes, and
 generates HTML, Markdown, JSON, CSV and optional PDF evidence. It supports
 Windows, macOS and Linux without installing, importing or running FEMM or

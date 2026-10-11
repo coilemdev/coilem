@@ -1,3 +1,4 @@
 * text=auto eol=lf
 # Preserve registered benchmark fixture bytes and their measurement hashes.
 benchmarks/main-20261009-bad71d9/fixtures/*.json -text -eol whitespace=cr-at-eol
+benchmarks/ipm-high-output-20261011-af56962/fixtures/*.json -text -eol whitespace=cr-at-eol

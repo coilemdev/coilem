@@ -1,5 +1,10 @@
 # A/B/C/D rerun on public main `45e0a5c`
 
+**Archived protocol 1.0.0 run.** Start with the [current baseline v1.2](../release-baseline-20261011-v1.2/README.md)
+or [benchmark index](../README.md). The current report reuses this package's
+unchanged measured rows and fixtures. The original two FAILs remain recorded;
+the historical matrix is still reproducible with the explicit commands below.
+
 This package records a rerun of the versioned A/B/C/D benchmark (harness
 1.0.0, protocol 1.0.0) on public Coilem commit
 `45e0a5c7662ade04a4be5519b7e5bac771a6122f` against the FEMM references retained from
@@ -91,9 +96,20 @@ files also stay local; their result hashes are in `run.jobs`.
 
 ## Reproduce
 
+From a current checkout, explicitly select the historical matrix to compare
+that checkout's solver with the retained references:
+
 ```sh
-python -m tools.run_benchmarks --phases A B C D --out-dir ../benchmark-output/rerun --pdf
+python -m tools.run_benchmarks --suite benchmarks/abcd-v1/benchmark_spec.json --reference-bundle benchmarks/reference-baselines/main-bad71d9 --phases A B C D --out-dir ../benchmark-output/rerun --pdf
 ```
 
-Run it from a clean checkout of `45e0a5c`. Cross-platform floating-point
-results and runtimes may differ slightly; see the [benchmark protocol](../abcd-v1/README.md).
+To reproduce the measured candidate, use a clean checkout of `45e0a5c` and
+its bundled harness 1.0.0 command. That checkout predates `--suite`; its
+default is protocol 1.0.0:
+
+```sh
+python -m tools.run_benchmarks --phases A B C D --out-dir ../benchmark-output/rerun-45e0a5c --pdf
+```
+
+Cross-platform floating-point results and runtimes may differ slightly; see
+the [historical benchmark protocol](../abcd-v1/README.md).

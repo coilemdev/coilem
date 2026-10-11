@@ -9,6 +9,46 @@ See [Numerical evidence](NUMERICAL_EVIDENCE.md) for measured comparisons and
 [Local verification](VERIFICATION.md) for the build, browser and audit record.
 These records keep their tested runtime identities explicit.
 
+The [benchmark index](../benchmarks/README.md) identifies the current selection
+and archived evidence. The [IPM diagnosis](IPM_BENCHMARK_DIAGNOSIS.md) explains
+the fixture replacement and the solver/convergence work that remains open.
+
+## Next-release benchmark selection
+
+[Baseline report v1.2](../benchmarks/release-baseline-20261011-v1.2/benchmark_report.md)
+is the updated benchmark selection for the next release: A - SPM 10 PASS,
+B - IPM 12 PASS, C - Distributed Winding 4 PASS / one planned coverage item (not yet supported), and
+D - BLDC 3 PASS / 42 gates. Protocol 1.1.0 replaces the two low-output Phase B
+cases with higher-output designs; all other inputs, saved references and gates
+are unchanged. Deep apex uses 12 mm magnet legs, wide angle 10 mm. Their
+fresh native/FEMM means exceed 0.5 N m and their torque/Back-EMF gates PASS.
+
+The baseline compiles retained macOS measurements at `45e0a5c` and the new
+two-case qualification at `af56962`, identifying each row's candidate and source.
+It is not a complete run of a single next-release commit. The original failures
+and preview qualification record below remain archived. New geometry passing
+does not establish a solver fix or broaden the previous qualification claim.
+Run the selected full matrix on the next release commit before updating that claim.
+
+Harness 1.2.1 runs [protocol 1.1.0](../benchmarks/abcd-v1.1/README.md) without FEMM
+on macOS, Windows and Linux:
+
+```sh
+python -m tools.run_benchmarks --phases A B C D --out-dir ../benchmark-output/my-run --pdf
+```
+
+Historical protocol 1.0.0 remains selectable with `--suite` and its matching
+`--reference-bundle`. Changed physical inputs require new matched references;
+changing only the candidate solver can reuse compatible frozen data.
+
+### Planned ORNL Prius coverage
+
+The planned item is ORNL Prius 2004: its HoleM50 rotor geometry is outside the
+public flat-buried/V-shape IPM policy. Geometry helpers exist, but native
+meshing/field solves and matched FEMM qualification are needed before enabling
+public support. Numerical status remains UNSUPPORTED; no comparison was
+performed and no delivery date is claimed.
+
 ## Qualification status
 
 The maintainers accept [benchmark report v1.1](../benchmarks/main-20261009-bad71d9/benchmark_report.md)

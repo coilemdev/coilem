@@ -13,11 +13,11 @@ from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
-from tools.benchmark_suite import HARNESS_VERSION, PROTOCOL_VERSION
+from tools.benchmark_suite import HARNESS_VERSION, PROTOCOL_VERSION, SUPPORTED_PROTOCOL_VERSIONS
 
 ROOT = Path(__file__).resolve().parents[2]
-SPEC = ROOT / "benchmarks/abcd-v1/benchmark_spec.json"
-DEFAULT_BUNDLE = ROOT / "benchmarks/reference-baselines/main-bad71d9"
+SPEC = ROOT / "benchmarks/abcd-v1.1/benchmark_spec.json"
+DEFAULT_BUNDLE = ROOT / "benchmarks/reference-baselines/ipm-high-output-v1"
 # Native solver isolation can change process PATH. Provenance calls must use the
 # Git executable/environment resolved before that scope, without changing solve options.
 _GIT_EXECUTABLE = shutil.which("git")
@@ -71,7 +71,9 @@ def git(*args):
     return subprocess.check_output([_GIT_EXECUTABLE, "-C", str(ROOT), *args], env=_GIT_ENV, text=True).strip()
 
 
-def identity(binary):
+def identity(binary, *, protocol_version=PROTOCOL_VERSION):
+    if protocol_version not in SUPPORTED_PROTOCOL_VERSIONS:
+        raise ValueError("Unsupported suite protocol")
     # Hash actual sources, including uncommitted code when explicitly allowed.
     sources = {}
     for directory, suffixes in (
@@ -97,7 +99,7 @@ def identity(binary):
         "python_executable_sha256": sha(Path(os.sys.executable)),
         "dependencies": {name: importlib.metadata.version(name) for name in ("gmsh", "meshio", "numpy", "pydantic")},
         "harness_version": HARNESS_VERSION,
-        "protocol_version": PROTOCOL_VERSION,
+        "protocol_version": protocol_version,
     }
 
 

@@ -7,6 +7,12 @@ Everything runs on your computer.
 
 Website: [coilem.com](https://coilem.com)
 
+The current next-release [benchmark baseline v1.2](benchmarks/release-baseline-20261011-v1.2/README.md)
+uses higher-output deep-apex and wide-angle IPM fixtures: 29 PASS and one planned
+coverage item (numerical status UNSUPPORTED). It compiles explicitly identified
+measured candidates. The [benchmark index](benchmarks/README.md) separates this
+default selection from archived runs and the preview qualification record.
+
 ![coilEM workspace](docs/images/coilem-landing-page.png)
 
 **Developer preview:** the published [A/B/C/D benchmark report
@@ -99,7 +105,7 @@ Run the versioned A/B/C/D suite (SPM, IPM, Distributed Winding and BLDC) from th
 checkout with `python -m tools.run_benchmarks --out-dir ../benchmark-output/my-run --pdf`.
 It measures the current public native solver against saved FEMM data, with no
 reference solver installation or adapter required. See the [benchmark commands,
-reference compatibility and version policy](benchmarks/abcd-v1/README.md).
+reference compatibility and version policy](benchmarks/abcd-v1.1/README.md).
 
 The public Magneto2D path ignores inherited numerical solver switches. It derives
 native options from the request and records its environment policy and options
