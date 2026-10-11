@@ -35,7 +35,6 @@ def test_checkout_reads_repository_files() -> None:
 
 
 def _load_setup():
-    pytest.importorskip("setuptools")
     spec = importlib.util.spec_from_file_location("coilem_setup", REPO_ROOT / "setup.py")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)

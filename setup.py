@@ -21,10 +21,6 @@ import shutil
 import subprocess
 from pathlib import Path
 
-from setuptools import Distribution, setup
-from setuptools.command.bdist_wheel import bdist_wheel
-from setuptools.command.build_py import build_py
-
 ROOT = Path(__file__).resolve().parent
 
 
@@ -150,30 +146,37 @@ def stage_runtime_files(package: Path, version: str) -> None:
     (package / resources.BUILD_INFO_FILE).write_text(json.dumps(build_info, indent=2) + "\n", encoding="utf-8")
 
 
-class BuildPyWithRuntimeFiles(build_py):
-    def run(self) -> None:
-        super().run()
-        if not self.editable_mode:
-            stage_runtime_files(Path(self.build_lib) / "backend", self.distribution.get_version())
+def main() -> None:
+    # setuptools is imported here so tests can load the staging helpers above
+    # without it; builds get a current setuptools from pyproject.toml.
+    from setuptools import Distribution, setup
+    from setuptools.command.bdist_wheel import bdist_wheel
+    from setuptools.command.build_py import build_py
 
+    class BuildPyWithRuntimeFiles(build_py):
+        def run(self) -> None:
+            super().run()
+            if not self.editable_mode:
+                stage_runtime_files(Path(self.build_lib) / "backend", self.distribution.get_version())
 
-class BinaryDistribution(Distribution):
-    """Wheels carry the Magneto2D executable, so they are platform specific."""
+    class BinaryDistribution(Distribution):
+        """Wheels carry the Magneto2D executable, so they are platform specific."""
 
-    def has_ext_modules(self) -> bool:
-        return True
+        def has_ext_modules(self) -> bool:
+            return True
 
+    class PlatformWheel(bdist_wheel):
+        def get_tag(self) -> tuple[str, str, str]:
+            # The binary is a standalone executable, so one wheel per platform
+            # serves every supported Python version.
+            return "py3", "none", super().get_tag()[2]
 
-class PlatformWheel(bdist_wheel):
-    def get_tag(self) -> tuple[str, str, str]:
-        # The binary is a standalone executable, so one wheel per platform
-        # serves every supported Python version.
-        return "py3", "none", super().get_tag()[2]
-
-
-# setuptools' PEP 517 backend runs this file as __main__; tests import it.
-if __name__ == "__main__":
     setup(
         distclass=BinaryDistribution,
         cmdclass={"build_py": BuildPyWithRuntimeFiles, "bdist_wheel": PlatformWheel},
     )
+
+
+# setuptools' PEP 517 backend runs this file as __main__.
+if __name__ == "__main__":
+    main()

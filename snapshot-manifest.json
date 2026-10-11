@@ -275,8 +275,8 @@
     },
     {
       "path": "backend/launcher.py",
-      "sha256": "4a3ac3e43d1cc5949bd76e63083af8f80617a6ec89e2948d9e3ba11431a98bf2",
-      "bytes": 14357
+      "sha256": "e1681e92d7836ecf333821914b143d03e98085f37c5a7e7ecf76cd0505208cd6",
+      "bytes": 14583
     },
     {
       "path": "backend/local_file_safety.py",
@@ -2550,8 +2550,8 @@
     },
     {
       "path": "setup.py",
-      "sha256": "26c83cde4c2fcbc0d32d3591d2a7e48fe23379828ac8bcb27f3905b122b9e05b",
-      "bytes": 6683
+      "sha256": "b04fab7450b571553f81f89143f6e7e16c23f7dc3edf107f59d50e8fa1005bc6",
+      "bytes": 6913
     },
     {
       "path": "solvers/magneto2d/Cargo.lock",
@@ -2825,8 +2825,8 @@
     },
     {
       "path": "tests/test_installed_resources.py",
-      "sha256": "548c0f588a0f9bc95de98f082b5b1dd2effa88cc9f8427c7767446055f9c73e2",
-      "bytes": 6184
+      "sha256": "1eb0048e667da38db57089238ec97343cb018bdf422ee1219d4d90d7ea7eb35b",
+      "bytes": 6146
     },
     {
       "path": "tests/test_launcher.py",

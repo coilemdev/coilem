@@ -88,13 +88,18 @@ def probe(port: int) -> RunningCoilem | bool:
 
     connection = http.client.HTTPConnection("127.0.0.1", port, timeout=PROBE_TIMEOUT_S)
     try:
-        connection.request("GET", "/health", headers={"Accept": "application/json"})
-        response = connection.getresponse()
-        body = response.read(1_000_000)
-    except ConnectionRefusedError:
-        return False
-    except (OSError, http.client.HTTPException):
-        return True
+        try:
+            connection.connect()
+        except OSError:
+            # Refused. Windows retries a refused loopback connect for about
+            # two seconds, so a timeout here also means nothing is listening.
+            return False
+        try:
+            connection.request("GET", "/health", headers={"Accept": "application/json"})
+            response = connection.getresponse()
+            body = response.read(1_000_000)
+        except (OSError, http.client.HTTPException):
+            return True
     finally:
         connection.close()
     try:
