@@ -12,6 +12,22 @@ backend startup to one exact HTTP loopback origin, for example
 are rejected. Set `VITE_COILEM_LOCAL_API_BASE` in the matching frontend when
 using a different API port. Keep the server bound to loopback.
 
+The `coilem` launcher binds `127.0.0.1` itself and serves the built UI from the
+same process. It trusts only its own origin, `http://127.0.0.1:<bound port>`,
+plus an explicit `COILEM_LOCAL_UI_ORIGIN`; the development ports are not
+trusted. The `Host` header must carry the bound port. Pages requested through
+another loopback name redirect to the `127.0.0.1` origin. The production
+bundle sends API requests to its own origin, which it still checks is loopback.
+
+UI files are an exact allowlist, kept separate from the API paths below and
+absent from `/openapi.json`: `/`, the tutorial routes defined in
+`frontend/src/public/tutorials/lessonRoutes.ts`, the files from
+`frontend/public/`, and the hashed build files under `/assets/`. Only those
+page routes return `index.html`; there is no prefix fallback, because lesson
+pages and lesson API routes share the `/tutorials/` prefix. Unknown paths and
+missing assets return 404. Hashed assets are cached as immutable, and
+`index.html` is served with `Cache-Control: no-store`.
+
 This is a single-user local application. It does not authenticate other
 processes running as the same OS user and is not a network service. Saved-run
 paths and replay packages reject pre-existing symbolic links/junctions below

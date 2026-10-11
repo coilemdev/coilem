@@ -12,6 +12,8 @@ test environment. This override moves both durable runs and the solver cache
 described below. The application creates:
 
 ```text
+launcher.lock        # held by the running `coilem` launcher
+launcher.json        # its port, process ID and version, while it runs
 solve_cache/
   magneto2d-<timestamp>/
 solves/

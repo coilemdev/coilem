@@ -13,6 +13,7 @@ import shutil
 import subprocess
 import tempfile
 import time
+from contextlib import contextmanager
 from math import ceil, gcd, isfinite
 from pathlib import Path
 from typing import Any
@@ -21,6 +22,7 @@ from backend.gmsh_solver import run_gmsh_mesh_preview
 from backend.logging_utils import log_event
 from backend.material_contract import electrical_steel_preflight_records
 from backend.models import MotorConfig, SolveOptionsConfig
+from backend.resources import PACKAGED_BIN_DIR, packaged_file_path
 from backend.solver_environment import solver_environment_provenance, solver_process_environment, solver_setting
 from backend.sweep_planning import loaded_angle_grid, loaded_sweep_plan
 from backend.topology_provenance import (
@@ -39,13 +41,17 @@ from backend.winding_utils import (
 from ._state import (  # noqa: F401  (re-exports for backward-compat call sites)
     _ACTIVE_MAGNETO2D_PROCESS_LOCK,
     _ACTIVE_MAGNETO2D_PROCESSES,
+    _ACTIVE_NATIVE_PROCESSES,
     _MAGNETO2D_BUILD_LOCK,
     _MAX_SOLVE_MESH_CACHE_SIZE,
+    _NATIVE_SHUTDOWN,
     _SOLVE_MESH_CACHE,
     LIVE_FIELD_CONTOUR_BANDS_PER_SIDE,
     LIVE_FIELD_FRAME_PREFIX,
     LIVE_FIELD_MESH_PREFIX,
     MAGNETO2D_BINARY,
+    MAGNETO2D_BINARY_ENV,
+    MAGNETO2D_EXECUTABLE_NAME,
     MAGNETO2D_FINE_NONLINEAR_TOL,
     MAGNETO2D_INTERACTIVE_NONLINEAR_TOL,
     MAGNETO2D_MANIFEST,
@@ -948,7 +954,26 @@ def _magneto2d_build_env() -> dict[str, str] | None:
 
 
 def ensure_magneto2d_binary(runner: Any = subprocess.run) -> Path:
-    """Build the release binary when needed and return its executable path."""
+    """Return the Magneto2D executable.
+
+    Resolution order: ``COILEM_MAGNETO2D_BINARY``, the binary shipped in an
+    installed package, then a release build that is (re)built with Cargo when
+    stale, which only a source checkout can do.
+    """
+    override = os.environ.get(MAGNETO2D_BINARY_ENV)
+    if override:
+        configured = Path(override).expanduser().resolve()
+        if not configured.is_file():
+            raise Magneto2DExecutionError(f"{MAGNETO2D_BINARY_ENV} does not name an existing Magneto2D executable.")
+        return configured
+    packaged = packaged_file_path(PACKAGED_BIN_DIR, MAGNETO2D_EXECUTABLE_NAME)
+    if packaged is not None:
+        return packaged
+    if not MAGNETO2D_MANIFEST.is_file():
+        raise Magneto2DExecutionError(
+            "This coilEM installation does not include the Magneto2D solver. "
+            f"Reinstall coilEM, or set {MAGNETO2D_BINARY_ENV} to a Magneto2D executable."
+        )
     if _magneto2d_binary_is_fresh():
         return MAGNETO2D_BINARY
 
@@ -1187,17 +1212,9 @@ def run_magneto2d_report(
             mesher=mesher_choice,
         )
         if progress_callback is not None and runner is subprocess.run:
-            completed = _run_with_progress(command, progress_callback, env=run_env)
+            completed = _run_with_progress(command, progress_callback, cwd=tmp_path, env=run_env)
         else:
-            runner_kwargs = {
-                "cwd": str(REPO_ROOT),
-                "capture_output": True,
-                "text": True,
-                "check": False,
-            }
-            if runner is subprocess.run:
-                runner_kwargs["env"] = run_env
-            completed = runner(command, **runner_kwargs)
+            completed = _run_magneto2d_command(runner, command, cwd=tmp_path, env=run_env)
         if completed.returncode != 0:
             raise Magneto2DExecutionError(
                 "magneto2d CLI failed: "
@@ -1295,17 +1312,9 @@ def run_magneto2d_batch_reports(
             mesher=mesher_choice,
         )
         if progress_callback is not None and runner is subprocess.run:
-            completed = _run_with_progress(command, progress_callback, env=run_env)
+            completed = _run_with_progress(command, progress_callback, cwd=tmp_path, env=run_env)
         else:
-            runner_kwargs = {
-                "cwd": str(REPO_ROOT),
-                "capture_output": True,
-                "text": True,
-                "check": False,
-            }
-            if runner is subprocess.run:
-                runner_kwargs["env"] = run_env
-            completed = runner(command, **runner_kwargs)
+            completed = _run_magneto2d_command(runner, command, cwd=tmp_path, env=run_env)
         if completed.returncode != 0:
             raise Magneto2DExecutionError(
                 "magneto2d CLI failed: "
@@ -1342,22 +1351,117 @@ def run_magneto2d_batch_reports(
         return [dict(item) for item in reports]
 
 
+def _stop_native_process(process: subprocess.Popen) -> None:
+    if process.poll() is not None:
+        return
+    process.terminate()
+    try:
+        process.wait(timeout=1.0)
+    except subprocess.TimeoutExpired:
+        process.kill()
+
+
 def cancel_active_magneto2d_processes() -> None:
     """Best-effort cancellation for active Rust magneto2d subprocesses."""
     with _ACTIVE_MAGNETO2D_PROCESS_LOCK:
         processes = list(_ACTIVE_MAGNETO2D_PROCESSES)
 
     for process in processes:
-        if process.poll() is not None:
-            continue
-        process.terminate()
+        _stop_native_process(process)
+
+
+def shutdown_native_processes() -> None:
+    """Refuse new native solves and stop every running one, for application exit."""
+    with _ACTIVE_MAGNETO2D_PROCESS_LOCK:
+        _NATIVE_SHUTDOWN.set()
+        processes = [*_ACTIVE_MAGNETO2D_PROCESSES, *_ACTIVE_NATIVE_PROCESSES]
+    for process in processes:
+        _stop_native_process(process)
+
+
+def start_native_process(command: list[str], **popen_kwargs: Any) -> subprocess.Popen:
+    """Start a native solver process unless the application is shutting down."""
+    if _NATIVE_SHUTDOWN.is_set():
+        raise Magneto2DExecutionError("coilEM is shutting down; the solve was not started.")
+    return subprocess.Popen(command, **popen_kwargs)
+
+
+@contextmanager
+def track_native_process(process: subprocess.Popen, *, motor: bool = False):
+    """Register a running native process so cancellation or shutdown can stop it."""
+    registry = _ACTIVE_MAGNETO2D_PROCESSES if motor else _ACTIVE_NATIVE_PROCESSES
+    with _ACTIVE_MAGNETO2D_PROCESS_LOCK:
+        registry.add(process)
+        # Checked under the lock shutdown takes, so a process started while
+        # shutdown snapshots the registries is still stopped.
+        shutting_down = _NATIVE_SHUTDOWN.is_set()
+    try:
+        if shutting_down:
+            _stop_native_process(process)
+        yield process
+    finally:
+        with _ACTIVE_MAGNETO2D_PROCESS_LOCK:
+            registry.discard(process)
+
+
+def run_native_process(
+    command: list[str],
+    *,
+    cwd: Path,
+    env: dict[str, str],
+    timeout: float | None = None,
+    motor: bool = False,
+) -> subprocess.CompletedProcess[str]:
+    """``subprocess.run`` with captured UTF-8 output for a tracked native process."""
+    process = start_native_process(
+        command,
+        cwd=str(cwd),
+        env=env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    with track_native_process(process, motor=motor):
         try:
-            process.wait(timeout=1.0)
+            stdout, stderr = process.communicate(timeout=timeout)
         except subprocess.TimeoutExpired:
             process.kill()
+            stdout, stderr = process.communicate()
+            raise subprocess.TimeoutExpired(command, timeout or 0.0, output=stdout, stderr=stderr) from None
+        except BaseException:
+            process.kill()
+            process.wait()
+            raise
+    return subprocess.CompletedProcess(command, process.returncode, stdout, stderr)
 
 
-def _run_with_progress(command: list[str], progress_callback: Any, *, env: dict[str, str] | None = None):
+_SUBPROCESS_RUN = subprocess.run
+
+
+def _run_magneto2d_command(runner: Any, command: list[str], *, cwd: Path, env: dict[str, str]):
+    """Run one blocking Magneto2D command in ``cwd``.
+
+    The default runner is tracked so ``/solve/cancel`` and shutdown can stop it.
+    Injected runners receive ``subprocess.run`` keyword arguments; ``env`` is
+    passed only where tests replace ``subprocess.run`` itself.
+    """
+    if runner is _SUBPROCESS_RUN:
+        return run_native_process(command, cwd=cwd, env=env, motor=True)
+    runner_kwargs: dict[str, Any] = {"cwd": str(cwd), "capture_output": True, "text": True, "check": False}
+    if runner is subprocess.run:
+        runner_kwargs["env"] = env
+    return runner(command, **runner_kwargs)
+
+
+def _run_with_progress(
+    command: list[str],
+    progress_callback: Any,
+    *,
+    cwd: Path,
+    env: dict[str, str] | None = None,
+):
     """Run the CLI and forward sweep progress lines to the callback."""
     # encoding="utf-8" is REQUIRED on Windows: without it, Popen(text=True) uses
     # locale.getpreferredencoding() which is cp1252 on a default Western-Windows
@@ -1368,9 +1472,9 @@ def _run_with_progress(command: list[str], progress_callback: Any, *, env: dict[
     # errors="replace" keeps the pump alive even if an unexpected byte sneaks in.
     # bufsize=1 forces line-buffering on the Python side so we see progress lines
     # as Rust flushes them, not after the whole process exits.
-    process = subprocess.Popen(
+    process = start_native_process(
         command,
-        cwd=str(REPO_ROOT),
+        cwd=str(cwd),
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,
@@ -1379,8 +1483,6 @@ def _run_with_progress(command: list[str], progress_callback: Any, *, env: dict[
         bufsize=1,
         env=env if env is not None else solver_process_environment(),
     )
-    with _ACTIVE_MAGNETO2D_PROCESS_LOCK:
-        _ACTIVE_MAGNETO2D_PROCESSES.add(process)
 
     stderr_lines: list[str] = []
     # Throttle pass-through of non-progress Rust stderr.
@@ -1406,7 +1508,7 @@ def _run_with_progress(command: list[str], progress_callback: Any, *, env: dict[
     live_field_mesh: dict[str, Any] | None = None
     live_field_mesh_sent = False
     solve_log_context: dict[str, Any] | None = None
-    try:
+    with track_native_process(process, motor=True):
         if process.stderr is not None:
             for line in process.stderr:
                 solve_context = _parse_solve_context(line)
@@ -1503,9 +1605,6 @@ def _run_with_progress(command: list[str], progress_callback: Any, *, env: dict[
 
         stdout = process.stdout.read() if process.stdout is not None else ""
         returncode = process.wait()
-    finally:
-        with _ACTIVE_MAGNETO2D_PROCESS_LOCK:
-            _ACTIVE_MAGNETO2D_PROCESSES.discard(process)
 
     class Completed:
         def __init__(self, returncode: int, stdout: str, stderr: str):
@@ -1603,14 +1702,7 @@ def run_magneto2d_mesh_preview(
         # making the toggle silently ineffective for the visual feedback loop.
         env_overrides = _magneto2d_env_overrides(config)
         run_env = solver_process_environment(env_overrides)
-        completed = runner(
-            command,
-            cwd=str(REPO_ROOT),
-            capture_output=True,
-            text=True,
-            check=False,
-            env=run_env,
-        )
+        completed = _run_magneto2d_command(runner, command, cwd=tmp_path, env=run_env)
         if completed.returncode != 0:
             raise Magneto2DExecutionError(
                 "magneto2d mesh preview failed: "

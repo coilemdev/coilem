@@ -4,6 +4,15 @@ coilEM 0.2.0 is a source-built developer preview of the local motor-design
 application. It bundles Magneto2D 0.3.2 as its field solver; the application
 and solver use separate version numbers.
 
+## Packaged launcher (unreleased)
+
+The source-built `coilem` launcher serves the UI and API together at
+`http://127.0.0.1:2645` by default. Halbach autosaves and tutorial progress
+saved in the browser under the development origin on port 5173 do not appear
+at the packaged origin. Browser-saved state also stays with its original port
+when the launcher falls back to another port. Saved motor runs remain in the
+user-data folder.
+
 ## Qualification
 
 Numerical qualification for this preview is the published [A/B/C/D benchmark

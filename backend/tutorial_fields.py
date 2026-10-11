@@ -19,10 +19,9 @@ from backend.gmsh_solver import (
     _extract_gmsh_triangles,
     gmsh,
 )
-from backend.magneto2d_adapter import Magneto2DExecutionError, ensure_magneto2d_binary
+from backend.magneto2d_adapter import Magneto2DExecutionError, ensure_magneto2d_binary, run_native_process
 from backend.solver_environment import ISOLATED_RUNTIME, solver_process_environment
 
-_REPO_ROOT = Path(__file__).resolve().parents[1]
 _DOMAIN_X_MIN_MM = -50.0
 _DOMAIN_X_MAX_MM = 50.0
 _DOMAIN_Y_MIN_MM = -34.0
@@ -72,6 +71,17 @@ _ROTATING_FIELD_ANGLES_DEG = tuple(
     index * _ROTATING_FIELD_STEP_DEG
     for index in range(round(360.0 / _ROTATING_FIELD_STEP_DEG))
 )
+
+
+def _run_teaching_solver(runner: Any, command: list[str], *, cwd: Path, timeout: float | None = None) -> Any:
+    """Run one teaching solve in ``cwd``; the default runner is tracked for shutdown."""
+
+    if runner is subprocess.run:
+        return run_native_process(command, cwd=cwd, env=solver_process_environment(), timeout=timeout)
+    runner_kwargs: dict[str, Any] = {"cwd": str(cwd), "capture_output": True, "text": True, "check": False}
+    if timeout is not None:
+        runner_kwargs["timeout"] = timeout
+    return runner(command, **runner_kwargs)
 
 
 def _wire_field_absolute_contour_levels(
@@ -1802,13 +1812,10 @@ def run_follow_flux_fixture(
             "-o",
             str(output_path),
         ]
-        completed = runner(
+        completed = _run_teaching_solver(
+            runner,
             command,
-            cwd=str(_REPO_ROOT),
-            capture_output=True,
-            text=True,
-            check=False,
-            **({"env": solver_process_environment()} if runner is subprocess.run else {}),
+            cwd=tmp_path,
         )
         if completed.returncode != 0:
             detail = (completed.stderr or completed.stdout or "unknown solver failure").strip()
@@ -1884,7 +1891,8 @@ def run_airgap_tax_fixture(
         input_path = tmp_path / "request.json"
         output_path = tmp_path / "report.json"
         input_path.write_text(json.dumps(request), encoding="utf-8")
-        completed = runner(
+        completed = _run_teaching_solver(
+            runner,
             [
                 str(executable or "magneto2d"),
                 str(input_path),
@@ -1893,11 +1901,7 @@ def run_airgap_tax_fixture(
                 "-o",
                 str(output_path),
             ],
-            cwd=str(_REPO_ROOT),
-            capture_output=True,
-            text=True,
-            check=False,
-            **({"env": solver_process_environment()} if runner is subprocess.run else {}),
+            cwd=tmp_path,
         )
         if completed.returncode != 0:
             detail = (completed.stderr or completed.stdout or "unknown solver failure").strip()
@@ -1961,7 +1965,8 @@ def run_current_field_fixture(
         input_path = tmp_path / "request.json"
         output_path = tmp_path / "report.json"
         input_path.write_text(json.dumps(request), encoding="utf-8")
-        completed = runner(
+        completed = _run_teaching_solver(
+            runner,
             [
                 str(executable or "magneto2d"),
                 str(input_path),
@@ -1970,11 +1975,7 @@ def run_current_field_fixture(
                 "-o",
                 str(output_path),
             ],
-            cwd=str(_REPO_ROOT),
-            capture_output=True,
-            text=True,
-            check=False,
-            **({"env": solver_process_environment()} if runner is subprocess.run else {}),
+            cwd=tmp_path,
         )
         if completed.returncode != 0:
             detail = (completed.stderr or completed.stdout or "unknown solver failure").strip()
@@ -2038,7 +2039,8 @@ def run_iron_saturation_fixture(
         input_path = tmp_path / "request.json"
         output_path = tmp_path / "report.json"
         input_path.write_text(json.dumps(request), encoding="utf-8")
-        completed = runner(
+        completed = _run_teaching_solver(
+            runner,
             [
                 str(executable or "magneto2d"),
                 str(input_path),
@@ -2047,11 +2049,7 @@ def run_iron_saturation_fixture(
                 "-o",
                 str(output_path),
             ],
-            cwd=str(_REPO_ROOT),
-            capture_output=True,
-            text=True,
-            check=False,
-            **({"env": solver_process_environment()} if runner is subprocess.run else {}),
+            cwd=tmp_path,
         )
         if completed.returncode != 0:
             detail = (completed.stderr or completed.stdout or "unknown solver failure").strip()
@@ -2132,7 +2130,8 @@ def _run_iron_saturation_tooth_fixture(
         input_path = tmp_path / "request.json"
         output_path = tmp_path / "report.json"
         input_path.write_text(json.dumps(request), encoding="utf-8")
-        completed = runner(
+        completed = _run_teaching_solver(
+            runner,
             [
                 str(executable or "magneto2d"),
                 str(input_path),
@@ -2141,11 +2140,7 @@ def _run_iron_saturation_tooth_fixture(
                 "-o",
                 str(output_path),
             ],
-            cwd=str(_REPO_ROOT),
-            capture_output=True,
-            text=True,
-            check=False,
-            **({"env": solver_process_environment()} if runner is subprocess.run else {}),
+            cwd=tmp_path,
         )
         if completed.returncode != 0:
             detail = (completed.stderr or completed.stdout or "unknown solver failure").strip()
@@ -2256,7 +2251,8 @@ def run_field_force_fixture(
         input_path = tmp_path / "request.json"
         output_path = tmp_path / "report.json"
         input_path.write_text(json.dumps(request), encoding="utf-8")
-        completed = runner(
+        completed = _run_teaching_solver(
+            runner,
             [
                 str(executable or "magneto2d"),
                 str(input_path),
@@ -2265,11 +2261,7 @@ def run_field_force_fixture(
                 "-o",
                 str(output_path),
             ],
-            cwd=str(_REPO_ROOT),
-            capture_output=True,
-            text=True,
-            check=False,
-            **({"env": solver_process_environment()} if runner is subprocess.run else {}),
+            cwd=tmp_path,
         )
         if completed.returncode != 0:
             detail = (completed.stderr or completed.stdout or "unknown solver failure").strip()
@@ -2381,13 +2373,10 @@ def run_linear_motor_capstone_fixture(
         if remaining_s <= 0.0:
             raise TimeoutError(f"Linear-capstone fixture timed out after {timeout_s:g}s")
         try:
-            completed = runner(
+            completed = _run_teaching_solver(
+                runner,
                 command,
-                cwd=str(_REPO_ROOT),
-                capture_output=True,
-                text=True,
-                check=False,
-            **({"env": solver_process_environment()} if runner is subprocess.run else {}),
+                cwd=tmp_path,
                 timeout=remaining_s,
             )
         except subprocess.TimeoutExpired as exc:
@@ -2566,7 +2555,8 @@ def run_rotor_chase_fixture(
         input_path = tmp_path / "request.json"
         output_path = tmp_path / "report.json"
         input_path.write_text(json.dumps(request), encoding="utf-8")
-        completed = runner(
+        completed = _run_teaching_solver(
+            runner,
             [
                 str(executable or "magneto2d"),
                 str(input_path),
@@ -2575,11 +2565,7 @@ def run_rotor_chase_fixture(
                 "-o",
                 str(output_path),
             ],
-            cwd=str(_REPO_ROOT),
-            capture_output=True,
-            text=True,
-            check=False,
-            **({"env": solver_process_environment()} if runner is subprocess.run else {}),
+            cwd=tmp_path,
         )
         if completed.returncode != 0:
             detail = (completed.stderr or completed.stdout or "unknown solver failure").strip()
@@ -2676,7 +2662,8 @@ def run_rotating_field_fixture(
         input_path = tmp_path / "request.json"
         output_path = tmp_path / "report.json"
         input_path.write_text(json.dumps(request), encoding="utf-8")
-        completed = runner(
+        completed = _run_teaching_solver(
+            runner,
             [
                 str(executable or "magneto2d"),
                 str(input_path),
@@ -2685,11 +2672,7 @@ def run_rotating_field_fixture(
                 "-o",
                 str(output_path),
             ],
-            cwd=str(_REPO_ROOT),
-            capture_output=True,
-            text=True,
-            check=False,
-            **({"env": solver_process_environment()} if runner is subprocess.run else {}),
+            cwd=tmp_path,
         )
         if completed.returncode != 0:
             detail = (completed.stderr or completed.stdout or "unknown solver failure").strip()
@@ -2835,7 +2818,8 @@ def run_rotating_field_motor_fixture(
         input_path = tmp_path / "request.json"
         output_path = tmp_path / "report.json"
         input_path.write_text(json.dumps(request), encoding="utf-8")
-        completed = runner(
+        completed = _run_teaching_solver(
+            runner,
             [
                 str(executable or "magneto2d"),
                 str(input_path),
@@ -2844,11 +2828,7 @@ def run_rotating_field_motor_fixture(
                 "-o",
                 str(output_path),
             ],
-            cwd=str(_REPO_ROOT),
-            capture_output=True,
-            text=True,
-            check=False,
-            **({"env": solver_process_environment()} if runner is subprocess.run else {}),
+            cwd=tmp_path,
         )
         if completed.returncode != 0:
             detail = (completed.stderr or completed.stdout or "unknown solver failure").strip()
@@ -3027,7 +3007,8 @@ def run_three_phase_motor_fixture(
         input_path = tmp_path / "request.json"
         output_path = tmp_path / "report.json"
         input_path.write_text(json.dumps(request), encoding="utf-8")
-        completed = runner(
+        completed = _run_teaching_solver(
+            runner,
             [
                 str(executable or "magneto2d"),
                 str(input_path),
@@ -3036,11 +3017,7 @@ def run_three_phase_motor_fixture(
                 "-o",
                 str(output_path),
             ],
-            cwd=str(_REPO_ROOT),
-            capture_output=True,
-            text=True,
-            check=False,
-            **({"env": solver_process_environment()} if runner is subprocess.run else {}),
+            cwd=tmp_path,
         )
         if completed.returncode != 0:
             detail = (completed.stderr or completed.stdout or "unknown solver failure").strip()

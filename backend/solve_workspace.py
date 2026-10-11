@@ -33,6 +33,7 @@ from backend.public_report import (
     build_public_run_pdf,
     write_replayable_run_package,
 )
+from backend.resources import application_commit as _application_commit
 
 RUN_MANIFEST_SCHEMA = "coilem.solve_run.v2"
 RUN_REQUEST_SCHEMA = "coilem.solve_request.v1"
@@ -186,29 +187,10 @@ def user_data_root() -> Path:
     return (base / "coilem").resolve()
 
 
-def _application_commit() -> str:
-    configured = os.environ.get("COILEM_BUILD_COMMIT")
-    if configured:
-        return configured.strip()
-    repo_root = Path(__file__).resolve().parents[1]
-    snapshot_manifest = repo_root / "snapshot-manifest.json"
-    try:
-        snapshot_commit = json.loads(snapshot_manifest.read_text(encoding="utf-8")).get("source_commit")
-    except (OSError, json.JSONDecodeError):
-        snapshot_commit = None
-    if isinstance(snapshot_commit, str) and re.fullmatch(r"[0-9a-f]{40}", snapshot_commit):
-        return snapshot_commit
-    try:
-        completed = subprocess.run(
-            ["git", "-C", str(repo_root), "rev-parse", "HEAD"],
-            capture_output=True,
-            check=False,
-            text=True,
-            timeout=2,
-        )
-    except (OSError, subprocess.SubprocessError):
-        return "unknown"
-    return completed.stdout.strip() if completed.returncode == 0 else "unknown"
+def user_data_root_id() -> str:
+    """Identify the user-data root in ``/health`` without exposing its path."""
+
+    return hashlib.sha256(str(user_data_root()).encode("utf-8")).hexdigest()[:16]
 
 
 def _material_records(config: Mapping[str, Any]) -> list[dict[str, object]]:

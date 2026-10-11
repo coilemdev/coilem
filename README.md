@@ -66,6 +66,12 @@ Motor**, and follow Design → Solve → Results. The [Getting started
 guide](docs/GETTING_STARTED.md) explains the example, solve settings and exports.
 The backend must stay bound to loopback.
 
+Contributors can also try the packaged launcher from a checkout. Run
+`python -m pip install .` in a separate virtual environment; this builds the UI
+and Magneto2D, so it still needs Node.js and Cargo. Then run `coilem`: it
+serves the UI and API together and opens `http://127.0.0.1:2645`. See
+[the `coilem` launcher](docs/RUNTIME_SETTINGS.md#the-coilem-launcher).
+
 ## What you can explore
 
 - Radial-flux SPM and IPM (flat-buried and V-shape) motor geometry, native
