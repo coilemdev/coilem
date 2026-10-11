@@ -4,7 +4,10 @@ A wheel ships the compiled Magneto2D executable, which statically links its
 crate dependencies, so the wheel must carry those crates' license notices.
 This resolves the normal (linked) dependency graph for one target from
 Cargo.lock and writes every license file the crates distribute, with identical
-texts printed once. Standard library only: setup.py loads it by path.
+texts printed once. Some crates publish packages without their own license
+file; their upstream LICENSE files are kept in ``crate_notices/``. A linked
+crate with neither fails the build. Standard library only: setup.py loads it
+by path.
 
     python -m tools.release.rust_licenses --target x86_64-unknown-linux-gnu --output FILE
 """
@@ -15,12 +18,39 @@ import argparse
 import hashlib
 import json
 import subprocess
+import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST = ROOT / "solvers" / "magneto2d" / "Cargo.toml"
+CRATE_NOTICES = Path(__file__).resolve().parent / "crate_notices"
 _LICENSE_PREFIXES = ("license", "licence", "copying", "copyright", "notice", "unlicense")
+# A crate's own license; COPYING.<component> files are incorporated notices.
+_OWN_LICENSE_PREFIXES = ("license", "licence", "unlicense", "copyright")
+_OWN_LICENSE_NAMES = frozenset({"copying", "copying.txt", "copying.md"})
+_EQUATOR = ("equator.LICENSE", "https://github.com/sarah-ek/equator/blob/572df6071c33cd4ce3298b8ba851774b0645b8a5/LICENSE")
+_FAER = ("faer.LICENSE", "https://codeberg.org/sarah-quinones/faer/src/tag/faer-v0.24.1/LICENSE")
+_NANO_GEMM = ("nano-gemm.LICENSE", "https://github.com/sarah-ek/nano-gemm/blob/nano-gemm-v0.2.2/LICENSE")
+# Crates whose published packages omit their own license file: the upstream
+# LICENSE kept in crate_notices/ and where it was taken from.
+UPSTREAM_NOTICES: dict[str, tuple[str, str]] = {
+    "equator": _EQUATOR,
+    "equator-macro": _EQUATOR,
+    "faer": _FAER,
+    "faer-traits": _FAER,
+    "nano-gemm": _NANO_GEMM,
+    "nano-gemm-c32": _NANO_GEMM,
+    "nano-gemm-c64": _NANO_GEMM,
+    "nano-gemm-core": _NANO_GEMM,
+    "nano-gemm-f32": _NANO_GEMM,
+    "nano-gemm-f64": _NANO_GEMM,
+    "pulp-wasm-simd-flag": ("pulp.LICENSE", "https://github.com/sarah-quinones/pulp/blob/pulp-wasm-simd-flag-v0.1.0/LICENSE"),
+}
+
+
+class RustLicenseError(Exception):
+    pass
 
 
 @dataclass
@@ -32,6 +62,23 @@ class Crate:
     license_files: dict[str, str] = field(default_factory=dict)
 
 
+def has_own_license(crate: Crate) -> bool:
+    return any(name.lower().startswith(_OWN_LICENSE_PREFIXES) or name.lower() in _OWN_LICENSE_NAMES for name in crate.license_files)
+
+
+def add_upstream_notice(crate: Crate) -> bool:
+    """Give a crate without its own license file the recorded upstream notice."""
+
+    if has_own_license(crate):
+        return True
+    notice = UPSTREAM_NOTICES.get(crate.name)
+    if notice is None:
+        return False
+    filename, source = notice
+    crate.license_files[f"LICENSE from {source}"] = (CRATE_NOTICES / filename).read_text(encoding="utf-8")
+    return True
+
+
 def host_target(rustc: str = "rustc") -> str:
     output = subprocess.run([rustc, "-vV"], capture_output=True, text=True, check=True).stdout
     return next(line.split(":", 1)[1].strip() for line in output.splitlines() if line.startswith("host:"))
@@ -39,7 +86,8 @@ def host_target(rustc: str = "rustc") -> str:
 
 def collect(target: str, *, manifest: Path = MANIFEST, cargo: str = "cargo") -> list[Crate]:
     """Third-party crates linked into the binary for ``target``: normal
-    dependencies only, excluding build scripts' and tests' dependencies."""
+    dependencies only, excluding build scripts' and tests' dependencies.
+    Raises RustLicenseError when a crate has no license notice."""
 
     metadata = json.loads(
         subprocess.run(
@@ -80,6 +128,13 @@ def collect(target: str, *, manifest: Path = MANIFEST, cargo: str = "cargo") -> 
                 license_files=files,
             )
         )
+    unresolved = sorted(f"{crate.name} {crate.version}" for crate in crates if not add_upstream_notice(crate))
+    if unresolved:
+        raise RustLicenseError(
+            "these linked crates ship no license file of their own: "
+            + ", ".join(unresolved)
+            + ". Add their upstream LICENSE to tools/release/crate_notices/ and UPSTREAM_NOTICES."
+        )
     return sorted(crates, key=lambda crate: (crate.name, crate.version))
 
 
@@ -90,8 +145,9 @@ def render(crates: list[Crate], target: str) -> str:
         f"The Magneto2D executable in this package was built for {target}. It",
         "statically links the Rust crates below, resolved from",
         "solvers/magneto2d/Cargo.lock. Each crate's license files follow, with",
-        "identical texts printed once. Magneto2D itself is licensed under",
-        "AGPL-3.0-or-later; see LICENSE.",
+        "identical texts printed once. For crates published without their own",
+        "license file, the upstream LICENSE is included with its source.",
+        "Magneto2D itself is licensed under AGPL-3.0-or-later; see LICENSE.",
         "",
         "Crates",
         "------",
@@ -107,17 +163,6 @@ def render(crates: list[Crate], target: str) -> str:
     for text, users in texts.values():
         lines += ["", "=" * 78, "Used by: " + ", ".join(users), "=" * 78, "", text]
 
-    missing = [crate for crate in crates if not crate.license_files]
-    if missing:
-        lines += [
-            "",
-            "Crates without license files",
-            "----------------------------",
-            "These crates declare the license shown in their package metadata but",
-            "distribute no license file; see each repository for its notice.",
-            "",
-        ]
-        lines += [f"{crate.name} {crate.version}: {crate.license}" + (f" ({crate.repository})" if crate.repository else "") for crate in missing]
     return "\n".join(lines) + "\n"
 
 
@@ -127,10 +172,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args(argv)
     target = args.target or host_target()
-    crates = collect(target)
+    try:
+        crates = collect(target)
+    except RustLicenseError as exc:
+        print(f"rust licenses: {exc}", file=sys.stderr)
+        return 1
     args.output.write_text(render(crates, target), encoding="utf-8")
-    without = sum(not crate.license_files for crate in crates)
-    print(f"{len(crates)} crates, {without} without license files -> {args.output}")
+    print(f"{len(crates)} crates -> {args.output}")
     return 0
 
 

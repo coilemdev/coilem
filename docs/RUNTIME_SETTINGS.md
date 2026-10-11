@@ -24,6 +24,7 @@ end in `.coilem`. Existing `.openem` files and lower-case schema keys remain com
 | `COILEM_BUILD_UI_DIST` | Package this prebuilt UI bundle, with its `.build.json` record, instead of running `npm run build`; see [Release wheels](RELEASING.md). |
 | `COILEM_BUILD_MAGNETO2D_BINARY` | Package this prebuilt Magneto2D executable, with its `.build.json` record and crate licenses, instead of running Cargo. |
 | `COILEM_WHEEL_PLATFORM_TAG` | Set the wheel platform tag from the release policy. |
+| `COILEM_VERSION_SUFFIX` | Append a `.devN` suffix to the package version for a TestPyPI rehearsal. |
 | `CARGO` | Select the Cargo executable for backend build-tool discovery. |
 
 The separate cache path and retention policy are documented in

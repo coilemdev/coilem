@@ -5,6 +5,7 @@ with PATH, HOME and CARGO set so neither Cargo nor Node can be found, launches
 the installed ``coilem --no-browser`` and checks, through HTTP only:
 
 - the UI index, a hashed asset and a deep link; a 404 for an unknown API path;
+- that the launcher and health report the installed distribution version;
 - a motor Preview solve, cylindrical and linear Halbach solves and a lesson solve;
 - the saved run's PDF, CSV and replay-package downloads;
 - that a second launch reuses the running server;
@@ -15,11 +16,16 @@ This file uses only the standard library and carries its own inputs, so copy it
 anywhere and run it with the Python version under test:
 
     python -I acceptance.py --install WHEEL_OR_REQUIREMENT [--keep]
+
+To test a published release, ``--index-url`` downloads the coilEM wheel from
+that index (for example TestPyPI) and ``--expect-sha256`` checks it is the
+wheel CI built. Its dependencies still come from PyPI, never from that index.
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -196,6 +202,7 @@ class Acceptance:
         self.data_root = work / "user-data"
         self.results: list[tuple[str, bool, str]] = []
         self.log: list[str] = []
+        self.version: str | None = None
         home = work / "home"
         home.mkdir(parents=True, exist_ok=True)
         system = Path(os.environ.get("SystemRoot", r"C:\Windows"))
@@ -217,10 +224,43 @@ class Acceptance:
         print(("PASS " if ok else "FAIL ") + name + (f"  [{detail}]" if detail else ""), flush=True)
         return ok
 
+    def download(self, requirement: str, index_url: str, expected_sha256: str | None, python: str) -> str:
+        """Fetch only the coilEM wheel from ``index_url``, retrying while a new upload propagates."""
+
+        destination = self.work / "download"
+        command = [python, "-m", "pip", "download", "--no-deps", "--only-binary", ":all:", "--disable-pip-version-check"]
+        command += ["--index-url", index_url, "--dest", str(destination), requirement]
+        for attempt in range(20):
+            completed = subprocess.run(command, capture_output=True, text=True)
+            if completed.returncode == 0:
+                break
+            print(f"waiting for {requirement} on {index_url} (attempt {attempt + 1})", flush=True)
+            time.sleep(30)
+        else:
+            raise SystemExit(f"could not download {requirement} from {index_url}:\n{completed.stderr}")
+        wheel = next(destination.glob("*.whl"))
+        digest = hashlib.sha256(wheel.read_bytes()).hexdigest()
+        if expected_sha256 is not None:
+            self.check("the published wheel is the one CI built", digest == expected_sha256, f"{wheel.name} {digest}")
+        return str(wheel)
+
     def install(self, requirement: str, python: str) -> None:
         subprocess.run([python, "-m", "venv", str(self.venv)], check=True)
         interpreter = self.bin / ("python.exe" if WINDOWS else "python")
         subprocess.run([str(interpreter), "-m", "pip", "install", "--quiet", "--disable-pip-version-check", requirement], check=True)
+        self.version = subprocess.check_output(
+            [str(interpreter), "-I", "-c", "from importlib.metadata import version; print(version('coilem'))"],
+            cwd=self.work, text=True,
+        ).strip()
+        reported = subprocess.run(
+            [str(self.bin / ("coilem.exe" if WINDOWS else "coilem")), "--version"],
+            cwd=self.work, env=self.env, capture_output=True, text=True, timeout=30,
+        )
+        self.check(
+            "launcher reports the installed version",
+            reported.returncode == 0 and reported.stdout.strip() == f"coilEM {self.version}",
+            (reported.stdout + reported.stderr).strip(),
+        )
         missing = [tool for tool in ("cargo", "node", "npm") if shutil.which(tool, path=self.env["PATH"])]
         self.check("Cargo and Node are unavailable to the installed app", not missing, f"found={missing}")
 
@@ -270,6 +310,14 @@ class Acceptance:
         return self.finish()
 
     def exercise(self, base: str, port: int) -> None:
+        status, _, body = request("GET", base + "/health")
+        health = json.loads(body) if status == 200 else {}
+        self.check(
+            "health reports the installed version",
+            status == 200 and health.get("version") == self.version
+            and (health.get("build") or {}).get("application_version") == self.version,
+            f"installed={self.version}, health={health.get('version')}",
+        )
         status, headers, body = request("GET", base + "/")
         self.check("index", status == 200 and b'<div id="root">' in body and headers.get("cache-control") == "no-store", str(status))
         asset = re.search(rb'src="(/assets/[^"]+\.js)"', body)
@@ -312,10 +360,15 @@ class Acceptance:
         standard = json.loads(json.dumps(MOTOR))
         standard["solve_params"].update({"solve_quality": "standard", "mesh_density": "normal"})
         threading.Thread(target=lambda: request("POST", base + "/solve/stream", standard, timeout=900), daemon=True).start()
+        # Record what the wait saw: solver batches are short-lived, and a second
+        # query (about a second through PowerShell on Windows) can fall between two.
+        running: list[str] = []
         deadline = time.monotonic() + 180
-        while time.monotonic() < deadline and not self.solver_processes():
-            time.sleep(0.2)
-        self.check("a solve is running before the interrupt", bool(self.solver_processes()))
+        while time.monotonic() < deadline and not running:
+            running = self.solver_processes()
+            if not running:
+                time.sleep(0.2)
+        self.check("a solve is running before the interrupt", bool(running), f"{running[:2]}")
         started = time.monotonic()
         server.send_signal(signal.CTRL_BREAK_EVENT if WINDOWS else signal.SIGINT)
         try:
@@ -353,12 +406,18 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--install", required=True, help="wheel path or pip requirement to install")
     parser.add_argument("--python", default=sys.executable, help="interpreter for the new environment")
+    parser.add_argument("--index-url", help="download the coilEM wheel from this index; dependencies still come from PyPI")
+    parser.add_argument("--expect-sha256", help="with --index-url, the SHA-256 the downloaded wheel must have")
     parser.add_argument("--keep", action="store_true", help="keep the temporary directory")
     args = parser.parse_args()
     requirement = str(Path(args.install).resolve()) if Path(args.install).is_file() else args.install
     work = Path(tempfile.mkdtemp(prefix="coilem-acceptance-"))
     try:
         acceptance = Acceptance(work)
+        if args.index_url:
+            requirement = acceptance.download(requirement, args.index_url, args.expect_sha256, args.python)
+            if acceptance.results and not acceptance.results[-1][1]:
+                return acceptance.finish()
         acceptance.install(requirement, args.python)
         return acceptance.run()
     finally:

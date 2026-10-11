@@ -11,7 +11,8 @@ Release builds package prebuilt artifacts from ``tools/release/artifacts.py``
 instead: ``COILEM_BUILD_UI_DIST`` and ``COILEM_BUILD_MAGNETO2D_BINARY`` point at
 them, and their ``.build.json`` sidecars supply toolchain records.
 ``COILEM_WHEEL_PLATFORM_TAG`` sets the wheel's platform tag from the release
-policy. Project metadata lives in pyproject.toml.
+policy, and ``COILEM_VERSION_SUFFIX=.devN`` makes a TestPyPI rehearsal version.
+Other project metadata lives in pyproject.toml.
 """
 
 from __future__ import annotations
@@ -41,6 +42,7 @@ def _load(name: str, relative: str):
 
 resources = _load("_coilem_build_resources", "backend/resources.py")
 rust_licenses = _load("_coilem_build_rust_licenses", "tools/release/rust_licenses.py")
+release_version = _load("_coilem_build_release_version", "tools/release/version.py")
 
 
 def _sha256(path: Path) -> str:
@@ -130,15 +132,35 @@ def _magneto2d_binary() -> tuple[Path, dict, str]:
         "target": target,
         "toolchain": {"rustc": _version(rustc, "-V"), "cargo": _version(cargo, "-V")},
     }
-    licenses = rust_licenses.render(rust_licenses.collect(target, manifest=crate / "Cargo.toml", cargo=cargo), target)
+    try:
+        crates = rust_licenses.collect(target, manifest=crate / "Cargo.toml", cargo=cargo)
+    except rust_licenses.RustLicenseError as exc:
+        raise SystemExit(f"coilEM build: {exc}") from exc
+    licenses = rust_licenses.render(crates, target)
     name = "magneto2d.exe" if os.name == "nt" else "magneto2d"
     return crate / "target" / "release" / name, record, licenses
+
+
+def _stamp_package_version(package: Path, version: str) -> None:
+    """Give launcher and health checks the distribution version, including .devN."""
+
+    initializer = package / "__init__.py"
+    source, count = re.subn(
+        r'^__version__ = "[^"]+"$',
+        f"__version__ = {json.dumps(version)}",
+        initializer.read_text(encoding="utf-8"),
+        flags=re.MULTILINE,
+    )
+    if count != 1:
+        raise SystemExit("coilEM build: backend/__init__.py must define exactly one __version__.")
+    initializer.write_text(source, encoding="utf-8", newline="\n")
 
 
 def stage_runtime_files(package: Path, version: str) -> None:
     """Copy data, UI, solver and build identity into a built ``backend`` package."""
 
     _check_packaged_sources()
+    _stamp_package_version(package, version)
     data = package / resources.PACKAGED_DATA_DIR
     shutil.rmtree(data, ignore_errors=True)
     for relative in resources.PACKAGED_DATA_FILES:
@@ -201,7 +223,12 @@ def main() -> None:
             # serves every supported Python version.
             return "py3", "none", os.environ.get("COILEM_WHEEL_PLATFORM_TAG") or super().get_tag()[2]
 
+    try:
+        version = release_version.package_version()
+    except release_version.VersionError as exc:
+        raise SystemExit(f"coilEM build: {exc}") from exc
     setup(
+        version=version,
         distclass=BinaryDistribution,
         cmdclass={"build_py": BuildPyWithRuntimeFiles, "bdist_wheel": PlatformWheel},
     )

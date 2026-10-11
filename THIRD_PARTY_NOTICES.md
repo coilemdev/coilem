@@ -107,6 +107,13 @@ compatible dual-license expressions. The lock also includes target-specific
 Windows support crates even when building for another platform. No crate source
 is copied into this repository.
 
+Some MIT-licensed crates publish packages without their own license file:
+faer 0.24.0 ships only the incorporated notices below, and faer-traits,
+equator, equator-macro, nano-gemm with its c32, c64, core, f32 and f64 crates,
+and pulp-wasm-simd-flag ship none. Their upstream LICENSE files are kept in
+`tools/release/crate_notices/`, with their sources recorded in
+`tools/release/rust_licenses.py`. Release wheels include them.
+
 ### faer incorporated algorithms
 
 The faer 0.24.0 crate distributes four additional notice files:
