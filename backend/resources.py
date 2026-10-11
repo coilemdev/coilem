@@ -12,10 +12,12 @@ share the packaged-file list and the build-identity derivation.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
 import subprocess
+from collections.abc import Iterable
 from functools import reduce
 from importlib import resources
 from importlib.resources.abc import Traversable
@@ -25,6 +27,8 @@ from typing import Any
 PACKAGED_DATA_DIR = "_data"
 PACKAGED_UI_DIR = "_ui"
 PACKAGED_BIN_DIR = "_bin"
+PACKAGED_LICENSES_DIR = "_licenses"
+MAGNETO2D_LICENSES_FILE = "magneto2d-rust-crates.txt"
 BUILD_INFO_FILE = "_build_info.json"
 SOURCE_UI_DIR = "frontend/dist-public-boundary"
 
@@ -113,6 +117,41 @@ def stamped_build_info() -> dict[str, Any] | None:
     except (OSError, ValueError):
         return None
     return payload if isinstance(payload, dict) else None
+
+
+BUILD_IDENTITY_FIELDS = (
+    "application_version",
+    "application_commit",
+    "magneto2d_version",
+    "magneto2d_target",
+    "magneto2d_sha256",
+    "ui_bundle_sha256",
+    "toolchain",
+)
+
+
+def bundle_sha256(files: Iterable[tuple[str, bytes]]) -> str:
+    """Hash a file tree from ``(relative POSIX path, content)`` pairs.
+
+    The build info's ``ui_bundle_sha256``. Files are ordered by their path
+    string, so every OS agrees: Windows orders ``Path`` objects without case.
+    """
+
+    lines = "".join(f"{path} {hashlib.sha256(data).hexdigest()}\n" for path, data in sorted(files))
+    return hashlib.sha256(lines.encode("utf-8")).hexdigest()
+
+
+def directory_sha256(root: Path) -> str:
+    return bundle_sha256((path.relative_to(root).as_posix(), path.read_bytes()) for path in root.rglob("*") if path.is_file())
+
+
+def build_identity() -> dict[str, Any]:
+    """What this installation runs: an installed package's stamped build, or a source checkout."""
+
+    stamped = stamped_build_info()
+    if stamped is None:
+        return {"installation": "source"}
+    return {"installation": "package", **{field: stamped.get(field) for field in BUILD_IDENTITY_FIELDS}}
 
 
 def source_checkout_commit(root: Path) -> str:

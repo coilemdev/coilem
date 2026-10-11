@@ -34,6 +34,7 @@ from backend.public_report import (
     write_replayable_run_package,
 )
 from backend.resources import application_commit as _application_commit
+from backend.resources import build_identity
 
 RUN_MANIFEST_SCHEMA = "coilem.solve_run.v2"
 RUN_REQUEST_SCHEMA = "coilem.solve_request.v1"
@@ -388,6 +389,7 @@ class SolveRunWriter:
             "provenance": {
                 "application_version": __version__,
                 "application_commit": self.application_commit,
+                "build": build_identity(),
                 "solver_name": solver_name or None,
                 "excitation": excitation_provenance,
                 "platform": {

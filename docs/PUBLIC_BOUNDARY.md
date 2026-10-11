@@ -18,6 +18,9 @@ plus an explicit `COILEM_LOCAL_UI_ORIGIN`; the development ports are not
 trusted. The `Host` header must carry the bound port. Pages requested through
 another loopback name redirect to the `127.0.0.1` origin. The production
 bundle sends API requests to its own origin, which it still checks is loopback.
+`/health` reports a hash that identifies the user-data folder without its path,
+which a second launch uses to find a running server, and the `build` identity of
+an installed package; see [Release wheels](RELEASING.md).
 
 UI files are an exact allowlist, kept separate from the API paths below and
 absent from `/openapi.json`: `/`, the tutorial routes defined in

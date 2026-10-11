@@ -48,6 +48,14 @@ RUNNING_INSTANCE_WAIT_S = 10.0
 GRACEFUL_SHUTDOWN_S = 10
 SHUTDOWN_DEADLINE_S = 20.0
 _WSAEACCES = 10013
+# Ctrl+C, and Ctrl+Break, which is how Windows interrupts a console process group.
+_INTERRUPTS = frozenset({signal.SIGINT, *((signal.SIGBREAK,) if hasattr(signal, "SIGBREAK") else ())})
+_LINUX_MESHER_HELP = (
+    "Install it, then start coilEM again:\n"
+    "  Debian/Ubuntu: sudo apt-get install libglu1-mesa\n"
+    "  Fedora/RHEL:   sudo dnf install mesa-libGLU\n"
+    "  Arch Linux:    sudo pacman -S glu"
+)
 
 
 class LaunchError(Exception):
@@ -275,7 +283,7 @@ def _launcher_server_class() -> type:
 
     class LauncherServer(uvicorn.Server):
         def handle_exit(self, sig: int, frame: Any) -> None:
-            if self.should_exit and sig == signal.SIGINT:
+            if self.should_exit and sig in _INTERRUPTS:
                 print("\ncoilem: forced exit.", file=sys.stderr, flush=True)
                 _force_exit(130)
             if not self.should_exit:
@@ -307,6 +315,28 @@ def _raise_exit(signum: int, frame: Any) -> None:
     raise SystemExit(128 + signum)
 
 
+def _raise_interrupt(signum: int, frame: Any) -> None:
+    raise KeyboardInterrupt
+
+
+def _import_gmsh() -> None:
+    import gmsh  # noqa: F401
+
+
+def linux_mesher_problem(*, platform: str = sys.platform, load: Any = _import_gmsh) -> str | None:
+    """Explain a system library Gmsh cannot load on Linux, instead of failing at the first mesh."""
+
+    if not platform.startswith("linux"):
+        return None
+    try:
+        load()
+    except OSError as exc:
+        if "GLU" in str(exc):
+            return f"the Gmsh mesher needs the GLU library (libGLU.so.1). {_LINUX_MESHER_HELP}"
+        return f"the Gmsh mesher could not load a system library: {exc}"
+    return None
+
+
 def serve(sock: socket.socket, port: int, ui_bundle: Path, root_id: str, *, open_browser: bool) -> int:
     import uvicorn
 
@@ -327,10 +357,10 @@ def serve(sock: socket.socket, port: int, ui_bundle: Path, root_id: str, *, open
         daemon=True,
     ).start()
     # uvicorn re-raises the signal that stopped it once shutdown completes.
-    # Turn termination requests into an exit that still runs cleanup.
-    for name in ("SIGTERM", "SIGBREAK"):
-        if hasattr(signal, name):
-            signal.signal(getattr(signal, name), _raise_exit)
+    # Ctrl+Break ends like Ctrl+C; a termination request still runs cleanup.
+    signal.signal(signal.SIGTERM, _raise_exit)
+    if hasattr(signal, "SIGBREAK"):
+        signal.signal(signal.SIGBREAK, _raise_interrupt)
     try:
         server.run(sockets=[sock])
     except KeyboardInterrupt:
@@ -349,6 +379,9 @@ def launch(args: argparse.Namespace) -> int:
             "this installation has no built UI. In a source checkout, run `npm ci` and "
             "`npm run build` in frontend/, or use the development servers in the README."
         )
+    mesher_problem = linux_mesher_problem()
+    if mesher_problem is not None:
+        raise LaunchError(mesher_problem)
     root = user_data_root()
     root_id = user_data_root_id()
     open_browser = not args.no_browser

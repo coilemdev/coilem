@@ -29,7 +29,7 @@ qualified scope and its limits.
 
 ## Start from source
 
-You need Python 3.11+, Node.js 24 with npm, and stable Rust with Cargo
+You need Python 3.11 to 3.14, Node.js 24 with npm, and stable Rust with Cargo
 (the locked `faer` dependency requires Rust 1.84 or newer). Use a fresh checkout and virtual environment. On Ubuntu/Debian, install the Gmsh system
 library first: `sudo apt-get install libglu1-mesa`.
 
