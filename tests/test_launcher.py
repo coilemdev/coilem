@@ -162,6 +162,36 @@ def test_probe_distinguishes_coilem_other_programs_and_free_ports() -> None:
     assert launcher.probe(free_port) is False
 
 
+@pytest.mark.parametrize(
+    ("error", "expected"),
+    [
+        (ConnectionRefusedError(errno.ECONNREFUSED, "refused"), False),
+        (TimeoutError("connect timed out"), True),
+        (PermissionError(errno.EACCES, "denied"), True),
+    ],
+)
+def test_probe_only_classifies_an_explicit_connection_refusal_as_free(monkeypatch, error, expected) -> None:
+    closed = []
+
+    class Connection:
+        def connect(self) -> None:
+            raise error
+
+        def close(self) -> None:
+            closed.append(True)
+
+    monkeypatch.setattr(launcher.http.client, "HTTPConnection", lambda *args, **kwargs: Connection())
+    assert launcher.probe(9100) is expected
+    assert closed == [True]
+
+
+def test_probe_keeps_an_unresponsive_listener_occupied() -> None:
+    with socket.socket() as holder:
+        holder.bind(("127.0.0.1", 0))
+        holder.listen()
+        assert launcher.probe(holder.getsockname()[1]) is True
+
+
 def test_root_lock_admits_one_launcher(tmp_path: Path) -> None:
     first = launcher.acquire_root_lock(tmp_path / "root")
     assert first is not None
@@ -181,10 +211,14 @@ def test_record_round_trip(tmp_path: Path) -> None:
     assert json.loads((tmp_path / launcher.RECORD_FILE).read_text())["version"] == __version__
 
 
-def test_locked_root_reuses_the_recorded_server(monkeypatch, tmp_path: Path) -> None:
+@pytest.mark.parametrize(("cli_port", "env_port"), [(None, None), (9100, None), (None, "9100"), (9100, "9200")])
+def test_locked_root_reuses_the_recorded_server(monkeypatch, tmp_path: Path, cli_port, env_port) -> None:
     from backend import solve_workspace
 
     monkeypatch.setenv("COILEM_USER_DATA_ROOT", str(tmp_path))
+    monkeypatch.delenv("COILEM_LOCAL_API_PORT", raising=False)
+    if env_port is not None:
+        monkeypatch.setenv("COILEM_LOCAL_API_PORT", env_port)
     monkeypatch.setattr("backend.resources.ui_bundle_root", lambda: tmp_path)
     root_id = solve_workspace.user_data_root_id()
     holder = launcher.acquire_root_lock(tmp_path)
@@ -192,7 +226,28 @@ def test_locked_root_reuses_the_recorded_server(monkeypatch, tmp_path: Path) -> 
     monkeypatch.setattr(launcher, "probe", lambda port: RunningCoilem(port, __version__, root_id) if port == 9100 else False)
     monkeypatch.setattr(launcher.webbrowser, "open", lambda url: None)
     try:
-        assert launcher.launch(Namespace(port=None, no_browser=True)) == 0
+        assert launcher.launch(Namespace(port=cli_port, no_browser=True)) == 0
+    finally:
+        holder.close()
+
+
+@pytest.mark.parametrize(("cli_port", "env_port"), [(9101, None), (None, "9101")])
+def test_locked_root_rejects_a_different_exact_port(monkeypatch, tmp_path: Path, cli_port, env_port) -> None:
+    from backend import solve_workspace
+
+    monkeypatch.setenv("COILEM_USER_DATA_ROOT", str(tmp_path))
+    monkeypatch.delenv("COILEM_LOCAL_API_PORT", raising=False)
+    if env_port is not None:
+        monkeypatch.setenv("COILEM_LOCAL_API_PORT", env_port)
+    monkeypatch.setattr("backend.resources.ui_bundle_root", lambda: tmp_path)
+    root_id = solve_workspace.user_data_root_id()
+    holder = launcher.acquire_root_lock(tmp_path)
+    launcher.write_record(tmp_path, 9100)
+    monkeypatch.setattr(launcher, "probe", lambda port: RunningCoilem(port, __version__, root_id) if port == 9100 else False)
+    monkeypatch.setattr(launcher.webbrowser, "open", lambda url: pytest.fail("must not open a different port"))
+    try:
+        with pytest.raises(LaunchError, match="already running at http://127.0.0.1:9100.*requested port 9101"):
+            launcher.launch(Namespace(port=cli_port, no_browser=False))
     finally:
         holder.close()
 

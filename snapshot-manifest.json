@@ -60,8 +60,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 6269,
-      "sha256": "462408771e7a1bdd9bf6e21181ae55b9b7e40b54837808c6e310106e6f3d0ef6"
+      "bytes": 6700,
+      "sha256": "694627dd23600257c00044edd7c9db76ab50f7194d11c328b104ccbc2f759968"
     },
     {
       "path": "SECURITY.md",
@@ -275,8 +275,8 @@
     },
     {
       "path": "backend/launcher.py",
-      "sha256": "e1681e92d7836ecf333821914b143d03e98085f37c5a7e7ecf76cd0505208cd6",
-      "bytes": 14583
+      "sha256": "327d806c0cccb34a904110e6b0574b6485aaacce422302c416b5bbb476550443",
+      "bytes": 15250
     },
     {
       "path": "backend/local_file_safety.py",
@@ -1645,8 +1645,8 @@
     },
     {
       "path": "docs/RUNTIME_SETTINGS.md",
-      "bytes": 5897,
-      "sha256": "57f75b61ef146dfedaeaebd275bbf36aa9b871536474610e7580fd9be28e84c4"
+      "bytes": 6092,
+      "sha256": "97cd86376b7b0443ca428844d83e1f4e68b9735305d4db242e22538f39bfd246"
     },
     {
       "path": "docs/VALIDATION.md",
@@ -2830,8 +2830,8 @@
     },
     {
       "path": "tests/test_launcher.py",
-      "sha256": "0e0a98a4e41a7fc9cdb36de5ecddd7135c704bd986a73643fbbe3b1e044669d2",
-      "bytes": 8622
+      "sha256": "daeedb449e75809c3974745c4805342726fb8fe57c8989b1219a3b02e2f024da",
+      "bytes": 10980
     },
     {
       "path": "tests/test_linear_halbach_analytical.py",
@@ -3817,6 +3817,30 @@
       "path": "README.md",
       "source_sha256": "d01f99340e30f73ece44ebb990b065a582c7a1011ff5db48bdcfeda16778c1af",
       "reason": "Point contributors to the packaged coilem launcher they can build from a checkout."
+    },
+    {
+      "base_commit": "4332bf385618fff95761d826badc2534b2e91bf4",
+      "path": "backend/launcher.py",
+      "source_sha256": "e1681e92d7836ecf333821914b143d03e98085f37c5a7e7ecf76cd0505208cd6",
+      "reason": "Honor exact ports when reusing a running launcher and distinguish Windows connection refusal from timed-out or denied probes."
+    },
+    {
+      "base_commit": "4332bf385618fff95761d826badc2534b2e91bf4",
+      "path": "tests/test_launcher.py",
+      "source_sha256": "0e0a98a4e41a7fc9cdb36de5ecddd7135c704bd986a73643fbbe3b1e044669d2",
+      "reason": "Cover exact CLI/environment ports on second launch, conservative connection errors and unresponsive listeners."
+    },
+    {
+      "base_commit": "4332bf385618fff95761d826badc2534b2e91bf4",
+      "path": "docs/RUNTIME_SETTINGS.md",
+      "source_sha256": "57f75b61ef146dfedaeaebd275bbf36aa9b871536474610e7580fd9be28e84c4",
+      "reason": "Explain that an exact port must match the server holding the user-data-root lock."
+    },
+    {
+      "base_commit": "4332bf385618fff95761d826badc2534b2e91bf4",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "462408771e7a1bdd9bf6e21181ae55b9b7e40b54837808c6e310106e6f3d0ef6",
+      "reason": "Add the unreleased packaged-origin browser-state migration note required by issue 13."
     }
   ]
 }

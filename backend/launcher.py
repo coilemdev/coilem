@@ -41,6 +41,8 @@ FALLBACK_PORTS = range(DEFAULT_PORT, DEFAULT_PORT + 10)
 LOCK_FILE = "launcher.lock"
 RECORD_FILE = "launcher.json"
 PROBE_TIMEOUT_S = 2.0
+# Windows can take just over two seconds to report WSAECONNREFUSED.
+PROBE_CONNECT_TIMEOUT_S = 5.0 if os.name == "nt" else PROBE_TIMEOUT_S
 READY_TIMEOUT_S = 60.0
 RUNNING_INSTANCE_WAIT_S = 10.0
 GRACEFUL_SHUTDOWN_S = 10
@@ -86,15 +88,18 @@ def requested_port(cli_port: int | None, environ: Mapping[str, str] = os.environ
 def probe(port: int) -> RunningCoilem | bool:
     """Return the coilEM serving ``port``, ``True`` for another program, ``False`` if nothing listens."""
 
-    connection = http.client.HTTPConnection("127.0.0.1", port, timeout=PROBE_TIMEOUT_S)
+    connection = http.client.HTTPConnection("127.0.0.1", port, timeout=PROBE_CONNECT_TIMEOUT_S)
     try:
         try:
             connection.connect()
-        except OSError:
-            # Refused. Windows retries a refused loopback connect for about
-            # two seconds, so a timeout here also means nothing is listening.
+        except ConnectionRefusedError:
             return False
+        except OSError:
+            # A timeout or access denial does not establish that the port is free.
+            return True
         try:
+            assert connection.sock is not None
+            connection.sock.settimeout(PROBE_TIMEOUT_S)
             connection.request("GET", "/health", headers={"Accept": "application/json"})
             response = connection.getresponse()
             body = response.read(1_000_000)
@@ -187,17 +192,22 @@ def recorded_port(root: Path) -> int | None:
     return port if isinstance(port, int) and 1 <= port <= 65535 else None
 
 
-def reuse_running(found: RunningCoilem, *, open_browser: bool) -> int:
+def reuse_running(found: RunningCoilem, *, open_browser: bool, exact_port: int | None = None) -> int:
     """Open a same-root, same-version server; report a different version."""
 
     url = bound_url(found.port)
     if found.version != __version__:
         print(
             f"coilem: coilEM {found.version} is already running at {url}; this is coilEM {__version__}.\n"
-            "Stop the running copy first, or choose another port with --port.",
+            "Stop the running copy first; use a different COILEM_USER_DATA_ROOT and --port for a separate instance.",
             file=sys.stderr,
         )
         return 1
+    if exact_port is not None and found.port != exact_port:
+        raise LaunchError(
+            f"coilEM is already running at {url} using this data folder; requested port {exact_port} cannot be used. "
+            "Stop the running copy first, or set COILEM_USER_DATA_ROOT to use a different folder."
+        )
     print(f"coilEM {found.version} is already running at {url}")
     if open_browser:
         webbrowser.open(url)
@@ -351,11 +361,11 @@ def launch(args: argparse.Namespace) -> int:
                 f"another coilEM is using the data folder {root} but does not answer. "
                 "Stop it, or set COILEM_USER_DATA_ROOT to use a different folder."
             )
-        return reuse_running(found, open_browser=open_browser)
+        return reuse_running(found, open_browser=open_browser, exact_port=explicit)
     try:
         sock, found = claim_port(explicit, root_id)
         if found is not None:
-            return reuse_running(found, open_browser=open_browser)
+            return reuse_running(found, open_browser=open_browser, exact_port=explicit)
         assert sock is not None
         port = sock.getsockname()[1]
         if explicit is None and port != DEFAULT_PORT:

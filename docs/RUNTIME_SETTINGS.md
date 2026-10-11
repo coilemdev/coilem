@@ -46,8 +46,11 @@ browser window.
   fallback. On Windows, a port in a Hyper-V or WSL excluded range counts as
   occupied.
 - One server runs per user-data root. A second launch with the same root opens
-  the browser at the running server and exits. If a different coilEM version
-  is running there, the launcher prints both versions and exits.
+  the browser at the running server and exits, provided any explicitly requested
+  port matches the running server. A different exact port fails with an error;
+  stop the running copy or use another `COILEM_USER_DATA_ROOT` to change ports.
+  If a different coilEM version is running there, the launcher prints both
+  versions and exits.
 - Ctrl+C stops accepting work and cancels active motor, Halbach and lesson
   solver processes. An in-flight motor run stays recorded as cancelled. A
   second Ctrl+C forces exit.
