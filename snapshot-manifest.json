@@ -2985,8 +2985,8 @@
     },
     {
       "path": "tools/release/acceptance.py",
-      "sha256": "68b81d210d24907cdea8cb8c133603061a95876dfc6e9d640269114608b9650a",
-      "bytes": 18015
+      "sha256": "9d4a2087d1aeb649fb1d5f72c3fc0cb0c6dca9e14ff5f1dc83af4f0aabb50c4c",
+      "bytes": 18277
     },
     {
       "path": "tools/release/artifacts.py",
@@ -4072,6 +4072,12 @@
       "path": "tools/release/verify_wheel.py",
       "source_sha256": "2afdf9b081b52132ba4c6de12fb4774d4e5723374ba775125da41410b3e0b771",
       "reason": "Check that every crate in the crate license file has a license text."
+    },
+    {
+      "base_commit": "02d75228845f68f33a0141d8194c05661fd66bbe",
+      "path": "tests/test_installed_resources.py",
+      "source_sha256": "aa3137e87a9aed5e2ea76ef1682828fba00921161b89d7bb307219dc4155700d",
+      "reason": "Check the packaged backend carries the distribution version, including rehearsal .devN versions."
     }
   ]
 }

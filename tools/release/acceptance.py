@@ -360,10 +360,15 @@ class Acceptance:
         standard = json.loads(json.dumps(MOTOR))
         standard["solve_params"].update({"solve_quality": "standard", "mesh_density": "normal"})
         threading.Thread(target=lambda: request("POST", base + "/solve/stream", standard, timeout=900), daemon=True).start()
+        # Record what the wait saw: solver batches are short-lived, and a second
+        # query (about a second through PowerShell on Windows) can fall between two.
+        running: list[str] = []
         deadline = time.monotonic() + 180
-        while time.monotonic() < deadline and not self.solver_processes():
-            time.sleep(0.2)
-        self.check("a solve is running before the interrupt", bool(self.solver_processes()))
+        while time.monotonic() < deadline and not running:
+            running = self.solver_processes()
+            if not running:
+                time.sleep(0.2)
+        self.check("a solve is running before the interrupt", bool(running), f"{running[:2]}")
         started = time.monotonic()
         server.send_signal(signal.CTRL_BREAK_EVENT if WINDOWS else signal.SIGINT)
         try:
