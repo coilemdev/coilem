@@ -99,7 +99,7 @@ Run the versioned A/B/C/D suite (SPM, IPM, Distributed Winding and BLDC) from th
 checkout with `python -m tools.run_benchmarks --out-dir ../benchmark-output/my-run --pdf`.
 It measures the current public native solver against saved FEMM data, with no
 reference solver installation or adapter required. See the [benchmark commands,
-reference compatibility and version policy](benchmarks/abcd-v1/README.md).
+reference compatibility and version policy](benchmarks/abcd-v1.1/README.md).
 
 The public Magneto2D path ignores inherited numerical solver switches. It derives
 native options from the request and records its environment policy and options
@@ -120,3 +120,8 @@ Report bugs through [Support](SUPPORT.md), and vulnerabilities privately through
 [Security](SECURITY.md). Source is licensed under AGPL-3.0-or-later; see
 [LICENSE](LICENSE), [third-party notices](THIRD_PARTY_NOTICES.md) and
 [trademark terms](TRADEMARKS.md).
+
+The next-release [benchmark baseline v1.2](benchmarks/release-baseline-20261011-v1.2/benchmark_report.md)
+uses higher-output deep-apex and wide-angle IPM fixtures. Its 29 PASS / one
+UNSUPPORTED outcomes compile explicitly identified measured candidates; the
+original low-output failures remain archived.

@@ -1,12 +1,12 @@
 """Data-only reference bundles, already normalized to public clockwise coordinates."""
 
-from tools.benchmark_suite import CONVENTION, PROTOCOL_VERSION
+from tools.benchmark_suite import CONVENTION, SUPPORTED_PROTOCOL_VERSIONS
 from tools.benchmark_suite.contract import canonical, checked_json, read, sha
 
 
 def load_suite(path):
     spec = read(path)
-    if spec["schema"] != "coilem.benchmark_spec/v1" or spec["protocol_version"] != PROTOCOL_VERSION:
+    if spec["schema"] != "coilem.benchmark_spec/v1" or spec["protocol_version"] not in SUPPORTED_PROTOCOL_VERSIONS:
         raise ValueError("Unsupported suite protocol")
     if spec["convention"] != CONVENTION:
         raise ValueError("Suite coordinate convention mismatch")

@@ -9,7 +9,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from tools.benchmark_suite import HARNESS_VERSION, PHASE_LABELS
+from tools.benchmark_suite import HARNESS_VERSION, PHASE_LABELS, PROTOCOL_VERSION
 from tools.benchmark_suite.bldc_metrics import validate_lane_result
 from tools.benchmark_suite.contract import (
     DEFAULT_BUNDLE,
@@ -118,7 +118,8 @@ def evaluate(output, manifest, selected, configs, protocols, golden, references)
 
 
 def execute(args):
-    spec = load_suite(SPEC)
+    spec_path = getattr(args, "suite", SPEC).resolve()
+    spec = load_suite(spec_path)
     selected = [c for c in spec["cases"] if c["phase"] in args.phases and (not args.case or c["id"] in args.case)]
     if args.case and set(args.case) - {c["id"] for c in selected}:
         raise ValueError("Unknown case or case excluded by --phases")
@@ -148,7 +149,7 @@ def execute(args):
                 validate_abc(reference, configs[case["id"], "native"], native=False)
     selection = {
         "case_ids": [c["id"] for c in selected],
-        "spec_sha256": sha(SPEC),
+        "spec_sha256": sha(spec_path),
         "bundle_sha256": bundle_sha,
         "smoke": args.smoke,
         "no_reference": args.no_reference,
@@ -165,7 +166,7 @@ def execute(args):
 
         verify_materials(spec["material_contract"])
         binary = ensure_magneto2d_binary()
-        runtime = identity(binary)
+        runtime = identity(binary, protocol_version=spec["protocol_version"])
         if runtime["dirty"] and not args.allow_dirty:
             raise ValueError("Checkout has local changes; commit them or use --allow-dirty to register the actual source hashes")
         if path.exists():
@@ -265,11 +266,11 @@ def execute(args):
             print(f"{job['case_id']} / {job['stage']}: {job['status']}", flush=True)
             # Check again before registering or launching the next solve.
             inputs(spec, selected)
-            if sha(SPEC) != selection["spec_sha256"]:
+            if sha(spec_path) != selection["spec_sha256"]:
                 raise ValueError("Registered suite changed")
             if bundle_sha is not None and load_bundle(args.reference_bundle.resolve(), spec)[2] != bundle_sha:
                 raise ValueError("Reference bundle changed during the run")
-            if identity(binary) != runtime:
+            if identity(binary, protocol_version=spec["protocol_version"]) != runtime:
                 raise ValueError("Runtime changed; remaining jobs were not launched")
         manifest.update(status="COMPLETE_WITH_ERRORS" if any(j["status"] == "ERROR" for j in manifest["jobs"]) else "COMPLETE", completed_at=now())
         write(path, manifest)
@@ -287,9 +288,13 @@ def finish(output, manifest, selected, configs, protocols, golden, references, *
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--version", action="version", version=f"Coilem benchmark harness {HARNESS_VERSION}")
+    parser.add_argument("--version", action="version", version=f"Coilem benchmark harness {HARNESS_VERSION} (default protocol {PROTOCOL_VERSION})")
     parser.add_argument("--phases", nargs="+", choices=list(PHASE_LABELS), default=list(PHASE_LABELS))
     parser.add_argument("--case", action="append", help="Select a registered case id; repeat for multiple cases")
+    parser.add_argument(
+        "--suite", type=Path, default=SPEC,
+        help="Select a registered suite; default is A/B/C/D 1.1 with higher-output IPM replacements",
+    )
     parser.add_argument("--reference-bundle", type=Path, default=DEFAULT_BUNDLE)
     parser.add_argument("--out-dir", type=Path)
     parser.add_argument("--list", action="store_true", help="List the verified suite without building or solving")

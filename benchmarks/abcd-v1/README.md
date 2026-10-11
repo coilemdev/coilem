@@ -1,9 +1,13 @@
 # A/B/C/D benchmark protocol 1.0.0
 
+> This is frozen protocol 1.0.0. The default [protocol 1.1.0](../abcd-v1.1/README.md)
+> replaces two Phase B geometries. Every command below explicitly selects this
+> historical suite and bundle, preserving the original low-output cases.
+
 Run from a Coilem source checkout with the normal Python dependencies and Rust toolchain installed:
 
 ```sh
-python -m tools.run_benchmarks --phases A B C D --out-dir ../benchmark-output/my-run --pdf
+python -m tools.run_benchmarks --suite benchmarks/abcd-v1/benchmark_spec.json --reference-bundle benchmarks/reference-baselines/main-bad71d9 --phases A B C D --out-dir ../benchmark-output/my-run --pdf
 ```
 
 This measures the current checkout's public Magneto2D solver and compares it with saved FEMM evidence. It does not install, import, discover or execute a reference solver. The native executable is built on demand. Keep output outside the checkout. A clean Git checkout is required by default; `--allow-dirty` explicitly registers uncommitted source hashes for local experiments.
@@ -20,12 +24,12 @@ The public request policy is checked on every run. The rejected Prius fixture is
 ## Running and resuming
 
 ```sh
-python -m tools.run_benchmarks --version
-python -m tools.run_benchmarks --list
-python -m tools.run_benchmarks --phases A D --case spm_4p12s_simple__baseline --case spm_4p12s_small --smoke --out-dir ../benchmark-output/smoke
-python -m tools.run_benchmarks --phases A B C D --out-dir ../benchmark-output/my-run --resume --pdf
-python -m tools.run_benchmarks --phases A B C D --out-dir ../benchmark-output/my-run --report-only --pdf
-python -m tools.run_benchmarks --phases D --no-reference --out-dir ../benchmark-output/native-only
+python -m tools.run_benchmarks --suite benchmarks/abcd-v1/benchmark_spec.json --reference-bundle benchmarks/reference-baselines/main-bad71d9 --version
+python -m tools.run_benchmarks --suite benchmarks/abcd-v1/benchmark_spec.json --reference-bundle benchmarks/reference-baselines/main-bad71d9 --list
+python -m tools.run_benchmarks --suite benchmarks/abcd-v1/benchmark_spec.json --reference-bundle benchmarks/reference-baselines/main-bad71d9 --phases A D --case spm_4p12s_simple__baseline --case spm_4p12s_small --smoke --out-dir ../benchmark-output/smoke
+python -m tools.run_benchmarks --suite benchmarks/abcd-v1/benchmark_spec.json --reference-bundle benchmarks/reference-baselines/main-bad71d9 --phases A B C D --out-dir ../benchmark-output/my-run --resume --pdf
+python -m tools.run_benchmarks --suite benchmarks/abcd-v1/benchmark_spec.json --reference-bundle benchmarks/reference-baselines/main-bad71d9 --phases A B C D --out-dir ../benchmark-output/my-run --report-only --pdf
+python -m tools.run_benchmarks --suite benchmarks/abcd-v1/benchmark_spec.json --reference-bundle benchmarks/reference-baselines/main-bad71d9 --phases D --no-reference --out-dir ../benchmark-output/native-only
 ```
 
 `--smoke` uses a reduced coarse grid to exercise execution. Its outcome is NON_GATING_SMOKE; it never establishes numerical parity. `--no-reference` retains native BLDC current, golden sequence, convergence and power checks; the five reference-dependent gates are NOT_EVALUATED. Successful native-only cases are NOT_COMPARED, not parity PASS. Exit codes are 0 for completed available checks, 1 for numerical FAIL, and 2 for execution/integrity errors or incomplete evidence. Inspect the recorded outcome alongside the exit code.

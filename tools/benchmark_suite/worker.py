@@ -41,7 +41,8 @@ def measure(args):
         if not ISOLATED_RUNTIME:
             raise ValueError("Public request-only solver environment is required")
         binary = ROOT / request["binary"]
-        before = identity(binary)
+        protocol_version = request["identity"]["protocol_version"]
+        before = identity(binary, protocol_version=protocol_version)
         if before != request["identity"] or canonical(request["config"]) != request["config_sha256"]:
             raise ValueError("Registered runtime or request changed")
         config, _, solver = parse_public_solve_request(request["config"])
@@ -53,7 +54,7 @@ def measure(args):
         )
         data["resolved_config"] = config.model_dump(mode="json")
         data["identity_before"] = before
-        data["identity_after"] = identity(binary)
+        data["identity_after"] = identity(binary, protocol_version=protocol_version)
         if data["identity_after"] != before:
             raise ValueError("Runtime changed during solve")
         imports = {}
