@@ -16,7 +16,8 @@ from typing import Any, Callable
 from jsonschema import Draft202012Validator
 from referencing import Registry, Resource
 
-from backend.magneto2d_adapter import ensure_magneto2d_binary
+from backend.magneto2d_adapter import ensure_magneto2d_binary, start_native_process, track_native_process
+from backend.resources import read_data_json
 from backend.solver_environment import solver_process_environment
 
 from .geometry import PlanarEmGeometryArtifact, build_planar_geometry
@@ -30,27 +31,10 @@ from .materials import ResolvedMagnetMaterial, resolve_magnet_material
 from .models import HalbachArrayConfig
 from .postprocess import build_halbach_report, field_comparison_metrics
 
-ROOT = Path(__file__).resolve().parents[2]
-PROBLEM_SCHEMA = json.loads(
-    (ROOT / "schemas" / "v1" / "magnetostatic_problem.schema.json").read_text(
-        encoding="utf-8"
-    )
-)
-FIELD_REPORT_SCHEMA = json.loads(
-    (ROOT / "schemas" / "v1" / "field_solution_report.schema.json").read_text(
-        encoding="utf-8"
-    )
-)
-HALBACH_CONFIG_SCHEMA = json.loads(
-    (ROOT / "schemas" / "v1" / "halbach_array_config.schema.json").read_text(
-        encoding="utf-8"
-    )
-)
-HALBACH_REPORT_SCHEMA = json.loads(
-    (ROOT / "schemas" / "v1" / "halbach_solution_report.schema.json").read_text(
-        encoding="utf-8"
-    )
-)
+PROBLEM_SCHEMA = read_data_json("schemas/v1/magnetostatic_problem.schema.json")
+FIELD_REPORT_SCHEMA = read_data_json("schemas/v1/field_solution_report.schema.json")
+HALBACH_CONFIG_SCHEMA = read_data_json("schemas/v1/halbach_array_config.schema.json")
+HALBACH_REPORT_SCHEMA = read_data_json("schemas/v1/halbach_solution_report.schema.json")
 HALBACH_SCHEMA_REGISTRY = Registry().with_resource(
     "https://coilem.com/schemas/v1/halbach_array_config.schema.json",
     Resource.from_contents(HALBACH_CONFIG_SCHEMA),
@@ -99,7 +83,7 @@ def _run_field_problem(
         problem_path = workdir / "magnetostatic_problem.json"
         report_path = workdir / "field_solution_report.json"
         problem_path.write_bytes(canonical_json_bytes(problem))
-        process = subprocess.Popen(
+        process = start_native_process(
             [
                 str(executable),
                 str(problem_path),
@@ -108,14 +92,14 @@ def _run_field_problem(
                 "-o",
                 str(report_path),
             ],
-            cwd=ROOT,
+            cwd=workdir,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
             env=solver_process_environment(),
         )
         peak_memory: int | None = None
-        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+        with track_native_process(process), concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
             communication = executor.submit(process.communicate)
             while not communication.done():
                 rss = _process_rss_bytes(process)

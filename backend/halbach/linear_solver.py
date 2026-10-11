@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -10,6 +9,8 @@ from typing import Any, Callable
 
 from jsonschema import Draft202012Validator
 from referencing import Registry, Resource
+
+from backend.resources import read_data_json
 
 from .linear_geometry import (
     LinearPlanarGeometryArtifact,
@@ -32,23 +33,8 @@ from .solver import (
     _run_field_problem,
 )
 
-ROOT = Path(__file__).resolve().parents[2]
-LINEAR_HALBACH_CONFIG_SCHEMA = json.loads(
-    (
-        ROOT
-        / "schemas"
-        / "v1"
-        / "linear_halbach_array_config.schema.json"
-    ).read_text(encoding="utf-8")
-)
-LINEAR_HALBACH_REPORT_SCHEMA = json.loads(
-    (
-        ROOT
-        / "schemas"
-        / "v1"
-        / "linear_halbach_solution_report.schema.json"
-    ).read_text(encoding="utf-8")
-)
+LINEAR_HALBACH_CONFIG_SCHEMA = read_data_json("schemas/v1/linear_halbach_array_config.schema.json")
+LINEAR_HALBACH_REPORT_SCHEMA = read_data_json("schemas/v1/linear_halbach_solution_report.schema.json")
 LINEAR_HALBACH_SCHEMA_REGISTRY = (
     Registry()
     .with_resource(

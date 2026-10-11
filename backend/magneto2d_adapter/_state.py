@@ -10,15 +10,11 @@ from pathlib import Path
 from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+MAGNETO2D_EXECUTABLE_NAME = "magneto2d.exe" if os.name == "nt" else "magneto2d"
+MAGNETO2D_BINARY_ENV = "COILEM_MAGNETO2D_BINARY"
+# Source-checkout build locations; an installed package ships its own binary.
 MAGNETO2D_MANIFEST = REPO_ROOT / "solvers" / "magneto2d" / "Cargo.toml"
-MAGNETO2D_BINARY = (
-    REPO_ROOT
-    / "solvers"
-    / "magneto2d"
-    / "target"
-    / "release"
-    / ("magneto2d.exe" if os.name == "nt" else "magneto2d")
-)
+MAGNETO2D_BINARY = REPO_ROOT / "solvers" / "magneto2d" / "target" / "release" / MAGNETO2D_EXECUTABLE_NAME
 _MAGNETO2D_BUILD_LOCK = threading.Lock()
 
 SWEEP_PROGRESS_RE = re.compile(
@@ -37,7 +33,12 @@ LIVE_FIELD_CONTOUR_BANDS_PER_SIDE = 8
 MAGNETO2D_INTERACTIVE_NONLINEAR_TOL = "0.075"
 MAGNETO2D_FINE_NONLINEAR_TOL = "0.05"
 _ACTIVE_MAGNETO2D_PROCESS_LOCK = threading.Lock()
+# Motor solves, which /solve/cancel stops.
 _ACTIVE_MAGNETO2D_PROCESSES: "set[subprocess.Popen]" = set()
+# Halbach and teaching solves: stopped only at application shutdown, so a motor
+# cancel cannot interrupt a lesson running in another tab.
+_ACTIVE_NATIVE_PROCESSES: "set[subprocess.Popen]" = set()
+_NATIVE_SHUTDOWN = threading.Event()
 
 _MAX_SOLVE_MESH_CACHE_SIZE = 16
 _SOLVE_MESH_CACHE: "OrderedDict[str, dict[str, Any]]" = OrderedDict()

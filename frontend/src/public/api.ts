@@ -95,8 +95,11 @@ export function resolvePublicApiBase(configured?: string): string {
   return parsed.toString().replace(/\/$/, '');
 }
 
+// The Vite dev server runs apart from the API (`npm run dev` next to uvicorn on
+// 8000). A production bundle is served by the `coilem` launcher's API process,
+// so it calls its own origin, whatever port the launcher bound.
 export const PUBLIC_API_BASE = resolvePublicApiBase(
-  import.meta.env.VITE_COILEM_LOCAL_API_BASE,
+  import.meta.env.DEV ? import.meta.env.VITE_COILEM_LOCAL_API_BASE : globalThis.location.origin,
 );
 
 async function parseApiError(response: Response): Promise<PublicApiError> {

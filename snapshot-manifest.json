@@ -30,8 +30,8 @@
     },
     {
       "path": ".gitignore",
-      "bytes": 240,
-      "sha256": "066ee5b6c1919e7075b4d1dbc592b271ba05843d340a7ac687e6c577e1551c7a"
+      "bytes": 255,
+      "sha256": "3dcb5392490c674411717b421fe9df35981ae9eafe4c24bc0eaf1c5f51be180f"
     },
     {
       "path": "CITATION.cff",
@@ -140,8 +140,8 @@
     },
     {
       "path": "backend/elmer/profile.py",
-      "bytes": 585,
-      "sha256": "5c5c8aca61a0b00ec2ac2817328ac429d7210de8087e9f8f46b0590d08eaf31b"
+      "bytes": 600,
+      "sha256": "2631532cb38e3430b4beb83c119d2363c97bbf686b7eda574822e24982f21d9d"
     },
     {
       "path": "backend/elmer/profiles/v1.json",
@@ -205,8 +205,8 @@
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 73327,
-      "sha256": "fec4d99e74568ab88cc6c514e561cd70df194fd1817e830da44616d3c6221c1e"
+      "bytes": 73324,
+      "sha256": "e3796787573275abbf5954bb3926086266bdad63c753bf4ae7203b53d33fe9e8"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -250,8 +250,8 @@
     },
     {
       "path": "backend/halbach/linear_solver.py",
-      "bytes": 9285,
-      "sha256": "89b1c709ef2d82accddeb5f10a4b0b3b582697e2bc5160104691b0ea75548e98"
+      "bytes": 9106,
+      "sha256": "0d979f3bc5a3c28fa7dc495087f23eee6b8b6c9497bf10557859a01f5914ecba"
     },
     {
       "path": "backend/halbach/materials.py",
@@ -270,8 +270,13 @@
     },
     {
       "path": "backend/halbach/solver.py",
-      "bytes": 12969,
-      "sha256": "8b7f54de96674feda1b129073761f4b92fa562a23e09c298c588a18c91b26ec7"
+      "bytes": 12809,
+      "sha256": "74f7984e5c33d544fe3a1fd09078d08363d82f157e4f22f8f392e3089d442965"
+    },
+    {
+      "path": "backend/launcher.py",
+      "sha256": "4a3ac3e43d1cc5949bd76e63083af8f80617a6ec89e2948d9e3ba11431a98bf2",
+      "bytes": 14357
     },
     {
       "path": "backend/local_file_safety.py",
@@ -290,13 +295,13 @@
     },
     {
       "path": "backend/magneto2d_adapter/__init__.py",
-      "bytes": 67261,
-      "sha256": "22b5093176d34a940e82860ceb2a862ce651d62f5d0a50729b51ea0ddac3cb18"
+      "bytes": 70945,
+      "sha256": "091c624da3a3f1d24c1d9cad896b958da8386b3b3b5712f92db21a349b93b209"
     },
     {
       "path": "backend/magneto2d_adapter/_state.py",
-      "bytes": 1694,
-      "sha256": "3310a6731d09435927704204269279f98e02e0a1ec71662c86894b352eb03ba0"
+      "bytes": 2122,
+      "sha256": "6c6920a7ff2b28cbe368ad2de16df4cd9bf57ddc9626b26cd57dda3c4405e0e4"
     },
     {
       "path": "backend/magneto2d_adapter/streaming.py",
@@ -310,8 +315,8 @@
     },
     {
       "path": "backend/material_contract.py",
-      "bytes": 8287,
-      "sha256": "eb33c7d60407ce520bd223392118131278d6fc3ba241c1e51d27f29e0e6f830d"
+      "bytes": 8599,
+      "sha256": "a171739b17fbd29047b5b1747c14f2b3094a845ec50ba3b02764512b4105fd07"
     },
     {
       "path": "backend/mesh_evidence.py",
@@ -390,8 +395,8 @@
     },
     {
       "path": "backend/public_main.py",
-      "bytes": 8120,
-      "sha256": "3ef306a4b36a819cfdfbbb72674cd8083ecaff206da45cffb29ace04547ef3c4"
+      "bytes": 9375,
+      "sha256": "5ec15ceebe0ae42287659317c48485f910bd954298abd9d79dae1fc1889f1972"
     },
     {
       "path": "backend/public_material_catalog.py",
@@ -430,8 +435,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 47249,
-      "sha256": "59d4e64caeb4bf2ea8bf3bafd8a739c0be2da7094020ebab5d317120c7b8019c"
+      "bytes": 47554,
+      "sha256": "fa061c7c8d744f5e2d84d93a1a12ede03e32053a956ae85322962a15be4abe47"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -440,13 +445,23 @@
     },
     {
       "path": "backend/public_security.py",
-      "bytes": 2360,
-      "sha256": "b89080f3995c0f40085c0df1cb4374c25414c30f6f08229aaa98e22a51423431"
+      "bytes": 3394,
+      "sha256": "dd6ba3adc9a0118b0e3ac9554f3306a9fec1e40b967013447cbb1bfa49c40bc5"
+    },
+    {
+      "path": "backend/public_ui.py",
+      "sha256": "361975044c426c497547f46a0773e7d6f2d28f8ebf1c0fa9c60079fea9252e9a",
+      "bytes": 5363
+    },
+    {
+      "path": "backend/resources.py",
+      "sha256": "7910885b52abe328794caabd80eee9785a9e07009d6df5fe30d5f9abd21a7eaa",
+      "bytes": 5544
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 41405,
-      "sha256": "9cd3b941c0d48cdc80f0f25ebad6ae9cfa681a93a50777eaccfe0309e7ef2ae6"
+      "bytes": 40727,
+      "sha256": "7633d44ffd5a5c070b66f849c4a13bdee7d4d1edd3b73e88c0b739daa69fbdf5"
     },
     {
       "path": "backend/solver/__init__.py",
@@ -490,8 +505,8 @@
     },
     {
       "path": "backend/tutorial_fields.py",
-      "bytes": 135144,
-      "sha256": "b26d208a33606ecf4be3bf1f05f63e0b0c68e5db65d09f2aa00083fc994e5844"
+      "bytes": 134073,
+      "sha256": "1d4c09cbede78fb8148994436dcbc87ce23fd87b244d41085ff2ed24aafe74d3"
     },
     {
       "path": "backend/winding_utils.py",
@@ -1580,8 +1595,8 @@
     },
     {
       "path": "docs/ARCHITECTURE.md",
-      "bytes": 11239,
-      "sha256": "0d0aff314ee4c4f5c8411ec3c3b2651831098f5f745b091eaec9f46bb9d914c8"
+      "bytes": 11304,
+      "sha256": "54ec6b85b36f1e1beec6083c672b06b7d6b7d8b3af4acecdbbe548ef8e432c02"
     },
     {
       "path": "docs/ELMER.md",
@@ -1625,13 +1640,13 @@
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
-      "bytes": 8939,
-      "sha256": "b95688ca1ea43fb4134c31a68179e994fdd13ed56eb77359bb43c7c49e8fcad6"
+      "bytes": 9964,
+      "sha256": "35d9097015571417eec9eef28c0bafa046084c5adc94c9da1a6d492d9efabb7a"
     },
     {
       "path": "docs/RUNTIME_SETTINGS.md",
-      "bytes": 3603,
-      "sha256": "303e609c32db4ae8639501ee8b5b130741fe4b6f8a3b377a7806840927643cc6"
+      "bytes": 5897,
+      "sha256": "57f75b61ef146dfedaeaebd275bbf36aa9b871536474610e7580fd9be28e84c4"
     },
     {
       "path": "docs/VALIDATION.md",
@@ -1670,8 +1685,8 @@
     },
     {
       "path": "docs/local_solve_workspace.md",
-      "bytes": 4890,
-      "sha256": "c3c01a9d17700f7240ceecbf3485092bfe48df014462fb8b2e86247eee49c789"
+      "bytes": 5022,
+      "sha256": "459ec9b52236f335abf97d2d5add0e05f4537fed5bfa7dd8b78840521bb00857"
     },
     {
       "path": "frontend/package-lock.json",
@@ -2200,8 +2215,8 @@
     },
     {
       "path": "frontend/src/public/api.ts",
-      "bytes": 10529,
-      "sha256": "196d3a7cf75e28c24af479ea9ae8ecb105478d730ee3bed9792380e47dc4e91b"
+      "bytes": 10806,
+      "sha256": "be803acc6a3dc388c78fa8a9a46f7aedd10a40ceafb47e9f7ced8e5229e05d08"
     },
     {
       "path": "frontend/src/public/backendMonitor.ts",
@@ -2450,8 +2465,8 @@
     },
     {
       "path": "pyproject.toml",
-      "bytes": 1260,
-      "sha256": "6a7e7aeaf3aed2f40bb13a645f4f7b865975203b0349f35548d644ff8a98013a"
+      "bytes": 1520,
+      "sha256": "8965175e71da3d9046c92e071ff782e24929181f5a78f0e0914dd531cdd7a35d"
     },
     {
       "path": "references/benchmark_configs/validation_ipm_10p_v_shape_medium.openem",
@@ -2532,6 +2547,11 @@
       "path": "schemas/v1/magnetostatic_problem.schema.json",
       "bytes": 7587,
       "sha256": "811d8f567e57980a5d4fe04d56fee78c836f93aa629bf1db3929d07b819e81cd"
+    },
+    {
+      "path": "setup.py",
+      "sha256": "26c83cde4c2fcbc0d32d3591d2a7e48fe23379828ac8bcb27f3905b122b9e05b",
+      "bytes": 6683
     },
     {
       "path": "solvers/magneto2d/Cargo.lock",
@@ -2804,6 +2824,16 @@
       "sha256": "25a2dd6d2096095b4a246b7fcfc13b5d0b05b2e7ad888ce9c80b24e3e0d85d81"
     },
     {
+      "path": "tests/test_installed_resources.py",
+      "sha256": "548c0f588a0f9bc95de98f082b5b1dd2effa88cc9f8427c7767446055f9c73e2",
+      "bytes": 6184
+    },
+    {
+      "path": "tests/test_launcher.py",
+      "sha256": "0e0a98a4e41a7fc9cdb36de5ecddd7135c704bd986a73643fbbe3b1e044669d2",
+      "bytes": 8622
+    },
+    {
       "path": "tests/test_linear_halbach_analytical.py",
       "bytes": 14686,
       "sha256": "79a4b03ca91953f6f863bb009546ec5bd05489d2648593fc65b568fe4537fd98"
@@ -2834,6 +2864,11 @@
       "sha256": "77051b351b4d60f6283ae32ef84cced3a0ed2fbd11e7a062f2ec128089f07edc"
     },
     {
+      "path": "tests/test_native_processes.py",
+      "sha256": "bc4f556fd203fc16e86058e6cfa0cef82d91a78fc49d0870e12085b0bd28aa50",
+      "bytes": 5172
+    },
+    {
       "path": "tests/test_public_cancellation.py",
       "bytes": 13911,
       "sha256": "9af6ecb663d4a045a1754b6fa706c9adc664e082871d3287928f0e37364d5d51"
@@ -2862,6 +2897,11 @@
       "path": "tests/test_public_solver_environment.py",
       "bytes": 5948,
       "sha256": "ac8a9a29cf1925523a6d323818f46e954d58a97c9afa4301e4017b3fce2df8f5"
+    },
+    {
+      "path": "tests/test_public_ui.py",
+      "sha256": "9fab4d66ca16b11d3ab4ece8ab6901447ce74c60cdddd94c0716c01fffed82bc",
+      "bytes": 7530
     },
     {
       "path": "tests/test_public_validation_fixtures.py",
@@ -2945,8 +2985,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 17132,
-      "sha256": "11bdf4ae5e1d8f5bc6738f2578aba90d5d62f57b9c482913371d80e59e29fe84"
+      "bytes": 17289,
+      "sha256": "7c353f7b69aa6a8728f05c5a05707908cb26d055a3e7e9ea6ff188c9eff48c54"
     }
   ],
   "public_patches": [
@@ -3651,6 +3691,126 @@
       "path": "benchmarks/main-20261010-45e0a5c-rerun/artifact_manifest.json",
       "source_sha256": "bff648967f9cc9ed5b9c778301f725d0ad74ebffe12803eabdffe7f6a2afdeef",
       "reason": "Select two qualified higher-output IPM geometries for the next-release benchmark; retain archived failures, unchanged requests, references and gates; publish report v1.2 with distinct measured candidates and support legacy protocol selection."
+    },
+    {
+      "base_commit": "f3d69b36bc9cd583fc4fa393c0723ce5c458196f",
+      "path": ".gitignore",
+      "source_sha256": "066ee5b6c1919e7075b4d1dbc592b271ba05843d340a7ac687e6c577e1551c7a",
+      "reason": "Ignore Python wheel build outputs (build/, dist/)."
+    },
+    {
+      "base_commit": "f3d69b36bc9cd583fc4fa393c0723ce5c458196f",
+      "path": "backend/elmer/profile.py",
+      "source_sha256": "5c5c8aca61a0b00ec2ac2817328ac429d7210de8087e9f8f46b0590d08eaf31b",
+      "reason": "Load the frozen Elmer profile through importlib.resources so an installed package finds it."
+    },
+    {
+      "base_commit": "f3d69b36bc9cd583fc4fa393c0723ce5c458196f",
+      "path": "backend/gmsh_solver.py",
+      "source_sha256": "fec4d99e74568ab88cc6c514e561cd70df194fd1817e830da44616d3c6221c1e",
+      "reason": "Load the Gmsh mesh profile through importlib.resources so an installed package finds it."
+    },
+    {
+      "base_commit": "f3d69b36bc9cd583fc4fa393c0723ce5c458196f",
+      "path": "backend/halbach/linear_solver.py",
+      "source_sha256": "89b1c709ef2d82accddeb5f10a4b0b3b582697e2bc5160104691b0ea75548e98",
+      "reason": "Load the linear Halbach schemas as package data instead of from the source tree."
+    },
+    {
+      "base_commit": "f3d69b36bc9cd583fc4fa393c0723ce5c458196f",
+      "path": "backend/halbach/solver.py",
+      "source_sha256": "8b7f54de96674feda1b129073761f4b92fa562a23e09c298c588a18c91b26ec7",
+      "reason": "Load Halbach schemas as package data, run the field solve in its work directory and register it for launcher shutdown."
+    },
+    {
+      "base_commit": "f3d69b36bc9cd583fc4fa393c0723ce5c458196f",
+      "path": "backend/magneto2d_adapter/__init__.py",
+      "source_sha256": "22b5093176d34a940e82860ceb2a862ce651d62f5d0a50729b51ea0ddac3cb18",
+      "reason": "Resolve Magneto2D from COILEM_MAGNETO2D_BINARY, the packaged binary, then a source-checkout build; run solver processes in temporary directories and track them for cancellation and launcher shutdown."
+    },
+    {
+      "base_commit": "f3d69b36bc9cd583fc4fa393c0723ce5c458196f",
+      "path": "backend/magneto2d_adapter/_state.py",
+      "source_sha256": "3310a6731d09435927704204269279f98e02e0a1ec71662c86894b352eb03ba0",
+      "reason": "Add the binary override name and the native-process registries used at launcher shutdown."
+    },
+    {
+      "base_commit": "f3d69b36bc9cd583fc4fa393c0723ce5c458196f",
+      "path": "backend/material_contract.py",
+      "source_sha256": "eb33c7d60407ce520bd223392118131278d6fc3ba241c1e51d27f29e0e6f830d",
+      "reason": "Load the frozen M350-50A curve through the packaged-data resolver; curve bytes and hash are unchanged."
+    },
+    {
+      "base_commit": "f3d69b36bc9cd583fc4fa393c0723ce5c458196f",
+      "path": "backend/public_main.py",
+      "source_sha256": "3ef306a4b36a819cfdfbbb72674cd8083ecaff206da45cffb29ace04547ef3c4",
+      "reason": "Build the API with create_app so the coilem launcher can add its bound origin and the built UI; report a path-free user-data root identifier in /health."
+    },
+    {
+      "base_commit": "f3d69b36bc9cd583fc4fa393c0723ce5c458196f",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "59d4e64caeb4bf2ea8bf3bafd8a739c0be2da7094020ebab5d317120c7b8019c",
+      "reason": "Share active-solve cancellation between /solve/cancel and launcher shutdown."
+    },
+    {
+      "base_commit": "f3d69b36bc9cd583fc4fa393c0723ce5c458196f",
+      "path": "backend/public_security.py",
+      "source_sha256": "b89080f3995c0f40085c0df1cb4374c25414c30f6f08229aaa98e22a51423431",
+      "reason": "Add the launcher's bound-origin allowlist and Host port pinning."
+    },
+    {
+      "base_commit": "f3d69b36bc9cd583fc4fa393c0723ce5c458196f",
+      "path": "backend/solve_workspace.py",
+      "source_sha256": "9cd3b941c0d48cdc80f0f25ebad6ae9cfa681a93a50777eaccfe0309e7ef2ae6",
+      "reason": "Use the stamped build identity instead of reading snapshot-manifest.json at runtime; add the path-free user-data root identifier."
+    },
+    {
+      "base_commit": "f3d69b36bc9cd583fc4fa393c0723ce5c458196f",
+      "path": "backend/tutorial_fields.py",
+      "source_sha256": "b26d208a33606ecf4be3bf1f05f63e0b0c68e5db65d09f2aa00083fc994e5844",
+      "reason": "Run teaching solves in their temporary directories and register them for launcher shutdown."
+    },
+    {
+      "base_commit": "f3d69b36bc9cd583fc4fa393c0723ce5c458196f",
+      "path": "docs/ARCHITECTURE.md",
+      "source_sha256": "0d0aff314ee4c4f5c8411ec3c3b2651831098f5f745b091eaec9f46bb9d914c8",
+      "reason": "Document the coilem launcher's bound browser origin."
+    },
+    {
+      "base_commit": "f3d69b36bc9cd583fc4fa393c0723ce5c458196f",
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "source_sha256": "b95688ca1ea43fb4134c31a68179e994fdd13ed56eb77359bb43c7c49e8fcad6",
+      "reason": "Document the coilem launcher's origin and Host policy and its exact UI allowlist."
+    },
+    {
+      "base_commit": "f3d69b36bc9cd583fc4fa393c0723ce5c458196f",
+      "path": "docs/RUNTIME_SETTINGS.md",
+      "source_sha256": "303e609c32db4ae8639501ee8b5b130741fe4b6f8a3b377a7806840927643cc6",
+      "reason": "Document the coilem launcher, its port policy and the binary and wheel-build settings."
+    },
+    {
+      "base_commit": "f3d69b36bc9cd583fc4fa393c0723ce5c458196f",
+      "path": "docs/local_solve_workspace.md",
+      "source_sha256": "c3c01a9d17700f7240ceecbf3485092bfe48df014462fb8b2e86247eee49c789",
+      "reason": "Document the launcher lock and record files in the user-data root."
+    },
+    {
+      "base_commit": "f3d69b36bc9cd583fc4fa393c0723ce5c458196f",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "196d3a7cf75e28c24af479ea9ae8ecb105478d730ee3bed9792380e47dc4e91b",
+      "reason": "Production bundles call their own loopback origin; the Vite dev server keeps VITE_COILEM_LOCAL_API_BASE with the 8000 default."
+    },
+    {
+      "base_commit": "f3d69b36bc9cd583fc4fa393c0723ce5c458196f",
+      "path": "pyproject.toml",
+      "source_sha256": "6a7e7aeaf3aed2f40bb13a645f4f7b865975203b0349f35548d644ff8a98013a",
+      "reason": "Add the coilem launcher entry point and package data."
+    },
+    {
+      "base_commit": "f3d69b36bc9cd583fc4fa393c0723ce5c458196f",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "11bdf4ae5e1d8f5bc6738f2578aba90d5d62f57b9c482913371d80e59e29fe84",
+      "reason": "Skip git-ignored Python wheel build outputs."
     }
   ]
 }

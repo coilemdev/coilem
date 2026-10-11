@@ -204,7 +204,7 @@ hashes. Downloads are served from this stored run and do not start a solver.
 - The public service binds to `127.0.0.1`, not to a LAN or public interface.
 - The public frontend accepts only loopback API addresses.
 - Browser origins are limited to the documented local development and preview
-  ports.
+  ports, or, for the `coilem` launcher, its own bound `127.0.0.1` origin.
 - The launch configuration policy accepts Magneto2D with native Gmsh meshes.
   Elmer discovery and selection require `COILEM_ENABLE_ELMER=1` and a qualified
   user-installed runtime; this development opt-in does not expand the release claim.

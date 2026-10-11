@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import hashlib
 import json
-from pathlib import Path
 from typing import Any
 
-PROFILE_PATH = Path(__file__).resolve().parent / "profiles" / "v1.json"
+from backend.resources import package_resource
+
+PROFILE_PATH = package_resource("elmer", "profiles", "v1.json")
 
 
 def load_profile() -> tuple[dict[str, Any], str]:

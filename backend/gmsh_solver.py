@@ -8,7 +8,6 @@ import math
 import threading
 import time
 from dataclasses import dataclass, field
-from pathlib import Path
 from typing import Any
 
 from backend.custom_materials import is_custom_steel_id
@@ -19,6 +18,7 @@ from backend.geometry_drawer import (
 )
 from backend.geometry_ir import GeometryIR, GeometryIRLoop, GeometryIRRegion, build_geometry_ir
 from backend.models import MotorConfig
+from backend.resources import package_resource
 from backend.solver_environment import ISOLATED_RUNTIME
 from backend.topology_provenance import build_topology_provenance
 
@@ -40,9 +40,7 @@ class GmshMeshQAError(ValueError):
 
 
 _GMSH_API_LOCK = threading.Lock()
-_GMSH_MESH_PROFILE_CONFIG_PATH = (
-    Path(__file__).resolve().parent / "mesh_profiles" / "gmsh_profiles.json"
-)
+_GMSH_MESH_PROFILE_CONFIG_PATH = package_resource("mesh_profiles", "gmsh_profiles.json")
 _GMSH_MESH_PROFILE_CONFIG_REPO_PATH = "backend/mesh_profiles/gmsh_profiles.json"
 
 

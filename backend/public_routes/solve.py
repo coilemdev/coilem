@@ -1314,13 +1314,15 @@ async def solve_stream(body: dict[str, Any]) -> StreamingResponse:
     )
 
 
-@router.post("/solve/cancel", tags=["solve"])
-async def cancel_solve() -> dict[str, str]:
-    """Cancel the active public electromagnetic solve, if one exists."""
+def request_active_solve_cancellation() -> bool:
+    """Cancel the active solve and record its run as cancelled; ``False`` when idle.
+
+    Used by ``/solve/cancel`` and by the launcher when it shuts down.
+    """
 
     solver = _ACTIVE_SOLVE.get("solver")
     if not _ACTIVE_SOLVE["running"] or solver is None:
-        return {"status": "no_active_solve"}
+        return False
 
     _ACTIVE_SOLVE["cancelled"] = True
     run_writer = _ACTIVE_SOLVE.get("run_writer")
@@ -1330,8 +1332,17 @@ async def cancel_solve() -> dict[str, str]:
             message="Solve cancelled by user.",
             cancelled=True,
         )
+    solver.cancel_active_solve()
+    return True
+
+
+@router.post("/solve/cancel", tags=["solve"])
+async def cancel_solve() -> dict[str, str]:
+    """Cancel the active public electromagnetic solve, if one exists."""
+
     try:
-        solver.cancel_active_solve()
+        if not request_active_solve_cancellation():
+            return {"status": "no_active_solve"}
     except Exception as exc:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

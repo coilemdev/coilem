@@ -11,8 +11,11 @@ import csv
 import hashlib
 import math
 from dataclasses import dataclass
+from importlib.resources.abc import Traversable
 from pathlib import Path
 from typing import Iterable, Mapping
+
+from backend.resources import data_file
 
 
 class ElectricalSteelCurveError(RuntimeError):
@@ -36,7 +39,7 @@ class ElectricalSteelSpec:
 @dataclass(frozen=True)
 class ElectricalSteelCurve:
     spec: ElectricalSteelSpec
-    path: Path
+    path: Path | Traversable
     sha256: str
     points: tuple[tuple[float, float], ...]
 
@@ -72,8 +75,6 @@ class ElectricalSteelCurve:
             },
         }
 
-
-REPO_ROOT = Path(__file__).resolve().parents[1]
 
 M350_50A_SPEC = ElectricalSteelSpec(
     material_key="M350-50A",
@@ -181,7 +182,15 @@ def load_electrical_steel_curve(
             f"Unsupported electrical-steel curve {material_key!r}; supported: {supported}"
         )
 
-    path = curve_path if curve_path is not None else REPO_ROOT / spec.relative_path
+    if curve_path is not None:
+        path: Path | Traversable = curve_path
+    else:
+        try:
+            path = data_file(spec.relative_path)
+        except FileNotFoundError as exc:
+            raise ElectricalSteelCurveError(
+                f"Required electrical-steel curve is missing: {spec.relative_path}"
+            ) from exc
     try:
         raw = path.read_bytes()
     except FileNotFoundError as exc:
