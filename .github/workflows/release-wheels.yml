@@ -1,0 +1,255 @@
+name: coilEM release wheels
+
+# Builds one py3-none-<platform> wheel per supported platform, checks it, and
+# runs the installed-package acceptance test on every platform and supported
+# Python version. Publishing is a separate step.
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+  pull_request:
+    paths:
+      - .github/workflows/release-wheels.yml
+      - setup.py
+      - pyproject.toml
+      - requirements.lock
+      - backend/launcher.py
+      - backend/resources.py
+      - tools/release/**
+      - solvers/magneto2d/Cargo.toml
+      - solvers/magneto2d/Cargo.lock
+      - frontend/package-lock.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-wheels-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  RUST_TOOLCHAIN: "1.94.0"
+  NODE_VERSION: "24"
+  BUILD_PYTHON: "3.12"
+  COILEM_BUILD_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  policy:
+    name: Compatibility policy
+    runs-on: ubuntu-24.04
+    outputs:
+      policy: ${{ steps.policy.outputs.policy }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.BUILD_PYTHON }}
+      - run: python -m pip install packaging
+      - name: Compute platform floors from the pinned runtime wheels
+        id: policy
+        run: python -m tools.release.policy --github-output "$GITHUB_OUTPUT"
+
+  ui:
+    name: UI bundle
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.BUILD_PYTHON }}
+      - name: Build the production bundle once for every wheel
+        run: python -m tools.release.artifacts ui --out dist/release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ui
+          path: |
+            dist/release/ui
+            dist/release/ui.build.json
+          if-no-files-found: error
+
+  magneto2d:
+    name: Magneto2D (${{ matrix.target }})
+    needs: policy
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: linux-x86_64
+            triple: x86_64-unknown-linux-gnu
+            runner: ubuntu-24.04
+          - target: macos-arm64
+            triple: aarch64-apple-darwin
+            runner: macos-15
+          - target: macos-x86_64
+            triple: x86_64-apple-darwin
+            runner: macos-15-intel
+          - target: windows-amd64
+            triple: x86_64-pc-windows-msvc
+            runner: windows-2022
+    runs-on: ${{ matrix.runner }}
+    env:
+      TARGET_POLICY: ${{ toJSON(fromJSON(needs.policy.outputs.policy)[matrix.target]) }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build in the manylinux image at or below the glibc floor
+        if: matrix.target == 'linux-x86_64'
+        run: |
+          image=$(python3 -c 'import json, os; print(json.loads(os.environ["TARGET_POLICY"])["build_image"])')
+          docker run --rm -v "$PWD":/io -w /io -e RUST_TOOLCHAIN "$image" bash -euo pipefail -c '
+            git config --global --add safe.directory /io
+            curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain "$RUST_TOOLCHAIN"
+            export PATH="$HOME/.cargo/bin:$PATH"
+            /opt/python/cp312-cp312/bin/python -m tools.release.artifacts magneto2d \
+              --target ${{ matrix.triple }} --out dist/release/magneto2d'
+      - uses: actions/setup-python@v5
+        if: matrix.target != 'linux-x86_64'
+        with:
+          python-version: ${{ env.BUILD_PYTHON }}
+      - name: Build with the pinned toolchain
+        if: matrix.target != 'linux-x86_64'
+        run: |
+          rustup toolchain install "$RUST_TOOLCHAIN" --profile minimal --target ${{ matrix.triple }}
+          rustup default "$RUST_TOOLCHAIN"
+          deployment_target=$(python -c 'import json, os; print(json.loads(os.environ["TARGET_POLICY"]).get("macosx_deployment_target", ""))')
+          python -m tools.release.artifacts magneto2d --target ${{ matrix.triple }} --out dist/release/magneto2d \
+            ${deployment_target:+--macos-deployment-target "$deployment_target"}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: magneto2d-${{ matrix.target }}
+          path: dist/release/magneto2d
+          if-no-files-found: error
+
+  wheel:
+    name: Wheel (${{ matrix.target }})
+    needs: [policy, ui, magneto2d]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: linux-x86_64
+            runner: ubuntu-24.04
+            executable: magneto2d
+          - target: macos-arm64
+            runner: macos-15
+            executable: magneto2d
+          - target: macos-x86_64
+            runner: macos-15-intel
+            executable: magneto2d
+          - target: windows-amd64
+            runner: windows-2022
+            executable: magneto2d.exe
+    runs-on: ${{ matrix.runner }}
+    env:
+      PLATFORM_TAG: ${{ fromJSON(needs.policy.outputs.policy)[matrix.target].platform_tag }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.BUILD_PYTHON }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: ui
+          path: dist/release
+      - uses: actions/download-artifact@v4
+        with:
+          name: magneto2d-${{ matrix.target }}
+          path: dist/release/magneto2d
+      - name: Package the prebuilt UI and binary
+        env:
+          COILEM_BUILD_UI_DIST: dist/release/ui
+          COILEM_BUILD_MAGNETO2D_BINARY: dist/release/magneto2d/${{ matrix.executable }}
+          COILEM_WHEEL_PLATFORM_TAG: ${{ env.PLATFORM_TAG }}
+        run: python -m pip wheel . --no-deps --wheel-dir dist/wheels
+      - name: Check metadata, contents and build identity
+        run: |
+          python -m pip install packaging
+          python -m tools.release.verify_wheel dist/wheels/*.whl --platform-tag "$PLATFORM_TAG" --require-commit
+      - name: Check native dependencies (auditwheel)
+        if: matrix.target == 'linux-x86_64'
+        run: |
+          python -m pip install auditwheel
+          auditwheel show dist/wheels/*.whl
+          python -m tools.release.native_deps dist/wheels/*.whl
+      - name: Check native dependencies (delocate)
+        if: startsWith(matrix.target, 'macos')
+        run: |
+          python -m pip install delocate
+          external=$(delocate-listdeps dist/wheels/*.whl)
+          if [ -n "$external" ]; then echo "non-system libraries: $external"; exit 1; fi
+          python -m tools.release.native_deps dist/wheels/*.whl
+      - name: Check native dependencies (dumpbin)
+        if: matrix.target == 'windows-amd64'
+        shell: pwsh
+        run: |
+          $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * `
+            -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+          $dumpbin = Get-ChildItem "$vs\VC\Tools\MSVC\*\bin\Hostx64\x64\dumpbin.exe" | Select-Object -First 1
+          $env:PATH = "$($dumpbin.DirectoryName);$env:PATH"
+          $wheel = Get-ChildItem dist\wheels\*.whl | Select-Object -First 1
+          python -m tools.release.native_deps $wheel.FullName
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheel-${{ matrix.target }}
+          path: dist/wheels/*.whl
+          if-no-files-found: error
+
+  acceptance:
+    name: Acceptance (${{ matrix.target }}, Python ${{ matrix.python }})
+    needs: wheel
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [linux-x86_64, macos-arm64, macos-x86_64, windows-amd64]
+        python: ["3.11", "3.12", "3.13", "3.14"]
+        # The oldest supported OS that has a hosted runner.
+        include:
+          - target: linux-x86_64
+            runner: ubuntu-22.04
+          - target: macos-arm64
+            runner: macos-15
+          - target: macos-x86_64
+            runner: macos-15-intel
+          - target: windows-amd64
+            runner: windows-2022
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/release/acceptance.py
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: wheel-${{ matrix.target }}
+          path: wheels
+      - name: Report a missing GLU library at startup
+        if: matrix.target == 'linux-x86_64' && matrix.python == '3.12'
+        run: |
+          if ldconfig -p | grep -q 'libGLU.so.1'; then echo "GLU is preinstalled on this image; skipping"; exit 0; fi
+          python -m venv "$RUNNER_TEMP/glu-check"
+          "$RUNNER_TEMP/glu-check/bin/python" -m pip install --quiet wheels/*.whl
+          if "$RUNNER_TEMP/glu-check/bin/coilem" --no-browser 2> "$RUNNER_TEMP/glu.err"; then echo "coilem started without GLU"; exit 1; fi
+          cat "$RUNNER_TEMP/glu.err"
+          grep -q "sudo apt-get install libglu1-mesa" "$RUNNER_TEMP/glu.err"
+      - name: Install the documented Linux prerequisite
+        if: matrix.target == 'linux-x86_64'
+        run: sudo apt-get update && sudo apt-get install -y libglu1-mesa
+      - name: Run the installed-package acceptance test outside the checkout
+        run: |
+          wheel=$(python -c 'import glob, os; print(os.path.abspath(glob.glob("wheels/*.whl")[0]))')
+          cp tools/release/acceptance.py "$RUNNER_TEMP/"
+          cd "$RUNNER_TEMP"
+          python -I acceptance.py --install "$wheel"

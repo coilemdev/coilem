@@ -21,8 +21,9 @@ end in `.coilem`. Existing `.openem` files and lower-case schema keys remain com
 | `COILEM_TEST_PYTHON` | Select the Python interpreter for browser tests. |
 | `COILEM_MAGNETO2D_BINARY` | Run this Magneto2D executable instead of the packaged or source-built one. |
 | `COILEM_MAGNETO2D_BUILD_RUSTFLAGS` | Override Rust flags used when the backend builds Magneto2D. |
-| `COILEM_BUILD_UI_DIST` | Package this prebuilt UI bundle in a wheel build instead of running `npm run build`. |
-| `COILEM_BUILD_MAGNETO2D_BINARY` | Package this prebuilt Magneto2D executable in a wheel build instead of running Cargo. |
+| `COILEM_BUILD_UI_DIST` | Package this prebuilt UI bundle, with its `.build.json` record, instead of running `npm run build`; see [Release wheels](RELEASING.md). |
+| `COILEM_BUILD_MAGNETO2D_BINARY` | Package this prebuilt Magneto2D executable, with its `.build.json` record and crate licenses, instead of running Cargo. |
+| `COILEM_WHEEL_PLATFORM_TAG` | Set the wheel platform tag from the release policy. |
 | `CARGO` | Select the Cargo executable for backend build-tool discovery. |
 
 The separate cache path and retention policy are documented in

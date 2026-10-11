@@ -7,23 +7,17 @@ name = "coilem"
 version = "0.2.0"
 description = "Local, open-source motor design with Magneto2D and optional Elmer analysis"
 readme = "README.md"
-requires-python = ">=3.11"
+# Every supported version must have wheels for all locked runtime pins; see
+# tools/release/policy.py, which checks this.
+requires-python = ">=3.11,<3.15"
 license = "AGPL-3.0-or-later"
-license-files = ["LICENSE"]
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
 authors = [
     { name = "coilEM contributors" },
 ]
-dependencies = [
-    "fastapi>=0.104.0,<1",
-    "uvicorn>=0.24.0,<1",
-    "pydantic>=2.0.0,<3",
-    "numpy>=1.24.0,<3",
-    "gmsh>=4.10,<5",
-    "meshio>=5.3,<6",
-    "jsonschema>=4.20,<5",
-    "pillow>=12.3.0,<13",
-    "reportlab>=4.0,<5",
-]
+# The audited runtime lock is the dependency list: an installed coilEM gets
+# exactly the versions that were reviewed and tested.
+dynamic = ["dependencies"]
 
 [project.urls]
 Homepage = "https://coilem.com"
@@ -40,6 +34,9 @@ dev = [
 [project.scripts]
 coilem = "backend.launcher:main"
 coilem-serve = "backend.public_main:start"
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.lock"] }
 
 [tool.setuptools.packages.find]
 include = ["backend*"]

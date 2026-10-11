@@ -7,6 +7,13 @@ audited dependency versions. Anyone distributing an installer or binary bundle
 must also preserve the license files supplied by those packages and satisfy
 their source-distribution obligations.
 
+coilEM release wheels bundle a compiled Magneto2D executable and the built
+browser UI. They ship this file and `LICENSE` as license files. The license
+files of the Rust crates linked into each wheel's executable are in
+`backend/_licenses/magneto2d-rust-crates.txt`. The frontend runtime notices
+below cover the bundled UI. Python dependencies are installed from their own
+wheels, which carry their own license files.
+
 ## Modelica Standard Library M350-50A material model
 
 `materials/electrical-steel/M350-50A.csv` is generated from the `M350_50A`

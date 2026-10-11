@@ -379,6 +379,18 @@ def _section(title: str, styles: Mapping[str, ParagraphStyle]) -> Paragraph:
     return Paragraph(escape(title), styles["heading"])
 
 
+def _build_rows(build: Mapping[str, Any]) -> list[tuple[str, Any]]:
+    """Installed-package identity; runs from a source checkout have none."""
+
+    if build.get("installation") != "package":
+        return []
+    return [
+        ("Magneto2D build", f"{build.get('magneto2d_version')} for {build.get('magneto2d_target')}"),
+        ("Magneto2D binary SHA-256", build.get("magneto2d_sha256")),
+        ("UI bundle SHA-256", build.get("ui_bundle_sha256")),
+    ]
+
+
 def _key_value_table(
     rows: Sequence[tuple[str, Any]],
     styles: Mapping[str, ParagraphStyle],
@@ -812,6 +824,7 @@ def build_public_run_pdf(
                     ("Solver", solve_metadata.get("solver_name") or provenance.get("solver_name")),
                     ("Application version", provenance.get("application_version")),
                     ("Application commit", provenance.get("application_commit")),
+                    *_build_rows(_mapping(provenance.get("build"))),
                     ("Platform", _plain(provenance.get("platform"))),
                     ("Result SHA-256", _mapping(manifest.get("bindings")).get("result_sha256")),
                     ("Resolved request SHA-256", _mapping(manifest.get("bindings")).get("resolved_request_sha256")),

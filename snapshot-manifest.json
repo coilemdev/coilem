@@ -29,6 +29,11 @@
       "sha256": "52d4776e1710d0e43da46482771c513934afbc1ebcf2c9728b5ef0bbc7122b92"
     },
     {
+      "path": ".github/workflows/release-wheels.yml",
+      "sha256": "b9150556367ffe78c5dea5008baa51d90e40713cebb2de43ce9f57b578665f27",
+      "bytes": 9810
+    },
+    {
       "path": ".gitignore",
       "bytes": 255,
       "sha256": "3dcb5392490c674411717b421fe9df35981ae9eafe4c24bc0eaf1c5f51be180f"
@@ -55,8 +60,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 6588,
-      "sha256": "9a8ee6cd83a275a1000f333e0f6b34d7f971d009f3e854b1e04e608b0d06814d"
+      "bytes": 6595,
+      "sha256": "2aaff360915eb183b2d373d636cc1bf14300edfd5ffd075318cff0666b7c1a7e"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -75,8 +80,8 @@
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
-      "bytes": 15448,
-      "sha256": "f045aca3a5fd303d2694c5df32b3b4458ffdebe7f5efce6fc6f3e952eae2f34d"
+      "bytes": 15866,
+      "sha256": "bed8cc15684fdb2a354d751606a76fe5f4999c7c51e0e9e7dd1b3d3fc80bfcf9"
     },
     {
       "path": "TRADEMARKS.md",
@@ -275,8 +280,8 @@
     },
     {
       "path": "backend/launcher.py",
-      "sha256": "327d806c0cccb34a904110e6b0574b6485aaacce422302c416b5bbb476550443",
-      "bytes": 15250
+      "sha256": "791fe20a342993f0a18c2a114b66452d980ba349271ac4d2335a9d27604a96dd",
+      "bytes": 16464
     },
     {
       "path": "backend/local_file_safety.py",
@@ -395,8 +400,8 @@
     },
     {
       "path": "backend/public_main.py",
-      "bytes": 9375,
-      "sha256": "5ec15ceebe0ae42287659317c48485f910bd954298abd9d79dae1fc1889f1972"
+      "bytes": 9455,
+      "sha256": "33b47e934dc5865198c3ee673dd45b4723a5e1cd1f589233c824759b3823c6d1"
     },
     {
       "path": "backend/public_material_catalog.py",
@@ -410,8 +415,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 40215,
-      "sha256": "1f0dbc024dc6645ce955ecdd21bf3e74bbd16ee0f27eeaaed2ef56e0833e1054"
+      "bytes": 40749,
+      "sha256": "4e6c1e9f74bb6d9466ae931bebd9594f04ac2822d9f52f17ca6a2830c72cbb66"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -455,13 +460,13 @@
     },
     {
       "path": "backend/resources.py",
-      "sha256": "7910885b52abe328794caabd80eee9785a9e07009d6df5fe30d5f9abd21a7eaa",
-      "bytes": 5544
+      "sha256": "99fac1fa9cf8458f543aabce5df8fe32649377916344ee9b4ee7550981fd72ea",
+      "bytes": 6179
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 40727,
-      "sha256": "7633d44ffd5a5c070b66f849c4a13bdee7d4d1edd3b73e88c0b739daa69fbdf5"
+      "bytes": 40815,
+      "sha256": "14c08f399771fb23d1a4afe817a627636dc6aadce8f2fca60cec09ec09109c82"
     },
     {
       "path": "backend/solver/__init__.py",
@@ -1615,8 +1620,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 12990,
-      "sha256": "024bd90b5085e81aefbbaeb1026908715c95911f387548beda495ec89fc096f0"
+      "bytes": 12989,
+      "sha256": "086237f05c64dbc1a7e821c21c59f5fef67b9e850bfa661389c1dfab48169f13"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -1640,13 +1645,18 @@
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
-      "bytes": 9964,
-      "sha256": "35d9097015571417eec9eef28c0bafa046084c5adc94c9da1a6d492d9efabb7a"
+      "bytes": 10183,
+      "sha256": "e25b4c771696c94fee03f6b36bdef96a96ef33af6054c414a8a15da386a352fb"
+    },
+    {
+      "path": "docs/RELEASING.md",
+      "sha256": "967b2fea22caf4265e2e71a28359750006198585f025df4f95e1a07a0c6dd03f",
+      "bytes": 5115
     },
     {
       "path": "docs/RUNTIME_SETTINGS.md",
-      "bytes": 6092,
-      "sha256": "97cd86376b7b0443ca428844d83e1f4e68b9735305d4db242e22538f39bfd246"
+      "bytes": 6263,
+      "sha256": "783aa232b67000460192f8d8270ef4c7503d367a6e250b69d04e95a4a4e7a76c"
     },
     {
       "path": "docs/VALIDATION.md",
@@ -2465,8 +2475,8 @@
     },
     {
       "path": "pyproject.toml",
-      "bytes": 1520,
-      "sha256": "8965175e71da3d9046c92e071ff782e24929181f5a78f0e0914dd531cdd7a35d"
+      "bytes": 1663,
+      "sha256": "85c526f48285059f0eff1422f742d6a16df3a5cba16fe57ea72c7fbd8886aef7"
     },
     {
       "path": "references/benchmark_configs/validation_ipm_10p_v_shape_medium.openem",
@@ -2550,8 +2560,8 @@
     },
     {
       "path": "setup.py",
-      "sha256": "b04fab7450b571553f81f89143f6e7e16c23f7dc3edf107f59d50e8fa1005bc6",
-      "bytes": 6913
+      "sha256": "cb9e601611ced87c885eff13e4dc41f34c1ca293b0826b7f758d6bcbb7e4a268",
+      "bytes": 9373
     },
     {
       "path": "solvers/magneto2d/Cargo.lock",
@@ -2825,13 +2835,13 @@
     },
     {
       "path": "tests/test_installed_resources.py",
-      "sha256": "1eb0048e667da38db57089238ec97343cb018bdf422ee1219d4d90d7ea7eb35b",
-      "bytes": 6146
+      "sha256": "aa3137e87a9aed5e2ea76ef1682828fba00921161b89d7bb307219dc4155700d",
+      "bytes": 9413
     },
     {
       "path": "tests/test_launcher.py",
-      "sha256": "daeedb449e75809c3974745c4805342726fb8fe57c8989b1219a3b02e2f024da",
-      "bytes": 10980
+      "sha256": "e7c1592e0c33d6edfcd37222addd653cb8fd9a35d328c61dfc3b32651b397ec0",
+      "bytes": 12525
     },
     {
       "path": "tests/test_linear_halbach_analytical.py",
@@ -2909,6 +2919,11 @@
       "sha256": "0d46d2e74c5bb7f94e25e822189f4664ee983ecca4e521408ce1a9ac542642a9"
     },
     {
+      "path": "tests/test_release_tools.py",
+      "sha256": "12a55efd30ae3f1c7a7e9408c6a307996d08401c71b23554b34e2b3f8b0db5da",
+      "bytes": 13759
+    },
+    {
       "path": "tests/test_solve_workspace.py",
       "bytes": 22220,
       "sha256": "db3ad88a797164357e4bcf96ca6b3e89438c2b00c1fe4c15263439dcc5752961"
@@ -2962,6 +2977,41 @@
       "path": "tools/generate_m350_50a_bh.py",
       "bytes": 3369,
       "sha256": "f4dac661f48b35b86299ea7c2d5da935b0880c5ad141637a0de58e786ca7f256"
+    },
+    {
+      "path": "tools/release/__init__.py",
+      "sha256": "2dbf5c952d7497fcfd2a81360f5b5fddeefc5b08c39d5d2c59f8f2e48f832f0c",
+      "bytes": 72
+    },
+    {
+      "path": "tools/release/acceptance.py",
+      "sha256": "fd2feedadf68b6da98891b049c5553a1af55bac993733db6c12fa401ac5bc0af",
+      "bytes": 14894
+    },
+    {
+      "path": "tools/release/artifacts.py",
+      "sha256": "2c52427246b94aa83adb221fbffd363536aa16f1767bc42d3cb5eb3bfa17ba7c",
+      "bytes": 6025
+    },
+    {
+      "path": "tools/release/native_deps.py",
+      "sha256": "286835b1ad1c216e39eef81ed08b12ae114b8f8bdb17066bddf180eb12cc9130",
+      "bytes": 5879
+    },
+    {
+      "path": "tools/release/policy.py",
+      "sha256": "09052a063623a1a6aefbe2bad6ee04ae71f266a2993917e1213314c785f0710b",
+      "bytes": 9515
+    },
+    {
+      "path": "tools/release/rust_licenses.py",
+      "sha256": "aa922ce1c12d325b192d78b8f771a1968ef6268eac240c346a87ebe17ba1bfd0",
+      "bytes": 5578
+    },
+    {
+      "path": "tools/release/verify_wheel.py",
+      "sha256": "1eea420d4eed811189ba787d09d4e135b3e47929da0abe94c0dc1a833acfce30",
+      "bytes": 8245
     },
     {
       "path": "tools/replay_numerical_case.py",
@@ -3841,6 +3891,90 @@
       "path": "RELEASE_NOTES.md",
       "source_sha256": "462408771e7a1bdd9bf6e21181ae55b9b7e40b54837808c6e310106e6f3d0ef6",
       "reason": "Add the unreleased packaged-origin browser-state migration note required by issue 13."
+    },
+    {
+      "base_commit": "ece1b86c94659cd9347fbf7371b7be0a8d46e98d",
+      "path": "README.md",
+      "source_sha256": "9a8ee6cd83a275a1000f333e0f6b34d7f971d009f3e854b1e04e608b0d06814d",
+      "reason": "State the supported Python range, 3.11 to 3.14."
+    },
+    {
+      "base_commit": "ece1b86c94659cd9347fbf7371b7be0a8d46e98d",
+      "path": "THIRD_PARTY_NOTICES.md",
+      "source_sha256": "f045aca3a5fd303d2694c5df32b3b4458ffdebe7f5efce6fc6f3e952eae2f34d",
+      "reason": "Describe the notices release wheels carry for the bundled Magneto2D executable and UI."
+    },
+    {
+      "base_commit": "ece1b86c94659cd9347fbf7371b7be0a8d46e98d",
+      "path": "backend/launcher.py",
+      "source_sha256": "327d806c0cccb34a904110e6b0574b6485aaacce422302c416b5bbb476550443",
+      "reason": "Report a missing GLU library on Linux at startup and treat Ctrl+Break on Windows as an interrupt."
+    },
+    {
+      "base_commit": "ece1b86c94659cd9347fbf7371b7be0a8d46e98d",
+      "path": "backend/public_main.py",
+      "source_sha256": "5ec15ceebe0ae42287659317c48485f910bd954298abd9d79dae1fc1889f1972",
+      "reason": "Report the installed build identity in /health."
+    },
+    {
+      "base_commit": "ece1b86c94659cd9347fbf7371b7be0a8d46e98d",
+      "path": "backend/public_report.py",
+      "source_sha256": "1f0dbc024dc6645ce955ecdd21bf3e74bbd16ee0f27eeaaed2ef56e0833e1054",
+      "reason": "Show an installed package's Magneto2D build and binary and UI hashes in the PDF provenance table."
+    },
+    {
+      "base_commit": "ece1b86c94659cd9347fbf7371b7be0a8d46e98d",
+      "path": "backend/resources.py",
+      "source_sha256": "7910885b52abe328794caabd80eee9785a9e07009d6df5fe30d5f9abd21a7eaa",
+      "reason": "Add the crate-license layout and the build identity reported in /health and run provenance."
+    },
+    {
+      "base_commit": "ece1b86c94659cd9347fbf7371b7be0a8d46e98d",
+      "path": "backend/solve_workspace.py",
+      "source_sha256": "7633d44ffd5a5c070b66f849c4a13bdee7d4d1edd3b73e88c0b739daa69fbdf5",
+      "reason": "Record the build identity in new run provenance."
+    },
+    {
+      "base_commit": "ece1b86c94659cd9347fbf7371b7be0a8d46e98d",
+      "path": "docs/GETTING_STARTED.md",
+      "source_sha256": "024bd90b5085e81aefbbaeb1026908715c95911f387548beda495ec89fc096f0",
+      "reason": "State the supported Python range, 3.11 to 3.14."
+    },
+    {
+      "base_commit": "ece1b86c94659cd9347fbf7371b7be0a8d46e98d",
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "source_sha256": "35d9097015571417eec9eef28c0bafa046084c5adc94c9da1a6d492d9efabb7a",
+      "reason": "Document the user-data identifier and build identity in /health."
+    },
+    {
+      "base_commit": "ece1b86c94659cd9347fbf7371b7be0a8d46e98d",
+      "path": "docs/RUNTIME_SETTINGS.md",
+      "source_sha256": "97cd86376b7b0443ca428844d83e1f4e68b9735305d4db242e22538f39bfd246",
+      "reason": "Document the release wheel build settings."
+    },
+    {
+      "base_commit": "ece1b86c94659cd9347fbf7371b7be0a8d46e98d",
+      "path": "pyproject.toml",
+      "source_sha256": "8965175e71da3d9046c92e071ff782e24929181f5a78f0e0914dd531cdd7a35d",
+      "reason": "Pin wheel dependencies to requirements.lock, cap Python below 3.15 and ship the third-party notices as a license file."
+    },
+    {
+      "base_commit": "ece1b86c94659cd9347fbf7371b7be0a8d46e98d",
+      "path": "setup.py",
+      "source_sha256": "b04fab7450b571553f81f89143f6e7e16c23f7dc3edf107f59d50e8fa1005bc6",
+      "reason": "Package release artifacts with their toolchain records and crate licenses, and take the wheel platform tag from the release policy."
+    },
+    {
+      "base_commit": "ece1b86c94659cd9347fbf7371b7be0a8d46e98d",
+      "path": "tests/test_installed_resources.py",
+      "source_sha256": "1eb0048e667da38db57089238ec97343cb018bdf422ee1219d4d90d7ea7eb35b",
+      "reason": "Cover release-artifact sidecars, the expanded build identity and its reporting."
+    },
+    {
+      "base_commit": "ece1b86c94659cd9347fbf7371b7be0a8d46e98d",
+      "path": "tests/test_launcher.py",
+      "source_sha256": "daeedb449e75809c3974745c4805342726fb8fe57c8989b1219a3b02e2f024da",
+      "reason": "Cover the Linux GLU check and Ctrl+Break handling."
     }
   ]
 }

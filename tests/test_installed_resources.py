@@ -32,6 +32,28 @@ def test_checkout_reads_repository_files() -> None:
     assert resources.source_checkout_root() == REPO_ROOT
     assert Path(str(resources.data_file(M350_50A_SPEC.relative_path))) == REPO_ROOT / M350_50A_SPEC.relative_path
     assert resources.stamped_build_info() is None
+    assert resources.build_identity() == {"installation": "source"}
+
+
+def test_prebuilt_artifacts_need_their_sidecars(tmp_path: Path, monkeypatch) -> None:
+    bundle = tmp_path / "ui"
+    bundle.mkdir()
+    (bundle / "index.html").write_text("<!doctype html>")
+    monkeypatch.setenv("COILEM_BUILD_UI_DIST", str(bundle))
+    with pytest.raises(SystemExit, match="ui.build.json is missing"):
+        _load_setup()._ui_bundle()
+    binary = tmp_path / "magneto2d"
+    binary.write_bytes(b"binary")
+    monkeypatch.setenv("COILEM_BUILD_MAGNETO2D_BINARY", str(binary))
+    with pytest.raises(SystemExit, match="magneto2d.licenses.txt is missing"):
+        _load_setup()._magneto2d_binary()
+
+
+def _install_backend_at(monkeypatch, package: Path) -> None:
+    """Resolve ``backend`` package resources from ``package``; other packages are unaffected."""
+
+    original = resources.resources.files
+    monkeypatch.setattr(resources.resources, "files", lambda name: package if name == "backend" else original(name))
 
 
 def _load_setup():
@@ -43,14 +65,20 @@ def _load_setup():
 
 @pytest.fixture
 def installed(tmp_path: Path, monkeypatch) -> Path:
-    """Stage a package as a wheel build does, then resolve files as if installed there."""
+    """Stage a package from release artifacts as a wheel build does, then
+    resolve files as if installed there."""
 
-    bundle = tmp_path / "ui-build"
+    bundle = tmp_path / "artifacts" / "ui"
     (bundle / "assets").mkdir(parents=True)
     (bundle / "index.html").write_text("<!doctype html>")
     (bundle / "assets" / "index-AbCd1234.js").write_text("export {};")
-    binary = tmp_path / "magneto2d-build"
+    (bundle.parent / "ui.build.json").write_text(json.dumps({"toolchain": {"node": "v24.1.0", "npm": "11.3.0"}}))
+    binary = tmp_path / "artifacts" / "magneto2d" / "magneto2d"
+    binary.parent.mkdir()
     binary.write_bytes(b"\x7fELF not really")
+    (binary.parent / "magneto2d.licenses.txt").write_text("Third-party licenses for the Magneto2D executable\n")
+    record = {"magneto2d_version": "0.3.2", "target": "aarch64-apple-darwin", "toolchain": {"rustc": "rustc 1.94.0", "cargo": "cargo 1.94.0"}}
+    (binary.parent / "magneto2d.build.json").write_text(json.dumps(record))
     monkeypatch.setenv("COILEM_BUILD_UI_DIST", str(bundle))
     monkeypatch.setenv("COILEM_BUILD_MAGNETO2D_BINARY", str(binary))
     monkeypatch.setenv("COILEM_BUILD_COMMIT", "1" * 40)
@@ -58,7 +86,7 @@ def installed(tmp_path: Path, monkeypatch) -> Path:
     _load_setup().stage_runtime_files(package, "0.2.0")
     for name in ("COILEM_BUILD_UI_DIST", "COILEM_BUILD_MAGNETO2D_BINARY", "COILEM_BUILD_COMMIT", "COILEM_MAGNETO2D_BINARY"):
         monkeypatch.delenv(name, raising=False)
-    monkeypatch.setattr(resources.resources, "files", lambda name: package)
+    _install_backend_at(monkeypatch, package)
     monkeypatch.setattr(resources, "source_checkout_root", lambda: None)
     return package
 
@@ -82,6 +110,10 @@ def test_build_identity_is_stamped_and_env_still_overrides(installed: Path, monk
     assert info["application_version"] == "0.2.0"
     assert info["application_commit"] == "1" * 40
     assert len(info["magneto2d_sha256"]) == len(info["ui_bundle_sha256"]) == 64
+    assert (info["magneto2d_version"], info["magneto2d_target"]) == ("0.3.2", "aarch64-apple-darwin")
+    assert info["toolchain"] == {"rustc": "rustc 1.94.0", "cargo": "cargo 1.94.0", "node": "v24.1.0", "npm": "11.3.0"}
+    assert (installed / "_licenses" / "magneto2d-rust-crates.txt").read_text().startswith("Third-party licenses")
+    assert resources.build_identity() == {"installation": "package", **{field: info[field] for field in resources.BUILD_IDENTITY_FIELDS}}
     assert resources.application_commit() == "1" * 40
     monkeypatch.setenv("COILEM_BUILD_COMMIT", "2" * 40)
     assert resources.application_commit() == "2" * 40
@@ -99,7 +131,7 @@ def test_binary_override_comes_first(installed: Path, monkeypatch, tmp_path: Pat
 
 def test_installation_without_packaged_files_fails_clearly(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.delenv("COILEM_MAGNETO2D_BINARY", raising=False)
-    monkeypatch.setattr(resources.resources, "files", lambda name: tmp_path)
+    _install_backend_at(monkeypatch, tmp_path)
     monkeypatch.setattr(resources, "source_checkout_root", lambda: None)
     monkeypatch.setattr(adapter, "MAGNETO2D_MANIFEST", tmp_path / "Cargo.toml")
     with pytest.raises(FileNotFoundError, match="missing from this installation"):
@@ -121,3 +153,27 @@ def test_build_rejects_data_that_differs_from_the_snapshot_manifest(monkeypatch,
         curve.write("# edited\n")
     with pytest.raises(SystemExit, match="M350-50A.csv differs from its snapshot-manifest.json entry"):
         setup_module._check_packaged_sources()
+
+
+def test_health_run_provenance_and_report_carry_the_build(installed: Path, monkeypatch, tmp_path: Path) -> None:
+    from fastapi.testclient import TestClient
+
+    from backend.public_main import create_app
+    from backend.public_report import _build_rows
+    from backend.solve_workspace import SolveWorkspace
+
+    stamped = json.loads((installed / "_build_info.json").read_text())
+    health = TestClient(create_app(), base_url="http://127.0.0.1").get("/health").json()
+    assert health["build"]["installation"] == "package"
+    assert health["build"]["magneto2d_sha256"] == stamped["magneto2d_sha256"]
+
+    monkeypatch.setenv("COILEM_USER_DATA_ROOT", str(tmp_path / "user-data"))
+    config = json.loads((REPO_ROOT / "tests/fixtures/spm_4p12s_simple.json").read_text())
+    writer = SolveWorkspace().begin_run(project_name="provenance", config=config, submitted_request={"config": config})
+    provenance = json.loads((writer.partial_path / "manifest.json").read_text())["provenance"]
+    assert provenance["build"] == health["build"]
+    writer.fail(error_code="SOLVE_FAILED", message="test")
+
+    labels = [label for label, _ in _build_rows(provenance["build"])]
+    assert labels == ["Magneto2D build", "Magneto2D binary SHA-256", "UI bundle SHA-256"]
+    assert _build_rows({"installation": "source"}) == []

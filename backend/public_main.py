@@ -38,6 +38,7 @@ from backend.public_security import (
     public_ui_origins,
 )
 from backend.public_ui import install_ui_routes
+from backend.resources import build_identity
 from backend.solve_workspace import user_data_root_id
 
 # Route templates, not request URLs: the allowlist test compares this set against
@@ -170,6 +171,7 @@ async def health_check() -> dict[str, Any]:
         },
         "version": __version__,
         "user_data_root_id": user_data_root_id(),
+        "build": build_identity(),
         "capabilities": {
             "elmer": elmer,
             "halbach_array_2d": halbach_capability_payload(),

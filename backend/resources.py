@@ -25,6 +25,8 @@ from typing import Any
 PACKAGED_DATA_DIR = "_data"
 PACKAGED_UI_DIR = "_ui"
 PACKAGED_BIN_DIR = "_bin"
+PACKAGED_LICENSES_DIR = "_licenses"
+MAGNETO2D_LICENSES_FILE = "magneto2d-rust-crates.txt"
 BUILD_INFO_FILE = "_build_info.json"
 SOURCE_UI_DIR = "frontend/dist-public-boundary"
 
@@ -113,6 +115,26 @@ def stamped_build_info() -> dict[str, Any] | None:
     except (OSError, ValueError):
         return None
     return payload if isinstance(payload, dict) else None
+
+
+BUILD_IDENTITY_FIELDS = (
+    "application_version",
+    "application_commit",
+    "magneto2d_version",
+    "magneto2d_target",
+    "magneto2d_sha256",
+    "ui_bundle_sha256",
+    "toolchain",
+)
+
+
+def build_identity() -> dict[str, Any]:
+    """What this installation runs: an installed package's stamped build, or a source checkout."""
+
+    stamped = stamped_build_info()
+    if stamped is None:
+        return {"installation": "source"}
+    return {"installation": "package", **{field: stamped.get(field) for field in BUILD_IDENTITY_FIELDS}}
 
 
 def source_checkout_commit(root: Path) -> str:
