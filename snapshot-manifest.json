@@ -55,8 +55,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 6223,
-      "sha256": "d01f99340e30f73ece44ebb990b065a582c7a1011ff5db48bdcfeda16778c1af"
+      "bytes": 6588,
+      "sha256": "9a8ee6cd83a275a1000f333e0f6b34d7f971d009f3e854b1e04e608b0d06814d"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -3811,6 +3811,12 @@
       "path": "tools/verify_snapshot.py",
       "source_sha256": "11bdf4ae5e1d8f5bc6738f2578aba90d5d62f57b9c482913371d80e59e29fe84",
       "reason": "Skip git-ignored Python wheel build outputs."
+    },
+    {
+      "base_commit": "f3d69b36bc9cd583fc4fa393c0723ce5c458196f",
+      "path": "README.md",
+      "source_sha256": "d01f99340e30f73ece44ebb990b065a582c7a1011ff5db48bdcfeda16778c1af",
+      "reason": "Point contributors to the packaged coilem launcher they can build from a checkout."
     }
   ]
 }
