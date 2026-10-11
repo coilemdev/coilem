@@ -5,9 +5,9 @@
 The [report v1.2](../benchmarks/release-baseline-20261011-v1.2/benchmark_report.md),
 [HTML plots](../benchmarks/release-baseline-20261011-v1.2/coilem_benchmark_report.html)
 and [JSON evidence](../benchmarks/release-baseline-20261011-v1.2/benchmark_summary.json)
-use the default protocol 1.1.0 matrix: **29 PASS, one UNSUPPORTED**.
+use the default protocol 1.1.0 matrix: **29 PASS, one planned coverage item (numerical state UNSUPPORTED)**.
 A - SPM: 10 PASS; B - IPM: 12 PASS; C - Distributed Winding: 4 PASS and one
-UNSUPPORTED; D - BLDC: 3 PASS, 42/42 gates. All numerical gates are unchanged.
+planned coverage (not yet supported); D - BLDC: 3 PASS, 42/42 gates. All numerical gates are unchanged.
 
 This is a compiled baseline for the next release. It retains unchanged native
 measurements from the October 10 macOS rerun at
@@ -36,6 +36,14 @@ Changing units does not change relative error. Selecting new geometries does not
 fix the original discrepancy or prove spatial convergence. Existing preview
 qualification remains scoped to the measured records; broad V-shape accuracy
 and a full next-release run remain separate from this matrix update.
+
+### Planned ORNL Prius coverage
+
+The planned item is ORNL Prius 2004: its HoleM50 rotor geometry is outside the
+public flat-buried/V-shape IPM policy. Geometry helpers exist, but native
+meshing/field solves and matched FEMM qualification are needed before enabling
+public support. Numerical status remains UNSUPPORTED; no comparison was
+performed and no delivery date is claimed.
 
 ## Public main snapshot benchmark report v1.1
 
@@ -108,7 +116,7 @@ python -m tools.run_benchmarks --phases A B C D --out-dir ../benchmark-output/my
 ```
 
 The [benchmark harness and protocol](../benchmarks/abcd-v1.1/README.md) are
-versioned as 1.2.0 and 1.1.0. The default selects the replacement designs;
+versioned as 1.2.1 and 1.1.0. The default selects the replacement designs;
 the archived protocol 1.0.0 and its reference bundle remain explicitly selectable. The command builds and measures the current checkout's
 public Magneto2D solver, verifies saved reference and request hashes, and
 generates HTML, Markdown, JSON, CSV and optional PDF evidence. It supports

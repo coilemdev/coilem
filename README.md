@@ -122,6 +122,6 @@ Report bugs through [Support](SUPPORT.md), and vulnerabilities privately through
 [trademark terms](TRADEMARKS.md).
 
 The next-release [benchmark baseline v1.2](benchmarks/release-baseline-20261011-v1.2/benchmark_report.md)
-uses higher-output deep-apex and wide-angle IPM fixtures. Its 29 PASS / one
-UNSUPPORTED outcomes compile explicitly identified measured candidates; the
+uses higher-output deep-apex and wide-angle IPM fixtures. Its 29 PASS / one planned coverage item
+(numerical state UNSUPPORTED) compile explicitly identified measured candidates; the
 original low-output failures remain archived.

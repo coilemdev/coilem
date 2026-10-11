@@ -12,7 +12,9 @@ at `af56962`, with fresh matched FEMM. Each row retains native and reference
 waveforms, gates, original runtime/source identities and source-record hashes.
 Links resolve to the exact measured fixtures in their source packages.
 
-Selected outcomes: **29 PASS, one UNSUPPORTED**, across A - SPM, B - IPM,
+The planned item is ORNL Prius 2004: its HoleM50 rotor geometry is outside the public flat-buried/V-shape IPM policy. Geometry helpers exist, but native meshing/field solves and matched FEMM qualification are needed before enabling public support. Numerical status remains UNSUPPORTED; no comparison was performed and no delivery date is claimed.
+
+Selected outcomes: **29 PASS, one planned coverage item (not yet supported)**, across A - SPM, B - IPM,
 C - Distributed Winding and D - BLDC. Phase D retains 42/42 gates. Only the
 two Phase B magnet-leg dimensions change. All other requests, references,
 material contracts, angular grids, golden vectors and gates remain unchanged.

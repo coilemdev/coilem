@@ -1,7 +1,7 @@
 {
   "schema": "coilem.benchmark_baseline/v1",
   "report_version": "1.2",
-  "generated_at": "2026-10-11T15:54:38.939163+00:00",
+  "generated_at": "2026-10-11T16:04:09.147996+00:00",
   "state": "COMPLETE",
   "status": "PASS_WITH_UNSUPPORTED",
   "counts": {
@@ -9,7 +9,7 @@
     "UNSUPPORTED": 1
   },
   "protocol_version": "1.1.0",
-  "harness_version": "1.2.0",
+  "harness_version": "1.2.1",
   "evidence_kind": "COMPILED_MEASURED_BASELINE; NOT_A_NEW_SINGLE_CANDIDATE_RUN",
   "candidate_commits": [
     "45e0a5c7662ade04a4be5519b7e5bac771a6122f",
@@ -52624,5 +52624,13 @@
         "fixture_sha256": "c7c0657f31d62e1ddb62edcc07fa6838370a937aa6cdc4580d3cd443b6f0808c"
       }
     }
-  ]
+  ],
+  "planned_coverage": {
+    "ornl_prius_2004_ipm": {
+      "label": "Planned coverage (not yet supported)",
+      "reason": "The Prius fixture uses HoleM50 rotor geometry; the public API currently accepts flat-buried and V-shape IPM only.",
+      "next_step": "Qualify the Prius geometry, native mesh and field solves against matched FEMM evidence before enabling public support.",
+      "numerical_status": "UNSUPPORTED"
+    }
+  }
 }

@@ -1,6 +1,6 @@
 # A/B/C/D benchmark protocol 1.1.0
 
-Harness **1.2.0** selects protocol **1.1.0** by default. This edition replaces
+Harness **1.2.1** selects protocol **1.1.0** by default. This edition replaces
 the low-output deep-apex and wide-angle Phase B cases with qualified higher-output
 physical designs. All other requests, references, angular grids, materials,
 BLDC golden vectors and numerical gates remain unchanged.
@@ -13,7 +13,8 @@ BLDC golden vectors and numerical gates remain unchanged.
 | D - BLDC | 3 | 3 | 9 |
 
 The suite has **30 cases, 29 references and 35 supported native field jobs**.
-The rejected request remains UNSUPPORTED. Thermal analysis is outside A/B/C/D.
+ORNL Prius is shown as Planned coverage (not yet supported). Its numerical
+status remains UNSUPPORTED; it has no parity measurement or PASS. Thermal analysis is outside A/B/C/D.
 
 ## Run a new native benchmark without FEMM
 
@@ -50,7 +51,7 @@ are serialized with process locks and resumable manifests.
 ## Fixture changes and report v1.2
 
 The [release baseline report v1.2](../release-baseline-20261011-v1.2/benchmark_report.md)
-selects the new 30-case matrix: **29 PASS, one UNSUPPORTED**. It compiles the
+selects the new 30-case matrix: **29 PASS, one planned coverage item (numerical state UNSUPPORTED)**. It compiles the
 unchanged October 10 macOS rerun at `45e0a5c` with two freshly qualified October 11
 IPM designs at `af56962`. Each row identifies its actual measured candidate and
 source evidence; this is not a new full sweep of a single release commit.
@@ -84,7 +85,7 @@ Changed solver implementation can reuse compatible references. Changed geometry,
 current, winding, speed, materials, grids, conventions or request settings require
 new matched reference evidence. Missing or incompatible references never PASS.
 
-Harness 1.2.0 supports protocols 1.0.0 and 1.1.0 and records the selected protocol
+Harness 1.2.1 supports protocols 1.0.0 and 1.1.0 and records the selected protocol
 in worker identities. Protocol 1.1.0 changes matrix membership. Gates are unchanged:
 mean torque PASS <=8% / YELLOW <=15% (existing absolute limits near zero),
 Back-EMF H1/peak PASS <=10% / YELLOW <=15%, and fourteen BLDC gates per fixture.
@@ -105,3 +106,7 @@ python -m tools.run_benchmarks \
 The [historical report v1.1](../main-20261009-bad71d9/benchmark_report.md),
 [macOS rerun](../main-20261010-45e0a5c-rerun/README.md), original inputs and recorded
 FAILs remain unchanged. See [historical protocol details](../abcd-v1/README.md).
+
+## Planned ORNL Prius coverage
+
+The planned item is ORNL Prius 2004: its HoleM50 rotor geometry is outside the public flat-buried/V-shape IPM policy. Geometry helpers exist, but native meshing/field solves and matched FEMM qualification are needed before enabling public support. Numerical status remains UNSUPPORTED; no comparison was performed and no delivery date is claimed.

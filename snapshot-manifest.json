@@ -55,8 +55,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 6106,
-      "sha256": "a432469493cd044f1198920d98327d04b902766cb46853a64c120ef4327aa088"
+      "bytes": 6137,
+      "sha256": "0fbc40fbfdd08b72b2cc2c2d48de1ac174dc78881e1dee8c58ed190c6921090d"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -500,8 +500,8 @@
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
-      "bytes": 5487,
-      "sha256": "5591eec7876334bf96f286ebb99088b4639d1d89641f0a6ab3b6c5d5d89b76ec"
+      "bytes": 6006,
+      "sha256": "0334fa66badca568e5f130db6020c73ddf63344f84051e2b39745ddb9929c060"
     },
     {
       "path": "benchmarks/abcd-v1.1/benchmark_spec.json",
@@ -1550,28 +1550,28 @@
     },
     {
       "path": "benchmarks/release-baseline-20261011-v1.2/README.md",
-      "bytes": 1867,
-      "sha256": "5ca5adf4b811015d6cb63e2a5b6ca493df1b75031e0235c1489f6034be8bfc63"
+      "bytes": 2245,
+      "sha256": "037d4b92a3a3819de78fcfcccb5ed741dc76522152b261cec57e1285da206275"
     },
     {
       "path": "benchmarks/release-baseline-20261011-v1.2/artifact_manifest.json",
       "bytes": 377,
-      "sha256": "c75f18d5e0dc1c5727dfff19a4d4970f3a71d70a4a1074e2d60a1e29db5e1d8d"
+      "sha256": "845562916551e7b15d0026790d3871348ec8bc7d9f737a1685048013aa243c51"
     },
     {
       "path": "benchmarks/release-baseline-20261011-v1.2/benchmark_report.md",
-      "bytes": 28280,
-      "sha256": "3bc0c6cc0a3b4eb03151a2cdcc40626abd943b27779cbe81024c30301b6a7d21"
+      "bytes": 32483,
+      "sha256": "6e257408b6b885e0bc825723c851ff32353327d89033ba34c7c0d2eb64e67eeb"
     },
     {
       "path": "benchmarks/release-baseline-20261011-v1.2/benchmark_summary.json",
-      "bytes": 1777428,
-      "sha256": "bfa877d02c92f1e83183cffa5ded500ec3b11ccb6836cbe61c8cedffe6793604"
+      "bytes": 1777861,
+      "sha256": "6ff1ae16e93819ce1a742f6f411e067fe165704a05992f2c9e3c0be0acf375a0"
     },
     {
       "path": "benchmarks/release-baseline-20261011-v1.2/coilem_benchmark_report.html",
-      "bytes": 275549,
-      "sha256": "5b6c6b5fb020ac71d4ffc5c271200f95c2f86094b475e2dbb9ce8f9692d97121"
+      "bytes": 276345,
+      "sha256": "082f841c598fb32bc90a2528950ff1aff31a215457a3bd0a42a120b1fb7b1280"
     },
     {
       "path": "docs/ARCHITECTURE.md",
@@ -1610,8 +1610,8 @@
     },
     {
       "path": "docs/NUMERICAL_EVIDENCE.md",
-      "bytes": 17061,
-      "sha256": "af90d9efd90ba8366ba4614c8583bd4f2d86f3b918c66e40290e4fdcdc0836e6"
+      "bytes": 17507,
+      "sha256": "ea8384603385046008c21a4efe43a383a8660abf2c2394ec0dd9ccaf998e0569"
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
@@ -1625,8 +1625,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 13907,
-      "sha256": "3416d4500f4d9011b0c457b90f85b8cc9b2d48b329075ddcb1406811785fd0b6"
+      "bytes": 14318,
+      "sha256": "4559afd83f0253e5aa1ff38839030db7c43826f4d326a00f0231a7cbb3a175ab"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -2770,8 +2770,8 @@
     },
     {
       "path": "tests/test_benchmark_suite.py",
-      "bytes": 22646,
-      "sha256": "0b1f536ddc76e73ce9613afcf730f403530516af6a053fc5e78de2761f6f3fe9"
+      "bytes": 25442,
+      "sha256": "22f413ea06effb593a4d21baa027cdcd33421c3c1d6600264c531daf37e25b39"
     },
     {
       "path": "tests/test_halbach_api.py",
@@ -2866,7 +2866,7 @@
     {
       "path": "tools/benchmark_suite/__init__.py",
       "bytes": 317,
-      "sha256": "bc715398d7055b33372bc259dac306c523dcbc86ebac01897069967879994dec"
+      "sha256": "c5fc3d2eba606f06b47f0d8233869b224d07f512884120bfaab407f9a254a607"
     },
     {
       "path": "tools/benchmark_suite/abc_metrics.py",
@@ -2900,8 +2900,8 @@
     },
     {
       "path": "tools/benchmark_suite/report.py",
-      "bytes": 20805,
-      "sha256": "59f352a8d5dc6773a0c1ed91c975dbc2be23246d28b56a1fe864cdc911c13a3e"
+      "bytes": 23142,
+      "sha256": "b824617f4bd29a0d455a4063a07989f17f68cb0a90aa3d49734465d8ec93e5bc"
     },
     {
       "path": "tools/benchmark_suite/worker.py",
@@ -3610,6 +3610,12 @@
       "base_commit": "5c1faedc9f655fc46cc4a5eba9d90cb56912cfdc",
       "path": "tools/benchmark_suite/worker.py",
       "source_sha256": "d0253e582776c4e8cc0d81f8a9997c951295e691a36d2e52a212edd46e55a0b1",
+      "reason": "Select two qualified higher-output IPM geometries for the next-release benchmark; retain archived failures, unchanged requests, references and gates; publish report v1.2 with distinct measured candidates and support legacy protocol selection."
+    },
+    {
+      "base_commit": "5c1faedc9f655fc46cc4a5eba9d90cb56912cfdc",
+      "path": "tools/benchmark_suite/report.py",
+      "source_sha256": "59f352a8d5dc6773a0c1ed91c975dbc2be23246d28b56a1fe864cdc911c13a3e",
       "reason": "Select two qualified higher-output IPM geometries for the next-release benchmark; retain archived failures, unchanged requests, references and gates; publish report v1.2 with distinct measured candidates and support legacy protocol selection."
     }
   ]

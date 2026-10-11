@@ -13,7 +13,7 @@ These records keep their tested runtime identities explicit.
 
 [Baseline report v1.2](../benchmarks/release-baseline-20261011-v1.2/benchmark_report.md)
 is the updated benchmark selection for the next release: A - SPM 10 PASS,
-B - IPM 12 PASS, C - Distributed Winding 4 PASS / one UNSUPPORTED, and
+B - IPM 12 PASS, C - Distributed Winding 4 PASS / one planned coverage item (not yet supported), and
 D - BLDC 3 PASS / 42 gates. Protocol 1.1.0 replaces the two low-output Phase B
 cases with higher-output designs; all other inputs, saved references and gates
 are unchanged. Deep apex uses 12 mm magnet legs, wide angle 10 mm. Their
@@ -26,7 +26,7 @@ and preview qualification record below remain archived. New geometry passing
 does not establish a solver fix or broaden the previous qualification claim.
 Run the selected full matrix on the next release commit before updating that claim.
 
-Harness 1.2.0 runs [protocol 1.1.0](../benchmarks/abcd-v1.1/README.md) without FEMM
+Harness 1.2.1 runs [protocol 1.1.0](../benchmarks/abcd-v1.1/README.md) without FEMM
 on macOS, Windows and Linux:
 
 ```sh
@@ -36,6 +36,14 @@ python -m tools.run_benchmarks --phases A B C D --out-dir ../benchmark-output/my
 Historical protocol 1.0.0 remains selectable with `--suite` and its matching
 `--reference-bundle`. Changed physical inputs require new matched references;
 changing only the candidate solver can reuse compatible frozen data.
+
+### Planned ORNL Prius coverage
+
+The planned item is ORNL Prius 2004: its HoleM50 rotor geometry is outside the
+public flat-buried/V-shape IPM policy. Geometry helpers exist, but native
+meshing/field solves and matched FEMM qualification are needed before enabling
+public support. Numerical status remains UNSUPPORTED; no comparison was
+performed and no delivery date is claimed.
 
 ## Qualification status
 

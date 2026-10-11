@@ -1,6 +1,7 @@
 """Regression coverage for frozen-reference reuse and unchanged numerical gates."""
 
 import copy
+import csv
 import os
 import subprocess
 import sys
@@ -249,6 +250,45 @@ def test_report_orders_phases_and_retains_hashed_input_copies(tmp_path):
             assert read(fixture) == row["configurations"][stage]
 
 
+def test_prius_planned_label_preserves_policy_rejection_and_numerical_status(tmp_path):
+    from backend.magneto2d_adapter import get_magneto2d_winding_support_error
+    from backend.models import MotorConfig
+    from backend.public_policy import PublicConfigError, parse_public_solve_request
+    from tools.benchmark_suite.report import display_outcome
+
+    cid = "ornl_prius_2004_ipm"
+    config = CONFIGS[cid, "native"]
+    assert get_magneto2d_winding_support_error(MotorConfig.model_validate(config)) is None
+    with pytest.raises(PublicConfigError) as caught:
+        parse_public_solve_request(config)
+    assert caught.value.field == "rotor.ipm_topology"
+    row = {"id": cid, "phase": "C", "fixture": next(c for c in SPECIFICATION["cases"] if c["id"] == cid)["jobs"][0]["fixture"],
+           "status": "UNSUPPORTED", "evaluation": {"status": "UNSUPPORTED", "reason": str(caught.value), "gates": []},
+           "measurements": {}, "configurations": {"native": config}}
+    manifest = {"identity": {"harness_version": "1.2.1", "protocol_version": "1.1.0", "commit": "candidate"},
+                "smoke": False, "reference_mode": "FROZEN_REFERENCE"}
+    assert build(tmp_path, manifest, [row]) == "PASS_WITH_UNSUPPORTED"
+    summary = read(tmp_path / "report/benchmark_summary.json")
+    assert summary["counts"] == {"UNSUPPORTED": 1}
+    assert summary["rows"][0]["status"] == summary["rows"][0]["evaluation"]["status"] == "UNSUPPORTED"
+    assert summary["phase_summary_presentation"]["C"] == "YELLOW"
+    assert summary["planned_coverage"][cid]["numerical_status"] == "UNSUPPORTED"
+    assert display_outcome(row) == "Planned coverage (not yet supported)"
+    for name in ("coilem_benchmark_report.html", "benchmark_report.md"):
+        content = (tmp_path / "report" / name).read_text(encoding="utf-8")
+        assert "Planned coverage (not yet supported)" in content
+        assert "HoleM50" in content
+        assert "no comparison was performed" in content
+    with (tmp_path / "report/benchmark_results.csv").open(newline="", encoding="utf-8") as stream:
+        record = next(csv.DictReader(stream))
+    assert record["status"] == "UNSUPPORTED"
+    assert record["coverage_label"] == "Planned coverage (not yet supported)"
+    # The roadmap label must not hide other outcomes or imply arbitrary unsupported cases are planned.
+    for status in ("PASS", "FAIL", "INCOMPLETE", "NOT_COMPARED"):
+        assert display_outcome({"id": cid, "status": status}) == status
+    assert display_outcome({"id": "other", "status": "UNSUPPORTED"}) == "UNSUPPORTED"
+
+
 def test_canonical_request_hash_includes_speed_and_geometry():
     config = copy.deepcopy(next(iter(CONFIGS.values())))
     original = canonical(config)
@@ -421,6 +461,8 @@ def test_release_baseline_retains_actual_measured_candidates_and_unaffected_evid
     assert [row["id"] for row in baseline["rows"]] == [case["id"] for case in current["cases"]]
     assert baseline["counts"] == {"PASS": 29, "UNSUPPORTED": 1}
     assert baseline["status"] == "PASS_WITH_UNSUPPORTED"
+    assert baseline["planned_coverage"]["ornl_prius_2004_ipm"]["label"] == "Planned coverage (not yet supported)"
+    assert baseline["planned_coverage"]["ornl_prius_2004_ipm"]["numerical_status"] == "UNSUPPORTED"
     assert baseline["phase_order"] == ["A", "B", "C", "D"]
     assert baseline["phase_summary_presentation"] == {"A": "PASS", "B": "PASS", "C": "YELLOW", "D": "PASS"}
     assert baseline["evidence_kind"] == "COMPILED_MEASURED_BASELINE; NOT_A_NEW_SINGLE_CANDIDATE_RUN"
