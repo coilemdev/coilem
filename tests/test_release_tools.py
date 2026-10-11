@@ -123,7 +123,8 @@ def test_release_build_refuses_cpu_specific_or_ad_hoc_flags() -> None:
     assert "RUSTFLAGS" not in artifacts.release_environment("x86_64-unknown-linux-gnu", {}, None)
 
 
-def test_crate_license_report_dedupes_texts() -> None:
+@pytest.mark.parametrize("newline", ["\n", "\r\n"])
+def test_crate_license_report_dedupes_texts(newline: str) -> None:
     mit = "MIT License\n\nCopyright (c) Example"
     crates = [
         rust_licenses.Crate("alpha", "1.0.0", "MIT OR Apache-2.0", "https://example.com/alpha", {"LICENSE-MIT": mit, "LICENSE-APACHE": "Apache"}),
@@ -133,9 +134,21 @@ def test_crate_license_report_dedupes_texts() -> None:
     assert "built for x86_64-unknown-linux-gnu" in text
     assert text.count("\nApache\n") == 1
     assert "Used by: alpha 1.0.0 (LICENSE-APACHE), beta 2.0.0 (LICENSE-APACHE)" in text
-    assert verify_wheel.crates_without_license_text(text) == []
+    assert verify_wheel.crates_without_license_text(text.replace("\n", newline)) == []
     uncovered = text.replace("Used by: alpha 1.0.0 (LICENSE-APACHE), beta 2.0.0 (LICENSE-APACHE)", "Used by: alpha 1.0.0 (LICENSE-APACHE)")
-    assert verify_wheel.crates_without_license_text(uncovered) == ["beta 2.0.0"]
+    assert verify_wheel.crates_without_license_text(uncovered.replace("\n", newline)) == ["beta 2.0.0"]
+
+
+@pytest.mark.parametrize("report", [
+    "Used by: faer 0.24.0 (LICENSE)\n",
+    "Header\n\nCrates\n",
+    "Header\n\nCrates\n-----\nfaer 0.24.0: MIT\n",
+    "Header\n\nCrates\n------\n\nLicense texts\n-------------\n",
+    "Header\n\nCrates\n------\nnot a crate entry\n",
+])
+def test_malformed_crate_license_reports_are_rejected(report: str) -> None:
+    with pytest.raises(ValueError, match="crate license report"):
+        verify_wheel.crates_without_license_text(report)
 
 
 def test_crates_without_their_own_license_get_the_recorded_upstream_notice() -> None:
@@ -154,11 +167,14 @@ def test_crates_without_their_own_license_get_the_recorded_upstream_notice() -> 
         assert source.startswith("https://") and source.endswith("/LICENSE")
 
 
-@pytest.mark.skipif(shutil.which("cargo") is None, reason="needs Cargo and the locked crate sources")
 @pytest.mark.parametrize("target", ["x86_64-unknown-linux-gnu", "aarch64-apple-darwin", "x86_64-apple-darwin", "x86_64-pc-windows-msvc"])
 def test_every_linked_crate_carries_a_license_text(target: str) -> None:
+    # Gmsh can alter the native Windows PATH without updating os.environ.
+    cargo = shutil.which("cargo")
+    if cargo is None:
+        pytest.skip("needs Cargo and the locked crate sources")
     try:
-        crates = rust_licenses.collect(target)
+        crates = rust_licenses.collect(target, cargo=cargo)
     except subprocess.CalledProcessError as exc:
         pytest.skip(f"cargo metadata is unavailable here: {exc.stderr.strip()[:200]}")
     upstream = [crate for crate in crates if any(name.startswith("LICENSE from ") for name in crate.license_files)]
@@ -226,7 +242,10 @@ def test_native_dependency_parsers_and_rules(tmp_path: Path) -> None:
     ]
 
 
-def _write_wheel(path: Path, *, requires: list[str], binary: bytes = b"binary", stamp_binary: bytes | None = None) -> Path:
+def _write_wheel(
+    path: Path, *, requires: list[str], binary: bytes = b"binary", stamp_binary: bytes | None = None,
+    runtime_version: str = "0.2.0", crate_licenses: str | None = None,
+) -> Path:
     dist_info = "coilem-0.2.0.dist-info"
     ui = {"index.html": b"<!doctype html>", "assets/index-AbCd1234.js": b"export {};", "assets/Lesson-AbCd1234.js": b"export {};"}
     ui_hash = hashlib.sha256(
@@ -245,6 +264,7 @@ def _write_wheel(path: Path, *, requires: list[str], binary: bytes = b"binary", 
     metadata += "License-Expression: AGPL-3.0-or-later\nLicense-File: LICENSE\nLicense-File: THIRD_PARTY_NOTICES.md\n"
     metadata += "".join(f"Requires-Dist: {line}\n" for line in requires) + 'Requires-Dist: pytest; extra == "dev"\n'
     with zipfile.ZipFile(path, "w") as archive:
+        archive.writestr("backend/__init__.py", f"__version__ = {json.dumps(runtime_version)}\n")
         archive.writestr(f"{dist_info}/METADATA", metadata)
         archive.writestr(
             f"{dist_info}/entry_points.txt",
@@ -259,6 +279,7 @@ def _write_wheel(path: Path, *, requires: list[str], binary: bytes = b"binary", 
             archive.writestr(f"backend/_ui/{name}", data)
         archive.writestr(
             "backend/_licenses/magneto2d-rust-crates.txt",
+            crate_licenses if crate_licenses is not None else
             "Header\n\nCrates\n------\nfaer 0.24.0: MIT\n\nLicense texts\n-------------\n\nUsed by: faer 0.24.0 (COPYING.SUITE_SPARSE.AMD.BSD)\n",
         )
         archive.writestr("backend/_build_info.json", json.dumps(build))
@@ -294,6 +315,30 @@ def test_wheel_checks(tmp_path: Path) -> None:
     assert verify_wheel.check_wheel(stale) == ["build info magneto2d_sha256 does not match the packaged binary"]
     linux = _write_wheel(tmp_path / "coilem-0.2.0-py3-none-linux_x86_64.whl", requires=lock)
     assert "linux_x86_64 is not a publishable platform tag" in verify_wheel.check_wheel(linux)
+
+
+@pytest.mark.parametrize("newline", ["\n", "\r\n"])
+def test_wheel_rejects_missing_crate_coverage_and_malformed_report(tmp_path: Path, newline: str) -> None:
+    lock = [str(item) for item in policy.read_lock(REPO_ROOT / "requirements.lock")]
+    path = tmp_path / "coilem-0.2.0-py3-none-macosx_12_0_arm64.whl"
+    report = (
+        "Header\n\nCrates\n------\nfaer 0.24.0: MIT\nnano-gemm 0.2.2: MIT\n\nLicense texts\n-------------\n\n"
+        "Used by: faer 0.24.0 (COPYING.SUITE_SPARSE.AMD.BSD)\n"
+    )
+    wheel = _write_wheel(path, requires=lock, crate_licenses=report.replace("\n", newline))
+    assert verify_wheel.check_wheel(wheel) == [
+        "crates without a license text in the crate license file: nano-gemm 0.2.2"
+    ]
+    wheel = _write_wheel(path, requires=lock, crate_licenses="Used by: faer 0.24.0 (COPYING.SUITE_SPARSE.AMD.BSD)\n")
+    assert verify_wheel.check_wheel(wheel) == ["crate license report is missing its Crates section"]
+
+
+def test_wheel_rejects_a_different_backend_version(tmp_path: Path) -> None:
+    lock = [str(item) for item in policy.read_lock(REPO_ROOT / "requirements.lock")]
+    wheel = _write_wheel(
+        tmp_path / "coilem-0.2.0-py3-none-macosx_12_0_arm64.whl", requires=lock, runtime_version="0.2.0.dev17",
+    )
+    assert verify_wheel.check_wheel(wheel) == ["backend version 0.2.0.dev17 differs from the wheel's 0.2.0"]
 
 
 def test_acceptance_test_is_self_contained_with_current_inputs() -> None:

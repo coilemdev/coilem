@@ -35,13 +35,27 @@ def _requirement_key(requirement: Requirement) -> tuple[str, str, str]:
 
 
 def crates_without_license_text(report: str) -> list[str]:
-    """Crates listed in a rust_licenses report that no license text names."""
+    """Uncovered crates, accepting either line ending and rejecting malformed lists."""
 
-    listed_block = report.split("\nCrates\n------\n", 1)[1].split("\n\n", 1)[0] if "\nCrates\n------\n" in report else ""
-    listed = [line.split(":", 1)[0] for line in listed_block.splitlines() if line.strip()]
+    lines = report.splitlines()
+    try:
+        start = lines.index("Crates")
+    except ValueError as exc:
+        raise ValueError("crate license report is missing its Crates section") from exc
+    if lines[start + 1:start + 2] != ["------"]:
+        raise ValueError("crate license report has an invalid Crates heading")
+    listed = []
+    for line in lines[start + 2:]:
+        if not line.strip():
+            break
+        if not re.fullmatch(r"\S+ \S+: .+", line):
+            raise ValueError(f"crate license report has an invalid Crates entry: {line}")
+        listed.append(line.split(":", 1)[0])
+    if not listed:
+        raise ValueError("crate license report has an empty Crates section")
     covered = {
         entry.rsplit(" (", 1)[0]
-        for line in report.splitlines()
+        for line in lines
         if line.startswith("Used by: ")
         for entry in line.removeprefix("Used by: ").split(", ")
     }
@@ -93,6 +107,7 @@ def check_wheel(path: Path, *, platform_tag: str | None = None, require_commit: 
         executable = "magneto2d.exe" if wheel_platform.startswith("win") else "magneto2d"
         binary_name = f"backend/{resources.PACKAGED_BIN_DIR}/{executable}"
         required = [
+            "backend/__init__.py",
             binary_name,
             f"backend/{resources.PACKAGED_UI_DIR}/index.html",
             f"backend/{resources.PACKAGED_LICENSES_DIR}/{resources.MAGNETO2D_LICENSES_FILE}",
@@ -117,9 +132,19 @@ def check_wheel(path: Path, *, platform_tag: str | None = None, require_commit: 
         crate_licenses = archive.read(f"backend/{resources.PACKAGED_LICENSES_DIR}/{resources.MAGNETO2D_LICENSES_FILE}").decode("utf-8")
         if "faer " not in crate_licenses or "COPYING.SUITE_SPARSE.AMD.BSD" not in crate_licenses:
             problems.append("the crate license file does not cover faer and its incorporated notices")
-        uncovered = crates_without_license_text(crate_licenses)
-        if uncovered:
-            problems.append(f"crates without a license text in the crate license file: {', '.join(uncovered)}")
+        try:
+            uncovered = crates_without_license_text(crate_licenses)
+        except ValueError as exc:
+            problems.append(str(exc))
+        else:
+            if uncovered:
+                problems.append(f"crates without a license text in the crate license file: {', '.join(uncovered)}")
+
+        backend_source = "\n".join(archive.read("backend/__init__.py").decode("utf-8").splitlines())
+        runtime_version = re.search(r'^__version__ = "([^"]+)"$', backend_source, re.MULTILINE)
+        if runtime_version is None or runtime_version[1] != version:
+            actual = runtime_version[1] if runtime_version else "missing"
+            problems.append(f"backend version {actual} differs from the wheel's {version}")
 
         build = json.loads(archive.read(f"backend/{resources.BUILD_INFO_FILE}"))
         for field in resources.BUILD_IDENTITY_FIELDS:

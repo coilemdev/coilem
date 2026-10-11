@@ -141,10 +141,26 @@ def _magneto2d_binary() -> tuple[Path, dict, str]:
     return crate / "target" / "release" / name, record, licenses
 
 
+def _stamp_package_version(package: Path, version: str) -> None:
+    """Give launcher and health checks the distribution version, including .devN."""
+
+    initializer = package / "__init__.py"
+    source, count = re.subn(
+        r'^__version__ = "[^"]+"$',
+        f"__version__ = {json.dumps(version)}",
+        initializer.read_text(encoding="utf-8"),
+        flags=re.MULTILINE,
+    )
+    if count != 1:
+        raise SystemExit("coilEM build: backend/__init__.py must define exactly one __version__.")
+    initializer.write_text(source, encoding="utf-8", newline="\n")
+
+
 def stage_runtime_files(package: Path, version: str) -> None:
     """Copy data, UI, solver and build identity into a built ``backend`` package."""
 
     _check_packaged_sources()
+    _stamp_package_version(package, version)
     data = package / resources.PACKAGED_DATA_DIR
     shutil.rmtree(data, ignore_errors=True)
     for relative in resources.PACKAGED_DATA_FILES:

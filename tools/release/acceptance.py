@@ -5,6 +5,7 @@ with PATH, HOME and CARGO set so neither Cargo nor Node can be found, launches
 the installed ``coilem --no-browser`` and checks, through HTTP only:
 
 - the UI index, a hashed asset and a deep link; a 404 for an unknown API path;
+- that the launcher and health report the installed distribution version;
 - a motor Preview solve, cylindrical and linear Halbach solves and a lesson solve;
 - the saved run's PDF, CSV and replay-package downloads;
 - that a second launch reuses the running server;
@@ -201,6 +202,7 @@ class Acceptance:
         self.data_root = work / "user-data"
         self.results: list[tuple[str, bool, str]] = []
         self.log: list[str] = []
+        self.version: str | None = None
         home = work / "home"
         home.mkdir(parents=True, exist_ok=True)
         system = Path(os.environ.get("SystemRoot", r"C:\Windows"))
@@ -246,6 +248,19 @@ class Acceptance:
         subprocess.run([python, "-m", "venv", str(self.venv)], check=True)
         interpreter = self.bin / ("python.exe" if WINDOWS else "python")
         subprocess.run([str(interpreter), "-m", "pip", "install", "--quiet", "--disable-pip-version-check", requirement], check=True)
+        self.version = subprocess.check_output(
+            [str(interpreter), "-I", "-c", "from importlib.metadata import version; print(version('coilem'))"],
+            cwd=self.work, text=True,
+        ).strip()
+        reported = subprocess.run(
+            [str(self.bin / ("coilem.exe" if WINDOWS else "coilem")), "--version"],
+            cwd=self.work, env=self.env, capture_output=True, text=True, timeout=30,
+        )
+        self.check(
+            "launcher reports the installed version",
+            reported.returncode == 0 and reported.stdout.strip() == f"coilEM {self.version}",
+            (reported.stdout + reported.stderr).strip(),
+        )
         missing = [tool for tool in ("cargo", "node", "npm") if shutil.which(tool, path=self.env["PATH"])]
         self.check("Cargo and Node are unavailable to the installed app", not missing, f"found={missing}")
 
@@ -295,6 +310,14 @@ class Acceptance:
         return self.finish()
 
     def exercise(self, base: str, port: int) -> None:
+        status, _, body = request("GET", base + "/health")
+        health = json.loads(body) if status == 200 else {}
+        self.check(
+            "health reports the installed version",
+            status == 200 and health.get("version") == self.version
+            and (health.get("build") or {}).get("application_version") == self.version,
+            f"installed={self.version}, health={health.get('version')}",
+        )
         status, headers, body = request("GET", base + "/")
         self.check("index", status == 200 and b'<div id="root">' in body and headers.get("cache-control") == "no-store", str(status))
         asset = re.search(rb'src="(/assets/[^"]+\.js)"', body)

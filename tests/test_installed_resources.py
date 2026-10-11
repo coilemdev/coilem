@@ -10,8 +10,8 @@ from pathlib import Path
 
 import pytest
 
+from backend import __version__, resources
 from backend import magneto2d_adapter as adapter
-from backend import resources
 from backend.material_contract import M350_50A_SPEC, load_electrical_steel_curve
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -64,7 +64,7 @@ def _load_setup():
 
 
 @pytest.fixture
-def installed(tmp_path: Path, monkeypatch) -> Path:
+def installed(tmp_path: Path, monkeypatch, request) -> Path:
     """Stage a package from release artifacts as a wheel build does, then
     resolve files as if installed there."""
 
@@ -83,12 +83,24 @@ def installed(tmp_path: Path, monkeypatch) -> Path:
     monkeypatch.setenv("COILEM_BUILD_MAGNETO2D_BINARY", str(binary))
     monkeypatch.setenv("COILEM_BUILD_COMMIT", "1" * 40)
     package = tmp_path / "site-packages" / "backend"
-    _load_setup().stage_runtime_files(package, "0.2.0")
+    package.mkdir(parents=True)
+    shutil.copyfile(REPO_ROOT / "backend" / "__init__.py", package / "__init__.py")
+    _load_setup().stage_runtime_files(package, getattr(request, "param", "0.2.0"))
     for name in ("COILEM_BUILD_UI_DIST", "COILEM_BUILD_MAGNETO2D_BINARY", "COILEM_BUILD_COMMIT", "COILEM_MAGNETO2D_BINARY"):
         monkeypatch.delenv(name, raising=False)
     _install_backend_at(monkeypatch, package)
     monkeypatch.setattr(resources, "source_checkout_root", lambda: None)
     return package
+
+
+@pytest.mark.parametrize("installed", ["0.2.0", "0.2.0.dev17"], indirect=True)
+def test_packaged_backend_has_the_distribution_version(installed: Path) -> None:
+    spec = importlib.util.spec_from_file_location("packaged_backend_version", installed / "__init__.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    build = json.loads((installed / "_build_info.json").read_text())
+    assert module.__version__ == build["application_version"]
+    assert (REPO_ROOT / "backend" / "__init__.py").read_text().endswith(f'__version__ = "{__version__}"\n')
 
 
 def test_installed_package_resolves_every_runtime_file(installed: Path) -> None:
