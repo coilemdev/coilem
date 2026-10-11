@@ -115,6 +115,9 @@ test.describe('public developer preview release rehearsal', () => {
       await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
       await expect(page.getByRole('navigation', { name: 'Motor workflow' })).toBeVisible();
       await page.getByRole('button', { name: 'Design file menu', exact: true }).click();
+      // A mouse click on Examples hovers it first; the submenu must stay open.
+      await page.getByRole('menuitem', { name: 'Examples', exact: true }).click();
+      await expect(page.getByRole('menu', { name: 'Example designs', exact: true })).toBeVisible();
       const pendingDownload = page.waitForEvent('download');
       await page.getByRole('menuitem', { name: 'Save design file (.coilem)', exact: true }).click();
       const download = await pendingDownload;

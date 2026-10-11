@@ -1775,8 +1775,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 95448,
-      "sha256": "163f12c0c4ddbf19539b9d98511064e829341a64df2a3b6e8f2bfa11bade1e4f"
+      "bytes": 95786,
+      "sha256": "833d91fa95ceb04d334f121388f3a44b4a87ed7fcfcfe99a3951145effe73731"
     },
     {
       "path": "frontend/src/api/projectSchema.ts",
@@ -2160,8 +2160,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 174204,
-      "sha256": "6e7f506bc2d96fce4b1bfbb8641e1d000ec96b56a716f9eced9275c4ee4ff9f9"
+      "bytes": 174430,
+      "sha256": "bdd9ebde9bf5f26d170124aba64624f9ae1cb0ec2d75de5b41b41cac081fc557"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -2455,8 +2455,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 13211,
-      "sha256": "e1b6aacedfa24c9dd1e33e873252a9117cae67eeb9ad108b540718e4aee83ab7"
+      "bytes": 13474,
+      "sha256": "bcd6a8a5a145d611af1f29123f6add028e4771b5d778af97ccae6bce8ac74e39"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -4078,6 +4078,24 @@
       "path": "tests/test_installed_resources.py",
       "source_sha256": "aa3137e87a9aed5e2ea76ef1682828fba00921161b89d7bb307219dc4155700d",
       "reason": "Check the packaged backend carries the distribution version, including rehearsal .devN versions."
+    },
+    {
+      "base_commit": "3e8f2f1ff912485065a6f511e522b14e42dcaad5",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "163f12c0c4ddbf19539b9d98511064e829341a64df2a3b6e8f2bfa11bade1e4f",
+      "reason": "Check that clicking Examples opens its submenu rather than toggling it."
+    },
+    {
+      "base_commit": "3e8f2f1ff912485065a6f511e522b14e42dcaad5",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "6e7f506bc2d96fce4b1bfbb8641e1d000ec96b56a716f9eced9275c4ee4ff9f9",
+      "reason": "Open the Examples submenu on click instead of toggling it, so a mouse click after the hover no longer closes it."
+    },
+    {
+      "base_commit": "3e8f2f1ff912485065a6f511e522b14e42dcaad5",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "e1b6aacedfa24c9dd1e33e873252a9117cae67eeb9ad108b540718e4aee83ab7",
+      "reason": "Check in a real browser that the Examples submenu stays open after a mouse click."
     }
   ]
 }
