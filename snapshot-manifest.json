@@ -65,8 +65,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 8759,
-      "sha256": "f38d163670b66db73e8f47739392f7a4d46d101cfd320317496e0c0a42e7b785"
+      "bytes": 9138,
+      "sha256": "7b6e24da04669743bdbd07c0981130a898adbf552002725afed5350f40ed8a15"
     },
     {
       "path": "SECURITY.md",
@@ -2860,8 +2860,8 @@
     },
     {
       "path": "solvers/magneto2d/src/postprocess.rs",
-      "bytes": 18819,
-      "sha256": "9db0af77263e23d293e86bb2aff2acc0b3b8f816650b6c5442f9e230d29618bc"
+      "bytes": 21541,
+      "sha256": "ff9b7d727df7a4610f7d1c22e6c48771c260b50c18f6de4671d3d59558c14838"
     },
     {
       "path": "solvers/magneto2d/src/postprocess/summary.rs",
@@ -2870,8 +2870,8 @@
     },
     {
       "path": "solvers/magneto2d/src/postprocess/tests.rs",
-      "bytes": 42184,
-      "sha256": "d7e399a4dbb39eeb695c5ddb19920ada3a7d12add172c8bfbb62d91f193d8a17"
+      "bytes": 45801,
+      "sha256": "d0f41f2e309eaedcc1e434506bf0919fde28412ebf5eff5be5dacfe3457a03e0"
     },
     {
       "path": "solvers/magneto2d/src/postprocess/torque/env_flags.rs",
@@ -4650,6 +4650,24 @@
       "path": "docs/VALIDATION.md",
       "source_sha256": "3330ab5b82846589b02f089b6c94ad318ea556df5668395e6af3d692551cbc28",
       "reason": "Point readers to full Windows benchmark report v1.3 at measured commit 0b463b3, with frozen FEMM reference provenance."
+    },
+    {
+      "base_commit": "4e7da1e4b6dbfc592c1d76b43f0c4ed9696e695d",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "f38d163670b66db73e8f47739392f7a4d46d101cfd320317496e0c0a42e7b785",
+      "reason": "Note the faster Magneto2D airgap post-processing and its run-time effect."
+    },
+    {
+      "base_commit": "4e7da1e4b6dbfc592c1d76b43f0c4ed9696e695d",
+      "path": "solvers/magneto2d/src/postprocess.rs",
+      "source_sha256": "9db0af77263e23d293e86bb2aff2acc0b3b8f816650b6c5442f9e230d29618bc",
+      "reason": "Index airgap triangles on a grid so finding full-coverage airgap radii no longer scans every triangle per sample point."
+    },
+    {
+      "base_commit": "4e7da1e4b6dbfc592c1d76b43f0c4ed9696e695d",
+      "path": "solvers/magneto2d/src/postprocess/tests.rs",
+      "source_sha256": "d7e399a4dbb39eeb695c5ddb19920ada3a7d12add172c8bfbb62d91f193d8a17",
+      "reason": "Check the indexed airgap-radius search against the brute-force scan it replaced."
     }
   ]
 }

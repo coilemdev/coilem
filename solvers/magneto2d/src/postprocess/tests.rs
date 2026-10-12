@@ -1,13 +1,13 @@
 use std::f64::consts::PI;
 
 use super::{
-    choose_az_contour_radial_step, compute_filtered_nodal_b_field, compute_nodal_b_field,
-    compute_stator_core_loss, compute_torque, compute_torque_arkkio_debug,
+    barycentric_weights, choose_az_contour_radial_step, compute_filtered_nodal_b_field,
+    compute_nodal_b_field, compute_stator_core_loss, compute_torque, compute_torque_arkkio_debug,
     compute_torque_at_multiple_radii, compute_torque_at_multiple_radii_from_az,
     compute_torque_midgap_contour_debug_with_samples,
     compute_torque_midgap_contour_debug_with_samples_from_az, compute_torque_robust_contour_debug,
     compute_torque_weighted_stress_debug, compute_torque_weighted_stress_debug_with_az,
-    project_field_to_polar, CoreLossSummary, ElementField,
+    full_coverage_airgap_radii, project_field_to_polar, CoreLossSummary, ElementField,
 };
 use crate::materials::{assign_materials, SteinmetzCoefficients, MU_0};
 use crate::mesh::{MeshInfo, Region, TriMesh};
@@ -1233,5 +1233,92 @@ fn arkkio_torque_is_insensitive_to_adjacent_iron_field() {
         quiet.scaled_torque_nm,
         saturated.scaled_torque_nm,
         abs_diff
+    );
+}
+
+/// The scan `full_coverage_airgap_radii` replaced: every sample point tests
+/// every airgap triangle. Kept as the reference its grid must match exactly.
+fn brute_force_airgap_radii(mesh: &TriMesh) -> Vec<f64> {
+    let mut radii = Vec::new();
+    let mut triangles = Vec::new();
+    for (tri, region) in mesh.triangles.iter().zip(&mesh.regions) {
+        if *region != Region::Airgap {
+            continue;
+        }
+        let points = tri.map(|node| mesh.nodes[node]);
+        radii.extend(points.iter().map(|[x, y]| (x * x + y * y).sqrt()));
+        triangles.push(points);
+    }
+    radii.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    radii.dedup_by(|a, b| (*a - *b).abs() < 1e-9);
+    let span_rad = mesh.info.total_span_deg.to_radians();
+    radii
+        .windows(2)
+        .map(|window| 0.5 * (window[0] + window[1]))
+        .filter(|&radius| {
+            (0..180).all(|sample| {
+                let theta = span_rad * sample as f64 / 180.0;
+                let point = [radius * theta.cos(), radius * theta.sin()];
+                triangles.iter().any(|tri| {
+                    let pad = 1e-9;
+                    let xs = tri.map(|[x, _]| x);
+                    let ys = tri.map(|[_, y]| y);
+                    let inside_box = point[0]
+                        >= xs.iter().copied().fold(f64::INFINITY, f64::min) - pad
+                        && point[0] <= xs.iter().copied().fold(f64::NEG_INFINITY, f64::max) + pad
+                        && point[1] >= ys.iter().copied().fold(f64::INFINITY, f64::min) - pad
+                        && point[1] <= ys.iter().copied().fold(f64::NEG_INFINITY, f64::max) + pad;
+                    inside_box && barycentric_weights(point, *tri).is_some()
+                })
+            })
+        })
+        .collect()
+}
+
+#[test]
+fn full_coverage_airgap_radii_match_the_brute_force_scan() {
+    let full_ring = annulus_airgap_mesh(0.030, 0.031, 4, 96, 8, 8);
+    let sector = annulus_airgap_mesh(0.030, 0.031, 4, 48, 8, 3);
+
+    // Gmsh airgaps give nearly every node its own radius; jitter the inner
+    // rings so the candidate list is long and irregular.
+    let mut jittered = annulus_airgap_mesh(0.030, 0.031, 6, 120, 8, 8);
+    let ring_nodes = jittered.nodes.len() / 7;
+    for (index, node) in jittered.nodes.iter_mut().enumerate() {
+        let ring = index / ring_nodes;
+        if ring == 0 || ring == 6 {
+            continue;
+        }
+        let scale = 1.0 + 1.5e-3 * (1.7 * index as f64).sin();
+        *node = [node[0] * scale, node[1] * scale];
+    }
+
+    // A missing pair of triangles leaves the middle ring's radii uncovered.
+    let mut holed = annulus_airgap_mesh(0.030, 0.031, 4, 96, 8, 8);
+    let middle_ring_first_triangle = 2 * 96 * 2;
+    holed
+        .triangles
+        .drain(middle_ring_first_triangle..middle_ring_first_triangle + 2);
+    holed
+        .regions
+        .drain(middle_ring_first_triangle..middle_ring_first_triangle + 2);
+    holed.info.num_triangles = holed.triangles.len();
+
+    for (name, mesh) in [
+        ("full ring", &full_ring),
+        ("sector", &sector),
+        ("jittered", &jittered),
+        ("holed", &holed),
+    ] {
+        let expected = brute_force_airgap_radii(mesh);
+        assert!(
+            !expected.is_empty(),
+            "{name}: the reference finds working radii"
+        );
+        assert_eq!(full_coverage_airgap_radii(mesh), expected, "{name}");
+    }
+    assert!(
+        brute_force_airgap_radii(&holed).len() < brute_force_airgap_radii(&full_ring).len(),
+        "the hole removes the radii it leaves uncovered",
     );
 }

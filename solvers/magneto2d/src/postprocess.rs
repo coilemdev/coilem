@@ -352,30 +352,29 @@ fn full_coverage_airgap_radii(mesh: &TriMesh) -> Vec<f64> {
 
     let total_span_rad = mesh.info.total_span_deg.to_radians();
     let coverage_samples = 180usize;
+    let pad = 1e-9;
+    // Scanning every airgap triangle for every sample point cost about 2 s per
+    // call on a Gmsh airgap (~1,450 distinct radii x 180 angles x ~9,000
+    // triangles). The grid narrows each point to the triangles whose padded
+    // box overlaps its cell, and the same box and barycentric checks decide
+    // coverage, so the returned radii are unchanged.
+    let grid = TriangleBoxGrid::new(&airgap_triangles, pad);
     let mut working_radii = Vec::new();
     for window in unique_airgap_radii.windows(2) {
         let candidate_radius = 0.5 * (window[0] + window[1]);
         let mut covered = true;
-        'sample_loop: for sample_index in 0..coverage_samples {
+        for sample_index in 0..coverage_samples {
             let theta = total_span_rad * sample_index as f64 / coverage_samples as f64;
             let x = candidate_radius * theta.cos();
             let y = candidate_radius * theta.sin();
-            let mut matched = false;
-            for &(tri_xy, bbox) in &airgap_triangles {
-                let pad = 1e-9;
-                if x < bbox[0] - pad || x > bbox[1] + pad || y < bbox[2] - pad || y > bbox[3] + pad
-                {
-                    continue;
-                }
-                if barycentric_weights([x, y], tri_xy).is_none() {
-                    continue;
-                }
-                matched = true;
-                break;
-            }
+            let matched = grid.candidates(x, y).iter().any(|&index| {
+                let (tri_xy, bbox) = airgap_triangles[index];
+                !(x < bbox[0] - pad || x > bbox[1] + pad || y < bbox[2] - pad || y > bbox[3] + pad)
+                    && barycentric_weights([x, y], tri_xy).is_some()
+            });
             if !matched {
                 covered = false;
-                break 'sample_loop;
+                break;
             }
         }
         if covered {
@@ -385,6 +384,76 @@ fn full_coverage_airgap_radii(mesh: &TriMesh) -> Vec<f64> {
 
     working_radii
 }
+
+/// Uniform grid over triangle bounding boxes. Each cell lists every triangle
+/// whose padded box overlaps it. A point outside the grid maps to the nearest
+/// edge cell, where every candidate's box check then rejects it.
+struct TriangleBoxGrid {
+    origin: [f64; 2],
+    cell_size: [f64; 2],
+    side: usize,
+    cells: Vec<Vec<usize>>,
+}
+
+impl TriangleBoxGrid {
+    fn new(triangles: &[([[f64; 2]; 3], [f64; 4])], pad: f64) -> Self {
+        let mut min = [f64::INFINITY; 2];
+        let mut max = [f64::NEG_INFINITY; 2];
+        for (_, bbox) in triangles {
+            min[0] = min[0].min(bbox[0] - pad);
+            max[0] = max[0].max(bbox[1] + pad);
+            min[1] = min[1].min(bbox[2] - pad);
+            max[1] = max[1].max(bbox[3] + pad);
+        }
+        // An airgap ring then holds a handful of triangles per cell.
+        let side = ((triangles.len() as f64).sqrt() * 2.0)
+            .ceil()
+            .clamp(1.0, 1024.0) as usize;
+        let span = |axis: usize| {
+            let span = max[axis] - min[axis];
+            if span.is_finite() && span > 0.0 {
+                span
+            } else {
+                1.0
+            }
+        };
+        let mut grid = Self {
+            origin: [
+                if min[0].is_finite() { min[0] } else { 0.0 },
+                if min[1].is_finite() { min[1] } else { 0.0 },
+            ],
+            cell_size: [span(0) / side as f64, span(1) / side as f64],
+            side,
+            cells: vec![Vec::new(); side * side],
+        };
+        for (index, (_, bbox)) in triangles.iter().enumerate() {
+            let (x0, x1) = (grid.cell(bbox[0] - pad, 0), grid.cell(bbox[1] + pad, 0));
+            let (y0, y1) = (grid.cell(bbox[2] - pad, 1), grid.cell(bbox[3] + pad, 1));
+            for iy in y0..=y1 {
+                for ix in x0..=x1 {
+                    grid.cells[iy * side + ix].push(index);
+                }
+            }
+        }
+        grid
+    }
+
+    /// Monotone in `value`, so a point inside a padded box always lands in a
+    /// cell that box was registered in.
+    fn cell(&self, value: f64, axis: usize) -> usize {
+        let raw = ((value - self.origin[axis]) / self.cell_size[axis]).floor();
+        if raw.is_nan() || raw < 0.0 {
+            0
+        } else {
+            (raw as usize).min(self.side - 1)
+        }
+    }
+
+    fn candidates(&self, x: f64, y: f64) -> &[usize] {
+        &self.cells[self.cell(y, 1) * self.side + self.cell(x, 0)]
+    }
+}
+
 fn airgap_mid_radius(mesh: &TriMesh) -> Option<f64> {
     if let Some(band) = mesh.info.airgap_band() {
         return Some(0.5 * (band.inner_radius_m() + band.outer_radius_m()));
