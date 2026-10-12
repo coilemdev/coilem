@@ -90,8 +90,7 @@ def planned_work(config: MotorConfig) -> dict[str, int]:
 
 
 def mesh_workers(mesh_jobs: int) -> int:
-    """Gmsh producer processes the solver will use: up to eight, one per CPU,
-    and one where it runs without a process pool (Windows)."""
+    """Gmsh producer processes the solver will use: up to eight, one per CPU."""
 
     return _gmsh_pipeline_worker_count("COILEM_MAGNETO2D_GMSH_PRODUCER_WORKERS", mesh_jobs, uses_process_pool=True)
 

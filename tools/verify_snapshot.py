@@ -58,6 +58,7 @@ ALLOWED_BINARY_SIGNATURES = {
     "docs/images/coilem-landing-page.png": b"\x89PNG\r\n\x1a\n",
     "docs/images/magneto2d-follow-flux-fields.png": b"\x89PNG\r\n\x1a\n",
     "docs/images/magneto2d-p1-element.png": b"\x89PNG\r\n\x1a\n",
+    "benchmarks/windows-process-pools-20261012-02fa24b/coilem_benchmark_report.pdf": b"%PDF-",
 }
 
 
@@ -163,7 +164,10 @@ def main() -> int:
         if allowed_signature is not None:
             if not path.read_bytes().startswith(allowed_signature):
                 failures.append(f"invalid allowlisted binary signature: {relative}")
-            failures.extend(png_hygiene_failures(relative, path))
+            if path.suffix.lower() == ".png":
+                failures.extend(png_hygiene_failures(relative, path))
+            elif not path.read_bytes().rstrip().endswith(b"%%EOF"):
+                failures.append(f"incomplete allowlisted PDF: {relative}")
             continue
         try:
             text = path.read_text(encoding="utf-8")

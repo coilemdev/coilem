@@ -5,13 +5,13 @@ import inspect
 import json
 import math
 import os
-import platform
 import shutil
 import sys
 import threading
 import time
 from collections import OrderedDict
-from concurrent.futures import Future, ProcessPoolExecutor, ThreadPoolExecutor, as_completed
+from collections.abc import Callable
+from concurrent.futures import Future, ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from functools import wraps
 from pathlib import Path
@@ -58,8 +58,18 @@ from backend.models import (
     SolveSummary,
     TorqueWaveform,
 )
+from backend.solver._mesh_pool import (
+    check_mesh_worker_cancelled,
+    completed_mesh_futures,
+    gmsh_mesh_process_pool,
+)
+from backend.solver._process_pool import (
+    cancellable_process_pool,
+    check_process_worker_cancelled,
+    completed_process_futures,
+)
 from backend.solver_contract import SolveCancelledError, Solver
-from backend.solver_environment import solver_setting
+from backend.solver_environment import public_process_pool_disabled, solver_setting
 from backend.steel_flux_metrics import (
     finalize_steel_flux_density_rms,
     merge_steel_flux_density_rms_accumulator,
@@ -129,11 +139,42 @@ def _env_positive_int(name: str) -> int | None:
 
 
 def _magneto2d_python_process_pool_enabled() -> bool:
+    if public_process_pool_disabled():
+        return False
     explicit = _env_bool("COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL")
     if explicit is not None:
         return explicit
-    return platform.system().lower() != "windows"
+    return True
 
+
+def _gmsh_mesh_process_pool_enabled() -> bool:
+    """Gmsh mesh workers support Windows independently of frame/playback pools."""
+    if public_process_pool_disabled("mesh"):
+        return False
+    explicit = _env_bool("COILEM_MAGNETO2D_ALLOW_MESH_PROCESS_POOL")
+    if explicit is not None:
+        return explicit
+    return _env_bool("COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL") is not False
+
+
+def _playback_process_pool_enabled() -> bool:
+    """Playback workers support Windows independently of field-frame pools."""
+    if public_process_pool_disabled("playback"):
+        return False
+    explicit = _env_bool("COILEM_MAGNETO2D_ALLOW_PLAYBACK_PROCESS_POOL")
+    if explicit is not None:
+        return explicit
+    return _env_bool("COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL") is not False
+
+
+def _field_frame_process_pool_enabled() -> bool:
+    """Field-frame workers use the same approved defaults on every platform."""
+    if public_process_pool_disabled("frames"):
+        return False
+    explicit = _env_bool("COILEM_MAGNETO2D_ALLOW_FIELD_FRAME_PROCESS_POOL")
+    if explicit is not None:
+        return explicit
+    return _magneto2d_python_process_pool_enabled()
 
 
 
@@ -488,9 +529,11 @@ def _build_gmsh_mesh_in_subprocess(
 ) -> tuple[dict[str, Any], int, float]:
     """Build one Gmsh mesh in a separate Python process."""
 
+    check_mesh_worker_cancelled()
     config = MotorConfig.model_validate(config_payload)
     started = time.perf_counter()
     artifact, generation_time_ms = _GmshMeshProducer.build(config, rotor_angle_mech_deg)
+    check_mesh_worker_cancelled()
     return artifact, generation_time_ms, (time.perf_counter() - started) * 1000.0
 
 
@@ -785,7 +828,7 @@ def _gmsh_pipeline_worker_count(
     default: int = 8,
     uses_process_pool: bool = False,
 ) -> int:
-    if uses_process_pool and not _magneto2d_python_process_pool_enabled():
+    if uses_process_pool and not _gmsh_mesh_process_pool_enabled():
         return 1
     requested = _env_positive_int(env_name)
     host_cpus = os.cpu_count() or default
@@ -813,12 +856,12 @@ def _live_field_frame_solver_detail() -> dict[str, Any]:
 
 
 def _field_preview_worker_count(total_frames: int, solve_workers: int) -> int:
-    if not _magneto2d_python_process_pool_enabled():
+    if not _field_frame_process_pool_enabled():
         return 1
     requested = _env_positive_int("COILEM_MAGNETO2D_FIELD_PREVIEW_WORKERS")
     default = max(1, int(solve_workers))
     workers = requested if requested is not None else default
-    return max(1, min(int(workers), max(1, int(total_frames))))
+    return max(1, min(int(workers), 8, os.cpu_count() or 1, max(1, int(total_frames))))
 
 
 def _slim_result_field_frame(frame_payload: dict[str, Any]) -> dict[str, Any]:
@@ -854,6 +897,7 @@ def _build_field_line_frame_in_subprocess(
     solve_cache_dir_text: str | None,
     include_live_frame: bool,
 ) -> tuple[int, dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None]:
+    check_process_worker_cancelled()
     frame = _field_line_frame_from_report(loaded_report, angle_elec_deg, noload_report)
     if frame is None:
         return idx, None, None, None
@@ -873,6 +917,7 @@ def _build_field_line_frame_in_subprocess(
     # for a 48-position IPM run).
     steel_accumulator = new_steel_flux_density_rms_accumulator()
     update_steel_flux_density_rms_accumulator(steel_accumulator, frame_payload)
+    check_process_worker_cancelled()
     return idx, _slim_result_field_frame(frame_payload), live_frame, steel_accumulator
 
 
@@ -883,6 +928,7 @@ def _solve_with_per_angle_producer_meshes(
     solve_cache_dir: Path | None,
     on_progress=None,
     clockwise_positive: bool = False,
+    check_cancelled: Callable[[], None] | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Shared per-angle remesh sweep for imported-mesh producers (FEMM/Gmsh).
 
@@ -1354,7 +1400,7 @@ def _solve_with_per_angle_producer_meshes(
                         int((time.perf_counter() - rebake_started) * 1000.0),
                     )
             elif producer_workers > 1:
-                with ProcessPoolExecutor(max_workers=producer_workers) as mesh_pool:
+                with gmsh_mesh_process_pool(producer_workers) as mesh_pool:
                     mesh_futures: dict[
                         Future[tuple[dict[str, Any], int, float]],
                         dict[str, Any],
@@ -1364,13 +1410,15 @@ def _solve_with_per_angle_producer_meshes(
                     # in the same instant with identical counts and read as
                     # a frozen bar in the UI.
                     for job in producer_jobs:
+                        if check_cancelled is not None:
+                            check_cancelled()
                         mesh_future = mesh_pool.submit(
                             _build_gmsh_mesh_in_subprocess,
                             config_payload,
                             float(job["rotor_angle_mech_deg"]),
                         )
                         mesh_futures[mesh_future] = job
-                    for mesh_future in as_completed(mesh_futures):
+                    for mesh_future in completed_mesh_futures(mesh_futures, check_cancelled):
                         job = mesh_futures[mesh_future]
                         solve_mesh_artifact, generation_time_ms, _mesh_wall_ms = mesh_future.result()
                         handle_group_mesh_ready(
@@ -1591,8 +1639,8 @@ def _solve_with_per_angle_producer_meshes(
 
             frame_workers = _field_preview_worker_count(len(loaded_reports), solve_workers)
             if frame_workers > 1 and len(loaded_reports) > 1:
-                with ProcessPoolExecutor(max_workers=frame_workers) as frame_pool:
-                    frame_futures: list[
+                with cancellable_process_pool(frame_workers) as frame_pool:
+                    frame_futures: dict[
                         Future[
                             tuple[
                                 int,
@@ -1600,12 +1648,14 @@ def _solve_with_per_angle_producer_meshes(
                                 dict[str, Any] | None,
                                 dict[str, Any] | None,
                             ]
-                        ]
-                    ] = [
-                        frame_pool.submit(_build_field_line_frame_in_subprocess, *frame_job)
-                        for frame_job in field_frame_jobs
-                    ]
-                    for frame_future in as_completed(frame_futures):
+                        ],
+                        int,
+                    ] = {}
+                    for frame_job in field_frame_jobs:
+                        if check_cancelled is not None:
+                            check_cancelled()
+                        frame_futures[frame_pool.submit(_build_field_line_frame_in_subprocess, *frame_job)] = frame_job[0]
+                    for frame_future in completed_process_futures(frame_futures, check_cancelled):
                         idx, field_line_frame, live_field_frame, steel_accumulator = (
                             frame_future.result()
                         )
@@ -1614,6 +1664,8 @@ def _solve_with_per_angle_producer_meshes(
                         steel_accumulators_ordered[idx] = steel_accumulator
             else:
                 for frame_job in field_frame_jobs:
+                    if check_cancelled is not None:
+                        check_cancelled()
                     frame_idx, field_line_frame, live_field_frame, steel_accumulator = (
                         _build_field_line_frame_in_subprocess(*frame_job)
                     )
@@ -2961,8 +3013,8 @@ class Magneto2DSolver(Solver):
         )
 
 
-    @staticmethod
     def _solve_with_per_angle_gmsh_meshes(
+        self,
         config: MotorConfig,
         *,
         solve_cache_dir: Path | None,
@@ -2976,6 +3028,7 @@ class Magneto2DSolver(Solver):
             solve_cache_dir=solve_cache_dir,
             on_progress=on_progress,
             clockwise_positive=clockwise_positive,
+            check_cancelled=self._raise_if_cancelled,
         )
 
     def solve(

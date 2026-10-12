@@ -46,6 +46,21 @@ shares its arrays, copies use a faster method, and mesh-evidence hashes skip
 a per-value walk and reuse the mesh's serialized text. Hashes and results are
 unchanged. The IPM 14p run then took 76 s and the SPM 8p/12s run 48 s.
 
+Windows now generates independent Gmsh meshes in worker processes, with up
+to eight workers limited by the host CPU count. Playback sweeps with at least
+eight frames also use up to eight worker processes to render and encode the
+same image layers. Field-frame extraction also uses up to eight processes,
+limited by CPU, solve-worker and frame counts. All pools use Windows spawning.
+Frames and steel RMS contributions retain their angle order. Cancelling a solve
+skips queued meshes and frames, lets running work finish, and joins workers
+before releasing the solve lane.
+
+Installed applications can disable mesh, field-frame and playback pools with their
+individual `COILEM_MAGNETO2D_ALLOW_*_PROCESS_POOL` switches, or disable all Python
+pools with `COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL=0` before restarting. These
+disable-only compatibility controls keep numerical settings isolated and are
+not forwarded to Magneto2D.
+
 ## Solver time (unreleased)
 
 The Solver time on the Results page and in the PDF and CSV reports is now the

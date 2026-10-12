@@ -5,8 +5,8 @@
   "files": [
     {
       "path": ".gitattributes",
-      "bytes": 268,
-      "sha256": "550ea00496f1641c1dc0318d89db0154a3d1b3ed8c2d2397b5e8564405164570"
+      "bytes": 281,
+      "sha256": "3077a1e2193c544c8204a5f0f59898c2311f69b96e74aee5a1895e1b50e1c9ce"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -65,8 +65,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 10668,
-      "sha256": "a5b586fdfa3257d97efa9b141f9f425934122e852538d2aab4a1ae9df8813e44"
+      "bytes": 11592,
+      "sha256": "ab4151bf127e2e517e5067b5b3adfd85f58757bc9f9b095b99cd61a7e7b0c59b"
     },
     {
       "path": "SECURITY.md",
@@ -390,8 +390,8 @@
     },
     {
       "path": "backend/public_field_playback.py",
-      "bytes": 26297,
-      "sha256": "fbe73ed42ab38acaff671b5a4e11dd1e00463594ad76b040cba59eccbf9154c7"
+      "bytes": 26295,
+      "sha256": "fc701d296c473251183c4cc861403dd7696efc8ccfe2bf3ef8b5a6564b3596da"
     },
     {
       "path": "backend/public_field_playback_contract.py",
@@ -470,8 +470,8 @@
     },
     {
       "path": "backend/solve_estimate.py",
-      "sha256": "89545dec4ce670131b9005062b5d6a52fe18ce8e633d6cb643e96e99dad72b11",
-      "bytes": 5184
+      "sha256": "568229e08975b0295f223e5965cdfcf1f4aca3edb9c4ab35903a9943a131cd8e",
+      "bytes": 5124
     },
     {
       "path": "backend/solve_workspace.py",
@@ -480,13 +480,23 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 137850,
-      "sha256": "62dd40847e01862b08153ad8a146b4ad3565e751a2fa4ba5a32a717a1fbfff01"
+      "bytes": 139987,
+      "sha256": "378152675ad6182aeaafd81e10d2d0268bfceedb06e62c1dad57e93a66632dca"
     },
     {
       "path": "backend/solver/_helpers.py",
       "bytes": 60828,
       "sha256": "d422325c9fd1efcba023fcffb45db0ebc55a0fccdf5d0540599b2ebae93b8e18"
+    },
+    {
+      "path": "backend/solver/_mesh_pool.py",
+      "bytes": 489,
+      "sha256": "03badfb53eb6b4d68ce35b2402213f61afb3f03ebe1897dbcfe78abebc11abc4"
+    },
+    {
+      "path": "backend/solver/_process_pool.py",
+      "bytes": 2138,
+      "sha256": "85506651ec15ae94ef9fcdaacf87070ddef8153c744d9388da8794f1d5fad487"
     },
     {
       "path": "backend/solver_contract.py",
@@ -495,8 +505,8 @@
     },
     {
       "path": "backend/solver_environment.py",
-      "bytes": 1682,
-      "sha256": "c60730f29ae37c8bb93f87b7537675205fbc39d26731ca781ab3f6f4d54fc9b1"
+      "bytes": 2745,
+      "sha256": "9f623790efdcdc915cc693bb16cb4675bcbc1c21188176caccfe53fb3984b06f"
     },
     {
       "path": "backend/steel_flux_metrics.py",
@@ -530,8 +540,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 2923,
-      "sha256": "d480aee17543d1e0393ce3b1830e0731fdd8976982701d3c8c4712aeabf42f09"
+      "bytes": 3433,
+      "sha256": "52dcff69414e0ff0f6f8c5420f9ee05b0e552e53aff29532cce87fafe3c49cdc"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -1829,6 +1839,231 @@
       "sha256": "082f841c598fb32bc90a2528950ff1aff31a215457a3bd0a42a120b1fb7b1280"
     },
     {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/README.md",
+      "bytes": 4909,
+      "sha256": "6bde194b2561f8d2eb749b60f742a7eb6a9ed40af67626de9dffe96ff09a9fbb"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/artifact_manifest.json",
+      "bytes": 8172,
+      "sha256": "69ecedc9bb6573856e74b992d7f173de2e97fea25ee72f1a63e37a44a45c4515"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/benchmark_report.md",
+      "bytes": 4001,
+      "sha256": "84da1d079bc95772f6f09dd6b161bac94e7265b0077216c4377d11b6857c1c02"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/benchmark_summary.json",
+      "bytes": 1733812,
+      "sha256": "5fa0692b6729bd38d00ac14d6c5c3048188723c95f1f5059b97c21fb9a69aad1"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/coilem_benchmark_report.html",
+      "bytes": 397056,
+      "sha256": "79393ef498e7592604483d4f8558e429e7167253a69931d59d3c1f7ac1b5ea94"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/coilem_benchmark_report.pdf",
+      "bytes": 143079,
+      "sha256": "d447e725781c9beab6c1ec23e11dd33e5a5a260daa730c6d4fcb4240578557a1"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/comparison-to-v1.3.json",
+      "bytes": 82529,
+      "sha256": "0de97402e37f0120ef4998b38ad1a7ec27cd4c75fbe18fec47ffc69bc0c031b8"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/execution-timings.json",
+      "bytes": 8436,
+      "sha256": "a95f64c21e9b1e607c0751dd2970d3cf3536ed7f760471fca6e4e92385ec8f7f"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1604,
+      "sha256": "15423a47ebbf8509a7935c60d5c45404b8ee186f37dd266dec9e3f2a01560e34"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1607,
+      "sha256": "e328650573ad963181a7cf2292f6fe924d866c792d79c2a32137da2f9522fae0"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1606,
+      "sha256": "68b4e61d69cbc4673eba7ec92d0609862b1cf0283fa8391bf174b8d6c55b7c59"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2503,
+      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2503,
+      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2503,
+      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2502,
+      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2502,
+      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2502,
+      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1594,
+      "sha256": "3d78ae3d4175a933e18d04b9d45c7bddaff1db6e8355c21675dbe4da2934392c"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1596,
+      "sha256": "2081d6ab448377574d76cdd8c86724d07368fd09093bab02d111bfb589d5d709"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1595,
+      "sha256": "a77a7fbd94ed2a06659067f6501b029f612f09877128361268c76c5f9e268604"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2506,
+      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2506,
+      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1640,
+      "sha256": "dd91d0757a826b34c3fde5e813bdfdc385bc048ce477a172c5bfbf292ff6703b"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1642,
+      "sha256": "4e53c05733eb4d81cc3205e743f12fb473065142827f4e38327bd035caf7545c"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1641,
+      "sha256": "1825fe88e7ddf36234aa984f0fbbd30e894bfb34a6030fc02a348c883bf18ffa"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2550,
+      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/windows-process-pools-20261012-02fa24b/publication.json",
+      "bytes": 7016,
+      "sha256": "bbbb31394267fee19c1a44302ff4e936936dab358d9abc31c73d7a7a2ae91bec"
+    },
+    {
       "path": "docs/ARCHITECTURE.md",
       "bytes": 11304,
       "sha256": "54ec6b85b36f1e1beec6083c672b06b7d6b7d8b3af4acecdbbe548ef8e432c02"
@@ -1885,13 +2120,13 @@
     },
     {
       "path": "docs/RUNTIME_SETTINGS.md",
-      "bytes": 6366,
-      "sha256": "2e48fb0e6b4751b19bc7b758fde8f42afc269ac12f6fcc095f30782fc16774cd"
+      "bytes": 8998,
+      "sha256": "83807ef6c1457ef2a34fafc9ef09b53793ea711bbe62d6674aaa1fd1786e6578"
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 16367,
-      "sha256": "d9a09d4d7cecec0ae9b1a61e0cf69ad6312281b19963a15d195013106afd1e4d"
+      "bytes": 17941,
+      "sha256": "c105300710e4373c5b03a48c60dbb5897be3094ab5fcaa89b8c72d20fb547f46"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -3155,8 +3390,8 @@
     },
     {
       "path": "tests/test_public_solver_environment.py",
-      "bytes": 5948,
-      "sha256": "ac8a9a29cf1925523a6d323818f46e954d58a97c9afa4301e4017b3fce2df8f5"
+      "bytes": 10482,
+      "sha256": "d50605cc2853d954305848d5fecc6c1fe857a1442e7191af700b2f38e21157fe"
     },
     {
       "path": "tests/test_public_ui.py",
@@ -3197,6 +3432,21 @@
       "path": "tests/test_solve_workspace.py",
       "bytes": 22220,
       "sha256": "db3ad88a797164357e4bcf96ca6b3e89438c2b00c1fe4c15263439dcc5752961"
+    },
+    {
+      "path": "tests/test_windows_field_frame_pool.py",
+      "bytes": 4574,
+      "sha256": "caedc891aa678952edd9afd41b58c2bd9891d7bee8b5315f821faeb88a20cb73"
+    },
+    {
+      "path": "tests/test_windows_mesh_pool.py",
+      "bytes": 5157,
+      "sha256": "3396b5c304626b27a5ed6f509d46c53cba36e0f73c06135928c9788ee6873444"
+    },
+    {
+      "path": "tests/test_windows_playback_pool.py",
+      "bytes": 4371,
+      "sha256": "862ad10f119ca85ba1996413416494468d18febb98c0885f28ef79c07f224bc8"
     },
     {
       "path": "tools/benchmark_suite/__init__.py",
@@ -3330,8 +3580,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 17289,
-      "sha256": "7c353f7b69aa6a8728f05c5a05707908cb26d055a3e7e9ea6ff188c9eff48c54"
+      "bytes": 17577,
+      "sha256": "bb69e9154a151c1f7d1ed3462c5208a0f63c5401a262c2fac9c00ccfebe3ae0b"
     }
   ],
   "public_patches": [

@@ -8,6 +8,10 @@ end in `.coilem`. Existing `.openem` files and lower-case schema keys remain com
 | `COILEM_USER_DATA_ROOT` | Override durable motor-run storage and the solver cache. |
 | `COILEM_SOLVE_WORKSPACE_MAX_BYTES` | Set the durable workspace budget; excludes the solver cache. |
 | `COILEM_SOLVE_CACHE_MAX_BYTES` | Set the solver-cache byte budget used by rolling cleanup; defaults to 2 GiB. |
+| `COILEM_MAGNETO2D_ALLOW_MESH_PROCESS_POOL` | Set to `0` to generate Gmsh meshes in the backend process; works in the installed app. |
+| `COILEM_MAGNETO2D_ALLOW_PLAYBACK_PROCESS_POOL` | Set to `0` to use threads for playback rendering; works in the installed app. |
+| `COILEM_MAGNETO2D_ALLOW_FIELD_FRAME_PROCESS_POOL` | Set to `0` to extract field frames with one backend worker; works in the installed app. |
+| `COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL` | Set to `0` to disable all Python process pools; works in the installed app. |
 | `COILEM_LOCAL_API_PORT` | Select the loopback port for `coilem-serve`, or an exact port for the `coilem` launcher. |
 | `VITE_COILEM_LOCAL_API_BASE` | Select a loopback backend URL for the Vite development server; production bundles call their own origin. |
 | `COILEM_LOCAL_UI_ORIGIN` | Allow one additional HTTP loopback UI origin with an explicit port. |
@@ -74,8 +78,9 @@ solves inherit only
 `TZ`. Runtime library injection variables and arbitrary shell variables are
 excluded. Numerical options are generated from the request; setting a native
 solver debug variable in your shell does not change an application solve.
-Python orchestration and shaft material selection also use fixed defaults instead
-of inherited diagnostic switches. Gmsh initialization skips machine-local
+Python orchestration uses fixed defaults except for the four disable-only
+process-pool compatibility controls below. Shaft material selection and
+numerical diagnostic switches remain isolated. Gmsh initialization skips machine-local
 configuration files; mesh options come from the application and request. Build-tool discovery is separate from solver execution.
 
 The optional Elmer development lane does not use this environment allowlist:
@@ -93,3 +98,48 @@ Direct use of the Magneto2D CLI is a separate research interface. It still
 accepts the documented `COILEM_*` and `MAGNETO2D_*` diagnostic switches; results
 from custom CLI environments are not equivalent to the application's fixed
 policy. Document those settings when sharing direct-CLI experiments.
+
+## Process-pool compatibility fallback
+
+If Python worker processes cannot start on a machine, stop the running backend
+or installed app first, then disable its process pools before restarting. In
+Windows PowerShell, for an installed app:
+
+```powershell
+$env:COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL = "0"
+coilem
+```
+
+For a source checkout, use the same setting before the usual backend command:
+
+```powershell
+$env:COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL = "0"
+.\.venv\Scripts\python.exe -m uvicorn backend.public_main:app --host 127.0.0.1 --port 8000
+```
+
+Gmsh then generates meshes in the backend process, playback uses threads, and
+field-frame production uses one worker. The mesh runtime estimate follows the
+serial worker count. To disable only one pool, set its specific variable above
+to `0` and leave the shared variable unset. The shared off switch takes priority
+over the specific switches in the installed application.
+
+These isolated-runtime controls accept `0`, `false`, `no` or `off`, ignoring
+case and surrounding spaces. Other values preserve the approved defaults;
+`1` cannot force on a disabled pool or enable diagnostic numerical settings.
+The controls stay in Python and are not passed to Magneto2D. To restore the
+defaults, remove any off switches and restart the app; for the shared switch:
+
+```powershell
+Remove-Item Env:COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL -ErrorAction SilentlyContinue
+```
+
+Restarting is required because a second `coilem` launch reuses an existing
+server in the same user-data folder. Settings in a new shell do not change that
+server. This fallback changes concurrency, while retaining the same numerical
+options, meshes and renderer.
+
+Without an off switch, field-frame extraction uses up to eight processes,
+capped by CPU count, solve concurrency and frame count. Windows workers use
+`spawn`. Frames and steel RMS partials are collected by angle index and reduced
+in that fixed order. Cancellation skips queued frame work and joins workers
+before the solve lane is released.
