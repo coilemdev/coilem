@@ -9,9 +9,29 @@ See [Numerical evidence](NUMERICAL_EVIDENCE.md) for measured comparisons and
 [Local verification](VERIFICATION.md) for the build, browser and audit record.
 These records keep their tested runtime identities explicit.
 
-The [benchmark index](../benchmarks/README.md) identifies the current selection
-and archived evidence. The [IPM diagnosis](IPM_BENCHMARK_DIAGNOSIS.md) explains
+The [benchmark index](../benchmarks/README.md) identifies the latest full run,
+the current selection and archived evidence. The [IPM diagnosis](IPM_BENCHMARK_DIAGNOSIS.md) explains
 the fixture replacement and the solver/convergence work that remains open.
+
+## Full Windows rerun before later performance changes
+
+[Report v1.3](../benchmarks/main-20261012-0b463b3-rerun/README.md) measures the
+complete selected protocol 1.1.0 matrix at clean candidate
+`0b463b31fc3479360ffaa3668731e3792c034639`: A - SPM 10 PASS, B - IPM 12 PASS,
+C - Distributed Winding 4 PASS / one planned unsupported Prius fixture,
+D - BLDC 3 PASS / 42 gates. All native field jobs are new; comparisons read the
+frozen, data-only FEMM bundle. FEMM and its adapter were not installed or run.
+
+This candidate predates performance PRs #32, #33 and #34, and the later main
+responsiveness changes in PRs #29, #30 and #31. The report provides a recorded
+numerical baseline for comparing later candidates without claiming those later
+changes were measured. Its elapsed timings include concurrent workloads and
+result generation, and do not benchmark browser responsiveness. A controlled
+speed comparison requires comparable load and settings.
+
+Inputs, reference arrays, material contracts, angle grids and gates are unchanged
+from v1.2. The original failed low-output geometries and the scoped preview
+qualification table below remain visible; this rerun does not broaden that policy.
 
 ## Next-release benchmark selection
 
@@ -28,7 +48,8 @@ two-case qualification at `af56962`, identifying each row's candidate and source
 It is not a complete run of a single next-release commit. The original failures
 and preview qualification record below remain archived. New geometry passing
 does not establish a solver fix or broaden the previous qualification claim.
-Run the selected full matrix on the next release commit before updating that claim.
+V1.3 now records that full selected matrix at `0b463b3`; subsequent release
+candidates still require their own run before updating a qualification claim.
 
 Harness 1.2.1 runs [protocol 1.1.0](../benchmarks/abcd-v1.1/README.md) without FEMM
 on macOS, Windows and Linux:

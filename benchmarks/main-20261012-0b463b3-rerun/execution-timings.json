@@ -1,0 +1,292 @@
+{
+  "schema": "coilem.benchmark_execution_timings/v1",
+  "candidate_commit": "0b463b31fc3479360ffaa3668731e3792c034639",
+  "started_at": "2026-10-12T13:13:20.389646+00:00",
+  "completed_at": "2026-10-12T16:09:57.668522+00:00",
+  "elapsed_wall_time_s": 10597.278876,
+  "jobs": [
+    {
+      "case_id": "spm_4p12s_simple__baseline",
+      "phase": "A",
+      "stage": "native",
+      "wall_time_s": 335.365076,
+      "worker_runtime_s": 333.22746840002947,
+      "result_sha256": "16c04aadf1d094804b7fd43e93ccb51ad7f1831ed38964ded44fa47ba8ca1877"
+    },
+    {
+      "case_id": "spm_4p12s_simple__high_current",
+      "phase": "A",
+      "stage": "native",
+      "wall_time_s": 288.339087,
+      "worker_runtime_s": 286.30056300002616,
+      "result_sha256": "97667948204118a4aa5a0ef7efc69103c137725b1f56d63fde305657160e4160"
+    },
+    {
+      "case_id": "spm_4p12s_simple__tight_airgap",
+      "phase": "A",
+      "stage": "native",
+      "wall_time_s": 231.491427,
+      "worker_runtime_s": 229.99040699994657,
+      "result_sha256": "82a48da3f37825a29a56b27ffa2186a44628714e30381bdf17a0206769dd1425"
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__baseline",
+      "phase": "A",
+      "stage": "native",
+      "wall_time_s": 298.510549,
+      "worker_runtime_s": 296.3750200000359,
+      "result_sha256": "419c7f7f87026dfb2948c6f50d65c38df64176a9e6101a86a9eb34293def4e53"
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__high_current",
+      "phase": "A",
+      "stage": "native",
+      "wall_time_s": 302.467945,
+      "worker_runtime_s": 300.20624819991644,
+      "result_sha256": "7ccd245196bd1a4d33887c051e1d7590ef914f72e78c045bb8fecb438bb5d640"
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__tight_airgap",
+      "phase": "A",
+      "stage": "native",
+      "wall_time_s": 238.482158,
+      "worker_runtime_s": 236.99236260005273,
+      "result_sha256": "8bc6dc94beb7aadd587bb28677a61b9c6f5bfd4d2ff29d63733c63ae19d68ae7"
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__baseline",
+      "phase": "A",
+      "stage": "native",
+      "wall_time_s": 472.082768,
+      "worker_runtime_s": 469.4410899000941,
+      "result_sha256": "51c3324146371a29e31b773806dce2750f83b65778a6ed992911057dbd32586f"
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__high_current",
+      "phase": "A",
+      "stage": "native",
+      "wall_time_s": 475.653852,
+      "worker_runtime_s": 473.01544889993966,
+      "result_sha256": "ea39622b2074756be91dc352e9d6855047e0ba9c8ac67b36142cfab43435b036"
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__tight_airgap",
+      "phase": "A",
+      "stage": "native",
+      "wall_time_s": 494.304655,
+      "worker_runtime_s": 491.56696079997346,
+      "result_sha256": "b5daa3750f31b66d9c3b7879ca7eb89fe87c6516862ddf96baee8cd30b3357f0"
+    },
+    {
+      "case_id": "spm_8p12s_reference_angle30__baseline",
+      "phase": "A",
+      "stage": "native",
+      "wall_time_s": 429.294388,
+      "worker_runtime_s": 426.7161555000348,
+      "result_sha256": "aab70757fb858648909724c9d8ac06e9ea95121297d085cb54f9f94e8490719f"
+    },
+    {
+      "case_id": "ipm_flat_12s10p_fscw_contract",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 290.214057,
+      "worker_runtime_s": 287.3926677000709,
+      "result_sha256": "95132fd857932c860967615b9bc1af44234e20cba02872e179023ba6f5733691"
+    },
+    {
+      "case_id": "ipm_flat_24s16p_industrial_contract",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 299.440197,
+      "worker_runtime_s": 296.4616307000397,
+      "result_sha256": "86598b49a454c2aabf7e0a8db3e59ad9166a44a5688e971abd8ccf146af027a1"
+    },
+    {
+      "case_id": "ipm_flat_4p12s_micro_contract",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 348.963965,
+      "worker_runtime_s": 345.75293299998157,
+      "result_sha256": "481bdf769cd7f04ce99c1c9099cd0c4cee4e7dde5b49993920cbc8047ddeaf1c"
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 415.202828,
+      "worker_runtime_s": 411.43471960001625,
+      "result_sha256": "74948b0860c79ab52f6b5f2599a00c9a7fd37a8850bc4ef0e225f9b9e67a14d5"
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 400.586622,
+      "worker_runtime_s": 396.7646535000531,
+      "result_sha256": "38f35085bde991fe1226afde6c76f7107010f384496a09a2d580f53cbe172ead"
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 371.23468,
+      "worker_runtime_s": 367.4450344000943,
+      "result_sha256": "78eca2dd852fb02724266f4a71c59d0602cf822ecd1146453ae37dc4399187bd"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_baseline_contract",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 243.267278,
+      "worker_runtime_s": 240.4372860000003,
+      "result_sha256": "5f0a5d2ee1308d9c6fe92427640b309eb1dcbabe666ac73799f85a064625db45"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 261.482185,
+      "worker_runtime_s": 258.4627638999373,
+      "result_sha256": "e6594c9855a93a1aef1a2828380e7d7f11480f6f823b2c371756211cef2b220a"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_narrow_angle_contract",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 255.044581,
+      "worker_runtime_s": 252.1721295999596,
+      "result_sha256": "480f8ae46740cd43fa2974c9556e2c8ad974ee3481b82005f7cdc8af31509e55"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 241.492719,
+      "worker_runtime_s": 238.68333329993766,
+      "result_sha256": "19402885a48dc6b9dcf63d991c17148769b968a07b77da3e9088801441845101"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_thin_bridge_contract",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 222.556077,
+      "worker_runtime_s": 219.70115129998885,
+      "result_sha256": "d96dc4294813a4c80decca38bc7f86e226964a14582b12b82e2dc58e0acc627b"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 241.8612,
+      "worker_runtime_s": 238.9024651000509,
+      "result_sha256": "37152c919788d0faccc9cbc26cb865837b505db42a17f1796baa0f5e208b8f0a"
+    },
+    {
+      "case_id": "spm_12p36s_distributed_femm_validation",
+      "phase": "C",
+      "stage": "native",
+      "wall_time_s": 178.249097,
+      "worker_runtime_s": 175.89560889999848,
+      "result_sha256": "34980995122f09821d5085cf55c1102f08ff943726d0387d8f3532d023c30a2e"
+    },
+    {
+      "case_id": "spm_8p24s_distributed_femm_validation",
+      "phase": "C",
+      "stage": "native",
+      "wall_time_s": 169.123714,
+      "worker_runtime_s": 166.94607089995407,
+      "result_sha256": "f6138802e651c9b896933a95307023ef94a5c67f489f561728bfdd4db9ef281d"
+    },
+    {
+      "case_id": "spm_8p48s_chorded_5_6",
+      "phase": "C",
+      "stage": "native",
+      "wall_time_s": 295.585079,
+      "worker_runtime_s": 293.1596883999882,
+      "result_sha256": "d9313c9663a83009da6d4a78d90049060c5086f1f03cf442d2930758e09ae1ca"
+    },
+    {
+      "case_id": "spm_8p48s_distributed_femm_validation",
+      "phase": "C",
+      "stage": "native",
+      "wall_time_s": 185.590125,
+      "worker_runtime_s": 183.26191289990675,
+      "result_sha256": "40d23f30e1796cc02e2c749974149fe0ce29564e85ddd649d978e60407acf021"
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "stage": "native-standard",
+      "wall_time_s": 297.394263,
+      "worker_runtime_s": 295.6105977999978,
+      "result_sha256": "aba94d8eb8302b7f01e5b6722109b466c2232b6058a48c2847e4f807ea64b61c"
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "stage": "native-fine",
+      "wall_time_s": 617.791967,
+      "worker_runtime_s": 615.5734550999478,
+      "result_sha256": "0f31c89183c49c1401c7860fe58f31fda360e44cac76355622b83cb13fa52cdf"
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "stage": "analytical",
+      "wall_time_s": 374.384441,
+      "worker_runtime_s": 372.3328014999861,
+      "result_sha256": "c99f1240853bef3e05ffd741720447027a2df7eb757b09cced9258c23f0afe8e"
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "phase": "D",
+      "stage": "native-standard",
+      "wall_time_s": 96.977947,
+      "worker_runtime_s": 95.94579859997611,
+      "result_sha256": "0ea492dd08c392b5a18c66a7ce9f5529d2a0b21979fd0da45f4838aef950ac53"
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "phase": "D",
+      "stage": "native-fine",
+      "wall_time_s": 204.470606,
+      "worker_runtime_s": 203.07488309999462,
+      "result_sha256": "9dc99fa8a9bdd5f5b1858474691a474a06a904a9a885821050acb3a9ad57fb2e"
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "phase": "D",
+      "stage": "analytical",
+      "wall_time_s": 267.366852,
+      "worker_runtime_s": 265.646946700057,
+      "result_sha256": "42664339845d7619cc86344e64cf059fae63c65899cc581df3a7a73f39febbe7"
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "phase": "D",
+      "stage": "native-standard",
+      "wall_time_s": 135.072152,
+      "worker_runtime_s": 133.92476379999425,
+      "result_sha256": "125191f4956dd086674790032dd761b7156cab0b0bec774fb1413444a40bbeec"
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "phase": "D",
+      "stage": "native-fine",
+      "wall_time_s": 270.028856,
+      "worker_runtime_s": 268.26676410005894,
+      "result_sha256": "7a9a3ab75e8a629e63518847e9bcd97ab8e5623a15963927c1156410e54ee402"
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "phase": "D",
+      "stage": "analytical",
+      "wall_time_s": 342.833994,
+      "worker_runtime_s": 340.82699959992897,
+      "result_sha256": "252804938caa3dd797fd95d51a7192dacac23c011e821ba67e3dbf992a8a4390"
+    }
+  ],
+  "concurrent_workload_caveat": "During part of this run, another full A/B/C/D run and an older refined-IPM sweep were active on the same machine.",
+  "timing_definition": "Wall time comes from actual controller start/completion timestamps. solve_metadata.solve_time_s is an aggregate solver timing, not the benchmark elapsed duration.",
+  "scope": "Headless native fields and result generation; browser mesh zoom, pan and playback responsiveness are not measured."
+}

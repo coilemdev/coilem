@@ -1,0 +1,937 @@
+{
+  "schema": "coilem.benchmark_comparison/v1",
+  "previous_report": "../release-baseline-20261011-v1.2/benchmark_summary.json",
+  "previous_report_sha256": "6ff1ae16e93819ce1a742f6f411e067fe165704a05992f2c9e3c0be0acf375a0",
+  "candidate_commit": "0b463b31fc3479360ffaa3668731e3792c034639",
+  "comparisons": [
+    {
+      "id": "spm_4p12s_simple__baseline",
+      "phase": "A",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 0.47826882137448995,
+          "mean_torque_Nm": 0.4782802173506237,
+          "mean_torque_absolute_change_Nm": 1.1395976133754537e-05,
+          "mean_torque_change_pct": 0.0023827553928779644,
+          "back_emf_fundamental_change_pct": 0.0006700622253313162,
+          "back_emf_phase_a_peak_change_pct": 0.00038733493209886936,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.0040039565350499465,
+              "max_absolute_difference": 4.1409629823130345e-05
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.0026802721712132207,
+              "max_absolute_difference": 0.00015172014509667875
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_4p12s_simple__high_current",
+      "phase": "A",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 0.7172251293051968,
+          "mean_torque_Nm": 0.7172376412100244,
+          "mean_torque_absolute_change_Nm": 1.2511904827650078e-05,
+          "mean_torque_change_pct": 0.0017444877928037511,
+          "back_emf_fundamental_change_pct": 0.0006700622253313162,
+          "back_emf_phase_a_peak_change_pct": 0.00038733493209886936,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.0029201798927293112,
+              "max_absolute_difference": 4.563980935012868e-05
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.0026802721712132207,
+              "max_absolute_difference": 0.00015172014509667875
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_4p12s_simple__tight_airgap",
+      "phase": "A",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 0.582696802172012,
+          "mean_torque_Nm": 0.5826230012358574,
+          "mean_torque_absolute_change_Nm": 7.380093615461103e-05,
+          "mean_torque_change_pct": 0.012665409502766586,
+          "back_emf_fundamental_change_pct": 0.005516492916365697,
+          "back_emf_phase_a_peak_change_pct": 0.0025469571794724793,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.02884834721318739,
+              "max_absolute_difference": 0.00035917810391133953
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.025698159452066213,
+              "max_absolute_difference": 0.002021028348153653
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_4p12s_simple_noload__baseline",
+      "phase": "A",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": -3.4844206409888686e-06,
+          "mean_torque_Nm": 5.46342814086812e-06,
+          "mean_torque_absolute_change_Nm": 8.947848781856988e-06,
+          "mean_torque_change_pct": null,
+          "back_emf_fundamental_change_pct": 0.0006700622253313162,
+          "back_emf_phase_a_peak_change_pct": 0.00038733493209886936,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.03342717775952418,
+              "max_absolute_difference": 3.307201798379705e-05
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.0026802721712132207,
+              "max_absolute_difference": 0.00015172014509667875
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_4p12s_simple_noload__high_current",
+      "phase": "A",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 0.23916950192063438,
+          "mean_torque_Nm": 0.23917968929676894,
+          "mean_torque_absolute_change_Nm": 1.0187376134562776e-05,
+          "mean_torque_change_pct": 0.004259479596166629,
+          "back_emf_fundamental_change_pct": 0.0006700622253313162,
+          "back_emf_phase_a_peak_change_pct": 0.00038733493209886936,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.007205861773758722,
+              "max_absolute_difference": 3.720985953847844e-05
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.0026802721712132207,
+              "max_absolute_difference": 0.00015172014509667875
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_4p12s_simple_noload__tight_airgap",
+      "phase": "A",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": -0.00011648309004660264,
+          "mean_torque_Nm": -0.00017900740467821101,
+          "mean_torque_absolute_change_Nm": 6.252431463160838e-05,
+          "mean_torque_change_pct": null,
+          "back_emf_fundamental_change_pct": 0.005516492916365697,
+          "back_emf_phase_a_peak_change_pct": 0.0025469571794724793,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.16222719774819844,
+              "max_absolute_difference": 0.00044978892913662355
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.025698159452066213,
+              "max_absolute_difference": 0.002021028348153653
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p12s_concentrated__baseline",
+      "phase": "A",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 2.5618358865399062,
+          "mean_torque_Nm": 2.561834085193818,
+          "mean_torque_absolute_change_Nm": 1.8013460882926324e-06,
+          "mean_torque_change_pct": 7.031465589802418e-05,
+          "back_emf_fundamental_change_pct": 5.203654341713865e-06,
+          "back_emf_phase_a_peak_change_pct": 8.365429651449794e-05,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.003167226415102039,
+              "max_absolute_difference": 0.00018264412091362203
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.0005338024476930901,
+              "max_absolute_difference": 0.00011536889062391253
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p12s_concentrated__high_current",
+      "phase": "A",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 3.836666901248213,
+          "mean_torque_Nm": 3.8366641244503263,
+          "mean_torque_absolute_change_Nm": 2.776797886738791e-06,
+          "mean_torque_change_pct": 7.237526629782203e-05,
+          "back_emf_fundamental_change_pct": 5.203654341713865e-06,
+          "back_emf_phase_a_peak_change_pct": 8.365429651449794e-05,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.0019782064202277694,
+              "max_absolute_difference": 0.00017038794528234646
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.0005338024476930901,
+              "max_absolute_difference": 0.00011536889062391253
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p12s_concentrated__tight_airgap",
+      "phase": "A",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 2.7179597824573647,
+          "mean_torque_Nm": 2.7179654220267273,
+          "mean_torque_absolute_change_Nm": 5.639569362614338e-06,
+          "mean_torque_change_pct": 0.0002074927450734935,
+          "back_emf_fundamental_change_pct": 2.250738447951408e-05,
+          "back_emf_phase_a_peak_change_pct": 0.00015183677720288487,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.004105321875627936,
+              "max_absolute_difference": 0.00041919455655037297
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.0005273359170336193,
+              "max_absolute_difference": 0.00017216336101810725
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p12s_reference_angle30__baseline",
+      "phase": "A",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 19.17308309639929,
+          "mean_torque_Nm": 19.173086794839893,
+          "mean_torque_absolute_change_Nm": 3.6984406044382467e-06,
+          "mean_torque_change_pct": 1.928975421346197e-05,
+          "back_emf_fundamental_change_pct": 9.04595813916957e-06,
+          "back_emf_phase_a_peak_change_pct": 7.04627789543804e-05,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.00022537945985824398,
+              "max_absolute_difference": 0.00017102148396119787
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.0001678521330295367,
+              "max_absolute_difference": 0.00010894900820446196
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_flat_12s10p_fscw_contract",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 4.502357985912007,
+          "mean_torque_Nm": 4.502596056517707,
+          "mean_torque_absolute_change_Nm": 0.0002380706056994697,
+          "mean_torque_change_pct": 0.0052876871729080335,
+          "back_emf_fundamental_change_pct": 0.004106685528739949,
+          "back_emf_phase_a_peak_change_pct": 0.164199908287101,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.015206963256539505,
+              "max_absolute_difference": 0.002288073078351438
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.13000030205492571,
+              "max_absolute_difference": 0.052385320128037094
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_flat_24s16p_industrial_contract",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 22.42661224724422,
+          "mean_torque_Nm": 22.426521301346458,
+          "mean_torque_absolute_change_Nm": 9.094589776026396e-05,
+          "mean_torque_change_pct": 0.000405526687480136,
+          "back_emf_fundamental_change_pct": 0.007154224636839679,
+          "back_emf_phase_a_peak_change_pct": 0.041191900301490975,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.002683914243132349,
+              "max_absolute_difference": 0.0018937528288240912
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.23973999405488491,
+              "max_absolute_difference": 0.0923408498665843
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_flat_4p12s_micro_contract",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 0.021443977467069573,
+          "mean_torque_Nm": 0.021444537184232615,
+          "mean_torque_absolute_change_Nm": 5.597171630414288e-07,
+          "mean_torque_change_pct": 0.002610136873632506,
+          "back_emf_fundamental_change_pct": 0.008897448393885808,
+          "back_emf_phase_a_peak_change_pct": 0.010706378187330279,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.006368314231836012,
+              "max_absolute_difference": 4.445352400968272e-06
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.1722080569964523,
+              "max_absolute_difference": 0.001265436731759377
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 2.484240074149019,
+          "mean_torque_Nm": 2.4842373353881353,
+          "mean_torque_absolute_change_Nm": 2.738760883858049e-06,
+          "mean_torque_change_pct": 0.00011024541920716807,
+          "back_emf_fundamental_change_pct": 0.0008001191545063089,
+          "back_emf_phase_a_peak_change_pct": 0.005018349174504946,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.003322951393992669,
+              "max_absolute_difference": 0.00022825672297521749
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.016318827638446557,
+              "max_absolute_difference": 0.0022786254378430737
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 2.974150053011726,
+          "mean_torque_Nm": 2.974142198906881,
+          "mean_torque_absolute_change_Nm": 7.854104845161913e-06,
+          "mean_torque_change_pct": 0.00026407897063594955,
+          "back_emf_fundamental_change_pct": 7.988828775883777e-05,
+          "back_emf_phase_a_peak_change_pct": 0.005337381093018157,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.005332583501148094,
+              "max_absolute_difference": 0.0004984151312377172
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.009057245895026605,
+              "max_absolute_difference": 0.0009185565681351093
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 3.6780259989342605,
+          "mean_torque_Nm": 3.6779674721039366,
+          "mean_torque_absolute_change_Nm": 5.852683032392392e-05,
+          "mean_torque_change_pct": 0.0015912565691727728,
+          "back_emf_fundamental_change_pct": 5.102978911853416e-06,
+          "back_emf_phase_a_peak_change_pct": 0.028883572812230782,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.005659369043872548,
+              "max_absolute_difference": 0.000749733668961472
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.023870100926747913,
+              "max_absolute_difference": 0.003772217022159463
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_vshape_8p12s_baseline_contract",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 0.9344741267007337,
+          "mean_torque_Nm": 0.9349518840476123,
+          "mean_torque_absolute_change_Nm": 0.0004777573468786045,
+          "mean_torque_change_pct": 0.05112579719733715,
+          "back_emf_fundamental_change_pct": 0.0068440408314931565,
+          "back_emf_phase_a_peak_change_pct": 0.01518068426460862,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.4170481456446702,
+              "max_absolute_difference": 0.013281210556795875
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.3128232674148265,
+              "max_absolute_difference": 0.011532766724421717
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 0.6256903524461748,
+          "mean_torque_Nm": 0.6256903524461748,
+          "mean_torque_absolute_change_Nm": 0.0,
+          "mean_torque_change_pct": 0.0,
+          "back_emf_fundamental_change_pct": 0.0,
+          "back_emf_phase_a_peak_change_pct": 0.0,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.0,
+              "max_absolute_difference": 0.0
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.0,
+              "max_absolute_difference": 0.0
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_vshape_8p12s_narrow_angle_contract",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 0.9342909356199895,
+          "mean_torque_Nm": 0.93394545131718,
+          "mean_torque_absolute_change_Nm": 0.0003454843028095622,
+          "mean_torque_change_pct": 0.03697823554076344,
+          "back_emf_fundamental_change_pct": 0.015795585479613787,
+          "back_emf_phase_a_peak_change_pct": 0.0008835250332662255,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.15576084514753835,
+              "max_absolute_difference": 0.004519716874300972
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.4059316574472769,
+              "max_absolute_difference": 0.021474128326030573
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 1.1227676480679551,
+          "mean_torque_Nm": 1.122228758180256,
+          "mean_torque_absolute_change_Nm": 0.0005388898876992343,
+          "mean_torque_change_pct": 0.04799656354781414,
+          "back_emf_fundamental_change_pct": 0.0004146139499757533,
+          "back_emf_phase_a_peak_change_pct": 0.01733031140023065,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.1539099552577795,
+              "max_absolute_difference": 0.004890148708536879
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.17002595281472926,
+              "max_absolute_difference": 0.006121452904343405
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_vshape_8p12s_thin_bridge_contract",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 3.0109341936399754,
+          "mean_torque_Nm": 3.0108995138101666,
+          "mean_torque_absolute_change_Nm": 3.4679829808759166e-05,
+          "mean_torque_change_pct": 0.0011517963388908896,
+          "back_emf_fundamental_change_pct": 1.3021490124068036e-06,
+          "back_emf_phase_a_peak_change_pct": 4.585406408326851e-05,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.004533018790569827,
+              "max_absolute_difference": 0.00044240070320888947
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.0038892009423574774,
+              "max_absolute_difference": 0.0005056733253674395
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 0.7899635019183682,
+          "mean_torque_Nm": 0.7899635019183682,
+          "mean_torque_absolute_change_Nm": 0.0,
+          "mean_torque_change_pct": 0.0,
+          "back_emf_fundamental_change_pct": 0.0,
+          "back_emf_phase_a_peak_change_pct": 0.0,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.0,
+              "max_absolute_difference": 0.0
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.0,
+              "max_absolute_difference": 0.0
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "ornl_prius_2004_ipm",
+      "phase": "C",
+      "previous_status": "UNSUPPORTED",
+      "status": "UNSUPPORTED",
+      "stages": {}
+    },
+    {
+      "id": "spm_12p36s_distributed_femm_validation",
+      "phase": "C",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 5.044513661627727,
+          "mean_torque_Nm": 5.051115536633054,
+          "mean_torque_absolute_change_Nm": 0.006601875005326718,
+          "mean_torque_change_pct": 0.1308723783532479,
+          "back_emf_fundamental_change_pct": 0.00048256763292455114,
+          "back_emf_phase_a_peak_change_pct": 0.0013491795093035573,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.09650210048618903,
+              "max_absolute_difference": 0.01416129926045695
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.003781288017392511,
+              "max_absolute_difference": 0.012954915031684777
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p24s_distributed_femm_validation",
+      "phase": "C",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 5.562636290888545,
+          "mean_torque_Nm": 5.560934226827017,
+          "mean_torque_absolute_change_Nm": 0.0017020640615275084,
+          "mean_torque_change_pct": 0.030598154769087556,
+          "back_emf_fundamental_change_pct": 0.0003750354716952117,
+          "back_emf_phase_a_peak_change_pct": 0.0002693802139845883,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.09794203489866389,
+              "max_absolute_difference": 0.014339248480101041
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.005451555663379932,
+              "max_absolute_difference": 0.016524947884818175
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p48s_chorded_5_6",
+      "phase": "C",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 5.937996287705,
+          "mean_torque_Nm": 5.94246666035061,
+          "mean_torque_absolute_change_Nm": 0.004470372645609899,
+          "mean_torque_change_pct": 0.07528419401113623,
+          "back_emf_fundamental_change_pct": 0.00016916752942574786,
+          "back_emf_phase_a_peak_change_pct": 0.002264163711073758,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.29498381945985186,
+              "max_absolute_difference": 0.03602742487340316
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.0246859090566692,
+              "max_absolute_difference": 0.038807887520320605
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p48s_distributed_femm_validation",
+      "phase": "C",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native": {
+          "previous_mean_torque_Nm": 6.057185749050082,
+          "mean_torque_Nm": 6.063108931676818,
+          "mean_torque_absolute_change_Nm": 0.005923182626736079,
+          "mean_torque_change_pct": 0.0977876999671833,
+          "back_emf_fundamental_change_pct": 0.00016916756916077424,
+          "back_emf_phase_a_peak_change_pct": 0.010968095346065899,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.239373161743274,
+              "max_absolute_difference": 0.03573091535013795
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.02633088439523628,
+              "max_absolute_difference": 0.04799632686845712
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native-standard": {
+          "previous_mean_torque_Nm": 1.6395804529050026,
+          "mean_torque_Nm": 1.6395842367261562,
+          "mean_torque_absolute_change_Nm": 3.7838211535135002e-06,
+          "mean_torque_change_pct": 0.00023077984046524462,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.04198232335187296,
+              "max_absolute_difference": 0.002764533947640979
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": null,
+              "max_absolute_difference": 0.0
+            }
+          }
+        },
+        "native-fine": {
+          "previous_mean_torque_Nm": 1.6329459324632936,
+          "mean_torque_Nm": 1.6330570198275087,
+          "mean_torque_absolute_change_Nm": 0.00011108736421516774,
+          "mean_torque_change_pct": 0.0068028807327131045,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.04187389251010641,
+              "max_absolute_difference": 0.002764533947640979
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": null,
+              "max_absolute_difference": 0.0
+            }
+          }
+        },
+        "analytical": {
+          "previous_mean_torque_Nm": 0.16419335270371224,
+          "mean_torque_Nm": 0.16419170911610945,
+          "mean_torque_absolute_change_Nm": 1.643587602795371e-06,
+          "mean_torque_change_pct": 0.0010010073950808675,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.38035223794550055,
+              "max_absolute_difference": 0.0022290439631951486
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.03373411351154457,
+              "max_absolute_difference": 0.012405778685987912
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_4p12s_small",
+      "phase": "D",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native-standard": {
+          "previous_mean_torque_Nm": 0.2870591698975048,
+          "mean_torque_Nm": 0.2870509187142987,
+          "mean_torque_absolute_change_Nm": 8.251183206076096e-06,
+          "mean_torque_change_pct": 0.002874384124019519,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.007814569602455395,
+              "max_absolute_difference": 6.373578423921056e-05
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": null,
+              "max_absolute_difference": 0.0
+            }
+          }
+        },
+        "native-fine": {
+          "previous_mean_torque_Nm": 0.28765123437527446,
+          "mean_torque_Nm": 0.28765449066197996,
+          "mean_torque_absolute_change_Nm": 3.2562867054997113e-06,
+          "mean_torque_change_pct": 0.0011320259802019507,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.010697458146264816,
+              "max_absolute_difference": 0.00010036610142838409
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": null,
+              "max_absolute_difference": 0.0
+            }
+          }
+        },
+        "analytical": {
+          "previous_mean_torque_Nm": 0.028788340604883406,
+          "mean_torque_Nm": 0.028789931904550165,
+          "mean_torque_absolute_change_Nm": 1.5912996667588608e-06,
+          "mean_torque_change_pct": 0.005527583852780061,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.05226523738693037,
+              "max_absolute_difference": 9.256554731486288e-05
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.0026035042986755795,
+              "max_absolute_difference": 0.0004715999540385596
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p12s_reference",
+      "phase": "D",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "stages": {
+        "native-standard": {
+          "previous_mean_torque_Nm": 8.728667599294347,
+          "mean_torque_Nm": 8.725539846198817,
+          "mean_torque_absolute_change_Nm": 0.0031277530955300392,
+          "mean_torque_change_pct": 0.03583311037967463,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.0726055249885915,
+              "max_absolute_difference": 0.02458824088198419
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": null,
+              "max_absolute_difference": 0.0
+            }
+          }
+        },
+        "native-fine": {
+          "previous_mean_torque_Nm": 8.740947791245011,
+          "mean_torque_Nm": 8.738405959958504,
+          "mean_torque_absolute_change_Nm": 0.0025418312865070902,
+          "mean_torque_change_pct": 0.029079584356435633,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.05908100149386682,
+              "max_absolute_difference": 0.02458824088198419
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": null,
+              "max_absolute_difference": 0.0
+            }
+          }
+        },
+        "analytical": {
+          "previous_mean_torque_Nm": 0.8772592270966654,
+          "mean_torque_Nm": 0.8746640508910316,
+          "mean_torque_absolute_change_Nm": 0.0025951762056337646,
+          "mean_torque_change_pct": 0.29582774685911645,
+          "waveforms": {
+            "torque": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.08588764609889994,
+              "max_absolute_difference": 0.02414910545990323
+            },
+            "back_emf_phase_a": {
+              "angle_grids_match": true,
+              "rms_difference_pct_of_previous_waveform_rms": 0.005241513400611359,
+              "max_absolute_difference": 0.004963866619743129
+            }
+          }
+        }
+      }
+    }
+  ],
+  "summary": {
+    "verdicts_unchanged": true,
+    "ABC_max_nonzero_mean_torque_change_pct": 0.1308723783532479,
+    "ABC_max_back_emf_fundamental_change_pct": 0.015795585479613787,
+    "ABC_max_back_emf_phase_a_peak_change_pct": 0.164199908287101,
+    "ABC_max_near_zero_mean_torque_absolute_change_Nm": 6.252431463160838e-05,
+    "BLDC_max_standard_mean_torque_change_pct": 0.03583311037967463
+  }
+}

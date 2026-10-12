@@ -1,8 +1,38 @@
 # Numerical evidence for the developer preview
 
-Use the [benchmark index](../benchmarks/README.md) to distinguish the current
-default selection from archived runs. The [IPM diagnosis](IPM_BENCHMARK_DIAGNOSIS.md)
+Use the [benchmark index](../benchmarks/README.md) to distinguish the latest full
+run, the current default selection and archived runs. The [IPM diagnosis](IPM_BENCHMARK_DIAGNOSIS.md)
 links the fixture decision to the open nonlinear-convergence and reporting issues.
+
+## Windows full benchmark report v1.3
+
+The [report v1.3](../benchmarks/main-20261012-0b463b3-rerun/benchmark_report.md),
+[HTML plots](../benchmarks/main-20261012-0b463b3-rerun/coilem_benchmark_report.html)
+and [JSON evidence](../benchmarks/main-20261012-0b463b3-rerun/benchmark_summary.json)
+record a fresh, complete native Windows run at
+`0b463b31fc3479360ffaa3668731e3792c034639`: **29 PASS, one planned unsupported
+Prius fixture; 42/42 BLDC gates**. It uses the same protocol 1.1.0 inputs and
+data-only FEMM reference bundle as v1.2. No FEMM solve or reference regeneration
+was performed, and all v1.2 verdicts are retained.
+
+This is the numerical record before the performance changes in PRs #32 (airgap
+radius indexing), #33 (post-solve pipeline) and #34 (wall-clock timing). It also
+predates the later main responsiveness changes in PRs #29, #30 and #31.
+[Per-stage differences from v1.2](../benchmarks/main-20261012-0b463b3-rerun/comparison-to-v1.2.json)
+retain mean torque, Back-EMF and waveform comparisons. Runtime/source and input
+hashes bind the measurements to the recorded candidate; publishing on a newer
+branch does not mean its changes were measured.
+
+[Elapsed job timings](../benchmarks/main-20261012-0b463b3-rerun/execution-timings.json)
+use actual start/completion timestamps. They include changing concurrent machine
+load, including another full benchmark and an older refined-IPM sweep. Aggregate
+solver timings are not benchmark wall time. This headless run does not measure
+browser mesh zoom/pan or field-playback responsiveness, and a later speed comparison
+requires comparable machine load and settings.
+
+The selected V-shape fixtures passing does not resolve the archived low-output
+failures or establish broad V-shape accuracy, spatial convergence, thermal or
+hardware accuracy. The application qualification policy remains unchanged.
 
 ## Next-release benchmark baseline v1.2
 

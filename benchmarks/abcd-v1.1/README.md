@@ -70,7 +70,10 @@ Original torque units were correctly N m; displaying mN m does not change the
 relative error. These are new geometries, not a fix for the original failures or
 proof of spatial convergence. The original cases are removed from the default
 matrix and retained with their FAIL verdicts in the frozen historical suite and
-reports. A complete run on the next release commit remains a separate action.
+reports. The [full Windows report v1.3](../main-20261012-0b463b3-rerun/README.md)
+now reruns the complete selected matrix at `0b463b3` against these same frozen
+references. It predates the later performance changes; subsequent candidates
+need their own complete run, and elapsed timing comparisons need comparable load.
 
 ## Reference integrity and versions
 
