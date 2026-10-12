@@ -65,8 +65,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 8211,
-      "sha256": "9d865e4064780bd4977352dcfc9f5a46b18a49052712d1122cb0ef2e373ff5e1"
+      "bytes": 8433,
+      "sha256": "04d13cb230a7934364ed11af62441a4d24fe0fe1107cdaf9ba45165ca5d71862"
     },
     {
       "path": "SECURITY.md",
@@ -2205,8 +2205,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 52933,
-      "sha256": "a91aa0b2ecb6b7d256e880680c528f7590a6bc2bc853613b658c095cde31d121"
+      "bytes": 53168,
+      "sha256": "98cb2ab37f8078c2ee3863e893d34911d14eba017c0b20c88d4315d5128c2dba"
     },
     {
       "path": "frontend/src/public/PublicLanding.tsx",
@@ -2345,8 +2345,8 @@
     },
     {
       "path": "frontend/src/public/halbach/Halbach2DViewport.tsx",
-      "bytes": 30844,
-      "sha256": "4359f1ee94cfad59161a6f4f563ab3711ea3d7f6e3b3114d04b7970a9c50a731"
+      "bytes": 31184,
+      "sha256": "042c341fb4ba44811f74db90afd35ed3b20edd21f329b60c805d841303ff0c83"
     },
     {
       "path": "frontend/src/public/halbach/Halbach3DViewer.tsx",
@@ -2360,8 +2360,8 @@
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbach2DViewport.tsx",
-      "bytes": 32447,
-      "sha256": "48a2fb5600075c1ce7003bee80ebe5a78e17671a45cf0932278225f4f1b9fdfc"
+      "bytes": 32769,
+      "sha256": "50de4fd5dce2342868267288ac80c3b2d8421d72c257de69b5bfa55e78fa29ca"
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbach3DViewer.tsx",
@@ -4340,6 +4340,30 @@
       "path": "frontend/src/public/fieldPlaybackTiming.ts",
       "source_sha256": "5f55f904650c7577ecb09c71d56f3e3d06d038136b13940146213110bf4e6e6e",
       "reason": "Choose a playback stride the loader sustains or the cache holds, and list exactly the frames playback will show."
+    },
+    {
+      "base_commit": "f98625876426f338228a5081f7c8074c078894cb",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "9d865e4064780bd4977352dcfc9f5a46b18a49052712d1122cb0ef2e373ff5e1",
+      "reason": "Note that Mesh tab zoom and pan redraw in about 45 ms instead of about a second."
+    },
+    {
+      "base_commit": "f98625876426f338228a5081f7c8074c078894cb",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "a91aa0b2ecb6b7d256e880680c528f7590a6bc2bc853613b658c095cde31d121",
+      "reason": "Close Mesh tab triangles with an explicit edge instead of the quadratic Path2D closePath."
+    },
+    {
+      "base_commit": "f98625876426f338228a5081f7c8074c078894cb",
+      "path": "frontend/src/public/halbach/Halbach2DViewport.tsx",
+      "source_sha256": "4359f1ee94cfad59161a6f4f563ab3711ea3d7f6e3b3114d04b7970a9c50a731",
+      "reason": "Close mesh-overlay triangles with an explicit edge instead of the quadratic closePath."
+    },
+    {
+      "base_commit": "f98625876426f338228a5081f7c8074c078894cb",
+      "path": "frontend/src/public/halbach/LinearHalbach2DViewport.tsx",
+      "source_sha256": "48a2fb5600075c1ce7003bee80ebe5a78e17671a45cf0932278225f4f1b9fdfc",
+      "reason": "Close mesh-overlay triangles with an explicit edge instead of the quadratic closePath."
     }
   ]
 }

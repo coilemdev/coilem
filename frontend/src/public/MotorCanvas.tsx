@@ -1082,10 +1082,13 @@ function drawMesh(
       selection: { index, quality, band, region },
     });
     if (displayMode === 'geometry') {
+      // An explicit closing edge, not closePath(): Chromium's closePath() cost
+      // grows with the path built so far, so per-region paths of thousands of
+      // triangles made every zoom and pan step take about a second.
       path.moveTo(a[0], a[1]);
       path.lineTo(b[0], b[1]);
       path.lineTo(c[0], c[1]);
-      path.closePath();
+      path.lineTo(a[0], a[1]);
       fillPaths.set(region, path);
       return;
     }

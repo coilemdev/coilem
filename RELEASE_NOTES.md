@@ -34,6 +34,12 @@ Playback no longer stalls at higher speeds. Above about 30 new frames per
 second, playback shows every second or third solved position, and a loop of
 up to 16 frames stays in memory after its first pass.
 
+## Mesh view zoom and pan (unreleased)
+
+Zooming or panning the Mesh tab now redraws in about 45 ms instead of about a
+second for the 29k-element example mesh. The Halbach mesh views draw their
+meshes the same faster way.
+
 ## Qualification
 
 Numerical qualification for this preview is the published [A/B/C/D benchmark
