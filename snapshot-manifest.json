@@ -65,8 +65,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 6700,
-      "sha256": "694627dd23600257c00044edd7c9db76ab50f7194d11c328b104ccbc2f759968"
+      "bytes": 7104,
+      "sha256": "f706215a7802e4ee1c2ca5173fadb33a140d5ad49a07732fafe727e40c772efa"
     },
     {
       "path": "SECURITY.md",
@@ -1705,8 +1705,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 1533,
-      "sha256": "b8915bd2f6a38272168e2b1755b5607bc43759fd3acbc4dea92f52cff3c9cb57"
+      "bytes": 1579,
+      "sha256": "d3123e6efc3ec15fd665b9c7b11ec769be5f8a36584ed2b177cbff49aa301414"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -1737,6 +1737,11 @@
       "path": "frontend/scripts/test-custom-steel.mjs",
       "bytes": 2006,
       "sha256": "206e0c3c63ddf9e11d28f6d4a60d4227eaac4757d0fb06ab538fd8b1d4db6e3f"
+    },
+    {
+      "path": "frontend/scripts/test-design-file-defaults.mjs",
+      "sha256": "04af6648d5d0edf780cf74b3a09390a41f8576e35b837302aa4c83aaa54c31be",
+      "bytes": 3729
     },
     {
       "path": "frontend/scripts/test-flat-ipm-burial-health.mjs",
@@ -2255,8 +2260,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "bytes": 10105,
-      "sha256": "c5bd08e23d7843f42ae1331120adddb12133d63e9b923d1060d6bfb380ed34ba"
+      "bytes": 10984,
+      "sha256": "757c6cc7901f0babf3a0d6d2dd6010c14a5719be4987c28f584af162934a951b"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -2455,8 +2460,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 13474,
-      "sha256": "bcd6a8a5a145d611af1f29123f6add028e4771b5d778af97ccae6bce8ac74e39"
+      "bytes": 14822,
+      "sha256": "8f85717fcf9ef9b6345b7e25d17626fe9d48748c42afb9104697dfdfeb620e5b"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -2915,8 +2920,8 @@
     },
     {
       "path": "tests/test_public_validation_fixtures.py",
-      "bytes": 2227,
-      "sha256": "0d46d2e74c5bb7f94e25e822189f4664ee983ecca4e521408ce1a9ac542642a9"
+      "bytes": 3130,
+      "sha256": "fcd5bd4017a410bd7a7802c0a3bfd723bf0594156770ce810578336638579f60"
     },
     {
       "path": "tests/test_release_tools.py",
@@ -4096,6 +4101,36 @@
       "path": "frontend/tests/public-release.spec.ts",
       "source_sha256": "e1b6aacedfa24c9dd1e33e873252a9117cae67eeb9ad108b540718e4aee83ab7",
       "reason": "Check in a real browser that the Examples submenu stays open after a mouse click."
+    },
+    {
+      "base_commit": "61caf4d4f6488c8c5d6cd3cd22da625d8cbcd5f6",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "694627dd23600257c00044edd7c9db76ab50f7194d11c328b104ccbc2f759968",
+      "reason": "Note that examples and design files without tooth-shoe settings now load without tooth shoes."
+    },
+    {
+      "base_commit": "61caf4d4f6488c8c5d6cd3cd22da625d8cbcd5f6",
+      "path": "frontend/package.json",
+      "source_sha256": "b8915bd2f6a38272168e2b1755b5607bc43759fd3acbc4dea92f52cff3c9cb57",
+      "reason": "Run the design file defaults test with the public UI tests."
+    },
+    {
+      "base_commit": "61caf4d4f6488c8c5d6cd3cd22da625d8cbcd5f6",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "c5bd08e23d7843f42ae1331120adddb12133d63e9b923d1060d6bfb380ed34ba",
+      "reason": "Load a design file's absent tooth-shoe settings as the backend defaults, so bundled examples and older designs no longer inherit the starter motor's tooth shoes."
+    },
+    {
+      "base_commit": "61caf4d4f6488c8c5d6cd3cd22da625d8cbcd5f6",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "bcd6a8a5a145d611af1f29123f6add028e4771b5d778af97ccae6bce8ac74e39",
+      "reason": "Load every bundled example from the Examples menu and check its preview succeeds without inherited tooth shoes."
+    },
+    {
+      "base_commit": "61caf4d4f6488c8c5d6cd3cd22da625d8cbcd5f6",
+      "path": "tests/test_public_validation_fixtures.py",
+      "source_sha256": "0d46d2e74c5bb7f94e25e822189f4664ee983ecca4e521408ce1a9ac542642a9",
+      "reason": "Keep the frontend loader's fallback stator values equal to the backend defaults."
     }
   ]
 }
