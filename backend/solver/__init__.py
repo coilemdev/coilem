@@ -11,6 +11,7 @@ import sys
 import threading
 import time
 from collections import OrderedDict
+from collections.abc import Callable
 from concurrent.futures import Future, ProcessPoolExecutor, ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from functools import wraps
@@ -57,6 +58,11 @@ from backend.models import (
     SolveResult,
     SolveSummary,
     TorqueWaveform,
+)
+from backend.solver._mesh_pool import (
+    check_mesh_worker_cancelled,
+    completed_mesh_futures,
+    gmsh_mesh_process_pool,
 )
 from backend.solver_contract import SolveCancelledError, Solver
 from backend.solver_environment import solver_setting
@@ -134,6 +140,13 @@ def _magneto2d_python_process_pool_enabled() -> bool:
         return explicit
     return platform.system().lower() != "windows"
 
+
+def _gmsh_mesh_process_pool_enabled() -> bool:
+    """Gmsh mesh workers support Windows independently of frame/playback pools."""
+    explicit = _env_bool("COILEM_MAGNETO2D_ALLOW_MESH_PROCESS_POOL")
+    if explicit is not None:
+        return explicit
+    return _env_bool("COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL") is not False
 
 
 
@@ -488,9 +501,11 @@ def _build_gmsh_mesh_in_subprocess(
 ) -> tuple[dict[str, Any], int, float]:
     """Build one Gmsh mesh in a separate Python process."""
 
+    check_mesh_worker_cancelled()
     config = MotorConfig.model_validate(config_payload)
     started = time.perf_counter()
     artifact, generation_time_ms = _GmshMeshProducer.build(config, rotor_angle_mech_deg)
+    check_mesh_worker_cancelled()
     return artifact, generation_time_ms, (time.perf_counter() - started) * 1000.0
 
 
@@ -785,7 +800,7 @@ def _gmsh_pipeline_worker_count(
     default: int = 8,
     uses_process_pool: bool = False,
 ) -> int:
-    if uses_process_pool and not _magneto2d_python_process_pool_enabled():
+    if uses_process_pool and not _gmsh_mesh_process_pool_enabled():
         return 1
     requested = _env_positive_int(env_name)
     host_cpus = os.cpu_count() or default
@@ -883,6 +898,7 @@ def _solve_with_per_angle_producer_meshes(
     solve_cache_dir: Path | None,
     on_progress=None,
     clockwise_positive: bool = False,
+    check_cancelled: Callable[[], None] | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Shared per-angle remesh sweep for imported-mesh producers (FEMM/Gmsh).
 
@@ -1354,7 +1370,7 @@ def _solve_with_per_angle_producer_meshes(
                         int((time.perf_counter() - rebake_started) * 1000.0),
                     )
             elif producer_workers > 1:
-                with ProcessPoolExecutor(max_workers=producer_workers) as mesh_pool:
+                with gmsh_mesh_process_pool(producer_workers) as mesh_pool:
                     mesh_futures: dict[
                         Future[tuple[dict[str, Any], int, float]],
                         dict[str, Any],
@@ -1364,13 +1380,15 @@ def _solve_with_per_angle_producer_meshes(
                     # in the same instant with identical counts and read as
                     # a frozen bar in the UI.
                     for job in producer_jobs:
+                        if check_cancelled is not None:
+                            check_cancelled()
                         mesh_future = mesh_pool.submit(
                             _build_gmsh_mesh_in_subprocess,
                             config_payload,
                             float(job["rotor_angle_mech_deg"]),
                         )
                         mesh_futures[mesh_future] = job
-                    for mesh_future in as_completed(mesh_futures):
+                    for mesh_future in completed_mesh_futures(mesh_futures, check_cancelled):
                         job = mesh_futures[mesh_future]
                         solve_mesh_artifact, generation_time_ms, _mesh_wall_ms = mesh_future.result()
                         handle_group_mesh_ready(
@@ -2961,8 +2979,8 @@ class Magneto2DSolver(Solver):
         )
 
 
-    @staticmethod
     def _solve_with_per_angle_gmsh_meshes(
+        self,
         config: MotorConfig,
         *,
         solve_cache_dir: Path | None,
@@ -2976,6 +2994,7 @@ class Magneto2DSolver(Solver):
             solve_cache_dir=solve_cache_dir,
             on_progress=on_progress,
             clockwise_positive=clockwise_positive,
+            check_cancelled=self._raise_if_cancelled,
         )
 
     def solve(

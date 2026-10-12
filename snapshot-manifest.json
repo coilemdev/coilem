@@ -65,8 +65,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 10668,
-      "sha256": "a5b586fdfa3257d97efa9b141f9f425934122e852538d2aab4a1ae9df8813e44"
+      "bytes": 11001,
+      "sha256": "764dcbd628aebf04cac99ee50d501da6259e7d6517b801475d77ff8648117ef7"
     },
     {
       "path": "SECURITY.md",
@@ -470,8 +470,8 @@
     },
     {
       "path": "backend/solve_estimate.py",
-      "sha256": "89545dec4ce670131b9005062b5d6a52fe18ce8e633d6cb643e96e99dad72b11",
-      "bytes": 5184
+      "sha256": "568229e08975b0295f223e5965cdfcf1f4aca3edb9c4ab35903a9943a131cd8e",
+      "bytes": 5124
     },
     {
       "path": "backend/solve_workspace.py",
@@ -480,13 +480,18 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 137850,
-      "sha256": "62dd40847e01862b08153ad8a146b4ad3565e751a2fa4ba5a32a717a1fbfff01"
+      "bytes": 138633,
+      "sha256": "c1b7fe741bd37d5ba0e2bc8c90d14cc7c810fb2324d29d4819a61386c26fc32a"
     },
     {
       "path": "backend/solver/_helpers.py",
       "bytes": 60828,
       "sha256": "d422325c9fd1efcba023fcffb45db0ebc55a0fccdf5d0540599b2ebae93b8e18"
+    },
+    {
+      "path": "backend/solver/_mesh_pool.py",
+      "bytes": 2139,
+      "sha256": "707d0e91164fb76e0e9d5b5a2a502f6ecf88364ce2008509365841bee7cdb70c"
     },
     {
       "path": "backend/solver_contract.py",
@@ -3197,6 +3202,11 @@
       "path": "tests/test_solve_workspace.py",
       "bytes": 22220,
       "sha256": "db3ad88a797164357e4bcf96ca6b3e89438c2b00c1fe4c15263439dcc5752961"
+    },
+    {
+      "path": "tests/test_windows_mesh_pool.py",
+      "bytes": 4943,
+      "sha256": "0cfff2ab22eef06c2f5ae0e96ae98aefaf5a37880c188733dca9cd469b333282"
     },
     {
       "path": "tools/benchmark_suite/__init__.py",
