@@ -7,11 +7,13 @@ Everything runs on your computer.
 
 Website: [coilem.com](https://coilem.com)
 
-The current next-release [benchmark baseline v1.2](benchmarks/release-baseline-20261011-v1.2/README.md)
-uses higher-output deep-apex and wide-angle IPM fixtures: 29 PASS and one planned
-coverage item (numerical status UNSUPPORTED). It compiles explicitly identified
-measured candidates. The [benchmark index](benchmarks/README.md) separates this
-default selection from archived runs and the preview qualification record.
+The latest complete [benchmark report v1.3](benchmarks/main-20261012-0b463b3-rerun/README.md)
+measures the selected A/B/C/D matrix on Windows at `0b463b3`: 29 PASS, one planned
+unsupported Prius fixture and 42/42 BLDC gates. It runs fresh Magneto2D fields
+against frozen, data-only FEMM references; no new FEMM solves were executed.
+The measured commit predates the later performance changes. The
+[benchmark index](benchmarks/README.md) retains the compiled v1.2 selection,
+archived runs and the scoped preview qualification record.
 
 ![coilEM workspace](docs/images/coilem-landing-page.png)
 

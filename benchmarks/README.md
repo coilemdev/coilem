@@ -1,21 +1,26 @@
 # Benchmark reports and protocols
 
-Start with the [current next-release baseline v1.2](release-baseline-20261011-v1.2/README.md)
+Start with the [latest full Windows report v1.3](main-20261012-0b463b3-rerun/README.md)
 and [default A/B/C/D run commands](abcd-v1.1/README.md). The selected matrix has
-29 PASS and one planned coverage item (numerical status UNSUPPORTED).
+29 PASS and one planned coverage item (numerical status UNSUPPORTED), with
+42/42 BLDC gates. This is a fresh native rerun at `0b463b3` against frozen FEMM
+data, before the later performance changes; no reference solves were executed.
 
 | Record | Role | Matrix / measured candidate |
 | --- | --- | --- |
-| [Baseline v1.2](release-baseline-20261011-v1.2/README.md) | Current selection for the next release | Protocol 1.1.0; compiled measurements at `45e0a5c` and `af56962` |
+| [Windows report v1.3](main-20261012-0b463b3-rerun/README.md) | Latest complete run of the selected matrix; before later performance changes | Protocol 1.1.0; fresh native fields at `0b463b3`, frozen FEMM references |
+| [Baseline v1.2](release-baseline-20261011-v1.2/README.md) | Archived compilation defining the current fixture selection | Protocol 1.1.0; compiled measurements at `45e0a5c` and `af56962` |
 | [Higher-output IPM qualification](ipm-high-output-20261011-af56962/README.md) | Source evidence for the two replacement designs | Two cases at `af56962`, with fresh matched FEMM |
 | [October 10 macOS rerun](main-20261010-45e0a5c-rerun/README.md) | Archived protocol 1.0.0 run; source evidence for unchanged v1.2 rows | `45e0a5c`; original two FAILs retained |
 | [Snapshot report v1.1](main-20261009-bad71d9/README.md) | Archived fresh-reference run and 0.2.0 preview qualification record | `bad71d9`; original two FAILs retained |
 | [Protocol 1.0.0](abcd-v1/README.md) | Explicitly selectable historical suite | Original low-output IPM fixtures and saved references |
 
-V1.2 supersedes the old matrix as the **default benchmark selection**. It is
-not a new complete run at one release commit, so it does not replace the
-earlier preview qualification claim. Run the default command on the next
-release checkout to produce that evidence.
+V1.2 defines the **default benchmark selection**. V1.3 reruns that same selection
+at one clean candidate on Windows, preserving the inputs, references and gates.
+It records numerical parity and elapsed job timings without broadening the
+application qualification policy. Later commits require their own measured run.
+Concurrent workloads during v1.3 limit direct performance comparisons; see its
+[timing record and caveat](main-20261012-0b463b3-rerun/execution-timings.json).
 
 ## Why the archive folders remain
 
