@@ -8,8 +8,9 @@ published: building from source needs Rust and Node.js, so there is no sdist.
 
 The `coilEM release wheels` workflow (`.github/workflows/release-wheels.yml`)
 builds and tests the wheels for version tags, manual runs and pull requests
-that change packaging. A manual run can also rehearse publishing on TestPyPI;
-see below. Nothing in the workflow uploads to PyPI yet.
+that change packaging. A manual run can also rehearse publishing on TestPyPI,
+and a pushed version tag publishes to PyPI once a reviewer approves; see
+[Publishing a release](#publishing-a-release).
 
 ## Compatibility policy
 
@@ -88,7 +89,7 @@ test. It installs the wheel into a fresh environment where Cargo and Node.js
 cannot be found, then exercises the installed `coilem` through HTTP:
 
 ```sh
-python -I acceptance.py --install path/to/coilem-0.2.1-py3-none-macosx_12_0_arm64.whl
+python -I acceptance.py --install path/to/coilem-0.3.0-py3-none-macosx_12_0_arm64.whl
 ```
 
 ## TestPyPI rehearsal
@@ -120,17 +121,56 @@ button to appear; the run can target another branch. The run:
    byte-identical to the wheel CI built, installs it with its dependencies
    from PyPI, and repeats the acceptance test.
 
-To try a rehearsal build by hand, download the wheel from TestPyPI and install
+To try a rehearsal build by hand, download the wheel from TestPyPI and run
 that file. Its dependencies then come from PyPI:
 
 ```sh
-python -m pip download --no-deps --index-url https://test.pypi.org/simple/ coilem==0.2.1.devN -d coilem-wheel
-pipx install coilem-wheel/coilem-0.2.1.devN-*.whl
+python -m pip download --no-deps --index-url https://test.pypi.org/simple/ coilem==0.3.0.devN -d coilem-wheel
+uvx --from coilem-wheel/coilem-0.3.0.devN-*.whl coilem
 ```
 
 Do not install with `--extra-index-url https://test.pypi.org/simple/`: anyone
 can upload to TestPyPI, so its copies of coilEM's dependencies are untrusted.
 
-A release tag must match the version in `backend/__init__.py` (for example
-`v0.2.1`); `python -m tools.release.version --tag v0.2.1` checks it.
+## Publishing a release
+
+One-time setup, done by the project owner:
+
+1. Create a PyPI account and enable two-factor authentication.
+2. Under *Your account → Publishing*, add a pending trusted publisher for the
+   project `coilem`: owner `coilemdev`, repository `coilem`, workflow
+   `release-wheels.yml`, environment `pypi`. Until the first upload, anyone
+   can still register the name.
+3. In the GitHub repository settings, create the environment `pypi`. Add a
+   required reviewer and, under *Deployment branches and tags*, allow only
+   tags matching `v*`. Restrict `testpypi` to `main` the same way.
+
+Each release:
+
+1. On a branch, set the version in `backend/__init__.py`,
+   `frontend/package.json` (and its lock file) and `COILEM_APP_VERSION` in
+   `frontend/src/public/designFile.ts`; `tests/test_public_candidate.py`
+   checks that they agree. Give `RELEASE_NOTES.md` the new heading.
+2. Merge, then run a TestPyPI rehearsal on that `main` commit and try the
+   build by hand on each platform.
+3. Tag that commit and push the tag. The tag must name the version exactly,
+   such as `v0.3.0` for 0.3.0, or the policy job stops the run;
+   `python -m tools.release.version --tag v0.3.0` runs the same check.
+
+   ```sh
+   git tag -a v0.3.0 -m "coilEM 0.3.0" <commit>
+   git push origin v0.3.0
+   ```
+
+4. The workflow builds and accepts the wheels as for any run, then waits for
+   approval of the `pypi` environment. Approving it uploads the four wheels
+   with trusted publishing.
+5. On each platform, the workflow downloads the wheel from PyPI, checks it is
+   byte-identical to the wheel CI built, and repeats the acceptance test.
+6. Finally it attaches the wheels to a draft GitHub release for the tag, with
+   `RELEASE_NOTES.md` as its notes. Review the draft and publish it.
+
+PyPI never accepts the same version twice, even after a file is deleted. A
+broken release can be yanked, which hides it from new installs, but a fix
+needs a new version such as 0.3.1.
 

@@ -1,6 +1,6 @@
 # Support
 
-coilEM 0.2.1 is a source-built developer preview without a support SLA.
+coilEM 0.3.0 is a developer preview without a support SLA.
 
 Use [GitHub Issues](https://github.com/coilemdev/coilem/issues) for:
 

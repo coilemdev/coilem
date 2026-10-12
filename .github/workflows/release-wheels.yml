@@ -4,7 +4,10 @@ name: coilEM release wheels
 # runs the installed-package acceptance test on every platform and supported
 # Python version. A manual run with `publish: testpypi` then uploads the wheels
 # to TestPyPI as a unique .devN rehearsal version and repeats the acceptance
-# test against the TestPyPI install. Nothing here uploads to PyPI.
+# test against the TestPyPI install. Only a pushed vX.Y.Z tag that matches the
+# package version uploads to PyPI, after every acceptance job passes and a
+# reviewer approves the `pypi` environment; the acceptance test then runs
+# against the PyPI install and the wheels go to a draft GitHub release.
 
 on:
   workflow_dispatch:
@@ -343,3 +346,102 @@ jobs:
           cp tools/release/acceptance.py "$RUNNER_TEMP/"
           cd "$RUNNER_TEMP"
           python -I acceptance.py --install "coilem==$VERSION" --index-url https://test.pypi.org/simple/ --expect-sha256 "$built"
+
+  publish-pypi:
+    name: Publish to PyPI
+    needs: [policy, acceptance]
+    # Only a pushed release tag; the policy job has checked that it names the version.
+    if: github.event_name == 'push' && github.ref_type == 'tag'
+    runs-on: ubuntu-24.04
+    environment:
+      name: pypi
+      url: https://pypi.org/project/coilem/${{ needs.policy.outputs.version }}/
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: wheel-*
+          path: dist
+          merge-multiple: true
+      - name: Check that every platform's wheel has the release version
+        env:
+          VERSION: ${{ needs.policy.outputs.version }}
+        run: |
+          ls -l dist
+          test "$(ls dist/*.whl | wc -l)" -eq 4
+          for wheel in dist/*.whl; do
+            case "$(basename "$wheel")" in "coilem-$VERSION-py3-none-"*) ;; *) echo "unexpected wheel: $wheel"; exit 1 ;; esac
+          done
+      - name: Upload with trusted publishing
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+
+  pypi-acceptance:
+    name: PyPI install (${{ matrix.target }})
+    needs: [policy, publish-pypi]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: linux-x86_64
+            runner: ubuntu-22.04
+          - target: macos-arm64
+            runner: macos-15
+          - target: macos-x86_64
+            runner: macos-15-intel
+          - target: windows-amd64
+            runner: windows-2022
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/release/acceptance.py
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.BUILD_PYTHON }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: wheel-${{ matrix.target }}
+          path: wheels
+      - name: Install the documented Linux prerequisite
+        if: matrix.target == 'linux-x86_64'
+        run: sudo apt-get update && sudo apt-get install -y libglu1-mesa
+      - name: Install from PyPI and run the acceptance test
+        env:
+          VERSION: ${{ needs.policy.outputs.version }}
+        run: |
+          built=$(python -c 'import glob, hashlib; print(hashlib.sha256(open(glob.glob("wheels/*.whl")[0], "rb").read()).hexdigest())')
+          cp tools/release/acceptance.py "$RUNNER_TEMP/"
+          cd "$RUNNER_TEMP"
+          python -I acceptance.py --install "coilem==$VERSION" --index-url https://pypi.org/simple/ --expect-sha256 "$built"
+
+  github-release:
+    name: Attach the wheels to a draft GitHub release
+    needs: [policy, pypi-acceptance]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: RELEASE_NOTES.md
+          sparse-checkout-cone-mode: false
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: wheel-*
+          path: dist
+          merge-multiple: true
+      - name: Create or update the draft release for this tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          VERSION: ${{ needs.policy.outputs.version }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" dist/*.whl --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" dist/*.whl --draft --verify-tag \
+              --title "coilEM $VERSION Developer Preview" --notes-file RELEASE_NOTES.md
+          fi

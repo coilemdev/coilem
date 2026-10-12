@@ -1,12 +1,13 @@
 # Release status
 
-The current source candidate is **coilEM 0.2.1 Developer Preview**, with **Magneto2D 0.3.3**.
+The release is **coilEM 0.3.0 Developer Preview**, with **Magneto2D 0.3.3**.
 Its numerical qualification is the published [A/B/C/D benchmark report
 v1.1](benchmarks/main-20261009-bad71d9/benchmark_report.md). It qualifies the
 tested SPM and flat-buried IPM combinations listed in [Validation](docs/VALIDATION.md#qualification-status);
 V-shape IPM and untested combinations remain experimental.
-It is source software without an installer. Passing CI does not establish
-engineering accuracy or a supported operating-system matrix.
+It installs from PyPI with `uv tool install coilem`; see [Install](README.md#install)
+for the platforms its wheels are built and tested on. Passing CI does not
+establish engineering accuracy.
 
 [Validation](docs/VALIDATION.md) records the qualified scope, evidence and
 current limits. [Release notes](RELEASE_NOTES.md) describe the available workflows.

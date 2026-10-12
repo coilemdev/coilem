@@ -36,8 +36,9 @@ The separate cache path and retention policy are documented in
 
 ## The `coilem` launcher
 
-An installed package (`pip install .` from a checkout, which still needs Node.js
-and Cargo to build) provides `coilem`. It serves the built UI and the API from
+An installed package provides `coilem`: the published wheels with
+`uv tool install coilem`, or a checkout with `pip install .`, which builds the
+UI and Magneto2D and so needs Node.js and Cargo. It serves the built UI and the API from
 one loopback process and opens the browser at `http://127.0.0.1:<port>`,
 never `localhost`. Browser-saved state, such as Halbach autosaves and tutorial
 progress, belongs to that exact origin, so state saved under the development

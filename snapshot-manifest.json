@@ -11,7 +11,7 @@
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
       "bytes": 1440,
-      "sha256": "b09a97631381c2577f77630d2d4cd54a0729c2877be6c9716571a90ccb551a7d"
+      "sha256": "648ab60ba0c23c696ae9a052e004da1f4ee68f5affd794c2f4423b772fe7156f"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/config.yml",
@@ -30,8 +30,8 @@
     },
     {
       "path": ".github/workflows/release-wheels.yml",
-      "sha256": "1451383aa0f24642fb1ebc617c1dc3333ae0aeabbe10b79ec7950a9edde6b7f7",
-      "bytes": 13416
+      "sha256": "b7fbb1e974f53e83e73f2babc3d7daede7264e3cc337282802683dafb52d4e24",
+      "bytes": 17300
     },
     {
       "path": ".gitignore",
@@ -41,7 +41,7 @@
     {
       "path": "CITATION.cff",
       "bytes": 580,
-      "sha256": "ca4b8172d331c4a322437f085cb624c406ab8c2805386cfdb9b23df72fd3da50"
+      "sha256": "ff5e95a2b8212d13f9fdcb56c895c1f9481d384ffc0a670a20aef43e826f38fb"
     },
     {
       "path": "LICENSE",
@@ -55,18 +55,18 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 1420,
-      "sha256": "5afacaa7a141d0320c72c5054d7076ca702ad2d78495cb72e3f1f07afb49b866"
+      "bytes": 1460,
+      "sha256": "0680208d00c9e952f3839d09b3ea743ee251e3a674d6737a600d0f1311d267d9"
     },
     {
       "path": "README.md",
-      "bytes": 6707,
-      "sha256": "a1266e3545e56669a3aeae5e5b195fa3b5ef4d08c8ac9c855cca8fd770296464"
+      "bytes": 8450,
+      "sha256": "d6065eb85606fdcc6fe890aa6d5fa37ebd1b0144cdbb2322544d2253d2de54ca"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 11932,
-      "sha256": "bcd68170402bf0bd091f2a1025e335192aa21fb8394c8438a892e6b49b6d120f"
+      "bytes": 13685,
+      "sha256": "895a5dc4dbacf08f4b09436273161281c3794bb16d1d910895609af2907c1f91"
     },
     {
       "path": "SECURITY.md",
@@ -75,8 +75,8 @@
     },
     {
       "path": "SUPPORT.md",
-      "bytes": 984,
-      "sha256": "b16f39a2c5cf725207618f6d995eaf26891fe9056858d027dee29f64d37323e6"
+      "bytes": 971,
+      "sha256": "18e7800a4190b7c935c4f173c9e3c9ad215af6f838085981a3bc50bdf1978ac3"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -91,7 +91,7 @@
     {
       "path": "backend/__init__.py",
       "bytes": 53,
-      "sha256": "893cda93a572f0f5ab33e0963ae85d1d08b2da5e85c4d0a43b75bdc97d3514a6"
+      "sha256": "303edf330c12da756ea2724620a24ab9c759c5d1bbefde9d06a23c17b625d92a"
     },
     {
       "path": "backend/airgap_sampling.py",
@@ -2071,7 +2071,7 @@
     {
       "path": "docs/ELMER.md",
       "bytes": 6064,
-      "sha256": "3df892f25f6ba432f6db2ee663478b78044de07b50df209a080c44f339e6203c"
+      "sha256": "39ed5f9ae925db34d500c4df3b81cdd422b25f63e7b133ad222c90e19e38a032"
     },
     {
       "path": "docs/FIELD_PLAYBACK_V2.md",
@@ -2085,8 +2085,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 12989,
-      "sha256": "4fd03a44ad6c0925d8fd166b68f1c278da16170d83df9ca82ee144d171d6cdfe"
+      "bytes": 13164,
+      "sha256": "f7cf05e40ce6dda1f0cfc78df416f784e8e12cd6a43dd770d00b2251e80d8ebc"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -2101,7 +2101,7 @@
     {
       "path": "docs/MAGNETO2D.md",
       "bytes": 46156,
-      "sha256": "e58c50c6fb27dbece97545edbdb670a672dc2f5132ec475c9cfe273bafc57918"
+      "sha256": "5457a0699831248090b830afba898fac610693eadccea877a5d8a20b4d921508"
     },
     {
       "path": "docs/NUMERICAL_EVIDENCE.md",
@@ -2111,22 +2111,22 @@
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
       "bytes": 10183,
-      "sha256": "e8bc022e8a9f29e6d0260e61f2b00eedb8fbcb5a2fcab747b9c145f78ca36494"
+      "sha256": "ebf15e5909a244ec60daca787dc23e422c32418d1505a28e0daf18ecae62e961"
     },
     {
       "path": "docs/RELEASING.md",
-      "sha256": "b3581b8f1eb7f77a43a78d1f6fb35363b1b84d91a0a024cc12d083d60a2f009a",
-      "bytes": 7521
+      "sha256": "b5fe5f0631590493eb696861422f130838f27bf2c083830ed017729a9d890276",
+      "bytes": 9416
     },
     {
       "path": "docs/RUNTIME_SETTINGS.md",
-      "bytes": 8998,
-      "sha256": "83807ef6c1457ef2a34fafc9ef09b53793ea711bbe62d6674aaa1fd1786e6578"
+      "bytes": 9072,
+      "sha256": "c128b54cbf1083cb2861b416333e67f6f09283f3e49bef6f25e056b26751447c"
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 17958,
-      "sha256": "841d27d0580c5002a03e2b19da90c7ffca92b36a19e79da748fbf612e307f4f1"
+      "bytes": 17928,
+      "sha256": "f6090f992fa684d6ece9d7b198f3b6934d69822c35d441fa6783193b745a164d"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -2166,12 +2166,12 @@
     {
       "path": "frontend/package-lock.json",
       "bytes": 63981,
-      "sha256": "4a027aeca20f4f07b0e47b6ca0787bec0a22ad6b8b14d5c246e2089fb351fedc"
+      "sha256": "03282779075633cdfe979bdbbe8661792ca8e4bff3f8d92600df1d9677bb3729"
     },
     {
       "path": "frontend/package.json",
       "bytes": 1705,
-      "sha256": "dbd6c27f40a53ae454f041dc3aa0f132fce11bad5bd64dfddda3e799ed4711a3"
+      "sha256": "819bab254fe093a0e6afe00e6e35d8f6b0585a2a7e7347633481d03105ba001c"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -2756,7 +2756,7 @@
     {
       "path": "frontend/src/public/designFile.ts",
       "bytes": 10984,
-      "sha256": "ed3aacdb19005e7d4b6ab042d580c46c33beb081edbba82695d11062a2e2c0e8"
+      "sha256": "c2221aba124add77366b60db8c286c0dc02a2e0932498998a3a14a0d93c20f05"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -3411,7 +3411,7 @@
     {
       "path": "tests/test_public_candidate.py",
       "bytes": 20035,
-      "sha256": "86e638f4972c3672994d0c1c61ed2f37f21ca91e87e40f8eea17d9aadd930bc0"
+      "sha256": "cb0440756f460e74bfb7a70895f09f8160edff3ad16c64e25f6467c37d555171"
     },
     {
       "path": "tests/test_public_field_playback.py",
@@ -3455,8 +3455,8 @@
     },
     {
       "path": "tests/test_release_tools.py",
-      "sha256": "8a94a5aa218c93bd563b60b0f24a6d18b49d08b7f1e22c14171227e454e974a3",
-      "bytes": 20681
+      "sha256": "83e2d4fae8b35236e3fc0a765407b641f86aa5e81166e823daf337e7efac85f3",
+      "bytes": 21853
     },
     {
       "path": "tests/test_solve_estimate.py",
@@ -5423,6 +5423,126 @@
       "path": "tests/test_solve_estimate.py",
       "source_sha256": "07809bd70efb63f9a66a80676a8fe6286988f55ede6034d63c5f000b964c21e2",
       "reason": "#58: planned work for Preview's 48-angle grid; Preview stays estimated below Standard."
+    },
+    {
+      "base_commit": "750d458dc45d5e3820b75cc89c14280155ec2ca6",
+      "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
+      "source_sha256": "b09a97631381c2577f77630d2d4cd54a0729c2877be6c9716571a90ccb551a7d",
+      "reason": "Show a 0.3.0 version in the bug report example."
+    },
+    {
+      "base_commit": "750d458dc45d5e3820b75cc89c14280155ec2ca6",
+      "path": ".github/workflows/release-wheels.yml",
+      "source_sha256": "1451383aa0f24642fb1ebc617c1dc3333ae0aeabbe10b79ec7950a9edde6b7f7",
+      "reason": "Publish to PyPI from a matching version tag after acceptance and approval, test the PyPI install, and attach the wheels to a draft GitHub release."
+    },
+    {
+      "base_commit": "750d458dc45d5e3820b75cc89c14280155ec2ca6",
+      "path": "CITATION.cff",
+      "source_sha256": "ca4b8172d331c4a322437f085cb624c406ab8c2805386cfdb9b23df72fd3da50",
+      "reason": "Cite version 0.3.0."
+    },
+    {
+      "base_commit": "750d458dc45d5e3820b75cc89c14280155ec2ca6",
+      "path": "PUBLICATION_STATUS.md",
+      "source_sha256": "5afacaa7a141d0320c72c5054d7076ca702ad2d78495cb72e3f1f07afb49b866",
+      "reason": "Describe 0.3.0 as installable from PyPI."
+    },
+    {
+      "base_commit": "750d458dc45d5e3820b75cc89c14280155ec2ca6",
+      "path": "README.md",
+      "source_sha256": "a1266e3545e56669a3aeae5e5b195fa3b5ef4d08c8ac9c855cca8fd770296464",
+      "reason": "Lead with the uv install, list the supported platforms, and keep the source build for contributors."
+    },
+    {
+      "base_commit": "750d458dc45d5e3820b75cc89c14280155ec2ca6",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "bcd68170402bf0bd091f2a1025e335192aa21fb8394c8438a892e6b49b6d120f",
+      "reason": "Release notes for 0.3.0, the first release installable with one command; fold the later solve-performance, solver-time, slider, cancel and mesh-view sections into 0.3.0 and correct the Windows limitation that the Windows process pools made stale. Add the tooth-shoe mesh-key fix (#42), including the mesh-evidence hash change."
+    },
+    {
+      "base_commit": "750d458dc45d5e3820b75cc89c14280155ec2ca6",
+      "path": "SUPPORT.md",
+      "source_sha256": "b16f39a2c5cf725207618f6d995eaf26891fe9056858d027dee29f64d37323e6",
+      "reason": "Name version 0.3.0."
+    },
+    {
+      "base_commit": "750d458dc45d5e3820b75cc89c14280155ec2ca6",
+      "path": "backend/__init__.py",
+      "source_sha256": "893cda93a572f0f5ab33e0963ae85d1d08b2da5e85c4d0a43b75bdc97d3514a6",
+      "reason": "Set the application version to 0.3.0."
+    },
+    {
+      "base_commit": "750d458dc45d5e3820b75cc89c14280155ec2ca6",
+      "path": "docs/ELMER.md",
+      "source_sha256": "3df892f25f6ba432f6db2ee663478b78044de07b50df209a080c44f339e6203c",
+      "reason": "Refer to the 0.3.0 release claim."
+    },
+    {
+      "base_commit": "750d458dc45d5e3820b75cc89c14280155ec2ca6",
+      "path": "docs/GETTING_STARTED.md",
+      "source_sha256": "4fd03a44ad6c0925d8fd166b68f1c278da16170d83df9ca82ee144d171d6cdfe",
+      "reason": "Point installed users at the walkthrough and name version 0.3.0."
+    },
+    {
+      "base_commit": "750d458dc45d5e3820b75cc89c14280155ec2ca6",
+      "path": "docs/MAGNETO2D.md",
+      "source_sha256": "e58c50c6fb27dbece97545edbdb670a672dc2f5132ec475c9cfe273bafc57918",
+      "reason": "Name the 0.3.0 application."
+    },
+    {
+      "base_commit": "750d458dc45d5e3820b75cc89c14280155ec2ca6",
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "source_sha256": "e8bc022e8a9f29e6d0260e61f2b00eedb8fbcb5a2fcab747b9c145f78ca36494",
+      "reason": "Refer to the 0.3.0 release claim."
+    },
+    {
+      "base_commit": "750d458dc45d5e3820b75cc89c14280155ec2ca6",
+      "path": "docs/RELEASING.md",
+      "source_sha256": "b3581b8f1eb7f77a43a78d1f6fb35363b1b84d91a0a024cc12d083d60a2f009a",
+      "reason": "Document the PyPI one-time setup and the release procedure."
+    },
+    {
+      "base_commit": "750d458dc45d5e3820b75cc89c14280155ec2ca6",
+      "path": "docs/RUNTIME_SETTINGS.md",
+      "source_sha256": "83807ef6c1457ef2a34fafc9ef09b53793ea711bbe62d6674aaa1fd1786e6578",
+      "reason": "Explain that the published wheels provide the coilem launcher."
+    },
+    {
+      "base_commit": "750d458dc45d5e3820b75cc89c14280155ec2ca6",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "841d27d0580c5002a03e2b19da90c7ffca92b36a19e79da748fbf612e307f4f1",
+      "reason": "Name version 0.3.0."
+    },
+    {
+      "base_commit": "750d458dc45d5e3820b75cc89c14280155ec2ca6",
+      "path": "frontend/package-lock.json",
+      "source_sha256": "4a027aeca20f4f07b0e47b6ca0787bec0a22ad6b8b14d5c246e2089fb351fedc",
+      "reason": "Set the frontend package version to 0.3.0."
+    },
+    {
+      "base_commit": "750d458dc45d5e3820b75cc89c14280155ec2ca6",
+      "path": "frontend/package.json",
+      "source_sha256": "dbd6c27f40a53ae454f041dc3aa0f132fce11bad5bd64dfddda3e799ed4711a3",
+      "reason": "Set the frontend package version to 0.3.0."
+    },
+    {
+      "base_commit": "750d458dc45d5e3820b75cc89c14280155ec2ca6",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "ed3aacdb19005e7d4b6ab042d580c46c33beb081edbba82695d11062a2e2c0e8",
+      "reason": "Stamp saved designs with version 0.3.0."
+    },
+    {
+      "base_commit": "750d458dc45d5e3820b75cc89c14280155ec2ca6",
+      "path": "tests/test_public_candidate.py",
+      "source_sha256": "86e638f4972c3672994d0c1c61ed2f37f21ca91e87e40f8eea17d9aadd930bc0",
+      "reason": "Check the 0.3.0 version everywhere it is stated."
+    },
+    {
+      "base_commit": "750d458dc45d5e3820b75cc89c14280155ec2ca6",
+      "path": "tests/test_release_tools.py",
+      "source_sha256": "8a94a5aa218c93bd563b60b0f24a6d18b49d08b7f1e22c14171227e454e974a3",
+      "reason": "Check that only a version tag publishes to PyPI, after acceptance and through the reviewed environment."
     }
   ]
 }
