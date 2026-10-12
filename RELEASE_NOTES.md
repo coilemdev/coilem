@@ -34,6 +34,13 @@ Playback no longer stalls at higher speeds. Above about 30 new frames per
 second, playback shows every second or third solved position, and a loop of
 up to 16 frames stays in memory after its first pass.
 
+## Cancel a stator-only field (unreleased)
+
+A running **Stator only** field can now be canceled from the run button,
+which reads **Cancel stator field** while it runs, or from the field view's
+progress overlay. The resultant field stays available. Before, the run held
+the solver until it finished, blocking any other solve.
+
 ## Mesh view zoom and pan (unreleased)
 
 Zooming or panning the Mesh tab now redraws in about 45 ms instead of about a

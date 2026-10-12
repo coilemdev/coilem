@@ -65,8 +65,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 8433,
-      "sha256": "04d13cb230a7934364ed11af62441a4d24fe0fe1107cdaf9ba45165ca5d71862"
+      "bytes": 8759,
+      "sha256": "f38d163670b66db73e8f47739392f7a4d46d101cfd320317496e0c0a42e7b785"
     },
     {
       "path": "SECURITY.md",
@@ -1795,8 +1795,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 96937,
-      "sha256": "7ec7d9323fecb9620ba2e43ee95cd308b8736aaa6c9e18356d461b2d20beaa21"
+      "bytes": 97705,
+      "sha256": "e21dca440fc0e74c03e37800088b57c10eefe0223236f63df2a8f0507555eb16"
     },
     {
       "path": "frontend/src/api/projectSchema.ts",
@@ -2170,8 +2170,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 66155,
-      "sha256": "1aa5b6f1900d572804239d332f4a7e687e5dee9049e720870736074b8c860b73"
+      "bytes": 66919,
+      "sha256": "de97cfac5fd67b9e03618435c60b86543f6bf260d6f50624fde4ada24bd6988f"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -2180,8 +2180,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 177958,
-      "sha256": "405c86df360f89871f72de22d2913ea8ae5834639eed9b56bda2e68a24979bda"
+      "bytes": 178208,
+      "sha256": "778009e9dfb7e1428002d9ceee7a8ee4eb87631b9be680c0bbd671fa397c01c8"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -2225,8 +2225,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 45296,
-      "sha256": "97c073f490a33523cb7a3331c3440e976315bde9971d07a1c192c8e4b9050e28"
+      "bytes": 45467,
+      "sha256": "91fd02de7db4a87cee3146cf750aa38bda1f18ce031abf7466e06370e021eaeb"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -2445,8 +2445,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 221872,
-      "sha256": "fb99c0c7b0825533f372d55beda15b4e3b86621c57939394e74164e3d022a1fc"
+      "bytes": 222403,
+      "sha256": "cc58384585052ab175f65f49102013b69eb01938960af37a9d4384b305816d9e"
     },
     {
       "path": "frontend/src/public/tutorials/PublicTutorials.tsx",
@@ -4364,6 +4364,42 @@
       "path": "frontend/src/public/halbach/LinearHalbach2DViewport.tsx",
       "source_sha256": "48a2fb5600075c1ce7003bee80ebe5a78e17671a45cf0932278225f4f1b9fdfc",
       "reason": "Close mesh-overlay triangles with an explicit edge instead of the quadratic closePath."
+    },
+    {
+      "base_commit": "fcde08405257626f2ab5fbe454a27cad9a7d3dfb",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "04d13cb230a7934364ed11af62441a4d24fe0fe1107cdaf9ba45165ca5d71862",
+      "reason": "Note that a running stator-only field can now be canceled."
+    },
+    {
+      "base_commit": "fcde08405257626f2ab5fbe454a27cad9a7d3dfb",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "7ec7d9323fecb9620ba2e43ee95cd308b8736aaa6c9e18356d461b2d20beaa21",
+      "reason": "Check the stator-only field cancel controls in the run button, field overlay and app."
+    },
+    {
+      "base_commit": "fcde08405257626f2ab5fbe454a27cad9a7d3dfb",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "1aa5b6f1900d572804239d332f4a7e687e5dee9049e720870736074b8c860b73",
+      "reason": "Cancel a running stator-only field: abort its stream and cancel the active solve."
+    },
+    {
+      "base_commit": "fcde08405257626f2ab5fbe454a27cad9a7d3dfb",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "405c86df360f89871f72de22d2913ea8ae5834639eed9b56bda2e68a24979bda",
+      "reason": "Turn the run button into Cancel stator field while a stator-only field runs."
+    },
+    {
+      "base_commit": "fcde08405257626f2ab5fbe454a27cad9a7d3dfb",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "97c073f490a33523cb7a3331c3440e976315bde9971d07a1c192c8e4b9050e28",
+      "reason": "Add a Cancel button to the stator-only field progress overlay."
+    },
+    {
+      "base_commit": "fcde08405257626f2ab5fbe454a27cad9a7d3dfb",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "fb99c0c7b0825533f372d55beda15b4e3b86621c57939394e74164e3d022a1fc",
+      "reason": "Lay out the stator-only progress overlay with its Cancel button."
     }
   ]
 }

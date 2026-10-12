@@ -187,6 +187,7 @@ interface SolvedFieldViewerProps {
   armatureProgress: PublicSolveProgress | null;
   magnetoCompositionAvailable: boolean;
   onRequestArmature: () => void;
+  onCancelArmature: () => void;
 }
 
 function nearestFrame(
@@ -251,6 +252,7 @@ export function SolvedFieldViewer({
   armatureProgress,
   magnetoCompositionAvailable,
   onRequestArmature,
+  onCancelArmature,
 }: SolvedFieldViewerProps) {
   const resultantFrames = useMemo(
     () => playbackDescriptors(result.field_playback, result.field_line_frames ?? []),
@@ -1000,6 +1002,7 @@ export function SolvedFieldViewer({
                 ? `Position ${Math.min(armatureProgress.position, armatureProgress.total)} / ${armatureProgress.total}`
                 : 'Preparing exact field…'}
             </strong>
+            <button type="button" aria-label="Cancel the stator-only field" onClick={onCancelArmature}>Cancel</button>
             <progress
               max={Math.max(1, armatureProgress?.total ?? 1)}
               value={Math.max(0, armatureProgress?.position ?? 0)}

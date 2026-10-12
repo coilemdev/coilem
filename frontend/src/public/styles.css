@@ -1601,7 +1601,10 @@ body {
 .public-solved-field-canvas .public-field-result-canvas > canvas { position: absolute; inset: 0; }
 .public-solved-field-canvas .public-field-result-canvas canvas,
 .public-solved-field-canvas .public-field-result-canvas svg { width: 100%; height: 100%; max-height: none; }
-.public-field-stream-status { position: absolute; z-index: 12; top: 12px; left: 50%; display: grid; min-width: 250px; gap: 4px; padding: 8px 11px; border: 1px solid rgba(103,232,249,.34); border-radius: 9px; color: var(--text-secondary); background: rgba(7,9,14,.9); box-shadow: var(--shadow-md); transform: translateX(-50%); backdrop-filter: blur(12px); pointer-events: none; }
+.public-field-stream-status { position: absolute; z-index: 12; top: 12px; left: 50%; display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; min-width: 250px; gap: 4px 12px; padding: 8px 11px; border: 1px solid rgba(103,232,249,.34); border-radius: 9px; color: var(--text-secondary); background: rgba(7,9,14,.9); box-shadow: var(--shadow-md); transform: translateX(-50%); backdrop-filter: blur(12px); pointer-events: none; }
+.public-field-stream-status span, .public-field-stream-status progress { grid-column: 1 / -1; }
+.public-field-stream-status button { pointer-events: auto; padding: 3px 10px; border: 1px solid rgba(239,68,68,.55); border-radius: 999px; color: #fecaca; background: rgba(127,29,29,.34); font: 700 9px var(--font-mono); cursor: pointer; }
+.public-field-stream-status button:hover, .public-field-stream-status button:focus-visible { background: rgba(127,29,29,.6); }
 .public-field-stream-status span { color: var(--info); font: 700 7px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
 .public-field-stream-status strong { color: var(--text-primary); font-size: 10px; }
 .public-field-stream-status progress { width: 100%; height: 3px; overflow: hidden; border: 0; border-radius: 999px; color: var(--info); background: rgba(148,163,184,.16); }
