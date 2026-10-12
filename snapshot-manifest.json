@@ -410,8 +410,8 @@
     },
     {
       "path": "backend/public_policy.py",
-      "bytes": 9913,
-      "sha256": "331ae45fc61c2d248eb768fa407a433708eca6347f68343b8a920fa9e2bcc939"
+      "bytes": 10651,
+      "sha256": "4f233fbbca8fe39f2b4a2d52870f12358445ea04f5a834a3f6c84a1a8a176be4"
     },
     {
       "path": "backend/public_report.py",
@@ -1780,8 +1780,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 95786,
-      "sha256": "833d91fa95ceb04d334f121388f3a44b4a87ed7fcfcfe99a3951145effe73731"
+      "bytes": 95991,
+      "sha256": "3b0bdaf8a65debaf196af3ceda2543e5ed6757b7b7e2c9bd6dc89c114b428884"
     },
     {
       "path": "frontend/src/api/projectSchema.ts",
@@ -2165,8 +2165,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 174430,
-      "sha256": "bdd9ebde9bf5f26d170124aba64624f9ae1cb0ec2d75de5b41b41cac081fc557"
+      "bytes": 174622,
+      "sha256": "ea3f1d13853f3cfcac4ccbdd290ae077150fa175d8250b969447b30469a209ba"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -2917,6 +2917,11 @@
       "path": "tests/test_public_ui.py",
       "sha256": "9fab4d66ca16b11d3ab4ece8ab6901447ce74c60cdddd94c0716c01fffed82bc",
       "bytes": 7530
+    },
+    {
+      "path": "tests/test_public_validation_errors.py",
+      "sha256": "bf41217334bddcbee7ecc3420b6a0082e2c284f29a2aaff16105d0a098c63a1c",
+      "bytes": 3690
     },
     {
       "path": "tests/test_public_validation_fixtures.py",
@@ -4131,6 +4136,24 @@
       "path": "tests/test_public_validation_fixtures.py",
       "source_sha256": "0d46d2e74c5bb7f94e25e822189f4664ee983ecca4e521408ce1a9ac542642a9",
       "reason": "Keep the frontend loader's fallback stator values equal to the backend defaults."
+    },
+    {
+      "base_commit": "9f48d2a00843b1d7e9595e8d75ac4bd63663e4e8",
+      "path": "backend/public_policy.py",
+      "source_sha256": "331ae45fc61c2d248eb768fa407a433708eca6347f68343b8a920fa9e2bcc939",
+      "reason": "Report the first schema validation error's reason and location instead of a generic message."
+    },
+    {
+      "base_commit": "9f48d2a00843b1d7e9595e8d75ac4bd63663e4e8",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "833d91fa95ceb04d334f121388f3a44b4a87ed7fcfcfe99a3951145effe73731",
+      "reason": "Check that solve-settings validation errors get their own label."
+    },
+    {
+      "base_commit": "9f48d2a00843b1d7e9595e8d75ac4bd63663e4e8",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "bdd9ebde9bf5f26d170124aba64624f9ae1cb0ec2d75de5b41b41cac081fc557",
+      "reason": "Label solve-settings validation errors as solve settings rather than geometry."
     }
   ]
 }

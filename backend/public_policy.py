@@ -16,6 +16,7 @@ PUBLIC_SOLVER_IDS = frozenset({"magneto2d", "elmer"})
 PublicSolverId = Literal["magneto2d", "elmer"]
 PUBLIC_ELMER_FEATURE_ENV = "COILEM_ENABLE_ELMER"
 _TRUE_ENV_VALUES = frozenset({"1", "true", "yes", "on"})
+_MAX_VALIDATION_MESSAGE_CHARS = 300
 
 
 class PublicConfigError(ValueError):
@@ -38,6 +39,27 @@ def _reject_disabled_elmer(requested_solver: str) -> None:
             "Elmer is disabled for this build. Set COILEM_ENABLE_ELMER=1 before starting the local API to enable it.",
             field="solver",
         )
+
+
+def _validation_error(exc: ValidationError) -> PublicConfigError:
+    """Report the first problem pydantic found and where it is.
+
+    Validator messages give the reason, such as a tooth shoe that closes
+    the slot mouth; pydantic's own messages state the violated limit, so the
+    location leads the message. Neither repeats the submitted value, and the
+    message is bounded. Material errors are reported first.
+    """
+
+    errors = exc.errors(include_url=False, include_input=False, include_context=False)
+    material_errors = [error for error in errors if error["loc"] and error["loc"][0] == "materials"]
+    error = (material_errors or errors)[0]
+    field = ".".join(map(str, error["loc"])) or None
+    message = error["msg"].removeprefix("Value error, ").removeprefix("Assertion failed, ")
+    if field:
+        message = f"{field}: {message}"
+    if len(message) > _MAX_VALIDATION_MESSAGE_CHARS:
+        message = message[: _MAX_VALIDATION_MESSAGE_CHARS - 1].rstrip() + "\u2026"
+    return PublicConfigError(message, field=field)
 
 
 def parse_public_motor_config(body: dict[str, Any]) -> MotorConfig:
@@ -98,13 +120,7 @@ def parse_public_motor_config(body: dict[str, Any]) -> MotorConfig:
     try:
         config = MotorConfig.model_validate(body)
     except ValidationError as exc:
-        material_errors = [error for error in exc.errors() if error["loc"] and error["loc"][0] == "materials"]
-        if material_errors:
-            error = material_errors[0]
-            raise PublicConfigError(error["msg"], field=".".join(map(str, error["loc"]))) from exc
-        raise PublicConfigError(
-            "Motor configuration failed schema validation.",
-        ) from exc
+        raise _validation_error(exc) from exc
 
     support_error = public_config_support_error(
         config,
