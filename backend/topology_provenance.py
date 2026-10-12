@@ -14,7 +14,11 @@ from backend.models import MotorConfig
 # material_from_contract_key) — so a frozen Mesh-tab artifact is only valid
 # for the materials it was built with. Before v3, changing magnet grade or
 # steel after freezing a mesh silently solved with the stale grade.
-MAGNETO2D_MESH_SIGNATURE_VERSION = "magneto2d_mesh_signature/v3"
+# v4: the stator tooth-shoe settings joined the geometry block. geometry_ir
+# builds the bore from them, so before v4 two designs that differed only in
+# their tooth shoe shared one signature and could reuse each other's cached
+# per-angle meshes.
+MAGNETO2D_MESH_SIGNATURE_VERSION = "magneto2d_mesh_signature/v4"
 TOPOLOGY_PROVENANCE_SCHEMA_VERSION = "openem.topology_provenance.v1"
 
 
@@ -86,6 +90,9 @@ def build_topology_geometry_provenance(
             "slot_opening_mm": _value(stator, "slot_opening_mm"),
             "tooth_width_mm": _value(stator, "tooth_width_mm"),
             "yoke_thickness_mm": _value(stator, "yoke_thickness_mm"),
+            "tooth_shoe_enabled": _value(stator, "tooth_shoe_enabled"),
+            "tooth_shoe_height_mm": _value(stator, "tooth_shoe_height_mm"),
+            "tooth_shoe_overhang_mm": _value(stator, "tooth_shoe_overhang_mm"),
         },
         "rotor": {
             "OD_mm": _value(rotor, "OD_mm"),
