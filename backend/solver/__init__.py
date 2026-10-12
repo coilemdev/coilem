@@ -60,7 +60,13 @@ from backend.models import (
 )
 from backend.solver_contract import SolveCancelledError, Solver
 from backend.solver_environment import solver_setting
-from backend.steel_flux_metrics import steel_flux_density_rms_from_frames
+from backend.steel_flux_metrics import (
+    finalize_steel_flux_density_rms,
+    merge_steel_flux_density_rms_accumulator,
+    new_steel_flux_density_rms_accumulator,
+    steel_flux_density_rms_from_frames,
+    update_steel_flux_density_rms_accumulator,
+)
 from backend.sweep_planning import (
     cogging_angle_grid as shared_cogging_angle_grid,
 )
@@ -811,6 +817,23 @@ def _slim_result_field_frame(frame_payload: dict[str, Any]) -> dict[str, Any]:
     return result_frame
 
 
+def _validated_steel_flux_density_rms(value: Any) -> dict[str, float | None] | None:
+    """Return a sweep report's precomputed steel RMS, or None to recompute it."""
+
+    if not isinstance(value, dict):
+        return None
+    result: dict[str, float | None] = {}
+    for bucket in ("teeth", "yoke"):
+        item = value.get(bucket)
+        if item is None:
+            result[bucket] = None
+        elif isinstance(item, (int, float)) and not isinstance(item, bool) and math.isfinite(item) and item >= 0:
+            result[bucket] = float(item)
+        else:
+            return None
+    return result if result["teeth"] is not None or result["yoke"] is not None else None
+
+
 def _build_field_line_frame_in_subprocess(
     idx: int,
     loaded_report: dict[str, Any],
@@ -818,10 +841,10 @@ def _build_field_line_frame_in_subprocess(
     noload_report: dict[str, Any] | None,
     solve_cache_dir_text: str | None,
     include_live_frame: bool,
-) -> tuple[int, dict[str, Any] | None, dict[str, Any] | None]:
+) -> tuple[int, dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None]:
     frame = _field_line_frame_from_report(loaded_report, angle_elec_deg, noload_report)
     if frame is None:
-        return idx, None, None
+        return idx, None, None, None
 
     attached = _attach_field_frame_artifacts(
         [frame],
@@ -833,7 +856,12 @@ def _build_field_line_frame_in_subprocess(
     else:
         frame_payload = _field_line_frame_json(frame)
     live_frame = _slim_progress_field_frame(frame_payload) if include_live_frame else None
-    return idx, _slim_result_field_frame(frame_payload), live_frame
+    # Accumulate steel |B| here, while the full frame is in memory. Computing
+    # it afterwards re-read and re-parsed all ~11 MB frames serially (~6.7 s
+    # for a 48-position IPM run).
+    steel_accumulator = new_steel_flux_density_rms_accumulator()
+    update_steel_flux_density_rms_accumulator(steel_accumulator, frame_payload)
+    return idx, _slim_result_field_frame(frame_payload), live_frame, steel_accumulator
 
 
 def _solve_with_per_angle_producer_meshes(
@@ -1514,10 +1542,12 @@ def _solve_with_per_angle_producer_meshes(
         )
 
         precomputed_field_line_frames: list[dict[str, Any]] | None = None
+        precomputed_steel_flux_density_rms: dict[str, float | None] | None = None
         if not compact_qa_report:
             field_frame_start = time.perf_counter()
             field_line_frames_ordered: list[dict[str, Any] | None] = [None] * len(loaded_reports)
             live_field_frames_ordered: list[dict[str, Any] | None] = [None] * len(loaded_reports)
+            steel_accumulators_ordered: list[dict[str, Any] | None] = [None] * len(loaded_reports)
             field_frame_jobs: list[
                 tuple[int, dict[str, Any], float, dict[str, Any] | None, str | None, bool]
             ] = [
@@ -1540,26 +1570,43 @@ def _solve_with_per_angle_producer_meshes(
             if frame_workers > 1 and len(loaded_reports) > 1:
                 with ProcessPoolExecutor(max_workers=frame_workers) as frame_pool:
                     frame_futures: list[
-                        Future[tuple[int, dict[str, Any] | None, dict[str, Any] | None]]
+                        Future[
+                            tuple[
+                                int,
+                                dict[str, Any] | None,
+                                dict[str, Any] | None,
+                                dict[str, Any] | None,
+                            ]
+                        ]
                     ] = [
                         frame_pool.submit(_build_field_line_frame_in_subprocess, *frame_job)
                         for frame_job in field_frame_jobs
                     ]
                     for frame_future in as_completed(frame_futures):
-                        idx, field_line_frame, live_field_frame = frame_future.result()
+                        idx, field_line_frame, live_field_frame, steel_accumulator = (
+                            frame_future.result()
+                        )
                         field_line_frames_ordered[idx] = field_line_frame
                         live_field_frames_ordered[idx] = live_field_frame
+                        steel_accumulators_ordered[idx] = steel_accumulator
             else:
                 for frame_job in field_frame_jobs:
-                    frame_idx, field_line_frame, live_field_frame = _build_field_line_frame_in_subprocess(
-                        *frame_job
+                    frame_idx, field_line_frame, live_field_frame, steel_accumulator = (
+                        _build_field_line_frame_in_subprocess(*frame_job)
                     )
                     field_line_frames_ordered[frame_idx] = field_line_frame
                     live_field_frames_ordered[frame_idx] = live_field_frame
+                    steel_accumulators_ordered[frame_idx] = steel_accumulator
 
             precomputed_field_line_frames = [
                 frame for frame in field_line_frames_ordered if frame is not None
             ]
+            steel_accumulator_total = new_steel_flux_density_rms_accumulator()
+            for steel_accumulator in steel_accumulators_ordered:
+                merge_steel_flux_density_rms_accumulator(steel_accumulator_total, steel_accumulator)
+            precomputed_steel_flux_density_rms = finalize_steel_flux_density_rms(
+                steel_accumulator_total,
+            )
             emit_timing_delta(
                 "field_frame_extract",
                 "Field preview extraction",
@@ -1596,6 +1643,7 @@ def _solve_with_per_angle_producer_meshes(
             include_visual_frames=not compact_qa_report,
             include_no_load_field_frames=include_no_load_field_frames,
             precomputed_field_line_frames=precomputed_field_line_frames,
+            precomputed_steel_flux_density_rms=precomputed_steel_flux_density_rms,
         )
         emit_timing_delta(
             "sweep_aggregation",
@@ -2518,7 +2566,9 @@ class Magneto2DSolver(Solver):
             field_line_frames,
             solve_cache_dir,
         )
-        steel_b_rms = steel_flux_density_rms_from_frames(field_line_frames or [])
+        steel_b_rms = _validated_steel_flux_density_rms(
+            sweep_report.get("steel_flux_density_rms"),
+        ) or steel_flux_density_rms_from_frames(field_line_frames or [])
         slot_excitation_frames = _validated_slot_excitation_frames(sweep_report.get("slot_excitation_frames") or sweep.get("slot_excitation_frames"))
         if slot_excitation_frames is None:
             slot_excitation_frames = _validated_slot_excitation_frames(

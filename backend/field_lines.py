@@ -263,6 +263,20 @@ def generate_contour_segments(
         else 0.0
         for bx, by in zip(triangle_bx_t, triangle_by_t)
     ]
+    # A triangle whose node values all sit more than value_tol on one side of
+    # a level adds no segment for it. Testing its extremes with the same
+    # subtraction the edge checks use skips it exactly, without re-testing
+    # all three edges for every level. A NaN value keeps the full checks.
+    value_ranges: list[tuple[float, float]] = []
+    for tri in triangles:
+        if len(tri) != 3:
+            value_ranges.append((math.inf, -math.inf))
+            continue
+        tri_values = (az_nodal[tri[0]], az_nodal[tri[1]], az_nodal[tri[2]])
+        if any(math.isnan(value) for value in tri_values):
+            value_ranges.append((-math.inf, math.inf))
+        else:
+            value_ranges.append((min(tri_values), max(tri_values)))
 
     for level in levels:
         segments_mm: list[list[float]] = []
@@ -271,6 +285,9 @@ def generate_contour_segments(
         segment_by_t: list[float] = []
 
         for tri_idx, tri in enumerate(triangles):
+            lowest, highest = value_ranges[tri_idx]
+            if highest - level < -value_tol or lowest - level > value_tol:
+                continue
             if len(tri) != 3:
                 continue
 

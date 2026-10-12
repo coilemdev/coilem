@@ -35,6 +35,20 @@ def _b64url_decode(value: str) -> str:
     return base64.urlsafe_b64decode(padded.encode("ascii")).decode("utf-8")
 
 
+def _write_json_gz(path: Path, payload: dict[str, Any]) -> None:
+    """Write compact JSON through gzip in one call.
+
+    ``json.dump`` to a file runs the pure-Python encoder and issues about a
+    million small writes for one field frame; ``json.dumps`` uses the C encoder
+    and produces the same text. Level 1 compresses about ten times faster than
+    gzip's default 9 for files about 9% larger, and decompresses identically.
+    """
+
+    data = json.dumps(payload, separators=(",", ":")).encode("utf-8")
+    with gzip.open(path, "wb", compresslevel=1) as fh:
+        fh.write(data)
+
+
 def encode_solve_cache_artifact_id(path: Path) -> str:
     """Return an opaque id for a file under the solve-cache root."""
 
@@ -238,8 +252,7 @@ def write_airgap_records_artifact(
             "airgap_brbt": profile,
             "airgap_b_records": records,
         }
-        with gzip.open(path, "wt", encoding="utf-8") as fh:
-            json.dump(payload, fh, separators=(",", ":"))
+        _write_json_gz(path, payload)
         return {
             "artifact_id": encode_solve_cache_artifact_id(path),
             "format": "json.gz",
@@ -304,8 +317,7 @@ def write_field_line_frame_artifact(
             "record_count": record_count,
             "field_line_frame": frame_payload,
         }
-        with gzip.open(path, "wt", encoding="utf-8") as fh:
-            json.dump(payload, fh, separators=(",", ":"))
+        _write_json_gz(path, payload)
         return {
             "artifact_id": encode_solve_cache_artifact_id(path),
             "format": "json.gz",
