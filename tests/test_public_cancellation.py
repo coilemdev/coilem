@@ -327,3 +327,28 @@ def test_direct_route_keeps_lane_until_interrupted_worker_finishes(
                 await _eventually(worker_finished.is_set)
 
     asyncio.run(scenario())
+
+
+def test_solve_time_is_the_calls_wall_clock_time(monkeypatch, public_config, isolated_solver):
+    """Per-position times overlap across workers; their sum is CPU time, not duration."""
+    solver, _ = isolated_solver
+    summed = 1500.0
+
+    def mesh_worker(config, **kwargs):
+        return {"sweep": {}}, {}
+
+    def build_result(*args, **kwargs):
+        summary = type("Summary", (), {"solve_time_s": summed})()
+        metadata = type("Metadata", (), {"solve_time_s": summed, "solver_cpu_time_s": summed})()
+        return type("Result", (), {"summary": summary, "solve_metadata": metadata})()
+
+    monkeypatch.setattr(solver, "_solve_with_per_angle_gmsh_meshes", mesh_worker)
+    monkeypatch.setattr(solver_module, "_select_magneto2d_torque_series", lambda sweep, method: (None, 0.0, method))
+    monkeypatch.setattr(solver_module, "_torque_in_ui_direction", lambda torque, **kwargs: torque)
+    monkeypatch.setattr(solver, "build_result_from_reports", build_result)
+
+    result = solver.solve(public_config)
+
+    assert 0 <= result.summary.solve_time_s < 30
+    assert result.solve_metadata.solve_time_s == result.summary.solve_time_s
+    assert result.solve_metadata.solver_cpu_time_s == summed

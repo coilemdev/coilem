@@ -58,6 +58,11 @@ class SolveMetadata(BaseModel):
     postprocess_source_cache_dir: str | None = None
     postprocess_time_s: float | None = Field(default=None, ge=0)
     solve_time_s: float | None = Field(default=None, ge=0)
+    solver_cpu_time_s: float | None = Field(
+        default=None,
+        ge=0,
+        description="Sum of every rotor position's solver process time; positions run in parallel",
+    )
     mesher: str | None = None
     mesh_density: str | None = None
     mesh_source: str | None = None

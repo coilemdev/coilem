@@ -39,6 +39,14 @@ instead of re-reading every frame. With both changes the IPM 14p run took
 larger. Results are unchanged; the steel RMS flux densities can differ in
 the 14th significant digit because their sums are added in a different order.
 
+## Solver time (unreleased)
+
+The Solver time on the Results page and in the PDF and CSV reports is now the
+wall-clock time of meshing, solving and building the result. It used to add up
+every rotor position's solver time, although positions run in parallel, so a
+4-minute IPM 14p run reported over 20 minutes. Saved results keep that sum as
+solver CPU time. Runs saved before this change still show the summed value.
+
 ## Field solution position slider (unreleased)
 
 Moving the Position slider on a solved field no longer freezes the page for
