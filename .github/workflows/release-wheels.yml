@@ -41,7 +41,7 @@ env:
   NODE_VERSION: "24"
   BUILD_PYTHON: "3.12"
   COILEM_BUILD_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
-  # TestPyPI never accepts a version twice; rehearsals publish 0.2.0.dev<run><attempt>.
+  # TestPyPI never accepts a version twice; rehearsals publish <version>.dev<run><attempt>.
   COILEM_VERSION_SUFFIX: ${{ inputs.publish == 'testpypi' && format('.dev{0}{1}', github.run_id, github.run_attempt) || '' }}
 
 defaults:

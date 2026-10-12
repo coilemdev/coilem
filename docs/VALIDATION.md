@@ -1,7 +1,7 @@
 # Developer-preview validation
 
-The release is coilEM 0.2.0 with Magneto2D 0.3.2, a source-built developer
-preview. Its numerical qualification is the published A/B/C/D benchmark
+The current source candidate is coilEM 0.2.1 with Magneto2D 0.3.3, a
+source-built developer preview. Its numerical qualification is the published A/B/C/D benchmark
 report v1.1, which compares the native solver with fresh, matched FEMM
 references. Passing CI alone does not establish numerical accuracy.
 

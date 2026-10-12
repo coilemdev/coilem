@@ -1,8 +1,14 @@
-# coilEM 0.2.0 Developer Preview
+# coilEM 0.2.1 Developer Preview
 
-coilEM 0.2.0 is a source-built developer preview of the local motor-design
-application. It bundles Magneto2D 0.3.2 as its field solver; the application
+coilEM 0.2.1 is a source-built developer preview of the local motor-design
+application. It bundles Magneto2D 0.3.3 as its field solver; the application
 and solver use separate version numbers.
+
+This patch identifies the merged solve-performance improvements with new
+application and native solver versions. Current package, design-file and
+result metadata use the new versions. Saved results and archived benchmark
+reports retain their original measured versions; input schemas, material
+contracts and numerical gates are unchanged.
 
 ## Packaged launcher (unreleased)
 

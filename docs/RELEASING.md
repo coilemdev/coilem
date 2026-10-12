@@ -88,7 +88,7 @@ test. It installs the wheel into a fresh environment where Cargo and Node.js
 cannot be found, then exercises the installed `coilem` through HTTP:
 
 ```sh
-python -I acceptance.py --install path/to/coilem-0.2.0-py3-none-macosx_12_0_arm64.whl
+python -I acceptance.py --install path/to/coilem-0.2.1-py3-none-macosx_12_0_arm64.whl
 ```
 
 ## TestPyPI rehearsal
@@ -124,13 +124,13 @@ To try a rehearsal build by hand, download the wheel from TestPyPI and install
 that file. Its dependencies then come from PyPI:
 
 ```sh
-python -m pip download --no-deps --index-url https://test.pypi.org/simple/ coilem==0.2.0.devN -d coilem-wheel
-pipx install coilem-wheel/coilem-0.2.0.devN-*.whl
+python -m pip download --no-deps --index-url https://test.pypi.org/simple/ coilem==0.2.1.devN -d coilem-wheel
+pipx install coilem-wheel/coilem-0.2.1.devN-*.whl
 ```
 
 Do not install with `--extra-index-url https://test.pypi.org/simple/`: anyone
 can upload to TestPyPI, so its copies of coilEM's dependencies are untrusted.
 
 A release tag must match the version in `backend/__init__.py` (for example
-`v0.2.0`); `python -m tools.release.version --tag v0.2.0` checks it.
+`v0.2.1`); `python -m tools.release.version --tag v0.2.1` checks it.
 

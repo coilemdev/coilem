@@ -10,8 +10,8 @@
     },
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
-      "bytes": 1439,
-      "sha256": "67ccb96a9562ca0db27046e69b94e2f0559d8a4c4c8507c3b2b1e5a4875d186a"
+      "bytes": 1440,
+      "sha256": "b09a97631381c2577f77630d2d4cd54a0729c2877be6c9716571a90ccb551a7d"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/config.yml",
@@ -30,8 +30,8 @@
     },
     {
       "path": ".github/workflows/release-wheels.yml",
-      "sha256": "b1d42ab842c08d9cb095d1392cd2ac142c818a38bb3b819d1e5a5f35ba57cfb2",
-      "bytes": 13412
+      "sha256": "1451383aa0f24642fb1ebc617c1dc3333ae0aeabbe10b79ec7950a9edde6b7f7",
+      "bytes": 13416
     },
     {
       "path": ".gitignore",
@@ -41,7 +41,7 @@
     {
       "path": "CITATION.cff",
       "bytes": 580,
-      "sha256": "921684be914a8ff021785cc3c52a9c95be5e13fb68f91f86895ad3b35e25d338"
+      "sha256": "ca4b8172d331c4a322437f085cb624c406ab8c2805386cfdb9b23df72fd3da50"
     },
     {
       "path": "LICENSE",
@@ -55,18 +55,18 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 1403,
-      "sha256": "6944684215f4a36457d3d1476f31c212a0ff6ae93080d6ea79f96d74b897b60b"
+      "bytes": 1420,
+      "sha256": "5afacaa7a141d0320c72c5054d7076ca702ad2d78495cb72e3f1f07afb49b866"
     },
     {
       "path": "README.md",
       "bytes": 6707,
-      "sha256": "7f644dcff9471939e7b44474110398b57d1dfadbb8268c2289cd1e46578e804a"
+      "sha256": "a1266e3545e56669a3aeae5e5b195fa3b5ef4d08c8ac9c855cca8fd770296464"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 11592,
-      "sha256": "ab4151bf127e2e517e5067b5b3adfd85f58757bc9f9b095b99cd61a7e7b0c59b"
+      "bytes": 11932,
+      "sha256": "bcd68170402bf0bd091f2a1025e335192aa21fb8394c8438a892e6b49b6d120f"
     },
     {
       "path": "SECURITY.md",
@@ -76,7 +76,7 @@
     {
       "path": "SUPPORT.md",
       "bytes": 984,
-      "sha256": "232db88eac38a2c1d86ec52d80190a1ed64b3b56bfae96373dcc75a7d4541bc2"
+      "sha256": "b16f39a2c5cf725207618f6d995eaf26891fe9056858d027dee29f64d37323e6"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -91,7 +91,7 @@
     {
       "path": "backend/__init__.py",
       "bytes": 53,
-      "sha256": "b24287232a229607997fdf457a58b4691a3a7befa611d1e9d8cc58a3852e0730"
+      "sha256": "893cda93a572f0f5ab33e0963ae85d1d08b2da5e85c4d0a43b75bdc97d3514a6"
     },
     {
       "path": "backend/airgap_sampling.py",
@@ -481,7 +481,7 @@
     {
       "path": "backend/solver/__init__.py",
       "bytes": 139987,
-      "sha256": "378152675ad6182aeaafd81e10d2d0268bfceedb06e62c1dad57e93a66632dca"
+      "sha256": "bec3f503a6df0ecd3a0bf757cdfab97e715245aa24995e152f9fa5f9f828fd77"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -2071,7 +2071,7 @@
     {
       "path": "docs/ELMER.md",
       "bytes": 6064,
-      "sha256": "9e235eb3b2b1d7e5912b4daada204986fa44e7a0e88e2b4f5c3d80a44304fa78"
+      "sha256": "3df892f25f6ba432f6db2ee663478b78044de07b50df209a080c44f339e6203c"
     },
     {
       "path": "docs/FIELD_PLAYBACK_V2.md",
@@ -2086,7 +2086,7 @@
     {
       "path": "docs/GETTING_STARTED.md",
       "bytes": 12989,
-      "sha256": "086237f05c64dbc1a7e821c21c59f5fef67b9e850bfa661389c1dfab48169f13"
+      "sha256": "4fd03a44ad6c0925d8fd166b68f1c278da16170d83df9ca82ee144d171d6cdfe"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -2101,7 +2101,7 @@
     {
       "path": "docs/MAGNETO2D.md",
       "bytes": 46156,
-      "sha256": "0821100286b8d9e829668c81a8620b809bd337b87297e93e372d916c88d4a13a"
+      "sha256": "e58c50c6fb27dbece97545edbdb670a672dc2f5132ec475c9cfe273bafc57918"
     },
     {
       "path": "docs/NUMERICAL_EVIDENCE.md",
@@ -2111,11 +2111,11 @@
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
       "bytes": 10183,
-      "sha256": "e25b4c771696c94fee03f6b36bdef96a96ef33af6054c414a8a15da386a352fb"
+      "sha256": "e8bc022e8a9f29e6d0260e61f2b00eedb8fbcb5a2fcab747b9c145f78ca36494"
     },
     {
       "path": "docs/RELEASING.md",
-      "sha256": "59aeb73ea81fbf9df1853acde5fcd52c67e55c2675d1bd29d1480b574fdbc990",
+      "sha256": "b3581b8f1eb7f77a43a78d1f6fb35363b1b84d91a0a024cc12d083d60a2f009a",
       "bytes": 7521
     },
     {
@@ -2125,8 +2125,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 17941,
-      "sha256": "c105300710e4373c5b03a48c60dbb5897be3094ab5fcaa89b8c72d20fb547f46"
+      "bytes": 17958,
+      "sha256": "841d27d0580c5002a03e2b19da90c7ffca92b36a19e79da748fbf612e307f4f1"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -2166,12 +2166,12 @@
     {
       "path": "frontend/package-lock.json",
       "bytes": 63981,
-      "sha256": "e791b180125a2046fffbc1d54940cc097aba71ce83c88f84becc8f58263da5ab"
+      "sha256": "4a027aeca20f4f07b0e47b6ca0787bec0a22ad6b8b14d5c246e2089fb351fedc"
     },
     {
       "path": "frontend/package.json",
       "bytes": 1626,
-      "sha256": "1fc682dda0de54d7fe925adbb91368a441837b5b6e3047b7a10bb4d2d109a935"
+      "sha256": "b5525ba952fa79f690843945f3d999ed242c27de26cedbc8c87bab6ba8c7a791"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -2731,7 +2731,7 @@
     {
       "path": "frontend/src/public/designFile.ts",
       "bytes": 10984,
-      "sha256": "757c6cc7901f0babf3a0d6d2dd6010c14a5719be4987c28f584af162934a951b"
+      "sha256": "ed3aacdb19005e7d4b6ab042d580c46c33beb081edbba82695d11062a2e2c0e8"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -3041,12 +3041,12 @@
     {
       "path": "solvers/magneto2d/Cargo.lock",
       "bytes": 28550,
-      "sha256": "030474034e939fd3316d90bcc8ee2dff6bf4b3e803a5ccf3fb1aedfd40ae6dcc"
+      "sha256": "1c963a3a9e0dd242d2d8dded6ae91c39bc7675ebe63c742195fb62d2674d5fbe"
     },
     {
       "path": "solvers/magneto2d/Cargo.toml",
       "bytes": 522,
-      "sha256": "d2092ad759105eef2aba7fdf781138338d4b3e41f09bd29383eb5a16ffbe7a6e"
+      "sha256": "9e0cd154f57ac88074e7216240b072eec4b60827c43b3d5ce502792a1ce24b81"
     },
     {
       "path": "solvers/magneto2d/build.rs",
@@ -3315,7 +3315,7 @@
     },
     {
       "path": "tests/test_installed_resources.py",
-      "sha256": "b742e8d16997fd043f9150d00a7d224ef2fa72f32362b9224ee6c2b4b720adc8",
+      "sha256": "2655c03ca9b0c15c463398155119702625d56009ade0a7d4639b55035257ae8e",
       "bytes": 10171
     },
     {
@@ -3371,7 +3371,7 @@
     {
       "path": "tests/test_public_candidate.py",
       "bytes": 20035,
-      "sha256": "93749b3fce4c8ea47f3605f3a5e9b29fbdf2b36c6acfef821d7080c86a3237d8"
+      "sha256": "86e638f4972c3672994d0c1c61ed2f37f21ca91e87e40f8eea17d9aadd930bc0"
     },
     {
       "path": "tests/test_public_field_playback.py",

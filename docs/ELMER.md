@@ -2,7 +2,7 @@
 
 coilEM contains an adapter for a separately installed Elmer FEM runtime as an
 opt-in development and testing alternative to Magneto2D. Elmer is not part of
-the coilEM 0.2.0 release claim. It is disabled, hidden, and not probed by
+the coilEM 0.2.1 release claim. It is disabled, hidden, and not probed by
 default, and is never downloaded, bundled, linked, or selected automatically.
 The public Python environment includes `meshio`, which reads Elmer's VTU
 field-result files after the override is deliberately enabled.
@@ -87,7 +87,7 @@ The adapter can exercise full-machine 2D radial-flux SPM and native-Gmsh IPM
 geometries, M350-50A nonlinear steel, permanent magnets, and supported winding
 layouts. It produces loaded torque, no-load phase flux-linkage and Back-EMF,
 flux-density maps, field lines, and normal coilEM result provenance. These are
-development capabilities, not 0.2.0 launch support or cross-solver accuracy
+development capabilities, not 0.2.1 launch support or cross-solver accuracy
 claims.
 
 Elmer runs use a fixed reproducibility profile:
