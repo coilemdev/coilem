@@ -47,10 +47,12 @@ a per-value walk and reuse the mesh's serialized text. Hashes and results are
 unchanged. The IPM 14p run then took 76 s and the SPM 8p/12s run 48 s.
 
 Windows now generates independent Gmsh meshes in worker processes, with up
-to eight workers limited by the host CPU count. Field-frame production and
-playback keep their existing Windows settings. Cancelling a solve skips
-queued meshes, lets Gmsh calls already running finish, and joins the workers
-before releasing the solve lane.
+to eight workers limited by the host CPU count. Playback sweeps with at least
+eight frames also use up to eight worker processes to render and encode the
+same image layers. Both pools use Windows spawning; field-frame production
+keeps its existing Windows setting. Cancelling a solve skips queued meshes,
+lets Gmsh calls already running finish, and joins the workers before releasing
+the solve lane.
 
 ## Solver time (unreleased)
 

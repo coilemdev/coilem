@@ -22,6 +22,7 @@ import json
 import math
 import os
 from concurrent.futures import Executor, ProcessPoolExecutor, ThreadPoolExecutor
+from multiprocessing import get_context
 from pathlib import Path
 from typing import Any, Literal
 
@@ -697,19 +698,18 @@ def _package_playback_frame(
 
 
 def _playback_executor(frame_count: int) -> Executor:
-    """Render frames in processes where the solver allows Python process pools.
+    """Render large sweeps in processes, including Windows spawn workers.
 
-    Drawing is one Pillow call per triangle, so threads mostly wait on the GIL:
-    4 threads rendered 48 IPM frames in 28 s against 52 s serially. Small
-    sweeps stay on threads, where starting worker processes would cost more
-    than it saves.
+    Geometry conversion and drawing contain Python loops, so threads contend
+    for the GIL. Small sweeps stay on threads to avoid process startup costs.
     """
 
-    from backend.solver import _magneto2d_python_process_pool_enabled
+    from backend.solver import _playback_process_pool_enabled
 
-    if frame_count >= _PLAYBACK_PROCESS_MIN_FRAMES and _magneto2d_python_process_pool_enabled():
+    if frame_count >= _PLAYBACK_PROCESS_MIN_FRAMES and _playback_process_pool_enabled():
         return ProcessPoolExecutor(
             max_workers=max(1, min(_PLAYBACK_MAX_PROCESSES, os.cpu_count() or 1, frame_count)),
+            mp_context=get_context("spawn" if os.name == "nt" else None),
         )
     return ThreadPoolExecutor(
         max_workers=max(1, min(4, frame_count)),

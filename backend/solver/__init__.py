@@ -149,6 +149,14 @@ def _gmsh_mesh_process_pool_enabled() -> bool:
     return _env_bool("COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL") is not False
 
 
+def _playback_process_pool_enabled() -> bool:
+    """Playback workers support Windows independently of field-frame pools."""
+    explicit = _env_bool("COILEM_MAGNETO2D_ALLOW_PLAYBACK_PROCESS_POOL")
+    if explicit is not None:
+        return explicit
+    return _env_bool("COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL") is not False
+
+
 
 def _magneto2d_persist_raw_artifacts() -> bool:
     """Keep raw per-angle Magneto2D reports/meshes only for local/debug runs."""
