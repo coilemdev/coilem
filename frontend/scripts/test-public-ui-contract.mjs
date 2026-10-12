@@ -805,6 +805,8 @@ assert.match(solvedFieldSource, /\? -mechanicalAngleDeg/);
 assert.match(solvedFieldSource, /statorPolarityRotationDeg=\{statorPolarityRotationDeg\}/);
 assert.match(fieldResultSource, /cue\.angleDeg \+ statorPolarityRotationDeg/);
 assert.match(solvedFieldSource, /Solved rotor position/);
+assert.match(workspaceSource, /Solver time is the wall-clock time for meshing, solving and building the result/);
+assert.doesNotMatch(workspaceSource, /may sum parallel tasks/);
 assert.match(solvedFieldSource, /setPlaying/);
 assert.match(solvedFieldSource, /retainedPlot/);
 assert.match(solvedFieldSource, /frameRequestsRef/);

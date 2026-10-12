@@ -65,8 +65,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 9798,
-      "sha256": "ee6fa7ac2a29f49ed0a2baf45d0fcf893279f7d65a0cfb840388f974ee16e1d0"
+      "bytes": 10216,
+      "sha256": "521becf6c6dd4a8c4f052e9034f5c5b425dfcbb4cad90ac8793ee3ea0eec6fc3"
     },
     {
       "path": "SECURITY.md",
@@ -365,8 +365,8 @@
     },
     {
       "path": "backend/models/result.py",
-      "bytes": 4083,
-      "sha256": "1f3822b5881ec887e8987402ea8bf4ca85dca5f9b167a5949b90badcb8462dd3"
+      "bytes": 4270,
+      "sha256": "34d42f29fd8442e21d94a09cc0d3e72a4da556139c3842a9e91c4f5113790b0d"
     },
     {
       "path": "backend/models/waveforms.py",
@@ -480,8 +480,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 136098,
-      "sha256": "ec04a36df4d3c3a72eb6457a6af1a87cd091419c3108cbc52eda0a0a8127f6a2"
+      "bytes": 136615,
+      "sha256": "7fba3bac4c22dc5e52b67f622f790aaf9d57fe7b8df10862973ad99806cf8dba"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -2015,8 +2015,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 97705,
-      "sha256": "e21dca440fc0e74c03e37800088b57c10eefe0223236f63df2a8f0507555eb16"
+      "bytes": 97883,
+      "sha256": "f1dec45460e8fc0ef821e7ef61a146a38cb72dc3f4a450f000279c9c515e022b"
     },
     {
       "path": "frontend/src/api/projectSchema.ts",
@@ -2400,8 +2400,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 178208,
-      "sha256": "778009e9dfb7e1428002d9ceee7a8ee4eb87631b9be680c0bbd671fa397c01c8"
+      "bytes": 178251,
+      "sha256": "af7a07eb1e1b79a7c258f3308c0214d8900d54f63d529f03cc9eb6707d4b20a2"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -3130,8 +3130,8 @@
     },
     {
       "path": "tests/test_public_cancellation.py",
-      "bytes": 13911,
-      "sha256": "9af6ecb663d4a045a1754b6fa706c9adc664e082871d3287928f0e37364d5d51"
+      "bytes": 15116,
+      "sha256": "848822429984ae5896b5187a7b943fb5c3685f1073a24dca0548a2e8f4a92507"
     },
     {
       "path": "tests/test_public_candidate.py",
@@ -4715,6 +4715,42 @@
       "path": "backend/solver/_helpers.py",
       "source_sha256": "a5efc69c9cdb751c5bb5e58d61c19482a5b340f69a74fdc5808e445357a195d7",
       "reason": "Carry the precomputed steel flux-density RMS in the sweep report."
+    },
+    {
+      "base_commit": "7750d809353d4589dba93a85abb6622ec86f775f",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "ee6fa7ac2a29f49ed0a2baf45d0fcf893279f7d65a0cfb840388f974ee16e1d0",
+      "reason": "Note that Solver time now reports wall-clock time."
+    },
+    {
+      "base_commit": "7750d809353d4589dba93a85abb6622ec86f775f",
+      "path": "backend/models/result.py",
+      "source_sha256": "1f3822b5881ec887e8987402ea8bf4ca85dca5f9b167a5949b90badcb8462dd3",
+      "reason": "Add solver_cpu_time_s for the summed per-position solver time."
+    },
+    {
+      "base_commit": "7750d809353d4589dba93a85abb6622ec86f775f",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "ec04a36df4d3c3a72eb6457a6af1a87cd091419c3108cbc52eda0a0a8127f6a2",
+      "reason": "Report the solve call's wall-clock time as solve_time_s and keep the per-position sum as solver CPU time."
+    },
+    {
+      "base_commit": "7750d809353d4589dba93a85abb6622ec86f775f",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "778009e9dfb7e1428002d9ceee7a8ee4eb87631b9be680c0bbd671fa397c01c8",
+      "reason": "Describe Solver time as wall-clock time for meshing, solving and building the result."
+    },
+    {
+      "base_commit": "7750d809353d4589dba93a85abb6622ec86f775f",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "e21dca440fc0e74c03e37800088b57c10eefe0223236f63df2a8f0507555eb16",
+      "reason": "Check the Solver time note describes wall-clock time."
+    },
+    {
+      "base_commit": "7750d809353d4589dba93a85abb6622ec86f775f",
+      "path": "tests/test_public_cancellation.py",
+      "source_sha256": "9af6ecb663d4a045a1754b6fa706c9adc664e082871d3287928f0e37364d5d51",
+      "reason": "Check solve() reports its wall-clock time rather than the summed per-position time."
     }
   ]
 }

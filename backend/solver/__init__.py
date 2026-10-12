@@ -2813,6 +2813,7 @@ class Magneto2DSolver(Solver):
                 postprocess_source_cache_dir=postprocess_source_cache_dir,
                 postprocess_time_s=postprocess_time_s,
                 solve_time_s=total_time_s,
+                solver_cpu_time_s=total_time_s,
                 mesher=getattr(config.solve_params, "mesher", "gmsh"),
                 mesh_density=getattr(config.solve_params, "mesh_density", None),
                 mesh_source=mesh_source_val,
@@ -2960,6 +2961,7 @@ class Magneto2DSolver(Solver):
         on_progress=None,
         solve_mesh_key: str | None = None,
     ) -> SolveResult:
+        solve_started = time.perf_counter()
         self._raise_if_cancelled()
         original_progress = on_progress
 
@@ -2994,6 +2996,12 @@ class Magneto2DSolver(Solver):
                 solve_mesh_key=solve_mesh_key,
                 launch_surface=self._launch_surface,
             )
+            # The reports' times add up every position's solver process, which
+            # run in parallel; a 4-minute run summed to over 20 minutes. Report
+            # this call's wall-clock time and keep the sum as solver CPU time.
+            wall_time_s = round(time.perf_counter() - solve_started, 3)
+            result.summary.solve_time_s = wall_time_s
+            result.solve_metadata.solve_time_s = wall_time_s
             _emit_solver_timing(
                 on_progress,
                 "result_packaging",
