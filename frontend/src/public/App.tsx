@@ -1189,6 +1189,26 @@ export function App() {
     });
   };
 
+  const cancelArmatureField = async () => {
+    armatureFieldRequestId.current += 1;
+    armatureFieldController.current?.abort();
+    armatureFieldController.current = null;
+    setArmatureField(null);
+    setArmatureFieldError(null);
+    setError(null);
+    try {
+      await cancelPublicSolve();
+      setConnectionStatus('online');
+      setNotice('Stator-only field canceled. The resultant field is still available.');
+    } catch (requestError) {
+      setError(errorMessage(requestError));
+      setConnectionStatus(requestError instanceof TypeError ? 'offline' : 'online');
+    } finally {
+      setBusy((current) => current === 'field' ? null : current);
+      setProgress(null);
+    }
+  };
+
   const cancelSolve = async () => {
     solveRequestId.current += 1;
     solveController.current?.abort();
@@ -1686,6 +1706,7 @@ export function App() {
       onStartSolve={() => void startSolve()}
       onCancelSolve={() => void cancelSolve()}
       onRequestArmatureField={() => void loadArmatureField()}
+      onCancelArmatureField={() => void cancelArmatureField()}
       onOpenRunFolder={openSavedRunFolder}
       onDownloadRunExport={downloadSavedRunExport}
       onOpenRunProject={(savedRun) => void restoreSavedRun(savedRun, 'design')}

@@ -251,10 +251,18 @@ assert.match(styleSource, /\.public-excitation-preview-plot \.phase-a/);
 assert.match(styleSource, /\.public-excitation-preview-plot \.phase-b/);
 assert.match(styleSource, /\.public-excitation-preview-plot \.phase-c/);
 const solveFooterIndex = workspaceSource.indexOf('className="public-solve-footer"');
-const runActionIndex = workspaceSource.indexOf("busy === 'solve' ? 'public-cancel-btn' : 'public-run-btn'");
+const runActionIndex = workspaceSource.indexOf("busy === 'solve' || busy === 'field' ? 'public-cancel-btn' : 'public-run-btn'");
 const runPlanIndex = workspaceSource.indexOf('className="public-run-plan"');
 assert.ok(solveFooterIndex >= 0 && runActionIndex > solveFooterIndex && runActionIndex < runPlanIndex, 'Run analysis belongs in the left solve footer');
 assert.match(workspaceSource, /export type PublicWorkflowStep = 'design' \| 'solve' \| 'report'/);
+// A running stator-only field can be canceled like a solve, from the run
+// button and from the field viewer's progress overlay.
+assert.match(workspaceSource, /busy === 'field' \? onCancelArmatureField/);
+assert.match(workspaceSource, /'■ Cancel stator field'/);
+assert.match(workspaceSource, /onCancelArmature=\{onCancelArmatureField\}/);
+assert.match(solvedFieldSource, /aria-label="Cancel the stator-only field" onClick=\{onCancelArmature\}/);
+assert.match(appSource, /const cancelArmatureField = async \(\) => \{[\s\S]*?armatureFieldController\.current\?\.abort\(\);[\s\S]*?await cancelPublicSolve\(\);/);
+assert.match(styleSource, /\.public-field-stream-status button \{ pointer-events: auto;/);
 assert.match(workspaceSource, /\{ id: 'report', label: 'Results', available: resultReady \}/);
 assert.match(workspaceSource, /Full results →/);
 assert.doesNotMatch(workspaceSource, /\{ id: 'report', label: 'Report'/);
@@ -1003,7 +1011,7 @@ assert.match(workspaceSource, /onKeyDown=\{handleRunPlanResizeKey\}/);
 assert.match(workspaceSource, /const RUN_PLAN_ACTIVE_WIDTH = 440/);
 assert.match(workspaceSource, /setRunPlanWidth\(\(currentWidth\) => Math\.max/);
 assert.match(workspaceSource, /runPlanScrollRef\.current\?\.scrollTo/);
-assert.match(workspaceSource, /onClick=\{busy === 'solve' \? onCancelSolve : handleStartSolve\}/);
+assert.match(workspaceSource, /onClick=\{busy === 'solve' \? onCancelSolve : busy === 'field' \? onCancelArmatureField : handleStartSolve\}/);
 assert.match(workspaceSource, /solveInProgress \? ' is-run-plan-focused'/);
 assert.match(styleSource, /\.public-run-plan-resizer/);
 assert.match(styleSource, /cursor: col-resize/);
