@@ -103,7 +103,7 @@ Six-step excitation models ideal commanded currents, without PWM, switching,
 ESC dynamics or thermal behavior. See [Release notes](RELEASE_NOTES.md) and
 [Materials](MATERIALS.md).
 
-The application is **coilEM 0.2.0** and the solver is **Magneto2D 0.3.2**.
+The application is **coilEM 0.2.1** and the solver is **Magneto2D 0.3.3**.
 There are no accounts, hosted services or telemetry in this distribution.
 Elmer is an optional development-only lane; see [its setup](docs/ELMER.md).
 

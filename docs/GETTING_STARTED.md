@@ -4,8 +4,8 @@ This guide takes the included example motor from a clean checkout through
 geometry review, mesh preparation, a local Magneto2D solve, and an immutable
 report export.
 
-The application in this guide is coilEM 0.2.0 and the bundled solver is
-Magneto2D 0.3.2. coilEM requires Python 3.11 to 3.14, Node.js 24 with npm, a Rust
+The application in this guide is coilEM 0.2.1 and the bundled solver is
+Magneto2D 0.3.3. coilEM requires Python 3.11 to 3.14, Node.js 24 with npm, a Rust
 toolchain with Cargo (the locked `faer` dependency requires Rust 1.84+), and Git. The platform-specific commands below are setup
 guidance, not a broad operating-system support guarantee. Record the exact
 system used for the final release-candidate walkthrough with its evidence.
@@ -356,6 +356,6 @@ demagnetization safety, or axial end effects. Review
 [Materials](../MATERIALS.md) and [Magneto2D limitations](MAGNETO2D.md#limitations)
 before using results outside an exploratory or validation workflow.
 
-For known release limits, see [coilEM 0.2.0 release notes](../RELEASE_NOTES.md).
+For known release limits, see [coilEM 0.2.1 release notes](../RELEASE_NOTES.md).
 Use [GitHub Issues](https://github.com/coilemdev/coilem/issues) for public bugs
 and [SECURITY.md](../SECURITY.md) for private vulnerability reporting.

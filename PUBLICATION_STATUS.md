@@ -1,6 +1,6 @@
 # Release status
 
-The release is **coilEM 0.2.0 Developer Preview**, with **Magneto2D 0.3.2**.
+The current source candidate is **coilEM 0.2.1 Developer Preview**, with **Magneto2D 0.3.3**.
 Its numerical qualification is the published [A/B/C/D benchmark report
 v1.1](benchmarks/main-20261009-bad71d9/benchmark_report.md). It qualifies the
 tested SPM and flat-buried IPM combinations listed in [Validation](docs/VALIDATION.md#qualification-status);

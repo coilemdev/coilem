@@ -2845,7 +2845,7 @@ class Magneto2DSolver(Solver):
             field_line_frames=field_line_frames,
             slot_excitation_frames=slot_excitation_frames,
             solve_metadata=SolveMetadata(
-                solver_name="magneto2d-rust-0.3.2",
+                solver_name="magneto2d-rust-0.3.3",
                 solver_environment=single_report.get("solver_environment"),
                 mesh_element_count=mesh_info["num_triangles"],
                 rotor_positions=len(sweep["rotor_positions_elec_deg"]),

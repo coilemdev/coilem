@@ -77,7 +77,7 @@ def installed(tmp_path: Path, monkeypatch, request) -> Path:
     binary.parent.mkdir()
     binary.write_bytes(b"\x7fELF not really")
     (binary.parent / "magneto2d.licenses.txt").write_text("Third-party licenses for the Magneto2D executable\n")
-    record = {"magneto2d_version": "0.3.2", "target": "aarch64-apple-darwin", "toolchain": {"rustc": "rustc 1.94.0", "cargo": "cargo 1.94.0"}}
+    record = {"magneto2d_version": "0.3.3", "target": "aarch64-apple-darwin", "toolchain": {"rustc": "rustc 1.94.0", "cargo": "cargo 1.94.0"}}
     (binary.parent / "magneto2d.build.json").write_text(json.dumps(record))
     monkeypatch.setenv("COILEM_BUILD_UI_DIST", str(bundle))
     monkeypatch.setenv("COILEM_BUILD_MAGNETO2D_BINARY", str(binary))
@@ -85,7 +85,7 @@ def installed(tmp_path: Path, monkeypatch, request) -> Path:
     package = tmp_path / "site-packages" / "backend"
     package.mkdir(parents=True)
     shutil.copyfile(REPO_ROOT / "backend" / "__init__.py", package / "__init__.py")
-    _load_setup().stage_runtime_files(package, getattr(request, "param", "0.2.0"))
+    _load_setup().stage_runtime_files(package, getattr(request, "param", "0.2.1"))
     for name in ("COILEM_BUILD_UI_DIST", "COILEM_BUILD_MAGNETO2D_BINARY", "COILEM_BUILD_COMMIT", "COILEM_MAGNETO2D_BINARY"):
         monkeypatch.delenv(name, raising=False)
     _install_backend_at(monkeypatch, package)
@@ -93,7 +93,7 @@ def installed(tmp_path: Path, monkeypatch, request) -> Path:
     return package
 
 
-@pytest.mark.parametrize("installed", ["0.2.0", "0.2.0.dev17"], indirect=True)
+@pytest.mark.parametrize("installed", ["0.2.1", "0.2.1.dev17"], indirect=True)
 def test_packaged_backend_has_the_distribution_version(installed: Path) -> None:
     spec = importlib.util.spec_from_file_location("packaged_backend_version", installed / "__init__.py")
     module = importlib.util.module_from_spec(spec)
@@ -119,10 +119,10 @@ def test_installed_package_resolves_every_runtime_file(installed: Path) -> None:
 
 def test_build_identity_is_stamped_and_env_still_overrides(installed: Path, monkeypatch) -> None:
     info = json.loads((installed / "_build_info.json").read_text())
-    assert info["application_version"] == "0.2.0"
+    assert info["application_version"] == "0.2.1"
     assert info["application_commit"] == "1" * 40
     assert len(info["magneto2d_sha256"]) == len(info["ui_bundle_sha256"]) == 64
-    assert (info["magneto2d_version"], info["magneto2d_target"]) == ("0.3.2", "aarch64-apple-darwin")
+    assert (info["magneto2d_version"], info["magneto2d_target"]) == ("0.3.3", "aarch64-apple-darwin")
     assert info["toolchain"] == {"rustc": "rustc 1.94.0", "cargo": "cargo 1.94.0", "node": "v24.1.0", "npm": "11.3.0"}
     assert (installed / "_licenses" / "magneto2d-rust-crates.txt").read_text().startswith("Third-party licenses")
     assert resources.build_identity() == {"installation": "package", **{field: info[field] for field in resources.BUILD_IDENTITY_FIELDS}}
