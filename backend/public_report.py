@@ -150,6 +150,26 @@ def _mapping(value: Any) -> Mapping[str, Any]:
     return value if isinstance(value, Mapping) else {}
 
 
+def _qualification_row(manifest: Mapping[str, Any]) -> list[tuple[str, Any]]:
+    """The run's qualification status (backend/qualification.py) for the
+    report header; runs stored before it was recorded have none."""
+
+    qualification = _mapping(_mapping(manifest.get("provenance")).get("qualification"))
+    status = _plain(qualification.get("status"))
+    if not status:
+        return []
+    return [("Qualification", f"{status.capitalize()}: {_plain(qualification.get('reason'))} ({_plain(qualification.get('basis'))})")]
+
+
+def _qualification_limitations(manifest: Mapping[str, Any]) -> list[str]:
+    qualification = _mapping(_mapping(manifest.get("provenance")).get("qualification"))
+    limitations = []
+    if qualification.get("status") == "experimental":
+        limitations.append(f"Experimental combination: {_plain(qualification.get('reason'))}")
+    limitations.extend(_plain(caveat) for caveat in _sequence(qualification.get("caveats")))
+    return limitations
+
+
 def _sequence(value: Any) -> Sequence[Any]:
     return value if isinstance(value, (list, tuple)) else ()
 
@@ -290,13 +310,17 @@ def build_public_run_csv(
         row("warning", "message", warning, sample_index=index)
     for index, limitation in enumerate(PUBLIC_REPORT_LIMITATIONS):
         row("known_limitation", "message", limitation, sample_index=index)
+    limitation_index = len(PUBLIC_REPORT_LIMITATIONS)
     if _mapping(resolved_config.get("solve_params")).get("excitation_mode") == "ideal_six_step_120":
         row(
             "known_limitation",
             "message",
             SIX_STEP_REPORT_LIMITATION,
-            sample_index=len(PUBLIC_REPORT_LIMITATIONS),
+            sample_index=limitation_index,
         )
+        limitation_index += 1
+    for index, limitation in enumerate(_qualification_limitations(manifest), start=limitation_index):
+        row("known_limitation", "message", limitation, sample_index=index)
     return output.getvalue().encode("utf-8")
 
 
@@ -782,6 +806,7 @@ def build_public_run_pdf(
                 ("Run ID", manifest.get("run_id")),
                 ("Completed (UTC)", manifest.get("completed_at")),
                 ("Topology", project.get("topology")),
+                *_qualification_row(manifest),
             ],
             styles,
         ),
@@ -960,6 +985,8 @@ def build_public_run_pdf(
         story.append(Paragraph(f"- {escape(limitation)}", styles["body"]))
     if six_step:
         story.append(Paragraph(f"- {escape(SIX_STEP_REPORT_LIMITATION)}", styles["body"]))
+    for limitation in _qualification_limitations(manifest):
+        story.append(Paragraph(f"- {escape(limitation)}", styles["body"]))
 
     document.build(
         story,

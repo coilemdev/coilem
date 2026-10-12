@@ -57,6 +57,7 @@ import type {
   PublicElmerCapability,
   PublicMotorComponentKind,
   PublicMotorComponentSelection,
+  PublicQualification,
   PublicSavedRun,
   PublicSolverId,
   SolveResult,
@@ -1986,6 +1987,38 @@ function currentToothWidthAdvisory(
   };
 }
 
+const QUALIFICATION_DOCS_URL = 'https://github.com/coilemdev/coilem/blob/main/docs/VALIDATION.md#qualification-status';
+const QUALIFICATION_LABELS: Record<PublicQualification['status'], string> = {
+  qualified: 'Qualified',
+  experimental: 'Experimental',
+  unsupported: 'Unsupported',
+};
+
+/** The backend's qualification of a design (backend/qualification.py), read
+ * defensively because previews, validations and old saved runs may lack it. */
+function readQualification(value: unknown): PublicQualification | null {
+  if (!value || typeof value !== 'object') return null;
+  const raw = value as Record<string, unknown>;
+  if (raw.status !== 'qualified' && raw.status !== 'experimental' && raw.status !== 'unsupported') return null;
+  if (typeof raw.reason !== 'string') return null;
+  const caveats = Array.isArray(raw.caveats) ? raw.caveats.filter((caveat): caveat is string => typeof caveat === 'string') : [];
+  return { status: raw.status, reason: raw.reason, caveats };
+}
+
+/** Status, reason and caveats, so experimental results never look qualified. */
+function QualificationNote({ qualification }: { qualification: PublicQualification }) {
+  return (
+    <div className={`public-qualification-note is-${qualification.status}`} role="note" aria-label="Benchmark qualification">
+      <span className="public-qualification-badge">{QUALIFICATION_LABELS[qualification.status]}</span>
+      <div>
+        <span>{qualification.reason}</span>
+        {qualification.caveats.map((caveat) => <span key={caveat}>{caveat}</span>)}
+        <a href={QUALIFICATION_DOCS_URL} target="_blank" rel="noreferrer">How designs are qualified</a>
+      </div>
+    </div>
+  );
+}
+
 type DesignHealthSeverity = 'positive' | 'info' | 'warning';
 
 interface DesignHealthIssue {
@@ -2027,6 +2060,7 @@ function HealthPanel({
   const burialHealth = publicFlatIpmBurialHealth(config);
   const statorWidths = deriveStatorSectionWidths(config, geometryStale ? null : geometry);
   const toothWidthAdvisory = currentToothWidthAdvisory(geometry, geometryStale);
+  const qualification = geometryStale ? null : readQualification(geometry?.metadata?.qualification);
   const issues: DesignHealthIssue[] = [
     ...(error ? [{
       severity: 'warning' as const,
@@ -2038,6 +2072,11 @@ function HealthPanel({
     { severity: coverage >= 55 && coverage <= 90 ? 'positive' : 'warning', title: coverage >= 55 && coverage <= 90 ? 'Magnet coverage is in a practical range' : 'Magnet coverage needs review', copy: `${coverage}% pole coverage for the current rotor.` },
     { severity: config.stator.slot_count % 3 === 0 ? 'positive' : 'warning', title: config.stator.slot_count % 3 === 0 ? 'Slot count supports three phases' : 'Slot count does not divide across three phases', copy: `${config.stator.slot_count} stator slots across three phases.` },
     { severity: geometry && !geometryStale ? 'positive' : 'info', title: geometry && !geometryStale ? 'Geometry preview is current' : 'Updating geometry preview', copy: geometry && !geometryStale ? `${geometry.regions.length} regions returned by the local backend.` : 'The preview will refresh after the local backend responds.' },
+    ...(qualification ? [{
+      severity: qualification.status === 'qualified' ? 'positive' as const : 'warning' as const,
+      title: `${QUALIFICATION_LABELS[qualification.status]} motor combination`,
+      copy: [qualification.reason, ...qualification.caveats].join(' '),
+    }] : []),
     ...(mesh ? [{ severity: 'positive' as const, title: 'Mesh quality gate passed', copy: `${mesh.triangles.length.toLocaleString()} generated triangles.` }] : []),
     ...(toothWidthAdvisory ? [{
       severity: toothWidthAdvisory.severity,
@@ -2439,6 +2478,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
     : validationChecking
       ? 'Calculating…'
       : 'Estimate unavailable';
+  const validationQualification = readQualification(validation?.qualification);
   const positionsText = validation
     ? `${validation.sweep_positions} rotor positions`
     : validationChecking
@@ -3008,6 +3048,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               <StatusGlyph tone={runReady && !solveInProgress ? 'good' : validationError || validation?.valid === false ? 'warning' : 'info'} />
               <div><strong>{runReadinessTitle}</strong><span>{runReadinessCopy}</span></div>
             </div>}
+            {!error && validationQualification && <QualificationNote qualification={validationQualification} />}
             <ExcitationRunPlanPreview config={config} />
             {(busy === 'mesh' || busy === 'solve') && <LiveSolveMonitor busy={busy} progress={progress} liveSamples={liveSamples} progressPercent={progressPercent} />}
             <dl className="public-quality-list">
@@ -3036,6 +3077,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               <div><dt>Corner refinement</dt><dd className={mesh && appliedRefinement ? 'pass' : ''}>{mesh ? (appliedRefinement ? 'Applied' : 'Off') : 'Pending'}</dd></div>
               <div><dt>Positions</dt><dd>{validationChecking ? 'Calculating…' : validation?.sweep_positions ?? 'Unavailable'}</dd></div>
               <div><dt>Solver estimate</dt><dd>{estimatedTimeText}</dd></div>
+              <div><dt>Qualification</dt><dd>{validationQualification ? QUALIFICATION_LABELS[validationQualification.status] : validationChecking ? 'Calculating…' : 'Unavailable'}</dd></div>
             </dl>
           </div>
         </details>
@@ -3128,6 +3170,7 @@ function ReportStage({
   } | null>(null);
   const fieldPlot = result.field_line_plot;
   const sixStep = resultUsesSixStep(result, config);
+  const reportQualification = readQualification(result.qualification);
   const completeLoadedCycle = result.solve_metadata.loaded_cycle_complete === true;
   const backEmfLine = lineBackEmf(result);
   const resultUsesElmer = result.solve_metadata.solver_name.toLowerCase().startsWith('elmer');
@@ -3210,6 +3253,7 @@ function ReportStage({
       <div className="public-report-header"><div><span className="eyebrow">Completed analysis</span><h1>Electromagnetic performance</h1><p>Local {reportSolverLabel} result for the current motor definition.</p></div><div className="public-report-header-actions"><div className="public-report-mode" role="group" aria-label="Results view"><button type="button" className={reportMode === 'single' ? 'active' : ''} onClick={() => setReportMode('single')}>This run</button><button type="button" className={reportMode === 'compare' ? 'active' : ''} onClick={() => setReportMode('compare')}>Compare runs</button></div><button type="button" onClick={onBack}>← Back to Solve</button></div></div>
       {reportMode === 'compare' ? <PublicRunComparison currentResult={result} /> : <>
       {savedRunPanel}
+      {reportQualification && <QualificationNote qualification={reportQualification} />}
       <div className="metric-grid wide">
         <article><span>Average torque{sixStep && !completeLoadedCycle ? ' · preview only' : ''}</span><strong>{formatNumber(result.summary.avg_torque_Nm)} <small>N·m</small></strong></article>
         <article><span>Torque ripple{sixStep && !completeLoadedCycle ? ' · preview only' : ''}</span><strong>{formatNumber(result.summary.torque_ripple_pct)} <small>%</small></strong></article>
@@ -3222,7 +3266,7 @@ function ReportStage({
         {result.workflow_elapsed_s != null && <article><span>Total elapsed</span><strong>{formatNumber(result.workflow_elapsed_s, 1)} <small>s</small></strong></article>}
       </div>
       <p className="public-timing-note">Solver time excludes playback and saving and may sum parallel tasks. Total elapsed measures this run in the browser through receipt of the saved result.</p>
-      <div className="public-report-provenance"><span>Project</span><strong>{projectName}</strong><span>Material</span><strong>{materialName}</strong>{sixStep ? <span>Conducting phase current</span> : <span>Phase current</span>}<strong>{formatNumber(config.solve_params.current_amplitude_A)} A {sixStep ? 'plateau' : config.solve_params.current_amplitude_convention}</strong><span>Excitation</span><strong>{sixStep ? 'Ideal six-step (120°)' : 'Sinusoidal'}</strong>{sixStep && <><span>Commutation advance</span><strong>{formatNumber(result.solve_metadata.commutation_advance_deg ?? config.solve_params.commutation_advance_deg)}° electrical</strong><span>Phase connection</span><strong>Wye (MVP)</strong></>}<span>Rated speed</span><strong>{formatNumber(config.solve_params.rated_speed_rpm, 0)} rpm</strong><span>Solver</span><strong>{result.solve_metadata.solver_name}</strong><span>Torque method</span><strong>{torqueMethod}</strong><span>Nonlinear solver</span><strong>{nonlinearSolver}</strong><span>Requested linear solver</span><strong>{requestedLinearSolver}</strong><span>Mesh elements</span><strong>{result.solve_metadata.mesh_element_count.toLocaleString()}</strong><span>Rotor positions</span><strong>{result.solve_metadata.rotor_positions}</strong><span>Mesh density</span><strong>{result.solve_metadata.mesh_density || 'native'}</strong></div>
+      <div className="public-report-provenance"><span>Project</span><strong>{projectName}</strong><span>Material</span><strong>{materialName}</strong>{sixStep ? <span>Conducting phase current</span> : <span>Phase current</span>}<strong>{formatNumber(config.solve_params.current_amplitude_A)} A {sixStep ? 'plateau' : config.solve_params.current_amplitude_convention}</strong><span>Excitation</span><strong>{sixStep ? 'Ideal six-step (120°)' : 'Sinusoidal'}</strong>{reportQualification && <><span>Qualification</span><strong>{QUALIFICATION_LABELS[reportQualification.status]}</strong></>}{sixStep && <><span>Commutation advance</span><strong>{formatNumber(result.solve_metadata.commutation_advance_deg ?? config.solve_params.commutation_advance_deg)}° electrical</strong><span>Phase connection</span><strong>Wye (MVP)</strong></>}<span>Rated speed</span><strong>{formatNumber(config.solve_params.rated_speed_rpm, 0)} rpm</strong><span>Solver</span><strong>{result.solve_metadata.solver_name}</strong><span>Torque method</span><strong>{torqueMethod}</strong><span>Nonlinear solver</span><strong>{nonlinearSolver}</strong><span>Requested linear solver</span><strong>{requestedLinearSolver}</strong><span>Mesh elements</span><strong>{result.solve_metadata.mesh_element_count.toLocaleString()}</strong><span>Rotor positions</span><strong>{result.solve_metadata.rotor_positions}</strong><span>Mesh density</span><strong>{result.solve_metadata.mesh_density || 'native'}</strong></div>
       <div className="public-report-assumptions" role="note">
         <details>
           <summary>Model assumptions</summary>

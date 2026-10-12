@@ -175,6 +175,15 @@ export interface MeshPreview {
   solve_mesh_key?: string;
 }
 
+/** Benchmark qualification of a design (backend/qualification.py). */
+export type PublicQualificationStatus = 'qualified' | 'experimental' | 'unsupported';
+
+export interface PublicQualification {
+  status: PublicQualificationStatus;
+  reason: string;
+  caveats: string[];
+}
+
 export interface SolveValidation {
   valid: boolean;
   errors: Array<{ code?: string; message: string; suggestion?: string }>;
@@ -182,6 +191,7 @@ export interface SolveValidation {
   estimated_solve_time_s: number;
   estimated_mesh_elements: number;
   sweep_positions: number;
+  qualification?: PublicQualification;
 }
 
 export interface FieldLineContourLevel {
@@ -464,6 +474,8 @@ export interface SolveResult {
   field_line_frames?: PublicFieldFrameDescriptor[] | null;
   field_playback?: PublicFieldPlaybackManifest | null;
   saved_run?: PublicSavedRun | null;
+  /** Absent for runs saved before qualification was recorded. */
+  qualification?: PublicQualification | null;
   /** Browser wall time from Run through receipt of the saved result; absent on older/reloaded runs. */
   workflow_elapsed_s?: number;
 }

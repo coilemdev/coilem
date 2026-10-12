@@ -32,6 +32,7 @@ from backend.models import (
     WindingSlot,
 )
 from backend.preview_from_ir import append_winding_symbols, preview_regions_from_geometry_ir
+from backend.qualification import classify_qualification
 from backend.winding_utils import (
     distributed_full_pitch_slots,
     distributed_fundamental_winding_factor,
@@ -193,6 +194,7 @@ def generate_preview(config: MotorConfig) -> GeometryPreview:
             "yoke_tooth_width_mm": width_advisory.yoke_tooth_width_mm,
             "relative_narrowing": width_advisory.relative_narrowing,
         }
+    metadata["qualification"] = classify_qualification(config)
 
     elapsed_ms = (time.perf_counter() - start_time) * 1000
 
