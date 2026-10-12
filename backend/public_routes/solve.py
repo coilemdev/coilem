@@ -603,8 +603,13 @@ def _resolve_public_artifact_id(artifact_id: str):
 
 
 @router.get("/solve/field-frame/{artifact_id}", tags=["solve"])
-async def get_public_field_frame(artifact_id: str) -> dict[str, Any]:
-    """Return one sanitized, local Magneto2D field frame by opaque id."""
+def get_public_field_frame(artifact_id: str) -> dict[str, Any]:
+    """Return one sanitized, local Magneto2D field frame by opaque id.
+
+    Deliberately sync: reading and parsing a ~11 MB frame takes ~0.1 s, so
+    FastAPI runs it in its threadpool instead of blocking the event loop that
+    serves the lightweight playback rasters while the viewer scrubs.
+    """
 
     try:
         path = _resolve_public_artifact_id(artifact_id)

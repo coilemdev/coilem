@@ -30,7 +30,9 @@ import {
   nearestPlaybackFrameIndex,
   normalizePlaybackElectricalAngle,
   playbackCycleSpanDeg,
+  playbackFrameStride,
   playbackLookaheadFrameIndices,
+  playbackStrideFrameIndex,
   PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM,
   PUBLIC_FIELD_PLAYBACK_MAX_RPM,
   PUBLIC_FIELD_PLAYBACK_MIN_RPM,
@@ -53,12 +55,19 @@ type FieldSource = 'resultant' | 'pm' | 'armature';
 const IDLE_BUFFER_FRAMES = 4;
 const DETAIL_VIEWPORT_SCALE = 1.08;
 const MAX_PLAYBACK_CATCHUP_MS = 250;
+// While the position slider moves, each position shows its fast playback
+// raster. The exact ~11 MB solver frame loads only once the slider rests.
+const EXACT_FRAME_SETTLE_MS = 200;
 const FIELD_LINE_DENSITY_STOPS: readonly FieldLineDensity[] = ['low', 'medium', 'high'];
 
-function prepareFrameForPlayback(frame: PublicFieldLinePlot): Promise<PublicFieldLinePlot> {
+function prepareFrameForPlayback(
+  frame: PublicFieldLinePlot,
+  source: FieldSource,
+): Promise<PublicFieldLinePlot> {
   return new Promise((resolve) => {
     const prepare = () => {
-      warmFieldResultPlot(frame);
+      // Warm only the composition on screen; the other prepares on demand.
+      warmFieldResultPlot(source === 'pm' ? frame.noload_plot ?? frame : frame);
       resolve(frame);
     };
     if (typeof window.requestIdleCallback === 'function') {
@@ -78,6 +87,24 @@ function closeRaster(raster: FieldResultRaster): void {
   raster.heat.close();
   raster.mesh?.close();
   raster.lines.close();
+}
+
+// Drop the oldest rasters beyond the limit, keeping the ones on screen or about
+// to play. Kept rasters may briefly hold the cache above its limit.
+function evictRasters(
+  cache: Record<string, FieldResultRaster>,
+  limit: number,
+  keep: ReadonlySet<string>,
+  retire: (raster: FieldResultRaster) => void,
+): void {
+  let excess = Object.keys(cache).length - limit;
+  for (const key of Object.keys(cache)) {
+    if (excess <= 0) return;
+    if (keep.has(key)) continue;
+    retire(cache[key]);
+    delete cache[key];
+    excess -= 1;
+  }
 }
 
 function readableFieldRegion(region: string): string {
@@ -238,6 +265,8 @@ export function SolvedFieldViewer({
     [armature?.airgap_profiles, armature?.field_playback, armature?.frames],
   );
   const [source, setSource] = useState<FieldSource>('resultant');
+  const sourceRef = useRef<FieldSource>('resultant');
+  sourceRef.current = source;
   const [frameIndex, setFrameIndex] = useState(0);
   const [showHeatmap, setShowHeatmap] = useState(true);
   const [showMesh, setShowMesh] = useState(false);
@@ -267,6 +296,7 @@ export function SolvedFieldViewer({
   const [retainedPlot, setRetainedPlot] = useState<{ source: FieldSource; plot: PublicFieldLinePlot } | null>(null);
   const [frameLoading, setFrameLoading] = useState(false);
   const [frameError, setFrameError] = useState<string | null>(null);
+  const [settledArtifactId, setSettledArtifactId] = useState<string | null>(null);
   const [fieldViewportScale, setFieldViewportScale] = useState(1);
   const [detailPlot, setDetailPlot] = useState<{
     artifactId: string;
@@ -282,15 +312,23 @@ export function SolvedFieldViewer({
     raster: FieldResultRaster;
   } | null>(null);
   const detailRequestRef = useRef(0);
+  // A slider update renders at a higher priority than a queued cache update,
+  // so React can still render a raster that an eviction has already dropped.
+  // Retired rasters are closed only once a committed render no longer shows
+  // them; closing them sooner made drawImage throw on a detached bitmap.
+  const retiredRastersRef = useRef<Set<FieldResultRaster>>(new Set());
+  const retireRaster = useCallback((raster: FieldResultRaster) => {
+    retiredRastersRef.current.add(raster);
+  }, []);
   const replaceDetailRaster = useCallback((next: {
     key: string;
     raster: FieldResultRaster;
   } | null) => {
     const current = detailRasterRef.current;
-    if (current && current.raster !== next?.raster) closeRaster(current.raster);
+    if (current && current.raster !== next?.raster) retireRaster(current.raster);
     detailRasterRef.current = next;
     setDetailRaster(next);
-  }, []);
+  }, [retireRaster]);
 
   // Public Magneto2D solves already map increasing UI angles to the solver's
   // negative (clockwise) native rotor positions. Preserve the stored,
@@ -308,6 +346,7 @@ export function SolvedFieldViewer({
   const sourceFrames = source === 'armature' ? armatureFrames : resultantFrames;
   const descriptor = streamingArmatureFrame ?? nearestFrame(sourceFrames, electricalAngleDeg);
   const artifactId = descriptor?.field_frame_artifact.artifact_id ?? null;
+  const exactFrameSettled = artifactId !== null && settledArtifactId === artifactId;
   const activeRasterKey = artifactId ? rasterCacheKey(artifactId, source) : null;
   activeRasterKeyRef.current = activeRasterKey;
   const activeRaster = activeRasterKey ? rasterCache[activeRasterKey] : null;
@@ -371,6 +410,20 @@ export function SolvedFieldViewer({
     IDLE_BUFFER_FRAMES,
     publicFieldPlaybackBufferFrames(playbackRpm),
   );
+  const playbackStride = playbackFrameStride(
+    angleFrames.length,
+    playbackSpanDeg,
+    playbackRpm,
+    polePairs,
+  );
+  const playbackStrideRef = useRef(playbackStride);
+  playbackStrideRef.current = playbackStride;
+  const rasterCacheLimit = publicFieldPlaybackCacheFrames(
+    playbackRpm,
+    Math.ceil(angleFrames.length / playbackStride),
+  );
+  const rasterCacheLimitRef = useRef(rasterCacheLimit);
+  rasterCacheLimitRef.current = rasterCacheLimit;
   const playbackLookaheadIndices = useMemo(
     () => playbackLookaheadFrameIndices(
       angleFrames,
@@ -411,6 +464,21 @@ export function SolvedFieldViewer({
     source,
     sourceFrames,
   ]);
+  const upcomingRasterKeys = useMemo(() => new Set(
+    playbackLookaheadIndices.flatMap((preloadIndex) => {
+      const preloadAngle = angleFrames[preloadIndex]?.angle_deg ?? 0;
+      const preloadArtifactId = nearestFrame(sourceFrames, preloadAngle)?.field_frame_artifact.artifact_id;
+      return preloadArtifactId ? [rasterCacheKey(preloadArtifactId, source)] : [];
+    }),
+  ), [angleFrames, playbackLookaheadIndices, source, sourceFrames]);
+  const upcomingRasterKeysRef = useRef(upcomingRasterKeys);
+  upcomingRasterKeysRef.current = upcomingRasterKeys;
+  const keptRasterKeys = useCallback((loadedKey?: string): Set<string> => {
+    const keep = new Set(upcomingRasterKeysRef.current);
+    if (loadedKey) keep.add(loadedKey);
+    if (activeRasterKeyRef.current) keep.add(activeRasterKeyRef.current);
+    return keep;
+  }, []);
 
   const loadFrame = useCallback((requestedArtifactId: string): Promise<PublicFieldLinePlot> => {
     const cached = frameCacheRef.current[requestedArtifactId];
@@ -423,7 +491,7 @@ export function SolvedFieldViewer({
     const request = getPublicFieldFrame(requestedArtifactId)
       .then(async (payload) => {
         const frame = payload.field_line_frame as unknown as PublicFieldLinePlot;
-        await prepareFrameForPlayback(frame);
+        await prepareFrameForPlayback(frame, sourceRef.current);
         if (frameGenerationRef.current === generation) {
           const nextCache = {
             ...frameCacheRef.current,
@@ -478,23 +546,7 @@ export function SolvedFieldViewer({
           ...rasterCacheRef.current,
           [key]: raster,
         };
-        const cachedKeys = Object.keys(nextCache);
-        while (
-          cachedKeys.length
-          > publicFieldPlaybackCacheFrames(playbackRpmRef.current)
-        ) {
-          const expiredKey = cachedKeys.shift();
-          if (
-            expiredKey
-            && expiredKey !== key
-            && expiredKey !== activeRasterKeyRef.current
-          ) {
-            closeRaster(nextCache[expiredKey]);
-            delete nextCache[expiredKey];
-          } else if (expiredKey) {
-            cachedKeys.push(expiredKey);
-          }
-        }
+        evictRasters(nextCache, rasterCacheLimitRef.current, keptRasterKeys(key), retireRaster);
         rasterCacheRef.current = nextCache;
         setRasterCache(nextCache);
         return raster;
@@ -511,7 +563,7 @@ export function SolvedFieldViewer({
       });
     rasterRequestsRef.current.set(key, request);
     return request;
-  }, [loadFrame]);
+  }, [keptRasterKeys, loadFrame, retireRaster]);
 
   useEffect(() => {
     const rasterizer = new FieldPlaybackRasterizer();
@@ -525,8 +577,18 @@ export function SolvedFieldViewer({
   }, []);
 
   useEffect(() => {
+    const shown = new Set(Object.values(rasterCache));
+    if (detailRaster) shown.add(detailRaster.raster);
+    retiredRastersRef.current.forEach((raster) => {
+      if (shown.has(raster)) return;
+      closeRaster(raster);
+      retiredRastersRef.current.delete(raster);
+    });
+  }, [detailRaster, rasterCache]);
+
+  useEffect(() => {
     frameGenerationRef.current += 1;
-    Object.values(rasterCacheRef.current).forEach(closeRaster);
+    Object.values(rasterCacheRef.current).forEach(retireRaster);
     frameCacheRef.current = {};
     rasterCacheRef.current = {};
     frameRequestsRef.current.clear();
@@ -546,7 +608,7 @@ export function SolvedFieldViewer({
     replaceDetailRaster(null);
     detailRequestRef.current += 1;
     setFrameError(null);
-  }, [replaceDetailRaster, result]);
+  }, [replaceDetailRaster, result, retireRaster]);
 
   useEffect(() => {
     frameIndexRef.current = boundedIndex;
@@ -578,24 +640,13 @@ export function SolvedFieldViewer({
       setFrameCache(nextFrameCache);
     }
 
-    const cachedRasterKeys = Object.keys(rasterCacheRef.current);
-    if (cachedRasterKeys.length > cacheLimit) {
+    if (Object.keys(rasterCacheRef.current).length > rasterCacheLimit) {
       const nextRasterCache = { ...rasterCacheRef.current };
-      while (cachedRasterKeys.length > cacheLimit) {
-        const expiredKey = cachedRasterKeys.shift();
-        if (expiredKey === activeRasterKeyRef.current) {
-          cachedRasterKeys.push(expiredKey);
-          continue;
-        }
-        if (expiredKey) {
-          closeRaster(nextRasterCache[expiredKey]);
-          delete nextRasterCache[expiredKey];
-        }
-      }
+      evictRasters(nextRasterCache, rasterCacheLimit, keptRasterKeys(), retireRaster);
       rasterCacheRef.current = nextRasterCache;
       setRasterCache(nextRasterCache);
     }
-  }, [playbackRpm]);
+  }, [keptRasterKeys, playbackRpm, rasterCacheLimit, retireRaster]);
 
   useEffect(() => {
     if (!playing || angleFrames.length < 2) return undefined;
@@ -614,10 +665,11 @@ export function SolvedFieldViewer({
           nextPlaybackAngleDeg,
           playbackSpanDeg,
         );
-        const nextIndex = nearestPlaybackFrameIndex(
+        const nextIndex = playbackStrideFrameIndex(
           angleFrames,
           nextSolvedAngleDeg,
           playbackSpanDeg,
+          playbackStrideRef.current,
         );
         const nextAngle = angleFrames[nextIndex]?.angle_deg ?? 0;
         const nextDescriptor = nearestFrame(sourceFrames, nextAngle);
@@ -664,6 +716,15 @@ export function SolvedFieldViewer({
   }, [activePlot, source]);
 
   useEffect(() => {
+    if (playing || !artifactId) return undefined;
+    const timeout = window.setTimeout(
+      () => setSettledArtifactId(artifactId),
+      EXACT_FRAME_SETTLE_MS,
+    );
+    return () => window.clearTimeout(timeout);
+  }, [artifactId, playing]);
+
+  useEffect(() => {
     if (fieldViewportScale < DETAIL_VIEWPORT_SCALE || playing || !artifactId) {
       if (fieldViewportScale < DETAIL_VIEWPORT_SCALE || playing) {
         setDetailPlot(null);
@@ -676,17 +737,17 @@ export function SolvedFieldViewer({
       replaceDetailRaster(null);
       return;
     }
-    if (activeDetailPlot || activeDetailRaster) return;
+    if (activeDetailPlot || activeDetailRaster || !exactFrameSettled) return;
 
     const requestId = ++detailRequestRef.current;
     // Prefer exact solver vectors for a stopped, zoomed frame. Playback WebPs
     // keep animation fast, while the numerical artifact has no raster ceiling.
     // Older caches retained only frame zero, so their detail WebP remains the
     // compatibility fallback when the numerical endpoint returns 404.
-    const loadNumericalDetail = () => getPublicFieldFrame(artifactId)
-      .then((payload) => {
+    // loadFrame shares the exact-frame request instead of downloading it twice.
+    const loadNumericalDetail = () => loadFrame(artifactId)
+      .then((outerPlot) => {
         if (detailRequestRef.current !== requestId) return false;
-        const outerPlot = payload.field_line_frame as unknown as PublicFieldLinePlot;
         if (!outerPlot) return false;
         const requestedPlot = source === 'pm' ? outerPlot.noload_plot : outerPlot;
         if (!requestedPlot) return false;
@@ -719,7 +780,9 @@ export function SolvedFieldViewer({
     activePlot,
     artifactId,
     descriptor,
+    exactFrameSettled,
     fieldViewportScale,
+    loadFrame,
     playing,
     replaceDetailRaster,
     source,
@@ -780,12 +843,12 @@ export function SolvedFieldViewer({
   }, [artifactId, descriptor, frameCache, loadVisualFrame, rasterCache, source]);
 
   useEffect(() => {
-    if (playing || !artifactId || activePlot) return;
+    if (playing || !artifactId || activePlot || !exactFrameSettled) return;
     // A stopped frame keeps its compact playback raster for immediate display,
     // then loads the exact numerical mesh for probing, density control, and a
     // genuinely fixed color range.
     void loadFrame(artifactId).catch(() => undefined);
-  }, [activePlot, artifactId, loadFrame, playing]);
+  }, [activePlot, artifactId, exactFrameSettled, loadFrame, playing]);
 
   const selectSource = (nextSource: FieldSource) => {
     if (nextSource === 'armature' && !magnetoCompositionAvailable) return;

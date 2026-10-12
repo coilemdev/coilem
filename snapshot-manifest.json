@@ -65,8 +65,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 7554,
-      "sha256": "2555c905adce972cc67b295afd2897a36dcde7194be8eb979ded0c60af1f92db"
+      "bytes": 8211,
+      "sha256": "9d865e4064780bd4977352dcfc9f5a46b18a49052712d1122cb0ef2e373ff5e1"
     },
     {
       "path": "SECURITY.md",
@@ -440,8 +440,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 47685,
-      "sha256": "5b778fdd950bec2e069101d164881984b11bcc2ca4feee3b730211591d30fff2"
+      "bytes": 47907,
+      "sha256": "c66837d12fb4916677174a99e689e43c22105fa15a5b7abbee7c3e91a61e35d6"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -1715,8 +1715,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 1579,
-      "sha256": "d3123e6efc3ec15fd665b9c7b11ec769be5f8a36584ed2b177cbff49aa301414"
+      "bytes": 1626,
+      "sha256": "1fc682dda0de54d7fe925adbb91368a441837b5b6e3047b7a10bb4d2d109a935"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -1752,6 +1752,11 @@
       "path": "frontend/scripts/test-design-file-defaults.mjs",
       "sha256": "04af6648d5d0edf780cf74b3a09390a41f8576e35b837302aa4c83aaa54c31be",
       "bytes": 3729
+    },
+    {
+      "path": "frontend/scripts/test-field-playback-timing.mjs",
+      "sha256": "2e445a4cb33afd518a2e5328b19ee9fafc41284ee00930827482393794e17a99",
+      "bytes": 4156
     },
     {
       "path": "frontend/scripts/test-flat-ipm-burial-health.mjs",
@@ -1790,8 +1795,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 96647,
-      "sha256": "7a94e44c9d0cde4e0c5ba2cb804a2fbcfa1eeb0e733e397532c81b1c2f92b2d3"
+      "bytes": 96937,
+      "sha256": "7ec7d9323fecb9620ba2e43ee95cd308b8736aaa6c9e18356d461b2d20beaa21"
     },
     {
       "path": "frontend/src/api/projectSchema.ts",
@@ -2185,8 +2190,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 38395,
-      "sha256": "739947601c14b547e72c3405b42a625026a74290491fe23c1cb7e164ec041447"
+      "bytes": 38610,
+      "sha256": "64073f28f2fca56c145184fb37fa467d35b13420c907b6945d3660d46ae8dcca"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -2220,8 +2225,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 42251,
-      "sha256": "ea515f1908e0b5f117ba7e40d48133e078a31f0233152747455f725e44dfc249"
+      "bytes": 45296,
+      "sha256": "97c073f490a33523cb7a3331c3440e976315bde9971d07a1c192c8e4b9050e28"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -2315,13 +2320,13 @@
     },
     {
       "path": "frontend/src/public/fieldPlaybackTiming.ts",
-      "bytes": 6002,
-      "sha256": "5f55f904650c7577ecb09c71d56f3e3d06d038136b13940146213110bf4e6e6e"
+      "bytes": 7580,
+      "sha256": "5b4fd9e0420a326208cf49c124b3789d7936b2333e1e1c2a7588e44cbbe1072d"
     },
     {
       "path": "frontend/src/public/fieldPlaybackWorker.ts",
-      "bytes": 8155,
-      "sha256": "782cb67c29ba7831df1fbdf13873d8cb85d7fe15b3a2405001f43cdf3d046e26"
+      "bytes": 8330,
+      "sha256": "ce407a01ed2a4ba017df3c4475eba02cacd7e0f0b7d4a6b104ef31edcbcef9e4"
     },
     {
       "path": "frontend/src/public/fieldViewportRange.ts",
@@ -4275,6 +4280,66 @@
       "path": "frontend/src/public/model.ts",
       "source_sha256": "21b91449cd6b3326b20ea9426f2452ddc76f7111300754a99fcba1aecf415d2c",
       "reason": "Type the run-time estimate range."
+    },
+    {
+      "base_commit": "0b463b31fc3479360ffaa3668731e3792c034639",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "2555c905adce972cc67b295afd2897a36dcde7194be8eb979ded0c60af1f92db",
+      "reason": "Note that the field-solution position slider no longer freezes or crashes while scrubbing."
+    },
+    {
+      "base_commit": "0b463b31fc3479360ffaa3668731e3792c034639",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "5b778fdd950bec2e069101d164881984b11bcc2ca4feee3b730211591d30fff2",
+      "reason": "Serve exact field frames from the threadpool so reading one does not block playback-layer requests."
+    },
+    {
+      "base_commit": "0b463b31fc3479360ffaa3668731e3792c034639",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "739947601c14b547e72c3405b42a625026a74290491fe23c1cb7e164ec041447",
+      "reason": "Close mesh triangles with an explicit edge instead of the quadratic Path2D closePath, and warm only the requested field composition."
+    },
+    {
+      "base_commit": "0b463b31fc3479360ffaa3668731e3792c034639",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "ea515f1908e0b5f117ba7e40d48133e078a31f0233152747455f725e44dfc249",
+      "reason": "Load the exact field frame once the position slider rests, warm only the visible composition, and close evicted playback rasters only after a committed render stops showing them."
+    },
+    {
+      "base_commit": "0b463b31fc3479360ffaa3668731e3792c034639",
+      "path": "frontend/src/public/fieldPlaybackWorker.ts",
+      "source_sha256": "782cb67c29ba7831df1fbdf13873d8cb85d7fe15b3a2405001f43cdf3d046e26",
+      "reason": "Close mesh triangles with an explicit edge instead of the quadratic closePath."
+    },
+    {
+      "base_commit": "3f7b1d935aa055741d0c7c1fdfaf86be0676ca11",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "5d56951fabaa86a6e9a707764073c4b84d2599c1c4ae2841b205f210a187688b",
+      "reason": "Note that field playback no longer stalls at higher speeds."
+    },
+    {
+      "base_commit": "3f7b1d935aa055741d0c7c1fdfaf86be0676ca11",
+      "path": "frontend/package.json",
+      "source_sha256": "d3123e6efc3ec15fd665b9c7b11ec769be5f8a36584ed2b177cbff49aa301414",
+      "reason": "Run the field playback timing checks with the public UI tests."
+    },
+    {
+      "base_commit": "3f7b1d935aa055741d0c7c1fdfaf86be0676ca11",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "7a94e44c9d0cde4e0c5ba2cb804a2fbcfa1eeb0e733e397532c81b1c2f92b2d3",
+      "reason": "Check the playback stride, loop cache and eviction that replace display-rate frame sampling."
+    },
+    {
+      "base_commit": "3f7b1d935aa055741d0c7c1fdfaf86be0676ca11",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "73893fdcc145e52fe9dac6c7dfda820db57ce60c2946d54629dd08de0712085f",
+      "reason": "Play every n-th solved frame on a fixed grid, cache a short loop in full, and never evict upcoming playback frames."
+    },
+    {
+      "base_commit": "3f7b1d935aa055741d0c7c1fdfaf86be0676ca11",
+      "path": "frontend/src/public/fieldPlaybackTiming.ts",
+      "source_sha256": "5f55f904650c7577ecb09c71d56f3e3d06d038136b13940146213110bf4e6e6e",
+      "reason": "Choose a playback stride the loader sustains or the cache holds, and list exactly the frames playback will show."
     }
   ]
 }

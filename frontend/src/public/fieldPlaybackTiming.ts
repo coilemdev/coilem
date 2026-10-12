@@ -3,12 +3,17 @@ export const PUBLIC_FIELD_PLAYBACK_MAX_RPM = 100;
 export const PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM = 18;
 
 /**
- * Solved fields are discrete rasters, so presenting more than one new raster
- * per ordinary display refresh only wastes streaming and rasterization work.
- * The mechanical clock remains truthful above this rate; frame selection
- * deliberately skips intermediate solved angles.
+ * New solved frames per second that playback can load while it keeps up. Each
+ * frame decodes four 1536 px layers; a 10-core Mac sustained about 30 frames/s
+ * next to rendering. Faster playback shows every n-th solved frame instead.
  */
-export const PUBLIC_FIELD_PLAYBACK_PRESENTATION_FPS = 60;
+export const PUBLIC_FIELD_PLAYBACK_MAX_LOADED_FPS = 30;
+
+/**
+ * Longest playback loop held decoded in full (each frame is ~38 MB of
+ * bitmaps). A loop this short plays from memory after its first pass.
+ */
+export const PUBLIC_FIELD_PLAYBACK_LOOP_CACHE_FRAMES = 16;
 
 const FULL_ELECTRICAL_CYCLE_DEG = 360;
 
@@ -105,24 +110,66 @@ export function advancePlaybackElectricalAngle(
   cycleSpanDeg = FULL_ELECTRICAL_CYCLE_DEG,
 ): number {
   const safeElapsedMs = Math.max(0, Number.isFinite(elapsedMs) ? elapsedMs : 0);
+  return normalizePlaybackElectricalAngle(
+    electricalAngleDeg
+      + playbackElectricalDegPerSecond(rpm, polePairs) * (safeElapsedMs / 1000),
+    cycleSpanDeg,
+  );
+}
+
+function playbackElectricalDegPerSecond(rpm: number, polePairs: number): number {
   const safeRpm = Math.min(
     PUBLIC_FIELD_PLAYBACK_MAX_RPM,
     Math.max(PUBLIC_FIELD_PLAYBACK_MIN_RPM, Number.isFinite(rpm) ? rpm : 0),
   );
   const safePolePairs = Math.max(1, Number.isFinite(polePairs) ? polePairs : 1);
-  const electricalDegPerSecond = safeRpm * 6 * safePolePairs;
-  return normalizePlaybackElectricalAngle(
-    electricalAngleDeg + electricalDegPerSecond * (safeElapsedMs / 1000),
-    cycleSpanDeg,
-  );
+  return safeRpm * 6 * safePolePairs;
 }
 
 /**
- * Predict the solved frames that the presentation clock will actually show.
- *
- * At low RPM this is the contiguous next-frame sequence. At high RPM it is a
- * sparse sequence sampled at the display budget, so lookahead and cache space
- * follow the frames users will see instead of loading angles that are skipped.
+ * Playback shows every `stride`-th solved frame. It picks the smallest stride
+ * whose loop either fits the decoded cache, so playback runs from memory after
+ * one pass, or needs no more new frames per second than the loader sustains.
+ * Strides divide the frame count, so every loop shows the same frames.
+ */
+export function playbackFrameStride(
+  frameCount: number,
+  cycleSpanDeg: number,
+  rpm: number,
+  polePairs: number,
+): number {
+  if (frameCount < 2) return 1;
+  const stepDeg = cycleSpanDeg / frameCount;
+  const solvedFramesPerSecond = playbackElectricalDegPerSecond(rpm, polePairs) / stepDeg;
+  for (let stride = 1; stride < frameCount; stride += 1) {
+    if (frameCount % stride !== 0) continue;
+    if (
+      frameCount / stride <= PUBLIC_FIELD_PLAYBACK_LOOP_CACHE_FRAMES
+      || solvedFramesPerSecond / stride <= PUBLIC_FIELD_PLAYBACK_MAX_LOADED_FPS
+    ) return stride;
+  }
+  return frameCount;
+}
+
+/** The solved frame on the playback stride grid nearest to an angle. */
+export function playbackStrideFrameIndex(
+  frames: readonly PublicFieldPlaybackAngleFrame[],
+  electricalAngleDeg: number,
+  cycleSpanDeg: number,
+  stride: number,
+): number {
+  if (frames.length === 0) return 0;
+  const originDeg = frames[0].angle_deg;
+  const gridDeg = (cycleSpanDeg / frames.length) * Math.max(1, stride);
+  const snappedDeg = originDeg
+    + Math.round((electricalAngleDeg - originDeg) / gridDeg) * gridDeg;
+  return nearestPlaybackFrameIndex(frames, snappedDeg, cycleSpanDeg);
+}
+
+/**
+ * The solved frames playback will show next, in order: the following frames
+ * on the stride grid. They do not depend on the display's refresh rate, so the
+ * preloaded frames are exactly the ones shown.
  */
 export function playbackLookaheadFrameIndices(
   frames: readonly PublicFieldPlaybackAngleFrame[],
@@ -137,41 +184,27 @@ export function playbackLookaheadFrameIndices(
   );
   if (frames.length < 2 || count === 0) return [];
 
-  const sampleMs = 1000 / PUBLIC_FIELD_PLAYBACK_PRESENTATION_FPS;
   const cycleSpanDeg = playbackCycleSpanDeg(frames);
-  const indices: number[] = [];
-  let sampleAngleDeg = normalizePlaybackElectricalAngle(
+  const stride = playbackFrameStride(frames.length, cycleSpanDeg, rpm, polePairs);
+  const gridDeg = (cycleSpanDeg / frames.length) * stride;
+  const currentIndex = playbackStrideFrameIndex(
+    frames,
     electricalAngleDeg,
     cycleSpanDeg,
+    stride,
   );
-  let previousIndex = nearestPlaybackFrameIndex(
-    frames,
-    sampleAngleDeg,
-    cycleSpanDeg,
-  );
-  // One RPM with a fine angle grid may need hundreds of display samples
-  // before the nearest solved frame changes. Keep the guard generous while
-  // still making malformed/duplicate timelines terminate deterministically.
-  const maxSamples = Math.max(1200, count * 1200);
-
-  for (let sample = 0; sample < maxSamples && indices.length < count; sample += 1) {
-    sampleAngleDeg = advancePlaybackElectricalAngle(
-      sampleAngleDeg,
-      sampleMs,
-      rpm,
-      polePairs,
-      cycleSpanDeg,
-    );
+  const currentAngleDeg = frames[currentIndex].angle_deg;
+  const indices: number[] = [];
+  for (let step = 1; indices.length < count && step < frames.length; step += 1) {
     const nextIndex = nearestPlaybackFrameIndex(
       frames,
-      sampleAngleDeg,
+      currentAngleDeg + step * gridDeg,
       cycleSpanDeg,
     );
-    if (nextIndex === previousIndex) continue;
+    // Stop once the loop wraps back to frames already listed.
+    if (nextIndex === currentIndex || indices.includes(nextIndex)) break;
     indices.push(nextIndex);
-    previousIndex = nextIndex;
   }
-
   return indices;
 }
 
@@ -181,6 +214,10 @@ export function publicFieldPlaybackBufferFrames(rpm: number): number {
   return 6;
 }
 
-export function publicFieldPlaybackCacheFrames(rpm: number): number {
-  return publicFieldPlaybackBufferFrames(rpm) + 1;
+export function publicFieldPlaybackCacheFrames(rpm: number, loopFrames = 0): number {
+  const bufferedFrames = publicFieldPlaybackBufferFrames(rpm) + 1;
+  // Hold a short loop in full so it plays from memory after its first pass.
+  return loopFrames <= PUBLIC_FIELD_PLAYBACK_LOOP_CACHE_FRAMES
+    ? Math.max(bufferedFrames, loopFrames)
+    : bufferedFrames;
 }
