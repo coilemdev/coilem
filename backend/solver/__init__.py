@@ -1,6 +1,5 @@
 """Motor solver orchestration, cached report mapping and cancellation."""
 
-import copy
 import hashlib
 import inspect
 import json
@@ -24,6 +23,7 @@ from backend.geometry_drawer import (
     compute_3phase_current_density_for_rotor_elec,
 )
 from backend.gmsh_mesh_rotation import (
+    copy_json_like,
     derive_congruent_solve_report,
     gmsh_mesh_reuse_enabled,
     gmsh_solve_reuse_enabled,
@@ -605,7 +605,7 @@ def _angle_mesh_cache_store(scope: str, angle_key: int, artifact: dict[str, Any]
         return
     # Deep-copied BEFORE the artifact is handed to solve threads so the
     # cached entry can never see downstream mutation.
-    copied = copy.deepcopy(artifact)
+    copied = copy_json_like(artifact)
     with _PER_ANGLE_GMSH_MESH_CACHE_LOCK:
         _PER_ANGLE_GMSH_MESH_CACHE[(scope, angle_key)] = copied
         _PER_ANGLE_GMSH_MESH_CACHE.move_to_end((scope, angle_key))
@@ -669,9 +669,16 @@ def _assert_imported_mesh_consumed_by_rust(
 
 
 def _zero_current_solve_mesh_artifact(solve_mesh_artifact: dict[str, Any]) -> dict[str, Any]:
-    """Return a copy of an imported mesh artifact with slot current metadata zeroed."""
+    """Return a copy of an imported mesh artifact with slot current metadata zeroed.
 
-    artifact = copy.deepcopy(solve_mesh_artifact)
+    Only the containers that change are copied. The mesh, magnetization and
+    other arrays are shared with the input: artifacts are treated as values
+    here (rotation, re-baking and caching copy before changing anything, and
+    solve and evidence code only read them), and deep-copying the whole 8 MB
+    artifact for every no-load solve cost ~75 ms of GIL-bound time each.
+    """
+
+    artifact = dict(solve_mesh_artifact)
     current_density = artifact.get("element_current_density_a_per_m2")
     if isinstance(current_density, list):
         artifact["element_current_density_a_per_m2"] = [
@@ -682,14 +689,19 @@ def _zero_current_solve_mesh_artifact(solve_mesh_artifact: dict[str, Any]) -> di
     contract = artifact.get("physics_contract")
     regions = contract.get("regions") if isinstance(contract, dict) else None
     if isinstance(regions, list):
+        zeroed_regions: list[Any] = []
         for region in regions:
             if not isinstance(region, dict) or region.get("kind") != "SlotWinding":
+                zeroed_regions.append(region)
                 continue
+            region = dict(region)
             if "current_density_a_per_m2" in region:
                 region["current_density_a_per_m2"] = 0.0
             winding = region.get("winding")
             if isinstance(winding, dict) and "current_density_a_per_m2" in winding:
-                winding["current_density_a_per_m2"] = 0.0
+                region["winding"] = {**winding, "current_density_a_per_m2": 0.0}
+            zeroed_regions.append(region)
+        artifact["physics_contract"] = {**contract, "regions": zeroed_regions}
 
     return artifact
 
@@ -934,13 +946,24 @@ def _solve_with_per_angle_producer_meshes(
         noload: bool,
     ) -> None:
         angle_key = _per_angle_grid_key(angle_elec_deg)
+        # Zeroing currents leaves the mesh, region ids and rotor angle the same
+        # objects, so both lanes share their serialized text and the loaded
+        # geometry hash.
+        canonical_cache: dict[int, tuple[Any, str]] = {}
+        loaded_evidence: dict[str, Any] | None = None
         if loaded:
-            loaded_mesh_evidence_by_key[angle_key] = build_solve_mesh_evidence(
-                solve_mesh_artifact
+            loaded_evidence = build_solve_mesh_evidence(
+                solve_mesh_artifact,
+                canonical_cache=canonical_cache,
             )
+            loaded_mesh_evidence_by_key[angle_key] = loaded_evidence
         if noload:
             noload_mesh_evidence_by_key[angle_key] = build_solve_mesh_evidence(
-                _zero_current_solve_mesh_artifact(solve_mesh_artifact)
+                _zero_current_solve_mesh_artifact(solve_mesh_artifact),
+                geometry_sha256=(
+                    loaded_evidence["geometry_sha256"] if loaded_evidence is not None else None
+                ),
+                canonical_cache=canonical_cache,
             )
 
     def attach_solve_mesh_evidence(sweep_report: dict[str, Any]) -> None:

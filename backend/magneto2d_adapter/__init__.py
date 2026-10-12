@@ -878,10 +878,26 @@ def _latest_magneto2d_source_mtime() -> float:
     return max((path.stat().st_mtime for path in existing), default=0.0)
 
 
+# Each per-angle solve asks for the binary, and the freshness check walks the
+# Rust source tree; with eight solve threads sharing the GIL that cost ~0.5 s
+# per position. A positive verdict is reused briefly, keyed on the binary's
+# own mtime, so a rebuild is still noticed and a source edit within seconds.
+_MAGNETO2D_FRESH_TTL_S = 10.0
+_magneto2d_fresh_verdict: tuple[float, float] | None = None
+
+
 def _magneto2d_binary_is_fresh() -> bool:
+    global _magneto2d_fresh_verdict
     if not MAGNETO2D_BINARY.exists():
         return False
-    return MAGNETO2D_BINARY.stat().st_mtime >= _latest_magneto2d_source_mtime()
+    binary_mtime = MAGNETO2D_BINARY.stat().st_mtime
+    verdict = _magneto2d_fresh_verdict
+    now = time.monotonic()
+    if verdict is not None and verdict[0] == binary_mtime and now - verdict[1] < _MAGNETO2D_FRESH_TTL_S:
+        return True
+    fresh = binary_mtime >= _latest_magneto2d_source_mtime()
+    _magneto2d_fresh_verdict = (binary_mtime, now) if fresh else None
+    return fresh
 
 
 def _summarize_process_failure(stderr: str | None, stdout: str | None, returncode: int) -> str:
@@ -1195,8 +1211,10 @@ def run_magneto2d_report(
             )
         input_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
         if solve_mesh_artifact is not None:
+            # Compact JSON: indent forces the pure-Python encoder, ~4x slower
+            # on an 8 MB mesh, and the solver reads the same values either way.
             solve_mesh_path.write_text(
-                json.dumps(solve_mesh_artifact, indent=2),
+                json.dumps(solve_mesh_artifact),
                 encoding="utf-8",
             )
 
@@ -1227,16 +1245,37 @@ def run_magneto2d_report(
         if not output_path.exists():
             raise Magneto2DExecutionError("magneto2d CLI did not produce a report JSON")
 
+        report_text = output_path.read_text(encoding="utf-8")
         try:
-            report = json.loads(output_path.read_text(encoding="utf-8"))
+            report = json.loads(report_text)
         except json.JSONDecodeError as exc:
             raise Magneto2DExecutionError("magneto2d returned invalid JSON") from exc
 
-        report["solver_environment"] = solver_environment_provenance(env_overrides)
-        output_path.write_text(json.dumps(report), encoding="utf-8")
+        solver_environment = solver_environment_provenance(env_overrides)
+        appendable = (
+            isinstance(report, dict)
+            and bool(report)
+            and "solver_environment" not in report
+            and report_text.rstrip().endswith("}")
+        )
+        report["solver_environment"] = solver_environment
         if persist_artifacts_dir is not None:
             shutil.copy2(input_path, persist_artifacts_dir / f"{prefix}_input.json")
-            shutil.copy2(output_path, persist_artifacts_dir / f"{prefix}_report.json")
+            # The solver never writes solver_environment, so appending it to
+            # the solver's own text gives the same JSON values, in the same key
+            # order, as re-serializing the whole ~6 MB report.
+            persisted_report = (
+                report_text.rstrip()[:-1]
+                + ',"solver_environment":'
+                + json.dumps(solver_environment)
+                + "}"
+                if appendable
+                else json.dumps(report)
+            )
+            (persist_artifacts_dir / f"{prefix}_report.json").write_text(
+                persisted_report,
+                encoding="utf-8",
+            )
             if solve_mesh_artifact is not None:
                 shutil.copy2(solve_mesh_path, persist_artifacts_dir / f"{prefix}_mesh.json")
                 write_provenance_sidecar(persist_artifacts_dir, prefix, solve_mesh_artifact)

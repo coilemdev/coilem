@@ -39,6 +39,13 @@ instead of re-reading every frame. With both changes the IPM 14p run took
 larger. Results are unchanged; the steel RMS flux densities can differ in
 the 14th significant digit because their sums are added in a different order.
 
+The bookkeeping around each rotor position's solve no longer queues behind
+Python's global lock. Meshes are written for the solver as compact JSON,
+reports are saved without being re-serialized, the no-load copy of each mesh
+shares its arrays, copies use a faster method, and mesh-evidence hashes skip
+a per-value walk and reuse the mesh's serialized text. Hashes and results are
+unchanged. The IPM 14p run then took 76 s and the SPM 8p/12s run 48 s.
+
 ## Solver time (unreleased)
 
 The Solver time on the Results page and in the PDF and CSV reports is now the
