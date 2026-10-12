@@ -362,12 +362,15 @@ export function LinearHalbach2DViewport({
         if (showMeshOverlay) {
           context.save();
           context.beginPath();
+          // An explicit closing edge, not closePath(): Chromium's closePath()
+          // cost grows with the path built so far, which makes one path for
+          // the whole mesh quadratic.
           fieldData.triangles.forEach((triangle) => {
             const points = triangle.map((nodeIndex) => toCanvas(fieldData.nodes_mm[nodeIndex]));
             context.moveTo(points[0][0], points[0][1]);
             context.lineTo(points[1][0], points[1][1]);
             context.lineTo(points[2][0], points[2][1]);
-            context.closePath();
+            context.lineTo(points[0][0], points[0][1]);
           });
           context.strokeStyle = 'rgba(203, 213, 225, .27)';
           context.lineWidth = 0.5 / Math.max(1, navigation.scale);
@@ -424,12 +427,13 @@ export function LinearHalbach2DViewport({
       if (viewportMode === 'mesh' && mesh) {
         context.save();
         context.beginPath();
+        // Explicit closing edges: closePath() on one growing path is quadratic.
         mesh.triangles.forEach((triangle) => {
           const points = triangle.map((nodeIndex) => toCanvas(mesh.nodes_mm[nodeIndex]));
           context.moveTo(points[0][0], points[0][1]);
           context.lineTo(points[1][0], points[1][1]);
           context.lineTo(points[2][0], points[2][1]);
-          context.closePath();
+          context.lineTo(points[0][0], points[0][1]);
         });
         context.strokeStyle = 'rgba(197, 218, 212, .38)';
         context.lineWidth = 0.5 / Math.max(1, navigation.scale);
