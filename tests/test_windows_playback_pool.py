@@ -19,15 +19,14 @@ pytestmark = pytest.mark.pr
 @pytest.fixture(autouse=True)
 def clean_process_pool_switches(monkeypatch):
     for name in ("COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL", "COILEM_MAGNETO2D_ALLOW_MESH_PROCESS_POOL",
-                 "COILEM_MAGNETO2D_ALLOW_PLAYBACK_PROCESS_POOL"):
+                 "COILEM_MAGNETO2D_ALLOW_PLAYBACK_PROCESS_POOL", "COILEM_MAGNETO2D_ALLOW_FIELD_FRAME_PROCESS_POOL"):
         monkeypatch.delenv(name, raising=False)
 
 
-def test_windows_playback_policy_keeps_field_frame_workers_serial(monkeypatch):
-    monkeypatch.setattr(solver.platform, "system", lambda: "Windows")
+def test_windows_playback_and_field_frame_pools_are_enabled(monkeypatch):
     assert solver._playback_process_pool_enabled()
-    assert not solver._magneto2d_python_process_pool_enabled()
-    assert solver._field_preview_worker_count(48, 8) == 1
+    assert solver._magneto2d_python_process_pool_enabled()
+    assert solver._field_preview_worker_count(48, 8) == min(8, solver.os.cpu_count() or 1)
 
 
 def test_playback_uses_threads_for_small_sweeps_and_caps_large_pool(monkeypatch):

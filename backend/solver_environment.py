@@ -18,11 +18,12 @@ _OS_VARIABLES = frozenset({"PATH", "SYSTEMROOT", "WINDIR", "TEMP", "TMP", "TMPDI
 _PROCESS_POOL_SWITCHES = {
     "mesh": "COILEM_MAGNETO2D_ALLOW_MESH_PROCESS_POOL",
     "playback": "COILEM_MAGNETO2D_ALLOW_PLAYBACK_PROCESS_POOL",
+    "frames": "COILEM_MAGNETO2D_ALLOW_FIELD_FRAME_PROCESS_POOL",
 }
 _DISABLE_VALUES = frozenset({"0", "false", "no", "off"})
 
 
-def public_process_pool_disabled(pool: Literal["mesh", "playback"] | None = None) -> bool:
+def public_process_pool_disabled(pool: Literal["mesh", "playback", "frames"] | None = None) -> bool:
     """Accept only disabling a pool in the installed, isolated application.
 
     Development keeps its existing solver_setting behavior. In the public

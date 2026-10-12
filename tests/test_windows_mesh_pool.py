@@ -24,7 +24,7 @@ pytestmark = pytest.mark.pr
 @pytest.fixture(autouse=True)
 def clean_process_pool_switches(monkeypatch):
     for name in ("COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL", "COILEM_MAGNETO2D_ALLOW_MESH_PROCESS_POOL",
-                 "COILEM_MAGNETO2D_ALLOW_PLAYBACK_PROCESS_POOL"):
+                 "COILEM_MAGNETO2D_ALLOW_PLAYBACK_PROCESS_POOL", "COILEM_MAGNETO2D_ALLOW_FIELD_FRAME_PROCESS_POOL"):
         monkeypatch.delenv(name, raising=False)
 
 
@@ -36,8 +36,7 @@ def _queued_mesh_probe(started_path: str) -> None:
     check_mesh_worker_cancelled()
 
 
-def test_windows_mesh_pool_does_not_enable_frame_or_playback_pools(monkeypatch):
-    monkeypatch.setattr(solver.platform, "system", lambda: "Windows")
+def test_windows_mesh_and_frame_worker_counts(monkeypatch):
     monkeypatch.setattr(solver.os, "cpu_count", lambda: 16)
     assert solver._gmsh_pipeline_worker_count(
         "COILEM_MAGNETO2D_GMSH_PRODUCER_WORKERS", 48, uses_process_pool=True,
@@ -45,14 +44,13 @@ def test_windows_mesh_pool_does_not_enable_frame_or_playback_pools(monkeypatch):
     assert solver._gmsh_pipeline_worker_count(
         "COILEM_MAGNETO2D_GMSH_PRODUCER_WORKERS", 1, uses_process_pool=True,
     ) == 1
-    assert not solver._magneto2d_python_process_pool_enabled()
-    assert solver._field_preview_worker_count(48, 8) == 1
+    assert solver._magneto2d_python_process_pool_enabled()
+    assert solver._field_preview_worker_count(48, 8) == min(8, solver.os.cpu_count() or 1)
 
 
 def test_mesh_pool_disable_and_worker_cap_in_development(monkeypatch):
     settings = {"COILEM_MAGNETO2D_ALLOW_MESH_PROCESS_POOL": "0"}
     monkeypatch.setattr(solver, "solver_setting", lambda key, default=None: settings.get(key, default))
-    monkeypatch.setattr(solver.platform, "system", lambda: "Windows")
     assert solver._gmsh_pipeline_worker_count("mesh_workers", 48, uses_process_pool=True) == 1
     settings["COILEM_MAGNETO2D_ALLOW_MESH_PROCESS_POOL"] = "1"
     settings["mesh_workers"] = "4"

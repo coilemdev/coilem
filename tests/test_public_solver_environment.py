@@ -22,6 +22,7 @@ POOL_SWITCHES = (
     "COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL",
     "COILEM_MAGNETO2D_ALLOW_MESH_PROCESS_POOL",
     "COILEM_MAGNETO2D_ALLOW_PLAYBACK_PROCESS_POOL",
+    "COILEM_MAGNETO2D_ALLOW_FIELD_FRAME_PROCESS_POOL",
 )
 
 
@@ -97,7 +98,6 @@ def test_same_request_ignores_magnet_override_and_retains_policy(monkeypatch, tm
 def test_installed_app_can_disable_all_python_pools(monkeypatch, value):
     assert policy.ISOLATED_RUNTIME is True
     monkeypatch.setenv(POOL_SWITCHES[0], value)
-    monkeypatch.setattr(solver.platform, "system", lambda: "Linux")
     assert not solver._magneto2d_python_process_pool_enabled()
     assert solver._field_preview_worker_count(48, 8) == 1
     assert solver._gmsh_pipeline_worker_count("COILEM_MAGNETO2D_GMSH_PRODUCER_WORKERS", 48, uses_process_pool=True) == 1
@@ -121,13 +121,13 @@ def test_installed_playback_off_switch_keeps_mesh_enabled(monkeypatch):
 
 
 @pytest.mark.parametrize("value", ["1", "true", "invalid", ""])
-def test_installed_switches_cannot_force_windows_field_pools_on(monkeypatch, value):
+def test_installed_enable_values_preserve_approved_worker_defaults(monkeypatch, value):
     for name in POOL_SWITCHES:
         monkeypatch.setenv(name, value)
-    monkeypatch.setattr(solver.platform, "system", lambda: "Windows")
     monkeypatch.setattr(solver.os, "cpu_count", lambda: 16)
-    assert not solver._magneto2d_python_process_pool_enabled()
-    assert solver._field_preview_worker_count(48, 8) == 1
+    monkeypatch.setenv("COILEM_MAGNETO2D_FIELD_PREVIEW_WORKERS", "1")
+    assert solver._magneto2d_python_process_pool_enabled()
+    assert solver._field_preview_worker_count(48, 8) == 8
     assert solver._gmsh_pipeline_worker_count("COILEM_MAGNETO2D_GMSH_PRODUCER_WORKERS", 48, uses_process_pool=True) == 8
     assert solver._playback_process_pool_enabled()
     assert policy.solver_setting(POOL_SWITCHES[0]) is None

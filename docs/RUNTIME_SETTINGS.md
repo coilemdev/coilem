@@ -10,6 +10,7 @@ end in `.coilem`. Existing `.openem` files and lower-case schema keys remain com
 | `COILEM_SOLVE_CACHE_MAX_BYTES` | Set the solver-cache byte budget used by rolling cleanup; defaults to 2 GiB. |
 | `COILEM_MAGNETO2D_ALLOW_MESH_PROCESS_POOL` | Set to `0` to generate Gmsh meshes in the backend process; works in the installed app. |
 | `COILEM_MAGNETO2D_ALLOW_PLAYBACK_PROCESS_POOL` | Set to `0` to use threads for playback rendering; works in the installed app. |
+| `COILEM_MAGNETO2D_ALLOW_FIELD_FRAME_PROCESS_POOL` | Set to `0` to extract field frames with one backend worker; works in the installed app. |
 | `COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL` | Set to `0` to disable all Python process pools; works in the installed app. |
 | `COILEM_LOCAL_API_PORT` | Select the loopback port for `coilem-serve`, or an exact port for the `coilem` launcher. |
 | `VITE_COILEM_LOCAL_API_BASE` | Select a loopback backend URL for the Vite development server; production bundles call their own origin. |
@@ -77,7 +78,7 @@ solves inherit only
 `TZ`. Runtime library injection variables and arbitrary shell variables are
 excluded. Numerical options are generated from the request; setting a native
 solver debug variable in your shell does not change an application solve.
-Python orchestration uses fixed defaults except for the three disable-only
+Python orchestration uses fixed defaults except for the four disable-only
 process-pool compatibility controls below. Shaft material selection and
 numerical diagnostic switches remain isolated. Gmsh initialization skips machine-local
 configuration files; mesh options come from the application and request. Build-tool discovery is separate from solver execution.
@@ -136,3 +137,9 @@ Restarting is required because a second `coilem` launch reuses an existing
 server in the same user-data folder. Settings in a new shell do not change that
 server. This fallback changes concurrency, while retaining the same numerical
 options, meshes and renderer.
+
+Without an off switch, field-frame extraction uses up to eight processes,
+capped by CPU count, solve concurrency and frame count. Windows workers use
+`spawn`. Frames and steel RMS partials are collected by angle index and reduced
+in that fixed order. Cancellation skips queued frame work and joins workers
+before the solve lane is released.
