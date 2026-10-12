@@ -67,6 +67,16 @@ pools with `COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL=0` before restarting. These
 disable-only compatibility controls keep numerical settings isolated and are
 not forwarded to Magneto2D.
 
+Gmsh meshes are now also kept on disk, in `mesh_cache` in the user-data
+folder, with their own 1 GiB budget that drops the least recently used meshes.
+Re-running a design whose geometry and mesh settings are unchanged, for
+example with another current, speed or excitation, reuses each rotor
+position's mesh and skips Gmsh, also after the application restarts. Positions
+that are not cached are meshed as before. Results are identical to meshing
+again. On a Mac, a repeat Standard run of the IPM 14p example took 52 s instead
+of 74 s, and the SPM 24p example 62 s instead of 73 s; first runs take as long
+as before.
+
 ## Solver time (unreleased)
 
 The Solver time on the Results page and in the PDF and CSV reports is now the

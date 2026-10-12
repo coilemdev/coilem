@@ -65,8 +65,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 11932,
-      "sha256": "bcd68170402bf0bd091f2a1025e335192aa21fb8394c8438a892e6b49b6d120f"
+      "bytes": 12549,
+      "sha256": "68105db3ea30087428d20b461931a3dd842477060c370e93acf877b9106e4463"
     },
     {
       "path": "SECURITY.md",
@@ -205,8 +205,8 @@
     },
     {
       "path": "backend/gmsh_mesh_rotation.py",
-      "bytes": 26047,
-      "sha256": "aff821206ba637dfd4a6536880ba3d44442a89ebf0125cc14bde8b6c5db12f1c"
+      "bytes": 25977,
+      "sha256": "2458260a1757ccbb684cf2df01f1f4f5bc76fdd69b638a4b27adc3193a6e3540"
     },
     {
       "path": "backend/gmsh_solver.py",
@@ -480,13 +480,18 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 139987,
-      "sha256": "bec3f503a6df0ecd3a0bf757cdfab97e715245aa24995e152f9fa5f9f828fd77"
+      "bytes": 143708,
+      "sha256": "94aa1657c199319e148e429d4a45ed2d8bb5a00bb7fd3b97411a35b6bd0e2756"
     },
     {
       "path": "backend/solver/_helpers.py",
       "bytes": 60828,
       "sha256": "d422325c9fd1efcba023fcffb45db0ebc55a0fccdf5d0540599b2ebae93b8e18"
+    },
+    {
+      "path": "backend/solver/_mesh_disk_cache.py",
+      "sha256": "3879eb35901aec457ab5452efd80efe388d16084709e50fb8bbf538e96c762a3",
+      "bytes": 8232
     },
     {
       "path": "backend/solver/_mesh_pool.py",
@@ -2160,8 +2165,8 @@
     },
     {
       "path": "docs/local_solve_workspace.md",
-      "bytes": 5022,
-      "sha256": "459ec9b52236f335abf97d2d5add0e05f4537fed5bfa7dd8b78840521bb00857"
+      "bytes": 5739,
+      "sha256": "4bc6407f735c54fe2a16b8d5fc528e4e3e5cb29f23b6e2477e674d5ebfe94657"
     },
     {
       "path": "frontend/package-lock.json",
@@ -3355,13 +3360,18 @@
     },
     {
       "path": "tests/test_mesh_signature_tooth_shoe.py",
-      "sha256": "ffd7fa77f6c45865bdda6dbc73803073053206bc8543be344a6d9ac363118bfd",
-      "bytes": 3637
+      "sha256": "b4f53946ee37a988f7144f8193cfe7216ce0fec3435a304950f844adb4e2a17b",
+      "bytes": 4068
     },
     {
       "path": "tests/test_native_processes.py",
       "sha256": "bc4f556fd203fc16e86058e6cfa0cef82d91a78fc49d0870e12085b0bd28aa50",
       "bytes": 5172
+    },
+    {
+      "path": "tests/test_persistent_mesh_cache.py",
+      "sha256": "5ea98a1fe281a258613201e9aea480260750f0a1f1ed16ead8bbd24c30794f2c",
+      "bytes": 16105
     },
     {
       "path": "tests/test_postsolve_pipeline.py",
@@ -5047,6 +5057,48 @@
       "path": "backend/topology_provenance.py",
       "source_sha256": "3d774b03589697c2d7b96989d4d758190fb0c04e2cbaeffd4276da5ad9b26b51",
       "reason": "Record the stator tooth-shoe settings in the topology provenance and mesh signature (v4), so designs that differ only in their tooth shoe never share cached meshes."
+    },
+    {
+      "base_commit": "6f78d694c66d864ca260be4a38ac651e489f03b9",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "bcd68170402bf0bd091f2a1025e335192aa21fb8394c8438a892e6b49b6d120f",
+      "reason": "Note the persistent per-angle mesh cache, its run-time effect, and the tooth-shoe cache-key fix."
+    },
+    {
+      "base_commit": "6f78d694c66d864ca260be4a38ac651e489f03b9",
+      "path": "backend/gmsh_mesh_rotation.py",
+      "source_sha256": "aff821206ba637dfd4a6536880ba3d44442a89ebf0125cc14bde8b6c5db12f1c",
+      "reason": "Stop marking re-baked cache hits in the mesh provenance, so a cache hit gives the same artifact and mesh-evidence hashes as a fresh Gmsh build."
+    },
+    {
+      "base_commit": "6f78d694c66d864ca260be4a38ac651e489f03b9",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "bec3f503a6df0ecd3a0bf757cdfab97e715245aa24995e152f9fa5f9f828fd77",
+      "reason": "Look up cached Gmsh meshes per base angle in memory and then on disk, mesh only the missing angles, cache only producer-built meshes, and key the cache scope by the whole stator, rotor and winding sections."
+    },
+    {
+      "base_commit": "6f78d694c66d864ca260be4a38ac651e489f03b9",
+      "path": "docs/local_solve_workspace.md",
+      "source_sha256": "459ec9b52236f335abf97d2d5add0e05f4537fed5bfa7dd8b78840521bb00857",
+      "reason": "Document the mesh_cache folder, its key and its 1 GiB budget."
+    },
+    {
+      "base_commit": "6f78d694c66d864ca260be4a38ac651e489f03b9",
+      "path": "tests/test_mesh_signature_tooth_shoe.py",
+      "source_sha256": "ffd7fa77f6c45865bdda6dbc73803073053206bc8543be344a6d9ac363118bfd",
+      "reason": "Check the tooth-shoe miss against both cache layers through the per-angle lookup."
+    },
+    {
+      "base_commit": "e77db3b9f7c9869357f95740a32b1c84d2fb07cc",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "94a1126cfb61a143a433a1315d0fc90e3fa9c2c90f389c30ba12adfccee80d6d",
+      "reason": "Keep only the mesh cache in this note; the tooth-shoe fix ships in 0.3.0 through #42."
+    },
+    {
+      "base_commit": "e77db3b9f7c9869357f95740a32b1c84d2fb07cc",
+      "path": "backend/solver/_mesh_disk_cache.py",
+      "source_sha256": "8aa702a48916de07985ff10a96e2f581c70f2f7e51d95b67177cbb345e9aa0e3",
+      "reason": "State that pruning is serialized only within one process, and what two backends pruning together can do."
     }
   ]
 }

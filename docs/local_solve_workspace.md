@@ -14,6 +14,8 @@ described below. The application creates:
 ```text
 launcher.lock        # held by the running `coilem` launcher
 launcher.json        # its port, process ID and version, while it runs
+mesh_cache/
+  <sha256>.json.gz   # one Gmsh mesh per rotor angle
 solve_cache/
   magneto2d-<timestamp>/
 solves/
@@ -93,6 +95,16 @@ longer uses that directory, and it can be deleted.
 Heavy artifacts referenced by a completed public result are copied into that
 run and addressed by root-confined opaque IDs, so clearing the cache does not
 break an archived run.
+
+The mesh cache in `mesh_cache/` keeps the Gmsh mesh of each rotor angle as gzip
+JSON, so re-running a design whose geometry and mesh settings are unchanged
+skips Gmsh, also after a restart. An entry is keyed by the mesh signature,
+materials, rotation convention, rotor angle, Gmsh version and mesh-producer
+version, and a cached mesh is the mesh Gmsh would build again. The cache has
+its own 1 GiB budget, separate from the solver cache and the durable workspace:
+after a solve writes new meshes, the least recently used ones are removed. A
+corrupt or unreadable entry is deleted and that angle is meshed again, so
+deleting the folder is always safe.
 
 Field playback intentionally retains one exact numerical snapshot and one
 1536px layered raster set per solved position. This makes stopped-frame zoom,

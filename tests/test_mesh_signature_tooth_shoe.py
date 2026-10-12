@@ -58,15 +58,20 @@ def test_tooth_shoe_only_change_moves_signature_and_cache_scope(variant):
         ) != solver._angle_mesh_cache_scope_key(changed, clockwise_positive=clockwise_positive)
 
 
-def test_tooth_shoe_only_change_does_not_reuse_a_cached_mesh():
+def test_tooth_shoe_only_change_does_not_reuse_a_cached_mesh(monkeypatch, tmp_path):
+    pytest.importorskip("gmsh")  # the persistent layer keys entries by the Gmsh version
+    monkeypatch.setenv("COILEM_USER_DATA_ROOT", str(tmp_path))
     solver.clear_per_angle_gmsh_mesh_cache()
     try:
-        plain = _config()
-        shoe = _config(**SHOE)
-        plain_scope = solver._angle_mesh_cache_scope_key(plain)
-        solver._angle_mesh_cache_store(plain_scope, 0, {"mesh": {"nodes": [[0.0, 0.0]]}})
-        assert solver._angle_mesh_cache_take_all(plain_scope, [0]) is not None
-        assert solver._angle_mesh_cache_take_all(solver._angle_mesh_cache_scope_key(shoe), [0]) is None
+        job = {"angle_key": 0, "rotor_angle_mech_deg": 0.0}
+        plain_scope = solver._angle_mesh_cache_scope_key(_config())
+        shoe_scope = solver._angle_mesh_cache_scope_key(_config(**SHOE))
+        solver._angle_mesh_cache_put(plain_scope, job, {"mesh": {"nodes": [[0.0, 0.0]]}})
+        for layers in ("memory and disk", "disk only"):
+            assert solver._angle_mesh_cache_take(plain_scope, job) is not None, layers
+            assert solver._angle_mesh_cache_probe(shoe_scope, [job]) == [], layers
+            assert solver._angle_mesh_cache_take(shoe_scope, job) is None, layers
+            solver.clear_per_angle_gmsh_mesh_cache()
     finally:
         solver.clear_per_angle_gmsh_mesh_cache()
 
