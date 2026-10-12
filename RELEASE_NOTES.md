@@ -29,6 +29,16 @@ position's solver process takes about a quarter of the time with identical
 results. A Standard run of the IPM 14p example took 146 s instead of 236 s,
 and the SPM 8p/12s example 106 s instead of 140 s.
 
+The work after the field sweep is also faster. Field-line frames skip
+triangles a contour level cannot cross and are written with the fast JSON
+encoder and light gzip. Playback images render in worker processes. The
+run package stores already-compressed files instead of deflating them again,
+and the steel flux-density summary is gathered while frames are built
+instead of re-reading every frame. With both changes the IPM 14p run took
+98 s and the SPM 8p/12s run 61 s. Frame and image files are about 10%
+larger. Results are unchanged; the steel RMS flux densities can differ in
+the 14th significant digit because their sums are added in a different order.
+
 ## Field solution position slider (unreleased)
 
 Moving the Position slider on a solved field no longer freezes the page for

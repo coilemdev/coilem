@@ -20,7 +20,8 @@ from __future__ import annotations
 import gzip
 import json
 import math
-from concurrent.futures import ThreadPoolExecutor
+import os
+from concurrent.futures import Executor, ProcessPoolExecutor, ThreadPoolExecutor
 from pathlib import Path
 from typing import Any, Literal
 
@@ -45,6 +46,8 @@ PLAYBACK_DIRECTION_CUE_LIMIT = 48
 # numerical contour set for interactive density changes and zoom inspection.
 PLAYBACK_CONTOUR_LEVEL_STRIDE = 2
 PLAYBACK_RENDERER_REVISION = "medium-contours-mesh-v2"
+_PLAYBACK_PROCESS_MIN_FRAMES = 8
+_PLAYBACK_MAX_PROCESSES = 8
 _HEAT_COLORS = (
     (20, 42, 97, 255),
     (24, 85, 167, 255),
@@ -312,10 +315,12 @@ def _save_webp(image: Any, path: Path, *, quality: int) -> dict[str, Any]:
 
 def _save_png(image: Any, path: Path) -> dict[str, Any]:
     temporary = path.with_name(f".{path.name}.tmp")
+    # Level 3 encodes in about 60% of level 6's time for files about 25%
+    # larger; PNG is lossless, so the pixels are the same.
     image.save(
         temporary,
         format="PNG",
-        compress_level=6,
+        compress_level=3,
     )
     temporary.replace(path)
     return {
@@ -626,6 +631,92 @@ def _existing_manifest(manifest_path: Path) -> tuple[dict[str, Any] | None, set[
     return payload, retained
 
 
+def _package_playback_frame(
+    frame_index: int,
+    artifact_id: str,
+    cache_dir_text: str,
+    output_dir_text: str,
+    mode: PlaybackMode,
+    angle_deg: float,
+) -> tuple[str, dict[str, Any]]:
+    """Render and save one frame's layers; module-level so a process pool can run it."""
+
+    from PIL import Image, ImageDraw, ImageFilter  # type: ignore
+
+    output_dir = Path(output_dir_text)
+    source_path, outer = _load_frame(artifact_id)
+    if source_path.parent.parent != Path(cache_dir_text):
+        raise ValueError("field playback frames span multiple solve caches")
+    nodes, view_box = _view_geometry(outer)
+    point = _pixel_mapper(view_box)
+    triangles = _triangles(outer, nodes)
+    if not triangles:
+        raise ValueError("field playback source has no drawable triangles")
+    base = _render_base(Image, ImageDraw, triangles, point)
+    base_ref = _save_png(
+        base,
+        output_dir / f"frame_{frame_index:04d}_base.png",
+    )
+    mesh = _render_mesh(Image, ImageDraw, triangles, point)
+    mesh_ref = _save_png(
+        mesh,
+        output_dir / f"frame_{frame_index:04d}_mesh.png",
+    )
+    compositions: dict[str, Any] = {
+        "armature" if mode == "armature" else "resultant": _render_composition(
+            Image,
+            ImageDraw,
+            ImageFilter,
+            outer,
+            output_dir=output_dir,
+            frame_index=frame_index,
+            composition="armature" if mode == "armature" else "resultant",
+            base_ref=base_ref,
+            mesh_ref=mesh_ref,
+        )
+    }
+    if mode == "resultant_pm":
+        pm_plot = outer.get("noload_plot")
+        if isinstance(pm_plot, dict):
+            compositions["pm"] = _render_composition(
+                Image,
+                ImageDraw,
+                ImageFilter,
+                pm_plot,
+                output_dir=output_dir,
+                frame_index=frame_index,
+                composition="pm",
+                base_ref=base_ref,
+                mesh_ref=mesh_ref,
+            )
+    return str(source_path), {
+        "index": frame_index,
+        "coordinate": angle_deg,
+        "compositions": compositions,
+    }
+
+
+def _playback_executor(frame_count: int) -> Executor:
+    """Render frames in processes where the solver allows Python process pools.
+
+    Drawing is one Pillow call per triangle, so threads mostly wait on the GIL:
+    4 threads rendered 48 IPM frames in 28 s against 52 s serially. Small
+    sweeps stay on threads, where starting worker processes would cost more
+    than it saves.
+    """
+
+    from backend.solver import _magneto2d_python_process_pool_enabled
+
+    if frame_count >= _PLAYBACK_PROCESS_MIN_FRAMES and _magneto2d_python_process_pool_enabled():
+        return ProcessPoolExecutor(
+            max_workers=max(1, min(_PLAYBACK_MAX_PROCESSES, os.cpu_count() or 1, frame_count)),
+        )
+    return ThreadPoolExecutor(
+        max_workers=max(1, min(4, frame_count)),
+        thread_name_prefix="coilem-field-playback",
+    )
+
+
 def build_public_field_playback(
     frames: Any,
     *,
@@ -655,71 +746,20 @@ def build_public_field_playback(
         if existing is not None:
             return existing, retained
 
-        from PIL import Image, ImageDraw, ImageFilter  # type: ignore
-
         output_dir.mkdir(parents=True, exist_ok=True)
-        def package_frame(
-            indexed_source: tuple[int, str],
-        ) -> tuple[Path, dict[str, Any]]:
-            frame_index, artifact_id = indexed_source
-            source_path, outer = _load_frame(artifact_id)
-            if source_path.parent.parent != cache_dir:
-                raise ValueError("field playback frames span multiple solve caches")
-            nodes, view_box = _view_geometry(outer)
-            point = _pixel_mapper(view_box)
-            triangles = _triangles(outer, nodes)
-            if not triangles:
-                raise ValueError("field playback source has no drawable triangles")
-            base = _render_base(Image, ImageDraw, triangles, point)
-            base_ref = _save_png(
-                base,
-                output_dir / f"frame_{frame_index:04d}_base.png",
+        jobs = [
+            (
+                frame_index,
+                artifact_id,
+                str(cache_dir),
+                str(output_dir),
+                mode,
+                float(_payload(frame_values[frame_index]).get("angle_deg", 0.0)),
             )
-            mesh = _render_mesh(Image, ImageDraw, triangles, point)
-            mesh_ref = _save_png(
-                mesh,
-                output_dir / f"frame_{frame_index:04d}_mesh.png",
-            )
-            compositions: dict[str, Any] = {
-                "armature" if mode == "armature" else "resultant": _render_composition(
-                    Image,
-                    ImageDraw,
-                    ImageFilter,
-                    outer,
-                    output_dir=output_dir,
-                    frame_index=frame_index,
-                    composition="armature" if mode == "armature" else "resultant",
-                    base_ref=base_ref,
-                    mesh_ref=mesh_ref,
-                )
-            }
-            if mode == "resultant_pm":
-                pm_plot = outer.get("noload_plot")
-                if isinstance(pm_plot, dict):
-                    compositions["pm"] = _render_composition(
-                        Image,
-                        ImageDraw,
-                        ImageFilter,
-                        pm_plot,
-                        output_dir=output_dir,
-                        frame_index=frame_index,
-                        composition="pm",
-                        base_ref=base_ref,
-                        mesh_ref=mesh_ref,
-                    )
-            frame_payload = _payload(frame_values[frame_index])
-            return source_path, {
-                "index": frame_index,
-                "coordinate": float(frame_payload.get("angle_deg", 0.0)),
-                "compositions": compositions,
-            }
-
-        workers = min(4, len(source_ids))
-        with ThreadPoolExecutor(
-            max_workers=workers,
-            thread_name_prefix="coilem-field-playback",
-        ) as executor:
-            packaged = list(executor.map(package_frame, enumerate(source_ids)))
+            for frame_index, artifact_id in enumerate(source_ids)
+        ]
+        with _playback_executor(len(jobs)) as executor:
+            packaged = list(executor.map(_package_playback_frame, *zip(*jobs)))
         manifest_frames = [frame for _, frame in packaged]
         expected_compositions = set(manifest_frames[0]["compositions"])
         if any(

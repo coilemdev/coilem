@@ -964,6 +964,7 @@ def _aggregate_per_angle_mesh_sweep(
     include_visual_frames: bool = True,
     include_no_load_field_frames: bool | None = None,
     precomputed_field_line_frames: list[dict[str, Any]] | None = None,
+    precomputed_steel_flux_density_rms: dict[str, float | None] | None = None,
 ) -> dict[str, Any]:
     if not loaded_reports:
         raise ValueError("per-angle Gmsh mesh sweep did not produce any loaded reports")
@@ -1481,4 +1482,9 @@ def _aggregate_per_angle_mesh_sweep(
         "sweep": sweep,
         "field_line_frames": field_line_frames,
         "slot_excitation_frames": slot_excitation_frames,
+        **(
+            {"steel_flux_density_rms": precomputed_steel_flux_density_rms}
+            if precomputed_steel_flux_density_rms is not None
+            else {}
+        ),
     }

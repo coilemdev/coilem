@@ -997,6 +997,11 @@ def build_public_run_pdf(
     return buffer.getvalue()
 
 
+# Playback layers and field frames are already compressed. Deflating them
+# again at level 9 took ~4.7 s per IPM run and shrank ~300 MB by ~1%.
+_ALREADY_COMPRESSED_SUFFIXES = frozenset({".gz", ".png", ".webp", ".zip"})
+
+
 def write_replayable_run_package(
     run_directory: Path,
     target: Path,
@@ -1035,7 +1040,11 @@ def write_replayable_run_package(
                 continue
             relative = source.relative_to(run_directory).as_posix()
             info = zipfile.ZipInfo(relative, zip_time)
-            info.compress_type = zipfile.ZIP_DEFLATED
+            info.compress_type = (
+                zipfile.ZIP_STORED
+                if source.suffix.lower() in _ALREADY_COMPRESSED_SUFFIXES
+                else zipfile.ZIP_DEFLATED
+            )
             info.create_system = 3
             info.external_attr = 0o100644 << 16
             info.flag_bits = 0x800

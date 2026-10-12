@@ -65,8 +65,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 9138,
-      "sha256": "7b6e24da04669743bdbd07c0981130a898adbf552002725afed5350f40ed8a15"
+      "bytes": 9798,
+      "sha256": "ee6fa7ac2a29f49ed0a2baf45d0fcf893279f7d65a0cfb840388f974ee16e1d0"
     },
     {
       "path": "SECURITY.md",
@@ -170,8 +170,8 @@
     },
     {
       "path": "backend/field_artifacts.py",
-      "bytes": 11117,
-      "sha256": "35b03a2e6c41fddb794f6954335ad4c7e3beaf2ffa447aa15930f0325788d472"
+      "bytes": 11547,
+      "sha256": "379b89960bd89b3c23c854c2b9db936f942552cb2365f024250084653eeede1d"
     },
     {
       "path": "backend/field_composition.py",
@@ -180,8 +180,8 @@
     },
     {
       "path": "backend/field_lines.py",
-      "bytes": 15672,
-      "sha256": "446bf8187168693fadf848db3ef8809b54d60b6b52a3f2457e6c1ac82af5d1f1"
+      "bytes": 16573,
+      "sha256": "ddde2f12c118374ca7048a9c190502ac838bfdb48a4d148729e9a68f78be41c9"
     },
     {
       "path": "backend/geometry.py",
@@ -390,8 +390,8 @@
     },
     {
       "path": "backend/public_field_playback.py",
-      "bytes": 25323,
-      "sha256": "4c7a82bcb7c8951fc04c3eff96bbc3ad246ac7c3e9fdfb98e9fbcdbe6f63ddaa"
+      "bytes": 26297,
+      "sha256": "fbe73ed42ab38acaff671b5a4e11dd1e00463594ad76b040cba59eccbf9154c7"
     },
     {
       "path": "backend/public_field_playback_contract.py",
@@ -415,8 +415,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 42159,
-      "sha256": "7eecbe6c88396b066c42578294ffd823f655603f48a1012bfd72ec0ca18bc17e"
+      "bytes": 42525,
+      "sha256": "07839030369c3eec9775c5367e3070ed2f4a7d8b2ee0fe97a50fd069c546368f"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -480,13 +480,13 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 133619,
-      "sha256": "8eff648ce5cf9b47862369019b4f2e3f53aafd161c440c6d2cf8648f27e1ec89"
+      "bytes": 136098,
+      "sha256": "ec04a36df4d3c3a72eb6457a6af1a87cd091419c3108cbc52eda0a0a8127f6a2"
     },
     {
       "path": "backend/solver/_helpers.py",
-      "bytes": 60569,
-      "sha256": "a5efc69c9cdb751c5bb5e58d61c19482a5b340f69a74fdc5808e445357a195d7"
+      "bytes": 60828,
+      "sha256": "d422325c9fd1efcba023fcffb45db0ebc55a0fccdf5d0540599b2ebae93b8e18"
     },
     {
       "path": "backend/solver_contract.py",
@@ -3124,6 +3124,11 @@
       "bytes": 5172
     },
     {
+      "path": "tests/test_postsolve_pipeline.py",
+      "sha256": "048ac4984ae66c17658e3fe0c2e393fda63431b7ea74aea9b6890744f7fbeac7",
+      "bytes": 6629
+    },
+    {
       "path": "tests/test_public_cancellation.py",
       "bytes": 13911,
       "sha256": "9af6ecb663d4a045a1754b6fa706c9adc664e082871d3287928f0e37364d5d51"
@@ -4668,6 +4673,48 @@
       "path": "solvers/magneto2d/src/postprocess/tests.rs",
       "source_sha256": "d7e399a4dbb39eeb695c5ddb19920ada3a7d12add172c8bfbb62d91f193d8a17",
       "reason": "Check the indexed airgap-radius search against the brute-force scan it replaced."
+    },
+    {
+      "base_commit": "d661447683a3b1a02bb861dfb03aa372ee1eebac",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "7b6e24da04669743bdbd07c0981130a898adbf552002725afed5350f40ed8a15",
+      "reason": "Note the faster post-solve pipeline and its run-time effect."
+    },
+    {
+      "base_commit": "d661447683a3b1a02bb861dfb03aa372ee1eebac",
+      "path": "backend/field_artifacts.py",
+      "source_sha256": "35b03a2e6c41fddb794f6954335ad4c7e3beaf2ffa447aa15930f0325788d472",
+      "reason": "Write field-frame and airgap artifacts with the C JSON encoder in one call at gzip level 1."
+    },
+    {
+      "base_commit": "d661447683a3b1a02bb861dfb03aa372ee1eebac",
+      "path": "backend/field_lines.py",
+      "source_sha256": "446bf8187168693fadf848db3ef8809b54d60b6b52a3f2457e6c1ac82af5d1f1",
+      "reason": "Skip triangles whose node values cannot reach a contour level before testing their edges."
+    },
+    {
+      "base_commit": "d661447683a3b1a02bb861dfb03aa372ee1eebac",
+      "path": "backend/public_field_playback.py",
+      "source_sha256": "4c7a82bcb7c8951fc04c3eff96bbc3ad246ac7c3e9fdfb98e9fbcdbe6f63ddaa",
+      "reason": "Render playback frames in worker processes where Python process pools are allowed, and save PNG layers at compression level 3."
+    },
+    {
+      "base_commit": "d661447683a3b1a02bb861dfb03aa372ee1eebac",
+      "path": "backend/public_report.py",
+      "source_sha256": "7eecbe6c88396b066c42578294ffd823f655603f48a1012bfd72ec0ca18bc17e",
+      "reason": "Store already-compressed files in the run package instead of deflating them again."
+    },
+    {
+      "base_commit": "d661447683a3b1a02bb861dfb03aa372ee1eebac",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "8eff648ce5cf9b47862369019b4f2e3f53aafd161c440c6d2cf8648f27e1ec89",
+      "reason": "Accumulate steel flux-density RMS in the field-frame workers and use it in the result instead of re-reading every frame."
+    },
+    {
+      "base_commit": "d661447683a3b1a02bb861dfb03aa372ee1eebac",
+      "path": "backend/solver/_helpers.py",
+      "source_sha256": "a5efc69c9cdb751c5bb5e58d61c19482a5b340f69a74fdc5808e445357a195d7",
+      "reason": "Carry the precomputed steel flux-density RMS in the sweep report."
     }
   ]
 }
