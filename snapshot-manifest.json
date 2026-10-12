@@ -65,8 +65,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 12898,
-      "sha256": "94a1126cfb61a143a433a1315d0fc90e3fa9c2c90f389c30ba12adfccee80d6d"
+      "bytes": 12549,
+      "sha256": "68105db3ea30087428d20b461931a3dd842477060c370e93acf877b9106e4463"
     },
     {
       "path": "SECURITY.md",
@@ -490,8 +490,8 @@
     },
     {
       "path": "backend/solver/_mesh_disk_cache.py",
-      "sha256": "8aa702a48916de07985ff10a96e2f581c70f2f7e51d95b67177cbb345e9aa0e3",
-      "bytes": 8001
+      "sha256": "3879eb35901aec457ab5452efd80efe388d16084709e50fb8bbf538e96c762a3",
+      "bytes": 8232
     },
     {
       "path": "backend/solver/_mesh_pool.py",
@@ -5087,6 +5087,18 @@
       "path": "tests/test_mesh_signature_tooth_shoe.py",
       "source_sha256": "ffd7fa77f6c45865bdda6dbc73803073053206bc8543be344a6d9ac363118bfd",
       "reason": "Check the tooth-shoe miss against both cache layers through the per-angle lookup."
+    },
+    {
+      "base_commit": "e77db3b9f7c9869357f95740a32b1c84d2fb07cc",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "94a1126cfb61a143a433a1315d0fc90e3fa9c2c90f389c30ba12adfccee80d6d",
+      "reason": "Keep only the mesh cache in this note; the tooth-shoe fix ships in 0.3.0 through #42."
+    },
+    {
+      "base_commit": "e77db3b9f7c9869357f95740a32b1c84d2fb07cc",
+      "path": "backend/solver/_mesh_disk_cache.py",
+      "source_sha256": "8aa702a48916de07985ff10a96e2f581c70f2f7e51d95b67177cbb345e9aa0e3",
+      "reason": "State that pruning is serialized only within one process, and what two backends pruning together can do."
     }
   ]
 }

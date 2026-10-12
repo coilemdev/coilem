@@ -75,11 +75,7 @@ position's mesh and skips Gmsh, also after the application restarts. Positions
 that are not cached are meshed as before. Results are identical to meshing
 again. On a Mac, a repeat Standard run of the IPM 14p example took 52 s instead
 of 74 s, and the SPM 24p example 62 s instead of 73 s; first runs take as long
-as before. The cache also tells designs apart by their stator tooth shoe now.
-Before, within one session, a design that differed from the previous one only
-in its tooth shoe could reuse that design's meshes and solve on the wrong
-geometry. Mesh provenance now records the tooth-shoe settings, so mesh-evidence
-hashes differ from runs saved before this change.
+as before.
 
 ## Solver time (unreleased)
 

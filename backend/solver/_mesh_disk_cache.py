@@ -21,7 +21,10 @@ file damaged by a power cut is just a corrupt entry.
 
 The cache has its own byte budget, separate from the solve cache's, and evicts
 least recently used entries. Recency is the file's modification time, which a
-hit refreshes, so it is shared between processes.
+hit refreshes, so it is shared between processes. Pruning is serialized only
+within one process: two backends sharing a user-data root can prune at the
+same time, and the worst outcome is a file deleted twice or a few more entries
+evicted than needed, which later runs mesh again.
 """
 
 from __future__ import annotations
