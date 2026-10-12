@@ -21,6 +21,13 @@ from backend.solver_contract import SolveCancelledError
 pytestmark = pytest.mark.pr
 
 
+@pytest.fixture(autouse=True)
+def clean_process_pool_switches(monkeypatch):
+    for name in ("COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL", "COILEM_MAGNETO2D_ALLOW_MESH_PROCESS_POOL",
+                 "COILEM_MAGNETO2D_ALLOW_PLAYBACK_PROCESS_POOL"):
+        monkeypatch.delenv(name, raising=False)
+
+
 def _queued_mesh_probe(started_path: str) -> None:
     """A short running task, with the same checkpoints as a real Gmsh job."""
     check_mesh_worker_cancelled()

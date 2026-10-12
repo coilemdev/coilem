@@ -65,8 +65,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 11144,
-      "sha256": "b095dc861e2ec492bff8f1df99607c473bf66a5835e15432e3d4a1a5c136dead"
+      "bytes": 11490,
+      "sha256": "d27391d6e3feb17b9d9cce30edd7642a30cc62c4a1032bdf79aa274c017aeac1"
     },
     {
       "path": "SECURITY.md",
@@ -480,8 +480,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 138962,
-      "sha256": "1cac51ca13aa6120150666fe773474b56e0980e9b10a0477ece49def56dff73d"
+      "bytes": 139188,
+      "sha256": "3eddb01541a8be4709f31237b477147fd273f6df88b03aad5fc4608280938106"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -500,8 +500,8 @@
     },
     {
       "path": "backend/solver_environment.py",
-      "bytes": 1682,
-      "sha256": "c60730f29ae37c8bb93f87b7537675205fbc39d26731ca781ab3f6f4d54fc9b1"
+      "bytes": 2670,
+      "sha256": "cf3daa488cb537bfffd02756e6be46b2ae2a9f613259db9c4684313a71e254c6"
     },
     {
       "path": "backend/steel_flux_metrics.py",
@@ -1890,8 +1890,8 @@
     },
     {
       "path": "docs/RUNTIME_SETTINGS.md",
-      "bytes": 6366,
-      "sha256": "2e48fb0e6b4751b19bc7b758fde8f42afc269ac12f6fcc095f30782fc16774cd"
+      "bytes": 8513,
+      "sha256": "e2377b2a09c2ee394d88b7987cdef6aed9d384b44c1e16915e06c1f86fa44b7f"
     },
     {
       "path": "docs/VALIDATION.md",
@@ -3160,8 +3160,8 @@
     },
     {
       "path": "tests/test_public_solver_environment.py",
-      "bytes": 5948,
-      "sha256": "ac8a9a29cf1925523a6d323818f46e954d58a97c9afa4301e4017b3fce2df8f5"
+      "bytes": 10496,
+      "sha256": "09e2a59c7da98930304a22e7f132f17f0ae63c5b2608bd074a99cfa33a3d5b89"
     },
     {
       "path": "tests/test_public_ui.py",
@@ -3205,13 +3205,13 @@
     },
     {
       "path": "tests/test_windows_mesh_pool.py",
-      "bytes": 4943,
-      "sha256": "0cfff2ab22eef06c2f5ae0e96ae98aefaf5a37880c188733dca9cd469b333282"
+      "bytes": 5238,
+      "sha256": "ff1dbeaece7dbab1b812f74b4e1fe649ea87be10c1338e2ee014ae7417aeb7ea"
     },
     {
       "path": "tests/test_windows_playback_pool.py",
-      "bytes": 4072,
-      "sha256": "78752362dd9c1bb9b1b9cbe079d31db49b698b6fe8c36e784aa4d79aead162c6"
+      "bytes": 4367,
+      "sha256": "4e931b7593b48279731948e14d1742b4fe64391d9aa53b859ce7cb778614462f"
     },
     {
       "path": "tools/benchmark_suite/__init__.py",

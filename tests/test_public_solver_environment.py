@@ -1,18 +1,34 @@
 """The exported application must be independent of inherited numerical flags."""
 
 import json
+import os
 import subprocess
+import sys
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import pytest
 from pydantic import ValidationError
 
+import backend.solver as solver
 from backend import magneto2d_adapter as adapter
+from backend import public_field_playback as playback
 from backend import solver_environment as policy
 from backend.gmsh_mesh_rotation import gmsh_mesh_reuse_enabled
 from backend.models import MotorConfig
 
 ROOT = Path(__file__).resolve().parents[1]
+POOL_SWITCHES = (
+    "COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL",
+    "COILEM_MAGNETO2D_ALLOW_MESH_PROCESS_POOL",
+    "COILEM_MAGNETO2D_ALLOW_PLAYBACK_PROCESS_POOL",
+)
+
+
+@pytest.fixture(autouse=True)
+def clean_process_pool_switches(monkeypatch):
+    for name in POOL_SWITCHES:
+        monkeypatch.delenv(name, raising=False)
 
 
 def config():
@@ -53,6 +69,8 @@ def test_same_request_ignores_magnet_override_and_retains_policy(monkeypatch, tm
     for index, value in enumerate(["1", "0"]):
         monkeypatch.setenv("COILEM_MAGNET_BR_SCALE", value)
         monkeypatch.setenv("MAGNETO2D_NONLINEAR_RELAX", value)
+        for name in POOL_SWITCHES:
+            monkeypatch.setenv(name, value)
         directory = tmp_path / str(index)
         if batch:
             result = adapter.run_magneto2d_batch_reports(
@@ -72,6 +90,85 @@ def test_same_request_ignores_magnet_override_and_retains_policy(monkeypatch, tm
     assert "COILEM_MAGNET_BR_SCALE" not in observed[0][1]
     assert "MAGNETO2D_NONLINEAR_RELAX" not in observed[0][1]
     assert "solver_environment" in observed[0][0]["openem_provenance"]
+    assert not set(POOL_SWITCHES) & observed[0][1].keys()
+
+
+@pytest.mark.parametrize("value", ["0", " FALSE ", "No", "off"])
+def test_installed_app_can_disable_all_python_pools(monkeypatch, value):
+    assert policy.ISOLATED_RUNTIME is True
+    monkeypatch.setenv(POOL_SWITCHES[0], value)
+    monkeypatch.setattr(solver.platform, "system", lambda: "Linux")
+    assert not solver._magneto2d_python_process_pool_enabled()
+    assert solver._field_preview_worker_count(48, 8) == 1
+    assert solver._gmsh_pipeline_worker_count("COILEM_MAGNETO2D_GMSH_PRODUCER_WORKERS", 48, uses_process_pool=True) == 1
+    with playback._playback_executor(48) as executor:
+        assert isinstance(executor, ThreadPoolExecutor)
+
+
+def test_installed_mesh_off_switch_keeps_playback_enabled(monkeypatch):
+    monkeypatch.setenv(POOL_SWITCHES[1], "0")
+    assert not solver._gmsh_mesh_process_pool_enabled()
+    assert solver._playback_process_pool_enabled()
+    assert solver._gmsh_pipeline_worker_count("COILEM_MAGNETO2D_GMSH_PRODUCER_WORKERS", 48, uses_process_pool=True) == 1
+
+
+def test_installed_playback_off_switch_keeps_mesh_enabled(monkeypatch):
+    monkeypatch.setenv(POOL_SWITCHES[2], "0")
+    assert solver._gmsh_mesh_process_pool_enabled()
+    assert not solver._playback_process_pool_enabled()
+    with playback._playback_executor(48) as executor:
+        assert isinstance(executor, ThreadPoolExecutor)
+
+
+@pytest.mark.parametrize("value", ["1", "true", "invalid", ""])
+def test_installed_switches_cannot_force_windows_field_pools_on(monkeypatch, value):
+    for name in POOL_SWITCHES:
+        monkeypatch.setenv(name, value)
+    monkeypatch.setattr(solver.platform, "system", lambda: "Windows")
+    monkeypatch.setattr(solver.os, "cpu_count", lambda: 16)
+    assert not solver._magneto2d_python_process_pool_enabled()
+    assert solver._field_preview_worker_count(48, 8) == 1
+    assert solver._gmsh_pipeline_worker_count("COILEM_MAGNETO2D_GMSH_PRODUCER_WORKERS", 48, uses_process_pool=True) == 8
+    assert solver._playback_process_pool_enabled()
+    assert policy.solver_setting(POOL_SWITCHES[0]) is None
+
+
+def test_installed_shared_off_switch_overrides_specific_enable_values(monkeypatch):
+    monkeypatch.setenv(POOL_SWITCHES[0], "0")
+    monkeypatch.setenv(POOL_SWITCHES[1], "1")
+    monkeypatch.setenv(POOL_SWITCHES[2], "1")
+    assert not solver._gmsh_mesh_process_pool_enabled()
+    assert not solver._playback_process_pool_enabled()
+
+
+def test_fresh_isolated_backend_honors_off_switch_without_policy_patch():
+    script = '''
+import json
+from concurrent.futures import ThreadPoolExecutor
+import backend.solver as solver
+from backend import solver_environment as policy
+from backend.public_field_playback import _playback_executor
+from backend.gmsh_mesh_rotation import gmsh_mesh_reuse_enabled
+with _playback_executor(48) as executor:
+    print(json.dumps({
+        "isolated": policy.ISOLATED_RUNTIME,
+        "mesh_workers": solver._gmsh_pipeline_worker_count("COILEM_MAGNETO2D_GMSH_PRODUCER_WORKERS", 48, uses_process_pool=True),
+        "playback_threads": isinstance(executor, ThreadPoolExecutor),
+        "field_workers": solver._field_preview_worker_count(48, 8),
+        "mesh_reuse": gmsh_mesh_reuse_enabled(),
+        "numerical_override": policy.solver_setting("MAGNETO2D_NONLINEAR_TOL"),
+        "native_switch_forwarded": "COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL" in policy.solver_process_environment(),
+    }))
+'''
+    completed = subprocess.run(
+        [sys.executable, "-c", script], cwd=ROOT, capture_output=True, text=True, timeout=30, check=True,
+        env={**os.environ, POOL_SWITCHES[0]: "0", POOL_SWITCHES[1]: "1", POOL_SWITCHES[2]: "1",
+             "COILEM_MAGNETO2D_GMSH_MESH_REUSE": "0", "MAGNETO2D_NONLINEAR_TOL": "0.99"},
+    )
+    assert json.loads(completed.stdout) == {
+        "isolated": True, "mesh_workers": 1, "playback_threads": True, "field_workers": 1,
+        "mesh_reuse": True, "numerical_override": None, "native_switch_forwarded": False,
+    }
 
 
 def test_request_derived_armature_switch_still_works():

@@ -54,6 +54,12 @@ keeps its existing Windows setting. Cancelling a solve skips queued meshes,
 lets Gmsh calls already running finish, and joins the workers before releasing
 the solve lane.
 
+Installed applications can disable mesh and playback process pools with their
+individual `COILEM_MAGNETO2D_ALLOW_*_PROCESS_POOL` switches, or disable all Python
+pools with `COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL=0` before restarting. These
+disable-only compatibility controls keep numerical settings isolated and are
+not forwarded to Magneto2D.
+
 ## Solver time (unreleased)
 
 The Solver time on the Results page and in the PDF and CSV reports is now the

@@ -16,6 +16,13 @@ from backend.field_artifacts import encode_solve_cache_artifact_id
 pytestmark = pytest.mark.pr
 
 
+@pytest.fixture(autouse=True)
+def clean_process_pool_switches(monkeypatch):
+    for name in ("COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL", "COILEM_MAGNETO2D_ALLOW_MESH_PROCESS_POOL",
+                 "COILEM_MAGNETO2D_ALLOW_PLAYBACK_PROCESS_POOL"):
+        monkeypatch.delenv(name, raising=False)
+
+
 def test_windows_playback_policy_keeps_field_frame_workers_serial(monkeypatch):
     monkeypatch.setattr(solver.platform, "system", lambda: "Windows")
     assert solver._playback_process_pool_enabled()

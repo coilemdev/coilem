@@ -65,7 +65,7 @@ from backend.solver._mesh_pool import (
     gmsh_mesh_process_pool,
 )
 from backend.solver_contract import SolveCancelledError, Solver
-from backend.solver_environment import solver_setting
+from backend.solver_environment import public_process_pool_disabled, solver_setting
 from backend.steel_flux_metrics import (
     finalize_steel_flux_density_rms,
     merge_steel_flux_density_rms_accumulator,
@@ -135,6 +135,8 @@ def _env_positive_int(name: str) -> int | None:
 
 
 def _magneto2d_python_process_pool_enabled() -> bool:
+    if public_process_pool_disabled():
+        return False
     explicit = _env_bool("COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL")
     if explicit is not None:
         return explicit
@@ -143,6 +145,8 @@ def _magneto2d_python_process_pool_enabled() -> bool:
 
 def _gmsh_mesh_process_pool_enabled() -> bool:
     """Gmsh mesh workers support Windows independently of frame/playback pools."""
+    if public_process_pool_disabled("mesh"):
+        return False
     explicit = _env_bool("COILEM_MAGNETO2D_ALLOW_MESH_PROCESS_POOL")
     if explicit is not None:
         return explicit
@@ -151,6 +155,8 @@ def _gmsh_mesh_process_pool_enabled() -> bool:
 
 def _playback_process_pool_enabled() -> bool:
     """Playback workers support Windows independently of field-frame pools."""
+    if public_process_pool_disabled("playback"):
+        return False
     explicit = _env_bool("COILEM_MAGNETO2D_ALLOW_PLAYBACK_PROCESS_POOL")
     if explicit is not None:
         return explicit
