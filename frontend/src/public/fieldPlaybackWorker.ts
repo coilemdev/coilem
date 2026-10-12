@@ -35,11 +35,13 @@ function validTriangle(plot: FieldPlotPayload, triangle: number[]): number[][] |
     : null;
 }
 
+// An explicit closing edge, not closePath(): Chromium's closePath() cost grows
+// with the path built so far, which makes whole-mesh paths quadratic.
 function addTriangle(context: OffscreenCanvasRenderingContext2D, points: number[][]): void {
   context.moveTo(points[0][0], -points[0][1]);
   context.lineTo(points[1][0], -points[1][1]);
   context.lineTo(points[2][0], -points[2][1]);
-  context.closePath();
+  context.lineTo(points[0][0], -points[0][1]);
 }
 
 function configuredCanvas(

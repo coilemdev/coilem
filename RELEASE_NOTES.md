@@ -21,6 +21,15 @@ starter motor's shoes: the SPM 24p example then failed geometry validation,
 and the two IPM examples solved with narrower slot mouths than their files
 define. Saved runs keep the geometry they were solved with.
 
+## Field solution position slider (unreleased)
+
+Moving the Position slider on a solved field no longer freezes the page for
+seconds at each position. The slider shows each position's playback image
+straight away and loads the exact solver frame once it stops. Preparing that
+frame now takes about 0.15 s, down from about 2 s for each of the Resultant
+and PM-only fields. Fast scrubbing also no longer crashes the viewer with a
+"detached" image error.
+
 ## Qualification
 
 Numerical qualification for this preview is the published [A/B/C/D benchmark

@@ -103,6 +103,20 @@ function lineDensityStride(density: FieldLineDensity): number {
   return 1;
 }
 
+// Close each triangle with an explicit edge back to its first vertex, never
+// closePath(). Chromium's Path2D closePath() costs time proportional to the
+// path built so far, so a 33k-triangle solver mesh took ~1.6 s to prepare on
+// every new rotor position. The explicit edge fills and strokes identically.
+function addTrianglePath(
+  path: Path2D,
+  [first, second, third]: [[number, number], [number, number], [number, number]],
+): void {
+  path.moveTo(first[0], -first[1]);
+  path.lineTo(second[0], -second[1]);
+  path.lineTo(third[0], -third[1]);
+  path.lineTo(first[0], -first[1]);
+}
+
 function heatPathsForRange(
   records: PreparedFieldPlot['triangleRecords'],
   minB: number,
@@ -117,11 +131,7 @@ function heatPathsForRange(
       HEAT_COLORS.length - 1,
       Math.max(0, Math.floor((((value ?? 0) - minB) / span) * HEAT_COLORS.length)),
     );
-    const [first, second, third] = points;
-    paths[bucket].moveTo(first[0], -first[1]);
-    paths[bucket].lineTo(second[0], -second[1]);
-    paths[bucket].lineTo(third[0], -third[1]);
-    paths[bucket].closePath();
+    addTrianglePath(paths[bucket], points);
     counts[bucket] += 1;
   });
   return { paths, counts };
@@ -243,16 +253,13 @@ function prepareFieldPlot(plot: PublicFieldLinePlot): PreparedFieldPlot | null {
   triangles.forEach((triangle, index) => {
     const points = triangle.map((nodeIndex) => nodes[nodeIndex]);
     if (points.length !== 3 || points.some((point) => !point || !Number.isFinite(point[0]) || !Number.isFinite(point[1]))) return;
-    const [first, second, third] = points as [[number, number], [number, number], [number, number]];
-    basePath.moveTo(first[0], -first[1]);
-    basePath.lineTo(second[0], -second[1]);
-    basePath.lineTo(third[0], -third[1]);
-    basePath.closePath();
+    const trianglePoints = points as [[number, number], [number, number], [number, number]];
+    addTrianglePath(basePath, trianglePoints);
     triangleCount += 1;
     const value = plot.element_b_mag_t[index];
     triangleRecords.push({
       index,
-      points: [first, second, third],
+      points: trianglePoints,
       value: Number.isFinite(value) ? value : null,
     });
   });
@@ -401,7 +408,6 @@ function baseFieldLayer(prepared: PreparedFieldPlot): HTMLCanvasElement {
 
 export function warmFieldResultPlot(plot: PublicFieldLinePlot): void {
   warmPreparedFieldPlot(cachedFieldPlot(plot));
-  if (plot.noload_plot) warmPreparedFieldPlot(cachedFieldPlot(plot.noload_plot));
 }
 
 function pointInTriangle(
