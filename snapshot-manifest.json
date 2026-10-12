@@ -65,8 +65,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 10216,
-      "sha256": "521becf6c6dd4a8c4f052e9034f5c5b425dfcbb4cad90ac8793ee3ea0eec6fc3"
+      "bytes": 10668,
+      "sha256": "a5b586fdfa3257d97efa9b141f9f425934122e852538d2aab4a1ae9df8813e44"
     },
     {
       "path": "SECURITY.md",
@@ -205,8 +205,8 @@
     },
     {
       "path": "backend/gmsh_mesh_rotation.py",
-      "bytes": 25644,
-      "sha256": "d6f99020cb7adeb975d2f66e15270d194d7a5638d9f438540602db8eba20f741"
+      "bytes": 26047,
+      "sha256": "aff821206ba637dfd4a6536880ba3d44442a89ebf0125cc14bde8b6c5db12f1c"
     },
     {
       "path": "backend/gmsh_solver.py",
@@ -300,8 +300,8 @@
     },
     {
       "path": "backend/magneto2d_adapter/__init__.py",
-      "bytes": 70945,
-      "sha256": "091c624da3a3f1d24c1d9cad896b958da8386b3b3b5712f92db21a349b93b209"
+      "bytes": 72617,
+      "sha256": "24cc97fa0c9e249c6020a02f8aa5bac0124e6054c5d2f38bddb22c55a0c6d04b"
     },
     {
       "path": "backend/magneto2d_adapter/_state.py",
@@ -325,8 +325,8 @@
     },
     {
       "path": "backend/mesh_evidence.py",
-      "bytes": 4890,
-      "sha256": "96543c8aa3f7012126a1e8b08a532a251c6d75d89efc983f56f2470853ebfd5f"
+      "bytes": 7348,
+      "sha256": "456222cc40fc5cf41083cca94ff3b782aaf724cffd0e210235b116c667229e88"
     },
     {
       "path": "backend/mesh_profiles/gmsh_profiles.json",
@@ -480,8 +480,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 136615,
-      "sha256": "7fba3bac4c22dc5e52b67f622f790aaf9d57fe7b8df10862973ad99806cf8dba"
+      "bytes": 137850,
+      "sha256": "62dd40847e01862b08153ad8a146b4ad3565e751a2fa4ba5a32a717a1fbfff01"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -3189,6 +3189,11 @@
       "bytes": 3786
     },
     {
+      "path": "tests/test_solve_pipeline_overhead.py",
+      "sha256": "732bba417b0c4a959fff227c5466ce84287f886f8db5dbcd59ff4530fbc79131",
+      "bytes": 5255
+    },
+    {
       "path": "tests/test_solve_workspace.py",
       "bytes": 22220,
       "sha256": "db3ad88a797164357e4bcf96ca6b3e89438c2b00c1fe4c15263439dcc5752961"
@@ -4751,6 +4756,36 @@
       "path": "tests/test_public_cancellation.py",
       "source_sha256": "9af6ecb663d4a045a1754b6fa706c9adc664e082871d3287928f0e37364d5d51",
       "reason": "Check solve() reports its wall-clock time rather than the summed per-position time."
+    },
+    {
+      "base_commit": "4bca00e1687ff4303c8c094abe0f40cdf1825b31",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "521becf6c6dd4a8c4f052e9034f5c5b425dfcbb4cad90ac8793ee3ea0eec6fc3",
+      "reason": "Note the cheaper per-position solve bookkeeping and its run-time effect."
+    },
+    {
+      "base_commit": "4bca00e1687ff4303c8c094abe0f40cdf1825b31",
+      "path": "backend/gmsh_mesh_rotation.py",
+      "source_sha256": "d6f99020cb7adeb975d2f66e15270d194d7a5638d9f438540602db8eba20f741",
+      "reason": "Copy mesh artifacts and solver reports with a pickle round trip instead of copy.deepcopy."
+    },
+    {
+      "base_commit": "4bca00e1687ff4303c8c094abe0f40cdf1825b31",
+      "path": "backend/magneto2d_adapter/__init__.py",
+      "source_sha256": "091c624da3a3f1d24c1d9cad896b958da8386b3b3b5712f92db21a349b93b209",
+      "reason": "Write solver meshes as compact JSON, persist reports by appending the solver environment to the solver's text, and reuse a recent binary freshness check."
+    },
+    {
+      "base_commit": "4bca00e1687ff4303c8c094abe0f40cdf1825b31",
+      "path": "backend/mesh_evidence.py",
+      "source_sha256": "96543c8aa3f7012126a1e8b08a532a251c6d75d89efc983f56f2470853ebfd5f",
+      "reason": "Hash canonical JSON without the per-value normalizing walk unless a -0.0 is present, and share serialized top-level values between evidence records."
+    },
+    {
+      "base_commit": "4bca00e1687ff4303c8c094abe0f40cdf1825b31",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "7fba3bac4c22dc5e52b67f622f790aaf9d57fe7b8df10862973ad99806cf8dba",
+      "reason": "Share unchanged arrays in zero-current mesh copies, copy cached meshes faster, and reuse the loaded mesh's serialized text and geometry hash for no-load evidence."
     }
   ]
 }

@@ -4,7 +4,13 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from typing import Any
+
+# In compact JSON a -0.0 number is always a list item or a dict value, so it
+# sits between one of "[,:" and one of ",]}". Inside a string the pattern can
+# also match; that only sends the payload down the exact slow path.
+_NEGATIVE_ZERO_TOKEN = re.compile(r"(?<=[\[,:])-0\.0(?=[,\]}])")
 
 
 def _normalize_canonical_json(payload: Any) -> Any:
@@ -25,19 +31,72 @@ def _normalize_canonical_json(payload: Any) -> Any:
     return payload
 
 
-def _sha256_json(payload: Any) -> str:
-    encoded = json.dumps(
-        _normalize_canonical_json(payload),
+def _canonical_json(payload: Any) -> str:
+    return json.dumps(
+        payload,
         allow_nan=False,
         ensure_ascii=False,
         separators=(",", ":"),
         sort_keys=True,
-    ).encode("utf-8")
-    return hashlib.sha256(encoded).hexdigest()
+    )
 
 
-def build_solve_mesh_evidence(solve_mesh_artifact: dict[str, Any]) -> dict[str, Any]:
-    """Return hashes/counts/inventories without retaining the full mesh arrays."""
+CanonicalTextCache = dict[int, tuple[Any, str]]
+
+
+def _normalized_canonical_json(payload: Any) -> str:
+    # Normalizing only changes a payload that holds -0.0, but it walks every
+    # value in Python: ~60 million calls per solve. Serialize first and
+    # normalize only when the text shows a -0.0, so the text is the same
+    # either way.
+    encoded = _canonical_json(payload)
+    if isinstance(payload, float) or _NEGATIVE_ZERO_TOKEN.search(encoded):
+        encoded = _canonical_json(_normalize_canonical_json(payload))
+    return encoded
+
+
+def _sha256_json(payload: Any, cache: CanonicalTextCache | None = None) -> str:
+    """Hash the normalized canonical JSON of ``payload``.
+
+    With ``cache``, a dict with string keys is hashed from its values' texts,
+    which are reused for values (by identity) already serialized in this
+    cache. The bytes are those of the whole-payload text: sorted
+    ``"key":value`` pieces joined by commas inside braces.
+    """
+
+    if cache is None or not isinstance(payload, dict) or not all(isinstance(key, str) for key in payload):
+        return hashlib.sha256(_normalized_canonical_json(payload).encode("utf-8")).hexdigest()
+    digest = hashlib.sha256(b"{")
+    for index, key in enumerate(sorted(payload)):
+        value = payload[key]
+        cached = cache.get(id(value))
+        if cached is not None and cached[0] is value:
+            text = cached[1]
+        else:
+            text = _normalized_canonical_json(value)
+            cache[id(value)] = (value, text)
+        if index:
+            digest.update(b",")
+        digest.update(json.dumps(key, ensure_ascii=False).encode("utf-8"))
+        digest.update(b":")
+        digest.update(text.encode("utf-8"))
+    digest.update(b"}")
+    return digest.hexdigest()
+
+
+def build_solve_mesh_evidence(
+    solve_mesh_artifact: dict[str, Any],
+    *,
+    geometry_sha256: str | None = None,
+    canonical_cache: CanonicalTextCache | None = None,
+) -> dict[str, Any]:
+    """Return hashes/counts/inventories without retaining the full mesh arrays.
+
+    ``geometry_sha256`` may carry the geometry hash of an artifact with the same
+    mesh, element region ids and rotor angle, so hashing the mesh arrays again
+    is skipped. ``canonical_cache`` shares serialized top-level values, such as
+    the mesh, between calls on artifacts that hold the same objects.
+    """
 
     mesh = solve_mesh_artifact.get("mesh")
     if not isinstance(mesh, dict):
@@ -108,8 +167,8 @@ def build_solve_mesh_evidence(solve_mesh_artifact: dict[str, Any]) -> dict[str, 
     return {
         "schema_version": "openem.solve_mesh_evidence/v1",
         "contract_complete": contract_complete,
-        "artifact_sha256": _sha256_json(solve_mesh_artifact),
-        "geometry_sha256": _sha256_json(geometry_payload),
+        "artifact_sha256": _sha256_json(solve_mesh_artifact, canonical_cache),
+        "geometry_sha256": geometry_sha256 or _sha256_json(geometry_payload, canonical_cache),
         "physics_contract_sha256": _sha256_json(physics_contract),
         "region_inventory_sha256": _sha256_json(region_inventory),
         "source_inventory_sha256": _sha256_json(source_inventory),
