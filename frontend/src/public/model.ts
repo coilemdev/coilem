@@ -189,6 +189,8 @@ export interface SolveValidation {
   errors: Array<{ code?: string; message: string; suggestion?: string }>;
   warnings: Array<{ code?: string; message: string; suggestion?: string }>;
   estimated_solve_time_s: number;
+  /** Low and high run time in seconds; machines differ (backend/solve_estimate.py). */
+  estimated_solve_time_range_s?: [number, number];
   estimated_mesh_elements: number;
   sweep_positions: number;
   qualification?: PublicQualification;

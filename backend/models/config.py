@@ -571,57 +571,6 @@ class SolveParams(BaseModel):
         return self.rotor_sweep_range_deg
 
 
-
-    def estimate_positions(self, pole_pairs: int) -> int:
-        """Estimate the number of torque sweep positions for a given motor.
-
-        Mirrors the Native adapter's sweep planner
-        (``_resolve_magneto2d_sweep_plan``):
-
-        - Full-cycle sweeps (fine, span == 360°) drop the terminal
-          sample so the FFT sees clean ``[0°, 360°)`` periodic support
-          (``n_steps = round(span / step)``).
-        - Partial sweeps (quick/standard) include both endpoints
-          (``n_steps + 1``).
-
-        Uses :meth:`effective_native_loaded_sweep_range_deg` so /solve/validate
-        stays consistent with what the Native solver actually runs — otherwise
-        ``standard`` (now 180°/7.5°) would report fewer positions than
-        ``quick`` (60°/3.75°) because the old implementation always used the
-        raw ``rotor_sweep_range_deg``.
-        """
-        step = self.effective_step_deg()
-        sweep_range = self.effective_native_loaded_sweep_range_deg()
-        n_steps = int(round(sweep_range / step))
-        if sweep_range >= 360.0 - 1e-9:
-            return max(2, n_steps)
-        return max(2, n_steps + 1)
-
-    def estimate_solve_time_s(
-        self,
-        pole_pairs: int,
-        per_position_s: float = 3.0,
-        *,
-        include_no_load: bool = True,
-    ) -> float:
-        """Estimate total solve time in seconds.
-
-        Args:
-            pole_pairs: Number of pole pairs for the motor.
-            per_position_s: Estimated seconds per FEMM position solve.
-                Default 3.0s is a conservative estimate for a typical laptop.
-            include_no_load: Whether the run includes the no-load Back-EMF/THD
-                companion solve at each position. Interactive torque-only
-                native runs skip it.
-        """
-        n_torque = self.estimate_positions(pole_pairs)
-        # Back-EMF/no-load companion fields are the largest selectable cost.
-        # Flux extraction/post-processing keeps a small overhead even when the
-        # no-load leg is off.
-        overhead_factor = 1.4 if include_no_load else 1.1
-        return n_torque * per_position_s * overhead_factor
-
-
 class SolveOptionsConfig(BaseModel):
     """Selective solve phase flags — controls which analyses to run."""
 

@@ -86,10 +86,14 @@ report downloads. See [Halbach arrays](docs/HALBACH_ARRAY.md).
   a visible **View Results** action.
 - A failed geometry preview recovers after the local backend reconnects,
   preserving the latest draft. **Retry geometry preview** is also available.
-- Timing labels separate approximate solver estimates, solver timing, and
-  total elapsed time through playback preparation and saving. Total elapsed
-  is measured during the current session and is absent from older or reopened
+- Timing labels separate the estimated run time, solver timing, and total
+  elapsed time through playback preparation and saving. Total elapsed is
+  measured during the current session and is absent from older or reopened
   results.
+- The Solve page estimates the whole run as a range, such as "about 2–4 min",
+  from the prepared mesh and the meshes and positions the solver will run. It
+  includes meshing and saving, and replaces a flat cost per rotor position
+  that missed IPM and larger runs by up to 2.4 times.
 - Reports identify the requested torque method and the method actually used;
   missing provenance is shown as not recorded.
 - The public motor permanent-magnet catalog agrees with the bundled native
