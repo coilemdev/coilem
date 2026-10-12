@@ -520,8 +520,8 @@
     },
     {
       "path": "backend/topology_provenance.py",
-      "bytes": 8086,
-      "sha256": "3d774b03589697c2d7b96989d4d758190fb0c04e2cbaeffd4276da5ad9b26b51"
+      "bytes": 8562,
+      "sha256": "c56d93086d39f494670dd58d242ebede0a75ff0ad7b2ecbaa6f18e4fcdd28e92"
     },
     {
       "path": "backend/torque_metrics.py",
@@ -3129,6 +3129,11 @@
       "sha256": "77051b351b4d60f6283ae32ef84cced3a0ed2fbd11e7a062f2ec128089f07edc"
     },
     {
+      "path": "tests/test_mesh_signature_tooth_shoe.py",
+      "sha256": "ffd7fa77f6c45865bdda6dbc73803073053206bc8543be344a6d9ac363118bfd",
+      "bytes": 3637
+    },
+    {
       "path": "tests/test_native_processes.py",
       "sha256": "bc4f556fd203fc16e86058e6cfa0cef82d91a78fc49d0870e12085b0bd28aa50",
       "bytes": 5172
@@ -4811,6 +4816,12 @@
       "path": "backend/solver/__init__.py",
       "source_sha256": "7fba3bac4c22dc5e52b67f622f790aaf9d57fe7b8df10862973ad99806cf8dba",
       "reason": "Share unchanged arrays in zero-current mesh copies, copy cached meshes faster, and reuse the loaded mesh's serialized text and geometry hash for no-load evidence."
+    },
+    {
+      "base_commit": "02fa24b7e9f00643d3d5931f55e79de0b623a9ec",
+      "path": "backend/topology_provenance.py",
+      "source_sha256": "3d774b03589697c2d7b96989d4d758190fb0c04e2cbaeffd4276da5ad9b26b51",
+      "reason": "Record the stator tooth-shoe settings in the topology provenance and mesh signature (v4), so designs that differ only in their tooth shoe never share cached meshes."
     }
   ]
 }
