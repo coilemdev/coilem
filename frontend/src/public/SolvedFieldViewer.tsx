@@ -30,7 +30,9 @@ import {
   nearestPlaybackFrameIndex,
   normalizePlaybackElectricalAngle,
   playbackCycleSpanDeg,
+  playbackFrameStride,
   playbackLookaheadFrameIndices,
+  playbackStrideFrameIndex,
   PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM,
   PUBLIC_FIELD_PLAYBACK_MAX_RPM,
   PUBLIC_FIELD_PLAYBACK_MIN_RPM,
@@ -85,6 +87,24 @@ function closeRaster(raster: FieldResultRaster): void {
   raster.heat.close();
   raster.mesh?.close();
   raster.lines.close();
+}
+
+// Drop the oldest rasters beyond the limit, keeping the ones on screen or about
+// to play. Kept rasters may briefly hold the cache above its limit.
+function evictRasters(
+  cache: Record<string, FieldResultRaster>,
+  limit: number,
+  keep: ReadonlySet<string>,
+  retire: (raster: FieldResultRaster) => void,
+): void {
+  let excess = Object.keys(cache).length - limit;
+  for (const key of Object.keys(cache)) {
+    if (excess <= 0) return;
+    if (keep.has(key)) continue;
+    retire(cache[key]);
+    delete cache[key];
+    excess -= 1;
+  }
 }
 
 function readableFieldRegion(region: string): string {
@@ -390,6 +410,20 @@ export function SolvedFieldViewer({
     IDLE_BUFFER_FRAMES,
     publicFieldPlaybackBufferFrames(playbackRpm),
   );
+  const playbackStride = playbackFrameStride(
+    angleFrames.length,
+    playbackSpanDeg,
+    playbackRpm,
+    polePairs,
+  );
+  const playbackStrideRef = useRef(playbackStride);
+  playbackStrideRef.current = playbackStride;
+  const rasterCacheLimit = publicFieldPlaybackCacheFrames(
+    playbackRpm,
+    Math.ceil(angleFrames.length / playbackStride),
+  );
+  const rasterCacheLimitRef = useRef(rasterCacheLimit);
+  rasterCacheLimitRef.current = rasterCacheLimit;
   const playbackLookaheadIndices = useMemo(
     () => playbackLookaheadFrameIndices(
       angleFrames,
@@ -430,6 +464,21 @@ export function SolvedFieldViewer({
     source,
     sourceFrames,
   ]);
+  const upcomingRasterKeys = useMemo(() => new Set(
+    playbackLookaheadIndices.flatMap((preloadIndex) => {
+      const preloadAngle = angleFrames[preloadIndex]?.angle_deg ?? 0;
+      const preloadArtifactId = nearestFrame(sourceFrames, preloadAngle)?.field_frame_artifact.artifact_id;
+      return preloadArtifactId ? [rasterCacheKey(preloadArtifactId, source)] : [];
+    }),
+  ), [angleFrames, playbackLookaheadIndices, source, sourceFrames]);
+  const upcomingRasterKeysRef = useRef(upcomingRasterKeys);
+  upcomingRasterKeysRef.current = upcomingRasterKeys;
+  const keptRasterKeys = useCallback((loadedKey?: string): Set<string> => {
+    const keep = new Set(upcomingRasterKeysRef.current);
+    if (loadedKey) keep.add(loadedKey);
+    if (activeRasterKeyRef.current) keep.add(activeRasterKeyRef.current);
+    return keep;
+  }, []);
 
   const loadFrame = useCallback((requestedArtifactId: string): Promise<PublicFieldLinePlot> => {
     const cached = frameCacheRef.current[requestedArtifactId];
@@ -497,23 +546,7 @@ export function SolvedFieldViewer({
           ...rasterCacheRef.current,
           [key]: raster,
         };
-        const cachedKeys = Object.keys(nextCache);
-        while (
-          cachedKeys.length
-          > publicFieldPlaybackCacheFrames(playbackRpmRef.current)
-        ) {
-          const expiredKey = cachedKeys.shift();
-          if (
-            expiredKey
-            && expiredKey !== key
-            && expiredKey !== activeRasterKeyRef.current
-          ) {
-            retireRaster(nextCache[expiredKey]);
-            delete nextCache[expiredKey];
-          } else if (expiredKey) {
-            cachedKeys.push(expiredKey);
-          }
-        }
+        evictRasters(nextCache, rasterCacheLimitRef.current, keptRasterKeys(key), retireRaster);
         rasterCacheRef.current = nextCache;
         setRasterCache(nextCache);
         return raster;
@@ -530,7 +563,7 @@ export function SolvedFieldViewer({
       });
     rasterRequestsRef.current.set(key, request);
     return request;
-  }, [loadFrame, retireRaster]);
+  }, [keptRasterKeys, loadFrame, retireRaster]);
 
   useEffect(() => {
     const rasterizer = new FieldPlaybackRasterizer();
@@ -607,24 +640,13 @@ export function SolvedFieldViewer({
       setFrameCache(nextFrameCache);
     }
 
-    const cachedRasterKeys = Object.keys(rasterCacheRef.current);
-    if (cachedRasterKeys.length > cacheLimit) {
+    if (Object.keys(rasterCacheRef.current).length > rasterCacheLimit) {
       const nextRasterCache = { ...rasterCacheRef.current };
-      while (cachedRasterKeys.length > cacheLimit) {
-        const expiredKey = cachedRasterKeys.shift();
-        if (expiredKey === activeRasterKeyRef.current) {
-          cachedRasterKeys.push(expiredKey);
-          continue;
-        }
-        if (expiredKey) {
-          retireRaster(nextRasterCache[expiredKey]);
-          delete nextRasterCache[expiredKey];
-        }
-      }
+      evictRasters(nextRasterCache, rasterCacheLimit, keptRasterKeys(), retireRaster);
       rasterCacheRef.current = nextRasterCache;
       setRasterCache(nextRasterCache);
     }
-  }, [playbackRpm, retireRaster]);
+  }, [keptRasterKeys, playbackRpm, rasterCacheLimit, retireRaster]);
 
   useEffect(() => {
     if (!playing || angleFrames.length < 2) return undefined;
@@ -643,10 +665,11 @@ export function SolvedFieldViewer({
           nextPlaybackAngleDeg,
           playbackSpanDeg,
         );
-        const nextIndex = nearestPlaybackFrameIndex(
+        const nextIndex = playbackStrideFrameIndex(
           angleFrames,
           nextSolvedAngleDeg,
           playbackSpanDeg,
+          playbackStrideRef.current,
         );
         const nextAngle = angleFrames[nextIndex]?.angle_deg ?? 0;
         const nextDescriptor = nearestFrame(sourceFrames, nextAngle);

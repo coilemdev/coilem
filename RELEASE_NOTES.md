@@ -30,6 +30,10 @@ frame now takes about 0.15 s, down from about 2 s for each of the Resultant
 and PM-only fields. Fast scrubbing also no longer crashes the viewer with a
 "detached" image error.
 
+Playback no longer stalls at higher speeds. Above about 30 new frames per
+second, playback shows every second or third solved position, and a loop of
+up to 16 frames stays in memory after its first pass.
+
 ## Qualification
 
 Numerical qualification for this preview is the published [A/B/C/D benchmark

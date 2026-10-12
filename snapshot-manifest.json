@@ -65,8 +65,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 8006,
-      "sha256": "5d56951fabaa86a6e9a707764073c4b84d2599c1c4ae2841b205f210a187688b"
+      "bytes": 8211,
+      "sha256": "9d865e4064780bd4977352dcfc9f5a46b18a49052712d1122cb0ef2e373ff5e1"
     },
     {
       "path": "SECURITY.md",
@@ -1715,8 +1715,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 1579,
-      "sha256": "d3123e6efc3ec15fd665b9c7b11ec769be5f8a36584ed2b177cbff49aa301414"
+      "bytes": 1626,
+      "sha256": "1fc682dda0de54d7fe925adbb91368a441837b5b6e3047b7a10bb4d2d109a935"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -1752,6 +1752,11 @@
       "path": "frontend/scripts/test-design-file-defaults.mjs",
       "sha256": "04af6648d5d0edf780cf74b3a09390a41f8576e35b837302aa4c83aaa54c31be",
       "bytes": 3729
+    },
+    {
+      "path": "frontend/scripts/test-field-playback-timing.mjs",
+      "sha256": "2e445a4cb33afd518a2e5328b19ee9fafc41284ee00930827482393794e17a99",
+      "bytes": 4156
     },
     {
       "path": "frontend/scripts/test-flat-ipm-burial-health.mjs",
@@ -1790,8 +1795,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 96647,
-      "sha256": "7a94e44c9d0cde4e0c5ba2cb804a2fbcfa1eeb0e733e397532c81b1c2f92b2d3"
+      "bytes": 96937,
+      "sha256": "7ec7d9323fecb9620ba2e43ee95cd308b8736aaa6c9e18356d461b2d20beaa21"
     },
     {
       "path": "frontend/src/api/projectSchema.ts",
@@ -2220,8 +2225,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 44107,
-      "sha256": "73893fdcc145e52fe9dac6c7dfda820db57ce60c2946d54629dd08de0712085f"
+      "bytes": 45296,
+      "sha256": "97c073f490a33523cb7a3331c3440e976315bde9971d07a1c192c8e4b9050e28"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -2315,8 +2320,8 @@
     },
     {
       "path": "frontend/src/public/fieldPlaybackTiming.ts",
-      "bytes": 6002,
-      "sha256": "5f55f904650c7577ecb09c71d56f3e3d06d038136b13940146213110bf4e6e6e"
+      "bytes": 7580,
+      "sha256": "5b4fd9e0420a326208cf49c124b3789d7936b2333e1e1c2a7588e44cbbe1072d"
     },
     {
       "path": "frontend/src/public/fieldPlaybackWorker.ts",
@@ -4305,6 +4310,36 @@
       "path": "frontend/src/public/fieldPlaybackWorker.ts",
       "source_sha256": "782cb67c29ba7831df1fbdf13873d8cb85d7fe15b3a2405001f43cdf3d046e26",
       "reason": "Close mesh triangles with an explicit edge instead of the quadratic closePath."
+    },
+    {
+      "base_commit": "3f7b1d935aa055741d0c7c1fdfaf86be0676ca11",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "5d56951fabaa86a6e9a707764073c4b84d2599c1c4ae2841b205f210a187688b",
+      "reason": "Note that field playback no longer stalls at higher speeds."
+    },
+    {
+      "base_commit": "3f7b1d935aa055741d0c7c1fdfaf86be0676ca11",
+      "path": "frontend/package.json",
+      "source_sha256": "d3123e6efc3ec15fd665b9c7b11ec769be5f8a36584ed2b177cbff49aa301414",
+      "reason": "Run the field playback timing checks with the public UI tests."
+    },
+    {
+      "base_commit": "3f7b1d935aa055741d0c7c1fdfaf86be0676ca11",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "7a94e44c9d0cde4e0c5ba2cb804a2fbcfa1eeb0e733e397532c81b1c2f92b2d3",
+      "reason": "Check the playback stride, loop cache and eviction that replace display-rate frame sampling."
+    },
+    {
+      "base_commit": "3f7b1d935aa055741d0c7c1fdfaf86be0676ca11",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "73893fdcc145e52fe9dac6c7dfda820db57ce60c2946d54629dd08de0712085f",
+      "reason": "Play every n-th solved frame on a fixed grid, cache a short loop in full, and never evict upcoming playback frames."
+    },
+    {
+      "base_commit": "3f7b1d935aa055741d0c7c1fdfaf86be0676ca11",
+      "path": "frontend/src/public/fieldPlaybackTiming.ts",
+      "source_sha256": "5f55f904650c7577ecb09c71d56f3e3d06d038136b13940146213110bf4e6e6e",
+      "reason": "Choose a playback stride the loader sustains or the cache holds, and list exactly the frames playback will show."
     }
   ]
 }
