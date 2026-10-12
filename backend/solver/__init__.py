@@ -22,6 +22,7 @@ from backend.field_lines import build_field_line_plot
 from backend.geometry_drawer import (
     compute_3phase_current_density_for_rotor_elec,
 )
+from backend.geometry_ir import SHAFT_MATERIAL_ENV
 from backend.gmsh_mesh_rotation import (
     copy_json_like,
     derive_congruent_solve_report,
@@ -57,6 +58,13 @@ from backend.models import (
     SolveResult,
     SolveSummary,
     TorqueWaveform,
+)
+from backend.solver._mesh_disk_cache import (
+    has_mesh_cache_entry,
+    load_mesh_cache_entry,
+    mesh_cache_entry_key,
+    prune_mesh_cache,
+    store_mesh_cache_entry,
 )
 from backend.solver._mesh_pool import (
     check_mesh_worker_cancelled,
@@ -583,24 +591,29 @@ def _rebake_gmsh_artifact_for_config(
     )
 
 
-# ── Per-angle Gmsh mesh cache (reuse across operating points) ────────
+# ── Per-angle Gmsh mesh cache (reuse across operating points and runs) ──
 #
-# A per-angle solve-mesh artifact depends on geometry + mesh policy + debug
-# flags + materials + rotor angle — NOT on current amplitude or advance angle
+# A per-angle solve-mesh artifact depends on geometry + mesh policy +
+# materials + rotor angle — NOT on current amplitude or advance angle
 # (gamma), which are baked as slot current densities and can be rewritten by
 # _rebake_gmsh_artifact_for_config. Caching the artifacts lets an MTPA gamma
-# sweep (or any repeat solve of unchanged geometry) mesh each rotor angle
-# once: gamma point N>1 skips gmsh entirely and only re-bakes currents.
+# sweep, or any re-run of unchanged geometry and mesh settings, skip Gmsh and
+# only re-bake currents.
 #
-# The cache key extends build_mesh_signature_payload (which is deliberately
+# Two layers share one scope key: a small in-memory LRU in front of the
+# persistent cache in backend/solver/_mesh_disk_cache.py, which survives a
+# backend restart and adds the Gmsh, producer and runtime versions to its
+# key. The scope extends build_mesh_signature_payload (which is deliberately
 # current-agnostic, see backend/topology_provenance.py) with config.materials,
-# because the artifact's physics contract embeds material keys.
+# because the artifact's physics contract embeds material keys, and with the
+# whole stator, rotor and winding sections, so a geometry field the signature
+# misses can only cost a cache miss, never reuse a stale mesh.
 #
-# Reuse is ALL-OR-NOTHING per sweep: either every angle in the sweep grid is
-# cached (skip the producer entirely) or the sweep builds normally and
-# populates the cache. Partial reuse would have to interleave with the
-# slot-pitch congruence grouping; all-or-nothing keeps the two mechanisms
-# composable and covers the MTPA case exactly.
+# Only artifacts the PRODUCER built are cached. A slot-pitch derived angle is
+# a rotated copy of its base mesh, not the mesh Gmsh would build at that
+# angle, so it is re-derived from its (cached or fresh) base on every run and
+# a cache hit yields the same artifacts as a cold run. Lookup is per base
+# angle: a partial overlap meshes only the angles that are missing.
 
 _PER_ANGLE_GMSH_MESH_CACHE: OrderedDict[tuple[str, int], dict[str, Any]] = OrderedDict()
 _PER_ANGLE_GMSH_MESH_CACHE_LOCK = threading.Lock()
@@ -618,16 +631,26 @@ def _angle_mesh_cache_max_entries() -> int:
         return 96
 
 
+def _section_json(section: Any) -> Any:
+    return section.model_dump(mode="json") if section is not None else None
+
+
 def _angle_mesh_cache_scope_key(
     config: MotorConfig,
     *,
     clockwise_positive: bool = False,
 ) -> str:
     """Hash of everything a cached per-angle mesh depends on except the angle."""
-    materials = config.materials
     payload = {
         "signature": build_mesh_signature_payload(config),
-        "materials": materials.model_dump(mode="json") if materials is not None else None,
+        "materials": _section_json(config.materials),
+        "geometry_sections": {
+            "stator": _section_json(config.stator),
+            "rotor": _section_json(config.rotor),
+            "winding": _section_json(config.winding),
+        },
+        # geometry_ir picks the shaft material key from this setting.
+        "shaft_material_setting": solver_setting(SHAFT_MATERIAL_ENV, ""),
         # Clockwise-positive launch sweeps solve the mirrored rotor positions
         # inside Magneto2D. Keep those artifacts isolated from the native
         # counterclockwise-positive validation cache.
@@ -642,39 +665,97 @@ def _angle_mesh_cache_scope_key(
     ).hexdigest()
 
 
-def _angle_mesh_cache_store(scope: str, angle_key: int, artifact: dict[str, Any]) -> None:
+def _angle_mesh_cache_store(
+    scope: str,
+    angle_key: int,
+    artifact: dict[str, Any],
+    *,
+    copy: bool = True,
+) -> None:
     max_entries = _angle_mesh_cache_max_entries()
     if max_entries <= 0:
         return
     # Deep-copied BEFORE the artifact is handed to solve threads so the
-    # cached entry can never see downstream mutation.
-    copied = copy_json_like(artifact)
+    # cached entry can never see downstream mutation. An artifact just read
+    # from disk belongs to the cache already.
+    cached = copy_json_like(artifact) if copy else artifact
     with _PER_ANGLE_GMSH_MESH_CACHE_LOCK:
-        _PER_ANGLE_GMSH_MESH_CACHE[(scope, angle_key)] = copied
+        _PER_ANGLE_GMSH_MESH_CACHE[(scope, angle_key)] = cached
         _PER_ANGLE_GMSH_MESH_CACHE.move_to_end((scope, angle_key))
         while len(_PER_ANGLE_GMSH_MESH_CACHE) > max_entries:
             _PER_ANGLE_GMSH_MESH_CACHE.popitem(last=False)
 
 
-def _angle_mesh_cache_take_all(
+def _angle_mesh_cache_disk_key(scope: str, job: dict[str, Any]) -> dict[str, Any] | None:
+    return mesh_cache_entry_key(
+        scope,
+        int(job["angle_key"]),
+        float(job["rotor_angle_mech_deg"]),
+    )
+
+
+def _angle_mesh_cache_probe(
     scope: str,
-    angle_keys: list[int],
-) -> dict[int, dict[str, Any]] | None:
-    """Return cached base artifacts for EVERY requested angle, or None."""
+    jobs: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Return the jobs whose base artifact is cached in memory or on disk.
+
+    This only checks presence. _angle_mesh_cache_take can still miss, for
+    example when another solve evicts the entry first or the file is corrupt.
+    """
     with _PER_ANGLE_GMSH_MESH_CACHE_LOCK:
-        entries: dict[int, dict[str, Any]] = {}
-        for angle_key in angle_keys:
-            entry = _PER_ANGLE_GMSH_MESH_CACHE.get((scope, angle_key))
-            if entry is None:
-                return None
-            entries[angle_key] = entry
-        for angle_key in angle_keys:
+        in_memory = {
+            angle_key
+            for entry_scope, angle_key in _PER_ANGLE_GMSH_MESH_CACHE
+            if entry_scope == scope
+        }
+    cached: list[dict[str, Any]] = []
+    for job in jobs:
+        if int(job["angle_key"]) in in_memory:
+            cached.append(job)
+            continue
+        disk_key = _angle_mesh_cache_disk_key(scope, job)
+        if disk_key is not None and has_mesh_cache_entry(disk_key):
+            cached.append(job)
+    return cached
+
+
+def _angle_mesh_cache_take(scope: str, job: dict[str, Any]) -> dict[str, Any] | None:
+    """Return one cached base artifact, or None.
+
+    The artifact is shared with the cache: copy it before changing it, as
+    _rebake_gmsh_artifact_for_config does.
+    """
+    angle_key = int(job["angle_key"])
+    with _PER_ANGLE_GMSH_MESH_CACHE_LOCK:
+        entry = _PER_ANGLE_GMSH_MESH_CACHE.get((scope, angle_key))
+        if entry is not None:
             _PER_ANGLE_GMSH_MESH_CACHE.move_to_end((scope, angle_key))
-    return entries
+            return entry
+    disk_key = _angle_mesh_cache_disk_key(scope, job)
+    artifact = load_mesh_cache_entry(disk_key) if disk_key is not None else None
+    if artifact is not None:
+        _angle_mesh_cache_store(scope, angle_key, artifact, copy=False)
+    return artifact
+
+
+def _angle_mesh_cache_put(
+    scope: str,
+    job: dict[str, Any],
+    artifact: dict[str, Any],
+) -> bool:
+    """Cache one producer-built artifact; return whether it reached the disk."""
+    _angle_mesh_cache_store(scope, int(job["angle_key"]), artifact)
+    disk_key = _angle_mesh_cache_disk_key(scope, job)
+    return disk_key is not None and store_mesh_cache_entry(disk_key, artifact)
 
 
 def clear_per_angle_gmsh_mesh_cache() -> None:
-    """Test hook: drop all cached per-angle Gmsh artifacts."""
+    """Drop the in-memory layer, as a backend restart does.
+
+    The persistent layer under ``user_data_root()/mesh_cache`` is kept; see
+    ``backend.solver._mesh_disk_cache.clear_mesh_cache``.
+    """
     with _PER_ANGLE_GMSH_MESH_CACHE_LOCK:
         _PER_ANGLE_GMSH_MESH_CACHE.clear()
 
@@ -1227,8 +1308,7 @@ def _solve_with_per_angle_producer_meshes(
                     flush=True,
                 )
 
-        # ── Per-angle mesh cache lookup (all-or-nothing over the
-        # producer jobs) ─────────────────────────────────────────────────
+        # ── Per-angle mesh cache lookup (per producer job) ───────────────
         #
         # The cache substitutes for the PRODUCER only: it is consulted after
         # slot-pitch congruence grouping so cached base artifacts still flow
@@ -1236,18 +1316,21 @@ def _solve_with_per_angle_producer_meshes(
         # congruent SOLUTION reuse compose with cache hits instead of being
         # bypassed. Cached artifacts carry currents from the operating point
         # that built them; _rebake_gmsh_artifact_for_config rewrites them
-        # for this config before use.
+        # for this config before use. Base angles that are not cached go to
+        # the producer as before.
         cache_scope: str | None = None
-        cached_base_artifacts: dict[int, dict[str, Any]] | None = None
+        cached_jobs: list[dict[str, Any]] = []
         if producer.source == "gmsh" and _angle_mesh_cache_enabled():
             cache_scope = _angle_mesh_cache_scope_key(
                 config,
                 clockwise_positive=clockwise_positive,
             )
-            cached_base_artifacts = _angle_mesh_cache_take_all(
-                cache_scope,
-                [int(job["angle_key"]) for job in producer_jobs],
-            )
+            cached_jobs = _angle_mesh_cache_probe(cache_scope, producer_jobs)
+        cached_angle_keys = {int(job["angle_key"]) for job in cached_jobs}
+        build_jobs = [
+            job for job in producer_jobs if int(job["angle_key"]) not in cached_angle_keys
+        ]
+        mesh_cache_writes = 0
 
         # Mesh-completion progress: one tick per ready solve mesh (base Gmsh
         # build or derived rotation), with running counts in solver_detail so
@@ -1315,12 +1398,6 @@ def _solve_with_per_angle_producer_meshes(
             solve_mesh_artifact: dict[str, Any],
             generation_time_ms: int,
         ) -> None:
-            # Populate the per-angle cache BEFORE the artifact is
-            # handed to solve threads (store deep-copies internally).
-            if cache_scope is not None:
-                _angle_mesh_cache_store(
-                    cache_scope, int(job["angle_key"]), solve_mesh_artifact
-                )
             handle_mesh_ready(solve_pool, job, solve_mesh_artifact, generation_time_ms)
             emit_mesh_ready_tick(float(job["angle_elec_deg"]))
             for derived_job, n_slots in derived_jobs_by_base_key.get(
@@ -1332,10 +1409,6 @@ def _solve_with_per_angle_producer_meshes(
                     excitation_config,
                     float(derived_job["rotor_angle_mech_deg"]),
                 )
-                if cache_scope is not None:
-                    _angle_mesh_cache_store(
-                        cache_scope, int(derived_job["angle_key"]), derived_artifact
-                    )
                 reuse_loaded = (
                     solve_reuse_active
                     and bool(job["run_loaded"])
@@ -1377,30 +1450,63 @@ def _solve_with_per_angle_producer_meshes(
                 )
                 emit_mesh_ready_tick(float(derived_job["angle_elec_deg"]))
 
+        def handle_built_mesh(
+            solve_pool: ThreadPoolExecutor,
+            job: dict[str, Any],
+            solve_mesh_artifact: dict[str, Any],
+            generation_time_ms: int,
+        ) -> None:
+            nonlocal mesh_cache_writes
+            # Populate the per-angle cache BEFORE the artifact is handed to
+            # solve threads (the in-memory layer deep-copies internally).
+            if cache_scope is not None and _angle_mesh_cache_put(
+                cache_scope, job, solve_mesh_artifact
+            ):
+                mesh_cache_writes += 1
+            handle_group_mesh_ready(solve_pool, job, solve_mesh_artifact, generation_time_ms)
+
+        def build_mesh_in_process(solve_pool: ThreadPoolExecutor, job: dict[str, Any]) -> None:
+            mesh_started = time.perf_counter()
+            solve_mesh_artifact, generation_time_ms = producer.build(
+                excitation_config,
+                float(job["rotor_angle_mech_deg"]),
+            )
+            if not generation_time_ms:
+                generation_time_ms = int((time.perf_counter() - mesh_started) * 1000.0)
+            handle_built_mesh(solve_pool, job, solve_mesh_artifact, generation_time_ms)
+
+        def handle_cached_meshes(solve_pool: ThreadPoolExecutor) -> None:
+            for job in cached_jobs:
+                if check_cancelled is not None:
+                    check_cancelled()
+                rebake_started = time.perf_counter()
+                cached_artifact = (
+                    _angle_mesh_cache_take(cache_scope, job) if cache_scope is not None else None
+                )
+                if cached_artifact is None:
+                    # Evicted or unreadable since the probe: mesh it here.
+                    build_mesh_in_process(solve_pool, job)
+                    continue
+                handle_group_mesh_ready(
+                    solve_pool,
+                    job,
+                    _rebake_gmsh_artifact_for_config(cached_artifact, excitation_config),
+                    int((time.perf_counter() - rebake_started) * 1000.0),
+                )
+
         with ThreadPoolExecutor(max_workers=solve_workers) as solve_pool:
-            if cached_base_artifacts is not None:
+            if cached_jobs:
                 print(
                     "magneto2d: per-angle Gmsh mesh cache — reusing "
-                    f"{len(producer_jobs)} cached base mesh(es); slot currents "
-                    "re-baked for this operating point "
+                    f"{len(cached_jobs)} of {len(producer_jobs)} base mesh(es); "
+                    "slot currents re-baked for this operating point "
                     "(COILEM_MAGNETO2D_ANGLE_MESH_CACHE=0 to disable)",
                     file=sys.stderr,
                     flush=True,
                 )
-                for job in producer_jobs:
-                    rebake_started = time.perf_counter()
-                    solve_mesh_artifact = _rebake_gmsh_artifact_for_config(
-                        cached_base_artifacts[int(job["angle_key"])],
-                        excitation_config,
-                    )
-                    handle_group_mesh_ready(
-                        solve_pool,
-                        job,
-                        solve_mesh_artifact,
-                        int((time.perf_counter() - rebake_started) * 1000.0),
-                    )
-            elif producer_workers > 1:
-                with gmsh_mesh_process_pool(producer_workers) as mesh_pool:
+            mesh_workers = min(producer_workers, len(build_jobs))
+            if mesh_workers > 1:
+                with gmsh_mesh_process_pool(mesh_workers) as mesh_pool:
                     mesh_futures: dict[
                         Future[tuple[dict[str, Any], int, float]],
                         dict[str, Any],
@@ -1409,7 +1515,7 @@ def _solve_with_per_angle_producer_meshes(
                     # emit_mesh_ready_tick); submission-time ticks all fire
                     # in the same instant with identical counts and read as
                     # a frozen bar in the UI.
-                    for job in producer_jobs:
+                    for job in build_jobs:
                         if check_cancelled is not None:
                             check_cancelled()
                         mesh_future = mesh_pool.submit(
@@ -1418,30 +1524,24 @@ def _solve_with_per_angle_producer_meshes(
                             float(job["rotor_angle_mech_deg"]),
                         )
                         mesh_futures[mesh_future] = job
+                    # Cached angles feed the solve pool while Gmsh meshes
+                    # the rest.
+                    handle_cached_meshes(solve_pool)
                     for mesh_future in completed_mesh_futures(mesh_futures, check_cancelled):
                         job = mesh_futures[mesh_future]
                         solve_mesh_artifact, generation_time_ms, _mesh_wall_ms = mesh_future.result()
-                        handle_group_mesh_ready(
+                        handle_built_mesh(
                             solve_pool,
                             job,
                             solve_mesh_artifact,
                             generation_time_ms,
                         )
             else:
-                for job in producer_jobs:
-                    mesh_started = time.perf_counter()
-                    solve_mesh_artifact, generation_time_ms = producer.build(
-                        excitation_config,
-                        float(job["rotor_angle_mech_deg"]),
-                    )
-                    if not generation_time_ms:
-                        generation_time_ms = int((time.perf_counter() - mesh_started) * 1000.0)
-                    handle_group_mesh_ready(
-                        solve_pool,
-                        job,
-                        solve_mesh_artifact,
-                        generation_time_ms,
-                    )
+                handle_cached_meshes(solve_pool)
+                for job in build_jobs:
+                    build_mesh_in_process(solve_pool, job)
+            if mesh_cache_writes:
+                prune_mesh_cache()
 
             mesh_done_at = time.perf_counter()
             emit_timing_delta(

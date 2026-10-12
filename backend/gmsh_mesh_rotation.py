@@ -334,6 +334,10 @@ def rebake_solve_mesh_artifact_currents(
     current densities exactly the way the producer bakes them
     (gmsh_solver._current_density_by_ir_region). This lets
     an MTPA gamma sweep mesh each rotor angle once.
+
+    The result is the artifact the producer builds for this operating point,
+    so it carries no reuse marker: a cache hit must give the same mesh
+    evidence hashes as a cold run.
     """
     rebaked = copy_json_like(artifact)
     rotor_angle_mech_deg = float(rebaked.get("rotor_angle_mech_deg") or 0.0)
@@ -371,13 +375,6 @@ def rebake_solve_mesh_artifact_currents(
             else None
             for previous, region_id in zip(element_current_density, element_region_ids)
         ]
-
-    provenance = physics_contract.get("provenance")
-    if isinstance(provenance, dict):
-        provenance["mesh_reuse"] = {
-            "kind": "per_angle_mesh_cache_current_rebake",
-            "rotor_angle_mech_deg": rotor_angle_mech_deg,
-        }
 
     return rebaked
 
