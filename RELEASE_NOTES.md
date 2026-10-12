@@ -21,6 +21,14 @@ starter motor's shoes: the SPM 24p example then failed geometry validation,
 and the two IPM examples solved with narrower slot mouths than their files
 define. Saved runs keep the geometry they were solved with.
 
+## Faster solves (unreleased)
+
+Magneto2D spent about 2 s per rotor position finding the airgap radii it
+samples torque and fields on. It now indexes the airgap triangles, so a
+position's solver process takes about a quarter of the time with identical
+results. A Standard run of the IPM 14p example took 146 s instead of 236 s,
+and the SPM 8p/12s example 106 s instead of 140 s.
+
 ## Field solution position slider (unreleased)
 
 Moving the Position slider on a solved field no longer freezes the page for
