@@ -13,6 +13,32 @@ The [benchmark index](../benchmarks/README.md) identifies the latest full run,
 the current selection and archived evidence. The [IPM diagnosis](IPM_BENCHMARK_DIAGNOSIS.md) explains
 the fixture replacement and the solver/convergence work that remains open.
 
+## Full Windows rerun with process-pool improvements
+
+[Report v1.4](../benchmarks/windows-process-pools-20261012-02fa24b/README.md)
+measures clean candidate `02fa24b7e9f00643d3d5931f55e79de0b623a9ec`, including
+the performance changes in PRs #32, #33, #34 and #36 and the Windows process
+pools in PR #37. All 35 supported native jobs completed in 44.66 minutes;
+the registered gates record 29 PASS, the same planned unsupported Prius case
+and 42/42 BLDC gates PASS. The generated PDF and full numerical comparison are
+committed with the report.
+
+All 30 verdicts and all reference gate values match v1.3. Registered inputs,
+resolved configurations, mesh element counts and angle grids match; every
+native torque, Back-EMF and phase-current waveform is exactly equal. Physical
+summary values also match exactly except teeth/yoke steel RMS floating-point
+accumulation differences below 6e-14 T. Before/after worker identities,
+registered request/result hashes and frozen reference gates were verified.
+
+The measured application and native solver remain coilEM 0.2.0 and Magneto2D
+0.3.2; the report records the exact commit, source and binary hashes. The CLI
+includes field-frame extraction and result construction but does not invoke
+public HTTP playback packaging or durable UI run saving. The older run had
+concurrent workloads, so the elapsed-time ratio is an observation across all
+intervening changes, rather than a controlled process-pool-only A/B test. This
+record preserves the existing fixture metrics and does not broaden the
+developer-preview qualification policy.
+
 ## Full Windows rerun before later performance changes
 
 [Report v1.3](../benchmarks/main-20261012-0b463b3-rerun/README.md) measures the
