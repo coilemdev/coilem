@@ -1,0 +1,258 @@
+{
+  "description": "Locked-rotor torque: S2 Table 3.2, p.20 (PDF 29), with its motor-shaft angle, and S3 Table 3.2, p.21 (PDF 29), with its electrical position; electrical position = 4 x (shaft angle - 90). DC excitation Ia, -Ia/2, -Ia/2 (S1 p.7).",
+  "rows": [
+    {
+      "motor_shaft_angle_deg_S2": 90,
+      "electrical_position_deg_S3": 0,
+      "torque_Nm_50A": -1.9,
+      "torque_Nm_75A": -0.6,
+      "torque_Nm_100A": 3.5,
+      "torque_Nm_125A": 5.3,
+      "torque_Nm_150A": 3.6,
+      "torque_Nm_200A": 6.0,
+      "torque_Nm_250A": 10.0
+    },
+    {
+      "motor_shaft_angle_deg_S2": 92,
+      "electrical_position_deg_S3": 8,
+      "torque_Nm_50A": 0.7,
+      "torque_Nm_75A": 2.4,
+      "torque_Nm_100A": 0.7,
+      "torque_Nm_125A": 0.0,
+      "torque_Nm_150A": -7.6,
+      "torque_Nm_200A": -9.6,
+      "torque_Nm_250A": -10.1
+    },
+    {
+      "motor_shaft_angle_deg_S2": 94,
+      "electrical_position_deg_S3": 16,
+      "torque_Nm_50A": 1.0,
+      "torque_Nm_75A": -2.8,
+      "torque_Nm_100A": -8.1,
+      "torque_Nm_125A": -15.0,
+      "torque_Nm_150A": -25.7,
+      "torque_Nm_200A": -37.6,
+      "torque_Nm_250A": -43.3
+    },
+    {
+      "motor_shaft_angle_deg_S2": 96,
+      "electrical_position_deg_S3": 24,
+      "torque_Nm_50A": 0.2,
+      "torque_Nm_75A": -3.0,
+      "torque_Nm_100A": -9.0,
+      "torque_Nm_125A": -17.0,
+      "torque_Nm_150A": -24.7,
+      "torque_Nm_200A": -35.4,
+      "torque_Nm_250A": -46.2
+    },
+    {
+      "motor_shaft_angle_deg_S2": 98,
+      "electrical_position_deg_S3": 32,
+      "torque_Nm_50A": 1.9,
+      "torque_Nm_75A": -2.3,
+      "torque_Nm_100A": -5.8,
+      "torque_Nm_125A": -12.0,
+      "torque_Nm_150A": -17.3,
+      "torque_Nm_200A": -26.7,
+      "torque_Nm_250A": -33.8
+    },
+    {
+      "motor_shaft_angle_deg_S2": 100,
+      "electrical_position_deg_S3": 40,
+      "torque_Nm_50A": 7.3,
+      "torque_Nm_75A": 6.1,
+      "torque_Nm_100A": 6.1,
+      "torque_Nm_125A": 2.0,
+      "torque_Nm_150A": -3.5,
+      "torque_Nm_200A": -11.7,
+      "torque_Nm_250A": -16.4
+    },
+    {
+      "motor_shaft_angle_deg_S2": 102,
+      "electrical_position_deg_S3": 48,
+      "torque_Nm_50A": 14.5,
+      "torque_Nm_75A": 11.8,
+      "torque_Nm_100A": 10.4,
+      "torque_Nm_125A": 9.0,
+      "torque_Nm_150A": 7.4,
+      "torque_Nm_200A": 0.0,
+      "torque_Nm_250A": -1.9
+    },
+    {
+      "motor_shaft_angle_deg_S2": 104,
+      "electrical_position_deg_S3": 56,
+      "torque_Nm_50A": 19.6,
+      "torque_Nm_75A": 20.8,
+      "torque_Nm_100A": 22.0,
+      "torque_Nm_125A": 24.0,
+      "torque_Nm_150A": 25.8,
+      "torque_Nm_200A": 27.0,
+      "torque_Nm_250A": 31.7
+    },
+    {
+      "motor_shaft_angle_deg_S2": 106,
+      "electrical_position_deg_S3": 64,
+      "torque_Nm_50A": 25.8,
+      "torque_Nm_75A": 34.0,
+      "torque_Nm_100A": 41.0,
+      "torque_Nm_125A": 53.0,
+      "torque_Nm_150A": 54.8,
+      "torque_Nm_200A": 62.0,
+      "torque_Nm_250A": 78.1
+    },
+    {
+      "motor_shaft_angle_deg_S2": 108,
+      "electrical_position_deg_S3": 72,
+      "torque_Nm_50A": 34.1,
+      "torque_Nm_75A": 48.3,
+      "torque_Nm_100A": 61.0,
+      "torque_Nm_125A": 72.0,
+      "torque_Nm_150A": 83.6,
+      "torque_Nm_200A": 99.2,
+      "torque_Nm_250A": 114.2
+    },
+    {
+      "motor_shaft_angle_deg_S2": 110,
+      "electrical_position_deg_S3": 80,
+      "torque_Nm_50A": 45.5,
+      "torque_Nm_75A": 64.0,
+      "torque_Nm_100A": 82.0,
+      "torque_Nm_125A": 96.0,
+      "torque_Nm_150A": 109.9,
+      "torque_Nm_200A": 132.0,
+      "torque_Nm_250A": 158.5
+    },
+    {
+      "motor_shaft_angle_deg_S2": 112,
+      "electrical_position_deg_S3": 88,
+      "torque_Nm_50A": 48.2,
+      "torque_Nm_75A": 72.4,
+      "torque_Nm_100A": 95.0,
+      "torque_Nm_125A": 116.0,
+      "torque_Nm_150A": 127.8,
+      "torque_Nm_200A": 157.0,
+      "torque_Nm_250A": 181.6
+    },
+    {
+      "motor_shaft_angle_deg_S2": 114,
+      "electrical_position_deg_S3": 96,
+      "torque_Nm_50A": 55.8,
+      "torque_Nm_75A": 81.9,
+      "torque_Nm_100A": 109.0,
+      "torque_Nm_125A": 135.0,
+      "torque_Nm_150A": 151.0,
+      "torque_Nm_200A": 189.2,
+      "torque_Nm_250A": 222.0
+    },
+    {
+      "motor_shaft_angle_deg_S2": 116,
+      "electrical_position_deg_S3": 104,
+      "torque_Nm_50A": 63.9,
+      "torque_Nm_75A": 92.6,
+      "torque_Nm_100A": 125.0,
+      "torque_Nm_125A": 151.0,
+      "torque_Nm_150A": 177.4,
+      "torque_Nm_200A": 214.3,
+      "torque_Nm_250A": 255.0
+    },
+    {
+      "motor_shaft_angle_deg_S2": 118,
+      "electrical_position_deg_S3": 112,
+      "torque_Nm_50A": 73.1,
+      "torque_Nm_75A": 112.5,
+      "torque_Nm_100A": 149.0,
+      "torque_Nm_125A": 182.0,
+      "torque_Nm_150A": 208.1,
+      "torque_Nm_200A": 258.6,
+      "torque_Nm_250A": 302.0
+    },
+    {
+      "motor_shaft_angle_deg_S2": 120,
+      "electrical_position_deg_S3": 120,
+      "torque_Nm_50A": 74.0,
+      "torque_Nm_75A": 117.7,
+      "torque_Nm_100A": 157.0,
+      "torque_Nm_125A": 193.0,
+      "torque_Nm_150A": 223.0,
+      "torque_Nm_200A": 277.0,
+      "torque_Nm_250A": 324.0
+    },
+    {
+      "motor_shaft_angle_deg_S2": 122,
+      "electrical_position_deg_S3": 128,
+      "torque_Nm_50A": 70.9,
+      "torque_Nm_75A": 114.1,
+      "torque_Nm_100A": 158.0,
+      "torque_Nm_125A": 199.0,
+      "torque_Nm_150A": 229.0,
+      "torque_Nm_200A": 286.1,
+      "torque_Nm_250A": 337.0
+    },
+    {
+      "motor_shaft_angle_deg_S2": 124,
+      "electrical_position_deg_S3": 136,
+      "torque_Nm_50A": 59.1,
+      "torque_Nm_75A": 102.1,
+      "torque_Nm_100A": 149.0,
+      "torque_Nm_125A": 191.0,
+      "torque_Nm_150A": 223.0,
+      "torque_Nm_200A": 280.4,
+      "torque_Nm_250A": 332.0
+    },
+    {
+      "motor_shaft_angle_deg_S2": 126,
+      "electrical_position_deg_S3": 144,
+      "torque_Nm_50A": 50.2,
+      "torque_Nm_75A": 89.0,
+      "torque_Nm_100A": 136.0,
+      "torque_Nm_125A": 192.0,
+      "torque_Nm_150A": 221.0,
+      "torque_Nm_200A": 286.6,
+      "torque_Nm_250A": 339.0
+    },
+    {
+      "motor_shaft_angle_deg_S2": 128,
+      "electrical_position_deg_S3": 152,
+      "torque_Nm_50A": 47.3,
+      "torque_Nm_75A": 79.0,
+      "torque_Nm_100A": 120.0,
+      "torque_Nm_125A": 162.0,
+      "torque_Nm_150A": 198.2,
+      "torque_Nm_200A": 271.2,
+      "torque_Nm_250A": 331.0
+    },
+    {
+      "motor_shaft_angle_deg_S2": 130,
+      "electrical_position_deg_S3": 160,
+      "torque_Nm_50A": 38.8,
+      "torque_Nm_75A": 63.5,
+      "torque_Nm_100A": 98.0,
+      "torque_Nm_125A": 133.0,
+      "torque_Nm_150A": 159.6,
+      "torque_Nm_200A": 228.2,
+      "torque_Nm_250A": 287.0
+    },
+    {
+      "motor_shaft_angle_deg_S2": 132,
+      "electrical_position_deg_S3": 168,
+      "torque_Nm_50A": 19.0,
+      "torque_Nm_75A": 33.0,
+      "torque_Nm_100A": 59.0,
+      "torque_Nm_125A": 82.0,
+      "torque_Nm_150A": 99.7,
+      "torque_Nm_200A": 134.2,
+      "torque_Nm_250A": 175.0
+    },
+    {
+      "motor_shaft_angle_deg_S2": 134,
+      "electrical_position_deg_S3": 176,
+      "torque_Nm_50A": 3.4,
+      "torque_Nm_75A": 7.1,
+      "torque_Nm_100A": 20.4,
+      "torque_Nm_125A": 30.0,
+      "torque_Nm_150A": 25.3,
+      "torque_Nm_200A": 58.3,
+      "torque_Nm_250A": 87.0
+    }
+  ]
+}

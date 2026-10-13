@@ -3264,6 +3264,36 @@
       "sha256": "25bbe57352a4307d176d0dcc8c22f1c1466922dcad4092bff63c5f14b2d901d3"
     },
     {
+      "path": "docs/hardware-validation/ornl-prius-2004/input-provenance.json",
+      "sha256": "717340af98275adf20f418c95e00374b2ea2723b7a1d7ad5ec6f22c29c439986",
+      "bytes": 12708
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/rotor-pocket-measurements.json",
+      "sha256": "75415f09a4e98708e26de8c5b67cc809851739b34c11e54209f6f0bb2606b94d",
+      "bytes": 5597
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/source-audit.md",
+      "sha256": "35d3ffc6edba4f763cf6f172a699ee867abe7efba6eb13e3711d197f77f6380d",
+      "bytes": 19838
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/sources.json",
+      "sha256": "0e5f96d113ef8b20e56adc1d479789f8aea73b4720029f1370ba236f127c764c",
+      "bytes": 2477
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/target-back-emf.json",
+      "sha256": "41db6bb847374c2ab6b8925f742c538bce12ce377fa00896d45f33c5d23c4aa6",
+      "bytes": 2804
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/target-locked-rotor.json",
+      "sha256": "d279e47f9f4bf14e2d615172479efe18fd02c5dda73f5cc2a7043158cf112bbd",
+      "bytes": 7200
+    },
+    {
       "path": "docs/images/coilem-landing-page.png",
       "bytes": 573781,
       "sha256": "08fde6e6600d37f8ac2fdda79a2cbfb52a6a8ad651b49477e3c42d7ca36a1eba"
