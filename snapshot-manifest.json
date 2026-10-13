@@ -280,8 +280,8 @@
     },
     {
       "path": "backend/launcher.py",
-      "sha256": "be86df45c9d8ad827a3432e73d8587019ccf9af3302ae37504f78a9d387dabcd",
-      "bytes": 17147
+      "sha256": "243e33bcc18299f82b6a03a29656c2c63909c363ab0f04dff9cc9df10e3131db",
+      "bytes": 17379
     },
     {
       "path": "backend/local_file_safety.py",
@@ -390,8 +390,8 @@
     },
     {
       "path": "backend/public_field_playback.py",
-      "bytes": 26295,
-      "sha256": "fc701d296c473251183c4cc861403dd7696efc8ccfe2bf3ef8b5a6564b3596da"
+      "bytes": 26474,
+      "sha256": "548d90598572c72f9fac405f47688c88b8c6009425cc7ec3a648b418d7e38211"
     },
     {
       "path": "backend/public_field_playback_contract.py",
@@ -440,8 +440,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 50537,
-      "sha256": "2d2242c2b7f7586cefd0f6812bc5dda9089ec2c4ca45ffc4e9f35c8da9301849"
+      "bytes": 51250,
+      "sha256": "7fcaa62f30bf2b86cffe1ae8c705c9d451b64bd3bea817463c0f94924b6d76c7"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -475,8 +475,8 @@
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 41307,
-      "sha256": "fdd8af4de0af01d7a8c2249fb080b553f7c9128268ac00e81d5e501a69c757a5"
+      "bytes": 41902,
+      "sha256": "d84c691e311762ea039c906755ee98e53269dc548669dd0a6ccd4371cb5e502e"
     },
     {
       "path": "backend/solver/__init__.py",
@@ -495,8 +495,8 @@
     },
     {
       "path": "backend/solver/_process_pool.py",
-      "bytes": 2138,
-      "sha256": "85506651ec15ae94ef9fcdaacf87070ddef8153c744d9388da8794f1d5fad487"
+      "bytes": 4295,
+      "sha256": "f4bf9b3f9b82abdff21eb7e7e7a45a482a48721d3a286a725077a0d37b5c2480"
     },
     {
       "path": "backend/solver_contract.py",
@@ -3355,8 +3355,8 @@
     },
     {
       "path": "tests/test_launcher_shutdown.py",
-      "sha256": "8bddcdb813d5b215593b64f3d600d8a0e8732bf07eeea39c45ed5b830e4faa36",
-      "bytes": 6966
+      "sha256": "dcf38c0c11e8c73e50bf2e0c36d209fdaecaff7010d72b901e61b3eee1801e66",
+      "bytes": 19862
     },
     {
       "path": "tests/test_linear_halbach_analytical.py",
@@ -5298,6 +5298,42 @@
       "path": "backend/public_routes/solve.py",
       "source_sha256": "fa880d91ba79fad6810ad9fa30b5b819af4f1a9aa61459192c6a8f551f1c90fd",
       "reason": "Run solver workers on a non-daemon thread, so the interpreter finishes their unwinding before it finalizes; a daemon thread hung shutdown on Python 3.12 and 3.13 on Windows (#55)."
+    },
+    {
+      "base_commit": "a22094e8b65297aafc0c83ee4da081d4b9f3f29f",
+      "path": "backend/launcher.py",
+      "source_sha256": "be86df45c9d8ad827a3432e73d8587019ccf9af3302ae37504f78a9d387dabcd",
+      "reason": "#55 review: application shutdown also stops the solver's process-pool workers, after ending solve streams and native processes."
+    },
+    {
+      "base_commit": "a22094e8b65297aafc0c83ee4da081d4b9f3f29f",
+      "path": "backend/public_field_playback.py",
+      "source_sha256": "fc701d296c473251183c4cc861403dd7696efc8ccfe2bf3ef8b5a6564b3596da",
+      "reason": "#55 review: register the playback process pool until its shutdown returns, so application exit can stop its workers."
+    },
+    {
+      "base_commit": "a22094e8b65297aafc0c83ee4da081d4b9f3f29f",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "2d2242c2b7f7586cefd0f6812bc5dda9089ec2c4ca45ffc4e9f35c8da9301849",
+      "reason": "#55 review: record the cancellation before ending streams, stop the solver even if recording fails, and package and save results off the default executor."
+    },
+    {
+      "base_commit": "a22094e8b65297aafc0c83ee4da081d4b9f3f29f",
+      "path": "backend/solve_workspace.py",
+      "source_sha256": "fdd8af4de0af01d7a8c2249fb080b553f7c9128268ac00e81d5e501a69c757a5",
+      "reason": "#55 review: serialize a run writer's complete() and fail(), which raced on manifest.json during shutdown on Windows."
+    },
+    {
+      "base_commit": "a22094e8b65297aafc0c83ee4da081d4b9f3f29f",
+      "path": "backend/solver/_process_pool.py",
+      "source_sha256": "85506651ec15ae94ef9fcdaacf87070ddef8153c744d9388da8794f1d5fad487",
+      "reason": "#55 review: keep a registry of live solver process pools and stop their workers on application exit."
+    },
+    {
+      "base_commit": "a22094e8b65297aafc0c83ee4da081d4b9f3f29f",
+      "path": "tests/test_launcher_shutdown.py",
+      "source_sha256": "8bddcdb813d5b215593b64f3d600d8a0e8732bf07eeea39c45ed5b830e4faa36",
+      "reason": "#55 review: cover concurrent run-manifest writes, cancellation order, pool termination and a real interrupted launcher."
     }
   ]
 }

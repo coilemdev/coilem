@@ -1,34 +1,44 @@
 """Ctrl+C during a streamed solve stops the server promptly and removes its record (#55).
 
-The worker here is synthetic: after a cancellation it keeps "unwinding" until
-the test releases it, like a Windows process pool joining its workers. Before
-#55 the open stream waited for it until uvicorn's graceful-shutdown timeout,
-and ``asyncio.run`` then waited for its default-executor thread, so the
-launcher hit its 20 s deadline and force-exited without removing its record.
+Before #55 the open stream waited for the solver until uvicorn's
+graceful-shutdown timeout. After the server stopped, interpreter exit still
+joined the solver's process pools, which wait for their running tasks, such
+as Gmsh meshes, so the launcher hit its 20 s deadline and force-exited
+without removing its record. The in-process test uses a synthetic worker that
+keeps "unwinding" until released; the subprocess tests interrupt the real
+launcher while a real process-pool task is running.
 """
 
 from __future__ import annotations
 
 import http.client
 import json
+import os
 import signal
 import socket
+import subprocess
+import sys
 import threading
 import time
+from concurrent.futures.process import BrokenProcessPool
 from pathlib import Path
 
 import pytest
 import uvicorn
 
 import backend.magneto2d_adapter as magneto2d_adapter
+import backend.solve_workspace as solve_workspace
 from backend import launcher
 from backend.models import MotorConfig
 from backend.public_main import create_app
 from backend.public_routes import solve as routes
+from backend.solve_workspace import SolveRunWriter, SolveWorkspace, SolveWorkspaceError
+from backend.solver import _process_pool
 from backend.solver_contract import SolveCancelledError
 
 pytestmark = pytest.mark.pr
 
+REPO = Path(__file__).resolve().parents[1]
 CONFIG = MotorConfig.model_validate_json(
     (Path(__file__).parent / "fixtures" / "spm_4p12s_simple.json").read_text(encoding="utf-8")
 ).model_dump(mode="json")
@@ -173,11 +183,364 @@ def test_forced_exit_removes_the_launcher_record(monkeypatch, tmp_path):
     assert launcher._WRITTEN_RECORD is None
 
 
-def test_shutdown_ends_solve_streams_before_stopping_native_processes(monkeypatch):
+def test_shutdown_ends_solve_streams_then_stops_native_processes_and_pools(monkeypatch):
     calls: list[str] = []
     monkeypatch.setattr(routes, "begin_server_shutdown", lambda: calls.append("streams"))
     monkeypatch.setattr(magneto2d_adapter, "shutdown_native_processes", lambda: calls.append("native"))
+    monkeypatch.setattr(_process_pool, "terminate_process_pools", lambda: calls.append("pools"))
 
     launcher._shutdown_native_work()
 
-    assert calls == ["streams", "native"]
+    assert calls == ["streams", "native", "pools"]
+
+
+class _RecordingWriter(SolveRunWriter):
+    def __init__(self, record) -> None:  # no run directory
+        self.record = record
+
+    def fail(self, **kwargs) -> None:
+        self.record()
+
+
+class _RecordingSolver:
+    def __init__(self, calls: list[str]) -> None:
+        self.calls = calls
+
+    def cancel_active_solve(self) -> None:
+        self.calls.append("solver")
+
+
+def _active_solve(monkeypatch, solver, writer) -> threading.Event:
+    monkeypatch.setattr(routes, "_ACTIVE_SOLVE", {
+        "running": True, "cancelled": False, "solver": solver, "run_writer": writer,
+    })
+    stopping = threading.Event()
+    monkeypatch.setattr(routes, "_SERVER_STOPPING", stopping)
+    return stopping
+
+
+def test_shutdown_records_the_cancellation_before_ending_solve_streams(monkeypatch):
+    calls: list[str] = []
+    stopping = _active_solve(
+        monkeypatch,
+        _RecordingSolver(calls),
+        _RecordingWriter(lambda: calls.append(f"record (streams ending: {routes._SERVER_STOPPING.is_set()})")),
+    )
+
+    routes.begin_server_shutdown()
+
+    # A stream that ends on shutdown then finds the run already recorded.
+    assert calls == ["solver", "record (streams ending: False)"]
+    assert stopping.is_set()
+
+
+def test_shutdown_stops_the_solver_and_streams_even_if_recording_fails(monkeypatch):
+    calls: list[str] = []
+
+    def denied() -> None:
+        calls.append("record")
+        raise PermissionError(5, "Access is denied")
+
+    stopping = _active_solve(monkeypatch, _RecordingSolver(calls), _RecordingWriter(denied))
+
+    with pytest.raises(PermissionError):
+        routes.begin_server_shutdown()
+
+    assert calls == ["solver", "record"]
+    assert stopping.is_set()
+
+
+def _run_writer(tmp_path: Path) -> SolveRunWriter:
+    return SolveWorkspace(tmp_path / "workspace").begin_run(
+        project_name="shutdown", config=CONFIG, submitted_request={"config": CONFIG}
+    )
+
+
+def test_concurrent_cancellations_write_the_run_manifest_once(monkeypatch, tmp_path):
+    writer = _run_writer(tmp_path)
+    original = solve_workspace._atomic_write_json
+    counting = threading.Lock()
+    active = 0
+    overlap: list[int] = []
+    statuses: list[str] = []
+
+    def slow_write(path: Path, payload) -> None:
+        nonlocal active
+        with counting:
+            active += 1
+            overlap.append(active)
+        try:
+            time.sleep(0.2)  # long enough for the other cancellation to arrive
+            statuses.append(payload["status"])
+            original(path, payload)
+        finally:
+            with counting:
+                active -= 1
+
+    monkeypatch.setattr(solve_workspace, "_atomic_write_json", slow_write)
+    start = threading.Barrier(2)
+
+    def cancel() -> None:
+        start.wait()
+        writer.fail(error_code="SOLVER_CANCELLED", message="Solve cancelled by user.", cancelled=True)
+
+    # The stream's error path and the launcher's shutdown, as on Windows in #55,
+    # where a second concurrent replace of manifest.json is refused.
+    threads = [threading.Thread(target=cancel) for _ in range(2)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join(timeout=10)
+
+    assert max(overlap) == 1
+    assert statuses == ["cancelled"]
+    manifest = json.loads((writer.partial_path / "manifest.json").read_text(encoding="utf-8"))
+    assert manifest["status"] == "cancelled"
+
+
+def test_saving_a_run_waits_for_its_cancellation_to_be_recorded(monkeypatch, tmp_path):
+    writer = _run_writer(tmp_path)
+    original = solve_workspace._atomic_write_json
+    writing = threading.Event()
+    release = threading.Event()
+
+    def held_write(path: Path, payload) -> None:
+        writing.set()
+        release.wait(timeout=10)
+        original(path, payload)
+
+    monkeypatch.setattr(solve_workspace, "_atomic_write_json", held_write)
+    cancelling = threading.Thread(
+        target=writer.fail,
+        kwargs={"error_code": "SOLVER_CANCELLED", "message": "coilEM is stopping.", "cancelled": True},
+    )
+    cancelling.start()
+    assert writing.wait(timeout=5)
+
+    outcome: list[str] = []
+
+    def save() -> None:
+        try:
+            writer.complete({})
+            outcome.append("saved")
+        except SolveWorkspaceError as exc:
+            outcome.append(str(exc))
+
+    saving = threading.Thread(target=save)
+    saving.start()
+    saving.join(timeout=0.3)
+    assert saving.is_alive(), "the save must wait for the cancellation being recorded"
+    release.set()
+    cancelling.join(timeout=10)
+    saving.join(timeout=10)
+
+    assert outcome == ["solve run writer is already closed"]
+
+
+def test_terminating_process_pools_ends_their_running_tasks(monkeypatch):
+    unwound = threading.Event()
+    pools: list = []
+    futures: list = []
+
+    def cancelled_while_a_task_runs() -> None:
+        try:
+            with _process_pool.cancellable_process_pool(1) as pool:
+                pools.append(pool)
+                futures.append(pool.submit(time.sleep, 120))
+                raise SolveCancelledError("cancelled by the user")
+        except SolveCancelledError:
+            pass
+        finally:
+            unwound.set()
+
+    solver = threading.Thread(target=cancelled_while_a_task_runs, daemon=True)
+    solver.start()
+    try:
+        # A user's cancellation lets the running task finish.
+        assert not unwound.wait(timeout=1.0)
+        assert list(_process_pool._LIVE_POOLS) == pools
+
+        _process_pool.terminate_process_pools()
+
+        assert unwound.wait(timeout=10), "pool shutdown still waited for its running task"
+        assert isinstance(futures[0].exception(timeout=5), BrokenProcessPool)
+        assert not _process_pool._LIVE_POOLS
+    finally:
+        if not unwound.is_set():
+            _process_pool._stop_pool_workers(pools[0])
+        solver.join(timeout=10)
+
+
+# The real launcher, with the solve or its packaging held by a process-pool
+# task that runs until it is stopped. Run as a script so Ctrl+C is real.
+_INTERRUPTED_LAUNCHER = """
+import os
+import sys
+import threading
+import time
+from pathlib import Path
+
+import backend.launcher as launcher
+import backend.public_field_playback as playback
+import backend.resources as resources
+from backend.public_routes import solve as routes
+from backend.solver._process_pool import cancellable_process_pool, completed_process_futures
+from backend.solver_contract import SolveCancelledError
+
+
+def hold(*_args):
+    Path(os.environ["COILEM_TEST_POOL_PID"]).write_text(str(os.getpid()), encoding="utf-8")
+    time.sleep(120)
+
+
+class PoolHoldingSolver:
+    def __init__(self, stage):
+        self.stage = stage
+        self.cancelled = threading.Event()
+
+    def cancel_active_solve(self):
+        self.cancelled.set()
+
+    def check_cancelled(self):
+        if self.cancelled.is_set():
+            raise SolveCancelledError("Solve cancelled by user.")
+
+    def solve(self, config, *, on_progress=None, **kwargs):
+        on_progress(1, 48, 0.25)
+        if self.stage == "packaging":
+            return {"frames": [{"field_frame_artifact": {"artifact_id": "held"}}]}
+        with cancellable_process_pool(1) as pool:
+            for future in completed_process_futures({pool.submit(hold): 0}, self.check_cancelled):
+                future.result()
+        return {}
+
+
+if __name__ == "__main__":
+    stage = sys.argv[1]
+    cache = Path(os.environ["COILEM_TEST_CACHE"])
+    resources.ui_bundle_root = lambda: Path(os.environ["COILEM_TEST_UI"])
+    launcher.linux_mesher_problem = lambda: None
+    routes._create_public_solver = lambda *args: PoolHoldingSolver(stage)
+    # Packaging builds field playback on its process pool.
+    playback.resolve_solve_cache_artifact_id = lambda artifact_id: cache / "frames" / artifact_id
+    playback._PLAYBACK_PROCESS_MIN_FRAMES = 1
+    playback._package_playback_frame = hold
+    routes._package_public_result = lambda result: playback.build_public_field_playback(
+        result["frames"], mode="armature"
+    )
+    raise SystemExit(launcher.main(sys.argv[2:]))
+"""
+
+
+def _process_alive(pid: int) -> bool:
+    if os.name == "nt":
+        import ctypes
+
+        kernel32 = ctypes.windll.kernel32
+        handle = kernel32.OpenProcess(0x00100000, False, pid)  # SYNCHRONIZE
+        if not handle:
+            return False
+        try:
+            return kernel32.WaitForSingleObject(handle, 0) == 0x102  # WAIT_TIMEOUT
+        finally:
+            kernel32.CloseHandle(handle)
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    return True
+
+
+def _gone_within(pid: int, seconds: float) -> bool:
+    deadline = time.monotonic() + seconds
+    while _process_alive(pid):
+        if time.monotonic() >= deadline:
+            return False
+        time.sleep(0.1)
+    return True
+
+
+def _free_port() -> int:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+        probe.bind(("127.0.0.1", 0))
+        return probe.getsockname()[1]
+
+
+@pytest.mark.parametrize("stage", ["solving", "packaging"])
+def test_interrupting_the_launcher_stops_a_running_process_pool_task(tmp_path, stage):
+    ui = tmp_path / "ui"
+    ui.mkdir()
+    (ui / "index.html").write_text("<!doctype html><title>coilEM</title>", encoding="utf-8")
+    script = tmp_path / "interrupted_launcher.py"
+    script.write_text(_INTERRUPTED_LAUNCHER, encoding="utf-8")
+    data, pid_file = tmp_path / "user-data", tmp_path / "pool-worker.pid"
+    env = {
+        **os.environ,
+        "PYTHONPATH": str(REPO),
+        "PYTHONUNBUFFERED": "1",
+        "COILEM_USER_DATA_ROOT": str(data),
+        "COILEM_TEST_UI": str(ui),
+        "COILEM_TEST_CACHE": str(tmp_path / "cache"),
+        "COILEM_TEST_POOL_PID": str(pid_file),
+        "COILEM_MAGNETO2D_ALLOW_PLAYBACK_PROCESS_POOL": "1",
+    }
+    env.pop("COILEM_LOCAL_API_PORT", None)
+    port = _free_port()
+    server = subprocess.Popen(
+        [sys.executable, str(script), stage, "--no-browser", "--port", str(port)],
+        cwd=tmp_path,
+        env=env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        creationflags=subprocess.CREATE_NEW_PROCESS_GROUP if os.name == "nt" else 0,
+    )
+    output: list[str] = []
+    ready = threading.Event()
+
+    def drain() -> None:
+        assert server.stdout is not None
+        for line in server.stdout:
+            output.append(line.rstrip())
+            if "is running at" in line:
+                ready.set()
+
+    threading.Thread(target=drain, daemon=True).start()
+    try:
+        assert ready.wait(timeout=60), "\n".join(output)
+        events: list[tuple[str, dict]] = []
+        client = threading.Thread(target=_read_stream, args=(port, events, threading.Event()), daemon=True)
+        client.start()
+        deadline = time.monotonic() + 60
+        while not pid_file.exists() and time.monotonic() < deadline:
+            time.sleep(0.05)
+        assert pid_file.exists(), "\n".join(output)
+        time.sleep(0.2)  # let the worker record its id fully
+        worker = int(pid_file.read_text(encoding="utf-8"))
+
+        started = time.monotonic()
+        server.send_signal(signal.CTRL_BREAK_EVENT if os.name == "nt" else signal.SIGINT)
+        code = server.wait(timeout=60)
+        elapsed = time.monotonic() - started
+
+        log = "\n".join(output)
+        assert code == 0, f"exit {code} after {elapsed:.1f}s\n{log}"
+        assert elapsed < launcher.GRACEFUL_SHUTDOWN_S, f"took {elapsed:.1f}s\n{log}"
+        assert not (data / launcher.RECORD_FILE).exists()
+        assert _gone_within(worker, 10), "the process-pool worker outlived the launcher"
+        client.join(timeout=10)
+        if stage == "packaging":
+            assert ("progress", "packaging_results") in [(name, event.get("stage")) for name, event in events]
+        assert events[-1][0] == "error"
+        assert events[-1][1]["error_code"] == "SOLVER_CANCELLED"
+        manifests = list((data / "solves").rglob("manifest.json"))
+        assert any(json.loads(path.read_text(encoding="utf-8"))["status"] == "cancelled" for path in manifests)
+    finally:
+        if server.poll() is None:
+            server.kill()
+            server.wait(timeout=10)
+        if pid_file.exists() and pid_file.read_text(encoding="utf-8").strip():
+            try:
+                os.kill(int(pid_file.read_text(encoding="utf-8")), getattr(signal, "SIGKILL", signal.SIGTERM))
+            except OSError:
+                pass

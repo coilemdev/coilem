@@ -301,6 +301,10 @@ class SolveRunWriter:
         self.application_commit = _application_commit()
         self.run_id, self.partial_path, self.final_path = workspace._allocate_run_paths(self.project_slug)
         self._closed = False
+        # complete() and fail() can race: an open solve stream and the launcher's
+        # shutdown both record a cancellation, and Windows refuses a second
+        # concurrent replace of manifest.json (#55). One runs at a time.
+        self._lock = threading.RLock()
         self._artifact_records: list[dict[str, Any]] = []
 
         self.partial_path.mkdir(parents=True, exist_ok=False)
@@ -472,6 +476,10 @@ class SolveRunWriter:
         visit(result)
 
     def complete(self, result: Mapping[str, Any]) -> RunLocation:
+        with self._lock:
+            return self._complete(result)
+
+    def _complete(self, result: Mapping[str, Any]) -> RunLocation:
         if self._closed:
             raise SolveWorkspaceError("solve run writer is already closed")
         stored_result = deepcopy(dict(result))
@@ -583,6 +591,10 @@ class SolveRunWriter:
         message: str,
         cancelled: bool = False,
     ) -> None:
+        with self._lock:
+            self._fail(error_code=error_code, message=message, cancelled=cancelled)
+
+    def _fail(self, *, error_code: str, message: str, cancelled: bool) -> None:
         if self._closed:
             return
         try:

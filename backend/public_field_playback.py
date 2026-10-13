@@ -758,7 +758,11 @@ def build_public_field_playback(
             )
             for frame_index, artifact_id in enumerate(source_ids)
         ]
-        with _playback_executor(len(jobs)) as executor:
+        from backend.solver._process_pool import tracked_process_pool
+
+        executor = _playback_executor(len(jobs))
+        # Registered until the executor's shutdown returns.
+        with tracked_process_pool(executor), executor:
             packaged = list(executor.map(_package_playback_frame, *zip(*jobs)))
         manifest_frames = [frame for _, frame in packaged]
         expected_compositions = set(manifest_frames[0]["compositions"])

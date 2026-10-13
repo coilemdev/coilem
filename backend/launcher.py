@@ -275,12 +275,17 @@ def claim_port(explicit: int | None, root_id: str) -> tuple[socket.socket | None
 def _shutdown_native_work() -> None:
     from backend.magneto2d_adapter import shutdown_native_processes
     from backend.public_routes.solve import begin_server_shutdown
+    from backend.solver._process_pool import terminate_process_pools
 
     try:
         # Also ends open solve streams, so graceful shutdown need not wait for them.
         begin_server_shutdown()
     finally:
-        shutdown_native_processes()
+        try:
+            shutdown_native_processes()
+        finally:
+            # Exit joins the solver's process pools; their running tasks must not hold it.
+            terminate_process_pools()
 
 
 def _force_exit(code: int) -> None:

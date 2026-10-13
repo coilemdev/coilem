@@ -346,10 +346,14 @@ _SERVER_STOPPING = threading.Event()
 
 
 def begin_server_shutdown() -> None:
-    """End open solve streams and cancel the active solve, for application exit."""
+    """Cancel the active solve and end open solve streams, for application exit."""
 
-    _SERVER_STOPPING.set()
-    request_active_solve_cancellation()
+    try:
+        request_active_solve_cancellation()
+    finally:
+        # Only now, so a stream ending on shutdown finds the cancellation
+        # recorded instead of racing its manifest write.
+        _SERVER_STOPPING.set()
 
 
 def _raise_if_server_stopping() -> None:
@@ -361,13 +365,12 @@ def _run_solver_thread(function: Any, /, *args: Any, **kwargs: Any) -> asyncio.F
     """Run a solver call on its own thread and return a future for its result.
 
     ``asyncio.to_thread`` uses the event loop's default executor, which
-    ``asyncio.run`` waits for inside the server's shutdown, after uvicorn's own
-    graceful window. Here the server stops first; the interpreter then waits
-    for this thread while it finishes unwinding, such as a Windows process
-    pool joining its workers (#55). The thread is not a daemon: finalizing
-    the interpreter while a solver still unwound its process pools hung
-    shutdown on Python 3.12 and 3.13 on Windows. The solve lane is released
-    only when the worker returns.
+    ``asyncio.run`` waits for inside the server's shutdown. Here the server
+    stops first, and the interpreter waits for this thread at exit. Exit also
+    joins the solver's own thread and process pools whatever thread started
+    them, so the application's shutdown stops their process workers to keep
+    that unwinding short (#55). The solve lane is released only when the
+    worker returns.
     """
 
     loop = asyncio.get_running_loop()
@@ -396,7 +399,7 @@ def _run_solver_thread(function: Any, /, *args: Any, **kwargs: Any) -> asyncio.F
     return future
 
 
-async def _wait_for_worker(future: asyncio.Future[Any], *, timeout: float) -> Any:
+async def _wait_for_worker(future: asyncio.Future[Any], *, timeout: float | None) -> Any:
     """Await a solver thread, but stop waiting once the server starts shutting down.
 
     Neither the timeout nor shutdown cancels the worker: ``asyncio.wait`` leaves
@@ -410,6 +413,17 @@ async def _wait_for_worker(future: asyncio.Future[Any], *, timeout: float) -> An
         return future.result()
 
     return await asyncio.wait_for(worker_or_shutdown(), timeout=timeout)
+
+
+async def _finish_off_loop(function: Any, /, *args: Any, **kwargs: Any) -> Any:
+    """Package or save a result like a solve: off the default executor, shutdown-aware.
+
+    On shutdown the route stops waiting. Packaging then fails once its playback
+    workers are stopped; a save already underway completes or is recorded as
+    cancelled, never both, because the run writer serializes the two.
+    """
+
+    return await _wait_for_worker(_run_solver_thread(function, *args, **kwargs), timeout=None)
 
 
 def _release_after_worker(solver: Solver, future: asyncio.Future[Any] | None) -> None:
@@ -809,7 +823,7 @@ async def _package_public_armature_response(
 ) -> dict[str, Any]:
     """Build the bounded public response shared by one-shot and SSE callers."""
 
-    field_playback, retained_ids = await asyncio.to_thread(
+    field_playback, retained_ids = await _finish_off_loop(
         build_public_field_playback,
         response.get("frames"),
         mode="armature",
@@ -1003,8 +1017,8 @@ async def solve(body: dict[str, Any]) -> dict[str, Any]:
     future = _run_solver_thread(solver.solve, config, solve_mesh_key=solve_mesh_key)
     try:
         result = await _wait_for_worker(future, timeout=timeout_seconds)
-        public_result = await asyncio.to_thread(_package_public_result, result)
-        return await asyncio.to_thread(
+        public_result = await _finish_off_loop(_package_public_result, result)
+        return await _finish_off_loop(
             _store_public_result,
             workspace,
             run_writer,
@@ -1329,7 +1343,7 @@ async def solve_stream(body: dict[str, Any]) -> StreamingResponse:
                     "stage": "packaging_results",
                 },
             )
-            public_result = await asyncio.to_thread(_package_public_result, result)
+            public_result = await _finish_off_loop(_package_public_result, result)
             yield _sse_event(
                 "progress",
                 {
@@ -1339,7 +1353,7 @@ async def solve_stream(body: dict[str, Any]) -> StreamingResponse:
                     "stage": "saving_run",
                 },
             )
-            stored_result = await asyncio.to_thread(
+            stored_result = await _finish_off_loop(
                 _store_public_result,
                 workspace,
                 run_writer,
@@ -1390,14 +1404,17 @@ def request_active_solve_cancellation() -> bool:
         return False
 
     _ACTIVE_SOLVE["cancelled"] = True
-    run_writer = _ACTIVE_SOLVE.get("run_writer")
-    if isinstance(run_writer, SolveRunWriter):
-        run_writer.fail(
-            error_code="SOLVER_CANCELLED",
-            message="Solve cancelled by user.",
-            cancelled=True,
-        )
-    solver.cancel_active_solve()
+    try:
+        # Stop the solver first: a failed manifest write must not leave it running.
+        solver.cancel_active_solve()
+    finally:
+        run_writer = _ACTIVE_SOLVE.get("run_writer")
+        if isinstance(run_writer, SolveRunWriter):
+            run_writer.fail(
+                error_code="SOLVER_CANCELLED",
+                message="Solve cancelled by user.",
+                cancelled=True,
+            )
     return True
 
 
