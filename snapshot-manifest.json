@@ -205,8 +205,8 @@
     },
     {
       "path": "backend/gmsh_mesh_rotation.py",
-      "bytes": 26047,
-      "sha256": "aff821206ba637dfd4a6536880ba3d44442a89ebf0125cc14bde8b6c5db12f1c"
+      "bytes": 27596,
+      "sha256": "c872864083c037c6d56acb3fe630ba0540fb61b54bb37f10ff1c90fbe4839529"
     },
     {
       "path": "backend/gmsh_solver.py",
@@ -470,8 +470,8 @@
     },
     {
       "path": "backend/solve_estimate.py",
-      "sha256": "568229e08975b0295f223e5965cdfcf1f4aca3edb9c4ab35903a9943a131cd8e",
-      "bytes": 5124
+      "sha256": "2fa2afa838be11c87e3058af3e4302ac00180993c18ff3360ccae4add7cf55be",
+      "bytes": 6183
     },
     {
       "path": "backend/solve_workspace.py",
@@ -480,8 +480,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 139987,
-      "sha256": "bec3f503a6df0ecd3a0bf757cdfab97e715245aa24995e152f9fa5f9f828fd77"
+      "bytes": 142122,
+      "sha256": "696af12acd2ab91099cecd024486f8678277c1050d0e6fdde259a6c7b4ce8f8a"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -515,8 +515,8 @@
     },
     {
       "path": "backend/sweep_planning.py",
-      "bytes": 4514,
-      "sha256": "82c016bffb5b708b5c0bac58c504e09b18ed3b171677969f93f1f67cd5315cf9"
+      "bytes": 5684,
+      "sha256": "1a36902ae5e1eb460228200c5ea9f93e463cd56c14c7a21db2a154fe848d8d14"
     },
     {
       "path": "backend/topology_provenance.py",
@@ -3305,8 +3305,8 @@
     },
     {
       "path": "tests/fixtures/solve_time_calibration.json",
-      "sha256": "64436061e75fc07bd523b69851fb6532bbeb81e241c7a3904701cdc298d5ea7a",
-      "bytes": 9590
+      "sha256": "603f5d1a641b8d59277c9a604346cf692dcf29f12b9bb825c93a5a0d9d0cd1f2",
+      "bytes": 10098
     },
     {
       "path": "tests/fixtures/spm_4p12s_simple.json",
@@ -3460,8 +3460,8 @@
     },
     {
       "path": "tests/test_solve_estimate.py",
-      "sha256": "07809bd70efb63f9a66a80676a8fe6286988f55ede6034d63c5f000b964c21e2",
-      "bytes": 3786
+      "sha256": "40b6589ce1b3590b30ddcc404c9648c19113ceb24b08e30cd4a978defd0e8bf8",
+      "bytes": 4802
     },
     {
       "path": "tests/test_solve_pipeline_overhead.py",
@@ -3472,6 +3472,11 @@
       "path": "tests/test_solve_workspace.py",
       "bytes": 22220,
       "sha256": "db3ad88a797164357e4bcf96ca6b3e89438c2b00c1fe4c15263439dcc5752961"
+    },
+    {
+      "path": "tests/test_sweep_planning.py",
+      "sha256": "b1d691235c34345c1711393f3aa0107bc00a25b9987db4a7e597c24fcef80cd1",
+      "bytes": 5665
     },
     {
       "path": "tests/test_windows_field_frame_pool.py",
@@ -5382,6 +5387,42 @@
       "path": "tests/test_public_report_exports.py",
       "source_sha256": "888dcaa77e3e3a2244c073eb2a2fb1d6015eee11572738841399cf570b332c84",
       "reason": "Pin which plans use the stored step and sweep range in the PDF settings (#61 review)."
+    },
+    {
+      "base_commit": "474b51131466d9954949bf59f9af55bf662ecc76",
+      "path": "backend/gmsh_mesh_rotation.py",
+      "source_sha256": "aff821206ba637dfd4a6536880ba3d44442a89ebf0125cc14bde8b6c5db12f1c",
+      "reason": "#58: find the congruent angle a full cycle at the loaded step meshes for each loaded position, so Preview can keep those meshes."
+    },
+    {
+      "base_commit": "474b51131466d9954949bf59f9af55bf662ecc76",
+      "path": "backend/solve_estimate.py",
+      "source_sha256": "568229e08975b0295f223e5965cdfcf1f4aca3edb9c4ab35903a9943a131cd8e",
+      "reason": "#58: plan Preview's 48-angle Back-EMF grid, its PM-only frame solves and its mesh-only anchors."
+    },
+    {
+      "base_commit": "474b51131466d9954949bf59f9af55bf662ecc76",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "bec3f503a6df0ecd3a0bf757cdfab97e715245aa24995e152f9fa5f9f828fd77",
+      "reason": "#58: solve loaded positions off Preview's Back-EMF grid no-load for their PM-only frames, and keep their meshes with mesh-only anchors."
+    },
+    {
+      "base_commit": "474b51131466d9954949bf59f9af55bf662ecc76",
+      "path": "backend/sweep_planning.py",
+      "source_sha256": "82c016bffb5b708b5c0bac58c504e09b18ed3b171677969f93f1f67cd5315cf9",
+      "reason": "#58: give Preview's full-cycle Back-EMF grid the Standard 7.5 deg step (48 angles instead of 96)."
+    },
+    {
+      "base_commit": "474b51131466d9954949bf59f9af55bf662ecc76",
+      "path": "tests/fixtures/solve_time_calibration.json",
+      "source_sha256": "64436061e75fc07bd523b69851fb6532bbeb81e241c7a3904701cdc298d5ea7a",
+      "reason": "#58: mark the Preview calibration runs, measured with the 96-angle Back-EMF grid, as superseded."
+    },
+    {
+      "base_commit": "474b51131466d9954949bf59f9af55bf662ecc76",
+      "path": "tests/test_solve_estimate.py",
+      "source_sha256": "07809bd70efb63f9a66a80676a8fe6286988f55ede6034d63c5f000b964c21e2",
+      "reason": "#58: planned work for Preview's 48-angle grid; Preview stays estimated below Standard."
     }
   ]
 }

@@ -25,6 +25,7 @@ from backend.geometry_drawer import (
 from backend.gmsh_mesh_rotation import (
     copy_json_like,
     derive_congruent_solve_report,
+    full_cycle_congruent_bases,
     gmsh_mesh_reuse_enabled,
     gmsh_solve_reuse_enabled,
     rebake_solve_mesh_artifact_currents,
@@ -83,7 +84,7 @@ from backend.sweep_planning import (
 from backend.sweep_planning import (
     full_cycle_back_emf_angle_grid as shared_full_cycle_back_emf_angle_grid,
 )
-from backend.sweep_planning import is_uniform_full_cycle_grid
+from backend.sweep_planning import is_uniform_full_cycle_grid, no_load_field_frame_angles
 from backend.topology_provenance import build_mesh_signature_payload
 from backend.torque_metrics import torque_at_q_axis_nm as _torque_at_q_axis_nm
 
@@ -975,7 +976,18 @@ def _solve_with_per_angle_producer_meshes(
     include_no_load_field_frames = bool(
         getattr(solve_params, "stream_noload_field_lines", False)
     )
-    no_load_angle_keys = {_per_angle_grid_key(angle) for angle in no_load_angles_elec_deg}
+    # Every no-load solve: the Back-EMF grid, plus loaded positions it misses
+    # (Preview, #58), which are solved only for their PM-only playback frames.
+    # Only the grid feeds the Back-EMF waveform, THD and mesh evidence.
+    no_load_solve_angles = [
+        *no_load_angles_elec_deg,
+        *(
+            no_load_field_frame_angles(angles_elec_deg, no_load_angles_elec_deg)
+            if (opts.back_emf or opts.thd_analysis) and include_no_load_field_frames
+            else []
+        ),
+    ]
+    no_load_angle_keys = {_per_angle_grid_key(angle) for angle in no_load_solve_angles}
     loaded_angle_keys = {_per_angle_grid_key(angle) for angle in angles_elec_deg}
     no_load_only_angles = [
         angle for angle in no_load_angles_elec_deg
@@ -1031,7 +1043,7 @@ def _solve_with_per_angle_producer_meshes(
     # outside the loaded grid. On a full-cycle sweep the no-load grid equals
     # the loaded grid, so the old accounting (len(no_load_only_angles) == 0)
     # froze the UI at N/N+1 for the entire back-EMF phase.
-    progress_no_load_count = len(no_load_angles_elec_deg) if run_no_load else 0
+    progress_no_load_count = len(no_load_solve_angles) if run_no_load else 0
     total_progress = len(angles_elec_deg) + progress_no_load_count + 1
     no_load_config = (
         _config_with_phase_current(excitation_config, 0.0)
@@ -1076,7 +1088,7 @@ def _solve_with_per_angle_producer_meshes(
                 "run_no_load": False,
                 "no_load_progress": False,
             }
-        for angle_elec_deg in no_load_angles_elec_deg:
+        for angle_elec_deg in no_load_solve_angles:
             angle_key = _per_angle_grid_key(angle_elec_deg)
             job = mesh_jobs_by_key.setdefault(
                 angle_key,
@@ -1096,6 +1108,39 @@ def _solve_with_per_angle_producer_meshes(
             # back-EMF phase instead of stalling on full-cycle grids.
             job["no_load_progress"] = True
 
+        # Preview samples Back-EMF more coarsely than its loaded window (#58).
+        # Slot-pitch reuse used to mesh each loaded position at a congruent
+        # angle of the full cycle at the loaded step and rotate that mesh to
+        # it. A mesh-only job at that angle keeps doing so where the coarser
+        # grid no longer has it, so loaded results do not move by mesh noise.
+        if (
+            producer.source == "gmsh"
+            and gmsh_mesh_reuse_enabled()
+            and (opts.back_emf or opts.thd_analysis)
+            and len(angles_elec_deg) > 1
+            and no_load_field_frame_angles(angles_elec_deg, no_load_angles_elec_deg)
+        ):
+            for base_angle in full_cycle_congruent_bases(
+                angles_elec_deg,
+                step_deg=float(angles_elec_deg[1]) - float(angles_elec_deg[0]),
+                slot_count=config.stator.slot_count,
+                pole_pairs=pole_pairs,
+                rotor_angle_mech_deg=solver_rotor_angle_mech_deg,
+            ):
+                angle_key = _per_angle_grid_key(base_angle)
+                mesh_jobs_by_key.setdefault(
+                    angle_key,
+                    {
+                        "idx": None,
+                        "angle_key": angle_key,
+                        "angle_elec_deg": base_angle,
+                        "rotor_angle_mech_deg": solver_rotor_angle_mech_deg(base_angle),
+                        "run_loaded": False,
+                        "run_no_load": False,
+                        "no_load_progress": False,
+                    },
+                )
+
         mesh_jobs = [mesh_jobs_by_key[key] for key in sorted(mesh_jobs_by_key)]
         producer_workers = _gmsh_pipeline_worker_count(
             "COILEM_MAGNETO2D_GMSH_PRODUCER_WORKERS",
@@ -1104,7 +1149,7 @@ def _solve_with_per_angle_producer_meshes(
         )
         solve_workers = _gmsh_pipeline_worker_count(
             "COILEM_MAGNETO2D_GMSH_SOLVE_WORKERS",
-            len(angles_elec_deg) + len(no_load_angles_elec_deg),
+            len(angles_elec_deg) + len(no_load_solve_angles),
         )
         subprocess_workers = _per_angle_subprocess_workers(solve_workers)
         loaded_solve_config = _config_with_magneto2d_workers(
@@ -1522,7 +1567,7 @@ def _solve_with_per_angle_producer_meshes(
                         {
                             "solve_kind": no_load_solve_kind,
                             "completed_positions": noload_arrived,
-                            "total_positions": len(no_load_angles_elec_deg),
+                            "total_positions": len(no_load_solve_angles),
                         },
                     )
 

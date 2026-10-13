@@ -6,6 +6,11 @@ import math
 
 from backend.models import MotorConfig, SolveOptionsConfig
 
+# Preview solves its loaded window at 3.75 deg, but its full-cycle Back-EMF grid
+# uses the Standard step. 48 samples meet the THD minimum, and at 3.75 deg the
+# grid needed 96 meshes, so Preview took longer than Standard on IPM 14p (#58).
+PREVIEW_BACK_EMF_STEP_DEG = 7.5
+
 
 def loaded_sweep_plan(config: MotorConfig) -> tuple[int, float]:
     """Return ``(sample_count, electrical_span_deg)`` for a loaded sweep.
@@ -82,6 +87,8 @@ def full_cycle_back_emf_angle_grid(
         ]
         differences = [value for value in differences if math.isfinite(value) and value > 1.0e-9]
         step_deg = min(differences) if differences else 7.5
+    if solve_params is not None and solve_params.solve_quality == "quick":
+        step_deg = max(step_deg, PREVIEW_BACK_EMF_STEP_DEG)
     count = max(3, int(round(360.0 / step_deg)))
     options = config.solve_options or SolveOptionsConfig()
     if options.thd_analysis:
@@ -92,6 +99,26 @@ def full_cycle_back_emf_angle_grid(
         count = max(count, 48)
     step_deg = 360.0 / count
     return [index * step_deg for index in range(count)]
+
+
+def no_load_field_frame_angles(
+    loaded_angles_elec_deg: list[float],
+    no_load_angles_elec_deg: list[float],
+) -> list[float]:
+    """Loaded positions the Back-EMF grid misses, solved no-load for PM-only frames.
+
+    PM-only field playback needs a no-load solve at every loaded position.
+    Preview's loaded window is finer than its Back-EMF grid, so the positions
+    between grid points are solved no-load too. They are meshed for the loaded
+    solve anyway and never join the Back-EMF waveform.
+    """
+
+    grid_keys = {int(round(float(angle) * 1_000_000.0)) for angle in no_load_angles_elec_deg}
+    return [
+        float(angle)
+        for angle in loaded_angles_elec_deg
+        if int(round(float(angle) * 1_000_000.0)) not in grid_keys
+    ]
 
 
 def cogging_angle_grid(config: MotorConfig, *, step_deg: float = 1.0) -> list[float]:

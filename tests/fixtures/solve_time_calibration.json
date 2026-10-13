@@ -311,28 +311,32 @@
    "plan": "quick",
    "mesh_elements": 13948,
    "measured_s": 41.35,
-   "previous_estimate_s": 71.4
+   "previous_estimate_s": 71.4,
+   "superseded_by": "#58: Preview's Back-EMF grid now has 48 angles, not 96, so it plans fewer meshes than this run measured"
   },
   {
    "design": "ipm_10p_v",
    "plan": "quick",
    "mesh_elements": 15860,
    "measured_s": 50.05,
-   "previous_estimate_s": 71.4
+   "previous_estimate_s": 71.4,
+   "superseded_by": "#58: Preview's Back-EMF grid now has 48 angles, not 96, so it plans fewer meshes than this run measured"
   },
   {
    "design": "ipm_14p_flat",
    "plan": "quick",
    "mesh_elements": 18654,
    "measured_s": 119.15,
-   "previous_estimate_s": 54.6
+   "previous_estimate_s": 54.6,
+   "superseded_by": "#58: Preview's Back-EMF grid now has 48 angles, not 96, so it plans fewer meshes than this run measured"
   },
   {
    "design": "spm_24p",
    "plan": "quick",
    "mesh_elements": 23896,
    "measured_s": 91.9,
-   "previous_estimate_s": 37.8
+   "previous_estimate_s": 37.8,
+   "superseded_by": "#58: Preview's Back-EMF grid now has 48 angles, not 96, so it plans fewer meshes than this run measured"
   },
   {
    "design": "spm_8p12s",
