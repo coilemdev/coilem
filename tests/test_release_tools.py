@@ -367,13 +367,35 @@ def test_rehearsal_versions_and_release_tags() -> None:
         version.check_tag(f"v{__version__}", f"{__version__}.dev1")
 
 
-def test_release_workflow_uploads_only_to_testpypi_after_acceptance() -> None:
+def _job(workflow: str, name: str) -> str:
+    body = workflow.split(f"\n  {name}:\n", 1)[1]
+    following = [line for line in body.splitlines() if line.startswith("  ") and not line.startswith("   ") and line.rstrip().endswith(":")]
+    return body.split(f"\n{following[0]}\n", 1)[0] if following else body
+
+
+def test_release_workflow_publishes_only_after_acceptance() -> None:
     workflow = (REPO_ROOT / ".github/workflows/release-wheels.yml").read_text()
     assert "upload.pypi.org" not in workflow
-    assert workflow.count("pypa/gh-action-pypi-publish@") == 1
-    publish = workflow.split("\n  publish-testpypi:\n", 1)[1].split("\n  testpypi-acceptance:\n", 1)[0]
-    assert "needs: [policy, acceptance]" in publish
-    assert "if: inputs.publish == 'testpypi'" in publish
-    assert "repository-url: https://test.pypi.org/legacy/" in publish
-    assert "id-token: write" in publish and "name: testpypi" in publish
-    assert "--index-url https://test.pypi.org/simple/ --expect-sha256" in workflow
+    assert workflow.count("pypa/gh-action-pypi-publish@") == 2
+    assert workflow.count("id-token: write") == 2
+
+    testpypi = _job(workflow, "publish-testpypi")
+    assert "needs: [policy, acceptance]" in testpypi
+    assert "if: inputs.publish == 'testpypi'" in testpypi
+    assert "repository-url: https://test.pypi.org/legacy/" in testpypi
+    assert "id-token: write" in testpypi and "name: testpypi" in testpypi
+    assert "--index-url https://test.pypi.org/simple/ --expect-sha256" in _job(workflow, "testpypi-acceptance")
+
+    # PyPI: only a pushed tag (checked against the version by the policy job),
+    # only after acceptance, and only through the reviewed `pypi` environment.
+    pypi = _job(workflow, "publish-pypi")
+    assert "needs: [policy, acceptance]" in pypi
+    assert "if: github.event_name == 'push' && github.ref_type == 'tag'" in pypi
+    assert "name: pypi" in pypi and "id-token: write" in pypi
+    assert "repository-url" not in pypi
+    assert 'args=(--tag "$GITHUB_REF_NAME")' in _job(workflow, "policy")
+    assert "--index-url https://pypi.org/simple/ --expect-sha256" in _job(workflow, "pypi-acceptance")
+    release = _job(workflow, "github-release")
+    assert "needs: [policy, pypi-acceptance]" in release
+    assert "contents: write" in release and "--draft --verify-tag" in release
+    assert workflow.count("contents: write") == 1

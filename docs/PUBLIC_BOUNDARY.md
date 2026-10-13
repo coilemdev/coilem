@@ -111,7 +111,7 @@ The release request policy accepts Magneto2D with native Gmsh meshes. With
 `COILEM_ENABLE_ELMER` unset, it skips Elmer discovery, hides Elmer in the UI,
 and rejects direct Elmer requests. Setting `COILEM_ENABLE_ELMER=1` before
 startup enables development/testing discovery of a separately installed Elmer
-26.2 runtime; it does not expand the 0.2.1 release claim. The policy never
+26.2 runtime; it does not expand the 0.3.0 release claim. The policy never
 substitutes solvers automatically. It rejects FEMM selection, non-native mesh
 sources, thermal requests, and internal debug diagnostics. The service binds to
 `127.0.0.1`; the TypeScript client accepts only loopback API hosts. Completed

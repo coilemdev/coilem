@@ -25,12 +25,60 @@ tested combinations against matched FEMM references:
 - flat-buried IPM with concentrated windings, under sinusoidal current.
 
 V-shape IPM and untested combinations, such as six-step with distributed
-windings, are experimental. There is no installer or supported
-operating-system matrix yet. See [Validation](docs/VALIDATION.md) for the
+windings, are experimental. See [Validation](docs/VALIDATION.md) for the
 qualified scope and its limits.
+
+## Install
+
+coilEM is published on PyPI as `coilem`. Install it with
+[uv](https://docs.astral.sh/uv/), then start it:
+
+```sh
+uv tool install coilem
+coilem
+```
+
+`coilem` starts the app on your computer and opens
+[http://127.0.0.1:2645](http://127.0.0.1:2645) in your browser. Press Ctrl+C in
+its terminal to stop it. To try coilEM once without installing it, run
+`uvx coilem`. uv downloads a compatible Python (3.11 to 3.14) if you do not
+have one, and nothing else is needed: each wheel includes the Magneto2D solver
+and the built UI.
+
+If you do not have uv yet, install it first, then open a new terminal:
+
+```sh
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+On Windows PowerShell:
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+| Platform | Requirement |
+| --- | --- |
+| macOS on Apple silicon | macOS 12 or newer |
+| macOS on Intel | macOS 10.15 or newer |
+| Linux x86_64 | glibc 2.27 or newer (for example Ubuntu 18.04, Debian 10, RHEL 8) and the GLU library: `sudo apt-get install libglu1-mesa` on Debian and Ubuntu |
+| Windows x64 | 64-bit Windows |
+
+Linux and Windows on ARM are not supported yet. CI tests the installed wheel
+on macOS 15 (Apple silicon and Intel), Ubuntu 22.04 and Windows Server 2022
+with Python 3.11 to 3.14.
+
+Upgrade with `uv tool upgrade coilem` and remove it with
+`uv tool uninstall coilem`. Saved runs stay in your
+[user-data folder](docs/local_solve_workspace.md) after an uninstall. If
+`coilem` is not found after installing, run `uv tool update-shell` and open a
+new terminal. `pipx install coilem` also works when Python 3.11 or newer is
+installed. [The `coilem` launcher](docs/RUNTIME_SETTINGS.md#the-coilem-launcher)
+describes ports and options.
 
 ## Start from source
 
+To work on coilEM itself, build it from a checkout instead.
 You need Python 3.11 to 3.14, Node.js 24 with npm, and stable Rust with Cargo
 (the locked `faer` dependency requires Rust 1.84 or newer). Use a fresh checkout and virtual environment. On Ubuntu/Debian, install the Gmsh system
 library first: `sudo apt-get install libglu1-mesa`.
@@ -103,7 +151,7 @@ Six-step excitation models ideal commanded currents, without PWM, switching,
 ESC dynamics or thermal behavior. See [Release notes](RELEASE_NOTES.md) and
 [Materials](MATERIALS.md).
 
-The application is **coilEM 0.2.1** and the solver is **Magneto2D 0.3.3**.
+The application is **coilEM 0.3.0** and the solver is **Magneto2D 0.3.3**.
 There are no accounts, hosted services or telemetry in this distribution.
 Elmer is an optional development-only lane; see [its setup](docs/ELMER.md).
 

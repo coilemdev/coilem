@@ -1,33 +1,69 @@
-# coilEM 0.2.1 Developer Preview
+# coilEM 0.3.0 Developer Preview
 
-coilEM 0.2.1 is a source-built developer preview of the local motor-design
-application. It bundles Magneto2D 0.3.3 as its field solver; the application
-and solver use separate version numbers.
+coilEM 0.3.0 is the first coilEM release you can install with one command. It
+is a developer preview of the local motor-design application and bundles
+Magneto2D 0.3.3 as its field solver; the application and solver use separate
+version numbers.
 
-This patch identifies the merged solve-performance improvements with new
-application and native solver versions. Current package, design-file and
-result metadata use the new versions. Saved results and archived benchmark
-reports retain their original measured versions; input schemas, material
-contracts and numerical gates are unchanged.
+## Install
 
-## Packaged launcher (unreleased)
+```sh
+uv tool install coilem
+coilem
+```
 
-The source-built `coilem` launcher serves the UI and API together at
-`http://127.0.0.1:2645` by default. Halbach autosaves and tutorial progress
-saved in the browser under the development origin on port 5173 do not appear
-at the packaged origin. Browser-saved state also stays with its original port
-when the launcher falls back to another port. Saved motor runs remain in the
-user-data folder.
+`uvx coilem` runs it once without installing. The [README](README.md#install)
+lists the supported platforms and how to install uv.
 
-## Design file loading (unreleased)
+- Each platform's wheel carries the Magneto2D executable and the built UI, so
+  installing needs neither Rust nor Node.js. Wheels cover macOS 12 or newer on
+  Apple silicon, macOS 10.15 or newer on Intel, Linux x86_64 with glibc 2.27
+  or newer, and Windows x64, for Python 3.11 to 3.14.
+- The `coilem` launcher serves the UI and API together at
+  `http://127.0.0.1:2645` by default. Halbach autosaves and tutorial progress
+  saved in the browser under the development origin on port 5173 do not
+  appear at the packaged origin. Browser-saved state also stays with its
+  original port when the launcher falls back to another port. Saved motor
+  runs remain in the user-data folder.
+- Each wheel records its build identity: the application and Magneto2D
+  versions, the commit, and the binary and UI hashes. `/health`, saved-run
+  provenance and the PDF report show it.
 
-Bundled examples and design files that leave out the tooth-shoe settings now
-load without tooth shoes, as the backend reads them. They used to inherit the
-starter motor's shoes: the SPM 24p example then failed geometry validation,
-and the two IPM examples solved with narrower slot mouths than their files
-define. Saved runs keep the geometry they were solved with.
+## Changes since the 0.2.0 source preview
 
-## Faster solves (unreleased)
+- coilEM installs from PyPI, as above. Building from source is unchanged for
+  contributors.
+- The app shows each design's benchmark qualification status, with its
+  reason; see Qualification below.
+- An invalid design reports the specific reason and the field it concerns,
+  instead of "Motor configuration failed schema validation."
+- Bundled examples and design files that leave out the tooth-shoe settings now
+  load without tooth shoes, as the backend reads them. They used to inherit
+  the starter motor's shoes: the SPM 24p example then failed geometry
+  validation, and the two IPM examples solved with narrower slot mouths than
+  their files define. Saved runs keep the geometry they were solved with.
+- The Solve page estimates the whole run as a range, such as "about 2–4 min",
+  from the prepared mesh and the meshes and positions the solver will run. It
+  includes meshing and saving, and replaces a flat cost per rotor position
+  that missed IPM and larger runs by up to 2.4 times.
+- Clicking **Examples** in the design menu keeps its submenu open.
+- Cached meshes are now keyed by the stator tooth-shoe settings. Before, a
+  design that differed from the previous one only in its tooth shoe could
+  reuse that design's cached meshes within one session and solve on the wrong
+  geometry. Mesh provenance now records the tooth-shoe settings (mesh
+  signature v4), so mesh-evidence hashes differ from runs saved before this
+  change; numerical results do not.
+- Solves are faster on every platform, and Windows now meshes, extracts
+  field frames and renders playback in parallel worker processes. The
+  sections below cover these, the wall-clock solver time, the field position
+  slider, cancelling a stator-only field and faster mesh views.
+- Fixes from testing this release: Preview is faster than Standard on every
+  example again, the field Position slider follows a drag and stays inside a
+  Preview run's window, plots show their values on click, the saved-run PDF
+  lists only the design's own settings, and Ctrl+C stops a running solve
+  promptly. The sections below describe them.
+
+## Faster solves
 
 Magneto2D spent about 2 s per rotor position finding the airgap radii it
 samples torque and fields on. It now indexes the airgap triangles, so a
@@ -61,13 +97,22 @@ Frames and steel RMS contributions retain their angle order. Cancelling a solve
 skips queued meshes and frames, lets running work finish, and joins workers
 before releasing the solve lane.
 
+Preview used to sample its full-cycle Back-EMF at its 3.75° loaded step: 96
+no-load positions and up to 96 meshes, twice Standard's 48, so the IPM 14p
+example took longer in Preview than in Standard. Preview now samples Back-EMF
+on Standard's 48-position grid and keeps its 3.75° loaded window. On an
+Apple-silicon Mac the IPM 14p Preview took 43.5 s instead of 71.5 s (Standard
+79.5 s), and every example is faster in Preview than in Standard. Loaded
+torque, ripple and field playback are unchanged; Back-EMF values move by about
+0.2% with the coarser sampling.
+
 Installed applications can disable mesh, field-frame and playback pools with their
 individual `COILEM_MAGNETO2D_ALLOW_*_PROCESS_POOL` switches, or disable all Python
 pools with `COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL=0` before restarting. These
 disable-only compatibility controls keep numerical settings isolated and are
 not forwarded to Magneto2D.
 
-## Solver time (unreleased)
+## Solver time
 
 The Solver time on the Results page and in the PDF and CSV reports is now the
 wall-clock time of meshing, solving and building the result. It used to add up
@@ -75,7 +120,7 @@ every rotor position's solver time, although positions run in parallel, so a
 4-minute IPM 14p run reported over 20 minutes. Saved results keep that sum as
 solver CPU time. Runs saved before this change still show the summed value.
 
-## Field solution position slider (unreleased)
+## Field solution position slider
 
 Moving the Position slider on a solved field no longer freezes the page for
 seconds at each position. The slider shows each position's playback image
@@ -88,14 +133,30 @@ Playback no longer stalls at higher speeds. Above about 30 new frames per
 second, playback shows every second or third solved position, and a loop of
 up to 16 frames stays in memory after its first pass.
 
-## Cancel a stator-only field (unreleased)
+On a Preview run the slider now covers just the solved 45° or 60° window, and
+playback loops within it. Before, the slider ran over a full 0–360° cycle, so
+moving it jumped the motor back to the start after a few positions. Dragging
+at normal speed no longer stutters: while you drag, the viewer loads the
+newest position first, shows each frame as it arrives, preloads neighbours in
+the drag direction, and skips the mesh layer unless it is shown.
+
+## Read values from plots
+
+Click or tap a point on the torque, Back-EMF and six-step plots on the
+Results and Compare pages to read its angle and values. The arrow keys step
+between solved positions, Home and End jump to the ends, and Escape or a click
+outside the plot clears the reading. Compare also shows Run B − Run A at that
+angle. Angle axes are labelled every 45° over a full cycle, or every 7.5° over
+a Preview window, in the app and in the PDF.
+
+## Cancel a stator-only field
 
 A running **Stator only** field can now be canceled from the run button,
 which reads **Cancel stator field** while it runs, or from the field view's
 progress overlay. The resultant field stays available. Before, the run held
 the solver until it finished, blocking any other solve.
 
-## Mesh view zoom and pan (unreleased)
+## Mesh view zoom and pan
 
 Zooming or panning the Mesh tab now redraws in about 45 ms instead of about a
 second for the 29k-element example mesh. The Halbach mesh views draw their
@@ -162,6 +223,23 @@ report downloads. See [Halbach arrays](docs/HALBACH_ARRAY.md).
 - Newly generated saved-run PDFs include the motor's 2D geometry and a stored
   solved flux-density heatmap. Existing immutable reports retain their
   original content.
+- The saved-run PDF's settings page lists the resolved settings that apply to
+  the design: its stator, its rotor type, and the solve plan, including a
+  Preview run's stored sweep range. It used to print every configuration
+  field over several pages, including settings for other rotor types. Solver
+  and build provenance stay together on the first page.
+- Pressing Ctrl+C (Ctrl+Break on Windows) while a solve runs stops coilEM
+  within seconds. It cancels the solve, records the run as cancelled, ends
+  open solve streams and stops the solver's worker processes. Before, it could
+  reach the 20-second shutdown deadline and leave the launcher's record
+  behind. If a shutdown still takes longer than 20 seconds, the launcher
+  prints where it was waiting before it exits, and removes its record.
+- The live solve progress bar only moves forward. It used to step back when
+  meshing gave way to solving, and again while finalizing.
+- Solve-page updates, such as Gmsh mesh preparation, show in a thin banner
+  under the top bar instead of covering the field and results tabs.
+- The design menu opens above the motor view's tabs, and the Results
+  qualification note stays within the report column.
 - Narrow windows retain access to solve progress and completed reports, with
   a visible **View Results** action.
 - A failed geometry preview recovers after the local backend reconnects,
@@ -170,10 +248,6 @@ report downloads. See [Halbach arrays](docs/HALBACH_ARRAY.md).
   elapsed time through playback preparation and saving. Total elapsed is
   measured during the current session and is absent from older or reopened
   results.
-- The Solve page estimates the whole run as a range, such as "about 2–4 min",
-  from the prepared mesh and the meshes and positions the solver will run. It
-  includes meshing and saving, and replaces a flat cost per rotor position
-  that missed IPM and larger runs by up to 2.4 times.
 - Reports identify the requested torque method and the method actually used;
   missing provenance is shown as not recorded.
 - The public motor permanent-magnet catalog agrees with the bundled native
@@ -183,11 +257,17 @@ report downloads. See [Halbach arrays](docs/HALBACH_ARRAY.md).
 
 ## Known limitations
 
-- This is a source build. There is no installer, code signing, notarization,
-  auto-update mechanism, or bundled Python runtime.
-- No broad Windows, macOS, or Linux support matrix is claimed. The exact system
-  used for the release-candidate walkthrough must be recorded with its evidence;
-  reports from other systems are welcome.
+- coilEM installs as a Python package from PyPI. There is no desktop
+  installer, code signing, notarization or automatic update; upgrade with
+  `uv tool upgrade coilem`.
+- CI tests the installed wheels on macOS 15 (Apple silicon and Intel), Ubuntu
+  22.04 and Windows Server 2022 with Python 3.11 to 3.14. Older systems down to
+  the stated minimums should work but are not tested; reports from other
+  systems are welcome. Linux and Windows on ARM are not supported, because
+  Gmsh publishes no wheels for them.
+- The run-time estimate comes from runs timed on an Apple-silicon Mac before
+  the faster solves, so it tends to overstate run times there. It has not been
+  calibrated on Windows or Linux.
 - Qualification is agreement with FEMM, a reference 2D finite-element solver,
   on the measured fixtures. It is not a hardware measurement or an engineering
   certification, and it does not cover cogging, THD, airgap harmonics, losses

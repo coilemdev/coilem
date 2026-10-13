@@ -1,7 +1,7 @@
 # Magneto2D
 
 Magneto2D 0.3.3 is coilEM's native Rust 2D magnetostatic finite-element solver
-and postprocessor. It is bundled by the coilEM 0.2.1 application; the solver
+and postprocessor. It is bundled by the coilEM 0.3.0 application; the solver
 and application have separate version numbers. The public application uses
 Python and Gmsh to build tagged solve meshes, then invokes Magneto2D for field
 solving and electromagnetic postprocessing.
@@ -37,7 +37,7 @@ generic field interface can represent. The backend is the authoritative motor
 support gate: a motor configuration can satisfy the JSON schema and still be
 rejected when its topology, winding, mesh source, or material lies outside
 this boundary. A dedicated cogging-torque results view is not included in the
-0.2.1 preview. Field mode has its own versioned, solve-ready contract and does
+0.3.0 preview. Field mode has its own versioned, solve-ready contract and does
 not imply public support for a new motor topology.
 See [Validation](VALIDATION.md#qualification-status) for the qualified scope and its limits.
 The public API rejects requests with `solve_options.cogging_torque = true`.
