@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import errno
+import faulthandler
 import http.client
 import json
 import os
@@ -301,6 +302,11 @@ def _force_exit(code: int) -> None:
 def _exit_after_deadline() -> None:
     time.sleep(SHUTDOWN_DEADLINE_S)
     print(f"coilem: shutdown took longer than {SHUTDOWN_DEADLINE_S:g} s; exiting.", file=sys.stderr, flush=True)
+    try:
+        # Where shutdown is still waiting, for a bug report (#55).
+        faulthandler.dump_traceback(file=sys.stderr, all_threads=True)
+    except Exception:  # noqa: BLE001 - no usable stderr; exit regardless
+        pass
     _force_exit(1)
 
 

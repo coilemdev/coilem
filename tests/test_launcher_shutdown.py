@@ -169,6 +169,26 @@ def test_ctrl_c_during_a_streamed_solve_stops_within_the_graceful_window(monkeyp
         serving.join(timeout=15)
 
 
+def test_the_deadline_shows_where_shutdown_waits_then_exits(monkeypatch, capfd):
+    exits: list[int] = []
+    monkeypatch.setattr(launcher.time, "sleep", lambda seconds: None)
+    monkeypatch.setattr(launcher, "_force_exit", exits.append)
+
+    launcher._exit_after_deadline()
+
+    assert exits == [1]
+    stderr = capfd.readouterr().err
+    assert "shutdown took longer than 20 s" in stderr
+    assert "test_the_deadline_shows_where_shutdown_waits_then_exits" in stderr
+
+    def no_stderr(**kwargs):
+        raise ValueError("sys.stderr has no file descriptor")
+
+    monkeypatch.setattr(launcher.faulthandler, "dump_traceback", no_stderr)
+    launcher._exit_after_deadline()
+    assert exits == [1, 1]
+
+
 def test_forced_exit_removes_the_launcher_record(monkeypatch, tmp_path):
     exits: list[int] = []
 

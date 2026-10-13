@@ -280,8 +280,8 @@
     },
     {
       "path": "backend/launcher.py",
-      "sha256": "243e33bcc18299f82b6a03a29656c2c63909c363ab0f04dff9cc9df10e3131db",
-      "bytes": 17379
+      "sha256": "05ce9ff0df2befb464396f1bcff23717cb4fc3abb4998a20fb5a7bc0308bafa3",
+      "bytes": 17633
     },
     {
       "path": "backend/local_file_safety.py",
@@ -3355,8 +3355,8 @@
     },
     {
       "path": "tests/test_launcher_shutdown.py",
-      "sha256": "3b4fc8750caf9c64429c935932877ba8192073b60f854e98a1df3dd9d0ce6883",
-      "bytes": 22480
+      "sha256": "666ce998ac08aa10b2000f527c764dddc8a3721236b0467559861e30934077a0",
+      "bytes": 23185
     },
     {
       "path": "tests/test_linear_halbach_analytical.py",
@@ -5346,6 +5346,18 @@
       "path": "tests/test_launcher_shutdown.py",
       "source_sha256": "dcf38c0c11e8c73e50bf2e0c36d209fdaecaff7010d72b901e61b3eee1801e66",
       "reason": "#55 review: cover a pool registered before its workers start and a launcher interrupted while playback still prepares its input."
+    },
+    {
+      "base_commit": "2a234de09de10b020954150d3ebb31864905fd96",
+      "path": "backend/launcher.py",
+      "source_sha256": "243e33bcc18299f82b6a03a29656c2c63909c363ab0f04dff9cc9df10e3131db",
+      "reason": "#55: when the shutdown deadline fires, print every thread's stack before the forced exit, so a stalled shutdown shows where it waits."
+    },
+    {
+      "base_commit": "2a234de09de10b020954150d3ebb31864905fd96",
+      "path": "tests/test_launcher_shutdown.py",
+      "source_sha256": "3b4fc8750caf9c64429c935932877ba8192073b60f854e98a1df3dd9d0ce6883",
+      "reason": "#55: the deadline prints the thread stacks and still exits when stderr cannot take them."
     }
   ]
 }
