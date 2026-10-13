@@ -390,7 +390,12 @@ assert.match(waveformSource, /visible && plottedSeries\.length === 1/);
 assert.match(waveformSource, /samplingLabel \|\|/);
 assert.match(waveformSource, /periodicAxisEnd/);
 assert.match(waveformSource, /inferredEnd - 360/);
-assert.match(waveformSource, /axisMaxX\.toFixed\(0\)/);
+// The angle axis is labelled at regular steps, 45° over a full cycle.
+assert.match(waveformSource, /const angleTicks = electricalAngleTicks\(minX, axisMaxX\)/);
+assert.match(waveformSource, /angleTicks\.map\(\(tick\) => \(\s*<text key=\{tick\} x=\{x\(tick\)\}[^>]*>\{formatElectricalAngleTick\(tick\)\}/);
+assert.match(waveformSource, /angleTicks\.map\(\(tick\) => \(\s*<line key=\{tick\} x1=\{x\(tick\)\}[^>]*className="chart-grid"/);
+assert.match(bldcChartSource, /electricalAngleTicks\(0, 360\)\.map\(\(tick\) => \(\{ tick, x: margin\.left \+ tick \/ 360 \* plotWidth \}\)\)/,
+  'six-step ticks use their own scale: x() wraps 360° back to the left edge');
 assert.match(waveformSource, /strokeDasharray=\{item\.dashArray\}/);
 assert.match(waveformSource, /const renderedSeries = \[\.\.\.plottedSeries\]\.sort/);
 assert.match(waveformSource, /renderedSeries\.map/);

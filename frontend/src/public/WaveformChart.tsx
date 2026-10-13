@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { WaveformReadoutBar, WaveformReadoutMarker, useWaveformReadout } from './WaveformReadout';
+import { electricalAngleTicks, formatElectricalAngleTick } from './chartAxis';
 import {
   waveformReadoutAngles,
   waveformReadoutDifferenceValue,
@@ -102,6 +103,7 @@ export function WaveformChart({ angles, values, series, label, unit, samplingLab
     .map((value, index) => `${index === 0 ? 'M' : 'L'} ${x(seriesAngles[index]).toFixed(2)} ${y(value).toFixed(2)}`)
     .join(' ');
   const ticks = [0, 0.25, 0.5, 0.75, 1];
+  const angleTicks = electricalAngleTicks(minX, axisMaxX);
   const readoutValues = readout.shownAngle === null ? [] : waveformReadoutValues(readoutSeries, readout.shownAngle);
   const readoutDifferenceValue = readoutDifference ? waveformReadoutDifferenceValue(readoutValues, readoutDifference) : null;
   const fillId = `wave-fill-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
@@ -184,6 +186,9 @@ export function WaveformChart({ angles, values, series, label, unit, samplingLab
               </g>
             );
           })}
+          {angleTicks.map((tick) => (
+            <line key={tick} x1={x(tick)} x2={x(tick)} y1={margin.top} y2={height - margin.bottom} className="chart-grid" />
+          ))}
           {plottedSeries.length === 1 && (
             <path
               d={`${pathFor(plottedSeries[0].angles, plottedSeries[0].values)} L ${x(plottedSeries[0].angles[plottedSeries[0].angles.length - 1]).toFixed(2)} ${height - margin.bottom} L ${x(plottedSeries[0].angles[0]).toFixed(2)} ${height - margin.bottom} Z`}
@@ -193,8 +198,10 @@ export function WaveformChart({ angles, values, series, label, unit, samplingLab
           {renderedSeries.map((item, index) => (
             <path key={item.id || `${item.label}-${index}`} d={pathFor(item.angles, item.values)} fill="none" stroke={item.color} strokeWidth="2" strokeDasharray={item.dashArray} strokeLinecap="round" strokeLinejoin="round" />
           ))}
-          <text x={margin.left} y={height - 12} className="chart-label">{minX.toFixed(0)}°</text>
-          <text x={width - margin.right} y={height - 12} textAnchor="end" className="chart-label">{axisMaxX.toFixed(0)}° electrical</text>
+          {angleTicks.map((tick) => (
+            <text key={tick} x={x(tick)} y={height - margin.bottom + 14} textAnchor="middle" className="chart-label">{formatElectricalAngleTick(tick)}</text>
+          ))}
+          <text x={width - margin.right} y={height - 4} textAnchor="end" className="chart-label">electrical angle</text>
           <text x={margin.left} y="12" className="chart-label chart-unit-label">{unit}</text>
           {readout.shownAngle !== null && (
             <WaveformReadoutMarker

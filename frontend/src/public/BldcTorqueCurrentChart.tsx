@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { currentStepSegments } from './bldcChartPaths';
 import { WaveformReadoutBar, WaveformReadoutMarker, useWaveformReadout } from './WaveformReadout';
+import { electricalAngleTicks, formatElectricalAngleTick } from './chartAxis';
 import { waveformReadoutAngles, waveformReadoutValues, type WaveformReadoutSeries } from './chartReadout';
 
 interface BldcTorqueCurrentChartProps {
@@ -102,6 +103,8 @@ export function BldcTorqueCurrentChart({
   const segments = sectorSegments(commutationAdvanceDeg);
   const torqueTicks = [0, 0.5, 1];
   const currentTicks = [-maxCurrent, 0, maxCurrent];
+  // Not x(): wrap360 would put 360° back at the left edge.
+  const angleTicks = electricalAngleTicks(0, 360).map((tick) => ({ tick, x: margin.left + tick / 360 * plotWidth }));
   const readoutValues = readout.shownAngle === null ? [] : waveformReadoutValues(readoutSeries, readout.shownAngle);
   const visibleSeriesLabel = showTorque && showPhaseCurrents
     ? 'Torque and commanded phase currents'
@@ -175,12 +178,13 @@ export function BldcTorqueCurrentChart({
             return <g key={tick}><line x1={margin.left} x2={width - margin.right} y1={y} y2={y} className="chart-grid" /><text x={margin.left - 9} y={y + 4} textAnchor="end" className="chart-label">{value.toFixed(2)}</text></g>;
           })}
           {showPhaseCurrents && currentTicks.map((value) => <g key={value}>{!showTorque && <line x1={margin.left} x2={width - margin.right} y1={currentY(value)} y2={currentY(value)} className="chart-grid" />}<text x={width - margin.right + 9} y={currentY(value) + 4} className="chart-label">{value.toFixed(0)}</text></g>)}
+          {angleTicks.map(({ tick, x: tickX }) => <line key={tick} x1={tickX} x2={tickX} y1={margin.top} y2={height - margin.bottom} className="chart-grid" />)}
           {showTorque && <path d={torquePath} className="public-bldc-torque-line" />}
           {showPhaseCurrents && [phaseA, phaseB, phaseC].map((values, index) => stepSegments(values).map((segment, segmentIndex) => <path key={`${PHASE_COLORS[index]}-${segmentIndex}`} d={segment.path} className={segment.conducting ? undefined : 'public-bldc-open-phase'} fill="none" stroke={PHASE_COLORS[index]} strokeWidth="1.8" strokeLinejoin="miter" />))}
           {showTorque && <text x={margin.left} y="13" className="chart-label chart-unit-label">Torque (N·m)</text>}
           {showPhaseCurrents && <text x={width - margin.right} y="13" textAnchor="end" className="chart-label chart-unit-label">Current (A plateau)</text>}
-          <text x={margin.left} y={height - 12} className="chart-label">0°</text>
-          <text x={width - margin.right} y={height - 12} textAnchor="end" className="chart-label">360° electrical</text>
+          {angleTicks.map(({ tick, x: tickX }) => <text key={tick} x={tickX} y={height - margin.bottom + 14} textAnchor="middle" className="chart-label">{formatElectricalAngleTick(tick)}</text>)}
+          <text x={width - margin.right} y={height - 4} textAnchor="end" className="chart-label">electrical angle</text>
           {readout.shownAngle !== null && (
             <WaveformReadoutMarker
               x={x(readout.shownAngle)}

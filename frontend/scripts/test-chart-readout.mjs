@@ -91,4 +91,20 @@ assert.equal(formatWaveformReadoutDifference(-0.1234, 'N·m'), '-0.12 N·m');
 assert.equal(formatWaveformReadoutDifference(0.001, 'N·m'), '0.00 N·m', 'a difference that rounds to zero carries no sign');
 assert.equal(formatWaveformReadoutDifference(-0.001, 'N·m'), '0.00 N·m');
 
+// Angle axis labels (#54 follow-up): regular, round steps.
+const { electricalAngleTicks, formatElectricalAngleTick } = await importTypeScriptModule(
+  new URL('../src/public/chartAxis.ts', import.meta.url),
+);
+assert.deepEqual(electricalAngleTicks(0, 360), [0, 45, 90, 135, 180, 225, 270, 315, 360], 'a full cycle every 45°');
+assert.deepEqual(electricalAngleTicks(0, 180), [0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5, 180]);
+assert.deepEqual(electricalAngleTicks(0, 60), [0, 7.5, 15, 22.5, 30, 37.5, 45, 52.5, 60], 'the 60° Preview window');
+assert.deepEqual(electricalAngleTicks(0, 45), [0, 7.5, 15, 22.5, 30, 37.5, 45], 'the 45° Preview window');
+assert.deepEqual(electricalAngleTicks(0, 352.5), [0, 45, 90, 135, 180, 225, 270, 315], 'no label past the axis end');
+assert.deepEqual(electricalAngleTicks(-90, 90), [-90, -67.5, -45, -22.5, 0, 22.5, 45, 67.5, 90]);
+assert.deepEqual(electricalAngleTicks(30, 30), [30], 'a single angle');
+assert.deepEqual(electricalAngleTicks(Number.NaN, 360), []);
+assert.equal(formatElectricalAngleTick(7.5), '7.5°');
+assert.equal(formatElectricalAngleTick(45), '45°');
+assert.equal(formatElectricalAngleTick(-0), '0°');
+
 console.log('Chart readout tests passed.');

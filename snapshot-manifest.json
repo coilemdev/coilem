@@ -2200,8 +2200,8 @@
     },
     {
       "path": "frontend/scripts/test-chart-readout.mjs",
-      "sha256": "10acbe8cc21e49d38b7b4f3d9bff92bd809e8dc4df799f8e0f7f8a8a3d135e23",
-      "bytes": 5658
+      "sha256": "cfc5fb93f2888eda0f48b103b88b3b3f443564e2bad0fa1d0a8a4fc72e3c8bf2",
+      "bytes": 6820
     },
     {
       "path": "frontend/scripts/test-custom-steel.mjs",
@@ -2255,8 +2255,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 101891,
-      "sha256": "3fd211025e50e90ae8e9d281ea47786bc87bf53f281cdd1047fa8f60be5f6e56"
+      "bytes": 102497,
+      "sha256": "228fc0b4e5f238fc1bcd9bc4db5da76a2adc90b0016025d33d2a38382f5e4c5a"
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
@@ -2640,8 +2640,8 @@
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
-      "bytes": 11219,
-      "sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e"
+      "bytes": 11750,
+      "sha256": "004b91fbcb617265355f6d6c43196bd3e3b81e552a9dabc8bc8c8f3b240239c9"
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
@@ -2700,8 +2700,8 @@
     },
     {
       "path": "frontend/src/public/WaveformChart.tsx",
-      "bytes": 10469,
-      "sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e"
+      "bytes": 10876,
+      "sha256": "039816809a55e83e3a8ec18f4c974d82ce05144d41299e6f747b751169881fd5"
     },
     {
       "path": "frontend/src/public/WaveformReadout.tsx",
@@ -2727,6 +2727,11 @@
       "path": "frontend/src/public/bldcChartPaths.ts",
       "bytes": 1151,
       "sha256": "5630590265b8d02821ba60706eb007447568abf83a66ca92730fe08528f69a78"
+    },
+    {
+      "path": "frontend/src/public/chartAxis.ts",
+      "sha256": "ade180d736a567e8b044e35d052739edd9e6d271a4474ce7fca89b9a0972d9ba",
+      "bytes": 1124
     },
     {
       "path": "frontend/src/public/chartReadout.ts",
@@ -5151,6 +5156,30 @@
       "path": "frontend/src/public/styles.css",
       "source_sha256": "6845735664b43f7dc522418d0d2a87408d5e18a36579c3963310e527cea85fc5",
       "reason": "Style the plot readout, its marker and the plot focus ring (#54)."
+    },
+    {
+      "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
+      "path": "frontend/scripts/test-chart-readout.mjs",
+      "source_sha256": "10acbe8cc21e49d38b7b4f3d9bff92bd809e8dc4df799f8e0f7f8a8a3d135e23",
+      "reason": "Cover the electrical-angle axis ticks (#54 follow-up)."
+    },
+    {
+      "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "3fd211025e50e90ae8e9d281ea47786bc87bf53f281cdd1047fa8f60be5f6e56",
+      "reason": "Pin the labelled electrical-angle axis on the result charts (#54 follow-up)."
+    },
+    {
+      "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
+      "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
+      "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
+      "reason": "Label the six-step chart's electrical-angle axis every 45° (#54 follow-up)."
+    },
+    {
+      "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
+      "path": "frontend/src/public/WaveformChart.tsx",
+      "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
+      "reason": "Label the electrical-angle axis at regular steps, 45° over a full cycle (#54 follow-up)."
     }
   ]
 }
