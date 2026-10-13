@@ -72,18 +72,23 @@ parameters. The relevant upstream source is distributed under this notice:
 | markdown-it-py | 4.2.0 | MIT |
 | mdurl | 0.1.2 | MIT |
 | meshio | 5.3.5 | MIT |
-| numpy | 2.4.6 | BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 |
+| numpy (Python 3.11 to 3.14) | 2.4.6 | BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 |
+| numpy (Python 3.15) | 2.5.4 | BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 |
 | pillow | 12.3.0 | MIT-CMU |
-| pydantic | 2.13.4 | MIT |
-| pydantic-core | 2.46.4 | MIT |
+| pydantic (Python 3.11 to 3.14) | 2.13.4 | MIT |
+| pydantic (Python 3.15) | 2.14.1 | MIT |
+| pydantic-core (Python 3.11 to 3.14) | 2.46.4 | MIT |
+| pydantic-core (Python 3.15) | 2.50.1 | MIT |
 | pygments | 2.20.0 | BSD-2-Clause |
 | reportlab | 4.4.9 | BSD-3-Clause |
 | referencing | 0.37.0 | MIT |
 | rich | 15.0.0 | MIT |
-| rpds-py | 0.30.0 | MIT |
+| rpds-py (Python 3.11 to 3.14) | 0.30.0 | MIT |
+| rpds-py (Python 3.15) | 2026.9.1 | MIT |
 | starlette | 1.3.1 | BSD-3-Clause |
 | typing-extensions | 4.16.0 | PSF-2.0 |
-| typing-inspection | 0.4.2 | MIT |
+| typing-inspection (Python 3.11 to 3.14) | 0.4.2 | MIT |
+| typing-inspection (Python 3.15) | 0.4.4 | MIT |
 | uvicorn | 0.51.0 | BSD-3-Clause |
 
 The licenses above are the package metadata shipped with the audited wheels.

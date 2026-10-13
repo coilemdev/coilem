@@ -24,7 +24,7 @@ and a pushed version tag publishes to PyPI once a reviewer approves; see
 | CPU baseline | Generic x86-64 and arm64 code generation. Release builds refuse `RUSTFLAGS`, `CARGO_BUILD_RUSTFLAGS` and `COILEM_MAGNETO2D_BUILD_RUSTFLAGS`. |
 | Native libraries | `auditwheel show` (Linux), `delocate-listdeps` (macOS) and `dumpbin /dependents` (Windows), plus `tools/release/native_deps.py`, which fails on any library outside the operating system or a minimum OS above the wheel tag. |
 | Linux system libraries | Gmsh needs GLU (`libglu1-mesa` on Debian and Ubuntu). `coilem` checks for it at startup and prints the install command. |
-| Python versions | 3.11, 3.12, 3.13 and 3.14, each tested. `Requires-Python` is `>=3.11,<3.15`: every supported version must have wheels for all runtime pins, which the policy tool checks. |
+| Python versions | 3.11, 3.12, 3.13, 3.14 and 3.15, each tested. `Requires-Python` is `>=3.11,<3.16`: every supported version must have wheels for all runtime pins, which the policy tool checks. A pin may be split by `python_version` marker when no single version has wheels for every supported Python; the policy tool requires exactly one pin per package for each supported platform and Python version. |
 | Runners | Pinned images: builds on ubuntu-24.04, macos-15, macos-15-intel and windows-2022; acceptance on the oldest supported image with a hosted runner (ubuntu-22.04, macos-15, macos-15-intel, windows-2022). |
 
 On 2026-10-11 the policy gave these platform tags:
@@ -44,6 +44,9 @@ image, `manylinux_2_28`, exceeds the 2.27 floor.
 - Wheels require exactly the versions in `requirements.lock`; `pyproject.toml`
   reads its dependency list from that file. `verify_wheel.py` compares the
   wheel metadata with the lock.
+- CI audits each supported Python's pins with pip-audit. `python -m
+  tools.release.policy --audit-pins DIR` writes them without markers,
+  because pip-audit skips pins whose markers do not match its interpreter.
 - Release builds use the pinned Rust toolchain with `cargo build --release
   --locked` and the frontend's `npm ci`. The UI is built once and shared by
   every wheel.

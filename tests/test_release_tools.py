@@ -37,10 +37,28 @@ NUMPY = [
         "win_amd64",
     )
 ]
+# NumPy 2.5 has no Python 3.11 wheels, so the lock pins it for Python 3.15 only.
+NUMPY_25 = [
+    f"numpy-2.5.4-cp{minor}-cp{minor}-{platform}.whl"
+    for minor in ("312", "313", "314", "315")
+    for platform in (
+        "macosx_11_0_arm64",
+        "macosx_14_0_arm64",
+        "macosx_10_15_x86_64",
+        "manylinux_2_27_x86_64.manylinux_2_28_x86_64",
+        "musllinux_1_2_x86_64",
+        "win_amd64",
+    )
+]
+SPLIT_NUMPY = [
+    policy.Requirement('numpy==2.4.6; python_version < "3.15"'),
+    policy.Requirement('numpy==2.5.4; python_version >= "3.15"'),
+]
 
 
 def fake_index(files: dict[str, list[str]]):
-    return lambda name, version: files[name]
+    """Wheel files by ``name``, or by ``name==version`` for a package pinned twice."""
+    return lambda name, version: files.get(f"{name}=={version}", files.get(name))
 
 
 def test_python_and_platform_tag_rules() -> None:
@@ -61,11 +79,17 @@ def test_python_and_platform_tag_rules() -> None:
 def test_floor_is_the_highest_minimum_across_pins() -> None:
     requirements = [
         policy.Requirement("gmsh==4.15.2"),
-        policy.Requirement("numpy==2.4.6"),
+        *SPLIT_NUMPY,
         policy.Requirement("idna==3.18"),
         policy.Requirement('colorama==0.4.6; platform_system == "Windows"'),
     ]
-    index = {"gmsh": GMSH, "numpy": NUMPY, "idna": ["idna-3.18-py3-none-any.whl"], "colorama": ["colorama-0.4.6-py2.py3-none-any.whl"]}
+    index = {
+        "gmsh": GMSH,
+        "numpy==2.4.6": NUMPY,
+        "numpy==2.5.4": NUMPY_25,
+        "idna": ["idna-3.18-py3-none-any.whl"],
+        "colorama": ["colorama-0.4.6-py2.py3-none-any.whl"],
+    }
     result = policy.compute_policy(requirements, fake_index(index))
     assert result["macos-arm64"]["platform_tag"] == "macosx_12_0_arm64"
     assert result["macos-arm64"]["limited_by"] == ["gmsh"]
@@ -87,6 +111,33 @@ def test_missing_wheel_for_a_supported_python_fails() -> None:
     only_old = [name for name in NUMPY if "cp314" not in name]
     with pytest.raises(policy.PolicyError, match="numpy==2.4.6: no wheel for macos-arm64 on Python 3.14"):
         policy.compute_policy([policy.Requirement("numpy==2.4.6")], fake_index({"numpy": only_old}))
+
+
+def test_split_pins_must_cover_every_python_once() -> None:
+    policy.check_markers(SPLIT_NUMPY)
+    policy.check_markers(policy.read_lock(REPO_ROOT / "requirements.lock"))
+    gap = [policy.Requirement('numpy==2.4.6; python_version < "3.14"'), SPLIT_NUMPY[1]]
+    with pytest.raises(policy.PolicyError, match="numpy has 0 pins for macos-arm64 on Python 3.14"):
+        policy.check_markers(gap)
+    overlap = [policy.Requirement('numpy==2.4.6; python_version <= "3.15"'), SPLIT_NUMPY[1]]
+    with pytest.raises(policy.PolicyError, match="numpy has 2 pins for macos-arm64 on Python 3.15"):
+        policy.compute_policy(overlap, fake_index({"numpy==2.4.6": NUMPY, "numpy==2.5.4": NUMPY_25}))
+    # A platform marker may still limit a package to some targets.
+    policy.check_markers([policy.Requirement('colorama==0.4.6; platform_system == "Windows"')])
+
+
+def test_audit_pins_list_each_pythons_exact_pins(tmp_path: Path) -> None:
+    lock = policy.read_lock(REPO_ROOT / "requirements.lock")
+    oldest, newest = policy.audit_pins(lock, "3.11"), policy.audit_pins(lock, "3.15")
+    assert "numpy==2.4.6" in oldest and "numpy==2.5.4" not in oldest
+    assert "numpy==2.5.4" in newest and "numpy==2.4.6" not in newest
+    # pip-audit skips pins whose markers do not match its interpreter, so the
+    # audit lists carry none, and include the Windows-only pin everywhere.
+    assert "colorama==0.4.6" in oldest and not any(";" in pin for pin in oldest + newest)
+    assert len({pin.split("==")[0] for pin in newest}) == len(newest)
+    assert policy.main(["--audit-pins", str(tmp_path)]) == 0
+    assert sorted(path.name for path in tmp_path.iterdir()) == [f"pins-{python}.txt" for python in policy.SUPPORTED_PYTHONS]
+    assert (tmp_path / "pins-3.15.txt").read_text(encoding="utf-8").splitlines() == newest
 
 
 def test_lock_must_hold_exact_pins(tmp_path: Path) -> None:
@@ -260,7 +311,7 @@ def _write_wheel(
         "ui_bundle_sha256": ui_hash,
         "toolchain": {"rustc": "rustc 1.94.0", "cargo": "cargo 1.94.0", "node": "v24.0.0", "npm": "11.0.0"},
     }
-    metadata = "Metadata-Version: 2.4\nName: coilem\nVersion: 0.2.0\nRequires-Python: <3.15,>=3.11\n"
+    metadata = "Metadata-Version: 2.4\nName: coilem\nVersion: 0.2.0\nRequires-Python: <3.16,>=3.11\n"
     metadata += "License-Expression: AGPL-3.0-or-later\nLicense-File: LICENSE\nLicense-File: THIRD_PARTY_NOTICES.md\n"
     metadata += "".join(f"Requires-Dist: {line}\n" for line in requires) + 'Requires-Dist: pytest; extra == "dev"\n'
     with zipfile.ZipFile(path, "w") as archive:

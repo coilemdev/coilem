@@ -25,13 +25,13 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 5254,
-      "sha256": "52d4776e1710d0e43da46482771c513934afbc1ebcf2c9728b5ef0bbc7122b92"
+      "bytes": 5788,
+      "sha256": "993d07eac9fef00eb213ef25d6f435dcf5c8bb65a8f78e6af34a16bd5116e320"
     },
     {
       "path": ".github/workflows/release-wheels.yml",
-      "bytes": 17300,
-      "sha256": "b7fbb1e974f53e83e73f2babc3d7daede7264e3cc337282802683dafb52d4e24"
+      "bytes": 17308,
+      "sha256": "34dcac51ca9ab80ba75a8344ddf8cf2f782260e070d21b86e3ed0f26e55c3565"
     },
     {
       "path": ".gitignore",
@@ -80,8 +80,8 @@
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
-      "bytes": 16294,
-      "sha256": "319f8c048ee7cd995ed1b0762b61439e27e9462638b1fd184e8454ae12914c36"
+      "bytes": 16671,
+      "sha256": "bd0207bf5296f1cfc395cc224953d25cc69cd0f6b5605748fabd0a8c566529ea"
     },
     {
       "path": "TRADEMARKS.md",
@@ -3240,8 +3240,8 @@
     },
     {
       "path": "docs/RELEASING.md",
-      "bytes": 9416,
-      "sha256": "b5fe5f0631590493eb696861422f130838f27bf2c083830ed017729a9d890276"
+      "bytes": 9844,
+      "sha256": "c872a39aa6369142b8c1a0cc9926bf21b40fe69ddc7b17ddb6d5a7d8404fd2b5"
     },
     {
       "path": "docs/RUNTIME_SETTINGS.md",
@@ -4106,7 +4106,7 @@
     {
       "path": "pyproject.toml",
       "bytes": 1742,
-      "sha256": "aa7e6f4f114d7282619850f3c46b7cd420a281f3409a52c8b3c0cfb9efc976d2"
+      "sha256": "ecd948e616491e0c7aaf59aa86adbcde40bbc8375858e68cfac9437bb4cd4ed2"
     },
     {
       "path": "references/benchmark_configs/validation_ipm_10p_v_shape_medium.openem",
@@ -4125,8 +4125,8 @@
     },
     {
       "path": "requirements.lock",
-      "bytes": 765,
-      "sha256": "fbe29d3d5586f557467c04cc91c0fd03007709d7936aa791a2b00f0b484c6397"
+      "bytes": 1328,
+      "sha256": "7931b933a9db88657aea494aaab7a7652d5cfb18e3d71dc255f9cecb2059277c"
     },
     {
       "path": "schemas/v1/examples/field_current_square.json",
@@ -4535,8 +4535,8 @@
     },
     {
       "path": "tests/test_public_candidate.py",
-      "bytes": 20035,
-      "sha256": "cb0440756f460e74bfb7a70895f09f8160edff3ad16c64e25f6467c37d555171"
+      "bytes": 20059,
+      "sha256": "2118fb2c0a73a84bff7487d779c513fa37843dc342d1050feab87adafe9ab154"
     },
     {
       "path": "tests/test_public_field_playback.py",
@@ -4580,8 +4580,8 @@
     },
     {
       "path": "tests/test_release_tools.py",
-      "bytes": 21853,
-      "sha256": "83e2d4fae8b35236e3fc0a765407b641f86aa5e81166e823daf337e7efac85f3"
+      "bytes": 24414,
+      "sha256": "7cc7f837cfc7744f9014734c672958ead5bef364152a5ad1ec8e5906c0a8cc12"
     },
     {
       "path": "tests/test_solve_estimate.py",
@@ -4615,8 +4615,8 @@
     },
     {
       "path": "tests/test_windows_playback_pool.py",
-      "bytes": 4371,
-      "sha256": "862ad10f119ca85ba1996413416494468d18febb98c0885f28ef79c07f224bc8"
+      "bytes": 4729,
+      "sha256": "72a72eb8f34af191d0a17334ac6908c76159062655fc11e9428783f8c33bff65"
     },
     {
       "path": "tools/benchmark_suite/__init__.py",
@@ -4710,8 +4710,8 @@
     },
     {
       "path": "tools/release/policy.py",
-      "bytes": 9515,
-      "sha256": "09052a063623a1a6aefbe2bad6ee04ae71f266a2993917e1213314c785f0710b"
+      "bytes": 11897,
+      "sha256": "5b38a5f885bf83091823514f317aeafa54cd0570e94377a9dd4934e29df62e2a"
     },
     {
       "path": "tools/release/rust_licenses.py",
@@ -4750,8 +4750,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 17987,
-      "sha256": "15f12dc8d347d806f7433eb8a5aecf52de6fb67c727a6f60e43b9d94a29c31e5"
+      "bytes": 18039,
+      "sha256": "031e1e194edfaa5a580ec92fc11f8675e04351b68c6b7a41f95358e2aaccce25"
     }
   ],
   "public_patches": [
@@ -6794,6 +6794,72 @@
       "path": "docs/RUNTIME_SETTINGS.md",
       "source_sha256": "c128b54cbf1083cb2861b416333e67f6f09283f3e49bef6f25e056b26751447c",
       "reason": "Show the install command with --python 3.14 (#72)."
+    },
+    {
+      "base_commit": "f24ccc45aef939a7fe81b57bad32b0c98e5cb835",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "52d4776e1710d0e43da46482771c513934afbc1ebcf2c9728b5ef0bbc7122b92",
+      "reason": "Run the runtime job on Ubuntu with Python 3.15, and audit each supported Python's pins (#72)."
+    },
+    {
+      "base_commit": "f24ccc45aef939a7fe81b57bad32b0c98e5cb835",
+      "path": ".github/workflows/release-wheels.yml",
+      "source_sha256": "b7fbb1e974f53e83e73f2babc3d7daede7264e3cc337282802683dafb52d4e24",
+      "reason": "Run the installed-wheel acceptance test on Python 3.15 on every platform (#72)."
+    },
+    {
+      "base_commit": "f24ccc45aef939a7fe81b57bad32b0c98e5cb835",
+      "path": "THIRD_PARTY_NOTICES.md",
+      "source_sha256": "319f8c048ee7cd995ed1b0762b61439e27e9462638b1fd184e8454ae12914c36",
+      "reason": "List the Python 3.15 versions of the split runtime pins (#72)."
+    },
+    {
+      "base_commit": "f24ccc45aef939a7fe81b57bad32b0c98e5cb835",
+      "path": "docs/RELEASING.md",
+      "source_sha256": "b5fe5f0631590493eb696861422f130838f27bf2c083830ed017729a9d890276",
+      "reason": "Document Python 3.15, pins split by Python version and the per-Python dependency audit (#72)."
+    },
+    {
+      "base_commit": "f24ccc45aef939a7fe81b57bad32b0c98e5cb835",
+      "path": "pyproject.toml",
+      "source_sha256": "aa7e6f4f114d7282619850f3c46b7cd420a281f3409a52c8b3c0cfb9efc976d2",
+      "reason": "Support Python 3.15: Requires-Python >=3.11,<3.16 (#72)."
+    },
+    {
+      "base_commit": "f24ccc45aef939a7fe81b57bad32b0c98e5cb835",
+      "path": "requirements.lock",
+      "source_sha256": "fbe29d3d5586f557467c04cc91c0fd03007709d7936aa791a2b00f0b484c6397",
+      "reason": "Add Python 3.15 pins for numpy, pydantic, pydantic-core, rpds-py and typing-inspection, split by python_version so Python 3.11 to 3.14 keep the 0.3.0 versions (#72)."
+    },
+    {
+      "base_commit": "f24ccc45aef939a7fe81b57bad32b0c98e5cb835",
+      "path": "tests/test_public_candidate.py",
+      "source_sha256": "cb0440756f460e74bfb7a70895f09f8160edff3ad16c64e25f6467c37d555171",
+      "reason": "Require the audited Python 3.15 numpy pin (#72)."
+    },
+    {
+      "base_commit": "f24ccc45aef939a7fe81b57bad32b0c98e5cb835",
+      "path": "tests/test_release_tools.py",
+      "source_sha256": "83e2d4fae8b35236e3fc0a765407b641f86aa5e81166e823daf337e7efac85f3",
+      "reason": "Test split pins, the one-pin-per-Python check and the audit pin files (#72)."
+    },
+    {
+      "base_commit": "f24ccc45aef939a7fe81b57bad32b0c98e5cb835",
+      "path": "tools/release/policy.py",
+      "source_sha256": "09052a063623a1a6aefbe2bad6ee04ae71f266a2993917e1213314c785f0710b",
+      "reason": "Add Python 3.15, allow a pin split by marker, require one pin per package for each platform and Python, and write per-Python pins for pip-audit (#72)."
+    },
+    {
+      "base_commit": "f24ccc45aef939a7fe81b57bad32b0c98e5cb835",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "15f12dc8d347d806f7433eb8a5aecf52de6fb67c727a6f60e43b9d94a29c31e5",
+      "reason": "Require the audited Python 3.15 numpy and pydantic pins (#72)."
+    },
+    {
+      "base_commit": "353208d73a24de3f3eba39f7c72c097db6dc3f5b",
+      "path": "tests/test_windows_playback_pool.py",
+      "source_sha256": "862ad10f119ca85ba1996413416494468d18febb98c0885f28ef79c07f224bc8",
+      "reason": "Spawn the playback test's workers as on Windows; a Linux forkserver (Python 3.14+) started by an earlier test keeps that test's data root (#72)."
     }
   ]
 }

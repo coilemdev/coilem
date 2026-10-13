@@ -4,6 +4,7 @@ from __future__ import annotations
 import gzip
 import hashlib
 import json
+import multiprocessing
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 
 import pytest
@@ -52,6 +53,10 @@ def test_playback_pool_controls_in_development(monkeypatch):
 def test_playback_worker_preserves_decoded_layers_and_joins(monkeypatch, tmp_path):
     monkeypatch.setenv("COILEM_USER_DATA_ROOT", str(tmp_path))
     monkeypatch.setattr(playback.os, "cpu_count", lambda: 2)
+    # Spawn workers as on Windows. Linux defaults to forkserver from Python
+    # 3.14, and a forkserver started by an earlier test keeps that test's
+    # COILEM_USER_DATA_ROOT, so its workers would not find this test's cache.
+    monkeypatch.setattr(playback, "get_context", lambda method=None: multiprocessing.get_context("spawn"))
     cache = tmp_path / "solve_cache/magneto2d-test"
     source = cache / "field_line_frames/frame_000.json.gz"
     source.parent.mkdir(parents=True)

@@ -6,9 +6,15 @@ pins publish for that platform, and never below what the bundled Rust binary
 needs. This tool reads the lock, lists each pin's wheels on PyPI, and reports
 per target the wheel platform tag, the macOS deployment target or manylinux
 glibc version for the Magneto2D build, and which pins set the floor. It fails
-when a pin has no wheel for a supported platform and Python version.
+when a pin has no wheel for a supported platform and Python version, or when
+the lock's environment markers leave a package with no pin, or more than one,
+for a supported platform and Python version.
 
     python -m tools.release.policy [--json] [--github-output FILE]
+    python -m tools.release.policy --audit-pins DIR
+
+``--audit-pins`` writes each supported Python's pins without markers, for
+pip-audit, which skips pins whose markers do not match its own interpreter.
 """
 
 from __future__ import annotations
@@ -24,10 +30,10 @@ from pathlib import Path
 
 from packaging.requirements import Requirement
 from packaging.tags import Tag
-from packaging.utils import parse_wheel_filename
+from packaging.utils import canonicalize_name, parse_wheel_filename
 
 ROOT = Path(__file__).resolve().parents[2]
-SUPPORTED_PYTHONS = ("3.11", "3.12", "3.13", "3.14")
+SUPPORTED_PYTHONS = ("3.11", "3.12", "3.13", "3.14", "3.15")
 # Minimums of Rust's standard library for the release toolchain.
 RUST_MINIMUMS = {"macos-arm64": (11, 0), "macos-x86_64": (10, 12), "linux-x86_64": (2, 17)}
 # Newest manylinux build image first; the binary is built in the newest one
@@ -92,6 +98,39 @@ def read_lock(path: Path) -> list[Requirement]:
 
 def pinned_version(requirement: Requirement) -> str:
     return next(iter(requirement.specifier)).version
+
+
+def applies(requirement: Requirement, target: Target, python: str) -> bool:
+    return requirement.marker is None or requirement.marker.evaluate(target.marker_environment(python))
+
+
+def check_markers(requirements: list[Requirement], pythons: Iterable[str] = SUPPORTED_PYTHONS) -> None:
+    """Require one pin per package on every supported Python of each target
+    where the package is installed, so a pin split by Python version cannot
+    leave a version without it or install two."""
+
+    pythons = tuple(pythons)
+    for target in TARGETS:
+        pins: dict[str, dict[str, list[str]]] = {}
+        for requirement in requirements:
+            for python in pythons:
+                if applies(requirement, target, python):
+                    pins.setdefault(canonicalize_name(requirement.name), {}).setdefault(python, []).append(str(requirement))
+        for name, by_python in pins.items():
+            for python in pythons:
+                found = by_python.get(python, [])
+                if len(found) != 1:
+                    raise PolicyError(f"{name} has {len(found)} pins for {target.key} on Python {python}: {found}")
+
+
+def audit_pins(requirements: list[Requirement], python: str) -> list[str]:
+    """The exact pins a supported Python installs on any target, without markers."""
+
+    return [
+        f"{requirement.name}=={pinned_version(requirement)}"
+        for requirement in requirements
+        if any(applies(requirement, target, python) for target in TARGETS)
+    ]
 
 
 def pypi_wheel_files(name: str, version: str) -> list[str]:
@@ -162,17 +201,18 @@ def compute_policy(
     pythons: Iterable[str] = SUPPORTED_PYTHONS,
 ) -> dict[str, dict[str, object]]:
     pythons = tuple(pythons)
-    files = {requirement.name: fetch(requirement.name, pinned_version(requirement)) for requirement in requirements}
+    check_markers(requirements, pythons)
+    files = {str(requirement): fetch(requirement.name, pinned_version(requirement)) for requirement in requirements}
     policy: dict[str, dict[str, object]] = {}
     for target in TARGETS:
         floor = RUST_MINIMUMS.get(target.key)
         constraints: dict[str, str] = {}
         for requirement in requirements:
             for python in pythons:
-                if requirement.marker is not None and not requirement.marker.evaluate(target.marker_environment(python)):
+                if not applies(requirement, target, python):
                     continue
                 try:
-                    package = package_floor(files[requirement.name], target, python)
+                    package = package_floor(files[str(requirement)], target, python)
                 except PolicyError as exc:
                     raise PolicyError(f"{requirement.name}=={pinned_version(requirement)}: {exc}") from exc
                 if package is not None:
@@ -209,9 +249,18 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--lock", type=Path, default=ROOT / "requirements.lock")
     parser.add_argument("--json", action="store_true", help="print the policy as JSON")
     parser.add_argument("--github-output", type=Path, help="append `policy=<json>` for a GitHub Actions step")
+    parser.add_argument("--audit-pins", type=Path, metavar="DIR", help="write pins-<python>.txt for each supported Python and exit")
     args = parser.parse_args(argv)
     try:
-        policy = compute_policy(read_lock(args.lock))
+        requirements = read_lock(args.lock)
+        if args.audit_pins:
+            check_markers(requirements)
+            args.audit_pins.mkdir(parents=True, exist_ok=True)
+            for python in SUPPORTED_PYTHONS:
+                pins = "".join(f"{pin}\n" for pin in audit_pins(requirements, python))
+                (args.audit_pins / f"pins-{python}.txt").write_text(pins, encoding="utf-8")
+            return 0
+        policy = compute_policy(requirements)
     except PolicyError as exc:
         print(f"release policy: {exc}", file=sys.stderr)
         return 1
