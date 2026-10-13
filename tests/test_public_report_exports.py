@@ -573,9 +573,18 @@ def test_pdf_settings_follow_rotor_type_plan_and_tooth_shoe() -> None:
     assert "Magneto2d workers" not in groups["Solve plan"]
     assert "HoleM50 W0" in _settings_page_text(config)
 
-    preset = _resolved(CONFIG)
-    assert preset["solve_params"]["solve_quality"] != "custom"
-    assert not {"Rotor step", "Rotor sweep range"} & set(_setting_labels(preset)["Solve plan"]), "presets set their own step"
+    # Every preset sets its own step; Preview uses the stored sweep range, capped
+    # at 60 deg (SolveParams.effective_native_loaded_sweep_range_deg).
+    for plan in ("quick", "standard", "fine"):
+        raw = deepcopy(CONFIG)
+        raw["solve_params"].update(solve_quality=plan, rotor_sweep_range_deg=45)
+        plan_settings = _setting_labels(_resolved(raw))["Solve plan"]
+        assert "Rotor step" not in plan_settings, plan
+        if plan == "quick":
+            assert plan_settings["Rotor sweep range"] == "45 deg", "a Preview run solved this 45 deg window"
+        else:
+            assert "Rotor sweep range" not in plan_settings, plan
+    assert "settings the solve plan does not use" in _settings_page_text(_resolved(CONFIG))
 
 
 def test_pdf_settings_follow_the_excitation() -> None:

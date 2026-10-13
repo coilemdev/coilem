@@ -535,9 +535,13 @@ _SOLVE_PLAN_SETTINGS = (
     "linear_steel_mu_rel",
     "field_composition_source",
 )
-# Only the custom plan reads these; the presets set their own step and sweep
-# (SolveParams.effective_step_deg).
-_CUSTOM_PLAN_SETTINGS = frozenset({"rotor_step_deg", "rotor_sweep_range_deg"})
+# The plans that read these stored values (SolveParams.effective_step_deg and
+# effective_native_loaded_sweep_range_deg). Every preset sets its own step;
+# Preview caps the stored sweep range at 60 deg, so it uses that range too.
+_PLANS_USING_SETTING = {
+    "rotor_step_deg": frozenset({"custom"}),
+    "rotor_sweep_range_deg": frozenset({"custom", "quick"}),
+}
 # Execution settings that do not change the solved numbers.
 _RUNTIME_ONLY_SETTINGS = frozenset({"magneto2d_workers", "stream_noload_field_lines"})
 
@@ -601,8 +605,8 @@ def _setting_group(
 def _design_setting_groups(config: Mapping[str, Any]) -> list[tuple[str, list[tuple[str, str]]]]:
     """The resolved settings that apply to this run's topology, by section.
 
-    Settings of other rotor types or the other excitation, a preset plan's
-    unused step and sweep, empty values and runtime-only switches are left out.
+    Settings of other rotor types or the other excitation, settings the solve
+    plan does not use, empty values and runtime-only switches are left out.
     """
 
     stator = _mapping(config.get("stator"))
@@ -618,7 +622,8 @@ def _design_setting_groups(config: Mapping[str, Any]) -> list[tuple[str, list[tu
     rotor_omit = _ROTOR_TYPE_SETTINGS - set(rotor_order)
     six_step = solve_params.get("excitation_mode") == "ideal_six_step_120"
     excitation_omit = _SINUSOIDAL_ONLY_SETTINGS if six_step else _SIX_STEP_ONLY_SETTINGS
-    plan_omit = set() if solve_params.get("solve_quality") == "custom" else set(_CUSTOM_PLAN_SETTINGS)
+    plan = solve_params.get("solve_quality")
+    plan_omit = {name for name, plans in _PLANS_USING_SETTING.items() if plan not in plans}
     materials = _mapping(config.get("materials"))
     custom_steels = _mapping(materials.get("custom_steels"))
 
@@ -1228,8 +1233,8 @@ def build_public_run_pdf(
                     Paragraph(
                         escape(
                             f"The stored settings that define this {topology} design and its solve. Settings "
-                            "of other rotor types or the other excitation, a preset plan's unused step and "
-                            "sweep, empty values and runtime-only switches are left out."
+                            "of other rotor types or the other excitation, settings the solve plan does "
+                            "not use, empty values and runtime-only switches are left out."
                         ),
                         styles["small"],
                     ),

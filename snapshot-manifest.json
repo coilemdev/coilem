@@ -415,8 +415,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 53260,
-      "sha256": "ab6872c8f36acc660e326cf74d84f3065cea3371c916ef8b87879eb7b168b8c5"
+      "bytes": 53463,
+      "sha256": "a888c2dae3e36f2bb996935bebc487a839dc9b399a289a1dcb94328d348974d8"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -3420,8 +3420,8 @@
     },
     {
       "path": "tests/test_public_report_exports.py",
-      "bytes": 26622,
-      "sha256": "888dcaa77e3e3a2244c073eb2a2fb1d6015eee11572738841399cf570b332c84"
+      "bytes": 27148,
+      "sha256": "17d1fc7f64d35356bccc8e417b353b9b8d92d9459bd5d54ad862ff8d1f5fe259"
     },
     {
       "path": "tests/test_public_security.py",
@@ -5370,6 +5370,18 @@
       "path": "tests/test_launcher_shutdown.py",
       "source_sha256": "666ce998ac08aa10b2000f527c764dddc8a3721236b0467559861e30934077a0",
       "reason": "#55: a worker killed while sending its result must not leave the pool's manager thread for interpreter exit to wait on."
+    },
+    {
+      "base_commit": "ddd992ddd7c4e325349e963aae7c9ad0c69db799",
+      "path": "backend/public_report.py",
+      "source_sha256": "ab6872c8f36acc660e326cf74d84f3065cea3371c916ef8b87879eb7b168b8c5",
+      "reason": "List the stored sweep range for Preview runs, which use it capped at 60 deg, and describe omitted plan settings accurately (#61 review)."
+    },
+    {
+      "base_commit": "ddd992ddd7c4e325349e963aae7c9ad0c69db799",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "888dcaa77e3e3a2244c073eb2a2fb1d6015eee11572738841399cf570b332c84",
+      "reason": "Pin which plans use the stored step and sweep range in the PDF settings (#61 review)."
     }
   ]
 }
