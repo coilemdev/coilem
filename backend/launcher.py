@@ -192,6 +192,24 @@ def write_record(root: Path, port: int) -> None:
     os.replace(temporary, root / RECORD_FILE)
 
 
+# The record this process wrote, so even a forced exit removes it (#55). The
+# root lock guarantees no other launcher writes it meanwhile.
+_WRITTEN_RECORD: Path | None = None
+
+
+def remove_own_record() -> None:
+    """Remove this process's launcher record, best effort."""
+
+    global _WRITTEN_RECORD
+    record, _WRITTEN_RECORD = _WRITTEN_RECORD, None
+    if record is None:
+        return
+    try:
+        record.unlink(missing_ok=True)
+    except OSError:
+        pass
+
+
 def recorded_port(root: Path) -> int | None:
     try:
         port = json.loads((root / RECORD_FILE).read_text(encoding="utf-8")).get("port")
@@ -256,10 +274,11 @@ def claim_port(explicit: int | None, root_id: str) -> tuple[socket.socket | None
 
 def _shutdown_native_work() -> None:
     from backend.magneto2d_adapter import shutdown_native_processes
-    from backend.public_routes.solve import request_active_solve_cancellation
+    from backend.public_routes.solve import begin_server_shutdown
 
     try:
-        request_active_solve_cancellation()
+        # Also ends open solve streams, so graceful shutdown need not wait for them.
+        begin_server_shutdown()
     finally:
         shutdown_native_processes()
 
@@ -269,6 +288,8 @@ def _force_exit(code: int) -> None:
     worker = threading.Thread(target=_shutdown_native_work, daemon=True)
     worker.start()
     worker.join(2.0)
+    # os._exit skips launch()'s cleanup, so remove the record here (#55).
+    remove_own_record()
     os._exit(code)
 
 
@@ -409,10 +430,12 @@ def launch(args: argparse.Namespace) -> int:
                 file=sys.stderr,
             )
         write_record(root, port)
+        global _WRITTEN_RECORD
+        _WRITTEN_RECORD = root / RECORD_FILE
         try:
             return serve(sock, port, ui_bundle, root_id, open_browser=open_browser)
         finally:
-            (root / RECORD_FILE).unlink(missing_ok=True)
+            remove_own_record()
     finally:
         lock.close()
 

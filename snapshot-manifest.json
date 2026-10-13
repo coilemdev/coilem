@@ -280,8 +280,8 @@
     },
     {
       "path": "backend/launcher.py",
-      "sha256": "791fe20a342993f0a18c2a114b66452d980ba349271ac4d2335a9d27604a96dd",
-      "bytes": 16464
+      "sha256": "be86df45c9d8ad827a3432e73d8587019ccf9af3302ae37504f78a9d387dabcd",
+      "bytes": 17147
     },
     {
       "path": "backend/local_file_safety.py",
@@ -440,8 +440,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 47907,
-      "sha256": "c66837d12fb4916677174a99e689e43c22105fa15a5b7abbee7c3e91a61e35d6"
+      "bytes": 50417,
+      "sha256": "fa880d91ba79fad6810ad9fa30b5b819af4f1a9aa61459192c6a8f551f1c90fd"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -3354,6 +3354,11 @@
       "bytes": 12525
     },
     {
+      "path": "tests/test_launcher_shutdown.py",
+      "sha256": "8bddcdb813d5b215593b64f3d600d8a0e8732bf07eeea39c45ed5b830e4faa36",
+      "bytes": 6966
+    },
+    {
       "path": "tests/test_linear_halbach_analytical.py",
       "bytes": 14686,
       "sha256": "79a4b03ca91953f6f863bb009546ec5bd05489d2648593fc65b568fe4537fd98"
@@ -5275,6 +5280,18 @@
       "path": "frontend/src/public/styles.css",
       "source_sha256": "60808514937e95877d447b076580957410c3275f55b85664ec9d7939f4e7c376",
       "reason": "Style the Solve-page update banner in the page flow and drop the overlay toast (owner QA of #64)."
+    },
+    {
+      "base_commit": "bea65aec3c07dbeb03604f1b298bae6f77fbf17c",
+      "path": "backend/launcher.py",
+      "source_sha256": "791fe20a342993f0a18c2a114b66452d980ba349271ac4d2335a9d27604a96dd",
+      "reason": "Start shutdown by ending open solve streams, and remove the launcher record on every exit path, including a forced exit (#55)."
+    },
+    {
+      "base_commit": "bea65aec3c07dbeb03604f1b298bae6f77fbf17c",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "c66837d12fb4916677174a99e689e43c22105fa15a5b7abbee7c3e91a61e35d6",
+      "reason": "End open solve streams and direct solve waits when the server stops, and run solver workers on daemon threads that application exit does not wait for (#55)."
     }
   ]
 }

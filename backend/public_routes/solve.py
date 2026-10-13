@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextvars
 import errno
 import gzip
 import json
@@ -338,13 +339,84 @@ def _release_solve(solver: Solver) -> None:
         )
 
 
-def _release_after_worker(solver: Solver, future: asyncio.Task[Any] | None) -> None:
+# Set when the launcher starts shutting down. Open solve streams then stop
+# waiting for their worker and end, so the server's graceful shutdown is not
+# held open by a solver that is still unwinding its process pools (#55).
+_SERVER_STOPPING = threading.Event()
+
+
+def begin_server_shutdown() -> None:
+    """End open solve streams and cancel the active solve, for application exit."""
+
+    _SERVER_STOPPING.set()
+    request_active_solve_cancellation()
+
+
+def _raise_if_server_stopping() -> None:
+    if _SERVER_STOPPING.is_set():
+        raise SolveCancelledError("coilEM is stopping; the solve was cancelled.")
+
+
+def _run_solver_thread(function: Any, /, *args: Any, **kwargs: Any) -> asyncio.Future[Any]:
+    """Run a solver call on a daemon thread and return a future for its result.
+
+    ``asyncio.to_thread`` uses the event loop's default executor, and
+    ``asyncio.run`` waits up to five minutes for its threads before returning.
+    A solver still unwinding after a cancellation, such as a Windows process
+    pool joining its workers, then held the launcher past its shutdown deadline
+    (#55). Nothing waits for a daemon thread at exit; the solve lane is still
+    released only when the worker returns.
+    """
+
+    loop = asyncio.get_running_loop()
+    future: asyncio.Future[Any] = loop.create_future()
+    context = contextvars.copy_context()
+
+    def settle(outcome: Any, failed: bool) -> None:
+        if future.done():
+            return
+        if failed:
+            future.set_exception(outcome)
+        else:
+            future.set_result(outcome)
+
+    def run() -> None:
+        try:
+            outcome, failed = context.run(function, *args, **kwargs), False
+        except BaseException as exc:  # noqa: BLE001 - handed to the awaiting coroutine
+            outcome, failed = exc, True
+        try:
+            loop.call_soon_threadsafe(settle, outcome, failed)
+        except RuntimeError:  # The event loop closed first, at application exit.
+            pass
+
+    threading.Thread(target=run, name="coilem-solver", daemon=True).start()
+    return future
+
+
+async def _wait_for_worker(future: asyncio.Future[Any], *, timeout: float) -> Any:
+    """Await a solver thread, but stop waiting once the server starts shutting down.
+
+    Neither the timeout nor shutdown cancels the worker: ``asyncio.wait`` leaves
+    the future running, and the lane is released when it returns.
+    """
+
+    async def worker_or_shutdown() -> Any:
+        while not future.done():
+            _raise_if_server_stopping()
+            await asyncio.wait({future}, timeout=0.25)
+        return future.result()
+
+    return await asyncio.wait_for(worker_or_shutdown(), timeout=timeout)
+
+
+def _release_after_worker(solver: Solver, future: asyncio.Future[Any] | None) -> None:
     """A disconnected stream must not free the lane while its thread runs."""
     if future is None or future.done():
         _release_solve(solver)
         return
 
-    def finished(task: asyncio.Task[Any]) -> None:
+    def finished(task: asyncio.Future[Any]) -> None:
         if not task.cancelled():
             task.exception()  # Retrieve a detached worker's cancellation/error.
         _release_solve(solver)
@@ -687,18 +759,15 @@ async def solve_public_armature_field(body: dict[str, Any]) -> dict[str, Any]:
 
     solver = Magneto2DSolver(launch_surface=True)
     _claim_solve(solver)
-    future = asyncio.create_task(asyncio.to_thread(
+    future = _run_solver_thread(
         solve_armature_field_sweep,
         config,
         solve_mesh_key=solve_mesh_key,
         solver_factory=lambda: solver,
         clockwise_positive=True,
-    ))
+    )
     try:
-        response = await asyncio.wait_for(
-            asyncio.shield(future),
-            timeout=1200.0,
-        )
+        response = await _wait_for_worker(future, timeout=1200.0)
     except SolveCancelledError as exc:
         raise HTTPException(status_code=409, detail=_stream_error_payload(exc)) from exc
     except (asyncio.TimeoutError, TimeoutError) as exc:
@@ -803,7 +872,7 @@ async def stream_public_armature_field(body: dict[str, Any]) -> StreamingRespons
         queue: asyncio.Queue[dict[str, Any]] = asyncio.Queue()
         loop = asyncio.get_running_loop()
         started = time.perf_counter()
-        future: asyncio.Task[Any] | None = None
+        future: asyncio.Future[Any] | None = None
         stream_closed = threading.Event()
 
         def on_progress(
@@ -857,17 +926,16 @@ async def stream_public_armature_field(body: dict[str, Any]) -> StreamingRespons
                     "elapsed_s": 0,
                 },
             )
-            future = asyncio.create_task(
-                asyncio.to_thread(
-                    solve_armature_field_sweep,
-                    config,
-                    solve_mesh_key=solve_mesh_key,
-                    solver_factory=lambda: solver,
-                    clockwise_positive=True,
-                    on_progress=on_progress,
-                )
+            future = _run_solver_thread(
+                solve_armature_field_sweep,
+                config,
+                solve_mesh_key=solve_mesh_key,
+                solver_factory=lambda: solver,
+                clockwise_positive=True,
+                on_progress=on_progress,
             )
             while not future.done():
+                _raise_if_server_stopping()
                 try:
                     progress = await asyncio.wait_for(queue.get(), timeout=0.5)
                     yield _sse_event("progress", progress)
@@ -930,12 +998,9 @@ async def solve(body: dict[str, Any]) -> dict[str, Any]:
                 detail=_stream_error_payload(exc),
             ) from exc
         raise
-    future = asyncio.create_task(asyncio.to_thread(solver.solve, config, solve_mesh_key=solve_mesh_key))
+    future = _run_solver_thread(solver.solve, config, solve_mesh_key=solve_mesh_key)
     try:
-        result = await asyncio.wait_for(
-            asyncio.shield(future),
-            timeout=timeout_seconds,
-        )
+        result = await _wait_for_worker(future, timeout=timeout_seconds)
         public_result = await asyncio.to_thread(_package_public_result, result)
         return await asyncio.to_thread(
             _store_public_result,
@@ -1160,7 +1225,7 @@ async def solve_stream(body: dict[str, Any]) -> StreamingResponse:
         queue: asyncio.Queue[dict[str, Any]] = asyncio.Queue()
         loop = asyncio.get_running_loop()
         started = time.perf_counter()
-        future: asyncio.Task[Any] | None = None
+        future: asyncio.Future[Any] | None = None
         stream_closed = threading.Event()
         latest_position = 0
         latest_total = 0
@@ -1232,15 +1297,14 @@ async def solve_stream(body: dict[str, Any]) -> StreamingResponse:
                     "elapsed_s": 0,
                 },
             )
-            future = asyncio.create_task(
-                asyncio.to_thread(
-                    solver.solve,
-                    config,
-                    on_progress=on_progress,
-                    solve_mesh_key=solve_mesh_key,
-                )
+            future = _run_solver_thread(
+                solver.solve,
+                config,
+                on_progress=on_progress,
+                solve_mesh_key=solve_mesh_key,
             )
             while not future.done():
+                _raise_if_server_stopping()
                 try:
                     progress = await asyncio.wait_for(queue.get(), timeout=0.5)
                     yield _sse_event("progress", progress)
