@@ -11,7 +11,7 @@
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
       "bytes": 1440,
-      "sha256": "648ab60ba0c23c696ae9a052e004da1f4ee68f5affd794c2f4423b772fe7156f"
+      "sha256": "100369ab00fbdb942f04c8f071a00abe69705330caef42beb6cfd72c87e3f9ae"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/config.yml",
@@ -41,7 +41,7 @@
     {
       "path": "CITATION.cff",
       "bytes": 580,
-      "sha256": "ff5e95a2b8212d13f9fdcb56c895c1f9481d384ffc0a670a20aef43e826f38fb"
+      "sha256": "92b5406b7b51318eb0afd69361f16640201b67c805d58f9c9fca46cf646ed70a"
     },
     {
       "path": "LICENSE",
@@ -55,18 +55,18 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 1812,
-      "sha256": "3718b65b694a5733d1d43f7bd97572e59b147db06b72c6165caa11e5056c8e71"
+      "bytes": 1971,
+      "sha256": "1578fbe64d3e47a73080b4bb7143e86e207c771646ceb8badddb01b5dc266615"
     },
     {
       "path": "README.md",
-      "bytes": 9048,
-      "sha256": "bbd5c9c50908bb6e0c234f1dbb3a7a47a8ef4de218f1a3e00d595fd1458801ae"
+      "bytes": 8782,
+      "sha256": "2ef849d33b4de702ae7206e28f8ff1a56bec55662f07b8b168b71807f1474f4f"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 17690,
-      "sha256": "2b6ffe63e0808affaadcf6277111e65a34a81af3e425b6cc547c2e19c1a0a8ce"
+      "bytes": 18573,
+      "sha256": "e67540aa7b91dcf252cfb129be5251d020236c64ae6fc4b3065909d259334651"
     },
     {
       "path": "SECURITY.md",
@@ -76,7 +76,7 @@
     {
       "path": "SUPPORT.md",
       "bytes": 971,
-      "sha256": "18e7800a4190b7c935c4f173c9e3c9ad215af6f838085981a3bc50bdf1978ac3"
+      "sha256": "69f665d7a688663ce92fe6ea8cc6469db939a412549450aba3ad159dd6c0a6bd"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -91,7 +91,7 @@
     {
       "path": "backend/__init__.py",
       "bytes": 53,
-      "sha256": "303edf330c12da756ea2724620a24ab9c759c5d1bbefde9d06a23c17b625d92a"
+      "sha256": "a504ea60e52a6281ed93c0120ebb218eeceea9753767e95273b8449249bb3cf2"
     },
     {
       "path": "backend/airgap_sampling.py",
@@ -3196,7 +3196,7 @@
     {
       "path": "docs/ELMER.md",
       "bytes": 6064,
-      "sha256": "39ed5f9ae925db34d500c4df3b81cdd422b25f63e7b133ad222c90e19e38a032"
+      "sha256": "1068d2db3c4e7a8b6113aaa1ca0ab93a38067944d7e42beeafa01a97baed69d0"
     },
     {
       "path": "docs/FIELD_PLAYBACK_V2.md",
@@ -3210,8 +3210,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 13178,
-      "sha256": "1233026cdc35733141c83dd03a5867d6156a75c6380439e9c4002214a41fa766"
+      "bytes": 13164,
+      "sha256": "c3ad869dc7507fc1b338194e530f6763f8189efbb6acc53fc94f58e0e61db948"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -3226,7 +3226,7 @@
     {
       "path": "docs/MAGNETO2D.md",
       "bytes": 46156,
-      "sha256": "5457a0699831248090b830afba898fac610693eadccea877a5d8a20b4d921508"
+      "sha256": "93f64669998b64d434bdcc333f11b3a1e6941124ce9b6d7af4d7c334de1810b9"
     },
     {
       "path": "docs/NUMERICAL_EVIDENCE.md",
@@ -3236,22 +3236,22 @@
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
       "bytes": 10183,
-      "sha256": "ebf15e5909a244ec60daca787dc23e422c32418d1505a28e0daf18ecae62e961"
+      "sha256": "62210e9ff878bf643eac4ad39055374af65ec10a1624035b9fddde776924b690"
     },
     {
       "path": "docs/RELEASING.md",
       "bytes": 9844,
-      "sha256": "c872a39aa6369142b8c1a0cc9926bf21b40fe69ddc7b17ddb6d5a7d8404fd2b5"
+      "sha256": "6ff1c7d400a574eff860265478ca3cd88c503a20fe5e8410ea7ac189be209c3c"
     },
     {
       "path": "docs/RUNTIME_SETTINGS.md",
-      "bytes": 9086,
-      "sha256": "c3b22595c1dd62c1d52c91a456877e1483148112548044455d6c015dc5c0cc3b"
+      "bytes": 9072,
+      "sha256": "c128b54cbf1083cb2861b416333e67f6f09283f3e49bef6f25e056b26751447c"
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 20725,
-      "sha256": "4d5f4cd2e9632012ef8179cfdd5ed09fbd73d17a4444613e0ba214c29f1957ed"
+      "bytes": 21006,
+      "sha256": "3ee90d2481ae77981d82ee7a377fceb5382ede5c1d0858882f912bdd2d27edfe"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -3291,12 +3291,12 @@
     {
       "path": "frontend/package-lock.json",
       "bytes": 63981,
-      "sha256": "03282779075633cdfe979bdbbe8661792ca8e4bff3f8d92600df1d9677bb3729"
+      "sha256": "46e5466c723c04d949140f0a5769b9c3372fdb2c90dae0c26e3609ccdb804ed3"
     },
     {
       "path": "frontend/package.json",
       "bytes": 1705,
-      "sha256": "819bab254fe093a0e6afe00e6e35d8f6b0585a2a7e7347633481d03105ba001c"
+      "sha256": "831be9ee6d85977bf9844778fc08089626001f3e7110c99565742602b2aac2d2"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -3881,7 +3881,7 @@
     {
       "path": "frontend/src/public/designFile.ts",
       "bytes": 10984,
-      "sha256": "c2221aba124add77366b60db8c286c0dc02a2e0932498998a3a14a0d93c20f05"
+      "sha256": "605683d55a4c753dfa130159b2d923ad99a30b8cf700d107af4b688f498c701a"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -4536,7 +4536,7 @@
     {
       "path": "tests/test_public_candidate.py",
       "bytes": 20059,
-      "sha256": "2118fb2c0a73a84bff7487d779c513fa37843dc342d1050feab87adafe9ab154"
+      "sha256": "4d284e07b09f17698671afa3f0502ff3250e9cbabb2ea0adab7610fd947485d4"
     },
     {
       "path": "tests/test_public_field_playback.py",
@@ -6860,6 +6860,114 @@
       "path": "tests/test_windows_playback_pool.py",
       "source_sha256": "862ad10f119ca85ba1996413416494468d18febb98c0885f28ef79c07f224bc8",
       "reason": "Spawn the playback test's workers as on Windows; a Linux forkserver (Python 3.14+) started by an earlier test keeps that test's data root (#72)."
+    },
+    {
+      "base_commit": "29ac8d767dfa6a269330f334fec5e11c5f3c1d8c",
+      "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
+      "source_sha256": "648ab60ba0c23c696ae9a052e004da1f4ee68f5affd794c2f4423b772fe7156f",
+      "reason": "Release coilEM 0.3.1: version placeholder."
+    },
+    {
+      "base_commit": "29ac8d767dfa6a269330f334fec5e11c5f3c1d8c",
+      "path": "CITATION.cff",
+      "source_sha256": "ff5e95a2b8212d13f9fdcb56c895c1f9481d384ffc0a670a20aef43e826f38fb",
+      "reason": "Release coilEM 0.3.1: citation version."
+    },
+    {
+      "base_commit": "29ac8d767dfa6a269330f334fec5e11c5f3c1d8c",
+      "path": "PUBLICATION_STATUS.md",
+      "source_sha256": "3718b65b694a5733d1d43f7bd97572e59b147db06b72c6165caa11e5056c8e71",
+      "reason": "Release coilEM 0.3.1: version, the bare install command, and why the 0.3.0 benchmark reports apply to 0.3.1 (#72)."
+    },
+    {
+      "base_commit": "29ac8d767dfa6a269330f334fec5e11c5f3c1d8c",
+      "path": "README.md",
+      "source_sha256": "bbd5c9c50908bb6e0c234f1dbb3a7a47a8ef4de218f1a3e00d595fd1458801ae",
+      "reason": "Release coilEM 0.3.1: restore the bare install commands and list Python 3.11 to 3.15 (#72)."
+    },
+    {
+      "base_commit": "29ac8d767dfa6a269330f334fec5e11c5f3c1d8c",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "2b6ffe63e0808affaadcf6277111e65a34a81af3e425b6cc547c2e19c1a0a8ce",
+      "reason": "Release coilEM 0.3.1: Python 3.15 support, the bare install commands, and the Python 3.15 benchmark limitation (#72)."
+    },
+    {
+      "base_commit": "29ac8d767dfa6a269330f334fec5e11c5f3c1d8c",
+      "path": "SUPPORT.md",
+      "source_sha256": "18e7800a4190b7c935c4f173c9e3c9ad215af6f838085981a3bc50bdf1978ac3",
+      "reason": "Release coilEM 0.3.1: version."
+    },
+    {
+      "base_commit": "29ac8d767dfa6a269330f334fec5e11c5f3c1d8c",
+      "path": "backend/__init__.py",
+      "source_sha256": "303edf330c12da756ea2724620a24ab9c759c5d1bbefde9d06a23c17b625d92a",
+      "reason": "Release coilEM 0.3.1: application version 0.3.1."
+    },
+    {
+      "base_commit": "29ac8d767dfa6a269330f334fec5e11c5f3c1d8c",
+      "path": "docs/ELMER.md",
+      "source_sha256": "39ed5f9ae925db34d500c4df3b81cdd422b25f63e7b133ad222c90e19e38a032",
+      "reason": "Release coilEM 0.3.1: version in the release-claim wording."
+    },
+    {
+      "base_commit": "29ac8d767dfa6a269330f334fec5e11c5f3c1d8c",
+      "path": "docs/GETTING_STARTED.md",
+      "source_sha256": "1233026cdc35733141c83dd03a5867d6156a75c6380439e9c4002214a41fa766",
+      "reason": "Release coilEM 0.3.1: version, Python 3.11 to 3.15 and the bare install command (#72)."
+    },
+    {
+      "base_commit": "29ac8d767dfa6a269330f334fec5e11c5f3c1d8c",
+      "path": "docs/MAGNETO2D.md",
+      "source_sha256": "5457a0699831248090b830afba898fac610693eadccea877a5d8a20b4d921508",
+      "reason": "Release coilEM 0.3.1: bundling application version."
+    },
+    {
+      "base_commit": "29ac8d767dfa6a269330f334fec5e11c5f3c1d8c",
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "source_sha256": "ebf15e5909a244ec60daca787dc23e422c32418d1505a28e0daf18ecae62e961",
+      "reason": "Release coilEM 0.3.1: version in the release-claim wording."
+    },
+    {
+      "base_commit": "29ac8d767dfa6a269330f334fec5e11c5f3c1d8c",
+      "path": "docs/RELEASING.md",
+      "source_sha256": "c872a39aa6369142b8c1a0cc9926bf21b40fe69ddc7b17ddb6d5a7d8404fd2b5",
+      "reason": "Release coilEM 0.3.1: version in the release command examples."
+    },
+    {
+      "base_commit": "29ac8d767dfa6a269330f334fec5e11c5f3c1d8c",
+      "path": "docs/RUNTIME_SETTINGS.md",
+      "source_sha256": "c3b22595c1dd62c1d52c91a456877e1483148112548044455d6c015dc5c0cc3b",
+      "reason": "Release coilEM 0.3.1: the bare install command (#72)."
+    },
+    {
+      "base_commit": "29ac8d767dfa6a269330f334fec5e11c5f3c1d8c",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "4d5f4cd2e9632012ef8179cfdd5ed09fbd73d17a4444613e0ba214c29f1957ed",
+      "reason": "Release coilEM 0.3.1: version, why the 0.3.0 benchmark reports apply, and the Python 3.15 CI check (#72)."
+    },
+    {
+      "base_commit": "29ac8d767dfa6a269330f334fec5e11c5f3c1d8c",
+      "path": "frontend/package-lock.json",
+      "source_sha256": "03282779075633cdfe979bdbbe8661792ca8e4bff3f8d92600df1d9677bb3729",
+      "reason": "Release coilEM 0.3.1: frontend package version."
+    },
+    {
+      "base_commit": "29ac8d767dfa6a269330f334fec5e11c5f3c1d8c",
+      "path": "frontend/package.json",
+      "source_sha256": "819bab254fe093a0e6afe00e6e35d8f6b0585a2a7e7347633481d03105ba001c",
+      "reason": "Release coilEM 0.3.1: frontend package version."
+    },
+    {
+      "base_commit": "29ac8d767dfa6a269330f334fec5e11c5f3c1d8c",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "c2221aba124add77366b60db8c286c0dc02a2e0932498998a3a14a0d93c20f05",
+      "reason": "Release coilEM 0.3.1: design-file application version."
+    },
+    {
+      "base_commit": "29ac8d767dfa6a269330f334fec5e11c5f3c1d8c",
+      "path": "tests/test_public_candidate.py",
+      "source_sha256": "2118fb2c0a73a84bff7487d779c513fa37843dc342d1050feab87adafe9ab154",
+      "reason": "Release coilEM 0.3.1: expected versions."
     }
   ]
 }

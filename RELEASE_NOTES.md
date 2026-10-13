@@ -1,24 +1,25 @@
-# coilEM 0.3.0 Developer Preview
+# coilEM 0.3.1 Developer Preview
 
-coilEM 0.3.0 is the first coilEM release you can install with one command. It
-is a developer preview of the local motor-design application and bundles
-Magneto2D 0.3.3 as its field solver; the application and solver use separate
-version numbers.
+coilEM 0.3.1 is a patch release of the 0.3 developer preview that supports
+Python 3.15, so the one-command install works on computers without an older
+Python. It is a developer preview of the local motor-design application and
+bundles Magneto2D 0.3.3 as its field solver; the application and solver use
+separate version numbers.
 
 ## Install
 
 ```sh
-uv tool install --python 3.14 coilem
+uv tool install coilem
 coilem
 ```
 
-`uvx --python 3.14 coilem` runs it once without installing. The [README](README.md#install)
+`uvx coilem` runs it once without installing. The [README](README.md#install)
 lists the supported platforms and how to install uv.
 
 - Each platform's wheel carries the Magneto2D executable and the built UI, so
   installing needs neither Rust nor Node.js. Wheels cover macOS 12 or newer on
   Apple silicon, macOS 10.15 or newer on Intel, Linux x86_64 with glibc 2.27
-  or newer, and Windows x64, for Python 3.11 to 3.14.
+  or newer, and Windows x64, for Python 3.11 to 3.15.
 - The `coilem` launcher serves the UI and API together at
   `http://127.0.0.1:2645` by default. Halbach autosaves and tutorial progress
   saved in the browser under the development origin on port 5173 do not
@@ -28,6 +29,23 @@ lists the supported platforms and how to install uv.
 - Each wheel records its build identity: the application and Magneto2D
   versions, the commit, and the binary and UI hashes. `/health`, saved-run
   provenance and the PDF report show it.
+
+## Changes in 0.3.1
+
+- Python 3.15 is supported. Without Python 3.11 to 3.14 on the computer, uv
+  chooses Python 3.15, and coilEM 0.3.0's pinned numpy, pydantic-core and
+  rpds-py have no wheels for it, so that install failed while building them
+  ([#72](https://github.com/coilemdev/coilem/issues/72)). On Python 3.15,
+  coilEM 0.3.1 installs numpy 2.5.4, pydantic 2.14.1 with pydantic-core
+  2.50.1, rpds-py 2026.9.1 and typing-inspection 0.4.4. NumPy 2.5 has no
+  Python 3.11 wheels, so Python 3.11 to 3.14 keep the 0.3.0 versions.
+- The install commands no longer need `--python 3.14`.
+- The application and solver are unchanged from 0.3.0. On Python 3.11 to 3.14,
+  0.3.1 installs the same dependencies as 0.3.0, so benchmark reports v1.7 and
+  v1.8 of 0.3.0 apply to it.
+- CI runs the installed-wheel acceptance test with Python 3.15 on every
+  platform and the full test suite with Python 3.15 on Linux, and audits each
+  supported Python's dependency pins.
 
 ## Changes since the 0.2.0 source preview
 
@@ -264,19 +282,18 @@ report downloads. See [Halbach arrays](docs/HALBACH_ARRAY.md).
 
 ## Known limitations
 
-- Keep `--python 3.14` in the install commands above. On a computer without
-  Python 3.11 to 3.14, `uv tool install coilem` and `uvx coilem` without it let
-  uv choose Python 3.15, which coilEM 0.3.0's pinned dependencies do not support
-  yet, and the install fails while building them ([#72](https://github.com/coilemdev/coilem/issues/72)). A patch
-  release will add Python 3.15.
 - coilEM installs as a Python package from PyPI. There is no desktop
   installer, code signing, notarization or automatic update; upgrade with
   `uv tool upgrade coilem`.
 - CI tests the installed wheels on macOS 15 (Apple silicon and Intel), Ubuntu
-  22.04 and Windows Server 2022 with Python 3.11 to 3.14. Older systems down to
+  22.04 and Windows Server 2022 with Python 3.11 to 3.15. Older systems down to
   the stated minimums should work but are not tested; reports from other
   systems are welcome. Linux and Windows on ARM are not supported, because
   Gmsh publishes no wheels for them.
+- Benchmark reports v1.7 and v1.8 ran with Python 3.12 and the 0.3.0
+  dependencies. Python 3.15 installs use numpy 2.5.4 and pydantic 2.14.1 and
+  have no benchmark report yet; CI runs the tests and a benchmark smoke run
+  with Python 3.15.
 - The run-time estimate comes from runs timed on an Apple-silicon Mac before
   the faster solves, so it tends to overstate run times there. It has not been
   calibrated on Windows or Linux.

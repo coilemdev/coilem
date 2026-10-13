@@ -92,7 +92,7 @@ test. It installs the wheel into a fresh environment where Cargo and Node.js
 cannot be found, then exercises the installed `coilem` through HTTP:
 
 ```sh
-python -I acceptance.py --install path/to/coilem-0.3.0-py3-none-macosx_12_0_arm64.whl
+python -I acceptance.py --install path/to/coilem-0.3.1-py3-none-macosx_12_0_arm64.whl
 ```
 
 ## TestPyPI rehearsal
@@ -128,8 +128,8 @@ To try a rehearsal build by hand, download the wheel from TestPyPI and run
 that file. Its dependencies then come from PyPI:
 
 ```sh
-python -m pip download --no-deps --index-url https://test.pypi.org/simple/ coilem==0.3.0.devN -d coilem-wheel
-uvx --from coilem-wheel/coilem-0.3.0.devN-*.whl coilem
+python -m pip download --no-deps --index-url https://test.pypi.org/simple/ coilem==0.3.1.devN -d coilem-wheel
+uvx --from coilem-wheel/coilem-0.3.1.devN-*.whl coilem
 ```
 
 Do not install with `--extra-index-url https://test.pypi.org/simple/`: anyone
@@ -157,12 +157,12 @@ Each release:
 2. Merge, then run a TestPyPI rehearsal on that `main` commit and try the
    build by hand on each platform.
 3. Tag that commit and push the tag. The tag must name the version exactly,
-   such as `v0.3.0` for 0.3.0, or the policy job stops the run;
-   `python -m tools.release.version --tag v0.3.0` runs the same check.
+   such as `v0.3.1` for 0.3.1, or the policy job stops the run;
+   `python -m tools.release.version --tag v0.3.1` runs the same check.
 
    ```sh
-   git tag -a v0.3.0 -m "coilEM 0.3.0" <commit>
-   git push origin v0.3.0
+   git tag -a v0.3.1 -m "coilEM 0.3.1" <commit>
+   git push origin v0.3.1
    ```
 
 4. The workflow builds and accepts the wheels as for any run, then waits for
