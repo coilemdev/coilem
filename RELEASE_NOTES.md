@@ -170,6 +170,13 @@ Magneto2D with fresh, matched FEMM references across 30 fixtures: 27 PASS,
 2 FAIL and 1 unsupported. See [Validation](docs/VALIDATION.md#qualification-status)
 for the gates and limits.
 
+Benchmark reports [v1.7](benchmarks/macos-rc-20261013-1fac3a1/README.md) (macOS) and [v1.8](benchmarks/windows-rc-20261013-1fac3a1/README.md) (Windows)
+rerun the current selection on this release, `1fac3a1`: 29 PASS, the planned
+unsupported Prius fixture and 42/42 BLDC gates on both platforms. The current selection replaces the two
+failing low-output V-shape fixtures with higher-output designs, which pass; the
+original failures stay reproducible and V-shape IPM remains experimental. Every
+qualified fixture still passes, so the qualified scope is unchanged.
+
 - **Qualified:** these tested combinations, each with every v1.1 fixture
   passing, using M350-50A steel, native Gmsh meshing and local Magneto2D:
   - SPM with single-layer concentrated windings, under sinusoidal current
