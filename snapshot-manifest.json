@@ -495,8 +495,8 @@
     },
     {
       "path": "backend/solver/_process_pool.py",
-      "bytes": 4295,
-      "sha256": "f4bf9b3f9b82abdff21eb7e7e7a45a482a48721d3a286a725077a0d37b5c2480"
+      "bytes": 5257,
+      "sha256": "b083b9b7fa4bd717e5d06132ee91a2538b0e91f3187763ef8c69cb00a4844b2e"
     },
     {
       "path": "backend/solver_contract.py",
@@ -3355,8 +3355,8 @@
     },
     {
       "path": "tests/test_launcher_shutdown.py",
-      "sha256": "dcf38c0c11e8c73e50bf2e0c36d209fdaecaff7010d72b901e61b3eee1801e66",
-      "bytes": 19862
+      "sha256": "3b4fc8750caf9c64429c935932877ba8192073b60f854e98a1df3dd9d0ce6883",
+      "bytes": 22480
     },
     {
       "path": "tests/test_linear_halbach_analytical.py",
@@ -5334,6 +5334,18 @@
       "path": "tests/test_launcher_shutdown.py",
       "source_sha256": "8bddcdb813d5b215593b64f3d600d8a0e8732bf07eeea39c45ed5b830e4faa36",
       "reason": "#55 review: cover concurrent run-manifest writes, cancellation order, pool termination and a real interrupted launcher."
+    },
+    {
+      "base_commit": "98ef40412acfc4add1e79e63c7c025b35a5beb91",
+      "path": "backend/solver/_process_pool.py",
+      "source_sha256": "f4bf9b3f9b82abdff21eb7e7e7a45a482a48721d3a286a725077a0d37b5c2480",
+      "reason": "#55 review: latch application exit so pools created after shutdown cleanup are refused, and shut each pool down before stopping its workers so none start later."
+    },
+    {
+      "base_commit": "98ef40412acfc4add1e79e63c7c025b35a5beb91",
+      "path": "tests/test_launcher_shutdown.py",
+      "source_sha256": "dcf38c0c11e8c73e50bf2e0c36d209fdaecaff7010d72b901e61b3eee1801e66",
+      "reason": "#55 review: cover a pool registered before its workers start and a launcher interrupted while playback still prepares its input."
     }
   ]
 }

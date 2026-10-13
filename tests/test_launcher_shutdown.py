@@ -44,6 +44,12 @@ CONFIG = MotorConfig.model_validate_json(
 ).model_dump(mode="json")
 
 
+@pytest.fixture(autouse=True)
+def _fresh_exit_latch(monkeypatch):
+    """Application exit refuses new process pools; keep that to each test."""
+    monkeypatch.setattr(_process_pool, "_EXITING", threading.Event())
+
+
 class SlowUnwindingWorker:
     """Reports progress, then keeps unwinding after a cancellation until released."""
 
@@ -365,10 +371,41 @@ def test_terminating_process_pools_ends_their_running_tasks(monkeypatch):
         assert unwound.wait(timeout=10), "pool shutdown still waited for its running task"
         assert isinstance(futures[0].exception(timeout=5), BrokenProcessPool)
         assert not _process_pool._LIVE_POOLS
+        # A pool created after exit began cannot escape it.
+        with pytest.raises(SolveCancelledError):
+            with _process_pool.cancellable_process_pool(1):
+                pass
     finally:
         if not unwound.is_set():
             _process_pool._stop_pool_workers(pools[0])
         solver.join(timeout=10)
+
+
+def test_terminating_a_pool_before_its_workers_start_refuses_them():
+    registered, terminated = threading.Event(), threading.Event()
+    outcome: list[BaseException] = []
+    workers: list[dict] = []
+
+    def submits_after_exit_began() -> None:
+        try:
+            with _process_pool.cancellable_process_pool(1) as pool:
+                workers.append(pool._processes)
+                registered.set()
+                terminated.wait(timeout=10)
+                pool.submit(time.sleep, 120)
+        except BaseException as exc:  # noqa: BLE001 - recorded for the assertion
+            outcome.append(exc)
+
+    solver = threading.Thread(target=submits_after_exit_began, daemon=True)
+    solver.start()
+    assert registered.wait(timeout=10)
+    _process_pool.terminate_process_pools()
+    terminated.set()
+    solver.join(timeout=10)
+
+    assert not solver.is_alive()
+    assert len(outcome) == 1 and isinstance(outcome[0], RuntimeError), outcome
+    assert workers == [{}], "no worker may start once exit has begun"
 
 
 # The real launcher, with the solve or its packaging held by a process-pool
@@ -383,9 +420,12 @@ from pathlib import Path
 import backend.launcher as launcher
 import backend.public_field_playback as playback
 import backend.resources as resources
+import backend.solver._process_pool as process_pool
 from backend.public_routes import solve as routes
 from backend.solver._process_pool import cancellable_process_pool, completed_process_futures
 from backend.solver_contract import SolveCancelledError
+
+POOLS_STOPPED = threading.Event()
 
 
 def hold(*_args):
@@ -407,12 +447,25 @@ class PoolHoldingSolver:
 
     def solve(self, config, *, on_progress=None, **kwargs):
         on_progress(1, 48, 0.25)
-        if self.stage == "packaging":
+        if self.stage != "solving":
             return {"frames": [{"field_frame_artifact": {"artifact_id": "held"}}]}
         with cancellable_process_pool(1) as pool:
             for future in completed_process_futures({pool.submit(hold): 0}, self.check_cancelled):
                 future.result()
         return {}
+
+
+def prepare_playback(stage, cache, artifact_id):
+    if stage == "packaging-after-cleanup":
+        # Still preparing playback input when shutdown stops the live pools.
+        Path(os.environ["COILEM_TEST_PREPARING"]).write_text("1", encoding="utf-8")
+        POOLS_STOPPED.wait(timeout=60)
+    return cache / "frames" / artifact_id
+
+
+def stop_pools_then_release(stop_pools):
+    stop_pools()
+    POOLS_STOPPED.set()
 
 
 if __name__ == "__main__":
@@ -421,8 +474,10 @@ if __name__ == "__main__":
     resources.ui_bundle_root = lambda: Path(os.environ["COILEM_TEST_UI"])
     launcher.linux_mesher_problem = lambda: None
     routes._create_public_solver = lambda *args: PoolHoldingSolver(stage)
+    stop_pools = process_pool.terminate_process_pools
+    process_pool.terminate_process_pools = lambda: stop_pools_then_release(stop_pools)
     # Packaging builds field playback on its process pool.
-    playback.resolve_solve_cache_artifact_id = lambda artifact_id: cache / "frames" / artifact_id
+    playback.resolve_solve_cache_artifact_id = lambda artifact_id: prepare_playback(stage, cache, artifact_id)
     playback._PLAYBACK_PROCESS_MIN_FRAMES = 1
     playback._package_playback_frame = hold
     routes._package_public_result = lambda result: playback.build_public_field_playback(
@@ -466,7 +521,7 @@ def _free_port() -> int:
         return probe.getsockname()[1]
 
 
-@pytest.mark.parametrize("stage", ["solving", "packaging"])
+@pytest.mark.parametrize("stage", ["solving", "packaging", "packaging-after-cleanup"])
 def test_interrupting_the_launcher_stops_a_running_process_pool_task(tmp_path, stage):
     ui = tmp_path / "ui"
     ui.mkdir()
@@ -474,6 +529,8 @@ def test_interrupting_the_launcher_stops_a_running_process_pool_task(tmp_path, s
     script = tmp_path / "interrupted_launcher.py"
     script.write_text(_INTERRUPTED_LAUNCHER, encoding="utf-8")
     data, pid_file = tmp_path / "user-data", tmp_path / "pool-worker.pid"
+    preparing = tmp_path / "preparing-playback"
+    late = stage == "packaging-after-cleanup"
     env = {
         **os.environ,
         "PYTHONPATH": str(REPO),
@@ -482,6 +539,7 @@ def test_interrupting_the_launcher_stops_a_running_process_pool_task(tmp_path, s
         "COILEM_TEST_UI": str(ui),
         "COILEM_TEST_CACHE": str(tmp_path / "cache"),
         "COILEM_TEST_POOL_PID": str(pid_file),
+        "COILEM_TEST_PREPARING": str(preparing),
         "COILEM_MAGNETO2D_ALLOW_PLAYBACK_PROCESS_POOL": "1",
     }
     env.pop("COILEM_LOCAL_API_PORT", None)
@@ -511,12 +569,15 @@ def test_interrupting_the_launcher_stops_a_running_process_pool_task(tmp_path, s
         events: list[tuple[str, dict]] = []
         client = threading.Thread(target=_read_stream, args=(port, events, threading.Event()), daemon=True)
         client.start()
+        # Interrupt while a pool task runs, or (late) while playback still
+        # prepares its input, before its pool exists.
+        started_marker = preparing if late else pid_file
         deadline = time.monotonic() + 60
-        while not pid_file.exists() and time.monotonic() < deadline:
+        while not started_marker.exists() and time.monotonic() < deadline:
             time.sleep(0.05)
-        assert pid_file.exists(), "\n".join(output)
+        assert started_marker.exists(), "\n".join(output)
         time.sleep(0.2)  # let the worker record its id fully
-        worker = int(pid_file.read_text(encoding="utf-8"))
+        worker = None if late else int(pid_file.read_text(encoding="utf-8"))
 
         started = time.monotonic()
         server.send_signal(signal.CTRL_BREAK_EVENT if os.name == "nt" else signal.SIGINT)
@@ -527,9 +588,12 @@ def test_interrupting_the_launcher_stops_a_running_process_pool_task(tmp_path, s
         assert code == 0, f"exit {code} after {elapsed:.1f}s\n{log}"
         assert elapsed < launcher.GRACEFUL_SHUTDOWN_S, f"took {elapsed:.1f}s\n{log}"
         assert not (data / launcher.RECORD_FILE).exists()
-        assert _gone_within(worker, 10), "the process-pool worker outlived the launcher"
+        if worker is None:
+            assert not pid_file.exists(), "a pool created after shutdown cleanup started a worker"
+        else:
+            assert _gone_within(worker, 10), "the process-pool worker outlived the launcher"
         client.join(timeout=10)
-        if stage == "packaging":
+        if stage != "solving":
             assert ("progress", "packaging_results") in [(name, event.get("stage")) for name, event in events]
         assert events[-1][0] == "error"
         assert events[-1][1]["error_code"] == "SOLVER_CANCELLED"

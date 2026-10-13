@@ -20,17 +20,28 @@ _worker_cancelled: Event | None = None
 # because the interpreter otherwise waits for those tasks before it exits (#55).
 _LIVE_POOLS: dict[ProcessPoolExecutor, Event | None] = {}
 _LIVE_POOLS_LOCK = threading.Lock()
+# Set, under the lock, once application exit has begun: later pools are refused.
+_EXITING = threading.Event()
 
 
 @contextmanager
 def tracked_process_pool(pool: Executor, cancelled: Event | None = None) -> Iterator[Executor]:
-    """Register a process pool so application exit can stop its workers."""
+    """Register a process pool so application exit can stop its workers.
+
+    Once exit has begun the pool is refused instead, like a native solve, so a
+    pool created after ``terminate_process_pools`` cannot outlive it.
+    """
 
     if not isinstance(pool, ProcessPoolExecutor):
         yield pool
         return
     with _LIVE_POOLS_LOCK:
-        _LIVE_POOLS[pool] = cancelled
+        refused = _EXITING.is_set()
+        if not refused:
+            _LIVE_POOLS[pool] = cancelled
+    if refused:
+        pool.shutdown(wait=False, cancel_futures=True)
+        raise SolveCancelledError("coilEM is stopping; no new solver workers are started.")
     try:
         yield pool
     finally:
@@ -39,14 +50,15 @@ def tracked_process_pool(pool: Executor, cancelled: Event | None = None) -> Iter
 
 
 def terminate_process_pools() -> None:
-    """Stop the workers of every live solver process pool, for application exit.
+    """Stop every solver process pool's workers and refuse new pools, for application exit.
 
-    Their pending futures then fail with ``BrokenProcessPool``, so a solver or
+    Pending futures then fail with ``BrokenProcessPool``, so a solver or
     playback build waiting on them unwinds at once instead of after its
     running tasks, such as Gmsh meshes on Windows, finish.
     """
 
     with _LIVE_POOLS_LOCK:
+        _EXITING.set()
         pools = list(_LIVE_POOLS.items())
     for pool, cancelled in pools:
         if cancelled is not None:
@@ -55,15 +67,24 @@ def terminate_process_pools() -> None:
 
 
 def _stop_pool_workers(pool: ProcessPoolExecutor) -> None:
-    kill = getattr(pool, "kill_workers", None)  # Python 3.14+
-    if callable(kill):
-        try:
-            kill()
-            return
-        except Exception:  # noqa: BLE001 - fall back to the workers themselves
-            pass
-    # Python 3.11-3.13 have no public way to stop a pool's workers.
-    for process in list((getattr(pool, "_processes", None) or {}).values()):
+    # submit() starts workers into this dict under the pool's shutdown lock.
+    # Shutting down first refuses later submissions, so the dict then holds
+    # every worker the pool will ever have, even ones a submission in flight
+    # just started; shutdown() drops the pool's own reference to it.
+    processes = getattr(pool, "_processes", None)
+    try:
+        pool.shutdown(wait=False, cancel_futures=True)
+    except Exception:  # noqa: BLE001 - still stop the workers
+        pass
+    if processes is None:
+        kill = getattr(pool, "kill_workers", None)  # Python 3.14+, if the layout changes
+        if callable(kill):
+            try:
+                kill()
+            except Exception:  # noqa: BLE001 - best effort at exit
+                pass
+        return
+    for process in list(processes.values()):
         try:
             process.kill()
         except Exception:  # noqa: BLE001 - best effort at exit
