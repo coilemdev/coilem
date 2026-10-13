@@ -7,22 +7,22 @@ Everything runs on your computer.
 
 Website: [coilem.com](https://coilem.com)
 
-The latest complete [benchmark report v1.5](benchmarks/macos-rc-20261013-04f87a5/README.md)
-measures the selected A/B/C/D matrix on the pinned coilEM 0.3.0 release
-candidate `04f87a5`, on macOS: 29 PASS, one planned unsupported Prius fixture
-and 42/42 BLDC gates. Every verdict and gate status matches the previous
-Windows report v1.4. It runs fresh Magneto2D fields against frozen, data-only
+The latest complete benchmark reports, [v1.7](benchmarks/macos-rc-20261013-1fac3a1/README.md) on macOS and
+[v1.8](benchmarks/windows-rc-20261013-1fac3a1/README.md) on Windows, measure the selected A/B/C/D matrix on
+coilEM 0.3.0 (`1fac3a1`): 29 PASS, one planned unsupported Prius fixture and
+42/42 BLDC gates on both platforms. The two platforms agree on every verdict
+and gate status. They run fresh Magneto2D fields against frozen, data-only
 FEMM references; no new FEMM solves were executed. The
-[benchmark index](benchmarks/README.md) retains the Windows runs, the compiled
+[benchmark index](benchmarks/README.md) retains earlier runs, the compiled
 v1.2 selection, archived runs and the scoped preview qualification record.
 
 ![coilEM workspace](docs/images/coilem-landing-page.png)
 
 **Developer preview:** the published [A/B/C/D benchmark report
 v1.1](benchmarks/main-20261009-bad71d9/benchmark_report.md) qualifies these
-tested combinations against matched FEMM references, and [report
-v1.5](benchmarks/macos-rc-20261013-04f87a5/README.md) confirms that every qualified fixture still
-passes on the 0.3.0 release candidate `04f87a5`:
+tested combinations against matched FEMM references, and reports
+[v1.7](benchmarks/macos-rc-20261013-1fac3a1/README.md) and [v1.8](benchmarks/windows-rc-20261013-1fac3a1/README.md) confirm that every qualified
+fixture still passes on coilEM 0.3.0, on macOS and Windows:
 - SPM with concentrated windings, under sinusoidal or ideal six-step current;
 - SPM with two-layer distributed windings, under sinusoidal current; and
 - flat-buried IPM with concentrated windings, under sinusoidal current.

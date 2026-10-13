@@ -55,18 +55,18 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 1712,
-      "sha256": "044ae5f116fecdec76a1dc5e943bb6797d22dcfae46a84d3bcf7f5b3dc45bc90"
+      "bytes": 1798,
+      "sha256": "44c716ece91ac915988f16cdb4596e2ed6e06a42ceee828ff87bc442b9a81295"
     },
     {
       "path": "README.md",
-      "bytes": 8678,
-      "sha256": "b5b7161845a63105b1dc8496af496248c49ad8a5a319e7a09e1b54a8f7d453b5"
+      "bytes": 8783,
+      "sha256": "96797343f9c0000ff72e0b9e2eb53c072c670702efdde9959df82c95a0966a2c"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 17411,
-      "sha256": "e0f912116543868573e5fb084deba3fc4e4050bce30881069d9ce2586faf238b"
+      "bytes": 17280,
+      "sha256": "10e450bca3b93f900e2367d6b9a4fcde4e576abd37346375df6975135da8abd7"
     },
     {
       "path": "SECURITY.md",
@@ -3250,8 +3250,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 19433,
-      "sha256": "2f2257c73a69e65edb0a40503092caf2422c913c019f97b465cafd274c3a3f28"
+      "bytes": 20725,
+      "sha256": "4d5f4cd2e9632012ef8179cfdd5ed09fbd73d17a4444613e0ba214c29f1957ed"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -6740,6 +6740,30 @@
       "path": "docs/VALIDATION.md",
       "source_sha256": "f6090f992fa684d6ece9d7b198f3b6934d69822c35d441fa6783193b745a164d",
       "reason": "Add the release-candidate run v1.5 at 04f87a5 and cite it in the qualification status, without changing the qualified scope."
+    },
+    {
+      "base_commit": "6f7ba09a34f6b48129ec682d97570afb77d42d10",
+      "path": "PUBLICATION_STATUS.md",
+      "source_sha256": "044ae5f116fecdec76a1dc5e943bb6797d22dcfae46a84d3bcf7f5b3dc45bc90",
+      "reason": "Record that reports v1.7 and v1.8 measure this release on macOS and Windows and retain every verdict."
+    },
+    {
+      "base_commit": "6f7ba09a34f6b48129ec682d97570afb77d42d10",
+      "path": "README.md",
+      "source_sha256": "b5b7161845a63105b1dc8496af496248c49ad8a5a319e7a09e1b54a8f7d453b5",
+      "reason": "Cite reports v1.7 (macOS) and v1.8 (Windows) of coilEM 0.3.0 at 1fac3a1 as the latest complete runs and as confirming the qualified fixtures."
+    },
+    {
+      "base_commit": "6f7ba09a34f6b48129ec682d97570afb77d42d10",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "e0f912116543868573e5fb084deba3fc4e4050bce30881069d9ce2586faf238b",
+      "reason": "Cite reports v1.7 and v1.8 in Qualification, and drop the walkthrough times measured on the superseded release-candidate wheel."
+    },
+    {
+      "base_commit": "6f7ba09a34f6b48129ec682d97570afb77d42d10",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "2f2257c73a69e65edb0a40503092caf2422c913c019f97b465cafd274c3a3f28",
+      "reason": "Describe the v1.7 and v1.8 runs of coilEM 0.3.0 on both platforms and keep v1.5 as the earlier release-candidate record."
     }
   ]
 }
