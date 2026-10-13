@@ -1,10 +1,14 @@
 # Developer-preview validation
 
-The release is coilEM 0.3.0 with Magneto2D 0.3.3, a developer preview. Its numerical qualification is the published A/B/C/D benchmark
+The release is coilEM 0.3.1 with Magneto2D 0.3.3, a developer preview. Its numerical qualification is the published A/B/C/D benchmark
 report v1.1, which compares the native solver with fresh, matched FEMM
 references. Reports [v1.7](../benchmarks/macos-rc-20261013-1fac3a1/README.md) (macOS) and [v1.8](../benchmarks/windows-rc-20261013-1fac3a1/README.md)
-(Windows) measure the released commit `1fac3a17fca7501d054a12b64b4a0472916ade98`;
-they retain every verdict and do not change the qualified scope. Passing CI
+(Windows) measure coilEM 0.3.0 at `1fac3a17fca7501d054a12b64b4a0472916ade98`;
+they retain every verdict and do not change the qualified scope. coilEM 0.3.1
+adds Python 3.15 support and leaves the application unchanged: on Python 3.11
+to 3.14 it installs the same dependencies as 0.3.0, so these reports apply to
+it. Python 3.15 installs use newer numpy and pydantic and have no benchmark
+report yet. Passing CI
 alone does not establish numerical accuracy.
 
 See [Numerical evidence](NUMERICAL_EVIDENCE.md) for measured comparisons and
@@ -279,7 +283,7 @@ not prove that this earlier material is clean.
 ## Automated checks
 
 The public CI workflow checks the snapshot manifest, publication contents,
-Python dependencies, lint and exported tests on Python 3.11 across Windows, macOS and Linux,
+Python dependencies, lint and exported tests on Python 3.11 across Windows, macOS and Linux and on Python 3.15 on Linux,
 the locked native solver build, real native-mesh sinusoidal and six-step smoke
 solves, frontend contracts and production build, and native Rust tests. Dependency
 audits cover the Python, JavaScript and Rust locks. A separate Chromium job

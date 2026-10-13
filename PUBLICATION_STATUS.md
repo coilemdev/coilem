@@ -1,15 +1,17 @@
 # Release status
 
-The release is **coilEM 0.3.0 Developer Preview**, with **Magneto2D 0.3.3**.
+The release is **coilEM 0.3.1 Developer Preview**, with **Magneto2D 0.3.3**.
 Its numerical qualification is the published [A/B/C/D benchmark report
 v1.1](benchmarks/main-20261009-bad71d9/benchmark_report.md). It qualifies the
 tested SPM and flat-buried IPM combinations listed in [Validation](docs/VALIDATION.md#qualification-status);
 V-shape IPM and untested combinations remain experimental.
 Benchmark reports [v1.7](benchmarks/macos-rc-20261013-1fac3a1/README.md) (macOS) and [v1.8](benchmarks/windows-rc-20261013-1fac3a1/README.md) (Windows)
-measure this release, `1fac3a1`, and retain every verdict on both platforms:
+measure coilEM 0.3.0, `1fac3a1`, and retain every verdict on both platforms:
 29 PASS, the planned unsupported Prius fixture and 42/42 BLDC gates. They do
-not change the qualified scope.
-It installs from PyPI with `uv tool install --python 3.14 coilem`; see [Install](README.md#install)
+not change the qualified scope. coilEM 0.3.1 adds Python 3.15 support and
+leaves the application unchanged: on Python 3.11 to 3.14 it installs the same
+dependencies as 0.3.0, so these reports apply to it.
+It installs from PyPI with `uv tool install coilem`; see [Install](README.md#install)
 for the platforms its wheels are built and tested on. Passing CI does not
 establish engineering accuracy.
 
