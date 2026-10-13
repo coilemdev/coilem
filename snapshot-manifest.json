@@ -65,8 +65,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 13685,
-      "sha256": "895a5dc4dbacf08f4b09436273161281c3794bb16d1d910895609af2907c1f91"
+      "bytes": 16716,
+      "sha256": "080121ce0f6d56a15dabb0e094c9982afb079c407c0e3634047526fa1f55331b"
     },
     {
       "path": "SECURITY.md",
@@ -5543,6 +5543,12 @@
       "path": "tests/test_release_tools.py",
       "source_sha256": "8a94a5aa218c93bd563b60b0f24a6d18b49d08b7f1e22c14171227e454e974a3",
       "reason": "Check that only a version tag publishes to PyPI, after acceptance and through the reviewed environment."
+    },
+    {
+      "base_commit": "989015536a26d32647bcdb4bc8de7a2c1c32301f",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "895a5dc4dbacf08f4b09436273161281c3794bb16d1d910895609af2907c1f91",
+      "reason": "Add the fixes from 0.3 QA (#51-#55, #58, #59, #62) to the 0.3.0 release notes."
     }
   ]
 }
