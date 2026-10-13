@@ -2,7 +2,7 @@
 
 This guide takes the included example motor from a clean checkout through
 geometry review, mesh preparation, a local Magneto2D solve, and an immutable
-report export. If you installed coilEM with `uv tool install coilem`, run
+report export. If you installed coilEM with `uv tool install --python 3.14 coilem`, run
 `coilem` and start at [6. Load the example motor](#6-load-the-example-motor);
 sections 1 to 5 build it from source.
 

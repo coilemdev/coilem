@@ -8,11 +8,11 @@ version numbers.
 ## Install
 
 ```sh
-uv tool install coilem
+uv tool install --python 3.14 coilem
 coilem
 ```
 
-`uvx coilem` runs it once without installing. The [README](README.md#install)
+`uvx --python 3.14 coilem` runs it once without installing. The [README](README.md#install)
 lists the supported platforms and how to install uv.
 
 - Each platform's wheel carries the Magneto2D executable and the built UI, so
@@ -264,6 +264,11 @@ report downloads. See [Halbach arrays](docs/HALBACH_ARRAY.md).
 
 ## Known limitations
 
+- Keep `--python 3.14` in the install commands above. On a computer without
+  Python 3.11 to 3.14, `uv tool install coilem` and `uvx coilem` without it let
+  uv choose Python 3.15, which coilEM 0.3.0's pinned dependencies do not support
+  yet, and the install fails while building them ([#72](https://github.com/coilemdev/coilem/issues/72)). A patch
+  release will add Python 3.15.
 - coilEM installs as a Python package from PyPI. There is no desktop
   installer, code signing, notarization or automatic update; upgrade with
   `uv tool upgrade coilem`.

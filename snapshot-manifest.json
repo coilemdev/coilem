@@ -55,18 +55,18 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 1798,
-      "sha256": "44c716ece91ac915988f16cdb4596e2ed6e06a42ceee828ff87bc442b9a81295"
+      "bytes": 1812,
+      "sha256": "3718b65b694a5733d1d43f7bd97572e59b147db06b72c6165caa11e5056c8e71"
     },
     {
       "path": "README.md",
-      "bytes": 8783,
-      "sha256": "96797343f9c0000ff72e0b9e2eb53c072c670702efdde9959df82c95a0966a2c"
+      "bytes": 9048,
+      "sha256": "bbd5c9c50908bb6e0c234f1dbb3a7a47a8ef4de218f1a3e00d595fd1458801ae"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 17280,
-      "sha256": "10e450bca3b93f900e2367d6b9a4fcde4e576abd37346375df6975135da8abd7"
+      "bytes": 17690,
+      "sha256": "2b6ffe63e0808affaadcf6277111e65a34a81af3e425b6cc547c2e19c1a0a8ce"
     },
     {
       "path": "SECURITY.md",
@@ -3210,8 +3210,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 13164,
-      "sha256": "f7cf05e40ce6dda1f0cfc78df416f784e8e12cd6a43dd770d00b2251e80d8ebc"
+      "bytes": 13178,
+      "sha256": "1233026cdc35733141c83dd03a5867d6156a75c6380439e9c4002214a41fa766"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -3245,8 +3245,8 @@
     },
     {
       "path": "docs/RUNTIME_SETTINGS.md",
-      "bytes": 9072,
-      "sha256": "c128b54cbf1083cb2861b416333e67f6f09283f3e49bef6f25e056b26751447c"
+      "bytes": 9086,
+      "sha256": "c3b22595c1dd62c1d52c91a456877e1483148112548044455d6c015dc5c0cc3b"
     },
     {
       "path": "docs/VALIDATION.md",
@@ -6764,6 +6764,36 @@
       "path": "docs/VALIDATION.md",
       "source_sha256": "2f2257c73a69e65edb0a40503092caf2422c913c019f97b465cafd274c3a3f28",
       "reason": "Describe the v1.7 and v1.8 runs of coilEM 0.3.0 on both platforms and keep v1.5 as the earlier release-candidate record."
+    },
+    {
+      "base_commit": "60c391310ed2c29d7b187d0bdfcdf264ae0f9b33",
+      "path": "PUBLICATION_STATUS.md",
+      "source_sha256": "44c716ece91ac915988f16cdb4596e2ed6e06a42ceee828ff87bc442b9a81295",
+      "reason": "Show the install command with --python 3.14 (#72)."
+    },
+    {
+      "base_commit": "60c391310ed2c29d7b187d0bdfcdf264ae0f9b33",
+      "path": "README.md",
+      "source_sha256": "96797343f9c0000ff72e0b9e2eb53c072c670702efdde9959df82c95a0966a2c",
+      "reason": "Install with --python 3.14: without it uv can choose Python 3.15, which coilEM 0.3.0 does not support (#72)."
+    },
+    {
+      "base_commit": "60c391310ed2c29d7b187d0bdfcdf264ae0f9b33",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "10e450bca3b93f900e2367d6b9a4fcde4e576abd37346375df6975135da8abd7",
+      "reason": "Use --python 3.14 in the install commands and name the Python 3.15 install failure as a known limitation (#72)."
+    },
+    {
+      "base_commit": "60c391310ed2c29d7b187d0bdfcdf264ae0f9b33",
+      "path": "docs/GETTING_STARTED.md",
+      "source_sha256": "f7cf05e40ce6dda1f0cfc78df416f784e8e12cd6a43dd770d00b2251e80d8ebc",
+      "reason": "Show the install command with --python 3.14 (#72)."
+    },
+    {
+      "base_commit": "60c391310ed2c29d7b187d0bdfcdf264ae0f9b33",
+      "path": "docs/RUNTIME_SETTINGS.md",
+      "source_sha256": "c128b54cbf1083cb2861b416333e67f6f09283f3e49bef6f25e056b26751447c",
+      "reason": "Show the install command with --python 3.14 (#72)."
     }
   ]
 }
