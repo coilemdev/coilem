@@ -2255,8 +2255,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 104921,
-      "sha256": "aa7320862bdcf599245f646e169e557065c7109fd5b83642fc6ef531381eb593"
+      "bytes": 105598,
+      "sha256": "242944ed2edd3159b49b30649934541c02da2e0dee41eaa5e6cb90613501dc0e"
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
@@ -2645,8 +2645,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 178528,
-      "sha256": "2d9c80c4cd23acfcf0085179321d4ecab4dc6be20c3f2530edfb592581f78998"
+      "bytes": 178718,
+      "sha256": "41002d08e80b42ac558f9357eb977d16ed8732383b0030c67b7f70a82be5eca7"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -2930,8 +2930,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 225283,
-      "sha256": "60808514937e95877d447b076580957410c3275f55b85664ec9d7939f4e7c376"
+      "bytes": 225541,
+      "sha256": "907976c194be01c074133968c323a7ca55640932a98157ff473230da9c354a25"
     },
     {
       "path": "frontend/src/public/tutorials/PublicTutorials.tsx",
@@ -5257,6 +5257,24 @@
       "path": "frontend/src/public/fieldPlaybackTiming.ts",
       "source_sha256": "5b4fd9e0420a326208cf49c124b3789d7936b2333e1e1c2a7588e44cbbe1072d",
       "reason": "Add the Preview window span, slider mapping, window playback and resting preload helpers (#59)."
+    },
+    {
+      "base_commit": "5454f331e560b491ecd060f032467baef7db0974",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "aa7320862bdcf599245f646e169e557065c7109fd5b83642fc6ef531381eb593",
+      "reason": "Pin the Solve-page update banner under the top bar (owner QA of #64)."
+    },
+    {
+      "base_commit": "5454f331e560b491ecd060f032467baef7db0974",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "2d9c80c4cd23acfcf0085179321d4ecab4dc6be20c3f2530edfb592581f78998",
+      "reason": "Show Solve-page updates in a thin banner under the top bar instead of over the view tabs (owner QA of #64)."
+    },
+    {
+      "base_commit": "5454f331e560b491ecd060f032467baef7db0974",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "60808514937e95877d447b076580957410c3275f55b85664ec9d7939f4e7c376",
+      "reason": "Style the Solve-page update banner in the page flow and drop the overlay toast (owner QA of #64)."
     }
   ]
 }

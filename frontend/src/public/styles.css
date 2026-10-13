@@ -3102,35 +3102,48 @@ body {
   font-size: 8px;
   line-height: 1.5;
 }
-.public-solve-toast {
-  position: absolute;
-  z-index: 45;
-  top: 12px;
-  left: 50%;
+.public-solve-stage {
   display: flex;
-  max-width: min(520px, calc(100% - 330px));
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  border: 1px solid rgba(34, 197, 94, 0.32);
-  border-radius: 8px;
-  color: var(--text-secondary);
-  background: rgba(9, 35, 24, 0.94);
-  box-shadow: var(--shadow-md);
-  font-size: 9px;
-  transform: translateX(-50%);
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
 }
-.public-solve-toast > span:not(.public-status-glyph) {
+.public-solve-stage > .public-solve-workspace {
+  flex: 1 1 auto;
+  height: auto;
+}
+.public-solve-banner {
+  display: flex;
+  min-height: 22px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 6px 12px 0;
+  padding: 2px 10px;
+  border: 1px solid rgba(34, 197, 94, 0.28);
+  border-radius: 7px;
+  color: var(--text-secondary);
+  background: rgba(9, 35, 24, 0.9);
+  font-size: 10px;
+  animation: public-solve-banner-in 160ms ease-out;
+}
+.public-solve-banner > span:not(.public-status-glyph) {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.public-solve-toast button {
+.public-solve-banner button {
   flex: 0 0 auto;
   border: 0;
   color: var(--text-muted);
   background: transparent;
   cursor: pointer;
+}
+@keyframes public-solve-banner-in {
+  from { opacity: 0; transform: translateY(-3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .public-solve-banner { animation: none; }
 }
 .public-motor-viewport .public-mesh-inspection-controls {
   display: flex;
@@ -3384,7 +3397,6 @@ body {
   }
   .public-solve-plan-choices button small { white-space: normal; }
   .public-custom-sweep-toggle small { white-space: normal; }
-  .public-solve-toast { max-width: calc(100% - 220px); }
 }
 
 @media (max-width: 1180px) {

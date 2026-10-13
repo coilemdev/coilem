@@ -2757,6 +2757,16 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
   );
 
   return (
+    <div className="public-solve-stage">
+      {/* Updates show in a thin banner under the top bar that takes its own
+          space, so they never cover the view tabs (owner QA of #64). */}
+      {transientNotice && (
+        <div className="public-solve-banner" role="status">
+          <StatusGlyph tone="good" />
+          <span>{transientNotice}</span>
+          <button type="button" aria-label="Dismiss update" onClick={() => setTransientNotice(null)}>×</button>
+        </div>
+      )}
     <div className={`public-solve-workspace${resizingRunPlan ? ' is-resizing-run-plan' : ''}${solveInProgress ? ' is-run-plan-focused' : ''}${solveViewportExpanded ? ' is-viewport-expanded' : ''}`}>
       <aside className="public-solve-setup">
         <div className="mesh-panel-header"><span className="mesh-panel-header-title">Analysis setup</span></div>
@@ -2965,13 +2975,6 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
         </div>
       </aside>
       <div className="public-live-stage">
-        {transientNotice && (
-          <div className="public-solve-toast" role="status">
-            <StatusGlyph tone="good" />
-            <span>{transientNotice}</span>
-            <button type="button" aria-label="Dismiss update" onClick={() => setTransientNotice(null)}>×</button>
-          </div>
-        )}
         {solveView !== 'field' && solveViewportSwitch}
         {solveView === 'field' && result
           ? (
@@ -3152,6 +3155,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
         {result && <CompletedResultMonitor result={result} onOpenReport={onOpenReport} />}
         </div>
       </aside>
+    </div>
     </div>
   );
 }

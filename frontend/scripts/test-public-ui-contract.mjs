@@ -904,6 +904,13 @@ assert.match(solvedFieldSource, /scrubNeighbourIndices\(angleFrames\.length, bou
 assert.match(solvedFieldSource, /const heldFrame = !activeRaster && !meshlessRaster && !exactVectorPlot && heldRaster\?\.source === source/);
 assert.match(solvedFieldSource, /if \(heldRaster\) shown\.add\(heldRaster\.raster\);/, 'a held frame is never closed while on screen');
 assert.match(solvedFieldSource, /magnetRotationDeg=\{\(heldFrame\?\.angleDeg \?\? electricalAngleDeg\) \/ polePairs\}/);
+// Solve-page updates are a thin banner under the top bar, in the page flow, so
+// they never cover the motor view's tabs (owner QA of #64).
+assert.match(workspaceSource, /<div className="public-solve-stage">\s*\{\/\*[^]*?\*\/\}\s*\{transientNotice && \(\s*<div className="public-solve-banner" role="status">/);
+assert.doesNotMatch(workspaceSource, /public-solve-toast/);
+assert.doesNotMatch(styleSource, /public-solve-toast/);
+assert.match(styleSource, /\.public-solve-stage > \.public-solve-workspace \{\s*flex: 1 1 auto;/);
+assert.doesNotMatch(styleSource.match(/\.public-solve-banner \{[^}]*\}/)?.[0] ?? '', /position: (absolute|fixed)/, 'the banner takes its own space');
 // #59: the mesh layer is decoded only while the Mesh overlay is shown.
 assert.match(playbackRasterizerSource, /layers\.mesh && withMesh \? load\(layers\.mesh\.artifact_id\)/);
 assert.match(solvedFieldSource, /requestedDescriptor\.playback_frame,\s*withMesh,/);
