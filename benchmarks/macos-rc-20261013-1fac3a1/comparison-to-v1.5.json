@@ -1,0 +1,1682 @@
+{
+  "schema": "coilem.cross_platform_benchmark_comparison/v1",
+  "previous_report": "../macos-rc-20261013-04f87a5/benchmark_summary.json",
+  "previous_report_sha256": "dfbf8dc1e76730f4a4e81f35f8f4c8c7eb9a37b1f7b492f29d3dc820aec9134e",
+  "previous_commit": "04f87a5013415997cdef96a9bfa35125ce625bc5",
+  "previous_platform": "macOS-15.7.3-arm64-arm-64bit",
+  "candidate_commit": "1fac3a17fca7501d054a12b64b4a0472916ade98",
+  "candidate_platform": "macOS-15.7.3-arm64-arm-64bit",
+  "source_sha256": "c8279a44bda14ded31c8cf04d1ba2f3c6195cb6d48758b213c5d2b95b34adc6f",
+  "binary_sha256": "b5a2ac6c3903d8653cafbe157622ed6a049f30d29dbd4064f589fd5c2f898972",
+  "reference_commit": "8b95decda27d475ddbb75e99d92744ebc8e53b28",
+  "selection_matches": true,
+  "counts": {
+    "PASS": 29,
+    "UNSUPPORTED": 1
+  },
+  "previous_counts": {
+    "PASS": 29,
+    "UNSUPPORTED": 1
+  },
+  "all_30_verdicts_retained": true,
+  "all_gate_statuses_retained": true,
+  "bldc_gates_pass": 42,
+  "bldc_gates_total": 42,
+  "native_jobs": 35,
+  "cases_with_different_mesh_element_count": 0,
+  "max_candidate_average_relative_change": 0.0,
+  "numerical_values_identical": true,
+  "fields_ignored_in_value_comparison": [
+    "completed_at",
+    "runtime_s",
+    "solve_cache_dir",
+    "solve_time_s",
+    "solver_cpu_time_s",
+    "started_at",
+    "timestamp"
+  ],
+  "platform_note": "Both runs on the same Apple M4 (macOS 15.7.3, Python 3.12.13, rustc 1.94.0). The candidate differs from v1.5's 04f87a5 by the 0.3 QA fixes (#65), none of which changes a benchmark input or numerical path.",
+  "execution_elapsed_s": 3398.653902,
+  "previous_execution_elapsed_s": 3392.727324,
+  "timing_limitation": "Same machine; one pass of each run, so per-job differences of a few percent are run-to-run noise, not a performance change.",
+  "phase_timings": {
+    "A": {
+      "jobs": 10,
+      "current_elapsed_sum_s": 520.169435,
+      "previous_elapsed_sum_s": 493.53216499999996
+    },
+    "B": {
+      "jobs": 12,
+      "current_elapsed_sum_s": 1967.379623,
+      "previous_elapsed_sum_s": 1983.4910699999998
+    },
+    "C": {
+      "jobs": 4,
+      "current_elapsed_sum_s": 419.13451,
+      "previous_elapsed_sum_s": 439.432818
+    },
+    "D": {
+      "jobs": 9,
+      "current_elapsed_sum_s": 490.14163799999994,
+      "previous_elapsed_sum_s": 474.555064
+    }
+  },
+  "cases": [
+    {
+      "case_id": "spm_4p12s_simple__baseline",
+      "phase": "A",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 0.47826882137448995,
+      "candidate_average_Nm": 0.47826882137448995,
+      "previous_average_delta_pct": 0.15816336420491137,
+      "average_delta_pct": 0.15816336420491137,
+      "previous_bemf_fundamental_delta_pct": 0.012164141004945422,
+      "bemf_fundamental_delta_pct": 0.012164141004945422,
+      "previous_bemf_peak_delta_pct": 0.0411047055926166,
+      "bemf_peak_delta_pct": 0.0411047055926166,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 59102,
+      "mesh_element_count": 59102
+    },
+    {
+      "case_id": "spm_4p12s_simple__high_current",
+      "phase": "A",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 0.7172251293051968,
+      "candidate_average_Nm": 0.7172251293051968,
+      "previous_average_delta_pct": 0.11557670923695408,
+      "average_delta_pct": 0.11557670923695408,
+      "previous_bemf_fundamental_delta_pct": 0.012164141004945422,
+      "bemf_fundamental_delta_pct": 0.012164141004945422,
+      "previous_bemf_peak_delta_pct": 0.0411047055926166,
+      "bemf_peak_delta_pct": 0.0411047055926166,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 59102,
+      "mesh_element_count": 59102
+    },
+    {
+      "case_id": "spm_4p12s_simple__tight_airgap",
+      "phase": "A",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 0.582696802172012,
+      "candidate_average_Nm": 0.582696802172012,
+      "previous_average_delta_pct": 0.06338413454613623,
+      "average_delta_pct": 0.06338413454613623,
+      "previous_bemf_fundamental_delta_pct": 0.3479925271510483,
+      "bemf_fundamental_delta_pct": 0.3479925271510483,
+      "previous_bemf_peak_delta_pct": 0.052906103756592895,
+      "bemf_peak_delta_pct": 0.052906103756592895,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 45694,
+      "mesh_element_count": 45694
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__baseline",
+      "phase": "A",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": -3.4844206409888686e-06,
+      "candidate_average_Nm": -3.4844206409888686e-06,
+      "previous_average_delta_pct": 99.83071659058804,
+      "average_delta_pct": 99.83071659058804,
+      "previous_bemf_fundamental_delta_pct": 0.012164141004945422,
+      "bemf_fundamental_delta_pct": 0.012164141004945422,
+      "previous_bemf_peak_delta_pct": 0.0411047055926166,
+      "bemf_peak_delta_pct": 0.0411047055926166,
+      "candidate_average_relative_change": null,
+      "previous_mesh_element_count": 59102,
+      "mesh_element_count": 59102
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__high_current",
+      "phase": "A",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 0.23916950192063438,
+      "candidate_average_Nm": 0.23916950192063438,
+      "previous_average_delta_pct": 0.27519161127503766,
+      "average_delta_pct": 0.27519161127503766,
+      "previous_bemf_fundamental_delta_pct": 0.012164141004945422,
+      "bemf_fundamental_delta_pct": 0.012164141004945422,
+      "previous_bemf_peak_delta_pct": 0.0411047055926166,
+      "bemf_peak_delta_pct": 0.0411047055926166,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 59102,
+      "mesh_element_count": 59102
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__tight_airgap",
+      "phase": "A",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": -0.00011648309004660264,
+      "candidate_average_Nm": -0.00011648309004660264,
+      "previous_average_delta_pct": 12.021043598434797,
+      "average_delta_pct": 12.021043598434797,
+      "previous_bemf_fundamental_delta_pct": 0.3479925271510483,
+      "bemf_fundamental_delta_pct": 0.3479925271510483,
+      "previous_bemf_peak_delta_pct": 0.052906103756592895,
+      "bemf_peak_delta_pct": 0.052906103756592895,
+      "candidate_average_relative_change": null,
+      "previous_mesh_element_count": 45694,
+      "mesh_element_count": 45694
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__baseline",
+      "phase": "A",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 2.5618358865399062,
+      "candidate_average_Nm": 2.5618358865399062,
+      "previous_average_delta_pct": 0.15833701976806752,
+      "average_delta_pct": 0.15833701976806752,
+      "previous_bemf_fundamental_delta_pct": 0.07031372633702604,
+      "bemf_fundamental_delta_pct": 0.07031372633702604,
+      "previous_bemf_peak_delta_pct": 0.15396760532753329,
+      "bemf_peak_delta_pct": 0.15396760532753329,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 82938,
+      "mesh_element_count": 82938
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__high_current",
+      "phase": "A",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 3.836666901248213,
+      "candidate_average_Nm": 3.836666901248213,
+      "previous_average_delta_pct": 0.0839794405912069,
+      "average_delta_pct": 0.0839794405912069,
+      "previous_bemf_fundamental_delta_pct": 0.07031372633702604,
+      "bemf_fundamental_delta_pct": 0.07031372633702604,
+      "previous_bemf_peak_delta_pct": 0.15396760532753329,
+      "bemf_peak_delta_pct": 0.15396760532753329,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 82938,
+      "mesh_element_count": 82938
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__tight_airgap",
+      "phase": "A",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 2.7179597824573647,
+      "candidate_average_Nm": 2.7179597824573647,
+      "previous_average_delta_pct": 0.26852054220612565,
+      "average_delta_pct": 0.26852054220612565,
+      "previous_bemf_fundamental_delta_pct": 0.014441094980060545,
+      "bemf_fundamental_delta_pct": 0.014441094980060545,
+      "previous_bemf_peak_delta_pct": 0.08011570822617779,
+      "bemf_peak_delta_pct": 0.08011570822617779,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 87048,
+      "mesh_element_count": 87048
+    },
+    {
+      "case_id": "spm_8p12s_reference_angle30__baseline",
+      "phase": "A",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 19.17308309639929,
+      "candidate_average_Nm": 19.17308309639929,
+      "previous_average_delta_pct": 0.32033136749889224,
+      "average_delta_pct": 0.32033136749889224,
+      "previous_bemf_fundamental_delta_pct": 0.14499964338880592,
+      "bemf_fundamental_delta_pct": 0.14499964338880592,
+      "previous_bemf_peak_delta_pct": 0.17367212307487379,
+      "bemf_peak_delta_pct": 0.17367212307487379,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 77228,
+      "mesh_element_count": 77228
+    },
+    {
+      "case_id": "ipm_flat_12s10p_fscw_contract",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 4.502357985912007,
+      "candidate_average_Nm": 4.502357985912007,
+      "previous_average_delta_pct": 0.5898961464077251,
+      "average_delta_pct": 0.5898961464077251,
+      "previous_bemf_fundamental_delta_pct": 0.6061792879523775,
+      "bemf_fundamental_delta_pct": 0.6061792879523775,
+      "previous_bemf_peak_delta_pct": 0.7846358828724177,
+      "bemf_peak_delta_pct": 0.7846358828724177,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 87342,
+      "mesh_element_count": 87342
+    },
+    {
+      "case_id": "ipm_flat_24s16p_industrial_contract",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 22.42661224724422,
+      "candidate_average_Nm": 22.42661224724422,
+      "previous_average_delta_pct": 0.5796274962220288,
+      "average_delta_pct": 0.5796274962220288,
+      "previous_bemf_fundamental_delta_pct": 0.18444538096553711,
+      "bemf_fundamental_delta_pct": 0.18444538096553711,
+      "previous_bemf_peak_delta_pct": 0.30611358555686047,
+      "bemf_peak_delta_pct": 0.30611358555686047,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 97542,
+      "mesh_element_count": 97542
+    },
+    {
+      "case_id": "ipm_flat_4p12s_micro_contract",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 0.021443977467069573,
+      "candidate_average_Nm": 0.021443977467069573,
+      "previous_average_delta_pct": 0.3331446781507082,
+      "average_delta_pct": 0.3331446781507082,
+      "previous_bemf_fundamental_delta_pct": 0.556907545180219,
+      "bemf_fundamental_delta_pct": 0.556907545180219,
+      "previous_bemf_peak_delta_pct": 0.7804534150418587,
+      "bemf_peak_delta_pct": 0.7804534150418587,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 109776,
+      "mesh_element_count": 109776
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 2.484240074149019,
+      "candidate_average_Nm": 2.484240074149019,
+      "previous_average_delta_pct": 0.1022755200220455,
+      "average_delta_pct": 0.1022755200220455,
+      "previous_bemf_fundamental_delta_pct": 0.300873151009174,
+      "bemf_fundamental_delta_pct": 0.300873151009174,
+      "previous_bemf_peak_delta_pct": 0.73084473368247,
+      "bemf_peak_delta_pct": 0.73084473368247,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 122762,
+      "mesh_element_count": 122762
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 2.974150053011726,
+      "candidate_average_Nm": 2.974150053011726,
+      "previous_average_delta_pct": 0.14505565322233407,
+      "average_delta_pct": 0.14505565322233407,
+      "previous_bemf_fundamental_delta_pct": 0.24342277804785323,
+      "bemf_fundamental_delta_pct": 0.24342277804785323,
+      "previous_bemf_peak_delta_pct": 0.2966096617652735,
+      "bemf_peak_delta_pct": 0.2966096617652735,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 122700,
+      "mesh_element_count": 122700
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 3.6780259989342605,
+      "candidate_average_Nm": 3.6780259989342605,
+      "previous_average_delta_pct": 0.12647492280697392,
+      "average_delta_pct": 0.12647492280697392,
+      "previous_bemf_fundamental_delta_pct": 0.2207486082531887,
+      "bemf_fundamental_delta_pct": 0.2207486082531887,
+      "previous_bemf_peak_delta_pct": 0.4479294626113053,
+      "bemf_peak_delta_pct": 0.4479294626113053,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 122322,
+      "mesh_element_count": 122322
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_baseline_contract",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 0.9344741267007337,
+      "candidate_average_Nm": 0.9344741267007337,
+      "previous_average_delta_pct": 7.429826027247476,
+      "average_delta_pct": 7.429826027247476,
+      "previous_bemf_fundamental_delta_pct": 2.0873706115085837,
+      "bemf_fundamental_delta_pct": 2.0873706115085837,
+      "previous_bemf_peak_delta_pct": 6.264886415997937,
+      "bemf_peak_delta_pct": 6.264886415997937,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 94688,
+      "mesh_element_count": 94688
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 0.6242264870333069,
+      "candidate_average_Nm": 0.6242264870333069,
+      "previous_average_delta_pct": 7.159951451374412,
+      "average_delta_pct": 7.159951451374412,
+      "previous_bemf_fundamental_delta_pct": 3.3045808259339933,
+      "bemf_fundamental_delta_pct": 3.3045808259339933,
+      "previous_bemf_peak_delta_pct": 4.04151968039851,
+      "bemf_peak_delta_pct": 4.04151968039851,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 97342,
+      "mesh_element_count": 97342
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_narrow_angle_contract",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 0.9342909356199895,
+      "candidate_average_Nm": 0.9342909356199895,
+      "previous_average_delta_pct": 4.154076789039316,
+      "average_delta_pct": 4.154076789039316,
+      "previous_bemf_fundamental_delta_pct": 3.536968945864215,
+      "bemf_fundamental_delta_pct": 3.536968945864215,
+      "previous_bemf_peak_delta_pct": 4.428408139416105,
+      "bemf_peak_delta_pct": 4.428408139416105,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 94306,
+      "mesh_element_count": 94306
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 1.1227676480679551,
+      "candidate_average_Nm": 1.1227676480679551,
+      "previous_average_delta_pct": 5.452588174967076,
+      "average_delta_pct": 5.452588174967076,
+      "previous_bemf_fundamental_delta_pct": 1.328375510321179,
+      "bemf_fundamental_delta_pct": 1.328375510321179,
+      "previous_bemf_peak_delta_pct": 3.02715487633381,
+      "bemf_peak_delta_pct": 3.02715487633381,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 94772,
+      "mesh_element_count": 94772
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_thin_bridge_contract",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 3.0109341936399754,
+      "candidate_average_Nm": 3.0109341936399754,
+      "previous_average_delta_pct": 1.804012611276338,
+      "average_delta_pct": 1.804012611276338,
+      "previous_bemf_fundamental_delta_pct": 0.8522190680813927,
+      "bemf_fundamental_delta_pct": 0.8522190680813927,
+      "previous_bemf_peak_delta_pct": 1.7025215315171653,
+      "bemf_peak_delta_pct": 1.7025215315171653,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 91030,
+      "mesh_element_count": 91030
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "phase": "B",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 0.7903073418554989,
+      "candidate_average_Nm": 0.7903073418554989,
+      "previous_average_delta_pct": 7.1227828652987615,
+      "average_delta_pct": 7.1227828652987615,
+      "previous_bemf_fundamental_delta_pct": 3.4884089305580894,
+      "bemf_fundamental_delta_pct": 3.4884089305580894,
+      "previous_bemf_peak_delta_pct": 3.950959264553936,
+      "bemf_peak_delta_pct": 3.950959264553936,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 94160,
+      "mesh_element_count": 94160
+    },
+    {
+      "case_id": "ornl_prius_2004_ipm",
+      "phase": "C",
+      "previous_status": "UNSUPPORTED",
+      "status": "UNSUPPORTED",
+      "gates_previous": [],
+      "gates": []
+    },
+    {
+      "case_id": "spm_12p36s_distributed_femm_validation",
+      "phase": "C",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 5.044513661627727,
+      "candidate_average_Nm": 5.044513661627727,
+      "previous_average_delta_pct": 3.1032373079607685,
+      "average_delta_pct": 3.1032373079607685,
+      "previous_bemf_fundamental_delta_pct": 0.9841141914335624,
+      "bemf_fundamental_delta_pct": 0.9841141914335624,
+      "previous_bemf_peak_delta_pct": 0.5893914785676946,
+      "bemf_peak_delta_pct": 0.5893914785676946,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 77070,
+      "mesh_element_count": 77070
+    },
+    {
+      "case_id": "spm_8p24s_distributed_femm_validation",
+      "phase": "C",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 5.562636290888545,
+      "candidate_average_Nm": 5.562636290888545,
+      "previous_average_delta_pct": 1.1005408031666428,
+      "average_delta_pct": 1.1005408031666428,
+      "previous_bemf_fundamental_delta_pct": 0.5125631171535104,
+      "bemf_fundamental_delta_pct": 0.5125631171535104,
+      "previous_bemf_peak_delta_pct": 0.277345744892906,
+      "bemf_peak_delta_pct": 0.277345744892906,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 74552,
+      "mesh_element_count": 74552
+    },
+    {
+      "case_id": "spm_8p48s_chorded_5_6",
+      "phase": "C",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 5.937996287705,
+      "candidate_average_Nm": 5.937996287705,
+      "previous_average_delta_pct": 0.6997519149542347,
+      "average_delta_pct": 0.6997519149542347,
+      "previous_bemf_fundamental_delta_pct": 0.7999116608512703,
+      "bemf_fundamental_delta_pct": 0.7999116608512703,
+      "previous_bemf_peak_delta_pct": 0.12616312621988385,
+      "bemf_peak_delta_pct": 0.12616312621988385,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 74656,
+      "mesh_element_count": 74656
+    },
+    {
+      "case_id": "spm_8p48s_distributed_femm_validation",
+      "phase": "C",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "previous_candidate_average_Nm": 6.057185749050082,
+      "candidate_average_Nm": 6.057185749050082,
+      "previous_average_delta_pct": 0.6624809925380244,
+      "average_delta_pct": 0.6624809925380244,
+      "previous_bemf_fundamental_delta_pct": 0.8667286718404588,
+      "bemf_fundamental_delta_pct": 0.8667286718404588,
+      "previous_bemf_peak_delta_pct": 0.964625350322708,
+      "bemf_peak_delta_pct": 0.964625350322708,
+      "candidate_average_relative_change": 0.0,
+      "previous_mesh_element_count": 74656,
+      "mesh_element_count": 74656
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": [
+        {
+          "id": "mean_torque_delta_pct",
+          "value": 0.05651794851269517,
+          "maximum": 5.0,
+          "status": "PASS"
+        },
+        {
+          "id": "torque_waveform_nrmse_pct",
+          "value": 0.8629583277302675,
+          "maximum": 10.0,
+          "status": "PASS"
+        },
+        {
+          "id": "commutation_transition_delta_samples",
+          "value": 0,
+          "maximum": 1,
+          "status": "PASS"
+        },
+        {
+          "id": "power_torque_delta_pct",
+          "value": 0.6698243868784128,
+          "maximum": 10.0,
+          "status": "PASS"
+        },
+        {
+          "id": "native_standard_to_fine_mean_torque_delta_pct",
+          "value": 0.4062914950099382,
+          "maximum": 2.0,
+          "status": "PASS"
+        },
+        {
+          "id": "native_standard_to_fine_ripple_delta_percentage_points",
+          "value": 3.4478002328230666,
+          "maximum": 5.0,
+          "status": "PASS"
+        },
+        {
+          "id": "native_standard_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "native_fine_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "femm_standard_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "analytical_low_current_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "native-standard_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        },
+        {
+          "id": "native-fine_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        },
+        {
+          "id": "analytical_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        },
+        {
+          "id": "femm-standard_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        }
+      ],
+      "gates": [
+        {
+          "id": "mean_torque_delta_pct",
+          "value": 0.05651794851269517,
+          "maximum": 5.0,
+          "status": "PASS"
+        },
+        {
+          "id": "torque_waveform_nrmse_pct",
+          "value": 0.8629583277302675,
+          "maximum": 10.0,
+          "status": "PASS"
+        },
+        {
+          "id": "commutation_transition_delta_samples",
+          "value": 0,
+          "maximum": 1,
+          "status": "PASS"
+        },
+        {
+          "id": "power_torque_delta_pct",
+          "value": 0.6698243868784128,
+          "maximum": 10.0,
+          "status": "PASS"
+        },
+        {
+          "id": "native_standard_to_fine_mean_torque_delta_pct",
+          "value": 0.4062914950099382,
+          "maximum": 2.0,
+          "status": "PASS"
+        },
+        {
+          "id": "native_standard_to_fine_ripple_delta_percentage_points",
+          "value": 3.4478002328230666,
+          "maximum": 5.0,
+          "status": "PASS"
+        },
+        {
+          "id": "native_standard_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "native_fine_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "femm_standard_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "analytical_low_current_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "native-standard_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        },
+        {
+          "id": "native-fine_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        },
+        {
+          "id": "analytical_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        },
+        {
+          "id": "femm-standard_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "phase": "D",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": [
+        {
+          "id": "mean_torque_delta_pct",
+          "value": 0.20078353821366576,
+          "maximum": 5.0,
+          "status": "PASS"
+        },
+        {
+          "id": "torque_waveform_nrmse_pct",
+          "value": 0.5307239003789992,
+          "maximum": 10.0,
+          "status": "PASS"
+        },
+        {
+          "id": "commutation_transition_delta_samples",
+          "value": 0,
+          "maximum": 1,
+          "status": "PASS"
+        },
+        {
+          "id": "power_torque_delta_pct",
+          "value": 0.32206908191685346,
+          "maximum": 10.0,
+          "status": "PASS"
+        },
+        {
+          "id": "native_standard_to_fine_mean_torque_delta_pct",
+          "value": 0.20582719871010308,
+          "maximum": 2.0,
+          "status": "PASS"
+        },
+        {
+          "id": "native_standard_to_fine_ripple_delta_percentage_points",
+          "value": 1.0619125315549027,
+          "maximum": 5.0,
+          "status": "PASS"
+        },
+        {
+          "id": "native_standard_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "native_fine_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "femm_standard_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "analytical_low_current_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "native-standard_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        },
+        {
+          "id": "native-fine_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        },
+        {
+          "id": "analytical_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        },
+        {
+          "id": "femm-standard_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        }
+      ],
+      "gates": [
+        {
+          "id": "mean_torque_delta_pct",
+          "value": 0.20078353821366576,
+          "maximum": 5.0,
+          "status": "PASS"
+        },
+        {
+          "id": "torque_waveform_nrmse_pct",
+          "value": 0.5307239003789992,
+          "maximum": 10.0,
+          "status": "PASS"
+        },
+        {
+          "id": "commutation_transition_delta_samples",
+          "value": 0,
+          "maximum": 1,
+          "status": "PASS"
+        },
+        {
+          "id": "power_torque_delta_pct",
+          "value": 0.32206908191685346,
+          "maximum": 10.0,
+          "status": "PASS"
+        },
+        {
+          "id": "native_standard_to_fine_mean_torque_delta_pct",
+          "value": 0.20582719871010308,
+          "maximum": 2.0,
+          "status": "PASS"
+        },
+        {
+          "id": "native_standard_to_fine_ripple_delta_percentage_points",
+          "value": 1.0619125315549027,
+          "maximum": 5.0,
+          "status": "PASS"
+        },
+        {
+          "id": "native_standard_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "native_fine_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "femm_standard_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "analytical_low_current_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "native-standard_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        },
+        {
+          "id": "native-fine_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        },
+        {
+          "id": "analytical_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        },
+        {
+          "id": "femm-standard_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "phase": "D",
+      "previous_status": "PASS",
+      "status": "PASS",
+      "gates_previous": [
+        {
+          "id": "mean_torque_delta_pct",
+          "value": 0.8167869976402937,
+          "maximum": 5.0,
+          "status": "PASS"
+        },
+        {
+          "id": "torque_waveform_nrmse_pct",
+          "value": 1.2842809804072182,
+          "maximum": 10.0,
+          "status": "PASS"
+        },
+        {
+          "id": "commutation_transition_delta_samples",
+          "value": 0,
+          "maximum": 1,
+          "status": "PASS"
+        },
+        {
+          "id": "power_torque_delta_pct",
+          "value": 0.6139601132031779,
+          "maximum": 10.0,
+          "status": "PASS"
+        },
+        {
+          "id": "native_standard_to_fine_mean_torque_delta_pct",
+          "value": 0.14049039353562773,
+          "maximum": 2.0,
+          "status": "PASS"
+        },
+        {
+          "id": "native_standard_to_fine_ripple_delta_percentage_points",
+          "value": 2.7532318915079372,
+          "maximum": 5.0,
+          "status": "PASS"
+        },
+        {
+          "id": "native_standard_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "native_fine_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "femm_standard_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "analytical_low_current_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "native-standard_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        },
+        {
+          "id": "native-fine_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        },
+        {
+          "id": "analytical_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        },
+        {
+          "id": "femm-standard_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        }
+      ],
+      "gates": [
+        {
+          "id": "mean_torque_delta_pct",
+          "value": 0.8167869976402937,
+          "maximum": 5.0,
+          "status": "PASS"
+        },
+        {
+          "id": "torque_waveform_nrmse_pct",
+          "value": 1.2842809804072182,
+          "maximum": 10.0,
+          "status": "PASS"
+        },
+        {
+          "id": "commutation_transition_delta_samples",
+          "value": 0,
+          "maximum": 1,
+          "status": "PASS"
+        },
+        {
+          "id": "power_torque_delta_pct",
+          "value": 0.6139601132031779,
+          "maximum": 10.0,
+          "status": "PASS"
+        },
+        {
+          "id": "native_standard_to_fine_mean_torque_delta_pct",
+          "value": 0.14049039353562773,
+          "maximum": 2.0,
+          "status": "PASS"
+        },
+        {
+          "id": "native_standard_to_fine_ripple_delta_percentage_points",
+          "value": 2.7532318915079372,
+          "maximum": 5.0,
+          "status": "PASS"
+        },
+        {
+          "id": "native_standard_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "native_fine_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "femm_standard_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "analytical_low_current_current_properties",
+          "value": {
+            "max_zero_sum_abs_A": 0.0,
+            "max_plateau_error_abs_A": 0.0,
+            "max_zero_phase_abs_A": 0.0,
+            "invalid_conduction_samples": 0
+          },
+          "maximum": {
+            "zero_sum_abs_A": 1e-09,
+            "current_abs_A": 1e-09,
+            "invalid_samples": 0
+          },
+          "status": "PASS"
+        },
+        {
+          "id": "native-standard_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        },
+        {
+          "id": "native-fine_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        },
+        {
+          "id": "analytical_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        },
+        {
+          "id": "femm-standard_golden_current_sequence",
+          "value": "matches frozen golden current table",
+          "maximum": "exact phase sequence within frozen current tolerance",
+          "status": "PASS"
+        }
+      ]
+    }
+  ]
+}

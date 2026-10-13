@@ -1,15 +1,19 @@
-Start with the [latest full report v1.5](macos-rc-20261013-04f87a5/README.md), which measures the
-pinned coilEM 0.3.0 release candidate `04f87a5` on macOS, and the
+# Benchmark reports and protocols
+
+Start with the [latest full report v1.7](macos-rc-20261013-1fac3a1/README.md), which measures the
+frozen coilEM 0.3.0 commit `1fac3a1` on macOS, and the
 [default A/B/C/D run commands](abcd-v1.1/README.md). The selected matrix has
 29 PASS and one planned coverage item (numerical status UNSUPPORTED), with
-42/42 BLDC gates. Every verdict and gate status matches the
+42/42 BLDC gates. Every numerical value matches the previous pin's
+[macOS report v1.5](macos-rc-20261013-04f87a5/README.md) exactly. Every verdict and gate status matches the
 [latest Windows report v1.4](windows-process-pools-20261012-02fa24b/README.md); values differ only at
-the mesh-noise level from per-platform Gmsh meshes. Both runs use frozen FEMM data; no
+the mesh-noise level from per-platform Gmsh meshes. All runs use frozen FEMM data; no
 reference solves were executed. The generated PDF is included in each evidence package.
 
 | Record | Role | Matrix / measured candidate |
 | --- | --- | --- |
-| [macOS report v1.5](macos-rc-20261013-04f87a5/README.md) | Latest complete run; the pinned 0.3.0 release candidate; all 30 verdicts and 42 BLDC gates retained across 35 native jobs | Protocol 1.1.0; fresh native fields at `04f87a5` on macOS, frozen FEMM references |
+| [macOS report v1.7](macos-rc-20261013-1fac3a1/README.md) | Latest complete run; the frozen 0.3.0 commit after the QA fixes; every numerical value identical to v1.5 across 35 native jobs | Protocol 1.1.0; fresh native fields at `1fac3a1` on macOS, frozen FEMM references |
+| [macOS report v1.5](macos-rc-20261013-04f87a5/README.md) | Previous pin `04f87a5`, kept as history; all 30 verdicts and 42 BLDC gates retained across 35 native jobs | Protocol 1.1.0; fresh native fields at `04f87a5` on macOS, frozen FEMM references |
 | [Windows report v1.4](windows-process-pools-20261012-02fa24b/README.md) | Latest Windows run; all 30 verdicts and 42 BLDC gates retained, with exact native waveforms across 35 jobs | Protocol 1.1.0; fresh native fields at `02fa24b`, frozen FEMM references |
 | [Windows report v1.3](main-20261012-0b463b3-rerun/README.md) | Previous complete run; baseline before later performance changes | Protocol 1.1.0; fresh native fields at `0b463b3`, frozen FEMM references |
 | [Baseline v1.2](release-baseline-20261011-v1.2/README.md) | Archived compilation defining the current fixture selection | Protocol 1.1.0; compiled measurements at `45e0a5c` and `af56962` |
@@ -21,7 +25,8 @@ reference solves were executed. The generated PDF is included in each evidence p
 V1.2 defines the **default benchmark selection**. V1.3 and V1.4 rerun that same
 selection at clean candidates on Windows, preserving the inputs, references and
 gates. V1.5 reruns it on macOS at the pinned 0.3.0 release candidate, with every
-verdict and gate status unchanged. V1.4 records 44.66 minutes of native execution, compared with 176.62 minutes
+verdict and gate status unchanged. V1.7 reruns it on the same Mac at the frozen 0.3.0
+commit after the QA fixes, with every numerical value identical to v1.5. V1.4 records 44.66 minutes of native execution, compared with 176.62 minutes
 in V1.3. All physical summary values match exactly except steel RMS accumulation
 rounding below 6e-14 T. These runs retain the existing numerical metrics without
 broadening application qualification. Later commits require their own measured run.
