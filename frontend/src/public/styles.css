@@ -1212,6 +1212,14 @@ body {
 .public-coilem-shell .progress-track span { display: block; height: 100%; border-radius: inherit; background: var(--accent-gradient); transition: width .2s; }
 .public-coilem-shell .progress-track.indeterminate span { animation: public-solve-indeterminate 1.15s ease-in-out infinite; }
 @keyframes public-solve-indeterminate { from { transform: translateX(-120%); } to { transform: translateX(420%); } }
+/* Before any progress the bar stays empty and shimmers across the track; finalizing
+   keeps the reached width and shimmers on top of it. Neither shrinks the bar (#53). */
+.public-coilem-shell .progress-track.is-waiting { position: relative; }
+.public-coilem-shell .progress-track.is-waiting::after { position: absolute; inset: 0; content: ''; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .16), transparent); transform: translateX(-100%); animation: public-solve-finishing 1.4s ease-in-out infinite; }
+.public-coilem-shell .progress-track.is-finishing span { position: relative; overflow: hidden; }
+.public-coilem-shell .progress-track.is-finishing span::after { position: absolute; inset: 0; content: ''; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .38), transparent); transform: translateX(-100%); animation: public-solve-finishing 1.4s ease-in-out infinite; }
+@keyframes public-solve-finishing { to { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) { .public-coilem-shell .progress-track.is-waiting::after, .public-coilem-shell .progress-track.is-finishing span::after { animation: none; } }
 .public-run-copy { padding: 16px 14px; border-bottom: 1px solid var(--border-subtle); }
 .public-run-plan-section > summary {
   position: relative;

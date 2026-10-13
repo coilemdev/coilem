@@ -2170,8 +2170,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 1626,
-      "sha256": "b5525ba952fa79f690843945f3d999ed242c27de26cedbc8c87bab6ba8c7a791"
+      "bytes": 1666,
+      "sha256": "96a4f0c051aa82f11d32d51361a776cd33d97840c47eba6408381799558151ea"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -2250,8 +2250,13 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 98106,
-      "sha256": "95be7c0b9b75efb2c312a1e543c1f8a0581c6f10f7f15bac4e704705f94ab050"
+      "bytes": 98793,
+      "sha256": "a49efa4a32efb1e6ca9da1552b70ed9739914a53ef82e6327a12e54b7facbd69"
+    },
+    {
+      "path": "frontend/scripts/test-solve-progress.mjs",
+      "sha256": "82b7dd8a6c043530ed24f15b6688760176c82ecf621e6d73597efbed22b10350",
+      "bytes": 4019
     },
     {
       "path": "frontend/src/api/projectSchema.ts",
@@ -2625,8 +2630,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 66919,
-      "sha256": "de97cfac5fd67b9e03618435c60b86543f6bf260d6f50624fde4ada24bd6988f"
+      "bytes": 67195,
+      "sha256": "f84c2ff65f3ce25ed1e11db71c3da1e3c61ce0bb3a2be1920619cc1a74fd7a07"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -2635,8 +2640,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 178251,
-      "sha256": "af7a07eb1e1b79a7c258f3308c0214d8900d54f63d529f03cc9eb6707d4b20a2"
+      "bytes": 178488,
+      "sha256": "78ab02749add81043f8258d0b797756a2ba415038b59de2488c32e5c4dabca12"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -2895,13 +2900,13 @@
     },
     {
       "path": "frontend/src/public/solveProgress.ts",
-      "bytes": 850,
-      "sha256": "a4dcf62f4f159ee5f257ad672392044066dc6f54694b17fa8a0f18e8a882a639"
+      "bytes": 3720,
+      "sha256": "31d1a0334bea94877f5fc341895d847b4688b09f318a4f5a7eebe7e6d5c98847"
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 222512,
-      "sha256": "a414b09923bc5b709f369b1e5b701cb87095bbc2b48fcf3f30abb8a85d516dfd"
+      "bytes": 223680,
+      "sha256": "6845735664b43f7dc522418d0d2a87408d5e18a36579c3963310e527cea85fc5"
     },
     {
       "path": "frontend/src/public/tutorials/PublicTutorials.tsx",
@@ -5059,6 +5064,42 @@
       "path": "frontend/src/public/styles.css",
       "source_sha256": "cc58384585052ab175f65f49102013b69eb01938960af37a9d4384b305816d9e",
       "reason": "Give the Results-page qualification note the same centred 1080px column as the other panels (#51)."
+    },
+    {
+      "base_commit": "ab512bed8d7f4e30a3274e689f577a353e36f0d5",
+      "path": "frontend/package.json",
+      "source_sha256": "b5525ba952fa79f690843945f3d999ed242c27de26cedbc8c87bab6ba8c7a791",
+      "reason": "Run the solve-progress checks with the public UI tests (#53)."
+    },
+    {
+      "base_commit": "ab512bed8d7f4e30a3274e689f577a353e36f0d5",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "95be7c0b9b75efb2c312a1e543c1f8a0581c6f10f7f15bac4e704705f94ab050",
+      "reason": "Pin the monotonic live-solve bar in the UI contract (#53)."
+    },
+    {
+      "base_commit": "ab512bed8d7f4e30a3274e689f577a353e36f0d5",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "de97cfac5fd67b9e03618435c60b86543f6bf260d6f50624fde4ada24bd6988f",
+      "reason": "Drive the live-solve bar from the monotonic solve-progress state instead of position / total (#53)."
+    },
+    {
+      "base_commit": "ab512bed8d7f4e30a3274e689f577a353e36f0d5",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "af7a07eb1e1b79a7c258f3308c0214d8900d54f63d529f03cc9eb6707d4b20a2",
+      "reason": "Draw the live-solve bar from the monotonic percentage, empty with a shimmer before progress and full while finalizing (#53)."
+    },
+    {
+      "base_commit": "ab512bed8d7f4e30a3274e689f577a353e36f0d5",
+      "path": "frontend/src/public/solveProgress.ts",
+      "source_sha256": "a4dcf62f4f159ee5f257ad672392044066dc6f54694b17fa8a0f18e8a882a639",
+      "reason": "Derive a live-solve bar that fills from mesh progress then solve positions and never moves backwards within a solve (#53)."
+    },
+    {
+      "base_commit": "ab512bed8d7f4e30a3274e689f577a353e36f0d5",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "a414b09923bc5b709f369b1e5b701cb87095bbc2b48fcf3f30abb8a85d516dfd",
+      "reason": "Add waiting and finishing shimmers that never shrink the live-solve bar (#53)."
     }
   ]
 }

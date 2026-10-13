@@ -239,6 +239,13 @@ assert.match(
   /\.public-report-stage > \.public-qualification-note \{\s*max-width: 1080px;\s*margin: 0 auto 14px;\s*\}/,
 );
 assert.equal((workspaceSource.match(/<QualificationNote qualification=/g) ?? []).length, 2, 'Solve and Results show the qualification note');
+// The live-solve bar comes from the monotonic solve-progress helper, not
+// fixed placeholder widths (#53).
+assert.match(appSource, /nextPublicSolveProgressBar\(previous, progress\)/);
+assert.doesNotMatch(workspaceSource, /finalizing \? '28%'/);
+assert.match(workspaceSource, /<span style=\{\{ width: `\$\{progressPercent\}%` \}\} \/>/);
+assert.doesNotMatch(workspaceSource, /: '24%' \}\}/);
+assert.match(styleSource, /\.progress-track\.is-finishing span::after/);
 assert.match(appSource, /const convertProjectSteelToM350 = useCallback/);
 assert.match(appSource, /stator_steel: 'M350-50A'/);
 assert.match(appSource, /rotor_steel: 'M350-50A'/);
@@ -992,7 +999,9 @@ assert.match(workspaceSource, /BackEMFHarmonicSpectrum/);
 assert.match(workspaceSource, /H1–H/);
 assert.match(workspaceSource, /Line AB THD H12/);
 assert.match(workspaceSource, /periodic no-load flux-linkage DFT/);
-assert.match(workspaceSource, /progress-track\$\{finalizing \? ' indeterminate'/);
+// Empty with a shimmer until progress starts; finalizing keeps the reached bar and adds a shimmer (#53).
+assert.match(workspaceSource, /progress-track\$\{progressStarted \? '' : ' is-waiting'\}\$\{finalizing \? ' is-finishing' : ''\}/);
+assert.match(styleSource, /\.progress-track\.is-waiting::after/);
 assert.match(workspaceSource, /window\.setInterval/);
 assert.match(workspaceSource, /is-running/);
 assert.match(solveProgressSource, /packaging_results/);
