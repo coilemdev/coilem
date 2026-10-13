@@ -440,8 +440,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 50417,
-      "sha256": "fa880d91ba79fad6810ad9fa30b5b819af4f1a9aa61459192c6a8f551f1c90fd"
+      "bytes": 50537,
+      "sha256": "2d2242c2b7f7586cefd0f6812bc5dda9089ec2c4ca45ffc4e9f35c8da9301849"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -5292,6 +5292,12 @@
       "path": "backend/public_routes/solve.py",
       "source_sha256": "c66837d12fb4916677174a99e689e43c22105fa15a5b7abbee7c3e91a61e35d6",
       "reason": "End open solve streams and direct solve waits when the server stops, and run solver workers on daemon threads that application exit does not wait for (#55)."
+    },
+    {
+      "base_commit": "415d5dab79c8d59c7889b9b0d9143ab3ccbeb35b",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "fa880d91ba79fad6810ad9fa30b5b819af4f1a9aa61459192c6a8f551f1c90fd",
+      "reason": "Run solver workers on a non-daemon thread, so the interpreter finishes their unwinding before it finalizes; a daemon thread hung shutdown on Python 3.12 and 3.13 on Windows (#55)."
     }
   ]
 }

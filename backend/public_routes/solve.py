@@ -358,14 +358,16 @@ def _raise_if_server_stopping() -> None:
 
 
 def _run_solver_thread(function: Any, /, *args: Any, **kwargs: Any) -> asyncio.Future[Any]:
-    """Run a solver call on a daemon thread and return a future for its result.
+    """Run a solver call on its own thread and return a future for its result.
 
-    ``asyncio.to_thread`` uses the event loop's default executor, and
-    ``asyncio.run`` waits up to five minutes for its threads before returning.
-    A solver still unwinding after a cancellation, such as a Windows process
-    pool joining its workers, then held the launcher past its shutdown deadline
-    (#55). Nothing waits for a daemon thread at exit; the solve lane is still
-    released only when the worker returns.
+    ``asyncio.to_thread`` uses the event loop's default executor, which
+    ``asyncio.run`` waits for inside the server's shutdown, after uvicorn's own
+    graceful window. Here the server stops first; the interpreter then waits
+    for this thread while it finishes unwinding, such as a Windows process
+    pool joining its workers (#55). The thread is not a daemon: finalizing
+    the interpreter while a solver still unwound its process pools hung
+    shutdown on Python 3.12 and 3.13 on Windows. The solve lane is released
+    only when the worker returns.
     """
 
     loop = asyncio.get_running_loop()
@@ -390,7 +392,7 @@ def _run_solver_thread(function: Any, /, *args: Any, **kwargs: Any) -> asyncio.F
         except RuntimeError:  # The event loop closed first, at application exit.
             pass
 
-    threading.Thread(target=run, name="coilem-solver", daemon=True).start()
+    threading.Thread(target=run, name="coilem-solver").start()
     return future
 
 
