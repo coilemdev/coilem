@@ -1,0 +1,461 @@
+{
+  "schema": "coilem.benchmark_timings/v1",
+  "report_version": "1.8",
+  "measured_commit": "1fac3a17fca7501d054a12b64b4a0472916ade98",
+  "started_at": "2026-10-13T18:16:37.110225+00:00",
+  "completed_at": "2026-10-13T19:09:11.501273+00:00",
+  "elapsed_wall_time_s": 3154.391048,
+  "elapsed_wall_time_includes_reboot_and_abandoned_partial_attempt": true,
+  "successful_job_elapsed_sum_s": 2696.982404,
+  "interruption": {
+    "reason": "Host reboot requested by user",
+    "completed_jobs_retained": 24,
+    "runtime_identity_verified_unchanged": true,
+    "interrupted_jobs": [
+      {
+        "case_id": "spm_8p48s_chorded_5_6",
+        "stage": "native",
+        "started_at": "2026-10-13T14:51:18.343525-04:00"
+      }
+    ],
+    "last_observed_progress_at": "2026-10-13T18:52:13Z",
+    "host_last_boot_at": "2026-10-13T18:52:38.5000000Z",
+    "resumed_at": "2026-10-13T18:58:49.9624717Z",
+    "interrupted_job_restarted_from_beginning": true
+  },
+  "uninterrupted_run": false,
+  "timing_caveat": "The host rebooted after 24 completed jobs. The interrupted chorded-winding job was restarted in full. Successful-job durations exclude the abandoned partial attempt, reboot downtime and between-job overhead; registered wall time includes them. No uninterrupted wall-clock performance comparison is claimed.",
+  "phase_timings": {
+    "A": {
+      "jobs": 10,
+      "verdict_counts": {
+        "PASS": 10
+      },
+      "current_job_sum_s": 626.964099,
+      "previous_job_sum_s": 626.369847
+    },
+    "B": {
+      "jobs": 12,
+      "verdict_counts": {
+        "PASS": 12
+      },
+      "current_job_sum_s": 1343.1724570000001,
+      "previous_job_sum_s": 1342.493436
+    },
+    "C": {
+      "jobs": 4,
+      "verdict_counts": {
+        "UNSUPPORTED": 1,
+        "PASS": 4
+      },
+      "current_job_sum_s": 301.494119,
+      "previous_job_sum_s": 309.233818
+    },
+    "D": {
+      "jobs": 9,
+      "verdict_counts": {
+        "PASS": 3
+      },
+      "current_job_sum_s": 425.35172900000003,
+      "previous_job_sum_s": 409.880779
+    }
+  },
+  "jobs": [
+    {
+      "case_id": "spm_4p12s_simple__baseline",
+      "phase": "A",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:16:37.111223+00:00",
+      "completed_at": "2026-10-13T18:17:30.988023+00:00",
+      "elapsed_s": 53.8768,
+      "request_sha256": "85c9cd72c70658667bf176999caa7addb6a49903c0bb06956fca96b1b3dd74a1",
+      "result_sha256": "c5565ed28c661e3d9dcb5c8e72fd7c42be581020b675e838ac1040b3eca92854"
+    },
+    {
+      "case_id": "spm_4p12s_simple__high_current",
+      "phase": "A",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:17:31.109765+00:00",
+      "completed_at": "2026-10-13T18:18:25.421941+00:00",
+      "elapsed_s": 54.312176,
+      "request_sha256": "2fe734b5c468ecb08a11531b9d772c79ac2001ab30615b68733799dea0b5db3f",
+      "result_sha256": "1969a209b3471be002048e792688ab83f775e818202b17638eed6fa7462bca50"
+    },
+    {
+      "case_id": "spm_4p12s_simple__tight_airgap",
+      "phase": "A",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:18:25.546886+00:00",
+      "completed_at": "2026-10-13T18:19:06.045648+00:00",
+      "elapsed_s": 40.498762,
+      "request_sha256": "f26d4b0448be36a5ae35782a3735b8a901dcd0ebf44a9e03aeeebea67fe1edc2",
+      "result_sha256": "f8bad1cf1d9aacb9f76ab1f2fc88fc2cf76d60dc899ac6edfb107f23c76d8da4"
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__baseline",
+      "phase": "A",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:19:06.166206+00:00",
+      "completed_at": "2026-10-13T18:20:04.053993+00:00",
+      "elapsed_s": 57.887787,
+      "request_sha256": "cea9487163181310cbcd645e9965955d29bb4fcdcd3e3ac87043996bb22508b8",
+      "result_sha256": "8fcbdd4200d82a0edf1591594eb23d87154d38135209533e6922909dd65aa46f"
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__high_current",
+      "phase": "A",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:20:04.176783+00:00",
+      "completed_at": "2026-10-13T18:20:58.545210+00:00",
+      "elapsed_s": 54.368427,
+      "request_sha256": "11bd0a8523103829fce08a6eb161e99199a53e1afc3e3eb95f15448568ca37de",
+      "result_sha256": "36685076319de064070dca4248831fe7211699dce07e618d01015e1296fb0a51"
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__tight_airgap",
+      "phase": "A",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:20:58.668091+00:00",
+      "completed_at": "2026-10-13T18:21:41.700049+00:00",
+      "elapsed_s": 43.031958,
+      "request_sha256": "dd6fbcdf60eba6f503270abafebb344b039831407482ac2c48fed72d42456715",
+      "result_sha256": "44eb1322bc7c856841a42431db6d350fd666611df011e65e90d47e3c6eddc5de"
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__baseline",
+      "phase": "A",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:21:41.825639+00:00",
+      "completed_at": "2026-10-13T18:23:02.957966+00:00",
+      "elapsed_s": 81.132327,
+      "request_sha256": "45844ce623a899be89699aa18f96250090904438259323c0e21ab325618f987c",
+      "result_sha256": "db01342d98dca5b999dff660d4c7fdf5bf29eca2b9ad1ba8f7119edbc0b56b25"
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__high_current",
+      "phase": "A",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:23:03.088309+00:00",
+      "completed_at": "2026-10-13T18:24:22.949648+00:00",
+      "elapsed_s": 79.861339,
+      "request_sha256": "5364c0f2dc5d2736169300b6de46189286bbc17e5939ca8783654609475d27fd",
+      "result_sha256": "f7577e1860c0766468ffd103ef62d1ef8bcde12dc112fac9eb815967daf3d9ae"
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__tight_airgap",
+      "phase": "A",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:24:23.075334+00:00",
+      "completed_at": "2026-10-13T18:25:48.608676+00:00",
+      "elapsed_s": 85.533342,
+      "request_sha256": "004959ad7ab8b4af46f15d749376e49336ab43bbe6c94a615c7316cc5e5d7a71",
+      "result_sha256": "5fd88b8d6fd63a76e828d65ee66970d3d1a255955c21d348088092c1120fbf2e"
+    },
+    {
+      "case_id": "spm_8p12s_reference_angle30__baseline",
+      "phase": "A",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:25:48.732018+00:00",
+      "completed_at": "2026-10-13T18:27:05.193199+00:00",
+      "elapsed_s": 76.461181,
+      "request_sha256": "41ad8c7d2a7ae619e4bff7c2f578b52c9f493f2c7cf7897ac5b89cb1f8be9097",
+      "result_sha256": "9101ddb27a8e96c21501e43307b3c2e8b3eabae2b7ae392eca8b37132185e8eb"
+    },
+    {
+      "case_id": "ipm_flat_12s10p_fscw_contract",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:27:05.323357+00:00",
+      "completed_at": "2026-10-13T18:28:42.507500+00:00",
+      "elapsed_s": 97.184143,
+      "request_sha256": "d14f0631dcf6c414badbcdef1dc5e88ff6a6c9ac2fed00431ccb0ec573e55bc9",
+      "result_sha256": "9912aced28bb00b132aa65465efcb9e18df8bb495a46581ed7ed93cf1faedbbe"
+    },
+    {
+      "case_id": "ipm_flat_24s16p_industrial_contract",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:28:42.645576+00:00",
+      "completed_at": "2026-10-13T18:30:29.204050+00:00",
+      "elapsed_s": 106.558474,
+      "request_sha256": "c53e560476ae3e882cc8283d5d773e1e401765ea112e3f38491628dec513754f",
+      "result_sha256": "fd8d8cad307736bde3c03c5b2fc80a3aabf315b04ca37082b945b74b4da1eec7"
+    },
+    {
+      "case_id": "ipm_flat_4p12s_micro_contract",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:30:29.329229+00:00",
+      "completed_at": "2026-10-13T18:31:53.354728+00:00",
+      "elapsed_s": 84.025499,
+      "request_sha256": "2d74abb8378188493a48114e65d4aa66c58155b8013b208bdb80a5917ffa0cd3",
+      "result_sha256": "021f9cd0caf4537618d3036ee6a94ee06ab7c72765d98ce51662755660eead90"
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:31:53.481176+00:00",
+      "completed_at": "2026-10-13T18:35:02.080810+00:00",
+      "elapsed_s": 188.599634,
+      "request_sha256": "9fd4b239e7991b6ad561bfea874a1c2d06dd28f66c2db9d2b39fda4de29488ee",
+      "result_sha256": "07ee1853749f5f2e285c7397e6c9496ff491ced0225a83ba22b9d3f530be0dd6"
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:35:02.203825+00:00",
+      "completed_at": "2026-10-13T18:37:41.891529+00:00",
+      "elapsed_s": 159.687704,
+      "request_sha256": "69421c5b51209470b45b10bf43ff2fe3d7c60340db36c795650ff2b0a845057a",
+      "result_sha256": "2924f70a3f34ef5f5a29f940d10943c07ad78a41a9435a293628d4b4b1111e9b"
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:37:42.021273+00:00",
+      "completed_at": "2026-10-13T18:40:14.355005+00:00",
+      "elapsed_s": 152.333732,
+      "request_sha256": "c70e9a440fff1c48617ccd868933f816f1bf154a87da30abdbb2073ccf09b653",
+      "result_sha256": "14f5aad427039e5b1884d5c219e0804b45750f44dd3b9746a5ae7cd8ff7849f3"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_baseline_contract",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:40:14.480901+00:00",
+      "completed_at": "2026-10-13T18:41:44.512984+00:00",
+      "elapsed_s": 90.032083,
+      "request_sha256": "b08676894a72603c56576df923a25dfae4bcf4f20a8b6779f42f47da7e0cb5ac",
+      "result_sha256": "1ce7c2d6838923f224bbd6dabaf666a896ceadb0380d15cd6e1e9d88de56827b"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:41:44.652204+00:00",
+      "completed_at": "2026-10-13T18:43:34.634547+00:00",
+      "elapsed_s": 109.982343,
+      "request_sha256": "7271387ae25a8fe6c164e83fd9c596089949ee1ed01bf1ae8f4536cd4b8b4524",
+      "result_sha256": "7a837872600b39da2c1a8ddb7ba8a10da56ddb56a3b6e6553d12700a6e4eb830"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_narrow_angle_contract",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:43:34.756686+00:00",
+      "completed_at": "2026-10-13T18:45:17.471905+00:00",
+      "elapsed_s": 102.715219,
+      "request_sha256": "39b2a4fef83d182c05db15f8994e7930998a25f1a8336ec6bd5d7009357c34ca",
+      "result_sha256": "76658b481dbe65dd5df3c6d848a977e23b0bfb64eafc83f654c2f1bd10219ce0"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:45:17.596986+00:00",
+      "completed_at": "2026-10-13T18:46:49.101681+00:00",
+      "elapsed_s": 91.504695,
+      "request_sha256": "8436d68c62a53b4d59ddb63c4121d30a270e442af885ff4c6c73f895a86c54ef",
+      "result_sha256": "61ac2ba8a798b2470d61b3898f94a8dc39c3509faf7b71e3587937a1f8b97edf"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_thin_bridge_contract",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:46:49.224058+00:00",
+      "completed_at": "2026-10-13T18:48:05.478326+00:00",
+      "elapsed_s": 76.254268,
+      "request_sha256": "daf5ac32fdd7378d31c79734b4a3f5f989f430676bac6caee5fe81a50490f1c4",
+      "result_sha256": "9674d79c8cf682b492c4d7bb85354337655453966d1c765aa2b0a0d9e408c0f7"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:48:05.599574+00:00",
+      "completed_at": "2026-10-13T18:49:29.894237+00:00",
+      "elapsed_s": 84.294663,
+      "request_sha256": "caf7780d48e8a699fdcb7b3ee9f03ca575bec6933658be101300a14dddb652bc",
+      "result_sha256": "2757ea17da7efe0d30fdcff22a36f87e6a9757eeecd0a25c4a2b9a53e58ed1b6"
+    },
+    {
+      "case_id": "ornl_prius_2004_ipm",
+      "phase": "C",
+      "stage": "native",
+      "status": "UNSUPPORTED",
+      "started_at": null,
+      "completed_at": null,
+      "elapsed_s": null,
+      "request_sha256": "86f9ab47498ec684af5a94f38a712b3e19bf6232bc43eda44c91981d2cd7d16d",
+      "result_sha256": null
+    },
+    {
+      "case_id": "spm_12p36s_distributed_femm_validation",
+      "phase": "C",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:49:30.016416+00:00",
+      "completed_at": "2026-10-13T18:50:23.367502+00:00",
+      "elapsed_s": 53.351086,
+      "request_sha256": "94007c1907d21cbc99c543c30eab2ee91b27d7e767bd57aeb635c34b6c56fb94",
+      "result_sha256": "37dc9efaabd8f5f9a0a1c18152352d89d33da32d32bfbe5c0f740f376ef1013c"
+    },
+    {
+      "case_id": "spm_8p24s_distributed_femm_validation",
+      "phase": "C",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:50:23.493757+00:00",
+      "completed_at": "2026-10-13T18:51:18.215996+00:00",
+      "elapsed_s": 54.722239,
+      "request_sha256": "97a7ab6112105f9ad0ed861c6232aaaa7903f6ca9f4ab75712b17b5c5be83483",
+      "result_sha256": "a693e52274a1c34aa9c2008a397b55ff6553f9df12e179ec87266a3b1ec15dd3"
+    },
+    {
+      "case_id": "spm_8p48s_chorded_5_6",
+      "phase": "C",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T18:58:51.507678+00:00",
+      "completed_at": "2026-10-13T19:01:16.786453+00:00",
+      "elapsed_s": 145.278775,
+      "request_sha256": "89859fa7af0b70e0e609740877809e76e5c34ddabe75822cd52050ff7da7cab7",
+      "result_sha256": "480bfcafebf872d69409d46af00aacd2f9aaf626b7c71f5b680b5e653d1ba1b0"
+    },
+    {
+      "case_id": "spm_8p48s_distributed_femm_validation",
+      "phase": "C",
+      "stage": "native",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T19:01:16.883871+00:00",
+      "completed_at": "2026-10-13T19:02:05.025890+00:00",
+      "elapsed_s": 48.142019,
+      "request_sha256": "f80a40f8c66cf409c126cc199ed9efc042c4f28d1bc002e892f22ed6e9465f4a",
+      "result_sha256": "842a79b3d1d34a007eb7e2ddd7c8de06b5b63bcf6cede5c36b4d108acb790cae"
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "stage": "native-standard",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T19:02:05.132258+00:00",
+      "completed_at": "2026-10-13T19:02:49.105623+00:00",
+      "elapsed_s": 43.973365,
+      "request_sha256": "5293e20c265e6f0fea0d301e65e7190892c56253de482cd44644408a357aa980",
+      "result_sha256": "4acac9b53bfcd72ea7141da55affccb87a3ffe64507cc172bf9233c51b6ce492"
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "stage": "native-fine",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T19:02:49.223858+00:00",
+      "completed_at": "2026-10-13T19:04:18.933336+00:00",
+      "elapsed_s": 89.709478,
+      "request_sha256": "add7e3ba301f4358c578ed77fa90c5e9f4d21a5f31facb56982b8a144bd71a55",
+      "result_sha256": "ae49eeec2ec12f4cae43246bd50badb6d3709f7b7958e826ce1bd28295c29111"
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "stage": "analytical",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T19:04:19.047406+00:00",
+      "completed_at": "2026-10-13T19:05:27.870616+00:00",
+      "elapsed_s": 68.82321,
+      "request_sha256": "27de3e56f02c6e823e6f8538bd7845729170ced1eb2a31901dfe9c8cf21772d9",
+      "result_sha256": "354cfd1113950b7a09dfb0b99a1f64a70d5047759b044cf22c6ce18aad251460"
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "phase": "D",
+      "stage": "native-standard",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T19:05:27.992111+00:00",
+      "completed_at": "2026-10-13T19:05:46.568996+00:00",
+      "elapsed_s": 18.576885,
+      "request_sha256": "8ff208ca774fa6cf37d3723df542fd3a42a244fc034411d19f72b162debe6e29",
+      "result_sha256": "f0d400908cca9db288884073ecbf5777072b70cc20b26162e3de669d70131866"
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "phase": "D",
+      "stage": "native-fine",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T19:05:46.683714+00:00",
+      "completed_at": "2026-10-13T19:06:20.857645+00:00",
+      "elapsed_s": 34.173931,
+      "request_sha256": "65aa63d41d4a4341862be7607ce32cf52e4a9eff9478fd63622000d09a94e6b5",
+      "result_sha256": "6ed85ef4ce69789874034c00e72e7c1ecd6a4ab60229a231091598f81e419ec2"
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "phase": "D",
+      "stage": "analytical",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T19:06:20.964702+00:00",
+      "completed_at": "2026-10-13T19:07:14.914121+00:00",
+      "elapsed_s": 53.949419,
+      "request_sha256": "5535c99177753c4505e510033fa687bd7825c370dfccc2cc5a713719fbf65154",
+      "result_sha256": "077b8f1e655d3667e743d99e39a31db96beeedff2b921fa6f7ca2ddafa64fd1e"
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "phase": "D",
+      "stage": "native-standard",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T19:07:15.026207+00:00",
+      "completed_at": "2026-10-13T19:07:36.128741+00:00",
+      "elapsed_s": 21.102534,
+      "request_sha256": "947c25ff66c755efa551cbc861be62d09e4b0b69c253f3379c22bcff89fc8115",
+      "result_sha256": "db530ca262784729599c162eb8d6a9d99958680fdeecce7750c7e479538e48e4"
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "phase": "D",
+      "stage": "native-fine",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T19:07:36.241964+00:00",
+      "completed_at": "2026-10-13T19:08:15.352181+00:00",
+      "elapsed_s": 39.110217,
+      "request_sha256": "91cd7bfa0bb559de1adac1644ac902615f42cdd90111847842f86092218dcbb4",
+      "result_sha256": "d4a204e01743f85c11367f6cba45c224abb4b2eb41ee2abef865465704516297"
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "phase": "D",
+      "stage": "analytical",
+      "status": "COMPLETE",
+      "started_at": "2026-10-13T19:08:15.459393+00:00",
+      "completed_at": "2026-10-13T19:09:11.392083+00:00",
+      "elapsed_s": 55.93269,
+      "request_sha256": "b9fd1927e8df957eadf08b1475a1df12c83aa2b982ee93a0f8168e1c0ff126e9",
+      "result_sha256": "79de5418be7a91a4de1e1e3409d05c2f9609702d28c66ccd8d352cb71a6f3bc8"
+    }
+  ]
+}

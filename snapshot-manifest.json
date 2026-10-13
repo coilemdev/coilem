@@ -30,8 +30,8 @@
     },
     {
       "path": ".github/workflows/release-wheels.yml",
-      "sha256": "b7fbb1e974f53e83e73f2babc3d7daede7264e3cc337282802683dafb52d4e24",
-      "bytes": 17300
+      "bytes": 17300,
+      "sha256": "b7fbb1e974f53e83e73f2babc3d7daede7264e3cc337282802683dafb52d4e24"
     },
     {
       "path": ".gitignore",
@@ -280,8 +280,8 @@
     },
     {
       "path": "backend/launcher.py",
-      "sha256": "05ce9ff0df2befb464396f1bcff23717cb4fc3abb4998a20fb5a7bc0308bafa3",
-      "bytes": 17633
+      "bytes": 17633,
+      "sha256": "05ce9ff0df2befb464396f1bcff23717cb4fc3abb4998a20fb5a7bc0308bafa3"
     },
     {
       "path": "backend/local_file_safety.py",
@@ -455,23 +455,23 @@
     },
     {
       "path": "backend/public_ui.py",
-      "sha256": "361975044c426c497547f46a0773e7d6f2d28f8ebf1c0fa9c60079fea9252e9a",
-      "bytes": 5363
+      "bytes": 5363,
+      "sha256": "361975044c426c497547f46a0773e7d6f2d28f8ebf1c0fa9c60079fea9252e9a"
     },
     {
       "path": "backend/qualification.py",
-      "sha256": "a88792ed792405de022197cb43a22e82b6d8cb6a999bf325e949bd433456e279",
-      "bytes": 5027
+      "bytes": 5027,
+      "sha256": "a88792ed792405de022197cb43a22e82b6d8cb6a999bf325e949bd433456e279"
     },
     {
       "path": "backend/resources.py",
-      "sha256": "f643d73b09ba46c4ed51a9ef667ca5fd4221df82fbefdaec5f4f82fe8e1027a9",
-      "bytes": 6860
+      "bytes": 6860,
+      "sha256": "f643d73b09ba46c4ed51a9ef667ca5fd4221df82fbefdaec5f4f82fe8e1027a9"
     },
     {
       "path": "backend/solve_estimate.py",
-      "sha256": "2fa2afa838be11c87e3058af3e4302ac00180993c18ff3360ccae4add7cf55be",
-      "bytes": 6183
+      "bytes": 6183,
+      "sha256": "2fa2afa838be11c87e3058af3e4302ac00180993c18ff3360ccae4add7cf55be"
     },
     {
       "path": "backend/solve_workspace.py",
@@ -645,453 +645,453 @@
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/README.md",
-      "sha256": "60003a361d71f2664abacb11d98921977385fd787bcb4d278e64aa84f7800773",
-      "bytes": 8492
+      "bytes": 8492,
+      "sha256": "60003a361d71f2664abacb11d98921977385fd787bcb4d278e64aa84f7800773"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/artifact_manifest.json",
-      "sha256": "11c04ff2ff261e837551d0863d1647f7abb51423af2f3eec639d2b4b82bbf3ac",
-      "bytes": 8159
+      "bytes": 8159,
+      "sha256": "11c04ff2ff261e837551d0863d1647f7abb51423af2f3eec639d2b4b82bbf3ac"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/benchmark_report.md",
-      "sha256": "63cb9dc0d201ad4d6e949adeea8e36ddd369e0b0439619d9e2991646993727fc",
-      "bytes": 4001
+      "bytes": 4001,
+      "sha256": "63cb9dc0d201ad4d6e949adeea8e36ddd369e0b0439619d9e2991646993727fc"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/benchmark_summary.json",
-      "sha256": "dfbf8dc1e76730f4a4e81f35f8f4c8c7eb9a37b1f7b492f29d3dc820aec9134e",
-      "bytes": 1733775
+      "bytes": 1733775,
+      "sha256": "dfbf8dc1e76730f4a4e81f35f8f4c8c7eb9a37b1f7b492f29d3dc820aec9134e"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/coilem_benchmark_report.html",
-      "sha256": "f819f2654483a602e9f0c3be32a50febbad9b90ae0bbf47b832a587161387031",
-      "bytes": 396900
+      "bytes": 396900,
+      "sha256": "f819f2654483a602e9f0c3be32a50febbad9b90ae0bbf47b832a587161387031"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/coilem_benchmark_report.pdf",
-      "sha256": "c8f7f6c9bdee58286783603945145ca869a8c63cf4bce83cca629754432b4014",
-      "bytes": 146754
+      "bytes": 146754,
+      "sha256": "c8f7f6c9bdee58286783603945145ca869a8c63cf4bce83cca629754432b4014"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/comparison-to-v1.4.json",
-      "sha256": "747a51875e8e99bf345f54df983d674e5cc6518bc3b452ccacb4a881a850657d",
-      "bytes": 55757
+      "bytes": 55757,
+      "sha256": "747a51875e8e99bf345f54df983d674e5cc6518bc3b452ccacb4a881a850657d"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/execution-timings.json",
-      "sha256": "15d99cfa5ce34796a48a32b3aeedd8a2b0563f271ffbc4670f03c287987be426",
-      "bytes": 8444
+      "bytes": 8444,
+      "sha256": "15d99cfa5ce34796a48a32b3aeedd8a2b0563f271ffbc4670f03c287987be426"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
-      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290",
-      "bytes": 2506
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
-      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4",
-      "bytes": 2547
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/ipm_flat_4p12s_micro_contract__native.json",
-      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3",
-      "bytes": 2499
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
-      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a",
-      "bytes": 2533
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
-      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf",
-      "bytes": 2546
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
-      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4",
-      "bytes": 2545
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
-      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e",
-      "bytes": 2527
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
-      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577",
-      "bytes": 2527
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
-      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23",
-      "bytes": 2527
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
-      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d",
-      "bytes": 2527
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
-      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a",
-      "bytes": 2527
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
-      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df",
-      "bytes": 2527
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/ornl_prius_2004_ipm__native.json",
-      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c",
-      "bytes": 2530
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_12p36s_distributed_femm_validation__native.json",
-      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400",
-      "bytes": 2505
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_14p12s_high_pole__analytical.json",
-      "sha256": "15423a47ebbf8509a7935c60d5c45404b8ee186f37dd266dec9e3f2a01560e34",
-      "bytes": 1604
+      "bytes": 1604,
+      "sha256": "15423a47ebbf8509a7935c60d5c45404b8ee186f37dd266dec9e3f2a01560e34"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_14p12s_high_pole__native-fine.json",
-      "sha256": "e328650573ad963181a7cf2292f6fe924d866c792d79c2a32137da2f9522fae0",
-      "bytes": 1607
+      "bytes": 1607,
+      "sha256": "e328650573ad963181a7cf2292f6fe924d866c792d79c2a32137da2f9522fae0"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_14p12s_high_pole__native-standard.json",
-      "sha256": "68b4e61d69cbc4673eba7ec92d0609862b1cf0283fa8391bf174b8d6c55b7c59",
-      "bytes": 1606
+      "bytes": 1606,
+      "sha256": "68b4e61d69cbc4673eba7ec92d0609862b1cf0283fa8391bf174b8d6c55b7c59"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_4p12s_simple__baseline__native.json",
-      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e",
-      "bytes": 2503
+      "bytes": 2503,
+      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_4p12s_simple__high_current__native.json",
-      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4",
-      "bytes": 2503
+      "bytes": 2503,
+      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_4p12s_simple__tight_airgap__native.json",
-      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf",
-      "bytes": 2503
+      "bytes": 2503,
+      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_4p12s_simple_noload__baseline__native.json",
-      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2",
-      "bytes": 2502
+      "bytes": 2502,
+      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_4p12s_simple_noload__high_current__native.json",
-      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c",
-      "bytes": 2502
+      "bytes": 2502,
+      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
-      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0",
-      "bytes": 2502
+      "bytes": 2502,
+      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_4p12s_small__analytical.json",
-      "sha256": "3d78ae3d4175a933e18d04b9d45c7bddaff1db6e8355c21675dbe4da2934392c",
-      "bytes": 1594
+      "bytes": 1594,
+      "sha256": "3d78ae3d4175a933e18d04b9d45c7bddaff1db6e8355c21675dbe4da2934392c"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_4p12s_small__native-fine.json",
-      "sha256": "2081d6ab448377574d76cdd8c86724d07368fd09093bab02d111bfb589d5d709",
-      "bytes": 1596
+      "bytes": 1596,
+      "sha256": "2081d6ab448377574d76cdd8c86724d07368fd09093bab02d111bfb589d5d709"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_4p12s_small__native-standard.json",
-      "sha256": "a77a7fbd94ed2a06659067f6501b029f612f09877128361268c76c5f9e268604",
-      "bytes": 1595
+      "bytes": 1595,
+      "sha256": "a77a7fbd94ed2a06659067f6501b029f612f09877128361268c76c5f9e268604"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_8p12s_concentrated__baseline__native.json",
-      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a",
-      "bytes": 2506
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_8p12s_concentrated__high_current__native.json",
-      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85",
-      "bytes": 2506
+      "bytes": 2506,
+      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
-      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e",
-      "bytes": 2506
+      "bytes": 2506,
+      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_8p12s_reference__analytical.json",
-      "sha256": "dd91d0757a826b34c3fde5e813bdfdc385bc048ce477a172c5bfbf292ff6703b",
-      "bytes": 1640
+      "bytes": 1640,
+      "sha256": "dd91d0757a826b34c3fde5e813bdfdc385bc048ce477a172c5bfbf292ff6703b"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_8p12s_reference__native-fine.json",
-      "sha256": "4e53c05733eb4d81cc3205e743f12fb473065142827f4e38327bd035caf7545c",
-      "bytes": 1642
+      "bytes": 1642,
+      "sha256": "4e53c05733eb4d81cc3205e743f12fb473065142827f4e38327bd035caf7545c"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_8p12s_reference__native-standard.json",
-      "sha256": "1825fe88e7ddf36234aa984f0fbbd30e894bfb34a6030fc02a348c883bf18ffa",
-      "bytes": 1641
+      "bytes": 1641,
+      "sha256": "1825fe88e7ddf36234aa984f0fbbd30e894bfb34a6030fc02a348c883bf18ffa"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
-      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c",
-      "bytes": 2550
+      "bytes": 2550,
+      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_8p24s_distributed_femm_validation__native.json",
-      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829",
-      "bytes": 2506
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_8p48s_chorded_5_6__native.json",
-      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136",
-      "bytes": 2501
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/fixtures/spm_8p48s_distributed_femm_validation__native.json",
-      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357",
-      "bytes": 2504
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/publication.json",
-      "sha256": "4bf32f6295766c45c66d4e74129a392ae652a9a7599c739c3e64f3b2fadce865",
-      "bytes": 7005
+      "bytes": 7005,
+      "sha256": "4bf32f6295766c45c66d4e74129a392ae652a9a7599c739c3e64f3b2fadce865"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/README.md",
-      "sha256": "8a385cd65590905bfe7408bf6000cacd12338a8e61a92ad9983dc4925251cab4",
-      "bytes": 5435
+      "bytes": 5435,
+      "sha256": "8a385cd65590905bfe7408bf6000cacd12338a8e61a92ad9983dc4925251cab4"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/artifact_manifest.json",
-      "sha256": "877302f8ddb272196d6a3e20329c64f5f747dcb05aa9dab7b1e00a1b7a7a620c",
-      "bytes": 8159
+      "bytes": 8159,
+      "sha256": "877302f8ddb272196d6a3e20329c64f5f747dcb05aa9dab7b1e00a1b7a7a620c"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/benchmark_report.md",
-      "sha256": "608b34e7fbc8525ecf82149401b8180c0e605be40dc450a82285a09317abb677",
-      "bytes": 4001
+      "bytes": 4001,
+      "sha256": "608b34e7fbc8525ecf82149401b8180c0e605be40dc450a82285a09317abb677"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/benchmark_summary.json",
-      "sha256": "6b350ac282089fb90d18a70e1ff01714abeaeb659b79d97f682c6cf3610e6079",
-      "bytes": 1733771
+      "bytes": 1733771,
+      "sha256": "6b350ac282089fb90d18a70e1ff01714abeaeb659b79d97f682c6cf3610e6079"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/coilem_benchmark_report.html",
-      "sha256": "f43b294f62253407663077abaef9d50994f2fab30378419d92b9a99ad14dece0",
-      "bytes": 396899
+      "bytes": 396899,
+      "sha256": "f43b294f62253407663077abaef9d50994f2fab30378419d92b9a99ad14dece0"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/coilem_benchmark_report.pdf",
-      "sha256": "c0cd303fd95b41e378e1193478be7a2ac3adcc3124a8e58f60d50d5ae326a868",
-      "bytes": 147040
+      "bytes": 147040,
+      "sha256": "c0cd303fd95b41e378e1193478be7a2ac3adcc3124a8e58f60d50d5ae326a868"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/comparison-to-v1.5.json",
-      "sha256": "1f876984e87da9ed99b7a37cb1090e3e93042f4e1b5027078c4f5e8c02e70d53",
-      "bytes": 55470
+      "bytes": 55470,
+      "sha256": "1f876984e87da9ed99b7a37cb1090e3e93042f4e1b5027078c4f5e8c02e70d53"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/execution-timings.json",
-      "sha256": "9785efce25d0e7435173cd88fccfcb5e22a439e3b95f28cb6aa0cf324e6d987c",
-      "bytes": 8445
+      "bytes": 8445,
+      "sha256": "9785efce25d0e7435173cd88fccfcb5e22a439e3b95f28cb6aa0cf324e6d987c"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
-      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290",
-      "bytes": 2506
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
-      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4",
-      "bytes": 2547
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/ipm_flat_4p12s_micro_contract__native.json",
-      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3",
-      "bytes": 2499
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
-      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a",
-      "bytes": 2533
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
-      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf",
-      "bytes": 2546
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
-      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4",
-      "bytes": 2545
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
-      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e",
-      "bytes": 2527
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
-      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577",
-      "bytes": 2527
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
-      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23",
-      "bytes": 2527
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
-      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d",
-      "bytes": 2527
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
-      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a",
-      "bytes": 2527
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
-      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df",
-      "bytes": 2527
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/ornl_prius_2004_ipm__native.json",
-      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c",
-      "bytes": 2530
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_12p36s_distributed_femm_validation__native.json",
-      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400",
-      "bytes": 2505
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_14p12s_high_pole__analytical.json",
-      "sha256": "15423a47ebbf8509a7935c60d5c45404b8ee186f37dd266dec9e3f2a01560e34",
-      "bytes": 1604
+      "bytes": 1604,
+      "sha256": "15423a47ebbf8509a7935c60d5c45404b8ee186f37dd266dec9e3f2a01560e34"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_14p12s_high_pole__native-fine.json",
-      "sha256": "e328650573ad963181a7cf2292f6fe924d866c792d79c2a32137da2f9522fae0",
-      "bytes": 1607
+      "bytes": 1607,
+      "sha256": "e328650573ad963181a7cf2292f6fe924d866c792d79c2a32137da2f9522fae0"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_14p12s_high_pole__native-standard.json",
-      "sha256": "68b4e61d69cbc4673eba7ec92d0609862b1cf0283fa8391bf174b8d6c55b7c59",
-      "bytes": 1606
+      "bytes": 1606,
+      "sha256": "68b4e61d69cbc4673eba7ec92d0609862b1cf0283fa8391bf174b8d6c55b7c59"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_4p12s_simple__baseline__native.json",
-      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e",
-      "bytes": 2503
+      "bytes": 2503,
+      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_4p12s_simple__high_current__native.json",
-      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4",
-      "bytes": 2503
+      "bytes": 2503,
+      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_4p12s_simple__tight_airgap__native.json",
-      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf",
-      "bytes": 2503
+      "bytes": 2503,
+      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_4p12s_simple_noload__baseline__native.json",
-      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2",
-      "bytes": 2502
+      "bytes": 2502,
+      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_4p12s_simple_noload__high_current__native.json",
-      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c",
-      "bytes": 2502
+      "bytes": 2502,
+      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
-      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0",
-      "bytes": 2502
+      "bytes": 2502,
+      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_4p12s_small__analytical.json",
-      "sha256": "3d78ae3d4175a933e18d04b9d45c7bddaff1db6e8355c21675dbe4da2934392c",
-      "bytes": 1594
+      "bytes": 1594,
+      "sha256": "3d78ae3d4175a933e18d04b9d45c7bddaff1db6e8355c21675dbe4da2934392c"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_4p12s_small__native-fine.json",
-      "sha256": "2081d6ab448377574d76cdd8c86724d07368fd09093bab02d111bfb589d5d709",
-      "bytes": 1596
+      "bytes": 1596,
+      "sha256": "2081d6ab448377574d76cdd8c86724d07368fd09093bab02d111bfb589d5d709"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_4p12s_small__native-standard.json",
-      "sha256": "a77a7fbd94ed2a06659067f6501b029f612f09877128361268c76c5f9e268604",
-      "bytes": 1595
+      "bytes": 1595,
+      "sha256": "a77a7fbd94ed2a06659067f6501b029f612f09877128361268c76c5f9e268604"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_8p12s_concentrated__baseline__native.json",
-      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a",
-      "bytes": 2506
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_8p12s_concentrated__high_current__native.json",
-      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85",
-      "bytes": 2506
+      "bytes": 2506,
+      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
-      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e",
-      "bytes": 2506
+      "bytes": 2506,
+      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_8p12s_reference__analytical.json",
-      "sha256": "dd91d0757a826b34c3fde5e813bdfdc385bc048ce477a172c5bfbf292ff6703b",
-      "bytes": 1640
+      "bytes": 1640,
+      "sha256": "dd91d0757a826b34c3fde5e813bdfdc385bc048ce477a172c5bfbf292ff6703b"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_8p12s_reference__native-fine.json",
-      "sha256": "4e53c05733eb4d81cc3205e743f12fb473065142827f4e38327bd035caf7545c",
-      "bytes": 1642
+      "bytes": 1642,
+      "sha256": "4e53c05733eb4d81cc3205e743f12fb473065142827f4e38327bd035caf7545c"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_8p12s_reference__native-standard.json",
-      "sha256": "1825fe88e7ddf36234aa984f0fbbd30e894bfb34a6030fc02a348c883bf18ffa",
-      "bytes": 1641
+      "bytes": 1641,
+      "sha256": "1825fe88e7ddf36234aa984f0fbbd30e894bfb34a6030fc02a348c883bf18ffa"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
-      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c",
-      "bytes": 2550
+      "bytes": 2550,
+      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_8p24s_distributed_femm_validation__native.json",
-      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829",
-      "bytes": 2506
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_8p48s_chorded_5_6__native.json",
-      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136",
-      "bytes": 2501
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/fixtures/spm_8p48s_distributed_femm_validation__native.json",
-      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357",
-      "bytes": 2504
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
     },
     {
       "path": "benchmarks/macos-rc-20261013-1fac3a1/publication.json",
-      "sha256": "64cca75cb5d730d85964a88e63a664dca3ad0dc99fc5627bd952e217b4eaf616",
-      "bytes": 6985
+      "bytes": 6985,
+      "sha256": "64cca75cb5d730d85964a88e63a664dca3ad0dc99fc5627bd952e217b4eaf616"
     },
     {
       "path": "benchmarks/main-20261009-bad71d9/README.md",
@@ -1959,6 +1959,231 @@
       "sha256": "4acf58cbaf2ad02fda8e322e423fbf803c11e918f999bf6bc49b1bcaaf64bbdc"
     },
     {
+      "path": "benchmarks/main-20261012-af10e6d/README.md",
+      "bytes": 5195,
+      "sha256": "13c80cc339d59c27c9bc76455b35a2e7b2125c1365cf438ad7949599098b9fca"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/artifact_manifest.json",
+      "bytes": 8156,
+      "sha256": "5d89d0d6dfe97703aec9d9116b02f793dc65eca3d61bed977846c278791a48f5"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/benchmark_report.md",
+      "bytes": 4001,
+      "sha256": "817e13160b613cb05ec11dc332a10a4eeea2d3bff1a98d5ef3362fd957bd940f"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/benchmark_summary.json",
+      "bytes": 1733822,
+      "sha256": "b23e5481ba91eee159a14635ef4c66bd143a2ea84ce5a653a82b306a5eed353f"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/coilem_benchmark_report.html",
+      "bytes": 397051,
+      "sha256": "540b11751f4b68d1cb131730272ee6d912074ca2c353f3c08c81b29c4a676cfa"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/coilem_benchmark_report.pdf",
+      "bytes": 143511,
+      "sha256": "b4142cb7a41e6fb3da51bfec7e0fc7190e23f80a0af11ccc47bc65636dfe7bc1"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/comparison-to-v1.4.json",
+      "bytes": 116106,
+      "sha256": "57f2c689062bdf75b72c124e4bff34d3aa69530b53d905c905262655da667b7c"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/execution-timings.json",
+      "bytes": 8436,
+      "sha256": "4b073e7c1f012b08c285c334a5f5200913628bb983afb9f4974d725344300706"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1604,
+      "sha256": "15423a47ebbf8509a7935c60d5c45404b8ee186f37dd266dec9e3f2a01560e34"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1607,
+      "sha256": "e328650573ad963181a7cf2292f6fe924d866c792d79c2a32137da2f9522fae0"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1606,
+      "sha256": "68b4e61d69cbc4673eba7ec92d0609862b1cf0283fa8391bf174b8d6c55b7c59"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2503,
+      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2503,
+      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2503,
+      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2502,
+      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2502,
+      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2502,
+      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1594,
+      "sha256": "3d78ae3d4175a933e18d04b9d45c7bddaff1db6e8355c21675dbe4da2934392c"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1596,
+      "sha256": "2081d6ab448377574d76cdd8c86724d07368fd09093bab02d111bfb589d5d709"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1595,
+      "sha256": "a77a7fbd94ed2a06659067f6501b029f612f09877128361268c76c5f9e268604"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2506,
+      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2506,
+      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1640,
+      "sha256": "dd91d0757a826b34c3fde5e813bdfdc385bc048ce477a172c5bfbf292ff6703b"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1642,
+      "sha256": "4e53c05733eb4d81cc3205e743f12fb473065142827f4e38327bd035caf7545c"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1641,
+      "sha256": "1825fe88e7ddf36234aa984f0fbbd30e894bfb34a6030fc02a348c883bf18ffa"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2550,
+      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/main-20261012-af10e6d/publication.json",
+      "bytes": 7366,
+      "sha256": "fbc3d867f6eef3896169bf3b861d88ae404d67cebfda8fd11fb0898c3056eb3d"
+    },
+    {
       "path": "benchmarks/preview-evidence/results.json",
       "bytes": 764856,
       "sha256": "324e8d5a482e9d5c94abf5f7af6e23f8cd7a6422cee1452fbf54f90fa427ce0f"
@@ -2514,6 +2739,456 @@
       "sha256": "bbbb31394267fee19c1a44302ff4e936936dab358d9abc31c73d7a7a2ae91bec"
     },
     {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/README.md",
+      "bytes": 4635,
+      "sha256": "737aa246c28ca2f1149181b2f88866ee092f481e2cb833b82723c3da0e30a586"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/artifact_manifest.json",
+      "bytes": 8181,
+      "sha256": "6e9e0f778a5c80cdbda47a407f072377fdf1d661d0ca68b018b33a0d8ea4335d"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/benchmark_report.md",
+      "bytes": 4001,
+      "sha256": "63cb9dc0d201ad4d6e949adeea8e36ddd369e0b0439619d9e2991646993727fc"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/benchmark_summary.json",
+      "bytes": 1733804,
+      "sha256": "4e405c1bc4183deffbd77d25d445901ed4b98d10d36d1276c70ffea27ba5f395"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/coilem_benchmark_report.html",
+      "bytes": 397048,
+      "sha256": "8660b5b0bb58a2504fa918091abb95e44d660fb74122bc655182628431fadfb8"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/coilem_benchmark_report.pdf",
+      "bytes": 142827,
+      "sha256": "ee322f9cdec40428321dee7cc43917962959d018990946542362a2a953f8d496"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/comparison-to-windows-main-and-mac-rc.json",
+      "bytes": 106516,
+      "sha256": "1b900fb3813c12a350583541de69985604222259904999d91f33c7122925667b"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/execution-timings.json",
+      "bytes": 8437,
+      "sha256": "9787749e395cdab3117fa6f2337593e5665ad134253e9a3cd42ebcd40ff19220"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1604,
+      "sha256": "15423a47ebbf8509a7935c60d5c45404b8ee186f37dd266dec9e3f2a01560e34"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1607,
+      "sha256": "e328650573ad963181a7cf2292f6fe924d866c792d79c2a32137da2f9522fae0"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1606,
+      "sha256": "68b4e61d69cbc4673eba7ec92d0609862b1cf0283fa8391bf174b8d6c55b7c59"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2503,
+      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2503,
+      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2503,
+      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2502,
+      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2502,
+      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2502,
+      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1594,
+      "sha256": "3d78ae3d4175a933e18d04b9d45c7bddaff1db6e8355c21675dbe4da2934392c"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1596,
+      "sha256": "2081d6ab448377574d76cdd8c86724d07368fd09093bab02d111bfb589d5d709"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1595,
+      "sha256": "a77a7fbd94ed2a06659067f6501b029f612f09877128361268c76c5f9e268604"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2506,
+      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2506,
+      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1640,
+      "sha256": "dd91d0757a826b34c3fde5e813bdfdc385bc048ce477a172c5bfbf292ff6703b"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1642,
+      "sha256": "4e53c05733eb4d81cc3205e743f12fb473065142827f4e38327bd035caf7545c"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1641,
+      "sha256": "1825fe88e7ddf36234aa984f0fbbd30e894bfb34a6030fc02a348c883bf18ffa"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2550,
+      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-04f87a5/publication.json",
+      "bytes": 7161,
+      "sha256": "378eb269948a95b29cacdd7df296091d5c6af8d9d06aa035d069b820b8281a7c"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/README.md",
+      "bytes": 5767,
+      "sha256": "0e24eef1f3b43a611cfd9a919095cba033cd1898739d158802328b5f70b81d50"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/artifact_manifest.json",
+      "bytes": 8185,
+      "sha256": "b0effb06e5cf11c335c88f7ffe23b7f2983d05a423f0e1d55f24ff60091dece0"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/benchmark_report.md",
+      "bytes": 4001,
+      "sha256": "608b34e7fbc8525ecf82149401b8180c0e605be40dc450a82285a09317abb677"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/benchmark_summary.json",
+      "bytes": 1733687,
+      "sha256": "d348e8001b1479bf752f0ea947232561b1e049daf3c2c816c4c6a629ed536e7b"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/coilem_benchmark_report.html",
+      "bytes": 397107,
+      "sha256": "8e2beb7c5cbc849a3dd148728a79de2c3221d3e24f26cd5831b167161034deff"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/coilem_benchmark_report.pdf",
+      "bytes": 141385,
+      "sha256": "a1bd9fb40bcb3c3e30bcfe8ef4f831b37e68ef69178ecb2fc54d34a7e81acd0c"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/comparison-to-windows-v1.6-and-macos-v1.7.json",
+      "bytes": 32524,
+      "sha256": "458e9a5c027e3c8ba27d3d2ef67bd47b83eeadfd826284a342a5af552d1c593a"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/execution-timings.json",
+      "bytes": 18668,
+      "sha256": "cc47a5f5044aa4b36092b5b17a190720cb444cc7ba675a90fa92797238f6cf34"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1604,
+      "sha256": "15423a47ebbf8509a7935c60d5c45404b8ee186f37dd266dec9e3f2a01560e34"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1607,
+      "sha256": "e328650573ad963181a7cf2292f6fe924d866c792d79c2a32137da2f9522fae0"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1606,
+      "sha256": "68b4e61d69cbc4673eba7ec92d0609862b1cf0283fa8391bf174b8d6c55b7c59"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2503,
+      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2503,
+      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2503,
+      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2502,
+      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2502,
+      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2502,
+      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1594,
+      "sha256": "3d78ae3d4175a933e18d04b9d45c7bddaff1db6e8355c21675dbe4da2934392c"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1596,
+      "sha256": "2081d6ab448377574d76cdd8c86724d07368fd09093bab02d111bfb589d5d709"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1595,
+      "sha256": "a77a7fbd94ed2a06659067f6501b029f612f09877128361268c76c5f9e268604"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2506,
+      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2506,
+      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1640,
+      "sha256": "dd91d0757a826b34c3fde5e813bdfdc385bc048ce477a172c5bfbf292ff6703b"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1642,
+      "sha256": "4e53c05733eb4d81cc3205e743f12fb473065142827f4e38327bd035caf7545c"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1641,
+      "sha256": "1825fe88e7ddf36234aa984f0fbbd30e894bfb34a6030fc02a348c883bf18ffa"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2550,
+      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/windows-rc-20261013-1fac3a1/publication.json",
+      "bytes": 8302,
+      "sha256": "09dc207ac3738206c0f6c17855bfaaf6faf51a5db88e400c7fa79a1a379be585"
+    },
+    {
       "path": "docs/ARCHITECTURE.md",
       "bytes": 11304,
       "sha256": "54ec6b85b36f1e1beec6083c672b06b7d6b7d8b3af4acecdbbe548ef8e432c02"
@@ -2565,8 +3240,8 @@
     },
     {
       "path": "docs/RELEASING.md",
-      "sha256": "b5fe5f0631590493eb696861422f130838f27bf2c083830ed017729a9d890276",
-      "bytes": 9416
+      "bytes": 9416,
+      "sha256": "b5fe5f0631590493eb696861422f130838f27bf2c083830ed017729a9d890276"
     },
     {
       "path": "docs/RUNTIME_SETTINGS.md",
@@ -2650,8 +3325,8 @@
     },
     {
       "path": "frontend/scripts/test-chart-readout.mjs",
-      "sha256": "cfc5fb93f2888eda0f48b103b88b3b3f443564e2bad0fa1d0a8a4fc72e3c8bf2",
-      "bytes": 6820
+      "bytes": 6820,
+      "sha256": "cfc5fb93f2888eda0f48b103b88b3b3f443564e2bad0fa1d0a8a4fc72e3c8bf2"
     },
     {
       "path": "frontend/scripts/test-custom-steel.mjs",
@@ -2660,13 +3335,13 @@
     },
     {
       "path": "frontend/scripts/test-design-file-defaults.mjs",
-      "sha256": "04af6648d5d0edf780cf74b3a09390a41f8576e35b837302aa4c83aaa54c31be",
-      "bytes": 3729
+      "bytes": 3729,
+      "sha256": "04af6648d5d0edf780cf74b3a09390a41f8576e35b837302aa4c83aaa54c31be"
     },
     {
       "path": "frontend/scripts/test-field-playback-timing.mjs",
-      "sha256": "772e47122f0d5154706aa5c542f0dd4fb27a8c826d006661cc8fa42485834aa3",
-      "bytes": 10401
+      "bytes": 10401,
+      "sha256": "772e47122f0d5154706aa5c542f0dd4fb27a8c826d006661cc8fa42485834aa3"
     },
     {
       "path": "frontend/scripts/test-flat-ipm-burial-health.mjs",
@@ -2710,8 +3385,8 @@
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
-      "sha256": "82b7dd8a6c043530ed24f15b6688760176c82ecf621e6d73597efbed22b10350",
-      "bytes": 4019
+      "bytes": 4019,
+      "sha256": "82b7dd8a6c043530ed24f15b6688760176c82ecf621e6d73597efbed22b10350"
     },
     {
       "path": "frontend/src/api/projectSchema.ts",
@@ -3155,8 +3830,8 @@
     },
     {
       "path": "frontend/src/public/WaveformReadout.tsx",
-      "sha256": "e11d57dd065df974058b6b02e01b6f702fc4da9b8d5d2ee5c4db2c3b532f1c90",
-      "bytes": 6486
+      "bytes": 6486,
+      "sha256": "e11d57dd065df974058b6b02e01b6f702fc4da9b8d5d2ee5c4db2c3b532f1c90"
     },
     {
       "path": "frontend/src/public/WindingLayoutView.tsx",
@@ -3180,13 +3855,13 @@
     },
     {
       "path": "frontend/src/public/chartAxis.ts",
-      "sha256": "ade180d736a567e8b044e35d052739edd9e6d271a4474ce7fca89b9a0972d9ba",
-      "bytes": 1124
+      "bytes": 1124,
+      "sha256": "ade180d736a567e8b044e35d052739edd9e6d271a4474ce7fca89b9a0972d9ba"
     },
     {
       "path": "frontend/src/public/chartReadout.ts",
-      "sha256": "b64be454f36cd11cd6d1cc8508ae239ff0c2cd621908ac21fa99eef25cdf998e",
-      "bytes": 4315
+      "bytes": 4315,
+      "sha256": "b64be454f36cd11cd6d1cc8508ae239ff0c2cd621908ac21fa99eef25cdf998e"
     },
     {
       "path": "frontend/src/public/coil3d.ts",
@@ -3335,8 +4010,8 @@
     },
     {
       "path": "frontend/src/public/latestFrameLoader.ts",
-      "sha256": "03789a09d067323780d331304e0add1e89ac655a0b9fd4e78fb82ed925b2d726",
-      "bytes": 1541
+      "bytes": 1541,
+      "sha256": "03789a09d067323780d331304e0add1e89ac655a0b9fd4e78fb82ed925b2d726"
     },
     {
       "path": "frontend/src/public/magnetPoleFaces.ts",
@@ -3515,8 +4190,8 @@
     },
     {
       "path": "setup.py",
-      "sha256": "d2b545d92a84218a1c23ef31ec0a74aaef9366bbbb38398f1ad61e230fad6164",
-      "bytes": 10240
+      "bytes": 10240,
+      "sha256": "d2b545d92a84218a1c23ef31ec0a74aaef9366bbbb38398f1ad61e230fad6164"
     },
     {
       "path": "solvers/magneto2d/Cargo.lock",
@@ -3755,8 +4430,8 @@
     },
     {
       "path": "tests/fixtures/solve_time_calibration.json",
-      "sha256": "603f5d1a641b8d59277c9a604346cf692dcf29f12b9bb825c93a5a0d9d0cd1f2",
-      "bytes": 10098
+      "bytes": 10098,
+      "sha256": "603f5d1a641b8d59277c9a604346cf692dcf29f12b9bb825c93a5a0d9d0cd1f2"
     },
     {
       "path": "tests/fixtures/spm_4p12s_simple.json",
@@ -3795,18 +4470,18 @@
     },
     {
       "path": "tests/test_installed_resources.py",
-      "sha256": "2655c03ca9b0c15c463398155119702625d56009ade0a7d4639b55035257ae8e",
-      "bytes": 10171
+      "bytes": 10171,
+      "sha256": "2655c03ca9b0c15c463398155119702625d56009ade0a7d4639b55035257ae8e"
     },
     {
       "path": "tests/test_launcher.py",
-      "sha256": "e7c1592e0c33d6edfcd37222addd653cb8fd9a35d328c61dfc3b32651b397ec0",
-      "bytes": 12525
+      "bytes": 12525,
+      "sha256": "e7c1592e0c33d6edfcd37222addd653cb8fd9a35d328c61dfc3b32651b397ec0"
     },
     {
       "path": "tests/test_launcher_shutdown.py",
-      "sha256": "7db7e7678d895a4d0c11a7e12cf56ea10c342cb57da6b25feca218ba458bdfc2",
-      "bytes": 25342
+      "bytes": 25342,
+      "sha256": "7db7e7678d895a4d0c11a7e12cf56ea10c342cb57da6b25feca218ba458bdfc2"
     },
     {
       "path": "tests/test_linear_halbach_analytical.py",
@@ -3840,18 +4515,18 @@
     },
     {
       "path": "tests/test_mesh_signature_tooth_shoe.py",
-      "sha256": "ffd7fa77f6c45865bdda6dbc73803073053206bc8543be344a6d9ac363118bfd",
-      "bytes": 3637
+      "bytes": 3637,
+      "sha256": "ffd7fa77f6c45865bdda6dbc73803073053206bc8543be344a6d9ac363118bfd"
     },
     {
       "path": "tests/test_native_processes.py",
-      "sha256": "bc4f556fd203fc16e86058e6cfa0cef82d91a78fc49d0870e12085b0bd28aa50",
-      "bytes": 5172
+      "bytes": 5172,
+      "sha256": "bc4f556fd203fc16e86058e6cfa0cef82d91a78fc49d0870e12085b0bd28aa50"
     },
     {
       "path": "tests/test_postsolve_pipeline.py",
-      "sha256": "048ac4984ae66c17658e3fe0c2e393fda63431b7ea74aea9b6890744f7fbeac7",
-      "bytes": 6629
+      "bytes": 6629,
+      "sha256": "048ac4984ae66c17658e3fe0c2e393fda63431b7ea74aea9b6890744f7fbeac7"
     },
     {
       "path": "tests/test_public_cancellation.py",
@@ -3885,13 +4560,13 @@
     },
     {
       "path": "tests/test_public_ui.py",
-      "sha256": "9fab4d66ca16b11d3ab4ece8ab6901447ce74c60cdddd94c0716c01fffed82bc",
-      "bytes": 7530
+      "bytes": 7530,
+      "sha256": "9fab4d66ca16b11d3ab4ece8ab6901447ce74c60cdddd94c0716c01fffed82bc"
     },
     {
       "path": "tests/test_public_validation_errors.py",
-      "sha256": "bf41217334bddcbee7ecc3420b6a0082e2c284f29a2aaff16105d0a098c63a1c",
-      "bytes": 3690
+      "bytes": 3690,
+      "sha256": "bf41217334bddcbee7ecc3420b6a0082e2c284f29a2aaff16105d0a098c63a1c"
     },
     {
       "path": "tests/test_public_validation_fixtures.py",
@@ -3900,23 +4575,23 @@
     },
     {
       "path": "tests/test_qualification.py",
-      "sha256": "102e1e5334233bf292b86294fabeac95de65b97c01bf13d24e6214b9d4cbb68d",
-      "bytes": 8235
+      "bytes": 8235,
+      "sha256": "102e1e5334233bf292b86294fabeac95de65b97c01bf13d24e6214b9d4cbb68d"
     },
     {
       "path": "tests/test_release_tools.py",
-      "sha256": "83e2d4fae8b35236e3fc0a765407b641f86aa5e81166e823daf337e7efac85f3",
-      "bytes": 21853
+      "bytes": 21853,
+      "sha256": "83e2d4fae8b35236e3fc0a765407b641f86aa5e81166e823daf337e7efac85f3"
     },
     {
       "path": "tests/test_solve_estimate.py",
-      "sha256": "40b6589ce1b3590b30ddcc404c9648c19113ceb24b08e30cd4a978defd0e8bf8",
-      "bytes": 4802
+      "bytes": 4802,
+      "sha256": "40b6589ce1b3590b30ddcc404c9648c19113ceb24b08e30cd4a978defd0e8bf8"
     },
     {
       "path": "tests/test_solve_pipeline_overhead.py",
-      "sha256": "732bba417b0c4a959fff227c5466ce84287f886f8db5dbcd59ff4530fbc79131",
-      "bytes": 5255
+      "bytes": 5255,
+      "sha256": "732bba417b0c4a959fff227c5466ce84287f886f8db5dbcd59ff4530fbc79131"
     },
     {
       "path": "tests/test_solve_workspace.py",
@@ -3925,8 +4600,8 @@
     },
     {
       "path": "tests/test_sweep_planning.py",
-      "sha256": "b1d691235c34345c1711393f3aa0107bc00a25b9987db4a7e597c24fcef80cd1",
-      "bytes": 5665
+      "bytes": 5665,
+      "sha256": "b1d691235c34345c1711393f3aa0107bc00a25b9987db4a7e597c24fcef80cd1"
     },
     {
       "path": "tests/test_windows_field_frame_pool.py",
@@ -3995,63 +4670,63 @@
     },
     {
       "path": "tools/release/__init__.py",
-      "sha256": "2dbf5c952d7497fcfd2a81360f5b5fddeefc5b08c39d5d2c59f8f2e48f832f0c",
-      "bytes": 72
+      "bytes": 72,
+      "sha256": "2dbf5c952d7497fcfd2a81360f5b5fddeefc5b08c39d5d2c59f8f2e48f832f0c"
     },
     {
       "path": "tools/release/acceptance.py",
-      "sha256": "9d4a2087d1aeb649fb1d5f72c3fc0cb0c6dca9e14ff5f1dc83af4f0aabb50c4c",
-      "bytes": 18277
+      "bytes": 18277,
+      "sha256": "9d4a2087d1aeb649fb1d5f72c3fc0cb0c6dca9e14ff5f1dc83af4f0aabb50c4c"
     },
     {
       "path": "tools/release/artifacts.py",
-      "sha256": "7a7490cd144fceac001d01bc173e05512db98cc30b400e35a6956c9fc1d00506",
-      "bytes": 5884
+      "bytes": 5884,
+      "sha256": "7a7490cd144fceac001d01bc173e05512db98cc30b400e35a6956c9fc1d00506"
     },
     {
       "path": "tools/release/crate_notices/equator.LICENSE",
-      "sha256": "97d3424e347e8fa236806725ce9837bb453d4dfc9ce1d4733fd6023a8038000a",
-      "bytes": 1062
+      "bytes": 1062,
+      "sha256": "97d3424e347e8fa236806725ce9837bb453d4dfc9ce1d4733fd6023a8038000a"
     },
     {
       "path": "tools/release/crate_notices/faer.LICENSE",
-      "sha256": "1f6b7e2a30afc2f5f253cb3535e041f91de1e1f9815b38714dfd94e53e61d972",
-      "bytes": 1083
+      "bytes": 1083,
+      "sha256": "1f6b7e2a30afc2f5f253cb3535e041f91de1e1f9815b38714dfd94e53e61d972"
     },
     {
       "path": "tools/release/crate_notices/nano-gemm.LICENSE",
-      "sha256": "310b7323adcc27fc94c45d1155b6c89c17986576d790f766a04c855662428a7c",
-      "bytes": 1073
+      "bytes": 1073,
+      "sha256": "310b7323adcc27fc94c45d1155b6c89c17986576d790f766a04c855662428a7c"
     },
     {
       "path": "tools/release/crate_notices/pulp.LICENSE",
-      "sha256": "d64f878c89bd5f1e5ada7e4aad57690b122727cf5229b7b87ea1980c188da1d9",
-      "bytes": 1062
+      "bytes": 1062,
+      "sha256": "d64f878c89bd5f1e5ada7e4aad57690b122727cf5229b7b87ea1980c188da1d9"
     },
     {
       "path": "tools/release/native_deps.py",
-      "sha256": "286835b1ad1c216e39eef81ed08b12ae114b8f8bdb17066bddf180eb12cc9130",
-      "bytes": 5879
+      "bytes": 5879,
+      "sha256": "286835b1ad1c216e39eef81ed08b12ae114b8f8bdb17066bddf180eb12cc9130"
     },
     {
       "path": "tools/release/policy.py",
-      "sha256": "09052a063623a1a6aefbe2bad6ee04ae71f266a2993917e1213314c785f0710b",
-      "bytes": 9515
+      "bytes": 9515,
+      "sha256": "09052a063623a1a6aefbe2bad6ee04ae71f266a2993917e1213314c785f0710b"
     },
     {
       "path": "tools/release/rust_licenses.py",
-      "sha256": "09c0d0d0bf18890d179608716f4a3b40d8b721651b16d05f0f142a25b77df687",
-      "bytes": 7673
+      "bytes": 7673,
+      "sha256": "09c0d0d0bf18890d179608716f4a3b40d8b721651b16d05f0f142a25b77df687"
     },
     {
       "path": "tools/release/verify_wheel.py",
-      "sha256": "80338462f0bc39d9cb45bbcb61ebd17f1772fd5b85015ab9a426a0889651730c",
-      "bytes": 10011
+      "bytes": 10011,
+      "sha256": "80338462f0bc39d9cb45bbcb61ebd17f1772fd5b85015ab9a426a0889651730c"
     },
     {
       "path": "tools/release/version.py",
-      "sha256": "1566604a291df98048330d29d214a24b1f5abc33971397714e5ea1badfe00f76",
-      "bytes": 2035
+      "bytes": 2035,
+      "sha256": "1566604a291df98048330d29d214a24b1f5abc33971397714e5ea1badfe00f76"
     },
     {
       "path": "tools/replay_numerical_case.py",
@@ -4075,8 +4750,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 17741,
-      "sha256": "42b45ecad157cf03fb6aa61d2c30649c11cbdb1bcbc08faf837813146ad8705a"
+      "bytes": 17987,
+      "sha256": "15f12dc8d347d806f7433eb8a5aecf52de6fb67c727a6f60e43b9d94a29c31e5"
     }
   ],
   "public_patches": [
@@ -5608,7 +6283,7 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B − Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B \u2212 Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
@@ -5638,13 +6313,13 @@
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45° (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45\u00b0 (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45° over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45\u00b0 over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "a482ff6e2bd9616d2ece2a68f8fa2f2c49aae45c",
@@ -5662,7 +6337,7 @@
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45° (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00b0 (#52 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
@@ -6035,6 +6710,12 @@
       "path": "tools/verify_snapshot.py",
       "source_sha256": "d7a4b2af6f0eff1c7a58696496d3384164aa8bfd5c49627767139a0a19857962",
       "reason": "Allow the macOS v1.7 benchmark record's generated PDF, as for the v1.5 record."
+    },
+    {
+      "base_commit": "9d66dab7212d165a1db601d40bbcf68b7c124253",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "42b45ecad157cf03fb6aa61d2c30649c11cbdb1bcbc08faf837813146ad8705a",
+      "reason": "Allowlist historical Windows main/RC PDFs and the frozen-pin Windows benchmark v1.8 PDF; no runtime or qualification policy changes."
     }
   ]
 }
