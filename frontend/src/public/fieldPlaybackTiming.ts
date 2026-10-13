@@ -221,3 +221,129 @@ export function publicFieldPlaybackCacheFrames(rpm: number, loopFrames = 0): num
     ? Math.max(bufferedFrames, loopFrames)
     : bufferedFrames;
 }
+
+/**
+ * Playback rate cap for a solved window (#59): a Preview run solves only part
+ * of a cycle, so its positions loop as a sweep. At the RPM-based rate a 45°
+ * window would loop about 17 times a second and show scattered positions.
+ */
+export const PUBLIC_FIELD_PLAYBACK_MAX_WINDOW_FPS = 12;
+
+/** How the position slider and playback cover a run's solved positions. */
+export interface PublicFieldPlaybackSpan {
+  /** True when the positions cover only part of an electrical cycle (Preview). */
+  windowed: boolean;
+  startDeg: number;
+  endDeg: number;
+  stepDeg: number;
+}
+
+export function playbackSpanOf(
+  frames: readonly PublicFieldPlaybackAngleFrame[],
+): PublicFieldPlaybackSpan {
+  const angles = frames.map((frame) => frame.angle_deg).filter(Number.isFinite).sort((left, right) => left - right);
+  if (angles.length < 2) {
+    return { windowed: false, startDeg: angles[0] ?? 0, endDeg: angles[0] ?? 0, stepDeg: FULL_ELECTRICAL_CYCLE_DEG };
+  }
+  const spacings = angles.slice(1).map((angle, index) => angle - angles[index]).filter((spacing) => spacing > Number.EPSILON);
+  const stepDeg = spacings.sort((left, right) => left - right)[Math.floor(spacings.length / 2)] ?? FULL_ELECTRICAL_CYCLE_DEG;
+  return {
+    windowed: playbackCycleSpanDeg(frames) < FULL_ELECTRICAL_CYCLE_DEG,
+    startDeg: angles[0],
+    endDeg: angles[angles.length - 1],
+    stepDeg,
+  };
+}
+
+/** The slider covers a solved window once; a full cycle keeps 0–360°. */
+export function positionSliderRange(span: PublicFieldPlaybackSpan): { min: number; max: number } {
+  return span.windowed
+    ? { min: span.startDeg, max: span.endDeg }
+    : { min: 0, max: FULL_ELECTRICAL_CYCLE_DEG };
+}
+
+/** The slider value that shows a playback angle. */
+export function positionSliderValue(span: PublicFieldPlaybackSpan, electricalAngleDeg: number): number {
+  return span.windowed
+    ? Math.min(span.endDeg, Math.max(span.startDeg, electricalAngleDeg))
+    : normalizePlaybackElectricalAngle(electricalAngleDeg);
+}
+
+/** The solved position a slider value selects: within a window, without wrapping. */
+export function positionSliderFrameIndex(
+  frames: readonly PublicFieldPlaybackAngleFrame[],
+  valueDeg: number,
+  span: PublicFieldPlaybackSpan,
+): number {
+  if (!span.windowed) return nearestPlaybackFrameIndex(frames, valueDeg, playbackCycleSpanDeg(frames));
+  let nearest = 0;
+  frames.forEach((frame, index) => {
+    if (Math.abs(frame.angle_deg - valueDeg) < Math.abs(frames[nearest].angle_deg - valueDeg)) nearest = index;
+  });
+  return nearest;
+}
+
+/**
+ * Advance playback through a solved window and loop back to its start. Each
+ * position shows for one step, the last one included, and the rate is capped
+ * at PUBLIC_FIELD_PLAYBACK_MAX_WINDOW_FPS positions a second.
+ */
+export function advanceWindowPlaybackAngle(
+  electricalAngleDeg: number,
+  elapsedMs: number,
+  rpm: number,
+  polePairs: number,
+  span: PublicFieldPlaybackSpan,
+): number {
+  const loopDeg = span.endDeg - span.startDeg + span.stepDeg;
+  if (!(loopDeg > 0)) return span.startDeg;
+  const degPerSecond = Math.min(
+    playbackElectricalDegPerSecond(rpm, polePairs),
+    span.stepDeg * PUBLIC_FIELD_PLAYBACK_MAX_WINDOW_FPS,
+  );
+  const safeElapsedMs = Math.max(0, Number.isFinite(elapsedMs) ? elapsedMs : 0);
+  const offset = (electricalAngleDeg - span.startDeg + degPerSecond * (safeElapsedMs / 1000)) % loopDeg;
+  return span.startDeg + (offset < 0 ? offset + loopDeg : offset);
+}
+
+/** The window position a playback angle shows: the last solved angle at or before it. */
+export function windowPlaybackFrameIndex(
+  frames: readonly PublicFieldPlaybackAngleFrame[],
+  electricalAngleDeg: number,
+  span: PublicFieldPlaybackSpan,
+): number {
+  const steps = Math.floor((electricalAngleDeg - span.startDeg) / span.stepDeg + 1e-9);
+  return positionSliderFrameIndex(frames, span.startDeg + Math.max(0, steps) * span.stepDeg, span);
+}
+
+/** The window positions playback shows next, in order, looping to the start. */
+export function windowLookaheadFrameIndices(frameCount: number, currentIndex: number, count: number): number[] {
+  const indices: number[] = [];
+  for (let step = 1; step <= Math.min(count, frameCount - 1); step += 1) indices.push((currentIndex + step) % frameCount);
+  return indices;
+}
+
+/**
+ * Positions to preload once the slider rests: `ahead` in the direction it was
+ * last dragged and `behind` the other way, so the next drag starts on decoded
+ * frames either way. A full cycle wraps around; a window stops at its ends.
+ */
+export function scrubNeighbourIndices(
+  frameCount: number,
+  currentIndex: number,
+  direction: 1 | -1,
+  wraps: boolean,
+  ahead = 3,
+  behind = 2,
+): number[] {
+  const indices: number[] = [];
+  const add = (offset: number) => {
+    let index = currentIndex + offset;
+    if (wraps) index = ((index % frameCount) + frameCount) % frameCount;
+    else if (index < 0 || index >= frameCount) return;
+    if (index !== currentIndex && !indices.includes(index)) indices.push(index);
+  };
+  for (let step = 1; step <= ahead; step += 1) add(direction * step);
+  for (let step = 1; step <= behind; step += 1) add(-direction * step);
+  return indices;
+}

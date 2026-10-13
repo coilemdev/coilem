@@ -885,12 +885,28 @@ assert.match(solvedFieldSource, /CW · \{bufferStatus\}/);
 assert.doesNotMatch(solvedFieldSource, /MAX_CACHED_FRAMES/);
 assert.match(solvedFieldSource, /window\.requestAnimationFrame\(animate\)/);
 assert.match(solvedFieldSource, /advancePlaybackElectricalAngle/);
-assert.match(solvedFieldSource, /nearestPlaybackFrameIndex/);
+assert.match(solvedFieldSource, /const nextIndex = positionSliderFrameIndex\(angleFrames, nextPlaybackAngleDeg, playbackSpan\)/);
 assert.match(solvedFieldSource, /playbackCycleSpanDeg/);
 assert.match(solvedFieldSource, /normalizePlaybackElectricalAngle/);
 assert.match(solvedFieldSource, /playbackSliderRef\.current\.value/);
 assert.match(solvedFieldSource, /step="any"/);
-assert.match(solvedFieldSource, /for \(const preloadIndex of playbackLookaheadIndices\)/);
+assert.match(solvedFieldSource, /for \(const preloadIndex of preloadIndices\)/);
+// #59: a Preview window is covered once by the slider and loops in order when played.
+assert.match(solvedFieldSource, /min=\{sliderRange\.min\}\s*max=\{sliderRange\.max\}/);
+assert.match(solvedFieldSource, /positionSliderValue\(playbackSpanRef\.current, electricalAngle\)/);
+assert.match(solvedFieldSource, /playbackSpan\.windowed\s*\? advanceWindowPlaybackAngle\(/);
+assert.match(solvedFieldSource, /windowPlaybackFrameIndex\(angleFrames, nextPlaybackAngleDeg, playbackSpan\)/);
+// #59: dragging loads only the newest position, preloads nothing until it rests,
+// and keeps the last drawn frame (with its magnet angle) while the next decodes.
+assert.match(solvedFieldSource, /frameLoaderRef\.current\.request\(\(\) => loadVisualFrame\(descriptor, source\)\)/);
+assert.match(solvedFieldSource, /if \(angleFrames\.length < 2 \|\| \(scrubbing && !playing\)\) return;/);
+assert.match(solvedFieldSource, /scrubNeighbourIndices\(angleFrames\.length, boundedIndex, scrubDirection, !playbackSpan\.windowed\)/);
+assert.match(solvedFieldSource, /const heldFrame = !activeRaster && !meshlessRaster && !exactVectorPlot && heldRaster\?\.source === source/);
+assert.match(solvedFieldSource, /if \(heldRaster\) shown\.add\(heldRaster\.raster\);/, 'a held frame is never closed while on screen');
+assert.match(solvedFieldSource, /magnetRotationDeg=\{\(heldFrame\?\.angleDeg \?\? electricalAngleDeg\) \/ polePairs\}/);
+// #59: the mesh layer is decoded only while the Mesh overlay is shown.
+assert.match(playbackRasterizerSource, /layers\.mesh && withMesh \? load\(layers\.mesh\.artifact_id\)/);
+assert.match(solvedFieldSource, /requestedDescriptor\.playback_frame,\s*withMesh,/);
 assert.match(solvedFieldSource, /Playback speed \(RPM\)/);
 assert.doesNotMatch(solvedFieldSource, /PLAYBACK_RATES|PlaybackRate|Field playback speed/);
 assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_MIN_RPM = 1/);

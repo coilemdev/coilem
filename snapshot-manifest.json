@@ -2215,8 +2215,8 @@
     },
     {
       "path": "frontend/scripts/test-field-playback-timing.mjs",
-      "sha256": "2e445a4cb33afd518a2e5328b19ee9fafc41284ee00930827482393794e17a99",
-      "bytes": 4156
+      "sha256": "772e47122f0d5154706aa5c542f0dd4fb27a8c826d006661cc8fa42485834aa3",
+      "bytes": 10401
     },
     {
       "path": "frontend/scripts/test-flat-ipm-burial-health.mjs",
@@ -2255,8 +2255,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 103197,
-      "sha256": "bafd25e97655b99a6f7369bd6b5cd4ed8c5658123420d473eac350a7d5254648"
+      "bytes": 104921,
+      "sha256": "aa7320862bdcf599245f646e169e557065c7109fd5b83642fc6ef531381eb593"
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
@@ -2690,8 +2690,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 45467,
-      "sha256": "91fd02de7db4a87cee3146cf750aa38bda1f18ce031abf7466e06370e021eaeb"
+      "bytes": 51243,
+      "sha256": "02781349b905d414252a7726bc5de8e427705dbf9079febedc23996247e1739e"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -2795,13 +2795,13 @@
     },
     {
       "path": "frontend/src/public/fieldPlaybackRasterizer.ts",
-      "bytes": 5266,
-      "sha256": "6a6fe9e37da8387d34d7fbffdab15067ea6609703a2efa3d58bff9f89eedc861"
+      "bytes": 5435,
+      "sha256": "9f4514df097baba9bb7d0c10d1e3baace38b29812ff09f2d6b832c94393173e9"
     },
     {
       "path": "frontend/src/public/fieldPlaybackTiming.ts",
-      "bytes": 7580,
-      "sha256": "5b4fd9e0420a326208cf49c124b3789d7936b2333e1e1c2a7588e44cbbe1072d"
+      "bytes": 12743,
+      "sha256": "a759c3332b20c0a6c0e58bbd00e64d1f9f3393b4f5405347a7ded59ddfa6cf6d"
     },
     {
       "path": "frontend/src/public/fieldPlaybackWorker.ts",
@@ -2882,6 +2882,11 @@
       "path": "frontend/src/public/index.html",
       "bytes": 489,
       "sha256": "43fe2fc0a36e1d265b94dc17cee4c5c79ac13c19a07e129588b5d5a14d55c213"
+    },
+    {
+      "path": "frontend/src/public/latestFrameLoader.ts",
+      "sha256": "03789a09d067323780d331304e0add1e89ac655a0b9fd4e78fb82ed925b2d726",
+      "bytes": 1541
     },
     {
       "path": "frontend/src/public/magnetPoleFaces.ts",
@@ -5222,6 +5227,36 @@
       "path": "frontend/src/public/styles.css",
       "source_sha256": "268def3f72bd90cfe7fc2a4a57262701dac2cfb38d3c8e8b43fdec1900f13354",
       "reason": "Lift the top bar's stacking context while its design menu is open, so the menu draws over the motor view's toolbars (#62)."
+    },
+    {
+      "base_commit": "1d6f00511fe77e8a17337f685584691f0dec64e7",
+      "path": "frontend/scripts/test-field-playback-timing.mjs",
+      "source_sha256": "2e445a4cb33afd518a2e5328b19ee9fafc41284ee00930827482393794e17a99",
+      "reason": "Cover the Preview window slider and playback, the resting preload and the newest-position frame loader (#59)."
+    },
+    {
+      "base_commit": "1d6f00511fe77e8a17337f685584691f0dec64e7",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "bafd25e97655b99a6f7369bd6b5cd4ed8c5658123420d473eac350a7d5254648",
+      "reason": "Pin the window-aware slider, newest-position loading, held frame and on-demand mesh layer (#59)."
+    },
+    {
+      "base_commit": "1d6f00511fe77e8a17337f685584691f0dec64e7",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "91fd02de7db4a87cee3146cf750aa38bda1f18ce031abf7466e06370e021eaeb",
+      "reason": "Cover a Preview window once with the Position slider, load only the newest position while it is dragged, and keep the last frame on screen while the next decodes (#59)."
+    },
+    {
+      "base_commit": "1d6f00511fe77e8a17337f685584691f0dec64e7",
+      "path": "frontend/src/public/fieldPlaybackRasterizer.ts",
+      "source_sha256": "6a6fe9e37da8387d34d7fbffdab15067ea6609703a2efa3d58bff9f89eedc861",
+      "reason": "Skip the mesh playback layer while the Mesh overlay is hidden (#59)."
+    },
+    {
+      "base_commit": "1d6f00511fe77e8a17337f685584691f0dec64e7",
+      "path": "frontend/src/public/fieldPlaybackTiming.ts",
+      "source_sha256": "5b4fd9e0420a326208cf49c124b3789d7936b2333e1e1c2a7588e44cbbe1072d",
+      "reason": "Add the Preview window span, slider mapping, window playback and resting preload helpers (#59)."
     }
   ]
 }
