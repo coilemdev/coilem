@@ -2883,8 +2883,10 @@ body {
 .public-qualification-note.is-unsupported .public-qualification-badge {
   background: rgba(245, 158, 11, 0.24);
 }
+/* Same centred 1080px column as the saved-run box, metric cards and plots (#51). */
 .public-report-stage > .public-qualification-note {
-  margin: 0 0 14px;
+  max-width: 1080px;
+  margin: 0 auto 14px;
 }
 .public-excitation-preview {
   display: grid;

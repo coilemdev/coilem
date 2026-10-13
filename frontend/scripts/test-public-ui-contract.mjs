@@ -233,6 +233,11 @@ assert.match(workspaceSource, /docs\/VALIDATION\.md#qualification-status/);
 assert.match(workspaceSource, /readQualification\(geometry\?\.metadata\?\.qualification\)/);
 assert.match(workspaceSource, /readQualification\(validation\?\.qualification\)/);
 assert.match(workspaceSource, /readQualification\(result\.qualification\)/);
+// On Results the note sits in the same centred column as the other panels (#51).
+assert.match(
+  styleSource,
+  /\.public-report-stage > \.public-qualification-note \{\s*max-width: 1080px;\s*margin: 0 auto 14px;\s*\}/,
+);
 assert.equal((workspaceSource.match(/<QualificationNote qualification=/g) ?? []).length, 2, 'Solve and Results show the qualification note');
 assert.match(appSource, /const convertProjectSteelToM350 = useCallback/);
 assert.match(appSource, /stator_steel: 'M350-50A'/);

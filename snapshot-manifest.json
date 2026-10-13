@@ -2250,8 +2250,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 97883,
-      "sha256": "f1dec45460e8fc0ef821e7ef61a146a38cb72dc3f4a450f000279c9c515e022b"
+      "bytes": 98106,
+      "sha256": "95be7c0b9b75efb2c312a1e543c1f8a0581c6f10f7f15bac4e704705f94ab050"
     },
     {
       "path": "frontend/src/api/projectSchema.ts",
@@ -2900,8 +2900,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 222403,
-      "sha256": "cc58384585052ab175f65f49102013b69eb01938960af37a9d4384b305816d9e"
+      "bytes": 222512,
+      "sha256": "a414b09923bc5b709f369b1e5b701cb87095bbc2b48fcf3f30abb8a85d516dfd"
     },
     {
       "path": "frontend/src/public/tutorials/PublicTutorials.tsx",
@@ -5047,6 +5047,18 @@
       "path": "backend/topology_provenance.py",
       "source_sha256": "3d774b03589697c2d7b96989d4d758190fb0c04e2cbaeffd4276da5ad9b26b51",
       "reason": "Record the stator tooth-shoe settings in the topology provenance and mesh signature (v4), so designs that differ only in their tooth shoe never share cached meshes."
+    },
+    {
+      "base_commit": "6f78d694c66d864ca260be4a38ac651e489f03b9",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "f1dec45460e8fc0ef821e7ef61a146a38cb72dc3f4a450f000279c9c515e022b",
+      "reason": "Pin the Results-page qualification note to the shared report column (#51)."
+    },
+    {
+      "base_commit": "6f78d694c66d864ca260be4a38ac651e489f03b9",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "cc58384585052ab175f65f49102013b69eb01938960af37a9d4384b305816d9e",
+      "reason": "Give the Results-page qualification note the same centred 1080px column as the other panels (#51)."
     }
   ]
 }
