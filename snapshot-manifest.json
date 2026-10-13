@@ -645,12 +645,12 @@
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/README.md",
-      "sha256": "d66c54960572e632eeaf2e113bd93ca6f76fe1f2e5b423e278e45449ff3d3939",
-      "bytes": 8370
+      "sha256": "60003a361d71f2664abacb11d98921977385fd787bcb4d278e64aa84f7800773",
+      "bytes": 8492
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/artifact_manifest.json",
-      "sha256": "bceda773ee5bf7edef8cf736dd4b1367eba2dec51d6f3830c417336e64a0316d",
+      "sha256": "11c04ff2ff261e837551d0863d1647f7abb51423af2f3eec639d2b4b82bbf3ac",
       "bytes": 8159
     },
     {
@@ -5786,6 +5786,18 @@
       "path": "tools/verify_snapshot.py",
       "source_sha256": "bb69e9154a151c1f7d1ed3462c5208a0f63c5401a262c2fac9c00ccfebe3ae0b",
       "reason": "Allow the macOS v1.5 benchmark record's generated PDF, as for the v1.4 record."
+    },
+    {
+      "base_commit": "d7a7349f6a24231466e4a0d868eaef36d4fdf156",
+      "path": "benchmarks/macos-rc-20261013-04f87a5/README.md",
+      "source_sha256": "d66c54960572e632eeaf2e113bd93ca6f76fe1f2e5b423e278e45449ff3d3939",
+      "reason": "Record that the owner accepted the macOS record in place of a Windows run of the pinned commit."
+    },
+    {
+      "base_commit": "d7a7349f6a24231466e4a0d868eaef36d4fdf156",
+      "path": "benchmarks/macos-rc-20261013-04f87a5/artifact_manifest.json",
+      "source_sha256": "bceda773ee5bf7edef8cf736dd4b1367eba2dec51d6f3830c417336e64a0316d",
+      "reason": "Refresh the package hash of the updated README."
     }
   ]
 }

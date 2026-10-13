@@ -81,7 +81,7 @@ PYTHONPATH="$PWD" .venv/bin/python -m tools.run_benchmarks \
 
 Use a new output directory. Rebuilding with another Rust toolchain creates a different binary identity even when the source commit matches. Each job's solve cache was deleted after the job recorded its result, to keep disk use bounded; the report never reads those caches.
 
-The release-candidate freeze in #46 asks for the full run on the Windows Ryzen 7 7700 as well. That run is recorded separately with the v1.4 PowerShell commands checked out at the same commit.
+The release-candidate freeze in #46 asked for this run on the Windows Ryzen 7 7700. The owner accepted this macOS record instead, because every verdict and gate status matches Windows report v1.4; no Windows run of the pinned commit is recorded. The v1.4 PowerShell commands reproduce it on Windows at this commit.
 
 ## Publication
 
