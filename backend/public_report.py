@@ -649,10 +649,11 @@ def _design_setting_groups(config: Mapping[str, Any]) -> list[tuple[str, list[tu
 
 
 def _settings_grid(
-    entries: Sequence[tuple[str, str]],
+    entries: Sequence[tuple[str, Any]],
     styles: Mapping[str, ParagraphStyle],
     *,
     columns: int = 3,
+    cell_widths: tuple[float, float] = (27 * mm, 33 * mm),
 ) -> Table:
     data = []
     for offset in range(0, len(entries), columns):
@@ -661,7 +662,7 @@ def _settings_grid(
             row.extend([_safe_paragraph(label, styles["small"]), _safe_paragraph(value, styles["body"])])
         row.extend([""] * (2 * columns - len(row)))
         data.append(row)
-    table = Table(data, colWidths=[27 * mm, 33 * mm] * columns, hAlign="LEFT")
+    table = Table(data, colWidths=list(cell_widths) * columns, hAlign="LEFT")
     table.setStyle(
         TableStyle(
             [
@@ -731,6 +732,41 @@ def _numeric_points(x_values: Any, y_values: Any) -> list[tuple[float, float]]:
     return points
 
 
+# Same steps as the app's charts (frontend/src/public/chartAxis.ts).
+_ELECTRICAL_ANGLE_TICK_STEPS_DEG = (1, 2, 2.5, 3.75, 5, 7.5, 10, 15, 22.5, 30, 45, 60, 90, 180)
+
+
+def _electrical_angle_ticks(min_deg: float, max_deg: float, max_intervals: int = 8) -> list[float]:
+    """Multiples of the smallest step leaving at most ``max_intervals`` intervals."""
+
+    span = max_deg - min_deg
+    if not math.isfinite(span) or span <= 0:
+        return [min_deg] if math.isfinite(min_deg) else []
+    step = next(
+        (candidate for candidate in _ELECTRICAL_ANGLE_TICK_STEPS_DEG if span / candidate <= max_intervals + 1e-9),
+        span / max_intervals,
+    )
+    ticks = []
+    index = math.ceil(min_deg / step - 1e-9)
+    while index * step <= max_deg + 1e-9:
+        ticks.append(round(index * step, 6))
+        index += 1
+    return ticks
+
+
+def _angle_axis_end(angles: Sequence[float]) -> float:
+    """360 for a full cycle sampled from 0, as the app's charts show it; else the last angle."""
+
+    ordered = sorted(set(angles))
+    if len(ordered) < 2:
+        return ordered[-1] if ordered else 0.0
+    step = ordered[-1] - ordered[-2]
+    tolerance = max(abs(step) * 0.05, 0.01)
+    if abs(ordered[0]) <= tolerance and abs(ordered[-1] + step - 360) <= tolerance:
+        return 360.0
+    return ordered[-1]
+
+
 def _line_plot(
     *,
     title: str,
@@ -751,8 +787,11 @@ def _line_plot(
     plot.data = [points for _name, points, _color in valid]
     plot.joinedLines = 1
     plot.strokeColor = _BORDER
-    plot.xValueAxis.valueMin = min(point[0] for _n, points, _c in valid for point in points)
-    plot.xValueAxis.valueMax = max(point[0] for _n, points, _c in valid for point in points)
+    angles = [point[0] for _n, points, _c in valid for point in points]
+    plot.xValueAxis.valueMin = min(angles)
+    plot.xValueAxis.valueMax = max(max(angles), _angle_axis_end(angles))
+    plot.xValueAxis.valueSteps = _electrical_angle_ticks(plot.xValueAxis.valueMin, plot.xValueAxis.valueMax)
+    plot.xValueAxis.labelTextFormat = lambda value: f"{value:g}"
     y_values = [point[1] for _n, points, _c in valid for point in points]
     y_min, y_max = min(y_values), max(y_values)
     if math.isclose(y_min, y_max):
@@ -1060,7 +1099,8 @@ def build_public_run_pdf(
     story.extend(
         [
             _section("Operating point and mesh", styles),
-            _key_value_table(
+            # A compact grid, so the provenance below fits on the first page.
+            _settings_grid(
                 [
                     (
                         "Conducting phase current" if six_step else "Phase current",
@@ -1081,19 +1121,25 @@ def build_public_run_pdf(
                     ("Torque method requested", solve_params.get("torque_method")),
                 ],
                 styles,
+                columns=2,
+                cell_widths=(40 * mm, 50 * mm),
             ),
-            _section("Solver and build provenance", styles),
-            _key_value_table(
+            KeepTogether(
                 [
-                    ("Solver", solve_metadata.get("solver_name") or provenance.get("solver_name")),
-                    ("Application version", provenance.get("application_version")),
-                    ("Application commit", provenance.get("application_commit")),
-                    *_build_rows(_mapping(provenance.get("build"))),
-                    ("Platform", _plain(provenance.get("platform"))),
-                    ("Result SHA-256", _mapping(manifest.get("bindings")).get("result_sha256")),
-                    ("Resolved request SHA-256", _mapping(manifest.get("bindings")).get("resolved_request_sha256")),
-                ],
-                styles,
+                    _section("Solver and build provenance", styles),
+                    _key_value_table(
+                        [
+                            ("Solver", solve_metadata.get("solver_name") or provenance.get("solver_name")),
+                            ("Application version", provenance.get("application_version")),
+                            ("Application commit", provenance.get("application_commit")),
+                            *_build_rows(_mapping(provenance.get("build"))),
+                            ("Platform", _plain(provenance.get("platform"))),
+                            ("Result SHA-256", _mapping(manifest.get("bindings")).get("result_sha256")),
+                            ("Resolved request SHA-256", _mapping(manifest.get("bindings")).get("resolved_request_sha256")),
+                        ],
+                        styles,
+                    ),
+                ]
             ),
         ]
     )

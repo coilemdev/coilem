@@ -415,8 +415,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 51384,
-      "sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088"
+      "bytes": 53260,
+      "sha256": "ab6872c8f36acc660e326cf74d84f3065cea3371c916ef8b87879eb7b168b8c5"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -3410,8 +3410,8 @@
     },
     {
       "path": "tests/test_public_report_exports.py",
-      "bytes": 24122,
-      "sha256": "0e1ba7d358b457a1dc64b756d362e8944ebf6ec74a885745f461d4dbcc5133ad"
+      "bytes": 26622,
+      "sha256": "888dcaa77e3e3a2244c073eb2a2fb1d6015eee11572738841399cf570b332c84"
     },
     {
       "path": "tests/test_public_security.py",
@@ -5192,6 +5192,18 @@
       "path": "tests/test_public_report_exports.py",
       "source_sha256": "068504766ea4e311d175c1479efa4c2f70fe1f130902fa6f7221e601d4445fb8",
       "reason": "Cover the topology-aware PDF settings section and the complete CSV setting rows (#52)."
+    },
+    {
+      "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
+      "path": "backend/public_report.py",
+      "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45° (#52 follow-up)."
+    },
+    {
+      "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "0e1ba7d358b457a1dc64b756d362e8944ebf6ec74a885745f461d4dbcc5133ad",
+      "reason": "Cover the first-page provenance table and the PDF angle-axis steps (#52 follow-up)."
     }
   ]
 }

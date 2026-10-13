@@ -13,7 +13,9 @@ import pytest
 
 from backend.models import MotorConfig
 from backend.public_report import (
+    _angle_axis_end,
     _design_setting_groups,
+    _electrical_angle_ticks,
     _flatten,
     _plain,
     build_public_run_csv,
@@ -599,3 +601,51 @@ def test_pdf_settings_keep_fields_this_report_does_not_know_yet() -> None:
     assert groups["Rotor"]["Sleeve thickness"] == "0.5 mm"
     assert groups["Solve plan"]["Mesh smoothing passes"] == "3"
     assert "Nested" not in groups["Solve plan"]
+
+
+def test_pdf_first_page_holds_the_whole_provenance_table() -> None:
+    """Owner QA of #61: the provenance table split across pages 1 and 2."""
+
+    config = _resolved(CONFIG)
+    manifest = {
+        "run_id": "20261013t000000000000z-qa",
+        "project_name": "A project name long enough to take a full line in the header table",
+        "provenance": {
+            "solver_name": "magneto2d-rust-0.3.3",
+            "application_version": "0.3.0",
+            "application_commit": "a" * 40,
+            # An installed package records three more provenance rows.
+            "build": {
+                "installation": "package",
+                "magneto2d_version": "0.3.3",
+                "magneto2d_target": "aarch64-apple-darwin",
+                "magneto2d_sha256": "b" * 64,
+                "ui_bundle_sha256": "c" * 64,
+            },
+            "platform": {"machine": "arm64", "python": "3.12.13", "system": "Darwin"},
+            "qualification": {
+                "status": "experimental",
+                "reason": "V-shape IPM rotors: two of the six benchmark fixtures fail their torque gates, so results are experimental.",
+                "basis": "coilEM benchmark report v1.1",
+            },
+        },
+        "bindings": {"result_sha256": "d" * 64, "resolved_request_sha256": "e" * 64},
+    }
+    pdf = build_public_run_pdf(
+        project={"topology": "SPM"}, request={"resolved_config": config}, result=_result(), material={}, manifest=manifest,
+    )
+    first_page = pypdf.PdfReader(io.BytesIO(pdf)).pages[0].extract_text() or ""
+    for row in ("Solver and build provenance", "UI bundle SHA-256", "Platform", "Result SHA-256", "Resolved request SHA-256", "e" * 64):
+        assert row in first_page, row
+    assert "Torque method requested" in first_page
+
+
+def test_pdf_plot_angle_axis_matches_the_apps_steps() -> None:
+    assert _electrical_angle_ticks(0, 360) == [0, 45, 90, 135, 180, 225, 270, 315, 360]
+    assert _electrical_angle_ticks(0, 60) == [0, 7.5, 15, 22.5, 30, 37.5, 45, 52.5, 60]
+    assert _electrical_angle_ticks(0, 45) == [0, 7.5, 15, 22.5, 30, 37.5, 45]
+    assert _electrical_angle_ticks(30, 30) == [30]
+    # A full cycle sampled from 0 ends at 360; a partial window at its last angle.
+    assert _angle_axis_end([index * 7.5 for index in range(48)]) == 360.0
+    assert _angle_axis_end([index * 3.75 for index in range(13)]) == 45.0
+    assert _angle_axis_end([0.0, 30.0, 60.0, 90.0]) == 90.0
