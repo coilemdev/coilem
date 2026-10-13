@@ -2,7 +2,10 @@
 
 The release is coilEM 0.3.0 with Magneto2D 0.3.3, a developer preview. Its numerical qualification is the published A/B/C/D benchmark
 report v1.1, which compares the native solver with fresh, matched FEMM
-references. Passing CI alone does not establish numerical accuracy.
+references. [Report v1.5](../benchmarks/macos-rc-20261013-04f87a5/README.md) measures the pinned
+release candidate `04f87a5013415997cdef96a9bfa35125ce625bc5`; it retains every
+verdict and does not change the qualified scope. Passing CI alone does not
+establish numerical accuracy.
 
 See [Numerical evidence](NUMERICAL_EVIDENCE.md) for measured comparisons and
 [Local verification](VERIFICATION.md) for the build, browser and audit record.
@@ -11,6 +14,24 @@ These records keep their tested runtime identities explicit.
 The [benchmark index](../benchmarks/README.md) identifies the latest full run,
 the current selection and archived evidence. The [IPM diagnosis](IPM_BENCHMARK_DIAGNOSIS.md) explains
 the fixture replacement and the solver/convergence work that remains open.
+
+## Release-candidate run on macOS
+
+[Report v1.5](../benchmarks/macos-rc-20261013-04f87a5/README.md) measures the pinned coilEM 0.3.0
+release candidate `04f87a5013415997cdef96a9bfa35125ce625bc5` (coilEM 0.3.0,
+Magneto2D 0.3.3) on macOS with harness 1.2.1 and protocol 1.1.0. All 35
+supported native jobs completed in 56.5 minutes; the registered gates record
+29 PASS, the same planned unsupported Prius case and 42/42 BLDC gates PASS. The
+generated PDF and a cross-platform comparison with v1.4 are committed with the
+report.
+
+All 30 verdicts and every gate status match v1.4. The values are not
+bit-identical, because v1.4 ran on Windows: Gmsh builds slightly different
+meshes on each platform, so element counts differ by a few to a few tens of
+elements and candidate mean torque moves by at most 0.23% (V-shape deep apex),
+far inside every gate. Since `02fa24b` the candidate changes no solver input or
+numerical path. This record preserves the existing fixture metrics and does not
+broaden the developer-preview qualification policy.
 
 ## Full Windows rerun with process-pool improvements
 
@@ -74,7 +95,8 @@ It is not a complete run of a single next-release commit. The original failures
 and preview qualification record below remain archived. New geometry passing
 does not establish a solver fix or broaden the previous qualification claim.
 V1.3 now records that full selected matrix at `0b463b3`; subsequent release
-candidates still require their own run before updating a qualification claim.
+candidates still require their own run before updating a qualification claim. V1.5 is that run
+for the 0.3.0 release candidate `04f87a5`.
 
 Harness 1.2.1 runs [protocol 1.1.0](../benchmarks/abcd-v1.1/README.md) without FEMM
 on macOS, Windows and Linux:
@@ -102,7 +124,9 @@ as the numerical qualification record for this preview. Qualification
 applies to the tested combinations of rotor, winding and excitation below. A
 combination is qualified when every registered v1.1 fixture for it passes its
 FEMM parity gates. Failed and unsupported outcomes remain visible and are not
-waived by the aggregate pass count.
+waived by the aggregate pass count. [Report v1.5](../benchmarks/macos-rc-20261013-04f87a5/README.md) reran
+every registered fixture of the qualified combinations below on the 0.3.0
+release candidate `04f87a5`, and all still pass.
 
 | Rotor | Winding | Excitation | v1.1 fixtures | Outcome | Status |
 | --- | --- | --- | --- | --- | --- |

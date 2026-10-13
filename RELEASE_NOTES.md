@@ -112,6 +112,10 @@ pools with `COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL=0` before restarting. These
 disable-only compatibility controls keep numerical settings isolated and are
 not forwarded to Magneto2D.
 
+On an Apple M4 Mac, the 0.3.0 release-candidate wheel installed with
+`uv tool install` ran a Preview solve of the SPM 8p/12s example in 22 s and of
+the IPM 14p example in 73 s, from **Run analysis** to saved results.
+
 ## Solver time
 
 The Solver time on the Results page and in the PDF and CSV reports is now the
@@ -169,6 +173,13 @@ report v1.1](benchmarks/main-20261009-bad71d9/benchmark_report.md). It compares
 Magneto2D with fresh, matched FEMM references across 30 fixtures: 27 PASS,
 2 FAIL and 1 unsupported. See [Validation](docs/VALIDATION.md#qualification-status)
 for the gates and limits.
+
+[Benchmark report v1.5](benchmarks/macos-rc-20261013-04f87a5/README.md) reruns the current
+selection on this release candidate, `04f87a5`: 29 PASS, the planned unsupported
+Prius fixture and 42/42 BLDC gates. The current selection replaces the two
+failing low-output V-shape fixtures with higher-output designs, which pass; the
+original failures stay reproducible and V-shape IPM remains experimental. Every
+qualified fixture still passes, so the qualified scope is unchanged.
 
 - **Qualified:** these tested combinations, each with every v1.1 fixture
   passing, using M350-50A steel, native Gmsh meshing and local Magneto2D:

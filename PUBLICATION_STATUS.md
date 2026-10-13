@@ -5,6 +5,10 @@ Its numerical qualification is the published [A/B/C/D benchmark report
 v1.1](benchmarks/main-20261009-bad71d9/benchmark_report.md). It qualifies the
 tested SPM and flat-buried IPM combinations listed in [Validation](docs/VALIDATION.md#qualification-status);
 V-shape IPM and untested combinations remain experimental.
+[Benchmark report v1.5](benchmarks/macos-rc-20261013-04f87a5/README.md) measures this release
+candidate, `04f87a5`, and retains every verdict: 29 PASS, the planned
+unsupported Prius fixture and 42/42 BLDC gates. It does not change the
+qualified scope.
 It installs from PyPI with `uv tool install coilem`; see [Install](README.md#install)
 for the platforms its wheels are built and tested on. Passing CI does not
 establish engineering accuracy.

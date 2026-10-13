@@ -55,18 +55,18 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 1460,
-      "sha256": "0680208d00c9e952f3839d09b3ea743ee251e3a674d6737a600d0f1311d267d9"
+      "bytes": 1712,
+      "sha256": "044ae5f116fecdec76a1dc5e943bb6797d22dcfae46a84d3bcf7f5b3dc45bc90"
     },
     {
       "path": "README.md",
-      "bytes": 8450,
-      "sha256": "d6065eb85606fdcc6fe890aa6d5fa37ebd1b0144cdbb2322544d2253d2de54ca"
+      "bytes": 8678,
+      "sha256": "b5b7161845a63105b1dc8496af496248c49ad8a5a319e7a09e1b54a8f7d453b5"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 16716,
-      "sha256": "080121ce0f6d56a15dabb0e094c9982afb079c407c0e3634047526fa1f55331b"
+      "bytes": 17411,
+      "sha256": "e0f912116543868573e5fb084deba3fc4e4050bce30881069d9ce2586faf238b"
     },
     {
       "path": "SECURITY.md",
@@ -3250,8 +3250,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 17928,
-      "sha256": "f6090f992fa684d6ece9d7b198f3b6934d69822c35d441fa6783193b745a164d"
+      "bytes": 19433,
+      "sha256": "2f2257c73a69e65edb0a40503092caf2422c913c019f97b465cafd274c3a3f28"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -6283,7 +6283,7 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B \u2212 Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B − Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
@@ -6313,13 +6313,13 @@
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45\u00b0 (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45° (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45\u00b0 over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45° over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "a482ff6e2bd9616d2ece2a68f8fa2f2c49aae45c",
@@ -6337,7 +6337,7 @@
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00b0 (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45° (#52 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
@@ -6716,6 +6716,30 @@
       "path": "tools/verify_snapshot.py",
       "source_sha256": "42b45ecad157cf03fb6aa61d2c30649c11cbdb1bcbc08faf837813146ad8705a",
       "reason": "Allowlist historical Windows main/RC PDFs and the frozen-pin Windows benchmark v1.8 PDF; no runtime or qualification policy changes."
+    },
+    {
+      "base_commit": "5bc45ab6075b4fcf6ffc6165290d7b910d3b93d5",
+      "path": "PUBLICATION_STATUS.md",
+      "source_sha256": "0680208d00c9e952f3839d09b3ea743ee251e3a674d6737a600d0f1311d267d9",
+      "reason": "Record that report v1.5 measures the release candidate 04f87a5 and retains every verdict."
+    },
+    {
+      "base_commit": "5bc45ab6075b4fcf6ffc6165290d7b910d3b93d5",
+      "path": "README.md",
+      "source_sha256": "d6065eb85606fdcc6fe890aa6d5fa37ebd1b0144cdbb2322544d2253d2de54ca",
+      "reason": "Point to report v1.5 of the pinned 0.3.0 release candidate as the latest complete run and cite it for the qualified combinations."
+    },
+    {
+      "base_commit": "5bc45ab6075b4fcf6ffc6165290d7b910d3b93d5",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "080121ce0f6d56a15dabb0e094c9982afb079c407c0e3634047526fa1f55331b",
+      "reason": "Cite report v1.5 for the release candidate in Qualification and record the installed-wheel walkthrough times."
+    },
+    {
+      "base_commit": "5bc45ab6075b4fcf6ffc6165290d7b910d3b93d5",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "f6090f992fa684d6ece9d7b198f3b6934d69822c35d441fa6783193b745a164d",
+      "reason": "Add the release-candidate run v1.5 at 04f87a5 and cite it in the qualification status, without changing the qualified scope."
     }
   ]
 }
