@@ -37,16 +37,20 @@ coilEM is published on PyPI as `coilem`. Install it with
 [uv](https://docs.astral.sh/uv/), then start it:
 
 ```sh
-uv tool install coilem
+uv tool install --python 3.14 coilem
 coilem
 ```
 
 `coilem` starts the app on your computer and opens
 [http://127.0.0.1:2645](http://127.0.0.1:2645) in your browser. Press Ctrl+C in
 its terminal to stop it. To try coilEM once without installing it, run
-`uvx coilem`. uv downloads a compatible Python (3.11 to 3.14) if you do not
-have one, and nothing else is needed: each wheel includes the Magneto2D solver
-and the built UI.
+`uvx --python 3.14 coilem`. uv downloads Python 3.14 if you do not have it, and
+nothing else is needed: each wheel includes the Magneto2D solver and the built
+UI.
+
+Keep `--python 3.14` for coilEM 0.3.0. Without it, uv can choose Python 3.15,
+which 0.3.0 does not support yet, and the install then fails while building
+dependencies ([#72](https://github.com/coilemdev/coilem/issues/72)). A patch release will add Python 3.15.
 
 If you do not have uv yet, install it first, then open a new terminal:
 
@@ -75,8 +79,8 @@ Upgrade with `uv tool upgrade coilem` and remove it with
 `uv tool uninstall coilem`. Saved runs stay in your
 [user-data folder](docs/local_solve_workspace.md) after an uninstall. If
 `coilem` is not found after installing, run `uv tool update-shell` and open a
-new terminal. `pipx install coilem` also works when Python 3.11 or newer is
-installed. [The `coilem` launcher](docs/RUNTIME_SETTINGS.md#the-coilem-launcher)
+new terminal. `pipx install coilem` also works when pipx runs on Python 3.11
+to 3.14. [The `coilem` launcher](docs/RUNTIME_SETTINGS.md#the-coilem-launcher)
 describes ports and options.
 
 ## Start from source

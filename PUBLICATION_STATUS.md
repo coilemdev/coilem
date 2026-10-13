@@ -9,7 +9,7 @@ Benchmark reports [v1.7](benchmarks/macos-rc-20261013-1fac3a1/README.md) (macOS)
 measure this release, `1fac3a1`, and retain every verdict on both platforms:
 29 PASS, the planned unsupported Prius fixture and 42/42 BLDC gates. They do
 not change the qualified scope.
-It installs from PyPI with `uv tool install coilem`; see [Install](README.md#install)
+It installs from PyPI with `uv tool install --python 3.14 coilem`; see [Install](README.md#install)
 for the platforms its wheels are built and tested on. Passing CI does not
 establish engineering accuracy.
 
