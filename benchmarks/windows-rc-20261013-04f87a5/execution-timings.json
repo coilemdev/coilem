@@ -1,0 +1,254 @@
+{
+  "schema": "coilem.benchmark_execution_timings/v1",
+  "candidate_commit": "04f87a5013415997cdef96a9bfa35125ce625bc5",
+  "started_at": "2026-10-13T04:39:44.474767+00:00",
+  "completed_at": "2026-10-13T05:24:37.039554+00:00",
+  "elapsed_wall_time_s": 2692.564787,
+  "jobs": [
+    {
+      "case_id": "spm_4p12s_simple__baseline",
+      "phase": "A",
+      "stage": "native",
+      "wall_time_s": 55.339294,
+      "result_sha256": "7e64056e4c600cac320e40cbaf3b653ae9a1265a329e56cc9432e4fc396f3d69"
+    },
+    {
+      "case_id": "spm_4p12s_simple__high_current",
+      "phase": "A",
+      "stage": "native",
+      "wall_time_s": 54.153314,
+      "result_sha256": "4abd525c38c371a0372719a288e06260e82ce95683c4e45ecda64e51cf1a2f86"
+    },
+    {
+      "case_id": "spm_4p12s_simple__tight_airgap",
+      "phase": "A",
+      "stage": "native",
+      "wall_time_s": 39.884632,
+      "result_sha256": "a477eff0e7b1e3045c2edb27d16b252d190e6270f101d49b0b5e4d85cd739b91"
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__baseline",
+      "phase": "A",
+      "stage": "native",
+      "wall_time_s": 57.882698,
+      "result_sha256": "366127df7fbb19e1a9dc3b21e363e05b4f4d9010f7aee1ecb92488348c4e8ccb"
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__high_current",
+      "phase": "A",
+      "stage": "native",
+      "wall_time_s": 53.939421,
+      "result_sha256": "de05ed7ffe2d2451d13f46bc8b955701b5ebf28c510347397ae98cda54ed35c9"
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__tight_airgap",
+      "phase": "A",
+      "stage": "native",
+      "wall_time_s": 43.532408,
+      "result_sha256": "1dc2b8a0019c2b8272dda64aead5aa063d5ecf589eecdbcd0a2322b7bf7723db"
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__baseline",
+      "phase": "A",
+      "stage": "native",
+      "wall_time_s": 79.896943,
+      "result_sha256": "3ad7faec743c1f14a62e6da394d10e7ee76111bd141e97bac37038eb01a487ab"
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__high_current",
+      "phase": "A",
+      "stage": "native",
+      "wall_time_s": 80.956266,
+      "result_sha256": "f6262acad558ef1023e7fe089182b296291712ec97cdbdde3836875162ed2ad7"
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__tight_airgap",
+      "phase": "A",
+      "stage": "native",
+      "wall_time_s": 85.403648,
+      "result_sha256": "7662b1f4e95afb17d5c45c273ce56e59d94e8b331275465c4186e05a1a9d0d0c"
+    },
+    {
+      "case_id": "spm_8p12s_reference_angle30__baseline",
+      "phase": "A",
+      "stage": "native",
+      "wall_time_s": 75.381223,
+      "result_sha256": "7ac9db229978a1367babcb2e4eff690cbd0d9f1c869371a69614dbbf833713f0"
+    },
+    {
+      "case_id": "ipm_flat_12s10p_fscw_contract",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 98.959989,
+      "result_sha256": "34215cc9648430d876b819ec3155df092260ee05fc0ce266f72a3daab6bb5565"
+    },
+    {
+      "case_id": "ipm_flat_24s16p_industrial_contract",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 104.981508,
+      "result_sha256": "0798ff4d732af27b1242ee3fe3cd0fda9a0656136e817c292a18c425175b91ec"
+    },
+    {
+      "case_id": "ipm_flat_4p12s_micro_contract",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 85.081004,
+      "result_sha256": "c3dbf57502f13d4bbe863a11ab1c79a35c9cc12f49ca6e07122708d1bb3d551e"
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 186.717758,
+      "result_sha256": "9eb51a1ed6dde8476f789dbfc7a2346cc79a9745bb1675d524da30b8918b00d5"
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 159.74087,
+      "result_sha256": "e957ba79d73a0abb3723eae614e9920fa0adc8b88b8286035f371f052709ce8a"
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 144.725739,
+      "result_sha256": "6263c7c8c4719162deb871925e470a21cfa8f7c2f0c7b8da56b81c41d7622a11"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_baseline_contract",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 91.644736,
+      "result_sha256": "55447b37fcc931d23b8575e2e5adfec754485a5aa0804af6f599b5e3ebf8f6b7"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 113.311409,
+      "result_sha256": "0aab3e3257d724b45d26d58caa985afd512d07041c69bca9088dc11a02457db7"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_narrow_angle_contract",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 103.66694,
+      "result_sha256": "33f815b0967da1048735f343b20f6ebc09d0017a6b591167604923332e321926"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 91.516545,
+      "result_sha256": "de4bb5ce8cbe9bc89a9c2682afc1008c0164aebc5264183988e5df917723d436"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_thin_bridge_contract",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 75.770018,
+      "result_sha256": "3a5b0212a85db8c0647dd02f47fe304b18993024ae7415dbccc5c10f835692c1"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "phase": "B",
+      "stage": "native",
+      "wall_time_s": 86.37692,
+      "result_sha256": "60b33dc5442fc8d30ed8f9a43bb4cdaaa038be8268ddcf5bf32f0bc935e279fa"
+    },
+    {
+      "case_id": "spm_12p36s_distributed_femm_validation",
+      "phase": "C",
+      "stage": "native",
+      "wall_time_s": 52.587614,
+      "result_sha256": "9128779bf7f261eac3393a5340fab7cd1ac5b519e69fd89071fffc579558e4f4"
+    },
+    {
+      "case_id": "spm_8p24s_distributed_femm_validation",
+      "phase": "C",
+      "stage": "native",
+      "wall_time_s": 55.556181,
+      "result_sha256": "25f8da04a2e595f04588d42aa142110fb324f8abf2cd6efc9dc51bc1178bd615"
+    },
+    {
+      "case_id": "spm_8p48s_chorded_5_6",
+      "phase": "C",
+      "stage": "native",
+      "wall_time_s": 151.724728,
+      "result_sha256": "979c60900260f31f4a84f54a7c977f780eae011d8fb9ab8c8e68323312df4d37"
+    },
+    {
+      "case_id": "spm_8p48s_distributed_femm_validation",
+      "phase": "C",
+      "stage": "native",
+      "wall_time_s": 49.365295,
+      "result_sha256": "ec2648928a4db75c6f7f8fe8ba5b77d9fcb354fca0a50d9b4350d252ccba50a8"
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "stage": "native-standard",
+      "wall_time_s": 44.312839,
+      "result_sha256": "b12570effd6a51c2ac59b5c08bdaa26540406eaf9e9c39aa2b8b51c35e6c4ad6"
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "stage": "native-fine",
+      "wall_time_s": 87.791652,
+      "result_sha256": "2485249761cfb57f8698a5499a855cddf6410a6ecc9e06723f9baf0daa2fc3fa"
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "stage": "analytical",
+      "wall_time_s": 62.457685,
+      "result_sha256": "7e45b20b81c16dbd8352d22025961b9277c205f7c84cbb529f8a2d3ac1f18ee2"
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "phase": "D",
+      "stage": "native-standard",
+      "wall_time_s": 17.928697,
+      "result_sha256": "acb24cab8ee1c9dc2e249e49a67bb61016877e917b9ca083bc7fe1e8323665e1"
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "phase": "D",
+      "stage": "native-fine",
+      "wall_time_s": 33.656851,
+      "result_sha256": "a1036826e219ad44628fbc198f9a7523ad360a8cb4861e49d2f31c6757f16fc6"
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "phase": "D",
+      "stage": "analytical",
+      "wall_time_s": 48.906371,
+      "result_sha256": "e2a2ae9bdba84f267d0f5c364a0849b969c9dac877103a3aa24fb2ff6d5b05ff"
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "phase": "D",
+      "stage": "native-standard",
+      "wall_time_s": 19.862283,
+      "result_sha256": "b8498b5e93af0191946108a6bbc2dfee7d8f776f830d4e27c072bdaa0f1efedd"
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "phase": "D",
+      "stage": "native-fine",
+      "wall_time_s": 37.05382,
+      "result_sha256": "df74d81154360133a28793d3d6a89ab927fed28c40b10fd21731ff5442a71f69"
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "phase": "D",
+      "stage": "analytical",
+      "wall_time_s": 57.910581,
+      "result_sha256": "a90bdd83b6a754fdcc4c706c64ba3abfefd094c185f604f73b770a7782768c13"
+    }
+  ]
+}
