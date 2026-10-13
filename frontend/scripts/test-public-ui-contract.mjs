@@ -100,6 +100,7 @@ const halbachStyleSource = await readFile(
   'utf8',
 );
 const waveformSource = await readFile(path.join(frontendRoot, 'src/public/WaveformChart.tsx'), 'utf8');
+const waveformReadoutSource = await readFile(path.join(frontendRoot, 'src/public/WaveformReadout.tsx'), 'utf8');
 const fieldResultSource = await readFile(path.join(frontendRoot, 'src/public/FieldResultPlot.tsx'), 'utf8');
 const solvedFieldSource = await readFile(path.join(frontendRoot, 'src/public/SolvedFieldViewer.tsx'), 'utf8');
 const playbackContractSource = await readFile(path.join(frontendRoot, 'src/public/fieldPlaybackContract.ts'), 'utf8');
@@ -399,6 +400,37 @@ assert.match(waveformSource, /public-waveform-legend-row/);
 assert.match(waveformSource, /group\.entries\.map/);
 assert.match(styleSource, /\.public-waveform-legend button\[aria-pressed="false"\]/);
 assert.match(styleSource, /\.public-waveform-legend-row \{ display: grid;/);
+// Click-to-read plot values (#54): a click, tap or arrow key selects the nearest
+// solved position of the shown series and lists their stored values.
+assert.match(waveformSource, /const readoutSeries: WaveformReadoutSeries\[\] = plottedSeries\.map/,
+  'the readout lists only shown series, so legend-hidden series are left out');
+assert.match(waveformSource, /useWaveformReadout\(\{\s*angles: waveformReadoutAngles\(readoutSeries\)/);
+assert.match(waveformSource, /waveformReadoutValues\(readoutSeries, readout\.shownAngle\)/);
+assert.match(waveformSource, /<WaveformReadoutBar/);
+assert.match(waveformSource, /<WaveformReadoutMarker/);
+assert.match(waveformSource, /className="public-waveform-plot"[^>]*\{\.\.\.readout\.plotProps\}/);
+assert.match(waveformSource, /<svg ref=\{readout\.svgRef\}/);
+assert.match(runComparisonSource, /label="Torque comparison"[^\n]*readoutDifference=\{\{ minuendKey: 'run-b', subtrahendKey: 'run-a', label: 'Run B − Run A' \}\}/,
+  'Compare torque shows each run and Run B − Run A, like the metric cards');
+assert.doesNotMatch(runComparisonSource, /label="Three-phase back EMF comparison"[^\n]*readoutDifference/);
+assert.match(bldcChartSource, /\.\.\.\(showTorque \? \[\{ key: 'torque', label: 'Torque'/);
+assert.match(bldcChartSource, /\.\.\.\(showPhaseCurrents\s*\? \[phaseA, phaseB, phaseC\]\.map/);
+assert.match(bldcChartSource, /angleNote=\{readout\.shownAngle === null \? undefined : `sector S\$\{sectorAt\(readout\.shownAngle, commutationAdvanceDeg\) \+ 1\}`\}/);
+assert.match(bldcChartSource, /<svg ref=\{readout\.svgRef\}/);
+assert.match(waveformReadoutSource, /getScreenCTM\(\)/, 'the click maps through the SVG transform, so letterboxing cannot shift it');
+assert.match(waveformReadoutSource, /event\.pointerType !== 'mouse'/, 'only a mouse hover previews; touch selects on tap');
+assert.match(waveformReadoutSource, /index === selectedIndex \? null : angles\[index\]/, 'clicking the selected point again clears it');
+assert.match(waveformReadoutSource, /event\.key === 'Escape'/);
+assert.match(waveformReadoutSource, /setSelectedAngle\(\(previous\) => \{\s*const next = steppedWaveformReadoutIndex\(snapped\(previous\), angles\.length, event\.key\)/, 'keys step from the latest selection');
+assert.match(waveformReadoutSource, /document\.addEventListener\('pointerdown', clearOutside\)/, 'clicking outside the chart clears it');
+assert.match(waveformReadoutSource, /tabIndex: 0/);
+assert.match(waveformReadoutSource, /role="status" aria-live="polite"/);
+assert.match(waveformReadoutSource, /formatWaveformReadoutValue\(item\.value, item\.unit\)/);
+assert.match(waveformReadoutSource, /'not solved at this angle'/);
+assert.match(styleSource, /\.public-waveform-plot:focus-visible \{/);
+assert.match(styleSource, /\.public-waveform-marker \{ pointer-events: none; \}/);
+assert.match(styleSource, /\.public-waveform-marker\.is-preview line \{ stroke-dasharray/);
+assert.match(styleSource, /\.public-waveform-readout \{ display: flex;/);
 assert.doesNotMatch(runComparisonSource, /pdf-compare/);
 assert.match(apiSource, /report\.\$\{exportKind\}/);
 assert.match(apiSource, /package\.zip/);

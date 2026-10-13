@@ -1,4 +1,12 @@
 import { useState } from 'react';
+import { WaveformReadoutBar, WaveformReadoutMarker, useWaveformReadout } from './WaveformReadout';
+import {
+  waveformReadoutAngles,
+  waveformReadoutDifferenceValue,
+  waveformReadoutValues,
+  type WaveformReadoutDifference,
+  type WaveformReadoutSeries,
+} from './chartReadout';
 
 export interface WaveformSeries {
   id?: string;
@@ -21,6 +29,8 @@ interface WaveformChartProps {
   toggleableSeries?: boolean;
   hiddenSeriesKeys?: string[];
   onHiddenSeriesKeysChange?: (keys: string[]) => void;
+  /** Two series whose difference the readout shows, for example Run B − Run A. */
+  readoutDifference?: WaveformReadoutDifference;
 }
 
 function periodicAxisEnd(angles: number[]) {
@@ -35,7 +45,7 @@ function periodicAxisEnd(angles: number[]) {
     : finalAngle;
 }
 
-export function WaveformChart({ angles, values, series, label, unit, samplingLabel, toggleableSeries = false, hiddenSeriesKeys: controlledHiddenSeriesKeys, onHiddenSeriesKeysChange }: WaveformChartProps) {
+export function WaveformChart({ angles, values, series, label, unit, samplingLabel, toggleableSeries = false, hiddenSeriesKeys: controlledHiddenSeriesKeys, onHiddenSeriesKeysChange, readoutDifference }: WaveformChartProps) {
   const [internalHiddenSeriesKeys, setInternalHiddenSeriesKeys] = useState<string[]>([]);
   const hiddenSeriesKeys = controlledHiddenSeriesKeys || internalHiddenSeriesKeys;
   const eligibleSeries = (series || (values ? [{ label, values, color: '#de7948' }] : []))
@@ -45,6 +55,28 @@ export function WaveformChart({ angles, values, series, label, unit, samplingLab
   const plottedSeries = toggleableSeries
     ? eligibleSeries.filter((item, index) => !hiddenSeriesKeys.includes(seriesKey(item, index)))
     : eligibleSeries;
+  const width = 760;
+  const height = 250;
+  const margin = { top: 22, right: 24, bottom: 38, left: 56 };
+  const plotWidth = width - margin.left - margin.right;
+  const allAngles = plottedSeries.flatMap((item) => item.angles);
+  const minX = Math.min(...allAngles);
+  const maxX = Math.max(...allAngles);
+  const axisMaxX = Math.max(maxX, ...plottedSeries.map((item) => periodicAxisEnd(item.angles)));
+  // The readout lists only the shown series, at their own solved angles.
+  const readoutSeries: WaveformReadoutSeries[] = plottedSeries.map((item) => ({
+    key: item.id || item.label,
+    label: item.label,
+    color: item.color,
+    unit,
+    angles: item.angles,
+    values: item.values,
+  }));
+  const readout = useWaveformReadout({
+    angles: waveformReadoutAngles(readoutSeries),
+    angleAtX: (svgX) => minX + ((svgX - margin.left) / plotWidth) * Math.max(axisMaxX - minX, 1),
+    dataKey: `${label}|${eligibleSeries.map((item) => `${item.id || item.label}:${item.angles.length}:${item.angles[0]}:${item.angles[item.angles.length - 1]}`).join('|')}`,
+  });
   if (plottedSeries.length === 0) return null;
 
   const toggleSeries = (item: WaveformSeries, index: number) => {
@@ -58,25 +90,20 @@ export function WaveformChart({ angles, values, series, label, unit, samplingLab
     else setInternalHiddenSeriesKeys(next);
   };
 
-  const width = 760;
-  const height = 250;
-  const margin = { top: 22, right: 24, bottom: 38, left: 56 };
-  const allAngles = plottedSeries.flatMap((item) => item.angles);
-  const minX = Math.min(...allAngles);
-  const maxX = Math.max(...allAngles);
-  const axisMaxX = Math.max(maxX, ...plottedSeries.map((item) => periodicAxisEnd(item.angles)));
   const allValues = plottedSeries.flatMap((item) => item.values);
   const rawMinY = Math.min(...allValues);
   const rawMaxY = Math.max(...allValues);
   const yPadding = Math.max((rawMaxY - rawMinY) * 0.15, Math.abs(rawMaxY) * 0.05, 0.01);
   const minY = rawMinY - yPadding;
   const maxY = rawMaxY + yPadding;
-  const x = (value: number) => margin.left + ((value - minX) / Math.max(axisMaxX - minX, 1)) * (width - margin.left - margin.right);
+  const x = (value: number) => margin.left + ((value - minX) / Math.max(axisMaxX - minX, 1)) * plotWidth;
   const y = (value: number) => margin.top + ((maxY - value) / Math.max(maxY - minY, 1)) * (height - margin.top - margin.bottom);
   const pathFor = (seriesAngles: number[], seriesValues: number[]) => seriesValues
     .map((value, index) => `${index === 0 ? 'M' : 'L'} ${x(seriesAngles[index]).toFixed(2)} ${y(value).toFixed(2)}`)
     .join(' ');
   const ticks = [0, 0.25, 0.5, 0.75, 1];
+  const readoutValues = readout.shownAngle === null ? [] : waveformReadoutValues(readoutSeries, readout.shownAngle);
+  const readoutDifferenceValue = readoutDifference ? waveformReadoutDifferenceValue(readoutValues, readoutDifference) : null;
   const fillId = `wave-fill-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
   const positionCounts = [...new Set(eligibleSeries.map((item) => item.angles.length))];
   const renderedSeries = [...plottedSeries].sort((left, right) => Number(Boolean(left.dashArray)) - Number(Boolean(right.dashArray)));
@@ -130,36 +157,56 @@ export function WaveformChart({ angles, values, series, label, unit, samplingLab
             : eligibleSeries.map((item, index) => legendControl(item, index))}
         </div>
       )}
-      <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`${label} waveform`}>
-        <defs>
-          <linearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor={plottedSeries[0].color} stopOpacity="0.34" />
-            <stop offset="1" stopColor={plottedSeries[0].color} stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        {ticks.map((tick) => {
-          const tickY = margin.top + tick * (height - margin.top - margin.bottom);
-          const value = maxY - tick * (maxY - minY);
-          return (
-            <g key={tick}>
-              <line x1={margin.left} x2={width - margin.right} y1={tickY} y2={tickY} className="chart-grid" />
-              <text x={margin.left - 10} y={tickY + 4} textAnchor="end" className="chart-label">{value.toFixed(2)}</text>
-            </g>
-          );
-        })}
-        {plottedSeries.length === 1 && (
-          <path
-            d={`${pathFor(plottedSeries[0].angles, plottedSeries[0].values)} L ${x(plottedSeries[0].angles[plottedSeries[0].angles.length - 1]).toFixed(2)} ${height - margin.bottom} L ${x(plottedSeries[0].angles[0]).toFixed(2)} ${height - margin.bottom} Z`}
-            fill={`url(#${fillId})`}
-          />
-        )}
-        {renderedSeries.map((item, index) => (
-          <path key={item.id || `${item.label}-${index}`} d={pathFor(item.angles, item.values)} fill="none" stroke={item.color} strokeWidth="2" strokeDasharray={item.dashArray} strokeLinecap="round" strokeLinejoin="round" />
-        ))}
-        <text x={margin.left} y={height - 12} className="chart-label">{minX.toFixed(0)}°</text>
-        <text x={width - margin.right} y={height - 12} textAnchor="end" className="chart-label">{axisMaxX.toFixed(0)}° electrical</text>
-        <text x={margin.left} y="12" className="chart-label chart-unit-label">{unit}</text>
-      </svg>
+      <WaveformReadoutBar
+        id={readout.readoutId}
+        angleDeg={readout.shownAngle}
+        values={readoutValues}
+        difference={readoutDifference && readoutDifferenceValue !== null
+          ? { label: readoutDifference.label, value: readoutDifferenceValue, unit }
+          : null}
+        previewing={readout.previewing}
+      />
+      <div className="public-waveform-plot" role="group" aria-label={`${label} plot`} {...readout.plotProps}>
+        <svg ref={readout.svgRef} viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`${label} waveform`}>
+          <defs>
+            <linearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor={plottedSeries[0].color} stopOpacity="0.34" />
+              <stop offset="1" stopColor={plottedSeries[0].color} stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          {ticks.map((tick) => {
+            const tickY = margin.top + tick * (height - margin.top - margin.bottom);
+            const value = maxY - tick * (maxY - minY);
+            return (
+              <g key={tick}>
+                <line x1={margin.left} x2={width - margin.right} y1={tickY} y2={tickY} className="chart-grid" />
+                <text x={margin.left - 10} y={tickY + 4} textAnchor="end" className="chart-label">{value.toFixed(2)}</text>
+              </g>
+            );
+          })}
+          {plottedSeries.length === 1 && (
+            <path
+              d={`${pathFor(plottedSeries[0].angles, plottedSeries[0].values)} L ${x(plottedSeries[0].angles[plottedSeries[0].angles.length - 1]).toFixed(2)} ${height - margin.bottom} L ${x(plottedSeries[0].angles[0]).toFixed(2)} ${height - margin.bottom} Z`}
+              fill={`url(#${fillId})`}
+            />
+          )}
+          {renderedSeries.map((item, index) => (
+            <path key={item.id || `${item.label}-${index}`} d={pathFor(item.angles, item.values)} fill="none" stroke={item.color} strokeWidth="2" strokeDasharray={item.dashArray} strokeLinecap="round" strokeLinejoin="round" />
+          ))}
+          <text x={margin.left} y={height - 12} className="chart-label">{minX.toFixed(0)}°</text>
+          <text x={width - margin.right} y={height - 12} textAnchor="end" className="chart-label">{axisMaxX.toFixed(0)}° electrical</text>
+          <text x={margin.left} y="12" className="chart-label chart-unit-label">{unit}</text>
+          {readout.shownAngle !== null && (
+            <WaveformReadoutMarker
+              x={x(readout.shownAngle)}
+              top={margin.top}
+              bottom={height - margin.bottom}
+              points={readoutValues.flatMap((item) => item.value === null ? [] : [{ key: item.key, y: y(item.value), color: item.color }])}
+              previewing={readout.previewing}
+            />
+          )}
+        </svg>
+      </div>
     </div>
   );
 }

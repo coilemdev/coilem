@@ -2170,8 +2170,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 1666,
-      "sha256": "96a4f0c051aa82f11d32d51361a776cd33d97840c47eba6408381799558151ea"
+      "bytes": 1705,
+      "sha256": "dbd6c27f40a53ae454f041dc3aa0f132fce11bad5bd64dfddda3e799ed4711a3"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -2197,6 +2197,11 @@
       "path": "frontend/scripts/test-bldc-chart-paths.mjs",
       "bytes": 5104,
       "sha256": "1d7a2c25dbdf42708728e2066ea15ce50e9832321c8f03fcd51e31f2ec82e709"
+    },
+    {
+      "path": "frontend/scripts/test-chart-readout.mjs",
+      "sha256": "10acbe8cc21e49d38b7b4f3d9bff92bd809e8dc4df799f8e0f7f8a8a3d135e23",
+      "bytes": 5658
     },
     {
       "path": "frontend/scripts/test-custom-steel.mjs",
@@ -2250,8 +2255,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 98793,
-      "sha256": "a49efa4a32efb1e6ca9da1552b70ed9739914a53ef82e6327a12e54b7facbd69"
+      "bytes": 101891,
+      "sha256": "3fd211025e50e90ae8e9d281ea47786bc87bf53f281cdd1047fa8f60be5f6e56"
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
@@ -2635,8 +2640,8 @@
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
-      "bytes": 8962,
-      "sha256": "ef1b7cc5f042d6b23e95fb0d6649655b3d860da552408c00190e49dae2fa5db6"
+      "bytes": 11219,
+      "sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e"
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
@@ -2680,8 +2685,8 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 22948,
-      "sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615"
+      "bytes": 23042,
+      "sha256": "c99d00b86d1d63b318a4f1a296dc356263f8c16d7d76ae6c53f0fc7dc8b9e29b"
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
@@ -2695,8 +2700,13 @@
     },
     {
       "path": "frontend/src/public/WaveformChart.tsx",
-      "bytes": 8133,
-      "sha256": "8c29e4a1ddf38109f8d48fd1439bbb203d9450796db5e3358ab8ebb92cb8a8bd"
+      "bytes": 10469,
+      "sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e"
+    },
+    {
+      "path": "frontend/src/public/WaveformReadout.tsx",
+      "sha256": "e11d57dd065df974058b6b02e01b6f702fc4da9b8d5d2ee5c4db2c3b532f1c90",
+      "bytes": 6486
     },
     {
       "path": "frontend/src/public/WindingLayoutView.tsx",
@@ -2717,6 +2727,11 @@
       "path": "frontend/src/public/bldcChartPaths.ts",
       "bytes": 1151,
       "sha256": "5630590265b8d02821ba60706eb007447568abf83a66ca92730fe08528f69a78"
+    },
+    {
+      "path": "frontend/src/public/chartReadout.ts",
+      "sha256": "b64be454f36cd11cd6d1cc8508ae239ff0c2cd621908ac21fa99eef25cdf998e",
+      "bytes": 4315
     },
     {
       "path": "frontend/src/public/coil3d.ts",
@@ -2905,8 +2920,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 223680,
-      "sha256": "6845735664b43f7dc522418d0d2a87408d5e18a36579c3963310e527cea85fc5"
+      "bytes": 224974,
+      "sha256": "268def3f72bd90cfe7fc2a4a57262701dac2cfb38d3c8e8b43fdec1900f13354"
     },
     {
       "path": "frontend/src/public/tutorials/PublicTutorials.tsx",
@@ -5100,6 +5115,42 @@
       "path": "frontend/src/public/styles.css",
       "source_sha256": "a414b09923bc5b709f369b1e5b701cb87095bbc2b48fcf3f30abb8a85d516dfd",
       "reason": "Add waiting and finishing shimmers that never shrink the live-solve bar (#53)."
+    },
+    {
+      "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
+      "path": "frontend/package.json",
+      "source_sha256": "96a4f0c051aa82f11d32d51361a776cd33d97840c47eba6408381799558151ea",
+      "reason": "Run the chart readout tests in test:public-ui (#54)."
+    },
+    {
+      "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "a49efa4a32efb1e6ca9da1552b70ed9739914a53ef82e6327a12e54b7facbd69",
+      "reason": "Pin the click-to-read plot readout in the UI contract (#54)."
+    },
+    {
+      "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
+      "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
+      "source_sha256": "ef1b7cc5f042d6b23e95fb0d6649655b3d860da552408c00190e49dae2fa5db6",
+      "reason": "Read the angle, sector, torque and phase currents of a clicked six-step position (#54)."
+    },
+    {
+      "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
+      "reason": "Show Run B − Run A in the Compare torque readout (#54)."
+    },
+    {
+      "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
+      "path": "frontend/src/public/WaveformChart.tsx",
+      "source_sha256": "8c29e4a1ddf38109f8d48fd1439bbb203d9450796db5e3358ab8ebb92cb8a8bd",
+      "reason": "Read the angle and stored values of a clicked solved position on the Results and Compare plots (#54)."
+    },
+    {
+      "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "6845735664b43f7dc522418d0d2a87408d5e18a36579c3963310e527cea85fc5",
+      "reason": "Style the plot readout, its marker and the plot focus ring (#54)."
     }
   ]
 }

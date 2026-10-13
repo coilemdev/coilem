@@ -1464,6 +1464,20 @@ body {
 .public-waveform-legend-row { display: grid; grid-template-columns: minmax(150px, .72fr) repeat(3, minmax(110px, 1fr)); align-items: center; gap: 8px; }
 .public-waveform-legend-row > strong { color: var(--text-secondary); font: 600 10px var(--font-sans); }
 .public-waveform-legend-row > button, .public-waveform-legend-row > span { width: 100%; justify-content: flex-start; }
+.public-waveform-readout { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; min-height: 26px; padding: 6px 6px 0; color: var(--text-muted); font-size: 10px; }
+.public-waveform-readout > strong { color: var(--text-primary); font: 600 10px var(--font-mono); }
+.public-waveform-readout > span { display: inline-flex; align-items: center; gap: 5px; }
+.public-waveform-readout i { width: 8px; height: 8px; border-radius: 99px; }
+.public-waveform-readout b { color: var(--text-primary); font: 600 10px var(--font-mono); }
+.public-waveform-readout.is-preview > strong, .public-waveform-readout.is-preview b { color: var(--text-secondary); }
+.public-waveform-readout-difference { padding-left: 12px; border-left: 1px solid var(--border-subtle); }
+.public-waveform-plot { border-radius: 6px; cursor: crosshair; touch-action: manipulation; }
+.public-waveform-plot:focus { outline: none; }
+.public-waveform-plot:focus-visible { outline: 2px solid var(--border-accent); outline-offset: 2px; }
+.public-waveform-marker { pointer-events: none; }
+.public-waveform-marker line { stroke: var(--text-secondary); stroke-width: 1; }
+.public-waveform-marker.is-preview line { stroke-dasharray: 3 3; opacity: .7; }
+.public-waveform-marker circle { stroke: var(--bg-surface-1); stroke-width: 1.5; }
 @media (max-width: 680px) {
   .public-waveform-legend-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .public-waveform-legend-row > strong { grid-column: 1 / -1; }
