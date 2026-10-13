@@ -436,6 +436,14 @@ assert.match(styleSource, /\.public-waveform-plot:focus-visible \{/);
 assert.match(styleSource, /\.public-waveform-marker \{ pointer-events: none; \}/);
 assert.match(styleSource, /\.public-waveform-marker\.is-preview line \{ stroke-dasharray/);
 assert.match(styleSource, /\.public-waveform-readout \{ display: flex;/);
+// The open design menu stacks above the motor view's toolbars: the top bar's
+// own stacking context is lifted while the menu is open.
+assert.match(workspaceSource, /\$\{designMenuOpen \? ' is-menu-open' : ''\}/);
+assert.match(styleSource, /\.public-coilem-shell \.public-coilem-topbar\.is-menu-open \{ z-index: 100; \}/);
+for (const [selector, zIndex] of [['.public-solve-view-switch', 30], ['.public-solved-field-toolbar', 40], ['.public-field-layer-menu', 50]]) {
+  const rule = styleSource.match(new RegExp(`${selector.replace(/[.]/g, '\\.')} \\{[^}]*z-index: (\\d+)`));
+  assert.ok(rule && Number(rule[1]) === zIndex && Number(rule[1]) < 100, `${selector} stays below the open design menu`);
+}
 assert.doesNotMatch(runComparisonSource, /pdf-compare/);
 assert.match(apiSource, /report\.\$\{exportKind\}/);
 assert.match(apiSource, /package\.zip/);

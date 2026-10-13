@@ -2324,6 +2324,10 @@ body {
 
 /* Design-file menu on the project chip */
 .public-project-chip-wrap { position: relative; display: inline-flex; }
+/* The top bar is a stacking context (z-index 20), so its menu's own z-index
+   only counts inside it. While the menu is open, lift the whole bar above the
+   workspace's floating toolbars (z-index 30–60) and below dialogs (120). */
+.public-coilem-shell .public-coilem-topbar.is-menu-open { z-index: 100; }
 .public-project-menu { position: absolute; top: calc(100% + 6px); left: 0; z-index: 80; min-width: 232px; display: grid; gap: 2px; padding: 6px; border: 1px solid var(--border-default); border-radius: 10px; background: rgba(13, 15, 21, 0.97); box-shadow: var(--shadow-md); backdrop-filter: blur(10px); }
 .public-project-menu button { display: block; width: 100%; padding: 8px 10px; border: 0; border-radius: 7px; background: transparent; color: var(--text-secondary); font: inherit; font-size: 12.5px; text-align: left; cursor: pointer; }
 .public-project-menu button:hover:not(:disabled) { background: rgba(245, 158, 11, 0.14); color: var(--text-primary); }

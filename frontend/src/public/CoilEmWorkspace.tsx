@@ -453,7 +453,7 @@ export function CoilEmTopBar({
   };
   return (
     <>
-    <header className={`topbar public-coilem-topbar${tutorialCatalog ? ' is-tutorial-catalog' : ''}`}>
+    <header className={`topbar public-coilem-topbar${tutorialCatalog ? ' is-tutorial-catalog' : ''}${designMenuOpen ? ' is-menu-open' : ''}`}>
       <div className="topbar-left">
         <button className="logo public-logo-button" type="button" onClick={onHome} aria-label="Return to coilEM home">
           <img className="logo-mark" src="/brand/coilem-mark.svg" alt="" aria-hidden="true" />
