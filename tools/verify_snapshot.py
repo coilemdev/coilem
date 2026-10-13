@@ -59,6 +59,8 @@ ALLOWED_BINARY_SIGNATURES = {
     "docs/images/magneto2d-follow-flux-fields.png": b"\x89PNG\r\n\x1a\n",
     "docs/images/magneto2d-p1-element.png": b"\x89PNG\r\n\x1a\n",
     "benchmarks/windows-process-pools-20261012-02fa24b/coilem_benchmark_report.pdf": b"%PDF-",
+    "benchmarks/macos-rc-20261013-04f87a5/coilem_benchmark_report.pdf": b"%PDF-",
+    "benchmarks/macos-rc-20261013-1fac3a1/coilem_benchmark_report.pdf": b"%PDF-",
 }
 
 
