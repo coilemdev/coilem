@@ -495,8 +495,8 @@
     },
     {
       "path": "backend/solver/_process_pool.py",
-      "bytes": 5257,
-      "sha256": "b083b9b7fa4bd717e5d06132ee91a2538b0e91f3187763ef8c69cb00a4844b2e"
+      "bytes": 5956,
+      "sha256": "53619f5596380bfab581f20d7fc5dffc684384ecb20c477d534941cf95b41fbd"
     },
     {
       "path": "backend/solver_contract.py",
@@ -3355,8 +3355,8 @@
     },
     {
       "path": "tests/test_launcher_shutdown.py",
-      "sha256": "666ce998ac08aa10b2000f527c764dddc8a3721236b0467559861e30934077a0",
-      "bytes": 23185
+      "sha256": "7db7e7678d895a4d0c11a7e12cf56ea10c342cb57da6b25feca218ba458bdfc2",
+      "bytes": 25342
     },
     {
       "path": "tests/test_linear_halbach_analytical.py",
@@ -5358,6 +5358,18 @@
       "path": "tests/test_launcher_shutdown.py",
       "source_sha256": "3b4fc8750caf9c64429c935932877ba8192073b60f854e98a1df3dd9d0ce6883",
       "reason": "#55: the deadline prints the thread stacks and still exits when stderr cannot take them."
+    },
+    {
+      "base_commit": "60e41caabda59b2fcf4efc0f4f4bc2ee1be0b69b",
+      "path": "backend/solver/_process_pool.py",
+      "source_sha256": "b083b9b7fa4bd717e5d06132ee91a2538b0e91f3187763ef8c69cb00a4844b2e",
+      "reason": "#55: after stopping a pool's workers, close this process's end of the result pipe, so a manager thread waiting for the rest of a killed worker's result can exit."
+    },
+    {
+      "base_commit": "60e41caabda59b2fcf4efc0f4f4bc2ee1be0b69b",
+      "path": "tests/test_launcher_shutdown.py",
+      "source_sha256": "666ce998ac08aa10b2000f527c764dddc8a3721236b0467559861e30934077a0",
+      "reason": "#55: a worker killed while sending its result must not leave the pool's manager thread for interpreter exit to wait on."
     }
   ]
 }

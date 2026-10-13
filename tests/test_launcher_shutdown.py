@@ -16,6 +16,7 @@ import json
 import os
 import signal
 import socket
+import struct
 import subprocess
 import sys
 import threading
@@ -399,6 +400,56 @@ def test_terminating_process_pools_ends_their_running_tasks(monkeypatch):
         if not unwound.is_set():
             _process_pool._stop_pool_workers(pools[0])
         solver.join(timeout=10)
+
+
+def _die_while_sending_a_result(marker: str) -> None:
+    """In a pool worker: send part of a result message, then hang until killed."""
+    frame = sys._getframe(1)
+    while "result_queue" not in frame.f_locals:  # concurrent.futures.process._process_worker
+        frame = frame.f_back
+    writer = frame.f_locals["result_queue"]._writer
+    os.write(writer.fileno(), struct.pack("!i", 1 << 20) + b"part of a large mesh")
+    Path(marker).write_text("sent", encoding="utf-8")
+    time.sleep(120)
+
+
+@pytest.mark.skipif(os.name == "nt", reason="Windows pipes carry whole messages")
+def test_terminating_a_pool_frees_its_manager_from_a_partial_result(tmp_path):
+    # A worker killed while sending a large result left the pool's manager
+    # thread waiting in recv() for the rest, and interpreter exit joined that
+    # thread, so the launcher hit its 20 s deadline (#55 acceptance).
+    marker = tmp_path / "sent"
+    unwound = threading.Event()
+    pools: list = []
+
+    def solve_cancelled_by_exit() -> None:
+        try:
+            with _process_pool.cancellable_process_pool(1) as pool:
+                pools.append(pool)
+                future = pool.submit(_die_while_sending_a_result, str(marker))
+                future.result(timeout=60)
+        except BaseException:  # noqa: BLE001 - only the unwinding matters here
+            pass
+        finally:
+            unwound.set()
+
+    threading.Thread(target=solve_cancelled_by_exit, daemon=True).start()
+    deadline = time.monotonic() + 60
+    while not marker.exists() and time.monotonic() < deadline:
+        time.sleep(0.05)
+    assert marker.exists()
+    time.sleep(0.3)  # let the manager thread start reading the message
+    manager = pools[0]._executor_manager_thread
+    results = pools[0]._result_queue
+    try:
+        _process_pool.terminate_process_pools()
+
+        manager.join(timeout=10)
+        assert not manager.is_alive(), "the pool's manager thread still waits for the rest of the result"
+        assert unwound.wait(timeout=10)
+    finally:
+        results._writer.close()  # never leave a stuck thread for pytest's own exit
+        manager.join(timeout=10)
 
 
 def test_terminating_a_pool_before_its_workers_start_refuses_them():

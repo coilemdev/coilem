@@ -70,8 +70,10 @@ def _stop_pool_workers(pool: ProcessPoolExecutor) -> None:
     # submit() starts workers into this dict under the pool's shutdown lock.
     # Shutting down first refuses later submissions, so the dict then holds
     # every worker the pool will ever have, even ones a submission in flight
-    # just started; shutdown() drops the pool's own reference to it.
+    # just started; shutdown() drops the pool's own references to it and to
+    # the result queue.
     processes = getattr(pool, "_processes", None)
+    results = getattr(pool, "_result_queue", None)
     try:
         pool.shutdown(wait=False, cancel_futures=True)
     except Exception:  # noqa: BLE001 - still stop the workers
@@ -87,6 +89,18 @@ def _stop_pool_workers(pool: ProcessPoolExecutor) -> None:
     for process in list(processes.values()):
         try:
             process.kill()
+        except Exception:  # noqa: BLE001 - best effort at exit
+            pass
+    # A worker killed while sending its result, such as a large mesh, leaves
+    # part of a message in the result pipe. The pool's manager thread then
+    # waits in recv() for the rest while any process holds the pipe's write
+    # end, and interpreter exit joins that thread. Once the workers are gone,
+    # only this process does: closing it ends the read, and the manager
+    # thread winds the pool down as broken.
+    writer = getattr(results, "_writer", None)
+    if writer is not None:
+        try:
+            writer.close()
         except Exception:  # noqa: BLE001 - best effort at exit
             pass
 
