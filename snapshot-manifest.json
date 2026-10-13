@@ -4615,8 +4615,8 @@
     },
     {
       "path": "tests/test_windows_playback_pool.py",
-      "bytes": 4371,
-      "sha256": "862ad10f119ca85ba1996413416494468d18febb98c0885f28ef79c07f224bc8"
+      "bytes": 4729,
+      "sha256": "72a72eb8f34af191d0a17334ac6908c76159062655fc11e9428783f8c33bff65"
     },
     {
       "path": "tools/benchmark_suite/__init__.py",
@@ -6854,6 +6854,12 @@
       "path": "tools/verify_snapshot.py",
       "source_sha256": "15f12dc8d347d806f7433eb8a5aecf52de6fb67c727a6f60e43b9d94a29c31e5",
       "reason": "Require the audited Python 3.15 numpy and pydantic pins (#72)."
+    },
+    {
+      "base_commit": "353208d73a24de3f3eba39f7c72c097db6dc3f5b",
+      "path": "tests/test_windows_playback_pool.py",
+      "source_sha256": "862ad10f119ca85ba1996413416494468d18febb98c0885f28ef79c07f224bc8",
+      "reason": "Spawn the playback test's workers as on Windows; a Linux forkserver (Python 3.14+) started by an earlier test keeps that test's data root (#72)."
     }
   ]
 }
