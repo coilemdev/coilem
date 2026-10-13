@@ -11,7 +11,13 @@ from pathlib import Path
 
 import pytest
 
+from backend.models import MotorConfig
 from backend.public_report import (
+    _angle_axis_end,
+    _design_setting_groups,
+    _electrical_angle_ticks,
+    _flatten,
+    _plain,
     build_public_run_csv,
     build_public_run_pdf,
     write_replayable_run_package,
@@ -293,7 +299,9 @@ def test_stored_pdf_csv_and_package_are_bound_to_one_immutable_run(
         "4.25 N m",
         "Peak tooth flux density is near the review threshold.",
         "temperature prediction is not included",
-        "Exact resolved settings",
+        "Resolved settings for this design",
+        "Every stored setting, including those left out here, is in the setting rows of",
+        manifest["bindings"]["resolved_request_sha256"],
     ):
         assert expected in text
 
@@ -315,6 +323,10 @@ def test_stored_pdf_csv_and_package_are_bound_to_one_immutable_run(
     ] in rows
     assert ["summary", "avg_torque_Nm", "N m", "4.25", ""] in rows
     assert ["setting", "materials.stator_steel", "", "M350-50A", ""] in rows
+    # The CSV keeps every resolved setting, also those the PDF leaves out.
+    assert [row[1:4] for row in rows if row[0] == "setting"] == [
+        [field, "", _plain(value)] for field, value in _flatten(request["resolved_config"])
+    ]
     assert [
         "solve_metadata",
         "solver_name",
@@ -463,3 +475,186 @@ def test_missing_or_older_run_export_fails_with_migration_guidance(
 
     with pytest.raises(SolveWorkspaceError, match="older manifest"):
         workspace.resolve_export(location.project_slug, location.run_id, "csv")
+
+
+# The PDF lists the settings that define the design (#52); the CSV and
+# request.json keep every resolved value.
+EXAMPLES = Path("frontend/src/public/examples")
+_POCKET_SETTINGS = {
+    "flat_buried": {"Flat buried magnet shape", "Bridge thickness", "Side bridge thickness"},
+    "v_shape": {"V angle", "V depth", "Inner web thickness", "Outer bridge thickness"},
+}
+
+
+def _resolved(raw: dict) -> dict:
+    """A resolved_config as the solve route stores it."""
+
+    return MotorConfig.model_validate(raw).model_dump(mode="json")
+
+
+def _setting_labels(config: dict) -> dict[str, dict[str, str]]:
+    return {title: dict(entries) for title, entries in _design_setting_groups(config)}
+
+
+def _settings_page_text(config: dict) -> str:
+    """The text of the PDF page holding the settings section, which must fit on it."""
+
+    pdf = build_public_run_pdf(
+        project={"topology": config["topology"]},
+        request={"resolved_config": config},
+        result=_result(),
+        material={},
+        manifest={"bindings": {"resolved_request_sha256": "f" * 64}},
+    )
+    pages = [page.extract_text() or "" for page in pypdf.PdfReader(io.BytesIO(pdf)).pages]
+    first = next(index for index, text in enumerate(pages) if "Resolved settings for this design" in text)
+    last = next(index for index, text in enumerate(pages) if "Every stored setting" in text)
+    assert first == last, "the settings section fits on one page"
+    return pages[first]
+
+
+def _bundled_configs() -> dict[str, dict]:
+    configs = {"spm_4p12s_simple": _resolved(CONFIG)}
+    for path in sorted(EXAMPLES.glob("*.openem")):
+        configs[path.stem] = _resolved(json.loads(path.read_text(encoding="utf-8")))
+    return configs
+
+
+@pytest.mark.parametrize("name", sorted(_bundled_configs()))
+def test_pdf_settings_list_only_the_settings_of_the_designs_topology(name: str) -> None:
+    config = _bundled_configs()[name]
+    groups = _setting_labels(config)
+    labels = {label for entries in groups.values() for label in entries}
+    values = [value for entries in groups.values() for value in entries.values()]
+    rotor_type = config["rotor"]["ipm_topology"] if config["topology"] == "IPM" else None
+
+    assert list(groups) == ["Stator", "Rotor", "Winding", "Materials", "Operating point", "Solve plan"] + (
+        ["Analyses"] if config["solve_options"] else []
+    )
+    assert all(value.strip() and value not in {"[]", "{}"} for value in values), "no empty values"
+    assert not any(label.startswith("HoleM50") for label in labels), "HoleM50 fields only for a HoleM50 rotor"
+    assert not labels & {"Flux barrier count", "Barrier widths", "Magneto2d workers", "Stream noload field lines"}
+    for pocket_type, pocket_labels in _POCKET_SETTINGS.items():
+        if pocket_type == rotor_type:
+            assert pocket_labels <= set(groups["Rotor"])
+        else:
+            assert not pocket_labels & set(groups["Rotor"]), f"{pocket_type} fields on a {rotor_type or 'SPM'} rotor"
+    if config["topology"] == "SPM":
+        assert "IPM rotor type" not in groups["Rotor"] and "Pocket clearance" not in groups["Rotor"]
+    assert ("Tooth shoe height" in groups["Stator"]) == bool(config["stator"]["tooth_shoe_enabled"])
+    assert ("Coil span" in groups["Winding"]) == (config["winding"]["coil_span"] is not None)
+    assert groups["Operating point"]["Phase current"] == (
+        f"{_plain(config['solve_params']['current_amplitude_A'])} A "
+        f"{config['solve_params']['current_amplitude_convention']}"
+    )
+
+    page = _settings_page_text(config)
+    assert "f" * 64 in page
+    assert "holem50" not in page.lower()
+
+
+def test_pdf_settings_follow_rotor_type_plan_and_tooth_shoe() -> None:
+    raw = deepcopy(CONFIG)
+    raw["topology"] = "IPM"
+    raw["rotor"]["ipm_topology"] = "pyleecan_holem50"
+    raw["stator"]["tooth_shoe_enabled"] = False
+    raw["solve_params"].update(solve_quality="custom", rotor_step_deg=2.5, rotor_sweep_range_deg=120, magneto2d_workers=4)
+    config = _resolved(raw)
+    groups = _setting_labels(config)
+
+    holem50 = {f"HoleM50 W{index}" for index in range(5)} | {f"HoleM50 H{index}" for index in range(5)}
+    assert holem50 <= set(groups["Rotor"])
+    assert groups["Rotor"]["HoleM50 W0"] == f"{_plain(config['rotor']['holem50_w0_mm'])} mm"
+    assert groups["Rotor"]["IPM rotor type"] == "pyleecan_holem50"
+    assert not set().union(*_POCKET_SETTINGS.values()) & set(groups["Rotor"])
+    assert "Tooth shoe height" not in groups["Stator"] and groups["Stator"]["Tooth shoe enabled"] == "false"
+    assert groups["Solve plan"]["Rotor step"] == "2.5 deg"
+    assert groups["Solve plan"]["Rotor sweep range"] == "120 deg"
+    assert "Magneto2d workers" not in groups["Solve plan"]
+    assert "HoleM50 W0" in _settings_page_text(config)
+
+    # Every preset sets its own step; Preview uses the stored sweep range, capped
+    # at 60 deg (SolveParams.effective_native_loaded_sweep_range_deg).
+    for plan in ("quick", "standard", "fine"):
+        raw = deepcopy(CONFIG)
+        raw["solve_params"].update(solve_quality=plan, rotor_sweep_range_deg=45)
+        plan_settings = _setting_labels(_resolved(raw))["Solve plan"]
+        assert "Rotor step" not in plan_settings, plan
+        if plan == "quick":
+            assert plan_settings["Rotor sweep range"] == "45 deg", "a Preview run solved this 45 deg window"
+        else:
+            assert "Rotor sweep range" not in plan_settings, plan
+    assert "settings the solve plan does not use" in _settings_page_text(_resolved(CONFIG))
+
+
+def test_pdf_settings_follow_the_excitation() -> None:
+    sinusoidal = _setting_labels(_resolved(CONFIG))["Operating point"]
+    assert "Current angle" in sinusoidal
+    assert not {"Commutation advance", "Phase connection"} & set(sinusoidal)
+
+    raw = deepcopy(CONFIG)
+    raw["solve_params"].update(excitation_mode="ideal_six_step_120", current_amplitude_convention="plateau")
+    six_step = _setting_labels(_resolved(raw))["Operating point"]
+    assert {"Commutation advance", "Phase connection"} <= set(six_step)
+    assert "Current angle" not in six_step
+    assert six_step["Phase current"].endswith(" A plateau")
+
+
+def test_pdf_settings_keep_fields_this_report_does_not_know_yet() -> None:
+    config = _resolved(CONFIG)
+    config["rotor"]["sleeve_thickness_mm"] = 0.5
+    config["solve_params"]["mesh_smoothing_passes"] = 3
+    config["solve_params"]["nested"] = {"left": "to the CSV"}
+    groups = _setting_labels(config)
+
+    assert groups["Rotor"]["Sleeve thickness"] == "0.5 mm"
+    assert groups["Solve plan"]["Mesh smoothing passes"] == "3"
+    assert "Nested" not in groups["Solve plan"]
+
+
+def test_pdf_first_page_holds_the_whole_provenance_table() -> None:
+    """Owner QA of #61: the provenance table split across pages 1 and 2."""
+
+    config = _resolved(CONFIG)
+    manifest = {
+        "run_id": "20261013t000000000000z-qa",
+        "project_name": "A project name long enough to take a full line in the header table",
+        "provenance": {
+            "solver_name": "magneto2d-rust-0.3.3",
+            "application_version": "0.3.0",
+            "application_commit": "a" * 40,
+            # An installed package records three more provenance rows.
+            "build": {
+                "installation": "package",
+                "magneto2d_version": "0.3.3",
+                "magneto2d_target": "aarch64-apple-darwin",
+                "magneto2d_sha256": "b" * 64,
+                "ui_bundle_sha256": "c" * 64,
+            },
+            "platform": {"machine": "arm64", "python": "3.12.13", "system": "Darwin"},
+            "qualification": {
+                "status": "experimental",
+                "reason": "V-shape IPM rotors: two of the six benchmark fixtures fail their torque gates, so results are experimental.",
+                "basis": "coilEM benchmark report v1.1",
+            },
+        },
+        "bindings": {"result_sha256": "d" * 64, "resolved_request_sha256": "e" * 64},
+    }
+    pdf = build_public_run_pdf(
+        project={"topology": "SPM"}, request={"resolved_config": config}, result=_result(), material={}, manifest=manifest,
+    )
+    first_page = pypdf.PdfReader(io.BytesIO(pdf)).pages[0].extract_text() or ""
+    for row in ("Solver and build provenance", "UI bundle SHA-256", "Platform", "Result SHA-256", "Resolved request SHA-256", "e" * 64):
+        assert row in first_page, row
+    assert "Torque method requested" in first_page
+
+
+def test_pdf_plot_angle_axis_matches_the_apps_steps() -> None:
+    assert _electrical_angle_ticks(0, 360) == [0, 45, 90, 135, 180, 225, 270, 315, 360]
+    assert _electrical_angle_ticks(0, 60) == [0, 7.5, 15, 22.5, 30, 37.5, 45, 52.5, 60]
+    assert _electrical_angle_ticks(0, 45) == [0, 7.5, 15, 22.5, 30, 37.5, 45]
+    assert _electrical_angle_ticks(30, 30) == [30]
+    # A full cycle sampled from 0 ends at 360; a partial window at its last angle.
+    assert _angle_axis_end([index * 7.5 for index in range(48)]) == 360.0
+    assert _angle_axis_end([index * 3.75 for index in range(13)]) == 45.0
+    assert _angle_axis_end([0.0, 30.0, 60.0, 90.0]) == 90.0

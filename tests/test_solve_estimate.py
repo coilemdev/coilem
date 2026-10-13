@@ -38,18 +38,38 @@ def _reference_workers(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(solve_estimate, "mesh_workers", lambda jobs: min(8, jobs))
 
 
-@pytest.mark.parametrize("run", CALIBRATION["runs"], ids=lambda run: f"{run['design']}-{run['plan']}")
+# Runs of a plan that has since changed measured different work (#58).
+CURRENT_RUNS = [run for run in CALIBRATION["runs"] if "superseded_by" not in run]
+
+
+@pytest.mark.parametrize("run", CURRENT_RUNS, ids=lambda run: f"{run['design']}-{run['plan']}")
 def test_measured_runs_fall_inside_the_estimated_range(run: dict) -> None:
     estimate = estimate_solve(_planned(run["design"], run["plan"]), mesh_elements=run["mesh_elements"])
     assert estimate.low_s <= run["measured_s"] <= estimate.high_s, (estimate, run["measured_s"])
 
 
 def test_planned_work_counts_meshes_after_slot_pitch_reuse() -> None:
-    # Preview meshes the 96-angle Back-EMF grid; 12 slots let angles a slot
-    # pitch apart share a mesh, but 27 slots with 24 poles share none.
-    assert planned_work(_planned("spm_8p12s", "quick")) == {"loaded": 17, "no_load": 96, "mesh_jobs": 96, "base_meshes": 32}
-    assert planned_work(_planned("spm_24p", "quick"))["base_meshes"] == 96
+    # Preview's Back-EMF grid has Standard's 48 angles (#58). Its 8 loaded
+    # positions between them get mesh-only jobs at the congruent angles a full
+    # cycle at their step meshes for them, so they keep those meshes. 12 slots
+    # let angles a slot pitch apart share a mesh; 27 slots with 24 poles share none.
+    preview = _planned("spm_8p12s", "quick")
+    assert planned_work(preview) == {"loaded": 17, "no_load": 48, "mesh_jobs": 64, "base_meshes": 24}
+    # The public solve route streams PM-only frames, so those 8 are solved no-load too.
+    streamed = preview.model_copy(
+        update={"solve_params": preview.solve_params.model_copy(update={"stream_noload_field_lines": True})}
+    )
+    assert planned_work(streamed)["no_load"] == 56
+    assert planned_work(_planned("spm_24p", "quick"))["base_meshes"] == 52
     assert planned_work(_planned("spm_8p12s", "standard")) == {"loaded": 48, "no_load": 48, "mesh_jobs": 48, "base_meshes": 16}
+
+
+@pytest.mark.parametrize("design", sorted(CALIBRATION["designs"]))
+def test_preview_is_estimated_faster_than_standard(design: str) -> None:
+    preview = estimate_solve(_planned(design, "quick"))
+    standard = estimate_solve(_planned(design, "standard"))
+    # Even its pessimistic end stays below Standard's estimate, as measured (#58).
+    assert preview.high_s < standard.seconds
 
 
 def test_fewer_mesh_workers_lengthen_the_estimate(monkeypatch: pytest.MonkeyPatch) -> None:

@@ -453,7 +453,7 @@ export function CoilEmTopBar({
   };
   return (
     <>
-    <header className={`topbar public-coilem-topbar${tutorialCatalog ? ' is-tutorial-catalog' : ''}`}>
+    <header className={`topbar public-coilem-topbar${tutorialCatalog ? ' is-tutorial-catalog' : ''}${designMenuOpen ? ' is-menu-open' : ''}`}>
       <div className="topbar-left">
         <button className="logo public-logo-button" type="button" onClick={onHome} aria-label="Return to coilEM home">
           <img className="logo-mark" src="/brand/coilem-mark.svg" alt="" aria-hidden="true" />
@@ -2281,6 +2281,7 @@ function LiveSolveMonitor({ busy, progress, liveSamples, progressPercent }: Pick
   const currentPosition = progress?.position ?? 0;
   const totalPositions = progress?.total ?? 0;
   const finalizing = busy === 'solve' && isPublicSolveFinalizing(progress);
+  const progressStarted = progressPercent > 0;
   const sweepComplete = finalizing
     && totalPositions > 0
     && currentPosition >= totalPositions - 1;
@@ -2302,13 +2303,17 @@ function LiveSolveMonitor({ busy, progress, liveSamples, progressPercent }: Pick
   return (
     <section className={`public-live-monitor${finalizing ? ' is-finalizing' : ''}`} aria-label="Live solve status" aria-busy={busy === 'solve'}>
       <div className="public-live-monitor-heading"><span className="public-section-kicker">Live solve</span><strong>{solveStageLabel(progress, busy)}</strong></div>
+      {/* Empty with a shimmer until meshing or a field solve reports progress,
+          then a fill that only grows; finalizing keeps the full bar (#53). */}
       <div
-        className={`progress-track${finalizing ? ' indeterminate' : ''}`}
+        className={`progress-track${progressStarted ? '' : ' is-waiting'}${finalizing ? ' is-finishing' : ''}`}
         role="progressbar"
-        aria-label={finalizing ? 'Post-processing solved field data' : 'Rotor sweep progress'}
-        aria-valuenow={finalizing ? undefined : progressPercent}
+        aria-label={finalizing ? 'Post-processing solved field data' : 'Solve progress'}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={progressStarted ? Math.round(progressPercent) : undefined}
       >
-        <span style={{ width: finalizing ? '28%' : currentPosition > 0 && totalPositions > 0 ? `${progressPercent}%` : '24%' }} />
+        <span style={{ width: `${progressPercent}%` }} />
       </div>
       {finalizing && (
         <div className="public-finalization-status">
@@ -2752,6 +2757,16 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
   );
 
   return (
+    <div className="public-solve-stage">
+      {/* Updates show in a thin banner under the top bar that takes its own
+          space, so they never cover the view tabs (owner QA of #64). */}
+      {transientNotice && (
+        <div className="public-solve-banner" role="status">
+          <StatusGlyph tone="good" />
+          <span>{transientNotice}</span>
+          <button type="button" aria-label="Dismiss update" onClick={() => setTransientNotice(null)}>×</button>
+        </div>
+      )}
     <div className={`public-solve-workspace${resizingRunPlan ? ' is-resizing-run-plan' : ''}${solveInProgress ? ' is-run-plan-focused' : ''}${solveViewportExpanded ? ' is-viewport-expanded' : ''}`}>
       <aside className="public-solve-setup">
         <div className="mesh-panel-header"><span className="mesh-panel-header-title">Analysis setup</span></div>
@@ -2960,13 +2975,6 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
         </div>
       </aside>
       <div className="public-live-stage">
-        {transientNotice && (
-          <div className="public-solve-toast" role="status">
-            <StatusGlyph tone="good" />
-            <span>{transientNotice}</span>
-            <button type="button" aria-label="Dismiss update" onClick={() => setTransientNotice(null)}>×</button>
-          </div>
-        )}
         {solveView !== 'field' && solveViewportSwitch}
         {solveView === 'field' && result
           ? (
@@ -3147,6 +3155,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
         {result && <CompletedResultMonitor result={result} onOpenReport={onOpenReport} />}
         </div>
       </aside>
+    </div>
     </div>
   );
 }

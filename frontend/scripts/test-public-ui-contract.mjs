@@ -100,6 +100,7 @@ const halbachStyleSource = await readFile(
   'utf8',
 );
 const waveformSource = await readFile(path.join(frontendRoot, 'src/public/WaveformChart.tsx'), 'utf8');
+const waveformReadoutSource = await readFile(path.join(frontendRoot, 'src/public/WaveformReadout.tsx'), 'utf8');
 const fieldResultSource = await readFile(path.join(frontendRoot, 'src/public/FieldResultPlot.tsx'), 'utf8');
 const solvedFieldSource = await readFile(path.join(frontendRoot, 'src/public/SolvedFieldViewer.tsx'), 'utf8');
 const playbackContractSource = await readFile(path.join(frontendRoot, 'src/public/fieldPlaybackContract.ts'), 'utf8');
@@ -233,7 +234,19 @@ assert.match(workspaceSource, /docs\/VALIDATION\.md#qualification-status/);
 assert.match(workspaceSource, /readQualification\(geometry\?\.metadata\?\.qualification\)/);
 assert.match(workspaceSource, /readQualification\(validation\?\.qualification\)/);
 assert.match(workspaceSource, /readQualification\(result\.qualification\)/);
+// On Results the note sits in the same centred column as the other panels (#51).
+assert.match(
+  styleSource,
+  /\.public-report-stage > \.public-qualification-note \{\s*max-width: 1080px;\s*margin: 0 auto 14px;\s*\}/,
+);
 assert.equal((workspaceSource.match(/<QualificationNote qualification=/g) ?? []).length, 2, 'Solve and Results show the qualification note');
+// The live-solve bar comes from the monotonic solve-progress helper, not
+// fixed placeholder widths (#53).
+assert.match(appSource, /nextPublicSolveProgressBar\(previous, progress\)/);
+assert.doesNotMatch(workspaceSource, /finalizing \? '28%'/);
+assert.match(workspaceSource, /<span style=\{\{ width: `\$\{progressPercent\}%` \}\} \/>/);
+assert.doesNotMatch(workspaceSource, /: '24%' \}\}/);
+assert.match(styleSource, /\.progress-track\.is-finishing span::after/);
 assert.match(appSource, /const convertProjectSteelToM350 = useCallback/);
 assert.match(appSource, /stator_steel: 'M350-50A'/);
 assert.match(appSource, /rotor_steel: 'M350-50A'/);
@@ -377,7 +390,12 @@ assert.match(waveformSource, /visible && plottedSeries\.length === 1/);
 assert.match(waveformSource, /samplingLabel \|\|/);
 assert.match(waveformSource, /periodicAxisEnd/);
 assert.match(waveformSource, /inferredEnd - 360/);
-assert.match(waveformSource, /axisMaxX\.toFixed\(0\)/);
+// The angle axis is labelled at regular steps, 45° over a full cycle.
+assert.match(waveformSource, /const angleTicks = electricalAngleTicks\(minX, axisMaxX\)/);
+assert.match(waveformSource, /angleTicks\.map\(\(tick\) => \(\s*<text key=\{tick\} x=\{x\(tick\)\}[^>]*>\{formatElectricalAngleTick\(tick\)\}/);
+assert.match(waveformSource, /angleTicks\.map\(\(tick\) => \(\s*<line key=\{tick\} x1=\{x\(tick\)\}[^>]*className="chart-grid"/);
+assert.match(bldcChartSource, /electricalAngleTicks\(0, 360\)\.map\(\(tick\) => \(\{ tick, x: margin\.left \+ tick \/ 360 \* plotWidth \}\)\)/,
+  'six-step ticks use their own scale: x() wraps 360° back to the left edge');
 assert.match(waveformSource, /strokeDasharray=\{item\.dashArray\}/);
 assert.match(waveformSource, /const renderedSeries = \[\.\.\.plottedSeries\]\.sort/);
 assert.match(waveformSource, /renderedSeries\.map/);
@@ -387,6 +405,45 @@ assert.match(waveformSource, /public-waveform-legend-row/);
 assert.match(waveformSource, /group\.entries\.map/);
 assert.match(styleSource, /\.public-waveform-legend button\[aria-pressed="false"\]/);
 assert.match(styleSource, /\.public-waveform-legend-row \{ display: grid;/);
+// Click-to-read plot values (#54): a click, tap or arrow key selects the nearest
+// solved position of the shown series and lists their stored values.
+assert.match(waveformSource, /const readoutSeries: WaveformReadoutSeries\[\] = plottedSeries\.map/,
+  'the readout lists only shown series, so legend-hidden series are left out');
+assert.match(waveformSource, /useWaveformReadout\(\{\s*angles: waveformReadoutAngles\(readoutSeries\)/);
+assert.match(waveformSource, /waveformReadoutValues\(readoutSeries, readout\.shownAngle\)/);
+assert.match(waveformSource, /<WaveformReadoutBar/);
+assert.match(waveformSource, /<WaveformReadoutMarker/);
+assert.match(waveformSource, /className="public-waveform-plot"[^>]*\{\.\.\.readout\.plotProps\}/);
+assert.match(waveformSource, /<svg ref=\{readout\.svgRef\}/);
+assert.match(runComparisonSource, /label="Torque comparison"[^\n]*readoutDifference=\{\{ minuendKey: 'run-b', subtrahendKey: 'run-a', label: 'Run B − Run A' \}\}/,
+  'Compare torque shows each run and Run B − Run A, like the metric cards');
+assert.doesNotMatch(runComparisonSource, /label="Three-phase back EMF comparison"[^\n]*readoutDifference/);
+assert.match(bldcChartSource, /\.\.\.\(showTorque \? \[\{ key: 'torque', label: 'Torque'/);
+assert.match(bldcChartSource, /\.\.\.\(showPhaseCurrents\s*\? \[phaseA, phaseB, phaseC\]\.map/);
+assert.match(bldcChartSource, /angleNote=\{readout\.shownAngle === null \? undefined : `sector S\$\{sectorAt\(readout\.shownAngle, commutationAdvanceDeg\) \+ 1\}`\}/);
+assert.match(bldcChartSource, /<svg ref=\{readout\.svgRef\}/);
+assert.match(waveformReadoutSource, /getScreenCTM\(\)/, 'the click maps through the SVG transform, so letterboxing cannot shift it');
+assert.match(waveformReadoutSource, /event\.pointerType !== 'mouse'/, 'only a mouse hover previews; touch selects on tap');
+assert.match(waveformReadoutSource, /index === selectedIndex \? null : angles\[index\]/, 'clicking the selected point again clears it');
+assert.match(waveformReadoutSource, /event\.key === 'Escape'/);
+assert.match(waveformReadoutSource, /setSelectedAngle\(\(previous\) => \{\s*const next = steppedWaveformReadoutIndex\(snapped\(previous\), angles\.length, event\.key\)/, 'keys step from the latest selection');
+assert.match(waveformReadoutSource, /document\.addEventListener\('pointerdown', clearOutside\)/, 'clicking outside the chart clears it');
+assert.match(waveformReadoutSource, /tabIndex: 0/);
+assert.match(waveformReadoutSource, /role="status" aria-live="polite"/);
+assert.match(waveformReadoutSource, /formatWaveformReadoutValue\(item\.value, item\.unit\)/);
+assert.match(waveformReadoutSource, /'not solved at this angle'/);
+assert.match(styleSource, /\.public-waveform-plot:focus-visible \{/);
+assert.match(styleSource, /\.public-waveform-marker \{ pointer-events: none; \}/);
+assert.match(styleSource, /\.public-waveform-marker\.is-preview line \{ stroke-dasharray/);
+assert.match(styleSource, /\.public-waveform-readout \{ display: flex;/);
+// The open design menu stacks above the motor view's toolbars: the top bar's
+// own stacking context is lifted while the menu is open.
+assert.match(workspaceSource, /\$\{designMenuOpen \? ' is-menu-open' : ''\}/);
+assert.match(styleSource, /\.public-coilem-shell \.public-coilem-topbar\.is-menu-open \{ z-index: 100; \}/);
+for (const [selector, zIndex] of [['.public-solve-view-switch', 30], ['.public-solved-field-toolbar', 40], ['.public-field-layer-menu', 50]]) {
+  const rule = styleSource.match(new RegExp(`${selector.replace(/[.]/g, '\\.')} \\{[^}]*z-index: (\\d+)`));
+  assert.ok(rule && Number(rule[1]) === zIndex && Number(rule[1]) < 100, `${selector} stays below the open design menu`);
+}
 assert.doesNotMatch(runComparisonSource, /pdf-compare/);
 assert.match(apiSource, /report\.\$\{exportKind\}/);
 assert.match(apiSource, /package\.zip/);
@@ -828,12 +885,35 @@ assert.match(solvedFieldSource, /CW · \{bufferStatus\}/);
 assert.doesNotMatch(solvedFieldSource, /MAX_CACHED_FRAMES/);
 assert.match(solvedFieldSource, /window\.requestAnimationFrame\(animate\)/);
 assert.match(solvedFieldSource, /advancePlaybackElectricalAngle/);
-assert.match(solvedFieldSource, /nearestPlaybackFrameIndex/);
+assert.match(solvedFieldSource, /const nextIndex = positionSliderFrameIndex\(angleFrames, nextPlaybackAngleDeg, playbackSpan\)/);
 assert.match(solvedFieldSource, /playbackCycleSpanDeg/);
 assert.match(solvedFieldSource, /normalizePlaybackElectricalAngle/);
 assert.match(solvedFieldSource, /playbackSliderRef\.current\.value/);
 assert.match(solvedFieldSource, /step="any"/);
-assert.match(solvedFieldSource, /for \(const preloadIndex of playbackLookaheadIndices\)/);
+assert.match(solvedFieldSource, /for \(const preloadIndex of preloadIndices\)/);
+// #59: a Preview window is covered once by the slider and loops in order when played.
+assert.match(solvedFieldSource, /min=\{sliderRange\.min\}\s*max=\{sliderRange\.max\}/);
+assert.match(solvedFieldSource, /positionSliderValue\(playbackSpanRef\.current, electricalAngle\)/);
+assert.match(solvedFieldSource, /playbackSpan\.windowed\s*\? advanceWindowPlaybackAngle\(/);
+assert.match(solvedFieldSource, /windowPlaybackFrameIndex\(angleFrames, nextPlaybackAngleDeg, playbackSpan\)/);
+// #59: dragging loads only the newest position, preloads nothing until it rests,
+// and keeps the last drawn frame (with its magnet angle) while the next decodes.
+assert.match(solvedFieldSource, /frameLoaderRef\.current\.request\(\(\) => loadVisualFrame\(descriptor, source\)\)/);
+assert.match(solvedFieldSource, /if \(angleFrames\.length < 2 \|\| \(scrubbing && !playing\)\) return;/);
+assert.match(solvedFieldSource, /scrubNeighbourIndices\(angleFrames\.length, boundedIndex, scrubDirection, !playbackSpan\.windowed\)/);
+assert.match(solvedFieldSource, /const heldFrame = !activeRaster && !meshlessRaster && !exactVectorPlot && heldRaster\?\.source === source/);
+assert.match(solvedFieldSource, /if \(heldRaster\) shown\.add\(heldRaster\.raster\);/, 'a held frame is never closed while on screen');
+assert.match(solvedFieldSource, /magnetRotationDeg=\{\(heldFrame\?\.angleDeg \?\? electricalAngleDeg\) \/ polePairs\}/);
+// Solve-page updates are a thin banner under the top bar, in the page flow, so
+// they never cover the motor view's tabs (owner QA of #64).
+assert.match(workspaceSource, /<div className="public-solve-stage">\s*\{\/\*[^]*?\*\/\}\s*\{transientNotice && \(\s*<div className="public-solve-banner" role="status">/);
+assert.doesNotMatch(workspaceSource, /public-solve-toast/);
+assert.doesNotMatch(styleSource, /public-solve-toast/);
+assert.match(styleSource, /\.public-solve-stage > \.public-solve-workspace \{\s*flex: 1 1 auto;/);
+assert.doesNotMatch(styleSource.match(/\.public-solve-banner \{[^}]*\}/)?.[0] ?? '', /position: (absolute|fixed)/, 'the banner takes its own space');
+// #59: the mesh layer is decoded only while the Mesh overlay is shown.
+assert.match(playbackRasterizerSource, /layers\.mesh && withMesh \? load\(layers\.mesh\.artifact_id\)/);
+assert.match(solvedFieldSource, /requestedDescriptor\.playback_frame,\s*withMesh,/);
 assert.match(solvedFieldSource, /Playback speed \(RPM\)/);
 assert.doesNotMatch(solvedFieldSource, /PLAYBACK_RATES|PlaybackRate|Field playback speed/);
 assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_MIN_RPM = 1/);
@@ -987,7 +1067,9 @@ assert.match(workspaceSource, /BackEMFHarmonicSpectrum/);
 assert.match(workspaceSource, /H1–H/);
 assert.match(workspaceSource, /Line AB THD H12/);
 assert.match(workspaceSource, /periodic no-load flux-linkage DFT/);
-assert.match(workspaceSource, /progress-track\$\{finalizing \? ' indeterminate'/);
+// Empty with a shimmer until progress starts; finalizing keeps the reached bar and adds a shimmer (#53).
+assert.match(workspaceSource, /progress-track\$\{progressStarted \? '' : ' is-waiting'\}\$\{finalizing \? ' is-finishing' : ''\}/);
+assert.match(styleSource, /\.progress-track\.is-waiting::after/);
 assert.match(workspaceSource, /window\.setInterval/);
 assert.match(workspaceSource, /is-running/);
 assert.match(solveProgressSource, /packaging_results/);

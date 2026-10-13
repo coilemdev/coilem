@@ -81,6 +81,7 @@ import {
   type PublicSolvePreset,
   type PublicSweepSampling,
 } from './solvePlan';
+import { EMPTY_PUBLIC_SOLVE_PROGRESS_BAR, nextPublicSolveProgressBar } from './solveProgress';
 
 const FALLBACK_MATERIALS: MaterialCatalog = {
   steels: ['M350-50A'],
@@ -1504,10 +1505,13 @@ export function App() {
     }
   };
 
-  const progressPercent = useMemo(() => {
-    if (!progress || progress.total <= 0) return 0;
-    return Math.min(100, Math.max(0, (progress.position / progress.total) * 100));
+  // Meshing fills the first part of the bar and field solves the rest; it
+  // never moves backwards within one solve (#53).
+  const [progressBar, setProgressBar] = useState(EMPTY_PUBLIC_SOLVE_PROGRESS_BAR);
+  useEffect(() => {
+    setProgressBar((previous) => nextPublicSolveProgressBar(previous, progress));
   }, [progress]);
+  const progressPercent = progressBar.percent;
 
   const meshElements = Number(mesh?.mesh_info.num_triangles || mesh?.triangles.length || 0);
   const meshQuality = Number(mesh?.mesh_qa.min_triangle_quality || 0);

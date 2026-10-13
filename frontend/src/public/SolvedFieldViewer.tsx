@@ -27,18 +27,26 @@ import {
 } from './fieldPlaybackRasterizer';
 import {
   advancePlaybackElectricalAngle,
-  nearestPlaybackFrameIndex,
+  advanceWindowPlaybackAngle,
   normalizePlaybackElectricalAngle,
   playbackCycleSpanDeg,
   playbackFrameStride,
   playbackLookaheadFrameIndices,
+  playbackSpanOf,
   playbackStrideFrameIndex,
+  positionSliderFrameIndex,
+  positionSliderRange,
+  positionSliderValue,
   PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM,
   PUBLIC_FIELD_PLAYBACK_MAX_RPM,
   PUBLIC_FIELD_PLAYBACK_MIN_RPM,
   publicFieldPlaybackBufferFrames,
   publicFieldPlaybackCacheFrames,
+  scrubNeighbourIndices,
+  windowLookaheadFrameIndices,
+  windowPlaybackFrameIndex,
 } from './fieldPlaybackTiming';
+import { LatestFrameLoader } from './latestFrameLoader';
 import { rotorAirgapBoundaryRadiusMm } from './motorAirgap';
 import type {
   GeometryPreview,
@@ -78,8 +86,20 @@ function prepareFrameForPlayback(
   });
 }
 
-function rasterCacheKey(artifactId: string, source: FieldRasterSource): string {
-  return `${source}:${artifactId}`;
+function rasterCacheKey(artifactId: string, source: FieldRasterSource, withMesh = false): string {
+  return `${source}:${withMesh ? 'mesh:' : ''}${artifactId}`;
+}
+
+// Playback rasters skip the mesh layer while it is hidden. One decoded with
+// its mesh also serves a view without it.
+function cachedRaster(
+  cache: Record<string, FieldResultRaster>,
+  artifactId: string,
+  source: FieldRasterSource,
+  withMesh: boolean,
+): FieldResultRaster | undefined {
+  return cache[rasterCacheKey(artifactId, source, true)]
+    ?? (withMesh ? undefined : cache[rasterCacheKey(artifactId, source)]);
 }
 
 function closeRaster(raster: FieldResultRaster): void {
@@ -272,6 +292,8 @@ export function SolvedFieldViewer({
   const [frameIndex, setFrameIndex] = useState(0);
   const [showHeatmap, setShowHeatmap] = useState(true);
   const [showMesh, setShowMesh] = useState(false);
+  const showMeshRef = useRef(false);
+  showMeshRef.current = showMesh;
   const [showFieldLines, setShowFieldLines] = useState(true);
   const [showMagnets, setShowMagnets] = useState(true);
   const [showAirgap, setShowAirgap] = useState(false);
@@ -299,6 +321,20 @@ export function SolvedFieldViewer({
   const [frameLoading, setFrameLoading] = useState(false);
   const [frameError, setFrameError] = useState<string | null>(null);
   const [settledArtifactId, setSettledArtifactId] = useState<string | null>(null);
+  // The last frame drawn, kept on screen while the slider's next one decodes.
+  const [heldRaster, setHeldRaster] = useState<{
+    source: FieldSource;
+    raster: FieldResultRaster;
+    angleDeg: number;
+  } | null>(null);
+  // While the slider is dragged, only its newest position loads (#59).
+  const [scrubbing, setScrubbing] = useState(false);
+  const [scrubDirection, setScrubDirection] = useState<1 | -1>(1);
+  const scrubIdleTimerRef = useRef<number | null>(null);
+  const frameLoaderRef = useRef(new LatestFrameLoader<FieldResultRaster | null>());
+  // Two loads can finish out of order; only a newer request replaces the frame shown.
+  const frameRequestSeqRef = useRef(0);
+  const shownRequestSeqRef = useRef(0);
   const [fieldViewportScale, setFieldViewportScale] = useState(1);
   const [detailPlot, setDetailPlot] = useState<{
     artifactId: string;
@@ -339,6 +375,11 @@ export function SolvedFieldViewer({
   const angleFrames = resultantFrames.length > 0 ? resultantFrames : armatureFrames;
   const boundedIndex = Math.min(frameIndex, Math.max(0, angleFrames.length - 1));
   const playbackSpanDeg = playbackCycleSpanDeg(angleFrames);
+  // A Preview run solves only a window of the cycle; the slider covers it once.
+  const playbackSpan = useMemo(() => playbackSpanOf(angleFrames), [angleFrames]);
+  const playbackSpanRef = useRef(playbackSpan);
+  playbackSpanRef.current = playbackSpan;
+  const sliderRange = positionSliderRange(playbackSpan);
   const streamingArmatureFrame = source === 'armature' && armatureBusy
     ? armatureFrames[armatureFrames.length - 1] ?? null
     : null;
@@ -349,10 +390,13 @@ export function SolvedFieldViewer({
   const descriptor = streamingArmatureFrame ?? nearestFrame(sourceFrames, electricalAngleDeg);
   const artifactId = descriptor?.field_frame_artifact.artifact_id ?? null;
   const exactFrameSettled = artifactId !== null && settledArtifactId === artifactId;
-  const activeRasterKey = artifactId ? rasterCacheKey(artifactId, source) : null;
+  const activeRasterKey = artifactId ? rasterCacheKey(artifactId, source, showMesh) : null;
   activeRasterKeyRef.current = activeRasterKey;
-  const activeRaster = activeRasterKey ? rasterCache[activeRasterKey] : null;
-  const activeDetailRaster = detailRaster?.key === activeRasterKey
+  const activeRaster = artifactId ? cachedRaster(rasterCache, artifactId, source, showMesh) ?? null : null;
+  // Turning the mesh on keeps the frame without it until its mesh layer loads.
+  const meshlessRaster = artifactId && showMesh ? rasterCache[rasterCacheKey(artifactId, source)] ?? null : null;
+  const detailRasterKey = artifactId ? rasterCacheKey(artifactId, source) : null;
+  const activeDetailRaster = detailRaster?.key === detailRasterKey
     ? detailRaster.raster
     : null;
   const artifactFrame = artifactId ? frameCache[artifactId] : null;
@@ -374,7 +418,13 @@ export function SolvedFieldViewer({
   const visiblePlot = exactVectorPlot
     ?? (retainedPlot?.source === source ? retainedPlot.plot : null)
     ?? armatureReferencePlot;
-  const visibleRaster = activeRaster;
+  // A frame still decoding keeps the last one drawn on screen, with the magnets
+  // at its angle, instead of an older exact frame, so dragging the slider
+  // never jumps backwards (#59).
+  const heldFrame = !activeRaster && !meshlessRaster && !exactVectorPlot && heldRaster?.source === source
+    ? heldRaster
+    : null;
+  const visibleRaster = activeRaster ?? meshlessRaster ?? heldFrame?.raster ?? null;
   const currentPeakBT = useMemo(() => {
     const rasterPeak = activeDetailRaster?.maxB ?? visibleRaster?.maxB;
     if (Number.isFinite(rasterPeak)) return rasterPeak ?? 0;
@@ -442,16 +492,35 @@ export function SolvedFieldViewer({
       polePairs,
     ],
   );
-  const bufferTarget = playbackLookaheadIndices.length;
+  // Playing preloads the frames it shows next. Stopped, the slider preloads a
+  // few positions in the direction it was last dragged, and nothing while it
+  // is being dragged.
+  const preloadIndices = useMemo(() => {
+    if (playing) {
+      return playbackSpan.windowed
+        ? windowLookaheadFrameIndices(angleFrames.length, boundedIndex, desiredBufferFrames)
+        : playbackLookaheadIndices;
+    }
+    return scrubNeighbourIndices(angleFrames.length, boundedIndex, scrubDirection, !playbackSpan.windowed);
+  }, [
+    angleFrames.length,
+    boundedIndex,
+    desiredBufferFrames,
+    playbackLookaheadIndices,
+    playbackSpan.windowed,
+    playing,
+    scrubDirection,
+  ]);
+  const bufferTarget = preloadIndices.length;
   const bufferedAhead = useMemo(() => {
     let ready = 0;
-    for (const preloadIndex of playbackLookaheadIndices) {
+    for (const preloadIndex of preloadIndices) {
       const preloadAngle = angleFrames[preloadIndex]?.angle_deg ?? 0;
       const preloadArtifactId = nearestFrame(sourceFrames, preloadAngle)?.field_frame_artifact.artifact_id;
       if (
         !preloadArtifactId
         || (
-          !rasterCache[rasterCacheKey(preloadArtifactId, source)]
+          !cachedRaster(rasterCache, preloadArtifactId, source, showMesh)
           && !frameCache[preloadArtifactId]
         )
       ) break;
@@ -461,24 +530,30 @@ export function SolvedFieldViewer({
   }, [
     angleFrames,
     frameCache,
-    playbackLookaheadIndices,
+    preloadIndices,
     rasterCache,
+    showMesh,
     source,
     sourceFrames,
   ]);
   const upcomingRasterKeys = useMemo(() => new Set(
-    playbackLookaheadIndices.flatMap((preloadIndex) => {
+    preloadIndices.flatMap((preloadIndex) => {
       const preloadAngle = angleFrames[preloadIndex]?.angle_deg ?? 0;
       const preloadArtifactId = nearestFrame(sourceFrames, preloadAngle)?.field_frame_artifact.artifact_id;
-      return preloadArtifactId ? [rasterCacheKey(preloadArtifactId, source)] : [];
+      return preloadArtifactId
+        ? [rasterCacheKey(preloadArtifactId, source), rasterCacheKey(preloadArtifactId, source, true)]
+        : [];
     }),
-  ), [angleFrames, playbackLookaheadIndices, source, sourceFrames]);
+  ), [angleFrames, preloadIndices, source, sourceFrames]);
   const upcomingRasterKeysRef = useRef(upcomingRasterKeys);
   upcomingRasterKeysRef.current = upcomingRasterKeys;
   const keptRasterKeys = useCallback((loadedKey?: string): Set<string> => {
     const keep = new Set(upcomingRasterKeysRef.current);
     if (loadedKey) keep.add(loadedKey);
-    if (activeRasterKeyRef.current) keep.add(activeRasterKeyRef.current);
+    if (activeRasterKeyRef.current) {
+      keep.add(activeRasterKeyRef.current);
+      keep.add(activeRasterKeyRef.current.replace(/^([^:]+):mesh:/, '$1:'));
+    }
     return keep;
   }, []);
 
@@ -526,8 +601,9 @@ export function SolvedFieldViewer({
     requestedSource: FieldRasterSource,
   ): Promise<FieldResultRaster | null> => {
     const requestedArtifactId = requestedDescriptor.field_frame_artifact.artifact_id;
-    const key = rasterCacheKey(requestedArtifactId, requestedSource);
-    const cached = rasterCacheRef.current[key];
+    const withMesh = showMeshRef.current;
+    const key = rasterCacheKey(requestedArtifactId, requestedSource, withMesh);
+    const cached = cachedRaster(rasterCacheRef.current, requestedArtifactId, requestedSource, withMesh);
     if (cached) return Promise.resolve(cached);
     const pending = rasterRequestsRef.current.get(key);
     if (pending) return pending;
@@ -537,6 +613,7 @@ export function SolvedFieldViewer({
         requestedArtifactId,
         requestedSource,
         requestedDescriptor.playback_frame,
+        withMesh,
       )
       : Promise.reject(new Error('Field playback workers are unavailable.')))
       .then((raster) => {
@@ -581,12 +658,22 @@ export function SolvedFieldViewer({
   useEffect(() => {
     const shown = new Set(Object.values(rasterCache));
     if (detailRaster) shown.add(detailRaster.raster);
+    if (heldRaster) shown.add(heldRaster.raster);
     retiredRastersRef.current.forEach((raster) => {
       if (shown.has(raster)) return;
       closeRaster(raster);
       retiredRastersRef.current.delete(raster);
     });
-  }, [detailRaster, rasterCache]);
+  }, [detailRaster, heldRaster, rasterCache]);
+
+  const drawnRaster = activeRaster ?? meshlessRaster;
+  useEffect(() => {
+    if (drawnRaster) setHeldRaster({ source, raster: drawnRaster, angleDeg: electricalAngleDeg });
+  }, [drawnRaster, electricalAngleDeg, source]);
+
+  useEffect(() => () => {
+    if (scrubIdleTimerRef.current !== null) window.clearTimeout(scrubIdleTimerRef.current);
+  }, []);
 
   useEffect(() => {
     frameGenerationRef.current += 1;
@@ -603,6 +690,8 @@ export function SolvedFieldViewer({
     setPlaybackWaiting(false);
     setFrameCache({});
     setRasterCache({});
+    setHeldRaster(null);
+    frameLoaderRef.current.clear();
     setRetainedPlot(null);
     setFieldViewportScale(1);
     setColorRangeMode('viewport');
@@ -619,7 +708,7 @@ export function SolvedFieldViewer({
   const syncPlaybackSlider = useCallback((electricalAngle: number) => {
     if (!playbackSliderRef.current) return;
     playbackSliderRef.current.value = String(
-      normalizePlaybackElectricalAngle(electricalAngle),
+      positionSliderValue(playbackSpanRef.current, electricalAngle),
     );
   }, []);
 
@@ -657,28 +746,36 @@ export function SolvedFieldViewer({
     const animate = (timestamp: number) => {
       if (lastSampleAt !== null) {
         const elapsedMs = timestamp - lastSampleAt;
-        const nextPlaybackAngleDeg = advancePlaybackElectricalAngle(
-          playbackElectricalAngleRef.current,
-          Math.min(elapsedMs, MAX_PLAYBACK_CATCHUP_MS),
-          playbackRpmRef.current,
-          polePairs,
-        );
-        const nextSolvedAngleDeg = normalizePlaybackElectricalAngle(
-          nextPlaybackAngleDeg,
-          playbackSpanDeg,
-        );
-        const nextIndex = playbackStrideFrameIndex(
-          angleFrames,
-          nextSolvedAngleDeg,
-          playbackSpanDeg,
-          playbackStrideRef.current,
-        );
+        // A solved window loops through its positions in order; a full cycle
+        // turns at the playback RPM on its stride grid.
+        const nextPlaybackAngleDeg = playbackSpan.windowed
+          ? advanceWindowPlaybackAngle(
+            playbackElectricalAngleRef.current,
+            Math.min(elapsedMs, MAX_PLAYBACK_CATCHUP_MS),
+            playbackRpmRef.current,
+            polePairs,
+            playbackSpan,
+          )
+          : advancePlaybackElectricalAngle(
+            playbackElectricalAngleRef.current,
+            Math.min(elapsedMs, MAX_PLAYBACK_CATCHUP_MS),
+            playbackRpmRef.current,
+            polePairs,
+          );
+        const nextIndex = playbackSpan.windowed
+          ? windowPlaybackFrameIndex(angleFrames, nextPlaybackAngleDeg, playbackSpan)
+          : playbackStrideFrameIndex(
+            angleFrames,
+            normalizePlaybackElectricalAngle(nextPlaybackAngleDeg, playbackSpanDeg),
+            playbackSpanDeg,
+            playbackStrideRef.current,
+          );
         const nextAngle = angleFrames[nextIndex]?.angle_deg ?? 0;
         const nextDescriptor = nearestFrame(sourceFrames, nextAngle);
         const nextArtifactId = nextDescriptor?.field_frame_artifact.artifact_id;
         const nextReady = nextArtifactId
           && (
-            rasterCacheRef.current[rasterCacheKey(nextArtifactId, source)]
+            cachedRaster(rasterCacheRef.current, nextArtifactId, source, showMeshRef.current)
             || frameCacheRef.current[nextArtifactId]
           );
         if (nextDescriptor && nextArtifactId && !nextReady) {
@@ -707,6 +804,7 @@ export function SolvedFieldViewer({
     loadVisualFrame,
     playing,
     polePairs,
+    playbackSpan,
     playbackSpanDeg,
     source,
     sourceFrames,
@@ -791,15 +889,17 @@ export function SolvedFieldViewer({
   ]);
 
   useEffect(() => {
-    if (angleFrames.length < 2) return;
-    for (const preloadIndex of playbackLookaheadIndices) {
+    // Preloading while the slider is dragged would queue frames it has already
+    // left; the slider's own position loads instead.
+    if (angleFrames.length < 2 || (scrubbing && !playing)) return;
+    for (const preloadIndex of preloadIndices) {
       const preloadAngle = angleFrames[preloadIndex]?.angle_deg ?? 0;
       const preloadDescriptor = nearestFrame(sourceFrames, preloadAngle);
       const preloadArtifactId = preloadDescriptor?.field_frame_artifact.artifact_id;
       if (
         preloadDescriptor
         && preloadArtifactId
-        && !rasterCacheRef.current[rasterCacheKey(preloadArtifactId, source)]
+        && !cachedRaster(rasterCacheRef.current, preloadArtifactId, source, showMeshRef.current)
         && !frameCacheRef.current[preloadArtifactId]
       ) {
         void loadVisualFrame(preloadDescriptor, source).catch(() => undefined);
@@ -808,7 +908,10 @@ export function SolvedFieldViewer({
   }, [
     angleFrames,
     loadVisualFrame,
-    playbackLookaheadIndices,
+    playing,
+    preloadIndices,
+    scrubbing,
+    showMesh,
     source,
     sourceFrames,
   ]);
@@ -819,7 +922,7 @@ export function SolvedFieldViewer({
       return;
     }
     if (
-      rasterCacheRef.current[rasterCacheKey(artifactId, source)]
+      cachedRaster(rasterCacheRef.current, artifactId, source, showMeshRef.current)
       || frameCacheRef.current[artifactId]
     ) {
       setFrameLoading(false);
@@ -830,7 +933,21 @@ export function SolvedFieldViewer({
     setFrameLoading(true);
     setFrameError(null);
     if (!descriptor) return;
-    void loadVisualFrame(descriptor, source)
+    // Stopped, the newest slider position replaces any position still waiting
+    // to load, so dragging never queues frames the slider has left (#59).
+    // Each frame that finishes is shown straight away, even when the slider
+    // has moved on, so the picture keeps following a fast drag.
+    const frameAngleDeg = descriptor.angle_deg;
+    const requestSeq = ++frameRequestSeqRef.current;
+    void (playing
+      ? loadVisualFrame(descriptor, source)
+      : frameLoaderRef.current.request(() => loadVisualFrame(descriptor, source)).then((raster) => {
+        if (raster && requestSeq > shownRequestSeqRef.current) {
+          shownRequestSeqRef.current = requestSeq;
+          setHeldRaster({ source, raster, angleDeg: frameAngleDeg });
+        }
+        return raster;
+      }))
       .catch((error: unknown) => {
         if (!active) return;
         const message = error && typeof error === 'object' && 'message' in error
@@ -842,7 +959,7 @@ export function SolvedFieldViewer({
         if (active) setFrameLoading(false);
       });
     return () => { active = false; };
-  }, [artifactId, descriptor, frameCache, loadVisualFrame, rasterCache, source]);
+  }, [artifactId, descriptor, frameCache, loadVisualFrame, playing, rasterCache, showMesh, source]);
 
   useEffect(() => {
     if (playing || !artifactId || activePlot || !exactFrameSettled) return;
@@ -1029,7 +1146,7 @@ export function SolvedFieldViewer({
               highResolutionPlot={exactVectorPlot}
               probeEnabled={!playing && Boolean(exactVectorPlot)}
               geometry={geometry}
-              magnetRotationDeg={mechanicalAngleDeg}
+              magnetRotationDeg={(heldFrame?.angleDeg ?? electricalAngleDeg) / polePairs}
               showMagnets={showMagnets}
               showAirgap={showAirgap}
               airgapInnerRadiusMm={rotorAirgapBoundaryRadiusMm(config)}
@@ -1083,23 +1200,23 @@ export function SolvedFieldViewer({
           <input
             ref={playbackSliderRef}
             type="range"
-            min={0}
-            max={360}
+            min={sliderRange.min}
+            max={sliderRange.max}
             step="any"
-            defaultValue={0}
+            defaultValue={sliderRange.min}
             disabled={angleFrames.length < 2}
             aria-label="Solved rotor position"
             onChange={(event) => {
               const nextPlaybackAngleDeg = Number(event.target.value);
-              const nextSolvedAngleDeg = normalizePlaybackElectricalAngle(
-                nextPlaybackAngleDeg,
-                playbackSpanDeg,
-              );
-              const nextIndex = nearestPlaybackFrameIndex(
-                angleFrames,
-                nextSolvedAngleDeg,
-                playbackSpanDeg,
-              );
+              const nextIndex = positionSliderFrameIndex(angleFrames, nextPlaybackAngleDeg, playbackSpan);
+              const direction = nextPlaybackAngleDeg >= playbackElectricalAngleRef.current ? 1 : -1;
+              if (direction !== scrubDirection) setScrubDirection(direction);
+              setScrubbing(true);
+              if (scrubIdleTimerRef.current !== null) window.clearTimeout(scrubIdleTimerRef.current);
+              scrubIdleTimerRef.current = window.setTimeout(() => {
+                scrubIdleTimerRef.current = null;
+                setScrubbing(false);
+              }, EXACT_FRAME_SETTLE_MS);
               setPlaying(false);
               setPlaybackWaiting(false);
               frameIndexRef.current = nextIndex;

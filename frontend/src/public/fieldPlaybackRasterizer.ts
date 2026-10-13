@@ -60,17 +60,19 @@ export class FieldPlaybackRasterizer {
     });
   }
 
+  /** `withMesh` false skips the mesh layer, a quarter of the decode work, while it is hidden. */
   render(
     artifactId: string,
     source: FieldRasterSource,
     playbackFrame?: PublicFieldPlaybackFrame,
+    withMesh = true,
   ): Promise<FieldResultRaster> {
     if (this.disposed) return Promise.reject(new Error('The field playback renderer is unavailable.'));
     const composition = playbackFrame?.compositions[source];
     if (playbackFrame && !composition) {
       return Promise.reject(new Error('The requested field composition is unavailable.'));
     }
-    if (composition) return this.renderRasterLayers(composition);
+    if (composition) return this.renderRasterLayers(composition, false, withMesh);
     return new Promise((resolve, reject) => {
       this.queue.push({
         requestId: this.nextRequestId++,
@@ -95,6 +97,7 @@ export class FieldPlaybackRasterizer {
   private async renderRasterLayers(
     composition: PublicFieldPlaybackComposition,
     detail = false,
+    withMesh = true,
   ): Promise<FieldResultRaster> {
     const bitmaps: ImageBitmap[] = [];
     try {
@@ -114,7 +117,7 @@ export class FieldPlaybackRasterizer {
       const [base, heat, mesh, lines] = await Promise.all([
         load(layers.base.artifact_id),
         load(layers.flux_density.artifact_id),
-        layers.mesh ? load(layers.mesh.artifact_id) : Promise.resolve(null),
+        layers.mesh && withMesh ? load(layers.mesh.artifact_id) : Promise.resolve(null),
         load(layers.field_lines.artifact_id),
       ]);
       return {

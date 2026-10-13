@@ -33,6 +33,7 @@ from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.pdfgen import canvas
 from reportlab.platypus import (
     Flowable,
+    KeepTogether,
     PageBreak,
     Paragraph,
     SimpleDocTemplate,
@@ -388,13 +389,15 @@ def _report_styles() -> dict[str, ParagraphStyle]:
             leading=14,
             textColor=_NAVY,
         ),
-        "table_head": ParagraphStyle(
-            "TableHead",
+        "group": ParagraphStyle(
+            "SettingsGroup",
             parent=base["BodyText"],
             fontName="Helvetica-Bold",
-            fontSize=7.5,
-            leading=9,
-            textColor=_WHITE,
+            fontSize=8.5,
+            leading=11,
+            textColor=_NAVY,
+            spaceBefore=2.5 * mm,
+            spaceAfter=1.2 * mm,
         ),
     }
 
@@ -434,6 +437,248 @@ def _key_value_table(
                 ("RIGHTPADDING", (0, 0), (-1, -1), 2.5 * mm),
                 ("TOPPADDING", (0, 0), (-1, -1), 1.5 * mm),
                 ("BOTTOMPADDING", (0, 0), (-1, -1), 1.5 * mm),
+            ]
+        )
+    )
+    return table
+
+
+# The PDF lists the settings that define the run's design (#52). The CSV
+# ``setting`` rows and request.json keep every stored value.
+_SETTING_UNIT_SUFFIXES = (
+    ("_mm", "mm"),
+    ("_deg", "deg"),
+    ("_rpm", "rpm"),
+    ("_A", "A"),
+    ("_V", "V"),
+    ("_C", "degC"),
+)
+_SETTING_LABELS = {
+    "OD_mm": "Outer diameter",
+    "ID_mm": "Inner diameter",
+    "magnet_embrace": "Magnet coverage",
+    "ipm_topology": "IPM rotor type",
+    "current_amplitude_A": "Phase current",
+    "motor_input_dc_bus_V": "DC bus voltage",
+    "linear_steel_mu_rel": "Linear steel relative permeability",
+    "back_emf": "Back EMF",
+    "thd_analysis": "THD analysis",
+}
+_STATOR_SETTINGS = (
+    "OD_mm",
+    "ID_mm",
+    "slot_count",
+    "stack_length_mm",
+    "slot_opening_mm",
+    "tooth_width_mm",
+    "yoke_thickness_mm",
+    "tooth_shoe_enabled",
+    "tooth_shoe_height_mm",
+    "tooth_shoe_overhang_mm",
+)
+_TOOTH_SHOE_SETTINGS = frozenset({"tooth_shoe_height_mm", "tooth_shoe_overhang_mm"})
+_ROTOR_SETTINGS = ("pole_count", "OD_mm", "ID_mm", "magnet_thickness_mm", "magnet_width_mm", "magnet_embrace")
+# Pocket settings each IPM rotor type builds its geometry from (backend/geometry_drawer.py).
+_IPM_ROTOR_SETTINGS = {
+    "flat_buried": (
+        "flat_buried_magnet_shape",
+        "bridge_thickness_mm",
+        "side_bridge_thickness_mm",
+        "pocket_clearance_mm",
+        "magnet_angle_deg",
+    ),
+    "v_shape": (
+        "v_angle_deg",
+        "v_depth_mm",
+        "inner_web_thickness_mm",
+        "outer_bridge_thickness_mm",
+        "pocket_clearance_mm",
+        "magnet_angle_deg",
+    ),
+    "pyleecan_holem50": (
+        *(f"holem50_w{index}_mm" for index in range(5)),
+        *(f"holem50_h{index}_mm" for index in range(5)),
+        "magnet_angle_deg",
+    ),
+}
+_ROTOR_TYPE_SETTINGS = frozenset(
+    {"ipm_topology", *(name for names in _IPM_ROTOR_SETTINGS.values() for name in names)}
+)
+_WINDING_SETTINGS = ("type", "layers", "turns_per_coil", "parallel_paths", "coil_span")
+_MATERIAL_SETTINGS = ("stator_steel", "rotor_steel", "magnet_grade", "conductor")
+_OPERATING_POINT_SETTINGS = (
+    "excitation_mode",
+    "current_amplitude_A",
+    "current_angle_deg",
+    "commutation_advance_deg",
+    "phase_connection",
+    "rated_speed_rpm",
+    "magnet_temperature_C",
+    "motor_input_dc_bus_V",
+)
+_SINUSOIDAL_ONLY_SETTINGS = frozenset({"current_angle_deg"})
+_SIX_STEP_ONLY_SETTINGS = frozenset({"commutation_advance_deg", "phase_connection"})
+_SOLVE_PLAN_SETTINGS = (
+    "solve_quality",
+    "rotor_step_deg",
+    "rotor_sweep_range_deg",
+    "mesh_density",
+    "mesher",
+    "mesh_source",
+    "corner_refinement",
+    "slot_sidewall_refinement",
+    "rotor_rotation_model",
+    "torque_method",
+    "nonlinear_solver",
+    "max_nonlinear_iterations",
+    "linear_solver_preconditioner",
+    "linear_steel_mu_rel",
+    "field_composition_source",
+)
+# The plans that read these stored values (SolveParams.effective_step_deg and
+# effective_native_loaded_sweep_range_deg). Every preset sets its own step;
+# Preview caps the stored sweep range at 60 deg, so it uses that range too.
+_PLANS_USING_SETTING = {
+    "rotor_step_deg": frozenset({"custom"}),
+    "rotor_sweep_range_deg": frozenset({"custom", "quick"}),
+}
+# Execution settings that do not change the solved numbers.
+_RUNTIME_ONLY_SETTINGS = frozenset({"magneto2d_workers", "stream_noload_field_lines"})
+
+
+def _setting_is_empty(value: Any) -> bool:
+    if value is None:
+        return True
+    if isinstance(value, float):
+        return not math.isfinite(value)
+    return isinstance(value, (str, list, tuple, Mapping)) and len(value) == 0
+
+
+def _setting_entry(name: str, value: Any) -> tuple[str, str]:
+    label = _SETTING_LABELS.get(name)
+    unit = ""
+    base = name
+    for suffix, suffix_unit in _SETTING_UNIT_SUFFIXES:
+        if name.endswith(suffix):
+            base, unit = name[: -len(suffix)], suffix_unit
+            break
+    if label is None:
+        if base.startswith("holem50_"):
+            label = f"HoleM50 {base.removeprefix('holem50_').upper()}"
+        else:
+            words = base.replace("_", " ")
+            label = words[:1].upper() + words[1:]
+    return label, f"{_plain(value)} {unit}".strip()
+
+
+def _setting_group(
+    section: Mapping[str, Any],
+    order: Sequence[str],
+    *,
+    omit: Iterable[str] = (),
+    others: bool = True,
+) -> list[tuple[str, str]]:
+    """Entries for the settings in ``order``, then, with ``others``, the rest.
+
+    Settings this report does not know yet are kept, so a new field is never
+    hidden. Nested mappings stay in the CSV and request.json.
+    """
+
+    omitted = set(omit)
+    names = [name for name in order if name in section]
+    if others:
+        names += sorted(name for name in section if name not in order)
+    entries = []
+    for name in names:
+        value = section[name]
+        if name in omitted or _setting_is_empty(value) or isinstance(value, Mapping):
+            continue
+        if name == "current_amplitude_A":
+            label, text = _setting_entry(name, value)
+            convention = section.get("current_amplitude_convention")
+            entries.append((label, f"{text} {_plain(convention)}".strip()))
+            continue
+        entries.append(_setting_entry(name, value))
+    return entries
+
+
+def _design_setting_groups(config: Mapping[str, Any]) -> list[tuple[str, list[tuple[str, str]]]]:
+    """The resolved settings that apply to this run's topology, by section.
+
+    Settings of other rotor types or the other excitation, settings the solve
+    plan does not use, empty values and runtime-only switches are left out.
+    """
+
+    stator = _mapping(config.get("stator"))
+    rotor = _mapping(config.get("rotor"))
+    solve_params = _mapping(config.get("solve_params"))
+
+    stator_omit = set() if stator.get("tooth_shoe_enabled") else set(_TOOTH_SHOE_SETTINGS)
+    rotor_order: list[str] = list(_ROTOR_SETTINGS)
+    rotor_type = rotor.get("ipm_topology")
+    if config.get("topology") == "IPM":
+        rotor_order.append("ipm_topology")
+        rotor_order.extend(_IPM_ROTOR_SETTINGS.get(str(rotor_type), sorted(_ROTOR_TYPE_SETTINGS - {"ipm_topology"})))
+    rotor_omit = _ROTOR_TYPE_SETTINGS - set(rotor_order)
+    six_step = solve_params.get("excitation_mode") == "ideal_six_step_120"
+    excitation_omit = _SINUSOIDAL_ONLY_SETTINGS if six_step else _SIX_STEP_ONLY_SETTINGS
+    plan = solve_params.get("solve_quality")
+    plan_omit = {name for name, plans in _PLANS_USING_SETTING.items() if plan not in plans}
+    materials = _mapping(config.get("materials"))
+    custom_steels = _mapping(materials.get("custom_steels"))
+
+    groups = [
+        ("Stator", _setting_group(stator, _STATOR_SETTINGS, omit=stator_omit)),
+        ("Rotor", _setting_group(rotor, rotor_order, omit=rotor_omit)),
+        ("Winding", _setting_group(_mapping(config.get("winding")), _WINDING_SETTINGS)),
+        (
+            "Materials",
+            _setting_group(materials, _MATERIAL_SETTINGS)
+            + ([("Custom steels", ", ".join(sorted(map(str, custom_steels))))] if custom_steels else []),
+        ),
+        (
+            "Operating point",
+            _setting_group(solve_params, _OPERATING_POINT_SETTINGS, omit=excitation_omit, others=False),
+        ),
+        (
+            "Solve plan",
+            _setting_group(
+                solve_params,
+                _SOLVE_PLAN_SETTINGS,
+                omit={*_OPERATING_POINT_SETTINGS, *_RUNTIME_ONLY_SETTINGS, *plan_omit, "current_amplitude_convention"},
+            ),
+        ),
+        ("Analyses", _setting_group(_mapping(config.get("solve_options")), ())),
+    ]
+    return [(title, entries) for title, entries in groups if entries]
+
+
+def _settings_grid(
+    entries: Sequence[tuple[str, Any]],
+    styles: Mapping[str, ParagraphStyle],
+    *,
+    columns: int = 3,
+    cell_widths: tuple[float, float] = (27 * mm, 33 * mm),
+) -> Table:
+    data = []
+    for offset in range(0, len(entries), columns):
+        row: list[Any] = []
+        for label, value in entries[offset : offset + columns]:
+            row.extend([_safe_paragraph(label, styles["small"]), _safe_paragraph(value, styles["body"])])
+        row.extend([""] * (2 * columns - len(row)))
+        data.append(row)
+    table = Table(data, colWidths=list(cell_widths) * columns, hAlign="LEFT")
+    table.setStyle(
+        TableStyle(
+            [
+                *(("BACKGROUND", (column, 0), (column, -1), _LIGHT) for column in range(0, 2 * columns, 2)),
+                ("BOX", (0, 0), (-1, -1), 0.4, _BORDER),
+                ("INNERGRID", (0, 0), (-1, -1), 0.25, _BORDER),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 2 * mm),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 2 * mm),
+                ("TOPPADDING", (0, 0), (-1, -1), 1.2 * mm),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 1.2 * mm),
             ]
         )
     )
@@ -492,6 +737,41 @@ def _numeric_points(x_values: Any, y_values: Any) -> list[tuple[float, float]]:
     return points
 
 
+# Same steps as the app's charts (frontend/src/public/chartAxis.ts).
+_ELECTRICAL_ANGLE_TICK_STEPS_DEG = (1, 2, 2.5, 3.75, 5, 7.5, 10, 15, 22.5, 30, 45, 60, 90, 180)
+
+
+def _electrical_angle_ticks(min_deg: float, max_deg: float, max_intervals: int = 8) -> list[float]:
+    """Multiples of the smallest step leaving at most ``max_intervals`` intervals."""
+
+    span = max_deg - min_deg
+    if not math.isfinite(span) or span <= 0:
+        return [min_deg] if math.isfinite(min_deg) else []
+    step = next(
+        (candidate for candidate in _ELECTRICAL_ANGLE_TICK_STEPS_DEG if span / candidate <= max_intervals + 1e-9),
+        span / max_intervals,
+    )
+    ticks = []
+    index = math.ceil(min_deg / step - 1e-9)
+    while index * step <= max_deg + 1e-9:
+        ticks.append(round(index * step, 6))
+        index += 1
+    return ticks
+
+
+def _angle_axis_end(angles: Sequence[float]) -> float:
+    """360 for a full cycle sampled from 0, as the app's charts show it; else the last angle."""
+
+    ordered = sorted(set(angles))
+    if len(ordered) < 2:
+        return ordered[-1] if ordered else 0.0
+    step = ordered[-1] - ordered[-2]
+    tolerance = max(abs(step) * 0.05, 0.01)
+    if abs(ordered[0]) <= tolerance and abs(ordered[-1] + step - 360) <= tolerance:
+        return 360.0
+    return ordered[-1]
+
+
 def _line_plot(
     *,
     title: str,
@@ -512,8 +792,11 @@ def _line_plot(
     plot.data = [points for _name, points, _color in valid]
     plot.joinedLines = 1
     plot.strokeColor = _BORDER
-    plot.xValueAxis.valueMin = min(point[0] for _n, points, _c in valid for point in points)
-    plot.xValueAxis.valueMax = max(point[0] for _n, points, _c in valid for point in points)
+    angles = [point[0] for _n, points, _c in valid for point in points]
+    plot.xValueAxis.valueMin = min(angles)
+    plot.xValueAxis.valueMax = max(max(angles), _angle_axis_end(angles))
+    plot.xValueAxis.valueSteps = _electrical_angle_ticks(plot.xValueAxis.valueMin, plot.xValueAxis.valueMax)
+    plot.xValueAxis.labelTextFormat = lambda value: f"{value:g}"
     y_values = [point[1] for _n, points, _c in valid for point in points]
     y_min, y_max = min(y_values), max(y_values)
     if math.isclose(y_min, y_max):
@@ -821,7 +1104,8 @@ def build_public_run_pdf(
     story.extend(
         [
             _section("Operating point and mesh", styles),
-            _key_value_table(
+            # A compact grid, so the provenance below fits on the first page.
+            _settings_grid(
                 [
                     (
                         "Conducting phase current" if six_step else "Phase current",
@@ -842,19 +1126,25 @@ def build_public_run_pdf(
                     ("Torque method requested", solve_params.get("torque_method")),
                 ],
                 styles,
+                columns=2,
+                cell_widths=(40 * mm, 50 * mm),
             ),
-            _section("Solver and build provenance", styles),
-            _key_value_table(
+            KeepTogether(
                 [
-                    ("Solver", solve_metadata.get("solver_name") or provenance.get("solver_name")),
-                    ("Application version", provenance.get("application_version")),
-                    ("Application commit", provenance.get("application_commit")),
-                    *_build_rows(_mapping(provenance.get("build"))),
-                    ("Platform", _plain(provenance.get("platform"))),
-                    ("Result SHA-256", _mapping(manifest.get("bindings")).get("result_sha256")),
-                    ("Resolved request SHA-256", _mapping(manifest.get("bindings")).get("resolved_request_sha256")),
-                ],
-                styles,
+                    _section("Solver and build provenance", styles),
+                    _key_value_table(
+                        [
+                            ("Solver", solve_metadata.get("solver_name") or provenance.get("solver_name")),
+                            ("Application version", provenance.get("application_version")),
+                            ("Application commit", provenance.get("application_commit")),
+                            *_build_rows(_mapping(provenance.get("build"))),
+                            ("Platform", _plain(provenance.get("platform"))),
+                            ("Result SHA-256", _mapping(manifest.get("bindings")).get("result_sha256")),
+                            ("Resolved request SHA-256", _mapping(manifest.get("bindings")).get("resolved_request_sha256")),
+                        ],
+                        styles,
+                    ),
+                ]
             ),
         ]
     )
@@ -926,67 +1216,61 @@ def build_public_run_pdf(
         if back_emf_plot is not None:
             story.append(back_emf_plot)
 
-    settings_rows = [(field, _plain(value)) for field, value in _flatten(_mapping(request.get("resolved_config")))]
-    if settings_rows:
-        for chunk_index, offset in enumerate(range(0, len(settings_rows), 24)):
-            story.extend(
+    setting_groups = _design_setting_groups(_mapping(request.get("resolved_config")))
+    if setting_groups:
+        topology = _plain(_mapping(request.get("resolved_config")).get("topology")) or "this"
+        setting_blocks = [
+            [Paragraph(escape(title), styles["group"]), _settings_grid(entries, styles)]
+            for title, entries in setting_groups
+        ]
+        # The section starts a page, which it fits on for the bundled designs;
+        # each group stays in one piece if a longer design needs a second page.
+        story.append(PageBreak())
+        story.append(
+            KeepTogether(
                 [
-                    PageBreak(),
-                    _section(
-                        "Exact resolved settings" if chunk_index == 0 else "Exact resolved settings (continued)",
-                        styles,
+                    _section("Resolved settings for this design", styles),
+                    Paragraph(
+                        escape(
+                            f"The stored settings that define this {topology} design and its solve. Settings "
+                            "of other rotor types or the other excitation, settings the solve plan does "
+                            "not use, empty values and runtime-only switches are left out."
+                        ),
+                        styles["small"],
                     ),
+                    *setting_blocks[0],
                 ]
             )
-            settings_data = [
-                [
-                    Paragraph("Setting", styles["table_head"]),
-                    Paragraph("Stored value", styles["table_head"]),
-                ],
-                *[
-                    [
-                        _safe_paragraph(field, styles["small"]),
-                        _safe_paragraph(value, styles["body"]),
-                    ]
-                    for field, value in settings_rows[offset : offset + 24]
-                ],
+        )
+        story.extend(KeepTogether(block) for block in setting_blocks[1:])
+        story.extend(
+            [
+                Spacer(1, 2 * mm),
+                Paragraph(
+                    escape(
+                        "Every stored setting, including those left out here, is in the setting rows of "
+                        "report.csv and in request.json, both in the run folder and in run-package.zip. "
+                        "The resolved request SHA-256, of request.json as canonical JSON, is "
+                        f"{_plain(_mapping(manifest.get('bindings')).get('resolved_request_sha256')) or 'not recorded'}."
+                    ),
+                    styles["small"],
+                ),
             ]
-            settings_table = Table(
-                settings_data,
-                colWidths=[82 * mm, 98 * mm],
-                hAlign="LEFT",
-                repeatRows=1,
-            )
-            settings_table.setStyle(
-                TableStyle(
-                    [
-                        ("BACKGROUND", (0, 0), (-1, 0), _NAVY),
-                        ("BOX", (0, 0), (-1, -1), 0.4, _BORDER),
-                        ("INNERGRID", (0, 0), (-1, -1), 0.25, _BORDER),
-                        ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                        ("LEFTPADDING", (0, 0), (-1, -1), 2.5 * mm),
-                        ("RIGHTPADDING", (0, 0), (-1, -1), 2.5 * mm),
-                        ("TOPPADDING", (0, 0), (-1, -1), 1.4 * mm),
-                        ("BOTTOMPADDING", (0, 0), (-1, -1), 1.4 * mm),
-                    ]
-                )
-            )
-            story.append(settings_table)
+        )
 
-    story.append(_section("Warnings", styles))
+    # Keep each closing heading on the page of its first line.
     warnings = _warnings(result)
-    if warnings:
-        for warning in warnings:
-            story.append(Paragraph(f"- {escape(warning)}", styles["body"]))
-    else:
-        story.append(Paragraph("No solver warnings were recorded.", styles["body"]))
-    story.append(_section("Known limitations", styles))
-    for limitation in PUBLIC_REPORT_LIMITATIONS:
-        story.append(Paragraph(f"- {escape(limitation)}", styles["body"]))
-    if six_step:
-        story.append(Paragraph(f"- {escape(SIX_STEP_REPORT_LIMITATION)}", styles["body"]))
-    for limitation in _qualification_limitations(manifest):
-        story.append(Paragraph(f"- {escape(limitation)}", styles["body"]))
+    warning_lines = [Paragraph(f"- {escape(warning)}", styles["body"]) for warning in warnings] or [
+        Paragraph("No solver warnings were recorded.", styles["body"])
+    ]
+    story.extend([KeepTogether([_section("Warnings", styles), warning_lines[0]]), *warning_lines[1:]])
+    limitations = [
+        *PUBLIC_REPORT_LIMITATIONS,
+        *((SIX_STEP_REPORT_LIMITATION,) if six_step else ()),
+        *_qualification_limitations(manifest),
+    ]
+    limitation_lines = [Paragraph(f"- {escape(limitation)}", styles["body"]) for limitation in limitations]
+    story.extend([KeepTogether([_section("Known limitations", styles), limitation_lines[0]]), *limitation_lines[1:]])
 
     document.build(
         story,

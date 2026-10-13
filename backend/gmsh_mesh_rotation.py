@@ -33,6 +33,7 @@ from __future__ import annotations
 import math
 import pickle
 import re
+from collections.abc import Iterable
 from typing import Any, Callable
 
 from backend.solver_environment import solver_setting
@@ -112,6 +113,41 @@ def slot_congruence_groups(
         if not placed:
             groups.append({"base": job, "derived": []})
     return groups
+
+
+def full_cycle_congruent_bases(
+    angles_elec_deg: Iterable[float],
+    *,
+    step_deg: float,
+    slot_count: int,
+    pole_pairs: int,
+    rotor_angle_mech_deg: Callable[[float], float],
+    tol_deg: float = _ANGLE_TOL_DEG,
+) -> list[float]:
+    """Angles a full 0-360 deg electrical grid at ``step_deg`` meshes for these angles.
+
+    On such a grid, slot-pitch reuse meshes the base of each congruence class
+    (see ``slot_congruence_groups``) and rotates that mesh to the others.
+    Returns the bases that differ from the angles they serve, so a plan that
+    samples fewer angles can still give those angles the same meshes (#58).
+    """
+
+    pitch_elec = slot_pitch_deg(slot_count) * max(1, int(pole_pairs))
+    reach = int(360.0 // pitch_elec) + 1
+    bases: list[float] = []
+    for angle in angles_elec_deg:
+        members = []
+        for count in range(-reach, reach + 1):
+            member = float(angle) + count * pitch_elec
+            ratio = member / step_deg
+            if -tol_deg <= member < 360.0 - tol_deg and abs(ratio - round(ratio)) * step_deg <= tol_deg:
+                members.append({"angle_elec_deg": member, "rotor_angle_mech_deg": rotor_angle_mech_deg(member)})
+        if not members:
+            continue
+        base = float(slot_congruence_groups(members, slot_count, tol_deg=tol_deg)[0]["base"]["angle_elec_deg"])
+        if abs(base - float(angle)) > tol_deg and all(abs(base - known) > tol_deg for known in bases):
+            bases.append(base)
+    return bases
 
 
 def _slot_table_from_contract(

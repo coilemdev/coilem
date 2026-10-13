@@ -205,8 +205,8 @@
     },
     {
       "path": "backend/gmsh_mesh_rotation.py",
-      "bytes": 26047,
-      "sha256": "aff821206ba637dfd4a6536880ba3d44442a89ebf0125cc14bde8b6c5db12f1c"
+      "bytes": 27596,
+      "sha256": "c872864083c037c6d56acb3fe630ba0540fb61b54bb37f10ff1c90fbe4839529"
     },
     {
       "path": "backend/gmsh_solver.py",
@@ -280,8 +280,8 @@
     },
     {
       "path": "backend/launcher.py",
-      "sha256": "791fe20a342993f0a18c2a114b66452d980ba349271ac4d2335a9d27604a96dd",
-      "bytes": 16464
+      "sha256": "05ce9ff0df2befb464396f1bcff23717cb4fc3abb4998a20fb5a7bc0308bafa3",
+      "bytes": 17633
     },
     {
       "path": "backend/local_file_safety.py",
@@ -390,8 +390,8 @@
     },
     {
       "path": "backend/public_field_playback.py",
-      "bytes": 26295,
-      "sha256": "fc701d296c473251183c4cc861403dd7696efc8ccfe2bf3ef8b5a6564b3596da"
+      "bytes": 26474,
+      "sha256": "548d90598572c72f9fac405f47688c88b8c6009425cc7ec3a648b418d7e38211"
     },
     {
       "path": "backend/public_field_playback_contract.py",
@@ -415,8 +415,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 42525,
-      "sha256": "07839030369c3eec9775c5367e3070ed2f4a7d8b2ee0fe97a50fd069c546368f"
+      "bytes": 53463,
+      "sha256": "a888c2dae3e36f2bb996935bebc487a839dc9b399a289a1dcb94328d348974d8"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -440,8 +440,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 47907,
-      "sha256": "c66837d12fb4916677174a99e689e43c22105fa15a5b7abbee7c3e91a61e35d6"
+      "bytes": 51250,
+      "sha256": "7fcaa62f30bf2b86cffe1ae8c705c9d451b64bd3bea817463c0f94924b6d76c7"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -470,18 +470,18 @@
     },
     {
       "path": "backend/solve_estimate.py",
-      "sha256": "568229e08975b0295f223e5965cdfcf1f4aca3edb9c4ab35903a9943a131cd8e",
-      "bytes": 5124
+      "sha256": "2fa2afa838be11c87e3058af3e4302ac00180993c18ff3360ccae4add7cf55be",
+      "bytes": 6183
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 41307,
-      "sha256": "fdd8af4de0af01d7a8c2249fb080b553f7c9128268ac00e81d5e501a69c757a5"
+      "bytes": 41902,
+      "sha256": "d84c691e311762ea039c906755ee98e53269dc548669dd0a6ccd4371cb5e502e"
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 139987,
-      "sha256": "bec3f503a6df0ecd3a0bf757cdfab97e715245aa24995e152f9fa5f9f828fd77"
+      "bytes": 142122,
+      "sha256": "696af12acd2ab91099cecd024486f8678277c1050d0e6fdde259a6c7b4ce8f8a"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -495,8 +495,8 @@
     },
     {
       "path": "backend/solver/_process_pool.py",
-      "bytes": 2138,
-      "sha256": "85506651ec15ae94ef9fcdaacf87070ddef8153c744d9388da8794f1d5fad487"
+      "bytes": 5956,
+      "sha256": "53619f5596380bfab581f20d7fc5dffc684384ecb20c477d534941cf95b41fbd"
     },
     {
       "path": "backend/solver_contract.py",
@@ -515,8 +515,8 @@
     },
     {
       "path": "backend/sweep_planning.py",
-      "bytes": 4514,
-      "sha256": "82c016bffb5b708b5c0bac58c504e09b18ed3b171677969f93f1f67cd5315cf9"
+      "bytes": 5684,
+      "sha256": "1a36902ae5e1eb460228200c5ea9f93e463cd56c14c7a21db2a154fe848d8d14"
     },
     {
       "path": "backend/topology_provenance.py",
@@ -2170,8 +2170,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 1626,
-      "sha256": "b5525ba952fa79f690843945f3d999ed242c27de26cedbc8c87bab6ba8c7a791"
+      "bytes": 1705,
+      "sha256": "dbd6c27f40a53ae454f041dc3aa0f132fce11bad5bd64dfddda3e799ed4711a3"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -2199,6 +2199,11 @@
       "sha256": "1d7a2c25dbdf42708728e2066ea15ce50e9832321c8f03fcd51e31f2ec82e709"
     },
     {
+      "path": "frontend/scripts/test-chart-readout.mjs",
+      "sha256": "cfc5fb93f2888eda0f48b103b88b3b3f443564e2bad0fa1d0a8a4fc72e3c8bf2",
+      "bytes": 6820
+    },
+    {
       "path": "frontend/scripts/test-custom-steel.mjs",
       "bytes": 2006,
       "sha256": "206e0c3c63ddf9e11d28f6d4a60d4227eaac4757d0fb06ab538fd8b1d4db6e3f"
@@ -2210,8 +2215,8 @@
     },
     {
       "path": "frontend/scripts/test-field-playback-timing.mjs",
-      "sha256": "2e445a4cb33afd518a2e5328b19ee9fafc41284ee00930827482393794e17a99",
-      "bytes": 4156
+      "sha256": "772e47122f0d5154706aa5c542f0dd4fb27a8c826d006661cc8fa42485834aa3",
+      "bytes": 10401
     },
     {
       "path": "frontend/scripts/test-flat-ipm-burial-health.mjs",
@@ -2250,8 +2255,13 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 97883,
-      "sha256": "f1dec45460e8fc0ef821e7ef61a146a38cb72dc3f4a450f000279c9c515e022b"
+      "bytes": 105598,
+      "sha256": "242944ed2edd3159b49b30649934541c02da2e0dee41eaa5e6cb90613501dc0e"
+    },
+    {
+      "path": "frontend/scripts/test-solve-progress.mjs",
+      "sha256": "82b7dd8a6c043530ed24f15b6688760176c82ecf621e6d73597efbed22b10350",
+      "bytes": 4019
     },
     {
       "path": "frontend/src/api/projectSchema.ts",
@@ -2625,18 +2635,18 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 66919,
-      "sha256": "de97cfac5fd67b9e03618435c60b86543f6bf260d6f50624fde4ada24bd6988f"
+      "bytes": 67195,
+      "sha256": "f84c2ff65f3ce25ed1e11db71c3da1e3c61ce0bb3a2be1920619cc1a74fd7a07"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
-      "bytes": 8962,
-      "sha256": "ef1b7cc5f042d6b23e95fb0d6649655b3d860da552408c00190e49dae2fa5db6"
+      "bytes": 11750,
+      "sha256": "004b91fbcb617265355f6d6c43196bd3e3b81e552a9dabc8bc8c8f3b240239c9"
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 178251,
-      "sha256": "af7a07eb1e1b79a7c258f3308c0214d8900d54f63d529f03cc9eb6707d4b20a2"
+      "bytes": 178718,
+      "sha256": "41002d08e80b42ac558f9357eb977d16ed8732383b0030c67b7f70a82be5eca7"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -2675,13 +2685,13 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 22948,
-      "sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615"
+      "bytes": 23042,
+      "sha256": "c99d00b86d1d63b318a4f1a296dc356263f8c16d7d76ae6c53f0fc7dc8b9e29b"
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 45467,
-      "sha256": "91fd02de7db4a87cee3146cf750aa38bda1f18ce031abf7466e06370e021eaeb"
+      "bytes": 51243,
+      "sha256": "02781349b905d414252a7726bc5de8e427705dbf9079febedc23996247e1739e"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -2690,8 +2700,13 @@
     },
     {
       "path": "frontend/src/public/WaveformChart.tsx",
-      "bytes": 8133,
-      "sha256": "8c29e4a1ddf38109f8d48fd1439bbb203d9450796db5e3358ab8ebb92cb8a8bd"
+      "bytes": 10876,
+      "sha256": "039816809a55e83e3a8ec18f4c974d82ce05144d41299e6f747b751169881fd5"
+    },
+    {
+      "path": "frontend/src/public/WaveformReadout.tsx",
+      "sha256": "e11d57dd065df974058b6b02e01b6f702fc4da9b8d5d2ee5c4db2c3b532f1c90",
+      "bytes": 6486
     },
     {
       "path": "frontend/src/public/WindingLayoutView.tsx",
@@ -2712,6 +2727,16 @@
       "path": "frontend/src/public/bldcChartPaths.ts",
       "bytes": 1151,
       "sha256": "5630590265b8d02821ba60706eb007447568abf83a66ca92730fe08528f69a78"
+    },
+    {
+      "path": "frontend/src/public/chartAxis.ts",
+      "sha256": "ade180d736a567e8b044e35d052739edd9e6d271a4474ce7fca89b9a0972d9ba",
+      "bytes": 1124
+    },
+    {
+      "path": "frontend/src/public/chartReadout.ts",
+      "sha256": "b64be454f36cd11cd6d1cc8508ae239ff0c2cd621908ac21fa99eef25cdf998e",
+      "bytes": 4315
     },
     {
       "path": "frontend/src/public/coil3d.ts",
@@ -2770,13 +2795,13 @@
     },
     {
       "path": "frontend/src/public/fieldPlaybackRasterizer.ts",
-      "bytes": 5266,
-      "sha256": "6a6fe9e37da8387d34d7fbffdab15067ea6609703a2efa3d58bff9f89eedc861"
+      "bytes": 5435,
+      "sha256": "9f4514df097baba9bb7d0c10d1e3baace38b29812ff09f2d6b832c94393173e9"
     },
     {
       "path": "frontend/src/public/fieldPlaybackTiming.ts",
-      "bytes": 7580,
-      "sha256": "5b4fd9e0420a326208cf49c124b3789d7936b2333e1e1c2a7588e44cbbe1072d"
+      "bytes": 12743,
+      "sha256": "a759c3332b20c0a6c0e58bbd00e64d1f9f3393b4f5405347a7ded59ddfa6cf6d"
     },
     {
       "path": "frontend/src/public/fieldPlaybackWorker.ts",
@@ -2859,6 +2884,11 @@
       "sha256": "43fe2fc0a36e1d265b94dc17cee4c5c79ac13c19a07e129588b5d5a14d55c213"
     },
     {
+      "path": "frontend/src/public/latestFrameLoader.ts",
+      "sha256": "03789a09d067323780d331304e0add1e89ac655a0b9fd4e78fb82ed925b2d726",
+      "bytes": 1541
+    },
+    {
       "path": "frontend/src/public/magnetPoleFaces.ts",
       "bytes": 6918,
       "sha256": "fbd5c3f5569b29b6a7188d8a302b8938cced26ff348c0bbca76fb06308203642"
@@ -2895,13 +2925,13 @@
     },
     {
       "path": "frontend/src/public/solveProgress.ts",
-      "bytes": 850,
-      "sha256": "a4dcf62f4f159ee5f257ad672392044066dc6f54694b17fa8a0f18e8a882a639"
+      "bytes": 3720,
+      "sha256": "31d1a0334bea94877f5fc341895d847b4688b09f318a4f5a7eebe7e6d5c98847"
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 222403,
-      "sha256": "cc58384585052ab175f65f49102013b69eb01938960af37a9d4384b305816d9e"
+      "bytes": 225541,
+      "sha256": "907976c194be01c074133968c323a7ca55640932a98157ff473230da9c354a25"
     },
     {
       "path": "frontend/src/public/tutorials/PublicTutorials.tsx",
@@ -3275,8 +3305,8 @@
     },
     {
       "path": "tests/fixtures/solve_time_calibration.json",
-      "sha256": "64436061e75fc07bd523b69851fb6532bbeb81e241c7a3904701cdc298d5ea7a",
-      "bytes": 9590
+      "sha256": "603f5d1a641b8d59277c9a604346cf692dcf29f12b9bb825c93a5a0d9d0cd1f2",
+      "bytes": 10098
     },
     {
       "path": "tests/fixtures/spm_4p12s_simple.json",
@@ -3322,6 +3352,11 @@
       "path": "tests/test_launcher.py",
       "sha256": "e7c1592e0c33d6edfcd37222addd653cb8fd9a35d328c61dfc3b32651b397ec0",
       "bytes": 12525
+    },
+    {
+      "path": "tests/test_launcher_shutdown.py",
+      "sha256": "7db7e7678d895a4d0c11a7e12cf56ea10c342cb57da6b25feca218ba458bdfc2",
+      "bytes": 25342
     },
     {
       "path": "tests/test_linear_halbach_analytical.py",
@@ -3385,8 +3420,8 @@
     },
     {
       "path": "tests/test_public_report_exports.py",
-      "bytes": 17545,
-      "sha256": "068504766ea4e311d175c1479efa4c2f70fe1f130902fa6f7221e601d4445fb8"
+      "bytes": 27148,
+      "sha256": "17d1fc7f64d35356bccc8e417b353b9b8d92d9459bd5d54ad862ff8d1f5fe259"
     },
     {
       "path": "tests/test_public_security.py",
@@ -3425,8 +3460,8 @@
     },
     {
       "path": "tests/test_solve_estimate.py",
-      "sha256": "07809bd70efb63f9a66a80676a8fe6286988f55ede6034d63c5f000b964c21e2",
-      "bytes": 3786
+      "sha256": "40b6589ce1b3590b30ddcc404c9648c19113ceb24b08e30cd4a978defd0e8bf8",
+      "bytes": 4802
     },
     {
       "path": "tests/test_solve_pipeline_overhead.py",
@@ -3437,6 +3472,11 @@
       "path": "tests/test_solve_workspace.py",
       "bytes": 22220,
       "sha256": "db3ad88a797164357e4bcf96ca6b3e89438c2b00c1fe4c15263439dcc5752961"
+    },
+    {
+      "path": "tests/test_sweep_planning.py",
+      "sha256": "b1d691235c34345c1711393f3aa0107bc00a25b9987db4a7e597c24fcef80cd1",
+      "bytes": 5665
     },
     {
       "path": "tests/test_windows_field_frame_pool.py",
@@ -5047,6 +5087,342 @@
       "path": "backend/topology_provenance.py",
       "source_sha256": "3d774b03589697c2d7b96989d4d758190fb0c04e2cbaeffd4276da5ad9b26b51",
       "reason": "Record the stator tooth-shoe settings in the topology provenance and mesh signature (v4), so designs that differ only in their tooth shoe never share cached meshes."
+    },
+    {
+      "base_commit": "6f78d694c66d864ca260be4a38ac651e489f03b9",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "f1dec45460e8fc0ef821e7ef61a146a38cb72dc3f4a450f000279c9c515e022b",
+      "reason": "Pin the Results-page qualification note to the shared report column (#51)."
+    },
+    {
+      "base_commit": "6f78d694c66d864ca260be4a38ac651e489f03b9",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "cc58384585052ab175f65f49102013b69eb01938960af37a9d4384b305816d9e",
+      "reason": "Give the Results-page qualification note the same centred 1080px column as the other panels (#51)."
+    },
+    {
+      "base_commit": "ab512bed8d7f4e30a3274e689f577a353e36f0d5",
+      "path": "frontend/package.json",
+      "source_sha256": "b5525ba952fa79f690843945f3d999ed242c27de26cedbc8c87bab6ba8c7a791",
+      "reason": "Run the solve-progress checks with the public UI tests (#53)."
+    },
+    {
+      "base_commit": "ab512bed8d7f4e30a3274e689f577a353e36f0d5",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "95be7c0b9b75efb2c312a1e543c1f8a0581c6f10f7f15bac4e704705f94ab050",
+      "reason": "Pin the monotonic live-solve bar in the UI contract (#53)."
+    },
+    {
+      "base_commit": "ab512bed8d7f4e30a3274e689f577a353e36f0d5",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "de97cfac5fd67b9e03618435c60b86543f6bf260d6f50624fde4ada24bd6988f",
+      "reason": "Drive the live-solve bar from the monotonic solve-progress state instead of position / total (#53)."
+    },
+    {
+      "base_commit": "ab512bed8d7f4e30a3274e689f577a353e36f0d5",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "af7a07eb1e1b79a7c258f3308c0214d8900d54f63d529f03cc9eb6707d4b20a2",
+      "reason": "Draw the live-solve bar from the monotonic percentage, empty with a shimmer before progress and full while finalizing (#53)."
+    },
+    {
+      "base_commit": "ab512bed8d7f4e30a3274e689f577a353e36f0d5",
+      "path": "frontend/src/public/solveProgress.ts",
+      "source_sha256": "a4dcf62f4f159ee5f257ad672392044066dc6f54694b17fa8a0f18e8a882a639",
+      "reason": "Derive a live-solve bar that fills from mesh progress then solve positions and never moves backwards within a solve (#53)."
+    },
+    {
+      "base_commit": "ab512bed8d7f4e30a3274e689f577a353e36f0d5",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "a414b09923bc5b709f369b1e5b701cb87095bbc2b48fcf3f30abb8a85d516dfd",
+      "reason": "Add waiting and finishing shimmers that never shrink the live-solve bar (#53)."
+    },
+    {
+      "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
+      "path": "frontend/package.json",
+      "source_sha256": "96a4f0c051aa82f11d32d51361a776cd33d97840c47eba6408381799558151ea",
+      "reason": "Run the chart readout tests in test:public-ui (#54)."
+    },
+    {
+      "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "a49efa4a32efb1e6ca9da1552b70ed9739914a53ef82e6327a12e54b7facbd69",
+      "reason": "Pin the click-to-read plot readout in the UI contract (#54)."
+    },
+    {
+      "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
+      "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
+      "source_sha256": "ef1b7cc5f042d6b23e95fb0d6649655b3d860da552408c00190e49dae2fa5db6",
+      "reason": "Read the angle, sector, torque and phase currents of a clicked six-step position (#54)."
+    },
+    {
+      "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
+      "reason": "Show Run B − Run A in the Compare torque readout (#54)."
+    },
+    {
+      "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
+      "path": "frontend/src/public/WaveformChart.tsx",
+      "source_sha256": "8c29e4a1ddf38109f8d48fd1439bbb203d9450796db5e3358ab8ebb92cb8a8bd",
+      "reason": "Read the angle and stored values of a clicked solved position on the Results and Compare plots (#54)."
+    },
+    {
+      "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "6845735664b43f7dc522418d0d2a87408d5e18a36579c3963310e527cea85fc5",
+      "reason": "Style the plot readout, its marker and the plot focus ring (#54)."
+    },
+    {
+      "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
+      "path": "frontend/scripts/test-chart-readout.mjs",
+      "source_sha256": "10acbe8cc21e49d38b7b4f3d9bff92bd809e8dc4df799f8e0f7f8a8a3d135e23",
+      "reason": "Cover the electrical-angle axis ticks (#54 follow-up)."
+    },
+    {
+      "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "3fd211025e50e90ae8e9d281ea47786bc87bf53f281cdd1047fa8f60be5f6e56",
+      "reason": "Pin the labelled electrical-angle axis on the result charts (#54 follow-up)."
+    },
+    {
+      "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
+      "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
+      "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
+      "reason": "Label the six-step chart's electrical-angle axis every 45° (#54 follow-up)."
+    },
+    {
+      "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
+      "path": "frontend/src/public/WaveformChart.tsx",
+      "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
+      "reason": "Label the electrical-angle axis at regular steps, 45° over a full cycle (#54 follow-up)."
+    },
+    {
+      "base_commit": "a482ff6e2bd9616d2ece2a68f8fa2f2c49aae45c",
+      "path": "backend/public_report.py",
+      "source_sha256": "07839030369c3eec9775c5367e3070ed2f4a7d8b2ee0fe97a50fd069c546368f",
+      "reason": "List only the resolved settings that define the run's design in a compact grid on one PDF page, and name the CSV and request.json that hold every setting with the request hash (#52)."
+    },
+    {
+      "base_commit": "a482ff6e2bd9616d2ece2a68f8fa2f2c49aae45c",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "068504766ea4e311d175c1479efa4c2f70fe1f130902fa6f7221e601d4445fb8",
+      "reason": "Cover the topology-aware PDF settings section and the complete CSV setting rows (#52)."
+    },
+    {
+      "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
+      "path": "backend/public_report.py",
+      "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45° (#52 follow-up)."
+    },
+    {
+      "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "0e1ba7d358b457a1dc64b756d362e8944ebf6ec74a885745f461d4dbcc5133ad",
+      "reason": "Cover the first-page provenance table and the PDF angle-axis steps (#52 follow-up)."
+    },
+    {
+      "base_commit": "b6ab1b44e97ab7b8454330746fdeb3ab68a98ed0",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "228fc0b4e5f238fc1bcd9bc4db5da76a2adc90b0016025d33d2a38382f5e4c5a",
+      "reason": "Pin the open design menu above the motor view's toolbars (#62)."
+    },
+    {
+      "base_commit": "b6ab1b44e97ab7b8454330746fdeb3ab68a98ed0",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "78ab02749add81043f8258d0b797756a2ba415038b59de2488c32e5c4dabca12",
+      "reason": "Mark the top bar while its design menu is open (#62)."
+    },
+    {
+      "base_commit": "b6ab1b44e97ab7b8454330746fdeb3ab68a98ed0",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "268def3f72bd90cfe7fc2a4a57262701dac2cfb38d3c8e8b43fdec1900f13354",
+      "reason": "Lift the top bar's stacking context while its design menu is open, so the menu draws over the motor view's toolbars (#62)."
+    },
+    {
+      "base_commit": "1d6f00511fe77e8a17337f685584691f0dec64e7",
+      "path": "frontend/scripts/test-field-playback-timing.mjs",
+      "source_sha256": "2e445a4cb33afd518a2e5328b19ee9fafc41284ee00930827482393794e17a99",
+      "reason": "Cover the Preview window slider and playback, the resting preload and the newest-position frame loader (#59)."
+    },
+    {
+      "base_commit": "1d6f00511fe77e8a17337f685584691f0dec64e7",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "bafd25e97655b99a6f7369bd6b5cd4ed8c5658123420d473eac350a7d5254648",
+      "reason": "Pin the window-aware slider, newest-position loading, held frame and on-demand mesh layer (#59)."
+    },
+    {
+      "base_commit": "1d6f00511fe77e8a17337f685584691f0dec64e7",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "91fd02de7db4a87cee3146cf750aa38bda1f18ce031abf7466e06370e021eaeb",
+      "reason": "Cover a Preview window once with the Position slider, load only the newest position while it is dragged, and keep the last frame on screen while the next decodes (#59)."
+    },
+    {
+      "base_commit": "1d6f00511fe77e8a17337f685584691f0dec64e7",
+      "path": "frontend/src/public/fieldPlaybackRasterizer.ts",
+      "source_sha256": "6a6fe9e37da8387d34d7fbffdab15067ea6609703a2efa3d58bff9f89eedc861",
+      "reason": "Skip the mesh playback layer while the Mesh overlay is hidden (#59)."
+    },
+    {
+      "base_commit": "1d6f00511fe77e8a17337f685584691f0dec64e7",
+      "path": "frontend/src/public/fieldPlaybackTiming.ts",
+      "source_sha256": "5b4fd9e0420a326208cf49c124b3789d7936b2333e1e1c2a7588e44cbbe1072d",
+      "reason": "Add the Preview window span, slider mapping, window playback and resting preload helpers (#59)."
+    },
+    {
+      "base_commit": "5454f331e560b491ecd060f032467baef7db0974",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "aa7320862bdcf599245f646e169e557065c7109fd5b83642fc6ef531381eb593",
+      "reason": "Pin the Solve-page update banner under the top bar (owner QA of #64)."
+    },
+    {
+      "base_commit": "5454f331e560b491ecd060f032467baef7db0974",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "2d9c80c4cd23acfcf0085179321d4ecab4dc6be20c3f2530edfb592581f78998",
+      "reason": "Show Solve-page updates in a thin banner under the top bar instead of over the view tabs (owner QA of #64)."
+    },
+    {
+      "base_commit": "5454f331e560b491ecd060f032467baef7db0974",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "60808514937e95877d447b076580957410c3275f55b85664ec9d7939f4e7c376",
+      "reason": "Style the Solve-page update banner in the page flow and drop the overlay toast (owner QA of #64)."
+    },
+    {
+      "base_commit": "bea65aec3c07dbeb03604f1b298bae6f77fbf17c",
+      "path": "backend/launcher.py",
+      "source_sha256": "791fe20a342993f0a18c2a114b66452d980ba349271ac4d2335a9d27604a96dd",
+      "reason": "Start shutdown by ending open solve streams, and remove the launcher record on every exit path, including a forced exit (#55)."
+    },
+    {
+      "base_commit": "bea65aec3c07dbeb03604f1b298bae6f77fbf17c",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "c66837d12fb4916677174a99e689e43c22105fa15a5b7abbee7c3e91a61e35d6",
+      "reason": "End open solve streams and direct solve waits when the server stops, and run solver workers on daemon threads that application exit does not wait for (#55)."
+    },
+    {
+      "base_commit": "415d5dab79c8d59c7889b9b0d9143ab3ccbeb35b",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "fa880d91ba79fad6810ad9fa30b5b819af4f1a9aa61459192c6a8f551f1c90fd",
+      "reason": "Run solver workers on a non-daemon thread, so the interpreter finishes their unwinding before it finalizes; a daemon thread hung shutdown on Python 3.12 and 3.13 on Windows (#55)."
+    },
+    {
+      "base_commit": "a22094e8b65297aafc0c83ee4da081d4b9f3f29f",
+      "path": "backend/launcher.py",
+      "source_sha256": "be86df45c9d8ad827a3432e73d8587019ccf9af3302ae37504f78a9d387dabcd",
+      "reason": "#55 review: application shutdown also stops the solver's process-pool workers, after ending solve streams and native processes."
+    },
+    {
+      "base_commit": "a22094e8b65297aafc0c83ee4da081d4b9f3f29f",
+      "path": "backend/public_field_playback.py",
+      "source_sha256": "fc701d296c473251183c4cc861403dd7696efc8ccfe2bf3ef8b5a6564b3596da",
+      "reason": "#55 review: register the playback process pool until its shutdown returns, so application exit can stop its workers."
+    },
+    {
+      "base_commit": "a22094e8b65297aafc0c83ee4da081d4b9f3f29f",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "2d2242c2b7f7586cefd0f6812bc5dda9089ec2c4ca45ffc4e9f35c8da9301849",
+      "reason": "#55 review: record the cancellation before ending streams, stop the solver even if recording fails, and package and save results off the default executor."
+    },
+    {
+      "base_commit": "a22094e8b65297aafc0c83ee4da081d4b9f3f29f",
+      "path": "backend/solve_workspace.py",
+      "source_sha256": "fdd8af4de0af01d7a8c2249fb080b553f7c9128268ac00e81d5e501a69c757a5",
+      "reason": "#55 review: serialize a run writer's complete() and fail(), which raced on manifest.json during shutdown on Windows."
+    },
+    {
+      "base_commit": "a22094e8b65297aafc0c83ee4da081d4b9f3f29f",
+      "path": "backend/solver/_process_pool.py",
+      "source_sha256": "85506651ec15ae94ef9fcdaacf87070ddef8153c744d9388da8794f1d5fad487",
+      "reason": "#55 review: keep a registry of live solver process pools and stop their workers on application exit."
+    },
+    {
+      "base_commit": "a22094e8b65297aafc0c83ee4da081d4b9f3f29f",
+      "path": "tests/test_launcher_shutdown.py",
+      "source_sha256": "8bddcdb813d5b215593b64f3d600d8a0e8732bf07eeea39c45ed5b830e4faa36",
+      "reason": "#55 review: cover concurrent run-manifest writes, cancellation order, pool termination and a real interrupted launcher."
+    },
+    {
+      "base_commit": "98ef40412acfc4add1e79e63c7c025b35a5beb91",
+      "path": "backend/solver/_process_pool.py",
+      "source_sha256": "f4bf9b3f9b82abdff21eb7e7e7a45a482a48721d3a286a725077a0d37b5c2480",
+      "reason": "#55 review: latch application exit so pools created after shutdown cleanup are refused, and shut each pool down before stopping its workers so none start later."
+    },
+    {
+      "base_commit": "98ef40412acfc4add1e79e63c7c025b35a5beb91",
+      "path": "tests/test_launcher_shutdown.py",
+      "source_sha256": "dcf38c0c11e8c73e50bf2e0c36d209fdaecaff7010d72b901e61b3eee1801e66",
+      "reason": "#55 review: cover a pool registered before its workers start and a launcher interrupted while playback still prepares its input."
+    },
+    {
+      "base_commit": "2a234de09de10b020954150d3ebb31864905fd96",
+      "path": "backend/launcher.py",
+      "source_sha256": "243e33bcc18299f82b6a03a29656c2c63909c363ab0f04dff9cc9df10e3131db",
+      "reason": "#55: when the shutdown deadline fires, print every thread's stack before the forced exit, so a stalled shutdown shows where it waits."
+    },
+    {
+      "base_commit": "2a234de09de10b020954150d3ebb31864905fd96",
+      "path": "tests/test_launcher_shutdown.py",
+      "source_sha256": "3b4fc8750caf9c64429c935932877ba8192073b60f854e98a1df3dd9d0ce6883",
+      "reason": "#55: the deadline prints the thread stacks and still exits when stderr cannot take them."
+    },
+    {
+      "base_commit": "60e41caabda59b2fcf4efc0f4f4bc2ee1be0b69b",
+      "path": "backend/solver/_process_pool.py",
+      "source_sha256": "b083b9b7fa4bd717e5d06132ee91a2538b0e91f3187763ef8c69cb00a4844b2e",
+      "reason": "#55: after stopping a pool's workers, close this process's end of the result pipe, so a manager thread waiting for the rest of a killed worker's result can exit."
+    },
+    {
+      "base_commit": "60e41caabda59b2fcf4efc0f4f4bc2ee1be0b69b",
+      "path": "tests/test_launcher_shutdown.py",
+      "source_sha256": "666ce998ac08aa10b2000f527c764dddc8a3721236b0467559861e30934077a0",
+      "reason": "#55: a worker killed while sending its result must not leave the pool's manager thread for interpreter exit to wait on."
+    },
+    {
+      "base_commit": "ddd992ddd7c4e325349e963aae7c9ad0c69db799",
+      "path": "backend/public_report.py",
+      "source_sha256": "ab6872c8f36acc660e326cf74d84f3065cea3371c916ef8b87879eb7b168b8c5",
+      "reason": "List the stored sweep range for Preview runs, which use it capped at 60 deg, and describe omitted plan settings accurately (#61 review)."
+    },
+    {
+      "base_commit": "ddd992ddd7c4e325349e963aae7c9ad0c69db799",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "888dcaa77e3e3a2244c073eb2a2fb1d6015eee11572738841399cf570b332c84",
+      "reason": "Pin which plans use the stored step and sweep range in the PDF settings (#61 review)."
+    },
+    {
+      "base_commit": "474b51131466d9954949bf59f9af55bf662ecc76",
+      "path": "backend/gmsh_mesh_rotation.py",
+      "source_sha256": "aff821206ba637dfd4a6536880ba3d44442a89ebf0125cc14bde8b6c5db12f1c",
+      "reason": "#58: find the congruent angle a full cycle at the loaded step meshes for each loaded position, so Preview can keep those meshes."
+    },
+    {
+      "base_commit": "474b51131466d9954949bf59f9af55bf662ecc76",
+      "path": "backend/solve_estimate.py",
+      "source_sha256": "568229e08975b0295f223e5965cdfcf1f4aca3edb9c4ab35903a9943a131cd8e",
+      "reason": "#58: plan Preview's 48-angle Back-EMF grid, its PM-only frame solves and its mesh-only anchors."
+    },
+    {
+      "base_commit": "474b51131466d9954949bf59f9af55bf662ecc76",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "bec3f503a6df0ecd3a0bf757cdfab97e715245aa24995e152f9fa5f9f828fd77",
+      "reason": "#58: solve loaded positions off Preview's Back-EMF grid no-load for their PM-only frames, and keep their meshes with mesh-only anchors."
+    },
+    {
+      "base_commit": "474b51131466d9954949bf59f9af55bf662ecc76",
+      "path": "backend/sweep_planning.py",
+      "source_sha256": "82c016bffb5b708b5c0bac58c504e09b18ed3b171677969f93f1f67cd5315cf9",
+      "reason": "#58: give Preview's full-cycle Back-EMF grid the Standard 7.5 deg step (48 angles instead of 96)."
+    },
+    {
+      "base_commit": "474b51131466d9954949bf59f9af55bf662ecc76",
+      "path": "tests/fixtures/solve_time_calibration.json",
+      "source_sha256": "64436061e75fc07bd523b69851fb6532bbeb81e241c7a3904701cdc298d5ea7a",
+      "reason": "#58: mark the Preview calibration runs, measured with the 96-angle Back-EMF grid, as superseded."
+    },
+    {
+      "base_commit": "474b51131466d9954949bf59f9af55bf662ecc76",
+      "path": "tests/test_solve_estimate.py",
+      "source_sha256": "07809bd70efb63f9a66a80676a8fe6286988f55ede6034d63c5f000b964c21e2",
+      "reason": "#58: planned work for Preview's 48-angle grid; Preview stays estimated below Standard."
     }
   ]
 }

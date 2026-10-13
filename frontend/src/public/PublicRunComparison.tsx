@@ -451,7 +451,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false }: Publi
           <button type="button" role="tab" aria-selected={plot === 'torque'} className={plot === 'torque' ? 'active' : ''} onClick={() => setPlot('torque')}>Torque overlay</button>
           <button type="button" role="tab" aria-selected={plot === 'back-emf'} className={plot === 'back-emf' ? 'active' : ''} onClick={() => setPlot('back-emf')}>Back EMF overlay</button>
         </div>
-        {plot === 'torque' && <WaveformChart angles={left.result.torque_waveform.electrical_angle_deg} series={torqueSeries} label="Torque comparison" unit="N·m" samplingLabel={torqueSampling} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} />}
+        {plot === 'torque' && <WaveformChart angles={left.result.torque_waveform.electrical_angle_deg} series={torqueSeries} label="Torque comparison" unit="N·m" samplingLabel={torqueSampling} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} readoutDifference={{ minuendKey: 'run-b', subtrahendKey: 'run-a', label: 'Run B − Run A' }} />}
         {plot === 'back-emf' && <WaveformChart angles={left.result.back_emf_waveform.electrical_angle_deg} series={emfSeries} label="Three-phase back EMF comparison" unit="V" samplingLabel={emfSampling} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} />}
       </>}
     </section>
