@@ -410,8 +410,8 @@
     },
     {
       "path": "backend/public_policy.py",
-      "bytes": 10651,
-      "sha256": "4f233fbbca8fe39f2b4a2d52870f12358445ea04f5a834a3f6c84a1a8a176be4"
+      "bytes": 11275,
+      "sha256": "d8bb1b685aefa7dd2ecb4a436ca44474154929b513321a93538c2271d61da68c"
     },
     {
       "path": "backend/public_report.py",
@@ -3264,6 +3264,16 @@
       "sha256": "25bbe57352a4307d176d0dcc8c22f1c1466922dcad4092bff63c5f14b2d901d3"
     },
     {
+      "path": "docs/hardware-validation/ornl-prius-2004/holem50-mapping.json",
+      "bytes": 10013,
+      "sha256": "248ace08371f4164b38791fe665854ce98ff6d66c12a7a62abd2ab3974a137d9"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/holem50-mapping.md",
+      "bytes": 6772,
+      "sha256": "07cc1d99fd890bcfccbf0386a2138869a6d406c530b5529c1f6c104665e92203"
+    },
+    {
       "path": "docs/hardware-validation/ornl-prius-2004/input-provenance.json",
       "sha256": "717340af98275adf20f418c95e00374b2ea2723b7a1d7ad5ec6f22c29c439986",
       "bytes": 12708
@@ -4479,6 +4489,11 @@
       "sha256": "22f413ea06effb593a4d21baa027cdcd33421c3c1d6600264c531daf37e25b39"
     },
     {
+      "path": "tests/test_experimental_holem50.py",
+      "bytes": 8830,
+      "sha256": "ae082b80e08635d0515c6eb476f863693a19a5d6042e85cb232e34bd0c8c9a25"
+    },
+    {
       "path": "tests/test_halbach_api.py",
       "bytes": 11374,
       "sha256": "c121c79c2bb017d8601c611ca0217059d0061dae30e9d0525f1b24c49f70a9d4"
@@ -4692,6 +4707,16 @@
       "path": "tools/benchmark_suite/worker.py",
       "bytes": 4094,
       "sha256": "3610b56a778a98c2c7ccb4727c51a90fcb110803b034cbf3f87599e190f64de5"
+    },
+    {
+      "path": "tools/experimental_solve.py",
+      "bytes": 4202,
+      "sha256": "6a50b22ee7800f0f22f056288e6c3b54c297dbc5244f1427f9861458e230e8ab"
+    },
+    {
+      "path": "tools/fit_ornl_prius_holem50.py",
+      "bytes": 15569,
+      "sha256": "6bf8cbd40e270ec73486fa26066f31a3b6879fa33207f550bb21aa8d79e5d2e7"
     },
     {
       "path": "tools/generate_m350_50a_bh.py",
