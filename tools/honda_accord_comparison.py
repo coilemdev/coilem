@@ -37,9 +37,13 @@ FOLDER = ROOT / "docs/hardware-validation/honda-accord-2005"
 REQUEST = FOLDER / "request.json"
 POLE_PAIRS = 8
 CURRENTS_A = (25, 50, 75, 100, 125, 150, 175, 200, 225)
-# delta = 0 is the no-torque position (ORNL's definition): coilEM's rotor offset of 240 degrees
-# electrical, located on coilEM's own 100 A cycle (torque crosses zero rising there).
-ZERO_OFFSET_ELEC_DEG = 240.0
+# delta = 0 is the no-torque position (ORNL's definition), located on coilEM's own 100 A cycle where the
+# torque crosses zero rising (a 30-degree electrical scan of the rotor offset; real-winding-comparison/
+# zero-scan-100A.json). The winding as built crosses at 300 degrees; the first comparison's emulated slot
+# map crossed at 240. The curves are otherwise the same (peak 59.5 vs 59.6 N m at 100 A): the fixed solver
+# labels the tooth coils' phases 60 degrees from the emulation's (A - B)/2 pairing.
+ZERO_OFFSET_ELEC_DEG = 300.0
+EMULATED_ZERO_OFFSET_ELEC_DEG = 240.0
 PEAK_DELTAS_DEG = tuple(range(60, 151, 5))     # ORNL's 5-degree step, around the peak
 LOBE_CURRENTS_A = (50, 125, 225)               # full 0-180 lobes for the magnet/reluctance split
 LOBE_DELTAS_DEG = tuple(range(0, 181, 10))
@@ -121,11 +125,7 @@ def rotor_offset_mech_deg(delta_deg: float) -> float:
 
 
 def locked_rotor_request(current_a: float, delta_deg: float) -> dict:
-    """ORNL's DC pattern (Ia, -Ia/2, -Ia/2) at sweep position 0: source angle 90 deg.
-
-    The emulation's (0.75, -0.75, 0) Ia on the old slot map was this same field, so the zero offset
-    located with it still holds.
-    """
+    """ORNL's DC pattern (Ia, -Ia/2, -Ia/2) at sweep position 0: source angle 90 deg."""
     body = as_wound_request()
     body["rotor"]["magnet_angle_deg"] = rotor_offset_mech_deg(delta_deg)
     body["solve_params"].update(current_amplitude_A=float(current_a), current_angle_deg=gamma_for_source_angle(body, 90.0),
@@ -206,6 +206,7 @@ def assemble(no_load: dict, locked: list[dict], out: Path, write: bool = True) -
                       "error_pct": round((tq / t["peak_torque_Nm"] - 1) * 100, 2)})
     lobes = {c: sorted((d, by[c][d]) for d in by[c] if d in LOBE_DELTAS_DEG or d in PEAK_DELTAS_DEG) for c in LOBE_CURRENTS_A}
     runs = sorted({(r.get("run_commit"), r.get("run_dirty")) for r in locked})
+    zero_offset = EMULATED_ZERO_OFFSET_ELEC_DEG if emulated else ZERO_OFFSET_ELEC_DEG
     if emulated:
         winding_note = "#91 emulated."
         emf_method = "Tooth-coil phase = (A - B)/2 of coilEM's slot-map phases (#91 emulated)."
@@ -233,7 +234,7 @@ def assemble(no_load: dict, locked: list[dict], out: Path, write: bool = True) -
                          "runs": [{"commit": c, "dirty": d} for c, d in runs],
                          "method": ["Static solves of the frozen request; only the excitation and the rotor angle change.",
                                     current_method,
-                                    "delta = 0 is the no-torque position (ORNL's definition), coilEM rotor offset 240 deg electrical.",
+                                    f"delta = 0 is the no-torque position (ORNL's definition), coilEM rotor offset {zero_offset:g} deg electrical.",
                                     "Peak over delta = 60..150 deg in ORNL's 5-degree steps; full lobes at 50, 125 and 225 A in 10-degree steps."],
                          "peak_by_current": peaks,
                          "error_pct": {"mean": round(float(np.mean([p["error_pct"] for p in peaks])), 2),

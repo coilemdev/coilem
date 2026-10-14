@@ -3629,6 +3629,11 @@
       "sha256": "4485495d7f28a25209835a9ba867a7b963c70f43215f72d7da76577e7bd34612"
     },
     {
+      "path": "docs/hardware-validation/honda-accord-2005/real-winding-comparison/zero-scan-100A.json",
+      "bytes": 2040,
+      "sha256": "6acb2badf21654f1e7a75ed8014001202620f5a23337cf59c2206db3edbc2127"
+    },
+    {
       "path": "docs/hardware-validation/honda-accord-2005/request.json",
       "bytes": 1542,
       "sha256": "60351175715cd05288059c19665c8ac6614b3ba897cce54a41d22809991c6192"
@@ -5225,8 +5230,8 @@
     },
     {
       "path": "tools/honda_accord_comparison.py",
-      "bytes": 15015,
-      "sha256": "38834d5a3d705ab362984c888ee660f9fb40e099312f5eb3b8c78df34096b703"
+      "bytes": 15337,
+      "sha256": "75e6c1da16b7c4a12493a19dfd73cfc37d83b30e0042febb04ce79bfce7b2842"
     },
     {
       "path": "tools/honda_accord_request.py",
