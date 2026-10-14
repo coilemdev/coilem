@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "topology": "SPM",
+  "stator": {
+    "OD_mm": 50.0,
+    "ID_mm": 34.0,
+    "slot_count": 12,
+    "stack_length_mm": 40.0,
+    "slot_opening_mm": 2.5,
+    "tooth_width_mm": 4.5,
+    "yoke_thickness_mm": 4.5
+  },
+  "rotor": {
+    "OD_mm": 25.0,
+    "magnet_thickness_mm": 3.0,
+    "magnet_width_mm": 16.5,
+    "pole_count": 4,
+    "magnet_embrace": 0.85,
+    "bridge_thickness_mm": 1.0,
+    "flux_barrier_count": null,
+    "barrier_widths_mm": null
+  },
+  "winding": {
+    "type": "concentrated",
+    "turns_per_coil": 10,
+    "layers": 1,
+    "parallel_paths": 1
+  },
+  "materials": {
+    "stator_steel": "M350-50A",
+    "rotor_steel": "M350-50A",
+    "magnet_grade": "N42",
+    "conductor": "copper"
+  },
+  "solve_params": {
+    "solve_quality": "custom",
+    "rotor_sweep_range_deg": 360.0,
+    "rotor_step_deg": 7.5,
+    "mesh_density": "normal",
+    "mesh_source": "native",
+    "mesher": "gmsh",
+    "corner_refinement": true,
+    "rotor_rotation_model": "remesh_per_step",
+    "torque_method": "weighted_stress",
+    "current_amplitude_A": 15.0,
+    "current_amplitude_convention": "plateau",
+    "current_angle_deg": 30.0,
+    "rated_speed_rpm": 6000.0,
+    "nonlinear_solver": "picard",
+    "max_nonlinear_iterations": 100,
+    "excitation_mode": "ideal_six_step_120",
+    "commutation_advance_deg": 0.0,
+    "phase_connection": "wye",
+    "femm_workers": 1
+  },
+  "solve_options": {
+    "torque_sweep": true,
+    "back_emf": false,
+    "cogging_torque": false,
+    "flux_density": false,
+    "thd_analysis": false,
+    "torque_speed_envelope": false
+  }
+}
