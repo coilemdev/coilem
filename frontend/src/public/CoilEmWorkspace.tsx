@@ -529,7 +529,7 @@ export function CoilEmTopBar({
                 {examplesMenuOpen && (
                   <div className="public-project-examples-menu" role="menu" aria-label="Example designs">
                     <span className="public-project-example-group-label" role="presentation">Motor examples</span>
-                    {publicExampleOptions(experimentalRotors).map((example) => (
+                    {publicExampleOptions(experimentalRotors, 'motor').map((example) => (
                       <button
                         type="button"
                         role="menuitem"
@@ -540,6 +540,23 @@ export function CoilEmTopBar({
                         <small>{example.detail}</small>
                       </button>
                     ))}
+                    {publicExampleOptions(experimentalRotors, 'benchmark').length > 0 && (
+                      <>
+                        <span className="menu-divider" role="presentation" />
+                        <span className="public-project-example-group-label" role="presentation">Benchmarks</span>
+                        {publicExampleOptions(experimentalRotors, 'benchmark').map((example) => (
+                          <button
+                            type="button"
+                            role="menuitem"
+                            key={example.id}
+                            onClick={closeMenuThen(() => onLoadExample?.(example.id))}
+                          >
+                            <strong>{example.label}</strong>
+                            <small>{example.detail}</small>
+                          </button>
+                        ))}
+                      </>
+                    )}
                     {onOpenHalbach && (
                       <>
                         <span className="menu-divider" role="presentation" />

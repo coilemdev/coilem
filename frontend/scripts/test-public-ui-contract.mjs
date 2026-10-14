@@ -328,7 +328,12 @@ assert.match(apiSource, /export function deletePublicRun/);
 assert.match(apiSource, /confirm_run_id: runId/);
 assert.match(styleSource, /\.public-run-storage-meter/);
 assert.match(workspaceSource, /aria-label="Example designs"/);
-assert.match(workspaceSource, /publicExampleOptions\(experimentalRotors\)\.map/);
+assert.match(workspaceSource, /publicExampleOptions\(experimentalRotors, 'motor'\)\.map/);
+// Hardware-validated motors get their own group, shown only when one is available to this launch.
+assert.match(workspaceSource, /publicExampleOptions\(experimentalRotors, 'benchmark'\)\.length > 0/);
+assert.match(workspaceSource, />Benchmarks</);
+assert.match(exampleDesignsSource, /Boolean\(option\.benchmark\) === \(group === 'benchmark'\)/);
+assert.match(exampleDesignsSource, /id: 'ornl-prius-2004-holem50',[\s\S]*?experimental: true,[\s\S]*?benchmark: true/);
 assert.match(workspaceSource, /public-project-submenu-trigger/);
 assert.match(workspaceSource, />Motor examples</);
 assert.match(workspaceSource, />Field examples</);

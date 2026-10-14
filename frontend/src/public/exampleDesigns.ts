@@ -19,6 +19,12 @@ export interface PublicExampleOption {
   detail: string;
   /** Needs the local app started with COILEM_EXPERIMENTAL_ROTORS=1. */
   experimental?: boolean;
+  /**
+   * A real motor that coilEM has been compared against published hardware
+   * measurements. Listed under Benchmarks. Its design file holds only public
+   * facts from the cited source, never licensed or proprietary data.
+   */
+  benchmark?: boolean;
 }
 
 export const PUBLIC_EXAMPLE_OPTIONS: readonly PublicExampleOption[] = [
@@ -26,12 +32,25 @@ export const PUBLIC_EXAMPLE_OPTIONS: readonly PublicExampleOption[] = [
   { id: 'ipm-10p-v-shape-medium', label: 'IPM 10p V-shape', detail: 'Medium' },
   { id: 'ipm-14p-flat-buried-large', label: 'IPM 14p flat buried', detail: 'Large' },
   { id: 'spm-24p-small', label: 'SPM 24p', detail: 'Small' },
-  { id: 'ornl-prius-2004-holem50', label: 'ORNL 2004 Prius', detail: 'HoleM50 · experimental', experimental: true },
+  {
+    id: 'ornl-prius-2004-holem50',
+    label: 'ORNL 2004 Prius',
+    detail: 'ORNL hardware data · experimental rotor',
+    experimental: true,
+    benchmark: true,
+  },
 ];
 
-/** The examples this launch can open: experimental rotors only when switched on. */
-export function publicExampleOptions(experimentalRotors: boolean): readonly PublicExampleOption[] {
-  return PUBLIC_EXAMPLE_OPTIONS.filter((option) => experimentalRotors || !option.experimental);
+export type PublicExampleGroup = 'motor' | 'benchmark';
+
+/** The examples this launch can open in one menu group: experimental rotors only when switched on. */
+export function publicExampleOptions(
+  experimentalRotors: boolean,
+  group: PublicExampleGroup = 'motor',
+): readonly PublicExampleOption[] {
+  return PUBLIC_EXAMPLE_OPTIONS.filter(
+    (option) => (experimentalRotors || !option.experimental) && Boolean(option.benchmark) === (group === 'benchmark'),
+  );
 }
 
 const BUNDLED_EXAMPLE_FILES: Record<Exclude<PublicExampleId, 'spm-8p12s'>, string> = {
