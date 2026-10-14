@@ -169,9 +169,19 @@ Each release:
    approval of the `pypi` environment. Approving it uploads the four wheels
    with trusted publishing.
 5. On each platform, the workflow downloads the wheel from PyPI, checks it is
-   byte-identical to the wheel CI built, and repeats the acceptance test.
+   byte-identical to the wheel CI built, and repeats the acceptance test. It
+   finds the wheel by its SHA-256 through PyPI's JSON API, which is current as
+   soon as the upload finishes. PyPI's `/simple/` pages, which pip reads, stay
+   cached for up to 10 minutes after an upload.
 6. Finally it attaches the wheels to a draft GitHub release for the tag, with
-   `RELEASE_NOTES.md` as its notes. Review the draft and publish it.
+   `RELEASE_NOTES.md` as its notes. The job rewrites the notes' relative links
+   to `https://github.com/coilemdev/coilem/blob/<tag>/...`, because a release
+   page has no repository context. Review the draft and publish it.
+
+   If the draft ever needs a hand edit, use `gh release edit vX.Y.Z`, or include
+   `tag_name` in a REST `PATCH`. A `PATCH` without `tag_name` detaches the
+   draft from its tag, and publishing it then creates a stray `untagged-…` tag,
+   as happened with 0.3.1.
 
 PyPI never accepts the same version twice, even after a file is deleted. A
 broken release can be yanked, which hides it from new installs, but a fix
