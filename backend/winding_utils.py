@@ -67,16 +67,19 @@ def flux_linkage_slot_side_turn_factor(
 ) -> float:
     """Return the multiplier from slot-side turns to series turns per branch.
 
-    coilEM winding geometry is described in terms of slot sides. For single-layer
-    concentrated windings, summing every slot side directly double-counts the
-    series turns seen at the terminals because each physical turn has two active
-    sides. Back-EMF / flux-linkage calculations should therefore use half the raw
-    slot-side turn count. Parallel branches divide the terminal series turns
-    further.
+    The flux-linkage extractors sum turns_per_coil * A_z over every slot side,
+    signed by its direction. A coil's two sides enter with opposite signs, so
+    the sum is each coil's linkage N * L * (A_go - A_return), counted once, for
+    every winding type and layer count: the same turns the source excites with
+    J = turns_per_coil * I / A_slot (see series_turns_per_path). Only parallel
+    branches divide the terminal series turns.
+
+    Concentrated single-layer windings used to be credited half the turns
+    here, which halved their flux linkage, back-EMF and Ke against the
+    excitation (#80); winding_type and layers are kept for callers.
     """
 
-    slot_side_normalization = 0.5 if winding_type == "concentrated" and layers == 1 else 1.0
-    return slot_side_normalization / max(1, parallel_paths)
+    return 1.0 / max(1, parallel_paths)
 
 
 def series_turns_per_path(
@@ -106,8 +109,8 @@ def series_turns_per_path(
         N_path = kw * slot_count * turns_per_coil / (6 * parallel_paths)
 
     independent of ``layers``. This is exactly the credit the solver-lane
-    slot-sum extraction applies (flux_linkage_slot_side_turn_factor with the
-    distributed normalization of 1.0): for the full-pitch belt layout the
+    slot-sum extraction applies (flux_linkage_slot_side_turn_factor, 1.0 per
+    path for every winding type): for the full-pitch belt layout the
     signed per-slot A_z sum counts every coil's flux linkage exactly once,
     verified analytically in tests/test_winding_bookkeeping_crosslane.py for
     (layers, paths) in {1,2}x{1,2} on 24s8p and the Prius 48s8p case.

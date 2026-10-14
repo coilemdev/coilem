@@ -210,19 +210,10 @@ def phase_current_sample_dict(sample: PhaseCurrentSample) -> dict[str, float]:
 def terminal_to_slot_current_scale(config: MotorConfig) -> float:
     """Map public terminal phase current to the homogenized slot-side source.
 
-    The established single-layer concentrated-winding flux-linkage contract
-    credits half of the raw slot-side turns.  Six-step current is explicitly a
-    terminal conducting-phase plateau, so its source must use the reciprocal
-    slot-side normalization as well.  The legacy sinusoidal path is intentionally
-    unchanged because its current convention and regression corpus predate the
-    terminal-current BLDC contract.
+    Every excitation mode drives each slot side with the terminal current: the
+    flux-linkage extractors credit the same turns_per_coil per slot side
+    (winding_utils.flux_linkage_slot_side_turn_factor), so source and linkage
+    stay reciprocal. Six-step concentrated single-layer windings used to halve
+    this source to match a halved flux-linkage credit (#80).
     """
-    sp = config.solve_params
-    if (
-        sp is not None
-        and sp.excitation_mode == IDEAL_SIX_STEP_120
-        and config.winding.type == "concentrated"
-        and config.winding.layers == 1
-    ):
-        return 0.5
     return 1.0

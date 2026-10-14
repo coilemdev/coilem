@@ -47,6 +47,30 @@ def validate_abc(result, config, *, native=True):
         raise ValueError("Candidate did not use the public native WST solver")
 
 
+def energy_balance_ratio(result, config):
+    """Average torque over the torque its own back-EMF and current imply.
+
+    For sinusoidal current, T_implied = 3 * E_rms * I_rms * cos(gamma) / omega_m.
+    A consistent model gives about 1, or less where load saturation lowers the
+    flux linkage below its no-load value; the halved flux-linkage credit for
+    single-layer concentrated windings gave about 2 (#80). Diagnostic only.
+    """
+    params = config.get("solve_params") or {}
+    if (params.get("excitation_mode") or "sinusoidal") != "sinusoidal":
+        return None
+    summary = result.get("summary", {})
+    torque = summary.get("avg_torque_Nm")
+    emf_rms = summary.get("back_emf_fundamental_V")
+    current = params.get("current_amplitude_A")
+    speed_rpm = params.get("rated_speed_rpm")
+    if not current or not speed_rpm or torque is None or emf_rms is None:
+        return None
+    rms = current if params.get("current_amplitude_convention") == "rms" else current / math.sqrt(2)
+    gamma = math.radians(params.get("current_angle_deg") or 0.0)
+    implied = 3 * emf_rms * rms * math.cos(gamma) / (speed_rpm * 2 * math.pi / 60)
+    return abs(torque) / abs(implied) if abs(implied) > 1e-12 else None
+
+
 def evaluate_abc(result, reference, config):
     validate_abc(result, config)
     if reference is None:
