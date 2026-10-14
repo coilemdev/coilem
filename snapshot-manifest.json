@@ -160,8 +160,8 @@
     },
     {
       "path": "backend/excitation.py",
-      "bytes": 7897,
-      "sha256": "a6e200494865dfc4147615d7187760025605376752fb53661c040018776388c6"
+      "bytes": 7609,
+      "sha256": "1af5bfc451cf2995508ef980ce1a2a6492f651f230a679a71cb05daeb3709a29"
     },
     {
       "path": "backend/export_safety.py",
@@ -535,8 +535,8 @@
     },
     {
       "path": "backend/winding_utils.py",
-      "bytes": 15116,
-      "sha256": "bad70a57f91e9ea6074a39975b80e847e492f8d07a6738c5fe41ed5f430e690e"
+      "bytes": 15241,
+      "sha256": "676b0040a79b90e113e8a18fdeb70b3d2a7c53bd2dcf172a6fffc777fc8b2f1b"
     },
     {
       "path": "benchmarks/README.md",
@@ -4385,8 +4385,8 @@
     },
     {
       "path": "solvers/magneto2d/src/sources.rs",
-      "bytes": 54377,
-      "sha256": "8c32aea119fc7cb08aad16ae2ecf3962a94255674bd2f80f0ebec19771ff5b50"
+      "bytes": 54549,
+      "sha256": "04aa500fea8eaaeeb05d3331ab35b4dc2a5513661b16f6fc406569b8d0f09fd9"
     },
     {
       "path": "solvers/magneto2d/src/sparse.rs",
@@ -7028,6 +7028,24 @@
       "path": ".github/workflows/ci.yml",
       "source_sha256": "993d07eac9fef00eb213ef25d6f435dcf5c8bb65a8f78e6af34a16bd5116e320",
       "reason": "Pin the Ubuntu CI jobs to ubuntu-24.04 before ubuntu-latest moves to Ubuntu 26 on 2026-10-19 (#79)."
+    },
+    {
+      "base_commit": "f3d98899f98f9fd432520166585a03bfe179cd7a",
+      "path": "backend/excitation.py",
+      "source_sha256": "a6e200494865dfc4147615d7187760025605376752fb53661c040018776388c6",
+      "reason": "Drive six-step slot sources with the terminal current, reciprocal with the full flux-linkage credit (#80)."
+    },
+    {
+      "base_commit": "f3d98899f98f9fd432520166585a03bfe179cd7a",
+      "path": "backend/winding_utils.py",
+      "source_sha256": "bad70a57f91e9ea6074a39975b80e847e492f8d07a6738c5fe41ed5f430e690e",
+      "reason": "Credit the full slot-side turns per path for every winding; concentrated single-layer flux linkage was halved (#80)."
+    },
+    {
+      "base_commit": "f3d98899f98f9fd432520166585a03bfe179cd7a",
+      "path": "solvers/magneto2d/src/sources.rs",
+      "source_sha256": "8c32aea119fc7cb08aad16ae2ecf3962a94255674bd2f80f0ebec19771ff5b50",
+      "reason": "Credit the full slot-side turns per path and drop the six-step source halving, with tests (#80)."
     }
   ]
 }
