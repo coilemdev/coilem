@@ -8,6 +8,7 @@ import { deriveStatorSectionWidths } from './dimensionAnnotations';
 import { publicFlatIpmMagnetCenterRadiusMm } from './flatIpmBurialHealth';
 import type { MotorConfig, PublicMotorComponentSelection } from './model';
 import { PUBLIC_MOTOR_COLORS, PUBLIC_PHASE_COLORS, renderTargetColor } from './motorPalette';
+import { concentratedUsesToothCoils, toothCoilAssignments } from './toothCoils';
 
 interface PublicMotor3DProps {
   config: MotorConfig;
@@ -1039,6 +1040,15 @@ export function PublicMotor3D({
       coilModelNote = `${turnsNote} · ${bundleNote}`;
     }
 
+    // Tooth coils (#91) follow the backend's layout: alternate teeth with one
+    // layer, every tooth with two, each with its own phase and sign.
+    const toothCoilByTooth = config.winding.type === 'concentrated'
+      && concentratedUsesToothCoils(config.stator.slot_count, config.rotor.pole_count)
+      ? new Map(
+        toothCoilAssignments(config.stator.slot_count, config.rotor.pole_count, config.winding.layers)
+          .map((coil) => [coil.tooth, coil] as const),
+      )
+      : null;
     for (let slot = 0; slot < config.stator.slot_count; slot += 1) {
       const angle = slot * slotPitch;
       const tooth = new THREE.Mesh(toothGeometry, materials.tooth);
@@ -1047,9 +1057,11 @@ export function PublicMotor3D({
       teethGroup.add(tooth);
       registerRadialExplosion(tooth, angle, outerRadius * 0.075);
 
-      const phase = (['A', 'C', 'B'] as const)[slot % 3];
-      const direction = slot % 2 === 0 ? '+' : '-';
+      const toothCoil = toothCoilByTooth?.get(slot);
+      const phase = toothCoil?.phase ?? (['A', 'C', 'B'] as const)[slot % 3];
+      const direction = toothCoil ? (toothCoil.direction === 'in' ? '+' : '-') : slot % 2 === 0 ? '+' : '-';
       if (concentratedCoil) {
+        if (toothCoilByTooth && !toothCoil) continue;
         const coilMaterial = { A: materials.coilA, B: materials.coilB, C: materials.coilC }[phase];
         const coilAssembly = new THREE.Group();
         coilAssembly.add(
@@ -1092,7 +1104,9 @@ export function PublicMotor3D({
       const harness = buildWindingHarness({
         slotCount: config.stator.slot_count,
         slotPitchRad: slotPitch,
-        phaseOfSlot: (slot) => (['A', 'C', 'B'] as const)[slot % 3],
+        phaseOfSlot: (slot) => (
+          toothCoilByTooth ? toothCoilByTooth.get(slot)?.phase ?? null : (['A', 'C', 'B'] as const)[slot % 3]
+        ),
         bundleCenterRadius: concentratedCoil.bundleCenterRadius,
         stackHalf: stackDepth / 2,
         axialOverhang: concentratedCoil.axialOverhang,

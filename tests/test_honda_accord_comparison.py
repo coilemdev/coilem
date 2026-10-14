@@ -1,4 +1,4 @@
-"""The 2005 Honda Accord comparison (#92) is reproducible from its data, with #91 emulated correctly."""
+"""The 2005 Honda Accord comparison (#92): the first comparison rebuilds from its data, and new runs wind the motor as built (#91)."""
 
 from __future__ import annotations
 
@@ -17,11 +17,11 @@ def read(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def test_locked_rotor_request_puts_ornl_dc_pattern_on_the_tooth_coils():
+def test_locked_rotor_request_puts_ornl_dc_pattern_on_the_real_coils():
     from backend.geometry_drawer import current_angle_elec_deg_for_rotor_elec
     from backend.models import MotorConfig
     from backend.solver import _clockwise_excitation_config
-    from tools.honda_accord_comparison import REQUEST, locked_rotor_request
+    from tools.honda_accord_comparison import AS_WOUND_WINDING, REQUEST, locked_rotor_request
 
     frozen = read(REQUEST)
     for current, delta in ((25, 0), (100, 95), (225, 150)):
@@ -29,37 +29,39 @@ def test_locked_rotor_request_puts_ornl_dc_pattern_on_the_tooth_coils():
         assert {k: v for k, v in body["rotor"].items() if k != "magnet_angle_deg"} == {
             k: v for k, v in frozen["rotor"].items() if k != "magnet_angle_deg"
         }
-        assert (body["stator"], body["winding"], body["materials"]) == (frozen["stator"], frozen["winding"], frozen["materials"])
+        assert (body["stator"], body["materials"]) == (frozen["stator"], frozen["materials"])
+        assert body["winding"] == AS_WOUND_WINDING
         config = _clockwise_excitation_config(MotorConfig.model_validate(body))
         angle = math.radians(current_angle_elec_deg_for_rotor_elec(config, 0.0))
         amplitude = body["solve_params"]["current_amplitude_A"]
+        # ORNL's (Ia, -Ia/2, -Ia/2) straight onto the tooth coils (#91), no emulation.
         coilem = [amplitude * math.sin(angle - k * 2 * math.pi / 3) for k in range(3)]
-        # coilEM's slot-map currents (0.75, -0.75, 0) Ia ...
-        assert coilem == pytest.approx([0.75 * current, -0.75 * current, 0.0], abs=1e-9)
-        # ... are ORNL's (Ia, -Ia/2, -Ia/2) on the real tooth coils: i'A = (iA - iC)/2, i'B = (iB - iA)/2.
-        ia, ib, ic = current, -current / 2, -current / 2
-        assert coilem[:2] == pytest.approx([(ia - ic) / 2, (ib - ia) / 2])
+        assert coilem == pytest.approx([current, -current / 2, -current / 2], abs=1e-9)
 
 
-def test_tooth_coil_repairing_scales_by_root3_over_2_and_inverts_5th_and_7th():
-    from tools.honda_accord_comparison import tooth_coil
+def test_as_wound_winding_is_the_frozen_equivalent_in_series_turns():
+    from backend.geometry import validate_geometry
+    from backend.models import MotorConfig
+    from tools.honda_accord_comparison import REQUEST, as_wound_request
 
-    theta = [math.radians(2 * i) for i in range(180)]
+    frozen, wound = read(REQUEST)["winding"], as_wound_request()["winding"]
+    # A coil on every tooth: 24 coils of 52 turns, 8 per phase, one per path.
+    assert wound["turns_per_coil"] * 24 / (6 * wound["parallel_paths"]) == frozen["turns_per_coil"] * 24 / 6 == 52
+    assert validate_geometry(MotorConfig.model_validate(as_wound_request())) == []
 
-    def phase(k):
-        return [math.cos(t - k * 2 * math.pi / 3) + 0.1 * math.cos(5 * (t - k * 2 * math.pi / 3)) for t in theta]
 
-    real = tooth_coil(phase(0), phase(1))
+def test_app_example_is_the_as_wound_request_and_previews():
+    from fastapi.testclient import TestClient
 
-    def harmonic(v, n):
-        return complex(sum(x * math.cos(n * t) for x, t in zip(v, theta)), -sum(x * math.sin(n * t) for x, t in zip(v, theta))) * 2 / len(v)
+    from backend.public_main import app
+    from tools.honda_accord_comparison import as_wound_request
 
-    h1, h5 = harmonic(real, 1), harmonic(real, 5)
-    assert abs(h1) == pytest.approx(math.sqrt(3) / 2)
-    assert abs(h5) == pytest.approx(0.1 * math.sqrt(3) / 2)
-    # Relative to the fundamental, the 5th turns over: in step on coilEM's slot map, inverted on the tooth coil.
-    relative = math.degrees(math.atan2((h5 / h1**5).imag, (h5 / h1**5).real))
-    assert abs(abs(relative) - 180) < 1e-6
+    example = read(REPO_ROOT / "frontend/src/public/examples/honda_accord_2005.coilem")
+    design = {k: v for k, v in example.items() if k not in {"openem_schema_version", "openem_version", "name", "description", "debug"}}
+    assert design == as_wound_request()
+    response = TestClient(app, base_url="http://127.0.0.1").post("/preview", json=design)
+    assert response.status_code == 200, response.text
+    assert response.json()["metadata"]["qualification"]["status"] == "experimental"
 
 
 def test_committed_comparison_matches_its_data():

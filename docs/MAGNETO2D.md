@@ -883,6 +883,15 @@ rotor-synchronous stator-current phasor. If it is explicitly present, the
 solver uses that value. The report records both requested and resolved
 operating-point values.
 
+The angle is measured from the q-axis, taking phase A's own axis as the
+reference: 0 gives the largest magnet torque on a surface-PM rotor, for every
+winding. Phase A's axis is the angle of its fundamental winding phasor, which
+the source angle subtracts. A one-slot phase belt has its axis on its slot, at 0. Wider belts
+put it at the belt centre (15 degrees electrical for q = 2, 20 for q = 3), and
+fractional-slot tooth coils on a tooth (30 degrees for q = 1/2). Before #91 the
+axis was taken as 0 for every layout, so q >= 2 distributed windings peaked
+near 15 degrees. Ideal six-step commutation is timed from the same axis.
+
 ### Rotor angles
 
 The CLI's single-angle flag is mechanical, while sweep positions and spans are

@@ -380,13 +380,13 @@
     },
     {
       "path": "backend/preview.py",
-      "bytes": 38907,
-      "sha256": "e45db846a3956faf009248864a2d10b13cdd663888be55fe2444c860a13d32ca"
+      "bytes": 39014,
+      "sha256": "704ad1cd0eecfaca80c0ba57783bdb4101fd61c35de1c2917aa41ebcafb561e5"
     },
     {
       "path": "backend/preview_from_ir.py",
-      "bytes": 8588,
-      "sha256": "7a0821b726191891af18b9fa38035b0db60274a52e6076f81a1dd3deafff364a"
+      "bytes": 9082,
+      "sha256": "3a3e9b8ec32cb28f00b40a896f66f616e56bd21e5957ad9c55c218b07c5e628c"
     },
     {
       "path": "backend/public_field_playback.py",
@@ -3240,8 +3240,8 @@
     },
     {
       "path": "docs/MAGNETO2D.md",
-      "bytes": 46156,
-      "sha256": "93f64669998b64d434bdcc333f11b3a1e6941124ce9b6d7af4d7c334de1810b9"
+      "bytes": 46787,
+      "sha256": "7ca3db37a127c168648f4b60cd2e476da643693713e925a497dfbbb190d4ebe5"
     },
     {
       "path": "docs/NUMERICAL_EVIDENCE.md",
@@ -3535,8 +3535,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 106093,
-      "sha256": "ce10281f99f5b0a68985613cd90c085c0726e17367e9fc76999c91c95db7a599"
+      "bytes": 106283,
+      "sha256": "e22b38999c6905e3463a381be3700cbae15831cdecc17af3167ad86c6bc309bb"
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
@@ -3955,8 +3955,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 53168,
-      "sha256": "98cb2ab37f8078c2ee3863e893d34911d14eba017c0b20c88d4315d5128c2dba"
+      "bytes": 47400,
+      "sha256": "68a2f20bbb557c39008eca9d79ddb672091eeb2856b55cf967f264a2a2712dc1"
     },
     {
       "path": "frontend/src/public/PublicLanding.tsx",
@@ -3965,8 +3965,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 78952,
-      "sha256": "ffa5bef5e34217998edf2d8117c6463569ee4076e919757b714d9d65a33facab"
+      "bytes": 79803,
+      "sha256": "63df8a31b921bde6ddf1d12c49610ff4fc1cae424847f2041a55349a15e677c5"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
@@ -4025,8 +4025,8 @@
     },
     {
       "path": "frontend/src/public/coil3d.ts",
-      "bytes": 16402,
-      "sha256": "9cad7de5a93294d077a6dddaeb06a945e1322ed00a05042a2a885adab30b9a43"
+      "bytes": 16527,
+      "sha256": "6ff9a1edf8d0ddb812748833d099fcd79d0b73de3f9a84669b851b2847e78cfc"
     },
     {
       "path": "frontend/src/public/customSteel.css",
@@ -4050,8 +4050,13 @@
     },
     {
       "path": "frontend/src/public/exampleDesigns.ts",
-      "bytes": 2850,
-      "sha256": "0189301fe019de9f8be04234df5528875a461b27aa5f5acafb94971a4f43b2e8"
+      "bytes": 3125,
+      "sha256": "0bf3f379a2b4bea1076f4830e84fb6a01802729e8a66f2b209a700fe4bb1bea5"
+    },
+    {
+      "path": "frontend/src/public/examples/honda_accord_2005.coilem",
+      "bytes": 2210,
+      "sha256": "733e6334b7198b9d8234bda558b467cc2382c975d3be2ed8d4abc41477fce6bd"
     },
     {
       "path": "frontend/src/public/examples/ornl_prius_2004_holem50.coilem",
@@ -4070,8 +4075,8 @@
     },
     {
       "path": "frontend/src/public/examples/validation_spm_24p_small.openem",
-      "bytes": 1934,
-      "sha256": "2b0e660e31d01ff8bbbcbde6dcfb2f6e726b5d98e6d0fe6087819ce5206a4082"
+      "bytes": 2012,
+      "sha256": "55826b1f16decf0518a4cdaf28d887caf8b3f78f15b18a4277f953330ee40b08"
     },
     {
       "path": "frontend/src/public/excitationDrafts.ts",
@@ -4110,8 +4115,8 @@
     },
     {
       "path": "frontend/src/public/guidedConfigRepair.ts",
-      "bytes": 14279,
-      "sha256": "914ee38714c2613bc1b097cada784d7b92a535f1210573f007df3b709f25491a"
+      "bytes": 10151,
+      "sha256": "827f0cb82211b3ceddda302a30f0a146c75d1c0d651033731c7a793c28f9a8ea"
     },
     {
       "path": "frontend/src/public/halbach/Halbach2DViewport.tsx",
@@ -4224,6 +4229,11 @@
       "sha256": "907976c194be01c074133968c323a7ca55640932a98157ff473230da9c354a25"
     },
     {
+      "path": "frontend/src/public/toothCoils.ts",
+      "bytes": 4921,
+      "sha256": "34b597e5208a48a510926dd93813705d186f7d25932fc72c600a18b261a1b42f"
+    },
+    {
       "path": "frontend/src/public/tutorials/PublicTutorials.tsx",
       "bytes": 9207,
       "sha256": "aa2f863b7be9ccdde58572cf76e58644df24a6ad854de33b6ed85c9dcc9f06f7"
@@ -4285,8 +4295,8 @@
     },
     {
       "path": "references/benchmark_configs/validation_spm_24p_small.openem",
-      "bytes": 1934,
-      "sha256": "2b0e660e31d01ff8bbbcbde6dcfb2f6e726b5d98e6d0fe6087819ce5206a4082"
+      "bytes": 2012,
+      "sha256": "55826b1f16decf0518a4cdaf28d887caf8b3f78f15b18a4277f953330ee40b08"
     },
     {
       "path": "requirements.lock",
@@ -4650,8 +4660,8 @@
     },
     {
       "path": "tests/test_honda_accord_comparison.py",
-      "bytes": 4090,
-      "sha256": "55382fa89ea48ca8fdaf52654b89f098c0a1405af1ed77090a628d6843a1da30"
+      "bytes": 4300,
+      "sha256": "00860c952c0928c4fe4b25392d5ced9cc3e25c5e384b7e7b2fed116959605c6f"
     },
     {
       "path": "tests/test_honda_accord_request.py",
@@ -4715,8 +4725,8 @@
     },
     {
       "path": "tests/test_ornl_prius_comparison.py",
-      "bytes": 2965,
-      "sha256": "b0b1f6512a5c77d3b4bd15c2506368f0f750a4614ce2f6ee5f08c83ec114ee33"
+      "bytes": 3249,
+      "sha256": "7982aff96eb3c5a3714404080aacce322d7cc85e8238467b4e67b330c74953f8"
     },
     {
       "path": "tests/test_postsolve_pipeline.py",
@@ -4900,8 +4910,8 @@
     },
     {
       "path": "tools/honda_accord_comparison.py",
-      "bytes": 12909,
-      "sha256": "129dda687d8a89cd6350fc17457a54139a0bba2185a5af8706713c4c036eb2fb"
+      "bytes": 15015,
+      "sha256": "38834d5a3d705ab362984c888ee660f9fb40e099312f5eb3b8c78df34096b703"
     },
     {
       "path": "tools/honda_accord_request.py",
@@ -4910,8 +4920,8 @@
     },
     {
       "path": "tools/ornl_prius_comparison.py",
-      "bytes": 9118,
-      "sha256": "375132af888a6d6a043bd42f102f2f3af4f07f7cac3a45c44f8ad9ff78301c54"
+      "bytes": 10083,
+      "sha256": "a25b7d5fae5997277d80906056ce337d89cbdb3cafd28f36b067bbda4916e182"
     },
     {
       "path": "tools/plot_honda_accord_comparison.py",

@@ -26,16 +26,38 @@ REQUEST = ROOT / "benchmarks/abcd-v1.2/fixtures/ornl_prius_2004_ipm.json"
 FOLDER = ROOT / "docs/hardware-validation/ornl-prius-2004"
 CURRENTS_A = (50, 75, 100, 125, 150, 200, 250)
 DELTAS_DEG = tuple(range(0, 177, 8))
-# ORNL holds the currents at (Ia, -Ia/2, -Ia/2) and turns the rotor. coilEM's source
-# angle is rotor_elec - 90 + gamma - axis with I_a = I sin(angle), where axis is phase
-# A's belt centre (15 deg electrical for this q = 2 winding, #91), so gamma = 180 + axis
-# at sweep position 0 gives exactly that set. The rotor is turned with
-# magnet_angle_deg. Its zero (delta = 0: no torque, ORNL's definition) sits half a slot
-# pitch, that same 15 deg, from coilEM's rotor zero, measured on coilEM's own 50 A
-# cycle; delta runs in the direction that puts the IPM torque peak beyond 90 deg
-# (Lq > Ld). Before #91 the convention ignored the axis and gamma was 180: the solves
-# are the same.
+# ORNL holds the currents at (Ia, -Ia/2, -Ia/2) and turns the rotor. The solves run on
+# coilEM's public (clockwise) frame, where the first comparison's gamma = 180 put
+# (-Ia, Ia/2, Ia/2) at sweep position 0: ORNL's pattern turned 180 deg electrical, which
+# T(-I, theta) = T(I, theta + 180) makes the same lobe, and which the zero offset below,
+# measured on coilEM's own 50 A cycle, absorbs. Since #91 the source angle subtracts
+# phase A's axis (its belt centre, 15 deg electrical for this q = 2 winding), so the
+# current angle is solved to keep that same source angle, -90 deg: the solves are the
+# same. The rotor is turned with magnet_angle_deg. Its zero (delta = 0: no torque,
+# ORNL's definition) sits half a slot pitch, that same 15 deg, from coilEM's rotor zero;
+# delta runs in the direction that puts the IPM torque peak beyond 90 deg (Lq > Ld).
+SOURCE_ANGLE_AT_ZERO_DEG = -90.0
 ZERO_OFFSET_ELEC_DEG = 105.0
+
+
+def gamma_for_source_angle(body: dict, source_angle_deg: float) -> float:
+    """The current angle that puts this source angle at sweep position 0 on the public (clockwise) frame.
+
+    Solved through the solver's own transform: the public frame mirrors gamma (internal 180 - gamma), and
+    the source angle subtracts phase A's axis angle (#91), so the answer depends on the winding.
+    """
+    from backend.geometry_drawer import current_angle_elec_deg_for_rotor_elec
+    from backend.models import MotorConfig
+    from backend.solver import _clockwise_excitation_config
+
+    def source(gamma: float) -> float:
+        trial = json.loads(json.dumps(body))
+        trial["solve_params"]["current_angle_deg"] = gamma
+        return current_angle_elec_deg_for_rotor_elec(_clockwise_excitation_config(MotorConfig.model_validate(trial)), 0.0)
+
+    at_zero = source(0.0)
+    slope = source(1.0) - at_zero
+    return ((source_angle_deg - at_zero) / slope + 180.0) % 360.0 - 180.0
 
 
 def rotor_offset_mech_deg(delta_deg: float, pole_pairs: int = 4) -> float:
@@ -44,13 +66,9 @@ def rotor_offset_mech_deg(delta_deg: float, pole_pairs: int = 4) -> float:
 
 
 def locked_rotor_request(current_a: float, delta_deg: float) -> dict:
-    from backend.excitation import phase_axis_offset_deg
-    from backend.models import MotorConfig
-
     body = json.loads(REQUEST.read_text(encoding="utf-8"))
     body["rotor"]["magnet_angle_deg"] = rotor_offset_mech_deg(delta_deg)
-    # Wrapped into the request's (-180, 180] range: -165 deg for this winding.
-    gamma = (180.0 + phase_axis_offset_deg(MotorConfig.model_validate(body)) + 180.0) % 360.0 - 180.0
+    gamma = gamma_for_source_angle(body, SOURCE_ANGLE_AT_ZERO_DEG)
     body["solve_params"].update(current_amplitude_A=float(current_a), current_angle_deg=gamma, rotor_sweep_range_deg=1.0, rotor_step_deg=1.0)
     body["solve_options"].update(back_emf=False, flux_density=False, torque_sweep=True)
     return body
@@ -143,7 +161,7 @@ def assemble(run: Path, locked: list[dict], out: Path) -> dict:
             "runs": [{"commit": c, "dirty": d} for c, d in sorted(commits)],
             "method": [
                 "Static solves of the frozen request with only the excitation and rotor angle changed.",
-                "Currents (Ia, -Ia/2, -Ia/2): current angle 180 deg from phase A's axis at sweep position 0 (requested as -165 deg since #91).",
+                "Currents (-Ia, Ia/2, Ia/2) at sweep position 0 on coilEM's clockwise frame: ORNL's pattern turned 180 deg, the same lobe.",
                 "delta = 0 is the no-torque position, as ORNL defines it, measured on coilEM's own 50 A cycle.",
                 "Torque by weighted stress; motor-shaft torque, as ORNL's table reports it.",
             ],

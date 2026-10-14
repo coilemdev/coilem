@@ -154,6 +154,7 @@ def generate_preview(config: MotorConfig) -> GeometryPreview:
             slot_pitch_rad=tooth_pitch_rad,
             origin_x=origin_x,
             origin_y=origin_y,
+            layer_split=geometry_ir.metadata.get("slot_layer_split") if geometry_ir is not None else None,
         )
 
     # ============================================================================

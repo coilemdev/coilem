@@ -189,8 +189,13 @@ def append_winding_symbols(
     slot_pitch_rad: float,
     origin_x: float = 0.0,
     origin_y: float = 0.0,
+    layer_split: str | None = None,
 ) -> None:
-    """Add in/out winding marker glyphs (not part of geometry IR)."""
+    """Add in/out winding marker glyphs (not part of geometry IR).
+
+    Two-layer slots put each side's marker in its own layer: stacked along the
+    slot for a radial split, side by side across it for tooth coils (#91).
+    """
     import math
 
     radial_span = max(0.0, slot_bottom_r - bore_r)
@@ -204,8 +209,13 @@ def append_winding_symbols(
     for ws in sorted(winding_layout, key=lambda item: (item.slot_index, item.layer)):
         slot_idx = ws.slot_index
         layer_count = max_layer_by_slot.get(slot_idx, 1)
-        slot_center_r = bore_r + radial_span * (ws.layer - 0.5) / max(1, layer_count)
         slot_angle = slot_idx * slot_pitch_rad
+        if layer_split == "tangential" and layer_count > 1:
+            slot_center_r = bore_r + 0.5 * radial_span
+            quarter_slot_rad = slot_body_width / (4.0 * max(slot_center_r, 1e-9))
+            slot_angle += quarter_slot_rad if ws.layer == 2 else -quarter_slot_rad
+        else:
+            slot_center_r = bore_r + radial_span * (ws.layer - 0.5) / max(1, layer_count)
         cx = origin_x + slot_center_r * math.cos(slot_angle)
         cy = origin_y + slot_center_r * math.sin(slot_angle)
         symbol_size = slot_body_width * (0.11 if layer_count > 1 else 0.15)

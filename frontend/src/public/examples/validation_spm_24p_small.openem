@@ -2,7 +2,7 @@
   "openem_schema_version": 4,
   "openem_version": "0.1.4",
   "name": "Validation SPM 24p — Small",
-  "description": "Small-frame 24-pole, 27-slot surface-PM fixture for public Magneto2D validation.",
+  "description": "Small-frame 24-pole, 27-slot surface-PM fixture for public Magneto2D validation. Two-layer tooth coils: 27 slots can only be wound with a coil on every tooth.",
   "schema_version": "1.0",
   "topology": "SPM",
   "stator": {
@@ -36,7 +36,7 @@
   "winding": {
     "type": "concentrated",
     "turns_per_coil": 18,
-    "layers": 1,
+    "layers": 2,
     "parallel_paths": 3
   },
   "materials": {

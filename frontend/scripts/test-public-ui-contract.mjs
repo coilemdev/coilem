@@ -1413,15 +1413,16 @@ assert.match(viteSource, /\.\/src\/public/);
 assert.match(viteSource, /publicDir:\s*fileURLToPath\(new URL\('\.\/public'/);
 assert.doesNotMatch(viteSource, /\.\/src\/main\.tsx/);
 
-// Double-layer tooth-coil 2D winding display: each slot splits into two
-// half-wedges owned by the adjacent tooth coils, with ⊙/⊗ side markers.
-assert.match(motorCanvasSource, /const TOOTH_PHASE_SEQUENCE = \['A', 'C', 'B'\] as const/);
-assert.match(motorCanvasSource, /toothIndex % 2 === 0 \? '\+' : '-'/);
-assert.match(motorCanvasSource, /toothCoilSidesForSlot/);
+// Tooth-coil windings (#91) draw as the backend lays them out: no client-side
+// per-tooth phase pattern, no re-splitting of slots, the backend's ⊙/⊗ markers.
+// The 3D coils come from the same tooth-coil layout the backend uses.
+assert.doesNotMatch(motorCanvasSource, /TOOTH_PHASE_SEQUENCE|toothCoilSidesForSlot/);
+assert.doesNotMatch(motorCanvasSource, /region\.region_type === 'winding_symbol'\) return/);
+assert.match(motorCanvasSource, /const concentratedWinding = windingType === 'concentrated'/);
 assert.match(motorCanvasSource, /clipPolygonToHalfPlane/);
 assert.match(motorCanvasSource, /drawCurrentMarker/);
-assert.match(motorCanvasSource, /region\.region_type === 'winding_symbol'\) return/);
 assert.match(motorCanvasSource, /windingType = 'concentrated'/);
+assert.match(motorThreeSource, /toothCoilAssignments\(config\.stator\.slot_count, config\.rotor\.pole_count, config\.winding\.layers\)/);
 assert.match(workspaceSource, /windingType=\{config\.winding\.type\}/);
 // The legend moved into the Layout view with the card it lived on, and it no longer
 // mentions +/- because that view marks direction with the glyphs themselves, not

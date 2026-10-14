@@ -20,6 +20,7 @@ def read(path: Path):
 def test_locked_rotor_request_reproduces_ornl_dc_currents():
     from backend.geometry_drawer import current_angle_elec_deg_for_rotor_elec
     from backend.models import MotorConfig
+    from backend.solver import _clockwise_excitation_config
     from tools.ornl_prius_comparison import REQUEST, locked_rotor_request, rotor_offset_mech_deg
 
     frozen = read(REQUEST)
@@ -32,9 +33,12 @@ def test_locked_rotor_request_reproduces_ornl_dc_currents():
         assert unrotated(body["rotor"]) == unrotated(frozen["rotor"])
         assert (body["stator"], body["winding"], body["materials"]) == (frozen["stator"], frozen["winding"], frozen["materials"])
         assert -45.0 <= body["rotor"]["magnet_angle_deg"] < 45.0
-        angle = math.radians(current_angle_elec_deg_for_rotor_elec(MotorConfig.model_validate(body), 0.0))
+        # The solves run on the public (clockwise) frame: ORNL's pattern turned 180 deg, as in the
+        # first comparison's runs, whatever phase A's axis angle (#91).
+        config = _clockwise_excitation_config(MotorConfig.model_validate(body))
+        angle = math.radians(current_angle_elec_deg_for_rotor_elec(config, 0.0))
         currents = [math.sin(angle - k * 2 * math.pi / 3) for k in range(3)]
-        assert currents == pytest.approx([1.0, -0.5, -0.5])
+        assert currents == pytest.approx([-1.0, 0.5, 0.5])
     assert rotor_offset_mech_deg(0) == pytest.approx(26.25)
 
 

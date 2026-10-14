@@ -269,7 +269,8 @@ export type HarnessPhase = 'A' | 'B' | 'C';
 export interface WindingHarnessSpec {
   slotCount: number;
   slotPitchRad: number;
-  phaseOfSlot: (slot: number) => HarnessPhase;
+  /** The phase of the coil on this tooth, or null for a tooth without a coil. */
+  phaseOfSlot: (slot: number) => HarnessPhase | null;
   /** Radial position of the rear jumper ring, in millimetres. */
   bundleCenterRadius: number;
   stackHalf: number;
@@ -304,7 +305,8 @@ export function buildWindingHarness(spec: WindingHarnessSpec): WindingHarnessMod
 
   const slotsByPhase: Record<HarnessPhase, number[]> = { A: [], B: [], C: [] };
   for (let slot = 0; slot < spec.slotCount; slot += 1) {
-    slotsByPhase[spec.phaseOfSlot(slot)].push(slot);
+    const phase = spec.phaseOfSlot(slot);
+    if (phase) slotsByPhase[phase].push(slot);
   }
   const orderedPhases = (['A', 'B', 'C'] as const)
     .filter((phase) => slotsByPhase[phase].length > 0)

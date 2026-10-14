@@ -1,3 +1,4 @@
+import hondaAccord2005 from './examples/honda_accord_2005.coilem?raw';
 import ipm10pVShapeMedium from './examples/validation_ipm_10p_v_shape_medium.openem?raw';
 import ipm14pFlatBuriedLarge from './examples/validation_ipm_14p_flat_buried_large.openem?raw';
 import ornlPrius2004HoleM50 from './examples/ornl_prius_2004_holem50.coilem?raw';
@@ -11,7 +12,8 @@ export type PublicExampleId =
   | 'ipm-10p-v-shape-medium'
   | 'ipm-14p-flat-buried-large'
   | 'spm-24p-small'
-  | 'ornl-prius-2004-holem50';
+  | 'ornl-prius-2004-holem50'
+  | 'honda-accord-2005';
 
 export interface PublicExampleOption {
   id: PublicExampleId;
@@ -39,6 +41,12 @@ export const PUBLIC_EXAMPLE_OPTIONS: readonly PublicExampleOption[] = [
     experimental: true,
     benchmark: true,
   },
+  {
+    id: 'honda-accord-2005',
+    label: '2005 Honda Accord',
+    detail: 'ORNL hardware data · tooth coils',
+    benchmark: true,
+  },
 ];
 
 export type PublicExampleGroup = 'motor' | 'benchmark';
@@ -58,6 +66,7 @@ const BUNDLED_EXAMPLE_FILES: Record<Exclude<PublicExampleId, 'spm-8p12s'>, strin
   'ipm-14p-flat-buried-large': ipm14pFlatBuriedLarge,
   'spm-24p-small': spm24pSmall,
   'ornl-prius-2004-holem50': ornlPrius2004HoleM50,
+  'honda-accord-2005': hondaAccord2005,
 };
 
 export function createPublicExampleDesign(exampleId: PublicExampleId): { name: string; config: MotorConfig } {
