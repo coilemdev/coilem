@@ -66,6 +66,9 @@ def test_layouts_match_the_shared_fixture(case: dict) -> None:
 @pytest.mark.parametrize(
     ("slot_count", "pole_count", "layers", "expected"),
     [
+        (6, 4, 1, 0.866),
+        (6, 4, 2, 0.866),
+        (9, 6, 2, 0.866),
         (12, 8, 1, 0.866),
         (12, 8, 2, 0.866),
         (24, 16, 2, 0.866),
@@ -78,6 +81,58 @@ def test_layouts_match_the_shared_fixture(case: dict) -> None:
 )
 def test_winding_factors_match_the_textbook_values(slot_count: int, pole_count: int, layers: int, expected: float) -> None:
     assert concentrated_winding_factor(slot_count, pole_count, layers) == pytest.approx(expected, abs=5e-4)
+
+
+@pytest.mark.parametrize(
+    ("slot_count", "pole_count", "layers", "kw5", "kw7"),
+    [
+        (12, 8, 2, 0.866, 0.866),
+        (12, 10, 1, 0.259, 0.259),
+        (12, 10, 2, 0.067, 0.067),
+        (9, 8, 2, 0.140, 0.061),
+    ],
+)
+def test_fifth_and_seventh_winding_factors_match_the_textbook_values(
+    slot_count: int, pole_count: int, layers: int, kw5: float, kw7: float
+) -> None:
+    assert concentrated_winding_factor(slot_count, pole_count, layers, harmonic=5) == pytest.approx(kw5, abs=5e-4)
+    assert concentrated_winding_factor(slot_count, pole_count, layers, harmonic=7) == pytest.approx(kw7, abs=5e-4)
+
+
+@pytest.mark.parametrize("case", LAYOUTS, ids=_label)
+@pytest.mark.parametrize("harmonic", [1, 5, 7])
+def test_harmonics_follow_the_coil_emf_star(case: dict, harmonic: int) -> None:
+    # The slot sides the solver winds carry exactly the EMF of their coils: coil t links
+    # e^{jn a t} - e^{jn a (t + 1)} at harmonic n, a the electrical slot pitch.
+    s, p, layers = case["slot_count"], case["pole_count"], case["layers"]
+    pitch = math.pi * p / s
+    star = {"A": 0j, "B": 0j, "C": 0j}
+    for tooth, phase, direction in tooth_coil_assignments(s, p, layers):
+        sign = 1.0 if direction == "in" else -1.0
+        fraction = 0.5 if layers >= 2 else 1.0
+        star[phase] += sign * fraction * (cmath.exp(1j * harmonic * pitch * tooth) - cmath.exp(1j * harmonic * pitch * (tooth + 1)))
+    sides = concentrated_phase_phasors(s, p, layers, harmonic)
+    for phase in "ABC":
+        assert sides[phase] == pytest.approx(star[phase], abs=1e-9)
+
+
+def test_fifth_and_seventh_turn_over_against_the_old_slot_map() -> None:
+    # The notch #91 found on the CREATOR back-EMF: relative to the fundamental, a
+    # q = 1/2 tooth coil carries its 5th and 7th inverted; the old one-phase-per-slot
+    # map had them in step.
+    def relative_deg(phasors: dict[int, complex], harmonic: int) -> float:
+        return abs(math.degrees(cmath.phase(phasors[harmonic] / phasors[1] ** harmonic)))
+
+    tooth_coils = {n: concentrated_phase_phasors(12, 8, 1, n)["A"] for n in (1, 5, 7)}
+    old_map = [legacy_concentrated_slot_phase(slot, 12, 4) for slot in range(12)]
+    assert all(direction == "in" for phase, direction in old_map if phase == "A")
+    old_phasors = {
+        n: sum(cmath.exp(1j * n * math.pi * 8 / 12 * slot) for slot, (phase, _) in enumerate(old_map) if phase == "A")
+        for n in (1, 5, 7)
+    }
+    for n in (5, 7):
+        assert relative_deg(tooth_coils, n) == pytest.approx(180.0)
+        assert relative_deg(old_phasors, n) == pytest.approx(0.0, abs=1e-6)
 
 
 @pytest.mark.parametrize("case", LAYOUTS, ids=_label)

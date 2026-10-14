@@ -4820,8 +4820,8 @@
     },
     {
       "path": "tests/test_tooth_coil_windings.py",
-      "bytes": 7723,
-      "sha256": "efb86020ad0cb178801fd7532577cc25f29db5c67e6304742e4e39a9a09956c7"
+      "bytes": 10401,
+      "sha256": "183395ca3662f2ca15d3b038ab3badfc42d5faee85b7c086f7e36e59f5b47a35"
     },
     {
       "path": "tests/test_windows_field_frame_pool.py",
