@@ -67,7 +67,7 @@ def run_locked_rotor(out: Path, currents, deltas) -> None:
                 "source_dirty": record["source_dirty"],
                 "solve_s": round(time.perf_counter() - start, 1),
             })
-            out.write_text(json.dumps(results, indent=1) + "\n", encoding="utf-8")
+            out.write_text(json.dumps(results, indent=1) + "\n", encoding="utf-8", newline="\n")
             print(f"I={current} A delta={delta}: {results[-1]['torque_Nm']:+.2f} N m", flush=True)
 
 
@@ -146,7 +146,7 @@ def assemble(run: Path, locked: list[dict], out: Path) -> dict:
         },
     }
     out.mkdir(parents=True, exist_ok=True)
-    (out / "comparison.json").write_text(json.dumps(data, indent=1) + "\n", encoding="utf-8")
+    (out / "comparison.json").write_text(json.dumps(data, indent=1) + "\n", encoding="utf-8", newline="\n")
     return data
 
 

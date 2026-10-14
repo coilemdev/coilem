@@ -4795,13 +4795,13 @@
     },
     {
       "path": "tools/fit_ornl_prius_holem50.py",
-      "bytes": 15735,
-      "sha256": "c1b413ac38af4efc13ce36692a9117b62224dd50c303238c07d98cbdd384aa8d"
+      "bytes": 15749,
+      "sha256": "e368258c75d60515fe0210e0b94435ee0af2ea8ac6b1428f20cce51c52c7a84e"
     },
     {
       "path": "tools/fit_ornl_prius_stator.py",
-      "bytes": 8619,
-      "sha256": "c6848f3ebdaf803443f50a3b34d1f8868462a055dcda685aa6d0765969f0fb6c"
+      "bytes": 8633,
+      "sha256": "d324672a6c7170f2b9ec4f8fe394018b9f208582113017f862c96749d287262d"
     },
     {
       "path": "tools/generate_m350_50a_bh.py",
@@ -4810,13 +4810,13 @@
     },
     {
       "path": "tools/ornl_prius_comparison.py",
-      "bytes": 8563,
-      "sha256": "7d250bc5de516c899fe14ccec907f129d08b7a549713171aaa4482cb0fe2de11"
+      "bytes": 8591,
+      "sha256": "db3fb9d531e46362766dfad72486ad1c721aa4c41b1ee331027eaa69ca14cf39"
     },
     {
       "path": "tools/plot_ornl_prius_comparison.py",
-      "bytes": 7561,
-      "sha256": "5c20a53f91ad4395b44f70ceba5bfc349b5b738bb4c75dd12d82a59c426e4ade"
+      "bytes": 7589,
+      "sha256": "ed686f57028435f2b212a749e5d51a71fb4056d85300392463ca4dc2ff07cea6"
     },
     {
       "path": "tools/release/__init__.py",
