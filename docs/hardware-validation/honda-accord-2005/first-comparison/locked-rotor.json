@@ -1,0 +1,2576 @@
+[
+ {
+  "current_A": 25,
+  "delta_deg": 60,
+  "torque_Nm": 13.595649507915335,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 20.0
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 65,
+  "torque_Nm": 9.474691301600112,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 19.0
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 70,
+  "torque_Nm": 6.705502157383768,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 19.9
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 75,
+  "torque_Nm": 7.063710831848265,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 18.1
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 80,
+  "torque_Nm": 10.082334209776812,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.7
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 85,
+  "torque_Nm": 13.611664788413782,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.3
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 90,
+  "torque_Nm": 14.867686390283556,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.1
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 95,
+  "torque_Nm": 14.70195944657765,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.3
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 100,
+  "torque_Nm": 16.55739325421346,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 18.8
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 105,
+  "torque_Nm": 18.652418946681024,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 18.6
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 110,
+  "torque_Nm": 18.515275175678884,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 18.7
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 115,
+  "torque_Nm": 16.803117072811546,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 23.1
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 120,
+  "torque_Nm": 13.602283576865812,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 18.9
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 125,
+  "torque_Nm": 8.488846629151178,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 18.9
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 130,
+  "torque_Nm": 5.163480817357787,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 21.8
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 135,
+  "torque_Nm": 4.656445745231578,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.7
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 140,
+  "torque_Nm": 6.656254458872511,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.0
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 145,
+  "torque_Nm": 8.40995790074711,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.8
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 150,
+  "torque_Nm": 8.16298131408696,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.1
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 60,
+  "torque_Nm": 26.222350565331865,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 14.4
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 65,
+  "torque_Nm": 22.987859898248153,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 14.9
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 70,
+  "torque_Nm": 19.88880332108076,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 13.4
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 75,
+  "torque_Nm": 20.031197201192253,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 14.7
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 80,
+  "torque_Nm": 23.524768116412194,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.0
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 85,
+  "torque_Nm": 27.60300065549512,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 13.8
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 90,
+  "torque_Nm": 29.63377848307623,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.9
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 95,
+  "torque_Nm": 29.21705665564831,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 14.4
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 100,
+  "torque_Nm": 29.97053650008136,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 13.1
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 105,
+  "torque_Nm": 31.75292908554473,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 13.6
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 110,
+  "torque_Nm": 31.51657388258807,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.5
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 115,
+  "torque_Nm": 29.844882182929886,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 13.9
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 120,
+  "torque_Nm": 26.90335764113534,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 13.7
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 125,
+  "torque_Nm": 21.663081685510146,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 14.5
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 130,
+  "torque_Nm": 17.432469758226954,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.1
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 135,
+  "torque_Nm": 16.32989056530224,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.2
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 140,
+  "torque_Nm": 17.834047698764014,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.7
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 145,
+  "torque_Nm": 18.469677406163772,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.8
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 150,
+  "torque_Nm": 17.65751914024192,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 14.0
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 60,
+  "torque_Nm": 37.717777022980925,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.8
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 65,
+  "torque_Nm": 35.50178798868373,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.5
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 70,
+  "torque_Nm": 32.61761866469629,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.3
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 75,
+  "torque_Nm": 33.35057107605171,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.4
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 80,
+  "torque_Nm": 37.57462680085353,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.8
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 85,
+  "torque_Nm": 42.17642154520094,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.2
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 90,
+  "torque_Nm": 44.63624534338466,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.6
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 95,
+  "torque_Nm": 44.109474649885776,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.5
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 100,
+  "torque_Nm": 43.916852592928095,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 13.7
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 105,
+  "torque_Nm": 45.268325462014595,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 13.3
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 110,
+  "torque_Nm": 45.19919538943266,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.2
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 115,
+  "torque_Nm": 43.610907902970474,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 13.5
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 120,
+  "torque_Nm": 40.43758566827082,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.8
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 125,
+  "torque_Nm": 35.00069916708451,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.7
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 130,
+  "torque_Nm": 30.19749164569601,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.5
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 135,
+  "torque_Nm": 28.635434561998288,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.1
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 140,
+  "torque_Nm": 29.372220673708544,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 13.6
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 145,
+  "torque_Nm": 29.3372795295868,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 13.7
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 150,
+  "torque_Nm": 28.2134582012893,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.2
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 60,
+  "torque_Nm": 47.88709635091908,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.9
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 65,
+  "torque_Nm": 46.91286357895806,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.1
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 70,
+  "torque_Nm": 45.68485140402196,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 14.8
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 75,
+  "torque_Nm": 47.63996112750428,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 19.1
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 80,
+  "torque_Nm": 52.28094674917613,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 19.4
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 85,
+  "torque_Nm": 57.05508623656416,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 19.7
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 90,
+  "torque_Nm": 59.63144434015369,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 22.2
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 95,
+  "torque_Nm": 58.95886124240146,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.1
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 100,
+  "torque_Nm": 57.88476015403457,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.8
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 105,
+  "torque_Nm": 59.032649727755306,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.0
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 110,
+  "torque_Nm": 59.582709743523246,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.5
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 115,
+  "torque_Nm": 58.22786332665725,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 18.1
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 120,
+  "torque_Nm": 54.963023044757065,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.8
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 125,
+  "torque_Nm": 49.158811218836874,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.4
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 130,
+  "torque_Nm": 43.644867363434194,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 18.5
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 135,
+  "torque_Nm": 41.45239614990078,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.0
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 140,
+  "torque_Nm": 40.41754938324122,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.8
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 145,
+  "torque_Nm": 39.740521945228735,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.3
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 150,
+  "torque_Nm": 39.67794905738082,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 14.4
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 60,
+  "torque_Nm": 56.07948889031155,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.2
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 65,
+  "torque_Nm": 58.08761618713769,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.7
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 70,
+  "torque_Nm": 59.26398879396127,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.8
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 75,
+  "torque_Nm": 61.96295142845668,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 18.4
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 80,
+  "torque_Nm": 66.87978235059926,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.7
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 85,
+  "torque_Nm": 72.42788688049401,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.6
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 90,
+  "torque_Nm": 74.94734577663895,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.1
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 95,
+  "torque_Nm": 73.56752443396441,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 19.0
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 100,
+  "torque_Nm": 72.03383628942227,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.7
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 105,
+  "torque_Nm": 73.09593210782754,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 14.9
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 110,
+  "torque_Nm": 74.22385919564258,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.9
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 115,
+  "torque_Nm": 73.64442298394282,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.9
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 120,
+  "torque_Nm": 70.58219107870146,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.5
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 125,
+  "torque_Nm": 64.15414521141277,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.5
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 130,
+  "torque_Nm": 57.85170512861649,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.5
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 135,
+  "torque_Nm": 54.44561044126514,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.1
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 140,
+  "torque_Nm": 51.515036243331494,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.3
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 145,
+  "torque_Nm": 49.54985066988035,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 14.7
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 150,
+  "torque_Nm": 50.867419133152836,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.3
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 60,
+  "torque_Nm": 61.94850890945794,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.8
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 65,
+  "torque_Nm": 68.77868700755927,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 18.4
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 70,
+  "torque_Nm": 72.5806541604152,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 22.4
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 75,
+  "torque_Nm": 76.4450392986257,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.0
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 80,
+  "torque_Nm": 81.08893155226826,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 18.2
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 85,
+  "torque_Nm": 87.4810428050686,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.2
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 90,
+  "torque_Nm": 90.38431372246224,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.9
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 95,
+  "torque_Nm": 88.18993421446805,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.5
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 100,
+  "torque_Nm": 86.1274690831303,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.4
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 105,
+  "torque_Nm": 86.70643338143407,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.7
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 110,
+  "torque_Nm": 89.55172686627591,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.9
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 115,
+  "torque_Nm": 89.44549899095888,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.9
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 120,
+  "torque_Nm": 86.41142962313128,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.7
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 125,
+  "torque_Nm": 79.92298423728874,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.3
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 130,
+  "torque_Nm": 72.72902461856279,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 14.7
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 135,
+  "torque_Nm": 68.22354852325071,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 14.3
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 140,
+  "torque_Nm": 63.190883086778506,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 14.3
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 145,
+  "torque_Nm": 59.449845959709364,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.5
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 150,
+  "torque_Nm": 60.78349157261891,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 14.0
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 60,
+  "torque_Nm": 66.6901645016051,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.1
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 65,
+  "torque_Nm": 77.19674600118272,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 21.6
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 70,
+  "torque_Nm": 84.58793998048763,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 18.4
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 75,
+  "torque_Nm": 89.9317328553187,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.5
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 80,
+  "torque_Nm": 94.98737564913291,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 19.1
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 85,
+  "torque_Nm": 101.94037156927078,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.6
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 90,
+  "torque_Nm": 106.18735203880799,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.6
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 95,
+  "torque_Nm": 103.42814660025735,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.9
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 100,
+  "torque_Nm": 100.23464473807776,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.6
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 105,
+  "torque_Nm": 100.59409462496646,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.2
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 110,
+  "torque_Nm": 103.96334381907504,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.5
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 115,
+  "torque_Nm": 105.83858538300215,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.5
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 120,
+  "torque_Nm": 103.03494005463469,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 18.2
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 125,
+  "torque_Nm": 96.3913108281741,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.7
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 130,
+  "torque_Nm": 88.02617345108375,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.2
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 135,
+  "torque_Nm": 81.66379445708223,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.6
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 140,
+  "torque_Nm": 74.82107301603463,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.8
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 145,
+  "torque_Nm": 69.19321867515936,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.2
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 150,
+  "torque_Nm": 69.74310314058087,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 13.5
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 60,
+  "torque_Nm": 70.7784552656891,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.0
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 65,
+  "torque_Nm": 84.18169661821578,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.0
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 70,
+  "torque_Nm": 95.189205358742,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.6
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 75,
+  "torque_Nm": 102.8481479829226,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 18.1
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 80,
+  "torque_Nm": 108.65386578338712,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 18.9
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 85,
+  "torque_Nm": 115.87417775786521,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.4
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 90,
+  "torque_Nm": 121.71355691960763,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.4
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 95,
+  "torque_Nm": 118.29723101541002,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.7
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 100,
+  "torque_Nm": 114.29778337885678,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.0
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 105,
+  "torque_Nm": 114.49799768318805,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.2
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 110,
+  "torque_Nm": 118.56475722892361,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.7
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 115,
+  "torque_Nm": 122.05739371735714,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.5
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 120,
+  "torque_Nm": 119.89256430442158,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.3
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 125,
+  "torque_Nm": 112.97546234979737,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.1
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 130,
+  "torque_Nm": 103.81055563703507,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.7
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 135,
+  "torque_Nm": 95.67966047625052,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.5
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 140,
+  "torque_Nm": 86.57660607738438,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 18.2
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 145,
+  "torque_Nm": 79.00209566782836,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.8
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 150,
+  "torque_Nm": 78.48022910975402,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.1
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 60,
+  "torque_Nm": 74.31536309228308,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 18.1
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 65,
+  "torque_Nm": 89.80074748778206,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 20.6
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 70,
+  "torque_Nm": 104.25352410374845,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 19.4
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 75,
+  "torque_Nm": 113.88716535742324,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 21.1
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 80,
+  "torque_Nm": 121.25048230679525,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 21.2
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 85,
+  "torque_Nm": 129.50286753023488,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 20.9
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 90,
+  "torque_Nm": 137.0551361355252,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 18.6
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 95,
+  "torque_Nm": 133.38712296723136,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.5
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 100,
+  "torque_Nm": 128.5293426019458,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.8
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 105,
+  "torque_Nm": 128.63345474372758,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.7
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 110,
+  "torque_Nm": 132.95750647146076,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 18.0
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 115,
+  "torque_Nm": 137.9662247970054,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.1
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 120,
+  "torque_Nm": 136.6727710050909,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 20.0
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 125,
+  "torque_Nm": 129.593870375132,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 21.1
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 130,
+  "torque_Nm": 119.29514939840301,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 21.6
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 135,
+  "torque_Nm": 110.18062396370475,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 23.0
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 140,
+  "torque_Nm": 98.52187198038102,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 21.1
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 145,
+  "torque_Nm": 88.88249124763955,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 22.8
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 150,
+  "torque_Nm": 87.47231546503282,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 21.4
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 0,
+  "torque_Nm": -0.016184362024254408,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.3
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 10,
+  "torque_Nm": -2.2227663324062488,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.9
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 20,
+  "torque_Nm": 2.994996092542797,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.3
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 30,
+  "torque_Nm": 10.871197673503927,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 18.4
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 40,
+  "torque_Nm": 19.48430162702875,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.1
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 50,
+  "torque_Nm": 25.336130378869342,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.6
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 160,
+  "torque_Nm": 13.470746468556149,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.4
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 170,
+  "torque_Nm": 9.874523096023756,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.9
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 180,
+  "torque_Nm": -0.021382661756506022,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 14.2
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 0,
+  "torque_Nm": 0.022734962662775388,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.5
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 10,
+  "torque_Nm": 3.199277154729197,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.8
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 20,
+  "torque_Nm": 11.425767668024417,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 18.1
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 30,
+  "torque_Nm": 20.150177406399838,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.0
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 40,
+  "torque_Nm": 33.64174561241394,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.4
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 50,
+  "torque_Nm": 44.82025564558254,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.5
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 160,
+  "torque_Nm": 35.54492349823777,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 14.1
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 170,
+  "torque_Nm": 17.072541770365415,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.2
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 180,
+  "torque_Nm": -0.02372465234131989,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 14.5
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 0,
+  "torque_Nm": 0.04325627493099763,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.4
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 10,
+  "torque_Nm": 9.832507944404425,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.1
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 20,
+  "torque_Nm": 18.373181308692022,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 16.3
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 30,
+  "torque_Nm": 27.365024581290946,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 15.2
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 40,
+  "torque_Nm": 40.75700885788527,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 32.5
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 50,
+  "torque_Nm": 54.00112735037017,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 23.3
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 160,
+  "torque_Nm": 71.09303690868008,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 20.5
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 170,
+  "torque_Nm": 30.564858128968027,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 19.2
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 180,
+  "torque_Nm": 0.022138258253286882,
+  "coilem_currents_per_Ia": [
+   0.75,
+   -0.75,
+   -0.0
+  ],
+  "run_commit": "23799a5c8db51d7baa81a2c19e3eefd90c9e09e0",
+  "run_dirty": false,
+  "solve_s": 17.5
+ }
+]
