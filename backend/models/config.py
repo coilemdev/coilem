@@ -256,8 +256,12 @@ class WindingConfig(BaseModel):
     )
     turns_per_coil: int = Field(..., ge=1, le=500, description="Turns per coil")
     layers: int = Field(default=2, ge=1, le=2, description="Number of layers (1 or 2)")
+    # The physical limit is that paths divide each phase's coils evenly, which
+    # validate_geometry checks; this bound only caps the field (32 = the most coils
+    # a phase can have at the 96-slot maximum). It used to be 6, which ruled out
+    # real machines such as the 2005 Honda Accord's 8 parallel coils (#91).
     parallel_paths: int = Field(
-        default=1, ge=1, le=6, description="Number of parallel paths"
+        default=1, ge=1, le=32, description="Number of parallel paths"
     )
     coil_span: Optional[int] = Field(
         default=None,

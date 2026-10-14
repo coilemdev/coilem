@@ -97,15 +97,23 @@ pub(crate) fn phase_currents_for_excitation(
     let pole_pairs = ((config.rotor.pole_count / 2).max(1)) as f64;
     let rotor_elec_deg = rotor_angle_rad.to_degrees() * pole_pairs;
     let advance_deg = sp.commutation_advance_deg();
+    // Commutate on the rotor's position relative to phase A's axis, which tooth
+    // coils move off 0 degrees (#91); 0.0 for every other layout.
+    let axis_offset_deg = winding_phase_axis_offset_elec_deg(
+        &config.winding.winding_type,
+        config.stator.slot_count,
+        config.rotor.pole_count,
+        config.winding.layers,
+    );
     let (effective_deg, table) =
         if sp.excitation_rotation_convention_label() == "clockwise_positive_ui" {
             (
-                normalize_commutation_boundary(-rotor_elec_deg + advance_deg),
+                normalize_commutation_boundary(-(rotor_elec_deg - axis_offset_deg) + advance_deg),
                 &PUBLIC_SIX_STEP_TABLE,
             )
         } else {
             (
-                normalize_commutation_boundary(rotor_elec_deg + advance_deg),
+                normalize_commutation_boundary(rotor_elec_deg - axis_offset_deg + advance_deg),
                 &NATIVE_SIX_STEP_TABLE,
             )
         };
@@ -286,6 +294,7 @@ pub fn compute_slot_excitation_summary(
         slot_count,
         pole_count,
         turns_per_coil,
+        1,
         current_angle_deg,
         phase_currents,
         current_densities,
@@ -299,6 +308,7 @@ pub fn compute_slot_excitation_summary_from_phase_currents(
     slot_count: u32,
     pole_count: u32,
     turns_per_coil: u32,
+    winding_layers: u32,
     source_current_angle_deg: f64,
     phase_currents: [f64; 3],
     current_densities: &[f64],
@@ -333,7 +343,7 @@ pub fn compute_slot_excitation_summary_from_phase_currents(
 
         if !slot_assigned[slot_local] {
             let (phase, dir) =
-                winding_assignment(winding_type, slot_global, slot_count, pole_count);
+                winding_assignment(winding_type, slot_global, slot_count, pole_count, winding_layers);
             slot_phase[slot_local] = phase;
             slot_direction[slot_local] = if dir { 1.0 } else { -1.0 };
             slot_assigned[slot_local] = true;
@@ -555,8 +565,112 @@ pub(crate) fn slot_winding_layers(
             .collect();
     }
 
-    let (phase, direction) = winding_assignment(winding_type, slot, slot_count, pole_count);
+    if winding_type != "distributed" {
+        return concentrated_slot_sides(slot, slot_count, pole_count, winding_layers);
+    }
+    let (phase, direction) = distributed_winding_assignment(slot, slot_count, pole_count);
     vec![(phase, direction, 1.0)]
+}
+
+/// Fractional-slot concentrated windings (q = slots / (3 poles) < 1) are real
+/// tooth coils (#91). Concentrated windings with q >= 1 keep the whole-slot
+/// layout of `concentrated_winding_assignment`, as do slot counts the three
+/// phases cannot share, which Python validation rejects before a solve.
+pub fn concentrated_uses_tooth_coils(slot_count: u32, pole_count: u32) -> bool {
+    slot_count > 0 && slot_count % 3 == 0 && pole_count > 0 && slot_count < 3 * pole_count
+}
+
+/// coilEM's 60-degree sector order A+, C-, B+, A-, C+, B- as (phase, direction_in).
+const CONCENTRATED_SECTORS: [(usize, bool); 6] =
+    [(0, true), (2, false), (1, true), (0, false), (2, true), (1, false)];
+/// Coil phasors of the q = 1/2 family sit exactly on sector boundaries; a fixed
+/// bias keeps their assignment independent of floating-point rounding.
+const SECTOR_BOUNDARY_BIAS_DEG: f64 = 1e-7;
+
+fn electrical_slot_pitch_rad(slot_count: u32, pole_count: u32) -> f64 {
+    2.0 * PI * (pole_count as f64 / 2.0) / slot_count.max(1) as f64
+}
+
+/// (tooth, phase, direction_in) for every wound tooth: coil t wraps tooth t,
+/// with its go side in slot t and its return side in slot t + 1, phased by its
+/// EMF phasor e^{j a t} - e^{j a (t+1)}. One layer winds alternate teeth, two
+/// layers every tooth. Mirrors `backend.winding_utils.tooth_coil_assignments`.
+pub fn tooth_coil_assignments(slot_count: u32, pole_count: u32, layers: u32) -> Vec<(usize, usize, bool)> {
+    let pitch = electrical_slot_pitch_rad(slot_count, pole_count);
+    let step = if layers >= 2 { 1 } else { 2 };
+    (0..slot_count as usize)
+        .step_by(step)
+        .map(|tooth| {
+            let t = tooth as f64;
+            let re = (pitch * t).cos() - (pitch * (t + 1.0)).cos();
+            let im = (pitch * t).sin() - (pitch * (t + 1.0)).sin();
+            let angle = (im.atan2(re).to_degrees() + SECTOR_BOUNDARY_BIAS_DEG).rem_euclid(360.0);
+            let (phase, direction_in) = CONCENTRATED_SECTORS[((angle / 60.0).floor() as usize) % 6];
+            (tooth, phase, direction_in)
+        })
+        .collect()
+}
+
+/// Coil sides in one concentrated slot as (phase, direction_in, turn_fraction).
+///
+/// Tooth coils (q < 1): with one layer, an even slot holds the go side of the
+/// coil on its own tooth and an odd slot the return side of the coil on the
+/// tooth before it; with two layers, side 1 is the return side of the coil on
+/// the tooth before the slot and side 2 the go side of the coil on the slot's
+/// own tooth, half the slot's conductors each. Otherwise the whole slot carries
+/// the legacy assignment. Mirrors
+/// `backend.winding_utils.concentrated_slot_layer_assignments`.
+pub fn concentrated_slot_sides(slot: usize, slot_count: u32, pole_count: u32, layers: u32) -> Vec<(usize, bool, f64)> {
+    let legacy = || {
+        let (phase, direction) = concentrated_winding_assignment(slot, slot_count, pole_count);
+        vec![(phase, direction, 1.0)]
+    };
+    if !concentrated_uses_tooth_coils(slot_count, pole_count) {
+        return legacy();
+    }
+    let n = slot_count as usize;
+    let coils = tooth_coil_assignments(slot_count, pole_count, layers);
+    let coil_on = |tooth: usize| coils.iter().find(|coil| coil.0 == tooth).map(|coil| (coil.1, coil.2));
+    let slot = slot % n;
+    let previous_tooth = (slot + n - 1) % n;
+    if layers >= 2 {
+        return match (coil_on(previous_tooth), coil_on(slot)) {
+            (Some((back_phase, back_in)), Some((go_phase, go_in))) => {
+                vec![(back_phase, !back_in, 0.5), (go_phase, go_in, 0.5)]
+            }
+            _ => legacy(),
+        };
+    }
+    if let Some((phase, direction_in)) = coil_on(slot) {
+        return vec![(phase, direction_in, 1.0)];
+    }
+    match coil_on(previous_tooth) {
+        Some((phase, direction_in)) => vec![(phase, !direction_in, 1.0)],
+        None => legacy(),
+    }
+}
+
+/// Electrical angle of phase A's axis that the current-angle convention must
+/// absorb: tooth-coil layouts put it on a tooth (+30 degrees for q = 1/2), so
+/// gamma stays measured from the q-axis. Every other layout returns 0.0 and
+/// keeps its historical behaviour. Mirrors
+/// `backend.winding_utils.winding_phase_axis_offset_elec_deg`.
+pub fn winding_phase_axis_offset_elec_deg(winding_type: &str, slot_count: u32, pole_count: u32, layers: u32) -> f64 {
+    if winding_type == "distributed" || !concentrated_uses_tooth_coils(slot_count, pole_count) {
+        return 0.0;
+    }
+    let pitch = electrical_slot_pitch_rad(slot_count, pole_count);
+    let (mut re, mut im) = (0.0_f64, 0.0_f64);
+    for slot in 0..slot_count as usize {
+        for (phase, direction_in, fraction) in concentrated_slot_sides(slot, slot_count, pole_count, layers) {
+            if phase == 0 {
+                let sign = if direction_in { 1.0 } else { -1.0 };
+                re += sign * fraction * (pitch * slot as f64).cos();
+                im += sign * fraction * (pitch * slot as f64).sin();
+            }
+        }
+    }
+    im.atan2(re).to_degrees()
 }
 
 /// Dispatch slot assignment on the config winding type. Anything other than
@@ -567,15 +681,17 @@ pub(crate) fn winding_assignment(
     slot: usize,
     slot_count: u32,
     pole_count: u32,
+    layers: u32,
 ) -> (usize, bool) {
     if winding_type == "distributed" {
         distributed_winding_assignment(slot, slot_count, pole_count)
     } else {
-        concentrated_winding_assignment(slot, slot_count, pole_count)
+        let (phase, direction, _) = concentrated_slot_sides(slot, slot_count, pole_count, layers)[0];
+        (phase, direction)
     }
 }
 
-pub fn phase_slot_side_phasor_magnitudes(slot_count: u32, pole_count: u32) -> [f64; 3] {
+pub fn phase_slot_side_phasor_magnitudes(slot_count: u32, pole_count: u32, layers: u32) -> [f64; 3] {
     let pole_pairs = pole_count as f64 / 2.0;
     let elec_slot_pitch_rad = pole_pairs * 2.0 * PI / slot_count as f64;
     let mut re = [0.0_f64; 3];
@@ -583,10 +699,11 @@ pub fn phase_slot_side_phasor_magnitudes(slot_count: u32, pole_count: u32) -> [f
 
     for slot in 0..slot_count as usize {
         let theta_elec = slot as f64 * elec_slot_pitch_rad;
-        let (phase, direction) = concentrated_winding_assignment(slot, slot_count, pole_count);
-        let sign = if direction { 1.0 } else { -1.0 };
-        re[phase] += sign * theta_elec.cos();
-        im[phase] += sign * theta_elec.sin();
+        for (phase, direction, fraction) in concentrated_slot_sides(slot, slot_count, pole_count, layers) {
+            let sign = if direction { 1.0 } else { -1.0 };
+            re[phase] += sign * fraction * theta_elec.cos();
+            im[phase] += sign * fraction * theta_elec.sin();
+        }
     }
 
     [
@@ -671,6 +788,7 @@ mod tests {
         estimate_slot_areas, flux_linkage_slot_side_turn_factor, mesh_slot_areas_mm2,
         phase_currents_for_excitation, phase_slot_side_phasor_magnitudes, slot_center_angle_rad,
         slot_index_from_theta, source_phase_currents_for_excitation, winding_assignment,
+        concentrated_slot_sides, winding_phase_axis_offset_elec_deg,
     };
     use crate::mesh::{MeshInfo, Region, TriMesh};
     use crate::motor::MotorConfig;
@@ -731,10 +849,20 @@ mod tests {
         for vector in golden.vectors {
             let config = six_step_config(vector.commutation_advance_deg);
             let pole_pairs = (config.rotor.pole_count / 2) as f64;
+            // The contract's angle is measured from the phase-A axis. The 12s8p
+            // tooth coils (#91) put that axis 30 electrical degrees after the
+            // slot-0 frame the rotor angle uses, and commutation follows it.
+            let axis_offset_deg = winding_phase_axis_offset_elec_deg(
+                &config.winding.winding_type,
+                config.stator.slot_count,
+                config.rotor.pole_count,
+                config.winding.layers,
+            );
+            assert!((axis_offset_deg - 30.0).abs() < 1e-9, "12s8p axis offset {axis_offset_deg}");
+            let public_electrical_deg = vector.rotor_electrical_angle_deg - axis_offset_deg;
             // The solver rotates counterclockwise internally. Its adapter marks
             // the public clockwise convention and mirrors the public angle.
-            let native_mechanical_rad =
-                (-vector.rotor_electrical_angle_deg / pole_pairs).to_radians();
+            let native_mechanical_rad = (-public_electrical_deg / pole_pairs).to_radians();
             let actual = phase_currents_for_excitation(
                 &config,
                 native_mechanical_rad,
@@ -970,6 +1098,59 @@ mod tests {
                 concentrated_winding_assignment(slot, 36, 30),
                 expected[slot % expected.len()],
                 "slot {slot} assignment mismatch",
+            );
+        }
+    }
+
+    #[derive(Deserialize)]
+    struct ToothCoilLayouts {
+        cases: Vec<ToothCoilLayout>,
+    }
+
+    #[derive(Deserialize)]
+    struct ToothCoilLayout {
+        slot_count: u32,
+        pole_count: u32,
+        layers: u32,
+        phase_axis_offset_elec_deg: f64,
+        slots: Vec<Vec<(String, String, f64)>>,
+    }
+
+    #[test]
+    fn tooth_coil_slot_sides_match_the_python_layouts() {
+        // Shared with tests/test_tooth_coil_windings.py, which checks the same
+        // file against backend.winding_utils (#91).
+        let layouts: ToothCoilLayouts = serde_json::from_str(include_str!(
+            "../../../tests/fixtures/tooth_coil_layouts.json"
+        ))
+        .expect("shared tooth-coil layouts");
+        assert!(!layouts.cases.is_empty());
+        for case in layouts.cases {
+            let label = format!("{}s{}p layers={}", case.slot_count, case.pole_count, case.layers);
+            for (slot, expected) in case.slots.iter().enumerate() {
+                let actual: Vec<(String, String, f64)> =
+                    concentrated_slot_sides(slot, case.slot_count, case.pole_count, case.layers)
+                        .into_iter()
+                        .map(|(phase, direction_in, fraction)| {
+                            (
+                                ["A", "B", "C"][phase].to_string(),
+                                if direction_in { "in" } else { "out" }.to_string(),
+                                fraction,
+                            )
+                        })
+                        .collect();
+                assert_eq!(&actual, expected, "{label} slot {slot}");
+            }
+            let offset = winding_phase_axis_offset_elec_deg(
+                "concentrated",
+                case.slot_count,
+                case.pole_count,
+                case.layers,
+            );
+            assert!(
+                (offset - case.phase_axis_offset_elec_deg).abs() < 1e-6,
+                "{label} axis offset {offset} vs {}",
+                case.phase_axis_offset_elec_deg,
             );
         }
     }
@@ -1257,16 +1438,16 @@ mod tests {
     fn winding_assignment_dispatches_on_winding_type() {
         for slot in 0..48 {
             assert_eq!(
-                winding_assignment("distributed", slot, 48, 8),
+                winding_assignment("distributed", slot, 48, 8, 1),
                 distributed_winding_assignment(slot, 48, 8),
             );
             // Anything that is not explicitly distributed stays concentrated.
             assert_eq!(
-                winding_assignment("concentrated", slot, 48, 8),
+                winding_assignment("concentrated", slot, 48, 8, 1),
                 concentrated_winding_assignment(slot, 48, 8),
             );
             assert_eq!(
-                winding_assignment("hairpin", slot, 48, 8),
+                winding_assignment("hairpin", slot, 48, 8, 1),
                 concentrated_winding_assignment(slot, 48, 8),
             );
         }
@@ -1393,7 +1574,7 @@ mod tests {
 
     #[test]
     fn slot_side_phasor_diagnostic_matches_36s30p_fscw_reference() {
-        let mags = phase_slot_side_phasor_magnitudes(36, 30);
+        let mags = phase_slot_side_phasor_magnitudes(36, 30, 1);
         let expected = 11.59110991546882;
 
         for mag in mags {

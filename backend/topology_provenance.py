@@ -18,7 +18,10 @@ from backend.models import MotorConfig
 # builds the bore from them, so before v4 two designs that differed only in
 # their tooth shoe shared one signature and could reuse each other's cached
 # per-angle meshes.
-MAGNETO2D_MESH_SIGNATURE_VERSION = "magneto2d_mesh_signature/v4"
+# v5: concentrated windings with q < 1 became tooth coils (#91). Cached meshes
+# carry each slot's phase and direction in their region labels, and a re-bake
+# reuses those labels, so a v4 mesh would drive the old slot map.
+MAGNETO2D_MESH_SIGNATURE_VERSION = "magneto2d_mesh_signature/v5"
 TOPOLOGY_PROVENANCE_SCHEMA_VERSION = "openem.topology_provenance.v1"
 
 

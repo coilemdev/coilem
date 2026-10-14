@@ -358,23 +358,36 @@ fn uses_cogging_remesh_per_step(config: &MotorConfig) -> bool {
     uses_remesh_per_step(config) || config.stator.od_mm <= 75.0
 }
 
-fn applied_current_angle_deg(rotor_electrical_angle_deg: f64, gamma_deg: f64) -> f64 {
+fn applied_current_angle_deg(rotor_electrical_angle_deg: f64, gamma_deg: f64, axis_offset_deg: f64) -> f64 {
     // Positive gamma ADDS to the source
     // angle so that positive gamma is flux-weakening advance, mirroring
-    // backend.geometry_drawer.current_angle_elec_deg_for_rotor_elec exactly.
+    // backend.excitation.resolve_phase_current_sample exactly.
     // The earlier convention of subtracting gamma retarded the phasor and
-    // mirrored the advance axis on both lanes.
-    rotor_electrical_angle_deg - 90.0 + gamma_deg
+    // mirrored the advance axis on both lanes. `axis_offset_deg` is the
+    // winding's phase-A axis angle (non-zero only for tooth coils, #91), which
+    // keeps gamma measured from the q-axis.
+    rotor_electrical_angle_deg - 90.0 + gamma_deg - axis_offset_deg
+}
+
+/// Phase-A axis angle of the drawn winding (0.0 except for tooth coils, #91).
+fn winding_axis_offset_deg(config: &MotorConfig) -> f64 {
+    crate::sources::winding_phase_axis_offset_elec_deg(
+        &config.winding.winding_type,
+        config.stator.slot_count,
+        config.rotor.pole_count,
+        config.winding.layers,
+    )
 }
 
 fn rotor_electrical_angle_deg(rotor_angle_rad: f64, pole_pairs: usize) -> f64 {
     rotor_angle_rad.to_degrees() * pole_pairs as f64
 }
 
-fn synced_current_angle_deg(rotor_angle_rad: f64, pole_pairs: usize, advance_deg: f64) -> f64 {
+fn synced_current_angle_deg(rotor_angle_rad: f64, pole_pairs: usize, advance_deg: f64, axis_offset_deg: f64) -> f64 {
     applied_current_angle_deg(
         rotor_electrical_angle_deg(rotor_angle_rad, pole_pairs),
         advance_deg,
+        axis_offset_deg,
     )
 }
 
@@ -1954,6 +1967,7 @@ fn solve_at_angle(
         config.stator.slot_count,
         config.rotor.pole_count,
         config.winding.turns_per_coil,
+        config.winding.layers,
         source_current_angle_deg,
         phase_currents,
         &j_z,
@@ -2321,7 +2335,7 @@ pub fn run_magnetostatic_solve_at_angle_with_mesh(
     let ctx = setup_context(config, context_artifact)?;
     let pole_pairs = ((config.rotor.pole_count / 2).max(1)) as usize;
     let synced_current_angle =
-        synced_current_angle_deg(rotor_angle_rad, pole_pairs, ctx.current_angle);
+        synced_current_angle_deg(rotor_angle_rad, pole_pairs, ctx.current_angle, winding_axis_offset_deg(config));
 
     eprintln!(
         "magneto2d: mesh {} nodes, {} triangles, {} pole pitches, rotor_angle={:.3}deg mech",
@@ -2706,7 +2720,7 @@ fn run_rotor_sweep_inner(
                 completed_positions: &completed,
                 elec_deg: 0.0,
             };
-            let synced_at_zero = synced_current_angle_deg(0.0, pole_pairs, advance_deg);
+            let synced_at_zero = synced_current_angle_deg(0.0, pole_pairs, advance_deg, winding_axis_offset_deg(config));
             let seed_started = Instant::now();
             let (_seed_fields, _seed_summary, seed_az, _seed_diag, seed_warm) = solve_at_angle(
                 &ctx,
@@ -2739,7 +2753,8 @@ fn run_rotor_sweep_inner(
         {
             let elec_deg = i as f64 * elec_step;
             let mech_rad = elec_deg.to_radians() / pole_pairs as f64;
-            let synced_current_angle = synced_current_angle_deg(mech_rad, pole_pairs, advance_deg);
+            let synced_current_angle =
+                synced_current_angle_deg(mech_rad, pole_pairs, advance_deg, winding_axis_offset_deg(config));
 
             // In remesh_per_step mode rebuild the mesh (and derived
             // centroids) with the rotor baked at mech_rad. The rest of
@@ -3114,7 +3129,7 @@ fn run_rotor_sweep_inner(
                 // current synthesis on the shared fixed mesh, no solve.
                 let mech_rad = elec_deg.to_radians() / pole_pairs as f64;
                 let source_current_angle_deg =
-                    synced_current_angle_deg(mech_rad, pole_pairs, advance_deg);
+                    synced_current_angle_deg(mech_rad, pole_pairs, advance_deg, winding_axis_offset_deg(config));
                 let phase_currents = phase_currents_for_excitation(
                     config,
                     mech_rad,
@@ -3146,6 +3161,7 @@ fn run_rotor_sweep_inner(
                     config.stator.slot_count,
                     config.rotor.pole_count,
                     config.winding.turns_per_coil,
+                    config.winding.layers,
                     source_current_angle_deg,
                     phase_currents,
                     &j_z,
@@ -3330,7 +3346,7 @@ fn run_rotor_sweep_inner(
     let _torques_pb: Vec<f64> = (0..n_positions)
         .map(|i| {
             let current_rad =
-                applied_current_angle_deg(positions_elec[i], advance_deg).to_radians();
+                applied_current_angle_deg(positions_elec[i], advance_deg, winding_axis_offset_deg(config)).to_radians();
             let i_a = ctx.current_a * current_rad.sin();
             let i_b = ctx.current_a * (current_rad - 2.0 * PI / 3.0).sin();
             let i_c = ctx.current_a * (current_rad - 4.0 * PI / 3.0).sin();

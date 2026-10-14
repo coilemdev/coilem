@@ -597,16 +597,20 @@ pub fn compute_flux_linkage(
         let az_avg_slot = slot_az_integral[s] / slot_area_total[s];
         let az_effective_slot = az_avg_slot - slot_az_reference;
         let slot_global = s % slot_count as usize;
-        if winding_type == "distributed" && coil_span.is_some() {
+        // Chorded distributed slots and double-layer tooth-coil slots (#91) hold
+        // more than one coil side: each side links the slot's average A_z with
+        // its own phase, direction and share of the conductors.
+        let sides = slot_winding_layers(
+            winding_type,
+            slot_global,
+            slot_count,
+            pole_count,
+            winding_layers,
+            coil_span,
+        );
+        if (winding_type == "distributed" && coil_span.is_some()) || sides.len() > 1 {
             let theta_deg = slot_center_angle_rad(s, slot_pitch_rad).to_degrees();
-            for (phase, direction, turn_fraction) in slot_winding_layers(
-                winding_type,
-                slot_global,
-                slot_count,
-                pole_count,
-                winding_layers,
-                coil_span,
-            ) {
+            for (phase, direction, turn_fraction) in sides {
                 let dir_sign = if direction { 1.0 } else { -1.0 };
                 let contrib = dir_sign
                     * turn_fraction
@@ -1146,7 +1150,7 @@ pub fn summarize_fields(
     let slot_side_turn_factor =
         flux_linkage_slot_side_turn_factor(winding_type, winding_layers, parallel_paths);
     if winding_type == "concentrated" && field_spectrum_diagnostics_enabled() {
-        let phasor_magnitudes = phase_slot_side_phasor_magnitudes(slot_count, pole_count);
+        let phasor_magnitudes = phase_slot_side_phasor_magnitudes(slot_count, pole_count, winding_layers);
         let effective_turns = [
             phasor_magnitudes[0] * turns_per_coil as f64 * slot_side_turn_factor,
             phasor_magnitudes[1] * turns_per_coil as f64 * slot_side_turn_factor,
@@ -1727,10 +1731,16 @@ mod tests {
             0.5,
             false,
         );
-        assert!(
-            (raw_offset_flux[0] - raw_flux[0]).abs() > 0.02,
-            "unreferenced phase flux should expose the synthetic common-mode sensitivity"
-        );
+        // 12s8p is wound as tooth coils (#91): each coil's go and return sides
+        // cancel a common A_z offset even before the reference is removed.
+        for phase in 0..3 {
+            assert!(
+                (raw_offset_flux[phase] - raw_flux[phase]).abs() < 1e-12,
+                "tooth-coil phase {phase} picked up a common A_z offset: {} -> {}",
+                raw_flux[phase],
+                raw_offset_flux[phase],
+            );
+        }
     }
 
     #[test]

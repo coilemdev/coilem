@@ -32,9 +32,12 @@ from backend.models.config import (
     MIN_STATOR_TOOTH_WIDTH_MM,
 )
 from backend.winding_utils import (
+    concentrated_uses_tooth_coils,
     distributed_full_pitch_slots,
     distributed_slots_per_pole_per_phase_value,
     distributed_winding_is_balanced,
+    tooth_coil_assignments,
+    tooth_coil_layout_error,
 )
 
 # "Does this fit" comparisons are against arcs computed through pi, so a part
@@ -61,21 +64,31 @@ SLOT_COUNT_MIN = 6
 SLOT_COUNT_MAX = 96
 
 
-def concentrated_belt_counts(slot_count: int, pole_count: int) -> dict[str, int]:
-    """Coils per phase for a concentrated (one coil per tooth) winding."""
+def concentrated_belt_counts(slot_count: int, pole_count: int, layers: int = 1) -> dict[str, int]:
+    """Coils per phase for a concentrated winding.
 
-    pole_pairs = max(1, pole_count // 2)
+    Fractional-slot windings (q < 1) count their tooth coils (#91): alternate teeth
+    with one layer, every tooth with two. Others count whole slots per phase.
+    """
+
     counts: dict[str, int] = {}
+    if concentrated_uses_tooth_coils(slot_count, pole_count):
+        for _tooth, phase, _direction in tooth_coil_assignments(slot_count, pole_count, layers):
+            counts[phase] = counts.get(phase, 0) + 1
+        return counts
+    pole_pairs = max(1, pole_count // 2)
     for slot_idx in range(slot_count):
         phase, _direction = concentrated_slot_phase(slot_idx, slot_count, pole_pairs)
         counts[phase] = counts.get(phase, 0) + 1
     return counts
 
 
-def concentrated_winding_is_balanced(slot_count: int, pole_count: int) -> bool:
-    """True when all three phases get coils, and the same number of them."""
+def concentrated_winding_is_balanced(slot_count: int, pole_count: int, layers: int = 1) -> bool:
+    """True when all three phases get coils, the same number of them, and (for tooth coils) a balanced EMF."""
 
-    counts = concentrated_belt_counts(slot_count, pole_count)
+    if concentrated_uses_tooth_coils(slot_count, pole_count):
+        return tooth_coil_layout_error(slot_count, pole_count, layers) is None
+    counts = concentrated_belt_counts(slot_count, pole_count, layers)
     return set(counts) == {"A", "B", "C"} and len(set(counts.values())) == 1
 
 
@@ -116,7 +129,10 @@ def winding_layout_problem(
     """The single decision on whether a 3-phase winding layout is workable."""
 
     if winding_type != "distributed":
-        belt_counts = concentrated_belt_counts(slot_count, pole_count)
+        if concentrated_uses_tooth_coils(slot_count, pole_count):
+            error = tooth_coil_layout_error(slot_count, pole_count, layers)
+            return None if error is None else WindingLayoutProblem("tooth_coil_layout", error)
+        belt_counts = concentrated_belt_counts(slot_count, pole_count, layers)
         missing = sorted({"A", "B", "C"} - belt_counts.keys())
         if missing:
             return WindingLayoutProblem(
@@ -146,7 +162,7 @@ def winding_layout_problem(
 
 
 def balanced_concentrated_slot_counts(
-    pole_count: int, *, near: int, limit: int = 3
+    pole_count: int, *, near: int, limit: int = 3, layers: int = 1
 ) -> list[int]:
     """Supported slot counts that do balance at this pole count, nearest `near` first.
 
@@ -160,7 +176,7 @@ def balanced_concentrated_slot_counts(
     candidates = [
         slots
         for slots in range(SLOT_COUNT_MIN, SLOT_COUNT_MAX + 1)
-        if slots != near and concentrated_winding_is_balanced(slots, pole_count)
+        if slots != near and concentrated_winding_is_balanced(slots, pole_count, layers)
     ]
     candidates.sort(key=lambda slots: (abs(slots - near), slots))
     return sorted(candidates[:limit])
@@ -430,12 +446,12 @@ def validate_geometry(config: MotorConfig) -> list[ErrorResponse]:
     # "Geometry valid — ready to solve" for a two-phase machine.
     if winding.type != "distributed" and stator.slot_count > 0:
         problem = winding_layout_problem(
-            stator.slot_count, rotor.pole_count, winding.type
+            stator.slot_count, rotor.pole_count, winding.type, layers=winding.layers
         )
         if problem is not None:
             detail = problem.detail
             alternatives = balanced_concentrated_slot_counts(
-                rotor.pole_count, near=stator.slot_count
+                rotor.pole_count, near=stator.slot_count, layers=winding.layers
             )
             # Balance depends on the slot/pole *pair*, not on the slot count alone, so
             # the alternatives are searched with the same belt assignment the check
@@ -470,9 +486,17 @@ def validate_geometry(config: MotorConfig) -> list[ErrorResponse]:
     # split into 3 equal branches. Unequal branches have unequal EMF in a real
     # machine and circulate current between themselves, heating the winding for no
     # torque.
+    tooth_coils = winding.type != "distributed" and concentrated_uses_tooth_coils(stator.slot_count, rotor.pole_count)
     if winding.type != "distributed" and stator.slot_count % 3 == 0:
-        coils_per_phase = stator.slot_count // 3
-        if winding.parallel_paths > 1 and coils_per_phase % winding.parallel_paths != 0:
+        # Tooth coils (#91): alternate teeth with one layer (slot_count / 6 coils per
+        # phase), every tooth with two (slot_count / 3).
+        coils_per_phase = (
+            len(tooth_coil_assignments(stator.slot_count, rotor.pole_count, winding.layers)) // 3
+            if tooth_coils
+            else stator.slot_count // 3
+        )
+        coil_layout = "one coil on every other tooth" if tooth_coils and winding.layers < 2 else "one coil per tooth"
+        if winding.parallel_paths > 1 and coils_per_phase and coils_per_phase % winding.parallel_paths != 0:
             divisors = [p for p in range(1, coils_per_phase + 1) if coils_per_phase % p == 0]
             errors.append(
                 ErrorResponse(
@@ -481,7 +505,7 @@ def validate_geometry(config: MotorConfig) -> list[ErrorResponse]:
                     error_code="INVALID_GEOMETRY",
                     message=f"parallel_paths={winding.parallel_paths} does not evenly divide the "
                     f"{coils_per_phase} coils per phase of this concentrated layout "
-                    f"({stator.slot_count} slots, one coil per tooth).",
+                    f"({stator.slot_count} slots, {coil_layout}).",
                     field="winding.parallel_paths",
                     suggestion=f"Use one of: {divisors}",
                 )

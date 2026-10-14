@@ -2186,9 +2186,9 @@ fn rms_current_amplitude_is_converted_to_peak_current() {
 fn applied_current_angle_uses_unified_q_axis_gamma_convention() {
     // Positive gamma ADVANCES the source phasor. gamma=0
     // rows stay bit-identical to the legacy rotor_elec - 90 source angle.
-    assert_eq!(applied_current_angle_deg(30.0, 0.0), -60.0);
-    assert_eq!(applied_current_angle_deg(0.0, 0.0), -90.0);
-    assert_eq!(applied_current_angle_deg(30.0, 30.0), -30.0);
+    assert_eq!(applied_current_angle_deg(30.0, 0.0, 0.0), -60.0);
+    assert_eq!(applied_current_angle_deg(0.0, 0.0, 0.0), -90.0);
+    assert_eq!(applied_current_angle_deg(30.0, 30.0, 0.0), -30.0);
 }
 
 #[test]
@@ -2202,8 +2202,8 @@ fn single_angle_sync_matches_full_sweep_rule() {
     let mech_rad = 15.0_f64.to_radians();
     let pole_pairs = 2;
     let advance_deg = 0.0;
-    assert!((synced_current_angle_deg(mech_rad, pole_pairs, advance_deg) - (-60.0)).abs() < 1e-9);
-    assert!((synced_current_angle_deg(mech_rad, pole_pairs, 30.0) - (-30.0)).abs() < 1e-9);
+    assert!((synced_current_angle_deg(mech_rad, pole_pairs, advance_deg, 0.0) - (-60.0)).abs() < 1e-9);
+    assert!((synced_current_angle_deg(mech_rad, pole_pairs, 30.0, 0.0) - (-30.0)).abs() < 1e-9);
 }
 
 #[test]

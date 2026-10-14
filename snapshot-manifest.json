@@ -160,8 +160,8 @@
     },
     {
       "path": "backend/excitation.py",
-      "bytes": 7609,
-      "sha256": "1af5bfc451cf2995508ef980ce1a2a6492f651f230a679a71cb05daeb3709a29"
+      "bytes": 8450,
+      "sha256": "53eae3c7ea7f05f20d90f456c87fa0a46a78350404c00128180351678539cf3d"
     },
     {
       "path": "backend/export_safety.py",
@@ -185,13 +185,13 @@
     },
     {
       "path": "backend/geometry.py",
-      "bytes": 56777,
-      "sha256": "f227703284c55f986a54b56400aff00eeea36d005281e3c9c680ca64dce8db26"
+      "bytes": 58332,
+      "sha256": "88828611cc3019c2d8c602aa717ae722311102bf4f0ef225bb4bf9e27d43f673"
     },
     {
       "path": "backend/geometry_drawer.py",
-      "bytes": 52547,
-      "sha256": "8185274e9c4df280bf8330016553dbfde1b611fcae56376853c04be698d03a8f"
+      "bytes": 52995,
+      "sha256": "f8e3bae7c86ab55908501313ce1ac99bc1335d2d92b884970b5d0da988f14f5f"
     },
     {
       "path": "backend/geometry_ir.py",
@@ -340,8 +340,8 @@
     },
     {
       "path": "backend/models/config.py",
-      "bytes": 26249,
-      "sha256": "b5c17c901734cadb5bd85dfa0afdc89118f48c4a96e8ec7de593202561d512c7"
+      "bytes": 26570,
+      "sha256": "6f7b04272c5740bb02bed64dcdf7af4486ced9851a1b9e4c01d58ba56d75558e"
     },
     {
       "path": "backend/models/errors.py",
@@ -380,8 +380,8 @@
     },
     {
       "path": "backend/preview.py",
-      "bytes": 40134,
-      "sha256": "f3bf857b92a42350ecf080e34857349734aea1d4c054346f3a636afd658cb5a2"
+      "bytes": 38907,
+      "sha256": "e45db846a3956faf009248864a2d10b13cdd663888be55fe2444c860a13d32ca"
     },
     {
       "path": "backend/preview_from_ir.py",
@@ -520,8 +520,8 @@
     },
     {
       "path": "backend/topology_provenance.py",
-      "bytes": 8562,
-      "sha256": "c56d93086d39f494670dd58d242ebede0a75ff0ad7b2ecbaa6f18e4fcdd28e92"
+      "bytes": 8785,
+      "sha256": "17dc1de253182afef89071898481b16ce1646136722fb0cf87662fe625c4c9f5"
     },
     {
       "path": "backend/torque_metrics.py",
@@ -535,8 +535,8 @@
     },
     {
       "path": "backend/winding_utils.py",
-      "bytes": 15241,
-      "sha256": "676b0040a79b90e113e8a18fdeb70b3d2a7c53bd2dcf172a6fffc777fc8b2f1b"
+      "bytes": 23867,
+      "sha256": "7d93c411055c2de66bdf167c24fabef817ef921fc0643c6a1847ae22173da4be"
     },
     {
       "path": "benchmarks/README.md",
@@ -3420,8 +3420,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 1705,
-      "sha256": "831be9ee6d85977bf9844778fc08089626001f3e7110c99565742602b2aac2d2"
+      "bytes": 1748,
+      "sha256": "1743ec6ff42b5e244fd8db943a5944b3bdf86777bc391fbea495418522cfdc8d"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -3512,6 +3512,11 @@
       "path": "frontend/scripts/test-solve-progress.mjs",
       "bytes": 4019,
       "sha256": "82b7dd8a6c043530ed24f15b6688760176c82ecf621e6d73597efbed22b10350"
+    },
+    {
+      "path": "frontend/scripts/test-tooth-coil-repair.mjs",
+      "bytes": 2601,
+      "sha256": "e8976a28d5000ab0e692698e6522f6a4f4cd01a1b7c0637128a100450fb477e7"
     },
     {
       "path": "frontend/src/api/projectSchema.ts",
@@ -4075,8 +4080,8 @@
     },
     {
       "path": "frontend/src/public/guidedConfigRepair.ts",
-      "bytes": 10428,
-      "sha256": "591f72a1ac4f37f3a1b68983fcc5e4f13302a2b8d7346c4016b3310c1f9f6022"
+      "bytes": 14279,
+      "sha256": "914ee38714c2613bc1b097cada784d7b92a535f1210573f007df3b709f25491a"
     },
     {
       "path": "frontend/src/public/halbach/Halbach2DViewport.tsx",
@@ -4385,8 +4390,8 @@
     },
     {
       "path": "solvers/magneto2d/src/postprocess/summary.rs",
-      "bytes": 70921,
-      "sha256": "130e7f50e2b35ae0649731a32248b5670e058e90e144a5e377fc13613a530b56"
+      "bytes": 71466,
+      "sha256": "08ef2d1a051d23dea5abe35e0a4830463a4dc699240731271739a76b9f917446"
     },
     {
       "path": "solvers/magneto2d/src/postprocess/tests.rs",
@@ -4435,8 +4440,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/mod.rs",
-      "bytes": 152104,
-      "sha256": "c84c827dac02063f9192388d92702740504534169cece119bd7877a79407a158"
+      "bytes": 152920,
+      "sha256": "fa19f931a7cd21aef2f764362920a460a3ce02f002c660dbf60d79300bdf39bc"
     },
     {
       "path": "solvers/magneto2d/src/solve/model/ipm.rs",
@@ -4475,8 +4480,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/tests.rs",
-      "bytes": 96934,
-      "sha256": "8b77f595d185cfc0b3a051ab5c680dec9690caa32b6178bc9f0a39d985f14e55"
+      "bytes": 96959,
+      "sha256": "b7bdd7173ae24100434f86e30f46735260d8b2745788249102e8472c7cd2168a"
     },
     {
       "path": "solvers/magneto2d/src/solve/types.rs",
@@ -4485,8 +4490,8 @@
     },
     {
       "path": "solvers/magneto2d/src/sources.rs",
-      "bytes": 54549,
-      "sha256": "04aa500fea8eaaeeb05d3331ab35b4dc2a5513661b16f6fc406569b8d0f09fd9"
+      "bytes": 63078,
+      "sha256": "73d9f3d81c088512c73f6a66f341521de63c00d87833ec10b76837f3db3c38a1"
     },
     {
       "path": "solvers/magneto2d/src/sparse.rs",
@@ -4572,6 +4577,11 @@
       "path": "tests/fixtures/spm_8p12s_concentrated.json",
       "bytes": 1165,
       "sha256": "bb0d567682cbdb3d53093dcce85f7d4f06bb6ae2a99896a4a471fd3d75393287"
+    },
+    {
+      "path": "tests/fixtures/tooth_coil_layouts.json",
+      "bytes": 12168,
+      "sha256": "cc91ebe104dbaf92cc784868428ac2ceac456a6cee63ab92e817fa6e6160d40d"
     },
     {
       "path": "tests/test_benchmark_suite.py",
@@ -4661,7 +4671,7 @@
     {
       "path": "tests/test_mesh_signature_tooth_shoe.py",
       "bytes": 3637,
-      "sha256": "ffd7fa77f6c45865bdda6dbc73803073053206bc8543be344a6d9ac363118bfd"
+      "sha256": "c0d3bdfb94ebb20ab188e71804c7987776e310bd2d9990bf35eaa145f3acfac8"
     },
     {
       "path": "tests/test_native_processes.py",
@@ -4757,6 +4767,11 @@
       "path": "tests/test_sweep_planning.py",
       "bytes": 5665,
       "sha256": "b1d691235c34345c1711393f3aa0107bc00a25b9987db4a7e597c24fcef80cd1"
+    },
+    {
+      "path": "tests/test_tooth_coil_windings.py",
+      "bytes": 6765,
+      "sha256": "fc0b939440d5f9f5b65d805f69c4f063236a359e643779f7cdd79f3864993b23"
     },
     {
       "path": "tests/test_windows_field_frame_pool.py",

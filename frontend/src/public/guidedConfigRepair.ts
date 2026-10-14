@@ -20,40 +20,112 @@ const MIN_SLOT_OPENING_MM = 2;
 const MIN_TOOTH_WIDTH_MM = 2;
 const MIN_SLOT_BODY_WIDTH_MM = 0.5;
 const TARGET_AIRGAP_MM = 0.5;
+// backend/models/config.py WindingConfig.parallel_paths le=32 (#91).
+const MAX_PARALLEL_PATHS = 32;
 
 function floorToTenth(value: number): number {
   return Math.floor((value + 1e-9) * 10) / 10;
 }
 
-function phaseForConcentratedSlot(
-  slotIndex: number,
-  slotCount: number,
-  poleCount: number,
-): 'A' | 'B' | 'C' {
-  const phases = ['A', 'C', 'B', 'A', 'C', 'B'] as const;
-  const polePairs = Math.max(1, poleCount / 2);
-  const electricalAngleDeg = (slotIndex * 360 * polePairs / slotCount) % 360;
-  return phases[Math.floor(electricalAngleDeg / 60) % phases.length];
+type Phase = 'A' | 'B' | 'C';
+type Direction = 'in' | 'out';
+
+// Mirrors backend/winding_utils.py: the 60-degree sector order and the bias that
+// keeps q = 1/2 coil phasors, which sit on sector boundaries, assigned stably.
+const CONCENTRATED_SECTORS: readonly (readonly [Phase, Direction])[] = [
+  ['A', 'in'], ['C', 'out'], ['B', 'in'], ['A', 'out'], ['C', 'in'], ['B', 'out'],
+];
+const SECTOR_BOUNDARY_BIAS_DEG = 1e-7;
+
+function electricalSlotPitchRad(slotCount: number, poleCount: number): number {
+  return 2 * Math.PI * (poleCount / 2) / Math.max(1, slotCount);
 }
 
+function sectorFor(angleDeg: number): readonly [Phase, Direction] {
+  const wrapped = ((angleDeg % 360) + 360) % 360;
+  return CONCENTRATED_SECTORS[Math.floor(wrapped / 60) % 6];
+}
+
+/** Fractional-slot concentrated windings (q < 1) are real tooth coils (#91). */
+export function concentratedUsesToothCoils(slotCount: number, poleCount: number): boolean {
+  return slotCount > 0 && slotCount % 3 === 0 && poleCount > 0 && slotCount < 3 * poleCount;
+}
+
+/** (phase, direction) of each wound tooth: alternate teeth with one layer, every tooth with two. */
+function toothCoils(slotCount: number, poleCount: number, layers: number): { tooth: number; phase: Phase; direction: Direction }[] {
+  const pitch = electricalSlotPitchRad(slotCount, poleCount);
+  const coils: { tooth: number; phase: Phase; direction: Direction }[] = [];
+  for (let tooth = 0; tooth < slotCount; tooth += layers >= 2 ? 1 : 2) {
+    const re = Math.cos(pitch * tooth) - Math.cos(pitch * (tooth + 1));
+    const im = Math.sin(pitch * tooth) - Math.sin(pitch * (tooth + 1));
+    const [phase, direction] = sectorFor(Math.atan2(im, re) * 180 / Math.PI + SECTOR_BOUNDARY_BIAS_DEG);
+    coils.push({ tooth, phase, direction });
+  }
+  return coils;
+}
+
+function toothCoilLayoutIsBalanced(slotCount: number, poleCount: number, layers: number): boolean {
+  if (layers < 2 && slotCount % 2 !== 0) return false;
+  const pitch = electricalSlotPitchRad(slotCount, poleCount);
+  const counts = { A: 0, B: 0, C: 0 };
+  const phasors = { A: [0, 0], B: [0, 0], C: [0, 0] };
+  for (const { tooth, phase, direction } of toothCoils(slotCount, poleCount, layers)) {
+    counts[phase] += 1;
+    const sign = direction === 'in' ? 1 : -1;
+    phasors[phase][0] += sign * (Math.cos(pitch * tooth) - Math.cos(pitch * (tooth + 1)));
+    phasors[phase][1] += sign * (Math.sin(pitch * tooth) - Math.sin(pitch * (tooth + 1)));
+  }
+  if (!(counts.A > 0 && counts.A === counts.B && counts.B === counts.C)) return false;
+  const magnitude = Math.hypot(phasors.A[0], phasors.A[1]);
+  if (magnitude < 1e-9) return false;
+  const angles = (['A', 'B', 'C'] as const).map((phase) => {
+    if (Math.abs(Math.hypot(phasors[phase][0], phasors[phase][1]) - magnitude) > 1e-9 * Math.max(1, magnitude)) return NaN;
+    return Math.atan2(phasors[phase][1], phasors[phase][0]) * 180 / Math.PI;
+  });
+  return angles.every((angle, index) => {
+    const gap = (((angles[(index + 1) % 3] - angle) % 360) + 360) % 360;
+    return Math.abs(gap - 120) <= 1e-6;
+  });
+}
+
+function legacyConcentratedSlotPhase(slotIndex: number, slotCount: number, poleCount: number): Phase {
+  const polePairs = Math.max(1, poleCount / 2);
+  const electricalAngleDeg = (slotIndex * 360 * polePairs / slotCount) % 360;
+  return CONCENTRATED_SECTORS[Math.floor(electricalAngleDeg / 60) % 6][0];
+}
+
+/** Mirrors backend/geometry.py concentrated_winding_is_balanced. */
 export function concentratedGuidedLayoutIsBalanced(
   slotCount: number,
   poleCount: number,
+  layers = 1,
 ): boolean {
   if (!Number.isInteger(slotCount) || slotCount < 1 || !Number.isInteger(poleCount) || poleCount < 2) {
     return false;
   }
+  if (concentratedUsesToothCoils(slotCount, poleCount)) {
+    return toothCoilLayoutIsBalanced(slotCount, poleCount, layers);
+  }
   const counts = { A: 0, B: 0, C: 0 };
   for (let slotIndex = 0; slotIndex < slotCount; slotIndex += 1) {
-    counts[phaseForConcentratedSlot(slotIndex, slotCount, poleCount)] += 1;
+    counts[legacyConcentratedSlotPhase(slotIndex, slotCount, poleCount)] += 1;
   }
   return counts.A > 0 && counts.A === counts.B && counts.B === counts.C;
 }
 
-function nearestBalancedPoleCount(slotCount: number, currentPoleCount: number): number | null {
-  if (concentratedGuidedLayoutIsBalanced(slotCount, currentPoleCount)) return currentPoleCount;
+/** Coils each phase has, which parallel paths must divide (backend/geometry.py validate_geometry). */
+export function coilsPerPhase(slotCount: number, poleCount: number, windingType: string, layers: number): number {
+  if (windingType === 'distributed') return Math.floor(slotCount / 6);
+  if (concentratedUsesToothCoils(slotCount, poleCount)) {
+    return Math.floor(toothCoils(slotCount, poleCount, layers).length / 3);
+  }
+  return Math.floor(slotCount / 3);
+}
+
+function nearestBalancedPoleCount(slotCount: number, currentPoleCount: number, layers: number): number | null {
+  if (concentratedGuidedLayoutIsBalanced(slotCount, currentPoleCount, layers)) return currentPoleCount;
   const candidates = Array.from({ length: 16 }, (_, index) => (index + 1) * 2)
-    .filter((poleCount) => concentratedGuidedLayoutIsBalanced(slotCount, poleCount))
+    .filter((poleCount) => concentratedGuidedLayoutIsBalanced(slotCount, poleCount, layers))
     .sort((left, right) => (
       Math.abs(left - currentPoleCount) - Math.abs(right - currentPoleCount)
       || left - right
@@ -98,6 +170,7 @@ export function repairGuidedSection(
       const balancedPoleCount = nearestBalancedPoleCount(
         next.stator.slot_count,
         next.rotor.pole_count,
+        next.winding.layers,
       );
       if (balancedPoleCount !== null) {
         adjust(
@@ -267,15 +340,18 @@ export function repairGuidedSection(
   }
 
   if (section === 'winding') {
-    const terminalCoilsPerPhase = next.winding.type === 'distributed'
-      ? Math.floor(next.stator.slot_count / 6)
-      : Math.floor(next.stator.slot_count / 3);
+    const terminalCoilsPerPhase = coilsPerPhase(
+      next.stator.slot_count,
+      next.rotor.pole_count,
+      next.winding.type,
+      next.winding.layers,
+    );
     if (
       terminalCoilsPerPhase > 0
       && terminalCoilsPerPhase % next.winding.parallel_paths !== 0
     ) {
       const repairedPaths = Array.from(
-        { length: Math.min(6, terminalCoilsPerPhase) },
+        { length: Math.min(MAX_PARALLEL_PATHS, terminalCoilsPerPhase) },
         (_, index) => index + 1,
       )
         .filter((candidate) => terminalCoilsPerPhase % candidate === 0)

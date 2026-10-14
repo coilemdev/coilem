@@ -12,7 +12,12 @@ from backend.excitation import (
     terminal_to_slot_current_scale,
 )
 from backend.models import MotorConfig
-from backend.winding_utils import distributed_layer_tag, distributed_slot_assignment
+from backend.winding_utils import (
+    concentrated_slot_layer_assignments,
+    distributed_layer_tag,
+    distributed_slot_assignment,
+    legacy_concentrated_slot_phase,
+)
 
 # Narrowest slot body the drawer will emit. Past this the tooth has eaten the
 # slot and the floor engages, so the drawn geometry stops matching the fields —
@@ -976,7 +981,6 @@ def _compute_slot_placements(config: MotorConfig) -> list[SlotPlacement]:
 
     slot_count = stator.slot_count
     pole_count = rotor.pole_count
-    pole_pairs = max(1, pole_count // 2)
 
     # Slot geometry. The slot mouth is an independent width at the stator bore,
     # while the body width remains the pitch minus tooth-width behind the tip.
@@ -1007,8 +1011,10 @@ def _compute_slot_placements(config: MotorConfig) -> list[SlotPlacement]:
         for slot_idx in range(slot_count):
             center_angle = slot_idx * slot_angular_pitch
 
-            # Electrical angle and belt now live in concentrated_slot_phase.
-            phase, direction = concentrated_slot_phase(slot_idx, slot_count, pole_pairs)
+            # Tooth coils for q < 1 (#91), the legacy whole-slot map otherwise; the
+            # slot carries its first coil side (one per slot with a single layer).
+            first_side = concentrated_slot_layer_assignments(slot_idx, slot_count, pole_count, winding.layers)[0]
+            phase, direction = first_side.phase, first_side.direction
 
             slots.append(SlotPlacement(
                 slot_index=slot_idx,
@@ -1085,10 +1091,7 @@ def concentrated_slot_phase(
     and a validator with its own copy of this table could not tell.
     """
 
-    if slot_count <= 0:
-        return CONCENTRATED_PHASE_BELTS[0]
-    elec_angle_deg = (slot_idx * 360.0 * pole_pairs / slot_count) % 360.0
-    return CONCENTRATED_PHASE_BELTS[int(elec_angle_deg / 60) % 6]
+    return legacy_concentrated_slot_phase(slot_idx, slot_count, pole_pairs)
 
 
 def _slot_body_width_mm(config: MotorConfig) -> float:
@@ -1288,9 +1291,10 @@ def current_angle_elec_deg_for_rotor_elec(
     ``current_angle_deg`` is gamma measured from the positive q-axis. Positive
     gamma is flux-weakening advance, and motoring torque is positive for
     ``0 <= gamma < 90``. The applied source angle is therefore
-    ``theta_e = rotor_elec - 90 + gamma`` for every topology and winding type.
-    At gamma=0 this preserves the historical SPM ``rotor_elec - 90`` source
-    angle bit-for-bit.
+    ``theta_e = rotor_elec - 90 + gamma - axis`` for every topology and winding
+    type, where ``axis`` is phase A's axis angle: zero except for tooth coils
+    (#91). At gamma=0 this preserves the historical SPM ``rotor_elec - 90``
+    source angle bit-for-bit for every other layout.
 
     The earlier sign convention used ``rotor_elec - (90 + gamma)``, which
     retards the source phasor for positive gamma under this codebase's phase sequence and slot ordering —
@@ -1299,10 +1303,14 @@ def current_angle_elec_deg_for_rotor_elec(
     higher IPM torque than +45, i.e. -gamma was the flux-weakening side).
     Adding gamma makes the label match the physics contract stated above.
     """
+    from backend.excitation import phase_axis_offset_deg
+
     gamma_deg = 0.0
     if config.solve_params is not None:
         gamma_deg = float(getattr(config.solve_params, "current_angle_deg", 0.0) or 0.0)
-    return float(rotor_angle_elec_deg) - 90.0 + gamma_deg
+    # Tooth coils (#91) put phase A's axis off 0 degrees; subtracting it keeps gamma
+    # measured from the q-axis. Zero for every other layout.
+    return float(rotor_angle_elec_deg) - 90.0 + gamma_deg - phase_axis_offset_deg(config)
 
 
 def current_angle_elec_deg_for_mech(
