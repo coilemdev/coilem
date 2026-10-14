@@ -3279,6 +3279,36 @@
       "sha256": "25bbe57352a4307d176d0dcc8c22f1c1466922dcad4092bff63c5f14b2d901d3"
     },
     {
+      "path": "docs/hardware-validation/honda-accord-2005/README.md",
+      "bytes": 5734,
+      "sha256": "53dcaff1c3db0258394adcb8a2e24180fd0b822aa16e924d61b24b77082dc9e9"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/input-provenance.json",
+      "bytes": 2278,
+      "sha256": "4485495d7f28a25209835a9ba867a7b963c70f43215f72d7da76577e7bd34612"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/request.json",
+      "bytes": 1542,
+      "sha256": "60351175715cd05288059c19665c8ac6614b3ba897cce54a41d22809991c6192"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/sources.json",
+      "bytes": 602,
+      "sha256": "8b998a7fb568a8f5906f704b2032a9fc77afd1d90393c430394d6aef0f5d5265"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/target-back-emf.json",
+      "bytes": 3162,
+      "sha256": "4a8af716996e40ea2da9af452e7aed8c101b46fe5c207f534ab28ef3fd87a9d9"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/target-locked-rotor.json",
+      "bytes": 1100,
+      "sha256": "1d18ad6d85430cc7191b028accf511868c8f4a1f59c27e293ce17eb9213f3f09"
+    },
+    {
       "path": "docs/hardware-validation/ornl-prius-2004/femm-reference-spec.md",
       "bytes": 4176,
       "sha256": "866c74e7d8cc5737da843c258de77761a000ce1e87213016d31c386a78f3a335"
@@ -4579,6 +4609,11 @@
       "sha256": "25a2dd6d2096095b4a246b7fcfc13b5d0b05b2e7ad888ce9c80b24e3e0d85d81"
     },
     {
+      "path": "tests/test_honda_accord_request.py",
+      "bytes": 1919,
+      "sha256": "2a82c34aa059d70599b48bfaf5be1524aaaa82ccbeea5ea08b9fe00565e81a6b"
+    },
+    {
       "path": "tests/test_installed_resources.py",
       "bytes": 10171,
       "sha256": "2655c03ca9b0c15c463398155119702625d56009ade0a7d4639b55035257ae8e"
@@ -4807,6 +4842,11 @@
       "path": "tools/generate_m350_50a_bh.py",
       "bytes": 3369,
       "sha256": "f4dac661f48b35b86299ea7c2d5da935b0880c5ad141637a0de58e786ca7f256"
+    },
+    {
+      "path": "tools/honda_accord_request.py",
+      "bytes": 4445,
+      "sha256": "25596806ccedb1032a191d48a6763b16b10dc87dc02f51aba5ce7c7fe6d9b1ec"
     },
     {
       "path": "tools/ornl_prius_comparison.py",
