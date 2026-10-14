@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import ctypes
 import hashlib
 import json
 import math
+import signal
 import threading
 import time
 from dataclasses import dataclass, field
@@ -40,6 +42,32 @@ class GmshMeshQAError(ValueError):
 
 
 _GMSH_API_LOCK = threading.Lock()
+
+
+def initialize_gmsh() -> None:
+    """Start the Gmsh API for one meshing session.
+
+    Callers hold _GMSH_API_LOCK. Non-interruptible: Gmsh's default initializer
+    installs a SIGINT handler, which Python allows only on the main thread, and
+    meshing runs in FastAPI worker threads.
+    """
+    gmsh.initialize(readConfigFiles=not ISOLATED_RUNTIME, interruptible=False)
+    _ignore_sigpipe()
+
+
+def _ignore_sigpipe() -> None:
+    # libgmsh sets SIGPIPE back to the default action, which kills the process,
+    # and gmsh.finalize() does not undo it. The launcher meshes in its own
+    # process, so a solver pipe or client socket that closed during shutdown
+    # would kill the server instead of raising BrokenPipeError. Restore what
+    # CPython set at startup; signal.signal() is main-thread only, PyOS_setsig
+    # is not.
+    if not hasattr(signal, "SIGPIPE"):
+        return
+    setsig = ctypes.pythonapi.PyOS_setsig
+    setsig.argtypes = [ctypes.c_int, ctypes.c_void_p]
+    setsig.restype = ctypes.c_void_p
+    setsig(signal.SIGPIPE, ctypes.c_void_p(1))  # SIG_IGN
 _GMSH_MESH_PROFILE_CONFIG_PATH = package_resource("mesh_profiles", "gmsh_profiles.json")
 _GMSH_MESH_PROFILE_CONFIG_REPO_PATH = "backend/mesh_profiles/gmsh_profiles.json"
 
@@ -308,7 +336,7 @@ def run_gmsh_mesh_preview(
     # initialization installs a signal handler, which is only legal on the main
     # Python thread.
     with _GMSH_API_LOCK:
-        gmsh.initialize(readConfigFiles=not ISOLATED_RUNTIME, interruptible=False)
+        initialize_gmsh()
         try:
             gmsh.option.setNumber("General.Terminal", 0)
             gmsh.option.setNumber("Mesh.Algorithm", 5)
@@ -415,7 +443,7 @@ def _run_gmsh_ir_mesh_preview(
     # No _GMSH_API_LOCK here: run_gmsh_mesh_preview already holds it across the call
     # into this function. threading.Lock is not reentrant, so taking it again would
     # deadlock the request thread outright.
-    gmsh.initialize(readConfigFiles=not ISOLATED_RUNTIME, interruptible=False)
+    initialize_gmsh()
     try:
         gmsh.option.setNumber("General.Terminal", 0)
         gmsh.option.setNumber("Mesh.Algorithm", 5)
