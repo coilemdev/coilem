@@ -150,7 +150,7 @@ def split_torque(deltas: list[float], torques: list[float], current: float) -> d
             "lq_minus_ld_uH": round(-float(b) / (0.75 * POLE_PAIRS * current**2) * 1e6, 1)}
 
 
-def assemble(no_load: dict, locked: list[dict], out: Path) -> dict:
+def assemble(no_load: dict, locked: list[dict], out: Path, write: bool = True) -> dict:
     import numpy as np
 
     back = json.loads((FOLDER / "target-back-emf.json").read_text(encoding="utf-8"))["rows"]
@@ -198,8 +198,9 @@ def assemble(no_load: dict, locked: list[dict], out: Path) -> dict:
                          "magnet_reluctance_split": [split_torque([d for d, _ in lobes[c] if d % 10 == 0],
                                                                   [t for d, t in lobes[c] if d % 10 == 0], c) for c in LOBE_CURRENTS_A]},
     }
-    out.mkdir(parents=True, exist_ok=True)
-    (out / "comparison.json").write_text(json.dumps(data, indent=1) + "\n", encoding="utf-8", newline="\n")
+    if write:
+        out.mkdir(parents=True, exist_ok=True)
+        (out / "comparison.json").write_text(json.dumps(data, indent=1) + "\n", encoding="utf-8", newline="\n")
     return data
 
 
