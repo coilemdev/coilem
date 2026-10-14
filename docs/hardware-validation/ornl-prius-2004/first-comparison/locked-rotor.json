@@ -1,0 +1,1129 @@
+[
+ {
+  "current_A": 50,
+  "delta_deg": 0,
+  "torque_Nm": -0.006550267276064433,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 8,
+  "torque_Nm": 0.5374606428195869,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 16,
+  "torque_Nm": 3.3595766464400256,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 24,
+  "torque_Nm": 6.8418421689992615,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 32,
+  "torque_Nm": 9.724887628734152,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 40,
+  "torque_Nm": 16.995488808324765,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 48,
+  "torque_Nm": 27.75316141168011,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 56,
+  "torque_Nm": 34.7610273316208,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 64,
+  "torque_Nm": 37.55590277368156,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 72,
+  "torque_Nm": 48.14680942121533,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 80,
+  "torque_Nm": 58.773642716503204,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 88,
+  "torque_Nm": 63.22746331039749,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 96,
+  "torque_Nm": 64.12332460134773,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 104,
+  "torque_Nm": 76.1027766867516,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 112,
+  "torque_Nm": 87.19039388686247,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 120,
+  "torque_Nm": 84.88934454823234,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 128,
+  "torque_Nm": 73.502576710322,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 136,
+  "torque_Nm": 63.70662514587801,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 144,
+  "torque_Nm": 58.90811547897602,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 152,
+  "torque_Nm": 49.685162338272924,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 160,
+  "torque_Nm": 36.6679723686196,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 168,
+  "torque_Nm": 19.926997956526886,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 176,
+  "torque_Nm": 6.4877945334682625,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 0,
+  "torque_Nm": 0.0022195184983600873,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 8,
+  "torque_Nm": -1.077490719203053,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 16,
+  "torque_Nm": 1.830901618638686,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 24,
+  "torque_Nm": 5.514021580636748,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 32,
+  "torque_Nm": 9.24332051035068,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 40,
+  "torque_Nm": 16.73130099562838,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 48,
+  "torque_Nm": 31.40467449116109,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 56,
+  "torque_Nm": 43.13251830194821,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 64,
+  "torque_Nm": 49.727967894101646,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 72,
+  "torque_Nm": 67.72494813918249,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 80,
+  "torque_Nm": 84.45540881574301,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 88,
+  "torque_Nm": 92.29172108836791,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 96,
+  "torque_Nm": 94.65663363581774,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 104,
+  "torque_Nm": 115.36186519619298,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 112,
+  "torque_Nm": 137.15130209578697,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 120,
+  "torque_Nm": 133.85424844507511,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 128,
+  "torque_Nm": 119.11156581542151,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 136,
+  "torque_Nm": 107.97928955764938,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 144,
+  "torque_Nm": 101.92354242313874,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 152,
+  "torque_Nm": 85.09062447375341,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 160,
+  "torque_Nm": 64.15361411589836,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 168,
+  "torque_Nm": 36.68440032574561,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 176,
+  "torque_Nm": 12.88322397503187,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 0,
+  "torque_Nm": -0.1382512996369068,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 8,
+  "torque_Nm": -6.732136597010927,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 16,
+  "torque_Nm": -3.3159510600539477,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 24,
+  "torque_Nm": 4.147111232806985,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 32,
+  "torque_Nm": 10.422092772926796,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 40,
+  "torque_Nm": 22.232992119023216,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 48,
+  "torque_Nm": 35.609610729849464,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 56,
+  "torque_Nm": 51.44808753472992,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 64,
+  "torque_Nm": 60.85769452984353,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 72,
+  "torque_Nm": 84.18872559613946,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 80,
+  "torque_Nm": 108.01893044892552,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 88,
+  "torque_Nm": 119.49996397069857,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 96,
+  "torque_Nm": 123.24640683912278,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 104,
+  "torque_Nm": 149.98653692945322,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 112,
+  "torque_Nm": 180.35707903642862,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 120,
+  "torque_Nm": 179.9534644616843,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 128,
+  "torque_Nm": 163.75869139972195,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 136,
+  "torque_Nm": 155.26947735099472,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 144,
+  "torque_Nm": 148.68300994582572,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 152,
+  "torque_Nm": 124.68595786870077,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 160,
+  "torque_Nm": 94.57485717550395,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 168,
+  "torque_Nm": 57.51808385748307,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 176,
+  "torque_Nm": 20.47111375991881,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 0,
+  "torque_Nm": -0.0974533665542546,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 8,
+  "torque_Nm": -12.211395432477579,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 16,
+  "torque_Nm": -8.70046458668939,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 24,
+  "torque_Nm": 1.372743401790678,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 32,
+  "torque_Nm": 9.813888315143851,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 40,
+  "torque_Nm": 21.460477412417454,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 48,
+  "torque_Nm": 39.259646268152444,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 56,
+  "torque_Nm": 59.43806591582475,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 64,
+  "torque_Nm": 71.4854463135594,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 72,
+  "torque_Nm": 98.91478042443522,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 80,
+  "torque_Nm": 128.55234807876144,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 88,
+  "torque_Nm": 144.6510077167604,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 96,
+  "torque_Nm": 150.87772380765276,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 104,
+  "torque_Nm": 183.57618346987365,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 112,
+  "torque_Nm": 219.44570400383083,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 120,
+  "torque_Nm": 220.23095327147868,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 128,
+  "torque_Nm": 206.25600581921728,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 136,
+  "torque_Nm": 201.8514623829916,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 144,
+  "torque_Nm": 196.62948809109787,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 152,
+  "torque_Nm": 166.05844241487617,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 160,
+  "torque_Nm": 126.70665281392041,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 168,
+  "torque_Nm": 80.91821542340611,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 176,
+  "torque_Nm": 28.50128023078599,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 0,
+  "torque_Nm": 0.023484702549010396,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 8,
+  "torque_Nm": -16.888627679673352,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 16,
+  "torque_Nm": -13.827890165547716,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 24,
+  "torque_Nm": -1.2492673105647505,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 32,
+  "torque_Nm": 8.826506776087955,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 40,
+  "torque_Nm": 22.275124024960526,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 48,
+  "torque_Nm": 41.949001807915245,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 56,
+  "torque_Nm": 66.77307684773976,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 64,
+  "torque_Nm": 81.76526952922625,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 72,
+  "torque_Nm": 112.53796170959181,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 80,
+  "torque_Nm": 146.8565128858893,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 88,
+  "torque_Nm": 167.30241494398402,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 96,
+  "torque_Nm": 176.32573971748693,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 104,
+  "torque_Nm": 216.14894937937203,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 112,
+  "torque_Nm": 253.82387340556036,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 120,
+  "torque_Nm": 256.7212317002005,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 128,
+  "torque_Nm": 243.67015525515447,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 136,
+  "torque_Nm": 245.23949193108385,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 144,
+  "torque_Nm": 243.8514416129652,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 152,
+  "torque_Nm": 207.97375591846784,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 160,
+  "torque_Nm": 157.94706606361308,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 168,
+  "torque_Nm": 105.06264835735747,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 176,
+  "torque_Nm": 36.806988015113674,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 0,
+  "torque_Nm": -0.0466890448522148,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 8,
+  "torque_Nm": -25.165294209347653,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 16,
+  "torque_Nm": -23.12000924487809,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 24,
+  "torque_Nm": -5.752199821144279,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 32,
+  "torque_Nm": 6.636589978494807,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 40,
+  "torque_Nm": 21.93541197186501,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 48,
+  "torque_Nm": 46.16061816361434,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 56,
+  "torque_Nm": 78.91400276020109,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 64,
+  "torque_Nm": 101.25122021099452,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 72,
+  "torque_Nm": 138.98459473730304,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 80,
+  "torque_Nm": 179.86932905836534,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 88,
+  "torque_Nm": 205.87055354619648,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 96,
+  "torque_Nm": 222.82159346921404,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 104,
+  "torque_Nm": 267.1999983944464,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 112,
+  "torque_Nm": 317.01168725248743,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 120,
+  "torque_Nm": 323.20079411568804,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 128,
+  "torque_Nm": 309.0291454875139,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 136,
+  "torque_Nm": 319.28359850074463,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 144,
+  "torque_Nm": 333.3697250519255,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 152,
+  "torque_Nm": 290.401243042317,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 160,
+  "torque_Nm": 222.2773865328413,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 168,
+  "torque_Nm": 150.23431255154577,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 176,
+  "torque_Nm": 53.425836183223176,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 0,
+  "torque_Nm": -0.16260676159952803,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 8,
+  "torque_Nm": -31.633173081968497,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 16,
+  "torque_Nm": -31.680591393650424,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 24,
+  "torque_Nm": -9.53243162068483,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 32,
+  "torque_Nm": 4.647342422819492,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 40,
+  "torque_Nm": 21.451045715595452,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 48,
+  "torque_Nm": 47.68503811480115,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 56,
+  "torque_Nm": 88.09835250459741,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 64,
+  "torque_Nm": 118.8897991810129,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 72,
+  "torque_Nm": 163.73828459003528,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 80,
+  "torque_Nm": 208.95568767964954,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 88,
+  "torque_Nm": 238.51536966141106,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 96,
+  "torque_Nm": 261.1310638918574,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 104,
+  "torque_Nm": 314.00179596111985,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 112,
+  "torque_Nm": 371.7099839471423,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 120,
+  "torque_Nm": 380.88632905627696,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 128,
+  "torque_Nm": 365.3183628392654,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 136,
+  "torque_Nm": 374.86622499197756,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 144,
+  "torque_Nm": 405.4719662180753,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 152,
+  "torque_Nm": 370.4166822132867,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 160,
+  "torque_Nm": 284.2921820243863,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 168,
+  "torque_Nm": 190.03463812358265,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ },
+ {
+  "current_A": 250,
+  "delta_deg": 176,
+  "torque_Nm": 68.52795924427657,
+  "source_commit": "83231e03453c751e425fca4d4394b568c3cd6527",
+  "source_dirty": false
+ }
+]

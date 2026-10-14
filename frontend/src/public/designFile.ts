@@ -1,5 +1,5 @@
 import { migrateProjectFile, COILEM_SCHEMA_VERSION } from '../api/projectSchema';
-import { applyPublicSolverSettings, cloneDefaultConfig, PUBLIC_MAGNETO2D_SETTINGS } from './model';
+import { applyPublicSolverSettings, cloneDefaultConfig, HOLEM50_FIELDS, PUBLIC_MAGNETO2D_SETTINGS } from './model';
 import type { MotorConfig } from './model';
 import { parseCustomSteels } from './customSteel';
 
@@ -41,7 +41,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 const WINDING_TYPES = new Set(['concentrated', 'distributed']);
-const IPM_TOPOLOGIES = new Set(['flat_buried', 'v_shape']);
+const IPM_TOPOLOGIES = new Set(['flat_buried', 'v_shape', 'pyleecan_holem50']);
 const FLAT_BURIED_MAGNET_SHAPES = new Set(['straight', 'legacy_arc']);
 const SOLVE_QUALITIES = new Set(['quick', 'standard', 'fine', 'custom']);
 const MESH_DENSITIES = new Set(['coarse', 'normal', 'fine', 'very_fine']);
@@ -130,6 +130,14 @@ export function parseDesignFile(text: string): ParsedDesignFile {
   }
   if (!WINDING_TYPES.has(config.winding.type)) config.winding.type = defaults.winding.type;
   if (!IPM_TOPOLOGIES.has(config.rotor.ipm_topology)) config.rotor.ipm_topology = defaults.rotor.ipm_topology;
+  // HoleM50 pocket parameters are not part of the default design, so the
+  // section merge above drops them; carry them over for HoleM50 rotors only.
+  if (config.rotor.ipm_topology === 'pyleecan_holem50' && isRecord(source.rotor)) {
+    for (const field of HOLEM50_FIELDS) {
+      const value = source.rotor[field];
+      if (typeof value === 'number' && Number.isFinite(value)) config.rotor[field] = value;
+    }
+  }
   if (!FLAT_BURIED_MAGNET_SHAPES.has(config.rotor.flat_buried_magnet_shape)) {
     config.rotor.flat_buried_magnet_shape = defaults.rotor.flat_buried_magnet_shape;
   }

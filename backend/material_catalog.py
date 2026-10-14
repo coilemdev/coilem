@@ -80,6 +80,19 @@ MAGNET_PROPERTIES = {
         "density_kg_m3": 7450,
         "relative_permeability": 1.05,
     },
+    # ORNL/TM-2004/137 Fig. 14: the 2004 Prius magnet's demagnetization line,
+    # Br 12.3-12.4 kG and Hc 11.0 kOe (normal), so recoil permeability ~1.12.
+    # Energy product is Br^2 / (4 mu0 mu_r) of that straight line. Density is
+    # not stated; the remaining fields repeat the other NdFeB rows.
+    "ORNL_Prius_2004_NdFeB": {
+        "name": "ORNL 2004 Prius NdFeB",
+        "remanence_T": 1.235,
+        "coercivity_bH_kA_m": -875,
+        "coercivity_bM_kA_m": -79.6,
+        "max_energy_kJ_m3": 271,
+        "density_kg_m3": 7450,
+        "relative_permeability": 1.12,
+    },
     "Prius_2004_NdFeB": {
         "name": "Prius 2004 / Pyleecan NdFeB",
         "remanence_T": 1.24,

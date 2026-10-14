@@ -76,6 +76,8 @@ impl MaterialProps {
             "N38" => (1.260, 1.05),
             "N42" => (1.315, 1.05),
             "Prius_2004_NdFeB" => (1.240, 1.05),
+            // ORNL/TM-2004/137 Fig. 14 demagnetization line. See MATERIALS.md.
+            "ORNL_Prius_2004_NdFeB" => (1.235, 1.12),
             "N45" => (1.350, 1.05),
             "N48" => (1.400, 1.05),
             "N48SH" => (1.390, 1.05),
@@ -140,6 +142,7 @@ fn known_magnet_grade(grade: &str) -> bool {
             | "N38"
             | "N42"
             | "Prius_2004_NdFeB"
+            | "ORNL_Prius_2004_NdFeB"
             | "N45"
             | "N48"
             | "N48SH"
@@ -717,8 +720,8 @@ mod tests {
 
     use super::{
         assign_materials, assign_materials_with_mode, assign_materials_with_resolved_magnetization,
-        get_bh_curve, has_bh_curve, initial_steel_mu_rel, is_bh_curve_csv, nonlinear_steel_mu_rel,
-        parse_magnet_br_scale, BHCurve, MaterialProps,
+        get_bh_curve, has_bh_curve, initial_steel_mu_rel, is_bh_curve_csv, known_magnet_grade,
+        nonlinear_steel_mu_rel, parse_magnet_br_scale, BHCurve, MaterialProps,
     };
     use crate::mesh::Region;
 
@@ -852,6 +855,15 @@ B_T,H_A_per_m
 
         assert!((magnet.br - 1.24).abs() < 1e-12);
         assert!((magnet.mu_rel - 1.05).abs() < 1e-12);
+    }
+
+    #[test]
+    fn ornl_prius_magnet_uses_the_ornl_demagnetization_line() {
+        let magnet = MaterialProps::magnet("ORNL_Prius_2004_NdFeB", 0.0);
+
+        assert!(known_magnet_grade("ORNL_Prius_2004_NdFeB"));
+        assert!((magnet.br - 1.235).abs() < 1e-12);
+        assert!((magnet.mu_rel - 1.12).abs() < 1e-12);
     }
 
     #[test]

@@ -2,7 +2,7 @@
 
 Start with the [latest full report v1.7](macos-rc-20261013-1fac3a1/README.md), which measures the
 frozen coilEM 0.3.0 commit `1fac3a1` on macOS, and the
-[default A/B/C/D run commands](abcd-v1.1/README.md). The selected matrix has
+[default A/B/C/D run commands](abcd-v1.1/README.md). [Protocol 1.2.0](abcd-v1.2/README.md) registers the corrected ORNL Prius case; it becomes the default once its FEMM reference bundle lands. The selected matrix has
 29 PASS and one planned coverage item (numerical status UNSUPPORTED), with
 42/42 BLDC gates. Every numerical value matches the previous pin's
 [macOS report v1.5](macos-rc-20261013-04f87a5/README.md) exactly. Every verdict and gate status matches the

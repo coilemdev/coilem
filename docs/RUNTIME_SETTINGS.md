@@ -16,6 +16,7 @@ end in `.coilem`. Existing `.openem` files and lower-case schema keys remain com
 | `VITE_COILEM_LOCAL_API_BASE` | Select a loopback backend URL for the Vite development server; production bundles call their own origin. |
 | `COILEM_LOCAL_UI_ORIGIN` | Allow one additional HTTP loopback UI origin with an explicit port. |
 | `COILEM_ENABLE_ELMER` | Enable the optional external Elmer development lane when set to `1`. |
+| `COILEM_EXPERIMENTAL_ROTORS` | Accept experimental rotor families (the HoleM50 rotor of the ORNL 2004 Prius) when set to `1`. Off by default; results are labelled experimental and carry no qualification claim. |
 | `COILEM_ELMER_HOME` | Pin Elmer discovery to an installation root or executable directory. |
 | `COILEM_ELMER_RETAIN_ARTIFACTS` | Retain successful raw Elmer cases for diagnostics when set to `1`. |
 | `COILEM_ELMER_RUN_ROOT` | Override the raw Elmer case directory, which has rolling retention. |

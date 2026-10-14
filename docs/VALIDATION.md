@@ -120,7 +120,7 @@ V1.3 now records that full selected matrix at `0b463b3`; subsequent release
 candidates still require their own run before updating a qualification claim. V1.7 (macOS)
 and v1.8 (Windows) are those runs for coilEM 0.3.0 at `1fac3a1`.
 
-Harness 1.2.1 runs [protocol 1.1.0](../benchmarks/abcd-v1.1/README.md) without FEMM
+Harness 1.3.0 runs [protocol 1.1.0](../benchmarks/abcd-v1.1/README.md) without FEMM
 on macOS, Windows and Linux:
 
 ```sh

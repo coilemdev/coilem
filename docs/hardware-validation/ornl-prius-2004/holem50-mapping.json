@@ -1,0 +1,516 @@
+{
+ "description": "Pyleecan HoleM50 parameters fitted to the ORNL 2004 Prius rotor pocket outline (#70). Inferred from a figure, not stated by ORNL.",
+ "source": {
+  "id": "S5",
+  "report": "ORNL/TM-2005/33",
+  "figure": "Fig. 21, p.25 (PDF 32)",
+  "paths": "blue rotor vector paths"
+ },
+ "tool": "tools/fit_ornl_prius_holem50.py",
+ "rotor_od_mm": 160.376,
+ "drawing_calibration": {
+  "centre_x_pt": 219.125,
+  "centre_y_pt": 563.1428,
+  "pt_per_inch": 18.6881
+ },
+ "points_per_pole": [
+  1193,
+  1197,
+  1202,
+  1192,
+  1196,
+  1202,
+  1190,
+  1197
+ ],
+ "fixed_mm": {
+  "w1": 0.0,
+  "h4": 0.0
+ },
+ "read_off_error_mm": {
+  "positions": 0.5,
+  "widths_and_lengths": 0.1
+ },
+ "variants": {
+  "A_pyleecan_toyota_prius": {
+   "holem50_mm": {
+    "h0": 10.96,
+    "h1": 1.5,
+    "h2": 1.0,
+    "h3": 6.5,
+    "w0": 42.0,
+    "w2": 0.0,
+    "w3": 14.0,
+    "w4": 18.9
+   },
+   "drawing": {
+    "centre_offset_mm": [
+     0.053,
+     -0.084
+    ],
+    "rotation_deg": 0.0032,
+    "stretch_x_over_y": 1.01181
+   },
+   "rms_mm": 0.256,
+   "p95_mm": 0.459,
+   "max_mm": 1.047,
+   "per_pole": [
+    {
+     "pole_d_axis_deg": 22.5,
+     "rms_mm": 0.262,
+     "max_mm": 1.006
+    },
+    {
+     "pole_d_axis_deg": 67.5,
+     "rms_mm": 0.253,
+     "max_mm": 0.943
+    },
+    {
+     "pole_d_axis_deg": 112.5,
+     "rms_mm": 0.255,
+     "max_mm": 1.047
+    },
+    {
+     "pole_d_axis_deg": 157.5,
+     "rms_mm": 0.257,
+     "max_mm": 1.005
+    },
+    {
+     "pole_d_axis_deg": 202.5,
+     "rms_mm": 0.252,
+     "max_mm": 0.951
+    },
+    {
+     "pole_d_axis_deg": 247.5,
+     "rms_mm": 0.257,
+     "max_mm": 0.984
+    },
+    {
+     "pole_d_axis_deg": 292.5,
+     "rms_mm": 0.256,
+     "max_mm": 0.988
+    },
+    {
+     "pole_d_axis_deg": 337.5,
+     "rms_mm": 0.257,
+     "max_mm": 0.943
+    }
+   ],
+   "per_feature": {
+    "apex inner edges": {
+     "points": 347,
+     "mean_signed_mm": -0.801,
+     "rms_mm": 0.83,
+     "max_abs_mm": 1.047
+    },
+    "barrier inner edge": {
+     "points": 383,
+     "mean_signed_mm": -0.254,
+     "rms_mm": 0.351,
+     "max_abs_mm": 0.542
+    },
+    "magnet seat (W4)": {
+     "points": 3355,
+     "mean_signed_mm": 0.131,
+     "rms_mm": 0.149,
+     "max_abs_mm": 0.571
+    },
+    "outer edge (H0, W0)": {
+     "points": 3581,
+     "mean_signed_mm": 0.169,
+     "rms_mm": 0.17,
+     "max_abs_mm": 0.281
+    },
+    "stop notch, apex side (H2)": {
+     "points": 247,
+     "mean_signed_mm": -0.246,
+     "rms_mm": 0.38,
+     "max_abs_mm": 0.943
+    },
+    "stop notch, tip side (H2)": {
+     "points": 239,
+     "mean_signed_mm": 0.37,
+     "rms_mm": 0.388,
+     "max_abs_mm": 0.563
+    },
+    "tip arc (bridge H1)": {
+     "points": 459,
+     "mean_signed_mm": -0.213,
+     "rms_mm": 0.266,
+     "max_abs_mm": 0.558
+    },
+    "tip edge facing the q-axis": {
+     "points": 958,
+     "mean_signed_mm": 0.118,
+     "rms_mm": 0.248,
+     "max_abs_mm": 0.548
+    }
+   }
+  },
+  "B_all_parameters_fitted": {
+   "holem50_mm": {
+    "h0": 10.716,
+    "h1": 1.683,
+    "h2": 1.749,
+    "h3": 6.807,
+    "w0": 40.981,
+    "w2": 0.0,
+    "w3": 13.635,
+    "w4": 19.298
+   },
+   "drawing": {
+    "centre_offset_mm": [
+     0.053,
+     -0.085
+    ],
+    "rotation_deg": -0.0004,
+    "stretch_x_over_y": 1.01183
+   },
+   "rms_mm": 0.1,
+   "p95_mm": 0.224,
+   "max_mm": 0.568,
+   "per_pole": [
+    {
+     "pole_d_axis_deg": 22.5,
+     "rms_mm": 0.102,
+     "max_mm": 0.548
+    },
+    {
+     "pole_d_axis_deg": 67.5,
+     "rms_mm": 0.1,
+     "max_mm": 0.552
+    },
+    {
+     "pole_d_axis_deg": 112.5,
+     "rms_mm": 0.101,
+     "max_mm": 0.527
+    },
+    {
+     "pole_d_axis_deg": 157.5,
+     "rms_mm": 0.1,
+     "max_mm": 0.568
+    },
+    {
+     "pole_d_axis_deg": 202.5,
+     "rms_mm": 0.101,
+     "max_mm": 0.55
+    },
+    {
+     "pole_d_axis_deg": 247.5,
+     "rms_mm": 0.096,
+     "max_mm": 0.526
+    },
+    {
+     "pole_d_axis_deg": 292.5,
+     "rms_mm": 0.097,
+     "max_mm": 0.563
+    },
+    {
+     "pole_d_axis_deg": 337.5,
+     "rms_mm": 0.1,
+     "max_mm": 0.53
+    }
+   ],
+   "per_feature": {
+    "apex inner edges": {
+     "points": 301,
+     "mean_signed_mm": -0.207,
+     "rms_mm": 0.212,
+     "max_abs_mm": 0.377
+    },
+    "barrier inner edge": {
+     "points": 433,
+     "mean_signed_mm": 0.155,
+     "rms_mm": 0.16,
+     "max_abs_mm": 0.271
+    },
+    "magnet seat (W4)": {
+     "points": 3425,
+     "mean_signed_mm": -0.0,
+     "rms_mm": 0.071,
+     "max_abs_mm": 0.379
+    },
+    "outer edge (H0, W0)": {
+     "points": 3443,
+     "mean_signed_mm": 0.0,
+     "rms_mm": 0.042,
+     "max_abs_mm": 0.104
+    },
+    "stop notch, apex side (H2)": {
+     "points": 321,
+     "mean_signed_mm": -0.036,
+     "rms_mm": 0.061,
+     "max_abs_mm": 0.251
+    },
+    "stop notch, tip side (H2)": {
+     "points": 336,
+     "mean_signed_mm": -0.002,
+     "rms_mm": 0.042,
+     "max_abs_mm": 0.201
+    },
+    "tip arc (bridge H1)": {
+     "points": 641,
+     "mean_signed_mm": -0.009,
+     "rms_mm": 0.206,
+     "max_abs_mm": 0.568
+    },
+    "tip edge facing the q-axis": {
+     "points": 669,
+     "mean_signed_mm": 0.001,
+     "rms_mm": 0.164,
+     "max_abs_mm": 0.563
+    }
+   }
+  },
+  "C_bridge_at_stated_callouts": {
+   "holem50_mm": {
+    "h0": 10.714,
+    "h1": 1.473,
+    "h2": 1.751,
+    "h3": 6.812,
+    "w0": 41.705,
+    "w2": 0.0,
+    "w3": 13.683,
+    "w4": 19.296
+   },
+   "drawing": {
+    "centre_offset_mm": [
+     0.053,
+     -0.085
+    ],
+    "rotation_deg": -0.0007,
+    "stretch_x_over_y": 1.01185
+   },
+   "rms_mm": 0.113,
+   "p95_mm": 0.241,
+   "max_mm": 0.664,
+   "per_pole": [
+    {
+     "pole_d_axis_deg": 22.5,
+     "rms_mm": 0.116,
+     "max_mm": 0.645
+    },
+    {
+     "pole_d_axis_deg": 67.5,
+     "rms_mm": 0.115,
+     "max_mm": 0.647
+    },
+    {
+     "pole_d_axis_deg": 112.5,
+     "rms_mm": 0.114,
+     "max_mm": 0.62
+    },
+    {
+     "pole_d_axis_deg": 157.5,
+     "rms_mm": 0.112,
+     "max_mm": 0.627
+    },
+    {
+     "pole_d_axis_deg": 202.5,
+     "rms_mm": 0.113,
+     "max_mm": 0.61
+    },
+    {
+     "pole_d_axis_deg": 247.5,
+     "rms_mm": 0.107,
+     "max_mm": 0.604
+    },
+    {
+     "pole_d_axis_deg": 292.5,
+     "rms_mm": 0.111,
+     "max_mm": 0.664
+    },
+    {
+     "pole_d_axis_deg": 337.5,
+     "rms_mm": 0.115,
+     "max_mm": 0.63
+    }
+   ],
+   "per_feature": {
+    "apex inner edges": {
+     "points": 302,
+     "mean_signed_mm": -0.208,
+     "rms_mm": 0.213,
+     "max_abs_mm": 0.378
+    },
+    "barrier inner edge": {
+     "points": 421,
+     "mean_signed_mm": 0.161,
+     "rms_mm": 0.165,
+     "max_abs_mm": 0.274
+    },
+    "magnet seat (W4)": {
+     "points": 3424,
+     "mean_signed_mm": -0.001,
+     "rms_mm": 0.07,
+     "max_abs_mm": 0.376
+    },
+    "outer edge (H0, W0)": {
+     "points": 3537,
+     "mean_signed_mm": -0.002,
+     "rms_mm": 0.042,
+     "max_abs_mm": 0.167
+    },
+    "stop notch, apex side (H2)": {
+     "points": 321,
+     "mean_signed_mm": -0.035,
+     "rms_mm": 0.061,
+     "max_abs_mm": 0.251
+    },
+    "stop notch, tip side (H2)": {
+     "points": 337,
+     "mean_signed_mm": -0.001,
+     "rms_mm": 0.042,
+     "max_abs_mm": 0.201
+    },
+    "tip arc (bridge H1)": {
+     "points": 518,
+     "mean_signed_mm": -0.228,
+     "rms_mm": 0.29,
+     "max_abs_mm": 0.627
+    },
+    "tip edge facing the q-axis": {
+     "points": 709,
+     "mean_signed_mm": 0.001,
+     "rms_mm": 0.2,
+     "max_abs_mm": 0.664
+    }
+   }
+  }
+ },
+ "recommended": {
+  "variant": "C_bridge_at_stated_callouts, rounded to 0.01 mm",
+  "fit": {
+   "holem50_mm": {
+    "h0": 10.71,
+    "h1": 1.47,
+    "h2": 1.75,
+    "h3": 6.81,
+    "w0": 41.7,
+    "w2": 0.0,
+    "w3": 13.68,
+    "w4": 19.3
+   },
+   "drawing": {
+    "centre_offset_mm": [
+     0.053,
+     -0.085
+    ],
+    "rotation_deg": -0.0007,
+    "stretch_x_over_y": 1.01185
+   },
+   "rms_mm": 0.113,
+   "p95_mm": 0.24,
+   "max_mm": 0.666,
+   "per_pole": [
+    {
+     "pole_d_axis_deg": 22.5,
+     "rms_mm": 0.116,
+     "max_mm": 0.647
+    },
+    {
+     "pole_d_axis_deg": 67.5,
+     "rms_mm": 0.116,
+     "max_mm": 0.648
+    },
+    {
+     "pole_d_axis_deg": 112.5,
+     "rms_mm": 0.114,
+     "max_mm": 0.623
+    },
+    {
+     "pole_d_axis_deg": 157.5,
+     "rms_mm": 0.113,
+     "max_mm": 0.631
+    },
+    {
+     "pole_d_axis_deg": 202.5,
+     "rms_mm": 0.114,
+     "max_mm": 0.613
+    },
+    {
+     "pole_d_axis_deg": 247.5,
+     "rms_mm": 0.108,
+     "max_mm": 0.607
+    },
+    {
+     "pole_d_axis_deg": 292.5,
+     "rms_mm": 0.112,
+     "max_mm": 0.666
+    },
+    {
+     "pole_d_axis_deg": 337.5,
+     "rms_mm": 0.115,
+     "max_mm": 0.632
+    }
+   ],
+   "per_feature": {
+    "apex inner edges": {
+     "points": 301,
+     "mean_signed_mm": -0.204,
+     "rms_mm": 0.209,
+     "max_abs_mm": 0.373
+    },
+    "barrier inner edge": {
+     "points": 420,
+     "mean_signed_mm": 0.166,
+     "rms_mm": 0.17,
+     "max_abs_mm": 0.279
+    },
+    "magnet seat (W4)": {
+     "points": 3425,
+     "mean_signed_mm": 0.005,
+     "rms_mm": 0.07,
+     "max_abs_mm": 0.382
+    },
+    "outer edge (H0, W0)": {
+     "points": 3535,
+     "mean_signed_mm": -0.006,
+     "rms_mm": 0.042,
+     "max_abs_mm": 0.163
+    },
+    "stop notch, apex side (H2)": {
+     "points": 320,
+     "mean_signed_mm": -0.033,
+     "rms_mm": 0.059,
+     "max_abs_mm": 0.247
+    },
+    "stop notch, tip side (H2)": {
+     "points": 341,
+     "mean_signed_mm": -0.005,
+     "rms_mm": 0.045,
+     "max_abs_mm": 0.195
+    },
+    "tip arc (bridge H1)": {
+     "points": 520,
+     "mean_signed_mm": -0.23,
+     "rms_mm": 0.292,
+     "max_abs_mm": 0.631
+    },
+    "tip edge facing the q-axis": {
+     "points": 707,
+     "mean_signed_mm": -0.001,
+     "rms_mm": 0.201,
+     "max_abs_mm": 0.666
+    }
+   }
+  },
+  "rotor": {
+   "OD_mm": 160.38,
+   "ID_mm": 110.64,
+   "ipm_topology": "pyleecan_holem50",
+   "holem50_h0_mm": 10.71,
+   "holem50_h1_mm": 1.47,
+   "holem50_h2_mm": 1.75,
+   "holem50_h3_mm": 6.81,
+   "holem50_w0_mm": 41.7,
+   "holem50_w2_mm": 0.0,
+   "holem50_w3_mm": 13.68,
+   "holem50_w4_mm": 19.3,
+   "holem50_w1_mm": 0.0,
+   "holem50_h4_mm": 0.0,
+   "magnet_width_mm": 19.3,
+   "magnet_thickness_mm": 6.81
+  }
+ }
+}

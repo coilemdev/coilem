@@ -21,6 +21,58 @@ PLANNED_COVERAGE = {
 }
 
 
+EXPERIMENTAL_ROTOR_NOTE = "Experimental rotor path (#70): not public support; results carry no qualification claim."
+HARDWARE_COLUMNS = ("Speed (rpm)", "Measured LL RMS (V)", "Predicted LL RMS (V)", "RMS error", "Measured LL peak (V)",
+                    "Predicted LL peak (V)", "Peak error")
+
+
+def hardware_table(row):
+    """Rows of the exploratory hardware correlation, or None when the case has none."""
+    comparison = row.get("hardware_comparison")
+    if not comparison:
+        return None
+    if comparison.get("status") != "NO_VERDICT":
+        return [["Hardware correlation", comparison.get("reason", comparison.get("status", ""))]]
+    return [
+        [f"{r['motor_shaft_rpm']:g}", f"{r['measured_ll_rms_V']:g}", f"{r['predicted_ll_rms_V']:.1f}", f"{r['rms_error_pct']:+.1f}%",
+         f"{r['measured_ll_peak_V']:g}", f"{r['predicted_ll_peak_V']:.1f}", f"{r['peak_error_pct']:+.1f}%"]
+        for r in comparison["rows"]
+    ]
+
+
+def hardware_html(row):
+    rows = hardware_table(row)
+    if rows is None:
+        return ""
+    comparison = row["hardware_comparison"]
+    if comparison.get("status") != "NO_VERDICT":
+        return f"<p>Hardware correlation: {html.escape(rows[0][1])}</p>"
+    head = "".join(f"<th>{html.escape(c)}</th>" for c in HARDWARE_COLUMNS)
+    body = "".join("<tr>" + "".join(f"<td>{html.escape(c)}</td>" for c in r) + "</tr>" for r in rows)
+    notes = "".join(f"<li>{html.escape(n)}</li>" for n in comparison["conversion"] + comparison["allowances"])
+    return (
+        f"<h4>{html.escape(comparison['label'])}</h4><p>Measured: {html.escape(comparison['reference']['label'])}.</p>"
+        f"<table><tr>{head}</tr>{body}</table><ul>{notes}</ul>"
+    )
+
+
+def hardware_markdown(row):
+    rows = hardware_table(row)
+    if rows is None:
+        return []
+    comparison = row["hardware_comparison"]
+    if comparison.get("status") != "NO_VERDICT":
+        return ["", f"Hardware correlation: {rows[0][1]}"]
+    return [
+        "",
+        f"{comparison['label']}. Measured: {comparison['reference']['label']}.",
+        "",
+        "| " + " | ".join(HARDWARE_COLUMNS) + " |",
+        "|" + "---|" * len(HARDWARE_COLUMNS),
+        *("| " + " | ".join(r) + " |" for r in rows),
+    ]
+
+
 def coverage_plan(row):
     """A roadmap label applies only to an explicitly planned, rejected case."""
     return PLANNED_COVERAGE.get(row["id"]) if row["status"] == "UNSUPPORTED" else None
@@ -54,7 +106,7 @@ def phase_display_status(outcomes):
     return "YELLOW"
 
 
-def plot(title, x, series):
+def plot(title, x, series, x_unit="°"):
     """Native orange first; dashed FEMM blue last exposes orange through its gaps."""
     if not x or not series:
         return ""
@@ -86,7 +138,7 @@ def plot(title, x, series):
         )
         dash = ' stroke-dasharray="6 4"' if dashed else ""
         output.append(f'<polyline points="{points}" fill="none" stroke="{color}" stroke-width="2"{dash}/>')
-    output.append(f'<text x="45" y="185">{xlo:g}°</text><text x="490" y="185">{xhi:g}°</text>')
+    output.append(f'<text x="45" y="185">{xlo:g}{x_unit}</text><text x="{490 - 6 * (len(x_unit) - 1)}" y="185">{xhi:g}{x_unit}</text>')
     for i, (label, _, color, dashed) in enumerate(series):
         pos = 15 + i * 170
         output.append(
@@ -114,6 +166,22 @@ def charts(row):
                 series.append(("Frozen FEMM", ry, "#245dcc", True))
                 out.append(plot(title + " residual: Coilem − FEMM", x, [("Residual", [a - b for a, b in zip(y, ry, strict=True)], "#7653a2", False)]))
             out.append(plot(title, x, series))
+        hardware = row.get("hardware_comparison") or {}
+        if hardware.get("status") == "NO_VERDICT":
+            speeds = [r["motor_shaft_rpm"] for r in hardware["rows"]]
+            out.append(
+                plot(
+                    "No-load line-to-line Back-EMF (V) against speed: ORNL measured and Coilem predicted",
+                    speeds,
+                    [
+                        ("Coilem RMS", [r["predicted_ll_rms_V"] for r in hardware["rows"]], "#d66a00", False),
+                        ("ORNL RMS", [r["measured_ll_rms_V"] for r in hardware["rows"]], "#245dcc", True),
+                        ("Coilem peak", [r["predicted_ll_peak_V"] for r in hardware["rows"]], "#8a4500", False),
+                        ("ORNL peak", [r["measured_ll_peak_V"] for r in hardware["rows"]], "#12357a", True),
+                    ],
+                    x_unit=" rpm",
+                )
+            )
         return "".join(out)
     standard = data.get("native-standard")
     if not standard:
@@ -278,10 +346,13 @@ def build(output, manifest, rows, *, pdf=False):
                 f'<tr class="{row["status"]}"><td><a href="{html.escape(link, quote=True)}">{html.escape(row["id"])}</a></td>'
                 f"<td>{display_outcome(row)}</td></tr>"
             )
-            markdown.extend(["", f"- [{row['id']}]({link}): **{display_outcome(row)}**"])
+            markdown.extend(["", f"- [{row['id']}]({link}): **{display_outcome(row)}**{energy_balance_text(row)}"])
             plan = coverage_plan(row)
             if plan:
                 markdown.extend(["", f"{plan['reason']} {plan['next_step']} Numerical status remains UNSUPPORTED; no comparison was performed."])
+            if row.get("experimental_rotor"):
+                markdown.extend(["", EXPERIMENTAL_ROTOR_NOTE])
+            markdown.extend(hardware_markdown(row))
         parts.append("</table>")
         for row in selected:
             parts.extend(
@@ -290,15 +361,17 @@ def build(output, manifest, rows, *, pdf=False):
                     "<p>Frozen inputs: "
                     + ", ".join(f'<a href="{html.escape(link, quote=True)}">{html.escape(stage)}</a>' for stage, link in row["fixture_files"].items())
                     + "</p>",
-                    f"<p>{html.escape(display_outcome(row))}</p>",
+                    f"<p>{html.escape(display_outcome(row))}{html.escape(energy_balance_text(row))}</p>",
                     (
                         f"<p>{html.escape(coverage_plan(row)['reason'])} {html.escape(coverage_plan(row)['next_step'])} "
                         "Numerical status: UNSUPPORTED; no comparison was performed.</p>"
                         if coverage_plan(row)
                         else ""
                     ),
+                    f"<p>{html.escape(EXPERIMENTAL_ROTOR_NOTE)}</p>" if row.get("experimental_rotor") else "",
                     charts(row),
                     gate_table(row["evaluation"]),
+                    hardware_html(row),
                     "<details><summary>Metrics and diagnostics</summary><pre>"
                     f"{html.escape(json.dumps(row['evaluation'], indent=2, allow_nan=False))}</pre></details></section>",
                 ]
@@ -333,6 +406,15 @@ def build(output, manifest, rows, *, pdf=False):
         {p.relative_to(report).as_posix(): sha(p) for p in sorted(report.rglob("*")) if p.is_file() and p.name != "artifact_manifest.json"},
     )
     return overall
+
+
+def energy_balance_text(row):
+    """Torque over 3*E*I*cos(gamma)/omega_m for coilEM and the reference; diagnostic, never a gate (#80)."""
+
+    balance = row.get("energy_balance") or {}
+    values = [(label, balance.get(key)) for label, key in (("coilEM", "candidate_ratio"), ("reference", "reference_ratio"))]
+    shown = [f"{label} {value:.3f}" for label, value in values if isinstance(value, (int, float))]
+    return f". Energy balance, torque / (3·E·I·cos γ / ω): {', '.join(shown)}" if shown else ""
 
 
 def gate_table(evaluation):
@@ -470,6 +552,16 @@ def export_pdf(report, summary):
             story.append(table([["Gate", "Outcome"], *[[g["id"], g["status"]] for g in gates]], [g["status"] for g in gates]))
         else:
             story.append(Paragraph(html.escape(row["evaluation"].get("reason", row["status"])), styles["BodyText"]))
+        if row.get("experimental_rotor"):
+            story.append(Paragraph(html.escape(EXPERIMENTAL_ROTOR_NOTE), styles["BodyText"]))
+        hardware = hardware_table(row)
+        if hardware is not None:
+            comparison = row["hardware_comparison"]
+            story.append(Spacer(1, 8))
+            story.append(Paragraph(html.escape(comparison.get("label", "Hardware correlation")), styles["Heading3"]))
+            header = [list(HARDWARE_COLUMNS)] if comparison.get("status") == "NO_VERDICT" else []
+            cells = [[Paragraph(html.escape(c), styles["BodyText"]) for c in r] for r in header + hardware]
+            story.append(Table(cells, repeatRows=1, hAlign="LEFT"))
     SimpleDocTemplate(
         str(report / "coilem_benchmark_report.pdf"),
         title="Coilem A/B/C/D benchmark",
