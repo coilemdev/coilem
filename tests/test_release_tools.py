@@ -450,3 +450,122 @@ def test_release_workflow_publishes_only_after_acceptance() -> None:
     assert "needs: [policy, pypi-acceptance]" in release
     assert "contents: write" in release and "--draft --verify-tag" in release
     assert workflow.count("contents: write") == 1
+
+
+# Actions that ran on Node 20 and the first major of each that runs on Node 24 (#79).
+NODE24_MAJORS = {
+    "actions/checkout": 5,
+    "actions/setup-python": 6,
+    "actions/setup-node": 5,
+    "actions/upload-artifact": 6,
+    "actions/download-artifact": 7,
+}
+
+
+def test_workflow_actions_are_pinned_by_commit_to_node24_releases() -> None:
+    import re
+
+    pattern = re.compile(r"uses: (actions/[a-z-]+)@(\S+)(?: # v(\d+)\.\d+\.\d+)?")
+    seen = set()
+    for workflow in sorted((REPO_ROOT / ".github/workflows").glob("*.yml")):
+        for action, ref, major in pattern.findall(workflow.read_text()):
+            seen.add(action)
+            assert re.fullmatch(r"[0-9a-f]{40}", ref), f"{workflow.name}: {action}@{ref} is not pinned by commit"
+            assert major and int(major) >= NODE24_MAJORS[action], f"{workflow.name}: {action} v{major} predates Node 24"
+    assert seen == set(NODE24_MAJORS)
+
+
+def _acceptance_module():
+    spec = importlib.util.spec_from_file_location("acceptance", REPO_ROOT / "tools/release/acceptance.py")
+    acceptance = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(acceptance)
+    return acceptance
+
+
+def test_acceptance_takes_the_built_wheel_from_the_json_api(tmp_path, monkeypatch) -> None:
+    import io
+    import urllib.error
+
+    acceptance = _acceptance_module()
+    wheel_bytes = b"the wheel CI built"
+    digest = hashlib.sha256(wheel_bytes).hexdigest()
+    listing = {"urls": [
+        {"packagetype": "sdist", "filename": "coilem-0.4.0.tar.gz", "url": "https://files.example/sdist", "digests": {"sha256": "0" * 64}},
+        {"packagetype": "bdist_wheel", "filename": "coilem-0.4.0-py3-none-other.whl", "url": "https://files.example/other",
+         "digests": {"sha256": "1" * 64}},
+        {"packagetype": "bdist_wheel", "filename": "coilem-0.4.0-py3-none-this.whl", "url": "https://files.example/this",
+         "digests": {"sha256": digest}},
+    ]}
+    requested = []
+
+    def urlopen(url, timeout=None):
+        requested.append(url)
+        if url.endswith("/json") and len(requested) == 1:
+            raise urllib.error.HTTPError(url, 404, "not yet", None, None)  # still propagating
+        if url.endswith("/json"):
+            return io.BytesIO(json.dumps(listing).encode())
+        assert url == "https://files.example/this"
+        return io.BytesIO(wheel_bytes)
+
+    monkeypatch.setattr(acceptance.urllib.request, "urlopen", urlopen)
+    monkeypatch.setattr(acceptance.time, "sleep", lambda seconds: None)
+    run = acceptance.Acceptance(tmp_path)
+    wheel = run.download("coilem==0.4.0", "https://test.pypi.org/simple/", digest, "python")
+    assert requested[0] == "https://test.pypi.org/pypi/coilem/0.4.0/json"
+    assert Path(wheel).read_bytes() == wheel_bytes
+    assert run.results[-1][1] is True
+
+    # A version whose files don't include the wheel CI built fails the check instead of installing anything.
+    requested.clear()
+    requested.append("skip the propagation miss")
+    assert acceptance.Acceptance(tmp_path / "other").download("coilem==0.4.0", "https://pypi.org/simple/", "f" * 64, "python") == ""
+
+
+
+def test_acceptance_falls_back_to_pip_at_once_when_the_json_api_is_unusable(tmp_path, monkeypatch) -> None:
+    import ssl
+    import urllib.error
+
+    acceptance = _acceptance_module()
+    wheel_bytes = b"the wheel CI built"
+    digest = hashlib.sha256(wheel_bytes).hexdigest()
+    sleeps, pip_calls = [], []
+    monkeypatch.setattr(acceptance.time, "sleep", sleeps.append)
+
+    def pip_download(self, requirement, index_url, python, destination):
+        pip_calls.append(requirement)
+        wheel = destination / "coilem-0.4.0-py3-none-this.whl"
+        wheel.write_bytes(wheel_bytes)
+        return wheel
+
+    monkeypatch.setattr(acceptance.Acceptance, "pip_download", pip_download)
+    failures = [
+        urllib.error.URLError(ssl.SSLCertVerificationError(1, "certificate verify failed")),  # TLS on a runner's Python
+        urllib.error.HTTPError("https://test.pypi.org/pypi/coilem/0.4.0/json", 403, "forbidden", None, None),
+    ]
+    for failure in failures:
+        def urlopen(url, timeout=None, failure=failure):
+            raise failure
+
+        monkeypatch.setattr(acceptance.urllib.request, "urlopen", urlopen)
+        run = acceptance.Acceptance(tmp_path / str(len(pip_calls)))
+        wheel = run.download("coilem==0.4.0", "https://test.pypi.org/simple/", digest, "python")
+        assert Path(wheel).read_bytes() == wheel_bytes and run.results[-1][1] is True
+    # Neither failure is "not on the index yet": pip takes over without the 25-minute wait.
+    assert pip_calls == ["coilem==0.4.0", "coilem==0.4.0"] and sleeps == []
+
+def test_release_notes_links_become_absolute_for_the_release_page() -> None:
+    from tools.release.release_notes import absolute_links
+
+    text = "See [install\n](README.md#install), [docs](./docs/VALIDATION.md), [web](https://x.org/a), [here](#top) and [abs](/root)."
+    assert absolute_links(text, "coilemdev/coilem", "v0.4.0") == (
+        "See [install\n](https://github.com/coilemdev/coilem/blob/v0.4.0/README.md#install), "
+        "[docs](https://github.com/coilemdev/coilem/blob/v0.4.0/docs/VALIDATION.md), [web](https://x.org/a), [here](#top) and [abs](/root)."
+    )
+    notes = (REPO_ROOT / "RELEASE_NOTES.md").read_text(encoding="utf-8")
+    rewritten = absolute_links(notes, "coilemdev/coilem", "v0.4.0")
+    import re
+
+    assert not [t for t in re.findall(r"\]\(([^)\s]+)\)", rewritten) if not t.startswith(("http://", "https://", "#", "mailto:"))]
+    release = _job((REPO_ROOT / ".github/workflows/release-wheels.yml").read_text(), "github-release")
+    assert "tools/release/release_notes.py RELEASE_NOTES.md" in release and '--notes-file "$RUNNER_TEMP/notes.md"' in release

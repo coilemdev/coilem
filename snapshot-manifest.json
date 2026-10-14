@@ -25,13 +25,13 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 5866,
-      "sha256": "eaf53f1ebcb550a5484102d5bf399d641394123cb8298a7e47eb7e569f96d3f0"
+      "bytes": 6383,
+      "sha256": "c0b81a9e0e6a68b2015becaf3a29091b96196a8ef119b0d4e31f6d9eb1a1ebf0"
     },
     {
       "path": ".github/workflows/release-wheels.yml",
-      "bytes": 17308,
-      "sha256": "34dcac51ca9ab80ba75a8344ddf8cf2f782260e070d21b86e3ed0f26e55c3565"
+      "bytes": 18873,
+      "sha256": "141114d388835f32b90a1b06e386ee5595e09842ebe5a936f7ed512b03363443"
     },
     {
       "path": ".gitignore",
@@ -210,8 +210,8 @@
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 73324,
-      "sha256": "e3796787573275abbf5954bb3926086266bdad63c753bf4ae7203b53d33fe9e8"
+      "bytes": 74315,
+      "sha256": "c010d58e9652244130f52e2b6e249d56700a62dba408bd7204ac29445ce97cfa"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -230,8 +230,8 @@
     },
     {
       "path": "backend/halbach/gmsh_adapter.py",
-      "bytes": 27851,
-      "sha256": "50186517357c9a64f9c1d8d74008770094f7a1125eff33cdd23de0085d801690"
+      "bytes": 27755,
+      "sha256": "fa07601465c8999e378d03d99dcbee19424dfec9e7bdd41a97494ba3c585af85"
     },
     {
       "path": "backend/halbach/linear_geometry.py",
@@ -240,8 +240,8 @@
     },
     {
       "path": "backend/halbach/linear_gmsh_adapter.py",
-      "bytes": 27163,
-      "sha256": "5383dc45c7dc06ff3f358300f2c846f46b08b19a56f11a065a12f34a4536859d"
+      "bytes": 27067,
+      "sha256": "178b133772d1a81584ce1780abd4641da57a8c679d30defede57f9f40e8409a8"
     },
     {
       "path": "backend/halbach/linear_models.py",
@@ -530,8 +530,8 @@
     },
     {
       "path": "backend/tutorial_fields.py",
-      "bytes": 134073,
-      "sha256": "1d4c09cbede78fb8148994436dcbc87ce23fd87b244d41085ff2ed24aafe74d3"
+      "bytes": 133506,
+      "sha256": "32d109b4e6e53ba078e9b7ee2ad4c7509e31881bf0ddd1cb0f35ec3f9f9b627c"
     },
     {
       "path": "backend/winding_utils.py",
@@ -3550,8 +3550,8 @@
     },
     {
       "path": "docs/RELEASING.md",
-      "bytes": 10159,
-      "sha256": "46b8bc6933892fcc645d2faaadfee5dee53f979c4085b12dd0f02e1857228060"
+      "bytes": 10790,
+      "sha256": "82bea795a7ce8a7f34661d03778d9cce8c1c950bd5ac3df551c5c6a5347398e3"
     },
     {
       "path": "docs/RUNTIME_SETTINGS.md",
@@ -4804,6 +4804,11 @@
       "sha256": "ae082b80e08635d0515c6eb476f863693a19a5d6042e85cb232e34bd0c8c9a25"
     },
     {
+      "path": "tests/test_gmsh_sigpipe.py",
+      "bytes": 2226,
+      "sha256": "dc6047fb2b7381a610ba7b9ff5011b6a39574bc60aaefa3074400726a558819e"
+    },
+    {
       "path": "tests/test_halbach_api.py",
       "bytes": 11374,
       "sha256": "c121c79c2bb017d8601c611ca0217059d0061dae30e9d0525f1b24c49f70a9d4"
@@ -4935,8 +4940,8 @@
     },
     {
       "path": "tests/test_release_tools.py",
-      "bytes": 24414,
-      "sha256": "7cc7f837cfc7744f9014734c672958ead5bef364152a5ad1ec8e5906c0a8cc12"
+      "bytes": 30172,
+      "sha256": "955ffc8b1a1b04890794f62bcca2e588df18aec1df943bb55d614e138aff731d"
     },
     {
       "path": "tests/test_solve_estimate.py",
@@ -5040,8 +5045,8 @@
     },
     {
       "path": "tools/release/acceptance.py",
-      "bytes": 18277,
-      "sha256": "9d4a2087d1aeb649fb1d5f72c3fc0cb0c6dca9e14ff5f1dc83af4f0aabb50c4c"
+      "bytes": 22039,
+      "sha256": "22350ab5b8ba0310e3ae7f6525464c392ae1fb008cac749502bb8cad0204adfa"
     },
     {
       "path": "tools/release/artifacts.py",
@@ -5077,6 +5082,11 @@
       "path": "tools/release/policy.py",
       "bytes": 11897,
       "sha256": "5b38a5f885bf83091823514f317aeafa54cd0570e94377a9dd4934e29df62e2a"
+    },
+    {
+      "path": "tools/release/release_notes.py",
+      "bytes": 1420,
+      "sha256": "1df1bcfeeb75af8f8e6c14ea4d874d335aa9bd89212690231b4ca78248c14b7c"
     },
     {
       "path": "tools/release/rust_licenses.py",
@@ -6648,7 +6658,7 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B \u2212 Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B − Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
@@ -6678,13 +6688,13 @@
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45\u00b0 (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45° (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45\u00b0 over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45° over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "a482ff6e2bd9616d2ece2a68f8fa2f2c49aae45c",
@@ -6702,7 +6712,7 @@
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00b0 (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45° (#52 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",

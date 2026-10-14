@@ -18,9 +18,10 @@ from backend.gmsh_solver import (
     _add_threshold_field,
     _extract_gmsh_triangles,
     gmsh,
+    initialize_gmsh,
 )
 from backend.magneto2d_adapter import Magneto2DExecutionError, ensure_magneto2d_binary, run_native_process
-from backend.solver_environment import ISOLATED_RUNTIME, solver_process_environment
+from backend.solver_environment import solver_process_environment
 
 _DOMAIN_X_MIN_MM = -50.0
 _DOMAIN_X_MAX_MM = 50.0
@@ -234,7 +235,7 @@ def _build_follow_flux_gmsh_mesh(
             )
         )
     with _GMSH_API_LOCK:
-        gmsh.initialize(readConfigFiles=not ISOLATED_RUNTIME, interruptible=False)
+        initialize_gmsh()
         try:
             gmsh.option.setNumber("General.Terminal", 0)
             gmsh.option.setNumber("Mesh.Algorithm", 6)
@@ -445,7 +446,7 @@ def _build_current_wire_gmsh_mesh(
     _, far_lc_mm, edge_lc_mm, influence_mm = _teaching_mesh_sizes(mesh_density)
     wire_radius_mm = 5.0
     with _GMSH_API_LOCK:
-        gmsh.initialize(readConfigFiles=not ISOLATED_RUNTIME, interruptible=False)
+        initialize_gmsh()
         try:
             gmsh.option.setNumber("General.Terminal", 0)
             gmsh.option.setNumber("Mesh.Algorithm", 6)
@@ -533,7 +534,7 @@ def _build_current_force_gmsh_mesh(
     magnet_inner_x_mm = wire_radius_mm + pole_gap_mm
     magnet_outer_x_mm = magnet_inner_x_mm + magnet_width_mm
     with _GMSH_API_LOCK:
-        gmsh.initialize(readConfigFiles=not ISOLATED_RUNTIME, interruptible=False)
+        initialize_gmsh()
         try:
             gmsh.option.setNumber("General.Terminal", 0)
             gmsh.option.setNumber("Mesh.Algorithm", 6)
@@ -651,7 +652,7 @@ def _build_linear_motor_capstone_gmsh_mesh(
         factor * winding_spacing_mm for factor in (-1.5, -0.5, 0.5, 1.5)
     )
     with _GMSH_API_LOCK:
-        gmsh.initialize(readConfigFiles=not ISOLATED_RUNTIME, interruptible=False)
+        initialize_gmsh()
         try:
             gmsh.option.setNumber("General.Terminal", 0)
             gmsh.option.setNumber("Mesh.Algorithm", 6)
@@ -781,7 +782,7 @@ def _build_rotor_chase_gmsh_mesh(
     stator_outer_x_mm = stator_inner_x_mm + _FORCE_MAGNET_WIDTH_MM
 
     with _GMSH_API_LOCK:
-        gmsh.initialize(readConfigFiles=not ISOLATED_RUNTIME, interruptible=False)
+        initialize_gmsh()
         try:
             gmsh.option.setNumber("General.Terminal", 0)
             gmsh.option.setNumber("Mesh.Algorithm", 6)
@@ -918,7 +919,7 @@ def _build_rotating_field_gmsh_mesh(
         (_ROTATING_FIELD_COIL_OFFSET_MM, 0.0),
     )
     with _GMSH_API_LOCK:
-        gmsh.initialize(readConfigFiles=not ISOLATED_RUNTIME, interruptible=False)
+        initialize_gmsh()
         try:
             gmsh.option.setNumber("General.Terminal", 0)
             gmsh.option.setNumber("Mesh.Algorithm", 6)
@@ -1058,7 +1059,7 @@ def _build_rotating_field_motor_gmsh_mesh(
     )
 
     with _GMSH_API_LOCK:
-        gmsh.initialize(readConfigFiles=not ISOLATED_RUNTIME, interruptible=False)
+        initialize_gmsh()
         try:
             gmsh.option.setNumber("General.Terminal", 0)
             gmsh.option.setNumber("Mesh.Algorithm", 6)
@@ -1200,7 +1201,7 @@ def _build_three_phase_motor_gmsh_mesh(
                 )
 
     with _GMSH_API_LOCK:
-        gmsh.initialize(readConfigFiles=not ISOLATED_RUNTIME, interruptible=False)
+        initialize_gmsh()
         try:
             gmsh.option.setNumber("General.Terminal", 0)
             gmsh.option.setNumber("Mesh.Algorithm", 6)
@@ -1341,7 +1342,7 @@ def _build_iron_saturation_gmsh_mesh(
     ring_inner_radius_mm = 11.0
     ring_outer_radius_mm = 23.0
     with _GMSH_API_LOCK:
-        gmsh.initialize(readConfigFiles=not ISOLATED_RUNTIME, interruptible=False)
+        initialize_gmsh()
         try:
             gmsh.option.setNumber("General.Terminal", 0)
             gmsh.option.setNumber("Mesh.Algorithm", 6)
@@ -1424,7 +1425,7 @@ def _build_iron_saturation_tooth_gmsh_mesh(
 
     _, far_lc_mm, edge_lc_mm, influence_mm = _teaching_mesh_sizes(mesh_density)
     with _GMSH_API_LOCK:
-        gmsh.initialize(readConfigFiles=not ISOLATED_RUNTIME, interruptible=False)
+        initialize_gmsh()
         try:
             gmsh.option.setNumber("General.Terminal", 0)
             gmsh.option.setNumber("Mesh.Algorithm", 6)
