@@ -60,10 +60,11 @@ def test_broken_pipe_after_meshing_raises_instead_of_killing_the_process() -> No
 
 
 def test_backend_starts_gmsh_only_through_initialize_gmsh() -> None:
+    # One call: the one inside initialize_gmsh itself.
     direct = [
-        f"{path.relative_to(REPO_ROOT)}:{number}"
+        path.relative_to(REPO_ROOT).as_posix()
         for path in sorted((REPO_ROOT / "backend").rglob("*.py"))
-        for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1)
+        for line in path.read_text(encoding="utf-8").splitlines()
         if re.search(r"\bgmsh\.initialize\(", line)
     ]
-    assert direct == ["backend/gmsh_solver.py:54"], direct
+    assert direct == ["backend/gmsh_solver.py"], direct

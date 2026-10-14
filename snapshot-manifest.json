@@ -4480,8 +4480,8 @@
     },
     {
       "path": "tests/test_gmsh_sigpipe.py",
-      "bytes": 2205,
-      "sha256": "7be6a55f907ada04e12d3f963f1b55d4056a8a510c9205fc2a1120e98400cd40"
+      "bytes": 2226,
+      "sha256": "dc6047fb2b7381a610ba7b9ff5011b6a39574bc60aaefa3074400726a558819e"
     },
     {
       "path": "tests/test_halbach_api.py",
