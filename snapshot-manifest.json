@@ -3475,8 +3475,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 105618,
-      "sha256": "cd83787ea0c3b00e76ef72f726781d12151a1a2c07bcfbc502f291a68cd8b501"
+      "bytes": 106093,
+      "sha256": "ce10281f99f5b0a68985613cd90c085c0726e17367e9fc76999c91c95db7a599"
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
@@ -3865,8 +3865,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 180355,
-      "sha256": "36a935fe16270b7ad27a7e627003c039c2b964d0b870fbd15c05c6ad782fd423"
+      "bytes": 181285,
+      "sha256": "3faa890514edf100829d63886845e2206e3ce87d29185e8667c5856b79db7946"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -3985,8 +3985,8 @@
     },
     {
       "path": "frontend/src/public/exampleDesigns.ts",
-      "bytes": 2348,
-      "sha256": "8ccd3c618ba4cf2a993089fc0fe03ba92e9265413c7779fafc776394e36be2f2"
+      "bytes": 2850,
+      "sha256": "0189301fe019de9f8be04234df5528875a461b27aa5f5acafb94971a4f43b2e8"
     },
     {
       "path": "frontend/src/public/examples/ornl_prius_2004_holem50.coilem",
