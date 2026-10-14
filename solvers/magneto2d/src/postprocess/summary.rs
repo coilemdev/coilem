@@ -1540,6 +1540,97 @@ mod tests {
         (mesh, centroids)
     }
 
+    /// sum_p lambda_p * i_p / (L * integral(A_z * J_z)) for one winding, with
+    /// J_z from the slot current source and lambda_p from the extraction.
+    fn reciprocity_ratio(
+        winding_type: &str,
+        slot_count: usize,
+        pole_count: u32,
+        layers: u32,
+        coil_span: Option<u32>,
+        parallel_paths: u32,
+    ) -> f64 {
+        use crate::sources::{
+            compute_current_densities_from_phase_currents, flux_linkage_slot_side_turn_factor,
+        };
+
+        let (mesh, centroids) = synthetic_slot_flux_mesh(slot_count, pole_count);
+        // An arbitrary field and unbalanced currents, so no symmetry hides a mismatch.
+        let az: Vec<f64> = (0..mesh.nodes.len())
+            .map(|node| 1.0e-3 * (0.37 * node as f64).sin() + 2.0e-4 * (node / 3) as f64)
+            .collect();
+        let currents = [3.0, -1.0, -2.5];
+        let areas_m2: Vec<f64> = mesh
+            .triangles
+            .iter()
+            .map(|&[i, j, k]| {
+                let [a, b, c] = [mesh.nodes[i], mesh.nodes[j], mesh.nodes[k]];
+                0.5 * ((b[0] - a[0]) * (c[1] - a[1]) - (c[0] - a[0]) * (b[1] - a[1])).abs()
+            })
+            .collect();
+        let areas_mm2: Vec<f64> = areas_m2.iter().map(|area| area * 1e6).collect();
+        let turns = 10;
+        let stack_mm = 100.0;
+        let j_z = compute_current_densities_from_phase_currents(
+            &mesh,
+            &centroids,
+            winding_type,
+            slot_count as u32,
+            pole_count,
+            turns,
+            layers,
+            coil_span,
+            currents,
+            &areas_mm2,
+        );
+        let (flux, _) = compute_flux_linkage(
+            &mesh,
+            &az,
+            &centroids,
+            stack_mm,
+            winding_type,
+            slot_count as u32,
+            pole_count,
+            turns,
+            layers,
+            coil_span,
+            flux_linkage_slot_side_turn_factor(winding_type, layers, parallel_paths),
+            false,
+        );
+        let terminal: f64 = (0..3).map(|phase| flux[phase] * currents[phase]).sum();
+        let field: f64 = mesh
+            .triangles
+            .iter()
+            .enumerate()
+            .map(|(idx, &[i, j, k])| (az[i] + az[j] + az[k]) / 3.0 * j_z[idx] * areas_m2[idx])
+            .sum::<f64>()
+            * stack_mm
+            * 1e-3;
+        terminal / field
+    }
+
+    #[test]
+    fn flux_linkage_is_reciprocal_with_the_slot_current_source() {
+        // Energy consistency (#80): the turns the extraction credits must be the
+        // turns the source excites, or back-EMF and torque disagree by the ratio.
+        // A single-layer concentrated winding credited half its turns (ratio 0.5).
+        // One path each: production divides by parallel paths in the Python slot
+        // source it imports, not in this analytical synthesis.
+        for (winding_type, slots, poles, layers, span) in [
+            ("concentrated", 12, 8, 1, None),
+            ("concentrated", 12, 4, 1, None),
+            ("distributed", 24, 4, 1, None),
+            ("distributed", 48, 8, 2, None),
+            ("distributed", 48, 8, 2, Some(5)),
+        ] {
+            let ratio = reciprocity_ratio(winding_type, slots, poles, layers, span, 1);
+            assert!(
+                (ratio - 1.0).abs() < 1e-9,
+                "{winding_type} {slots}s/{poles}p layers={layers} span={span:?}: lambda*i / L*int(A*J) = {ratio}"
+            );
+        }
+    }
+
     fn contour_debug(status: &str, scaled_torque_nm: f64) -> ContourTorqueDebug {
         ContourTorqueDebug {
             status: status.to_string(),
