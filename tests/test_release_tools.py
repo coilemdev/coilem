@@ -521,6 +521,39 @@ def test_acceptance_takes_the_built_wheel_from_the_json_api(tmp_path, monkeypatc
     assert acceptance.Acceptance(tmp_path / "other").download("coilem==0.4.0", "https://pypi.org/simple/", "f" * 64, "python") == ""
 
 
+
+def test_acceptance_falls_back_to_pip_at_once_when_the_json_api_is_unusable(tmp_path, monkeypatch) -> None:
+    import ssl
+    import urllib.error
+
+    acceptance = _acceptance_module()
+    wheel_bytes = b"the wheel CI built"
+    digest = hashlib.sha256(wheel_bytes).hexdigest()
+    sleeps, pip_calls = [], []
+    monkeypatch.setattr(acceptance.time, "sleep", sleeps.append)
+
+    def pip_download(self, requirement, index_url, python, destination):
+        pip_calls.append(requirement)
+        wheel = destination / "coilem-0.4.0-py3-none-this.whl"
+        wheel.write_bytes(wheel_bytes)
+        return wheel
+
+    monkeypatch.setattr(acceptance.Acceptance, "pip_download", pip_download)
+    failures = [
+        urllib.error.URLError(ssl.SSLCertVerificationError(1, "certificate verify failed")),  # TLS on a runner's Python
+        urllib.error.HTTPError("https://test.pypi.org/pypi/coilem/0.4.0/json", 403, "forbidden", None, None),
+    ]
+    for failure in failures:
+        def urlopen(url, timeout=None, failure=failure):
+            raise failure
+
+        monkeypatch.setattr(acceptance.urllib.request, "urlopen", urlopen)
+        run = acceptance.Acceptance(tmp_path / str(len(pip_calls)))
+        wheel = run.download("coilem==0.4.0", "https://test.pypi.org/simple/", digest, "python")
+        assert Path(wheel).read_bytes() == wheel_bytes and run.results[-1][1] is True
+    # Neither failure is "not on the index yet": pip takes over without the 25-minute wait.
+    assert pip_calls == ["coilem==0.4.0", "coilem==0.4.0"] and sleeps == []
+
 def test_release_notes_links_become_absolute_for_the_release_page() -> None:
     from tools.release.release_notes import absolute_links
 
