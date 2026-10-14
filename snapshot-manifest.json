@@ -540,8 +540,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 4597,
-      "sha256": "ff2772a36c377303352bc846bd6ce4e92a33b33728f48d7dadf0cdaa7162e1bd"
+      "bytes": 4978,
+      "sha256": "9d6bcd7d7953a7d55c808e18b11990647d5c435977d1bf7eecb5367f206bc058"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -2527,6 +2527,316 @@
       "path": "benchmarks/release-baseline-20261011-v1.2/coilem_benchmark_report.html",
       "bytes": 276345,
       "sha256": "082f841c598fb32bc90a2528950ff1aff31a215457a3bd0a42a120b1fb7b1280"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/README.md",
+      "bytes": 6191,
+      "sha256": "699be0501f35bfaa08e3000151e7aab03defc4a2f7d395e57c1821a374d2bb27"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/analysis/comparison-summary.json",
+      "bytes": 23871,
+      "sha256": "4873c33d0302f975660f62298584a59bdbfe379354591d86a0acc3693dcfb120"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/analysis/execution-timings.json",
+      "bytes": 9863,
+      "sha256": "d34838405d7d00632b1f58c22d39b460045f13cac82ccd31d0fb840755dfb42d"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/analysis/native-before-after.json",
+      "bytes": 26028,
+      "sha256": "37dc5bd05c6be03af39e37b2eb2821325acc3343d9a4ae250368d945a9cebfba"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/analysis/physical-comparison.json",
+      "bytes": 245583,
+      "sha256": "cebb47d9ede0b08fd07698fbecad738e279b27506763185ebc522dea09270835"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/analysis/ripple-failure-inspection.json",
+      "bytes": 1199,
+      "sha256": "7c5d170662e1d3ce95ed3a15c88b9c3b28f21e6a1ecac8ebc311161cacc48087"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/artifact_manifest.json",
+      "bytes": 11184,
+      "sha256": "e183ce05d332c6a4a68b86bca8b65bd0c78b99528f8b2795c843f999a9132b53"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/benchmark_report.md",
+      "bytes": 3967,
+      "sha256": "942a452367ca7c5391ca800f2b72d984840c3675aa9a5dc793ade149884c3230"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/benchmark_summary.json",
+      "bytes": 1757242,
+      "sha256": "df3e90407b61d2ad3d75b20315a94cdbdc3ad48d10a349571bafe2bbea05c92e"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/coilem_benchmark_report.html",
+      "bytes": 396879,
+      "sha256": "4886723d3e670e2ab75fe349b2819ce9ab80d123ba8f7b02a8adaef973a053b4"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/coilem_benchmark_report.pdf",
+      "bytes": 143188,
+      "sha256": "0f976481c0f31222f4dd3762119ef5061f670547918b316135af70b724a5ec65"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1604,
+      "sha256": "15423a47ebbf8509a7935c60d5c45404b8ee186f37dd266dec9e3f2a01560e34"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1607,
+      "sha256": "e328650573ad963181a7cf2292f6fe924d866c792d79c2a32137da2f9522fae0"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1606,
+      "sha256": "68b4e61d69cbc4673eba7ec92d0609862b1cf0283fa8391bf174b8d6c55b7c59"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2503,
+      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2503,
+      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2503,
+      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2502,
+      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2502,
+      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2502,
+      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1594,
+      "sha256": "3d78ae3d4175a933e18d04b9d45c7bddaff1db6e8355c21675dbe4da2934392c"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1596,
+      "sha256": "2081d6ab448377574d76cdd8c86724d07368fd09093bab02d111bfb589d5d709"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1595,
+      "sha256": "a77a7fbd94ed2a06659067f6501b029f612f09877128361268c76c5f9e268604"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2506,
+      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2506,
+      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1640,
+      "sha256": "dd91d0757a826b34c3fde5e813bdfdc385bc048ce477a172c5bfbf292ff6703b"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1642,
+      "sha256": "4e53c05733eb4d81cc3205e743f12fb473065142827f4e38327bd035caf7545c"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1641,
+      "sha256": "1825fe88e7ddf36234aa984f0fbbd30e894bfb34a6030fc02a348c883bf18ffa"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2550,
+      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/publication.json",
+      "bytes": 9142,
+      "sha256": "105045a8def119e594267754984abaa23aacb4727a9b31ff4140a5269a696a9d"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/results-comparison.md",
+      "bytes": 11029,
+      "sha256": "8a3126d507c1b420250674f3803cd36c6b1a6eae2ec7dea312a449c2a506753b"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/investigation.json",
+      "bytes": 6247,
+      "sha256": "c9d3a383c29321c942e8bcf06046ef05432488ff9d0f7c5ea0e3b5e3e0dad5c8"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/investigation.md",
+      "bytes": 3041,
+      "sha256": "2b48bfad2c61a675e9173b2e9ee2129892399bf16d6c2270a43cf8187512877a"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/jobs/grid-0p9375-50A/request.json",
+      "bytes": 18241,
+      "sha256": "5d0b6886332fb4a7d9aceec6c8e27275ccfdee0072cc45177b18892205a3f05c"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/jobs/grid-0p9375-50A/result.json",
+      "bytes": 150141,
+      "sha256": "4645f84050d128cd0c55c399fbf240d2181b971bac2a252f0995ecba7e0bb5b1"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/jobs/grid-1p875-50A/request.json",
+      "bytes": 18240,
+      "sha256": "a5390bb90983e01160fb258fccdcc03c5a87a0d37226743d42b5976462cc9343"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/jobs/grid-1p875-50A/result.json",
+      "bytes": 100682,
+      "sha256": "0f0dca0606cce3fda1b9598df71157f78a7da5f33e7a7f2e0c94844143e86a99"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/jobs/half-current-3p75-25A/request.json",
+      "bytes": 18239,
+      "sha256": "30756c8e8dfa2770b38501e8aa58cc8376c6ed881cd33041e6c57a65fdf21ae4"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/jobs/half-current-3p75-25A/result.json",
+      "bytes": 76268,
+      "sha256": "0ae223854d68024bd965a4cbf2aece06c0648675390097b6c59a7ca273e32827"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/ripple-diagnostic.pdf",
+      "bytes": 19515,
+      "sha256": "b72cb5c617145cde56bbcabaf5ebefb9d61bbdccea8b90cd7488f6860658c016"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/state.json",
+      "bytes": 24940,
+      "sha256": "668947cc50f0d1eec8db91cbd1f73d838910e02609bff11956cf8e1249e7f87c"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/torque-refinement-full.svg",
+      "bytes": 46498,
+      "sha256": "7473624e98071eec2cc6f5c7cc9567d385107f1d392e6dc698940a9e8f3d24de"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/torque-refinement-trough.svg",
+      "bytes": 8534,
+      "sha256": "6761c3535c9d0b426c5b881c6e21de5af85488794fc5e508c50975ae01ce7113"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/run_manifest.json",
+      "bytes": 44011,
+      "sha256": "e8574dcb6daa2c0337b95f2be4cd47e5bf213efc52b53e15d1a8c601564032cd"
     },
     {
       "path": "benchmarks/windows-process-pools-20261012-02fa24b/README.md",
@@ -5015,8 +5325,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 18039,
-      "sha256": "031e1e194edfaa5a580ec92fc11f8675e04351b68c6b7a41f95358e2aaccce25"
+      "bytes": 18237,
+      "sha256": "dd838984a7051e2df85447e0b69d9400dd9fe30e0da8e7df8129aca1fb57c832"
     }
   ],
   "public_patches": [
