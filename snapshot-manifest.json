@@ -2354,6 +2354,156 @@
       "sha256": "91dfe1726054b29ccfb1568e906c489dca26a1d56f4b4b47939097e37cfbeacf"
     },
     {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_flat_12s10p_fscw_contract.json",
+      "bytes": 16060,
+      "sha256": "e5c4fc3e793b6503149b885ad16a0367d6a572e668a82fba4b4a548400a2bace"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_flat_24s16p_industrial_contract.json",
+      "bytes": 21951,
+      "sha256": "300137aafc55c957929aa2c0a4c50cad63e7aa09281a5dfdfb837884fec545fb"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_flat_4p12s_micro_contract.json",
+      "bytes": 16254,
+      "sha256": "9c7b148251a909886476685d9572cf900e4016f5a9d24adbf83172f62757e526"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_flat_8p12s_fsae_angled_pocket_contract.json",
+      "bytes": 16108,
+      "sha256": "b9854217e38e8c0a459655735a3420f0180614e985faa8021a65def0d2a72662"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_flat_8p12s_fsae_contract.json",
+      "bytes": 16086,
+      "sha256": "c3020d31c9333af313227322cf860d6e73d1e1a787beda3057777f3e19726bac"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_flat_8p12s_fsae_thin_bridge_contract.json",
+      "bytes": 16116,
+      "sha256": "834f586536b25d7c59e052f5880fa51d2250d34280952deadb2186e3836b79cb"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_vshape_8p12s_baseline_contract.json",
+      "bytes": 16116,
+      "sha256": "6970e50a388616b775a2879feb11bc8e1db46691881bd7ee214c93c24d6e4988"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_vshape_8p12s_deep_apex_high_output_v1.json",
+      "bytes": 16195,
+      "sha256": "b0e96efb21f594cc879cbab4f258bed6da7d8c393ad53699666efd41ba9aefac"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_vshape_8p12s_narrow_angle_contract.json",
+      "bytes": 16134,
+      "sha256": "b8b4f485300324ffce5a26d48a135a2399d3c0d40721def91b8d1aa9b90a1aec"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_vshape_8p12s_pocket_offset_contract.json",
+      "bytes": 16144,
+      "sha256": "a4de7e5b1b4baad0341d75d617259244eabd9481ae68b51d656c58721872d22d"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_vshape_8p12s_thin_bridge_contract.json",
+      "bytes": 16053,
+      "sha256": "691110d26eb1ce82628da391e04fec5e2e5443cd7d30b1290a0a2d2c4007f665"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_vshape_8p12s_wide_angle_high_output_v1.json",
+      "bytes": 16132,
+      "sha256": "b4355b84a8980258845b0013645113ee4608666dd35a77b06a6e6bcf416e5405"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/manifest.json",
+      "bytes": 8964,
+      "sha256": "8ca3002ed095854ce6b97fc6623c0d232d95743ac1224a57a9dcf7b2683c20e6"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_12p36s_distributed_femm_validation.json",
+      "bytes": 27742,
+      "sha256": "b73f7f0dcc07d0d5e14ec820b0a711d0daad90adef8784d1cfa76503a9f087e5"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_14p12s_high_pole.json",
+      "bytes": 10093,
+      "sha256": "ee3598044fcc0cde08dea27390e2018f70c4a9a829656ba1f92f8aa0826322cb"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_4p12s_simple__baseline.json",
+      "bytes": 17612,
+      "sha256": "d00c8c9fc2c603d4527f0e1422070eaee38d99d43c6f2969011bc5d0f680c720"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_4p12s_simple__high_current.json",
+      "bytes": 17639,
+      "sha256": "2b09feca906bfe47a5af31318c6ae8a2927bdac18b12c3ac67420737cf02ea3f"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_4p12s_simple__tight_airgap.json",
+      "bytes": 17633,
+      "sha256": "dc461fbb930a73aa99b4e4e4eeff1792ce6a7fb42eed5dafa7b58e568eeb7776"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_4p12s_simple_noload__baseline.json",
+      "bytes": 17014,
+      "sha256": "d6cd92e9fd15072e48a0aadef2bcc50968b61a33abb5d18c4e261a24d74f5f91"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_4p12s_simple_noload__high_current.json",
+      "bytes": 17637,
+      "sha256": "03da7e7132ba4360164ec2a81ddcce447e01b4da5a09fdd30140e59a16c3157b"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_4p12s_simple_noload__tight_airgap.json",
+      "bytes": 16994,
+      "sha256": "d1ad552e6ee04699d72cfd16ce19e0439d1b3dddebcbc5716ccaff8e20ce9245"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_4p12s_small.json",
+      "bytes": 5413,
+      "sha256": "4eb6aaf51eccd015b1d658fd8010552f67acaf282f294176464529fe0a7bda42"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_8p12s_concentrated__baseline.json",
+      "bytes": 17576,
+      "sha256": "4124e7510006e94526930e5fb8fe773dcdfbcfe52e670402df673c2b39e1139c"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_8p12s_concentrated__high_current.json",
+      "bytes": 17596,
+      "sha256": "f6ae6b07e82a488ffd9c320fceb1130c6f95e08352577a6fc3ca6d37fce28529"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_8p12s_concentrated__tight_airgap.json",
+      "bytes": 17590,
+      "sha256": "772696810fc7e8a0ab236e3de6295c25d012789b511087470af3d7688d143b16"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_8p12s_reference.json",
+      "bytes": 5370,
+      "sha256": "f698b436c941744674934fba2b0bbc6a388f8c74ca5ad6e5ab9eda8749240dab"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_8p12s_reference_angle30__baseline.json",
+      "bytes": 17637,
+      "sha256": "e81cd6ceb71f45c368e59604e4d0c550b8f328d9fe58c5a353484b0bb5abdf68"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_8p24s_distributed_femm_validation.json",
+      "bytes": 22034,
+      "sha256": "6f76ef0a52d663e47c36b76bb19732cc61e1aef9b02125525c47eae257c5b1b7"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_8p48s_chorded_5_6.json",
+      "bytes": 57076,
+      "sha256": "45c506c1d58305adc4cb8e15c68ce24c83734c6419c9ab85aa381337ac9692be"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_8p48s_distributed_femm_validation.json",
+      "bytes": 33702,
+      "sha256": "78fdc1dceed6619df219e019d6e79a6afaaa2caa913065921cc2ef990ce55d76"
+    },
+    {
       "path": "benchmarks/reference-baselines/main-bad71d9/ipm_flat_12s10p_fscw_contract.json",
       "bytes": 16175,
       "sha256": "3846f311d85bf2dfa62d1e541126dcc9d97da58d5800af913b8daac0103dd07e"
