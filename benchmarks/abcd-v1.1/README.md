@@ -1,6 +1,6 @@
 # A/B/C/D benchmark protocol 1.1.0
 
-Harness **1.2.1** selects protocol **1.1.0** by default. This edition replaces
+Harness **1.3.0** selects protocol **1.1.0** by default. This edition replaces
 the low-output deep-apex and wide-angle Phase B cases with qualified higher-output
 physical designs. All other requests, references, angular grids, materials,
 BLDC golden vectors and numerical gates remain unchanged.
@@ -88,7 +88,7 @@ Changed solver implementation can reuse compatible references. Changed geometry,
 current, winding, speed, materials, grids, conventions or request settings require
 new matched reference evidence. Missing or incompatible references never PASS.
 
-Harness 1.2.1 supports protocols 1.0.0 and 1.1.0 and records the selected protocol
+Harness 1.3.0 supports protocols 1.0.0, 1.1.0 and [1.2.0](../abcd-v1.2/README.md) and records the selected protocol
 in worker identities. Protocol 1.1.0 changes matrix membership. Gates are unchanged:
 mean torque PASS <=8% / YELLOW <=15% (existing absolute limits near zero),
 Back-EMF H1/peak PASS <=10% / YELLOW <=15%, and fourteen BLDC gates per fixture.

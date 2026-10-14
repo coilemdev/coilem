@@ -50,8 +50,8 @@
     },
     {
       "path": "MATERIALS.md",
-      "bytes": 8011,
-      "sha256": "fd157117ffd42b4dec5741a64d33055781012d2714d0ddedc54d2d3316a7d96f"
+      "bytes": 8554,
+      "sha256": "751a4ca113657aea0a0635c3cdcd4f57895811231562f927b533a8c1e290612a"
     },
     {
       "path": "PUBLICATION_STATUS.md",
@@ -210,8 +210,8 @@
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 73324,
-      "sha256": "e3796787573275abbf5954bb3926086266bdad63c753bf4ae7203b53d33fe9e8"
+      "bytes": 73353,
+      "sha256": "858012df32f08046c3afbe4f625fc05b9fd67398d1d2637ab5a102e101e64a7c"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -315,8 +315,8 @@
     },
     {
       "path": "backend/material_catalog.py",
-      "bytes": 4026,
-      "sha256": "7af93ae3ec8f29a1e3a8bc219be5ecec91c092eb2d5d675d6e58c52b26bd979d"
+      "bytes": 4613,
+      "sha256": "4227dfbbddd82167b780f2284de59bcc0db69840a865de145612a9dda99fa198"
     },
     {
       "path": "backend/material_contract.py",
@@ -340,8 +340,8 @@
     },
     {
       "path": "backend/models/config.py",
-      "bytes": 26224,
-      "sha256": "22d0c9aca5bcb1ae8c2fa268c4119c00e92daf7643c504aa5c5c83dd6c0b75d1"
+      "bytes": 26249,
+      "sha256": "b5c17c901734cadb5bd85dfa0afdc89118f48c4a96e8ec7de593202561d512c7"
     },
     {
       "path": "backend/models/errors.py",
@@ -405,13 +405,13 @@
     },
     {
       "path": "backend/public_material_catalog.py",
-      "bytes": 9521,
-      "sha256": "645fc7b73dfeac2ca5226269c89a3580b1e7606264392d230d0f198a52cc6348"
+      "bytes": 9879,
+      "sha256": "eb648442968b26b9644a940247de27aa0e44c50cd682c59a0fae55d58fbed458"
     },
     {
       "path": "backend/public_policy.py",
-      "bytes": 11275,
-      "sha256": "d8bb1b685aefa7dd2ecb4a436ca44474154929b513321a93538c2271d61da68c"
+      "bytes": 11621,
+      "sha256": "a2ec20f5817fa667f7f33482dd3303b610d6c23a518ebf5ebebdcaf120692a51"
     },
     {
       "path": "backend/public_report.py",
@@ -540,18 +540,33 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 4457,
-      "sha256": "23a59e63162065b1b9ea530afce1099417a00978a4659292d43337ecd9ffd56c"
+      "bytes": 4597,
+      "sha256": "ff2772a36c377303352bc846bd6ce4e92a33b33728f48d7dadf0cdaa7162e1bd"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
-      "bytes": 6248,
-      "sha256": "d33a09277f6894b7639a444de191a67fd95a6b94589453143d051fb7a50dbd2b"
+      "bytes": 6281,
+      "sha256": "d152cbb4b059bf8d7d450fbee03c93cd4ed56d43cd45ca66f73a5f00966568e9"
     },
     {
       "path": "benchmarks/abcd-v1.1/benchmark_spec.json",
       "bytes": 17605,
       "sha256": "ea9d60d81d8601d2cdd6d7c94b3b3df70c65c6cf516737aeb125a4b2f2004721"
+    },
+    {
+      "path": "benchmarks/abcd-v1.2/README.md",
+      "bytes": 2335,
+      "sha256": "37b06510ab0be8666d422c2c905af3dced518640c57cfc9cb1594743d77f8ee2"
+    },
+    {
+      "path": "benchmarks/abcd-v1.2/benchmark_spec.json",
+      "bytes": 17925,
+      "sha256": "950ed611e478079e1cd21a9485759c1f70c59af0fc2b30fbcb549ca34b202ddc"
+    },
+    {
+      "path": "benchmarks/abcd-v1.2/fixtures/ornl_prius_2004_ipm.json",
+      "bytes": 2544,
+      "sha256": "7578d8a487782f1b8a315dcb5af4dca28b28e0af85138d2b752feb0e67a62377"
     },
     {
       "path": "benchmarks/abcd-v1/README.md",
@@ -3251,7 +3266,7 @@
     {
       "path": "docs/VALIDATION.md",
       "bytes": 21006,
-      "sha256": "3ee90d2481ae77981d82ee7a377fceb5382ede5c1d0858882f912bdd2d27edfe"
+      "sha256": "9e7831dde1a24d18a06ec704641605cdc1172e234139c824e95b2ba07886496c"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -3262,6 +3277,16 @@
       "path": "docs/examples/follow-flux-magnet-iron-report.json",
       "bytes": 2897435,
       "sha256": "25bbe57352a4307d176d0dcc8c22f1c1466922dcad4092bff63c5f14b2d901d3"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/femm-reference-spec.md",
+      "bytes": 4176,
+      "sha256": "866c74e7d8cc5737da843c258de77761a000ce1e87213016d31c386a78f3a335"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/fixture-correction.md",
+      "bytes": 4994,
+      "sha256": "3b828f5c44edf9e307ff10fbd5f4a8c667d8969b2c42def5cde38c226d451b56"
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/holem50-mapping.json",
@@ -3292,6 +3317,11 @@
       "path": "docs/hardware-validation/ornl-prius-2004/sources.json",
       "sha256": "0e5f96d113ef8b20e56adc1d479789f8aea73b4720029f1370ba236f127c764c",
       "bytes": 2477
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/stator-slot-mapping.json",
+      "bytes": 3994,
+      "sha256": "5a7064a1e2e38fc896cadc1264433421d417bca4546867686e4c44669ff70dfb"
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/target-back-emf.json",
@@ -4275,8 +4305,8 @@
     },
     {
       "path": "solvers/magneto2d/src/materials.rs",
-      "bytes": 31498,
-      "sha256": "506328a402dba389cdcf0059225f48074aa615f7f330556f641541aca029e096"
+      "bytes": 32017,
+      "sha256": "42c6fcda5430f904a240c7fabb7e35d6ad209a2f98247c332846be5b3e7b5b77"
     },
     {
       "path": "solvers/magneto2d/src/mesh.rs",
@@ -4490,8 +4520,8 @@
     },
     {
       "path": "tests/test_experimental_holem50.py",
-      "bytes": 8830,
-      "sha256": "ae082b80e08635d0515c6eb476f863693a19a5d6042e85cb232e34bd0c8c9a25"
+      "bytes": 9328,
+      "sha256": "f149dbadaf501a9e9d7d44f91c708dde43e4b2b3cfaf643cf6a37004ff0f0cf2"
     },
     {
       "path": "tests/test_halbach_api.py",
@@ -4574,6 +4604,11 @@
       "sha256": "048ac4984ae66c17658e3fe0c2e393fda63431b7ea74aea9b6890744f7fbeac7"
     },
     {
+      "path": "tests/test_prius_benchmark_case.py",
+      "bytes": 10858,
+      "sha256": "1d7082f4d03ce50fd48124099a6b6d61641419040a6b651c766390bb0d618bc0"
+    },
+    {
       "path": "tests/test_public_cancellation.py",
       "bytes": 15116,
       "sha256": "848822429984ae5896b5187a7b943fb5c3685f1073a24dca0548a2e8f4a92507"
@@ -4610,8 +4645,8 @@
     },
     {
       "path": "tests/test_public_validation_errors.py",
-      "bytes": 3690,
-      "sha256": "bf41217334bddcbee7ecc3420b6a0082e2c284f29a2aaff16105d0a098c63a1c"
+      "bytes": 3715,
+      "sha256": "e3780b463fae51e5e01dc30803c851b54044371c7f5f316e995a3e60927a423a"
     },
     {
       "path": "tests/test_public_validation_fixtures.py",
@@ -4665,8 +4700,8 @@
     },
     {
       "path": "tools/benchmark_suite/__init__.py",
-      "bytes": 317,
-      "sha256": "c5fc3d2eba606f06b47f0d8233869b224d07f512884120bfaab407f9a254a607"
+      "bytes": 326,
+      "sha256": "ad26efbfea36fa4a98960ecef88bb0e81e99734736951844bb76c2eb5f209272"
     },
     {
       "path": "tools/benchmark_suite/abc_metrics.py",
@@ -4680,13 +4715,18 @@
     },
     {
       "path": "tools/benchmark_suite/cli.py",
-      "bytes": 16334,
-      "sha256": "0a7c22759b25674f4e6626b2237722fbdbeb17aec4f776691efd6b858ba967e5"
+      "bytes": 17870,
+      "sha256": "12ba1ff247807434d4d4bef31aecf50a8aae973e1b5abe30bf449470f02cf9da"
     },
     {
       "path": "tools/benchmark_suite/contract.py",
       "bytes": 4722,
       "sha256": "192b62eda371de846f9872295041b1ab51294e00b5017a8a3d983f325a7e6bd1"
+    },
+    {
+      "path": "tools/benchmark_suite/hardware.py",
+      "bytes": 3327,
+      "sha256": "6204d74fca84aad9297d368cbe03027277d7724e518c5ff747c767e541fb18cb"
     },
     {
       "path": "tools/benchmark_suite/metrics.py",
@@ -4700,13 +4740,13 @@
     },
     {
       "path": "tools/benchmark_suite/report.py",
-      "bytes": 23142,
-      "sha256": "b824617f4bd29a0d455a4063a07989f17f68cb0a90aa3d49734465d8ec93e5bc"
+      "bytes": 27334,
+      "sha256": "f8d0f8ba30901df6aac578d9f7b3cd13e4ea1b9637d4945c51bcb6dcf2a98bf4"
     },
     {
       "path": "tools/benchmark_suite/worker.py",
-      "bytes": 4094,
-      "sha256": "3610b56a778a98c2c7ccb4727c51a90fcb110803b034cbf3f87599e190f64de5"
+      "bytes": 4183,
+      "sha256": "741e83560518eb530113ba3c0d21a1acd12956a1ab6a5b99b64d04c3b5693637"
     },
     {
       "path": "tools/experimental_solve.py",
@@ -4715,8 +4755,13 @@
     },
     {
       "path": "tools/fit_ornl_prius_holem50.py",
-      "bytes": 15569,
-      "sha256": "6bf8cbd40e270ec73486fa26066f31a3b6879fa33207f550bb21aa8d79e5d2e7"
+      "bytes": 15735,
+      "sha256": "c1b413ac38af4efc13ce36692a9117b62224dd50c303238c07d98cbdd384aa8d"
+    },
+    {
+      "path": "tools/fit_ornl_prius_stator.py",
+      "bytes": 8619,
+      "sha256": "c6848f3ebdaf803443f50a3b34d1f8868462a055dcda685aa6d0765969f0fb6c"
     },
     {
       "path": "tools/generate_m350_50a_bh.py",

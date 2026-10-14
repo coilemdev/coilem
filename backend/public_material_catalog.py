@@ -51,6 +51,10 @@ ARNOLD_NDFEB_SOURCE = PublicMaterialSource(
     label="Arnold typical room-temperature NdFeB reference",
     url="https://www.arnoldmagnetics.com/products/neodymium-iron-boron-magnets/",
 )
+ORNL_PRIUS_MAGNET_SOURCE = PublicMaterialSource(
+    label="ORNL/TM-2004/137 Fig. 14, 2004 Prius magnet demagnetization line",
+    url="https://www.osti.gov/servlets/purl/885676",
+)
 
 
 class PublicMaterialModel(BaseModel):
@@ -92,6 +96,8 @@ MAGNET_SOLVER_INPUTS: dict[
     # vendor page as evidence for ferrite or the Prius-specific approximation.
     "Ferrite_Y30": ("Ferrite Y30", 0.40, 1.05, None),
     "Prius_2004_NdFeB": ("Prius 2004 NdFeB preset", 1.24, 1.05, None),
+    # Br 1.23-1.24 T and Hc 875 kA/m read from the figure; mu_r = Br / (mu0 Hc).
+    "ORNL_Prius_2004_NdFeB": ("ORNL 2004 Prius NdFeB", 1.235, 1.12, ORNL_PRIUS_MAGNET_SOURCE),
 }
 
 CONDUCTOR_KEYS = ("copper", "aluminum")

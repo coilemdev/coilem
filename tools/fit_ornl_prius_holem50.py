@@ -40,8 +40,8 @@ STATED_BRIDGE_MM = (0.056 + 0.060) / 2 * 25.4  # Fig. 21 callouts, 0.056 and 0.0
 READ_OFF_ERROR_MM = {"positions": 0.5, "widths_and_lengths": 0.1}  # Phase A source audit
 
 
-def figure_segments(pdf: Path) -> list[tuple[tuple[float, float], tuple[float, float]]]:
-    """Blue (rotor) line segments of Fig. 21, in PDF points."""
+def figure_segments(pdf: Path, colour: str = "blue") -> list[tuple[tuple[float, float], tuple[float, float]]]:
+    """Line segments of Fig. 21 in one stroke colour, in PDF points: blue rotor, black stator, red callouts."""
 
     from pypdf import PdfReader
 
@@ -49,7 +49,7 @@ def figure_segments(pdf: Path) -> list[tuple[tuple[float, float], tuple[float, f
     if hashlib.sha256(pdf.read_bytes()).hexdigest() != expected:
         raise SystemExit(f"{pdf} is not the ORNL/TM-2005/33 PDF recorded in {SOURCES.relative_to(ROOT)}")
     page = PdfReader(str(pdf)).pages[FIGURE_PAGE - 1]
-    segments, blue, start, current, ctm = [], False, None, None, np.eye(3)
+    segments, stroke, start, current, ctm = [], "black", None, None, np.eye(3)
 
     def tx(x, y):
         p = np.array([x, y, 1.0]) @ ctm
@@ -62,18 +62,18 @@ def figure_segments(pdf: Path) -> list[tuple[tuple[float, float], tuple[float, f
             ctm = np.array([[a, b, 0], [c, d, 0], [e, f, 1]]) @ ctm
         elif op in ("SCN", "SC", "RG"):
             values = [float(v) for v in operands if isinstance(v, (int, float))]
-            blue = values[-3:] == [0, 0, 1]
+            stroke = "blue" if values[-3:] == [0, 0, 1] else "red" if values[-3:] == [1, 0, 0] else "black"
         elif op in ("G", "K"):
-            blue = False
+            stroke = "black"
         elif op == "m":
             current = start = tx(*map(float, operands))
         elif op == "l":
             point = tx(*map(float, operands))
-            if blue:
+            if stroke == colour:
                 segments.append((current, point))
             current = point
         elif op == "h" and current and start:
-            if blue:
+            if stroke == colour:
                 segments.append((current, start))
             current = start
     return segments

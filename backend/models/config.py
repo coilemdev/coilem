@@ -282,7 +282,7 @@ class MaterialsConfig(BaseModel):
     # Keep in sync with backend.material_catalog.MAGNET_PROPERTIES keys. Unknown
     # grades must 422 at config parse time — never crash post-solve demag.
     magnet_grade: Literal[
-        "N35", "N42", "N48", "N52", "N48SH", "Ferrite_Y30", "Prius_2004_NdFeB"
+        "N35", "N42", "N48", "N52", "N48SH", "Ferrite_Y30", "Prius_2004_NdFeB", "ORNL_Prius_2004_NdFeB"
     ] = Field(default="N42", description="Magnet grade")
     conductor: Literal["copper", "aluminum"] = Field(
         default="copper", description="Conductor material"

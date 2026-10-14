@@ -60,7 +60,7 @@ def test_section_validator_reason_is_reported_with_its_section(route: str) -> No
             lambda config: config["materials"].update(magnet_grade="N99"),
             "materials.magnet_grade",
             "materials.magnet_grade: Input should be 'N35', 'N42', 'N48', 'N52', 'N48SH', "
-            "'Ferrite_Y30' or 'Prius_2004_NdFeB'",
+            "'Ferrite_Y30', 'Prius_2004_NdFeB' or 'ORNL_Prius_2004_NdFeB'",
         ),
     ],
 )

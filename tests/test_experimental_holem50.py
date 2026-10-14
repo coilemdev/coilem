@@ -101,15 +101,25 @@ def test_http_routes_reject_holem50_with_the_public_message(route):
     assert detail["field"] == "rotor.ipm_topology"
 
 
-def test_only_the_policy_module_can_enable_experimental_rotors():
-    # HTTP routes and the benchmark harness never pass the opt-in; only the research tool does.
+def test_only_research_tools_can_enable_experimental_rotors():
+    # HTTP routes never pass the opt-in. The research tool does, and the benchmark
+    # harness does only for suite cases registered as experimental rotors.
     mentions = {
         path.relative_to(REPO_ROOT).as_posix()
         for directory in ("backend", "tools")
         for path in (REPO_ROOT / directory).rglob("*.py")
         if "allow_experimental_rotors" in path.read_text(encoding="utf-8")
     }
-    assert mentions == {"backend/public_policy.py", "tools/experimental_solve.py"}
+    assert mentions == {
+        "backend/public_policy.py",
+        "tools/experimental_solve.py",
+        "tools/benchmark_suite/cli.py",
+        "tools/benchmark_suite/worker.py",
+    }
+    cli = (REPO_ROOT / "tools/benchmark_suite/cli.py").read_text(encoding="utf-8")
+    worker = (REPO_ROOT / "tools/benchmark_suite/worker.py").read_text(encoding="utf-8")
+    assert 'experimental = bool(case.get("experimental_rotor"))' in cli
+    assert 'allow_experimental_rotors=bool(request.get("experimental_rotor"))' in worker
 
 
 def test_experimental_opt_in_accepts_only_experimental_rotors():

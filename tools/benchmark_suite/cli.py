@@ -24,6 +24,7 @@ from tools.benchmark_suite.contract import (
     sha,
     write,
 )
+from tools.benchmark_suite.hardware import no_load_back_emf_line_to_line
 from tools.benchmark_suite.metrics import evaluate_abc, evaluate_bldc, validate_abc
 from tools.benchmark_suite.references import load_bundle, load_suite, verify_materials
 from tools.benchmark_suite.report import build
@@ -52,6 +53,16 @@ def inputs(spec, selected):
     return configs, protocols, golden
 
 
+def hardware_targets(selected):
+    """Measured hardware data for cases that register an exploratory correlation."""
+
+    return {
+        case["id"]: checked_json(ROOT, case["hardware_reference"]["file"], case["hardware_reference"]["sha256"])
+        for case in selected
+        if case.get("hardware_reference")
+    }
+
+
 def verify_artifact(output, job, registered_identity):
     request = read(output / job["request"])
     if sha(output / job["request"]) != job["request_sha256"] or request["identity"] != registered_identity:
@@ -67,7 +78,7 @@ def verify_artifact(output, job, registered_identity):
     return data
 
 
-def evaluate(output, manifest, selected, configs, protocols, golden, references):
+def evaluate(output, manifest, selected, configs, protocols, golden, references, hardware=None):
     rows = []
     for case in selected:
         jobs = [j for j in manifest["jobs"] if j["case_id"] == case["id"]]
@@ -113,6 +124,18 @@ def evaluate(output, manifest, selected, configs, protocols, golden, references)
         }
         if case["phase"] == "D":
             row["protocol"] = protocols[case["id"]]
+        if case.get("experimental_rotor"):
+            row["experimental_rotor"] = True
+        targets = (hardware or {}).get(case["id"])
+        if targets is not None and not manifest["smoke"] and "native" in measurements:
+            # Row level, outside the evaluation, so registered gate results stay unchanged.
+            try:
+                row["hardware_comparison"] = {
+                    "reference": case["hardware_reference"],
+                    **no_load_back_emf_line_to_line(measurements["native"], configs[case["id"], "native"], targets),
+                }
+            except (ValueError, KeyError, TypeError, ZeroDivisionError) as exc:
+                row["hardware_comparison"] = {"reference": case["hardware_reference"], "status": "INCOMPLETE", "reason": str(exc)}
         rows.append(row)
     return rows
 
@@ -126,6 +149,7 @@ def execute(args):
     if not selected:
         raise ValueError("No cases selected")
     configs, protocols, golden = inputs(spec, selected)
+    hardware = hardware_targets(selected)
     if args.list:
         for case in selected:
             print(case["phase"], PHASE_LABELS[case["phase"]], case["id"], ", ".join(j["stage"] for j in case["jobs"]))
@@ -160,7 +184,7 @@ def execute(args):
             manifest = read(path)
             if manifest["selection"] != selection:
                 raise ValueError("Report selection or input bundle differs from the registered run")
-            return finish(output, manifest, selected, configs, protocols, golden, references, pdf=args.pdf)
+            return finish(output, manifest, selected, configs, protocols, golden, references, hardware, pdf=args.pdf)
         from backend.magneto2d_adapter import ensure_magneto2d_binary
         from backend.public_policy import PublicConfigError, parse_public_solve_request
 
@@ -194,8 +218,9 @@ def execute(args):
                         "result": (directory / "result.json").as_posix(),
                         "fixture_sha256": job["fixture_sha256"],
                     }
+                    experimental = bool(case.get("experimental_rotor"))
                     try:
-                        parse_public_solve_request(config)
+                        parse_public_solve_request(config, allow_experimental_rotors=experimental)
                     except PublicConfigError as exc:
                         record.update(status="UNSUPPORTED", reason=str(exc))
                     request = {
@@ -204,6 +229,8 @@ def execute(args):
                         "identity": runtime,
                         "binary": binary.relative_to(ROOT).as_posix(),
                     }
+                    if experimental:
+                        request["experimental_rotor"] = True
                     write(output / record["request"], request)
                     record["request_sha256"] = sha(output / record["request"])
                     jobs.append(record)
@@ -266,6 +293,7 @@ def execute(args):
             print(f"{job['case_id']} / {job['stage']}: {job['status']}", flush=True)
             # Check again before registering or launching the next solve.
             inputs(spec, selected)
+            hardware_targets(selected)
             if sha(spec_path) != selection["spec_sha256"]:
                 raise ValueError("Registered suite changed")
             if bundle_sha is not None and load_bundle(args.reference_bundle.resolve(), spec)[2] != bundle_sha:
@@ -274,11 +302,11 @@ def execute(args):
                 raise ValueError("Runtime changed; remaining jobs were not launched")
         manifest.update(status="COMPLETE_WITH_ERRORS" if any(j["status"] == "ERROR" for j in manifest["jobs"]) else "COMPLETE", completed_at=now())
         write(path, manifest)
-        return finish(output, manifest, selected, configs, protocols, golden, references, pdf=args.pdf)
+        return finish(output, manifest, selected, configs, protocols, golden, references, hardware, pdf=args.pdf)
 
 
-def finish(output, manifest, selected, configs, protocols, golden, references, *, pdf=False):
-    rows = evaluate(output, manifest, selected, configs, protocols, golden, references)
+def finish(output, manifest, selected, configs, protocols, golden, references, hardware=None, *, pdf=False):
+    rows = evaluate(output, manifest, selected, configs, protocols, golden, references, hardware)
     verdict = build(output, manifest, rows, pdf=pdf)
     print(f"{verdict}: {output / 'report/coilem_benchmark_report.html'}", flush=True)
     if any(r["status"] in ("ERROR", "INCOMPLETE") for r in rows):

@@ -38,6 +38,14 @@ permeability = 1.05. `Prius_2004_NdFeB` uses a benchmark assumption of Br =
 not claims that a particular vendor or vehicle contains material with exactly
 those properties.
 
+`ORNL_Prius_2004_NdFeB` follows the 2004 Prius magnet's demagnetization line in
+[ORNL/TM-2004/137](https://www.osti.gov/servlets/purl/885676) Fig. 14: Br =
+1.235 T (the figure gives 12.3–12.4 kG) and relative permeability 1.12, from
+Br / (μ0 Hc) with a normal coercivity of 11.0 kOe. The values are read from a
+figure, extrapolated from points measured at H ≈ −7.2 to −4.7 kOe; ORNL states
+no test temperature and says only that the magnets appear sintered. The grade
+exists for the ORNL Prius benchmark case.
+
 ### Halbach coercivity and temperature policy
 
 Cylindrical and linear Halbach workspaces resolve magnets from the legacy
@@ -51,8 +59,8 @@ that table. These inputs differ from the public Magneto2D motor catalog above:
 | N48SH | 1.390 / 1.05 | 1.380 / 1.05 |
 | Ferrite_Y30 | 0.400 / 1.05 | 0.390 / 1.10 |
 
-N35, N48 and Prius_2004_NdFeB have matching Br and relative permeability in
-both tables. Halbach Br(T) and Hcj(T) temperature coefficients are independent
+N35, N48, Prius_2004_NdFeB and ORNL_Prius_2004_NdFeB have matching Br and
+relative permeability in both tables. Halbach Br(T) and Hcj(T) temperature coefficients are independent
 records with explicit reference temperatures and provenance. Compare the
 resolved material inputs, not only grade names, when comparing workflows.
 

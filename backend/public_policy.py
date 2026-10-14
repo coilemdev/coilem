@@ -12,7 +12,8 @@ from backend.models import MotorConfig
 
 SUPPORTED_PUBLIC_IPM_TOPOLOGIES = frozenset({"flat_buried", "v_shape"})
 # Research-only rotor families, accepted only when a non-HTTP caller passes
-# allow_experimental_rotors=True (tools/experimental_solve.py). Not public support.
+# allow_experimental_rotors=True: tools/experimental_solve.py, and the benchmark
+# harness for suite cases registered as experimental rotors. Not public support.
 EXPERIMENTAL_IPM_TOPOLOGIES = frozenset({"pyleecan_holem50"})
 SUPPORTED_PUBLIC_STEELS = frozenset({"M350-50A"})
 PUBLIC_SOLVER_IDS = frozenset({"magneto2d", "elmer"})
@@ -141,8 +142,14 @@ def parse_public_motor_config(body: dict[str, Any], *, allow_experimental_rotors
 
 def parse_public_solve_request(
     body: dict[str, Any],
+    *,
+    allow_experimental_rotors: bool = False,
 ) -> tuple[MotorConfig, str | None, PublicSolverId]:
-    """Parse the direct or frontend-wrapped local solve request shape."""
+    """Parse the direct or frontend-wrapped local solve request shape.
+
+    ``allow_experimental_rotors`` is passed only by the benchmark harness, for
+    suite cases registered as experimental rotors; HTTP routes never pass it.
+    """
 
     if not isinstance(body, dict):
         raise PublicConfigError("Solve request must be a JSON object.")
@@ -190,7 +197,7 @@ def parse_public_solve_request(
             field="solver",
         )
     return (
-        parse_public_motor_config(config_body),
+        parse_public_motor_config(config_body, allow_experimental_rotors=allow_experimental_rotors),
         solve_mesh_key,
         cast(PublicSolverId, requested_solver),
     )
