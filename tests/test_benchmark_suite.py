@@ -12,7 +12,7 @@ import pytest
 
 from tools.benchmark_suite.cli import inputs, verify_artifact
 from tools.benchmark_suite.contract import DEFAULT_BUNDLE, ROOT, SPEC, canonical, read, run_lock, sha, write
-from tools.benchmark_suite.metrics import evaluate_abc, evaluate_bldc
+from tools.benchmark_suite.metrics import energy_balance_ratio, evaluate_abc, evaluate_bldc
 from tools.benchmark_suite.references import load_bundle, load_suite
 from tools.benchmark_suite.report import build, phase_display_status
 
@@ -69,6 +69,24 @@ def test_historical_verdicts_and_gates(case):
         assert evaluated["status"] == recorded["comparison"]["status"]
         for name in ("average_delta_pct", "bemf_fundamental_delta_pct", "bemf_peak_delta_pct", "torque_waveform", "bemf_waveform"):
             assert_same_metrics(evaluated[name], recorded["comparison"][name])
+
+
+def test_energy_balance_exposes_the_halved_flux_linkage_credit():
+    # The v1.1 record predates #80: single-layer concentrated windings show about
+    # twice the torque their own back-EMF and current imply; distributed windings
+    # balance. Native and FEMM shared the credit, so the parity gates passed.
+    by_id = {case["id"]: case for case in SPECIFICATION["cases"]}
+    for case_id, low, high in (
+        ("spm_4p12s_simple__baseline", 1.95, 2.05),
+        ("spm_8p48s_distributed_femm_validation", 0.9, 1.05),
+    ):
+        recorded = historical(by_id[case_id])
+        config = CONFIGS[case_id, "native"]
+        assert low < energy_balance_ratio(recorded["candidate"], config) < high
+        assert low < energy_balance_ratio(REFERENCES[case_id], config) < high
+    six_step = copy.deepcopy(CONFIGS["spm_4p12s_simple__baseline", "native"])
+    six_step["solve_params"]["excitation_mode"] = "ideal_six_step_120"
+    assert energy_balance_ratio(recorded["candidate"], six_step) is None
 
 
 def test_frozen_bundle_matches_all_inputs():

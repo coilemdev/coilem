@@ -25,7 +25,7 @@ from tools.benchmark_suite.contract import (
     write,
 )
 from tools.benchmark_suite.hardware import no_load_back_emf_line_to_line
-from tools.benchmark_suite.metrics import evaluate_abc, evaluate_bldc, validate_abc
+from tools.benchmark_suite.metrics import energy_balance_ratio, evaluate_abc, evaluate_bldc, validate_abc
 from tools.benchmark_suite.references import load_bundle, load_suite, verify_materials
 from tools.benchmark_suite.report import build
 from tools.benchmark_suite.worker import compact
@@ -124,6 +124,15 @@ def evaluate(output, manifest, selected, configs, protocols, golden, references,
         }
         if case["phase"] == "D":
             row["protocol"] = protocols[case["id"]]
+        else:
+            # Diagnostic only, outside the recorded evaluation: torque over the
+            # torque its own back-EMF and current imply (#80).
+            config = configs[case["id"], "native"]
+            native = measurements.get("native")
+            row["energy_balance"] = {
+                "candidate_ratio": energy_balance_ratio(native, config) if native else None,
+                "reference_ratio": energy_balance_ratio(reference, config) if reference is not None else None,
+            }
         if case.get("experimental_rotor"):
             row["experimental_rotor"] = True
         targets = (hardware or {}).get(case["id"])
