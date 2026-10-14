@@ -3284,6 +3284,31 @@
       "sha256": "866c74e7d8cc5737da843c258de77761a000ce1e87213016d31c386a78f3a335"
     },
     {
+      "path": "docs/hardware-validation/ornl-prius-2004/first-comparison/README.md",
+      "bytes": 4522,
+      "sha256": "f4c6eddff371e915cda9716e5386d1ca93a5937fb698e9f042db6081aa85a501"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/first-comparison/back-emf.svg",
+      "bytes": 10347,
+      "sha256": "614d1ee305cadb9342be5ac8c2e69a2852d8d07a18b14dcf3a83761f68f5a1f0"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/first-comparison/comparison.json",
+      "bytes": 18783,
+      "sha256": "17313aac758c2a62c3cdb18e1bf960576789edba504a8b75ea390f60d5a909f7"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/first-comparison/locked-rotor-torque.svg",
+      "bytes": 22778,
+      "sha256": "f7f78fd9c89f178aea30cedc6bb7fca4ac8b94598ae2d49f4ab28632d88a2bd9"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/first-comparison/locked-rotor.json",
+      "bytes": 27001,
+      "sha256": "9554f1a84fc1b2701bf4a96528f09f5e8d61d9dc2f4103e17126fc85465d5d6e"
+    },
+    {
       "path": "docs/hardware-validation/ornl-prius-2004/fixture-correction.md",
       "bytes": 4994,
       "sha256": "3b828f5c44edf9e307ff10fbd5f4a8c667d8969b2c42def5cde38c226d451b56"
@@ -4599,6 +4624,11 @@
       "sha256": "bc4f556fd203fc16e86058e6cfa0cef82d91a78fc49d0870e12085b0bd28aa50"
     },
     {
+      "path": "tests/test_ornl_prius_comparison.py",
+      "bytes": 2965,
+      "sha256": "b0b1f6512a5c77d3b4bd15c2506368f0f750a4614ce2f6ee5f08c83ec114ee33"
+    },
+    {
       "path": "tests/test_postsolve_pipeline.py",
       "bytes": 6629,
       "sha256": "048ac4984ae66c17658e3fe0c2e393fda63431b7ea74aea9b6890744f7fbeac7"
@@ -4767,6 +4797,16 @@
       "path": "tools/generate_m350_50a_bh.py",
       "bytes": 3369,
       "sha256": "f4dac661f48b35b86299ea7c2d5da935b0880c5ad141637a0de58e786ca7f256"
+    },
+    {
+      "path": "tools/ornl_prius_comparison.py",
+      "bytes": 8563,
+      "sha256": "7d250bc5de516c899fe14ccec907f129d08b7a549713171aaa4482cb0fe2de11"
+    },
+    {
+      "path": "tools/plot_ornl_prius_comparison.py",
+      "bytes": 7561,
+      "sha256": "5c20a53f91ad4395b44f70ceba5bfc349b5b738bb4c75dd12d82a59c426e4ade"
     },
     {
       "path": "tools/release/__init__.py",
