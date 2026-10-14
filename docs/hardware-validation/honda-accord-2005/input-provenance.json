@@ -1,0 +1,64 @@
+{
+  "description": "Design data transcribed from S1 for the 2005 Accord motor (#92). Values exactly as printed; 'derived' entries are computed in tools/honda_accord_request.py.",
+  "table_2_3": {
+    "stator_od_mm": 315.5,
+    "stator_id_mm": 232,
+    "rotor_od_mm": 230,
+    "rotor_id_mm": 188,
+    "rotor_stack_mm": 41.2,
+    "stator_stack_mm": 40.1,
+    "air_gap_mm": 1,
+    "lamination_thickness_mm": 0.343,
+    "end_turn_length_mm": 35,
+    "stator_turns_per_coil": 52,
+    "parallel_circuits_per_phase": 8,
+    "turns_in_series_per_phase_as_printed": 0,
+    "poles": 16,
+    "stator_slots": 24,
+    "wire_diameter_mm": 1.55,
+    "slot_depth_mm": 30.6,
+    "slot_opening_mm": 4.75,
+    "slot_area_mm2": 307,
+    "phase_resistance_ohm_21C": 0.0097,
+    "stator_winding_mass_kg": 3.01,
+    "stator_core_mass_kg": 7.704,
+    "rotor_mass_kg": 8.02,
+    "magnet_width_mm": 18.45,
+    "magnet_thickness_mm": 4.46,
+    "magnet_length_mm": 40.4,
+    "magnets_per_pole": 2,
+    "magnet_volume_per_pole_mm3": 3320,
+    "magnet_mass_per_pole_g": 25
+  },
+  "fig_2_5_slot": {
+    "slot_depth_to_bottom_apex_mm": 30.6,
+    "slot_side_length_mm": 27.6,
+    "slot_bottom_width_mm": 19.05,
+    "mouth_mm": 4.75,
+    "tip_height_mm": 0.66,
+    "wedge_angle_deg": 20,
+    "wedge_top_height_mm": 2.03,
+    "read_at_drawing_scale": {
+      "slot_body_width_at_wedge_top_mm": 12.61,
+      "bottom_corner_depth_mm": 29.42,
+      "note": "Scaled from the drawing (30.6 mm = 466 px)."
+    }
+  },
+  "fig_2_4_photo_estimates": {
+    "magnet_outer_face_below_surface_mm": 1.0,
+    "rib_between_pair_mm": 1.5,
+    "note": "Rough estimates from the end-plate-removed photo (Fig. 2.4d); low resolution."
+  },
+  "text": {
+    "stator": "Segmented 'daisy-chain' stator: a lamination stack and bobbin coil per tooth (Figs. 2.2, 2.3); every tooth wound.",
+    "rotor": "Interior PMs embedded near the rotor surface; two magnets per pole with a lamination rib between them (Fig. 2.4).",
+    "connection": "Star, with a neutral line (Section 2.1)."
+  },
+  "not_published": [
+    "magnet grade / Br",
+    "lamination steel grade",
+    "rotor pocket drawing (depth, bridges, rib, end barriers)",
+    "locked-rotor current pattern (not restated in S1)",
+    "test temperatures for back-EMF and locked-rotor"
+  ]
+}
