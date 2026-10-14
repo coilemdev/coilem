@@ -18,11 +18,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        # Ubuntu is pinned: ubuntu-latest moves to Ubuntu 26 from 2026-10-19 (#79).
+        os: [windows-latest, macos-latest, ubuntu-24.04]
         python: ['3.11']
         # The newest supported Python installs its own pins; see requirements.lock.
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             python: '3.15'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
@@ -70,7 +71,7 @@ jobs:
           --out-dir "${{ runner.temp }}/coilem-abcd-smoke" --pdf
 
   frontend:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
@@ -90,7 +91,7 @@ jobs:
         run: npm audit --audit-level=high
 
   public-browser:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
@@ -130,7 +131,7 @@ jobs:
             frontend/test-results/public-release.json
 
   dependency-audit:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
@@ -154,7 +155,7 @@ jobs:
           cargo audit --file solvers/magneto2d/Cargo.lock
 
   native-tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4

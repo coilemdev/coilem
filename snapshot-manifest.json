@@ -25,8 +25,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 5788,
-      "sha256": "993d07eac9fef00eb213ef25d6f435dcf5c8bb65a8f78e6af34a16bd5116e320"
+      "bytes": 5866,
+      "sha256": "eaf53f1ebcb550a5484102d5bf399d641394123cb8298a7e47eb7e569f96d3f0"
     },
     {
       "path": ".github/workflows/release-wheels.yml",
@@ -6992,6 +6992,12 @@
       "path": "docs/RELEASING.md",
       "source_sha256": "6ff1c7d400a574eff860265478ca3cd88c503a20fe5e8410ea7ac189be209c3c",
       "reason": "Record that Gmsh needs OpenGL and X11 libraries and that CI does not test a minimal Linux (#77)."
+    },
+    {
+      "base_commit": "9a2070b565da353ee534924b3e0c5ae6ca305181",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "993d07eac9fef00eb213ef25d6f435dcf5c8bb65a8f78e6af34a16bd5116e320",
+      "reason": "Pin the Ubuntu CI jobs to ubuntu-24.04 before ubuntu-latest moves to Ubuntu 26 on 2026-10-19 (#79)."
     }
   ]
 }
