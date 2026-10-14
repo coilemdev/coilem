@@ -44,10 +44,12 @@ python -m pip install -r requirements.lock
 python -m pip install -e ".[dev]"
 ```
 
-On Ubuntu/Debian, install `libglu1-mesa` before starting the backend:
+On Ubuntu/Debian, install the OpenGL and X11 libraries Gmsh needs before
+starting the backend. A desktop install usually has all but `libglu1-mesa`;
+a minimal one, such as a server or container, needs them all:
 
 ```bash
-sudo apt-get install libglu1-mesa
+sudo apt-get install libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6 libxfixes3 libxft2 libxinerama1 libxrender1 libfontconfig1 libgomp1
 ```
 
 The locked requirements install the Python Gmsh package used by the public

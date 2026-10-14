@@ -290,6 +290,18 @@ report downloads. See [Halbach arrays](docs/HALBACH_ARRAY.md).
   the stated minimums should work but are not tested; reports from other
   systems are welcome. Linux and Windows on ARM are not supported, because
   Gmsh publishes no wheels for them.
+- On a minimal Linux, such as a server or container, `libglu1-mesa` alone is
+  not enough: Gmsh also needs OpenGL and X11 client libraries, and `coilem`
+  stops with the name of the missing one. On Debian and Ubuntu, install them
+  with `sudo apt-get install libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6
+  libxfixes3 libxft2 libxinerama1 libxrender1 libfontconfig1 libgomp1`
+  ([#77](https://github.com/coilemdev/coilem/issues/77)). Desktop Ubuntu
+  usually has them already.
+- Under `uvx coilem` on macOS and Linux, one Ctrl+C reaches coilEM twice, so it
+  exits with code 130, and during a solve it prints `coilem: forced exit.` The
+  solve is still cancelled and recorded. `coilem` installed with
+  `uv tool install` or pipx is not affected
+  ([#76](https://github.com/coilemdev/coilem/issues/76)).
 - Benchmark reports v1.7 and v1.8 ran with Python 3.12 and the 0.3.0
   dependencies. Python 3.15 installs use numpy 2.5.4 and pydantic 2.14.1 and
   have no benchmark report yet; CI runs the tests and a benchmark smoke run

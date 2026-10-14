@@ -64,7 +64,7 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 | --- | --- |
 | macOS on Apple silicon | macOS 12 or newer |
 | macOS on Intel | macOS 10.15 or newer |
-| Linux x86_64 | glibc 2.27 or newer (for example Ubuntu 18.04, Debian 10, RHEL 8) and the GLU library: `sudo apt-get install libglu1-mesa` on Debian and Ubuntu |
+| Linux x86_64 | glibc 2.27 or newer (for example Ubuntu 18.04, Debian 10, RHEL 8) and the OpenGL and X11 libraries Gmsh needs: `sudo apt-get install libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6 libxfixes3 libxft2 libxinerama1 libxrender1 libfontconfig1 libgomp1` on Debian and Ubuntu |
 | Windows x64 | 64-bit Windows |
 
 Linux and Windows on ARM are not supported yet. CI tests the installed wheel
@@ -83,8 +83,8 @@ describes ports and options.
 
 To work on coilEM itself, build it from a checkout instead.
 You need Python 3.11 to 3.15, Node.js 24 with npm, and stable Rust with Cargo
-(the locked `faer` dependency requires Rust 1.84 or newer). Use a fresh checkout and virtual environment. On Ubuntu/Debian, install the Gmsh system
-library first: `sudo apt-get install libglu1-mesa`.
+(the locked `faer` dependency requires Rust 1.84 or newer). Use a fresh checkout and virtual environment. On Ubuntu/Debian, install the system
+libraries Gmsh needs first: `sudo apt-get install libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6 libxfixes3 libxft2 libxinerama1 libxrender1 libfontconfig1 libgomp1`.
 
 Windows PowerShell:
 

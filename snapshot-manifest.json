@@ -60,13 +60,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 8782,
-      "sha256": "2ef849d33b4de702ae7206e28f8ff1a56bec55662f07b8b168b71807f1474f4f"
+      "bytes": 9024,
+      "sha256": "bfc7a46d6fe45ca3804150c1be66a8c4eb25873bbf26287ae4e02357da121dca"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 18573,
-      "sha256": "e67540aa7b91dcf252cfb129be5251d020236c64ae6fc4b3065909d259334651"
+      "bytes": 19380,
+      "sha256": "f2503f406fc405d8171018ca901439118e473d7c8ceac6080f44a3503c966386"
     },
     {
       "path": "SECURITY.md",
@@ -3210,8 +3210,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 13164,
-      "sha256": "c3ad869dc7507fc1b338194e530f6763f8189efbb6acc53fc94f58e0e61db948"
+      "bytes": 13410,
+      "sha256": "49a537d6010bb4b89ff08b04497ad7e7911f948240bc708a54b7c2d825f38f75"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -3240,8 +3240,8 @@
     },
     {
       "path": "docs/RELEASING.md",
-      "bytes": 9844,
-      "sha256": "6ff1c7d400a574eff860265478ca3cd88c503a20fe5e8410ea7ac189be209c3c"
+      "bytes": 10159,
+      "sha256": "46b8bc6933892fcc645d2faaadfee5dee53f979c4085b12dd0f02e1857228060"
     },
     {
       "path": "docs/RUNTIME_SETTINGS.md",
@@ -6968,6 +6968,30 @@
       "path": "tests/test_public_candidate.py",
       "source_sha256": "2118fb2c0a73a84bff7487d779c513fa37843dc342d1050feab87adafe9ab154",
       "reason": "Release coilEM 0.3.1: expected versions."
+    },
+    {
+      "base_commit": "5f0cca5efdea50d200f9e4bb3d6ee037144cc70c",
+      "path": "README.md",
+      "source_sha256": "2ef849d33b4de702ae7206e28f8ff1a56bec55662f07b8b168b71807f1474f4f",
+      "reason": "List every Debian/Ubuntu library Gmsh needs, not only libglu1-mesa (#77)."
+    },
+    {
+      "base_commit": "5f0cca5efdea50d200f9e4bb3d6ee037144cc70c",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "e67540aa7b91dcf252cfb129be5251d020236c64ae6fc4b3065909d259334651",
+      "reason": "Name the minimal-Linux libraries (#77) and the uvx Ctrl+C issue (#76) as known limitations of 0.3.1, as #47 requires."
+    },
+    {
+      "base_commit": "5f0cca5efdea50d200f9e4bb3d6ee037144cc70c",
+      "path": "docs/GETTING_STARTED.md",
+      "source_sha256": "c3ad869dc7507fc1b338194e530f6763f8189efbb6acc53fc94f58e0e61db948",
+      "reason": "List every Debian/Ubuntu library Gmsh needs, not only libglu1-mesa (#77)."
+    },
+    {
+      "base_commit": "5f0cca5efdea50d200f9e4bb3d6ee037144cc70c",
+      "path": "docs/RELEASING.md",
+      "source_sha256": "6ff1c7d400a574eff860265478ca3cd88c503a20fe5e8410ea7ac189be209c3c",
+      "reason": "Record that Gmsh needs OpenGL and X11 libraries and that CI does not test a minimal Linux (#77)."
     }
   ]
 }
