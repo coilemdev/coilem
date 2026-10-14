@@ -148,9 +148,9 @@ def torque_chart(data):
 def main():
     folder = Path(sys.argv[1])
     data = json.loads((folder / "comparison.json").read_text(encoding="utf-8"))
-    (folder / "back-emf.svg").write_text(back_emf_chart(data), encoding="utf-8")
+    (folder / "back-emf.svg").write_text(back_emf_chart(data), encoding="utf-8", newline="\n")
     if data.get("locked_rotor"):
-        (folder / "locked-rotor-torque.svg").write_text(torque_chart(data), encoding="utf-8")
+        (folder / "locked-rotor-torque.svg").write_text(torque_chart(data), encoding="utf-8", newline="\n")
 
 
 if __name__ == "__main__":
