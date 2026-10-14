@@ -4844,6 +4844,11 @@
       "sha256": "f4dac661f48b35b86299ea7c2d5da935b0880c5ad141637a0de58e786ca7f256"
     },
     {
+      "path": "tools/honda_accord_comparison.py",
+      "bytes": 12867,
+      "sha256": "61e9a587bc6ae4812f082f57dd0fa7ae108f68dac5d0482b744e1ac3d5fe0eca"
+    },
+    {
       "path": "tools/honda_accord_request.py",
       "bytes": 4445,
       "sha256": "25596806ccedb1032a191d48a6763b16b10dc87dc02f51aba5ce7c7fe6d9b1ec"
