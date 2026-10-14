@@ -44,6 +44,11 @@ from pathlib import Path
 INDEX_ATTEMPTS = 50
 INDEX_WAIT_S = 30
 
+
+class IndexApiUnusable(Exception):
+    """The index's JSON API can't be used from this machine; pip is the fallback."""
+
+
 WINDOWS = os.name == "nt"
 # Copies of tests/fixtures/spm_4p12s_simple.json and the schemas/v1/examples
 # Halbach configurations; tests/test_release_tools.py keeps them in sync.
@@ -241,11 +246,18 @@ class Acceptance:
         destination = self.work / "download"
         destination.mkdir(parents=True, exist_ok=True)
         name, _, version = requirement.partition("==")
+        wheel = None
         if expected_sha256 is not None and version:
-            wheel = self.download_by_digest(name.strip(), version.strip(), index_url, expected_sha256, destination)
-            if wheel is None:
-                return ""
-        else:
+            try:
+                wheel = self.download_by_digest(name.strip(), version.strip(), index_url, expected_sha256, destination)
+            except IndexApiUnusable as reason:
+                # The JSON API answered with something other than "not yet" or a server error
+                # (TLS, DNS, proxy, malformed reply): fall back to pip rather than wait it out.
+                print(f"cannot use the index JSON API ({reason}); falling back to pip", flush=True)
+            else:
+                if wheel is None:
+                    return ""
+        if wheel is None:
             wheel = self.pip_download(requirement, index_url, python, destination)
         digest = hashlib.sha256(wheel.read_bytes()).hexdigest()
         if expected_sha256 is not None:
@@ -261,9 +273,14 @@ class Acceptance:
                 with urllib.request.urlopen(api, timeout=60) as response:
                     files = json.load(response)["urls"]
                 break
-            except (urllib.error.URLError, OSError, ValueError, KeyError):
-                print(f"waiting for {name} {version} on {api} (attempt {attempt + 1})", flush=True)
+            except urllib.error.HTTPError as error:
+                # 404: the upload hasn't propagated yet; 5xx: the index is struggling. Both are worth waiting for.
+                if error.code != 404 and error.code < 500:
+                    raise IndexApiUnusable(f"HTTP {error.code} from {api}") from error
+                print(f"waiting for {name} {version} on {api} (attempt {attempt + 1}, HTTP {error.code})", flush=True)
                 time.sleep(INDEX_WAIT_S)
+            except (urllib.error.URLError, OSError, ValueError, KeyError) as error:
+                raise IndexApiUnusable(f"{type(error).__name__}: {error}") from error
         else:
             raise SystemExit(f"{name} {version} never appeared on {api}")
         match = next((f for f in files if f.get("packagetype") == "bdist_wheel" and f.get("digests", {}).get("sha256") == expected_sha256), None)
@@ -272,8 +289,11 @@ class Acceptance:
             self.check("the published wheel is the one CI built", False, f"no file with {expected_sha256}; published: {published}")
             return None
         wheel = destination / match["filename"]
-        with urllib.request.urlopen(match["url"], timeout=300) as response:
-            wheel.write_bytes(response.read())
+        try:
+            with urllib.request.urlopen(match["url"], timeout=300) as response:
+                wheel.write_bytes(response.read())
+        except (urllib.error.URLError, OSError) as error:
+            raise IndexApiUnusable(f"cannot download {match['url']}: {error}") from error
         return wheel
 
     def pip_download(self, requirement: str, index_url: str, python: str, destination: Path) -> Path:

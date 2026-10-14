@@ -4610,8 +4610,8 @@
     },
     {
       "path": "tests/test_release_tools.py",
-      "bytes": 28621,
-      "sha256": "56ae317f5d122defc5d2f12e9d4803b7cddf266c7ae4ab618a93baa788345bcb"
+      "bytes": 30172,
+      "sha256": "955ffc8b1a1b04890794f62bcca2e588df18aec1df943bb55d614e138aff731d"
     },
     {
       "path": "tests/test_solve_estimate.py",
@@ -4705,8 +4705,8 @@
     },
     {
       "path": "tools/release/acceptance.py",
-      "bytes": 20903,
-      "sha256": "9db59001c51c0d3482737f7e88f6fece82bd6caae73a1880ca1360b40fddbd0e"
+      "bytes": 22039,
+      "sha256": "22350ab5b8ba0310e3ae7f6525464c392ae1fb008cac749502bb8cad0204adfa"
     },
     {
       "path": "tools/release/artifacts.py",
