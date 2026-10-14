@@ -540,8 +540,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 4978,
-      "sha256": "9d6bcd7d7953a7d55c808e18b11990647d5c435977d1bf7eecb5367f206bc058"
+      "bytes": 5281,
+      "sha256": "48041f9f29216f61202b526dac4f4a47af04ec60fcaac5d56ad782acd4704185"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -2197,6 +2197,16 @@
       "path": "benchmarks/main-20261012-af10e6d/publication.json",
       "bytes": 7366,
       "sha256": "fbc3d867f6eef3896169bf3b861d88ae404d67cebfda8fd11fb0898c3056eb3d"
+    },
+    {
+      "path": "benchmarks/pr100-v3-handoff/README.md",
+      "bytes": 10798,
+      "sha256": "7035d7360a6047f961931fbfd50dddcbc45ac36b365ff48fbd05331a25fa1534"
+    },
+    {
+      "path": "benchmarks/pr100-v3-handoff/run-contract.json",
+      "bytes": 9805,
+      "sha256": "bfb143e2b29c9dfa94f8f2b71869d71bb53dbab243f54669583661d805a1944f"
     },
     {
       "path": "benchmarks/preview-evidence/results.json",
@@ -4989,6 +4999,11 @@
       "sha256": "2655c03ca9b0c15c463398155119702625d56009ade0a7d4639b55035257ae8e"
     },
     {
+      "path": "tests/test_late_reference_comparison.py",
+      "bytes": 12508,
+      "sha256": "031f5ca531ea0dfa36cfc17b8434e4fb71ee1833038290d2fdc37b433aefc6b5"
+    },
+    {
       "path": "tests/test_launcher.py",
       "bytes": 12525,
       "sha256": "e7c1592e0c33d6edfcd37222addd653cb8fd9a35d328c61dfc3b32651b397ec0"
@@ -5317,6 +5332,11 @@
       "path": "tools/replay_numerical_case.py",
       "bytes": 3436,
       "sha256": "259f3476758b6bbc6eddae5269799b2d1c8c9628d1ba67c5ca06d51b6845e2ba"
+    },
+    {
+      "path": "tools/report_benchmark_against_reference.py",
+      "bytes": 12678,
+      "sha256": "0fc86b73830a9cddd4c566f767d1d6ad7e3e725829748a3cc99eb0263753f65a"
     },
     {
       "path": "tools/run_benchmarks.py",
@@ -6868,7 +6888,7 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B − Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B \u2212 Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
@@ -6898,13 +6918,13 @@
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45° (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45\u00b0 (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45° over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45\u00b0 over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "a482ff6e2bd9616d2ece2a68f8fa2f2c49aae45c",
@@ -6922,7 +6942,7 @@
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45° (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00b0 (#52 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",

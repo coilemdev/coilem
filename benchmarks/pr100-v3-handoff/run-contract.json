@@ -1,0 +1,236 @@
+{
+  "schema": "coilem.pr100_v3_handoff/v1",
+  "measured_source_commit": "738d9516e8500c5996c772bd96470472cbb9a0f9",
+  "suite": {
+    "file": "benchmarks/abcd-v1.1/benchmark_spec.json",
+    "sha256": "ea9d60d81d8601d2cdd6d7c94b3b3df70c65c6cf516737aeb125a4b2f2004721",
+    "protocol_version": "1.1.0",
+    "convention": "public-clockwise-v2"
+  },
+  "reference_bundle_name": "ipm-high-output-v3",
+  "reference_commit_required": "738d9516e8500c5996c772bd96470472cbb9a0f9",
+  "reference_state_at_handoff": "WINDOWS_FEMM_RUNNING",
+  "case_count": 30,
+  "supported_native_job_count": 35,
+  "native_only_command": [
+    "python",
+    "-m",
+    "tools.run_benchmarks",
+    "--suite",
+    "benchmarks/abcd-v1.1/benchmark_spec.json",
+    "--phases",
+    "A",
+    "B",
+    "C",
+    "D",
+    "--no-reference",
+    "--out-dir",
+    "../benchmark-output/pr100-v3-native-738d951",
+    "--pdf"
+  ],
+  "material_contract": {
+    "steel_grade": "M350-50A",
+    "curve_sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+    "magnets": {
+      "N42": {
+        "Br_T": 1.315,
+        "mu_r": 1.05
+      },
+      "N35": {
+        "Br_T": 1.23,
+        "mu_r": 1.05
+      }
+    }
+  },
+  "golden": {
+    "file": "benchmarks/main-20261009-bad71d9/protocols/golden_commutation_vectors.json",
+    "sha256": "0914644d93f05fa5738534c518e2ecffeca2d129d8a38fbe8b8df2f65c695b86"
+  },
+  "numerical_grids_changed": false,
+  "historical_failed_record_changed": false,
+  "ripple_limit_percentage_points": 5.0,
+  "shared_source_sha256": {
+    "winding_utils": "63c58cdf306665ed8b184b36072c8feb312033afddfb0c6097ec476152578954",
+    "excitation": "7e2dead86d3db978cd641fcfe203a2e747f5b48076be0483eff841f84bb9aa84",
+    "geometry_drawer": "df695284a5acc9b64ac800fd59fff1530a34f8de0b9f9e8b15b190df8a601584",
+    "geometry_ir": "c854de3f60d054660b9616cdb752a32835b12c445f497adb7ee24eb0ebf4f8bb",
+    "geometry": "88828611cc3019c2d8c602aa717ae722311102bf4f0ef225bb4bf9e27d43f673",
+    "solver_environment": "9f623790efdcdc915cc693bb16cb4675bcbc1c21188176caccfe53fb3984b06f"
+  },
+  "six_step_cases": [
+    {
+      "id": "spm_14p12s_high_pole",
+      "protocol_file": "benchmarks/main-20261009-bad71d9/protocols/spm_14p12s_high_pole_refined.json",
+      "protocol_sha256": "10170a6cf48f89aa9c86337722fd1086abe98109d7751b6860c2f4249f161c59",
+      "jobs": [
+        {
+          "stage": "native-standard",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_14p12s_high_pole_native-standard.json",
+          "fixture_sha256": "2da4d771bdf7a367b4dd6c88bc4ccb41c1d03dd163d341fc99ec3b6aa3016d00",
+          "input_sha256": "715fd362ac31d3801c0c4eb084f1b64959b3a7128d75966671a890a3960aa8bc"
+        },
+        {
+          "stage": "native-fine",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_14p12s_high_pole_native-fine.json",
+          "fixture_sha256": "aa2da80d9b7c2cc4b697bf829099906ea1d3d96709663b95c1f976fd218d7480",
+          "input_sha256": "7c6562bfed2373fdd7babc647ac3f46395af444fcfc6201dd0bbfa4260c7d19b"
+        },
+        {
+          "stage": "analytical",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_14p12s_high_pole_analytical.json",
+          "fixture_sha256": "18ddea5035192f409c54c59a99f682aa6ca8aafa58947b08ad310ea6c2e00806",
+          "input_sha256": "f5093f8337c178e31ac53bd512e6793eb7bc390447b60595973ca19eb0b013c6"
+        }
+      ],
+      "standard_grid": {
+        "solvers": [
+          "Magneto2D",
+          "FEMM"
+        ],
+        "mesh_policy": {
+          "Magneto2D": "native Gmsh normal remesh-per-step",
+          "FEMM": "native FEMM mesh"
+        },
+        "electrical_angle_start_deg": 0.0,
+        "electrical_angle_stop_exclusive_deg": 360.0,
+        "electrical_angle_step_deg": 3.75,
+        "sample_count": 96
+      },
+      "fine_grid": {
+        "solver": "Magneto2D",
+        "mesh_policy": "native Gmsh normal remesh-per-step",
+        "electrical_angle_start_deg": 0.0,
+        "electrical_angle_stop_exclusive_deg": 360.0,
+        "electrical_angle_step_deg": 1.875,
+        "sample_count": 192
+      },
+      "limits": {
+        "current_zero_sum_abs_A_max": 1e-09,
+        "current_plateau_abs_A_max": 1e-09,
+        "mean_torque_delta_pct_max": 5.0,
+        "torque_waveform_nrmse_pct_max": 10.0,
+        "commutation_transition_delta_samples_max": 1,
+        "power_torque_delta_pct_max": 10.0,
+        "native_standard_to_fine_mean_torque_delta_pct_max": 2.0,
+        "native_standard_to_fine_ripple_delta_percentage_points_max": 5.0,
+        "sine_regression_policy": "bit-identical selected golden values and all existing suite tolerances green"
+      }
+    },
+    {
+      "id": "spm_4p12s_small",
+      "protocol_file": "benchmarks/main-20261009-bad71d9/protocols/spm_4p12s_small.json",
+      "protocol_sha256": "bba51d89538650dbbe3d3e600e198f6aa5b5cac7ca2345241ebdfea671634d2f",
+      "jobs": [
+        {
+          "stage": "native-standard",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_4p12s_small_native-standard.json",
+          "fixture_sha256": "7b14bb32c5c46f0fdb2652b6306bad65093eebb073180d4cd932e5923377dc45",
+          "input_sha256": "0d905ab6916a5f956f88b185a7c1514623db69138aa242102b4ab2b9c469261b"
+        },
+        {
+          "stage": "native-fine",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_4p12s_small_native-fine.json",
+          "fixture_sha256": "3f6ab9ebc78cde63f9f1a61af4d69f93c90206a5e71187c1cc576f6ee22a5325",
+          "input_sha256": "03d9e9e35632f35121e0937dfacf2261db9cb772ade997ad804631ecc9daef5f"
+        },
+        {
+          "stage": "analytical",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_4p12s_small_analytical.json",
+          "fixture_sha256": "87944a94e259d955d77bff1971f46790f864719bd00b4773ca81667907be26f8",
+          "input_sha256": "97c397f6da70739aa8936a122ad2f458be761293fd67af3b28c573cc04836c91"
+        }
+      ],
+      "standard_grid": {
+        "solvers": [
+          "Magneto2D",
+          "FEMM"
+        ],
+        "mesh_policy": {
+          "Magneto2D": "native Gmsh normal remesh-per-step",
+          "FEMM": "native FEMM mesh"
+        },
+        "electrical_angle_start_deg": 0.0,
+        "electrical_angle_stop_exclusive_deg": 360.0,
+        "electrical_angle_step_deg": 7.5,
+        "sample_count": 48
+      },
+      "fine_grid": {
+        "solver": "Magneto2D",
+        "mesh_policy": "native Gmsh normal remesh-per-step",
+        "electrical_angle_start_deg": 0.0,
+        "electrical_angle_stop_exclusive_deg": 360.0,
+        "electrical_angle_step_deg": 3.75,
+        "sample_count": 96
+      },
+      "limits": {
+        "current_zero_sum_abs_A_max": 1e-09,
+        "current_plateau_abs_A_max": 1e-09,
+        "mean_torque_delta_pct_max": 5.0,
+        "torque_waveform_nrmse_pct_max": 10.0,
+        "commutation_transition_delta_samples_max": 1,
+        "power_torque_delta_pct_max": 10.0,
+        "native_standard_to_fine_mean_torque_delta_pct_max": 2.0,
+        "native_standard_to_fine_ripple_delta_percentage_points_max": 5.0,
+        "sine_regression_policy": "bit-identical selected golden values and all existing suite tolerances green"
+      }
+    },
+    {
+      "id": "spm_8p12s_reference",
+      "protocol_file": "benchmarks/main-20261009-bad71d9/protocols/spm_8p12s_reference.json",
+      "protocol_sha256": "04cc1a160aba2940152c1a5d7fdf9d47f8a5a7398f9cbaad91b5bae635757bda",
+      "jobs": [
+        {
+          "stage": "native-standard",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_8p12s_reference_native-standard.json",
+          "fixture_sha256": "c7c0657f31d62e1ddb62edcc07fa6838370a937aa6cdc4580d3cd443b6f0808c",
+          "input_sha256": "27d44ba712a94358558622addf3281b66933b5abc89792d3d6aab0a3fcfe6e36"
+        },
+        {
+          "stage": "native-fine",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_8p12s_reference_native-fine.json",
+          "fixture_sha256": "95d7a030314366852c1b924d1c91895c945da92b52080a7f81ffb268c2919001",
+          "input_sha256": "ab957086804826f14bae075d7c1468bdbb9c5aa7a3f814688c218ca67cb05fa7"
+        },
+        {
+          "stage": "analytical",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/bldc_spm_8p12s_reference_analytical.json",
+          "fixture_sha256": "df88c4f821d8130c644244189a84e19841855c342c5cd3c4044bf3281c40ad8e",
+          "input_sha256": "9c092c2c01617f6ef20b8a1246d45b7167a3c101df077950359c29ef2a1f4bb3"
+        }
+      ],
+      "standard_grid": {
+        "solvers": [
+          "Magneto2D",
+          "FEMM"
+        ],
+        "mesh_policy": {
+          "Magneto2D": "native Gmsh normal remesh-per-step",
+          "FEMM": "native FEMM mesh"
+        },
+        "electrical_angle_start_deg": 0.0,
+        "electrical_angle_stop_exclusive_deg": 360.0,
+        "electrical_angle_step_deg": 7.5,
+        "sample_count": 48
+      },
+      "fine_grid": {
+        "solver": "Magneto2D",
+        "mesh_policy": "native Gmsh normal remesh-per-step",
+        "electrical_angle_start_deg": 0.0,
+        "electrical_angle_stop_exclusive_deg": 360.0,
+        "electrical_angle_step_deg": 3.75,
+        "sample_count": 96
+      },
+      "limits": {
+        "current_zero_sum_abs_A_max": 1e-09,
+        "current_plateau_abs_A_max": 1e-09,
+        "mean_torque_delta_pct_max": 5.0,
+        "torque_waveform_nrmse_pct_max": 10.0,
+        "commutation_transition_delta_samples_max": 1,
+        "power_torque_delta_pct_max": 10.0,
+        "native_standard_to_fine_mean_torque_delta_pct_max": 2.0,
+        "native_standard_to_fine_ripple_delta_percentage_points_max": 5.0,
+        "sine_regression_policy": "bit-identical selected golden values and all existing suite tolerances green"
+      }
+    }
+  ]
+}
