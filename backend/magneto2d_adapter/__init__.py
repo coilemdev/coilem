@@ -30,6 +30,7 @@ from backend.topology_provenance import (
     build_topology_provenance,
 )
 from backend.winding_utils import (
+    concentrated_uses_tooth_coils,
     distributed_full_pitch_slots,
     distributed_slots_per_pole_per_phase_value,
     distributed_winding_is_balanced,
@@ -509,9 +510,14 @@ def get_magneto2d_winding_support_error(config: MotorConfig) -> str | None:
             f"Winding type '{config.winding.type}' is not supported by native "
             "Magneto2D."
         )
-    if config.winding.layers != 1:
+    if config.winding.layers != 1 and not concentrated_uses_tooth_coils(
+        config.stator.slot_count, config.rotor.pole_count
+    ):
+        # Two layers mean a coil on every tooth (#91); the whole-slot map used
+        # for q >= 1 has no second layer to wind.
         return (
-            "Magneto2D supports only single-layer concentrated windings."
+            "Magneto2D supports two-layer concentrated windings only as tooth coils "
+            "(fewer slots than 3 x poles)."
         )
     return None
 

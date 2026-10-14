@@ -1292,9 +1292,10 @@ def current_angle_elec_deg_for_rotor_elec(
     gamma is flux-weakening advance, and motoring torque is positive for
     ``0 <= gamma < 90``. The applied source angle is therefore
     ``theta_e = rotor_elec - 90 + gamma - axis`` for every topology and winding
-    type, where ``axis`` is phase A's axis angle: zero except for tooth coils
-    (#91). At gamma=0 this preserves the historical SPM ``rotor_elec - 90``
-    source angle bit-for-bit for every other layout.
+    type, where ``axis`` is phase A's axis angle (#91): 0 for one-slot phase
+    belts, the belt centre for wider ones (15 degrees at q = 2) and a tooth for
+    tooth coils (30 degrees at q = 1/2). Layouts with the axis at 0 keep the
+    historical SPM ``rotor_elec - 90`` source angle at gamma=0 bit-for-bit.
 
     The earlier sign convention used ``rotor_elec - (90 + gamma)``, which
     retards the source phasor for positive gamma under this codebase's phase sequence and slot ordering —
@@ -1308,8 +1309,7 @@ def current_angle_elec_deg_for_rotor_elec(
     gamma_deg = 0.0
     if config.solve_params is not None:
         gamma_deg = float(getattr(config.solve_params, "current_angle_deg", 0.0) or 0.0)
-    # Tooth coils (#91) put phase A's axis off 0 degrees; subtracting it keeps gamma
-    # measured from the q-axis. Zero for every other layout.
+    # Subtracting phase A's axis angle keeps gamma measured from the q-axis (#91).
     return float(rotor_angle_elec_deg) - 90.0 + gamma_deg - phase_axis_offset_deg(config)
 
 

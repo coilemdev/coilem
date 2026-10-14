@@ -73,6 +73,7 @@ def test_unmeasured_and_failing_combinations_are_experimental() -> None:
         "Only full-pitch and 5/6": _with(_fixture("spm_8p48s_distributed_femm_validation.json"), "winding", coil_span=4),
         "IPM with distributed windings": _with(flat_ipm, "winding", type="distributed", layers=2),
         "Custom steel": _with(distributed, "materials", stator_steel="custom:lab-curve"),
+        "Two-layer concentrated windings": _with(_fixture("spm_8p12s_concentrated__baseline.json"), "winding", layers=2),
     }
     for reason, config in cases.items():
         qualification = classify_qualification(config)
@@ -80,12 +81,12 @@ def test_unmeasured_and_failing_combinations_are_experimental() -> None:
 
 
 def test_rejected_rotors_and_windings_are_unsupported() -> None:
-    concentrated = _fixture("spm_8p12s_concentrated__baseline.json")
     flat_ipm = _fixture("ipm_flat_8p12s_fsae_contract.json")
     for config in (
         _fixture("ornl_prius_2004_ipm.json"),
         _with(flat_ipm, "rotor", flux_barrier_count=2),
-        _with(concentrated, "winding", layers=2),
+        # Two layers wind a coil on every tooth; q = 1 has no tooth coils to double up.
+        _with(MotorConfig.model_validate(SPM_CONCENTRATED), "winding", layers=2),
     ):
         qualification = classify_qualification(config)
         assert qualification["status"] == "unsupported"

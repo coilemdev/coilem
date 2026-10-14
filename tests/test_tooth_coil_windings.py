@@ -3,7 +3,7 @@
 A coil on tooth t has its go side in slot t and its return side in slot t+1.
 One layer winds every other tooth; two layers wind every tooth, half a slot's
 conductors per coil side. Concentrated windings with q >= 1 keep the legacy
-whole-slot map. tests/fixtures/tooth_coil_layouts.json is shared with the
+whole-slot map. Every layout measures gamma from phase A's own axis. tests/fixtures/tooth_coil_layouts.json is shared with the
 Magneto2D test that holds the Rust slot map to the same layouts.
 """
 
@@ -121,7 +121,27 @@ def test_q_of_one_or_more_keeps_the_legacy_whole_slot_map() -> None:
     for slot in range(12):
         (side,) = concentrated_slot_layer_assignments(slot, 12, 4, 1)
         assert (side.phase, side.direction) == legacy_concentrated_slot_phase(slot, 12, 2)
-    assert winding_phase_axis_offset_elec_deg("distributed", 48, 8, 1) == 0.0
+
+
+@pytest.mark.parametrize(
+    ("winding_type", "slot_count", "pole_count", "layers", "coil_span", "expected"),
+    [
+        ("distributed", 24, 8, 1, None, 0.0),
+        ("distributed", 36, 12, 2, None, 0.0),
+        ("distributed", 48, 8, 1, None, 15.0),
+        ("distributed", 48, 8, 2, None, 15.0),
+        ("distributed", 48, 8, 2, 5, 0.0),
+        ("distributed", 72, 8, 1, None, 20.0),
+        ("concentrated", 12, 4, 1, None, 0.0),
+        ("concentrated", 12, 8, 1, None, 30.0),
+    ],
+)
+def test_phase_axis_offset_sits_at_the_phase_belt_centre(
+    winding_type: str, slot_count: int, pole_count: int, layers: int, coil_span: int | None, expected: float
+) -> None:
+    # Same table as Magneto2D's phase_axis_offset_sits_at_the_phase_belt_centre; exact, not approximate,
+    # so a layout with its axis at 0 keeps its historical source angles bit for bit.
+    assert winding_phase_axis_offset_elec_deg(winding_type, slot_count, pole_count, layers, coil_span) == expected
 
 
 def test_slot_counts_the_phases_cannot_share_are_not_tooth_coils() -> None:

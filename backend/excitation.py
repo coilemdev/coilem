@@ -104,12 +104,13 @@ def _sine_peak_current_a(config: MotorConfig) -> float:
 
 
 def phase_axis_offset_deg(config: MotorConfig) -> float:
-    """Phase A's axis angle for this winding: non-zero only for tooth coils (#91).
+    """Phase A's axis angle for this winding (#91).
 
-    The current-angle convention assumes phase A's axis at 0 degrees electrical;
-    tooth coils put it on a tooth instead, so the excitation subtracts this angle
-    to keep gamma measured from the q-axis and six-step commutation in step.
-    Mirrors solvers/magneto2d/src/sources.rs winding_phase_axis_offset_elec_deg.
+    The current-angle convention assumes phase A's axis at 0 degrees electrical.
+    Phase belts wider than one slot put it at the belt centre and tooth coils on
+    a tooth, so the excitation subtracts this angle to keep gamma measured from
+    the q-axis and six-step commutation in step. Mirrors
+    solvers/magneto2d/src/sources.rs winding_phase_axis_offset_elec_deg.
     """
 
     return winding_phase_axis_offset_elec_deg(
@@ -117,6 +118,7 @@ def phase_axis_offset_deg(config: MotorConfig) -> float:
         config.stator.slot_count,
         config.rotor.pole_count,
         config.winding.layers,
+        getattr(config.winding, "coil_span", None),
     )
 def _resolve_native_six_step(
     current_a: float,

@@ -376,6 +376,7 @@ fn winding_axis_offset_deg(config: &MotorConfig) -> f64 {
         config.stator.slot_count,
         config.rotor.pole_count,
         config.winding.layers,
+        config.winding.coil_span,
     )
 }
 
@@ -844,6 +845,7 @@ fn summarize_angle_solution(
     solution: &FieldSolution,
     centroids: &[[f64; 2]],
     config: &MotorConfig,
+    element_slot_layers: Option<&[u8]>,
 ) -> FieldSummary {
     let machine = MachineModel::from_config(config);
     summarize_fields(
@@ -859,6 +861,7 @@ fn summarize_angle_solution(
         machine.winding_layers(),
         machine.winding_parallel_paths(),
         config.winding.coil_span,
+        element_slot_layers,
     )
 }
 
@@ -1952,7 +1955,13 @@ fn solve_at_angle(
     };
     let summary_start = Instant::now();
     let mut summary =
-        summarize_angle_solution(&solve_mesh, &field_solution, &ctx.centroids, config);
+        summarize_angle_solution(
+            &solve_mesh,
+            &field_solution,
+            &ctx.centroids,
+            config,
+            mesh_metadata::element_slot_layers(&ctx.solve_mesh_artifact).as_deref(),
+        );
     if let Some(profile) = solve_profile.as_mut() {
         profile.postprocess_summary_ms += elapsed_ms(summary_start);
     }
@@ -3151,6 +3160,7 @@ fn run_rotor_sweep_inner(
                     config.winding.turns_per_coil,
                     config.winding.layers,
                     config.winding.coil_span,
+                    config.winding.parallel_paths,
                     source_phase_currents,
                     &ctx.slot_areas,
                 );

@@ -15,6 +15,7 @@ from typing import Literal, TypedDict
 
 from backend.models import MotorConfig
 from backend.public_policy import EXPERIMENTAL_IPM_TOPOLOGIES, experimental_rotors_enabled
+from backend.winding_utils import concentrated_uses_tooth_coils
 
 QualificationStatus = Literal["qualified", "experimental", "unsupported"]
 
@@ -65,7 +66,8 @@ def _combination(config: MotorConfig) -> tuple[QualificationStatus, str]:
     if rotor.flux_barrier_count or rotor.barrier_widths_mm:
         return "unsupported", "Multi-layer IPM rotors are not supported in this preview."
     if winding.type == "concentrated" and winding.layers != 1:
-        return "unsupported", "Two-layer concentrated windings are not supported in this preview."
+        if not concentrated_uses_tooth_coils(config.stator.slot_count, rotor.pole_count):
+            return "unsupported", "Two layers apply only to fractional-slot concentrated windings (tooth coils)."
 
     if config.topology == "IPM":
         if six_step:
@@ -114,6 +116,8 @@ def classify_qualification(config: MotorConfig) -> Qualification:
     """Return the status, a one-sentence reason and any caveats for ``config``."""
 
     status, reason = _combination(config)
+    if status == "qualified" and config.winding.type == "concentrated" and config.winding.layers != 1:
+        status, reason = "experimental", "Two-layer concentrated windings (a coil on every tooth) were not measured by the benchmark."
     steels = {config.materials.stator_steel, config.materials.rotor_steel}
     if status == "qualified" and steels != {_QUALIFIED_STEEL}:
         status, reason = "experimental", f"Custom steel: the benchmark qualified only the bundled {_QUALIFIED_STEEL} curve."

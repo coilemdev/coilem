@@ -447,6 +447,7 @@ pub fn compute_flux_linkage(
     coil_span: Option<u32>,
     slot_side_turn_factor: f64,
     subtract_slot_az_reference: bool,
+    element_slot_layers: Option<&[u8]>,
 ) -> ([f64; 3], Vec<SlotFluxLinkageContribution>) {
     let l_stack = stack_length_mm * 1e-3;
     let n_pole_pitches = mesh.info.n_pole_pitches;
@@ -462,6 +463,9 @@ pub fn compute_flux_linkage(
     let mut slot_phase = vec![0usize; total_slots_in_span];
     let mut slot_direction = vec![1.0_f64; total_slots_in_span];
     let mut slot_assigned = vec![false; total_slots_in_span];
+    // Split slots (#91): each coil side links the A_z of its own layer region.
+    let mut layer_az_integral = vec![[0.0_f64; 2]; total_slots_in_span];
+    let mut layer_area_total = vec![[0.0_f64; 2]; total_slots_in_span];
 
     for (idx, (tri, region)) in mesh.triangles.iter().zip(mesh.regions.iter()).enumerate() {
         // Align slot/tooth filtering with the canonical FEMM convention.
@@ -486,6 +490,10 @@ pub fn compute_flux_linkage(
 
         slot_az_integral[slot_idx] += az_avg * area;
         slot_area_total[slot_idx] += area;
+        if let Some(layer @ 1..=2) = element_slot_layers.and_then(|layers| layers.get(idx)).copied() {
+            layer_az_integral[slot_idx][usize::from(layer - 1)] += az_avg * area;
+            layer_area_total[slot_idx][usize::from(layer - 1)] += area;
+        }
 
         if !slot_assigned[slot_idx] {
             let slot_global = slot_local % slot_count as usize;
@@ -598,8 +606,9 @@ pub fn compute_flux_linkage(
         let az_effective_slot = az_avg_slot - slot_az_reference;
         let slot_global = s % slot_count as usize;
         // Chorded distributed slots and double-layer tooth-coil slots (#91) hold
-        // more than one coil side: each side links the slot's average A_z with
-        // its own phase, direction and share of the conductors.
+        // more than one coil side: each side links the average A_z of its own
+        // layer region (the whole slot's when the mesh has no layer regions)
+        // with its own phase, direction and share of the conductors.
         let sides = slot_winding_layers(
             winding_type,
             slot_global,
@@ -610,14 +619,24 @@ pub fn compute_flux_linkage(
         );
         if (winding_type == "distributed" && coil_span.is_some()) || sides.len() > 1 {
             let theta_deg = slot_center_angle_rad(s, slot_pitch_rad).to_degrees();
-            for (phase, direction, turn_fraction) in sides {
+            let per_layer = sides.len() == 2 && layer_area_total[s].iter().all(|area| *area >= 1e-15);
+            for (side_idx, (phase, direction, turn_fraction)) in sides.into_iter().enumerate() {
+                let (az_side, area_side) = if per_layer {
+                    (
+                        layer_az_integral[s][side_idx] / layer_area_total[s][side_idx],
+                        layer_area_total[s][side_idx],
+                    )
+                } else {
+                    (az_avg_slot, slot_area_total[s])
+                };
+                let az_effective_side = az_side - slot_az_reference;
                 let dir_sign = if direction { 1.0 } else { -1.0 };
                 let contrib = dir_sign
                     * turn_fraction
                     * slot_side_turn_factor
                     * turns_per_coil as f64
                     * l_stack
-                    * az_effective_slot;
+                    * az_effective_side;
                 phase_flux[phase] += contrib;
                 if diagnostics_enabled {
                     eprintln!(
@@ -627,8 +646,8 @@ pub fn compute_flux_linkage(
                         ["A", "B", "C"][phase],
                         dir_sign,
                         turn_fraction,
-                        az_avg_slot,
-                        az_effective_slot,
+                        az_side,
+                        az_effective_side,
                         contrib,
                     );
                 }
@@ -643,9 +662,9 @@ pub fn compute_flux_linkage(
                     },
                     center_angle_mech_deg: theta_deg,
                     az_reference_wb_per_m: slot_az_reference,
-                    az_avg_wb_per_m: az_avg_slot,
-                    az_effective_wb_per_m: az_effective_slot,
-                    slot_area_m2: slot_area_total[s],
+                    az_avg_wb_per_m: az_side,
+                    az_effective_wb_per_m: az_effective_side,
+                    slot_area_m2: area_side,
                     turns_per_coil,
                     contribution_wb: contrib,
                 });
@@ -718,6 +737,7 @@ pub fn summarize_fields(
     winding_layers: u32,
     parallel_paths: u32,
     coil_span: Option<u32>,
+    element_slot_layers: Option<&[u8]>,
 ) -> FieldSummary {
     // Collect (b_mag, area) per region so peak-B reporting can
     // filter out sliver triangles (which pile up at reentrant corners and
@@ -1183,6 +1203,7 @@ pub fn summarize_fields(
         coil_span,
         slot_side_turn_factor,
         subtract_slot_az_reference,
+        element_slot_layers,
     );
     let nodal_b = compute_nodal_b_field(mesh, fields);
     let (peak_b_tooth_point_t, peak_b_yoke_point_t) =
@@ -1584,6 +1605,7 @@ mod tests {
             turns,
             layers,
             coil_span,
+            parallel_paths,
             currents,
             &areas_mm2,
         );
@@ -1600,6 +1622,7 @@ mod tests {
             coil_span,
             flux_linkage_slot_side_turn_factor(winding_type, layers, parallel_paths),
             false,
+            None,
         );
         let terminal: f64 = (0..3).map(|phase| flux[phase] * currents[phase]).sum();
         let field: f64 = mesh
@@ -1618,21 +1641,133 @@ mod tests {
         // Energy consistency (#80): the turns the extraction credits must be the
         // turns the source excites, or back-EMF and torque disagree by the ratio.
         // A single-layer concentrated winding credited half its turns (ratio 0.5).
-        // One path each: production divides by parallel paths in the Python slot
-        // source it imports, not in this analytical synthesis.
+        // The analytical source divides by parallel paths like the Python slot
+        // source it stands in for; it once used terminal current (ratio 1/paths, #85).
         for (winding_type, slots, poles, layers, span) in [
             ("concentrated", 12, 8, 1, None),
+            ("concentrated", 12, 8, 2, None),
             ("concentrated", 12, 4, 1, None),
             ("distributed", 24, 4, 1, None),
             ("distributed", 48, 8, 2, None),
             ("distributed", 48, 8, 2, Some(5)),
         ] {
-            let ratio = reciprocity_ratio(winding_type, slots, poles, layers, span, 1);
-            assert!(
-                (ratio - 1.0).abs() < 1e-9,
-                "{winding_type} {slots}s/{poles}p layers={layers} span={span:?}: lambda*i / L*int(A*J) = {ratio}"
-            );
+            for paths in [1, 2, 4] {
+                let ratio = reciprocity_ratio(winding_type, slots, poles, layers, span, paths);
+                assert!(
+                    (ratio - 1.0).abs() < 1e-9,
+                    "{winding_type} {slots}s/{poles}p layers={layers} span={span:?} paths={paths}: lambda*i / L*int(A*J) = {ratio}"
+                );
+            }
         }
+    }
+
+    #[test]
+    fn reconstructed_excitation_summary_reports_the_path_current() {
+        // Sextant reconstruction rebuilds the slot summary from the analytical
+        // source (#85): 8 A at the terminal over 2 paths is 4 A per conductor.
+        use crate::sources::{
+            compute_current_densities_from_phase_currents,
+            compute_slot_excitation_summary_from_phase_currents,
+        };
+        let (mesh, centroids) = synthetic_slot_flux_mesh(12, 4);
+        let areas_mm2: Vec<f64> = mesh
+            .triangles
+            .iter()
+            .map(|&[i, j, k]| {
+                let [a, b, c] = [mesh.nodes[i], mesh.nodes[j], mesh.nodes[k]];
+                0.5e6 * ((b[0] - a[0]) * (c[1] - a[1]) - (c[0] - a[0]) * (b[1] - a[1])).abs()
+            })
+            .collect();
+        let currents = [8.0, -4.0, -4.0];
+        let j_z = compute_current_densities_from_phase_currents(
+            &mesh, &centroids, "concentrated", 12, 4, 10, 1, None, 2, currents, &areas_mm2,
+        );
+        let summary = compute_slot_excitation_summary_from_phase_currents(
+            &mesh, &centroids, "concentrated", 12, 4, 10, 1, 0.0, currents, &j_z,
+        );
+        let slot_a = summary
+            .slot_excitation_contributions
+            .iter()
+            .find(|slot| slot.slot_index_global == 0)
+            .expect("slot 0");
+        assert_eq!((slot_a.phase.as_str(), slot_a.direction.as_str()), ("A", "in"));
+        assert!((slot_a.phase_current_a - 8.0).abs() < 1e-12);
+        assert!((slot_a.slot_current_a - 4.0).abs() < 1e-9, "per-conductor {}", slot_a.slot_current_a);
+        assert!((slot_a.integrated_amp_turns_a - 40.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn split_slot_sides_link_their_own_layer() {
+        // Double-layer 12s8p tooth coils (#91): each slot holds the return side of
+        // the coil on the tooth before it (layer 1, left half) and the go side of
+        // its own tooth's coil (layer 2, right half).
+        use crate::sources::concentrated_slot_sides;
+        let slot_count = 12;
+        let pole_count = 8;
+        let slot_pitch_rad = 2.0 * std::f64::consts::PI / slot_count as f64;
+        let (radius_m, dr_m, offset, half_angle) = (0.036, 0.001, 0.02, 0.004);
+        let (mut nodes, mut triangles, mut regions, mut centroids, mut az, mut layers) =
+            (Vec::new(), Vec::new(), Vec::new(), Vec::new(), Vec::new(), Vec::new());
+        let mut half_az = Vec::new();
+        for slot in 0..slot_count {
+            for (layer, side) in [(1u8, -1.0), (2u8, 1.0)] {
+                let theta = slot as f64 * slot_pitch_rad + side * offset;
+                let points = [
+                    [radius_m * theta.cos(), radius_m * theta.sin()],
+                    [(radius_m + dr_m) * (theta + half_angle).cos(), (radius_m + dr_m) * (theta + half_angle).sin()],
+                    [(radius_m + dr_m) * (theta - half_angle).cos(), (radius_m + dr_m) * (theta - half_angle).sin()],
+                ];
+                let value = 1.0e-3 * (slot as f64 + 1.0) * if layer == 1 { 1.0 } else { -0.4 };
+                let start = nodes.len();
+                nodes.extend(points);
+                az.extend([value; 3]);
+                triangles.push([start, start + 1, start + 2]);
+                regions.push(Region::SlotWinding);
+                layers.push(layer);
+                half_az.push(value);
+                centroids.push([
+                    (points[0][0] + points[1][0] + points[2][0]) / 3.0,
+                    (points[0][1] + points[1][1] + points[2][1]) / 3.0,
+                ]);
+            }
+        }
+        let (template, _) = synthetic_slot_flux_mesh(slot_count, pole_count);
+        let mesh = TriMesh {
+            info: MeshInfo { num_nodes: nodes.len(), num_triangles: triangles.len(), ..template.info },
+            nodes,
+            triangles,
+            regions,
+            boundary_nodes: Vec::new(),
+            sector_edge_pairs: Vec::new(),
+        };
+        let (turns, stack_mm) = (10, 100.0);
+        let link = |layers: Option<&[u8]>| {
+            compute_flux_linkage(
+                &mesh, &az, &centroids, stack_mm, "concentrated", slot_count as u32, pole_count, turns, 2,
+                None, 1.0, false, layers,
+            )
+            .0
+        };
+        // Equal-area halves, so the whole-slot average is the mean of the two.
+        let mut own_layer = [0.0_f64; 3];
+        let mut slot_average = [0.0_f64; 3];
+        for slot in 0..slot_count {
+            let sides = concentrated_slot_sides(slot, slot_count as u32, pole_count, 2);
+            assert_eq!(sides.len(), 2);
+            let mean = 0.5 * (half_az[2 * slot] + half_az[2 * slot + 1]);
+            for (side_idx, (phase, direction_in, fraction)) in sides.into_iter().enumerate() {
+                let weight = if direction_in { 1.0 } else { -1.0 } * fraction * turns as f64 * stack_mm * 1e-3;
+                own_layer[phase] += weight * half_az[2 * slot + side_idx];
+                slot_average[phase] += weight * mean;
+            }
+        }
+        let per_layer = link(Some(&layers));
+        let whole_slot = link(None);
+        for phase in 0..3 {
+            assert!((per_layer[phase] - own_layer[phase]).abs() < 1e-15, "phase {phase}: {} vs {}", per_layer[phase], own_layer[phase]);
+            assert!((whole_slot[phase] - slot_average[phase]).abs() < 1e-15);
+        }
+        assert!((per_layer[0] - whole_slot[0]).abs() > 1e-6, "the halves must matter in this field");
     }
 
     fn contour_debug(status: &str, scaled_torque_nm: f64) -> ContourTorqueDebug {
@@ -1675,6 +1810,7 @@ mod tests {
             None,
             0.5,
             true,
+            None,
         );
         let (offset_flux, offset_contributions) = compute_flux_linkage(
             &mesh,
@@ -1689,6 +1825,7 @@ mod tests {
             None,
             0.5,
             true,
+            None,
         );
 
         for phase in 0..3 {
@@ -1716,6 +1853,7 @@ mod tests {
             None,
             0.5,
             false,
+            None,
         );
         let (raw_offset_flux, _) = compute_flux_linkage(
             &mesh,
@@ -1730,6 +1868,7 @@ mod tests {
             None,
             0.5,
             false,
+            None,
         );
         // 12s8p is wound as tooth coils (#91): each coil's go and return sides
         // cancel a common A_z offset even before the reference is removed.
@@ -1775,6 +1914,7 @@ mod tests {
             None,
             1.0,
             false,
+            None,
         );
 
         assert_eq!(contributions.len(), 12);
@@ -1833,6 +1973,7 @@ mod tests {
             None,
             1.0,
             false,
+            None,
         );
         let (_, chorded_contributions) = compute_flux_linkage(
             &mesh,
@@ -1847,6 +1988,7 @@ mod tests {
             Some(5),
             1.0,
             false,
+            None,
         );
 
         assert_eq!(full_pitch_contributions.len(), 48);

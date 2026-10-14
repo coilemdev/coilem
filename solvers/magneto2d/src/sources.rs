@@ -97,13 +97,13 @@ pub(crate) fn phase_currents_for_excitation(
     let pole_pairs = ((config.rotor.pole_count / 2).max(1)) as f64;
     let rotor_elec_deg = rotor_angle_rad.to_degrees() * pole_pairs;
     let advance_deg = sp.commutation_advance_deg();
-    // Commutate on the rotor's position relative to phase A's axis, which tooth
-    // coils move off 0 degrees (#91); 0.0 for every other layout.
+    // Commutate on the rotor's position relative to phase A's axis (#91).
     let axis_offset_deg = winding_phase_axis_offset_elec_deg(
         &config.winding.winding_type,
         config.stator.slot_count,
         config.rotor.pole_count,
         config.winding.layers,
+        config.winding.coil_span,
     );
     let (effective_deg, table) =
         if sp.excitation_rotation_convention_label() == "clockwise_positive_ui" {
@@ -151,11 +151,13 @@ pub fn compute_current_densities_from_phase_currents(
     turns_per_coil: u32,
     winding_layers: u32,
     coil_span: Option<u32>,
+    parallel_paths: u32,
     phase_currents: [f64; 3],
     slot_areas_mm2: &[f64],
 ) -> Vec<f64> {
     let n_tri = mesh.triangles.len();
     let mut j_z = vec![0.0_f64; n_tri];
+    let paths = parallel_paths.max(1) as f64;
 
     if phase_currents.iter().all(|current| current.abs() < 1e-12) {
         return j_z;
@@ -192,7 +194,9 @@ pub fn compute_current_densities_from_phase_currents(
         let slot_idx = slot_local.min(slot_areas_mm2.len().saturating_sub(1));
         let a_slot_m2 = slot_areas_mm2.get(slot_idx).copied().unwrap_or(1.0) * 1e-6;
         if a_slot_m2 > 1e-12 {
-            j_z[tri_idx] = turns_per_coil as f64 * slot_current_sum / a_slot_m2;
+            // Each conductor carries its path's share of the terminal current, as
+            // in the Python slot source and the flux-linkage credit (#85).
+            j_z[tri_idx] = turns_per_coil as f64 * slot_current_sum / paths / a_slot_m2;
         }
     }
     j_z
@@ -217,6 +221,7 @@ pub fn compute_current_densities(
     turns_per_coil: u32,
     winding_layers: u32,
     coil_span: Option<u32>,
+    parallel_paths: u32,
     current_amplitude_a: f64,
     current_angle_deg: f64,
     slot_areas_mm2: &[f64],
@@ -231,6 +236,7 @@ pub fn compute_current_densities(
         turns_per_coil,
         winding_layers,
         coil_span,
+        parallel_paths,
         phase_currents,
         slot_areas_mm2,
     )
@@ -650,19 +656,29 @@ pub fn concentrated_slot_sides(slot: usize, slot_count: u32, pole_count: u32, la
     }
 }
 
-/// Electrical angle of phase A's axis that the current-angle convention must
-/// absorb: tooth-coil layouts put it on a tooth (+30 degrees for q = 1/2), so
-/// gamma stays measured from the q-axis. Every other layout returns 0.0 and
-/// keeps its historical behaviour. Mirrors
-/// `backend.winding_utils.winding_phase_axis_offset_elec_deg`.
-pub fn winding_phase_axis_offset_elec_deg(winding_type: &str, slot_count: u32, pole_count: u32, layers: u32) -> f64 {
-    if winding_type == "distributed" || !concentrated_uses_tooth_coils(slot_count, pole_count) {
+/// Electrical angle of phase A's axis, which the current-angle convention and
+/// six-step commutation absorb (#91). The convention puts phase A's axis at 0
+/// degrees, where a one-slot phase belt has it; wider belts put it at their
+/// centre (15 degrees for q = 2) and tooth coils on a tooth (30 degrees for
+/// q = 1/2). Computed from the slot sides the solver winds and rounded to 1e-9
+/// degrees, so a layout with its axis at 0 keeps its source angles bit for bit.
+/// Mirrors `backend.winding_utils.winding_phase_axis_offset_elec_deg`.
+pub fn winding_phase_axis_offset_elec_deg(
+    winding_type: &str,
+    slot_count: u32,
+    pole_count: u32,
+    layers: u32,
+    coil_span: Option<u32>,
+) -> f64 {
+    if slot_count == 0 || pole_count == 0 {
         return 0.0;
     }
     let pitch = electrical_slot_pitch_rad(slot_count, pole_count);
     let (mut re, mut im) = (0.0_f64, 0.0_f64);
     for slot in 0..slot_count as usize {
-        for (phase, direction_in, fraction) in concentrated_slot_sides(slot, slot_count, pole_count, layers) {
+        for (phase, direction_in, fraction) in
+            slot_winding_layers(winding_type, slot, slot_count, pole_count, layers, coil_span)
+        {
             if phase == 0 {
                 let sign = if direction_in { 1.0 } else { -1.0 };
                 re += sign * fraction * (pitch * slot as f64).cos();
@@ -670,7 +686,10 @@ pub fn winding_phase_axis_offset_elec_deg(winding_type: &str, slot_count: u32, p
             }
         }
     }
-    im.atan2(re).to_degrees()
+    if re.hypot(im) < 1e-9 {
+        return 0.0;
+    }
+    (im.atan2(re).to_degrees() * 1e9).round() / 1e9 + 0.0
 }
 
 /// Dispatch slot assignment on the config winding type. Anything other than
@@ -857,6 +876,7 @@ mod tests {
                 config.stator.slot_count,
                 config.rotor.pole_count,
                 config.winding.layers,
+                config.winding.coil_span,
             );
             assert!((axis_offset_deg - 30.0).abs() < 1e-9, "12s8p axis offset {axis_offset_deg}");
             let public_electrical_deg = vector.rotor_electrical_angle_deg - axis_offset_deg;
@@ -1146,12 +1166,31 @@ mod tests {
                 case.slot_count,
                 case.pole_count,
                 case.layers,
+                None,
             );
             assert!(
                 (offset - case.phase_axis_offset_elec_deg).abs() < 1e-6,
                 "{label} axis offset {offset} vs {}",
                 case.phase_axis_offset_elec_deg,
             );
+        }
+    }
+
+    #[test]
+    fn phase_axis_offset_sits_at_the_phase_belt_centre() {
+        // Matches backend.winding_utils.winding_phase_axis_offset_elec_deg (#91).
+        for (winding_type, slots, poles, layers, span, expected) in [
+            ("distributed", 24, 8, 1, None, 0.0),
+            ("distributed", 36, 12, 2, None, 0.0),
+            ("distributed", 48, 8, 1, None, 15.0),
+            ("distributed", 48, 8, 2, None, 15.0),
+            ("distributed", 48, 8, 2, Some(5), 0.0),
+            ("distributed", 72, 8, 1, None, 20.0),
+            ("concentrated", 12, 4, 1, None, 0.0),
+            ("concentrated", 12, 8, 1, None, 30.0),
+        ] {
+            let offset = winding_phase_axis_offset_elec_deg(winding_type, slots, poles, layers, span);
+            assert_eq!(offset, expected, "{winding_type} {slots}s{poles}p layers={layers} span={span:?}");
         }
     }
 

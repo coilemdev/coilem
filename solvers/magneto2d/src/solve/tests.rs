@@ -1,5 +1,6 @@
 use super::mesh_metadata::{
-    resolve_step_current_densities_a_per_m2, resolve_step_current_densities_for_requested_current,
+    element_slot_layers, resolve_step_current_densities_a_per_m2,
+    resolve_step_current_densities_for_requested_current,
     resolve_step_element_magnetization_rad, validate_imported_sources_for_problem,
     validate_imported_step_motion, validate_mesh_metadata, MeshMetadataError,
 };
@@ -758,6 +759,28 @@ fn mesh_metadata_validation_rejects_wrong_length_current_density() {
             actual: 2,
         }
     );
+}
+
+#[test]
+fn split_slot_elements_carry_their_layer_from_the_region_id() {
+    let mut artifact = metadata_test_artifact(
+        vec![Region::SlotWinding, Region::SlotWinding, Region::StatorTooth],
+        None,
+    );
+    assert_eq!(element_slot_layers(&artifact), None);
+    artifact.element_region_ids = Some(
+        ["slot_winding_3_layer1", "slot_winding_3_layer2", "stator_tooth_3"]
+            .map(str::to_string)
+            .to_vec(),
+    );
+    assert_eq!(element_slot_layers(&artifact), Some(vec![1, 2, 0]));
+    // Whole-slot windings keep the slot-average path.
+    artifact.element_region_ids = Some(
+        ["slot_winding_3", "slot_winding_4", "stator_tooth_3"]
+            .map(str::to_string)
+            .to_vec(),
+    );
+    assert_eq!(element_slot_layers(&artifact), None);
 }
 
 #[test]

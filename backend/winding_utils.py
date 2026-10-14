@@ -579,16 +579,39 @@ def tooth_coil_layout_error(slot_count: int, pole_count: int, layers: int) -> st
     return None
 
 
-def winding_phase_axis_offset_elec_deg(winding_type: str, slot_count: int, pole_count: int, layers: int) -> float:
-    """Electrical angle of phase A's axis that the current-angle convention must absorb.
+def winding_phase_phasors(
+    winding_type: str, slot_count: int, pole_count: int, layers: int, coil_span: int | None = None
+) -> dict[str, complex]:
+    """Fundamental phasor of each phase over the slot sides the solver winds, for any winding type."""
 
-    The convention (source angle rotor_elec - 90 + gamma) assumes phase A's axis at
-    0 degrees. Tooth-coil layouts put it on a tooth instead (+30 degrees for q = 1/2),
-    so they report that angle and gamma stays measured from the q-axis. Every other
-    layout returns 0.0 and keeps its historical behaviour bit for bit.
+    if winding_type != "distributed":
+        return concentrated_phase_phasors(slot_count, pole_count, layers)
+    pitch = _electrical_slot_pitch_rad(slot_count, pole_count)
+    totals = {"A": 0j, "B": 0j, "C": 0j}
+    for slot in range(slot_count):
+        for side in distributed_slot_layer_assignments(slot, slot_count, pole_count, layers, coil_span):
+            sign = 1.0 if side.direction == "in" else -1.0
+            totals[side.phase] += sign * side.turn_fraction * complex(math.cos(pitch * slot), math.sin(pitch * slot))
+    return totals
+
+
+def winding_phase_axis_offset_elec_deg(
+    winding_type: str, slot_count: int, pole_count: int, layers: int, coil_span: int | None = None
+) -> float:
+    """Electrical angle of phase A's axis, which the current-angle convention absorbs (#91).
+
+    The convention (source angle rotor_elec - 90 + gamma) puts phase A's axis at 0
+    degrees, where a one-slot phase belt has it. Wider belts put it at their centre
+    (15 degrees for q = 2, 20 for q = 3; 5/6 chording at q = 2 brings it back to 0)
+    and tooth coils on a tooth (+30 degrees for q = 1/2). Subtracting it keeps gamma
+    measured from the q-axis for every layout. Rounded to 1e-9 degrees so a layout
+    whose axis is at 0 keeps its source angles bit for bit. Mirrors
+    solvers/magneto2d/src/sources.rs winding_phase_axis_offset_elec_deg.
     """
 
-    if winding_type != "concentrated" or not concentrated_uses_tooth_coils(slot_count, pole_count):
+    if slot_count <= 0 or pole_count <= 0:
         return 0.0
-    phasor = concentrated_phase_phasors(slot_count, pole_count, layers)["A"]
-    return math.degrees(math.atan2(phasor.imag, phasor.real))
+    phasor = winding_phase_phasors(winding_type, slot_count, pole_count, layers, coil_span)["A"]
+    if abs(phasor) < 1e-9:
+        return 0.0
+    return round(math.degrees(math.atan2(phasor.imag, phasor.real)), 9) + 0.0

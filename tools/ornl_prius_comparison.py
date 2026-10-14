@@ -27,11 +27,14 @@ FOLDER = ROOT / "docs/hardware-validation/ornl-prius-2004"
 CURRENTS_A = (50, 75, 100, 125, 150, 200, 250)
 DELTAS_DEG = tuple(range(0, 177, 8))
 # ORNL holds the currents at (Ia, -Ia/2, -Ia/2) and turns the rotor. coilEM's source
-# angle is rotor_elec - 90 + gamma with I_a = I sin(angle), so gamma = 180 at sweep
-# position 0 gives exactly that set. The rotor is turned with magnet_angle_deg. Its
-# zero (delta = 0: no torque, ORNL's definition) sits half a slot pitch, 15 deg
-# electrical, from coilEM's rotor zero, measured on coilEM's own 50 A cycle; delta
-# runs in the direction that puts the IPM torque peak beyond 90 deg (Lq > Ld).
+# angle is rotor_elec - 90 + gamma - axis with I_a = I sin(angle), where axis is phase
+# A's belt centre (15 deg electrical for this q = 2 winding, #91), so gamma = 180 + axis
+# at sweep position 0 gives exactly that set. The rotor is turned with
+# magnet_angle_deg. Its zero (delta = 0: no torque, ORNL's definition) sits half a slot
+# pitch, that same 15 deg, from coilEM's rotor zero, measured on coilEM's own 50 A
+# cycle; delta runs in the direction that puts the IPM torque peak beyond 90 deg
+# (Lq > Ld). Before #91 the convention ignored the axis and gamma was 180: the solves
+# are the same.
 ZERO_OFFSET_ELEC_DEG = 105.0
 
 
@@ -41,9 +44,14 @@ def rotor_offset_mech_deg(delta_deg: float, pole_pairs: int = 4) -> float:
 
 
 def locked_rotor_request(current_a: float, delta_deg: float) -> dict:
+    from backend.excitation import phase_axis_offset_deg
+    from backend.models import MotorConfig
+
     body = json.loads(REQUEST.read_text(encoding="utf-8"))
     body["rotor"]["magnet_angle_deg"] = rotor_offset_mech_deg(delta_deg)
-    body["solve_params"].update(current_amplitude_A=float(current_a), current_angle_deg=180.0, rotor_sweep_range_deg=1.0, rotor_step_deg=1.0)
+    # Wrapped into the request's (-180, 180] range: -165 deg for this winding.
+    gamma = (180.0 + phase_axis_offset_deg(MotorConfig.model_validate(body)) + 180.0) % 360.0 - 180.0
+    body["solve_params"].update(current_amplitude_A=float(current_a), current_angle_deg=gamma, rotor_sweep_range_deg=1.0, rotor_step_deg=1.0)
     body["solve_options"].update(back_emf=False, flux_density=False, torque_sweep=True)
     return body
 
@@ -135,7 +143,7 @@ def assemble(run: Path, locked: list[dict], out: Path) -> dict:
             "runs": [{"commit": c, "dirty": d} for c, d in sorted(commits)],
             "method": [
                 "Static solves of the frozen request with only the excitation and rotor angle changed.",
-                "Currents (Ia, -Ia/2, -Ia/2): current angle 180 deg at sweep position 0.",
+                "Currents (Ia, -Ia/2, -Ia/2): current angle 180 deg from phase A's axis at sweep position 0 (requested as -165 deg since #91).",
                 "delta = 0 is the no-torque position, as ORNL defines it, measured on coilEM's own 50 A cycle.",
                 "Torque by weighted stress; motor-shaft torque, as ORNL's table reports it.",
             ],

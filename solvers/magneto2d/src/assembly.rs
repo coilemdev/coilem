@@ -1428,6 +1428,7 @@ mod tests {
             None,
             1.0,
             false,
+            None,
         );
 
         let expected_flux_wb = turns_per_coil as f64 * stack_length_mm * 1e-3 * slot_area_avg_az;
