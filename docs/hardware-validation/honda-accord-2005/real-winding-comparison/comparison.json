@@ -1,0 +1,592 @@
+{
+ "description": "coilEM's frozen 2005 Honda Accord request against ORNL's hardware measurements (#92). Exploratory; no pass/fail. Winding as built: a coil on every tooth (#91).",
+ "request": "docs/hardware-validation/honda-accord-2005/request.json",
+ "winding": {
+  "type": "concentrated",
+  "layers": 2,
+  "turns_per_coil": 104,
+  "parallel_paths": 8
+ },
+ "back_emf": {
+  "source": "ORNL/TM-2006/535 Table 3.1 (line-to-neutral rms, three-phase average)",
+  "run": {
+   "commit": "738d9516e8500c5996c772bd96470472cbb9a0f9",
+   "dirty": false
+  },
+  "method": [
+   "One 360-degree electrical no-load sweep at the request's speed, 2-degree steps.",
+   "Phase back-EMF of the winding as built: two-layer tooth coils, 104 conductors per slot, 8 paths (#91).",
+   "True rms over the cycle, averaged over the three phases; scaled linearly with speed."
+  ],
+  "solved_speed_rpm": 1000,
+  "phase_rms_V": 28.482,
+  "rows": [
+   {
+    "motor_shaft_rpm": 200,
+    "measured_ln_rms_V": 5.85,
+    "predicted_ln_rms_V": 5.696,
+    "error_pct": -2.63
+   },
+   {
+    "motor_shaft_rpm": 400,
+    "measured_ln_rms_V": 11.46,
+    "predicted_ln_rms_V": 11.393,
+    "error_pct": -0.59
+   },
+   {
+    "motor_shaft_rpm": 600,
+    "measured_ln_rms_V": 17.13,
+    "predicted_ln_rms_V": 17.089,
+    "error_pct": -0.24
+   },
+   {
+    "motor_shaft_rpm": 800,
+    "measured_ln_rms_V": 22.83,
+    "predicted_ln_rms_V": 22.786,
+    "error_pct": -0.19
+   },
+   {
+    "motor_shaft_rpm": 1000,
+    "measured_ln_rms_V": 28.51,
+    "predicted_ln_rms_V": 28.482,
+    "error_pct": -0.1
+   },
+   {
+    "motor_shaft_rpm": 1200,
+    "measured_ln_rms_V": 34.17,
+    "predicted_ln_rms_V": 34.179,
+    "error_pct": 0.03
+   },
+   {
+    "motor_shaft_rpm": 1400,
+    "measured_ln_rms_V": 39.86,
+    "predicted_ln_rms_V": 39.875,
+    "error_pct": 0.04
+   },
+   {
+    "motor_shaft_rpm": 1600,
+    "measured_ln_rms_V": 45.55,
+    "predicted_ln_rms_V": 45.571,
+    "error_pct": 0.05
+   },
+   {
+    "motor_shaft_rpm": 1800,
+    "measured_ln_rms_V": 51.25,
+    "predicted_ln_rms_V": 51.268,
+    "error_pct": 0.03
+   },
+   {
+    "motor_shaft_rpm": 2000,
+    "measured_ln_rms_V": 57.1,
+    "predicted_ln_rms_V": 56.964,
+    "error_pct": -0.24
+   },
+   {
+    "motor_shaft_rpm": 2500,
+    "measured_ln_rms_V": 71.95,
+    "predicted_ln_rms_V": 71.205,
+    "error_pct": -1.03
+   },
+   {
+    "motor_shaft_rpm": 3000,
+    "measured_ln_rms_V": 85.88,
+    "predicted_ln_rms_V": 85.447,
+    "error_pct": -0.5
+   },
+   {
+    "motor_shaft_rpm": 3500,
+    "measured_ln_rms_V": 99.64,
+    "predicted_ln_rms_V": 99.688,
+    "error_pct": 0.05
+   },
+   {
+    "motor_shaft_rpm": 4000,
+    "measured_ln_rms_V": 112.6,
+    "predicted_ln_rms_V": 113.929,
+    "error_pct": 1.18
+   },
+   {
+    "motor_shaft_rpm": 4500,
+    "measured_ln_rms_V": 125.4,
+    "predicted_ln_rms_V": 128.17,
+    "error_pct": 2.21
+   },
+   {
+    "motor_shaft_rpm": 5000,
+    "measured_ln_rms_V": 138.4,
+    "predicted_ln_rms_V": 142.411,
+    "error_pct": 2.9
+   },
+   {
+    "motor_shaft_rpm": 5500,
+    "measured_ln_rms_V": 150.6,
+    "predicted_ln_rms_V": 156.652,
+    "error_pct": 4.02
+   },
+   {
+    "motor_shaft_rpm": 6000,
+    "measured_ln_rms_V": 162.2,
+    "predicted_ln_rms_V": 170.893,
+    "error_pct": 5.36
+   }
+  ],
+  "error_pct": {
+   "mean": 0.57,
+   "min": -2.63,
+   "max": 5.36
+  },
+  "cogging_torque_peak_Nm": 6.211516612494495
+ },
+ "locked_rotor": {
+  "source": "ORNL/TM-2006/535 Table 3.2 (peak over rotor position); DC pattern (Ia, -Ia/2, -Ia/2) assumed (A5)",
+  "runs": [
+   {
+    "commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+    "dirty": false
+   }
+  ],
+  "method": [
+   "Static solves of the frozen request; only the excitation and the rotor angle change.",
+   "coilEM currents (Ia, -Ia/2, -Ia/2): 180 deg from phase A's axis at sweep position 0; checked on every solve.",
+   "delta = 0 is the no-torque position (ORNL's definition), coilEM rotor offset 300 deg electrical.",
+   "Peak over delta = 60..150 deg in ORNL's 5-degree steps; full lobes at 50, 125 and 225 A in 10-degree steps."
+  ],
+  "peak_by_current": [
+   {
+    "current_A": 25,
+    "ornl_peak_Nm": 18.3,
+    "coilem_peak_Nm": 18.566,
+    "coilem_peak_delta_deg": 105,
+    "error_pct": 1.45
+   },
+   {
+    "current_A": 50,
+    "ornl_peak_Nm": 33.3,
+    "coilem_peak_Nm": 31.596,
+    "coilem_peak_delta_deg": 105,
+    "error_pct": -5.12
+   },
+   {
+    "current_A": 75,
+    "ornl_peak_Nm": 48.1,
+    "coilem_peak_Nm": 45.106,
+    "coilem_peak_delta_deg": 105,
+    "error_pct": -6.22
+   },
+   {
+    "current_A": 100,
+    "ornl_peak_Nm": 64.9,
+    "coilem_peak_Nm": 59.498,
+    "coilem_peak_delta_deg": 90,
+    "error_pct": -8.32
+   },
+   {
+    "current_A": 125,
+    "ornl_peak_Nm": 79.4,
+    "coilem_peak_Nm": 74.646,
+    "coilem_peak_delta_deg": 90,
+    "error_pct": -5.99
+   },
+   {
+    "current_A": 150,
+    "ornl_peak_Nm": 94.5,
+    "coilem_peak_Nm": 90.355,
+    "coilem_peak_delta_deg": 90,
+    "error_pct": -4.39
+   },
+   {
+    "current_A": 175,
+    "ornl_peak_Nm": 111,
+    "coilem_peak_Nm": 105.946,
+    "coilem_peak_delta_deg": 90,
+    "error_pct": -4.55
+   },
+   {
+    "current_A": 200,
+    "ornl_peak_Nm": 123,
+    "coilem_peak_Nm": 121.715,
+    "coilem_peak_delta_deg": 115,
+    "error_pct": -1.05
+   },
+   {
+    "current_A": 225,
+    "ornl_peak_Nm": 135,
+    "coilem_peak_Nm": 137.476,
+    "coilem_peak_delta_deg": 115,
+    "error_pct": 1.83
+   }
+  ],
+  "error_pct": {
+   "mean": -3.6,
+   "min": -8.32,
+   "max": 1.83
+  },
+  "curves": {
+   "50": [
+    {
+     "delta_deg": 0,
+     "torque_Nm": 0.023
+    },
+    {
+     "delta_deg": 10,
+     "torque_Nm": -2.196
+    },
+    {
+     "delta_deg": 20,
+     "torque_Nm": 3.047
+    },
+    {
+     "delta_deg": 30,
+     "torque_Nm": 10.882
+    },
+    {
+     "delta_deg": 40,
+     "torque_Nm": 19.484
+    },
+    {
+     "delta_deg": 50,
+     "torque_Nm": 25.241
+    },
+    {
+     "delta_deg": 60,
+     "torque_Nm": 26.221
+    },
+    {
+     "delta_deg": 65,
+     "torque_Nm": 22.955
+    },
+    {
+     "delta_deg": 70,
+     "torque_Nm": 19.722
+    },
+    {
+     "delta_deg": 75,
+     "torque_Nm": 19.843
+    },
+    {
+     "delta_deg": 80,
+     "torque_Nm": 23.328
+    },
+    {
+     "delta_deg": 85,
+     "torque_Nm": 27.524
+    },
+    {
+     "delta_deg": 90,
+     "torque_Nm": 29.551
+    },
+    {
+     "delta_deg": 95,
+     "torque_Nm": 29.191
+    },
+    {
+     "delta_deg": 100,
+     "torque_Nm": 29.775
+    },
+    {
+     "delta_deg": 105,
+     "torque_Nm": 31.596
+    },
+    {
+     "delta_deg": 110,
+     "torque_Nm": 31.405
+    },
+    {
+     "delta_deg": 115,
+     "torque_Nm": 29.813
+    },
+    {
+     "delta_deg": 120,
+     "torque_Nm": 26.846
+    },
+    {
+     "delta_deg": 125,
+     "torque_Nm": 21.749
+    },
+    {
+     "delta_deg": 130,
+     "torque_Nm": 17.525
+    },
+    {
+     "delta_deg": 135,
+     "torque_Nm": 16.415
+    },
+    {
+     "delta_deg": 140,
+     "torque_Nm": 17.797
+    },
+    {
+     "delta_deg": 145,
+     "torque_Nm": 18.279
+    },
+    {
+     "delta_deg": 150,
+     "torque_Nm": 17.647
+    },
+    {
+     "delta_deg": 160,
+     "torque_Nm": 13.486
+    },
+    {
+     "delta_deg": 170,
+     "torque_Nm": 9.82
+    },
+    {
+     "delta_deg": 180,
+     "torque_Nm": 0.009
+    }
+   ],
+   "125": [
+    {
+     "delta_deg": 0,
+     "torque_Nm": -0.016
+    },
+    {
+     "delta_deg": 10,
+     "torque_Nm": 3.155
+    },
+    {
+     "delta_deg": 20,
+     "torque_Nm": 11.334
+    },
+    {
+     "delta_deg": 30,
+     "torque_Nm": 20.073
+    },
+    {
+     "delta_deg": 40,
+     "torque_Nm": 33.256
+    },
+    {
+     "delta_deg": 50,
+     "torque_Nm": 44.666
+    },
+    {
+     "delta_deg": 60,
+     "torque_Nm": 55.911
+    },
+    {
+     "delta_deg": 65,
+     "torque_Nm": 57.91
+    },
+    {
+     "delta_deg": 70,
+     "torque_Nm": 59.043
+    },
+    {
+     "delta_deg": 75,
+     "torque_Nm": 61.716
+    },
+    {
+     "delta_deg": 80,
+     "torque_Nm": 66.486
+    },
+    {
+     "delta_deg": 85,
+     "torque_Nm": 72.317
+    },
+    {
+     "delta_deg": 90,
+     "torque_Nm": 74.646
+    },
+    {
+     "delta_deg": 95,
+     "torque_Nm": 73.693
+    },
+    {
+     "delta_deg": 100,
+     "torque_Nm": 71.906
+    },
+    {
+     "delta_deg": 105,
+     "torque_Nm": 72.824
+    },
+    {
+     "delta_deg": 110,
+     "torque_Nm": 74.064
+    },
+    {
+     "delta_deg": 115,
+     "torque_Nm": 73.428
+    },
+    {
+     "delta_deg": 120,
+     "torque_Nm": 70.314
+    },
+    {
+     "delta_deg": 125,
+     "torque_Nm": 64.275
+    },
+    {
+     "delta_deg": 130,
+     "torque_Nm": 57.823
+    },
+    {
+     "delta_deg": 135,
+     "torque_Nm": 54.475
+    },
+    {
+     "delta_deg": 140,
+     "torque_Nm": 51.563
+    },
+    {
+     "delta_deg": 145,
+     "torque_Nm": 49.25
+    },
+    {
+     "delta_deg": 150,
+     "torque_Nm": 50.584
+    },
+    {
+     "delta_deg": 160,
+     "torque_Nm": 35.52
+    },
+    {
+     "delta_deg": 170,
+     "torque_Nm": 17.02
+    },
+    {
+     "delta_deg": 180,
+     "torque_Nm": -0.029
+    }
+   ],
+   "225": [
+    {
+     "delta_deg": 0,
+     "torque_Nm": -0.013
+    },
+    {
+     "delta_deg": 10,
+     "torque_Nm": 9.674
+    },
+    {
+     "delta_deg": 20,
+     "torque_Nm": 18.248
+    },
+    {
+     "delta_deg": 30,
+     "torque_Nm": 26.965
+    },
+    {
+     "delta_deg": 40,
+     "torque_Nm": 40.573
+    },
+    {
+     "delta_deg": 50,
+     "torque_Nm": 53.793
+    },
+    {
+     "delta_deg": 60,
+     "torque_Nm": 73.739
+    },
+    {
+     "delta_deg": 65,
+     "torque_Nm": 89.346
+    },
+    {
+     "delta_deg": 70,
+     "torque_Nm": 103.998
+    },
+    {
+     "delta_deg": 75,
+     "torque_Nm": 113.43
+    },
+    {
+     "delta_deg": 80,
+     "torque_Nm": 120.64
+    },
+    {
+     "delta_deg": 85,
+     "torque_Nm": 128.947
+    },
+    {
+     "delta_deg": 90,
+     "torque_Nm": 136.664
+    },
+    {
+     "delta_deg": 95,
+     "torque_Nm": 133.232
+    },
+    {
+     "delta_deg": 100,
+     "torque_Nm": 127.851
+    },
+    {
+     "delta_deg": 105,
+     "torque_Nm": 127.706
+    },
+    {
+     "delta_deg": 110,
+     "torque_Nm": 132.205
+    },
+    {
+     "delta_deg": 115,
+     "torque_Nm": 137.476
+    },
+    {
+     "delta_deg": 120,
+     "torque_Nm": 136.318
+    },
+    {
+     "delta_deg": 125,
+     "torque_Nm": 129.636
+    },
+    {
+     "delta_deg": 130,
+     "torque_Nm": 119.092
+    },
+    {
+     "delta_deg": 135,
+     "torque_Nm": 109.418
+    },
+    {
+     "delta_deg": 140,
+     "torque_Nm": 98.239
+    },
+    {
+     "delta_deg": 145,
+     "torque_Nm": 88.513
+    },
+    {
+     "delta_deg": 150,
+     "torque_Nm": 86.673
+    },
+    {
+     "delta_deg": 160,
+     "torque_Nm": 70.812
+    },
+    {
+     "delta_deg": 170,
+     "torque_Nm": 30.009
+    },
+    {
+     "delta_deg": 180,
+     "torque_Nm": -0.194
+    }
+   ]
+  },
+  "magnet_reluctance_split": [
+   {
+    "current_A": 50,
+    "magnet_term_Nm": 28.2,
+    "reluctance_term_Nm": -1.96,
+    "lambda_pm_Wb": 0.047,
+    "lq_minus_ld_uH": 130.9
+   },
+   {
+    "current_A": 125,
+    "magnet_term_Nm": 70.36,
+    "reluctance_term_Nm": -11.3,
+    "lambda_pm_Wb": 0.04691,
+    "lq_minus_ld_uH": 120.5
+   },
+   {
+    "current_A": 225,
+    "magnet_term_Nm": 122.34,
+    "reluctance_term_Nm": -32.04,
+    "lambda_pm_Wb": 0.04531,
+    "lq_minus_ld_uH": 105.5
+   }
+  ]
+ }
+}

@@ -63,10 +63,15 @@ coilEM allows at most 6 parallel paths, so the request uses the exact field equi
 - the real slot ampere-turns, 52·(iA − iC)/8, equal 13·i′A;
 - the re-paired linkage, 8·13·L·ΔĀ/2 = 52·L·ΔĀ, is one real coil's linkage, which is the phase linkage for 8 identical coils in parallel.
 
-The transforms keep power exactly. Torque comes straight from the field. These runs are labelled *#91 emulated*, and the case is re-run on the real fix when it lands.
+The transforms keep power exactly. Torque comes straight from the field. These runs are labelled *#91 emulated*, and the case is re-run on the real fix when it lands. It was: see [Comparisons](#comparisons).
 
 ## Phase B plan
 
 - **No-load back-EMF:** one sweep of 360° electrical in 2° steps at 1000 rpm, re-paired, compared line-to-neutral with Table 3.1 by scaling with speed.
 - **Locked rotor:** static solves at ORNL's DC pattern over rotor position for each current in Table 3.2, taking the peak over position. Split into magnet and reluctance parts as for the Prius.
 - **Fitted variant:** Br fitted to the back-EMF; the locked-rotor torque is then re-run as the independent check.
+
+## Comparisons
+
+- **[First comparison](first-comparison/README.md) (#92):** the #91 tooth coils emulated on coilEM's old slot map. Back-EMF +0.7% mean; peak locked-rotor torque −3.3% mean.
+- **[Winding as built](real-winding-comparison/README.md) (#91):** the fixed solver, a coil on every tooth with 8 parallel paths. Back-EMF +0.6% mean; peak locked-rotor torque −3.6% mean. It reproduces the first comparison to within half a percent.

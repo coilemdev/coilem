@@ -16,10 +16,12 @@ from pathlib import Path
 from tools.plot_ornl_prius_comparison import COILEM, INK, ORNL, SURFACE, panel, svg, text
 
 
-def legend(x, y):
+def legend(x, y, data):
+    # The first comparison emulated the #91 tooth coils; later runs wind the motor as built.
+    winding = "#91 fix emulated" if "#91 emulated" in data["description"] else "wound as built"
     return (
         f'<line x1="{x}" y1="{y - 4}" x2="{x + 22}" y2="{y - 4}" stroke="{COILEM}" stroke-width="2"/>'
-        + text(x + 28, y, "coilEM prediction (frozen inputs, N35 assumed, #91 fix emulated)", 12, INK)
+        + text(x + 28, y, f"coilEM prediction (frozen inputs, N35 assumed, {winding})", 12, INK)
         + f'<circle cx="{x + 470}" cy="{y - 4}" r="4.5" fill="{ORNL}" stroke="{SURFACE}" stroke-width="2"/>'
         + text(x + 480, y, "ORNL measured (2005 Accord motor)", 12, INK)
     )
@@ -28,7 +30,7 @@ def legend(x, y):
 def back_emf_chart(data):
     rows = data["back_emf"]["rows"]
     speeds = [r["motor_shaft_rpm"] for r in rows]
-    body = legend(20, 74) + panel(10, 86, 880, 300, "No-load back-EMF, line-to-neutral rms", "Motor speed (rpm)", "Volts", (0, 6200), [
+    body = legend(20, 74, data) + panel(10, 86, 880, 300, "No-load back-EMF, line-to-neutral rms", "Motor speed (rpm)", "Volts", (0, 6200), [
         ("coilEM", speeds, [r["predicted_ln_rms_V"] for r in rows], "line"),
         ("ORNL", speeds, [r["measured_ln_rms_V"] for r in rows], "markers"),
     ], x_ticks=[0, 1000, 2000, 3000, 4000, 5000, 6000])
@@ -41,7 +43,7 @@ def back_emf_chart(data):
 def torque_chart(data):
     lr = data["locked_rotor"]
     peaks = lr["peak_by_current"]
-    body = legend(20, 74)
+    body = legend(20, 74, data)
     body += panel(10, 86, 880, 300, "Peak locked-rotor torque", "DC current Ia (A)", "Torque (N·m)", (0, 240), [
         ("coilEM", [p["current_A"] for p in peaks], [p["coilem_peak_Nm"] for p in peaks], "line"),
         ("ORNL", [p["current_A"] for p in peaks], [p["ornl_peak_Nm"] for p in peaks], "markers"),

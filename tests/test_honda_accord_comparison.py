@@ -11,6 +11,7 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parents[1]
 FOLDER = REPO_ROOT / "docs/hardware-validation/honda-accord-2005"
 EVIDENCE = FOLDER / "first-comparison"
+AS_WOUND = FOLDER / "real-winding-comparison"
 
 
 def read(path: Path):
@@ -85,3 +86,28 @@ def test_charts_regenerate_byte_for_byte(tmp_path):
     plot_honda_accord_comparison.main()
     for name in ("back-emf.svg", "locked-rotor-torque.svg"):
         assert (tmp_path / name).read_bytes() == (EVIDENCE / name).read_bytes()
+
+
+def test_as_wound_comparison_rebuilds_from_its_runs():
+    from tools.honda_accord_comparison import AS_WOUND_WINDING, CURRENTS_A, assemble
+
+    comparison = read(AS_WOUND / "comparison.json")
+    locked = read(AS_WOUND / "locked-rotor.json")
+    no_load = read(AS_WOUND / "no-load.json")
+    assert no_load["winding"] == comparison["winding"] == AS_WOUND_WINDING
+    assert {r["current_A"] for r in locked} == set(CURRENTS_A)
+    # ORNL's pattern straight onto the real tooth coils, on clean commits.
+    assert all(r["coilem_currents_per_Ia"] == [1.0, -0.5, -0.5] for r in locked)
+    assert not no_load["run"]["dirty"] and not any(r["run_dirty"] for r in locked)
+    assert assemble(no_load, locked, Path("/nonexistent-is-not-written"), write=False) == comparison
+    assert read(AS_WOUND / "zero-scan-100A.json")["zero_offset_elec_deg"] == 300.0
+
+
+def test_as_wound_charts_regenerate_byte_for_byte(tmp_path):
+    from tools import plot_honda_accord_comparison
+
+    (tmp_path / "comparison.json").write_bytes((AS_WOUND / "comparison.json").read_bytes())
+    plot_honda_accord_comparison.main.__globals__["sys"].argv = ["plot", str(tmp_path)]
+    plot_honda_accord_comparison.main()
+    for name in ("back-emf.svg", "locked-rotor-torque.svg"):
+        assert (tmp_path / name).read_bytes() == (AS_WOUND / name).read_bytes()

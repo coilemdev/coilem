@@ -3750,8 +3750,8 @@
     },
     {
       "path": "docs/hardware-validation/honda-accord-2005/README.md",
-      "bytes": 5734,
-      "sha256": "53dcaff1c3db0258394adcb8a2e24180fd0b822aa16e924d61b24b77082dc9e9"
+      "bytes": 6218,
+      "sha256": "35d1eaa006223350dfc9498f245663eacc78d5b3dc9de0b2bcd17fa1d587a3f3"
     },
     {
       "path": "docs/hardware-validation/honda-accord-2005/first-comparison/README.md",
@@ -3787,6 +3787,36 @@
       "path": "docs/hardware-validation/honda-accord-2005/input-provenance.json",
       "bytes": 2278,
       "sha256": "4485495d7f28a25209835a9ba867a7b963c70f43215f72d7da76577e7bd34612"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/real-winding-comparison/README.md",
+      "bytes": 4506,
+      "sha256": "83b5f2736e15d9ab4fe37224a1ef04dffe0b97e3b026e9cc1ba11635d5df2573"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/real-winding-comparison/back-emf.svg",
+      "bytes": 6367,
+      "sha256": "03c6bb0aa32199351c2519deaf2ebc86003b8ccc6b8196caa73f7757585529b7"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/real-winding-comparison/comparison.json",
+      "bytes": 11070,
+      "sha256": "b7eef67de3a988e2a07b26cf01b886045f442744a99fb7d1d0bb5b0c0b7e780a"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/real-winding-comparison/locked-rotor-torque.svg",
+      "bytes": 13272,
+      "sha256": "e3de49428ffcb6939feb12c0d634f123af65f7f1fe6f056c12f4b2fb2f3664e7"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/real-winding-comparison/locked-rotor.json",
+      "bytes": 47639,
+      "sha256": "e43c97970c2b268c8715e6901216f6d393db2ff76dd28c4dae76f57219accf26"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/real-winding-comparison/no-load.json",
+      "bytes": 14401,
+      "sha256": "3f46f7ba3bfb11311a28fedc8b89490ac6673529581d060c7a9d83788f832d7d"
     },
     {
       "path": "docs/hardware-validation/honda-accord-2005/real-winding-comparison/zero-scan-100A.json",
@@ -5140,8 +5170,8 @@
     },
     {
       "path": "tests/test_honda_accord_comparison.py",
-      "bytes": 4300,
-      "sha256": "00860c952c0928c4fe4b25392d5ced9cc3e25c5e384b7e7b2fed116959605c6f"
+      "bytes": 5674,
+      "sha256": "c81e3e5b94b5370dae97f7b2c52c91b6457c91f8cb02984452be656966bd1e8a"
     },
     {
       "path": "tests/test_honda_accord_request.py",
@@ -5410,8 +5440,8 @@
     },
     {
       "path": "tools/plot_honda_accord_comparison.py",
-      "bytes": 3642,
-      "sha256": "fd6056a3c428850afb3139ff939ba25b2368a754e5b8e430597eaf25cf209b25"
+      "bytes": 3843,
+      "sha256": "18628b78c29e19144b23b820bf5a57d9e49a255d3cfd8c2f20c3464cbab9e19e"
     },
     {
       "path": "tools/plot_ornl_prius_comparison.py",
@@ -7043,7 +7073,7 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B \u2212 Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B − Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
@@ -7073,13 +7103,13 @@
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45\u00b0 (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45° (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45\u00b0 over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45° over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "a482ff6e2bd9616d2ece2a68f8fa2f2c49aae45c",
@@ -7097,7 +7127,7 @@
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00b0 (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45° (#52 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
