@@ -346,7 +346,7 @@ def build(output, manifest, rows, *, pdf=False):
                 f'<tr class="{row["status"]}"><td><a href="{html.escape(link, quote=True)}">{html.escape(row["id"])}</a></td>'
                 f"<td>{display_outcome(row)}</td></tr>"
             )
-            markdown.extend(["", f"- [{row['id']}]({link}): **{display_outcome(row)}**"])
+            markdown.extend(["", f"- [{row['id']}]({link}): **{display_outcome(row)}**{energy_balance_text(row)}"])
             plan = coverage_plan(row)
             if plan:
                 markdown.extend(["", f"{plan['reason']} {plan['next_step']} Numerical status remains UNSUPPORTED; no comparison was performed."])
@@ -361,7 +361,7 @@ def build(output, manifest, rows, *, pdf=False):
                     "<p>Frozen inputs: "
                     + ", ".join(f'<a href="{html.escape(link, quote=True)}">{html.escape(stage)}</a>' for stage, link in row["fixture_files"].items())
                     + "</p>",
-                    f"<p>{html.escape(display_outcome(row))}</p>",
+                    f"<p>{html.escape(display_outcome(row))}{html.escape(energy_balance_text(row))}</p>",
                     (
                         f"<p>{html.escape(coverage_plan(row)['reason'])} {html.escape(coverage_plan(row)['next_step'])} "
                         "Numerical status: UNSUPPORTED; no comparison was performed.</p>"
@@ -406,6 +406,15 @@ def build(output, manifest, rows, *, pdf=False):
         {p.relative_to(report).as_posix(): sha(p) for p in sorted(report.rglob("*")) if p.is_file() and p.name != "artifact_manifest.json"},
     )
     return overall
+
+
+def energy_balance_text(row):
+    """Torque over 3*E*I*cos(gamma)/omega_m for coilEM and the reference; diagnostic, never a gate (#80)."""
+
+    balance = row.get("energy_balance") or {}
+    values = [(label, balance.get(key)) for label, key in (("coilEM", "candidate_ratio"), ("reference", "reference_ratio"))]
+    shown = [f"{label} {value:.3f}" for label, value in values if isinstance(value, (int, float))]
+    return f". Energy balance, torque / (3·E·I·cos γ / ω): {', '.join(shown)}" if shown else ""
 
 
 def gate_table(evaluation):

@@ -115,35 +115,23 @@ pub(crate) fn phase_currents_for_excitation(
 
 /// Convert public terminal currents to the homogenized slot-side source.
 ///
-/// Single-layer concentrated flux linkage uses the historical 0.5 slot-side
-/// turn normalization. The BLDC plateau is a terminal phase current, so its
-/// source uses the same normalization for electromechanical reciprocity.
-/// Legacy sinusoidal excitation remains unchanged.
+/// Every excitation mode drives each slot side with the terminal current, the
+/// same turns the flux-linkage extraction credits
+/// (`flux_linkage_slot_side_turn_factor`), so source and linkage stay
+/// reciprocal. Six-step concentrated single-layer windings used to halve this
+/// source to match a halved flux-linkage credit (#80).
 pub(crate) fn source_phase_currents_for_excitation(
     config: &MotorConfig,
     rotor_angle_rad: f64,
     current_amplitude_a: f64,
     source_current_angle_deg: f64,
 ) -> [f64; 3] {
-    let currents = phase_currents_for_excitation(
+    phase_currents_for_excitation(
         config,
         rotor_angle_rad,
         current_amplitude_a,
         source_current_angle_deg,
-    );
-    let scale = if config
-        .solve_params
-        .as_ref()
-        .map(|sp| sp.excitation_mode_label() == "ideal_six_step_120")
-        .unwrap_or(false)
-        && config.winding.winding_type == "concentrated"
-        && config.winding.layers == 1
-    {
-        0.5
-    } else {
-        1.0
-    };
-    currents.map(|current| current * scale)
+    )
 }
 
 pub fn compute_current_densities_from_phase_currents(
@@ -608,21 +596,19 @@ pub fn phase_slot_side_phasor_magnitudes(slot_count: u32, pole_count: u32) -> [f
     ]
 }
 
+/// Multiplier from slot-side turns to series turns per parallel branch.
+///
+/// The extraction sums `turns_per_coil * A_z` over every slot side, signed by
+/// direction, so each coil's linkage N * L * (A_go - A_return) is counted
+/// once for every winding type and layer count, matching the source
+/// J = turns_per_coil * I / A_slot. Concentrated single-layer windings used to
+/// be credited half the turns, halving their flux linkage and back-EMF (#80).
 pub fn flux_linkage_slot_side_turn_factor(
-    winding_type: &str,
-    layers: u32,
+    _winding_type: &str,
+    _layers: u32,
     parallel_paths: u32,
 ) -> f64 {
-    let slot_side_normalization = if winding_type == "concentrated" && layers == 1 {
-        // Single-layer FSCW configs are represented as slot sides.
-        // Back-EMF / flux linkage should use series turns per coil branch,
-        // not the raw sum over both sides of every turn.
-        0.5
-    } else {
-        1.0
-    };
-
-    slot_side_normalization / parallel_paths.max(1) as f64
+    1.0 / parallel_paths.max(1) as f64
 }
 
 pub(crate) fn slot_index_from_theta(
@@ -771,11 +757,12 @@ mod tests {
     }
 
     #[test]
-    fn six_step_terminal_current_uses_single_layer_slot_side_scale() {
+    fn six_step_terminal_current_drives_the_slot_source_unscaled() {
+        // Source and flux-linkage credit both use the full slot-side turns (#80).
         let config = six_step_config(0.0);
         let terminal = phase_currents_for_excitation(&config, 0.0, 10.0, 0.0);
         let source = source_phase_currents_for_excitation(&config, 0.0, 10.0, 0.0);
-        assert_eq!(source, terminal.map(|current| current * 0.5));
+        assert_eq!(source, terminal);
 
         let mut sine_config = config;
         sine_config.solve_params.as_mut().unwrap().excitation_mode = None;
@@ -1335,11 +1322,12 @@ mod tests {
     }
 
     #[test]
-    fn single_layer_fscw_flux_linkage_uses_half_slot_side_turns() {
-        assert!((flux_linkage_slot_side_turn_factor("concentrated", 1, 1) - 0.5).abs() < 1e-12);
+    fn flux_linkage_credits_full_slot_side_turns_per_path() {
+        // Every winding type and layer count: only parallel paths divide (#80).
+        assert!((flux_linkage_slot_side_turn_factor("concentrated", 1, 1) - 1.0).abs() < 1e-12);
         assert!((flux_linkage_slot_side_turn_factor("concentrated", 2, 1) - 1.0).abs() < 1e-12);
         assert!((flux_linkage_slot_side_turn_factor("distributed", 1, 1) - 1.0).abs() < 1e-12);
-        assert!((flux_linkage_slot_side_turn_factor("concentrated", 1, 2) - 0.25).abs() < 1e-12);
+        assert!((flux_linkage_slot_side_turn_factor("concentrated", 1, 2) - 0.5).abs() < 1e-12);
     }
 
     #[test]
@@ -1412,8 +1400,11 @@ mod tests {
             assert!((mag - expected).abs() < 1e-9);
         }
 
-        let effective_turns =
-            mags[0] * 18.0 * flux_linkage_slot_side_turn_factor("concentrated", 1, 1);
-        assert!((effective_turns - 104.3199892392194).abs() < 1e-9);
+        // Single-layer 36s30p: 6 coils of 18 turns per phase, kw = 0.966, so
+        // N_eff = 108 * kw = 104.32. As in the distributed test above, the
+        // slot-sum credit per (A_hat * L) is 2 * N_eff, because the flux per
+        // pole is 2 * A_hat * L (#80).
+        let credit = mags[0] * 18.0 * flux_linkage_slot_side_turn_factor("concentrated", 1, 1);
+        assert!((credit - 2.0 * 104.3199892392194).abs() < 1e-9);
     }
 }

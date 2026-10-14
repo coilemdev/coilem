@@ -160,8 +160,8 @@
     },
     {
       "path": "backend/excitation.py",
-      "bytes": 7897,
-      "sha256": "a6e200494865dfc4147615d7187760025605376752fb53661c040018776388c6"
+      "bytes": 7609,
+      "sha256": "1af5bfc451cf2995508ef980ce1a2a6492f651f230a679a71cb05daeb3709a29"
     },
     {
       "path": "backend/export_safety.py",
@@ -535,8 +535,8 @@
     },
     {
       "path": "backend/winding_utils.py",
-      "bytes": 15116,
-      "sha256": "bad70a57f91e9ea6074a39975b80e847e492f8d07a6738c5fe41ed5f430e690e"
+      "bytes": 15241,
+      "sha256": "676b0040a79b90e113e8a18fdeb70b3d2a7c53bd2dcf172a6fffc777fc8b2f1b"
     },
     {
       "path": "benchmarks/README.md",
@@ -3325,23 +3325,23 @@
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/input-provenance.json",
-      "sha256": "717340af98275adf20f418c95e00374b2ea2723b7a1d7ad5ec6f22c29c439986",
-      "bytes": 12708
+      "bytes": 12708,
+      "sha256": "717340af98275adf20f418c95e00374b2ea2723b7a1d7ad5ec6f22c29c439986"
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/rotor-pocket-measurements.json",
-      "sha256": "75415f09a4e98708e26de8c5b67cc809851739b34c11e54209f6f0bb2606b94d",
-      "bytes": 5597
+      "bytes": 5597,
+      "sha256": "75415f09a4e98708e26de8c5b67cc809851739b34c11e54209f6f0bb2606b94d"
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/source-audit.md",
-      "sha256": "35d3ffc6edba4f763cf6f172a699ee867abe7efba6eb13e3711d197f77f6380d",
-      "bytes": 19838
+      "bytes": 19838,
+      "sha256": "35d3ffc6edba4f763cf6f172a699ee867abe7efba6eb13e3711d197f77f6380d"
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/sources.json",
-      "sha256": "0e5f96d113ef8b20e56adc1d479789f8aea73b4720029f1370ba236f127c764c",
-      "bytes": 2477
+      "bytes": 2477,
+      "sha256": "0e5f96d113ef8b20e56adc1d479789f8aea73b4720029f1370ba236f127c764c"
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/stator-slot-mapping.json",
@@ -3350,13 +3350,13 @@
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/target-back-emf.json",
-      "sha256": "41db6bb847374c2ab6b8925f742c538bce12ce377fa00896d45f33c5d23c4aa6",
-      "bytes": 2804
+      "bytes": 2804,
+      "sha256": "41db6bb847374c2ab6b8925f742c538bce12ce377fa00896d45f33c5d23c4aa6"
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/target-locked-rotor.json",
-      "sha256": "d279e47f9f4bf14e2d615172479efe18fd02c5dda73f5cc2a7043158cf112bbd",
-      "bytes": 7200
+      "bytes": 7200,
+      "sha256": "d279e47f9f4bf14e2d615172479efe18fd02c5dda73f5cc2a7043158cf112bbd"
     },
     {
       "path": "docs/images/coilem-landing-page.png",
@@ -4350,8 +4350,8 @@
     },
     {
       "path": "solvers/magneto2d/src/postprocess/summary.rs",
-      "bytes": 67442,
-      "sha256": "f7ecbec16be20dc83399bea94a576e95cc018c1ba1b7ae61929b4bda521e1460"
+      "bytes": 70921,
+      "sha256": "130e7f50e2b35ae0649731a32248b5670e058e90e144a5e377fc13613a530b56"
     },
     {
       "path": "solvers/magneto2d/src/postprocess/tests.rs",
@@ -4450,8 +4450,8 @@
     },
     {
       "path": "solvers/magneto2d/src/sources.rs",
-      "bytes": 54377,
-      "sha256": "8c32aea119fc7cb08aad16ae2ecf3962a94255674bd2f80f0ebec19771ff5b50"
+      "bytes": 54549,
+      "sha256": "04aa500fea8eaaeeb05d3331ab35b4dc2a5513661b16f6fc406569b8d0f09fd9"
     },
     {
       "path": "solvers/magneto2d/src/sparse.rs",
@@ -4540,8 +4540,8 @@
     },
     {
       "path": "tests/test_benchmark_suite.py",
-      "bytes": 25442,
-      "sha256": "22f413ea06effb593a4d21baa027cdcd33421c3c1d6600264c531daf37e25b39"
+      "bytes": 26463,
+      "sha256": "5ce6684e29e3708c3c5fedbad50bc421301fe34eb3866d987b251cf86bd70cd8"
     },
     {
       "path": "tests/test_experimental_holem50.py",
@@ -4745,8 +4745,8 @@
     },
     {
       "path": "tools/benchmark_suite/cli.py",
-      "bytes": 17870,
-      "sha256": "12ba1ff247807434d4d4bef31aecf50a8aae973e1b5abe30bf449470f02cf9da"
+      "bytes": 18404,
+      "sha256": "0e13634b07c666b9d4baea3c7dc782d1927a7f70977c9d9b022c481842bea3c3"
     },
     {
       "path": "tools/benchmark_suite/contract.py",
@@ -4760,8 +4760,8 @@
     },
     {
       "path": "tools/benchmark_suite/metrics.py",
-      "bytes": 5240,
-      "sha256": "b978d23fe286940ae0d9b7f35534b1dbd6e95b2596b335ed22e84bc86ebf5543"
+      "bytes": 6462,
+      "sha256": "a3f501794e89ea01256edab3d75eab440df46fcafef37ccb1d4c7fb841b57c27"
     },
     {
       "path": "tools/benchmark_suite/references.py",
@@ -4770,8 +4770,8 @@
     },
     {
       "path": "tools/benchmark_suite/report.py",
-      "bytes": 27334,
-      "sha256": "f8d0f8ba30901df6aac578d9f7b3cd13e4ea1b9637d4945c51bcb6dcf2a98bf4"
+      "bytes": 27912,
+      "sha256": "85443eb626365d97c3a96274921a62cc82fa1bfcf6e092dc145d73fa84e3f9ee"
     },
     {
       "path": "tools/benchmark_suite/worker.py",
@@ -7138,6 +7138,54 @@
       "path": ".github/workflows/ci.yml",
       "source_sha256": "993d07eac9fef00eb213ef25d6f435dcf5c8bb65a8f78e6af34a16bd5116e320",
       "reason": "Pin the Ubuntu CI jobs to ubuntu-24.04 before ubuntu-latest moves to Ubuntu 26 on 2026-10-19 (#79)."
+    },
+    {
+      "base_commit": "f3d98899f98f9fd432520166585a03bfe179cd7a",
+      "path": "backend/excitation.py",
+      "source_sha256": "a6e200494865dfc4147615d7187760025605376752fb53661c040018776388c6",
+      "reason": "Drive six-step slot sources with the terminal current, reciprocal with the full flux-linkage credit (#80)."
+    },
+    {
+      "base_commit": "f3d98899f98f9fd432520166585a03bfe179cd7a",
+      "path": "backend/winding_utils.py",
+      "source_sha256": "bad70a57f91e9ea6074a39975b80e847e492f8d07a6738c5fe41ed5f430e690e",
+      "reason": "Credit the full slot-side turns per path for every winding; concentrated single-layer flux linkage was halved (#80)."
+    },
+    {
+      "base_commit": "f3d98899f98f9fd432520166585a03bfe179cd7a",
+      "path": "solvers/magneto2d/src/sources.rs",
+      "source_sha256": "8c32aea119fc7cb08aad16ae2ecf3962a94255674bd2f80f0ebec19771ff5b50",
+      "reason": "Credit the full slot-side turns per path and drop the six-step source halving, with tests (#80)."
+    },
+    {
+      "base_commit": "1ea9e406818b9ceafe5408e9c16acd33e9c439b0",
+      "path": "solvers/magneto2d/src/postprocess/summary.rs",
+      "source_sha256": "f7ecbec16be20dc83399bea94a576e95cc018c1ba1b7ae61929b4bda521e1460",
+      "reason": "Test that flux linkage is reciprocal with the slot current source for every winding type and layer count (#80)."
+    },
+    {
+      "base_commit": "a46e5001f86a0bc361e011896ee695776360b24a",
+      "path": "tests/test_benchmark_suite.py",
+      "source_sha256": "22f413ea06effb593a4d21baa027cdcd33421c3c1d6600264c531daf37e25b39",
+      "reason": "Test that the energy-balance diagnostic flags the halved flux-linkage credit in the v1.1 record (#80)."
+    },
+    {
+      "base_commit": "a46e5001f86a0bc361e011896ee695776360b24a",
+      "path": "tools/benchmark_suite/cli.py",
+      "source_sha256": "0a7c22759b25674f4e6626b2237722fbdbeb17aec4f776691efd6b858ba967e5",
+      "reason": "Attach the energy-balance diagnostic to each A/B/C row, outside the recorded evaluation (#80)."
+    },
+    {
+      "base_commit": "a46e5001f86a0bc361e011896ee695776360b24a",
+      "path": "tools/benchmark_suite/metrics.py",
+      "source_sha256": "b978d23fe286940ae0d9b7f35534b1dbd6e95b2596b335ed22e84bc86ebf5543",
+      "reason": "Add the energy-balance diagnostic: torque over 3*E*I*cos(gamma)/omega_m from the case's own results (#80)."
+    },
+    {
+      "base_commit": "a46e5001f86a0bc361e011896ee695776360b24a",
+      "path": "tools/benchmark_suite/report.py",
+      "source_sha256": "b824617f4bd29a0d455a4063a07989f17f68cb0a90aa3d49734465d8ec93e5bc",
+      "reason": "Show the energy-balance diagnostic for coilEM and the reference in the benchmark report (#80)."
     }
   ]
 }
