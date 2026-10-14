@@ -1259,6 +1259,9 @@ export function PublicMotor3D({
         magnetsGroup.add(magnetUnit);
         registerRadialExplosion(magnetUnit, pole * polePitch, rotorRadius * 0.14);
       }
+    } else if (config.rotor.ipm_topology === 'pyleecan_holem50') {
+      // Experimental HoleM50 pockets have no parametric 3D model; the 2D
+      // cross-section shows the solved geometry. The rotor core still renders.
     } else if (config.rotor.ipm_topology === 'v_shape') {
       const magnetDepth = Math.max(1, config.rotor.magnet_thickness_mm);
       const magnetAxialDepth = stackDepth * 0.92;

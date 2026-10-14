@@ -400,8 +400,8 @@
     },
     {
       "path": "backend/public_main.py",
-      "bytes": 9455,
-      "sha256": "33b47e934dc5865198c3ee673dd45b4723a5e1cd1f589233c824759b3823c6d1"
+      "bytes": 9785,
+      "sha256": "869b960f7e5b0282f0151a5d18e5ea7af519526672e09a5ea7d79e3f6e628aa0"
     },
     {
       "path": "backend/public_material_catalog.py",
@@ -410,8 +410,8 @@
     },
     {
       "path": "backend/public_policy.py",
-      "bytes": 11621,
-      "sha256": "a2ec20f5817fa667f7f33482dd3303b610d6c23a518ebf5ebebdcaf120692a51"
+      "bytes": 12038,
+      "sha256": "88ef6fd4e551ce3a1ae0eb22bdc4ce84e3919c487fd663ba52df3025d0cc9374"
     },
     {
       "path": "backend/public_report.py",
@@ -460,8 +460,8 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 5027,
-      "sha256": "a88792ed792405de022197cb43a22e82b6d8cb6a999bf325e949bd433456e279"
+      "bytes": 5421,
+      "sha256": "9a4d278e8e7b7a44c087d052ae1aa5705b597d1498effd31111145acb0c14625"
     },
     {
       "path": "backend/resources.py",
@@ -3250,8 +3250,8 @@
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
-      "bytes": 10183,
-      "sha256": "62210e9ff878bf643eac4ad39055374af65ec10a1624035b9fddde776924b690"
+      "bytes": 10419,
+      "sha256": "884e0ac399db75a0b24ddae940cd788c0ecbcd213426faf45e0f6ec2bc205d50"
     },
     {
       "path": "docs/RELEASING.md",
@@ -3260,8 +3260,8 @@
     },
     {
       "path": "docs/RUNTIME_SETTINGS.md",
-      "bytes": 9072,
-      "sha256": "c128b54cbf1083cb2861b416333e67f6f09283f3e49bef6f25e056b26751447c"
+      "bytes": 9286,
+      "sha256": "80a13340dfcc798097abb26134949b7f630e6934d42d9ef0531a620fb94e3d50"
     },
     {
       "path": "docs/VALIDATION.md",
@@ -3430,8 +3430,8 @@
     },
     {
       "path": "frontend/scripts/test-design-file-defaults.mjs",
-      "bytes": 3729,
-      "sha256": "04af6648d5d0edf780cf74b3a09390a41f8576e35b837302aa4c83aaa54c31be"
+      "bytes": 4779,
+      "sha256": "b03a28241f360dfe64756fba073929a80aafc1d96182377403a00f7350c51b65"
     },
     {
       "path": "frontend/scripts/test-field-playback-timing.mjs",
@@ -3475,8 +3475,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 105598,
-      "sha256": "242944ed2edd3159b49b30649934541c02da2e0dee41eaa5e6cb90613501dc0e"
+      "bytes": 105618,
+      "sha256": "cd83787ea0c3b00e76ef72f726781d12151a1a2c07bcfbc502f291a68cd8b501"
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
@@ -3855,8 +3855,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 67195,
-      "sha256": "f84c2ff65f3ce25ed1e11db71c3da1e3c61ce0bb3a2be1920619cc1a74fd7a07"
+      "bytes": 68815,
+      "sha256": "804a77667a747da0824656a5caa9d4ecc1ea004fe1d0bd56cc1fb62a2ed237f0"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -3865,8 +3865,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 178718,
-      "sha256": "41002d08e80b42ac558f9357eb977d16ed8732383b0030c67b7f70a82be5eca7"
+      "bytes": 180355,
+      "sha256": "36a935fe16270b7ad27a7e627003c039c2b964d0b870fbd15c05c6ad782fd423"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -3900,8 +3900,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 78731,
-      "sha256": "72b019b0acf6fd01c9ad99ff0f792e16e6b4922dd7a2be8a1023f6b3f33bd18c"
+      "bytes": 78952,
+      "sha256": "ffa5bef5e34217998edf2d8117c6463569ee4076e919757b714d9d65a33facab"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
@@ -3975,8 +3975,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "bytes": 10984,
-      "sha256": "605683d55a4c753dfa130159b2d923ad99a30b8cf700d107af4b688f498c701a"
+      "bytes": 11441,
+      "sha256": "e4fa94560257411f3a9a9eb4979dc28ba696d5def02df32e8089d664c9da67bc"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -3985,8 +3985,13 @@
     },
     {
       "path": "frontend/src/public/exampleDesigns.ts",
-      "bytes": 1685,
-      "sha256": "76e48914382200534d2177f174625cfa9d2984a18ebd78ba13b5df82091efd17"
+      "bytes": 2348,
+      "sha256": "8ccd3c618ba4cf2a993089fc0fe03ba92e9265413c7779fafc776394e36be2f2"
+    },
+    {
+      "path": "frontend/src/public/examples/ornl_prius_2004_holem50.coilem",
+      "bytes": 3030,
+      "sha256": "385245790bea2051c4347f2939636ede14e93b063402a8ad91fb58f658d2bd74"
     },
     {
       "path": "frontend/src/public/examples/validation_ipm_10p_v_shape_medium.openem",
@@ -4040,8 +4045,8 @@
     },
     {
       "path": "frontend/src/public/guidedConfigRepair.ts",
-      "bytes": 10140,
-      "sha256": "5e849143ae9c6e6ba9a92f061a320bab2b919737ec507d7066a30dc4c8720677"
+      "bytes": 10428,
+      "sha256": "591f72a1ac4f37f3a1b68983fcc5e4f13302a2b8d7346c4016b3310c1f9f6022"
     },
     {
       "path": "frontend/src/public/halbach/Halbach2DViewport.tsx",
@@ -4125,8 +4130,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 17562,
-      "sha256": "6a519d018baeee7ef05d1c0fbc57263a5b2eb0a749e1cb42d89244d22a2c82ff"
+      "bytes": 18282,
+      "sha256": "ec40320cf45fbeaca78a7e3590f6ba3c47a1a816219cf314e4daa601da8158bd"
     },
     {
       "path": "frontend/src/public/motorAirgap.ts",
@@ -4547,6 +4552,11 @@
       "path": "tests/test_experimental_holem50.py",
       "bytes": 9328,
       "sha256": "f149dbadaf501a9e9d7d44f91c708dde43e4b2b3cfaf643cf6a37004ff0f0cf2"
+    },
+    {
+      "path": "tests/test_experimental_rotor_switch.py",
+      "bytes": 3508,
+      "sha256": "6c9b0504dfca472880ae6d2b409963ae870087e96ecc6fe0958c9f9b19ea2733"
     },
     {
       "path": "tests/test_halbach_api.py",

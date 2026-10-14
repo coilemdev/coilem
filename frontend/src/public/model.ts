@@ -2,7 +2,15 @@ import type { AirgapBrBtProfile } from '../components/tutorials/lessonSolveTypes
 import type { CustomSteel } from './customSteel';
 
 export type Topology = 'SPM' | 'IPM';
-export type IpMTopology = 'flat_buried' | 'v_shape';
+export type IpMTopology = 'flat_buried' | 'v_shape' | 'pyleecan_holem50';
+// Experimental rotor families: accepted only when the local app was started with
+// COILEM_EXPERIMENTAL_ROTORS=1. Not public support and no qualification claim.
+export const EXPERIMENTAL_IPM_TOPOLOGIES: ReadonlySet<IpMTopology> = new Set(['pyleecan_holem50']);
+export const HOLEM50_FIELDS = [
+  'holem50_w0_mm', 'holem50_w1_mm', 'holem50_w2_mm', 'holem50_w3_mm', 'holem50_w4_mm',
+  'holem50_h0_mm', 'holem50_h1_mm', 'holem50_h2_mm', 'holem50_h3_mm', 'holem50_h4_mm',
+] as const;
+export type HoleM50Field = typeof HOLEM50_FIELDS[number];
 export type SolveQuality = 'quick' | 'standard' | 'fine' | 'custom';
 export type MeshDensity = 'coarse' | 'normal' | 'fine' | 'very_fine';
 
@@ -19,6 +27,12 @@ export function applyPublicSolverSettings(config: MotorConfig): MotorConfig {
   };
 }
 export type PublicSolverId = 'magneto2d' | 'elmer';
+
+export interface PublicExperimentalRotorCapability {
+  enabled: boolean;
+  families: IpMTopology[];
+  switch: string;
+}
 
 export interface PublicElmerCapability {
   feature_enabled: boolean;
@@ -84,7 +98,7 @@ export interface MotorConfig {
     v_depth_mm: number;
     inner_web_thickness_mm: number;
     outer_bridge_thickness_mm: number;
-  };
+  } & Partial<Record<HoleM50Field, number>>;
   winding: {
     type: 'concentrated' | 'distributed';
     turns_per_coil: number;

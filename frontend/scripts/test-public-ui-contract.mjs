@@ -328,7 +328,7 @@ assert.match(apiSource, /export function deletePublicRun/);
 assert.match(apiSource, /confirm_run_id: runId/);
 assert.match(styleSource, /\.public-run-storage-meter/);
 assert.match(workspaceSource, /aria-label="Example designs"/);
-assert.match(workspaceSource, /PUBLIC_EXAMPLE_OPTIONS\.map/);
+assert.match(workspaceSource, /publicExampleOptions\(experimentalRotors\)\.map/);
 assert.match(workspaceSource, /public-project-submenu-trigger/);
 assert.match(workspaceSource, />Motor examples</);
 assert.match(workspaceSource, />Field examples</);

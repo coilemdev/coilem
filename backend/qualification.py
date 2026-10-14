@@ -14,6 +14,7 @@ from fractions import Fraction
 from typing import Literal, TypedDict
 
 from backend.models import MotorConfig
+from backend.public_policy import EXPERIMENTAL_IPM_TOPOLOGIES, experimental_rotors_enabled
 
 QualificationStatus = Literal["qualified", "experimental", "unsupported"]
 
@@ -69,6 +70,11 @@ def _combination(config: MotorConfig) -> tuple[QualificationStatus, str]:
     if config.topology == "IPM":
         if six_step:
             return "unsupported", "Ideal six-step excitation is available for SPM only."
+        if rotor.ipm_topology in EXPERIMENTAL_IPM_TOPOLOGIES and experimental_rotors_enabled():
+            return (
+                "experimental",
+                "HoleM50 rotor (ORNL 2004 Prius): an experimental rotor path with no benchmark qualification; its FEMM parity is pending.",
+            )
         if rotor.ipm_topology not in (_QUALIFIED_IPM, _EXPERIMENTAL_IPM):
             return "unsupported", "Only flat-buried and V-shape IPM rotors are supported in this preview."
         if winding.type == "distributed":

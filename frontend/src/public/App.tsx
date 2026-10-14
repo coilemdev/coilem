@@ -67,6 +67,7 @@ import {
   type PublicFieldFrameDescriptor,
   type PublicMotorComponentKind,
   type PublicElmerCapability,
+  type PublicExperimentalRotorCapability,
   type PublicSavedRun,
   type PublicSolverId,
   type SolveResult,
@@ -125,6 +126,29 @@ function sameElmerCapability(
     && current.solver_version === next.solver_version
     && current.grid_version === next.grid_version
     && current.reason === next.reason;
+}
+
+const EXPERIMENTAL_ROTORS_OFF: PublicExperimentalRotorCapability = {
+  enabled: false,
+  families: [],
+  switch: 'COILEM_EXPERIMENTAL_ROTORS',
+};
+
+function experimentalRotorsFromHealth(health: PublicJson): PublicExperimentalRotorCapability {
+  const capabilities = health.capabilities;
+  const payload = capabilities && typeof capabilities === 'object'
+    ? (capabilities as PublicJson).experimental_rotors
+    : null;
+  if (!payload || typeof payload !== 'object') return EXPERIMENTAL_ROTORS_OFF;
+  const data = payload as PublicJson;
+  const enabled = data.enabled === true;
+  return {
+    enabled,
+    families: enabled && Array.isArray(data.families)
+      ? data.families.filter((family): family is 'pyleecan_holem50' => family === 'pyleecan_holem50')
+      : [],
+    switch: typeof data.switch === 'string' ? data.switch : EXPERIMENTAL_ROTORS_OFF.switch,
+  };
 }
 
 function elmerCapabilityFromHealth(health: PublicJson): PublicElmerCapability {
@@ -360,6 +384,7 @@ function editableValue(config: MotorConfig, section: PublicEditableSection, fiel
 
 function formatEditValue(field: string, value: unknown): string {
   if (field === 'ipm_topology' && typeof value === 'string') {
+    if (value === 'pyleecan_holem50') return 'HoleM50 (experimental)';
     return value === 'v_shape' ? 'V-shape' : 'Flat / buried';
   }
   if (field === 'magnet_embrace' && typeof value === 'number') {
@@ -422,7 +447,7 @@ function describeDesignEdit(
 }
 
 const GUIDED_IPM_LAYOUT_PRESETS: Record<
-  MotorConfig['rotor']['ipm_topology'],
+  'flat_buried' | 'v_shape',
   Partial<MotorConfig['rotor']>
 > = {
   flat_buried: {
@@ -500,6 +525,7 @@ export function App() {
   const [connectionStatus, setConnectionStatus] = useState<PublicConnectionStatus>('checking');
   const [selectedSolver, setSelectedSolver] = useState<PublicSolverId>('magneto2d');
   const [elmerCapability, setElmerCapability] = useState<PublicElmerCapability>(ELMER_CHECKING);
+  const [experimentalRotors, setExperimentalRotors] = useState<PublicExperimentalRotorCapability>(EXPERIMENTAL_ROTORS_OFF);
   const [geometryStale, setGeometryStale] = useState(true);
   const [previewNetworkFailed, setPreviewNetworkFailed] = useState(false);
   const [backendRecovery, setBackendRecovery] = useState(0);
@@ -969,11 +995,18 @@ export function App() {
         setElmerCapability((current) => (
           sameElmerCapability(current, nextElmerCapability) ? current : nextElmerCapability
         ));
+        const nextExperimentalRotors = experimentalRotorsFromHealth(health);
+        setExperimentalRotors((current) => (
+          current.enabled === nextExperimentalRotors.enabled && current.switch === nextExperimentalRotors.switch
+            ? current
+            : nextExperimentalRotors
+        ));
         refreshMaterials();
       },
       onOffline: () => {
         setConnectionStatus('offline');
         setElmerCapability(ELMER_API_UNAVAILABLE);
+        setExperimentalRotors(EXPERIMENTAL_ROTORS_OFF);
       },
       onReconnect: () => setBackendRecovery((current) => current + 1),
     });
@@ -1542,6 +1575,7 @@ export function App() {
           onLoadExample={loadExampleDesign}
           onOpenHalbach={() => setShowHalbachWorkspace(true)}
           onNewDesign={startNewDesign}
+          experimentalRotors={experimentalRotors.enabled}
           tutorialCatalog={tutorialsView === 'catalog'}
           tutorialProgress={tutorialsView === 'lesson-1'
             ? tutorialHeaderProgress?.lessonNumber === 1
@@ -1638,6 +1672,7 @@ export function App() {
           onLoadExample={loadExampleDesign}
           onOpenHalbach={() => setShowHalbachWorkspace(true)}
           onNewDesign={startNewDesign}
+          experimentalRotors={experimentalRotors.enabled}
           workflowDisabled
         />
         <PublicLanding
@@ -1672,6 +1707,7 @@ export function App() {
       connectionStatus={connectionStatus}
       selectedSolver={selectedSolver}
       elmerCapability={elmerCapability}
+      experimentalRotors={experimentalRotors}
       geometryStale={geometryStale}
       error={error}
       errorDetails={errorDetails}

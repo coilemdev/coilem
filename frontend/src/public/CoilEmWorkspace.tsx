@@ -41,7 +41,7 @@ import { SolvedFieldViewer } from './SolvedFieldViewer';
 import { WaveformChart } from './WaveformChart';
 import { BldcTorqueCurrentChart } from './BldcTorqueCurrentChart';
 import { PublicRunComparison } from './PublicRunComparison';
-import { PUBLIC_EXAMPLE_OPTIONS, type PublicExampleId } from './exampleDesigns';
+import { publicExampleOptions, type PublicExampleId } from './exampleDesigns';
 import {
   magneticAirgapMm,
   PUBLIC_AIRGAP_LAUNCH_MIN_MM,
@@ -55,6 +55,7 @@ import type {
   MotorConfig,
   PublicArmatureFieldComposition,
   PublicElmerCapability,
+  PublicExperimentalRotorCapability,
   PublicMotorComponentKind,
   PublicMotorComponentSelection,
   PublicQualification,
@@ -63,6 +64,7 @@ import type {
   SolveResult,
   SolveValidation,
 } from './model';
+import { HOLEM50_FIELDS } from './model';
 import type { PublicRunExportKind } from './api';
 import type { PublicSolveProgress } from './api';
 import { LessonProgressStepper } from '../components/tutorials/LessonProgressStepper';
@@ -116,6 +118,7 @@ interface CoilEmWorkspaceProps {
   connectionStatus: PublicConnectionStatus;
   selectedSolver: PublicSolverId;
   elmerCapability: PublicElmerCapability;
+  experimentalRotors?: PublicExperimentalRotorCapability;
   geometryStale: boolean;
   error: string | null;
   errorDetails?: PublicApiError | null;
@@ -384,6 +387,7 @@ export function CoilEmTopBar({
   onLoadExample,
   onOpenHalbach,
   onNewDesign,
+  experimentalRotors = false,
   workflowDisabled = false,
   tutorialProgress = null,
   tutorialCatalog = false,
@@ -401,6 +405,7 @@ export function CoilEmTopBar({
   onLoadExample?: (exampleId: PublicExampleId) => void;
   onOpenHalbach?: () => void;
   onNewDesign?: () => void;
+  experimentalRotors?: boolean;
   workflowDisabled?: boolean;
   tutorialProgress?: LearningLessonHeaderProgress | null;
   tutorialCatalog?: boolean;
@@ -524,7 +529,7 @@ export function CoilEmTopBar({
                 {examplesMenuOpen && (
                   <div className="public-project-examples-menu" role="menu" aria-label="Example designs">
                     <span className="public-project-example-group-label" role="presentation">Motor examples</span>
-                    {PUBLIC_EXAMPLE_OPTIONS.map((example) => (
+                    {publicExampleOptions(experimentalRotors).map((example) => (
                       <button
                         type="button"
                         role="menuitem"
@@ -916,8 +921,8 @@ function ParameterSectionBlock({
   );
 }
 
-function ParameterPanel({ config, materials, geometry, geometryStale, busy, error, notice, blankDesign = false, guidedActive, guidedDesignSection, selectedComponent, onTopologyChange, onSectionChange, onDesignSectionVisit, onConvertProjectSteelToM350, onImportSteel, onReset, onRefreshGeometry, onNext, onClearComponent }: Pick<CoilEmWorkspaceProps,
-  'config' | 'materials' | 'geometry' | 'geometryStale' | 'busy' | 'error' | 'notice' | 'blankDesign' | 'onTopologyChange' | 'onSectionChange' | 'onDesignSectionVisit' | 'onConvertProjectSteelToM350' | 'onImportSteel' | 'onReset' | 'onRefreshGeometry'
+function ParameterPanel({ config, materials, geometry, geometryStale, busy, error, notice, blankDesign = false, guidedActive, guidedDesignSection, selectedComponent, experimentalRotors, onTopologyChange, onSectionChange, onDesignSectionVisit, onConvertProjectSteelToM350, onImportSteel, onReset, onRefreshGeometry, onNext, onClearComponent }: Pick<CoilEmWorkspaceProps,
+  'config' | 'materials' | 'geometry' | 'geometryStale' | 'busy' | 'error' | 'notice' | 'blankDesign' | 'experimentalRotors' | 'onTopologyChange' | 'onSectionChange' | 'onDesignSectionVisit' | 'onConvertProjectSteelToM350' | 'onImportSteel' | 'onReset' | 'onRefreshGeometry'
 > & {
   guidedActive?: boolean;
   guidedDesignSection?: PublicParameterSection | null;
@@ -1144,7 +1149,16 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
                   </button>
                 ))}
               </div>
-              <p className="ipm-layout-note">Fine-tune V-angle and depth later in Advanced Geometry.</p>
+              {config.rotor.ipm_topology === 'pyleecan_holem50' ? (
+                <p className="ipm-layout-note ipm-experimental-note" role="note">
+                  <strong>HoleM50 (experimental). </strong>
+                  {experimentalRotors?.enabled
+                    ? 'An experimental rotor path: not public support, and results carry no qualification claim. Pick a layout above to switch to a public rotor.'
+                    : `This rotor needs coilEM started with ${experimentalRotors?.switch ?? 'COILEM_EXPERIMENTAL_ROTORS'}=1 to preview and solve.`}
+                </p>
+              ) : (
+                <p className="ipm-layout-note">Fine-tune V-angle and depth later in Advanced Geometry.</p>
+              )}
             </div>
           )}
         </div>}
@@ -1161,8 +1175,19 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         <NumberRow label="Pole Count" value={config.rotor.pole_count} min={2} max={32} step={2} disabled={disabled} onChange={set('rotor', 'pole_count', 'rotor')} />
         <NumberRow label="Rotor OD" value={config.rotor.OD_mm} unit="mm" min={15} step={1} disabled={disabled} onChange={set('rotor', 'OD_mm', 'rotor')} />
         <div className="param-row public-param-row public-derived-row"><span className="param-label">Air Gap<small>mm</small></span><strong>{airgap.toFixed(2)}</strong></div>
-        <NumberRow label="Magnet Thick." value={config.rotor.magnet_thickness_mm} unit="mm" min={2} step={0.5} disabled={disabled} onChange={set('rotor', 'magnet_thickness_mm', 'rotor')} />
-        <NumberRow label="Magnet Width" value={config.rotor.magnet_width_mm} unit="mm" min={1} step={0.1} disabled={disabled} onChange={set('rotor', 'magnet_width_mm', 'rotor')} />
+        {config.topology === 'IPM' && config.rotor.ipm_topology === 'pyleecan_holem50' ? (
+          HOLEM50_FIELDS.map((field) => (
+            <div className="param-row public-param-row public-derived-row" key={field}>
+              <span className="param-label">HoleM50 {field.slice(8, 10).toUpperCase()}<small>mm</small></span>
+              <strong>{typeof config.rotor[field] === 'number' ? config.rotor[field]?.toFixed(2) : '—'}</strong>
+            </div>
+          ))
+        ) : (
+          <>
+            <NumberRow label="Magnet Thick." value={config.rotor.magnet_thickness_mm} unit="mm" min={2} step={0.5} disabled={disabled} onChange={set('rotor', 'magnet_thickness_mm', 'rotor')} />
+            <NumberRow label="Magnet Width" value={config.rotor.magnet_width_mm} unit="mm" min={1} step={0.1} disabled={disabled} onChange={set('rotor', 'magnet_width_mm', 'rotor')} />
+          </>
+        )}
         {config.topology === 'IPM' && config.rotor.ipm_topology === 'flat_buried' && (
           <NumberRow
             label="Outer Bridge"
@@ -1176,7 +1201,9 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
             onChange={set('rotor', 'bridge_thickness_mm', 'rotor')}
           />
         )}
-        <div className="param-row public-param-row public-derived-row"><span className="param-label">Coverage<small>%</small></span><strong>{coverage}</strong></div>
+        {config.rotor.ipm_topology !== 'pyleecan_holem50' && (
+          <div className="param-row public-param-row public-derived-row"><span className="param-label">Coverage<small>%</small></span><strong>{coverage}</strong></div>
+        )}
         <SelectRow label="Magnet Grade" value={config.materials.magnet_grade} choices={materials.magnet_grades.map((value) => ({ value, label: value }))} disabled={disabled} onChange={set('materials', 'magnet_grade', 'rotor')} />
       </ParameterSectionBlock>}
 
@@ -3375,6 +3402,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
         onLoadExample={props.onLoadExample}
         onOpenHalbach={props.onOpenHalbach}
         onNewDesign={props.onNewDesign}
+        experimentalRotors={props.experimentalRotors?.enabled ?? false}
         runHistoryOpen={runHistoryOpen}
         onRunHistoryOpenChange={setRunHistoryOpen}
       />
@@ -3385,6 +3413,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
               <div className="design-workspace-main">
                 <ParameterPanel
                   config={props.config}
+                  experimentalRotors={props.experimentalRotors}
                   materials={props.materials}
                   geometry={props.geometry}
                   geometryStale={props.geometryStale}

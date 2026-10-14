@@ -73,6 +73,11 @@ export function repairGuidedSection(
   config: MotorConfig,
   section: PublicParameterSection,
 ): GuidedConfigRepair {
+  // Experimental HoleM50 rotors carry their own pocket geometry; the flat and
+  // V-shape repairs below would rewrite it, so leave such designs untouched.
+  if (config.topology === 'IPM' && config.rotor.ipm_topology === 'pyleecan_holem50') {
+    return { config, adjustments: [] };
+  }
   const next = structuredClone(config);
   const adjustments: GuidedConfigAdjustment[] = [];
 
