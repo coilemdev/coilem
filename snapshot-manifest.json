@@ -210,8 +210,8 @@
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 73324,
-      "sha256": "e3796787573275abbf5954bb3926086266bdad63c753bf4ae7203b53d33fe9e8"
+      "bytes": 74315,
+      "sha256": "c010d58e9652244130f52e2b6e249d56700a62dba408bd7204ac29445ce97cfa"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -230,8 +230,8 @@
     },
     {
       "path": "backend/halbach/gmsh_adapter.py",
-      "bytes": 27851,
-      "sha256": "50186517357c9a64f9c1d8d74008770094f7a1125eff33cdd23de0085d801690"
+      "bytes": 27755,
+      "sha256": "fa07601465c8999e378d03d99dcbee19424dfec9e7bdd41a97494ba3c585af85"
     },
     {
       "path": "backend/halbach/linear_geometry.py",
@@ -240,8 +240,8 @@
     },
     {
       "path": "backend/halbach/linear_gmsh_adapter.py",
-      "bytes": 27163,
-      "sha256": "5383dc45c7dc06ff3f358300f2c846f46b08b19a56f11a065a12f34a4536859d"
+      "bytes": 27067,
+      "sha256": "178b133772d1a81584ce1780abd4641da57a8c679d30defede57f9f40e8409a8"
     },
     {
       "path": "backend/halbach/linear_models.py",
@@ -530,8 +530,8 @@
     },
     {
       "path": "backend/tutorial_fields.py",
-      "bytes": 134073,
-      "sha256": "1d4c09cbede78fb8148994436dcbc87ce23fd87b244d41085ff2ed24aafe74d3"
+      "bytes": 133506,
+      "sha256": "32d109b4e6e53ba078e9b7ee2ad4c7509e31881bf0ddd1cb0f35ec3f9f9b627c"
     },
     {
       "path": "backend/winding_utils.py",
@@ -4477,6 +4477,11 @@
       "path": "tests/test_benchmark_suite.py",
       "bytes": 25442,
       "sha256": "22f413ea06effb593a4d21baa027cdcd33421c3c1d6600264c531daf37e25b39"
+    },
+    {
+      "path": "tests/test_gmsh_sigpipe.py",
+      "bytes": 2226,
+      "sha256": "dc6047fb2b7381a610ba7b9ff5011b6a39574bc60aaefa3074400726a558819e"
     },
     {
       "path": "tests/test_halbach_api.py",
