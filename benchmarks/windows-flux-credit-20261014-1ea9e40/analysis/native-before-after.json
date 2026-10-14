@@ -1,0 +1,755 @@
+{
+  "schema": "coilem.native_before_after/v1",
+  "current_commit": "1ea9e406818b9ceafe5408e9c16acd33e9c439b0",
+  "previous_commit": "04f87a5013415997cdef96a9bfa35125ce625bc5",
+  "previous_report_sha256": "4e405c1bc4183deffbd77d25d445901ed4b98d10d36d1276c70ffea27ba5f395",
+  "same_registered_configs": true,
+  "rows": [
+    {
+      "case_id": "spm_4p12s_simple__baseline",
+      "phase": "A",
+      "expected_voltage_credit_factor": 2,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 2.0,
+      "lambda_ratio": 2.0,
+      "Ke_ratio": 2.0,
+      "all_changed_common_numeric_summary_fields": {
+        "Ke_Vs_per_rad_mech": {
+          "previous": 0.01122529537663341,
+          "current": 0.02245059075326682,
+          "signed_delta": 0.01122529537663341
+        },
+        "back_emf_fundamental_V": {
+          "previous": 2.4936336652316284,
+          "current": 4.987267330463257,
+          "signed_delta": 2.4936336652316284
+        },
+        "lambda_pm_Wb": {
+          "previous": 0.005612647688316705,
+          "current": 0.01122529537663341,
+          "signed_delta": 0.005612647688316705
+        }
+      }
+    },
+    {
+      "case_id": "spm_4p12s_simple__high_current",
+      "phase": "A",
+      "expected_voltage_credit_factor": 2,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 2.0,
+      "lambda_ratio": 2.0,
+      "Ke_ratio": 2.0,
+      "all_changed_common_numeric_summary_fields": {
+        "Ke_Vs_per_rad_mech": {
+          "previous": 0.01122529537663341,
+          "current": 0.02245059075326682,
+          "signed_delta": 0.01122529537663341
+        },
+        "back_emf_fundamental_V": {
+          "previous": 2.4936336652316284,
+          "current": 4.987267330463257,
+          "signed_delta": 2.4936336652316284
+        },
+        "lambda_pm_Wb": {
+          "previous": 0.005612647688316705,
+          "current": 0.01122529537663341,
+          "signed_delta": 0.005612647688316705
+        }
+      }
+    },
+    {
+      "case_id": "spm_4p12s_simple__tight_airgap",
+      "phase": "A",
+      "expected_voltage_credit_factor": 2,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 2.0,
+      "lambda_ratio": 2.0,
+      "Ke_ratio": 2.0,
+      "all_changed_common_numeric_summary_fields": {
+        "Ke_Vs_per_rad_mech": {
+          "previous": 0.013683767023734741,
+          "current": 0.027367534047469482,
+          "signed_delta": 0.013683767023734741
+        },
+        "back_emf_fundamental_V": {
+          "previous": 3.0397687519742584,
+          "current": 6.079537503948517,
+          "signed_delta": 3.0397687519742584
+        },
+        "lambda_pm_Wb": {
+          "previous": 0.0068418835118673705,
+          "current": 0.013683767023734741,
+          "signed_delta": 0.0068418835118673705
+        }
+      }
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__baseline",
+      "phase": "A",
+      "expected_voltage_credit_factor": 2,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 2.0,
+      "lambda_ratio": 2.0,
+      "Ke_ratio": 2.0,
+      "all_changed_common_numeric_summary_fields": {
+        "Ke_Vs_per_rad_mech": {
+          "previous": 0.01122529537663341,
+          "current": 0.02245059075326682,
+          "signed_delta": 0.01122529537663341
+        },
+        "back_emf_fundamental_V": {
+          "previous": 2.4936336652316284,
+          "current": 4.987267330463257,
+          "signed_delta": 2.4936336652316284
+        },
+        "lambda_pm_Wb": {
+          "previous": 0.005612647688316705,
+          "current": 0.01122529537663341,
+          "signed_delta": 0.005612647688316705
+        }
+      }
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__high_current",
+      "phase": "A",
+      "expected_voltage_credit_factor": 2,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 2.0,
+      "lambda_ratio": 2.0,
+      "Ke_ratio": 2.0,
+      "all_changed_common_numeric_summary_fields": {
+        "Ke_Vs_per_rad_mech": {
+          "previous": 0.01122529537663341,
+          "current": 0.02245059075326682,
+          "signed_delta": 0.01122529537663341
+        },
+        "back_emf_fundamental_V": {
+          "previous": 2.4936336652316284,
+          "current": 4.987267330463257,
+          "signed_delta": 2.4936336652316284
+        },
+        "lambda_pm_Wb": {
+          "previous": 0.005612647688316705,
+          "current": 0.01122529537663341,
+          "signed_delta": 0.005612647688316705
+        }
+      }
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__tight_airgap",
+      "phase": "A",
+      "expected_voltage_credit_factor": 2,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 2.0,
+      "lambda_ratio": 2.0,
+      "Ke_ratio": 2.0,
+      "all_changed_common_numeric_summary_fields": {
+        "Ke_Vs_per_rad_mech": {
+          "previous": 0.013683767023734741,
+          "current": 0.027367534047469482,
+          "signed_delta": 0.013683767023734741
+        },
+        "back_emf_fundamental_V": {
+          "previous": 3.0397687519742584,
+          "current": 6.079537503948517,
+          "signed_delta": 3.0397687519742584
+        },
+        "lambda_pm_Wb": {
+          "previous": 0.0068418835118673705,
+          "current": 0.013683767023734741,
+          "signed_delta": 0.0068418835118673705
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__baseline",
+      "phase": "A",
+      "expected_voltage_credit_factor": 2,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 2.0,
+      "lambda_ratio": 2.0,
+      "Ke_ratio": 2.0,
+      "all_changed_common_numeric_summary_fields": {
+        "Ke_Vs_per_rad_mech": {
+          "previous": 0.04231880210639579,
+          "current": 0.08463760421279158,
+          "signed_delta": 0.04231880210639579
+        },
+        "back_emf_fundamental_V": {
+          "previous": 9.40087419209031,
+          "current": 18.80174838418062,
+          "signed_delta": 9.40087419209031
+        },
+        "lambda_pm_Wb": {
+          "previous": 0.010579700526598948,
+          "current": 0.021159401053197895,
+          "signed_delta": 0.010579700526598948
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__high_current",
+      "phase": "A",
+      "expected_voltage_credit_factor": 2,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 2.0,
+      "lambda_ratio": 2.0,
+      "Ke_ratio": 2.0,
+      "all_changed_common_numeric_summary_fields": {
+        "Ke_Vs_per_rad_mech": {
+          "previous": 0.04231880210639579,
+          "current": 0.08463760421279158,
+          "signed_delta": 0.04231880210639579
+        },
+        "back_emf_fundamental_V": {
+          "previous": 9.40087419209031,
+          "current": 18.80174838418062,
+          "signed_delta": 9.40087419209031
+        },
+        "lambda_pm_Wb": {
+          "previous": 0.010579700526598948,
+          "current": 0.021159401053197895,
+          "signed_delta": 0.010579700526598948
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__tight_airgap",
+      "phase": "A",
+      "expected_voltage_credit_factor": 2,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 2.0,
+      "lambda_ratio": 2.0,
+      "Ke_ratio": 2.0,
+      "all_changed_common_numeric_summary_fields": {
+        "Ke_Vs_per_rad_mech": {
+          "previous": 0.04509610075722598,
+          "current": 0.09019220151445197,
+          "signed_delta": 0.04509610075722598
+        },
+        "back_emf_fundamental_V": {
+          "previous": 10.017834831587495,
+          "current": 20.03566966317499,
+          "signed_delta": 10.017834831587495
+        },
+        "lambda_pm_Wb": {
+          "previous": 0.011274025189306496,
+          "current": 0.02254805037861299,
+          "signed_delta": 0.011274025189306496
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p12s_reference_angle30__baseline",
+      "phase": "A",
+      "expected_voltage_credit_factor": 2,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 2.0,
+      "lambda_ratio": 2.0,
+      "Ke_ratio": 2.0,
+      "all_changed_common_numeric_summary_fields": {
+        "Ke_Vs_per_rad_mech": {
+          "previous": 0.10373488374485594,
+          "current": 0.20746976748971188,
+          "signed_delta": 0.10373488374485594
+        },
+        "back_emf_fundamental_V": {
+          "previous": 23.044097254093103,
+          "current": 46.088194508186206,
+          "signed_delta": 23.044097254093103
+        },
+        "lambda_pm_Wb": {
+          "previous": 0.025933720936213985,
+          "current": 0.05186744187242797,
+          "signed_delta": 0.025933720936213985
+        }
+      }
+    },
+    {
+      "case_id": "ipm_flat_12s10p_fscw_contract",
+      "phase": "B",
+      "expected_voltage_credit_factor": 2,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 2.0,
+      "lambda_ratio": 2.0,
+      "Ke_ratio": 2.0,
+      "all_changed_common_numeric_summary_fields": {
+        "Ke_Vs_per_rad_mech": {
+          "previous": 0.053089420845929165,
+          "current": 0.10617884169185833,
+          "signed_delta": 0.053089420845929165
+        },
+        "back_emf_fundamental_V": {
+          "previous": 11.793504103654389,
+          "current": 23.587008207308777,
+          "signed_delta": 11.793504103654389
+        },
+        "lambda_pm_Wb": {
+          "previous": 0.010617884169185833,
+          "current": 0.021235768338371666,
+          "signed_delta": 0.010617884169185833
+        }
+      }
+    },
+    {
+      "case_id": "ipm_flat_24s16p_industrial_contract",
+      "phase": "B",
+      "expected_voltage_credit_factor": 2,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 2.0,
+      "lambda_ratio": 2.0,
+      "Ke_ratio": 2.0,
+      "all_changed_common_numeric_summary_fields": {
+        "Ke_Vs_per_rad_mech": {
+          "previous": 0.07504185315804328,
+          "current": 0.15008370631608656,
+          "signed_delta": 0.07504185315804328
+        },
+        "back_emf_fundamental_V": {
+          "previous": 16.6701084521828,
+          "current": 33.3402169043656,
+          "signed_delta": 16.6701084521828
+        },
+        "lambda_pm_Wb": {
+          "previous": 0.00938023164475541,
+          "current": 0.01876046328951082,
+          "signed_delta": 0.00938023164475541
+        }
+      }
+    },
+    {
+      "case_id": "ipm_flat_4p12s_micro_contract",
+      "phase": "B",
+      "expected_voltage_credit_factor": 2,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 2.0,
+      "lambda_ratio": 2.0,
+      "Ke_ratio": 2.0,
+      "all_changed_common_numeric_summary_fields": {
+        "Ke_Vs_per_rad_mech": {
+          "previous": 0.0010109884959421554,
+          "current": 0.0020219769918843108,
+          "signed_delta": 0.0010109884959421554
+        },
+        "back_emf_fundamental_V": {
+          "previous": 0.22458517696478952,
+          "current": 0.44917035392957905,
+          "signed_delta": 0.22458517696478952
+        },
+        "lambda_pm_Wb": {
+          "previous": 0.0005054942479710777,
+          "current": 0.0010109884959421554,
+          "signed_delta": 0.0005054942479710777
+        }
+      }
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "phase": "B",
+      "expected_voltage_credit_factor": 2,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 2.0,
+      "lambda_ratio": 2.0,
+      "Ke_ratio": 2.0,
+      "all_changed_common_numeric_summary_fields": {
+        "Ke_Vs_per_rad_mech": {
+          "previous": 0.018271868228920213,
+          "current": 0.036543736457840426,
+          "signed_delta": 0.018271868228920213
+        },
+        "back_emf_fundamental_V": {
+          "previous": 4.058988580127377,
+          "current": 8.117977160254753,
+          "signed_delta": 4.058988580127377
+        },
+        "lambda_pm_Wb": {
+          "previous": 0.004567967057230053,
+          "current": 0.009135934114460106,
+          "signed_delta": 0.004567967057230053
+        }
+      }
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract",
+      "phase": "B",
+      "expected_voltage_credit_factor": 2,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 2.0,
+      "lambda_ratio": 2.0,
+      "Ke_ratio": 2.0,
+      "all_changed_common_numeric_summary_fields": {
+        "Ke_Vs_per_rad_mech": {
+          "previous": 0.019903037434252473,
+          "current": 0.039806074868504945,
+          "signed_delta": 0.019903037434252473
+        },
+        "back_emf_fundamental_V": {
+          "previous": 4.421343271708379,
+          "current": 8.842686543416757,
+          "signed_delta": 4.421343271708379
+        },
+        "lambda_pm_Wb": {
+          "previous": 0.004975759358563118,
+          "current": 0.009951518717126236,
+          "signed_delta": 0.004975759358563118
+        }
+      }
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "phase": "B",
+      "expected_voltage_credit_factor": 2,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 2.0,
+      "lambda_ratio": 2.0,
+      "Ke_ratio": 2.0,
+      "all_changed_common_numeric_summary_fields": {
+        "Ke_Vs_per_rad_mech": {
+          "previous": 0.024821508475177553,
+          "current": 0.049643016950355105,
+          "signed_delta": 0.024821508475177553
+        },
+        "back_emf_fundamental_V": {
+          "previous": 5.5139528251859815,
+          "current": 11.027905650371963,
+          "signed_delta": 5.5139528251859815
+        },
+        "lambda_pm_Wb": {
+          "previous": 0.006205377118794388,
+          "current": 0.012410754237588776,
+          "signed_delta": 0.006205377118794388
+        }
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_baseline_contract",
+      "phase": "B",
+      "expected_voltage_credit_factor": 2,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 2.0,
+      "lambda_ratio": 2.0,
+      "Ke_ratio": 2.0,
+      "all_changed_common_numeric_summary_fields": {
+        "Ke_Vs_per_rad_mech": {
+          "previous": 0.005767931431465732,
+          "current": 0.011535862862931463,
+          "signed_delta": 0.005767931431465732
+        },
+        "back_emf_fundamental_V": {
+          "previous": 1.281312207266323,
+          "current": 2.562624414532646,
+          "signed_delta": 1.281312207266323
+        },
+        "lambda_pm_Wb": {
+          "previous": 0.001441982857866433,
+          "current": 0.002883965715732866,
+          "signed_delta": 0.001441982857866433
+        }
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "phase": "B",
+      "expected_voltage_credit_factor": 2,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 2.0,
+      "lambda_ratio": 2.0,
+      "Ke_ratio": 2.0,
+      "all_changed_common_numeric_summary_fields": {
+        "Ke_Vs_per_rad_mech": {
+          "previous": 0.0038716826236640926,
+          "current": 0.007743365247328185,
+          "signed_delta": 0.0038716826236640926
+        },
+        "back_emf_fundamental_V": {
+          "previous": 0.8600716335320707,
+          "current": 1.7201432670641414,
+          "signed_delta": 0.8600716335320707
+        },
+        "lambda_pm_Wb": {
+          "previous": 0.0009679206559160231,
+          "current": 0.0019358413118320463,
+          "signed_delta": 0.0009679206559160231
+        }
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_narrow_angle_contract",
+      "phase": "B",
+      "expected_voltage_credit_factor": 2,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 2.0,
+      "lambda_ratio": 2.0,
+      "Ke_ratio": 2.0,
+      "all_changed_common_numeric_summary_fields": {
+        "Ke_Vs_per_rad_mech": {
+          "previous": 0.005861125516028485,
+          "current": 0.01172225103205697,
+          "signed_delta": 0.005861125516028485
+        },
+        "back_emf_fundamental_V": {
+          "previous": 1.3020147276783802,
+          "current": 2.6040294553567604,
+          "signed_delta": 1.3020147276783802
+        },
+        "lambda_pm_Wb": {
+          "previous": 0.0014652813790071212,
+          "current": 0.0029305627580142424,
+          "signed_delta": 0.0014652813790071212
+        }
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "phase": "B",
+      "expected_voltage_credit_factor": 2,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 2.0,
+      "lambda_ratio": 2.0,
+      "Ke_ratio": 2.0,
+      "all_changed_common_numeric_summary_fields": {
+        "Ke_Vs_per_rad_mech": {
+          "previous": 0.0057299056469027445,
+          "current": 0.011459811293805489,
+          "signed_delta": 0.0057299056469027445
+        },
+        "back_emf_fundamental_V": {
+          "previous": 1.272865001794074,
+          "current": 2.545730003588148,
+          "signed_delta": 1.272865001794074
+        },
+        "lambda_pm_Wb": {
+          "previous": 0.0014324764117256861,
+          "current": 0.0028649528234513722,
+          "signed_delta": 0.0014324764117256861
+        }
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_thin_bridge_contract",
+      "phase": "B",
+      "expected_voltage_credit_factor": 2,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 2.0,
+      "lambda_ratio": 2.0,
+      "Ke_ratio": 2.0,
+      "all_changed_common_numeric_summary_fields": {
+        "Ke_Vs_per_rad_mech": {
+          "previous": 0.019272199683001912,
+          "current": 0.038544399366003824,
+          "signed_delta": 0.019272199683001912
+        },
+        "back_emf_fundamental_V": {
+          "previous": 4.281206357619514,
+          "current": 8.562412715239027,
+          "signed_delta": 4.281206357619514
+        },
+        "lambda_pm_Wb": {
+          "previous": 0.004818049920750478,
+          "current": 0.009636099841500956,
+          "signed_delta": 0.004818049920750478
+        }
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "phase": "B",
+      "expected_voltage_credit_factor": 2,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 2.0,
+      "lambda_ratio": 2.0,
+      "Ke_ratio": 2.0,
+      "all_changed_common_numeric_summary_fields": {
+        "Ke_Vs_per_rad_mech": {
+          "previous": 0.005062626733663641,
+          "current": 0.010125253467327282,
+          "signed_delta": 0.005062626733663641
+        },
+        "back_emf_fundamental_V": {
+          "previous": 1.1246328968629304,
+          "current": 2.249265793725861,
+          "signed_delta": 1.1246328968629304
+        },
+        "lambda_pm_Wb": {
+          "previous": 0.0012656566834159102,
+          "current": 0.0025313133668318204,
+          "signed_delta": 0.0012656566834159102
+        }
+      }
+    },
+    {
+      "case_id": "spm_12p36s_distributed_femm_validation",
+      "phase": "C",
+      "expected_voltage_credit_factor": 1,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 1.0,
+      "lambda_ratio": 1.0,
+      "Ke_ratio": 1.0,
+      "all_changed_common_numeric_summary_fields": {}
+    },
+    {
+      "case_id": "spm_8p24s_distributed_femm_validation",
+      "phase": "C",
+      "expected_voltage_credit_factor": 1,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 1.0,
+      "lambda_ratio": 1.0,
+      "Ke_ratio": 1.0,
+      "all_changed_common_numeric_summary_fields": {}
+    },
+    {
+      "case_id": "spm_8p48s_chorded_5_6",
+      "phase": "C",
+      "expected_voltage_credit_factor": 1,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 1.0,
+      "lambda_ratio": 1.0,
+      "Ke_ratio": 1.0,
+      "all_changed_common_numeric_summary_fields": {}
+    },
+    {
+      "case_id": "spm_8p48s_distributed_femm_validation",
+      "phase": "C",
+      "expected_voltage_credit_factor": 1,
+      "full_three_phase_voltage_waveforms_exact_factor": true,
+      "primary_torque_waveform_exact": true,
+      "mean_torque_exact": true,
+      "bemf_fundamental_ratio": 1.0,
+      "lambda_ratio": 1.0,
+      "Ke_ratio": 1.0,
+      "all_changed_common_numeric_summary_fields": {}
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "stages": {
+        "native-standard": {
+          "current_mean_torque_Nm": 3.279989231941555,
+          "previous_mean_torque_Nm": 1.6395842367261562,
+          "mean_torque_ratio": 2.0005005893999575,
+          "phase_current_waveform_exact": true,
+          "full_three_phase_voltage_waveforms_exact_double": true
+        },
+        "native-fine": {
+          "current_mean_torque_Nm": 3.2668414257832126,
+          "previous_mean_torque_Nm": 1.6330570198275087,
+          "mean_torque_ratio": 2.000445413797169,
+          "phase_current_waveform_exact": true,
+          "full_three_phase_voltage_waveforms_exact_double": true
+        },
+        "analytical": {
+          "current_mean_torque_Nm": 0.3280662877133328,
+          "previous_mean_torque_Nm": 0.16419170911610945,
+          "mean_torque_ratio": 1.9980685351252307,
+          "phase_current_waveform_exact": true,
+          "full_three_phase_voltage_waveforms_exact_double": true
+        }
+      }
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "phase": "D",
+      "stages": {
+        "native-standard": {
+          "current_mean_torque_Nm": 0.574050023938528,
+          "previous_mean_torque_Nm": 0.2870509187142987,
+          "mean_torque_ratio": 1.9998194972156804,
+          "phase_current_waveform_exact": true,
+          "full_three_phase_voltage_waveforms_exact_double": true
+        },
+        "native-fine": {
+          "current_mean_torque_Nm": 0.5751319217017291,
+          "previous_mean_torque_Nm": 0.28765449066197996,
+          "mean_torque_ratio": 1.9993844712042446,
+          "phase_current_waveform_exact": true,
+          "full_three_phase_voltage_waveforms_exact_double": true
+        },
+        "analytical": {
+          "current_mean_torque_Nm": 0.05755365705471143,
+          "previous_mean_torque_Nm": 0.028789931904550165,
+          "mean_torque_ratio": 1.9990897250304105,
+          "phase_current_waveform_exact": true,
+          "full_three_phase_voltage_waveforms_exact_double": true
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "phase": "D",
+      "stages": {
+        "native-standard": {
+          "current_mean_torque_Nm": 17.44635709178827,
+          "previous_mean_torque_Nm": 8.725539846198817,
+          "mean_torque_ratio": 1.9994587612121875,
+          "phase_current_waveform_exact": true,
+          "full_three_phase_voltage_waveforms_exact_double": true
+        },
+        "native-fine": {
+          "current_mean_torque_Nm": 17.469421148167836,
+          "previous_mean_torque_Nm": 8.738405959958504,
+          "mean_torque_ratio": 1.9991542196845697,
+          "phase_current_waveform_exact": true,
+          "full_three_phase_voltage_waveforms_exact_double": true
+        },
+        "analytical": {
+          "current_mean_torque_Nm": 1.7485478454640644,
+          "previous_mean_torque_Nm": 0.8746640508910316,
+          "mean_torque_ratio": 1.9991079359930204,
+          "phase_current_waveform_exact": true,
+          "full_three_phase_voltage_waveforms_exact_double": true
+        }
+      }
+    }
+  ],
+  "scope": "Direct measured values compared with the recorded Windows 04f87a5 run. Source commits differ; observations alone do not isolate every intervening code change. No old record is modified or used as the new FEMM reference."
+}
