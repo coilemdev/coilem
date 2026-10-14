@@ -1,5 +1,7 @@
 # Benchmark reports and protocols
 
+The [Windows full-turn comparison](windows-flux-credit-20261014-1ea9e40/README.md) and [64-page plot PDF](windows-flux-credit-20261014-1ea9e40/coilem_benchmark_report.pdf) measure the #80 fixed pin `1ea9e40` against fresh FEMM v2: 28 PASS, 1 angular-ripple FAIL and one planned unsupported Prius case. Separate refinement/current-control diagnostics retain that original failure.
+
 Start with the [latest full report v1.7](macos-rc-20261013-1fac3a1/README.md), which measures the
 frozen coilEM 0.3.0 commit `1fac3a1` on macOS, and the
 [default A/B/C/D run commands](abcd-v1.1/README.md). [Protocol 1.2.0](abcd-v1.2/README.md) registers the corrected ORNL Prius case; it becomes the default once its FEMM reference bundle lands. The selected matrix has
