@@ -1,0 +1,65 @@
+{
+  "description": "The five primary ORNL reports audited, retrieved from OSTI; sha256 is of the retrieved PDF.",
+  "sources": [
+    {
+      "id": "S1",
+      "report": "ORNL/TM-2004/185 (revised May 2007)",
+      "title": "Report on Toyota/Prius Motor Torque Capability, Torque Property, No-Load Back EMF, and Mechanical Losses",
+      "date": "2007-05",
+      "lead_author": "J. S. Hsu",
+      "osti_id": "921782",
+      "url": "https://www.osti.gov/servlets/purl/921782",
+      "pdf_pages": "24",
+      "sha256_of_retrieved_pdf": "c985c0ce285890b89ca7d3c1b9f1da26726cdc18a2d024ca79aa6be639779d05",
+      "retrieved": "2026-10-13"
+    },
+    {
+      "id": "S2",
+      "report": "ORNL/TM-2006/423",
+      "title": "Evaluation of 2004 Toyota Prius Hybrid Electric Drive System",
+      "date": "2006-05",
+      "lead_author": "R. H. Staunton",
+      "osti_id": "890029",
+      "url": "https://www.osti.gov/servlets/purl/890029",
+      "pdf_pages": "95",
+      "sha256_of_retrieved_pdf": "e2685ea921894bb7dd15b063c822e234caba4e29bec1fdacf6d03a1cab3eade9",
+      "retrieved": "2026-10-13"
+    },
+    {
+      "id": "S3",
+      "report": "ORNL/TM-2004/247 (revised FY 2007)",
+      "title": "Evaluation of 2004 Toyota Prius Hybrid Electric Drive System Interim Report - Revised",
+      "date": "FY 2007",
+      "lead_author": "C. W. Ayers",
+      "osti_id": "921783",
+      "url": "https://www.osti.gov/servlets/purl/921783",
+      "pdf_pages": "44",
+      "sha256_of_retrieved_pdf": "2ec9f3c2a989beb746699fdede7a033d62c4bf2d014fc3750d764a7cb8b29b62",
+      "retrieved": "2026-10-13"
+    },
+    {
+      "id": "S4",
+      "report": "ORNL/TM-2004/137",
+      "title": "Report on Toyota/Prius Motor Design and Manufacturing Assessment",
+      "date": "2004-07",
+      "lead_author": "J. S. Hsu",
+      "osti_id": "885676",
+      "url": "https://www.osti.gov/servlets/purl/885676",
+      "pdf_pages": "15",
+      "sha256_of_retrieved_pdf": "32469ab008f72ef106159769b8163dc43d52d0f71d179dd2e3700dc10a9b4fbc",
+      "retrieved": "2026-10-13"
+    },
+    {
+      "id": "S5",
+      "report": "ORNL/TM-2005/33",
+      "title": "Report on Toyota Prius Motor Thermal Management",
+      "date": "2005-02",
+      "lead_author": "J. S. Hsu",
+      "osti_id": "885987",
+      "url": "https://www.osti.gov/servlets/purl/885987",
+      "pdf_pages": "50",
+      "sha256_of_retrieved_pdf": "179407ecf90ac054f8c30e1c4c2380da00eef693fbe9ff2f7b5e594f4c703341",
+      "retrieved": "2026-10-13"
+    }
+  ]
+}

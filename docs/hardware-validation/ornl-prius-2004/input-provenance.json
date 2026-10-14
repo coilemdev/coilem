@@ -1,0 +1,408 @@
+{
+  "description": "One row per model input: value, source location (report page, then PDF page) and provenance class.",
+  "inputs": [
+    {
+      "id": "G01",
+      "parameter": "pole count",
+      "value": "8",
+      "source": "S2",
+      "location": "p.10 (PDF 19) sec. 2.2.4; S1 p.7 (PDF 13)",
+      "class": "stated",
+      "notes": "S1: electrical angle is four times the mechanical angle"
+    },
+    {
+      "id": "G02",
+      "parameter": "rotor type",
+      "value": "interior PM in a V arrangement",
+      "source": "S2",
+      "location": "p.10 (PDF 19) sec. 2.2.4",
+      "class": "stated",
+      "notes": "S4 p.5 (PDF 6): V-shape PM grooves in the 2004 punching"
+    },
+    {
+      "id": "G03",
+      "parameter": "stator slot count",
+      "value": "48",
+      "source": "S5",
+      "location": "p.26 (PDF 33); Fig. 21 p.25 (PDF 32)",
+      "class": "stated",
+      "notes": "'6 of the 48 stator slots'"
+    },
+    {
+      "id": "G04",
+      "parameter": "stator outside diameter",
+      "value": "10.600",
+      "unit": "in",
+      "value_si": "269.24 mm",
+      "source": "S5",
+      "location": "Fig. 21 p.25 (PDF 32)",
+      "class": "stated",
+      "notes": "callout ø10.600 on the 2004 stator lamination drawing"
+    },
+    {
+      "id": "G05",
+      "parameter": "stator bore diameter",
+      "value": "6.375",
+      "unit": "in",
+      "value_si": "161.93 mm",
+      "source": "S5",
+      "location": "Fig. 21 p.25 (PDF 32)",
+      "class": "stated",
+      "notes": "callout has no ø symbol; the innermost stator edges in the vector drawing sit at about 6.35 in diameter, consistent with a bore diameter"
+    },
+    {
+      "id": "G06",
+      "parameter": "rotor outside diameter",
+      "value": "6.314",
+      "unit": "in",
+      "value_si": "160.38 mm",
+      "source": "S5",
+      "location": "Fig. 21 p.25 (PDF 32)",
+      "class": "stated",
+      "notes": "red callout ø6.314"
+    },
+    {
+      "id": "G07",
+      "parameter": "rotor lamination inside diameter",
+      "value": "4.356",
+      "unit": "in",
+      "value_si": "110.64 mm",
+      "source": "S5",
+      "location": "Fig. 21 p.25 (PDF 32)",
+      "class": "stated",
+      "notes": "red callout ø4.356"
+    },
+    {
+      "id": "G08",
+      "parameter": "radial airgap",
+      "value": "0.0305",
+      "unit": "in",
+      "value_si": "0.775 mm",
+      "source": "S5",
+      "location": "Fig. 21",
+      "class": "derived-from-stated",
+      "notes": "(6.375 - 6.314) / 2"
+    },
+    {
+      "id": "G09",
+      "parameter": "stack (core) length",
+      "value": "3.3",
+      "unit": "in",
+      "value_si": "83.82 mm",
+      "source": "S4",
+      "location": "p.4 (PDF 5); Table 2 p.5 (PDF 6)",
+      "class": "stated",
+      "notes": "2003 model: 3.5 in"
+    },
+    {
+      "id": "G10",
+      "parameter": "stator slot depth",
+      "value": "1.320",
+      "unit": "in",
+      "value_si": "33.53 mm",
+      "source": "S5",
+      "location": "Fig. 21 slot detail",
+      "class": "stated",
+      "notes": "value stated; that it spans bore to slot bottom is read from the drawing (vector slot bottoms at about 9.07 in diameter; bore + 2 x 1.320 = 9.015 in)"
+    },
+    {
+      "id": "G11",
+      "parameter": "slot bottom round",
+      "value": "0.222",
+      "unit": "in (diameter)",
+      "value_si": "5.64 mm",
+      "source": "S5",
+      "location": "Fig. 21 slot detail",
+      "class": "stated"
+    },
+    {
+      "id": "G12",
+      "parameter": "slot detail dimension",
+      "value": "0.124",
+      "unit": "in",
+      "value_si": "3.15 mm",
+      "source": "S5",
+      "location": "Fig. 21 slot detail",
+      "class": "stated",
+      "notes": "value stated; probably the slot width above the tooth tips (association inferred from the figure)"
+    },
+    {
+      "id": "G13",
+      "parameter": "slot detail dimension",
+      "value": "0.040",
+      "unit": "in",
+      "value_si": "1.02 mm",
+      "source": "S5",
+      "location": "Fig. 21 slot detail",
+      "class": "stated",
+      "notes": "value stated; probably the tooth-tip height (association inferred from the figure)"
+    },
+    {
+      "id": "G14",
+      "parameter": "slot opening",
+      "value": "0.076",
+      "unit": "in",
+      "value_si": "1.93 mm",
+      "source": "S5",
+      "location": "Fig. 21 slot detail",
+      "class": "stated",
+      "notes": "value stated; association with the slot mouth inferred from the figure"
+    },
+    {
+      "id": "G15",
+      "parameter": "stator yoke depth",
+      "value": "0.7925",
+      "unit": "in",
+      "value_si": "20.13 mm",
+      "source": "S5",
+      "location": "Fig. 21",
+      "class": "derived-from-stated",
+      "notes": "(10.600 - 6.375 - 2 x 1.320) / 2, if 1.320 spans bore to slot bottom"
+    },
+    {
+      "id": "G16",
+      "parameter": "stator tooth width",
+      "value": "not stated",
+      "class": "assumed",
+      "notes": "not dimensioned; measurable from the Fig. 21 vector paths (not done in Phase A)"
+    },
+    {
+      "id": "G17",
+      "parameter": "rotor lamination thickness",
+      "value": "0.014",
+      "unit": "in",
+      "value_si": "0.356 mm",
+      "source": "S4",
+      "location": "p.7 (PDF 8)",
+      "class": "stated",
+      "notes": "rotor punchings; stator lamination thickness not stated"
+    },
+    {
+      "id": "G18",
+      "parameter": "stacking factor",
+      "value": "not stated",
+      "class": "assumed"
+    },
+    {
+      "id": "M01",
+      "parameter": "electrical steel grade and B-H curve",
+      "value": "not stated",
+      "class": "assumed",
+      "notes": "existing benchmark fixture assumes M350-50A, a 0.50 mm grade; S4 gives 0.356 mm rotor laminations"
+    },
+    {
+      "id": "R01",
+      "parameter": "rotor pocket layout",
+      "value": "one connected V pocket per pole: apex toward the shaft, arms toward the airgap, magnet seats between notches",
+      "source": "S5",
+      "location": "Fig. 21 (vector paths)",
+      "class": "inferred-from-figure",
+      "notes": "the pockets are drawn but not dimensioned; see rotor-pocket-measurements.csv"
+    },
+    {
+      "id": "R02",
+      "parameter": "pocket arm angle from the tangential direction",
+      "value": "16.8 to 18.0 (mean 17.4)",
+      "unit": "deg",
+      "source": "S5",
+      "location": "Fig. 21 (vector paths)",
+      "class": "inferred-from-figure",
+      "notes": "included angle between the arms about 145 deg; 8 poles x 2 arms measured"
+    },
+    {
+      "id": "R03",
+      "parameter": "pocket width across an arm",
+      "value": "6.67 to 6.85 (mean 6.77)",
+      "unit": "mm",
+      "source": "S5",
+      "location": "Fig. 21 (vector paths)",
+      "class": "inferred-from-figure",
+      "notes": "perpendicular distance between an arm's long edges"
+    },
+    {
+      "id": "R04",
+      "parameter": "magnet seat length",
+      "value": "18.3 to 18.6",
+      "unit": "mm",
+      "source": "S5",
+      "location": "Fig. 21 (vector paths)",
+      "class": "inferred-from-figure",
+      "notes": "inner long edge of an arm, between the stop notches"
+    },
+    {
+      "id": "R05",
+      "parameter": "pocket arm outer-edge length",
+      "value": "21.6 to 21.9",
+      "unit": "mm",
+      "source": "S5",
+      "location": "Fig. 21 (vector paths)",
+      "class": "inferred-from-figure"
+    },
+    {
+      "id": "R06",
+      "parameter": "pocket apex depth below the rotor surface (outer edge)",
+      "value": "10.4 to 11.2 (mean 10.8)",
+      "unit": "mm",
+      "source": "S5",
+      "location": "Fig. 21 (vector paths)",
+      "class": "inferred-from-figure",
+      "notes": "the pole-to-pole spread follows the circle-fit centre offset (about 0.4 mm)"
+    },
+    {
+      "id": "R07",
+      "parameter": "outer bridge (pocket tip to rotor surface)",
+      "value": "0.060 and 0.056",
+      "unit": "in",
+      "value_si": "1.52 and 1.42 mm",
+      "source": "S5",
+      "location": "Fig. 21 red callouts",
+      "class": "stated",
+      "notes": "values stated; their location at the pocket tips is read from the figure; the vector minimum against the nominal OD circle is 0.84-1.06 mm, within the drawing's +/-0.6 mm outline residual"
+    },
+    {
+      "id": "R08",
+      "parameter": "d-axis positions in the drawing",
+      "value": "22.5 + k x 45",
+      "unit": "deg",
+      "source": "S5",
+      "location": "Fig. 21 (vector paths)",
+      "class": "inferred-from-figure",
+      "notes": "pocket apexes; the q-axis iron between poles is wide, as S4 p.5 (PDF 6) describes"
+    },
+    {
+      "id": "P01",
+      "parameter": "magnet length and thickness",
+      "value": "not stated",
+      "class": "assumed",
+      "notes": "bounded by the pocket seat (18.3-18.6 mm x 6.67-6.85 mm); S4 Figs. 10-11 (PDF 10-11) are photographs only"
+    },
+    {
+      "id": "P02",
+      "parameter": "magnet axial length",
+      "value": "not stated",
+      "class": "assumed",
+      "notes": "assume equal to the stack length"
+    },
+    {
+      "id": "P03",
+      "parameter": "magnet remanence Br",
+      "value": "12.3 to 12.4",
+      "unit": "kG",
+      "value_si": "1.23 to 1.24 T",
+      "source": "S4",
+      "location": "Fig. 14 p.11 (PDF 12)",
+      "class": "inferred-from-figure",
+      "notes": "straight demagnetization line extrapolated to H = 0 through points measured at H of about -7.2 to -4.7 kOe; test temperature not stated"
+    },
+    {
+      "id": "P04",
+      "parameter": "magnet coercivity (normal) Hc",
+      "value": "11.0",
+      "unit": "kOe",
+      "value_si": "875 kA/m",
+      "source": "S4",
+      "location": "Fig. 14 p.11 (PDF 12)",
+      "class": "inferred-from-figure",
+      "notes": "B = 0 intercept of the same line"
+    },
+    {
+      "id": "P05",
+      "parameter": "magnet recoil permeability",
+      "value": "1.12",
+      "source": "S4",
+      "location": "Fig. 14 p.11 (PDF 12)",
+      "class": "inferred-from-figure",
+      "notes": "Br / (mu0 x Hc) from P03 and P04"
+    },
+    {
+      "id": "P06",
+      "parameter": "magnet material",
+      "value": "high-strength, apparently sintered",
+      "source": "S4",
+      "location": "p.11 (PDF 12)",
+      "class": "stated",
+      "notes": "ORNL's own hedge ('It appears that they are sintered'); NdFeB is not named"
+    },
+    {
+      "id": "P07",
+      "parameter": "magnet temperature during the back-EMF test",
+      "value": "25",
+      "unit": "degC",
+      "source": "S2",
+      "location": "p.21 (PDF 30)",
+      "class": "assumed",
+      "notes": "stated: lubricating oil nominal 25 degC; magnet temperature not measured"
+    },
+    {
+      "id": "W01",
+      "parameter": "winding connection",
+      "value": "series (2003 model: two parallel)",
+      "source": "S4",
+      "location": "p.4-5 (PDF 5-6); Table 2; Fig. 3 caption",
+      "class": "stated",
+      "notes": "same gauge, turns per coil, distribution and stator punching as 2003"
+    },
+    {
+      "id": "W02",
+      "parameter": "parallel paths",
+      "value": "1",
+      "source": "S4",
+      "location": "p.4-5 (PDF 5-6)",
+      "class": "derived-from-stated",
+      "notes": "series connection instead of the 2003 two-parallel winding"
+    },
+    {
+      "id": "W03",
+      "parameter": "turns per coil",
+      "value": "9",
+      "source": "S5",
+      "location": "Fig. 24 p.27 (PDF 34); text p.26 (PDF 33)",
+      "class": "inferred-from-figure",
+      "notes": "'Nine Bundles of Copper Wire' per slot in ORNL's thermal model; ORNL does not say that a bundle is one turn; S4 p.4 gives no number"
+    },
+    {
+      "id": "W04",
+      "parameter": "winding layout (layers, coil pitch)",
+      "value": "not stated",
+      "class": "assumed",
+      "notes": "S5 Fig. 24 shows one stack of bundles per slot (consistent with a single layer); 48 slots, 8 poles, 3 phases gives 2 slots per pole per phase"
+    },
+    {
+      "id": "W05",
+      "parameter": "slot fill factor",
+      "value": "0.84",
+      "source": "S4",
+      "location": "p.7 (PDF 8)",
+      "class": "stated",
+      "notes": "not a back-EMF input"
+    },
+    {
+      "id": "W06",
+      "parameter": "end-winding extension",
+      "value": "1.5 (approximately)",
+      "unit": "in per side",
+      "value_si": "38 mm",
+      "source": "S4",
+      "location": "p.7 (PDF 8)",
+      "class": "stated",
+      "notes": "for the 2D end-effect allowance"
+    },
+    {
+      "id": "W07",
+      "parameter": "rotor or stator skew",
+      "value": "not stated",
+      "class": "assumed",
+      "notes": "none mentioned in S1-S5"
+    },
+    {
+      "id": "O01",
+      "parameter": "static d- and q-axis inductance",
+      "value": "1.92 and 5",
+      "unit": "mH",
+      "source": "S2",
+      "location": "p.42 (PDF 51)",
+      "class": "stated",
+      "notes": "a possible secondary target, not a model input"
+    }
+  ]
+}
