@@ -170,7 +170,7 @@ def main() -> None:
         },
         "recommended": "fitted_to_walls",
     }
-    out.write_text(json.dumps(result, indent=1) + "\n", encoding="utf-8")
+    out.write_text(json.dumps(result, indent=1) + "\n", encoding="utf-8", newline="\n")
     for name, candidate in result["candidates"].items():
         print(f"{name}: rms {candidate['fit']['rms_mm']} max {candidate['fit']['max_mm']} mm")
     print("recommended:", recommended)
