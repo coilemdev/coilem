@@ -40,6 +40,15 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
+# A new upload reaches the index's /simple/ pages within its 10-minute CDN cache; wait 25 minutes.
+INDEX_ATTEMPTS = 50
+INDEX_WAIT_S = 30
+
+
+class IndexApiUnusable(Exception):
+    """The index's JSON API can't be used from this machine; pip is the fallback."""
+
+
 WINDOWS = os.name == "nt"
 # Copies of tests/fixtures/spm_4p12s_simple.json and the schemas/v1/examples
 # Halbach configurations; tests/test_release_tools.py keeps them in sync.
@@ -225,24 +234,80 @@ class Acceptance:
         return ok
 
     def download(self, requirement: str, index_url: str, expected_sha256: str | None, python: str) -> str:
-        """Fetch only the coilEM wheel from ``index_url``, retrying while a new upload propagates."""
+        """Fetch only the coilEM wheel from ``index_url``, retrying while a new upload propagates.
+
+        The index's ``/simple/`` pages, which pip reads, are CDN-cached for ten minutes
+        (``max-age=600``), so pip often missed a fresh upload for that whole window. Given
+        the wheel CI built (``expected_sha256``) and a pinned version, take the wheel from
+        the index's JSON API instead: it is current as soon as an upload finishes, and its
+        file URLs are immutable. Otherwise fall back to pip, waiting past the cache window.
+        """
 
         destination = self.work / "download"
-        command = [python, "-m", "pip", "download", "--no-deps", "--only-binary", ":all:", "--disable-pip-version-check"]
-        command += ["--index-url", index_url, "--dest", str(destination), requirement]
-        for attempt in range(20):
-            completed = subprocess.run(command, capture_output=True, text=True)
-            if completed.returncode == 0:
-                break
-            print(f"waiting for {requirement} on {index_url} (attempt {attempt + 1})", flush=True)
-            time.sleep(30)
-        else:
-            raise SystemExit(f"could not download {requirement} from {index_url}:\n{completed.stderr}")
-        wheel = next(destination.glob("*.whl"))
+        destination.mkdir(parents=True, exist_ok=True)
+        name, _, version = requirement.partition("==")
+        wheel = None
+        if expected_sha256 is not None and version:
+            try:
+                wheel = self.download_by_digest(name.strip(), version.strip(), index_url, expected_sha256, destination)
+            except IndexApiUnusable as reason:
+                # The JSON API answered with something other than "not yet" or a server error
+                # (TLS, DNS, proxy, malformed reply): fall back to pip rather than wait it out.
+                print(f"cannot use the index JSON API ({reason}); falling back to pip", flush=True)
+            else:
+                if wheel is None:
+                    return ""
+        if wheel is None:
+            wheel = self.pip_download(requirement, index_url, python, destination)
         digest = hashlib.sha256(wheel.read_bytes()).hexdigest()
         if expected_sha256 is not None:
             self.check("the published wheel is the one CI built", digest == expected_sha256, f"{wheel.name} {digest}")
         return str(wheel)
+
+    def download_by_digest(self, name: str, version: str, index_url: str, expected_sha256: str, destination: Path) -> Path | None:
+        """Download the wheel whose SHA-256 is ``expected_sha256`` via the index's JSON API."""
+
+        api = f"{index_url.rstrip('/').rsplit('/simple', 1)[0]}/pypi/{name}/{version}/json"
+        for attempt in range(INDEX_ATTEMPTS):
+            try:
+                with urllib.request.urlopen(api, timeout=60) as response:
+                    files = json.load(response)["urls"]
+                break
+            except urllib.error.HTTPError as error:
+                # 404: the upload hasn't propagated yet; 5xx: the index is struggling. Both are worth waiting for.
+                if error.code != 404 and error.code < 500:
+                    raise IndexApiUnusable(f"HTTP {error.code} from {api}") from error
+                print(f"waiting for {name} {version} on {api} (attempt {attempt + 1}, HTTP {error.code})", flush=True)
+                time.sleep(INDEX_WAIT_S)
+            except (urllib.error.URLError, OSError, ValueError, KeyError) as error:
+                raise IndexApiUnusable(f"{type(error).__name__}: {error}") from error
+        else:
+            raise SystemExit(f"{name} {version} never appeared on {api}")
+        match = next((f for f in files if f.get("packagetype") == "bdist_wheel" and f.get("digests", {}).get("sha256") == expected_sha256), None)
+        if match is None:
+            published = ", ".join(f"{f.get('filename')} {f.get('digests', {}).get('sha256')}" for f in files)
+            self.check("the published wheel is the one CI built", False, f"no file with {expected_sha256}; published: {published}")
+            return None
+        wheel = destination / match["filename"]
+        try:
+            with urllib.request.urlopen(match["url"], timeout=300) as response:
+                wheel.write_bytes(response.read())
+        except (urllib.error.URLError, OSError) as error:
+            raise IndexApiUnusable(f"cannot download {match['url']}: {error}") from error
+        return wheel
+
+    def pip_download(self, requirement: str, index_url: str, python: str, destination: Path) -> Path:
+        command = [python, "-m", "pip", "download", "--no-deps", "--only-binary", ":all:", "--disable-pip-version-check"]
+        command += ["--index-url", index_url, "--dest", str(destination), requirement]
+        for attempt in range(INDEX_ATTEMPTS):
+            completed = subprocess.run(command, capture_output=True, text=True)
+            if completed.returncode == 0:
+                break
+            print(f"waiting for {requirement} on {index_url} (attempt {attempt + 1})", flush=True)
+            time.sleep(INDEX_WAIT_S)
+        else:
+            raise SystemExit(f"could not download {requirement} from {index_url}:\n{completed.stderr}")
+        return next(destination.glob("*.whl"))
 
     def install(self, requirement: str, python: str) -> None:
         subprocess.run([python, "-m", "venv", str(self.venv)], check=True)

@@ -9,8 +9,7 @@ import time
 from dataclasses import dataclass
 from typing import Any
 
-from backend.gmsh_solver import _GMSH_API_LOCK, GMSH_AVAILABLE, gmsh
-from backend.solver_environment import ISOLATED_RUNTIME
+from backend.gmsh_solver import _GMSH_API_LOCK, GMSH_AVAILABLE, gmsh, initialize_gmsh
 
 from .gmsh_adapter import canonical_json_bytes
 from .linear_geometry import (
@@ -173,7 +172,7 @@ def _generate_linear_halbach_mesh(
         )
     started = time.perf_counter()
     with _GMSH_API_LOCK:
-        gmsh.initialize(readConfigFiles=not ISOLATED_RUNTIME, interruptible=False)
+        initialize_gmsh()
         try:
             gmsh.option.setNumber("General.Terminal", 0)
             gmsh.option.setNumber("Mesh.ElementOrder", 1)

@@ -9,8 +9,7 @@ import time
 from dataclasses import dataclass
 from typing import Any
 
-from backend.gmsh_solver import _GMSH_API_LOCK, GMSH_AVAILABLE, gmsh
-from backend.solver_environment import ISOLATED_RUNTIME
+from backend.gmsh_solver import _GMSH_API_LOCK, GMSH_AVAILABLE, gmsh, initialize_gmsh
 
 from .geometry import PlanarEmGeometryArtifact, PlanarRegion
 from .models import HalbachArrayConfig
@@ -168,7 +167,7 @@ def generate_halbach_mesh(
         # default initializer installs a SIGINT handler, which Python permits
         # only on the main thread; the shared motor adapter uses the same
         # non-interruptible mode for this reason.
-        gmsh.initialize(readConfigFiles=not ISOLATED_RUNTIME, interruptible=False)
+        initialize_gmsh()
         try:
             gmsh.option.setNumber("General.Terminal", 0)
             gmsh.option.setNumber("Mesh.ElementOrder", 1)
