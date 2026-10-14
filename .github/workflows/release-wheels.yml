@@ -59,8 +59,8 @@ jobs:
       policy: ${{ steps.policy.outputs.policy }}
       version: ${{ steps.version.outputs.version }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: ${{ env.BUILD_PYTHON }}
       - name: Resolve the package version; a release tag must match it
@@ -80,18 +80,18 @@ jobs:
     name: UI bundle
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
           cache-dependency-path: frontend/package-lock.json
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: ${{ env.BUILD_PYTHON }}
       - name: Build the production bundle once for every wheel
         run: python -m tools.release.artifacts ui --out dist/release
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: ui
           path: |
@@ -122,7 +122,7 @@ jobs:
     env:
       TARGET_POLICY: ${{ toJSON(fromJSON(needs.policy.outputs.policy)[matrix.target]) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - name: Build in the manylinux image at or below the glibc floor
         if: matrix.target == 'linux-x86_64'
         run: |
@@ -133,7 +133,7 @@ jobs:
             export PATH="$HOME/.cargo/bin:$PATH"
             /opt/python/cp312-cp312/bin/python -m tools.release.artifacts magneto2d \
               --target ${{ matrix.triple }} --out dist/release/magneto2d'
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         if: matrix.target != 'linux-x86_64'
         with:
           python-version: ${{ env.BUILD_PYTHON }}
@@ -145,7 +145,7 @@ jobs:
           deployment_target=$(python -c 'import json, os; print(json.loads(os.environ["TARGET_POLICY"]).get("macosx_deployment_target", ""))')
           python -m tools.release.artifacts magneto2d --target ${{ matrix.triple }} --out dist/release/magneto2d \
             ${deployment_target:+--macos-deployment-target "$deployment_target"}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: magneto2d-${{ matrix.target }}
           path: dist/release/magneto2d
@@ -174,15 +174,15 @@ jobs:
     env:
       PLATFORM_TAG: ${{ fromJSON(needs.policy.outputs.policy)[matrix.target].platform_tag }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: ${{ env.BUILD_PYTHON }}
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: ui
           path: dist/release
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: magneto2d-${{ matrix.target }}
           path: dist/release/magneto2d
@@ -219,7 +219,7 @@ jobs:
           $env:PATH = "$($dumpbin.DirectoryName);$env:PATH"
           $wheel = Get-ChildItem dist\wheels\*.whl | Select-Object -First 1
           python -m tools.release.native_deps $wheel.FullName
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: wheel-${{ matrix.target }}
           path: dist/wheels/*.whl
@@ -246,14 +246,14 @@ jobs:
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           sparse-checkout: tools/release/acceptance.py
           sparse-checkout-cone-mode: false
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: ${{ matrix.python }}
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: wheel-${{ matrix.target }}
           path: wheels
@@ -287,7 +287,7 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           pattern: wheel-*
           path: dist
@@ -324,14 +324,14 @@ jobs:
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           sparse-checkout: tools/release/acceptance.py
           sparse-checkout-cone-mode: false
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: ${{ env.BUILD_PYTHON }}
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: wheel-${{ matrix.target }}
           path: wheels
@@ -359,7 +359,7 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           pattern: wheel-*
           path: dist
@@ -394,14 +394,14 @@ jobs:
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           sparse-checkout: tools/release/acceptance.py
           sparse-checkout-cone-mode: false
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: ${{ env.BUILD_PYTHON }}
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: wheel-${{ matrix.target }}
           path: wheels
@@ -424,11 +424,13 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
-          sparse-checkout: RELEASE_NOTES.md
+          sparse-checkout: |
+            RELEASE_NOTES.md
+            tools/release/release_notes.py
           sparse-checkout-cone-mode: false
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           pattern: wheel-*
           path: dist
@@ -442,6 +444,8 @@ jobs:
           if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
             gh release upload "$GITHUB_REF_NAME" dist/*.whl --clobber
           else
+            # A release page has no repository context: make relative links absolute (#79).
+            python3 -I tools/release/release_notes.py RELEASE_NOTES.md --repo "$GH_REPO" --ref "$GITHUB_REF_NAME" > "$RUNNER_TEMP/notes.md"
             gh release create "$GITHUB_REF_NAME" dist/*.whl --draft --verify-tag \
-              --title "coilEM $VERSION Developer Preview" --notes-file RELEASE_NOTES.md
+              --title "coilEM $VERSION Developer Preview" --notes-file "$RUNNER_TEMP/notes.md"
           fi

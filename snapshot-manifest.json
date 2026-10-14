@@ -25,13 +25,13 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 5866,
-      "sha256": "eaf53f1ebcb550a5484102d5bf399d641394123cb8298a7e47eb7e569f96d3f0"
+      "bytes": 6383,
+      "sha256": "c0b81a9e0e6a68b2015becaf3a29091b96196a8ef119b0d4e31f6d9eb1a1ebf0"
     },
     {
       "path": ".github/workflows/release-wheels.yml",
-      "bytes": 17308,
-      "sha256": "34dcac51ca9ab80ba75a8344ddf8cf2f782260e070d21b86e3ed0f26e55c3565"
+      "bytes": 18873,
+      "sha256": "141114d388835f32b90a1b06e386ee5595e09842ebe5a936f7ed512b03363443"
     },
     {
       "path": ".gitignore",
@@ -3240,8 +3240,8 @@
     },
     {
       "path": "docs/RELEASING.md",
-      "bytes": 10159,
-      "sha256": "46b8bc6933892fcc645d2faaadfee5dee53f979c4085b12dd0f02e1857228060"
+      "bytes": 10790,
+      "sha256": "82bea795a7ce8a7f34661d03778d9cce8c1c950bd5ac3df551c5c6a5347398e3"
     },
     {
       "path": "docs/RUNTIME_SETTINGS.md",
@@ -3265,33 +3265,33 @@
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/input-provenance.json",
-      "sha256": "717340af98275adf20f418c95e00374b2ea2723b7a1d7ad5ec6f22c29c439986",
-      "bytes": 12708
+      "bytes": 12708,
+      "sha256": "717340af98275adf20f418c95e00374b2ea2723b7a1d7ad5ec6f22c29c439986"
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/rotor-pocket-measurements.json",
-      "sha256": "75415f09a4e98708e26de8c5b67cc809851739b34c11e54209f6f0bb2606b94d",
-      "bytes": 5597
+      "bytes": 5597,
+      "sha256": "75415f09a4e98708e26de8c5b67cc809851739b34c11e54209f6f0bb2606b94d"
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/source-audit.md",
-      "sha256": "35d3ffc6edba4f763cf6f172a699ee867abe7efba6eb13e3711d197f77f6380d",
-      "bytes": 19838
+      "bytes": 19838,
+      "sha256": "35d3ffc6edba4f763cf6f172a699ee867abe7efba6eb13e3711d197f77f6380d"
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/sources.json",
-      "sha256": "0e5f96d113ef8b20e56adc1d479789f8aea73b4720029f1370ba236f127c764c",
-      "bytes": 2477
+      "bytes": 2477,
+      "sha256": "0e5f96d113ef8b20e56adc1d479789f8aea73b4720029f1370ba236f127c764c"
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/target-back-emf.json",
-      "sha256": "41db6bb847374c2ab6b8925f742c538bce12ce377fa00896d45f33c5d23c4aa6",
-      "bytes": 2804
+      "bytes": 2804,
+      "sha256": "41db6bb847374c2ab6b8925f742c538bce12ce377fa00896d45f33c5d23c4aa6"
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/target-locked-rotor.json",
-      "sha256": "d279e47f9f4bf14e2d615172479efe18fd02c5dda73f5cc2a7043158cf112bbd",
-      "bytes": 7200
+      "bytes": 7200,
+      "sha256": "d279e47f9f4bf14e2d615172479efe18fd02c5dda73f5cc2a7043158cf112bbd"
     },
     {
       "path": "docs/images/coilem-landing-page.png",
@@ -4610,8 +4610,8 @@
     },
     {
       "path": "tests/test_release_tools.py",
-      "bytes": 24414,
-      "sha256": "7cc7f837cfc7744f9014734c672958ead5bef364152a5ad1ec8e5906c0a8cc12"
+      "bytes": 28621,
+      "sha256": "56ae317f5d122defc5d2f12e9d4803b7cddf266c7ae4ab618a93baa788345bcb"
     },
     {
       "path": "tests/test_solve_estimate.py",
@@ -4705,8 +4705,8 @@
     },
     {
       "path": "tools/release/acceptance.py",
-      "bytes": 18277,
-      "sha256": "9d4a2087d1aeb649fb1d5f72c3fc0cb0c6dca9e14ff5f1dc83af4f0aabb50c4c"
+      "bytes": 20903,
+      "sha256": "9db59001c51c0d3482737f7e88f6fece82bd6caae73a1880ca1360b40fddbd0e"
     },
     {
       "path": "tools/release/artifacts.py",
@@ -4742,6 +4742,11 @@
       "path": "tools/release/policy.py",
       "bytes": 11897,
       "sha256": "5b38a5f885bf83091823514f317aeafa54cd0570e94377a9dd4934e29df62e2a"
+    },
+    {
+      "path": "tools/release/release_notes.py",
+      "bytes": 1420,
+      "sha256": "1df1bcfeeb75af8f8e6c14ea4d874d335aa9bd89212690231b4ca78248c14b7c"
     },
     {
       "path": "tools/release/rust_licenses.py",
