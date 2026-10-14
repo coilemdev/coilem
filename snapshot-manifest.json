@@ -3275,33 +3275,33 @@
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/input-provenance.json",
-      "sha256": "717340af98275adf20f418c95e00374b2ea2723b7a1d7ad5ec6f22c29c439986",
-      "bytes": 12708
+      "bytes": 12708,
+      "sha256": "717340af98275adf20f418c95e00374b2ea2723b7a1d7ad5ec6f22c29c439986"
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/rotor-pocket-measurements.json",
-      "sha256": "75415f09a4e98708e26de8c5b67cc809851739b34c11e54209f6f0bb2606b94d",
-      "bytes": 5597
+      "bytes": 5597,
+      "sha256": "75415f09a4e98708e26de8c5b67cc809851739b34c11e54209f6f0bb2606b94d"
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/source-audit.md",
-      "sha256": "35d3ffc6edba4f763cf6f172a699ee867abe7efba6eb13e3711d197f77f6380d",
-      "bytes": 19838
+      "bytes": 19838,
+      "sha256": "35d3ffc6edba4f763cf6f172a699ee867abe7efba6eb13e3711d197f77f6380d"
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/sources.json",
-      "sha256": "0e5f96d113ef8b20e56adc1d479789f8aea73b4720029f1370ba236f127c764c",
-      "bytes": 2477
+      "bytes": 2477,
+      "sha256": "0e5f96d113ef8b20e56adc1d479789f8aea73b4720029f1370ba236f127c764c"
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/target-back-emf.json",
-      "sha256": "41db6bb847374c2ab6b8925f742c538bce12ce377fa00896d45f33c5d23c4aa6",
-      "bytes": 2804
+      "bytes": 2804,
+      "sha256": "41db6bb847374c2ab6b8925f742c538bce12ce377fa00896d45f33c5d23c4aa6"
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/target-locked-rotor.json",
-      "sha256": "d279e47f9f4bf14e2d615172479efe18fd02c5dda73f5cc2a7043158cf112bbd",
-      "bytes": 7200
+      "bytes": 7200,
+      "sha256": "d279e47f9f4bf14e2d615172479efe18fd02c5dda73f5cc2a7043158cf112bbd"
     },
     {
       "path": "docs/images/coilem-landing-page.png",
@@ -4715,8 +4715,8 @@
     },
     {
       "path": "tools/fit_ornl_prius_holem50.py",
-      "bytes": 15569,
-      "sha256": "6bf8cbd40e270ec73486fa26066f31a3b6879fa33207f550bb21aa8d79e5d2e7"
+      "bytes": 15583,
+      "sha256": "4326bb6b5936cda155de7edfc42f20d81c0c6c8e4028053bd06e1b28a8b3bd1d"
     },
     {
       "path": "tools/generate_m350_50a_bh.py",

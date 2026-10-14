@@ -357,7 +357,7 @@ def main() -> None:
             },
         },
     }
-    out.write_text(json.dumps(result, indent=1) + "\n", encoding="utf-8")
+    out.write_text(json.dumps(result, indent=1) + "\n", encoding="utf-8", newline="\n")
     for name, v in [*result["variants"].items(), ("recommended", result["recommended"]["fit"])]:
         print(f"{name}: {v['holem50_mm']} rms {v['rms_mm']} p95 {v['p95_mm']} max {v['max_mm']} mm; stretch {v['drawing']['stretch_x_over_y']}")
 
