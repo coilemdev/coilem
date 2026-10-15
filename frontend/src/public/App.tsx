@@ -31,6 +31,7 @@ import {
 } from './CoilEmWorkspace';
 import { PublicGuidedSetup } from './GuidedSetup';
 import { coilsPerPhase, parallelPathsDividing, repairGuidedSection } from './guidedConfigRepair';
+import { windingLayerWording } from './toothCoils';
 import { PublicLanding } from './PublicLanding';
 import { HalbachWorkspace } from './halbach/HalbachWorkspace';
 import {
@@ -423,7 +424,11 @@ function describeDesignEdit(
   section: PublicEditableSection,
   field: string,
 ): Pick<PublicDesignEditFeedback, 'message' | 'consequence' | 'affectedKind'> {
-  const label = DESIGN_FIELD_LABELS[field] ?? field.replace(/_/g, ' ');
+  // A layer change keeps the layout, so the previous design names both counts (#102).
+  const layerWording = section === 'winding' && field === 'layers'
+    ? windingLayerWording(previous.stator.slot_count, previous.rotor.pole_count, previous.winding.type)
+    : null;
+  const label = layerWording?.label ?? DESIGN_FIELD_LABELS[field] ?? field.replace(/_/g, ' ');
   const previousAirgap = magneticAirgapMm(previous);
   const nextAirgap = magneticAirgapMm(next);
   const previousQ = slotsPerPolePerPhase(previous);
@@ -434,6 +439,9 @@ function describeDesignEdit(
     consequence = `Airgap ${previousAirgap.toFixed(2)} → ${nextAirgap.toFixed(2)} mm`;
   } else if (Math.abs(previousQ - nextQ) > 1e-6) {
     consequence = `Slots per pole per phase ${previousQ.toFixed(2)} → ${nextQ.toFixed(2)}`;
+  } else if (layerWording) {
+    const layerName = (layers: number) => layerWording.choice[layers === 2 ? 2 : 1];
+    consequence = `${layerName(previous.winding.layers)} → ${layerName(next.winding.layers)}`;
   } else {
     const previousValue = editableValue(previous, section, field);
     const nextValue = editableValue(next, section, field);

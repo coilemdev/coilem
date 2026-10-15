@@ -1432,7 +1432,12 @@ assert.match(modelSource, /toothIndex\?: number/);
 // The Winding section exposes layers (#91): only the counts the backend winds are
 // selectable, coils per phase are shown, and a layer change keeps the parallel
 // paths a divisor of the coils that remain.
-assert.match(workspaceSource, /label="Layers"/);
+assert.match(workspaceSource, /label=\{layerWording\.label\}/);
+// #102: the control, summary and edit note are worded by layout, not as "layers".
+assert.match(workspaceSource, /windingLayerWording\(config\.stator\.slot_count, config\.rotor\.pole_count, config\.winding\.type\)/);
+assert.match(workspaceSource, /label: layerWording\.choice\[layers\]/);
+assert.match(workspaceSource, /layerWording\.summary\[layerCount\]/);
+assert.match(appSource, /windingLayerWording\(previous\.stator\.slot_count, previous\.rotor\.pole_count, previous\.winding\.type\)/);
 assert.match(workspaceSource, /windingLayerOptions\(config\.stator\.slot_count, config\.rotor\.pole_count, config\.winding\.type\)/);
 assert.match(workspaceSource, /disabled: !available/);
 assert.match(workspaceSource, /Coils per Phase/);
