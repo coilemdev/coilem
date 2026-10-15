@@ -44,8 +44,8 @@
     },
     {
       "path": "coilem_benchmark_report.pdf",
-      "bytes": 143188,
-      "sha256": "0f976481c0f31222f4dd3762119ef5061f670547918b316135af70b724a5ec65"
+      "bytes": 143152,
+      "sha256": "b57105f547dc940337dbfe21531affb1d7bd7aa4f8a843569ec9bff8ce7bfba0"
     },
     {
       "path": "fixtures/ipm_flat_12s10p_fscw_contract__native.json",

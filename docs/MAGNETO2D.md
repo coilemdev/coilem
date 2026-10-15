@@ -24,8 +24,8 @@ limitations.
 | Qualified motor paths | Per the [Magneto2D versus FEMM v3 report](../benchmarks/windows-v3-20261015-738d951/README.md): SPM with concentrated windings under sinusoidal or ideal six-step current; SPM with two-layer distributed windings under sinusoidal current; flat-buried IPM with concentrated windings under sinusoidal current |
 | Experimental motor paths | V-shape IPM (one of six v3 fixtures is YELLOW), and accepted combinations the benchmark did not measure, such as six-step with distributed windings or IPM with distributed windings |
 | Mesh producer | Native Gmsh only |
-| Concentrated windings | Fractional-slot layouts (`q < 1`) are tooth coils: one layer winds every other tooth, two layers every tooth (experimental). Other concentrated layouts wind one phase per slot in one layer |
-| Distributed windings | Balanced one- or two-layer star-of-slots layouts with `q >= 1`; explicit short pitch is limited to supported integer-`q` layouts |
+| Concentrated windings | Fractional-slot layouts (`q < 1`) are tooth coils: one layer winds every other tooth, two layers every tooth (experimental). The Design panel calls this **Wound teeth**: Alternate or All. Other concentrated layouts wind one phase per slot in one layer |
+| Distributed windings | Balanced one- or two-layer star-of-slots layouts with `q >= 1`; explicit short pitch is limited to supported integer-`q` layouts. The Design panel calls the layer count **Coil sides / slot** |
 | Electrical steel | Bundled M350-50A nonlinear reference model or project-local imported B-H curves (Magneto2D only) |
 | Preview result surface | Loaded torque, torque ripple, flux linkage, Back-EMF, field values/plots, and solver/mesh provenance |
 | Harmonic tiers | Preview: waveform only; Standard: THD and H1-H12; High accuracy (`fine`): THD and H1-H24 |

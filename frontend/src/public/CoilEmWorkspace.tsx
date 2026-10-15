@@ -1,8 +1,9 @@
 import { CustomSteelImport } from './CustomSteelImport';
-import { steelDisplayName, type CustomSteel, type SteelTarget } from './customSteel';
+import { projectMaterialCatalog, steelDisplayName, type CustomSteel, type SteelTarget } from './customSteel';
 import {
   useCallback,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -22,7 +23,7 @@ import {
   type PublicMeshElementSelection,
 } from './MotorCanvas';
 import { WindingLayoutView } from './WindingLayoutView';
-import { coilsPerPhase, concentratedUsesToothCoils, windingLayerOptions } from './toothCoils';
+import { coilsPerPhase, windingLayerOptions, windingLayerWording } from './toothCoils';
 import {
   buildDimensionAnnotations,
   deriveStatorSectionWidths,
@@ -42,6 +43,8 @@ import { SolvedFieldViewer } from './SolvedFieldViewer';
 import { WaveformChart } from './WaveformChart';
 import { BldcTorqueCurrentChart } from './BldcTorqueCurrentChart';
 import { PublicRunComparison } from './PublicRunComparison';
+import { MotorConstants } from './MotorConstants';
+import { ResultSummary } from './ResultSummary';
 import { publicExampleOptions, type PublicExampleId } from './exampleDesigns';
 import {
   magneticAirgapMm,
@@ -1060,9 +1063,15 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
     stator: 'stator geometry outer diameter inner diameter slot count stack length bore pitch',
     rotor: 'rotor magnets pole count rotor od air gap magnet thickness magnet width burial depth outer bridge bridge thickness magnet position coverage magnet grade',
     advanced: 'advanced geometry bore tooth width tooth width at yoke bore slot opening physical slot mouth slot width at yoke yoke thickness tooth shoe shoulder height overhang rotor layout v angle v depth',
-    winding: 'winding type layers layer single double tooth coils per phase turns coil parallel paths phase current amp rms',
+    winding: 'winding type wound teeth alternate all coil sides slot layers layer single double tooth coils per phase turns coil parallel paths phase current amp rms',
     materials: 'materials stator steel rotor steel magnet grade conductor',
   };
+  const layerWording = windingLayerWording(config.stator.slot_count, config.rotor.pole_count, config.winding.type);
+  const layerCount: 1 | 2 = config.winding.layers === 2 ? 2 : 1;
+  const showLayerRow = !(layerWording.hidden && layerCount === 1);
+  const unavailableLayerReasons = windingLayerOptions(config.stator.slot_count, config.rotor.pole_count, config.winding.type)
+    .filter(({ available }) => !available)
+    .map(({ layers, reason }) => `${layerWording.choice[layers]} is unavailable: ${reason}.`);
   const matchesSearch = (section: PublicParameterSection | 'topology') => (
     !normalizedSearch || searchTerms[section].includes(normalizedSearch)
   );
@@ -1283,24 +1292,20 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         </>}
       </ParameterSectionBlock>}
 
-      {matchesSearch('winding') && <ParameterSectionBlock id="winding" label="Winding" active={Boolean(normalizedSearch) || activeSection === 'winding'} onToggle={toggle} summary={`${config.winding.type} · ${config.winding.layers} layer${config.winding.layers === 2 ? 's' : ''} · ${config.winding.turns_per_coil} turns × ${config.winding.parallel_paths}p`} nextLabel={normalizedSearch ? undefined : 'Materials'} onNext={normalizedSearch ? undefined : setNext('materials')}>
+      {matchesSearch('winding') && <ParameterSectionBlock id="winding" label="Winding" active={Boolean(normalizedSearch) || activeSection === 'winding'} onToggle={toggle} summary={`${config.winding.type}${showLayerRow ? ` · ${layerWording.summary[layerCount]}` : ''} · ${config.winding.turns_per_coil} turns × ${config.winding.parallel_paths}p`} nextLabel={normalizedSearch ? undefined : 'Materials'} onNext={normalizedSearch ? undefined : setNext('materials')}>
         <SelectRow label="Type" value={config.winding.type} choices={[{ value: 'concentrated', label: 'Concentrated' }, { value: 'distributed', label: 'Distributed' }]} disabled={disabled} onChange={set('winding', 'type', 'winding')} />
-        <SelectRow
-          label="Layers"
+        {showLayerRow && <SelectRow
+          label={layerWording.label}
           value={String(config.winding.layers)}
-          choices={windingLayerOptions(config.stator.slot_count, config.rotor.pole_count, config.winding.type).map(({ layers, available, reason }) => ({
+          choices={windingLayerOptions(config.stator.slot_count, config.rotor.pole_count, config.winding.type).map(({ layers, available }) => ({
             value: String(layers),
-            label: `${layers} layer${layers === 2 ? 's' : ''}${reason ? ` · ${reason}` : ''}`,
+            label: layerWording.choice[layers],
             disabled: !available,
           }))}
-          hint={config.winding.type === 'distributed'
-            ? 'Two layers put two coil sides in every slot; the benchmark qualified two-layer distributed windings.'
-            : concentratedUsesToothCoils(config.stator.slot_count, config.rotor.pole_count)
-              ? 'One layer winds a coil on every other tooth, two layers on every tooth. Two-layer concentrated windings are experimental.'
-              : 'This slot/pole combination winds one phase per slot, in one layer.'}
+          hint={[layerWording.hint, ...unavailableLayerReasons].join(' ')}
           disabled={disabled}
           onChange={(value) => set('winding', 'layers', 'winding')(Number(value))}
-        />
+        />}
         <div className="param-row public-param-row public-derived-row" title="Coils in each phase; parallel paths must divide them.">
           <span className="param-label">Coils per Phase<small>calc</small></span>
           <strong>{coilsPerPhase(config.stator.slot_count, config.rotor.pole_count, config.winding.type, config.winding.layers)}</strong>
@@ -2441,6 +2446,7 @@ function CompletedResultMonitor({ result, onOpenReport }: { result: SolveResult;
         <div><dt>Solver time</dt><dd>{formatNumber(result.summary.solve_time_s, 1)} s</dd></div>
         {result.workflow_elapsed_s != null && <div><dt>Total elapsed</dt><dd>{formatNumber(result.workflow_elapsed_s, 1)} s</dd></div>}
       </dl>
+      <MotorConstants summary={result.summary} />
       <div className="public-compact-result-tabs" role="tablist" aria-label="Completed result plots">
         <button type="button" role="tab" aria-selected={activePlot === 'torque'} className={activePlot === 'torque' ? 'active' : ''} onClick={() => setActivePlot('torque')}>Torque</button>
         <button type="button" role="tab" aria-selected={activePlot === 'back-emf'} className={activePlot === 'back-emf' ? 'active' : ''} onClick={() => setActivePlot('back-emf')}>Back EMF</button>
@@ -3229,6 +3235,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
 function ReportStage({
   result,
   config,
+  materials,
   designName,
   onBack,
   onOpenRunFolder,
@@ -3238,6 +3245,7 @@ function ReportStage({
 }: {
   result: SolveResult;
   config: MotorConfig;
+  materials: MaterialCatalog;
   designName: string | null;
   onBack: () => void;
   onOpenRunFolder: (savedRun: PublicSavedRun) => Promise<void>;
@@ -3256,6 +3264,24 @@ function ReportStage({
     tone: 'working' | 'success' | 'error';
     message: string;
   } | null>(null);
+  const [moreActionsOpen, setMoreActionsOpen] = useState(false);
+  const moreActionsId = useId();
+  const moreActionsRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!moreActionsOpen) return undefined;
+    const closeOnOutsidePointer = (event: PointerEvent) => {
+      if (!moreActionsRef.current?.contains(event.target as Node)) setMoreActionsOpen(false);
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMoreActionsOpen(false);
+    };
+    document.addEventListener('pointerdown', closeOnOutsidePointer);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsidePointer);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [moreActionsOpen]);
   const fieldPlot = result.field_line_plot;
   const sixStep = resultUsesSixStep(result, config);
   const reportQualification = readQualification(result.qualification);
@@ -3307,24 +3333,42 @@ function ReportStage({
     }
   };
   const exportBusy = exportState?.tone === 'working';
+  const completedAt = result.saved_run?.completed_at ? new Date(result.saved_run.completed_at) : null;
+  const completedText = completedAt && !Number.isNaN(completedAt.getTime())
+    ? completedAt.toLocaleString(undefined, { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+    : result.saved_run?.completed_at ?? null;
+  const moreAction = (operation: () => void) => () => {
+    setMoreActionsOpen(false);
+    operation();
+  };
+  // A qualified design's note becomes a chip in the saved bar; any other status keeps the full note.
+  const qualificationChip = reportQualification && result.saved_run && reportQualification.status === 'qualified';
   const savedRunPanel = result.saved_run ? (
     <section className="public-saved-run" aria-label="Saved solve run">
-      <div>
-        <span>Saved locally</span>
-        <strong>{result.saved_run.path}</strong>
-        <small>
-          Run {result.saved_run.run_id}
-          {result.saved_run.completed_at ? ` · completed ${result.saved_run.completed_at}` : ''}.
-          Stored results are immutable; replay loads inputs without solving.
-        </small>
+      <div className="public-saved-run-summary" title={`${result.saved_run.path}\nRun ${result.saved_run.run_id}. Stored results are immutable; replay loads inputs without solving.`}>
+        <span className="public-saved-run-label">Saved</span>
+        {completedText && <span>{completedText}</span>}
+        {qualificationChip && (
+          <span role="note" aria-label="Benchmark qualification">
+            <a className="public-qualification-chip" href={QUALIFICATION_DOCS_URL} target="_blank" rel="noreferrer" title={reportQualification.reason}>
+              {QUALIFICATION_LABELS[reportQualification.status]}
+            </a>
+            <span className="public-visually-hidden">{reportQualification.reason}</span>
+          </span>
+        )}
       </div>
-      <div className="public-saved-run-actions">
-        <button type="button" disabled={exportBusy} onClick={() => void runSavedAction('pdf', 'Preparing stored PDF…', 'Downloaded the immutable PDF report.', () => onDownloadRunExport(result.saved_run!, 'pdf'))}>Download PDF</button>
-        <button type="button" disabled={exportBusy} onClick={() => void runSavedAction('csv', 'Preparing stored CSV…', 'Downloaded the immutable CSV data.', () => onDownloadRunExport(result.saved_run!, 'csv'))}>Download CSV</button>
-        <button type="button" disabled={exportBusy} onClick={() => void runSavedAction('folder', 'Opening result folder…', 'Opened the local result folder.', () => onOpenRunFolder(result.saved_run!))}>Open result folder</button>
-        <button type="button" disabled={exportBusy} onClick={() => void runSavedAction('package', 'Preparing replay package…', 'Saved the replayable run package.', () => onDownloadRunExport(result.saved_run!, 'package'))}>Save replayable run package</button>
-        <button type="button" onClick={() => onOpenRunProject(result.saved_run!)}>Open project</button>
-        <button type="button" onClick={() => onRerun(result.saved_run!)}>Rerun settings</button>
+      <div className="public-saved-run-actions" ref={moreActionsRef}>
+        <button type="button" className="primary" disabled={exportBusy} onClick={() => void runSavedAction('pdf', 'Preparing stored PDF…', 'Downloaded the immutable PDF report.', () => onDownloadRunExport(result.saved_run!, 'pdf'))}>Download PDF</button>
+        <button type="button" aria-expanded={moreActionsOpen} aria-controls={moreActionsId} onClick={() => setMoreActionsOpen((open) => !open)}>More ▾</button>
+        {moreActionsOpen && (
+          <div id={moreActionsId} className="public-saved-run-menu" role="group" aria-label="More run actions">
+            <button type="button" disabled={exportBusy} onClick={moreAction(() => void runSavedAction('csv', 'Preparing stored CSV…', 'Downloaded the immutable CSV data.', () => onDownloadRunExport(result.saved_run!, 'csv')))}>Download CSV</button>
+            <button type="button" disabled={exportBusy} onClick={moreAction(() => void runSavedAction('folder', 'Opening result folder…', 'Opened the local result folder.', () => onOpenRunFolder(result.saved_run!)))}>Open result folder</button>
+            <button type="button" disabled={exportBusy} onClick={moreAction(() => void runSavedAction('package', 'Preparing replay package…', 'Saved the replayable run package.', () => onDownloadRunExport(result.saved_run!, 'package')))}>Save replayable run package</button>
+            <button type="button" onClick={moreAction(() => onOpenRunProject(result.saved_run!))}>Open project</button>
+            <button type="button" onClick={moreAction(() => onRerun(result.saved_run!))}>Rerun settings</button>
+          </div>
+        )}
       </div>
       {exportState && (
         <div
@@ -3341,19 +3385,18 @@ function ReportStage({
       <div className="public-report-header"><div><span className="eyebrow">Completed analysis</span><h1>Electromagnetic performance</h1><p>Local {reportSolverLabel} result for the current motor definition.</p></div><div className="public-report-header-actions"><div className="public-report-mode" role="group" aria-label="Results view"><button type="button" className={reportMode === 'single' ? 'active' : ''} onClick={() => setReportMode('single')}>This run</button><button type="button" className={reportMode === 'compare' ? 'active' : ''} onClick={() => setReportMode('compare')}>Compare runs</button></div><button type="button" onClick={onBack}>← Back to Solve</button></div></div>
       {reportMode === 'compare' ? <PublicRunComparison currentResult={result} /> : <>
       {savedRunPanel}
-      {reportQualification && <QualificationNote qualification={reportQualification} />}
-      <div className="metric-grid wide">
-        <article><span>Average torque{sixStep && !completeLoadedCycle ? ' · preview only' : ''}</span><strong>{formatNumber(result.summary.avg_torque_Nm)} <small>N·m</small></strong></article>
-        <article><span>Torque ripple{sixStep && !completeLoadedCycle ? ' · preview only' : ''}</span><strong>{formatNumber(result.summary.torque_ripple_pct)} <small>%</small></strong></article>
-        <article><span>Back EMF</span><strong>{formatNumber(result.summary.back_emf_fundamental_V)} <small>V</small></strong></article>
-        <article><span>Peak tooth B</span><strong>{formatNumber(result.summary.peak_flux_density_teeth_T)} <small>T</small></strong></article>
-        <article><span>Peak yoke B</span><strong>{formatNumber(result.summary.peak_flux_density_yoke_T)} <small>T</small></strong></article>
-        <article><span>Torque constant</span><strong>{formatNumber(result.summary.Kt_Nm_per_A)} <small>N·m/A</small></strong></article>
-        <article><span>{reportThdLabel}</span><strong>{formatNumber(result.summary.back_emf_thd_pct)} <small>%</small></strong></article>
-        <article><span>Solver time</span><strong>{formatNumber(result.summary.solve_time_s, 1)} <small>s</small></strong></article>
-        {result.workflow_elapsed_s != null && <article><span>Total elapsed</span><strong>{formatNumber(result.workflow_elapsed_s, 1)} <small>s</small></strong></article>}
-      </div>
-      <p className="public-timing-note">Solver time is the wall-clock time for meshing, solving and building the result. Total elapsed also covers playback images and saving, measured in the browser through receipt of the saved result.</p>
+      {reportQualification && !qualificationChip && <QualificationNote qualification={reportQualification} />}
+      <ResultSummary
+        result={result}
+        config={config}
+        materials={projectMaterialCatalog(materials, config)}
+        sixStep={sixStep}
+        completeLoadedCycle={completeLoadedCycle}
+        thdLabel={reportThdLabel}
+        solverLabel={reportSolverLabel}
+        torqueMethod={torqueMethod}
+        nonlinearSolver={nonlinearSolver}
+      />
       <div className="public-report-provenance"><span>Project</span><strong>{projectName}</strong><span>Material</span><strong>{materialName}</strong>{sixStep ? <span>Conducting phase current</span> : <span>Phase current</span>}<strong>{formatNumber(config.solve_params.current_amplitude_A)} A {sixStep ? 'plateau' : config.solve_params.current_amplitude_convention}</strong><span>Excitation</span><strong>{sixStep ? 'Ideal six-step (120°)' : 'Sinusoidal'}</strong>{reportQualification && <><span>Qualification</span><strong>{QUALIFICATION_LABELS[reportQualification.status]}</strong></>}{sixStep && <><span>Commutation advance</span><strong>{formatNumber(result.solve_metadata.commutation_advance_deg ?? config.solve_params.commutation_advance_deg)}° electrical</strong><span>Phase connection</span><strong>Wye (MVP)</strong></>}<span>Rated speed</span><strong>{formatNumber(config.solve_params.rated_speed_rpm, 0)} rpm</strong><span>Solver</span><strong>{result.solve_metadata.solver_name}</strong><span>Torque method</span><strong>{torqueMethod}</strong><span>Nonlinear solver</span><strong>{nonlinearSolver}</strong><span>Requested linear solver</span><strong>{requestedLinearSolver}</strong><span>Mesh elements</span><strong>{result.solve_metadata.mesh_element_count.toLocaleString()}</strong><span>Rotor positions</span><strong>{result.solve_metadata.rotor_positions}</strong><span>Mesh density</span><strong>{result.solve_metadata.mesh_density || 'native'}</strong></div>
       <div className="public-report-assumptions" role="note">
         <details>
@@ -3516,7 +3559,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
             </div>
           )}
           {props.activeStep === 'solve' && <SolveStage config={props.config} materials={props.materials} geometry={props.geometry} mesh={props.mesh} validation={props.validation} validationChecking={props.validationChecking} validationError={props.validationError} result={props.result} armatureField={props.armatureField} armatureFieldError={props.armatureFieldError} progress={props.progress} liveSamples={props.liveSamples} busy={props.busy} error={props.error} errorDetails={props.errorDetails} notice={props.notice} progressPercent={props.progressPercent} meshElements={props.meshElements} meshQuality={props.meshQuality} selectedSolver={props.selectedSolver} elmerCapability={props.elmerCapability} onBack={() => props.onStepChange('design')} onOpenReport={() => props.onStepChange('report')} onGenerateMesh={props.onGenerateMesh} onStartSolve={props.onStartSolve} onCancelSolve={props.onCancelSolve} onRequestArmatureField={props.onRequestArmatureField} onCancelArmatureField={props.onCancelArmatureField} onMeshSettingChange={props.onMeshSettingChange} onSolvePlanChange={props.onSolvePlanChange} onCustomSweepChange={props.onCustomSweepChange} onSolveSettingChange={props.onSolveSettingChange} onSolverChange={props.onSolverChange} onManageRuns={needsRunStorageRecovery(props.error) ? () => setRunHistoryOpen(true) : undefined} />}
-          {props.activeStep === 'report' && props.result && <ReportStage result={props.result} config={props.config} designName={props.designName ?? null} onBack={() => props.onStepChange('solve')} onOpenRunFolder={props.onOpenRunFolder} onDownloadRunExport={props.onDownloadRunExport} onOpenRunProject={props.onOpenRunProject} onRerun={props.onRerun} />}
+          {props.activeStep === 'report' && props.result && <ReportStage result={props.result} config={props.config} materials={props.materials} designName={props.designName ?? null} onBack={() => props.onStepChange('solve')} onOpenRunFolder={props.onOpenRunFolder} onDownloadRunExport={props.onDownloadRunExport} onOpenRunProject={props.onOpenRunProject} onRerun={props.onRerun} />}
         </div>
       </main>
     </div>

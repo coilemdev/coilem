@@ -122,6 +122,51 @@ export function windingLayerOptions(slotCount: number, poleCount: number, windin
   });
 }
 
+export interface WindingLayerWording {
+  /** The Design panel label for `winding.layers`. */
+  label: string;
+  /** What each layer count is called; short enough to fit the select. */
+  choice: Record<1 | 2, string>;
+  /** The Winding section summary for each layer count. */
+  summary: Record<1 | 2, string>;
+  hint: string;
+  /** Whole-slot concentrated maps wind one layer only; the row shows only to fix a second. */
+  hidden: boolean;
+}
+
+/**
+ * How `winding.layers` reads for a layout (#102). Tooth-coil users think in teeth
+ * wound and distributed-winding users in coil sides per slot, not in layers.
+ * The design file keeps `winding.layers` either way.
+ */
+export function windingLayerWording(slotCount: number, poleCount: number, windingType: string): WindingLayerWording {
+  if (windingType === 'distributed') {
+    return {
+      label: 'Coil sides / slot',
+      choice: { 1: '1', 2: '2' },
+      summary: { 1: '1 coil side', 2: '2 coil sides' },
+      hint: 'Single or double layer. Two-layer distributed windings are the benchmark-qualified option.',
+      hidden: false,
+    };
+  }
+  if (concentratedUsesToothCoils(slotCount, poleCount)) {
+    return {
+      label: 'Wound teeth',
+      choice: { 1: 'Alternate', 2: 'All' },
+      summary: { 1: 'alternate teeth', 2: 'all teeth' },
+      hint: 'Alternate: a coil on every other tooth (single layer). All: a coil on every tooth, two coil sides per slot (double layer); not in the benchmark yet.',
+      hidden: false,
+    };
+  }
+  return {
+    label: 'Layers',
+    choice: { 1: '1', 2: '2' },
+    summary: { 1: '1 layer', 2: '2 layers' },
+    hint: 'This slot/pole combination winds one phase per slot, in one layer.',
+    hidden: true,
+  };
+}
+
 /** Coils each phase has, which parallel paths must divide (backend/geometry.py validate_geometry). */
 export function coilsPerPhase(slotCount: number, poleCount: number, windingType: string, layers: number): number {
   if (windingType === 'distributed') return Math.floor(slotCount / 6);

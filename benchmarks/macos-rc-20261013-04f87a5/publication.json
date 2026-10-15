@@ -67,9 +67,13 @@
   "changes": [
     "local run directory replaced by <run-root> in text and JSON artifacts",
     "worker process IDs omitted",
-    "publication, timing and cross-platform comparison records added"
+    "publication, timing and cross-platform comparison records added",
+    "PDF fixture-link annotations point to the committed fixture JSON on GitHub instead of the local report paths; every other PDF byte is unchanged apart from cross-reference offsets"
   ],
-  "generated_pdf_unchanged": true,
+  "generated_pdf_unchanged": false,
+  "published_pdf_sha256": "09bd368275d853d3966455a651cf94e5f2ae6bd97a1ae76c18270006cd031781",
+  "pdf_link_annotations_changed": 36,
+  "pdf_page_content_streams_and_text_unchanged": true,
   "numerical_values_and_verdicts_changed": false,
   "new_reference_solves_executed": false,
   "local_only_formats": [

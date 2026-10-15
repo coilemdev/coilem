@@ -67,6 +67,6 @@ The owner asked for the benchmark to be re-run on both platforms at the new free
 
 ## Publication
 
-The generated PDF is committed byte-for-byte unchanged, and its SHA-256 matches the original report artifact. Its fixture hyperlinks keep the originating local report paths; the HTML and Markdown versions link to the committed fixture JSON files.
+The generated PDF is committed unchanged except for its 36 fixture hyperlinks: they named the originating local report paths and now point to the committed fixture JSON on GitHub. Every other byte is identical apart from cross-reference offsets, and `publication.json` keeps both SHA-256 values. The HTML and Markdown versions link to the committed fixture JSON files.
 
 Published text and JSON replace the local run root with `<run-root>` and omit worker PIDs, while keeping all numerical values and identities. CSV, worker logs, raw job evidence, mesh and frame caches and solver binaries stay local; their registered result hashes are kept in `execution-timings.json`.

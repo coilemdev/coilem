@@ -69,9 +69,13 @@
     "local run directory replaced by <run-root> in text and JSON artifacts",
     "worker process IDs omitted",
     "publication and full comparison records added",
-    "historical record label disambiguated from macOS report v1.5; measured data unchanged"
+    "historical record label disambiguated from macOS report v1.5; measured data unchanged",
+    "PDF fixture-link annotations point to the committed fixture JSON on GitHub instead of the local report paths; every other PDF byte is unchanged apart from cross-reference offsets"
   ],
-  "generated_pdf_unchanged": true,
+  "generated_pdf_unchanged": false,
+  "published_pdf_sha256": "6ff56c441212571627631f4bab59ad1dd7f5dc7ee9dfc13788c2a3bd3f544058",
+  "pdf_link_annotations_changed": 36,
+  "pdf_page_content_streams_and_text_unchanged": true,
   "numerical_values_and_verdicts_changed": false,
   "new_reference_solves_executed": false,
   "local_only_formats": [

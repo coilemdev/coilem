@@ -1,6 +1,6 @@
 # First comparison with ORNL's hardware measurements
 
-coilEM's prediction for the 2004 Prius motor, from the inputs frozen in commit `83231e0` ([fixture correction](../fixture-correction.md)), against ORNL's measurements of the real motor. It's an exploratory hardware correlation with no pass/fail, as [#69](https://github.com/coilemdev/coilem/issues/69) requires. Nothing here was fitted. The bands and the full Phase B report come separately.
+coilEM's prediction for the 2004 Prius motor, from the inputs frozen in commit `83231e0` ([fixture correction](../fixture-correction.md)), against ORNL's measurements of the real motor. It's an exploratory hardware correlation with no pass/fail, as [#69](https://github.com/coilemdev/coilem/issues/69) requires. Nothing here was fitted. The bands and the full Phase B report are in [`report-v1.md`](../report-v1.md).
 
 | File | What it holds |
 | --- | --- |
