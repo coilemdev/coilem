@@ -240,7 +240,12 @@ assert.match(
   styleSource,
   /\.public-report-stage > \.public-qualification-note \{\s*max-width: 1080px;\s*margin: 0 auto 14px;\s*\}/,
 );
-assert.equal((workspaceSource.match(/<QualificationNote qualification=/g) ?? []).length, 2, 'Solve and Results show the qualification note');
+assert.equal((workspaceSource.match(/<QualificationNote qualification=/g) ?? []).length, 1, 'Results shows the qualification note');
+// Solve shows the same qualification as a short tag in the Run plan header,
+// with the reason, caveats and docs link in its hover/focus details (#110).
+assert.match(workspaceSource, /\{validationQualification && <QualificationTag qualification=\{validationQualification\} \/>\}/);
+assert.match(workspaceSource, /function QualificationTag[\s\S]*?role="note"\s*ariaLabel="Benchmark qualification"[\s\S]*?qualification\.caveats\.map[\s\S]*?How designs are qualified/);
+assert.match(workspaceSource, /tone=\{qualification\.status === 'qualified' \? 'good' : 'warning'\}/);
 // The live-solve bar comes from the monotonic solve-progress helper, not
 // fixed placeholder widths (#53).
 assert.match(appSource, /nextPublicSolveProgressBar\(previous, progress\)/);
@@ -252,7 +257,7 @@ assert.match(appSource, /const convertProjectSteelToM350 = useCallback/);
 assert.match(appSource, /stator_steel: 'M350-50A'/);
 assert.match(appSource, /rotor_steel: 'M350-50A'/);
 assert.match(appSource, /save a new \.coilem file to preserve the conversion/);
-assert.match(workspaceSource, /public-solve-workspace\$\{resizingRunPlan[\s\S]*?solveViewportExpanded/);
+assert.match(workspaceSource, /public-solve-workspace\$\{resizingPanel === 'runPlan'[\s\S]*?solveViewportExpanded/);
 assert.match(workspaceSource, /className="public-solve-setup-scroll"/);
 assert.match(workspaceSource, /className="public-solve-footer"/);
 assert.match(workspaceSource, /function ExcitationRunPlanPreview/);
@@ -730,7 +735,19 @@ assert.match(workspaceSource, /public-quality-shape-scale/);
 assert.match(workspaceSource, /role="tooltip"/);
 assert.match(workspaceSource, /Required ≥/);
 assert.match(workspaceSource, /Ready to run/);
-assert.match(workspaceSource, /public-run-consequence/);
+// Run status is a short tag with hover/focus details, not a full-width card,
+// and the footer drops the position and output counts (#110).
+assert.match(workspaceSource, /function StatusTag\(/);
+assert.match(workspaceSource, /aria-describedby=\{detailsId\}/);
+assert.match(styleSource, /\.public-status-tag:hover \.public-status-tag-details,\s*\.public-status-tag:focus-within \.public-status-tag-details \{ opacity: 1; visibility: visible; \}/);
+assert.doesNotMatch(workspaceSource, /public-run-readiness/);
+assert.doesNotMatch(workspaceSource, /\{outputLabels\.length\} outputs/);
+assert.match(workspaceSource, /<div className="public-run-consequence">\s*<StatusTag tone=\{actionTagTone\}[^>]*placement="above">[\s\S]*?<strong>\{estimatedTimeText\}<\/strong>/);
+assert.match(workspaceSource, /<div className="public-run-plan-tags">\s*<StatusTag[\s\S]*?role="status"\s*ariaBusy=\{solveInProgress\}/);
+// The excitation preview labels the peak current on its y-axis (#110).
+assert.match(workspaceSource, /current_amplitude_convention === 'rms'\s*\? config\.solve_params\.current_amplitude_A \* Math\.SQRT2/);
+assert.match(workspaceSource, /className="public-excitation-preview-axis" aria-hidden="true"/);
+assert.match(workspaceSource, /<line className="peak"/);
 assert.match(workspaceSource, /public-derived-operating-point/);
 assert.match(workspaceSource, /public-mesh-quality-summary/);
 assert.match(workspaceSource, /open=\{analysisDetailsOpen\}/);
@@ -1091,7 +1108,8 @@ assert.match(workspaceSource, /periodic no-load flux-linkage DFT/);
 assert.match(workspaceSource, /progress-track\$\{progressStarted \? '' : ' is-waiting'\}\$\{finalizing \? ' is-finishing' : ''\}/);
 assert.match(styleSource, /\.progress-track\.is-waiting::after/);
 assert.match(workspaceSource, /window\.setInterval/);
-assert.match(workspaceSource, /is-running/);
+assert.match(workspaceSource, /const runReadinessTone: StatusTagTone = solveInProgress \|\| busy === 'mesh'\s*\? 'running'/);
+assert.match(styleSource, /\.public-status-tag\.is-running \.public-status-tag-pill i \{ animation: public-status-tag-pulse/);
 assert.match(solveProgressSource, /packaging_results/);
 assert.match(solveProgressSource, /saving_run/);
 assert.match(solveProgressSource, /solver_timing/);
@@ -1112,6 +1130,14 @@ assert.match(workspaceSource, /Resize completed results panel/);
 assert.match(workspaceSource, /role="separator"/);
 assert.match(workspaceSource, /window\.addEventListener\('pointermove', handlePointerMove\)/);
 assert.match(workspaceSource, /onKeyDown=\{handleRunPlanResizeKey\}/);
+// The Analysis setup panel resizes the same way from its right edge (#110).
+assert.match(workspaceSource, /Resize analysis setup panel/);
+assert.match(workspaceSource, /onKeyDown=\{handleSetupResizeKey\}/);
+assert.match(workspaceSource, /onPointerDown=\{handleSetupResizeStart\}/);
+assert.match(workspaceSource, /onDoubleClick=\{\(\) => setSetupWidth\(null\)\}/);
+assert.match(workspaceSource, /if \(panel === 'setup'\) setSetupWidth\(clampSetupWidth\(startWidth \+ event\.clientX - startX\)\)/);
+assert.match(styleSource, /\.public-solve-setup-resizer \{ right: -8px; \}/);
+assert.match(styleSource, /\.public-run-plan-resizer,\s*\.public-solve-setup-resizer \{ display: none; \}/);
 assert.match(workspaceSource, /const RUN_PLAN_ACTIVE_WIDTH = 440/);
 assert.match(workspaceSource, /setRunPlanWidth\(\(currentWidth\) => Math\.max/);
 assert.match(workspaceSource, /runPlanScrollRef\.current\?\.scrollTo/);
