@@ -1,0 +1,134 @@
+{
+  "schema": "coilem.ripple_investigation/v1",
+  "case_id": "spm_8p12s_reference",
+  "measured_commit": "1ea9e406818b9ceafe5408e9c16acd33e9c439b0",
+  "source_sha256": "0d285d645d53075bb99148f6acb1f25bb3f924b376e17117c2deba3d906918b1",
+  "binary_sha256": "f84d71aea782624eb173e0874fbb80c9ceb749d18b845877e352ac9cb53ecaa6",
+  "original_suite_status": "FAIL",
+  "original_failed_gate": "native_standard_to_fine_ripple_delta_percentage_points",
+  "registered_limit_percentage_points": 5.0,
+  "grids_50A": [
+    {
+      "step_deg": 7.5,
+      "scope": "registered suite",
+      "points": 48,
+      "mean_Nm": 17.44635709178827,
+      "minimum_Nm": 4.767361602203942,
+      "minimum_angle_deg": 195.0,
+      "maximum_Nm": 30.542144277302476,
+      "maximum_angle_deg": 105.0,
+      "ripple_pct": 147.73733301165964,
+      "mesh_density": "normal",
+      "current_plateau_A": 50.0
+    },
+    {
+      "step_deg": 3.75,
+      "scope": "registered suite",
+      "points": 96,
+      "mean_Nm": 17.469421148167836,
+      "minimum_Nm": 3.853866893984895,
+      "minimum_angle_deg": 11.25,
+      "maximum_Nm": 30.542144277302476,
+      "maximum_angle_deg": 105.0,
+      "ripple_pct": 152.77138925760346,
+      "mesh_density": "normal",
+      "current_plateau_A": 50.0
+    },
+    {
+      "step_deg": 1.875,
+      "scope": "supplemental diagnostic",
+      "points": 192,
+      "mean_Nm": 17.47769080303025,
+      "minimum_Nm": 3.850692317402392,
+      "minimum_angle_deg": 193.125,
+      "maximum_Nm": 30.542144277302476,
+      "maximum_angle_deg": 105.0,
+      "ripple_pct": 152.71726832055165,
+      "mesh_density": "normal",
+      "current_plateau_A": 50.0
+    },
+    {
+      "step_deg": 0.9375,
+      "scope": "supplemental diagnostic",
+      "points": 384,
+      "mean_Nm": 17.478491621035904,
+      "minimum_Nm": 3.6919941060548664,
+      "minimum_angle_deg": 12.1875,
+      "maximum_Nm": 30.542144277302476,
+      "maximum_angle_deg": 105.0,
+      "ripple_pct": 153.61823407537426,
+      "mesh_density": "normal",
+      "current_plateau_A": 50.0
+    }
+  ],
+  "successive_grid_comparisons": [
+    {
+      "coarse_step_deg": 7.5,
+      "fine_step_deg": 3.75,
+      "mean_delta_pct": 0.13202530400949405,
+      "ripple_delta_percentage_points": 5.034056245943816,
+      "shared_samples": 48,
+      "shared_angle_samples_exact": true,
+      "maximum_shared_angle_absolute_delta_Nm": 0.0
+    },
+    {
+      "coarse_step_deg": 3.75,
+      "fine_step_deg": 1.875,
+      "mean_delta_pct": 0.04731548896024475,
+      "ripple_delta_percentage_points": 0.054120937051806095,
+      "shared_samples": 96,
+      "shared_angle_samples_exact": true,
+      "maximum_shared_angle_absolute_delta_Nm": 0.0
+    },
+    {
+      "coarse_step_deg": 1.875,
+      "fine_step_deg": 0.9375,
+      "mean_delta_pct": 0.0045817340707502855,
+      "ripple_delta_percentage_points": 0.9009657548226073,
+      "shared_samples": 192,
+      "shared_angle_samples_exact": true,
+      "maximum_shared_angle_absolute_delta_Nm": 0.0
+    }
+  ],
+  "half_current_control": {
+    "step_deg": 3.75,
+    "scope": "supplemental diagnostic",
+    "points": 96,
+    "mean_Nm": 8.738405959958504,
+    "minimum_Nm": -4.357325568010145,
+    "minimum_angle_deg": 11.25,
+    "maximum_Nm": 21.730085839699374,
+    "maximum_angle_deg": 105.0,
+    "ripple_pct": 298.537416632374,
+    "mesh_density": "normal",
+    "current_plateau_A": 25.0
+  },
+  "earlier_recorded_commit": "04f87a5013415997cdef96a9bfa35125ce625bc5",
+  "earlier_report_sha256": "4e405c1bc4183deffbd77d25d445901ed4b98d10d36d1276c70ffea27ba5f395",
+  "half_current_control_matches_earlier_fine_torque_waveform_exactly": true,
+  "half_current_control_maximum_delta_Nm": 0.0,
+  "current_at_finest_minimum_A": {
+    "phase_a_A": 50.0,
+    "phase_b_A": -50.0,
+    "phase_c_A": 0.0
+  },
+  "diagnostic_elapsed_wall_s": 242.45289530000446,
+  "diagnostic_solver_job_runtime_sum_s": 236.85000240000227,
+  "original_evidence_unchanged": true,
+  "request_result_log_sha256": {
+    "original/native-standard/result.json": "5bbd3019b62dae9e7fd0d96a01dffec473c7e494d69ba4e8a4813629f1129504",
+    "original/native-fine/result.json": "c7ef9103c7a1c32eac56e62f2bb4cf51aee80af2657471e9cf99650a3478f829",
+    "diagnostic/grid-1p875-50A/request.json": "a5390bb90983e01160fb258fccdcc03c5a87a0d37226743d42b5976462cc9343",
+    "diagnostic/grid-1p875-50A/result.json": "3ef4a27c10745f19a55657c05c3d964d3e4f5fc3460edca53579b34892dd6a3b",
+    "diagnostic/grid-1p875-50A/worker.log": "c298087a6c19648d6ddc0b4423263396ca59b266de28454fc1c7cc476faf8252",
+    "diagnostic/grid-0p9375-50A/request.json": "5d0b6886332fb4a7d9aceec6c8e27275ccfdee0072cc45177b18892205a3f05c",
+    "diagnostic/grid-0p9375-50A/result.json": "7afc6d217fe3be2fd0934ea4db5b2313f21e10dea63bd4b0084dd65eb7330e9c",
+    "diagnostic/grid-0p9375-50A/worker.log": "9bd39fac678708909ce3f39b9670d6be30ba18f8fc3f0b1829b53623555d3486",
+    "diagnostic/half-current-3p75-25A/request.json": "30756c8e8dfa2770b38501e8aa58cc8376c6ed881cd33041e6c57a65fdf21ae4",
+    "diagnostic/half-current-3p75-25A/result.json": "e92e2d8eb4c40e57d59c26e09eca9642b9e281667eac096fcc5ddb041303b916",
+    "diagnostic/half-current-3p75-25A/worker.log": "4e1940091dc44dca80e93aabcf00690ad6aa61e86d8ade6695e746794128af4c"
+  },
+  "conclusion": "The registered 7.5 degree grid undersamples the torque trough; its 3.75 degree refinement exceeds the unchanged five percentage point ripple gate. Shared-angle torques are bit-for-bit equal at every refinement. A fresh 25 A control exactly reproduces the earlier fine-grid torque waveform, isolating the intended removal of the old half-current source scaling. Finer diagnostic pairs change ripple by less than one percentage point but do not change the original verdict or prove spatial convergence.",
+  "scope": "Normal spatial mesh and all non-angle/current numerical settings retained. Diagnostic requests are separate from registered suite requests. No gate, reference, waveform, phase, sign or scale was fitted or changed.",
+  "recommended_follow_up": "Retain this FAIL. For a future registered protocol, evaluate a finer standard/fine angular pair with matching FEMM reference samples and evidence. Do not raise the existing threshold or replace original measurements with these diagnostics."
+}

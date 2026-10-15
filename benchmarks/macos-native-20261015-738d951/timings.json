@@ -1,0 +1,260 @@
+{
+  "schema": "coilem.native_timings/v1",
+  "run_started_at": "2026-10-14T21:58:10.583345+00:00",
+  "run_completed_at": "2026-10-15T02:18:39.017974+00:00",
+  "note": "Per-job wall time from the run manifest (final attempt of each job). The run was paused three times by a free-disk guard and resumed with --resume, so start-to-finish elapsed time is not a solve-time measure. A separate solve from another task shared the CPU during phase A.",
+  "job_wall_seconds_total": 2850.144,
+  "phase_job_wall_seconds": {
+    "A": 758.604,
+    "B": 1398.147,
+    "C": 277.262,
+    "D": 416.131
+  },
+  "jobs": [
+    {
+      "case_id": "spm_4p12s_simple__baseline",
+      "phase": "A",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 68.54
+    },
+    {
+      "case_id": "spm_4p12s_simple__high_current",
+      "phase": "A",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 59.251
+    },
+    {
+      "case_id": "spm_4p12s_simple__tight_airgap",
+      "phase": "A",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 41.694
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__baseline",
+      "phase": "A",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 62.804
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__high_current",
+      "phase": "A",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 56.172
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__tight_airgap",
+      "phase": "A",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 44.994
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__baseline",
+      "phase": "A",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 106.405
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__high_current",
+      "phase": "A",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 105.101
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__tight_airgap",
+      "phase": "A",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 112.479
+    },
+    {
+      "case_id": "spm_8p12s_reference_angle30__baseline",
+      "phase": "A",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 101.166
+    },
+    {
+      "case_id": "ipm_flat_12s10p_fscw_contract",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 84.291
+    },
+    {
+      "case_id": "ipm_flat_24s16p_industrial_contract",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 99.815
+    },
+    {
+      "case_id": "ipm_flat_4p12s_micro_contract",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 83.537
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 157.849
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 154.553
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 148.866
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_baseline_contract",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 116.941
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 121.071
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_narrow_angle_contract",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 121.025
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 108.635
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_thin_bridge_contract",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 95.899
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "phase": "B",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 105.667
+    },
+    {
+      "case_id": "spm_12p36s_distributed_femm_validation",
+      "phase": "C",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 58.39
+    },
+    {
+      "case_id": "spm_8p24s_distributed_femm_validation",
+      "phase": "C",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 56.859
+    },
+    {
+      "case_id": "spm_8p48s_chorded_5_6",
+      "phase": "C",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 115.814
+    },
+    {
+      "case_id": "spm_8p48s_distributed_femm_validation",
+      "phase": "C",
+      "stage": "native",
+      "status": "COMPLETE",
+      "wall_seconds": 46.2
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "stage": "native-standard",
+      "status": "COMPLETE",
+      "wall_seconds": 43.842
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "stage": "native-fine",
+      "status": "COMPLETE",
+      "wall_seconds": 101.717
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "stage": "analytical",
+      "status": "COMPLETE",
+      "wall_seconds": 59.122
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "phase": "D",
+      "stage": "native-standard",
+      "status": "COMPLETE",
+      "wall_seconds": 19.122
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "phase": "D",
+      "stage": "native-fine",
+      "status": "COMPLETE",
+      "wall_seconds": 27.375
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "phase": "D",
+      "stage": "analytical",
+      "status": "COMPLETE",
+      "wall_seconds": 45.962
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "phase": "D",
+      "stage": "native-standard",
+      "status": "COMPLETE",
+      "wall_seconds": 21.692
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "phase": "D",
+      "stage": "native-fine",
+      "status": "COMPLETE",
+      "wall_seconds": 39.087
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "phase": "D",
+      "stage": "analytical",
+      "status": "COMPLETE",
+      "wall_seconds": 58.213
+    }
+  ]
+}

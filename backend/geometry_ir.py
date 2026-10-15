@@ -14,7 +14,12 @@ from typing import Literal
 from backend.geometry_drawer import MotorGeometry, compute_geometry
 from backend.models import MotorConfig
 from backend.solver_environment import solver_setting
-from backend.winding_utils import distributed_slot_layer_assignments
+from backend.winding_utils import (
+    SlotLayerAssignment,
+    concentrated_slot_layer_assignments,
+    concentrated_uses_tooth_coils,
+    distributed_slot_layer_assignments,
+)
 
 GEOMETRY_IR_VERSION = "geometry_ir/v0"
 SHAFT_MATERIAL_ENV = "COILEM_SHAFT_MATERIAL"
@@ -193,15 +198,12 @@ def _build_motor_geometry_ir(config: MotorConfig, geom: MotorGeometry) -> Geomet
             getattr(config.rotor, "pocket_clearance_mm", 0.0) or 0.0
         ),
     }
-    split_distributed_layers = (
-        config.winding.type == "distributed"
-        and config.winding.layers >= 2
-        and not bool(config.stator.tooth_shoe_enabled)
-    )
-    if split_distributed_layers:
+    layer_split = slot_layer_split(config)
+    if layer_split is not None and not slotless_stator:
         metadata["winding_type"] = str(config.winding.type)
         metadata["winding_layers"] = int(config.winding.layers)
-        if config.winding.coil_span is not None:
+        metadata["slot_layer_split"] = layer_split
+        if config.winding.type == "distributed" and config.winding.coil_span is not None:
             metadata["coil_span_slots"] = int(config.winding.coil_span)
 
     return GeometryIR(
@@ -239,9 +241,8 @@ def validate_geometry_ir(ir: GeometryIR) -> GeometryIRValidationReport:
         )
 
     slot_regions = [region for region in ir.regions if region.kind == "SlotWinding"]
-    winding_type = str(ir.metadata.get("winding_type") or "")
     winding_layers = int(ir.metadata.get("winding_layers") or 1)
-    expected_layers = max(1, winding_layers) if winding_type == "distributed" else 1
+    expected_layers = max(1, winding_layers) if ir.metadata.get("slot_layer_split") else 1
     expected_slot_regions = ir.slot_count * expected_layers
     if slot_regions and len(slot_regions) != expected_slot_regions:
         issues.append(
@@ -319,6 +320,12 @@ def _add_stator_regions(
     for slot in geom.slots:
         stator_inner_breakpoints.extend(slot.edge_angles_at_radius(geom.stator_ID_r))
         stator_outer_breakpoints.extend(slot.edge_angles_at_radius(slot_outer_r))
+    layer_split = slot_layer_split(config)
+    slot_centres = [slot.center_angle_rad for slot in geom.slots]
+    if layer_split == "tangential":
+        # Side-by-side coil sides meet on the slot centre line; the yoke arc
+        # (here) and the bore arc (below) need a node there too.
+        stator_outer_breakpoints.extend(slot_centres)
 
     regions.append(
         GeometryIRRegion(
@@ -359,6 +366,7 @@ def _add_stator_regions(
     # slot ``idx + 1``; the slot loop reuses these exact angles so tooth/slot
     # boundaries line up even after local shoulder fillets are applied.
     tooth_shoe_boundaries: list[tuple[float, float, float, float, float, float]] = []
+    tooth_plain_boundaries: list[tuple[float, float, float, float]] = []
 
     for idx, slot in enumerate(geom.slots):
         next_slot = geom.slots[(idx + 1) % len(geom.slots)]
@@ -391,26 +399,79 @@ def _add_stator_regions(
                 slot_pitch_rad,
                 slot_opening_mm,
             )
-            bore_start = tooth_center - bore_tip_half
-            bore_end = tooth_center + bore_tip_half
-            shoulder_start = tooth_center - shoulder_half
-            shoulder_end = tooth_center + shoulder_half
-            tooth_loop = _shoed_annular_loop(
-                f"stator_tooth_{idx}_boundary",
-                bore_r,
-                shoulder_r,
-                slot_outer_r,
-                bore_start,
-                bore_end,
-                shoulder_start,
-                shoulder_end,
-                outer_start,
-                outer_end,
-            )
-            tooth_area = _loop_area_mm2(tooth_loop)
-            bore_breakpoints.extend((bore_start, bore_end))
             tooth_shoe_boundaries.append(
                 (
+                    tooth_center - bore_tip_half,
+                    tooth_center + bore_tip_half,
+                    tooth_center - shoulder_half,
+                    tooth_center + shoulder_half,
+                    outer_start,
+                    outer_end,
+                )
+            )
+        else:
+            tooth_plain_boundaries.append(
+                (tooth_center - inner_half, tooth_center + inner_half, outer_start, outer_end)
+            )
+
+    # Radial layers meet the slot walls part-way up; the teeth carry the same
+    # points so the slot and tooth meshes share nodes along every wall.
+    radial_layers: list[_RadialLayerBoundary] = []
+    if layer_split == "radial":
+        for slot_idx, slot in enumerate(geom.slots):
+            if shoe_enabled:
+                left_tooth = tooth_shoe_boundaries[(slot_idx - 1) % len(tooth_shoe_boundaries)]
+                right_tooth = tooth_shoe_boundaries[slot_idx % len(tooth_shoe_boundaries)]
+                radial_layers.append(
+                    _shoed_radial_layer_boundary(
+                        bore_r,
+                        shoulder_r,
+                        slot.outer_radius_mm,
+                        left_tooth[1],
+                        right_tooth[0],
+                        left_tooth[3],
+                        right_tooth[2],
+                        left_tooth[5],
+                        right_tooth[4],
+                    )
+                )
+            else:
+                radial_layers.append(_plain_radial_layer_boundary(slot))
+
+    for idx in range(len(geom.slots)):
+        next_idx = (idx + 1) % len(geom.slots)
+        # This tooth's start wall is slot idx's right wall; its end wall is the
+        # next slot's left wall.
+        start_wall = (
+            (radial_layers[idx].radius_mm, radial_layers[idx].right_angle_rad) if radial_layers else None
+        )
+        end_wall = (
+            (radial_layers[next_idx].radius_mm, radial_layers[next_idx].left_angle_rad) if radial_layers else None
+        )
+        if shoe_enabled:
+            bore_start, bore_end, shoulder_start, shoulder_end, outer_start, outer_end = tooth_shoe_boundaries[idx]
+            if radial_layers:
+                tooth_loop = _path_loop(
+                    f"stator_tooth_{idx}_boundary",
+                    (
+                        (bore_r, bore_start, "arc+"),
+                        (bore_r, bore_end, "line"),
+                        (shoulder_r, bore_end, "line"),
+                        (shoulder_r, shoulder_end, "line"),
+                        (*end_wall, "line"),
+                        (slot_outer_r, outer_end, "arc-"),
+                        (slot_outer_r, outer_start, "line"),
+                        (*start_wall, "line"),
+                        (shoulder_r, shoulder_start, "line"),
+                        (shoulder_r, bore_start, "line"),
+                    ),
+                )
+            else:
+                tooth_loop = _shoed_annular_loop(
+                    f"stator_tooth_{idx}_boundary",
+                    bore_r,
+                    shoulder_r,
+                    slot_outer_r,
                     bore_start,
                     bore_end,
                     shoulder_start,
@@ -418,19 +479,32 @@ def _add_stator_regions(
                     outer_start,
                     outer_end,
                 )
-            )
+            tooth_area = _loop_area_mm2(tooth_loop)
+            bore_breakpoints.extend((bore_start, bore_end))
         else:
-            inner_start = tooth_center - inner_half
-            inner_end = tooth_center + inner_half
-            tooth_loop = _tapered_annular_loop(
-                f"stator_tooth_{idx}_boundary",
-                geom.stator_ID_r,
-                slot_outer_r,
-                inner_start,
-                inner_end,
-                outer_start,
-                outer_end,
-            )
+            inner_start, inner_end, outer_start, outer_end = tooth_plain_boundaries[idx]
+            if radial_layers:
+                tooth_loop = _path_loop(
+                    f"stator_tooth_{idx}_boundary",
+                    (
+                        (geom.stator_ID_r, inner_start, "arc+"),
+                        (geom.stator_ID_r, inner_end, "line"),
+                        (*end_wall, "line"),
+                        (slot_outer_r, outer_end, "arc-"),
+                        (slot_outer_r, outer_start, "line"),
+                        (*start_wall, "line"),
+                    ),
+                )
+            else:
+                tooth_loop = _tapered_annular_loop(
+                    f"stator_tooth_{idx}_boundary",
+                    geom.stator_ID_r,
+                    slot_outer_r,
+                    inner_start,
+                    inner_end,
+                    outer_start,
+                    outer_end,
+                )
             tooth_area = _tapered_annular_sector_area(
                 geom.stator_ID_r,
                 slot_outer_r,
@@ -454,6 +528,9 @@ def _add_stator_regions(
                 motion_group="stationary",
             )
         )
+
+    if layer_split == "tangential":
+        (bore_breakpoints if shoe_enabled else stator_inner_breakpoints).extend(slot_centres)
 
     conductor_material = f"conductor:{config.materials.conductor}"
     for slot_idx, slot in enumerate(geom.slots):
@@ -504,48 +581,75 @@ def _add_stator_regions(
                 outer_right,
             )
 
-        if config.winding.type == "distributed" and config.winding.layers >= 2 and not shoe_enabled:
-            for assignment in distributed_slot_layer_assignments(
-                slot.slot_index,
-                config.stator.slot_count,
-                config.rotor.pole_count,
-                config.winding.layers,
-                coil_span=config.winding.coil_span,
-            ):
-                layer_inner_r, layer_outer_r = _slot_layer_radial_bounds(
-                    slot.inner_radius_mm,
-                    slot.outer_radius_mm,
-                    assignment.layer,
-                    2,
-                )
-                layer_inner_left = _slot_wall_angle_at_radius(slot, "left", layer_inner_r)
-                layer_inner_right = _slot_wall_angle_at_radius(slot, "right", layer_inner_r)
-                layer_outer_left = _slot_wall_angle_at_radius(slot, "left", layer_outer_r)
-                layer_outer_right = _slot_wall_angle_at_radius(slot, "right", layer_outer_r)
-                layer_loop = _tapered_annular_loop(
-                    f"slot_winding_{slot.slot_index}_layer{assignment.layer}_boundary",
-                    layer_inner_r,
-                    layer_outer_r,
-                    layer_inner_left,
-                    layer_inner_right,
-                    layer_outer_left,
-                    layer_outer_right,
-                )
-                layer_area = _tapered_annular_sector_area(
-                    layer_inner_r,
-                    layer_outer_r,
-                    layer_inner_left,
-                    layer_inner_right,
-                    layer_outer_left,
-                    layer_outer_right,
-                )
+        if layer_split is not None:
+            for assignment in slot_layer_assignments(config, slot.slot_index):
+                prefix = f"slot_winding_{slot.slot_index}_layer{assignment.layer}"
+                if layer_split == "radial":
+                    boundary = radial_layers[slot_idx]
+                    if shoe_enabled:
+                        layer_loop = _shoed_radial_layer_loop(
+                            f"{prefix}_boundary",
+                            assignment.layer,
+                            boundary,
+                            bore_r,
+                            shoulder_r,
+                            slot.outer_radius_mm,
+                            bore_left,
+                            bore_right,
+                            shoulder_left,
+                            shoulder_right,
+                            outer_left,
+                            outer_right,
+                        )
+                    else:
+                        layer_loop = _plain_radial_layer_loop(
+                            f"{prefix}_boundary", assignment.layer, boundary, slot
+                        )
+                elif shoe_enabled:
+                    layer_loop = _shoed_tangential_layer_loop(
+                        f"{prefix}_boundary",
+                        assignment.layer,
+                        slot.center_angle_rad,
+                        bore_r,
+                        shoulder_r,
+                        slot.outer_radius_mm,
+                        bore_left,
+                        bore_right,
+                        shoulder_left,
+                        shoulder_right,
+                        outer_left,
+                        outer_right,
+                    )
+                else:
+                    centre = slot.center_angle_rad
+                    layer_loop = (
+                        _tapered_annular_loop(
+                            f"{prefix}_boundary",
+                            slot.inner_radius_mm,
+                            slot.outer_radius_mm,
+                            inner_left,
+                            centre,
+                            outer_left,
+                            centre,
+                        )
+                        if assignment.layer == 1
+                        else _tapered_annular_loop(
+                            f"{prefix}_boundary",
+                            slot.inner_radius_mm,
+                            slot.outer_radius_mm,
+                            centre,
+                            inner_right,
+                            centre,
+                            outer_right,
+                        )
+                    )
                 regions.append(
                     GeometryIRRegion(
-                        region_id=f"slot_winding_{slot.slot_index}_layer{assignment.layer}",
+                        region_id=prefix,
                         kind="SlotWinding",
                         material_key=conductor_material,
                         loops=(layer_loop,),
-                        area_mm2=layer_area,
+                        area_mm2=_loop_area_mm2(layer_loop),
                         motion_group="stationary",
                         source_group=(
                             f"winding:{assignment.phase}:{assignment.direction}:"
@@ -572,18 +676,283 @@ def _add_stator_regions(
     return bore_breakpoints if shoe_enabled else stator_inner_breakpoints
 
 
-def _slot_layer_radial_bounds(
-    inner_radius_mm: float,
+SlotLayerSplit = Literal["radial", "tangential"]
+
+
+def slot_layer_split(config: MotorConfig) -> SlotLayerSplit | None:
+    """How a two-layer slot divides between its coil sides, or None for a whole-slot winding.
+
+    Distributed double layers stack radially, layer 1 next to the bore. Tooth
+    coils (#91) sit side by side on the slot centre line: layer 1, the return
+    side of the coil on the tooth before the slot, takes the half next to that
+    tooth; layer 2, the go side of the coil on the slot's own tooth, the other.
+    Each layer holds half the slot's area, so the uniform slot current density
+    gives each coil side half the slot's ampere-turns.
+    """
+
+    if config.winding.layers < 2:
+        return None
+    if config.winding.type == "distributed":
+        return "radial"
+    if concentrated_uses_tooth_coils(config.stator.slot_count, config.rotor.pole_count):
+        return "tangential"
+    return None
+
+
+def slot_layer_assignments(config: MotorConfig, slot_index: int) -> tuple[SlotLayerAssignment, ...]:
+    """The coil sides in one slot, in layer order, for a split slot."""
+
+    if config.winding.type == "distributed":
+        return distributed_slot_layer_assignments(
+            slot_index,
+            config.stator.slot_count,
+            config.rotor.pole_count,
+            config.winding.layers,
+            coil_span=config.winding.coil_span,
+        )
+    return concentrated_slot_layer_assignments(
+        slot_index, config.stator.slot_count, config.rotor.pole_count, config.winding.layers
+    )
+
+
+@dataclass(frozen=True)
+class _RadialLayerBoundary:
+    """Where the radial layer boundary arc meets a slot's walls."""
+
+    radius_mm: float
+    left_angle_rad: float
+    right_angle_rad: float
+
+
+def _equal_area_radius(area_below, lower_mm: float, upper_mm: float, target_mm2: float) -> float:
+    lo, hi = lower_mm, upper_mm
+    for _ in range(80):
+        mid = 0.5 * (lo + hi)
+        if area_below(mid) < target_mm2:
+            lo = mid
+        else:
+            hi = mid
+    return 0.5 * (lo + hi)
+
+
+def _plain_radial_layer_boundary(slot) -> _RadialLayerBoundary:
+    inner_left, inner_right = slot.edge_angles_at_radius(slot.inner_radius_mm)
+    outer_left, outer_right = slot.edge_angles_at_radius(slot.outer_radius_mm)
+    total = _tapered_annular_sector_area(
+        slot.inner_radius_mm, slot.outer_radius_mm, inner_left, inner_right, outer_left, outer_right
+    )
+
+    def area_below(radius_mm: float) -> float:
+        return _tapered_annular_sector_area(
+            slot.inner_radius_mm,
+            radius_mm,
+            inner_left,
+            inner_right,
+            _slot_wall_angle_at_radius(slot, "left", radius_mm),
+            _slot_wall_angle_at_radius(slot, "right", radius_mm),
+        )
+
+    radius = _equal_area_radius(area_below, slot.inner_radius_mm, slot.outer_radius_mm, 0.5 * total)
+    return _RadialLayerBoundary(
+        radius,
+        _slot_wall_angle_at_radius(slot, "left", radius),
+        _slot_wall_angle_at_radius(slot, "right", radius),
+    )
+
+
+def _plain_radial_layer_loop(loop_id: str, layer: int, boundary: _RadialLayerBoundary, slot) -> GeometryIRLoop:
+    if layer == 1:
+        inner_left, inner_right = slot.edge_angles_at_radius(slot.inner_radius_mm)
+        return _tapered_annular_loop(
+            loop_id,
+            slot.inner_radius_mm,
+            boundary.radius_mm,
+            inner_left,
+            inner_right,
+            boundary.left_angle_rad,
+            boundary.right_angle_rad,
+        )
+    outer_left, outer_right = slot.edge_angles_at_radius(slot.outer_radius_mm)
+    return _tapered_annular_loop(
+        loop_id,
+        boundary.radius_mm,
+        slot.outer_radius_mm,
+        boundary.left_angle_rad,
+        boundary.right_angle_rad,
+        outer_left,
+        outer_right,
+    )
+
+
+def _shoed_radial_layer_boundary(
+    bore_radius_mm: float,
+    shoulder_radius_mm: float,
     outer_radius_mm: float,
+    bore_left: float,
+    bore_right: float,
+    shoulder_left: float,
+    shoulder_right: float,
+    outer_left: float,
+    outer_right: float,
+) -> _RadialLayerBoundary:
+    def boundary_at(radius_mm: float) -> _RadialLayerBoundary:
+        return _RadialLayerBoundary(
+            radius_mm,
+            _wall_angle_at_radius(shoulder_radius_mm, shoulder_left, outer_radius_mm, outer_left, radius_mm),
+            _wall_angle_at_radius(shoulder_radius_mm, shoulder_right, outer_radius_mm, outer_right, radius_mm),
+        )
+
+    def layer_one(boundary: _RadialLayerBoundary) -> GeometryIRLoop:
+        return _shoed_radial_layer_loop(
+            "probe", 1, boundary, bore_radius_mm, shoulder_radius_mm, outer_radius_mm,
+            bore_left, bore_right, shoulder_left, shoulder_right, outer_left, outer_right,
+        )
+
+    whole = _shoed_annular_loop(
+        "probe", bore_radius_mm, shoulder_radius_mm, outer_radius_mm,
+        bore_left, bore_right, shoulder_left, shoulder_right, outer_left, outer_right,
+    )
+    span = outer_radius_mm - shoulder_radius_mm
+    radius = _equal_area_radius(
+        lambda radius_mm: _loop_area_mm2(layer_one(boundary_at(radius_mm))),
+        shoulder_radius_mm + 1e-3 * span,
+        outer_radius_mm - 1e-3 * span,
+        0.5 * _loop_area_mm2(whole),
+    )
+    return boundary_at(radius)
+
+
+def _shoed_radial_layer_loop(
+    loop_id: str,
     layer: int,
-    layers: int,
-) -> tuple[float, float]:
-    radial_span = max(0.0, outer_radius_mm - inner_radius_mm)
-    n_layers = max(1, layers)
-    layer_idx = max(1, min(layer, n_layers)) - 1
-    r0 = inner_radius_mm + radial_span * layer_idx / n_layers
-    r1 = inner_radius_mm + radial_span * (layer_idx + 1) / n_layers
-    return r0, r1
+    boundary: _RadialLayerBoundary,
+    bore_radius_mm: float,
+    shoulder_radius_mm: float,
+    outer_radius_mm: float,
+    bore_left: float,
+    bore_right: float,
+    shoulder_left: float,
+    shoulder_right: float,
+    outer_left: float,
+    outer_right: float,
+) -> GeometryIRLoop:
+    if layer == 1:
+        # The slot mouth between the shoe tips and the body up to the boundary.
+        return _path_loop(
+            loop_id,
+            (
+                (bore_radius_mm, bore_left, "arc+"),
+                (bore_radius_mm, bore_right, "line"),
+                (shoulder_radius_mm, bore_right, "line"),
+                (shoulder_radius_mm, shoulder_right, "line"),
+                (boundary.radius_mm, boundary.right_angle_rad, "arc-"),
+                (boundary.radius_mm, boundary.left_angle_rad, "line"),
+                (shoulder_radius_mm, shoulder_left, "line"),
+                (shoulder_radius_mm, bore_left, "line"),
+            ),
+        )
+    return _tapered_annular_loop(
+        loop_id,
+        boundary.radius_mm,
+        outer_radius_mm,
+        boundary.left_angle_rad,
+        boundary.right_angle_rad,
+        outer_left,
+        outer_right,
+    )
+
+
+def _shoed_tangential_layer_loop(
+    loop_id: str,
+    layer: int,
+    centre_rad: float,
+    bore_radius_mm: float,
+    shoulder_radius_mm: float,
+    outer_radius_mm: float,
+    bore_left: float,
+    bore_right: float,
+    shoulder_left: float,
+    shoulder_right: float,
+    outer_left: float,
+    outer_right: float,
+) -> GeometryIRLoop:
+    if layer == 1:
+        return _path_loop(
+            loop_id,
+            (
+                (bore_radius_mm, bore_left, "arc+"),
+                (bore_radius_mm, centre_rad, "line"),
+                (outer_radius_mm, centre_rad, "arc-"),
+                (outer_radius_mm, outer_left, "line"),
+                (shoulder_radius_mm, shoulder_left, "line"),
+                (shoulder_radius_mm, bore_left, "line"),
+            ),
+        )
+    return _path_loop(
+        loop_id,
+        (
+            (bore_radius_mm, centre_rad, "arc+"),
+            (bore_radius_mm, bore_right, "line"),
+            (shoulder_radius_mm, bore_right, "line"),
+            (shoulder_radius_mm, shoulder_right, "line"),
+            (outer_radius_mm, outer_right, "arc-"),
+            (outer_radius_mm, centre_rad, "line"),
+        ),
+    )
+
+
+def _path_loop(loop_id: str, steps: tuple[tuple[float, float, str], ...]) -> GeometryIRLoop:
+    """Closed loop through polar points; each step names its edge to the next point.
+
+    ``"line"`` is a straight edge, ``"arc+"``/``"arc-"`` an arc about the origin at
+    the step's radius running counter-clockwise/clockwise to the next point.
+    """
+
+    points = tuple(_point(radius, angle) for radius, angle, _ in steps)
+    origin = GeometryIRPoint(0.0, 0.0)
+    segments: list[GeometryIRSegment] = []
+    for index, (radius, angle, edge) in enumerate(steps):
+        following = (index + 1) % len(steps)
+        next_angle = steps[following][1]
+        if edge == "line":
+            segments.append(GeometryIRSegment("line", points[index], points[following]))
+            continue
+        sweep = (
+            _positive_angle_delta(angle, next_angle)
+            if edge == "arc+"
+            else -_positive_angle_delta(next_angle, angle)
+        )
+        segments.append(
+            GeometryIRSegment("arc", points[index], points[following], origin, radius, math.degrees(sweep))
+        )
+    return GeometryIRLoop(loop_id=loop_id, kind="arc_band", segments=tuple(segments), points_mm=points)
+
+
+def _wall_angle_at_radius(
+    start_radius_mm: float,
+    start_angle_rad: float,
+    end_radius_mm: float,
+    end_angle_rad: float,
+    radius_mm: float,
+) -> float:
+    """Polar angle where the straight wall between two polar points crosses a radius."""
+
+    x0, y0 = _polar_point(start_radius_mm, start_angle_rad)
+    x1, y1 = _polar_point(end_radius_mm, end_angle_rad)
+    dx, dy = x1 - x0, y1 - y0
+    qa = dx * dx + dy * dy
+    qb = 2.0 * (x0 * dx + y0 * dy)
+    qc = x0 * x0 + y0 * y0 - radius_mm * radius_mm
+    if qa <= 1.0e-18:
+        return math.atan2(y0, x0)
+    disc = math.sqrt(max(0.0, qb * qb - 4.0 * qa * qc))
+    nominal = (radius_mm - start_radius_mm) / max(1.0e-12, end_radius_mm - start_radius_mm)
+    t = min(
+        ((-qb - disc) / (2.0 * qa), (-qb + disc) / (2.0 * qa)),
+        key=lambda value: (0.0 if -1.0e-9 <= value <= 1.0 + 1.0e-9 else 1.0, abs(value - nominal)),
+    )
+    t = max(0.0, min(1.0, t))
+    return math.atan2(y0 + t * dy, x0 + t * dx)
 
 
 def _slot_wall_angle_at_radius(slot, side: str, radius_mm: float) -> float:

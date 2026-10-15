@@ -45,7 +45,9 @@ def measure(args):
         before = identity(binary, protocol_version=protocol_version)
         if before != request["identity"] or canonical(request["config"]) != request["config_sha256"]:
             raise ValueError("Registered runtime or request changed")
-        config, _, solver = parse_public_solve_request(request["config"])
+        config, _, solver = parse_public_solve_request(
+            request["config"], allow_experimental_rotors=bool(request.get("experimental_rotor"))
+        )
         if solver != "magneto2d":
             raise ValueError("This suite measures only public Magneto2D")
         measured = Magneto2DSolver(launch_surface=True).solve(config, on_progress=lambda *a, **k: print(*a[:4], flush=True))

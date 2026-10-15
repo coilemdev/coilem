@@ -735,6 +735,7 @@ _QA_MAGNET_GRADES = {
     "Ferrite",
     "Ferrite_Y30",
     "Prius_2004_NdFeB",
+    "ORNL_Prius_2004_NdFeB",
 }
 
 

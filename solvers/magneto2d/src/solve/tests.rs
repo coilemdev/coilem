@@ -1,5 +1,6 @@
 use super::mesh_metadata::{
-    resolve_step_current_densities_a_per_m2, resolve_step_current_densities_for_requested_current,
+    element_slot_layers, resolve_step_current_densities_a_per_m2,
+    resolve_step_current_densities_for_requested_current,
     resolve_step_element_magnetization_rad, validate_imported_sources_for_problem,
     validate_imported_step_motion, validate_mesh_metadata, MeshMetadataError,
 };
@@ -758,6 +759,28 @@ fn mesh_metadata_validation_rejects_wrong_length_current_density() {
             actual: 2,
         }
     );
+}
+
+#[test]
+fn split_slot_elements_carry_their_layer_from_the_region_id() {
+    let mut artifact = metadata_test_artifact(
+        vec![Region::SlotWinding, Region::SlotWinding, Region::StatorTooth],
+        None,
+    );
+    assert_eq!(element_slot_layers(&artifact), None);
+    artifact.element_region_ids = Some(
+        ["slot_winding_3_layer1", "slot_winding_3_layer2", "stator_tooth_3"]
+            .map(str::to_string)
+            .to_vec(),
+    );
+    assert_eq!(element_slot_layers(&artifact), Some(vec![1, 2, 0]));
+    // Whole-slot windings keep the slot-average path.
+    artifact.element_region_ids = Some(
+        ["slot_winding_3", "slot_winding_4", "stator_tooth_3"]
+            .map(str::to_string)
+            .to_vec(),
+    );
+    assert_eq!(element_slot_layers(&artifact), None);
 }
 
 #[test]
@@ -2186,9 +2209,9 @@ fn rms_current_amplitude_is_converted_to_peak_current() {
 fn applied_current_angle_uses_unified_q_axis_gamma_convention() {
     // Positive gamma ADVANCES the source phasor. gamma=0
     // rows stay bit-identical to the legacy rotor_elec - 90 source angle.
-    assert_eq!(applied_current_angle_deg(30.0, 0.0), -60.0);
-    assert_eq!(applied_current_angle_deg(0.0, 0.0), -90.0);
-    assert_eq!(applied_current_angle_deg(30.0, 30.0), -30.0);
+    assert_eq!(applied_current_angle_deg(30.0, 0.0, 0.0), -60.0);
+    assert_eq!(applied_current_angle_deg(0.0, 0.0, 0.0), -90.0);
+    assert_eq!(applied_current_angle_deg(30.0, 30.0, 0.0), -30.0);
 }
 
 #[test]
@@ -2202,8 +2225,8 @@ fn single_angle_sync_matches_full_sweep_rule() {
     let mech_rad = 15.0_f64.to_radians();
     let pole_pairs = 2;
     let advance_deg = 0.0;
-    assert!((synced_current_angle_deg(mech_rad, pole_pairs, advance_deg) - (-60.0)).abs() < 1e-9);
-    assert!((synced_current_angle_deg(mech_rad, pole_pairs, 30.0) - (-30.0)).abs() < 1e-9);
+    assert!((synced_current_angle_deg(mech_rad, pole_pairs, advance_deg, 0.0) - (-60.0)).abs() < 1e-9);
+    assert!((synced_current_angle_deg(mech_rad, pole_pairs, 30.0, 0.0) - (-30.0)).abs() < 1e-9);
 }
 
 #[test]

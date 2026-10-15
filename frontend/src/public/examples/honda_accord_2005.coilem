@@ -1,0 +1,70 @@
+{
+  "openem_schema_version": 4,
+  "openem_version": "0.3.1",
+  "name": "2005 Honda Accord IMA motor (ORNL)",
+  "description": "The 2005 Honda Accord hybrid (IMA) motor as frozen for the hardware correlation (#92): 24 slots with a coil on every tooth (two layers, 52 turns per coil, 8 coils per phase in parallel), 16 poles with one flat bar per pole standing in for each pole's two magnets, catalog N35 magnets. Design data from ORNL/TM-2006/535. The solve is the frozen no-load sweep at 1000 rpm, which gives the back-EMF ORNL measured.",
+  "debug": null,
+  "materials": {
+    "stator_steel": "M350-50A",
+    "rotor_steel": "M350-50A",
+    "magnet_grade": "N35",
+    "conductor": "copper"
+  },
+  "rotor": {
+    "OD_mm": 230.0,
+    "ID_mm": 188.0,
+    "pole_count": 16,
+    "ipm_topology": "flat_buried",
+    "flat_buried_magnet_shape": "straight",
+    "magnet_width_mm": 36.9,
+    "magnet_thickness_mm": 4.46,
+    "bridge_thickness_mm": 1.0,
+    "pocket_clearance_mm": 0.25,
+    "magnet_angle_deg": 0.0
+  },
+  "schema_version": "1.0",
+  "solve_options": {
+    "torque_sweep": true,
+    "back_emf": true,
+    "flux_density": false,
+    "cogging_torque": false,
+    "thd_analysis": false,
+    "torque_speed_envelope": false
+  },
+  "solve_params": {
+    "solve_quality": "custom",
+    "rotor_sweep_range_deg": 360.0,
+    "rotor_step_deg": 2.0,
+    "mesh_density": "normal",
+    "mesh_source": "native",
+    "mesher": "gmsh",
+    "rotor_rotation_model": "remesh_per_step",
+    "torque_method": "weighted_stress",
+    "nonlinear_solver": "newton",
+    "max_nonlinear_iterations": 200,
+    "linear_solver_preconditioner": "direct",
+    "current_amplitude_A": 0.0,
+    "current_amplitude_convention": "peak",
+    "current_angle_deg": 0.0,
+    "rated_speed_rpm": 1000
+  },
+  "stator": {
+    "OD_mm": 315.5,
+    "ID_mm": 232.0,
+    "slot_count": 24,
+    "stack_length_mm": 40.1,
+    "yoke_thickness_mm": 11.15,
+    "tooth_width_mm": 19.092,
+    "slot_opening_mm": 12.178,
+    "tooth_shoe_enabled": true,
+    "tooth_shoe_height_mm": 1.423,
+    "tooth_shoe_overhang_mm": 3.714
+  },
+  "topology": "IPM",
+  "winding": {
+    "type": "concentrated",
+    "layers": 2,
+    "turns_per_coil": 104,
+    "parallel_paths": 8
+  }
+}

@@ -159,6 +159,30 @@ def status(value: float, maximum: float) -> str:
     return "PASS" if math.isfinite(value) and value <= maximum else "FAIL"
 
 
+def golden_sector(angle: float, protocol: dict[str, Any]) -> int:
+    """Select a golden sector in the explicitly registered current-angle frame.
+
+    Missing metadata retains the historical fixed-axis interpretation. Offsets
+    belong to the registered fixture geometry, never to a waveform fit.
+    """
+    contract = protocol.get("current_angle_convention")
+    offset = 0.0
+    if contract is not None:
+        if not isinstance(contract, dict) or contract.get("version") != "winding-phase-a-v1":
+            raise ValueError("Unsupported BLDC current-angle convention")
+        offset = contract.get("phase_a_axis_offset_electrical_deg")
+        if isinstance(offset, bool) or not isinstance(offset, (int, float)) or not math.isfinite(offset) or not 0 <= offset < 360:
+            raise ValueError("Invalid registered phase-A axis offset")
+        if contract.get("physical_angle_convention") != "public-clockwise-v2":
+            raise ValueError("BLDC current-angle coordinate convention mismatch")
+    effective = (angle + offset + protocol["excitation"]["commutation_advance_deg"]) % 360.0
+    if contract is not None:
+        boundary = round(effective / 60.0) * 60.0
+        if abs(effective - boundary) <= 1e-12:
+            effective = boundary % 360.0
+    return int(effective // 60.0)
+
+
 def validate_lane_result(
     stage: str, result: dict[str, Any], protocol: dict[str, Any], *, golden: dict[str, Any], check_golden_sequence: bool = True
 ) -> None:
@@ -197,10 +221,9 @@ def validate_lane_result(
         series(current.get(f"phase_{phase}_A"), f"phase_{phase}_A")
     plateau = protocol["excitation"]["analytical_current_A" if stage == "analytical" else "product_current_A"]
     scale = plateau / golden["plateau_current_A"]
-    advance = protocol["excitation"]["commutation_advance_deg"]
     tolerance = protocol["gates"]["current_plateau_abs_A_max"]
     for angle, row in zip(expected, current_rows(result), strict=True):
-        sector = int(((angle + advance) % 360.0) // 60.0)
+        sector = golden_sector(angle, protocol)
         if check_golden_sequence and any(
             abs(actual - frozen * scale) > tolerance for actual, frozen in zip(row, golden["sector_table_A"][sector], strict=True)
         ):

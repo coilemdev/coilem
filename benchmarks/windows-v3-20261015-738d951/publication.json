@@ -1,0 +1,50 @@
+{
+  "schema": "coilem.benchmark_publication/v1",
+  "package": "windows-v3-20261015-738d951",
+  "packaged_at": "2026-10-15T13:59:47.098771+00:00",
+  "measured_commit": "738d9516e8500c5996c772bd96470472cbb9a0f9",
+  "measured_harness_version": "1.3.0",
+  "measured_protocol_version": "1.1.0",
+  "evaluation_contract": {
+    "version": "1.3.0",
+    "suite": "benchmarks/abcd-v1.3/benchmark_spec.json",
+    "suite_sha256": "9d8cd79e60d0b908e072504a1886db7873f13047609697897ffdcccb81825743",
+    "measured_protocol_version": "1.1.0",
+    "current_angle_convention": "winding-phase-a-v1",
+    "post_hoc_registration": true,
+    "physical_inputs_changed": false,
+    "waveforms_changed": false,
+    "historical_evaluations_preserved": true,
+    "evaluator_commit": "8a4eb25ec47ae0d5799323a0722a866ea792e7dd",
+    "evaluator_dirty": false,
+    "protocol_sha256": {
+      "benchmarks/abcd-v1.3/protocols/spm_14p12s_high_pole.json": "d47aca42dc38c7d921ed88bf355163ab5a894920780058875f6b0d139cc1982b",
+      "benchmarks/abcd-v1.3/protocols/spm_4p12s_small.json": "30c164bfb9fac53ffce1eef07f6c68147f1935f8ab59d2f74c004edd79a0bef4",
+      "benchmarks/abcd-v1.3/protocols/spm_8p12s_reference.json": "56d8421901292e036197f7b7da17c131938746996241edacec46a457d821182e"
+    },
+    "evaluator_sha256": "79b912dc1190ceaebdcbcb5ec0eea83f519063b9a16783bd5b80a2c31c447716",
+    "reference_loader_sha256": "8578999697e86fd5582ca088f5013ed9522060605b799da69db58627b93809d6",
+    "report_renderer_sha256": "dfe6e8cb3e7bf062f9fa350f1e88bda558ae74852f696572c8e525505ae6a6cd"
+  },
+  "reference_bundle": "benchmarks/reference-baselines/ipm-high-output-v3",
+  "reference_manifest_sha256": "b5178463b9746ea2ca7604ab24b97f221905e495bcfa22bc5169c7f7a9fd4008",
+  "reference_bundle_sha256": "95450ffcb909ed20caf514548f741c15611087a3482657c87add4255b308ba63",
+  "original_comparison_manifest_sha256": "6a17a0a37698c1461c8b5bc48e3e3165bd8441c7b2e559c30361c09eb224a6df",
+  "original_native_manifest_sha256": "2c8be8fdd9c98171cb9de0392824807e8063d0381458f9ac2614895013ee520c",
+  "original_pdf_sha256": "0f25d42b02d4f1a814de0e2d038370ae6aebeea6ceeb5dfff7848f296b4dcec8",
+  "published_pdf_sha256": "d7250b1a101b6844612fff8ce81f9bbeecdc556f7efef67a1ad50d7022ca913e",
+  "pdf_pages": 64,
+  "pdf_link_annotations_changed": 36,
+  "pdf_page_content_streams_and_text_unchanged": true,
+  "all_numerical_values_waveforms_and_verdicts_unchanged_from_reconciled_report": true,
+  "historical_fixed_axis_evaluations_retained": true,
+  "field_solves_during_publication": 0,
+  "changes": [
+    "Native cache roots replaced by <native-out> in public text/JSON",
+    "Historical archive root normalized in environment metadata",
+    "PDF fixture URI annotations point to committed PR fixtures; visible PDF content unchanged",
+    "Publication hashes and timing summary added"
+  ],
+  "raw_evidence_policy": "Original raw evidence, original reports and references are preserved locally and unchanged; published copies do not replace raw hash verification",
+  "qualification": "Post hoc angle-contract correction; YELLOW and scientific-review limitations remain; not release qualification"
+}

@@ -15,9 +15,21 @@ def load_suite(path):
 
 def load_bundle(directory, spec):
     manifest = read(directory / "manifest.json")
+    # A new validation frame can reuse unchanged physical fields only through
+    # an explicit, hash-bound bridge. This never rewrites a measured record.
+    bridge = None
+    if manifest["protocol_version"] != spec["protocol_version"]:
+        bridge = spec.get("reference_compatibility")
+        if (
+            not isinstance(bridge, dict)
+            or bridge.get("schema") != "coilem.reference_validation_bridge/v1"
+            or bridge.get("manifest_sha256") != sha(directory / "manifest.json")
+            or bridge.get("measured_protocol_version") != manifest["protocol_version"]
+            or bridge.get("reference_commit") != manifest["reference_commit"]
+        ):
+            raise ValueError("Reference protocol mismatch; an exact registered validation bridge is required")
     if (
         manifest["schema"] != "coilem.frozen_reference_bundle/v1"
-        or manifest["protocol_version"] != spec["protocol_version"]
         or manifest["convention"] != CONVENTION
         or manifest.get("normalized") is not True
         or manifest["material_contract"] != spec["material_contract"]
@@ -37,7 +49,9 @@ def load_bundle(directory, spec):
             or record["convention"] != CONVENTION
             or record.get("normalized") is not True
             or record["reference_commit"] != manifest["reference_commit"]
-            or (case["phase"] == "D" and record["protocol_sha256"] != case["protocol_sha256"])
+            or (case["phase"] == "D" and record["protocol_sha256"] != (
+                bridge.get("six_step_protocol_sha256", {}).get(case["id"]) if bridge else case["protocol_sha256"]
+            ))
         ):
             raise ValueError(f"Reference input or identity mismatch: {case['id']}; register a new bundle")
         records[case["id"]] = record["result"]

@@ -1,0 +1,34 @@
+{
+  "case_id": "spm_8p12s_reference",
+  "gate": "native_standard_to_fine_ripple_delta_percentage_points",
+  "limit_percentage_points": 5.0,
+  "shared_angle_samples_exact": true,
+  "maximum_shared_angle_absolute_delta_Nm": 0.0,
+  "standard": {
+    "mean_torque_Nm": 17.44635709178827,
+    "minimum_torque_Nm": 4.767361602203942,
+    "minimum_angle_deg": 195.0,
+    "maximum_torque_Nm": 30.542144277302476,
+    "maximum_angle_deg": 105.0,
+    "ripple_pct": 147.73733301165964,
+    "points": 48
+  },
+  "fine": {
+    "mean_torque_Nm": 17.469421148167836,
+    "minimum_torque_Nm": 3.853866893984895,
+    "minimum_angle_deg": 11.25,
+    "maximum_torque_Nm": 30.542144277302476,
+    "maximum_angle_deg": 105.0,
+    "ripple_pct": 152.77138925760346,
+    "points": 96
+  },
+  "standard_step_deg": 7.5,
+  "fine_step_deg": 3.75,
+  "earlier_recorded_gate": {
+    "id": "native_standard_to_fine_ripple_delta_percentage_points",
+    "value": 2.7551025405282417,
+    "maximum": 5.0,
+    "status": "PASS"
+  },
+  "interpretation": "The additional registered angular samples expose a lower minimum; all shared samples are exactly equal. The original FAIL is retained; inputs, limits and measurements are unchanged."
+}

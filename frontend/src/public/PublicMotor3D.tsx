@@ -8,6 +8,7 @@ import { deriveStatorSectionWidths } from './dimensionAnnotations';
 import { publicFlatIpmMagnetCenterRadiusMm } from './flatIpmBurialHealth';
 import type { MotorConfig, PublicMotorComponentSelection } from './model';
 import { PUBLIC_MOTOR_COLORS, PUBLIC_PHASE_COLORS, renderTargetColor } from './motorPalette';
+import { concentratedUsesToothCoils, toothCoilAssignments } from './toothCoils';
 
 interface PublicMotor3DProps {
   config: MotorConfig;
@@ -1039,17 +1040,31 @@ export function PublicMotor3D({
       coilModelNote = `${turnsNote} · ${bundleNote}`;
     }
 
+    // Tooth coils (#91) follow the backend's layout: alternate teeth with one
+    // layer, every tooth with two, each with its own phase and sign.
+    const toothCoilByTooth = config.winding.type === 'concentrated'
+      && concentratedUsesToothCoils(config.stator.slot_count, config.rotor.pole_count)
+      ? new Map(
+        toothCoilAssignments(config.stator.slot_count, config.rotor.pole_count, config.winding.layers)
+          .map((coil) => [coil.tooth, coil] as const),
+      )
+      : null;
     for (let slot = 0; slot < config.stator.slot_count; slot += 1) {
-      const angle = slot * slotPitch;
+      // The backend centres slot k at k slot pitches and tooth k between slots
+      // k and k + 1, the frame the 2D view and the tooth-coil rules use.
+      const angle = (slot + 0.5) * slotPitch;
+      const slotAngle = slot * slotPitch;
       const tooth = new THREE.Mesh(toothGeometry, materials.tooth);
       tooth.rotation.z = angle;
       makeSelectable(tooth, { id: `3d-stator-tooth-${slot + 1}`, kind: 'stator', label: `Stator tooth ${slot + 1}`, role: 'Stationary magnetic flux path', slotIndex: slot + 1 });
       teethGroup.add(tooth);
       registerRadialExplosion(tooth, angle, outerRadius * 0.075);
 
-      const phase = (['A', 'C', 'B'] as const)[slot % 3];
-      const direction = slot % 2 === 0 ? '+' : '-';
+      const toothCoil = toothCoilByTooth?.get(slot);
+      const phase = toothCoil?.phase ?? (['A', 'C', 'B'] as const)[slot % 3];
+      const direction = toothCoil ? (toothCoil.direction === 'in' ? '+' : '-') : slot % 2 === 0 ? '+' : '-';
       if (concentratedCoil) {
+        if (toothCoilByTooth && !toothCoil) continue;
         const coilMaterial = { A: materials.coilA, B: materials.coilB, C: materials.coilC }[phase];
         const coilAssembly = new THREE.Group();
         coilAssembly.add(
@@ -1078,10 +1093,10 @@ export function PublicMotor3D({
         geometries.push(coilGeometry);
         const phaseMaterial = { A: materials.phaseA, B: materials.phaseB, C: materials.phaseC }[phase];
         const coil = new THREE.Mesh(coilGeometry, phaseMaterial);
-        coil.rotation.z = angle + slotPitch / 2;
+        coil.rotation.z = slotAngle;
         makeSelectable(coil, { id: `3d-winding-${slot + 1}`, kind: 'winding', label: `Slot ${slot + 1} · phase ${phase}${direction}`, role: 'Current-carrying stator winding', slotIndex: slot + 1, phase, direction });
         windingsGroup.add(coil);
-        registerRadialExplosion(coil, angle + slotPitch / 2, outerRadius * 0.16);
+        registerRadialExplosion(coil, slotAngle, outerRadius * 0.16);
       }
     }
     scene.add(statorGroup, teethGroup, windingsGroup);
@@ -1092,7 +1107,10 @@ export function PublicMotor3D({
       const harness = buildWindingHarness({
         slotCount: config.stator.slot_count,
         slotPitchRad: slotPitch,
-        phaseOfSlot: (slot) => (['A', 'C', 'B'] as const)[slot % 3],
+        toothAngleOffsetRad: slotPitch / 2,
+        phaseOfSlot: (slot) => (
+          toothCoilByTooth ? toothCoilByTooth.get(slot)?.phase ?? null : (['A', 'C', 'B'] as const)[slot % 3]
+        ),
         bundleCenterRadius: concentratedCoil.bundleCenterRadius,
         stackHalf: stackDepth / 2,
         axialOverhang: concentratedCoil.axialOverhang,
@@ -1259,6 +1277,9 @@ export function PublicMotor3D({
         magnetsGroup.add(magnetUnit);
         registerRadialExplosion(magnetUnit, pole * polePitch, rotorRadius * 0.14);
       }
+    } else if (config.rotor.ipm_topology === 'pyleecan_holem50') {
+      // Experimental HoleM50 pockets have no parametric 3D model; the 2D
+      // cross-section shows the solved geometry. The rotor core still renders.
     } else if (config.rotor.ipm_topology === 'v_shape') {
       const magnetDepth = Math.max(1, config.rotor.magnet_thickness_mm);
       const magnetAxialDepth = stackDepth * 0.92;

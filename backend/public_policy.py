@@ -11,6 +11,12 @@ from backend.magneto2d_adapter import get_magneto2d_winding_support_error
 from backend.models import MotorConfig
 
 SUPPORTED_PUBLIC_IPM_TOPOLOGIES = frozenset({"flat_buried", "v_shape"})
+# Experimental rotor families: not public support and no qualification claim.
+# Accepted only when a caller passes allow_experimental_rotors=True (the research
+# tool, and the benchmark harness for registered experimental cases) or when the
+# local app was started with COILEM_EXPERIMENTAL_ROTORS=1.
+EXPERIMENTAL_IPM_TOPOLOGIES = frozenset({"pyleecan_holem50"})
+EXPERIMENTAL_ROTORS_FEATURE_ENV = "COILEM_EXPERIMENTAL_ROTORS"
 SUPPORTED_PUBLIC_STEELS = frozenset({"M350-50A"})
 PUBLIC_SOLVER_IDS = frozenset({"magneto2d", "elmer"})
 PublicSolverId = Literal["magneto2d", "elmer"]
@@ -31,6 +37,12 @@ def public_elmer_enabled() -> bool:
     """Return whether the optional Elmer surface was explicitly enabled."""
 
     return os.environ.get(PUBLIC_ELMER_FEATURE_ENV, "").strip().lower() in _TRUE_ENV_VALUES
+
+
+def experimental_rotors_enabled() -> bool:
+    """Return whether this launch opted in to experimental rotor families."""
+
+    return os.environ.get(EXPERIMENTAL_ROTORS_FEATURE_ENV, "").strip().lower() in _TRUE_ENV_VALUES
 
 
 def _reject_disabled_elmer(requested_solver: str) -> None:
@@ -62,8 +74,12 @@ def _validation_error(exc: ValidationError) -> PublicConfigError:
     return PublicConfigError(message, field=field)
 
 
-def parse_public_motor_config(body: dict[str, Any]) -> MotorConfig:
-    """Validate a public request without entering excluded feature modules."""
+def parse_public_motor_config(body: dict[str, Any], *, allow_experimental_rotors: bool = False) -> MotorConfig:
+    """Validate a public request without entering excluded feature modules.
+
+    ``allow_experimental_rotors`` also accepts EXPERIMENTAL_IPM_TOPOLOGIES. HTTP
+    routes never pass it; every other check still applies.
+    """
 
     if not isinstance(body, dict):
         raise PublicConfigError("Motor configuration must be a JSON object.")
@@ -125,6 +141,7 @@ def parse_public_motor_config(body: dict[str, Any]) -> MotorConfig:
     support_error = public_config_support_error(
         config,
         solver_id="elmer" if requested_solver == "elmer" else "magneto2d",
+        allow_experimental_rotors=allow_experimental_rotors,
     )
     if support_error is not None:
         raise support_error
@@ -133,8 +150,14 @@ def parse_public_motor_config(body: dict[str, Any]) -> MotorConfig:
 
 def parse_public_solve_request(
     body: dict[str, Any],
+    *,
+    allow_experimental_rotors: bool = False,
 ) -> tuple[MotorConfig, str | None, PublicSolverId]:
-    """Parse the direct or frontend-wrapped local solve request shape."""
+    """Parse the direct or frontend-wrapped local solve request shape.
+
+    ``allow_experimental_rotors`` is passed only by the benchmark harness, for
+    suite cases registered as experimental rotors; HTTP routes never pass it.
+    """
 
     if not isinstance(body, dict):
         raise PublicConfigError("Solve request must be a JSON object.")
@@ -182,7 +205,7 @@ def parse_public_solve_request(
             field="solver",
         )
     return (
-        parse_public_motor_config(config_body),
+        parse_public_motor_config(config_body, allow_experimental_rotors=allow_experimental_rotors),
         solve_mesh_key,
         cast(PublicSolverId, requested_solver),
     )
@@ -193,6 +216,7 @@ def public_config_support_error(
     *,
     require_solve_params: bool = False,
     solver_id: PublicSolverId = "magneto2d",
+    allow_experimental_rotors: bool = False,
 ) -> PublicConfigError | None:
     """Return an actionable public-boundary error, or ``None``."""
 
@@ -223,7 +247,9 @@ def public_config_support_error(
 
     if config.topology == "IPM":
         ipm_topology = str(config.rotor.ipm_topology or "flat_buried")
-        if ipm_topology not in SUPPORTED_PUBLIC_IPM_TOPOLOGIES:
+        experimental = allow_experimental_rotors or experimental_rotors_enabled()
+        accepted = SUPPORTED_PUBLIC_IPM_TOPOLOGIES | (EXPERIMENTAL_IPM_TOPOLOGIES if experimental else frozenset())
+        if ipm_topology not in accepted:
             return PublicConfigError(
                 "The public launch supports flat-buried and V-shape IPM only.",
                 field="rotor.ipm_topology",

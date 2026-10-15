@@ -1,0 +1,131 @@
+{
+  "description": "Measured no-load back-EMF of the 2005 Accord motor: S1 Table 3.1, p.14 (PDF 20). Line-to-neutral rms per phase and the three-phase average; the non-energized motor spun over its speed range (repeated after the performance tests with no significant change).",
+  "rows": [
+    {
+      "motor_shaft_rpm": 200,
+      "va_ln_rms_V": 6,
+      "vb_ln_rms_V": 5.92,
+      "vc_ln_rms_V": 5.62,
+      "average_ln_rms_V": 5.85
+    },
+    {
+      "motor_shaft_rpm": 400,
+      "va_ln_rms_V": 11.11,
+      "vb_ln_rms_V": 11.64,
+      "vc_ln_rms_V": 11.63,
+      "average_ln_rms_V": 11.46
+    },
+    {
+      "motor_shaft_rpm": 600,
+      "va_ln_rms_V": 17.44,
+      "vb_ln_rms_V": 17.19,
+      "vc_ln_rms_V": 16.77,
+      "average_ln_rms_V": 17.13
+    },
+    {
+      "motor_shaft_rpm": 800,
+      "va_ln_rms_V": 22.51,
+      "vb_ln_rms_V": 22.72,
+      "vc_ln_rms_V": 23.27,
+      "average_ln_rms_V": 22.83
+    },
+    {
+      "motor_shaft_rpm": 1000,
+      "va_ln_rms_V": 28.79,
+      "vb_ln_rms_V": 28.14,
+      "vc_ln_rms_V": 28.61,
+      "average_ln_rms_V": 28.51
+    },
+    {
+      "motor_shaft_rpm": 1200,
+      "va_ln_rms_V": 34.44,
+      "vb_ln_rms_V": 33.94,
+      "vc_ln_rms_V": 34.12,
+      "average_ln_rms_V": 34.17
+    },
+    {
+      "motor_shaft_rpm": 1400,
+      "va_ln_rms_V": 39.83,
+      "vb_ln_rms_V": 39.87,
+      "vc_ln_rms_V": 39.88,
+      "average_ln_rms_V": 39.86
+    },
+    {
+      "motor_shaft_rpm": 1600,
+      "va_ln_rms_V": 45.59,
+      "vb_ln_rms_V": 45.51,
+      "vc_ln_rms_V": 45.56,
+      "average_ln_rms_V": 45.55
+    },
+    {
+      "motor_shaft_rpm": 1800,
+      "va_ln_rms_V": 51.23,
+      "vb_ln_rms_V": 50.9,
+      "vc_ln_rms_V": 51.62,
+      "average_ln_rms_V": 51.25
+    },
+    {
+      "motor_shaft_rpm": 2000,
+      "va_ln_rms_V": 57.39,
+      "vb_ln_rms_V": 56.93,
+      "vc_ln_rms_V": 56.97,
+      "average_ln_rms_V": 57.1
+    },
+    {
+      "motor_shaft_rpm": 2500,
+      "va_ln_rms_V": 71.77,
+      "vb_ln_rms_V": 71.48,
+      "vc_ln_rms_V": 72.59,
+      "average_ln_rms_V": 71.95
+    },
+    {
+      "motor_shaft_rpm": 3000,
+      "va_ln_rms_V": 85.87,
+      "vb_ln_rms_V": 85.53,
+      "vc_ln_rms_V": 86.25,
+      "average_ln_rms_V": 85.88
+    },
+    {
+      "motor_shaft_rpm": 3500,
+      "va_ln_rms_V": 99.95,
+      "vb_ln_rms_V": 99.08,
+      "vc_ln_rms_V": 99.89,
+      "average_ln_rms_V": 99.64
+    },
+    {
+      "motor_shaft_rpm": 4000,
+      "va_ln_rms_V": 112.9,
+      "vb_ln_rms_V": 111.7,
+      "vc_ln_rms_V": 113.3,
+      "average_ln_rms_V": 112.6
+    },
+    {
+      "motor_shaft_rpm": 4500,
+      "va_ln_rms_V": 125.3,
+      "vb_ln_rms_V": 124.7,
+      "vc_ln_rms_V": 126.3,
+      "average_ln_rms_V": 125.4
+    },
+    {
+      "motor_shaft_rpm": 5000,
+      "va_ln_rms_V": 137.9,
+      "vb_ln_rms_V": 137.7,
+      "vc_ln_rms_V": 139.7,
+      "average_ln_rms_V": 138.4
+    },
+    {
+      "motor_shaft_rpm": 5500,
+      "va_ln_rms_V": 150.2,
+      "vb_ln_rms_V": 150.0,
+      "vc_ln_rms_V": 151.7,
+      "average_ln_rms_V": 150.6
+    },
+    {
+      "motor_shaft_rpm": 6000,
+      "va_ln_rms_V": 162.0,
+      "vb_ln_rms_V": 161.1,
+      "vc_ln_rms_V": 163.6,
+      "average_ln_rms_V": 162.2
+    }
+  ]
+}

@@ -11,8 +11,8 @@ from pathlib import Path
 import pytest
 
 from tools.benchmark_suite.cli import inputs, verify_artifact
-from tools.benchmark_suite.contract import DEFAULT_BUNDLE, ROOT, SPEC, canonical, read, run_lock, sha, write
-from tools.benchmark_suite.metrics import evaluate_abc, evaluate_bldc
+from tools.benchmark_suite.contract import ROOT, SPEC, canonical, read, run_lock, sha, write
+from tools.benchmark_suite.metrics import energy_balance_ratio, evaluate_abc, evaluate_bldc
 from tools.benchmark_suite.references import load_bundle, load_suite
 from tools.benchmark_suite.report import build, phase_display_status
 
@@ -69,6 +69,24 @@ def test_historical_verdicts_and_gates(case):
         assert evaluated["status"] == recorded["comparison"]["status"]
         for name in ("average_delta_pct", "bemf_fundamental_delta_pct", "bemf_peak_delta_pct", "torque_waveform", "bemf_waveform"):
             assert_same_metrics(evaluated[name], recorded["comparison"][name])
+
+
+def test_energy_balance_exposes_the_halved_flux_linkage_credit():
+    # The v1.1 record predates #80: single-layer concentrated windings show about
+    # twice the torque their own back-EMF and current imply; distributed windings
+    # balance. Native and FEMM shared the credit, so the parity gates passed.
+    by_id = {case["id"]: case for case in SPECIFICATION["cases"]}
+    for case_id, low, high in (
+        ("spm_4p12s_simple__baseline", 1.95, 2.05),
+        ("spm_8p48s_distributed_femm_validation", 0.9, 1.05),
+    ):
+        recorded = historical(by_id[case_id])
+        config = CONFIGS[case_id, "native"]
+        assert low < energy_balance_ratio(recorded["candidate"], config) < high
+        assert low < energy_balance_ratio(REFERENCES[case_id], config) < high
+    six_step = copy.deepcopy(CONFIGS["spm_4p12s_simple__baseline", "native"])
+    six_step["solve_params"]["excitation_mode"] = "ideal_six_step_120"
+    assert energy_balance_ratio(recorded["candidate"], six_step) is None
 
 
 def test_frozen_bundle_matches_all_inputs():
@@ -391,9 +409,10 @@ def test_orchestrator_resume_and_report_only_preserve_completed_jobs(tmp_path, m
 
 
 def test_release_suite_replaces_only_two_requests_and_preserves_archives():
-    current = load_suite(SPEC)
+    current = load_suite(ROOT / "benchmarks/abcd-v1.1/benchmark_spec.json")
+    historical_current_bundle = ROOT / "benchmarks/reference-baselines/ipm-high-output-v1"
     configurations, _, _ = inputs(current, current["cases"])
-    manifest, refs, _ = load_bundle(DEFAULT_BUNDLE, current)
+    manifest, refs, _ = load_bundle(historical_current_bundle, current)
     assert current["protocol_version"] == "1.1.0"
     assert Counter(c["phase"] for c in current["cases"]) == {"A": 10, "B": 12, "C": 5, "D": 3}
     assert len(refs) == 29
@@ -412,7 +431,7 @@ def test_release_suite_replaces_only_two_requests_and_preserves_archives():
             assert cid not in manifest["records"]
             continue
         assert manifest["records"][cid] == entry
-        assert sha(DEFAULT_BUNDLE / entry["file"]) == sha(HISTORICAL_BUNDLE / entry["file"])
+        assert sha(historical_current_bundle / entry["file"]) == sha(HISTORICAL_BUNDLE / entry["file"])
     added = [c for c in current["cases"] if c["id"] not in {c["id"] for c in SPECIFICATION["cases"]}]
     assert len(added) == 2
     for case in added:
@@ -439,7 +458,7 @@ def test_protocol_selection_is_recorded_and_unknown_protocols_rejected(tmp_path)
     from tools.benchmark_suite.contract import identity
 
     binary = ROOT / "solvers/magneto2d/Cargo.toml"
-    assert identity(binary)["protocol_version"] == "1.1.0"
+    assert identity(binary)["protocol_version"] == "1.3.0"
     assert identity(binary, protocol_version="1.0.0")["protocol_version"] == "1.0.0"
     with pytest.raises(ValueError, match="Unsupported suite protocol"):
         identity(binary, protocol_version="2.0.0")

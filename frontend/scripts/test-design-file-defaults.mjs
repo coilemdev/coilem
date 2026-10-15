@@ -20,7 +20,7 @@ function assertShoeFitsSlot(stator, label) {
 }
 
 const examplesDir = new URL('../src/public/examples/', import.meta.url);
-const examples = (await readdir(examplesDir)).filter((name) => name.endsWith('.openem')).sort();
+const examples = (await readdir(examplesDir)).filter((name) => name.endsWith('.openem') || name.endsWith('.coilem')).sort();
 assert.ok(examples.length >= 3, 'expected the bundled example designs');
 for (const name of examples) {
   const file = JSON.parse(await readFile(new URL(name, examplesDir), 'utf8'));
@@ -65,3 +65,18 @@ delete statorless.stator;
 assert.deepEqual(parseDesignFile(JSON.stringify(statorless)).config.stator, starter.stator);
 
 console.log(`design file defaults passed (${examples.length} bundled examples)`);
+
+// An experimental HoleM50 design keeps its rotor family and pocket parameters,
+// which are not part of the default design the section merge starts from.
+const prius = JSON.parse(await readFile(new URL('ornl_prius_2004_holem50.coilem', examplesDir), 'utf8'));
+const priusRotor = parseDesignFile(JSON.stringify(prius)).config.rotor;
+assert.equal(priusRotor.ipm_topology, 'pyleecan_holem50');
+for (const [key, value] of Object.entries(prius.rotor).filter(([key]) => key.startsWith('holem50_'))) {
+  assert.equal(priusRotor[key], value, `HoleM50 ${key} lost on load`);
+}
+const reopenedPrius = parseDesignFile(serializeDesignFile(parseDesignFile(JSON.stringify(prius)).config, 'Prius')).config.rotor;
+assert.deepEqual(reopenedPrius, priusRotor, 'HoleM50 rotor changed on save and reopen');
+// Other rotor families never pick up HoleM50 fields.
+const flat = JSON.parse(JSON.stringify(prius));
+flat.rotor.ipm_topology = 'flat_buried';
+assert.equal(parseDesignFile(JSON.stringify(flat)).config.rotor.holem50_w0_mm, undefined);

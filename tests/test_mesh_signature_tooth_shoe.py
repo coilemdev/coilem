@@ -41,7 +41,7 @@ def test_tooth_shoe_settings_are_recorded_in_provenance():
     assert stator["tooth_shoe_enabled"] is True
     assert stator["tooth_shoe_height_mm"] == 2.0
     assert stator["tooth_shoe_overhang_mm"] == 1.0
-    assert MAGNETO2D_MESH_SIGNATURE_VERSION == "magneto2d_mesh_signature/v4"
+    assert MAGNETO2D_MESH_SIGNATURE_VERSION == "magneto2d_mesh_signature/v5"
 
 
 @pytest.mark.parametrize("variant", sorted(SHOE_VARIANTS))

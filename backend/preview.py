@@ -34,10 +34,14 @@ from backend.models import (
 from backend.preview_from_ir import append_winding_symbols, preview_regions_from_geometry_ir
 from backend.qualification import classify_qualification
 from backend.winding_utils import (
+    concentrated_slot_layer_assignments,
+    concentrated_uses_tooth_coils,
+    concentrated_winding_factor,
     distributed_full_pitch_slots,
     distributed_fundamental_winding_factor,
     distributed_pitch_factor,
     distributed_slot_layer_assignments,
+    tooth_coil_assignments,
 )
 
 
@@ -128,6 +132,8 @@ def generate_preview(config: MotorConfig) -> GeometryPreview:
             stator.slot_count,
             winding.type,
             float(winding_metadata.get("coil_span_slots", 1.0) or 1.0),
+            rotor.pole_count,
+            winding.layers,
         )
 
     if geometry_ir is not None:
@@ -148,6 +154,7 @@ def generate_preview(config: MotorConfig) -> GeometryPreview:
             slot_pitch_rad=tooth_pitch_rad,
             origin_x=origin_x,
             origin_y=origin_y,
+            layer_split=geometry_ir.metadata.get("slot_layer_split") if geometry_ir is not None else None,
         )
 
     # ============================================================================
@@ -759,13 +766,9 @@ def _generate_winding_layout(
         Tuple of (winding_layout list, metadata dict with winding_factor, fill_factor, warnings)
     """
     winding_layout: list[WindingSlot] = []
-    phases: list[str] = ["A", "B", "C"]
     metadata: dict[str, object] = {}
     warnings: list[str] = []
     fundamental_winding_factor = 1.0
-
-    # Number of pole pairs
-    pole_pairs = max(1, pole_count // 2)
 
     # Whether the three phases come out equal is a property of the slot/pole pair,
     # not of the slot count alone. This used to warn on `slot_count % 3 != 0`, which
@@ -788,45 +791,24 @@ def _generate_winding_layout(
         )
 
     if winding_type == "concentrated":
-        # Concentrated winding: each coil wraps around a single tooth.
-        # Phase/sign distribution for concentrated windings. Keep this in sync
-        # with geometry_drawer._compute_slot_placements; the preview payload is
-        # the UI-facing representation of the same winding the solvers consume.
-        slot_phase_map = _assign_concentrated_phases(slot_count, pole_count, phases)
-
+        # The same layout the solvers consume (backend.winding_utils): tooth coils
+        # for q < 1 (#91), one entry per coil side, and the legacy whole-slot map
+        # otherwise.
         for slot_idx in range(slot_count):
-            phase: Literal["A", "B", "C"] = slot_phase_map.get(slot_idx, "A")  # type: ignore[assignment]
-            elec_angle_deg = (slot_idx * 360.0 * pole_pairs / slot_count) % 360.0
-            sector = int(elec_angle_deg / 60) % 6
-            direction_by_sector: tuple[Literal["in", "out"], ...] = (
-                "in",
-                "out",
-                "in",
-                "out",
-                "in",
-                "out",
-            )
-            direction = direction_by_sector[sector]
-            layer = 1  # Concentrated windings typically use single layer
-
-            winding_layout.append(
-                WindingSlot(
-                    slot_index=slot_idx,
-                    phase=phase,
-                    direction=direction,
-                    layer=layer,
+            for side in concentrated_slot_layer_assignments(slot_idx, slot_count, pole_count, layers):
+                winding_layout.append(
+                    WindingSlot(
+                        slot_index=slot_idx,
+                        phase=side.phase,  # type: ignore[arg-type]
+                        direction=side.direction,  # type: ignore[arg-type]
+                        layer=side.layer,
+                    )
                 )
-            )
 
-        coil_span_slots = 1.0
-
-        # Winding factor for concentrated: kw = kd * kp
-        # For concentrated: kd=1 (all turns in one slot), kp depends on coil span
-        kd_concentrated = 1.0
-        # Coil span for concentrated = 1 tooth
-        pole_pitch = slot_count / pole_count
-        kp_concentrated = math.sin((coil_span_slots / pole_pitch) * math.pi / 2)
-        kw_concentrated = kd_concentrated * kp_concentrated
+        # A tooth coil spans one slot pitch; the legacy layout draws full-pitch belts.
+        coil_span_slots = 1.0 if concentrated_uses_tooth_coils(slot_count, pole_count) else slot_count / pole_count
+        # The drawn layout's own winding factor: 0.866 for q = 1/2, 0.933 or 0.966 for 12s10p.
+        kw_concentrated = concentrated_winding_factor(slot_count, pole_count, layers)
         metadata["winding_factor"] = kw_concentrated
         fundamental_winding_factor = kw_concentrated
         metadata["coil_span_slots"] = coil_span_slots
@@ -995,6 +977,8 @@ def _derive_winding_coils(
     slot_count: int,
     winding_type: str,
     coil_span_slots: float,
+    pole_count: int = 0,
+    layers: int = 1,
 ) -> list[WindingCoil]:
     """Derive coil-level connectivity from the per-slot winding layout.
 
@@ -1011,6 +995,21 @@ def _derive_winding_coils(
         return []
 
     coils: list[WindingCoil] = []
+
+    if winding_type == "concentrated" and concentrated_uses_tooth_coils(slot_count, pole_count):
+        # Tooth coils (#91): one coil per wound tooth, every other tooth with one layer.
+        return [
+            WindingCoil(
+                coil_index=index,
+                phase=phase,  # type: ignore[arg-type]
+                polarity=1 if direction == "in" else -1,
+                slot_in=tooth,
+                slot_out=(tooth + 1) % slot_count,
+                tooth_wound=True,
+                layer=2 if layers >= 2 else 1,
+            )
+            for index, (tooth, phase, direction) in enumerate(tooth_coil_assignments(slot_count, pole_count, layers))
+        ]
 
     if winding_type == "concentrated":
         by_slot = {entry.slot_index: entry for entry in winding_layout}
@@ -1077,37 +1076,3 @@ def _derive_winding_coils(
     return coils
 
 
-def _assign_concentrated_phases(
-    slot_count: int, pole_count: int, phases: list[str]
-) -> dict[int, str]:
-    """Assign phases to slots for concentrated winding using EMF phasor star.
-
-    Each slot's electrical angle determines its phase assignment via
-    60-degree sectors of the EMF phasor diagram. This is critical for
-    fractional-slot concentrated windings (e.g. 12s/8p, q=0.5) where
-    consecutive slots are NOT the same phase.
-
-    Sectors: A(0-60°), C(60-120°), B(120-180°), A(180-240°), C(240-300°), B(300-360°)
-    — the canonical positive-sequence phasor-star belt order (A, -C, B, -A,
-    C, -B), matching geometry_drawer._compute_slot_placements. Directions
-    alternate in/out per sector in both conventions, so only the phase
-    letters differ from the old (mirrored) B/C-swapped order.
-
-    Args:
-        slot_count: Number of slots
-        pole_count: Number of poles
-        phases: Phase names ["A", "B", "C"]
-
-    Returns:
-        Dictionary mapping slot_index -> phase
-    """
-    slot_phase_map = {}
-    pole_pairs = max(1, pole_count // 2)
-    sector_phases = (phases[0], phases[2], phases[1])  # A, C, B
-
-    for slot_idx in range(slot_count):
-        elec_angle_deg = (slot_idx * 360.0 * pole_pairs / slot_count) % 360.0
-        sector = int(elec_angle_deg / 60) % 6
-        slot_phase_map[slot_idx] = sector_phases[sector % 3]
-
-    return slot_phase_map

@@ -22,6 +22,7 @@ import {
   type PublicMeshElementSelection,
 } from './MotorCanvas';
 import { WindingLayoutView } from './WindingLayoutView';
+import { coilsPerPhase, concentratedUsesToothCoils, windingLayerOptions } from './toothCoils';
 import {
   buildDimensionAnnotations,
   deriveStatorSectionWidths,
@@ -41,7 +42,7 @@ import { SolvedFieldViewer } from './SolvedFieldViewer';
 import { WaveformChart } from './WaveformChart';
 import { BldcTorqueCurrentChart } from './BldcTorqueCurrentChart';
 import { PublicRunComparison } from './PublicRunComparison';
-import { PUBLIC_EXAMPLE_OPTIONS, type PublicExampleId } from './exampleDesigns';
+import { publicExampleOptions, type PublicExampleId } from './exampleDesigns';
 import {
   magneticAirgapMm,
   PUBLIC_AIRGAP_LAUNCH_MIN_MM,
@@ -55,6 +56,7 @@ import type {
   MotorConfig,
   PublicArmatureFieldComposition,
   PublicElmerCapability,
+  PublicExperimentalRotorCapability,
   PublicMotorComponentKind,
   PublicMotorComponentSelection,
   PublicQualification,
@@ -63,6 +65,7 @@ import type {
   SolveResult,
   SolveValidation,
 } from './model';
+import { HOLEM50_FIELDS } from './model';
 import type { PublicRunExportKind } from './api';
 import type { PublicSolveProgress } from './api';
 import { LessonProgressStepper } from '../components/tutorials/LessonProgressStepper';
@@ -116,6 +119,7 @@ interface CoilEmWorkspaceProps {
   connectionStatus: PublicConnectionStatus;
   selectedSolver: PublicSolverId;
   elmerCapability: PublicElmerCapability;
+  experimentalRotors?: PublicExperimentalRotorCapability;
   geometryStale: boolean;
   error: string | null;
   errorDetails?: PublicApiError | null;
@@ -384,6 +388,7 @@ export function CoilEmTopBar({
   onLoadExample,
   onOpenHalbach,
   onNewDesign,
+  experimentalRotors = false,
   workflowDisabled = false,
   tutorialProgress = null,
   tutorialCatalog = false,
@@ -401,6 +406,7 @@ export function CoilEmTopBar({
   onLoadExample?: (exampleId: PublicExampleId) => void;
   onOpenHalbach?: () => void;
   onNewDesign?: () => void;
+  experimentalRotors?: boolean;
   workflowDisabled?: boolean;
   tutorialProgress?: LearningLessonHeaderProgress | null;
   tutorialCatalog?: boolean;
@@ -524,7 +530,7 @@ export function CoilEmTopBar({
                 {examplesMenuOpen && (
                   <div className="public-project-examples-menu" role="menu" aria-label="Example designs">
                     <span className="public-project-example-group-label" role="presentation">Motor examples</span>
-                    {PUBLIC_EXAMPLE_OPTIONS.map((example) => (
+                    {publicExampleOptions(experimentalRotors, 'motor').map((example) => (
                       <button
                         type="button"
                         role="menuitem"
@@ -535,6 +541,23 @@ export function CoilEmTopBar({
                         <small>{example.detail}</small>
                       </button>
                     ))}
+                    {publicExampleOptions(experimentalRotors, 'benchmark').length > 0 && (
+                      <>
+                        <span className="menu-divider" role="presentation" />
+                        <span className="public-project-example-group-label" role="presentation">Benchmarks</span>
+                        {publicExampleOptions(experimentalRotors, 'benchmark').map((example) => (
+                          <button
+                            type="button"
+                            role="menuitem"
+                            key={example.id}
+                            onClick={closeMenuThen(() => onLoadExample?.(example.id))}
+                          >
+                            <strong>{example.label}</strong>
+                            <small>{example.detail}</small>
+                          </button>
+                        ))}
+                      </>
+                    )}
                     {onOpenHalbach && (
                       <>
                         <span className="menu-divider" role="presentation" />
@@ -733,16 +756,17 @@ function ToggleRow({ label, checked, hint, disabled, onChange }: {
   );
 }
 
-function SelectRow({ label, value, choices, disabled, onChange, selectRef }: {
+function SelectRow({ label, value, choices, hint, disabled, onChange, selectRef }: {
   label: string;
   value: string;
   choices: Array<{ value: string; label: string; disabled?: boolean }>;
+  hint?: string;
   disabled?: boolean;
   selectRef?: Ref<HTMLSelectElement>;
   onChange: (value: string) => void;
 }) {
   return (
-    <label className="param-row public-param-row">
+    <label className="param-row public-param-row" title={hint}>
       <span className="param-label">{label}</span>
       <select ref={selectRef} className="param-select" value={value} disabled={disabled} onChange={(event) => onChange(event.target.value)}>
         {choices.map((choice) => <option value={choice.value} disabled={choice.disabled} key={choice.value}>{choice.label}</option>)}
@@ -916,8 +940,8 @@ function ParameterSectionBlock({
   );
 }
 
-function ParameterPanel({ config, materials, geometry, geometryStale, busy, error, notice, blankDesign = false, guidedActive, guidedDesignSection, selectedComponent, onTopologyChange, onSectionChange, onDesignSectionVisit, onConvertProjectSteelToM350, onImportSteel, onReset, onRefreshGeometry, onNext, onClearComponent }: Pick<CoilEmWorkspaceProps,
-  'config' | 'materials' | 'geometry' | 'geometryStale' | 'busy' | 'error' | 'notice' | 'blankDesign' | 'onTopologyChange' | 'onSectionChange' | 'onDesignSectionVisit' | 'onConvertProjectSteelToM350' | 'onImportSteel' | 'onReset' | 'onRefreshGeometry'
+function ParameterPanel({ config, materials, geometry, geometryStale, busy, error, notice, blankDesign = false, guidedActive, guidedDesignSection, selectedComponent, experimentalRotors, onTopologyChange, onSectionChange, onDesignSectionVisit, onConvertProjectSteelToM350, onImportSteel, onReset, onRefreshGeometry, onNext, onClearComponent }: Pick<CoilEmWorkspaceProps,
+  'config' | 'materials' | 'geometry' | 'geometryStale' | 'busy' | 'error' | 'notice' | 'blankDesign' | 'experimentalRotors' | 'onTopologyChange' | 'onSectionChange' | 'onDesignSectionVisit' | 'onConvertProjectSteelToM350' | 'onImportSteel' | 'onReset' | 'onRefreshGeometry'
 > & {
   guidedActive?: boolean;
   guidedDesignSection?: PublicParameterSection | null;
@@ -1036,7 +1060,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
     stator: 'stator geometry outer diameter inner diameter slot count stack length bore pitch',
     rotor: 'rotor magnets pole count rotor od air gap magnet thickness magnet width burial depth outer bridge bridge thickness magnet position coverage magnet grade',
     advanced: 'advanced geometry bore tooth width tooth width at yoke bore slot opening physical slot mouth slot width at yoke yoke thickness tooth shoe shoulder height overhang rotor layout v angle v depth',
-    winding: 'winding type turns coil parallel paths phase current amp rms',
+    winding: 'winding type layers layer single double tooth coils per phase turns coil parallel paths phase current amp rms',
     materials: 'materials stator steel rotor steel magnet grade conductor',
   };
   const matchesSearch = (section: PublicParameterSection | 'topology') => (
@@ -1144,7 +1168,16 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
                   </button>
                 ))}
               </div>
-              <p className="ipm-layout-note">Fine-tune V-angle and depth later in Advanced Geometry.</p>
+              {config.rotor.ipm_topology === 'pyleecan_holem50' ? (
+                <p className="ipm-layout-note ipm-experimental-note" role="note">
+                  <strong>HoleM50 (experimental). </strong>
+                  {experimentalRotors?.enabled
+                    ? 'An experimental rotor path: not public support, and results carry no qualification claim. Pick a layout above to switch to a public rotor.'
+                    : `This rotor needs coilEM started with ${experimentalRotors?.switch ?? 'COILEM_EXPERIMENTAL_ROTORS'}=1 to preview and solve.`}
+                </p>
+              ) : (
+                <p className="ipm-layout-note">Fine-tune V-angle and depth later in Advanced Geometry.</p>
+              )}
             </div>
           )}
         </div>}
@@ -1161,8 +1194,19 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         <NumberRow label="Pole Count" value={config.rotor.pole_count} min={2} max={32} step={2} disabled={disabled} onChange={set('rotor', 'pole_count', 'rotor')} />
         <NumberRow label="Rotor OD" value={config.rotor.OD_mm} unit="mm" min={15} step={1} disabled={disabled} onChange={set('rotor', 'OD_mm', 'rotor')} />
         <div className="param-row public-param-row public-derived-row"><span className="param-label">Air Gap<small>mm</small></span><strong>{airgap.toFixed(2)}</strong></div>
-        <NumberRow label="Magnet Thick." value={config.rotor.magnet_thickness_mm} unit="mm" min={2} step={0.5} disabled={disabled} onChange={set('rotor', 'magnet_thickness_mm', 'rotor')} />
-        <NumberRow label="Magnet Width" value={config.rotor.magnet_width_mm} unit="mm" min={1} step={0.1} disabled={disabled} onChange={set('rotor', 'magnet_width_mm', 'rotor')} />
+        {config.topology === 'IPM' && config.rotor.ipm_topology === 'pyleecan_holem50' ? (
+          HOLEM50_FIELDS.map((field) => (
+            <div className="param-row public-param-row public-derived-row" key={field}>
+              <span className="param-label">HoleM50 {field.slice(8, 10).toUpperCase()}<small>mm</small></span>
+              <strong>{typeof config.rotor[field] === 'number' ? config.rotor[field]?.toFixed(2) : '—'}</strong>
+            </div>
+          ))
+        ) : (
+          <>
+            <NumberRow label="Magnet Thick." value={config.rotor.magnet_thickness_mm} unit="mm" min={2} step={0.5} disabled={disabled} onChange={set('rotor', 'magnet_thickness_mm', 'rotor')} />
+            <NumberRow label="Magnet Width" value={config.rotor.magnet_width_mm} unit="mm" min={1} step={0.1} disabled={disabled} onChange={set('rotor', 'magnet_width_mm', 'rotor')} />
+          </>
+        )}
         {config.topology === 'IPM' && config.rotor.ipm_topology === 'flat_buried' && (
           <NumberRow
             label="Outer Bridge"
@@ -1176,7 +1220,9 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
             onChange={set('rotor', 'bridge_thickness_mm', 'rotor')}
           />
         )}
-        <div className="param-row public-param-row public-derived-row"><span className="param-label">Coverage<small>%</small></span><strong>{coverage}</strong></div>
+        {config.rotor.ipm_topology !== 'pyleecan_holem50' && (
+          <div className="param-row public-param-row public-derived-row"><span className="param-label">Coverage<small>%</small></span><strong>{coverage}</strong></div>
+        )}
         <SelectRow label="Magnet Grade" value={config.materials.magnet_grade} choices={materials.magnet_grades.map((value) => ({ value, label: value }))} disabled={disabled} onChange={set('materials', 'magnet_grade', 'rotor')} />
       </ParameterSectionBlock>}
 
@@ -1237,8 +1283,28 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         </>}
       </ParameterSectionBlock>}
 
-      {matchesSearch('winding') && <ParameterSectionBlock id="winding" label="Winding" active={Boolean(normalizedSearch) || activeSection === 'winding'} onToggle={toggle} summary={`${config.winding.type} · ${config.winding.turns_per_coil} turns × ${config.winding.parallel_paths}p`} nextLabel={normalizedSearch ? undefined : 'Materials'} onNext={normalizedSearch ? undefined : setNext('materials')}>
+      {matchesSearch('winding') && <ParameterSectionBlock id="winding" label="Winding" active={Boolean(normalizedSearch) || activeSection === 'winding'} onToggle={toggle} summary={`${config.winding.type} · ${config.winding.layers} layer${config.winding.layers === 2 ? 's' : ''} · ${config.winding.turns_per_coil} turns × ${config.winding.parallel_paths}p`} nextLabel={normalizedSearch ? undefined : 'Materials'} onNext={normalizedSearch ? undefined : setNext('materials')}>
         <SelectRow label="Type" value={config.winding.type} choices={[{ value: 'concentrated', label: 'Concentrated' }, { value: 'distributed', label: 'Distributed' }]} disabled={disabled} onChange={set('winding', 'type', 'winding')} />
+        <SelectRow
+          label="Layers"
+          value={String(config.winding.layers)}
+          choices={windingLayerOptions(config.stator.slot_count, config.rotor.pole_count, config.winding.type).map(({ layers, available, reason }) => ({
+            value: String(layers),
+            label: `${layers} layer${layers === 2 ? 's' : ''}${reason ? ` · ${reason}` : ''}`,
+            disabled: !available,
+          }))}
+          hint={config.winding.type === 'distributed'
+            ? 'Two layers put two coil sides in every slot; the benchmark qualified two-layer distributed windings.'
+            : concentratedUsesToothCoils(config.stator.slot_count, config.rotor.pole_count)
+              ? 'One layer winds a coil on every other tooth, two layers on every tooth. Two-layer concentrated windings are experimental.'
+              : 'This slot/pole combination winds one phase per slot, in one layer.'}
+          disabled={disabled}
+          onChange={(value) => set('winding', 'layers', 'winding')(Number(value))}
+        />
+        <div className="param-row public-param-row public-derived-row" title="Coils in each phase; parallel paths must divide them.">
+          <span className="param-label">Coils per Phase<small>calc</small></span>
+          <strong>{coilsPerPhase(config.stator.slot_count, config.rotor.pole_count, config.winding.type, config.winding.layers)}</strong>
+        </div>
         <NumberRow label="Turns / Coil" value={config.winding.turns_per_coil} min={1} step={1} disabled={disabled} onChange={set('winding', 'turns_per_coil', 'winding')} />
         <NumberRow label="Parallel Paths" value={config.winding.parallel_paths} min={1} step={1} disabled={disabled} onChange={set('winding', 'parallel_paths', 'winding')} />
         <NumberRow label="Phase Current" value={config.solve_params.current_amplitude_A} unit="A rms" min={0} step={0.5} disabled={disabled} onChange={set('solve_params', 'current_amplitude_A', 'winding')} />
@@ -3375,6 +3441,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
         onLoadExample={props.onLoadExample}
         onOpenHalbach={props.onOpenHalbach}
         onNewDesign={props.onNewDesign}
+        experimentalRotors={props.experimentalRotors?.enabled ?? false}
         runHistoryOpen={runHistoryOpen}
         onRunHistoryOpenChange={setRunHistoryOpen}
       />
@@ -3385,6 +3452,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
               <div className="design-workspace-main">
                 <ParameterPanel
                   config={props.config}
+                  experimentalRotors={props.experimentalRotors}
                   materials={props.materials}
                   geometry={props.geometry}
                   geometryStale={props.geometryStale}

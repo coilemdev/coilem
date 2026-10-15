@@ -67,16 +67,19 @@ def flux_linkage_slot_side_turn_factor(
 ) -> float:
     """Return the multiplier from slot-side turns to series turns per branch.
 
-    coilEM winding geometry is described in terms of slot sides. For single-layer
-    concentrated windings, summing every slot side directly double-counts the
-    series turns seen at the terminals because each physical turn has two active
-    sides. Back-EMF / flux-linkage calculations should therefore use half the raw
-    slot-side turn count. Parallel branches divide the terminal series turns
-    further.
+    The flux-linkage extractors sum turns_per_coil * A_z over every slot side,
+    signed by its direction. A coil's two sides enter with opposite signs, so
+    the sum is each coil's linkage N * L * (A_go - A_return), counted once, for
+    every winding type and layer count: the same turns the source excites with
+    J = turns_per_coil * I / A_slot (see series_turns_per_path). Only parallel
+    branches divide the terminal series turns.
+
+    Concentrated single-layer windings used to be credited half the turns
+    here, which halved their flux linkage, back-EMF and Ke against the
+    excitation (#80); winding_type and layers are kept for callers.
     """
 
-    slot_side_normalization = 0.5 if winding_type == "concentrated" and layers == 1 else 1.0
-    return slot_side_normalization / max(1, parallel_paths)
+    return 1.0 / max(1, parallel_paths)
 
 
 def series_turns_per_path(
@@ -106,8 +109,8 @@ def series_turns_per_path(
         N_path = kw * slot_count * turns_per_coil / (6 * parallel_paths)
 
     independent of ``layers``. This is exactly the credit the solver-lane
-    slot-sum extraction applies (flux_linkage_slot_side_turn_factor with the
-    distributed normalization of 1.0): for the full-pitch belt layout the
+    slot-sum extraction applies (flux_linkage_slot_side_turn_factor, 1.0 per
+    path for every winding type): for the full-pitch belt layout the
     signed per-slot A_z sum counts every coil's flux linkage exactly once,
     verified analytically in tests/test_winding_bookkeeping_crosslane.py for
     (layers, paths) in {1,2}x{1,2} on 24s8p and the Prius 48s8p case.
@@ -416,3 +419,199 @@ def distributed_fundamental_winding_factor(
     value bit-for-bit for existing configs.
     """
     return distributed_winding_factor(slot_count, pole_count, 1, coil_span)
+
+
+# ---------------------------------------------------------------------------
+# Concentrated windings (#91)
+#
+# Fractional-slot concentrated windings (q = slot_count / (3 * pole_count) < 1)
+# are real tooth coils: coil t wraps tooth t, with its go side in slot t and its
+# return side in slot t + 1. Each coil's phase comes from its EMF phasor
+# e^{j a t} - e^{j a (t+1)} (a = electrical slot pitch) in coilEM's 60-degree
+# sector order (A+, C-, B+, A-, C+, B-). layers = 1 winds alternate teeth (one
+# coil side per slot); layers = 2 winds every tooth (two coil sides per slot,
+# split into the same two layer regions distributed windings use).
+#
+# The turns convention is unchanged: ``turns_per_coil`` is the conductor bundle
+# of one slot, so with layers = 2 each tooth coil has turns_per_coil / 2 turns.
+#
+# The previous layout gave every slot one phase from its own electrical angle.
+# For q = 1/2 that put A, B, C in consecutive slots all in one direction: no
+# phase had a return side, its fundamental winding factor read 1.0 instead of
+# 0.866, and its 5th and 7th harmonics were inverted against a real machine
+# (#91, measured on the CREATOR PMSM, #90). Concentrated windings with q >= 1
+# keep that layout, which there draws full-pitch phase belts.
+# ---------------------------------------------------------------------------
+
+_CONCENTRATED_SECTORS: tuple[tuple[str, str], ...] = (
+    ("A", "in"),
+    ("C", "out"),
+    ("B", "in"),
+    ("A", "out"),
+    ("C", "in"),
+    ("B", "out"),
+)
+# Coil phasors of the q = 1/2 family sit exactly on sector boundaries; a fixed,
+# tiny bias keeps their assignment independent of floating-point rounding.
+_SECTOR_BOUNDARY_BIAS_DEG = 1e-7
+
+
+def _electrical_slot_pitch_rad(slot_count: int, pole_count: int) -> float:
+    return 2.0 * math.pi * (pole_count / 2.0) / max(1, slot_count)
+
+
+def legacy_concentrated_slot_phase(slot_idx: int, slot_count: int, pole_pairs: int) -> tuple[str, str]:
+    """Whole-slot phase and direction from the slot's own electrical angle (q >= 1 layout)."""
+
+    if slot_count <= 0:
+        return _CONCENTRATED_SECTORS[0]
+    elec_angle_deg = (slot_idx * 360.0 * pole_pairs / slot_count) % 360.0
+    return _CONCENTRATED_SECTORS[int(elec_angle_deg / 60) % 6]
+
+
+def concentrated_uses_tooth_coils(slot_count: int, pole_count: int) -> bool:
+    """Fractional-slot concentrated windings (q < 1) are drawn as tooth coils (#91).
+
+    Slot counts the three phases cannot share keep the legacy map; validation
+    rejects them as unbalanced either way.
+    """
+
+    return slot_count > 0 and slot_count % 3 == 0 and pole_count > 0 and slot_count < 3 * pole_count
+
+
+def tooth_coil_assignments(slot_count: int, pole_count: int, layers: int) -> tuple[tuple[int, str, str], ...]:
+    """(tooth, phase, direction) for every wound tooth; coil t has its go side in slot t."""
+
+    pitch = _electrical_slot_pitch_rad(slot_count, pole_count)
+    teeth = range(slot_count) if layers >= 2 else range(0, slot_count, 2)
+    coils = []
+    for tooth in teeth:
+        phasor = complex(math.cos(pitch * tooth), math.sin(pitch * tooth)) - complex(
+            math.cos(pitch * (tooth + 1)), math.sin(pitch * (tooth + 1))
+        )
+        angle = (math.degrees(math.atan2(phasor.imag, phasor.real)) + _SECTOR_BOUNDARY_BIAS_DEG) % 360.0
+        phase, direction = _CONCENTRATED_SECTORS[int(angle // 60.0) % 6]
+        coils.append((tooth, phase, direction))
+    return tuple(coils)
+
+
+def _opposite(direction: str) -> str:
+    return "out" if direction == "in" else "in"
+
+
+def tooth_coil_slot_layer_assignments(
+    slot_idx: int, slot_count: int, pole_count: int, layers: int
+) -> tuple[SlotLayerAssignment, ...]:
+    """Coil sides in one slot of a tooth-coil layout.
+
+    Single layer: an even slot holds the go side of the coil on its own tooth, an
+    odd slot the return side of the coil on the tooth before it. Double layer:
+    layer 1 holds the return side of the coil on the tooth before the slot,
+    layer 2 the go side of the coil on the slot's own tooth, half the slot's
+    conductors each.
+    """
+
+    coils = {tooth: (phase, direction) for tooth, phase, direction in tooth_coil_assignments(slot_count, pole_count, layers)}
+    slot = slot_idx % slot_count
+    previous_tooth = (slot - 1) % slot_count
+    if layers >= 2:
+        back_phase, back_direction = coils[previous_tooth]
+        go_phase, go_direction = coils[slot]
+        return (
+            SlotLayerAssignment(layer=1, phase=back_phase, direction=_opposite(back_direction), turn_fraction=0.5),
+            SlotLayerAssignment(layer=2, phase=go_phase, direction=go_direction, turn_fraction=0.5),
+        )
+    if slot in coils:
+        phase, direction = coils[slot]
+        return (SlotLayerAssignment(layer=1, phase=phase, direction=direction, turn_fraction=1.0),)
+    phase, direction = coils[previous_tooth]
+    return (SlotLayerAssignment(layer=1, phase=phase, direction=_opposite(direction), turn_fraction=1.0),)
+
+
+def concentrated_slot_layer_assignments(
+    slot_idx: int, slot_count: int, pole_count: int, layers: int
+) -> tuple[SlotLayerAssignment, ...]:
+    """Per-layer winding assignment of one concentrated slot: tooth coils for q < 1, else the legacy whole-slot map."""
+
+    if concentrated_uses_tooth_coils(slot_count, pole_count):
+        return tooth_coil_slot_layer_assignments(slot_idx, slot_count, pole_count, layers)
+    phase, direction = legacy_concentrated_slot_phase(slot_idx, slot_count, int(pole_count // 2))
+    return (SlotLayerAssignment(layer=1, phase=phase, direction=direction, turn_fraction=1.0),)
+
+
+def concentrated_phase_phasors(slot_count: int, pole_count: int, layers: int, harmonic: int = 1) -> dict[str, complex]:
+    """Sum of sign * turn_fraction * e^{j n a s} over each phase's coil sides (winding-factor phasor)."""
+
+    pitch = _electrical_slot_pitch_rad(slot_count, pole_count)
+    totals = {"A": 0j, "B": 0j, "C": 0j}
+    for slot in range(slot_count):
+        for side in concentrated_slot_layer_assignments(slot, slot_count, pole_count, layers):
+            sign = 1.0 if side.direction == "in" else -1.0
+            angle = harmonic * pitch * slot
+            totals[side.phase] += sign * side.turn_fraction * complex(math.cos(angle), math.sin(angle))
+    return totals
+
+
+def concentrated_winding_factor(slot_count: int, pole_count: int, layers: int, harmonic: int = 1) -> float:
+    """Winding factor of the drawn concentrated layout: |phase phasor| / (slot_count / 3) whole-slot bundles."""
+
+    return abs(concentrated_phase_phasors(slot_count, pole_count, layers, harmonic)["A"]) / (slot_count / 3.0)
+
+
+def tooth_coil_layout_error(slot_count: int, pole_count: int, layers: int) -> str | None:
+    """Why this tooth-coil layout cannot be wound as a balanced three-phase winding, or None."""
+
+    if not concentrated_uses_tooth_coils(slot_count, pole_count):
+        return None
+    if layers < 2 and slot_count % 2:
+        return f"a single-layer tooth-coil winding needs an even slot count; {slot_count} slots needs layers = 2"
+    coils = tooth_coil_assignments(slot_count, pole_count, layers)
+    counts = {phase: sum(1 for _, p, _ in coils if p == phase) for phase in "ABC"}
+    if len(set(counts.values())) != 1:
+        return f"tooth coils split unevenly between phases ({counts})"
+    phasors = concentrated_phase_phasors(slot_count, pole_count, layers)
+    magnitude = abs(phasors["A"])
+    if magnitude < 1e-9 or any(abs(abs(phasors[p]) - magnitude) > 1e-9 * max(1.0, magnitude) for p in "BC"):
+        return "the phases' fundamental EMFs differ in size"
+    angles = [math.degrees(math.atan2(phasors[p].imag, phasors[p].real)) for p in "ABC"]
+    if any(abs(((angles[(i + 1) % 3] - angles[i]) % 360.0) - 120.0) > 1e-6 for i in range(3)):
+        return "the phases' fundamental EMFs are not 120 degrees apart"
+    return None
+
+
+def winding_phase_phasors(
+    winding_type: str, slot_count: int, pole_count: int, layers: int, coil_span: int | None = None
+) -> dict[str, complex]:
+    """Fundamental phasor of each phase over the slot sides the solver winds, for any winding type."""
+
+    if winding_type != "distributed":
+        return concentrated_phase_phasors(slot_count, pole_count, layers)
+    pitch = _electrical_slot_pitch_rad(slot_count, pole_count)
+    totals = {"A": 0j, "B": 0j, "C": 0j}
+    for slot in range(slot_count):
+        for side in distributed_slot_layer_assignments(slot, slot_count, pole_count, layers, coil_span):
+            sign = 1.0 if side.direction == "in" else -1.0
+            totals[side.phase] += sign * side.turn_fraction * complex(math.cos(pitch * slot), math.sin(pitch * slot))
+    return totals
+
+
+def winding_phase_axis_offset_elec_deg(
+    winding_type: str, slot_count: int, pole_count: int, layers: int, coil_span: int | None = None
+) -> float:
+    """Electrical angle of phase A's axis, which the current-angle convention absorbs (#91).
+
+    The convention (source angle rotor_elec - 90 + gamma) puts phase A's axis at 0
+    degrees, where a one-slot phase belt has it. Wider belts put it at their centre
+    (15 degrees for q = 2, 20 for q = 3; 5/6 chording at q = 2 brings it back to 0)
+    and tooth coils on a tooth (+30 degrees for q = 1/2). Subtracting it keeps gamma
+    measured from the q-axis for every layout. Rounded to 1e-9 degrees so a layout
+    whose axis is at 0 keeps its source angles bit for bit. Mirrors
+    solvers/magneto2d/src/sources.rs winding_phase_axis_offset_elec_deg.
+    """
+
+    if slot_count <= 0 or pole_count <= 0:
+        return 0.0
+    phasor = winding_phase_phasors(winding_type, slot_count, pole_count, layers, coil_span)["A"]
+    if abs(phasor) < 1e-9:
+        return 0.0
+    return round(math.degrees(math.atan2(phasor.imag, phasor.real)), 9) + 0.0

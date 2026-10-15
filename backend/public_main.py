@@ -20,7 +20,7 @@ from backend.public_material_catalog import (
     PublicMaterialCatalogResponse,
     build_public_material_catalog,
 )
-from backend.public_policy import public_elmer_enabled
+from backend.public_policy import EXPERIMENTAL_IPM_TOPOLOGIES, experimental_rotors_enabled, public_elmer_enabled
 from backend.public_routes.halbach import (
     halbach_capability_payload,
 )
@@ -175,6 +175,11 @@ async def health_check() -> dict[str, Any]:
         "capabilities": {
             "elmer": elmer,
             "halbach_array_2d": halbach_capability_payload(),
+            "experimental_rotors": {
+                "enabled": experimental_rotors_enabled(),
+                "families": sorted(EXPERIMENTAL_IPM_TOPOLOGIES) if experimental_rotors_enabled() else [],
+                "switch": "COILEM_EXPERIMENTAL_ROTORS",
+            },
         },
     }
 

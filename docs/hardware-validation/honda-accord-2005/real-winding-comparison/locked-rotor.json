@@ -1,0 +1,2576 @@
+[
+ {
+  "current_A": 25,
+  "delta_deg": 60,
+  "torque_Nm": 13.522259013845447,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 10.6
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 65,
+  "torque_Nm": 9.398333286756664,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.2
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 70,
+  "torque_Nm": 6.5978278845465095,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.4
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 75,
+  "torque_Nm": 6.949127784701449,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.3
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 80,
+  "torque_Nm": 10.00548965538334,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.4
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 85,
+  "torque_Nm": 13.56152649908598,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.7
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 90,
+  "torque_Nm": 14.810258913075916,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.5
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 95,
+  "torque_Nm": 14.6635888349828,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.9
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 100,
+  "torque_Nm": 16.45862809372382,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.7
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 105,
+  "torque_Nm": 18.56550524603078,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.9
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 110,
+  "torque_Nm": 18.45704560159757,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.2
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 115,
+  "torque_Nm": 16.678429858124954,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.6
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 120,
+  "torque_Nm": 13.664185014852572,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.8
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 125,
+  "torque_Nm": 8.577707307056581,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.4
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 130,
+  "torque_Nm": 5.239520634088157,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.2
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 135,
+  "torque_Nm": 4.647108629552075,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.7
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 140,
+  "torque_Nm": 6.669010729142056,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.3
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 145,
+  "torque_Nm": 8.505956829028253,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.2
+ },
+ {
+  "current_A": 25,
+  "delta_deg": 150,
+  "torque_Nm": 8.165275843156477,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.3
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 60,
+  "torque_Nm": 26.220523064745933,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 10.6
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 65,
+  "torque_Nm": 22.954689574537827,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.7
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 70,
+  "torque_Nm": 19.72227782499024,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.6
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 75,
+  "torque_Nm": 19.84332017543664,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.0
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 80,
+  "torque_Nm": 23.32791433297713,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.4
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 85,
+  "torque_Nm": 27.5236506882703,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.6
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 90,
+  "torque_Nm": 29.551451591185163,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.3
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 95,
+  "torque_Nm": 29.190987582147915,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.0
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 100,
+  "torque_Nm": 29.775281153896824,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.6
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 105,
+  "torque_Nm": 31.59564738725423,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.5
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 110,
+  "torque_Nm": 31.405493349962082,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.4
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 115,
+  "torque_Nm": 29.812640983743137,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 10.5
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 120,
+  "torque_Nm": 26.846082990351935,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.1
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 125,
+  "torque_Nm": 21.74884397165378,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.5
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 130,
+  "torque_Nm": 17.524746563781605,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.7
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 135,
+  "torque_Nm": 16.415406212712718,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.8
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 140,
+  "torque_Nm": 17.796910427640537,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.0
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 145,
+  "torque_Nm": 18.27913666423981,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.5
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 150,
+  "torque_Nm": 17.64658319050661,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.1
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 60,
+  "torque_Nm": 37.69225398219841,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.7
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 65,
+  "torque_Nm": 35.47257541067627,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.3
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 70,
+  "torque_Nm": 32.39995320587026,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.6
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 75,
+  "torque_Nm": 33.21274911188388,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.5
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 80,
+  "torque_Nm": 37.41130637133903,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.7
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 85,
+  "torque_Nm": 42.036333126748524,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.5
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 90,
+  "torque_Nm": 44.39584878993095,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.5
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 95,
+  "torque_Nm": 44.14064045904962,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.9
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 100,
+  "torque_Nm": 43.66339111918052,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.2
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 105,
+  "torque_Nm": 45.10603646635511,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.1
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 110,
+  "torque_Nm": 45.053357264705774,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.7
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 115,
+  "torque_Nm": 43.589400198161606,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.6
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 120,
+  "torque_Nm": 40.561883240862926,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.7
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 125,
+  "torque_Nm": 35.08225201751031,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.3
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 130,
+  "torque_Nm": 30.13901283102849,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.4
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 135,
+  "torque_Nm": 28.686758865410333,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.6
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 140,
+  "torque_Nm": 28.961284947259635,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.2
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 145,
+  "torque_Nm": 29.150228422568,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.2
+ },
+ {
+  "current_A": 75,
+  "delta_deg": 150,
+  "torque_Nm": 28.137871072118763,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.8
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 60,
+  "torque_Nm": 47.8758737204887,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.5
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 65,
+  "torque_Nm": 46.58365663594077,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.3
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 70,
+  "torque_Nm": 45.45198040979464,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.8
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 75,
+  "torque_Nm": 47.432852852067995,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.5
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 80,
+  "torque_Nm": 51.98551054554548,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 15.2
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 85,
+  "torque_Nm": 57.01274103468485,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.6
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 90,
+  "torque_Nm": 59.49786425196611,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.3
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 95,
+  "torque_Nm": 58.794714099630816,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.3
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 100,
+  "torque_Nm": 57.95250744746422,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.5
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 105,
+  "torque_Nm": 59.06937201323558,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.4
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 110,
+  "torque_Nm": 59.30986957524868,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.3
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 115,
+  "torque_Nm": 58.156096115913776,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.8
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 120,
+  "torque_Nm": 55.04291742329256,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.3
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 125,
+  "torque_Nm": 49.25607936715706,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.3
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 130,
+  "torque_Nm": 43.56641789683922,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.6
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 135,
+  "torque_Nm": 41.30382061297624,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.2
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 140,
+  "torque_Nm": 40.15439508096364,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.9
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 145,
+  "torque_Nm": 39.339586938642185,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.8
+ },
+ {
+  "current_A": 100,
+  "delta_deg": 150,
+  "torque_Nm": 39.500307288883434,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.0
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 60,
+  "torque_Nm": 55.91076512049875,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.6
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 65,
+  "torque_Nm": 57.90988778828908,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.3
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 70,
+  "torque_Nm": 59.04305283222691,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.0
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 75,
+  "torque_Nm": 61.716217723807596,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.7
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 80,
+  "torque_Nm": 66.48550838321037,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.4
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 85,
+  "torque_Nm": 72.31675249112469,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.9
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 90,
+  "torque_Nm": 74.64590816348661,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.2
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 95,
+  "torque_Nm": 73.69287817465236,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.9
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 100,
+  "torque_Nm": 71.90643553610815,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.1
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 105,
+  "torque_Nm": 72.82444458964504,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.4
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 110,
+  "torque_Nm": 74.06421723689297,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.6
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 115,
+  "torque_Nm": 73.42751531253028,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.4
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 120,
+  "torque_Nm": 70.31362763303069,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.4
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 125,
+  "torque_Nm": 64.27462826685156,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.8
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 130,
+  "torque_Nm": 57.82294070265334,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.2
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 135,
+  "torque_Nm": 54.474539159269234,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.2
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 140,
+  "torque_Nm": 51.56266257399883,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.1
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 145,
+  "torque_Nm": 49.24978569381798,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.9
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 150,
+  "torque_Nm": 50.584177325180235,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.5
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 60,
+  "torque_Nm": 61.77402420490344,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.7
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 65,
+  "torque_Nm": 68.54352311994998,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.3
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 70,
+  "torque_Nm": 72.17697400553611,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.1
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 75,
+  "torque_Nm": 75.9781914601353,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.7
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 80,
+  "torque_Nm": 80.64182436946588,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.3
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 85,
+  "torque_Nm": 87.30890234868946,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.5
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 90,
+  "torque_Nm": 90.35508055671727,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.1
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 95,
+  "torque_Nm": 88.2267647352286,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.6
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 100,
+  "torque_Nm": 85.74481245422074,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.1
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 105,
+  "torque_Nm": 86.1693436823597,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.8
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 110,
+  "torque_Nm": 88.73922710579076,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.4
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 115,
+  "torque_Nm": 89.26062827560395,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.8
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 120,
+  "torque_Nm": 86.45187487758979,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.9
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 125,
+  "torque_Nm": 79.9428111391658,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.4
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 130,
+  "torque_Nm": 72.49686966915039,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.4
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 135,
+  "torque_Nm": 68.10334059898325,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.4
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 140,
+  "torque_Nm": 62.83204092498176,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.9
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 145,
+  "torque_Nm": 59.197607655793995,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.5
+ },
+ {
+  "current_A": 150,
+  "delta_deg": 150,
+  "torque_Nm": 60.43651896202252,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.6
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 60,
+  "torque_Nm": 66.29886167363475,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.7
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 65,
+  "torque_Nm": 77.09880995960937,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 15.7
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 70,
+  "torque_Nm": 84.19127221347321,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.2
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 75,
+  "torque_Nm": 89.7022734963871,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.5
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 80,
+  "torque_Nm": 94.63785494351905,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.6
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 85,
+  "torque_Nm": 101.63798877012069,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.8
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 90,
+  "torque_Nm": 105.94564351572201,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.3
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 95,
+  "torque_Nm": 103.09247627161645,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.0
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 100,
+  "torque_Nm": 99.58346248462577,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.2
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 105,
+  "torque_Nm": 100.15460442255818,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.0
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 110,
+  "torque_Nm": 103.20595253182962,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.1
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 115,
+  "torque_Nm": 105.35411351201928,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.0
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 120,
+  "torque_Nm": 103.06411714651317,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.8
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 125,
+  "torque_Nm": 96.2103835436065,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.8
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 130,
+  "torque_Nm": 88.01021049445629,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.4
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 135,
+  "torque_Nm": 81.81469242745207,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 10.5
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 140,
+  "torque_Nm": 74.43538100911762,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.8
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 145,
+  "torque_Nm": 68.6776055925324,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.9
+ },
+ {
+  "current_A": 175,
+  "delta_deg": 150,
+  "torque_Nm": 69.91825042731085,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.3
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 60,
+  "torque_Nm": 70.32054318301974,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 15.2
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 65,
+  "torque_Nm": 83.48709262244611,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 16.7
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 70,
+  "torque_Nm": 94.66020317112023,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.5
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 75,
+  "torque_Nm": 102.22413450232649,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 16.0
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 80,
+  "torque_Nm": 108.4523389397194,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.4
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 85,
+  "torque_Nm": 115.41135535898769,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.8
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 90,
+  "torque_Nm": 121.48832188566749,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.9
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 95,
+  "torque_Nm": 118.03397472728031,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.3
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 100,
+  "torque_Nm": 113.86109318466168,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.7
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 105,
+  "torque_Nm": 114.01668042410496,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.0
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 110,
+  "torque_Nm": 117.87045635958141,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.3
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 115,
+  "torque_Nm": 121.71453530186163,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.0
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 120,
+  "torque_Nm": 119.58478844558157,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.7
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 125,
+  "torque_Nm": 112.9186985898302,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.9
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 130,
+  "torque_Nm": 103.57613258276542,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.3
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 135,
+  "torque_Nm": 95.55936536803725,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.7
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 140,
+  "torque_Nm": 86.4280259347334,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.2
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 145,
+  "torque_Nm": 78.44763714476603,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.6
+ },
+ {
+  "current_A": 200,
+  "delta_deg": 150,
+  "torque_Nm": 78.11084373071289,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.0
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 60,
+  "torque_Nm": 73.73875948588557,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 15.5
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 65,
+  "torque_Nm": 89.34577012705863,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 16.1
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 70,
+  "torque_Nm": 103.99800222784671,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.4
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 75,
+  "torque_Nm": 113.43018671886854,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.6
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 80,
+  "torque_Nm": 120.63987730443115,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 15.6
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 85,
+  "torque_Nm": 128.94744577730404,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.8
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 90,
+  "torque_Nm": 136.66373004526625,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.3
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 95,
+  "torque_Nm": 133.2316097925609,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.3
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 100,
+  "torque_Nm": 127.8505694994605,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.2
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 105,
+  "torque_Nm": 127.706498486217,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.1
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 110,
+  "torque_Nm": 132.20513270644457,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.9
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 115,
+  "torque_Nm": 137.4758678133974,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.4
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 120,
+  "torque_Nm": 136.31785435977912,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.4
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 125,
+  "torque_Nm": 129.6356250280817,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.2
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 130,
+  "torque_Nm": 119.09171883994853,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.9
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 135,
+  "torque_Nm": 109.4178053892109,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.8
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 140,
+  "torque_Nm": 98.23943655438667,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.3
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 145,
+  "torque_Nm": 88.51336960820441,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.6
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 150,
+  "torque_Nm": 86.67321907810992,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.0
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 0,
+  "torque_Nm": 0.022794198860968437,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 15.5
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 10,
+  "torque_Nm": -2.1955533742700903,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.4
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 20,
+  "torque_Nm": 3.0473395580553144,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.9
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 30,
+  "torque_Nm": 10.881698597814184,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.8
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 40,
+  "torque_Nm": 19.483881415115537,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.1
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 50,
+  "torque_Nm": 25.241415456817165,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.6
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 160,
+  "torque_Nm": 13.485692928524733,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.5
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 170,
+  "torque_Nm": 9.819902795200198,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.7
+ },
+ {
+  "current_A": 50,
+  "delta_deg": 180,
+  "torque_Nm": 0.008786827002157074,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 10.9
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 0,
+  "torque_Nm": -0.01625851069524218,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.9
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 10,
+  "torque_Nm": 3.1554893255545466,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 15.8
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 20,
+  "torque_Nm": 11.33394254953617,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.9
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 30,
+  "torque_Nm": 20.072775273693974,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.0
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 40,
+  "torque_Nm": 33.256146733249196,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.9
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 50,
+  "torque_Nm": 44.66645114681356,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 15.0
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 160,
+  "torque_Nm": 35.51970770663879,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.8
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 170,
+  "torque_Nm": 17.019950634802615,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.9
+ },
+ {
+  "current_A": 125,
+  "delta_deg": 180,
+  "torque_Nm": -0.029318043152876498,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.9
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 0,
+  "torque_Nm": -0.012944963973558345,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 16.0
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 10,
+  "torque_Nm": 9.673556298931732,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.6
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 20,
+  "torque_Nm": 18.24818142992287,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 15.5
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 30,
+  "torque_Nm": 26.965445747273762,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 13.5
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 40,
+  "torque_Nm": 40.57332722174107,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.4
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 50,
+  "torque_Nm": 53.793386915617134,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.3
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 160,
+  "torque_Nm": 70.81242300711831,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 12.1
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 170,
+  "torque_Nm": 30.008743473277693,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 14.1
+ },
+ {
+  "current_A": 225,
+  "delta_deg": 180,
+  "torque_Nm": -0.19382710623711089,
+  "coilem_currents_per_Ia": [
+   1.0,
+   -0.5,
+   -0.5
+  ],
+  "run_commit": "50fe4056983ad15362afdfe31b83372e23d63094",
+  "run_dirty": false,
+  "solve_s": 11.4
+ }
+]

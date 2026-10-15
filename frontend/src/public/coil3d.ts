@@ -269,7 +269,10 @@ export type HarnessPhase = 'A' | 'B' | 'C';
 export interface WindingHarnessSpec {
   slotCount: number;
   slotPitchRad: number;
-  phaseOfSlot: (slot: number) => HarnessPhase;
+  /** Angle of tooth 0; tooth k sits k slot pitches further on. Defaults to 0. */
+  toothAngleOffsetRad?: number;
+  /** The phase of the coil on this tooth, or null for a tooth without a coil. */
+  phaseOfSlot: (slot: number) => HarnessPhase | null;
   /** Radial position of the rear jumper ring, in millimetres. */
   bundleCenterRadius: number;
   stackHalf: number;
@@ -301,17 +304,19 @@ export function buildWindingHarness(spec: WindingHarnessSpec): WindingHarnessMod
   const zStubTop = -(spec.stackHalf + spec.axialOverhang * 0.55);
   const zBase = -(spec.stackHalf + spec.axialOverhang + 2.2);
   const zStep = leadRadius * 2.7;
+  const toothAngle = (tooth: number) => (spec.toothAngleOffsetRad ?? 0) + tooth * spec.slotPitchRad;
 
   const slotsByPhase: Record<HarnessPhase, number[]> = { A: [], B: [], C: [] };
   for (let slot = 0; slot < spec.slotCount; slot += 1) {
-    slotsByPhase[spec.phaseOfSlot(slot)].push(slot);
+    const phase = spec.phaseOfSlot(slot);
+    if (phase) slotsByPhase[phase].push(slot);
   }
   const orderedPhases = (['A', 'B', 'C'] as const)
     .filter((phase) => slotsByPhase[phase].length > 0)
     .sort((a, b) => slotsByPhase[a][0] - slotsByPhase[b][0]);
 
   const terminalRadius = (spec.yokeInnerRadius + spec.outerRadius) / 2;
-  const terminalAngle = circularMean(orderedPhases.map((phase) => slotsByPhase[phase][0] * spec.slotPitchRad));
+  const terminalAngle = circularMean(orderedPhases.map((phase) => toothAngle(slotsByPhase[phase][0])));
   const zTerminal = -(spec.stackHalf + 4.2);
 
   const phaseGeometries: Record<HarnessPhase, THREE.BufferGeometry | null> = { A: null, B: null, C: null };
@@ -322,7 +327,7 @@ export function buildWindingHarness(spec: WindingHarnessSpec): WindingHarnessMod
     const zPlane = zBase - phaseIndex * zStep;
     const parts: THREE.BufferGeometry[] = [];
     slots.forEach((slot) => {
-      const angle = slot * spec.slotPitchRad;
+      const angle = toothAngle(slot);
       parts.push(tubeAlong(
         new THREE.LineCurve3(polar(radius, angle, zStubTop), polar(radius, angle, zPlane)),
         Math.abs(zPlane - zStubTop),
@@ -330,11 +335,11 @@ export function buildWindingHarness(spec: WindingHarnessSpec): WindingHarnessMod
       ));
     });
     for (let index = 0; index < slots.length - 1; index += 1) {
-      const from = slots[index] * spec.slotPitchRad;
-      const to = slots[index + 1] * spec.slotPitchRad;
+      const from = toothAngle(slots[index]);
+      const to = toothAngle(slots[index + 1]);
       parts.push(tubeAlong(new HarnessArcCurve(radius, from, to, zPlane), Math.abs(to - from) * radius, leadRadius));
     }
-    const leadAngle = slots[0] * spec.slotPitchRad;
+    const leadAngle = toothAngle(slots[0]);
     const landAngle = terminalAngle + (phaseIndex - (orderedPhases.length - 1) / 2) * 0.1;
     const lead = new THREE.QuadraticBezierCurve3(
       polar(radius, leadAngle, zPlane),
@@ -344,7 +349,7 @@ export function buildWindingHarness(spec: WindingHarnessSpec): WindingHarnessMod
     parts.push(tubeAlong(lead, lead.getLength(), leadRadius));
     phaseGeometries[phase] = mergeGeometries(parts, false) ?? null;
     parts.forEach((part) => part.dispose());
-    tailPoints[phase] = polar(radius, slots[slots.length - 1] * spec.slotPitchRad, zPlane);
+    tailPoints[phase] = polar(radius, toothAngle(slots[slots.length - 1]), zPlane);
   });
 
   let neutralGeometry: THREE.BufferGeometry | null = null;

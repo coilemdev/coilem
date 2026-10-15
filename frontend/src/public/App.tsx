@@ -30,7 +30,7 @@ import {
   type PublicWorkflowStep,
 } from './CoilEmWorkspace';
 import { PublicGuidedSetup } from './GuidedSetup';
-import { repairGuidedSection } from './guidedConfigRepair';
+import { coilsPerPhase, parallelPathsDividing, repairGuidedSection } from './guidedConfigRepair';
 import { PublicLanding } from './PublicLanding';
 import { HalbachWorkspace } from './halbach/HalbachWorkspace';
 import {
@@ -67,6 +67,7 @@ import {
   type PublicFieldFrameDescriptor,
   type PublicMotorComponentKind,
   type PublicElmerCapability,
+  type PublicExperimentalRotorCapability,
   type PublicSavedRun,
   type PublicSolverId,
   type SolveResult,
@@ -125,6 +126,29 @@ function sameElmerCapability(
     && current.solver_version === next.solver_version
     && current.grid_version === next.grid_version
     && current.reason === next.reason;
+}
+
+const EXPERIMENTAL_ROTORS_OFF: PublicExperimentalRotorCapability = {
+  enabled: false,
+  families: [],
+  switch: 'COILEM_EXPERIMENTAL_ROTORS',
+};
+
+function experimentalRotorsFromHealth(health: PublicJson): PublicExperimentalRotorCapability {
+  const capabilities = health.capabilities;
+  const payload = capabilities && typeof capabilities === 'object'
+    ? (capabilities as PublicJson).experimental_rotors
+    : null;
+  if (!payload || typeof payload !== 'object') return EXPERIMENTAL_ROTORS_OFF;
+  const data = payload as PublicJson;
+  const enabled = data.enabled === true;
+  return {
+    enabled,
+    families: enabled && Array.isArray(data.families)
+      ? data.families.filter((family): family is 'pyleecan_holem50' => family === 'pyleecan_holem50')
+      : [],
+    switch: typeof data.switch === 'string' ? data.switch : EXPERIMENTAL_ROTORS_OFF.switch,
+  };
 }
 
 function elmerCapabilityFromHealth(health: PublicJson): PublicElmerCapability {
@@ -320,6 +344,7 @@ const DESIGN_FIELD_LABELS: Record<string, string> = {
   v_angle_deg: 'V angle',
   v_depth_mm: 'V depth',
   type: 'Winding type',
+  layers: 'Winding layers',
   turns_per_coil: 'Turns per coil',
   parallel_paths: 'Parallel paths',
   current_amplitude_A: 'Phase current',
@@ -360,6 +385,7 @@ function editableValue(config: MotorConfig, section: PublicEditableSection, fiel
 
 function formatEditValue(field: string, value: unknown): string {
   if (field === 'ipm_topology' && typeof value === 'string') {
+    if (value === 'pyleecan_holem50') return 'HoleM50 (experimental)';
     return value === 'v_shape' ? 'V-shape' : 'Flat / buried';
   }
   if (field === 'magnet_embrace' && typeof value === 'number') {
@@ -413,6 +439,13 @@ function describeDesignEdit(
     const nextValue = editableValue(next, section, field);
     consequence = `${formatEditValue(field, previousValue)} → ${formatEditValue(field, nextValue)}`;
   }
+  if (
+    section === 'winding'
+    && field !== 'parallel_paths'
+    && previous.winding.parallel_paths !== next.winding.parallel_paths
+  ) {
+    consequence = `${consequence} · parallel paths ${previous.winding.parallel_paths} → ${next.winding.parallel_paths}`;
+  }
 
   return {
     message: `${label} updated`,
@@ -422,7 +455,7 @@ function describeDesignEdit(
 }
 
 const GUIDED_IPM_LAYOUT_PRESETS: Record<
-  MotorConfig['rotor']['ipm_topology'],
+  'flat_buried' | 'v_shape',
   Partial<MotorConfig['rotor']>
 > = {
   flat_buried: {
@@ -500,6 +533,7 @@ export function App() {
   const [connectionStatus, setConnectionStatus] = useState<PublicConnectionStatus>('checking');
   const [selectedSolver, setSelectedSolver] = useState<PublicSolverId>('magneto2d');
   const [elmerCapability, setElmerCapability] = useState<PublicElmerCapability>(ELMER_CHECKING);
+  const [experimentalRotors, setExperimentalRotors] = useState<PublicExperimentalRotorCapability>(EXPERIMENTAL_ROTORS_OFF);
   const [geometryStale, setGeometryStale] = useState(true);
   const [previewNetworkFailed, setPreviewNetworkFailed] = useState(false);
   const [backendRecovery, setBackendRecovery] = useState(0);
@@ -634,6 +668,12 @@ export function App() {
     const enablingToothShoe = section === 'stator'
       && field === 'tooth_shoe_enabled'
       && value === true;
+    // One layer winds half the tooth coils of two (8p/12s: 2 per phase, not 4),
+    // so keep the parallel paths a divisor of what is left.
+    const layerCount = section === 'winding' && field === 'layers' ? Number(value) : null;
+    const layerCoilsPerPhase = layerCount === null
+      ? 0
+      : coilsPerPhase(config.stator.slot_count, config.rotor.pole_count, config.winding.type, layerCount);
     const nextConfig: MotorConfig = selectedIpmLayout
       ? {
         ...config,
@@ -657,6 +697,17 @@ export function App() {
               config.stator.tooth_shoe_overhang_mm ?? 1.5,
               Math.max(0, (config.stator.slot_opening_mm - 0.1) / 2),
             ),
+          },
+        }
+      : layerCount !== null
+        ? {
+          ...config,
+          winding: {
+            ...config.winding,
+            layers: layerCount,
+            parallel_paths: layerCoilsPerPhase > 0
+              ? parallelPathsDividing(layerCoilsPerPhase, config.winding.parallel_paths)
+              : config.winding.parallel_paths,
           },
         }
       : {
@@ -969,11 +1020,18 @@ export function App() {
         setElmerCapability((current) => (
           sameElmerCapability(current, nextElmerCapability) ? current : nextElmerCapability
         ));
+        const nextExperimentalRotors = experimentalRotorsFromHealth(health);
+        setExperimentalRotors((current) => (
+          current.enabled === nextExperimentalRotors.enabled && current.switch === nextExperimentalRotors.switch
+            ? current
+            : nextExperimentalRotors
+        ));
         refreshMaterials();
       },
       onOffline: () => {
         setConnectionStatus('offline');
         setElmerCapability(ELMER_API_UNAVAILABLE);
+        setExperimentalRotors(EXPERIMENTAL_ROTORS_OFF);
       },
       onReconnect: () => setBackendRecovery((current) => current + 1),
     });
@@ -1542,6 +1600,7 @@ export function App() {
           onLoadExample={loadExampleDesign}
           onOpenHalbach={() => setShowHalbachWorkspace(true)}
           onNewDesign={startNewDesign}
+          experimentalRotors={experimentalRotors.enabled}
           tutorialCatalog={tutorialsView === 'catalog'}
           tutorialProgress={tutorialsView === 'lesson-1'
             ? tutorialHeaderProgress?.lessonNumber === 1
@@ -1638,6 +1697,7 @@ export function App() {
           onLoadExample={loadExampleDesign}
           onOpenHalbach={() => setShowHalbachWorkspace(true)}
           onNewDesign={startNewDesign}
+          experimentalRotors={experimentalRotors.enabled}
           workflowDisabled
         />
         <PublicLanding
@@ -1672,6 +1732,7 @@ export function App() {
       connectionStatus={connectionStatus}
       selectedSolver={selectedSolver}
       elmerCapability={elmerCapability}
+      experimentalRotors={experimentalRotors}
       geometryStale={geometryStale}
       error={error}
       errorDetails={errorDetails}

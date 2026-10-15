@@ -111,44 +111,9 @@ function windingToken(regionType: string): { phase: keyof typeof PHASE_COLORS; d
   };
 }
 
-const TOOTH_PHASE_SEQUENCE = ['A', 'C', 'B'] as const;
-
-/** Per-tooth coil identity — the same pattern the 3D concentrated coils use. */
-function toothCoil(toothIndex: number): { phase: keyof typeof PHASE_COLORS; direction: '+' | '-' } {
-  const wrapped = ((toothIndex % 3) + 3) % 3;
-  return {
-    phase: TOOTH_PHASE_SEQUENCE[wrapped],
-    direction: toothIndex % 2 === 0 ? '+' : '-',
-  };
-}
-
 function slotNumberFromRegion(regionType: string): number | null {
   const match = regionType.match(/slot[_-]?(\d+)/i);
   return match ? Number(match[1]) : null;
-}
-
-interface ToothCoilSide {
-  toothIndex: number;
-  phase: keyof typeof PHASE_COLORS;
-  direction: '+' | '-';
-  outOfPage: boolean;
-}
-
-/**
- * The two coil sides sharing one slot of a double-layer tooth winding.
- * Tooth t sits counterclockwise of slot t, so slot k holds the clockwise side
- * of tooth k's coil (upper half) and the counterclockwise side of tooth k−1's
- * coil (lower half); the two sides of any one coil carry opposite current.
- */
-function toothCoilSidesForSlot(slotIndex: number, slotCount: number): { lower: ToothCoilSide; upper: ToothCoilSide } {
-  const upperTooth = ((slotIndex % slotCount) + slotCount) % slotCount;
-  const lowerTooth = (upperTooth + slotCount - 1) % slotCount;
-  const upperCoil = toothCoil(upperTooth);
-  const lowerCoil = toothCoil(lowerTooth);
-  return {
-    lower: { toothIndex: lowerTooth, ...lowerCoil, outOfPage: lowerCoil.direction === '+' },
-    upper: { toothIndex: upperTooth, ...upperCoil, outOfPage: upperCoil.direction === '-' },
-  };
 }
 
 /** Keep the polygon part on the non-negative side of the line through the origin with this normal. */
@@ -173,31 +138,6 @@ function clipPolygonToHalfPlane(
     if (currentSide >= 0) clipped.push(current);
   }
   return clipped;
-}
-
-function polygonAreaAndCentroid(points: Array<[number, number]>): { area: number; centroid: [number, number] } {
-  let doubledArea = 0;
-  let centroidX = 0;
-  let centroidY = 0;
-  for (let index = 0; index < points.length; index += 1) {
-    const [x0, y0] = points[index];
-    const [x1, y1] = points[(index + 1) % points.length];
-    const cross = x0 * y1 - x1 * y0;
-    doubledArea += cross;
-    centroidX += (x0 + x1) * cross;
-    centroidY += (y0 + y1) * cross;
-  }
-  if (Math.abs(doubledArea) < 1e-9) {
-    const fallback = points.reduce<[number, number]>(
-      (sum, point) => [sum[0] + point[0], sum[1] + point[1]],
-      [0, 0],
-    );
-    return { area: 0, centroid: [fallback[0] / Math.max(1, points.length), fallback[1] / Math.max(1, points.length)] };
-  }
-  return {
-    area: Math.abs(doubledArea) / 2,
-    centroid: [centroidX / (3 * doubledArea), centroidY / (3 * doubledArea)],
-  };
 }
 
 /** ⊙ current toward the viewer, ⊗ current into the page. */
@@ -567,12 +507,10 @@ function drawGeometry(
   if (points.length === 0) return;
   const { map, scale } = fitTransform(points, width, height, viewportScale, pan);
   const slotCount = Number(data.metadata.slot_count || 0);
-  // Every layer except Materials draws the winding split into its two coil sides.
-  // 'none' included: the split is what the winding physically is — two coil sides
-  // sharing a slot — not an annotation, so turning an overlay off must not redraw
-  // the slots as single solid wedges in a different colour.
-  const splitLayer = layer !== 'materials';
-  const toothSplitActive = windingType === 'concentrated' && slotCount >= 3;
+  // Slots draw as the backend lays them out (#91): a single-layer tooth-coil slot
+  // holds one coil side, a two-layer one arrives as two side-by-side regions,
+  // each with its own phase and the backend's ⊙/⊗ marker.
+  const concentratedWinding = windingType === 'concentrated' && slotCount >= 3;
   const origin = map([0, 0]);
   const [, boundingRadiusMm] = radialExtentMm(points);
   const outerRadiusPx = Math.max(1, (Number(data.metadata.stator_od_mm || 0) / 2 || boundingRadiusMm) * scale);
@@ -617,77 +555,10 @@ function drawGeometry(
   context.arc(origin[0] + outerRadiusPx * 0.04, origin[1] + outerRadiusPx * 0.09, outerRadiusPx * 1.2, 0, Math.PI * 2);
   context.fill();
 
-  const drawToothCoilHalf = (
-    regionPoints: Array<[number, number]>,
-    normal: [number, number],
-    side: ToothCoilSide,
-    slotNumber: number,
-    regionIndex: number,
-  ) => {
-    const halfPoints = clipPolygonToHalfPlane(regionPoints, normal);
-    if (halfPoints.length < 3) return;
-    const canvasPoints = halfPoints.map(map);
-    context.beginPath();
-    context.moveTo(canvasPoints[0][0], canvasPoints[0][1]);
-    for (const [x, y] of canvasPoints.slice(1)) {
-      context.lineTo(x, y);
-    }
-    context.closePath();
-    const [innerCoilMm, outerCoilMm] = radialExtentMm(halfPoints);
-    context.fillStyle = shadedRegionFill(
-      context,
-      'winding',
-      phaseFill(side.phase, layer, rotorAngleDeg),
-      origin,
-      innerCoilMm * scale,
-      outerCoilMm * scale,
-    );
-    context.globalAlpha = 0.94;
-    context.fill();
-    context.globalAlpha = 1;
-    context.strokeStyle = 'rgba(6, 8, 12, 0.68)';
-    context.lineWidth = Math.max(0.7, Math.min(1.5, scale * 0.035));
-    context.stroke();
-    const selection: PublicMotorComponentSelection = {
-      id: `region-${regionIndex}-tooth-${side.toothIndex}`,
-      kind: 'winding',
-      label: `Tooth ${side.toothIndex + 1} coil · phase ${side.phase}${side.direction}`,
-      role: `Concentrated coil side in slot ${slotNumber} — current ${side.outOfPage ? 'out of the page ⊙' : 'into the page ⊗'}`,
-      regionType: `tooth_${side.toothIndex}_coil_side`,
-      regionIndex,
-      slotIndex: slotNumber,
-      toothIndex: side.toothIndex + 1,
-      phase: side.phase,
-      direction: side.direction,
-    };
-    hitRegions.push({ points: canvasPoints, selection });
-    trackComponentPath(selection, canvasPoints);
-    // Slots deliberately omits the direction glyphs; every other layer, including
-    // 'none', keeps them, so the winding reads the same whatever is switched on.
-    if (layer !== 'materials' && layer !== 'slots') {
-      const { area, centroid } = polygonAreaAndCentroid(halfPoints);
-      const [markerX, markerY] = map(centroid);
-      const markerRadius = Math.max(4, Math.min(11, Math.sqrt(Math.max(area, 1)) * scale * 0.21));
-      // Markers render after the lighting pass so their glyphs stay crisp.
-      pendingMarkers.push({ x: markerX, y: markerY, radius: markerRadius, outOfPage: side.outOfPage, ring: PHASE_COLORS[side.phase] });
-    }
-  };
-
   context.lineJoin = 'round';
   data.regions.forEach((region, regionIndex) => {
     if (region.points.length < 2) return;
-    // The double-layer tooth winding draws its own per-side ⊙/⊗ markers, so
-    // the backend's single homogenized slot marker would contradict them.
-    if (toothSplitActive && region.region_type === 'winding_symbol') return;
     const slotNumber = slotNumberFromRegion(region.region_type);
-    if (toothSplitActive && splitLayer && slotNumber !== null && windingToken(region.region_type)) {
-      const slotAngle = ((slotNumber - 1) * Math.PI * 2) / slotCount;
-      const normal: [number, number] = [-Math.sin(slotAngle), Math.cos(slotAngle)];
-      const sides = toothCoilSidesForSlot(slotNumber - 1, slotCount);
-      drawToothCoilHalf(region.points, [-normal[0], -normal[1]], sides.lower, slotNumber, regionIndex);
-      drawToothCoilHalf(region.points, normal, sides.upper, slotNumber, regionIndex);
-      return;
-    }
     const [innerRadiusMm, outerRadiusMm] = radialExtentMm(region.points);
     if (/^airgap$/i.test(region.region_type)) {
       // The airgap reads as a glowing clearance ring, like the 3D torus cue.
@@ -787,11 +658,11 @@ function drawGeometry(
       context.stroke();
     }
     let selection = componentSelectionFromRegion(region.region_type, regionIndex);
-    if (selection && toothSplitActive && selection.kind === 'winding' && slotNumber !== null) {
+    if (selection && concentratedWinding && selection.kind === 'winding' && slotNumber !== null) {
       selection = {
         ...selection,
-        label: `Slot ${slotNumber} winding`,
-        role: 'Carries one coil side from each adjacent tooth coil',
+        label: `Slot ${slotNumber} coil side`,
+        role: 'One side of a concentrated coil wound around an adjacent tooth',
       };
     }
     if (selection) hitRegions.push({ points: canvasPoints, selection });
@@ -845,9 +716,6 @@ function drawGeometry(
     for (const region of data.regions) {
       const slotMatch = region.region_type.match(/slot_(\d+)/i);
       if (!slotMatch || region.points.length === 0) continue;
-      // In the tooth-split view the phase identity lives on the half-wedges
-      // and their markers; a single homogenized phase chip would mislead.
-      if (toothSplitActive && layer !== 'slots') continue;
       const center = region.points.reduce<[number, number]>(
         (current, point) => [current[0] + point[0], current[1] + point[1]],
         [0, 0],
@@ -859,7 +727,7 @@ function drawGeometry(
       context.arc(x, y, layer === 'slots' ? 10 : 12, 0, Math.PI * 2);
       context.fillStyle = 'rgba(8, 10, 14, 0.78)';
       context.fill();
-      context.strokeStyle = winding && !toothSplitActive ? PHASE_COLORS[winding.phase] : 'rgba(255,255,255,.34)';
+      context.strokeStyle = winding ? PHASE_COLORS[winding.phase] : 'rgba(255,255,255,.34)';
       context.lineWidth = 1.2;
       context.stroke();
       context.fillStyle = '#f8fafc';

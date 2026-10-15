@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import io
 import json
+from collections import defaultdict
 from copy import deepcopy
 from pathlib import Path
 
@@ -14,11 +16,45 @@ from fastapi.testclient import TestClient
 from backend.models import MotorConfig
 from backend.public_main import app
 from backend.public_routes.solve import _store_public_result
-from backend.qualification import classify_qualification
+from backend.qualification import QUALIFICATION_BASIS, QUALIFICATION_REPORT, classify_qualification
 from backend.solve_workspace import SolveRunWriter, SolveWorkspace, _qualification
 
 FIXTURES = Path("benchmarks/main-20261009-bad71d9/fixtures")
 SPM_CONCENTRATED = json.loads(Path("tests/fixtures/spm_4p12s_simple.json").read_text(encoding="utf-8"))
+REPORT = json.loads(Path(QUALIFICATION_REPORT).read_text(encoding="utf-8"))
+
+# The sources that decide what the report measured: winding layout, current angle
+# and axis, slot and layer geometry, meshes and angle grids, materials, field
+# extraction and the native solver. Changing any of them needs a new report
+# before a combination keeps its qualified status.
+PHYSICS_SOURCES = (
+    "backend/airgap_sampling.py",
+    "backend/back_emf_harmonics.py",
+    "backend/excitation.py",
+    "backend/geometry.py",
+    "backend/geometry_drawer.py",
+    "backend/geometry_ir.py",
+    "backend/geometry_ir_tessellation.py",
+    "backend/gmsh_mesh_rotation.py",
+    "backend/gmsh_solver.py",
+    "backend/magneto2d_adapter/__init__.py",
+    "backend/material_catalog.py",
+    "backend/material_contract.py",
+    "backend/solver/__init__.py",
+    "backend/solver/_helpers.py",
+    "backend/solver_contract.py",
+    "backend/steel_flux_metrics.py",
+    "backend/sweep_planning.py",
+    "backend/torque_metrics.py",
+    "backend/winding_utils.py",
+    "materials/electrical-steel/M350-50A.csv",
+    "solvers/magneto2d/Cargo.lock",
+    *sorted(
+        path.as_posix()
+        for path in Path("solvers/magneto2d/src").rglob("*.rs")
+        if path.name not in ("tests.rs", "teaching.rs") and "thermal" not in path.parts
+    ),
+)
 
 
 def _fixture(name: str) -> MotorConfig:
@@ -58,8 +94,82 @@ def test_qualified_combinations_name_their_evidence(fixture: str, reason: str) -
     qualification = classify_qualification(_fixture(fixture))
     assert qualification["status"] == "qualified"
     assert qualification["reason"].startswith(reason)
-    assert qualification["basis"] == "coilEM benchmark report v1.1"
+    assert qualification["basis"] == "coilEM benchmark report, measured at 738d951"
     assert qualification["reference"].endswith("docs/VALIDATION.md#qualification-status")
+
+
+def test_basis_names_the_measured_commit_and_reference() -> None:
+    run = REPORT["run"]
+    assert run["status"] == "COMPLETE" and run["identity"]["dirty"] is False
+    assert run["identity"]["commit"] == run["reference_commit"]
+    assert run["identity"]["commit"][:7] in QUALIFICATION_BASIS
+    # The six-step claim rests on the winding-axis current check.
+    assert run["comparison"]["evaluation_contract"]["version"] == "1.3.0"
+
+
+@pytest.mark.parametrize("path", PHYSICS_SOURCES)
+def test_report_measured_the_current_physics_sources(path: str) -> None:
+    measured = REPORT["run"]["identity"]["source_files"]
+    assert path in measured, f"{QUALIFICATION_REPORT} did not measure {path}; run a new report before qualifying it"
+    assert hashlib.sha256(Path(path).read_bytes()).hexdigest() == measured[path], (
+        f"{path} changed after {QUALIFICATION_REPORT} measured it. Run a new A/B/C/D report and point "
+        "QUALIFICATION_BASIS at it, or mark the affected combinations experimental."
+    )
+
+
+def test_reasons_match_the_report_outcomes() -> None:
+    # A reason names the combination, then states its claim after ": ". The two
+    # distributed pitches share one claim about the same four fixtures.
+    outcomes: dict[tuple[str, str], list[str]] = defaultdict(list)
+    gates: dict[tuple[str, str], list[str]] = defaultdict(list)
+    for row in REPORT["rows"]:
+        config = MotorConfig.model_validate_json(Path(row["fixture"]).read_text(encoding="utf-8"))
+        qualification = classify_qualification(config)
+        key = (qualification["status"], qualification["reason"].partition(": ")[2])
+        outcomes[key].append(row["status"])
+        if row["phase"] == "D":
+            gates[key] += [gate["status"] for gate in row["evaluation"]["gates"]]
+    assert {status for status, _ in outcomes} == {"qualified", "experimental", "unsupported"}
+    for (status, claim), statuses in outcomes.items():
+        if status == "qualified":
+            assert set(statuses) == {"PASS"}, claim
+            assert claim.startswith(f"all {len(statuses)} benchmark "), claim
+        elif status == "experimental":
+            assert set(statuses) != {"PASS"}, claim
+            assert claim.startswith(f"{statuses.count('PASS')} of {len(statuses)} benchmark fixtures pass"), claim
+        else:
+            assert set(statuses) == {"UNSUPPORTED"}, claim
+    for key, statuses in gates.items():
+        assert f"({statuses.count('PASS')} of {len(statuses)} gates)" in key[1]
+
+
+def test_qualification_text_names_no_excluded_launch_terms(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Qualification travels in public preview, solve and saved-run payloads, which
+    # must not name the reference solver or thermal analysis (tools/smoke_public_runtime.py).
+    monkeypatch.setenv("COILEM_EXPERIMENTAL_ROTORS", "1")
+    prius = json.loads(Path("frontend/src/public/examples/ornl_prius_2004_holem50.coilem").read_text(encoding="utf-8"))
+    for key in ("openem_schema_version", "openem_version", "name", "description"):
+        prius.pop(key, None)
+    distributed = _fixture("spm_8p24s_distributed_femm_validation.json")
+    concentrated = _fixture("spm_8p12s_concentrated__baseline.json")
+    configs = [
+        *(MotorConfig.model_validate_json(Path(row["fixture"]).read_text(encoding="utf-8")) for row in REPORT["rows"]),
+        *(MotorConfig.model_validate_json(path.read_text(encoding="utf-8")) for path in sorted(FIXTURES.glob("*.json"))),
+        _with(distributed, "winding", layers=1),
+        _with(distributed, "winding", coil_span=4),
+        _with(distributed, "materials", stator_steel="custom:lab-curve"),
+        _with(distributed, "solve_params", excitation_mode="ideal_six_step_120", current_amplitude_convention="plateau"),
+        _with(concentrated, "winding", layers=2),
+        _with(concentrated, "solve_params", solve_quality="quick", mesh_density="coarse"),
+        MotorConfig.model_validate(prius),
+    ]
+    reasons = set()
+    for config in configs:
+        text = json.dumps(classify_qualification(config)).lower()
+        assert "femm" not in text and "thermal" not in text, text
+        reasons.add(classify_qualification(config)["reason"])
+    assert any(reason.startswith("HoleM50") for reason in reasons)
+    assert any(reason.startswith("V-shape IPM") for reason in reasons)
 
 
 def test_unmeasured_and_failing_combinations_are_experimental() -> None:
@@ -67,12 +177,13 @@ def test_unmeasured_and_failing_combinations_are_experimental() -> None:
     six_step = _with(distributed, "solve_params", excitation_mode="ideal_six_step_120", current_amplitude_convention="plateau")
     flat_ipm = _fixture("ipm_flat_8p12s_fsae_contract.json")
     cases = {
-        "V-shape IPM: 2 of 6": _fixture("ipm_vshape_8p12s_baseline_contract.json"),
+        "V-shape IPM: 5 of 6": _fixture("ipm_vshape_8p12s_baseline_contract.json"),
         "SPM with distributed windings under ideal six-step": six_step,
         "Single-layer distributed": _with(distributed, "winding", layers=1),
         "Only full-pitch and 5/6": _with(_fixture("spm_8p48s_distributed_femm_validation.json"), "winding", coil_span=4),
         "IPM with distributed windings": _with(flat_ipm, "winding", type="distributed", layers=2),
         "Custom steel": _with(distributed, "materials", stator_steel="custom:lab-curve"),
+        "Two-layer concentrated windings": _with(_fixture("spm_8p12s_concentrated__baseline.json"), "winding", layers=2),
     }
     for reason, config in cases.items():
         qualification = classify_qualification(config)
@@ -80,12 +191,12 @@ def test_unmeasured_and_failing_combinations_are_experimental() -> None:
 
 
 def test_rejected_rotors_and_windings_are_unsupported() -> None:
-    concentrated = _fixture("spm_8p12s_concentrated__baseline.json")
     flat_ipm = _fixture("ipm_flat_8p12s_fsae_contract.json")
     for config in (
         _fixture("ornl_prius_2004_ipm.json"),
         _with(flat_ipm, "rotor", flux_barrier_count=2),
-        _with(concentrated, "winding", layers=2),
+        # Two layers wind a coil on every tooth; q = 1 has no tooth coils to double up.
+        _with(MotorConfig.model_validate(SPM_CONCENTRATED), "winding", layers=2),
     ):
         qualification = classify_qualification(config)
         assert qualification["status"] == "unsupported"
@@ -145,7 +256,7 @@ def test_saved_run_records_status_in_provenance_and_exports(tmp_path: Path) -> N
     loaded = workspace.load_run(location.project_slug, location.run_id)
     qualification = loaded["manifest"]["provenance"]["qualification"]
     assert qualification["status"] == "experimental"
-    assert qualification["reason"].startswith("V-shape IPM: 2 of 6")
+    assert qualification["reason"].startswith("V-shape IPM: 5 of 6")
 
     rows = list(csv.reader(io.StringIO((location.path / "report" / "report.csv").read_text(encoding="utf-8"))))
     assert ["provenance", "qualification.status", "", "experimental", ""] in rows
@@ -156,7 +267,7 @@ def test_saved_run_records_status_in_provenance_and_exports(tmp_path: Path) -> N
         (page.extract_text() or "") for page in pypdf.PdfReader(location.path / "report" / "report.pdf").pages
     )
     pdf_text = " ".join(pdf_text.split())
-    assert "Qualification Experimental: V-shape IPM: 2 of 6" in pdf_text
+    assert "Qualification Experimental: V-shape IPM: 5 of 6" in pdf_text
     assert "Experimental combination: V-shape IPM" in pdf_text
 
 

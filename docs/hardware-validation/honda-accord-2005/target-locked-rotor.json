@@ -1,0 +1,41 @@
+{
+  "description": "Measured locked-rotor peak torque of the 2005 Accord motor: S1 Table 3.2, p.16 (PDF 22). DC current applied with the rotor locked every 5 electrical degrees over a full cycle; torque from an in-line shaft sensor; the peak over position at each current. S1 does not restate the current pattern; ORNL's Prius reports use (Ia, -Ia/2, -Ia/2) (assumption A5 in README.md). S1 notes saturation becomes significant above about 175 A. Torque vs position (Fig. 3.7) is plotted only.",
+  "rows": [
+    {
+      "current_A": 25,
+      "peak_torque_Nm": 18.3
+    },
+    {
+      "current_A": 50,
+      "peak_torque_Nm": 33.3
+    },
+    {
+      "current_A": 75,
+      "peak_torque_Nm": 48.1
+    },
+    {
+      "current_A": 100,
+      "peak_torque_Nm": 64.9
+    },
+    {
+      "current_A": 125,
+      "peak_torque_Nm": 79.4
+    },
+    {
+      "current_A": 150,
+      "peak_torque_Nm": 94.5
+    },
+    {
+      "current_A": 175,
+      "peak_torque_Nm": 111
+    },
+    {
+      "current_A": 200,
+      "peak_torque_Nm": 123
+    },
+    {
+      "current_A": 225,
+      "peak_torque_Nm": 135
+    }
+  ]
+}

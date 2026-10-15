@@ -1,0 +1,87 @@
+{
+ "description": "Locating ORNL's delta = 0 (no-torque position) on coilEM's own 100 A cycle for the Accord wound as built (#91).",
+ "run": {
+  "commit": "738d9516e8500c5996c772bd96470472cbb9a0f9",
+  "dirty": false
+ },
+ "method": [
+  "Static solves of the as-wound request at 100 A, ORNL's DC pattern (Ia, -Ia/2, -Ia/2).",
+  "Rotor offset scanned in 30-degree electrical steps; delta = 0 is where torque crosses zero rising.",
+  "Result: 300 deg electrical (-0.01 N m there). The first comparison's emulated slot map crossed at 240."
+ ],
+ "zero_offset_elec_deg": 300.0,
+ "rows": [
+  {
+   "current_A": 100,
+   "offset_elec_deg": 0,
+   "magnet_angle_deg": 0.0,
+   "torque_Nm": 47.8758737204887
+  },
+  {
+   "current_A": 100,
+   "offset_elec_deg": 30,
+   "magnet_angle_deg": 3.75,
+   "torque_Nm": 59.49786425196611
+  },
+  {
+   "current_A": 100,
+   "offset_elec_deg": 60,
+   "magnet_angle_deg": 7.5,
+   "torque_Nm": 55.04291742329256
+  },
+  {
+   "current_A": 100,
+   "offset_elec_deg": 90,
+   "magnet_angle_deg": 11.25,
+   "torque_Nm": 39.500307288883434
+  },
+  {
+   "current_A": 100,
+   "offset_elec_deg": 120,
+   "magnet_angle_deg": 15.0,
+   "torque_Nm": -0.0780772568971722
+  },
+  {
+   "current_A": 100,
+   "offset_elec_deg": 150,
+   "magnet_angle_deg": 18.75,
+   "torque_Nm": -39.623229011649144
+  },
+  {
+   "current_A": 100,
+   "offset_elec_deg": 180,
+   "magnet_angle_deg": -22.5,
+   "torque_Nm": -55.05303831643738
+  },
+  {
+   "current_A": 100,
+   "offset_elec_deg": 210,
+   "magnet_angle_deg": -18.75,
+   "torque_Nm": -59.4476761253378
+  },
+  {
+   "current_A": 100,
+   "offset_elec_deg": 240,
+   "magnet_angle_deg": -15.0,
+   "torque_Nm": -48.035707846713684
+  },
+  {
+   "current_A": 100,
+   "offset_elec_deg": 270,
+   "magnet_angle_deg": -11.25,
+   "torque_Nm": -17.311009857863578
+  },
+  {
+   "current_A": 100,
+   "offset_elec_deg": 300,
+   "magnet_angle_deg": -7.5,
+   "torque_Nm": -0.01114674161488132
+  },
+  {
+   "current_A": 100,
+   "offset_elec_deg": 330,
+   "magnet_angle_deg": -3.75,
+   "torque_Nm": 17.44338404538991
+  }
+ ]
+}

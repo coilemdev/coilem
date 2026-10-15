@@ -1,11 +1,12 @@
-"""Qualification status of a motor configuration under benchmark report v1.1.
+"""Qualification status of a motor configuration under the FEMM v3 benchmark report.
 
 docs/VALIDATION.md#qualification-status is the source: a combination of
-rotor, winding and excitation is qualified when every registered v1.1 fixture
-for it passes its FEMM parity gates. Combinations the benchmark did not
-measure, or measured with failures, are experimental. The result travels
-with previews, solve validation and saved runs, so the app and its exports
-say what the docs say.
+rotor, winding and excitation is qualified when every registered fixture for
+it passes its FEMM parity gates in QUALIFICATION_REPORT, which measured the
+current winding, current-angle and slot-layer models at 738d951.
+Combinations the benchmark did not measure, or measured with failures, are
+experimental. The result travels with previews, solve validation and saved
+runs, so the app and its exports say what the docs say.
 """
 
 from __future__ import annotations
@@ -14,10 +15,18 @@ from fractions import Fraction
 from typing import Literal, TypedDict
 
 from backend.models import MotorConfig
+from backend.public_policy import EXPERIMENTAL_IPM_TOPOLOGIES, experimental_rotors_enabled
+from backend.winding_utils import concentrated_uses_tooth_coils
 
 QualificationStatus = Literal["qualified", "experimental", "unsupported"]
 
-QUALIFICATION_BASIS = "coilEM benchmark report v1.1"
+# The basis, reasons and caveats travel in public preview, solve and saved-run
+# payloads, which must not name the reference solver or thermal analysis
+# (tools/smoke_public_runtime.py); docs/VALIDATION.md names the report in full.
+QUALIFICATION_BASIS = "coilEM benchmark report, measured at 738d951"
+# Repository path of the report behind every reason below. tests/test_qualification.py
+# checks the reasons against its outcomes and its sources against the current code.
+QUALIFICATION_REPORT = "benchmarks/windows-v3-20261015-738d951/benchmark_summary.json"
 QUALIFICATION_REFERENCE = "https://github.com/coilemdev/coilem/blob/main/docs/VALIDATION.md#qualification-status"
 _QUALIFIED_STEEL = "M350-50A"
 _QUALIFIED_IPM = "flat_buried"
@@ -64,11 +73,17 @@ def _combination(config: MotorConfig) -> tuple[QualificationStatus, str]:
     if rotor.flux_barrier_count or rotor.barrier_widths_mm:
         return "unsupported", "Multi-layer IPM rotors are not supported in this preview."
     if winding.type == "concentrated" and winding.layers != 1:
-        return "unsupported", "Two-layer concentrated windings are not supported in this preview."
+        if not concentrated_uses_tooth_coils(config.stator.slot_count, rotor.pole_count):
+            return "unsupported", "Two layers apply only to fractional-slot concentrated windings (tooth coils)."
 
     if config.topology == "IPM":
         if six_step:
             return "unsupported", "Ideal six-step excitation is available for SPM only."
+        if rotor.ipm_topology in EXPERIMENTAL_IPM_TOPOLOGIES and experimental_rotors_enabled():
+            return (
+                "experimental",
+                "HoleM50 rotor (ORNL 2004 Prius): an experimental rotor path with no benchmark qualification; its reference comparison is pending.",
+            )
         if rotor.ipm_topology not in (_QUALIFIED_IPM, _EXPERIMENTAL_IPM):
             return "unsupported", "Only flat-buried and V-shape IPM rotors are supported in this preview."
         if winding.type == "distributed":
@@ -76,7 +91,7 @@ def _combination(config: MotorConfig) -> tuple[QualificationStatus, str]:
         if rotor.ipm_topology == _EXPERIMENTAL_IPM:
             return (
                 "experimental",
-                "V-shape IPM: 2 of 6 benchmark fixtures fail FEMM parity (deep apex and wide angle).",
+                "V-shape IPM: 5 of 6 benchmark fixtures pass; the baseline's peak Back-EMF is YELLOW (14.8% from the reference).",
             )
         return "qualified", "Flat-buried IPM, single-layer concentrated winding, sinusoidal current: all 6 benchmark fixtures pass."
 
@@ -108,6 +123,8 @@ def classify_qualification(config: MotorConfig) -> Qualification:
     """Return the status, a one-sentence reason and any caveats for ``config``."""
 
     status, reason = _combination(config)
+    if status == "qualified" and config.winding.type == "concentrated" and config.winding.layers != 1:
+        status, reason = "experimental", "Two-layer concentrated windings (a coil on every tooth) were not measured by the benchmark."
     steels = {config.materials.stator_steel, config.materials.rotor_steel}
     if status == "qualified" and steels != {_QUALIFIED_STEEL}:
         status, reason = "experimental", f"Custom steel: the benchmark qualified only the bundled {_QUALIFIED_STEEL} curve."

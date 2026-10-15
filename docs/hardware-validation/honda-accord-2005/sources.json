@@ -1,0 +1,20 @@
+{
+  "description": "Sources for the 2005 Honda Accord hybrid motor benchmark (#92).",
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Evaluation of 2005 Honda Accord Hybrid Electric Drive System",
+      "report": "ORNL/TM-2006/535",
+      "authors": [
+        "R. H. Staunton",
+        "T. A. Burress",
+        "L. D. Marlino"
+      ],
+      "date": "2006-09",
+      "url": "https://info.ornl.gov/sites/publications/files/Pub2642.pdf",
+      "pdf_sha256": "1411dd0612648f921a8dc23d3b320dbc2bc2d4e0df172414d752b7c4ea2603f7",
+      "pdf_bytes": 1520468,
+      "retrieved": "2026-10-14"
+    }
+  ]
+}

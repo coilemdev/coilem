@@ -58,7 +58,7 @@ async function solveStandard(page: Page, mode: Excitation): Promise<void> {
   await page.getByRole('button', { name: 'Full results →', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Electromagnetic performance', exact: true })).toBeVisible();
   await expect(page.getByRole('region', { name: 'Saved solve run' })).toBeVisible();
-  // The starter SPM 8p/12s is a qualified combination under benchmark report v1.1.
+  // The starter SPM 8p/12s is a qualified combination under the FEMM v3 benchmark report.
   await expect(page.locator('.public-report-stage').getByRole('note', { name: 'Benchmark qualification' })).toContainText('Qualified');
   for (const tabName of ['Back EMF', 'Torque']) {
     const tab = page.getByRole('tab', { name: tabName, exact: true });

@@ -256,8 +256,12 @@ class WindingConfig(BaseModel):
     )
     turns_per_coil: int = Field(..., ge=1, le=500, description="Turns per coil")
     layers: int = Field(default=2, ge=1, le=2, description="Number of layers (1 or 2)")
+    # The physical limit is that paths divide each phase's coils evenly, which
+    # validate_geometry checks; this bound only caps the field (32 = the most coils
+    # a phase can have at the 96-slot maximum). It used to be 6, which ruled out
+    # real machines such as the 2005 Honda Accord's 8 parallel coils (#91).
     parallel_paths: int = Field(
-        default=1, ge=1, le=6, description="Number of parallel paths"
+        default=1, ge=1, le=32, description="Number of parallel paths"
     )
     coil_span: Optional[int] = Field(
         default=None,
@@ -282,7 +286,7 @@ class MaterialsConfig(BaseModel):
     # Keep in sync with backend.material_catalog.MAGNET_PROPERTIES keys. Unknown
     # grades must 422 at config parse time — never crash post-solve demag.
     magnet_grade: Literal[
-        "N35", "N42", "N48", "N52", "N48SH", "Ferrite_Y30", "Prius_2004_NdFeB"
+        "N35", "N42", "N48", "N52", "N48SH", "Ferrite_Y30", "Prius_2004_NdFeB", "ORNL_Prius_2004_NdFeB"
     ] = Field(default="N42", description="Magnet grade")
     conductor: Literal["copper", "aluminum"] = Field(
         default="copper", description="Conductor material"

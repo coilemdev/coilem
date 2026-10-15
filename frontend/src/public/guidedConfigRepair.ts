@@ -1,5 +1,6 @@
 import type { PublicParameterSection } from './CoilEmWorkspace';
 import type { MotorConfig } from './model';
+import { coilsPerPhase, concentratedLayoutIsBalanced } from './toothCoils';
 
 export interface GuidedConfigAdjustment {
   field: string;
@@ -20,40 +21,39 @@ const MIN_SLOT_OPENING_MM = 2;
 const MIN_TOOTH_WIDTH_MM = 2;
 const MIN_SLOT_BODY_WIDTH_MM = 0.5;
 const TARGET_AIRGAP_MM = 0.5;
+// backend/models/config.py WindingConfig.parallel_paths le=32 (#91).
+const MAX_PARALLEL_PATHS = 32;
 
 function floorToTenth(value: number): number {
   return Math.floor((value + 1e-9) * 10) / 10;
 }
 
-function phaseForConcentratedSlot(
-  slotIndex: number,
-  slotCount: number,
-  poleCount: number,
-): 'A' | 'B' | 'C' {
-  const phases = ['A', 'C', 'B', 'A', 'C', 'B'] as const;
-  const polePairs = Math.max(1, poleCount / 2);
-  const electricalAngleDeg = (slotIndex * 360 * polePairs / slotCount) % 360;
-  return phases[Math.floor(electricalAngleDeg / 60) % phases.length];
+export { coilsPerPhase, concentratedUsesToothCoils } from './toothCoils';
+
+/** The largest parallel-path count up to `current` that divides the coils per phase; 1 when none does. */
+export function parallelPathsDividing(coilsPerPhaseCount: number, current: number): number {
+  return Array.from(
+    { length: Math.min(MAX_PARALLEL_PATHS, coilsPerPhaseCount) },
+    (_, index) => index + 1,
+  )
+    .filter((candidate) => coilsPerPhaseCount % candidate === 0)
+    .reverse()
+    .find((candidate) => candidate <= current) ?? 1;
 }
 
+/** Mirrors backend/geometry.py concentrated_winding_is_balanced. */
 export function concentratedGuidedLayoutIsBalanced(
   slotCount: number,
   poleCount: number,
+  layers = 1,
 ): boolean {
-  if (!Number.isInteger(slotCount) || slotCount < 1 || !Number.isInteger(poleCount) || poleCount < 2) {
-    return false;
-  }
-  const counts = { A: 0, B: 0, C: 0 };
-  for (let slotIndex = 0; slotIndex < slotCount; slotIndex += 1) {
-    counts[phaseForConcentratedSlot(slotIndex, slotCount, poleCount)] += 1;
-  }
-  return counts.A > 0 && counts.A === counts.B && counts.B === counts.C;
+  return concentratedLayoutIsBalanced(slotCount, poleCount, layers);
 }
 
-function nearestBalancedPoleCount(slotCount: number, currentPoleCount: number): number | null {
-  if (concentratedGuidedLayoutIsBalanced(slotCount, currentPoleCount)) return currentPoleCount;
+function nearestBalancedPoleCount(slotCount: number, currentPoleCount: number, layers: number): number | null {
+  if (concentratedGuidedLayoutIsBalanced(slotCount, currentPoleCount, layers)) return currentPoleCount;
   const candidates = Array.from({ length: 16 }, (_, index) => (index + 1) * 2)
-    .filter((poleCount) => concentratedGuidedLayoutIsBalanced(slotCount, poleCount))
+    .filter((poleCount) => concentratedGuidedLayoutIsBalanced(slotCount, poleCount, layers))
     .sort((left, right) => (
       Math.abs(left - currentPoleCount) - Math.abs(right - currentPoleCount)
       || left - right
@@ -73,6 +73,11 @@ export function repairGuidedSection(
   config: MotorConfig,
   section: PublicParameterSection,
 ): GuidedConfigRepair {
+  // Experimental HoleM50 rotors carry their own pocket geometry; the flat and
+  // V-shape repairs below would rewrite it, so leave such designs untouched.
+  if (config.topology === 'IPM' && config.rotor.ipm_topology === 'pyleecan_holem50') {
+    return { config, adjustments: [] };
+  }
   const next = structuredClone(config);
   const adjustments: GuidedConfigAdjustment[] = [];
 
@@ -93,6 +98,7 @@ export function repairGuidedSection(
       const balancedPoleCount = nearestBalancedPoleCount(
         next.stator.slot_count,
         next.rotor.pole_count,
+        next.winding.layers,
       );
       if (balancedPoleCount !== null) {
         adjust(
@@ -262,20 +268,17 @@ export function repairGuidedSection(
   }
 
   if (section === 'winding') {
-    const terminalCoilsPerPhase = next.winding.type === 'distributed'
-      ? Math.floor(next.stator.slot_count / 6)
-      : Math.floor(next.stator.slot_count / 3);
+    const terminalCoilsPerPhase = coilsPerPhase(
+      next.stator.slot_count,
+      next.rotor.pole_count,
+      next.winding.type,
+      next.winding.layers,
+    );
     if (
       terminalCoilsPerPhase > 0
       && terminalCoilsPerPhase % next.winding.parallel_paths !== 0
     ) {
-      const repairedPaths = Array.from(
-        { length: Math.min(6, terminalCoilsPerPhase) },
-        (_, index) => index + 1,
-      )
-        .filter((candidate) => terminalCoilsPerPhase % candidate === 0)
-        .reverse()
-        .find((candidate) => candidate <= next.winding.parallel_paths) ?? 1;
+      const repairedPaths = parallelPathsDividing(terminalCoilsPerPhase, next.winding.parallel_paths);
       adjust(
         'winding.parallel_paths',
         'parallel paths',

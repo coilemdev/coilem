@@ -142,8 +142,8 @@ serves the UI and API together and opens `http://127.0.0.1:2645`. See
 Qualification means agreement with FEMM, a reference 2D finite-element solver,
 on the measured benchmark fixtures: mean torque within 8%, Back-EMF fundamental
 and peak within 10%, plus fourteen six-step gates for BLDC. It covers only the
-tested combinations listed above, with M350-50A steel. Two of six V-shape IPM
-fixtures fail, so V-shape results are experimental. Cogging, THD, airgap harmonics, losses and
+tested combinations listed above, with M350-50A steel. One of six V-shape IPM
+fixtures is YELLOW against FEMM, so V-shape results are experimental. Cogging, THD, airgap harmonics, losses and
 thermal behavior are not covered. It is not a hardware measurement.
 
 Motor sweeps use per-angle meshes, with symmetry-based reuse where applicable,
@@ -164,7 +164,7 @@ Run the versioned A/B/C/D suite (SPM, IPM, Distributed Winding and BLDC) from th
 checkout with `python -m tools.run_benchmarks --out-dir ../benchmark-output/my-run --pdf`.
 It measures the current public native solver against saved FEMM data, with no
 reference solver installation or adapter required. See the [benchmark commands,
-reference compatibility and version policy](benchmarks/abcd-v1.1/README.md).
+reference compatibility and version policy](benchmarks/abcd-v1.3/README.md).
 
 The public Magneto2D path ignores inherited numerical solver switches. It derives
 native options from the request and records its environment policy and options

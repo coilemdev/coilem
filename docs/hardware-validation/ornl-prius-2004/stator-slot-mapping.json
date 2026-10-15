@@ -1,0 +1,216 @@
+{
+ "description": "coilEM stator slot parameters fitted to the ORNL 2004 Prius stator lamination (#82). Inferred from a figure where not stated.",
+ "source": {
+  "id": "S5",
+  "report": "ORNL/TM-2005/33",
+  "figure": "Fig. 21, p.25 (PDF 32)",
+  "paths": "black stator vector paths"
+ },
+ "tool": "tools/fit_ornl_prius_stator.py",
+ "drawing_frame": "holem50-mapping.json recommended.fit.drawing (centre offset and plot stretch)",
+ "callouts_mm": {
+  "mouth": 1.93,
+  "width_above_tips": 3.15,
+  "tip_height": 1.016,
+  "bottom_round_diameter": 5.639
+ },
+ "measured_slot_width_mm": {
+  "81.1": {
+   "median": 1.849,
+   "p10": 1.785,
+   "p90": 1.944,
+   "slots": 48
+  },
+  "81.6": {
+   "median": 1.869,
+   "p10": 1.802,
+   "p90": 1.932,
+   "slots": 48
+  },
+  "82.6": {
+   "median": 3.167,
+   "p10": 3.121,
+   "p90": 3.217,
+   "slots": 48
+  },
+  "83.1": {
+   "median": 3.209,
+   "p10": 3.164,
+   "p90": 3.259,
+   "slots": 48
+  },
+  "84.2": {
+   "median": 3.302,
+   "p10": 3.257,
+   "p90": 3.35,
+   "slots": 48
+  },
+  "86.2": {
+   "median": 3.469,
+   "p10": 3.425,
+   "p90": 3.517,
+   "slots": 48
+  },
+  "89.2": {
+   "median": 3.725,
+   "p10": 3.681,
+   "p90": 3.768,
+   "slots": 48
+  },
+  "92.2": {
+   "median": 3.979,
+   "p10": 3.934,
+   "p90": 4.018,
+   "slots": 48
+  },
+  "95.2": {
+   "median": 4.233,
+   "p10": 4.187,
+   "p90": 4.269,
+   "slots": 48
+  },
+  "98.2": {
+   "median": 4.488,
+   "p10": 4.44,
+   "p90": 4.523,
+   "slots": 48
+  },
+  "101.2": {
+   "median": 4.741,
+   "p10": 4.697,
+   "p90": 4.779,
+   "slots": 48
+  },
+  "104.2": {
+   "median": 4.998,
+   "p10": 4.953,
+   "p90": 5.033,
+   "slots": 48
+  },
+  "107.2": {
+   "median": 5.254,
+   "p10": 5.203,
+   "p90": 5.29,
+   "slots": 48
+  },
+  "110.2": {
+   "median": 5.513,
+   "p10": 5.453,
+   "p90": 5.551,
+   "slots": 48
+  },
+  "111.2": {
+   "median": 5.563,
+   "p10": 5.5,
+   "p90": 5.608,
+   "slots": 48
+  },
+  "112.2": {
+   "median": 5.339,
+   "p10": 5.294,
+   "p90": 5.391,
+   "slots": 48
+  },
+  "113.2": {
+   "median": 4.229,
+   "p10": 4.151,
+   "p90": 4.314,
+   "slots": 48
+  }
+ },
+ "candidates": {
+  "existing_fixture": {
+   "stator": {
+    "ID_mm": 161.9,
+    "OD_mm": 269.24,
+    "slot_count": 48,
+    "slot_opening_mm": 2.0,
+    "stack_length_mm": 83.82,
+    "tooth_shoe_enabled": false,
+    "tooth_shoe_height_mm": 1.5,
+    "tooth_shoe_overhang_mm": 1.5,
+    "tooth_width_mm": 5.6,
+    "yoke_thickness_mm": 19.37
+   },
+   "fit": {
+    "rms_mm": 1.452,
+    "max_mm": 2.844,
+    "per_station_mm": {
+     "82.6": -0.846,
+     "83.1": -0.779,
+     "84.2": -0.632,
+     "86.2": -0.36,
+     "89.2": 0.041,
+     "92.2": 0.443,
+     "95.2": 0.846,
+     "98.2": 1.247,
+     "101.2": 1.651,
+     "104.2": 2.046,
+     "107.2": 2.447,
+     "110.2": 2.844
+    }
+   }
+  },
+  "callouts": {
+   "stator": {
+    "OD_mm": 269.24,
+    "ID_mm": 161.93,
+    "yoke_thickness_mm": 20.13,
+    "slot_opening_mm": 3.15,
+    "tooth_shoe_enabled": true,
+    "tooth_shoe_height_mm": 1.02,
+    "tooth_shoe_overhang_mm": 0.61,
+    "tooth_width_mm": 9.35
+   },
+   "fit": {
+    "rms_mm": 0.105,
+    "max_mm": 0.208,
+    "per_station_mm": {
+     "82.6": 0.081,
+     "83.1": 0.076,
+     "84.2": 0.065,
+     "86.2": 0.047,
+     "89.2": 0.014,
+     "92.2": -0.015,
+     "95.2": -0.045,
+     "98.2": -0.077,
+     "101.2": -0.107,
+     "104.2": -0.141,
+     "107.2": -0.173,
+     "110.2": -0.208
+    }
+   }
+  },
+  "fitted_to_walls": {
+   "stator": {
+    "OD_mm": 269.24,
+    "ID_mm": 161.93,
+    "yoke_thickness_mm": 20.13,
+    "slot_opening_mm": 3.06,
+    "tooth_shoe_enabled": true,
+    "tooth_shoe_height_mm": 1.02,
+    "tooth_shoe_overhang_mm": 0.56,
+    "tooth_width_mm": 9.1
+   },
+   "fit": {
+    "rms_mm": 0.004,
+    "max_mm": 0.006,
+    "per_station_mm": {
+     "82.6": 0.002,
+     "83.1": 0.003,
+     "84.2": 0.003,
+     "86.2": 0.006,
+     "89.2": 0.004,
+     "92.2": 0.005,
+     "95.2": 0.005,
+     "98.2": 0.004,
+     "101.2": 0.005,
+     "104.2": 0.002,
+     "107.2": 0.001,
+     "110.2": -0.003
+    }
+   }
+  }
+ },
+ "recommended": "fitted_to_walls"
+}

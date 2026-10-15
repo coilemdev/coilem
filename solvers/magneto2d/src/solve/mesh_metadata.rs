@@ -501,6 +501,23 @@ pub(super) fn resolve_step_element_magnetization_rad(
     Ok(resolved)
 }
 
+/// The winding layer (1, 2) of each element in a split slot, read from its
+/// `slot_winding_{i}_layer{L}` region id; 0 elsewhere. None when no element
+/// belongs to a layer, so whole-slot windings keep their slot-average path.
+pub(super) fn element_slot_layers(artifact: &SolveMeshArtifact) -> Option<Vec<u8>> {
+    let region_ids = artifact.element_region_ids.as_ref()?;
+    let layers: Vec<u8> = region_ids
+        .iter()
+        .map(|region_id| {
+            region_id
+                .rsplit_once("_layer")
+                .and_then(|(_, layer)| layer.parse::<u8>().ok())
+                .unwrap_or(0)
+        })
+        .collect();
+    layers.iter().any(|layer| *layer > 0).then_some(layers)
+}
+
 pub(super) fn has_imported_current_density_metadata(artifact: &SolveMeshArtifact) -> bool {
     artifact
         .element_current_density_a_per_m2

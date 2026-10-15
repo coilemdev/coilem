@@ -21,10 +21,10 @@ limitations.
 | Area | Developer-preview boundary |
 | --- | --- |
 | Physics | 2D magnetostatic FEM with nonlinear electrical steel |
-| Qualified motor paths | Per [benchmark report v1.1](../benchmarks/main-20261009-bad71d9/benchmark_report.md): SPM with concentrated windings under sinusoidal or ideal six-step current; SPM with two-layer distributed windings under sinusoidal current; flat-buried IPM with concentrated windings under sinusoidal current |
-| Experimental motor paths | V-shape IPM (two of six v1.1 fixtures fail), and accepted combinations v1.1 did not measure, such as six-step with distributed windings or IPM with distributed windings |
+| Qualified motor paths | Per the [Magneto2D versus FEMM v3 report](../benchmarks/windows-v3-20261015-738d951/README.md): SPM with concentrated windings under sinusoidal or ideal six-step current; SPM with two-layer distributed windings under sinusoidal current; flat-buried IPM with concentrated windings under sinusoidal current |
+| Experimental motor paths | V-shape IPM (one of six v3 fixtures is YELLOW), and accepted combinations the benchmark did not measure, such as six-step with distributed windings or IPM with distributed windings |
 | Mesh producer | Native Gmsh only |
-| Concentrated windings | Single layer |
+| Concentrated windings | Fractional-slot layouts (`q < 1`) are tooth coils: one layer winds every other tooth, two layers every tooth (experimental). Other concentrated layouts wind one phase per slot in one layer |
 | Distributed windings | Balanced one- or two-layer star-of-slots layouts with `q >= 1`; explicit short pitch is limited to supported integer-`q` layouts |
 | Electrical steel | Bundled M350-50A nonlinear reference model or project-local imported B-H curves (Magneto2D only) |
 | Preview result surface | Loaded torque, torque ripple, flux linkage, Back-EMF, field values/plots, and solver/mesh provenance |
@@ -882,6 +882,15 @@ wye-connected, with `excitation_mode = ideal_six_step_120`.
 rotor-synchronous stator-current phasor. If it is explicitly present, the
 solver uses that value. The report records both requested and resolved
 operating-point values.
+
+The angle is measured from the q-axis, taking phase A's own axis as the
+reference: 0 gives the largest magnet torque on a surface-PM rotor, for every
+winding. Phase A's axis is the angle of its fundamental winding phasor, which
+the source angle subtracts. A one-slot phase belt has its axis on its slot, at 0. Wider belts
+put it at the belt centre (15 degrees electrical for q = 2, 20 for q = 3), and
+fractional-slot tooth coils on a tooth (30 degrees for q = 1/2). Before #91 the
+axis was taken as 0 for every layout, so q >= 2 distributed windings peaked
+near 15 degrees. Ideal six-step commutation is timed from the same axis.
 
 ### Rotor angles
 

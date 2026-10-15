@@ -153,6 +153,7 @@ impl SolveProblem {
                     config.winding.turns_per_coil,
                     config.winding.layers,
                     config.winding.coil_span,
+                    config.winding.parallel_paths,
                     phase_currents,
                     &ctx.slot_areas,
                 )

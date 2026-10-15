@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from typing import Literal
 
 from backend.models import MotorConfig
+from backend.winding_utils import winding_phase_axis_offset_elec_deg
 
 ExcitationMode = Literal["sinusoidal", "ideal_six_step_120"]
 
@@ -101,6 +102,24 @@ def _sine_peak_current_a(config: MotorConfig) -> float:
     raise ValueError("sinusoidal excitation does not accept plateau current")
 
 
+
+def phase_axis_offset_deg(config: MotorConfig) -> float:
+    """Phase A's axis angle for this winding (#91).
+
+    The current-angle convention assumes phase A's axis at 0 degrees electrical.
+    Phase belts wider than one slot put it at the belt centre and tooth coils on
+    a tooth, so the excitation subtracts this angle to keep gamma measured from
+    the q-axis and six-step commutation in step. Mirrors
+    solvers/magneto2d/src/sources.rs winding_phase_axis_offset_elec_deg.
+    """
+
+    return winding_phase_axis_offset_elec_deg(
+        config.winding.type,
+        config.stator.slot_count,
+        config.rotor.pole_count,
+        config.winding.layers,
+        getattr(config.winding, "coil_span", None),
+    )
 def _resolve_native_six_step(
     current_a: float,
     rotor_electrical_angle_deg: float,
@@ -168,16 +187,17 @@ def resolve_phase_current_sample(
             )
         rotor_angle = float(rotor_electrical_angle_deg)
         advance = float(sp.commutation_advance_deg)
+        axis_offset = phase_axis_offset_deg(config)
         if clockwise_positive or sp.excitation_rotation_convention == "clockwise_positive_ui":
             public_rotor_angle = rotor_angle if clockwise_positive else -rotor_angle
             return _resolve_public_six_step(
                 float(sp.current_amplitude_A),
-                public_rotor_angle,
+                public_rotor_angle + axis_offset,
                 advance,
             )
         return _resolve_native_six_step(
             float(sp.current_amplitude_A),
-            rotor_angle,
+            rotor_angle - axis_offset,
             advance,
         )
 
@@ -185,6 +205,7 @@ def resolve_phase_current_sample(
         float(rotor_electrical_angle_deg)
         - 90.0
         + float(sp.current_angle_deg)
+        - phase_axis_offset_deg(config)
     )
     peak = _sine_peak_current_a(config)
     theta = math.radians(source_angle)
@@ -210,19 +231,10 @@ def phase_current_sample_dict(sample: PhaseCurrentSample) -> dict[str, float]:
 def terminal_to_slot_current_scale(config: MotorConfig) -> float:
     """Map public terminal phase current to the homogenized slot-side source.
 
-    The established single-layer concentrated-winding flux-linkage contract
-    credits half of the raw slot-side turns.  Six-step current is explicitly a
-    terminal conducting-phase plateau, so its source must use the reciprocal
-    slot-side normalization as well.  The legacy sinusoidal path is intentionally
-    unchanged because its current convention and regression corpus predate the
-    terminal-current BLDC contract.
+    Every excitation mode drives each slot side with the terminal current: the
+    flux-linkage extractors credit the same turns_per_coil per slot side
+    (winding_utils.flux_linkage_slot_side_turn_factor), so source and linkage
+    stay reciprocal. Six-step concentrated single-layer windings used to halve
+    this source to match a halved flux-linkage credit (#80).
     """
-    sp = config.solve_params
-    if (
-        sp is not None
-        and sp.excitation_mode == IDEAL_SIX_STEP_120
-        and config.winding.type == "concentrated"
-        and config.winding.layers == 1
-    ):
-        return 0.5
     return 1.0

@@ -50,8 +50,8 @@
     },
     {
       "path": "MATERIALS.md",
-      "bytes": 8011,
-      "sha256": "fd157117ffd42b4dec5741a64d33055781012d2714d0ddedc54d2d3316a7d96f"
+      "bytes": 8554,
+      "sha256": "751a4ca113657aea0a0635c3cdcd4f57895811231562f927b533a8c1e290612a"
     },
     {
       "path": "PUBLICATION_STATUS.md",
@@ -60,8 +60,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 9024,
-      "sha256": "bfc7a46d6fe45ca3804150c1be66a8c4eb25873bbf26287ae4e02357da121dca"
+      "bytes": 9042,
+      "sha256": "420e3758fd297c5d1fc417f22c662e0ca72e5487db39aa0b2f1f82fe4b6d1c75"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -160,8 +160,8 @@
     },
     {
       "path": "backend/excitation.py",
-      "bytes": 7897,
-      "sha256": "a6e200494865dfc4147615d7187760025605376752fb53661c040018776388c6"
+      "bytes": 8522,
+      "sha256": "7e2dead86d3db978cd641fcfe203a2e747f5b48076be0483eff841f84bb9aa84"
     },
     {
       "path": "backend/export_safety.py",
@@ -185,18 +185,18 @@
     },
     {
       "path": "backend/geometry.py",
-      "bytes": 56777,
-      "sha256": "f227703284c55f986a54b56400aff00eeea36d005281e3c9c680ca64dce8db26"
+      "bytes": 58332,
+      "sha256": "88828611cc3019c2d8c602aa717ae722311102bf4f0ef225bb4bf9e27d43f673"
     },
     {
       "path": "backend/geometry_drawer.py",
-      "bytes": 52547,
-      "sha256": "8185274e9c4df280bf8330016553dbfde1b611fcae56376853c04be698d03a8f"
+      "bytes": 53035,
+      "sha256": "df695284a5acc9b64ac800fd59fff1530a34f8de0b9f9e8b15b190df8a601584"
     },
     {
       "path": "backend/geometry_ir.py",
-      "bytes": 51943,
-      "sha256": "be5a4cd8eb1c23dbd68a10c6aac22fd5ff38c1b1bef2df56b813d75a3a004c15"
+      "bytes": 65987,
+      "sha256": "c854de3f60d054660b9616cdb752a32835b12c445f497adb7ee24eb0ebf4f8bb"
     },
     {
       "path": "backend/geometry_ir_tessellation.py",
@@ -210,8 +210,8 @@
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 74315,
-      "sha256": "c010d58e9652244130f52e2b6e249d56700a62dba408bd7204ac29445ce97cfa"
+      "bytes": 74344,
+      "sha256": "7fc06b773b7b0546e86edfcdf81136564dc7693e2a556334b249da7662f73d65"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -300,8 +300,8 @@
     },
     {
       "path": "backend/magneto2d_adapter/__init__.py",
-      "bytes": 72617,
-      "sha256": "24cc97fa0c9e249c6020a02f8aa5bac0124e6054c5d2f38bddb22c55a0c6d04b"
+      "bytes": 72940,
+      "sha256": "0ffba926d459e54c6e83943be4b4855bd0cfe20ba05586f1273e6575f5405baa"
     },
     {
       "path": "backend/magneto2d_adapter/_state.py",
@@ -315,8 +315,8 @@
     },
     {
       "path": "backend/material_catalog.py",
-      "bytes": 4026,
-      "sha256": "7af93ae3ec8f29a1e3a8bc219be5ecec91c092eb2d5d675d6e58c52b26bd979d"
+      "bytes": 4613,
+      "sha256": "4227dfbbddd82167b780f2284de59bcc0db69840a865de145612a9dda99fa198"
     },
     {
       "path": "backend/material_contract.py",
@@ -340,8 +340,8 @@
     },
     {
       "path": "backend/models/config.py",
-      "bytes": 26224,
-      "sha256": "22d0c9aca5bcb1ae8c2fa268c4119c00e92daf7643c504aa5c5c83dd6c0b75d1"
+      "bytes": 26570,
+      "sha256": "6f7b04272c5740bb02bed64dcdf7af4486ced9851a1b9e4c01d58ba56d75558e"
     },
     {
       "path": "backend/models/errors.py",
@@ -380,13 +380,13 @@
     },
     {
       "path": "backend/preview.py",
-      "bytes": 40134,
-      "sha256": "f3bf857b92a42350ecf080e34857349734aea1d4c054346f3a636afd658cb5a2"
+      "bytes": 39014,
+      "sha256": "704ad1cd0eecfaca80c0ba57783bdb4101fd61c35de1c2917aa41ebcafb561e5"
     },
     {
       "path": "backend/preview_from_ir.py",
-      "bytes": 8588,
-      "sha256": "7a0821b726191891af18b9fa38035b0db60274a52e6076f81a1dd3deafff364a"
+      "bytes": 9082,
+      "sha256": "3a3e9b8ec32cb28f00b40a896f66f616e56bd21e5957ad9c55c218b07c5e628c"
     },
     {
       "path": "backend/public_field_playback.py",
@@ -400,18 +400,18 @@
     },
     {
       "path": "backend/public_main.py",
-      "bytes": 9455,
-      "sha256": "33b47e934dc5865198c3ee673dd45b4723a5e1cd1f589233c824759b3823c6d1"
+      "bytes": 9785,
+      "sha256": "869b960f7e5b0282f0151a5d18e5ea7af519526672e09a5ea7d79e3f6e628aa0"
     },
     {
       "path": "backend/public_material_catalog.py",
-      "bytes": 9521,
-      "sha256": "645fc7b73dfeac2ca5226269c89a3580b1e7606264392d230d0f198a52cc6348"
+      "bytes": 9879,
+      "sha256": "eb648442968b26b9644a940247de27aa0e44c50cd682c59a0fae55d58fbed458"
     },
     {
       "path": "backend/public_policy.py",
-      "bytes": 10651,
-      "sha256": "4f233fbbca8fe39f2b4a2d52870f12358445ea04f5a834a3f6c84a1a8a176be4"
+      "bytes": 12038,
+      "sha256": "88ef6fd4e551ce3a1ae0eb22bdc4ce84e3919c487fd663ba52df3025d0cc9374"
     },
     {
       "path": "backend/public_report.py",
@@ -460,8 +460,8 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 5027,
-      "sha256": "a88792ed792405de022197cb43a22e82b6d8cb6a999bf325e949bd433456e279"
+      "bytes": 6481,
+      "sha256": "a8b2d50a4b3d23fc70fb81d0cfd05e77c71ae6de2ab4eef637819cb354d455c7"
     },
     {
       "path": "backend/resources.py",
@@ -520,8 +520,8 @@
     },
     {
       "path": "backend/topology_provenance.py",
-      "bytes": 8562,
-      "sha256": "c56d93086d39f494670dd58d242ebede0a75ff0ad7b2ecbaa6f18e4fcdd28e92"
+      "bytes": 8785,
+      "sha256": "17dc1de253182afef89071898481b16ce1646136722fb0cf87662fe625c4c9f5"
     },
     {
       "path": "backend/torque_metrics.py",
@@ -535,23 +535,63 @@
     },
     {
       "path": "backend/winding_utils.py",
-      "bytes": 15116,
-      "sha256": "bad70a57f91e9ea6074a39975b80e847e492f8d07a6738c5fe41ed5f430e690e"
+      "bytes": 24974,
+      "sha256": "63c58cdf306665ed8b184b36072c8feb312033afddfb0c6097ec476152578954"
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 4457,
-      "sha256": "23a59e63162065b1b9ea530afce1099417a00978a4659292d43337ecd9ffd56c"
+      "bytes": 6164,
+      "sha256": "9404804743a6146b743f3abd221ec20895e9cb3c868125f52ea8110a50f3f522"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
-      "bytes": 6248,
-      "sha256": "d33a09277f6894b7639a444de191a67fd95a6b94589453143d051fb7a50dbd2b"
+      "bytes": 6698,
+      "sha256": "3de54da64a9a6e17436b06ccd33a90d346cb209c12f920f4115ebf670e52fbeb"
     },
     {
       "path": "benchmarks/abcd-v1.1/benchmark_spec.json",
       "bytes": 17605,
       "sha256": "ea9d60d81d8601d2cdd6d7c94b3b3df70c65c6cf516737aeb125a4b2f2004721"
+    },
+    {
+      "path": "benchmarks/abcd-v1.2/README.md",
+      "bytes": 2379,
+      "sha256": "5bea41cd01388429b3d4a03fc5e3ccf5b96fc3e06d8001032823299be3089b5b"
+    },
+    {
+      "path": "benchmarks/abcd-v1.2/benchmark_spec.json",
+      "bytes": 17925,
+      "sha256": "950ed611e478079e1cd21a9485759c1f70c59af0fc2b30fbcb549ca34b202ddc"
+    },
+    {
+      "path": "benchmarks/abcd-v1.2/fixtures/ornl_prius_2004_ipm.json",
+      "bytes": 2544,
+      "sha256": "7578d8a487782f1b8a315dcb5af4dca28b28e0af85138d2b752feb0e67a62377"
+    },
+    {
+      "path": "benchmarks/abcd-v1.3/README.md",
+      "bytes": 4157,
+      "sha256": "20cdafa0378155f6c1ea9ca800dd15962155d172dbf47103a6b250294736a1ce"
+    },
+    {
+      "path": "benchmarks/abcd-v1.3/benchmark_spec.json",
+      "bytes": 18775,
+      "sha256": "9d8cd79e60d0b908e072504a1886db7873f13047609697897ffdcccb81825743"
+    },
+    {
+      "path": "benchmarks/abcd-v1.3/protocols/spm_14p12s_high_pole.json",
+      "bytes": 4534,
+      "sha256": "d47aca42dc38c7d921ed88bf355163ab5a894920780058875f6b0d139cc1982b"
+    },
+    {
+      "path": "benchmarks/abcd-v1.3/protocols/spm_4p12s_small.json",
+      "bytes": 4041,
+      "sha256": "30c164bfb9fac53ffce1eef07f6c68147f1935f8ab59d2f74c004edd79a0bef4"
+    },
+    {
+      "path": "benchmarks/abcd-v1.3/protocols/spm_8p12s_reference.json",
+      "bytes": 4051,
+      "sha256": "56d8421901292e036197f7b7da17c131938746996241edacec46a457d821182e"
     },
     {
       "path": "benchmarks/abcd-v1/README.md",
@@ -642,6 +682,231 @@
       "path": "benchmarks/m350-launch/fixtures/spm_8p12s_m350_launch.json",
       "bytes": 1498,
       "sha256": "85312895c5aa54d65ed89e1b6569bccd8a11b9f1dafb0ae3ce280416efb9e8ea"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/README.md",
+      "bytes": 4768,
+      "sha256": "b9fe7c47ee0d5d9ba226d8a670fed67d6175f51add0fded64d7b3ddcfc021a29"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/artifact_manifest.json",
+      "bytes": 5082,
+      "sha256": "4a7e82d30e655c0915391cbe8af88505bdb03c6bb2f8e56625077fda32a34825"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/benchmark_report.md",
+      "bytes": 5686,
+      "sha256": "72a0d093173707cc338093607fd446b3e226685ba2c87517a9aecf1f7f0e3e39"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/benchmark_summary.json",
+      "bytes": 1056344,
+      "sha256": "9587d3a9347d2ae79dc73476a70dba2d53481509cc1bdb91deed0e9d4929fca7"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/coilem_benchmark_report.html",
+      "bytes": 143947,
+      "sha256": "fe0267c185941ab5563fe1f51cb8f58c959fbba499e9685e8424d0688c20cb25"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/environment.json",
+      "bytes": 1678,
+      "sha256": "e4abd11d16d8878c9f681cd70d2dea3df7fe762e35bd0b373f65f2869ddbcb21"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/evidence-hashes.json",
+      "bytes": 15352,
+      "sha256": "e04f1173d5b2653f4c71dc967df817704e373e6512af35eeff41d0345d8e6655"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1604,
+      "sha256": "15423a47ebbf8509a7935c60d5c45404b8ee186f37dd266dec9e3f2a01560e34"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1607,
+      "sha256": "e328650573ad963181a7cf2292f6fe924d866c792d79c2a32137da2f9522fae0"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1606,
+      "sha256": "68b4e61d69cbc4673eba7ec92d0609862b1cf0283fa8391bf174b8d6c55b7c59"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2503,
+      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2503,
+      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2503,
+      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2502,
+      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2502,
+      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2502,
+      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1594,
+      "sha256": "3d78ae3d4175a933e18d04b9d45c7bddaff1db6e8355c21675dbe4da2934392c"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1596,
+      "sha256": "2081d6ab448377574d76cdd8c86724d07368fd09093bab02d111bfb589d5d709"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1595,
+      "sha256": "a77a7fbd94ed2a06659067f6501b029f612f09877128361268c76c5f9e268604"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2506,
+      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2506,
+      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1640,
+      "sha256": "dd91d0757a826b34c3fde5e813bdfdc385bc048ce477a172c5bfbf292ff6703b"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1642,
+      "sha256": "4e53c05733eb4d81cc3205e743f12fb473065142827f4e38327bd035caf7545c"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1641,
+      "sha256": "1825fe88e7ddf36234aa984f0fbbd30e894bfb34a6030fc02a348c883bf18ffa"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2550,
+      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/run_manifest.json",
+      "bytes": 44719,
+      "sha256": "43b99db2ddf1deab974977739527ab1c7388c96a02298bf499ee95e3a21e962e"
+    },
+    {
+      "path": "benchmarks/macos-native-20261015-738d951/timings.json",
+      "bytes": 6493,
+      "sha256": "a053006d4f463d01cbbfcf37dafade75c5517536a946f6de64fff74f7cb8ae46"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/README.md",
@@ -2184,6 +2449,16 @@
       "sha256": "fbc3d867f6eef3896169bf3b861d88ae404d67cebfda8fd11fb0898c3056eb3d"
     },
     {
+      "path": "benchmarks/pr100-v3-handoff/README.md",
+      "bytes": 10798,
+      "sha256": "7035d7360a6047f961931fbfd50dddcbc45ac36b365ff48fbd05331a25fa1534"
+    },
+    {
+      "path": "benchmarks/pr100-v3-handoff/run-contract.json",
+      "bytes": 9805,
+      "sha256": "bfb143e2b29c9dfa94f8f2b71869d71bb53dbab243f54669583661d805a1944f"
+    },
+    {
       "path": "benchmarks/preview-evidence/results.json",
       "bytes": 764856,
       "sha256": "324e8d5a482e9d5c94abf5f7af6e23f8cd7a6422cee1452fbf54f90fa427ce0f"
@@ -2337,6 +2612,306 @@
       "path": "benchmarks/reference-baselines/ipm-high-output-v1/spm_8p48s_distributed_femm_validation.json",
       "bytes": 33786,
       "sha256": "91dfe1726054b29ccfb1568e906c489dca26a1d56f4b4b47939097e37cfbeacf"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_flat_12s10p_fscw_contract.json",
+      "bytes": 16060,
+      "sha256": "e5c4fc3e793b6503149b885ad16a0367d6a572e668a82fba4b4a548400a2bace"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_flat_24s16p_industrial_contract.json",
+      "bytes": 21951,
+      "sha256": "300137aafc55c957929aa2c0a4c50cad63e7aa09281a5dfdfb837884fec545fb"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_flat_4p12s_micro_contract.json",
+      "bytes": 16254,
+      "sha256": "9c7b148251a909886476685d9572cf900e4016f5a9d24adbf83172f62757e526"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_flat_8p12s_fsae_angled_pocket_contract.json",
+      "bytes": 16108,
+      "sha256": "b9854217e38e8c0a459655735a3420f0180614e985faa8021a65def0d2a72662"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_flat_8p12s_fsae_contract.json",
+      "bytes": 16086,
+      "sha256": "c3020d31c9333af313227322cf860d6e73d1e1a787beda3057777f3e19726bac"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_flat_8p12s_fsae_thin_bridge_contract.json",
+      "bytes": 16116,
+      "sha256": "834f586536b25d7c59e052f5880fa51d2250d34280952deadb2186e3836b79cb"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_vshape_8p12s_baseline_contract.json",
+      "bytes": 16116,
+      "sha256": "6970e50a388616b775a2879feb11bc8e1db46691881bd7ee214c93c24d6e4988"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_vshape_8p12s_deep_apex_high_output_v1.json",
+      "bytes": 16195,
+      "sha256": "b0e96efb21f594cc879cbab4f258bed6da7d8c393ad53699666efd41ba9aefac"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_vshape_8p12s_narrow_angle_contract.json",
+      "bytes": 16134,
+      "sha256": "b8b4f485300324ffce5a26d48a135a2399d3c0d40721def91b8d1aa9b90a1aec"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_vshape_8p12s_pocket_offset_contract.json",
+      "bytes": 16144,
+      "sha256": "a4de7e5b1b4baad0341d75d617259244eabd9481ae68b51d656c58721872d22d"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_vshape_8p12s_thin_bridge_contract.json",
+      "bytes": 16053,
+      "sha256": "691110d26eb1ce82628da391e04fec5e2e5443cd7d30b1290a0a2d2c4007f665"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/ipm_vshape_8p12s_wide_angle_high_output_v1.json",
+      "bytes": 16132,
+      "sha256": "b4355b84a8980258845b0013645113ee4608666dd35a77b06a6e6bcf416e5405"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/manifest.json",
+      "bytes": 8964,
+      "sha256": "8ca3002ed095854ce6b97fc6623c0d232d95743ac1224a57a9dcf7b2683c20e6"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_12p36s_distributed_femm_validation.json",
+      "bytes": 27742,
+      "sha256": "b73f7f0dcc07d0d5e14ec820b0a711d0daad90adef8784d1cfa76503a9f087e5"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_14p12s_high_pole.json",
+      "bytes": 10093,
+      "sha256": "ee3598044fcc0cde08dea27390e2018f70c4a9a829656ba1f92f8aa0826322cb"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_4p12s_simple__baseline.json",
+      "bytes": 17612,
+      "sha256": "d00c8c9fc2c603d4527f0e1422070eaee38d99d43c6f2969011bc5d0f680c720"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_4p12s_simple__high_current.json",
+      "bytes": 17639,
+      "sha256": "2b09feca906bfe47a5af31318c6ae8a2927bdac18b12c3ac67420737cf02ea3f"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_4p12s_simple__tight_airgap.json",
+      "bytes": 17633,
+      "sha256": "dc461fbb930a73aa99b4e4e4eeff1792ce6a7fb42eed5dafa7b58e568eeb7776"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_4p12s_simple_noload__baseline.json",
+      "bytes": 17014,
+      "sha256": "d6cd92e9fd15072e48a0aadef2bcc50968b61a33abb5d18c4e261a24d74f5f91"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_4p12s_simple_noload__high_current.json",
+      "bytes": 17637,
+      "sha256": "03da7e7132ba4360164ec2a81ddcce447e01b4da5a09fdd30140e59a16c3157b"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_4p12s_simple_noload__tight_airgap.json",
+      "bytes": 16994,
+      "sha256": "d1ad552e6ee04699d72cfd16ce19e0439d1b3dddebcbc5716ccaff8e20ce9245"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_4p12s_small.json",
+      "bytes": 5413,
+      "sha256": "4eb6aaf51eccd015b1d658fd8010552f67acaf282f294176464529fe0a7bda42"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_8p12s_concentrated__baseline.json",
+      "bytes": 17576,
+      "sha256": "4124e7510006e94526930e5fb8fe773dcdfbcfe52e670402df673c2b39e1139c"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_8p12s_concentrated__high_current.json",
+      "bytes": 17596,
+      "sha256": "f6ae6b07e82a488ffd9c320fceb1130c6f95e08352577a6fc3ca6d37fce28529"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_8p12s_concentrated__tight_airgap.json",
+      "bytes": 17590,
+      "sha256": "772696810fc7e8a0ab236e3de6295c25d012789b511087470af3d7688d143b16"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_8p12s_reference.json",
+      "bytes": 5370,
+      "sha256": "f698b436c941744674934fba2b0bbc6a388f8c74ca5ad6e5ab9eda8749240dab"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_8p12s_reference_angle30__baseline.json",
+      "bytes": 17637,
+      "sha256": "e81cd6ceb71f45c368e59604e4d0c550b8f328d9fe58c5a353484b0bb5abdf68"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_8p24s_distributed_femm_validation.json",
+      "bytes": 22034,
+      "sha256": "6f76ef0a52d663e47c36b76bb19732cc61e1aef9b02125525c47eae257c5b1b7"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_8p48s_chorded_5_6.json",
+      "bytes": 57076,
+      "sha256": "45c506c1d58305adc4cb8e15c68ce24c83734c6419c9ab85aa381337ac9692be"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v2/spm_8p48s_distributed_femm_validation.json",
+      "bytes": 33702,
+      "sha256": "78fdc1dceed6619df219e019d6e79a6afaaa2caa913065921cc2ef990ce55d76"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/ipm_flat_12s10p_fscw_contract.json",
+      "bytes": 16086,
+      "sha256": "6a5b716c8cdd7d9c69e24c8ce03d47f0dbdc2bdef98b185a374d221f71907314"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/ipm_flat_24s16p_industrial_contract.json",
+      "bytes": 22190,
+      "sha256": "db9826b250ef22556c0451c4e89f92b800a0e403c75058dbf3e7416ad058f325"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/ipm_flat_4p12s_micro_contract.json",
+      "bytes": 16270,
+      "sha256": "85aad63946503e747a894abf06b6f3fecb867bb603020280fca8fe835195406a"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/ipm_flat_8p12s_fsae_angled_pocket_contract.json",
+      "bytes": 16173,
+      "sha256": "78a8e91a032277a07fb5825f3f12aefa0c8747e42dbd92801d39f074f82bfe51"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/ipm_flat_8p12s_fsae_contract.json",
+      "bytes": 16162,
+      "sha256": "fb426da74cd514f2c9da813d627157fe6123abb2ef016b2d9a4a11cc42049918"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/ipm_flat_8p12s_fsae_thin_bridge_contract.json",
+      "bytes": 16196,
+      "sha256": "b661cd9bd50a8ab411920c30a883751f7357c88b7e04a0da104af207202ca5fa"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/ipm_vshape_8p12s_baseline_contract.json",
+      "bytes": 16232,
+      "sha256": "0badc2ef57195382e0881723630fdca43e6cea6900ce254b165e4cbc7115d3d9"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/ipm_vshape_8p12s_deep_apex_high_output_v1.json",
+      "bytes": 16282,
+      "sha256": "68d3fbc08cba2888deb0dce683b4aac632dda753ad8a6cd979b086ead1d07bdb"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/ipm_vshape_8p12s_narrow_angle_contract.json",
+      "bytes": 16256,
+      "sha256": "58d0a8d9ae19d55e6ba93779b299fb2e25c45d1f832cc002471a115b939a1090"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/ipm_vshape_8p12s_pocket_offset_contract.json",
+      "bytes": 16267,
+      "sha256": "f938c884b6214cdf81f496cad53bc005c582198eaf5681f33335b15dbd7f9e10"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/ipm_vshape_8p12s_thin_bridge_contract.json",
+      "bytes": 16238,
+      "sha256": "cd802364064102c3239280f076c5780d08c384203cbdf31b7665513150d3923c"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/ipm_vshape_8p12s_wide_angle_high_output_v1.json",
+      "bytes": 16271,
+      "sha256": "d0c41dc4dd07833f12af2c92dabbb4c6053e0084fe1a8af68a4047b98997731b"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/manifest.json",
+      "bytes": 9237,
+      "sha256": "b5178463b9746ea2ca7604ab24b97f221905e495bcfa22bc5169c7f7a9fd4008"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/spm_12p36s_distributed_femm_validation.json",
+      "bytes": 45167,
+      "sha256": "826da018bceb23f2d44a263ef3a0034d23c3783e97e0734eeca347d14637edde"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/spm_14p12s_high_pole.json",
+      "bytes": 10829,
+      "sha256": "061710daa4cf331a97eaeb50aa3372a69a7f7e8d7fbc874947b9836e153dd161"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/spm_4p12s_simple__baseline.json",
+      "bytes": 17611,
+      "sha256": "5d3edfdef32ae6276571b3da60a42119766babebafad060bfa254dbcbde19f78"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/spm_4p12s_simple__high_current.json",
+      "bytes": 17634,
+      "sha256": "e27694a3c7f210d3e60db76e0b587f4767d9b1d5b8d850bc2905b889c279cae0"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/spm_4p12s_simple__tight_airgap.json",
+      "bytes": 17626,
+      "sha256": "c5d4c80f8cfd93616f22802fce47dac4bc0619d87048d17f7043868c527f582d"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/spm_4p12s_simple_noload__baseline.json",
+      "bytes": 17011,
+      "sha256": "3e15889fd0353da7c6be46ec72d950059891debdd3c68dec4422e79e9a7e6df4"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/spm_4p12s_simple_noload__high_current.json",
+      "bytes": 17631,
+      "sha256": "7f966cbb156d044b82c477965ea6a89da6fd7af89db1e2127d86b5464d356038"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/spm_4p12s_simple_noload__tight_airgap.json",
+      "bytes": 17013,
+      "sha256": "df58381d7531da345443904515657a6e1695273988abe82fb6afb09316007322"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/spm_4p12s_small.json",
+      "bytes": 5792,
+      "sha256": "6cd966f3d2dc43120326a5f32a1c11f25de75097b95de8ccc1f9f456d212768f"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/spm_8p12s_concentrated__baseline.json",
+      "bytes": 17683,
+      "sha256": "ea21f90fd27b8e693c62374bb0c811e37752d800d2ee6896385e8f60423e78a8"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/spm_8p12s_concentrated__high_current.json",
+      "bytes": 17713,
+      "sha256": "4bffd56541e23dfd674cf20344b14f1c7495938fbe5ca1572f39fc020bceab71"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/spm_8p12s_concentrated__tight_airgap.json",
+      "bytes": 17666,
+      "sha256": "f3c38862ca4f5bcb0f848a3e5a7292d54fcfb73f984daa3dded1f35842107944"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/spm_8p12s_reference.json",
+      "bytes": 6055,
+      "sha256": "72dc3c15777846ff7da71cc57ee3b93ab51e7b8ff8a72e35f0cac83395a9a0ad"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/spm_8p12s_reference_angle30__baseline.json",
+      "bytes": 17577,
+      "sha256": "b0de9eb761b5cb02d6031d3410f684e9d83f397b19d469175ed48161600508da"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/spm_8p24s_distributed_femm_validation.json",
+      "bytes": 33761,
+      "sha256": "42daeb1110ccc56af32b8784f71e5757a08089c9e24a68af20e542c3c9bbebf0"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/spm_8p48s_chorded_5_6.json",
+      "bytes": 57056,
+      "sha256": "dc603932a63ac3038ddb58bab4f31fa5d3b11585277930dfd3b365d0ce5e9f41"
+    },
+    {
+      "path": "benchmarks/reference-baselines/ipm-high-output-v3/spm_8p48s_distributed_femm_validation.json",
+      "bytes": 57579,
+      "sha256": "0f7c011d4d83c9c36a4e0330ccd4de4944bfba938be479d1622a2e6d56409701"
     },
     {
       "path": "benchmarks/reference-baselines/main-bad71d9/ipm_flat_12s10p_fscw_contract.json",
@@ -2512,6 +3087,316 @@
       "path": "benchmarks/release-baseline-20261011-v1.2/coilem_benchmark_report.html",
       "bytes": 276345,
       "sha256": "082f841c598fb32bc90a2528950ff1aff31a215457a3bd0a42a120b1fb7b1280"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/README.md",
+      "bytes": 6191,
+      "sha256": "699be0501f35bfaa08e3000151e7aab03defc4a2f7d395e57c1821a374d2bb27"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/analysis/comparison-summary.json",
+      "bytes": 23871,
+      "sha256": "4873c33d0302f975660f62298584a59bdbfe379354591d86a0acc3693dcfb120"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/analysis/execution-timings.json",
+      "bytes": 9863,
+      "sha256": "d34838405d7d00632b1f58c22d39b460045f13cac82ccd31d0fb840755dfb42d"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/analysis/native-before-after.json",
+      "bytes": 26028,
+      "sha256": "37dc5bd05c6be03af39e37b2eb2821325acc3343d9a4ae250368d945a9cebfba"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/analysis/physical-comparison.json",
+      "bytes": 245583,
+      "sha256": "cebb47d9ede0b08fd07698fbecad738e279b27506763185ebc522dea09270835"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/analysis/ripple-failure-inspection.json",
+      "bytes": 1199,
+      "sha256": "7c5d170662e1d3ce95ed3a15c88b9c3b28f21e6a1ecac8ebc311161cacc48087"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/artifact_manifest.json",
+      "bytes": 11184,
+      "sha256": "e183ce05d332c6a4a68b86bca8b65bd0c78b99528f8b2795c843f999a9132b53"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/benchmark_report.md",
+      "bytes": 3967,
+      "sha256": "942a452367ca7c5391ca800f2b72d984840c3675aa9a5dc793ade149884c3230"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/benchmark_summary.json",
+      "bytes": 1757242,
+      "sha256": "df3e90407b61d2ad3d75b20315a94cdbdc3ad48d10a349571bafe2bbea05c92e"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/coilem_benchmark_report.html",
+      "bytes": 396879,
+      "sha256": "4886723d3e670e2ab75fe349b2819ce9ab80d123ba8f7b02a8adaef973a053b4"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/coilem_benchmark_report.pdf",
+      "bytes": 143188,
+      "sha256": "0f976481c0f31222f4dd3762119ef5061f670547918b316135af70b724a5ec65"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1604,
+      "sha256": "15423a47ebbf8509a7935c60d5c45404b8ee186f37dd266dec9e3f2a01560e34"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1607,
+      "sha256": "e328650573ad963181a7cf2292f6fe924d866c792d79c2a32137da2f9522fae0"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1606,
+      "sha256": "68b4e61d69cbc4673eba7ec92d0609862b1cf0283fa8391bf174b8d6c55b7c59"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2503,
+      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2503,
+      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2503,
+      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2502,
+      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2502,
+      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2502,
+      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1594,
+      "sha256": "3d78ae3d4175a933e18d04b9d45c7bddaff1db6e8355c21675dbe4da2934392c"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1596,
+      "sha256": "2081d6ab448377574d76cdd8c86724d07368fd09093bab02d111bfb589d5d709"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1595,
+      "sha256": "a77a7fbd94ed2a06659067f6501b029f612f09877128361268c76c5f9e268604"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2506,
+      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2506,
+      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1640,
+      "sha256": "dd91d0757a826b34c3fde5e813bdfdc385bc048ce477a172c5bfbf292ff6703b"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1642,
+      "sha256": "4e53c05733eb4d81cc3205e743f12fb473065142827f4e38327bd035caf7545c"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1641,
+      "sha256": "1825fe88e7ddf36234aa984f0fbbd30e894bfb34a6030fc02a348c883bf18ffa"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2550,
+      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/publication.json",
+      "bytes": 9142,
+      "sha256": "105045a8def119e594267754984abaa23aacb4727a9b31ff4140a5269a696a9d"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/results-comparison.md",
+      "bytes": 11029,
+      "sha256": "8a3126d507c1b420250674f3803cd36c6b1a6eae2ec7dea312a449c2a506753b"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/investigation.json",
+      "bytes": 6247,
+      "sha256": "c9d3a383c29321c942e8bcf06046ef05432488ff9d0f7c5ea0e3b5e3e0dad5c8"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/investigation.md",
+      "bytes": 3041,
+      "sha256": "2b48bfad2c61a675e9173b2e9ee2129892399bf16d6c2270a43cf8187512877a"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/jobs/grid-0p9375-50A/request.json",
+      "bytes": 18241,
+      "sha256": "5d0b6886332fb4a7d9aceec6c8e27275ccfdee0072cc45177b18892205a3f05c"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/jobs/grid-0p9375-50A/result.json",
+      "bytes": 150141,
+      "sha256": "4645f84050d128cd0c55c399fbf240d2181b971bac2a252f0995ecba7e0bb5b1"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/jobs/grid-1p875-50A/request.json",
+      "bytes": 18240,
+      "sha256": "a5390bb90983e01160fb258fccdcc03c5a87a0d37226743d42b5976462cc9343"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/jobs/grid-1p875-50A/result.json",
+      "bytes": 100682,
+      "sha256": "0f0dca0606cce3fda1b9598df71157f78a7da5f33e7a7f2e0c94844143e86a99"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/jobs/half-current-3p75-25A/request.json",
+      "bytes": 18239,
+      "sha256": "30756c8e8dfa2770b38501e8aa58cc8376c6ed881cd33041e6c57a65fdf21ae4"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/jobs/half-current-3p75-25A/result.json",
+      "bytes": 76268,
+      "sha256": "0ae223854d68024bd965a4cbf2aece06c0648675390097b6c59a7ca273e32827"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/ripple-diagnostic.pdf",
+      "bytes": 19515,
+      "sha256": "b72cb5c617145cde56bbcabaf5ebefb9d61bbdccea8b90cd7488f6860658c016"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/state.json",
+      "bytes": 24940,
+      "sha256": "668947cc50f0d1eec8db91cbd1f73d838910e02609bff11956cf8e1249e7f87c"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/torque-refinement-full.svg",
+      "bytes": 46498,
+      "sha256": "7473624e98071eec2cc6f5c7cc9567d385107f1d392e6dc698940a9e8f3d24de"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/torque-refinement-trough.svg",
+      "bytes": 8534,
+      "sha256": "6761c3535c9d0b426c5b881c6e21de5af85488794fc5e508c50975ae01ce7113"
+    },
+    {
+      "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/run_manifest.json",
+      "bytes": 44011,
+      "sha256": "e8574dcb6daa2c0337b95f2be4cd47e5bf213efc52b53e15d1a8c601564032cd"
     },
     {
       "path": "benchmarks/windows-process-pools-20261012-02fa24b/README.md",
@@ -3189,6 +4074,251 @@
       "sha256": "09dc207ac3738206c0f6c17855bfaaf6faf51a5db88e400c7fa79a1a379be585"
     },
     {
+      "path": "benchmarks/windows-v3-20261015-738d951/README.md",
+      "bytes": 5920,
+      "sha256": "dec5ad5f83e6ec597712d5e4f92465fbcc0f7a08d39aed863550f45e7a6f4955"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/artifact_manifest.json",
+      "bytes": 5722,
+      "sha256": "a45b1840785fc80d90381a0813997912ecc2dade50a416af8fb8f2e19f6524c9"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/benchmark_report.md",
+      "bytes": 6124,
+      "sha256": "ade5defed886a94568b50d3c775bb6c108ee19635c2f3b823bc4d0075ffdad75"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/benchmark_summary.json",
+      "bytes": 1870183,
+      "sha256": "3ccf633f17019619830b0eaae4c0caa90da312e3870d07a3d9c96c77d2782319"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/coilem_benchmark_report.html",
+      "bytes": 399268,
+      "sha256": "3a9e432529ebaed211d439d97af5e896c200676f6f531265e41b2e5b854bbaea"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/coilem_benchmark_report.pdf",
+      "bytes": 146257,
+      "sha256": "d7250b1a101b6844612fff8ce81f9bbeecdc556f7efef67a1ad50d7022ca913e"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/comparison_manifest.json",
+      "bytes": 56365,
+      "sha256": "6a17a0a37698c1461c8b5bc48e3e3165bd8441c7b2e559c30361c09eb224a6df"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/environment.json",
+      "bytes": 17961,
+      "sha256": "3740e631d90ff33fbfb25a7990bf842a72b8345c560a4e73efc9374db9c7c4f4"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/evidence-hashes.json",
+      "bytes": 15742,
+      "sha256": "1fd8658cd2b78589c0414ef58035cbd6d5e4effafdf8c6bc49c8875aa73c8966"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1604,
+      "sha256": "15423a47ebbf8509a7935c60d5c45404b8ee186f37dd266dec9e3f2a01560e34"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1607,
+      "sha256": "e328650573ad963181a7cf2292f6fe924d866c792d79c2a32137da2f9522fae0"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1606,
+      "sha256": "68b4e61d69cbc4673eba7ec92d0609862b1cf0283fa8391bf174b8d6c55b7c59"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2503,
+      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2503,
+      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2503,
+      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2502,
+      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2502,
+      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2502,
+      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1594,
+      "sha256": "3d78ae3d4175a933e18d04b9d45c7bddaff1db6e8355c21675dbe4da2934392c"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1596,
+      "sha256": "2081d6ab448377574d76cdd8c86724d07368fd09093bab02d111bfb589d5d709"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1595,
+      "sha256": "a77a7fbd94ed2a06659067f6501b029f612f09877128361268c76c5f9e268604"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2506,
+      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2506,
+      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1640,
+      "sha256": "dd91d0757a826b34c3fde5e813bdfdc385bc048ce477a172c5bfbf292ff6703b"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1642,
+      "sha256": "4e53c05733eb4d81cc3205e743f12fb473065142827f4e38327bd035caf7545c"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1641,
+      "sha256": "1825fe88e7ddf36234aa984f0fbbd30e894bfb34a6030fc02a348c883bf18ffa"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2550,
+      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/publication.json",
+      "bytes": 3129,
+      "sha256": "0c734a1776bc9baf31b7106c18b103045425167256917e031edeb420e5caed1c"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/run_manifest.json",
+      "bytes": 44700,
+      "sha256": "2c8be8fdd9c98171cb9de0392824807e8063d0381458f9ac2614895013ee520c"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/timings.json",
+      "bytes": 5505,
+      "sha256": "d9b878604e57e0e100767372a588d21f74b47cc478d1c791e5bab99bc65fb8c4"
+    },
+    {
+      "path": "benchmarks/windows-v3-20261015-738d951/winding_axis_diagnostics.json",
+      "bytes": 8247,
+      "sha256": "591112872e6c9c5c0e0a5ea9379405e61ae11a06cc8ff822a2d474be1633dc58"
+    },
+    {
       "path": "docs/ARCHITECTURE.md",
       "bytes": 11304,
       "sha256": "54ec6b85b36f1e1beec6083c672b06b7d6b7d8b3af4acecdbbe548ef8e432c02"
@@ -3225,8 +4355,8 @@
     },
     {
       "path": "docs/MAGNETO2D.md",
-      "bytes": 46156,
-      "sha256": "93f64669998b64d434bdcc333f11b3a1e6941124ce9b6d7af4d7c334de1810b9"
+      "bytes": 46985,
+      "sha256": "da768c3d4acb71b6c67cc9b5107f0abc11ab701634b8be849f67d4bb3664f427"
     },
     {
       "path": "docs/NUMERICAL_EVIDENCE.md",
@@ -3235,8 +4365,8 @@
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
-      "bytes": 10183,
-      "sha256": "62210e9ff878bf643eac4ad39055374af65ec10a1624035b9fddde776924b690"
+      "bytes": 10419,
+      "sha256": "884e0ac399db75a0b24ddae940cd788c0ecbcd213426faf45e0f6ec2bc205d50"
     },
     {
       "path": "docs/RELEASING.md",
@@ -3245,23 +4375,163 @@
     },
     {
       "path": "docs/RUNTIME_SETTINGS.md",
-      "bytes": 9072,
-      "sha256": "c128b54cbf1083cb2861b416333e67f6f09283f3e49bef6f25e056b26751447c"
+      "bytes": 9286,
+      "sha256": "80a13340dfcc798097abb26134949b7f630e6934d42d9ef0531a620fb94e3d50"
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 21006,
-      "sha256": "3ee90d2481ae77981d82ee7a377fceb5382ede5c1d0858882f912bdd2d27edfe"
+      "bytes": 22970,
+      "sha256": "425be00ba4bb63b4fc7373e66fc0d180dc33d1836947e5fc07e01c51c469400c"
     },
     {
       "path": "docs/VERIFICATION.md",
-      "bytes": 6746,
-      "sha256": "5c7af266b312e426ca41a4ccedc7935f129aef53d2eb51a823d66d44286135ab"
+      "bytes": 6748,
+      "sha256": "6bc2a602672fe8ae9558fe1b94f236517f8ccbe438fefaf0d2826a034703ce63"
     },
     {
       "path": "docs/examples/follow-flux-magnet-iron-report.json",
       "bytes": 2897435,
       "sha256": "25bbe57352a4307d176d0dcc8c22f1c1466922dcad4092bff63c5f14b2d901d3"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/README.md",
+      "bytes": 6218,
+      "sha256": "35d1eaa006223350dfc9498f245663eacc78d5b3dc9de0b2bcd17fa1d587a3f3"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/first-comparison/README.md",
+      "bytes": 4465,
+      "sha256": "ff91e4f11cf8ed3c9266cbcaf11a5ebe9c6557c389c74bfa398e624c378d78cb"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/first-comparison/back-emf.svg",
+      "bytes": 6369,
+      "sha256": "bb91cf0dfeb56a22f552c4b1a6c9263b73d25e2495380e52f3adf05f41adf03c"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/first-comparison/comparison.json",
+      "bytes": 10941,
+      "sha256": "abdc236c1f80910c318d54e6c045714f79d8a0f5df9cee09d73d22474eb2427e"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/first-comparison/locked-rotor-torque.svg",
+      "bytes": 13024,
+      "sha256": "4bd73f0e777fb8d5641c7dd9021ad91799320bdfd9dc1919b1b1a8ee262bc827"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/first-comparison/locked-rotor.json",
+      "bytes": 48035,
+      "sha256": "09013d65f219e7eaddbc9a886e47371883e7a893067a504cc632ebc861a19d76"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/first-comparison/no-load.json",
+      "bytes": 26752,
+      "sha256": "3549d654ccd47b86758953fbb5a97f2187c167ccdfb15c820d07d0b7e10078af"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/input-provenance.json",
+      "bytes": 2278,
+      "sha256": "4485495d7f28a25209835a9ba867a7b963c70f43215f72d7da76577e7bd34612"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/real-winding-comparison/README.md",
+      "bytes": 4506,
+      "sha256": "83b5f2736e15d9ab4fe37224a1ef04dffe0b97e3b026e9cc1ba11635d5df2573"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/real-winding-comparison/back-emf.svg",
+      "bytes": 6367,
+      "sha256": "03c6bb0aa32199351c2519deaf2ebc86003b8ccc6b8196caa73f7757585529b7"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/real-winding-comparison/comparison.json",
+      "bytes": 11070,
+      "sha256": "b7eef67de3a988e2a07b26cf01b886045f442744a99fb7d1d0bb5b0c0b7e780a"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/real-winding-comparison/locked-rotor-torque.svg",
+      "bytes": 13272,
+      "sha256": "e3de49428ffcb6939feb12c0d634f123af65f7f1fe6f056c12f4b2fb2f3664e7"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/real-winding-comparison/locked-rotor.json",
+      "bytes": 47639,
+      "sha256": "e43c97970c2b268c8715e6901216f6d393db2ff76dd28c4dae76f57219accf26"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/real-winding-comparison/no-load.json",
+      "bytes": 14401,
+      "sha256": "3f46f7ba3bfb11311a28fedc8b89490ac6673529581d060c7a9d83788f832d7d"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/real-winding-comparison/zero-scan-100A.json",
+      "bytes": 2040,
+      "sha256": "6acb2badf21654f1e7a75ed8014001202620f5a23337cf59c2206db3edbc2127"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/request.json",
+      "bytes": 1542,
+      "sha256": "60351175715cd05288059c19665c8ac6614b3ba897cce54a41d22809991c6192"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/sources.json",
+      "bytes": 602,
+      "sha256": "8b998a7fb568a8f5906f704b2032a9fc77afd1d90393c430394d6aef0f5d5265"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/target-back-emf.json",
+      "bytes": 3162,
+      "sha256": "4a8af716996e40ea2da9af452e7aed8c101b46fe5c207f534ab28ef3fd87a9d9"
+    },
+    {
+      "path": "docs/hardware-validation/honda-accord-2005/target-locked-rotor.json",
+      "bytes": 1100,
+      "sha256": "1d18ad6d85430cc7191b028accf511868c8f4a1f59c27e293ce17eb9213f3f09"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/femm-reference-spec.md",
+      "bytes": 4176,
+      "sha256": "866c74e7d8cc5737da843c258de77761a000ce1e87213016d31c386a78f3a335"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/first-comparison/README.md",
+      "bytes": 4522,
+      "sha256": "f4c6eddff371e915cda9716e5386d1ca93a5937fb698e9f042db6081aa85a501"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/first-comparison/back-emf.svg",
+      "bytes": 10347,
+      "sha256": "614d1ee305cadb9342be5ac8c2e69a2852d8d07a18b14dcf3a83761f68f5a1f0"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/first-comparison/comparison.json",
+      "bytes": 18783,
+      "sha256": "17313aac758c2a62c3cdb18e1bf960576789edba504a8b75ea390f60d5a909f7"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/first-comparison/locked-rotor-torque.svg",
+      "bytes": 22778,
+      "sha256": "f7f78fd9c89f178aea30cedc6bb7fca4ac8b94598ae2d49f4ab28632d88a2bd9"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/first-comparison/locked-rotor.json",
+      "bytes": 27001,
+      "sha256": "9554f1a84fc1b2701bf4a96528f09f5e8d61d9dc2f4103e17126fc85465d5d6e"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/fixture-correction.md",
+      "bytes": 4994,
+      "sha256": "3b828f5c44edf9e307ff10fbd5f4a8c667d8969b2c42def5cde38c226d451b56"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/holem50-mapping.json",
+      "bytes": 10013,
+      "sha256": "248ace08371f4164b38791fe665854ce98ff6d66c12a7a62abd2ab3974a137d9"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/holem50-mapping.md",
+      "bytes": 6772,
+      "sha256": "07cc1d99fd890bcfccbf0386a2138869a6d406c530b5529c1f6c104665e92203"
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/input-provenance.json",
@@ -3282,6 +4552,11 @@
       "path": "docs/hardware-validation/ornl-prius-2004/sources.json",
       "bytes": 2477,
       "sha256": "0e5f96d113ef8b20e56adc1d479789f8aea73b4720029f1370ba236f127c764c"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/stator-slot-mapping.json",
+      "bytes": 3994,
+      "sha256": "5a7064a1e2e38fc896cadc1264433421d417bca4546867686e4c44669ff70dfb"
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/target-back-emf.json",
@@ -3325,8 +4600,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 1705,
-      "sha256": "831be9ee6d85977bf9844778fc08089626001f3e7110c99565742602b2aac2d2"
+      "bytes": 1748,
+      "sha256": "1743ec6ff42b5e244fd8db943a5944b3bdf86777bc391fbea495418522cfdc8d"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -3365,8 +4640,8 @@
     },
     {
       "path": "frontend/scripts/test-design-file-defaults.mjs",
-      "bytes": 3729,
-      "sha256": "04af6648d5d0edf780cf74b3a09390a41f8576e35b837302aa4c83aaa54c31be"
+      "bytes": 4779,
+      "sha256": "b03a28241f360dfe64756fba073929a80aafc1d96182377403a00f7350c51b65"
     },
     {
       "path": "frontend/scripts/test-field-playback-timing.mjs",
@@ -3410,13 +4685,18 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 105598,
-      "sha256": "242944ed2edd3159b49b30649934541c02da2e0dee41eaa5e6cb90613501dc0e"
+      "bytes": 107028,
+      "sha256": "98a8f88bda89efc0c5106e7e40ef513a644d3db8452bba8b39810eebf88c9230"
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
       "bytes": 4019,
       "sha256": "82b7dd8a6c043530ed24f15b6688760176c82ecf621e6d73597efbed22b10350"
+    },
+    {
+      "path": "frontend/scripts/test-tooth-coil-repair.mjs",
+      "bytes": 4152,
+      "sha256": "7183bf390ec50f333cd4b6203b96611440b935ab839118c7c70dea0aebb3a952"
     },
     {
       "path": "frontend/src/api/projectSchema.ts",
@@ -3790,8 +5070,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 67195,
-      "sha256": "f84c2ff65f3ce25ed1e11db71c3da1e3c61ce0bb3a2be1920619cc1a74fd7a07"
+      "bytes": 69909,
+      "sha256": "c2a4ca9dbdb492706ea4fd491049aebb104afc3d8cb4e8589ae4cb7570799a04"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -3800,8 +5080,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 178718,
-      "sha256": "41002d08e80b42ac558f9357eb977d16ed8732383b0030c67b7f70a82be5eca7"
+      "bytes": 182947,
+      "sha256": "a65a423952165483a8dc1b996fddcbc5cca0cd40dd0588acdb3b0656a8d4a0d8"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -3825,8 +5105,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 53168,
-      "sha256": "98cb2ab37f8078c2ee3863e893d34911d14eba017c0b20c88d4315d5128c2dba"
+      "bytes": 47400,
+      "sha256": "68a2f20bbb557c39008eca9d79ddb672091eeb2856b55cf967f264a2a2712dc1"
     },
     {
       "path": "frontend/src/public/PublicLanding.tsx",
@@ -3835,8 +5115,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 78731,
-      "sha256": "72b019b0acf6fd01c9ad99ff0f792e16e6b4922dd7a2be8a1023f6b3f33bd18c"
+      "bytes": 80027,
+      "sha256": "49c55615439bca2536bf682d1f1103d93dd0213028e9bff7542744a80450344e"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
@@ -3895,8 +5175,8 @@
     },
     {
       "path": "frontend/src/public/coil3d.ts",
-      "bytes": 16402,
-      "sha256": "9cad7de5a93294d077a6dddaeb06a945e1322ed00a05042a2a885adab30b9a43"
+      "bytes": 16694,
+      "sha256": "a3b43d36585905c43d9915eded59e94120c9f3a32ef6d919ac0d7ca26d41be86"
     },
     {
       "path": "frontend/src/public/customSteel.css",
@@ -3910,8 +5190,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "bytes": 10984,
-      "sha256": "605683d55a4c753dfa130159b2d923ad99a30b8cf700d107af4b688f498c701a"
+      "bytes": 11441,
+      "sha256": "e4fa94560257411f3a9a9eb4979dc28ba696d5def02df32e8089d664c9da67bc"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -3920,8 +5200,18 @@
     },
     {
       "path": "frontend/src/public/exampleDesigns.ts",
-      "bytes": 1685,
-      "sha256": "76e48914382200534d2177f174625cfa9d2984a18ebd78ba13b5df82091efd17"
+      "bytes": 3125,
+      "sha256": "0bf3f379a2b4bea1076f4830e84fb6a01802729e8a66f2b209a700fe4bb1bea5"
+    },
+    {
+      "path": "frontend/src/public/examples/honda_accord_2005.coilem",
+      "bytes": 2210,
+      "sha256": "733e6334b7198b9d8234bda558b467cc2382c975d3be2ed8d4abc41477fce6bd"
+    },
+    {
+      "path": "frontend/src/public/examples/ornl_prius_2004_holem50.coilem",
+      "bytes": 3030,
+      "sha256": "385245790bea2051c4347f2939636ede14e93b063402a8ad91fb58f658d2bd74"
     },
     {
       "path": "frontend/src/public/examples/validation_ipm_10p_v_shape_medium.openem",
@@ -3935,8 +5225,8 @@
     },
     {
       "path": "frontend/src/public/examples/validation_spm_24p_small.openem",
-      "bytes": 1934,
-      "sha256": "2b0e660e31d01ff8bbbcbde6dcfb2f6e726b5d98e6d0fe6087819ce5206a4082"
+      "bytes": 2012,
+      "sha256": "55826b1f16decf0518a4cdaf28d887caf8b3f78f15b18a4277f953330ee40b08"
     },
     {
       "path": "frontend/src/public/excitationDrafts.ts",
@@ -3975,8 +5265,8 @@
     },
     {
       "path": "frontend/src/public/guidedConfigRepair.ts",
-      "bytes": 10140,
-      "sha256": "5e849143ae9c6e6ba9a92f061a320bab2b919737ec507d7066a30dc4c8720677"
+      "bytes": 10388,
+      "sha256": "1fbf251e9a7b3a53c05b921ddaab58d2ceaab23efdce8e79f9dabaa52fa710e7"
     },
     {
       "path": "frontend/src/public/halbach/Halbach2DViewport.tsx",
@@ -4060,8 +5350,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 17562,
-      "sha256": "6a519d018baeee7ef05d1c0fbc57263a5b2eb0a749e1cb42d89244d22a2c82ff"
+      "bytes": 18282,
+      "sha256": "ec40320cf45fbeaca78a7e3590f6ba3c47a1a816219cf314e4daa601da8158bd"
     },
     {
       "path": "frontend/src/public/motorAirgap.ts",
@@ -4087,6 +5377,11 @@
       "path": "frontend/src/public/styles.css",
       "bytes": 225541,
       "sha256": "907976c194be01c074133968c323a7ca55640932a98157ff473230da9c354a25"
+    },
+    {
+      "path": "frontend/src/public/toothCoils.ts",
+      "bytes": 6182,
+      "sha256": "232774f29571e9ff2df6e20069b83fa4540f1bcd31b7c26e739e29612cfa67c5"
     },
     {
       "path": "frontend/src/public/tutorials/PublicTutorials.tsx",
@@ -4115,8 +5410,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 15140,
-      "sha256": "c7432c0278becd2dc4a3b5f56e12d586c8dfd16ed68e42f2a9266f91375daeb5"
+      "bytes": 15147,
+      "sha256": "a9b1e55123e0ca5474bfa92b1884deb7f7ed72dcf44f944a269ed839207408cf"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -4150,8 +5445,8 @@
     },
     {
       "path": "references/benchmark_configs/validation_spm_24p_small.openem",
-      "bytes": 1934,
-      "sha256": "2b0e660e31d01ff8bbbcbde6dcfb2f6e726b5d98e6d0fe6087819ce5206a4082"
+      "bytes": 2012,
+      "sha256": "55826b1f16decf0518a4cdaf28d887caf8b3f78f15b18a4277f953330ee40b08"
     },
     {
       "path": "requirements.lock",
@@ -4240,8 +5535,8 @@
     },
     {
       "path": "solvers/magneto2d/src/assembly.rs",
-      "bytes": 61931,
-      "sha256": "206c5cb2be4467ee9bfa1b537f3fdb8ecab115bb608f389fe1f2dd3e79439327"
+      "bytes": 61949,
+      "sha256": "4f360ca4ae50cc7a26c772843b7cdf70078d0e294abbd342ba90405ce85cd8bb"
     },
     {
       "path": "solvers/magneto2d/src/field.rs",
@@ -4265,8 +5560,8 @@
     },
     {
       "path": "solvers/magneto2d/src/materials.rs",
-      "bytes": 31498,
-      "sha256": "506328a402dba389cdcf0059225f48074aa615f7f330556f641541aca029e096"
+      "bytes": 32017,
+      "sha256": "42c6fcda5430f904a240c7fabb7e35d6ad209a2f98247c332846be5b3e7b5b77"
     },
     {
       "path": "solvers/magneto2d/src/mesh.rs",
@@ -4285,8 +5580,8 @@
     },
     {
       "path": "solvers/magneto2d/src/postprocess/summary.rs",
-      "bytes": 67442,
-      "sha256": "f7ecbec16be20dc83399bea94a576e95cc018c1ba1b7ae61929b4bda521e1460"
+      "bytes": 78496,
+      "sha256": "7e582df8d8633e8dd46e7f44f15f32424dc5a8ebace32886f69d0769ff5ce010"
     },
     {
       "path": "solvers/magneto2d/src/postprocess/tests.rs",
@@ -4325,8 +5620,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/mesh_metadata.rs",
-      "bytes": 21216,
-      "sha256": "78fe2e172fbb184d1957cf6711f34f7aa3764b54307252800a8fdb7d9f128b1e"
+      "bytes": 21921,
+      "sha256": "a9d2a61aae3d4c02b49edfdd9ffce38e196bcb860688afb6c21d62411d3115b9"
     },
     {
       "path": "solvers/magneto2d/src/solve/metrics.rs",
@@ -4335,8 +5630,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/mod.rs",
-      "bytes": 152104,
-      "sha256": "c84c827dac02063f9192388d92702740504534169cece119bd7877a79407a158"
+      "bytes": 153218,
+      "sha256": "79cdc5358a33db0f1f6822152ba12667d40682beac1c53b43a5b228f928db9fd"
     },
     {
       "path": "solvers/magneto2d/src/solve/model/ipm.rs",
@@ -4370,13 +5665,13 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/problem.rs",
-      "bytes": 12647,
-      "sha256": "f75bd491644164d18ad5bee577bb441b6607322db680dc1b50ea9c1eb8f7989a"
+      "bytes": 12698,
+      "sha256": "ea94c3e616ccfbeb8237da97a166265d8692b38223a45977e98aa90d2d5e345c"
     },
     {
       "path": "solvers/magneto2d/src/solve/tests.rs",
-      "bytes": 96934,
-      "sha256": "8b77f595d185cfc0b3a051ab5c680dec9690caa32b6178bc9f0a39d985f14e55"
+      "bytes": 97782,
+      "sha256": "0b1aec76d2fa138d274544350f0483bcd6631a1544fb81834dbef621deb7feb7"
     },
     {
       "path": "solvers/magneto2d/src/solve/types.rs",
@@ -4385,8 +5680,8 @@
     },
     {
       "path": "solvers/magneto2d/src/sources.rs",
-      "bytes": 54377,
-      "sha256": "8c32aea119fc7cb08aad16ae2ecf3962a94255674bd2f80f0ebec19771ff5b50"
+      "bytes": 64584,
+      "sha256": "27bddb72c8830a2f736f586f50db8eff883e5350eb4647a90dd6eed362af6118"
     },
     {
       "path": "solvers/magneto2d/src/sparse.rs",
@@ -4474,9 +5769,29 @@
       "sha256": "bb0d567682cbdb3d53093dcce85f7d4f06bb6ae2a99896a4a471fd3d75393287"
     },
     {
+      "path": "tests/fixtures/tooth_coil_layouts.json",
+      "bytes": 12168,
+      "sha256": "cc91ebe104dbaf92cc784868428ac2ceac456a6cee63ab92e817fa6e6160d40d"
+    },
+    {
       "path": "tests/test_benchmark_suite.py",
-      "bytes": 25442,
-      "sha256": "22f413ea06effb593a4d21baa027cdcd33421c3c1d6600264c531daf37e25b39"
+      "bytes": 26605,
+      "sha256": "94ee8903336ae42634490b9eaa68ccac248b12e24df3d15012d2faa1ea94ccf7"
+    },
+    {
+      "path": "tests/test_bldc_angle_contract.py",
+      "bytes": 6846,
+      "sha256": "32c1035b6336e501e86fe5698c4030e7ace47ab8f6c31819bc29a388c19462f0"
+    },
+    {
+      "path": "tests/test_experimental_holem50.py",
+      "bytes": 9328,
+      "sha256": "f149dbadaf501a9e9d7d44f91c708dde43e4b2b3cfaf643cf6a37004ff0f0cf2"
+    },
+    {
+      "path": "tests/test_experimental_rotor_switch.py",
+      "bytes": 3508,
+      "sha256": "6c9b0504dfca472880ae6d2b409963ae870087e96ecc6fe0958c9f9b19ea2733"
     },
     {
       "path": "tests/test_gmsh_sigpipe.py",
@@ -4504,9 +5819,24 @@
       "sha256": "25a2dd6d2096095b4a246b7fcfc13b5d0b05b2e7ad888ce9c80b24e3e0d85d81"
     },
     {
+      "path": "tests/test_honda_accord_comparison.py",
+      "bytes": 5674,
+      "sha256": "c81e3e5b94b5370dae97f7b2c52c91b6457c91f8cb02984452be656966bd1e8a"
+    },
+    {
+      "path": "tests/test_honda_accord_request.py",
+      "bytes": 1919,
+      "sha256": "2a82c34aa059d70599b48bfaf5be1524aaaa82ccbeea5ea08b9fe00565e81a6b"
+    },
+    {
       "path": "tests/test_installed_resources.py",
       "bytes": 10171,
       "sha256": "2655c03ca9b0c15c463398155119702625d56009ade0a7d4639b55035257ae8e"
+    },
+    {
+      "path": "tests/test_late_reference_comparison.py",
+      "bytes": 13524,
+      "sha256": "4dcaf10ddb8a2f4956f236f74a01323d04c3134aae652ea64c703a11d783eacf"
     },
     {
       "path": "tests/test_launcher.py",
@@ -4551,7 +5881,7 @@
     {
       "path": "tests/test_mesh_signature_tooth_shoe.py",
       "bytes": 3637,
-      "sha256": "ffd7fa77f6c45865bdda6dbc73803073053206bc8543be344a6d9ac363118bfd"
+      "sha256": "c0d3bdfb94ebb20ab188e71804c7987776e310bd2d9990bf35eaa145f3acfac8"
     },
     {
       "path": "tests/test_native_processes.py",
@@ -4559,9 +5889,19 @@
       "sha256": "bc4f556fd203fc16e86058e6cfa0cef82d91a78fc49d0870e12085b0bd28aa50"
     },
     {
+      "path": "tests/test_ornl_prius_comparison.py",
+      "bytes": 3249,
+      "sha256": "7982aff96eb3c5a3714404080aacce322d7cc85e8238467b4e67b330c74953f8"
+    },
+    {
       "path": "tests/test_postsolve_pipeline.py",
       "bytes": 6629,
       "sha256": "048ac4984ae66c17658e3fe0c2e393fda63431b7ea74aea9b6890744f7fbeac7"
+    },
+    {
+      "path": "tests/test_prius_benchmark_case.py",
+      "bytes": 11186,
+      "sha256": "a5ecffba81c88589a6ffb6f1bac05c0fb5730570bd3ca396c678d78a57a12580"
     },
     {
       "path": "tests/test_public_cancellation.py",
@@ -4600,8 +5940,8 @@
     },
     {
       "path": "tests/test_public_validation_errors.py",
-      "bytes": 3690,
-      "sha256": "bf41217334bddcbee7ecc3420b6a0082e2c284f29a2aaff16105d0a098c63a1c"
+      "bytes": 3715,
+      "sha256": "e3780b463fae51e5e01dc30803c851b54044371c7f5f316e995a3e60927a423a"
     },
     {
       "path": "tests/test_public_validation_fixtures.py",
@@ -4610,13 +5950,18 @@
     },
     {
       "path": "tests/test_qualification.py",
-      "bytes": 8235,
-      "sha256": "102e1e5334233bf292b86294fabeac95de65b97c01bf13d24e6214b9d4cbb68d"
+      "bytes": 14166,
+      "sha256": "e5f729588b359752642106a40a8b6fb86f597f4ac0b17aa683e3b463badfafbd"
     },
     {
       "path": "tests/test_release_tools.py",
       "bytes": 30172,
       "sha256": "955ffc8b1a1b04890794f62bcca2e588df18aec1df943bb55d614e138aff731d"
+    },
+    {
+      "path": "tests/test_slot_layer_split.py",
+      "bytes": 4617,
+      "sha256": "7cdd0d69a32510bb1cbf9ae590320a03c0cfa9f34b794d442e8a43a71e5d6399"
     },
     {
       "path": "tests/test_solve_estimate.py",
@@ -4639,6 +5984,11 @@
       "sha256": "b1d691235c34345c1711393f3aa0107bc00a25b9987db4a7e597c24fcef80cd1"
     },
     {
+      "path": "tests/test_tooth_coil_windings.py",
+      "bytes": 10401,
+      "sha256": "183395ca3662f2ca15d3b038ab3badfc42d5faee85b7c086f7e36e59f5b47a35"
+    },
+    {
       "path": "tests/test_windows_field_frame_pool.py",
       "bytes": 4574,
       "sha256": "caedc891aa678952edd9afd41b58c2bd9891d7bee8b5315f821faeb88a20cb73"
@@ -4655,8 +6005,8 @@
     },
     {
       "path": "tools/benchmark_suite/__init__.py",
-      "bytes": 317,
-      "sha256": "c5fc3d2eba606f06b47f0d8233869b224d07f512884120bfaab407f9a254a607"
+      "bytes": 335,
+      "sha256": "b1db87be752e01fc4048bc64a67f300e2ef63c19d32772a66266a507d6b7075d"
     },
     {
       "path": "tools/benchmark_suite/abc_metrics.py",
@@ -4665,43 +6015,88 @@
     },
     {
       "path": "tools/benchmark_suite/bldc_metrics.py",
-      "bytes": 15451,
-      "sha256": "98994e024bf28269e2c87c6aa2a279eec7df909ca11e1a7599f5d13bd1dd82df"
+      "bytes": 16680,
+      "sha256": "79b912dc1190ceaebdcbcb5ec0eea83f519063b9a16783bd5b80a2c31c447716"
     },
     {
       "path": "tools/benchmark_suite/cli.py",
-      "bytes": 16334,
-      "sha256": "0a7c22759b25674f4e6626b2237722fbdbeb17aec4f776691efd6b858ba967e5"
+      "bytes": 18817,
+      "sha256": "74486eccf70f2df46349ecb5aeaf80987d8df0d9e3550baffe925be3aef46319"
     },
     {
       "path": "tools/benchmark_suite/contract.py",
       "bytes": 4722,
-      "sha256": "192b62eda371de846f9872295041b1ab51294e00b5017a8a3d983f325a7e6bd1"
+      "sha256": "0e48fbb43074cf069e55b1110c3e5c2693825ebab418a28cc6ae5ab424664dd2"
+    },
+    {
+      "path": "tools/benchmark_suite/hardware.py",
+      "bytes": 3327,
+      "sha256": "6204d74fca84aad9297d368cbe03027277d7724e518c5ff747c767e541fb18cb"
     },
     {
       "path": "tools/benchmark_suite/metrics.py",
-      "bytes": 5240,
-      "sha256": "b978d23fe286940ae0d9b7f35534b1dbd6e95b2596b335ed22e84bc86ebf5543"
+      "bytes": 6462,
+      "sha256": "a3f501794e89ea01256edab3d75eab440df46fcafef37ccb1d4c7fb841b57c27"
     },
     {
       "path": "tools/benchmark_suite/references.py",
-      "bytes": 2692,
-      "sha256": "3a70cb0a43d9233e66d4c6d7c0cce22caf813a805f306ae0aa2aab757e22077b"
+      "bytes": 3522,
+      "sha256": "8578999697e86fd5582ca088f5013ed9522060605b799da69db58627b93809d6"
     },
     {
       "path": "tools/benchmark_suite/report.py",
-      "bytes": 23142,
-      "sha256": "b824617f4bd29a0d455a4063a07989f17f68cb0a90aa3d49734465d8ec93e5bc"
+      "bytes": 28686,
+      "sha256": "dfe6e8cb3e7bf062f9fa350f1e88bda558ae74852f696572c8e525505ae6a6cd"
     },
     {
       "path": "tools/benchmark_suite/worker.py",
-      "bytes": 4094,
-      "sha256": "3610b56a778a98c2c7ccb4727c51a90fcb110803b034cbf3f87599e190f64de5"
+      "bytes": 4183,
+      "sha256": "741e83560518eb530113ba3c0d21a1acd12956a1ab6a5b99b64d04c3b5693637"
+    },
+    {
+      "path": "tools/experimental_solve.py",
+      "bytes": 4202,
+      "sha256": "6a50b22ee7800f0f22f056288e6c3b54c297dbc5244f1427f9861458e230e8ab"
+    },
+    {
+      "path": "tools/fit_ornl_prius_holem50.py",
+      "bytes": 15749,
+      "sha256": "e368258c75d60515fe0210e0b94435ee0af2ea8ac6b1428f20cce51c52c7a84e"
+    },
+    {
+      "path": "tools/fit_ornl_prius_stator.py",
+      "bytes": 8633,
+      "sha256": "d324672a6c7170f2b9ec4f8fe394018b9f208582113017f862c96749d287262d"
     },
     {
       "path": "tools/generate_m350_50a_bh.py",
       "bytes": 3369,
       "sha256": "f4dac661f48b35b86299ea7c2d5da935b0880c5ad141637a0de58e786ca7f256"
+    },
+    {
+      "path": "tools/honda_accord_comparison.py",
+      "bytes": 15337,
+      "sha256": "75e6c1da16b7c4a12493a19dfd73cfc37d83b30e0042febb04ce79bfce7b2842"
+    },
+    {
+      "path": "tools/honda_accord_request.py",
+      "bytes": 4445,
+      "sha256": "25596806ccedb1032a191d48a6763b16b10dc87dc02f51aba5ce7c7fe6d9b1ec"
+    },
+    {
+      "path": "tools/ornl_prius_comparison.py",
+      "bytes": 10083,
+      "sha256": "a25b7d5fae5997277d80906056ce337d89cbdb3cafd28f36b067bbda4916e182"
+    },
+    {
+      "path": "tools/plot_honda_accord_comparison.py",
+      "bytes": 3843,
+      "sha256": "18628b78c29e19144b23b820bf5a57d9e49a255d3cfd8c2f20c3464cbab9e19e"
+    },
+    {
+      "path": "tools/plot_ornl_prius_comparison.py",
+      "bytes": 7589,
+      "sha256": "ed686f57028435f2b212a749e5d51a71fb4056d85300392463ca4dc2ff07cea6"
     },
     {
       "path": "tools/release/__init__.py",
@@ -4774,6 +6169,11 @@
       "sha256": "259f3476758b6bbc6eddae5269799b2d1c8c9628d1ba67c5ca06d51b6845e2ba"
     },
     {
+      "path": "tools/report_benchmark_against_reference.py",
+      "bytes": 19937,
+      "sha256": "c1bbc90b616a447439ae712e1202716395bf1a29a6450690ddbb41bb0fa06f95"
+    },
+    {
       "path": "tools/run_benchmarks.py",
       "bytes": 176,
       "sha256": "08c44bec8a7ac59cd9ea04079c22f1cbaae6a0e777203b1bba69d3d512beeaf9"
@@ -4790,8 +6190,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 18039,
-      "sha256": "031e1e194edfaa5a580ec92fc11f8675e04351b68c6b7a41f95358e2aaccce25"
+      "bytes": 18321,
+      "sha256": "70f385981405a661fe888f095e808e7006e9ebd11e61cac0fd5a317cd72c0f7e"
     }
   ],
   "public_patches": [
@@ -6323,7 +7723,7 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B − Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B Ã¢Ë†â€™ Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
@@ -6353,13 +7753,13 @@
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45° (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45Ã‚Â° (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45° over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45Ã‚Â° over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "a482ff6e2bd9616d2ece2a68f8fa2f2c49aae45c",
@@ -6377,7 +7777,7 @@
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45° (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45Ã‚Â° (#52 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
@@ -7038,6 +8438,54 @@
       "path": ".github/workflows/ci.yml",
       "source_sha256": "993d07eac9fef00eb213ef25d6f435dcf5c8bb65a8f78e6af34a16bd5116e320",
       "reason": "Pin the Ubuntu CI jobs to ubuntu-24.04 before ubuntu-latest moves to Ubuntu 26 on 2026-10-19 (#79)."
+    },
+    {
+      "base_commit": "f3d98899f98f9fd432520166585a03bfe179cd7a",
+      "path": "backend/excitation.py",
+      "source_sha256": "a6e200494865dfc4147615d7187760025605376752fb53661c040018776388c6",
+      "reason": "Drive six-step slot sources with the terminal current, reciprocal with the full flux-linkage credit (#80)."
+    },
+    {
+      "base_commit": "f3d98899f98f9fd432520166585a03bfe179cd7a",
+      "path": "backend/winding_utils.py",
+      "source_sha256": "bad70a57f91e9ea6074a39975b80e847e492f8d07a6738c5fe41ed5f430e690e",
+      "reason": "Credit the full slot-side turns per path for every winding; concentrated single-layer flux linkage was halved (#80)."
+    },
+    {
+      "base_commit": "f3d98899f98f9fd432520166585a03bfe179cd7a",
+      "path": "solvers/magneto2d/src/sources.rs",
+      "source_sha256": "8c32aea119fc7cb08aad16ae2ecf3962a94255674bd2f80f0ebec19771ff5b50",
+      "reason": "Credit the full slot-side turns per path and drop the six-step source halving, with tests (#80)."
+    },
+    {
+      "base_commit": "1ea9e406818b9ceafe5408e9c16acd33e9c439b0",
+      "path": "solvers/magneto2d/src/postprocess/summary.rs",
+      "source_sha256": "f7ecbec16be20dc83399bea94a576e95cc018c1ba1b7ae61929b4bda521e1460",
+      "reason": "Test that flux linkage is reciprocal with the slot current source for every winding type and layer count (#80)."
+    },
+    {
+      "base_commit": "a46e5001f86a0bc361e011896ee695776360b24a",
+      "path": "tests/test_benchmark_suite.py",
+      "source_sha256": "22f413ea06effb593a4d21baa027cdcd33421c3c1d6600264c531daf37e25b39",
+      "reason": "Test that the energy-balance diagnostic flags the halved flux-linkage credit in the v1.1 record (#80)."
+    },
+    {
+      "base_commit": "a46e5001f86a0bc361e011896ee695776360b24a",
+      "path": "tools/benchmark_suite/cli.py",
+      "source_sha256": "0a7c22759b25674f4e6626b2237722fbdbeb17aec4f776691efd6b858ba967e5",
+      "reason": "Attach the energy-balance diagnostic to each A/B/C row, outside the recorded evaluation (#80)."
+    },
+    {
+      "base_commit": "a46e5001f86a0bc361e011896ee695776360b24a",
+      "path": "tools/benchmark_suite/metrics.py",
+      "source_sha256": "b978d23fe286940ae0d9b7f35534b1dbd6e95b2596b335ed22e84bc86ebf5543",
+      "reason": "Add the energy-balance diagnostic: torque over 3*E*I*cos(gamma)/omega_m from the case's own results (#80)."
+    },
+    {
+      "base_commit": "a46e5001f86a0bc361e011896ee695776360b24a",
+      "path": "tools/benchmark_suite/report.py",
+      "source_sha256": "b824617f4bd29a0d455a4063a07989f17f68cb0a90aa3d49734465d8ec93e5bc",
+      "reason": "Show the energy-balance diagnostic for coilEM and the reference in the benchmark report (#80)."
     }
   ]
 }
