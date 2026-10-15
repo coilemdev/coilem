@@ -30,12 +30,12 @@ function Label({ symbol, name }: { symbol: string; name: string }) {
  * table whose numbers share one right-aligned column. Renders nothing for a
  * run that reported none of them.
  */
-export function MotorConstants({ summary }: { summary: MotorConstantsSummary }) {
+export function MotorConstants({ summary, variant = 'panel' }: { summary: MotorConstantsSummary; variant?: 'panel' | 'report' }) {
   const headingId = useId();
   if (!hasMotorConstants(summary)) return null;
   const view = motorConstantsView(summary);
   return (
-    <section className="motor-constants" aria-labelledby={headingId}>
+    <section className={`motor-constants${variant === 'report' ? ' is-report' : ''}`} aria-labelledby={headingId}>
       <h3 id={headingId}>Motor constants</h3>
       <table>
         <tbody>

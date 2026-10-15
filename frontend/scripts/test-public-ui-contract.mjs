@@ -16,6 +16,7 @@ const readOptionalSource = async (relativePath) => {
 const appSource = await readFile(path.join(frontendRoot, 'src/public/App.tsx'), 'utf8');
 const mainSource = await readFile(path.join(frontendRoot, 'src/public/main.tsx'), 'utf8');
 const workspaceSource = await readFile(path.join(frontendRoot, 'src/public/CoilEmWorkspace.tsx'), 'utf8');
+const resultSummarySource = await readFile(path.join(frontendRoot, 'src/public/ResultSummary.tsx'), 'utf8');
 const bldcChartSource = await readFile(path.join(frontendRoot, 'src/public/BldcTorqueCurrentChart.tsx'), 'utf8');
 const exampleDesignsSource = await readFile(path.join(frontendRoot, 'src/public/exampleDesigns.ts'), 'utf8');
 const runComparisonSource = await readFile(path.join(frontendRoot, 'src/public/PublicRunComparison.tsx'), 'utf8');
@@ -299,7 +300,7 @@ assert.match(workspaceSource, /className="results-dashboard public-report-stage"
 assert.match(workspaceSource, /className="public-saved-run"/);
 const reportStageIndex = workspaceSource.indexOf('className="results-dashboard public-report-stage"');
 const savedRunPanelIndex = workspaceSource.indexOf('{savedRunPanel}', reportStageIndex);
-const reportMetricsIndex = workspaceSource.indexOf('className="metric-grid wide"', reportStageIndex);
+const reportMetricsIndex = workspaceSource.indexOf('<ResultSummary', reportStageIndex);
 assert.ok(
   savedRunPanelIndex > reportStageIndex && savedRunPanelIndex < reportMetricsIndex,
   'Saved locally panel belongs directly beneath the This run header controls',
@@ -308,7 +309,21 @@ assert.match(workspaceSource, />Download PDF</);
 assert.match(workspaceSource, />Download CSV</);
 assert.match(workspaceSource, />Open result folder</);
 assert.match(workspaceSource, />Save replayable run package</);
-assert.match(workspaceSource, /completed \$\{result\.saved_run\.completed_at\}/);
+assert.match(workspaceSource, /new Date\(result\.saved_run\.completed_at\)/);
+// Results summary (#99 part B): a slim saved bar with Download PDF and a More
+// menu, a chip for qualified designs (other statuses keep the full note), and
+// the summary in place of the equal-weight tile grid.
+assert.match(workspaceSource, /aria-expanded=\{moreActionsOpen\}/);
+assert.match(workspaceSource, /role="group" aria-label="More run actions"/);
+assert.match(workspaceSource, /reportQualification && !qualificationChip && <QualificationNote/);
+// The chip stays the Results page's "Benchmark qualification" note (#20), with its reason for screen readers.
+assert.match(workspaceSource, /<span role="note" aria-label="Benchmark qualification">\s*<a className="public-qualification-chip"/);
+assert.doesNotMatch(workspaceSource, /className="metric-grid wide"/);
+assert.match(resultSummarySource, /aria-label="Operating point"/);
+assert.match(resultSummarySource, /Fundamental, rms line-to-neutral at/);
+assert.match(resultSummarySource, /Torque × speed, before losses/);
+assert.match(resultSummarySource, /<MotorConstants summary=\{summary\} variant="report" \/>/);
+assert.match(resultSummarySource, /saturationKneeRangeT\(materials, config\.materials\.stator_steel\)/);
 assert.match(workspaceSource, />Open project</);
 assert.match(workspaceSource, />Rerun settings</);
 assert.match(workspaceSource, />Compare runs</);
@@ -867,7 +882,7 @@ assert.match(solvedFieldSource, /\? -mechanicalAngleDeg/);
 assert.match(solvedFieldSource, /statorPolarityRotationDeg=\{statorPolarityRotationDeg\}/);
 assert.match(fieldResultSource, /cue\.angleDeg \+ statorPolarityRotationDeg/);
 assert.match(solvedFieldSource, /Solved rotor position/);
-assert.match(workspaceSource, /Solver time is the wall-clock time for meshing, solving and building the result/);
+assert.match(resultSummarySource, /Solver time is the wall-clock time for meshing, solving and building the result/);
 assert.doesNotMatch(workspaceSource, /may sum parallel tasks/);
 assert.match(solvedFieldSource, /setPlaying/);
 assert.match(solvedFieldSource, /retainedPlot/);
