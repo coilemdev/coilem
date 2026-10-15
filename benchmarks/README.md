@@ -1,5 +1,7 @@
 # Benchmark reports and protocols
 
+The [Windows Magneto2D versus FEMM v3 report](windows-v3-20261015-738d951/README.md) includes the [64-page plot PDF](windows-v3-20261015-738d951/coilem_benchmark_report.pdf), HTML plots, complete results and provenance at measured pin `738d951`. All A/B/C/D data is complete. The post hoc protocol 1.3.0 angle-contract evaluation records **28 PASS, 1 YELLOW, 1 planned unsupported Prius**; historical fixed-axis FAILs remain in the JSON. The [default protocol 1.3.0 commands](abcd-v1.3/README.md) document the correction and unchanged limits. This is scientific-review evidence, not release qualification.
+
 The [PR #100 v3 handoff](pr100-v3-handoff/README.md) pins parallel Magneto2D A/B/C/D collection to `738d951`, matching the Windows FEMM v3 run. It includes native-only commands, hash contracts and a report-only join for the later reference bundle; historical six-step gates and failures remain intact.
 
 The [macOS native collection](macos-native-20261015-738d951/README.md) is that handoff's native half at `738d951`: all 35 supported jobs complete, A/B/C `NOT_COMPARED` until FEMM v3 arrives, and the two tooth-coil six-step fixtures keep their fixed-axis golden-sequence FAILs.
@@ -8,7 +10,7 @@ The [Windows full-turn comparison](windows-flux-credit-20261014-1ea9e40/README.m
 
 Start with the [latest full report v1.7](macos-rc-20261013-1fac3a1/README.md), which measures the
 frozen coilEM 0.3.0 commit `1fac3a1` on macOS, and the
-[default A/B/C/D run commands](abcd-v1.1/README.md). [Protocol 1.2.0](abcd-v1.2/README.md) registers the corrected ORNL Prius case; it becomes the default once its FEMM reference bundle lands. The selected matrix has
+[historical protocol 1.1.0 commands](abcd-v1.1/README.md). [Protocol 1.2.0](abcd-v1.2/README.md) remains the separate experimental ORNL Prius extension awaiting its FEMM reference bundle. That historical matrix has
 29 PASS and one planned coverage item (numerical status UNSUPPORTED), with
 42/42 BLDC gates. Every numerical value matches the previous pin's
 [macOS report v1.5](macos-rc-20261013-04f87a5/README.md) exactly. Every verdict and gate status matches the

@@ -55,6 +55,7 @@ FORBIDDEN_RUST_RUNTIME_MARKERS = {
     "struct DebugConfig",
 }
 ALLOWED_BINARY_SIGNATURES = {
+    "benchmarks/windows-v3-20261015-738d951/coilem_benchmark_report.pdf": b"%PDF-",
     "benchmarks/windows-flux-credit-20261014-1ea9e40/coilem_benchmark_report.pdf": b"%PDF-",
     "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/ripple-diagnostic.pdf": b"%PDF-",
     "benchmarks/main-20261012-af10e6d/coilem_benchmark_report.pdf": b"%PDF-",
