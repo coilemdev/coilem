@@ -87,6 +87,18 @@ def phase_outcomes(rows):
     return ", ".join(f"{n} {label}" for label, n in sorted(Counter(display_outcome(row) for row in rows).items()))
 
 
+def evaluation_note(manifest):
+    contract = manifest.get("comparison", {}).get("evaluation_contract")
+    if not contract:
+        return ""
+    return (
+        f"Evaluation protocol {contract['version']}: {contract['current_angle_convention']}. "
+        f"Measured protocol remains {contract['measured_protocol_version']}. "
+        "Post hoc angle-contract reconciliation; historical FAIL evaluations are retained in JSON. "
+        "Scientific review and release qualification remain separate."
+    )
+
+
 def display_overall(status, rows):
     rejected = [row for row in rows if row["status"] == "UNSUPPORTED"]
     if status == "PASS_WITH_UNSUPPORTED" and rejected and all(coverage_plan(row) for row in rejected):
@@ -305,6 +317,7 @@ def build(output, manifest, rows, *, pdf=False):
         f'<!doctype html><html lang="en"><meta charset="utf-8"><title>{title}</title><style>{styles}</style><body><h1>{title}</h1>',
         f'<p class="{overall}">Outcome: {display_overall(overall, rows)}</p><p>Harness {manifest["identity"]["harness_version"]}; '
         f"protocol {manifest['identity']['protocol_version']}; Coilem commit {html.escape(manifest['identity']['commit'])}.</p>",
+        f"<p>{html.escape(evaluation_note(manifest))}</p>" if evaluation_note(manifest) else "",
         "<p>Orange solid = Coilem. Blue dashed = saved FEMM reference, drawn last so overlaps remain visible. "
         "Residual plots show small differences. Reference data is already in public clockwise coordinates.</p>",
         f"<p>Reference mode: {manifest['reference_mode']}; reference commit: {manifest.get('reference_commit') or 'none'}. "
@@ -318,6 +331,7 @@ def build(output, manifest, rows, *, pdf=False):
         f"Harness {manifest['identity']['harness_version']}; protocol {manifest['identity']['protocol_version']}.",
         f"Candidate commit: `{manifest['identity']['commit']}`. Reference mode: `{manifest['reference_mode']}`.",
         f"Reference commit: `{manifest.get('reference_commit') or 'none'}`. No reference solves executed.",
+        evaluation_note(manifest),
         "",
         "| Phase | Outcomes |",
         "|---|---|",
@@ -450,6 +464,8 @@ def export_pdf(report, summary):
         Paragraph(display_overall(summary["status"], summary["rows"]), styles["Heading2"]),
     ]
     run = summary["run"]
+    if evaluation_note(run):
+        story.extend([Paragraph(html.escape(evaluation_note(run)), styles["BodyText"]), Spacer(1, 8)])
     for text in (
         f"Harness {run['identity']['harness_version']}; protocol {run['identity']['protocol_version']}.",
         f"Candidate commit: {run['identity']['commit']}",

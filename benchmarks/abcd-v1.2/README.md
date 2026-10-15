@@ -1,6 +1,6 @@
 # A/B/C/D benchmark protocol 1.2.0
 
-Harness **1.3.0** supports protocol **1.2.0**. The default is still [protocol 1.1.0](../abcd-v1.1/README.md) until 1.2.0 has its FEMM reference bundle.
+Harness **1.4.0** supports protocol **1.2.0**. The default is [protocol 1.3.0](../abcd-v1.3/README.md); 1.2.0 remains the separate experimental Prius extension awaiting its FEMM reference bundle.
 
 Protocol 1.2.0 changes one request: the **ORNL 2004 Prius** (`ornl_prius_2004_ipm`, Phase C) moves from planned coverage to a measured case ([#82](https://github.com/coilemdev/coilem/issues/82)).
 

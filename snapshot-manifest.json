@@ -61,7 +61,7 @@
     {
       "path": "README.md",
       "bytes": 9024,
-      "sha256": "bfc7a46d6fe45ca3804150c1be66a8c4eb25873bbf26287ae4e02357da121dca"
+      "sha256": "e2a30a29adf7cc616386a7394fe8dd0b0fb9ccffa113660d0428daf951ab3e3e"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -545,8 +545,8 @@
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
-      "bytes": 6281,
-      "sha256": "d152cbb4b059bf8d7d450fbee03c93cd4ed56d43cd45ca66f73a5f00966568e9"
+      "bytes": 6698,
+      "sha256": "3de54da64a9a6e17436b06ccd33a90d346cb209c12f920f4115ebf670e52fbeb"
     },
     {
       "path": "benchmarks/abcd-v1.1/benchmark_spec.json",
@@ -555,8 +555,8 @@
     },
     {
       "path": "benchmarks/abcd-v1.2/README.md",
-      "bytes": 2335,
-      "sha256": "37b06510ab0be8666d422c2c905af3dced518640c57cfc9cb1594743d77f8ee2"
+      "bytes": 2379,
+      "sha256": "5bea41cd01388429b3d4a03fc5e3ccf5b96fc3e06d8001032823299be3089b5b"
     },
     {
       "path": "benchmarks/abcd-v1.2/benchmark_spec.json",
@@ -567,6 +567,31 @@
       "path": "benchmarks/abcd-v1.2/fixtures/ornl_prius_2004_ipm.json",
       "bytes": 2544,
       "sha256": "7578d8a487782f1b8a315dcb5af4dca28b28e0af85138d2b752feb0e67a62377"
+    },
+    {
+      "path": "benchmarks/abcd-v1.3/README.md",
+      "bytes": 4157,
+      "sha256": "20cdafa0378155f6c1ea9ca800dd15962155d172dbf47103a6b250294736a1ce"
+    },
+    {
+      "path": "benchmarks/abcd-v1.3/benchmark_spec.json",
+      "bytes": 18775,
+      "sha256": "9d8cd79e60d0b908e072504a1886db7873f13047609697897ffdcccb81825743"
+    },
+    {
+      "path": "benchmarks/abcd-v1.3/protocols/spm_14p12s_high_pole.json",
+      "bytes": 4534,
+      "sha256": "d47aca42dc38c7d921ed88bf355163ab5a894920780058875f6b0d139cc1982b"
+    },
+    {
+      "path": "benchmarks/abcd-v1.3/protocols/spm_4p12s_small.json",
+      "bytes": 4041,
+      "sha256": "30c164bfb9fac53ffce1eef07f6c68147f1935f8ab59d2f74c004edd79a0bef4"
+    },
+    {
+      "path": "benchmarks/abcd-v1.3/protocols/spm_8p12s_reference.json",
+      "bytes": 4051,
+      "sha256": "56d8421901292e036197f7b7da17c131938746996241edacec46a457d821182e"
     },
     {
       "path": "benchmarks/abcd-v1/README.md",
@@ -5505,8 +5530,13 @@
     },
     {
       "path": "tests/test_benchmark_suite.py",
-      "bytes": 26463,
-      "sha256": "5ce6684e29e3708c3c5fedbad50bc421301fe34eb3866d987b251cf86bd70cd8"
+      "bytes": 26621,
+      "sha256": "54e422b20edec2727bcc2cb40a981baf08251764cae183d19c728aceaaf571c7"
+    },
+    {
+      "path": "tests/test_bldc_angle_contract.py",
+      "bytes": 6765,
+      "sha256": "8ff99d365cc6d3b8ae7fffc938e5bd5e2860254682998fbd6a161338dc11f929"
     },
     {
       "path": "tests/test_experimental_holem50.py",
@@ -5560,8 +5590,8 @@
     },
     {
       "path": "tests/test_late_reference_comparison.py",
-      "bytes": 12508,
-      "sha256": "031f5ca531ea0dfa36cfc17b8434e4fb71ee1833038290d2fdc37b433aefc6b5"
+      "bytes": 13530,
+      "sha256": "e4e41fae40b8d53887e7f8ca26409bbacee7fb2a822f20af26a1fb3288cd063c"
     },
     {
       "path": "tests/test_launcher.py",
@@ -5625,8 +5655,8 @@
     },
     {
       "path": "tests/test_prius_benchmark_case.py",
-      "bytes": 10858,
-      "sha256": "1d7082f4d03ce50fd48124099a6b6d61641419040a6b651c766390bb0d618bc0"
+      "bytes": 11186,
+      "sha256": "a5ecffba81c88589a6ffb6f1bac05c0fb5730570bd3ca396c678d78a57a12580"
     },
     {
       "path": "tests/test_public_cancellation.py",
@@ -5730,8 +5760,8 @@
     },
     {
       "path": "tools/benchmark_suite/__init__.py",
-      "bytes": 326,
-      "sha256": "ad26efbfea36fa4a98960ecef88bb0e81e99734736951844bb76c2eb5f209272"
+      "bytes": 335,
+      "sha256": "b1db87be752e01fc4048bc64a67f300e2ef63c19d32772a66266a507d6b7075d"
     },
     {
       "path": "tools/benchmark_suite/abc_metrics.py",
@@ -5740,18 +5770,18 @@
     },
     {
       "path": "tools/benchmark_suite/bldc_metrics.py",
-      "bytes": 15451,
-      "sha256": "98994e024bf28269e2c87c6aa2a279eec7df909ca11e1a7599f5d13bd1dd82df"
+      "bytes": 16680,
+      "sha256": "79b912dc1190ceaebdcbcb5ec0eea83f519063b9a16783bd5b80a2c31c447716"
     },
     {
       "path": "tools/benchmark_suite/cli.py",
-      "bytes": 18404,
-      "sha256": "0e13634b07c666b9d4baea3c7dc782d1927a7f70977c9d9b022c481842bea3c3"
+      "bytes": 18817,
+      "sha256": "74486eccf70f2df46349ecb5aeaf80987d8df0d9e3550baffe925be3aef46319"
     },
     {
       "path": "tools/benchmark_suite/contract.py",
       "bytes": 4722,
-      "sha256": "192b62eda371de846f9872295041b1ab51294e00b5017a8a3d983f325a7e6bd1"
+      "sha256": "0e48fbb43074cf069e55b1110c3e5c2693825ebab418a28cc6ae5ab424664dd2"
     },
     {
       "path": "tools/benchmark_suite/hardware.py",
@@ -5765,13 +5795,13 @@
     },
     {
       "path": "tools/benchmark_suite/references.py",
-      "bytes": 2692,
-      "sha256": "3a70cb0a43d9233e66d4c6d7c0cce22caf813a805f306ae0aa2aab757e22077b"
+      "bytes": 3522,
+      "sha256": "8578999697e86fd5582ca088f5013ed9522060605b799da69db58627b93809d6"
     },
     {
       "path": "tools/benchmark_suite/report.py",
-      "bytes": 27912,
-      "sha256": "85443eb626365d97c3a96274921a62cc82fa1bfcf6e092dc145d73fa84e3f9ee"
+      "bytes": 28686,
+      "sha256": "dfe6e8cb3e7bf062f9fa350f1e88bda558ae74852f696572c8e525505ae6a6cd"
     },
     {
       "path": "tools/benchmark_suite/worker.py",
@@ -5895,8 +5925,8 @@
     },
     {
       "path": "tools/report_benchmark_against_reference.py",
-      "bytes": 12678,
-      "sha256": "0fc86b73830a9cddd4c566f767d1d6ad7e3e725829748a3cc99eb0263753f65a"
+      "bytes": 19756,
+      "sha256": "faf9a989f1cb0c7e48aaa08b01332729e4bacae30d3c14d201baf8686a205a3e"
     },
     {
       "path": "tools/run_benchmarks.py",
@@ -7448,7 +7478,7 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B − Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B âˆ’ Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
@@ -7478,13 +7508,13 @@
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45° (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45Â° (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45° over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45Â° over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "a482ff6e2bd9616d2ece2a68f8fa2f2c49aae45c",
@@ -7502,7 +7532,7 @@
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45° (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45Â° (#52 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",

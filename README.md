@@ -164,7 +164,7 @@ Run the versioned A/B/C/D suite (SPM, IPM, Distributed Winding and BLDC) from th
 checkout with `python -m tools.run_benchmarks --out-dir ../benchmark-output/my-run --pdf`.
 It measures the current public native solver against saved FEMM data, with no
 reference solver installation or adapter required. See the [benchmark commands,
-reference compatibility and version policy](benchmarks/abcd-v1.1/README.md).
+reference compatibility and version policy](benchmarks/abcd-v1.3/README.md).
 
 The public Magneto2D path ignores inherited numerical solver switches. It derives
 native options from the request and records its environment policy and options

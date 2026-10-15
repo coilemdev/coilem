@@ -10,6 +10,9 @@ from tools import report_benchmark_against_reference as late
 from tools.benchmark_suite import cli
 from tools.benchmark_suite.contract import ROOT, SPEC, canonical, read, sha, write
 
+# These fixtures replay the immutable protocol measured at 738d951.
+SPEC = ROOT / "benchmarks/abcd-v1.1/benchmark_spec.json"
+
 
 def test_requires_measured_commit_and_source_hashes(tmp_path, monkeypatch):
     path = tmp_path / "backend" / "example.py"
@@ -142,7 +145,8 @@ def test_join_rejects_tampered_native_result_and_stale_reference(tmp_path, monke
         late.compare(args)
 
 
-def test_six_step_join_preserves_fixed_axis_failures_and_reports_new_frame(tmp_path, monkeypatch):
+@pytest.mark.parametrize("reconciled", [False, True])
+def test_six_step_join_preserves_fixed_axis_failures_and_reports_new_frame(tmp_path, monkeypatch, reconciled):
     args = synthetic_run(tmp_path)
     spec = read(SPEC)
     case = next(c for c in spec["cases"] if c["id"] == "spm_8p12s_reference")
@@ -197,9 +201,23 @@ def test_six_step_join_preserves_fixed_axis_failures_and_reports_new_frame(tmp_p
                                               "input_sha256": case["jobs"][0]["input_sha256"]}}
     write(args.reference_bundle / "manifest.json", bundle_manifest)
     monkeypatch.setattr(late, "require_source", lambda *a: None)
-    assert late.compare(args) == 1
+    if reconciled:
+        from types import SimpleNamespace
+
+        args.evaluation_suite = ROOT / "benchmarks/abcd-v1.3/benchmark_spec.json"
+        loader = late.evaluation_module
+        # This test's one-case synthetic reference is not the registered full
+        # v3 bundle; real bridge integrity is covered separately.
+        monkeypatch.setattr(late, "evaluation_module", lambda path:
+            SimpleNamespace(load_bundle=lambda *a: ({},{case["id"]:reference},"test"))
+            if path.endswith("references.py") else loader(path))
+    assert late.compare(args) == (0 if reconciled else 1)
     row = read(args.out_dir / "report/benchmark_summary.json")["rows"][0]
-    golden_failures = [g for g in row["evaluation"]["gates"] if g["id"].endswith("golden_current_sequence")]
+    historical = row["historical_evaluation"] if reconciled else row["evaluation"]
+    golden_failures = [g for g in historical["gates"] if g["id"].endswith("golden_current_sequence")]
     assert len(golden_failures) == 4 and all(g["status"] == "FAIL" for g in golden_failures)
+    if reconciled:
+        assert row["evaluation"]["status"] == "PASS"
+        assert "Evaluation protocol 1.3.0" in (args.out_dir/"report/coilem_benchmark_report.html").read_text()
     diagnostics = read(args.out_dir / "winding_axis_diagnostics.json")[case["id"]]
     assert len(diagnostics) == 4 and all(d["pr100_winding_axis_sequence"] == "PASS" for d in diagnostics.values())

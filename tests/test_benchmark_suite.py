@@ -409,9 +409,10 @@ def test_orchestrator_resume_and_report_only_preserve_completed_jobs(tmp_path, m
 
 
 def test_release_suite_replaces_only_two_requests_and_preserves_archives():
-    current = load_suite(SPEC)
+    current = load_suite(ROOT / "benchmarks/abcd-v1.1/benchmark_spec.json")
+    historical_current_bundle = ROOT / "benchmarks/reference-baselines/ipm-high-output-v1"
     configurations, _, _ = inputs(current, current["cases"])
-    manifest, refs, _ = load_bundle(DEFAULT_BUNDLE, current)
+    manifest, refs, _ = load_bundle(historical_current_bundle, current)
     assert current["protocol_version"] == "1.1.0"
     assert Counter(c["phase"] for c in current["cases"]) == {"A": 10, "B": 12, "C": 5, "D": 3}
     assert len(refs) == 29
@@ -430,7 +431,7 @@ def test_release_suite_replaces_only_two_requests_and_preserves_archives():
             assert cid not in manifest["records"]
             continue
         assert manifest["records"][cid] == entry
-        assert sha(DEFAULT_BUNDLE / entry["file"]) == sha(HISTORICAL_BUNDLE / entry["file"])
+        assert sha(historical_current_bundle / entry["file"]) == sha(HISTORICAL_BUNDLE / entry["file"])
     added = [c for c in current["cases"] if c["id"] not in {c["id"] for c in SPECIFICATION["cases"]}]
     assert len(added) == 2
     for case in added:
@@ -457,7 +458,7 @@ def test_protocol_selection_is_recorded_and_unknown_protocols_rejected(tmp_path)
     from tools.benchmark_suite.contract import identity
 
     binary = ROOT / "solvers/magneto2d/Cargo.toml"
-    assert identity(binary)["protocol_version"] == "1.1.0"
+    assert identity(binary)["protocol_version"] == "1.3.0"
     assert identity(binary, protocol_version="1.0.0")["protocol_version"] == "1.0.0"
     with pytest.raises(ValueError, match="Unsupported suite protocol"):
         identity(binary, protocol_version="2.0.0")

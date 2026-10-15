@@ -17,6 +17,7 @@ from tools.benchmark_suite.hardware import no_load_back_emf_line_to_line
 from tools.benchmark_suite.references import load_suite
 
 SUITE = ROOT / "benchmarks/abcd-v1.2/benchmark_spec.json"
+HISTORICAL_SUITE = ROOT / "benchmarks/abcd-v1.1/benchmark_spec.json"
 FOLDER = ROOT / "docs/hardware-validation/ornl-prius-2004"
 CASE_ID = "ornl_prius_2004_ipm"
 TARGETS = read(FOLDER / "target-back-emf.json")
@@ -49,7 +50,7 @@ def synthetic_result(config, phase_peak_V=100.0):
 
 
 def test_suite_1_2_changes_only_the_prius_request():
-    previous, current = load_suite(SPEC), load_suite(SUITE)
+    previous, current = load_suite(HISTORICAL_SUITE), load_suite(SUITE)
     assert (previous["protocol_version"], current["protocol_version"]) == ("1.1.0", "1.2.0")
     assert current["golden"] == previous["golden"] and current["convention"] == previous["convention"]
     before = {c["id"]: c for c in previous["cases"]}
@@ -69,11 +70,14 @@ def test_suite_1_2_changes_only_the_prius_request():
     assert MAGNET_SOLVER_INPUTS["ORNL_Prius_2004_NdFeB"][1:3] == (magnets["ORNL_Prius_2004_NdFeB"]["Br_T"], magnets["ORNL_Prius_2004_NdFeB"]["mu_r"])
 
 
-def test_default_suite_is_unchanged():
+def test_default_angle_revision_does_not_enable_experimental_prius():
     from tools.benchmark_suite import PROTOCOL_VERSION, SUPPORTED_PROTOCOL_VERSIONS
 
-    assert SPEC.relative_to(ROOT).as_posix() == "benchmarks/abcd-v1.1/benchmark_spec.json"
-    assert PROTOCOL_VERSION == "1.1.0" and "1.2.0" in SUPPORTED_PROTOCOL_VERSIONS
+    assert SPEC.relative_to(ROOT).as_posix() == "benchmarks/abcd-v1.3/benchmark_spec.json"
+    assert PROTOCOL_VERSION == "1.3.0" and "1.2.0" in SUPPORTED_PROTOCOL_VERSIONS
+    old_prius = next(c for c in load_suite(HISTORICAL_SUITE)["cases"] if c["id"] == CASE_ID)
+    default_prius = next(c for c in load_suite(SPEC)["cases"] if c["id"] == CASE_ID)
+    assert default_prius == old_prius
 
 
 def test_corrected_fixture_uses_the_ornl_mappings():

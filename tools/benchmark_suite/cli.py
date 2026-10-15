@@ -50,6 +50,13 @@ def inputs(spec, selected):
             configs[case["id"], job["stage"]] = config
         if case["phase"] == "D":
             protocols[case["id"]] = checked_json(ROOT, case["protocol"], case["protocol_sha256"])
+            if spec["protocol_version"] == "1.3.0":
+                from tools.benchmark_suite.bldc_metrics import golden_sector
+
+                protocol = protocols[case["id"]]
+                if not isinstance(protocol.get("current_angle_convention"), dict):
+                    raise ValueError("Protocol 1.3 requires an explicit BLDC current-angle convention")
+                golden_sector(0.0, protocol)
     return configs, protocols, golden
 
 
@@ -330,7 +337,7 @@ def main():
     parser.add_argument("--case", action="append", help="Select a registered case id; repeat for multiple cases")
     parser.add_argument(
         "--suite", type=Path, default=SPEC,
-        help="Select a registered suite; default is A/B/C/D 1.1 with higher-output IPM replacements",
+        help="Select a registered suite; default is A/B/C/D 1.3 with winding-relative BLDC validation",
     )
     parser.add_argument("--reference-bundle", type=Path, default=DEFAULT_BUNDLE)
     parser.add_argument("--out-dir", type=Path)

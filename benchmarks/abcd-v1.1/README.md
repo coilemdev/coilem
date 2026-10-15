@@ -1,6 +1,8 @@
 # A/B/C/D benchmark protocol 1.1.0
 
-Harness **1.3.0** selects protocol **1.1.0** by default. This edition replaces
+Protocol **1.1.0** is retained for historical replay. Harness 1.4.0 now defaults
+to [protocol 1.3.0](../abcd-v1.3/README.md), which reconciles the BLDC current
+frame while preserving this protocol's original results. This edition replaces
 the low-output deep-apex and wide-angle Phase B cases with qualified higher-output
 physical designs. All other requests, references, angular grids, materials,
 BLDC golden vectors and numerical gates remain unchanged.
@@ -23,7 +25,9 @@ After installing the normal Python dependencies and Rust toolchain:
 ```sh
 python -m tools.run_benchmarks --version
 python -m tools.run_benchmarks --list
-python -m tools.run_benchmarks --phases A B C D --out-dir ../benchmark-output/my-run --pdf
+python -m tools.run_benchmarks --suite benchmarks/abcd-v1.1/benchmark_spec.json \
+  --reference-bundle benchmarks/reference-baselines/ipm-high-output-v1 \
+  --phases A B C D --out-dir ../benchmark-output/my-run --pdf
 ```
 
 The same command works on macOS, Windows and Linux. It builds and measures the
@@ -36,7 +40,8 @@ checkout is required by default. `--allow-dirty` records uncommitted source hash
 To run only the replacements:
 
 ```sh
-python -m tools.run_benchmarks --phases B \
+python -m tools.run_benchmarks --suite benchmarks/abcd-v1.1/benchmark_spec.json \
+  --reference-bundle benchmarks/reference-baselines/ipm-high-output-v1 --phases B \
   --case ipm_vshape_8p12s_wide_angle_high_output_v1 \
   --case ipm_vshape_8p12s_deep_apex_high_output_v1 \
   --out-dir ../benchmark-output/high-output-ipm --pdf
@@ -77,7 +82,7 @@ need their own complete run, and elapsed timing comparisons need comparable load
 
 ## Reference integrity and versions
 
-The default data-only bundle is `benchmarks/reference-baselines/ipm-high-output-v1`.
+The historical 1.1.0 data-only bundle is `benchmarks/reference-baselines/ipm-high-output-v1`.
 Its 27 inherited reference files are byte-for-byte unchanged. Two new records
 bind the replacement requests to fresh matched FEMM evidence. Full input hashes
 prevent comparing the new geometry with old FEMM data. Candidate and reference

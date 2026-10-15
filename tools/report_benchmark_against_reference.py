@@ -5,9 +5,89 @@ from __future__ import annotations
 import argparse
 import copy
 import hashlib
+import importlib.util
 import subprocess
 import sys
 from pathlib import Path
+
+
+def evaluation_module(relative):
+    root = Path(__file__).resolve().parents[1]
+    path = root / relative
+    name = "reconciled_" + path.stem
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def reconcile_angles(path, measured_spec, rows, configs, protocols, golden, bundle):
+    """Apply a separately registered validator; preserve the measured contract."""
+    from tools.benchmark_suite.contract import ROOT as measured_root, checked_json, read, sha
+
+    root = Path(__file__).resolve().parents[1]
+    path = path.resolve()
+    if not path.is_relative_to(root):
+        raise ValueError("Evaluation suite must belong to the versioned report-tool checkout")
+    spec = read(path)
+    if spec.get("protocol_version") != "1.3.0" or measured_spec["protocol_version"] != "1.1.0":
+        raise ValueError("Only the registered 1.1 to 1.3 angle-validation migration is supported")
+    if any(spec[k] != measured_spec[k] for k in ("material_contract", "golden", "golden_sha256", "convention")):
+        raise ValueError("Evaluation migration changed materials, golden vectors or physical coordinates")
+    if [c["id"] for c in spec["cases"]] != [c["id"] for c in measured_spec["cases"]]:
+        raise ValueError("Evaluation migration changed case membership")
+    old = {c["id"]: c for c in measured_spec["cases"]}
+    metadata = {"schema", "registered_date", "registered_before_full_evidence", "source_protocol", "current_angle_convention"}
+    registered = {}
+    for case in spec["cases"]:
+        previous = old[case["id"]]
+        if case["phase"] != previous["phase"] or case["jobs"] != previous["jobs"]:
+            raise ValueError("Evaluation migration changed a physical request")
+        if case["phase"] != "D":
+            if case != previous:
+                raise ValueError("Angle migration changed an A/B/C case")
+            continue
+        protocol_path = (root / case["protocol"]).resolve()
+        if not protocol_path.is_relative_to(root) or sha(protocol_path) != case["protocol_sha256"]:
+            raise ValueError("Changed evaluation protocol hash")
+        protocol = read(protocol_path)
+        if not isinstance(protocol.get("current_angle_convention"), dict):
+            raise ValueError("Protocol 1.3 requires an explicit BLDC current-angle convention")
+        original = protocols.get(case["id"]) or checked_json(
+            measured_root, previous["protocol"], previous["protocol_sha256"],
+        )
+        if {k:v for k,v in protocol.items() if k not in metadata} != {k:v for k,v in original.items() if k not in metadata}:
+            raise ValueError("Angle migration changed grids, excitation settings or numerical limits")
+        if protocol.get("source_protocol") != {"file":previous["protocol"], "sha256":previous["protocol_sha256"]}:
+            raise ValueError("Angle migration does not identify its historical protocol")
+        registered[case["id"]] = protocol
+    refs = evaluation_module("tools/benchmark_suite/references.py")
+    _, references, _ = refs.load_bundle(bundle, spec)
+    metrics = evaluation_module("tools/benchmark_suite/bldc_metrics.py")
+    for row in rows:
+        if row["phase"] != "D" or row["status"] in ("ERROR", "INCOMPLETE", "UNSUPPORTED"):
+            continue
+        historical = copy.deepcopy(row["evaluation"])
+        raw = {stage:{"result":result} for stage,result in row["measurements"].items()}
+        raw["femm-standard"] = {"result":references[row["id"]]}
+        evaluated = metrics.evaluate_numeric(registered[row["id"]], raw, golden)
+        numerical = lambda e: [g for g in e["gates"] if not g["id"].endswith("_golden_current_sequence")]
+        if numerical(evaluated) != numerical(historical):
+            raise ValueError("Angle reconciliation changed a numerical gate or value")
+        row.update(historical_evaluation=historical, historical_protocol=row["protocol"],
+                   evaluation=evaluated, status=evaluated["status"], protocol=registered[row["id"]])
+    return {
+        "version":"1.3.0", "suite":path.relative_to(root).as_posix(), "suite_sha256":sha(path),
+        "measured_protocol_version":"1.1.0", "current_angle_convention":"winding-phase-a-v1",
+        "post_hoc_registration":True, "physical_inputs_changed":False, "waveforms_changed":False,
+        "historical_evaluations_preserved":True,
+        "evaluator_commit":subprocess.check_output(["git","-C",str(root),"rev-parse","HEAD"],text=True).strip(),
+        "evaluator_dirty":bool(subprocess.check_output(["git","-C",str(root),"status","--porcelain"],text=True).strip()),
+        "protocol_sha256":{c["protocol"]:c["protocol_sha256"] for c in spec["cases"] if c["phase"]=="D"},
+        "evaluator_sha256":sha(root/"tools/benchmark_suite/bldc_metrics.py"),
+        "reference_loader_sha256":sha(root/"tools/benchmark_suite/references.py"),
+        "report_renderer_sha256":sha(root/"tools/benchmark_suite/report.py"),
+    }
 
 
 def file_sha(path):
@@ -187,6 +267,16 @@ def compare(args):
             axis = phase_axis_offset_deg(MotorConfig.model_validate(config))
             diagnostic["femm-standard"] = winding_axis_diagnostic(references[cid], config, protocols[cid], golden, axis)
         diagnostics[cid] = diagnostic
+    evaluation_suite = getattr(args, "evaluation_suite", None)
+    if evaluation_suite is not None:
+        derived["comparison"]["evaluation_contract"] = reconcile_angles(
+            evaluation_suite, spec, rows, configs, protocols, golden, bundle,
+        )
+        derived["comparison"]["qualification"] = (
+            "Post hoc current-angle contract reconciliation; original historical evaluations remain preserved. "
+            "FEMM v3 scientific review and release qualification remain separate."
+        )
+        build = evaluation_module("tools/benchmark_suite/report.py").build
     output.mkdir(parents=True, exist_ok=True)
     verdict = build(output, derived, rows, pdf=args.pdf)
     write(output / "comparison_manifest.json", derived)
@@ -196,10 +286,17 @@ def compare(args):
         f"Measured source and reference pin: `{args.expected_commit}`. Numerical outcome: **{verdict}**.\n\n"
         "This report reused verified native measurements and a separately generated reference. Zero field solves ran here. "
         "The original native-only manifest and artifacts remain unchanged. `comparison_manifest.json` is comparison provenance, "
-        "not a native-run resume manifest. Keep the original native evidence alongside this output.\n\n"
+        "not a native-run resume manifest. Keep the original native evidence alongside this output.\n\n" +
+        ("Evaluation uses registered protocol 1.3.0 (winding-phase-a-v1). Each D row retains its original 1.1.0 "
+         "`historical_evaluation`, including FAILs. This is post hoc convention reconciliation, not a new field run or release qualification.\n\n"
+         if evaluation_suite is not None else "") +
         "The historical six-step fixed-axis gates remain unchanged, including FAILs. `winding_axis_diagnostics.json` separately "
-        "checks PR100's geometry-derived phase-A frame without moving any waveform. A passing new-frame diagnostic does not "
-        "replace a failed historical gate. Reconcile that contract and scientifically review FEMM v3 before release qualification.\n",
+        "checks PR100's geometry-derived phase-A frame without moving any waveform. " +
+        ("The new evaluation adjudicates the current checks under the separately versioned contract; "
+         "it does not erase the original verdicts. Scientific review of FEMM v3 is still required before release qualification.\n"
+         if evaluation_suite is not None else
+         "A passing new-frame diagnostic does not replace a failed historical gate. Reconcile that contract and scientifically "
+         "review FEMM v3 before release qualification.\n"),
         encoding="utf-8",
     )
     if sha(native / "run_manifest.json") != manifest_sha or load_bundle(bundle, spec)[2] != bundle_sha:
@@ -207,6 +304,15 @@ def compare(args):
     for relative, expected in evidence_hashes.items():
         if sha(checked_path(native, relative)) != expected:
             raise ValueError("Native evidence changed while rendering")
+    if evaluation_suite is not None:
+        contract = derived["comparison"]["evaluation_contract"]
+        root = Path(__file__).resolve().parents[1]
+        files = {contract["suite"]:contract["suite_sha256"], **contract["protocol_sha256"],
+                 "tools/benchmark_suite/bldc_metrics.py":contract["evaluator_sha256"],
+                 "tools/benchmark_suite/references.py":contract["reference_loader_sha256"],
+                 "tools/benchmark_suite/report.py":contract["report_renderer_sha256"]}
+        if any(file_sha(root / name) != digest for name,digest in files.items()):
+            raise ValueError("Evaluation contract or validator changed while rendering")
     require_source(source, args.expected_commit, original["identity"])
     print(f"{verdict}: {output / 'report/coilem_benchmark_report.html'} (0 field solves)")
     if any(row["status"] in ("ERROR", "INCOMPLETE") for row in rows):
@@ -223,6 +329,7 @@ def main():
     parser.add_argument("--out-dir", type=Path, required=True)
     parser.add_argument("--suite", type=Path, default=Path("benchmarks/abcd-v1.1/benchmark_spec.json"))
     parser.add_argument("--pdf", action="store_true")
+    parser.add_argument("--evaluation-suite", type=Path, help="Explicit registered angle-contract revision; measured evidence remains immutable")
     args = parser.parse_args()
     try:
         return compare(args)
