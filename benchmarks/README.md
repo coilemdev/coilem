@@ -2,6 +2,8 @@
 
 The [PR #100 v3 handoff](pr100-v3-handoff/README.md) pins parallel Magneto2D A/B/C/D collection to `738d951`, matching the Windows FEMM v3 run. It includes native-only commands, hash contracts and a report-only join for the later reference bundle; historical six-step gates and failures remain intact.
 
+The [macOS native collection](macos-native-20261015-738d951/README.md) is that handoff's native half at `738d951`: all 35 supported jobs complete, A/B/C `NOT_COMPARED` until FEMM v3 arrives, and the two tooth-coil six-step fixtures keep their fixed-axis golden-sequence FAILs.
+
 The [Windows full-turn comparison](windows-flux-credit-20261014-1ea9e40/README.md) and [64-page plot PDF](windows-flux-credit-20261014-1ea9e40/coilem_benchmark_report.pdf) measure the #80 fixed pin `1ea9e40` against fresh FEMM v2: 28 PASS, 1 angular-ripple FAIL and one planned unsupported Prius case. Separate refinement/current-control diagnostics retain that original failure.
 
 Start with the [latest full report v1.7](macos-rc-20261013-1fac3a1/README.md), which measures the
