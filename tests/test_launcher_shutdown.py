@@ -592,25 +592,23 @@ def _free_port() -> int:
         return probe.getsockname()[1]
 
 
-@pytest.mark.parametrize("stage", ["solving", "packaging", "packaging-after-cleanup"])
-def test_interrupting_the_launcher_stops_a_running_process_pool_task(tmp_path, stage):
+def _serve_scripted_launcher(tmp_path: Path, stage: str):
+    """Run _INTERRUPTED_LAUNCHER until it serves; return it, its port, its output and the output reader."""
+
     ui = tmp_path / "ui"
     ui.mkdir()
     (ui / "index.html").write_text("<!doctype html><title>coilEM</title>", encoding="utf-8")
     script = tmp_path / "interrupted_launcher.py"
     script.write_text(_INTERRUPTED_LAUNCHER, encoding="utf-8")
-    data, pid_file = tmp_path / "user-data", tmp_path / "pool-worker.pid"
-    preparing = tmp_path / "preparing-playback"
-    late = stage == "packaging-after-cleanup"
     env = {
         **os.environ,
         "PYTHONPATH": str(REPO),
         "PYTHONUNBUFFERED": "1",
-        "COILEM_USER_DATA_ROOT": str(data),
+        "COILEM_USER_DATA_ROOT": str(tmp_path / "user-data"),
         "COILEM_TEST_UI": str(ui),
         "COILEM_TEST_CACHE": str(tmp_path / "cache"),
-        "COILEM_TEST_POOL_PID": str(pid_file),
-        "COILEM_TEST_PREPARING": str(preparing),
+        "COILEM_TEST_POOL_PID": str(tmp_path / "pool-worker.pid"),
+        "COILEM_TEST_PREPARING": str(tmp_path / "preparing-playback"),
         "COILEM_MAGNETO2D_ALLOW_PLAYBACK_PROCESS_POOL": "1",
     }
     env.pop("COILEM_LOCAL_API_PORT", None)
@@ -634,9 +632,37 @@ def test_interrupting_the_launcher_stops_a_running_process_pool_task(tmp_path, s
             if "is running at" in line:
                 ready.set()
 
-    threading.Thread(target=drain, daemon=True).start()
+    reader = threading.Thread(target=drain, daemon=True)
+    reader.start()
+    if not ready.wait(timeout=60):
+        _stop_scripted_launcher(server, tmp_path)
+        pytest.fail("\n".join(output))
+    return server, port, output, reader
+
+
+def _interrupt(server: subprocess.Popen) -> None:
+    server.send_signal(signal.CTRL_BREAK_EVENT if os.name == "nt" else signal.SIGINT)
+
+
+def _stop_scripted_launcher(server: subprocess.Popen, tmp_path: Path) -> None:
+    if server.poll() is None:
+        server.kill()
+        server.wait(timeout=10)
+    pid_file = tmp_path / "pool-worker.pid"
+    if pid_file.exists() and pid_file.read_text(encoding="utf-8").strip():
+        try:
+            os.kill(int(pid_file.read_text(encoding="utf-8")), getattr(signal, "SIGKILL", signal.SIGTERM))
+        except OSError:
+            pass
+
+
+@pytest.mark.parametrize("stage", ["solving", "packaging", "packaging-after-cleanup"])
+def test_interrupting_the_launcher_stops_a_running_process_pool_task(tmp_path, stage):
+    data, pid_file = tmp_path / "user-data", tmp_path / "pool-worker.pid"
+    preparing = tmp_path / "preparing-playback"
+    late = stage == "packaging-after-cleanup"
+    server, port, output, _ = _serve_scripted_launcher(tmp_path, stage)
     try:
-        assert ready.wait(timeout=60), "\n".join(output)
         events: list[tuple[str, dict]] = []
         client = threading.Thread(target=_read_stream, args=(port, events, threading.Event()), daemon=True)
         client.start()
@@ -651,7 +677,7 @@ def test_interrupting_the_launcher_stops_a_running_process_pool_task(tmp_path, s
         worker = None if late else int(pid_file.read_text(encoding="utf-8"))
 
         started = time.monotonic()
-        server.send_signal(signal.CTRL_BREAK_EVENT if os.name == "nt" else signal.SIGINT)
+        _interrupt(server)
         code = server.wait(timeout=60)
         elapsed = time.monotonic() - started
 
@@ -671,11 +697,32 @@ def test_interrupting_the_launcher_stops_a_running_process_pool_task(tmp_path, s
         manifests = list((data / "solves").rglob("manifest.json"))
         assert any(json.loads(path.read_text(encoding="utf-8"))["status"] == "cancelled" for path in manifests)
     finally:
-        if server.poll() is None:
-            server.kill()
-            server.wait(timeout=10)
-        if pid_file.exists() and pid_file.read_text(encoding="utf-8").strip():
-            try:
-                os.kill(int(pid_file.read_text(encoding="utf-8")), getattr(signal, "SIGKILL", signal.SIGTERM))
-            except OSError:
-                pass
+        _stop_scripted_launcher(server, tmp_path)
+
+
+@pytest.mark.parametrize("solving", [False, True], ids=["idle", "solving"])
+def test_one_ctrl_c_delivered_twice_stops_the_launcher_cleanly(tmp_path, solving):
+    """Under uvx the terminal interrupts the process group, then uv forwards the same Ctrl+C about 200 ms later (#76)."""
+
+    pid_file = tmp_path / "pool-worker.pid"
+    server, port, output, reader = _serve_scripted_launcher(tmp_path, "solving")
+    try:
+        if solving:
+            threading.Thread(target=_read_stream, args=(port, [], threading.Event()), daemon=True).start()
+            deadline = time.monotonic() + 60
+            while not pid_file.exists() and time.monotonic() < deadline:
+                time.sleep(0.05)
+            assert pid_file.exists(), "\n".join(output)
+
+        _interrupt(server)
+        time.sleep(0.2)
+        _interrupt(server)
+        code = server.wait(timeout=60)
+        reader.join(timeout=10)
+
+        log = "\n".join(output)
+        assert code == 0, f"exit {code}\n{log}"
+        assert "forced exit" not in log, log
+        assert not (tmp_path / "user-data" / launcher.RECORD_FILE).exists()
+    finally:
+        _stop_scripted_launcher(server, tmp_path)

@@ -1,0 +1,1558 @@
+{
+  "description": "ORNL 2004 Prius Phase B (#69): blind no-load back-EMF correlation with sourced sensitivity bands. Exploratory hardware correlation; no pass/fail.",
+  "targets": "target-back-emf.json (ORNL/TM-2006/423 Table 3.4, terminal line-to-line volts, oil at a nominal 25 degC)",
+  "frozen_request": {
+    "path": "benchmarks/abcd-v1.2/fixtures/ornl_prius_2004_ipm.json",
+    "sha256": "7578d8a487782f1b8a315dcb5af4dca28b28e0af85138d2b752feb0e67a62377",
+    "frozen_in": "83231e0 (fixture-correction.md)"
+  },
+  "run": {
+    "commit": "d60802c94679ebaf3488cd98b595d0f1395d36a6",
+    "dirty": false,
+    "tool": "tools/experimental_solve.py (experimental HoleM50 path; no qualification claim)",
+    "magneto2d_binary_sha256": "454e2045aaf5fee0641681093403beb66bdbe000bb3996b21209fd58156561bf",
+    "platform": "Darwin arm64",
+    "solver_settings": "as the frozen request: normal mesh, Newton, WST torque, 7.5 deg mechanical steps"
+  },
+  "conversion": [
+    "Native phase waveforms are line-to-neutral volts at the solved speed (3000 rpm).",
+    "Line-to-line = phase A - phase B, sampled on the registered electrical-angle grid.",
+    "RMS over one electrical period; peak = largest sampled absolute value.",
+    "No-load back-EMF scales linearly with speed from the solved speed.",
+    "ORNL Table 3.4 values are motor-terminal line-to-line volts (owner decision, 2026-10-14)."
+  ],
+  "samples_per_electrical_period": 48,
+  "cases": [
+    {
+      "name": "nominal",
+      "label": "Nominal (frozen inputs)",
+      "method": "solved",
+      "source": "frozen request, unchanged",
+      "changes": {},
+      "rms_error_mean_pct": 26.55320824240572,
+      "peak_error_mean_pct": 20.890891876633344,
+      "request": "benchmarks/abcd-v1.2/fixtures/ornl_prius_2004_ipm.json",
+      "request_sha256": "7578d8a487782f1b8a315dcb5af4dca28b28e0af85138d2b752feb0e67a62377",
+      "lambda_pm_Wb": 0.21842522368780942,
+      "change_vs_nominal_pct": 0.0,
+      "peak_change_vs_nominal_pct": 0.0,
+      "rows": [
+        {
+          "motor_shaft_rpm": 502,
+          "measured_ll_rms_V": 42.0,
+          "predicted_ll_rms_V": 56.3668141159548,
+          "rms_error_pct": 34.20670027608286,
+          "measured_ll_peak_V": 75,
+          "predicted_ll_peak_V": 87.36780469901969,
+          "peak_error_pct": 16.49040626535958
+        },
+        {
+          "motor_shaft_rpm": 1000,
+          "measured_ll_rms_V": 85.7,
+          "predicted_ll_rms_V": 112.2844902708263,
+          "rms_error_pct": 31.02040871741691,
+          "measured_ll_peak_V": 150,
+          "predicted_ll_peak_V": 174.03945159167267,
+          "peak_error_pct": 16.026301061115113
+        },
+        {
+          "motor_shaft_rpm": 1502,
+          "measured_ll_rms_V": 132.3,
+          "predicted_ll_rms_V": 168.65130438678113,
+          "rms_error_pct": 27.47642054934325,
+          "measured_ll_peak_V": 225,
+          "predicted_ll_peak_V": 261.4072562906924,
+          "peak_error_pct": 16.18100279586328
+        },
+        {
+          "motor_shaft_rpm": 1999,
+          "measured_ll_rms_V": 181.6,
+          "predicted_ll_rms_V": 224.45669605138178,
+          "rms_error_pct": 23.59950223093711,
+          "measured_ll_peak_V": 300,
+          "predicted_ll_peak_V": 347.90486373175366,
+          "peak_error_pct": 15.968287910584555
+        },
+        {
+          "motor_shaft_rpm": 2501,
+          "measured_ll_rms_V": 221.8,
+          "predicted_ll_rms_V": 280.82351016733656,
+          "rms_error_pct": 26.611140742712603,
+          "measured_ll_peak_V": 350,
+          "predicted_ll_peak_V": 435.27266843077336,
+          "peak_error_pct": 24.36361955164953
+        },
+        {
+          "motor_shaft_rpm": 2999,
+          "measured_ll_rms_V": 269.3,
+          "predicted_ll_rms_V": 336.7411863222081,
+          "rms_error_pct": 25.04314382555071,
+          "measured_ll_peak_V": 425,
+          "predicted_ll_peak_V": 521.9443153234264,
+          "peak_error_pct": 22.81042713492386
+        },
+        {
+          "motor_shaft_rpm": 3501,
+          "measured_ll_rms_V": 315.7,
+          "predicted_ll_rms_V": 393.1080004381629,
+          "rms_error_pct": 24.51948065827143,
+          "measured_ll_peak_V": 500,
+          "predicted_ll_peak_V": 609.312120022446,
+          "peak_error_pct": 21.86242400448921
+        },
+        {
+          "motor_shaft_rpm": 3999,
+          "measured_ll_rms_V": 354.6,
+          "predicted_ll_rms_V": 449.0256765930344,
+          "rms_error_pct": 26.62878640525504,
+          "measured_ll_peak_V": 575,
+          "predicted_ll_peak_V": 695.983766915099,
+          "peak_error_pct": 21.04065511566938
+        },
+        {
+          "motor_shaft_rpm": 4501,
+          "measured_ll_rms_V": 405.5,
+          "predicted_ll_rms_V": 505.3924907089892,
+          "rms_error_pct": 24.63439968162496,
+          "measured_ll_peak_V": 625,
+          "predicted_ll_peak_V": 783.3515716141187,
+          "peak_error_pct": 25.336251458258996
+        },
+        {
+          "motor_shaft_rpm": 4999,
+          "measured_ll_rms_V": 440.4,
+          "predicted_ll_rms_V": 561.3101668638608,
+          "rms_error_pct": 27.454624628487924,
+          "measured_ll_peak_V": 700,
+          "predicted_ll_peak_V": 870.0232185067717,
+          "peak_error_pct": 24.289031215253107
+        },
+        {
+          "motor_shaft_rpm": 5500,
+          "measured_ll_rms_V": 503.4,
+          "predicted_ll_rms_V": 617.5646964895446,
+          "rms_error_pct": 22.678723974879752,
+          "measured_ll_peak_V": 775,
+          "predicted_ll_peak_V": 957.2169837541996,
+          "peak_error_pct": 23.51186887150963
+        },
+        {
+          "motor_shaft_rpm": 5998,
+          "measured_ll_rms_V": 539.8,
+          "predicted_ll_rms_V": 673.4823726444162,
+          "rms_error_pct": 24.76516721830608,
+          "measured_ll_peak_V": 850,
+          "predicted_ll_peak_V": 1043.8886306468528,
+          "peak_error_pct": 22.81042713492386
+        }
+      ]
+    },
+    {
+      "name": "magnet-length-18.3",
+      "label": "Magnet length 18.3 mm",
+      "method": "solved",
+      "source": "Phase A: straight magnet-seat edge measured at 18.3-18.6 mm; HoleM50 models notch to notch, 19.30 mm (holem50-mapping.md)",
+      "changes": {
+        "rotor.holem50_w4_mm": 18.3
+      },
+      "rms_error_mean_pct": 19.12417802307422,
+      "peak_error_mean_pct": 12.422874315063735,
+      "request": "docs/hardware-validation/ornl-prius-2004/phase-b/requests/magnet-length-18.3.json",
+      "request_sha256": "799b81de83f531b70d30c3cfa20f9191d18bda7c02ed49de9e77c702ee7ebc41",
+      "lambda_pm_Wb": 0.20565032520314086,
+      "change_vs_nominal_pct": -5.870282012212291,
+      "peak_change_vs_nominal_pct": -7.004677879464271,
+      "rows": [
+        {
+          "motor_shaft_rpm": 502,
+          "measured_ll_rms_V": 42.0,
+          "predicted_ll_rms_V": 53.057923166048774,
+          "rms_error_pct": 26.32838849059232,
+          "measured_ll_peak_V": 75,
+          "predicted_ll_peak_V": 81.2479714094939,
+          "peak_error_pct": 8.330628545991866
+        },
+        {
+          "motor_shaft_rpm": 1000,
+          "measured_ll_rms_V": 85.7,
+          "predicted_ll_rms_V": 105.69307403595373,
+          "rms_error_pct": 23.329141232151372,
+          "measured_ll_peak_V": 150,
+          "predicted_ll_peak_V": 161.84854862448984,
+          "peak_error_pct": 7.899032416326558
+        },
+        {
+          "motor_shaft_rpm": 1502,
+          "measured_ll_rms_V": 132.3,
+          "predicted_ll_rms_V": 158.7509972020025,
+          "rms_error_pct": 19.99319516402305,
+          "measured_ll_peak_V": 225,
+          "predicted_ll_peak_V": 243.09652003398378,
+          "peak_error_pct": 8.04289779288168
+        },
+        {
+          "motor_shaft_rpm": 1999,
+          "measured_ll_rms_V": 181.6,
+          "predicted_ll_rms_V": 211.28045499787152,
+          "rms_error_pct": 16.343862884290488,
+          "measured_ll_peak_V": 300,
+          "predicted_ll_peak_V": 323.5352487003552,
+          "peak_error_pct": 7.845082900118408
+        },
+        {
+          "motor_shaft_rpm": 2501,
+          "measured_ll_rms_V": 221.8,
+          "predicted_ll_rms_V": 264.3383781639203,
+          "rms_error_pct": 19.178709722236384,
+          "measured_ll_peak_V": 350,
+          "predicted_ll_peak_V": 404.7832201098491,
+          "peak_error_pct": 15.652348602814023
+        },
+        {
+          "motor_shaft_rpm": 2999,
+          "measured_ll_rms_V": 269.3,
+          "predicted_ll_rms_V": 316.97352903382523,
+          "rms_error_pct": 17.70275864605467,
+          "measured_ll_peak_V": 425,
+          "predicted_ll_peak_V": 485.3837973248451,
+          "peak_error_pct": 14.207952311728256
+        },
+        {
+          "motor_shaft_rpm": 3501,
+          "measured_ll_rms_V": 315.7,
+          "predicted_ll_rms_V": 370.031452199874,
+          "rms_error_pct": 17.209835983488766,
+          "measured_ll_peak_V": 500,
+          "predicted_ll_peak_V": 566.631768734339,
+          "peak_error_pct": 13.326353746867788
+        },
+        {
+          "motor_shaft_rpm": 3999,
+          "measured_ll_rms_V": 354.6,
+          "predicted_ll_rms_V": 422.66660306977894,
+          "rms_error_pct": 19.195319534624623,
+          "measured_ll_peak_V": 575,
+          "predicted_ll_peak_V": 647.2323459493349,
+          "peak_error_pct": 12.56214712162346
+        },
+        {
+          "motor_shaft_rpm": 4501,
+          "measured_ll_rms_V": 405.5,
+          "predicted_ll_rms_V": 475.72452623582774,
+          "rms_error_pct": 17.318008936085754,
+          "measured_ll_peak_V": 625,
+          "predicted_ll_peak_V": 728.4803173588288,
+          "peak_error_pct": 16.556850777412603
+        },
+        {
+          "motor_shaft_rpm": 4999,
+          "measured_ll_rms_V": 440.4,
+          "predicted_ll_rms_V": 528.3596771057328,
+          "rms_error_pct": 19.9726787251891,
+          "measured_ll_peak_V": 700,
+          "predicted_ll_peak_V": 809.0808945738248,
+          "peak_error_pct": 15.58298493911783
+        },
+        {
+          "motor_shaft_rpm": 5500,
+          "measured_ll_rms_V": 503.4,
+          "predicted_ll_rms_V": 581.3119071977455,
+          "rms_error_pct": 15.477136908570833,
+          "measured_ll_peak_V": 775,
+          "predicted_ll_peak_V": 890.1670174346941,
+          "peak_error_pct": 14.86026031415408
+        },
+        {
+          "motor_shaft_rpm": 5998,
+          "measured_ll_rms_V": 539.8,
+          "predicted_ll_rms_V": 633.9470580676505,
+          "rms_error_pct": 17.441100049583273,
+          "measured_ll_peak_V": 850,
+          "predicted_ll_peak_V": 970.7675946496902,
+          "peak_error_pct": 14.207952311728256
+        }
+      ]
+    },
+    {
+      "name": "magnet-length-18.6",
+      "label": "Magnet length 18.6 mm",
+      "method": "solved",
+      "source": "Phase A: straight magnet-seat edge measured at 18.3-18.6 mm (holem50-mapping.md)",
+      "changes": {
+        "rotor.holem50_w4_mm": 18.6
+      },
+      "rms_error_mean_pct": 21.36560825147453,
+      "peak_error_mean_pct": 14.891903763435486,
+      "request": "docs/hardware-validation/ornl-prius-2004/phase-b/requests/magnet-length-18.6.json",
+      "request_sha256": "c8c8416d54f5eb85cce70a93a45d444b0ae0628c71c0284d0b6660372775cd40",
+      "lambda_pm_Wb": 0.2095127815815713,
+      "change_vs_nominal_pct": -4.099145381596825,
+      "peak_change_vs_nominal_pct": -4.962316035619708,
+      "rows": [
+        {
+          "motor_shaft_rpm": 502,
+          "measured_ll_rms_V": 42.0,
+          "predicted_ll_rms_V": 54.05625645836738,
+          "rms_error_pct": 28.705372519922328,
+          "measured_ll_peak_V": 75,
+          "predicted_ll_peak_V": 83.03233811647132,
+          "peak_error_pct": 10.709784155295097
+        },
+        {
+          "motor_shaft_rpm": 1000,
+          "measured_ll_rms_V": 85.7,
+          "predicted_ll_rms_V": 107.68178577364019,
+          "rms_error_pct": 25.649691684527635,
+          "measured_ll_peak_V": 150,
+          "predicted_ll_peak_V": 165.4030639770345,
+          "peak_error_pct": 10.268709318022996
+        },
+        {
+          "motor_shaft_rpm": 1502,
+          "measured_ll_rms_V": 132.3,
+          "predicted_ll_rms_V": 161.7380422320076,
+          "rms_error_pct": 22.250976743769897,
+          "measured_ll_peak_V": 225,
+          "predicted_ll_peak_V": 248.43540209350584,
+          "peak_error_pct": 10.415734263780374
+        },
+        {
+          "motor_shaft_rpm": 1999,
+          "measured_ll_rms_V": 181.6,
+          "predicted_ll_rms_V": 215.25588976150675,
+          "rms_error_pct": 18.53297894356099,
+          "measured_ll_peak_V": 300,
+          "predicted_ll_peak_V": 330.640724890092,
+          "peak_error_pct": 10.213574963363993
+        },
+        {
+          "motor_shaft_rpm": 2501,
+          "measured_ll_rms_V": 221.8,
+          "predicted_ll_rms_V": 269.31214621987414,
+          "rms_error_pct": 21.42116601437066,
+          "measured_ll_peak_V": 350,
+          "predicted_ll_peak_V": 413.6730630065633,
+          "peak_error_pct": 18.19230371616095
+        },
+        {
+          "motor_shaft_rpm": 2999,
+          "measured_ll_rms_V": 269.3,
+          "predicted_ll_rms_V": 322.9376755351469,
+          "rms_error_pct": 19.917443570422172,
+          "measured_ll_peak_V": 425,
+          "predicted_ll_peak_V": 496.0437888671265,
+          "peak_error_pct": 16.716185615794476
+        },
+        {
+          "motor_shaft_rpm": 3501,
+          "measured_ll_rms_V": 315.7,
+          "predicted_ll_rms_V": 376.9939319935143,
+          "rms_error_pct": 19.415246117679544,
+          "measured_ll_peak_V": 500,
+          "predicted_ll_peak_V": 579.0761269835979,
+          "peak_error_pct": 15.815225396719576
+        },
+        {
+          "motor_shaft_rpm": 3999,
+          "measured_ll_rms_V": 354.6,
+          "predicted_ll_rms_V": 430.6194613087871,
+          "rms_error_pct": 21.43808835555191,
+          "measured_ll_peak_V": 575,
+          "predicted_ll_peak_V": 661.446852844161,
+          "peak_error_pct": 15.034235277245383
+        },
+        {
+          "motor_shaft_rpm": 4501,
+          "measured_ll_rms_V": 405.5,
+          "predicted_ll_rms_V": 484.6757177671545,
+          "rms_error_pct": 19.525454443194693,
+          "measured_ll_peak_V": 625,
+          "predicted_ll_peak_V": 744.4791909606323,
+          "peak_error_pct": 19.11667055370117
+        },
+        {
+          "motor_shaft_rpm": 4999,
+          "measured_ll_rms_V": 440.4,
+          "predicted_ll_rms_V": 538.3012470824274,
+          "rms_error_pct": 22.230074269397686,
+          "measured_ll_peak_V": 700,
+          "predicted_ll_peak_V": 826.8499168211956,
+          "peak_error_pct": 18.12141668874223
+        },
+        {
+          "motor_shaft_rpm": 5500,
+          "measured_ll_rms_V": 503.4,
+          "predicted_ll_rms_V": 592.249821755021,
+          "rms_error_pct": 17.64994472686155,
+          "measured_ll_peak_V": 775,
+          "predicted_ll_peak_V": 909.7168518736897,
+          "peak_error_pct": 17.382819596605124
+        },
+        {
+          "motor_shaft_rpm": 5998,
+          "measured_ll_rms_V": 539.8,
+          "predicted_ll_rms_V": 645.8753510702938,
+          "rms_error_pct": 19.65086162843533,
+          "measured_ll_peak_V": 850,
+          "predicted_ll_peak_V": 992.087577734253,
+          "peak_error_pct": 16.716185615794476
+        }
+      ]
+    },
+    {
+      "name": "bridge-0.056in",
+      "label": "Outer bridge 0.056 in (1.42 mm)",
+      "method": "solved",
+      "source": "ORNL/TM-2005/33 Fig. 21 bridge callouts, 0.056 and 0.060 in; the model uses their mean, 1.47 mm",
+      "changes": {
+        "rotor.holem50_h1_mm": 1.4224
+      },
+      "rms_error_mean_pct": 27.126694730940724,
+      "peak_error_mean_pct": 21.495557986491438,
+      "request": "docs/hardware-validation/ornl-prius-2004/phase-b/requests/bridge-0.056in.json",
+      "request_sha256": "43a15e1a6de3cad823d59ddd3c5384e331067f710738283827d141259cfb65c6",
+      "lambda_pm_Wb": 0.21941005213486361,
+      "change_vs_nominal_pct": 0.4531583959819674,
+      "peak_change_vs_nominal_pct": 0.5001750756170598,
+      "rows": [
+        {
+          "motor_shaft_rpm": 502,
+          "measured_ll_rms_V": 42.0,
+          "predicted_ll_rms_V": 56.6222450666688,
+          "rms_error_pct": 34.814869206354295,
+          "measured_ll_peak_V": 75,
+          "predicted_ll_peak_V": 87.80479668223798,
+          "peak_error_pct": 17.07306224298397
+        },
+        {
+          "motor_shaft_rpm": 1000,
+          "measured_ll_rms_V": 85.7,
+          "predicted_ll_rms_V": 112.7933168658741,
+          "rms_error_pct": 31.61413869996978,
+          "measured_ll_peak_V": 150,
+          "predicted_ll_peak_V": 174.90995355027485,
+          "peak_error_pct": 16.606635700183233
+        },
+        {
+          "motor_shaft_rpm": 1502,
+          "measured_ll_rms_V": 132.3,
+          "predicted_ll_rms_V": 169.41556193254291,
+          "rms_error_pct": 28.05409065195986,
+          "measured_ll_peak_V": 225,
+          "predicted_ll_peak_V": 262.71475023251287,
+          "peak_error_pct": 16.762111214450165
+        },
+        {
+          "motor_shaft_rpm": 1999,
+          "measured_ll_rms_V": 181.6,
+          "predicted_ll_rms_V": 225.47384041488235,
+          "rms_error_pct": 24.159603752688522,
+          "measured_ll_peak_V": 300,
+          "predicted_ll_peak_V": 349.6449971469994,
+          "peak_error_pct": 16.548332382333133
+        },
+        {
+          "motor_shaft_rpm": 2501,
+          "measured_ll_rms_V": 221.8,
+          "predicted_ll_rms_V": 282.09608548155114,
+          "rms_error_pct": 27.184889757236757,
+          "measured_ll_peak_V": 350,
+          "predicted_ll_peak_V": 437.4497938292374,
+          "peak_error_pct": 24.98565537978212
+        },
+        {
+          "motor_shaft_rpm": 2999,
+          "measured_ll_rms_V": 269.3,
+          "predicted_ll_rms_V": 338.26715728075646,
+          "rms_error_pct": 25.609787330396006,
+          "measured_ll_peak_V": 425,
+          "predicted_ll_peak_V": 524.5549506972743,
+          "peak_error_pct": 23.424694281711602
+        },
+        {
+          "motor_shaft_rpm": 3501,
+          "measured_ll_rms_V": 315.7,
+          "predicted_ll_rms_V": 394.8894023474253,
+          "rms_error_pct": 25.083751139507537,
+          "measured_ll_peak_V": 500,
+          "predicted_ll_peak_V": 612.3597473795122,
+          "peak_error_pct": 22.47194947590244
+        },
+        {
+          "motor_shaft_rpm": 3999,
+          "measured_ll_rms_V": 354.6,
+          "predicted_ll_rms_V": 451.06047414663055,
+          "rms_error_pct": 27.202615382580518,
+          "measured_ll_peak_V": 575,
+          "predicted_ll_peak_V": 699.4649042475492,
+          "peak_error_pct": 21.64607030392159
+        },
+        {
+          "motor_shaft_rpm": 4501,
+          "measured_ll_rms_V": 405.5,
+          "predicted_ll_rms_V": 507.6827192132994,
+          "rms_error_pct": 25.199190928063963,
+          "measured_ll_peak_V": 625,
+          "predicted_ll_peak_V": 787.2697009297871,
+          "peak_error_pct": 25.96315214876593
+        },
+        {
+          "motor_shaft_rpm": 4999,
+          "measured_ll_rms_V": 440.4,
+          "predicted_ll_rms_V": 563.8537910125048,
+          "rms_error_pct": 28.032195961059216,
+          "measured_ll_peak_V": 700,
+          "predicted_ll_peak_V": 874.374857797824,
+          "peak_error_pct": 24.910693971117716
+        },
+        {
+          "motor_shaft_rpm": 5500,
+          "measured_ll_rms_V": 503.4,
+          "predicted_ll_rms_V": 620.3632427623076,
+          "rms_error_pct": 23.23465291265546,
+          "measured_ll_peak_V": 775,
+          "predicted_ll_peak_V": 962.0047445265117,
+          "peak_error_pct": 24.129644455033763
+        },
+        {
+          "motor_shaft_rpm": 5998,
+          "measured_ll_rms_V": 539.8,
+          "predicted_ll_rms_V": 676.5343145615129,
+          "rms_error_pct": 25.33055104881678,
+          "measured_ll_peak_V": 850,
+          "predicted_ll_peak_V": 1049.1099013945486,
+          "peak_error_pct": 23.424694281711602
+        }
+      ]
+    },
+    {
+      "name": "bridge-0.060in",
+      "label": "Outer bridge 0.060 in (1.52 mm)",
+      "method": "solved",
+      "source": "ORNL/TM-2005/33 Fig. 21 bridge callouts, 0.056 and 0.060 in",
+      "changes": {
+        "rotor.holem50_h1_mm": 1.524
+      },
+      "rms_error_mean_pct": 25.86864908640032,
+      "peak_error_mean_pct": 20.98800376871988,
+      "request": "docs/hardware-validation/ornl-prius-2004/phase-b/requests/bridge-0.060in.json",
+      "request_sha256": "ecc306d4b45487e36362f6a669338399bde21313ac8be2bf20e8c7055d0468dd",
+      "lambda_pm_Wb": 0.2172281804974225,
+      "change_vs_nominal_pct": -0.5409259595332894,
+      "peak_change_vs_nominal_pct": 0.08033019740281144,
+      "rows": [
+        {
+          "motor_shaft_rpm": 502,
+          "measured_ll_rms_V": 42.0,
+          "predicted_ll_rms_V": 56.06191138583973,
+          "rms_error_pct": 33.480741394856494,
+          "measured_ll_peak_V": 75,
+          "predicted_ll_peak_V": 87.43798742900093,
+          "peak_error_pct": 16.5839832386679
+        },
+        {
+          "motor_shaft_rpm": 1000,
+          "measured_ll_rms_V": 85.7,
+          "predicted_ll_rms_V": 111.67711431442177,
+          "rms_error_pct": 30.31168531437779,
+          "measured_ll_peak_V": 150,
+          "predicted_ll_peak_V": 174.17925782669505,
+          "peak_error_pct": 16.1195052177967
+        },
+        {
+          "motor_shaft_rpm": 1502,
+          "measured_ll_rms_V": 132.3,
+          "predicted_ll_rms_V": 167.73902570026152,
+          "rms_error_pct": 26.78686749830802,
+          "measured_ll_peak_V": 225,
+          "predicted_ll_peak_V": 261.617245255696,
+          "peak_error_pct": 16.274331224753773
+        },
+        {
+          "motor_shaft_rpm": 1999,
+          "measured_ll_rms_V": 181.6,
+          "predicted_ll_rms_V": 223.2425515145291,
+          "rms_error_pct": 22.930920437516033,
+          "measured_ll_peak_V": 300,
+          "predicted_ll_peak_V": 348.18433639556343,
+          "peak_error_pct": 16.061445465187813
+        },
+        {
+          "motor_shaft_rpm": 2501,
+          "measured_ll_rms_V": 221.8,
+          "predicted_ll_rms_V": 279.30446290036883,
+          "rms_error_pct": 25.92626821477404,
+          "measured_ll_peak_V": 350,
+          "predicted_ll_peak_V": 435.6223238245644,
+          "peak_error_pct": 24.46352109273268
+        },
+        {
+          "motor_shaft_rpm": 2999,
+          "measured_ll_rms_V": 269.3,
+          "predicted_ll_rms_V": 334.9196658289509,
+          "rms_error_pct": 24.366752999981756,
+          "measured_ll_peak_V": 425,
+          "predicted_ll_peak_V": 522.3635942222585,
+          "peak_error_pct": 22.909080993472585
+        },
+        {
+          "motor_shaft_rpm": 3501,
+          "measured_ll_rms_V": 315.7,
+          "predicted_ll_rms_V": 390.98157721479066,
+          "rms_error_pct": 23.845922462714817,
+          "measured_ll_peak_V": 500,
+          "predicted_ll_peak_V": 609.8015816512594,
+          "peak_error_pct": 21.960316330251885
+        },
+        {
+          "motor_shaft_rpm": 3999,
+          "measured_ll_rms_V": 354.6,
+          "predicted_ll_rms_V": 446.59678014337265,
+          "rms_error_pct": 25.943818427347047,
+          "measured_ll_peak_V": 575,
+          "predicted_ll_peak_V": 696.5428520489536,
+          "peak_error_pct": 21.137887312861494
+        },
+        {
+          "motor_shaft_rpm": 4501,
+          "measured_ll_rms_V": 405.5,
+          "predicted_ll_rms_V": 502.6586915292124,
+          "rms_error_pct": 23.960219859238563,
+          "measured_ll_peak_V": 625,
+          "predicted_ll_peak_V": 783.9808394779545,
+          "peak_error_pct": 25.436934316472726
+        },
+        {
+          "motor_shaft_rpm": 4999,
+          "measured_ll_rms_V": 440.4,
+          "predicted_ll_rms_V": 558.2738944577944,
+          "rms_error_pct": 26.765189477246697,
+          "measured_ll_peak_V": 700,
+          "predicted_ll_peak_V": 870.7221098756487,
+          "peak_error_pct": 24.388872839378386
+        },
+        {
+          "motor_shaft_rpm": 5500,
+          "measured_ll_rms_V": 503.4,
+          "predicted_ll_rms_V": 614.2241287293198,
+          "rms_error_pct": 22.015122910075448,
+          "measured_ll_peak_V": 775,
+          "predicted_ll_peak_V": 957.9859180468228,
+          "peak_error_pct": 23.61108619959004
+        },
+        {
+          "motor_shaft_rpm": 5998,
+          "measured_ll_rms_V": 539.8,
+          "predicted_ll_rms_V": 669.8393316579018,
+          "rms_error_pct": 24.09028004036714,
+          "measured_ll_peak_V": 850,
+          "predicted_ll_peak_V": 1044.727188444517,
+          "peak_error_pct": 22.909080993472585
+        }
+      ]
+    },
+    {
+      "name": "double-layer-full-pitch",
+      "label": "Two layers, full pitch (control)",
+      "method": "solved",
+      "source": "Control for the pitch band: two layers at full pitch, which coilEM winds with the same conductors per slot as one layer",
+      "changes": {
+        "winding.layers": 2
+      },
+      "rms_error_mean_pct": 26.559960856171656,
+      "peak_error_mean_pct": 20.901724864517266,
+      "request": "docs/hardware-validation/ornl-prius-2004/phase-b/requests/double-layer-full-pitch.json",
+      "request_sha256": "2e060cc4bfd097e3da6396e39af52c52defebdcc13956d31ac383bef70fa2320",
+      "lambda_pm_Wb": 0.2184412982562002,
+      "change_vs_nominal_pct": 0.0053357902654038725,
+      "peak_change_vs_nominal_pct": 0.008960962828341579,
+      "rows": [
+        {
+          "motor_shaft_rpm": 502,
+          "measured_ll_rms_V": 42.0,
+          "predicted_ll_rms_V": 56.369821730935314,
+          "rms_error_pct": 34.2138612641317,
+          "measured_ll_peak_V": 75,
+          "predicted_ll_peak_V": 87.37563369552271,
+          "peak_error_pct": 16.500844927363612
+        },
+        {
+          "motor_shaft_rpm": 1000,
+          "measured_ll_rms_V": 85.7,
+          "predicted_ll_rms_V": 112.29048153572771,
+          "rms_error_pct": 31.027399691630926,
+          "measured_ll_peak_V": 150,
+          "predicted_ll_peak_V": 174.05504720223647,
+          "peak_error_pct": 16.03669813482431
+        },
+        {
+          "motor_shaft_rpm": 1502,
+          "measured_ll_rms_V": 132.3,
+          "predicted_ll_rms_V": 168.66030326666305,
+          "rms_error_pct": 27.483222423781584,
+          "measured_ll_peak_V": 225,
+          "predicted_ll_peak_V": 261.4306808977592,
+          "peak_error_pct": 16.191413732337423
+        },
+        {
+          "motor_shaft_rpm": 1999,
+          "measured_ll_rms_V": 181.6,
+          "predicted_ll_rms_V": 224.4686725899197,
+          "rms_error_pct": 23.606097241145207,
+          "measured_ll_peak_V": 300,
+          "predicted_ll_peak_V": 347.9360393572707,
+          "peak_error_pct": 15.978679785756905
+        },
+        {
+          "motor_shaft_rpm": 2501,
+          "measured_ll_rms_V": 221.8,
+          "predicted_ll_rms_V": 280.83849432085503,
+          "rms_error_pct": 26.617896447635264,
+          "measured_ll_peak_V": 350,
+          "predicted_ll_peak_V": 435.3116730527934,
+          "peak_error_pct": 24.37476372936955
+        },
+        {
+          "motor_shaft_rpm": 2999,
+          "measured_ll_rms_V": 269.3,
+          "predicted_ll_rms_V": 336.75915412564746,
+          "rms_error_pct": 25.049815865446508,
+          "measured_ll_peak_V": 425,
+          "predicted_ll_peak_V": 521.9910865595072,
+          "peak_error_pct": 22.82143213164874
+        },
+        {
+          "motor_shaft_rpm": 3501,
+          "measured_ll_rms_V": 315.7,
+          "predicted_ll_rms_V": 393.12897585658277,
+          "rms_error_pct": 24.526124756598918,
+          "measured_ll_peak_V": 500,
+          "predicted_ll_peak_V": 609.3667202550299,
+          "peak_error_pct": 21.873344051005983
+        },
+        {
+          "motor_shaft_rpm": 3999,
+          "measured_ll_rms_V": 354.6,
+          "predicted_ll_rms_V": 449.04963566137513,
+          "rms_error_pct": 26.635543051713228,
+          "measured_ll_peak_V": 575,
+          "predicted_ll_peak_V": 696.0461337617436,
+          "peak_error_pct": 21.051501523781493
+        },
+        {
+          "motor_shaft_rpm": 4501,
+          "measured_ll_rms_V": 405.5,
+          "predicted_ll_rms_V": 505.41945739231045,
+          "rms_error_pct": 24.641049911790493,
+          "measured_ll_peak_V": 625,
+          "predicted_ll_peak_V": 783.4217674572664,
+          "peak_error_pct": 25.34748279316262
+        },
+        {
+          "motor_shaft_rpm": 4999,
+          "measured_ll_rms_V": 440.4,
+          "predicted_ll_rms_V": 561.3401171971029,
+          "rms_error_pct": 27.461425339941638,
+          "measured_ll_peak_V": 700,
+          "predicted_ll_peak_V": 870.1011809639801,
+          "peak_error_pct": 24.30016870914002
+        },
+        {
+          "motor_shaft_rpm": 5500,
+          "measured_ll_rms_V": 503.4,
+          "predicted_ll_rms_V": 617.5976484465024,
+          "rms_error_pct": 22.685269854291302,
+          "measured_ll_peak_V": 775,
+          "predicted_ll_peak_V": 957.3027596123005,
+          "peak_error_pct": 23.52293672416781
+        },
+        {
+          "motor_shaft_rpm": 5998,
+          "measured_ll_rms_V": 539.8,
+          "predicted_ll_rms_V": 673.5183082512949,
+          "rms_error_pct": 24.771824425953128,
+          "measured_ll_peak_V": 850,
+          "predicted_ll_peak_V": 1043.9821731190143,
+          "peak_error_pct": 22.82143213164874
+        }
+      ]
+    },
+    {
+      "name": "double-layer-5-6-pitch",
+      "label": "Two layers, 5/6 pitch",
+      "method": "solved",
+      "source": "Source audit gap list: winding pitch assumed full; 5/6 short pitch is the alternative it names",
+      "changes": {
+        "winding.layers": 2,
+        "winding.coil_span": 5
+      },
+      "rms_error_mean_pct": 22.089978260087907,
+      "peak_error_mean_pct": 6.082493483404953,
+      "request": "docs/hardware-validation/ornl-prius-2004/phase-b/requests/double-layer-5-6-pitch.json",
+      "request_sha256": "5f7a21d865db66a324a0b35977b884ad5eae170d8a8ec8fae4ed5603e3490de5",
+      "lambda_pm_Wb": 0.2109981096024581,
+      "change_vs_nominal_pct": -3.5267616240662436,
+      "peak_change_vs_nominal_pct": -12.249391300992352,
+      "rows": [
+        {
+          "motor_shaft_rpm": 502,
+          "measured_ll_rms_V": 42.0,
+          "predicted_ll_rms_V": 54.37889094700455,
+          "rms_error_pct": 29.473549873820353,
+          "measured_ll_peak_V": 75,
+          "predicted_ll_peak_V": 76.66578043034998,
+          "peak_error_pct": 2.2210405737999777
+        },
+        {
+          "motor_shaft_rpm": 1000,
+          "measured_ll_rms_V": 85.7,
+          "predicted_ll_rms_V": 108.32448395817639,
+          "rms_error_pct": 26.39963122307629,
+          "measured_ll_peak_V": 150,
+          "predicted_ll_peak_V": 152.72067814810754,
+          "peak_error_pct": 1.813785432071692
+        },
+        {
+          "motor_shaft_rpm": 1502,
+          "measured_ll_rms_V": 132.3,
+          "predicted_ll_rms_V": 162.70337490518097,
+          "rms_error_pct": 22.9806310696757,
+          "measured_ll_peak_V": 225,
+          "predicted_ll_peak_V": 229.38645857845754,
+          "peak_error_pct": 1.949537145981127
+        },
+        {
+          "motor_shaft_rpm": 1999,
+          "measured_ll_rms_V": 181.6,
+          "predicted_ll_rms_V": 216.5406434323946,
+          "rms_error_pct": 19.2404424187195,
+          "measured_ll_peak_V": 300,
+          "predicted_ll_peak_V": 305.28863561806696,
+          "peak_error_pct": 1.7628785393556543
+        },
+        {
+          "motor_shaft_rpm": 2501,
+          "measured_ll_rms_V": 221.8,
+          "predicted_ll_rms_V": 270.9195343793992,
+          "rms_error_pct": 22.145867619206115,
+          "measured_ll_peak_V": 350,
+          "predicted_ll_peak_V": 381.95441604841693,
+          "peak_error_pct": 9.129833156690552
+        },
+        {
+          "motor_shaft_rpm": 2999,
+          "measured_ll_rms_V": 269.3,
+          "predicted_ll_rms_V": 324.86512739057105,
+          "rms_error_pct": 20.633170215585235,
+          "measured_ll_peak_V": 425,
+          "predicted_ll_peak_V": 458.0093137661745,
+          "peak_error_pct": 7.766897356746941
+        },
+        {
+          "motor_shaft_rpm": 3501,
+          "measured_ll_rms_V": 315.7,
+          "predicted_ll_rms_V": 379.2440183375756,
+          "rms_error_pct": 20.127975399928925,
+          "measured_ll_peak_V": 500,
+          "predicted_ll_peak_V": 534.6750941965245,
+          "peak_error_pct": 6.9350188393048935
+        },
+        {
+          "motor_shaft_rpm": 3999,
+          "measured_ll_rms_V": 354.6,
+          "predicted_ll_rms_V": 433.1896113487474,
+          "rms_error_pct": 22.162890961293677,
+          "measured_ll_peak_V": 575,
+          "predicted_ll_peak_V": 610.729991914282,
+          "peak_error_pct": 6.213911637266432
+        },
+        {
+          "motor_shaft_rpm": 4501,
+          "measured_ll_rms_V": 405.5,
+          "predicted_ll_rms_V": 487.56850229575195,
+          "rms_error_pct": 20.238841503268056,
+          "measured_ll_peak_V": 625,
+          "predicted_ll_peak_V": 687.3957723446321,
+          "peak_error_pct": 9.98332357514113
+        },
+        {
+          "motor_shaft_rpm": 4999,
+          "measured_ll_rms_V": 440.4,
+          "predicted_ll_rms_V": 541.5140953069239,
+          "rms_error_pct": 22.959603838992713,
+          "measured_ll_peak_V": 700,
+          "predicted_ll_peak_V": 763.4506700623897,
+          "peak_error_pct": 9.064381437484242
+        },
+        {
+          "motor_shaft_rpm": 5500,
+          "measured_ll_rms_V": 503.4,
+          "predicted_ll_rms_V": 595.7846617699702,
+          "rms_error_pct": 18.35213781683953,
+          "measured_ll_peak_V": 775,
+          "predicted_ll_peak_V": 839.9637298145914,
+          "peak_error_pct": 8.382416750269856
+        },
+        {
+          "motor_shaft_rpm": 5998,
+          "measured_ll_rms_V": 539.8,
+          "predicted_ll_rms_V": 649.7302547811421,
+          "rms_error_pct": 20.364997180648786,
+          "measured_ll_peak_V": 850,
+          "predicted_ll_peak_V": 916.018627532349,
+          "peak_error_pct": 7.766897356746941
+        }
+      ]
+    },
+    {
+      "name": "turns-8",
+      "label": "Turns per coil 8 (−1)",
+      "method": "analytic",
+      "source": "Source audit: 9 turns inferred from TM-2005/33 Fig. 24; no-load back-EMF is proportional to turns",
+      "changes": {},
+      "rms_error_mean_pct": 12.49174065991619,
+      "peak_error_mean_pct": 7.458570557007409,
+      "factor_on_nominal": 0.8888888888888888,
+      "change_vs_nominal_pct": -11.111111111111116,
+      "peak_change_vs_nominal_pct": -11.111111111111116,
+      "rows": [
+        {
+          "motor_shaft_rpm": 502,
+          "measured_ll_rms_V": 42.0,
+          "predicted_ll_rms_V": 50.1038347697376,
+          "rms_error_pct": 19.294844689851434,
+          "measured_ll_peak_V": 75,
+          "predicted_ll_peak_V": 77.66027084357304,
+          "peak_error_pct": 3.547027791430726
+        },
+        {
+          "motor_shaft_rpm": 1000,
+          "measured_ll_rms_V": 85.7,
+          "predicted_ll_rms_V": 99.80843579629004,
+          "rms_error_pct": 16.46258552659281,
+          "measured_ll_peak_V": 150,
+          "predicted_ll_peak_V": 154.70173474815348,
+          "peak_error_pct": 3.1344898321023225
+        },
+        {
+          "motor_shaft_rpm": 1502,
+          "measured_ll_rms_V": 132.3,
+          "predicted_ll_rms_V": 149.91227056602767,
+          "rms_error_pct": 13.312373821638444,
+          "measured_ll_peak_V": 225,
+          "predicted_ll_peak_V": 232.36200559172653,
+          "peak_error_pct": 3.2720024852117904
+        },
+        {
+          "motor_shaft_rpm": 1999,
+          "measured_ll_rms_V": 181.6,
+          "predicted_ll_rms_V": 199.5170631567838,
+          "rms_error_pct": 9.86622420527742,
+          "measured_ll_peak_V": 300,
+          "predicted_ll_peak_V": 309.2487677615588,
+          "peak_error_pct": 3.0829225871862604
+        },
+        {
+          "motor_shaft_rpm": 2501,
+          "measured_ll_rms_V": 221.8,
+          "predicted_ll_rms_V": 249.62089792652137,
+          "rms_error_pct": 12.543236215744525,
+          "measured_ll_peak_V": 350,
+          "predicted_ll_peak_V": 386.90903860513185,
+          "peak_error_pct": 10.545439601466244
+        },
+        {
+          "motor_shaft_rpm": 2999,
+          "measured_ll_rms_V": 269.3,
+          "predicted_ll_rms_V": 299.3254989530738,
+          "rms_error_pct": 11.149461178267282,
+          "measured_ll_peak_V": 425,
+          "predicted_ll_peak_V": 463.95050250971235,
+          "peak_error_pct": 9.164824119932318
+        },
+        {
+          "motor_shaft_rpm": 3501,
+          "measured_ll_rms_V": 315.7,
+          "predicted_ll_rms_V": 349.42933372281146,
+          "rms_error_pct": 10.683982807352384,
+          "measured_ll_peak_V": 500,
+          "predicted_ll_peak_V": 541.6107733532854,
+          "peak_error_pct": 8.322154670657074
+        },
+        {
+          "motor_shaft_rpm": 3999,
+          "measured_ll_rms_V": 354.6,
+          "predicted_ll_rms_V": 399.1339347493639,
+          "rms_error_pct": 12.558921249115587,
+          "measured_ll_peak_V": 575,
+          "predicted_ll_peak_V": 618.6522372578657,
+          "peak_error_pct": 7.591693436150565
+        },
+        {
+          "motor_shaft_rpm": 4501,
+          "measured_ll_rms_V": 405.5,
+          "predicted_ll_rms_V": 449.2377695191015,
+          "rms_error_pct": 10.786133050333294,
+          "measured_ll_peak_V": 625,
+          "predicted_ll_peak_V": 696.3125081014388,
+          "peak_error_pct": 11.410001296230202
+        },
+        {
+          "motor_shaft_rpm": 4999,
+          "measured_ll_rms_V": 440.4,
+          "predicted_ll_rms_V": 498.942370545654,
+          "rms_error_pct": 13.292999669767037,
+          "measured_ll_peak_V": 700,
+          "predicted_ll_peak_V": 773.3539720060193,
+          "peak_error_pct": 10.47913885800275
+        },
+        {
+          "motor_shaft_rpm": 5500,
+          "measured_ll_rms_V": 503.4,
+          "predicted_ll_rms_V": 548.9463968795952,
+          "rms_error_pct": 9.047754644337555,
+          "measured_ll_peak_V": 775,
+          "predicted_ll_peak_V": 850.8595411148441,
+          "peak_error_pct": 9.788327885786334
+        },
+        {
+          "motor_shaft_rpm": 5998,
+          "measured_ll_rms_V": 539.8,
+          "predicted_ll_rms_V": 598.6509979061476,
+          "rms_error_pct": 10.902370860716498,
+          "measured_ll_peak_V": 850,
+          "predicted_ll_peak_V": 927.9010050194247,
+          "peak_error_pct": 9.164824119932318
+        }
+      ]
+    },
+    {
+      "name": "turns-10",
+      "label": "Turns per coil 10 (+1)",
+      "method": "analytic",
+      "source": "Source audit: 9 turns inferred from TM-2005/33 Fig. 24; no-load back-EMF is proportional to turns",
+      "changes": {},
+      "rms_error_mean_pct": 40.61467582489525,
+      "peak_error_mean_pct": 34.323213196259275,
+      "factor_on_nominal": 1.1111111111111112,
+      "change_vs_nominal_pct": 11.111111111111116,
+      "peak_change_vs_nominal_pct": 11.111111111111116,
+      "rows": [
+        {
+          "motor_shaft_rpm": 502,
+          "measured_ll_rms_V": 42.0,
+          "predicted_ll_rms_V": 62.629793462172,
+          "rms_error_pct": 49.118555862314295,
+          "measured_ll_peak_V": 75,
+          "predicted_ll_peak_V": 97.07533855446633,
+          "peak_error_pct": 29.433784739288438
+        },
+        {
+          "motor_shaft_rpm": 1000,
+          "measured_ll_rms_V": 85.7,
+          "predicted_ll_rms_V": 124.76054474536255,
+          "rms_error_pct": 45.578231908241015,
+          "measured_ll_peak_V": 150,
+          "predicted_ll_peak_V": 193.37716843519186,
+          "peak_error_pct": 28.918112290127908
+        },
+        {
+          "motor_shaft_rpm": 1502,
+          "measured_ll_rms_V": 132.3,
+          "predicted_ll_rms_V": 187.3903382075346,
+          "rms_error_pct": 41.64046727704806,
+          "measured_ll_peak_V": 225,
+          "predicted_ll_peak_V": 290.4525069896582,
+          "peak_error_pct": 29.09000310651476
+        },
+        {
+          "motor_shaft_rpm": 1999,
+          "measured_ll_rms_V": 181.6,
+          "predicted_ll_rms_V": 249.39632894597977,
+          "rms_error_pct": 37.3327802565968,
+          "measured_ll_peak_V": 300,
+          "predicted_ll_peak_V": 386.56095970194855,
+          "peak_error_pct": 28.85365323398285
+        },
+        {
+          "motor_shaft_rpm": 2501,
+          "measured_ll_rms_V": 221.8,
+          "predicted_ll_rms_V": 312.02612240815176,
+          "rms_error_pct": 40.67904526968068,
+          "measured_ll_peak_V": 350,
+          "predicted_ll_peak_V": 483.6362982564149,
+          "peak_error_pct": 38.18179950183282
+        },
+        {
+          "motor_shaft_rpm": 2999,
+          "measured_ll_rms_V": 269.3,
+          "predicted_ll_rms_V": 374.15687369134235,
+          "rms_error_pct": 38.93682647283414,
+          "measured_ll_peak_V": 425,
+          "predicted_ll_peak_V": 579.9381281371404,
+          "peak_error_pct": 36.4560301499154
+        },
+        {
+          "motor_shaft_rpm": 3501,
+          "measured_ll_rms_V": 315.7,
+          "predicted_ll_rms_V": 436.7866671535143,
+          "rms_error_pct": 38.354978509190474,
+          "measured_ll_peak_V": 500,
+          "predicted_ll_peak_V": 677.0134666916067,
+          "peak_error_pct": 35.40269333832134
+        },
+        {
+          "motor_shaft_rpm": 3999,
+          "measured_ll_rms_V": 354.6,
+          "predicted_ll_rms_V": 498.9174184367049,
+          "rms_error_pct": 40.69865156139449,
+          "measured_ll_peak_V": 575,
+          "predicted_ll_peak_V": 773.3152965723322,
+          "peak_error_pct": 34.4896167951882
+        },
+        {
+          "motor_shaft_rpm": 4501,
+          "measured_ll_rms_V": 405.5,
+          "predicted_ll_rms_V": 561.547211898877,
+          "rms_error_pct": 38.48266631291664,
+          "measured_ll_peak_V": 625,
+          "predicted_ll_peak_V": 870.3906351267987,
+          "peak_error_pct": 39.262501620287786
+        },
+        {
+          "motor_shaft_rpm": 4999,
+          "measured_ll_rms_V": 440.4,
+          "predicted_ll_rms_V": 623.6779631820675,
+          "rms_error_pct": 41.6162495872088,
+          "measured_ll_peak_V": 700,
+          "predicted_ll_peak_V": 966.6924650075242,
+          "peak_error_pct": 38.098923572503466
+        },
+        {
+          "motor_shaft_rpm": 5500,
+          "measured_ll_rms_V": 503.4,
+          "predicted_ll_rms_V": 686.1829960994941,
+          "rms_error_pct": 36.309693305421945,
+          "measured_ll_peak_V": 775,
+          "predicted_ll_peak_V": 1063.5744263935553,
+          "peak_error_pct": 37.235409857232945
+        },
+        {
+          "motor_shaft_rpm": 5998,
+          "measured_ll_rms_V": 539.8,
+          "predicted_ll_rms_V": 748.3137473826847,
+          "rms_error_pct": 38.627963575895656,
+          "measured_ll_peak_V": 850,
+          "predicted_ll_peak_V": 1159.8762562742809,
+          "peak_error_pct": 36.4560301499154
+        }
+      ]
+    },
+    {
+      "name": "br-1.23",
+      "label": "Magnet Br 1.23 T",
+      "method": "analytic",
+      "source": "Source audit: Br read off as 1.23-1.24 T; back-EMF taken as proportional to Br",
+      "changes": {},
+      "rms_error_mean_pct": 26.04084707543241,
+      "peak_error_mean_pct": 20.401455067416197,
+      "factor_on_nominal": 0.9959514170040485,
+      "change_vs_nominal_pct": -0.4048582995951455,
+      "peak_change_vs_nominal_pct": -0.4048582995951455,
+      "rows": [
+        {
+          "motor_shaft_rpm": 502,
+          "measured_ll_rms_V": 42.0,
+          "predicted_ll_rms_V": 56.13860839078899,
+          "rms_error_pct": 33.66335331140235,
+          "measured_ll_peak_V": 75,
+          "predicted_ll_peak_V": 87.01408889052163,
+          "peak_error_pct": 16.018785187362177
+        },
+        {
+          "motor_shaft_rpm": 1000,
+          "measured_ll_rms_V": 85.7,
+          "predicted_ll_rms_V": 111.82989719280675,
+          "rms_error_pct": 30.48996171856097,
+          "measured_ll_peak_V": 150,
+          "predicted_ll_peak_V": 173.33483842733392,
+          "peak_error_pct": 15.556558951555946
+        },
+        {
+          "motor_shaft_rpm": 1502,
+          "measured_ll_rms_V": 132.3,
+          "predicted_ll_rms_V": 167.96850558359577,
+          "rms_error_pct": 26.960321680722416,
+          "measured_ll_peak_V": 225,
+          "predicted_ll_peak_V": 260.34892731785555,
+          "peak_error_pct": 15.710634363491357
+        },
+        {
+          "motor_shaft_rpm": 1999,
+          "measured_ll_rms_V": 181.6,
+          "predicted_ll_rms_V": 223.54796448842072,
+          "rms_error_pct": 23.099099387896874,
+          "measured_ll_peak_V": 300,
+          "predicted_ll_peak_V": 346.4963420162405,
+          "peak_error_pct": 15.498780672080159
+        },
+        {
+          "motor_shaft_rpm": 2501,
+          "measured_ll_rms_V": 221.8,
+          "predicted_ll_rms_V": 279.6865728792097,
+          "rms_error_pct": 26.098545031203635,
+          "measured_ll_peak_V": 350,
+          "predicted_ll_peak_V": 433.5104309067621,
+          "peak_error_pct": 23.860123116217746
+        },
+        {
+          "motor_shaft_rpm": 2999,
+          "measured_ll_rms_V": 269.3,
+          "predicted_ll_rms_V": 335.37786168122744,
+          "rms_error_pct": 24.53689627969827,
+          "measured_ll_peak_V": 425,
+          "predicted_ll_peak_V": 519.8311804435745,
+          "peak_error_pct": 22.31321892789987
+        },
+        {
+          "motor_shaft_rpm": 3501,
+          "measured_ll_rms_V": 315.7,
+          "predicted_ll_rms_V": 391.5164700720165,
+          "rms_error_pct": 24.015353206213653,
+          "measured_ll_peak_V": 500,
+          "predicted_ll_peak_V": 606.845269334096,
+          "peak_error_pct": 21.369053866819197
+        },
+        {
+          "motor_shaft_rpm": 3999,
+          "measured_ll_rms_V": 354.6,
+          "predicted_ll_rms_V": 447.20775887403425,
+          "rms_error_pct": 26.116119253816763,
+          "measured_ll_peak_V": 575,
+          "predicted_ll_peak_V": 693.1660188709083,
+          "peak_error_pct": 20.550611977549263
+        },
+        {
+          "motor_shaft_rpm": 4501,
+          "measured_ll_rms_V": 405.5,
+          "predicted_ll_rms_V": 503.34636726482324,
+          "rms_error_pct": 24.129806970363315,
+          "measured_ll_peak_V": 625,
+          "predicted_ll_peak_V": 780.1801077614299,
+          "peak_error_pct": 24.828817241828784
+        },
+        {
+          "motor_shaft_rpm": 4999,
+          "measured_ll_rms_V": 440.4,
+          "predicted_ll_rms_V": 559.0376560668411,
+          "rms_error_pct": 26.93861400246166,
+          "measured_ll_peak_V": 700,
+          "predicted_ll_peak_V": 866.5008572982423,
+          "peak_error_pct": 23.785836756891758
+        },
+        {
+          "motor_shaft_rpm": 5500,
+          "measured_ll_rms_V": 503.4,
+          "predicted_ll_rms_V": 615.0644345604371,
+          "rms_error_pct": 22.182048979030025,
+          "measured_ll_peak_V": 775,
+          "predicted_ll_peak_V": 953.3416113503365,
+          "peak_error_pct": 23.01182081939826
+        },
+        {
+          "motor_shaft_rpm": 5998,
+          "measured_ll_rms_V": 539.8,
+          "predicted_ll_rms_V": 670.7557233624549,
+          "rms_error_pct": 24.260045083818994,
+          "measured_ll_peak_V": 850,
+          "predicted_ll_peak_V": 1039.662360887149,
+          "peak_error_pct": 22.31321892789987
+        }
+      ]
+    },
+    {
+      "name": "br-1.24",
+      "label": "Magnet Br 1.24 T",
+      "method": "analytic",
+      "source": "Source audit: Br read off as 1.23-1.24 T; back-EMF taken as proportional to Br",
+      "changes": {},
+      "rms_error_mean_pct": 27.065569409379012,
+      "peak_error_mean_pct": 21.380328685850476,
+      "factor_on_nominal": 1.0040485829959513,
+      "change_vs_nominal_pct": 0.4048582995951344,
+      "peak_change_vs_nominal_pct": 0.4048582995951344,
+      "rows": [
+        {
+          "motor_shaft_rpm": 502,
+          "measured_ll_rms_V": 42.0,
+          "predicted_ll_rms_V": 56.59501984112061,
+          "rms_error_pct": 34.75004724076336,
+          "measured_ll_peak_V": 75,
+          "predicted_ll_peak_V": 87.72152050751774,
+          "peak_error_pct": 16.962027343356983
+        },
+        {
+          "motor_shaft_rpm": 1000,
+          "measured_ll_rms_V": 85.7,
+          "predicted_ll_rms_V": 112.73908334884582,
+          "rms_error_pct": 31.550855716272835,
+          "measured_ll_peak_V": 150,
+          "predicted_ll_peak_V": 174.74406475601143,
+          "peak_error_pct": 16.496043170674284
+        },
+        {
+          "motor_shaft_rpm": 1502,
+          "measured_ll_rms_V": 132.3,
+          "predicted_ll_rms_V": 169.33410318996647,
+          "rms_error_pct": 27.99251941796406,
+          "measured_ll_peak_V": 225,
+          "predicted_ll_peak_V": 262.4655852635292,
+          "peak_error_pct": 16.651371228235195
+        },
+        {
+          "motor_shaft_rpm": 1999,
+          "measured_ll_rms_V": 181.6,
+          "predicted_ll_rms_V": 225.36542761434282,
+          "rms_error_pct": 24.09990507397733,
+          "measured_ll_peak_V": 300,
+          "predicted_ll_peak_V": 349.3133854472668,
+          "peak_error_pct": 16.43779514908893
+        },
+        {
+          "motor_shaft_rpm": 2501,
+          "measured_ll_rms_V": 221.8,
+          "predicted_ll_rms_V": 281.9604474554634,
+          "rms_error_pct": 27.123736454221543,
+          "measured_ll_peak_V": 350,
+          "predicted_ll_peak_V": 437.03490595478456,
+          "peak_error_pct": 24.867115987081302
+        },
+        {
+          "motor_shaft_rpm": 2999,
+          "measured_ll_rms_V": 269.3,
+          "predicted_ll_rms_V": 338.10451096318866,
+          "rms_error_pct": 25.549391371403136,
+          "measured_ll_peak_V": 425,
+          "predicted_ll_peak_V": 524.0574502032783,
+          "peak_error_pct": 23.307635341947844
+        },
+        {
+          "motor_shaft_rpm": 3501,
+          "measured_ll_rms_V": 315.7,
+          "predicted_ll_rms_V": 394.6995308043093,
+          "rms_error_pct": 25.023608110329203,
+          "measured_ll_peak_V": 500,
+          "predicted_ll_peak_V": 611.778970710796,
+          "peak_error_pct": 22.355794142159198
+        },
+        {
+          "motor_shaft_rpm": 3999,
+          "measured_ll_rms_V": 354.6,
+          "predicted_ll_rms_V": 450.8435943120345,
+          "rms_error_pct": 27.141453556693307,
+          "measured_ll_peak_V": 575,
+          "predicted_ll_peak_V": 698.8015149592895,
+          "peak_error_pct": 21.530698253789485
+        },
+        {
+          "motor_shaft_rpm": 4501,
+          "measured_ll_rms_V": 405.5,
+          "predicted_ll_rms_V": 507.43861415315513,
+          "rms_error_pct": 25.13899239288659,
+          "measured_ll_peak_V": 625,
+          "predicted_ll_peak_V": 786.5230354668074,
+          "peak_error_pct": 25.843685674689187
+        },
+        {
+          "motor_shaft_rpm": 4999,
+          "measured_ll_rms_V": 440.4,
+          "predicted_ll_rms_V": 563.5826776608804,
+          "rms_error_pct": 27.970635254514185,
+          "measured_ll_peak_V": 700,
+          "predicted_ll_peak_V": 873.5455797153011,
+          "peak_error_pct": 24.79222567361444
+        },
+        {
+          "motor_shaft_rpm": 5500,
+          "measured_ll_rms_V": 503.4,
+          "predicted_ll_rms_V": 620.064958418652,
+          "rms_error_pct": 23.175398970729454,
+          "measured_ll_peak_V": 775,
+          "predicted_ll_peak_V": 961.0923561580628,
+          "peak_error_pct": 24.011916923621005
+        },
+        {
+          "motor_shaft_rpm": 5998,
+          "measured_ll_rms_V": 539.8,
+          "predicted_ll_rms_V": 676.2090219263773,
+          "rms_error_pct": 25.270289352793142,
+          "measured_ll_peak_V": 850,
+          "predicted_ll_peak_V": 1048.1149004065567,
+          "peak_error_pct": 23.307635341947844
+        }
+      ]
+    }
+  ],
+  "combined_envelopes": {
+    "all-bands-with-9-turns": {
+      "rms_factor_on_nominal": 0.8724986062515343,
+      "peak_factor_on_nominal": 0.7889163254938739,
+      "components": {
+        "magnet_length": "magnet-length-18.3",
+        "outer_bridge": "bridge-0.060in",
+        "pitch_5_6_vs_full_two_layer": {
+          "rms": 0.9646809104092278,
+          "peak": 0.8774274610414469
+        },
+        "br": 0.9959514170040485,
+        "end_effects_allowance": 0.97,
+        "turns_factor": 1.0
+      },
+      "rms_error_mean_pct": 10.41749780815917,
+      "peak_error_mean_pct": -4.627201795009214,
+      "note": "Every band at the endpoint that lowers the back-EMF, multiplied together; interactions are ignored, so this is approximate"
+    },
+    "all-bands-with-8-turns": {
+      "rms_factor_on_nominal": 0.7755543166680304,
+      "peak_factor_on_nominal": 0.7012589559945546,
+      "components": {
+        "magnet_length": "magnet-length-18.3",
+        "outer_bridge": "bridge-0.060in",
+        "pitch_5_6_vs_full_two_layer": {
+          "rms": 0.9646809104092278,
+          "peak": 0.8774274610414469
+        },
+        "br": 0.9959514170040485,
+        "end_effects_allowance": 0.97,
+        "turns_factor": 0.8888888888888888
+      },
+      "rms_error_mean_pct": -1.8511130594140752,
+      "peak_error_mean_pct": -15.224179373341526,
+      "note": "Every band at the endpoint that lowers the back-EMF, multiplied together; interactions are ignored, so this is approximate"
+    }
+  },
+  "ornl_implied_flux_linkage": {
+    "assumption": "sinusoidal fundamental: lambda = sqrt(2) * E_LL_rms / sqrt(3) / omega_e",
+    "rows": [
+      {
+        "motor_shaft_rpm": 502,
+        "lambda_Wb": 0.16308399228991236
+      },
+      {
+        "motor_shaft_rpm": 1000,
+        "lambda_Wb": 0.16705003966431517
+      },
+      {
+        "motor_shaft_rpm": 1502,
+        "lambda_Wb": 0.17169421904663015
+      },
+      {
+        "motor_shaft_rpm": 1999,
+        "lambda_Wb": 0.17707971373691295
+      },
+      {
+        "motor_shaft_rpm": 2501,
+        "lambda_Wb": 0.17286760347224053
+      },
+      {
+        "motor_shaft_rpm": 2999,
+        "lambda_Wb": 0.17503530224427227
+      },
+      {
+        "motor_shaft_rpm": 3501,
+        "lambda_Wb": 0.1757714082758295
+      },
+      {
+        "motor_shaft_rpm": 3999,
+        "lambda_Wb": 0.1728435144520265
+      },
+      {
+        "motor_shaft_rpm": 4501,
+        "lambda_Wb": 0.17560933842493653
+      },
+      {
+        "motor_shaft_rpm": 4999,
+        "lambda_Wb": 0.17172358034772503
+      },
+      {
+        "motor_shaft_rpm": 5500,
+        "lambda_Wb": 0.1784088044277421
+      },
+      {
+        "motor_shaft_rpm": 5998,
+        "lambda_Wb": 0.1754252806376869
+      }
+    ],
+    "mean_Wb": 0.17304939975168585,
+    "coilem_nominal_lambda_pm_Wb": 0.21842522368780942
+  },
+  "crest_factor": [
+    {
+      "motor_shaft_rpm": 502,
+      "ornl_peak_over_rms": 1.7857142857142858,
+      "coilem_peak_over_rms": 1.5499865669060398
+    },
+    {
+      "motor_shaft_rpm": 1000,
+      "ornl_peak_over_rms": 1.750291715285881,
+      "coilem_peak_over_rms": 1.5499865669060398
+    },
+    {
+      "motor_shaft_rpm": 1502,
+      "ornl_peak_over_rms": 1.7006802721088434,
+      "coilem_peak_over_rms": 1.5499865669060395
+    },
+    {
+      "motor_shaft_rpm": 1999,
+      "ornl_peak_over_rms": 1.6519823788546255,
+      "coilem_peak_over_rms": 1.5499865669060395
+    },
+    {
+      "motor_shaft_rpm": 2501,
+      "ornl_peak_over_rms": 1.5779981965734895,
+      "coilem_peak_over_rms": 1.5499865669060398
+    },
+    {
+      "motor_shaft_rpm": 2999,
+      "ornl_peak_over_rms": 1.5781656145562568,
+      "coilem_peak_over_rms": 1.5499865669060398
+    },
+    {
+      "motor_shaft_rpm": 3501,
+      "ornl_peak_over_rms": 1.5837820715869497,
+      "coilem_peak_over_rms": 1.5499865669060398
+    },
+    {
+      "motor_shaft_rpm": 3999,
+      "ornl_peak_over_rms": 1.6215454032712915,
+      "coilem_peak_over_rms": 1.5499865669060395
+    },
+    {
+      "motor_shaft_rpm": 4501,
+      "ornl_peak_over_rms": 1.5413070283600494,
+      "coilem_peak_over_rms": 1.5499865669060395
+    },
+    {
+      "motor_shaft_rpm": 4999,
+      "ornl_peak_over_rms": 1.5894641235240692,
+      "coilem_peak_over_rms": 1.5499865669060395
+    },
+    {
+      "motor_shaft_rpm": 5500,
+      "ornl_peak_over_rms": 1.5395311879221296,
+      "coilem_peak_over_rms": 1.5499865669060395
+    },
+    {
+      "motor_shaft_rpm": 5998,
+      "ornl_peak_over_rms": 1.5746572804742498,
+      "coilem_peak_over_rms": 1.5499865669060398
+    }
+  ],
+  "stated_not_solved": {
+    "magnet_temperature": "Assumed equal to the 25 degC oil; about -0.1 %/K for each kelvin warmer. No measured magnet temperature exists.",
+    "end_effects": "2D at the 83.82 mm stack. The audit's 1-3% allowance is included in the combined envelopes at 3%.",
+    "skew": "Assumed none; S4's rotor photographs were not inspected for skew. A skew would lower the fundamental by about 1-2%.",
+    "steel_grade": "Not run: Magneto2D has one steel curve (M350-50A, 0.5 mm). The audit asks for two 0.35 mm grades; no sourced curve is available.",
+    "magnet_condition": "The tested motor was used; its magnets' condition is unknown."
+  }
+}
