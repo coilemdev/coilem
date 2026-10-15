@@ -5,13 +5,16 @@ from __future__ import annotations
 import argparse
 import copy
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
 
-from tools.benchmark_suite import HARNESS_VERSION, PHASE_LABELS, PROTOCOL_VERSION
-from tools.benchmark_suite.bldc_metrics import validate_lane_result
-from tools.benchmark_suite.contract import (
+from backend.benchmark_suite import HARNESS_VERSION, PHASE_LABELS, PROTOCOL_VERSION
+from backend.benchmark_suite.bldc_metrics import validate_lane_result
+from backend.benchmark_suite.contract import (
+    CHECKOUT,
+    DATA_ROOT,
     DEFAULT_BUNDLE,
     ROOT,
     SPEC,
@@ -24,11 +27,29 @@ from tools.benchmark_suite.contract import (
     sha,
     write,
 )
-from tools.benchmark_suite.hardware import no_load_back_emf_line_to_line
-from tools.benchmark_suite.metrics import energy_balance_ratio, evaluate_abc, evaluate_bldc, validate_abc
-from tools.benchmark_suite.references import load_bundle, load_suite, verify_materials
-from tools.benchmark_suite.report import build
-from tools.benchmark_suite.worker import compact
+from backend.benchmark_suite.hardware import no_load_back_emf_line_to_line
+from backend.benchmark_suite.metrics import energy_balance_ratio, evaluate_abc, evaluate_bldc, validate_abc
+from backend.benchmark_suite.references import load_bundle, load_suite, verify_materials
+from backend.benchmark_suite.report import build
+from backend.benchmark_suite.worker import compact
+
+# Each job's native runtime (meshes, field frames, solve cache) can reach about
+# 1 GB. It is deleted when the job finishes, and no job starts below this much
+# free space on the output drive (#71).
+DEFAULT_MIN_FREE_GB = 3.0
+
+
+class DiskFloorError(ValueError):
+    """Free space on the output drive fell below the floor between jobs."""
+
+
+def check_free_space(output, job, floor_gb):
+    free = shutil.disk_usage(output).free
+    if free < floor_gb * 1e9:
+        raise DiskFloorError(
+            f"Stopped before {job['case_id']} / {job['stage']}: the output drive has {free / 1e9:.1f} GB free, "
+            f"below the {floor_gb:g} GB floor. Free some space, then rerun with --resume to continue from this job."
+        )
 
 
 def native_runtime_root(directory):
@@ -40,18 +61,18 @@ def native_runtime_root(directory):
 
 
 def inputs(spec, selected):
-    golden = checked_json(ROOT, spec["golden"], spec["golden_sha256"])
+    golden = checked_json(DATA_ROOT, spec["golden"], spec["golden_sha256"])
     configs, protocols = {}, {}
     for case in selected:
         for job in case["jobs"]:
-            config = checked_json(ROOT, job["fixture"], job["fixture_sha256"])
+            config = checked_json(DATA_ROOT, job["fixture"], job["fixture_sha256"])
             if canonical(config) != job["input_sha256"]:
                 raise ValueError(f"Registered request mismatch: {case['id']}")
             configs[case["id"], job["stage"]] = config
         if case["phase"] == "D":
-            protocols[case["id"]] = checked_json(ROOT, case["protocol"], case["protocol_sha256"])
+            protocols[case["id"]] = checked_json(DATA_ROOT, case["protocol"], case["protocol_sha256"])
             if spec["protocol_version"] == "1.3.0":
-                from tools.benchmark_suite.bldc_metrics import golden_sector
+                from backend.benchmark_suite.bldc_metrics import golden_sector
 
                 protocol = protocols[case["id"]]
                 if not isinstance(protocol.get("current_angle_convention"), dict):
@@ -64,7 +85,7 @@ def hardware_targets(selected):
     """Measured hardware data for cases that register an exploratory correlation."""
 
     return {
-        case["id"]: checked_json(ROOT, case["hardware_reference"]["file"], case["hardware_reference"]["sha256"])
+        case["id"]: checked_json(DATA_ROOT, case["hardware_reference"]["file"], case["hardware_reference"]["sha256"])
         for case in selected
         if case.get("hardware_reference")
     }
@@ -173,8 +194,8 @@ def execute(args):
     if args.out_dir is None:
         raise ValueError("--out-dir is required; use a directory outside the source checkout")
     output = args.out_dir.resolve()
-    if output.is_relative_to(ROOT):
-        raise ValueError("Keep generated artifacts outside the source checkout (--out-dir ../benchmark-output/run-id)")
+    if output.is_relative_to(ROOT) or (CHECKOUT is not None and output.is_relative_to(CHECKOUT)):
+        raise ValueError("Keep generated artifacts outside the source checkout or installation (--out-dir ../benchmark-output/run-id)")
     references, reference_manifest, bundle_sha = {}, {}, None
     if not args.no_reference and not args.smoke:
         reference_manifest, references, bundle_sha = load_bundle(args.reference_bundle.resolve(), spec)
@@ -243,7 +264,7 @@ def execute(args):
                         "config": config,
                         "config_sha256": canonical(config),
                         "identity": runtime,
-                        "binary": binary.relative_to(ROOT).as_posix(),
+                        "binary": binary.relative_to(ROOT).as_posix() if binary.is_relative_to(ROOT) else str(binary),
                     }
                     if experimental:
                         request["experimental_rotor"] = True
@@ -262,7 +283,9 @@ def execute(args):
                 "status": "RUNNING",
             }
             write(path, manifest)
-        for job in manifest["jobs"]:
+        floor_gb = getattr(args, "min_free_gb", DEFAULT_MIN_FREE_GB)
+        keep_runtime = getattr(args, "keep_runtime", False)
+        for index, job in enumerate(manifest["jobs"], 1):
             if job["status"] in ("UNSUPPORTED", "ERROR"):
                 continue
             directory = (output / job["result"]).parent
@@ -275,9 +298,15 @@ def execute(args):
                     continue
                 if sha(output / job["request"]) != job["request_sha256"]:
                     raise ValueError("Registered request changed")
+            try:
+                check_free_space(output, job, floor_gb)
+            except DiskFloorError:
+                manifest.update(status="STOPPED_LOW_DISK")
+                write(path, manifest)
+                raise
             job.update(status="RUNNING", started_at=now())
             write(path, manifest)
-            print(f"{job['phase']} / {job['case_id']} / {job['stage']}: starting native solve", flush=True)
+            print(f"[{index}/{len(manifest['jobs'])}] {job['phase']} / {job['case_id']} / {job['stage']}: starting native solve", flush=True)
             env = dict(os.environ, PYTHONUNBUFFERED="1", PYTHONUTF8="1", COILEM_USER_DATA_ROOT=native_runtime_root(directory))
             env.pop("PYTHONPATH", None)
             with (directory / "worker.log").open("ab") as log:
@@ -285,7 +314,7 @@ def execute(args):
                     [
                         sys.executable,
                         "-m",
-                        "tools.benchmark_suite.worker",
+                        "backend.benchmark_suite.worker",
                         "--request",
                         str(output / job["request"]),
                         "--output",
@@ -305,6 +334,9 @@ def execute(args):
                 job.update(status=data["status"], result_sha256=sha(output / job["result"]), error=data.get("error"))
             else:
                 job.update(status="ERROR", error="Worker exited without a measurement artifact")
+            if not keep_runtime:
+                # The measurement is in result.json; the runtime only fed it.
+                shutil.rmtree(native_runtime_root(directory), ignore_errors=True)
             write(path, manifest)
             print(f"{job['case_id']} / {job['stage']}: {job['status']}", flush=True)
             # Check again before registering or launching the next solve.
@@ -348,11 +380,19 @@ def main():
     parser.add_argument("--smoke", action="store_true", help="Reduced coarse grid; never a numerical parity result")
     parser.add_argument("--allow-dirty", action="store_true", help="Explicitly register actual uncommitted source hashes")
     parser.add_argument("--pdf", action="store_true", help="Also export a PDF using the existing reportlab dependency")
+    parser.add_argument(
+        "--min-free-gb", type=float, default=DEFAULT_MIN_FREE_GB,
+        help=f"Stop before a job when the output drive has less free space (default {DEFAULT_MIN_FREE_GB:g} GB)",
+    )
+    parser.add_argument("--keep-runtime", action="store_true", help="Keep each job's native runtime and solve cache")
     args = parser.parse_args()
     if args.resume and args.report_only:
         parser.error("--resume and --report-only are mutually exclusive")
     try:
         return execute(args)
+    except DiskFloorError as exc:
+        print(f"Benchmark stopped: {exc}", file=sys.stderr)
+        return 2
     except (ValueError, KeyError, OSError, subprocess.CalledProcessError) as exc:
         print(f"Benchmark refused: {exc}", file=sys.stderr)
         return 2

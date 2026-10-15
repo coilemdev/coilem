@@ -1,9 +1,10 @@
 """Build hooks that make an installed coilEM independent of the source checkout.
 
 A wheel build (``pip install .`` or ``python -m build --wheel``) copies into the
-``backend`` package everything the runtime reads: the repository data files,
-the production UI bundle, the Magneto2D release binary and a stamped build
-identity. Packaged data files must match ``snapshot-manifest.json``. Editable
+``backend`` package everything the runtime reads: the repository data files
+(including the benchmark suite, reference and records ``coilem benchmark``
+reads), the production UI bundle, the Magneto2D release binary and a stamped
+build identity. Packaged data files must match ``snapshot-manifest.json``. Editable
 installs skip all of this and read from the checkout.
 
 Building the UI needs Node.js and npm, and building the solver needs Cargo.
@@ -41,6 +42,7 @@ def _load(name: str, relative: str):
 
 
 resources = _load("_coilem_build_resources", "backend/resources.py")
+physics = _load("_coilem_build_physics", "backend/benchmark_suite/physics.py")
 rust_licenses = _load("_coilem_build_rust_licenses", "tools/release/rust_licenses.py")
 release_version = _load("_coilem_build_release_version", "tools/release/version.py")
 
@@ -86,7 +88,7 @@ def _check_packaged_sources() -> None:
     _require_checkout(ROOT / "snapshot-manifest.json", "nothing: data files are always checked")
     manifest = json.loads((ROOT / "snapshot-manifest.json").read_text(encoding="utf-8"))
     recorded = {entry["path"]: entry["sha256"] for entry in manifest["files"]}
-    for relative in (*resources.PACKAGED_DATA_FILES, *resources.PACKAGE_DATA_FILES):
+    for relative in (*resources.PACKAGED_DATA_FILES, *resources.PACKAGE_DATA_FILES, *resources.benchmark_data_files(ROOT)):
         if _sha256(ROOT / relative) != recorded.get(relative):
             raise SystemExit(f"coilEM build: {relative} differs from its snapshot-manifest.json entry.")
 
@@ -163,7 +165,7 @@ def stage_runtime_files(package: Path, version: str) -> None:
     _stamp_package_version(package, version)
     data = package / resources.PACKAGED_DATA_DIR
     shutil.rmtree(data, ignore_errors=True)
-    for relative in resources.PACKAGED_DATA_FILES:
+    for relative in (*resources.PACKAGED_DATA_FILES, *resources.benchmark_data_files(ROOT)):
         target = data / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / relative, target)
@@ -194,6 +196,9 @@ def stage_runtime_files(package: Path, version: str) -> None:
         "magneto2d_sha256": _sha256(packaged_binary),
         "ui_bundle_sha256": resources.directory_sha256(ui),
         "toolchain": {**binary_record["toolchain"], **ui_toolchain},
+        # The wheel carries the binary, not its Rust sources: `coilem benchmark`
+        # matches records by these hashes (#71).
+        physics.BUILD_INFO_KEY: physics.solver_source_hashes(ROOT),
     }
     (package / resources.BUILD_INFO_FILE).write_text(json.dumps(build_info, indent=2) + "\n", encoding="utf-8")
 

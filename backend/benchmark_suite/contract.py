@@ -13,11 +13,35 @@ from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
-from tools.benchmark_suite import HARNESS_VERSION, PROTOCOL_VERSION, SUPPORTED_PROTOCOL_VERSIONS
+from backend.benchmark_suite import HARNESS_VERSION, PROTOCOL_VERSION, SUPPORTED_PROTOCOL_VERSIONS
+from backend.resources import (
+    BENCHMARK_REFERENCE_BUNDLE_DIR,
+    BENCHMARK_SUITE_FILE,
+    BUILD_INFO_FILE,
+    PACKAGED_DATA_DIR,
+    application_commit,
+    source_checkout_root,
+)
 
+# The directory holding the ``backend`` package: the repository in a source
+# checkout, ``site-packages`` in an installed package. Provenance hashes files
+# relative to it, so both layouts name them alike.
 ROOT = Path(__file__).resolve().parents[2]
-SPEC = ROOT / "benchmarks/abcd-v1.3/benchmark_spec.json"
-DEFAULT_BUNDLE = ROOT / "benchmarks/reference-baselines/ipm-high-output-v3"
+CHECKOUT = source_checkout_root()
+
+
+def _data_root():
+    """Where the registered suite lives: the wheel's packaged copy, else the checkout."""
+
+    packaged = ROOT / "backend" / PACKAGED_DATA_DIR
+    if (packaged / BENCHMARK_SUITE_FILE).is_file():
+        return packaged
+    return CHECKOUT if CHECKOUT is not None else packaged
+
+
+DATA_ROOT = _data_root()
+SPEC = DATA_ROOT / BENCHMARK_SUITE_FILE
+DEFAULT_BUNDLE = DATA_ROOT / BENCHMARK_REFERENCE_BUNDLE_DIR
 # Native solver isolation can change process PATH. Provenance calls must use the
 # Git executable/environment resolved before that scope, without changing solve options.
 _GIT_EXECUTABLE = shutil.which("git")
@@ -71,25 +95,42 @@ def git(*args):
     return subprocess.check_output([_GIT_EXECUTABLE, "-C", str(ROOT), *args], env=_GIT_ENV, text=True).strip()
 
 
+def source_files():
+    """Hash the sources a run executes, including uncommitted code when explicitly allowed.
+
+    A checkout adds the solver sources it builds Magneto2D from; an installed
+    package adds its stamped build identity, which records them (#71).
+    """
+
+    sources = {}
+    for root, directory, suffixes in (
+        (ROOT, "backend", {".py"}),
+        (DATA_ROOT, "materials", {".csv", ".json"}),
+        *(((CHECKOUT, "solvers/magneto2d/src", {".rs"}),) if CHECKOUT is not None else ()),
+    ):
+        for path in sorted((root / directory).rglob("*")):
+            if path.is_file() and path.suffix in suffixes:
+                sources[path.relative_to(root).as_posix()] = sha(path)
+    if CHECKOUT is not None:
+        for name in ("tools/run_benchmarks.py", "solvers/magneto2d/Cargo.toml", "solvers/magneto2d/Cargo.lock", "snapshot-manifest.json"):
+            sources[name] = sha(CHECKOUT / name)
+    elif (ROOT / "backend" / BUILD_INFO_FILE).is_file():
+        sources[f"backend/{BUILD_INFO_FILE}"] = sha(ROOT / "backend" / BUILD_INFO_FILE)
+    return sources
+
+
 def identity(binary, *, protocol_version=PROTOCOL_VERSION):
     if protocol_version not in SUPPORTED_PROTOCOL_VERSIONS:
         raise ValueError("Unsupported suite protocol")
-    # Hash actual sources, including uncommitted code when explicitly allowed.
-    sources = {}
-    for directory, suffixes in (
-        ("backend", {".py"}),
-        ("tools/benchmark_suite", {".py"}),
-        ("solvers/magneto2d/src", {".rs"}),
-        ("materials", {".csv", ".json"}),
-    ):
-        for path in sorted((ROOT / directory).rglob("*")):
-            if path.is_file() and path.suffix in suffixes:
-                sources[path.relative_to(ROOT).as_posix()] = sha(path)
-    for name in ("tools/run_benchmarks.py", "solvers/magneto2d/Cargo.toml", "solvers/magneto2d/Cargo.lock", "snapshot-manifest.json"):
-        sources[name] = sha(ROOT / name)
+    sources = source_files()
+    # A checkout names its commit and whether it is clean. An installed package
+    # has no Git: its stamped build names the commit, and the file hashes
+    # above are what a benchmark record is matched against.
+    versioned = CHECKOUT is not None and _GIT_EXECUTABLE is not None and (CHECKOUT / ".git").exists()
     return {
-        "commit": git("rev-parse", "HEAD"),
-        "dirty": bool(git("status", "--porcelain")),
+        "installation": "source" if CHECKOUT is not None else "package",
+        "commit": git("rev-parse", "HEAD") if versioned else application_commit(),
+        "dirty": bool(git("status", "--porcelain")) if versioned else None,
         "source_sha256": canonical(sources),
         "source_files": sources,
         "binary_sha256": sha(binary),

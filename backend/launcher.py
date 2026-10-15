@@ -487,7 +487,16 @@ def launch(args: argparse.Namespace) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="coilem", description="Start coilEM and open it in your browser.")
+    argv = sys.argv[1:] if argv is None else argv
+    if argv[:1] == ["benchmark"]:
+        from backend.benchmark_suite.command import main as benchmark
+
+        return benchmark(argv[1:])
+    parser = argparse.ArgumentParser(
+        prog="coilem",
+        description="Start coilEM and open it in your browser.",
+        epilog="Run `coilem benchmark --help` to check this installation against the published benchmark.",
+    )
     parser.add_argument(
         "--port",
         type=int,

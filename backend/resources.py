@@ -49,6 +49,13 @@ PACKAGE_DATA_FILES = (
     "backend/elmer/profiles/v1.json",
     "backend/mesh_profiles/gmsh_profiles.json",
 )
+# ``coilem benchmark`` (#71) reads the registered suite, everything it
+# registers, the frozen reference bundle and the published per-platform
+# records. ``benchmark_data_files`` lists them; the build copies them into
+# ``backend/_data`` like the files above.
+BENCHMARK_SUITE_FILE = "benchmarks/abcd-v1.3/benchmark_spec.json"
+BENCHMARK_REFERENCE_BUNDLE_DIR = "benchmarks/reference-baselines/ipm-high-output-v3"
+BENCHMARK_RECORDS_DIR = "benchmarks/records"
 
 
 def package_resource(*parts: str) -> Traversable:
@@ -79,6 +86,24 @@ def data_file(relative_path: str) -> Traversable:
     if root is not None and (root / relative_path).is_file():
         return root / relative_path
     raise FileNotFoundError(f"coilEM data file {relative_path} is missing from this installation")
+
+
+def benchmark_data_files(root: Path) -> tuple[str, ...]:
+    """The repository files ``coilem benchmark`` reads, relative to ``root``."""
+
+    spec = json.loads((root / BENCHMARK_SUITE_FILE).read_text(encoding="utf-8"))
+    files = {BENCHMARK_SUITE_FILE, spec["golden"]}
+    for case in spec["cases"]:
+        files.update(job["fixture"] for job in case["jobs"])
+        if case.get("protocol"):
+            files.add(case["protocol"])
+        if case.get("hardware_reference"):
+            files.add(case["hardware_reference"]["file"])
+    bundle = json.loads((root / BENCHMARK_REFERENCE_BUNDLE_DIR / "manifest.json").read_text(encoding="utf-8"))
+    files.add(f"{BENCHMARK_REFERENCE_BUNDLE_DIR}/manifest.json")
+    files.update(f"{BENCHMARK_REFERENCE_BUNDLE_DIR}/{entry['file']}" for entry in bundle["records"].values())
+    files.update(path.relative_to(root).as_posix() for path in (root / BENCHMARK_RECORDS_DIR).glob("*.json"))
+    return tuple(sorted(files))
 
 
 def read_data_json(relative_path: str) -> Any:

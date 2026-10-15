@@ -113,11 +113,11 @@ def test_only_research_tools_can_enable_experimental_rotors():
     assert mentions == {
         "backend/public_policy.py",
         "tools/experimental_solve.py",
-        "tools/benchmark_suite/cli.py",
-        "tools/benchmark_suite/worker.py",
+        "backend/benchmark_suite/cli.py",
+        "backend/benchmark_suite/worker.py",
     }
-    cli = (REPO_ROOT / "tools/benchmark_suite/cli.py").read_text(encoding="utf-8")
-    worker = (REPO_ROOT / "tools/benchmark_suite/worker.py").read_text(encoding="utf-8")
+    cli = (REPO_ROOT / "backend/benchmark_suite/cli.py").read_text(encoding="utf-8")
+    worker = (REPO_ROOT / "backend/benchmark_suite/worker.py").read_text(encoding="utf-8")
     assert 'experimental = bool(case.get("experimental_rotor"))' in cli
     assert 'allow_experimental_rotors=bool(request.get("experimental_rotor"))' in worker
 
