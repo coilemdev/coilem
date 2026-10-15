@@ -20,7 +20,10 @@ from backend.winding_utils import concentrated_uses_tooth_coils
 
 QualificationStatus = Literal["qualified", "experimental", "unsupported"]
 
-QUALIFICATION_BASIS = "coilEM benchmark vs FEMM v3, measured at 738d951"
+# The basis, reasons and caveats travel in public preview, solve and saved-run
+# payloads, which must not name the reference solver or thermal analysis
+# (tools/smoke_public_runtime.py); docs/VALIDATION.md names the report in full.
+QUALIFICATION_BASIS = "coilEM benchmark report, measured at 738d951"
 # Repository path of the report behind every reason below. tests/test_qualification.py
 # checks the reasons against its outcomes and its sources against the current code.
 QUALIFICATION_REPORT = "benchmarks/windows-v3-20261015-738d951/benchmark_summary.json"
@@ -79,7 +82,7 @@ def _combination(config: MotorConfig) -> tuple[QualificationStatus, str]:
         if rotor.ipm_topology in EXPERIMENTAL_IPM_TOPOLOGIES and experimental_rotors_enabled():
             return (
                 "experimental",
-                "HoleM50 rotor (ORNL 2004 Prius): an experimental rotor path with no benchmark qualification; its FEMM parity is pending.",
+                "HoleM50 rotor (ORNL 2004 Prius): an experimental rotor path with no benchmark qualification; its reference comparison is pending.",
             )
         if rotor.ipm_topology not in (_QUALIFIED_IPM, _EXPERIMENTAL_IPM):
             return "unsupported", "Only flat-buried and V-shape IPM rotors are supported in this preview."
@@ -88,7 +91,7 @@ def _combination(config: MotorConfig) -> tuple[QualificationStatus, str]:
         if rotor.ipm_topology == _EXPERIMENTAL_IPM:
             return (
                 "experimental",
-                "V-shape IPM: 5 of 6 benchmark fixtures pass; the baseline's peak Back-EMF is YELLOW (14.8% from FEMM).",
+                "V-shape IPM: 5 of 6 benchmark fixtures pass; the baseline's peak Back-EMF is YELLOW (14.8% from the reference).",
             )
         return "qualified", "Flat-buried IPM, single-layer concentrated winding, sinusoidal current: all 6 benchmark fixtures pass."
 

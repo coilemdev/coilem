@@ -460,8 +460,8 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 6235,
-      "sha256": "1d25d240bed33db508dfa3d6348afc1fb8d908846cb2ee191201c58174761141"
+      "bytes": 6481,
+      "sha256": "a8b2d50a4b3d23fc70fb81d0cfd05e77c71ae6de2ab4eef637819cb354d455c7"
     },
     {
       "path": "backend/resources.py",
@@ -5950,8 +5950,8 @@
     },
     {
       "path": "tests/test_qualification.py",
-      "bytes": 12334,
-      "sha256": "3f51ae8abae38f4b46d4ce3c1a9e0d9b45603e6d0a0fc58bb40f6b60723623ee"
+      "bytes": 14166,
+      "sha256": "e5f729588b359752642106a40a8b6fb86f597f4ac0b17aa683e3b463badfafbd"
     },
     {
       "path": "tests/test_release_tools.py",
