@@ -1050,7 +1050,10 @@ export function PublicMotor3D({
       )
       : null;
     for (let slot = 0; slot < config.stator.slot_count; slot += 1) {
-      const angle = slot * slotPitch;
+      // The backend centres slot k at k slot pitches and tooth k between slots
+      // k and k + 1, the frame the 2D view and the tooth-coil rules use.
+      const angle = (slot + 0.5) * slotPitch;
+      const slotAngle = slot * slotPitch;
       const tooth = new THREE.Mesh(toothGeometry, materials.tooth);
       tooth.rotation.z = angle;
       makeSelectable(tooth, { id: `3d-stator-tooth-${slot + 1}`, kind: 'stator', label: `Stator tooth ${slot + 1}`, role: 'Stationary magnetic flux path', slotIndex: slot + 1 });
@@ -1090,10 +1093,10 @@ export function PublicMotor3D({
         geometries.push(coilGeometry);
         const phaseMaterial = { A: materials.phaseA, B: materials.phaseB, C: materials.phaseC }[phase];
         const coil = new THREE.Mesh(coilGeometry, phaseMaterial);
-        coil.rotation.z = angle + slotPitch / 2;
+        coil.rotation.z = slotAngle;
         makeSelectable(coil, { id: `3d-winding-${slot + 1}`, kind: 'winding', label: `Slot ${slot + 1} · phase ${phase}${direction}`, role: 'Current-carrying stator winding', slotIndex: slot + 1, phase, direction });
         windingsGroup.add(coil);
-        registerRadialExplosion(coil, angle + slotPitch / 2, outerRadius * 0.16);
+        registerRadialExplosion(coil, slotAngle, outerRadius * 0.16);
       }
     }
     scene.add(statorGroup, teethGroup, windingsGroup);
@@ -1104,6 +1107,7 @@ export function PublicMotor3D({
       const harness = buildWindingHarness({
         slotCount: config.stator.slot_count,
         slotPitchRad: slotPitch,
+        toothAngleOffsetRad: slotPitch / 2,
         phaseOfSlot: (slot) => (
           toothCoilByTooth ? toothCoilByTooth.get(slot)?.phase ?? null : (['A', 'C', 'B'] as const)[slot % 3]
         ),
