@@ -9,6 +9,7 @@ import os
 import platform
 import shutil
 import subprocess
+import sysconfig
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
@@ -89,6 +90,16 @@ def checked_json(root, relative, expected_sha):
     return read(path)
 
 
+def machine_name():
+    """The processor architecture, even where ``platform.machine()`` is empty.
+
+    Windows Python 3.11 and older read it from PROCESSOR_ARCHITECTURE, which a
+    minimal environment may lack; the interpreter's build platform names it.
+    """
+
+    return platform.machine() or sysconfig.get_platform().rsplit("-", 1)[-1]
+
+
 def git(*args):
     if not _GIT_EXECUTABLE:
         raise ValueError("Git is required to register candidate provenance")
@@ -136,7 +147,7 @@ def identity(binary, *, protocol_version=PROTOCOL_VERSION):
         "binary_sha256": sha(binary),
         "python": platform.python_version(),
         "platform": platform.platform(),
-        "machine": platform.machine(),
+        "machine": machine_name(),
         "python_executable_sha256": sha(Path(os.sys.executable)),
         "dependencies": {name: importlib.metadata.version(name) for name in ("gmsh", "meshio", "numpy", "pydantic")},
         "harness_version": HARNESS_VERSION,

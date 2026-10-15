@@ -15,7 +15,7 @@ import os
 import platform
 from datetime import datetime
 
-from backend.benchmark_suite.contract import CHECKOUT, DATA_ROOT, ROOT, read, sha
+from backend.benchmark_suite.contract import CHECKOUT, DATA_ROOT, ROOT, machine_name, read, sha
 from backend.benchmark_suite.physics import (
     BUILD_INFO_KEY,
     PHYSICS_DATA_SOURCES,
@@ -48,9 +48,9 @@ def platform_key(system=None, machine=None):
     """``macos-arm64``, ``windows-x86_64``, ``linux-x86_64``: one record per key."""
 
     system = (system or platform.system()).lower()
-    machine = (machine or platform.machine()).lower()
+    machine = (machine or machine_name()).lower()
     system = {"darwin": "macos"}.get(system, system)
-    machine = {"amd64": "x86_64", "x64": "x86_64", "aarch64": "arm64"}.get(machine, machine)
+    machine = {"amd64": "x86_64", "x64": "x86_64", "aarch64": "arm64", "win32": "x86"}.get(machine, machine)
     return f"{system}-{machine}"
 
 
@@ -73,8 +73,10 @@ def gated_values(row):
         return {}
     measurements = row["measurements"]
     if row["phase"] == "D":
+        # fsum is exact, so the mean is the same on every Python version
+        # (3.12 changed how sum() rounds floats).
         return {
-            f"{stage}.mean_torque_Nm": sum(result["torque_Nm"]) / len(result["torque_Nm"])
+            f"{stage}.mean_torque_Nm": math.fsum(result["torque_Nm"]) / len(result["torque_Nm"])
             for stage, result in sorted(measurements.items())
         }
     result = measurements["native"]

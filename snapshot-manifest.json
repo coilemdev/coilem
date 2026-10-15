@@ -130,8 +130,8 @@
     },
     {
       "path": "backend/benchmark_suite/contract.py",
-      "bytes": 6351,
-      "sha256": "f578c3e1a12d90412700b56a4fd077e61f4b88d55c9344cd8912f6d2506fd53e"
+      "bytes": 6708,
+      "sha256": "40c014b356b6616b31d9e4677c4fa25b7f33dbf9692340bf15206444bbf40db9"
     },
     {
       "path": "backend/benchmark_suite/hardware.py",
@@ -150,8 +150,8 @@
     },
     {
       "path": "backend/benchmark_suite/record.py",
-      "bytes": 10493,
-      "sha256": "fe47a21cab2587f9507b9bf33efafae8c18605b891b55cc26d83fc073d226f1f"
+      "bytes": 10648,
+      "sha256": "37b83a6e5aa3cfd2d47bd5ff8f390e912ef5ba90ebd7e06f0c126b03332f795b"
     },
     {
       "path": "backend/benchmark_suite/references.py",
@@ -5940,8 +5940,8 @@
     },
     {
       "path": "tests/test_benchmark_command.py",
-      "bytes": 12194,
-      "sha256": "076f78294ddd54ef5e869067d31839f8ea0096bbe9a0cd0f0236f2ba6feeee20"
+      "bytes": 12821,
+      "sha256": "16db67f674d6b86fbd59e7b168aa0edbdd899b5651b36f601c4cf68fddcdc98e"
     },
     {
       "path": "tests/test_benchmark_suite.py",

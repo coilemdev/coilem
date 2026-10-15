@@ -154,6 +154,18 @@ def test_each_platform_selects_its_record_or_the_closest(system, machine, key, c
     assert (selected["platform"] if selected else None, cross_platform) == (key, cross)
 
 
+def test_platform_key_survives_an_environment_without_the_processor_variable(monkeypatch) -> None:
+    # Windows Python 3.11 reads platform.machine() from PROCESSOR_ARCHITECTURE; a minimal
+    # environment, like the wheel acceptance test's, leaves it empty.
+    from backend.benchmark_suite import contract
+
+    monkeypatch.setattr(contract.platform, "machine", lambda: "")
+    monkeypatch.setattr(contract.sysconfig, "get_platform", lambda: "win-amd64")
+    monkeypatch.setattr(record.platform, "system", lambda: "Windows")
+    assert contract.machine_name() == "amd64"
+    assert record.platform_key() == "windows-x86_64"
+
+
 def test_quick_subset_is_one_passing_case_per_phase() -> None:
     cases = command.select_cases(load_suite(SPEC), list("ABCD"), quick=True)
     assert [case["phase"] for case in cases] == list("ABCD")
