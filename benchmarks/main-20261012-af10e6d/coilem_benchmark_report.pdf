@@ -38,7 +38,7 @@ endobj
 6 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_4p12s_simple__baseline__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_4p12s_simple__baseline__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -70,7 +70,7 @@ endobj
 10 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_4p12s_simple__high_current__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_4p12s_simple__high_current__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -97,7 +97,7 @@ endobj
 13 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_4p12s_simple__tight_airgap__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_4p12s_simple__tight_airgap__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -124,7 +124,7 @@ endobj
 16 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_4p12s_simple_noload__baseline__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_4p12s_simple_noload__baseline__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -151,7 +151,7 @@ endobj
 19 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_4p12s_simple_noload__high_current__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_4p12s_simple_noload__high_current__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -178,7 +178,7 @@ endobj
 22 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -205,7 +205,7 @@ endobj
 25 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_8p12s_concentrated__baseline__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_8p12s_concentrated__baseline__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -232,7 +232,7 @@ endobj
 28 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_8p12s_concentrated__high_current__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_8p12s_concentrated__high_current__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -259,7 +259,7 @@ endobj
 31 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_8p12s_concentrated__tight_airgap__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_8p12s_concentrated__tight_airgap__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -286,7 +286,7 @@ endobj
 34 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_8p12s_reference_angle30__baseline__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_8p12s_reference_angle30__baseline__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -313,7 +313,7 @@ endobj
 37 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/ipm_flat_12s10p_fscw_contract__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/ipm_flat_12s10p_fscw_contract__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -340,7 +340,7 @@ endobj
 40 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/ipm_flat_24s16p_industrial_contract__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/ipm_flat_24s16p_industrial_contract__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -367,7 +367,7 @@ endobj
 43 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/ipm_flat_4p12s_micro_contract__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/ipm_flat_4p12s_micro_contract__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -394,7 +394,7 @@ endobj
 46 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -421,7 +421,7 @@ endobj
 49 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/ipm_flat_8p12s_fsae_contract__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/ipm_flat_8p12s_fsae_contract__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -448,7 +448,7 @@ endobj
 52 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -475,7 +475,7 @@ endobj
 55 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/ipm_vshape_8p12s_baseline_contract__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/ipm_vshape_8p12s_baseline_contract__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -502,7 +502,7 @@ endobj
 58 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -529,7 +529,7 @@ endobj
 61 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -556,7 +556,7 @@ endobj
 64 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -583,7 +583,7 @@ endobj
 67 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -610,7 +610,7 @@ endobj
 70 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -637,7 +637,7 @@ endobj
 73 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/ornl_prius_2004_ipm__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/ornl_prius_2004_ipm__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -654,7 +654,7 @@ endobj
 75 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_12p36s_distributed_femm_validation__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_12p36s_distributed_femm_validation__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -681,7 +681,7 @@ endobj
 78 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_8p24s_distributed_femm_validation__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_8p24s_distributed_femm_validation__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -708,7 +708,7 @@ endobj
 81 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_8p48s_chorded_5_6__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_8p48s_chorded_5_6__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -735,7 +735,7 @@ endobj
 84 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_8p48s_distributed_femm_validation__native.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_8p48s_distributed_femm_validation__native.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 186.04 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -762,21 +762,21 @@ endobj
 87 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_14p12s_high_pole__native-standard.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_14p12s_high_pole__native-standard.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 624.6398 228.28 636.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
 88 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_14p12s_high_pole__native-fine.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_14p12s_high_pole__native-fine.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 606.6398 205.49 618.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
 89 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_14p12s_high_pole__analytical.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_14p12s_high_pole__analytical.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 588.6398 201.04 600.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -813,21 +813,21 @@ endobj
 93 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_4p12s_small__native-standard.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_4p12s_small__native-standard.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 228.28 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
 94 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_4p12s_small__native-fine.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_4p12s_small__native-fine.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 742.6398 205.49 754.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
 95 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_4p12s_small__analytical.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_4p12s_small__analytical.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 724.6398 201.04 736.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -864,21 +864,21 @@ endobj
 99 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_8p12s_reference__native-standard.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_8p12s_reference__native-standard.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 760.6398 228.28 772.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
 100 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_8p12s_reference__native-fine.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_8p12s_reference__native-fine.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 742.6398 205.49 754.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
 101 0 obj
 <<
 /A <<
-/S /URI /Type /Action /URI (file:///C:/Users/14845/Documents/GitHub/benchmark-output/main-0.2.1-magneto-0.3.3-af10e6dc8a5b/report/fixtures/spm_8p12s_reference__analytical.json)
+/S /URI /Type /Action /URI (https://github.com/coilemdev/coilem/blob/main/benchmarks/main-20261012-af10e6d/fixtures/spm_8p12s_reference__analytical.json)
 >> /Border [ 0 0 0 ] /Rect [ 66 724.6398 201.04 736.6398 ] /Subtype /Link /Type /Annot
 >>
 endobj
@@ -1391,171 +1391,171 @@ xref
 0000000331 00000 n 
 0000000538 00000 n 
 0000000745 00000 n 
-0000001039 00000 n 
-0000001148 00000 n 
-0000001373 00000 n 
-0000001580 00000 n 
-0000001879 00000 n 
-0000002106 00000 n 
-0000002314 00000 n 
-0000002613 00000 n 
-0000002840 00000 n 
-0000003048 00000 n 
-0000003350 00000 n 
-0000003577 00000 n 
-0000003785 00000 n 
-0000004091 00000 n 
-0000004318 00000 n 
-0000004526 00000 n 
-0000004832 00000 n 
-0000005059 00000 n 
-0000005267 00000 n 
-0000005568 00000 n 
-0000005795 00000 n 
-0000006003 00000 n 
-0000006308 00000 n 
-0000006535 00000 n 
-0000006743 00000 n 
-0000007048 00000 n 
-0000007275 00000 n 
-0000007483 00000 n 
-0000007789 00000 n 
-0000008016 00000 n 
-0000008224 00000 n 
-0000008522 00000 n 
-0000008749 00000 n 
-0000008957 00000 n 
-0000009261 00000 n 
-0000009488 00000 n 
-0000009696 00000 n 
-0000009994 00000 n 
-0000010221 00000 n 
-0000010429 00000 n 
-0000010740 00000 n 
-0000010967 00000 n 
-0000011175 00000 n 
-0000011472 00000 n 
-0000011699 00000 n 
-0000011907 00000 n 
-0000012216 00000 n 
-0000012443 00000 n 
-0000012651 00000 n 
-0000012954 00000 n 
-0000013181 00000 n 
-0000013389 00000 n 
-0000013699 00000 n 
-0000013926 00000 n 
-0000014134 00000 n 
-0000014441 00000 n 
-0000014668 00000 n 
-0000014876 00000 n 
-0000015184 00000 n 
-0000015411 00000 n 
-0000015619 00000 n 
-0000015925 00000 n 
-0000016152 00000 n 
-0000016360 00000 n 
-0000016671 00000 n 
-0000016898 00000 n 
-0000017106 00000 n 
-0000017394 00000 n 
-0000017621 00000 n 
-0000017928 00000 n 
-0000018155 00000 n 
-0000018363 00000 n 
-0000018669 00000 n 
-0000018896 00000 n 
-0000019104 00000 n 
-0000019394 00000 n 
-0000019621 00000 n 
-0000019829 00000 n 
-0000020135 00000 n 
-0000020362 00000 n 
-0000020570 00000 n 
-0000020868 00000 n 
-0000021162 00000 n 
-0000021455 00000 n 
-0000021696 00000 n 
-0000021904 00000 n 
-0000022112 00000 n 
-0000022405 00000 n 
-0000022694 00000 n 
-0000022982 00000 n 
-0000023223 00000 n 
-0000023431 00000 n 
-0000023639 00000 n 
-0000023936 00000 n 
-0000024230 00000 n 
-0000024523 00000 n 
-0000024767 00000 n 
-0000024976 00000 n 
-0000025185 00000 n 
-0000025257 00000 n 
-0000025543 00000 n 
-0000026064 00000 n 
-0000027561 00000 n 
-0000028418 00000 n 
-0000030627 00000 n 
-0000032157 00000 n 
-0000034384 00000 n 
-0000035914 00000 n 
-0000038097 00000 n 
-0000039622 00000 n 
-0000041850 00000 n 
-0000043380 00000 n 
-0000045607 00000 n 
-0000047137 00000 n 
-0000049339 00000 n 
-0000050864 00000 n 
-0000053094 00000 n 
-0000054628 00000 n 
-0000056853 00000 n 
-0000058387 00000 n 
-0000060614 00000 n 
-0000062132 00000 n 
-0000064325 00000 n 
-0000065850 00000 n 
-0000067448 00000 n 
-0000069040 00000 n 
-0000070653 00000 n 
-0000072210 00000 n 
-0000073818 00000 n 
-0000075398 00000 n 
-0000077006 00000 n 
-0000078564 00000 n 
-0000080184 00000 n 
-0000081721 00000 n 
-0000083348 00000 n 
-0000084908 00000 n 
-0000086503 00000 n 
-0000088118 00000 n 
-0000089747 00000 n 
-0000091389 00000 n 
-0000092994 00000 n 
-0000094641 00000 n 
-0000096253 00000 n 
-0000097882 00000 n 
-0000099474 00000 n 
-0000101052 00000 n 
-0000102675 00000 n 
-0000104305 00000 n 
-0000104948 00000 n 
-0000106535 00000 n 
-0000108124 00000 n 
-0000109703 00000 n 
-0000111250 00000 n 
-0000112835 00000 n 
-0000114397 00000 n 
-0000115972 00000 n 
-0000117539 00000 n 
-0000121246 00000 n 
-0000126311 00000 n 
-0000126864 00000 n 
-0000129398 00000 n 
-0000132732 00000 n 
-0000133285 00000 n 
-0000135854 00000 n 
-0000139297 00000 n 
+0000001016 00000 n 
+0000001125 00000 n 
+0000001350 00000 n 
+0000001557 00000 n 
+0000001833 00000 n 
+0000002060 00000 n 
+0000002268 00000 n 
+0000002544 00000 n 
+0000002771 00000 n 
+0000002979 00000 n 
+0000003258 00000 n 
+0000003485 00000 n 
+0000003693 00000 n 
+0000003976 00000 n 
+0000004203 00000 n 
+0000004411 00000 n 
+0000004694 00000 n 
+0000004921 00000 n 
+0000005129 00000 n 
+0000005407 00000 n 
+0000005634 00000 n 
+0000005842 00000 n 
+0000006124 00000 n 
+0000006351 00000 n 
+0000006559 00000 n 
+0000006841 00000 n 
+0000007068 00000 n 
+0000007276 00000 n 
+0000007559 00000 n 
+0000007786 00000 n 
+0000007994 00000 n 
+0000008269 00000 n 
+0000008496 00000 n 
+0000008704 00000 n 
+0000008985 00000 n 
+0000009212 00000 n 
+0000009420 00000 n 
+0000009695 00000 n 
+0000009922 00000 n 
+0000010130 00000 n 
+0000010418 00000 n 
+0000010645 00000 n 
+0000010853 00000 n 
+0000011127 00000 n 
+0000011354 00000 n 
+0000011562 00000 n 
+0000011848 00000 n 
+0000012075 00000 n 
+0000012283 00000 n 
+0000012563 00000 n 
+0000012790 00000 n 
+0000012998 00000 n 
+0000013285 00000 n 
+0000013512 00000 n 
+0000013720 00000 n 
+0000014004 00000 n 
+0000014231 00000 n 
+0000014439 00000 n 
+0000014724 00000 n 
+0000014951 00000 n 
+0000015159 00000 n 
+0000015442 00000 n 
+0000015669 00000 n 
+0000015877 00000 n 
+0000016165 00000 n 
+0000016392 00000 n 
+0000016600 00000 n 
+0000016865 00000 n 
+0000017092 00000 n 
+0000017376 00000 n 
+0000017603 00000 n 
+0000017811 00000 n 
+0000018094 00000 n 
+0000018321 00000 n 
+0000018529 00000 n 
+0000018796 00000 n 
+0000019023 00000 n 
+0000019231 00000 n 
+0000019514 00000 n 
+0000019741 00000 n 
+0000019949 00000 n 
+0000020224 00000 n 
+0000020495 00000 n 
+0000020765 00000 n 
+0000021006 00000 n 
+0000021214 00000 n 
+0000021422 00000 n 
+0000021692 00000 n 
+0000021958 00000 n 
+0000022223 00000 n 
+0000022464 00000 n 
+0000022672 00000 n 
+0000022880 00000 n 
+0000023154 00000 n 
+0000023425 00000 n 
+0000023695 00000 n 
+0000023939 00000 n 
+0000024148 00000 n 
+0000024357 00000 n 
+0000024429 00000 n 
+0000024715 00000 n 
+0000025236 00000 n 
+0000026733 00000 n 
+0000027590 00000 n 
+0000029799 00000 n 
+0000031329 00000 n 
+0000033556 00000 n 
+0000035086 00000 n 
+0000037269 00000 n 
+0000038794 00000 n 
+0000041022 00000 n 
+0000042552 00000 n 
+0000044779 00000 n 
+0000046309 00000 n 
+0000048511 00000 n 
+0000050036 00000 n 
+0000052266 00000 n 
+0000053800 00000 n 
+0000056025 00000 n 
+0000057559 00000 n 
+0000059786 00000 n 
+0000061304 00000 n 
+0000063497 00000 n 
+0000065022 00000 n 
+0000066620 00000 n 
+0000068212 00000 n 
+0000069825 00000 n 
+0000071382 00000 n 
+0000072990 00000 n 
+0000074570 00000 n 
+0000076178 00000 n 
+0000077736 00000 n 
+0000079356 00000 n 
+0000080893 00000 n 
+0000082520 00000 n 
+0000084080 00000 n 
+0000085675 00000 n 
+0000087290 00000 n 
+0000088919 00000 n 
+0000090561 00000 n 
+0000092166 00000 n 
+0000093813 00000 n 
+0000095425 00000 n 
+0000097054 00000 n 
+0000098646 00000 n 
+0000100224 00000 n 
+0000101847 00000 n 
+0000103477 00000 n 
+0000104120 00000 n 
+0000105707 00000 n 
+0000107296 00000 n 
+0000108875 00000 n 
+0000110422 00000 n 
+0000112007 00000 n 
+0000113569 00000 n 
+0000115144 00000 n 
+0000116711 00000 n 
+0000120418 00000 n 
+0000125483 00000 n 
+0000126036 00000 n 
+0000128570 00000 n 
+0000131904 00000 n 
+0000132457 00000 n 
+0000135026 00000 n 
+0000138469 00000 n 
 trailer
 <<
 /ID 
@@ -1567,5 +1567,5 @@ trailer
 /Size 172
 >>
 startxref
-139850
+139022
 %%EOF

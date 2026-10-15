@@ -522,7 +522,8 @@ def export_pdf(report, summary):
             [Spacer(1, 12) if first_phase_d else PageBreak(), Paragraph(f"Phase {row['phase']} – {html.escape(row['id'])}", styles["Heading2"])]
         )
         for stage, name in row["fixture_files"].items():
-            fixture_url = html.escape((report / name).as_uri(), quote=True)
+            # Relative, like the HTML report: an absolute file: URI would publish this machine's path.
+            fixture_url = html.escape(name, quote=True)
             story.append(Paragraph(f'<a href="{fixture_url}" color="blue">Frozen {html.escape(stage)} fixture JSON</a>', styles["BodyText"]))
         story.append(Spacer(1, 8))
         plan = coverage_plan(row)

@@ -1,6 +1,6 @@
 # Windows main comparison record at af10e6d (unnumbered)
 
-This historical Windows main comparison is unnumbered. Report v1.5 identifies the macOS release-candidate record; measured data and the original PDF are unchanged.
+This historical Windows main comparison is unnumbered. Report v1.5 identifies the macOS release-candidate record; measured data are unchanged, and the PDF differs from the original only in its fixture-link targets.
 
 [Generated PDF](coilem_benchmark_report.pdf), [HTML plots](coilem_benchmark_report.html), [Markdown results](benchmark_report.md), [JSON numerical evidence](benchmark_summary.json), [comparison with v1.4](comparison-to-v1.4.json), [elapsed job timings](execution-timings.json), [publication provenance](publication.json) and [artifact hashes](artifact_manifest.json).
 
@@ -54,4 +54,4 @@ Use a clean checkout, the recorded dependency versions and a new output director
 
 ## Publication
 
-The generated 64-page PDF is committed byte-for-byte unchanged; its SHA-256 matches the original report artifact manifest. Its fixture hyperlinks retain the originating local report paths; the HTML and Markdown versions link to the committed fixture JSON files. Published text/JSON replaces the local run root and omits worker PIDs while retaining all numerical values and identities. CSV, worker logs, raw job evidence, mesh/frame caches and solver binaries remain local. Their registered result hashes and full numerical comparison are retained here.
+The generated 64-page PDF is committed unchanged except for its 36 fixture hyperlinks: they named the originating local report paths and now point to the committed fixture JSON on GitHub. Every other byte is identical apart from cross-reference offsets, and `publication.json` keeps both SHA-256 values. The HTML and Markdown versions link to the committed fixture JSON files. Published text/JSON replaces the local run root and omits worker PIDs while retaining all numerical values and identities. CSV, worker logs, raw job evidence, mesh/frame caches and solver binaries remain local. Their registered result hashes and full numerical comparison are retained here.

@@ -23,7 +23,7 @@ import {
   type PublicMeshElementSelection,
 } from './MotorCanvas';
 import { WindingLayoutView } from './WindingLayoutView';
-import { coilsPerPhase, concentratedUsesToothCoils, windingLayerOptions } from './toothCoils';
+import { coilsPerPhase, windingLayerOptions, windingLayerWording } from './toothCoils';
 import {
   buildDimensionAnnotations,
   deriveStatorSectionWidths,
@@ -1063,9 +1063,15 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
     stator: 'stator geometry outer diameter inner diameter slot count stack length bore pitch',
     rotor: 'rotor magnets pole count rotor od air gap magnet thickness magnet width burial depth outer bridge bridge thickness magnet position coverage magnet grade',
     advanced: 'advanced geometry bore tooth width tooth width at yoke bore slot opening physical slot mouth slot width at yoke yoke thickness tooth shoe shoulder height overhang rotor layout v angle v depth',
-    winding: 'winding type layers layer single double tooth coils per phase turns coil parallel paths phase current amp rms',
+    winding: 'winding type wound teeth alternate all coil sides slot layers layer single double tooth coils per phase turns coil parallel paths phase current amp rms',
     materials: 'materials stator steel rotor steel magnet grade conductor',
   };
+  const layerWording = windingLayerWording(config.stator.slot_count, config.rotor.pole_count, config.winding.type);
+  const layerCount: 1 | 2 = config.winding.layers === 2 ? 2 : 1;
+  const showLayerRow = !(layerWording.hidden && layerCount === 1);
+  const unavailableLayerReasons = windingLayerOptions(config.stator.slot_count, config.rotor.pole_count, config.winding.type)
+    .filter(({ available }) => !available)
+    .map(({ layers, reason }) => `${layerWording.choice[layers]} is unavailable: ${reason}.`);
   const matchesSearch = (section: PublicParameterSection | 'topology') => (
     !normalizedSearch || searchTerms[section].includes(normalizedSearch)
   );
@@ -1286,24 +1292,20 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         </>}
       </ParameterSectionBlock>}
 
-      {matchesSearch('winding') && <ParameterSectionBlock id="winding" label="Winding" active={Boolean(normalizedSearch) || activeSection === 'winding'} onToggle={toggle} summary={`${config.winding.type} · ${config.winding.layers} layer${config.winding.layers === 2 ? 's' : ''} · ${config.winding.turns_per_coil} turns × ${config.winding.parallel_paths}p`} nextLabel={normalizedSearch ? undefined : 'Materials'} onNext={normalizedSearch ? undefined : setNext('materials')}>
+      {matchesSearch('winding') && <ParameterSectionBlock id="winding" label="Winding" active={Boolean(normalizedSearch) || activeSection === 'winding'} onToggle={toggle} summary={`${config.winding.type}${showLayerRow ? ` · ${layerWording.summary[layerCount]}` : ''} · ${config.winding.turns_per_coil} turns × ${config.winding.parallel_paths}p`} nextLabel={normalizedSearch ? undefined : 'Materials'} onNext={normalizedSearch ? undefined : setNext('materials')}>
         <SelectRow label="Type" value={config.winding.type} choices={[{ value: 'concentrated', label: 'Concentrated' }, { value: 'distributed', label: 'Distributed' }]} disabled={disabled} onChange={set('winding', 'type', 'winding')} />
-        <SelectRow
-          label="Layers"
+        {showLayerRow && <SelectRow
+          label={layerWording.label}
           value={String(config.winding.layers)}
-          choices={windingLayerOptions(config.stator.slot_count, config.rotor.pole_count, config.winding.type).map(({ layers, available, reason }) => ({
+          choices={windingLayerOptions(config.stator.slot_count, config.rotor.pole_count, config.winding.type).map(({ layers, available }) => ({
             value: String(layers),
-            label: `${layers} layer${layers === 2 ? 's' : ''}${reason ? ` · ${reason}` : ''}`,
+            label: layerWording.choice[layers],
             disabled: !available,
           }))}
-          hint={config.winding.type === 'distributed'
-            ? 'Two layers put two coil sides in every slot; the benchmark qualified two-layer distributed windings.'
-            : concentratedUsesToothCoils(config.stator.slot_count, config.rotor.pole_count)
-              ? 'One layer winds a coil on every other tooth, two layers on every tooth. Two-layer concentrated windings are experimental.'
-              : 'This slot/pole combination winds one phase per slot, in one layer.'}
+          hint={[layerWording.hint, ...unavailableLayerReasons].join(' ')}
           disabled={disabled}
           onChange={(value) => set('winding', 'layers', 'winding')(Number(value))}
-        />
+        />}
         <div className="param-row public-param-row public-derived-row" title="Coils in each phase; parallel paths must divide them.">
           <span className="param-label">Coils per Phase<small>calc</small></span>
           <strong>{coilsPerPhase(config.stator.slot_count, config.rotor.pole_count, config.winding.type, config.winding.layers)}</strong>
