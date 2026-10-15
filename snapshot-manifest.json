@@ -4355,8 +4355,8 @@
     },
     {
       "path": "docs/MAGNETO2D.md",
-      "bytes": 46809,
-      "sha256": "151bdbe4ae2fb3b40638939f574ccbd5f819ff371d67e4697d61f3dddc1257c2"
+      "bytes": 46985,
+      "sha256": "da768c3d4acb71b6c67cc9b5107f0abc11ab701634b8be849f67d4bb3664f427"
     },
     {
       "path": "docs/NUMERICAL_EVIDENCE.md",
@@ -4685,8 +4685,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 106283,
-      "sha256": "e22b38999c6905e3463a381be3700cbae15831cdecc17af3167ad86c6bc309bb"
+      "bytes": 107028,
+      "sha256": "98a8f88bda89efc0c5106e7e40ef513a644d3db8452bba8b39810eebf88c9230"
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
@@ -4695,8 +4695,8 @@
     },
     {
       "path": "frontend/scripts/test-tooth-coil-repair.mjs",
-      "bytes": 2601,
-      "sha256": "e8976a28d5000ab0e692698e6522f6a4f4cd01a1b7c0637128a100450fb477e7"
+      "bytes": 4152,
+      "sha256": "7183bf390ec50f333cd4b6203b96611440b935ab839118c7c70dea0aebb3a952"
     },
     {
       "path": "frontend/src/api/projectSchema.ts",
@@ -5070,8 +5070,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 68815,
-      "sha256": "804a77667a747da0824656a5caa9d4ecc1ea004fe1d0bd56cc1fb62a2ed237f0"
+      "bytes": 69909,
+      "sha256": "c2a4ca9dbdb492706ea4fd491049aebb104afc3d8cb4e8589ae4cb7570799a04"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -5080,8 +5080,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 181285,
-      "sha256": "3faa890514edf100829d63886845e2206e3ce87d29185e8667c5856b79db7946"
+      "bytes": 182947,
+      "sha256": "a65a423952165483a8dc1b996fddcbc5cca0cd40dd0588acdb3b0656a8d4a0d8"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5265,8 +5265,8 @@
     },
     {
       "path": "frontend/src/public/guidedConfigRepair.ts",
-      "bytes": 10151,
-      "sha256": "827f0cb82211b3ceddda302a30f0a146c75d1c0d651033731c7a793c28f9a8ea"
+      "bytes": 10388,
+      "sha256": "1fbf251e9a7b3a53c05b921ddaab58d2ceaab23efdce8e79f9dabaa52fa710e7"
     },
     {
       "path": "frontend/src/public/halbach/Halbach2DViewport.tsx",
@@ -5380,8 +5380,8 @@
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
-      "bytes": 4921,
-      "sha256": "34b597e5208a48a510926dd93813705d186f7d25932fc72c600a18b261a1b42f"
+      "bytes": 6182,
+      "sha256": "232774f29571e9ff2df6e20069b83fa4540f1bcd31b7c26e739e29612cfa67c5"
     },
     {
       "path": "frontend/src/public/tutorials/PublicTutorials.tsx",

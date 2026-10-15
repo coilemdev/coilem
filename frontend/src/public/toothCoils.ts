@@ -94,6 +94,34 @@ export function concentratedLayoutIsBalanced(slotCount: number, poleCount: numbe
   return counts.A > 0 && counts.A === counts.B && counts.B === counts.C;
 }
 
+export interface WindingLayerOption {
+  layers: 1 | 2;
+  available: boolean;
+  /** Why the backend would refuse this layer count, or null when it accepts it. */
+  reason: string | null;
+}
+
+/**
+ * The layer counts a layout can be wound with. Tooth-coil layouts take one layer
+ * (every other tooth) or two (every tooth) when the coils balance, so an odd slot
+ * count needs two. Whole-slot concentrated maps keep one: backend/qualification.py
+ * rejects a second layer there. Distributed windings take either; the backend
+ * reports an unbalanced star-of-slots table.
+ */
+export function windingLayerOptions(slotCount: number, poleCount: number, windingType: string): WindingLayerOption[] {
+  return ([1, 2] as const).map((layers) => {
+    if (windingType === 'distributed') return { layers, available: true, reason: null };
+    if (!concentratedUsesToothCoils(slotCount, poleCount)) {
+      return layers === 1
+        ? { layers, available: true, reason: null }
+        : { layers, available: false, reason: 'needs a fractional-slot layout' };
+    }
+    return toothCoilLayoutIsBalanced(slotCount, poleCount, layers)
+      ? { layers, available: true, reason: null }
+      : { layers, available: false, reason: `unbalanced with ${slotCount} slots` };
+  });
+}
+
 /** Coils each phase has, which parallel paths must divide (backend/geometry.py validate_geometry). */
 export function coilsPerPhase(slotCount: number, poleCount: number, windingType: string, layers: number): number {
   if (windingType === 'distributed') return Math.floor(slotCount / 6);

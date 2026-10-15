@@ -30,7 +30,7 @@ import {
   type PublicWorkflowStep,
 } from './CoilEmWorkspace';
 import { PublicGuidedSetup } from './GuidedSetup';
-import { repairGuidedSection } from './guidedConfigRepair';
+import { coilsPerPhase, parallelPathsDividing, repairGuidedSection } from './guidedConfigRepair';
 import { PublicLanding } from './PublicLanding';
 import { HalbachWorkspace } from './halbach/HalbachWorkspace';
 import {
@@ -344,6 +344,7 @@ const DESIGN_FIELD_LABELS: Record<string, string> = {
   v_angle_deg: 'V angle',
   v_depth_mm: 'V depth',
   type: 'Winding type',
+  layers: 'Winding layers',
   turns_per_coil: 'Turns per coil',
   parallel_paths: 'Parallel paths',
   current_amplitude_A: 'Phase current',
@@ -437,6 +438,13 @@ function describeDesignEdit(
     const previousValue = editableValue(previous, section, field);
     const nextValue = editableValue(next, section, field);
     consequence = `${formatEditValue(field, previousValue)} → ${formatEditValue(field, nextValue)}`;
+  }
+  if (
+    section === 'winding'
+    && field !== 'parallel_paths'
+    && previous.winding.parallel_paths !== next.winding.parallel_paths
+  ) {
+    consequence = `${consequence} · parallel paths ${previous.winding.parallel_paths} → ${next.winding.parallel_paths}`;
   }
 
   return {
@@ -660,6 +668,12 @@ export function App() {
     const enablingToothShoe = section === 'stator'
       && field === 'tooth_shoe_enabled'
       && value === true;
+    // One layer winds half the tooth coils of two (8p/12s: 2 per phase, not 4),
+    // so keep the parallel paths a divisor of what is left.
+    const layerCount = section === 'winding' && field === 'layers' ? Number(value) : null;
+    const layerCoilsPerPhase = layerCount === null
+      ? 0
+      : coilsPerPhase(config.stator.slot_count, config.rotor.pole_count, config.winding.type, layerCount);
     const nextConfig: MotorConfig = selectedIpmLayout
       ? {
         ...config,
@@ -683,6 +697,17 @@ export function App() {
               config.stator.tooth_shoe_overhang_mm ?? 1.5,
               Math.max(0, (config.stator.slot_opening_mm - 0.1) / 2),
             ),
+          },
+        }
+      : layerCount !== null
+        ? {
+          ...config,
+          winding: {
+            ...config.winding,
+            layers: layerCount,
+            parallel_paths: layerCoilsPerPhase > 0
+              ? parallelPathsDividing(layerCoilsPerPhase, config.winding.parallel_paths)
+              : config.winding.parallel_paths,
           },
         }
       : {

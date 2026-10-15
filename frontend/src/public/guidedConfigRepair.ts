@@ -30,6 +30,17 @@ function floorToTenth(value: number): number {
 
 export { coilsPerPhase, concentratedUsesToothCoils } from './toothCoils';
 
+/** The largest parallel-path count up to `current` that divides the coils per phase; 1 when none does. */
+export function parallelPathsDividing(coilsPerPhaseCount: number, current: number): number {
+  return Array.from(
+    { length: Math.min(MAX_PARALLEL_PATHS, coilsPerPhaseCount) },
+    (_, index) => index + 1,
+  )
+    .filter((candidate) => coilsPerPhaseCount % candidate === 0)
+    .reverse()
+    .find((candidate) => candidate <= current) ?? 1;
+}
+
 /** Mirrors backend/geometry.py concentrated_winding_is_balanced. */
 export function concentratedGuidedLayoutIsBalanced(
   slotCount: number,
@@ -267,13 +278,7 @@ export function repairGuidedSection(
       terminalCoilsPerPhase > 0
       && terminalCoilsPerPhase % next.winding.parallel_paths !== 0
     ) {
-      const repairedPaths = Array.from(
-        { length: Math.min(MAX_PARALLEL_PATHS, terminalCoilsPerPhase) },
-        (_, index) => index + 1,
-      )
-        .filter((candidate) => terminalCoilsPerPhase % candidate === 0)
-        .reverse()
-        .find((candidate) => candidate <= next.winding.parallel_paths) ?? 1;
+      const repairedPaths = parallelPathsDividing(terminalCoilsPerPhase, next.winding.parallel_paths);
       adjust(
         'winding.parallel_paths',
         'parallel paths',

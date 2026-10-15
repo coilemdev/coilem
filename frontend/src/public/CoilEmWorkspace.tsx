@@ -22,6 +22,7 @@ import {
   type PublicMeshElementSelection,
 } from './MotorCanvas';
 import { WindingLayoutView } from './WindingLayoutView';
+import { coilsPerPhase, concentratedUsesToothCoils, windingLayerOptions } from './toothCoils';
 import {
   buildDimensionAnnotations,
   deriveStatorSectionWidths,
@@ -755,16 +756,17 @@ function ToggleRow({ label, checked, hint, disabled, onChange }: {
   );
 }
 
-function SelectRow({ label, value, choices, disabled, onChange, selectRef }: {
+function SelectRow({ label, value, choices, hint, disabled, onChange, selectRef }: {
   label: string;
   value: string;
   choices: Array<{ value: string; label: string; disabled?: boolean }>;
+  hint?: string;
   disabled?: boolean;
   selectRef?: Ref<HTMLSelectElement>;
   onChange: (value: string) => void;
 }) {
   return (
-    <label className="param-row public-param-row">
+    <label className="param-row public-param-row" title={hint}>
       <span className="param-label">{label}</span>
       <select ref={selectRef} className="param-select" value={value} disabled={disabled} onChange={(event) => onChange(event.target.value)}>
         {choices.map((choice) => <option value={choice.value} disabled={choice.disabled} key={choice.value}>{choice.label}</option>)}
@@ -1058,7 +1060,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
     stator: 'stator geometry outer diameter inner diameter slot count stack length bore pitch',
     rotor: 'rotor magnets pole count rotor od air gap magnet thickness magnet width burial depth outer bridge bridge thickness magnet position coverage magnet grade',
     advanced: 'advanced geometry bore tooth width tooth width at yoke bore slot opening physical slot mouth slot width at yoke yoke thickness tooth shoe shoulder height overhang rotor layout v angle v depth',
-    winding: 'winding type turns coil parallel paths phase current amp rms',
+    winding: 'winding type layers layer single double tooth coils per phase turns coil parallel paths phase current amp rms',
     materials: 'materials stator steel rotor steel magnet grade conductor',
   };
   const matchesSearch = (section: PublicParameterSection | 'topology') => (
@@ -1281,8 +1283,28 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         </>}
       </ParameterSectionBlock>}
 
-      {matchesSearch('winding') && <ParameterSectionBlock id="winding" label="Winding" active={Boolean(normalizedSearch) || activeSection === 'winding'} onToggle={toggle} summary={`${config.winding.type} · ${config.winding.turns_per_coil} turns × ${config.winding.parallel_paths}p`} nextLabel={normalizedSearch ? undefined : 'Materials'} onNext={normalizedSearch ? undefined : setNext('materials')}>
+      {matchesSearch('winding') && <ParameterSectionBlock id="winding" label="Winding" active={Boolean(normalizedSearch) || activeSection === 'winding'} onToggle={toggle} summary={`${config.winding.type} · ${config.winding.layers} layer${config.winding.layers === 2 ? 's' : ''} · ${config.winding.turns_per_coil} turns × ${config.winding.parallel_paths}p`} nextLabel={normalizedSearch ? undefined : 'Materials'} onNext={normalizedSearch ? undefined : setNext('materials')}>
         <SelectRow label="Type" value={config.winding.type} choices={[{ value: 'concentrated', label: 'Concentrated' }, { value: 'distributed', label: 'Distributed' }]} disabled={disabled} onChange={set('winding', 'type', 'winding')} />
+        <SelectRow
+          label="Layers"
+          value={String(config.winding.layers)}
+          choices={windingLayerOptions(config.stator.slot_count, config.rotor.pole_count, config.winding.type).map(({ layers, available, reason }) => ({
+            value: String(layers),
+            label: `${layers} layer${layers === 2 ? 's' : ''}${reason ? ` · ${reason}` : ''}`,
+            disabled: !available,
+          }))}
+          hint={config.winding.type === 'distributed'
+            ? 'Two layers put two coil sides in every slot; the benchmark qualified two-layer distributed windings.'
+            : concentratedUsesToothCoils(config.stator.slot_count, config.rotor.pole_count)
+              ? 'One layer winds a coil on every other tooth, two layers on every tooth. Two-layer concentrated windings are experimental.'
+              : 'This slot/pole combination winds one phase per slot, in one layer.'}
+          disabled={disabled}
+          onChange={(value) => set('winding', 'layers', 'winding')(Number(value))}
+        />
+        <div className="param-row public-param-row public-derived-row" title="Coils in each phase; parallel paths must divide them.">
+          <span className="param-label">Coils per Phase<small>calc</small></span>
+          <strong>{coilsPerPhase(config.stator.slot_count, config.rotor.pole_count, config.winding.type, config.winding.layers)}</strong>
+        </div>
         <NumberRow label="Turns / Coil" value={config.winding.turns_per_coil} min={1} step={1} disabled={disabled} onChange={set('winding', 'turns_per_coil', 'winding')} />
         <NumberRow label="Parallel Paths" value={config.winding.parallel_paths} min={1} step={1} disabled={disabled} onChange={set('winding', 'parallel_paths', 'winding')} />
         <NumberRow label="Phase Current" value={config.solve_params.current_amplitude_A} unit="A rms" min={0} step={0.5} disabled={disabled} onChange={set('solve_params', 'current_amplitude_A', 'winding')} />

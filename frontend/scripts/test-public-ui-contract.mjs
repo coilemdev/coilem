@@ -1429,6 +1429,16 @@ assert.match(workspaceSource, /windingType=\{config\.winding\.type\}/);
 // signs. What matters is that the glyphs are still explained somewhere.
 assert.match(windingLayoutSource, /⊙ out of page · ⊗ into page/);
 assert.match(modelSource, /toothIndex\?: number/);
+// The Winding section exposes layers (#91): only the counts the backend winds are
+// selectable, coils per phase are shown, and a layer change keeps the parallel
+// paths a divisor of the coils that remain.
+assert.match(workspaceSource, /label="Layers"/);
+assert.match(workspaceSource, /windingLayerOptions\(config\.stator\.slot_count, config\.rotor\.pole_count, config\.winding\.type\)/);
+assert.match(workspaceSource, /disabled: !available/);
+assert.match(workspaceSource, /Coils per Phase/);
+assert.match(workspaceSource, /set\('winding', 'layers', 'winding'\)\(Number\(value\)\)/);
+assert.match(appSource, /parallelPathsDividing\(layerCoilsPerPhase, config\.winding\.parallel_paths\)/);
+assert.match(appSource, /layers: 'Winding layers'/);
 
 // Guided setup coach: landing entry, data-guide anchors, and step coach.
 assert.match(landingWorkflowHeroSource, /Start a design/);

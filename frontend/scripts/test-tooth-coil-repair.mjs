@@ -4,8 +4,14 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { importTypeScriptModule } from './import-typescript-module.mjs';
 
-const { coilsPerPhase, concentratedGuidedLayoutIsBalanced, concentratedUsesToothCoils, repairGuidedSection } =
-  await importTypeScriptModule(new URL('../src/public/guidedConfigRepair.ts', import.meta.url));
+const {
+  coilsPerPhase,
+  concentratedGuidedLayoutIsBalanced,
+  concentratedUsesToothCoils,
+  parallelPathsDividing,
+  repairGuidedSection,
+} = await importTypeScriptModule(new URL('../src/public/guidedConfigRepair.ts', import.meta.url));
+const { windingLayerOptions } = await importTypeScriptModule(new URL('../src/public/toothCoils.ts', import.meta.url));
 const { cloneDefaultConfig } = await importTypeScriptModule(new URL('../src/public/model.ts', import.meta.url));
 
 // Every layout the backend can wind, shared with tests/test_tooth_coil_windings.py and Magneto2D.
@@ -21,7 +27,28 @@ for (const { slot_count: slots, pole_count: poles, layers, slots: sides } of lay
   const goSides = layers >= 2 ? slots : slots / 2;
   assert.equal(coilsPerPhase(slots, poles, 'concentrated', layers), goSides / 3, label);
   assert.equal(sides.length, slots, label);
+  // The Layers control offers every layer count the backend winds.
+  assert.ok(windingLayerOptions(slots, poles, 'concentrated').find((option) => option.layers === layers).available, label);
 }
+
+// The Layers control: tooth coils take one or two layers when they balance,
+// whole-slot concentrated maps one, distributed windings either.
+const availability = (slots, poles, type) => windingLayerOptions(slots, poles, type)
+  .map(({ layers, available, reason }) => [layers, available, reason]);
+assert.deepEqual(availability(12, 8, 'concentrated'), [[1, true, null], [2, true, null]]);
+assert.deepEqual(availability(27, 24, 'concentrated'), [[1, false, 'unbalanced with 27 slots'], [2, true, null]]);
+assert.deepEqual(availability(12, 4, 'concentrated'), [[1, true, null], [2, false, 'needs a fractional-slot layout']]);
+assert.deepEqual(availability(24, 8, 'distributed'), [[1, true, null], [2, true, null]]);
+
+// Changing layers keeps the parallel paths a divisor of the coils per phase:
+// 8p/12s winds 4 coils per phase with two layers and 2 with one.
+assert.equal(coilsPerPhase(12, 8, 'concentrated', 2), 4);
+assert.equal(coilsPerPhase(12, 8, 'concentrated', 1), 2);
+assert.equal(parallelPathsDividing(2, 4), 2);
+assert.equal(parallelPathsDividing(4, 4), 4);
+assert.equal(parallelPathsDividing(4, 3), 2);
+assert.equal(parallelPathsDividing(6, 4), 3);
+assert.equal(parallelPathsDividing(5, 2), 1);
 
 // An odd slot count can only be wound with two layers.
 assert.equal(concentratedGuidedLayoutIsBalanced(27, 24, 1), false);
