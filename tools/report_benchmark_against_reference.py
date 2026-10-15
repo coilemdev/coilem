@@ -21,9 +21,15 @@ def evaluation_module(relative):
     return module
 
 
+def _numerical_gates(evaluation):
+    """Every gate except the golden current sequence, which the angle migration may change."""
+    return [g for g in evaluation["gates"] if not g["id"].endswith("_golden_current_sequence")]
+
+
 def reconcile_angles(path, measured_spec, rows, configs, protocols, golden, bundle):
     """Apply a separately registered validator; preserve the measured contract."""
-    from tools.benchmark_suite.contract import ROOT as measured_root, checked_json, read, sha
+    from tools.benchmark_suite.contract import ROOT as measured_root
+    from tools.benchmark_suite.contract import checked_json, read, sha
 
     root = Path(__file__).resolve().parents[1]
     path = path.resolve()
@@ -71,8 +77,7 @@ def reconcile_angles(path, measured_spec, rows, configs, protocols, golden, bund
         raw = {stage:{"result":result} for stage,result in row["measurements"].items()}
         raw["femm-standard"] = {"result":references[row["id"]]}
         evaluated = metrics.evaluate_numeric(registered[row["id"]], raw, golden)
-        numerical = lambda e: [g for g in e["gates"] if not g["id"].endswith("_golden_current_sequence")]
-        if numerical(evaluated) != numerical(historical):
+        if _numerical_gates(evaluated) != _numerical_gates(historical):
             raise ValueError("Angle reconciliation changed a numerical gate or value")
         row.update(historical_evaluation=historical, historical_protocol=row["protocol"],
                    evaluation=evaluated, status=evaluated["status"], protocol=registered[row["id"]])

@@ -11,6 +11,10 @@ it. Python 3.15 installs use newer numpy and pydantic and have no benchmark
 report yet. Passing CI
 alone does not establish numerical accuracy.
 
+The unreleased 0.4.0 application on `main` changes the winding model and
+qualifies against the [Magneto2D versus FEMM v3 report](../benchmarks/windows-v3-20261015-738d951/README.md)
+instead; see [Qualification status](#qualification-status).
+
 See [Numerical evidence](NUMERICAL_EVIDENCE.md) for measured comparisons and
 [Local verification](VERIFICATION.md) for the build, browser and audit record.
 These records keep their tested runtime identities explicit.
@@ -141,30 +145,48 @@ performed and no delivery date is claimed.
 
 ## Qualification status
 
-The maintainers accept [benchmark report v1.1](../benchmarks/main-20261009-bad71d9/benchmark_report.md)
-as the numerical qualification record for this preview. Qualification
-applies to the tested combinations of rotor, winding and excitation below. A
-combination is qualified when every registered v1.1 fixture for it passes its
-FEMM parity gates. Failed and unsupported outcomes remain visible and are not
-waived by the aggregate pass count. Reports [v1.7](../benchmarks/macos-rc-20261013-1fac3a1/README.md) and
-[v1.8](../benchmarks/windows-rc-20261013-1fac3a1/README.md) reran every registered fixture of the qualified
-combinations below on coilEM 0.3.0 (`1fac3a1`), on macOS and Windows, and all
-still pass.
+The maintainers accept the [Magneto2D versus FEMM v3 report](../benchmarks/windows-v3-20261015-738d951/README.md)
+as the numerical qualification record for the application on `main`. It
+measured commit `738d951` on Windows against the matched
+[FEMM v3 references](../benchmarks/reference-baselines/ipm-high-output-v3/manifest.json),
+so it covers the 0.4.0 winding model: full slot-side turns in flux linkage
+(#80), tooth coils for fractional-slot concentrated windings, the current angle
+measured from phase A's own axis and conformal two-layer slots (#91, #85).
+Earlier reports measured the previous winding model, so their PASS results no
+longer qualify these combinations; report v1.1 remains the record for coilEM
+0.3.x. A combination is qualified when every registered fixture for it passes
+its FEMM parity gates in the v3 report. Failed, YELLOW and unsupported outcomes
+remain visible and are not waived by the aggregate pass count.
 
-| Rotor | Winding | Excitation | v1.1 fixtures | Outcome | Status |
+The six-step rows pass under evaluation protocol 1.3.0, which checks the
+commanded currents against phase A's winding axis. That protocol was registered
+after the fields were measured. The report retains the fixed-axis protocol 1.1.0
+evaluation, including its golden-sequence FAILs for the 8-pole and 14-pole
+12-slot fixtures. The FEMM v3 bundle keeps `REVIEW_REQUIRED` for limitations
+outside these gates, such as steel-loss estimates, the Kt current base and
+peak flux-density sampling. Release qualification remains a separate step.
+
+| Rotor | Winding | Excitation | Fixtures | v3 outcome | Status |
 | --- | --- | --- | --- | --- | --- |
 | SPM | Single-layer concentrated | Sinusoidal | Phase A: ten operating points on 4-pole/12-slot and 8-pole/12-slot designs | 10 PASS | Qualified |
-| SPM | Single-layer concentrated | Ideal six-step 120-degree wye (BLDC) | Phase D: 4-pole, 8-pole and 14-pole 12-slot designs | 3 PASS; 42/42 gates | Qualified |
+| SPM | Single-layer concentrated | Ideal six-step 120-degree wye (BLDC) | Phase D: 4-pole, 8-pole and 14-pole 12-slot designs | 3 PASS; 42/42 gates (protocol 1.3.0) | Qualified |
 | SPM | Two-layer distributed, full pitch or 5/6 short pitch | Sinusoidal | Phase C: 8p/24s, 8p/48s, 8p/48s 5/6-chorded, 12p/36s | 4 PASS | Qualified |
 | Flat-buried IPM | Single-layer concentrated | Sinusoidal | Phase B: six fixtures | 6 PASS | Qualified |
-| V-shape IPM | Single-layer concentrated | Sinusoidal | Phase B: six fixtures | 4 PASS, 2 FAIL | Experimental |
+| V-shape IPM | Single-layer concentrated | Sinusoidal | Phase B: six fixtures | 5 PASS, 1 YELLOW | Experimental |
 | Multi-layer IPM (Prius 2004 fixture) | - | - | Phase C | Rejected by the public policy | Unsupported |
 
-The application also accepts combinations that v1.1 did not measure. They are
-experimental:
+The 4-pole/12-slot fixtures keep their winding layout; only their flux-linkage
+credit changed. The 8-pole/12-slot, 12-slot/10-pole, 24-slot/16-pole and
+14-pole/12-slot fixtures are now wound as tooth coils. The Phase C fixtures keep
+their turn credit and use the conformal two-layer slots and phase-A current
+angle. The v3 report re-measured every row on the changed code.
+
+The application also accepts combinations that the benchmark did not measure.
+They are experimental:
 
 - SPM with distributed windings under ideal six-step excitation;
 - SPM with single-layer distributed windings;
+- two-layer concentrated windings (a coil on every tooth);
 - flat-buried or V-shape IPM with distributed windings; and
 - Halbach, lessons and generic field mode, which are outside A/B/C/D.
 
@@ -176,10 +198,14 @@ and steel, and returns the status with a one-sentence reason. Design health,
 the Solve page and the Results page show it, and each saved run records it in
 its provenance, PDF and CSV. A qualified combination using custom steel is
 experimental, because qualification used the bundled M350-50A curve. A
-Preview run notes that its coarse mesh was not part of qualification.
+Preview run notes that its coarse mesh was not part of qualification. Tests
+check each reason against the v3 report's outcomes, and fail when a winding,
+current-angle, geometry, mesh, material or native-solver source differs from
+the one the report measured; a changed physics source needs a new report
+before it can keep a qualified status.
 
 Qualified means agreement with FEMM within the registered gates for the
-measured fixtures, under these conditions: Magneto2D 0.3.2, native Gmsh meshes
+measured fixtures, under these conditions: Magneto2D 0.3.3, native Gmsh meshes
 at the normal density used by the Standard plan, weighted-stress torque, the
 bundled M350-50A curve, the public magnet grades and angular grids matched to
 the reference.
@@ -195,11 +221,14 @@ combination but outside the measured geometry range use the same solver path,
 but their accuracy has not been measured individually. Check
 mesh and angular convergence before relying on small differences.
 
-The deep-apex V-shape fixture fails mean-torque parity (36.02% difference).
-The wide-angle V-shape fixture fails Back-EMF H1 and peak parity (36.03% and
-25.16%); its mean-torque gate is YELLOW (12.41%). The other four V-shape
-fixtures pass. Treat V-shape results as experimental until a solver change
-passes all six fixtures.
+The V-shape baseline's peak Back-EMF differs from FEMM by 14.78% (YELLOW;
+PASS is within 10%, FAIL beyond 15%); its fundamental differs by 2.06% and its
+mean torque by 5.85%. The other five V-shape fixtures pass, with mean-torque
+differences of 2.5-5.9%, against 0.01-0.64% for flat-buried IPM. Treat V-shape
+results as experimental until a solver change passes all six fixtures. Report
+v1.1's original low-output deep-apex and wide-angle fixtures failed (36.02%
+mean torque; 36.03% and 25.16% Back-EMF H1 and peak) and remain in its
+archived record.
 
 ## Benchmark report v1.1
 

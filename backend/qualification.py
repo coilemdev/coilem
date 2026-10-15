@@ -1,11 +1,12 @@
-"""Qualification status of a motor configuration under benchmark report v1.1.
+"""Qualification status of a motor configuration under the FEMM v3 benchmark report.
 
 docs/VALIDATION.md#qualification-status is the source: a combination of
-rotor, winding and excitation is qualified when every registered v1.1 fixture
-for it passes its FEMM parity gates. Combinations the benchmark did not
-measure, or measured with failures, are experimental. The result travels
-with previews, solve validation and saved runs, so the app and its exports
-say what the docs say.
+rotor, winding and excitation is qualified when every registered fixture for
+it passes its FEMM parity gates in QUALIFICATION_REPORT, which measured the
+current winding, current-angle and slot-layer models at 738d951.
+Combinations the benchmark did not measure, or measured with failures, are
+experimental. The result travels with previews, solve validation and saved
+runs, so the app and its exports say what the docs say.
 """
 
 from __future__ import annotations
@@ -19,7 +20,10 @@ from backend.winding_utils import concentrated_uses_tooth_coils
 
 QualificationStatus = Literal["qualified", "experimental", "unsupported"]
 
-QUALIFICATION_BASIS = "coilEM benchmark report v1.1"
+QUALIFICATION_BASIS = "coilEM benchmark vs FEMM v3, measured at 738d951"
+# Repository path of the report behind every reason below. tests/test_qualification.py
+# checks the reasons against its outcomes and its sources against the current code.
+QUALIFICATION_REPORT = "benchmarks/windows-v3-20261015-738d951/benchmark_summary.json"
 QUALIFICATION_REFERENCE = "https://github.com/coilemdev/coilem/blob/main/docs/VALIDATION.md#qualification-status"
 _QUALIFIED_STEEL = "M350-50A"
 _QUALIFIED_IPM = "flat_buried"
@@ -84,7 +88,7 @@ def _combination(config: MotorConfig) -> tuple[QualificationStatus, str]:
         if rotor.ipm_topology == _EXPERIMENTAL_IPM:
             return (
                 "experimental",
-                "V-shape IPM: 2 of 6 benchmark fixtures fail FEMM parity (deep apex and wide angle).",
+                "V-shape IPM: 5 of 6 benchmark fixtures pass; the baseline's peak Back-EMF is YELLOW (14.8% from FEMM).",
             )
         return "qualified", "Flat-buried IPM, single-layer concentrated winding, sinusoidal current: all 6 benchmark fixtures pass."
 

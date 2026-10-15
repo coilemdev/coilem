@@ -142,8 +142,8 @@ serves the UI and API together and opens `http://127.0.0.1:2645`. See
 Qualification means agreement with FEMM, a reference 2D finite-element solver,
 on the measured benchmark fixtures: mean torque within 8%, Back-EMF fundamental
 and peak within 10%, plus fourteen six-step gates for BLDC. It covers only the
-tested combinations listed above, with M350-50A steel. Two of six V-shape IPM
-fixtures fail, so V-shape results are experimental. Cogging, THD, airgap harmonics, losses and
+tested combinations listed above, with M350-50A steel. One of six V-shape IPM
+fixtures is YELLOW against FEMM, so V-shape results are experimental. Cogging, THD, airgap harmonics, losses and
 thermal behavior are not covered. It is not a hardware measurement.
 
 Motor sweeps use per-angle meshes, with symmetry-based reuse where applicable,

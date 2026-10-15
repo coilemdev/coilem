@@ -60,8 +60,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 9024,
-      "sha256": "e2a30a29adf7cc616386a7394fe8dd0b0fb9ccffa113660d0428daf951ab3e3e"
+      "bytes": 9042,
+      "sha256": "420e3758fd297c5d1fc417f22c662e0ca72e5487db39aa0b2f1f82fe4b6d1c75"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -460,8 +460,8 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 5828,
-      "sha256": "13d3b48942b618b6c9933f0d50854277e1b717e4260c5cdfb7f3ef77e4049a29"
+      "bytes": 6235,
+      "sha256": "1d25d240bed33db508dfa3d6348afc1fb8d908846cb2ee191201c58174761141"
     },
     {
       "path": "backend/resources.py",
@@ -4355,8 +4355,8 @@
     },
     {
       "path": "docs/MAGNETO2D.md",
-      "bytes": 46787,
-      "sha256": "7ca3db37a127c168648f4b60cd2e476da643693713e925a497dfbbb190d4ebe5"
+      "bytes": 46809,
+      "sha256": "151bdbe4ae2fb3b40638939f574ccbd5f819ff371d67e4697d61f3dddc1257c2"
     },
     {
       "path": "docs/NUMERICAL_EVIDENCE.md",
@@ -4380,13 +4380,13 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 21006,
-      "sha256": "9e7831dde1a24d18a06ec704641605cdc1172e234139c824e95b2ba07886496c"
+      "bytes": 22970,
+      "sha256": "425be00ba4bb63b4fc7373e66fc0d180dc33d1836947e5fc07e01c51c469400c"
     },
     {
       "path": "docs/VERIFICATION.md",
-      "bytes": 6746,
-      "sha256": "5c7af266b312e426ca41a4ccedc7935f129aef53d2eb51a823d66d44286135ab"
+      "bytes": 6748,
+      "sha256": "6bc2a602672fe8ae9558fe1b94f236517f8ccbe438fefaf0d2826a034703ce63"
     },
     {
       "path": "docs/examples/follow-flux-magnet-iron-report.json",
@@ -5410,8 +5410,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 15140,
-      "sha256": "c7432c0278becd2dc4a3b5f56e12d586c8dfd16ed68e42f2a9266f91375daeb5"
+      "bytes": 15147,
+      "sha256": "a9b1e55123e0ca5474bfa92b1884deb7f7ed72dcf44f944a269ed839207408cf"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -5775,13 +5775,13 @@
     },
     {
       "path": "tests/test_benchmark_suite.py",
-      "bytes": 26621,
-      "sha256": "54e422b20edec2727bcc2cb40a981baf08251764cae183d19c728aceaaf571c7"
+      "bytes": 26605,
+      "sha256": "94ee8903336ae42634490b9eaa68ccac248b12e24df3d15012d2faa1ea94ccf7"
     },
     {
       "path": "tests/test_bldc_angle_contract.py",
-      "bytes": 6765,
-      "sha256": "8ff99d365cc6d3b8ae7fffc938e5bd5e2860254682998fbd6a161338dc11f929"
+      "bytes": 6846,
+      "sha256": "32c1035b6336e501e86fe5698c4030e7ace47ab8f6c31819bc29a388c19462f0"
     },
     {
       "path": "tests/test_experimental_holem50.py",
@@ -5835,8 +5835,8 @@
     },
     {
       "path": "tests/test_late_reference_comparison.py",
-      "bytes": 13530,
-      "sha256": "e4e41fae40b8d53887e7f8ca26409bbacee7fb2a822f20af26a1fb3288cd063c"
+      "bytes": 13524,
+      "sha256": "4dcaf10ddb8a2f4956f236f74a01323d04c3134aae652ea64c703a11d783eacf"
     },
     {
       "path": "tests/test_launcher.py",
@@ -5950,8 +5950,8 @@
     },
     {
       "path": "tests/test_qualification.py",
-      "bytes": 8408,
-      "sha256": "47a077f48e0402048755d00a07b8e8d9e8633142e78c7a57661c45c5098fd943"
+      "bytes": 12334,
+      "sha256": "3f51ae8abae38f4b46d4ce3c1a9e0d9b45603e6d0a0fc58bb40f6b60723623ee"
     },
     {
       "path": "tests/test_release_tools.py",
@@ -6170,8 +6170,8 @@
     },
     {
       "path": "tools/report_benchmark_against_reference.py",
-      "bytes": 19756,
-      "sha256": "faf9a989f1cb0c7e48aaa08b01332729e4bacae30d3c14d201baf8686a205a3e"
+      "bytes": 19937,
+      "sha256": "c1bbc90b616a447439ae712e1202716395bf1a29a6450690ddbb41bb0fa06f95"
     },
     {
       "path": "tools/run_benchmarks.py",

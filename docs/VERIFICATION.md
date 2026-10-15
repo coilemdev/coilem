@@ -107,7 +107,7 @@ Before publishing a release, pin the actual public commit and verify its new
 repository metadata, private vulnerability-reporting route and hosted CI runs.
 CI specifies Python 3.11 and Node 24 and includes Windows, macOS and Linux jobs;
 those hosted runs are separate from this local record. Numerical qualification
-is the published A/B/C/D benchmark report v1.1; see [Validation](VALIDATION.md#qualification-status).
+is the published Magneto2D versus FEMM v3 report; see [Validation](VALIDATION.md#qualification-status).
 Record the complete interactive walkthrough on the tagged commit; the automated
 recovery checks above cover backend reconnection and configured
 workspace-capacity recovery.

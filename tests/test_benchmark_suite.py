@@ -11,7 +11,7 @@ from pathlib import Path
 import pytest
 
 from tools.benchmark_suite.cli import inputs, verify_artifact
-from tools.benchmark_suite.contract import DEFAULT_BUNDLE, ROOT, SPEC, canonical, read, run_lock, sha, write
+from tools.benchmark_suite.contract import ROOT, SPEC, canonical, read, run_lock, sha, write
 from tools.benchmark_suite.metrics import energy_balance_ratio, evaluate_abc, evaluate_bldc
 from tools.benchmark_suite.references import load_bundle, load_suite
 from tools.benchmark_suite.report import build, phase_display_status

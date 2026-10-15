@@ -9,7 +9,7 @@ from backend.excitation import phase_axis_offset_deg
 from backend.models import MotorConfig
 from tools.benchmark_suite.bldc_metrics import golden_sector, validate_lane_result
 from tools.benchmark_suite.cli import inputs
-from tools.benchmark_suite.contract import DEFAULT_BUNDLE, ROOT, SPEC, read, sha
+from tools.benchmark_suite.contract import DEFAULT_BUNDLE, ROOT, SPEC, sha
 from tools.benchmark_suite.references import load_bundle, load_suite
 
 OLD = ROOT / "benchmarks/abcd-v1.1/benchmark_spec.json"
@@ -97,10 +97,14 @@ def test_legacy_protocol_retains_fixed_axis_and_unknown_frames_fail_closed():
 @pytest.mark.parametrize("mutation", ["missing_bridge","manifest_hash","measured_commit","protocol_hash","limits"])
 def test_reference_reuse_is_explicit_and_hash_bound(mutation):
     spec=load_suite(NEW)
-    if mutation=="missing_bridge":spec.pop("reference_compatibility")
-    elif mutation=="manifest_hash":spec["reference_compatibility"]["manifest_sha256"]="0"*64
-    elif mutation=="measured_commit":spec["reference_compatibility"]["reference_commit"]="wrong"
-    elif mutation=="protocol_hash":spec["reference_compatibility"]["six_step_protocol_sha256"]["spm_8p12s_reference"]="0"*64
+    if mutation=="missing_bridge":
+        spec.pop("reference_compatibility")
+    elif mutation=="manifest_hash":
+        spec["reference_compatibility"]["manifest_sha256"]="0"*64
+    elif mutation=="measured_commit":
+        spec["reference_compatibility"]["reference_commit"]="wrong"
+    elif mutation=="protocol_hash":
+        spec["reference_compatibility"]["six_step_protocol_sha256"]["spm_8p12s_reference"]="0"*64
     else:
         spec["material_contract"]=copy.deepcopy(spec["material_contract"])
         spec["material_contract"]["steel_grade"]="other"
@@ -119,9 +123,12 @@ def test_report_migration_rejects_numerical_or_physical_setting_changes(monkeypa
     def changed(path):
         value=original_read(path)
         if Path(path).name=='spm_8p12s_reference.json':
-            if kind=='grid':value['matrix']['cross_lane_product']['sample_count']+=1
-            elif kind=='limit':value['gates']['native_standard_to_fine_ripple_delta_percentage_points_max']=6
-            else:value['excitation']['product_current_A']=51
+            if kind=='grid':
+                value['matrix']['cross_lane_product']['sample_count']+=1
+            elif kind=='limit':
+                value['gates']['native_standard_to_fine_ripple_delta_percentage_points_max']=6
+            else:
+                value['excitation']['product_current_A']=51
         return value
     monkeypatch.setattr(contract,'read',changed)
     with pytest.raises(ValueError,match='grids, excitation settings or numerical limits'):
