@@ -94,7 +94,7 @@ def test_qualified_combinations_name_their_evidence(fixture: str, reason: str) -
     qualification = classify_qualification(_fixture(fixture))
     assert qualification["status"] == "qualified"
     assert qualification["reason"].startswith(reason)
-    assert qualification["basis"] == "coilEM benchmark vs FEMM v3, measured at 738d951"
+    assert qualification["basis"] == "coilEM benchmark report, measured at 738d951"
     assert qualification["reference"].endswith("docs/VALIDATION.md#qualification-status")
 
 
@@ -141,6 +141,35 @@ def test_reasons_match_the_report_outcomes() -> None:
             assert set(statuses) == {"UNSUPPORTED"}, claim
     for key, statuses in gates.items():
         assert f"({statuses.count('PASS')} of {len(statuses)} gates)" in key[1]
+
+
+def test_qualification_text_names_no_excluded_launch_terms(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Qualification travels in public preview, solve and saved-run payloads, which
+    # must not name the reference solver or thermal analysis (tools/smoke_public_runtime.py).
+    monkeypatch.setenv("COILEM_EXPERIMENTAL_ROTORS", "1")
+    prius = json.loads(Path("frontend/src/public/examples/ornl_prius_2004_holem50.coilem").read_text(encoding="utf-8"))
+    for key in ("openem_schema_version", "openem_version", "name", "description"):
+        prius.pop(key, None)
+    distributed = _fixture("spm_8p24s_distributed_femm_validation.json")
+    concentrated = _fixture("spm_8p12s_concentrated__baseline.json")
+    configs = [
+        *(MotorConfig.model_validate_json(Path(row["fixture"]).read_text(encoding="utf-8")) for row in REPORT["rows"]),
+        *(MotorConfig.model_validate_json(path.read_text(encoding="utf-8")) for path in sorted(FIXTURES.glob("*.json"))),
+        _with(distributed, "winding", layers=1),
+        _with(distributed, "winding", coil_span=4),
+        _with(distributed, "materials", stator_steel="custom:lab-curve"),
+        _with(distributed, "solve_params", excitation_mode="ideal_six_step_120", current_amplitude_convention="plateau"),
+        _with(concentrated, "winding", layers=2),
+        _with(concentrated, "solve_params", solve_quality="quick", mesh_density="coarse"),
+        MotorConfig.model_validate(prius),
+    ]
+    reasons = set()
+    for config in configs:
+        text = json.dumps(classify_qualification(config)).lower()
+        assert "femm" not in text and "thermal" not in text, text
+        reasons.add(classify_qualification(config)["reason"])
+    assert any(reason.startswith("HoleM50") for reason in reasons)
+    assert any(reason.startswith("V-shape IPM") for reason in reasons)
 
 
 def test_unmeasured_and_failing_combinations_are_experimental() -> None:
