@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import errno
 import json
+import re
 import signal
 import socket
 import socketserver
@@ -266,11 +267,28 @@ def test_linux_reports_a_missing_system_library_before_serving() -> None:
 
         return load
 
-    message = launcher.linux_mesher_problem(platform="linux", load=missing("libGLU.so.1"))
-    assert "libGLU.so.1" in message and "sudo apt-get install libglu1-mesa" in message
-    assert "libXft.so.2" in launcher.linux_mesher_problem(platform="linux", load=missing("libXft.so.2"))
+    # Whichever library is missing first, the message names it and every package to install (#77).
+    for library in ("libGLU.so.1", "libGL.so.1", "libXft.so.2", "libgomp.so.1"):
+        message = launcher.linux_mesher_problem(platform="linux", load=missing(library))
+        assert library in message and _debian_command() in message
     assert launcher.linux_mesher_problem(platform="linux", load=lambda: None) is None
     assert launcher.linux_mesher_problem(platform="darwin", load=missing("libGLU.so.1")) is None
+
+
+def _debian_command() -> str:
+    return re.search(r"Debian/Ubuntu: (sudo apt-get install [^\n]+)", launcher._LINUX_MESHER_HELP)[1]
+
+
+def test_the_launcher_docs_and_ci_install_the_same_linux_libraries() -> None:
+    repo = Path(__file__).resolve().parents[1]
+    command = _debian_command()
+    for doc in ("README.md", "docs/GETTING_STARTED.md"):
+        assert set(re.findall(r"sudo apt-get install libglu1-mesa[^`\n]*", (repo / doc).read_text(encoding="utf-8"))) == {command}, doc
+    packages = command.removeprefix("sudo apt-get install ")
+    workflow = (repo / ".github/workflows/release-wheels.yml").read_text(encoding="utf-8")
+    assert f"sudo apt-get install -y {packages}" in workflow
+    assert f"apt-get install -y --no-install-recommends {packages}" in workflow
+    assert f'grep -qF "{command}"' in workflow
 
 
 def test_launch_stops_with_the_mesher_message(monkeypatch, tmp_path: Path, capsys) -> None:
@@ -285,5 +303,44 @@ def test_ctrl_break_ends_like_ctrl_c() -> None:
     assert signal.SIGINT in launcher._INTERRUPTS
     if hasattr(signal, "SIGBREAK"):
         assert signal.SIGBREAK in launcher._INTERRUPTS
+
+
+def _launcher_server(monkeypatch):
+    import uvicorn
+
+    forced: list[int] = []
+    monkeypatch.setattr(launcher, "_shutdown_native_work", lambda: None)
+    monkeypatch.setattr(launcher, "_exit_after_deadline", lambda: None)
+    monkeypatch.setattr(launcher, "_force_exit", forced.append)
+    return launcher._launcher_server_class()(uvicorn.Config(lambda scope, receive, send: None)), forced
+
+
+def test_one_ctrl_c_delivered_twice_is_one_interrupt(monkeypatch) -> None:
+    """Under uvx one Ctrl+C reaches coilEM twice, about 0.2 s apart (#76)."""
+    server, forced = _launcher_server(monkeypatch)
+    server.handle_exit(signal.SIGINT, None)
+    assert server.should_exit and forced == []
+    server.handle_exit(signal.SIGINT, None)
+    assert forced == [] and not server.force_exit
+    server.first_interrupt_at -= launcher.DUPLICATE_INTERRUPT_S
+    server.handle_exit(signal.SIGINT, None)
+    assert forced == [130]
+
+
+def test_ctrl_c_after_a_termination_request_forces_exit(monkeypatch) -> None:
+    server, forced = _launcher_server(monkeypatch)
+    server.handle_exit(signal.SIGTERM, None)
+    server.handle_exit(signal.SIGINT, None)
+    assert forced == [130]
+
+
+def test_ctrl_c_outside_uvicorn_is_ignored_only_once_ctrl_c_stopped_the_server(monkeypatch) -> None:
+    server, _ = _launcher_server(monkeypatch)
+    handle = launcher._interrupt_outside_uvicorn(server)
     with pytest.raises(KeyboardInterrupt):
-        launcher._raise_interrupt(signal.SIGINT, None)
+        handle(signal.SIGINT, None)  # before uvicorn takes over
+    server.handle_exit(signal.SIGTERM, None)
+    with pytest.raises(KeyboardInterrupt):
+        handle(signal.SIGINT, None)  # stopping on request: Ctrl+C still interrupts cleanup
+    server.handle_exit(signal.SIGINT, None)
+    handle(signal.SIGINT, None)  # uvicorn's re-raise, or the late duplicate under uvx

@@ -30,8 +30,8 @@
     },
     {
       "path": ".github/workflows/release-wheels.yml",
-      "bytes": 18873,
-      "sha256": "141114d388835f32b90a1b06e386ee5595e09842ebe5a936f7ed512b03363443"
+      "bytes": 21716,
+      "sha256": "f3fcc1517c0a81bb834fe847de82a4b8ca08a80e2874bc50843f24086891ad41"
     },
     {
       "path": ".gitignore",
@@ -280,8 +280,8 @@
     },
     {
       "path": "backend/launcher.py",
-      "bytes": 17633,
-      "sha256": "05ce9ff0df2befb464396f1bcff23717cb4fc3abb4998a20fb5a7bc0308bafa3"
+      "bytes": 19562,
+      "sha256": "38d70a6b51f9aed61064242a47a9b1e3cf1914643d1de64bad0d3a40bc949ce8"
     },
     {
       "path": "backend/local_file_safety.py",
@@ -4370,8 +4370,8 @@
     },
     {
       "path": "docs/RELEASING.md",
-      "bytes": 10790,
-      "sha256": "82bea795a7ce8a7f34661d03778d9cce8c1c950bd5ac3df551c5c6a5347398e3"
+      "bytes": 10942,
+      "sha256": "e690bc0d26e6bb6efacc4384e7f396a72b3888138e38d6da8585448568f3a8c1"
     },
     {
       "path": "docs/RUNTIME_SETTINGS.md",
@@ -5840,13 +5840,13 @@
     },
     {
       "path": "tests/test_launcher.py",
-      "bytes": 12525,
-      "sha256": "e7c1592e0c33d6edfcd37222addd653cb8fd9a35d328c61dfc3b32651b397ec0"
+      "bytes": 15111,
+      "sha256": "b030de3caf5808c136629732abd5214815d4b04f3e4212dfcc7fc903ea79e1bd"
     },
     {
       "path": "tests/test_launcher_shutdown.py",
-      "bytes": 25342,
-      "sha256": "7db7e7678d895a4d0c11a7e12cf56ea10c342cb57da6b25feca218ba458bdfc2"
+      "bytes": 27155,
+      "sha256": "4ef2789ea71745edeb6fdf852229bad32e2f9eb3583d85652f8fae843a139025"
     },
     {
       "path": "tests/test_linear_halbach_analytical.py",
@@ -5955,8 +5955,8 @@
     },
     {
       "path": "tests/test_release_tools.py",
-      "bytes": 30172,
-      "sha256": "955ffc8b1a1b04890794f62bcca2e588df18aec1df943bb55d614e138aff731d"
+      "bytes": 30218,
+      "sha256": "39612257d20634219f92ec7d509ae0daf17b7f3bf8cb189297f362fc4b4d45bd"
     },
     {
       "path": "tests/test_slot_layer_split.py",
