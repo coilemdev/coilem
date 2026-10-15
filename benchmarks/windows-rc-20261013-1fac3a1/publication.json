@@ -104,13 +104,17 @@
     "fixtures/spm_8p48s_chorded_5_6__native.json": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136",
     "fixtures/spm_8p48s_distributed_femm_validation__native.json": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
   },
-  "generated_pdf_unchanged": true,
+  "generated_pdf_unchanged": false,
+  "published_pdf_sha256": "b581fe94662b77a7c39d363400e5ed7f96fcc4f79f9e546657d6a29432f4b6fb",
+  "pdf_link_annotations_changed": 36,
+  "pdf_page_content_streams_and_text_unchanged": true,
   "numerical_values_and_verdicts_changed": false,
   "new_reference_solves_executed": false,
   "changes": [
     "local run root normalized in text and JSON",
     "worker process IDs omitted",
-    "publication, timing and comparison records added"
+    "publication, timing and comparison records added",
+    "PDF fixture-link annotations point to the committed fixture JSON on GitHub instead of the local report paths; every other PDF byte is unchanged apart from cross-reference offsets"
   ],
   "local_only_formats": [
     "CSV",

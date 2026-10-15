@@ -431,7 +431,7 @@ def test_release_workflow_publishes_only_after_acceptance() -> None:
     assert workflow.count("id-token: write") == 2
 
     testpypi = _job(workflow, "publish-testpypi")
-    assert "needs: [policy, acceptance]" in testpypi
+    assert "needs: [policy, acceptance, acceptance-bare-linux]" in testpypi
     assert "if: inputs.publish == 'testpypi'" in testpypi
     assert "repository-url: https://test.pypi.org/legacy/" in testpypi
     assert "id-token: write" in testpypi and "name: testpypi" in testpypi
@@ -440,7 +440,7 @@ def test_release_workflow_publishes_only_after_acceptance() -> None:
     # PyPI: only a pushed tag (checked against the version by the policy job),
     # only after acceptance, and only through the reviewed `pypi` environment.
     pypi = _job(workflow, "publish-pypi")
-    assert "needs: [policy, acceptance]" in pypi
+    assert "needs: [policy, acceptance, acceptance-bare-linux]" in pypi
     assert "if: github.event_name == 'push' && github.ref_type == 'tag'" in pypi
     assert "name: pypi" in pypi and "id-token: write" in pypi
     assert "repository-url" not in pypi

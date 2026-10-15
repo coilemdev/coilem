@@ -24,8 +24,8 @@
     },
     {
       "path": "coilem_benchmark_report.pdf",
-      "bytes": 147040,
-      "sha256": "c0cd303fd95b41e378e1193478be7a2ac3adcc3124a8e58f60d50d5ae326a868"
+      "bytes": 142972,
+      "sha256": "62c723f7b4ebe23aa813ecef09fb7ba2a8cba8a11cc10acbc4c942464d56dd80"
     },
     {
       "path": "comparison-to-v1.5.json",

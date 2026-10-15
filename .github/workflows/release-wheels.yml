@@ -266,9 +266,9 @@ jobs:
           if "$RUNNER_TEMP/glu-check/bin/coilem" --no-browser 2> "$RUNNER_TEMP/glu.err"; then echo "coilem started without GLU"; exit 1; fi
           cat "$RUNNER_TEMP/glu.err"
           grep -q "sudo apt-get install libglu1-mesa" "$RUNNER_TEMP/glu.err"
-      - name: Install the documented Linux prerequisite
+      - name: Install the documented Linux libraries
         if: matrix.target == 'linux-x86_64'
-        run: sudo apt-get update && sudo apt-get install -y libglu1-mesa
+        run: sudo apt-get update && sudo apt-get install -y libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6 libxfixes3 libxft2 libxinerama1 libxrender1 libfontconfig1 libgomp1
       - name: Run the installed-package acceptance test outside the checkout
         run: |
           wheel=$(python -c 'import glob, os; print(os.path.abspath(glob.glob("wheels/*.whl")[0]))')
@@ -276,9 +276,53 @@ jobs:
           cd "$RUNNER_TEMP"
           python -I acceptance.py --install "$wheel"
 
+  acceptance-bare-linux:
+    # The hosted images already have every library Gmsh loads, so the jobs
+    # above cannot catch a gap in the documented list (#77). Start from a bare
+    # container, check that coilem names the packages to install, then install
+    # exactly those and run the acceptance test.
+    name: Acceptance (bare ubuntu:22.04 container, Python 3.12)
+    needs: wheel
+    runs-on: ubuntu-24.04
+    container: ubuntu:22.04
+    timeout-minutes: 45
+    env:
+      DEBIAN_FRONTEND: noninteractive
+    steps:
+      # The container has no git, so checkout downloads the tree through the API.
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: wheel-linux-x86_64
+          path: wheels
+      # Ubuntu 22.04's own python3.11 is a 3.11.0 release candidate, which does
+      # not satisfy coilEM's Requires-Python; uv brings a standalone build.
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - name: Install Python 3.12, and procps for the acceptance test's process checks
+        run: |
+          uv python install 3.12
+          echo "PYTHON=$(uv python find 3.12)" >> "$GITHUB_ENV"
+          apt-get update
+          apt-get install -y --no-install-recommends procps
+      - name: Report every package to install when Gmsh cannot load
+        run: |
+          "$PYTHON" -m venv "$RUNNER_TEMP/bare"
+          "$RUNNER_TEMP/bare/bin/python" -m pip install --quiet wheels/*.whl
+          if timeout 120 "$RUNNER_TEMP/bare/bin/coilem" --no-browser 2> "$RUNNER_TEMP/missing.err"; then echo "coilem started without Gmsh's libraries"; exit 1; fi
+          cat "$RUNNER_TEMP/missing.err"
+          grep -qF "sudo apt-get install libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6 libxfixes3 libxft2 libxinerama1 libxrender1 libfontconfig1 libgomp1" "$RUNNER_TEMP/missing.err"
+      - name: Install only the Linux libraries the README documents
+        run: apt-get install -y --no-install-recommends libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6 libxfixes3 libxft2 libxinerama1 libxrender1 libfontconfig1 libgomp1
+      - name: Run the installed-package acceptance test outside the checkout
+        run: |
+          wheel=$(ls "$PWD"/wheels/*.whl)
+          cp tools/release/acceptance.py "$RUNNER_TEMP/"
+          cd "$RUNNER_TEMP"
+          "$PYTHON" -I acceptance.py --install "$wheel"
+
   publish-testpypi:
     name: Publish to TestPyPI
-    needs: [policy, acceptance]
+    needs: [policy, acceptance, acceptance-bare-linux]
     if: inputs.publish == 'testpypi'
     runs-on: ubuntu-24.04
     environment:
@@ -335,9 +379,9 @@ jobs:
         with:
           name: wheel-${{ matrix.target }}
           path: wheels
-      - name: Install the documented Linux prerequisite
+      - name: Install the documented Linux libraries
         if: matrix.target == 'linux-x86_64'
-        run: sudo apt-get update && sudo apt-get install -y libglu1-mesa
+        run: sudo apt-get update && sudo apt-get install -y libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6 libxfixes3 libxft2 libxinerama1 libxrender1 libfontconfig1 libgomp1
       - name: Install from TestPyPI and run the acceptance test
         env:
           VERSION: ${{ needs.policy.outputs.version }}
@@ -349,7 +393,7 @@ jobs:
 
   publish-pypi:
     name: Publish to PyPI
-    needs: [policy, acceptance]
+    needs: [policy, acceptance, acceptance-bare-linux]
     # Only a pushed release tag; the policy job has checked that it names the version.
     if: github.event_name == 'push' && github.ref_type == 'tag'
     runs-on: ubuntu-24.04
@@ -405,9 +449,9 @@ jobs:
         with:
           name: wheel-${{ matrix.target }}
           path: wheels
-      - name: Install the documented Linux prerequisite
+      - name: Install the documented Linux libraries
         if: matrix.target == 'linux-x86_64'
-        run: sudo apt-get update && sudo apt-get install -y libglu1-mesa
+        run: sudo apt-get update && sudo apt-get install -y libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6 libxfixes3 libxft2 libxinerama1 libxrender1 libfontconfig1 libgomp1
       - name: Install from PyPI and run the acceptance test
         env:
           VERSION: ${{ needs.policy.outputs.version }}
