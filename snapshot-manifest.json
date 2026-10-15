@@ -4495,8 +4495,8 @@
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/first-comparison/README.md",
-      "bytes": 4522,
-      "sha256": "f4c6eddff371e915cda9716e5386d1ca93a5937fb698e9f042db6081aa85a501"
+      "bytes": 4547,
+      "sha256": "db39904d7fd9693828dcd1dd24b351a2af21b5378f5ab0bdc3cdcb2e13fc85a6"
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/first-comparison/back-emf.svg",
@@ -4537,6 +4537,51 @@
       "path": "docs/hardware-validation/ornl-prius-2004/input-provenance.json",
       "bytes": 12708,
       "sha256": "717340af98275adf20f418c95e00374b2ea2723b7a1d7ad5ec6f22c29c439986"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/phase-b/bands.svg",
+      "bytes": 6199,
+      "sha256": "4618738638cc455eba4de9abbc23a70a7b393344cfeaf15b4de5ea7d7abe9140"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/phase-b/comparison.json",
+      "bytes": 57042,
+      "sha256": "94a4338ddc894ed008c392057955ef2ab4778287bce8f104ad287eca95d5c0c8"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/phase-b/requests/bridge-0.056in.json",
+      "bytes": 2546,
+      "sha256": "43a15e1a6de3cad823d59ddd3c5384e331067f710738283827d141259cfb65c6"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/phase-b/requests/bridge-0.060in.json",
+      "bytes": 2545,
+      "sha256": "ecc306d4b45487e36362f6a669338399bde21313ac8be2bf20e8c7055d0468dd"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/phase-b/requests/double-layer-5-6-pitch.json",
+      "bytes": 2541,
+      "sha256": "5f7a21d865db66a324a0b35977b884ad5eae170d8a8ec8fae4ed5603e3490de5"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/phase-b/requests/double-layer-full-pitch.json",
+      "bytes": 2544,
+      "sha256": "2e060cc4bfd097e3da6396e39af52c52defebdcc13956d31ac383bef70fa2320"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/phase-b/requests/magnet-length-18.3.json",
+      "bytes": 2544,
+      "sha256": "799b81de83f531b70d30c3cfa20f9191d18bda7c02ed49de9e77c702ee7ebc41"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/phase-b/requests/magnet-length-18.6.json",
+      "bytes": 2544,
+      "sha256": "c8c8416d54f5eb85cce70a93a45d444b0ae0628c71c0284d0b6660372775cd40"
+    },
+    {
+      "path": "docs/hardware-validation/ornl-prius-2004/report-v1.md",
+      "bytes": 12199,
+      "sha256": "289fefba7f34b9fe559a9df325d94ea9150af0185aac3039d4cb9892f9585449"
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/rotor-pocket-measurements.json",
