@@ -23,6 +23,10 @@ ABSOLUTE_USER_PATH_PATTERNS = (
     re.compile(r"[A-Za-z]:\\Users\\[A-Za-z0-9_.-]+\\", re.IGNORECASE),
     re.compile(r"/(?:Users|home)/[A-Za-z0-9_.-]+/", re.IGNORECASE),
 )
+# A published PDF may link to the web, to its own pages or to a file beside it.
+# file: URIs, absolute paths and file-opening actions name the machine that built it.
+PDF_LINK_SCHEMES = {"http", "https", "mailto"}
+PDF_FILE_ACTIONS = {"/Launch", "/GoToR", "/GoToE", "/ImportData"}
 FORBIDDEN_PARTS = {
     "cloud",
     "femm_solver",
@@ -111,6 +115,50 @@ def png_hygiene_failures(relative: str, path: Path) -> list[str]:
     return failures
 
 
+def pdf_link_is_local(uri: str) -> bool:
+    scheme = re.match(r"([A-Za-z][A-Za-z0-9+.-]*):", uri)
+    if scheme and len(scheme.group(1)) > 1:  # a single letter is a drive, not a scheme
+        local = scheme.group(1).lower() not in PDF_LINK_SCHEMES
+    else:
+        local = bool(scheme) or uri.startswith(("/", "\\", "~"))
+    return local or any(pattern.search(uri) for pattern in ABSOLUTE_USER_PATH_PATTERNS)
+
+
+def pdf_hygiene_failures(relative: str, path: Path) -> list[str]:
+    """Check link annotations; name pages only, so a detected path never reaches the log."""
+    try:
+        from pypdf import PdfReader
+    except ImportError:
+        return [f"pypdf is needed to check PDF links (pip install -e '.[dev]'): {relative}"]
+
+    def resolved(dictionary, key):
+        value = dictionary.get(key)  # pypdf resolves indirect objects on [] only
+        return None if value is None else value.get_object()
+
+    pages = []
+    try:
+        for number, page in enumerate(PdfReader(path).pages, 1):
+            for annotation in resolved(page, "/Annots") or []:
+                pending, seen = [resolved(annotation.get_object(), "/A")], set()
+                while pending:
+                    action = pending.pop()
+                    if action is None or id(action) in seen:  # /Next chains may loop
+                        continue
+                    seen.add(id(action))
+                    if isinstance(action, list):
+                        pending.extend(item.get_object() for item in action)
+                        continue
+                    kind = resolved(action, "/S")
+                    if kind in PDF_FILE_ACTIONS or (kind == "/URI" and pdf_link_is_local(str(resolved(action, "/URI") or ""))):
+                        pages.append(number)
+                    pending.append(resolved(action, "/Next"))
+    except Exception:
+        return [f"invalid publication PDF: {relative}"]
+    if pages:
+        return [f"local file link in PDF: {relative} ({len(pages)} links, first on page {pages[0]})"]
+    return []
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--publication", action="store_true")
@@ -174,8 +222,10 @@ def main() -> int:
                 failures.append(f"invalid allowlisted binary signature: {relative}")
             if path.suffix.lower() == ".png":
                 failures.extend(png_hygiene_failures(relative, path))
-            elif not path.read_bytes().rstrip().endswith(b"%%EOF"):
-                failures.append(f"incomplete allowlisted PDF: {relative}")
+            else:
+                if not path.read_bytes().rstrip().endswith(b"%%EOF"):
+                    failures.append(f"incomplete allowlisted PDF: {relative}")
+                failures.extend(pdf_hygiene_failures(relative, path))
             continue
         try:
             text = path.read_text(encoding="utf-8")

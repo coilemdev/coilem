@@ -87,14 +87,18 @@
     "torque-refinement-full.svg": "137b8cba5d741f9959598445667c23d2ec7a31cc7935639947168a92bef57a06",
     "torque-refinement-trough.svg": "f773fe2e43437ecd67fc0046f4f85662cb5cb187cd452f7357cd07ab95968a8f"
   },
-  "generated_main_pdf_unchanged": true,
+  "generated_main_pdf_unchanged": false,
+  "published_pdf_sha256": "b57105f547dc940337dbfe21531affb1d7bd7aa4f8a843569ec9bff8ce7bfba0",
+  "pdf_link_annotations_changed": 36,
+  "pdf_page_content_streams_and_text_unchanged": true,
   "all_published_numerical_values_and_verdicts_unchanged": true,
   "original_evidence_unchanged_after_diagnostics": true,
   "publication_changes": [
     "local directory paths replaced with portable placeholders in text/JSON",
     "worker PIDs omitted",
     "publication/README/ripple diagnostic evidence added",
-    "PDF paths registered in the publication verifier and publication file manifest refreshed"
+    "PDF paths registered in the publication verifier and publication file manifest refreshed",
+    "PDF fixture-link annotations point to the committed fixture JSON on GitHub instead of the local report paths; every other PDF byte is unchanged apart from cross-reference offsets"
   ],
   "local_only": [
     "raw main-suite request/result files and worker logs",

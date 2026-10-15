@@ -268,6 +268,39 @@ def test_report_orders_phases_and_retains_hashed_input_copies(tmp_path):
             assert read(fixture) == row["configurations"][stage]
 
 
+def test_pdf_report_links_fixtures_relative_to_the_report(tmp_path):
+    pypdf = pytest.importorskip("pypdf")
+    from tools.verify_snapshot import pdf_hygiene_failures
+
+    case = next(c for c in SPECIFICATION["cases"] if c["phase"] == "A")
+    stage = case["jobs"][0]["stage"]
+    manifest = {
+        "identity": {"harness_version": "1.0.0", "protocol_version": "1.0.0", "commit": "candidate"},
+        "smoke": False,
+        "reference_mode": "FROZEN_REFERENCE",
+    }
+    row = {
+        "id": case["id"],
+        "phase": "A",
+        "fixture": case["jobs"][0]["fixture"],
+        "status": "UNSUPPORTED",
+        "evaluation": {"status": "UNSUPPORTED", "gates": []},
+        "measurements": {},
+        "configurations": {stage: CONFIGS[case["id"], stage]},
+    }
+    build(tmp_path, manifest, [row], pdf=True)
+    pdf = tmp_path / "report/coilem_benchmark_report.pdf"
+    links = [
+        annotation.get_object()["/A"]["/URI"]
+        for page in pypdf.PdfReader(pdf).pages
+        if "/Annots" in page
+        for annotation in page["/Annots"]
+    ]
+    assert links == [f"fixtures/{case['id']}__{stage}.json"]
+    assert (pdf.parent / links[0]).is_file()
+    assert pdf_hygiene_failures("coilem_benchmark_report.pdf", pdf) == []
+
+
 def test_prius_planned_label_preserves_policy_rejection_and_numerical_status(tmp_path):
     from backend.magneto2d_adapter import get_magneto2d_winding_support_error
     from backend.models import MotorConfig
