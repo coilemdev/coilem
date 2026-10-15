@@ -4600,8 +4600,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 1748,
-      "sha256": "1743ec6ff42b5e244fd8db943a5944b3bdf86777bc391fbea495418522cfdc8d"
+      "bytes": 1789,
+      "sha256": "20e6dec6534cb25c8a1f2c3860e8733af1d68509f58e72322824b9a3b81d315d"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -4662,6 +4662,11 @@
       "path": "frontend/scripts/test-mesh-quality.mjs",
       "bytes": 3216,
       "sha256": "2d72189fd47da95a306099e9f23b5495291eae9603f51ba17a104ea172df429f"
+    },
+    {
+      "path": "frontend/scripts/test-motor-constants.mjs",
+      "bytes": 3927,
+      "sha256": "f4526bbaee3dcbbafabf2cc82ab34eeebee679d21dc13588812b326c51a99841"
     },
     {
       "path": "frontend/scripts/test-public-airgap-ux.mjs",
@@ -5080,8 +5085,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 182947,
-      "sha256": "a65a423952165483a8dc1b996fddcbc5cca0cd40dd0588acdb3b0656a8d4a0d8"
+      "bytes": 183048,
+      "sha256": "f794358ca394c3ea408b1ae2fdbc663ff44b9b783870132713837b29d934b5d0"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5107,6 +5112,11 @@
       "path": "frontend/src/public/MotorCanvas.tsx",
       "bytes": 47400,
       "sha256": "68a2f20bbb557c39008eca9d79ddb672091eeb2856b55cf967f264a2a2712dc1"
+    },
+    {
+      "path": "frontend/src/public/MotorConstants.tsx",
+      "bytes": 2899,
+      "sha256": "10f86b2399825a93c97d00ce85e2a8730c369d6232dec7cba6a172e461e66383"
     },
     {
       "path": "frontend/src/public/PublicLanding.tsx",
@@ -5334,6 +5344,11 @@
       "sha256": "03789a09d067323780d331304e0add1e89ac655a0b9fd4e78fb82ed925b2d726"
     },
     {
+      "path": "frontend/src/public/machineConstants.ts",
+      "bytes": 3675,
+      "sha256": "a6778cbbcb473fe2b84b181b17d8cec042815269211e0a0e578d075715b32c26"
+    },
+    {
       "path": "frontend/src/public/magnetPoleFaces.ts",
       "bytes": 6918,
       "sha256": "fbd5c3f5569b29b6a7188d8a302b8938cced26ff348c0bbca76fb06308203642"
@@ -5350,8 +5365,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 18282,
-      "sha256": "ec40320cf45fbeaca78a7e3590f6ba3c47a1a816219cf314e4daa601da8158bd"
+      "bytes": 18356,
+      "sha256": "d3362b8b111ff74d9c3da75d5777ff4f6a424bdc3eb1b7d036270368fb2a607d"
     },
     {
       "path": "frontend/src/public/motorAirgap.ts",
@@ -5375,8 +5390,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 225541,
-      "sha256": "907976c194be01c074133968c323a7ca55640932a98157ff473230da9c354a25"
+      "bytes": 227335,
+      "sha256": "e9e32597bc2ad09d5a9ec3fb7ad226901c0b7d7e4d0f379e4b85e49592f10fa2"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",

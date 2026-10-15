@@ -408,6 +408,8 @@ export interface SolveResult {
     back_emf_line_thd_h12_pct?: number | null;
     back_emf_line_thd_h24_pct?: number | null;
     Kt_Nm_per_A?: number | null;
+    Ke_Vs_per_rad_mech?: number | null;
+    lambda_pm_Wb?: number | null;
     peak_flux_density_teeth_T: number;
     peak_flux_density_yoke_T: number;
     solve_time_s: number;

@@ -42,6 +42,7 @@ import { SolvedFieldViewer } from './SolvedFieldViewer';
 import { WaveformChart } from './WaveformChart';
 import { BldcTorqueCurrentChart } from './BldcTorqueCurrentChart';
 import { PublicRunComparison } from './PublicRunComparison';
+import { MotorConstants } from './MotorConstants';
 import { publicExampleOptions, type PublicExampleId } from './exampleDesigns';
 import {
   magneticAirgapMm,
@@ -2441,6 +2442,7 @@ function CompletedResultMonitor({ result, onOpenReport }: { result: SolveResult;
         <div><dt>Solver time</dt><dd>{formatNumber(result.summary.solve_time_s, 1)} s</dd></div>
         {result.workflow_elapsed_s != null && <div><dt>Total elapsed</dt><dd>{formatNumber(result.workflow_elapsed_s, 1)} s</dd></div>}
       </dl>
+      <MotorConstants summary={result.summary} />
       <div className="public-compact-result-tabs" role="tablist" aria-label="Completed result plots">
         <button type="button" role="tab" aria-selected={activePlot === 'torque'} className={activePlot === 'torque' ? 'active' : ''} onClick={() => setActivePlot('torque')}>Torque</button>
         <button type="button" role="tab" aria-selected={activePlot === 'back-emf'} className={activePlot === 'back-emf' ? 'active' : ''} onClick={() => setActivePlot('back-emf')}>Back EMF</button>
