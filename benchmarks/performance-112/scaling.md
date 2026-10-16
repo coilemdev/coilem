@@ -1,5 +1,9 @@
 # FEMM performance follow-up (#112)
 
+The subsequent [full-suite run](full-suite.md) validates all 29 cases with the
+combined execution optimizations. The matched subset measurements below retain
+their original producer identities and scope.
+
 The same eight registered A/B/D cases were collected with four and eight
 independent case workers, using identical metrics-only producer identities.
 Four workers took **740.71s**; eight took **431.99s**.
@@ -72,7 +76,9 @@ host with the pinned private producer; keep internal case pools serial.
 The public launcher still defaults to one worker. The payload helper requires
 an explicit producer opt-in and an exact compact/full projection check.
 
-The full 29-case comparison, repeated idle-host measurements, V-shape/high-output
-coverage for the new output modes, reference-bundle assembly and selection of
-a full-suite default remain open in [#112](https://github.com/coilemdev/coilem/issues/112).
+The later [full-suite pass](full-suite.md) supplies 29-case timing and exact
+physical equality, including V-shape/high-output cases and local bundle assembly.
+Repeated idle-host measurements, full-suite worker-policy comparisons and
+integration for a new motor-discovery source pin remain in
+[#112](https://github.com/coilemdev/coilem/issues/112).
 Original evidence, numerical gates and scientific review requirements are unchanged.

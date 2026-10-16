@@ -42,9 +42,10 @@ leases one logical CPU from each physical core using per-run kernel mutexes,
 and applies affinity to each verified FEMM Job Object and its children.
 Two overlapping real FEMM probes verified distinct leases, masks and cleanup.
 
-A fresh full 29-case run uses this configuration, retaining the original
-grids, physics, tolerances and loaded/no-load sequence. Full-suite performance
-and numerical equality require that run to finish. These tuning measurements
-have one observation per setting and do not represent an idle-host repeat study.
+The subsequent [full 29-case run](full-suite.md) completed in **1h52m02s** using
+this configuration, with exact physical outputs and audits. It retains the
+original grids, physics, tolerances and loaded/no-load sequence. These tuning
+measurements have one observation per setting and do not represent an idle-host
+repeat study.
 
 [Raw timing summaries and integrity hashes](large-model-summary.json)

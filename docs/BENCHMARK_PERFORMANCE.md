@@ -18,7 +18,12 @@ cases in 12m21s at four workers and 7m12s at eight, with exact physical equality
 It also validates field-output and Windows readiness optimizations separately.
 The [large-model probes](../benchmarks/performance-112/large-model.md) show
 stronger contention on larger inputs and motivate the measured-host affinity
-and worker-cost configuration. Full-suite validation is a separate step.
+and worker-cost configuration. The [completed full-suite run](../benchmarks/performance-112/full-suite.md)
+collected all 29 cases in **1h52m02s**, versus the archived same-host serial span
+of **9h08m46s** (**79.58% less time**). All physical outputs and audits match
+exactly. This is one development-host observation, with the combined execution
+optimizations and a frozen physical source. FEMM analysis remains 87.2% of summed
+case time; native collection and report rendering are separate stages.
 
 ## Analyze saved measurements
 
@@ -110,6 +115,20 @@ cost hints are ignored and ordinary worker-count scheduling is retained.
 
 The timing analyzer's unconstrained scheduling estimates do not model these
 optional budgets. Use actual run sessions to assess a budgeted configuration.
+
+With the compatible pinned producer, reproduce the measured scheduler policy:
+
+```powershell
+python -m tools.run_reference_benchmark `
+  --producer C:\reference-tools\producer.py `
+  --out-dir C:\bench\reference-fast --workers 8 --worker-budget 8 `
+  --timings benchmarks\performance-112\worker-costs.json
+```
+
+That cost file describes the frozen v3 cases on the measured host. New geometry,
+windings or source pins require their own compatible references and scheduling
+measurements. Readiness, metrics mode and core affinity belong to the external
+producer; the generic launcher does not enable them by itself.
 
 ### Optional reuse inside an external producer
 

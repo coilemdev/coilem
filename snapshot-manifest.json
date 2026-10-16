@@ -540,8 +540,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 6475,
-      "sha256": "c471b8b584d9b7b37ed3ae3ff0ec460c6afddcb093f9f5f59687d704751befa7"
+      "bytes": 6633,
+      "sha256": "1791446725e734c74e6f39bf7b79f0e7dc0d50ba1b7bdb99f788ccb5b7a004bc"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -2450,8 +2450,18 @@
     },
     {
       "path": "benchmarks/performance-112/README.md",
-      "bytes": 4162,
-      "sha256": "36e03e7bdb3ec777de390422853e524836489777951650ffdd2a5cde4129964a"
+      "bytes": 4400,
+      "sha256": "0bda06883ba5d0bae17ef27a44b7d24eb31bce6a2d182d02e81165fa7a329335"
+    },
+    {
+      "path": "benchmarks/performance-112/full-suite-summary.json",
+      "bytes": 136842,
+      "sha256": "1da18892691f2d13c3f8bb1619e161e80614bbeb538c91c19b566b2e76bf5f0f"
+    },
+    {
+      "path": "benchmarks/performance-112/full-suite.md",
+      "bytes": 5466,
+      "sha256": "a8a9c9e3722c541550c92ce76871b600df23626fe83c969b4f40bdb1e17090cc"
     },
     {
       "path": "benchmarks/performance-112/large-model-summary.json",
@@ -2460,8 +2470,8 @@
     },
     {
       "path": "benchmarks/performance-112/large-model.md",
-      "bytes": 2824,
-      "sha256": "24a16069d0da0a74abbd62c77d6aab546f3ac0cac7550f5e804852525edc2d16"
+      "bytes": 2842,
+      "sha256": "e5402745861f0d0f2bce7be1ceae8c0f0016cca4086351bfedebc5af0579aebe"
     },
     {
       "path": "benchmarks/performance-112/pilot-summary.json",
@@ -2475,8 +2485,8 @@
     },
     {
       "path": "benchmarks/performance-112/scaling.md",
-      "bytes": 3862,
-      "sha256": "735eade6fa577d8f5e68ad3d34ccfca1c6f48c90373a9f520d56c2420857e8c3"
+      "bytes": 4163,
+      "sha256": "0dd989883dabb17c6e7a60fdb22d40d7eee9dcb93cf06d42d774b7af54f583d2"
     },
     {
       "path": "benchmarks/performance-112/worker-costs.json",
@@ -4360,8 +4370,8 @@
     },
     {
       "path": "docs/BENCHMARK_PERFORMANCE.md",
-      "bytes": 8856,
-      "sha256": "4bb93ceeb69ba6b3a565dbe044b6f784cd5edf78ec1293c5a91e0afd990cfa47"
+      "bytes": 9896,
+      "sha256": "0294f4154c0138aeebd7bba9ecd1e1d437f7227873cb0e5e30d106dca89eb589"
     },
     {
       "path": "docs/ELMER.md",

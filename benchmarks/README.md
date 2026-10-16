@@ -2,8 +2,10 @@
 
 For saved-run timing analysis and bounded external reference collection, see
 [benchmark execution performance](../docs/BENCHMARK_PERFORMANCE.md).
-The [#112 two-case FEMM pilot](performance-112/README.md) records the first measured
-case-concurrency result and its limits; full-suite scaling remains unmeasured.
+The [#112 full FEMM performance run](performance-112/full-suite.md) collected all
+29 cases in **1h52m02s**, versus the archived same-host serial span of **9h08m46s**
+(**79.58% less time**), with exact physical outputs and extraction audits. This is
+one development-host observation; native collection is a separate stage.
 
 The [Windows Magneto2D versus FEMM v3 report](windows-v3-20261015-738d951/README.md) includes the [64-page plot PDF](windows-v3-20261015-738d951/coilem_benchmark_report.pdf), HTML plots, complete results and provenance at measured pin `738d951`. All A/B/C/D data is complete. The post hoc protocol 1.3.0 angle-contract evaluation records **28 PASS, 1 YELLOW, 1 planned unsupported Prius**; historical fixed-axis FAILs remain in the JSON. The [default protocol 1.3.0 commands](abcd-v1.3/README.md) document the correction and unchanged limits. This is scientific-review evidence, not release qualification.
 
