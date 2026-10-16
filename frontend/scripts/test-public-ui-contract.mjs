@@ -893,6 +893,20 @@ assert.match(fieldResultSource, /Separate solves: in saturated steel the resulta
 assert.match(styleSource, /\.public-field-direction-cue\.is-overlay path \{/);
 assert.match(styleSource, /\.public-solved-field-canvas \.public-field-lines-legend \{[^}]*position: absolute/);
 assert.match(styleSource, /@container \(max-width: 760px\) \{\s*\.public-field-toolbar-groups \{ grid-column: 1 \/ -1; grid-row: 2;/);
+// Field axes: each field's working-harmonic poles, the stator lead and the caption.
+assert.match(solvedFieldSource, /fieldAxes=\{overlayActive \? CLOCKWISE_FIELD_AXES : null\}/);
+assert.match(solvedFieldSource, /setShowPoleLabels\(true\);\s*setFieldLineDensity\('low'\);/);
+assert.match(fieldResultSource, /airgapHarmonic\(statorPolarityProfile, axisPolePairs\)/);
+assert.match(fieldResultSource, /rotorNorthAxisDeg\(magnetOverlay, axisPolePairs\)/);
+assert.match(fieldResultSource, /className="public-field-axis is-stator"/);
+assert.match(fieldResultSource, /className="public-field-axis is-pm"/);
+assert.match(fieldResultSource, /Stator \{leadElecDeg >= 0 \? 'leads' : 'lags'\} magnets by/);
+assert.match(fieldResultSource, /The magnets are pulled after the stator field\./);
+assert.match(fieldResultSource, /-pole-pair part gives no steady torque/);
+assert.match(fieldResultSource, /<p className="public-field-axes-caption">/);
+assert.match(styleSource, /\.public-solved-field-canvas \.public-field-axes-caption \{ position: absolute; z-index: 7; left: 50%; bottom: 8px;/);
+assert.match(fieldResultSource, /strongestAirgapPolePairs\(statorPolarityProfile, axisPolePairs \* 4\)/);
+assert.match(styleSource, /\.public-field-axis\.is-stator \{ stroke: #ffb547;/);
 assert.match(solvedFieldSource, /showPolarityLegend=\{source === 'armature' && showPoleLabels\}/);
 assert.match(solvedFieldSource, /showStatorPolarity=\{source === 'armature' && showPoleLabels\}/);
 assert.match(solvedFieldSource, /nearestAirgapProfile/);

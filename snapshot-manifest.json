@@ -175,8 +175,8 @@
     },
     {
       "path": "backend/field_composition.py",
-      "bytes": 13760,
-      "sha256": "a3004702506189d0bb2ea27a9fc84f12c60311825c112efbcc71dfce3f52ae10"
+      "bytes": 16346,
+      "sha256": "370482a84a5931567801d1f2788ee35aad9193e9432a2b9f10ccf0cb45db1cc0"
     },
     {
       "path": "backend/field_lines.py",
@@ -4645,8 +4645,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 1829,
-      "sha256": "7f2ba6fdf77495ce751899892c3ad1f6366a8d039d8a39043dfbf6b461d47a89"
+      "bytes": 1865,
+      "sha256": "9b4a0e18e7ea9146e2d1dc40989a808528b8025f9dfc645d57acd66eacfa1a7c"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -4687,6 +4687,11 @@
       "path": "frontend/scripts/test-design-file-defaults.mjs",
       "bytes": 4779,
       "sha256": "b03a28241f360dfe64756fba073929a80aafc1d96182377403a00f7350c51b65"
+    },
+    {
+      "path": "frontend/scripts/test-field-axes.mjs",
+      "bytes": 2977,
+      "sha256": "39aef41d7087a48b455b04a8db3780a0d4a3868b478019c434f5fd57861b4b3f"
     },
     {
       "path": "frontend/scripts/test-field-playback-timing.mjs",
@@ -4735,8 +4740,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 110604,
-      "sha256": "afbea14902afe8a1e51bfe40b1ec76fd4e4e306783b2c18f8dc4326976c57dc6"
+      "bytes": 111869,
+      "sha256": "e62261716ff52b8639b3244df75e607952fdde0e8a4cc9afe4481d48cd957a8f"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5015,8 +5020,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/fieldPolarityCues.ts",
-      "bytes": 2131,
-      "sha256": "214682e372a4b8b473b570b262a31bf05e4d8a9aa4bc51c8380ee085c7e0f070"
+      "bytes": 3415,
+      "sha256": "923aa61ae3b0c3f354361c2891023e891afb579bc838ef4a4e52b2a46816f2a1"
     },
     {
       "path": "frontend/src/components/tutorials/follow-flux-three.css",
@@ -5145,8 +5150,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 44008,
-      "sha256": "70ebfb9392d2e8ef67ab4b6fd6d5288646f072bb613b2ff90d9403e1aa0b47d2"
+      "bytes": 49352,
+      "sha256": "08a95471d0d887e9fe9e1f2b1b5203c778e0f41ac3967f6d328d6d189aa8e832"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -5190,8 +5195,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 56906,
-      "sha256": "85ddc5628aee09ea3a7cd27420cf60711620e5ab66161206780078478a071122"
+      "bytes": 57261,
+      "sha256": "ab77dc524c39fb1789191788130b24d948674a370158466a1f2170571f20724a"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -5297,6 +5302,11 @@
       "path": "frontend/src/public/excitationDrafts.ts",
       "bytes": 2575,
       "sha256": "cc74a4cca94a23ac0da8ca51f047d613b5d93de3e1a882058bbecb7ab1a9e925"
+    },
+    {
+      "path": "frontend/src/public/fieldAxes.ts",
+      "bytes": 1486,
+      "sha256": "955232c4af710fbabcbb941281a8dde2dc624fb504dcf5041622b2f6e67c90a3"
     },
     {
       "path": "frontend/src/public/fieldPlaybackContract.ts",
@@ -5450,8 +5460,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 233177,
-      "sha256": "40d28ca47beaeefd96aceb2e2fe8829a514deb37d72e6e1eeb39173051ee1ae7"
+      "bytes": 234493,
+      "sha256": "ca4281da58f259677f73c572d5c53c558f71b5126cbb19331ef59b1c46755839"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -5867,6 +5877,11 @@
       "path": "tests/test_experimental_rotor_switch.py",
       "bytes": 3508,
       "sha256": "6c9b0504dfca472880ae6d2b409963ae870087e96ecc6fe0958c9f9b19ea2733"
+    },
+    {
+      "path": "tests/test_field_composition_airgap.py",
+      "bytes": 3104,
+      "sha256": "f5a86d1fc3e80d1ca3db6bb9d60e14d65ba0d532a3bdf9c4ce20c1b648a12b2c"
     },
     {
       "path": "tests/test_gmsh_sigpipe.py",
@@ -8590,6 +8605,48 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "eedd78457093a52f88122296c82b48c565c185117ae3bba5de905a7e2971e606",
       "reason": "Check the Stator + PM view, its overlay colours, legend and toolbar layout (#120)."
+    },
+    {
+      "base_commit": "69a573486535bbd752cdc939ae88b105fcc66947",
+      "path": "backend/field_composition.py",
+      "source_sha256": "a3004702506189d0bb2ea27a9fc84f12c60311825c112efbcc71dfce3f52ae10",
+      "reason": "Keep each stator-only frame's air-gap Br/Bt profile in the cached sweep (cache v2), so the viewer can place stator pole labels and field axes (#120)."
+    },
+    {
+      "base_commit": "69a573486535bbd752cdc939ae88b105fcc66947",
+      "path": "frontend/package.json",
+      "source_sha256": "7f2ba6fdf77495ce751899892c3ad1f6366a8d039d8a39043dfbf6b461d47a89",
+      "reason": "Run the field-axes tests with the public UI tests (#120)."
+    },
+    {
+      "base_commit": "69a573486535bbd752cdc939ae88b105fcc66947",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "afbea14902afe8a1e51bfe40b1ec76fd4e4e306783b2c18f8dc4326976c57dc6",
+      "reason": "Check the field-axis arrows, the stator lead readout, the caption and the Stator + PM defaults (#120)."
+    },
+    {
+      "base_commit": "69a573486535bbd752cdc939ae88b105fcc66947",
+      "path": "frontend/src/components/tutorials/fieldPolarityCues.ts",
+      "source_sha256": "214682e372a4b8b473b570b262a31bf05e4d8a9aa4bc51c8380ee085c7e0f070",
+      "reason": "Expose the air-gap harmonic fit and the strongest pole-pair order, used by the stator pole labels and the field axes (#120)."
+    },
+    {
+      "base_commit": "69a573486535bbd752cdc939ae88b105fcc66947",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "70ebfb9392d2e8ef67ab4b6fd6d5288646f072bb613b2ff90d9403e1aa0b47d2",
+      "reason": "Draw each field's working-harmonic axis arrows, the stator lead arc and readout, and a caption explaining why the fields turn (#120)."
+    },
+    {
+      "base_commit": "69a573486535bbd752cdc939ae88b105fcc66947",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "85ddc5628aee09ea3a7cd27420cf60711620e5ab66161206780078478a071122",
+      "reason": "Show the field axes in Stator + PM, with pole labels on and low line density when the view is chosen (#120)."
+    },
+    {
+      "base_commit": "69a573486535bbd752cdc939ae88b105fcc66947",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "40d28ca47beaeefd96aceb2e2fe8829a514deb37d72e6e1eeb39173051ee1ae7",
+      "reason": "Style the field-axis arrows, the lead readout and the caption strip (#120)."
     }
   ]
 }

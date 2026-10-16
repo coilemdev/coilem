@@ -7,7 +7,11 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from 'react';
 
-import { deriveMagneticPolarityCues } from '../components/tutorials/fieldPolarityCues';
+import {
+  airgapHarmonic,
+  deriveMagneticPolarityCues,
+  strongestAirgapPolePairs,
+} from '../components/tutorials/fieldPolarityCues';
 import type { AirgapBrBtProfile } from '../components/tutorials/lessonSolveTypes';
 import type {
   FieldLineContourLevel,
@@ -19,6 +23,7 @@ import {
   useViewportNavigation,
   ViewportNavigationControls,
 } from './ViewportNavigation';
+import { rotorNorthAxisDeg, statorLeadElecDeg } from './fieldAxes';
 import {
   fieldRangeForViewport,
   type FieldViewportRange,
@@ -72,6 +77,11 @@ export interface FieldResultRaster {
   contourLevelCount: number;
   contourSegmentCount: number;
   vectorCues: PublicFieldVectorCue[];
+}
+
+/** Draw each field's working-harmonic axes; playback turns in this direction. */
+export interface FieldAxesOptions {
+  rotation: 'clockwise' | 'counterclockwise';
 }
 
 /** A second field drawn as lines over the first, as in the Stator + PM view (#120). */
@@ -513,6 +523,7 @@ export function FieldResultPlot({
   describeProbe = defaultProbeDescription,
   onViewportScaleSettled,
   overlay = null,
+  fieldAxes = null,
 }: {
   plot?: PublicFieldLinePlot | null;
   raster?: FieldResultRaster | null;
@@ -546,6 +557,7 @@ export function FieldResultPlot({
   describeProbe?: (probe: FieldProbe) => FieldProbeDescription;
   onViewportScaleSettled?: (scale: number) => void;
   overlay?: FieldLineOverlay | null;
+  fieldAxes?: FieldAxesOptions | null;
 }) {
   const navigation = useViewportNavigation();
   const sourcePlot = highResolutionPlot ?? plot;
@@ -570,6 +582,23 @@ export function FieldResultPlot({
       : [],
     [poles, showStatorPolarity, statorPolarityProfile],
   );
+  const axisPolePairs = Math.max(1, Math.round(poles / 2));
+  const statorAxisDeg = useMemo(() => {
+    if (!fieldAxes) return null;
+    const harmonic = airgapHarmonic(statorPolarityProfile, axisPolePairs);
+    return harmonic ? harmonic.peakDeg + statorPolarityRotationDeg : null;
+  }, [axisPolePairs, fieldAxes, statorPolarityProfile, statorPolarityRotationDeg]);
+  const rotorAxisDeg = useMemo(
+    () => (fieldAxes ? rotorNorthAxisDeg(magnetOverlay, axisPolePairs) : null),
+    [axisPolePairs, fieldAxes, magnetOverlay],
+  );
+  const statorStrongestPolePairs = useMemo(
+    () => (fieldAxes ? strongestAirgapPolePairs(statorPolarityProfile, axisPolePairs * 4) : null),
+    [axisPolePairs, fieldAxes, statorPolarityProfile],
+  );
+  const leadElecDeg = fieldAxes && statorAxisDeg !== null && rotorAxisDeg !== null
+    ? statorLeadElecDeg(statorAxisDeg, rotorAxisDeg, axisPolePairs, fieldAxes.rotation)
+    : null;
   const [internalShowHeatmap, setInternalShowHeatmap] = useState(true);
   const [internalShowMesh, setInternalShowMesh] = useState(false);
   const [internalShowFieldLines, setInternalShowFieldLines] = useState(true);
@@ -871,6 +900,44 @@ export function FieldResultPlot({
     && Number.isFinite(statorInnerRadiusMm)
     && (airgapInnerRadiusMm ?? 0) > 0
     && (statorInnerRadiusMm ?? 0) > (airgapInnerRadiusMm ?? 0);
+  const axisRotorRadius = airgapInnerRadiusMm ?? 0;
+  const axisStatorRadius = statorInnerRadiusMm ?? 0;
+  const hasFieldAxes = fieldAxes !== null
+    && leadElecDeg !== null
+    && axisRotorRadius > 0
+    && axisStatorRadius > axisRotorRadius;
+  const polar = (radius: number, angleDeg: number) => {
+    const angleRad = (angleDeg * Math.PI) / 180;
+    return [radius * Math.cos(angleRad), -radius * Math.sin(angleRad)] as const;
+  };
+  const axisArrow = (fromRadius: number, toRadius: number, angleDeg: number) => {
+    const [x1, y1] = polar(fromRadius, angleDeg);
+    const [x2, y2] = polar(toRadius, angleDeg);
+    const head = (toRadius - fromRadius) * 0.28;
+    const [hx1, hy1] = polar(toRadius - head, angleDeg + 4);
+    const [hx2, hy2] = polar(toRadius - head, angleDeg - 4);
+    return `M ${x1} ${y1} L ${x2} ${y2} M ${hx1} ${hy1} L ${x2} ${y2} L ${hx2} ${hy2}`;
+  };
+  const axisPitchDeg = 360 / axisPolePairs;
+  const axisAngles = (startDeg: number) => Array.from(
+    { length: axisPolePairs },
+    (_, index) => startDeg + index * axisPitchDeg,
+  );
+  // The arc marks one rotor pole nearest the top of the view and the stator
+  // axis just ahead of it in the direction of rotation.
+  const arcRotorDeg = hasFieldAxes && rotorAxisDeg !== null
+    ? axisAngles(rotorAxisDeg).reduce((best, angle) => (
+      Math.abs(((angle - 90) % 360 + 540) % 360 - 180) < Math.abs(((best - 90) % 360 + 540) % 360 - 180) ? angle : best
+    ))
+    : 0;
+  const arcSpanDeg = hasFieldAxes && leadElecDeg !== null
+    ? (fieldAxes?.rotation === 'clockwise' ? -1 : 1) * leadElecDeg / axisPolePairs
+    : 0;
+  const arcRadius = axisRotorRadius * 0.5;
+  const [arcX1, arcY1] = polar(arcRadius, arcRotorDeg);
+  const [arcX2, arcY2] = polar(arcRadius, arcRotorDeg + arcSpanDeg);
+  const [arcLabelX, arcLabelY] = polar(arcRadius * 0.8, arcRotorDeg + arcSpanDeg / 2);
+  const axisFontSize = Math.max(1.2, axisRotorRadius * 0.07);
   const visibleLayerLabel = [
     showHeatmap && hasHeatmap ? 'flux-density heatmap' : null,
     showMesh && hasMesh ? 'solver mesh edges' : null,
@@ -881,6 +948,7 @@ export function FieldResultPlot({
       : null,
     hasAirgapOverlay ? 'airgap boundary contour' : null,
     hasStatorPolarityCues ? 'current-induced stator pole labels' : null,
+    hasFieldAxes ? 'stator and magnet field-axis arrows' : null,
   ].filter(Boolean).join(' and ') || 'magnetic field geometry';
   const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
     navigation.bind.onPointerMove(event);
@@ -961,7 +1029,7 @@ export function FieldResultPlot({
       >
         <canvas ref={canvasRef} role="img" aria-label={`Solved ${visibleLayerLabel}`} />
         <div className="public-viewport-navigation-content public-field-overlay-navigation" style={navigation.contentStyle}>
-          {(hasDirectionCues || (showMagnets && magnetOverlay.length > 0) || hasAirgapOverlay || hasStatorPolarityCues) && <svg viewBox={`0 0 ${FIELD_RASTER_SIZE} ${FIELD_RASTER_SIZE}`} className="public-field-result-overlay" aria-hidden="true">
+          {(hasDirectionCues || (showMagnets && magnetOverlay.length > 0) || hasAirgapOverlay || hasStatorPolarityCues || hasFieldAxes) && <svg viewBox={`0 0 ${FIELD_RASTER_SIZE} ${FIELD_RASTER_SIZE}`} className="public-field-result-overlay" aria-hidden="true">
             <g className="public-field-result-overlay-world" transform={`matrix(${overlayTransform})`}>
               {hasAirgapOverlay && (
                 <g className="public-field-result-airgap-overlay">
@@ -1005,6 +1073,23 @@ export function FieldResultPlot({
                   {showMagnetPolarityLabels && magnetOverlay.map((magnet, index) => <text x={magnet.center[0]} y={-magnet.center[1]} className="public-field-result-magnet-label" key={`magnet-label-${index}`}>{magnet.polarity === 'north' ? 'N' : 'S'}</text>)}
                 </g>
               )}
+              {hasFieldAxes && statorAxisDeg !== null && rotorAxisDeg !== null && (
+                <g className="public-field-axes">
+                  {axisAngles(rotorAxisDeg).map((angle) => (
+                    <path className="public-field-axis is-pm" d={axisArrow(axisRotorRadius * 0.62, axisRotorRadius * 0.96, angle)} key={`pm-axis-${angle}`} />
+                  ))}
+                  {axisAngles(statorAxisDeg).map((angle) => (
+                    <path className="public-field-axis is-stator" d={axisArrow(axisStatorRadius * 1.04, axisStatorRadius * 1.32, angle)} key={`stator-axis-${angle}`} />
+                  ))}
+                  <path
+                    className="public-field-axis-arc"
+                    d={`M ${arcX1} ${arcY1} A ${arcRadius} ${arcRadius} 0 0 ${arcSpanDeg > 0 ? 0 : 1} ${arcX2} ${arcY2}`}
+                  />
+                  <text className="public-field-axis-label" x={arcLabelX} y={arcLabelY} style={{ fontSize: axisFontSize }}>
+                    {Math.round(Math.abs(leadElecDeg ?? 0))}° elec
+                  </text>
+                </g>
+              )}
               {hasStatorPolarityCues && statorPolarityCues.map((cue, index) => {
                 const angleRad = (cue.angleDeg + statorPolarityRotationDeg) * Math.PI / 180;
                 const x = statorPoleLabelRadius * Math.cos(angleRad);
@@ -1042,11 +1127,29 @@ export function FieldResultPlot({
         )}
       </div>
       {overlay ? (
-        <div className="public-field-lines-legend" aria-label="Field-line colours">
-          <span><i className="is-stator" aria-hidden="true" />Stator</span>
-          <span><i className="is-pm" aria-hidden="true" />PM</span>
-          <small>Separate solves: in saturated steel the resultant is not their sum.</small>
-        </div>
+        <>
+          <div className="public-field-lines-legend" aria-label="Field-line colours">
+            <span><i className="is-stator" aria-hidden="true" />Stator</span>
+            <span><i className="is-pm" aria-hidden="true" />PM</span>
+            {hasFieldAxes && leadElecDeg !== null && (
+              <strong className="public-field-lead">
+                Stator {leadElecDeg >= 0 ? 'leads' : 'lags'} magnets by {Math.round(Math.abs(leadElecDeg))}° elec
+              </strong>
+            )}
+            <small>Separate solves: in saturated steel the resultant is not their sum.</small>
+          </div>
+          {hasFieldAxes && leadElecDeg !== null && (
+            <p className="public-field-axes-caption">
+              Arrows: each field&apos;s {axisPolePairs}-pole-pair flux pointing outward.{' '}
+              {leadElecDeg >= 0 ? 'The magnets are pulled after the stator field.' : 'The stator field holds the magnets back.'}
+              {statorStrongestPolePairs !== null && statorStrongestPolePairs !== axisPolePairs && (
+                <>
+                  {' '}The stator&apos;s stronger {statorStrongestPolePairs}-pole-pair part gives no steady torque and can make its lines seem to turn the other way.
+                </>
+              )}
+            </p>
+          )}
+        </>
       ) : <div className="public-field-result-legend">
         <strong>Flux density <span>|B| (T)</span></strong>
         <span className="is-min">{displayMinB.toFixed(3)}</span>

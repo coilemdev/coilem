@@ -1595,6 +1595,13 @@ body {
 .public-field-lines-legend .is-stator { background: #ffd166; box-shadow: 0 0 4px rgba(255,145,0,.9); }
 .public-field-lines-legend .is-pm { background: #5ed3f3; box-shadow: 0 0 0 1px rgba(3,10,20,.9), 0 0 4px rgba(94,211,243,.7); }
 .public-field-lines-legend small { flex-basis: 100%; color: var(--text-muted); font-size: 9px; line-height: 1.4; }
+.public-field-lines-legend .public-field-lead { flex-basis: 100%; color: var(--text-primary); font-size: 10px; font-weight: 700; }
+.public-field-axis { fill: none; stroke-width: 2.4px; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.public-field-axis.is-stator { stroke: #ffb547; filter: drop-shadow(0 0 2px rgba(0,0,0,.95)); }
+.public-field-axis.is-pm { stroke: #5ed3f3; filter: drop-shadow(0 0 2px rgba(0,0,0,.95)); }
+.public-field-axis-arc { fill: none; stroke: rgba(241,245,249,.8); stroke-width: 1.4px; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
+.public-field-axis-label { fill: #f8fafc; stroke: rgba(3,7,18,.9); stroke-width: .12; paint-order: stroke; text-anchor: middle; dominant-baseline: central; font-family: var(--font-mono); font-weight: 700; pointer-events: none; }
+.public-field-axes-caption { margin: 8px 0 0; color: var(--text-muted); font: 9px/1.45 var(--font-mono); }
 @keyframes public-field-direction-flow {
   0%, 100% { transform: translateX(-1.5px); opacity: .72; }
   50% { transform: translateX(1.5px); opacity: 1; }
@@ -1722,7 +1729,8 @@ body {
 .public-solved-field-canvas .public-field-result-legend .is-mid { top: 50%; transform: translateY(-50%); }
 .public-solved-field-canvas .public-field-result-legend .is-max { top: 0; }
 .public-solved-field-canvas .public-field-result-legend small { display: none; }
-.public-solved-field-canvas .public-field-lines-legend { position: absolute; z-index: 7; top: 112px; right: 0; max-width: 190px; margin: 0; padding: 8px 10px; border: 1px solid rgba(148,163,184,.16); border-radius: 8px; background: rgba(7,9,14,.82); box-shadow: var(--shadow-sm); pointer-events: none; }
+.public-solved-field-canvas .public-field-lines-legend { position: absolute; z-index: 7; top: 112px; right: 0; max-width: 220px; margin: 0; padding: 8px 10px; border: 1px solid rgba(148,163,184,.16); border-radius: 8px; background: rgba(7,9,14,.82); box-shadow: var(--shadow-sm); pointer-events: none; }
+.public-solved-field-canvas .public-field-axes-caption { position: absolute; z-index: 7; left: 50%; bottom: 8px; width: min(560px, calc(100% - 24px)); margin: 0; padding: 6px 10px; border: 1px solid rgba(148,163,184,.16); border-radius: 8px; background: rgba(7,9,14,.82); box-shadow: var(--shadow-sm); text-align: center; transform: translateX(-50%); pointer-events: none; }
 .public-solved-field-canvas .public-field-result-legend i { position: absolute; inset: 0; display: block; width: 100%; height: 100%; border-radius: inherit; background-color: #1b8eb7; background-image: linear-gradient(to top, #142a61 0%, #1855a7 14%, #1b8eb7 28%, #2ab673 42%, #a7c83a 57%, #f1c232 71%, #f58b24 85%, #dc3d3d 100%); }
 .public-field-range-control { position: absolute; right: 0; bottom: calc(100% + 4px); display: flex; padding: 2px; border: 1px solid var(--border-default); border-radius: 6px; background: rgba(7,9,14,.9); pointer-events: auto; }
 .public-field-range-control button { min-height: 21px; padding: 0 6px; border: 0; border-radius: 4px; color: var(--text-muted); background: transparent; font: 7px var(--font-mono); }

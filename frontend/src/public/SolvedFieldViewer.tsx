@@ -65,6 +65,8 @@ type FieldSource = 'resultant' | 'pm' | 'armature';
 type FieldView = FieldSource | 'stator_pm';
 // A stator frame pairs with the PM frame at the same rotor position.
 const OVERLAY_ANGLE_TOLERANCE_DEG = 1e-3;
+// Public playback turns clockwise (the solve angle convention).
+const CLOCKWISE_FIELD_AXES = { rotation: 'clockwise' } as const;
 const IDLE_BUFFER_FRAMES = 4;
 const DETAIL_VIEWPORT_SCALE = 1.08;
 const MAX_PLAYBACK_CATCHUP_MS = 250;
@@ -1076,8 +1078,13 @@ export function SolvedFieldViewer({
     setPlaying(false);
     setPlaybackWaiting(false);
     if (nextSource !== 'armature') setRetainedPlot(null);
-    // Stator + PM shows no flux-density map, so it has no colour range to hold.
-    if (nextView === 'stator_pm') setColorRangeMode('viewport');
+    if (nextView === 'stator_pm') {
+      // Stator + PM shows no flux-density map, so it has no colour range to hold.
+      setColorRangeMode('viewport');
+      // Pole labels and fewer lines keep the two fields' poles readable.
+      setShowPoleLabels(true);
+      setFieldLineDensity('low');
+    }
     setDetailPlot(null);
     replaceDetailRaster(null);
     detailRequestRef.current += 1;
@@ -1281,6 +1288,7 @@ export function SolvedFieldViewer({
               describeProbe={describeProbe}
               onViewportScaleSettled={setFieldViewportScale}
               overlay={fieldLineOverlay}
+              fieldAxes={overlayActive ? CLOCKWISE_FIELD_AXES : null}
             />
           </>
         )}
