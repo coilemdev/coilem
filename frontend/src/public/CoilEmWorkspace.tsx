@@ -2554,6 +2554,100 @@ function CompletedResultMonitor({ result, onOpenReport }: { result: SolveResult;
   );
 }
 
+type BackEmfHarmonic = NonNullable<SolveResult['back_emf_harmonic_analysis']>['harmonics'][number];
+
+/** Below this a harmonic shows as 0.00% of H1, so it gets no bar or label. */
+const HARMONIC_ZERO_PCT = 0.005;
+/** Orders under 1% of H1 keep a 2 px stub; their values are in the tooltip
+ * and the table, so the labels stay on the harmonics that matter. */
+const HARMONIC_LABEL_MIN_PCT = 1;
+
+function harmonicCapLabel(pct: number): string {
+  if (pct >= 99.95) return '100';
+  return pct >= 1 ? pct.toFixed(1) : pct.toFixed(2);
+}
+
+/** Vertical spectrum, like an FFT plot: one column per order, height = phase A
+ * as a percentage of H1 on a linear axis. Hover or focus a column for its
+ * frequency and voltages; the table below keeps every value (#110). */
+function HarmonicSpectrumChart({ harmonics, compact }: { harmonics: BackEmfHarmonic[]; compact: boolean }) {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const values = harmonics.map((harmonic) => Math.max(0, harmonic.phase_a_pct_fundamental ?? 0));
+  const axisMax = Math.max(100, Math.ceil(Math.max(...values) / 25) * 25);
+  const tickStep = compact ? axisMax / 2 : axisMax / 4;
+  const ticks = Array.from({ length: Math.round(axisMax / tickStep) + 1 }, (_, index) => index * tickStep);
+  // Dense spectra (H24) label H1 and at most the three largest harmonics, and
+  // every other order on the x-axis, so labels never collide.
+  const dense = harmonics.length > 12;
+  const largest = new Set(
+    values
+      .map((value, index) => ({ value, index }))
+      .filter(({ index }) => harmonics[index].order !== 1)
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 3)
+      .map(({ index }) => index),
+  );
+  const labelled = (index: number) => harmonics[index].order === 1
+    || (values[index] >= HARMONIC_LABEL_MIN_PCT && (!dense || largest.has(index)));
+  const active = activeIndex === null ? null : harmonics[activeIndex];
+  const activeAlign = activeIndex === null
+    ? 'center'
+    : activeIndex <= 1 ? 'start' : activeIndex >= harmonics.length - 2 ? 'end' : 'center';
+
+  return (
+    <div className={`public-harmonic-chart${compact ? ' compact' : ''}`} role="group" aria-label="Phase A back EMF harmonics as a percentage of H1">
+      <span className="public-harmonic-chart-unit" aria-hidden="true">% of H1</span>
+      <div className="public-harmonic-chart-y" aria-hidden="true">
+        {ticks.map((tick) => <span key={tick} style={{ bottom: `${(100 * tick) / axisMax}%` }}>{tick}</span>)}
+      </div>
+      <div className="public-harmonic-chart-plot" onPointerLeave={() => setActiveIndex(null)}>
+        {ticks.map((tick) => <i key={tick} className="public-harmonic-chart-grid" style={{ bottom: `${(100 * tick) / axisMax}%` }} aria-hidden="true" />)}
+        <div className="public-harmonic-chart-columns" style={{ gridTemplateColumns: `repeat(${harmonics.length}, minmax(0, 1fr))` }}>
+          {harmonics.map((harmonic, index) => {
+            const pct = values[index];
+            const height = (100 * pct) / axisMax;
+            return (
+              <span
+                key={harmonic.order}
+                className={`public-harmonic-column${activeIndex === index ? ' is-active' : ''}`}
+                role="img"
+                tabIndex={0}
+                aria-label={`H${harmonic.order}, ${formatNumber(harmonic.frequency_Hz, 0)} Hz: ${formatNumber(pct, 2)}% of H1; phase A ${formatNumber(harmonic.phase_a_rms_V, 3)} V; line AB ${formatNumber(harmonic.line_ab_rms_V, 3)} V rms`}
+                onPointerEnter={() => setActiveIndex(index)}
+                onFocus={() => setActiveIndex(index)}
+                onBlur={() => setActiveIndex((current) => current === index ? null : current)}
+              >
+                {pct >= HARMONIC_ZERO_PCT && <i className="public-harmonic-column-bar" style={{ height: `${height}%` }} />}
+                {labelled(index) && (
+                  <em className="public-harmonic-column-value" style={{ bottom: `${height}%` }} aria-hidden="true">{harmonicCapLabel(pct)}</em>
+                )}
+              </span>
+            );
+          })}
+        </div>
+        {active && activeIndex !== null && (
+          <div
+            className={`public-harmonic-chart-tooltip align-${activeAlign}`}
+            style={{
+              left: `${(100 * (activeIndex + 0.5)) / harmonics.length}%`,
+              // Tall columns keep the tooltip inside the plot, over the bar.
+              bottom: `calc(${Math.min(55, (100 * values[activeIndex]) / axisMax)}% + 16px)`,
+            }}
+            aria-hidden="true"
+          >
+            <strong>{formatNumber(values[activeIndex], 2)}% of H1</strong>
+            <span>H{active.order} · {formatNumber(active.frequency_Hz, active.frequency_Hz < 100 ? 1 : 0)} Hz</span>
+            <span>Phase A {formatNumber(active.phase_a_rms_V, 3)} V · Line AB {formatNumber(active.line_ab_rms_V, 3)} V</span>
+          </div>
+        )}
+      </div>
+      <div className="public-harmonic-chart-x" style={{ gridTemplateColumns: `repeat(${harmonics.length}, minmax(0, 1fr))` }} aria-hidden="true">
+        {harmonics.map((harmonic, index) => <span key={harmonic.order}>{!dense || index % 2 === 0 ? `H${harmonic.order}` : ''}</span>)}
+      </div>
+    </div>
+  );
+}
+
 function BackEMFHarmonicSpectrum({
   analysis,
   compact = false,
@@ -2578,20 +2672,18 @@ function BackEMFHarmonicSpectrum({
       <dl className="public-harmonic-thd-metrics">
         {thdMetrics.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{formatNumber(value)}%</dd></div>)}
       </dl>
+      <HarmonicSpectrumChart harmonics={analysis.harmonics} compact={compact} />
       <div className="public-harmonic-table" role="table" aria-label="Harmonic order, frequency, and RMS voltage">
         <div className="public-harmonic-row header" role="row"><span>Order</span><span>Frequency</span><span>Phase A / H1</span><span>Phase A</span><span>Line AB</span></div>
-        {analysis.harmonics.map((harmonic) => {
-          const phasePct = harmonic.phase_a_pct_fundamental ?? 0;
-          return (
-            <div className="public-harmonic-row" role="row" key={harmonic.order}>
-              <strong>H{harmonic.order}</strong>
-              <span>{formatNumber(harmonic.frequency_Hz, harmonic.frequency_Hz < 100 ? 1 : 0)} Hz</span>
-              <span className="public-harmonic-bar"><i style={{ width: `${Math.min(100, Math.max(phasePct > 0 ? 2 : 0, phasePct))}%` }} /><em>{formatNumber(phasePct, 2)}%</em></span>
-              <span>{formatNumber(harmonic.phase_a_rms_V, 3)} V</span>
-              <span>{formatNumber(harmonic.line_ab_rms_V, 3)} V</span>
-            </div>
-          );
-        })}
+        {analysis.harmonics.map((harmonic) => (
+          <div className="public-harmonic-row" role="row" key={harmonic.order}>
+            <strong>H{harmonic.order}</strong>
+            <span>{formatNumber(harmonic.frequency_Hz, harmonic.frequency_Hz < 100 ? 1 : 0)} Hz</span>
+            <span>{formatNumber(harmonic.phase_a_pct_fundamental ?? 0, 2)}%</span>
+            <span>{formatNumber(harmonic.phase_a_rms_V, 3)} V</span>
+            <span>{formatNumber(harmonic.line_ab_rms_V, 3)} V</span>
+          </div>
+        ))}
       </div>
       <p>All electrical orders are retained, including even and triplen harmonics. Line-to-line values show natural triplen cancellation. RMS values come from a periodic no-load flux-linkage DFT.</p>
     </section>

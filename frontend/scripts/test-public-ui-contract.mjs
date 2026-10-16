@@ -1101,6 +1101,13 @@ assert.match(workspaceSource, /Analysis is still running/);
 assert.match(workspaceSource, /Building torque, Back-EMF, field plots/);
 assert.match(workspaceSource, /Building waveform from solved fields/);
 assert.match(workspaceSource, /BackEMFHarmonicSpectrum/);
+// The Back EMF spectrum is a vertical column chart like an FFT plot, with
+// per-column hover/focus details; the table keeps every value (#110).
+assert.match(workspaceSource, /function HarmonicSpectrumChart\(/);
+assert.match(workspaceSource, /<HarmonicSpectrumChart harmonics=\{analysis\.harmonics\} compact=\{compact\} \/>\s*<div className="public-harmonic-table"/);
+assert.match(workspaceSource, /className=\{`public-harmonic-column\$\{activeIndex === index \? ' is-active' : ''\}`\}\s*role="img"\s*tabIndex=\{0\}/);
+assert.doesNotMatch(workspaceSource, /public-harmonic-bar/);
+assert.match(styleSource, /\.public-harmonic-column-bar \{[^}]*width: min\(24px, 62%\);[^}]*border-radius: 4px 4px 0 0;/);
 assert.match(workspaceSource, /H1–H/);
 assert.match(workspaceSource, /Line AB THD H12/);
 assert.match(workspaceSource, /periodic no-load flux-linkage DFT/);
