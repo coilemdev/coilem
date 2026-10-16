@@ -13,6 +13,9 @@ every reported 13-hour cycle or establish a controlled speedup.
 The [initial two-case pilot](../benchmarks/performance-112/README.md) measured
 13m35s serially versus 8m22s concurrently, with exact physical-payload equality.
 Its limits and separate retained-field profiling are recorded with the result.
+The [follow-up](../benchmarks/performance-112/scaling.md) measures the same eight
+cases in 12m21s at four workers and 7m12s at eight, with exact physical equality.
+It also validates field-output and Windows readiness optimizations separately.
 
 ## Analyze saved measurements
 
@@ -73,6 +76,12 @@ each successful measurement, and stores both worker identities and request/resul
 hashes. The producer remains responsible for matching its registered geometry,
 materials, grids, extraction methods and numerical gates.
 
+Start with representative cases using repeated `--case <id>` arguments, then
+compare serial, 2, 4 and 8 workers on the same machine. `--workers` defaults to
+1 and accepts 1..16. `--timings` changes launch order only; manifest order stays
+registered. Keep each case's internal pools capped and record resource use.
+The default per-job timeout is four hours; change it with `--timeout-s`.
+
 ### Optional reuse inside an external producer
 
 `tools.benchmark_suite.payload_reuse.reuse_full_payload(builder, raw_fields=...)`
@@ -90,12 +99,6 @@ that omits display work must retain the underlying numeric fields and verify
 all summaries, waveforms and extraction audits. Record omitted visualization
 artifacts explicitly in its identity and evidence. The public scheduler does
 not enable either optimization automatically.
-
-Start with representative cases using repeated `--case <id>` arguments, then
-compare serial, 2, 4 and 8 workers on the same machine. `--workers` defaults to
-1 and accepts 1..16. `--timings` changes launch order only; manifest order stays
-registered. Keep each case's internal pools capped and record resource use.
-The default per-job timeout is four hours; change it with `--timeout-s`.
 
 ### Solver ownership is part of the external producer contract
 

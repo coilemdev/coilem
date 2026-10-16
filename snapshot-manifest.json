@@ -2450,13 +2450,23 @@
     },
     {
       "path": "benchmarks/performance-112/README.md",
-      "bytes": 3799,
-      "sha256": "ff5dc49d64b48fdd38e4fb81c4073b6332c74765325b4ef0248a4e291d2d8300"
+      "bytes": 4002,
+      "sha256": "3aa7c294b2001c06736ac15eefb6da66528ef2388e73b860cd29fab5e320380e"
     },
     {
       "path": "benchmarks/performance-112/pilot-summary.json",
       "bytes": 5836,
       "sha256": "3d387e0bdf2cb71a5182962f18f4b48fdb8dbb27d09cfb7965dad0f7e4f697a1"
+    },
+    {
+      "path": "benchmarks/performance-112/scaling-summary.json",
+      "bytes": 67099,
+      "sha256": "848016322c442db5dce9915573bd1e20155cda61480cede41aceb6db8b81fbef"
+    },
+    {
+      "path": "benchmarks/performance-112/scaling.md",
+      "bytes": 3862,
+      "sha256": "735eade6fa577d8f5e68ad3d34ccfca1c6f48c90373a9f520d56c2420857e8c3"
     },
     {
       "path": "benchmarks/pr100-v3-handoff/README.md",
@@ -4335,8 +4345,8 @@
     },
     {
       "path": "docs/BENCHMARK_PERFORMANCE.md",
-      "bytes": 7107,
-      "sha256": "01406898a92e0eabcc257ec6b47ea8c07400937434f99078e5fc921fcd4e13c9"
+      "bytes": 7350,
+      "sha256": "d11f63ad7215de05276a85cf5be9a1e13ef7bb5f2846eb9832b0bc7285b1df7c"
     },
     {
       "path": "docs/ELMER.md",

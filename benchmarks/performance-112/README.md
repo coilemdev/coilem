@@ -1,5 +1,8 @@
 # FEMM case-concurrency pilot (#112)
 
+The [follow-up measurements](scaling.md) add matched four/eight-worker testing,
+CPU/memory observations and full-case output/readiness optimization checks.
+
 Two registered cases completed in **13m35.2s serially**
 and **8m21.6s in parallel**:
 **1.625x observed speedup**, or a
@@ -65,6 +68,7 @@ That is a helper microbenchmark, not a full-solve speedup. Payload reuse was not
 enabled in either fresh solve configuration. Steel RMS depends on the full field
 payload, so dropping field extraction outright would change a physical summary.
 
-Full-suite 1/2/4/8-worker scaling, CPU/memory measurements, a repeated idle-host
-comparison and a full-case payload-reuse check remain in #112. The public launcher
-therefore retains a serial default; no fastest parallel configuration is adopted yet.
+The [follow-up](scaling.md) completes the full-case reuse check and measures
+four/eight-worker subset scaling and CPU/memory use. Full-suite scaling and
+repeated idle-host controls remain in #112. The public launcher retains a serial
+default while producer-specific configurations are validated.
