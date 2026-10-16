@@ -7,6 +7,9 @@ The initial two-case results below remain a separate historical observation.
 The subsequent [FEMM 5 A/B/C/D pilot](femm5-pilot.md) measures a fresh paired
 case and four complete representative sweeps. It records changed meshes and
 numerical results separately from the exact-equivalence FEMM 4.2 work.
+The [mesh-refinement follow-up](femm5-mesh-convergence.md) tests the Phase C
+torque and IPM peak-flux differences at two explicit finer mesh levels, with
+complete case timings and paired refined-input controls against FEMM 4.2.
 
 The [follow-up measurements](scaling.md) add matched four/eight-worker testing,
 CPU/memory observations and full-case output/readiness optimization checks.

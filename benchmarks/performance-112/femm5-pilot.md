@@ -6,6 +6,10 @@ versus **303.64s** with the optimized FEMM 4.2 producer:
 All four representative case sweeps complete. FEMM 5 changes the generated mesh
 and numerical results, so this remains a separate candidate requiring review.
 
+The [subsequent mesh-refinement study](femm5-mesh-convergence.md) tests two
+explicit finer levels for the Phase C torque and IPM peak-flux differences,
+including complete case timings and paired refined-input controls with FEMM 4.2.
+
 [Machine-readable measurements and provenance](femm5-pilot-summary.json) ·
 [Validated 29-case FEMM 4.2 run](full-suite.md) ·
 [Execution contract](../../docs/BENCHMARK_PERFORMANCE.md)

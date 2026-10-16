@@ -33,6 +33,18 @@ but meshes and physical results differ, including a 3.99% Phase C mean-torque
 change. FEMM 5 remains a separate candidate requiring mesh-convergence review;
 this subset does not establish a new full-suite runtime or replace frozen data.
 
+The [mesh-refinement checks](../benchmarks/performance-112/femm5-mesh-convergence.md)
+reduce the Phase C mean-torque difference to 1.87% at fine and 0.42% at very_fine,
+with measured case times of 6m08s and 14m32s. The study also tests IPM peak flux
+and pairs retained refined inputs with both solver versions. All mesh policies,
+non-target metric changes and timing limits remain visible; this is candidate
+evidence without a frozen-reference or numerical-gate rule change. The finest
+IPM level worsens local peak-B agreement and crosses the saved native BEMF peak
+gate; its FAIL verdict remains visible. Fine better preserves agreement with
+the archived IPM reference at lower cost; the finer IPM field samples agree
+better with equivalently refined 4.2, so archived agreement is not an accuracy
+oracle. Phase C also retains a pointwise torque gap against refined 4.2.
+
 ## Analyze saved measurements
 
 ```powershell
