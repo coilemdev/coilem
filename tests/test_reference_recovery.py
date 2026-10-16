@@ -170,12 +170,18 @@ def test_worker_deadline_is_enforced_without_a_controller(tmp_path):
 def test_interrupt_retains_results_written_between_controller_polls(tmp_path, monkeypatch):
     args = setup_run(tmp_path, '    return {"status":"COMPLETE"}', cases='{"a":"A","b":"B"}')
     original_sleep = time.sleep
+    interrupted = False
 
-    def interrupt(_):
+    def interrupt(seconds):
+        nonlocal interrupted
+        if interrupted:
+            return original_sleep(seconds)
         deadline = time.monotonic() + 5
         while len(list(args.out_dir.glob("jobs/*/result.json"))) != 2:
             assert time.monotonic() < deadline
             original_sleep(.02)
+        # POSIX Popen.wait also sleeps; let cleanup wait after the one interrupt.
+        interrupted = True
         raise KeyboardInterrupt()
 
     with monkeypatch.context() as patch:

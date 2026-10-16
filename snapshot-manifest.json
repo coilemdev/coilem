@@ -6235,8 +6235,8 @@
     },
     {
       "path": "tests/test_reference_recovery.py",
-      "bytes": 11230,
-      "sha256": "d4abc948fe976e1edf61eae2013ad3983712b69b5ce40186dffda6dfc1f08338"
+      "bytes": 11465,
+      "sha256": "da6e7b242f508340cd51eef758296057dc4568803cc98d93afadea642869c321"
     },
     {
       "path": "tests/test_reference_runner.py",
