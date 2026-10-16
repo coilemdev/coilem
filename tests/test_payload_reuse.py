@@ -1,4 +1,6 @@
 """Verify the producer opt-in projection and cache invalidation contract."""
+import numpy as np
+
 from tools.benchmark_suite.payload_reuse import reuse_full_payload
 
 
@@ -54,3 +56,20 @@ def test_incomplete_fields_remain_none_and_are_built_once():
     assert cached(None) is None
     assert cached(None, include_raw_mesh=True) is None
     assert len(calls) == 1
+
+
+def test_array_options_reuse_identical_objects_and_rebuild_when_comparison_is_ambiguous():
+    calls = []
+
+    def builder(data, *, include_raw_mesh, angles):
+        calls.append(angles)
+        return {"angles": angles.tolist(), "nodes": data}
+
+    cached = reuse_full_payload(builder, raw_fields={"nodes"})
+    data, angles = {}, np.array([0, 7.5, 15])
+    assert cached(data, angles=angles)["angles"] == [0, 7.5, 15]
+    cached(data, angles=angles)
+    assert len(calls) == 1
+    cached(data, angles=angles.copy())
+    assert len(calls) == 2
+    assert cached(data, angles=np.array([0, 10, 20]))["angles"] == [0, 10, 20]

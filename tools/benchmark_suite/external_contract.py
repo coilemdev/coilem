@@ -31,11 +31,15 @@ def read(path):
     return json.loads(Path(path).read_text(encoding="utf-8"), parse_constant=reject)
 
 
+def json_bytes(value):
+    return (json.dumps(value, indent=2, allow_nan=False) + "\n").encode("utf-8")
+
+
 def write(path, value):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(json.dumps(value, indent=2, allow_nan=False) + "\n", encoding="utf-8", newline="\n")
+    temporary.write_bytes(json_bytes(value))
     temporary.replace(path)
 
 

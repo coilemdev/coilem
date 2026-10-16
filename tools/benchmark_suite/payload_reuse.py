@@ -16,9 +16,23 @@ def reuse_full_payload(builder, *, raw_fields):
     initialized = False
     counts = {"builds": 0, "reuses": 0}
 
+    def same_options(options):
+        if options.keys() != last_options.keys():
+            return False
+        for key, value in options.items():
+            previous = last_options[key]
+            if value is previous:
+                continue
+            try:
+                if not bool(value == previous):
+                    return False
+            except Exception:
+                return False
+        return True
+
     def build(data, *, include_raw_mesh=False, **options):
         nonlocal initialized, last_data, last_options, last_full
-        if not initialized or data is not last_data or options != last_options:
+        if not initialized or data is not last_data or not same_options(options):
             last_full = builder(data, include_raw_mesh=True, **options)
             last_data, last_options, initialized = data, options, True
             counts["builds"] += 1

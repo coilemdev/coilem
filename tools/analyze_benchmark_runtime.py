@@ -72,7 +72,7 @@ def analyze(root, suite):
         if not path.exists() and job_status == "COMPLETE":
             job_status = "MISSING_ARTIFACT"
         jobs.append({
-            "case_id": case_id, "phase": phases.get(case_id, "UNKNOWN"), "stage": stage,
+            "case_id": case_id, "phase": phases.get(case_id, registered.get("phase", "UNKNOWN")), "stage": stage,
             "status": job_status, "runtime_s": runtime,
             "started_at": data.get("started_at", registered.get("started_at")),
             "completed_at": data.get("completed_at", registered.get("completed_at")),

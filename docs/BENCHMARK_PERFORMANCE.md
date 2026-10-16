@@ -61,8 +61,9 @@ python -m tools.analyze_benchmark_runtime `
   --run C:\bench\original-run --out-dir C:\bench\runtime-analysis
 ```
 
-The command reads either a native `run_manifest.json` with per-job results or
-an external run's `measurements/<case-id>/measurement.json` files. It writes
+The command reads native or external-runner `run_manifest.json` files with
+their registered per-job results, or the historical external layout's
+`measurements/<case-id>/measurement.json` files. It writes
 JSON and Markdown in a new analysis location, without running a solver or
 editing the measured run. Select a historical suite with `--suite` if needed.
 
@@ -143,8 +144,14 @@ At `--workers 8 --worker-budget 8`, at most four jobs with cost two can run,
 while jobs with cost one can occupy eight slots. Costs are operator-defined scheduling units;
 choose them from measured contention or resource use. Missing costs are one;
 each selected cost must be a positive integer within the budget. The sum of
-active costs and the process-count limit are both enforced. A smaller job can
-start while an earlier large job waits for capacity. Each session records its
+active costs and the process-count limit are both enforced.
+
+Repeated timing rows for a case are combined by summing their durations and
+taking the maximum worker cost, so native runs with multiple stages can guide
+case scheduling. Durations must be finite and non-negative; timing validation
+finishes before the output directory is initialized.
+
+A smaller job can start while an earlier large job waits for capacity. Each session records its
 costs, budget, planned order and actual launch order. Without `--worker-budget`,
 cost hints are ignored and ordinary worker-count scheduling is retained.
 
@@ -204,15 +211,23 @@ Repeat the command with `--resume`. Selected cases, runtime, producer and source
 identities must match. Worker count and scheduling order can change between
 sessions and are recorded separately. Completed, hash-verified jobs are reused.
 Workers hold per-job kernel locks, so a worker that outlives its controller
-blocks duplicate execution. Each restarted incomplete job uses a new attempt
-directory; partial files are retained. Failed or corrupt completed evidence is
-retained and requires inspection and a new output directory.
+blocks duplicate execution. A worker also enforces its recorded launch deadline
+if the controller exits. Each restarted incomplete job uses a new attempt
+directory; partial files are retained. Missing or corrupt hash-recorded results
+are refused before any new solve; restore that evidence or use a new directory.
 
-The coordinator alone updates the run manifest. On failure or interruption it
-stops its remaining owned worker trees, retains completed jobs and records the
-interrupted state. Producer-owned out-of-tree solver servers must have the
-lifecycle described above. The locks and identity checks remain active in serial
-mode as well.
+The coordinator alone updates the run manifest. An individual failed or timed-out
+case leaves other jobs running; the run finishes `COMPLETE_WITH_ERRORS` and exits
+non-zero. Use `--resume --retry-failed` after resolving a transient failure to
+retry only failed cases, with the same registered producer/source identities.
+Every earlier result keeps its original path and hash in `attempt_history`;
+retries use `jobs/<case-id>/result-<attempt-id>.json`. Read result paths from the
+manifest. Successful cases are reused without rewriting their measured bytes.
+
+On controller interruption, owned workers are stopped, any already-completed
+results are verified and retained, and unfinished jobs remain resumable.
+Producer-owned out-of-tree solver servers must have the lifecycle described
+above. The locks and identity checks remain active in serial mode as well.
 
 This command collects measurements and execution profiles. It does not assemble
 or approve a frozen reference bundle, evaluate parity gates, change qualification

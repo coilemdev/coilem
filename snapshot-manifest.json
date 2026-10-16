@@ -4495,8 +4495,8 @@
     },
     {
       "path": "docs/BENCHMARK_PERFORMANCE.md",
-      "bytes": 12300,
-      "sha256": "f4a863ccb4af3ac77afebabbb74f616aeb301e6f7213bd05f38dbe2aa7d2d853"
+      "bytes": 13265,
+      "sha256": "a8343be8ad71b640d0351d83bd36097bdee34d991aa6deb8185672baf6ee5e45"
     },
     {
       "path": "docs/ELMER.md",
@@ -6040,8 +6040,8 @@
     },
     {
       "path": "tests/test_benchmark_runtime.py",
-      "bytes": 3535,
-      "sha256": "081267d41263e9826e0bda4f55baefd99a63498f182fcf48ceb223d4574f608b"
+      "bytes": 4000,
+      "sha256": "c09fa8a470b9b6d0c562fb2524f5acb9e214c257a8bd08def253624cf783594f"
     },
     {
       "path": "tests/test_benchmark_suite.py",
@@ -6105,8 +6105,8 @@
     },
     {
       "path": "tests/test_late_reference_comparison.py",
-      "bytes": 13528,
-      "sha256": "98ffc67aeb0579891218486e1daef27eb6ab88d14ac7028defbeb7057010d8e4"
+      "bytes": 13782,
+      "sha256": "cdf4098d1268f6d74e7ac4f44a0f0948bfc9ae875847fac4365ff4296d00a4a8"
     },
     {
       "path": "tests/test_launcher.py",
@@ -6165,8 +6165,8 @@
     },
     {
       "path": "tests/test_payload_reuse.py",
-      "bytes": 2051,
-      "sha256": "9905d7c56b553e2604f7d53ba8559c02ccd3a037645fd5e25046c684697d69c9"
+      "bytes": 2698,
+      "sha256": "7e74e645c876a03e975593a2ddccaf8f9fee0628452b1c95e1ce398727443366"
     },
     {
       "path": "tests/test_postsolve_pipeline.py",
@@ -6234,9 +6234,14 @@
       "sha256": "b90bf7a7b14bfbb32b4a4e1e02d335ac7ed6b10ab5f1364e3d1ee57a4a1a0d30"
     },
     {
+      "path": "tests/test_reference_recovery.py",
+      "bytes": 11230,
+      "sha256": "d4abc948fe976e1edf61eae2013ad3983712b69b5ce40186dffda6dfc1f08338"
+    },
+    {
       "path": "tests/test_reference_runner.py",
-      "bytes": 11571,
-      "sha256": "2bea94daa71e7388d9a1995ccdcd644f0ca77de9d157e18c071945163c0c9417"
+      "bytes": 11608,
+      "sha256": "41d3017b9dbb1ed7622e04647c7df5a1bd4531774f84cbd11409844338a92cc7"
     },
     {
       "path": "tests/test_release_tools.py",
@@ -6290,23 +6295,23 @@
     },
     {
       "path": "tools/analyze_benchmark_runtime.py",
-      "bytes": 8430,
-      "sha256": "b1daf70759a77b4409cc7a8c9e9ac4a7d947264fd654ce8ab5a271ad5661b7a5"
+      "bytes": 8455,
+      "sha256": "60a0cd92f1e11ed2d33ddd75433b37dd7f9598ed03eb4b74f69879e68b5b960c"
     },
     {
       "path": "tools/benchmark_suite/external.py",
-      "bytes": 16785,
-      "sha256": "c6d1600f0344002bf9184154b8f82be155227ae832490aba70a7a18fb071fc6f"
+      "bytes": 22985,
+      "sha256": "23cd9cfe71c92ab8685c8f38d921cd4a4228098956cb453f37b315b48d8a517d"
     },
     {
       "path": "tools/benchmark_suite/external_contract.py",
-      "bytes": 2147,
-      "sha256": "75a1d54e60e6cc90a97774d3731136b9c5b1179013029cf8a422ebab2f4b433c"
+      "bytes": 2188,
+      "sha256": "3d89f253a4da164b69e11c9cbadb58ef0d0a7fdc7afda920a1a6d88177d81012"
     },
     {
       "path": "tools/benchmark_suite/payload_reuse.py",
-      "bytes": 1459,
-      "sha256": "56f0876201e18682e8e6130ac7392f90df8fc9a39433d7eb6a9adbdab69cad7e"
+      "bytes": 1888,
+      "sha256": "e2da9fb4bdba5bfa8194dda8a927bef450b31ff8e33bd1f3bf06781e38508d82"
     },
     {
       "path": "tools/build_benchmark_record.py",
@@ -6430,8 +6435,8 @@
     },
     {
       "path": "tools/report_benchmark_against_reference.py",
-      "bytes": 19971,
-      "sha256": "442d32a02187bd5500ac052fd6b2c40dcd4a54f60a7a55abfba0c0305b06ba34"
+      "bytes": 20151,
+      "sha256": "22532d9a02cd2825b4a5f65636631b55571e81f6cc1cd77ebcef6885682086cc"
     },
     {
       "path": "tools/run_benchmarks.py",

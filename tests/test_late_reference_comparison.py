@@ -14,6 +14,12 @@ from tools import report_benchmark_against_reference as late
 SPEC = ROOT / "benchmarks/abcd-v1.1/benchmark_spec.json"
 
 
+def test_report_provenance_survives_native_path_isolation(monkeypatch):
+    before = late.git(ROOT, "rev-parse", "HEAD")
+    monkeypatch.setenv("PATH", "")
+    assert late.git(ROOT, "rev-parse", "HEAD") == before
+
+
 def test_requires_measured_commit_and_source_hashes(tmp_path, monkeypatch):
     path = tmp_path / "backend" / "example.py"
     path.parent.mkdir()
@@ -204,6 +210,7 @@ def test_six_step_join_preserves_fixed_axis_failures_and_reports_new_frame(tmp_p
     if reconciled:
         from types import SimpleNamespace
 
+        monkeypatch.setenv("PATH", "")
         args.evaluation_suite = ROOT / "benchmarks/abcd-v1.3/benchmark_spec.json"
         loader = late.evaluation_module
         # This test's one-case synthetic reference is not the registered full

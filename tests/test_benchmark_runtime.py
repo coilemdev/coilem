@@ -68,3 +68,12 @@ def test_timestamps_respect_offsets_and_reject_negative_span():
     assert elapsed("2026-10-15T08:00:00-04:00", "2026-10-15T12:00:10+00:00") == 10
     with pytest.raises(ValueError, match="Completion precedes start"):
         elapsed("2026-10-15T12:00:10+00:00", "2026-10-15T12:00:00+00:00")
+
+
+def test_external_manifest_supplies_phase_for_cases_outside_selected_suite(tmp_path):
+    store(tmp_path / "run_manifest.json", {"jobs": [
+        {"case_id": "custom", "phase": "D", "stage": "reference", "result": "jobs/custom/result.json", "status": "COMPLETE"},
+    ]})
+    store(tmp_path / "jobs/custom/result.json", {"status": "COMPLETE", "runtime_s": 3})
+    report = analyze(tmp_path, {"cases": []})
+    assert report["phases"]["D"]["completed_jobs"] == 1

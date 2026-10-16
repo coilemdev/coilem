@@ -38,6 +38,7 @@ def test_importing_reference_runner_leaves_producer_backend_namespace_free():
 
 
 def test_producer_can_own_its_backend_namespace(tmp_path):
+    original_path = sys.path[:]
     package = tmp_path / "backend"
     package.mkdir()
     (package / "__init__.py").write_text('ORIGIN = "external producer"\n', encoding="utf-8")
@@ -47,6 +48,7 @@ def test_producer_can_own_its_backend_namespace(tmp_path):
         '    import backend\n    assert backend.ORIGIN == "external producer"',
     ), encoding="utf-8")
     assert execute(arguments(path, tmp_path / "run")) == 0
+    assert sys.path == original_path
 
 
 def test_real_workers_overlap_and_resume_preserves_results(tmp_path):
@@ -105,11 +107,10 @@ def test_producer_failure_is_visible_and_other_process_survives(tmp_path):
     args = arguments(producer(tmp_path, duration=0.1, fail=True), tmp_path / "run")
     independent = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(30)"], cwd=ROOT)
     try:
-        with pytest.raises(ValueError, match="Reference job failed"):
-            execute(args)
+        assert execute(args) == 2
         assert independent.poll() is None
         manifest = read(args.out_dir / "run_manifest.json")
-        assert manifest["status"] == "INTERRUPTED"
+        assert manifest["status"] == "COMPLETE_WITH_ERRORS"
         assert any(job["status"] == "ERROR" for job in manifest["jobs"])
         failed = next(job for job in manifest["jobs"] if job["status"] == "ERROR")
         assert read(args.out_dir / failed["result"])["status"] == "ERROR"
@@ -121,9 +122,9 @@ def test_producer_failure_is_visible_and_other_process_survives(tmp_path):
 def test_timeout_joins_owned_worker_and_releases_job_lock(tmp_path):
     args = arguments(producer(tmp_path, duration=30), tmp_path / "run")
     args.timeout_s, args.workers = 0.3, 1
-    with pytest.raises(ValueError, match="timed out"):
-        execute(args)
+    assert execute(args) == 2
     job = read(args.out_dir / "run_manifest.json")["jobs"][0]
+    assert job["status"] == "ERROR" and "timed out" in job["error"]
     with run_lock((args.out_dir / job["result"]).parent):
         pass
 

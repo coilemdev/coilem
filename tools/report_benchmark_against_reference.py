@@ -6,9 +6,21 @@ import argparse
 import copy
 import hashlib
 import importlib.util
+import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
+
+# Keep report provenance available after native libraries isolate process PATH.
+_GIT_EXECUTABLE = shutil.which("git")
+_GIT_ENV = dict(os.environ)
+
+
+def git(root, *args):
+    if not _GIT_EXECUTABLE:
+        raise ValueError("Git is required to verify report provenance")
+    return subprocess.check_output([_GIT_EXECUTABLE, "-C", str(root), *args], env=_GIT_ENV, text=True).strip()
 
 
 def evaluation_module(relative):
@@ -86,8 +98,8 @@ def reconcile_angles(path, measured_spec, rows, configs, protocols, golden, bund
         "measured_protocol_version":"1.1.0", "current_angle_convention":"winding-phase-a-v1",
         "post_hoc_registration":True, "physical_inputs_changed":False, "waveforms_changed":False,
         "historical_evaluations_preserved":True,
-        "evaluator_commit":subprocess.check_output(["git","-C",str(root),"rev-parse","HEAD"],text=True).strip(),
-        "evaluator_dirty":bool(subprocess.check_output(["git","-C",str(root),"status","--porcelain"],text=True).strip()),
+        "evaluator_commit":git(root, "rev-parse", "HEAD"),
+        "evaluator_dirty":bool(git(root, "status", "--porcelain")),
         "protocol_sha256":{c["protocol"]:c["protocol_sha256"] for c in spec["cases"] if c["phase"]=="D"},
         "evaluator_sha256":sha(root/"backend/benchmark_suite/bldc_metrics.py"),
         "reference_loader_sha256":sha(root/"backend/benchmark_suite/references.py"),
@@ -100,8 +112,8 @@ def file_sha(path):
 
 
 def require_source(source, expected_commit, native_identity):
-    commit = subprocess.check_output(["git", "-C", str(source), "rev-parse", "HEAD"], text=True).strip()
-    dirty = subprocess.check_output(["git", "-C", str(source), "status", "--porcelain"], text=True).strip()
+    commit = git(source, "rev-parse", "HEAD")
+    dirty = git(source, "status", "--porcelain")
     if commit != expected_commit or dirty or native_identity["commit"] != expected_commit or native_identity["dirty"]:
         raise ValueError("Use the clean measured source pin; candidate identity must match")
     for relative, expected in native_identity["source_files"].items():
