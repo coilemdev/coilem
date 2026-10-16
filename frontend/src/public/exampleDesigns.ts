@@ -3,12 +3,14 @@ import ipm10pVShapeMedium from './examples/validation_ipm_10p_v_shape_medium.ope
 import ipm14pFlatBuriedLarge from './examples/validation_ipm_14p_flat_buried_large.openem?raw';
 import ornlPrius2004HoleM50 from './examples/ornl_prius_2004_holem50.coilem?raw';
 import spm24pSmall from './examples/validation_spm_24p_small.openem?raw';
+import rotatingField6p36s from './examples/rotating_field_6p36s.coilem?raw';
 
 import { parseDesignFile } from './designFile';
 import { cloneDefaultConfig, type MotorConfig } from './model';
 
 export type PublicExampleId =
   | 'spm-8p12s'
+  | 'rotating-field-6p36s'
   | 'ipm-10p-v-shape-medium'
   | 'ipm-14p-flat-buried-large'
   | 'spm-24p-small'
@@ -31,6 +33,7 @@ export interface PublicExampleOption {
 
 export const PUBLIC_EXAMPLE_OPTIONS: readonly PublicExampleOption[] = [
   { id: 'spm-8p12s', label: 'SPM 8p/12s', detail: 'Starter motor' },
+  { id: 'rotating-field-6p36s', label: 'Rotating field 6p/36s', detail: 'Three pole pairs · distributed winding' },
   { id: 'ipm-10p-v-shape-medium', label: 'IPM 10p V-shape', detail: 'Medium' },
   { id: 'ipm-14p-flat-buried-large', label: 'IPM 14p flat buried', detail: 'Large' },
   { id: 'spm-24p-small', label: 'SPM 24p', detail: 'Small' },
@@ -62,6 +65,7 @@ export function publicExampleOptions(
 }
 
 const BUNDLED_EXAMPLE_FILES: Record<Exclude<PublicExampleId, 'spm-8p12s'>, string> = {
+  'rotating-field-6p36s': rotatingField6p36s,
   'ipm-10p-v-shape-medium': ipm10pVShapeMedium,
   'ipm-14p-flat-buried-large': ipm14pFlatBuriedLarge,
   'spm-24p-small': spm24pSmall,
