@@ -3599,6 +3599,30 @@ function ReportStage({
   const materialName = config.materials.stator_steel === config.materials.rotor_steel
     ? steelDisplayName(config, config.materials.stator_steel)
     : `${steelDisplayName(config, config.materials.stator_steel)} stator / ${steelDisplayName(config, config.materials.rotor_steel)} rotor`;
+  // Every run setting, shown when the Results page's Run settings line is
+  // expanded (#110), in the order the old settings block listed them.
+  const reportSettings: Array<{ label: string; value: string }> = [
+    { label: 'Project', value: projectName },
+    { label: 'Material', value: materialName },
+    {
+      label: sixStep ? 'Conducting phase current' : 'Phase current',
+      value: `${formatNumber(config.solve_params.current_amplitude_A)} A ${sixStep ? 'plateau' : config.solve_params.current_amplitude_convention}`,
+    },
+    { label: 'Excitation', value: sixStep ? 'Ideal six-step (120°)' : 'Sinusoidal' },
+    ...(reportQualification ? [{ label: 'Qualification', value: QUALIFICATION_LABELS[reportQualification.status] }] : []),
+    ...(sixStep ? [
+      { label: 'Commutation advance', value: `${formatNumber(result.solve_metadata.commutation_advance_deg ?? config.solve_params.commutation_advance_deg)}° electrical` },
+      { label: 'Phase connection', value: 'Wye (MVP)' },
+    ] : []),
+    { label: 'Rated speed', value: `${formatNumber(config.solve_params.rated_speed_rpm, 0)} rpm` },
+    { label: 'Solver', value: result.solve_metadata.solver_name },
+    { label: 'Torque method', value: torqueMethod },
+    { label: 'Nonlinear solver', value: nonlinearSolver },
+    { label: 'Requested linear solver', value: requestedLinearSolver },
+    { label: 'Mesh elements', value: result.solve_metadata.mesh_element_count.toLocaleString() },
+    { label: 'Rotor positions', value: String(result.solve_metadata.rotor_positions) },
+    { label: 'Mesh density', value: result.solve_metadata.mesh_density || 'native' },
+  ];
   const runSavedAction = async (
     action: string,
     workingMessage: string,
@@ -3677,11 +3701,8 @@ function ReportStage({
         sixStep={sixStep}
         completeLoadedCycle={completeLoadedCycle}
         thdLabel={reportThdLabel}
-        solverLabel={reportSolverLabel}
-        torqueMethod={torqueMethod}
-        nonlinearSolver={nonlinearSolver}
+        settings={reportSettings}
       />
-      <div className="public-report-provenance"><span>Project</span><strong>{projectName}</strong><span>Material</span><strong>{materialName}</strong>{sixStep ? <span>Conducting phase current</span> : <span>Phase current</span>}<strong>{formatNumber(config.solve_params.current_amplitude_A)} A {sixStep ? 'plateau' : config.solve_params.current_amplitude_convention}</strong><span>Excitation</span><strong>{sixStep ? 'Ideal six-step (120°)' : 'Sinusoidal'}</strong>{reportQualification && <><span>Qualification</span><strong>{QUALIFICATION_LABELS[reportQualification.status]}</strong></>}{sixStep && <><span>Commutation advance</span><strong>{formatNumber(result.solve_metadata.commutation_advance_deg ?? config.solve_params.commutation_advance_deg)}° electrical</strong><span>Phase connection</span><strong>Wye (MVP)</strong></>}<span>Rated speed</span><strong>{formatNumber(config.solve_params.rated_speed_rpm, 0)} rpm</strong><span>Solver</span><strong>{result.solve_metadata.solver_name}</strong><span>Torque method</span><strong>{torqueMethod}</strong><span>Nonlinear solver</span><strong>{nonlinearSolver}</strong><span>Requested linear solver</span><strong>{requestedLinearSolver}</strong><span>Mesh elements</span><strong>{result.solve_metadata.mesh_element_count.toLocaleString()}</strong><span>Rotor positions</span><strong>{result.solve_metadata.rotor_positions}</strong><span>Mesh density</span><strong>{result.solve_metadata.mesh_density || 'native'}</strong></div>
       <div className="public-report-assumptions" role="note">
         <details>
           <summary>Model assumptions</summary>
