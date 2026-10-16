@@ -12,9 +12,9 @@ from pathlib import Path
 
 import pytest
 
-from tools.benchmark_suite.contract import ROOT, SPEC, canonical, read, sha, write
-from tools.benchmark_suite.hardware import no_load_back_emf_line_to_line
-from tools.benchmark_suite.references import load_suite
+from backend.benchmark_suite.contract import ROOT, SPEC, canonical, read, sha, write
+from backend.benchmark_suite.hardware import no_load_back_emf_line_to_line
+from backend.benchmark_suite.references import load_suite
 
 SUITE = ROOT / "benchmarks/abcd-v1.2/benchmark_spec.json"
 HISTORICAL_SUITE = ROOT / "benchmarks/abcd-v1.1/benchmark_spec.json"
@@ -71,7 +71,7 @@ def test_suite_1_2_changes_only_the_prius_request():
 
 
 def test_default_angle_revision_does_not_enable_experimental_prius():
-    from tools.benchmark_suite import PROTOCOL_VERSION, SUPPORTED_PROTOCOL_VERSIONS
+    from backend.benchmark_suite import PROTOCOL_VERSION, SUPPORTED_PROTOCOL_VERSIONS
 
     assert SPEC.relative_to(ROOT).as_posix() == "benchmarks/abcd-v1.3/benchmark_spec.json"
     assert PROTOCOL_VERSION == "1.3.0" and "1.2.0" in SUPPORTED_PROTOCOL_VERSIONS
@@ -135,8 +135,8 @@ def test_line_to_line_conversion_and_speed_scaling():
 @pytest.mark.parametrize("flagged", [True, False])
 def test_worker_opts_in_only_for_registered_experimental_requests(tmp_path, monkeypatch, flagged):
     from backend import solver
-    from tools.benchmark_suite.contract import identity
-    from tools.benchmark_suite.worker import measure
+    from backend.benchmark_suite.contract import identity
+    from backend.benchmark_suite.worker import measure
 
     config = prius_config()
 
@@ -168,7 +168,7 @@ def test_worker_opts_in_only_for_registered_experimental_requests(tmp_path, monk
 @pytest.mark.parametrize("smoke", [False, True])
 def test_runner_reports_the_hardware_correlation_without_a_verdict(tmp_path, monkeypatch, smoke):
     from backend import magneto2d_adapter
-    from tools.benchmark_suite import cli
+    from backend.benchmark_suite import cli
 
     runtime = {"commit": "test-candidate", "dirty": False, "harness_version": "1.3.0", "protocol_version": "1.2.0"}
     monkeypatch.setattr(cli, "identity", lambda _, **kwargs: runtime)

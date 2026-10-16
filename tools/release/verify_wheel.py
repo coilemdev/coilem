@@ -75,6 +75,8 @@ def check_wheel(path: Path, *, platform_tag: str | None = None, require_commit: 
     if wheel_platform in {"any", ""} or wheel_platform.startswith("linux_"):
         problems.append(f"{wheel_platform} is not a publishable platform tag")
 
+    # The runtime data files plus the benchmark suite, reference and records (#71).
+    packaged_data = (*resources.PACKAGED_DATA_FILES, *resources.benchmark_data_files(ROOT))
     with zipfile.ZipFile(path) as archive:
         names = set(archive.namelist())
         dist_info = f"{name.replace('-', '_')}-{version}.dist-info"
@@ -112,7 +114,7 @@ def check_wheel(path: Path, *, platform_tag: str | None = None, require_commit: 
             f"backend/{resources.PACKAGED_UI_DIR}/index.html",
             f"backend/{resources.PACKAGED_LICENSES_DIR}/{resources.MAGNETO2D_LICENSES_FILE}",
             f"backend/{resources.BUILD_INFO_FILE}",
-            *(f"backend/{resources.PACKAGED_DATA_DIR}/{relative}" for relative in resources.PACKAGED_DATA_FILES),
+            *(f"backend/{resources.PACKAGED_DATA_DIR}/{relative}" for relative in packaged_data),
             *resources.PACKAGE_DATA_FILES,
         ]
         for entry in required:
@@ -125,7 +127,7 @@ def check_wheel(path: Path, *, platform_tag: str | None = None, require_commit: 
             problems.append(f"{binary_name} is not executable")
         if not any(entry.startswith(f"backend/{resources.PACKAGED_UI_DIR}/assets/") for entry in names):
             problems.append("the UI bundle has no assets")
-        for relative in resources.PACKAGED_DATA_FILES:
+        for relative in packaged_data:
             source = ROOT / relative
             if source.is_file() and archive.read(f"backend/{resources.PACKAGED_DATA_DIR}/{relative}") != source.read_bytes():
                 problems.append(f"packaged {relative} differs from the source file")
