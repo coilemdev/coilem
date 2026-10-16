@@ -250,8 +250,8 @@
     },
     {
       "path": "backend/field_lines.py",
-      "bytes": 16573,
-      "sha256": "ddde2f12c118374ca7048a9c190502ac838bfdb48a4d148729e9a68f78be41c9"
+      "bytes": 31236,
+      "sha256": "3fbf0def71ecc1402b883b3692a07aac5083f30aeaac026747452ec257196a26"
     },
     {
       "path": "backend/geometry.py",
@@ -6064,6 +6064,11 @@
       "sha256": "6c9b0504dfca472880ae6d2b409963ae870087e96ecc6fe0958c9f9b19ea2733"
     },
     {
+      "path": "tests/test_field_lines_numpy.py",
+      "bytes": 9313,
+      "sha256": "e2bfbb122cd018e381e1557d6cde58e99f04466af4df8cd8defa962899ea5637"
+    },
+    {
       "path": "tests/test_gmsh_sigpipe.py",
       "bytes": 2226,
       "sha256": "dc6047fb2b7381a610ba7b9ff5011b6a39574bc60aaefa3074400726a558819e"
@@ -8756,6 +8761,12 @@
       "path": "tools/benchmark_suite/report.py",
       "source_sha256": "b824617f4bd29a0d455a4063a07989f17f68cb0a90aa3d49734465d8ec93e5bc",
       "reason": "Show the energy-balance diagnostic for coilEM and the reference in the benchmark report (#80)."
+    },
+    {
+      "base_commit": "6b3646ade5c8fcfecf09edc8b945fb588a9eeb00",
+      "path": "backend/field_lines.py",
+      "source_sha256": "ddde2f12c118374ca7048a9c190502ac838bfdb48a4d148729e9a68f78be41c9",
+      "reason": "Compute element B, contour levels and contour segments with numpy, bit-identical to the per-triangle loops, which remain for inputs numpy cannot match exactly (#38 lever 4)."
     }
   ]
 }
