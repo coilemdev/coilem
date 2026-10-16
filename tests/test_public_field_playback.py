@@ -367,3 +367,51 @@ def test_v2_contract_supports_tutorial_timelines_and_arbitrary_compositions() ->
     cue["dy"] = 0.0
     with pytest.raises(FieldPlaybackContractError, match="direction must be non-zero"):
         validate_field_playback_v2(zero_direction)
+
+
+def test_composition_reuses_the_frame_geometry_exactly(monkeypatch, tmp_path) -> None:
+    """Passing the frame's own geometry renders the same layers, and the frame builds it once per plot."""
+
+    from PIL import ImageDraw, ImageFilter
+
+    cache_dir = tmp_path / "magneto2d-test"
+    source = cache_dir / "field_line_frames" / "frame_000.json.gz"
+    _write_frame(source, 0.0)
+    _configure_artifact_ids(monkeypatch, cache_dir, {"source-0": source})
+
+    plot = _plot(0.0)
+    refs = {"base_ref": {"artifact_id": "base"}, "mesh_ref": {"artifact_id": "mesh"}}
+    rendered = {}
+    for label, geometry in (("own", None), ("shared", public_field_playback._drawable_geometry(plot))):
+        output_dir = cache_dir / label
+        output_dir.mkdir()
+        rendered[label] = public_field_playback._render_composition(
+            Image,
+            ImageDraw,
+            ImageFilter,
+            plot,
+            output_dir=output_dir,
+            frame_index=0,
+            composition="resultant",
+            geometry=geometry,
+            **refs,
+        )
+    # Layer artifact ids name their output folder; everything else must match.
+    assert json.dumps(rendered["own"]).replace("own/", "") == json.dumps(rendered["shared"]).replace("shared/", "")
+    for path in (cache_dir / "own").iterdir():
+        assert path.read_bytes() == (cache_dir / "shared" / path.name).read_bytes()
+
+    built = []
+    triangles = public_field_playback._triangles
+    monkeypatch.setattr(
+        public_field_playback,
+        "_triangles",
+        lambda plot, nodes: built.append(plot["element_b_mag_t"][0]) or triangles(plot, nodes),
+    )
+    output_dir = cache_dir / "frame"
+    output_dir.mkdir()
+    public_field_playback._package_playback_frame(
+        0, "source-0", str(cache_dir), str(output_dir), "resultant_pm", 0.0
+    )
+    # The loaded plot (|B| 0.5) once, the no-load plot (|B| 0.375) once.
+    assert built == [0.5, 0.375]
