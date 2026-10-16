@@ -1545,6 +1545,9 @@ assert.match(workspaceSource, /data-guide="solve-run"/);
 assert.match(workspaceSource, /data-guide="open-report"/);
 assert.match(workspaceSource, /Review source and limitations/);
 assert.match(workspaceSource, /Review material provenance/);
+// The Back EMF headline card shows a three-phase sparkline on one scale (#110).
+assert.match(resultSummarySource, /sharedSparklinePaths\(\s*\[result\.back_emf_waveform\.phase_a_V, result\.back_emf_waveform\.phase_b_V, result\.back_emf_waveform\.phase_c_V\]/);
+assert.match(resultSummarySource, /<article className="public-result-emf">[\s\S]*?className=\{`phase-\$\{'abc'\[index\]\}`\}/);
 // Model assumptions live inside the Results Run settings disclosure (#110).
 assert.match(resultSummarySource, /<details className="public-run-settings">[\s\S]*?<h4 id=\{assumptionsHeadingId\}>Model assumptions<\/h4>[\s\S]*?<\/details>/);
 assert.match(workspaceSource, /assumptions=\{\(\s*<>\s*<span>[\s\S]*?Review material provenance/);

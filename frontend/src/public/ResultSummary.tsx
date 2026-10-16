@@ -7,6 +7,7 @@ import {
   formatFrequencyHz,
   loadingScaleMaxT,
   saturationKneeRangeT,
+  sharedSparklinePaths,
   sparklinePath,
   torqueRange,
 } from './resultMetrics';
@@ -15,6 +16,9 @@ const TIMING_HELP = 'Solver time is the wall-clock time for meshing, solving and
   + 'Total elapsed also covers playback images and saving, measured in the browser through receipt of the saved result.';
 const SPARKLINE_WIDTH = 132;
 const SPARKLINE_HEIGHT = 36;
+// The Back EMF value is smaller than the torque hero's, so its sparkline is
+// shorter and keeps the three headline values on one line.
+const EMF_SPARKLINE_HEIGHT = 26;
 
 function fixed(value: number | null | undefined, digits = 2): string {
   return typeof value === 'number' && Number.isFinite(value) ? value.toFixed(digits) : '—';
@@ -69,6 +73,12 @@ export function ResultSummary({
   const preview = sixStep && !completeLoadedCycle ? ' · preview only' : '';
   const range = torqueRange(result.torque_waveform.torque_Nm);
   const sparkline = sparklinePath(result.torque_waveform.torque_Nm, SPARKLINE_WIDTH, SPARKLINE_HEIGHT);
+  // Phases A, B and C on one scale, in the Back EMF chart's colours.
+  const emfSparklines = sharedSparklinePaths(
+    [result.back_emf_waveform.phase_a_V, result.back_emf_waveform.phase_b_V, result.back_emf_waveform.phase_c_V],
+    SPARKLINE_WIDTH,
+    EMF_SPARKLINE_HEIGHT,
+  );
   const power = electromagneticPower(summary.avg_torque_Nm, rpm);
   const scaleMaxT = loadingScaleMaxT([summary.peak_flux_density_teeth_T, summary.peak_flux_density_yoke_T]);
   const knee = saturationKneeRangeT(materials, config.materials.stator_steel);
@@ -125,9 +135,16 @@ export function ResultSummary({
             {range ? ` · ${fixed(range.min)} – ${fixed(range.max)} N·m` : ''}
           </p>
         </article>
-        <article>
+        <article className="public-result-emf">
           <span>Back EMF</span>
-          <strong>{fixed(summary.back_emf_fundamental_V)} <small>V</small></strong>
+          <div>
+            <strong>{fixed(summary.back_emf_fundamental_V)} <small>V</small></strong>
+            {emfSparklines.some(Boolean) && (
+              <svg viewBox={`0 0 ${SPARKLINE_WIDTH} ${EMF_SPARKLINE_HEIGHT}`} width={SPARKLINE_WIDTH} height={EMF_SPARKLINE_HEIGHT} aria-hidden="true">
+                {emfSparklines.map((path, index) => path && <path key={index} className={`phase-${'abc'[index]}`} d={path} />)}
+              </svg>
+            )}
+          </div>
           <p>Fundamental, rms line-to-neutral at {rpm.toLocaleString()} rpm</p>
         </article>
         <article>

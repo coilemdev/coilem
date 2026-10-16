@@ -4830,13 +4830,13 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 113776,
-      "sha256": "c7d1da9ad215569dcb109bfbaae2cb3c183ccb4f67d465da9b84a9bd27b8d8e1"
+      "bytes": 114165,
+      "sha256": "52ccd29ddf8f2dd9564e94e27986d59d815500093ed49e0e5883a1dcdbe60106"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
-      "bytes": 2595,
-      "sha256": "816084e9c12b12db363f17988de02b3addc3a0f6d81bf15b07b5dc534573314b"
+      "bytes": 3084,
+      "sha256": "3fec1086f541be5038efc677a00adb4b7f88d27da5c8397ad52400f4f65844cf"
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
@@ -5280,8 +5280,8 @@
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
-      "bytes": 7288,
-      "sha256": "5a5b10f406c1e6d851e7c3bdaedda51e8aa839365a71b0e64b0509347a482a86"
+      "bytes": 8191,
+      "sha256": "f393e798527761bcf85de34a9c1a7c49881933093bcc5e149e961173ad25fb95"
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
@@ -5535,8 +5535,8 @@
     },
     {
       "path": "frontend/src/public/resultMetrics.ts",
-      "bytes": 2962,
-      "sha256": "ee8b5d839e47916fd7d16b52002e2eb5573ffbf6db6c5a066fda38cd5b6764e4"
+      "bytes": 3732,
+      "sha256": "9798d6ec71161433aa086cc56549419f33d585b962db66d422f697d096cf652f"
     },
     {
       "path": "frontend/src/public/solvePlan.ts",
@@ -5550,8 +5550,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 239470,
-      "sha256": "ecd7843c27608be23910cd52b73e995b9a68dd05c5821a741af92392cf851042"
+      "bytes": 239876,
+      "sha256": "4625a6b2635c9c2f369e9d4490061d77f18c9976946473142a889a79e348c707"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
