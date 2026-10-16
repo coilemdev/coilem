@@ -140,6 +140,15 @@ def execute(args):
     selected = {case_id: phase for case_id, phase in cases.items() if not args.case or case_id in args.case}
     if not selected or (args.case and set(args.case) - selected.keys()):
         raise ValueError("No cases selected or unknown reference case")
+    budget = getattr(args, "worker_budget", None)
+    weighted = budget is not None
+    if weighted and (type(budget) is not int or budget < 1):
+        raise ValueError("Worker budget must be a positive integer")
+    budget = budget if weighted else args.workers
+    hints = {job["case_id"]: job for job in read(args.timings)["jobs"]} if args.timings else {}
+    costs = {case_id: hints.get(case_id, {}).get("worker_cost", 1) if weighted else 1 for case_id in selected}
+    if any(type(cost) is not int or not 1 <= cost <= budget for cost in costs.values()):
+        raise ValueError("Each worker cost must be a positive integer within the worker budget")
     with run_lock(output):
         manifest_path = output / "run_manifest.json"
         if manifest_path.exists():
@@ -189,11 +198,11 @@ def execute(args):
                 else:
                     pending.append(job)
         if args.timings:
-            durations = {job["case_id"]: job.get("runtime_s") or 0 for job in read(args.timings)["jobs"]}
-            pending.sort(key=lambda job: -durations.get(job["case_id"], 0))
+            pending.sort(key=lambda job: -(hints.get(job["case_id"], {}).get("runtime_s") or 0))
         session = {"started_at": now(), "workers": args.workers, "timeout_s": args.timeout_s,
                    "order": "longest_first" if args.timings else "registered",
-                   "launch_order": [job["case_id"] for job in pending],
+                   "worker_budget": budget, "weighted": weighted, "worker_costs": costs,
+                   "planned_order": [job["case_id"] for job in pending], "launch_order": [],
                    "timings_sha256": sha(args.timings) if args.timings else None}
         manifest["execution_sessions"].append(session)
         manifest.update(status="RUNNING")
@@ -205,9 +214,14 @@ def execute(args):
         try:
             while pending or running:
                 while pending and len(running) < args.workers:
+                    active_cost = sum(costs[item[0]["case_id"]] for item in running)
+                    eligible = next((index for index, job in enumerate(pending)
+                                     if active_cost + costs[job["case_id"]] <= budget), None)
+                    if eligible is None:
+                        break
                     if identity(producer, producer_path) != runtime:
                         raise ValueError("Reference producer changed; remaining jobs were not launched")
-                    job = pending.pop(0)
+                    job = pending.pop(eligible)
                     directory = (output / job["result"]).parent
                     log = (directory / "worker.log").open("ab")
                     try:
@@ -223,7 +237,8 @@ def execute(args):
                     running.append((job, process, log, time.perf_counter()))
                     for name in ("error", "completed_at", "exit_code"):
                         job.pop(name, None)
-                    job.update(status="RUNNING", started_at=now(), pid=process.pid)
+                    job.update(status="RUNNING", started_at=now(), pid=process.pid, worker_cost=costs[job["case_id"]])
+                    session["launch_order"].append(job["case_id"])
                     write(manifest_path, manifest)
                     print(f"{job['case_id']}: starting reference job (pid {process.pid})", flush=True)
                 for item in list(running):
@@ -277,7 +292,8 @@ def main():
     parser.add_argument("--case", action="append", help="Select a case; repeat to select several; default all producer cases")
     parser.add_argument("--workers", type=int, default=1, help="Independent case processes, 1..16; default serial")
     parser.add_argument("--timeout-s", type=float, default=14400)
-    parser.add_argument("--timings", type=Path, help="Runtime-analysis JSON used only to order jobs longest first")
+    parser.add_argument("--timings", type=Path, help="Runtime-analysis JSON: longest-first durations and optional worker_cost hints")
+    parser.add_argument("--worker-budget", type=int, help="Opt into summed worker_cost limits from --timings; missing costs are 1")
     parser.add_argument("--resume", action="store_true")
     try:
         return execute(parser.parse_args())

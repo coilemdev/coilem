@@ -4345,8 +4345,8 @@
     },
     {
       "path": "docs/BENCHMARK_PERFORMANCE.md",
-      "bytes": 7350,
-      "sha256": "d11f63ad7215de05276a85cf5be9a1e13ef7bb5f2846eb9832b0bc7285b1df7c"
+      "bytes": 8615,
+      "sha256": "9d506ba2037b450466b27e66c23b9ea23d2e10f7c52c532fa670b9efa42ceafd"
     },
     {
       "path": "docs/ELMER.md",
@@ -5990,8 +5990,8 @@
     },
     {
       "path": "tests/test_reference_runner.py",
-      "bytes": 8530,
-      "sha256": "fcec347040fa204b2e254be483f4184e7450ebf7e424b53b794b660bb0b1747c"
+      "bytes": 10747,
+      "sha256": "c7c7de875fb1f146ad3a8381970b12e8723278182dbda86c042dca6be22ff0f4"
     },
     {
       "path": "tests/test_release_tools.py",
@@ -6075,8 +6075,8 @@
     },
     {
       "path": "tools/benchmark_suite/external.py",
-      "bytes": 15496,
-      "sha256": "f5331edc50d50634f16fc6448593b86de1ad9118492b0b560a45f8c14c4a093e"
+      "bytes": 16767,
+      "sha256": "6f348e05b71feb5f0bd7dbdffe5aa6fd64442f635fd92bd7c533e4feacd3486b"
     },
     {
       "path": "tools/benchmark_suite/hardware.py",

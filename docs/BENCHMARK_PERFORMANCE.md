@@ -78,9 +78,35 @@ materials, grids, extraction methods and numerical gates.
 
 Start with representative cases using repeated `--case <id>` arguments, then
 compare serial, 2, 4 and 8 workers on the same machine. `--workers` defaults to
-1 and accepts 1..16. `--timings` changes launch order only; manifest order stays
+1 and accepts 1..16. `--timings` orders jobs longest first; manifest order stays
 registered. Keep each case's internal pools capped and record resource use.
 The default per-job timeout is four hours; change it with `--timeout-s`.
+
+### Limit resource cost as well as process count
+
+Large models can contend more than the small cases used to test startup and
+isolation. Measure throughput on representative sizes before choosing a limit.
+For mixed workloads, `--worker-budget <positive-integer>` explicitly enables
+optional `worker_cost` values in the timing JSON:
+
+```json
+{"jobs": [
+  {"case_id": "large_case", "runtime_s": 1200, "worker_cost": 2},
+  {"case_id": "small_case", "runtime_s": 300, "worker_cost": 1}
+]}
+```
+
+At `--workers 8 --worker-budget 8`, cost-two jobs can occupy four slots, while
+cost-one jobs can occupy eight. Costs are operator-defined scheduling units;
+choose them from measured contention or resource use. Missing costs are one;
+each selected cost must be a positive integer within the budget. The sum of
+active costs and the process-count limit are both enforced. A smaller job can
+start while an earlier large job waits for capacity. Each session records its
+costs, budget, planned order and actual launch order. Without `--worker-budget`,
+cost hints are ignored and ordinary worker-count scheduling is retained.
+
+The timing analyzer's unconstrained scheduling estimates do not model these
+optional budgets. Use actual run sessions to assess a budgeted configuration.
 
 ### Optional reuse inside an external producer
 

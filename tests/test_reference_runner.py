@@ -181,6 +181,53 @@ def test_producer_can_use_sibling_imports_and_annotated_dataclasses(tmp_path):
     assert read(args.out_dir / first["result"])["measurement"]["version"] == "fixed"
 
 
+def test_worker_budget_backfills_small_jobs_without_overlapping_large_jobs(tmp_path):
+    path = producer(tmp_path)
+    path.write_text(path.read_text().replace(
+        'return {"a": "A", "b": "D"}', 'return {"a": "A", "b": "B", "c": "D"}',
+    ), encoding="utf-8")
+    args = arguments(path, tmp_path / "run")
+    args.workers, args.worker_budget = 3, 3
+    args.timings = tmp_path / "costs.json"
+    write_json(args.timings, {"jobs": [
+        {"case_id": "a", "runtime_s": 9, "worker_cost": 2},
+        {"case_id": "b", "runtime_s": 8, "worker_cost": 2},
+        {"case_id": "c", "runtime_s": 1, "worker_cost": 1},
+    ]})
+    assert execute(args) == 0
+    manifest = read(args.out_dir / "run_manifest.json")
+    assert [job["case_id"] for job in manifest["jobs"]] == ["a", "b", "c"]
+    session = manifest["execution_sessions"][0]
+    assert session["planned_order"] == ["a", "b", "c"]
+    assert session["launch_order"] == ["a", "c", "b"]
+    assert session["worker_budget"] == 3
+    results = {job["case_id"]: read(args.out_dir / job["result"]) for job in manifest["jobs"]}
+    assert results["a"]["started_at"] < results["c"]["completed_at"]
+    assert results["c"]["started_at"] < results["a"]["completed_at"]
+    assert results["b"]["started_at"] >= results["a"]["completed_at"]
+
+
+@pytest.mark.parametrize("cost", [0, -1, 1.5, True, "2", 4])
+def test_invalid_worker_cost_is_rejected_before_creating_output(tmp_path, cost):
+    args = arguments(producer(tmp_path), tmp_path / "run")
+    args.worker_budget = 3
+    args.timings = tmp_path / "costs.json"
+    write_json(args.timings, {"jobs": [{"case_id": "a", "worker_cost": cost}]})
+    with pytest.raises(ValueError, match="worker cost"):
+        execute(args)
+    assert not args.out_dir.exists()
+
+
+def test_worker_cost_hints_require_explicit_budget_opt_in(tmp_path):
+    args = arguments(producer(tmp_path), tmp_path / "run")
+    args.timings = tmp_path / "costs.json"
+    write_json(args.timings, {"jobs": [{"case_id": "a", "worker_cost": 100}]})
+    assert execute(args) == 0
+    session = read(args.out_dir / "run_manifest.json")["execution_sessions"][0]
+    assert session["weighted"] is False
+    assert session["worker_costs"] == {"a": 1, "b": 1}
+
+
 @pytest.mark.parametrize("case_id", ["../escape", "NUL", "con.txt", "trailing.", "a/b", "a\\b", ""])
 def test_unsafe_case_names_are_rejected(case_id):
     with pytest.raises(ValueError, match="case id"):
