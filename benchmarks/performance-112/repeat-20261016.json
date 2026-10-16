@@ -1,0 +1,1010 @@
+{
+  "schema": "coilem.benchmark_performance_repeat/v1",
+  "generated_at": "2026-10-16T18:14:55.982763+00:00",
+  "run_id": "femm-v3-stack-20261016-120441",
+  "source_commit": "9012f19ac4f6cee6339719e4b690b6efcb9f63df",
+  "reference_physical_commit": "738d9516e8500c5996c772bd96470472cbb9a0f9",
+  "femm_version": "4.2",
+  "hardware": "Windows 11, Ryzen 7 7700, 8 physical / 16 logical cores, 64 GiB RAM",
+  "validation_status": "REVIEW_REQUIRED",
+  "status": "COMPLETE",
+  "case_count": 29,
+  "started_at": "2026-10-16T16:04:42.166296+00:00",
+  "completed_at": "2026-10-16T17:55:36.490856+00:00",
+  "wall_s": 6654.354416499991,
+  "manifest_sha256": "8bfcdbc4abcbf4709c13aa038ff089b0aa9039f833eeedcef3be73fd5bc95f51",
+  "execution_identity_sha256": "4f683d77592e81132313bb0f795bd400cc20d172f23532b6a53b3521e613effe",
+  "producer_source_sha256": "a2cb40e1e35a1847ce3b9dd099f6510bf268375a5fde9f85871e323dd00b84a7",
+  "runner_sources": {
+    "tools/benchmark_suite/external.py": "c6d1600f0344002bf9184154b8f82be155227ae832490aba70a7a18fb071fc6f",
+    "tools/benchmark_suite/external_contract.py": "75a1d54e60e6cc90a97774d3731136b9c5b1179013029cf8a422ebab2f4b433c",
+    "tools/run_reference_benchmark.py": "5480b63cdc78f75b69d30507256b000a5eee02449d6e87aab099f104d4a7efce"
+  },
+  "physics_preflight": {
+    "status": "PASS",
+    "matched_source_count": 50,
+    "source_sha256": "b7aa9ddcf635e99a23b06c404d46fefe3a7d04f21526a39286fa81c9c1c6693f",
+    "evidence_sha256": "f4bf4730bb9d02e3c4d9184fbcd8b0d114ec4fba3d8d184d08074cc4e4647624"
+  },
+  "previous_optimized_run": {
+    "run_id": "f112-fullmix",
+    "wall_s": 6722.417971499992,
+    "manifest_sha256": "c7130849feaec0e1b549228660e15d395db2389578fc14b64ce25e0ccb5c2aca",
+    "report": "full-suite-summary.json"
+  },
+  "comparison": {
+    "saved_s": 68.06355500000063,
+    "reduction_pct": 1.012486210892558,
+    "historical_serial_span_s": 32925.536091,
+    "ratio_to_historical_serial_span": 4.947968507562291,
+    "reduction_from_historical_serial_pct": 79.78968543410014
+  },
+  "execution_session": {
+    "started_at": "2026-10-16T16:04:42.176030+00:00",
+    "workers": 8,
+    "timeout_s": 14400,
+    "order": "longest_first",
+    "worker_budget": 8,
+    "weighted": true,
+    "worker_costs": {
+      "spm_4p12s_simple__baseline": 1,
+      "spm_4p12s_simple__high_current": 1,
+      "spm_4p12s_simple__tight_airgap": 1,
+      "spm_4p12s_simple_noload__baseline": 1,
+      "spm_4p12s_simple_noload__high_current": 1,
+      "spm_4p12s_simple_noload__tight_airgap": 1,
+      "spm_8p12s_concentrated__baseline": 1,
+      "spm_8p12s_concentrated__high_current": 1,
+      "spm_8p12s_concentrated__tight_airgap": 1,
+      "spm_8p12s_reference_angle30__baseline": 1,
+      "ipm_flat_12s10p_fscw_contract": 1,
+      "ipm_flat_24s16p_industrial_contract": 2,
+      "ipm_flat_4p12s_micro_contract": 1,
+      "ipm_flat_8p12s_fsae_angled_pocket_contract": 1,
+      "ipm_flat_8p12s_fsae_contract": 1,
+      "ipm_flat_8p12s_fsae_thin_bridge_contract": 1,
+      "ipm_vshape_8p12s_baseline_contract": 1,
+      "ipm_vshape_8p12s_deep_apex_high_output_v1": 1,
+      "ipm_vshape_8p12s_narrow_angle_contract": 1,
+      "ipm_vshape_8p12s_pocket_offset_contract": 1,
+      "ipm_vshape_8p12s_thin_bridge_contract": 1,
+      "ipm_vshape_8p12s_wide_angle_high_output_v1": 1,
+      "spm_12p36s_distributed_femm_validation": 2,
+      "spm_8p24s_distributed_femm_validation": 1,
+      "spm_8p48s_chorded_5_6": 2,
+      "spm_8p48s_distributed_femm_validation": 2,
+      "spm_14p12s_high_pole": 1,
+      "spm_4p12s_small": 1,
+      "spm_8p12s_reference": 1
+    },
+    "planned_order": [
+      "spm_8p48s_distributed_femm_validation",
+      "spm_8p48s_chorded_5_6",
+      "spm_12p36s_distributed_femm_validation",
+      "ipm_flat_24s16p_industrial_contract",
+      "ipm_vshape_8p12s_narrow_angle_contract",
+      "ipm_vshape_8p12s_pocket_offset_contract",
+      "ipm_vshape_8p12s_baseline_contract",
+      "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "ipm_flat_12s10p_fscw_contract",
+      "ipm_vshape_8p12s_thin_bridge_contract",
+      "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "spm_8p24s_distributed_femm_validation",
+      "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "ipm_flat_8p12s_fsae_contract",
+      "spm_14p12s_high_pole",
+      "spm_8p12s_reference_angle30__baseline",
+      "spm_8p12s_concentrated__tight_airgap",
+      "spm_8p12s_concentrated__baseline",
+      "spm_8p12s_concentrated__high_current",
+      "spm_4p12s_simple__high_current",
+      "spm_4p12s_simple_noload__high_current",
+      "spm_4p12s_simple_noload__baseline",
+      "spm_4p12s_simple__baseline",
+      "ipm_flat_4p12s_micro_contract",
+      "spm_8p12s_reference",
+      "spm_4p12s_simple__tight_airgap",
+      "spm_4p12s_simple_noload__tight_airgap",
+      "spm_4p12s_small"
+    ],
+    "launch_order": [
+      "spm_8p48s_distributed_femm_validation",
+      "spm_8p48s_chorded_5_6",
+      "spm_12p36s_distributed_femm_validation",
+      "ipm_flat_24s16p_industrial_contract",
+      "ipm_vshape_8p12s_narrow_angle_contract",
+      "ipm_vshape_8p12s_pocket_offset_contract",
+      "ipm_vshape_8p12s_baseline_contract",
+      "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "ipm_flat_12s10p_fscw_contract",
+      "ipm_vshape_8p12s_thin_bridge_contract",
+      "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "spm_8p24s_distributed_femm_validation",
+      "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "ipm_flat_8p12s_fsae_contract",
+      "spm_14p12s_high_pole",
+      "spm_8p12s_reference_angle30__baseline",
+      "spm_8p12s_concentrated__tight_airgap",
+      "spm_8p12s_concentrated__baseline",
+      "spm_8p12s_concentrated__high_current",
+      "spm_4p12s_simple__high_current",
+      "spm_4p12s_simple_noload__high_current",
+      "spm_4p12s_simple_noload__baseline",
+      "spm_4p12s_simple__baseline",
+      "ipm_flat_4p12s_micro_contract",
+      "spm_8p12s_reference",
+      "spm_4p12s_simple__tight_airgap",
+      "spm_4p12s_simple_noload__tight_airgap",
+      "spm_4p12s_small"
+    ],
+    "timings_sha256": "5d33e0485264539cce63b88aab38048d3ca3e499beef9b89a74f1a6fb02cd758",
+    "completed_at": "2026-10-16T17:55:36.490856+00:00",
+    "wall_s": 6654.354416499991
+  },
+  "phases": [
+    {
+      "phase": "A",
+      "cases": 10,
+      "summed_worker_wall_s": 4728.440895900043,
+      "previous_summed_worker_wall_s": 4670.7260583000025
+    },
+    {
+      "phase": "B",
+      "cases": 12,
+      "summed_worker_wall_s": 17073.263792400016,
+      "previous_summed_worker_wall_s": 16974.966993899987
+    },
+    {
+      "phase": "C",
+      "cases": 4,
+      "summed_worker_wall_s": 14824.514873399981,
+      "previous_summed_worker_wall_s": 14816.383337000007
+    },
+    {
+      "phase": "D",
+      "cases": 3,
+      "summed_worker_wall_s": 1241.5087691999797,
+      "previous_summed_worker_wall_s": 1285.6041784000117
+    }
+  ],
+  "jobs": [
+    {
+      "case_id": "spm_4p12s_simple__baseline",
+      "phase": "A",
+      "started_at": "2026-10-16T17:47:39.666420+00:00",
+      "completed_at": "2026-10-16T17:54:11.345699+00:00",
+      "worker_wall_s": 391.39094599999953,
+      "producer_wall_s": 389.0703819000046,
+      "previous_worker_wall_s": 370.69327829999384,
+      "worker_wall_change_pct": 5.5835022946532975,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "996704d20eee13c2af2cd768bef3a0db14f9252dc605bf778ef9a9919dd00295",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "c600fd3424e10630252bed791aa4ebe419cc6a230ff65a6e47fb0a63b08fc70d",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "d170ada5df3725796995748c3bc076a4bb8879d553b48ace4640c1e7a182cbc7",
+          "exact": true
+        }
+      },
+      "request_sha256": "76df74e03882fef1b9e6613d2c8717bc6ebc682637dd2b6a3fbb98fb1a470a31",
+      "result_sha256": "0ad58c728625376b70658eab37ce97e1b78ac07adb4e5ff30325c0385796cc84"
+    },
+    {
+      "case_id": "spm_4p12s_simple__high_current",
+      "phase": "A",
+      "started_at": "2026-10-16T17:42:25.543523+00:00",
+      "completed_at": "2026-10-16T17:48:34.945973+00:00",
+      "worker_wall_s": 369.0567261999822,
+      "producer_wall_s": 366.732831500005,
+      "previous_worker_wall_s": 395.7801966999832,
+      "worker_wall_change_pct": -6.752098948563212,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "a800aea8cedb7beeacbfe07f6df154186d9417dc1fda9158931d0294eb0da8e5",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "d7fad1ed5d55c00b944ab20799a9e875aa9d7dcca40a003c54d9696f79efd257",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "e880511e84ca416cb45be32bd24c17f924b85bc98efc491e1dc36013ece167fe",
+          "exact": true
+        }
+      },
+      "request_sha256": "506dd74a8dea1662b80b0ce9f71f178dcf45d0ab575366c8f451135f5f1e9fd6",
+      "result_sha256": "21be74353ee874a8d94bb8f4ecca576644139ddd42c69b5483fe7d521acdecb7"
+    },
+    {
+      "case_id": "spm_4p12s_simple__tight_airgap",
+      "phase": "A",
+      "started_at": "2026-10-16T17:49:29.104746+00:00",
+      "completed_at": "2026-10-16T17:55:09.008542+00:00",
+      "worker_wall_s": 339.6947761000192,
+      "producer_wall_s": 337.55752639999264,
+      "previous_worker_wall_s": 303.73137209998094,
+      "worker_wall_change_pct": 11.840529923329758,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "508ff0173a70cb5e6eb110ee3f63dd7c94bc42162ca25b8cf0d9ef52c52e6d98",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "0836a3dd635ca966e54f974fc42cf7cdf33a9721c5d31f3a1becebef4b981886",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "06ceb45e69d3086ef819ec665d5ccbc9648802526d14b5a41c40b5a21f8e4c06",
+          "exact": true
+        }
+      },
+      "request_sha256": "890a6de64018bde9679c0c7d775b5868163d06d07722576d1d8b1230ae3d9de5",
+      "result_sha256": "10f5907a94628d16accdb099ced02c4b7499cb381050c517e920461ffe09397d"
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__baseline",
+      "phase": "A",
+      "started_at": "2026-10-16T17:47:15.073099+00:00",
+      "completed_at": "2026-10-16T17:53:39.299480+00:00",
+      "worker_wall_s": 383.8380569999863,
+      "producer_wall_s": 381.33037630000035,
+      "previous_worker_wall_s": 371.78851209999993,
+      "worker_wall_change_pct": 3.2409675145490757,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "51ae7c6d1676aeeaa5e8ab6cb0f8fa946674b00a77be8ab1c6eae16858d5a9e0",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "a6cc048a5f0171be45185399e56c1f3c01ddeb227e2ef43481eb1f38047db0e9",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "1e603ba4f44f97eff2506d4facfded1c93128fc5a522be52b927da1e11560752",
+          "exact": true
+        }
+      },
+      "request_sha256": "dc071620b330fe6bb26a7db0548bbfd3cf661c904b4bccd235af0e57dbad023d",
+      "result_sha256": "88ee09af9727e84290484d6685733860e4fe4ac8d79dd90ef96affae0a159bb1"
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__high_current",
+      "phase": "A",
+      "started_at": "2026-10-16T17:43:02.191620+00:00",
+      "completed_at": "2026-10-16T17:49:28.237759+00:00",
+      "worker_wall_s": 385.7425254000118,
+      "producer_wall_s": 383.25295630001347,
+      "previous_worker_wall_s": 371.2975687000144,
+      "worker_wall_change_pct": 3.890398946206952,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "9b39c8a38e864edaa7f0089943e06971349924ed3b3af60b5ee8d1a2b4aa600f",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "9cff96293da54f7a31f77b481a4bffe7fc70b594d00d566e239e4b8e4c2d2337",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "e518f833316248459ea1c7a3a89542b0d3e5748f886ec87b32ea3d2d6d303594",
+          "exact": true
+        }
+      },
+      "request_sha256": "b2d970c89add5db2cae884413e49d3ebe5513396b36ad19998f61bbf4669e6e5",
+      "result_sha256": "2d88c1752913f981d425def8e3ec1d522654ccd79eec88869847f1bfb5666c36"
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__tight_airgap",
+      "phase": "A",
+      "started_at": "2026-10-16T17:50:16.250393+00:00",
+      "completed_at": "2026-10-16T17:55:36.210913+00:00",
+      "worker_wall_s": 319.6983981000085,
+      "producer_wall_s": 317.7531880000024,
+      "previous_worker_wall_s": 297.3118620000023,
+      "worker_wall_change_pct": 7.529647807999673,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "d38534aa36bb999a47863674d6de6567f381fdf5c0a340dcd445f56169457dae",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "7179aa89de4af267688eb4d806073df0df9f0586d9698bb21be791187708b2d1",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "af8294943f9930b4d406907f4efd3beba9f1a5cd98dfb8d3993954e64bd613fa",
+          "exact": true
+        }
+      },
+      "request_sha256": "e6c2e06c8b107b0e96be4bcf5e7c642e99591f323502fd41d86acbc989a88da1",
+      "result_sha256": "fb7e4c8d3fb3836a8d2ff8a4b763efa05b66c9a9f153ce7628e0744d001bb6cf"
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__baseline",
+      "phase": "A",
+      "started_at": "2026-10-16T17:40:00.715039+00:00",
+      "completed_at": "2026-10-16T17:50:15.355106+00:00",
+      "worker_wall_s": 614.3045244000095,
+      "producer_wall_s": 611.8145187000046,
+      "previous_worker_wall_s": 608.9430506000062,
+      "worker_wall_change_pct": 0.8804557002038971,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "1a28d88f1291f71dd2ae84f6a0cf4709c7dff986535313d281bf033f756f00e8",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "5f4233b53ae20ee3b2c7e76c5fb5a90f3e0a5ce975a90739a61c72a0a5ef3271",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "c62fd68df482f952a02bd90b42475170e7d326e3e8af985370c6fd878b7280ea",
+          "exact": true
+        }
+      },
+      "request_sha256": "8a1d4769f7c74456c77e2f5848857a90a9a509a51e80913cff18afdd72016141",
+      "result_sha256": "0f302dd8b1230d00e9c494bfce976dc8ef4a7406c6f32a88b850ff18ee1ee568"
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__high_current",
+      "phase": "A",
+      "started_at": "2026-10-16T17:41:42.902081+00:00",
+      "completed_at": "2026-10-16T17:51:59.000533+00:00",
+      "worker_wall_s": 615.7863036000053,
+      "producer_wall_s": 613.2192552999768,
+      "previous_worker_wall_s": 639.0599562000134,
+      "worker_wall_change_pct": -3.6418574461147823,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "485770e1d00c8657b600a16037ada50229ff00d72e4b81a8a5d63154909be6be",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "67f50bb166664c16d617125296886f7d319e3cac7ee04b02ad6721b2eab141ec",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "cd98263cfa5567d55964239399ecccc6a1990c2d646f828214e9bd2b346fa085",
+          "exact": true
+        }
+      },
+      "request_sha256": "636309f9bbc38428eccf1d87bfb46911a05a4ca9a9e42f2ada00d350f6e586ad",
+      "result_sha256": "2cb8017d7792dcfe5ec4d44f22e45c653d08e6ee5659dcf656c4f9e4ca75311c"
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__tight_airgap",
+      "phase": "A",
+      "started_at": "2026-10-16T17:32:10.664245+00:00",
+      "completed_at": "2026-10-16T17:43:01.267672+00:00",
+      "worker_wall_s": 650.2986435000203,
+      "producer_wall_s": 647.8252783000062,
+      "previous_worker_wall_s": 651.0725112000073,
+      "worker_wall_change_pct": -0.11886044744243707,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "ee1aacffc5622cc9f78232e80dcdc90cefbfa94fdb8a93052af674864b663abe",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "0c435d1bb1dcaf591e97da68b62d3d960072f4c28a5ad4963b2141e5d46ac997",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "57ccba6776b03266dc46286c974a9bdff00abb745dee589919e633fff4956d11",
+          "exact": true
+        }
+      },
+      "request_sha256": "8563ff5f65a39a4787033fd1ad4f87cfb0725f3b8a30079702889c948fc544e6",
+      "result_sha256": "dae66ce9859254740d23dae4288ce0f33bfedfe74dae8231cc936a56d92f7a6c"
+    },
+    {
+      "case_id": "spm_8p12s_reference_angle30__baseline",
+      "phase": "A",
+      "started_at": "2026-10-16T17:31:25.613291+00:00",
+      "completed_at": "2026-10-16T17:42:24.632963+00:00",
+      "worker_wall_s": 658.6299956000003,
+      "producer_wall_s": 656.0574199999974,
+      "previous_worker_wall_s": 661.047750400001,
+      "worker_wall_change_pct": -0.3657458630693,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "b0e108050592c6a266dc2542920b3f3be607050e265acb2ec6218a8e6018dcf7",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "bd5a17ad23c1b324761e2b036a69f52d57936a44728d15d5f983dfcb4cdc854b",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "7f7e3b37e81123cad17e0fec45d1948ba58e1a5b844a3e5af5b36af306e7ec41",
+          "exact": true
+        }
+      },
+      "request_sha256": "88a711fbc98c8273fa90e37983fc105bc2ff71ea24cf04fe17dbdc468f0f5d94",
+      "result_sha256": "3fb7c699d41eb22b8ae5b6840deff9f9f706fbc47fee3ad9ff10318d104c7d6f"
+    },
+    {
+      "case_id": "ipm_flat_12s10p_fscw_contract",
+      "phase": "B",
+      "started_at": "2026-10-16T17:06:39.613912+00:00",
+      "completed_at": "2026-10-16T17:32:09.757789+00:00",
+      "worker_wall_s": 1529.7791948000086,
+      "producer_wall_s": 1527.3858300000138,
+      "previous_worker_wall_s": 1459.8091787000012,
+      "worker_wall_change_pct": 4.7930933111625995,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "bb95f4e7bd4ef6fa27e7cc4745c81b21f9c04e41435bb1818b2b99de7d0aec3b",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "9f58d67d614d1361ae99534ad095eb54dff87f9c1206f6a64a6f20519ca56fe9",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "c142c416d11871eac3c2597f067bcd36ffc54aa7d5696caeb8f61ff526cabd1f",
+          "exact": true
+        }
+      },
+      "request_sha256": "9a63f6341b9e8303d4b5a2a1788b36b193ab82dfee351e26042c71ae21ce8810",
+      "result_sha256": "2f9613d121d35911559299286563f3ff009eaac7b05d1c6e255bceb4132f5ad5"
+    },
+    {
+      "case_id": "ipm_flat_24s16p_industrial_contract",
+      "phase": "B",
+      "started_at": "2026-10-16T16:04:43.404950+00:00",
+      "completed_at": "2026-10-16T16:40:45.174577+00:00",
+      "worker_wall_s": 2161.4175632999977,
+      "producer_wall_s": 2159.3360255999723,
+      "previous_worker_wall_s": 2015.099155999982,
+      "worker_wall_change_pct": 7.261102108268513,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "5466bbf8847c4ca547896f690d82f2416b72384475ef41a273ac8160521d9185",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "4f2af1d99f60bc1114671665e60caf8cfa69fc331479cfe164c6e0fd31f92ce1",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "88b0e205ebb10a73bab367ade934f4c7cc81360d8900b0e4363c741b5a6a1eb3",
+          "exact": true
+        }
+      },
+      "request_sha256": "d51e91d1c247126f4b872b86d1e48df2842cf661141939900157460fbf2415cf",
+      "result_sha256": "06087a6d3deff94ed179f86ad961f99c91b7f60c1d27d395be56da82099c5f90"
+    },
+    {
+      "case_id": "ipm_flat_4p12s_micro_contract",
+      "phase": "B",
+      "started_at": "2026-10-16T17:48:28.119440+00:00",
+      "completed_at": "2026-10-16T17:54:25.361654+00:00",
+      "worker_wall_s": 356.908649399993,
+      "producer_wall_s": 354.64536890000454,
+      "previous_worker_wall_s": 367.785139900021,
+      "worker_wall_change_pct": -2.9572947136974337,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "2c8cb06fbb9fcd45129ab0a668d1d3de51b8d18f8193df8dd89cc7cd9eb688c9",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "668717149ea6c5addeca807687cb250841afb738b537b1adc2c0c5bed01a576f",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "7a3b2e86a547040187dd05cb6e636339812f2cf6915577422a0e35a32e00662e",
+          "exact": true
+        }
+      },
+      "request_sha256": "48b0eefc8145ea645b9ad8236a3d44fac2c9a3dd8fddbd4c5be36bb50323862c",
+      "result_sha256": "f2ab6cf55326486133bcb4e445b247f9dd0af50fe1be8b3187bb448e54fdceed"
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "phase": "B",
+      "started_at": "2026-10-16T17:29:24.894848+00:00",
+      "completed_at": "2026-10-16T17:48:27.225596+00:00",
+      "worker_wall_s": 1142.090512900002,
+      "producer_wall_s": 1139.7351064000104,
+      "previous_worker_wall_s": 1304.742807600007,
+      "worker_wall_change_pct": -12.466234245750973,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "d35834a5bda42a5650d10a5006bdb2210d2a5a413641eec20c5037b36720dab0",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "e1c405d9432280648f320741929ab01dcb7dfd14b4df05112fe60b99026d93ed",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "98b63cd5d2775a3d25e253d7c433c37e61f43f3ec2d1c4fe361921b79d924924",
+          "exact": true
+        }
+      },
+      "request_sha256": "3e86d53dad4630b3ca24e6eb77ccd067b106c3d6f30631db5d381a0a99386553",
+      "result_sha256": "b3446277235da8866638f1c6b35feb7cd6674307ab720f6101c7f9e7fda39eb0"
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract",
+      "phase": "B",
+      "started_at": "2026-10-16T17:30:25.311683+00:00",
+      "completed_at": "2026-10-16T17:47:14.180704+00:00",
+      "worker_wall_s": 1008.5276752000209,
+      "producer_wall_s": 1006.0030328999856,
+      "previous_worker_wall_s": 959.6033334999811,
+      "worker_wall_change_pct": 5.098392220210091,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "325234a93c8a6e81739596f90b97a0d16b1d4afaa5d671a409a69233b97dd794",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "1751a67667e7cf68d982fe9fc3d09c5dbb9fa0a9e1ec2ea975aff8ae80f533a7",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "d8ab87b47981834781fd20398e0f3974d7a07ecc53988acf7dfd950201001f84",
+          "exact": true
+        }
+      },
+      "request_sha256": "9c5b1695e36e7ef3f758289ca2757c620ff29ced1ef68a16ac00fc2f5de37f98",
+      "result_sha256": "e82957c86d207af78ab0457844dc7c20725a0e4bba00a09812fc711b2904600e"
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "phase": "B",
+      "started_at": "2026-10-16T17:29:24.507309+00:00",
+      "completed_at": "2026-10-16T17:55:18.653020+00:00",
+      "worker_wall_s": 1553.9236951000057,
+      "producer_wall_s": 1551.8422117999871,
+      "previous_worker_wall_s": 1499.3341823000228,
+      "worker_wall_change_pct": 3.640916977977593,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "804a39124334baaf25a869b107c1ca15dc3b159cff48d68ac9be4525f9654774",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "0f2baa0523193c271f654fad49646be63a435cd5f1710482d62479ccb8e9f3b8",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "d6bac3319a19841c62220819c82e4f7626e4974a882f2c45313d4dae081f3261",
+          "exact": true
+        }
+      },
+      "request_sha256": "41bcfe86fc2b6038d5b7e7d5090f27bbe403a583d937a3ed8fa18c601a6a2911",
+      "result_sha256": "622707d514b2ec749240d238fd99ea421234678f72e31afe05a96699cbd9c523"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_baseline_contract",
+      "phase": "B",
+      "started_at": "2026-10-16T16:47:16.909054+00:00",
+      "completed_at": "2026-10-16T17:13:26.884609+00:00",
+      "worker_wall_s": 1569.754040800006,
+      "producer_wall_s": 1567.629919799976,
+      "previous_worker_wall_s": 1567.9818555999955,
+      "worker_wall_change_pct": 0.11302332317693065,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "047eac99a4fe6c4a4059bfbbb5341708d75147f57969556e48b2854c58ef1913",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "7493e90548ddaab62761564d386c96a58af1609511d12d385b050cb7a3aab7d3",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "e70b359cdb116630923fecc934de791f310275ca94adbab710c3e6adfab9778e",
+          "exact": true
+        }
+      },
+      "request_sha256": "8cec12d2c631d42f87648979e85cb284be52c71854cec92b2b7d698d6ca72c70",
+      "result_sha256": "4497516e12f062caa55609fe4cc66714d5cd2ff9971a580b56c03cf950085fa8"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "phase": "B",
+      "started_at": "2026-10-16T17:12:53.856649+00:00",
+      "completed_at": "2026-10-16T17:39:59.808521+00:00",
+      "worker_wall_s": 1625.602802599984,
+      "producer_wall_s": 1623.269224699994,
+      "previous_worker_wall_s": 1499.5073188999959,
+      "worker_wall_change_pct": 8.409127592153997,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "5f25e8bba467f760e4521d901836c136186ab5c5e238f37a3f7387927a46f0e7",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "acbd6492d90dbf4b9d751f39558552255aae1dd33789773afdb3e65721cf49c3",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "f1c4d98419dfcba8210068377edb0eae6a646f76a2c7faa66e2b2777d17aac1e",
+          "exact": true
+        }
+      },
+      "request_sha256": "7b0876c97fbfb21fd2129074c22d8aadd0b9cab425e1dd20b3f1c72112eb5434",
+      "result_sha256": "3ba71dc0866cfd5ef0a094fddc4993e73bfd817d2afac9c265bdf0c1592308bd"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_narrow_angle_contract",
+      "phase": "B",
+      "started_at": "2026-10-16T16:40:45.947490+00:00",
+      "completed_at": "2026-10-16T17:07:02.894616+00:00",
+      "worker_wall_s": 1576.6748105000006,
+      "producer_wall_s": 1574.5340300999815,
+      "previous_worker_wall_s": 1612.042130899994,
+      "worker_wall_change_pct": -2.19394516570407,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "8d94ba394cface263cb29d700fb12f9ce0b641f76e919d04bed06dd28f742b26",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "96f66e0cbfdd523d1c8901ab4ca0bff38e21cdcaa615cc7edde99065b5923e74",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "ccbd5d302e79965c4d063aee215cd8e509e94899053023e19fb352dae7ffec46",
+          "exact": true
+        }
+      },
+      "request_sha256": "6da05950d892c668536cf22104e1fee54ac15511bffb389ac9eda09465985540",
+      "result_sha256": "d10e12d25433fb8400f7f657a4aedacf8df522b985e2e06e7a2ebccc72a66dc6"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "phase": "B",
+      "started_at": "2026-10-16T16:40:46.293125+00:00",
+      "completed_at": "2026-10-16T17:06:38.833542+00:00",
+      "worker_wall_s": 1552.294138600002,
+      "producer_wall_s": 1550.1683334000118,
+      "previous_worker_wall_s": 1616.7700375999848,
+      "worker_wall_change_pct": -3.9879449458188887,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "ec5b269154eca855318306fab32a98166c91bd00f2543672b5ea8b1840b63787",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "3910391bbf1b72a969eaddeb8bf106db7d0b5bbcec484a0c6ed06fac57bf943d",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "38070046f9683bc14f0d18a48e27bd48b80e9234b8089b2c5ab1bc070bfb76ce",
+          "exact": true
+        }
+      },
+      "request_sha256": "b804c46cf7b3a62e267c0dd9ba11e975a44ab8f283c8ca4c2bc3cdd325537112",
+      "result_sha256": "3d9523f7006fa576a2482480fd5c7bcec07ba7f91e731c30f726d1bd9e9b94ff"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_thin_bridge_contract",
+      "phase": "B",
+      "started_at": "2026-10-16T17:07:03.680170+00:00",
+      "completed_at": "2026-10-16T17:31:24.714854+00:00",
+      "worker_wall_s": 1460.741569100006,
+      "producer_wall_s": 1458.4746254000056,
+      "previous_worker_wall_s": 1523.8365152000042,
+      "worker_wall_change_pct": -4.14053249614621,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "285423811e4a6bd9ff883d1f3208427b88bc37f69e7f52a8406e48f94bf7d819",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "13c5e43f6d2cf2a5e1817b89bb3b3cf717a7a37218de16e8b5531c1d122311b0",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "54598bae34d34d4a0096bd7d43881d3780982dda166587d87301d65d8dd08a6e",
+          "exact": true
+        }
+      },
+      "request_sha256": "3af9c59a9736324a4920d3223623025acb0e66f7f49dc58618e72989ff6a2cf4",
+      "result_sha256": "73cb8e883baaa57cd74a52030b534ff44a468e49a0909d1e1669609b36282fd8"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "phase": "B",
+      "started_at": "2026-10-16T16:47:17.253145+00:00",
+      "completed_at": "2026-10-16T17:12:53.061945+00:00",
+      "worker_wall_s": 1535.549140099989,
+      "producer_wall_s": 1533.425307700003,
+      "previous_worker_wall_s": 1548.4553376999975,
+      "worker_wall_change_pct": -0.8334885279402848,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "bd5fd8805415bb08f1fc5c6857ccdb666fb02547f20dd067fd2bdb1ab298a580",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "6ae03b6fc33b13ccc5207b06a6058b0f11e7d74bdcd91b5e6caadfa3aa0a7dde",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "2e95b2897e3adf1cfc6d00fce15ef931d3281b2a1af542a9c66941feb1df8c08",
+          "exact": true
+        }
+      },
+      "request_sha256": "d56df9aeaae42e0a99beb863f53eda2a3f010ee2f3ada6b997c4e814254381ad",
+      "result_sha256": "1a6d5375e09b7e2633f01d924c0b408836545b991657fcfb9028879719ce6d60"
+    },
+    {
+      "case_id": "spm_12p36s_distributed_femm_validation",
+      "phase": "C",
+      "started_at": "2026-10-16T16:04:43.079198+00:00",
+      "completed_at": "2026-10-16T16:47:16.073163+00:00",
+      "worker_wall_s": 2552.3366891999904,
+      "producer_wall_s": 2549.9552522999875,
+      "previous_worker_wall_s": 2336.5860673999996,
+      "worker_wall_change_pct": 9.233583338107643,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "07985755c4820491351e5a543583a33a74c2cfd8e5e8ea2a6b678821ab8f9e53",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "64218960bd4c91e573dfe6b8d2935ce39c7333802a93efa98c5c13d82c179958",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "564f007c2130b08d36ddd86ca76b0df73ba9736c89841d0ba6d2b9c62c19c0d2",
+          "exact": true
+        }
+      },
+      "request_sha256": "1cd7b04d95f33151795cf5737a70e7efc3bb4ab635d4d55e4bb5d7ed7fa5644f",
+      "result_sha256": "7a71f2c38b56a59525dba0fe210559a03bf70cb56871d66d2e36166a77761010"
+    },
+    {
+      "case_id": "spm_8p24s_distributed_femm_validation",
+      "phase": "C",
+      "started_at": "2026-10-16T17:13:27.675899+00:00",
+      "completed_at": "2026-10-16T17:47:38.753570+00:00",
+      "worker_wall_s": 2050.566022300016,
+      "producer_wall_s": 2048.0272889999906,
+      "previous_worker_wall_s": 1859.286881500011,
+      "worker_wall_change_pct": 10.28776907443607,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "e4c88c530ddfa5d93a2ad62e40c2f74c6dd111eac5fa20a09cfa1de26e09e05d",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "824a39138593430c8130e83b4f4ce733fde0b55ded2340cb504f6a77e0022604",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "53018b0f0f02f93d3c2091065ded2a171f7ce02951b27a1cd978fbc12375e367",
+          "exact": true
+        }
+      },
+      "request_sha256": "fcfa54ed055ebf7cc8ca5692e3fc38f9e2765f0cd7724c4b100a098ec554684d",
+      "result_sha256": "d7c75d78d878fa89f5115bb77618f69acb4e635d4c7d4c86f599fc8f0f6397c8"
+    },
+    {
+      "case_id": "spm_8p48s_chorded_5_6",
+      "phase": "C",
+      "started_at": "2026-10-16T16:04:42.754584+00:00",
+      "completed_at": "2026-10-16T17:29:23.613134+00:00",
+      "worker_wall_s": 5080.271418999997,
+      "producer_wall_s": 5077.663285899995,
+      "previous_worker_wall_s": 5149.100706199999,
+      "worker_wall_change_pct": -1.3367244326203398,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "78162930eda8fe07d822798e7fc514f8b1293bd15cb4e8f4bb30f127af2b553e",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "e3fba40f291b4adeb1d7b8252c6c86c71c7da62f89343bdd384fd2913b30a7e8",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "38e743504ac129cd371679b0baf791c7bb1da88b610439eed29ac85d87b4709c",
+          "exact": true
+        }
+      },
+      "request_sha256": "4bea3b6b38069833baa7871f9e4785a1ec9baf50f64d9b30ae486e28f59a4dfc",
+      "result_sha256": "d9f2243b1bd44544bc32752c64fc84fd8b0e4c015b16edbd43369e839de121b9"
+    },
+    {
+      "case_id": "spm_8p48s_distributed_femm_validation",
+      "phase": "C",
+      "started_at": "2026-10-16T16:04:42.474314+00:00",
+      "completed_at": "2026-10-16T17:30:24.407069+00:00",
+      "worker_wall_s": 5141.340742899978,
+      "producer_wall_s": 5138.84211659999,
+      "previous_worker_wall_s": 5471.409681899997,
+      "worker_wall_change_pct": -6.032612401369287,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "03056686ecd4f285e7c9ea2988815ac9fb9c4b256d4027860ae1b4db2eb07fee",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "a1af7ba6e44000339904f55a2d8f6c75050f5016d5d33b14dfd56f5a034793f8",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "9e1b9d6fef216d2728779498f22f42a58d0211adef2ce5175aa24db6a51434c5",
+          "exact": true
+        }
+      },
+      "request_sha256": "80e29339f7f14c5de7ce2964fa8a601faa289678c0c56e66b792990f64e0ab14",
+      "result_sha256": "14c53824974d60c85cc83e53298e5dd9dc81d87e5ad09d7e9b1bdfe1d4138b2d"
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "started_at": "2026-10-16T17:30:25.713483+00:00",
+      "completed_at": "2026-10-16T17:41:41.835626+00:00",
+      "worker_wall_s": 675.7151156000036,
+      "producer_wall_s": 673.208220999979,
+      "previous_worker_wall_s": 717.0352586999943,
+      "worker_wall_change_pct": -5.762637554937711,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "99f383d4280b935c283793225047ed149f767244f5e4dc77c0075240c4c92101",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "17017285464cdb9d5db2dd979ba431a040257b0827326dff6bbd734b6f4e7d18",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 96,
+          "canonical_sha256": "e4ab28639a8d8fbdee7b6c1a142813a0f13372f65e7f8586db86dde07a5855ee",
+          "exact": true
+        }
+      },
+      "request_sha256": "2ea3fb2b53f705e631d033fe17a276b6ff1b0e636bbe3eb3474476198ddb91d6",
+      "result_sha256": "ec207b8bd8fe81ced877518d283ce2df869ec9cd01c37615d866f33859d53948"
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "phase": "D",
+      "started_at": "2026-10-16T17:51:59.866664+00:00",
+      "completed_at": "2026-10-16T17:55:22.671167+00:00",
+      "worker_wall_s": 202.56877399998484,
+      "producer_wall_s": 200.5811859999958,
+      "previous_worker_wall_s": 202.24972180000623,
+      "worker_wall_change_pct": 0.15775161376692104,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "b7138720fb8d4ce6436e1c5647285d32af1a2b4e0ab5611014e1bd576e337241",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "2e40852cf26c6cd098928070d53e0bc8cd8cde202192f7cbae9496e3f3e7159e",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "593c128a010b16b66c22e5fc3f1819bf666843ebddab4d1c67a2d4d8f034cdec",
+          "exact": true
+        }
+      },
+      "request_sha256": "9c6fdf89fd6af6ba7e7b68ef5f6db8de606567c2584c3c7cc5e69fde6d728ee9",
+      "result_sha256": "a613b8c0ca29aa250d90071a0be1d20d06883ed38d8c287a23d1f24735cbe561"
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "phase": "D",
+      "started_at": "2026-10-16T17:48:35.870489+00:00",
+      "completed_at": "2026-10-16T17:54:39.386253+00:00",
+      "worker_wall_s": 363.22487959999125,
+      "producer_wall_s": 361.0434493999928,
+      "previous_worker_wall_s": 366.3191979000112,
+      "worker_wall_change_pct": -0.8447054693716982,
+      "physical_payload_exact": true,
+      "physical_payload_sha256": "d0acb8b82df32637de56f69ca83f81c4b9439d599e4f2d1cf4d109a5993841ab",
+      "audits": {
+        "flux_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "d04658520dec36f9aa20d7410303a8d9b0526d4f03fdb9b3e67a3923c4c2d38a",
+          "exact": true
+        },
+        "source_extraction_evidence": {
+          "count": 48,
+          "canonical_sha256": "07762fd83257ae8fb189259aa32830979e865f138188e69d8c043b0851fabd0d",
+          "exact": true
+        }
+      },
+      "request_sha256": "cf3fc65c4921838f1acddb90493f31a6d3635be091df0175abb9365c964eaad0",
+      "result_sha256": "b8088823000a0c30841a06870b10b0de3e8ffa8336f015b8e1e6193085376041"
+    }
+  ],
+  "all_physical_payloads_and_audits_exact": true,
+  "all_request_and_result_hashes_verified": true,
+  "verification_sha256": "4c26f78dd4053a32b215a39b8023bb39fbc79ad9003d89186234dd0f8ec29fcd",
+  "recorded_concurrency_check": {
+    "schema": "coilem.recorded_concurrency_check/v1",
+    "status": "PASS",
+    "record_count": 29,
+    "run_manifest_sha256": "8bfcdbc4abcbf4709c13aa038ff089b0aa9039f833eeedcef3be73fd5bc95f51",
+    "worker_limit": 8,
+    "worker_budget": 8,
+    "peak_recorded_workers": 8,
+    "peak_recorded_worker_cost": 8,
+    "peak_recorded_large_jobs": 4,
+    "all_worker_intervals_within_limits": true,
+    "all_recorded_core_leases_exclusive": true,
+    "all_recorded_process_assignments_match": true,
+    "audit_source_sha256": "801bf768147933fa3da6f26f7c15e9ed18f42328593c1d083ddb78dfd0c16b7d"
+  },
+  "assembly": {
+    "status": "REVIEW_REQUIRED",
+    "record_count": 29,
+    "bundle_sha256": "d1e3504d6ccb241301776cec5ae7a263659383a0a9041a8c206b170a22323068",
+    "collection_manifest_sha256": "8bfcdbc4abcbf4709c13aa038ff089b0aa9039f833eeedcef3be73fd5bc95f51",
+    "collection_provenance_sha256": "9729b2e59a181122b399d3435aca6fc05a67cd7bd03429d8379735da55640635",
+    "assembly_runtime_s": 3.7454395000240766,
+    "smoke_gate": {
+      "status": "PASS",
+      "checks": {
+        "avg_torque_Nm": {
+          "actual": 0.47707813670238686,
+          "target": 0.477555,
+          "relative_limit": 0.001,
+          "pass": true
+        },
+        "back_emf_fundamental_V": {
+          "actual": 4.987861316206636,
+          "target": 4.987841,
+          "relative_limit": 0.001,
+          "pass": true
+        },
+        "lambda_pm_Wb": {
+          "actual": 0.011226632314274232,
+          "target": 0.011227,
+          "relative_limit": 0.001,
+          "pass": true
+        },
+        "energy_balance_ratio": {
+          "actual": 1.0016241292263757,
+          "target": 1.0,
+          "absolute_limit": 0.015,
+          "pass": true
+        }
+      }
+    },
+    "assembly_source_sha256": "415d025861c9af9f39416dffa3ed0e8c2d74477fe0a4a36dd156965a413e0f8b",
+    "public_loader_source_sha256": "563ab74ec26c7cfdf8ad1876e13e24d9e57a9534f2417f08f246710a1f72d9d2",
+    "evidence_sha256": "f76ec7dd6a569d27e19e3f9fd1abb5950ea7bf7b7daf1da54c1c67dae5046386"
+  },
+  "validation_bridge": {
+    "status": "LOCAL_CANDIDATE_REVIEW_REQUIRED",
+    "record_count": 29,
+    "all_physical_results_exact": true,
+    "published_suite_unchanged": true,
+    "physical_requests_gates_and_validation_frames_unchanged": true,
+    "published_suite_sha256": "9d8cd79e60d0b908e072504a1886db7873f13047609697897ffdcccb81825743",
+    "candidate_suite_sha256": "8c469cdc10900688edabab34c8a14baf79db3cf00a992ca5a1b8542e23f8302a",
+    "original_bundle_sha256": "95450ffcb909ed20caf514548f741c15611087a3482657c87add4255b308ba63",
+    "candidate_bundle_sha256": "d1e3504d6ccb241301776cec5ae7a263659383a0a9041a8c206b170a22323068",
+    "candidate_manifest_sha256": "fef3209b882b8d6f7865116656a1903b844299e9a45a51ae8e34ace0d01719be",
+    "bridge_source_sha256": "6a2baee72e1e2e5b8c992b62edf86e9ec64432b62453914c0865f7448454d2e0"
+  },
+  "reference_version_decision": {
+    "keep_bundle": "v3",
+    "keep_validation_protocol": "1.3.0",
+    "new_v4_required": false,
+    "reason": "All 29 physical payloads and extraction audits equal the frozen v3 evidence; only execution provenance and timing differ."
+  },
+  "limitations": [
+    "Same development host with ordinary desktop activity; timing variation between repetitions is expected.",
+    "This records FEMM collection and technical bundle compatibility. Native parity and scientific qualification are separate.",
+    "Original frozen bundles, fixture requests, meshes, numerical gates and validation frames are unchanged."
+  ]
+}
