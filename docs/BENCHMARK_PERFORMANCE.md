@@ -25,6 +25,14 @@ exactly. This is one development-host observation, with the combined execution
 optimizations and a frozen physical source. FEMM analysis remains 87.2% of summed
 case time; native collection and report rendering are separate stages.
 
+The [FEMM 5 pilot](../benchmarks/performance-112/femm5-pilot.md) evaluates the
+06Oct2026 headless/TCP build alongside the existing 4.2 installation. Its fresh
+matched Phase A case takes 63.87s versus 303.64s with the optimized 4.2 producer.
+Four complete representative A/B/C/D cases retain the saved native gate statuses,
+but meshes and physical results differ, including a 3.99% Phase C mean-torque
+change. FEMM 5 remains a separate candidate requiring mesh-convergence review;
+this subset does not establish a new full-suite runtime or replace frozen data.
+
 ## Analyze saved measurements
 
 ```powershell

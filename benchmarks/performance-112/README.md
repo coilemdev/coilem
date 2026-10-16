@@ -4,6 +4,10 @@ The subsequent [full 29-case run](full-suite.md) completed in **1h52m02s**, vers
 the archived serial span of **9h08m46s**, with exact physical outputs and audits.
 The initial two-case results below remain a separate historical observation.
 
+The subsequent [FEMM 5 A/B/C/D pilot](femm5-pilot.md) measures a fresh paired
+case and four complete representative sweeps. It records changed meshes and
+numerical results separately from the exact-equivalence FEMM 4.2 work.
+
 The [follow-up measurements](scaling.md) add matched four/eight-worker testing,
 CPU/memory observations and full-case output/readiness optimization checks.
 The [large-model study](large-model.md) records throughput/core-affinity probes
