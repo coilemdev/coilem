@@ -73,6 +73,24 @@ each successful measurement, and stores both worker identities and request/resul
 hashes. The producer remains responsible for matching its registered geometry,
 materials, grids, extraction methods and numerical gates.
 
+### Optional reuse inside an external producer
+
+`tools.benchmark_suite.payload_reuse.reuse_full_payload(builder, raw_fields=...)`
+can avoid building the same position's field payload twice. It computes the
+full payload once and projects the compact payload by dropping the specified
+raw fields. Enable it only after checking that both outputs exactly match the
+original builder. Include the helper source hash in the producer identity.
+The original builder must accept `include_raw_mesh`; inputs, options and nested
+output values must remain immutable between paired calls. Create a separate
+wrapper per serial case. It retains only the latest position and exposes
+`counts` for proving that reuse occurred.
+
+Field processing also supplies physical summaries such as steel RMS. A producer
+that omits display work must retain the underlying numeric fields and verify
+all summaries, waveforms and extraction audits. Record omitted visualization
+artifacts explicitly in its identity and evidence. The public scheduler does
+not enable either optimization automatically.
+
 Start with representative cases using repeated `--case <id>` arguments, then
 compare serial, 2, 4 and 8 workers on the same machine. `--workers` defaults to
 1 and accepts 1..16. `--timings` changes launch order only; manifest order stays
