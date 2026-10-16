@@ -144,7 +144,7 @@ def build_mesh_policy_provenance(
 ) -> dict[str, Any]:
     """Return mesh-policy fields that affect generated or imported mesh use."""
     solve_params = _section(config, "solve_params")
-    return {
+    policy = {
         "mesh_source": _value(solve_params, "mesh_source", "native"),
         "mesh_density": _value(solve_params, "mesh_density", "normal"),
         "mesher": _value(solve_params, "mesher", "gmsh"),
@@ -154,6 +154,12 @@ def build_mesh_policy_provenance(
         ),
         "rotor_rotation_model": _value(solve_params, "rotor_rotation_model", "fixed_mesh"),
     }
+    # Precise is the node placement every earlier mesh used, so it adds no key:
+    # those meshes keep their signatures and evidence hashes, and Fast ones differ.
+    mesh_build = _value(solve_params, "mesh_build", "precise")
+    if mesh_build != "precise":
+        policy["mesh_build"] = mesh_build
+    return policy
 
 
 def build_topology_provenance(

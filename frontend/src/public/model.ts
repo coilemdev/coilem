@@ -13,6 +13,8 @@ export const HOLEM50_FIELDS = [
 export type HoleM50Field = typeof HOLEM50_FIELDS[number];
 export type SolveQuality = 'quick' | 'standard' | 'fine' | 'custom';
 export type MeshDensity = 'coarse' | 'normal' | 'fine' | 'very_fine';
+/** How exactly Gmsh places nodes along curves: Precise is what the benchmark measured. */
+export type MeshBuild = 'precise' | 'fast';
 
 export const PUBLIC_MAGNETO2D_SETTINGS = {
   torque_method: 'weighted_stress',
@@ -121,6 +123,7 @@ export interface MotorConfig {
     mesh_source: 'native';
     mesher: 'gmsh';
     corner_refinement: boolean;
+    mesh_build: MeshBuild;
     rotor_rotation_model: 'remesh_per_step';
     torque_method: 'contour' | 'arkkio' | 'weighted_stress';
     nonlinear_solver: 'picard' | 'newton';
@@ -604,6 +607,7 @@ export const DEFAULT_CONFIG: MotorConfig = {
     mesh_source: 'native',
     mesher: 'gmsh',
     corner_refinement: true,
+    mesh_build: 'precise',
     rotor_rotation_model: 'remesh_per_step',
     torque_method: 'weighted_stress',
     nonlinear_solver: 'picard',

@@ -159,9 +159,15 @@ For the first run, keep **Accuracy plan → Standard**:
 
 - **Medium** mesh density (the `normal` configuration value);
 - corner refinement enabled;
+- **Precise** mesh build;
 - weighted-stress torque;
 - Picard nonlinear iteration; and
 - direct Cholesky linear solve.
+
+**Mesh build → Fast** places the mesh's boundary nodes less exactly, which
+makes each Gmsh mesh about four times faster with nearly the same element
+count. Results move at mesh-noise level. The benchmark measured Precise
+meshes, so a Fast run is experimental.
 
 When meshing completes, confirm:
 

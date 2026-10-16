@@ -128,4 +128,6 @@ def classify_qualification(config: MotorConfig) -> Qualification:
     steels = {config.materials.stator_steel, config.materials.rotor_steel}
     if status == "qualified" and steels != {_QUALIFIED_STEEL}:
         status, reason = "experimental", f"Custom steel: the benchmark qualified only the bundled {_QUALIFIED_STEEL} curve."
+    if status == "qualified" and config.solve_params is not None and config.solve_params.mesh_build == "fast":
+        status, reason = "experimental", "Fast mesh build: the benchmark measured meshes built with Precise node placement."
     return _result(status, reason, _caveats(config) if status != "unsupported" else [])

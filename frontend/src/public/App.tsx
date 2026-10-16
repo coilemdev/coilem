@@ -817,8 +817,8 @@ export function App() {
   }, [editFeedback, invalidateGeometryPreview, resetComputedState]);
 
   const updateMeshSetting = useCallback((
-    field: 'mesh_density' | 'corner_refinement',
-    value: MotorConfig['solve_params']['mesh_density'] | boolean,
+    field: 'mesh_density' | 'corner_refinement' | 'mesh_build',
+    value: MotorConfig['solve_params']['mesh_density'] | MotorConfig['solve_params']['mesh_build'] | boolean,
   ) => {
     validationRequestId.current += 1;
     setConfig((current) => ({

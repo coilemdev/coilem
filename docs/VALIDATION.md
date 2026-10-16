@@ -220,6 +220,8 @@ They are experimental:
 - SPM with distributed windings under ideal six-step excitation;
 - SPM with single-layer distributed windings;
 - two-layer concentrated windings (a coil on every tooth);
+- any combination solved with the **Fast** mesh build, because the
+  benchmark measured meshes built with Precise node placement;
 - flat-buried or V-shape IPM with distributed windings; and
 - Halbach, lessons and generic field mode, which are outside A/B/C/D.
 
