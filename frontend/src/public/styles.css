@@ -1502,6 +1502,19 @@ body {
 /* Results summary (#99 part B): operating point, headline row, constants beside loading, timings footer. */
 .public-result-summary { display: grid; gap: 12px; max-width: 1080px; margin: 0 auto; }
 .public-operating-point { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+/* Run settings (#110): the operating point as one collapsed line above the
+   results; expanding it shows every setting. */
+.public-run-settings { border: 1px solid var(--border-subtle); border-radius: 10px; background: var(--bg-surface-1); }
+.public-run-settings > summary { display: flex; align-items: center; gap: 10px; padding: 8px 12px; cursor: pointer; list-style: none; }
+.public-run-settings > summary::-webkit-details-marker { display: none; }
+.public-run-settings > summary:focus-visible { border-radius: 10px; outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+.public-run-settings-label { flex: none; color: var(--text-muted); font: 700 9px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
+.public-run-settings .public-operating-point { flex: 1 1 auto; min-width: 0; }
+.public-run-settings .public-operating-point li { padding: 3px 9px; background: transparent; }
+.public-run-settings-toggle { display: inline-flex; flex: none; align-items: center; gap: 5px; margin-left: auto; color: var(--text-accent); font-size: 10px; white-space: nowrap; }
+.public-run-settings-toggle::after { content: '▾'; transform: rotate(-90deg); transition: transform .15s ease; }
+.public-run-settings[open] .public-run-settings-toggle::after { transform: none; }
+.public-run-settings > summary:hover .public-run-settings-toggle { color: var(--accent-primary-hover); }
 .public-operating-point li { padding: 4px 11px; border: 1px solid var(--border-subtle); border-radius: 999px; color: var(--text-secondary); background: var(--bg-surface-1); font: 10px var(--font-mono); }
 .public-result-headline { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
 .public-result-headline article,
@@ -1568,9 +1581,11 @@ body {
   .public-waveform-legend-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .public-waveform-legend-row > strong { grid-column: 1 / -1; }
 }
-.public-report-provenance { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px 18px; max-width: 1080px; margin: 18px auto 0; padding: 14px 16px; border: 1px solid var(--border-subtle); border-radius: 10px; background: var(--bg-surface-1); }
-.public-report-provenance span { color: var(--text-muted); font-size: 10px; }
-.public-report-provenance strong { color: var(--text-secondary); font: 11px var(--font-mono); text-align: right; }
+.public-report-provenance { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 36px; margin: 0; padding: 12px 16px 14px; border-top: 1px solid var(--border-subtle); }
+.public-report-provenance > div { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; min-width: 0; }
+.public-report-provenance dt { color: var(--text-muted); font-size: 10px; }
+.public-report-provenance dd { margin: 0; overflow: hidden; color: var(--text-secondary); font: 11px var(--font-mono); text-align: right; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 900px) { .public-report-provenance { grid-template-columns: minmax(0, 1fr); } }
 .public-report-assumptions { max-width: 1080px; margin: 10px auto 0; padding: 12px 16px; border: 1px solid var(--border-subtle); border-radius: 10px; color: var(--text-muted); background: var(--bg-surface-1); font-size: 11px; line-height: 1.5; }
 .public-report-assumptions summary { min-height: 20px; color: var(--text-secondary); cursor: pointer; font-weight: 700; }
 .public-report-assumptions summary:focus-visible { outline: 2px solid var(--text-accent); outline-offset: 4px; border-radius: 2px; }

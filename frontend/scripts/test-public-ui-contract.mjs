@@ -325,6 +325,13 @@ assert.match(workspaceSource, /reportQualification && !qualificationChip && <Qua
 assert.match(workspaceSource, /<span role="note" aria-label="Benchmark qualification">\s*<a className="public-qualification-chip"/);
 assert.doesNotMatch(workspaceSource, /className="metric-grid wide"/);
 assert.match(resultSummarySource, /aria-label="Operating point"/);
+// Run settings sit above the results as one collapsed line; expanding shows
+// every setting, and the footer keeps only timings (#110).
+assert.match(resultSummarySource, /<details className="public-run-settings">\s*<summary>[\s\S]*?aria-label="Operating point"[\s\S]*?<\/summary>\s*<dl className="public-report-provenance">/);
+assert.ok(resultSummarySource.indexOf('public-run-settings') < resultSummarySource.indexOf('public-result-headline'), 'Run settings come before the headline results');
+assert.doesNotMatch(workspaceSource, /<div className="public-report-provenance">/);
+assert.match(workspaceSource, /\{ label: 'Requested linear solver', value: requestedLinearSolver \}/);
+assert.doesNotMatch(resultSummarySource, /rotor positions`,\s*`\$\{solverLabel\}/);
 assert.match(resultSummarySource, /Fundamental, rms line-to-neutral at/);
 assert.match(resultSummarySource, /Torque × speed, before losses/);
 assert.match(resultSummarySource, /<MotorConstants summary=\{summary\} variant="report" \/>/);
@@ -1539,8 +1546,8 @@ assert.match(workspaceSource, /data-guide="open-report"/);
 assert.match(workspaceSource, /Review source and limitations/);
 assert.match(workspaceSource, /Review material provenance/);
 assert.match(workspaceSource, /<summary>Model assumptions<\/summary>/);
-assert.match(workspaceSource, />Phase current</);
-assert.match(workspaceSource, />Rated speed</);
+assert.match(workspaceSource, /sixStep \? 'Conducting phase current' : 'Phase current'/);
+assert.match(workspaceSource, /\{ label: 'Rated speed', value:/);
 assert.match(workspaceSource, /Ideal six-step \(120°\)/);
 assert.match(workspaceSource, /Conducting phase current/);
 assert.match(workspaceSource, /A plateau/);

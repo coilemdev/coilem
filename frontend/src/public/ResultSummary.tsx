@@ -28,9 +28,8 @@ interface ResultSummaryProps {
   sixStep: boolean;
   completeLoadedCycle: boolean;
   thdLabel: string;
-  solverLabel: string;
-  torqueMethod: string;
-  nonlinearSolver: string;
+  /** Every run setting, label then value, shown when Run settings is expanded. */
+  settings: Array<{ label: string; value: string }>;
 }
 
 function LoadingBar({ label, valueT, scaleMaxT, knee }: { label: string; valueT: number; scaleMaxT: number; knee: [number, number] | null }) {
@@ -47,9 +46,9 @@ function LoadingBar({ label, valueT, scaleMaxT, knee }: { label: string; valueT:
 }
 
 /**
- * The Results summary (#99 part B): the operating point, the headline numbers
- * with their conventions, motor constants beside magnetic loading, and the
- * run timings demoted to one footer line.
+ * The Results summary (#99 part B): the run settings as one collapsed line
+ * (#110), the headline numbers with their conventions, motor constants beside
+ * magnetic loading, and the run timings demoted to one footer line.
  */
 export function ResultSummary({
   result,
@@ -58,9 +57,7 @@ export function ResultSummary({
   sixStep,
   completeLoadedCycle,
   thdLabel,
-  solverLabel,
-  torqueMethod,
-  nonlinearSolver,
+  settings,
 }: ResultSummaryProps) {
   const loadingHeadingId = useId();
   const { summary, solve_metadata: metadata } = result;
@@ -83,18 +80,27 @@ export function ResultSummary({
     sixStep ? 'Ideal six-step (120°)' : 'Sinusoidal',
     `${metadata.rotor_positions} positions · ${metadata.mesh_density || 'native'} mesh`,
   ];
+  // Solver, torque method and positions are in Run settings, so the footer
+  // keeps only the timings.
   const timings = [
     `Solver ${fixed(summary.solve_time_s, 1)} s`,
     ...(result.workflow_elapsed_s != null ? [`total elapsed ${fixed(result.workflow_elapsed_s, 1)} s`] : []),
-    `${metadata.rotor_positions} rotor positions`,
-    `${solverLabel}, ${torqueMethod} torque, ${nonlinearSolver}`,
   ];
 
   return (
     <div className="public-result-summary">
-      <ul className="public-operating-point" aria-label="Operating point">
-        {chips.map((chip) => <li key={chip}>{chip}</li>)}
-      </ul>
+      <details className="public-run-settings">
+        <summary>
+          <span className="public-run-settings-label">Run settings</span>
+          <ul className="public-operating-point" aria-label="Operating point">
+            {chips.map((chip) => <li key={chip}>{chip}</li>)}
+          </ul>
+          <span className="public-run-settings-toggle" aria-hidden="true">All settings</span>
+        </summary>
+        <dl className="public-report-provenance">
+          {settings.map(({ label, value }) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}
+        </dl>
+      </details>
       <div className="public-result-headline">
         <article className="public-result-hero">
           <span>Average torque{preview}</span>
