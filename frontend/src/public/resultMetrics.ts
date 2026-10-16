@@ -31,12 +31,19 @@ export function torqueRange(samples: readonly number[]): { min: number; max: num
   return finite.length < 2 ? null : { min: Math.min(...finite), max: Math.max(...finite) };
 }
 
-/** An SVG path through the samples, scaled into width × height with a margin. */
-export function sparklinePath(samples: readonly number[], width: number, height: number, margin = 2): string | null {
+/** An SVG path through the samples, scaled into width × height with a margin.
+ * A shared scale draws several waveforms on one vertical axis. */
+export function sparklinePath(
+  samples: readonly number[],
+  width: number,
+  height: number,
+  margin = 2,
+  scale?: { low: number; high: number },
+): string | null {
   const finite = samples.filter((value) => Number.isFinite(value));
   if (finite.length < 2) return null;
-  const low = Math.min(...finite);
-  const span = Math.max(...finite) - low || 1;
+  const low = scale?.low ?? Math.min(...finite);
+  const span = (scale?.high ?? Math.max(...finite)) - low || 1;
   const step = (width - 2 * margin) / (finite.length - 1);
   return finite
     .map((value, index) => {
@@ -45,6 +52,20 @@ export function sparklinePath(samples: readonly number[], width: number, height:
       return `${index === 0 ? 'M' : 'L'}${x.toFixed(1)} ${y.toFixed(1)}`;
     })
     .join(' ');
+}
+
+/** Sparkline paths for several waveforms on one shared scale, such as the
+ * three back-EMF phases, so their relative amplitudes stay true (#110). */
+export function sharedSparklinePaths(
+  series: readonly (readonly number[])[],
+  width: number,
+  height: number,
+  margin = 2,
+): Array<string | null> {
+  const finite = series.flatMap((samples) => samples.filter((value) => Number.isFinite(value)));
+  if (finite.length < 2) return series.map(() => null);
+  const scale = { low: Math.min(...finite), high: Math.max(...finite) };
+  return series.map((samples) => sparklinePath(samples, width, height, margin, scale));
 }
 
 /** The flux-density scale's top: 2 T, or the next 0.5 T above a higher peak. */
