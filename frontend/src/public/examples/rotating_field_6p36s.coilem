@@ -18,10 +18,10 @@
     "tooth_shoe_overhang_mm": 1.5
   },
   "rotor": {
-    "OD_mm": 150.0,
+    "OD_mm": 157.0,
     "ID_mm": 35.0,
     "magnet_thickness_mm": 3.0,
-    "magnet_width_mm": 64.1,
+    "magnet_width_mm": 67.0,
     "pole_count": 6,
     "magnet_embrace": 0.8,
     "bridge_thickness_mm": 1.0,

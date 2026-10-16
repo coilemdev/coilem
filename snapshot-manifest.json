@@ -4470,8 +4470,8 @@
     },
     {
       "path": "docs/TEACHING_MULTIPOLE_MOTOR.md",
-      "bytes": 2852,
-      "sha256": "28c4c0d2749ad2769b141c72044fdbd1e828f05d4f7565edf90df4fc8b689186"
+      "bytes": 2908,
+      "sha256": "59cf0a96048637c1e37a3f587df6a5c7bc8fb62ce213f02ae39b0a3625a47e2b"
     },
     {
       "path": "docs/VALIDATION.md",
@@ -5376,7 +5376,7 @@
     {
       "path": "frontend/src/public/examples/rotating_field_6p36s.coilem",
       "bytes": 2451,
-      "sha256": "ba45445c5efc2024b1a8bcbfcf55967df833b9bd3c61d5862075c46fbba239ef"
+      "sha256": "899708324813766eb607c3c858cf178f66c40e53502675da2ff01c0b67f9716e"
     },
     {
       "path": "frontend/src/public/examples/validation_ipm_10p_v_shape_medium.openem",
