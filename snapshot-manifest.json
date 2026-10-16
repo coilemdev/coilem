@@ -540,8 +540,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 6311,
-      "sha256": "cb0653c877d9976431420b5cb367ddc1c5189f8ab44acc9478c5f43c477a0fd2"
+      "bytes": 6475,
+      "sha256": "c471b8b584d9b7b37ed3ae3ff0ec460c6afddcb093f9f5f59687d704751befa7"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -2449,6 +2449,16 @@
       "sha256": "fbc3d867f6eef3896169bf3b861d88ae404d67cebfda8fd11fb0898c3056eb3d"
     },
     {
+      "path": "benchmarks/performance-112/README.md",
+      "bytes": 3799,
+      "sha256": "ff5dc49d64b48fdd38e4fb81c4073b6332c74765325b4ef0248a4e291d2d8300"
+    },
+    {
+      "path": "benchmarks/performance-112/pilot-summary.json",
+      "bytes": 5981,
+      "sha256": "ed3e616a41d14afbea1ef661e2ccda7f245b80f02d15f67d0dd697b7a8c91373"
+    },
+    {
       "path": "benchmarks/pr100-v3-handoff/README.md",
       "bytes": 10798,
       "sha256": "7035d7360a6047f961931fbfd50dddcbc45ac36b365ff48fbd05331a25fa1534"
@@ -4325,8 +4335,8 @@
     },
     {
       "path": "docs/BENCHMARK_PERFORMANCE.md",
-      "bytes": 5761,
-      "sha256": "36ce31514b29e397019f2ca37556fed79df670cef384ce8b10043f7c4ffecf7b"
+      "bytes": 6041,
+      "sha256": "0567f1ee364df038fa5ec87f6ed4f46da2ce8ddb69eddde1d8ade1a99e53798a"
     },
     {
       "path": "docs/ELMER.md",
@@ -5780,8 +5790,8 @@
     },
     {
       "path": "tests/test_benchmark_runtime.py",
-      "bytes": 2943,
-      "sha256": "96d9cb4c9dcfd15f554332f0035ffc2205be14de703f3ad0f15d30e33c4873b9"
+      "bytes": 3535,
+      "sha256": "081267d41263e9826e0bda4f55baefd99a63498f182fcf48ceb223d4574f608b"
     },
     {
       "path": "tests/test_benchmark_suite.py",
@@ -5965,8 +5975,8 @@
     },
     {
       "path": "tests/test_reference_runner.py",
-      "bytes": 6964,
-      "sha256": "48fb4d3552bc2035f8bdb20b18317cd222a44579664a33ce52b1b963841a72b9"
+      "bytes": 8494,
+      "sha256": "cc15a559afd53272cf92022247cb9ea281ed6197f2c9d4eb13107b9eab10e726"
     },
     {
       "path": "tests/test_release_tools.py",
@@ -6020,8 +6030,8 @@
     },
     {
       "path": "tools/analyze_benchmark_runtime.py",
-      "bytes": 8056,
-      "sha256": "21cbfd52ecea0ea1ece017848f38519225c6e0325714fc7bc6d7b5800baf8596"
+      "bytes": 8430,
+      "sha256": "b1daf70759a77b4409cc7a8c9e9ac4a7d947264fd654ce8ab5a271ad5661b7a5"
     },
     {
       "path": "tools/benchmark_suite/__init__.py",
@@ -6050,8 +6060,8 @@
     },
     {
       "path": "tools/benchmark_suite/external.py",
-      "bytes": 15155,
-      "sha256": "5f293082fdcbf87c43726bb56a41020a845db8c3fa64af02444083a72b8c5a71"
+      "bytes": 15360,
+      "sha256": "8312c07fe5468e88385719b8ee75d5273a9cbc9103f99febc710a745a2032b21"
     },
     {
       "path": "tools/benchmark_suite/hardware.py",

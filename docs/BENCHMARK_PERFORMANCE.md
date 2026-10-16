@@ -10,6 +10,10 @@ wall time. The published native collection took 2,737.39 seconds of wall time.
 These observations identify a useful starting point; they do not reproduce
 every reported 13-hour cycle or establish a controlled speedup.
 
+The [initial two-case pilot](../benchmarks/performance-112/README.md) measured
+13m35s serially versus 8m22s concurrently, with exact physical-payload equality.
+Its limits and separate retained-field profiling are recorded with the result.
+
 ## Analyze saved measurements
 
 ```powershell
@@ -25,7 +29,8 @@ editing the measured run. Select a historical suite with `--suite` if needed.
 The report separates registered wall time, the span of successful measurements,
 summed successful-job runtime, errors and unsupported jobs. It also simulates
 1/2/4/8-worker schedules from recorded durations, including longest-first order.
-Those simulations exclude contention and overhead and are explicitly estimates.
+Those simulations add no contention or coordinator overhead to the recorded job
+durations and are explicitly estimates.
 They are useful for choosing experiments, not for claiming a measured speedup.
 
 ## Run an external reference producer in independent case processes

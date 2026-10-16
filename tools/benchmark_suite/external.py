@@ -27,6 +27,10 @@ def load_producer(path):
     if spec is None or spec.loader is None:
         raise ValueError("Expected an external Python producer module")
     module = importlib.util.module_from_spec(spec)
+    # Match normal module execution for sibling imports and dataclass annotations.
+    if str(path.parent) not in sys.path:
+        sys.path.insert(0, str(path.parent))
+    sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
 

@@ -46,6 +46,17 @@ def test_native_missing_and_unsupported_jobs_are_retained(tmp_path):
     assert report["successful_job_runtime_sum_s"] == 0
 
 
+def test_missing_complete_artifact_and_escaped_paths_are_not_reported_as_completed(tmp_path):
+    manifest = {"jobs": [{"case_id": "a", "stage": "native", "result": "jobs/a/result.json", "status": "COMPLETE"}]}
+    store(tmp_path / "run_manifest.json", manifest)
+    suite = {"cases": [{"id": "a", "phase": "A"}]}
+    assert analyze(tmp_path, suite)["job_status_counts"] == {"MISSING_ARTIFACT": 1}
+    manifest["jobs"][0]["result"] = "../outside.json"
+    store(tmp_path / "run_manifest.json", manifest)
+    with pytest.raises(ValueError, match="escapes"):
+        analyze(tmp_path, suite)
+
+
 @pytest.mark.parametrize("duration", [-1, float("inf"), float("nan")])
 def test_invalid_runtime_is_rejected(tmp_path, duration):
     store(tmp_path / "measurements/a/measurement.json", {"status": "COMPLETE", "runtime_s": duration})

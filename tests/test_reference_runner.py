@@ -8,7 +8,7 @@ import pytest
 
 from tools.benchmark_suite.contract import ROOT, read, run_lock, sha
 from tools.benchmark_suite.contract import write as write_json
-from tools.benchmark_suite.external import execute, identity, load_producer, safe_id, worker
+from tools.benchmark_suite.external import execute, identity, load_producer, safe_id, stop, worker
 
 
 def producer(tmp_path, *, duration=0.8, fail=False):
@@ -94,8 +94,7 @@ def test_producer_failure_is_visible_and_other_process_survives(tmp_path):
         failed = next(job for job in manifest["jobs"] if job["status"] == "ERROR")
         assert read(args.out_dir / failed["result"])["status"] == "ERROR"
     finally:
-        independent.terminate()
-        independent.wait(timeout=10)
+        stop(independent)
 
 
 def test_timeout_joins_owned_worker_and_releases_job_lock(tmp_path):
@@ -148,6 +147,37 @@ def test_registered_job_structure_is_checked_on_resume(tmp_path, change):
     args.resume = True
     with pytest.raises(ValueError, match="Registered reference job"):
         execute(args)
+
+
+def test_longest_first_changes_launch_order_without_changing_registered_order(tmp_path):
+    args = arguments(producer(tmp_path, duration=0), tmp_path / "run")
+    args.workers = 1
+    args.timings = tmp_path / "timings.json"
+    write_json(args.timings, {"jobs": [{"case_id": "a", "runtime_s": 1}, {"case_id": "b", "runtime_s": 9}]})
+    assert execute(args) == 0
+    manifest = read(args.out_dir / "run_manifest.json")
+    assert [job["case_id"] for job in manifest["jobs"]] == ["a", "b"]
+    assert manifest["execution_sessions"][0]["launch_order"] == ["b", "a"]
+    assert manifest["execution_sessions"][0]["timings_sha256"] == sha(args.timings)
+
+
+def test_producer_can_use_sibling_imports_and_annotated_dataclasses(tmp_path):
+    (tmp_path / "producer_helper_112.py").write_text('VERSION = "fixed"\n', encoding="utf-8")
+    path = tmp_path / "producer.py"
+    path.write_text(
+        'from __future__ import annotations\n'
+        'from dataclasses import dataclass\n'
+        'from producer_helper_112 import VERSION\n'
+        '@dataclass\nclass Metadata:\n    version: str = VERSION\n'
+        'def identity(): return {"version": Metadata().version}\n'
+        'def cases(): return {"a": "A"}\n'
+        'def measure(case, directory): return {"status": "COMPLETE", "version": Metadata().version}\n',
+        encoding="utf-8",
+    )
+    args = arguments(path, tmp_path / "run")
+    assert execute(args) == 0
+    first = read(args.out_dir / "run_manifest.json")["jobs"][0]
+    assert read(args.out_dir / first["result"])["measurement"]["version"] == "fixed"
 
 
 @pytest.mark.parametrize("case_id", ["../escape", "NUL", "con.txt", "trailing.", "a/b", "a\\b", ""])

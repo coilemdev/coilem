@@ -48,7 +48,12 @@ def analyze(root, suite):
         manifest = read(manifest_path)
         started, completed = manifest.get("started_at"), manifest.get("completed_at")
         status = manifest.get("status")
-        candidates = [(job["case_id"], job["stage"], root / job["result"], job) for job in manifest["jobs"]]
+        candidates = []
+        for job in manifest["jobs"]:
+            path = (root / job["result"]).resolve()
+            if not path.is_relative_to(root.resolve()):
+                raise ValueError("Recorded result path escapes the measured run")
+            candidates.append((job["case_id"], job["stage"], path, job))
     else:
         state_path = root / "run-state.json"
         if state_path.exists():
@@ -63,9 +68,12 @@ def analyze(root, suite):
             runtime = float(runtime)
             if not math.isfinite(runtime) or runtime < 0:
                 raise ValueError(f"Invalid runtime for {case_id}/{stage}")
+        job_status = data.get("status", registered.get("status", "INCOMPLETE"))
+        if not path.exists() and job_status == "COMPLETE":
+            job_status = "MISSING_ARTIFACT"
         jobs.append({
             "case_id": case_id, "phase": phases.get(case_id, "UNKNOWN"), "stage": stage,
-            "status": data.get("status", registered.get("status", "INCOMPLETE")), "runtime_s": runtime,
+            "status": job_status, "runtime_s": runtime,
             "started_at": data.get("started_at", registered.get("started_at")),
             "completed_at": data.get("completed_at", registered.get("completed_at")),
         })
@@ -104,7 +112,7 @@ def analyze(root, suite):
         "jobs": sorted(jobs, key=lambda job: -(job["runtime_s"] or 0)),
         "scheduling_estimates": estimates,
         "estimate_assumptions": (
-            "Fixed recorded successful-job durations; no contention, startup, verification, reporting or retry overhead. "
+            "Fixed recorded successful-job durations; no additional contention, coordinator, startup, verification, reporting or retry overhead. "
             "Estimates are not measured speedups."
         ),
         "wall_time_scope": (
