@@ -2521,7 +2521,7 @@ function CompletedResultMonitor({ result, onOpenReport }: { result: SolveResult;
   return (
     <section className="public-completed-results" aria-label="Completed solver results">
       <div className="public-completed-results-heading">
-        <div><span className="public-section-kicker">Completed results</span><strong>Solver waveforms</strong></div>
+        <span className="public-section-kicker">Completed results</span>
         <button type="button" data-guide="open-report" onClick={onOpenReport}>Full results →</button>
       </div>
       <dl className="public-result-metrics">
@@ -2535,6 +2535,9 @@ function CompletedResultMonitor({ result, onOpenReport }: { result: SolveResult;
         {result.workflow_elapsed_s != null && <div><dt>Total elapsed</dt><dd>{formatNumber(result.workflow_elapsed_s, 1)} s</dd></div>}
       </dl>
       <MotorConstants summary={result.summary} />
+      {/* The waveform heading labels the plots below it, not the metrics and
+          constants above (#110). */}
+      <strong className="public-completed-waveforms-heading">Solver waveforms</strong>
       <div className="public-compact-result-tabs" role="tablist" aria-label="Completed result plots">
         <button type="button" role="tab" aria-selected={activePlot === 'torque'} className={activePlot === 'torque' ? 'active' : ''} onClick={() => setActivePlot('torque')}>Torque</button>
         <button type="button" role="tab" aria-selected={activePlot === 'back-emf'} className={activePlot === 'back-emf' ? 'active' : ''} onClick={() => setActivePlot('back-emf')}>Back EMF</button>

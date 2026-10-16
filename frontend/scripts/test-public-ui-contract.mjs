@@ -1130,6 +1130,9 @@ assert.match(workspaceSource, /Resize completed results panel/);
 assert.match(workspaceSource, /role="separator"/);
 assert.match(workspaceSource, /window\.addEventListener\('pointermove', handlePointerMove\)/);
 assert.match(workspaceSource, /onKeyDown=\{handleRunPlanResizeKey\}/);
+// "Solver waveforms" heads the plots, after the metrics and Motor constants (#110).
+assert.match(workspaceSource, /<span className="public-section-kicker">Completed results<\/span>\s*<button/);
+assert.match(workspaceSource, /<MotorConstants summary=\{result\.summary\} \/>[\s\S]{0,200}?<strong className="public-completed-waveforms-heading">Solver waveforms<\/strong>\s*<div className="public-compact-result-tabs"/);
 // The Analysis setup panel resizes the same way from its right edge (#110).
 assert.match(workspaceSource, /Resize analysis setup panel/);
 assert.match(workspaceSource, /onKeyDown=\{handleSetupResizeKey\}/);
