@@ -8,7 +8,7 @@ import pytest
 
 from tools.benchmark_suite.contract import ROOT, read, run_lock, sha
 from tools.benchmark_suite.contract import write as write_json
-from tools.benchmark_suite.external import execute, identity, load_producer, safe_id, stop, worker
+from tools.benchmark_suite.external import execute, identity, load_producer, safe_id, worker
 
 
 def producer(tmp_path, *, duration=0.8, fail=False):

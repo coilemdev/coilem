@@ -5975,8 +5975,8 @@
     },
     {
       "path": "tests/test_reference_runner.py",
-      "bytes": 8536,
-      "sha256": "53b5f02c8eeceab4cb65ad91a7d3e625fcb97df4334ba18f3d8035163a07733e"
+      "bytes": 8530,
+      "sha256": "fcec347040fa204b2e254be483f4184e7450ebf7e424b53b794b660bb0b1747c"
     },
     {
       "path": "tests/test_release_tools.py",
