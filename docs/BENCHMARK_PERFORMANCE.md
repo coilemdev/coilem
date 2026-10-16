@@ -16,6 +16,9 @@ Its limits and separate retained-field profiling are recorded with the result.
 The [follow-up](../benchmarks/performance-112/scaling.md) measures the same eight
 cases in 12m21s at four workers and 7m12s at eight, with exact physical equality.
 It also validates field-output and Windows readiness optimizations separately.
+The [large-model probes](../benchmarks/performance-112/large-model.md) show
+stronger contention on larger inputs and motivate the measured-host affinity
+and worker-cost configuration. Full-suite validation is a separate step.
 
 ## Analyze saved measurements
 
@@ -96,8 +99,8 @@ optional `worker_cost` values in the timing JSON:
 ]}
 ```
 
-At `--workers 8 --worker-budget 8`, cost-two jobs can occupy four slots, while
-cost-one jobs can occupy eight. Costs are operator-defined scheduling units;
+At `--workers 8 --worker-budget 8`, at most four jobs with cost two can run,
+while jobs with cost one can occupy eight slots. Costs are operator-defined scheduling units;
 choose them from measured contention or resource use. Missing costs are one;
 each selected cost must be a positive integer within the budget. The sum of
 active costs and the process-count limit are both enforced. A smaller job can

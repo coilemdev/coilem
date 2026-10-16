@@ -2,6 +2,8 @@
 
 The [follow-up measurements](scaling.md) add matched four/eight-worker testing,
 CPU/memory observations and full-case output/readiness optimization checks.
+The [large-model study](large-model.md) records throughput/core-affinity probes
+and the explicit mixed-workload policy used for the next full-suite validation.
 
 Two registered cases completed in **13m35.2s serially**
 and **8m21.6s in parallel**:

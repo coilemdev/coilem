@@ -2450,8 +2450,18 @@
     },
     {
       "path": "benchmarks/performance-112/README.md",
-      "bytes": 4002,
-      "sha256": "3aa7c294b2001c06736ac15eefb6da66528ef2388e73b860cd29fab5e320380e"
+      "bytes": 4162,
+      "sha256": "36e03e7bdb3ec777de390422853e524836489777951650ffdd2a5cde4129964a"
+    },
+    {
+      "path": "benchmarks/performance-112/large-model-summary.json",
+      "bytes": 18320,
+      "sha256": "49fb8a96dafcaca2e6d6e89f6de875dac4ac8f6df27a4f01ce5a076d30033fe1"
+    },
+    {
+      "path": "benchmarks/performance-112/large-model.md",
+      "bytes": 2824,
+      "sha256": "24a16069d0da0a74abbd62c77d6aab546f3ac0cac7550f5e804852525edc2d16"
     },
     {
       "path": "benchmarks/performance-112/pilot-summary.json",
@@ -2467,6 +2477,11 @@
       "path": "benchmarks/performance-112/scaling.md",
       "bytes": 3862,
       "sha256": "735eade6fa577d8f5e68ad3d34ccfca1c6f48c90373a9f520d56c2420857e8c3"
+    },
+    {
+      "path": "benchmarks/performance-112/worker-costs.json",
+      "bytes": 5945,
+      "sha256": "5d33e0485264539cce63b88aab38048d3ca3e499beef9b89a74f1a6fb02cd758"
     },
     {
       "path": "benchmarks/pr100-v3-handoff/README.md",
@@ -4345,8 +4360,8 @@
     },
     {
       "path": "docs/BENCHMARK_PERFORMANCE.md",
-      "bytes": 8615,
-      "sha256": "9d506ba2037b450466b27e66c23b9ea23d2e10f7c52c532fa670b9efa42ceafd"
+      "bytes": 8856,
+      "sha256": "4bb93ceeb69ba6b3a565dbe044b6f784cd5edf78ec1293c5a91e0afd990cfa47"
     },
     {
       "path": "docs/ELMER.md",

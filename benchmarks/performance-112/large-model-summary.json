@@ -1,0 +1,526 @@
+{
+  "schema": "coilem.retained_model_throughput_probe/v1",
+  "scope": "One retained 129548-triangle FEMM input per worker; not a full registered case or suite",
+  "case_origin": "spm_8p48s_distributed_femm_validation, archived final loaded model",
+  "unbound": [
+    {
+      "workers": 1,
+      "wall_s": 22.191023499995936,
+      "solves_per_s": 0.045063266234663904,
+      "results": [
+        {
+          "status": "COMPLETE",
+          "analysis_s": 20.920714700012468,
+          "mesh_s": 0.3831654999812599,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            30336
+          ]
+        }
+      ]
+    },
+    {
+      "workers": 2,
+      "wall_s": 28.05526390002342,
+      "solves_per_s": 0.07128786979609664,
+      "results": [
+        {
+          "status": "COMPLETE",
+          "analysis_s": 26.675186500011478,
+          "mesh_s": 0.4562433999963105,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            28852
+          ]
+        },
+        {
+          "status": "COMPLETE",
+          "analysis_s": 26.634279899997637,
+          "mesh_s": 0.4498092000139877,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            12784
+          ]
+        }
+      ]
+    },
+    {
+      "workers": 4,
+      "wall_s": 56.743459099991014,
+      "solves_per_s": 0.07049270635671616,
+      "results": [
+        {
+          "status": "COMPLETE",
+          "analysis_s": 51.47503780000261,
+          "mesh_s": 0.4585650000080932,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            6096
+          ]
+        },
+        {
+          "status": "COMPLETE",
+          "analysis_s": 51.28890330001013,
+          "mesh_s": 0.44121580000501126,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            2364
+          ]
+        },
+        {
+          "status": "COMPLETE",
+          "analysis_s": 53.189893700007815,
+          "mesh_s": 0.4231453000102192,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            11152
+          ]
+        },
+        {
+          "status": "COMPLETE",
+          "analysis_s": 55.370879299996886,
+          "mesh_s": 0.4509777000057511,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            16816
+          ]
+        }
+      ]
+    },
+    {
+      "workers": 8,
+      "wall_s": 87.73281459999271,
+      "solves_per_s": 0.09118594948167393,
+      "results": [
+        {
+          "status": "COMPLETE",
+          "analysis_s": 86.15120990001014,
+          "mesh_s": 0.5062457000021823,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            6432
+          ]
+        },
+        {
+          "status": "COMPLETE",
+          "analysis_s": 84.63211620002403,
+          "mesh_s": 0.4748208000091836,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            12932
+          ]
+        },
+        {
+          "status": "COMPLETE",
+          "analysis_s": 81.62789959998918,
+          "mesh_s": 0.5393028999969829,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            27900
+          ]
+        },
+        {
+          "status": "COMPLETE",
+          "analysis_s": 85.3208553000004,
+          "mesh_s": 0.5163436000002548,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            29840
+          ]
+        },
+        {
+          "status": "COMPLETE",
+          "analysis_s": 85.2504493999877,
+          "mesh_s": 0.5098101999901701,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            9884
+          ]
+        },
+        {
+          "status": "COMPLETE",
+          "analysis_s": 84.74218279999332,
+          "mesh_s": 0.5248710000014398,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            1920
+          ]
+        },
+        {
+          "status": "COMPLETE",
+          "analysis_s": 84.496332300012,
+          "mesh_s": 0.5561397999990731,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            26472
+          ]
+        },
+        {
+          "status": "COMPLETE",
+          "analysis_s": 78.37326469999971,
+          "mesh_s": 0.5025732000067364,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            29088
+          ]
+        }
+      ]
+    }
+  ],
+  "distinct_physical_core_affinity": [
+    {
+      "workers": 1,
+      "wall_s": 24.20279229999869,
+      "solves_per_s": 0.04131754665349312,
+      "results": [
+        {
+          "status": "COMPLETE",
+          "analysis_s": 22.83969750002143,
+          "mesh_s": 0.4133991000126116,
+          "cpu_mask": 1,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            29824
+          ]
+        }
+      ]
+    },
+    {
+      "workers": 2,
+      "wall_s": 27.445721299998695,
+      "solves_per_s": 0.07287110359165876,
+      "results": [
+        {
+          "status": "COMPLETE",
+          "analysis_s": 26.020060000009835,
+          "mesh_s": 0.44369230000302196,
+          "cpu_mask": 1,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            24996
+          ]
+        },
+        {
+          "status": "COMPLETE",
+          "analysis_s": 25.02249830000801,
+          "mesh_s": 0.40827129999524914,
+          "cpu_mask": 4,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            15716
+          ]
+        }
+      ]
+    },
+    {
+      "workers": 4,
+      "wall_s": 42.9634592999937,
+      "solves_per_s": 0.09310237269466302,
+      "results": [
+        {
+          "status": "COMPLETE",
+          "analysis_s": 39.628682799986564,
+          "mesh_s": 0.43666639999719337,
+          "cpu_mask": 1,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            30588
+          ]
+        },
+        {
+          "status": "COMPLETE",
+          "analysis_s": 29.225657200004207,
+          "mesh_s": 0.4232612999912817,
+          "cpu_mask": 4,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            31408
+          ]
+        },
+        {
+          "status": "COMPLETE",
+          "analysis_s": 40.651029200002085,
+          "mesh_s": 0.42990849999478087,
+          "cpu_mask": 16,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            5652
+          ]
+        },
+        {
+          "status": "COMPLETE",
+          "analysis_s": 41.571062300004996,
+          "mesh_s": 0.4448395000072196,
+          "cpu_mask": 64,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            24472
+          ]
+        }
+      ]
+    },
+    {
+      "workers": 8,
+      "wall_s": 72.18889459999627,
+      "solves_per_s": 0.11082036986891905,
+      "results": [
+        {
+          "status": "COMPLETE",
+          "analysis_s": 69.95479519999935,
+          "mesh_s": 0.5444720999803394,
+          "cpu_mask": 1,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            29776
+          ]
+        },
+        {
+          "status": "COMPLETE",
+          "analysis_s": 64.2610735000053,
+          "mesh_s": 0.4566214999940712,
+          "cpu_mask": 4,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            9108
+          ]
+        },
+        {
+          "status": "COMPLETE",
+          "analysis_s": 68.88827339999261,
+          "mesh_s": 0.5729147999954876,
+          "cpu_mask": 16,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            6408
+          ]
+        },
+        {
+          "status": "COMPLETE",
+          "analysis_s": 66.17668280002545,
+          "mesh_s": 0.4619395999761764,
+          "cpu_mask": 64,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            25944
+          ]
+        },
+        {
+          "status": "COMPLETE",
+          "analysis_s": 70.27500340002007,
+          "mesh_s": 0.5961650999961421,
+          "cpu_mask": 256,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            4992
+          ]
+        },
+        {
+          "status": "COMPLETE",
+          "analysis_s": 67.36747870000545,
+          "mesh_s": 0.46677110000746325,
+          "cpu_mask": 1024,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            30356
+          ]
+        },
+        {
+          "status": "COMPLETE",
+          "analysis_s": 67.62588700000197,
+          "mesh_s": 0.5010409000096843,
+          "cpu_mask": 4096,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            30624
+          ]
+        },
+        {
+          "status": "COMPLETE",
+          "analysis_s": 68.407377800002,
+          "mesh_s": 0.4615660999843385,
+          "cpu_mask": 16384,
+          "numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+          "nodes": 64955,
+          "triangles": 129548,
+          "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+          "femm_pids": [
+            28828
+          ]
+        }
+      ]
+    }
+  ],
+  "all_probe_meshes_and_potentials_exact": true,
+  "common_numeric_mesh_az_sha256": "16656864b4110b806378e77d90cf3f030a51a8ed10146563b462e0bb1971022f",
+  "eight_worker_affinity_runtime_reduction_pct": 17.717338798335703,
+  "eight_worker_affinity_throughput_ratio": 1.2153228704515617,
+  "core_lease_probe": {
+    "status": "PASS",
+    "leases": [
+      {
+        "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+        "physical_core_masks": [
+          3,
+          12,
+          48,
+          192,
+          768,
+          3072,
+          12288,
+          49152
+        ],
+        "lease_scope_sha256_prefix": "33a15686dd28c96d",
+        "assignments": [
+          {
+            "pid": 2112,
+            "cpu_mask": 1
+          }
+        ],
+        "core_index": 0,
+        "cpu_mask": 1,
+        "acquired_at": "2026-10-16T02:30:39.612682+00:00",
+        "released_at": "2026-10-16T02:30:40.788391+00:00"
+      },
+      {
+        "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+        "physical_core_masks": [
+          3,
+          12,
+          48,
+          192,
+          768,
+          3072,
+          12288,
+          49152
+        ],
+        "lease_scope_sha256_prefix": "33a15686dd28c96d",
+        "assignments": [
+          {
+            "pid": 30296,
+            "cpu_mask": 4
+          }
+        ],
+        "core_index": 1,
+        "cpu_mask": 4,
+        "acquired_at": "2026-10-16T02:30:39.612682+00:00",
+        "released_at": "2026-10-16T02:30:40.746075+00:00"
+      }
+    ]
+  },
+  "interrupted_full_trials": [
+    {
+      "status": "INTENTIONALLY_INTERRUPTED_PERFORMANCE_TRIAL",
+      "reason": "Large-model analysis rose about 4.5x versus archived serial while eight large jobs were active; measure heavy throughput before selecting full-suite scheduling.",
+      "manifest_sha256": "e089a37c37b587d60814859ee34cd5cdfa066883d5ac1774bd55948f972a8913",
+      "partial_wall_s": 629.2639024999808,
+      "complete_cases": 0,
+      "controlled_shutdown": "Terminated one verified owned worker; coordinator stopped all remaining owned trees and recorded INTERRUPTED; no FEMM processes remained."
+    },
+    {
+      "status": "INTENTIONALLY_INTERRUPTED_CALIBRATION_TRIAL",
+      "reason": "Complete the pinned two/four-worker controls before selecting the mixed full-suite policy.",
+      "partial_wall_s": 249.63201420000405,
+      "complete_cases": 0,
+      "manifest_sha256": "f4a893bcdf1036095b0de00f6fccdd45841b5a33f7f256fe0a921a07397d88d6"
+    }
+  ],
+  "selected_policy": {
+    "max_workers": 8,
+    "worker_budget": 8,
+    "large_model_worker_cost": 2,
+    "large_model_threshold_archived_mesh_elements": 100000,
+    "worker_costs_sha256": "5d33e0485264539cce63b88aab38048d3ca3e499beef9b89a74f1a6fb02cd758"
+  },
+  "limitations": [
+    "One observation per setting on a development host.",
+    "This selects an execution configuration; it does not establish full-case or full-suite speedup.",
+    "Input reload/meshing is common to all probe configurations; full-sweep history is separately validated."
+  ]
+}
