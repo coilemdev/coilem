@@ -232,9 +232,18 @@ function ExcitationRunPlanPreview({ config }: { config: MotorConfig }) {
   const operatingIdentity = sixStep
     ? `${formatNumber(config.solve_params.current_amplitude_A, 1)} A ${currentConvention} · ${formatNumber(config.solve_params.commutation_advance_deg, 1)}° advance`
     : `${formatNumber(config.solve_params.current_amplitude_A, 1)} A ${currentConvention} · ${formatNumber(config.solve_params.current_angle_deg, 1)}° current angle`;
+  // The y-axis reads the peak: the six-step plateau, or the sinusoid's crest
+  // (√2 × the rms input under the rms convention) (#110).
+  const peakCurrentA = !sixStep && config.solve_params.current_amplitude_convention === 'rms'
+    ? config.solve_params.current_amplitude_A * Math.SQRT2
+    : config.solve_params.current_amplitude_A;
+  const peakLabel = `${formatNumber(peakCurrentA, 1)} A`;
+  const peakY = RUN_PLAN_WAVEFORM_CENTER_Y - RUN_PLAN_WAVEFORM_AMPLITUDE;
+  const troughY = RUN_PLAN_WAVEFORM_CENTER_Y + RUN_PLAN_WAVEFORM_AMPLITUDE;
+  const yPercent = (y: number) => `${(100 * y) / RUN_PLAN_WAVEFORM_HEIGHT}%`;
   const accessibleDescription = sixStep
-    ? 'Ideal six-step BLDC phase currents. Two phases conduct at positive and negative plateau current while one phase floats in each of six sectors.'
-    : 'Balanced sinusoidal phase currents. Phase A, B, and C are shifted by 120 electrical degrees.';
+    ? `Ideal six-step BLDC phase currents. Two phases conduct at positive and negative plateau current of ${peakLabel} while one phase floats in each of six sectors.`
+    : `Balanced sinusoidal phase currents with a ${peakLabel} peak. Phase A, B, and C are shifted by 120 electrical degrees.`;
   const paths = sixStep
     ? [runPlanSixStepPath(0), runPlanSixStepPath(1), runPlanSixStepPath(2)]
     : [
@@ -252,28 +261,38 @@ function ExcitationRunPlanPreview({ config }: { config: MotorConfig }) {
         </div>
         <small>{sixStep ? '120° conduction' : 'Three-phase'}</small>
       </div>
-      <svg
-        className="public-excitation-preview-plot"
-        viewBox={`0 0 ${RUN_PLAN_WAVEFORM_WIDTH} ${RUN_PLAN_WAVEFORM_HEIGHT}`}
-        role="img"
-        aria-label={accessibleDescription}
-      >
-        <title>{accessibleDescription}</title>
-        <line className="axis" x1="0" y1={RUN_PLAN_WAVEFORM_CENTER_Y} x2={RUN_PLAN_WAVEFORM_WIDTH} y2={RUN_PLAN_WAVEFORM_CENTER_Y} />
-        {sixStep && Array.from({ length: 7 }, (_, index) => (
-          <line
-            className="sector"
-            x1={index * RUN_PLAN_WAVEFORM_WIDTH / 6}
-            y1="6"
-            x2={index * RUN_PLAN_WAVEFORM_WIDTH / 6}
-            y2={RUN_PLAN_WAVEFORM_HEIGHT - 6}
-            key={index}
-          />
-        ))}
-        {paths.map((path, index) => (
-          <path className={`phase phase-${String.fromCharCode(97 + index)}`} d={path} key={index} />
-        ))}
-      </svg>
+      <div className="public-excitation-preview-chart">
+        <div className="public-excitation-preview-axis" aria-hidden="true">
+          <span style={{ top: yPercent(peakY) }}>{peakLabel}</span>
+          <span style={{ top: yPercent(RUN_PLAN_WAVEFORM_CENTER_Y) }}>0</span>
+          <span style={{ top: yPercent(troughY) }}>−{peakLabel}</span>
+        </div>
+        <svg
+          className="public-excitation-preview-plot"
+          viewBox={`0 0 ${RUN_PLAN_WAVEFORM_WIDTH} ${RUN_PLAN_WAVEFORM_HEIGHT}`}
+          preserveAspectRatio="none"
+          role="img"
+          aria-label={accessibleDescription}
+        >
+          <title>{accessibleDescription}</title>
+          <line className="peak" x1="0" y1={peakY} x2={RUN_PLAN_WAVEFORM_WIDTH} y2={peakY} />
+          <line className="peak" x1="0" y1={troughY} x2={RUN_PLAN_WAVEFORM_WIDTH} y2={troughY} />
+          <line className="axis" x1="0" y1={RUN_PLAN_WAVEFORM_CENTER_Y} x2={RUN_PLAN_WAVEFORM_WIDTH} y2={RUN_PLAN_WAVEFORM_CENTER_Y} />
+          {sixStep && Array.from({ length: 7 }, (_, index) => (
+            <line
+              className="sector"
+              x1={index * RUN_PLAN_WAVEFORM_WIDTH / 6}
+              y1="6"
+              x2={index * RUN_PLAN_WAVEFORM_WIDTH / 6}
+              y2={RUN_PLAN_WAVEFORM_HEIGHT - 6}
+              key={index}
+            />
+          ))}
+          {paths.map((path, index) => (
+            <path className={`phase phase-${String.fromCharCode(97 + index)}`} d={path} key={index} />
+          ))}
+        </svg>
+      </div>
       <div className="public-excitation-preview-footer">
         <span className="public-excitation-preview-legend" aria-label="Phase colors">
           <i className="phase-a" />A <i className="phase-b" />B <i className="phase-c" />C
@@ -320,6 +339,50 @@ function StatusGlyph({ tone = 'good' }: { tone?: 'good' | 'info' | 'warning' }) 
   return (
     <span className={`public-status-glyph ${tone}`} aria-hidden="true">
       {tone === 'good' ? '✓' : tone === 'info' ? 'i' : '!'}
+    </span>
+  );
+}
+
+type StatusTagTone = 'good' | 'info' | 'warning' | 'running';
+
+/** A short status pill whose details open on hover or keyboard focus, so run
+ * status and qualification don't take a full-width card each (#110). */
+function StatusTag({
+  tone,
+  label,
+  heading,
+  children,
+  placement = 'below',
+  align = 'start',
+  role,
+  ariaLabel,
+  ariaBusy,
+}: {
+  tone: StatusTagTone;
+  label: string;
+  heading?: string;
+  children?: ReactNode;
+  placement?: 'above' | 'below';
+  align?: 'start' | 'end';
+  role?: 'status' | 'note';
+  ariaLabel?: string;
+  ariaBusy?: boolean;
+}) {
+  const detailsId = useId();
+  return (
+    <span
+      className={`public-status-tag is-${tone} opens-${placement} align-${align}`}
+      role={role}
+      aria-label={ariaLabel}
+      aria-busy={ariaBusy}
+    >
+      <button type="button" className="public-status-tag-pill" aria-describedby={detailsId}>
+        <i aria-hidden="true" />{label}
+      </button>
+      <span className="public-status-tag-details" id={detailsId}>
+        {heading && <strong>{heading}</strong>}
+        {children}
+      </span>
     </span>
   );
 }
@@ -2091,6 +2154,24 @@ function QualificationNote({ qualification }: { qualification: PublicQualificati
   );
 }
 
+/** The same status, reason and caveats as QualificationNote, as a Solve-page
+ * tag. Experimental and Unsupported keep the warning tone (#110). */
+function QualificationTag({ qualification }: { qualification: PublicQualification }) {
+  return (
+    <StatusTag
+      tone={qualification.status === 'qualified' ? 'good' : 'warning'}
+      label={QUALIFICATION_LABELS[qualification.status]}
+      align="end"
+      role="note"
+      ariaLabel="Benchmark qualification"
+    >
+      <span>{qualification.reason}</span>
+      {qualification.caveats.map((caveat) => <span key={caveat}>{caveat}</span>)}
+      <a href={QUALIFICATION_DOCS_URL} target="_blank" rel="noreferrer">How designs are qualified</a>
+    </StatusTag>
+  );
+}
+
 type DesignHealthSeverity = 'positive' | 'info' | 'warning';
 
 interface DesignHealthIssue {
@@ -2223,6 +2304,13 @@ const RUN_PLAN_RESIZE_STEP = 32;
 const RUN_PLAN_COMFORT_MAX_WIDTH = 368;
 const RUN_PLAN_ACTIVE_WIDTH = 440;
 const RUN_PLAN_COMFORT_VIEWPORT = '(min-width: 1800px) and (min-height: 900px)';
+// The Analysis setup panel resizes like the Run plan (#110). Its narrowest is
+// the compact rail width the stylesheet uses below 1220 px.
+const SETUP_MIN_WIDTH = 284;
+const SETUP_MAX_WIDTH = 640;
+// Width kept for the viewport, the workspace padding and the gaps whenever
+// either side panel grows.
+const SOLVE_STAGE_RESERVE = 368;
 
 function defaultRunPlanWidth(): number {
   if (typeof window === 'undefined' || !window.matchMedia(RUN_PLAN_COMFORT_VIEWPORT).matches) {
@@ -2433,7 +2521,7 @@ function CompletedResultMonitor({ result, onOpenReport }: { result: SolveResult;
   return (
     <section className="public-completed-results" aria-label="Completed solver results">
       <div className="public-completed-results-heading">
-        <div><span className="public-section-kicker">Completed results</span><strong>Solver waveforms</strong></div>
+        <span className="public-section-kicker">Completed results</span>
         <button type="button" data-guide="open-report" onClick={onOpenReport}>Full results →</button>
       </div>
       <dl className="public-result-metrics">
@@ -2447,6 +2535,9 @@ function CompletedResultMonitor({ result, onOpenReport }: { result: SolveResult;
         {result.workflow_elapsed_s != null && <div><dt>Total elapsed</dt><dd>{formatNumber(result.workflow_elapsed_s, 1)} s</dd></div>}
       </dl>
       <MotorConstants summary={result.summary} />
+      {/* The waveform heading labels the plots below it, not the metrics and
+          constants above (#110). */}
+      <strong className="public-completed-waveforms-heading">Solver waveforms</strong>
       <div className="public-compact-result-tabs" role="tablist" aria-label="Completed result plots">
         <button type="button" role="tab" aria-selected={activePlot === 'torque'} className={activePlot === 'torque' ? 'active' : ''} onClick={() => setActivePlot('torque')}>Torque</button>
         <button type="button" role="tab" aria-selected={activePlot === 'back-emf'} className={activePlot === 'back-emf' ? 'active' : ''} onClick={() => setActivePlot('back-emf')}>Back EMF</button>
@@ -2460,6 +2551,100 @@ function CompletedResultMonitor({ result, onOpenReport }: { result: SolveResult;
       </>}
       <p>Spatial flux density and field lines remain visible in the solved-field viewport.</p>
     </section>
+  );
+}
+
+type BackEmfHarmonic = NonNullable<SolveResult['back_emf_harmonic_analysis']>['harmonics'][number];
+
+/** Below this a harmonic shows as 0.00% of H1, so it gets no bar or label. */
+const HARMONIC_ZERO_PCT = 0.005;
+/** Orders under 1% of H1 keep a 2 px stub; their values are in the tooltip
+ * and the table, so the labels stay on the harmonics that matter. */
+const HARMONIC_LABEL_MIN_PCT = 1;
+
+function harmonicCapLabel(pct: number): string {
+  if (pct >= 99.95) return '100';
+  return pct >= 1 ? pct.toFixed(1) : pct.toFixed(2);
+}
+
+/** Vertical spectrum, like an FFT plot: one column per order, height = phase A
+ * as a percentage of H1 on a linear axis. Hover or focus a column for its
+ * frequency and voltages; the table below keeps every value (#110). */
+function HarmonicSpectrumChart({ harmonics, compact }: { harmonics: BackEmfHarmonic[]; compact: boolean }) {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const values = harmonics.map((harmonic) => Math.max(0, harmonic.phase_a_pct_fundamental ?? 0));
+  const axisMax = Math.max(100, Math.ceil(Math.max(...values) / 25) * 25);
+  const tickStep = compact ? axisMax / 2 : axisMax / 4;
+  const ticks = Array.from({ length: Math.round(axisMax / tickStep) + 1 }, (_, index) => index * tickStep);
+  // Dense spectra (H24) label H1 and at most the three largest harmonics, and
+  // every other order on the x-axis, so labels never collide.
+  const dense = harmonics.length > 12;
+  const largest = new Set(
+    values
+      .map((value, index) => ({ value, index }))
+      .filter(({ index }) => harmonics[index].order !== 1)
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 3)
+      .map(({ index }) => index),
+  );
+  const labelled = (index: number) => harmonics[index].order === 1
+    || (values[index] >= HARMONIC_LABEL_MIN_PCT && (!dense || largest.has(index)));
+  const active = activeIndex === null ? null : harmonics[activeIndex];
+  const activeAlign = activeIndex === null
+    ? 'center'
+    : activeIndex <= 1 ? 'start' : activeIndex >= harmonics.length - 2 ? 'end' : 'center';
+
+  return (
+    <div className={`public-harmonic-chart${compact ? ' compact' : ''}`} role="group" aria-label="Phase A back EMF harmonics as a percentage of H1">
+      <span className="public-harmonic-chart-unit" aria-hidden="true">% of H1</span>
+      <div className="public-harmonic-chart-y" aria-hidden="true">
+        {ticks.map((tick) => <span key={tick} style={{ bottom: `${(100 * tick) / axisMax}%` }}>{tick}</span>)}
+      </div>
+      <div className="public-harmonic-chart-plot" onPointerLeave={() => setActiveIndex(null)}>
+        {ticks.map((tick) => <i key={tick} className="public-harmonic-chart-grid" style={{ bottom: `${(100 * tick) / axisMax}%` }} aria-hidden="true" />)}
+        <div className="public-harmonic-chart-columns" style={{ gridTemplateColumns: `repeat(${harmonics.length}, minmax(0, 1fr))` }}>
+          {harmonics.map((harmonic, index) => {
+            const pct = values[index];
+            const height = (100 * pct) / axisMax;
+            return (
+              <span
+                key={harmonic.order}
+                className={`public-harmonic-column${activeIndex === index ? ' is-active' : ''}`}
+                role="img"
+                tabIndex={0}
+                aria-label={`H${harmonic.order}, ${formatNumber(harmonic.frequency_Hz, 0)} Hz: ${formatNumber(pct, 2)}% of H1; phase A ${formatNumber(harmonic.phase_a_rms_V, 3)} V; line AB ${formatNumber(harmonic.line_ab_rms_V, 3)} V rms`}
+                onPointerEnter={() => setActiveIndex(index)}
+                onFocus={() => setActiveIndex(index)}
+                onBlur={() => setActiveIndex((current) => current === index ? null : current)}
+              >
+                {pct >= HARMONIC_ZERO_PCT && <i className="public-harmonic-column-bar" style={{ height: `${height}%` }} />}
+                {labelled(index) && (
+                  <em className="public-harmonic-column-value" style={{ bottom: `${height}%` }} aria-hidden="true">{harmonicCapLabel(pct)}</em>
+                )}
+              </span>
+            );
+          })}
+        </div>
+        {active && activeIndex !== null && (
+          <div
+            className={`public-harmonic-chart-tooltip align-${activeAlign}`}
+            style={{
+              left: `${(100 * (activeIndex + 0.5)) / harmonics.length}%`,
+              // Tall columns keep the tooltip inside the plot, over the bar.
+              bottom: `calc(${Math.min(55, (100 * values[activeIndex]) / axisMax)}% + 16px)`,
+            }}
+            aria-hidden="true"
+          >
+            <strong>{formatNumber(values[activeIndex], 2)}% of H1</strong>
+            <span>H{active.order} · {formatNumber(active.frequency_Hz, active.frequency_Hz < 100 ? 1 : 0)} Hz</span>
+            <span>Phase A {formatNumber(active.phase_a_rms_V, 3)} V · Line AB {formatNumber(active.line_ab_rms_V, 3)} V</span>
+          </div>
+        )}
+      </div>
+      <div className="public-harmonic-chart-x" style={{ gridTemplateColumns: `repeat(${harmonics.length}, minmax(0, 1fr))` }} aria-hidden="true">
+        {harmonics.map((harmonic, index) => <span key={harmonic.order}>{!dense || index % 2 === 0 ? `H${harmonic.order}` : ''}</span>)}
+      </div>
+    </div>
   );
 }
 
@@ -2487,20 +2672,18 @@ function BackEMFHarmonicSpectrum({
       <dl className="public-harmonic-thd-metrics">
         {thdMetrics.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{formatNumber(value)}%</dd></div>)}
       </dl>
+      <HarmonicSpectrumChart harmonics={analysis.harmonics} compact={compact} />
       <div className="public-harmonic-table" role="table" aria-label="Harmonic order, frequency, and RMS voltage">
         <div className="public-harmonic-row header" role="row"><span>Order</span><span>Frequency</span><span>Phase A / H1</span><span>Phase A</span><span>Line AB</span></div>
-        {analysis.harmonics.map((harmonic) => {
-          const phasePct = harmonic.phase_a_pct_fundamental ?? 0;
-          return (
-            <div className="public-harmonic-row" role="row" key={harmonic.order}>
-              <strong>H{harmonic.order}</strong>
-              <span>{formatNumber(harmonic.frequency_Hz, harmonic.frequency_Hz < 100 ? 1 : 0)} Hz</span>
-              <span className="public-harmonic-bar"><i style={{ width: `${Math.min(100, Math.max(phasePct > 0 ? 2 : 0, phasePct))}%` }} /><em>{formatNumber(phasePct, 2)}%</em></span>
-              <span>{formatNumber(harmonic.phase_a_rms_V, 3)} V</span>
-              <span>{formatNumber(harmonic.line_ab_rms_V, 3)} V</span>
-            </div>
-          );
-        })}
+        {analysis.harmonics.map((harmonic) => (
+          <div className="public-harmonic-row" role="row" key={harmonic.order}>
+            <strong>H{harmonic.order}</strong>
+            <span>{formatNumber(harmonic.frequency_Hz, harmonic.frequency_Hz < 100 ? 1 : 0)} Hz</span>
+            <span>{formatNumber(harmonic.phase_a_pct_fundamental ?? 0, 2)}%</span>
+            <span>{formatNumber(harmonic.phase_a_rms_V, 3)} V</span>
+            <span>{formatNumber(harmonic.line_ab_rms_V, 3)} V</span>
+          </div>
+        ))}
       </div>
       <p>All electrical orders are retained, including even and triplen harmonics. Line-to-line values show natural triplen cancellation. RMS values come from a periodic no-load flux-linkage DFT.</p>
     </section>
@@ -2523,7 +2706,9 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
   const [analysisDetailsOpen, setAnalysisDetailsOpen] = useState(() => !result);
   const [elementQualityDetailsOpen, setElementQualityDetailsOpen] = useState(() => !result);
   const [runPlanWidth, setRunPlanWidth] = useState(defaultRunPlanWidth);
-  const [resizingRunPlan, setResizingRunPlan] = useState(false);
+  // null keeps the stylesheet's rail width until the user drags the handle.
+  const [setupWidth, setSetupWidth] = useState<number | null>(null);
+  const [resizingPanel, setResizingPanel] = useState<'setup' | 'runPlan' | null>(null);
   const completedResultAvailableRef = useRef(Boolean(result));
   const advancedOptionsRef = useRef<HTMLDetailsElement>(null);
   const nonlinearSolverRef = useRef<HTMLSelectElement>(null);
@@ -2533,7 +2718,9 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
   const runPlanScrollRef = useRef<HTMLDivElement>(null);
   const runPlanAutoExpandedRef = useRef(false);
   const runPlanUserSizedRef = useRef(false);
-  const runPlanDragRef = useRef<{ startX: number; startWidth: number } | null>(null);
+  const panelDragRef = useRef<{ panel: 'setup' | 'runPlan'; startX: number; startWidth: number } | null>(null);
+  const setupRef = useRef<HTMLElement>(null);
+  const runPlanRef = useRef<HTMLElement>(null);
   const solvePlans: Array<{ value: PublicSolvePreset; label: string; meshLabel: string; tradeoff: string; recommended?: boolean }> = [
     { value: 'quick', label: 'Preview', meshLabel: 'Coarse mesh', tradeoff: 'Fast iteration' },
     { value: 'standard', label: 'Standard', meshLabel: 'Medium mesh', tradeoff: 'Balanced', recommended: true },
@@ -2627,17 +2814,25 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
   const finalizingResults = solveInProgress && isPublicSolveFinalizing(progress);
   const runDisabled = busy === 'mesh'
     || (busy !== 'solve' && busy !== 'field' && !runReady);
-  const runReadinessTitle = solveInProgress
+  // [tag label, popover heading]
+  const [runReadinessTag, runReadinessTitle] = solveInProgress
     ? finalizingResults
-      ? 'Finalizing results'
-      : 'Analysis in progress'
+      ? ['Finalizing', 'Finalizing results']
+      : ['Running', 'Analysis in progress']
     : busy === 'mesh'
-      ? 'Preparing mesh'
+      ? ['Preparing mesh', 'Preparing mesh']
       : validationChecking
-        ? 'Checking setup'
+        ? ['Checking', 'Checking setup']
         : runReady
-          ? 'Ready to run'
-          : 'Review before running';
+          ? ['Ready to run', 'Ready to run']
+          : ['Needs review', 'Review before running'];
+  const runReadinessTone: StatusTagTone = solveInProgress || busy === 'mesh'
+    ? 'running'
+    : runReady
+      ? 'good'
+      : validationError || validation?.valid === false
+        ? 'warning'
+        : 'info';
   const runReadinessCopy = validationError
     ? validationError
     : solveInProgress
@@ -2656,25 +2851,38 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
     : runReady
       ? 'good'
       : 'info';
-  const actionStatus = error
-    ? convergenceFailed ? 'Convergence failed — review solver settings' : 'Review the request details before running'
+  // [tag label, popover heading]
+  const [actionTag, actionStatus] = error
+    ? convergenceFailed
+      ? ['Convergence failed', 'Convergence failed — review solver settings']
+      : ['Needs review', 'Review the request details before running']
     : busy === 'solve'
-      ? finalizingResults ? 'Preparing playback and saving results' : 'Analysis running locally'
+      ? finalizingResults
+        ? ['Finalizing', 'Preparing playback and saving results']
+        : ['Running', 'Analysis running locally']
       : busy === 'mesh'
-        ? 'Preparing the native mesh'
+        ? ['Preparing mesh', 'Preparing the native mesh']
         : busy === 'field'
-          ? 'Computing the stator-only field'
+          ? ['Stator field', 'Computing the stator-only field']
           : result
-            ? 'Analysis complete — view your results'
+            ? ['Complete', 'Analysis complete — view your results']
             : validationError
-              ? 'Run estimate unavailable — check the local backend'
+              ? ['No estimate', 'Run estimate unavailable — check the local backend']
               : validationChecking
-                ? 'Checking inputs and estimating the run'
+                ? ['Checking', 'Checking inputs and estimating the run']
                 : runReady
-                  ? 'Ready to run'
+                  ? ['Ready to run', 'Ready to run']
                   : mesh
-                    ? 'Review the setup before running'
-              : 'Prepare a mesh to continue';
+                    ? ['Needs review', 'Review the setup before running']
+                    : ['Mesh needed', 'Prepare a mesh to continue'];
+  const actionTagTone: StatusTagTone = actionTone === 'warning'
+    ? 'warning'
+    : busy !== null
+      ? 'running'
+      : actionTone;
+  const actionDetails = error
+    ? convergenceFailed ? errorDetails?.message ?? error : error
+    : runReadinessCopy;
 
   useEffect(() => {
     if (!notice) return undefined;
@@ -2738,20 +2946,38 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
     return () => window.removeEventListener('keydown', restoreOnEscape);
   }, [solveViewportExpanded]);
 
+  // Each side panel's limit leaves the viewport its reserve beside the other
+  // panel's rendered width, read from the DOM so window-resize handlers see the
+  // current layout.
+  const renderedWidth = (panel: HTMLElement | null, fallback: number) => panel?.offsetWidth || fallback;
   const maxRunPlanWidth = () => typeof window === 'undefined'
     ? RUN_PLAN_MAX_WIDTH
-    : Math.max(RUN_PLAN_MIN_WIDTH, Math.min(RUN_PLAN_MAX_WIDTH, window.innerWidth - 680));
+    : Math.max(RUN_PLAN_MIN_WIDTH, Math.min(
+      RUN_PLAN_MAX_WIDTH,
+      window.innerWidth - renderedWidth(setupRef.current, RUN_PLAN_MIN_WIDTH) - SOLVE_STAGE_RESERVE,
+    ));
   const clampRunPlanWidth = (value: number) => Math.max(RUN_PLAN_MIN_WIDTH, Math.min(maxRunPlanWidth(), value));
+  const maxSetupWidth = () => typeof window === 'undefined'
+    ? SETUP_MAX_WIDTH
+    : Math.max(SETUP_MIN_WIDTH, Math.min(
+      SETUP_MAX_WIDTH,
+      window.innerWidth - renderedWidth(runPlanRef.current, RUN_PLAN_MIN_WIDTH) - SOLVE_STAGE_RESERVE,
+    ));
+  const clampSetupWidth = (value: number) => Math.max(SETUP_MIN_WIDTH, Math.min(maxSetupWidth(), value));
 
   useEffect(() => {
-    const syncAutomaticRunPlanWidth = () => {
-      if (runPlanUserSizedRef.current) return;
+    const syncPanelWidths = () => {
+      setSetupWidth((width) => width === null ? null : clampSetupWidth(width));
+      if (runPlanUserSizedRef.current) {
+        setRunPlanWidth((width) => clampRunPlanWidth(width));
+        return;
+      }
       setRunPlanWidth(runPlanAutoExpandedRef.current
         ? clampRunPlanWidth(RUN_PLAN_ACTIVE_WIDTH)
         : defaultRunPlanWidth());
     };
-    window.addEventListener('resize', syncAutomaticRunPlanWidth);
-    return () => window.removeEventListener('resize', syncAutomaticRunPlanWidth);
+    window.addEventListener('resize', syncPanelWidths);
+    return () => window.removeEventListener('resize', syncPanelWidths);
   }, []);
 
   const handleRunPlanResizeStart = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -2759,8 +2985,8 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
     event.preventDefault();
     runPlanAutoExpandedRef.current = false;
     runPlanUserSizedRef.current = true;
-    runPlanDragRef.current = { startX: event.clientX, startWidth: runPlanWidth };
-    setResizingRunPlan(true);
+    panelDragRef.current = { panel: 'runPlan', startX: event.clientX, startWidth: runPlanWidth };
+    setResizingPanel('runPlan');
   };
   const handleRunPlanResizeKey = (event: ReactKeyboardEvent<HTMLDivElement>) => {
     const keyWidths: Partial<Record<string, number>> = {
@@ -2783,6 +3009,31 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
     setRunPlanWidth(defaultRunPlanWidth());
   };
 
+  // The setup handle sits on the panel's right edge, so it grows rightwards.
+  const handleSetupResizeStart = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    panelDragRef.current = {
+      panel: 'setup',
+      startX: event.clientX,
+      startWidth: renderedWidth(setupRef.current, SETUP_MIN_WIDTH),
+    };
+    setResizingPanel('setup');
+  };
+  const handleSetupResizeKey = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    const currentWidth = renderedWidth(setupRef.current, SETUP_MIN_WIDTH);
+    const keyWidths: Partial<Record<string, number>> = {
+      ArrowRight: currentWidth + RUN_PLAN_RESIZE_STEP,
+      ArrowLeft: currentWidth - RUN_PLAN_RESIZE_STEP,
+      Home: SETUP_MIN_WIDTH,
+      End: maxSetupWidth(),
+    };
+    const nextWidth = keyWidths[event.key];
+    if (nextWidth === undefined) return;
+    event.preventDefault();
+    setSetupWidth(clampSetupWidth(nextWidth));
+  };
+
   const handleStartSolve = () => {
     runPlanAutoExpandedRef.current = true;
     setAnalysisDetailsOpen(true);
@@ -2800,15 +3051,16 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
   };
 
   useEffect(() => {
-    if (!resizingRunPlan) return undefined;
+    if (!resizingPanel) return undefined;
     const handlePointerMove = (event: PointerEvent) => {
-      if (!runPlanDragRef.current) return;
-      const { startX, startWidth } = runPlanDragRef.current;
-      setRunPlanWidth(clampRunPlanWidth(startWidth + startX - event.clientX));
+      if (!panelDragRef.current) return;
+      const { panel, startX, startWidth } = panelDragRef.current;
+      if (panel === 'setup') setSetupWidth(clampSetupWidth(startWidth + event.clientX - startX));
+      else setRunPlanWidth(clampRunPlanWidth(startWidth + startX - event.clientX));
     };
     const handlePointerUp = () => {
-      runPlanDragRef.current = null;
-      setResizingRunPlan(false);
+      panelDragRef.current = null;
+      setResizingPanel(null);
     };
     window.addEventListener('pointermove', handlePointerMove);
     window.addEventListener('pointerup', handlePointerUp);
@@ -2818,7 +3070,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
       window.removeEventListener('pointerup', handlePointerUp);
       window.removeEventListener('pointercancel', handlePointerUp);
     };
-  }, [resizingRunPlan]);
+  }, [resizingPanel]);
 
   const solveViewportSwitch = (
     <div className="public-solve-view-switch" role="group" aria-label="Solve viewport">
@@ -2839,8 +3091,27 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
           <button type="button" aria-label="Dismiss update" onClick={() => setTransientNotice(null)}>×</button>
         </div>
       )}
-    <div className={`public-solve-workspace${resizingRunPlan ? ' is-resizing-run-plan' : ''}${solveInProgress ? ' is-run-plan-focused' : ''}${solveViewportExpanded ? ' is-viewport-expanded' : ''}`}>
-      <aside className="public-solve-setup">
+    <div className={`public-solve-workspace${resizingPanel === 'runPlan' ? ' is-resizing-run-plan' : ''}${resizingPanel === 'setup' ? ' is-resizing-setup' : ''}${solveInProgress ? ' is-run-plan-focused' : ''}${solveViewportExpanded ? ' is-viewport-expanded' : ''}`}>
+      <aside
+        ref={setupRef}
+        className="public-solve-setup"
+        style={setupWidth === null ? undefined : { width: setupWidth, minWidth: setupWidth }}
+      >
+        <div
+          className="public-solve-setup-resizer"
+          role="separator"
+          aria-label="Resize analysis setup panel"
+          aria-orientation="vertical"
+          aria-valuemin={SETUP_MIN_WIDTH}
+          aria-valuemax={maxSetupWidth()}
+          aria-valuenow={Math.round(setupWidth ?? defaultRunPlanWidth())}
+          tabIndex={0}
+          title="Drag to resize setup panel"
+          onDoubleClick={() => setSetupWidth(null)}
+          onKeyDown={handleSetupResizeKey}
+          onPointerDown={handleSetupResizeStart}
+        />
+        <div className="public-solve-setup-frame">
         <div className="mesh-panel-header"><span className="mesh-panel-header-title">Analysis setup</span></div>
         <div className="public-solve-setup-scroll">
         {elmerCapability.feature_enabled && <div className="public-setup-section public-solver-section">
@@ -3029,10 +3300,10 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
         </details>
         </div>
         <div className="public-solve-footer">
-          <div className={`validation-ok${actionTone === 'warning' ? ' has-error' : ''}`}><StatusGlyph tone={actionTone} />{actionStatus}</div>
           <div className="public-run-consequence">
-            <span>{positionsText}</span>
-            <span>{outputLabels.length} outputs</span>
+            <StatusTag tone={actionTagTone} label={actionTag} heading={actionStatus} placement="above">
+              <span>{actionDetails}</span>
+            </StatusTag>
             <strong>{estimatedTimeText}</strong>
           </div>
           {completedAnalysisAvailable ? (
@@ -3044,6 +3315,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
             <button className={busy === 'solve' || busy === 'field' ? 'public-cancel-btn' : 'public-run-btn'} type="button" data-guide="solve-run" disabled={runDisabled} onClick={busy === 'solve' ? onCancelSolve : busy === 'field' ? onCancelArmatureField : handleStartSolve}>{busy === 'solve' ? '■ Cancel solve' : busy === 'mesh' ? 'Preparing mesh…' : busy === 'field' ? '■ Cancel stator field' : validationChecking ? 'Checking setup…' : '▶ Run analysis'}</button>
           )}
           <button className="public-back-link" type="button" onClick={onBack}>← Back to Design</button>
+        </div>
         </div>
       </aside>
       <div className="public-live-stage">
@@ -3097,7 +3369,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
             />
           )}
       </div>
-      <aside className="public-run-plan" style={{ width: runPlanWidth, minWidth: runPlanWidth }}>
+      <aside ref={runPlanRef} className="public-run-plan" style={{ width: runPlanWidth, minWidth: runPlanWidth }}>
         <div
           className="public-run-plan-resizer"
           role="separator"
@@ -3113,7 +3385,24 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
           onPointerDown={handleRunPlanResizeStart}
         />
         <div ref={runPlanScrollRef} className="public-run-plan-scroll">
-        <div className="mesh-panel-header"><span className="mesh-panel-header-title">Run plan</span></div>
+        <div className="mesh-panel-header">
+          <span className="mesh-panel-header-title">Run plan</span>
+          {!error && (
+            <div className="public-run-plan-tags">
+              <StatusTag
+                tone={runReadinessTone}
+                label={runReadinessTag}
+                heading={runReadinessTitle}
+                align="end"
+                role="status"
+                ariaBusy={solveInProgress}
+              >
+                <span>{runReadinessCopy}</span>
+              </StatusTag>
+              {validationQualification && <QualificationTag qualification={validationQualification} />}
+            </div>
+          )}
+        </div>
         <details
           className="public-run-plan-section public-run-analysis"
           open={analysisDetailsOpen}
@@ -3137,11 +3426,6 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               </>}
               {onManageRuns && <button type="button" onClick={onManageRuns}>Manage previous runs</button>}
             </div>}
-            {!error && <div className={`public-run-readiness${runReady && !solveInProgress ? ' is-ready' : ''}${solveInProgress ? ' is-running' : ''}${validationError || validation?.valid === false ? ' needs-review' : ''}`} role="status" aria-busy={solveInProgress}>
-              <StatusGlyph tone={runReady && !solveInProgress ? 'good' : validationError || validation?.valid === false ? 'warning' : 'info'} />
-              <div><strong>{runReadinessTitle}</strong><span>{runReadinessCopy}</span></div>
-            </div>}
-            {!error && validationQualification && <QualificationNote qualification={validationQualification} />}
             <ExcitationRunPlanPreview config={config} />
             {(busy === 'mesh' || busy === 'solve') && <LiveSolveMonitor busy={busy} progress={progress} liveSamples={liveSamples} progressPercent={progressPercent} />}
             <dl className="public-quality-list">
