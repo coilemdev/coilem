@@ -380,13 +380,13 @@
     },
     {
       "path": "backend/preview.py",
-      "bytes": 39014,
-      "sha256": "704ad1cd0eecfaca80c0ba57783bdb4101fd61c35de1c2917aa41ebcafb561e5"
+      "bytes": 39043,
+      "sha256": "9d95bd235b3f2564b5c4fc6482adb549d01ac1ba25c6a9ce0da5c6e0cbf4eb28"
     },
     {
       "path": "backend/preview_from_ir.py",
-      "bytes": 9082,
-      "sha256": "3a3e9b8ec32cb28f00b40a896f66f616e56bd21e5957ad9c55c218b07c5e628c"
+      "bytes": 10654,
+      "sha256": "2f7c8764abdd35c4183ac4e63d27c304c38ec3cea7aa6e1a805c0dd2876b90b4"
     },
     {
       "path": "backend/public_field_playback.py",
@@ -6040,8 +6040,8 @@
     },
     {
       "path": "tests/test_slot_layer_split.py",
-      "bytes": 4617,
-      "sha256": "7cdd0d69a32510bb1cbf9ae590320a03c0cfa9f34b794d442e8a43a71e5d6399"
+      "bytes": 7905,
+      "sha256": "aa937b0dc5c16413a30f3963c78bb020fcc37e572b6b8afff88ffd63750cce9d"
     },
     {
       "path": "tests/test_solve_estimate.py",
@@ -7803,7 +7803,7 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B Ã¢Ë†â€™ Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B \u00c3\u00a2\u00cb\u2020\u00e2\u20ac\u2122 Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
@@ -7833,13 +7833,13 @@
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45Ã‚Â° (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45\u00c3\u201a\u00c2\u00b0 (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45Ã‚Â° over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45\u00c3\u201a\u00c2\u00b0 over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "a482ff6e2bd9616d2ece2a68f8fa2f2c49aae45c",
@@ -7857,7 +7857,7 @@
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45Ã‚Â° (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00c3\u201a\u00c2\u00b0 (#52 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
@@ -8566,6 +8566,24 @@
       "path": "tools/benchmark_suite/report.py",
       "source_sha256": "b824617f4bd29a0d455a4063a07989f17f68cb0a90aa3d49734465d8ec93e5bc",
       "reason": "Show the energy-balance diagnostic for coilEM and the reference in the benchmark report (#80)."
+    },
+    {
+      "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",
+      "path": "backend/preview_from_ir.py",
+      "source_sha256": "3a3e9b8ec32cb28f00b40a896f66f616e56bd21e5957ad9c55c218b07c5e628c",
+      "reason": "Place each split coil side's in/out marker at the area centroid of its own layer region instead of at fixed slot fractions, so two-layer markers sit centred in their half-slot."
+    },
+    {
+      "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",
+      "path": "backend/preview.py",
+      "source_sha256": "704ad1cd0eecfaca80c0ba57783bdb4101fd61c35de1c2917aa41ebcafb561e5",
+      "reason": "Pass the split coil sides' centroids from the geometry IR to the in/out marker placement."
+    },
+    {
+      "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",
+      "path": "tests/test_slot_layer_split.py",
+      "source_sha256": "7cdd0d69a32510bb1cbf9ae590320a03c0cfa9f34b794d442e8a43a71e5d6399",
+      "reason": "Assert each in/out marker sits at its own coil side's centroid for two-layer slots, and that whole-slot markers keep their place."
     }
   ]
 }
