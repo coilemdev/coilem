@@ -25,6 +25,15 @@ exactly. This is one development-host observation, with the combined execution
 optimizations and a frozen physical source. FEMM analysis remains 87.2% of summed
 case time; native collection and report rendering are separate stages.
 
+The [repeated FEMM 4.2 contention controls](../benchmarks/performance-112/contention.md)
+compare the four largest retained models plus eight small jobs under large-worker
+cost two versus three, using existing/candidate/candidate/existing run order.
+Cost three permits two large plus two small jobs: individual large-model
+analyses become 25.69% faster, but total retained-workload time increases 18.13%.
+All 176 recomputed solutions match the saved meshes and nodal potentials
+exactly. Keep the existing cost-two guidance; this short throughput experiment
+does not supply a new registered case or whole-suite runtime.
+
 The [FEMM 5 pilot](../benchmarks/performance-112/femm5-pilot.md) evaluates the
 06Oct2026 headless/TCP build alongside the existing 4.2 installation. Its fresh
 matched Phase A case takes 63.87s versus 303.64s with the optimized 4.2 producer.

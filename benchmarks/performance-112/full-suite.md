@@ -13,6 +13,11 @@ collection, with normal desktop activity present.
 [Matched four/eight-worker subset comparison](scaling.md) ·
 [Execution tools and producer contract](../../docs/BENCHMARK_PERFORMANCE.md)
 
+Later [repeated retained-model controls](contention.md) test a two-large-job
+alternative to this four-large budget. The alternative slows that workload
+by 18.13% despite faster individual analyses. It supplies no new full-suite
+time; the configuration and result below remain the validated observation.
+
 ## Scope and configuration
 
 Physical source: `738d9516e8500c5996c772bd96470472cbb9a0f9`.

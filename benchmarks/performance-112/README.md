@@ -15,6 +15,10 @@ The [follow-up measurements](scaling.md) add matched four/eight-worker testing,
 CPU/memory observations and full-case output/readiness optimization checks.
 The [large-model study](large-model.md) records throughput/core-affinity probes
 and the explicit mixed-workload policy used for the full-suite validation.
+The [repeated contention controls](contention.md) compare four versus two large
+jobs in a fixed retained-model workload. Reducing the limit lowers individual
+analysis latency but makes that workload 18.13% slower overall; the existing
+full-suite policy remains in use.
 
 Two registered cases completed in **13m35.2s serially**
 and **8m21.6s in parallel**:

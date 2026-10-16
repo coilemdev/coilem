@@ -49,3 +49,9 @@ measurements have one observation per setting and do not represent an idle-host
 repeat study.
 
 [Raw timing summaries and integrity hashes](large-model-summary.json)
+
+The later [mixed retained-model contention controls](contention.md) compare the
+existing cost-two policy against cost three (two large plus two small jobs).
+Two runs per policy show 25.69% lower large-model analysis latency but 18.13%
+longer workload wall time with cost three. Keep the existing policy; these
+retained inputs do not establish a new full-case or full-suite runtime.

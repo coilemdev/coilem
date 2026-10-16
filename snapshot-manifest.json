@@ -2450,8 +2450,18 @@
     },
     {
       "path": "benchmarks/performance-112/README.md",
-      "bytes": 4854,
-      "sha256": "e1f0fd6132b535a6293a75213bd3344b1efd1fb8861b2ff38fca7fc0e4d58a46"
+      "bytes": 5123,
+      "sha256": "345e850750b99a76fc0d9080ecaa79494b0544d07d4fd4f1d7348419bd18f898"
+    },
+    {
+      "path": "benchmarks/performance-112/contention-summary.json",
+      "bytes": 55015,
+      "sha256": "d915a43eea3e07fc26a4653a6c3caca56c5955a3a112660a1d2bb8ecae45c668"
+    },
+    {
+      "path": "benchmarks/performance-112/contention.md",
+      "bytes": 4517,
+      "sha256": "8038bb0f788c3109db89af2d80dff1e6d12bdafb55a235ff625f2ed56803aab1"
     },
     {
       "path": "benchmarks/performance-112/femm5-mesh-convergence-summary.json",
@@ -2485,8 +2495,8 @@
     },
     {
       "path": "benchmarks/performance-112/full-suite.md",
-      "bytes": 5466,
-      "sha256": "a8a9c9e3722c541550c92ce76871b600df23626fe83c969b4f40bdb1e17090cc"
+      "bytes": 5770,
+      "sha256": "b1a25fd23dbdcde1eab1182a90f1b073c2731797a8807b60d89c32b830d9cc2a"
     },
     {
       "path": "benchmarks/performance-112/large-model-summary.json",
@@ -2495,8 +2505,8 @@
     },
     {
       "path": "benchmarks/performance-112/large-model.md",
-      "bytes": 2842,
-      "sha256": "e5402745861f0d0f2bce7be1ceae8c0f0016cca4086351bfedebc5af0579aebe"
+      "bytes": 3225,
+      "sha256": "2349241f08c44cd80e108aa17be8ad628bf5ce519858c74293988f54127d54fe"
     },
     {
       "path": "benchmarks/performance-112/pilot-summary.json",
@@ -4395,8 +4405,8 @@
     },
     {
       "path": "docs/BENCHMARK_PERFORMANCE.md",
-      "bytes": 11329,
-      "sha256": "cba61ad2869c471929f965118d05634e426565e01ed7b8627e2d00ec5decc4a6"
+      "bytes": 11948,
+      "sha256": "1facfa323aa420cff3236a93bbff2ad3a6f80986a0afd6633311276e19d7c41f"
     },
     {
       "path": "docs/ELMER.md",
