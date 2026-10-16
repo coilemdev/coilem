@@ -15,12 +15,20 @@ async function runList(page: Page): Promise<RunRecord[]> {
   return (await response.json()).runs as RunRecord[];
 }
 
+async function openMoreRunActions(page: Page): Promise<void> {
+  const more = page.getByRole('button', { name: 'More ▾', exact: true });
+  if ((await more.getAttribute('aria-expanded')) !== 'true') await more.click();
+  await expect(page.getByRole('group', { name: 'More run actions' })).toBeVisible();
+}
+
 async function downloadReports(page: Page, info: TestInfo, mode: Excitation): Promise<void> {
   for (const [label, extension, signature] of [
     ['Download PDF', 'pdf', '%PDF-'],
     ['Download CSV', 'csv', 'report_schema,'],
     ['Save replayable run package', 'zip', 'PK'],
   ]) {
+    // Download PDF sits in the saved bar; the other exports are under More (#99).
+    if (label !== 'Download PDF') await openMoreRunActions(page);
     const pendingDownload = page.waitForEvent('download');
     await page.getByRole('button', { name: label, exact: true }).click();
     const download = await pendingDownload;
@@ -90,7 +98,7 @@ test.describe('public developer preview release rehearsal', () => {
     await expect(page.getByRole('status').filter({ hasText: 'Local: ready' })).toBeVisible();
     await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
     // The files define no tooth shoes, so none may be inherited from the starter motor.
-    for (const [label, slots] of [['IPM 10p V-shape', 12], ['IPM 14p flat buried', 18], ['SPM 24p', 27]] as const) {
+    for (const [label, slots] of [['IPM 10p V-shape', 12], ['IPM 14p flat buried', 18], ['SPM 24p', 27], ['Rotating field 6p/36s', 36]] as const) {
       await page.getByRole('button', { name: 'Design file menu', exact: true }).click();
       await page.getByRole('menuitem', { name: 'Examples', exact: true }).hover();
       const previewed = page.waitForResponse((response) => (
@@ -179,6 +187,7 @@ test.describe('public developer preview release rehearsal', () => {
         await route.continue();
       }, { times: 1 });
       try {
+        await openMoreRunActions(page);
         await page.getByRole('button', { name: 'Rerun settings', exact: true }).click();
         await pendingPreview;
         await expect(page.getByRole('button', { name: /Standard.*Medium mesh/ })).toBeEnabled();

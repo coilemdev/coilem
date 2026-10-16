@@ -87,6 +87,12 @@ repository supplies the scheduler; it supplies no reference-solver adapter,
 installation discovery or reference-solver dependencies. The native benchmark
 command and application solve path are unchanged.
 
+The installed native harness lives in `backend.benchmark_suite`. External
+reference scheduling stays in `tools.benchmark_suite` with standard-library
+file and process primitives, so it leaves a producer's own `backend` namespace
+available. The documented reference command and payload-reuse import stay the
+same after the installed-harness migration.
+
 The external Python module has three functions:
 
 ```python

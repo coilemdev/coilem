@@ -11,7 +11,7 @@ const {
   parallelPathsDividing,
   repairGuidedSection,
 } = await importTypeScriptModule(new URL('../src/public/guidedConfigRepair.ts', import.meta.url));
-const { windingLayerOptions } = await importTypeScriptModule(new URL('../src/public/toothCoils.ts', import.meta.url));
+const { windingLayerOptions, windingLayerWording } = await importTypeScriptModule(new URL('../src/public/toothCoils.ts', import.meta.url));
 const { cloneDefaultConfig } = await importTypeScriptModule(new URL('../src/public/model.ts', import.meta.url));
 
 // Every layout the backend can wind, shared with tests/test_tooth_coil_windings.py and Magneto2D.
@@ -39,6 +39,23 @@ assert.deepEqual(availability(12, 8, 'concentrated'), [[1, true, null], [2, true
 assert.deepEqual(availability(27, 24, 'concentrated'), [[1, false, 'unbalanced with 27 slots'], [2, true, null]]);
 assert.deepEqual(availability(12, 4, 'concentrated'), [[1, true, null], [2, false, 'needs a fractional-slot layout']]);
 assert.deepEqual(availability(24, 8, 'distributed'), [[1, true, null], [2, true, null]]);
+
+// The control is worded by layout (#102): tooth coils in teeth wound, distributed
+// windings in coil sides per slot. Whole-slot concentrated maps have one layer only.
+const wording = (slots, poles, type) => {
+  const { label, choice, summary, hidden } = windingLayerWording(slots, poles, type);
+  return [label, choice[1], choice[2], summary[1], summary[2], hidden];
+};
+assert.deepEqual(wording(12, 8, 'concentrated'), ['Wound teeth', 'Alternate', 'All', 'alternate teeth', 'all teeth', false]);
+assert.deepEqual(wording(27, 24, 'concentrated'), ['Wound teeth', 'Alternate', 'All', 'alternate teeth', 'all teeth', false]);
+assert.deepEqual(wording(24, 8, 'distributed'), ['Coil sides / slot', '1', '2', '1 coil side', '2 coil sides', false]);
+assert.deepEqual(wording(12, 4, 'concentrated'), ['Layers', '1', '2', '1 layer', '2 layers', true]);
+assert.match(windingLayerWording(12, 8, 'concentrated').hint, /not in the benchmark yet/);
+for (const [slots, poles, type] of [[12, 8, 'concentrated'], [24, 8, 'distributed'], [12, 4, 'concentrated']]) {
+  const { choice } = windingLayerWording(slots, poles, type);
+  // The select box truncates longer choices.
+  assert.ok(Object.values(choice).every((text) => text.length <= 11), `${slots}s${poles}p ${type}`);
+}
 
 // Changing layers keeps the parallel paths a divisor of the coils per phase:
 // 8p/12s winds 4 coils per phase with two layers and 2 with one.

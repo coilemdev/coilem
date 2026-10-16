@@ -6,8 +6,8 @@ from datetime import datetime
 
 import pytest
 
-from tools.benchmark_suite.contract import ROOT, read, run_lock, sha
-from tools.benchmark_suite.contract import write as write_json
+from backend.benchmark_suite.contract import ROOT, read, run_lock, sha
+from backend.benchmark_suite.contract import write as write_json
 from tools.benchmark_suite.external import execute, identity, load_producer, safe_id, worker
 
 
@@ -27,6 +27,26 @@ def producer(tmp_path, *, duration=0.8, fail=False):
 
 def arguments(path, output, **kwargs):
     return Namespace(producer=path, out_dir=output, workers=2, case=None, timeout_s=10, timings=None, resume=False, **kwargs)
+
+
+def test_importing_reference_runner_leaves_producer_backend_namespace_free():
+    code = (
+        "import sys; import tools.run_reference_benchmark; "
+        "assert not any(name == 'backend' or name.startswith('backend.') for name in sys.modules)"
+    )
+    subprocess.run([sys.executable, "-c", code], cwd=ROOT, check=True)
+
+
+def test_producer_can_own_its_backend_namespace(tmp_path):
+    package = tmp_path / "backend"
+    package.mkdir()
+    (package / "__init__.py").write_text('ORIGIN = "external producer"\n', encoding="utf-8")
+    path = producer(tmp_path, duration=0)
+    path.write_text(path.read_text().replace(
+        '    time.sleep(0)',
+        '    import backend\n    assert backend.ORIGIN == "external producer"',
+    ), encoding="utf-8")
+    assert execute(arguments(path, tmp_path / "run")) == 0
 
 
 def test_real_workers_overlap_and_resume_preserves_results(tmp_path):

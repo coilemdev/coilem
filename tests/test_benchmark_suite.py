@@ -10,11 +10,11 @@ from pathlib import Path
 
 import pytest
 
-from tools.benchmark_suite.cli import inputs, verify_artifact
-from tools.benchmark_suite.contract import ROOT, SPEC, canonical, read, run_lock, sha, write
-from tools.benchmark_suite.metrics import energy_balance_ratio, evaluate_abc, evaluate_bldc
-from tools.benchmark_suite.references import load_bundle, load_suite
-from tools.benchmark_suite.report import build, phase_display_status
+from backend.benchmark_suite.cli import inputs, verify_artifact
+from backend.benchmark_suite.contract import ROOT, SPEC, canonical, read, run_lock, sha, write
+from backend.benchmark_suite.metrics import energy_balance_ratio, evaluate_abc, evaluate_bldc
+from backend.benchmark_suite.references import load_bundle, load_suite
+from backend.benchmark_suite.report import build, phase_display_status
 
 HISTORICAL_SPEC = ROOT / "benchmarks/abcd-v1/benchmark_spec.json"
 HISTORICAL_BUNDLE = ROOT / "benchmarks/reference-baselines/main-bad71d9"
@@ -183,7 +183,7 @@ def test_resume_rejects_changed_evidence_or_identity(tmp_path):
 
 
 def test_run_lock_excludes_duplicate_process_and_releases(tmp_path):
-    code = "from pathlib import Path; from tools.benchmark_suite.contract import run_lock;\nwith run_lock(Path(__import__('sys').argv[1])): pass"
+    code = "from pathlib import Path; from backend.benchmark_suite.contract import run_lock;\nwith run_lock(Path(__import__('sys').argv[1])): pass"
     with run_lock(tmp_path):
         result = subprocess.run([sys.executable, "-c", code, str(tmp_path)], cwd=ROOT, capture_output=True, text=True)
         assert result.returncode != 0
@@ -193,9 +193,11 @@ def test_run_lock_excludes_duplicate_process_and_releases(tmp_path):
 
 
 def test_help_does_not_import_a_reference_or_native_backend():
+    # The harness lives in the backend package (#71); listing still loads no solver or policy module.
     code = (
-        "import sys; from tools.benchmark_suite.cli import main; sys.argv=['benchmark','--list']; main(); "
-        "assert not any(n.startswith('backend') for n in sys.modules)"
+        "import sys; from backend.benchmark_suite.cli import main; sys.argv=['benchmark','--list']; main(); "
+        "loaded = [n for n in sys.modules if n.startswith('backend.') and not n.startswith('backend.benchmark_suite')]; "
+        "assert loaded == ['backend.resources'], loaded"
     )
     result = subprocess.run([sys.executable, "-c", code], cwd=ROOT, capture_output=True, text=True)
     assert result.returncode == 0, result.stderr
@@ -268,11 +270,44 @@ def test_report_orders_phases_and_retains_hashed_input_copies(tmp_path):
             assert read(fixture) == row["configurations"][stage]
 
 
+def test_pdf_report_links_fixtures_relative_to_the_report(tmp_path):
+    pypdf = pytest.importorskip("pypdf")
+    from tools.verify_snapshot import pdf_hygiene_failures
+
+    case = next(c for c in SPECIFICATION["cases"] if c["phase"] == "A")
+    stage = case["jobs"][0]["stage"]
+    manifest = {
+        "identity": {"harness_version": "1.0.0", "protocol_version": "1.0.0", "commit": "candidate"},
+        "smoke": False,
+        "reference_mode": "FROZEN_REFERENCE",
+    }
+    row = {
+        "id": case["id"],
+        "phase": "A",
+        "fixture": case["jobs"][0]["fixture"],
+        "status": "UNSUPPORTED",
+        "evaluation": {"status": "UNSUPPORTED", "gates": []},
+        "measurements": {},
+        "configurations": {stage: CONFIGS[case["id"], stage]},
+    }
+    build(tmp_path, manifest, [row], pdf=True)
+    pdf = tmp_path / "report/coilem_benchmark_report.pdf"
+    links = [
+        annotation.get_object()["/A"]["/URI"]
+        for page in pypdf.PdfReader(pdf).pages
+        if "/Annots" in page
+        for annotation in page["/Annots"]
+    ]
+    assert links == [f"fixtures/{case['id']}__{stage}.json"]
+    assert (pdf.parent / links[0]).is_file()
+    assert pdf_hygiene_failures("coilem_benchmark_report.pdf", pdf) == []
+
+
 def test_prius_planned_label_preserves_policy_rejection_and_numerical_status(tmp_path):
+    from backend.benchmark_suite.report import display_outcome
     from backend.magneto2d_adapter import get_magneto2d_winding_support_error
     from backend.models import MotorConfig
     from backend.public_policy import PublicConfigError, parse_public_solve_request
-    from tools.benchmark_suite.report import display_outcome
 
     cid = "ornl_prius_2004_ipm"
     config = CONFIGS[cid, "native"]
@@ -318,7 +353,7 @@ def test_canonical_request_hash_includes_speed_and_geometry():
 
 
 def test_provenance_survives_native_environment_path_isolation(monkeypatch):
-    from tools.benchmark_suite.contract import git
+    from backend.benchmark_suite.contract import git
 
     before = git("rev-parse", "HEAD")
     monkeypatch.setenv("PATH", "")
@@ -330,7 +365,7 @@ def test_orchestrator_resume_and_report_only_preserve_completed_jobs(tmp_path, m
     from argparse import Namespace
 
     from backend import magneto2d_adapter
-    from tools.benchmark_suite import cli
+    from backend.benchmark_suite import cli
 
     case = next(c for c in SPECIFICATION["cases"] if c["phase"] == phase)
     recorded = historical(case)
@@ -408,6 +443,51 @@ def test_orchestrator_resume_and_report_only_preserve_completed_jobs(tmp_path, m
         cli.execute(args)
 
 
+def test_runner_deletes_each_job_runtime_and_stops_at_the_disk_floor(tmp_path, monkeypatch):
+    """#71: solver files go once a job is measured, and no job starts below the free-space floor."""
+    from argparse import Namespace
+
+    from backend import magneto2d_adapter
+    from backend.benchmark_suite import cli
+
+    case = next(c for c in SPECIFICATION["cases"] if c["phase"] == "A")
+    recorded = historical(case)
+    runtime = {"commit": "test-candidate", "dirty": False, "harness_version": "1.0.0", "protocol_version": "1.0.0"}
+    monkeypatch.setattr(cli, "identity", lambda _, **kwargs: runtime)
+    monkeypatch.setattr(magneto2d_adapter, "ensure_magneto2d_binary", lambda: ROOT / "solvers/magneto2d/Cargo.toml")
+    launches = []
+
+    class Worker:
+        pid = 12345
+
+        def __init__(self, command, **kwargs):
+            launches.append(command)
+            request_path = Path(command[command.index("--request") + 1])
+            output_path = Path(command[command.index("--output") + 1])
+            cache = output_path.parent / "native-runtime" / "solve_cache"
+            cache.mkdir(parents=True)
+            (cache / "fields.bin").write_bytes(b"0" * 1024)
+            request = read(request_path)
+            write(output_path, {"status": "COMPLETE", "request_sha256": sha(request_path), "identity_before": request["identity"],
+                                "identity_after": request["identity"], "result": recorded["candidate"]})
+
+        def wait(self):
+            return 0
+
+    monkeypatch.setattr(cli.subprocess, "Popen", Worker)
+    args = Namespace(phases=["A"], case=[case["id"]], list=False, out_dir=tmp_path, no_reference=False, smoke=False,
+                     suite=HISTORICAL_SPEC, reference_bundle=HISTORICAL_BUNDLE, report_only=False, allow_dirty=False,
+                     resume=False, pdf=False, min_free_gb=1e9)
+    with pytest.raises(cli.DiskFloorError, match=f"Stopped before {case['id']} / native: .* below the 1e\\+09 GB floor.*--resume"):
+        cli.execute(args)
+    assert launches == [] and read(tmp_path / "run_manifest.json")["status"] == "STOPPED_LOW_DISK"
+    args.resume, args.min_free_gb = True, 0
+    assert cli.execute(args) == 0
+    assert len(launches) == 1 and read(tmp_path / "run_manifest.json")["status"] == "COMPLETE"
+    job = tmp_path / "jobs" / case["id"] / "native"
+    assert (job / "result.json").is_file() and not (job / "native-runtime").exists()
+
+
 def test_release_suite_replaces_only_two_requests_and_preserves_archives():
     current = load_suite(ROOT / "benchmarks/abcd-v1.1/benchmark_spec.json")
     historical_current_bundle = ROOT / "benchmarks/reference-baselines/ipm-high-output-v1"
@@ -455,7 +535,7 @@ def test_release_suite_replaces_only_two_requests_and_preserves_archives():
 
 
 def test_protocol_selection_is_recorded_and_unknown_protocols_rejected(tmp_path):
-    from tools.benchmark_suite.contract import identity
+    from backend.benchmark_suite.contract import identity
 
     binary = ROOT / "solvers/magneto2d/Cargo.toml"
     assert identity(binary)["protocol_version"] == "1.3.0"
@@ -518,8 +598,8 @@ def test_worker_preserves_selected_protocol_for_runtime_verification(tmp_path, m
     from argparse import Namespace
 
     from backend import solver
-    from tools.benchmark_suite.contract import identity
-    from tools.benchmark_suite.worker import measure
+    from backend.benchmark_suite.contract import identity
+    from backend.benchmark_suite.worker import measure
 
     case = SPECIFICATION["cases"][0]
     config = CONFIGS[case["id"], "native"]

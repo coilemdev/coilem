@@ -1,7 +1,7 @@
 """Data-only reference bundles, already normalized to public clockwise coordinates."""
 
-from tools.benchmark_suite import CONVENTION, SUPPORTED_PROTOCOL_VERSIONS
-from tools.benchmark_suite.contract import canonical, checked_json, read, sha
+from backend.benchmark_suite import CONVENTION, SUPPORTED_PROTOCOL_VERSIONS
+from backend.benchmark_suite.contract import canonical, checked_json, read, sha
 
 
 def load_suite(path):

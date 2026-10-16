@@ -19,7 +19,7 @@ import traceback
 import uuid
 from pathlib import Path
 
-from tools.benchmark_suite.contract import ROOT, now, read, run_lock, sha, write
+from tools.benchmark_suite.external_contract import ROOT, now, read, run_lock, sha, write
 
 
 def load_producer(path):
@@ -39,7 +39,7 @@ def identity(producer, path):
     return {
         "producer": producer.identity(), "producer_sha256": sha(path),
         "runner_sources": {name: sha(ROOT / name) for name in (
-            "tools/benchmark_suite/external.py", "tools/benchmark_suite/contract.py", "tools/run_reference_benchmark.py",
+            "tools/benchmark_suite/external.py", "tools/benchmark_suite/external_contract.py", "tools/run_reference_benchmark.py",
         )},
         "python": sys.version, "python_executable_sha256": sha(sys.executable),
     }

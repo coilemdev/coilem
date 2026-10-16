@@ -6,9 +6,9 @@ import math
 
 import pytest
 
+from backend.benchmark_suite import cli
+from backend.benchmark_suite.contract import ROOT, canonical, read, sha, write
 from tools import report_benchmark_against_reference as late
-from tools.benchmark_suite import cli
-from tools.benchmark_suite.contract import ROOT, canonical, read, sha, write
 
 # These fixtures replay the immutable protocol measured at 738d951.
 SPEC = ROOT / "benchmarks/abcd-v1.1/benchmark_spec.json"

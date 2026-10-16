@@ -23,9 +23,9 @@ and a pushed version tag publishes to PyPI once a reviewer approves; see
 | Windows build | The C runtime is linked statically (`-C target-feature=+crt-static`), so no Visual C++ redistributable is needed. |
 | CPU baseline | Generic x86-64 and arm64 code generation. Release builds refuse `RUSTFLAGS`, `CARGO_BUILD_RUSTFLAGS` and `COILEM_MAGNETO2D_BUILD_RUSTFLAGS`. |
 | Native libraries | `auditwheel show` (Linux), `delocate-listdeps` (macOS) and `dumpbin /dependents` (Windows), plus `tools/release/native_deps.py`, which fails on any library outside the operating system or a minimum OS above the wheel tag. |
-| Linux system libraries | Gmsh needs GLU, OpenGL and X11 client libraries (`libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6 libxfixes3 libxft2 libxinerama1 libxrender1 libfontconfig1 libgomp1` on Debian and Ubuntu). The hosted runner images already have the OpenGL and X11 libraries, so CI does not test a minimal system (#77). `coilem` checks at startup that Gmsh loads: it prints the install command when GLU is missing and names any other missing library. |
+| Linux system libraries | Gmsh needs GLU, OpenGL and X11 client libraries (`libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6 libxfixes3 libxft2 libxinerama1 libxrender1 libfontconfig1 libgomp1` on Debian and Ubuntu). The hosted runner images already have the OpenGL and X11 libraries, so a bare `ubuntu:22.04` container job checks that `coilem` prints this command when Gmsh cannot load, then installs exactly these packages and runs the acceptance test (#77). `coilem` checks at startup that Gmsh loads and names the missing library with the install command. |
 | Python versions | 3.11, 3.12, 3.13, 3.14 and 3.15, each tested. `Requires-Python` is `>=3.11,<3.16`: every supported version must have wheels for all runtime pins, which the policy tool checks. A pin may be split by `python_version` marker when no single version has wheels for every supported Python; the policy tool requires exactly one pin per package for each supported platform and Python version. |
-| Runners | Pinned images: builds on ubuntu-24.04, macos-15, macos-15-intel and windows-2022; acceptance on the oldest supported image with a hosted runner (ubuntu-22.04, macos-15, macos-15-intel, windows-2022). |
+| Runners | Pinned images: builds on ubuntu-24.04, macos-15, macos-15-intel and windows-2022; acceptance on the oldest supported image with a hosted runner (ubuntu-22.04, macos-15, macos-15-intel, windows-2022), plus a bare ubuntu:22.04 container on ubuntu-24.04. |
 
 On 2026-10-11 the policy gave these platform tags:
 
@@ -153,7 +153,13 @@ Each release:
 1. On a branch, set the version in `backend/__init__.py`,
    `frontend/package.json` (and its lock file) and `COILEM_APP_VERSION` in
    `frontend/src/public/designFile.ts`; `tests/test_public_candidate.py`
-   checks that they agree. Give `RELEASE_NOTES.md` the new heading.
+   checks that they agree. Give `RELEASE_NOTES.md` the new heading and a
+   "Reproduce this record" section. It names the version and the records'
+   commit, and gives the `coilem benchmark` commands from the
+   [records README](../benchmarks/records/README.md#reproduce-this-record).
+   If the release changes a physics source, `coilem benchmark` reports
+   NOT_COMPARABLE until new records are built from a complete run on each
+   platform.
 2. Merge, then run a TestPyPI rehearsal on that `main` commit and try the
    build by hand on each platform.
 3. Tag that commit and push the tag. The tag must name the version exactly,

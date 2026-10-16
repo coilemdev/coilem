@@ -13,7 +13,8 @@ another; a running server of a different coilEM version is reported.
 
 The launcher binds the listening socket itself and hands it to uvicorn, so the
 port cannot be taken between selection and serving. Ctrl+C stops accepting
-work and cancels active solver processes; a second Ctrl+C forces exit.
+work and cancels active solver processes; another Ctrl+C a second or more
+later forces exit.
 """
 
 from __future__ import annotations
@@ -51,11 +52,20 @@ SHUTDOWN_DEADLINE_S = 20.0
 _WSAEACCES = 10013
 # Ctrl+C, and Ctrl+Break, which is how Windows interrupts a console process group.
 _INTERRUPTS = frozenset({signal.SIGINT, *((signal.SIGBREAK,) if hasattr(signal, "SIGBREAK") else ())})
+# One Ctrl+C can arrive twice: under uvx the terminal interrupts the whole
+# process group, then uv forwards the interrupt to coilEM about 0.2 s later (#76).
+DUPLICATE_INTERRUPT_S = 1.0
+# Every system library Gmsh loads beyond a minimal install (#77). The
+# Debian/Ubuntu command is the README's; the bare-container acceptance job
+# installs exactly it. The other lines name the packages for the same libraries.
 _LINUX_MESHER_HELP = (
-    "Install it, then start coilEM again:\n"
-    "  Debian/Ubuntu: sudo apt-get install libglu1-mesa\n"
-    "  Fedora/RHEL:   sudo dnf install mesa-libGLU\n"
-    "  Arch Linux:    sudo pacman -S glu"
+    "Install the libraries Gmsh needs, then start coilEM again:\n"
+    "  Debian/Ubuntu: sudo apt-get install libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6 libxfixes3 libxft2 "
+    "libxinerama1 libxrender1 libfontconfig1 libgomp1\n"
+    "  Fedora/RHEL:   sudo dnf install mesa-libGLU libglvnd-glx libX11 libXcursor libXext libXfixes libXft "
+    "libXinerama libXrender fontconfig libgomp\n"
+    "  Arch Linux:    sudo pacman -S glu libglvnd libx11 libxcursor libxext libxfixes libxft libxinerama libxrender "
+    "fontconfig"
 )
 
 
@@ -314,7 +324,15 @@ def _launcher_server_class() -> type:
     import uvicorn
 
     class LauncherServer(uvicorn.Server):
+        first_interrupt_at: float | None = None
+
         def handle_exit(self, sig: int, frame: Any) -> None:
+            if sig in _INTERRUPTS:
+                now = time.monotonic()
+                if self.first_interrupt_at is None:
+                    self.first_interrupt_at = now
+                elif now - self.first_interrupt_at < DUPLICATE_INTERRUPT_S:
+                    return  # the same Ctrl+C, delivered again
             if self.should_exit and sig in _INTERRUPTS:
                 print("\ncoilem: forced exit.", file=sys.stderr, flush=True)
                 _force_exit(130)
@@ -347,8 +365,20 @@ def _raise_exit(signum: int, frame: Any) -> None:
     raise SystemExit(128 + signum)
 
 
-def _raise_interrupt(signum: int, frame: Any) -> None:
-    raise KeyboardInterrupt
+def _interrupt_outside_uvicorn(server: Any) -> Any:
+    """Handle Ctrl+C before uvicorn takes over signals and after it gives them back.
+
+    Until a Ctrl+C has stopped the server, Ctrl+C raises KeyboardInterrupt as
+    usual. uvicorn restores this handler once shutdown completes and re-raises
+    the interrupt that stopped it; that one, and a late duplicate (#76), are
+    ignored so the launcher's cleanup finishes and it exits 0.
+    """
+
+    def handle(signum: int, frame: Any) -> None:
+        if server.first_interrupt_at is None:
+            raise KeyboardInterrupt
+
+    return handle
 
 
 def _import_gmsh() -> None:
@@ -363,9 +393,7 @@ def linux_mesher_problem(*, platform: str = sys.platform, load: Any = _import_gm
     try:
         load()
     except OSError as exc:
-        if "GLU" in str(exc):
-            return f"the Gmsh mesher needs the GLU library (libGLU.so.1). {_LINUX_MESHER_HELP}"
-        return f"the Gmsh mesher could not load a system library: {exc}"
+        return f"the Gmsh mesher could not load a system library: {exc}\n{_LINUX_MESHER_HELP}"
     return None
 
 
@@ -391,12 +419,19 @@ def serve(sock: socket.socket, port: int, ui_bundle: Path, root_id: str, *, open
     # uvicorn re-raises the signal that stopped it once shutdown completes.
     # Ctrl+Break ends like Ctrl+C; a termination request still runs cleanup.
     signal.signal(signal.SIGTERM, _raise_exit)
-    if hasattr(signal, "SIGBREAK"):
-        signal.signal(signal.SIGBREAK, _raise_interrupt)
+    interrupted = _interrupt_outside_uvicorn(server)
+    for interrupt in _INTERRUPTS:
+        signal.signal(interrupt, interrupted)
     try:
         server.run(sockets=[sock])
     except KeyboardInterrupt:
         pass
+    if server.first_interrupt_at is not None:
+        # At exit Python resets its own handlers to the default, under which a
+        # late duplicate would kill the launcher. The shutdown deadline that
+        # Ctrl+C started still bounds the rest of cleanup.
+        for interrupt in _INTERRUPTS:
+            signal.signal(interrupt, signal.SIG_IGN)
     return 0
 
 
@@ -452,7 +487,16 @@ def launch(args: argparse.Namespace) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="coilem", description="Start coilEM and open it in your browser.")
+    argv = sys.argv[1:] if argv is None else argv
+    if argv[:1] == ["benchmark"]:
+        from backend.benchmark_suite.command import main as benchmark
+
+        return benchmark(argv[1:])
+    parser = argparse.ArgumentParser(
+        prog="coilem",
+        description="Start coilEM and open it in your browser.",
+        epilog="Run `coilem benchmark --help` to check this installation against the published benchmark.",
+    )
     parser.add_argument(
         "--port",
         type=int,
