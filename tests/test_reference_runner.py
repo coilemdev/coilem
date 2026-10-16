@@ -94,7 +94,8 @@ def test_producer_failure_is_visible_and_other_process_survives(tmp_path):
         failed = next(job for job in manifest["jobs"] if job["status"] == "ERROR")
         assert read(args.out_dir / failed["result"])["status"] == "ERROR"
     finally:
-        stop(independent)
+        independent.terminate()
+        independent.wait(timeout=5)
 
 
 def test_timeout_joins_owned_worker_and_releases_job_lock(tmp_path):

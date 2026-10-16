@@ -86,7 +86,10 @@ def stop(process):
         if os.name == "nt":
             process.kill()
         else:
-            os.killpg(process.pid, signal.SIGKILL)
+            try:
+                os.killpg(process.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass  # The owned group exited between the wait and signal.
         process.wait(timeout=5)
 
 

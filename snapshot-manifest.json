@@ -5975,8 +5975,8 @@
     },
     {
       "path": "tests/test_reference_runner.py",
-      "bytes": 8494,
-      "sha256": "cc15a559afd53272cf92022247cb9ea281ed6197f2c9d4eb13107b9eab10e726"
+      "bytes": 8536,
+      "sha256": "53b5f02c8eeceab4cb65ad91a7d3e625fcb97df4334ba18f3d8035163a07733e"
     },
     {
       "path": "tests/test_release_tools.py",
@@ -6060,8 +6060,8 @@
     },
     {
       "path": "tools/benchmark_suite/external.py",
-      "bytes": 15360,
-      "sha256": "8312c07fe5468e88385719b8ee75d5273a9cbc9103f99febc710a745a2032b21"
+      "bytes": 15496,
+      "sha256": "f5331edc50d50634f16fc6448593b86de1ad9118492b0b560a45f8c14c4a093e"
     },
     {
       "path": "tools/benchmark_suite/hardware.py",
