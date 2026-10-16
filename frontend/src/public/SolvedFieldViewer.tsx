@@ -13,6 +13,7 @@ import {
   warmFieldResultPlot,
   type FieldColorRangeMode,
   type FieldLineDensity,
+  type FieldLineOverlay,
   type FieldProbe,
   type FieldProbeDescription,
   type FieldResultRaster,
@@ -60,6 +61,10 @@ import type {
 } from './model';
 
 type FieldSource = 'resultant' | 'pm' | 'armature';
+// Stator + PM draws the PM-only field's lines over the stator-only field (#120).
+type FieldView = FieldSource | 'stator_pm';
+// A stator frame pairs with the PM frame at the same rotor position.
+const OVERLAY_ANGLE_TOLERANCE_DEG = 1e-3;
 const IDLE_BUFFER_FRAMES = 4;
 const DETAIL_VIEWPORT_SCALE = 1.08;
 const MAX_PLAYBACK_CATCHUP_MS = 250;
@@ -286,7 +291,11 @@ export function SolvedFieldViewer({
     ),
     [armature?.airgap_profiles, armature?.field_playback, armature?.frames],
   );
-  const [source, setSource] = useState<FieldSource>('resultant');
+  const [view, setView] = useState<FieldView>('resultant');
+  const overlayActive = view === 'stator_pm';
+  // Stator + PM loads, caches and plays the stator field as Stator only does;
+  // the PM frame at the same position loads beside it.
+  const source: FieldSource = overlayActive ? 'armature' : view;
   const sourceRef = useRef<FieldSource>('resultant');
   sourceRef.current = source;
   const [frameIndex, setFrameIndex] = useState(0);
@@ -327,6 +336,8 @@ export function SolvedFieldViewer({
     raster: FieldResultRaster;
     angleDeg: number;
   } | null>(null);
+  // The last PM overlay drawn, kept while the next position's decodes.
+  const [heldOverlayRaster, setHeldOverlayRaster] = useState<FieldResultRaster | null>(null);
   // While the slider is dragged, only its newest position loads (#59).
   const [scrubbing, setScrubbing] = useState(false);
   const [scrubDirection, setScrubDirection] = useState<1 | -1>(1);
@@ -390,6 +401,24 @@ export function SolvedFieldViewer({
   const descriptor = streamingArmatureFrame ?? nearestFrame(sourceFrames, electricalAngleDeg);
   const artifactId = descriptor?.field_frame_artifact.artifact_id ?? null;
   const exactFrameSettled = artifactId !== null && settledArtifactId === artifactId;
+  const overlayDescriptor = overlayActive && descriptor
+    ? nearestFrame(resultantFrames, descriptor.angle_deg)
+    : null;
+  const overlayArtifactId = overlayDescriptor && descriptor
+    && Math.abs(overlayDescriptor.angle_deg - descriptor.angle_deg) <= OVERLAY_ANGLE_TOLERANCE_DEG
+    ? overlayDescriptor.field_frame_artifact.artifact_id
+    : null;
+  const overlayRasterKeyRef = useRef<string | null>(null);
+  overlayRasterKeyRef.current = overlayArtifactId ? rasterCacheKey(overlayArtifactId, 'pm') : null;
+  const overlayRaster = overlayArtifactId ? cachedRaster(rasterCache, overlayArtifactId, 'pm', false) ?? null : null;
+  const overlayPlot = overlayArtifactId ? frameCache[overlayArtifactId]?.noload_plot ?? null : null;
+  const visibleOverlayRaster = overlayActive ? overlayRaster ?? heldOverlayRaster : null;
+  const fieldLineOverlay = useMemo<FieldLineOverlay | null>(
+    () => (overlayActive && (visibleOverlayRaster || overlayPlot)
+      ? { raster: visibleOverlayRaster, plot: overlayPlot }
+      : null),
+    [overlayActive, overlayPlot, visibleOverlayRaster],
+  );
   const activeRasterKey = artifactId ? rasterCacheKey(artifactId, source, showMesh) : null;
   activeRasterKeyRef.current = activeRasterKey;
   const activeRaster = artifactId ? cachedRaster(rasterCache, artifactId, source, showMesh) ?? null : null;
@@ -473,7 +502,7 @@ export function SolvedFieldViewer({
   const rasterCacheLimit = publicFieldPlaybackCacheFrames(
     playbackRpm,
     Math.ceil(angleFrames.length / playbackStride),
-  );
+  ) * (overlayActive ? 2 : 1);
   const rasterCacheLimitRef = useRef(rasterCacheLimit);
   rasterCacheLimitRef.current = rasterCacheLimit;
   const playbackLookaheadIndices = useMemo(
@@ -540,11 +569,19 @@ export function SolvedFieldViewer({
     preloadIndices.flatMap((preloadIndex) => {
       const preloadAngle = angleFrames[preloadIndex]?.angle_deg ?? 0;
       const preloadArtifactId = nearestFrame(sourceFrames, preloadAngle)?.field_frame_artifact.artifact_id;
-      return preloadArtifactId
-        ? [rasterCacheKey(preloadArtifactId, source), rasterCacheKey(preloadArtifactId, source, true)]
-        : [];
+      const overlayArtifactIdAhead = overlayActive
+        ? nearestFrame(resultantFrames, preloadAngle)?.field_frame_artifact.artifact_id
+        : null;
+      return [
+        ...(preloadArtifactId
+          ? [rasterCacheKey(preloadArtifactId, source), rasterCacheKey(preloadArtifactId, source, true)]
+          : []),
+        ...(overlayArtifactIdAhead
+          ? [rasterCacheKey(overlayArtifactIdAhead, 'pm'), rasterCacheKey(overlayArtifactIdAhead, 'pm', true)]
+          : []),
+      ];
     }),
-  ), [angleFrames, preloadIndices, source, sourceFrames]);
+  ), [angleFrames, overlayActive, preloadIndices, resultantFrames, source, sourceFrames]);
   const upcomingRasterKeysRef = useRef(upcomingRasterKeys);
   upcomingRasterKeysRef.current = upcomingRasterKeys;
   const keptRasterKeys = useCallback((loadedKey?: string): Set<string> => {
@@ -553,6 +590,10 @@ export function SolvedFieldViewer({
     if (activeRasterKeyRef.current) {
       keep.add(activeRasterKeyRef.current);
       keep.add(activeRasterKeyRef.current.replace(/^([^:]+):mesh:/, '$1:'));
+    }
+    if (overlayRasterKeyRef.current) {
+      keep.add(overlayRasterKeyRef.current);
+      keep.add(overlayRasterKeyRef.current.replace(/^([^:]+):/, '$1:mesh:'));
     }
     return keep;
   }, []);
@@ -599,9 +640,9 @@ export function SolvedFieldViewer({
   const loadVisualFrame = useCallback((
     requestedDescriptor: PublicFieldFrameDescriptor,
     requestedSource: FieldRasterSource,
+    withMesh = showMeshRef.current,
   ): Promise<FieldResultRaster | null> => {
     const requestedArtifactId = requestedDescriptor.field_frame_artifact.artifact_id;
-    const withMesh = showMeshRef.current;
     const key = rasterCacheKey(requestedArtifactId, requestedSource, withMesh);
     const cached = cachedRaster(rasterCacheRef.current, requestedArtifactId, requestedSource, withMesh);
     if (cached) return Promise.resolve(cached);
@@ -659,17 +700,26 @@ export function SolvedFieldViewer({
     const shown = new Set(Object.values(rasterCache));
     if (detailRaster) shown.add(detailRaster.raster);
     if (heldRaster) shown.add(heldRaster.raster);
+    if (heldOverlayRaster) shown.add(heldOverlayRaster);
     retiredRastersRef.current.forEach((raster) => {
       if (shown.has(raster)) return;
       closeRaster(raster);
       retiredRastersRef.current.delete(raster);
     });
-  }, [detailRaster, heldRaster, rasterCache]);
+  }, [detailRaster, heldOverlayRaster, heldRaster, rasterCache]);
 
   const drawnRaster = activeRaster ?? meshlessRaster;
   useEffect(() => {
     if (drawnRaster) setHeldRaster({ source, raster: drawnRaster, angleDeg: electricalAngleDeg });
   }, [drawnRaster, electricalAngleDeg, source]);
+
+  useEffect(() => {
+    if (overlayRaster) setHeldOverlayRaster(overlayRaster);
+  }, [overlayRaster]);
+
+  useEffect(() => {
+    if (!overlayActive) setHeldOverlayRaster(null);
+  }, [overlayActive]);
 
   useEffect(() => () => {
     if (scrubIdleTimerRef.current !== null) window.clearTimeout(scrubIdleTimerRef.current);
@@ -682,7 +732,8 @@ export function SolvedFieldViewer({
     rasterCacheRef.current = {};
     frameRequestsRef.current.clear();
     rasterRequestsRef.current.clear();
-    setSource('resultant');
+    setView('resultant');
+    setHeldOverlayRaster(null);
     setFrameIndex(0);
     frameIndexRef.current = 0;
     playbackElectricalAngleRef.current = 0;
@@ -778,8 +829,19 @@ export function SolvedFieldViewer({
             cachedRaster(rasterCacheRef.current, nextArtifactId, source, showMeshRef.current)
             || frameCacheRef.current[nextArtifactId]
           );
+        const nextOverlay = overlayActive ? nearestFrame(resultantFrames, nextAngle) : null;
+        const nextOverlayId = nextOverlay?.field_frame_artifact.artifact_id;
+        const nextOverlayReady = !nextOverlayId
+          || cachedRaster(rasterCacheRef.current, nextOverlayId, 'pm', false)
+          || frameCacheRef.current[nextOverlayId];
         if (nextDescriptor && nextArtifactId && !nextReady) {
           void loadVisualFrame(nextDescriptor, source).catch(() => {
+            setPlaybackWaiting(false);
+            setPlaying(false);
+          });
+          setPlaybackWaiting(true);
+        } else if (nextOverlay && !nextOverlayReady) {
+          void loadVisualFrame(nextOverlay, 'pm', false).catch(() => {
             setPlaybackWaiting(false);
             setPlaying(false);
           });
@@ -802,10 +864,12 @@ export function SolvedFieldViewer({
   }, [
     angleFrames,
     loadVisualFrame,
+    overlayActive,
     playing,
     polePairs,
     playbackSpan,
     playbackSpanDeg,
+    resultantFrames,
     source,
     sourceFrames,
     syncPlaybackSlider,
@@ -904,16 +968,51 @@ export function SolvedFieldViewer({
       ) {
         void loadVisualFrame(preloadDescriptor, source).catch(() => undefined);
       }
+      const preloadOverlay = overlayActive ? nearestFrame(resultantFrames, preloadAngle) : null;
+      const preloadOverlayId = preloadOverlay?.field_frame_artifact.artifact_id;
+      if (
+        preloadOverlay
+        && preloadOverlayId
+        && !cachedRaster(rasterCacheRef.current, preloadOverlayId, 'pm', false)
+        && !frameCacheRef.current[preloadOverlayId]
+      ) {
+        void loadVisualFrame(preloadOverlay, 'pm', false).catch(() => undefined);
+      }
     }
   }, [
     angleFrames,
     loadVisualFrame,
+    overlayActive,
     playing,
     preloadIndices,
+    resultantFrames,
     scrubbing,
     showMesh,
     source,
     sourceFrames,
+  ]);
+
+  useEffect(() => {
+    // The PM frame on screen in Stator + PM: its playback raster at once, and
+    // its exact frame once the stator frame has settled.
+    if (!overlayActive || !overlayDescriptor || !overlayArtifactId) return;
+    if (
+      !cachedRaster(rasterCacheRef.current, overlayArtifactId, 'pm', false)
+      && !frameCacheRef.current[overlayArtifactId]
+    ) {
+      void loadVisualFrame(overlayDescriptor, 'pm', false).catch(() => undefined);
+    }
+    if (!playing && exactFrameSettled && !frameCacheRef.current[overlayArtifactId]) {
+      void loadFrame(overlayArtifactId).catch(() => undefined);
+    }
+  }, [
+    exactFrameSettled,
+    loadFrame,
+    loadVisualFrame,
+    overlayActive,
+    overlayArtifactId,
+    overlayDescriptor,
+    playing,
   ]);
 
   useEffect(() => {
@@ -969,12 +1068,16 @@ export function SolvedFieldViewer({
     void loadFrame(artifactId).catch(() => undefined);
   }, [activePlot, artifactId, exactFrameSettled, loadFrame, playing]);
 
-  const selectSource = (nextSource: FieldSource) => {
+  const selectSource = (nextView: FieldView) => {
+    const nextSource: FieldSource = nextView === 'stator_pm' ? 'armature' : nextView;
     if (nextSource === 'armature' && !magnetoCompositionAvailable) return;
-    setSource(nextSource);
+    if (nextView === 'stator_pm' && !pmAvailable) return;
+    setView(nextView);
     setPlaying(false);
     setPlaybackWaiting(false);
     if (nextSource !== 'armature') setRetainedPlot(null);
+    // Stator + PM shows no flux-density map, so it has no colour range to hold.
+    if (nextView === 'stator_pm') setColorRangeMode('viewport');
     setDetailPlot(null);
     replaceDetailRaster(null);
     detailRequestRef.current += 1;
@@ -995,12 +1098,16 @@ export function SolvedFieldViewer({
     setPlaying(true);
   };
 
-  const sourceLabel = source === 'resultant' ? 'Resultant field' : source === 'pm' ? 'PM-only field' : 'Stator-current field';
-  const sourceDetail = source === 'resultant'
-    ? 'Permanent magnets and stator current'
-    : source === 'pm'
-      ? 'Exact zero-current Magneto2D frames'
-      : 'PM remanence off · exact stator field';
+  const sourceLabel = overlayActive
+    ? 'Stator and PM field lines'
+    : source === 'resultant' ? 'Resultant field' : source === 'pm' ? 'PM-only field' : 'Stator-current field';
+  const sourceDetail = overlayActive
+    ? 'Separate solves: in saturated steel the resultant is not their sum.'
+    : source === 'resultant'
+      ? 'Permanent magnets and stator current'
+      : source === 'pm'
+        ? 'Exact zero-current Magneto2D frames'
+        : 'PM remanence off · exact stator field';
   const setRangeMode = (nextMode: FieldColorRangeMode) => {
     setColorRangeMode(nextMode);
     if (nextMode === 'sweep') {
@@ -1025,8 +1132,8 @@ export function SolvedFieldViewer({
         : frameError;
   const renderLayerButtons = () => (
     <>
-      {hasMagnets && <button type="button" aria-pressed={showMagnets} onClick={() => setShowMagnets((value) => !value)}><i aria-hidden="true" />{source === 'armature' ? 'PM reference' : 'Magnets'}</button>}
-      <button type="button" aria-pressed={showHeatmap} onClick={() => setShowHeatmap((value) => !value)}><i aria-hidden="true" />Flux density</button>
+      {hasMagnets && <button type="button" aria-pressed={showMagnets} onClick={() => setShowMagnets((value) => !value)}><i aria-hidden="true" />{source === 'armature' && !overlayActive ? 'PM reference' : 'Magnets'}</button>}
+      <button type="button" aria-pressed={showHeatmap && !overlayActive} disabled={overlayActive} title={overlayActive ? 'Off in Stator + PM: one |B| map cannot belong to both fields' : undefined} onClick={() => setShowHeatmap((value) => !value)}><i aria-hidden="true" />Flux density</button>
       <button type="button" aria-pressed={showMesh} onClick={() => setShowMesh((value) => !value)}><i aria-hidden="true" />Mesh</button>
       <button type="button" aria-pressed={showAirgap} onClick={() => setShowAirgap((value) => !value)}><i aria-hidden="true" />Airgap</button>
       <button type="button" aria-pressed={showFieldLines} onClick={() => setShowFieldLines((value) => !value)}><i aria-hidden="true" />Field lines</button>
@@ -1079,7 +1186,8 @@ export function SolvedFieldViewer({
             <div className="public-field-source-controls" role="group" aria-label="Field composition">
               <button type="button" aria-label="Resultant field, permanent magnets plus stator current" title="Permanent magnets plus stator current" aria-pressed={source === 'resultant'} onClick={() => selectSource('resultant')}><strong>Resultant</strong></button>
               <button type="button" aria-label="PM-only field, zero current" title="Exact zero-current Magneto2D field" aria-pressed={source === 'pm'} disabled={!pmAvailable} onClick={() => selectSource('pm')}><strong>PM only</strong></button>
-              <button type="button" aria-label="Stator-current-only field, permanent-magnet remanence disabled" title={magnetoCompositionAvailable ? 'Exact zero-remanence Magneto2D field' : 'Stator-only composition is available for Magneto2D results'} aria-pressed={source === 'armature'} disabled={!magnetoCompositionAvailable} onClick={() => selectSource('armature')}><strong>Stator only</strong></button>
+              <button type="button" aria-label="Stator-current-only field, permanent-magnet remanence disabled" title={magnetoCompositionAvailable ? 'Exact zero-remanence Magneto2D field' : 'Stator-only composition is available for Magneto2D results'} aria-pressed={view === 'armature'} disabled={!magnetoCompositionAvailable} onClick={() => selectSource('armature')}><strong>Stator only</strong></button>
+              <button type="button" aria-label="Stator-current and PM-only field lines together" title={magnetoCompositionAvailable && pmAvailable ? 'Stator field lines in orange, PM field lines in cyan' : 'Needs a Magneto2D result with PM-only frames'} aria-pressed={view === 'stator_pm'} disabled={!magnetoCompositionAvailable || !pmAvailable} onClick={() => selectSource('stator_pm')}><strong>Stator + PM</strong></button>
             </div>
           </div>
           <div className="public-field-control-cluster public-field-overlay-cluster">
@@ -1144,21 +1252,21 @@ export function SolvedFieldViewer({
               plot={visiblePlot}
               raster={activeDetailRaster ?? visibleRaster}
               highResolutionPlot={exactVectorPlot}
-              probeEnabled={!playing && Boolean(exactVectorPlot)}
+              probeEnabled={!playing && Boolean(exactVectorPlot) && !overlayActive}
               geometry={geometry}
               magnetRotationDeg={(heldFrame?.angleDeg ?? electricalAngleDeg) / polePairs}
               showMagnets={showMagnets}
               showAirgap={showAirgap}
               airgapInnerRadiusMm={rotorAirgapBoundaryRadiusMm(config)}
               showMagnetPolarityLabels={showPoleLabels}
-              magnetReference={source === 'armature'}
+              magnetReference={source === 'armature' && !overlayActive}
               showStatorPolarity={source === 'armature' && showPoleLabels}
               showPolarityLegend={source === 'armature' && showPoleLabels}
               statorPolarityProfile={descriptor?.airgap_brbt ?? exactVectorPlot?.airgap_brbt}
               statorPolarityRotationDeg={statorPolarityRotationDeg}
               statorInnerRadiusMm={config.stator.ID_mm / 2}
               poles={config.rotor.pole_count}
-              showHeatmap={showHeatmap}
+              showHeatmap={showHeatmap && !overlayActive}
               showMesh={showMesh}
               showFieldLines={showFieldLines}
               fieldLineDensity={exactVectorPlot ? fieldLineDensity : 'medium'}
@@ -1172,6 +1280,7 @@ export function SolvedFieldViewer({
               subtitle={sourceDetail}
               describeProbe={describeProbe}
               onViewportScaleSettled={setFieldViewportScale}
+              overlay={fieldLineOverlay}
             />
           </>
         )}
