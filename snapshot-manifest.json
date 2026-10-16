@@ -4379,6 +4379,11 @@
       "sha256": "80a13340dfcc798097abb26134949b7f630e6934d42d9ef0531a620fb94e3d50"
     },
     {
+      "path": "docs/TEACHING_MULTIPOLE_MOTOR.md",
+      "bytes": 2852,
+      "sha256": "28c4c0d2749ad2769b141c72044fdbd1e828f05d4f7565edf90df4fc8b689186"
+    },
+    {
       "path": "docs/VALIDATION.md",
       "bytes": 22970,
       "sha256": "425be00ba4bb63b4fc7373e66fc0d180dc33d1836947e5fc07e01c51c469400c"
@@ -5265,8 +5270,8 @@
     },
     {
       "path": "frontend/src/public/exampleDesigns.ts",
-      "bytes": 3125,
-      "sha256": "0bf3f379a2b4bea1076f4830e84fb6a01802729e8a66f2b209a700fe4bb1bea5"
+      "bytes": 3392,
+      "sha256": "0960503e282e3037cc963b82ef9894acf52ee7911a97fa632f83522bdb3cd5fe"
     },
     {
       "path": "frontend/src/public/examples/honda_accord_2005.coilem",
@@ -5277,6 +5282,11 @@
       "path": "frontend/src/public/examples/ornl_prius_2004_holem50.coilem",
       "bytes": 3030,
       "sha256": "385245790bea2051c4347f2939636ede14e93b063402a8ad91fb58f658d2bd74"
+    },
+    {
+      "path": "frontend/src/public/examples/rotating_field_6p36s.coilem",
+      "bytes": 2451,
+      "sha256": "ba45445c5efc2024b1a8bcbfcf55967df833b9bd3c61d5862075c46fbba239ef"
     },
     {
       "path": "frontend/src/public/examples/validation_ipm_10p_v_shape_medium.openem",
@@ -5485,8 +5495,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 15644,
-      "sha256": "b3d5f71f884ae7190b7bd030f8a86c04a48db5d69a5c3e81281293a9049417cc"
+      "bytes": 15675,
+      "sha256": "33306593c15421c3e779db184d32f39166a5a8863708cfebf4fdfad15dee2c70"
     },
     {
       "path": "frontend/tsconfig.public.json",
