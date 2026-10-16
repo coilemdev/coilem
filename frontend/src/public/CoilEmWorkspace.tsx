@@ -3702,16 +3702,13 @@ function ReportStage({
         completeLoadedCycle={completeLoadedCycle}
         thdLabel={reportThdLabel}
         settings={reportSettings}
-      />
-      <div className="public-report-assumptions" role="note">
-        <details>
-          <summary>Model assumptions</summary>
-          <div className="public-report-assumptions-body">
+        assumptions={(
+          <>
             <span>{sixStep ? 'Ideal current excitation only — no PWM, switching ripple, Hall timing, dead time, ESC dynamics, switching loss, or startup behavior. ' : ''}This is an electromagnetic result only. {config.materials.stator_steel.startsWith('custom:') || config.materials.rotor_steel.startsWith('custom:') ? 'Custom steel uses your imported B-H data.' : 'M350-50A is an open reference B-H model;'} Supplier-specific loss data and temperature prediction are not included.</span>
             <a href="https://github.com/coilemdev/coilem/blob/main/MATERIALS.md#electrical-steel" target="_blank" rel="noreferrer">Review material provenance</a>
-          </div>
-        </details>
-      </div>
+          </>
+        )}
+      />
       <div className="public-report-plot-tabs" role="tablist" aria-label="Result plots">
         <button type="button" role="tab" aria-selected={activePlot === 'torque'} className={activePlot === 'torque' ? 'active' : ''} onClick={() => setActivePlot('torque')}>Torque</button>
         <button type="button" role="tab" aria-selected={activePlot === 'back-emf'} className={activePlot === 'back-emf' ? 'active' : ''} onClick={() => setActivePlot('back-emf')}>Back EMF</button>

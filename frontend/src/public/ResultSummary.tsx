@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, type ReactNode } from 'react';
 import { MotorConstants } from './MotorConstants';
 import type { MaterialCatalog, MotorConfig, SolveResult } from './model';
 import {
@@ -30,6 +30,8 @@ interface ResultSummaryProps {
   thdLabel: string;
   /** Every run setting, label then value, shown when Run settings is expanded. */
   settings: Array<{ label: string; value: string }>;
+  /** The model assumptions note, shown under the settings when expanded. */
+  assumptions: ReactNode;
 }
 
 function LoadingBar({ label, valueT, scaleMaxT, knee }: { label: string; valueT: number; scaleMaxT: number; knee: [number, number] | null }) {
@@ -46,8 +48,8 @@ function LoadingBar({ label, valueT, scaleMaxT, knee }: { label: string; valueT:
 }
 
 /**
- * The Results summary (#99 part B): the run settings as one collapsed line
- * (#110), the headline numbers with their conventions, motor constants beside
+ * The Results summary (#99 part B): the run settings and model assumptions as
+ * one collapsed line (#110), the headline numbers with their conventions, motor constants beside
  * magnetic loading, and the run timings demoted to one footer line.
  */
 export function ResultSummary({
@@ -58,8 +60,10 @@ export function ResultSummary({
   completeLoadedCycle,
   thdLabel,
   settings,
+  assumptions,
 }: ResultSummaryProps) {
   const loadingHeadingId = useId();
+  const assumptionsHeadingId = useId();
   const { summary, solve_metadata: metadata } = result;
   const rpm = config.solve_params.rated_speed_rpm;
   const preview = sixStep && !completeLoadedCycle ? ' · preview only' : '';
@@ -95,11 +99,15 @@ export function ResultSummary({
           <ul className="public-operating-point" aria-label="Operating point">
             {chips.map((chip) => <li key={chip}>{chip}</li>)}
           </ul>
-          <span className="public-run-settings-toggle" aria-hidden="true">All settings</span>
+          <span className="public-run-settings-toggle" aria-hidden="true">Settings &amp; assumptions</span>
         </summary>
         <dl className="public-report-provenance">
           {settings.map(({ label, value }) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}
         </dl>
+        <section className="public-run-settings-assumptions" role="note" aria-labelledby={assumptionsHeadingId}>
+          <h4 id={assumptionsHeadingId}>Model assumptions</h4>
+          <div className="public-report-assumptions-body">{assumptions}</div>
+        </section>
       </details>
       <div className="public-result-headline">
         <article className="public-result-hero">

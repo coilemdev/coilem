@@ -1545,7 +1545,10 @@ assert.match(workspaceSource, /data-guide="solve-run"/);
 assert.match(workspaceSource, /data-guide="open-report"/);
 assert.match(workspaceSource, /Review source and limitations/);
 assert.match(workspaceSource, /Review material provenance/);
-assert.match(workspaceSource, /<summary>Model assumptions<\/summary>/);
+// Model assumptions live inside the Results Run settings disclosure (#110).
+assert.match(resultSummarySource, /<details className="public-run-settings">[\s\S]*?<h4 id=\{assumptionsHeadingId\}>Model assumptions<\/h4>[\s\S]*?<\/details>/);
+assert.match(workspaceSource, /assumptions=\{\(\s*<>\s*<span>[\s\S]*?Review material provenance/);
+assert.doesNotMatch(workspaceSource, /className="public-report-assumptions"/);
 assert.match(workspaceSource, /sixStep \? 'Conducting phase current' : 'Phase current'/);
 assert.match(workspaceSource, /\{ label: 'Rated speed', value:/);
 assert.match(workspaceSource, /Ideal six-step \(120°\)/);
