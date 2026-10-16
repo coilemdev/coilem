@@ -2455,8 +2455,8 @@
     },
     {
       "path": "benchmarks/performance-112/pilot-summary.json",
-      "bytes": 5981,
-      "sha256": "ed3e616a41d14afbea1ef661e2ccda7f245b80f02d15f67d0dd697b7a8c91373"
+      "bytes": 5836,
+      "sha256": "3d387e0bdf2cb71a5182962f18f4b48fdb8dbb27d09cfb7965dad0f7e4f697a1"
     },
     {
       "path": "benchmarks/pr100-v3-handoff/README.md",
