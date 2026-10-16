@@ -30,8 +30,9 @@ boundary; this does not mean the rotor made a complete mechanical turn.
 ## Geometry and operating point
 
 - Stator: 250 mm OD, 166 mm bore, 36 slots, 50 mm stack, 18 mm return yoke.
-- Rotor: 150 mm steel OD, 35 mm shaft hole, six 3 mm thick surface magnets.
-- Physical airgap: 5 mm. Each magnet covers 80% of its pole pitch.
+- Rotor: 157 mm steel OD, 35 mm shaft hole, six 3 mm thick surface magnets.
+- Physical airgap: 1.5 mm, the top of the app's practical range (0.5–1.5 mm).
+  Each magnet covers 80% of its pole pitch.
 - Winding: 20 turns per coil, two coil sides per slot, one parallel path.
 - Excitation: sinusoidal, 20 A peak phase current, 300 RPM operating speed.
   The separate 3 RPM playback setting slows the display for learning.
@@ -44,9 +45,8 @@ The design file is
 
 The native field study compared 4p/24s and 6p/36s distributed-winding motors.
 The six-pole design retained six distinct flux lobes with a dense tooth
-layout. Enlarging its airgap from 4 mm
-to 5 mm modestly softened the slot-scale contour bends and made rotor/stator
-separation easier to inspect. The final pass refines the mesh and reduces the
+layout. The study's drafts used a 4–5 mm airgap to make the rotor/stator
+separation easier to see; the bundled design uses a realistic 1.5 mm. The final pass refines the mesh and reduces the
 angular step from 30° to 5°, retaining the PM-only no-load field as well.
 
 All three sources are separate nonlinear Magneto2D solutions. Their arithmetic
