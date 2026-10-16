@@ -9,6 +9,7 @@ const {
   loadingScaleMaxT,
   saturationKneeRangeT,
   sparklinePath,
+  sharedSparklinePaths,
   torqueRange,
 } = await importTypeScriptModule(new URL('../src/public/resultMetrics.ts', import.meta.url));
 
@@ -32,6 +33,13 @@ const path = sparklinePath([1, 3, 2], 100, 20);
 assert.equal(path, 'M2.0 18.0 L50.0 2.0 L98.0 10.0');
 assert.equal(sparklinePath([5, 5, 5], 100, 20), 'M2.0 18.0 L50.0 18.0 L98.0 18.0', 'a flat waveform draws a flat line');
 assert.equal(sparklinePath([7], 100, 20), null);
+
+// The back-EMF sparkline draws all phases on one scale: a flat phase at the
+// midpoint of another's swing sits mid-height, not at the bottom (#110).
+const [phaseA, phaseB] = sharedSparklinePaths([[0, 2, 0], [1, 1, 1]], 100, 20);
+assert.equal(phaseA, 'M2.0 18.0 L50.0 2.0 L98.0 18.0');
+assert.equal(phaseB, 'M2.0 10.0 L50.0 10.0 L98.0 10.0');
+assert.deepEqual(sharedSparklinePaths([[1], []], 100, 20), [null, null], 'without two finite samples, no phase draws');
 
 // The flux-density scale is 0–2 T unless a peak exceeds it.
 assert.equal(loadingScaleMaxT([1.5, 1.25]), 2);

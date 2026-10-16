@@ -1525,9 +1525,16 @@ body {
 .public-result-headline strong small { margin-left: 2px; color: var(--text-muted); font: 11px var(--font-sans); }
 .public-result-headline p { margin: 6px 0 0; color: var(--text-muted); font-size: 10px; line-height: 1.45; }
 .public-result-hero { border-color: color-mix(in srgb, var(--accent-primary) 35%, var(--border-subtle)) !important; }
-.public-result-hero > div { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px; }
+.public-result-hero > div,
+.public-result-emf > div { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px; }
+.public-result-emf > div { align-items: center; }
 .public-result-hero strong { font-size: 32px; }
 .public-result-hero svg path { fill: none; stroke: var(--accent-primary); stroke-width: 2; stroke-linejoin: round; }
+/* Three-phase back-EMF sparkline, in the Back EMF chart's phase colours (#110). */
+.public-result-emf svg path { fill: none; stroke-width: 1.5; stroke-linejoin: round; }
+.public-result-emf svg .phase-a { stroke: #f87171; }
+.public-result-emf svg .phase-b { stroke: #4ade80; }
+.public-result-emf svg .phase-c { stroke: #60a5fa; }
 .public-result-detail { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
 .motor-constants.is-report { margin: 0; padding: 14px 16px; border-radius: 10px; background: var(--bg-surface-1); }
 .motor-constants.is-report h3 { margin-bottom: 8px; font-size: 9px; }
