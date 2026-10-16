@@ -1,0 +1,80 @@
+{
+  "openem_schema_version": 4,
+  "openem_version": "0.3.1",
+  "name": "SPM 6p/36s",
+  "description": "Multipole teaching motor: six poles, 36 teeth, three north–south pairs and a balanced three-phase distributed winding. Compare Stator only, PM only and Resultant fields. One electrical cycle covers 120 mechanical degrees. Begin with field lines, hidden flux-density colors, and 3 RPM playback. A numerical teaching design; not hardware validated.",
+  "schema_version": "1.0",
+  "topology": "SPM",
+  "stator": {
+    "OD_mm": 250.0,
+    "ID_mm": 166.0,
+    "slot_count": 36,
+    "stack_length_mm": 50.0,
+    "slot_opening_mm": 2.0,
+    "tooth_width_mm": 9.5,
+    "yoke_thickness_mm": 24.0,
+    "tooth_shoe_enabled": false,
+    "tooth_shoe_height_mm": 1.5,
+    "tooth_shoe_overhang_mm": 1.5
+  },
+  "rotor": {
+    "OD_mm": 157.0,
+    "ID_mm": 35.0,
+    "magnet_thickness_mm": 3.0,
+    "magnet_width_mm": 72.8,
+    "pole_count": 6,
+    "magnet_embrace": 0.87,
+    "bridge_thickness_mm": 1.0,
+    "ipm_topology": "flat_buried",
+    "side_bridge_thickness_mm": 1.0,
+    "pocket_clearance_mm": 0.2,
+    "magnet_angle_deg": 0.0,
+    "v_angle_deg": 60.0,
+    "v_depth_mm": 6.0,
+    "inner_web_thickness_mm": 2.0,
+    "outer_bridge_thickness_mm": 1.0,
+    "flux_barrier_count": null,
+    "barrier_widths_mm": null,
+    "flat_buried_magnet_shape": "straight"
+  },
+  "winding": {
+    "type": "distributed",
+    "turns_per_coil": 20,
+    "layers": 2,
+    "parallel_paths": 1
+  },
+  "materials": {
+    "stator_steel": "M350-50A",
+    "rotor_steel": "M350-50A",
+    "magnet_grade": "N42",
+    "conductor": "copper"
+  },
+  "solve_params": {
+    "solve_quality": "custom",
+    "rotor_sweep_range_deg": 360.0,
+    "rotor_step_deg": 5.0,
+    "mesh_density": "fine",
+    "mesh_source": "native",
+    "mesher": "gmsh",
+    "corner_refinement": true,
+    "rotor_rotation_model": "remesh_per_step",
+    "torque_method": "weighted_stress",
+    "nonlinear_solver": "picard",
+    "linear_solver_preconditioner": "direct",
+    "current_amplitude_A": 20.0,
+    "current_amplitude_convention": "peak",
+    "current_angle_deg": 0.0,
+    "rated_speed_rpm": 300.0,
+    "excitation_mode": "sinusoidal",
+    "phase_connection": "wye",
+    "commutation_advance_deg": 0.0
+  },
+  "solve_options": {
+    "torque_sweep": true,
+    "back_emf": true,
+    "flux_density": true,
+    "cogging_torque": false,
+    "torque_speed_envelope": false,
+    "thd_analysis": false
+  }
+}

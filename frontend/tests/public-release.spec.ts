@@ -98,7 +98,7 @@ test.describe('public developer preview release rehearsal', () => {
     await expect(page.getByRole('status').filter({ hasText: 'Local: ready' })).toBeVisible();
     await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
     // The files define no tooth shoes, so none may be inherited from the starter motor.
-    for (const [label, slots] of [['IPM 10p V-shape', 12], ['IPM 14p flat buried', 18], ['SPM 24p', 27]] as const) {
+    for (const [label, slots] of [['IPM 10p V-shape', 12], ['IPM 14p flat buried', 18], ['SPM 24p', 27], ['SPM 6p/36s', 36]] as const) {
       await page.getByRole('button', { name: 'Design file menu', exact: true }).click();
       await page.getByRole('menuitem', { name: 'Examples', exact: true }).hover();
       const previewed = page.waitForResponse((response) => (
