@@ -1603,6 +1603,8 @@ function ViewportChrome({
   const [showMeshNavigationHint, setShowMeshNavigationHint] = useState(false);
   const viewportRef = useRef<HTMLElement | null>(null);
   const bottomBarRef = useRef<HTMLDivElement | null>(null);
+  // The 2D canvas puts its zoom controls in the title bar, beside fullscreen.
+  const [navigationSlot, setNavigationSlot] = useState<HTMLSpanElement | null>(null);
   // The section fits its controls until it is dragged; double-click returns to fitting.
   const [dockFitHeight, setDockFitHeight] = useState(dockStrip || mode === 'geometry' ? VIEWPORT_DOCK_DEFAULT_HEIGHT_WITH_STRIP : VIEWPORT_DOCK_DEFAULT_HEIGHT);
   const [dockUserHeight, setDockUserHeight] = useState<number | null>(null);
@@ -1816,12 +1818,19 @@ function ViewportChrome({
   }, [focusedMeshElementIndex, mesh, meshQualitySummary, mode]);
   const activeMeshElement = hoveredMeshElement ?? focusedMeshElement;
 
-  // On the Solve page the readout rides on the tabs strip, saving a line of controls.
-  const cadStatus = mode === 'geometry' && viewportMode !== 'materials' ? (
+  // Every panel's title bar ends with the same readout: regions for the
+  // geometry views, element count and worst quality for the mesh.
+  const cadStatus = mode === 'mesh' ? (
+    mesh ? (
+      <div className="viewport-cad-status">
+        {mesh.triangles.length.toLocaleString('en-US')} elements{meshQualitySummary ? ` · min q ${formatNumber(meshQualitySummary.minimum, 3)}` : ''}
+      </div>
+    ) : null
+  ) : (
     <div className="viewport-cad-status">
       {geometry?.regions.length ?? 0} regions · {geometry ? formatNumber(geometry.generation_time_ms, 0) : '—'} ms
     </div>
-  ) : null;
+  );
   const primaryViewModes = mode === 'geometry' ? (
     <span className="vc-group public-primary-view-modes" role="group" aria-label="Motor view mode">
       {(['2d', '3d', 'materials', 'layout'] as const).map((viewMode) => {
@@ -1840,20 +1849,20 @@ function ViewportChrome({
       })}
     </span>
   ) : null;
-  // The panel's title bar holds the page's own tabs on the Solve page and the
-  // motor view tabs on Design, so the selected view reads apart from the toggles.
+  // The panel's title bar holds one level of tabs: the page's own on the Solve
+  // page, where Geometry is the 2D section that gets solved, and the motor view
+  // tabs on Design. Its right end is the same everywhere: readout, zoom, fullscreen.
   const titleBar = dockStrip ?? primaryViewModes;
 
   return (
     <section
       ref={viewportRef}
-      className={`viewport viewport-cad viewport-cad-grid public-motor-viewport${onExpandToggle ? ' is-expandable' : ''}${viewportMode === 'materials' ? ' is-materials-view' : ''}${showMaterialAssignment ? ' is-material-assignment' : ''}${showMaterialBehavior ? ' is-material-behavior' : ''}${dockResizing ? ' is-dock-resizing' : ''}`}
+      className={`viewport viewport-cad viewport-cad-grid public-motor-viewport${viewportMode === 'materials' ? ' is-materials-view' : ''}${showMaterialAssignment ? ' is-material-assignment' : ''}${showMaterialBehavior ? ' is-material-behavior' : ''}${dockResizing ? ' is-dock-resizing' : ''}`}
       style={{ ['--viewport-dock-height' as never]: `${dockHeight}px` }}
     >
       {showConfigurationLabel && (
         <div className="viewport-label viewport-label-cad">{config.topology} {config.rotor.pole_count}p/{config.stator.slot_count}s</div>
       )}
-      {onExpandToggle && <ViewportExpandButton expanded={isExpanded} onToggle={onExpandToggle} />}
       {showDimensionReadout && (
         <DimensionReadout
           annotations={dimensionAnnotations}
@@ -1925,6 +1934,7 @@ function ViewportChrome({
                   element?.index === focusedMeshElementIndex ? null : element?.index ?? null,
                 )
                 : undefined}
+              navigationSlot={navigationSlot}
             />
           )}
         </div>
@@ -2034,6 +2044,16 @@ function ViewportChrome({
           <small>{activeMeshElement.region.replace(/[_-]+/g, ' ')}</small>
         </div>
       )}
+      {/* Legends are read, not clicked, so they sit in the canvas's top-right
+          corner as the field view's do, and the panel below holds controls only. */}
+      {viewportMode === '2d' && mode === 'geometry' && (
+        <div className="public-winding-key public-canvas-legend" aria-label="Winding phase and current direction legend">
+          <span><i className="phase-a" />A</span>
+          <span><i className="phase-b" />B</span>
+          <span><i className="phase-c" />C</span>
+          <span className="direction-key">⊙ out · ⊗ in</span>
+        </div>
+      )}
       <div
         className="viewport-dock-resize"
         role="separator"
@@ -2049,92 +2069,115 @@ function ViewportChrome({
         onPointerDown={handleDockResizeStart}
       />
       <div ref={bottomBarRef} className={`viewport-bottom-bar${titleBar ? ' has-dock-strip' : ''}`}>
-        {titleBar && <div className="public-dock-strip">{titleBar}{cadStatus}</div>}
+        {titleBar && (
+          <div className="public-dock-strip">
+            {titleBar}
+            <div className="public-dock-strip-end">
+              {cadStatus}
+              <span className="public-dock-nav-slot" ref={setNavigationSlot} />
+              {viewportMode === '3d' && (
+                <button type="button" className="public-dock-reset-view" onClick={() => setThreeResetSignal((value) => value + 1)}>Reset view</button>
+              )}
+              {onExpandToggle && <ViewportExpandButton expanded={isExpanded} inline onToggle={onExpandToggle} />}
+            </div>
+          </div>
+        )}
         <div className="viewport-controls viewport-controls-cad" aria-label="Motor view and overlay controls">
+          {/* Each group has a small label and one of two shapes: a segmented
+              control picks one way to draw the view, a dot toggle switches a
+              layer on or off on its own. Tabs in the title bar pick the view. */}
           {mode === 'mesh' && (
             <span className="vc-group public-mesh-inspection-controls" role="group" aria-label="Mesh inspection controls">
+              <span className="public-dock-group-label" aria-hidden="true">Color by</span>
+              <span className="public-dock-segmented">
+                <button
+                  type="button"
+                  aria-pressed={meshDisplayMode === 'geometry'}
+                  title="Color each element by its region"
+                  onClick={() => onMeshDisplayModeChange?.('geometry')}
+                >
+                  Regions
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={meshDisplayMode === 'quality'}
+                  title="Quality heatmap: color each element by its shape quality"
+                  onClick={() => onMeshDisplayModeChange?.('quality')}
+                >
+                  Quality
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={meshDisplayMode === 'problems'}
+                  disabled={!meshQualitySummary?.weakElementIndices.length}
+                  onClick={() => {
+                    onMeshDisplayModeChange?.('problems');
+                    onFocusedMeshElementChange?.(meshQualitySummary?.weakElementIndices[0] ?? null);
+                  }}
+                >
+                  Weak elements{meshQualitySummary ? ` ${meshQualitySummary.weakElementIndices.length}` : ''}
+                </button>
+              </span>
+            </span>
+          )}
+          {mode === 'mesh' && (
+            <span className="vc-group public-mesh-layer-controls" role="group" aria-label="Mesh layers">
+              <span className="public-dock-group-label" aria-hidden="true">Show</span>
               <button
                 type="button"
-                className={meshDisplayMode === 'geometry' ? 'is-active' : ''}
-                aria-pressed={meshDisplayMode === 'geometry'}
-                onClick={() => onMeshDisplayModeChange?.('geometry')}
-              >
-                Geometry overlay
-              </button>
-              <button
-                type="button"
-                className={showMeshEdges ? 'is-active' : ''}
+                className="public-dock-toggle"
                 aria-pressed={showMeshEdges}
                 onClick={() => onShowMeshEdgesChange?.(!showMeshEdges)}
               >
                 Element edges
               </button>
-              <button
-                type="button"
-                className={meshDisplayMode === 'quality' ? 'is-active' : ''}
-                aria-pressed={meshDisplayMode === 'quality'}
-                onClick={() => onMeshDisplayModeChange?.(meshDisplayMode === 'quality' ? 'geometry' : 'quality')}
-              >
-                Quality heatmap
-              </button>
-              <button
-                type="button"
-                className={meshDisplayMode === 'problems' ? 'is-active' : ''}
-                aria-pressed={meshDisplayMode === 'problems'}
-                disabled={!meshQualitySummary?.weakElementIndices.length}
-                onClick={() => {
-                  const nextMode = meshDisplayMode === 'problems' ? 'geometry' : 'problems';
-                  onMeshDisplayModeChange?.(nextMode);
-                  if (nextMode === 'problems') {
-                    onFocusedMeshElementChange?.(meshQualitySummary?.weakElementIndices[0] ?? null);
-                  }
-                }}
-              >
-                Weak elements{meshQualitySummary ? ` ${meshQualitySummary.weakElementIndices.length}` : ''}
-              </button>
             </span>
           )}
-          {dockStrip && primaryViewModes}
           {viewportMode === 'materials' && mode === 'geometry' && (
             <span className="vc-group public-material-subview-controls" role="group" aria-label="Materials view mode">
-              {([
-                ['assignment', 'Assignment'],
-                ['behavior', 'Behavior'],
-              ] as Array<[PublicMaterialSubview, string]>).map(([value, label]) => (
-                <button
-                  type="button"
-                  className={materialSubview === value ? 'is-active' : ''}
-                  aria-pressed={materialSubview === value}
-                  onClick={() => setMaterialSubview(value)}
-                  key={value}
-                >
-                  {label}
-                </button>
-              ))}
+              <span className="public-dock-group-label" aria-hidden="true">Show</span>
+              <span className="public-dock-segmented">
+                {([
+                  ['assignment', 'Assignment'],
+                  ['behavior', 'Behavior'],
+                ] as Array<[PublicMaterialSubview, string]>).map(([value, label]) => (
+                  <button
+                    type="button"
+                    aria-pressed={materialSubview === value}
+                    onClick={() => setMaterialSubview(value)}
+                    key={value}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </span>
             </span>
           )}
           {viewportMode === '2d' && mode === 'geometry' && (
             <span className="vc-group public-view-modes" role="group" aria-label="2D display layers">
-              {([
-                ['dimensions', 'Dims'],
-                ['slots', 'Slots'],
-                ['windings', 'Winding'],
-                ['phases', 'Phases'],
-              ] as Array<[PublicCanvasLayer, string]>).map(([layer, label]) => (
-                <button
-                  type="button"
-                  className={canvasLayer === layer ? 'is-active' : ''}
-                  aria-pressed={canvasLayer === layer}
-                  title={canvasLayer === layer ? `Hide the ${label.toLowerCase()} overlay` : `Show ${label.toLowerCase()}`}
-                  // Clicking the active layer turns it off, which is the only way to
-                  // get the bare cross-section: these read as toggles, and Dims in
-                  // particular puts a legend and dashed lines over the motor.
-                  onClick={() => setCanvasLayer((current) => (current === layer ? 'none' : layer))}
-                  key={layer}
-                >
-                  {label}
-                </button>
-              ))}
+              <span className="public-dock-group-label" aria-hidden="true">Overlay</span>
+              <span className="public-dock-segmented">
+                {([
+                  ['none', 'None'],
+                  ['dimensions', 'Dims'],
+                  ['slots', 'Slots'],
+                  ['windings', 'Winding'],
+                  ['phases', 'Phases'],
+                ] as Array<[PublicCanvasLayer, string]>).map(([layer, label]) => (
+                  <button
+                    type="button"
+                    aria-pressed={canvasLayer === layer}
+                    title={layer === 'none' ? 'Show the bare cross-section' : canvasLayer === layer ? `Hide the ${label.toLowerCase()} overlay` : `Show ${label.toLowerCase()}`}
+                    // One overlay at a time. None, or clicking the active one again,
+                    // leaves the bare cross-section: Dims in particular puts a
+                    // legend and dashed lines over the motor.
+                    onClick={() => setCanvasLayer((current) => (current === layer ? 'none' : layer))}
+                    key={layer}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </span>
             </span>
           )}
           {viewportMode === '2d'
@@ -2142,64 +2185,72 @@ function ViewportChrome({
             && (config.topology === 'SPM'
               || (config.topology === 'IPM' && config.rotor.ipm_topology === 'v_shape')) && (
             <span className="vc-group public-polarity-view" role="group" aria-label="Magnet polarity display">
-              {([
-                ['dominant', 'Pole', 'Dominant pole', 'Color each magnet by the pole facing the airgap.'],
-                ['split', 'Split', 'Split view', 'Show both poles for orientation. The FEM magnet remains one region.'],
-              ] as Array<[PublicMagnetPolarityView, string, string, string]>).map(([value, label, ariaLabel, title]) => (
-                <button
-                  type="button"
-                  className={magnetPolarityView === value ? 'is-active' : ''}
-                  aria-pressed={magnetPolarityView === value}
-                  aria-label={ariaLabel}
-                  title={title}
-                  onClick={() => setMagnetPolarityView(value)}
-                  key={value}
-                >
-                  {label}
-                </button>
-              ))}
-            </span>
-          )}
-          {viewportMode === '2d' && mode === 'geometry' && (
-            <span className="public-winding-key" aria-label="Winding phase and current direction legend">
-              <span><i className="phase-a" />A</span>
-              <span><i className="phase-b" />B</span>
-              <span><i className="phase-c" />C</span>
-              <span className="direction-key">⊙ out · ⊗ in</span>
+              <span className="public-dock-group-label" aria-hidden="true">Magnets</span>
+              <span className="public-dock-segmented">
+                {([
+                  ['dominant', 'Pole', 'Dominant pole', 'Color each magnet by the pole facing the airgap.'],
+                  ['split', 'Split', 'Split view', 'Show both poles for orientation. The FEM magnet remains one region.'],
+                ] as Array<[PublicMagnetPolarityView, string, string, string]>).map(([value, label, ariaLabel, title]) => (
+                  <button
+                    type="button"
+                    aria-pressed={magnetPolarityView === value}
+                    aria-label={ariaLabel}
+                    title={title}
+                    onClick={() => setMagnetPolarityView(value)}
+                    key={value}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </span>
             </span>
           )}
           {viewportMode === '3d' && (
-            <>
-              <span className="vc-group"><button type="button" onClick={() => setThreeResetSignal((value) => value + 1)}>Reset view</button></span>
-              <span className="vc-group public-explode-controls">
-                <button
-                  type="button"
-                  className={explodedAmount > 0.04 ? 'is-active' : ''}
-                  aria-pressed={explodedAmount > 0.04}
-                  onClick={() => setExplodedAmount((value) => (value > 0.04 ? 0 : 1))}
-                >
-                  {explodedAmount > 0.04 ? 'Assemble' : 'Explode'}
-                </button>
+            <span className="vc-group public-explode-controls" role="group" aria-label="Exploded view">
+              <span className="public-dock-group-label" aria-hidden="true">Explode</span>
+              <button
+                type="button"
+                className="public-dock-toggle"
+                aria-pressed={explodedAmount > 0.04}
+                title={explodedAmount > 0.04 ? 'Assemble the motor' : 'Explode the motor into its parts'}
+                onClick={() => setExplodedAmount((value) => (value > 0.04 ? 0 : 1))}
+              >
+                Exploded
+              </button>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                step="1"
+                value={Math.round(explodedAmount * 100)}
+                aria-label="Exploded view amount"
+                title={`Exploded view: ${Math.round(explodedAmount * 100)}%`}
+                onChange={(event) => setExplodedAmount(Number(event.target.value) / 100)}
+              />
+              <output aria-live="polite">{Math.round(explodedAmount * 100)}%</output>
+            </span>
+          )}
+          {/* The rotor preview uses the field playback's transport: the same
+              play button and the same labelled speed slider. */}
+          {showPlayback && (
+            <span className="vc-group public-preview-transport" role="group" aria-label="Rotor preview">
+              <span className="public-dock-group-label" aria-hidden="true">Preview</span>
+              <button type="button" className="public-field-transport-play" aria-label={isAnimating ? 'Pause preview' : 'Play preview'} onClick={() => setIsAnimating((value) => !value)}>{isAnimating ? 'Ⅱ' : '▶'}</button>
+              <button type="button" className="public-field-transport-play" aria-label="Stop and reset preview" onClick={() => { setIsAnimating(false); setRotorAngleDeg(0); }}>■</button>
+              <label className="public-field-playback-rpm" title="Preview speed — not the solve operating point">
+                <span className="public-field-transport-label"><strong>Playback speed</strong><em>{animationRpm} RPM</em></span>
                 <input
                   type="range"
-                  min="0"
+                  min="1"
                   max="100"
-                  step="1"
-                  value={Math.round(explodedAmount * 100)}
-                  aria-label="Exploded view amount"
-                  title={`Exploded view: ${Math.round(explodedAmount * 100)}%`}
-                  onChange={(event) => setExplodedAmount(Number(event.target.value) / 100)}
+                  value={animationRpm}
+                  aria-label="Preview speed (RPM)"
+                  onChange={(event) => setAnimationRpm(Number(event.target.value))}
+                  style={{ ['--playback-rpm-progress' as never]: (((animationRpm - 1) / 99) * 100).toFixed(1) }}
                 />
-                <output aria-live="polite">{Math.round(explodedAmount * 100)}%</output>
-              </span>
-            </>
+              </label>
+            </span>
           )}
-          {showPlayback && <span className="vc-group public-playback">
-            <button type="button" className={isAnimating ? 'is-active' : ''} aria-label={isAnimating ? 'Pause preview' : 'Play preview'} onClick={() => setIsAnimating((value) => !value)}>{isAnimating ? 'Ⅱ' : '▶'}</button>
-            <button type="button" aria-label="Stop and reset preview" onClick={() => { setIsAnimating(false); setRotorAngleDeg(0); }}>■</button>
-            <input type="range" min="1" max="100" value={animationRpm} onChange={(event) => setAnimationRpm(Number(event.target.value))} aria-label="Preview speed (RPM)" />
-            <span>{animationRpm} RPM</span>
-          </span>}
         </div>
         {!titleBar && cadStatus}
       </div>
@@ -3504,16 +3555,9 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               meshQuality={meshQuality}
               showConfigurationLabel={false}
               enableDesignIntro={false}
-              dockStrip={(
-                <>
-                  {solveViewportSwitch}
-                  <ViewportExpandButton
-                    expanded={solveViewportExpanded}
-                    inline
-                    onToggle={() => setSolveViewportExpanded((expanded) => !expanded)}
-                  />
-                </>
-              )}
+              dockStrip={solveViewportSwitch}
+              isExpanded={solveViewportExpanded}
+              onExpandToggle={() => setSolveViewportExpanded((expanded) => !expanded)}
               meshDisplayMode={meshDisplayMode}
               showMeshEdges={showMeshEdges}
               meshQualitySummary={meshQualitySummary}

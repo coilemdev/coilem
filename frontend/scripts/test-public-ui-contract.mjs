@@ -610,7 +610,15 @@ assert.match(workspaceSource, /<MaterialBehaviorView/);
 assert.match(workspaceSource, /'assignment', 'Assignment'/);
 assert.match(workspaceSource, /'behavior', 'Behavior'/);
 assert.match(workspaceSource, /const showPlayback = mode === 'geometry'[\s\S]*viewportMode === '2d' \|\| viewportMode === '3d'/);
-assert.match(workspaceSource, /showPlayback && <span className="vc-group public-playback"/);
+assert.match(workspaceSource, /showPlayback && \(\s*<span className="vc-group public-preview-transport" role="group" aria-label="Rotor preview">/);
+// The rotor preview uses the field playback's transport, and the winding
+// legend sits in the canvas corner like the field view's legends.
+assert.match(workspaceSource, /<button type="button" className="public-field-transport-play" aria-label=\{isAnimating \? 'Pause preview' : 'Play preview'\}/);
+assert.match(workspaceSource, /<label className="public-field-playback-rpm" title="Preview speed — not the solve operating point">/);
+assert.match(workspaceSource, /<div className="public-winding-key public-canvas-legend" aria-label="Winding phase and current direction legend">/);
+assert.ok(workspaceSource.indexOf('public-canvas-legend') < workspaceSource.indexOf('className="viewport-dock-resize"'), 'the winding legend is on the canvas, not in the panel');
+assert.match(styleSource, /\.public-motor-viewport \.public-canvas-legend \{ position: absolute; z-index: 7; top: 14px; right: 14px;/);
+assert.doesNotMatch(styleSource, /\.public-playback /);
 assert.match(workspaceSource, /nextMode === 'materials' \|\| nextMode === 'layout'\) setIsAnimating\(false\)/);
 assert.doesNotMatch(workspaceSource, /public-material-view-card/);
 assert.match(materialWorkspaceSource, /Material assignment/);
@@ -738,10 +746,19 @@ assert.match(modelSource, /nonlinear_solver: 'picard'/);
 assert.match(modelSource, /linear_solver_preconditioner: 'direct'/);
 assert.match(modelSource, /cogging_torque_waveform\?/);
 assert.match(modelSource, /field_line_plot\?: PublicFieldLinePlot/);
-assert.match(workspaceSource, /Geometry overlay/);
+// The mesh panel separates how elements are coloured (one choice) from the
+// edges layer (on or off on its own), so the two no longer look alike.
+assert.match(workspaceSource, /<span className="public-dock-group-label" aria-hidden="true">Color by<\/span>\s*<span className="public-dock-segmented">[\s\S]*?Regions[\s\S]*?Quality[\s\S]*?Weak elements/);
+assert.match(workspaceSource, /<span className="public-dock-group-label" aria-hidden="true">Show<\/span>\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{showMeshEdges\}/);
 assert.match(workspaceSource, /Element edges/);
 assert.match(workspaceSource, /Quality heatmap/);
-assert.match(workspaceSource, /Weak elements/);
+// 2D overlays are one choice at a time, with None for the bare cross-section.
+assert.match(workspaceSource, /Overlay<\/span>\s*<span className="public-dock-segmented">\s*\{\(\[\s*\['none', 'None'\],\s*\['dimensions', 'Dims'\]/);
+assert.match(workspaceSource, />Magnets<\/span>/);
+assert.match(styleSource, /\.public-dock-segmented \{ display: inline-flex;[^}]*border: 1px solid rgba\(148,163,184,\.16\); border-radius: 10px;/);
+assert.match(styleSource, /\.public-dock-segmented button\[aria-pressed="true"\] \{ color: var\(--text-accent\); background: rgba\(245,158,11,\.14\);/);
+assert.match(styleSource, /button\.public-dock-toggle\[aria-pressed="true"\]::before \{ border-color: var\(--text-accent\); background: var\(--text-accent\);/);
+assert.match(styleSource, /\.public-dock-group-label \{ color: rgba\(148,163,184,\.58\); font: 600 10px var\(--font-mono\);/);
 assert.match(workspaceSource, /What does element quality mean\?/);
 assert.match(workspaceSource, /Triangle shape, not accuracy/);
 assert.match(workspaceSource, /1 for an ideal equilateral triangle to 0 for a collapsed triangle/);
@@ -788,17 +805,25 @@ assert.match(workspaceSource, /className="viewport-dock-resize"\s*role="separato
 assert.match(workspaceSource, /setDockUserHeight\(clampDockHeight\(drag\.startHeight \+ drag\.startY - event\.clientY\)\)/);
 assert.match(workspaceSource, /onDoubleClick=\{\(\) => setDockUserHeight\(null\)\}/);
 assert.match(workspaceSource, /const dockHeight = dockUserHeight \?\? dockFitHeight;/);
-// The Solve page's view tabs and fullscreen sit on a strip at the top of each
-// bottom panel: the Geometry and Mesh viewports' section and the field dock.
+// Every bottom panel opens with a title bar of one level of tabs: the Solve
+// page's Geometry / Mesh / Field solution, or Design's motor views. Its right
+// end is the same everywhere: readout, zoom, fullscreen.
 assert.doesNotMatch(workspaceSource, /\{solveView !== 'field' && solveViewportSwitch\}/);
-assert.match(workspaceSource, /dockStrip=\{\(\s*<>\s*\{solveViewportSwitch\}\s*<ViewportExpandButton/);
-assert.match(workspaceSource, /\{titleBar && <div className="public-dock-strip">\{titleBar\}\{cadStatus\}<\/div>\}/);
-assert.match(workspaceSource, /\{!titleBar && cadStatus\}/);
-// On Design the motor view tabs are the panel's title bar; on the Solve page
-// they stay with the controls under the Solve tabs.
+assert.match(workspaceSource, /dockStrip=\{solveViewportSwitch\}\s*isExpanded=\{solveViewportExpanded\}/);
 assert.match(workspaceSource, /const titleBar = dockStrip \?\? primaryViewModes;/);
-assert.match(workspaceSource, /\{dockStrip && primaryViewModes\}/);
-assert.match(solvedFieldSource, /<div className="public-field-dock">\s*<div className="public-dock-strip">\s*\{viewControls\}\s*\{expandControl\}\s*<\/div>/);
+assert.match(workspaceSource, /<div className="public-dock-strip">\s*\{titleBar\}\s*<div className="public-dock-strip-end">\s*\{cadStatus\}\s*<span className="public-dock-nav-slot" ref=\{setNavigationSlot\} \/>/);
+assert.match(workspaceSource, /\{onExpandToggle && <ViewportExpandButton expanded=\{isExpanded\} inline onToggle=\{onExpandToggle\} \/>\}/);
+assert.match(workspaceSource, /\{!titleBar && cadStatus\}/);
+// Solve's Geometry tab is the 2D section that gets solved: no second row of view tabs.
+assert.doesNotMatch(workspaceSource, /\{dockStrip && primaryViewModes\}/);
+assert.doesNotMatch(workspaceSource, /is-expandable/);
+assert.match(workspaceSource, /navigationSlot=\{navigationSlot\}/);
+assert.match(motorCanvasSource, /return navigationSlot \? createPortal\(zoomControls, navigationSlot\) : zoomControls;/);
+assert.match(workspaceSource, /\.toLocaleString\('en-US'\)\} elements\{meshQualitySummary \? ` · min q \$\{formatNumber\(meshQualitySummary\.minimum, 3\)\}` : ''\}/);
+assert.match(solvedFieldSource, /<div className="public-dock-strip-end">\s*<span className="public-field-zoom-slot" ref=\{setZoomSlot\} \/>\s*\{expandControl\}/);
+assert.match(styleSource, /\.public-dock-strip-end \{ display: flex;[^}]*margin-left: auto; \}/);
+assert.match(styleSource, /\.public-motor-viewport \.public-dock-strip-end \.viewport-cad-status \{[^}]*border: 0;[^}]*background: transparent;/);
+assert.match(solvedFieldSource, /<div className="public-field-dock">\s*<div className="public-dock-strip">\s*\{viewControls\}\s*<div className="public-dock-strip-end">/);
 assert.doesNotMatch(solvedFieldSource, /public-solved-field-toolbar/);
 assert.match(styleSource, /\.public-solved-field-viewer \{ display: grid; grid-template-rows: minmax\(0,1fr\) auto;/);
 assert.match(styleSource, /\.public-motor-viewport \.public-viewport-stage \{ inset: 0 0 var\(--viewport-dock-height\) 0; \}/);
@@ -927,17 +952,17 @@ assert.match(fieldResultSource, /element_by_t/);
 assert.match(solvedFieldSource, /viewControls: ReactNode/);
 assert.match(solvedFieldSource, /\{viewControls\}/);
 // Controls sit in a dock below the motor (playback, then field source, overlays,
-// line density, zoom and field details), so nothing floats over the field.
+// line density and field details; zoom is in its title bar), so nothing floats over the field.
 assert.match(solvedFieldSource, /className="public-field-dock-controls"[\s\S]*?<details className="public-field-layer-menu">\s*<summary>Show<\/summary>/);
 assert.match(styleSource, /\.public-field-layer-menu > \.public-field-layer-controls \{ position: absolute; z-index: 20; bottom: calc\(100% \+ 8px\);/);
 assert.match(styleSource, /@container \(max-width: 1040px\) \{\s*\.public-field-control-cluster > span \{ display: none; \}\s*\.public-field-overlay-cluster \{ display: none; \}\s*\.public-field-layer-menu \{ display: block; \}/);
 assert.match(solvedFieldSource, /<div className="public-field-dock">\s*<div className="public-dock-strip">[\s\S]*?<div className="public-field-playback">[\s\S]*?<div className="public-field-dock-controls" role="toolbar" aria-label="Field display">/);
-assert.match(solvedFieldSource, /className="public-field-dock-controls"[\s\S]*?<span>Field<\/span>[\s\S]*?<span>Show<\/span>[\s\S]*?renderDensityControl\(true\)[\s\S]*?<span className="public-field-zoom-slot" ref=\{setZoomSlot\} \/>/);
+assert.match(solvedFieldSource, /className="public-field-dock-controls"[\s\S]*?<span>Field<\/span>[\s\S]*?<span>Show<\/span>[\s\S]*?renderDensityControl\(true\)/);
 assert.ok(solvedFieldSource.indexOf('className="public-field-summary-panel"') > solvedFieldSource.indexOf('<div className="public-field-dock">'), 'field details live in the dock, not on the canvas');
 assert.match(solvedFieldSource, /navigationSlot=\{zoomSlot\}/);
 assert.match(fieldResultSource, /return navigationSlot \? createPortal\(zoomControls, navigationSlot\) : zoomControls;/);
 assert.match(styleSource, /\.public-field-dock-controls \{ display: flex; flex-wrap: wrap;/);
-assert.match(styleSource, /\.public-field-zoom-slot \.public-viewport-nav-controls \{ position: static;/);
+assert.match(styleSource, /\.public-dock-strip-end \.public-viewport-nav-controls \{ position: static;/);
 assert.match(styleSource, /@container \(max-width: 720px\) \{[^@]*\.public-field-zoom-slot \.public-viewport-nav-controls > span \{ display: none; \}/);
 assert.match(solvedFieldSource, /className="public-field-playback-meta"/);
 assert.match(solvedFieldSource, /className="public-field-physics-info"/);
