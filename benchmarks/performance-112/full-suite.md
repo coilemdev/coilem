@@ -1,5 +1,9 @@
 # Full FEMM A/B/C/D performance run (#112)
 
+A [fresh full-suite repeat on 2026-10-16](repeat-20261016.md) completed all
+29 cases in **1h50m54s**, with every physical output and extraction audit exact.
+The measurements below preserve the original **1h52m02s** observation.
+
 All **29 registered FEMM cases** completed in **1h52m02s** with up to eight
 independent case workers and the metrics/readiness/core-affinity producer. The archived
 serial measurement span was **9h08m46s** on the same host:

@@ -54,6 +54,7 @@ FORBIDDEN_SUFFIXES = {".ans", ".fem", ".log", ".pem", ".key"}
 ALLOWED_DATA_FILES = {
     "materials/electrical-steel/M350-50A.csv",
     "frontend/public/materials/sample-custom-steel.csv",
+    "benchmarks/performance-112/native-20261016/benchmark_results.csv",
 }
 # Single-digit sector/surface symbols (S1-S9) are engineering data. Story IDs
 # have multiple digits or a task suffix; explicit sprint/path references also fail.
@@ -69,6 +70,7 @@ FORBIDDEN_RUST_RUNTIME_MARKERS = {
     "struct DebugConfig",
 }
 ALLOWED_BINARY_SIGNATURES = {
+    "benchmarks/performance-112/native-20261016/coilem_benchmark_report.pdf": b"%PDF-",
     "benchmarks/windows-v3-20261015-738d951/coilem_benchmark_report.pdf": b"%PDF-",
     "benchmarks/windows-flux-credit-20261014-1ea9e40/coilem_benchmark_report.pdf": b"%PDF-",
     "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/ripple-diagnostic.pdf": b"%PDF-",

@@ -1,0 +1,936 @@
+{
+  "main_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",
+  "main_report": "benchmarks/windows-v3-20261015-738d951/benchmark_summary.json",
+  "main_report_sha256": "3ccf633f17019619830b0eaae4c0caa90da312e3870d07a3d9c96c77d2782319",
+  "fresh_report_sha256": "fe80be639e3a54863bbb0a2228532034a910d7732439099e5e9159738929dbfc",
+  "main_counts": {
+    "PASS": 28,
+    "YELLOW": 1,
+    "UNSUPPORTED": 1
+  },
+  "fresh_counts": {
+    "PASS": 28,
+    "YELLOW": 1,
+    "UNSUPPORTED": 1
+  },
+  "native_jobs": 35,
+  "native_physical_results_exact_jobs": 35,
+  "comparison_stats": {
+    "evaluations": {
+      "numbers_compared": 628,
+      "numeric_changes": 0,
+      "structural_or_other_changes": 0,
+      "maximum_absolute_change": 0
+    },
+    "native_results": {
+      "numbers_compared": 23287,
+      "numeric_changes": 0,
+      "structural_or_other_changes": 0,
+      "maximum_absolute_change": 0.0
+    },
+    "native_mesh_metadata": {
+      "numbers_compared": 26,
+      "numeric_changes": 0,
+      "structural_or_other_changes": 0,
+      "maximum_absolute_change": 0
+    },
+    "reference_results": {
+      "numbers_compared": 14165,
+      "numeric_changes": 0,
+      "structural_or_other_changes": 0,
+      "maximum_absolute_change": 0.0
+    }
+  },
+  "differences": [],
+  "screenshot_case": "ipm_vshape_8p12s_baseline_contract",
+  "screenshot_gate": {
+    "main": 14.778701363798104,
+    "fresh": 14.778701363798104
+  },
+  "screenshot_waveform_exact": true,
+  "screenshot_femm_waveform_exact": true,
+  "screenshot_residual_min_max_V": [
+    -0.7326139123385981,
+    0.7582029754793073
+  ],
+  "maxima": {
+    "average_delta_pct": {
+      "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "value": 5.9040051619481915
+    },
+    "bemf_fundamental_delta_pct": {
+      "case": "ipm_vshape_8p12s_narrow_angle_contract",
+      "value": 3.386134188199756
+    },
+    "bemf_peak_delta_pct": {
+      "case": "ipm_vshape_8p12s_baseline_contract",
+      "value": 14.778701363798104
+    }
+  },
+  "bldc_gates": {
+    "total": 42,
+    "pass": 42
+  },
+  "rows": [
+    {
+      "case_id": "spm_4p12s_simple__baseline",
+      "phase": "A",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 0.4782802173506237,
+          "fresh": 0.4782802173506237
+        },
+        "reference_average_Nm": {
+          "main": 0.47707813670238686,
+          "fresh": 0.47707813670238686
+        },
+        "average_delta_pct": {
+          "main": 0.25196724724082986,
+          "fresh": 0.25196724724082986
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.0012020806482368473,
+          "fresh": 0.0012020806482368473
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 0.011908625876360655,
+          "fresh": 0.011908625876360655
+        },
+        "bemf_peak_delta_pct": {
+          "main": 0.033431104213618064,
+          "fresh": 0.033431104213618064
+        }
+      }
+    },
+    {
+      "case_id": "spm_4p12s_simple__high_current",
+      "phase": "A",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 0.7172376412100244,
+          "fresh": 0.7172376412100244
+        },
+        "reference_average_Nm": {
+          "main": 0.7160095503741394,
+          "fresh": 0.7160095503741394
+        },
+        "average_delta_pct": {
+          "main": 0.17151877865921253,
+          "fresh": 0.17151877865921253
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.0012280908358850429,
+          "fresh": 0.0012280908358850429
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 0.011908625876360655,
+          "fresh": 0.011908625876360655
+        },
+        "bemf_peak_delta_pct": {
+          "main": 0.033431104213618064,
+          "fresh": 0.033431104213618064
+        }
+      }
+    },
+    {
+      "case_id": "spm_4p12s_simple__tight_airgap",
+      "phase": "A",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 0.5826230012358574,
+          "fresh": 0.5826230012358574
+        },
+        "reference_average_Nm": {
+          "main": 0.5850121670208285,
+          "fresh": 0.5850121670208285
+        },
+        "average_delta_pct": {
+          "main": 0.4083959137359269,
+          "fresh": 0.4083959137359269
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.002389165784971059,
+          "fresh": 0.002389165784971059
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 0.34413405920355467,
+          "fresh": 0.34413405920355467
+        },
+        "bemf_peak_delta_pct": {
+          "main": 0.03894170026551518,
+          "fresh": 0.03894170026551518
+        }
+      }
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__baseline",
+      "phase": "A",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 5.46342814086812e-06,
+          "fresh": 5.46342814086812e-06
+        },
+        "reference_average_Nm": {
+          "main": -0.0006416471211330068,
+          "fresh": -0.0006416471211330068
+        },
+        "average_delta_pct": {
+          "main": 100.85146928287014,
+          "fresh": 100.85146928287014
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.0006471105492738749,
+          "fresh": 0.0006471105492738749
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 0.011908625876360655,
+          "fresh": 0.011908625876360655
+        },
+        "bemf_peak_delta_pct": {
+          "main": 0.033431104213618064,
+          "fresh": 0.033431104213618064
+        }
+      }
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__high_current",
+      "phase": "A",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 0.23917968929676894,
+          "fresh": 0.23917968929676894
+        },
+        "reference_average_Nm": {
+          "main": 0.23802840224855903,
+          "fresh": 0.23802840224855903
+        },
+        "average_delta_pct": {
+          "main": 0.48367633330063187,
+          "fresh": 0.48367633330063187
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.0011512870482099091,
+          "fresh": 0.0011512870482099091
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 0.011908625876360655,
+          "fresh": 0.011908625876360655
+        },
+        "bemf_peak_delta_pct": {
+          "main": 0.033431104213618064,
+          "fresh": 0.033431104213618064
+        }
+      }
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__tight_airgap",
+      "phase": "A",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": -0.00017900740467821101,
+          "fresh": -0.00017900740467821101
+        },
+        "reference_average_Nm": {
+          "main": 0.0017798704484237194,
+          "fresh": 0.0017798704484237194
+        },
+        "average_delta_pct": {
+          "main": 110.05732775869967,
+          "fresh": 110.05732775869967
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.0019588778531019306,
+          "fresh": 0.0019588778531019306
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 0.34413405920355467,
+          "fresh": 0.34413405920355467
+        },
+        "bemf_peak_delta_pct": {
+          "main": 0.03894170026551518,
+          "fresh": 0.03894170026551518
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__baseline",
+      "phase": "A",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 2.218019081246451,
+          "fresh": 2.218019081246451
+        },
+        "reference_average_Nm": {
+          "main": 2.213722975816425,
+          "fresh": 2.213722975816425
+        },
+        "average_delta_pct": {
+          "main": 0.1940669847563589,
+          "fresh": 0.1940669847563589
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.004296105430025676,
+          "fresh": 0.004296105430025676
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 0.0008981285596674443,
+          "fresh": 0.0008981285596674443
+        },
+        "bemf_peak_delta_pct": {
+          "main": 0.04733282940218166,
+          "fresh": 0.04733282940218166
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__high_current",
+      "phase": "A",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 3.318539000877068,
+          "fresh": 3.318539000877068
+        },
+        "reference_average_Nm": {
+          "main": 3.3149907494133513,
+          "fresh": 3.3149907494133513
+        },
+        "average_delta_pct": {
+          "main": 0.1070365419374028,
+          "fresh": 0.1070365419374028
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.003548251463716845,
+          "fresh": 0.003548251463716845
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 0.0008981285596674443,
+          "fresh": 0.0008981285596674443
+        },
+        "bemf_peak_delta_pct": {
+          "main": 0.04733282940218166,
+          "fresh": 0.04733282940218166
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__tight_airgap",
+      "phase": "A",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 2.351072605031795,
+          "fresh": 2.351072605031795
+        },
+        "reference_average_Nm": {
+          "main": 2.357065017182515,
+          "fresh": 2.357065017182515
+        },
+        "average_delta_pct": {
+          "main": 0.2542319412929356,
+          "fresh": 0.2542319412929356
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.0059924121507197725,
+          "fresh": 0.0059924121507197725
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 0.05421752450791977,
+          "fresh": 0.05421752450791977
+        },
+        "bemf_peak_delta_pct": {
+          "main": 0.194634024754869,
+          "fresh": 0.194634024754869
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p12s_reference_angle30__baseline",
+      "phase": "A",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 16.617262984760952,
+          "fresh": 16.617262984760952
+        },
+        "reference_average_Nm": {
+          "main": 16.67111177934336,
+          "fresh": 16.67111177934336
+        },
+        "average_delta_pct": {
+          "main": 0.32300661944531883,
+          "fresh": 0.32300661944531883
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.05384879458240732,
+          "fresh": 0.05384879458240732
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 0.1127587731089207,
+          "fresh": 0.1127587731089207
+        },
+        "bemf_peak_delta_pct": {
+          "main": 0.07502206301439159,
+          "fresh": 0.07502206301439159
+        }
+      }
+    },
+    {
+      "case_id": "ipm_flat_12s10p_fscw_contract",
+      "phase": "B",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 4.830026820674141,
+          "fresh": 4.830026820674141
+        },
+        "reference_average_Nm": {
+          "main": 4.802681722828231,
+          "fresh": 4.802681722828231
+        },
+        "average_delta_pct": {
+          "main": 0.5693714350449878,
+          "fresh": 0.5693714350449878
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.027345097845910438,
+          "fresh": 0.027345097845910438
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 0.49424648681867167,
+          "fresh": 0.49424648681867167
+        },
+        "bemf_peak_delta_pct": {
+          "main": 0.7197010933943938,
+          "fresh": 0.7197010933943938
+        }
+      }
+    },
+    {
+      "case_id": "ipm_flat_24s16p_industrial_contract",
+      "phase": "B",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 19.40114293109601,
+          "fresh": 19.40114293109601
+        },
+        "reference_average_Nm": {
+          "main": 19.525404740094906,
+          "fresh": 19.525404740094906
+        },
+        "average_delta_pct": {
+          "main": 0.6364109254223386,
+          "fresh": 0.6364109254223386
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.12426180899889516,
+          "fresh": 0.12426180899889516
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 0.18228059867265634,
+          "fresh": 0.18228059867265634
+        },
+        "bemf_peak_delta_pct": {
+          "main": 0.336247760905902,
+          "fresh": 0.336247760905902
+        }
+      }
+    },
+    {
+      "case_id": "ipm_flat_4p12s_micro_contract",
+      "phase": "B",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 0.021444537184232615,
+          "fresh": 0.021444537184232615
+        },
+        "reference_average_Nm": {
+          "main": 0.021545078265510827,
+          "fresh": 0.021545078265510827
+        },
+        "average_delta_pct": {
+          "main": 0.46665451867565383,
+          "fresh": 0.46665451867565383
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.00010054108127821246,
+          "fresh": 0.00010054108127821246
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 0.5647183424122671,
+          "fresh": 0.5647183424122671
+        },
+        "bemf_peak_delta_pct": {
+          "main": 0.7964047812267219,
+          "fresh": 0.7964047812267219
+        }
+      }
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "phase": "B",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 2.159146148291403,
+          "fresh": 2.159146148291403
+        },
+        "reference_average_Nm": {
+          "main": 2.154819961289557,
+          "fresh": 2.154819961289557
+        },
+        "average_delta_pct": {
+          "main": 0.200767910060422,
+          "fresh": 0.200767910060422
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.004326187001845838,
+          "fresh": 0.004326187001845838
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 0.2651723094557047,
+          "fresh": 0.2651723094557047
+        },
+        "bemf_peak_delta_pct": {
+          "main": 0.3572352082889547,
+          "fresh": 0.3572352082889547
+        }
+      }
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract",
+      "phase": "B",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 2.5721783953454374,
+          "fresh": 2.5721783953454374
+        },
+        "reference_average_Nm": {
+          "main": 2.575709705414214,
+          "fresh": 2.575709705414214
+        },
+        "average_delta_pct": {
+          "main": 0.13710046832349518,
+          "fresh": 0.13710046832349518
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.0035313100687766052,
+          "fresh": 0.0035313100687766052
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 0.2582466713063702,
+          "fresh": 0.2582466713063702
+        },
+        "bemf_peak_delta_pct": {
+          "main": 0.1648326279741423,
+          "fresh": 0.1648326279741423
+        }
+      }
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "phase": "B",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 3.17692750631275,
+          "fresh": 3.17692750631275
+        },
+        "reference_average_Nm": {
+          "main": 3.1765066338102406,
+          "fresh": 3.1765066338102406
+        },
+        "average_delta_pct": {
+          "main": 0.013249539542267545,
+          "fresh": 0.013249539542267545
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.00042087250250943953,
+          "fresh": 0.00042087250250943953
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 0.2315476065283197,
+          "fresh": 0.2315476065283197
+        },
+        "bemf_peak_delta_pct": {
+          "main": 0.17077852796989162,
+          "fresh": 0.17077852796989162
+        }
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_baseline_contract",
+      "phase": "B",
+      "main_status": "YELLOW",
+      "fresh_status": "YELLOW",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 0.8870780159156986,
+          "fresh": 0.8870780159156986
+        },
+        "reference_average_Nm": {
+          "main": 0.838088155810624,
+          "fresh": 0.838088155810624
+        },
+        "average_delta_pct": {
+          "main": 5.845430431801066,
+          "fresh": 5.845430431801066
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.048989860105074556,
+          "fresh": 0.048989860105074556
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 2.0562933199286557,
+          "fresh": 2.0562933199286557
+        },
+        "bemf_peak_delta_pct": {
+          "main": 14.778701363798104,
+          "fresh": 14.778701363798104
+        }
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "phase": "B",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 0.6523435988489891,
+          "fresh": 0.6523435988489891
+        },
+        "reference_average_Nm": {
+          "main": 0.6253589921930292,
+          "fresh": 0.6253589921930292
+        },
+        "average_delta_pct": {
+          "main": 4.315058549222972,
+          "fresh": 4.315058549222972
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.02698460665595992,
+          "fresh": 0.02698460665595992
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 3.3508122957203743,
+          "fresh": 3.3508122957203743
+        },
+        "bemf_peak_delta_pct": {
+          "main": 5.75521015045559,
+          "fresh": 5.75521015045559
+        }
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_narrow_angle_contract",
+      "phase": "B",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 0.8911146677069278,
+          "fresh": 0.8911146677069278
+        },
+        "reference_average_Nm": {
+          "main": 0.8554171664861668,
+          "fresh": 0.8554171664861668
+        },
+        "average_delta_pct": {
+          "main": 4.173110222629401,
+          "fresh": 4.173110222629401
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.035697501220760985,
+          "fresh": 0.035697501220760985
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 3.386134188199756,
+          "fresh": 3.386134188199756
+        },
+        "bemf_peak_delta_pct": {
+          "main": 3.524814071349863,
+          "fresh": 3.524814071349863
+        }
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "phase": "B",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 1.1057394540620336,
+          "fresh": 1.1057394540620336
+        },
+        "reference_average_Nm": {
+          "main": 1.0576308555332692,
+          "fresh": 1.0576308555332692
+        },
+        "average_delta_pct": {
+          "main": 4.548713596721559,
+          "fresh": 4.548713596721559
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.04810859852876437,
+          "fresh": 0.04810859852876437
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 1.4021230776876916,
+          "fresh": 1.4021230776876916
+        },
+        "bemf_peak_delta_pct": {
+          "main": 2.25037994993998,
+          "fresh": 2.25037994993998
+        }
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_thin_bridge_contract",
+      "phase": "B",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 2.684196151858665,
+          "fresh": 2.684196151858665
+        },
+        "reference_average_Nm": {
+          "main": 2.6186325941350015,
+          "fresh": 2.6186325941350015
+        },
+        "average_delta_pct": {
+          "main": 2.503732591983586,
+          "fresh": 2.503732591983586
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.06556355772366329,
+          "fresh": 0.06556355772366329
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 0.756459120445039,
+          "fresh": 0.756459120445039
+        },
+        "bemf_peak_delta_pct": {
+          "main": 0.7200255294210746,
+          "fresh": 0.7200255294210746
+        }
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "phase": "B",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 0.7809011924937868,
+          "fresh": 0.7809011924937868
+        },
+        "reference_average_Nm": {
+          "main": 0.7373670063749093,
+          "fresh": 0.7373670063749093
+        },
+        "average_delta_pct": {
+          "main": 5.9040051619481915,
+          "fresh": 5.9040051619481915
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.043534186118877494,
+          "fresh": 0.043534186118877494
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 3.3675334488175745,
+          "fresh": 3.3675334488175745
+        },
+        "bemf_peak_delta_pct": {
+          "main": 4.075304375978985,
+          "fresh": 4.075304375978985
+        }
+      }
+    },
+    {
+      "case_id": "ornl_prius_2004_ipm",
+      "phase": "C",
+      "main_status": "UNSUPPORTED",
+      "fresh_status": "UNSUPPORTED",
+      "metrics": {}
+    },
+    {
+      "case_id": "spm_12p36s_distributed_femm_validation",
+      "phase": "C",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 4.959448930687874,
+          "fresh": 4.959448930687874
+        },
+        "reference_average_Nm": {
+          "main": 5.214834188473855,
+          "fresh": 5.214834188473855
+        },
+        "average_delta_pct": {
+          "main": 4.897284334570956,
+          "fresh": 4.897284334570956
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.25538525778598054,
+          "fresh": 0.25538525778598054
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 0.23132963770052561,
+          "fresh": 0.23132963770052561
+        },
+        "bemf_peak_delta_pct": {
+          "main": 0.4177889373852962,
+          "fresh": 0.4177889373852962
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p24s_distributed_femm_validation",
+      "phase": "C",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 5.5251382594991405,
+          "fresh": 5.5251382594991405
+        },
+        "reference_average_Nm": {
+          "main": 5.662010743893206,
+          "fresh": 5.662010743893206
+        },
+        "average_delta_pct": {
+          "main": 2.417382986100657,
+          "fresh": 2.417382986100657
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.13687248439406563,
+          "fresh": 0.13687248439406563
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 0.15251767230698765,
+          "fresh": 0.15251767230698765
+        },
+        "bemf_peak_delta_pct": {
+          "main": 0.16413247073949375,
+          "fresh": 0.16413247073949375
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p48s_chorded_5_6",
+      "phase": "C",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 5.8954024208388685,
+          "fresh": 5.8954024208388685
+        },
+        "reference_average_Nm": {
+          "main": 5.993778544282531,
+          "fresh": 5.993778544282531
+        },
+        "average_delta_pct": {
+          "main": 1.6413039406920276,
+          "fresh": 1.6413039406920276
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.09837612344366242,
+          "fresh": 0.09837612344366242
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 0.1922424336851159,
+          "fresh": 0.1922424336851159
+        },
+        "bemf_peak_delta_pct": {
+          "main": 0.6256102801290266,
+          "fresh": 0.6256102801290266
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p48s_distributed_femm_validation",
+      "phase": "C",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {
+        "candidate_average_Nm": {
+          "main": 6.196296718452879,
+          "fresh": 6.196296718452879
+        },
+        "reference_average_Nm": {
+          "main": 6.303735218583883,
+          "fresh": 6.303735218583883
+        },
+        "average_delta_pct": {
+          "main": 1.704362515326906,
+          "fresh": 1.704362515326906
+        },
+        "average_absolute_delta_Nm": {
+          "main": 0.10743850013100431,
+          "fresh": 0.10743850013100431
+        },
+        "bemf_fundamental_delta_pct": {
+          "main": 0.14538527098395218,
+          "fresh": 0.14538527098395218
+        },
+        "bemf_peak_delta_pct": {
+          "main": 0.03196206759731903,
+          "fresh": 0.03196206759731903
+        }
+      }
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {}
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "phase": "D",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {}
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "phase": "D",
+      "main_status": "PASS",
+      "fresh_status": "PASS",
+      "metrics": {}
+    }
+  ]
+}
