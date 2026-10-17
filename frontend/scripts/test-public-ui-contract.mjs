@@ -610,7 +610,15 @@ assert.match(workspaceSource, /<MaterialBehaviorView/);
 assert.match(workspaceSource, /'assignment', 'Assignment'/);
 assert.match(workspaceSource, /'behavior', 'Behavior'/);
 assert.match(workspaceSource, /const showPlayback = mode === 'geometry'[\s\S]*viewportMode === '2d' \|\| viewportMode === '3d'/);
-assert.match(workspaceSource, /showPlayback && <span className="vc-group public-playback"/);
+assert.match(workspaceSource, /showPlayback && \(\s*<span className="vc-group public-preview-transport" role="group" aria-label="Rotor preview">/);
+// The rotor preview uses the field playback's transport, and the winding
+// legend sits in the canvas corner like the field view's legends.
+assert.match(workspaceSource, /<button type="button" className="public-field-transport-play" aria-label=\{isAnimating \? 'Pause preview' : 'Play preview'\}/);
+assert.match(workspaceSource, /<label className="public-field-playback-rpm" title="Preview speed — not the solve operating point">/);
+assert.match(workspaceSource, /<div className="public-winding-key public-canvas-legend" aria-label="Winding phase and current direction legend">/);
+assert.ok(workspaceSource.indexOf('public-canvas-legend') < workspaceSource.indexOf('className="viewport-dock-resize"'), 'the winding legend is on the canvas, not in the panel');
+assert.match(styleSource, /\.public-motor-viewport \.public-canvas-legend \{ position: absolute; z-index: 7; top: 14px; right: 14px;/);
+assert.doesNotMatch(styleSource, /\.public-playback /);
 assert.match(workspaceSource, /nextMode === 'materials' \|\| nextMode === 'layout'\) setIsAnimating\(false\)/);
 assert.doesNotMatch(workspaceSource, /public-material-view-card/);
 assert.match(materialWorkspaceSource, /Material assignment/);

@@ -5180,8 +5180,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 127765,
-      "sha256": "eec4a40c087fdcf741bc301f72de89c485b86b5fa2eb7948bb9e586ac6bedeac"
+      "bytes": 128775,
+      "sha256": "2e8cb4e328ba6bea6aa3536521a3aeff6d272ac8504204a7057a2fe4fc1a2b62"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5580,8 +5580,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 205432,
-      "sha256": "586625a676c550b8f5e10870c53fa9fea9e20f0d35d20ac3adea144b166def1c"
+      "bytes": 206401,
+      "sha256": "c437474729d9f41f261f64e10d841a158610156886bcececea6e3aff0ff12775"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5910,8 +5910,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 251354,
-      "sha256": "a45d9c0e8ec50d3dc9a5cccfaf06d342d5b7e16016e1e0837ba3ef52ff1799a5"
+      "bytes": 252143,
+      "sha256": "6edb9b4d2142021b6769d4d63d20c442cd1bf6364c8c6768f637ff0011945020"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -9377,6 +9377,24 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "52b4ae4bdd1f0c7c283139b75ce1c4550a7f7b1b422fd1f53e0aae8158317854",
       "reason": "Cover the labelled groups and the two control shapes."
+    },
+    {
+      "base_commit": "43488ec597273997ad6258b087d299bf42d90a0e",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "586625a676c550b8f5e10870c53fa9fea9e20f0d35d20ac3adea144b166def1c",
+      "reason": "Move the winding legend to the canvas corner and give the rotor preview the field transport."
+    },
+    {
+      "base_commit": "43488ec597273997ad6258b087d299bf42d90a0e",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "a45d9c0e8ec50d3dc9a5cccfaf06d342d5b7e16016e1e0837ba3ef52ff1799a5",
+      "reason": "Style the canvas legend and the preview transport, and fit narrow title bars."
+    },
+    {
+      "base_commit": "43488ec597273997ad6258b087d299bf42d90a0e",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "eec4a40c087fdcf741bc301f72de89c485b86b5fa2eb7948bb9e586ac6bedeac",
+      "reason": "Cover the canvas legend and the shared preview transport."
     }
   ]
 }

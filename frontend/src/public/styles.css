@@ -1024,8 +1024,6 @@ body {
 .public-motor-viewport .public-polarity-view button { height: 27px; padding: 0 9px; border: 0; border-radius: 6px; color: var(--text-muted); background: transparent; font: 8px var(--font-mono); cursor: pointer; }
 .public-motor-viewport .public-polarity-view button.is-active,
 .public-motor-viewport .public-polarity-view button:hover { color: var(--text-accent); background: rgba(245, 158, 11, 0.1); }
-.public-motor-viewport .public-playback input { width: 58px; accent-color: var(--accent-primary); }
-.public-motor-viewport .public-playback span { padding: 0 6px; color: var(--text-muted); font: 8px var(--font-mono); }
 .public-motor-viewport .public-explode-controls input { width: 84px; accent-color: var(--accent-primary); cursor: pointer; }
 .public-motor-viewport .public-explode-controls output { min-width: 30px; padding-right: 3px; color: var(--text-secondary); font: 8px var(--font-mono); text-align: right; }
 .public-motor-viewport .viewport-cad-status { padding: 7px 9px; border: 1px solid var(--border-default); border-radius: 8px; color: var(--text-muted); background: rgba(15, 17, 23, 0.86); font: 8px var(--font-mono); }
@@ -1915,7 +1913,6 @@ body {
 .public-motor-viewport .viewport-preview-note { font-size: 11px; }
 .public-motor-viewport .viewport-controls button,
 .public-motor-viewport .public-polarity-view button,
-.public-motor-viewport .public-playback span,
 .public-motor-viewport .viewport-cad-status { font-size: 10px; }
 .public-canvas-progress { font-size: 12px; }
 
@@ -2055,9 +2052,7 @@ body {
 }
 .public-motor-viewport .viewport-controls button,
 .public-motor-viewport .public-polarity-view button,
-.public-motor-viewport .public-playback span,
 .public-motor-viewport .viewport-cad-status { font-size: 11px; }
-.public-motor-viewport .public-playback span { padding-inline: 4px; white-space: nowrap; }
 .public-motor-viewport .viewport-cad-status { margin-bottom: 0; }
 
 .public-winding-key {
@@ -2312,11 +2307,6 @@ body {
   .public-winding-key i {
     width: 9px;
     height: 9px;
-  }
-  .public-motor-viewport .public-playback input { width: 66px; }
-  .public-motor-viewport .public-playback span {
-    padding-inline: 5px;
-    font-size: 12px;
   }
   .public-motor-viewport .viewport-cad-status {
     position: absolute;
@@ -4457,10 +4447,6 @@ body {
 .public-motor-viewport .viewport-bottom-bar .vc-group { gap: 8px; padding: 0; }
 .public-motor-viewport .viewport-bottom-bar .viewport-controls button,
 .public-motor-viewport .viewport-bottom-bar .public-polarity-view button { min-width: 40px; height: 36px; padding: 0 14px; border-radius: 8px; font-size: 13px; }
-.public-motor-viewport .viewport-bottom-bar .public-winding-key { gap: 10px; padding-inline: 10px; font-size: 12px; }
-.public-motor-viewport .viewport-bottom-bar .public-winding-key i { width: 10px; height: 10px; }
-.public-motor-viewport .viewport-bottom-bar .public-playback input { width: 120px; }
-.public-motor-viewport .viewport-bottom-bar .public-playback span,
 .public-motor-viewport .viewport-bottom-bar .public-explode-controls output { font-size: 13px; }
 .public-motor-viewport .viewport-bottom-bar .viewport-cad-status { font-size: 12px; }
 /* Each bottom panel opens with a title bar: its view tabs at the left, the
@@ -4492,7 +4478,12 @@ body {
 .public-dock-reset-view { height: 33px; padding: 0 11px; border: 1px solid rgba(148,163,184,.14); border-radius: 9px; color: var(--text-secondary); background: rgba(10,12,17,.62); font: 700 11px var(--font-mono); cursor: pointer; }
 .public-dock-reset-view:hover { color: var(--text-accent); background: rgba(245,158,11,.12); }
 .public-motor-viewport .public-mesh-quality-legend { top: 14px; }
-@container (max-width: 560px) {
+/* On a narrow panel the title bar drops the readout first, then the zoom
+   level, so the tabs, zoom buttons and fullscreen always fit on one line. */
+@container (max-width: 720px) {
+  .public-dock-strip-end .public-viewport-nav-controls > span { display: none; }
+}
+@container (max-width: 640px) {
   .public-dock-strip-end .viewport-cad-status { display: none; }
 }
 /* Panel controls: each group has a small label, as in the field dock, and one
@@ -4517,3 +4508,13 @@ body {
   .public-dock-group-label { display: none; }
   .public-motor-viewport .viewport-bottom-bar .public-dock-segmented button { padding: 0 9px; font-size: 12px; }
 }
+/* Legends sit in the canvas's top-right corner, styled as the field view's
+   line legend, so the panel holds only controls. */
+.public-motor-viewport .public-canvas-legend { position: absolute; z-index: 7; top: 14px; right: 14px; display: inline-flex; align-items: center; gap: 10px; padding: 7px 10px; border: 1px solid rgba(148,163,184,.16); border-radius: 8px; color: var(--text-secondary); background: rgba(7,9,14,.82); box-shadow: var(--shadow-sm); font: 11px var(--font-mono); pointer-events: none; }
+.public-motor-viewport .public-canvas-legend i { width: 9px; height: 9px; }
+.public-motor-viewport .public-canvas-legend .direction-key { display: inline-flex; }
+/* The rotor preview borrows the field playback's transport at the panel's size. */
+.public-motor-viewport .viewport-bottom-bar button.public-field-transport-play { display: grid; width: 36px; min-width: 36px; height: 36px; padding: 0; place-items: center; border: 1px solid var(--border-default); border-radius: 8px; color: var(--text-primary); background: var(--bg-surface-2); font-size: 12px; }
+.public-motor-viewport .viewport-bottom-bar button.public-field-transport-play:hover { border-color: var(--border-accent); color: var(--text-accent); background: var(--bg-surface-2); }
+.public-motor-viewport .viewport-bottom-bar .public-field-playback-rpm { width: 176px; min-height: 36px; }
+.public-motor-viewport .viewport-bottom-bar .public-field-playback-rpm input { width: 100%; }

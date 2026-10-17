@@ -2044,6 +2044,16 @@ function ViewportChrome({
           <small>{activeMeshElement.region.replace(/[_-]+/g, ' ')}</small>
         </div>
       )}
+      {/* Legends are read, not clicked, so they sit in the canvas's top-right
+          corner as the field view's do, and the panel below holds controls only. */}
+      {viewportMode === '2d' && mode === 'geometry' && (
+        <div className="public-winding-key public-canvas-legend" aria-label="Winding phase and current direction legend">
+          <span><i className="phase-a" />A</span>
+          <span><i className="phase-b" />B</span>
+          <span><i className="phase-c" />C</span>
+          <span className="direction-key">⊙ out · ⊗ in</span>
+        </div>
+      )}
       <div
         className="viewport-dock-resize"
         role="separator"
@@ -2195,14 +2205,6 @@ function ViewportChrome({
               </span>
             </span>
           )}
-          {viewportMode === '2d' && mode === 'geometry' && (
-            <span className="public-winding-key" aria-label="Winding phase and current direction legend">
-              <span><i className="phase-a" />A</span>
-              <span><i className="phase-b" />B</span>
-              <span><i className="phase-c" />C</span>
-              <span className="direction-key">⊙ out · ⊗ in</span>
-            </span>
-          )}
           {viewportMode === '3d' && (
             <span className="vc-group public-explode-controls" role="group" aria-label="Exploded view">
               <span className="public-dock-group-label" aria-hidden="true">Explode</span>
@@ -2228,12 +2230,27 @@ function ViewportChrome({
               <output aria-live="polite">{Math.round(explodedAmount * 100)}%</output>
             </span>
           )}
-          {showPlayback && <span className="vc-group public-playback">
-            <button type="button" className={isAnimating ? 'is-active' : ''} aria-label={isAnimating ? 'Pause preview' : 'Play preview'} onClick={() => setIsAnimating((value) => !value)}>{isAnimating ? 'Ⅱ' : '▶'}</button>
-            <button type="button" aria-label="Stop and reset preview" onClick={() => { setIsAnimating(false); setRotorAngleDeg(0); }}>■</button>
-            <input type="range" min="1" max="100" value={animationRpm} onChange={(event) => setAnimationRpm(Number(event.target.value))} aria-label="Preview speed (RPM)" />
-            <span>{animationRpm} RPM</span>
-          </span>}
+          {/* The rotor preview uses the field playback's transport: the same
+              play button and the same labelled speed slider. */}
+          {showPlayback && (
+            <span className="vc-group public-preview-transport" role="group" aria-label="Rotor preview">
+              <span className="public-dock-group-label" aria-hidden="true">Preview</span>
+              <button type="button" className="public-field-transport-play" aria-label={isAnimating ? 'Pause preview' : 'Play preview'} onClick={() => setIsAnimating((value) => !value)}>{isAnimating ? 'Ⅱ' : '▶'}</button>
+              <button type="button" className="public-field-transport-play" aria-label="Stop and reset preview" onClick={() => { setIsAnimating(false); setRotorAngleDeg(0); }}>■</button>
+              <label className="public-field-playback-rpm" title="Preview speed — not the solve operating point">
+                <span className="public-field-transport-label"><strong>Playback speed</strong><em>{animationRpm} RPM</em></span>
+                <input
+                  type="range"
+                  min="1"
+                  max="100"
+                  value={animationRpm}
+                  aria-label="Preview speed (RPM)"
+                  onChange={(event) => setAnimationRpm(Number(event.target.value))}
+                  style={{ ['--playback-rpm-progress' as never]: (((animationRpm - 1) / 99) * 100).toFixed(1) }}
+                />
+              </label>
+            </span>
+          )}
         </div>
         {!titleBar && cadStatus}
       </div>
