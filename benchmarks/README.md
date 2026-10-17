@@ -1,5 +1,12 @@
 # Benchmark reports and protocols
 
+The [2026-10-16 matched Windows repeat](performance-112/native-20261016/README.md)
+includes the full 64-page PDF, HTML, CSV and numerical JSON against the fresh
+29-case FEMM 4.2 collection. Native collection took **43m40s**; all 35 native job
+summaries and waveforms and every evaluation value match the saved Windows v3
+report exactly. Its 28 PASS, 1 YELLOW and planned unsupported Prius outcomes
+remain. This repeat preserves the registered reference and qualification policy.
+
 For saved-run timing analysis and bounded external reference collection, see
 [benchmark execution performance](../docs/BENCHMARK_PERFORMANCE.md).
 The [#112 full FEMM performance run](performance-112/full-suite.md) collected all
