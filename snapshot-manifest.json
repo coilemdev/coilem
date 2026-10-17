@@ -5155,8 +5155,8 @@
     },
     {
       "path": "frontend/scripts/test-motor-constants.mjs",
-      "bytes": 3927,
-      "sha256": "f4526bbaee3dcbbafabf2cc82ab34eeebee679d21dc13588812b326c51a99841"
+      "bytes": 4204,
+      "sha256": "f85457080dd26d1c90dc9a4084ab0bb533db3ff7aa5ae129dca8133ff5b08cd2"
     },
     {
       "path": "frontend/scripts/test-public-airgap-ux.mjs",
@@ -5180,8 +5180,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 118783,
-      "sha256": "52e4d49c5d2b2ca576a71692e4380f04313e06cacd26623595942a035c748370"
+      "bytes": 119411,
+      "sha256": "1f9eb359c7cd6c3641b86f395be0877de130106141114629ca4de241a9dab29c"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5610,8 +5610,8 @@
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
-      "bytes": 2993,
-      "sha256": "f07317fff5ab8a18d5885d39d133aea50f53290292cd340d5d2b3f793db2b607"
+      "bytes": 3102,
+      "sha256": "edb83771dbfb8c0ff1270dc3eab4c64b34782dc6f5d30785b355b2c84160af95"
     },
     {
       "path": "frontend/src/public/PublicLanding.tsx",
@@ -5860,8 +5860,8 @@
     },
     {
       "path": "frontend/src/public/machineConstants.ts",
-      "bytes": 3675,
-      "sha256": "a6778cbbcb473fe2b84b181b17d8cec042815269211e0a0e578d075715b32c26"
+      "bytes": 4143,
+      "sha256": "cf05c7bac517df048ac1410c8ee498b1d95e27c1d70fb8bc7f6b5981909f373b"
     },
     {
       "path": "frontend/src/public/magnetPoleFaces.ts",
@@ -5910,8 +5910,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 243724,
-      "sha256": "16132cda32cacd2b719edb3777c289ef8da22369f7de4831e7f69b973a39eba1"
+      "bytes": 243815,
+      "sha256": "c5c6c4a6acfdec134633b520922622fe17e34c16f8eded1a839e7fb20b578ec4"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -9292,6 +9292,36 @@
       "path": "tests/test_reference_recovery.py",
       "source_sha256": "da6e7b242f508340cd51eef758296057dc4568803cc98d93afadea642869c321",
       "reason": "Cover a worker that writes its result and is then stopped by the interrupt's cleanup: the run records INTERRUPTED and --resume completes without --retry-failed."
+    },
+    {
+      "base_commit": "258aaaa4c075ad4c16705ed4f95ad53168176d7d",
+      "path": "frontend/src/public/machineConstants.ts",
+      "source_sha256": "a6778cbbcb473fe2b84b181b17d8cec042815269211e0a0e578d075715b32c26",
+      "reason": "Give Kt and Ke one value each in datasheet units (per rms ampere; V/krpm line-to-line rms), with the stored SI peak value as a hover hint."
+    },
+    {
+      "base_commit": "258aaaa4c075ad4c16705ed4f95ad53168176d7d",
+      "path": "frontend/src/public/MotorConstants.tsx",
+      "source_sha256": "f07317fff5ab8a18d5885d39d133aea50f53290292cd340d5d2b3f793db2b607",
+      "reason": "Show Kt and Ke on one row each and put their SI value in the cell's hover hint and screen-reader text."
+    },
+    {
+      "base_commit": "258aaaa4c075ad4c16705ed4f95ad53168176d7d",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "19194024303a01f02c5d0f68ee1c357380da2a61f3ed953e6960ace8f43eb980",
+      "reason": "Underline Kt and Ke with a faint dash to show they carry an SI hint."
+    },
+    {
+      "base_commit": "258aaaa4c075ad4c16705ed4f95ad53168176d7d",
+      "path": "frontend/scripts/test-motor-constants.mjs",
+      "source_sha256": "f4526bbaee3dcbbafabf2cc82ab34eeebee679d21dc13588812b326c51a99841",
+      "reason": "Test the single datasheet value and the SI hint for Kt and Ke."
+    },
+    {
+      "base_commit": "258aaaa4c075ad4c16705ed4f95ad53168176d7d",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "52e4d49c5d2b2ca576a71692e4380f04313e06cacd26623595942a035c748370",
+      "reason": "Check the one-row Kt and Ke and their hint."
     }
   ]
 }
