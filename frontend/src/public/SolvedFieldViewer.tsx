@@ -1091,6 +1091,16 @@ export function SolvedFieldViewer({
     if (nextSource === 'armature' && !armature && !armatureBusy) onRequestArmature();
   };
 
+  // PM and Stator are one group: either alone, or both to overlay their lines.
+  // Turning the last one off falls back to Resultant.
+  const pmShown = view === 'pm' || view === 'stator_pm';
+  const statorShown = view === 'armature' || view === 'stator_pm';
+  const toggleSeparateField = (part: 'pm' | 'armature') => {
+    const nextPm = part === 'pm' ? !pmShown : pmShown;
+    const nextStator = part === 'armature' ? !statorShown : statorShown;
+    selectSource(nextPm && nextStator ? 'stator_pm' : nextPm ? 'pm' : nextStator ? 'armature' : 'resultant');
+  };
+
   const togglePlayback = () => {
     if (playing) {
       setPlaying(false);
@@ -1135,12 +1145,12 @@ export function SolvedFieldViewer({
     : frameLoading
       ? 'Preparing solved geometry, flux density, and contours'
       : source === 'armature' && !armature
-        ? armatureError ?? 'Select Stator only to compute the cached Br = 0 sweep.'
+        ? armatureError ?? 'Select Stator to compute the cached Br = 0 sweep.'
         : frameError;
   const renderLayerButtons = () => (
     <>
       {hasMagnets && <button type="button" aria-pressed={showMagnets} onClick={() => setShowMagnets((value) => !value)}><i aria-hidden="true" />{source === 'armature' && !overlayActive ? 'PM reference' : 'Magnets'}</button>}
-      <button type="button" aria-pressed={showHeatmap && !overlayActive} disabled={overlayActive} title={overlayActive ? 'Off in Stator + PM: one |B| map cannot belong to both fields' : undefined} onClick={() => setShowHeatmap((value) => !value)}><i aria-hidden="true" />Flux density</button>
+      <button type="button" aria-pressed={showHeatmap && !overlayActive} disabled={overlayActive} title={overlayActive ? 'Off while PM and Stator are both shown: one |B| map cannot belong to both fields' : undefined} onClick={() => setShowHeatmap((value) => !value)}><i aria-hidden="true" />Flux density</button>
       <button type="button" aria-pressed={showMesh} onClick={() => setShowMesh((value) => !value)}><i aria-hidden="true" />Mesh</button>
       <button type="button" aria-pressed={showAirgap} onClick={() => setShowAirgap((value) => !value)}><i aria-hidden="true" />Airgap</button>
       <button type="button" aria-pressed={showFieldLines} onClick={() => setShowFieldLines((value) => !value)}><i aria-hidden="true" />Field lines</button>
@@ -1191,10 +1201,11 @@ export function SolvedFieldViewer({
           <div className="public-field-control-cluster">
             <span>Source</span>
             <div className="public-field-source-controls" role="group" aria-label="Field composition">
-              <button type="button" aria-label="Resultant field, permanent magnets plus stator current" title="Permanent magnets plus stator current" aria-pressed={source === 'resultant'} onClick={() => selectSource('resultant')}><strong>Resultant</strong></button>
-              <button type="button" aria-label="PM-only field, zero current" title="Exact zero-current Magneto2D field" aria-pressed={source === 'pm'} disabled={!pmAvailable} onClick={() => selectSource('pm')}><strong>PM only</strong></button>
-              <button type="button" aria-label="Stator-current-only field, permanent-magnet remanence disabled" title={magnetoCompositionAvailable ? 'Exact zero-remanence Magneto2D field' : 'Stator-only composition is available for Magneto2D results'} aria-pressed={view === 'armature'} disabled={!magnetoCompositionAvailable} onClick={() => selectSource('armature')}><strong>Stator only</strong></button>
-              <button type="button" aria-label="Stator-current and PM-only field lines together" title={magnetoCompositionAvailable && pmAvailable ? 'Stator field lines in orange, PM field lines in cyan' : 'Needs a Magneto2D result with PM-only frames'} aria-pressed={view === 'stator_pm'} disabled={!magnetoCompositionAvailable || !pmAvailable} onClick={() => selectSource('stator_pm')}><strong>Stator + PM</strong></button>
+              <button type="button" aria-label="Resultant field, permanent magnets plus stator current" title="Permanent magnets plus stator current" aria-pressed={view === 'resultant'} onClick={() => selectSource('resultant')}><strong>Resultant</strong></button>
+              <span className={`public-field-source-pair${overlayActive ? ' is-both' : ''}`} role="group" aria-label="Separate fields: PM, Stator, or both together" title="Pick PM, Stator, or both to draw their field lines together">
+                <button type="button" className="is-pm" aria-label="PM-only field, zero current" title="Exact zero-current Magneto2D field" aria-pressed={pmShown} disabled={!pmAvailable} onClick={() => toggleSeparateField('pm')}><strong>PM</strong></button>
+                <button type="button" className="is-stator" aria-label="Stator-current-only field, permanent-magnet remanence disabled" title={magnetoCompositionAvailable ? 'Exact zero-remanence Magneto2D field' : 'Stator-only composition is available for Magneto2D results'} aria-pressed={statorShown} disabled={!magnetoCompositionAvailable} onClick={() => toggleSeparateField('armature')}><strong>Stator</strong></button>
+              </span>
             </div>
           </div>
           <div className="public-field-control-cluster public-field-overlay-cluster">
