@@ -5180,8 +5180,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 128775,
-      "sha256": "2e8cb4e328ba6bea6aa3536521a3aeff6d272ac8504204a7057a2fe4fc1a2b62"
+      "bytes": 130061,
+      "sha256": "f214285851f9c1a5d80f1f2d1c7cdf18f6062d6e5622babd529f41584a6ec9d7"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5635,8 +5635,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 58128,
-      "sha256": "3349a52de5425d93a85d134e728a91e4f9c2ef05399102a8138b8a64a9430c06"
+      "bytes": 58394,
+      "sha256": "26e8f442c63bff8ce4ac4ff9ceacea3fa5d935041646612be0f0f4e5ca8b6876"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -5910,8 +5910,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 252515,
-      "sha256": "1a99e9322f87f6b9a771efae4b15fc5d6af1efc8845c7f655b7552021cb4bed9"
+      "bytes": 255297,
+      "sha256": "98eb6639b49bd9ff304550f83fa2cf5a62ac8551ae600fa12489aa81cdd5b843"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -9478,6 +9478,24 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "eec4a40c087fdcf741bc301f72de89c485b86b5fa2eb7948bb9e586ac6bedeac",
       "reason": "Cover the canvas legend and the shared preview transport."
+    },
+    {
+      "base_commit": "6ddba14b8b18a0cd8190eb51a2bbb9ac6084efc1",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "3349a52de5425d93a85d134e728a91e4f9c2ef05399102a8138b8a64a9430c06",
+      "reason": "Give the field panel the shared readout and labelled line-density slider."
+    },
+    {
+      "base_commit": "6ddba14b8b18a0cd8190eb51a2bbb9ac6084efc1",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "6edb9b4d2142021b6769d4d63d20c442cd1bf6364c8c6768f637ff0011945020",
+      "reason": "Match the field panel to the motor panels' layout, controls, sizes and type."
+    },
+    {
+      "base_commit": "6ddba14b8b18a0cd8190eb51a2bbb9ac6084efc1",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "2e8cb4e328ba6bea6aa3536521a3aeff6d272ac8504204a7057a2fe4fc1a2b62",
+      "reason": "Cover the field panel's shared panel styling."
     }
   ]
 }
