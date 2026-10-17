@@ -2,8 +2,8 @@
 
 import math
 
-from tools.benchmark_suite.abc_metrics import compare
-from tools.benchmark_suite.bldc_metrics import (
+from backend.benchmark_suite.abc_metrics import compare
+from backend.benchmark_suite.bldc_metrics import (
     current_property_metrics,
     evaluate_numeric,
     mean,

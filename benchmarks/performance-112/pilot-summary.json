@@ -1,0 +1,145 @@
+{
+  "schema": "coilem.benchmark_performance_pilot/v1",
+  "scope": "Two registered cases; observational development-host pilot, one pass per configuration, not full-suite qualification",
+  "physical_reference_commit": "738d9516e8500c5996c772bd96470472cbb9a0f9",
+  "serial_runner_commit": "3347c27",
+  "serial_runtime_identity_sha256": "153eab758276e455514fd1b9caf275e9ac840b73e037bfe3a1d95f69250349fb",
+  "hardware": "Windows 11, Ryzen 7 7700 (8 physical / 16 logical cores), 64 GiB RAM",
+  "serial_wall_s": 815.1661339999991,
+  "parallel_wall_s": 501.63168099999893,
+  "observed_pair_speedup": 1.6250292094290608,
+  "observed_pair_runtime_reduction_pct": 38.46264459754906,
+  "jobs": [
+    {
+      "case_id": "spm_4p12s_simple__baseline",
+      "phase": "A",
+      "serial_worker_wall_s": 487.51080429999274,
+      "serial_producer_wall_s": 486.43559799998184,
+      "parallel_producer_wall_s": 499.49770879998687,
+      "archived_producer_wall_s": 482.8149521000014,
+      "serial_result_sha256": "ecc5b0a4c696ed5507bf4951c3cd0547d57e926b48fa2c15e749683afa5f4969",
+      "parallel_measurement_sha256": "3600987115ef44d3d076fd3ff7fb155ec99b9e749171354e919426ecfe209274",
+      "physical_payload_sha256": "787f1897898d7b1292225dd5888e591725b5aece95f4941bd20f87eeeb076c4f",
+      "physical_summaries_waveforms_grids_and_mesh_counts_exact": true,
+      "flux_extraction_audit_count": 96,
+      "source_extraction_audit_count": 48,
+      "flux_and_source_audits_exact": true,
+      "flux_extraction_audit_sha256": "c600fd3424e10630252bed791aa4ebe419cc6a230ff65a6e47fb0a63b08fc70d",
+      "source_extraction_audit_sha256": "d170ada5df3725796995748c3bc076a4bb8879d553b48ace4640c1e7a182cbc7",
+      "parallel_femm_pids": [
+        31724
+      ],
+      "profiled_command_time_s": 284.0421027886623,
+      "top_commands": {
+        "mi_analyze": {
+          "count": 96,
+          "elapsed_s": 237.47882069996558,
+          "max_s": 2.8068662000005133
+        },
+        "mi_createmesh": {
+          "count": 96,
+          "elapsed_s": 14.644363999832422,
+          "max_s": 0.2043701000220608
+        },
+        "mi_loadsolution": {
+          "count": 96,
+          "elapsed_s": 9.837988499988569,
+          "max_s": 0.13900049999938346
+        },
+        "mi_addarc": {
+          "count": 6528,
+          "elapsed_s": 3.792035998805659,
+          "max_s": 0.0017520000110380352
+        }
+      }
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "phase": "D",
+      "serial_worker_wall_s": 325.881507699989,
+      "serial_producer_wall_s": 324.7542262999923,
+      "parallel_producer_wall_s": 336.6780686999846,
+      "archived_producer_wall_s": 324.71293899999,
+      "serial_result_sha256": "7230f90c494f32fa87e4a0ca0bdc60271bf8f0ddfa528e1fef3d1672b1186e8a",
+      "parallel_measurement_sha256": "d8e91f0db167325f0335e1165c9ef5cb7dba24157494086676bcf90fa6f6f3e0",
+      "physical_payload_sha256": "455eec0a30d99d7c73a541b075b02cd6478bf45c8c8aeea36467229f1426dcbc",
+      "physical_summaries_waveforms_grids_and_mesh_counts_exact": true,
+      "flux_extraction_audit_count": 48,
+      "source_extraction_audit_count": 48,
+      "flux_and_source_audits_exact": true,
+      "flux_extraction_audit_sha256": "2e40852cf26c6cd098928070d53e0bc8cd8cde202192f7cbae9496e3f3e7159e",
+      "source_extraction_audit_sha256": "593c128a010b16b66c22e5fc3f1819bf666843ebddab4d1c67a2d4d8f034cdec",
+      "parallel_femm_pids": [
+        28800
+      ],
+      "profiled_command_time_s": 146.1327098030888,
+      "top_commands": {
+        "mi_analyze": {
+          "count": 48,
+          "elapsed_s": 119.52048299997114,
+          "max_s": 2.752375799987931
+        },
+        "mi_createmesh": {
+          "count": 48,
+          "elapsed_s": 7.096247799869161,
+          "max_s": 0.16570179999689572
+        },
+        "mi_loadsolution": {
+          "count": 48,
+          "elapsed_s": 4.942951599950902,
+          "max_s": 0.13909050001529977
+        },
+        "mo_selectblock": {
+          "count": 2400,
+          "elapsed_s": 3.334520100586815,
+          "max_s": 0.014036999986274168
+        }
+      }
+    }
+  ],
+  "ownership_check": {
+    "status": "PASS",
+    "terminated_probe_pid": 27152,
+    "independent_femm_pid": 24204,
+    "owned_session_exited": true,
+    "independent_session_survived": true
+  },
+  "retained_field_payload_reuse": {
+    "status": "PASS",
+    "scope": "Retained-field helper microbenchmark; not a full solve speedup",
+    "results": [
+      {
+        "angle_deg": 0.0,
+        "original_pair_s": 1.508419000019785,
+        "cached_pair_s": 0.8054345000127796,
+        "compact_exactly_equal": true,
+        "full_exactly_equal": true
+      },
+      {
+        "angle_deg": 7.5,
+        "original_pair_s": 1.5270389000070281,
+        "cached_pair_s": 0.8142010000010487,
+        "compact_exactly_equal": true,
+        "full_exactly_equal": true
+      },
+      {
+        "angle_deg": 15.0,
+        "original_pair_s": 1.5851712999865413,
+        "cached_pair_s": 0.8278079000010621,
+        "compact_exactly_equal": true,
+        "full_exactly_equal": true
+      }
+    ],
+    "cache_counts": {
+      "builds": 3,
+      "reuses": 6
+    }
+  },
+  "limitations": [
+    "Two-case pilot; no measured whole-suite 4/8-worker speedup or recommended parallel default yet.",
+    "Parallel collection used the local prototype coordinator; serial collection exercised the public launcher with the same physical producer and automation bridge.",
+    "Short tests and retained-field profiling work shared the development host during collection; timings are observational, not an isolated/repeated performance study.",
+    "Payload reuse is a separate retained-field microbenchmark, not enabled in either fresh solve configuration.",
+    "No physical source, request, sweep, material, tolerance, reference bundle or qualification changed."
+  ]
+}

@@ -94,6 +94,22 @@ def _sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _copy_file_sha256(source: Path, target: Path) -> str:
+    """Copy ``source`` to ``target`` like ``shutil.copy2``; return the SHA-256 of the bytes copied.
+
+    Each artifact is read once. Hashing the source, copying it and then hashing
+    the copy read it three times, and the second hash re-read bytes just written
+    through the OS cache, so it added no integrity check.
+    """
+    digest = hashlib.sha256()
+    with source.open("rb") as reader, target.open("wb") as writer:
+        for chunk in iter(lambda: reader.read(1024 * 1024), b""):
+            digest.update(chunk)
+            writer.write(chunk)
+    shutil.copystat(source, target)
+    return digest.hexdigest()
+
+
 def _directory_size_bytes(path: Path) -> int:
     total = 0
     for candidate in path.rglob("*"):
@@ -446,11 +462,19 @@ class SolveRunWriter:
                         retained = copied.get(source_key)
                         if retained is None:
                             suffixes = "".join(source.suffixes[-2:]) or ".bin"
-                            source_hash = _sha256_file(source)
+                            # The name carries the content hash, so copy under a
+                            # temporary name and rename once the hash is known.
+                            artifacts_dir = self.partial_path / "artifacts"
+                            artifacts_dir.mkdir(parents=True, exist_ok=True)
+                            copying = artifacts_dir / f".{len(copied) + 1:04d}.copying"
+                            try:
+                                source_hash = _copy_file_sha256(source, copying)
+                            except BaseException:
+                                copying.unlink(missing_ok=True)
+                                raise
                             relative = f"artifacts/{len(copied) + 1:04d}-{source_hash[:12]}{suffixes}"
                             target = self.partial_path / relative
-                            target.parent.mkdir(parents=True, exist_ok=True)
-                            shutil.copy2(source, target)
+                            copying.replace(target)
                             retained_id = _encode_run_artifact_id(
                                 self.project_slug,
                                 self.run_id,
@@ -461,7 +485,7 @@ class SolveRunWriter:
                             self._artifact_records.append(
                                 {
                                     "relative_path": relative,
-                                    "sha256": _sha256_file(target),
+                                    "sha256": source_hash,
                                     "size_bytes": target.stat().st_size,
                                 }
                             )

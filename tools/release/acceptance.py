@@ -6,6 +6,7 @@ the installed ``coilem --no-browser`` and checks, through HTTP only:
 
 - the UI index, a hashed asset and a deep link; a 404 for an unknown API path;
 - that the launcher and health report the installed distribution version;
+- that ``coilem benchmark --quick --list`` reads the packaged suite and records;
 - a motor Preview solve, cylindrical and linear Halbach solves and a lesson solve;
 - the saved run's PDF, CSV and replay-package downloads;
 - that a second launch reuses the running server;
@@ -328,6 +329,15 @@ class Acceptance:
         )
         missing = [tool for tool in ("cargo", "node", "npm") if shutil.which(tool, path=self.env["PATH"])]
         self.check("Cargo and Node are unavailable to the installed app", not missing, f"found={missing}")
+        listed = subprocess.run(
+            [str(self.bin / ("coilem.exe" if WINDOWS else "coilem")), "benchmark", "--quick", "--list"],
+            cwd=self.work, env=self.env, capture_output=True, text=True, timeout=120,
+        )
+        self.check(
+            "the packaged benchmark lists its quick cases with the record's times",
+            listed.returncode == 0 and "spm_4p12s_small" in listed.stdout and "4 cases, about" in listed.stdout,
+            (listed.stdout + listed.stderr).strip()[-400:],
+        )
 
     def launch(self, *arguments: str, wait: bool = False) -> subprocess.Popen | subprocess.CompletedProcess:
         command = [str(self.bin / ("coilem.exe" if WINDOWS else "coilem")), "--no-browser", *arguments]

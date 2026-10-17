@@ -179,6 +179,38 @@ def _trailing_index(value: str) -> int:
     return int(match.group(1)) if match else 0
 
 
+def coil_side_centres(ir: GeometryIR) -> dict[tuple[int, int], tuple[float, float]]:
+    """Area centroid of each split coil side, keyed by (slot index, layer).
+
+    Only two-layer slots have entries. Their halves are not symmetric about the
+    slot's mid-radius or quarter-width (tooth-coil halves taper towards the
+    bore, radial layers split by area), so a marker placed by those fractions
+    lands beside the split line instead of inside its own half.
+    """
+    centres: dict[tuple[int, int], tuple[float, float]] = {}
+    for region in ir.regions:
+        if region.kind != "SlotWinding":
+            continue
+        match = re.search(r":slot(\d+):layer(\d+)$", region.source_group or "")
+        if match:
+            centres[(int(match.group(1)), int(match.group(2)))] = _area_centroid(tessellate_ir_region(region))
+    return centres
+
+
+def _area_centroid(points: list[list[float]]) -> tuple[float, float]:
+    # The arcs tessellate densely, so a vertex average leans towards them.
+    ring = points[:-1] if len(points) > 1 and points[0] == points[-1] else points
+    twice_area = cx = cy = 0.0
+    for (x0, y0), (x1, y1) in zip(ring, ring[1:] + ring[:1]):
+        cross = x0 * y1 - x1 * y0
+        twice_area += cross
+        cx += (x0 + x1) * cross
+        cy += (y0 + y1) * cross
+    if abs(twice_area) < 1e-12:
+        return polygon_centroid(points)
+    return cx / (3.0 * twice_area), cy / (3.0 * twice_area)
+
+
 def append_winding_symbols(
     regions: list[GeometryRegion],
     winding_layout: list[WindingSlot],
@@ -189,12 +221,14 @@ def append_winding_symbols(
     slot_pitch_rad: float,
     origin_x: float = 0.0,
     origin_y: float = 0.0,
-    layer_split: str | None = None,
+    split_side_centres: dict[tuple[int, int], tuple[float, float]] | None = None,
 ) -> None:
     """Add in/out winding marker glyphs (not part of geometry IR).
 
-    Two-layer slots put each side's marker in its own layer: stacked along the
-    slot for a radial split, side by side across it for tooth coils (#91).
+    A whole-slot marker sits on the slot centre line at mid-radius. Two-layer
+    slots put each side's marker at the area centroid of its own layer region
+    (``coil_side_centres``): stacked along the slot for a radial split, side by
+    side across it for tooth coils (#91).
     """
     import math
 
@@ -209,15 +243,15 @@ def append_winding_symbols(
     for ws in sorted(winding_layout, key=lambda item: (item.slot_index, item.layer)):
         slot_idx = ws.slot_index
         layer_count = max_layer_by_slot.get(slot_idx, 1)
-        slot_angle = slot_idx * slot_pitch_rad
-        if layer_split == "tangential" and layer_count > 1:
-            slot_center_r = bore_r + 0.5 * radial_span
-            quarter_slot_rad = slot_body_width / (4.0 * max(slot_center_r, 1e-9))
-            slot_angle += quarter_slot_rad if ws.layer == 2 else -quarter_slot_rad
+        side_centre = (split_side_centres or {}).get((slot_idx, ws.layer)) if layer_count > 1 else None
+        if side_centre is not None:
+            cx, cy = side_centre
+            slot_angle = math.atan2(cy - origin_y, cx - origin_x)
         else:
+            slot_angle = slot_idx * slot_pitch_rad
             slot_center_r = bore_r + radial_span * (ws.layer - 0.5) / max(1, layer_count)
-        cx = origin_x + slot_center_r * math.cos(slot_angle)
-        cy = origin_y + slot_center_r * math.sin(slot_angle)
+            cx = origin_x + slot_center_r * math.cos(slot_angle)
+            cy = origin_y + slot_center_r * math.sin(slot_angle)
         symbol_size = slot_body_width * (0.11 if layer_count > 1 else 0.15)
 
         if ws.direction == "in":

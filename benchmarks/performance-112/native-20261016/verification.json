@@ -1,0 +1,130 @@
+{
+  "status": "VERIFIED",
+  "native_wall_s": 2619.682354,
+  "previous_native_wall_s": 2737.385797,
+  "native_reduction_pct": 4.299848531726705,
+  "verified_native_jobs": 35,
+  "native_run_sha256": "bac4c1376648f9f6c3fa218c7680d4bd2838763d86d84d2c00c24e2fe9120fc5",
+  "fresh_femm_bundle_sha256": "d1e3504d6ccb241301776cec5ae7a263659383a0a9041a8c206b170a22323068",
+  "numerical_status": "YELLOW",
+  "counts": {
+    "PASS": 28,
+    "YELLOW": 1,
+    "UNSUPPORTED": 1
+  },
+  "status_changes": [],
+  "gate_status_changes": [],
+  "abc_max_deltas_pct": {
+    "average_delta_pct": {
+      "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "value": 5.9040051619481915
+    },
+    "bemf_fundamental_delta_pct": {
+      "case": "ipm_vshape_8p12s_narrow_angle_contract",
+      "value": 3.386134188199756
+    },
+    "bemf_peak_delta_pct": {
+      "case": "ipm_vshape_8p12s_baseline_contract",
+      "value": 14.778701363798104
+    }
+  },
+  "nonpassing_rows": [
+    {
+      "id": "ipm_vshape_8p12s_baseline_contract",
+      "phase": "B",
+      "status": "YELLOW",
+      "evaluation": {
+        "status": "YELLOW",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "YELLOW",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 0.8870780159156986,
+        "reference_average_Nm": 0.838088155810624,
+        "average_delta_pct": 5.845430431801066,
+        "average_absolute_delta_Nm": 0.048989860105074556,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 2.0562933199286557,
+        "bemf_peak_delta_pct": 14.778701363798104,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 13,
+          "reference_positions": 13,
+          "nrmse_pct": 6.38077121863248,
+          "correlation": 0.9963576568045875
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 12.650758033355352,
+          "correlation": 0.9926650930321876
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        }
+      }
+    }
+  ],
+  "phase_counts": {
+    "A": {
+      "PASS": 10
+    },
+    "B": {
+      "PASS": 11,
+      "YELLOW": 1
+    },
+    "C": {
+      "UNSUPPORTED": 1,
+      "PASS": 4
+    },
+    "D": {
+      "PASS": 3
+    }
+  },
+  "diagnostic_finding_counts": {},
+  "diagnostic_findings": [],
+  "report_files": [
+    {
+      "name": "artifact_manifest.json",
+      "bytes": 5082
+    },
+    {
+      "name": "benchmark_report.md",
+      "bytes": 5894
+    },
+    {
+      "name": "benchmark_results.csv",
+      "bytes": 17210
+    },
+    {
+      "name": "benchmark_summary.json",
+      "bytes": 1828549
+    },
+    {
+      "name": "coilem_benchmark_report.html",
+      "bytes": 399708
+    },
+    {
+      "name": "coilem_benchmark_report.pdf",
+      "bytes": 139611
+    }
+  ]
+}

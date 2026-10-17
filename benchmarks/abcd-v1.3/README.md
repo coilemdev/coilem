@@ -1,6 +1,6 @@
 # A/B/C/D protocol 1.3.0: winding-relative BLDC current validation
 
-Harness **1.4.0** defaults to this protocol and the complete `ipm-high-output-v3`
+Harness **1.5.0** defaults to this protocol and the complete `ipm-high-output-v3`
 FEMM bundle. The physical coordinate convention remains **public-clockwise-v2**.
 Only the BLDC golden-sector interpretation changes from protocol 1.1.0.
 Protocol 1.2.0 remains a separate experimental Prius extension; this suite keeps
@@ -42,11 +42,17 @@ protocol 1.3.0 directly.
 
 ## New runs
 
+An installed coilEM runs this suite with `coilem benchmark`, and matches the
+result against the [published record](../records/README.md) for its platform.
 From a clean candidate checkout, with its locked dependencies:
 
 ```sh
 python -m tools.run_benchmarks --phases A B C D --out-dir ../benchmark-output/my-run --pdf
 ```
+
+Both delete each job's solver files once it is measured, and stop before a
+job when the output drive has less than 3 GB free (`--min-free-gb`); resume
+with `--resume`. `--keep-runtime` keeps the solver files.
 
 This uses protocol 1.3.0 and FEMM v3 by default. Reproduce the older validator
 explicitly with `--suite benchmarks/abcd-v1.1/benchmark_spec.json`; choose the

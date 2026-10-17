@@ -240,7 +240,12 @@ assert.match(
   styleSource,
   /\.public-report-stage > \.public-qualification-note \{\s*max-width: 1080px;\s*margin: 0 auto 14px;\s*\}/,
 );
-assert.equal((workspaceSource.match(/<QualificationNote qualification=/g) ?? []).length, 2, 'Solve and Results show the qualification note');
+assert.equal((workspaceSource.match(/<QualificationNote qualification=/g) ?? []).length, 1, 'Results shows the qualification note');
+// Solve shows the same qualification as a short tag in the Run plan header,
+// with the reason, caveats and docs link in its hover/focus details (#110).
+assert.match(workspaceSource, /\{validationQualification && <QualificationTag qualification=\{validationQualification\} \/>\}/);
+assert.match(workspaceSource, /function QualificationTag[\s\S]*?role="note"\s*ariaLabel="Benchmark qualification"[\s\S]*?qualification\.caveats\.map[\s\S]*?How designs are qualified/);
+assert.match(workspaceSource, /tone=\{qualification\.status === 'qualified' \? 'good' : 'warning'\}/);
 // The live-solve bar comes from the monotonic solve-progress helper, not
 // fixed placeholder widths (#53).
 assert.match(appSource, /nextPublicSolveProgressBar\(previous, progress\)/);
@@ -252,7 +257,7 @@ assert.match(appSource, /const convertProjectSteelToM350 = useCallback/);
 assert.match(appSource, /stator_steel: 'M350-50A'/);
 assert.match(appSource, /rotor_steel: 'M350-50A'/);
 assert.match(appSource, /save a new \.coilem file to preserve the conversion/);
-assert.match(workspaceSource, /public-solve-workspace\$\{resizingRunPlan[\s\S]*?solveViewportExpanded/);
+assert.match(workspaceSource, /public-solve-workspace\$\{resizingPanel === 'runPlan'[\s\S]*?solveViewportExpanded/);
 assert.match(workspaceSource, /className="public-solve-setup-scroll"/);
 assert.match(workspaceSource, /className="public-solve-footer"/);
 assert.match(workspaceSource, /function ExcitationRunPlanPreview/);
@@ -320,6 +325,13 @@ assert.match(workspaceSource, /reportQualification && !qualificationChip && <Qua
 assert.match(workspaceSource, /<span role="note" aria-label="Benchmark qualification">\s*<a className="public-qualification-chip"/);
 assert.doesNotMatch(workspaceSource, /className="metric-grid wide"/);
 assert.match(resultSummarySource, /aria-label="Operating point"/);
+// Run settings sit above the results as one collapsed line; expanding shows
+// every setting, and the footer keeps only timings (#110).
+assert.match(resultSummarySource, /<details className="public-run-settings">\s*<summary>[\s\S]*?aria-label="Operating point"[\s\S]*?<\/summary>\s*<dl className="public-report-provenance">/);
+assert.ok(resultSummarySource.indexOf('public-run-settings') < resultSummarySource.indexOf('public-result-headline'), 'Run settings come before the headline results');
+assert.doesNotMatch(workspaceSource, /<div className="public-report-provenance">/);
+assert.match(workspaceSource, /\{ label: 'Requested linear solver', value: requestedLinearSolver \}/);
+assert.doesNotMatch(resultSummarySource, /rotor positions`,\s*`\$\{solverLabel\}/);
 assert.match(resultSummarySource, /Fundamental, rms line-to-neutral at/);
 assert.match(resultSummarySource, /Torque × speed, before losses/);
 assert.match(resultSummarySource, /<MotorConstants summary=\{summary\} variant="report" \/>/);
@@ -730,7 +742,19 @@ assert.match(workspaceSource, /public-quality-shape-scale/);
 assert.match(workspaceSource, /role="tooltip"/);
 assert.match(workspaceSource, /Required ≥/);
 assert.match(workspaceSource, /Ready to run/);
-assert.match(workspaceSource, /public-run-consequence/);
+// Run status is a short tag with hover/focus details, not a full-width card,
+// and the footer drops the position and output counts (#110).
+assert.match(workspaceSource, /function StatusTag\(/);
+assert.match(workspaceSource, /aria-describedby=\{detailsId\}/);
+assert.match(styleSource, /\.public-status-tag:hover \.public-status-tag-details,\s*\.public-status-tag:focus-within \.public-status-tag-details \{ opacity: 1; visibility: visible; \}/);
+assert.doesNotMatch(workspaceSource, /public-run-readiness/);
+assert.doesNotMatch(workspaceSource, /\{outputLabels\.length\} outputs/);
+assert.match(workspaceSource, /<div className="public-run-consequence">\s*<StatusTag tone=\{actionTagTone\}[^>]*placement="above">[\s\S]*?<strong>\{estimatedTimeText\}<\/strong>/);
+assert.match(workspaceSource, /<div className="public-run-plan-tags">\s*<StatusTag[\s\S]*?role="status"\s*ariaBusy=\{solveInProgress\}/);
+// The excitation preview labels the peak current on its y-axis (#110).
+assert.match(workspaceSource, /current_amplitude_convention === 'rms'\s*\? config\.solve_params\.current_amplitude_A \* Math\.SQRT2/);
+assert.match(workspaceSource, /className="public-excitation-preview-axis" aria-hidden="true"/);
+assert.match(workspaceSource, /<line className="peak"/);
 assert.match(workspaceSource, /public-derived-operating-point/);
 assert.match(workspaceSource, /public-mesh-quality-summary/);
 assert.match(workspaceSource, /open=\{analysisDetailsOpen\}/);
@@ -783,7 +807,7 @@ assert.match(fieldResultSource, /Waiting for samples|Completed Magneto2D solutio
 assert.match(fieldResultSource, /visibleLayerLabel/);
 assert.match(fieldResultSource, /probeEnabled\?: boolean/);
 assert.match(fieldResultSource, /\|\| !probeEnabled/);
-assert.match(solvedFieldSource, /probeEnabled=\{!playing && Boolean\(exactVectorPlot\)\}/);
+assert.match(solvedFieldSource, /probeEnabled=\{!playing && Boolean\(exactVectorPlot\) && !overlayActive\}/);
 assert.match(solvedFieldSource, /disabled=\{!densityAdjustable\}/);
 assert.match(solvedFieldSource, /Playback uses medium field-line density/);
 assert.match(materialWorkspaceSource, /<MaterialCurveChart key=\{model\.id\} model=\{model\}/);
@@ -871,7 +895,42 @@ assert.doesNotMatch(solvedFieldSource, /className="public-field-loading-visual"/
 assert.doesNotMatch(styleSource, /public-field-loading-spin/);
 assert.doesNotMatch(solvedFieldSource, /className="public-field-physics-note"/);
 assert.match(solvedFieldSource, /showMagnets=\{showMagnets\}/);
-assert.match(solvedFieldSource, /magnetReference=\{source === 'armature'\}/);
+assert.match(solvedFieldSource, /magnetReference=\{source === 'armature' && !overlayActive\}/);
+// Stator + PM (#120): the PM-only field's lines in cyan over the stator field,
+// with no flux-density map, matching arrows and a lines legend.
+assert.match(solvedFieldSource, />Stator \+ PM</);
+assert.match(solvedFieldSource, /aria-pressed=\{view === 'stator_pm'\}/);
+assert.match(solvedFieldSource, /aria-pressed=\{view === 'armature'\}/);
+assert.match(solvedFieldSource, /const source: FieldSource = overlayActive \? 'armature' : view/);
+assert.match(solvedFieldSource, /nearestFrame\(resultantFrames, descriptor\.angle_deg\)/);
+assert.match(solvedFieldSource, /OVERLAY_ANGLE_TOLERANCE_DEG/);
+assert.match(solvedFieldSource, /showHeatmap=\{showHeatmap && !overlayActive\}/);
+assert.match(solvedFieldSource, /Off in Stator \+ PM: one \|B\| map cannot belong to both fields/);
+assert.match(solvedFieldSource, /overlay=\{fieldLineOverlay\}/);
+assert.match(solvedFieldSource, /loadVisualFrame\(nextOverlay, 'pm', false\)/);
+assert.match(solvedFieldSource, /if \(heldOverlayRaster\) shown\.add\(heldOverlayRaster\)/);
+assert.match(fieldResultSource, /const OVERLAY_LINE_COLOR = '#5ed3f3'/);
+assert.match(fieldResultSource, /globalCompositeOperation = 'source-in'/);
+assert.match(fieldResultSource, /className="public-field-direction-cue is-overlay"/);
+assert.match(fieldResultSource, /className="public-field-lines-legend"/);
+assert.match(fieldResultSource, /Separate solves: in saturated steel the resultant is not their sum\./);
+assert.match(styleSource, /\.public-field-direction-cue\.is-overlay path \{/);
+assert.match(styleSource, /\.public-solved-field-canvas \.public-field-lines-legend \{[^}]*position: absolute/);
+assert.match(styleSource, /@container \(max-width: 760px\) \{\s*\.public-field-toolbar-groups \{ grid-column: 1 \/ -1; grid-row: 2;/);
+// Field axes: each field's working-harmonic poles, the stator lead and the caption.
+assert.match(solvedFieldSource, /fieldAxes=\{overlayActive \? CLOCKWISE_FIELD_AXES : null\}/);
+assert.match(solvedFieldSource, /setShowPoleLabels\(true\);\s*setFieldLineDensity\('low'\);/);
+assert.match(fieldResultSource, /airgapHarmonic\(statorPolarityProfile, axisPolePairs\)/);
+assert.match(fieldResultSource, /rotorNorthAxisDeg\(magnetOverlay, axisPolePairs\)/);
+assert.match(fieldResultSource, /className="public-field-axis is-stator"/);
+assert.match(fieldResultSource, /className="public-field-axis is-pm"/);
+assert.match(fieldResultSource, /Stator \{leadElecDeg >= 0 \? 'leads' : 'lags'\} magnets by/);
+assert.match(fieldResultSource, /The magnets are pulled after the stator field\./);
+assert.match(fieldResultSource, /-pole-pair part gives no steady torque/);
+assert.match(fieldResultSource, /<p className="public-field-axes-caption">/);
+assert.match(styleSource, /\.public-solved-field-canvas \.public-field-axes-caption \{ position: absolute; z-index: 7; left: 50%; bottom: 8px;/);
+assert.match(fieldResultSource, /strongestAirgapPolePairs\(statorPolarityProfile, axisPolePairs \* 4\)/);
+assert.match(styleSource, /\.public-field-axis\.is-stator \{ stroke: #ffb547;/);
 assert.match(solvedFieldSource, /showPolarityLegend=\{source === 'armature' && showPoleLabels\}/);
 assert.match(solvedFieldSource, /showStatorPolarity=\{source === 'armature' && showPoleLabels\}/);
 assert.match(solvedFieldSource, /nearestAirgapProfile/);
@@ -1084,6 +1143,13 @@ assert.match(workspaceSource, /Analysis is still running/);
 assert.match(workspaceSource, /Building torque, Back-EMF, field plots/);
 assert.match(workspaceSource, /Building waveform from solved fields/);
 assert.match(workspaceSource, /BackEMFHarmonicSpectrum/);
+// The Back EMF spectrum is a vertical column chart like an FFT plot, with
+// per-column hover/focus details; the table keeps every value (#110).
+assert.match(workspaceSource, /function HarmonicSpectrumChart\(/);
+assert.match(workspaceSource, /<HarmonicSpectrumChart harmonics=\{analysis\.harmonics\} compact=\{compact\} \/>\s*<div className="public-harmonic-table"/);
+assert.match(workspaceSource, /className=\{`public-harmonic-column\$\{activeIndex === index \? ' is-active' : ''\}`\}\s*role="img"\s*tabIndex=\{0\}/);
+assert.doesNotMatch(workspaceSource, /public-harmonic-bar/);
+assert.match(styleSource, /\.public-harmonic-column-bar \{[^}]*width: min\(24px, 62%\);[^}]*border-radius: 4px 4px 0 0;/);
 assert.match(workspaceSource, /H1–H/);
 assert.match(workspaceSource, /Line AB THD H12/);
 assert.match(workspaceSource, /periodic no-load flux-linkage DFT/);
@@ -1091,7 +1157,8 @@ assert.match(workspaceSource, /periodic no-load flux-linkage DFT/);
 assert.match(workspaceSource, /progress-track\$\{progressStarted \? '' : ' is-waiting'\}\$\{finalizing \? ' is-finishing' : ''\}/);
 assert.match(styleSource, /\.progress-track\.is-waiting::after/);
 assert.match(workspaceSource, /window\.setInterval/);
-assert.match(workspaceSource, /is-running/);
+assert.match(workspaceSource, /const runReadinessTone: StatusTagTone = solveInProgress \|\| busy === 'mesh'\s*\? 'running'/);
+assert.match(styleSource, /\.public-status-tag\.is-running \.public-status-tag-pill i \{ animation: public-status-tag-pulse/);
 assert.match(solveProgressSource, /packaging_results/);
 assert.match(solveProgressSource, /saving_run/);
 assert.match(solveProgressSource, /solver_timing/);
@@ -1112,6 +1179,17 @@ assert.match(workspaceSource, /Resize completed results panel/);
 assert.match(workspaceSource, /role="separator"/);
 assert.match(workspaceSource, /window\.addEventListener\('pointermove', handlePointerMove\)/);
 assert.match(workspaceSource, /onKeyDown=\{handleRunPlanResizeKey\}/);
+// "Solver waveforms" heads the plots, after the metrics and Motor constants (#110).
+assert.match(workspaceSource, /<span className="public-section-kicker">Completed results<\/span>\s*<button/);
+assert.match(workspaceSource, /<MotorConstants summary=\{result\.summary\} \/>[\s\S]{0,200}?<strong className="public-completed-waveforms-heading">Solver waveforms<\/strong>\s*<div className="public-compact-result-tabs"/);
+// The Analysis setup panel resizes the same way from its right edge (#110).
+assert.match(workspaceSource, /Resize analysis setup panel/);
+assert.match(workspaceSource, /onKeyDown=\{handleSetupResizeKey\}/);
+assert.match(workspaceSource, /onPointerDown=\{handleSetupResizeStart\}/);
+assert.match(workspaceSource, /onDoubleClick=\{\(\) => setSetupWidth\(null\)\}/);
+assert.match(workspaceSource, /if \(panel === 'setup'\) setSetupWidth\(clampSetupWidth\(startWidth \+ event\.clientX - startX\)\)/);
+assert.match(styleSource, /\.public-solve-setup-resizer \{ right: -8px; \}/);
+assert.match(styleSource, /\.public-run-plan-resizer,\s*\.public-solve-setup-resizer \{ display: none; \}/);
 assert.match(workspaceSource, /const RUN_PLAN_ACTIVE_WIDTH = 440/);
 assert.match(workspaceSource, /setRunPlanWidth\(\(currentWidth\) => Math\.max/);
 assert.match(workspaceSource, /runPlanScrollRef\.current\?\.scrollTo/);
@@ -1512,9 +1590,15 @@ assert.match(workspaceSource, /data-guide="solve-run"/);
 assert.match(workspaceSource, /data-guide="open-report"/);
 assert.match(workspaceSource, /Review source and limitations/);
 assert.match(workspaceSource, /Review material provenance/);
-assert.match(workspaceSource, /<summary>Model assumptions<\/summary>/);
-assert.match(workspaceSource, />Phase current</);
-assert.match(workspaceSource, />Rated speed</);
+// The Back EMF headline card shows a three-phase sparkline on one scale (#110).
+assert.match(resultSummarySource, /sharedSparklinePaths\(\s*\[result\.back_emf_waveform\.phase_a_V, result\.back_emf_waveform\.phase_b_V, result\.back_emf_waveform\.phase_c_V\]/);
+assert.match(resultSummarySource, /<article className="public-result-emf">[\s\S]*?className=\{`phase-\$\{'abc'\[index\]\}`\}/);
+// Model assumptions live inside the Results Run settings disclosure (#110).
+assert.match(resultSummarySource, /<details className="public-run-settings">[\s\S]*?<h4 id=\{assumptionsHeadingId\}>Model assumptions<\/h4>[\s\S]*?<\/details>/);
+assert.match(workspaceSource, /assumptions=\{\(\s*<>\s*<span>[\s\S]*?Review material provenance/);
+assert.doesNotMatch(workspaceSource, /className="public-report-assumptions"/);
+assert.match(workspaceSource, /sixStep \? 'Conducting phase current' : 'Phase current'/);
+assert.match(workspaceSource, /\{ label: 'Rated speed', value:/);
 assert.match(workspaceSource, /Ideal six-step \(120°\)/);
 assert.match(workspaceSource, /Conducting phase current/);
 assert.match(workspaceSource, /A plateau/);
