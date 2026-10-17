@@ -5080,8 +5080,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 1865,
-      "sha256": "9b4a0e18e7ea9146e2d1dc40989a808528b8025f9dfc645d57acd66eacfa1a7c"
+      "bytes": 1904,
+      "sha256": "261e1543b0dbfa07b1ea5165d663f522a0c31c7c088819275431ad378d308e91"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -5117,6 +5117,11 @@
       "path": "frontend/scripts/test-custom-steel.mjs",
       "bytes": 2006,
       "sha256": "206e0c3c63ddf9e11d28f6d4a60d4227eaac4757d0fb06ab538fd8b1d4db6e3f"
+    },
+    {
+      "path": "frontend/scripts/test-design-errors.mjs",
+      "bytes": 5205,
+      "sha256": "ec7c1bbd67974e5a005f5803c63b8b5bb0c92c0037b0ecb9f0ad33a4e841420a"
     },
     {
       "path": "frontend/scripts/test-design-file-defaults.mjs",
@@ -5175,8 +5180,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 117841,
-      "sha256": "f9e0959eef5f10f5e903710b3b9a80296e5e81926eaca754444740c101b5fa6c"
+      "bytes": 118783,
+      "sha256": "52e4d49c5d2b2ca576a71692e4380f04313e06cacd26623595942a035c748370"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5565,8 +5570,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 70465,
-      "sha256": "14f8457052751b147d1c1e3427cba2371af52e60831de9b9eb18a03147fd1632"
+      "bytes": 70950,
+      "sha256": "3e97e33db2f8975f52fa41f760158833a1d5be3365f7d4091ff4291a8f05d095"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -5575,8 +5580,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 196895,
-      "sha256": "76141cfbfa34ed25b01511a7361f7feb3a99472898ad7356272e2ebb1c9e3626"
+      "bytes": 197718,
+      "sha256": "1ea3817658e25452ef370dc545f6c47911f1d950d4a4a6a81129e140c937df22"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5692,6 +5697,11 @@
       "path": "frontend/src/public/customSteel.ts",
       "bytes": 4524,
       "sha256": "77326cc259e5da071304f72c1f3aff4e1a208f10705bf959a74af58b1ecf62c6"
+    },
+    {
+      "path": "frontend/src/public/designErrors.ts",
+      "bytes": 4673,
+      "sha256": "967bdce9d3a8fd5653e8866494c119f5134f05ded43997c99d5e5ec77f7031a0"
     },
     {
       "path": "frontend/src/public/designFile.ts",
@@ -9031,6 +9041,30 @@
       "path": "tools/benchmark_suite/report.py",
       "source_sha256": "b824617f4bd29a0d455a4063a07989f17f68cb0a90aa3d49734465d8ec93e5bc",
       "reason": "Show the energy-balance diagnostic for coilEM and the reference in the benchmark report (#80)."
+    },
+    {
+      "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "14f8457052751b147d1c1e3427cba2371af52e60831de9b9eb18a03147fd1632",
+      "reason": "Keep geometry-preview and mesh errors whole and show parallel-paths faults in plain words with the fixes that work."
+    },
+    {
+      "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "eb961fd5e45e44100e125981768106fce18e069c8d9e7db1061c6ab26e11b71a",
+      "reason": "Show a warning instead of a green check on the Design section whose field the current error names."
+    },
+    {
+      "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",
+      "path": "frontend/package.json",
+      "source_sha256": "7f2ba6fdf77495ce751899892c3ad1f6366a8d039d8a39043dfbf6b461d47a89",
+      "reason": "Run the design-error tests with the public UI tests."
+    },
+    {
+      "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "eedd78457093a52f88122296c82b48c565c185117ae3bba5de905a7e2971e606",
+      "reason": "Check that design errors keep their field, use the plain wording and flag their section."
     },
     {
       "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",

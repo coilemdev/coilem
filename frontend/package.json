@@ -10,7 +10,7 @@
     "test:public-boundary": "node scripts/test-public-boundary.mjs",
     "test:public-bundle": "node scripts/test-public-bundle.mjs",
     "test:public-airgap": "node scripts/test-public-airgap-ux.mjs",
-    "test:public-ui": "node scripts/test-public-ui-contract.mjs && node scripts/test-field-playback-timing.mjs && node scripts/test-solve-progress.mjs && node scripts/test-chart-readout.mjs && node scripts/test-bldc-chart-paths.mjs && node scripts/test-public-backend-monitor.mjs && node scripts/test-flat-ipm-burial-health.mjs && node scripts/test-custom-steel.mjs && node scripts/test-design-file-defaults.mjs && node scripts/test-field-axes.mjs && node scripts/test-tooth-coil-repair.mjs && node scripts/test-motor-constants.mjs && node scripts/test-result-summary.mjs",
+    "test:public-ui": "node scripts/test-public-ui-contract.mjs && node scripts/test-field-playback-timing.mjs && node scripts/test-solve-progress.mjs && node scripts/test-chart-readout.mjs && node scripts/test-bldc-chart-paths.mjs && node scripts/test-public-backend-monitor.mjs && node scripts/test-flat-ipm-burial-health.mjs && node scripts/test-custom-steel.mjs && node scripts/test-design-file-defaults.mjs && node scripts/test-field-axes.mjs && node scripts/test-tooth-coil-repair.mjs && node scripts/test-design-errors.mjs && node scripts/test-motor-constants.mjs && node scripts/test-result-summary.mjs",
     "typecheck": "tsc --project tsconfig.public.json",
     "test:browser": "playwright test --config playwright.public.config.ts",
     "test:lesson-ten-bemf": "node scripts/test-lesson-ten-bemf.mjs",

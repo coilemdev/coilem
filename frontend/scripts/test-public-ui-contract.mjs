@@ -1540,6 +1540,16 @@ assert.match(workspaceSource, /disabled: !available/);
 assert.match(workspaceSource, /Coils per Phase/);
 assert.match(workspaceSource, /set\('winding', 'layers', 'winding'\)\(Number\(value\)\)/);
 assert.match(appSource, /parallelPathsDividing\(layerCoilsPerPhase, config\.winding\.parallel_paths\)/);
+// Design errors keep their field so the parallel-paths check reads in plain words
+// and the section holding the field shows a warning instead of a green check.
+assert.match(appSource, /const error = errorDetails \? designErrorText\(errorDetails, config\) : null;/);
+assert.match(appSource, /setPreviewNetworkFailed\(requestError instanceof TypeError\);\s*setError\(requestFailure\(requestError\)\);/);
+assert.match(workspaceSource, /const errorSection = error \? designErrorSection\(errorDetails\) : null;/);
+assert.match(workspaceSource, /className=\{`param-group-header \$\{attention \? 'status-attention' : 'status-complete'\}/);
+assert.match(workspaceSource, /<StatusGlyph tone=\{attention \? 'warning' : 'good'\} \/>/);
+for (const section of ['stator', 'rotor', 'advanced', 'winding', 'materials']) {
+  assert.ok(workspaceSource.includes(`<ParameterSectionBlock id="${section}" attention={errorSection === '${section}'}`), section);
+}
 assert.match(appSource, /layers: 'Winding layers'/);
 
 // Guided setup coach: landing entry, data-guide anchors, and step coach.
