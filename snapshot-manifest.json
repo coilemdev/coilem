@@ -455,13 +455,13 @@
     },
     {
       "path": "backend/preview.py",
-      "bytes": 39014,
-      "sha256": "704ad1cd0eecfaca80c0ba57783bdb4101fd61c35de1c2917aa41ebcafb561e5"
+      "bytes": 39043,
+      "sha256": "9d95bd235b3f2564b5c4fc6482adb549d01ac1ba25c6a9ce0da5c6e0cbf4eb28"
     },
     {
       "path": "backend/preview_from_ir.py",
-      "bytes": 9082,
-      "sha256": "3a3e9b8ec32cb28f00b40a896f66f616e56bd21e5957ad9c55c218b07c5e628c"
+      "bytes": 10654,
+      "sha256": "2f7c8764abdd35c4183ac4e63d27c304c38ec3cea7aa6e1a805c0dd2876b90b4"
     },
     {
       "path": "backend/public_field_playback.py",
@@ -6525,8 +6525,8 @@
     },
     {
       "path": "tests/test_slot_layer_split.py",
-      "bytes": 4617,
-      "sha256": "7cdd0d69a32510bb1cbf9ae590320a03c0cfa9f34b794d442e8a43a71e5d6399"
+      "bytes": 7905,
+      "sha256": "aa937b0dc5c16413a30f3963c78bb020fcc37e572b6b8afff88ffd63750cce9d"
     },
     {
       "path": "tests/test_solve_estimate.py",
@@ -9031,6 +9031,24 @@
       "path": "tools/benchmark_suite/report.py",
       "source_sha256": "b824617f4bd29a0d455a4063a07989f17f68cb0a90aa3d49734465d8ec93e5bc",
       "reason": "Show the energy-balance diagnostic for coilEM and the reference in the benchmark report (#80)."
+    },
+    {
+      "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",
+      "path": "backend/preview_from_ir.py",
+      "source_sha256": "3a3e9b8ec32cb28f00b40a896f66f616e56bd21e5957ad9c55c218b07c5e628c",
+      "reason": "Place each split coil side's in/out marker at the area centroid of its own layer region instead of at fixed slot fractions, so two-layer markers sit centred in their half-slot."
+    },
+    {
+      "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",
+      "path": "backend/preview.py",
+      "source_sha256": "704ad1cd0eecfaca80c0ba57783bdb4101fd61c35de1c2917aa41ebcafb561e5",
+      "reason": "Pass the split coil sides' centroids from the geometry IR to the in/out marker placement."
+    },
+    {
+      "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",
+      "path": "tests/test_slot_layer_split.py",
+      "source_sha256": "7cdd0d69a32510bb1cbf9ae590320a03c0cfa9f34b794d442e8a43a71e5d6399",
+      "reason": "Assert each in/out marker sits at its own coil side's centroid for two-layer slots, and that whole-slot markers keep their place."
     },
     {
       "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",

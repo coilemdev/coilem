@@ -20,6 +20,7 @@ import pytest
 from backend.geometry_ir import build_geometry_ir, slot_layer_assignments, slot_layer_split
 from backend.gmsh_solver import GMSH_AVAILABLE, run_gmsh_mesh_preview
 from backend.models import MotorConfig
+from backend.preview import generate_preview
 
 pytestmark = pytest.mark.pr
 
@@ -88,6 +89,70 @@ def test_split_direction_follows_the_winding() -> None:
     # Single-layer slots keep one whole-slot region.
     regions = _slot_regions(_config(CONCENTRATED, {}))
     assert all(len(slot) == 1 and slot[0].region_id == f"slot_winding_{index}" for index, slot in regions.items())
+
+
+def _area_centroid(points: list[list[float]]) -> tuple[float, float]:
+    ring = points[:-1] if points[0] == points[-1] else points
+    pairs = list(zip(ring, ring[1:] + ring[:1]))
+    crosses = [x0 * y1 - x1 * y0 for (x0, y0), (x1, y1) in pairs]
+    twice_area = sum(crosses)
+    return (
+        sum((x0 + x1) * c for ((x0, _), (x1, _)), c in zip(pairs, crosses)) / (3 * twice_area),
+        sum((y0 + y1) * c for ((_, y0), (_, y1)), c in zip(pairs, crosses)) / (3 * twice_area),
+    )
+
+
+def _inside(point: tuple[float, float], polygon: list[list[float]]) -> bool:
+    x, y = point
+    inside = False
+    for (x0, y0), (x1, y1) in zip(polygon, polygon[1:] + polygon[:1]):
+        if (y0 > y) != (y1 > y) and x < x0 + (y - y0) * (x1 - x0) / (y1 - y0):
+            inside = not inside
+    return inside
+
+
+def _markers(config: MotorConfig) -> list[tuple[tuple[float, float], list[list[float]], object]]:
+    """Each in/out marker's centre, its glyph points, and the coil side it sits in."""
+    preview = generate_preview(config)
+    sides = [region for region in preview.regions if region.region_type.startswith("slot_")]
+    glyphs = [region for region in preview.regions if region.region_type == "winding_symbol"]
+    markers: list[tuple[tuple[float, float], list[list[float]], object]] = []
+    for glyph in glyphs:
+        ring = glyph.points[:-1]
+        if glyph.label.endswith("(in)"):
+            # The dot is a regular octagon around the centre.
+            centre = (sum(x for x, _ in ring) / len(ring), sum(y for _, y in ring) / len(ring))
+        else:
+            # Each bar of the cross runs from +size to -size through the centre.
+            centre = ((ring[0][0] + ring[1][0]) / 2, (ring[0][1] + ring[1][1]) / 2)
+            if markers and math.dist(centre, markers[-1][0]) < 1e-9:
+                markers[-1][1].extend(ring)
+                continue
+        owners = [side for side in sides if _inside(centre, side.points)]
+        assert len(owners) == 1, f"{glyph.label} marker at {centre} is not inside exactly one coil side"
+        markers.append((centre, list(ring), owners[0]))
+    assert len(markers) == len(sides)
+    assert {id(side) for _, _, side in markers} == {id(side) for side in sides}
+    return markers
+
+
+@pytest.mark.parametrize("case", CASES, ids=str)
+def test_each_marker_sits_at_the_centroid_of_its_own_coil_side(case: str) -> None:
+    for centre, glyph, side in _markers(_config(*CASES[case])):
+        assert math.dist(centre, _area_centroid(side.points)) < 0.01, side.label
+        assert all(_inside(tuple(point), side.points) for point in glyph), side.label
+
+
+def test_whole_slot_marker_stays_at_mid_radius_on_the_slot_centre_line() -> None:
+    config = _config(CONCENTRATED, {})
+    bore_r = config.stator.ID_mm / 2
+    slot_bottom_r = config.stator.OD_mm / 2 - config.stator.yoke_thickness_mm
+    pitch = 2 * math.pi / config.stator.slot_count
+    for centre, glyph, side in _markers(config):
+        slot = int(side.label.split()[1]) - 1
+        expected_r = (bore_r + slot_bottom_r) / 2
+        assert math.dist(centre, (expected_r * math.cos(slot * pitch), expected_r * math.sin(slot * pitch))) < 1e-9
+        assert all(_inside(tuple(point), side.points) for point in glyph), side.label
 
 
 @pytest.mark.skipif(not GMSH_AVAILABLE, reason="gmsh is not installed")
