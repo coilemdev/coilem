@@ -215,6 +215,10 @@ def timing_hints(path, weighted, budget):
 def finish_job(output, job, runtime, code=None, interrupted=False):
     if code is not None:
         job["exit_code"] = code
+    if interrupted:
+        # The controller stopped this worker, so a signal exit code is its own
+        # doing; resume must not later read it as the producer failing.
+        job["stopped_by_controller"] = True
     if job.get("status") not in ("COMPLETE", "ERROR") or not job.get("completed_at"):
         job["completed_at"] = now()
     if (output / job["result"]).exists():
@@ -312,16 +316,19 @@ def execute(args):
                     elif (output / old["result"]).exists():
                         raise ValueError("Unregistered result appeared in an earlier attempt")
                 if (output / job["result"]).exists():
-                    finish_job(output, job, runtime, code=job.get("exit_code"))
+                    finish_job(output, job, runtime, code=job.get("exit_code"),
+                               interrupted=job.get("stopped_by_controller", False))
                 elif job.get("result_sha256") or job["status"] == "COMPLETE":
                     raise ValueError("Recorded reference evidence missing; restore it or use a new output directory")
                 if job["status"] == "ERROR":
                     if not retry_failed:
                         raise ValueError("Failed evidence retained; use --resume --retry-failed to retry failed cases")
-                    fields = ("result", "result_sha256", "status", "error", "started_at", "completed_at", "exit_code", "pid")
+                    fields = ("result", "result_sha256", "status", "error", "started_at", "completed_at", "exit_code", "pid",
+                              "stopped_by_controller")
                     job.setdefault("attempt_history", []).append({key: job[key] for key in fields if key in job})
                     job["result"] = f"jobs/{case}/result-{uuid.uuid4().hex[:12]}.json"
-                    for key in ("result_sha256", "error", "started_at", "completed_at", "exit_code", "pid", "integrity_failure"):
+                    for key in ("result_sha256", "error", "started_at", "completed_at", "exit_code", "pid", "integrity_failure",
+                                "stopped_by_controller"):
                         job.pop(key, None)
                     job["status"] = "READY"
                 if job["status"] != "COMPLETE":
@@ -363,7 +370,7 @@ def execute(args):
                         log.close()
                         raise
                     running.append((job, process, log, time.perf_counter()))
-                    for name in ("error", "completed_at", "exit_code"):
+                    for name in ("error", "completed_at", "exit_code", "stopped_by_controller"):
                         job.pop(name, None)
                     job.update(status="RUNNING", started_at=now(), pid=process.pid,
                                worker_cost=costs[job["case_id"]], deadline_unix_ns=deadline)

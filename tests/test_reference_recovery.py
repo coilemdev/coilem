@@ -196,6 +196,41 @@ def test_interrupt_retains_results_written_between_controller_polls(tmp_path, mo
     assert read(args.out_dir / "run_manifest.json")["execution_sessions"][-1]["launch_order"] == []
 
 
+def test_resume_keeps_results_whose_worker_was_stopped_after_writing(tmp_path, monkeypatch):
+    # Each worker lingers after writing its result, so the interrupt's cleanup
+    # stops it and it exits by signal. Resume must still accept the results.
+    args = setup_run(tmp_path, '    import atexit\n    atexit.register(time.sleep, 1.0)\n    return {"status":"COMPLETE"}',
+                     cases='{"a":"A","b":"B"}')
+    original_sleep = time.sleep
+    interrupted = False
+
+    def interrupt(seconds):
+        nonlocal interrupted
+        if interrupted:
+            return original_sleep(seconds)
+        deadline = time.monotonic() + 5
+        while len(list(args.out_dir.glob("jobs/*/result.json"))) != 2:
+            assert time.monotonic() < deadline
+            original_sleep(.02)
+        interrupted = True
+        raise KeyboardInterrupt()
+
+    with monkeypatch.context() as patch:
+        patch.setattr(external.time, "sleep", interrupt)
+        with pytest.raises(KeyboardInterrupt):
+            external.execute(args)
+    manifest = read(args.out_dir / "run_manifest.json")
+    assert manifest["status"] == "INTERRUPTED"
+    assert all(job["status"] == "COMPLETE" and job["stopped_by_controller"] for job in manifest["jobs"])
+    if os.name != "nt":
+        assert all(job["exit_code"] < 0 for job in manifest["jobs"])
+    args.resume = True
+    assert external.execute(args) == 0
+    resumed = read(args.out_dir / "run_manifest.json")
+    assert resumed["status"] == "COMPLETE"
+    assert resumed["execution_sessions"][-1]["launch_order"] == []
+
+
 def test_verify_failure_records_terminal_status_before_abort(tmp_path, monkeypatch):
     args = setup_run(tmp_path, '    return {"status":"COMPLETE"}')
     verify = external.verify
