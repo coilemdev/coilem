@@ -5180,8 +5180,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 124472,
-      "sha256": "3d8ab25ae069d63c4af3501fd1f26f2a55649e196136d4eab58067fcd250e495"
+      "bytes": 125399,
+      "sha256": "1bc2d14cf62d1cb2e2247b1c8e4f8b33b52cb24c2604fe1c24a9f946199dbe7c"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5580,8 +5580,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 203717,
-      "sha256": "f9b76cd629f707cf3d789d1f4c6458f134c33f4e6387065897e2632e73e298b8"
+      "bytes": 203932,
+      "sha256": "56b48b2ff2c1c68a459b1432a51047ae9789f47a17665da0283c2dc09596e484"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5910,8 +5910,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 246297,
-      "sha256": "31d7e9c3721e3b699b66d8d7bf3c37ca87fc293d90fe27109ac1cb2701560d24"
+      "bytes": 248218,
+      "sha256": "7fe55fd6edd32b0d394e97171689a347f96f0dad8dfb6d99b55b38aa5e3e2b08"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -9311,6 +9311,24 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "2cf49fec70eb9f6b3fe056fdedf82ee7e0fc4d6bb3d87e65851f656a368b0fbc",
       "reason": "Check the resizable section, its handle and fit, the tabs strips and the larger controls."
+    },
+    {
+      "base_commit": "3c2afae20d28486255025b297a528782981ead52",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "f9b76cd629f707cf3d789d1f4c6458f134c33f4e6387065897e2632e73e298b8",
+      "reason": "Make the motor view tabs the Design panel's title bar."
+    },
+    {
+      "base_commit": "3c2afae20d28486255025b297a528782981ead52",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "31d7e9c3721e3b699b66d8d7bf3c37ca87fc293d90fe27109ac1cb2701560d24",
+      "reason": "Style each bottom panel's strip as a title bar with an underlined selected tab."
+    },
+    {
+      "base_commit": "3c2afae20d28486255025b297a528782981ead52",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "3d8ab25ae069d63c4af3501fd1f26f2a55649e196136d4eab58067fcd250e495",
+      "reason": "Cover the panel title bar and its tab styling."
     }
   ]
 }

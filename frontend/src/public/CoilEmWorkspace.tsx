@@ -1604,7 +1604,7 @@ function ViewportChrome({
   const viewportRef = useRef<HTMLElement | null>(null);
   const bottomBarRef = useRef<HTMLDivElement | null>(null);
   // The section fits its controls until it is dragged; double-click returns to fitting.
-  const [dockFitHeight, setDockFitHeight] = useState(dockStrip ? VIEWPORT_DOCK_DEFAULT_HEIGHT_WITH_STRIP : VIEWPORT_DOCK_DEFAULT_HEIGHT);
+  const [dockFitHeight, setDockFitHeight] = useState(dockStrip || mode === 'geometry' ? VIEWPORT_DOCK_DEFAULT_HEIGHT_WITH_STRIP : VIEWPORT_DOCK_DEFAULT_HEIGHT);
   const [dockUserHeight, setDockUserHeight] = useState<number | null>(null);
   const dockHeight = dockUserHeight ?? dockFitHeight;
   const [dockResizing, setDockResizing] = useState(false);
@@ -1822,6 +1822,27 @@ function ViewportChrome({
       {geometry?.regions.length ?? 0} regions · {geometry ? formatNumber(geometry.generation_time_ms, 0) : '—'} ms
     </div>
   ) : null;
+  const primaryViewModes = mode === 'geometry' ? (
+    <span className="vc-group public-primary-view-modes" role="group" aria-label="Motor view mode">
+      {(['2d', '3d', 'materials', 'layout'] as const).map((viewMode) => {
+        return (
+          <button
+            type="button"
+            className={viewportMode === viewMode ? 'is-active' : ''}
+            aria-label={`Show ${viewMode === '2d' ? '2D motor' : viewMode === '3d' ? '3D motor' : viewMode} view`}
+            aria-pressed={viewportMode === viewMode}
+            onClick={() => selectViewportMode(viewMode)}
+            key={viewMode}
+          >
+            {viewMode === '2d' ? '2D' : viewMode === '3d' ? '3D' : viewMode === 'materials' ? 'Materials' : 'Layout'}
+          </button>
+        );
+      })}
+    </span>
+  ) : null;
+  // The panel's title bar holds the page's own tabs on the Solve page and the
+  // motor view tabs on Design, so the selected view reads apart from the toggles.
+  const titleBar = dockStrip ?? primaryViewModes;
 
   return (
     <section
@@ -2027,8 +2048,8 @@ function ViewportChrome({
         onKeyDown={handleDockResizeKey}
         onPointerDown={handleDockResizeStart}
       />
-      <div ref={bottomBarRef} className={`viewport-bottom-bar${dockStrip ? ' has-dock-strip' : ''}`}>
-        {dockStrip && <div className="public-dock-strip">{dockStrip}{cadStatus}</div>}
+      <div ref={bottomBarRef} className={`viewport-bottom-bar${titleBar ? ' has-dock-strip' : ''}`}>
+        {titleBar && <div className="public-dock-strip">{titleBar}{cadStatus}</div>}
         <div className="viewport-controls viewport-controls-cad" aria-label="Motor view and overlay controls">
           {mode === 'mesh' && (
             <span className="vc-group public-mesh-inspection-controls" role="group" aria-label="Mesh inspection controls">
@@ -2073,22 +2094,7 @@ function ViewportChrome({
               </button>
             </span>
           )}
-          {mode === 'geometry' && <span className="vc-group public-primary-view-modes" role="group" aria-label="Motor view mode">
-            {(['2d', '3d', 'materials', 'layout'] as const).map((viewMode) => {
-              return (
-                <button
-                  type="button"
-                  className={viewportMode === viewMode ? 'is-active' : ''}
-                  aria-label={`Show ${viewMode === '2d' ? '2D motor' : viewMode === '3d' ? '3D motor' : viewMode} view`}
-                  aria-pressed={viewportMode === viewMode}
-                  onClick={() => selectViewportMode(viewMode)}
-                  key={viewMode}
-                >
-                  {viewMode === '2d' ? '2D' : viewMode === '3d' ? '3D' : viewMode === 'materials' ? 'Materials' : 'Layout'}
-                </button>
-              );
-            })}
-          </span>}
+          {dockStrip && primaryViewModes}
           {viewportMode === 'materials' && mode === 'geometry' && (
             <span className="vc-group public-material-subview-controls" role="group" aria-label="Materials view mode">
               {([
@@ -2195,7 +2201,7 @@ function ViewportChrome({
             <span>{animationRpm} RPM</span>
           </span>}
         </div>
-        {!dockStrip && cadStatus}
+        {!titleBar && cadStatus}
       </div>
     </section>
   );
