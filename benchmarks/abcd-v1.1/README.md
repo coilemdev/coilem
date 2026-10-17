@@ -1,6 +1,6 @@
 # A/B/C/D benchmark protocol 1.1.0
 
-Protocol **1.1.0** is retained for historical replay. Harness 1.4.0 now defaults
+Protocol **1.1.0** is retained for historical replay. Harness 1.5.0 now defaults
 to [protocol 1.3.0](../abcd-v1.3/README.md), which reconciles the BLDC current
 frame while preserving this protocol's original results. This edition replaces
 the low-output deep-apex and wide-angle Phase B cases with qualified higher-output

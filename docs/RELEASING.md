@@ -153,7 +153,13 @@ Each release:
 1. On a branch, set the version in `backend/__init__.py`,
    `frontend/package.json` (and its lock file) and `COILEM_APP_VERSION` in
    `frontend/src/public/designFile.ts`; `tests/test_public_candidate.py`
-   checks that they agree. Give `RELEASE_NOTES.md` the new heading.
+   checks that they agree. Give `RELEASE_NOTES.md` the new heading and a
+   "Reproduce this record" section. It names the version and the records'
+   commit, and gives the `coilem benchmark` commands from the
+   [records README](../benchmarks/records/README.md#reproduce-this-record).
+   If the release changes a physics source, `coilem benchmark` reports
+   NOT_COMPARABLE until new records are built from a complete run on each
+   platform.
 2. Merge, then run a TestPyPI rehearsal on that `main` commit and try the
    build by hand on each platform.
 3. Tag that commit and push the tag. The tag must name the version exactly,

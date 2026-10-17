@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import ast
 import hashlib
+import importlib.util
 import json
 import re
 import sys
@@ -19,10 +20,19 @@ SECRET_PATTERNS = {
     "service API key": re.compile(r"\b(?:sk-proj-|sk_live_|AIza)[A-Za-z0-9_-]{24,}\b"),
 }
 PERSONAL_EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@(?:gmail|hotmail|outlook|yahoo|protonmail|icloud)\.com\b", re.IGNORECASE)
-ABSOLUTE_USER_PATH_PATTERNS = (
-    re.compile(r"[A-Za-z]:\\Users\\[A-Za-z0-9_.-]+\\", re.IGNORECASE),
-    re.compile(r"/(?:Users|home)/[A-Za-z0-9_.-]+/", re.IGNORECASE),
-)
+
+
+def _load_local_paths():
+    # Shared with the shareable benchmark report (#71); loaded by path so this
+    # check never imports the backend package.
+    path = Path(__file__).resolve().parents[1] / "backend" / "local_paths.py"
+    spec = importlib.util.spec_from_file_location("_coilem_local_paths", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+ABSOLUTE_USER_PATH_PATTERNS = _load_local_paths().ABSOLUTE_USER_PATH_PATTERNS
 # A published PDF may link to the web, to its own pages or to a file beside it.
 # file: URIs, absolute paths and file-opening actions name the machine that built it.
 PDF_LINK_SCHEMES = {"http", "https", "mailto"}
@@ -44,6 +54,7 @@ FORBIDDEN_SUFFIXES = {".ans", ".fem", ".log", ".pem", ".key"}
 ALLOWED_DATA_FILES = {
     "materials/electrical-steel/M350-50A.csv",
     "frontend/public/materials/sample-custom-steel.csv",
+    "benchmarks/performance-112/native-20261016/benchmark_results.csv",
 }
 # Single-digit sector/surface symbols (S1-S9) are engineering data. Story IDs
 # have multiple digits or a task suffix; explicit sprint/path references also fail.
@@ -59,6 +70,7 @@ FORBIDDEN_RUST_RUNTIME_MARKERS = {
     "struct DebugConfig",
 }
 ALLOWED_BINARY_SIGNATURES = {
+    "benchmarks/performance-112/native-20261016/coilem_benchmark_report.pdf": b"%PDF-",
     "benchmarks/windows-v3-20261015-738d951/coilem_benchmark_report.pdf": b"%PDF-",
     "benchmarks/windows-flux-credit-20261014-1ea9e40/coilem_benchmark_report.pdf": b"%PDF-",
     "benchmarks/windows-flux-credit-20261014-1ea9e40/ripple-diagnostic/ripple-diagnostic.pdf": b"%PDF-",

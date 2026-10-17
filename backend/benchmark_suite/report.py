@@ -9,8 +9,8 @@ import math
 import textwrap
 from collections import Counter
 
-from tools.benchmark_suite import PHASE_LABELS
-from tools.benchmark_suite.contract import ROOT, read, sha, write
+from backend.benchmark_suite import PHASE_LABELS
+from backend.benchmark_suite.contract import DATA_ROOT, read, sha, write
 
 PLANNED_COVERAGE = {
     "ornl_prius_2004_ipm": {
@@ -265,7 +265,7 @@ def build(output, manifest, rows, *, pdf=False):
     report = output / "report"
     report.mkdir(exist_ok=True)
     for row in rows:
-        configurations = row.get("configurations") or {"registered": read(ROOT / row["fixture"])}
+        configurations = row.get("configurations") or {"registered": read(DATA_ROOT / row["fixture"])}
         row["fixture_files"] = {}
         for stage, config in configurations.items():
             name = f"fixtures/{row['id']}__{stage}.json"

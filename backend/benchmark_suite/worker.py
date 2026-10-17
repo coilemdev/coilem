@@ -8,7 +8,7 @@ import time
 import traceback
 from pathlib import Path
 
-from tools.benchmark_suite.contract import ROOT, canonical, identity, now, read, run_lock, sha, write
+from backend.benchmark_suite.contract import ROOT, canonical, identity, now, read, run_lock, sha, write
 
 
 def compact(result):
@@ -40,7 +40,7 @@ def measure(args):
 
         if not ISOLATED_RUNTIME:
             raise ValueError("Public request-only solver environment is required")
-        binary = ROOT / request["binary"]
+        binary = ROOT / request["binary"]  # absolute when COILEM_MAGNETO2D_BINARY names one elsewhere
         protocol_version = request["identity"]["protocol_version"]
         before = identity(binary, protocol_version=protocol_version)
         if before != request["identity"] or canonical(request["config"]) != request["config_sha256"]:

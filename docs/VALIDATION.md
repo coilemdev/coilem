@@ -131,6 +131,11 @@ on macOS, Windows and Linux:
 python -m tools.run_benchmarks --phases A B C D --out-dir ../benchmark-output/my-run --pdf
 ```
 
+Harness 1.5.0 also runs from an installed coilEM, with no checkout: `coilem
+benchmark` solves the current suite, grades it against the frozen FEMM v3
+reference, and matches it against the [published record](../benchmarks/records/README.md)
+for the platform (see [Run the benchmark yourself](#run-the-benchmark-yourself)).
+
 Historical protocol 1.0.0 remains selectable with `--suite` and its matching
 `--reference-bundle`. Changed physical inputs require new matched references;
 changing only the candidate solver can reuse compatible frozen data.
@@ -142,6 +147,34 @@ public flat-buried/V-shape IPM policy. Geometry helpers exist, but native
 meshing/field solves and matched FEMM qualification are needed before enabling
 public support. Numerical status remains UNSUPPORTED; no comparison was
 performed and no delivery date is claimed.
+
+## Run the benchmark yourself
+
+An installed coilEM carries the A/B/C/D suite, its frozen FEMM v3 reference
+and the [published records](../benchmarks/records/README.md), so anyone can
+check their own installation:
+
+```sh
+coilem benchmark --quick    # one case per phase, about 5 minutes
+coilem benchmark            # all 30 cases, about 50 minutes
+coilem benchmark --list     # the cases and the record's times
+```
+
+`--phase B` runs one phase (repeatable), and `--out` names the output folder.
+The command solves each case with the installed Magneto2D and grades it
+against the frozen reference with the gates above. It then matches the outcome
+against the record for the platform. A match needs the same verdicts and gate
+statuses, and mean torque, back-EMF fundamental and back-EMF peak within
+0.5%, 0.05% and 1.5% of the record. Those tolerances come from the measured
+difference between macOS and Windows. The physics sources are checked by hash
+first, so a release with unchanged physics is matched against a record
+measured at an earlier commit.
+
+Each case's solver files are deleted when it finishes. The run stops before a
+case if the output drive has less than 3 GB free; `--resume --out <folder>`
+continues it. The output folder holds the full report under `report/` and a
+shareable Markdown and JSON report under `share/`. The shareable report names
+no local paths and passes the publication path check.
 
 ## Qualification status
 
