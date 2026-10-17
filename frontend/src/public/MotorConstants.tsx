@@ -15,7 +15,14 @@ const CONSISTENCY_HELP = 'Average torque divided by the torque the back EMF pred
 function Value({ item, children }: { item: MotorConstantValue; children?: ReactNode }) {
   return (
     <>
-      <td className="motor-constants-value">{item.text}</td>
+      <td className="motor-constants-value" title={item.siHint}>
+        {item.siHint ? (
+          <span className="motor-constants-si-hint">
+            {item.text}
+            <span className="public-visually-hidden"> ({item.siHint})</span>
+          </span>
+        ) : item.text}
+      </td>
       <td className="motor-constants-unit">{item.unit}{children}</td>
     </>
   );
@@ -40,15 +47,13 @@ export function MotorConstants({ summary, variant = 'panel' }: { summary: MotorC
       <table>
         <tbody>
           <tr>
-            <th scope="row" rowSpan={2}><Label symbol="Kt" name="torque constant" /></th>
-            <Value item={view.kt[0]} />
+            <th scope="row"><Label symbol="Kt" name="torque constant" /></th>
+            <Value item={view.kt} />
           </tr>
-          <tr><Value item={view.kt[1]} /></tr>
           <tr>
-            <th scope="row" rowSpan={2}><Label symbol="Ke" name="back-EMF constant" /></th>
-            <Value item={view.ke[0]} />
+            <th scope="row"><Label symbol="Ke" name="back-EMF constant" /></th>
+            <Value item={view.ke} />
           </tr>
-          <tr><Value item={view.ke[1]} /></tr>
           <tr>
             <th scope="row"><Label symbol="λpm" name="magnet flux linkage" /></th>
             <Value item={view.lambdaPm} />
@@ -65,7 +70,7 @@ export function MotorConstants({ summary, variant = 'panel' }: { summary: MotorC
           </tr>
         </tbody>
       </table>
-      {view.kt[0].value === null && (
+      {view.kt.value === null && (
         <p className="motor-constants-note">Kt and the consistency check need a loaded run with sinusoidal current.</p>
       )}
     </section>

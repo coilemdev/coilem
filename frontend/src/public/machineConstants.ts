@@ -6,6 +6,10 @@
  * (backend/machine_constants.py). Power balance at the operating point gives
  * T·ω = 3·E_rms·I_rms = 1.5·E_pk·I_pk, so Kt = 1.5·Ke in those units; the
  * consistency check shows Kt / (1.5·Ke) as a percentage, 100% ideal.
+ *
+ * Kt and Ke are shown once each, in datasheet units (per rms ampere, and
+ * line-to-line rms volts per krpm). The stored SI peak value of each is
+ * kept as a hover hint rather than a second row.
  */
 
 export interface MotorConstantsSummary {
@@ -20,13 +24,15 @@ export interface MotorConstantValue {
   value: number | null;
   /** The number as displayed, with a true minus sign; '—' when unavailable. */
   text: string;
+  /** The same constant as the backend stores it, in SI peak units, for a hover hint. */
+  siHint?: string;
 }
 
 export type ConsistencyStatus = 'ok' | 'check' | 'unavailable';
 
 export interface MotorConstantsView {
-  kt: MotorConstantValue[];
-  ke: MotorConstantValue[];
+  kt: MotorConstantValue;
+  ke: MotorConstantValue;
   lambdaPm: MotorConstantValue;
   consistency: MotorConstantValue;
   consistencyStatus: ConsistencyStatus;
@@ -63,16 +69,12 @@ export function motorConstantsView(summary: MotorConstantsSummary): MotorConstan
   const formatPercent = (value: number) => value.toFixed(1);
   // Judge the value as displayed, so "90.0 %" never reads Check.
   const shownPercent = consistency === null ? null : Number(formatPercent(consistency));
+  // Torque per rms ampere: I_rms = I_pk / √2, so Kt_rms = √2 · Kt_pk.
+  const ktShown = constantValue('kt-rms', 'N·m/A rms', kt === null ? null : kt * Math.SQRT2);
+  const keShown = constantValue('ke-krpm', 'V/krpm L-L rms', ke === null ? null : ke * RAD_PER_S_PER_KRPM * PEAK_LN_TO_RMS_LL);
   return {
-    kt: [
-      constantValue('kt-peak', 'N·m/A pk', kt),
-      // Torque per rms ampere: I_rms = I_pk / √2, so Kt_rms = √2 · Kt_pk.
-      constantValue('kt-rms', 'N·m/A rms', kt === null ? null : kt * Math.SQRT2),
-    ],
-    ke: [
-      constantValue('ke-si', 'V·s/rad', ke),
-      constantValue('ke-krpm', 'V/krpm L-L rms', ke === null ? null : ke * RAD_PER_S_PER_KRPM * PEAK_LN_TO_RMS_LL),
-    ],
+    kt: kt === null ? ktShown : { ...ktShown, siHint: `${constantValue('kt-peak', '', kt).text} N·m/A per peak ampere (SI)` },
+    ke: ke === null ? keShown : { ...keShown, siHint: `${constantValue('ke-si', '', ke).text} V·s/rad, phase peak per mechanical rad/s (SI)` },
     lambdaPm: constantValue('lambda-pm', 'mWb', lambdaPm === null ? null : lambdaPm * 1000),
     consistency: constantValue('consistency', '%', consistency, formatPercent),
     consistencyStatus: shownPercent === null
