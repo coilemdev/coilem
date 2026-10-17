@@ -140,8 +140,8 @@
     },
     {
       "path": "backend/elmer/process.py",
-      "bytes": 9610,
-      "sha256": "5c6f50c6e7adcdbe23fc70e0c91d52ca440ca109618c46fd0356705276112212"
+      "bytes": 9799,
+      "sha256": "3f11c25b23dd01e63142506300b3fd2d5e06eb557768c9746afdd3627378c966"
     },
     {
       "path": "backend/elmer/profile.py",
@@ -157,6 +157,41 @@
       "path": "backend/elmer/results.py",
       "bytes": 13092,
       "sha256": "93c53df13df80ed5b2fac7cf0f1443c47296a10e100988ce1b2802eba908998b"
+    },
+    {
+      "path": "backend/elmer3d/__init__.py",
+      "bytes": 177,
+      "sha256": "c5a0abdec0da1807b7ca161c8a3b1852c93f46c80a119a7505520eb1802c40a9"
+    },
+    {
+      "path": "backend/elmer3d/demo.py",
+      "bytes": 5638,
+      "sha256": "a57cca6898f4e35812c4e4cf3baa58f66dee3e41ae2ade7455ebc17dfc56c885"
+    },
+    {
+      "path": "backend/elmer3d/gmsh_environment.py",
+      "bytes": 820,
+      "sha256": "4d2f9d796ac3b8ad7ddc5e3a49fc48ca893a7bb6c0bf78a06427e7c596887554"
+    },
+    {
+      "path": "backend/elmer3d/mesh.py",
+      "bytes": 7962,
+      "sha256": "e95553d5f1beca71bea1a5a9f08fef65898d14c95ee2eac93251d6fc0b6a6889"
+    },
+    {
+      "path": "backend/elmer3d/model.py",
+      "bytes": 3815,
+      "sha256": "8b271f727294393069ecbcfd761cc9950f3fc70962a702490848aaf3d7eba653"
+    },
+    {
+      "path": "backend/elmer3d/motor.py",
+      "bytes": 10970,
+      "sha256": "1f5ff04066a370483747e2fa65a0be2a43cf7e27acd2159865978f47ac667afa"
+    },
+    {
+      "path": "backend/elmer3d/solver.py",
+      "bytes": 18845,
+      "sha256": "434461cc6269558ea176bde51c5f5df45ce7c0948398b3471ab68a6720b254e8"
     },
     {
       "path": "backend/excitation.py",
@@ -4325,8 +4360,18 @@
     },
     {
       "path": "docs/ELMER.md",
-      "bytes": 6064,
-      "sha256": "1068d2db3c4e7a8b6113aaa1ca0ab93a38067944d7e42beeafa01a97baed69d0"
+      "bytes": 6271,
+      "sha256": "a540adad0f1a795e534eb39abb18d6268dd8859e842dcd67702fa2f8d14db19c"
+    },
+    {
+      "path": "docs/ELMER3D.md",
+      "bytes": 11501,
+      "sha256": "ab98746010b5771985c5b413691420ac74c8e0cb0afbca9a27e6f6bfb1cadaa4"
+    },
+    {
+      "path": "docs/ELMER3D_CONTROLS.json",
+      "bytes": 20643,
+      "sha256": "243f666cb80ac6d9df76ea48cd25a6dc5964df6571090681192296356cadd773"
     },
     {
       "path": "docs/FIELD_PLAYBACK_V2.md",
@@ -5859,6 +5904,16 @@
       "sha256": "32c1035b6336e501e86fe5698c4030e7ace47ab8f6c31819bc29a388c19462f0"
     },
     {
+      "path": "tests/test_elmer3d.py",
+      "bytes": 9435,
+      "sha256": "0948a09a0398d4109a5098d45e6a8591bafd0ec2cfdd1add2f02053b9fca509c"
+    },
+    {
+      "path": "tests/test_elmer_process.py",
+      "bytes": 1406,
+      "sha256": "ba8e290c05d88c63ab06d9ffe246a9e982c82812617254db8305307de8cf59b3"
+    },
+    {
       "path": "tests/test_experimental_holem50.py",
       "bytes": 9328,
       "sha256": "f149dbadaf501a9e9d7d44f91c708dde43e4b2b3cfaf643cf6a37004ff0f0cf2"
@@ -6132,6 +6187,21 @@
       "path": "tools/benchmark_suite/worker.py",
       "bytes": 4183,
       "sha256": "741e83560518eb530113ba3c0d21a1acd12956a1ab6a5b99b64d04c3b5693637"
+    },
+    {
+      "path": "tools/elmer3d_motor.py",
+      "bytes": 2037,
+      "sha256": "964f73d1f05bd6ad8ab47abef1ad90725bb999550cf399f732705ad34f47dd67"
+    },
+    {
+      "path": "tools/elmer3d_solve.py",
+      "bytes": 2158,
+      "sha256": "896b39338d0d1cb8e4d608a79eb89038cf14643f3706f097cf47f0d79432ba42"
+    },
+    {
+      "path": "tools/elmer3d_validate.py",
+      "bytes": 9163,
+      "sha256": "4d4eaf2d9b4f3f14e0049298cd847f0302c1a1eaa5a6440e4dac2adacd79e007"
     },
     {
       "path": "tools/experimental_solve.py",

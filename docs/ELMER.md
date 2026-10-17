@@ -1,5 +1,9 @@
 # Optional Elmer FEM solver
 
+An independent [experimental 3D case workflow](ELMER3D.md) is available for
+three-dimensional development controls and no-load motor extrusion. The adapter
+described below remains the existing 2D workflow.
+
 coilEM contains an adapter for a separately installed Elmer FEM runtime as an
 opt-in development and testing alternative to Magneto2D. Elmer is not part of
 the coilEM 0.3.1 release claim. It is disabled, hidden, and not probed by

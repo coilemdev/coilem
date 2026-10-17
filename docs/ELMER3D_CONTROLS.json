@@ -1,0 +1,441 @@
+{
+  "schema_version": "coilem.elmer3d_controls/v1",
+  "status": "PASS",
+  "motor_qualified": false,
+  "limits": {
+    "sphere_relative_error": 0.03,
+    "mesh_relative_change": 0.02,
+    "domain_relative_change": 0.01,
+    "linearity_relative_error": 2e-06,
+    "torque_reciprocity_relative_error": 0.1
+  },
+  "checks": {
+    "sphere_analytic": true,
+    "mesh_change": true,
+    "domain_change": true,
+    "bh_linear_equivalence": true,
+    "coil_nonzero_linkage": true,
+    "current_and_flux_normalization": true,
+    "right_hand_current_direction": true,
+    "no_load_virtual_winding": true,
+    "flux_superposition": true,
+    "torque_reciprocity": true,
+    "nonlinear_material_solve": true
+  },
+  "runs": {
+    "sphere": {
+      "elapsed_s": 2.187000000005355,
+      "tetrahedra": 14793,
+      "result": "sphere/result.json",
+      "mesh_sha256": "11a70ce52826337699f2e6063a1232a09a3cb59de47c8f6ca97ef7f02fa221e5",
+      "sif_sha256": "a19c0778f0a865f761ac29e64d8f11e1f1bc083918793f26c5fbaeb660fa06da",
+      "integration_source_sha256": {
+        "__init__.py": "c5a0abdec0da1807b7ca161c8a3b1852c93f46c80a119a7505520eb1802c40a9",
+        "demo.py": "b4b9fafabcf9f2c1c7c33a04d69066f9b0764d846a24b0999eb506a46829c133",
+        "mesh.py": "27341ead28e420abf9e6e84b8cc5738bef4a53516411399fe8643f6c8dc475c0",
+        "model.py": "360141529633c24f8d8240ad61b7659b472cdf07de927b6bd8227ec548f31959",
+        "motor.py": "2bf18f1612b5014ca025924f84016e4ed64b75ccf2e11d7a29831126661d12b6",
+        "solver.py": "8007596d16b68c05e157fdae6c2794a78e2ca844849d236a79c8944745033f2f"
+      },
+      "convergence": {
+        "iterations": 2,
+        "final_relative_change": 0.0,
+        "tolerance": 1e-07,
+        "criterion": "Elmer nonlinear iterate change; not a discretization-error estimate"
+      },
+      "peak_nodal_b_T": 0.9228351654734608,
+      "material_range_checks": {},
+      "runtime": {
+        "solver_version": "26.2-unknown",
+        "grid_version": "26.2",
+        "solver_sha256": "8dd293b48be151b8f7af524e0eaa742811f76f59657f272807a2ee263a9d1e11",
+        "grid_sha256": "85819fa4bf1d3d4164faea5ebea1c3ff0fc210af45020f306e2d10fc843f5ab9",
+        "platform": "Windows",
+        "architecture": "AMD64"
+      },
+      "source": null
+    },
+    "sphere_fine": {
+      "elapsed_s": 14.812000000005355,
+      "tetrahedra": 31348,
+      "result": "sphere_fine/result.json",
+      "mesh_sha256": "3dc9fa6bbce2102a99f9217c887d0c02cfda5b16b92694629e86fd8685ae1032",
+      "sif_sha256": "a19c0778f0a865f761ac29e64d8f11e1f1bc083918793f26c5fbaeb660fa06da",
+      "integration_source_sha256": {
+        "__init__.py": "c5a0abdec0da1807b7ca161c8a3b1852c93f46c80a119a7505520eb1802c40a9",
+        "demo.py": "b4b9fafabcf9f2c1c7c33a04d69066f9b0764d846a24b0999eb506a46829c133",
+        "mesh.py": "27341ead28e420abf9e6e84b8cc5738bef4a53516411399fe8643f6c8dc475c0",
+        "model.py": "360141529633c24f8d8240ad61b7659b472cdf07de927b6bd8227ec548f31959",
+        "motor.py": "2bf18f1612b5014ca025924f84016e4ed64b75ccf2e11d7a29831126661d12b6",
+        "solver.py": "8007596d16b68c05e157fdae6c2794a78e2ca844849d236a79c8944745033f2f"
+      },
+      "convergence": {
+        "iterations": 2,
+        "final_relative_change": 0.0,
+        "tolerance": 1e-07,
+        "criterion": "Elmer nonlinear iterate change; not a discretization-error estimate"
+      },
+      "peak_nodal_b_T": 0.9307040064405802,
+      "material_range_checks": {},
+      "runtime": {
+        "solver_version": "26.2-unknown",
+        "grid_version": "26.2",
+        "solver_sha256": "8dd293b48be151b8f7af524e0eaa742811f76f59657f272807a2ee263a9d1e11",
+        "grid_sha256": "85819fa4bf1d3d4164faea5ebea1c3ff0fc210af45020f306e2d10fc843f5ab9",
+        "platform": "Windows",
+        "architecture": "AMD64"
+      },
+      "source": null
+    },
+    "sphere_exterior": {
+      "elapsed_s": 46.562999999994645,
+      "tetrahedra": 52183,
+      "result": "sphere_exterior/result.json",
+      "mesh_sha256": "25233c4d07ed62b7deff2fc091f2decbfa26734e3e15197bc5b5bf4e24e144c8",
+      "sif_sha256": "a19c0778f0a865f761ac29e64d8f11e1f1bc083918793f26c5fbaeb660fa06da",
+      "integration_source_sha256": {
+        "__init__.py": "c5a0abdec0da1807b7ca161c8a3b1852c93f46c80a119a7505520eb1802c40a9",
+        "demo.py": "b4b9fafabcf9f2c1c7c33a04d69066f9b0764d846a24b0999eb506a46829c133",
+        "mesh.py": "27341ead28e420abf9e6e84b8cc5738bef4a53516411399fe8643f6c8dc475c0",
+        "model.py": "360141529633c24f8d8240ad61b7659b472cdf07de927b6bd8227ec548f31959",
+        "motor.py": "2bf18f1612b5014ca025924f84016e4ed64b75ccf2e11d7a29831126661d12b6",
+        "solver.py": "8007596d16b68c05e157fdae6c2794a78e2ca844849d236a79c8944745033f2f"
+      },
+      "convergence": {
+        "iterations": 2,
+        "final_relative_change": 0.0,
+        "tolerance": 1e-07,
+        "criterion": "Elmer nonlinear iterate change; not a discretization-error estimate"
+      },
+      "peak_nodal_b_T": 0.9142370446679551,
+      "material_range_checks": {},
+      "runtime": {
+        "solver_version": "26.2-unknown",
+        "grid_version": "26.2",
+        "solver_sha256": "8dd293b48be151b8f7af524e0eaa742811f76f59657f272807a2ee263a9d1e11",
+        "grid_sha256": "85819fa4bf1d3d4164faea5ebea1c3ff0fc210af45020f306e2d10fc843f5ab9",
+        "platform": "Windows",
+        "architecture": "AMD64"
+      },
+      "source": null
+    },
+    "bh_linear_gauge_reference": {
+      "elapsed_s": 7.062999999994645,
+      "tetrahedra": 14793,
+      "result": "bh_linear_gauge_reference/result.json",
+      "mesh_sha256": "11a70ce52826337699f2e6063a1232a09a3cb59de47c8f6ca97ef7f02fa221e5",
+      "sif_sha256": "2330147f74a7aa3ace1dd0025c5a5044769d2e5e977c4732ce40de9d4a44fc3d",
+      "integration_source_sha256": {
+        "__init__.py": "c5a0abdec0da1807b7ca161c8a3b1852c93f46c80a119a7505520eb1802c40a9",
+        "demo.py": "a57cca6898f4e35812c4e4cf3baa58f66dee3e41ae2ade7455ebc17dfc56c885",
+        "gmsh_environment.py": "4d2f9d796ac3b8ad7ddc5e3a49fc48ca893a7bb6c0bf78a06427e7c596887554",
+        "mesh.py": "e95553d5f1beca71bea1a5a9f08fef65898d14c95ee2eac93251d6fc0b6a6889",
+        "model.py": "360141529633c24f8d8240ad61b7659b472cdf07de927b6bd8227ec548f31959",
+        "motor.py": "1f5ff04066a370483747e2fa65a0be2a43cf7e27acd2159865978f47ac667afa",
+        "solver.py": "a8ee35e97967a7d650cb49c4a36cb1ac67cc7e4187d709a017bdf26ad9696ca2"
+      },
+      "convergence": {
+        "iterations": 2,
+        "final_relative_change": 1.7494629e-12,
+        "tolerance": 1e-07,
+        "criterion": "Elmer nonlinear iterate change; not a discretization-error estimate"
+      },
+      "peak_nodal_b_T": 0.9228351654710869,
+      "material_range_checks": {
+        "Air": {
+          "peak_nodal_b_T": 0.6466095630619813,
+          "table_max_b_T": 2.0
+        }
+      },
+      "runtime": {
+        "solver_version": "26.2-unknown",
+        "grid_version": "26.2",
+        "solver_sha256": "8dd293b48be151b8f7af524e0eaa742811f76f59657f272807a2ee263a9d1e11",
+        "grid_sha256": "85819fa4bf1d3d4164faea5ebea1c3ff0fc210af45020f306e2d10fc843f5ab9",
+        "platform": "Windows",
+        "architecture": "AMD64"
+      },
+      "source": {
+        "commit": "2b70a2f46c35691c0b309fa068e13ec33822aa1d",
+        "dirty": true
+      }
+    },
+    "coil_2A": {
+      "elapsed_s": 163.2029999999795,
+      "tetrahedra": 80727,
+      "result": "coil_2A/result.json",
+      "mesh_sha256": "b9ef4779bc875a5b436db1040d7c1c024534f357464d759c2f9b6db69e65b5ee",
+      "sif_sha256": "569fa76790c1191d988f9276ea4fe44f08ddbf109ccddab7f2efb7680334831b",
+      "integration_source_sha256": {
+        "__init__.py": "c5a0abdec0da1807b7ca161c8a3b1852c93f46c80a119a7505520eb1802c40a9",
+        "demo.py": "623d225ee1c19fa358abe14fd4faffa12d0272de974f4479f46841154cf4574f",
+        "mesh.py": "e95553d5f1beca71bea1a5a9f08fef65898d14c95ee2eac93251d6fc0b6a6889",
+        "model.py": "360141529633c24f8d8240ad61b7659b472cdf07de927b6bd8227ec548f31959",
+        "motor.py": "d6d4cab4957bda8fcb287c7ac2b2d41274f9f67013cd35d05db1203fbf3fa462",
+        "solver.py": "807d5b9c353588ea7a96c6c558e64ca7dcec357112ef7ce4ef40eed82fa59d93"
+      },
+      "convergence": {
+        "iterations": 3,
+        "final_relative_change": 0.0,
+        "tolerance": 1e-07,
+        "criterion": "Elmer nonlinear iterate change; not a discretization-error estimate"
+      },
+      "peak_nodal_b_T": 0.001634100590302406,
+      "material_range_checks": {},
+      "runtime": {
+        "solver_version": "26.2-unknown",
+        "grid_version": "26.2",
+        "solver_sha256": "8dd293b48be151b8f7af524e0eaa742811f76f59657f272807a2ee263a9d1e11",
+        "grid_sha256": "85819fa4bf1d3d4164faea5ebea1c3ff0fc210af45020f306e2d10fc843f5ab9",
+        "platform": "Windows",
+        "architecture": "AMD64"
+      },
+      "source": null
+    },
+    "coil_4A": {
+      "elapsed_s": 158.15599999998813,
+      "tetrahedra": 80727,
+      "result": "coil_4A/result.json",
+      "mesh_sha256": "b9ef4779bc875a5b436db1040d7c1c024534f357464d759c2f9b6db69e65b5ee",
+      "sif_sha256": "ccb2f4405ae342a43058b98041234db5d01d0658b84508b75e69805354ad8c1c",
+      "integration_source_sha256": {
+        "__init__.py": "c5a0abdec0da1807b7ca161c8a3b1852c93f46c80a119a7505520eb1802c40a9",
+        "demo.py": "623d225ee1c19fa358abe14fd4faffa12d0272de974f4479f46841154cf4574f",
+        "mesh.py": "e95553d5f1beca71bea1a5a9f08fef65898d14c95ee2eac93251d6fc0b6a6889",
+        "model.py": "360141529633c24f8d8240ad61b7659b472cdf07de927b6bd8227ec548f31959",
+        "motor.py": "d6d4cab4957bda8fcb287c7ac2b2d41274f9f67013cd35d05db1203fbf3fa462",
+        "solver.py": "807d5b9c353588ea7a96c6c558e64ca7dcec357112ef7ce4ef40eed82fa59d93"
+      },
+      "convergence": {
+        "iterations": 3,
+        "final_relative_change": 0.0,
+        "tolerance": 1e-07,
+        "criterion": "Elmer nonlinear iterate change; not a discretization-error estimate"
+      },
+      "peak_nodal_b_T": 0.003268201180604812,
+      "material_range_checks": {},
+      "runtime": {
+        "solver_version": "26.2-unknown",
+        "grid_version": "26.2",
+        "solver_sha256": "8dd293b48be151b8f7af524e0eaa742811f76f59657f272807a2ee263a9d1e11",
+        "grid_sha256": "85819fa4bf1d3d4164faea5ebea1c3ff0fc210af45020f306e2d10fc843f5ab9",
+        "platform": "Windows",
+        "architecture": "AMD64"
+      },
+      "source": null
+    },
+    "pm_linkage_at_zero_current": {
+      "elapsed_s": 151.64100000000326,
+      "tetrahedra": 80727,
+      "result": "pm_linkage_at_zero_current/result.json",
+      "mesh_sha256": "b9ef4779bc875a5b436db1040d7c1c024534f357464d759c2f9b6db69e65b5ee",
+      "sif_sha256": "6aa7c7b7b6c7f541a22f7af3e10dff3054a1c1cfa6ce1a01dbcef99a7ab6e3b5",
+      "integration_source_sha256": {
+        "__init__.py": "c5a0abdec0da1807b7ca161c8a3b1852c93f46c80a119a7505520eb1802c40a9",
+        "demo.py": "623d225ee1c19fa358abe14fd4faffa12d0272de974f4479f46841154cf4574f",
+        "mesh.py": "e95553d5f1beca71bea1a5a9f08fef65898d14c95ee2eac93251d6fc0b6a6889",
+        "model.py": "360141529633c24f8d8240ad61b7659b472cdf07de927b6bd8227ec548f31959",
+        "motor.py": "797453b3bbfab57cdcbd45a9e438a808d8c4401f574d6126e72ea9a4ae51ac93",
+        "solver.py": "c03b2de9e97f57c780e0bb747bcca326ebe4d99587932a9ba0f8aaf9bccd6cfe"
+      },
+      "convergence": {
+        "iterations": 2,
+        "final_relative_change": 0.0,
+        "tolerance": 1e-07,
+        "criterion": "Elmer nonlinear iterate change; not a discretization-error estimate"
+      },
+      "peak_nodal_b_T": 0.9245886364257775,
+      "material_range_checks": {},
+      "runtime": {
+        "solver_version": "26.2-unknown",
+        "grid_version": "26.2",
+        "solver_sha256": "8dd293b48be151b8f7af524e0eaa742811f76f59657f272807a2ee263a9d1e11",
+        "grid_sha256": "85819fa4bf1d3d4164faea5ebea1c3ff0fc210af45020f306e2d10fc843f5ab9",
+        "platform": "Windows",
+        "architecture": "AMD64"
+      },
+      "source": null
+    },
+    "pm_and_coil": {
+      "elapsed_s": 152.125,
+      "tetrahedra": 80727,
+      "result": "pm_and_coil/result.json",
+      "mesh_sha256": "b9ef4779bc875a5b436db1040d7c1c024534f357464d759c2f9b6db69e65b5ee",
+      "sif_sha256": "d32bf51717d667b3e1a324f2f8101cf1e6ecebcaea8e4d99d61cc70fbef048f5",
+      "integration_source_sha256": {
+        "__init__.py": "c5a0abdec0da1807b7ca161c8a3b1852c93f46c80a119a7505520eb1802c40a9",
+        "demo.py": "a901ade81c034005feabb8dd120a3adad1fb5fbc4ff99ebca5ef7411574a4f41",
+        "mesh.py": "e95553d5f1beca71bea1a5a9f08fef65898d14c95ee2eac93251d6fc0b6a6889",
+        "model.py": "360141529633c24f8d8240ad61b7659b472cdf07de927b6bd8227ec548f31959",
+        "motor.py": "797453b3bbfab57cdcbd45a9e438a808d8c4401f574d6126e72ea9a4ae51ac93",
+        "solver.py": "c03b2de9e97f57c780e0bb747bcca326ebe4d99587932a9ba0f8aaf9bccd6cfe"
+      },
+      "convergence": {
+        "iterations": 3,
+        "final_relative_change": 0.0,
+        "tolerance": 1e-07,
+        "criterion": "Elmer nonlinear iterate change; not a discretization-error estimate"
+      },
+      "peak_nodal_b_T": 0.9251324933797967,
+      "material_range_checks": {},
+      "runtime": {
+        "solver_version": "26.2-unknown",
+        "grid_version": "26.2",
+        "solver_sha256": "8dd293b48be151b8f7af524e0eaa742811f76f59657f272807a2ee263a9d1e11",
+        "grid_sha256": "85819fa4bf1d3d4164faea5ebea1c3ff0fc210af45020f306e2d10fc843f5ab9",
+        "platform": "Windows",
+        "architecture": "AMD64"
+      },
+      "source": null
+    },
+    "torque_plus": {
+      "elapsed_s": 155.23500000001513,
+      "tetrahedra": 80727,
+      "result": "torque_plus/result.json",
+      "mesh_sha256": "b9ef4779bc875a5b436db1040d7c1c024534f357464d759c2f9b6db69e65b5ee",
+      "sif_sha256": "29073f9bec2abdf146cdb405c69aa0f8772fb8461d4347d6043d307aeda8e8c6",
+      "integration_source_sha256": {
+        "__init__.py": "c5a0abdec0da1807b7ca161c8a3b1852c93f46c80a119a7505520eb1802c40a9",
+        "demo.py": "aab3c63b26ea63687f572c48fa01de934347679c5b2f7d5fa5c9e9b26b821104",
+        "mesh.py": "e95553d5f1beca71bea1a5a9f08fef65898d14c95ee2eac93251d6fc0b6a6889",
+        "model.py": "360141529633c24f8d8240ad61b7659b472cdf07de927b6bd8227ec548f31959",
+        "motor.py": "797453b3bbfab57cdcbd45a9e438a808d8c4401f574d6126e72ea9a4ae51ac93",
+        "solver.py": "0103413cb24bc0e21c70591b2e670571cddbe59ffa36a3e31cd64bb0a12f7285"
+      },
+      "convergence": {
+        "iterations": 3,
+        "final_relative_change": 0.0,
+        "tolerance": 1e-07,
+        "criterion": "Elmer nonlinear iterate change; not a discretization-error estimate"
+      },
+      "peak_nodal_b_T": 0.961197405626149,
+      "material_range_checks": {},
+      "runtime": {
+        "solver_version": "26.2-unknown",
+        "grid_version": "26.2",
+        "solver_sha256": "8dd293b48be151b8f7af524e0eaa742811f76f59657f272807a2ee263a9d1e11",
+        "grid_sha256": "85819fa4bf1d3d4164faea5ebea1c3ff0fc210af45020f306e2d10fc843f5ab9",
+        "platform": "Windows",
+        "architecture": "AMD64"
+      },
+      "source": null
+    },
+    "torque_minus": {
+      "elapsed_s": 153.39099999997416,
+      "tetrahedra": 80727,
+      "result": "torque_minus/result.json",
+      "mesh_sha256": "b9ef4779bc875a5b436db1040d7c1c024534f357464d759c2f9b6db69e65b5ee",
+      "sif_sha256": "a794728e2c4591c9cf6de88a95e69a57bac666a139ba1ab392d5e70c63197464",
+      "integration_source_sha256": {
+        "__init__.py": "c5a0abdec0da1807b7ca161c8a3b1852c93f46c80a119a7505520eb1802c40a9",
+        "demo.py": "a57cca6898f4e35812c4e4cf3baa58f66dee3e41ae2ade7455ebc17dfc56c885",
+        "gmsh_environment.py": "4d2f9d796ac3b8ad7ddc5e3a49fc48ca893a7bb6c0bf78a06427e7c596887554",
+        "mesh.py": "e95553d5f1beca71bea1a5a9f08fef65898d14c95ee2eac93251d6fc0b6a6889",
+        "model.py": "360141529633c24f8d8240ad61b7659b472cdf07de927b6bd8227ec548f31959",
+        "motor.py": "812509e83cd2ba222fa85c08033ad962aff076ca84b9f367150a909abeb0296e",
+        "solver.py": "2919ee1ac6ceab34f3b15b1307e0efa6c2f1aaf990025da15f3d7486d1212a23"
+      },
+      "convergence": {
+        "iterations": 3,
+        "final_relative_change": 0.0,
+        "tolerance": 1e-07,
+        "criterion": "Elmer nonlinear iterate change; not a discretization-error estimate"
+      },
+      "peak_nodal_b_T": 0.9610228424526853,
+      "material_range_checks": {},
+      "runtime": {
+        "solver_version": "26.2-unknown",
+        "grid_version": "26.2",
+        "solver_sha256": "8dd293b48be151b8f7af524e0eaa742811f76f59657f272807a2ee263a9d1e11",
+        "grid_sha256": "85819fa4bf1d3d4164faea5ebea1c3ff0fc210af45020f306e2d10fc843f5ab9",
+        "platform": "Windows",
+        "architecture": "AMD64"
+      },
+      "source": null
+    },
+    "nonlinear_core": {
+      "elapsed_s": 49.34299999999348,
+      "tetrahedra": 11344,
+      "result": "nonlinear_core/result.json",
+      "mesh_sha256": "cc4edfce588eaaff7735da8618d00c34887dcf39b86704c474f14eb4b626413a",
+      "sif_sha256": "8509ca1caae6865e29a15099f0954f3672f5a45fc604e0d0641b6316d42ce695",
+      "integration_source_sha256": {
+        "__init__.py": "c5a0abdec0da1807b7ca161c8a3b1852c93f46c80a119a7505520eb1802c40a9",
+        "demo.py": "a57cca6898f4e35812c4e4cf3baa58f66dee3e41ae2ade7455ebc17dfc56c885",
+        "gmsh_environment.py": "4d2f9d796ac3b8ad7ddc5e3a49fc48ca893a7bb6c0bf78a06427e7c596887554",
+        "mesh.py": "e95553d5f1beca71bea1a5a9f08fef65898d14c95ee2eac93251d6fc0b6a6889",
+        "model.py": "360141529633c24f8d8240ad61b7659b472cdf07de927b6bd8227ec548f31959",
+        "motor.py": "1f5ff04066a370483747e2fa65a0be2a43cf7e27acd2159865978f47ac667afa",
+        "solver.py": "a8ee35e97967a7d650cb49c4a36cb1ac67cc7e4187d709a017bdf26ad9696ca2"
+      },
+      "convergence": {
+        "iterations": 30,
+        "final_relative_change": 7.3236796e-08,
+        "tolerance": 1e-07,
+        "criterion": "Elmer nonlinear iterate change; not a discretization-error estimate"
+      },
+      "peak_nodal_b_T": 1.677605895899984,
+      "material_range_checks": {
+        "Core": {
+          "peak_nodal_b_T": 0.947507794396351,
+          "table_max_b_T": 2.5
+        }
+      },
+      "runtime": {
+        "solver_version": "26.2-unknown",
+        "grid_version": "26.2",
+        "solver_sha256": "8dd293b48be151b8f7af524e0eaa742811f76f59657f272807a2ee263a9d1e11",
+        "grid_sha256": "85819fa4bf1d3d4164faea5ebea1c3ff0fc210af45020f306e2d10fc843f5ab9",
+        "platform": "Windows",
+        "architecture": "AMD64"
+      },
+      "source": {
+        "commit": "2b70a2f46c35691c0b309fa068e13ec33822aa1d",
+        "dirty": true
+      }
+    }
+  },
+  "sphere_B_T": {
+    "coarse": 0.6280459303391542,
+    "fine": 0.6280517692315781,
+    "larger_domain": 0.628335634018506,
+    "analytic": 0.641025641025641
+  },
+  "linear_bh_relative_field_difference": 3.766621283489619e-12,
+  "torque_reciprocity": {
+    "stress_odd_in_current_Nm": -0.000944093141623792,
+    "flux_derivative_reference_Nm": -0.0009672576171091999,
+    "relative_error": 0.02394861004521065,
+    "raw_plus_Nm": [
+      -3.9944552638772797e-07,
+      -0.0009451236986743833,
+      1.627248760101033e-06
+    ],
+    "raw_minus_Nm": [
+      -1.2099260646755034e-06,
+      0.0009430625845732008,
+      3.2925601529105747e-06
+    ]
+  },
+  "coil_linkage_Wb": {
+    "2A": 1.352798289262e-05,
+    "4A": 2.705596578524e-05,
+    "PM_zero_current": 4.836288085545999e-05
+  },
+  "evidence_note": "Local pilot artifacts retained outside the repository. Linear cases were reused after exact request, input mesh, runtime binary and regenerated SIF hash checks. Original integration source hashes are retained; source commit metadata is null where the earlier pilot did not record it. These controls do not qualify a motor or runtime.",
+  "runtime_archive": {
+    "url": "https://www.nic.funet.fi/pub/sci/physics/elmer/bin/windows/ElmerFEM-nogui-nompi-Windows-AMD64.zip",
+    "sha256": "e9072fe8db3c15ae3bef36e3f6d5ac59241376002b1d78eb171c9242756b1fc8",
+    "build": "26.2-unknown; Windows AMD64; compiled 2026-08-05",
+    "qualified": false
+  },
+  "reviewed_integration_source_sha256": {
+    "__init__.py": "c5a0abdec0da1807b7ca161c8a3b1852c93f46c80a119a7505520eb1802c40a9",
+    "demo.py": "a57cca6898f4e35812c4e4cf3baa58f66dee3e41ae2ade7455ebc17dfc56c885",
+    "gmsh_environment.py": "4d2f9d796ac3b8ad7ddc5e3a49fc48ca893a7bb6c0bf78a06427e7c596887554",
+    "mesh.py": "e95553d5f1beca71bea1a5a9f08fef65898d14c95ee2eac93251d6fc0b6a6889",
+    "model.py": "8b271f727294393069ecbcfd761cc9950f3fc70962a702490848aaf3d7eba653",
+    "motor.py": "1f5ff04066a370483747e2fa65a0be2a43cf7e27acd2159865978f47ac667afa",
+    "solver.py": "434461cc6269558ea176bde51c5f5df45ce7c0948398b3471ab68a6720b254e8"
+  }
+}

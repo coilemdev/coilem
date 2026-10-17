@@ -34,7 +34,9 @@ class _BoundedLogCapture:
         self.path.write_bytes(b"")
 
     def consume(self, stream: object) -> None:
-        read = getattr(stream, "read")
+        # BufferedReader.read waits for a whole 64 KiB or EOF on a live pipe.
+        # read1 returns available output so a running solve has usable logs.
+        read = getattr(stream, "read1", None) or getattr(stream, "read")
         while True:
             chunk = read(64 * 1024)
             if not chunk:
