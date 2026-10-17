@@ -5180,8 +5180,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 122451,
-      "sha256": "2cf49fec70eb9f6b3fe056fdedf82ee7e0fc4d6bb3d87e65851f656a368b0fbc"
+      "bytes": 124472,
+      "sha256": "3d8ab25ae069d63c4af3501fd1f26f2a55649e196136d4eab58067fcd250e495"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5580,8 +5580,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 198339,
-      "sha256": "10dfa47da74e593072853b2765894b8c10e3b3a3b2e3e2c3eaf4127cd4bb7a7d"
+      "bytes": 203717,
+      "sha256": "f9b76cd629f707cf3d789d1f4c6458f134c33f4e6387065897e2632e73e298b8"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5635,8 +5635,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 58128,
-      "sha256": "dff36c375bef6fdbca4f4d918237ca3c4491206c7e3e675997d9cbbc27f18026"
+      "bytes": 58057,
+      "sha256": "07506e4557b0832101162f411dd8e83634f4f5e1f12aec7473d5e38cea49647a"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -5910,8 +5910,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 242696,
-      "sha256": "4631058103fad2be55e06786a7f44d402d4b7fbfcb7fc22561e4135e21bd01fb"
+      "bytes": 246297,
+      "sha256": "31d7e9c3721e3b699b66d8d7bf3c37ca87fc293d90fe27109ac1cb2701560d24"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -9287,6 +9287,30 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "70c8f6db26d829895d909f35c7c07e4548261d85bccc675729bb806bef26143e",
       "reason": "Check the Completed results list in place of the tiles."
+    },
+    {
+      "base_commit": "b0916271cd376e555c456a7daef011de27b3cf35",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "10dfa47da74e593072853b2765894b8c10e3b3a3b2e3e2c3eaf4127cd4bb7a7d",
+      "reason": "Give the Design, Geometry and Mesh views their controls in a section below the motor that fits its content and can be dragged taller or shorter, with larger buttons; on the Solve page the view tabs, fullscreen and the regions readout sit on a strip at the top of that section."
+    },
+    {
+      "base_commit": "b0916271cd376e555c456a7daef011de27b3cf35",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "dff36c375bef6fdbca4f4d918237ca3c4491206c7e3e675997d9cbbc27f18026",
+      "reason": "Move the Geometry / Mesh / Field solution tabs and fullscreen from the top bar onto a strip at the top of the field dock."
+    },
+    {
+      "base_commit": "b0916271cd376e555c456a7daef011de27b3cf35",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "4631058103fad2be55e06786a7f44d402d4b7fbfcb7fc22561e4135e21bd01fb",
+      "reason": "Style the resizable control section, its drag handle and the tabs strip; enlarge the viewport controls; drop the field viewer's top bar."
+    },
+    {
+      "base_commit": "b0916271cd376e555c456a7daef011de27b3cf35",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "2cf49fec70eb9f6b3fe056fdedf82ee7e0fc4d6bb3d87e65851f656a368b0fbc",
+      "reason": "Check the resizable section, its handle and fit, the tabs strips and the larger controls."
     }
   ]
 }

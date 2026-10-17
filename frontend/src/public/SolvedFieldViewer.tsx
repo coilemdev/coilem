@@ -1197,13 +1197,6 @@ export function SolvedFieldViewer({
 
   return (
     <section className="public-solved-field-viewer" aria-label="Completed field solution">
-      <div className="public-solved-field-toolbar">
-        {viewControls}
-        <div className="public-field-toolbar-end">
-          {expandControl}
-        </div>
-      </div>
-
       <div className="public-solved-field-canvas">
         {source === 'armature' && armatureBusy && (
           <div
@@ -1276,6 +1269,10 @@ export function SolvedFieldViewer({
       </div>
 
       <div className="public-field-dock">
+        <div className="public-dock-strip">
+          {viewControls}
+          {expandControl}
+        </div>
         <div className="public-field-playback">
           <button
             className="public-field-transport-play"

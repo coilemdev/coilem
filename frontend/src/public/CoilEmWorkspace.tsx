@@ -1530,6 +1530,15 @@ function ViewportExpandButton({
   );
 }
 
+// The Design and Mesh views keep their controls in a section below the motor;
+// its height can be dragged between these limits.
+const VIEWPORT_DOCK_DEFAULT_HEIGHT = 64;
+// With the Solve page's view tabs on a strip above the controls.
+const VIEWPORT_DOCK_DEFAULT_HEIGHT_WITH_STRIP = 104;
+const VIEWPORT_DOCK_MIN_HEIGHT = 48;
+const VIEWPORT_DOCK_MAX_FRACTION = 0.45;
+const VIEWPORT_DOCK_STEP = 16;
+
 function ViewportChrome({
   config,
   materials,
@@ -1552,7 +1561,10 @@ function ViewportChrome({
   onMeshDisplayModeChange,
   onShowMeshEdgesChange,
   onFocusedMeshElementChange,
+  dockStrip,
 }: Pick<CoilEmWorkspaceProps, 'config' | 'materials' | 'geometry' | 'mesh' | 'geometryStale' | 'busy' | 'meshElements' | 'meshQuality'> & {
+  /** Shown on a strip at the top of the bottom section (the Solve page's view tabs). */
+  dockStrip?: ReactNode;
   mode: 'geometry' | 'mesh';
   stale: boolean;
   showConfigurationLabel?: boolean;
@@ -1589,6 +1601,81 @@ function ViewportChrome({
   const [threeResetSignal, setThreeResetSignal] = useState(0);
   const [hoveredMeshElement, setHoveredMeshElement] = useState<PublicMeshElementSelection | null>(null);
   const [showMeshNavigationHint, setShowMeshNavigationHint] = useState(false);
+  const viewportRef = useRef<HTMLElement | null>(null);
+  const bottomBarRef = useRef<HTMLDivElement | null>(null);
+  // The section fits its controls until it is dragged; double-click returns to fitting.
+  const [dockFitHeight, setDockFitHeight] = useState(dockStrip ? VIEWPORT_DOCK_DEFAULT_HEIGHT_WITH_STRIP : VIEWPORT_DOCK_DEFAULT_HEIGHT);
+  const [dockUserHeight, setDockUserHeight] = useState<number | null>(null);
+  const dockHeight = dockUserHeight ?? dockFitHeight;
+  const [dockResizing, setDockResizing] = useState(false);
+  const dockDragRef = useRef<{ startY: number; startHeight: number } | null>(null);
+  const maxDockHeight = useCallback(() => Math.max(
+    VIEWPORT_DOCK_MIN_HEIGHT,
+    Math.round((viewportRef.current?.clientHeight ?? 600) * VIEWPORT_DOCK_MAX_FRACTION),
+  ), []);
+  const clampDockHeight = useCallback((height: number) => (
+    Math.min(maxDockHeight(), Math.max(VIEWPORT_DOCK_MIN_HEIGHT, Math.round(height)))
+  ), [maxDockHeight]);
+  const handleDockResizeStart = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    dockDragRef.current = { startY: event.clientY, startHeight: dockHeight };
+    setDockUserHeight(dockHeight);
+    setDockResizing(true);
+  };
+  const handleDockResizeKey = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    const keyHeights: Partial<Record<string, number>> = {
+      ArrowUp: dockHeight + VIEWPORT_DOCK_STEP,
+      ArrowDown: dockHeight - VIEWPORT_DOCK_STEP,
+      Home: VIEWPORT_DOCK_MIN_HEIGHT,
+      End: maxDockHeight(),
+    };
+    const nextHeight = keyHeights[event.key];
+    if (nextHeight === undefined) return;
+    event.preventDefault();
+    setDockUserHeight(clampDockHeight(nextHeight));
+  };
+  useEffect(() => {
+    if (!dockResizing) return undefined;
+    // The handle sits on the section's top edge, so dragging up makes it taller.
+    const handlePointerMove = (event: PointerEvent) => {
+      const drag = dockDragRef.current;
+      if (drag) setDockUserHeight(clampDockHeight(drag.startHeight + drag.startY - event.clientY));
+    };
+    const handlePointerUp = () => {
+      dockDragRef.current = null;
+      setDockResizing(false);
+    };
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerup', handlePointerUp);
+    window.addEventListener('pointercancel', handlePointerUp);
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerup', handlePointerUp);
+      window.removeEventListener('pointercancel', handlePointerUp);
+    };
+  }, [clampDockHeight, dockResizing]);
+  useEffect(() => {
+    const bar = bottomBarRef.current;
+    if (!bar || typeof ResizeObserver === 'undefined') return undefined;
+    // Fit the section to its controls, however many lines they wrap onto.
+    // The control groups flow as the bar's own items, so measure them, not their wrapper.
+    const items = () => Array.from(bar.querySelectorAll<HTMLElement>(':scope > *, :scope > .viewport-controls > *'));
+    const measure = () => {
+      const style = window.getComputedStyle(bar);
+      const barTop = bar.getBoundingClientRect().top;
+      const contentBottom = items().reduce((bottom, item) => {
+        const rect = item.getBoundingClientRect();
+        return rect.height > 0 ? Math.max(bottom, rect.bottom - barTop + bar.scrollTop) : bottom;
+      }, 0);
+      if (contentBottom > 0) setDockFitHeight(clampDockHeight(contentBottom + parseFloat(style.paddingBottom)));
+    };
+    const observer = new ResizeObserver(measure);
+    observer.observe(bar);
+    items().forEach((item) => observer.observe(item));
+    measure();
+    return () => observer.disconnect();
+  }, [clampDockHeight, dockStrip, mode, viewportMode]);
   const animationFrameRef = useRef(0);
   const introAnimationFrameRef = useRef(0);
   const introCompleteRef = useRef(!designIntroEnabled);
@@ -1729,8 +1816,19 @@ function ViewportChrome({
   }, [focusedMeshElementIndex, mesh, meshQualitySummary, mode]);
   const activeMeshElement = hoveredMeshElement ?? focusedMeshElement;
 
+  // On the Solve page the readout rides on the tabs strip, saving a line of controls.
+  const cadStatus = mode === 'geometry' && viewportMode !== 'materials' ? (
+    <div className="viewport-cad-status">
+      {geometry?.regions.length ?? 0} regions · {geometry ? formatNumber(geometry.generation_time_ms, 0) : '—'} ms
+    </div>
+  ) : null;
+
   return (
-    <section className={`viewport viewport-cad viewport-cad-grid public-motor-viewport${onExpandToggle ? ' is-expandable' : ''}${viewportMode === 'materials' ? ' is-materials-view' : ''}${showMaterialAssignment ? ' is-material-assignment' : ''}${showMaterialBehavior ? ' is-material-behavior' : ''}`}>
+    <section
+      ref={viewportRef}
+      className={`viewport viewport-cad viewport-cad-grid public-motor-viewport${onExpandToggle ? ' is-expandable' : ''}${viewportMode === 'materials' ? ' is-materials-view' : ''}${showMaterialAssignment ? ' is-material-assignment' : ''}${showMaterialBehavior ? ' is-material-behavior' : ''}${dockResizing ? ' is-dock-resizing' : ''}`}
+      style={{ ['--viewport-dock-height' as never]: `${dockHeight}px` }}
+    >
       {showConfigurationLabel && (
         <div className="viewport-label viewport-label-cad">{config.topology} {config.rotor.pole_count}p/{config.stator.slot_count}s</div>
       )}
@@ -1915,7 +2013,22 @@ function ViewportChrome({
           <small>{activeMeshElement.region.replace(/[_-]+/g, ' ')}</small>
         </div>
       )}
-      <div className="viewport-bottom-bar">
+      <div
+        className="viewport-dock-resize"
+        role="separator"
+        aria-label="Resize the motor view controls"
+        aria-orientation="horizontal"
+        aria-valuemin={VIEWPORT_DOCK_MIN_HEIGHT}
+        aria-valuemax={maxDockHeight()}
+        aria-valuenow={dockHeight}
+        tabIndex={0}
+        title="Drag to resize the controls"
+        onDoubleClick={() => setDockUserHeight(null)}
+        onKeyDown={handleDockResizeKey}
+        onPointerDown={handleDockResizeStart}
+      />
+      <div ref={bottomBarRef} className={`viewport-bottom-bar${dockStrip ? ' has-dock-strip' : ''}`}>
+        {dockStrip && <div className="public-dock-strip">{dockStrip}{cadStatus}</div>}
         <div className="viewport-controls viewport-controls-cad" aria-label="Motor view and overlay controls">
           {mode === 'mesh' && (
             <span className="vc-group public-mesh-inspection-controls" role="group" aria-label="Mesh inspection controls">
@@ -2082,11 +2195,7 @@ function ViewportChrome({
             <span>{animationRpm} RPM</span>
           </span>}
         </div>
-        {mode === 'geometry' && viewportMode !== 'materials' && (
-          <div className="viewport-cad-status">
-            {geometry?.regions.length ?? 0} regions · {geometry ? formatNumber(geometry.generation_time_ms, 0) : '—'} ms
-          </div>
-        )}
+        {!dockStrip && cadStatus}
       </div>
     </section>
   );
@@ -3342,7 +3451,6 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
         </div>
       </aside>
       <div className="public-live-stage">
-        {solveView !== 'field' && solveViewportSwitch}
         {solveView === 'field' && result
           ? (
             <SolvedFieldViewer
@@ -3380,8 +3488,16 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               meshQuality={meshQuality}
               showConfigurationLabel={false}
               enableDesignIntro={false}
-              isExpanded={solveViewportExpanded}
-              onExpandToggle={() => setSolveViewportExpanded((expanded) => !expanded)}
+              dockStrip={(
+                <>
+                  {solveViewportSwitch}
+                  <ViewportExpandButton
+                    expanded={solveViewportExpanded}
+                    inline
+                    onToggle={() => setSolveViewportExpanded((expanded) => !expanded)}
+                  />
+                </>
+              )}
               meshDisplayMode={meshDisplayMode}
               showMeshEdges={showMeshEdges}
               meshQualitySummary={meshQualitySummary}

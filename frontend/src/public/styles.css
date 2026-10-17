@@ -1677,9 +1677,12 @@ body {
 .public-solve-view-switch button { min-height: 30px; padding: 0 9px; border: 1px solid transparent; border-radius: 6px; color: var(--text-muted); background: transparent; font-size: 10px; }
 .public-solve-view-switch button[aria-pressed="true"] { border-color: var(--border-accent); color: var(--text-accent); background: rgba(245,158,11,.1); }
 .public-solve-view-switch button:disabled { color: var(--text-disabled); cursor: not-allowed; }
-.public-solved-field-viewer { display: grid; grid-template-rows: auto minmax(0,1fr) auto; width: 100%; height: 100%; min-height: 0; padding: 6px 16px; background: radial-gradient(circle at 50% 46%, rgba(23,31,44,.72), rgba(8,10,15,.98) 66%); }
-.public-solved-field-toolbar { position: relative; z-index: 40; display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center; gap: 10px; margin-bottom: 5px; }
-.public-solved-field-toolbar .public-solve-view-switch { position: static; flex: 0 0 auto; box-shadow: none; }
+.public-solved-field-viewer { display: grid; grid-template-rows: minmax(0,1fr) auto; width: 100%; height: 100%; min-height: 0; padding: 6px 16px; background: radial-gradient(circle at 50% 46%, rgba(23,31,44,.72), rgba(8,10,15,.98) 66%); }
+/* Each bottom panel opens with a strip: the Solve view tabs, then fullscreen at the right end. */
+.public-dock-strip { position: relative; z-index: 40; display: flex; align-items: center; gap: 10px; }
+.public-dock-strip .public-viewport-expand.is-inline { margin-left: auto; }
+.public-field-dock > .public-dock-strip { padding: 6px 7px; border-bottom: 1px solid var(--border-subtle); }
+.public-dock-strip .public-solve-view-switch { position: static; flex: 0 0 auto; box-shadow: none; }
 .public-field-control-cluster { display: flex; min-width: 0; align-items: center; gap: 5px; }
 .public-field-control-cluster > span,
 .public-field-density-control > span { color: var(--text-faint); font: 700 7px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
@@ -1711,21 +1714,21 @@ body {
 .public-field-density-control-inline > span { grid-area: title; }
 .public-field-density-control-inline > input { grid-area: slider; }
 .public-field-density-control-inline > small { grid-area: labels; }
-.public-solved-field-toolbar .public-solve-view-switch,
+.public-dock-strip .public-solve-view-switch,
 .public-field-dock-controls .public-field-source-controls { gap: 5px; padding: 0; border: 0; background: transparent; }
-.public-solved-field-toolbar .public-solve-view-switch button,
+.public-dock-strip .public-solve-view-switch button,
 .public-field-dock-controls .public-field-source-controls button,
 .public-field-dock-controls .public-field-layer-controls button { border-color: rgba(148,163,184,.16); border-radius: 999px; background: rgba(10,12,17,.62); box-shadow: none; }
-.public-solved-field-toolbar .public-solve-view-switch button,
+.public-dock-strip .public-solve-view-switch button,
 .public-field-dock-controls .public-field-source-controls button strong { font-weight: 600; }
 .public-field-dock-controls .public-field-source-controls button strong,
 .public-field-dock-controls .public-field-layer-controls button { font-family: var(--font-mono); }
 .public-field-dock-controls .public-field-source-controls button::before { width: 6px; height: 6px; flex: 0 0 6px; border: 1px solid var(--text-muted); border-radius: 50%; background: transparent; content: ''; }
 .public-field-dock-controls .public-field-source-controls button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; }
-.public-solved-field-toolbar .public-solve-view-switch button[aria-pressed="true"],
+.public-dock-strip .public-solve-view-switch button[aria-pressed="true"],
 .public-field-dock-controls .public-field-source-controls button[aria-pressed="true"],
 .public-field-dock-controls .public-field-layer-controls button[aria-pressed="true"] { border-color: rgba(148,163,184,.22); color: var(--text-secondary); background: rgba(15,17,23,.76); }
-.public-solved-field-toolbar .public-solve-view-switch button[aria-pressed="true"] { color: #d6ab58; }
+.public-dock-strip .public-solve-view-switch button[aria-pressed="true"] { color: #d6ab58; }
 .public-field-dock-controls .public-field-source-controls button[aria-pressed="true"]::before { border-color: var(--text-accent); background: var(--text-accent); }
 .public-field-source-pair { display: inline-flex; align-items: center; gap: 3px; padding: 2px; border: 1px solid rgba(148,163,184,.16); border-radius: 999px; }
 .public-field-dock-controls .public-field-source-pair button { min-width: 0; padding: 0 10px; }
@@ -1737,7 +1740,7 @@ body {
 .public-field-dock-controls .public-field-layer-controls button[aria-pressed="true"] > i { border-color: var(--text-accent); background: var(--text-accent); box-shadow: none; opacity: 1; }
 .public-field-dock-controls .public-field-control-cluster > span,
 .public-field-dock-controls .public-field-density-control > span { color: rgba(148,163,184,.58); font-weight: 600; }
-.public-solved-field-toolbar .public-viewport-expand.is-inline { border-color: rgba(148,163,184,.16); border-radius: 999px; color: var(--text-muted); background: rgba(10,12,17,.62); box-shadow: none; }
+.public-dock-strip .public-viewport-expand.is-inline { border-color: rgba(148,163,184,.16); border-radius: 999px; color: var(--text-muted); background: rgba(10,12,17,.62); box-shadow: none; }
 .public-solved-field-canvas { position: relative; min-height: 0; overflow: hidden; border: 0; background: rgba(7,9,14,.72); }
 .public-solved-field-canvas .public-field-result { position: relative; display: flex; width: 100%; height: 100%; max-width: none; margin: 0; padding: 0; border: 0; background: transparent; }
 .public-solved-field-canvas .public-field-result-canvas { flex: 1 1 auto; min-height: 0; border: 0; background: transparent; }
@@ -1859,8 +1862,8 @@ body {
 }
 
 @container (max-width: 680px) {
-  .public-solved-field-toolbar { gap: 5px; }
-  .public-solved-field-toolbar .public-solve-view-switch button { padding: 0 7px; }
+  .public-dock-strip { gap: 5px; }
+  .public-dock-strip .public-solve-view-switch button { padding: 0 7px; }
   .public-field-source-controls button { min-width: 66px; padding: 0 7px; }
 }
 
@@ -4311,11 +4314,8 @@ body {
   .public-minimum-quality-row button strong { font-size: 11px; }
 
   .public-solved-field-viewer { padding: 8px 18px; }
-  .public-solved-field-toolbar {
-    gap: 12px;
-    margin-bottom: 7px;
-  }
-  .public-solved-field-toolbar .public-solve-view-switch,
+  .public-dock-strip { gap: 12px; }
+  .public-dock-strip .public-solve-view-switch,
   .public-field-source-controls { padding: 4px; }
   .public-solve-view-switch button {
     min-height: 34px;
@@ -4449,3 +4449,38 @@ body {
   .public-quality-counts strong,
   .public-mesh-quality-summary p { font-size: 9px; }
 }
+
+/* Design and Mesh views: the controls get their own section below the motor
+   instead of floating over it, and its height can be dragged. Placed last so
+   it wins over the floating-bar rules above, including the large-screen ones. */
+.public-motor-viewport { --viewport-dock-height: 64px; }
+.public-motor-viewport .public-viewport-stage { inset: 0 0 var(--viewport-dock-height) 0; }
+.public-motor-viewport.is-material-assignment .public-viewport-stage-2d { bottom: var(--viewport-dock-height); }
+.public-motor-viewport.is-material-behavior .public-viewport-stage-2d { bottom: calc(var(--viewport-dock-height) + 8px); }
+.public-motor-viewport .public-mesh-element-card { bottom: calc(var(--viewport-dock-height) + 10px); }
+.public-motor-viewport .viewport-bottom-bar { position: absolute; z-index: 5; top: auto; right: 0; bottom: 0; left: 0; display: flex; height: var(--viewport-dock-height); flex-wrap: wrap; align-items: center; align-content: flex-start; justify-content: flex-start; gap: 8px 6px; padding: 8px 16px; overflow: auto; border-top: 1px solid var(--border-default); background: rgba(12,14,19,.96); pointer-events: auto; }
+/* The control groups and the regions readout wrap together as one row of items. */
+.public-motor-viewport .viewport-bottom-bar .viewport-controls { display: contents; }
+.public-motor-viewport .viewport-cad-status { position: static; flex: 0 0 auto; margin-left: auto; }
+.viewport-dock-resize { position: absolute; z-index: 6; right: 0; bottom: calc(var(--viewport-dock-height) - 5px); left: 0; height: 10px; cursor: row-resize; touch-action: none; }
+.viewport-dock-resize::before { position: absolute; top: 3px; left: 50%; width: 36px; height: 4px; border-radius: 999px; background: rgba(148,163,184,.35); content: ''; transform: translateX(-50%); }
+.viewport-dock-resize:hover::before,
+.viewport-dock-resize:focus-visible::before,
+.public-motor-viewport.is-dock-resizing .viewport-dock-resize::before { background: var(--accent-primary); }
+.viewport-dock-resize:focus-visible { outline: none; }
+.public-motor-viewport.is-dock-resizing { cursor: row-resize; user-select: none; }
+.public-motor-viewport .viewport-bottom-bar.has-dock-strip > .public-dock-strip { flex: 0 0 100%; }
+/* Room for proper-sized controls now that they have their own section. */
+.public-motor-viewport .viewport-bottom-bar .viewport-controls { gap: 6px; }
+.public-motor-viewport .viewport-bottom-bar .vc-group { gap: 4px; }
+.public-motor-viewport .viewport-bottom-bar .viewport-controls button,
+.public-motor-viewport .viewport-bottom-bar .public-polarity-view button { min-width: 40px; height: 36px; padding: 0 14px; border-radius: 8px; font-size: 13px; }
+.public-motor-viewport .viewport-bottom-bar .public-winding-key { gap: 10px; padding-inline: 10px; font-size: 12px; }
+.public-motor-viewport .viewport-bottom-bar .public-winding-key i { width: 10px; height: 10px; }
+.public-motor-viewport .viewport-bottom-bar .public-playback input { width: 120px; }
+.public-motor-viewport .viewport-bottom-bar .public-playback span,
+.public-motor-viewport .viewport-bottom-bar .public-explode-controls output { font-size: 13px; }
+.public-motor-viewport .viewport-bottom-bar .viewport-cad-status { font-size: 12px; }
+.public-motor-viewport .public-dock-strip > .viewport-cad-status { order: 2; margin-left: auto; }
+.public-motor-viewport .public-dock-strip > .public-viewport-expand.is-inline { order: 3; }
+.public-motor-viewport .public-dock-strip:has(> .viewport-cad-status) > .public-viewport-expand.is-inline { margin-left: 0; }
