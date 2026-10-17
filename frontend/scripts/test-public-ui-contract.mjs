@@ -792,8 +792,12 @@ assert.match(workspaceSource, /const dockHeight = dockUserHeight \?\? dockFitHei
 // bottom panel: the Geometry and Mesh viewports' section and the field dock.
 assert.doesNotMatch(workspaceSource, /\{solveView !== 'field' && solveViewportSwitch\}/);
 assert.match(workspaceSource, /dockStrip=\{\(\s*<>\s*\{solveViewportSwitch\}\s*<ViewportExpandButton/);
-assert.match(workspaceSource, /\{dockStrip && <div className="public-dock-strip">\{dockStrip\}\{cadStatus\}<\/div>\}/);
-assert.match(workspaceSource, /\{!dockStrip && cadStatus\}/);
+assert.match(workspaceSource, /\{titleBar && <div className="public-dock-strip">\{titleBar\}\{cadStatus\}<\/div>\}/);
+assert.match(workspaceSource, /\{!titleBar && cadStatus\}/);
+// On Design the motor view tabs are the panel's title bar; on the Solve page
+// they stay with the controls under the Solve tabs.
+assert.match(workspaceSource, /const titleBar = dockStrip \?\? primaryViewModes;/);
+assert.match(workspaceSource, /\{dockStrip && primaryViewModes\}/);
 assert.match(solvedFieldSource, /<div className="public-field-dock">\s*<div className="public-dock-strip">\s*\{viewControls\}\s*\{expandControl\}\s*<\/div>/);
 assert.doesNotMatch(solvedFieldSource, /public-solved-field-toolbar/);
 assert.match(styleSource, /\.public-solved-field-viewer \{ display: grid; grid-template-rows: minmax\(0,1fr\) auto;/);
@@ -865,7 +869,12 @@ assert.match(styleSource, /@keyframes public-field-direction-flow/);
 assert.match(styleSource, /animation: public-field-direction-flow 2\.2s ease-in-out infinite/);
 assert.match(styleSource, /\.public-dock-strip \{[^}]*display: flex;/s);
 assert.match(styleSource, /\.public-dock-strip \.public-solve-view-switch,[\s\S]*?gap: 5px; padding: 0; border: 0; background: transparent;/);
-assert.match(styleSource, /\.public-dock-strip \.public-solve-view-switch button,[\s\S]*?border-radius: 999px; background: rgba\(10,12,17,\.62\);/);
+// The title bar spans the panel and stays put when the controls scroll; its
+// selected tab is underlined, unlike the pill toggles below it.
+assert.match(styleSource, /\.public-motor-viewport \.viewport-bottom-bar\.has-dock-strip > \.public-dock-strip \{ position: sticky; top: 0; flex: 0 0 calc\(100% \+ 32px\);[^}]*margin: 0 -16px;/);
+assert.match(styleSource, /\.public-dock-strip \.public-solve-view-switch button \{ position: relative;[^}]*border: 0; border-radius: 0;/);
+assert.match(styleSource, /\.public-dock-strip \.public-solve-view-switch button\[aria-pressed="true"\]::after \{ position: absolute;[^}]*height: 2px;[^}]*background: var\(--accent-primary\);/);
+assert.doesNotMatch(styleSource, /\.public-dock-strip \.public-solve-view-switch button,\s*\.public-field-dock-controls/);
 assert.match(styleSource, /\.public-field-dock-controls \.public-field-source-controls button::before \{[^}]*border-radius: 50%;[^}]*content: '';/);
 assert.match(styleSource, /\.public-field-dock-controls \.public-field-source-controls button\[aria-pressed="true"\]::before \{[^}]*background: var\(--text-accent\);/);
 assert.match(styleSource, /\.public-field-dock-controls \.public-field-source-controls button strong \{ font-weight: 600; \}/);

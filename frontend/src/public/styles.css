@@ -1684,7 +1684,7 @@ body {
 /* Each bottom panel opens with a strip: the Solve view tabs, then fullscreen at the right end. */
 .public-dock-strip { position: relative; z-index: 40; display: flex; align-items: center; gap: 10px; }
 .public-dock-strip .public-viewport-expand.is-inline { margin-left: auto; }
-.public-field-dock > .public-dock-strip { padding: 6px 7px; border-bottom: 1px solid var(--border-subtle); }
+.public-field-dock > .public-dock-strip { min-height: 44px; padding: 0 7px; border-bottom: 1px solid var(--border-subtle); border-radius: 9px 9px 0 0; background: rgba(17,20,27,.98); }
 .public-dock-strip .public-solve-view-switch { position: static; flex: 0 0 auto; box-shadow: none; }
 .public-field-control-cluster { display: flex; min-width: 0; align-items: center; gap: 5px; }
 .public-field-control-cluster > span,
@@ -1719,19 +1719,15 @@ body {
 .public-field-density-control-inline > small { grid-area: labels; }
 .public-dock-strip .public-solve-view-switch,
 .public-field-dock-controls .public-field-source-controls { gap: 5px; padding: 0; border: 0; background: transparent; }
-.public-dock-strip .public-solve-view-switch button,
 .public-field-dock-controls .public-field-source-controls button,
 .public-field-dock-controls .public-field-layer-controls button { border-color: rgba(148,163,184,.16); border-radius: 999px; background: rgba(10,12,17,.62); box-shadow: none; }
-.public-dock-strip .public-solve-view-switch button,
 .public-field-dock-controls .public-field-source-controls button strong { font-weight: 600; }
 .public-field-dock-controls .public-field-source-controls button strong,
 .public-field-dock-controls .public-field-layer-controls button { font-family: var(--font-mono); }
 .public-field-dock-controls .public-field-source-controls button::before { width: 6px; height: 6px; flex: 0 0 6px; border: 1px solid var(--text-muted); border-radius: 50%; background: transparent; content: ''; }
 .public-field-dock-controls .public-field-source-controls button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; }
-.public-dock-strip .public-solve-view-switch button[aria-pressed="true"],
 .public-field-dock-controls .public-field-source-controls button[aria-pressed="true"],
 .public-field-dock-controls .public-field-layer-controls button[aria-pressed="true"] { border-color: rgba(148,163,184,.22); color: var(--text-secondary); background: rgba(15,17,23,.76); }
-.public-dock-strip .public-solve-view-switch button[aria-pressed="true"] { color: #d6ab58; }
 .public-field-dock-controls .public-field-source-controls button[aria-pressed="true"]::before { border-color: var(--text-accent); background: var(--text-accent); }
 .public-field-source-pair { display: inline-flex; align-items: center; gap: 3px; padding: 2px; border: 1px solid rgba(148,163,184,.16); border-radius: 999px; }
 .public-field-dock-controls .public-field-source-pair button { min-width: 0; padding: 0 10px; }
@@ -4476,7 +4472,6 @@ body {
 .public-motor-viewport.is-dock-resizing .viewport-dock-resize::before { background: var(--accent-primary); }
 .viewport-dock-resize:focus-visible { outline: none; }
 .public-motor-viewport.is-dock-resizing { cursor: row-resize; user-select: none; }
-.public-motor-viewport .viewport-bottom-bar.has-dock-strip > .public-dock-strip { flex: 0 0 100%; }
 /* Room for proper-sized controls now that they have their own section. */
 .public-motor-viewport .viewport-bottom-bar .viewport-controls { gap: 6px; }
 .public-motor-viewport .viewport-bottom-bar .vc-group { gap: 4px; }
@@ -4491,3 +4486,23 @@ body {
 .public-motor-viewport .public-dock-strip > .viewport-cad-status { order: 2; margin-left: auto; }
 .public-motor-viewport .public-dock-strip > .public-viewport-expand.is-inline { order: 3; }
 .public-motor-viewport .public-dock-strip:has(> .viewport-cad-status) > .public-viewport-expand.is-inline { margin-left: 0; }
+/* Each bottom panel opens with a title bar: its view tabs at the left, the
+   readout and fullscreen at the right. The selected tab is underlined, so it
+   reads apart from the on/off toggles in the panel below. */
+.public-motor-viewport .viewport-bottom-bar.has-dock-strip { padding-top: 0; }
+.public-motor-viewport .viewport-bottom-bar.has-dock-strip > .public-dock-strip { position: sticky; top: 0; flex: 0 0 calc(100% + 32px); min-height: 44px; margin: 0 -16px; padding: 0 16px; border-bottom: 1px solid var(--border-subtle); background: rgba(17,20,27,.98); }
+.public-dock-strip .public-primary-view-modes,
+.public-dock-strip .public-solve-view-switch { display: flex; align-self: stretch; gap: 2px; padding: 0; border: 0; background: transparent; }
+.public-motor-viewport .public-dock-strip .public-primary-view-modes button,
+.public-dock-strip .public-solve-view-switch button { position: relative; min-width: 0; height: auto; min-height: 44px; padding: 0 14px; border: 0; border-radius: 0; color: var(--text-muted); background: transparent; font: 600 13px var(--font-mono); }
+.public-motor-viewport .public-dock-strip .public-primary-view-modes button:hover,
+.public-dock-strip .public-solve-view-switch button:hover:not(:disabled) { color: var(--text-secondary); background: rgba(148,163,184,.06); }
+.public-motor-viewport .public-dock-strip .public-primary-view-modes button[aria-pressed="true"],
+.public-dock-strip .public-solve-view-switch button[aria-pressed="true"] { color: var(--text-accent); background: linear-gradient(to top, rgba(245,158,11,.12), transparent); }
+.public-dock-strip .public-primary-view-modes button[aria-pressed="true"]::after,
+.public-dock-strip .public-solve-view-switch button[aria-pressed="true"]::after { position: absolute; right: 8px; bottom: -1px; left: 8px; height: 2px; border-radius: 2px 2px 0 0; background: var(--accent-primary); content: ''; }
+.public-dock-strip .public-solve-view-switch button:disabled { color: var(--text-disabled); background: transparent; }
+@container (max-width: 680px) {
+  .public-motor-viewport .public-dock-strip .public-primary-view-modes button,
+  .public-dock-strip .public-solve-view-switch button { padding: 0 9px; font-size: 12px; }
+}
