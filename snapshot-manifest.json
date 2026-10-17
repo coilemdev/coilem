@@ -6525,8 +6525,8 @@
     },
     {
       "path": "tests/test_reference_recovery.py",
-      "bytes": 11465,
-      "sha256": "da6e7b242f508340cd51eef758296057dc4568803cc98d93afadea642869c321"
+      "bytes": 13029,
+      "sha256": "6e367bc4b58f4bede4e0804bea37899bb206b6656d7b3ecde3e3b7f0cf9ebeea"
     },
     {
       "path": "tests/test_reference_runner.py",
@@ -6590,8 +6590,8 @@
     },
     {
       "path": "tools/benchmark_suite/external.py",
-      "bytes": 22985,
-      "sha256": "23cd9cfe71c92ab8685c8f38d921cd4a4228098956cb453f37b315b48d8a517d"
+      "bytes": 23421,
+      "sha256": "63e8a1dce6707443b7c6c29e0fe96f3491443ddc0ad35d9ff18c4566b218e074"
     },
     {
       "path": "tools/benchmark_suite/external_contract.py",
@@ -9280,6 +9280,18 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "e1a6e246de259bc347c4c7bfc0b07d31a0924f036e555070dbdf614dd5394f1e",
       "reason": "Check the Resultant button, the PM/Stator pair and its toggle rule, and the 600 px toolbar wrap (#120)."
+    },
+    {
+      "base_commit": "195753cb54f40921c0106a6794bef1684b6df2dc",
+      "path": "tools/benchmark_suite/external.py",
+      "source_sha256": "23cd9cfe71c92ab8685c8f38d921cd4a4228098956cb453f37b315b48d8a517d",
+      "reason": "Remember when the controller stopped a worker during an interrupt, so --resume keeps a result written just before the stop instead of reading its signal exit code as a producer failure."
+    },
+    {
+      "base_commit": "195753cb54f40921c0106a6794bef1684b6df2dc",
+      "path": "tests/test_reference_recovery.py",
+      "source_sha256": "da6e7b242f508340cd51eef758296057dc4568803cc98d93afadea642869c321",
+      "reason": "Cover a worker that writes its result and is then stopped by the interrupt's cleanup: the run records INTERRUPTED and --resume completes without --retry-failed."
     }
   ]
 }
