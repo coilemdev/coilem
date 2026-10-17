@@ -4454,7 +4454,7 @@ body {
 .public-motor-viewport.is-dock-resizing { cursor: row-resize; user-select: none; }
 /* Room for proper-sized controls now that they have their own section. */
 .public-motor-viewport .viewport-bottom-bar .viewport-controls { gap: 6px; }
-.public-motor-viewport .viewport-bottom-bar .vc-group { gap: 4px; }
+.public-motor-viewport .viewport-bottom-bar .vc-group { gap: 8px; padding: 0; }
 .public-motor-viewport .viewport-bottom-bar .viewport-controls button,
 .public-motor-viewport .viewport-bottom-bar .public-polarity-view button { min-width: 40px; height: 36px; padding: 0 14px; border-radius: 8px; font-size: 13px; }
 .public-motor-viewport .viewport-bottom-bar .public-winding-key { gap: 10px; padding-inline: 10px; font-size: 12px; }
@@ -4494,4 +4494,26 @@ body {
 .public-motor-viewport .public-mesh-quality-legend { top: 14px; }
 @container (max-width: 560px) {
   .public-dock-strip-end .viewport-cad-status { display: none; }
+}
+/* Panel controls: each group has a small label, as in the field dock, and one
+   of two shapes. A segmented control picks one way to draw the view (one fill
+   on a shared track); a dot toggle switches a layer on or off on its own.
+   The labels replace the rules that used to separate the groups. */
+.public-motor-viewport .viewport-bottom-bar .vc-group + .vc-group,
+.public-motor-viewport .viewport-bottom-bar .vc-group + .public-winding-key,
+.public-motor-viewport .viewport-bottom-bar .public-winding-key + .vc-group { margin-left: 12px; padding-left: 0; border-left: 0; }
+.public-dock-group-label { color: rgba(148,163,184,.58); font: 600 10px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+.public-dock-segmented { display: inline-flex; align-items: center; gap: 2px; padding: 3px; border: 1px solid rgba(148,163,184,.16); border-radius: 10px; background: rgba(10,12,17,.62); }
+.public-motor-viewport .viewport-bottom-bar .public-dock-segmented button { min-width: 0; height: 28px; padding: 0 12px; border: 0; border-radius: 7px; color: var(--text-muted); background: transparent; font: 600 13px var(--font-mono); white-space: nowrap; }
+.public-motor-viewport .viewport-bottom-bar .public-dock-segmented button:hover:not(:disabled) { color: var(--text-secondary); background: rgba(148,163,184,.08); }
+.public-motor-viewport .viewport-bottom-bar .public-dock-segmented button[aria-pressed="true"] { color: var(--text-accent); background: rgba(245,158,11,.14); box-shadow: inset 0 0 0 1px rgba(245,158,11,.32); }
+.public-motor-viewport .viewport-bottom-bar .public-dock-segmented button:disabled { color: var(--text-disabled); background: transparent; cursor: not-allowed; }
+.public-motor-viewport .viewport-bottom-bar button.public-dock-toggle { display: inline-flex; align-items: center; gap: 8px; min-width: 0; height: 36px; padding: 0 14px; border: 1px solid rgba(148,163,184,.16); border-radius: 999px; color: var(--text-muted); background: rgba(10,12,17,.62); font: 600 13px var(--font-mono); white-space: nowrap; }
+.public-motor-viewport .viewport-bottom-bar button.public-dock-toggle::before { width: 8px; height: 8px; flex: 0 0 8px; border: 1px solid currentColor; border-radius: 50%; content: ''; opacity: .7; }
+.public-motor-viewport .viewport-bottom-bar button.public-dock-toggle:hover { color: var(--text-secondary); background: rgba(148,163,184,.08); }
+.public-motor-viewport .viewport-bottom-bar button.public-dock-toggle[aria-pressed="true"] { border-color: rgba(148,163,184,.26); color: var(--text-secondary); background: rgba(15,17,23,.76); }
+.public-motor-viewport .viewport-bottom-bar button.public-dock-toggle[aria-pressed="true"]::before { border-color: var(--text-accent); background: var(--text-accent); opacity: 1; }
+@container (max-width: 700px) {
+  .public-dock-group-label { display: none; }
+  .public-motor-viewport .viewport-bottom-bar .public-dock-segmented button { padding: 0 9px; font-size: 12px; }
 }

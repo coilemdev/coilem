@@ -5180,8 +5180,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 126440,
-      "sha256": "52b4ae4bdd1f0c7c283139b75ce1c4550a7f7b1b422fd1f53e0aae8158317854"
+      "bytes": 127765,
+      "sha256": "eec4a40c087fdcf741bc301f72de89c485b86b5fa2eb7948bb9e586ac6bedeac"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5580,8 +5580,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 204517,
-      "sha256": "e633092362cb7619a150c3d84098fc70bcaee44fcc96d99a4aa037df52b76de8"
+      "bytes": 205432,
+      "sha256": "586625a676c550b8f5e10870c53fa9fea9e20f0d35d20ac3adea144b166def1c"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5910,8 +5910,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 248358,
-      "sha256": "8047e475c364c1be52fbcd38d5c506e6f33bff605d9e1e3fe2ffa52d9dc92f17"
+      "bytes": 251354,
+      "sha256": "a45d9c0e8ec50d3dc9a5cccfaf06d342d5b7e16016e1e0837ba3ef52ff1799a5"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -9359,6 +9359,24 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "1bc2d14cf62d1cb2e2247b1c8e4f8b33b52cb24c2604fe1c24a9f946199dbe7c",
       "reason": "Cover the one-level tabs and the title bar's end group."
+    },
+    {
+      "base_commit": "e6fc5317744aa3b5eebab5573abbdbb4872aa906",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "e633092362cb7619a150c3d84098fc70bcaee44fcc96d99a4aa037df52b76de8",
+      "reason": "Label each panel control group and give choices and layers their own shapes."
+    },
+    {
+      "base_commit": "e6fc5317744aa3b5eebab5573abbdbb4872aa906",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "8047e475c364c1be52fbcd38d5c506e6f33bff605d9e1e3fe2ffa52d9dc92f17",
+      "reason": "Style segmented choices, dot toggles and group labels in the motor panels."
+    },
+    {
+      "base_commit": "e6fc5317744aa3b5eebab5573abbdbb4872aa906",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "52b4ae4bdd1f0c7c283139b75ce1c4550a7f7b1b422fd1f53e0aae8158317854",
+      "reason": "Cover the labelled groups and the two control shapes."
     }
   ]
 }

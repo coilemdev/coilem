@@ -2073,89 +2073,101 @@ function ViewportChrome({
           </div>
         )}
         <div className="viewport-controls viewport-controls-cad" aria-label="Motor view and overlay controls">
+          {/* Each group has a small label and one of two shapes: a segmented
+              control picks one way to draw the view, a dot toggle switches a
+              layer on or off on its own. Tabs in the title bar pick the view. */}
           {mode === 'mesh' && (
             <span className="vc-group public-mesh-inspection-controls" role="group" aria-label="Mesh inspection controls">
+              <span className="public-dock-group-label" aria-hidden="true">Color by</span>
+              <span className="public-dock-segmented">
+                <button
+                  type="button"
+                  aria-pressed={meshDisplayMode === 'geometry'}
+                  title="Color each element by its region"
+                  onClick={() => onMeshDisplayModeChange?.('geometry')}
+                >
+                  Regions
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={meshDisplayMode === 'quality'}
+                  title="Quality heatmap: color each element by its shape quality"
+                  onClick={() => onMeshDisplayModeChange?.('quality')}
+                >
+                  Quality
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={meshDisplayMode === 'problems'}
+                  disabled={!meshQualitySummary?.weakElementIndices.length}
+                  onClick={() => {
+                    onMeshDisplayModeChange?.('problems');
+                    onFocusedMeshElementChange?.(meshQualitySummary?.weakElementIndices[0] ?? null);
+                  }}
+                >
+                  Weak elements{meshQualitySummary ? ` ${meshQualitySummary.weakElementIndices.length}` : ''}
+                </button>
+              </span>
+            </span>
+          )}
+          {mode === 'mesh' && (
+            <span className="vc-group public-mesh-layer-controls" role="group" aria-label="Mesh layers">
+              <span className="public-dock-group-label" aria-hidden="true">Show</span>
               <button
                 type="button"
-                className={meshDisplayMode === 'geometry' ? 'is-active' : ''}
-                aria-pressed={meshDisplayMode === 'geometry'}
-                onClick={() => onMeshDisplayModeChange?.('geometry')}
-              >
-                Geometry overlay
-              </button>
-              <button
-                type="button"
-                className={showMeshEdges ? 'is-active' : ''}
+                className="public-dock-toggle"
                 aria-pressed={showMeshEdges}
                 onClick={() => onShowMeshEdgesChange?.(!showMeshEdges)}
               >
                 Element edges
               </button>
-              <button
-                type="button"
-                className={meshDisplayMode === 'quality' ? 'is-active' : ''}
-                aria-pressed={meshDisplayMode === 'quality'}
-                onClick={() => onMeshDisplayModeChange?.(meshDisplayMode === 'quality' ? 'geometry' : 'quality')}
-              >
-                Quality heatmap
-              </button>
-              <button
-                type="button"
-                className={meshDisplayMode === 'problems' ? 'is-active' : ''}
-                aria-pressed={meshDisplayMode === 'problems'}
-                disabled={!meshQualitySummary?.weakElementIndices.length}
-                onClick={() => {
-                  const nextMode = meshDisplayMode === 'problems' ? 'geometry' : 'problems';
-                  onMeshDisplayModeChange?.(nextMode);
-                  if (nextMode === 'problems') {
-                    onFocusedMeshElementChange?.(meshQualitySummary?.weakElementIndices[0] ?? null);
-                  }
-                }}
-              >
-                Weak elements{meshQualitySummary ? ` ${meshQualitySummary.weakElementIndices.length}` : ''}
-              </button>
             </span>
           )}
           {viewportMode === 'materials' && mode === 'geometry' && (
             <span className="vc-group public-material-subview-controls" role="group" aria-label="Materials view mode">
-              {([
-                ['assignment', 'Assignment'],
-                ['behavior', 'Behavior'],
-              ] as Array<[PublicMaterialSubview, string]>).map(([value, label]) => (
-                <button
-                  type="button"
-                  className={materialSubview === value ? 'is-active' : ''}
-                  aria-pressed={materialSubview === value}
-                  onClick={() => setMaterialSubview(value)}
-                  key={value}
-                >
-                  {label}
-                </button>
-              ))}
+              <span className="public-dock-group-label" aria-hidden="true">Show</span>
+              <span className="public-dock-segmented">
+                {([
+                  ['assignment', 'Assignment'],
+                  ['behavior', 'Behavior'],
+                ] as Array<[PublicMaterialSubview, string]>).map(([value, label]) => (
+                  <button
+                    type="button"
+                    aria-pressed={materialSubview === value}
+                    onClick={() => setMaterialSubview(value)}
+                    key={value}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </span>
             </span>
           )}
           {viewportMode === '2d' && mode === 'geometry' && (
             <span className="vc-group public-view-modes" role="group" aria-label="2D display layers">
-              {([
-                ['dimensions', 'Dims'],
-                ['slots', 'Slots'],
-                ['windings', 'Winding'],
-                ['phases', 'Phases'],
-              ] as Array<[PublicCanvasLayer, string]>).map(([layer, label]) => (
-                <button
-                  type="button"
-                  className={canvasLayer === layer ? 'is-active' : ''}
-                  aria-pressed={canvasLayer === layer}
-                  title={canvasLayer === layer ? `Hide the ${label.toLowerCase()} overlay` : `Show ${label.toLowerCase()}`}
-                  // Clicking the active layer turns it off, which is the only way to
-                  // get the bare cross-section: these read as toggles, and Dims in
-                  // particular puts a legend and dashed lines over the motor.
-                  onClick={() => setCanvasLayer((current) => (current === layer ? 'none' : layer))}
-                  key={layer}
-                >
-                  {label}
-                </button>
-              ))}
+              <span className="public-dock-group-label" aria-hidden="true">Overlay</span>
+              <span className="public-dock-segmented">
+                {([
+                  ['none', 'None'],
+                  ['dimensions', 'Dims'],
+                  ['slots', 'Slots'],
+                  ['windings', 'Winding'],
+                  ['phases', 'Phases'],
+                ] as Array<[PublicCanvasLayer, string]>).map(([layer, label]) => (
+                  <button
+                    type="button"
+                    aria-pressed={canvasLayer === layer}
+                    title={layer === 'none' ? 'Show the bare cross-section' : canvasLayer === layer ? `Hide the ${label.toLowerCase()} overlay` : `Show ${label.toLowerCase()}`}
+                    // One overlay at a time. None, or clicking the active one again,
+                    // leaves the bare cross-section: Dims in particular puts a
+                    // legend and dashed lines over the motor.
+                    onClick={() => setCanvasLayer((current) => (current === layer ? 'none' : layer))}
+                    key={layer}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </span>
             </span>
           )}
           {viewportMode === '2d'
@@ -2163,22 +2175,24 @@ function ViewportChrome({
             && (config.topology === 'SPM'
               || (config.topology === 'IPM' && config.rotor.ipm_topology === 'v_shape')) && (
             <span className="vc-group public-polarity-view" role="group" aria-label="Magnet polarity display">
-              {([
-                ['dominant', 'Pole', 'Dominant pole', 'Color each magnet by the pole facing the airgap.'],
-                ['split', 'Split', 'Split view', 'Show both poles for orientation. The FEM magnet remains one region.'],
-              ] as Array<[PublicMagnetPolarityView, string, string, string]>).map(([value, label, ariaLabel, title]) => (
-                <button
-                  type="button"
-                  className={magnetPolarityView === value ? 'is-active' : ''}
-                  aria-pressed={magnetPolarityView === value}
-                  aria-label={ariaLabel}
-                  title={title}
-                  onClick={() => setMagnetPolarityView(value)}
-                  key={value}
-                >
-                  {label}
-                </button>
-              ))}
+              <span className="public-dock-group-label" aria-hidden="true">Magnets</span>
+              <span className="public-dock-segmented">
+                {([
+                  ['dominant', 'Pole', 'Dominant pole', 'Color each magnet by the pole facing the airgap.'],
+                  ['split', 'Split', 'Split view', 'Show both poles for orientation. The FEM magnet remains one region.'],
+                ] as Array<[PublicMagnetPolarityView, string, string, string]>).map(([value, label, ariaLabel, title]) => (
+                  <button
+                    type="button"
+                    aria-pressed={magnetPolarityView === value}
+                    aria-label={ariaLabel}
+                    title={title}
+                    onClick={() => setMagnetPolarityView(value)}
+                    key={value}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </span>
             </span>
           )}
           {viewportMode === '2d' && mode === 'geometry' && (
@@ -2190,29 +2204,29 @@ function ViewportChrome({
             </span>
           )}
           {viewportMode === '3d' && (
-            <>
-              <span className="vc-group public-explode-controls">
-                <button
-                  type="button"
-                  className={explodedAmount > 0.04 ? 'is-active' : ''}
-                  aria-pressed={explodedAmount > 0.04}
-                  onClick={() => setExplodedAmount((value) => (value > 0.04 ? 0 : 1))}
-                >
-                  {explodedAmount > 0.04 ? 'Assemble' : 'Explode'}
-                </button>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  step="1"
-                  value={Math.round(explodedAmount * 100)}
-                  aria-label="Exploded view amount"
-                  title={`Exploded view: ${Math.round(explodedAmount * 100)}%`}
-                  onChange={(event) => setExplodedAmount(Number(event.target.value) / 100)}
-                />
-                <output aria-live="polite">{Math.round(explodedAmount * 100)}%</output>
-              </span>
-            </>
+            <span className="vc-group public-explode-controls" role="group" aria-label="Exploded view">
+              <span className="public-dock-group-label" aria-hidden="true">Explode</span>
+              <button
+                type="button"
+                className="public-dock-toggle"
+                aria-pressed={explodedAmount > 0.04}
+                title={explodedAmount > 0.04 ? 'Assemble the motor' : 'Explode the motor into its parts'}
+                onClick={() => setExplodedAmount((value) => (value > 0.04 ? 0 : 1))}
+              >
+                Exploded
+              </button>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                step="1"
+                value={Math.round(explodedAmount * 100)}
+                aria-label="Exploded view amount"
+                title={`Exploded view: ${Math.round(explodedAmount * 100)}%`}
+                onChange={(event) => setExplodedAmount(Number(event.target.value) / 100)}
+              />
+              <output aria-live="polite">{Math.round(explodedAmount * 100)}%</output>
+            </span>
           )}
           {showPlayback && <span className="vc-group public-playback">
             <button type="button" className={isAnimating ? 'is-active' : ''} aria-label={isAnimating ? 'Pause preview' : 'Play preview'} onClick={() => setIsAnimating((value) => !value)}>{isAnimating ? 'Ⅱ' : '▶'}</button>

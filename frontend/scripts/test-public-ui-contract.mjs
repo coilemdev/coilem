@@ -738,10 +738,19 @@ assert.match(modelSource, /nonlinear_solver: 'picard'/);
 assert.match(modelSource, /linear_solver_preconditioner: 'direct'/);
 assert.match(modelSource, /cogging_torque_waveform\?/);
 assert.match(modelSource, /field_line_plot\?: PublicFieldLinePlot/);
-assert.match(workspaceSource, /Geometry overlay/);
+// The mesh panel separates how elements are coloured (one choice) from the
+// edges layer (on or off on its own), so the two no longer look alike.
+assert.match(workspaceSource, /<span className="public-dock-group-label" aria-hidden="true">Color by<\/span>\s*<span className="public-dock-segmented">[\s\S]*?Regions[\s\S]*?Quality[\s\S]*?Weak elements/);
+assert.match(workspaceSource, /<span className="public-dock-group-label" aria-hidden="true">Show<\/span>\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{showMeshEdges\}/);
 assert.match(workspaceSource, /Element edges/);
 assert.match(workspaceSource, /Quality heatmap/);
-assert.match(workspaceSource, /Weak elements/);
+// 2D overlays are one choice at a time, with None for the bare cross-section.
+assert.match(workspaceSource, /Overlay<\/span>\s*<span className="public-dock-segmented">\s*\{\(\[\s*\['none', 'None'\],\s*\['dimensions', 'Dims'\]/);
+assert.match(workspaceSource, />Magnets<\/span>/);
+assert.match(styleSource, /\.public-dock-segmented \{ display: inline-flex;[^}]*border: 1px solid rgba\(148,163,184,\.16\); border-radius: 10px;/);
+assert.match(styleSource, /\.public-dock-segmented button\[aria-pressed="true"\] \{ color: var\(--text-accent\); background: rgba\(245,158,11,\.14\);/);
+assert.match(styleSource, /button\.public-dock-toggle\[aria-pressed="true"\]::before \{ border-color: var\(--text-accent\); background: var\(--text-accent\);/);
+assert.match(styleSource, /\.public-dock-group-label \{ color: rgba\(148,163,184,\.58\); font: 600 10px var\(--font-mono\);/);
 assert.match(workspaceSource, /What does element quality mean\?/);
 assert.match(workspaceSource, /Triangle shape, not accuracy/);
 assert.match(workspaceSource, /1 for an ideal equilateral triangle to 0 for a collapsed triangle/);
