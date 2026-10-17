@@ -5170,8 +5170,8 @@
     },
     {
       "path": "frontend/scripts/test-public-boundary.mjs",
-      "bytes": 5352,
-      "sha256": "f73074a8e8cf1d6926d06274f9684120d673814623f18c66279f378b3b3fde29"
+      "bytes": 5457,
+      "sha256": "4796ad621b0b759729c0e423beb5231bc50bfea46a2b934945186dc65f3f6cd4"
     },
     {
       "path": "frontend/scripts/test-public-bundle.mjs",
@@ -5180,8 +5180,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 119411,
-      "sha256": "1f9eb359c7cd6c3641b86f395be0877de130106141114629ca4de241a9dab29c"
+      "bytes": 121513,
+      "sha256": "70c8f6db26d829895d909f35c7c07e4548261d85bccc675729bb806bef26143e"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5590,8 +5590,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 49352,
-      "sha256": "08a95471d0d887e9fe9e1f2b1b5203c778e0f41ac3967f6d328d6d189aa8e832"
+      "bytes": 49759,
+      "sha256": "0167d1684d87d038d2cbef8770856a366e44af892c2a15856751590198afccd3"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -5635,8 +5635,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 57700,
-      "sha256": "43395341143b24b885cab3d1f69111d4ac4eb1c1bacbd9e8d5489f9583e14f69"
+      "bytes": 58128,
+      "sha256": "dff36c375bef6fdbca4f4d918237ca3c4491206c7e3e675997d9cbbc27f18026"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -5910,8 +5910,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 243443,
-      "sha256": "66a9c34f66b1b2b54844ff7c2289de641e58646f40832086bc5678fa1f41f6c8"
+      "bytes": 243227,
+      "sha256": "a43e6bff7e29773ab95175019f1cba4f8aed3f64360b2bf3c054d495dad271b3"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -9239,6 +9239,36 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "52e4d49c5d2b2ca576a71692e4380f04313e06cacd26623595942a035c748370",
       "reason": "Check the one-row Kt and Ke and their hint."
+    },
+    {
+      "base_commit": "4ed1fcd6738b40750fb2df870c917b49d660cd4e",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "43395341143b24b885cab3d1f69111d4ac4eb1c1bacbd9e8d5489f9583e14f69",
+      "reason": "Move the field viewer's controls into a two-row dock below the motor: playback, then field source, Show toggles, line density and zoom; one info popover holds the field details."
+    },
+    {
+      "base_commit": "4ed1fcd6738b40750fb2df870c917b49d660cd4e",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "08a95471d0d887e9fe9e1f2b1b5203c778e0f41ac3967f6d328d6d189aa8e832",
+      "reason": "Let a host render the zoom controls into its own slot (the solved-field dock) through a portal instead of over the plot."
+    },
+    {
+      "base_commit": "4ed1fcd6738b40750fb2df870c917b49d660cd4e",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "66a9c34f66b1b2b54844ff7c2289de641e58646f40832086bc5678fa1f41f6c8",
+      "reason": "Style the control dock, an upward Show menu for narrow viewers, the info popover's field details, and move the |B| scale up now that the canvas corners are free."
+    },
+    {
+      "base_commit": "4ed1fcd6738b40750fb2df870c917b49d660cd4e",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "1f9eb359c7cd6c3641b86f395be0877de130106141114629ca4de241a9dab29c",
+      "reason": "Check the dock layout, the zoom portal, the Show menu and the info popover in place of the floating controls."
+    },
+    {
+      "base_commit": "4ed1fcd6738b40750fb2df870c917b49d660cd4e",
+      "path": "frontend/scripts/test-public-boundary.mjs",
+      "source_sha256": "f73074a8e8cf1d6926d06274f9684120d673814623f18c66279f378b3b3fde29",
+      "reason": "Allow react-dom, the package behind react-dom/client, for createPortal."
     }
   ]
 }

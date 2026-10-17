@@ -6,6 +6,7 @@ import {
   type CSSProperties,
   type PointerEvent as ReactPointerEvent,
 } from 'react';
+import { createPortal } from 'react-dom';
 
 import {
   airgapHarmonic,
@@ -524,6 +525,7 @@ export function FieldResultPlot({
   onViewportScaleSettled,
   overlay = null,
   fieldAxes = null,
+  navigationSlot = null,
 }: {
   plot?: PublicFieldLinePlot | null;
   raster?: FieldResultRaster | null;
@@ -558,6 +560,8 @@ export function FieldResultPlot({
   onViewportScaleSettled?: (scale: number) => void;
   overlay?: FieldLineOverlay | null;
   fieldAxes?: FieldAxesOptions | null;
+  /** Render the zoom controls here instead of over the plot (the solved-field viewer's control dock). */
+  navigationSlot?: HTMLElement | null;
 }) {
   const navigation = useViewportNavigation();
   const sourcePlot = highResolutionPlot ?? plot;
@@ -1104,12 +1108,17 @@ export function FieldResultPlot({
             </g>
           </svg>}
         </div>
-        <ViewportNavigationControls
-          scale={navigation.scale}
-          onZoomIn={navigation.zoomIn}
-          onZoomOut={navigation.zoomOut}
-          onReset={navigation.reset}
-        />
+        {(() => {
+          const zoomControls = (
+            <ViewportNavigationControls
+              scale={navigation.scale}
+              onZoomIn={navigation.zoomIn}
+              onZoomOut={navigation.zoomOut}
+              onReset={navigation.reset}
+            />
+          );
+          return navigationSlot ? createPortal(zoomControls, navigationSlot) : zoomControls;
+        })()}
         {probe && probeDescription && (
           <div className={`public-field-probe is-${probeDescription.saturationTone}`} role="status">
             <header>
