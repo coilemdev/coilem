@@ -465,8 +465,8 @@
     },
     {
       "path": "backend/public_field_playback.py",
-      "bytes": 26474,
-      "sha256": "548d90598572c72f9fac405f47688c88b8c6009425cc7ec3a648b418d7e38211"
+      "bytes": 26926,
+      "sha256": "e61142f5092a2b244facccf3b56ccccc5bdf0f3f8802073deeec4220278a6dc1"
     },
     {
       "path": "backend/public_field_playback_contract.py",
@@ -550,8 +550,8 @@
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 41902,
-      "sha256": "d84c691e311762ea039c906755ee98e53269dc548669dd0a6ccd4371cb5e502e"
+      "bytes": 43098,
+      "sha256": "39efa404a3410b8a17c8023ceaa567566ab53482d1d1711b3b48b81034df1702"
     },
     {
       "path": "backend/solver/__init__.py",
@@ -6450,8 +6450,8 @@
     },
     {
       "path": "tests/test_public_field_playback.py",
-      "bytes": 12831,
-      "sha256": "068d919cfa2fe96f4ae6c91d40afb14aa90d0d630c8eb847da272e2f5def812e"
+      "bytes": 14768,
+      "sha256": "a2e2f7a8ed27f10376f83e3ef920b95f57cb5894ff7521830b796547da7f6649"
     },
     {
       "path": "tests/test_public_report_exports.py",
@@ -6525,8 +6525,8 @@
     },
     {
       "path": "tests/test_solve_workspace.py",
-      "bytes": 22220,
-      "sha256": "db3ad88a797164357e4bcf96ca6b3e89438c2b00c1fe4c15263439dcc5752961"
+      "bytes": 22702,
+      "sha256": "3dd440510fbe3540f0151fd68e8e15fef946a638f30de2f5382343afb6445025"
     },
     {
       "path": "tests/test_sweep_planning.py",
@@ -9022,6 +9022,30 @@
       "path": "backend/field_lines.py",
       "source_sha256": "ddde2f12c118374ca7048a9c190502ac838bfdb48a4d148729e9a68f78be41c9",
       "reason": "Compute element B, contour levels and contour segments with numpy, bit-identical to the per-triangle loops, which remain for inputs numpy cannot match exactly (#38 lever 4)."
+    },
+    {
+      "base_commit": "c03264350df0005e935ba3739396b1637a603939",
+      "path": "backend/public_field_playback.py",
+      "source_sha256": "548d90598572c72f9fac405f47688c88b8c6009425cc7ec3a648b418d7e38211",
+      "reason": "Reuse a frame's view geometry and drawable triangles for its loaded composition instead of building them twice (#38 lever 3)."
+    },
+    {
+      "base_commit": "c03264350df0005e935ba3739396b1637a603939",
+      "path": "backend/solve_workspace.py",
+      "source_sha256": "d84c691e311762ea039c906755ee98e53269dc548669dd0a6ccd4371cb5e502e",
+      "reason": "Hash each retained artifact while copying it, so saving reads it once instead of three times (#38 lever 3)."
+    },
+    {
+      "base_commit": "c03264350df0005e935ba3739396b1637a603939",
+      "path": "tests/test_public_field_playback.py",
+      "source_sha256": "068d919cfa2fe96f4ae6c91d40afb14aa90d0d630c8eb847da272e2f5def812e",
+      "reason": "Test that a composition renders identically from the frame's shared geometry, and that each plot's triangles are built once (#38 lever 3)."
+    },
+    {
+      "base_commit": "c03264350df0005e935ba3739396b1637a603939",
+      "path": "tests/test_solve_workspace.py",
+      "source_sha256": "db3ad88a797164357e4bcf96ca6b3e89438c2b00c1fe4c15263439dcc5752961",
+      "reason": "Test that a retained artifact's name and record carry the hash of its bytes and leave no temporary copy (#38 lever 3)."
     },
     {
       "base_commit": "195753cb54f40921c0106a6794bef1684b6df2dc",

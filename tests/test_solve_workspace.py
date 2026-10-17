@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import shutil
@@ -326,6 +327,12 @@ def test_complete_run_is_atomic_replayable_and_integrity_bound(
     retained = loaded["result"]["field_line_frames"][0]["field_frame_artifact"]
     assert retained["artifact_id"].startswith(RUN_ARTIFACT_PREFIX)
     assert retained["relative_path"].startswith("artifacts/")
+    # The name and the record carry the hash of the bytes stored, and no
+    # temporary copy is left behind.
+    record = next(item for item in loaded["manifest"]["artifacts"] if item["relative_path"] == retained["relative_path"])
+    assert record["sha256"] == hashlib.sha256(b"durable-field-frame").hexdigest()
+    assert retained["relative_path"].startswith(f"artifacts/0001-{record['sha256'][:12]}")
+    assert not list((location.path / "artifacts").glob(".*"))
     monkeypatch.setenv("COILEM_USER_DATA_ROOT", str(tmp_path / "data"))
     assert resolve_run_artifact_id(retained["artifact_id"]).read_bytes() == (b"durable-field-frame")
 
