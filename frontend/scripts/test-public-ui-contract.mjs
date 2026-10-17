@@ -807,7 +807,7 @@ assert.match(fieldResultSource, /Waiting for samples|Completed Magneto2D solutio
 assert.match(fieldResultSource, /visibleLayerLabel/);
 assert.match(fieldResultSource, /probeEnabled\?: boolean/);
 assert.match(fieldResultSource, /\|\| !probeEnabled/);
-assert.match(solvedFieldSource, /probeEnabled=\{!playing && Boolean\(exactVectorPlot\)\}/);
+assert.match(solvedFieldSource, /probeEnabled=\{!playing && Boolean\(exactVectorPlot\) && !overlayActive\}/);
 assert.match(solvedFieldSource, /disabled=\{!densityAdjustable\}/);
 assert.match(solvedFieldSource, /Playback uses medium field-line density/);
 assert.match(materialWorkspaceSource, /<MaterialCurveChart key=\{model\.id\} model=\{model\}/);
@@ -895,7 +895,42 @@ assert.doesNotMatch(solvedFieldSource, /className="public-field-loading-visual"/
 assert.doesNotMatch(styleSource, /public-field-loading-spin/);
 assert.doesNotMatch(solvedFieldSource, /className="public-field-physics-note"/);
 assert.match(solvedFieldSource, /showMagnets=\{showMagnets\}/);
-assert.match(solvedFieldSource, /magnetReference=\{source === 'armature'\}/);
+assert.match(solvedFieldSource, /magnetReference=\{source === 'armature' && !overlayActive\}/);
+// Stator + PM (#120): the PM-only field's lines in cyan over the stator field,
+// with no flux-density map, matching arrows and a lines legend.
+assert.match(solvedFieldSource, />Stator \+ PM</);
+assert.match(solvedFieldSource, /aria-pressed=\{view === 'stator_pm'\}/);
+assert.match(solvedFieldSource, /aria-pressed=\{view === 'armature'\}/);
+assert.match(solvedFieldSource, /const source: FieldSource = overlayActive \? 'armature' : view/);
+assert.match(solvedFieldSource, /nearestFrame\(resultantFrames, descriptor\.angle_deg\)/);
+assert.match(solvedFieldSource, /OVERLAY_ANGLE_TOLERANCE_DEG/);
+assert.match(solvedFieldSource, /showHeatmap=\{showHeatmap && !overlayActive\}/);
+assert.match(solvedFieldSource, /Off in Stator \+ PM: one \|B\| map cannot belong to both fields/);
+assert.match(solvedFieldSource, /overlay=\{fieldLineOverlay\}/);
+assert.match(solvedFieldSource, /loadVisualFrame\(nextOverlay, 'pm', false\)/);
+assert.match(solvedFieldSource, /if \(heldOverlayRaster\) shown\.add\(heldOverlayRaster\)/);
+assert.match(fieldResultSource, /const OVERLAY_LINE_COLOR = '#5ed3f3'/);
+assert.match(fieldResultSource, /globalCompositeOperation = 'source-in'/);
+assert.match(fieldResultSource, /className="public-field-direction-cue is-overlay"/);
+assert.match(fieldResultSource, /className="public-field-lines-legend"/);
+assert.match(fieldResultSource, /Separate solves: in saturated steel the resultant is not their sum\./);
+assert.match(styleSource, /\.public-field-direction-cue\.is-overlay path \{/);
+assert.match(styleSource, /\.public-solved-field-canvas \.public-field-lines-legend \{[^}]*position: absolute/);
+assert.match(styleSource, /@container \(max-width: 760px\) \{\s*\.public-field-toolbar-groups \{ grid-column: 1 \/ -1; grid-row: 2;/);
+// Field axes: each field's working-harmonic poles, the stator lead and the caption.
+assert.match(solvedFieldSource, /fieldAxes=\{overlayActive \? CLOCKWISE_FIELD_AXES : null\}/);
+assert.match(solvedFieldSource, /setShowPoleLabels\(true\);\s*setFieldLineDensity\('low'\);/);
+assert.match(fieldResultSource, /airgapHarmonic\(statorPolarityProfile, axisPolePairs\)/);
+assert.match(fieldResultSource, /rotorNorthAxisDeg\(magnetOverlay, axisPolePairs\)/);
+assert.match(fieldResultSource, /className="public-field-axis is-stator"/);
+assert.match(fieldResultSource, /className="public-field-axis is-pm"/);
+assert.match(fieldResultSource, /Stator \{leadElecDeg >= 0 \? 'leads' : 'lags'\} magnets by/);
+assert.match(fieldResultSource, /The magnets are pulled after the stator field\./);
+assert.match(fieldResultSource, /-pole-pair part gives no steady torque/);
+assert.match(fieldResultSource, /<p className="public-field-axes-caption">/);
+assert.match(styleSource, /\.public-solved-field-canvas \.public-field-axes-caption \{ position: absolute; z-index: 7; left: 50%; bottom: 8px;/);
+assert.match(fieldResultSource, /strongestAirgapPolePairs\(statorPolarityProfile, axisPolePairs \* 4\)/);
+assert.match(styleSource, /\.public-field-axis\.is-stator \{ stroke: #ffb547;/);
 assert.match(solvedFieldSource, /showPolarityLegend=\{source === 'armature' && showPoleLabels\}/);
 assert.match(solvedFieldSource, /showStatorPolarity=\{source === 'armature' && showPoleLabels\}/);
 assert.match(solvedFieldSource, /nearestAirgapProfile/);
@@ -1501,6 +1536,16 @@ assert.match(workspaceSource, /disabled: !available/);
 assert.match(workspaceSource, /Coils per Phase/);
 assert.match(workspaceSource, /set\('winding', 'layers', 'winding'\)\(Number\(value\)\)/);
 assert.match(appSource, /parallelPathsDividing\(layerCoilsPerPhase, config\.winding\.parallel_paths\)/);
+// Design errors keep their field so the parallel-paths check reads in plain words
+// and the section holding the field shows a warning instead of a green check.
+assert.match(appSource, /const error = errorDetails \? designErrorText\(errorDetails, config\) : null;/);
+assert.match(appSource, /setPreviewNetworkFailed\(requestError instanceof TypeError\);\s*setError\(requestFailure\(requestError\)\);/);
+assert.match(workspaceSource, /const errorSection = error \? designErrorSection\(errorDetails\) : null;/);
+assert.match(workspaceSource, /className=\{`param-group-header \$\{attention \? 'status-attention' : 'status-complete'\}/);
+assert.match(workspaceSource, /<StatusGlyph tone=\{attention \? 'warning' : 'good'\} \/>/);
+for (const section of ['stator', 'rotor', 'advanced', 'winding', 'materials']) {
+  assert.ok(workspaceSource.includes(`<ParameterSectionBlock id="${section}" attention={errorSection === '${section}'}`), section);
+}
 assert.match(appSource, /layers: 'Winding layers'/);
 
 // Guided setup coach: landing entry, data-guide anchors, and step coach.

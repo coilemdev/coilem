@@ -31,7 +31,11 @@ from backend.models import (
     WindingCoil,
     WindingSlot,
 )
-from backend.preview_from_ir import append_winding_symbols, preview_regions_from_geometry_ir
+from backend.preview_from_ir import (
+    append_winding_symbols,
+    coil_side_centres,
+    preview_regions_from_geometry_ir,
+)
 from backend.qualification import classify_qualification
 from backend.winding_utils import (
     concentrated_slot_layer_assignments,
@@ -154,7 +158,7 @@ def generate_preview(config: MotorConfig) -> GeometryPreview:
             slot_pitch_rad=tooth_pitch_rad,
             origin_x=origin_x,
             origin_y=origin_y,
-            layer_split=geometry_ir.metadata.get("slot_layer_split") if geometry_ir is not None else None,
+            split_side_centres=coil_side_centres(geometry_ir) if geometry_ir is not None else None,
         )
 
     # ============================================================================
