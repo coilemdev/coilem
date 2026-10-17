@@ -5180,8 +5180,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 125399,
-      "sha256": "1bc2d14cf62d1cb2e2247b1c8e4f8b33b52cb24c2604fe1c24a9f946199dbe7c"
+      "bytes": 126440,
+      "sha256": "52b4ae4bdd1f0c7c283139b75ce1c4550a7f7b1b422fd1f53e0aae8158317854"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5580,8 +5580,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 203932,
-      "sha256": "56b48b2ff2c1c68a459b1432a51047ae9789f47a17665da0283c2dc09596e484"
+      "bytes": 204517,
+      "sha256": "e633092362cb7619a150c3d84098fc70bcaee44fcc96d99a4aa037df52b76de8"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5605,8 +5605,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 47400,
-      "sha256": "68a2f20bbb557c39008eca9d79ddb672091eeb2856b55cf967f264a2a2712dc1"
+      "bytes": 47768,
+      "sha256": "20a89d4000b76c1b80121e4e12a002f4ba264a952865c8a298e10033db40b395"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -5635,8 +5635,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 58057,
-      "sha256": "07506e4557b0832101162f411dd8e83634f4f5e1f12aec7473d5e38cea49647a"
+      "bytes": 58128,
+      "sha256": "3349a52de5425d93a85d134e728a91e4f9c2ef05399102a8138b8a64a9430c06"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -5910,8 +5910,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 248218,
-      "sha256": "7fe55fd6edd32b0d394e97171689a347f96f0dad8dfb6d99b55b38aa5e3e2b08"
+      "bytes": 248358,
+      "sha256": "8047e475c364c1be52fbcd38d5c506e6f33bff605d9e1e3fe2ffa52d9dc92f17"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -9329,6 +9329,36 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "3d8ab25ae069d63c4af3501fd1f26f2a55649e196136d4eab58067fcd250e495",
       "reason": "Cover the panel title bar and its tab styling."
+    },
+    {
+      "base_commit": "a93c06df73460ca0519f96a446e56aed240a88f1",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "56b48b2ff2c1c68a459b1432a51047ae9789f47a17665da0283c2dc09596e484",
+      "reason": "Give every bottom panel one level of tabs and a fixed readout, zoom and fullscreen at the title bar's end."
+    },
+    {
+      "base_commit": "a93c06df73460ca0519f96a446e56aed240a88f1",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "68a2f20bbb557c39008eca9d79ddb672091eeb2856b55cf967f264a2a2712dc1",
+      "reason": "Let the 2D canvas put its zoom controls in the panel's title bar."
+    },
+    {
+      "base_commit": "a93c06df73460ca0519f96a446e56aed240a88f1",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "07506e4557b0832101162f411dd8e83634f4f5e1f12aec7473d5e38cea49647a",
+      "reason": "Move the field view's zoom controls into its title bar beside fullscreen."
+    },
+    {
+      "base_commit": "a93c06df73460ca0519f96a446e56aed240a88f1",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "7fe55fd6edd32b0d394e97171689a347f96f0dad8dfb6d99b55b38aa5e3e2b08",
+      "reason": "Style the title bar's end group and drop the floating fullscreen offsets."
+    },
+    {
+      "base_commit": "a93c06df73460ca0519f96a446e56aed240a88f1",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "1bc2d14cf62d1cb2e2247b1c8e4f8b33b52cb24c2604fe1c24a9f946199dbe7c",
+      "reason": "Cover the one-level tabs and the title bar's end group."
     }
   ]
 }

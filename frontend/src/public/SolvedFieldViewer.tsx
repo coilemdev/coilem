@@ -1271,7 +1271,10 @@ export function SolvedFieldViewer({
       <div className="public-field-dock">
         <div className="public-dock-strip">
           {viewControls}
-          {expandControl}
+          <div className="public-dock-strip-end">
+            <span className="public-field-zoom-slot" ref={setZoomSlot} />
+            {expandControl}
+          </div>
         </div>
         <div className="public-field-playback">
           <button
@@ -1383,7 +1386,6 @@ export function SolvedFieldViewer({
             </div>
           </details>
           {showFieldLines && renderDensityControl(true)}
-          <span className="public-field-zoom-slot" ref={setZoomSlot} />
         </div>
       </div>
     </section>

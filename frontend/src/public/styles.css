@@ -980,8 +980,6 @@ body {
 .public-viewport-expand:hover,
 .public-viewport-expand[aria-pressed="true"] { border-color: var(--border-accent); color: var(--text-accent); background: rgba(245, 158, 11, .1); }
 .public-viewport-expand:focus-visible { outline: 2px solid rgba(103, 232, 249, .68); outline-offset: 2px; }
-.public-motor-viewport.is-expandable .public-viewport-nav-controls { right: 61px; }
-.public-motor-viewport.is-expandable .public-3d-hint { right: 61px; }
 .public-viewport-stage { position: absolute; inset: 0; z-index: 1; overflow: hidden; transition: opacity 180ms linear; }
 .public-viewport-stage-2d { z-index: 2; }
 .public-viewport-stage-3d { z-index: 3; }
@@ -1807,9 +1805,7 @@ body {
 .public-field-layer-menu > summary::-webkit-details-marker { display: none; }
 .public-field-layer-menu[open] > summary { border-color: var(--border-accent); color: var(--text-accent); }
 .public-field-layer-menu > .public-field-layer-controls { position: absolute; z-index: 20; bottom: calc(100% + 8px); left: 0; display: grid; min-width: 172px; padding: 6px; border: 1px solid var(--border-default); border-radius: 9px; background: rgba(10,12,17,.98); box-shadow: var(--shadow-md); }
-.public-field-zoom-slot .public-viewport-nav-controls { margin-left: auto; }
 .public-field-zoom-slot { display: contents; }
-.public-field-zoom-slot .public-viewport-nav-controls { position: static; padding: 2px; border-color: rgba(148,163,184,.14); background: rgba(10,12,17,.62); }
 .public-field-transport-play { width: 34px; height: 34px; border: 1px solid var(--border-default); border-radius: 8px; color: var(--text-primary); background: var(--bg-surface-2); font-size: 11px; }
 .public-field-transport-play:disabled { color: var(--text-disabled); cursor: not-allowed; }
 .public-field-playback input { width: 100%; accent-color: var(--accent-amber); }
@@ -2019,15 +2015,6 @@ body {
   font-size: 13px;
 }
 
-/* Zoom, fit, and fullscreen read as one upper-right instrument. */
-.public-motor-viewport.is-expandable .public-viewport-nav-controls {
-  right: 50px;
-  border-right: 0;
-  border-radius: 9px 0 0 9px;
-}
-.public-motor-viewport.is-expandable .public-viewport-expand {
-  border-radius: 0 9px 9px 0;
-}
 
 /* View, overlay, polarity, legend, and playback controls share one lower
    toolbar instead of appearing as unrelated floating pills. */
@@ -4476,9 +4463,6 @@ body {
 .public-motor-viewport .viewport-bottom-bar .public-playback span,
 .public-motor-viewport .viewport-bottom-bar .public-explode-controls output { font-size: 13px; }
 .public-motor-viewport .viewport-bottom-bar .viewport-cad-status { font-size: 12px; }
-.public-motor-viewport .public-dock-strip > .viewport-cad-status { order: 2; margin-left: auto; }
-.public-motor-viewport .public-dock-strip > .public-viewport-expand.is-inline { order: 3; }
-.public-motor-viewport .public-dock-strip:has(> .viewport-cad-status) > .public-viewport-expand.is-inline { margin-left: 0; }
 /* Each bottom panel opens with a title bar: its view tabs at the left, the
    readout and fullscreen at the right. The selected tab is underlined, so it
    reads apart from the on/off toggles in the panel below. */
@@ -4489,7 +4473,7 @@ body {
 .public-motor-viewport .public-dock-strip .public-primary-view-modes button,
 .public-dock-strip .public-solve-view-switch button { position: relative; min-width: 0; height: auto; min-height: 44px; padding: 0 14px; border: 0; border-radius: 0; color: var(--text-muted); background: transparent; font: 600 13px var(--font-mono); }
 .public-motor-viewport .public-dock-strip .public-primary-view-modes button:hover,
-.public-dock-strip .public-solve-view-switch button:hover:not(:disabled) { color: var(--text-secondary); background: rgba(148,163,184,.06); }
+.public-dock-strip .public-solve-view-switch button:hover:not(:disabled) { color: var(--text-secondary); background: transparent; }
 .public-motor-viewport .public-dock-strip .public-primary-view-modes button[aria-pressed="true"],
 .public-dock-strip .public-solve-view-switch button[aria-pressed="true"] { color: var(--text-accent); background: linear-gradient(to top, rgba(245,158,11,.12), transparent); }
 .public-dock-strip .public-primary-view-modes button[aria-pressed="true"]::after,
@@ -4498,4 +4482,16 @@ body {
 @container (max-width: 680px) {
   .public-motor-viewport .public-dock-strip .public-primary-view-modes button,
   .public-dock-strip .public-solve-view-switch button { padding: 0 9px; font-size: 12px; }
+}
+/* The title bar's right end is the same on every panel: the readout as plain
+   text, then zoom and fit, then fullscreen. The canvas corners stay free. */
+.public-dock-strip-end { display: flex; flex: 0 0 auto; align-items: center; gap: 8px; margin-left: auto; }
+.public-dock-strip-end .public-viewport-nav-controls { position: static; padding: 2px; border-color: rgba(148,163,184,.14); background: rgba(10,12,17,.62); box-shadow: none; }
+.public-dock-nav-slot { display: contents; }
+.public-motor-viewport .public-dock-strip-end .viewport-cad-status { margin: 0; padding: 0; border: 0; color: var(--text-muted); background: transparent; white-space: nowrap; }
+.public-dock-reset-view { height: 33px; padding: 0 11px; border: 1px solid rgba(148,163,184,.14); border-radius: 9px; color: var(--text-secondary); background: rgba(10,12,17,.62); font: 700 11px var(--font-mono); cursor: pointer; }
+.public-dock-reset-view:hover { color: var(--text-accent); background: rgba(245,158,11,.12); }
+.public-motor-viewport .public-mesh-quality-legend { top: 14px; }
+@container (max-width: 560px) {
+  .public-dock-strip-end .viewport-cad-status { display: none; }
 }

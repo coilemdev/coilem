@@ -788,17 +788,25 @@ assert.match(workspaceSource, /className="viewport-dock-resize"\s*role="separato
 assert.match(workspaceSource, /setDockUserHeight\(clampDockHeight\(drag\.startHeight \+ drag\.startY - event\.clientY\)\)/);
 assert.match(workspaceSource, /onDoubleClick=\{\(\) => setDockUserHeight\(null\)\}/);
 assert.match(workspaceSource, /const dockHeight = dockUserHeight \?\? dockFitHeight;/);
-// The Solve page's view tabs and fullscreen sit on a strip at the top of each
-// bottom panel: the Geometry and Mesh viewports' section and the field dock.
+// Every bottom panel opens with a title bar of one level of tabs: the Solve
+// page's Geometry / Mesh / Field solution, or Design's motor views. Its right
+// end is the same everywhere: readout, zoom, fullscreen.
 assert.doesNotMatch(workspaceSource, /\{solveView !== 'field' && solveViewportSwitch\}/);
-assert.match(workspaceSource, /dockStrip=\{\(\s*<>\s*\{solveViewportSwitch\}\s*<ViewportExpandButton/);
-assert.match(workspaceSource, /\{titleBar && <div className="public-dock-strip">\{titleBar\}\{cadStatus\}<\/div>\}/);
-assert.match(workspaceSource, /\{!titleBar && cadStatus\}/);
-// On Design the motor view tabs are the panel's title bar; on the Solve page
-// they stay with the controls under the Solve tabs.
+assert.match(workspaceSource, /dockStrip=\{solveViewportSwitch\}\s*isExpanded=\{solveViewportExpanded\}/);
 assert.match(workspaceSource, /const titleBar = dockStrip \?\? primaryViewModes;/);
-assert.match(workspaceSource, /\{dockStrip && primaryViewModes\}/);
-assert.match(solvedFieldSource, /<div className="public-field-dock">\s*<div className="public-dock-strip">\s*\{viewControls\}\s*\{expandControl\}\s*<\/div>/);
+assert.match(workspaceSource, /<div className="public-dock-strip">\s*\{titleBar\}\s*<div className="public-dock-strip-end">\s*\{cadStatus\}\s*<span className="public-dock-nav-slot" ref=\{setNavigationSlot\} \/>/);
+assert.match(workspaceSource, /\{onExpandToggle && <ViewportExpandButton expanded=\{isExpanded\} inline onToggle=\{onExpandToggle\} \/>\}/);
+assert.match(workspaceSource, /\{!titleBar && cadStatus\}/);
+// Solve's Geometry tab is the 2D section that gets solved: no second row of view tabs.
+assert.doesNotMatch(workspaceSource, /\{dockStrip && primaryViewModes\}/);
+assert.doesNotMatch(workspaceSource, /is-expandable/);
+assert.match(workspaceSource, /navigationSlot=\{navigationSlot\}/);
+assert.match(motorCanvasSource, /return navigationSlot \? createPortal\(zoomControls, navigationSlot\) : zoomControls;/);
+assert.match(workspaceSource, /\.toLocaleString\('en-US'\)\} elements\{meshQualitySummary \? ` · min q \$\{formatNumber\(meshQualitySummary\.minimum, 3\)\}` : ''\}/);
+assert.match(solvedFieldSource, /<div className="public-dock-strip-end">\s*<span className="public-field-zoom-slot" ref=\{setZoomSlot\} \/>\s*\{expandControl\}/);
+assert.match(styleSource, /\.public-dock-strip-end \{ display: flex;[^}]*margin-left: auto; \}/);
+assert.match(styleSource, /\.public-motor-viewport \.public-dock-strip-end \.viewport-cad-status \{[^}]*border: 0;[^}]*background: transparent;/);
+assert.match(solvedFieldSource, /<div className="public-field-dock">\s*<div className="public-dock-strip">\s*\{viewControls\}\s*<div className="public-dock-strip-end">/);
 assert.doesNotMatch(solvedFieldSource, /public-solved-field-toolbar/);
 assert.match(styleSource, /\.public-solved-field-viewer \{ display: grid; grid-template-rows: minmax\(0,1fr\) auto;/);
 assert.match(styleSource, /\.public-motor-viewport \.public-viewport-stage \{ inset: 0 0 var\(--viewport-dock-height\) 0; \}/);
@@ -927,17 +935,17 @@ assert.match(fieldResultSource, /element_by_t/);
 assert.match(solvedFieldSource, /viewControls: ReactNode/);
 assert.match(solvedFieldSource, /\{viewControls\}/);
 // Controls sit in a dock below the motor (playback, then field source, overlays,
-// line density, zoom and field details), so nothing floats over the field.
+// line density and field details; zoom is in its title bar), so nothing floats over the field.
 assert.match(solvedFieldSource, /className="public-field-dock-controls"[\s\S]*?<details className="public-field-layer-menu">\s*<summary>Show<\/summary>/);
 assert.match(styleSource, /\.public-field-layer-menu > \.public-field-layer-controls \{ position: absolute; z-index: 20; bottom: calc\(100% \+ 8px\);/);
 assert.match(styleSource, /@container \(max-width: 1040px\) \{\s*\.public-field-control-cluster > span \{ display: none; \}\s*\.public-field-overlay-cluster \{ display: none; \}\s*\.public-field-layer-menu \{ display: block; \}/);
 assert.match(solvedFieldSource, /<div className="public-field-dock">\s*<div className="public-dock-strip">[\s\S]*?<div className="public-field-playback">[\s\S]*?<div className="public-field-dock-controls" role="toolbar" aria-label="Field display">/);
-assert.match(solvedFieldSource, /className="public-field-dock-controls"[\s\S]*?<span>Field<\/span>[\s\S]*?<span>Show<\/span>[\s\S]*?renderDensityControl\(true\)[\s\S]*?<span className="public-field-zoom-slot" ref=\{setZoomSlot\} \/>/);
+assert.match(solvedFieldSource, /className="public-field-dock-controls"[\s\S]*?<span>Field<\/span>[\s\S]*?<span>Show<\/span>[\s\S]*?renderDensityControl\(true\)/);
 assert.ok(solvedFieldSource.indexOf('className="public-field-summary-panel"') > solvedFieldSource.indexOf('<div className="public-field-dock">'), 'field details live in the dock, not on the canvas');
 assert.match(solvedFieldSource, /navigationSlot=\{zoomSlot\}/);
 assert.match(fieldResultSource, /return navigationSlot \? createPortal\(zoomControls, navigationSlot\) : zoomControls;/);
 assert.match(styleSource, /\.public-field-dock-controls \{ display: flex; flex-wrap: wrap;/);
-assert.match(styleSource, /\.public-field-zoom-slot \.public-viewport-nav-controls \{ position: static;/);
+assert.match(styleSource, /\.public-dock-strip-end \.public-viewport-nav-controls \{ position: static;/);
 assert.match(styleSource, /@container \(max-width: 720px\) \{[^@]*\.public-field-zoom-slot \.public-viewport-nav-controls > span \{ display: none; \}/);
 assert.match(solvedFieldSource, /className="public-field-playback-meta"/);
 assert.match(solvedFieldSource, /className="public-field-physics-info"/);

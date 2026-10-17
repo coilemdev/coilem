@@ -1603,6 +1603,8 @@ function ViewportChrome({
   const [showMeshNavigationHint, setShowMeshNavigationHint] = useState(false);
   const viewportRef = useRef<HTMLElement | null>(null);
   const bottomBarRef = useRef<HTMLDivElement | null>(null);
+  // The 2D canvas puts its zoom controls in the title bar, beside fullscreen.
+  const [navigationSlot, setNavigationSlot] = useState<HTMLSpanElement | null>(null);
   // The section fits its controls until it is dragged; double-click returns to fitting.
   const [dockFitHeight, setDockFitHeight] = useState(dockStrip || mode === 'geometry' ? VIEWPORT_DOCK_DEFAULT_HEIGHT_WITH_STRIP : VIEWPORT_DOCK_DEFAULT_HEIGHT);
   const [dockUserHeight, setDockUserHeight] = useState<number | null>(null);
@@ -1816,12 +1818,19 @@ function ViewportChrome({
   }, [focusedMeshElementIndex, mesh, meshQualitySummary, mode]);
   const activeMeshElement = hoveredMeshElement ?? focusedMeshElement;
 
-  // On the Solve page the readout rides on the tabs strip, saving a line of controls.
-  const cadStatus = mode === 'geometry' && viewportMode !== 'materials' ? (
+  // Every panel's title bar ends with the same readout: regions for the
+  // geometry views, element count and worst quality for the mesh.
+  const cadStatus = mode === 'mesh' ? (
+    mesh ? (
+      <div className="viewport-cad-status">
+        {mesh.triangles.length.toLocaleString('en-US')} elements{meshQualitySummary ? ` · min q ${formatNumber(meshQualitySummary.minimum, 3)}` : ''}
+      </div>
+    ) : null
+  ) : (
     <div className="viewport-cad-status">
       {geometry?.regions.length ?? 0} regions · {geometry ? formatNumber(geometry.generation_time_ms, 0) : '—'} ms
     </div>
-  ) : null;
+  );
   const primaryViewModes = mode === 'geometry' ? (
     <span className="vc-group public-primary-view-modes" role="group" aria-label="Motor view mode">
       {(['2d', '3d', 'materials', 'layout'] as const).map((viewMode) => {
@@ -1840,20 +1849,20 @@ function ViewportChrome({
       })}
     </span>
   ) : null;
-  // The panel's title bar holds the page's own tabs on the Solve page and the
-  // motor view tabs on Design, so the selected view reads apart from the toggles.
+  // The panel's title bar holds one level of tabs: the page's own on the Solve
+  // page, where Geometry is the 2D section that gets solved, and the motor view
+  // tabs on Design. Its right end is the same everywhere: readout, zoom, fullscreen.
   const titleBar = dockStrip ?? primaryViewModes;
 
   return (
     <section
       ref={viewportRef}
-      className={`viewport viewport-cad viewport-cad-grid public-motor-viewport${onExpandToggle ? ' is-expandable' : ''}${viewportMode === 'materials' ? ' is-materials-view' : ''}${showMaterialAssignment ? ' is-material-assignment' : ''}${showMaterialBehavior ? ' is-material-behavior' : ''}${dockResizing ? ' is-dock-resizing' : ''}`}
+      className={`viewport viewport-cad viewport-cad-grid public-motor-viewport${viewportMode === 'materials' ? ' is-materials-view' : ''}${showMaterialAssignment ? ' is-material-assignment' : ''}${showMaterialBehavior ? ' is-material-behavior' : ''}${dockResizing ? ' is-dock-resizing' : ''}`}
       style={{ ['--viewport-dock-height' as never]: `${dockHeight}px` }}
     >
       {showConfigurationLabel && (
         <div className="viewport-label viewport-label-cad">{config.topology} {config.rotor.pole_count}p/{config.stator.slot_count}s</div>
       )}
-      {onExpandToggle && <ViewportExpandButton expanded={isExpanded} onToggle={onExpandToggle} />}
       {showDimensionReadout && (
         <DimensionReadout
           annotations={dimensionAnnotations}
@@ -1925,6 +1934,7 @@ function ViewportChrome({
                   element?.index === focusedMeshElementIndex ? null : element?.index ?? null,
                 )
                 : undefined}
+              navigationSlot={navigationSlot}
             />
           )}
         </div>
@@ -2049,7 +2059,19 @@ function ViewportChrome({
         onPointerDown={handleDockResizeStart}
       />
       <div ref={bottomBarRef} className={`viewport-bottom-bar${titleBar ? ' has-dock-strip' : ''}`}>
-        {titleBar && <div className="public-dock-strip">{titleBar}{cadStatus}</div>}
+        {titleBar && (
+          <div className="public-dock-strip">
+            {titleBar}
+            <div className="public-dock-strip-end">
+              {cadStatus}
+              <span className="public-dock-nav-slot" ref={setNavigationSlot} />
+              {viewportMode === '3d' && (
+                <button type="button" className="public-dock-reset-view" onClick={() => setThreeResetSignal((value) => value + 1)}>Reset view</button>
+              )}
+              {onExpandToggle && <ViewportExpandButton expanded={isExpanded} inline onToggle={onExpandToggle} />}
+            </div>
+          </div>
+        )}
         <div className="viewport-controls viewport-controls-cad" aria-label="Motor view and overlay controls">
           {mode === 'mesh' && (
             <span className="vc-group public-mesh-inspection-controls" role="group" aria-label="Mesh inspection controls">
@@ -2094,7 +2116,6 @@ function ViewportChrome({
               </button>
             </span>
           )}
-          {dockStrip && primaryViewModes}
           {viewportMode === 'materials' && mode === 'geometry' && (
             <span className="vc-group public-material-subview-controls" role="group" aria-label="Materials view mode">
               {([
@@ -2170,7 +2191,6 @@ function ViewportChrome({
           )}
           {viewportMode === '3d' && (
             <>
-              <span className="vc-group"><button type="button" onClick={() => setThreeResetSignal((value) => value + 1)}>Reset view</button></span>
               <span className="vc-group public-explode-controls">
                 <button
                   type="button"
@@ -3494,16 +3514,9 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               meshQuality={meshQuality}
               showConfigurationLabel={false}
               enableDesignIntro={false}
-              dockStrip={(
-                <>
-                  {solveViewportSwitch}
-                  <ViewportExpandButton
-                    expanded={solveViewportExpanded}
-                    inline
-                    onToggle={() => setSolveViewportExpanded((expanded) => !expanded)}
-                  />
-                </>
-              )}
+              dockStrip={solveViewportSwitch}
+              isExpanded={solveViewportExpanded}
+              onExpandToggle={() => setSolveViewportExpanded((expanded) => !expanded)}
               meshDisplayMode={meshDisplayMode}
               showMeshEdges={showMeshEdges}
               meshQualitySummary={meshQualitySummary}

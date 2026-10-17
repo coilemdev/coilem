@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
+import { createPortal } from 'react-dom';
 
 import {
   buildDimensionAnnotations,
@@ -63,6 +64,8 @@ interface MotorCanvasProps {
   focusedMeshElementIndex?: number | null;
   onMeshElementHover?: (element: PublicMeshElementSelection | null) => void;
   onMeshElementSelect?: (element: PublicMeshElementSelection | null) => void;
+  /** Where the zoom controls go; without one they float over the canvas. */
+  navigationSlot?: HTMLElement | null;
 }
 
 /** 'none' = every overlay off, leaving the bare cross-section. */
@@ -1078,6 +1081,7 @@ export function MotorCanvas({
   focusedMeshElementIndex = null,
   onMeshElementHover,
   onMeshElementSelect,
+  navigationSlot = null,
 }: MotorCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const hitRegionsRef = useRef<HitRegion[]>([]);
@@ -1298,12 +1302,17 @@ export function MotorCanvas({
           onComponentSelect?.(componentAtPointer(event));
         }}
       />
-      <ViewportNavigationControls
-        scale={navigation.scale}
-        onZoomIn={navigation.zoomIn}
-        onZoomOut={navigation.zoomOut}
-        onReset={navigation.reset}
-      />
+      {(() => {
+        const zoomControls = (
+          <ViewportNavigationControls
+            scale={navigation.scale}
+            onZoomIn={navigation.zoomIn}
+            onZoomOut={navigation.zoomOut}
+            onReset={navigation.reset}
+          />
+        );
+        return navigationSlot ? createPortal(zoomControls, navigationSlot) : zoomControls;
+      })()}
     </div>
   );
 }
