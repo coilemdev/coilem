@@ -479,7 +479,7 @@ assert.match(styleSource, /\.public-waveform-readout \{ display: flex;/);
 // own stacking context is lifted while the menu is open.
 assert.match(workspaceSource, /\$\{designMenuOpen \? ' is-menu-open' : ''\}/);
 assert.match(styleSource, /\.public-coilem-shell \.public-coilem-topbar\.is-menu-open \{ z-index: 100; \}/);
-for (const [selector, zIndex] of [['.public-solve-view-switch', 30], ['.public-solved-field-toolbar', 40], ['.public-field-layer-menu', 50]]) {
+for (const [selector, zIndex] of [['.public-solve-view-switch', 30], ['.public-solved-field-toolbar', 40], ['.public-field-dock', 11]]) {
   const rule = styleSource.match(new RegExp(`${selector.replace(/[.]/g, '\\.')} \\{[^}]*z-index: (\\d+)`));
   assert.ok(rule && Number(rule[1]) === zIndex && Number(rule[1]) < 100, `${selector} stays below the open design menu`);
 }
@@ -828,10 +828,10 @@ assert.match(styleSource, /\.public-field-result-stator-pole\.is-south rect \{ f
 assert.match(styleSource, /\.public-field-result-pm-overlay\.is-reference \{ opacity: \.4; \}/);
 assert.match(styleSource, /\.public-field-result-stator-pole rect \{[^}]*stroke-width: \.16;[^}]*vector-effect: non-scaling-stroke;/s);
 assert.match(styleSource, /\.public-field-pole-legend \{/);
-assert.match(solvedFieldSource, /<details className="public-field-summary">[\s\S]*?<summary>Field details<\/summary>[\s\S]*?className="public-field-summary-panel"/);
-assert.doesNotMatch(solvedFieldSource, /<details className="public-field-summary" open/);
-assert.match(styleSource, /\.public-field-summary \{[^}]*position: absolute[^}]*left: 0;[^}]*pointer-events: auto;/s);
-assert.match(styleSource, /\.public-field-summary > summary \{[^}]*border-radius: 0 999px 999px 0;/s);
+// Field details share the playback row's one info popover with the composition note.
+assert.match(solvedFieldSource, /<details className="public-field-physics-info">\s*<summary aria-label="Field details" title="Field details">i<\/summary>\s*<div className="public-field-summary-panel">[\s\S]*?className="public-field-summary-note">PM-only and Stator-only are separate nonlinear solves/);
+assert.doesNotMatch(solvedFieldSource, /<details className="public-field-summary"/);
+assert.match(styleSource, /\.public-field-physics-info > \.public-field-summary-panel \{ position: absolute;[^}]*bottom: calc\(100% \+ 8px\);/s);
 assert.match(styleSource, /\.public-field-summary-panel \{[^}]*border-left: 2px solid var\(--accent-primary\)/s);
 assert.match(styleSource, /\.public-field-direction-cue path \{/);
 assert.match(styleSource, /@keyframes public-field-direction-flow/);
@@ -839,14 +839,14 @@ assert.match(styleSource, /animation: public-field-direction-flow 2\.2s ease-in-
 assert.match(styleSource, /\.public-solved-field-toolbar \{[^}]*grid-template-columns: auto minmax\(0,1fr\) auto/s);
 assert.match(styleSource, /\.public-solved-field-toolbar \.public-solve-view-switch,[\s\S]*?gap: 5px; padding: 0; border: 0; background: transparent;/);
 assert.match(styleSource, /\.public-solved-field-toolbar \.public-solve-view-switch button,[\s\S]*?border-radius: 999px; background: rgba\(10,12,17,\.62\);/);
-assert.match(styleSource, /\.public-solved-field-toolbar \.public-field-source-controls button::before \{[^}]*border-radius: 50%;[^}]*content: '';/);
-assert.match(styleSource, /\.public-solved-field-toolbar \.public-field-source-controls button\[aria-pressed="true"\]::before \{[^}]*background: var\(--text-accent\);/);
-assert.match(styleSource, /\.public-solved-field-toolbar \.public-field-source-controls button strong \{ font-weight: 600; \}/);
-assert.match(styleSource, /\.public-solved-field-toolbar \.public-field-layer-controls button > i \{[^}]*border-radius: 50%;/);
-assert.match(styleSource, /\.public-solved-field-toolbar \.public-field-layer-controls button\[aria-pressed="true"\] > i \{[^}]*background: var\(--text-accent\);[^}]*box-shadow: none;/);
+assert.match(styleSource, /\.public-field-dock-controls \.public-field-source-controls button::before \{[^}]*border-radius: 50%;[^}]*content: '';/);
+assert.match(styleSource, /\.public-field-dock-controls \.public-field-source-controls button\[aria-pressed="true"\]::before \{[^}]*background: var\(--text-accent\);/);
+assert.match(styleSource, /\.public-field-dock-controls \.public-field-source-controls button strong \{ font-weight: 600; \}/);
+assert.match(styleSource, /\.public-field-dock-controls \.public-field-layer-controls button > i \{[^}]*border-radius: 50%;/);
+assert.match(styleSource, /\.public-field-dock-controls \.public-field-layer-controls button\[aria-pressed="true"\] > i \{[^}]*background: var\(--text-accent\);[^}]*box-shadow: none;/);
 assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-canvas > canvas \{ position: absolute; inset: 0; \}/);
 assert.match(fieldResultSource, /className="is-mid">\{\(\(displayMinB \+ displayMaxB\) \/ 2\)\.toFixed\(3\)\}/);
-assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend \{[^}]*top: 112px[^}]*right: 0[^}]*bottom: 18px[^}]*width: 10px/s);
+assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend \{[^}]*top: 60px[^}]*right: 0[^}]*bottom: 18px[^}]*width: 10px/s);
 assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend > span \{[^}]*position: absolute[^}]*right: 14px/s);
 assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend \.is-min \{ bottom: 0; \}/);
 assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend \.is-mid \{ top: 50%; transform: translateY\(-50%\); \}/);
@@ -872,7 +872,7 @@ assert.match(solvedFieldSource, /Line density/);
 assert.match(solvedFieldSource, /FIELD_LINE_DENSITY_STOPS/);
 assert.match(solvedFieldSource, /type="range"[\s\S]*?aria-label="Field-line density"/);
 assert.match(solvedFieldSource, /<span>Low<\/span><span>Med<\/span><span>High<\/span>/);
-assert.match(solvedFieldSource, /\{showFieldLines && renderDensityControl\(\)\}/);
+assert.doesNotMatch(solvedFieldSource, /\{showFieldLines && renderDensityControl\(\)\}/);
 assert.match(solvedFieldSource, /\{showFieldLines && renderDensityControl\(true\)\}/);
 assert.doesNotMatch(solvedFieldSource, /<select[^>]*Field-line density/);
 assert.match(solvedFieldSource, /showAirgap=\{showAirgap\}/);
@@ -890,7 +890,20 @@ assert.match(fieldResultSource, /element_bx_t/);
 assert.match(fieldResultSource, /element_by_t/);
 assert.match(solvedFieldSource, /viewControls: ReactNode/);
 assert.match(solvedFieldSource, /\{viewControls\}/);
-assert.match(solvedFieldSource, /className="public-field-layer-menu"/);
+// Controls sit in a dock below the motor (playback, then field source, overlays,
+// line density, zoom and field details), so nothing floats over the field.
+assert.match(solvedFieldSource, /className="public-field-dock-controls"[\s\S]*?<details className="public-field-layer-menu">\s*<summary>Show<\/summary>/);
+assert.match(styleSource, /\.public-field-layer-menu > \.public-field-layer-controls \{ position: absolute; z-index: 20; bottom: calc\(100% \+ 8px\);/);
+assert.match(styleSource, /@container \(max-width: 1040px\) \{\s*\.public-field-control-cluster > span \{ display: none; \}\s*\.public-field-overlay-cluster \{ display: none; \}\s*\.public-field-layer-menu \{ display: block; \}/);
+assert.match(solvedFieldSource, /<div className="public-field-dock">\s*<div className="public-field-playback">[\s\S]*?<div className="public-field-dock-controls" role="toolbar" aria-label="Field display">/);
+assert.match(solvedFieldSource, /className="public-field-dock-controls"[\s\S]*?<span>Field<\/span>[\s\S]*?<span>Show<\/span>[\s\S]*?renderDensityControl\(true\)[\s\S]*?<span className="public-field-zoom-slot" ref=\{setZoomSlot\} \/>/);
+assert.ok(solvedFieldSource.indexOf('className="public-field-summary-panel"') > solvedFieldSource.indexOf('<div className="public-field-dock">'), 'field details live in the dock, not on the canvas');
+assert.match(solvedFieldSource, /<div className="public-solved-field-toolbar">\s*\{viewControls\}\s*<div className="public-field-toolbar-end">\s*\{expandControl\}\s*<\/div>\s*<\/div>/);
+assert.match(solvedFieldSource, /navigationSlot=\{zoomSlot\}/);
+assert.match(fieldResultSource, /return navigationSlot \? createPortal\(zoomControls, navigationSlot\) : zoomControls;/);
+assert.match(styleSource, /\.public-field-dock-controls \{ display: flex; flex-wrap: wrap;/);
+assert.match(styleSource, /\.public-field-zoom-slot \.public-viewport-nav-controls \{ position: static;/);
+assert.match(styleSource, /@container \(max-width: 720px\) \{[^@]*\.public-field-zoom-slot \.public-viewport-nav-controls > span \{ display: none; \}/);
 assert.match(solvedFieldSource, /className="public-field-playback-meta"/);
 assert.match(solvedFieldSource, /className="public-field-physics-info"/);
 assert.match(solvedFieldSource, /Solving the zero-remanence rotor sweep locally/);
@@ -927,7 +940,7 @@ assert.match(fieldResultSource, /className="public-field-lines-legend"/);
 assert.match(fieldResultSource, /Separate solves: in saturated steel the resultant is not their sum\./);
 assert.match(styleSource, /\.public-field-direction-cue\.is-overlay path \{/);
 assert.match(styleSource, /\.public-solved-field-canvas \.public-field-lines-legend \{[^}]*position: absolute/);
-assert.match(styleSource, /@container \(max-width: 600px\) \{\s*\.public-field-toolbar-groups \{ grid-column: 1 \/ -1; grid-row: 2;/);
+assert.doesNotMatch(styleSource, /\.public-field-toolbar-groups \{ grid-column: 1 \/ -1; grid-row: 2;/);
 // Field axes: each field's working-harmonic poles, the stator lead and the caption.
 assert.match(solvedFieldSource, /fieldAxes=\{overlayActive \? CLOCKWISE_FIELD_AXES : null\}/);
 assert.match(solvedFieldSource, /setShowPoleLabels\(true\);\s*setFieldLineDensity\('low'\);/);

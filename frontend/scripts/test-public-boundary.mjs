@@ -25,7 +25,8 @@ const allowedSharedFiles = [
   path.join(frontendRoot, 'src', 'api', 'statorDefaults.ts'),
 ];
 const allowedSourceRoots = [publicRoot, landingPreviewRoot, tutorialsRoot];
-const allowedBareImports = new Set(['react', 'react-dom/client', 'three']);
+// react-dom is the package behind react-dom/client; FieldResultPlot uses its createPortal.
+const allowedBareImports = new Set(['react', 'react-dom', 'react-dom/client', 'three']);
 
 function filesBelow(root) {
   return fs.readdirSync(root, { withFileTypes: true }).flatMap((entry) => {
