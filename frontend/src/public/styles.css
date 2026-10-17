@@ -1680,8 +1680,7 @@ body {
 .public-field-dock > .public-dock-strip { min-height: 44px; padding: 0 7px; border-bottom: 1px solid var(--border-subtle); border-radius: 9px 9px 0 0; background: rgba(17,20,27,.98); }
 .public-dock-strip .public-solve-view-switch { position: static; flex: 0 0 auto; box-shadow: none; }
 .public-field-control-cluster { display: flex; min-width: 0; align-items: center; gap: 5px; }
-.public-field-control-cluster > span,
-.public-field-density-control > span { color: var(--text-faint); font: 700 7px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+.public-field-control-cluster > span { color: var(--text-faint); font: 700 7px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
 .public-field-toolbar-end { display: flex; align-items: center; justify-self: end; gap: 6px; }
 .public-field-source-controls,
 .public-field-layer-controls { display: flex; gap: 5px; }
@@ -1694,22 +1693,6 @@ body {
 .public-field-layer-controls button { display: inline-flex; min-height: 30px; align-items: center; gap: 5px; padding: 0 8px; border: 1px solid var(--border-default); border-radius: 7px; color: var(--text-muted); background: rgba(15,17,23,.9); font-size: 9px; white-space: nowrap; }
 .public-field-layer-controls button > i { width: 7px; height: 7px; border: 1px solid currentColor; border-radius: 2px; opacity: .5; }
 .public-field-layer-controls button[aria-pressed="true"] > i { border-color: var(--success); background: var(--success); box-shadow: 0 0 7px rgba(34,197,94,.34); opacity: 1; }
-.public-field-density-control { display: grid; min-width: 142px; gap: 2px; padding: 4px 5px 3px; border: 1px solid var(--border-default); border-radius: 7px; background: rgba(15,17,23,.9); }
-.public-field-density-control input[type="range"] { width: 100%; height: 11px; margin: 0; appearance: none; background: transparent; cursor: pointer; }
-.public-field-density-control input[type="range"]::-webkit-slider-runnable-track { height: 3px; border-radius: 999px; background: linear-gradient(to right, var(--accent-primary) 0 var(--public-field-density-progress), rgba(148,163,184,.32) var(--public-field-density-progress) 100%); }
-.public-field-density-control input[type="range"]::-webkit-slider-thumb { width: 11px; height: 11px; margin-top: -4px; appearance: none; border: 2px solid #0b0d12; border-radius: 50%; background: var(--accent-primary); box-shadow: 0 0 0 1px rgba(245,158,11,.45); }
-.public-field-density-control input[type="range"]::-moz-range-track { height: 3px; border: 0; border-radius: 999px; background: rgba(148,163,184,.32); }
-.public-field-density-control input[type="range"]::-moz-range-progress { height: 3px; border-radius: 999px; background: var(--accent-primary); }
-.public-field-density-control input[type="range"]::-moz-range-thumb { width: 11px; height: 11px; border: 2px solid #0b0d12; border-radius: 50%; background: var(--accent-primary); box-shadow: 0 0 0 1px rgba(245,158,11,.45); }
-.public-field-density-control input[type="range"]:focus-visible { outline: 2px solid rgba(103,232,249,.7); outline-offset: 3px; border-radius: 999px; }
-.public-field-density-control input[type="range"]:disabled { opacity: .42; cursor: not-allowed; }
-.public-field-density-control small { display: grid; grid-template-columns: repeat(3,1fr); color: var(--text-faint); font: 6px var(--font-mono); line-height: 1; }
-.public-field-density-control small span:nth-child(2) { text-align: center; }
-.public-field-density-control small span:last-child { text-align: right; }
-.public-field-density-control-inline { grid-template: "title slider" auto ". labels" auto / auto 105px; min-width: 0; align-items: center; gap: 0 5px; padding: 3px 5px; }
-.public-field-density-control-inline > span { grid-area: title; }
-.public-field-density-control-inline > input { grid-area: slider; }
-.public-field-density-control-inline > small { grid-area: labels; }
 .public-dock-strip .public-solve-view-switch,
 .public-field-dock-controls .public-field-source-controls { gap: 5px; padding: 0; border: 0; background: transparent; }
 .public-field-dock-controls .public-field-source-controls button,
@@ -1726,12 +1709,10 @@ body {
 .public-field-dock-controls .public-field-source-pair button { min-width: 0; padding: 0 10px; }
 .public-field-dock-controls .public-field-source-pair.is-both .is-pm[aria-pressed="true"]::before { border-color: #5ed3f3; background: #5ed3f3; }
 .public-field-dock-controls .public-field-source-pair.is-both .is-stator[aria-pressed="true"]::before { border-color: #ffb547; background: #ffb547; }
-.public-field-dock-controls .public-field-layer-controls button,
-.public-field-dock-controls .public-field-density-control { border-color: rgba(148,163,184,.14); background: rgba(10,12,17,.62); }
+.public-field-dock-controls .public-field-layer-controls button { border-color: rgba(148,163,184,.14); background: rgba(10,12,17,.62); }
 .public-field-dock-controls .public-field-layer-controls button > i { width: 6px; height: 6px; border-color: var(--text-muted); border-radius: 50%; background: transparent; box-shadow: none; opacity: .68; }
 .public-field-dock-controls .public-field-layer-controls button[aria-pressed="true"] > i { border-color: var(--text-accent); background: var(--text-accent); box-shadow: none; opacity: 1; }
-.public-field-dock-controls .public-field-control-cluster > span,
-.public-field-dock-controls .public-field-density-control > span { color: rgba(148,163,184,.58); font-weight: 600; }
+.public-field-dock-controls .public-field-control-cluster > span { color: rgba(148,163,184,.58); font-weight: 600; }
 .public-dock-strip .public-viewport-expand.is-inline { border-color: rgba(148,163,184,.16); border-radius: 999px; color: var(--text-muted); background: rgba(10,12,17,.62); box-shadow: none; }
 .public-solved-field-canvas { position: relative; min-height: 0; overflow: hidden; border: 0; background: rgba(7,9,14,.72); }
 .public-solved-field-canvas .public-field-result { position: relative; display: flex; width: 100%; height: 100%; max-width: none; margin: 0; padding: 0; border: 0; background: transparent; }
@@ -1816,7 +1797,7 @@ body {
 .public-field-position-control em,
 .public-field-transport-label em { color: var(--text-secondary); font: 8px var(--font-mono); font-style: normal; white-space: nowrap; }
 .public-field-position-control input { height: 4px; }
-.public-field-playback-rpm { box-sizing: border-box; min-height: 38px; padding: 4px 9px; border: 1px solid var(--border-default); border-radius: 7px; color: var(--text-secondary); background: var(--bg-surface-2); cursor: pointer; }
+.public-field-playback-rpm { box-sizing: border-box; min-height: 36px; padding: 4px 9px; border: 1px solid var(--border-default); border-radius: 7px; color: var(--text-secondary); background: var(--bg-surface-2); cursor: pointer; }
 .public-field-playback-rpm input { height: 4px; border-radius: 999px; appearance: none; background: linear-gradient(to right, var(--accent-primary) 0 calc(1% * var(--playback-rpm-progress, 0)), rgba(148,163,184,.28) calc(1% * var(--playback-rpm-progress, 0)) 100%); }
 .public-field-playback-rpm input::-webkit-slider-thumb { width: 13px; height: 13px; border: 0; border-radius: 50%; appearance: none; background: #93c5fd; box-shadow: 0 0 0 2px rgba(147,197,253,.12); }
 .public-field-playback-rpm input::-moz-range-thumb { width: 13px; height: 13px; border: 0; border-radius: 50%; background: #93c5fd; box-shadow: 0 0 0 2px rgba(147,197,253,.12); }
@@ -1843,8 +1824,6 @@ body {
   .public-field-playback-meta { display: none; }
   /* Keep the dock's second row on one line down to about 490 px. */
   .public-field-dock-controls { gap: 6px; }
-  .public-field-dock-controls .public-field-density-control-inline { grid-template: "slider" auto "labels" auto / 84px; }
-  .public-field-dock-controls .public-field-density-control-inline > span { display: none; }
   .public-field-zoom-slot .public-viewport-nav-controls > span { display: none; }
   .public-field-dock-controls .public-field-source-pair button { padding: 0 7px; }
   .public-field-dock-controls .public-field-source-controls > button { min-width: 0; padding: 0 8px; }
@@ -4297,8 +4276,7 @@ body {
   }
   .public-field-toolbar-groups { gap: 9px; }
   .public-field-control-cluster { gap: 6px; }
-  .public-field-control-cluster > span,
-  .public-field-density-control > span { font-size: 8px; }
+  .public-field-control-cluster > span { font-size: 8px; }
   .public-field-source-controls button {
     min-width: 76px;
     min-height: 34px;
@@ -4314,20 +4292,6 @@ body {
   .public-field-layer-controls button > i {
     width: 8px;
     height: 8px;
-  }
-  .public-field-density-control {
-    min-width: 154px;
-    padding: 5px 7px 4px;
-  }
-  .public-field-density-control small { font-size: 7px; }
-  .public-field-density-control input[type="range"]::-webkit-slider-thumb {
-    width: 13px;
-    height: 13px;
-    margin-top: -5px;
-  }
-  .public-field-density-control input[type="range"]::-moz-range-thumb {
-    width: 13px;
-    height: 13px;
   }
   .public-field-summary-panel {
     min-width: 214px;
@@ -4516,5 +4480,57 @@ body {
 /* The rotor preview borrows the field playback's transport at the panel's size. */
 .public-motor-viewport .viewport-bottom-bar button.public-field-transport-play { display: grid; width: 36px; min-width: 36px; height: 36px; padding: 0; place-items: center; border: 1px solid var(--border-default); border-radius: 8px; color: var(--text-primary); background: var(--bg-surface-2); font-size: 12px; }
 .public-motor-viewport .viewport-bottom-bar button.public-field-transport-play:hover { border-color: var(--border-accent); color: var(--text-accent); background: var(--bg-surface-2); }
-.public-motor-viewport .viewport-bottom-bar .public-field-playback-rpm { width: 176px; min-height: 36px; }
+.public-motor-viewport .viewport-bottom-bar .public-field-playback-rpm { width: 176px; }
 .public-motor-viewport .viewport-bottom-bar .public-field-playback-rpm input { width: 100%; }
+/* The field panel matches the motor panels: a full-width section under the
+   field with the same title bar and readout, group labels, a segmented field
+   choice, dot toggles, labelled sliders, and the same sizes and type. */
+.public-solved-field-viewer { padding: 0; }
+.public-solved-field-canvas .public-field-lines-legend { top: 14px; right: 14px; }
+.public-solved-field-canvas .public-field-result-legend { right: 14px; }
+.public-field-dock { border: 0; border-top: 1px solid var(--border-default); border-radius: 0; background: rgba(12,14,19,.96); box-shadow: none; }
+.public-field-dock > .public-dock-strip { padding: 0 16px; border-radius: 0; }
+.public-field-dock .public-dock-strip-end .viewport-cad-status { color: var(--text-muted); font: 12px var(--font-mono); white-space: nowrap; }
+.public-field-dock > .public-field-playback { grid-template-columns: 36px minmax(180px,1fr) 176px minmax(220px,auto) 36px; gap: 10px; padding: 8px 16px 0; }
+/* Below 720 px the angle readout hides, so the row drops its column. */
+@container (max-width: 720px) {
+  .public-field-dock > .public-field-playback { grid-template-columns: 36px minmax(110px,1fr) 176px 36px; }
+}
+.public-field-dock .public-field-transport-play { width: 36px; height: 36px; font-size: 12px; }
+.public-field-dock .public-field-playback-meta small,
+.public-field-dock .public-field-playback-meta > em { font-size: 10px; }
+.public-field-dock .public-field-playback-meta strong { font-size: 12px; }
+.public-field-dock .public-field-physics-info > summary { width: 36px; height: 36px; font-size: 13px; }
+.public-field-dock .public-field-dock-controls { gap: 8px 12px; padding: 8px 16px; border-top: 0; }
+.public-field-dock .public-field-control-cluster { gap: 8px; }
+.public-field-dock .public-field-dock-controls .public-field-control-cluster > span { color: rgba(148,163,184,.58); font: 600 10px var(--font-mono); letter-spacing: .08em; }
+/* Field: Resultant, PM and Stator on one segmented track. PM and Stator can
+   both be on; then each takes its field-line colour. */
+.public-field-dock .public-field-dock-controls .public-field-source-controls { display: inline-flex; align-items: center; gap: 2px; padding: 3px; border: 1px solid rgba(148,163,184,.16); border-radius: 10px; background: rgba(10,12,17,.62); }
+.public-field-dock .public-field-dock-controls .public-field-source-pair { gap: 2px; margin-left: 1px; padding: 0 0 0 3px; border: 0; border-left: 1px solid rgba(148,163,184,.16); border-radius: 0; }
+.public-field-dock .public-field-dock-controls .public-field-source-controls button { min-width: 0; height: 28px; min-height: 28px; padding: 0 12px; border: 0; border-radius: 7px; color: var(--text-muted); background: transparent; box-shadow: none; font: 600 13px var(--font-mono); }
+.public-field-dock .public-field-dock-controls .public-field-source-controls button strong { font: inherit; }
+.public-field-dock .public-field-dock-controls .public-field-source-controls button::before { display: none; }
+.public-field-dock .public-field-dock-controls .public-field-source-controls button:hover:not(:disabled) { color: var(--text-secondary); background: rgba(148,163,184,.08); }
+.public-field-dock .public-field-dock-controls .public-field-source-controls button[aria-pressed="true"] { color: var(--text-accent); background: rgba(245,158,11,.14); box-shadow: inset 0 0 0 1px rgba(245,158,11,.32); }
+.public-field-dock .public-field-dock-controls .public-field-source-pair.is-both .is-pm[aria-pressed="true"] { color: #5ed3f3; background: rgba(94,211,243,.12); box-shadow: inset 0 0 0 1px rgba(94,211,243,.32); }
+.public-field-dock .public-field-dock-controls .public-field-source-pair.is-both .is-stator[aria-pressed="true"] { color: #ffb547; background: rgba(255,181,71,.12); box-shadow: inset 0 0 0 1px rgba(255,181,71,.32); }
+/* Show: the motor panels' dot toggles, inline or in the narrow-width menu. */
+.public-field-dock .public-field-layer-controls button { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 14px; border: 1px solid rgba(148,163,184,.16); border-radius: 999px; color: var(--text-muted); background: rgba(10,12,17,.62); font: 600 13px var(--font-mono); white-space: nowrap; }
+.public-field-dock .public-field-layer-controls button > i { width: 8px; height: 8px; border: 1px solid currentColor; border-radius: 50%; background: transparent; box-shadow: none; opacity: .7; }
+.public-field-dock .public-field-layer-controls button:hover:not(:disabled) { color: var(--text-secondary); background: rgba(148,163,184,.08); }
+.public-field-dock .public-field-layer-controls button[aria-pressed="true"] { border-color: rgba(148,163,184,.26); color: var(--text-secondary); background: rgba(15,17,23,.76); }
+.public-field-dock .public-field-layer-controls button[aria-pressed="true"] > i { border-color: var(--text-accent); background: var(--text-accent); opacity: 1; }
+.public-field-dock .public-field-layer-controls button:disabled { opacity: .42; cursor: not-allowed; }
+.public-field-dock .public-field-layer-menu > summary { min-width: 0; min-height: 36px; padding: 0 14px; border-radius: 999px; font: 600 13px var(--font-mono); }
+.public-field-dock .public-field-layer-menu > .public-field-layer-controls { gap: 6px; padding: 8px; }
+.public-field-dock .public-field-density-slider { width: 176px; }
+/* Every slider box reads the same: a label and its current value over the track. */
+.public-field-transport-label strong,
+.public-field-position-control strong { font-size: 11px; font-weight: 600; white-space: nowrap; }
+.public-field-transport-label em,
+.public-field-position-control em { font-size: 12px; }
+.public-field-playback-rpm input:disabled { opacity: .42; cursor: not-allowed; }
+/* A title-bar tab draws its keyboard focus ring inside, clear of the bar's edge. */
+.public-dock-strip .public-solve-view-switch button:focus-visible,
+.public-dock-strip .public-primary-view-modes button:focus-visible { outline-offset: -4px; }

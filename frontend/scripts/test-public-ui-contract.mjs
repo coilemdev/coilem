@@ -820,7 +820,17 @@ assert.doesNotMatch(workspaceSource, /is-expandable/);
 assert.match(workspaceSource, /navigationSlot=\{navigationSlot\}/);
 assert.match(motorCanvasSource, /return navigationSlot \? createPortal\(zoomControls, navigationSlot\) : zoomControls;/);
 assert.match(workspaceSource, /\.toLocaleString\('en-US'\)\} elements\{meshQualitySummary \? ` · min q \$\{formatNumber\(meshQualitySummary\.minimum, 3\)\}` : ''\}/);
-assert.match(solvedFieldSource, /<div className="public-dock-strip-end">\s*<span className="public-field-zoom-slot" ref=\{setZoomSlot\} \/>\s*\{expandControl\}/);
+assert.match(solvedFieldSource, /<div className="public-dock-strip-end">\s*\{\(activeDetailRaster \|\| visibleRaster \|\| visiblePlot\) && \(\s*<div className="viewport-cad-status">\{angleFrames\.length\} positions · peak \|B\| \{currentPeakBT\.toFixed\(2\)\} T<\/div>\s*\)\}\s*<span className="public-field-zoom-slot" ref=\{setZoomSlot\} \/>\s*\{expandControl\}/);
+// The field panel matches the motor panels: full width, same title bar,
+// segmented field choice, dot toggles and labelled slider boxes.
+assert.match(styleSource, /\.public-field-dock \{ border: 0; border-top: 1px solid var\(--border-default\); border-radius: 0;/);
+assert.match(styleSource, /\.public-field-dock \.public-field-dock-controls \.public-field-source-controls \{ display: inline-flex;[^}]*border-radius: 10px;/);
+assert.match(styleSource, /\.public-field-dock \.public-field-layer-controls button \{[^}]*min-height: 36px;[^}]*font: 600 13px var\(--font-mono\);/);
+assert.match(solvedFieldSource, /<label className="public-field-playback-rpm public-field-density-slider" title=\{densityTitle\}>\s*<span className="public-field-transport-label"><strong>Line density<\/strong><em>\{densityLabel\}<\/em><\/span>/);
+assert.doesNotMatch(styleSource, /public-field-density-control/);
+// Below 720 px the playback row drops the hidden angle readout's column, so
+// the field panel never grows wider than the stage.
+assert.match(styleSource, /@container \(max-width: 720px\) \{\s*\.public-field-dock > \.public-field-playback \{ grid-template-columns: 36px minmax\(110px,1fr\) 176px 36px; \}/);
 assert.match(styleSource, /\.public-dock-strip-end \{ display: flex;[^}]*margin-left: auto; \}/);
 assert.match(styleSource, /\.public-motor-viewport \.public-dock-strip-end \.viewport-cad-status \{[^}]*border: 0;[^}]*background: transparent;/);
 assert.match(solvedFieldSource, /<div className="public-field-dock">\s*<div className="public-dock-strip">\s*\{viewControls\}\s*<div className="public-dock-strip-end">/);
@@ -932,9 +942,8 @@ assert.match(solvedFieldSource, /fieldLineDensity/);
 assert.match(solvedFieldSource, /Line density/);
 assert.match(solvedFieldSource, /FIELD_LINE_DENSITY_STOPS/);
 assert.match(solvedFieldSource, /type="range"[\s\S]*?aria-label="Field-line density"/);
-assert.match(solvedFieldSource, /<span>Low<\/span><span>Med<\/span><span>High<\/span>/);
-assert.doesNotMatch(solvedFieldSource, /\{showFieldLines && renderDensityControl\(\)\}/);
-assert.match(solvedFieldSource, /\{showFieldLines && renderDensityControl\(true\)\}/);
+assert.match(solvedFieldSource, /aria-valuetext=\{densityLabel\}/);
+assert.match(solvedFieldSource, /\{showFieldLines && renderDensityControl\(\)\}/);
 assert.doesNotMatch(solvedFieldSource, /<select[^>]*Field-line density/);
 assert.match(solvedFieldSource, /showAirgap=\{showAirgap\}/);
 assert.match(solvedFieldSource, /airgapInnerRadiusMm=\{rotorAirgapBoundaryRadiusMm\(config\)\}/);
@@ -957,7 +966,7 @@ assert.match(solvedFieldSource, /className="public-field-dock-controls"[\s\S]*?<
 assert.match(styleSource, /\.public-field-layer-menu > \.public-field-layer-controls \{ position: absolute; z-index: 20; bottom: calc\(100% \+ 8px\);/);
 assert.match(styleSource, /@container \(max-width: 1040px\) \{\s*\.public-field-control-cluster > span \{ display: none; \}\s*\.public-field-overlay-cluster \{ display: none; \}\s*\.public-field-layer-menu \{ display: block; \}/);
 assert.match(solvedFieldSource, /<div className="public-field-dock">\s*<div className="public-dock-strip">[\s\S]*?<div className="public-field-playback">[\s\S]*?<div className="public-field-dock-controls" role="toolbar" aria-label="Field display">/);
-assert.match(solvedFieldSource, /className="public-field-dock-controls"[\s\S]*?<span>Field<\/span>[\s\S]*?<span>Show<\/span>[\s\S]*?renderDensityControl\(true\)/);
+assert.match(solvedFieldSource, /className="public-field-dock-controls"[\s\S]*?<span>Field<\/span>[\s\S]*?<span>Show<\/span>[\s\S]*?renderDensityControl\(\)/);
 assert.ok(solvedFieldSource.indexOf('className="public-field-summary-panel"') > solvedFieldSource.indexOf('<div className="public-field-dock">'), 'field details live in the dock, not on the canvas');
 assert.match(solvedFieldSource, /navigationSlot=\{zoomSlot\}/);
 assert.match(fieldResultSource, /return navigationSlot \? createPortal\(zoomControls, navigationSlot\) : zoomControls;/);
@@ -1090,7 +1099,7 @@ assert.match(playbackTimingSource, /if \(rpm >= 15\) return 10/);
 assert.match(solvedFieldSource, /const cacheLimit = publicFieldPlaybackCacheFrames\(playbackRpm\)/);
 assert.match(styleSource, /\.public-field-playback-rpm/);
 assert.match(styleSource, /\.public-field-playback \{[^}]*grid-template-columns: 38px minmax\(180px,1fr\) 176px minmax\(238px,auto\) 28px/);
-assert.match(styleSource, /\.public-field-playback-rpm \{[^}]*min-height: 38px/);
+assert.match(styleSource, /\.public-field-playback-rpm \{[^}]*min-height: 36px/);
 assert.match(styleSource, /\.public-field-playback-meta \{[^}]*display: grid[^}]*grid-template-columns: auto auto/);
 assert.match(styleSource, /\.public-field-position-control > span,/);
 assert.match(solvedFieldSource, /Buffering next frame/);

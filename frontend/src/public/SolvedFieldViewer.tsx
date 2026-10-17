@@ -1159,7 +1159,9 @@ export function SolvedFieldViewer({
       {(hasMagnets || source === 'armature') && <button type="button" aria-pressed={showPoleLabels} onClick={() => setShowPoleLabels((value) => !value)}><i aria-hidden="true" />Pole labels</button>}
     </>
   );
-  const renderDensityControl = (inline = false) => {
+  // Line density uses the playback speed's control, a labelled box showing the
+  // current value, so every slider in the motor and field panels reads alike.
+  const renderDensityControl = () => {
     const densityAdjustable = !playing && Boolean(exactVectorPlot);
     const displayedDensity = exactVectorPlot ? fieldLineDensity : 'medium';
     const densityIndex = Math.max(0, FIELD_LINE_DENSITY_STOPS.indexOf(displayedDensity));
@@ -1172,8 +1174,8 @@ export function SolvedFieldViewer({
         ? `${densityLabel} field-line density`
         : 'Loading the exact frame before field-line density can be changed.';
     return (
-      <label className={`public-field-density-control${inline ? ' public-field-density-control-inline' : ''}`}>
-        <span>{inline ? 'Lines' : 'Line density'}</span>
+      <label className="public-field-playback-rpm public-field-density-slider" title={densityTitle}>
+        <span className="public-field-transport-label"><strong>Line density</strong><em>{densityLabel}</em></span>
         <input
           type="range"
           min="0"
@@ -1183,14 +1185,12 @@ export function SolvedFieldViewer({
           disabled={!densityAdjustable}
           aria-label="Field-line density"
           aria-valuetext={densityLabel}
-          title={densityTitle}
-          style={{ ['--public-field-density-progress' as never]: `${densityIndex * 50}%` }}
+          style={{ ['--playback-rpm-progress' as never]: densityIndex * 50 }}
           onChange={(event) => {
             const nextDensity = FIELD_LINE_DENSITY_STOPS[Number(event.currentTarget.value)];
             if (nextDensity) setFieldLineDensity(nextDensity);
           }}
         />
-        <small aria-hidden="true"><span>Low</span><span>Med</span><span>High</span></small>
       </label>
     );
   };
@@ -1272,6 +1272,9 @@ export function SolvedFieldViewer({
         <div className="public-dock-strip">
           {viewControls}
           <div className="public-dock-strip-end">
+            {(activeDetailRaster || visibleRaster || visiblePlot) && (
+              <div className="viewport-cad-status">{angleFrames.length} positions · peak |B| {currentPeakBT.toFixed(2)} T</div>
+            )}
             <span className="public-field-zoom-slot" ref={setZoomSlot} />
             {expandControl}
           </div>
@@ -1385,7 +1388,7 @@ export function SolvedFieldViewer({
               {renderLayerButtons()}
             </div>
           </details>
-          {showFieldLines && renderDensityControl(true)}
+          {showFieldLines && renderDensityControl()}
         </div>
       </div>
     </section>
