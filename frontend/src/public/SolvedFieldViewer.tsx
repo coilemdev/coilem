@@ -1147,6 +1147,8 @@ export function SolvedFieldViewer({
       : source === 'armature' && !armature
         ? armatureError ?? 'Select Stator to compute the cached Br = 0 sweep.'
         : frameError;
+  // The plot portals its zoom controls into the dock, off the field (#120 follow-up).
+  const [zoomSlot, setZoomSlot] = useState<HTMLSpanElement | null>(null);
   const renderLayerButtons = () => (
     <>
       {hasMagnets && <button type="button" aria-pressed={showMagnets} onClick={() => setShowMagnets((value) => !value)}><i aria-hidden="true" />{source === 'armature' && !overlayActive ? 'PM reference' : 'Magnets'}</button>}
@@ -1197,33 +1199,7 @@ export function SolvedFieldViewer({
     <section className="public-solved-field-viewer" aria-label="Completed field solution">
       <div className="public-solved-field-toolbar">
         {viewControls}
-        <div className="public-field-toolbar-groups">
-          <div className="public-field-control-cluster">
-            <span>Source</span>
-            <div className="public-field-source-controls" role="group" aria-label="Field composition">
-              <button type="button" aria-label="Resultant field, permanent magnets plus stator current" title="Permanent magnets plus stator current" aria-pressed={view === 'resultant'} onClick={() => selectSource('resultant')}><strong>Resultant</strong></button>
-              <span className={`public-field-source-pair${overlayActive ? ' is-both' : ''}`} role="group" aria-label="Separate fields: PM, Stator, or both together" title="Pick PM, Stator, or both to draw their field lines together">
-                <button type="button" className="is-pm" aria-label="PM-only field, zero current" title="Exact zero-current Magneto2D field" aria-pressed={pmShown} disabled={!pmAvailable} onClick={() => toggleSeparateField('pm')}><strong>PM</strong></button>
-                <button type="button" className="is-stator" aria-label="Stator-current-only field, permanent-magnet remanence disabled" title={magnetoCompositionAvailable ? 'Exact zero-remanence Magneto2D field' : 'Stator-only composition is available for Magneto2D results'} aria-pressed={statorShown} disabled={!magnetoCompositionAvailable} onClick={() => toggleSeparateField('armature')}><strong>Stator</strong></button>
-              </span>
-            </div>
-          </div>
-          <div className="public-field-control-cluster public-field-overlay-cluster">
-            <span>Overlays</span>
-            <div className="public-field-layer-controls public-field-layer-controls-inline" role="group" aria-label="Field solution overlays">
-              {renderLayerButtons()}
-            </div>
-          </div>
-        </div>
         <div className="public-field-toolbar-end">
-          <details className="public-field-layer-menu">
-            <summary>Overlays</summary>
-            <div className="public-field-layer-controls" role="group" aria-label="Field solution overlays">
-              {renderLayerButtons()}
-              {showFieldLines && renderDensityControl()}
-            </div>
-          </details>
-          {showFieldLines && renderDensityControl(true)}
           {expandControl}
         </div>
       </div>
@@ -1254,18 +1230,6 @@ export function SolvedFieldViewer({
         )}
         {(activeDetailRaster || visibleRaster || visiblePlot) && (
           <>
-            <details className="public-field-summary">
-              <summary>Field details</summary>
-              <div className="public-field-summary-panel">
-                <span>Field composition</span>
-                <strong>{sourceLabel}</strong>
-                <p>{sourceDetail}</p>
-                <dl>
-                  <div><dt>Peak |B|</dt><dd>{currentPeakBT.toFixed(3)} T</dd></div>
-                  <div><dt>Position</dt><dd>{electricalAngleDeg.toFixed(1)}° elec</dd></div>
-                </dl>
-              </div>
-            </details>
             <FieldResultPlot
               plot={visiblePlot}
               raster={activeDetailRaster ?? visibleRaster}
@@ -1300,6 +1264,7 @@ export function SolvedFieldViewer({
               onViewportScaleSettled={setFieldViewportScale}
               overlay={fieldLineOverlay}
               fieldAxes={overlayActive ? CLOCKWISE_FIELD_AXES : null}
+              navigationSlot={zoomSlot}
             />
           </>
         )}
@@ -1310,80 +1275,119 @@ export function SolvedFieldViewer({
         </div>}
       </div>
 
-      <div className="public-field-playback">
-        <button
-          className="public-field-transport-play"
-          type="button"
-          aria-label={playing ? 'Pause clockwise field playback' : 'Play field clockwise'}
-          title={colorRangeMode === 'sweep'
-            ? 'Switch the flux-density range to View to animate.'
-            : 'Clockwise — follows the public solve angle convention'}
-          disabled={angleFrames.length < 2 || colorRangeMode === 'sweep'}
-          onClick={togglePlayback}
-        >
-          {playing ? 'Ⅱ' : '▶'}
-        </button>
-        <label className="public-field-position-control">
-          <span><strong>Position</strong><em>{boundedIndex + 1} / {Math.max(1, angleFrames.length)}</em></span>
-          <input
-            ref={playbackSliderRef}
-            type="range"
-            min={sliderRange.min}
-            max={sliderRange.max}
-            step="any"
-            defaultValue={sliderRange.min}
-            disabled={angleFrames.length < 2}
-            aria-label="Solved rotor position"
-            onChange={(event) => {
-              const nextPlaybackAngleDeg = Number(event.target.value);
-              const nextIndex = positionSliderFrameIndex(angleFrames, nextPlaybackAngleDeg, playbackSpan);
-              const direction = nextPlaybackAngleDeg >= playbackElectricalAngleRef.current ? 1 : -1;
-              if (direction !== scrubDirection) setScrubDirection(direction);
-              setScrubbing(true);
-              if (scrubIdleTimerRef.current !== null) window.clearTimeout(scrubIdleTimerRef.current);
-              scrubIdleTimerRef.current = window.setTimeout(() => {
-                scrubIdleTimerRef.current = null;
-                setScrubbing(false);
-              }, EXACT_FRAME_SETTLE_MS);
-              setPlaying(false);
-              setPlaybackWaiting(false);
-              frameIndexRef.current = nextIndex;
-              playbackElectricalAngleRef.current = nextPlaybackAngleDeg;
-              setFrameIndex(nextIndex);
-            }}
-          />
-        </label>
-        <label
-          className="public-field-playback-rpm"
-          title="Visual playback speed — not the solve operating point"
-        >
-          <span className="public-field-transport-label"><strong>Playback speed</strong><em>{Math.round(playbackRpm)} RPM</em></span>
-          <input
-            type="range"
-            min={PUBLIC_FIELD_PLAYBACK_MIN_RPM}
-            max={PUBLIC_FIELD_PLAYBACK_MAX_RPM}
-            step={1}
-            value={playbackRpm}
-            aria-label="Playback speed (RPM)"
-            onChange={(event) => setPlaybackRpm(Number(event.target.value))}
-            style={{
-              ['--playback-rpm-progress' as never]: (
-                ((playbackRpm - PUBLIC_FIELD_PLAYBACK_MIN_RPM)
-                  / (PUBLIC_FIELD_PLAYBACK_MAX_RPM - PUBLIC_FIELD_PLAYBACK_MIN_RPM))
-                * 100
-              ).toFixed(1),
-            }}
-          />
-        </label>
-        <span className="public-field-playback-meta" aria-live="polite">
-          <span><small>Mechanical</small><strong>{mechanicalAngleDeg.toFixed(2)}°</strong></span>
-          <span><small>Electrical</small><strong>{electricalAngleDeg.toFixed(1)}°</strong></span>
-          <em className={playbackWaiting ? 'is-buffering' : ''}>CW · {bufferStatus}</em>
-        </span>
-        <details className="public-field-physics-info">
-          <summary aria-label="About field composition" title="About field composition">i</summary>
-          <p>PM-only and Stator-only are separate nonlinear solves; their arithmetic sum is not assumed to equal the Resultant field when steel is saturated.</p>
-        </details>
+      <div className="public-field-dock">
+        <div className="public-field-playback">
+          <button
+            className="public-field-transport-play"
+            type="button"
+            aria-label={playing ? 'Pause clockwise field playback' : 'Play field clockwise'}
+            title={colorRangeMode === 'sweep'
+              ? 'Switch the flux-density range to View to animate.'
+              : 'Clockwise — follows the public solve angle convention'}
+            disabled={angleFrames.length < 2 || colorRangeMode === 'sweep'}
+            onClick={togglePlayback}
+          >
+            {playing ? 'Ⅱ' : '▶'}
+          </button>
+          <label className="public-field-position-control">
+            <span><strong>Position</strong><em>{boundedIndex + 1} / {Math.max(1, angleFrames.length)}</em></span>
+            <input
+              ref={playbackSliderRef}
+              type="range"
+              min={sliderRange.min}
+              max={sliderRange.max}
+              step="any"
+              defaultValue={sliderRange.min}
+              disabled={angleFrames.length < 2}
+              aria-label="Solved rotor position"
+              onChange={(event) => {
+                const nextPlaybackAngleDeg = Number(event.target.value);
+                const nextIndex = positionSliderFrameIndex(angleFrames, nextPlaybackAngleDeg, playbackSpan);
+                const direction = nextPlaybackAngleDeg >= playbackElectricalAngleRef.current ? 1 : -1;
+                if (direction !== scrubDirection) setScrubDirection(direction);
+                setScrubbing(true);
+                if (scrubIdleTimerRef.current !== null) window.clearTimeout(scrubIdleTimerRef.current);
+                scrubIdleTimerRef.current = window.setTimeout(() => {
+                  scrubIdleTimerRef.current = null;
+                  setScrubbing(false);
+                }, EXACT_FRAME_SETTLE_MS);
+                setPlaying(false);
+                setPlaybackWaiting(false);
+                frameIndexRef.current = nextIndex;
+                playbackElectricalAngleRef.current = nextPlaybackAngleDeg;
+                setFrameIndex(nextIndex);
+              }}
+            />
+          </label>
+          <label
+            className="public-field-playback-rpm"
+            title="Visual playback speed — not the solve operating point"
+          >
+            <span className="public-field-transport-label"><strong>Playback speed</strong><em>{Math.round(playbackRpm)} RPM</em></span>
+            <input
+              type="range"
+              min={PUBLIC_FIELD_PLAYBACK_MIN_RPM}
+              max={PUBLIC_FIELD_PLAYBACK_MAX_RPM}
+              step={1}
+              value={playbackRpm}
+              aria-label="Playback speed (RPM)"
+              onChange={(event) => setPlaybackRpm(Number(event.target.value))}
+              style={{
+                ['--playback-rpm-progress' as never]: (
+                  ((playbackRpm - PUBLIC_FIELD_PLAYBACK_MIN_RPM)
+                    / (PUBLIC_FIELD_PLAYBACK_MAX_RPM - PUBLIC_FIELD_PLAYBACK_MIN_RPM))
+                  * 100
+                ).toFixed(1),
+              }}
+            />
+          </label>
+          <span className="public-field-playback-meta" aria-live="polite">
+            <span><small>Mechanical</small><strong>{mechanicalAngleDeg.toFixed(2)}°</strong></span>
+            <span><small>Electrical</small><strong>{electricalAngleDeg.toFixed(1)}°</strong></span>
+            <em className={playbackWaiting ? 'is-buffering' : ''}>CW · {bufferStatus}</em>
+          </span>
+          <details className="public-field-physics-info">
+            <summary aria-label="Field details" title="Field details">i</summary>
+            <div className="public-field-summary-panel">
+              <span>Field composition</span>
+              <strong>{sourceLabel}</strong>
+              <p>{sourceDetail}</p>
+              {(activeDetailRaster || visibleRaster || visiblePlot) && (
+                <dl>
+                  <div><dt>Peak |B|</dt><dd>{currentPeakBT.toFixed(3)} T</dd></div>
+                  <div><dt>Position</dt><dd>{electricalAngleDeg.toFixed(1)}° elec</dd></div>
+                </dl>
+              )}
+              <p className="public-field-summary-note">PM-only and Stator-only are separate nonlinear solves; their arithmetic sum is not assumed to equal the Resultant field when steel is saturated.</p>
+            </div>
+          </details>
+        </div>
+        <div className="public-field-dock-controls" role="toolbar" aria-label="Field display">
+          <div className="public-field-control-cluster">
+            <span>Field</span>
+            <div className="public-field-source-controls" role="group" aria-label="Field composition">
+              <button type="button" aria-label="Resultant field, permanent magnets plus stator current" title="Permanent magnets plus stator current" aria-pressed={view === 'resultant'} onClick={() => selectSource('resultant')}><strong>Resultant</strong></button>
+              <span className={`public-field-source-pair${overlayActive ? ' is-both' : ''}`} role="group" aria-label="Separate fields: PM, Stator, or both together" title="Pick PM, Stator, or both to draw their field lines together">
+                <button type="button" className="is-pm" aria-label="PM-only field, zero current" title="Exact zero-current Magneto2D field" aria-pressed={pmShown} disabled={!pmAvailable} onClick={() => toggleSeparateField('pm')}><strong>PM</strong></button>
+                <button type="button" className="is-stator" aria-label="Stator-current-only field, permanent-magnet remanence disabled" title={magnetoCompositionAvailable ? 'Exact zero-remanence Magneto2D field' : 'Stator-only composition is available for Magneto2D results'} aria-pressed={statorShown} disabled={!magnetoCompositionAvailable} onClick={() => toggleSeparateField('armature')}><strong>Stator</strong></button>
+              </span>
+            </div>
+          </div>
+          <div className="public-field-control-cluster public-field-overlay-cluster">
+            <span>Show</span>
+            <div className="public-field-layer-controls public-field-layer-controls-inline" role="group" aria-label="Field solution overlays">
+              {renderLayerButtons()}
+            </div>
+          </div>
+          <details className="public-field-layer-menu">
+            <summary>Show</summary>
+            <div className="public-field-layer-controls" role="group" aria-label="Field solution overlays">
+              {renderLayerButtons()}
+            </div>
+          </details>
+          {showFieldLines && renderDensityControl(true)}
+          <span className="public-field-zoom-slot" ref={setZoomSlot} />
+        </div>
       </div>
     </section>
   );
