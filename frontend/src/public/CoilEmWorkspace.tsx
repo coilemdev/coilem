@@ -72,6 +72,7 @@ import { HOLEM50_FIELDS } from './model';
 import type { PublicRunExportKind } from './api';
 import type { PublicSolveProgress } from './api';
 import { LessonProgressStepper } from '../components/tutorials/LessonProgressStepper';
+import { designErrorSection } from './designErrors';
 import type { LearningLessonHeaderProgress } from '../components/tutorials/lessonStage';
 import {
   publicMeshQualityBand,
@@ -903,6 +904,7 @@ function ParameterSectionBlock({
   label,
   summary,
   active,
+  attention = false,
   onToggle,
   children,
   nextLabel,
@@ -912,6 +914,8 @@ function ParameterSectionBlock({
   label: string;
   summary: string;
   active: boolean;
+  /** The current design error names a field in this section. */
+  attention?: boolean;
   onToggle: (id: PublicParameterSection) => void;
   children: ReactNode;
   nextLabel?: string;
@@ -921,16 +925,16 @@ function ParameterSectionBlock({
     <section className="param-group" data-guide={`section-${id}`} data-guide-active={active ? 'true' : 'false'}>
       <button
         type="button"
-        className={`param-group-header status-complete${active ? '' : ' collapsed'}`}
+        className={`param-group-header ${attention ? 'status-attention' : 'status-complete'}${active ? '' : ' collapsed'}`}
         // The chevron is aria-hidden, so without this the header gave no clue
         // that it opens and closes anything.
         aria-expanded={active}
         aria-controls={`param-group-content-${id}`}
         onClick={() => onToggle(id)}
       >
-        <StatusGlyph />
+        <StatusGlyph tone={attention ? 'warning' : 'good'} />
         <span className="param-group-titles">
-          <span className="param-group-label">{label}</span>
+          <span className="param-group-label">{label}{attention && <span className="public-visually-hidden"> needs attention</span>}</span>
           {!active && <span className="param-group-chip">{summary}</span>}
         </span>
         <span className="chevron" aria-hidden="true">▼</span>
@@ -943,8 +947,8 @@ function ParameterSectionBlock({
   );
 }
 
-function ParameterPanel({ config, materials, geometry, geometryStale, busy, error, notice, blankDesign = false, guidedActive, guidedDesignSection, selectedComponent, experimentalRotors, onTopologyChange, onSectionChange, onDesignSectionVisit, onConvertProjectSteelToM350, onImportSteel, onReset, onRefreshGeometry, onNext, onClearComponent }: Pick<CoilEmWorkspaceProps,
-  'config' | 'materials' | 'geometry' | 'geometryStale' | 'busy' | 'error' | 'notice' | 'blankDesign' | 'experimentalRotors' | 'onTopologyChange' | 'onSectionChange' | 'onDesignSectionVisit' | 'onConvertProjectSteelToM350' | 'onImportSteel' | 'onReset' | 'onRefreshGeometry'
+function ParameterPanel({ config, materials, geometry, geometryStale, busy, error, errorDetails, notice, blankDesign = false, guidedActive, guidedDesignSection, selectedComponent, experimentalRotors, onTopologyChange, onSectionChange, onDesignSectionVisit, onConvertProjectSteelToM350, onImportSteel, onReset, onRefreshGeometry, onNext, onClearComponent }: Pick<CoilEmWorkspaceProps,
+  'config' | 'materials' | 'geometry' | 'geometryStale' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'blankDesign' | 'experimentalRotors' | 'onTopologyChange' | 'onSectionChange' | 'onDesignSectionVisit' | 'onConvertProjectSteelToM350' | 'onImportSteel' | 'onReset' | 'onRefreshGeometry'
 > & {
   guidedActive?: boolean;
   guidedDesignSection?: PublicParameterSection | null;
@@ -982,6 +986,9 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
   // leaves it held indefinitely — so an unsuppressed note would keep explaining a
   // shape the user has already changed.
   const geometryWarnings = currentGeometryWarnings(geometry, geometryStale);
+  // Every section header showed a green check, even beside "Winding needs
+  // attention"; the one holding the faulty field now shows the warning instead.
+  const errorSection = error ? designErrorSection(errorDetails) : null;
   const statorWidths = deriveStatorSectionWidths(
     config,
     geometryStale ? null : geometry,
@@ -1191,7 +1198,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
           )}
         </div>}
 
-      {matchesSearch('stator') && <ParameterSectionBlock id="stator" label="Stator Geometry" active={Boolean(normalizedSearch) || activeSection === 'stator'} onToggle={toggle} summary={`${config.stator.OD_mm} mm OD · ${config.stator.slot_count} slots · ${config.stator.stack_length_mm} mm stack`} nextLabel={normalizedSearch ? undefined : 'Rotor & Magnets'} onNext={normalizedSearch ? undefined : setNext('rotor')}>
+      {matchesSearch('stator') && <ParameterSectionBlock id="stator" attention={errorSection === 'stator'} label="Stator Geometry" active={Boolean(normalizedSearch) || activeSection === 'stator'} onToggle={toggle} summary={`${config.stator.OD_mm} mm OD · ${config.stator.slot_count} slots · ${config.stator.stack_length_mm} mm stack`} nextLabel={normalizedSearch ? undefined : 'Rotor & Magnets'} onNext={normalizedSearch ? undefined : setNext('rotor')}>
         <NumberRow label="Outer Diameter" value={config.stator.OD_mm} unit="mm" min={30} step={1} disabled={disabled} onChange={set('stator', 'OD_mm', 'stator')} />
         <NumberRow label="Inner Diameter" value={config.stator.ID_mm} unit="mm" min={20} step={1} disabled={disabled} onChange={set('stator', 'ID_mm', 'stator')} />
         <NumberRow label="Slot Count" value={config.stator.slot_count} min={6} step={1} disabled={disabled} onChange={set('stator', 'slot_count', 'stator')} />
@@ -1199,7 +1206,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         <div className="fable-derived"><span className="fable-derived-fx">ƒ</span><span>slot pitch {(360 / config.stator.slot_count).toFixed(1)}° · bore pitch {(Math.PI * config.stator.ID_mm / config.stator.slot_count).toFixed(1)} mm</span></div>
       </ParameterSectionBlock>}
 
-      {matchesSearch('rotor') && <ParameterSectionBlock id="rotor" label="Rotor & Magnets" active={Boolean(normalizedSearch) || activeSection === 'rotor'} onToggle={toggle} summary={`${config.rotor.pole_count} poles · ${config.rotor.OD_mm} mm rotor · ${config.rotor.magnet_thickness_mm} mm magnet`} nextLabel={normalizedSearch ? undefined : 'Advanced Geometry'} onNext={normalizedSearch ? undefined : setNext('advanced')}>
+      {matchesSearch('rotor') && <ParameterSectionBlock id="rotor" attention={errorSection === 'rotor'} label="Rotor & Magnets" active={Boolean(normalizedSearch) || activeSection === 'rotor'} onToggle={toggle} summary={`${config.rotor.pole_count} poles · ${config.rotor.OD_mm} mm rotor · ${config.rotor.magnet_thickness_mm} mm magnet`} nextLabel={normalizedSearch ? undefined : 'Advanced Geometry'} onNext={normalizedSearch ? undefined : setNext('advanced')}>
         <NumberRow label="Pole Count" value={config.rotor.pole_count} min={2} max={32} step={2} disabled={disabled} onChange={set('rotor', 'pole_count', 'rotor')} />
         <NumberRow label="Rotor OD" value={config.rotor.OD_mm} unit="mm" min={15} step={1} disabled={disabled} onChange={set('rotor', 'OD_mm', 'rotor')} />
         <div className="param-row public-param-row public-derived-row"><span className="param-label">Air Gap<small>mm</small></span><strong>{airgap.toFixed(2)}</strong></div>
@@ -1235,7 +1242,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         <SelectRow label="Magnet Grade" value={config.materials.magnet_grade} choices={materials.magnet_grades.map((value) => ({ value, label: value }))} disabled={disabled} onChange={set('materials', 'magnet_grade', 'rotor')} />
       </ParameterSectionBlock>}
 
-      {matchesSearch('advanced') && <ParameterSectionBlock id="advanced" label="Advanced Geometry" active={Boolean(normalizedSearch) || activeSection === 'advanced'} onToggle={toggle} summary={`bore tooth ${statorWidths.boreToothWidthMm.toFixed(1)} · yoke tooth ${config.stator.tooth_width_mm} · yoke ${config.stator.yoke_thickness_mm}`} nextLabel={normalizedSearch ? undefined : 'Winding'} onNext={normalizedSearch ? undefined : setNext('winding')}>
+      {matchesSearch('advanced') && <ParameterSectionBlock id="advanced" attention={errorSection === 'advanced'} label="Advanced Geometry" active={Boolean(normalizedSearch) || activeSection === 'advanced'} onToggle={toggle} summary={`bore tooth ${statorWidths.boreToothWidthMm.toFixed(1)} · yoke tooth ${config.stator.tooth_width_mm} · yoke ${config.stator.yoke_thickness_mm}`} nextLabel={normalizedSearch ? undefined : 'Winding'} onNext={normalizedSearch ? undefined : setNext('winding')}>
         <NumberRow label="Bore Tooth Width" value={Number(statorWidths.boreToothWidthMm.toFixed(1))} unit="mm" hint="Tangential tooth width at the stator bore. Bore slot opening is calculated from the remaining pitch." min={minimumBoreToothWidthMm} max={maximumBoreToothWidthMm} step={0.1} disabled={disabled} onChange={setBoreToothWidth} />
         <NumberRow label="Yoke Tooth Width" value={config.stator.tooth_width_mm} unit="mm" hint="Tangential tooth-body width where the slot terminates beside the yoke." min={2} step={0.1} disabled={disabled} onChange={set('stator', 'tooth_width_mm', 'advanced')} />
         <NumberRow label="Yoke Thick." value={config.stator.yoke_thickness_mm} unit="mm" min={1} step={0.1} disabled={disabled} onChange={set('stator', 'yoke_thickness_mm', 'advanced')} />
@@ -1292,7 +1299,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         </>}
       </ParameterSectionBlock>}
 
-      {matchesSearch('winding') && <ParameterSectionBlock id="winding" label="Winding" active={Boolean(normalizedSearch) || activeSection === 'winding'} onToggle={toggle} summary={`${config.winding.type}${showLayerRow ? ` · ${layerWording.summary[layerCount]}` : ''} · ${config.winding.turns_per_coil} turns × ${config.winding.parallel_paths}p`} nextLabel={normalizedSearch ? undefined : 'Materials'} onNext={normalizedSearch ? undefined : setNext('materials')}>
+      {matchesSearch('winding') && <ParameterSectionBlock id="winding" attention={errorSection === 'winding'} label="Winding" active={Boolean(normalizedSearch) || activeSection === 'winding'} onToggle={toggle} summary={`${config.winding.type}${showLayerRow ? ` · ${layerWording.summary[layerCount]}` : ''} · ${config.winding.turns_per_coil} turns × ${config.winding.parallel_paths}p`} nextLabel={normalizedSearch ? undefined : 'Materials'} onNext={normalizedSearch ? undefined : setNext('materials')}>
         <SelectRow label="Type" value={config.winding.type} choices={[{ value: 'concentrated', label: 'Concentrated' }, { value: 'distributed', label: 'Distributed' }]} disabled={disabled} onChange={set('winding', 'type', 'winding')} />
         {showLayerRow && <SelectRow
           label={layerWording.label}
@@ -1315,7 +1322,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         <NumberRow label="Phase Current" value={config.solve_params.current_amplitude_A} unit="A rms" min={0} step={0.5} disabled={disabled} onChange={set('solve_params', 'current_amplitude_A', 'winding')} />
       </ParameterSectionBlock>}
 
-      {matchesSearch('materials') && <ParameterSectionBlock id="materials" label="Materials" active={Boolean(normalizedSearch) || activeSection === 'materials'} onToggle={toggle} summary={`${steelDisplayName(config, config.materials.stator_steel)} stator · ${steelDisplayName(config, config.materials.rotor_steel)} rotor`}>
+      {matchesSearch('materials') && <ParameterSectionBlock id="materials" attention={errorSection === 'materials'} label="Materials" active={Boolean(normalizedSearch) || activeSection === 'materials'} onToggle={toggle} summary={`${steelDisplayName(config, config.materials.stator_steel)} stator · ${steelDisplayName(config, config.materials.rotor_steel)} rotor`}>
         <SelectRow label="Stator Steel" value={config.materials.stator_steel} choices={steelChoices(config.materials.stator_steel)} disabled={disabled} onChange={set('materials', 'stator_steel', 'materials')} />
         <SelectRow label="Rotor Steel" value={config.materials.rotor_steel} choices={steelChoices(config.materials.rotor_steel)} disabled={disabled} onChange={set('materials', 'rotor_steel', 'materials')} />
         {hasUnsupportedSteel && (
@@ -3501,6 +3508,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
                   geometryStale={props.geometryStale}
                   busy={props.busy}
                   error={props.error}
+                  errorDetails={props.errorDetails}
                   notice={props.notice}
                   blankDesign={props.blankDesign}
                   guidedActive={props.guidedActive}
