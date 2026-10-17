@@ -7,7 +7,11 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from 'react';
 
-import { deriveMagneticPolarityCues } from '../components/tutorials/fieldPolarityCues';
+import {
+  airgapHarmonic,
+  deriveMagneticPolarityCues,
+  strongestAirgapPolePairs,
+} from '../components/tutorials/fieldPolarityCues';
 import type { AirgapBrBtProfile } from '../components/tutorials/lessonSolveTypes';
 import type {
   FieldLineContourLevel,
@@ -19,6 +23,7 @@ import {
   useViewportNavigation,
   ViewportNavigationControls,
 } from './ViewportNavigation';
+import { rotorNorthAxisDeg, statorLeadElecDeg } from './fieldAxes';
 import {
   fieldRangeForViewport,
   type FieldViewportRange,
@@ -29,6 +34,11 @@ const FIELD_RASTER_SIZE = 900;
 const FIELD_DIRECTION_CUE_TARGET = 32;
 const DETAIL_RENDER_SCALE = 1.08;
 const VIEWPORT_SCALE_SETTLE_MS = 140;
+// The second field of the Stator + PM view (#120) is drawn in cyan with a dark
+// halo, apart from the orange stator lines and the red and blue magnets.
+const OVERLAY_LINE_COLOR = '#5ed3f3';
+const OVERLAY_HALO_COLOR = 'rgba(3,10,20,.92)';
+const OVERLAY_LINE_ALPHA = 0.85;
 
 export type FieldLineDensity = 'low' | 'medium' | 'high';
 export type FieldColorRangeMode = 'viewport' | 'sweep';
@@ -67,6 +77,19 @@ export interface FieldResultRaster {
   contourLevelCount: number;
   contourSegmentCount: number;
   vectorCues: PublicFieldVectorCue[];
+}
+
+/** Draw each field's working-harmonic axes; playback turns in this direction. */
+export interface FieldAxesOptions {
+  rotation: 'clockwise' | 'counterclockwise';
+}
+
+/** A second field drawn as lines over the first, as in the Stator + PM view (#120). */
+export interface FieldLineOverlay {
+  /** Playback raster of the second field; only its lines layer and direction cues are drawn. */
+  raster: FieldResultRaster | null;
+  /** Exact solver frame of the second field, drawn as vector lines when available. */
+  plot: PublicFieldLinePlot | null;
 }
 
 interface PreparedFieldPlot {
@@ -369,17 +392,52 @@ function drawFieldLines(
   context: CanvasRenderingContext2D,
   prepared: PreparedFieldPlot,
   density: FieldLineDensity = 'high',
+  overlay = false,
 ): void {
-  context.strokeStyle = '#ffd166';
+  context.strokeStyle = overlay ? OVERLAY_LINE_COLOR : '#ffd166';
   context.lineWidth = 0.28;
   context.lineCap = 'round';
-  context.shadowColor = 'rgba(255,145,0,.9)';
-  context.shadowBlur = 0.45;
+  context.shadowColor = overlay ? OVERLAY_HALO_COLOR : 'rgba(255,145,0,.9)';
+  context.shadowBlur = overlay ? 2 : 0.45;
   const stride = lineDensityStride(density);
   prepared.contourPaths.forEach((path, index) => {
     if (index % stride !== 0) return;
     context.stroke(path);
   });
+}
+
+/** The square of SVG-space coordinates that a square raster with this view box covers. */
+function rasterWorldSquare(viewBox: string): { left: number; top: number; size: number } | null {
+  const [x, y, width, height] = viewBox.split(/\s+/).map(Number);
+  if (![x, y, width, height].every(Number.isFinite) || width <= 0 || height <= 0) return null;
+  const size = Math.max(width, height);
+  return { left: x - (size - width) / 2, top: y - (size - height) / 2, size };
+}
+
+const overlayLineLayers = new WeakMap<ImageBitmap | HTMLCanvasElement, HTMLCanvasElement>();
+
+/** A field-line raster recoloured to the overlay colour, with its dark halo, made once per raster. */
+function overlayLineLayer(lines: ImageBitmap | HTMLCanvasElement): HTMLCanvasElement {
+  const cached = overlayLineLayers.get(lines);
+  if (cached) return cached;
+  const tint = document.createElement('canvas');
+  const layer = document.createElement('canvas');
+  tint.width = layer.width = lines.width;
+  tint.height = layer.height = lines.height;
+  const tintContext = tint.getContext('2d');
+  const context = layer.getContext('2d');
+  if (tintContext && context) {
+    tintContext.drawImage(lines, 0, 0);
+    // Keep each pixel's coverage; replace its colour.
+    tintContext.globalCompositeOperation = 'source-in';
+    tintContext.fillStyle = OVERLAY_LINE_COLOR;
+    tintContext.fillRect(0, 0, tint.width, tint.height);
+    context.shadowColor = OVERLAY_HALO_COLOR;
+    context.shadowBlur = Math.max(2, lines.width / 450);
+    context.drawImage(tint, 0, 0);
+  }
+  overlayLineLayers.set(lines, layer);
+  return layer;
 }
 
 function warmPreparedFieldPlot(prepared: PreparedFieldPlot | null): void {
@@ -464,6 +522,8 @@ export function FieldResultPlot({
   probeEnabled = true,
   describeProbe = defaultProbeDescription,
   onViewportScaleSettled,
+  overlay = null,
+  fieldAxes = null,
 }: {
   plot?: PublicFieldLinePlot | null;
   raster?: FieldResultRaster | null;
@@ -496,6 +556,8 @@ export function FieldResultPlot({
   probeEnabled?: boolean;
   describeProbe?: (probe: FieldProbe) => FieldProbeDescription;
   onViewportScaleSettled?: (scale: number) => void;
+  overlay?: FieldLineOverlay | null;
+  fieldAxes?: FieldAxesOptions | null;
 }) {
   const navigation = useViewportNavigation();
   const sourcePlot = highResolutionPlot ?? plot;
@@ -505,6 +567,10 @@ export function FieldResultPlot({
     if (!raster) warmPreparedFieldPlot(value);
     return value;
   }, [sourcePlot, raster]);
+  const overlayPrepared = useMemo(
+    () => (overlay?.plot ? cachedFieldPlot(overlay.plot) : null),
+    [overlay?.plot],
+  );
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const magnetOverlay = useMemo(
     () => prepareMagnetOverlay(geometry, magnetRotationDeg),
@@ -516,6 +582,23 @@ export function FieldResultPlot({
       : [],
     [poles, showStatorPolarity, statorPolarityProfile],
   );
+  const axisPolePairs = Math.max(1, Math.round(poles / 2));
+  const statorAxisDeg = useMemo(() => {
+    if (!fieldAxes) return null;
+    const harmonic = airgapHarmonic(statorPolarityProfile, axisPolePairs);
+    return harmonic ? harmonic.peakDeg + statorPolarityRotationDeg : null;
+  }, [axisPolePairs, fieldAxes, statorPolarityProfile, statorPolarityRotationDeg]);
+  const rotorAxisDeg = useMemo(
+    () => (fieldAxes ? rotorNorthAxisDeg(magnetOverlay, axisPolePairs) : null),
+    [axisPolePairs, fieldAxes, magnetOverlay],
+  );
+  const statorStrongestPolePairs = useMemo(
+    () => (fieldAxes ? strongestAirgapPolePairs(statorPolarityProfile, axisPolePairs * 4) : null),
+    [axisPolePairs, fieldAxes, statorPolarityProfile],
+  );
+  const leadElecDeg = fieldAxes && statorAxisDeg !== null && rotorAxisDeg !== null
+    ? statorLeadElecDeg(statorAxisDeg, rotorAxisDeg, axisPolePairs, fieldAxes.rotation)
+    : null;
   const [internalShowHeatmap, setInternalShowHeatmap] = useState(true);
   const [internalShowMesh, setInternalShowMesh] = useState(false);
   const [internalShowFieldLines, setInternalShowFieldLines] = useState(true);
@@ -562,6 +645,24 @@ export function FieldResultPlot({
       if (unchanged) return;
       viewportRangeRef.current = nextRange;
       setViewportRange(nextRange);
+    };
+    // Call with the canvas transform mapping SVG-space world coordinates. Exact
+    // overlay vectors go with exact primary vectors; otherwise its playback raster.
+    const drawOverlayLines = (context: CanvasRenderingContext2D, vectorPrimary: boolean) => {
+      if (!showFieldLines || !overlay) return;
+      const overlayRaster = overlay.raster;
+      if (overlayPrepared && (vectorPrimary || !overlayRaster)) {
+        context.save();
+        drawFieldLines(context, overlayPrepared, fieldLineDensity, true);
+        context.restore();
+        return;
+      }
+      const square = overlayRaster ? rasterWorldSquare(overlayRaster.viewBox) : null;
+      if (!overlayRaster || !square) return;
+      context.save();
+      context.globalAlpha = OVERLAY_LINE_ALPHA;
+      context.drawImage(overlayLineLayer(overlayRaster.lines), square.left, square.top, square.size, square.size);
+      context.restore();
     };
     const draw = () => {
       const width = Math.max(1, canvas.clientWidth);
@@ -626,6 +727,7 @@ export function FieldResultPlot({
         if (showHeatmap) drawHeat(context, prepared, sweepRange ?? visibleRange ?? undefined);
         if (showMesh) drawMeshEdges(context, prepared, navigation.scale);
         if (showFieldLines) drawFieldLines(context, prepared, fieldLineDensity);
+        drawOverlayLines(context, true);
         context.restore();
         return;
       }
@@ -700,6 +802,21 @@ export function FieldResultPlot({
           context.drawImage(layers.lines, x, y, drawSize, drawSize);
           context.restore();
         }
+        const primarySquare = rasterWorldSquare(raster?.viewBox ?? prepared?.viewBox ?? '');
+        if (overlay && primarySquare) {
+          const worldScale = drawSize / primarySquare.size;
+          context.save();
+          context.setTransform(
+            worldScale,
+            0,
+            0,
+            worldScale,
+            x - primarySquare.left * worldScale,
+            y - primarySquare.top * worldScale,
+          );
+          drawOverlayLines(context, Boolean(prepared && highResolutionPlot));
+          context.restore();
+        }
       }
     };
     draw();
@@ -714,6 +831,8 @@ export function FieldResultPlot({
     navigation.pan.x,
     navigation.pan.y,
     navigation.scale,
+    overlay,
+    overlayPrepared,
     prepared,
     raster,
     showFieldLines,
@@ -735,13 +854,12 @@ export function FieldResultPlot({
   const contourLevelCount = raster?.contourLevelCount ?? plot?.contour_levels.length ?? 0;
   const availableDirectionCues = raster?.vectorCues ?? prepared?.vectorCues ?? [];
   const directionCueTarget = fieldLineDensity === 'low' ? 12 : fieldLineDensity === 'medium' ? 20 : 32;
-  const directionCues = availableDirectionCues.length <= directionCueTarget
-    ? availableDirectionCues
+  const sampleCues = (cues: PublicFieldVectorCue[]) => (cues.length <= directionCueTarget
+    ? cues
     : Array.from({ length: directionCueTarget }, (_, index) => (
-      availableDirectionCues[
-        Math.round(index * (availableDirectionCues.length - 1) / (directionCueTarget - 1))
-      ]
-    ));
+      cues[Math.round(index * (cues.length - 1) / (directionCueTarget - 1))]
+    )));
+  const directionCues = sampleCues(availableDirectionCues);
   const viewBoxValues = viewBox.split(/\s+/).map(Number);
   const [viewX, viewY, viewWidth, viewHeight] = viewBoxValues;
   const hasValidOverlayViewBox = viewBoxValues.length === 4
@@ -769,7 +887,10 @@ export function FieldResultPlot({
     ? Math.max(0.8, Math.min(Math.abs(viewBoxValues[2]), Math.abs(viewBoxValues[3])) * 0.014)
     : 1;
   const arrowPath = `M ${-arrowSize * 0.58} 0 L ${arrowSize * 0.35} 0 M ${arrowSize * 0.05} ${-arrowSize * 0.3} L ${arrowSize * 0.52} 0 L ${arrowSize * 0.05} ${arrowSize * 0.3}`;
-  const hasDirectionCues = showFieldLines && directionCues.length > 0;
+  const overlayDirectionCues = overlay && showFieldLines
+    ? sampleCues(overlay.raster?.vectorCues ?? overlayPrepared?.vectorCues ?? [])
+    : [];
+  const hasDirectionCues = showFieldLines && (directionCues.length > 0 || overlayDirectionCues.length > 0);
   const statorPoleLabelRadius = Number.isFinite(statorInnerRadiusMm)
     ? (statorInnerRadiusMm ?? 0) + Math.max(3.2, Math.min(5, (statorInnerRadiusMm ?? 0) * 0.075))
     : null;
@@ -779,16 +900,55 @@ export function FieldResultPlot({
     && Number.isFinite(statorInnerRadiusMm)
     && (airgapInnerRadiusMm ?? 0) > 0
     && (statorInnerRadiusMm ?? 0) > (airgapInnerRadiusMm ?? 0);
+  const axisRotorRadius = airgapInnerRadiusMm ?? 0;
+  const axisStatorRadius = statorInnerRadiusMm ?? 0;
+  const hasFieldAxes = fieldAxes !== null
+    && leadElecDeg !== null
+    && axisRotorRadius > 0
+    && axisStatorRadius > axisRotorRadius;
+  const polar = (radius: number, angleDeg: number) => {
+    const angleRad = (angleDeg * Math.PI) / 180;
+    return [radius * Math.cos(angleRad), -radius * Math.sin(angleRad)] as const;
+  };
+  const axisArrow = (fromRadius: number, toRadius: number, angleDeg: number) => {
+    const [x1, y1] = polar(fromRadius, angleDeg);
+    const [x2, y2] = polar(toRadius, angleDeg);
+    const head = (toRadius - fromRadius) * 0.28;
+    const [hx1, hy1] = polar(toRadius - head, angleDeg + 4);
+    const [hx2, hy2] = polar(toRadius - head, angleDeg - 4);
+    return `M ${x1} ${y1} L ${x2} ${y2} M ${hx1} ${hy1} L ${x2} ${y2} L ${hx2} ${hy2}`;
+  };
+  const axisPitchDeg = 360 / axisPolePairs;
+  const axisAngles = (startDeg: number) => Array.from(
+    { length: axisPolePairs },
+    (_, index) => startDeg + index * axisPitchDeg,
+  );
+  // The arc marks one rotor pole nearest the top of the view and the stator
+  // axis just ahead of it in the direction of rotation.
+  const arcRotorDeg = hasFieldAxes && rotorAxisDeg !== null
+    ? axisAngles(rotorAxisDeg).reduce((best, angle) => (
+      Math.abs(((angle - 90) % 360 + 540) % 360 - 180) < Math.abs(((best - 90) % 360 + 540) % 360 - 180) ? angle : best
+    ))
+    : 0;
+  const arcSpanDeg = hasFieldAxes && leadElecDeg !== null
+    ? (fieldAxes?.rotation === 'clockwise' ? -1 : 1) * leadElecDeg / axisPolePairs
+    : 0;
+  const arcRadius = axisRotorRadius * 0.5;
+  const [arcX1, arcY1] = polar(arcRadius, arcRotorDeg);
+  const [arcX2, arcY2] = polar(arcRadius, arcRotorDeg + arcSpanDeg);
+  const [arcLabelX, arcLabelY] = polar(arcRadius * 0.8, arcRotorDeg + arcSpanDeg / 2);
+  const axisFontSize = Math.max(1.2, axisRotorRadius * 0.07);
   const visibleLayerLabel = [
     showHeatmap && hasHeatmap ? 'flux-density heatmap' : null,
     showMesh && hasMesh ? 'solver mesh edges' : null,
-    showFieldLines && hasFieldLines ? 'magnetic field lines' : null,
+    showFieldLines && hasFieldLines ? (overlay ? 'stator field lines in orange and PM field lines in cyan' : 'magnetic field lines') : null,
     hasDirectionCues ? 'field-direction arrows' : null,
     showMagnets && magnetOverlay.length > 0
       ? magnetReference ? 'dimmed permanent-magnet reference geometry' : 'permanent magnets'
       : null,
     hasAirgapOverlay ? 'airgap boundary contour' : null,
     hasStatorPolarityCues ? 'current-induced stator pole labels' : null,
+    hasFieldAxes ? 'stator and magnet field-axis arrows' : null,
   ].filter(Boolean).join(' and ') || 'magnetic field geometry';
   const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
     navigation.bind.onPointerMove(event);
@@ -869,7 +1029,7 @@ export function FieldResultPlot({
       >
         <canvas ref={canvasRef} role="img" aria-label={`Solved ${visibleLayerLabel}`} />
         <div className="public-viewport-navigation-content public-field-overlay-navigation" style={navigation.contentStyle}>
-          {(hasDirectionCues || (showMagnets && magnetOverlay.length > 0) || hasAirgapOverlay || hasStatorPolarityCues) && <svg viewBox={`0 0 ${FIELD_RASTER_SIZE} ${FIELD_RASTER_SIZE}`} className="public-field-result-overlay" aria-hidden="true">
+          {(hasDirectionCues || (showMagnets && magnetOverlay.length > 0) || hasAirgapOverlay || hasStatorPolarityCues || hasFieldAxes) && <svg viewBox={`0 0 ${FIELD_RASTER_SIZE} ${FIELD_RASTER_SIZE}`} className="public-field-result-overlay" aria-hidden="true">
             <g className="public-field-result-overlay-world" transform={`matrix(${overlayTransform})`}>
               {hasAirgapOverlay && (
                 <g className="public-field-result-airgap-overlay">
@@ -892,10 +1052,42 @@ export function FieldResultPlot({
                   </g>
                 );
               })}
+              {hasDirectionCues && overlayDirectionCues.map((cue, index) => {
+                const screenAngleDeg = Math.atan2(-cue.dy, cue.dx) * 180 / Math.PI;
+                const style = {
+                  '--public-field-arrow-delay': `${-(index % 12) * 0.14}s`,
+                } as CSSProperties;
+                return (
+                  <g
+                    transform={`translate(${cue.x} ${-cue.y}) rotate(${screenAngleDeg})`}
+                    className="public-field-direction-cue is-overlay"
+                    key={`overlay-direction-${index}`}
+                  >
+                    <path d={arrowPath} style={style} />
+                  </g>
+                );
+              })}
               {showMagnets && (
                 <g className={`public-field-result-pm-overlay${magnetReference ? ' is-reference' : ''}`}>
                   {magnetOverlay.map((magnet, index) => <path d={magnet.path} className={`public-field-result-magnet is-${magnet.polarity}`} key={`magnet-${index}`} />)}
                   {showMagnetPolarityLabels && magnetOverlay.map((magnet, index) => <text x={magnet.center[0]} y={-magnet.center[1]} className="public-field-result-magnet-label" key={`magnet-label-${index}`}>{magnet.polarity === 'north' ? 'N' : 'S'}</text>)}
+                </g>
+              )}
+              {hasFieldAxes && statorAxisDeg !== null && rotorAxisDeg !== null && (
+                <g className="public-field-axes">
+                  {axisAngles(rotorAxisDeg).map((angle) => (
+                    <path className="public-field-axis is-pm" d={axisArrow(axisRotorRadius * 0.62, axisRotorRadius * 0.96, angle)} key={`pm-axis-${angle}`} />
+                  ))}
+                  {axisAngles(statorAxisDeg).map((angle) => (
+                    <path className="public-field-axis is-stator" d={axisArrow(axisStatorRadius * 1.04, axisStatorRadius * 1.32, angle)} key={`stator-axis-${angle}`} />
+                  ))}
+                  <path
+                    className="public-field-axis-arc"
+                    d={`M ${arcX1} ${arcY1} A ${arcRadius} ${arcRadius} 0 0 ${arcSpanDeg > 0 ? 0 : 1} ${arcX2} ${arcY2}`}
+                  />
+                  <text className="public-field-axis-label" x={arcLabelX} y={arcLabelY} style={{ fontSize: axisFontSize }}>
+                    {Math.round(Math.abs(leadElecDeg ?? 0))}° elec
+                  </text>
                 </g>
               )}
               {hasStatorPolarityCues && statorPolarityCues.map((cue, index) => {
@@ -934,7 +1126,31 @@ export function FieldResultPlot({
           </div>
         )}
       </div>
-      <div className="public-field-result-legend">
+      {overlay ? (
+        <>
+          <div className="public-field-lines-legend" aria-label="Field-line colours">
+            <span><i className="is-stator" aria-hidden="true" />Stator</span>
+            <span><i className="is-pm" aria-hidden="true" />PM</span>
+            {hasFieldAxes && leadElecDeg !== null && (
+              <strong className="public-field-lead">
+                Stator {leadElecDeg >= 0 ? 'leads' : 'lags'} magnets by {Math.round(Math.abs(leadElecDeg))}° elec
+              </strong>
+            )}
+            <small>Separate solves: in saturated steel the resultant is not their sum.</small>
+          </div>
+          {hasFieldAxes && leadElecDeg !== null && (
+            <p className="public-field-axes-caption">
+              Arrows: each field&apos;s {axisPolePairs}-pole-pair flux pointing outward.{' '}
+              {leadElecDeg >= 0 ? 'The magnets are pulled after the stator field.' : 'The stator field holds the magnets back.'}
+              {statorStrongestPolePairs !== null && statorStrongestPolePairs !== axisPolePairs && (
+                <>
+                  {' '}The stator&apos;s stronger {statorStrongestPolePairs}-pole-pair part gives no steady torque and can make its lines seem to turn the other way.
+                </>
+              )}
+            </p>
+          )}
+        </>
+      ) : <div className="public-field-result-legend">
         <strong>Flux density <span>|B| (T)</span></strong>
         <span className="is-min">{displayMinB.toFixed(3)}</span>
         <i aria-hidden="true" />
@@ -963,7 +1179,7 @@ export function FieldResultPlot({
           </div>
         )}
         <small>{triangleCount.toLocaleString()} solved elements · {contourLevelCount} contour levels</small>
-      </div>
+      </div>}
     </section>
   );
 }

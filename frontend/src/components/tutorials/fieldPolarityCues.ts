@@ -7,24 +7,27 @@ export interface MagneticPolarityCue {
   label: 'N' | 'S';
 }
 
-/**
- * Fit the pole-pair spatial harmonic of signed air-gap Br. Tooth ripple and
- * local saturation remain in the field plot, while the N/S cues communicate
- * the stable electromagnetic pole centers a user is trying to identify.
- */
-export function deriveMagneticPolarityCues(
-  profile: AirgapBrBtProfile | null | undefined,
-  poles: number,
-  surface: MagneticSurface,
-): MagneticPolarityCue[] {
-  const finiteBins = profile?.bins?.filter((bin) => (
+export interface AirgapHarmonic {
+  /** Mechanical angle of one positive-Br peak (flux crossing rotor -> stator). */
+  peakDeg: number;
+  amplitudeT: number;
+}
+
+function finiteAirgapBins(profile: AirgapBrBtProfile | null | undefined) {
+  return profile?.bins?.filter((bin) => (
     Number.isFinite(bin.mech_angle_deg)
     && Number.isFinite(bin.br_t)
     && (bin.samples ?? 0) > 0
   )) ?? [];
-  const evenPoleCount = Math.max(2, Math.round(poles / 2) * 2);
-  const polePairs = evenPoleCount / 2;
-  if (finiteBins.length < Math.max(4, polePairs * 2)) return [];
+}
+
+/** Fit one spatial harmonic (in pole pairs) of signed air-gap Br. */
+export function airgapHarmonic(
+  profile: AirgapBrBtProfile | null | undefined,
+  polePairs: number,
+): AirgapHarmonic | null {
+  const finiteBins = finiteAirgapBins(profile);
+  if (finiteBins.length < Math.max(4, polePairs * 2)) return null;
 
   let cosine = 0;
   let sine = 0;
@@ -36,16 +39,53 @@ export function deriveMagneticPolarityCues(
     sine += weight * bin.br_t * Math.sin(polePairs * angleRad);
     weightSum += weight;
   }
-  if (weightSum <= 0) return [];
+  if (weightSum <= 0) return null;
   cosine /= weightSum;
   sine /= weightSum;
-  const harmonicAmplitudeT = 2 * Math.hypot(cosine, sine);
-  if (!Number.isFinite(harmonicAmplitudeT) || harmonicAmplitudeT < 1e-6) return [];
+  const amplitudeT = 2 * Math.hypot(cosine, sine);
+  if (!Number.isFinite(amplitudeT) || amplitudeT < 1e-6) return null;
+  return {
+    peakDeg: ((Math.atan2(sine, cosine) * 180) / Math.PI / polePairs + 360) % (360 / polePairs),
+    amplitudeT,
+  };
+}
 
-  const positivePeakDeg = (
-    (Math.atan2(sine, cosine) * 180) / Math.PI / polePairs
-    + 360
-  ) % (360 / polePairs);
+/**
+ * The pole-pair count of the strongest air-gap Br harmonic up to `maxPolePairs`,
+ * for a profile covering the full circle; null otherwise.
+ */
+export function strongestAirgapPolePairs(
+  profile: AirgapBrBtProfile | null | undefined,
+  maxPolePairs: number,
+): number | null {
+  if (!profile || Math.abs(profile.span_deg - 360) > 1e-6) return null;
+  let strongest: number | null = null;
+  let strongestAmplitude = 0;
+  for (let order = 1; order <= maxPolePairs; order += 1) {
+    const amplitude = airgapHarmonic(profile, order)?.amplitudeT ?? 0;
+    if (amplitude > strongestAmplitude) {
+      strongest = order;
+      strongestAmplitude = amplitude;
+    }
+  }
+  return strongest;
+}
+
+/**
+ * Fit the pole-pair spatial harmonic of signed air-gap Br. Tooth ripple and
+ * local saturation remain in the field plot, while the N/S cues communicate
+ * the stable electromagnetic pole centers a user is trying to identify.
+ */
+export function deriveMagneticPolarityCues(
+  profile: AirgapBrBtProfile | null | undefined,
+  poles: number,
+  surface: MagneticSurface,
+): MagneticPolarityCue[] {
+  const evenPoleCount = Math.max(2, Math.round(poles / 2) * 2);
+  const polePairs = evenPoleCount / 2;
+  const harmonic = airgapHarmonic(profile, polePairs);
+  if (!harmonic) return [];
+  const positivePeakDeg = harmonic.peakDeg;
 
   return Array.from({ length: evenPoleCount }, (_, index) => {
     const radialFieldIsPositive = index % 2 === 0;
