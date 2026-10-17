@@ -2524,6 +2524,17 @@ function CompletedResultMonitor({ result, onOpenReport }: { result: SolveResult;
   const thdLabel = result.back_emf_harmonic_analysis
     ? 'Back EMF THD H12'
     : 'Back EMF THD legacy';
+  const resultsHeadingId = useId();
+  const preview = sixStep && !completeCycle ? ' · preview' : '';
+  // Read like the motor constants below: one row per value, numbers in one
+  // right-aligned column, units beside them, a rule between groups.
+  const resultRow = (label: string, value: string, unit: string, groupStart = false) => (
+    <tr className={groupStart ? 'is-group-start' : undefined}>
+      <th scope="row">{label}</th>
+      <td className="motor-constants-value">{value}</td>
+      <td className="motor-constants-unit">{unit}</td>
+    </tr>
+  );
 
   return (
     <section className="public-completed-results" aria-label="Completed solver results">
@@ -2531,16 +2542,21 @@ function CompletedResultMonitor({ result, onOpenReport }: { result: SolveResult;
         <span className="public-section-kicker">Completed results</span>
         <button type="button" data-guide="open-report" onClick={onOpenReport}>Full results →</button>
       </div>
-      <dl className="public-result-metrics">
-        <div><dt>Average torque{sixStep && !completeCycle ? ' · preview' : ''}</dt><dd>{formatNumber(result.summary.avg_torque_Nm)} N·m</dd></div>
-        <div><dt>Torque ripple{sixStep && !completeCycle ? ' · preview' : ''}</dt><dd>{formatNumber(result.summary.torque_ripple_pct)} %</dd></div>
-        <div><dt>Back EMF</dt><dd>{formatNumber(result.summary.back_emf_fundamental_V)} V</dd></div>
-        <div><dt>{thdLabel}</dt><dd>{formatNumber(result.summary.back_emf_thd_pct)} %</dd></div>
-        <div><dt>Peak tooth B</dt><dd>{formatNumber(result.summary.peak_flux_density_teeth_T)} T</dd></div>
-        <div><dt>Peak yoke B</dt><dd>{formatNumber(result.summary.peak_flux_density_yoke_T)} T</dd></div>
-        <div><dt>Solver time</dt><dd>{formatNumber(result.summary.solve_time_s, 1)} s</dd></div>
-        {result.workflow_elapsed_s != null && <div><dt>Total elapsed</dt><dd>{formatNumber(result.workflow_elapsed_s, 1)} s</dd></div>}
-      </dl>
+      <section className="motor-constants public-result-list" aria-labelledby={resultsHeadingId}>
+        <h3 id={resultsHeadingId}>Performance</h3>
+        <table>
+          <tbody>
+            {resultRow(`Average torque${preview}`, formatNumber(result.summary.avg_torque_Nm), 'N·m')}
+            {resultRow(`Torque ripple${preview}`, formatNumber(result.summary.torque_ripple_pct), '%')}
+            {resultRow('Back EMF', formatNumber(result.summary.back_emf_fundamental_V), 'V', true)}
+            {resultRow(thdLabel, formatNumber(result.summary.back_emf_thd_pct), '%')}
+            {resultRow('Peak tooth B', formatNumber(result.summary.peak_flux_density_teeth_T), 'T', true)}
+            {resultRow('Peak yoke B', formatNumber(result.summary.peak_flux_density_yoke_T), 'T')}
+            {resultRow('Solver time', formatNumber(result.summary.solve_time_s, 1), 's', true)}
+            {result.workflow_elapsed_s != null && resultRow('Total elapsed', formatNumber(result.workflow_elapsed_s, 1), 's')}
+          </tbody>
+        </table>
+      </section>
       <MotorConstants summary={result.summary} />
       {/* The waveform heading labels the plots below it, not the metrics and
           constants above (#110). */}

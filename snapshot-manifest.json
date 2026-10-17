@@ -5180,8 +5180,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 121513,
-      "sha256": "70c8f6db26d829895d909f35c7c07e4548261d85bccc675729bb806bef26143e"
+      "bytes": 122451,
+      "sha256": "2cf49fec70eb9f6b3fe056fdedf82ee7e0fc4d6bb3d87e65851f656a368b0fbc"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5580,8 +5580,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 197718,
-      "sha256": "1ea3817658e25452ef370dc545f6c47911f1d950d4a4a6a81129e140c937df22"
+      "bytes": 198339,
+      "sha256": "10dfa47da74e593072853b2765894b8c10e3b3a3b2e3e2c3eaf4127cd4bb7a7d"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5910,8 +5910,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 243227,
-      "sha256": "a43e6bff7e29773ab95175019f1cba4f8aed3f64360b2bf3c054d495dad271b3"
+      "bytes": 242696,
+      "sha256": "4631058103fad2be55e06786a7f44d402d4b7fbfcb7fc22561e4135e21bd01fb"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -9269,6 +9269,24 @@
       "path": "frontend/scripts/test-public-boundary.mjs",
       "source_sha256": "f73074a8e8cf1d6926d06274f9684120d673814623f18c66279f378b3b3fde29",
       "reason": "Allow react-dom, the package behind react-dom/client, for createPortal."
+    },
+    {
+      "base_commit": "3cdc19aa698aa09d893ab3e6ace5da4e1a28e647",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "1ea3817658e25452ef370dc545f6c47911f1d950d4a4a6a81129e140c937df22",
+      "reason": "Show Completed results as a list like the motor constants: one row per value, right-aligned numbers, units in their own column, a rule between torque, back-EMF, flux-density and timing rows."
+    },
+    {
+      "base_commit": "3cdc19aa698aa09d893ab3e6ace5da4e1a28e647",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "a43e6bff7e29773ab95175019f1cba4f8aed3f64360b2bf3c054d495dad271b3",
+      "reason": "Replace the result tiles' styles with the list's group rule, reusing the motor-constants table styles."
+    },
+    {
+      "base_commit": "3cdc19aa698aa09d893ab3e6ace5da4e1a28e647",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "70c8f6db26d829895d909f35c7c07e4548261d85bccc675729bb806bef26143e",
+      "reason": "Check the Completed results list in place of the tiles."
     }
   ]
 }
