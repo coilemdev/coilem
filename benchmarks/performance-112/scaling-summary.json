@@ -1,0 +1,1854 @@
+{
+  "schema": "coilem.benchmark_performance_followup/v1",
+  "scope": "One pass per configuration on a development host; eight-case A/B/D scaling and separate serial BLDC output/readiness experiments",
+  "hardware": "Windows 11, Ryzen 7 7700, 8 physical / 16 logical cores, 64 GiB RAM",
+  "physical_source_commit": "738d9516e8500c5996c772bd96470472cbb9a0f9",
+  "execution_sources_match_commit": "17628dea22ee16f91bf7298ad104a869e1e75992",
+  "current_metrics_and_readiness_source_sha256": {
+    "producer.py": "4b118e2392c2557679cca3f5e2d92ddf9c825fc0b2a0707e293fcb6a64fbaaef",
+    "pilot.py": "4ddb157d36395bb73a7a5fc26287a1f1e177f17ca969e15b7b959c2554784f99",
+    "producer_optimized.py": "3e6036e61715ded8f5028718fe452717d015be2fa588509da77325d615fb2ecf",
+    "producer_metrics.py": "9c8bce2a5edaaaa5c194e934658c0596ce868736d4f3c18c2958b70c65b628d8",
+    "producer_ready.py": "5d0df9a560c777be614e73e39d07570b10c5983226a5882df5384f7142054ceb",
+    "run_scaling.py": "eae4ecf1e3cfc6f3446fdb6de10648689b1dfea9cebb0a10575ebffd3de868e8"
+  },
+  "public_payload_reuse_sha256": "56f0876201e18682e8e6130ac7392f90df8fc9a39433d7eb6a9adbdab69cad7e",
+  "physical_comparison": "All non-timing raw summaries, normalized results, raw waveforms, slot excitation frames, grids, mesh counts, physical solve metadata, reference config, current/model contracts; exact flux/source audit equality",
+  "fresh_serial_case_baseline": {
+    "case_id": "spm_4p12s_small",
+    "producer_wall_s": 324.7542262999923,
+    "result_sha256": "7230f90c494f32fa87e4a0ca0bdc60271bf8f0ddfa528e1fef3d1672b1186e8a"
+  },
+  "paired_payload_reuse": {
+    "run": "f112-o1",
+    "status": "COMPLETE",
+    "manifest_sha256": "849ace45a3d728d4201c8c5b1b7aaf13cf40b7a3275e460142dd11905baa1f1c",
+    "runtime_identity_sha256": "b94336cbc8d2f8455cead2850298be5953f7c6768e1eb25fa4bfe88d61563f05",
+    "producer_source_sha256": "cb0b08315087b99485f768ee36954d3d597ae025626d0ec0dacf37fed395d1f8",
+    "runner_sources": {
+      "tools/benchmark_suite/external.py": "f5331edc50d50634f16fc6448593b86de1ad9118492b0b560a45f8c14c4a093e",
+      "tools/benchmark_suite/contract.py": "0e48fbb43074cf069e55b1110c3e5c2693825ebab418a28cc6ae5ab424664dd2",
+      "tools/run_reference_benchmark.py": "5480b63cdc78f75b69d30507256b000a5eee02449d6e87aab099f104d4a7efce"
+    },
+    "session": {
+      "started_at": "2026-10-16T01:38:27.653151+00:00",
+      "workers": 1,
+      "timeout_s": 14400,
+      "order": "registered",
+      "launch_order": [
+        "spm_4p12s_small"
+      ],
+      "timings_sha256": null,
+      "completed_at": "2026-10-16T01:43:09.651873+00:00",
+      "wall_s": 282.00006710001617
+    },
+    "sampled_resources": null,
+    "jobs": [
+      {
+        "case_id": "spm_4p12s_small",
+        "phase": "D",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "b7138720fb8d4ce6436e1c5647285d32af1a2b4e0ab5611014e1bd576e337241",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "2e40852cf26c6cd098928070d53e0bc8cd8cde202192f7cbae9496e3f3e7159e",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "593c128a010b16b66c22e5fc3f1819bf666843ebddab4d1c67a2d4d8f034cdec",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 281.1375168999948,
+        "producer_wall_s": 279.8866735000047,
+        "archived_producer_wall_s": 324.71293899999,
+        "result_sha256": "88093f38194defbecbbf97921decacc15091c4e40d2cf7b13678478054833df4",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 130.625,
+          "solver_kernel_cpu_s": 6.75,
+          "solver_process_count": 145,
+          "solver_peak_job_commit_bytes": 25636864,
+          "python_cpu_s": 99.828125,
+          "python_memory": {
+            "PageFaultCount": 327548,
+            "PeakWorkingSetSize": 340385792,
+            "WorkingSetSize": 263675904,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275280,
+            "QuotaPeakNonPagedPoolUsage": 73424,
+            "QuotaNonPagedPoolUsage": 52624,
+            "PagefileUsage": 759660544,
+            "PeakPagefileUsage": 827588608
+          }
+        },
+        "femm_pids": [
+          8004
+        ],
+        "archived_measurement_sha256": "0161d994d10cee653f6a8d37c6d21ea4bfec7404e55f29a0b6232b571eada8f2",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 48,
+            "elapsed_s": 116.87385359994369,
+            "max_s": 2.6874514000082854
+          },
+          "mi_createmesh": {
+            "count": 48,
+            "elapsed_s": 6.713981799985049,
+            "max_s": 0.16098699998110533
+          },
+          "mi_loadsolution": {
+            "count": 48,
+            "elapsed_s": 4.71618819993455,
+            "max_s": 0.10678690002532676
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 3.197818000015104,
+            "max_s": 0.00488039999618195
+          },
+          "mo_blockintegral": {
+            "count": 1296,
+            "elapsed_s": 2.8362963991530705,
+            "max_s": 0.0212875000142958
+          },
+          "mi_addarc": {
+            "count": 3264,
+            "elapsed_s": 1.7953310994489584,
+            "max_s": 0.0013411000254563987
+          }
+        },
+        "benchmark_output_counts": null,
+        "readiness_counts": null
+      }
+    ],
+    "retained_bytes": 82026890,
+    "all_physical_payloads_and_audits_exact": true
+  },
+  "metrics_only_serial": {
+    "run": "f112-m1",
+    "status": "COMPLETE",
+    "manifest_sha256": "b7ea8ed9e803b221b3a37b1f4d1aff9c346de338e2b59d22f56264fb6d1dd1e4",
+    "runtime_identity_sha256": "37ff13fb4a5a59a15dd5b0bd22858150acef5a41c64d9a0e59f2e308de2125bf",
+    "producer_source_sha256": "9c8bce2a5edaaaa5c194e934658c0596ce868736d4f3c18c2958b70c65b628d8",
+    "runner_sources": {
+      "tools/benchmark_suite/external.py": "f5331edc50d50634f16fc6448593b86de1ad9118492b0b560a45f8c14c4a093e",
+      "tools/benchmark_suite/contract.py": "0e48fbb43074cf069e55b1110c3e5c2693825ebab418a28cc6ae5ab424664dd2",
+      "tools/run_reference_benchmark.py": "5480b63cdc78f75b69d30507256b000a5eee02449d6e87aab099f104d4a7efce"
+    },
+    "session": {
+      "started_at": "2026-10-16T01:43:22.271754+00:00",
+      "workers": 1,
+      "timeout_s": 14400,
+      "order": "longest_first",
+      "launch_order": [
+        "spm_4p12s_small"
+      ],
+      "timings_sha256": "b70d082e366ae0a7cc2ba6370f7a2932a4fb2c1c0aa50868c2935e3473aceb14",
+      "completed_at": "2026-10-16T01:46:44.448797+00:00",
+      "wall_s": 202.1772828999965
+    },
+    "sampled_resources": {
+      "exit_code": 0,
+      "wall_s": 202.85344490001444,
+      "sampled_owned_cpu_s": 149.953125,
+      "sampled_mean_cpu_cores": 0.7392190212688339,
+      "logical_cores": 16,
+      "peak_sampled_private_bytes": 653848576,
+      "peak_sampled_working_set_bytes": 201330688,
+      "tracked_process_count": 56,
+      "sampling_interval_s": 2,
+      "limitations": "Sampling can miss short-lived children; host contention is not isolated."
+    },
+    "jobs": [
+      {
+        "case_id": "spm_4p12s_small",
+        "phase": "D",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "b7138720fb8d4ce6436e1c5647285d32af1a2b4e0ab5611014e1bd576e337241",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "2e40852cf26c6cd098928070d53e0bc8cd8cde202192f7cbae9496e3f3e7159e",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "593c128a010b16b66c22e5fc3f1819bf666843ebddab4d1c67a2d4d8f034cdec",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 201.38366349998978,
+        "producer_wall_s": 199.899321600009,
+        "archived_producer_wall_s": 324.71293899999,
+        "result_sha256": "004a94a99076cc545d67a0a25f007413fc98b127242e353995d88359b85706c6",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 131.078125,
+          "solver_kernel_cpu_s": 7.1875,
+          "solver_process_count": 145,
+          "solver_peak_job_commit_bytes": 28336128,
+          "python_cpu_s": 19.109375,
+          "python_memory": {
+            "PageFaultCount": 251730,
+            "PeakWorkingSetSize": 128700416,
+            "WorkingSetSize": 109133824,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275280,
+            "QuotaPeakNonPagedPoolUsage": 49760,
+            "QuotaNonPagedPoolUsage": 33040,
+            "PagefileUsage": 596520960,
+            "PeakPagefileUsage": 616284160
+          }
+        },
+        "femm_pids": [
+          14992
+        ],
+        "archived_measurement_sha256": "0161d994d10cee653f6a8d37c6d21ea4bfec7404e55f29a0b6232b571eada8f2",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 48,
+            "elapsed_s": 117.6738839999889,
+            "max_s": 2.672884100000374
+          },
+          "mi_createmesh": {
+            "count": 48,
+            "elapsed_s": 6.725531400035834,
+            "max_s": 0.1611272000009194
+          },
+          "mi_loadsolution": {
+            "count": 48,
+            "elapsed_s": 4.817873799940571,
+            "max_s": 0.14367230000789277
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 3.2269214997941162,
+            "max_s": 0.005857799988007173
+          },
+          "mo_blockintegral": {
+            "count": 1296,
+            "elapsed_s": 2.862795700377319,
+            "max_s": 0.021185999998124316
+          },
+          "mi_addarc": {
+            "count": 3264,
+            "elapsed_s": 1.8199556003091857,
+            "max_s": 0.001424000016413629
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": null
+      }
+    ],
+    "retained_bytes": 6681481,
+    "all_physical_payloads_and_audits_exact": true
+  },
+  "four_workers": {
+    "run": "f112-m4",
+    "status": "COMPLETE",
+    "manifest_sha256": "9c302051c93afcbfd165ae750b304e2d7cd91c68dfcb372f88ae626c33a76894",
+    "runtime_identity_sha256": "37ff13fb4a5a59a15dd5b0bd22858150acef5a41c64d9a0e59f2e308de2125bf",
+    "producer_source_sha256": "9c8bce2a5edaaaa5c194e934658c0596ce868736d4f3c18c2958b70c65b628d8",
+    "runner_sources": {
+      "tools/benchmark_suite/external.py": "f5331edc50d50634f16fc6448593b86de1ad9118492b0b560a45f8c14c4a093e",
+      "tools/benchmark_suite/contract.py": "0e48fbb43074cf069e55b1110c3e5c2693825ebab418a28cc6ae5ab424664dd2",
+      "tools/run_reference_benchmark.py": "5480b63cdc78f75b69d30507256b000a5eee02449d6e87aab099f104d4a7efce"
+    },
+    "session": {
+      "started_at": "2026-10-16T01:46:54.857454+00:00",
+      "workers": 4,
+      "timeout_s": 14400,
+      "order": "longest_first",
+      "launch_order": [
+        "spm_4p12s_simple__high_current",
+        "spm_4p12s_simple_noload__high_current",
+        "spm_4p12s_simple_noload__baseline",
+        "spm_4p12s_simple__baseline",
+        "ipm_flat_4p12s_micro_contract",
+        "spm_8p12s_reference",
+        "spm_4p12s_simple__tight_airgap",
+        "spm_4p12s_small"
+      ],
+      "timings_sha256": "b70d082e366ae0a7cc2ba6370f7a2932a4fb2c1c0aa50868c2935e3473aceb14",
+      "completed_at": "2026-10-16T01:59:15.566426+00:00",
+      "wall_s": 740.714972900023
+    },
+    "sampled_resources": {
+      "exit_code": 0,
+      "wall_s": 741.7144262999936,
+      "sampled_owned_cpu_s": 2113.96875,
+      "sampled_mean_cpu_cores": 2.850111410863923,
+      "logical_cores": 16,
+      "peak_sampled_private_bytes": 2559295488,
+      "peak_sampled_working_set_bytes": 732078080,
+      "tracked_process_count": 772,
+      "sampling_interval_s": 2,
+      "limitations": "Sampling can miss short-lived children; host contention is not isolated."
+    },
+    "jobs": [
+      {
+        "case_id": "spm_4p12s_simple__baseline",
+        "phase": "A",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "996704d20eee13c2af2cd768bef3a0db14f9252dc605bf778ef9a9919dd00295",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "c600fd3424e10630252bed791aa4ebe419cc6a230ff65a6e47fb0a63b08fc70d",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "d170ada5df3725796995748c3bc076a4bb8879d553b48ace4640c1e7a182cbc7",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 379.4022736999905,
+        "producer_wall_s": 377.78140019997954,
+        "archived_producer_wall_s": 482.8149521000014,
+        "result_sha256": "c39ae5d678cf0ad3ffa11fce79c829e3ee0ad6144b8ed59b0281299e74842ad1",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 267.15625,
+          "solver_kernel_cpu_s": 13.453125,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 31526912,
+          "python_cpu_s": 22.90625,
+          "python_memory": {
+            "PageFaultCount": 263670,
+            "PeakWorkingSetSize": 129605632,
+            "WorkingSetSize": 110411776,
+            "QuotaPeakPagedPoolUsage": 278760,
+            "QuotaPagedPoolUsage": 277704,
+            "QuotaPeakNonPagedPoolUsage": 49944,
+            "QuotaNonPagedPoolUsage": 33176,
+            "PagefileUsage": 596320256,
+            "PeakPagefileUsage": 616464384
+          }
+        },
+        "femm_pids": [
+          11016
+        ],
+        "archived_measurement_sha256": "ffa09ebcefd21b3ce7c10deabe940c0e72147184442f09cdcb7c82db1760c2b8",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 244.2020712000085,
+            "max_s": 2.8035240000172053
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 14.293990799895255,
+            "max_s": 0.186133700015489
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 10.345104999956675,
+            "max_s": 0.12145819998113438
+          },
+          "mi_addarc": {
+            "count": 6528,
+            "elapsed_s": 4.03743609864614,
+            "max_s": 0.002296899998327717
+          },
+          "mi_addnode": {
+            "count": 25344,
+            "elapsed_s": 3.9940110013994854,
+            "max_s": 0.002977600001031533
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 3.545556000462966,
+            "max_s": 0.004897600010735914
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": null
+      },
+      {
+        "case_id": "spm_4p12s_simple__high_current",
+        "phase": "A",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "a800aea8cedb7beeacbfe07f6df154186d9417dc1fda9158931d0294eb0da8e5",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "d7fad1ed5d55c00b944ab20799a9e875aa9d7dcca40a003c54d9696f79efd257",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "e880511e84ca416cb45be32bd24c17f924b85bc98efc491e1dc36013ece167fe",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 378.27392169999075,
+        "producer_wall_s": 376.7138901000144,
+        "archived_producer_wall_s": 499.71195799999987,
+        "result_sha256": "020c06c0674b9aa5374568acd1d23b7735de0514214347a4f97d4bf26a0a0d20",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 267.34375,
+          "solver_kernel_cpu_s": 13.984375,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 32579584,
+          "python_cpu_s": 21.4375,
+          "python_memory": {
+            "PageFaultCount": 259244,
+            "PeakWorkingSetSize": 129728512,
+            "WorkingSetSize": 110657536,
+            "QuotaPeakPagedPoolUsage": 278760,
+            "QuotaPagedPoolUsage": 277704,
+            "QuotaPeakNonPagedPoolUsage": 50096,
+            "QuotaNonPagedPoolUsage": 33312,
+            "PagefileUsage": 596488192,
+            "PeakPagefileUsage": 616800256
+          }
+        },
+        "femm_pids": [
+          28412
+        ],
+        "archived_measurement_sha256": "8b6ea3d8ac0fd23e2f7ee40093e9ebaccda40026d645a68f965ca481226ef6b6",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 245.1205948999268,
+            "max_s": 2.7697503000090364
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 14.111317499977304,
+            "max_s": 0.1888883000065107
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 10.088628899975447,
+            "max_s": 0.11955329999909736
+          },
+          "mi_addarc": {
+            "count": 6528,
+            "elapsed_s": 3.8944811009278055,
+            "max_s": 0.0018872999935410917
+          },
+          "mi_addnode": {
+            "count": 25344,
+            "elapsed_s": 3.8421803007368,
+            "max_s": 0.0020892999891657382
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 3.3226380996056832,
+            "max_s": 0.004894999990938231
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": null
+      },
+      {
+        "case_id": "spm_4p12s_simple__tight_airgap",
+        "phase": "A",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "508ff0173a70cb5e6eb110ee3f63dd7c94bc42162ca25b8cf0d9ef52c52e6d98",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "0836a3dd635ca966e54f974fc42cf7cdf33a9721c5d31f3a1becebef4b981886",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "06ceb45e69d3086ef819ec665d5ccbc9648802526d14b5a41c40b5a21f8e4c06",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 346.71209049999015,
+        "producer_wall_s": 345.20538410000154,
+        "archived_producer_wall_s": 446.7195095999996,
+        "result_sha256": "9d5af37f6fcf3a8175d5476d2656e8916603cda96a340f37e79cfef6e461c1a9",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 235.671875,
+          "solver_kernel_cpu_s": 13.796875,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 30621696,
+          "python_cpu_s": 21.390625,
+          "python_memory": {
+            "PageFaultCount": 254876,
+            "PeakWorkingSetSize": 127287296,
+            "WorkingSetSize": 109477888,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275848,
+            "QuotaPeakNonPagedPoolUsage": 49688,
+            "QuotaNonPagedPoolUsage": 33040,
+            "PagefileUsage": 595476480,
+            "PeakPagefileUsage": 615022592
+          }
+        },
+        "femm_pids": [
+          24704
+        ],
+        "archived_measurement_sha256": "5ed3c06c8f79e5dfa0ac8a3021fbbb9eba00281f5dda8e3be0b29446c0d12d81",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 214.29560549985035,
+            "max_s": 2.785616499983007
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 13.862328599818284,
+            "max_s": 0.17985159999807365
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 9.887826699996367,
+            "max_s": 0.12318049999885261
+          },
+          "mi_addnode": {
+            "count": 25344,
+            "elapsed_s": 3.8569117993465625,
+            "max_s": 0.0013051000132691115
+          },
+          "mi_addarc": {
+            "count": 6528,
+            "elapsed_s": 3.8149954998516478,
+            "max_s": 0.0018909999926108867
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 3.402713798772311,
+            "max_s": 0.004617700004018843
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": null
+      },
+      {
+        "case_id": "spm_4p12s_simple_noload__baseline",
+        "phase": "A",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "51ae7c6d1676aeeaa5e8ab6cb0f8fa946674b00a77be8ab1c6eae16858d5a9e0",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "a6cc048a5f0171be45185399e56c1f3c01ddeb227e2ef43481eb1f38047db0e9",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "1e603ba4f44f97eff2506d4facfded1c93128fc5a522be52b927da1e11560752",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 380.0482947000128,
+        "producer_wall_s": 378.43990029999986,
+        "archived_producer_wall_s": 484.3242902999991,
+        "result_sha256": "af07635a6124581ed12ba8b5b11d48ec337ded3652529114ab12ce5c5357dd61",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 267.328125,
+          "solver_kernel_cpu_s": 14.296875,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 31625216,
+          "python_cpu_s": 22.4375,
+          "python_memory": {
+            "PageFaultCount": 254799,
+            "PeakWorkingSetSize": 129110016,
+            "WorkingSetSize": 110485504,
+            "QuotaPeakPagedPoolUsage": 278776,
+            "QuotaPagedPoolUsage": 277720,
+            "QuotaPeakNonPagedPoolUsage": 49976,
+            "QuotaNonPagedPoolUsage": 33176,
+            "PagefileUsage": 596516864,
+            "PeakPagefileUsage": 616103936
+          }
+        },
+        "femm_pids": [
+          25648
+        ],
+        "archived_measurement_sha256": "493e1e05204f2de8819a7a6e02edfa06162b5cf524bbe3c332ba00a7ff414b50",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 244.35936649996438,
+            "max_s": 2.8538982000027318
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 14.563013999868417,
+            "max_s": 0.18080099998041987
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 10.523999300115975,
+            "max_s": 0.1263675000227522
+          },
+          "mi_addarc": {
+            "count": 6528,
+            "elapsed_s": 3.9748403986450285,
+            "max_s": 0.00217199997860007
+          },
+          "mi_addnode": {
+            "count": 25344,
+            "elapsed_s": 3.9346978992398363,
+            "max_s": 0.001520399993751198
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 3.550886298966361,
+            "max_s": 0.005150199984200299
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": null
+      },
+      {
+        "case_id": "spm_4p12s_simple_noload__high_current",
+        "phase": "A",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "9b39c8a38e864edaa7f0089943e06971349924ed3b3af60b5ee8d1a2b4aa600f",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "9cff96293da54f7a31f77b481a4bffe7fc70b594d00d566e239e4b8e4c2d2337",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "e518f833316248459ea1c7a3a89542b0d3e5748f886ec87b32ea3d2d6d303594",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 379.6389948000142,
+        "producer_wall_s": 378.03484929999104,
+        "archived_producer_wall_s": 496.2007492999983,
+        "result_sha256": "c2ff3d85d31fcba64e129107c7e19021ee8beca2894cbd6b8b22ca12ad4075b6",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 267.28125,
+          "solver_kernel_cpu_s": 14.171875,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 32464896,
+          "python_cpu_s": 22.0625,
+          "python_memory": {
+            "PageFaultCount": 259241,
+            "PeakWorkingSetSize": 129622016,
+            "WorkingSetSize": 110452736,
+            "QuotaPeakPagedPoolUsage": 278760,
+            "QuotaPagedPoolUsage": 277704,
+            "QuotaPeakNonPagedPoolUsage": 49992,
+            "QuotaNonPagedPoolUsage": 33176,
+            "PagefileUsage": 596443136,
+            "PeakPagefileUsage": 616046592
+          }
+        },
+        "femm_pids": [
+          12256
+        ],
+        "archived_measurement_sha256": "7c6d6e8b0fbdb5b4ab0173316db368f420876b8ed2fb42085239c006f6a02fc1",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 245.09321430019918,
+            "max_s": 2.8078956000099424
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 14.326413600269007,
+            "max_s": 0.1969497000100091
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 10.21801649974077,
+            "max_s": 0.14123479998670518
+          },
+          "mi_addarc": {
+            "count": 6528,
+            "elapsed_s": 4.056201099709142,
+            "max_s": 0.002018099999986589
+          },
+          "mi_addnode": {
+            "count": 25344,
+            "elapsed_s": 4.02638249960728,
+            "max_s": 0.0017983999860007316
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 3.408937000698643,
+            "max_s": 0.004795399989234284
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": null
+      },
+      {
+        "case_id": "ipm_flat_4p12s_micro_contract",
+        "phase": "B",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "2c8cb06fbb9fcd45129ab0a668d1d3de51b8d18f8193df8dd89cc7cd9eb688c9",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "668717149ea6c5addeca807687cb250841afb738b537b1adc2c0c5bed01a576f",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "7a3b2e86a547040187dd05cb6e636339812f2cf6915577422a0e35a32e00662e",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 360.61031170000206,
+        "producer_wall_s": 359.0431842000107,
+        "archived_producer_wall_s": 472.89579409999715,
+        "result_sha256": "525d45bacf4e4f8fbf406db65b99004ef8209b354370585cd143233a47422dcb",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 243.390625,
+          "solver_kernel_cpu_s": 14.703125,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 32235520,
+          "python_cpu_s": 27.265625,
+          "python_memory": {
+            "PageFaultCount": 269989,
+            "PeakWorkingSetSize": 133066752,
+            "WorkingSetSize": 112156672,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275848,
+            "QuotaPeakNonPagedPoolUsage": 50232,
+            "QuotaNonPagedPoolUsage": 33448,
+            "PagefileUsage": 598372352,
+            "PeakPagefileUsage": 620105728
+          }
+        },
+        "femm_pids": [
+          15672
+        ],
+        "archived_measurement_sha256": "7e0566fe5d70ad64b32a8b81b3cc29c1d7b2b49369f95bec93433156e7c856fe",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 218.706055100105,
+            "max_s": 2.66740249999566
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 14.764579900016543,
+            "max_s": 0.22388179998961277
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 10.718501799943624,
+            "max_s": 0.13378930001636036
+          },
+          "mi_addnode": {
+            "count": 29952,
+            "elapsed_s": 4.925007098558126,
+            "max_s": 0.005135999992489815
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 3.7770102996728383,
+            "max_s": 0.0051485000003594905
+          },
+          "mi_addarc": {
+            "count": 5760,
+            "elapsed_s": 3.4937677995767444,
+            "max_s": 0.003602499986300245
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": null
+      },
+      {
+        "case_id": "spm_4p12s_small",
+        "phase": "D",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "b7138720fb8d4ce6436e1c5647285d32af1a2b4e0ab5611014e1bd576e337241",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "2e40852cf26c6cd098928070d53e0bc8cd8cde202192f7cbae9496e3f3e7159e",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "593c128a010b16b66c22e5fc3f1819bf666843ebddab4d1c67a2d4d8f034cdec",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 213.3763089000131,
+        "producer_wall_s": 211.8227043999941,
+        "archived_producer_wall_s": 324.71293899999,
+        "result_sha256": "68f8e826bdd27af16cf839a55b245d7755fb4b0bcf3d8b14fca9e32b2e946dd7",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 139.75,
+          "solver_kernel_cpu_s": 7.421875,
+          "solver_process_count": 145,
+          "solver_peak_job_commit_bytes": 29442048,
+          "python_cpu_s": 20.578125,
+          "python_memory": {
+            "PageFaultCount": 254801,
+            "PeakWorkingSetSize": 128630784,
+            "WorkingSetSize": 109744128,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275280,
+            "QuotaPeakNonPagedPoolUsage": 49624,
+            "QuotaNonPagedPoolUsage": 32904,
+            "PagefileUsage": 597274624,
+            "PeakPagefileUsage": 615927808
+          }
+        },
+        "femm_pids": [
+          12736
+        ],
+        "archived_measurement_sha256": "0161d994d10cee653f6a8d37c6d21ea4bfec7404e55f29a0b6232b571eada8f2",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 48,
+            "elapsed_s": 125.85435330000473,
+            "max_s": 2.9678506999916863
+          },
+          "mi_createmesh": {
+            "count": 48,
+            "elapsed_s": 7.205527499958407,
+            "max_s": 0.18702670000493526
+          },
+          "mi_loadsolution": {
+            "count": 48,
+            "elapsed_s": 5.2376067000150215,
+            "max_s": 0.138814599980833
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 3.50312629918335,
+            "max_s": 0.004882799985352904
+          },
+          "mo_blockintegral": {
+            "count": 1296,
+            "elapsed_s": 3.0498523998830933,
+            "max_s": 0.022149299999000505
+          },
+          "mi_addnode": {
+            "count": 12672,
+            "elapsed_s": 2.0527326994924806,
+            "max_s": 0.00157200000830926
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": null
+      },
+      {
+        "case_id": "spm_8p12s_reference",
+        "phase": "D",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "d0acb8b82df32637de56f69ca83f81c4b9439d599e4f2d1cf4d109a5993841ab",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "d04658520dec36f9aa20d7410303a8d9b0526d4f03fdb9b3e67a3923c4c2d38a",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "07762fd83257ae8fb189259aa32830979e865f138188e69d8c043b0851fabd0d",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 337.14813779998804,
+        "producer_wall_s": 335.6114116999961,
+        "archived_producer_wall_s": 468.5354456000059,
+        "result_sha256": "e877b6da4d9d52bbe8d250ebf50c3058fb00c0bb6efb59ef5ccad4b41147007e",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 259.40625,
+          "solver_kernel_cpu_s": 7.640625,
+          "solver_process_count": 145,
+          "solver_peak_job_commit_bytes": 31121408,
+          "python_cpu_s": 24.46875,
+          "python_memory": {
+            "PageFaultCount": 303292,
+            "PeakWorkingSetSize": 141193216,
+            "WorkingSetSize": 116326400,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275280,
+            "QuotaPeakNonPagedPoolUsage": 51000,
+            "QuotaNonPagedPoolUsage": 33992,
+            "PagefileUsage": 602787840,
+            "PeakPagefileUsage": 628703232
+          }
+        },
+        "femm_pids": [
+          24476
+        ],
+        "archived_measurement_sha256": "181d9bd7151b2866c5a12a78a7d992a356b194b60ef08b90099f3e2e24df91d1",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 48,
+            "elapsed_s": 242.1078316999483,
+            "max_s": 5.665119999990566
+          },
+          "mi_createmesh": {
+            "count": 48,
+            "elapsed_s": 8.240595500072232,
+            "max_s": 0.20415989999310113
+          },
+          "mi_loadsolution": {
+            "count": 48,
+            "elapsed_s": 5.9064327999949455,
+            "max_s": 0.1744847999943886
+          },
+          "mo_selectblock": {
+            "count": 2784,
+            "elapsed_s": 4.548624800663674,
+            "max_s": 0.006906900001922622
+          },
+          "mo_blockintegral": {
+            "count": 1296,
+            "elapsed_s": 3.4430278998916037,
+            "max_s": 0.024339299998246133
+          },
+          "mi_addnode": {
+            "count": 14976,
+            "elapsed_s": 2.413412699388573,
+            "max_s": 0.002464499993948266
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": null
+      }
+    ],
+    "retained_bytes": 83197606,
+    "all_physical_payloads_and_audits_exact": true
+  },
+  "eight_workers": {
+    "run": "f112-m8",
+    "status": "COMPLETE",
+    "manifest_sha256": "dee5a6800a822a8919ceeb51b38f11d011aff52899540a35399740c07ae012ba",
+    "runtime_identity_sha256": "37ff13fb4a5a59a15dd5b0bd22858150acef5a41c64d9a0e59f2e308de2125bf",
+    "producer_source_sha256": "9c8bce2a5edaaaa5c194e934658c0596ce868736d4f3c18c2958b70c65b628d8",
+    "runner_sources": {
+      "tools/benchmark_suite/external.py": "f5331edc50d50634f16fc6448593b86de1ad9118492b0b560a45f8c14c4a093e",
+      "tools/benchmark_suite/contract.py": "0e48fbb43074cf069e55b1110c3e5c2693825ebab418a28cc6ae5ab424664dd2",
+      "tools/run_reference_benchmark.py": "5480b63cdc78f75b69d30507256b000a5eee02449d6e87aab099f104d4a7efce"
+    },
+    "session": {
+      "started_at": "2026-10-16T01:59:20.831103+00:00",
+      "workers": 8,
+      "timeout_s": 14400,
+      "order": "longest_first",
+      "launch_order": [
+        "spm_4p12s_simple__high_current",
+        "spm_4p12s_simple_noload__high_current",
+        "spm_4p12s_simple_noload__baseline",
+        "spm_4p12s_simple__baseline",
+        "ipm_flat_4p12s_micro_contract",
+        "spm_8p12s_reference",
+        "spm_4p12s_simple__tight_airgap",
+        "spm_4p12s_small"
+      ],
+      "timings_sha256": "b70d082e366ae0a7cc2ba6370f7a2932a4fb2c1c0aa50868c2935e3473aceb14",
+      "completed_at": "2026-10-16T02:06:32.819134+00:00",
+      "wall_s": 431.9906907000113
+    },
+    "sampled_resources": {
+      "exit_code": 0,
+      "wall_s": 432.62436729998444,
+      "sampled_owned_cpu_s": 2566.9375,
+      "sampled_mean_cpu_cores": 5.9334094286466055,
+      "logical_cores": 16,
+      "peak_sampled_private_bytes": 5524795392,
+      "peak_sampled_working_set_bytes": 1647947776,
+      "tracked_process_count": 798,
+      "sampling_interval_s": 2,
+      "limitations": "Sampling can miss short-lived children; host contention is not isolated."
+    },
+    "jobs": [
+      {
+        "case_id": "spm_4p12s_simple__baseline",
+        "phase": "A",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "996704d20eee13c2af2cd768bef3a0db14f9252dc605bf778ef9a9919dd00295",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "c600fd3424e10630252bed791aa4ebe419cc6a230ff65a6e47fb0a63b08fc70d",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "d170ada5df3725796995748c3bc076a4bb8879d553b48ace4640c1e7a182cbc7",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 428.33893420000095,
+        "producer_wall_s": 426.7090470000112,
+        "archived_producer_wall_s": 482.8149521000014,
+        "result_sha256": "cfefb6d7817cea7323092eff2e6ac50bce2dd4f3c4c87f3091c35753a933094d",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 309.953125,
+          "solver_kernel_cpu_s": 14.421875,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 31891456,
+          "python_cpu_s": 25.625,
+          "python_memory": {
+            "PageFaultCount": 255178,
+            "PeakWorkingSetSize": 129527808,
+            "WorkingSetSize": 110448640,
+            "QuotaPeakPagedPoolUsage": 278760,
+            "QuotaPagedPoolUsage": 277704,
+            "QuotaPeakNonPagedPoolUsage": 49944,
+            "QuotaNonPagedPoolUsage": 33176,
+            "PagefileUsage": 596271104,
+            "PeakPagefileUsage": 616169472
+          }
+        },
+        "femm_pids": [
+          17072
+        ],
+        "archived_measurement_sha256": "ffa09ebcefd21b3ce7c10deabe940c0e72147184442f09cdcb7c82db1760c2b8",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 281.98721569988993,
+            "max_s": 3.4479076999996323
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 16.00327399984235,
+            "max_s": 0.2044430999958422
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 11.934220899856882,
+            "max_s": 0.16475789999822155
+          },
+          "mi_addnode": {
+            "count": 25344,
+            "elapsed_s": 4.951119296340039,
+            "max_s": 0.012504499987699091
+          },
+          "mi_addarc": {
+            "count": 6528,
+            "elapsed_s": 4.75760650014854,
+            "max_s": 0.013770999998087063
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 4.190952900302364,
+            "max_s": 0.006624699977692217
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": null
+      },
+      {
+        "case_id": "spm_4p12s_simple__high_current",
+        "phase": "A",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "a800aea8cedb7beeacbfe07f6df154186d9417dc1fda9158931d0294eb0da8e5",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "d7fad1ed5d55c00b944ab20799a9e875aa9d7dcca40a003c54d9696f79efd257",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "e880511e84ca416cb45be32bd24c17f924b85bc98efc491e1dc36013ece167fe",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 427.4407750000246,
+        "producer_wall_s": 425.8605886999867,
+        "archived_producer_wall_s": 499.71195799999987,
+        "result_sha256": "13a0e8cc85fea2d105deb32785fe56d5aa634531fe69ebda86ddbf86bf77f972",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 307.625,
+          "solver_kernel_cpu_s": 15.015625,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 31789056,
+          "python_cpu_s": 27.34375,
+          "python_memory": {
+            "PageFaultCount": 251577,
+            "PeakWorkingSetSize": 129867776,
+            "WorkingSetSize": 110895104,
+            "QuotaPeakPagedPoolUsage": 278760,
+            "QuotaPagedPoolUsage": 277704,
+            "QuotaPeakNonPagedPoolUsage": 49960,
+            "QuotaNonPagedPoolUsage": 33176,
+            "PagefileUsage": 596606976,
+            "PeakPagefileUsage": 617086976
+          }
+        },
+        "femm_pids": [
+          13996
+        ],
+        "archived_measurement_sha256": "8b6ea3d8ac0fd23e2f7ee40093e9ebaccda40026d645a68f965ca481226ef6b6",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 279.6602571999829,
+            "max_s": 3.5772198000049684
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 16.086180700047407,
+            "max_s": 0.2325635000015609
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 12.332790500135161,
+            "max_s": 0.19082089999574237
+          },
+          "mi_addnode": {
+            "count": 25344,
+            "elapsed_s": 4.994147500488907,
+            "max_s": 0.011835900018922985
+          },
+          "mi_addarc": {
+            "count": 6528,
+            "elapsed_s": 4.759305499464972,
+            "max_s": 0.002846899995347485
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 4.266506500163814,
+            "max_s": 0.006767499988200143
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": null
+      },
+      {
+        "case_id": "spm_4p12s_simple__tight_airgap",
+        "phase": "A",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "508ff0173a70cb5e6eb110ee3f63dd7c94bc42162ca25b8cf0d9ef52c52e6d98",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "0836a3dd635ca966e54f974fc42cf7cdf33a9721c5d31f3a1becebef4b981886",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "06ceb45e69d3086ef819ec665d5ccbc9648802526d14b5a41c40b5a21f8e4c06",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 390.4843264000083,
+        "producer_wall_s": 388.8011836000078,
+        "archived_producer_wall_s": 446.7195095999996,
+        "result_sha256": "f6d1e054d56592f84d24d2e4f2a5468713609a596365190db402792060fc6a7a",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 272.625,
+          "solver_kernel_cpu_s": 14.34375,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 31363072,
+          "python_cpu_s": 25.65625,
+          "python_memory": {
+            "PageFaultCount": 252852,
+            "PeakWorkingSetSize": 127127552,
+            "WorkingSetSize": 109260800,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275848,
+            "QuotaPeakNonPagedPoolUsage": 49824,
+            "QuotaNonPagedPoolUsage": 33176,
+            "PagefileUsage": 595177472,
+            "PeakPagefileUsage": 614342656
+          }
+        },
+        "femm_pids": [
+          31188
+        ],
+        "archived_measurement_sha256": "5ed3c06c8f79e5dfa0ac8a3021fbbb9eba00281f5dda8e3be0b29446c0d12d81",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 245.21700759991654,
+            "max_s": 3.0621782999951392
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 15.617580399935832,
+            "max_s": 0.20708280001417734
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 11.586490899935598,
+            "max_s": 0.14902020001318306
+          },
+          "mi_addnode": {
+            "count": 25344,
+            "elapsed_s": 4.99322129887878,
+            "max_s": 0.0019045000080950558
+          },
+          "mi_addarc": {
+            "count": 6528,
+            "elapsed_s": 4.652798200055258,
+            "max_s": 0.0023628000053577125
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 4.171646699658595,
+            "max_s": 0.006523299991386011
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": null
+      },
+      {
+        "case_id": "spm_4p12s_simple_noload__baseline",
+        "phase": "A",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "51ae7c6d1676aeeaa5e8ab6cb0f8fa946674b00a77be8ab1c6eae16858d5a9e0",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "a6cc048a5f0171be45185399e56c1f3c01ddeb227e2ef43481eb1f38047db0e9",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "1e603ba4f44f97eff2506d4facfded1c93128fc5a522be52b927da1e11560752",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 430.6050411000033,
+        "producer_wall_s": 429.05785160002415,
+        "archived_producer_wall_s": 484.3242902999991,
+        "result_sha256": "26a3267fd1492b1f5547e2e0a3dcc80610a82df5ffcd301decb33a791189ad8f",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 309.921875,
+          "solver_kernel_cpu_s": 14.578125,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 32043008,
+          "python_cpu_s": 26.375,
+          "python_memory": {
+            "PageFaultCount": 259543,
+            "PeakWorkingSetSize": 129519616,
+            "WorkingSetSize": 111140864,
+            "QuotaPeakPagedPoolUsage": 278776,
+            "QuotaPagedPoolUsage": 277720,
+            "QuotaPeakNonPagedPoolUsage": 49976,
+            "QuotaNonPagedPoolUsage": 33176,
+            "PagefileUsage": 597950464,
+            "PeakPagefileUsage": 617091072
+          }
+        },
+        "femm_pids": [
+          6784
+        ],
+        "archived_measurement_sha256": "493e1e05204f2de8819a7a6e02edfa06162b5cf524bbe3c332ba00a7ff414b50",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 281.5023966002045,
+            "max_s": 3.5367935999820475
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 16.577117900102166,
+            "max_s": 0.23595709999790415
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 12.188293099839939,
+            "max_s": 0.19155409999075346
+          },
+          "mi_addnode": {
+            "count": 25344,
+            "elapsed_s": 5.180414398142602,
+            "max_s": 0.002717099996516481
+          },
+          "mi_addarc": {
+            "count": 6528,
+            "elapsed_s": 4.923683901404729,
+            "max_s": 0.0028278000245336443
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 4.343366899993271,
+            "max_s": 0.008455300005152822
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": null
+      },
+      {
+        "case_id": "spm_4p12s_simple_noload__high_current",
+        "phase": "A",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "9b39c8a38e864edaa7f0089943e06971349924ed3b3af60b5ee8d1a2b4aa600f",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "9cff96293da54f7a31f77b481a4bffe7fc70b594d00d566e239e4b8e4c2d2337",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "e518f833316248459ea1c7a3a89542b0d3e5748f886ec87b32ea3d2d6d303594",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 429.6200475000078,
+        "producer_wall_s": 428.04120570002124,
+        "archived_producer_wall_s": 496.2007492999983,
+        "result_sha256": "3a57f6452a1713e3ae0caa171aaa88eefceac5ca37932c75d76f52f2246c47cd",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 311.375,
+          "solver_kernel_cpu_s": 14.625,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 31039488,
+          "python_cpu_s": 25.609375,
+          "python_memory": {
+            "PageFaultCount": 254980,
+            "PeakWorkingSetSize": 129495040,
+            "WorkingSetSize": 110882816,
+            "QuotaPeakPagedPoolUsage": 278744,
+            "QuotaPagedPoolUsage": 277688,
+            "QuotaPeakNonPagedPoolUsage": 49992,
+            "QuotaNonPagedPoolUsage": 33176,
+            "PagefileUsage": 596643840,
+            "PeakPagefileUsage": 616046592
+          }
+        },
+        "femm_pids": [
+          23644
+        ],
+        "archived_measurement_sha256": "7c6d6e8b0fbdb5b4ab0173316db368f420876b8ed2fb42085239c006f6a02fc1",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 284.3722771999892,
+            "max_s": 3.6097866999916732
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 15.99293409998063,
+            "max_s": 0.21401999998488463
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 11.89488259985228,
+            "max_s": 0.17038259998662397
+          },
+          "mi_addnode": {
+            "count": 25344,
+            "elapsed_s": 4.7772404008719604,
+            "max_s": 0.0018475000106263906
+          },
+          "mi_addarc": {
+            "count": 6528,
+            "elapsed_s": 4.65042979962891,
+            "max_s": 0.003067799989366904
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 4.002581299893791,
+            "max_s": 0.00617379997856915
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": null
+      },
+      {
+        "case_id": "ipm_flat_4p12s_micro_contract",
+        "phase": "B",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "2c8cb06fbb9fcd45129ab0a668d1d3de51b8d18f8193df8dd89cc7cd9eb688c9",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "668717149ea6c5addeca807687cb250841afb738b537b1adc2c0c5bed01a576f",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "7a3b2e86a547040187dd05cb6e636339812f2cf6915577422a0e35a32e00662e",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 408.6623867000162,
+        "producer_wall_s": 406.99120499999844,
+        "archived_producer_wall_s": 472.89579409999715,
+        "result_sha256": "5ed65aae6b1c0575b6289cae856c342305257dcfaf36162b355f7ebfa399c2c0",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 282.4375,
+          "solver_kernel_cpu_s": 15.046875,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 31793152,
+          "python_cpu_s": 32.640625,
+          "python_memory": {
+            "PageFaultCount": 271440,
+            "PeakWorkingSetSize": 133214208,
+            "WorkingSetSize": 112111616,
+            "QuotaPeakPagedPoolUsage": 278760,
+            "QuotaPagedPoolUsage": 277704,
+            "QuotaPeakNonPagedPoolUsage": 50096,
+            "QuotaNonPagedPoolUsage": 33176,
+            "PagefileUsage": 597962752,
+            "PeakPagefileUsage": 620933120
+          }
+        },
+        "femm_pids": [
+          12008
+        ],
+        "archived_measurement_sha256": "7e0566fe5d70ad64b32a8b81b3cc29c1d7b2b49369f95bec93433156e7c856fe",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 251.5408801001613,
+            "max_s": 3.114535300002899
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 17.079330200183904,
+            "max_s": 0.21523500001057982
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 12.568123000004562,
+            "max_s": 0.17352870001923293
+          },
+          "mi_addnode": {
+            "count": 29952,
+            "elapsed_s": 6.151321501733037,
+            "max_s": 0.004570999997667968
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 4.813807499362156,
+            "max_s": 0.007217900012619793
+          },
+          "mi_addarc": {
+            "count": 5760,
+            "elapsed_s": 4.191390698950272,
+            "max_s": 0.004466899990802631
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": null
+      },
+      {
+        "case_id": "spm_4p12s_small",
+        "phase": "D",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "b7138720fb8d4ce6436e1c5647285d32af1a2b4e0ab5611014e1bd576e337241",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "2e40852cf26c6cd098928070d53e0bc8cd8cde202192f7cbae9496e3f3e7159e",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "593c128a010b16b66c22e5fc3f1819bf666843ebddab4d1c67a2d4d8f034cdec",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 242.04892520001158,
+        "producer_wall_s": 240.21004820000962,
+        "archived_producer_wall_s": 324.71293899999,
+        "result_sha256": "22d8a0270ebc07969be6bc5de91de1d1b787dbee4c2db11047c823196f01feb9",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 161.65625,
+          "solver_kernel_cpu_s": 8.578125,
+          "solver_process_count": 145,
+          "solver_peak_job_commit_bytes": 29306880,
+          "python_cpu_s": 24.4375,
+          "python_memory": {
+            "PageFaultCount": 249909,
+            "PeakWorkingSetSize": 128872448,
+            "WorkingSetSize": 109629440,
+            "QuotaPeakPagedPoolUsage": 277840,
+            "QuotaPagedPoolUsage": 275296,
+            "QuotaPeakNonPagedPoolUsage": 49624,
+            "QuotaNonPagedPoolUsage": 32904,
+            "PagefileUsage": 596668416,
+            "PeakPagefileUsage": 616214528
+          }
+        },
+        "femm_pids": [
+          30116
+        ],
+        "archived_measurement_sha256": "0161d994d10cee653f6a8d37c6d21ea4bfec7404e55f29a0b6232b571eada8f2",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 48,
+            "elapsed_s": 144.83753040013835,
+            "max_s": 3.3328775000118185
+          },
+          "mi_createmesh": {
+            "count": 48,
+            "elapsed_s": 8.335727499972563,
+            "max_s": 0.20688090001931414
+          },
+          "mi_loadsolution": {
+            "count": 48,
+            "elapsed_s": 6.290025699912803,
+            "max_s": 0.15894199998001568
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 4.41861690080259,
+            "max_s": 0.007968299993081018
+          },
+          "mo_blockintegral": {
+            "count": 1296,
+            "elapsed_s": 3.4763572993979324,
+            "max_s": 0.028928799991263077
+          },
+          "mi_addnode": {
+            "count": 12672,
+            "elapsed_s": 2.561502898694016,
+            "max_s": 0.0017057999793905765
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": null
+      },
+      {
+        "case_id": "spm_8p12s_reference",
+        "phase": "D",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "d0acb8b82df32637de56f69ca83f81c4b9439d599e4f2d1cf4d109a5993841ab",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "d04658520dec36f9aa20d7410303a8d9b0526d4f03fdb9b3e67a3923c4c2d38a",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "07762fd83257ae8fb189259aa32830979e865f138188e69d8c043b0851fabd0d",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 386.8442807000247,
+        "producer_wall_s": 385.1005804000015,
+        "archived_producer_wall_s": 468.5354456000059,
+        "result_sha256": "a61a4b0861fe57a83912697bf2e5c20d0a9b13a5b514d439d422c49ccc83a948",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 302.875,
+          "solver_kernel_cpu_s": 8.765625,
+          "solver_process_count": 145,
+          "solver_peak_job_commit_bytes": 30994432,
+          "python_cpu_s": 28.015625,
+          "python_memory": {
+            "PageFaultCount": 297626,
+            "PeakWorkingSetSize": 141193216,
+            "WorkingSetSize": 117514240,
+            "QuotaPeakPagedPoolUsage": 277840,
+            "QuotaPagedPoolUsage": 275296,
+            "QuotaPeakNonPagedPoolUsage": 51000,
+            "QuotaNonPagedPoolUsage": 33992,
+            "PagefileUsage": 603860992,
+            "PeakPagefileUsage": 628830208
+          }
+        },
+        "femm_pids": [
+          19432
+        ],
+        "archived_measurement_sha256": "181d9bd7151b2866c5a12a78a7d992a356b194b60ef08b90099f3e2e24df91d1",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 48,
+            "elapsed_s": 281.9695041999803,
+            "max_s": 6.529880899994168
+          },
+          "mi_createmesh": {
+            "count": 48,
+            "elapsed_s": 9.488540900027147,
+            "max_s": 0.2315777000039816
+          },
+          "mi_loadsolution": {
+            "count": 48,
+            "elapsed_s": 7.037127899879124,
+            "max_s": 0.1776133999810554
+          },
+          "mo_selectblock": {
+            "count": 2784,
+            "elapsed_s": 5.661085200554226,
+            "max_s": 0.008784999983618036
+          },
+          "mo_blockintegral": {
+            "count": 1296,
+            "elapsed_s": 3.8978123004781082,
+            "max_s": 0.03188070000032894
+          },
+          "mi_addnode": {
+            "count": 14976,
+            "elapsed_s": 3.006437700940296,
+            "max_s": 0.0017626000044401735
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": null
+      }
+    ],
+    "retained_bytes": 83197384,
+    "all_physical_payloads_and_audits_exact": true
+  },
+  "four_to_eight_observed_speedup": 1.7146549424473594,
+  "four_to_eight_observed_runtime_reduction_pct": 41.67922797500696,
+  "windows_readiness_serial": {
+    "run": "f112-r1",
+    "status": "COMPLETE",
+    "manifest_sha256": "ca72228c5504c557c93548ddeb22f847ac95565ea9a6db21f7154c84fd282cd6",
+    "runtime_identity_sha256": "7dd81f769db6dfbb25cde9dc36fe7bdb9bdcc0d92b6d92ece7823973d91d4725",
+    "producer_source_sha256": "5d0df9a560c777be614e73e39d07570b10c5983226a5882df5384f7142054ceb",
+    "runner_sources": {
+      "tools/benchmark_suite/external.py": "f5331edc50d50634f16fc6448593b86de1ad9118492b0b560a45f8c14c4a093e",
+      "tools/benchmark_suite/contract.py": "0e48fbb43074cf069e55b1110c3e5c2693825ebab418a28cc6ae5ab424664dd2",
+      "tools/run_reference_benchmark.py": "5480b63cdc78f75b69d30507256b000a5eee02449d6e87aab099f104d4a7efce"
+    },
+    "session": {
+      "started_at": "2026-10-16T02:06:38.410288+00:00",
+      "workers": 1,
+      "timeout_s": 14400,
+      "order": "longest_first",
+      "launch_order": [
+        "spm_4p12s_small"
+      ],
+      "timings_sha256": "b70d082e366ae0a7cc2ba6370f7a2932a4fb2c1c0aa50868c2935e3473aceb14",
+      "completed_at": "2026-10-16T02:09:26.571227+00:00",
+      "wall_s": 168.16734610000276
+    },
+    "sampled_resources": {
+      "exit_code": 0,
+      "wall_s": 168.70891489999485,
+      "sampled_owned_cpu_s": 149.796875,
+      "sampled_mean_cpu_cores": 0.8879013600958474,
+      "logical_cores": 16,
+      "peak_sampled_private_bytes": 654266368,
+      "peak_sampled_working_set_bytes": 201519104,
+      "tracked_process_count": 55,
+      "sampling_interval_s": 2,
+      "limitations": "Sampling can miss short-lived children; host contention is not isolated."
+    },
+    "jobs": [
+      {
+        "case_id": "spm_4p12s_small",
+        "phase": "D",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "b7138720fb8d4ce6436e1c5647285d32af1a2b4e0ab5611014e1bd576e337241",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "2e40852cf26c6cd098928070d53e0bc8cd8cde202192f7cbae9496e3f3e7159e",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "593c128a010b16b66c22e5fc3f1819bf666843ebddab4d1c67a2d4d8f034cdec",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 167.38311319999048,
+        "producer_wall_s": 165.64688390001538,
+        "archived_producer_wall_s": 324.71293899999,
+        "result_sha256": "37df6d8f27b94851ef665966782d94c5fd5f60c587f776304a0f1face72ae70d",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 130.96875,
+          "solver_kernel_cpu_s": 6.875,
+          "solver_process_count": 145,
+          "solver_peak_job_commit_bytes": 28815360,
+          "python_cpu_s": 19.546875,
+          "python_memory": {
+            "PageFaultCount": 251397,
+            "PeakWorkingSetSize": 128552960,
+            "WorkingSetSize": 110780416,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275280,
+            "QuotaPeakNonPagedPoolUsage": 49760,
+            "QuotaNonPagedPoolUsage": 33040,
+            "PagefileUsage": 598204416,
+            "PeakPagefileUsage": 616996864
+          }
+        },
+        "femm_pids": [
+          30776
+        ],
+        "archived_measurement_sha256": "0161d994d10cee653f6a8d37c6d21ea4bfec7404e55f29a0b6232b571eada8f2",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 48,
+            "elapsed_s": 117.2379833998857,
+            "max_s": 2.681057100009639
+          },
+          "mi_createmesh": {
+            "count": 48,
+            "elapsed_s": 6.765665000042645,
+            "max_s": 0.15998440000112168
+          },
+          "mi_loadsolution": {
+            "count": 48,
+            "elapsed_s": 4.7503730000171345,
+            "max_s": 0.1130632999993395
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 3.1890029994247016,
+            "max_s": 0.004805100004887208
+          },
+          "mo_blockintegral": {
+            "count": 1296,
+            "elapsed_s": 2.871660600125324,
+            "max_s": 0.02106529998127371
+          },
+          "mi_addarc": {
+            "count": 3264,
+            "elapsed_s": 1.7966489002865274,
+            "max_s": 0.0010332999809179455
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 48,
+          "loaded_mesh_checks": 48,
+          "replaced_settle_s": 33.59999999999999,
+          "readiness_wait_s": 0.01043039993965067,
+          "analysis_calls": 48
+        }
+      }
+    ],
+    "retained_bytes": 6710846,
+    "all_physical_payloads_and_audits_exact": true
+  },
+  "limitations": [
+    "No measured full 29-case suite speedup or qualification change.",
+    "One pass each; background desktop activity and brief verification work were not isolated.",
+    "Historical eight-case serial runtime sum is context, not a fresh matched serial wall-time control.",
+    "Resource peaks are sampled every two seconds and can miss short-lived children; per-case solver Job Object accounting is also retained.",
+    "Metrics mode deliberately omits display contours and field-frame JSON, while preserving numeric fields and audit inputs.",
+    "Readiness checks replace only identified Windows ActiveX settle sites; Wine behavior and retry delays are unchanged.",
+    "Private bridge/adapter sources and raw model files remain local; public helper and scheduler remain opt-in."
+  ]
+}

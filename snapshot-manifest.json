@@ -615,8 +615,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 6164,
-      "sha256": "9404804743a6146b743f3abd221ec20895e9cb3c868125f52ea8110a50f3f522"
+      "bytes": 7113,
+      "sha256": "7cd81dcdd306daf53bc2b3423c9f543cff06c0355a5ba255d442ed8fd9e5fa9e"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -2524,6 +2524,341 @@
       "sha256": "9e8f5e2e25f80dddbe3a5d02c882ff9a46980cc298e39c0f0fa1484c741d6b11"
     },
     {
+      "path": "benchmarks/performance-112/README.md",
+      "bytes": 5123,
+      "sha256": "345e850750b99a76fc0d9080ecaa79494b0544d07d4fd4f1d7348419bd18f898"
+    },
+    {
+      "path": "benchmarks/performance-112/contention-summary.json",
+      "bytes": 55015,
+      "sha256": "d915a43eea3e07fc26a4653a6c3caca56c5955a3a112660a1d2bb8ecae45c668"
+    },
+    {
+      "path": "benchmarks/performance-112/contention.md",
+      "bytes": 4517,
+      "sha256": "8038bb0f788c3109db89af2d80dff1e6d12bdafb55a235ff625f2ed56803aab1"
+    },
+    {
+      "path": "benchmarks/performance-112/femm5-mesh-convergence-summary.json",
+      "bytes": 120715,
+      "sha256": "1a6933e3ea36409e9fdcab576bf612818a431e5100f589e26ba4262d48bedb55"
+    },
+    {
+      "path": "benchmarks/performance-112/femm5-mesh-convergence.md",
+      "bytes": 10197,
+      "sha256": "88383da9ff9f48176ab20a386578e1a22c7eed8dae34352e76fa5ed0d1c6832a"
+    },
+    {
+      "path": "benchmarks/performance-112/femm5-mesh-convergence.svg",
+      "bytes": 28446,
+      "sha256": "83e5e6c7f66fb5cc142c1fe1ec9ec371e2acda507e912debbf6e303bde7a8ee5"
+    },
+    {
+      "path": "benchmarks/performance-112/femm5-pilot-summary.json",
+      "bytes": 80056,
+      "sha256": "f4c2e89bf31098e0b63bf80d3d522d11e1318a8558be6a6a396fb7c5c8d5d63e"
+    },
+    {
+      "path": "benchmarks/performance-112/femm5-pilot.md",
+      "bytes": 7539,
+      "sha256": "e694b4b00cc41f19d77dfb9ada5a1d48776605a005be18fcdf97cabd3f2a7adc"
+    },
+    {
+      "path": "benchmarks/performance-112/full-suite-summary.json",
+      "bytes": 136842,
+      "sha256": "1da18892691f2d13c3f8bb1619e161e80614bbeb538c91c19b566b2e76bf5f0f"
+    },
+    {
+      "path": "benchmarks/performance-112/full-suite.md",
+      "bytes": 5999,
+      "sha256": "4a058d156287d815caff53f1cc4528a0f614b8f91273db0d49b1bbf91041bc5a"
+    },
+    {
+      "path": "benchmarks/performance-112/large-model-summary.json",
+      "bytes": 18320,
+      "sha256": "49fb8a96dafcaca2e6d6e89f6de875dac4ac8f6df27a4f01ce5a076d30033fe1"
+    },
+    {
+      "path": "benchmarks/performance-112/large-model.md",
+      "bytes": 3225,
+      "sha256": "2349241f08c44cd80e108aa17be8ad628bf5ce519858c74293988f54127d54fe"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/README.md",
+      "bytes": 4815,
+      "sha256": "185a64ba8edd5128519b6767108b00f909426556e1b286190ae94fc22bc5448b"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/artifact_manifest.json",
+      "bytes": 5714,
+      "sha256": "422ee29f75681491775374a257670ba8fdcbc17865a3c236c1852ae92b3a878d"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/benchmark_report.md",
+      "bytes": 5894,
+      "sha256": "ab216cccf82ffeb255cebba9b25137190375a96426b7b74d6bbc3aceb16b0148"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/benchmark_results.csv",
+      "bytes": 17010,
+      "sha256": "0789019f8e53fb2b3fdd3dd977211c423d6021e88508621707892261a32f9a34"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/benchmark_summary.json",
+      "bytes": 1826105,
+      "sha256": "e447f2c41d403c0834d724e5c20c06e3210b7bbf0eae049bbc7fd24018c063a3"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/candidate-suite.json",
+      "bytes": 19062,
+      "sha256": "8c469cdc10900688edabab34c8a14baf79db3cf00a992ca5a1b8542e23f8302a"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/coilem_benchmark_report.html",
+      "bytes": 398876,
+      "sha256": "a281ecf7db38d8d0f6d41c2e8234610a99f2d8b0b3e3eec6b302c33226f2a8eb"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/coilem_benchmark_report.pdf",
+      "bytes": 139611,
+      "sha256": "34b50bfccbc79091ae9b42f0ff834e789dca070e63608f29fa346fe8f4d1f840"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/comparison-to-main.json",
+      "bytes": 26422,
+      "sha256": "aa94c4225315ea3c35d3982ac17dbc9f16a383acd3d1e81a65ea147e1cfdf001"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1604,
+      "sha256": "15423a47ebbf8509a7935c60d5c45404b8ee186f37dd266dec9e3f2a01560e34"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1607,
+      "sha256": "e328650573ad963181a7cf2292f6fe924d866c792d79c2a32137da2f9522fae0"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1606,
+      "sha256": "68b4e61d69cbc4673eba7ec92d0609862b1cf0283fa8391bf174b8d6c55b7c59"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2503,
+      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2503,
+      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2503,
+      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2502,
+      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2502,
+      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2502,
+      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1594,
+      "sha256": "3d78ae3d4175a933e18d04b9d45c7bddaff1db6e8355c21675dbe4da2934392c"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1596,
+      "sha256": "2081d6ab448377574d76cdd8c86724d07368fd09093bab02d111bfb589d5d709"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1595,
+      "sha256": "a77a7fbd94ed2a06659067f6501b029f612f09877128361268c76c5f9e268604"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2506,
+      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2506,
+      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1640,
+      "sha256": "dd91d0757a826b34c3fde5e813bdfdc385bc048ce477a172c5bfbf292ff6703b"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1642,
+      "sha256": "4e53c05733eb4d81cc3205e743f12fb473065142827f4e38327bd035caf7545c"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1641,
+      "sha256": "1825fe88e7ddf36234aa984f0fbbd30e894bfb34a6030fc02a348c883bf18ffa"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2550,
+      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/publication.json",
+      "bytes": 7595,
+      "sha256": "10d71db33f38d5586091e49cf95899309ef4fa1ccb0c82fa19a0589a1a37304e"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/run_manifest.json",
+      "bytes": 45413,
+      "sha256": "bac4c1376648f9f6c3fa218c7680d4bd2838763d86d84d2c00c24e2fe9120fc5"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/timings.json",
+      "bytes": 14212,
+      "sha256": "45e6abda345b15955f9f27c4732c2a5105707c77a23bd28e2dd29659a5ca8d09"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/verification.json",
+      "bytes": 3613,
+      "sha256": "cba05a3c426d40312f85c2a6913885a8edee46597d9c2671ab8c2744955d4c8d"
+    },
+    {
+      "path": "benchmarks/performance-112/pilot-summary.json",
+      "bytes": 5836,
+      "sha256": "3d387e0bdf2cb71a5182962f18f4b48fdb8dbb27d09cfb7965dad0f7e4f697a1"
+    },
+    {
+      "path": "benchmarks/performance-112/repeat-20261016.json",
+      "bytes": 43462,
+      "sha256": "e421b47f719214fc52c97fc803b05bc54627129d74876e0f309d118e2756d57f"
+    },
+    {
+      "path": "benchmarks/performance-112/repeat-20261016.md",
+      "bytes": 5048,
+      "sha256": "16564ae7b02f4b7d66aff7b0e31f812fffd7bdf907208346e431f355770a62cf"
+    },
+    {
+      "path": "benchmarks/performance-112/scaling-summary.json",
+      "bytes": 67099,
+      "sha256": "848016322c442db5dce9915573bd1e20155cda61480cede41aceb6db8b81fbef"
+    },
+    {
+      "path": "benchmarks/performance-112/scaling.md",
+      "bytes": 4163,
+      "sha256": "0dd989883dabb17c6e7a60fdb22d40d7eee9dcb93cf06d42d774b7af54f583d2"
+    },
+    {
+      "path": "benchmarks/performance-112/worker-costs.json",
+      "bytes": 5945,
+      "sha256": "5d33e0485264539cce63b88aab38048d3ca3e499beef9b89a74f1a6fb02cd758"
+    },
+    {
       "path": "benchmarks/pr100-v3-handoff/README.md",
       "bytes": 10798,
       "sha256": "7035d7360a6047f961931fbfd50dddcbc45ac36b365ff48fbd05331a25fa1534"
@@ -4414,6 +4749,11 @@
       "sha256": "54ec6b85b36f1e1beec6083c672b06b7d6b7d8b3af4acecdbbe548ef8e432c02"
     },
     {
+      "path": "docs/BENCHMARK_PERFORMANCE.md",
+      "bytes": 14128,
+      "sha256": "33c7875e199d7e07165dc9b46a99033662ec753dbae9892a6e01db3c4865f387"
+    },
+    {
       "path": "docs/ELMER.md",
       "bytes": 6064,
       "sha256": "1068d2db3c4e7a8b6113aaa1ca0ab93a38067944d7e42beeafa01a97baed69d0"
@@ -5954,6 +6294,11 @@
       "sha256": "16db67f674d6b86fbd59e7b168aa0edbdd899b5651b36f601c4cf68fddcdc98e"
     },
     {
+      "path": "tests/test_benchmark_runtime.py",
+      "bytes": 4000,
+      "sha256": "c09fa8a470b9b6d0c562fb2524f5acb9e214c257a8bd08def253624cf783594f"
+    },
+    {
       "path": "tests/test_benchmark_suite.py",
       "bytes": 30515,
       "sha256": "4ec6029a89b570f016d8cdbc9e04970b9bfca734a654634c4e75407829c7a0e8"
@@ -6015,8 +6360,8 @@
     },
     {
       "path": "tests/test_late_reference_comparison.py",
-      "bytes": 13528,
-      "sha256": "98ffc67aeb0579891218486e1daef27eb6ab88d14ac7028defbeb7057010d8e4"
+      "bytes": 13782,
+      "sha256": "cdf4098d1268f6d74e7ac4f44a0f0948bfc9ae875847fac4365ff4296d00a4a8"
     },
     {
       "path": "tests/test_launcher.py",
@@ -6072,6 +6417,11 @@
       "path": "tests/test_ornl_prius_comparison.py",
       "bytes": 3249,
       "sha256": "7982aff96eb3c5a3714404080aacce322d7cc85e8238467b4e67b330c74953f8"
+    },
+    {
+      "path": "tests/test_payload_reuse.py",
+      "bytes": 2698,
+      "sha256": "7e74e645c876a03e975593a2ddccaf8f9fee0628452b1c95e1ce398727443366"
     },
     {
       "path": "tests/test_postsolve_pipeline.py",
@@ -6139,6 +6489,16 @@
       "sha256": "b90bf7a7b14bfbb32b4a4e1e02d335ac7ed6b10ab5f1364e3d1ee57a4a1a0d30"
     },
     {
+      "path": "tests/test_reference_recovery.py",
+      "bytes": 13029,
+      "sha256": "6e367bc4b58f4bede4e0804bea37899bb206b6656d7b3ecde3e3b7f0cf9ebeea"
+    },
+    {
+      "path": "tests/test_reference_runner.py",
+      "bytes": 11608,
+      "sha256": "41d3017b9dbb1ed7622e04647c7df5a1bd4531774f84cbd11409844338a92cc7"
+    },
+    {
       "path": "tests/test_release_tools.py",
       "bytes": 30265,
       "sha256": "cd290b78012f57c567950ac9a499440df22445f6b3be004e4dca66218d9e3433"
@@ -6187,6 +6547,26 @@
       "path": "tests/test_windows_playback_pool.py",
       "bytes": 4729,
       "sha256": "72a72eb8f34af191d0a17334ac6908c76159062655fc11e9428783f8c33bff65"
+    },
+    {
+      "path": "tools/analyze_benchmark_runtime.py",
+      "bytes": 8455,
+      "sha256": "60a0cd92f1e11ed2d33ddd75433b37dd7f9598ed03eb4b74f69879e68b5b960c"
+    },
+    {
+      "path": "tools/benchmark_suite/external.py",
+      "bytes": 23421,
+      "sha256": "63e8a1dce6707443b7c6c29e0fe96f3491443ddc0ad35d9ff18c4566b218e074"
+    },
+    {
+      "path": "tools/benchmark_suite/external_contract.py",
+      "bytes": 2188,
+      "sha256": "3d89f253a4da164b69e11c9cbadb58ef0d0a7fdc7afda920a1a6d88177d81012"
+    },
+    {
+      "path": "tools/benchmark_suite/payload_reuse.py",
+      "bytes": 1888,
+      "sha256": "e2da9fb4bdba5bfa8194dda8a927bef450b31ff8e33bd1f3bf06781e38508d82"
     },
     {
       "path": "tools/build_benchmark_record.py",
@@ -6310,8 +6690,8 @@
     },
     {
       "path": "tools/report_benchmark_against_reference.py",
-      "bytes": 19971,
-      "sha256": "442d32a02187bd5500ac052fd6b2c40dcd4a54f60a7a55abfba0c0305b06ba34"
+      "bytes": 20151,
+      "sha256": "22532d9a02cd2825b4a5f65636631b55571e81f6cc1cd77ebcef6885682086cc"
     },
     {
       "path": "tools/run_benchmarks.py",
@@ -6324,14 +6704,19 @@
       "sha256": "2cd224b20c7681a6baae705c29ccc7ce9bdc8b26d0e23592a22c0a494b4f5cd9"
     },
     {
+      "path": "tools/run_reference_benchmark.py",
+      "bytes": 192,
+      "sha256": "5480b63cdc78f75b69d30507256b000a5eee02449d6e87aab099f104d4a7efce"
+    },
+    {
       "path": "tools/smoke_public_runtime.py",
       "bytes": 7397,
       "sha256": "1e0ff7e1edb94c0cbb64cb1e2c1be53ccf38e03ee4dd31bed20ef0cc55d607e9"
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 21076,
-      "sha256": "ca90649a1e4087116bafc0c5a22fbb18e9fe58187d534b4c773666a0fa595e19"
+      "bytes": 21236,
+      "sha256": "45e505b5e769008137306770fb9d1889a909a65b4ed42110238af2602d5224a1"
     }
   ],
   "public_patches": [
@@ -7863,7 +8248,7 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B Ã¢Ë†â€™ Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B \u00c3\u00a2\u00cb\u2020\u00e2\u20ac\u2122 Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
@@ -7893,13 +8278,13 @@
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45Ã‚Â° (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45\u00c3\u201a\u00c2\u00b0 (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45Ã‚Â° over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45\u00c3\u201a\u00c2\u00b0 over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "a482ff6e2bd9616d2ece2a68f8fa2f2c49aae45c",
@@ -7917,7 +8302,7 @@
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45Ã‚Â° (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00c3\u201a\u00c2\u00b0 (#52 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
@@ -8626,6 +9011,18 @@
       "path": "tools/benchmark_suite/report.py",
       "source_sha256": "b824617f4bd29a0d455a4063a07989f17f68cb0a90aa3d49734465d8ec93e5bc",
       "reason": "Show the energy-balance diagnostic for coilEM and the reference in the benchmark report (#80)."
+    },
+    {
+      "base_commit": "195753cb54f40921c0106a6794bef1684b6df2dc",
+      "path": "tools/benchmark_suite/external.py",
+      "source_sha256": "23cd9cfe71c92ab8685c8f38d921cd4a4228098956cb453f37b315b48d8a517d",
+      "reason": "Remember when the controller stopped a worker during an interrupt, so --resume keeps a result written just before the stop instead of reading its signal exit code as a producer failure."
+    },
+    {
+      "base_commit": "195753cb54f40921c0106a6794bef1684b6df2dc",
+      "path": "tests/test_reference_recovery.py",
+      "source_sha256": "da6e7b242f508340cd51eef758296057dc4568803cc98d93afadea642869c321",
+      "reason": "Cover a worker that writes its result and is then stopped by the interrupt's cleanup: the run records INTERRUPTED and --resume completes without --retry-failed."
     }
   ]
 }
