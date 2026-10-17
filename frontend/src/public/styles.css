@@ -1734,6 +1734,10 @@ body {
 .public-solved-field-toolbar .public-field-layer-controls button[aria-pressed="true"] { border-color: rgba(148,163,184,.22); color: var(--text-secondary); background: rgba(15,17,23,.76); }
 .public-solved-field-toolbar .public-solve-view-switch button[aria-pressed="true"] { color: #d6ab58; }
 .public-solved-field-toolbar .public-field-source-controls button[aria-pressed="true"]::before { border-color: var(--text-accent); background: var(--text-accent); }
+.public-field-source-pair { display: inline-flex; align-items: center; gap: 3px; padding: 2px; border: 1px solid rgba(148,163,184,.16); border-radius: 999px; }
+.public-solved-field-toolbar .public-field-source-pair button { min-width: 0; padding: 0 10px; }
+.public-solved-field-toolbar .public-field-source-pair.is-both .is-pm[aria-pressed="true"]::before { border-color: #5ed3f3; background: #5ed3f3; }
+.public-solved-field-toolbar .public-field-source-pair.is-both .is-stator[aria-pressed="true"]::before { border-color: #ffb547; background: #ffb547; }
 .public-solved-field-toolbar .public-field-layer-controls button,
 .public-solved-field-toolbar .public-field-density-control,
 .public-solved-field-toolbar .public-field-layer-menu > summary { border-color: rgba(148,163,184,.14); background: rgba(10,12,17,.62); }
@@ -1846,7 +1850,7 @@ body {
 
 /* Four field sources (#120) no longer fit beside the view switch in a narrow
    viewer, so they take a second row instead of running under the menu. */
-@container (max-width: 760px) {
+@container (max-width: 600px) {
   .public-field-toolbar-groups { grid-column: 1 / -1; grid-row: 2; justify-content: flex-start; }
   .public-field-toolbar-end { grid-column: 3; grid-row: 1; }
 }

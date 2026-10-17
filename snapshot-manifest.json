@@ -5180,8 +5180,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 118165,
-      "sha256": "d00806537a5e9e07796657837b72009b3c15f0e209a054926d10f886aa7cd430"
+      "bytes": 118783,
+      "sha256": "52e4d49c5d2b2ca576a71692e4380f04313e06cacd26623595942a035c748370"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5635,8 +5635,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 57261,
-      "sha256": "ab77dc524c39fb1789191788130b24d948674a370158466a1f2170571f20724a"
+      "bytes": 57700,
+      "sha256": "43395341143b24b885cab3d1f69111d4ac4eb1c1bacbd9e8d5489f9583e14f69"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -5910,8 +5910,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 242797,
-      "sha256": "a359050c2be2c149c240d8249fc8490bc16a640e78a390ed92955f1eb4776200"
+      "bytes": 243352,
+      "sha256": "19194024303a01f02c5d0f68ee1c357380da2a61f3ed953e6960ace8f43eb980"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -9179,6 +9179,24 @@
       "path": "tests/test_solve_workspace.py",
       "source_sha256": "db3ad88a797164357e4bcf96ca6b3e89438c2b00c1fe4c15263439dcc5752961",
       "reason": "Test that a retained artifact's name and record carry the hash of its bytes and leave no temporary copy (#38 lever 3)."
+    },
+    {
+      "base_commit": "9efaf6505c06adaf7a2b356640bcfdc1a92ca525",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "ab77dc524c39fb1789191788130b24d948674a370158466a1f2170571f20724a",
+      "reason": "Replace the four field sources with Resultant plus a PM/Stator pair: either alone, or both to overlay their field lines (#120)."
+    },
+    {
+      "base_commit": "9efaf6505c06adaf7a2b356640bcfdc1a92ca525",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "a359050c2be2c149c240d8249fc8490bc16a640e78a390ed92955f1eb4776200",
+      "reason": "Style the PM/Stator pair, colour its dots like the overlay lines when both are on, and keep the sources on the first toolbar row down to 600 px (#120)."
+    },
+    {
+      "base_commit": "9efaf6505c06adaf7a2b356640bcfdc1a92ca525",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "e1a6e246de259bc347c4c7bfc0b07d31a0924f036e555070dbdf614dd5394f1e",
+      "reason": "Check the Resultant button, the PM/Stator pair and its toggle rule, and the 600 px toolbar wrap (#120)."
     }
   ]
 }
