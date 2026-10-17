@@ -25,6 +25,19 @@ exactly. This is one development-host observation, with the combined execution
 optimizations and a frozen physical source. FEMM analysis remains 87.2% of summed
 case time; native collection and report rendering are separate stages.
 
+The [fresh full-suite repeat](../benchmarks/performance-112/repeat-20261016.md)
+completed the same 29 cases in **1h50m54s**, 68.06 seconds (1.01%) less than the
+prior run. All physical payloads and extraction audits remain exact; recorded
+worker budgets, core leases and bundle-compatibility checks pass. Keep reference
+bundle v3 and validation protocol 1.3.0 for these unchanged physical results.
+
+The [matched native comparison](../benchmarks/performance-112/native-20261016/README.md)
+completed all 35 supported native jobs against that fresh FEMM bundle in
+**43m40s**, versus 45m37s in the saved Windows v3 report. All physical summaries,
+waveforms and evaluation numbers match exactly; the existing 28 PASS, 1 YELLOW
+and planned unsupported Prius outcomes remain. Both current collection stages
+sum to **2h34m34s**, excluding the gap between starting them.
+
 The [repeated FEMM 4.2 contention controls](../benchmarks/performance-112/contention.md)
 compare the four largest retained models plus eight small jobs under large-worker
 cost two versus three, using existing/candidate/candidate/existing run order.
