@@ -773,10 +773,18 @@ assert.match(styleSource, /\.public-run-plan-section\[open\] > summary::after \{
 assert.match(styleSource, /\.public-advanced-options > summary::after \{[^}]*font-size: 8px;[^}]*content: '▼';[^}]*rotate\(-90deg\);/);
 assert.match(styleSource, /\.public-advanced-options\[open\] > summary::after \{[^}]*rotate\(0\);/);
 assert.doesNotMatch(styleSource, /\.public-advanced-options > summary::after \{[^}]*content: '⌄'/);
-assert.match(styleSource, /\.public-result-metrics dd \{[^}]*color: var\(--text-primary\);[^}]*font: 800 11px/);
-assert.match(styleSource, /\.public-result-metrics dd \{ font-size: 12px; \}/);
-assert.match(workspaceSource, /torque_ripple_pct\)\} %/);
-assert.match(workspaceSource, /back_emf_thd_pct\)\} %/);
+// Completed results read as a list like the motor constants: one row per value,
+// numbers right-aligned, units in their own column, a rule between groups.
+assert.doesNotMatch(workspaceSource, /className="public-result-metrics"/);
+assert.match(workspaceSource, /<section className="motor-constants public-result-list" aria-labelledby=\{resultsHeadingId\}>\s*<h3 id=\{resultsHeadingId\}>Performance<\/h3>/);
+assert.match(workspaceSource, /<td className="motor-constants-value">\{value\}<\/td>\s*<td className="motor-constants-unit">\{unit\}<\/td>/);
+for (const label of ['Average torque', 'Torque ripple', "'Back EMF'", 'thdLabel', "'Peak tooth B'", "'Peak yoke B'", "'Solver time'", "'Total elapsed'"]) {
+  assert.ok(workspaceSource.includes(`resultRow(${label.startsWith("'") || label === 'thdLabel' ? label : '`' + label}`), label);
+}
+assert.match(styleSource, /\.public-result-list \.is-group-start > \* \{ padding-top: 6px; border-top: 1px solid var\(--border-subtle\); \}/);
+// Percentages keep their unit apart from the number: its own column in the list.
+assert.match(workspaceSource, /formatNumber\(result\.summary\.torque_ripple_pct\), '%'\)/);
+assert.match(workspaceSource, /formatNumber\(result\.summary\.back_emf_thd_pct\), '%'\)/);
 assert.doesNotMatch(workspaceSource, /(?:torque_ripple_pct|back_emf_thd_pct)\)\}%/);
 assert.doesNotMatch(workspaceSource, /Validate on run/i);
 assert.doesNotMatch(workspaceSource, /Local update/);
