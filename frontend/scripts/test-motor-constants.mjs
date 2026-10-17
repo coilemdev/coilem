@@ -17,17 +17,21 @@ const kt = 0.288;
 const ke = 0.201;
 const view = motorConstantsView({ Kt_Nm_per_A: kt, Ke_Vs_per_rad_mech: ke, lambda_pm_Wb: 0.0501 });
 
-assert.deepEqual(view.kt.map(shown), ['0.288', '0.407'], 'Kt per peak A, and per rms A = √2 × per peak A');
-close(view.kt[1].value, kt * Math.SQRT2, 'Kt per rms A');
-assert.deepEqual(view.kt.map((item) => item.unit), ['N·m/A pk', 'N·m/A rms']);
+// Kt shows once, per rms A = √2 × the stored per-peak-A value, which is the hover hint.
+assert.equal(shown(view.kt), '0.407', 'Kt per rms A');
+close(view.kt.value, kt * Math.SQRT2, 'Kt per rms A');
+assert.equal(view.kt.unit, 'N·m/A rms');
+assert.equal(view.kt.siHint, '0.288 N·m/A per peak ampere (SI)');
 
 // Ke in V/krpm line-to-line rms, derived independently: at 1,000 rpm the
 // per-phase peak EMF is Ke·ω, its rms is ÷√2, and line-to-line is ×√3.
 const omegaAt1000Rpm = 1000 * 2 * Math.PI / 60;
 const lineRmsAt1000Rpm = Math.sqrt(3) * (ke * omegaAt1000Rpm) / Math.SQRT2;
-close(view.ke[1].value, lineRmsAt1000Rpm, 'Ke V/krpm L-L rms');
-assert.deepEqual(view.ke.map(shown), ['0.201', '25.8']);
-assert.deepEqual(view.ke.map((item) => item.unit), ['V·s/rad', 'V/krpm L-L rms']);
+close(view.ke.value, lineRmsAt1000Rpm, 'Ke V/krpm L-L rms');
+assert.equal(shown(view.ke), '25.8');
+assert.equal(view.ke.unit, 'V/krpm L-L rms');
+assert.equal(view.ke.siHint, '0.201 V·s/rad, phase peak per mechanical rad/s (SI)');
+assert.equal(view.lambdaPm.siHint, undefined, 'only Kt and Ke carry an SI hint');
 
 assert.equal(shown(view.lambdaPm), '50.1', 'λpm in mWb');
 assert.equal(view.lambdaPm.unit, 'mWb');
@@ -49,15 +53,17 @@ assert.equal(statusAt(110.1), 'check');
 
 // Six-step and no-load runs report no Kt: no consistency either, Ke and λpm stay.
 const sixStep = motorConstantsView({ Kt_Nm_per_A: null, Ke_Vs_per_rad_mech: ke, lambda_pm_Wb: 0.0501 });
-assert.deepEqual(sixStep.kt.map(shown), ['—', '—']);
+assert.equal(shown(sixStep.kt), '—');
+assert.equal(sixStep.kt.siHint, undefined, 'no hint without a value');
 assert.equal(shown(sixStep.consistency), '—');
 assert.equal(sixStep.consistencyStatus, 'unavailable');
-assert.deepEqual(sixStep.ke.map(shown), ['0.201', '25.8']);
+assert.equal(shown(sixStep.ke), '25.8');
 assert.equal(motorConstantsView({ Kt_Nm_per_A: kt, Ke_Vs_per_rad_mech: 0 }).consistencyStatus, 'unavailable', 'no Ke, no ratio');
 
 // Negative torque (a generating current angle) keeps its sign, with a true minus.
 const generating = motorConstantsView({ Kt_Nm_per_A: -kt, Ke_Vs_per_rad_mech: ke });
-assert.equal(shown(generating.kt[0]), '−0.288');
+assert.equal(shown(generating.kt), '−0.407');
+assert.equal(generating.kt.siHint, '−0.288 N·m/A per peak ampere (SI)');
 assert.equal(generating.consistencyStatus, 'check');
 
 // Three significant figures, never an exponent; whole numbers keep every digit.

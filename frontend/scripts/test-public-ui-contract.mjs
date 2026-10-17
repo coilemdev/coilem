@@ -17,6 +17,7 @@ const appSource = await readFile(path.join(frontendRoot, 'src/public/App.tsx'), 
 const mainSource = await readFile(path.join(frontendRoot, 'src/public/main.tsx'), 'utf8');
 const workspaceSource = await readFile(path.join(frontendRoot, 'src/public/CoilEmWorkspace.tsx'), 'utf8');
 const resultSummarySource = await readFile(path.join(frontendRoot, 'src/public/ResultSummary.tsx'), 'utf8');
+const motorConstantsComponentSource = await readFile(path.join(frontendRoot, 'src/public/MotorConstants.tsx'), 'utf8');
 const bldcChartSource = await readFile(path.join(frontendRoot, 'src/public/BldcTorqueCurrentChart.tsx'), 'utf8');
 const exampleDesignsSource = await readFile(path.join(frontendRoot, 'src/public/exampleDesigns.ts'), 'utf8');
 const runComparisonSource = await readFile(path.join(frontendRoot, 'src/public/PublicRunComparison.tsx'), 'utf8');
@@ -335,6 +336,12 @@ assert.doesNotMatch(resultSummarySource, /rotor positions`,\s*`\$\{solverLabel\}
 assert.match(resultSummarySource, /Fundamental, rms line-to-neutral at/);
 assert.match(resultSummarySource, /Torque × speed, before losses/);
 assert.match(resultSummarySource, /<MotorConstants summary=\{summary\} variant="report" \/>/);
+// Kt and Ke show once each in datasheet units, with the stored SI value as a hover hint.
+assert.doesNotMatch(motorConstantsComponentSource, /rowSpan=\{2\}/);
+assert.match(motorConstantsComponentSource, /<td className="motor-constants-value" title=\{item\.siHint\}>/);
+assert.match(motorConstantsComponentSource, /<Value item=\{view\.kt\} \/>/);
+assert.match(motorConstantsComponentSource, /<Value item=\{view\.ke\} \/>/);
+assert.match(styleSource, /\.motor-constants-si-hint \{ border-bottom: 1px dashed/);
 assert.match(resultSummarySource, /saturationKneeRangeT\(materials, config\.materials\.stator_steel\)/);
 assert.match(workspaceSource, />Open project</);
 assert.match(workspaceSource, />Rerun settings</);
