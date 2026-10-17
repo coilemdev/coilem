@@ -1,0 +1,212 @@
+{
+  "schema": "coilem.reference_worker_costs/v1",
+  "physical_reference_commit": "738d9516e8500c5996c772bd96470472cbb9a0f9",
+  "scope": "Advisory scheduling on the measured Windows Ryzen 7 7700 host; no physical input changes",
+  "policy": "Up to eight processes, budget eight; cost two above 100000 archived mesh elements, otherwise one",
+  "rationale": "Reduce latency of the four longest large models while retaining higher overlap for smaller jobs; validate actual full-suite wall time.",
+  "jobs": [
+    {
+      "case_id": "spm_8p48s_distributed_femm_validation",
+      "phase": "C",
+      "runtime_s": 2656.463218699995,
+      "archived_mesh_elements": 132288,
+      "worker_cost": 2
+    },
+    {
+      "case_id": "spm_8p48s_chorded_5_6",
+      "phase": "C",
+      "runtime_s": 2641.949727200001,
+      "archived_mesh_elements": 132288,
+      "worker_cost": 2
+    },
+    {
+      "case_id": "spm_12p36s_distributed_femm_validation",
+      "phase": "C",
+      "runtime_s": 2133.2519268000033,
+      "archived_mesh_elements": 110812,
+      "worker_cost": 2
+    },
+    {
+      "case_id": "ipm_flat_24s16p_industrial_contract",
+      "phase": "B",
+      "runtime_s": 2054.1303785000055,
+      "archived_mesh_elements": 106484,
+      "worker_cost": 2
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_narrow_angle_contract",
+      "phase": "B",
+      "runtime_s": 1619.7890627000015,
+      "archived_mesh_elements": 69104,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "phase": "B",
+      "runtime_s": 1597.5066560999985,
+      "archived_mesh_elements": 68678,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_baseline_contract",
+      "phase": "B",
+      "runtime_s": 1572.1137507999956,
+      "archived_mesh_elements": 68572,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "phase": "B",
+      "runtime_s": 1509.6317756999924,
+      "archived_mesh_elements": 69224,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "ipm_flat_12s10p_fscw_contract",
+      "phase": "B",
+      "runtime_s": 1503.0009744000054,
+      "archived_mesh_elements": 67782,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_thin_bridge_contract",
+      "phase": "B",
+      "runtime_s": 1500.4336664999864,
+      "archived_mesh_elements": 68056,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "phase": "B",
+      "runtime_s": 1491.5853321000031,
+      "archived_mesh_elements": 66202,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "spm_8p24s_distributed_femm_validation",
+      "phase": "C",
+      "runtime_s": 1441.723152000006,
+      "archived_mesh_elements": 82554,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "phase": "B",
+      "runtime_s": 1296.6927656999906,
+      "archived_mesh_elements": 64328,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "phase": "B",
+      "runtime_s": 1052.1761990000086,
+      "archived_mesh_elements": 59106,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract",
+      "phase": "B",
+      "runtime_s": 950.1346181999979,
+      "archived_mesh_elements": 58296,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "runtime_s": 919.7253745999915,
+      "archived_mesh_elements": 57050,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "spm_8p12s_reference_angle30__baseline",
+      "phase": "A",
+      "runtime_s": 742.8823391000042,
+      "archived_mesh_elements": 50842,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__tight_airgap",
+      "phase": "A",
+      "runtime_s": 708.9449004999988,
+      "archived_mesh_elements": 45684,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__baseline",
+      "phase": "A",
+      "runtime_s": 700.511723399999,
+      "archived_mesh_elements": 45140,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__high_current",
+      "phase": "A",
+      "runtime_s": 696.6647319999975,
+      "archived_mesh_elements": 45140,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "spm_4p12s_simple__high_current",
+      "phase": "A",
+      "runtime_s": 499.71195799999987,
+      "archived_mesh_elements": 43134,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__high_current",
+      "phase": "A",
+      "runtime_s": 496.2007492999983,
+      "archived_mesh_elements": 43134,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__baseline",
+      "phase": "A",
+      "runtime_s": 484.3242902999991,
+      "archived_mesh_elements": 43134,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "spm_4p12s_simple__baseline",
+      "phase": "A",
+      "runtime_s": 482.8149521000014,
+      "archived_mesh_elements": 43134,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "ipm_flat_4p12s_micro_contract",
+      "phase": "B",
+      "runtime_s": 472.89579409999715,
+      "archived_mesh_elements": 44540,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "phase": "D",
+      "runtime_s": 468.5354456000059,
+      "archived_mesh_elements": 50842,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "spm_4p12s_simple__tight_airgap",
+      "phase": "A",
+      "runtime_s": 446.7195095999996,
+      "archived_mesh_elements": 40886,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__tight_airgap",
+      "phase": "A",
+      "runtime_s": 442.2317941000001,
+      "archived_mesh_elements": 40886,
+      "worker_cost": 1
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "phase": "D",
+      "runtime_s": 324.71293899999,
+      "archived_mesh_elements": 43134,
+      "worker_cost": 1
+    }
+  ]
+}

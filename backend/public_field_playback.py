@@ -49,6 +49,8 @@ PLAYBACK_CONTOUR_LEVEL_STRIDE = 2
 PLAYBACK_RENDERER_REVISION = "medium-contours-mesh-v2"
 _PLAYBACK_PROCESS_MIN_FRAMES = 8
 _PLAYBACK_MAX_PROCESSES = 8
+# View box, pixel mapper and (triangle index, pixel-space corners) pairs.
+_DrawableGeometry = tuple[tuple[float, float, float, float], Any, list[tuple[int, list[tuple[float, float]]]]]
 _HEAT_COLORS = (
     (20, 42, 97, 255),
     (24, 85, 167, 255),
@@ -169,6 +171,16 @@ def _triangles(
             continue
         valid.append((index, [(point[0], point[1]) for point in points]))
     return valid
+
+
+def _drawable_geometry(plot: dict[str, Any]) -> _DrawableGeometry:
+    """Return a plot's view box, pixel mapper and drawable triangles."""
+
+    nodes, view_box = _view_geometry(plot)
+    triangles = _triangles(plot, nodes)
+    if not triangles:
+        raise ValueError("field playback source has no drawable triangles")
+    return view_box, _pixel_mapper(view_box), triangles
 
 
 def _contour_levels(
@@ -478,12 +490,10 @@ def _render_composition(
     composition: str,
     base_ref: dict[str, Any],
     mesh_ref: dict[str, Any],
+    geometry: _DrawableGeometry | None = None,
 ) -> dict[str, Any]:
-    nodes, view_box = _view_geometry(plot)
-    point = _pixel_mapper(view_box)
-    triangles = _triangles(plot, nodes)
-    if not triangles:
-        raise ValueError("field playback source has no drawable triangles")
+    # The caller passes the geometry it already built for the same plot.
+    view_box, point, triangles = geometry if geometry is not None else _drawable_geometry(plot)
     heat, min_b, max_b = _render_heat(
         image_module,
         image_draw_module,
@@ -648,11 +658,8 @@ def _package_playback_frame(
     source_path, outer = _load_frame(artifact_id)
     if source_path.parent.parent != Path(cache_dir_text):
         raise ValueError("field playback frames span multiple solve caches")
-    nodes, view_box = _view_geometry(outer)
-    point = _pixel_mapper(view_box)
-    triangles = _triangles(outer, nodes)
-    if not triangles:
-        raise ValueError("field playback source has no drawable triangles")
+    geometry = _drawable_geometry(outer)
+    _, point, triangles = geometry
     base = _render_base(Image, ImageDraw, triangles, point)
     base_ref = _save_png(
         base,
@@ -674,6 +681,7 @@ def _package_playback_frame(
             composition="armature" if mode == "armature" else "resultant",
             base_ref=base_ref,
             mesh_ref=mesh_ref,
+            geometry=geometry,
         )
     }
     if mode == "resultant_pm":

@@ -6,9 +6,21 @@ import argparse
 import copy
 import hashlib
 import importlib.util
+import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
+
+# Keep report provenance available after native libraries isolate process PATH.
+_GIT_EXECUTABLE = shutil.which("git")
+_GIT_ENV = dict(os.environ)
+
+
+def git(root, *args):
+    if not _GIT_EXECUTABLE:
+        raise ValueError("Git is required to verify report provenance")
+    return subprocess.check_output([_GIT_EXECUTABLE, "-C", str(root), *args], env=_GIT_ENV, text=True).strip()
 
 
 def evaluation_module(relative):
@@ -28,8 +40,8 @@ def _numerical_gates(evaluation):
 
 def reconcile_angles(path, measured_spec, rows, configs, protocols, golden, bundle):
     """Apply a separately registered validator; preserve the measured contract."""
-    from tools.benchmark_suite.contract import ROOT as measured_root
-    from tools.benchmark_suite.contract import checked_json, read, sha
+    from backend.benchmark_suite.contract import ROOT as measured_root
+    from backend.benchmark_suite.contract import checked_json, read, sha
 
     root = Path(__file__).resolve().parents[1]
     path = path.resolve()
@@ -67,9 +79,9 @@ def reconcile_angles(path, measured_spec, rows, configs, protocols, golden, bund
         if protocol.get("source_protocol") != {"file":previous["protocol"], "sha256":previous["protocol_sha256"]}:
             raise ValueError("Angle migration does not identify its historical protocol")
         registered[case["id"]] = protocol
-    refs = evaluation_module("tools/benchmark_suite/references.py")
+    refs = evaluation_module("backend/benchmark_suite/references.py")
     _, references, _ = refs.load_bundle(bundle, spec)
-    metrics = evaluation_module("tools/benchmark_suite/bldc_metrics.py")
+    metrics = evaluation_module("backend/benchmark_suite/bldc_metrics.py")
     for row in rows:
         if row["phase"] != "D" or row["status"] in ("ERROR", "INCOMPLETE", "UNSUPPORTED"):
             continue
@@ -86,12 +98,12 @@ def reconcile_angles(path, measured_spec, rows, configs, protocols, golden, bund
         "measured_protocol_version":"1.1.0", "current_angle_convention":"winding-phase-a-v1",
         "post_hoc_registration":True, "physical_inputs_changed":False, "waveforms_changed":False,
         "historical_evaluations_preserved":True,
-        "evaluator_commit":subprocess.check_output(["git","-C",str(root),"rev-parse","HEAD"],text=True).strip(),
-        "evaluator_dirty":bool(subprocess.check_output(["git","-C",str(root),"status","--porcelain"],text=True).strip()),
+        "evaluator_commit":git(root, "rev-parse", "HEAD"),
+        "evaluator_dirty":bool(git(root, "status", "--porcelain")),
         "protocol_sha256":{c["protocol"]:c["protocol_sha256"] for c in spec["cases"] if c["phase"]=="D"},
-        "evaluator_sha256":sha(root/"tools/benchmark_suite/bldc_metrics.py"),
-        "reference_loader_sha256":sha(root/"tools/benchmark_suite/references.py"),
-        "report_renderer_sha256":sha(root/"tools/benchmark_suite/report.py"),
+        "evaluator_sha256":sha(root/"backend/benchmark_suite/bldc_metrics.py"),
+        "reference_loader_sha256":sha(root/"backend/benchmark_suite/references.py"),
+        "report_renderer_sha256":sha(root/"backend/benchmark_suite/report.py"),
     }
 
 
@@ -100,8 +112,8 @@ def file_sha(path):
 
 
 def require_source(source, expected_commit, native_identity):
-    commit = subprocess.check_output(["git", "-C", str(source), "rev-parse", "HEAD"], text=True).strip()
-    dirty = subprocess.check_output(["git", "-C", str(source), "status", "--porcelain"], text=True).strip()
+    commit = git(source, "rev-parse", "HEAD")
+    dirty = git(source, "status", "--porcelain")
     if commit != expected_commit or dirty or native_identity["commit"] != expected_commit or native_identity["dirty"]:
         raise ValueError("Use the clean measured source pin; candidate identity must match")
     for relative, expected in native_identity["source_files"].items():
@@ -167,12 +179,12 @@ def compare(args):
     if output.exists() and any(output.iterdir()):
         raise ValueError("Comparison output exists; select a new directory")
     sys.path.insert(0, str(source))
-    from tools.benchmark_suite import cli
-    from tools.benchmark_suite.contract import canonical, checked_path, read, sha, write
-    from tools.benchmark_suite.metrics import validate_abc
-    from tools.benchmark_suite.references import load_bundle, load_suite
-    from tools.benchmark_suite.report import build
-    from tools.benchmark_suite.worker import compact
+    from backend.benchmark_suite import cli
+    from backend.benchmark_suite.contract import canonical, checked_path, read, sha, write
+    from backend.benchmark_suite.metrics import validate_abc
+    from backend.benchmark_suite.references import load_bundle, load_suite
+    from backend.benchmark_suite.report import build
+    from backend.benchmark_suite.worker import compact
 
     if cli.ROOT.resolve() != source:
         raise ValueError("Benchmark evaluator imported from another checkout")
@@ -281,7 +293,7 @@ def compare(args):
             "Post hoc current-angle contract reconciliation; original historical evaluations remain preserved. "
             "FEMM v3 scientific review and release qualification remain separate."
         )
-        build = evaluation_module("tools/benchmark_suite/report.py").build
+        build = evaluation_module("backend/benchmark_suite/report.py").build
     output.mkdir(parents=True, exist_ok=True)
     verdict = build(output, derived, rows, pdf=args.pdf)
     write(output / "comparison_manifest.json", derived)
@@ -313,9 +325,9 @@ def compare(args):
         contract = derived["comparison"]["evaluation_contract"]
         root = Path(__file__).resolve().parents[1]
         files = {contract["suite"]:contract["suite_sha256"], **contract["protocol_sha256"],
-                 "tools/benchmark_suite/bldc_metrics.py":contract["evaluator_sha256"],
-                 "tools/benchmark_suite/references.py":contract["reference_loader_sha256"],
-                 "tools/benchmark_suite/report.py":contract["report_renderer_sha256"]}
+                 "backend/benchmark_suite/bldc_metrics.py":contract["evaluator_sha256"],
+                 "backend/benchmark_suite/references.py":contract["reference_loader_sha256"],
+                 "backend/benchmark_suite/report.py":contract["report_renderer_sha256"]}
         if any(file_sha(root / name) != digest for name,digest in files.items()):
             raise ValueError("Evaluation contract or validator changed while rendering")
     require_source(source, args.expected_commit, original["identity"])

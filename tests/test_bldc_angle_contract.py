@@ -5,12 +5,12 @@ from pathlib import Path
 
 import pytest
 
+from backend.benchmark_suite.bldc_metrics import golden_sector, validate_lane_result
+from backend.benchmark_suite.cli import inputs
+from backend.benchmark_suite.contract import DEFAULT_BUNDLE, ROOT, SPEC, sha
+from backend.benchmark_suite.references import load_bundle, load_suite
 from backend.excitation import phase_axis_offset_deg
 from backend.models import MotorConfig
-from tools.benchmark_suite.bldc_metrics import golden_sector, validate_lane_result
-from tools.benchmark_suite.cli import inputs
-from tools.benchmark_suite.contract import DEFAULT_BUNDLE, ROOT, SPEC, sha
-from tools.benchmark_suite.references import load_bundle, load_suite
 
 OLD = ROOT / "benchmarks/abcd-v1.1/benchmark_spec.json"
 NEW = ROOT / "benchmarks/abcd-v1.3/benchmark_spec.json"
@@ -114,8 +114,8 @@ def test_reference_reuse_is_explicit_and_hash_bound(mutation):
 
 @pytest.mark.parametrize("kind", ["grid","limit","current"])
 def test_report_migration_rejects_numerical_or_physical_setting_changes(monkeypatch,kind):
+    from backend.benchmark_suite import contract
     from tools import report_benchmark_against_reference as late
-    from tools.benchmark_suite import contract
 
     measured=load_suite(OLD)
     configs,protocols,golden=inputs(measured,measured['cases'])

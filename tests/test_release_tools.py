@@ -334,7 +334,7 @@ def _write_wheel(
             "Header\n\nCrates\n------\nfaer 0.24.0: MIT\n\nLicense texts\n-------------\n\nUsed by: faer 0.24.0 (COPYING.SUITE_SPARSE.AMD.BSD)\n",
         )
         archive.writestr("backend/_build_info.json", json.dumps(build))
-        for relative in resources.PACKAGED_DATA_FILES:
+        for relative in (*resources.PACKAGED_DATA_FILES, *resources.benchmark_data_files(REPO_ROOT)):
             archive.writestr(f"backend/_data/{relative}", (REPO_ROOT / relative).read_bytes())
         for relative in resources.PACKAGE_DATA_FILES:
             archive.writestr(relative, (REPO_ROOT / relative).read_bytes())
