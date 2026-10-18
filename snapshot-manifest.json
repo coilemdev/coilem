@@ -5170,8 +5170,8 @@
     },
     {
       "path": "frontend/scripts/test-magnet-coverage.mjs",
-      "bytes": 1976,
-      "sha256": "9a6161d05bd4ed85153fe06f8154552b5517fd166bddad613e02fecf24c3ae83"
+      "bytes": 2089,
+      "sha256": "f0637c36da3daaeccf73203d4abe7adf991514b6b34fd32888c6344b5e84a2da"
     },
     {
       "path": "frontend/scripts/test-mesh-quality.mjs",
@@ -5935,8 +5935,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 18732,
-      "sha256": "31acff9350415891e6b77a762690c99e7c27d74a18af7fc049b2a868a9966b24"
+      "bytes": 19043,
+      "sha256": "6b10b90de178bc2d1b5673c768af3cb3ee553156d2812848e7c098fedef2373f"
     },
     {
       "path": "frontend/src/public/motorAirgap.ts",
@@ -9922,6 +9922,18 @@
       "path": "frontend/package.json",
       "source_sha256": "fb77a24863a32f806515fa762a2af1e18174505622a6d65c503a9ff5ff85e303",
       "reason": "Run the magnet coverage test with the public UI tests."
+    },
+    {
+      "base_commit": "d9fb57e1662243e2d8e12e8f8db99d97ef999a7a",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "31acff9350415891e6b77a762690c99e7c27d74a18af7fc049b2a868a9966b24",
+      "reason": "Set the example SPM 8p/12s magnet width to 31.8 mm, its cogging minimum."
+    },
+    {
+      "base_commit": "d9fb57e1662243e2d8e12e8f8db99d97ef999a7a",
+      "path": "frontend/scripts/test-magnet-coverage.mjs",
+      "source_sha256": "9a6161d05bd4ed85153fe06f8154552b5517fd166bddad613e02fecf24c3ae83",
+      "reason": "Read the example's width from the default config."
     }
   ]
 }
