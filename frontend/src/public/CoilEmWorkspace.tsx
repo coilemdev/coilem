@@ -86,6 +86,7 @@ import type { PublicRunExportKind } from './api';
 import type { PublicSolveProgress } from './api';
 import { LessonProgressStepper } from '../components/tutorials/LessonProgressStepper';
 import { designErrorSection } from './designErrors';
+import { magnetPoleCoveragePct } from './magnetCoverage';
 import { RpmField } from './RpmField';
 import type { LearningLessonHeaderProgress } from '../components/tutorials/lessonStage';
 import {
@@ -905,7 +906,7 @@ function componentFacts(
         ...(config.topology === 'IPM' && config.rotor.ipm_topology === 'flat_buried'
           ? ([['Outer bridge', `${config.rotor.bridge_thickness_mm} mm`]] as Array<[string, string]>)
           : []),
-        ['Pole coverage', `${Math.round(config.rotor.magnet_embrace * 100)}%`],
+        ['Pole coverage', `${magnetPoleCoveragePct(config)}%`],
       ];
     case 'winding': {
       const facts: Array<[string, string]> = [
@@ -1143,7 +1144,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
     set('stator', 'slot_opening_mm', 'advanced')(boreSlotOpeningMm);
   };
   const airgap = Math.max(0, (config.stator.ID_mm - config.rotor.OD_mm) / 2 - (config.topology === 'SPM' ? config.rotor.magnet_thickness_mm : 0));
-  const coverage = Math.round(config.rotor.magnet_embrace * 100);
+  const coverage = magnetPoleCoveragePct(config);
   const steelChoices = (current: string) => [
     ...(!materials.steels.includes(current)
       ? [{ value: current, label: 'Choose a supported steel', disabled: true }]
@@ -1328,7 +1329,8 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
           />
         )}
         {config.rotor.ipm_topology !== 'pyleecan_holem50' && (
-          <div className="param-row public-param-row public-derived-row"><span className="param-label">Coverage<small>%</small></span><strong>{coverage}</strong></div>
+          // A surface magnet's coverage follows from its width, as the geometry builds it.
+          <div className="param-row public-param-row public-derived-row"><span className="param-label">Coverage<small>{config.topology === 'SPM' ? '% · calc' : '%'}</small></span><strong>{coverage}</strong></div>
         )}
         <SelectRow label="Magnet Grade" value={config.materials.magnet_grade} choices={materials.magnet_grades.map((value) => ({ value, label: value }))} disabled={disabled} onChange={set('materials', 'magnet_grade', 'rotor')} />
       </ParameterSectionBlock>}
@@ -2401,7 +2403,7 @@ function HealthPanel({
   }
   const airgap = magneticAirgapMm(config);
   const airgapHealth = publicAirgapHealth(airgap);
-  const coverage = Math.round(config.rotor.magnet_embrace * 100);
+  const coverage = magnetPoleCoveragePct(config);
   const burialHealth = publicFlatIpmBurialHealth(config);
   const statorWidths = deriveStatorSectionWidths(config, geometryStale ? null : geometry);
   const toothWidthAdvisory = currentToothWidthAdvisory(geometry, geometryStale);
