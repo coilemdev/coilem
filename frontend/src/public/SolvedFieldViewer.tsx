@@ -1286,6 +1286,7 @@ export function SolvedFieldViewer({
                     <div><dt>Position</dt><dd>{electricalAngleDeg.toFixed(1)}° elec</dd></div>
                     <div><dt>Mechanical</dt><dd>{mechanicalAngleDeg.toFixed(2)}°</dd></div>
                     <div><dt>Playback</dt><dd>Clockwise</dd></div>
+                    <div><dt>Frames</dt><dd>{bufferStatus}</dd></div>
                   </dl>
                 )}
                 <p className="public-field-summary-note">PM-only and Stator-only are separate nonlinear solves; their arithmetic sum is not assumed to equal the Resultant field when steel is saturated.</p>
@@ -1335,7 +1336,13 @@ export function SolvedFieldViewer({
             {playing ? 'Ⅱ' : '▶'}
           </button>
           <label className="public-field-position-control">
-            <span><strong>Position</strong><em>{boundedIndex + 1} / {Math.max(1, angleFrames.length)} · {electricalAngleDeg.toFixed(1)}° elec</em></span>
+            {/* Nothing in this row changes size while playing: a stall shows
+                inside the label, and the frame count is in the field details. */}
+            <span>
+              <strong>Position</strong>
+              {playbackWaiting && <small className="public-field-playback-buffering" aria-live="polite">Buffering…</small>}
+              <em>{boundedIndex + 1} / {Math.max(1, angleFrames.length)} · {electricalAngleDeg.toFixed(1)}° elec</em>
+            </span>
             <input
               ref={playbackSliderRef}
               type="range"
@@ -1386,11 +1393,6 @@ export function SolvedFieldViewer({
               }}
             />
           </label>
-          {(playbackWaiting || bufferedAhead < bufferTarget) && (
-            <span className="public-field-playback-meta" aria-live="polite">
-              <em className={playbackWaiting ? 'is-buffering' : ''}>{bufferStatus}</em>
-            </span>
-          )}
         </div>
       </div>
     </section>

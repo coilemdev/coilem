@@ -1804,12 +1804,6 @@ body {
 .public-field-playback-rpm input { height: 4px; border-radius: 999px; appearance: none; background: linear-gradient(to right, var(--accent-primary) 0 calc(1% * var(--playback-rpm-progress, 0)), rgba(148,163,184,.28) calc(1% * var(--playback-rpm-progress, 0)) 100%); }
 .public-field-playback-rpm input::-webkit-slider-thumb { width: 13px; height: 13px; border: 0; border-radius: 50%; appearance: none; background: #93c5fd; box-shadow: 0 0 0 2px rgba(147,197,253,.12); }
 .public-field-playback-rpm input::-moz-range-thumb { width: 13px; height: 13px; border: 0; border-radius: 50%; background: #93c5fd; box-shadow: 0 0 0 2px rgba(147,197,253,.12); }
-.public-field-playback-meta { display: grid; grid-template-columns: auto auto; min-width: 0; gap: 1px 12px; padding: 0 6px; white-space: nowrap; }
-.public-field-playback-meta > span { display: flex; align-items: baseline; gap: 5px; }
-.public-field-playback-meta small { color: var(--text-faint); font-size: 7px; }
-.public-field-playback-meta strong { color: var(--text-primary); font: 9px var(--font-mono); font-variant-numeric: tabular-nums; }
-.public-field-playback-meta > em { grid-column: 1 / -1; min-width: 0; overflow: hidden; color: var(--text-muted); font: 7px var(--font-mono); font-style: normal; text-overflow: ellipsis; }
-.public-field-playback-meta > em.is-buffering { color: var(--text-accent); }
 .public-field-physics-info { position: relative; }
 .public-field-physics-info > summary { display: grid; width: 28px; height: 28px; place-items: center; border: 1px solid var(--border-default); border-radius: 50%; color: var(--text-muted); background: var(--bg-surface-2); font: 700 11px var(--font-sans); cursor: pointer; list-style: none; }
 .public-field-physics-info > summary::-webkit-details-marker { display: none; }
@@ -1822,7 +1816,6 @@ body {
 
 @container (max-width: 720px) {
   .public-field-playback { grid-template-columns: 38px minmax(130px,1fr) 150px 28px; }
-  .public-field-playback-meta { display: none; }
   /* Keep the dock's second row on one line down to about 490 px. */
   .public-field-dock-controls { gap: 6px; }
   .public-field-zoom-slot .public-viewport-nav-controls > span { display: none; }
@@ -4340,14 +4333,6 @@ body {
   }
   .public-field-position-control,
   .public-field-playback-rpm { gap: 4px; }
-  .public-field-position-control strong,
-  .public-field-transport-label strong { font-size: 9px; }
-  .public-field-position-control em,
-  .public-field-transport-label em { font-size: 9px; }
-  .public-field-playback-rpm { min-height: 42px; }
-  .public-field-playback-meta small,
-  .public-field-playback-meta > em { font-size: 8px; }
-  .public-field-playback-meta strong { font-size: 10px; }
   .public-field-physics-info > summary {
     width: 32px;
     height: 32px;
@@ -4496,12 +4481,20 @@ body {
 .public-field-dock { border: 0; border-top: 1px solid var(--border-default); border-radius: 0; background: rgba(12,14,19,.96); box-shadow: none; }
 .public-field-dock > .public-dock-strip { padding: 0 16px; border-radius: 0; }
 .public-field-dock .public-dock-strip-end .viewport-cad-status { color: var(--text-muted); font: 12px var(--font-mono); white-space: nowrap; }
-/* Playback is the last row: play, the position (with its electrical angle),
-   the speed, and a frame status only while frames are still loading. */
-.public-field-dock > .public-field-playback { grid-template-columns: 36px minmax(110px,1fr) 176px auto; gap: 10px; padding: 0 16px 8px; }
-.public-field-dock .public-field-playback-meta { display: block; }
+/* Playback is the last row: play, the position (with its electrical angle) and
+   the speed. Its columns are fixed, so nothing in it moves while it plays; a
+   stall shows inside the position label instead of in a column of its own. */
+.public-field-dock > .public-field-playback { grid-template-columns: 36px minmax(0,1fr) 176px; gap: 10px; padding: 0 16px 8px; }
+.public-field-dock .public-field-position-control { min-width: 0; }
+/* On a narrow panel the position readout shortens with an ellipsis instead of
+   running under the speed box. */
+.public-field-dock .public-field-position-control > span { min-width: 0; overflow: hidden; }
+.public-field-dock .public-field-position-control em { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.public-field-dock .public-field-position-control em,
+.public-field-dock .public-dock-strip-end .viewport-cad-status,
+.public-field-transport-label em { font-variant-numeric: tabular-nums; }
+.public-field-playback-buffering { margin-right: auto; color: var(--text-accent); font: 11px var(--font-mono); white-space: nowrap; }
 .public-field-dock .public-field-transport-play { width: 36px; height: 36px; font-size: 12px; }
-.public-field-dock .public-field-playback-meta > em { font-size: 11px; }
 .public-field-dock .public-field-physics-info > summary { width: 32px; height: 32px; font-size: 13px; }
 .public-field-dock .public-field-dock-controls { gap: 8px 12px; padding: 8px 16px; border-top: 0; }
 .public-field-dock .public-field-control-cluster { gap: 8px; }

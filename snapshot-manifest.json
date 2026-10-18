@@ -5180,8 +5180,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 131434,
-      "sha256": "08c9bc48241962bb27cf04626b1544a59178d093bc048dd69aca5f485ee9e982"
+      "bytes": 131766,
+      "sha256": "82e6f910bc39207f892c45109510171e4bc737db701894b7da891819f188eff8"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5635,8 +5635,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 58468,
-      "sha256": "fa9128b889c3b209bdea79c01bbb8b32dbe4edd3b7f9d76932ab33bd1235e0d6"
+      "bytes": 58604,
+      "sha256": "d83eda46ead18e163eaa71896d9e574b662c3389617139db440d3a86265fc04d"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -5910,8 +5910,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 256641,
-      "sha256": "af20c68bc270237d19c31df0c380d71b6e6079f2737b32fe6a1f01422f4b0842"
+      "bytes": 256140,
+      "sha256": "491a1c0c1c042816a001d1119335c2c0d829958a2a837460c251eabf477324f2"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -9514,6 +9514,36 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "f214285851f9c1a5d80f1f2d1c7cdf18f6062d6e5622babd529f41584a6ec9d7",
       "reason": "Cover the field panel's order, More menu and density choice."
+    },
+    {
+      "base_commit": "5ab85f525feb69378ca6eb4ae2cf5b80d95c79b7",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "fa9128b889c3b209bdea79c01bbb8b32dbe4edd3b7f9d76932ab33bd1235e0d6",
+      "reason": "Keep the playback row still while playing: stall note in the position label, frame count in field details."
+    },
+    {
+      "base_commit": "5ab85f525feb69378ca6eb4ae2cf5b80d95c79b7",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "a938ac811f3dfb0f4d06dd0d9e5c473f64dfca4ab78d46b314dc82894035a781",
+      "reason": "Give the field playback row fixed columns and steady-width numbers."
+    },
+    {
+      "base_commit": "5ab85f525feb69378ca6eb4ae2cf5b80d95c79b7",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "08c9bc48241962bb27cf04626b1544a59178d093bc048dd69aca5f485ee9e982",
+      "reason": "Cover the fixed playback row and where the frame status moved."
+    },
+    {
+      "base_commit": "143beab22955c8406cfa1b2e5507afc504acdc95",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "bd7fd5d9736d15a40e47a7918f0bc1231b7fb1449a988f8e95e08dc18b42b04b",
+      "reason": "Shorten the field position readout with an ellipsis on narrow panels."
+    },
+    {
+      "base_commit": "143beab22955c8406cfa1b2e5507afc504acdc95",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "648ac6c7de35986eee68dd81414083d26c9216eba1ffe90e71735f5b867b1c88",
+      "reason": "Cover the position readout's ellipsis."
     }
   ]
 }

@@ -837,9 +837,17 @@ assert.match(solvedFieldSource, /<summary>More\{moreLayersOn > 0 && <em>\{moreLa
 assert.match(solvedFieldSource, /<span className="public-field-density-choice" role="group" aria-label="Field-line density" title=\{densityTitle\}>/);
 assert.match(solvedFieldSource, /\{stop === 'low' \? 'Low' : stop === 'medium' \? 'Med' : 'High'\}/);
 assert.match(solvedFieldSource, /<em>\{boundedIndex \+ 1\} \/ \{Math\.max\(1, angleFrames\.length\)\} · \{electricalAngleDeg\.toFixed\(1\)\}° elec<\/em>/);
-assert.match(solvedFieldSource, /\{\(playbackWaiting \|\| bufferedAhead < bufferTarget\) && \(\s*<span className="public-field-playback-meta" aria-live="polite">/);
+// Nothing in the playback row changes size while it plays (the speed and
+// position sliders jittered when a frame-status column came and went): the
+// row has fixed columns, a stall shows inside the position label, and the
+// frame count is in the field details.
+assert.doesNotMatch(solvedFieldSource, /public-field-playback-meta/);
+assert.match(solvedFieldSource, /\{playbackWaiting && <small className="public-field-playback-buffering" aria-live="polite">Buffering…<\/small>\}/);
+assert.match(solvedFieldSource, /<div><dt>Frames<\/dt><dd>\{bufferStatus\}<\/dd><\/div>/);
 assert.match(solvedFieldSource, /<div><dt>Mechanical<\/dt><dd>\{mechanicalAngleDeg\.toFixed\(2\)\}°<\/dd><\/div>/);
-assert.match(styleSource, /\.public-field-dock > \.public-field-playback \{ grid-template-columns: 36px minmax\(110px,1fr\) 176px auto;/);
+assert.match(styleSource, /\.public-field-dock > \.public-field-playback \{ grid-template-columns: 36px minmax\(0,1fr\) 176px;/);
+assert.doesNotMatch(styleSource, /\.public-field-playback-rpm \{ min-height: 42px; \}/);
+assert.match(styleSource, /\.public-field-dock \.public-field-position-control em \{ min-width: 0; overflow: hidden; text-overflow: ellipsis; \}/);
 assert.match(styleSource, /\.public-dock-strip-end \{ display: flex;[^}]*margin-left: auto; \}/);
 assert.match(styleSource, /\.public-motor-viewport \.public-dock-strip-end \.viewport-cad-status \{[^}]*border: 0;[^}]*background: transparent;/);
 assert.match(solvedFieldSource, /<div className="public-field-dock">\s*<div className="public-dock-strip">\s*\{viewControls\}\s*<div className="public-dock-strip-end">/);
@@ -980,7 +988,6 @@ assert.match(fieldResultSource, /return navigationSlot \? createPortal\(zoomCont
 assert.match(styleSource, /\.public-field-dock-controls \{ display: flex; flex-wrap: wrap;/);
 assert.match(styleSource, /\.public-dock-strip-end \.public-viewport-nav-controls \{ position: static;/);
 assert.match(styleSource, /@container \(max-width: 720px\) \{[^@]*\.public-field-zoom-slot \.public-viewport-nav-controls > span \{ display: none; \}/);
-assert.match(solvedFieldSource, /className="public-field-playback-meta"/);
 assert.match(solvedFieldSource, /className="public-field-physics-info"/);
 assert.match(solvedFieldSource, /Solving the zero-remanence rotor sweep locally/);
 assert.match(solvedFieldSource, /className="public-field-stream-status"/);
@@ -1064,7 +1071,6 @@ assert.match(solvedFieldSource, /Play field clockwise/);
 // only while frames are still loading.
 assert.match(solvedFieldSource, /° elec<\/em>/);
 assert.match(solvedFieldSource, /<div><dt>Playback<\/dt><dd>Clockwise<\/dd><\/div>/);
-assert.match(solvedFieldSource, /<em className=\{playbackWaiting \? 'is-buffering' : ''\}>\{bufferStatus\}<\/em>/);
 assert.doesNotMatch(solvedFieldSource, /MAX_CACHED_FRAMES/);
 assert.match(solvedFieldSource, /window\.requestAnimationFrame\(animate\)/);
 assert.match(solvedFieldSource, /advancePlaybackElectricalAngle/);
@@ -1111,7 +1117,6 @@ assert.match(solvedFieldSource, /const cacheLimit = publicFieldPlaybackCacheFram
 assert.match(styleSource, /\.public-field-playback-rpm/);
 assert.match(styleSource, /\.public-field-playback \{[^}]*grid-template-columns: 38px minmax\(180px,1fr\) 176px minmax\(238px,auto\) 28px/);
 assert.match(styleSource, /\.public-field-playback-rpm \{[^}]*min-height: 36px/);
-assert.match(styleSource, /\.public-field-playback-meta \{[^}]*display: grid[^}]*grid-template-columns: auto auto/);
 assert.match(styleSource, /\.public-field-position-control > span,/);
 assert.match(solvedFieldSource, /Buffering next frame/);
 assert.match(solvedFieldSource, /DETAIL_VIEWPORT_SCALE/);
