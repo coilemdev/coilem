@@ -47,7 +47,7 @@ export function useWaveformReadout({ angles, angleAtX, dataKey }: WaveformReadou
   useEffect(() => {
     if (!hasSelection) return undefined;
     const clearOutside = (event: globalThis.PointerEvent) => {
-      const chart = plotRef.current?.closest('.chart-shell');
+      const chart = plotRef.current?.closest('.chart-shell, .public-live-chart');
       if (chart && event.target instanceof Node && !chart.contains(event.target)) setSelectedAngle(null);
     };
     document.addEventListener('pointerdown', clearOutside);

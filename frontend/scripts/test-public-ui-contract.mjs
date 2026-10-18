@@ -473,6 +473,17 @@ assert.match(waveformReadoutSource, /role="status" aria-live="polite"/);
 assert.match(waveformReadoutSource, /formatWaveformReadoutValue\(item\.value, item\.unit\)/);
 assert.match(waveformReadoutSource, /'not solved at this angle'/);
 assert.match(styleSource, /\.public-waveform-plot:focus-visible \{/);
+// The Solve tab's waveform plots read a hovered position with the same readout.
+assert.match(workspaceSource, /const readout = useWaveformReadout\(\{\s*angles: waveformReadoutAngles\(readoutSeries\),/);
+assert.match(workspaceSource, /<div className="public-waveform-plot public-live-chart-plot" role="group" aria-label=\{`\$\{label\} plot`\} \{\.\.\.readout\.plotProps\}>\s*<svg ref=\{readout\.svgRef\}/);
+assert.match(workspaceSource, /<WaveformReadoutMarker\s+x=\{x\(shownAngle\)\}/);
+assert.match(waveformReadoutSource, /closest\('\.chart-shell, \.public-live-chart'\)/);
+assert.match(styleSource, /\.public-live-chart \.public-waveform-marker line \{ stroke: var\(--text-secondary\); stroke-width: 1; \}/);
+// Element quality is one line: the title, then the gate result and any weak count.
+assert.match(workspaceSource, /<span className="public-section-kicker">Element quality<\/span>\s*<strong className=\{qualityPasses \? 'is-pass' : 'is-fail'\}>/);
+assert.match(workspaceSource, /`\$\{qualityPasses \? 'Passed' : 'Failed'\} · \$\{weakElementCount\.toLocaleString\(\)\} weak`/);
+assert.doesNotMatch(workspaceSource, /No weak elements'|public-mesh-quality-meta/);
+assert.match(styleSource, /\.public-mesh-quality-heading strong \{[^}]*white-space: nowrap;/);
 assert.match(styleSource, /\.public-waveform-marker \{ pointer-events: none; \}/);
 assert.match(styleSource, /\.public-waveform-marker\.is-preview line \{ stroke-dasharray/);
 assert.match(styleSource, /\.public-waveform-readout \{ display: flex;/);
@@ -848,6 +859,13 @@ assert.match(solvedFieldSource, /<span className="public-field-density-choice" r
 assert.match(solvedFieldSource, /<span className="public-field-density-long">\{stop === 'low' \? 'Low' : stop === 'medium' \? 'Med' : 'High'\}<\/span>/);
 assert.match(solvedFieldSource, /<span className="public-field-density-short" aria-hidden="true">\{stop === 'low' \? 'L' : stop === 'medium' \? 'M' : 'H'\}<\/span>/);
 assert.match(styleSource, /@container \(max-width: 620px\) \{\s*\.public-field-dock \.public-field-density-long \{ display: none; \}/);
+// On a narrow stage the panels stay inside it: the field viewer's column never
+// outgrows the stage, and the title bar tightens, then drops ⓘ, then − and +.
+assert.match(styleSource, /\.public-solved-field-viewer \{ grid-template-columns: minmax\(0,1fr\); \}/);
+assert.match(workspaceSource, /aria-label="Field solution" aria-pressed=\{solveView === 'field'\}[^\n]*?><span className="public-solve-tab-long">Field solution<\/span><span className="public-solve-tab-short" aria-hidden="true">Field<\/span><\/button>/);
+assert.match(styleSource, /@container \(max-width: 460px\) \{\s*\.public-motor-viewport \.public-dock-strip \.public-primary-view-modes button,\s*\.public-dock-strip \.public-solve-view-switch button \{ padding: 0 7px; \}\s*\.public-dock-strip \.public-solve-tab-long \{ display: none; \}/);
+assert.match(styleSource, /@container \(max-width: 380px\) \{\s*\.public-field-dock \.public-field-physics-info \{ display: none; \}/);
+assert.match(styleSource, /@container \(max-width: 340px\) \{\s*\.public-dock-strip-end \.public-viewport-nav-controls button:not\(\.is-fit\) \{ display: none; \}/);
 assert.match(solvedFieldSource, /<em>\{boundedIndex \+ 1\} \/ \{Math\.max\(1, angleFrames\.length\)\} · \{electricalAngleDeg\.toFixed\(1\)\}° elec<\/em>/);
 // Nothing in the playback row changes size while it plays (the speed and
 // position sliders jittered when a frame-status column came and went): the

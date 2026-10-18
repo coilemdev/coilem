@@ -1343,6 +1343,15 @@ body {
 .public-live-chart-waiting { display: flex; min-height: 56px; align-items: center; justify-content: center; gap: 7px; color: var(--text-muted); font-size: 9px; }
 .public-live-chart-waiting i { width: 5px; height: 5px; border-radius: 50%; background: var(--text-disabled); }
 .public-live-chart.is-processing .public-live-chart-waiting i { background: var(--text-accent); animation: public-solve-pulse 1s ease-in-out infinite; }
+/* Hovering a Solve-tab waveform reads a solved position, as on the Results
+   plots: a marker line and dots on the curve, and the values in the heading
+   (one trace) or by the legend swatches (three phases). */
+.public-live-chart .public-waveform-marker line { stroke: var(--text-secondary); stroke-width: 1; }
+.public-live-chart .public-waveform-marker.is-preview line { stroke-dasharray: 3 3; opacity: .7; }
+.public-live-chart-readout { color: var(--text-secondary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.public-live-chart-readout b,
+.public-live-chart-legend b { margin-left: 3px; color: var(--text-primary); font-family: var(--font-mono); font-weight: 700; font-variant-numeric: tabular-nums; }
+.public-live-chart-readout.is-preview b { color: var(--text-secondary); }
 @keyframes public-solve-pulse { 0%, 100% { opacity: .3; transform: scale(.8); } 50% { opacity: 1; transform: scale(1.2); } }
 .public-completed-results { margin: 14px; padding: 12px; border: 1px solid rgba(245,158,11,.3); border-radius: 10px; background: rgba(245,158,11,.035); }
 .public-completed-results-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
@@ -3167,31 +3176,23 @@ body {
   border-radius: 10px;
   background: rgba(10, 12, 17, 0.48);
 }
+/* Element quality is one line: the title, then the gate result. */
 .public-mesh-quality-heading {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: baseline;
   gap: 8px;
+  min-height: 18px;
 }
-.public-mesh-quality-heading .public-section-kicker { margin-bottom: 3px; }
+.public-mesh-quality-heading .public-section-kicker { flex: none; margin: 0; }
 .public-mesh-quality-heading strong {
+  min-width: 0;
+  overflow: hidden;
   color: var(--text-secondary);
   font-size: 10px;
-}
-.public-mesh-quality-meta {
-  display: inline-flex;
-  min-height: 24px;
-  align-items: center;
-  margin-left: auto;
-  margin-right: 18px;
-  padding: 0 7px;
-  border: 1px solid var(--border-subtle);
-  border-radius: 6px;
-  color: var(--text-muted);
-  background: rgba(26, 28, 34, 0.42);
-  font: 8px var(--font-mono);
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
+.public-mesh-quality-heading strong.is-fail { color: var(--error); }
 .public-mesh-quality-actions {
   display: flex;
   justify-content: flex-end;
@@ -4355,7 +4356,6 @@ body {
     min-height: 30px;
     font-size: 9px;
   }
-  .public-mesh-quality-meta { font-size: 9px; }
   .public-quality-counts span,
   .public-quality-counts strong,
   .public-mesh-quality-summary p { font-size: 9px; }
@@ -4552,6 +4552,34 @@ body {
   .public-field-dock .public-field-density-long { display: none; }
   .public-field-dock .public-field-density-short { display: inline; }
   .public-field-dock .public-field-dock-controls .public-field-source-controls button { padding: 0 7px; }
+}
+/* On a narrow stage the panels stay inside it. The field viewer's column never
+   grows past the stage, and below 460 px the title bar still fits on one line:
+   "Field solution" reads "Field", the tabs and the right-hand buttons sit
+   closer, and the panel's side padding shrinks. Below 380 px the field panel
+   also drops its details button, and below 340 px the title bar drops the
+   zoom − and + (the wheel still zooms; Fit and fullscreen stay). Fullscreen
+   brings everything back. */
+.public-solved-field-viewer { grid-template-columns: minmax(0,1fr); }
+.public-solved-field-viewer > * { min-width: 0; }
+.public-solve-tab-short { display: none; }
+@container (max-width: 460px) {
+  .public-motor-viewport .public-dock-strip .public-primary-view-modes button,
+  .public-dock-strip .public-solve-view-switch button { padding: 0 7px; }
+  .public-dock-strip .public-solve-tab-long { display: none; }
+  .public-dock-strip .public-solve-tab-short { display: inline; }
+  .public-dock-strip-end { gap: 4px; }
+  .public-motor-viewport .viewport-bottom-bar { padding-right: 10px; padding-left: 10px; }
+  .public-motor-viewport .viewport-bottom-bar.has-dock-strip > .public-dock-strip { flex-basis: calc(100% + 20px); margin: 0 -10px; padding: 0 10px; }
+  .public-field-dock > .public-dock-strip { padding: 0 10px; }
+  .public-field-dock .public-field-dock-controls { padding: 8px 10px; }
+  .public-field-dock > .public-field-playback { gap: 8px; padding: 0 10px 8px; }
+}
+@container (max-width: 380px) {
+  .public-field-dock .public-field-physics-info { display: none; }
+}
+@container (max-width: 340px) {
+  .public-dock-strip-end .public-viewport-nav-controls button:not(.is-fit) { display: none; }
 }
 /* Completed results open on four key numbers; one toggle shows the rest. */
 .public-result-list-toggle { display: flex; width: 100%; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; padding: 7px 10px; border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-muted); background: transparent; font: 600 12px var(--font-mono); cursor: pointer; }
