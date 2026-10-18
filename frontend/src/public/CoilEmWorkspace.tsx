@@ -168,8 +168,8 @@ interface CoilEmWorkspaceProps {
   onConvertProjectSteelToM350: () => void;
   onImportSteel: (material: CustomSteel, target: SteelTarget) => void;
   onMeshSettingChange: (
-    field: 'mesh_density' | 'corner_refinement',
-    value: MotorConfig['solve_params']['mesh_density'] | boolean,
+    field: 'mesh_density' | 'corner_refinement' | 'mesh_build',
+    value: MotorConfig['solve_params']['mesh_density'] | MotorConfig['solve_params']['mesh_build'] | boolean,
   ) => void;
   onSolvePlanChange: (solvePlan: PublicSolvePreset) => void;
   onCustomSweepChange: (stepDeg: number) => void;
@@ -3076,6 +3076,11 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
     { value: 'normal', label: 'Medium' },
     { value: 'fine', label: 'Fine' },
   ];
+  const meshBuild = config.solve_params.mesh_build ?? 'precise';
+  const meshBuildChoices: Array<{ value: MotorConfig['solve_params']['mesh_build']; label: string; title: string }> = [
+    { value: 'precise', label: 'Precise', title: 'Places mesh nodes as the benchmark report measured.' },
+    { value: 'fast', label: 'Fast', title: 'About 4x faster meshing. Results move at mesh-noise level and are experimental.' },
+  ];
   const appliedRefinement = mesh?.mesh_info.corner_refinement === true;
   const meshQualitySummary = useMemo(() => summarizePublicMeshQuality(mesh), [mesh]);
   const qualityPasses = Boolean(mesh) && meshQualitySummary.minimum >= meshQualitySummary.threshold;
@@ -3129,7 +3134,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
   ].join(' · ');
   const planMeshLabel = solvePlans.find((plan) => plan.value === config.solve_params.solve_quality)?.meshLabel;
   const planSummary = [planLabel, planMeshLabel, estimatedTimeText].filter(Boolean).join(' · ');
-  const advancedSummary = `${torqueMethodLabel} · ${nonlinearSolverLabel} · ${linearSolverLabel} · ${validation ? `${validation.sweep_positions}p` : '…'} · ${meshDensityLabel}`;
+  const advancedSummary = `${torqueMethodLabel} · ${nonlinearSolverLabel} · ${linearSolverLabel} · ${validation ? `${validation.sweep_positions}p` : '…'} · ${meshDensityLabel}${meshBuild === 'fast' ? ' · Fast mesh' : ''}`;
   const runReady = Boolean(mesh)
     && Boolean(validation?.valid)
     && selectedSolverAvailable
@@ -3604,6 +3609,11 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               <span className="public-section-kicker" id="public-mesh-preparation-heading">Mesh preparation</span>
               <div className="mesh-segmented-control">{densityChoices.map((choice) => <button ref={choice.value === 'fine' ? fineMeshRef : undefined} type="button" className={config.solve_params.mesh_density === choice.value ? 'active' : ''} aria-pressed={config.solve_params.mesh_density === choice.value} disabled={busy !== null} onClick={() => onMeshSettingChange('mesh_density', choice.value)} key={choice.value}>{choice.label}</button>)}</div>
               <label className="public-check-row"><input type="checkbox" checked={config.solve_params.corner_refinement} disabled={busy !== null} onChange={(event) => onMeshSettingChange('corner_refinement', event.target.checked)} /> Corner refinement</label>
+              <div className="public-mesh-build" role="group" aria-labelledby="public-mesh-build-label">
+                <span id="public-mesh-build-label">Mesh build</span>
+                <div className="mesh-segmented-control">{meshBuildChoices.map((choice) => <button type="button" className={meshBuild === choice.value ? 'active' : ''} aria-pressed={meshBuild === choice.value} title={choice.title} disabled={busy !== null} onClick={() => onMeshSettingChange('mesh_build', choice.value)} key={choice.value}>{choice.label}</button>)}</div>
+              </div>
+              {meshBuild === 'fast' && <p className="public-mesh-build-note">About 4× faster meshing. Results move at mesh-noise level and are marked experimental.</p>}
               <button className="public-prepare-mesh-btn" type="button" disabled={busy !== null} onClick={onGenerateMesh}>{busy === 'mesh' ? 'Preparing mesh…' : mesh ? 'Regenerate mesh' : 'Prepare mesh'}</button>
             </section>
             <section className="public-advanced-section public-advanced-controls-section" aria-labelledby="public-electromagnetic-controls-heading">

@@ -3,7 +3,7 @@
 docs/VALIDATION.md#qualification-status is the source: a combination of
 rotor, winding and excitation is qualified when every registered fixture for
 it passes its FEMM parity gates in QUALIFICATION_REPORT, which measured the
-current winding, current-angle and slot-layer models at 738d951.
+current winding, current-angle, slot-layer and Precise mesh models at f390b25.
 Combinations the benchmark did not measure, or measured with failures, are
 experimental. The result travels with previews, solve validation and saved
 runs, so the app and its exports say what the docs say.
@@ -23,10 +23,10 @@ QualificationStatus = Literal["qualified", "experimental", "unsupported"]
 # The basis, reasons and caveats travel in public preview, solve and saved-run
 # payloads, which must not name the reference solver or thermal analysis
 # (tools/smoke_public_runtime.py); docs/VALIDATION.md names the report in full.
-QUALIFICATION_BASIS = "coilEM benchmark report, measured at 738d951"
+QUALIFICATION_BASIS = "coilEM benchmark report, measured at f390b25"
 # Repository path of the report behind every reason below. tests/test_qualification.py
 # checks the reasons against its outcomes and its sources against the current code.
-QUALIFICATION_REPORT = "benchmarks/windows-v3-20261015-738d951/benchmark_summary.json"
+QUALIFICATION_REPORT = "benchmarks/windows-native-20261018-f390b25/benchmark_summary.json"
 QUALIFICATION_REFERENCE = "https://github.com/coilemdev/coilem/blob/main/docs/VALIDATION.md#qualification-status"
 _QUALIFIED_STEEL = "M350-50A"
 _QUALIFIED_IPM = "flat_buried"
@@ -128,4 +128,6 @@ def classify_qualification(config: MotorConfig) -> Qualification:
     steels = {config.materials.stator_steel, config.materials.rotor_steel}
     if status == "qualified" and steels != {_QUALIFIED_STEEL}:
         status, reason = "experimental", f"Custom steel: the benchmark qualified only the bundled {_QUALIFIED_STEEL} curve."
+    if status == "qualified" and config.solve_params is not None and config.solve_params.mesh_build == "fast":
+        status, reason = "experimental", "Fast mesh build: the benchmark measured meshes built with Precise node placement."
     return _result(status, reason, _caveats(config) if status != "unsupported" else [])

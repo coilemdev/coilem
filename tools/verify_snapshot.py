@@ -55,6 +55,7 @@ ALLOWED_DATA_FILES = {
     "materials/electrical-steel/M350-50A.csv",
     "frontend/public/materials/sample-custom-steel.csv",
     "benchmarks/performance-112/native-20261016/benchmark_results.csv",
+    "benchmarks/windows-native-20261018-f390b25/benchmark_results.csv",
 }
 # Single-digit sector/surface symbols (S1-S9) are engineering data. Story IDs
 # have multiple digits or a task suffix; explicit sprint/path references also fail.
