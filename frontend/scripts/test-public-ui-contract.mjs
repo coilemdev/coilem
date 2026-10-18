@@ -820,17 +820,26 @@ assert.doesNotMatch(workspaceSource, /is-expandable/);
 assert.match(workspaceSource, /navigationSlot=\{navigationSlot\}/);
 assert.match(motorCanvasSource, /return navigationSlot \? createPortal\(zoomControls, navigationSlot\) : zoomControls;/);
 assert.match(workspaceSource, /\.toLocaleString\('en-US'\)\} elements\{meshQualitySummary \? ` · min q \$\{formatNumber\(meshQualitySummary\.minimum, 3\)\}` : ''\}/);
-assert.match(solvedFieldSource, /<div className="public-dock-strip-end">\s*\{\(activeDetailRaster \|\| visibleRaster \|\| visiblePlot\) && \(\s*<div className="viewport-cad-status">\{angleFrames\.length\} positions · peak \|B\| \{currentPeakBT\.toFixed\(2\)\} T<\/div>\s*\)\}\s*<span className="public-field-zoom-slot" ref=\{setZoomSlot\} \/>\s*\{expandControl\}/);
+assert.match(solvedFieldSource, /<div className="public-dock-strip-end">\s*\{\(activeDetailRaster \|\| visibleRaster \|\| visiblePlot\) && \(\s*<div className="viewport-cad-status">\{angleFrames\.length\} positions · peak \|B\| \{currentPeakBT\.toFixed\(2\)\} T<\/div>\s*\)\}\s*<details className="public-field-physics-info">[\s\S]*?<\/details>\s*<span className="public-field-zoom-slot" ref=\{setZoomSlot\} \/>\s*\{expandControl\}/);
 // The field panel matches the motor panels: full width, same title bar,
 // segmented field choice, dot toggles and labelled slider boxes.
 assert.match(styleSource, /\.public-field-dock \{ border: 0; border-top: 1px solid var\(--border-default\); border-radius: 0;/);
 assert.match(styleSource, /\.public-field-dock \.public-field-dock-controls \.public-field-source-controls \{ display: inline-flex;[^}]*border-radius: 10px;/);
 assert.match(styleSource, /\.public-field-dock \.public-field-layer-controls button \{[^}]*min-height: 36px;[^}]*font: 600 13px var\(--font-mono\);/);
-assert.match(solvedFieldSource, /<label className="public-field-playback-rpm public-field-density-slider" title=\{densityTitle\}>\s*<span className="public-field-transport-label"><strong>Line density<\/strong><em>\{densityLabel\}<\/em><\/span>/);
 assert.doesNotMatch(styleSource, /public-field-density-control/);
-// Below 720 px the playback row drops the hidden angle readout's column, so
-// the field panel never grows wider than the stage.
-assert.match(styleSource, /@container \(max-width: 720px\) \{\s*\.public-field-dock > \.public-field-playback \{ grid-template-columns: 36px minmax\(110px,1fr\) 176px 36px; \}/);
+// The field panel reads in working order: title bar, then what the field
+// shows, then playback. Flux density and field lines stay in view with line
+// density right after them; the reference layers wait in More, which counts
+// how many are on. The angle and frame details live in the title bar's ⓘ.
+assert.match(solvedFieldSource, /<div className="public-field-dock">\s*<div className="public-dock-strip">[\s\S]*?<div className="public-field-dock-controls" role="toolbar" aria-label="Field display">[\s\S]*?<div className="public-field-playback">/);
+assert.match(solvedFieldSource, /aria-label="Field solution overlays">\s*<button[\s\S]*?\/>Flux density<\/button>\s*<button[\s\S]*?\/>Field lines<\/button>\s*\{showFieldLines && renderDensityControl\(\)\}/);
+assert.match(solvedFieldSource, /<summary>More\{moreLayersOn > 0 && <em>\{moreLayersOn\} on<\/em>\}<\/summary>\s*<div className="public-field-layer-controls" role="group" aria-label="More field layers">\s*\{renderMoreLayerButtons\(\)\}/);
+assert.match(solvedFieldSource, /<span className="public-field-density-choice" role="group" aria-label="Field-line density" title=\{densityTitle\}>/);
+assert.match(solvedFieldSource, /\{stop === 'low' \? 'Low' : stop === 'medium' \? 'Med' : 'High'\}/);
+assert.match(solvedFieldSource, /<em>\{boundedIndex \+ 1\} \/ \{Math\.max\(1, angleFrames\.length\)\} · \{electricalAngleDeg\.toFixed\(1\)\}° elec<\/em>/);
+assert.match(solvedFieldSource, /\{\(playbackWaiting \|\| bufferedAhead < bufferTarget\) && \(\s*<span className="public-field-playback-meta" aria-live="polite">/);
+assert.match(solvedFieldSource, /<div><dt>Mechanical<\/dt><dd>\{mechanicalAngleDeg\.toFixed\(2\)\}°<\/dd><\/div>/);
+assert.match(styleSource, /\.public-field-dock > \.public-field-playback \{ grid-template-columns: 36px minmax\(110px,1fr\) 176px auto;/);
 assert.match(styleSource, /\.public-dock-strip-end \{ display: flex;[^}]*margin-left: auto; \}/);
 assert.match(styleSource, /\.public-motor-viewport \.public-dock-strip-end \.viewport-cad-status \{[^}]*border: 0;[^}]*background: transparent;/);
 assert.match(solvedFieldSource, /<div className="public-field-dock">\s*<div className="public-dock-strip">\s*\{viewControls\}\s*<div className="public-dock-strip-end">/);
@@ -939,10 +948,8 @@ assert.match(solvedFieldSource, />Field lines</);
 assert.match(solvedFieldSource, /'PM reference' : 'Magnets'/);
 assert.match(solvedFieldSource, />Pole labels</);
 assert.match(solvedFieldSource, /fieldLineDensity/);
-assert.match(solvedFieldSource, /Line density/);
-assert.match(solvedFieldSource, /FIELD_LINE_DENSITY_STOPS/);
-assert.match(solvedFieldSource, /type="range"[\s\S]*?aria-label="Field-line density"/);
-assert.match(solvedFieldSource, /aria-valuetext=\{densityLabel\}/);
+assert.match(solvedFieldSource, /FIELD_LINE_DENSITY_STOPS\.map\(\(stop\) => \(/);
+assert.match(solvedFieldSource, /aria-pressed=\{displayedDensity === stop\}\s*disabled=\{!densityAdjustable\}\s*onClick=\{\(\) => setFieldLineDensity\(stop\)\}/);
 assert.match(solvedFieldSource, /\{showFieldLines && renderDensityControl\(\)\}/);
 assert.doesNotMatch(solvedFieldSource, /<select[^>]*Field-line density/);
 assert.match(solvedFieldSource, /showAirgap=\{showAirgap\}/);
@@ -960,12 +967,12 @@ assert.match(fieldResultSource, /element_bx_t/);
 assert.match(fieldResultSource, /element_by_t/);
 assert.match(solvedFieldSource, /viewControls: ReactNode/);
 assert.match(solvedFieldSource, /\{viewControls\}/);
-// Controls sit in a dock below the motor (playback, then field source, overlays,
-// line density and field details; zoom is in its title bar), so nothing floats over the field.
-assert.match(solvedFieldSource, /className="public-field-dock-controls"[\s\S]*?<details className="public-field-layer-menu">\s*<summary>Show<\/summary>/);
+// Controls sit in a dock below the field (field source and layers, then
+// playback; zoom and field details are in its title bar), so nothing floats over the field.
+assert.match(solvedFieldSource, /className="public-field-dock-controls"[\s\S]*?<details className="public-field-layer-menu">\s*<summary>More/);
 assert.match(styleSource, /\.public-field-layer-menu > \.public-field-layer-controls \{ position: absolute; z-index: 20; bottom: calc\(100% \+ 8px\);/);
-assert.match(styleSource, /@container \(max-width: 1040px\) \{\s*\.public-field-control-cluster > span \{ display: none; \}\s*\.public-field-overlay-cluster \{ display: none; \}\s*\.public-field-layer-menu \{ display: block; \}/);
-assert.match(solvedFieldSource, /<div className="public-field-dock">\s*<div className="public-dock-strip">[\s\S]*?<div className="public-field-playback">[\s\S]*?<div className="public-field-dock-controls" role="toolbar" aria-label="Field display">/);
+assert.match(styleSource, /@container \(max-width: 1040px\) \{\s*\.public-field-control-cluster > span \{ display: none; \}\s*\}/);
+assert.doesNotMatch(styleSource, /\.public-field-overlay-cluster \{ display: none; \}/);
 assert.match(solvedFieldSource, /className="public-field-dock-controls"[\s\S]*?<span>Field<\/span>[\s\S]*?<span>Show<\/span>[\s\S]*?renderDensityControl\(\)/);
 assert.ok(solvedFieldSource.indexOf('className="public-field-summary-panel"') > solvedFieldSource.indexOf('<div className="public-field-dock">'), 'field details live in the dock, not on the canvas');
 assert.match(solvedFieldSource, /navigationSlot=\{zoomSlot\}/);
@@ -1052,8 +1059,12 @@ assert.match(solvedFieldSource, /const streamingArmatureFrame = source === 'arma
 assert.match(solvedFieldSource, /const electricalAngleDeg = streamingArmatureFrame\?\.angle_deg/);
 assert.doesNotMatch(solvedFieldSource, /counterclockwisePlaybackFrames|frames\.slice\(1\)\.reverse\(\)|solvedElectricalAngleDeg - 360/);
 assert.match(solvedFieldSource, /Play field clockwise/);
-assert.match(solvedFieldSource, /<small>Electrical<\/small>/);
-assert.match(solvedFieldSource, /CW · \{bufferStatus\}/);
+// The electrical angle rides on the position readout; the mechanical angle and
+// the clockwise direction are in the field details, and the frame status shows
+// only while frames are still loading.
+assert.match(solvedFieldSource, /° elec<\/em>/);
+assert.match(solvedFieldSource, /<div><dt>Playback<\/dt><dd>Clockwise<\/dd><\/div>/);
+assert.match(solvedFieldSource, /<em className=\{playbackWaiting \? 'is-buffering' : ''\}>\{bufferStatus\}<\/em>/);
 assert.doesNotMatch(solvedFieldSource, /MAX_CACHED_FRAMES/);
 assert.match(solvedFieldSource, /window\.requestAnimationFrame\(animate\)/);
 assert.match(solvedFieldSource, /advancePlaybackElectricalAngle/);

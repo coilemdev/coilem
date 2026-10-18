@@ -1149,49 +1149,46 @@ export function SolvedFieldViewer({
         : frameError;
   // The plot portals its zoom controls into the dock, off the field (#120 follow-up).
   const [zoomSlot, setZoomSlot] = useState<HTMLSpanElement | null>(null);
-  const renderLayerButtons = () => (
+  // Flux density and field lines change what the picture means, so they stay
+  // in view; the reference layers wait in More, which counts how many are on.
+  const renderMoreLayerButtons = () => (
     <>
       {hasMagnets && <button type="button" aria-pressed={showMagnets} onClick={() => setShowMagnets((value) => !value)}><i aria-hidden="true" />{source === 'armature' && !overlayActive ? 'PM reference' : 'Magnets'}</button>}
-      <button type="button" aria-pressed={showHeatmap && !overlayActive} disabled={overlayActive} title={overlayActive ? 'Off while PM and Stator are both shown: one |B| map cannot belong to both fields' : undefined} onClick={() => setShowHeatmap((value) => !value)}><i aria-hidden="true" />Flux density</button>
       <button type="button" aria-pressed={showMesh} onClick={() => setShowMesh((value) => !value)}><i aria-hidden="true" />Mesh</button>
       <button type="button" aria-pressed={showAirgap} onClick={() => setShowAirgap((value) => !value)}><i aria-hidden="true" />Airgap</button>
-      <button type="button" aria-pressed={showFieldLines} onClick={() => setShowFieldLines((value) => !value)}><i aria-hidden="true" />Field lines</button>
       {(hasMagnets || source === 'armature') && <button type="button" aria-pressed={showPoleLabels} onClick={() => setShowPoleLabels((value) => !value)}><i aria-hidden="true" />Pole labels</button>}
     </>
   );
-  // Line density uses the playback speed's control, a labelled box showing the
-  // current value, so every slider in the motor and field panels reads alike.
+  const moreLayersOn = [
+    hasMagnets && showMagnets,
+    showMesh,
+    showAirgap,
+    (hasMagnets || source === 'armature') && showPoleLabels,
+  ].filter(Boolean).length;
+  // Line density sits right after Field lines as a three-way choice, and only
+  // while the lines are shown.
   const renderDensityControl = () => {
     const densityAdjustable = !playing && Boolean(exactVectorPlot);
     const displayedDensity = exactVectorPlot ? fieldLineDensity : 'medium';
-    const densityIndex = Math.max(0, FIELD_LINE_DENSITY_STOPS.indexOf(displayedDensity));
-    const densityLabel = displayedDensity === 'medium'
-      ? 'Medium'
-      : `${displayedDensity.charAt(0).toUpperCase()}${displayedDensity.slice(1)}`;
     const densityTitle = playing
       ? 'Playback uses medium field-line density. Pause to adjust the exact frame.'
       : densityAdjustable
-        ? `${densityLabel} field-line density`
+        ? 'Field-line density'
         : 'Loading the exact frame before field-line density can be changed.';
     return (
-      <label className="public-field-playback-rpm public-field-density-slider" title={densityTitle}>
-        <span className="public-field-transport-label"><strong>Line density</strong><em>{densityLabel}</em></span>
-        <input
-          type="range"
-          min="0"
-          max="2"
-          step="1"
-          value={densityIndex}
-          disabled={!densityAdjustable}
-          aria-label="Field-line density"
-          aria-valuetext={densityLabel}
-          style={{ ['--playback-rpm-progress' as never]: densityIndex * 50 }}
-          onChange={(event) => {
-            const nextDensity = FIELD_LINE_DENSITY_STOPS[Number(event.currentTarget.value)];
-            if (nextDensity) setFieldLineDensity(nextDensity);
-          }}
-        />
-      </label>
+      <span className="public-field-density-choice" role="group" aria-label="Field-line density" title={densityTitle}>
+        {FIELD_LINE_DENSITY_STOPS.map((stop) => (
+          <button
+            type="button"
+            aria-pressed={displayedDensity === stop}
+            disabled={!densityAdjustable}
+            onClick={() => setFieldLineDensity(stop)}
+            key={stop}
+          >
+            {stop === 'low' ? 'Low' : stop === 'medium' ? 'Med' : 'High'}
+          </button>
+        ))}
+      </span>
     );
   };
 
@@ -1268,6 +1265,8 @@ export function SolvedFieldViewer({
         </div>}
       </div>
 
+      {/* The dock reads in the order you work: the title bar, then what the
+          field shows, then playback through the solved positions. */}
       <div className="public-field-dock">
         <div className="public-dock-strip">
           {viewControls}
@@ -1275,8 +1274,51 @@ export function SolvedFieldViewer({
             {(activeDetailRaster || visibleRaster || visiblePlot) && (
               <div className="viewport-cad-status">{angleFrames.length} positions · peak |B| {currentPeakBT.toFixed(2)} T</div>
             )}
+            <details className="public-field-physics-info">
+              <summary aria-label="Field details" title="Field details">i</summary>
+              <div className="public-field-summary-panel">
+                <span>Field composition</span>
+                <strong>{sourceLabel}</strong>
+                <p>{sourceDetail}</p>
+                {(activeDetailRaster || visibleRaster || visiblePlot) && (
+                  <dl>
+                    <div><dt>Peak |B|</dt><dd>{currentPeakBT.toFixed(3)} T</dd></div>
+                    <div><dt>Position</dt><dd>{electricalAngleDeg.toFixed(1)}° elec</dd></div>
+                    <div><dt>Mechanical</dt><dd>{mechanicalAngleDeg.toFixed(2)}°</dd></div>
+                    <div><dt>Playback</dt><dd>Clockwise</dd></div>
+                  </dl>
+                )}
+                <p className="public-field-summary-note">PM-only and Stator-only are separate nonlinear solves; their arithmetic sum is not assumed to equal the Resultant field when steel is saturated.</p>
+              </div>
+            </details>
             <span className="public-field-zoom-slot" ref={setZoomSlot} />
             {expandControl}
+          </div>
+        </div>
+        <div className="public-field-dock-controls" role="toolbar" aria-label="Field display">
+          <div className="public-field-control-cluster">
+            <span>Field</span>
+            <div className="public-field-source-controls" role="group" aria-label="Field composition">
+              <button type="button" aria-label="Resultant field, permanent magnets plus stator current" title="Permanent magnets plus stator current" aria-pressed={view === 'resultant'} onClick={() => selectSource('resultant')}><strong>Resultant</strong></button>
+              <span className={`public-field-source-pair${overlayActive ? ' is-both' : ''}`} role="group" aria-label="Separate fields: PM, Stator, or both together" title="Pick PM, Stator, or both to draw their field lines together">
+                <button type="button" className="is-pm" aria-label="PM-only field, zero current" title="Exact zero-current Magneto2D field" aria-pressed={pmShown} disabled={!pmAvailable} onClick={() => toggleSeparateField('pm')}><strong>PM</strong></button>
+                <button type="button" className="is-stator" aria-label="Stator-current-only field, permanent-magnet remanence disabled" title={magnetoCompositionAvailable ? 'Exact zero-remanence Magneto2D field' : 'Stator-only composition is available for Magneto2D results'} aria-pressed={statorShown} disabled={!magnetoCompositionAvailable} onClick={() => toggleSeparateField('armature')}><strong>Stator</strong></button>
+              </span>
+            </div>
+          </div>
+          <div className="public-field-control-cluster public-field-overlay-cluster">
+            <span>Show</span>
+            <div className="public-field-layer-controls public-field-layer-controls-inline" role="group" aria-label="Field solution overlays">
+              <button type="button" aria-pressed={showHeatmap && !overlayActive} disabled={overlayActive} title={overlayActive ? 'Off while PM and Stator are both shown: one |B| map cannot belong to both fields' : undefined} onClick={() => setShowHeatmap((value) => !value)}><i aria-hidden="true" />Flux density</button>
+              <button type="button" aria-pressed={showFieldLines} onClick={() => setShowFieldLines((value) => !value)}><i aria-hidden="true" />Field lines</button>
+              {showFieldLines && renderDensityControl()}
+            </div>
+            <details className="public-field-layer-menu">
+              <summary>More{moreLayersOn > 0 && <em>{moreLayersOn} on</em>}</summary>
+              <div className="public-field-layer-controls" role="group" aria-label="More field layers">
+                {renderMoreLayerButtons()}
+              </div>
+            </details>
           </div>
         </div>
         <div className="public-field-playback">
@@ -1293,7 +1335,7 @@ export function SolvedFieldViewer({
             {playing ? 'Ⅱ' : '▶'}
           </button>
           <label className="public-field-position-control">
-            <span><strong>Position</strong><em>{boundedIndex + 1} / {Math.max(1, angleFrames.length)}</em></span>
+            <span><strong>Position</strong><em>{boundedIndex + 1} / {Math.max(1, angleFrames.length)} · {electricalAngleDeg.toFixed(1)}° elec</em></span>
             <input
               ref={playbackSliderRef}
               type="range"
@@ -1344,51 +1386,11 @@ export function SolvedFieldViewer({
               }}
             />
           </label>
-          <span className="public-field-playback-meta" aria-live="polite">
-            <span><small>Mechanical</small><strong>{mechanicalAngleDeg.toFixed(2)}°</strong></span>
-            <span><small>Electrical</small><strong>{electricalAngleDeg.toFixed(1)}°</strong></span>
-            <em className={playbackWaiting ? 'is-buffering' : ''}>CW · {bufferStatus}</em>
-          </span>
-          <details className="public-field-physics-info">
-            <summary aria-label="Field details" title="Field details">i</summary>
-            <div className="public-field-summary-panel">
-              <span>Field composition</span>
-              <strong>{sourceLabel}</strong>
-              <p>{sourceDetail}</p>
-              {(activeDetailRaster || visibleRaster || visiblePlot) && (
-                <dl>
-                  <div><dt>Peak |B|</dt><dd>{currentPeakBT.toFixed(3)} T</dd></div>
-                  <div><dt>Position</dt><dd>{electricalAngleDeg.toFixed(1)}° elec</dd></div>
-                </dl>
-              )}
-              <p className="public-field-summary-note">PM-only and Stator-only are separate nonlinear solves; their arithmetic sum is not assumed to equal the Resultant field when steel is saturated.</p>
-            </div>
-          </details>
-        </div>
-        <div className="public-field-dock-controls" role="toolbar" aria-label="Field display">
-          <div className="public-field-control-cluster">
-            <span>Field</span>
-            <div className="public-field-source-controls" role="group" aria-label="Field composition">
-              <button type="button" aria-label="Resultant field, permanent magnets plus stator current" title="Permanent magnets plus stator current" aria-pressed={view === 'resultant'} onClick={() => selectSource('resultant')}><strong>Resultant</strong></button>
-              <span className={`public-field-source-pair${overlayActive ? ' is-both' : ''}`} role="group" aria-label="Separate fields: PM, Stator, or both together" title="Pick PM, Stator, or both to draw their field lines together">
-                <button type="button" className="is-pm" aria-label="PM-only field, zero current" title="Exact zero-current Magneto2D field" aria-pressed={pmShown} disabled={!pmAvailable} onClick={() => toggleSeparateField('pm')}><strong>PM</strong></button>
-                <button type="button" className="is-stator" aria-label="Stator-current-only field, permanent-magnet remanence disabled" title={magnetoCompositionAvailable ? 'Exact zero-remanence Magneto2D field' : 'Stator-only composition is available for Magneto2D results'} aria-pressed={statorShown} disabled={!magnetoCompositionAvailable} onClick={() => toggleSeparateField('armature')}><strong>Stator</strong></button>
-              </span>
-            </div>
-          </div>
-          <div className="public-field-control-cluster public-field-overlay-cluster">
-            <span>Show</span>
-            <div className="public-field-layer-controls public-field-layer-controls-inline" role="group" aria-label="Field solution overlays">
-              {renderLayerButtons()}
-            </div>
-          </div>
-          <details className="public-field-layer-menu">
-            <summary>Show</summary>
-            <div className="public-field-layer-controls" role="group" aria-label="Field solution overlays">
-              {renderLayerButtons()}
-            </div>
-          </details>
-          {showFieldLines && renderDensityControl()}
+          {(playbackWaiting || bufferedAhead < bufferTarget) && (
+            <span className="public-field-playback-meta" aria-live="polite">
+              <em className={playbackWaiting ? 'is-buffering' : ''}>{bufferStatus}</em>
+            </span>
+          )}
         </div>
       </div>
     </section>
