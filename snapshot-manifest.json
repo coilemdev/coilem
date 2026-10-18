@@ -5080,8 +5080,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2077,
-      "sha256": "fb77a24863a32f806515fa762a2af1e18174505622a6d65c503a9ff5ff85e303"
+      "bytes": 2118,
+      "sha256": "b6c9c006db041b31338fa978e4df68ea50c30c8600dc22455ea7813ff714d143"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -5169,6 +5169,11 @@
       "sha256": "61e991f0823f2ca6aeeccf5f14950ef350d9d3d5e826ba552864f9bcd7e2651d"
     },
     {
+      "path": "frontend/scripts/test-magnet-coverage.mjs",
+      "bytes": 1976,
+      "sha256": "9a6161d05bd4ed85153fe06f8154552b5517fd166bddad613e02fecf24c3ae83"
+    },
+    {
       "path": "frontend/scripts/test-mesh-quality.mjs",
       "bytes": 3216,
       "sha256": "2d72189fd47da95a306099e9f23b5495291eae9603f51ba17a104ea172df429f"
@@ -5200,8 +5205,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 145717,
-      "sha256": "0bd61ac4b17e26d3a564b05f3e6622c1c873d9221447df940bbbbb440b195baf"
+      "bytes": 146561,
+      "sha256": "dc468867393bb8fbed38bf32f6a5a2962d75c4e9713b5942721ae3e6a0d53967"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5600,8 +5605,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 216408,
-      "sha256": "1e408b887d95c52a8eff524c668a61c03ec061114371e2d55a3e5c8fe65acc0f"
+      "bytes": 216556,
+      "sha256": "705d2050876c798c3080ae2af734fdcd42ffd01b60f1508900a2aea772a157df"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5640,8 +5645,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 80027,
-      "sha256": "49c55615439bca2536bf682d1f1103d93dd0213028e9bff7542744a80450344e"
+      "bytes": 80094,
+      "sha256": "a17855aabe2ecddac7b53b6fc0e6423921552c1d356823097a8c351bb6511eae"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
@@ -5907,6 +5912,11 @@
       "path": "frontend/src/public/machineConstants.ts",
       "bytes": 4143,
       "sha256": "cf05c7bac517df048ac1410c8ee498b1d95e27c1d70fb8bc7f6b5981909f373b"
+    },
+    {
+      "path": "frontend/src/public/magnetCoverage.ts",
+      "bytes": 1102,
+      "sha256": "f42254517c49492dc95014537cb9eb30863f3ffa1e9e81bd50e0575258093571"
     },
     {
       "path": "frontend/src/public/magnetPoleFaces.ts",
@@ -9971,6 +9981,30 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "449276ed665ad71949e9aaf322abec8fde7e3ebfc386047e566ad2d264ede8b0",
       "reason": "Cover the compact top bar and the backend chip."
+    },
+    {
+      "base_commit": "b1b0798a7e566f32cf5c1fb2b3395807423d1bee",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "539f64cccc427c6c2cfee47ac9c7de10b5d01a1a8d0c2f79aae963e155b5381b",
+      "reason": "Show SPM pole coverage derived from magnet width in the Design row, health tile and check, and magnet card."
+    },
+    {
+      "base_commit": "b1b0798a7e566f32cf5c1fb2b3395807423d1bee",
+      "path": "frontend/src/public/PublicMotor3D.tsx",
+      "source_sha256": "49c55615439bca2536bf682d1f1103d93dd0213028e9bff7542744a80450344e",
+      "reason": "Size the 3D view's SPM magnets from the width-derived coverage."
+    },
+    {
+      "base_commit": "b1b0798a7e566f32cf5c1fb2b3395807423d1bee",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "0bd61ac4b17e26d3a564b05f3e6622c1c873d9221447df940bbbbb440b195baf",
+      "reason": "Cover the width-derived SPM coverage."
+    },
+    {
+      "base_commit": "b1b0798a7e566f32cf5c1fb2b3395807423d1bee",
+      "path": "frontend/package.json",
+      "source_sha256": "fb77a24863a32f806515fa762a2af1e18174505622a6d65c503a9ff5ff85e303",
+      "reason": "Run the magnet coverage test with the public UI tests."
     }
   ]
 }

@@ -912,6 +912,15 @@ assert.match(workspaceSource, /<g className="public-live-chart-playhead" aria-hi
 assert.match(workspaceSource, /Move along a curve to show that position in the field view; click to keep it\./);
 assert.match(styleSource, /\.public-live-chart \.public-live-chart-playhead line \{ stroke: var\(--accent-primary\);/);
 assert.match(packageSource, /node scripts\/test-field-position-link\.mjs/);
+// SPM pole coverage follows the magnet width (as the geometry builds the arc)
+// everywhere it shows: the Design row, the health tile and check, the magnet
+// card and the 3D view. magnet_embrace no longer feeds those for SPM.
+assert.match(packageSource, /node scripts\/test-magnet-coverage\.mjs/);
+assert.equal((workspaceSource.match(/const coverage = magnetPoleCoveragePct\(config\);/g) || []).length, 2);
+assert.match(workspaceSource, /\['Pole coverage', `\$\{magnetPoleCoveragePct\(config\)\}%`\]/);
+assert.match(workspaceSource, /<span className="param-label">Coverage<small>\{config\.topology === 'SPM' \? '% · calc' : '%'\}<\/small><\/span>/);
+assert.doesNotMatch(workspaceSource, /Math\.round\(config\.rotor\.magnet_embrace \* 100\)/);
+assert.match(motorThreeSource, /polePitch \* Math\.min\(1, magnetPoleCoverage\(config\)\) \/ 2/);
 assert.match(solvedFieldSource, /<div><dt>Frames<\/dt><dd>\{bufferStatus\}<\/dd><\/div>/);
 assert.match(solvedFieldSource, /<div><dt>Mechanical<\/dt><dd>\{mechanicalAngleDeg\.toFixed\(2\)\}°<\/dd><\/div>/);
 assert.match(styleSource, /\.public-field-dock > \.public-field-playback \{ display: flex; align-items: center; gap: 8px; padding: 0 16px 8px; \}/);
