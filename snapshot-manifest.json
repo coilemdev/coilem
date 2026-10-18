@@ -5180,8 +5180,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 130061,
-      "sha256": "f214285851f9c1a5d80f1f2d1c7cdf18f6062d6e5622babd529f41584a6ec9d7"
+      "bytes": 131434,
+      "sha256": "08c9bc48241962bb27cf04626b1544a59178d093bc048dd69aca5f485ee9e982"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5635,8 +5635,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 58394,
-      "sha256": "26e8f442c63bff8ce4ac4ff9ceacea3fa5d935041646612be0f0f4e5ca8b6876"
+      "bytes": 58468,
+      "sha256": "fa9128b889c3b209bdea79c01bbb8b32dbe4edd3b7f9d76932ab33bd1235e0d6"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -5910,8 +5910,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 255297,
-      "sha256": "98eb6639b49bd9ff304550f83fa2cf5a62ac8551ae600fa12489aa81cdd5b843"
+      "bytes": 256641,
+      "sha256": "af20c68bc270237d19c31df0c380d71b6e6079f2737b32fe6a1f01422f4b0842"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -9496,6 +9496,24 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "2e8cb4e328ba6bea6aa3536521a3aeff6d272ac8504204a7057a2fe4fc1a2b62",
       "reason": "Cover the field panel's shared panel styling."
+    },
+    {
+      "base_commit": "485c82110ebc6c664e8c5ddde967528f091da471",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "26e8f442c63bff8ce4ac4ff9ceacea3fa5d935041646612be0f0f4e5ca8b6876",
+      "reason": "Order the field panel by task and keep only the main layers in view."
+    },
+    {
+      "base_commit": "485c82110ebc6c664e8c5ddde967528f091da471",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "6146871457ff5cdb71d5809439c56d4183a296d423a9cf3b8c33ecd685ee76bd",
+      "reason": "Style the reordered field panel, its More menu and line-density choice."
+    },
+    {
+      "base_commit": "485c82110ebc6c664e8c5ddde967528f091da471",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "f214285851f9c1a5d80f1f2d1c7cdf18f6062d6e5622babd529f41584a6ec9d7",
+      "reason": "Cover the field panel's order, More menu and density choice."
     }
   ]
 }
