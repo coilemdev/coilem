@@ -4810,8 +4810,8 @@
     },
     {
       "path": "docs/TEACHING_MULTIPOLE_MOTOR.md",
-      "bytes": 2852,
-      "sha256": "28c4c0d2749ad2769b141c72044fdbd1e828f05d4f7565edf90df4fc8b689186"
+      "bytes": 4009,
+      "sha256": "b134a56cd2a1c04f3de94f3e2bbdfbc40066296194bead8c13d9add796597123"
     },
     {
       "path": "docs/VALIDATION.md",
@@ -5745,8 +5745,8 @@
     },
     {
       "path": "frontend/src/public/exampleDesigns.ts",
-      "bytes": 3392,
-      "sha256": "0960503e282e3037cc963b82ef9894acf52ee7911a97fa632f83522bdb3cd5fe"
+      "bytes": 3381,
+      "sha256": "d939c55468e098cb41cbd8b13925a1bac0eccf2d8359361e09a6dfd625a6dacb"
     },
     {
       "path": "frontend/src/public/examples/honda_accord_2005.coilem",
@@ -5760,8 +5760,8 @@
     },
     {
       "path": "frontend/src/public/examples/rotating_field_6p36s.coilem",
-      "bytes": 2451,
-      "sha256": "ba45445c5efc2024b1a8bcbfcf55967df833b9bd3c61d5862075c46fbba239ef"
+      "bytes": 2437,
+      "sha256": "a349fcfa32b1b4ee429ff7b2a0522dd4467c9c011b922a523cf3dbfecb7dbbed"
     },
     {
       "path": "frontend/src/public/examples/validation_ipm_10p_v_shape_medium.openem",
@@ -6000,8 +6000,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 16302,
-      "sha256": "35cb090c00d458a70cf4aa1ac528d2e04f20bb07f278128a761d02f591d91efc"
+      "bytes": 16291,
+      "sha256": "2a7d575407306141ef34e9904815eb5bb0c5f01ba55bc0bb8842652046c80afc"
     },
     {
       "path": "frontend/tsconfig.public.json",
