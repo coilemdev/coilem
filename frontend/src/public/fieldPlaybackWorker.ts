@@ -1,5 +1,7 @@
 /// <reference lib="webworker" />
 
+import { FIXED_FLUX_SCALE, FLUX_OVER_RANGE_INDEX, fluxColor, fluxColorIndex } from './fluxColorScale';
+
 type RasterSource = 'resultant' | 'pm' | 'armature';
 
 interface RasterRequest {
@@ -25,7 +27,6 @@ interface FieldPlotPayload {
 const RASTER_SIZE = 768;
 const DIRECTION_CUE_TARGET = 32;
 const MEDIUM_CONTOUR_LEVEL_STRIDE = 2;
-const HEAT_COLORS = ['#142a61', '#1855a7', '#1b8eb7', '#2ab673', '#a7c83a', '#f1c232', '#f58b24', '#dc3d3d'];
 
 function validTriangle(plot: FieldPlotPayload, triangle: number[]): number[][] | null {
   if (!Array.isArray(triangle) || triangle.length !== 3) return null;
@@ -78,16 +79,15 @@ function rasterize(plot: FieldPlotPayload) {
   const values = plot.element_b_mag_t.filter(Number.isFinite);
   const minB = values.length ? Math.min(...values) : 0;
   const maxB = values.length ? Math.max(...values) : 0;
-  const span = Math.max(maxB - minB, Number.EPSILON);
-  const buckets = Array.from({ length: HEAT_COLORS.length }, () => [] as number[]);
+  // The fixed 0–2.0 T scale, with an over-range colour, as in the server's images.
+  const buckets = Array.from({ length: FLUX_OVER_RANGE_INDEX + 1 }, () => [] as number[]);
   let triangleCount = 0;
   plot.triangles.forEach((triangle, index) => {
     if (!validTriangle(plot, triangle)) return;
     triangleCount += 1;
     const value = plot.element_b_mag_t[index];
     if (!Number.isFinite(value)) return;
-    const bucket = Math.min(HEAT_COLORS.length - 1, Math.floor(((value - minB) / span) * HEAT_COLORS.length));
-    buckets[bucket].push(index);
+    buckets[fluxColorIndex(value, FIXED_FLUX_SCALE)].push(index);
   });
 
   const baseLayer = configuredCanvas(viewBox);
@@ -120,7 +120,7 @@ function rasterize(plot: FieldPlotPayload) {
       const points = validTriangle(plot, plot.triangles[triangleIndex]);
       if (points) addTriangle(heatLayer.context, points);
     });
-    heatLayer.context.fillStyle = HEAT_COLORS[bucket];
+    heatLayer.context.fillStyle = fluxColor(bucket);
     heatLayer.context.fill();
   });
 
@@ -181,6 +181,7 @@ function rasterize(plot: FieldPlotPayload) {
     viewBox: viewBox.join(' '),
     minB,
     maxB,
+    colorScale: FIXED_FLUX_SCALE,
     triangleCount,
     contourLevelCount: playbackContourLevels.length,
     contourSegmentCount,

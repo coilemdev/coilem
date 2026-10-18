@@ -819,7 +819,9 @@ assert.doesNotMatch(workspaceSource, /\{dockStrip && primaryViewModes\}/);
 assert.doesNotMatch(workspaceSource, /is-expandable/);
 assert.match(workspaceSource, /navigationSlot=\{navigationSlot\}/);
 assert.match(motorCanvasSource, /return navigationSlot \? createPortal\(zoomControls, navigationSlot\) : zoomControls;/);
-assert.match(workspaceSource, /\.toLocaleString\('en-US'\)\} elements\{meshQualitySummary \? ` · min q \$\{formatNumber\(meshQualitySummary\.minimum, 3\)\}` : ''\}/);
+// The Mesh tab's title bar has no readout: its element count and quality are in the run plan.
+assert.match(workspaceSource, /const cadStatus = mode === 'mesh' \? null : \(/);
+assert.doesNotMatch(workspaceSource, /elements\{meshQualitySummary \? ` · min q/);
 assert.match(solvedFieldSource, /<div className="public-dock-strip-end">\s*\{\(activeDetailRaster \|\| visibleRaster \|\| visiblePlot\) && \(\s*<div className="viewport-cad-status">\{angleFrames\.length\} positions · peak \|B\| \{currentPeakBT\.toFixed\(2\)\} T<\/div>\s*\)\}\s*<details className="public-field-physics-info">[\s\S]*?<\/details>\s*<span className="public-field-zoom-slot" ref=\{setZoomSlot\} \/>\s*\{expandControl\}/);
 // The field panel matches the motor panels: full width, same title bar,
 // segmented field choice, dot toggles and labelled slider boxes.
@@ -933,7 +935,7 @@ assert.match(styleSource, /\.public-field-dock-controls \.public-field-source-co
 assert.match(styleSource, /\.public-field-dock-controls \.public-field-layer-controls button > i \{[^}]*border-radius: 50%;/);
 assert.match(styleSource, /\.public-field-dock-controls \.public-field-layer-controls button\[aria-pressed="true"\] > i \{[^}]*background: var\(--text-accent\);[^}]*box-shadow: none;/);
 assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-canvas > canvas \{ position: absolute; inset: 0; \}/);
-assert.match(fieldResultSource, /className="is-mid">\{\(\(displayMinB \+ displayMaxB\) \/ 2\)\.toFixed\(3\)\}/);
+assert.match(fieldResultSource, /className="is-mid">\{legendLabel\(\(legendScale\.minB \+ legendScale\.maxB\) \/ 2\)\}/);
 assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend \{[^}]*top: 60px[^}]*right: 0[^}]*bottom: 18px[^}]*width: 10px/s);
 assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend > span \{[^}]*position: absolute[^}]*right: 14px/s);
 assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend \.is-min \{ bottom: 0; \}/);
@@ -964,12 +966,27 @@ assert.match(solvedFieldSource, /showAirgap=\{showAirgap\}/);
 assert.match(solvedFieldSource, /airgapInnerRadiusMm=\{rotorAirgapBoundaryRadiusMm\(config\)\}/);
 assert.match(solvedFieldSource, /showMagnetPolarityLabels=\{showPoleLabels\}/);
 assert.match(solvedFieldSource, /colorRangeMode=\{colorRangeMode\}/);
-assert.match(solvedFieldSource, /fieldPlaybackSweepMaxT\(playbackFrames, source\)/);
-assert.match(fieldResultSource, />\s*Sweep\s*<\/button>/);
-assert.match(fieldResultSource, /All solved rotor positions/);
-assert.match(fieldResultSource, />\s*View\s*<\/button>/);
+// One flux-density scale everywhere (0–2.0 T, magenta above, the stator steel's
+// knee and saturation marked): a single sharp-corner element no longer sets the
+// top of the colours. Fit view rescales a stopped, zoomed frame, never past 2.0 T.
+assert.doesNotMatch(solvedFieldSource, /fieldPlaybackSweepMaxT|sweepScaleMaxT/);
+assert.doesNotMatch(fieldResultSource, /'sweep'|const HEAT_COLORS/);
+assert.match(fieldResultSource, /export type FieldColorRangeMode = 'fixed' \| 'viewport';/);
+assert.match(fieldResultSource, /colorRangeMode = 'fixed',/);
+assert.match(solvedFieldSource, /useState<FieldColorRangeMode>\('fixed'\)/);
+assert.match(fieldResultSource, />\s*Fixed\s*<\/button>/);
+assert.match(fieldResultSource, />\s*Fit view\s*<\/button>/);
 assert.match(fieldResultSource, /fieldRangeForViewport\(prepared\.triangleRecords/);
-assert.match(fieldResultSource, /Visible zoomed viewport/);
+assert.match(fieldResultSource, /drawHeat\(context, prepared, visibleRange \? fittedFluxScale\(visibleRange\.minB, visibleRange\.maxB\) : FIXED_FLUX_SCALE\)/);
+assert.match(fieldResultSource, /\|\| \(colorRangeMode === 'viewport' && highResolutionPlot\)/);
+assert.match(fieldResultSource, /: raster\.colorScale \?\? \{ minB, maxB, overAboveT: null, fixed: false \};/);
+assert.match(fieldResultSource, /className="is-over"[\s\S]*?&gt; \{legendScale\.overAboveT\.toFixed\(1\)\} T/);
+assert.match(fieldResultSource, /className=\{`public-field-legend-tick is-\$\{tick\.label\}`\}/);
+assert.match(solvedFieldSource, /statorSteelSaturationTicks\(config, materials\)/);
+assert.match(solvedFieldSource, /disabled=\{angleFrames\.length < 2 \|\| colorRangeMode === 'viewport'\}/);
+assert.match(workspaceSource, /<FieldResultPlot plot=\{fieldPlot\} saturationTicks=\{statorSteelSaturationTicks\(config, materials\)\} \/>/);
+assert.match(styleSource, /\.public-field-result-legend \.is-over b \{[^}]*background: #f43cf5;/);
+assert.match(styleSource, /\.public-solved-field-canvas \.public-field-legend-tick \{[^}]*bottom: var\(--tick-at\);/);
 assert.match(solvedFieldSource, /describeProbe=\{describeProbe\}/);
 assert.match(fieldResultSource, /element_bx_t/);
 assert.match(fieldResultSource, /element_by_t/);

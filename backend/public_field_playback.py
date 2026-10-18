@@ -48,7 +48,7 @@ PLAYBACK_DIRECTION_CUE_LIMIT = 48
 # into the compact animation artifact. Exact stopped frames still load the full
 # numerical contour set for interactive density changes and zoom inspection.
 PLAYBACK_CONTOUR_LEVEL_STRIDE = 2
-PLAYBACK_RENDERER_REVISION = "medium-contours-mesh-v2"
+PLAYBACK_RENDERER_REVISION = "medium-contours-mesh-fixed-flux-scale-v3"
 _PLAYBACK_PROCESS_MIN_FRAMES = 8
 _PLAYBACK_MAX_PROCESSES = 8
 # View box, pixel mapper and (triangle index, pixel-space corners) pairs.
@@ -63,6 +63,19 @@ _HEAT_COLORS = (
     (245, 139, 36, 255),
     (220, 61, 61, 255),
 )
+# One flux-density scale for every frame, rotor position and design: the eight
+# colours span 0–2.0 T and anything above is magenta. A per-frame minimum to
+# maximum let a single sharp-corner element (2.6 T in the example motor, where
+# 99% of the steel is below 1.4 T) set the top and squash the steel into the
+# lower colours. The browser uses the same scale (frontend fluxColorScale.ts).
+FLUX_SCALE_MAX_T = 2.0
+_FLUX_OVER_RANGE_COLOR = (244, 60, 245, 255)
+FLUX_COLOR_SCALE = {
+    "kind": "fixed",
+    "min": 0.0,
+    "max": FLUX_SCALE_MAX_T,
+    "over_range_color": "#f43cf5",
+}
 
 PlaybackMode = Literal["resultant_pm", "armature"]
 
@@ -400,6 +413,13 @@ def _render_mesh(
     return image
 
 
+def _flux_color(value: float) -> tuple[int, int, int, int]:
+    if value > FLUX_SCALE_MAX_T:
+        return _FLUX_OVER_RANGE_COLOR
+    bucket = int((max(0.0, value) / FLUX_SCALE_MAX_T) * len(_HEAT_COLORS))
+    return _HEAT_COLORS[min(len(_HEAT_COLORS) - 1, bucket)]
+
+
 def _render_heat(
     image_module: Any,
     image_draw_module: Any,
@@ -415,9 +435,10 @@ def _render_heat(
         for value in values
         if (number := _finite_number(value)) is not None
     ]
+    # The data range is still reported (the legend's min and max, and the peak
+    # readout); the colours use the fixed scale.
     min_b = min(finite_values, default=0.0)
     max_b = max(finite_values, default=0.0)
-    span = max(max_b - min_b, float.fromhex("0x1.0p-52"))
     image = image_module.new(
         "RGBA",
         (size_px, size_px),
@@ -430,13 +451,9 @@ def _render_heat(
         value = _finite_number(values[index])
         if value is None:
             continue
-        bucket = min(
-            len(_HEAT_COLORS) - 1,
-            max(0, int(((value - min_b) / span) * len(_HEAT_COLORS))),
-        )
         draw.polygon(
             [point(x, y) for x, y in triangle],
-            fill=_HEAT_COLORS[bucket],
+            fill=_flux_color(value),
         )
     return image, min_b, max_b
 
@@ -548,6 +565,7 @@ def _render_composition(
             "unit": "T",
             "min": min_b,
             "max": max_b,
+            "color_scale": dict(FLUX_COLOR_SCALE),
         },
         "statistics": {
             "triangle_count": len(triangles),

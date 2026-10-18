@@ -31,6 +31,7 @@ import {
   type DimensionId,
 } from './dimensionAnnotations';
 import { FieldResultPlot } from './FieldResultPlot';
+import { statorSteelSaturationTicks } from './fluxColorScale';
 import {
   MaterialAssignmentStrip,
   MaterialBehaviorView,
@@ -1819,15 +1820,9 @@ function ViewportChrome({
   }, [focusedMeshElementIndex, mesh, meshQualitySummary, mode]);
   const activeMeshElement = hoveredMeshElement ?? focusedMeshElement;
 
-  // Every panel's title bar ends with the same readout: regions for the
-  // geometry views, element count and worst quality for the mesh.
-  const cadStatus = mode === 'mesh' ? (
-    mesh ? (
-      <div className="viewport-cad-status">
-        {mesh.triangles.length.toLocaleString('en-US')} elements{meshQualitySummary ? ` · min q ${formatNumber(meshQualitySummary.minimum, 3)}` : ''}
-      </div>
-    ) : null
-  ) : (
+  // The geometry views' title bar ends with the regions readout. The Mesh tab
+  // has none: its element count and quality are in the run plan beside it.
+  const cadStatus = mode === 'mesh' ? null : (
     <div className="viewport-cad-status">
       {geometry?.regions.length ?? 0} regions · {geometry ? formatNumber(geometry.generation_time_ms, 0) : '—'} ms
     </div>
@@ -3486,7 +3481,6 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
             <p className="public-plan-advisory">Preview is intended for iteration, not final result sign-off.</p>
           )}
         </div>
-        <p className="public-timing-note">Run-time estimate covering meshing, solving, playback and saving, from the prepared mesh. It varies by computer.</p>
         <details ref={advancedOptionsRef} className="public-advanced-options" open={advancedOpen} onToggle={(event) => setAdvancedOpen(event.currentTarget.open)}>
           <summary>
             <span>Advanced options</span>
@@ -3555,6 +3549,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
         {solveView === 'field' && result
           ? (
             <SolvedFieldViewer
+              materials={materials}
               viewControls={solveViewportSwitch}
               expandControl={(
                 <ViewportExpandButton
@@ -3957,7 +3952,7 @@ function ReportStage({
           : <WaveformChart angles={result.back_emf_waveform.electrical_angle_deg} series={[{ label: 'Vab · line-line', values: backEmfLine.ab, color: '#f87171' }, { label: 'Vbc · line-line', values: backEmfLine.bc, color: '#4ade80' }, { label: 'Vca · line-line', values: backEmfLine.ca, color: '#60a5fa' }]} label="Back EMF · line-line" unit="V" />}
         {result.back_emf_harmonic_analysis && <BackEMFHarmonicSpectrum analysis={result.back_emf_harmonic_analysis} />}
       </>}
-      {activePlot === 'field-map' && fieldPlot && <FieldResultPlot plot={fieldPlot} />}
+      {activePlot === 'field-map' && fieldPlot && <FieldResultPlot plot={fieldPlot} saturationTicks={statorSteelSaturationTicks(config, materials)} />}
       </>}
     </div>
   );

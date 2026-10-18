@@ -29,8 +29,15 @@ import {
   fieldRangeForViewport,
   type FieldViewportRange,
 } from './fieldViewportRange';
-
-const HEAT_COLORS = ['#142a61', '#1855a7', '#1b8eb7', '#2ab673', '#a7c83a', '#f1c232', '#f58b24', '#dc3d3d'];
+import {
+  FIXED_FLUX_SCALE,
+  FLUX_OVER_RANGE_INDEX,
+  fittedFluxScale,
+  fluxColor,
+  fluxColorIndex,
+  type FluxColorScale,
+  type SaturationTick,
+} from './fluxColorScale';
 const FIELD_RASTER_SIZE = 900;
 const FIELD_DIRECTION_CUE_TARGET = 32;
 const DETAIL_RENDER_SCALE = 1.08;
@@ -42,7 +49,8 @@ const OVERLAY_HALO_COLOR = 'rgba(3,10,20,.92)';
 const OVERLAY_LINE_ALPHA = 0.85;
 
 export type FieldLineDensity = 'low' | 'medium' | 'high';
-export type FieldColorRangeMode = 'viewport' | 'sweep';
+/** Fixed: one 0–2.0 T scale everywhere. Viewport ("Fit view"): fitted to the zoomed area, never past 2.0 T. */
+export type FieldColorRangeMode = 'fixed' | 'viewport';
 
 export interface FieldProbe {
   elementIndex: number;
@@ -74,6 +82,8 @@ export interface FieldResultRaster {
   viewBox: string;
   minB: number;
   maxB: number;
+  /** The scale the image was drawn with; null for images drawn before the fixed scale (their minB–maxB). */
+  colorScale?: FluxColorScale | null;
   triangleCount: number;
   contourLevelCount: number;
   contourSegmentCount: number;
@@ -141,20 +151,15 @@ function addTrianglePath(
   path.lineTo(first[0], -first[1]);
 }
 
-function heatPathsForRange(
+function heatPathsForScale(
   records: PreparedFieldPlot['triangleRecords'],
-  minB: number,
-  maxB: number,
+  scale: FluxColorScale,
 ): { paths: Path2D[]; counts: number[] } {
-  const paths = Array.from({ length: HEAT_COLORS.length }, () => new Path2D());
-  const counts = Array.from({ length: HEAT_COLORS.length }, () => 0);
-  const span = Math.max(maxB - minB, Number.EPSILON);
+  const paths = Array.from({ length: FLUX_OVER_RANGE_INDEX + 1 }, () => new Path2D());
+  const counts = Array.from({ length: FLUX_OVER_RANGE_INDEX + 1 }, () => 0);
   records.forEach(({ points, value }) => {
     if (!Number.isFinite(value)) return;
-    const bucket = Math.min(
-      HEAT_COLORS.length - 1,
-      Math.max(0, Math.floor((((value ?? 0) - minB) / span) * HEAT_COLORS.length)),
-    );
+    const bucket = fluxColorIndex(value ?? 0, scale);
     addTrianglePath(paths[bucket], points);
     counts[bucket] += 1;
   });
@@ -287,10 +292,9 @@ function prepareFieldPlot(plot: PublicFieldLinePlot): PreparedFieldPlot | null {
       value: Number.isFinite(value) ? value : null,
     });
   });
-  const { paths: heatPaths, counts: heatBucketCounts } = heatPathsForRange(
+  const { paths: heatPaths, counts: heatBucketCounts } = heatPathsForScale(
     triangleRecords,
-    minB,
-    maxB,
+    FIXED_FLUX_SCALE,
   );
 
   let contourCount = 0;
@@ -355,15 +359,15 @@ function drawBase(context: CanvasRenderingContext2D, prepared: PreparedFieldPlot
 function drawHeat(
   context: CanvasRenderingContext2D,
   prepared: PreparedFieldPlot,
-  range?: { minB: number; maxB: number },
+  scale: FluxColorScale = FIXED_FLUX_SCALE,
 ): void {
   let paths = prepared.heatPaths;
   let counts = prepared.heatBucketCounts;
-  if (range) {
-    const key = `${range.minB.toFixed(6)}:${range.maxB.toFixed(6)}`;
+  if (!scale.fixed) {
+    const key = `${scale.minB.toFixed(6)}:${scale.maxB.toFixed(6)}`;
     let cached = prepared.heatPathCache.get(key);
     if (!cached) {
-      cached = heatPathsForRange(prepared.triangleRecords, range.minB, range.maxB);
+      cached = heatPathsForScale(prepared.triangleRecords, scale);
       prepared.heatPathCache.set(key, cached);
     }
     paths = cached.paths;
@@ -371,7 +375,7 @@ function drawHeat(
   }
   paths.forEach((path, index) => {
     if (counts[index] === 0) return;
-    context.fillStyle = HEAT_COLORS[index];
+    context.fillStyle = fluxColor(index);
     context.fill(path);
   });
 }
@@ -499,8 +503,8 @@ export function FieldResultPlot({
   showMesh: controlledShowMesh,
   showFieldLines: controlledShowFieldLines,
   fieldLineDensity = 'medium',
-  colorRangeMode = 'viewport',
-  sweepScaleMaxT,
+  colorRangeMode = 'fixed',
+  saturationTicks = [],
   showRangeControl = false,
   onColorRangeModeChange,
   showMagnets = false,
@@ -535,7 +539,8 @@ export function FieldResultPlot({
   showFieldLines?: boolean;
   fieldLineDensity?: FieldLineDensity;
   colorRangeMode?: FieldColorRangeMode;
-  sweepScaleMaxT?: number | null;
+  /** The stator steel's knee and saturation, marked on the fixed scale. */
+  saturationTicks?: SaturationTick[];
   showRangeControl?: boolean;
   onColorRangeModeChange?: (mode: FieldColorRangeMode) => void;
   showMagnets?: boolean;
@@ -609,15 +614,13 @@ export function FieldResultPlot({
   const [probe, setProbe] = useState<FieldProbe | null>(null);
   const [viewportRange, setViewportRange] = useState<FieldViewportRange | null>(null);
   const viewportRangeRef = useRef<FieldViewportRange | null>(null);
+  // Whether the canvas shows exact vectors (drawn here, on the chosen scale) or a
+  // playback image (drawn on the scale it carries); the legend follows it.
+  const [vectorDetailShown, setVectorDetailShown] = useState(false);
+  const vectorDetailShownRef = useRef(false);
   const showHeatmap = controlledShowHeatmap ?? internalShowHeatmap;
   const showMesh = controlledShowMesh ?? internalShowMesh;
   const showFieldLines = controlledShowFieldLines ?? internalShowFieldLines;
-  const sweepRange = useMemo(
-    () => colorRangeMode === 'sweep' && Number.isFinite(sweepScaleMaxT)
-      ? { minB: 0, maxB: Math.max(Number.EPSILON, sweepScaleMaxT ?? 0) }
-      : null,
-    [colorRangeMode, sweepScaleMaxT],
-  );
 
   useEffect(() => {
     if (!probeEnabled || !sourcePlot) setProbe(null);
@@ -649,6 +652,11 @@ export function FieldResultPlot({
       if (unchanged) return;
       viewportRangeRef.current = nextRange;
       setViewportRange(nextRange);
+    };
+    const publishVectorDetail = (shown: boolean) => {
+      if (vectorDetailShownRef.current === shown) return;
+      vectorDetailShownRef.current = shown;
+      setVectorDetailShown(shown);
     };
     // Call with the canvas transform mapping SVG-space world coordinates. Exact
     // overlay vectors go with exact primary vectors; otherwise its playback raster.
@@ -688,10 +696,12 @@ export function FieldResultPlot({
         prepared
         && (
           navigation.scale >= DETAIL_RENDER_SCALE
-          || (sweepRange && highResolutionPlot)
+          // Fit view needs the exact values to fit, even before zooming.
+          || (colorRangeMode === 'viewport' && highResolutionPlot)
         )
         && (!raster || highResolutionPlot),
       );
+      publishVectorDetail(useVectorDetail);
       if (useVectorDetail && prepared) {
         canvas.dataset.renderMode = 'vector-detail';
         canvas.dataset.sourceResolution = 'solver-vector';
@@ -728,7 +738,7 @@ export function FieldResultPlot({
           translateY,
         );
         drawBase(context, prepared);
-        if (showHeatmap) drawHeat(context, prepared, sweepRange ?? visibleRange ?? undefined);
+        if (showHeatmap) drawHeat(context, prepared, visibleRange ? fittedFluxScale(visibleRange.minB, visibleRange.maxB) : FIXED_FLUX_SCALE);
         if (showMesh) drawMeshEdges(context, prepared, navigation.scale);
         if (showFieldLines) drawFieldLines(context, prepared, fieldLineDensity);
         drawOverlayLines(context, true);
@@ -831,7 +841,6 @@ export function FieldResultPlot({
     colorRangeMode,
     highResolutionPlot,
     fieldLineDensity,
-    sweepRange,
     navigation.pan.x,
     navigation.pan.y,
     navigation.scale,
@@ -851,9 +860,18 @@ export function FieldResultPlot({
   const viewBox = raster?.viewBox ?? prepared?.viewBox ?? '0 0 1 1';
   const minB = raster?.minB ?? prepared?.minB ?? 0;
   const maxB = raster?.maxB ?? prepared?.maxB ?? 0;
-  const activeViewportRange = colorRangeMode === 'viewport' ? viewportRange : null;
-  const displayMinB = sweepRange?.minB ?? activeViewportRange?.minB ?? minB;
-  const displayMaxB = sweepRange?.maxB ?? activeViewportRange?.maxB ?? maxB;
+  // The legend describes what is on screen: exact vectors on the fixed or fitted
+  // scale, or a playback image on the scale it was drawn with. Images from before
+  // the fixed scale carry none and spanned their own minimum to maximum.
+  const legendScale: FluxColorScale = vectorDetailShown || !raster
+    ? (colorRangeMode === 'viewport' && viewportRange
+      ? fittedFluxScale(viewportRange.minB, viewportRange.maxB)
+      : FIXED_FLUX_SCALE)
+    : raster.colorScale ?? { minB, maxB, overAboveT: null, fixed: false };
+  const legendLabel = (value: number) => (legendScale.fixed ? value.toFixed(1) : value.toFixed(3));
+  const legendTicks = saturationTicks.filter((tick) => (
+    legendScale.overAboveT !== null && tick.bT > legendScale.minB && tick.bT < legendScale.maxB
+  ));
   const triangleCount = raster?.triangleCount ?? prepared?.triangleCount ?? 0;
   const contourLevelCount = raster?.contourLevelCount ?? plot?.contour_levels.length ?? 0;
   const availableDirectionCues = raster?.vectorCues ?? prepared?.vectorCues ?? [];
@@ -1159,31 +1177,54 @@ export function FieldResultPlot({
             </p>
           )}
         </>
-      ) : <div className="public-field-result-legend">
+      ) : <div className={`public-field-result-legend${legendScale.fixed ? ' is-fixed' : ''}`}>
         <strong>Flux density <span>|B| (T)</span></strong>
-        <span className="is-min">{displayMinB.toFixed(3)}</span>
-        <i aria-hidden="true" />
-        <span className="is-mid">{((displayMinB + displayMaxB) / 2).toFixed(3)}</span>
-        <span className="is-max">{displayMaxB.toFixed(3)}</span>
+        <span className="is-min">{legendLabel(legendScale.minB)}</span>
+        <i aria-hidden="true">
+          {legendTicks.map((tick) => (
+            <b
+              className={`public-field-legend-tick is-${tick.label}`}
+              key={tick.label}
+              style={{ ['--tick-at' as never]: `${(((tick.bT - legendScale.minB) / (legendScale.maxB - legendScale.minB)) * 100).toFixed(2)}%` }}
+            >
+              <em>{tick.bT.toFixed(2)} {tick.label === 'knee' ? 'knee' : 'sat.'}</em>
+            </b>
+          ))}
+        </i>
+        {legendScale.overAboveT !== null && (
+          <span
+            className="is-over"
+            title="Elements above 2.0 T. Sharp corners can show local peaks this high; the probe gives the exact value."
+          >
+            <b aria-hidden="true" />&gt; {legendScale.overAboveT.toFixed(1)} T
+          </span>
+        )}
+        <span className="is-mid">{legendLabel((legendScale.minB + legendScale.maxB) / 2)}</span>
+        <span className="is-max">{legendLabel(legendScale.maxB)}</span>
+        {legendTicks.length > 0 && (
+          <span className="public-visually-hidden">
+            {legendTicks.map((tick) => `${tick.steelName} ${tick.label} at ${tick.bT.toFixed(2)} T, where its relative permeability falls to ${tick.relativePermeability}.`).join(' ')}
+          </span>
+        )}
         {showRangeControl && onColorRangeModeChange && (
           <div className="public-field-range-control" role="group" aria-label="Flux-density color range">
             <button
               type="button"
-              aria-pressed={colorRangeMode === 'viewport'}
-              aria-label="View range: rescale colors to the visible zoomed viewport"
-              title="Visible zoomed viewport · updates after zoom or pan"
-              onClick={() => onColorRangeModeChange('viewport')}
+              aria-pressed={colorRangeMode === 'fixed'}
+              aria-label="Fixed range: one 0 to 2.0 T scale for every position and design"
+              title="One 0–2.0 T scale everywhere · above 2.0 T in magenta"
+              onClick={() => onColorRangeModeChange('fixed')}
             >
-              View
+              Fixed
             </button>
             <button
               type="button"
-              aria-pressed={colorRangeMode === 'sweep'}
-              aria-label="Sweep range: keep one color scale across every solved rotor position"
-              title={`All solved rotor positions · 0–${(sweepScaleMaxT ?? maxB).toFixed(3)} T`}
-              onClick={() => onColorRangeModeChange('sweep')}
+              aria-pressed={colorRangeMode === 'viewport'}
+              aria-label="Fit view: rescale colors to the visible zoomed area, never past 2.0 T"
+              title="Fit the visible zoomed area · never past 2.0 T · a stopped frame only"
+              onClick={() => onColorRangeModeChange('viewport')}
             >
-              Sweep
+              Fit view
             </button>
           </div>
         )}

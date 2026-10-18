@@ -85,7 +85,7 @@ def test_hybrid_raster_manifest_keeps_numerical_frames_for_exact_zoom_detail(
     assert manifest is not None
     assert manifest["schema_version"] == "coilem.field_playback.v2"
     assert manifest["encoding"] == "layered-raster-v1"
-    assert manifest["renderer_revision"] == "medium-contours-mesh-v2"
+    assert manifest["renderer_revision"] == "medium-contours-mesh-fixed-flux-scale-v3"
     assert manifest["width_px"] == 1536
     assert manifest["height_px"] == 1536
     assert "detail_width_px" not in manifest
@@ -417,3 +417,38 @@ def test_composition_reuses_the_frame_geometry_exactly(monkeypatch, tmp_path) ->
     )
     # The loaded plot (|B| 0.5) once, the no-load plot (|B| 0.375) once.
     assert built == [0.5, 0.375]
+
+
+def test_flux_colours_use_one_fixed_scale_with_magenta_above_two_tesla() -> None:
+    """A single hot element no longer sets the top of the colour scale."""
+
+    colors = public_field_playback._HEAT_COLORS
+    assert public_field_playback._flux_color(0.0) == colors[0]
+    assert public_field_playback._flux_color(0.24) == colors[0]
+    assert public_field_playback._flux_color(1.39) == colors[5]
+    assert public_field_playback._flux_color(1.99) == colors[7]
+    assert public_field_playback._flux_color(2.0) == colors[7]
+    assert public_field_playback._flux_color(2.64) == (244, 60, 245, 255)
+    assert public_field_playback.FLUX_COLOR_SCALE == {
+        "kind": "fixed",
+        "min": 0.0,
+        "max": 2.0,
+        "over_range_color": "#f43cf5",
+    }
+
+
+def test_heat_layer_keeps_the_data_range_but_colours_by_the_fixed_scale() -> None:
+    pytest.importorskip("PIL")
+    from PIL import Image, ImageDraw
+
+    plot = _plot(0.0)
+    plot["element_b_mag_t"] = [0.5, 2.6]
+    _, point, triangles = public_field_playback._drawable_geometry(plot)
+    image, min_b, max_b = public_field_playback._render_heat(Image, ImageDraw, plot, triangles, point)
+
+    assert (min_b, max_b) == (0.5, 2.6)
+    colors = {color for _, color in image.getcolors(maxcolors=4096)}
+    assert (244, 60, 245, 255) in colors
+    assert public_field_playback._HEAT_COLORS[2] in colors
+    # A per-frame scale would have made 0.5 T the bottom colour.
+    assert public_field_playback._HEAT_COLORS[0] not in colors
