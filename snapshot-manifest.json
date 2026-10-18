@@ -5200,8 +5200,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 144544,
-      "sha256": "449276ed665ad71949e9aaf322abec8fde7e3ebfc386047e566ad2d264ede8b0"
+      "bytes": 145717,
+      "sha256": "0bd61ac4b17e26d3a564b05f3e6622c1c873d9221447df940bbbbb440b195baf"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5600,8 +5600,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 214740,
-      "sha256": "6a280a45931e5f9d89bb635516770618d99b784ca65135b058974ac76a95da30"
+      "bytes": 215144,
+      "sha256": "539f64cccc427c6c2cfee47ac9c7de10b5d01a1a8d0c2f79aae963e155b5381b"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5955,8 +5955,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 261155,
-      "sha256": "d774171b3be5ccaecd81297adfb1bec330cda43685df893697a766e5de4b3fa3"
+      "bytes": 261062,
+      "sha256": "83aba621a3edf5a89ba1d9ae9e5ce23ebb1b0ffaa90144546d1750171c0c0fb0"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -9870,6 +9870,24 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "a81f26c18873ce10331460e9680b1eeeb6488b75a20f04759608b8aef7bfdf89",
       "reason": "Cover the one-line Stator + PM legend and the removed caption."
+    },
+    {
+      "base_commit": "e446a57152eae1055f15b61c5f5fe1c96b5db939",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "6a280a45931e5f9d89bb635516770618d99b784ca65135b058974ac76a95da30",
+      "reason": "Show the local backend as one status chip."
+    },
+    {
+      "base_commit": "e446a57152eae1055f15b61c5f5fe1c96b5db939",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "d774171b3be5ccaecd81297adfb1bec330cda43685df893697a766e5de4b3fa3",
+      "reason": "Make the top bar a flush 46 px strip with 30 px controls, and size the workspace from its height."
+    },
+    {
+      "base_commit": "e446a57152eae1055f15b61c5f5fe1c96b5db939",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "449276ed665ad71949e9aaf322abec8fde7e3ebfc386047e566ad2d264ede8b0",
+      "reason": "Cover the compact top bar and the backend chip."
     }
   ]
 }
