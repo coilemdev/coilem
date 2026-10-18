@@ -1115,10 +1115,17 @@ assert.match(solvedFieldSource, /if \(heldOverlayRaster\) shown\.add\(heldOverla
 assert.match(fieldResultSource, /const OVERLAY_LINE_COLOR = '#5ed3f3'/);
 assert.match(fieldResultSource, /globalCompositeOperation = 'source-in'/);
 assert.match(fieldResultSource, /className="public-field-direction-cue is-overlay"/);
-assert.match(fieldResultSource, /className="public-field-lines-legend"/);
-assert.match(fieldResultSource, /Separate solves: in saturated steel the resultant is not their sum\./);
+// Stator + PM: one legend line above the view (colours and the stator lead),
+// never over the motor; the longer notes are its tooltip.
+assert.match(fieldResultSource, /<div className="public-field-lines-legend" aria-label="Field-line colours" title=\{linesLegendNote\}>/);
+assert.match(fieldResultSource, /'Separate solves: in saturated steel the resultant is not their sum\.'/);
+assert.match(fieldResultSource, /className=\{`public-field-result\$\{overlay \? ' has-lines-legend' : ''\}`\}/);
 assert.match(styleSource, /\.public-field-direction-cue\.is-overlay path \{/);
-assert.match(styleSource, /\.public-solved-field-canvas \.public-field-lines-legend \{[^}]*position: absolute/);
+assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result\.has-lines-legend \{ flex-direction: column; \}/);
+assert.match(styleSource, /\.public-solved-field-canvas \.public-field-lines-legend \{ position: static; order: -1;[^}]*white-space: nowrap; \}/);
+assert.doesNotMatch(fieldResultSource, /<small>Separate solves/);
+assert.match(fieldResultSource, /<span className="public-field-lead-short" aria-hidden="true">Stator \{leadElecDeg >= 0 \? 'leads' : 'lags'\} \{Math\.round\(Math\.abs\(leadElecDeg\)\)\}°<\/span>/);
+assert.match(styleSource, /@container \(max-width: 440px\) \{\s*\.public-solved-field-canvas \.public-field-lines-legend \.public-field-lead-long \{ display: none; \}/);
 assert.doesNotMatch(styleSource, /\.public-field-toolbar-groups \{ grid-column: 1 \/ -1; grid-row: 2;/);
 // Field axes: each field's working-harmonic poles, the stator lead and the caption.
 assert.match(solvedFieldSource, /fieldAxes=\{overlayActive \? CLOCKWISE_FIELD_AXES : null\}/);
@@ -1130,8 +1137,9 @@ assert.match(fieldResultSource, /className="public-field-axis is-pm"/);
 assert.match(fieldResultSource, /Stator \{leadElecDeg >= 0 \? 'leads' : 'lags'\} magnets by/);
 assert.match(fieldResultSource, /The magnets are pulled after the stator field\./);
 assert.match(fieldResultSource, /-pole-pair part gives no steady torque/);
-assert.match(fieldResultSource, /<p className="public-field-axes-caption">/);
-assert.match(styleSource, /\.public-solved-field-canvas \.public-field-axes-caption \{ position: absolute; z-index: 7; left: 50%; bottom: 8px;/);
+// No caption over the motor: the arrows note is in the legend line's tooltip.
+assert.doesNotMatch(fieldResultSource, /public-field-axes-caption/);
+assert.doesNotMatch(styleSource, /public-field-axes-caption/);
 assert.match(fieldResultSource, /strongestAirgapPolePairs\(statorPolarityProfile, axisPolePairs \* 4\)/);
 assert.match(styleSource, /\.public-field-axis\.is-stator \{ stroke: #ffb547;/);
 assert.match(solvedFieldSource, /showPolarityLegend=\{source === 'armature' && showPoleLabels\}/);
