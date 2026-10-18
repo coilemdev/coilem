@@ -16,6 +16,7 @@ const readOptionalSource = async (relativePath) => {
 const appSource = await readFile(path.join(frontendRoot, 'src/public/App.tsx'), 'utf8');
 const mainSource = await readFile(path.join(frontendRoot, 'src/public/main.tsx'), 'utf8');
 const workspaceSource = await readFile(path.join(frontendRoot, 'src/public/CoilEmWorkspace.tsx'), 'utf8');
+const rpmFieldSource = await readFile(path.join(frontendRoot, 'src/public/RpmField.tsx'), 'utf8');
 const resultSummarySource = await readFile(path.join(frontendRoot, 'src/public/ResultSummary.tsx'), 'utf8');
 const motorConstantsComponentSource = await readFile(path.join(frontendRoot, 'src/public/MotorConstants.tsx'), 'utf8');
 const bldcChartSource = await readFile(path.join(frontendRoot, 'src/public/BldcTorqueCurrentChart.tsx'), 'utf8');
@@ -614,7 +615,8 @@ assert.match(workspaceSource, /showPlayback && \(\s*<span className="vc-group pu
 // The rotor preview uses the field playback's transport, and the winding
 // legend sits in the canvas corner like the field view's legends.
 assert.match(workspaceSource, /<button type="button" className="public-field-transport-play" aria-label=\{isAnimating \? 'Pause preview' : 'Play preview'\}/);
-assert.match(workspaceSource, /<label className="public-field-playback-rpm" title="Preview speed — not the solve operating point">/);
+assert.match(workspaceSource, /<RpmField\s+value=\{animationRpm\}\s+min=\{1\}\s+max=\{100\}\s+label="Speed"\s+ariaLabel="Preview speed \(RPM\)"/);
+assert.doesNotMatch(workspaceSource, /public-field-playback-rpm|playback-rpm-progress/);
 assert.match(workspaceSource, /<div className="public-winding-key public-canvas-legend" aria-label="Winding phase and current direction legend">/);
 assert.ok(workspaceSource.indexOf('public-canvas-legend') < workspaceSource.indexOf('className="viewport-dock-resize"'), 'the winding legend is on the canvas, not in the panel');
 assert.match(styleSource, /\.public-motor-viewport \.public-canvas-legend \{ position: absolute; z-index: 7; top: 14px; right: 14px;/);
@@ -855,8 +857,8 @@ assert.doesNotMatch(solvedFieldSource, /public-field-playback-meta/);
 assert.match(solvedFieldSource, /\{playbackWaiting && <small className="public-field-playback-buffering" aria-live="polite">Buffering…<\/small>\}/);
 assert.match(solvedFieldSource, /<div><dt>Frames<\/dt><dd>\{bufferStatus\}<\/dd><\/div>/);
 assert.match(solvedFieldSource, /<div><dt>Mechanical<\/dt><dd>\{mechanicalAngleDeg\.toFixed\(2\)\}°<\/dd><\/div>/);
-assert.match(styleSource, /\.public-field-dock > \.public-field-playback \{ grid-template-columns: 36px minmax\(0,1fr\) 176px;/);
-assert.doesNotMatch(styleSource, /\.public-field-playback-rpm \{ min-height: 42px; \}/);
+assert.match(styleSource, /\.public-field-dock > \.public-field-playback \{ grid-template-columns: 36px minmax\(0,1fr\) auto;/);
+assert.doesNotMatch(styleSource, /\.public-field-playback-rpm|playback-rpm-progress/);
 assert.match(styleSource, /\.public-field-dock \.public-field-position-control em \{ min-width: 0; overflow: hidden; text-overflow: ellipsis; \}/);
 assert.match(styleSource, /\.public-dock-strip-end \{ display: flex;[^}]*margin-left: auto; \}/);
 assert.match(styleSource, /\.public-motor-viewport \.public-dock-strip-end \.viewport-cad-status \{[^}]*border: 0;[^}]*background: transparent;/);
@@ -1128,7 +1130,8 @@ assert.doesNotMatch(styleSource.match(/\.public-solve-banner \{[^}]*\}/)?.[0] ??
 // #59: the mesh layer is decoded only while the Mesh overlay is shown.
 assert.match(playbackRasterizerSource, /layers\.mesh && withMesh \? load\(layers\.mesh\.artifact_id\)/);
 assert.match(solvedFieldSource, /requestedDescriptor\.playback_frame,\s*withMesh,/);
-assert.match(solvedFieldSource, /Playback speed \(RPM\)/);
+assert.match(solvedFieldSource, /<RpmField\s+value=\{playbackRpm\}\s+min=\{PUBLIC_FIELD_PLAYBACK_MIN_RPM\}\s+max=\{PUBLIC_FIELD_PLAYBACK_MAX_RPM\}\s+label="Speed"\s+ariaLabel="Playback speed \(RPM\)"/);
+assert.doesNotMatch(solvedFieldSource, /type="range"[^>]*Playback speed/);
 assert.doesNotMatch(solvedFieldSource, /PLAYBACK_RATES|PlaybackRate|Field playback speed/);
 assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_MIN_RPM = 1/);
 assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_MAX_RPM = 100/);
@@ -1139,10 +1142,18 @@ assert.match(solvedFieldSource, /evictRasters\(nextCache, rasterCacheLimitRef\.c
 assert.match(playbackTimingSource, /if \(rpm >= 60\) return 14/);
 assert.match(playbackTimingSource, /if \(rpm >= 15\) return 10/);
 assert.match(solvedFieldSource, /const cacheLimit = publicFieldPlaybackCacheFrames\(playbackRpm\)/);
-assert.match(styleSource, /\.public-field-playback-rpm/);
 assert.match(styleSource, /\.public-field-playback \{[^}]*grid-template-columns: 38px minmax\(180px,1fr\) 176px minmax\(238px,auto\) 28px/);
-assert.match(styleSource, /\.public-field-playback-rpm \{[^}]*min-height: 36px/);
-assert.match(styleSource, /\.public-field-position-control > span,/);
+// Playback speed is a small number field (typed, or stepped with the arrows), the
+// same height as the play button.
+assert.match(styleSource, /\.public-rpm-field \{[^}]*display: inline-flex;[^}]*min-height: 36px;/);
+assert.match(styleSource, /\.public-rpm-field input \{[^}]*width: 54px;[^}]*font-variant-numeric: tabular-nums;/);
+assert.match(rpmFieldSource, /type="number"/);
+assert.match(rpmFieldSource, /inputMode="numeric"/);
+assert.match(rpmFieldSource, /const clamp = \(rpm: number\) => Math\.min\(max, Math\.max\(min, Math\.round\(rpm\)\)\);/);
+assert.match(rpmFieldSource, /event\.shiftKey/);
+assert.match(rpmFieldSource, /commit\(event\.currentTarget\.value\);/);
+assert.match(rpmFieldSource, /cancelledRef\.current = true;\s+onChange\(valueBeforeEditRef\.current\);/);
+assert.match(styleSource, /\.public-field-position-control > span \{ display: flex;/);
 assert.match(solvedFieldSource, /Buffering next frame/);
 assert.match(solvedFieldSource, /DETAIL_VIEWPORT_SCALE/);
 assert.match(solvedFieldSource, /detailRequestRef/);

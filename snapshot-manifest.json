@@ -5185,8 +5185,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 135309,
-      "sha256": "8b62dc4437c59abb7fb8852376925c69bf1d2aa470ca309c95d49a74d5bfd736"
+      "bytes": 136383,
+      "sha256": "901ec58fe1e010e07a285284409196b7294f88325d79e756dc9f3fb02774a5bd"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5585,8 +5585,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 209242,
-      "sha256": "f2c296ab2ebada1243519cde073056d87ba8eba05c354ab34ae2daf7a75375d6"
+      "bytes": 208969,
+      "sha256": "b44477999f129dcd64396da8caa7c1c058f9444754f251c90a20ceb37e91ebea"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5639,9 +5639,14 @@
       "sha256": "f393e798527761bcf85de34a9c1a7c49881933093bcc5e149e961173ad25fb95"
     },
     {
+      "path": "frontend/src/public/RpmField.tsx",
+      "bytes": 2663,
+      "sha256": "d3f7d1ba52373c604cc30050c151175648af28c73b87749ff70433d1da45c1ec"
+    },
+    {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 59294,
-      "sha256": "14c3b03d7dde592bdfed0deb31ea87e11eeedc85257508189f8b60e8b463bad4"
+      "bytes": 58781,
+      "sha256": "1aa9a20da19e144ccf3d988244b17c73346ed78d0aae37560f7ea15773a2e5e6"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -5920,8 +5925,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 260660,
-      "sha256": "295afa6bbcb65a83030f2c0929dad2386fac50f40f2efbc6c4002abf55f0a525"
+      "bytes": 260516,
+      "sha256": "4d98384537cf71db6fb2fd1ad483d0b29182ac7d2f142e3340c09bd4ae4a0984"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -9756,6 +9761,30 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "6841e6c77cf958f4eb7bb100f5fb478a8b42aaa5e7638e8f5559276f157df731",
       "reason": "Cover the field panel's narrow-width short forms."
+    },
+    {
+      "base_commit": "559ddbc0f80590a624e5f7d66497e8c9e8c603f9",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "14c3b03d7dde592bdfed0deb31ea87e11eeedc85257508189f8b60e8b463bad4",
+      "reason": "Set the field playback speed in a small RPM number field instead of a slider."
+    },
+    {
+      "base_commit": "559ddbc0f80590a624e5f7d66497e8c9e8c603f9",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "1aab9d1cc180d3abf3fb906fada2a3b605227e68d424dbae7b6045b65660d7f8",
+      "reason": "Set the Design preview speed in the same RPM number field."
+    },
+    {
+      "base_commit": "559ddbc0f80590a624e5f7d66497e8c9e8c603f9",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "c127def99772dfb3e016f377b19db2d2517565ff34027456451ab27d8f1da57f",
+      "reason": "Style the RPM number field and drop the speed slider's styles."
+    },
+    {
+      "base_commit": "559ddbc0f80590a624e5f7d66497e8c9e8c603f9",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "8b62dc4437c59abb7fb8852376925c69bf1d2aa470ca309c95d49a74d5bfd736",
+      "reason": "Cover the RPM number field in both places."
     }
   ]
 }
