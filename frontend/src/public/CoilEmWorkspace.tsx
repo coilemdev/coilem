@@ -1618,6 +1618,9 @@ function ViewportChrome({
   ));
   const [introProgress, setIntroProgress] = useState(() => (designIntroEnabled ? 0 : 1));
   const [canvasLayer, setCanvasLayer] = useState<PublicCanvasLayer>('none');
+  // Each stator tooth's N / S pole as the rotor turns; its own toggle, so it
+  // works with or without Phases.
+  const [showToothPoles, setShowToothPoles] = useState(false);
   const [materialSubview, setMaterialSubview] = useState<PublicMaterialSubview>('assignment');
   const [materialTarget, setMaterialTarget] = useState<PublicMaterialTarget>('stator');
   const [previewMaterialTarget, setPreviewMaterialTarget] = useState<PublicMaterialTarget | null>(null);
@@ -1947,6 +1950,7 @@ function ViewportChrome({
               hoveredDimension={showDimensionReadout ? hoveredDimension : null}
               onDimensionSelect={showDimensionReadout ? setActiveDimension : undefined}
               magnetPolarityView={magnetPolarityView}
+              showToothPoles={viewportMode === '2d' && showToothPoles}
               meshDisplayMode={meshDisplayMode}
               showMeshEdges={showMeshEdges}
               meshQualities={meshQualitySummary?.qualities}
@@ -2286,6 +2290,17 @@ function ViewportChrome({
                   onClick={() => setCanvasLayer((current) => (current === 'phases' ? 'windings' : 'phases'))}
                 >
                   Phases
+                </button>
+              )}
+              {viewportMode === '2d' && (
+                <button
+                  type="button"
+                  className="public-dock-toggle"
+                  aria-pressed={showToothPoles}
+                  title={showToothPoles ? 'Hide the stator teeth\'s N / S poles' : 'Show each stator tooth\'s N / S pole as the rotor turns'}
+                  onClick={() => setShowToothPoles((shown) => !shown)}
+                >
+                  Tooth poles
                 </button>
               )}
             </span>

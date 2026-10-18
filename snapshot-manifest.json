@@ -5450,8 +5450,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 149673,
-      "sha256": "2c47577bbbfdfd9126ab545127a068ef964ded8166ac4428c2e419563ca1325c"
+      "bytes": 150363,
+      "sha256": "178e7a842fbef9beed687705f0fd108384f6d75d88fbc20d5a58d07bf17f4a85"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5850,8 +5850,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 219318,
-      "sha256": "5d3297a3a37a9eb0d1384bdb0996496fa3dbcecae298c558a4c18d4f2c3e3ff0"
+      "bytes": 220064,
+      "sha256": "415b3dd75d20d6bfb85a565965d45881526fb3fcbc703fb100f8a5e508d977de"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5875,8 +5875,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 56036,
-      "sha256": "b97db1c34adf252e71884deb85c99bfcc8f03f673f7af6824b895b324903ee01"
+      "bytes": 56336,
+      "sha256": "41efa00a5ce2a3db3d4a0f55476a78d1bef07e4588b6606c7d94dcabf056d0b4"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -10384,6 +10384,24 @@
       "path": "tests/test_public_phase_drive.py",
       "source_sha256": "673bbd84fbaffad01a2263fc56e4b5f9d1d62a0af0c25fb73935d8c740f176ad",
       "reason": "Keep the sine vector ids under the 150-column lint limit"
+    },
+    {
+      "base_commit": "2e871c2994e3d7e3796a6ea2ace6855c7b543024",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "5d3297a3a37a9eb0d1384bdb0996496fa3dbcecae298c558a4c18d4f2c3e3ff0",
+      "reason": "Add a Tooth poles toggle beside Phases, independent of it"
+    },
+    {
+      "base_commit": "2e871c2994e3d7e3796a6ea2ace6855c7b543024",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "b97db1c34adf252e71884deb85c99bfcc8f03f673f7af6824b895b324903ee01",
+      "reason": "Draw tooth poles from their own toggle, with or without Phases"
+    },
+    {
+      "base_commit": "2e871c2994e3d7e3796a6ea2ace6855c7b543024",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "2c47577bbbfdfd9126ab545127a068ef964ded8166ac4428c2e419563ca1325c",
+      "reason": "Pin the independent Tooth poles toggle"
     }
   ]
 }

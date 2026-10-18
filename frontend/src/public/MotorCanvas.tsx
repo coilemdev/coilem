@@ -71,6 +71,8 @@ interface MotorCanvasProps {
   onDimensionSelect?: (dimension: DimensionId | null) => void;
   /** Display-only polarity treatment; it never changes geometry or solver inputs. */
   magnetPolarityView?: PublicMagnetPolarityView;
+  /** Tint each stator tooth N / S by the pole the drive currents make it. */
+  showToothPoles?: boolean;
   meshDisplayMode?: PublicMeshDisplayMode;
   showMeshEdges?: boolean;
   meshQualities?: number[];
@@ -527,6 +529,7 @@ function drawGeometry(
   dimensionHits: DimensionHit[],
   magnetPolarityView: PublicMagnetPolarityView,
   phaseDrive: PhaseDrive | null,
+  showToothPoles: boolean,
 ): void {
   const points = data.regions.flatMap((region) => region.points);
   if (points.length === 0) return;
@@ -534,13 +537,14 @@ function drawGeometry(
   // waveforms wired into it, and its phases light with the currents they carry.
   const driveFrame = layer === 'phases' && phaseDrive ? phaseDriveFrame(width, height) : null;
   const rotorElecDeg = phaseDrive ? rotorElectricalDeg(rotorAngleDeg, phaseDrive.poleCount) : 0;
-  const currents = layer === 'phases' && phaseDrive ? phaseCurrents(phaseDrive, rotorElecDeg) : null;
-  const phaseLevels: PhaseLevels | null = currents
+  const currents = (layer === 'phases' || showToothPoles) && phaseDrive ? phaseCurrents(phaseDrive, rotorElecDeg) : null;
+  const phaseLevels: PhaseLevels | null = layer === 'phases' && currents
     ? { A: Math.abs(currents[0]), B: Math.abs(currents[1]), C: Math.abs(currents[2]) }
     : null;
-  // ...and each stator tooth turns N or S with the slot currents either side of it.
+  // Tooth poles, with or without Phases: each stator tooth turns N or S with the
+  // slot currents either side of it.
   const statorSlotCount = Number(data.metadata.slot_count || 0);
-  const poleByTooth = currents && data.winding_layout?.length && statorSlotCount > 0
+  const poleByTooth = showToothPoles && currents && data.winding_layout?.length && statorSlotCount > 0
     ? toothPoles(slotCurrents(data.winding_layout, statorSlotCount, currents))
     : null;
   const toothPoleLabels: Array<{ x: number; y: number; north: boolean; strength: number; size: number }> = [];
@@ -1244,6 +1248,7 @@ export function MotorCanvas({
   hoveredDimension = null,
   onDimensionSelect,
   magnetPolarityView = 'dominant',
+  showToothPoles = false,
   meshDisplayMode = 'geometry',
   showMeshEdges = true,
   meshQualities = EMPTY_MESH_QUALITIES,
@@ -1351,6 +1356,7 @@ export function MotorCanvas({
           dimensionHitsRef.current,
           magnetPolarityView,
           phaseDrive,
+          showToothPoles,
         );
       } else if (mode === 'mesh' && mesh) {
         drawMesh(
@@ -1390,6 +1396,7 @@ export function MotorCanvas({
     magnetPolarityView,
     mode,
     phaseDrive,
+    showToothPoles,
     navigation.pan.x,
     navigation.pan.y,
     navigation.scale,
