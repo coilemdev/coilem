@@ -5180,8 +5180,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 132493,
-      "sha256": "d9b45838862a583e0939e1c8be8d56ad4012fd754b6c19ffd7c37094e044cae8"
+      "bytes": 132585,
+      "sha256": "78972ea62c22f4493733314da2e15d112c726f9afb5e9fa6f1e1e23784da1da6"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5580,8 +5580,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 208036,
-      "sha256": "3bcd3fb91b5128ddd2a5e0792cd8b4329eed205ee22a9515486fac1cd52bdb0f"
+      "bytes": 207816,
+      "sha256": "362a014efe5e8e4c872bff54bf23ea59d8d0fed6389ce09e2737513f4fb50cda"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -9561,6 +9561,18 @@
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
       "source_sha256": "5ec783cbe1a19a8f601bec1c72f0d83a4e7f22223cb3fb1b7b32eb4ebe32135f",
       "reason": "Remove the run-time estimate note under the accuracy plan."
+    },
+    {
+      "base_commit": "d6db14ecdb566246bbf370ffb33676b26e133d9d",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "3bcd3fb91b5128ddd2a5e0792cd8b4329eed205ee22a9515486fac1cd52bdb0f",
+      "reason": "Drop the Mesh tab's title-bar readout; the run plan shows the element count and quality."
+    },
+    {
+      "base_commit": "d6db14ecdb566246bbf370ffb33676b26e133d9d",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "d9b45838862a583e0939e1c8be8d56ad4012fd754b6c19ffd7c37094e044cae8",
+      "reason": "The Mesh tab's title bar has no readout."
     }
   ]
 }

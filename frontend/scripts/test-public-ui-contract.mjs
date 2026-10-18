@@ -819,7 +819,9 @@ assert.doesNotMatch(workspaceSource, /\{dockStrip && primaryViewModes\}/);
 assert.doesNotMatch(workspaceSource, /is-expandable/);
 assert.match(workspaceSource, /navigationSlot=\{navigationSlot\}/);
 assert.match(motorCanvasSource, /return navigationSlot \? createPortal\(zoomControls, navigationSlot\) : zoomControls;/);
-assert.match(workspaceSource, /\.toLocaleString\('en-US'\)\} elements\{meshQualitySummary \? ` · min q \$\{formatNumber\(meshQualitySummary\.minimum, 3\)\}` : ''\}/);
+// The Mesh tab's title bar has no readout: its element count and quality are in the run plan.
+assert.match(workspaceSource, /const cadStatus = mode === 'mesh' \? null : \(/);
+assert.doesNotMatch(workspaceSource, /elements\{meshQualitySummary \? ` · min q/);
 assert.match(solvedFieldSource, /<div className="public-dock-strip-end">\s*\{\(activeDetailRaster \|\| visibleRaster \|\| visiblePlot\) && \(\s*<div className="viewport-cad-status">\{angleFrames\.length\} positions · peak \|B\| \{currentPeakBT\.toFixed\(2\)\} T<\/div>\s*\)\}\s*<details className="public-field-physics-info">[\s\S]*?<\/details>\s*<span className="public-field-zoom-slot" ref=\{setZoomSlot\} \/>\s*\{expandControl\}/);
 // The field panel matches the motor panels: full width, same title bar,
 // segmented field choice, dot toggles and labelled slider boxes.

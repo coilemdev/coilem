@@ -1819,15 +1819,9 @@ function ViewportChrome({
   }, [focusedMeshElementIndex, mesh, meshQualitySummary, mode]);
   const activeMeshElement = hoveredMeshElement ?? focusedMeshElement;
 
-  // Every panel's title bar ends with the same readout: regions for the
-  // geometry views, element count and worst quality for the mesh.
-  const cadStatus = mode === 'mesh' ? (
-    mesh ? (
-      <div className="viewport-cad-status">
-        {mesh.triangles.length.toLocaleString('en-US')} elements{meshQualitySummary ? ` · min q ${formatNumber(meshQualitySummary.minimum, 3)}` : ''}
-      </div>
-    ) : null
-  ) : (
+  // The geometry views' title bar ends with the regions readout. The Mesh tab
+  // has none: its element count and quality are in the run plan beside it.
+  const cadStatus = mode === 'mesh' ? null : (
     <div className="viewport-cad-status">
       {geometry?.regions.length ?? 0} regions · {geometry ? formatNumber(geometry.generation_time_ms, 0) : '—'} ms
     </div>
