@@ -6000,8 +6000,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 15675,
-      "sha256": "33306593c15421c3e779db184d32f39166a5a8863708cfebf4fdfad15dee2c70"
+      "bytes": 16302,
+      "sha256": "35cb090c00d458a70cf4aa1ac528d2e04f20bb07f278128a761d02f591d91efc"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -10017,6 +10017,12 @@
       "path": "frontend/scripts/test-magnet-coverage.mjs",
       "source_sha256": "9a6161d05bd4ed85153fe06f8154552b5517fd166bddad613e02fecf24c3ae83",
       "reason": "Read the example's width from the default config."
+    },
+    {
+      "base_commit": "d42f1600c50cd380f8ea888d65822b1bfe30e76b",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "33306593c15421c3e779db184d32f39166a5a8863708cfebf4fdfad15dee2c70",
+      "reason": "Find the backend status chip by its accessible name and open each Solve setup section before using its controls."
     }
   ]
 }
