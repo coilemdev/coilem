@@ -42,6 +42,14 @@ import {
 import { PublicMotor3D } from './PublicMotor3D';
 import { SolvedFieldViewer } from './SolvedFieldViewer';
 import { WaveformChart } from './WaveformChart';
+import { WaveformReadoutMarker, useWaveformReadout } from './WaveformReadout';
+import {
+  formatWaveformReadoutAngle,
+  formatWaveformReadoutValue,
+  waveformReadoutAngles,
+  waveformReadoutValues,
+  type WaveformReadoutSeries,
+} from './chartReadout';
 import { BldcTorqueCurrentChart } from './BldcTorqueCurrentChart';
 import { PublicRunComparison } from './PublicRunComparison';
 import { MotorConstants } from './MotorConstants';
@@ -965,7 +973,8 @@ function ComponentDetailCard({ selection, config, geometry, onClose }: {
   );
 }
 
-function ParameterSectionBlock({
+/** A collapsible panel section: Design's parameter groups and the Solve setup. */
+function ParameterSectionBlock<Id extends string = PublicParameterSection>({
   id,
   label,
   summary,
@@ -975,20 +984,27 @@ function ParameterSectionBlock({
   children,
   nextLabel,
   onNext,
+  guide,
+  sectionRef,
+  className,
 }: {
-  id: PublicParameterSection;
+  id: Id;
   label: string;
   summary: string;
   active: boolean;
   /** The current design error names a field in this section. */
   attention?: boolean;
-  onToggle: (id: PublicParameterSection) => void;
+  onToggle: (id: Id) => void;
   children: ReactNode;
   nextLabel?: string;
   onNext?: () => void;
+  /** The guided tour's target name; defaults to `section-<id>`. */
+  guide?: string;
+  sectionRef?: Ref<HTMLElement>;
+  className?: string;
 }) {
   return (
-    <section className="param-group" data-guide={`section-${id}`} data-guide-active={active ? 'true' : 'false'}>
+    <section ref={sectionRef} className={`param-group${className ? ` ${className}` : ''}`} data-guide={guide ?? `section-${id}`} data-guide-active={active ? 'true' : 'false'}>
       <button
         type="button"
         className={`param-group-header ${attention ? 'status-attention' : 'status-complete'}${active ? '' : ' collapsed'}`}
@@ -2544,7 +2560,28 @@ function CompactLiveChart({
   emptyWorking?: boolean;
 }) {
   const plottedSeries = series.filter((item) => item.values.length === angles.length);
-  if (angles.length === 0 || plottedSeries.length === 0) {
+  const hasSamples = angles.length > 0 && plottedSeries.length > 0;
+  const width = 272;
+  const height = 92;
+  const padding = { top: 10, right: 8, bottom: 12, left: 38 };
+  const minX = hasSamples ? Math.min(...angles) : 0;
+  const maxX = hasSamples ? Math.max(...angles) : 0;
+  // Hover reads a solved position, as on the Results plots: a mouse hover
+  // previews one, a click keeps it, and arrow keys step when the plot has focus.
+  const readoutSeries: WaveformReadoutSeries[] = plottedSeries.map((item) => ({
+    key: item.label,
+    label: item.label,
+    color: item.color,
+    unit,
+    angles,
+    values: item.values,
+  }));
+  const readout = useWaveformReadout({
+    angles: waveformReadoutAngles(readoutSeries),
+    angleAtX: (svgX) => minX + ((svgX - padding.left) / (width - padding.left - padding.right)) * Math.max(maxX - minX, 1),
+    dataKey: `${state}|${label}`,
+  });
+  if (!hasSamples) {
     return (
       <div className={`public-live-chart waiting${emptyWorking ? ' is-processing' : ''}`} aria-label={`${label}: ${emptyMessage}`}>
         <div className="public-live-chart-heading"><strong>{label}</strong><span>{emptyStatus}</span></div>
@@ -2553,11 +2590,6 @@ function CompactLiveChart({
     );
   }
 
-  const width = 272;
-  const height = 92;
-  const padding = { top: 10, right: 8, bottom: 12, left: 38 };
-  const minX = Math.min(...angles);
-  const maxX = Math.max(...angles);
   const allValues = plottedSeries.flatMap((item) => item.values);
   const rawMinY = Math.min(...allValues);
   const rawMaxY = Math.max(...allValues);
@@ -2574,12 +2606,32 @@ function CompactLiveChart({
   const pathFor = (values: number[]) => values
     .map((value, index) => `${index === 0 ? 'M' : 'L'} ${x(angles[index]).toFixed(2)} ${y(value).toFixed(2)}`)
     .join(' ');
+  const shownAngle = readout.shownAngle;
+  const readoutValues = shownAngle === null ? [] : waveformReadoutValues(readoutSeries, shownAngle);
+  const readoutText = (value: number | null) => value === null ? 'not solved' : formatWaveformReadoutValue(value, unit);
 
   return (
     <div className="public-live-chart">
-      <div className="public-live-chart-heading"><strong>{label}</strong><span>{angles.length} {angles.length === 1 ? 'sample' : 'samples'}</span></div>
-      {plottedSeries.length > 1 && <div className="public-live-chart-legend">{plottedSeries.map((item) => <span key={item.label}><i style={{ backgroundColor: item.color }} />{item.label}</span>)}</div>}
-      <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`${state === 'live' ? 'Live' : 'Completed'} ${label} curve from ${angles.length} solver samples`}>
+      {/* The sample count gives way to the hovered position; with one trace its
+          value follows, and with several each value sits by its legend swatch. */}
+      <div className="public-live-chart-heading">
+        <strong>{label}</strong>
+        <span
+          id={readout.readoutId}
+          className={shownAngle === null ? undefined : `public-live-chart-readout${readout.previewing ? ' is-preview' : ''}`}
+          aria-live={shownAngle === null ? 'off' : 'polite'}
+        >
+          {shownAngle === null
+            ? `${angles.length} ${angles.length === 1 ? 'sample' : 'samples'}`
+            : <>{formatWaveformReadoutAngle(shownAngle)} elec{plottedSeries.length === 1 && readoutValues[0] ? <> · <b>{readoutText(readoutValues[0].value)}</b></> : null}</>}
+        </span>
+      </div>
+      {plottedSeries.length > 1 && <div className="public-live-chart-legend">{plottedSeries.map((item) => {
+        const shown = readoutValues.find((value) => value.key === item.label);
+        return <span key={item.label}><i style={{ backgroundColor: item.color }} />{item.label}{shown && <b>{readoutText(shown.value)}</b>}</span>;
+      })}</div>}
+      <div className="public-waveform-plot public-live-chart-plot" role="group" aria-label={`${label} plot`} {...readout.plotProps}>
+      <svg ref={readout.svgRef} viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`${state === 'live' ? 'Live' : 'Completed'} ${label} curve from ${angles.length} solver samples`}>
         {yTickValues.map((tickValue) => (
           <g key={tickValue}>
             <line x1={padding.left} x2={width - padding.right} y1={y(tickValue)} y2={y(tickValue)} />
@@ -2592,7 +2644,17 @@ function CompactLiveChart({
         })}
         <text x={padding.left} y={height - 2}>{formatNumber(minX, 0)}°</text>
         <text x={width - padding.right} y={height - 2} textAnchor="end">{formatNumber(maxX, 0)}° · {unit}</text>
+        {shownAngle !== null && (
+          <WaveformReadoutMarker
+            x={x(shownAngle)}
+            top={padding.top}
+            bottom={height - padding.bottom}
+            points={readoutValues.flatMap((item) => item.value === null ? [] : [{ key: item.key, y: y(item.value), color: item.color }])}
+            previewing={readout.previewing}
+          />
+        )}
       </svg>
+      </div>
     </div>
   );
 }
@@ -2906,10 +2968,18 @@ function BackEMFHarmonicSpectrum({
   );
 }
 
+type SolveSetupSection = 'solver' | 'operating' | 'plan' | 'advanced';
+
 function SolveStage({ config, materials, geometry, mesh, validation, validationChecking, validationError, result, armatureField, armatureFieldError, progress, liveSamples, busy, error, errorDetails, notice, progressPercent, meshElements, meshQuality, selectedSolver, elmerCapability, onBack, onOpenReport, onGenerateMesh, onStartSolve, onCancelSolve, onRequestArmatureField, onCancelArmatureField, onMeshSettingChange, onSolvePlanChange, onCustomSweepChange, onSolveSettingChange, onSolverChange, onManageRuns }: Pick<CoilEmWorkspaceProps,
   'config' | 'materials' | 'geometry' | 'mesh' | 'validation' | 'validationChecking' | 'validationError' | 'result' | 'armatureField' | 'armatureFieldError' | 'progress' | 'liveSamples' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'progressPercent' | 'meshElements' | 'meshQuality' | 'selectedSolver' | 'elmerCapability' | 'onGenerateMesh' | 'onStartSolve' | 'onCancelSolve' | 'onRequestArmatureField' | 'onCancelArmatureField' | 'onMeshSettingChange' | 'onSolvePlanChange' | 'onCustomSweepChange' | 'onSolveSettingChange' | 'onSolverChange'
 > & { onBack: () => void; onOpenReport: () => void; onManageRuns?: () => void }) {
-  const [advancedOpen, setAdvancedOpen] = useState(false);
+  // The setup sections open one at a time, as Design's do. The accuracy plan
+  // starts open: it is the choice made on every run, and the guided tour's
+  // solve step points at it.
+  const [openSetupSection, setOpenSetupSection] = useState<SolveSetupSection | null>('plan');
+  const toggleSetupSection = (section: SolveSetupSection) => setOpenSetupSection((current) => current === section ? null : section);
+  const advancedOpen = openSetupSection === 'advanced';
+  const setAdvancedOpen = (open: boolean) => setOpenSetupSection((current) => open ? 'advanced' : current === 'advanced' ? null : current);
   const [customSweepOpen, setCustomSweepOpen] = useState(
     () => config.solve_params.solve_quality === 'custom',
   );
@@ -2926,7 +2996,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
   const [setupWidth, setSetupWidth] = useState<number | null>(null);
   const [resizingPanel, setResizingPanel] = useState<'setup' | 'runPlan' | null>(null);
   const completedResultAvailableRef = useRef(Boolean(result));
-  const advancedOptionsRef = useRef<HTMLDetailsElement>(null);
+  const advancedOptionsRef = useRef<HTMLElement>(null);
   const nonlinearSolverRef = useRef<HTMLSelectElement>(null);
   const fineMeshRef = useRef<HTMLButtonElement>(null);
   const recoveryFocusTargetRef = useRef<HTMLElement | null>(null);
@@ -3008,6 +3078,14 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
   const meshDensityLabel = config.solve_params.mesh_density === 'normal'
     ? 'Medium'
     : config.solve_params.mesh_density.replace('_', ' ');
+  const operatingSummary = [
+    sixStepSelected ? 'Six-step 120°' : 'Sinusoidal',
+    `${Number(config.solve_params.current_amplitude_A.toFixed(2))} A ${sixStepSelected ? 'plateau' : config.solve_params.current_amplitude_convention}`,
+    `${config.solve_params.rated_speed_rpm} rpm`,
+  ].join(' · ');
+  const planMeshLabel = solvePlans.find((plan) => plan.value === config.solve_params.solve_quality)?.meshLabel;
+  const planSummary = [planLabel, planMeshLabel, estimatedTimeText].filter(Boolean).join(' · ');
+  const advancedSummary = `${torqueMethodLabel} · ${nonlinearSolverLabel} · ${linearSolverLabel} · ${validation ? `${validation.sweep_positions}p` : '…'} · ${meshDensityLabel}${meshBuild === 'fast' ? ' · Fast mesh' : ''}`;
   const runReady = Boolean(mesh)
     && Boolean(validation?.valid)
     && selectedSolverAvailable
@@ -3297,7 +3375,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
     <div className="public-solve-view-switch" role="group" aria-label="Solve viewport">
       <button type="button" aria-pressed={solveView === 'geometry'} onClick={() => setSolveView('geometry')}>Geometry</button>
       <button type="button" aria-pressed={solveView === 'mesh'} disabled={!mesh} onClick={() => setSolveView('mesh')}>Mesh</button>
-      <button type="button" aria-pressed={solveView === 'field'} disabled={!result?.field_line_plot} onClick={() => setSolveView('field')}>Field solution</button>
+      <button type="button" aria-label="Field solution" aria-pressed={solveView === 'field'} disabled={!result?.field_line_plot} onClick={() => setSolveView('field')}><span className="public-solve-tab-long">Field solution</span><span className="public-solve-tab-short" aria-hidden="true">Field</span></button>
     </div>
   );
 
@@ -3335,8 +3413,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
         <div className="public-solve-setup-frame">
         <div className="mesh-panel-header"><span className="mesh-panel-header-title">Analysis setup</span></div>
         <div className="public-solve-setup-scroll">
-        {elmerCapability.feature_enabled && <div className="public-setup-section public-solver-section">
-          <span className="public-section-kicker">Solver</span>
+        {elmerCapability.feature_enabled && <ParameterSectionBlock id="solver" label="Solver" summary={selectedSolver === 'elmer' ? 'Elmer FEM' : 'Magneto2D · built in'} active={openSetupSection === 'solver'} onToggle={toggleSetupSection} className="public-solver-section">
           <div className="public-solver-selector" role="radiogroup" aria-label="Electromagnetic solver">
             <button
               type="button"
@@ -3368,9 +3445,8 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
             </button>
           </div>
           {!elmerAvailable && <p className="public-solver-diagnostic">{elmerCapability.reason || 'Qualified Elmer 26.2 runtime not detected.'}</p>}
-        </div>}
-        <div className="public-setup-section">
-          <span className="public-section-kicker">Operating point</span>
+        </ParameterSectionBlock>}
+        <ParameterSectionBlock id="operating" label="Operating point" summary={operatingSummary} active={openSetupSection === 'operating'} onToggle={toggleSetupSection}>
           <div className="public-excitation-selector" role="radiogroup" aria-label="Stator excitation">
             <button
               type="button"
@@ -3406,9 +3482,8 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
             <span>{sixStepSelected ? 'Wye · plateau current' : `${config.solve_params.current_amplitude_convention.toUpperCase()} phase current`}</span>
           </div>
           {sixStepSelected && <div className="public-six-step-limitation" role="note"><strong>Phase connection: Wye (MVP)</strong><span>Ideal current excitation only — no PWM, switching ripple, Hall timing, dead time, or ESC dynamics.</span></div>}
-        </div>
-        <div className="public-setup-section" data-guide="solve-plan">
-          <span className="public-section-kicker">Accuracy plan</span>
+        </ParameterSectionBlock>
+        <ParameterSectionBlock id="plan" label="Accuracy plan" summary={planSummary} active={openSetupSection === 'plan'} onToggle={toggleSetupSection} guide="solve-plan">
           <div className="public-choice-row public-solve-plan-choices">
             {solvePlans.map((plan) => (
               <button
@@ -3478,12 +3553,8 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
           {config.solve_params.solve_quality === 'quick' && (
             <p className="public-plan-advisory">Preview is intended for iteration, not final result sign-off.</p>
           )}
-        </div>
-        <details ref={advancedOptionsRef} className="public-advanced-options" open={advancedOpen} onToggle={(event) => setAdvancedOpen(event.currentTarget.open)}>
-          <summary>
-            <span>Advanced options</span>
-            <small>{torqueMethodLabel} · {nonlinearSolverLabel} · {linearSolverLabel} · {validation ? `${validation.sweep_positions}p` : '…'} · {meshDensityLabel}{meshBuild === 'fast' ? ' · Fast mesh' : ''}</small>
-          </summary>
+        </ParameterSectionBlock>
+        <ParameterSectionBlock id="advanced" label="Advanced options" summary={advancedSummary} active={advancedOpen} attention={convergenceFailed} onToggle={toggleSetupSection} sectionRef={advancedOptionsRef} className="public-advanced-options">
           <div className="public-advanced-body">
             <section className="public-advanced-section public-advanced-mesh-section" aria-labelledby="public-mesh-preparation-heading">
               <span className="public-section-kicker" id="public-mesh-preparation-heading">Mesh preparation</span>
@@ -3522,7 +3593,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               </div>
             </section>
           </div>
-        </details>
+        </ParameterSectionBlock>
         </div>
         <div className="public-solve-footer">
           <div className="public-run-consequence">
@@ -3691,9 +3762,17 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
             open={elementQualityDetailsOpen}
             onToggle={(event) => setElementQualityDetailsOpen(event.currentTarget.open)}
           >
-            <summary className="public-mesh-quality-heading">
-              <div><span className="public-section-kicker">Element quality</span><strong>{qualityPasses ? 'Solver gate passed' : 'Solver gate failed'}</strong></div>
-              <span className="public-mesh-quality-meta">{weakElementCount > 0 ? `${weakElementCount} weak` : 'No weak elements'}</span>
+            {/* One line: the title, then the gate result with any weak count. */}
+            <summary
+              className="public-mesh-quality-heading"
+              title={`Solver gate ${qualityPasses ? 'passed' : 'failed'}; ${weakElementCount > 0 ? `${weakElementCount.toLocaleString()} weak ${weakElementCount === 1 ? 'element' : 'elements'}` : 'no weak elements'}`}
+            >
+              <span className="public-section-kicker">Element quality</span>
+              <strong className={qualityPasses ? 'is-pass' : 'is-fail'}>
+                {weakElementCount > 0
+                  ? `${qualityPasses ? 'Passed' : 'Failed'} · ${weakElementCount.toLocaleString()} weak`
+                  : `Solver gate ${qualityPasses ? 'passed' : 'failed'}`}
+              </strong>
             </summary>
             <div className="public-mesh-quality-body">
               {weakElementCount > 0 && (

@@ -5185,8 +5185,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 136383,
-      "sha256": "901ec58fe1e010e07a285284409196b7294f88325d79e756dc9f3fb02774a5bd"
+      "bytes": 139990,
+      "sha256": "8f77a4474b696ec662120f391fbd1b8db264d45fb68a2f051b077c792fb2b24f"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5585,8 +5585,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 208969,
-      "sha256": "b44477999f129dcd64396da8caa7c1c058f9444754f251c90a20ceb37e91ebea"
+      "bytes": 213791,
+      "sha256": "33762ab7ed196b30d8ba830dd287cb38c1265370d85905f03749a4f84338ce9c"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5660,8 +5660,8 @@
     },
     {
       "path": "frontend/src/public/WaveformReadout.tsx",
-      "bytes": 6486,
-      "sha256": "e11d57dd065df974058b6b02e01b6f702fc4da9b8d5d2ee5c4db2c3b532f1c90"
+      "bytes": 6506,
+      "sha256": "2647d1bab21ce42f9fdee6cd919d9809cf57349c14e58e5327d0f5cd67f10f2b"
     },
     {
       "path": "frontend/src/public/WindingLayoutView.tsx",
@@ -5925,8 +5925,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 260516,
-      "sha256": "4d98384537cf71db6fb2fd1ad483d0b29182ac7d2f142e3340c09bd4ae4a0984"
+      "bytes": 262459,
+      "sha256": "428ad8cdfc7e49908d85500c7f2c106bcd534b4fcad6947c8985e844fbe92306"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -9785,6 +9785,48 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "8b62dc4437c59abb7fb8852376925c69bf1d2aa470ca309c95d49a74d5bfd736",
       "reason": "Cover the RPM number field in both places."
+    },
+    {
+      "base_commit": "e63abccaa2f0d02377264dd2f69dd7445246369e",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "9d44c0d53006b8de31a83a885fdc3cbee033ab2bfb88c33627569d25d4514a1f",
+      "reason": "Shorten the Field solution tab on narrow panels, put Element quality on one line, and read a hovered position on the Solve-tab waveforms."
+    },
+    {
+      "base_commit": "e63abccaa2f0d02377264dd2f69dd7445246369e",
+      "path": "frontend/src/public/WaveformReadout.tsx",
+      "source_sha256": "e11d57dd065df974058b6b02e01b6f702fc4da9b8d5d2ee5c4db2c3b532f1c90",
+      "reason": "Clear a pinned readout when clicking outside a Solve-tab waveform too."
+    },
+    {
+      "base_commit": "e63abccaa2f0d02377264dd2f69dd7445246369e",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "ad1bdceb966f78e4fbe23b3599532da1eb7b878c9e12d62c86f8a3ea1b52fc26",
+      "reason": "Keep the panels inside a narrow stage, put Element quality on one line, and style the Solve-tab waveform readout."
+    },
+    {
+      "base_commit": "e63abccaa2f0d02377264dd2f69dd7445246369e",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "901ec58fe1e010e07a285284409196b7294f88325d79e756dc9f3fb02774a5bd",
+      "reason": "Cover the narrow-stage title bar, the one-line Element quality and the Solve-tab waveform readout."
+    },
+    {
+      "base_commit": "b4e1852cade4364db2e1387e9d1edbd9c3a30526",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "8966116493144276182b0d97757b721f7d4dc2275a4fc465fd65a6732644b195",
+      "reason": "Collapse the Solve setup's sections with Design's section block, one open at a time, with a one-line summary when closed."
+    },
+    {
+      "base_commit": "b4e1852cade4364db2e1387e9d1edbd9c3a30526",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "2b212395b2d972edbc983a1d5bafab7f75adf03bc40962f628cdf9080bd8dfe7",
+      "reason": "Share Design's section styles with the Solve setup and drop the old setup-section and Advanced options styles."
+    },
+    {
+      "base_commit": "b4e1852cade4364db2e1387e9d1edbd9c3a30526",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "f128b2c27a390ee853c94a478e016d34382b542247cc12256eab2909b2969521",
+      "reason": "Cover the collapsible Solve setup sections."
     }
   ]
 }

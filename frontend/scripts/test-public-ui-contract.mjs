@@ -348,7 +348,7 @@ assert.match(workspaceSource, />Open project</);
 assert.match(workspaceSource, />Rerun settings</);
 assert.match(workspaceSource, />Compare runs</);
 assert.match(workspaceSource, /PublicRunComparison/);
-assert.match(workspaceSource, /elmerCapability\.feature_enabled && <div className="public-setup-section public-solver-section">/);
+assert.match(workspaceSource, /elmerCapability\.feature_enabled && <ParameterSectionBlock id="solver" label="Solver"/);
 assert.match(workspaceSource, /aria-label="Previous runs"/);
 assert.match(workspaceSource, /Review or compare completed analyses without starting another solve/);
 assert.match(workspaceSource, /<PublicRunComparison manageRuns/);
@@ -473,6 +473,17 @@ assert.match(waveformReadoutSource, /role="status" aria-live="polite"/);
 assert.match(waveformReadoutSource, /formatWaveformReadoutValue\(item\.value, item\.unit\)/);
 assert.match(waveformReadoutSource, /'not solved at this angle'/);
 assert.match(styleSource, /\.public-waveform-plot:focus-visible \{/);
+// The Solve tab's waveform plots read a hovered position with the same readout.
+assert.match(workspaceSource, /const readout = useWaveformReadout\(\{\s*angles: waveformReadoutAngles\(readoutSeries\),/);
+assert.match(workspaceSource, /<div className="public-waveform-plot public-live-chart-plot" role="group" aria-label=\{`\$\{label\} plot`\} \{\.\.\.readout\.plotProps\}>\s*<svg ref=\{readout\.svgRef\}/);
+assert.match(workspaceSource, /<WaveformReadoutMarker\s+x=\{x\(shownAngle\)\}/);
+assert.match(waveformReadoutSource, /closest\('\.chart-shell, \.public-live-chart'\)/);
+assert.match(styleSource, /\.public-live-chart \.public-waveform-marker line \{ stroke: var\(--text-secondary\); stroke-width: 1; \}/);
+// Element quality is one line: the title, then the gate result and any weak count.
+assert.match(workspaceSource, /<span className="public-section-kicker">Element quality<\/span>\s*<strong className=\{qualityPasses \? 'is-pass' : 'is-fail'\}>/);
+assert.match(workspaceSource, /`\$\{qualityPasses \? 'Passed' : 'Failed'\} · \$\{weakElementCount\.toLocaleString\(\)\} weak`/);
+assert.doesNotMatch(workspaceSource, /No weak elements'|public-mesh-quality-meta/);
+assert.match(styleSource, /\.public-mesh-quality-heading strong \{[^}]*white-space: nowrap;/);
 assert.match(styleSource, /\.public-waveform-marker \{ pointer-events: none; \}/);
 assert.match(styleSource, /\.public-waveform-marker\.is-preview line \{ stroke-dasharray/);
 assert.match(styleSource, /\.public-waveform-readout \{ display: flex;/);
@@ -689,7 +700,7 @@ assert.match(workspaceSource, /className="public-custom-sweep-estimate" aria-liv
 assert.match(styleSource, /\.public-custom-sweep-body \{[\s\S]*?grid-template-columns: minmax\(0, 1fr\) minmax\(118px, \.95fr\)/);
 assert.match(workspaceSource, /\(recoveryTarget \?\? advancedOptionsRef\.current\)\?\.scrollIntoView/);
 assert.match(workspaceSource, /block: recoveryTarget \? 'center' : 'start'/);
-assert.match(workspaceSource, /ref=\{advancedOptionsRef\} className="public-advanced-options"/);
+assert.match(workspaceSource, /sectionRef=\{advancedOptionsRef\} className="public-advanced-options"/);
 assert.match(modelSource, /SolveQuality = 'quick' \| 'standard' \| 'fine' \| 'custom'/);
 assert.match(workspaceSource, /label: 'Preview'/);
 assert.match(workspaceSource, /label: 'Standard'/);
@@ -789,9 +800,18 @@ assert.match(workspaceSource, /setAnalysisDetailsOpen\(!resultAvailable\)/);
 assert.match(workspaceSource, /setElementQualityDetailsOpen\(!resultAvailable\)/);
 assert.match(styleSource, /\.public-run-plan-section > summary::after \{[\s\S]*?content: '▼';[\s\S]*?rotate\(-90deg\);/);
 assert.match(styleSource, /\.public-run-plan-section\[open\] > summary::after \{[\s\S]*?rotate\(0\);/);
-assert.match(styleSource, /\.public-advanced-options > summary::after \{[^}]*font-size: 8px;[^}]*content: '▼';[^}]*rotate\(-90deg\);/);
-assert.match(styleSource, /\.public-advanced-options\[open\] > summary::after \{[^}]*rotate\(0\);/);
-assert.doesNotMatch(styleSource, /\.public-advanced-options > summary::after \{[^}]*content: '⌄'/);
+// The Solve setup's sections collapse like Design's: one shared section block
+// and one look, one section open at a time, the accuracy plan open first.
+assert.match(workspaceSource, /function ParameterSectionBlock<Id extends string = PublicParameterSection>/);
+assert.match(workspaceSource, /<ParameterSectionBlock id="operating" label="Operating point" summary=\{operatingSummary\} active=\{openSetupSection === 'operating'\} onToggle=\{toggleSetupSection\}>/);
+assert.match(workspaceSource, /<ParameterSectionBlock id="plan" label="Accuracy plan" summary=\{planSummary\} active=\{openSetupSection === 'plan'\} onToggle=\{toggleSetupSection\} guide="solve-plan">/);
+assert.match(workspaceSource, /<ParameterSectionBlock id="advanced" label="Advanced options" summary=\{advancedSummary\} active=\{advancedOpen\} attention=\{convergenceFailed\}/);
+assert.match(workspaceSource, /useState<SolveSetupSection \| null>\('plan'\)/);
+assert.match(workspaceSource, /const setAdvancedOpen = \(open: boolean\) => setOpenSetupSection/);
+assert.doesNotMatch(workspaceSource, /public-setup-section|<details ref=\{advancedOptionsRef\}/);
+assert.match(styleSource, /\.public-parameter-panel \.param-group-header\.collapsed \.chevron,\s*\.public-solve-setup \.param-group-header\.collapsed \.chevron \{ transform: rotate\(-90deg\); \}/);
+assert.match(styleSource, /\.public-parameter-panel \.param-group-content\.collapsed,\s*\.public-solve-setup \.param-group-content\.collapsed \{ display: none; \}/);
+assert.doesNotMatch(styleSource, /\.public-advanced-options > summary/);
 // Completed results read as a list like the motor constants: one row per value,
 // numbers right-aligned, units in their own column, a rule between groups.
 assert.doesNotMatch(workspaceSource, /className="public-result-metrics"/);
@@ -848,6 +868,13 @@ assert.match(solvedFieldSource, /<span className="public-field-density-choice" r
 assert.match(solvedFieldSource, /<span className="public-field-density-long">\{stop === 'low' \? 'Low' : stop === 'medium' \? 'Med' : 'High'\}<\/span>/);
 assert.match(solvedFieldSource, /<span className="public-field-density-short" aria-hidden="true">\{stop === 'low' \? 'L' : stop === 'medium' \? 'M' : 'H'\}<\/span>/);
 assert.match(styleSource, /@container \(max-width: 620px\) \{\s*\.public-field-dock \.public-field-density-long \{ display: none; \}/);
+// On a narrow stage the panels stay inside it: the field viewer's column never
+// outgrows the stage, and the title bar tightens, then drops ⓘ, then − and +.
+assert.match(styleSource, /\.public-solved-field-viewer \{ grid-template-columns: minmax\(0,1fr\); \}/);
+assert.match(workspaceSource, /aria-label="Field solution" aria-pressed=\{solveView === 'field'\}[^\n]*?><span className="public-solve-tab-long">Field solution<\/span><span className="public-solve-tab-short" aria-hidden="true">Field<\/span><\/button>/);
+assert.match(styleSource, /@container \(max-width: 460px\) \{\s*\.public-motor-viewport \.public-dock-strip \.public-primary-view-modes button,\s*\.public-dock-strip \.public-solve-view-switch button \{ padding: 0 7px; \}\s*\.public-dock-strip \.public-solve-tab-long \{ display: none; \}/);
+assert.match(styleSource, /@container \(max-width: 380px\) \{\s*\.public-field-dock \.public-field-physics-info \{ display: none; \}/);
+assert.match(styleSource, /@container \(max-width: 340px\) \{\s*\.public-dock-strip-end \.public-viewport-nav-controls button:not\(\.is-fit\) \{ display: none; \}/);
 assert.match(solvedFieldSource, /<em>\{boundedIndex \+ 1\} \/ \{Math\.max\(1, angleFrames\.length\)\} · \{electricalAngleDeg\.toFixed\(1\)\}° elec<\/em>/);
 // Nothing in the playback row changes size while it plays (the speed and
 // position sliders jittered when a frame-status column came and went): the
@@ -1733,11 +1760,11 @@ assert.ok(
   'IPM layout selection must appear before stator geometry',
 );
 assert.doesNotMatch(workspaceSource, /<SelectRow label="Rotor Layout"/);
-assert.match(workspaceSource, /data-guide=\{`section-\$\{id\}`\}/);
+assert.match(workspaceSource, /data-guide=\{guide \?\? `section-\$\{id\}`\}/);
 assert.match(workspaceSource, /data-guide-active=\{active \? 'true' : 'false'\}/);
 assert.match(workspaceSource, /setActiveSection\(guidedDesignSection \?\? null\)/);
 assert.match(workspaceSource, /data-guide="design-continue"/);
-assert.match(workspaceSource, /data-guide="solve-plan"/);
+assert.match(workspaceSource, /guide="solve-plan"/);
 assert.match(workspaceSource, /data-guide="solve-run"/);
 assert.match(workspaceSource, /data-guide="open-report"/);
 assert.match(workspaceSource, /Review source and limitations/);
