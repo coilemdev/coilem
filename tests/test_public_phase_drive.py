@@ -47,7 +47,11 @@ def test_preview_reports_the_axis_the_excitation_subtracts(fixture: str, axis_de
     assert metadata["phase_axis_offset_elec_deg"] == pytest.approx(axis_deg, abs=1e-9)
 
 
-@pytest.mark.parametrize("vector", SINE_VECTORS["vectors"], ids=lambda v: f"{v['fixture'][:12]}-g{v['current_angle_deg']}-t{v['rotor_electrical_angle_deg']}")
+def _vector_id(vector: dict) -> str:
+    return f"{vector['fixture'][:12]}-g{vector['current_angle_deg']}-t{vector['rotor_electrical_angle_deg']}"
+
+
+@pytest.mark.parametrize("vector", SINE_VECTORS["vectors"], ids=_vector_id)
 def test_sine_vectors_follow_the_launch_surface_solve(vector: dict) -> None:
     config = _fixture(vector["fixture"]).model_copy(deep=True)
     config.solve_params.current_angle_deg = vector["current_angle_deg"]

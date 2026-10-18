@@ -6805,8 +6805,8 @@
     },
     {
       "path": "tests/test_public_phase_drive.py",
-      "bytes": 4576,
-      "sha256": "673bbd84fbaffad01a2263fc56e4b5f9d1d62a0af0c25fb73935d8c740f176ad"
+      "bytes": 4642,
+      "sha256": "ac129fcdabe709be07df626b9d6a3bf9bb9ca26f5eae414cdfb3f34e0d623e52"
     },
     {
       "path": "tests/test_public_report_exports.py",
@@ -10378,6 +10378,12 @@
       "path": "tests/test_public_phase_drive.py",
       "source_sha256": "60319c9aaca20db172a0b3cb8661d48fb8fbbe21c246f8254c69a83e667b8345",
       "reason": "Keep the tooth-pole winding layout fixture equal to the preview"
+    },
+    {
+      "base_commit": "3902d872ad510c75dd2f637ce755d340216f1566",
+      "path": "tests/test_public_phase_drive.py",
+      "source_sha256": "673bbd84fbaffad01a2263fc56e4b5f9d1d62a0af0c25fb73935d8c740f176ad",
+      "reason": "Keep the sine vector ids under the 150-column lint limit"
     }
   ]
 }
