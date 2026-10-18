@@ -1290,7 +1290,14 @@ assert.match(workspaceSource, /window\.addEventListener\('pointermove', handlePo
 assert.match(workspaceSource, /onKeyDown=\{handleRunPlanResizeKey\}/);
 // "Solver waveforms" heads the plots, after the metrics and Motor constants (#110).
 assert.match(workspaceSource, /<span className="public-section-kicker">Completed results<\/span>\s*<button/);
-assert.match(workspaceSource, /<MotorConstants summary=\{result\.summary\} \/>[\s\S]{0,200}?<strong className="public-completed-waveforms-heading">Solver waveforms<\/strong>\s*<div className="public-compact-result-tabs"/);
+assert.match(workspaceSource, /<MotorConstants summary=\{result\.summary\} \/>[\s\S]{0,900}?className="public-result-list-toggle"[\s\S]{0,600}?<strong className="public-completed-waveforms-heading">Solver waveforms<\/strong>\s*<div className="public-compact-result-tabs"/);
+// Completed results open on four key numbers (average torque, ripple, back EMF,
+// Kt); one toggle shows the full performance and motor-constant tables.
+assert.match(workspaceSource, /const \[showAllResults, setShowAllResults\] = useState\(false\);/);
+assert.match(workspaceSource, /<h3 id=\{resultsHeadingId\}>Key results<\/h3>/);
+assert.match(workspaceSource, /\{showKt && constants && resultRow\('Kt torque constant', constants\.kt\.text, constants\.kt\.unit\)\}/);
+assert.match(workspaceSource, /aria-expanded=\{showAllResults\}\s*aria-controls=\{allResultsId\}/);
+assert.match(workspaceSource, /\{showAllResults \? 'Show fewer' : `All \$\{allResultCount\} results`\}/);
 // The Analysis setup panel resizes the same way from its right edge (#110).
 assert.match(workspaceSource, /Resize analysis setup panel/);
 assert.match(workspaceSource, /onKeyDown=\{handleSetupResizeKey\}/);

@@ -4542,3 +4542,7 @@ body {
   .public-field-dock .public-field-layer-controls button,
   .public-field-dock .public-field-layer-menu > summary { padding: 0 10px; font-size: 12px; }
 }
+/* Completed results open on four key numbers; one toggle shows the rest. */
+.public-result-list-toggle { display: flex; width: 100%; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; padding: 7px 10px; border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-muted); background: transparent; font: 600 12px var(--font-mono); cursor: pointer; }
+.public-result-list-toggle:hover { border-color: var(--border-accent); color: var(--text-accent); }
+.public-result-list-toggle span { font-size: 10px; }

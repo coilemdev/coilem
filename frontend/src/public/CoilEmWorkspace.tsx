@@ -44,6 +44,7 @@ import { WaveformChart } from './WaveformChart';
 import { BldcTorqueCurrentChart } from './BldcTorqueCurrentChart';
 import { PublicRunComparison } from './PublicRunComparison';
 import { MotorConstants } from './MotorConstants';
+import { hasMotorConstants, motorConstantsView } from './machineConstants';
 import { ResultSummary } from './ResultSummary';
 import { publicExampleOptions, type PublicExampleId } from './exampleDesigns';
 import {
@@ -2691,7 +2692,14 @@ function CompletedResultMonitor({ result, onOpenReport }: { result: SolveResult;
     ? 'Back EMF THD H12'
     : 'Back EMF THD legacy';
   const resultsHeadingId = useId();
+  const allResultsId = useId();
+  const [showAllResults, setShowAllResults] = useState(false);
   const preview = sixStep && !completeCycle ? ' · preview' : '';
+  // The panel opens on the few numbers people check first; the rest are one
+  // click away, and Full results has everything.
+  const constants = hasMotorConstants(result.summary) ? motorConstantsView(result.summary) : null;
+  const showKt = constants !== null && constants.kt.value !== null;
+  const allResultCount = 7 + (result.workflow_elapsed_s != null ? 1 : 0) + (constants ? 4 : 0);
   // Read like the motor constants below: one row per value, numbers in one
   // right-aligned column, units beside them, a rule between groups.
   const resultRow = (label: string, value: string, unit: string, groupStart = false) => (
@@ -2708,22 +2716,48 @@ function CompletedResultMonitor({ result, onOpenReport }: { result: SolveResult;
         <span className="public-section-kicker">Completed results</span>
         <button type="button" data-guide="open-report" onClick={onOpenReport}>Full results →</button>
       </div>
-      <section className="motor-constants public-result-list" aria-labelledby={resultsHeadingId}>
-        <h3 id={resultsHeadingId}>Performance</h3>
-        <table>
-          <tbody>
-            {resultRow(`Average torque${preview}`, formatNumber(result.summary.avg_torque_Nm), 'N·m')}
-            {resultRow(`Torque ripple${preview}`, formatNumber(result.summary.torque_ripple_pct), '%')}
-            {resultRow('Back EMF', formatNumber(result.summary.back_emf_fundamental_V), 'V', true)}
-            {resultRow(thdLabel, formatNumber(result.summary.back_emf_thd_pct), '%')}
-            {resultRow('Peak tooth B', formatNumber(result.summary.peak_flux_density_teeth_T), 'T', true)}
-            {resultRow('Peak yoke B', formatNumber(result.summary.peak_flux_density_yoke_T), 'T')}
-            {resultRow('Solver time', formatNumber(result.summary.solve_time_s, 1), 's', true)}
-            {result.workflow_elapsed_s != null && resultRow('Total elapsed', formatNumber(result.workflow_elapsed_s, 1), 's')}
-          </tbody>
-        </table>
-      </section>
-      <MotorConstants summary={result.summary} />
+      {showAllResults ? (
+        <div id={allResultsId}>
+          <section className="motor-constants public-result-list" aria-labelledby={resultsHeadingId}>
+            <h3 id={resultsHeadingId}>Performance</h3>
+            <table>
+              <tbody>
+                {resultRow(`Average torque${preview}`, formatNumber(result.summary.avg_torque_Nm), 'N·m')}
+                {resultRow(`Torque ripple${preview}`, formatNumber(result.summary.torque_ripple_pct), '%')}
+                {resultRow('Back EMF', formatNumber(result.summary.back_emf_fundamental_V), 'V', true)}
+                {resultRow(thdLabel, formatNumber(result.summary.back_emf_thd_pct), '%')}
+                {resultRow('Peak tooth B', formatNumber(result.summary.peak_flux_density_teeth_T), 'T', true)}
+                {resultRow('Peak yoke B', formatNumber(result.summary.peak_flux_density_yoke_T), 'T')}
+                {resultRow('Solver time', formatNumber(result.summary.solve_time_s, 1), 's', true)}
+                {result.workflow_elapsed_s != null && resultRow('Total elapsed', formatNumber(result.workflow_elapsed_s, 1), 's')}
+              </tbody>
+            </table>
+          </section>
+          <MotorConstants summary={result.summary} />
+        </div>
+      ) : (
+        <section id={allResultsId} className="motor-constants public-result-list" aria-labelledby={resultsHeadingId}>
+          <h3 id={resultsHeadingId}>Key results</h3>
+          <table>
+            <tbody>
+              {resultRow(`Average torque${preview}`, formatNumber(result.summary.avg_torque_Nm), 'N·m')}
+              {resultRow(`Torque ripple${preview}`, formatNumber(result.summary.torque_ripple_pct), '%')}
+              {resultRow('Back EMF', formatNumber(result.summary.back_emf_fundamental_V), 'V')}
+              {showKt && constants && resultRow('Kt torque constant', constants.kt.text, constants.kt.unit)}
+            </tbody>
+          </table>
+        </section>
+      )}
+      <button
+        type="button"
+        className="public-result-list-toggle"
+        aria-expanded={showAllResults}
+        aria-controls={allResultsId}
+        onClick={() => setShowAllResults((value) => !value)}
+      >
+        {showAllResults ? 'Show fewer' : `All ${allResultCount} results`}
+        <span aria-hidden="true">{showAllResults ? '▴' : '▾'}</span>
+      </button>
       {/* The waveform heading labels the plots below it, not the metrics and
           constants above (#110). */}
       <strong className="public-completed-waveforms-heading">Solver waveforms</strong>

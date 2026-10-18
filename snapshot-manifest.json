@@ -5180,8 +5180,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 131766,
-      "sha256": "82e6f910bc39207f892c45109510171e4bc737db701894b7da891819f188eff8"
+      "bytes": 132493,
+      "sha256": "d9b45838862a583e0939e1c8be8d56ad4012fd754b6c19ffd7c37094e044cae8"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5580,8 +5580,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 207664,
-      "sha256": "c1a241ebe4daa2a9ecf638c9d498be3ba621537f0e47d1a7ab542b302a32986f"
+      "bytes": 209458,
+      "sha256": "6b48a611bea32759d648a67a97847aff294aa553df03926574dbd36430430782"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5910,8 +5910,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 256140,
-      "sha256": "491a1c0c1c042816a001d1119335c2c0d829958a2a837460c251eabf477324f2"
+      "bytes": 256682,
+      "sha256": "9c594bfb692573cb131ad4f25023675a74a7d1234d62f6bf274ba444578704b5"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -9544,6 +9544,24 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "648ac6c7de35986eee68dd81414083d26c9216eba1ffe90e71735f5b867b1c88",
       "reason": "Cover the position readout's ellipsis."
+    },
+    {
+      "base_commit": "0063eb3650cda0ae9dfe61fa9069bf721e2c5c63",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "c437474729d9f41f261f64e10d841a158610156886bcececea6e3aff0ff12775",
+      "reason": "Open completed results on four key numbers with a toggle for the rest."
+    },
+    {
+      "base_commit": "0063eb3650cda0ae9dfe61fa9069bf721e2c5c63",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "757249edfb747c990fb8a25adcbfd4fdd3cdd7b602804a7e42ad834fca58a68f",
+      "reason": "Style the completed results toggle."
+    },
+    {
+      "base_commit": "0063eb3650cda0ae9dfe61fa9069bf721e2c5c63",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "82e6f910bc39207f892c45109510171e4bc737db701894b7da891819f188eff8",
+      "reason": "Cover the compact completed results and its toggle."
     }
   ]
 }
