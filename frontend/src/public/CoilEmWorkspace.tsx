@@ -717,11 +717,17 @@ export function CoilEmTopBar({
             <path d="M12 7.5V12l3 1.8" />
           </svg>
         </button>}
+        {/* One chip for the local backend: "● Local" when ready, the state in
+            words otherwise, and the full sentence as its tooltip. */}
         <div className="topbar-utility-panel">
-          <span className="public-backend-select">Local backend</span>
-          <span className={`backend-status ${connectionStatus === 'online' ? 'connected' : connectionStatus === 'checking' ? 'checking' : 'disconnected'}`} role="status">
+          <span
+            className={`backend-status ${connectionStatus === 'online' ? 'connected' : connectionStatus === 'checking' ? 'checking' : 'disconnected'}`}
+            role="status"
+            title={`Local backend: ${connectionStatus === 'online' ? 'ready' : connectionStatus === 'checking' ? 'checking' : 'not running'}`}
+            aria-label={`Local backend: ${connectionStatus === 'online' ? 'ready' : connectionStatus === 'checking' ? 'checking' : 'not running'}`}
+          >
             <span className="status-dot" aria-hidden="true" />
-            <span className="status-text">Local: {connectionStatus === 'online' ? 'ready' : connectionStatus === 'checking' ? 'checking' : 'not running'}</span>
+            <span className="status-text">Local{connectionStatus === 'online' ? '' : connectionStatus === 'checking' ? ' · checking' : ' · offline'}</span>
           </span>
         </div>
       </div>

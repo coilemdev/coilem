@@ -1434,7 +1434,17 @@ const cancelSolveBlock = appSource.slice(
 );
 assert.match(cancelSolveBlock, /solveRequestId\.current \+= 1/);
 assert.match(cancelSolveBlock, /The previous completed result is still available/);
-assert.match(workspaceSource, /Local backend/);
+// The top bar is a flush 46 px strip with 30 px controls and one backend chip.
+assert.match(workspaceSource, /title=\{`Local backend: \$\{connectionStatus === 'online' \? 'ready'/);
+assert.match(workspaceSource, /<span className="status-text">Local\{connectionStatus === 'online' \? '' : connectionStatus === 'checking' \? ' · checking' : ' · offline'\}<\/span>/);
+assert.doesNotMatch(workspaceSource, /public-backend-select/);
+assert.match(styleSource, /--public-topbar-height: 46px;/);
+assert.match(styleSource, /\.public-coilem-shell \.public-coilem-topbar \{[^}]*height: var\(--public-topbar-height\);[^}]*margin: 0;[^}]*border-bottom: 1px solid var\(--border-subtle\);[^}]*border-radius: 0;/);
+assert.match(styleSource, /\.public-coilem-shell \.workflow-stage-shell \{ height: calc\(100vh - var\(--public-topbar-height, 46px\)\);/);
+assert.match(styleSource, /\.public-coilem-shell \.stepper-step \{[^}]*height: 30px;/);
+assert.match(styleSource, /\.public-coilem-shell \.project-chip \{[^}]*height: 30px;/);
+assert.match(styleSource, /\.public-run-history-button \{ display: grid; width: 30px; height: 30px;/);
+assert.doesNotMatch(styleSource, /100vh - 78px\)\); min-height: 0; background: var\(--bg-canvas\)/);
 assert.doesNotMatch(workspaceSource, /Loopback API · no account required/);
 assert.match(appSource, /issue\.suggestion/);
 assert.match(workspaceSource, /connectionStatus === 'checking'/);
@@ -1723,8 +1733,8 @@ assert.doesNotMatch(`${appSource}\n${mainSource}\n${workspaceSource}\n${styleSou
 assert.match(styleSource, /\.public-parameter-panel/);
 assert.match(styleSource, /\.public-motor-viewport/);
 assert.match(styleSource, /html, body, #root \{[^}]*width: 100%/);
-assert.match(styleSource, /\.public-coilem-shell \.logo-mark \{[^}]*width: 34px;[^}]*height: 34px/);
-assert.match(styleSource, /\.public-coilem-shell \.logo-word \{ font-size: 20px; \}/);
+assert.match(styleSource, /\.public-coilem-shell \.logo-mark \{[^}]*width: 26px;[^}]*height: 26px/);
+assert.match(styleSource, /\.public-coilem-shell \.logo-word \{ font-size: 17px; \}/);
 assert.match(viteSource, /\.\/src\/public/);
 assert.match(viteSource, /publicDir:\s*fileURLToPath\(new URL\('\.\/public'/);
 assert.doesNotMatch(viteSource, /\.\/src\/main\.tsx/);
