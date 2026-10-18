@@ -4479,6 +4479,10 @@ body {
    stall shows inside the position label instead of in a column of its own. */
 .public-field-dock > .public-field-playback { grid-template-columns: 36px minmax(0,1fr) 176px; gap: 10px; padding: 0 16px 8px; }
 .public-field-dock .public-field-position-control { min-width: 0; }
+/* On a narrow panel the position readout shortens with an ellipsis instead of
+   running under the speed box. */
+.public-field-dock .public-field-position-control > span { min-width: 0; overflow: hidden; }
+.public-field-dock .public-field-position-control em { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .public-field-dock .public-field-position-control em,
 .public-field-dock .public-dock-strip-end .viewport-cad-status,
 .public-field-transport-label em { font-variant-numeric: tabular-nums; }

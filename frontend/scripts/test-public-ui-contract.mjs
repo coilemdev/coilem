@@ -847,6 +847,7 @@ assert.match(solvedFieldSource, /<div><dt>Frames<\/dt><dd>\{bufferStatus\}<\/dd>
 assert.match(solvedFieldSource, /<div><dt>Mechanical<\/dt><dd>\{mechanicalAngleDeg\.toFixed\(2\)\}°<\/dd><\/div>/);
 assert.match(styleSource, /\.public-field-dock > \.public-field-playback \{ grid-template-columns: 36px minmax\(0,1fr\) 176px;/);
 assert.doesNotMatch(styleSource, /\.public-field-playback-rpm \{ min-height: 42px; \}/);
+assert.match(styleSource, /\.public-field-dock \.public-field-position-control em \{ min-width: 0; overflow: hidden; text-overflow: ellipsis; \}/);
 assert.match(styleSource, /\.public-dock-strip-end \{ display: flex;[^}]*margin-left: auto; \}/);
 assert.match(styleSource, /\.public-motor-viewport \.public-dock-strip-end \.viewport-cad-status \{[^}]*border: 0;[^}]*background: transparent;/);
 assert.match(solvedFieldSource, /<div className="public-field-dock">\s*<div className="public-dock-strip">\s*\{viewControls\}\s*<div className="public-dock-strip-end">/);
