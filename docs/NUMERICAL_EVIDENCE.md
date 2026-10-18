@@ -143,7 +143,10 @@ remain separately identified in the frozen run evidence.
 
 ### Repeating A/B/C/D without FEMM
 
-After installing the normal Python dependencies and Rust toolchain, run:
+An installed coilEM runs it with `coilem benchmark` and matches the result
+against the [published record](../benchmarks/records/README.md) for its
+platform. From a checkout, after installing the normal Python dependencies and
+Rust toolchain, run:
 
 ```sh
 python -m tools.run_benchmarks --phases A B C D --out-dir ../benchmark-output/my-run --pdf

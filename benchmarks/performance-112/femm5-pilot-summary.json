@@ -1,0 +1,2134 @@
+{
+  "schema": "coilem.femm5_pilot/v1",
+  "collected_date": "2026-10-16",
+  "status": "PILOT_COMPLETE_REVIEW_REQUIRED",
+  "scope": "Four complete A/B/C/D representative cases; one fresh paired full-case timing; repeated retained-input solves. No full 29-case FEMM 5 run or new native collection.",
+  "host": {
+    "os": "Windows 11",
+    "cpu": "AMD Ryzen 7 7700",
+    "physical_cores": 8,
+    "logical_processors": 16,
+    "ram_GiB": 64,
+    "cpu_mask": 1,
+    "execution": "Sequential cases/probes, one fixed physical core; no overlapping evaluation solves; normal desktop activity"
+  },
+  "installation": {
+    "version": "FEMM headless engine v5.0 06Oct2026",
+    "official_download_page": "https://femm.info/doku/doku.php?id=download5",
+    "installer_url": "https://femm.info/doku/lib/exe/fetch.php?media=femm-qt:dist:femm-qt-py_06oct2026.exe",
+    "installer_sha256": "1a025bdb83a628a7b278e742e21a757ec4991162ec8bb8e3ed53cb8c136c9f77",
+    "authenticode_status": "Valid",
+    "signer": "David Meeker",
+    "source_url": "https://femm.info/doku/lib/exe/fetch.php?media=femm-qt:dist:femm-qt-py-src_06oct2026_bd03d0b.zip",
+    "source_sha256": "0ae785ab5f12b32f9529f479e9f1cbafea18aa23b32976d8ea559a08e016450d",
+    "extractor_url": "https://github.com/UserUnknownFactor/innoextract_win/releases/download/670/innoextract670.zip",
+    "extractor_zip_sha256": "79b69b9b1fcd98f42ccd4b245efdf6a03bcfb674ba6af482f5a46891c9ed4d14",
+    "method": "Portable extraction; installer not executed; shipped binding loaded in fresh child interpreter",
+    "system_environment_or_registry_modified": false,
+    "existing_42_installation_or_binding_replaced": false
+  },
+  "actual_solver": {
+    "version": "FEMM headless engine v5.0 06Oct2026",
+    "transport": "TCP owned headless server",
+    "binding_sha256": "7253242da6918ca5bbdf324ea446e2a8b1e7dc8355e89a2e654987d53ddccb48",
+    "binaries": {
+      "femm_headlessw.exe": "2393643b1af883b41ec08f6fe2a5e1063eeb21ca279419928a1c2b1dd7ebd23b",
+      "fkn.exe": "5dcd6bb40e424d7269a269c1fbfea3df5a2ee8fe88d7f431d3e665454c618e17"
+    },
+    "installer_sha256": "1a025bdb83a628a7b278e742e21a757ec4991162ec8bb8e3ed53cb8c136c9f77"
+  },
+  "frozen_input_and_extraction_baseline": {
+    "reference_commit": "738d9516e8500c5996c772bd96470472cbb9a0f9",
+    "adapter_base_commit": "8b95decda27d475ddbb75e99d92744ebc8e53b28",
+    "suite_sha256": "ea9d60d81d8601d2cdd6d7c94b3b3df70c65c6cf516737aeb125a4b2f2004721",
+    "femm_binaries": {
+      "femm.exe": "5e83cf0899cabae2017868ddcce338e3ba4ac25d1bf8e511eac77eda2bc92a21",
+      "fkn.exe": "2330a02b08b846fc6090c05f7fd5edbc1c910582bfd36721ecc0287c787b4eb0",
+      "triangle.exe": "6222b2a5cc9d68121e73f2d3f07b1715ffcb3f253dcbe799da20bf7878d863b8"
+    },
+    "femm_product_version": "4, 2, 0, 0",
+    "dependencies": {
+      "pyfemm": "0.1.3",
+      "pywin32": "311",
+      "numpy": "2.4.4",
+      "pydantic": "2.13.3"
+    }
+  },
+  "integration_sources_sha256": {
+    "build_report.py": "1d6e825a6291ba2dc407dc89c923ef43c2eaa2336c0b3828525622c672dfa6a9",
+    "compare_cases.py": "8091dfeae07a180de6562b18142149d98878fa91569ae89a717f3a461e5fc521",
+    "evaluate_case.py": "a621d3255615c808c2f494a6bfe62c60b087d69222f3df6bdf2a6e692590fcd3",
+    "femm5_session.py": "b68e862e4e866a871595cf490eda5d66ae6d8122d532456f3cf9d77d86103cab",
+    "probe_model.py": "6edbcc4563d066892e5063089917cab0653fc962ae4829eb999dede4a83697d4",
+    "repeat_probes.py": "16ade1f8ef0a543f7f3c7592343c9d3162818ca6dfa9ee5749556af83e6162bb",
+    "run_representatives.py": "4dfae40081edb111d9506a90bd0d86af3ddac7ca129dea9d6850fe37edb98dd2"
+  },
+  "payload_helper_sha256": "56f0876201e18682e8e6130ac7392f90df8fc9a39433d7eb6a9adbdab69cad7e",
+  "fresh_matched_case": {
+    "case_id": "spm_4p12s_simple__baseline",
+    "femm42_producer_s": 303.6422487999953,
+    "femm5_producer_s": 63.87267440001597,
+    "observed_ratio": 4.753867779175368,
+    "runtime_reduction_pct": 78.96449698536914,
+    "control42_proof": {
+      "status": "PASS",
+      "case_id": "spm_4p12s_simple__baseline",
+      "result_sha256": "ef6f1b458e65746846dac389a0376aa23e85745566e4509a1bbf5e19aa5ccdb1",
+      "manifest_sha256": "32bafa6b8142a04a4fba203c9300a82781993765e9b67794d76f675622110ea4",
+      "physical_payload_sha256": "996704d20eee13c2af2cd768bef3a0db14f9252dc605bf778ef9a9919dd00295",
+      "all_physical_payloads_and_audits_exact": true,
+      "producer_s": 303.6422487999953,
+      "session": {
+        "started_at": "2026-10-16T05:36:56.094854+00:00",
+        "workers": 1,
+        "timeout_s": 14400,
+        "order": "registered",
+        "worker_budget": 1,
+        "weighted": false,
+        "worker_costs": {
+          "spm_4p12s_simple__baseline": 1
+        },
+        "planned_order": [
+          "spm_4p12s_simple__baseline"
+        ],
+        "launch_order": [
+          "spm_4p12s_simple__baseline"
+        ],
+        "timings_sha256": null,
+        "completed_at": "2026-10-16T05:42:02.334185+00:00",
+        "wall_s": 306.24083989998326
+      }
+    },
+    "control42_proof_sha256": "c80377dcec3ec19042bd23c8ecc24549c04776c57b1f3f7636d1d63b0e6e13f2",
+    "conditions": "One fresh pair, same frozen requests/extraction, metrics/reuse/readiness, one fixed core, no concurrent evaluation solves; not a repeated or idle-host experiment. Different engine meshes."
+  },
+  "cases": [
+    {
+      "schema": "coilem.femm5_case_comparison/v1",
+      "case_id": "spm_4p12s_simple__baseline",
+      "phase": "A",
+      "scope": "FEMM 5 exploratory result; replay uses saved native fields, no new native solves or public registry change",
+      "archived_42_producer_s": 482.8149521000014,
+      "new_5_producer_s": 63.87267440001597,
+      "old_measurement_sha256": "ffa09ebcefd21b3ce7c10deabe940c0e72147184442f09cdcb7c82db1760c2b8",
+      "new_measurement_sha256": "a5d4302b137443dd6c2bf921a99548936cd9e280e47c9c0fea4750c73f01fed6",
+      "input_and_extraction_contracts_exact": true,
+      "scalar_metrics": {
+        "avg_torque_Nm": {
+          "old": 0.47707813670238686,
+          "new": 0.4776826205110192,
+          "delta": 0.0006044838086323168,
+          "relative_delta_pct": 0.12670540989586548
+        },
+        "back_emf_fundamental_V": {
+          "old": 4.987861316206636,
+          "new": 4.987376774656593,
+          "delta": -0.0004845415500422945,
+          "relative_delta_pct": -0.0097144150433356
+        },
+        "lambda_pm_Wb": {
+          "old": 0.011226632314274232,
+          "new": 0.011225541712615835,
+          "delta": -1.0906016583971806e-06,
+          "relative_delta_pct": -0.009714415043329802
+        },
+        "torque_ripple_pct": {
+          "old": 32.275951691787554,
+          "new": 33.05295106748946,
+          "delta": 0.7769993757019051,
+          "relative_delta_pct": 2.407363175907865
+        },
+        "peak_flux_density_teeth_T": {
+          "old": 1.2458324573169681,
+          "new": 1.2616075307975676,
+          "delta": 0.015775073480599477,
+          "relative_delta_pct": 1.2662275242509546
+        },
+        "peak_flux_density_yoke_T": {
+          "old": 1.4468535629881245,
+          "new": 1.4459115003640337,
+          "delta": -0.0009420626240908003,
+          "relative_delta_pct": -0.06511112445582944
+        },
+        "rms_flux_density_teeth_T": {
+          "old": 0.9995170427532712,
+          "new": 0.9988581701758973,
+          "delta": -0.000658872577373959,
+          "relative_delta_pct": -0.06591909384146442
+        },
+        "rms_flux_density_yoke_T": {
+          "old": 1.1075015214776394,
+          "new": 1.108248576800127,
+          "delta": 0.0007470553224875331,
+          "relative_delta_pct": 0.06745411252264508
+        }
+      },
+      "raw_waveforms": {
+        "torque_waveform.electrical_angle_deg": {
+          "count": 48,
+          "max_abs_delta": 0.0,
+          "rms_delta": 0.0,
+          "reference_rms": 204.59563778340925,
+          "nrmse_pct": 0.0,
+          "exact": true
+        },
+        "torque_waveform.torque_Nm": {
+          "count": 48,
+          "max_abs_delta": 0.006453494861636377,
+          "rms_delta": 0.0028196277816535404,
+          "reference_rms": 0.48018041794817645,
+          "nrmse_pct": 0.5872017425662387,
+          "exact": false
+        },
+        "torque_waveform.torque_energy_fd_Nm": {
+          "count": 48,
+          "max_abs_delta": 0.007196643154951651,
+          "rms_delta": 0.0027511059806344593,
+          "reference_rms": 0.04483946499326175,
+          "nrmse_pct": 6.135456747862361,
+          "exact": false
+        },
+        "torque_waveform.torque_coenergy_fd_Nm": {
+          "count": 48,
+          "max_abs_delta": 0.007195490063319456,
+          "rms_delta": 0.0027196571138655406,
+          "reference_rms": 0.05259280447465447,
+          "nrmse_pct": 5.171158186052235,
+          "exact": false
+        },
+        "torque_waveform.energy_potential_J": {
+          "count": 48,
+          "max_abs_delta": 0.002980411593490384,
+          "rms_delta": 0.0021542397384188426,
+          "reference_rms": 1.7132935595204433,
+          "nrmse_pct": 0.12573675576191518,
+          "exact": false
+        },
+        "torque_waveform.energy_coenergy_J": {
+          "count": 48,
+          "max_abs_delta": 0.003011513165931845,
+          "rms_delta": 0.0021872464841911675,
+          "reference_rms": 3.4905837172966336,
+          "nrmse_pct": 0.06266133865670849,
+          "exact": false
+        },
+        "back_emf_waveform.electrical_angle_deg": {
+          "count": 48,
+          "max_abs_delta": 0.0,
+          "rms_delta": 0.0,
+          "reference_rms": 204.59563778340925,
+          "nrmse_pct": 0.0,
+          "exact": true
+        },
+        "back_emf_waveform.phase_a_V": {
+          "count": 48,
+          "max_abs_delta": 0.007612912668763627,
+          "rms_delta": 0.0029825834609208592,
+          "reference_rms": 5.0182782113292586,
+          "nrmse_pct": 0.059434398319873585,
+          "exact": false
+        },
+        "back_emf_waveform.phase_b_V": {
+          "count": 48,
+          "max_abs_delta": 0.01229569975805811,
+          "rms_delta": 0.0033750594744483475,
+          "reference_rms": 5.019664128923338,
+          "nrmse_pct": 0.06723675902937873,
+          "exact": false
+        },
+        "back_emf_waveform.phase_c_V": {
+          "count": 48,
+          "max_abs_delta": 0.005592994812454677,
+          "rms_delta": 0.002606729332972388,
+          "reference_rms": 5.0244011687594075,
+          "nrmse_pct": 0.051881393332611304,
+          "exact": false
+        }
+      },
+      "old_mesh_element_count": 43134,
+      "new_mesh_element_count": 31784,
+      "audits": {
+        "flux_frames_before": 96,
+        "flux_frames_after": 96,
+        "source_frames_before": 48,
+        "source_frames_after": 48,
+        "flux_audits_numerically_exact": false,
+        "source_audits_numerically_exact": false
+      },
+      "published_native_summary_sha256": "3ccf633f17019619830b0eaae4c0caa90da312e3870d07a3d9c96c77d2782319",
+      "suite_sha256": "9d8cd79e60d0b908e072504a1886db7873f13047609697897ffdcccb81825743",
+      "evaluator_sources": {
+        "metrics.py": "a3f501794e89ea01256edab3d75eab440df46fcafef37ccb1d4c7fb841b57c27",
+        "abc_metrics.py": "206570f11d661feb2c95e4cf5ed939ddec0b1adc9c760b91631fd39b013767b8",
+        "bldc_metrics.py": "79b912dc1190ceaebdcbcb5ec0eea83f519063b9a16783bd5b80a2c31c447716"
+      },
+      "comparison_source_sha256": "8091dfeae07a180de6562b18142149d98878fa91569ae89a717f3a461e5fc521",
+      "scalar_metrics_source": "normalized result.summary",
+      "local_evidence_directory": "case-smoke-r2",
+      "comparison_sha256": "7caf65cb8d02c7780b8561a115c38fe7c2c1444c66fce7b9eedaf7576c7e213a",
+      "started_at": "2026-10-16T05:35:16.405665+00:00",
+      "completed_at": "2026-10-16T05:36:19.972124+00:00",
+      "prepared_identity_sha256": "69f1fd3b4c6ed53a2e5b5304c64e30a3086b06c20d6b0e50ef6593abf0ee83a4",
+      "execution_profile": {
+        "actual_solver": {
+          "version": "FEMM headless engine v5.0 06Oct2026",
+          "transport": "TCP owned headless server",
+          "binding_sha256": "7253242da6918ca5bbdf324ea446e2a8b1e7dc8355e89a2e654987d53ddccb48",
+          "binaries": {
+            "femm_headlessw.exe": "2393643b1af883b41ec08f6fe2a5e1063eeb21ca279419928a1c2b1dd7ebd23b",
+            "fkn.exe": "5dcd6bb40e424d7269a269c1fbfea3df5a2ee8fe88d7f431d3e665454c618e17"
+          },
+          "installer_sha256": "1a025bdb83a628a7b278e742e21a757ec4991162ec8bb8e3ed53cb8c136c9f77"
+        },
+        "integration_counts": {
+          "payload_builds": 48,
+          "payload_reuses": 48,
+          "omitted_contours": 48,
+          "omitted_frame_writes": 96,
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "analysis_calls": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.013411500287475064
+        },
+        "automation": {
+          "worker_pid": 32000,
+          "sessions": [
+            {
+              "pid": 13204,
+              "port": 60402,
+              "cpu_mask": 1,
+              "startup_s": 0.7969868000072893,
+              "created_at": "2026-10-16T05:35:22.510450+00:00",
+              "transport": "owned TCP server; verified listener PID; launch=False"
+            }
+          ],
+          "commands": {
+            "mi_analyze": {
+              "count": 96,
+              "elapsed_s": 30.333652699919185,
+              "max_s": 0.3476307000091765
+            },
+            "mi_loadsolution": {
+              "count": 96,
+              "elapsed_s": 5.1248899001511745,
+              "max_s": 0.07817849999992177
+            },
+            "mi_createmesh": {
+              "count": 96,
+              "elapsed_s": 3.8822515001229476,
+              "max_s": 0.04808119998779148
+            },
+            "mo_blockintegral": {
+              "count": 1296,
+              "elapsed_s": 1.007147799973609,
+              "max_s": 0.009777600003872067
+            },
+            "mo_getpointvalues": {
+              "count": 12182,
+              "elapsed_s": 1.0027566991921049,
+              "max_s": 0.007480500004021451
+            },
+            "mi_addnode": {
+              "count": 25344,
+              "elapsed_s": 0.6324691003537737,
+              "max_s": 0.0065645000140648335
+            },
+            "mi_addbhpoint": {
+              "count": 24192,
+              "elapsed_s": 0.6253813980729319,
+              "max_s": 0.0073235000018030405
+            },
+            "mi_addarc": {
+              "count": 6528,
+              "elapsed_s": 0.3000399010779802,
+              "max_s": 0.007150899997213855
+            },
+            "mo_selectblock": {
+              "count": 2400,
+              "elapsed_s": 0.12864079981227405,
+              "max_s": 0.0037367999902926385
+            },
+            "mi_selectlabel": {
+              "count": 3168,
+              "elapsed_s": 0.12612350092967972,
+              "max_s": 0.0058852000220213085
+            },
+            "mi_addsegment": {
+              "count": 3072,
+              "elapsed_s": 0.11080830116407014,
+              "max_s": 0.00591009997879155
+            },
+            "mi_saveas": {
+              "count": 96,
+              "elapsed_s": 0.10200220003025606,
+              "max_s": 0.010794400004670024
+            },
+            "mi_setblockprop": {
+              "count": 3168,
+              "elapsed_s": 0.09063790045911446,
+              "max_s": 0.0032002000079955906
+            },
+            "mi_addblocklabel": {
+              "count": 3168,
+              "elapsed_s": 0.08443190131220035,
+              "max_s": 0.0003766999871004373
+            },
+            "mi_clearselected": {
+              "count": 3264,
+              "elapsed_s": 0.07595339996623807,
+              "max_s": 0.007305200007976964
+            },
+            "mi_addmaterial": {
+              "count": 1920,
+              "elapsed_s": 0.06081229975097813,
+              "max_s": 0.0003034000110346824
+            },
+            "mo_clearblock": {
+              "count": 1248,
+              "elapsed_s": 0.03786530057550408,
+              "max_s": 0.001196099998196587
+            },
+            "mi_selectarcsegment": {
+              "count": 384,
+              "elapsed_s": 0.025925499852746725,
+              "max_s": 0.00427150001632981
+            },
+            "newdocument": {
+              "count": 96,
+              "elapsed_s": 0.02320449988474138,
+              "max_s": 0.006875099992612377
+            },
+            "mo_numnodes": {
+              "count": 144,
+              "elapsed_s": 0.011856000171974301,
+              "max_s": 0.0003319999959785491
+            },
+            "mo_smooth": {
+              "count": 49,
+              "elapsed_s": 0.007913399953395128,
+              "max_s": 0.0005286000086925924
+            },
+            "mo_numelements": {
+              "count": 96,
+              "elapsed_s": 0.004629699920769781,
+              "max_s": 0.00033049998455680907
+            },
+            "mo_close": {
+              "count": 96,
+              "elapsed_s": 0.004313199984608218,
+              "max_s": 0.0003563000063877553
+            },
+            "mi_probdef": {
+              "count": 96,
+              "elapsed_s": 0.003560399840353057,
+              "max_s": 0.00013410000246949494
+            },
+            "mi_shownames": {
+              "count": 96,
+              "elapsed_s": 0.003081300063058734,
+              "max_s": 0.0001561000244691968
+            },
+            "mi_close": {
+              "count": 96,
+              "elapsed_s": 0.00296129981870763,
+              "max_s": 0.00015619999612681568
+            },
+            "mi_addboundprop": {
+              "count": 96,
+              "elapsed_s": 0.0025975998141802847,
+              "max_s": 4.439998883754015e-05
+            },
+            "mi_smartmesh": {
+              "count": 96,
+              "elapsed_s": 0.002471300133038312,
+              "max_s": 6.349998875521123e-05
+            },
+            "mi_setarcsegmentprop": {
+              "count": 96,
+              "elapsed_s": 0.002385500178206712,
+              "max_s": 4.230000195093453e-05
+            },
+            "mo_shownames": {
+              "count": 48,
+              "elapsed_s": 0.0018102000176440924,
+              "max_s": 0.0001503999810665846
+            }
+          },
+          "resources": {
+            "solver_user_cpu_s": 36.515625,
+            "solver_kernel_cpu_s": 3.734375,
+            "solver_process_count": 97,
+            "solver_peak_job_commit_bytes": 1312034816
+          }
+        },
+        "scope": "Exploratory FEMM 5; grids, requests, materials and extraction definitions unchanged"
+      },
+      "native_gate_replay": {
+        "before": {
+          "status": "PASS",
+          "gates": {
+            "mean_torque": "PASS",
+            "bemf_fundamental": "PASS",
+            "bemf_peak": "PASS",
+            "torque_method": "PASS",
+            "native_mesh": "PASS",
+            "angle_grids": "PASS"
+          }
+        },
+        "with_femm5": {
+          "status": "PASS",
+          "gates": {
+            "mean_torque": "PASS",
+            "bemf_fundamental": "PASS",
+            "bemf_peak": "PASS",
+            "torque_method": "PASS",
+            "native_mesh": "PASS",
+            "angle_grids": "PASS"
+          }
+        },
+        "uses_saved_native_results": true
+      }
+    },
+    {
+      "schema": "coilem.femm5_case_comparison/v1",
+      "case_id": "ipm_vshape_8p12s_baseline_contract",
+      "phase": "B",
+      "scope": "FEMM 5 exploratory result; replay uses saved native fields, no new native solves or public registry change",
+      "archived_42_producer_s": 1572.1137507999956,
+      "new_5_producer_s": 157.88559520000126,
+      "old_measurement_sha256": "99c1341ea66fd4f26d1ffb272b42ba203f0e03182c2fcafde0679635c6e7555e",
+      "new_measurement_sha256": "940e476c79d8cf43d997f4a286e0d96b788ac1230af237f710afb47dd5fa09da",
+      "input_and_extraction_contracts_exact": true,
+      "scalar_metrics": {
+        "avg_torque_Nm": {
+          "old": 0.838088155810624,
+          "new": 0.8516245107635798,
+          "delta": 0.013536354952955798,
+          "relative_delta_pct": 1.6151469101556541
+        },
+        "back_emf_fundamental_V": {
+          "old": 2.174460279758134,
+          "new": 2.193331803694553,
+          "delta": 0.018871523936419,
+          "relative_delta_pct": 0.8678716328871313
+        },
+        "lambda_pm_Wb": {
+          "old": 0.0024471275858772416,
+          "new": 0.0024683655120156262,
+          "delta": 2.1237926138384638e-05,
+          "relative_delta_pct": 0.8678716328871471
+        },
+        "torque_ripple_pct": {
+          "old": 45.2488801491186,
+          "new": 45.72878120595574,
+          "delta": 0.4799010568371429,
+          "relative_delta_pct": 1.0605810690908135
+        },
+        "peak_flux_density_teeth_T": {
+          "old": 0.6032368920005551,
+          "new": 0.6538004765509443,
+          "delta": 0.05056358455038923,
+          "relative_delta_pct": 8.382044470573048
+        },
+        "peak_flux_density_yoke_T": {
+          "old": 0.3758572086643927,
+          "new": 0.34665022853855254,
+          "delta": -0.029206980125840165,
+          "relative_delta_pct": -7.770764921504916
+        },
+        "rms_flux_density_teeth_T": {
+          "old": 0.357851745576477,
+          "new": 0.3586869313862144,
+          "delta": 0.0008351858097374043,
+          "relative_delta_pct": 0.23338877623524562
+        },
+        "rms_flux_density_yoke_T": {
+          "old": 0.21947746498264384,
+          "new": 0.21925357640991833,
+          "delta": -0.00022388857272551133,
+          "relative_delta_pct": -0.10200982262266256
+        }
+      },
+      "raw_waveforms": {
+        "torque_waveform.electrical_angle_deg": {
+          "count": 48,
+          "max_abs_delta": 0.0,
+          "rms_delta": 0.0,
+          "reference_rms": 204.59563778340925,
+          "nrmse_pct": 0.0,
+          "exact": true
+        },
+        "torque_waveform.torque_Nm": {
+          "count": 48,
+          "max_abs_delta": 0.020447770950760447,
+          "rms_delta": 0.012713442306516685,
+          "reference_rms": 0.8547797499504949,
+          "nrmse_pct": 1.4873354577308355,
+          "exact": false
+        },
+        "torque_waveform.torque_energy_fd_Nm": {
+          "count": 48,
+          "max_abs_delta": 0.055633003671685735,
+          "rms_delta": 0.024345653091376318,
+          "reference_rms": 0.10867466239565862,
+          "nrmse_pct": 22.40232686690075,
+          "exact": false
+        },
+        "torque_waveform.torque_coenergy_fd_Nm": {
+          "count": 48,
+          "max_abs_delta": 0.05469396974403929,
+          "rms_delta": 0.021215814903612826,
+          "reference_rms": 0.10780078937988931,
+          "nrmse_pct": 19.68057472088486,
+          "exact": false
+        },
+        "torque_waveform.energy_potential_J": {
+          "count": 48,
+          "max_abs_delta": 0.009983910457996181,
+          "rms_delta": 0.007462333381930362,
+          "reference_rms": 3.795547033063448,
+          "nrmse_pct": 0.1966075855976784,
+          "exact": false
+        },
+        "torque_waveform.energy_coenergy_J": {
+          "count": 48,
+          "max_abs_delta": 0.012149294976183,
+          "rms_delta": 0.009747318384248067,
+          "reference_rms": 17.2453883505823,
+          "nrmse_pct": 0.056521304050070546,
+          "exact": false
+        },
+        "back_emf_waveform.electrical_angle_deg": {
+          "count": 48,
+          "max_abs_delta": 0.0,
+          "rms_delta": 0.0,
+          "reference_rms": 204.59563778340925,
+          "nrmse_pct": 0.0,
+          "exact": true
+        },
+        "back_emf_waveform.phase_a_V": {
+          "count": 48,
+          "max_abs_delta": 0.08889041605615278,
+          "rms_delta": 0.03090930355462494,
+          "reference_rms": 2.1994374802180494,
+          "nrmse_pct": 1.4053276727629753,
+          "exact": false
+        },
+        "back_emf_waveform.phase_b_V": {
+          "count": 48,
+          "max_abs_delta": 0.06773161366942393,
+          "rms_delta": 0.03203337252761341,
+          "reference_rms": 2.1989041643903433,
+          "nrmse_pct": 1.4567880240699265,
+          "exact": false
+        },
+        "back_emf_waveform.phase_c_V": {
+          "count": 48,
+          "max_abs_delta": 0.0812022660172439,
+          "rms_delta": 0.02867676663785306,
+          "reference_rms": 2.203457565250706,
+          "nrmse_pct": 1.3014440164446854,
+          "exact": false
+        }
+      },
+      "old_mesh_element_count": 68572,
+      "new_mesh_element_count": 50592,
+      "audits": {
+        "flux_frames_before": 96,
+        "flux_frames_after": 96,
+        "source_frames_before": 48,
+        "source_frames_after": 48,
+        "flux_audits_numerically_exact": false,
+        "source_audits_numerically_exact": false
+      },
+      "published_native_summary_sha256": "3ccf633f17019619830b0eaae4c0caa90da312e3870d07a3d9c96c77d2782319",
+      "suite_sha256": "9d8cd79e60d0b908e072504a1886db7873f13047609697897ffdcccb81825743",
+      "evaluator_sources": {
+        "metrics.py": "a3f501794e89ea01256edab3d75eab440df46fcafef37ccb1d4c7fb841b57c27",
+        "abc_metrics.py": "206570f11d661feb2c95e4cf5ed939ddec0b1adc9c760b91631fd39b013767b8",
+        "bldc_metrics.py": "79b912dc1190ceaebdcbcb5ec0eea83f519063b9a16783bd5b80a2c31c447716"
+      },
+      "comparison_source_sha256": "8091dfeae07a180de6562b18142149d98878fa91569ae89a717f3a461e5fc521",
+      "scalar_metrics_source": "normalized result.summary",
+      "local_evidence_directory": "case-vshape-r1",
+      "comparison_sha256": "24c358ea42c75b2c764f3d3af29f9ac9adeeebb9525f5ea77224d72d7a299786",
+      "started_at": "2026-10-16T05:42:04.424761+00:00",
+      "completed_at": "2026-10-16T05:44:42.006624+00:00",
+      "prepared_identity_sha256": "69f1fd3b4c6ed53a2e5b5304c64e30a3086b06c20d6b0e50ef6593abf0ee83a4",
+      "execution_profile": {
+        "actual_solver": {
+          "version": "FEMM headless engine v5.0 06Oct2026",
+          "transport": "TCP owned headless server",
+          "binding_sha256": "7253242da6918ca5bbdf324ea446e2a8b1e7dc8355e89a2e654987d53ddccb48",
+          "binaries": {
+            "femm_headlessw.exe": "2393643b1af883b41ec08f6fe2a5e1063eeb21ca279419928a1c2b1dd7ebd23b",
+            "fkn.exe": "5dcd6bb40e424d7269a269c1fbfea3df5a2ee8fe88d7f431d3e665454c618e17"
+          },
+          "installer_sha256": "1a025bdb83a628a7b278e742e21a757ec4991162ec8bb8e3ed53cb8c136c9f77"
+        },
+        "integration_counts": {
+          "payload_builds": 48,
+          "payload_reuses": 48,
+          "omitted_contours": 48,
+          "omitted_frame_writes": 96,
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "analysis_calls": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.015005600347649306
+        },
+        "automation": {
+          "worker_pid": 3380,
+          "sessions": [
+            {
+              "pid": 35508,
+              "port": 57915,
+              "cpu_mask": 1,
+              "startup_s": 0.771550000004936,
+              "created_at": "2026-10-16T05:42:10.513059+00:00",
+              "transport": "owned TCP server; verified listener PID; launch=False"
+            }
+          ],
+          "commands": {
+            "mi_analyze": {
+              "count": 96,
+              "elapsed_s": 93.50630350000574,
+              "max_s": 1.3482989999756683
+            },
+            "mi_loadsolution": {
+              "count": 96,
+              "elapsed_s": 8.026939900009893,
+              "max_s": 0.09740589998546056
+            },
+            "mi_createmesh": {
+              "count": 96,
+              "elapsed_s": 5.5397299999021925,
+              "max_s": 0.09111060001305304
+            },
+            "mi_addnode": {
+              "count": 57600,
+              "elapsed_s": 1.554444501438411,
+              "max_s": 0.01055639999685809
+            },
+            "mo_blockintegral": {
+              "count": 1296,
+              "elapsed_s": 1.492111300030956,
+              "max_s": 0.014847999991616234
+            },
+            "mo_getpointvalues": {
+              "count": 12182,
+              "elapsed_s": 1.1058697978733107,
+              "max_s": 0.01079789997311309
+            },
+            "mi_addbhpoint": {
+              "count": 24192,
+              "elapsed_s": 0.6448745956586208,
+              "max_s": 0.010488799976883456
+            },
+            "mi_addsegment": {
+              "count": 14592,
+              "elapsed_s": 0.609313699795166,
+              "max_s": 0.011185100011061877
+            },
+            "mi_saveas": {
+              "count": 96,
+              "elapsed_s": 0.5309818999958225,
+              "max_s": 0.33840739997685887
+            },
+            "mi_addarc": {
+              "count": 5760,
+              "elapsed_s": 0.2769261012435891,
+              "max_s": 0.010747699998319149
+            },
+            "mo_selectblock": {
+              "count": 3552,
+              "elapsed_s": 0.24059670080896467,
+              "max_s": 0.005354799999622628
+            },
+            "mi_selectlabel": {
+              "count": 5856,
+              "elapsed_s": 0.22255800006678328,
+              "max_s": 0.0073911000217776746
+            },
+            "mi_setblockprop": {
+              "count": 5856,
+              "elapsed_s": 0.16170849942136556,
+              "max_s": 0.004417600022861734
+            },
+            "mi_addblocklabel": {
+              "count": 5856,
+              "elapsed_s": 0.14850729939644225,
+              "max_s": 0.000732700020307675
+            },
+            "mi_clearselected": {
+              "count": 5952,
+              "elapsed_s": 0.14307210047263652,
+              "max_s": 0.009489399992162362
+            },
+            "mi_addmaterial": {
+              "count": 4608,
+              "elapsed_s": 0.13886780026950873,
+              "max_s": 0.002821600006427616
+            },
+            "mo_clearblock": {
+              "count": 1248,
+              "elapsed_s": 0.04422599961981177,
+              "max_s": 0.0062000000034458935
+            },
+            "newdocument": {
+              "count": 96,
+              "elapsed_s": 0.02297240003827028,
+              "max_s": 0.008841000002576038
+            },
+            "mi_selectarcsegment": {
+              "count": 384,
+              "elapsed_s": 0.021844300208613276,
+              "max_s": 0.0005993000231683254
+            },
+            "mo_numnodes": {
+              "count": 144,
+              "elapsed_s": 0.01150180006516166,
+              "max_s": 0.0003524000057950616
+            },
+            "mo_smooth": {
+              "count": 49,
+              "elapsed_s": 0.008353699900908396,
+              "max_s": 0.00047829997492954135
+            },
+            "mo_close": {
+              "count": 96,
+              "elapsed_s": 0.004802599927643314,
+              "max_s": 0.000597400008700788
+            },
+            "mo_numelements": {
+              "count": 96,
+              "elapsed_s": 0.004096999851753935,
+              "max_s": 8.259998867288232e-05
+            },
+            "mi_shownames": {
+              "count": 96,
+              "elapsed_s": 0.0036332001036498696,
+              "max_s": 0.0003229000139981508
+            },
+            "mi_probdef": {
+              "count": 96,
+              "elapsed_s": 0.0031818000716157258,
+              "max_s": 6.749999010935426e-05
+            },
+            "mi_close": {
+              "count": 96,
+              "elapsed_s": 0.0029384997324086726,
+              "max_s": 0.0002886999864131212
+            },
+            "mi_addboundprop": {
+              "count": 96,
+              "elapsed_s": 0.002467499900376424,
+              "max_s": 4.8999994760379195e-05
+            },
+            "mi_setarcsegmentprop": {
+              "count": 96,
+              "elapsed_s": 0.002461400144966319,
+              "max_s": 7.749997894279659e-05
+            },
+            "mi_smartmesh": {
+              "count": 96,
+              "elapsed_s": 0.0024443001311738044,
+              "max_s": 4.680000711232424e-05
+            },
+            "mo_shownames": {
+              "count": 48,
+              "elapsed_s": 0.001689099968643859,
+              "max_s": 7.229999755509198e-05
+            }
+          },
+          "resources": {
+            "solver_user_cpu_s": 101.8125,
+            "solver_kernel_cpu_s": 6.046875,
+            "solver_process_count": 97,
+            "solver_peak_job_commit_bytes": 2081026048
+          }
+        },
+        "scope": "Exploratory FEMM 5; grids, requests, materials and extraction definitions unchanged"
+      },
+      "native_gate_replay": {
+        "before": {
+          "status": "YELLOW",
+          "gates": {
+            "mean_torque": "PASS",
+            "bemf_fundamental": "PASS",
+            "bemf_peak": "YELLOW",
+            "torque_method": "PASS",
+            "native_mesh": "PASS",
+            "angle_grids": "PASS"
+          }
+        },
+        "with_femm5": {
+          "status": "YELLOW",
+          "gates": {
+            "mean_torque": "PASS",
+            "bemf_fundamental": "PASS",
+            "bemf_peak": "YELLOW",
+            "torque_method": "PASS",
+            "native_mesh": "PASS",
+            "angle_grids": "PASS"
+          }
+        },
+        "uses_saved_native_results": true
+      }
+    },
+    {
+      "schema": "coilem.femm5_case_comparison/v1",
+      "case_id": "spm_8p48s_distributed_femm_validation",
+      "phase": "C",
+      "scope": "FEMM 5 exploratory result; replay uses saved native fields, no new native solves or public registry change",
+      "archived_42_producer_s": 2656.463218699995,
+      "new_5_producer_s": 203.81848240000545,
+      "old_measurement_sha256": "a94e1c5b9fa581a430b15272895dde6fc7aa131a827289d71c0df2bf2018fe65",
+      "new_measurement_sha256": "eba1992cea43950362658f0c58d776c9057340c4c1e0ac9bb5334e9f2fcf7e41",
+      "input_and_extraction_contracts_exact": true,
+      "scalar_metrics": {
+        "avg_torque_Nm": {
+          "old": 6.303735218583883,
+          "new": 6.5550107272464935,
+          "delta": 0.2512755086626104,
+          "relative_delta_pct": 3.986136789531251
+        },
+        "back_emf_fundamental_V": {
+          "old": 116.1916620088623,
+          "new": 116.15097935761082,
+          "delta": -0.040682651251472635,
+          "relative_delta_pct": -0.0350133998843821
+        },
+        "lambda_pm_Wb": {
+          "old": 0.13076156138498812,
+          "new": 0.1307157773166053,
+          "delta": -4.578406838282034e-05,
+          "relative_delta_pct": -0.0350133998844071
+        },
+        "torque_ripple_pct": {
+          "old": 203.94356900810357,
+          "new": 210.24245430561598,
+          "delta": 6.298885297512413,
+          "relative_delta_pct": 3.0885432319084947
+        },
+        "peak_flux_density_teeth_T": {
+          "old": 1.426641922186618,
+          "new": 1.438360303693302,
+          "delta": 0.011718381506683917,
+          "relative_delta_pct": 0.821396127819034
+        },
+        "peak_flux_density_yoke_T": {
+          "old": 0.8391789885719076,
+          "new": 0.8429868773313623,
+          "delta": 0.003807888759454703,
+          "relative_delta_pct": 0.4537635964807539
+        },
+        "rms_flux_density_teeth_T": {
+          "old": 1.0639134453367538,
+          "new": 1.064659385986828,
+          "delta": 0.0007459406500742727,
+          "relative_delta_pct": 0.07011290752493167
+        },
+        "rms_flux_density_yoke_T": {
+          "old": 0.6888559724009143,
+          "new": 0.6897881824752292,
+          "delta": 0.0009322100743148765,
+          "relative_delta_pct": 0.13532728344733433
+        }
+      },
+      "raw_waveforms": {
+        "torque_waveform.electrical_angle_deg": {
+          "count": 48,
+          "max_abs_delta": 0.0,
+          "rms_delta": 0.0,
+          "reference_rms": 204.59563778340925,
+          "nrmse_pct": 0.0,
+          "exact": true
+        },
+        "torque_waveform.torque_Nm": {
+          "count": 48,
+          "max_abs_delta": 0.7475192261376993,
+          "rms_delta": 0.4012184127536028,
+          "reference_rms": 7.567877100543435,
+          "nrmse_pct": 5.301597890969874,
+          "exact": false
+        },
+        "torque_waveform.torque_energy_fd_Nm": {
+          "count": 48,
+          "max_abs_delta": 0.2573570359097257,
+          "rms_delta": 0.13505301397021352,
+          "reference_rms": 2.863794807021944,
+          "nrmse_pct": 4.715876069020984,
+          "exact": false
+        },
+        "torque_waveform.torque_coenergy_fd_Nm": {
+          "count": 48,
+          "max_abs_delta": 0.25575066005634683,
+          "rms_delta": 0.13509066952440307,
+          "reference_rms": 2.913747615987745,
+          "nrmse_pct": 4.6363202078024885,
+          "exact": false
+        },
+        "torque_waveform.energy_potential_J": {
+          "count": 48,
+          "max_abs_delta": 0.05199901035289756,
+          "rms_delta": 0.04308035010404706,
+          "reference_rms": 23.34222533609075,
+          "nrmse_pct": 0.18455973877279844,
+          "exact": false
+        },
+        "torque_waveform.energy_coenergy_J": {
+          "count": 48,
+          "max_abs_delta": 0.052161230481743814,
+          "rms_delta": 0.043192312810821934,
+          "reference_rms": 85.65759416402541,
+          "nrmse_pct": 0.050424382370713255,
+          "exact": false
+        },
+        "back_emf_waveform.electrical_angle_deg": {
+          "count": 48,
+          "max_abs_delta": 0.0,
+          "rms_delta": 0.0,
+          "reference_rms": 204.59563778340925,
+          "nrmse_pct": 0.0,
+          "exact": true
+        },
+        "back_emf_waveform.phase_a_V": {
+          "count": 48,
+          "max_abs_delta": 0.11658003779308501,
+          "rms_delta": 0.05997568342332637,
+          "reference_rms": 116.8969875544617,
+          "nrmse_pct": 0.05130644054910655,
+          "exact": false
+        },
+        "back_emf_waveform.phase_b_V": {
+          "count": 48,
+          "max_abs_delta": 0.11568149615975462,
+          "rms_delta": 0.061661358746952125,
+          "reference_rms": 117.03108033453705,
+          "nrmse_pct": 0.05268801977277419,
+          "exact": false
+        },
+        "back_emf_waveform.phase_c_V": {
+          "count": 48,
+          "max_abs_delta": 0.14850549762726928,
+          "rms_delta": 0.0649504227001876,
+          "reference_rms": 116.99231924153852,
+          "nrmse_pct": 0.055516826336345276,
+          "exact": false
+        }
+      },
+      "old_mesh_element_count": 132288,
+      "new_mesh_element_count": 76078,
+      "audits": {
+        "flux_frames_before": 96,
+        "flux_frames_after": 96,
+        "source_frames_before": 48,
+        "source_frames_after": 48,
+        "flux_audits_numerically_exact": false,
+        "source_audits_numerically_exact": false
+      },
+      "published_native_summary_sha256": "3ccf633f17019619830b0eaae4c0caa90da312e3870d07a3d9c96c77d2782319",
+      "suite_sha256": "9d8cd79e60d0b908e072504a1886db7873f13047609697897ffdcccb81825743",
+      "evaluator_sources": {
+        "metrics.py": "a3f501794e89ea01256edab3d75eab440df46fcafef37ccb1d4c7fb841b57c27",
+        "abc_metrics.py": "206570f11d661feb2c95e4cf5ed939ddec0b1adc9c760b91631fd39b013767b8",
+        "bldc_metrics.py": "79b912dc1190ceaebdcbcb5ec0eea83f519063b9a16783bd5b80a2c31c447716"
+      },
+      "comparison_source_sha256": "8091dfeae07a180de6562b18142149d98878fa91569ae89a717f3a461e5fc521",
+      "scalar_metrics_source": "normalized result.summary",
+      "local_evidence_directory": "case-distributed-r1",
+      "comparison_sha256": "02087c927c18c588a25e57cfefc64db6797d4fa35cee870ed23f67d0a181d75f",
+      "started_at": "2026-10-16T05:44:43.113663+00:00",
+      "completed_at": "2026-10-16T05:48:06.614733+00:00",
+      "prepared_identity_sha256": "69f1fd3b4c6ed53a2e5b5304c64e30a3086b06c20d6b0e50ef6593abf0ee83a4",
+      "execution_profile": {
+        "actual_solver": {
+          "version": "FEMM headless engine v5.0 06Oct2026",
+          "transport": "TCP owned headless server",
+          "binding_sha256": "7253242da6918ca5bbdf324ea446e2a8b1e7dc8355e89a2e654987d53ddccb48",
+          "binaries": {
+            "femm_headlessw.exe": "2393643b1af883b41ec08f6fe2a5e1063eeb21ca279419928a1c2b1dd7ebd23b",
+            "fkn.exe": "5dcd6bb40e424d7269a269c1fbfea3df5a2ee8fe88d7f431d3e665454c618e17"
+          },
+          "installer_sha256": "1a025bdb83a628a7b278e742e21a757ec4991162ec8bb8e3ed53cb8c136c9f77"
+        },
+        "integration_counts": {
+          "payload_builds": 48,
+          "payload_reuses": 48,
+          "omitted_contours": 48,
+          "omitted_frame_writes": 96,
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "analysis_calls": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.020954299805453047
+        },
+        "automation": {
+          "worker_pid": 37344,
+          "sessions": [
+            {
+              "pid": 34404,
+              "port": 57711,
+              "cpu_mask": 1,
+              "startup_s": 0.8036995999864303,
+              "created_at": "2026-10-16T05:44:49.228701+00:00",
+              "transport": "owned TCP server; verified listener PID; launch=False"
+            }
+          ],
+          "commands": {
+            "mi_analyze": {
+              "count": 96,
+              "elapsed_s": 95.68962569985888,
+              "max_s": 1.097968200017931
+            },
+            "mi_loadsolution": {
+              "count": 96,
+              "elapsed_s": 12.188630600110628,
+              "max_s": 0.13417390000540763
+            },
+            "mo_blockintegral": {
+              "count": 37008,
+              "elapsed_s": 8.635833200678462,
+              "max_s": 0.02207750000525266
+            },
+            "mi_createmesh": {
+              "count": 96,
+              "elapsed_s": 8.171413000236498,
+              "max_s": 0.10480329999700189
+            },
+            "mi_addarc": {
+              "count": 25728,
+              "elapsed_s": 3.5545808027673047,
+              "max_s": 0.015493900020373985
+            },
+            "mi_addnode": {
+              "count": 122112,
+              "elapsed_s": 3.4471764958580025,
+              "max_s": 0.01671540000825189
+            },
+            "mo_selectblock": {
+              "count": 19488,
+              "elapsed_s": 1.0496393989305943,
+              "max_s": 0.015482299990253523
+            },
+            "mi_addsegment": {
+              "count": 19968,
+              "elapsed_s": 0.9691480991314165,
+              "max_s": 0.013822300010360777
+            },
+            "mo_clearblock": {
+              "count": 27744,
+              "elapsed_s": 0.8075614994158968,
+              "max_s": 0.014553599990904331
+            },
+            "mi_addbhpoint": {
+              "count": 24192,
+              "elapsed_s": 0.6837362024525646,
+              "max_s": 0.01527239999268204
+            },
+            "mi_selectlabel": {
+              "count": 15072,
+              "elapsed_s": 0.608077300916193,
+              "max_s": 0.015129899984458461
+            },
+            "mi_addblocklabel": {
+              "count": 15072,
+              "elapsed_s": 0.44572040083585307,
+              "max_s": 0.016228599997702986
+            },
+            "mi_setblockprop": {
+              "count": 15072,
+              "elapsed_s": 0.41632900104741566,
+              "max_s": 0.0037718999956268817
+            },
+            "mi_clearselected": {
+              "count": 15168,
+              "elapsed_s": 0.3881620001629926,
+              "max_s": 0.013588100002380088
+            },
+            "mi_addmaterial": {
+              "count": 10368,
+              "elapsed_s": 0.33126559961237945,
+              "max_s": 0.015969600004609674
+            },
+            "mi_saveas": {
+              "count": 96,
+              "elapsed_s": 0.2136736000829842,
+              "max_s": 0.003519000019878149
+            },
+            "mo_getpointvalues": {
+              "count": 1850,
+              "elapsed_s": 0.2052350996818859,
+              "max_s": 0.007441099995048717
+            },
+            "mi_selectarcsegment": {
+              "count": 384,
+              "elapsed_s": 0.037432999815791845,
+              "max_s": 0.00037799999699927866
+            },
+            "newdocument": {
+              "count": 96,
+              "elapsed_s": 0.016175500146346167,
+              "max_s": 0.006065900000976399
+            },
+            "mo_numnodes": {
+              "count": 144,
+              "elapsed_s": 0.012322600203333423,
+              "max_s": 0.0006019999855197966
+            },
+            "mo_smooth": {
+              "count": 49,
+              "elapsed_s": 0.008360600098967552,
+              "max_s": 0.0004523000097833574
+            },
+            "mo_close": {
+              "count": 96,
+              "elapsed_s": 0.007038400188321248,
+              "max_s": 0.00013529998250305653
+            },
+            "mo_numelements": {
+              "count": 96,
+              "elapsed_s": 0.004309200186980888,
+              "max_s": 0.0001944000250659883
+            },
+            "mi_probdef": {
+              "count": 96,
+              "elapsed_s": 0.0035200001439079642,
+              "max_s": 5.289999535307288e-05
+            },
+            "mi_close": {
+              "count": 96,
+              "elapsed_s": 0.0034936997399199754,
+              "max_s": 0.0001475999888498336
+            },
+            "mi_shownames": {
+              "count": 96,
+              "elapsed_s": 0.0028306001040618867,
+              "max_s": 4.320000880397856e-05
+            },
+            "mi_setarcsegmentprop": {
+              "count": 96,
+              "elapsed_s": 0.0026005000399891287,
+              "max_s": 8.279999019578099e-05
+            },
+            "mi_smartmesh": {
+              "count": 96,
+              "elapsed_s": 0.0025745999591890723,
+              "max_s": 3.8700003642588854e-05
+            },
+            "mi_addboundprop": {
+              "count": 96,
+              "elapsed_s": 0.002501799986930564,
+              "max_s": 5.0000002374872565e-05
+            },
+            "mo_shownames": {
+              "count": 48,
+              "elapsed_s": 0.0016787000640761107,
+              "max_s": 7.840001489967108e-05
+            }
+          },
+          "resources": {
+            "solver_user_cpu_s": 121.734375,
+            "solver_kernel_cpu_s": 8.09375,
+            "solver_process_count": 97,
+            "solver_peak_job_commit_bytes": 3160469504
+          }
+        },
+        "scope": "Exploratory FEMM 5; grids, requests, materials and extraction definitions unchanged"
+      },
+      "native_gate_replay": {
+        "before": {
+          "status": "PASS",
+          "gates": {
+            "mean_torque": "PASS",
+            "bemf_fundamental": "PASS",
+            "bemf_peak": "PASS",
+            "torque_method": "PASS",
+            "native_mesh": "PASS",
+            "angle_grids": "PASS"
+          }
+        },
+        "with_femm5": {
+          "status": "PASS",
+          "gates": {
+            "mean_torque": "PASS",
+            "bemf_fundamental": "PASS",
+            "bemf_peak": "PASS",
+            "torque_method": "PASS",
+            "native_mesh": "PASS",
+            "angle_grids": "PASS"
+          }
+        },
+        "uses_saved_native_results": true
+      }
+    },
+    {
+      "schema": "coilem.femm5_case_comparison/v1",
+      "case_id": "spm_4p12s_small",
+      "phase": "D",
+      "scope": "FEMM 5 exploratory result; replay uses saved native fields, no new native solves or public registry change",
+      "archived_42_producer_s": 324.71293899999,
+      "new_5_producer_s": 42.26532029997907,
+      "old_measurement_sha256": "0161d994d10cee653f6a8d37c6d21ea4bfec7404e55f29a0b6232b571eada8f2",
+      "new_measurement_sha256": "08ef78ae6570c130bde5d705f712b75330c522ba4ba2f8b81058488fcb461a81",
+      "input_and_extraction_contracts_exact": true,
+      "scalar_metrics": {
+        "avg_torque_Nm": {
+          "old": -0.572900463351055,
+          "new": -0.5736652763621372,
+          "delta": -0.0007648130110821105,
+          "relative_delta_pct": -0.1334984102837874
+        },
+        "torque_ripple_pct": {
+          "old": 33.09788136956122,
+          "new": 34.046811599669745,
+          "delta": 0.9489302301085232,
+          "relative_delta_pct": 2.867042211895822
+        },
+        "peak_flux_density_teeth_T": {
+          "old": 1.204608540620619,
+          "new": 1.2167655833551727,
+          "delta": 0.012157042734553647,
+          "relative_delta_pct": 1.009211069372818
+        },
+        "peak_flux_density_yoke_T": {
+          "old": 1.3978621199860282,
+          "new": 1.3970790626756742,
+          "delta": -0.0007830573103539962,
+          "relative_delta_pct": -0.0560182080305476
+        },
+        "rms_flux_density_teeth_T": {
+          "old": 0.9964768679149135,
+          "new": 0.9958250177928563,
+          "delta": -0.0006518501220572626,
+          "relative_delta_pct": -0.06541547958069834
+        },
+        "rms_flux_density_yoke_T": {
+          "old": 1.1029374962933023,
+          "new": 1.1036930983817124,
+          "delta": 0.0007556020884100789,
+          "relative_delta_pct": 0.0685081512732561
+        }
+      },
+      "raw_waveforms": {
+        "torque_waveform.electrical_angle_deg": {
+          "count": 48,
+          "max_abs_delta": 0.0,
+          "rms_delta": 0.0,
+          "reference_rms": 204.59563778340925,
+          "nrmse_pct": 0.0,
+          "exact": true
+        },
+        "torque_waveform.torque_Nm": {
+          "count": 48,
+          "max_abs_delta": 0.005911306572625841,
+          "rms_delta": 0.0028494985491649047,
+          "reference_rms": 0.5769961626879817,
+          "nrmse_pct": 0.49385051988739287,
+          "exact": false
+        },
+        "torque_waveform.torque_energy_fd_Nm": {
+          "count": 48,
+          "max_abs_delta": 0.007216177898143501,
+          "rms_delta": 0.0027513400126408165,
+          "reference_rms": 0.044602648768808865,
+          "nrmse_pct": 6.168557448016091,
+          "exact": false
+        },
+        "torque_waveform.torque_coenergy_fd_Nm": {
+          "count": 48,
+          "max_abs_delta": 0.0068202629114304525,
+          "rms_delta": 0.0026570362361840903,
+          "reference_rms": 1.0140226808358452,
+          "nrmse_pct": 0.2620292707845481,
+          "exact": false
+        },
+        "torque_waveform.energy_potential_J": {
+          "count": 48,
+          "max_abs_delta": 0.00297783519091932,
+          "rms_delta": 0.002149929482126907,
+          "reference_rms": 1.716928630186291,
+          "nrmse_pct": 0.1252195020997253,
+          "exact": false
+        },
+        "torque_waveform.energy_coenergy_J": {
+          "count": 48,
+          "max_abs_delta": 0.0029862765142394387,
+          "rms_delta": 0.0021927660126333606,
+          "reference_rms": 3.4764933843153023,
+          "nrmse_pct": 0.06307407408069116,
+          "exact": false
+        },
+        "back_emf_waveform.electrical_angle_deg": {
+          "count": 2,
+          "max_abs_delta": 0.0,
+          "rms_delta": 0.0,
+          "reference_rms": 254.55844122715712,
+          "nrmse_pct": 0.0,
+          "exact": true
+        },
+        "back_emf_waveform.phase_a_V": {
+          "count": 2,
+          "max_abs_delta": 0.0,
+          "rms_delta": 0.0,
+          "reference_rms": 0.0,
+          "nrmse_pct": null,
+          "exact": true
+        },
+        "back_emf_waveform.phase_b_V": {
+          "count": 2,
+          "max_abs_delta": 0.0,
+          "rms_delta": 0.0,
+          "reference_rms": 0.0,
+          "nrmse_pct": null,
+          "exact": true
+        },
+        "back_emf_waveform.phase_c_V": {
+          "count": 2,
+          "max_abs_delta": 0.0,
+          "rms_delta": 0.0,
+          "reference_rms": 0.0,
+          "nrmse_pct": null,
+          "exact": true
+        },
+        "back_emf_waveform.line_ab_V": {
+          "count": 2,
+          "max_abs_delta": 0.0,
+          "rms_delta": 0.0,
+          "reference_rms": 0.0,
+          "nrmse_pct": null,
+          "exact": true
+        },
+        "back_emf_waveform.line_bc_V": {
+          "count": 2,
+          "max_abs_delta": 0.0,
+          "rms_delta": 0.0,
+          "reference_rms": 0.0,
+          "nrmse_pct": null,
+          "exact": true
+        },
+        "back_emf_waveform.line_ca_V": {
+          "count": 2,
+          "max_abs_delta": 0.0,
+          "rms_delta": 0.0,
+          "reference_rms": 0.0,
+          "nrmse_pct": null,
+          "exact": true
+        },
+        "phase_current_waveform.electrical_angle_deg": {
+          "count": 48,
+          "max_abs_delta": 0.0,
+          "rms_delta": 0.0,
+          "reference_rms": 204.59563778340925,
+          "nrmse_pct": 0.0,
+          "exact": true
+        },
+        "phase_current_waveform.phase_a_A": {
+          "count": 48,
+          "max_abs_delta": 0.0,
+          "rms_delta": 0.0,
+          "reference_rms": 12.24744871391589,
+          "nrmse_pct": 0.0,
+          "exact": true
+        },
+        "phase_current_waveform.phase_b_A": {
+          "count": 48,
+          "max_abs_delta": 0.0,
+          "rms_delta": 0.0,
+          "reference_rms": 12.24744871391589,
+          "nrmse_pct": 0.0,
+          "exact": true
+        },
+        "phase_current_waveform.phase_c_A": {
+          "count": 48,
+          "max_abs_delta": 0.0,
+          "rms_delta": 0.0,
+          "reference_rms": 12.24744871391589,
+          "nrmse_pct": 0.0,
+          "exact": true
+        }
+      },
+      "old_mesh_element_count": 43134,
+      "new_mesh_element_count": 31784,
+      "audits": {
+        "flux_frames_before": 48,
+        "flux_frames_after": 48,
+        "source_frames_before": 48,
+        "source_frames_after": 48,
+        "flux_audits_numerically_exact": false,
+        "source_audits_numerically_exact": false
+      },
+      "published_native_summary_sha256": "3ccf633f17019619830b0eaae4c0caa90da312e3870d07a3d9c96c77d2782319",
+      "suite_sha256": "9d8cd79e60d0b908e072504a1886db7873f13047609697897ffdcccb81825743",
+      "evaluator_sources": {
+        "metrics.py": "a3f501794e89ea01256edab3d75eab440df46fcafef37ccb1d4c7fb841b57c27",
+        "abc_metrics.py": "206570f11d661feb2c95e4cf5ed939ddec0b1adc9c760b91631fd39b013767b8",
+        "bldc_metrics.py": "79b912dc1190ceaebdcbcb5ec0eea83f519063b9a16783bd5b80a2c31c447716"
+      },
+      "comparison_source_sha256": "8091dfeae07a180de6562b18142149d98878fa91569ae89a717f3a461e5fc521",
+      "scalar_metrics_source": "raw_reference_result.summary; original signed torque; D normalized format has waveforms but no summary",
+      "local_evidence_directory": "case-bldc-r1",
+      "comparison_sha256": "f80730eda85b61067297f2c5172052c24ef8826899c0fd047144cf10eb7df3bf",
+      "started_at": "2026-10-16T05:48:08.239291+00:00",
+      "completed_at": "2026-10-16T05:48:50.182426+00:00",
+      "prepared_identity_sha256": "69f1fd3b4c6ed53a2e5b5304c64e30a3086b06c20d6b0e50ef6593abf0ee83a4",
+      "execution_profile": {
+        "actual_solver": {
+          "version": "FEMM headless engine v5.0 06Oct2026",
+          "transport": "TCP owned headless server",
+          "binding_sha256": "7253242da6918ca5bbdf324ea446e2a8b1e7dc8355e89a2e654987d53ddccb48",
+          "binaries": {
+            "femm_headlessw.exe": "2393643b1af883b41ec08f6fe2a5e1063eeb21ca279419928a1c2b1dd7ebd23b",
+            "fkn.exe": "5dcd6bb40e424d7269a269c1fbfea3df5a2ee8fe88d7f431d3e665454c618e17"
+          },
+          "installer_sha256": "1a025bdb83a628a7b278e742e21a757ec4991162ec8bb8e3ed53cb8c136c9f77"
+        },
+        "integration_counts": {
+          "payload_builds": 48,
+          "payload_reuses": 48,
+          "omitted_contours": 48,
+          "omitted_frame_writes": 96,
+          "fresh_answer_checks": 48,
+          "loaded_mesh_checks": 48,
+          "analysis_calls": 48,
+          "replaced_settle_s": 33.59999999999999,
+          "readiness_wait_s": 0.006739100033883005
+        },
+        "automation": {
+          "worker_pid": 7900,
+          "sessions": [
+            {
+              "pid": 31456,
+              "port": 57832,
+              "cpu_mask": 1,
+              "startup_s": 0.8157678999996278,
+              "created_at": "2026-10-16T05:48:14.381893+00:00",
+              "transport": "owned TCP server; verified listener PID; launch=False"
+            }
+          ],
+          "commands": {
+            "mi_analyze": {
+              "count": 48,
+              "elapsed_s": 15.413412899913965,
+              "max_s": 0.3444803000020329
+            },
+            "mi_loadsolution": {
+              "count": 48,
+              "elapsed_s": 2.550066899973899,
+              "max_s": 0.05596329999389127
+            },
+            "mi_createmesh": {
+              "count": 48,
+              "elapsed_s": 1.987280900037149,
+              "max_s": 0.04561140001169406
+            },
+            "mo_blockintegral": {
+              "count": 1296,
+              "elapsed_s": 1.04372149988194,
+              "max_s": 0.011075199989136308
+            },
+            "mo_getpointvalues": {
+              "count": 6998,
+              "elapsed_s": 0.5638444002252072,
+              "max_s": 0.0037583000084850937
+            },
+            "mi_addnode": {
+              "count": 12672,
+              "elapsed_s": 0.3143654007872101,
+              "max_s": 0.004006600007414818
+            },
+            "mi_addbhpoint": {
+              "count": 12096,
+              "elapsed_s": 0.301765597629128,
+              "max_s": 0.0036355000047478825
+            },
+            "mi_addarc": {
+              "count": 3264,
+              "elapsed_s": 0.14810450066579506,
+              "max_s": 0.0014392999873962253
+            },
+            "mo_selectblock": {
+              "count": 2400,
+              "elapsed_s": 0.13697109950589947,
+              "max_s": 0.003379400004632771
+            },
+            "mi_selectlabel": {
+              "count": 1584,
+              "elapsed_s": 0.05899759937892668,
+              "max_s": 0.0003448000061325729
+            },
+            "mi_addsegment": {
+              "count": 1536,
+              "elapsed_s": 0.05373480010894127,
+              "max_s": 0.0027572000108193606
+            },
+            "mi_saveas": {
+              "count": 48,
+              "elapsed_s": 0.04876289993990213,
+              "max_s": 0.0018121000030077994
+            },
+            "mi_setblockprop": {
+              "count": 1584,
+              "elapsed_s": 0.04309749975800514,
+              "max_s": 0.0005614999972749501
+            },
+            "mi_addblocklabel": {
+              "count": 1584,
+              "elapsed_s": 0.04248819954227656,
+              "max_s": 0.0011039999953936785
+            },
+            "mo_clearblock": {
+              "count": 1248,
+              "elapsed_s": 0.03582780036958866,
+              "max_s": 0.0006301999965216964
+            },
+            "mi_clearselected": {
+              "count": 1632,
+              "elapsed_s": 0.03404380049323663,
+              "max_s": 0.0002835999766830355
+            },
+            "mi_addmaterial": {
+              "count": 960,
+              "elapsed_s": 0.029033400060143322,
+              "max_s": 0.0003419000131543726
+            },
+            "mi_selectarcsegment": {
+              "count": 192,
+              "elapsed_s": 0.010823199932929128,
+              "max_s": 0.00011339999036863446
+            },
+            "newdocument": {
+              "count": 48,
+              "elapsed_s": 0.010316000028979033,
+              "max_s": 0.004035299993120134
+            },
+            "mo_numnodes": {
+              "count": 96,
+              "elapsed_s": 0.008641200023703277,
+              "max_s": 0.001779600017471239
+            },
+            "mo_smooth": {
+              "count": 49,
+              "elapsed_s": 0.007471500022802502,
+              "max_s": 0.0003419000131543726
+            },
+            "mi_shownames": {
+              "count": 48,
+              "elapsed_s": 0.0025163001264445484,
+              "max_s": 0.001264399994397536
+            },
+            "mo_numelements": {
+              "count": 48,
+              "elapsed_s": 0.0020838000637013465,
+              "max_s": 0.0001340000017080456
+            },
+            "mo_close": {
+              "count": 48,
+              "elapsed_s": 0.0018465000030118972,
+              "max_s": 5.199998850002885e-05
+            },
+            "mo_shownames": {
+              "count": 48,
+              "elapsed_s": 0.0017780001217033714,
+              "max_s": 6.980000762268901e-05
+            },
+            "mi_probdef": {
+              "count": 48,
+              "elapsed_s": 0.0015796999796293676,
+              "max_s": 0.00010159998782910407
+            },
+            "mi_setarcsegmentprop": {
+              "count": 48,
+              "elapsed_s": 0.0012193000584375113,
+              "max_s": 4.029998672194779e-05
+            },
+            "mi_addboundprop": {
+              "count": 48,
+              "elapsed_s": 0.001203500054543838,
+              "max_s": 4.360001184977591e-05
+            },
+            "mi_close": {
+              "count": 48,
+              "elapsed_s": 0.0011837999918498099,
+              "max_s": 4.0000013541430235e-05
+            },
+            "mi_smartmesh": {
+              "count": 48,
+              "elapsed_s": 0.0011039999953936785,
+              "max_s": 3.8799975300207734e-05
+            }
+          },
+          "resources": {
+            "solver_user_cpu_s": 19.1875,
+            "solver_kernel_cpu_s": 1.953125,
+            "solver_process_count": 49,
+            "solver_peak_job_commit_bytes": 661192704
+          }
+        },
+        "scope": "Exploratory FEMM 5; grids, requests, materials and extraction definitions unchanged"
+      },
+      "native_gate_replay": {
+        "before": {
+          "status": "PASS",
+          "gates": [
+            {
+              "id": "mean_torque_delta_pct",
+              "value": 0.20065625025835232,
+              "maximum": 5.0,
+              "status": "PASS"
+            },
+            {
+              "id": "torque_waveform_nrmse_pct",
+              "value": 0.3616065459560373,
+              "maximum": 10.0,
+              "status": "PASS"
+            },
+            {
+              "id": "commutation_transition_delta_samples",
+              "value": 0,
+              "maximum": 1,
+              "status": "PASS"
+            },
+            {
+              "id": "power_torque_delta_pct",
+              "value": 0.2823582620766015,
+              "maximum": 10.0,
+              "status": "PASS"
+            },
+            {
+              "id": "native_standard_to_fine_mean_torque_delta_pct",
+              "value": 0.1881129741503373,
+              "maximum": 2.0,
+              "status": "PASS"
+            },
+            {
+              "id": "native_standard_to_fine_ripple_delta_percentage_points",
+              "value": 0.39649663914045874,
+              "maximum": 5.0,
+              "status": "PASS"
+            },
+            {
+              "id": "native_standard_current_properties",
+              "value": {
+                "max_zero_sum_abs_A": 0.0,
+                "max_plateau_error_abs_A": 0.0,
+                "max_zero_phase_abs_A": 0.0,
+                "invalid_conduction_samples": 0
+              },
+              "maximum": {
+                "zero_sum_abs_A": 1e-09,
+                "current_abs_A": 1e-09,
+                "invalid_samples": 0
+              },
+              "status": "PASS"
+            },
+            {
+              "id": "native_fine_current_properties",
+              "value": {
+                "max_zero_sum_abs_A": 0.0,
+                "max_plateau_error_abs_A": 0.0,
+                "max_zero_phase_abs_A": 0.0,
+                "invalid_conduction_samples": 0
+              },
+              "maximum": {
+                "zero_sum_abs_A": 1e-09,
+                "current_abs_A": 1e-09,
+                "invalid_samples": 0
+              },
+              "status": "PASS"
+            },
+            {
+              "id": "femm_standard_current_properties",
+              "value": {
+                "max_zero_sum_abs_A": 0.0,
+                "max_plateau_error_abs_A": 0.0,
+                "max_zero_phase_abs_A": 0.0,
+                "invalid_conduction_samples": 0
+              },
+              "maximum": {
+                "zero_sum_abs_A": 1e-09,
+                "current_abs_A": 1e-09,
+                "invalid_samples": 0
+              },
+              "status": "PASS"
+            },
+            {
+              "id": "analytical_low_current_current_properties",
+              "value": {
+                "max_zero_sum_abs_A": 0.0,
+                "max_plateau_error_abs_A": 0.0,
+                "max_zero_phase_abs_A": 0.0,
+                "invalid_conduction_samples": 0
+              },
+              "maximum": {
+                "zero_sum_abs_A": 1e-09,
+                "current_abs_A": 1e-09,
+                "invalid_samples": 0
+              },
+              "status": "PASS"
+            },
+            {
+              "id": "native-standard_golden_current_sequence",
+              "value": "matches frozen golden current table",
+              "maximum": "exact phase sequence within frozen current tolerance",
+              "status": "PASS"
+            },
+            {
+              "id": "native-fine_golden_current_sequence",
+              "value": "matches frozen golden current table",
+              "maximum": "exact phase sequence within frozen current tolerance",
+              "status": "PASS"
+            },
+            {
+              "id": "analytical_golden_current_sequence",
+              "value": "matches frozen golden current table",
+              "maximum": "exact phase sequence within frozen current tolerance",
+              "status": "PASS"
+            },
+            {
+              "id": "femm-standard_golden_current_sequence",
+              "value": "matches frozen golden current table",
+              "maximum": "exact phase sequence within frozen current tolerance",
+              "status": "PASS"
+            }
+          ]
+        },
+        "with_femm5": {
+          "status": "PASS",
+          "gates": [
+            {
+              "id": "mean_torque_delta_pct",
+              "value": 0.06706830485378085,
+              "maximum": 5.0,
+              "status": "PASS"
+            },
+            {
+              "id": "torque_waveform_nrmse_pct",
+              "value": 0.47108732933764524,
+              "maximum": 10.0,
+              "status": "PASS"
+            },
+            {
+              "id": "commutation_transition_delta_samples",
+              "value": 0,
+              "maximum": 1,
+              "status": "PASS"
+            },
+            {
+              "id": "power_torque_delta_pct",
+              "value": 0.2823582620766015,
+              "maximum": 10.0,
+              "status": "PASS"
+            },
+            {
+              "id": "native_standard_to_fine_mean_torque_delta_pct",
+              "value": 0.1881129741503373,
+              "maximum": 2.0,
+              "status": "PASS"
+            },
+            {
+              "id": "native_standard_to_fine_ripple_delta_percentage_points",
+              "value": 0.39649663914045874,
+              "maximum": 5.0,
+              "status": "PASS"
+            },
+            {
+              "id": "native_standard_current_properties",
+              "value": {
+                "max_zero_sum_abs_A": 0.0,
+                "max_plateau_error_abs_A": 0.0,
+                "max_zero_phase_abs_A": 0.0,
+                "invalid_conduction_samples": 0
+              },
+              "maximum": {
+                "zero_sum_abs_A": 1e-09,
+                "current_abs_A": 1e-09,
+                "invalid_samples": 0
+              },
+              "status": "PASS"
+            },
+            {
+              "id": "native_fine_current_properties",
+              "value": {
+                "max_zero_sum_abs_A": 0.0,
+                "max_plateau_error_abs_A": 0.0,
+                "max_zero_phase_abs_A": 0.0,
+                "invalid_conduction_samples": 0
+              },
+              "maximum": {
+                "zero_sum_abs_A": 1e-09,
+                "current_abs_A": 1e-09,
+                "invalid_samples": 0
+              },
+              "status": "PASS"
+            },
+            {
+              "id": "femm_standard_current_properties",
+              "value": {
+                "max_zero_sum_abs_A": 0.0,
+                "max_plateau_error_abs_A": 0.0,
+                "max_zero_phase_abs_A": 0.0,
+                "invalid_conduction_samples": 0
+              },
+              "maximum": {
+                "zero_sum_abs_A": 1e-09,
+                "current_abs_A": 1e-09,
+                "invalid_samples": 0
+              },
+              "status": "PASS"
+            },
+            {
+              "id": "analytical_low_current_current_properties",
+              "value": {
+                "max_zero_sum_abs_A": 0.0,
+                "max_plateau_error_abs_A": 0.0,
+                "max_zero_phase_abs_A": 0.0,
+                "invalid_conduction_samples": 0
+              },
+              "maximum": {
+                "zero_sum_abs_A": 1e-09,
+                "current_abs_A": 1e-09,
+                "invalid_samples": 0
+              },
+              "status": "PASS"
+            },
+            {
+              "id": "native-standard_golden_current_sequence",
+              "value": "matches frozen golden current table",
+              "maximum": "exact phase sequence within frozen current tolerance",
+              "status": "PASS"
+            },
+            {
+              "id": "native-fine_golden_current_sequence",
+              "value": "matches frozen golden current table",
+              "maximum": "exact phase sequence within frozen current tolerance",
+              "status": "PASS"
+            },
+            {
+              "id": "analytical_golden_current_sequence",
+              "value": "matches frozen golden current table",
+              "maximum": "exact phase sequence within frozen current tolerance",
+              "status": "PASS"
+            },
+            {
+              "id": "femm-standard_golden_current_sequence",
+              "value": "matches frozen golden current table",
+              "maximum": "exact phase sequence within frozen current tolerance",
+              "status": "PASS"
+            }
+          ]
+        },
+        "uses_saved_native_results": true
+      }
+    }
+  ],
+  "retained_input_repeats": {
+    "scope": "Repeated retained-input probes; mesh differs by engine; not full-case/suite timing",
+    "status": "COMPLETE",
+    "sources": {
+      "probe_model.py": "6edbcc4563d066892e5063089917cab0653fc962ae4829eb999dede4a83697d4",
+      "femm5_session.py": "b68e862e4e866a871595cf490eda5d66ae6d8122d532456f3cf9d77d86103cab",
+      "repeat_probes.py": "16ade1f8ef0a543f7f3c7592343c9d3162818ca6dfa9ee5749556af83e6162bb"
+    },
+    "source_input_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+    "median_analysis_s": {
+      "42": 20.622508900007233,
+      "5": 1.0596624000172596
+    },
+    "within_engine_physical_outputs_exact": true,
+    "runs": [
+      {
+        "status": "COMPLETE",
+        "scope": "One retained loaded SPM model, not a complete case or suite",
+        "postprocessing_only": false,
+        "probe_source_sha256": "6edbcc4563d066892e5063089917cab0653fc962ae4829eb999dede4a83697d4",
+        "binding_source_sha256": "86798b83aa3e62ed1c564d75d0fa8c172a273c893827a7950d7a1c0532ebe45b",
+        "engine": "42",
+        "cpu_mask": 1,
+        "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+        "mesh_s": 0.41972679999889806,
+        "analysis_s": 20.71838229999412,
+        "wall_s": 22.303569900017465,
+        "nodes": 64955,
+        "elements": 129548,
+        "energy_J": 23.3715789577589,
+        "torque_Nm": -0.9228850083181963,
+        "answer_sha256": "65c2c50869cb9ddabf01428df0e246c9bf03beab6fa8a77acc4324f92526b25e",
+        "result_sha256": "f641af46ef992fa32ce87858d7e95d3407f3f865ac8c652b3bdc8512681e3567",
+        "directory": "1-42"
+      },
+      {
+        "status": "COMPLETE",
+        "scope": "One retained loaded SPM model, not a complete case or suite",
+        "postprocessing_only": false,
+        "probe_source_sha256": "6edbcc4563d066892e5063089917cab0653fc962ae4829eb999dede4a83697d4",
+        "binding_source_sha256": "7253242da6918ca5bbdf324ea446e2a8b1e7dc8355e89a2e654987d53ddccb48",
+        "engine": "5",
+        "cpu_mask": 1,
+        "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+        "mesh_s": 0.09023669999442063,
+        "analysis_s": 1.0707294000021648,
+        "wall_s": 2.07798180001555,
+        "nodes": 37628,
+        "elements": 74894,
+        "energy_J": 23.42013420372304,
+        "torque_Nm": -0.7082619559297446,
+        "answer_sha256": "bbbe712a81e3f975c62136e3e3909d86480b32cd30cda243526695524259dbfc",
+        "result_sha256": "f752ab2f267c94fb8f976a7e07cc091cbb09a18da9071fb9390c660edcdb249c",
+        "directory": "2-5"
+      },
+      {
+        "status": "COMPLETE",
+        "scope": "One retained loaded SPM model, not a complete case or suite",
+        "postprocessing_only": false,
+        "probe_source_sha256": "6edbcc4563d066892e5063089917cab0653fc962ae4829eb999dede4a83697d4",
+        "binding_source_sha256": "7253242da6918ca5bbdf324ea446e2a8b1e7dc8355e89a2e654987d53ddccb48",
+        "engine": "5",
+        "cpu_mask": 1,
+        "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+        "mesh_s": 0.09772320001502521,
+        "analysis_s": 1.0476117999933194,
+        "wall_s": 2.0066073999914806,
+        "nodes": 37628,
+        "elements": 74894,
+        "energy_J": 23.42013420372304,
+        "torque_Nm": -0.7082619559297446,
+        "answer_sha256": "bbbe712a81e3f975c62136e3e3909d86480b32cd30cda243526695524259dbfc",
+        "result_sha256": "b399461cc976acd5db6607836860450f72bfe0d1de9648948c410b30fa44c966",
+        "directory": "3-5"
+      },
+      {
+        "status": "COMPLETE",
+        "scope": "One retained loaded SPM model, not a complete case or suite",
+        "postprocessing_only": false,
+        "probe_source_sha256": "6edbcc4563d066892e5063089917cab0653fc962ae4829eb999dede4a83697d4",
+        "binding_source_sha256": "86798b83aa3e62ed1c564d75d0fa8c172a273c893827a7950d7a1c0532ebe45b",
+        "engine": "42",
+        "cpu_mask": 1,
+        "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+        "mesh_s": 0.4092419000226073,
+        "analysis_s": 20.622508900007233,
+        "wall_s": 22.162506100023165,
+        "nodes": 64955,
+        "elements": 129548,
+        "energy_J": 23.3715789577589,
+        "torque_Nm": -0.9228850083181963,
+        "answer_sha256": "65c2c50869cb9ddabf01428df0e246c9bf03beab6fa8a77acc4324f92526b25e",
+        "result_sha256": "76aa807f281889c53afef995038d0aeccad18c4705d906a74500794275a114a4",
+        "directory": "4-42"
+      },
+      {
+        "status": "COMPLETE",
+        "scope": "One retained loaded SPM model, not a complete case or suite",
+        "postprocessing_only": false,
+        "probe_source_sha256": "6edbcc4563d066892e5063089917cab0653fc962ae4829eb999dede4a83697d4",
+        "binding_source_sha256": "86798b83aa3e62ed1c564d75d0fa8c172a273c893827a7950d7a1c0532ebe45b",
+        "engine": "42",
+        "cpu_mask": 1,
+        "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+        "mesh_s": 0.4143464000080712,
+        "analysis_s": 20.599663600005442,
+        "wall_s": 22.176696000009542,
+        "nodes": 64955,
+        "elements": 129548,
+        "energy_J": 23.3715789577589,
+        "torque_Nm": -0.9228850083181963,
+        "answer_sha256": "65c2c50869cb9ddabf01428df0e246c9bf03beab6fa8a77acc4324f92526b25e",
+        "result_sha256": "210766159773bbd5f2d24be8562096ae50481dbf06128f59fba8ac2a96f41e59",
+        "directory": "5-42"
+      },
+      {
+        "status": "COMPLETE",
+        "scope": "One retained loaded SPM model, not a complete case or suite",
+        "postprocessing_only": false,
+        "probe_source_sha256": "6edbcc4563d066892e5063089917cab0653fc962ae4829eb999dede4a83697d4",
+        "binding_source_sha256": "7253242da6918ca5bbdf324ea446e2a8b1e7dc8355e89a2e654987d53ddccb48",
+        "engine": "5",
+        "cpu_mask": 1,
+        "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+        "mesh_s": 0.08833210001466796,
+        "analysis_s": 1.0596624000172596,
+        "wall_s": 2.041307000006782,
+        "nodes": 37628,
+        "elements": 74894,
+        "energy_J": 23.42013420372304,
+        "torque_Nm": -0.7082619559297446,
+        "answer_sha256": "bbbe712a81e3f975c62136e3e3909d86480b32cd30cda243526695524259dbfc",
+        "result_sha256": "ad8e0bde91ef9142ca70bf4213ced0ab3a288d0ea4a1caf34bafaeb2bf78178b",
+        "directory": "6-5"
+      }
+    ],
+    "summary_sha256": "11c4e42fdf9778bacfa52f8bce785372a950f8529eedc52def9769c4f812dd0b",
+    "median_analysis_ratio_mesh_confounded": 19.461395345981263
+  },
+  "retained_input_cross_engine_comparison": {
+    "scope": "One retained loaded rotor position, not a full waveform or case",
+    "old_elements": 129548,
+    "new_elements": 74894,
+    "old_torque_Nm": -0.9228850083181963,
+    "new_torque_Nm": -0.7082619559297446,
+    "torque_delta_Nm": 0.2146230523884517,
+    "torque_relative_delta_pct": 23.25566570634475,
+    "energy_relative_delta_pct": 0.2077533830807887,
+    "sampled_B_vector_nrmse_pct": 4.461607123507717,
+    "points": 144,
+    "cross_postprocessor_checks": {
+      "post5-answer42": {
+        "status": "COMPLETE",
+        "scope": "One retained loaded SPM model, not a complete case or suite",
+        "postprocessing_only": true,
+        "engine": "5",
+        "cpu_mask": 1,
+        "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+        "mesh_s": 0.0,
+        "analysis_s": 0.0,
+        "wall_s": 1.1305802999995649,
+        "nodes": 64955,
+        "elements": 129548,
+        "energy_J": 23.371578957758896,
+        "torque_Nm": -0.9228850083181939,
+        "answer_sha256": "65c2c50869cb9ddabf01428df0e246c9bf03beab6fa8a77acc4324f92526b25e",
+        "probe_result_sha256": "a510b379669983d8b3943c69ff141a7615d4479df30ab0aaef417c044eaf236e"
+      },
+      "post42-answer5": {
+        "status": "COMPLETE",
+        "scope": "One retained loaded SPM model, not a complete case or suite",
+        "postprocessing_only": true,
+        "engine": "42",
+        "cpu_mask": 1,
+        "source_sha256": "98e3cd0070fb52d23e10d452fb62300ed3e88f43ccbd337915544c970f205cac",
+        "mesh_s": 0.0,
+        "analysis_s": 0.0,
+        "wall_s": 0.9756889999844134,
+        "nodes": 37628,
+        "elements": 74894,
+        "energy_J": 23.42013420372303,
+        "torque_Nm": -0.7082619559297405,
+        "answer_sha256": "bbbe712a81e3f975c62136e3e3909d86480b32cd30cda243526695524259dbfc",
+        "probe_result_sha256": "f2bdef94a7ac1ef2b2d25b282dcb01605910690cdd6dde26d6b15770fbbea762"
+      }
+    },
+    "interpretation": "Saved-answer torque agrees across postprocessors within 1e-12 Nm. Cross-engine differences originate upstream in meshing/solving; a same-mesh solver speedup has not been measured."
+  },
+  "excluded_attempts": [
+    {
+      "name": "probe5-r1",
+      "reason": "Harness dependency preflight failed before launch"
+    },
+    {
+      "name": "probe5-r2",
+      "reason": "Probe rotor selection omitted magnets; excluded from numerical/timing conclusions"
+    },
+    {
+      "name": "case-smoke-r1",
+      "reason": "Harness source check used wrong text decoding; failed before analyses"
+    }
+  ],
+  "recommendation": "Continue in a distinct FEMM 5 candidate lane; investigate mesh convergence and torque/peak-B sensitivity before changing frozen references. Then measure all 29 cases and case-concurrency scaling.",
+  "published_reference_registry_changed": false,
+  "numerical_gates_changed": false,
+  "new_native_solves": false,
+  "scientific_qualification_changed": false
+}

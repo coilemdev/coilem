@@ -80,3 +80,14 @@ assert.deepEqual(reopenedPrius, priusRotor, 'HoleM50 rotor changed on save and r
 const flat = JSON.parse(JSON.stringify(prius));
 flat.rotor.ipm_topology = 'flat_buried';
 assert.equal(parseDesignFile(JSON.stringify(flat)).config.rotor.holem50_w0_mm, undefined);
+
+// Mesh build: new designs and files saved before it existed use Precise, the
+// node placement the benchmark measured; a design saved with Fast keeps it.
+assert.equal(cloneDefaultConfig().solve_params.mesh_build, 'precise');
+const beforeMeshBuild = JSON.parse(serializeDesignFile(cloneDefaultConfig(), 'Before mesh build'));
+delete beforeMeshBuild.solve_params.mesh_build;
+assert.equal(parseDesignFile(JSON.stringify(beforeMeshBuild)).config.solve_params.mesh_build, 'precise');
+const fastDesign = cloneDefaultConfig();
+fastDesign.solve_params.mesh_build = 'fast';
+assert.equal(parseDesignFile(serializeDesignFile(fastDesign, 'Fast mesh')).config.solve_params.mesh_build, 'fast');
+console.log('mesh build defaults passed');

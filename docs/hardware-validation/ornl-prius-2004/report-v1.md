@@ -120,7 +120,7 @@ ORNL's numbers and coilEM's come from different instruments and conventions. Eac
    - Peak is the largest sampled absolute value, so a narrow harmonic peak between samples can be missed.
 6. **Speed scaling.** No-load back-EMF is scaled linearly from 3,000 rpm to each measured speed. coilEM models no iron-loss effect on it.
 
-The same conversion is `no_load_back_emf_line_to_line` in [`tools/benchmark_suite/hardware.py`](../../../tools/benchmark_suite/hardware.py), which the benchmark row uses.
+The same conversion is `no_load_back_emf_line_to_line` in [`backend/benchmark_suite/hardware.py`](../../../backend/benchmark_suite/hardware.py), which the benchmark row uses.
 
 ## Flux linkage
 

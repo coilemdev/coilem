@@ -3,8 +3,10 @@
 The native solver writes exact numerical JSON frames for diagnostics,
 post-processing, and resolution-independent inspection. Browser playback uses
 independently toggleable high-resolution raster layers so animation does not
-need to download or rasterize those full arrays. Flat geometry and heatmap
-layers use lossless PNG; detailed field lines use WebP.
+need to download or rasterize those full arrays. Flat geometry, heatmap and
+mesh layers use lossless WebP (the same pixels as PNG at well under half the
+size); detailed field lines use lossy WebP, which their antialiased strokes
+compress far better than lossless.
 
 One numerical frame is retained for every raster frame behind the lazy
 field-frame endpoint. This keeps animation network usage lightweight while
@@ -17,7 +19,6 @@ limit bound storage.
 
 from __future__ import annotations
 
-import gzip
 import json
 import math
 import os
@@ -28,6 +29,7 @@ from typing import Any, Literal
 
 from backend.field_artifacts import (
     encode_solve_cache_artifact_id,
+    read_field_line_frame_artifact,
     resolve_solve_cache_artifact_id,
 )
 from backend.public_field_playback_contract import (
@@ -46,9 +48,11 @@ PLAYBACK_DIRECTION_CUE_LIMIT = 48
 # into the compact animation artifact. Exact stopped frames still load the full
 # numerical contour set for interactive density changes and zoom inspection.
 PLAYBACK_CONTOUR_LEVEL_STRIDE = 2
-PLAYBACK_RENDERER_REVISION = "medium-contours-mesh-v2"
+PLAYBACK_RENDERER_REVISION = "medium-contours-mesh-fixed-flux-scale-v3"
 _PLAYBACK_PROCESS_MIN_FRAMES = 8
 _PLAYBACK_MAX_PROCESSES = 8
+# View box, pixel mapper and (triangle index, pixel-space corners) pairs.
+_DrawableGeometry = tuple[tuple[float, float, float, float], Any, list[tuple[int, list[tuple[float, float]]]]]
 _HEAT_COLORS = (
     (20, 42, 97, 255),
     (24, 85, 167, 255),
@@ -59,6 +63,19 @@ _HEAT_COLORS = (
     (245, 139, 36, 255),
     (220, 61, 61, 255),
 )
+# One flux-density scale for every frame, rotor position and design: the eight
+# colours span 0–2.0 T and anything above is magenta. A per-frame minimum to
+# maximum let a single sharp-corner element (2.6 T in the example motor, where
+# 99% of the steel is below 1.4 T) set the top and squash the steel into the
+# lower colours. The browser uses the same scale (frontend fluxColorScale.ts).
+FLUX_SCALE_MAX_T = 2.0
+_FLUX_OVER_RANGE_COLOR = (244, 60, 245, 255)
+FLUX_COLOR_SCALE = {
+    "kind": "fixed",
+    "min": 0.0,
+    "max": FLUX_SCALE_MAX_T,
+    "over_range_color": "#f43cf5",
+}
 
 PlaybackMode = Literal["resultant_pm", "armature"]
 
@@ -88,8 +105,7 @@ def _load_frame(artifact_id: str) -> tuple[Path, dict[str, Any]]:
         or not path.name.endswith(".json.gz")
     ):
         raise ValueError("field playback source is not a numerical field frame")
-    with gzip.open(path, "rt", encoding="utf-8") as handle:
-        artifact = json.load(handle)
+    artifact = read_field_line_frame_artifact(path)
     frame = artifact.get("field_line_frame")
     if not isinstance(frame, dict):
         raise ValueError("field playback source has no field frame")
@@ -169,6 +185,16 @@ def _triangles(
             continue
         valid.append((index, [(point[0], point[1]) for point in points]))
     return valid
+
+
+def _drawable_geometry(plot: dict[str, Any]) -> _DrawableGeometry:
+    """Return a plot's view box, pixel mapper and drawable triangles."""
+
+    nodes, view_box = _view_geometry(plot)
+    triangles = _triangles(plot, nodes)
+    if not triangles:
+        raise ValueError("field playback source has no drawable triangles")
+    return view_box, _pixel_mapper(view_box), triangles
 
 
 def _contour_levels(
@@ -314,19 +340,23 @@ def _save_webp(image: Any, path: Path, *, quality: int) -> dict[str, Any]:
     }
 
 
-def _save_png(image: Any, path: Path) -> dict[str, Any]:
+def _save_lossless_webp(image: Any, path: Path) -> dict[str, Any]:
     temporary = path.with_name(f".{path.name}.tmp")
-    # Level 3 encodes in about 60% of level 6's time for files about 25%
-    # larger; PNG is lossless, so the pixels are the same.
+    # Lossless WebP keeps every pixel. Its fastest setting writes these 1536 px
+    # layers in about half of PNG level 3's time at 44% of the bytes; the
+    # slower settings shrink them only a little more.
     image.save(
         temporary,
-        format="PNG",
-        compress_level=3,
+        format="WEBP",
+        lossless=True,
+        quality=0,
+        method=0,
+        exact=True,
     )
     temporary.replace(path)
     return {
         "artifact_id": encode_solve_cache_artifact_id(path),
-        "media_type": "image/png",
+        "media_type": "image/webp",
         "byte_count": path.stat().st_size,
     }
 
@@ -383,6 +413,13 @@ def _render_mesh(
     return image
 
 
+def _flux_color(value: float) -> tuple[int, int, int, int]:
+    if value > FLUX_SCALE_MAX_T:
+        return _FLUX_OVER_RANGE_COLOR
+    bucket = int((max(0.0, value) / FLUX_SCALE_MAX_T) * len(_HEAT_COLORS))
+    return _HEAT_COLORS[min(len(_HEAT_COLORS) - 1, bucket)]
+
+
 def _render_heat(
     image_module: Any,
     image_draw_module: Any,
@@ -398,9 +435,10 @@ def _render_heat(
         for value in values
         if (number := _finite_number(value)) is not None
     ]
+    # The data range is still reported (the legend's min and max, and the peak
+    # readout); the colours use the fixed scale.
     min_b = min(finite_values, default=0.0)
     max_b = max(finite_values, default=0.0)
-    span = max(max_b - min_b, float.fromhex("0x1.0p-52"))
     image = image_module.new(
         "RGBA",
         (size_px, size_px),
@@ -413,13 +451,9 @@ def _render_heat(
         value = _finite_number(values[index])
         if value is None:
             continue
-        bucket = min(
-            len(_HEAT_COLORS) - 1,
-            max(0, int(((value - min_b) / span) * len(_HEAT_COLORS))),
-        )
         draw.polygon(
             [point(x, y) for x, y in triangle],
-            fill=_HEAT_COLORS[bucket],
+            fill=_flux_color(value),
         )
     return image, min_b, max_b
 
@@ -478,12 +512,10 @@ def _render_composition(
     composition: str,
     base_ref: dict[str, Any],
     mesh_ref: dict[str, Any],
+    geometry: _DrawableGeometry | None = None,
 ) -> dict[str, Any]:
-    nodes, view_box = _view_geometry(plot)
-    point = _pixel_mapper(view_box)
-    triangles = _triangles(plot, nodes)
-    if not triangles:
-        raise ValueError("field playback source has no drawable triangles")
+    # The caller passes the geometry it already built for the same plot.
+    view_box, point, triangles = geometry if geometry is not None else _drawable_geometry(plot)
     heat, min_b, max_b = _render_heat(
         image_module,
         image_draw_module,
@@ -506,9 +538,9 @@ def _render_composition(
         segments,
         point,
     )
-    heat_ref = _save_png(
+    heat_ref = _save_lossless_webp(
         heat,
-        output_dir / f"frame_{frame_index:04d}_{composition}_flux.png",
+        output_dir / f"frame_{frame_index:04d}_{composition}_flux.webp",
     )
     lines_ref = _save_webp(
         lines,
@@ -533,6 +565,7 @@ def _render_composition(
             "unit": "T",
             "min": min_b,
             "max": max_b,
+            "color_scale": dict(FLUX_COLOR_SCALE),
         },
         "statistics": {
             "triangle_count": len(triangles),
@@ -548,14 +581,14 @@ def _layer_catalog() -> list[dict[str, Any]]:
             "id": "geometry",
             "label": "Geometry",
             "role": "geometry",
-            "media_type": "image/png",
+            "media_type": "image/webp",
             "default_visible": True,
         },
         {
             "id": "flux_density",
             "label": "Flux density",
             "role": "scalar",
-            "media_type": "image/png",
+            "media_type": "image/webp",
             "default_visible": True,
             "quantity": "magnetic_flux_density",
             "unit": "T",
@@ -573,7 +606,7 @@ def _layer_catalog() -> list[dict[str, Any]]:
             "id": "mesh",
             "label": "Mesh",
             "role": "annotations",
-            "media_type": "image/png",
+            "media_type": "image/webp",
             "default_visible": False,
         },
     ]
@@ -648,20 +681,17 @@ def _package_playback_frame(
     source_path, outer = _load_frame(artifact_id)
     if source_path.parent.parent != Path(cache_dir_text):
         raise ValueError("field playback frames span multiple solve caches")
-    nodes, view_box = _view_geometry(outer)
-    point = _pixel_mapper(view_box)
-    triangles = _triangles(outer, nodes)
-    if not triangles:
-        raise ValueError("field playback source has no drawable triangles")
+    geometry = _drawable_geometry(outer)
+    _, point, triangles = geometry
     base = _render_base(Image, ImageDraw, triangles, point)
-    base_ref = _save_png(
+    base_ref = _save_lossless_webp(
         base,
-        output_dir / f"frame_{frame_index:04d}_base.png",
+        output_dir / f"frame_{frame_index:04d}_base.webp",
     )
     mesh = _render_mesh(Image, ImageDraw, triangles, point)
-    mesh_ref = _save_png(
+    mesh_ref = _save_lossless_webp(
         mesh,
-        output_dir / f"frame_{frame_index:04d}_mesh.png",
+        output_dir / f"frame_{frame_index:04d}_mesh.webp",
     )
     compositions: dict[str, Any] = {
         "armature" if mode == "armature" else "resultant": _render_composition(
@@ -674,6 +704,7 @@ def _package_playback_frame(
             composition="armature" if mode == "armature" else "resultant",
             base_ref=base_ref,
             mesh_ref=mesh_ref,
+            geometry=geometry,
         )
     }
     if mode == "resultant_pm":

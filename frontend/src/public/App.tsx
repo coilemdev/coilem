@@ -31,6 +31,7 @@ import {
 } from './CoilEmWorkspace';
 import { PublicGuidedSetup } from './GuidedSetup';
 import { coilsPerPhase, parallelPathsDividing, repairGuidedSection } from './guidedConfigRepair';
+import { designErrorText } from './designErrors';
 import { windingLayerWording } from './toothCoils';
 import { PublicLanding } from './PublicLanding';
 import { HalbachWorkspace } from './halbach/HalbachWorkspace';
@@ -509,6 +510,19 @@ function errorMessage(error: unknown): string {
   return 'The local request could not be completed.';
 }
 
+/** Keep an API error whole, so its field can be worded and placed; anything else becomes text. */
+function requestFailure(error: unknown): PublicApiError | string {
+  if (
+    error
+    && typeof error === 'object'
+    && typeof (error as PublicApiError).error_code === 'string'
+    && typeof (error as PublicApiError).message === 'string'
+  ) {
+    return error as PublicApiError;
+  }
+  return errorMessage(error);
+}
+
 export function App() {
   const [showLanding, setShowLanding] = useState(true);
   const [showHalbachWorkspace, setShowHalbachWorkspace] = useState(false);
@@ -548,7 +562,7 @@ export function App() {
   const previewRecoveryAttempt = useRef(0);
   // Keep API error codes for recovery UI; flattening to text loses the cause.
   const [errorDetails, setErrorDetails] = useState<PublicApiError | null>(null);
-  const error = errorDetails ? errorMessage(errorDetails) : null;
+  const error = errorDetails ? designErrorText(errorDetails, config) : null;
   const setError = useCallback((value: string | PublicApiError | null) => {
     setErrorDetails(typeof value === 'string'
       ? { error_code: 'LOCAL_REQUEST_FAILED', message: value }
@@ -648,7 +662,7 @@ export function App() {
       return preparedMesh;
     } catch (requestError) {
       if (requestId !== meshRequestId.current) return null;
-      setError(errorMessage(requestError));
+      setError(requestFailure(requestError));
       setConnectionStatus(requestError instanceof TypeError ? 'offline' : 'online');
       return null;
     } finally {
@@ -817,8 +831,8 @@ export function App() {
   }, [editFeedback, invalidateGeometryPreview, resetComputedState]);
 
   const updateMeshSetting = useCallback((
-    field: 'mesh_density' | 'corner_refinement',
-    value: MotorConfig['solve_params']['mesh_density'] | boolean,
+    field: 'mesh_density' | 'corner_refinement' | 'mesh_build',
+    value: MotorConfig['solve_params']['mesh_density'] | MotorConfig['solve_params']['mesh_build'] | boolean,
   ) => {
     validationRequestId.current += 1;
     setConfig((current) => ({
@@ -963,7 +977,7 @@ export function App() {
     } catch (requestError) {
       if (requestId !== previewRequestId.current) return;
       setPreviewNetworkFailed(requestError instanceof TypeError);
-      setError(errorMessage(requestError));
+      setError(requestFailure(requestError));
       setConnectionStatus(requestError instanceof TypeError ? 'offline' : 'online');
     } finally {
       if (requestId === previewRequestId.current) {

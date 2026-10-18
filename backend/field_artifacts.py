@@ -6,6 +6,8 @@ import base64
 import gzip
 import json
 import math
+import os
+import re
 from pathlib import Path
 from typing import Any
 
@@ -24,6 +26,78 @@ def solve_cache_root() -> Path:
     from backend.solve_workspace import user_data_root
 
     return user_data_root() / "solve_cache"
+
+
+# Raw per-position Magneto2D output (inputs, meshes, reports, diagnostics,
+# provenance) at the top of a solve's cache folder: about two thirds of it.
+# The solve reads these only while it assembles its result; the field frames
+# and playback layers it keeps live in subfolders and stay.
+_RAW_SOLVER_OUTPUT = re.compile(
+    r"^(sweep|single)(_pos\d{3}_(loaded|noload))?_(input|mesh|report|nonlinear_diagnostics|provenance)\.json$"
+)
+SOLVE_CACHE_DIR_PREFIX = "magneto2d-"
+
+
+def keep_raw_solver_outputs() -> bool:
+    """Whether to keep raw solver output after a saved run.
+
+    Keeping it is a storage choice, read from the environment like the cache
+    and workspace limits. The solver's own use of these switches is isolated
+    in the public build, where it always writes the raw output.
+    """
+
+    for name in ("COILEM_MAGNETO2D_PERSIST_RAW_ARTIFACTS", "COILEM_MAGNETO2D_PERSIST_ARTIFACTS"):
+        value = os.environ.get(name)
+        if value is not None:
+            return value.strip().lower() in {"1", "true", "yes", "on"}
+    return False
+
+
+def solve_cache_folders(result: Any) -> set[Path]:
+    """The Magneto2D solve-cache folders whose artifacts a result references."""
+
+    root = solve_cache_root().resolve()
+    folders: set[Path] = set()
+
+    def visit(value: Any) -> None:
+        if isinstance(value, dict):
+            artifact_id = value.get("artifact_id")
+            if isinstance(artifact_id, str) and artifact_id:
+                try:
+                    relative = resolve_solve_cache_artifact_id(artifact_id).relative_to(root)
+                except ValueError:
+                    relative = None
+                if relative is not None and len(relative.parts) > 1 and relative.parts[0].startswith(SOLVE_CACHE_DIR_PREFIX):
+                    folders.add(root / relative.parts[0])
+            for child in value.values():
+                visit(child)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child)
+
+    visit(result)
+    return folders
+
+
+def prune_raw_solver_outputs(folders: set[Path]) -> int:
+    """Delete raw solver output from finished solves' cache folders; return the bytes freed."""
+
+    root = solve_cache_root().resolve()
+    freed = 0
+    for folder in folders:
+        folder = folder.resolve()
+        if folder.parent != root or not folder.name.startswith(SOLVE_CACHE_DIR_PREFIX) or not folder.is_dir():
+            continue
+        for candidate in folder.iterdir():
+            if not _RAW_SOLVER_OUTPUT.match(candidate.name) or candidate.is_symlink() or not candidate.is_file():
+                continue
+            try:
+                size = candidate.stat().st_size
+                candidate.unlink()
+            except OSError:
+                continue
+            freed += size
+    return freed
 
 
 def _b64url_encode(value: str) -> str:
@@ -47,6 +121,53 @@ def _write_json_gz(path: Path, payload: dict[str, Any]) -> None:
     data = json.dumps(payload, separators=(",", ":")).encode("utf-8")
     with gzip.open(path, "wb", compresslevel=1) as fh:
         fh.write(data)
+
+
+# A frame's PM-only (no-load) plot is solved on the frame's own mesh, so its
+# triangles and regions repeat the frame's, and often its nodes too: up to a
+# sixth of every stored frame. Each part that is exactly equal is stored once
+# and listed under NOLOAD_MESH_FROM_FRAME; the reader restores it. Nodes the
+# no-load solve placed differently, even in the last digit, stay as solved.
+_SHARED_MESH_KEYS = ("nodes_mm", "triangles", "regions")
+NOLOAD_MESH_FROM_FRAME = "mesh_from_frame"
+
+
+def _share_noload_mesh(frame: dict[str, Any]) -> dict[str, Any]:
+    """Return ``frame`` with its no-load plot pointing at the frame's own mesh parts."""
+
+    noload = frame.get("noload_plot")
+    if not isinstance(noload, dict):
+        return frame
+    shared = [key for key in _SHARED_MESH_KEYS if key in noload and key in frame and noload[key] == frame[key]]
+    if not shared:
+        return frame
+    slim = {key: value for key, value in noload.items() if key not in shared}
+    slim[NOLOAD_MESH_FROM_FRAME] = shared
+    return {**frame, "noload_plot": slim}
+
+
+def restore_noload_mesh(frame: dict[str, Any]) -> dict[str, Any]:
+    """Undo ``_share_noload_mesh``; frames stored before it are returned as they are."""
+
+    noload = frame.get("noload_plot")
+    shared = noload.get(NOLOAD_MESH_FROM_FRAME) if isinstance(noload, dict) else None
+    if not isinstance(shared, list):
+        return frame
+    restored = {key: value for key, value in noload.items() if key != NOLOAD_MESH_FROM_FRAME}
+    for key in shared:
+        if key in _SHARED_MESH_KEYS and key in frame:
+            restored[key] = frame[key]
+    return {**frame, "noload_plot": restored}
+
+
+def read_field_line_frame_artifact(path: Path) -> dict[str, Any]:
+    """Read a stored field-frame artifact with its no-load plot complete again."""
+
+    with gzip.open(path, "rt", encoding="utf-8") as fh:
+        payload = json.load(fh)
+    if isinstance(payload, dict) and isinstance(payload.get("field_line_frame"), dict):
+        payload["field_line_frame"] = restore_noload_mesh(payload["field_line_frame"])
+    return payload
 
 
 def encode_solve_cache_artifact_id(path: Path) -> str:
@@ -302,7 +423,7 @@ def write_field_line_frame_artifact(
     if frame is None or cache_dir is None:
         return None
     try:
-        frame_payload = dict(frame)
+        frame_payload = _share_noload_mesh(dict(frame))
         frame_payload.pop("field_frame_artifact", None)
         artifact_dir = cache_dir / "field_line_frames"
         artifact_dir.mkdir(parents=True, exist_ok=True)

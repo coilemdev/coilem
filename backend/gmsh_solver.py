@@ -300,6 +300,19 @@ class _GmshGeometryBuilder:
             self.curves_by_feature.setdefault(feature, set()).add(abs(tag))
 
 
+# Gmsh places 1D nodes by integrating the mesh-size field along each curve to
+# this precision. "precise" is Gmsh's default, 1e-9, which the benchmark report
+# measured; it evaluates the four Threshold/Distance fields so often that 1D
+# meshing takes ~2.3 s of an IPM mesh's ~2.6 s. "fast" builds that mesh in
+# ~0.6 s with element counts within 1% (solve_params.mesh_build).
+GMSH_LC_INTEGRATION_PRECISION = {"precise": 1e-9, "fast": 1e-6}
+
+
+def _gmsh_lc_integration_precision(config: MotorConfig) -> float:
+    mesh_build = getattr(config.solve_params, "mesh_build", "precise")
+    return GMSH_LC_INTEGRATION_PRECISION[mesh_build]
+
+
 def run_gmsh_mesh_preview(
     config: MotorConfig,
     *,
@@ -340,6 +353,7 @@ def run_gmsh_mesh_preview(
         try:
             gmsh.option.setNumber("General.Terminal", 0)
             gmsh.option.setNumber("Mesh.Algorithm", 5)
+            gmsh.option.setNumber("Mesh.LcIntegrationPrecision", _gmsh_lc_integration_precision(config))
             gmsh.model.add("openem_motor_mesh")
 
             builder = _GmshGeometryBuilder(base_lc_mm=_base_lc_mm(config, density))
@@ -447,6 +461,7 @@ def _run_gmsh_ir_mesh_preview(
     try:
         gmsh.option.setNumber("General.Terminal", 0)
         gmsh.option.setNumber("Mesh.Algorithm", 5)
+        gmsh.option.setNumber("Mesh.LcIntegrationPrecision", _gmsh_lc_integration_precision(config))
         gmsh.model.add("openem_ir_motor_mesh")
 
         builder = _GmshGeometryBuilder(base_lc_mm=_base_lc_mm(config, density))

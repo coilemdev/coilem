@@ -1,0 +1,3828 @@
+{
+  "schema": "coilem.benchmark_performance_full_suite/v1",
+  "generated_at": "2026-10-16T04:31:54.057264+00:00",
+  "physical_source_commit": "738d9516e8500c5996c772bd96470472cbb9a0f9",
+  "execution_sources_match_commit": "a5eb84a7658b713886eb41322fe72b0e97303692",
+  "sealed_private_producer_source_sha256": {
+    "producer_pinned.py": "a2cb40e1e35a1847ce3b9dd099f6510bf268375a5fde9f85871e323dd00b84a7",
+    "producer_ready.py": "5d0df9a560c777be614e73e39d07570b10c5983226a5882df5384f7142054ceb",
+    "physical_cores.py": "96949d253fccee67bcaea6979880ab4d38e9e09ee86711db0fc2dcb02fef1dc5",
+    "producer_metrics.py": "9c8bce2a5edaaaa5c194e934658c0596ce868736d4f3c18c2958b70c65b628d8",
+    "producer_optimized.py": "3e6036e61715ded8f5028718fe452717d015be2fa588509da77325d615fb2ecf",
+    "producer.py": "4b118e2392c2557679cca3f5e2d92ddf9c825fc0b2a0707e293fcb6a64fbaaef",
+    "pilot.py": "4ddb157d36395bb73a7a5fc26287a1f1e177f17ca969e15b7b959c2554784f99"
+  },
+  "public_payload_reuse_sha256": "56f0876201e18682e8e6130ac7392f90df8fc9a39433d7eb6a9adbdab69cad7e",
+  "physical_runtime": {
+    "femm_product_version": "4, 2, 0, 0",
+    "femm_binaries": {
+      "femm.exe": "5e83cf0899cabae2017868ddcce338e3ba4ac25d1bf8e511eac77eda2bc92a21",
+      "fkn.exe": "2330a02b08b846fc6090c05f7fd5edbc1c910582bfd36721ecc0287c787b4eb0",
+      "triangle.exe": "6222b2a5cc9d68121e73f2d3f07b1715ffcb3f253dcbe799da20bf7878d863b8"
+    },
+    "dependencies": {
+      "pyfemm": "0.1.3",
+      "pywin32": "311",
+      "numpy": "2.4.4",
+      "pydantic": "2.13.3"
+    }
+  },
+  "python_version": "3.11.0b4 (main, Jul 11 2022, 15:47:56) [MSC v.1932 64 bit (AMD64)]",
+  "hardware": "Windows 11, Ryzen 7 7700, 8 physical / 16 logical cores, 64 GiB RAM",
+  "historical_serial_baseline": {
+    "registered_wall_s": 32928.427453,
+    "completed_measurement_span_s": 32925.536091,
+    "summed_case_runtime_s": 32907.45970609997,
+    "analysis_sha256": "b70d082e366ae0a7cc2ba6370f7a2932a4fb2c1c0aa50868c2935e3473aceb14",
+    "status": "REVIEW_REQUIRED"
+  },
+  "full_run": {
+    "run": "f112-fullmix",
+    "status": "COMPLETE",
+    "manifest_sha256": "c7130849feaec0e1b549228660e15d395db2389578fc14b64ce25e0ccb5c2aca",
+    "runtime_identity_sha256": "1b11161fcb69b69cc744c7760fb8bc3d29eb76c901f34b9a19d9a2fe54ef201d",
+    "producer_source_sha256": "a2cb40e1e35a1847ce3b9dd099f6510bf268375a5fde9f85871e323dd00b84a7",
+    "runner_sources": {
+      "tools/benchmark_suite/external.py": "6f348e05b71feb5f0bd7dbdffe5aa6fd64442f635fd92bd7c533e4feacd3486b",
+      "tools/benchmark_suite/contract.py": "0e48fbb43074cf069e55b1110c3e5c2693825ebab418a28cc6ae5ab424664dd2",
+      "tools/run_reference_benchmark.py": "5480b63cdc78f75b69d30507256b000a5eee02449d6e87aab099f104d4a7efce"
+    },
+    "session": {
+      "started_at": "2026-10-16T02:39:28.283700+00:00",
+      "workers": 8,
+      "timeout_s": 14400,
+      "order": "longest_first",
+      "worker_budget": 8,
+      "weighted": true,
+      "worker_costs": {
+        "spm_4p12s_simple__baseline": 1,
+        "spm_4p12s_simple__high_current": 1,
+        "spm_4p12s_simple__tight_airgap": 1,
+        "spm_4p12s_simple_noload__baseline": 1,
+        "spm_4p12s_simple_noload__high_current": 1,
+        "spm_4p12s_simple_noload__tight_airgap": 1,
+        "spm_8p12s_concentrated__baseline": 1,
+        "spm_8p12s_concentrated__high_current": 1,
+        "spm_8p12s_concentrated__tight_airgap": 1,
+        "spm_8p12s_reference_angle30__baseline": 1,
+        "ipm_flat_12s10p_fscw_contract": 1,
+        "ipm_flat_24s16p_industrial_contract": 2,
+        "ipm_flat_4p12s_micro_contract": 1,
+        "ipm_flat_8p12s_fsae_angled_pocket_contract": 1,
+        "ipm_flat_8p12s_fsae_contract": 1,
+        "ipm_flat_8p12s_fsae_thin_bridge_contract": 1,
+        "ipm_vshape_8p12s_baseline_contract": 1,
+        "ipm_vshape_8p12s_deep_apex_high_output_v1": 1,
+        "ipm_vshape_8p12s_narrow_angle_contract": 1,
+        "ipm_vshape_8p12s_pocket_offset_contract": 1,
+        "ipm_vshape_8p12s_thin_bridge_contract": 1,
+        "ipm_vshape_8p12s_wide_angle_high_output_v1": 1,
+        "spm_12p36s_distributed_femm_validation": 2,
+        "spm_8p24s_distributed_femm_validation": 1,
+        "spm_8p48s_chorded_5_6": 2,
+        "spm_8p48s_distributed_femm_validation": 2,
+        "spm_14p12s_high_pole": 1,
+        "spm_4p12s_small": 1,
+        "spm_8p12s_reference": 1
+      },
+      "planned_order": [
+        "spm_8p48s_distributed_femm_validation",
+        "spm_8p48s_chorded_5_6",
+        "spm_12p36s_distributed_femm_validation",
+        "ipm_flat_24s16p_industrial_contract",
+        "ipm_vshape_8p12s_narrow_angle_contract",
+        "ipm_vshape_8p12s_pocket_offset_contract",
+        "ipm_vshape_8p12s_baseline_contract",
+        "ipm_vshape_8p12s_wide_angle_high_output_v1",
+        "ipm_flat_12s10p_fscw_contract",
+        "ipm_vshape_8p12s_thin_bridge_contract",
+        "ipm_vshape_8p12s_deep_apex_high_output_v1",
+        "spm_8p24s_distributed_femm_validation",
+        "ipm_flat_8p12s_fsae_thin_bridge_contract",
+        "ipm_flat_8p12s_fsae_angled_pocket_contract",
+        "ipm_flat_8p12s_fsae_contract",
+        "spm_14p12s_high_pole",
+        "spm_8p12s_reference_angle30__baseline",
+        "spm_8p12s_concentrated__tight_airgap",
+        "spm_8p12s_concentrated__baseline",
+        "spm_8p12s_concentrated__high_current",
+        "spm_4p12s_simple__high_current",
+        "spm_4p12s_simple_noload__high_current",
+        "spm_4p12s_simple_noload__baseline",
+        "spm_4p12s_simple__baseline",
+        "ipm_flat_4p12s_micro_contract",
+        "spm_8p12s_reference",
+        "spm_4p12s_simple__tight_airgap",
+        "spm_4p12s_simple_noload__tight_airgap",
+        "spm_4p12s_small"
+      ],
+      "launch_order": [
+        "spm_8p48s_distributed_femm_validation",
+        "spm_8p48s_chorded_5_6",
+        "spm_12p36s_distributed_femm_validation",
+        "ipm_flat_24s16p_industrial_contract",
+        "ipm_vshape_8p12s_narrow_angle_contract",
+        "ipm_vshape_8p12s_pocket_offset_contract",
+        "ipm_vshape_8p12s_baseline_contract",
+        "ipm_vshape_8p12s_wide_angle_high_output_v1",
+        "ipm_flat_12s10p_fscw_contract",
+        "ipm_vshape_8p12s_thin_bridge_contract",
+        "ipm_vshape_8p12s_deep_apex_high_output_v1",
+        "spm_8p24s_distributed_femm_validation",
+        "ipm_flat_8p12s_fsae_thin_bridge_contract",
+        "ipm_flat_8p12s_fsae_angled_pocket_contract",
+        "ipm_flat_8p12s_fsae_contract",
+        "spm_14p12s_high_pole",
+        "spm_8p12s_reference_angle30__baseline",
+        "spm_8p12s_concentrated__tight_airgap",
+        "spm_8p12s_concentrated__baseline",
+        "spm_8p12s_concentrated__high_current",
+        "spm_4p12s_simple__high_current",
+        "spm_4p12s_simple_noload__high_current",
+        "spm_4p12s_simple_noload__baseline",
+        "spm_4p12s_simple__baseline",
+        "ipm_flat_4p12s_micro_contract",
+        "spm_8p12s_reference",
+        "spm_4p12s_simple__tight_airgap",
+        "spm_4p12s_simple_noload__tight_airgap",
+        "spm_4p12s_small"
+      ],
+      "timings_sha256": "5d33e0485264539cce63b88aab38048d3ca3e499beef9b89a74f1a6fb02cd758",
+      "completed_at": "2026-10-16T04:31:30.644036+00:00",
+      "wall_s": 6722.417971499992
+    },
+    "sampled_resources": {
+      "exit_code": 0,
+      "wall_s": 6724.7232863000245,
+      "sampled_owned_cpu_s": 36237.75,
+      "sampled_mean_cpu_cores": 5.3887347415209685,
+      "logical_cores": 16,
+      "peak_sampled_private_bytes": 5320015872,
+      "peak_sampled_working_set_bytes": 1683628032,
+      "tracked_process_count": 3252,
+      "sampling_interval_s": 2,
+      "limitations": "Sampling can miss short-lived children; host contention is not isolated."
+    },
+    "jobs": [
+      {
+        "case_id": "spm_4p12s_simple__baseline",
+        "phase": "A",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "996704d20eee13c2af2cd768bef3a0db14f9252dc605bf778ef9a9919dd00295",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "c600fd3424e10630252bed791aa4ebe419cc6a230ff65a6e47fb0a63b08fc70d",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "d170ada5df3725796995748c3bc076a4bb8879d553b48ace4640c1e7a182cbc7",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 370.69327829999384,
+        "producer_wall_s": 368.33590839998215,
+        "archived_producer_wall_s": 482.8149521000014,
+        "result_sha256": "2e0d79fac94ab9d4618f2c65e06a1edee0f03c32aee2570b563fd10deb17892a",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 300.5,
+          "solver_kernel_cpu_s": 12.84375,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 31989760,
+          "python_cpu_s": 37.09375,
+          "python_memory": {
+            "PageFaultCount": 259995,
+            "PeakWorkingSetSize": 130977792,
+            "WorkingSetSize": 113606656,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275848,
+            "QuotaPeakNonPagedPoolUsage": 50096,
+            "QuotaNonPagedPoolUsage": 33584,
+            "PagefileUsage": 599535616,
+            "PeakPagefileUsage": 617299968
+          }
+        },
+        "femm_pids": [
+          33172
+        ],
+        "archived_measurement_sha256": "ffa09ebcefd21b3ce7c10deabe940c0e72147184442f09cdcb7c82db1760c2b8",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 272.67077419988345,
+            "max_s": 3.228137300000526
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 15.669511500076624,
+            "max_s": 0.18472759998985566
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 11.887654299935093,
+            "max_s": 0.14796110001043417
+          },
+          "mi_addnode": {
+            "count": 25344,
+            "elapsed_s": 4.699107300461037,
+            "max_s": 0.015331899980083108
+          },
+          "mi_addarc": {
+            "count": 6528,
+            "elapsed_s": 4.6481723001925275,
+            "max_s": 0.005208699993090704
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 4.552522400801536,
+            "max_s": 0.008149400004185736
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.031503799924394116,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 33172,
+              "cpu_mask": 4096
+            }
+          ],
+          "core_index": 6,
+          "cpu_mask": 4096,
+          "acquired_at": "2026-10-16T04:21:21.283605+00:00",
+          "released_at": "2026-10-16T04:27:31.167446+00:00"
+        }
+      },
+      {
+        "case_id": "spm_4p12s_simple__high_current",
+        "phase": "A",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "a800aea8cedb7beeacbfe07f6df154186d9417dc1fda9158931d0294eb0da8e5",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "d7fad1ed5d55c00b944ab20799a9e875aa9d7dcca40a003c54d9696f79efd257",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "e880511e84ca416cb45be32bd24c17f924b85bc98efc491e1dc36013ece167fe",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 395.7801966999832,
+        "producer_wall_s": 393.3069878999959,
+        "archived_producer_wall_s": 499.71195799999987,
+        "result_sha256": "bb7de00917c66c0aad46a2b86589161b529d7b790f1c4555d8bae77786693203",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 312.4375,
+          "solver_kernel_cpu_s": 19.828125,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 31199232,
+          "python_cpu_s": 38.609375,
+          "python_memory": {
+            "PageFaultCount": 252041,
+            "PeakWorkingSetSize": 130105344,
+            "WorkingSetSize": 113328128,
+            "QuotaPeakPagedPoolUsage": 278760,
+            "QuotaPagedPoolUsage": 277704,
+            "QuotaPeakNonPagedPoolUsage": 50112,
+            "QuotaNonPagedPoolUsage": 33448,
+            "PagefileUsage": 599392256,
+            "PeakPagefileUsage": 616828928
+          }
+        },
+        "femm_pids": [
+          31092
+        ],
+        "archived_measurement_sha256": "8b6ea3d8ac0fd23e2f7ee40093e9ebaccda40026d645a68f965ca481226ef6b6",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 292.72538150000037,
+            "max_s": 3.4729829000134487
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 17.390710100065917,
+            "max_s": 0.24544179998338223
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 12.564839000115171,
+            "max_s": 0.1624694000056479
+          },
+          "mi_addnode": {
+            "count": 25344,
+            "elapsed_s": 4.965785901091294,
+            "max_s": 0.009814800025196746
+          },
+          "mi_addarc": {
+            "count": 6528,
+            "elapsed_s": 4.896043601707788,
+            "max_s": 0.0053038999903947115
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 4.889410200063139,
+            "max_s": 0.010788100014906377
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.048004299838794395,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 31092,
+              "cpu_mask": 256
+            }
+          ],
+          "core_index": 4,
+          "cpu_mask": 256,
+          "acquired_at": "2026-10-16T04:17:28.200395+00:00",
+          "released_at": "2026-10-16T04:24:03.142165+00:00"
+        }
+      },
+      {
+        "case_id": "spm_4p12s_simple__tight_airgap",
+        "phase": "A",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "508ff0173a70cb5e6eb110ee3f63dd7c94bc42162ca25b8cf0d9ef52c52e6d98",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "0836a3dd635ca966e54f974fc42cf7cdf33a9721c5d31f3a1becebef4b981886",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "06ceb45e69d3086ef819ec665d5ccbc9648802526d14b5a41c40b5a21f8e4c06",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 303.73137209998094,
+        "producer_wall_s": 301.69012539999676,
+        "archived_producer_wall_s": 446.7195095999996,
+        "result_sha256": "6ce8eb8759766ea2c4eedb5abae4d7a50c32799e27d97235dbe66f1a053945d1",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 246.21875,
+          "solver_kernel_cpu_s": 11.5625,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 30371840,
+          "python_cpu_s": 30.640625,
+          "python_memory": {
+            "PageFaultCount": 240244,
+            "PeakWorkingSetSize": 127897600,
+            "WorkingSetSize": 110014464,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275848,
+            "QuotaPeakNonPagedPoolUsage": 49840,
+            "QuotaNonPagedPoolUsage": 33040,
+            "PagefileUsage": 595795968,
+            "PeakPagefileUsage": 614391808
+          }
+        },
+        "femm_pids": [
+          37860
+        ],
+        "archived_measurement_sha256": "5ed3c06c8f79e5dfa0ac8a3021fbbb9eba00281f5dda8e3be0b29446c0d12d81",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 218.63639170015813,
+            "max_s": 2.724511900014477
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 14.482613400003174,
+            "max_s": 0.21984800000791438
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 10.716025999805424,
+            "max_s": 0.15843260000110604
+          },
+          "mi_addarc": {
+            "count": 6528,
+            "elapsed_s": 4.0690236997033935,
+            "max_s": 0.0046282999974209815
+          },
+          "mi_addnode": {
+            "count": 25344,
+            "elapsed_s": 4.0196782006532885,
+            "max_s": 0.008415100019192323
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 3.7885590003279503,
+            "max_s": 0.008449299988569692
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.03374030033592135,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 37860,
+              "cpu_mask": 16
+            }
+          ],
+          "core_index": 2,
+          "cpu_mask": 16,
+          "acquired_at": "2026-10-16T04:26:18.032696+00:00",
+          "released_at": "2026-10-16T04:31:21.063552+00:00"
+        }
+      },
+      {
+        "case_id": "spm_4p12s_simple_noload__baseline",
+        "phase": "A",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "51ae7c6d1676aeeaa5e8ab6cb0f8fa946674b00a77be8ab1c6eae16858d5a9e0",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "a6cc048a5f0171be45185399e56c1f3c01ddeb227e2ef43481eb1f38047db0e9",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "1e603ba4f44f97eff2506d4facfded1c93128fc5a522be52b927da1e11560752",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 371.78851209999993,
+        "producer_wall_s": 369.2948982999951,
+        "archived_producer_wall_s": 484.3242902999991,
+        "result_sha256": "2f5c7fde5b4f7d416974f482342d6e3fe6a03db31bcb97721fe77169d11fc217",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 301.359375,
+          "solver_kernel_cpu_s": 12.109375,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 32358400,
+          "python_cpu_s": 38.125,
+          "python_memory": {
+            "PageFaultCount": 252562,
+            "PeakWorkingSetSize": 129560576,
+            "WorkingSetSize": 110706688,
+            "QuotaPeakPagedPoolUsage": 278760,
+            "QuotaPagedPoolUsage": 277704,
+            "QuotaPeakNonPagedPoolUsage": 50112,
+            "QuotaNonPagedPoolUsage": 33176,
+            "PagefileUsage": 596332544,
+            "PeakPagefileUsage": 616665088
+          }
+        },
+        "femm_pids": [
+          34572
+        ],
+        "archived_measurement_sha256": "493e1e05204f2de8819a7a6e02edfa06162b5cf524bbe3c332ba00a7ff414b50",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 273.10106579982676,
+            "max_s": 3.2905385000049137
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 16.010492600151338,
+            "max_s": 0.20604499999899417
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 11.836180500074988,
+            "max_s": 0.1803506999858655
+          },
+          "mi_addarc": {
+            "count": 6528,
+            "elapsed_s": 4.6614311015291605,
+            "max_s": 0.00719170001684688
+          },
+          "mi_addnode": {
+            "count": 25344,
+            "elapsed_s": 4.657678199000657,
+            "max_s": 0.009306299994932488
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 4.452815699856728,
+            "max_s": 0.007819199992809445
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.03481519970227964,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 34572,
+              "cpu_mask": 16384
+            }
+          ],
+          "core_index": 7,
+          "cpu_mask": 16384,
+          "acquired_at": "2026-10-16T04:20:53.134898+00:00",
+          "released_at": "2026-10-16T04:27:04.094859+00:00"
+        }
+      },
+      {
+        "case_id": "spm_4p12s_simple_noload__high_current",
+        "phase": "A",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "9b39c8a38e864edaa7f0089943e06971349924ed3b3af60b5ee8d1a2b4aa600f",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "9cff96293da54f7a31f77b481a4bffe7fc70b594d00d566e239e4b8e4c2d2337",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "e518f833316248459ea1c7a3a89542b0d3e5748f886ec87b32ea3d2d6d303594",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 371.2975687000144,
+        "producer_wall_s": 368.81779209998786,
+        "archived_producer_wall_s": 496.2007492999983,
+        "result_sha256": "4c356f410c60d14d5f361dbb45505ddd7a76cf0dd599c8bf54422b1d26e3fa5f",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 300.375,
+          "solver_kernel_cpu_s": 12.484375,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 31064064,
+          "python_cpu_s": 38.625,
+          "python_memory": {
+            "PageFaultCount": 261838,
+            "PeakWorkingSetSize": 129970176,
+            "WorkingSetSize": 112828416,
+            "QuotaPeakPagedPoolUsage": 278760,
+            "QuotaPagedPoolUsage": 277704,
+            "QuotaPeakNonPagedPoolUsage": 50128,
+            "QuotaNonPagedPoolUsage": 33448,
+            "PagefileUsage": 599371776,
+            "PeakPagefileUsage": 616890368
+          }
+        },
+        "femm_pids": [
+          412
+        ],
+        "archived_measurement_sha256": "7c6d6e8b0fbdb5b4ab0173316db368f420876b8ed2fb42085239c006f6a02fc1",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 273.17836079990957,
+            "max_s": 3.194783799990546
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 15.578095700097037,
+            "max_s": 0.20237610000185668
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 11.649021299788728,
+            "max_s": 0.14463699999032542
+          },
+          "mi_addarc": {
+            "count": 6528,
+            "elapsed_s": 4.562181599845644,
+            "max_s": 0.0036077999975532293
+          },
+          "mi_addnode": {
+            "count": 25344,
+            "elapsed_s": 4.5073567997606006,
+            "max_s": 0.0033758000063244253
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 4.444379700755235,
+            "max_s": 0.011068100022384897
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.038980500015895814,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 412,
+              "cpu_mask": 1024
+            }
+          ],
+          "core_index": 5,
+          "cpu_mask": 1024,
+          "acquired_at": "2026-10-16T04:20:20.815863+00:00",
+          "released_at": "2026-10-16T04:26:31.330858+00:00"
+        }
+      },
+      {
+        "case_id": "spm_4p12s_simple_noload__tight_airgap",
+        "phase": "A",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "d38534aa36bb999a47863674d6de6567f381fdf5c0a340dcd445f56169457dae",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "7179aa89de4af267688eb4d806073df0df9f0586d9698bb21be791187708b2d1",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "af8294943f9930b4d406907f4efd3beba9f1a5cd98dfb8d3993954e64bd613fa",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 297.3118620000023,
+        "producer_wall_s": 295.31088649999583,
+        "archived_producer_wall_s": 442.2317941000001,
+        "result_sha256": "5d85ec096509e3fdfc7a1bbffe9ed60fb72a4bfb630f72693969db55480ff315",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 240.984375,
+          "solver_kernel_cpu_s": 11.015625,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 30773248,
+          "python_cpu_s": 29.46875,
+          "python_memory": {
+            "PageFaultCount": 247070,
+            "PeakWorkingSetSize": 126951424,
+            "WorkingSetSize": 110587904,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275848,
+            "QuotaPeakNonPagedPoolUsage": 49720,
+            "QuotaNonPagedPoolUsage": 33040,
+            "PagefileUsage": 596619264,
+            "PeakPagefileUsage": 615079936
+          }
+        },
+        "femm_pids": [
+          20916
+        ],
+        "archived_measurement_sha256": "d8298d33da30f706829ddb8db03c8fd0f37a92b17e62ae076511d5a88080d9f6",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 214.72600300019258,
+            "max_s": 2.5658124999899883
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 13.850142499926733,
+            "max_s": 0.168312199995853
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 10.384919100120896,
+            "max_s": 0.14239679998718202
+          },
+          "mi_addarc": {
+            "count": 6528,
+            "elapsed_s": 3.988911101274425,
+            "max_s": 0.006500700023025274
+          },
+          "mi_addnode": {
+            "count": 25344,
+            "elapsed_s": 3.986356701760087,
+            "max_s": 0.013306599983479828
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 3.5928757992805913,
+            "max_s": 0.00554709997959435
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.0262912001053337,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 20916,
+              "cpu_mask": 1024
+            }
+          ],
+          "core_index": 5,
+          "cpu_mask": 1024,
+          "acquired_at": "2026-10-16T04:26:33.331996+00:00",
+          "released_at": "2026-10-16T04:31:29.943017+00:00"
+        }
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__baseline",
+        "phase": "A",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "1a28d88f1291f71dd2ae84f6a0cf4709c7dff986535313d281bf033f756f00e8",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "5f4233b53ae20ee3b2c7e76c5fb5a90f3e0a5ce975a90739a61c72a0a5ef3271",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "c62fd68df482f952a02bd90b42475170e7d326e3e8af985370c6fd878b7280ea",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 608.9430506000062,
+        "producer_wall_s": 606.4487365000241,
+        "archived_producer_wall_s": 700.511723399999,
+        "result_sha256": "9a3bcefc61d458dea67df48c04a7bee3c64eb23f28fcb8a33078bbf057dfcae9",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 532.40625,
+          "solver_kernel_cpu_s": 14.59375,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 32124928,
+          "python_cpu_s": 42.0,
+          "python_memory": {
+            "PageFaultCount": 287048,
+            "PeakWorkingSetSize": 135213056,
+            "WorkingSetSize": 113397760,
+            "QuotaPeakPagedPoolUsage": 278760,
+            "QuotaPagedPoolUsage": 277704,
+            "QuotaPeakNonPagedPoolUsage": 50520,
+            "QuotaNonPagedPoolUsage": 33584,
+            "PagefileUsage": 599171072,
+            "PeakPagefileUsage": 621297664
+          }
+        },
+        "femm_pids": [
+          27096
+        ],
+        "archived_measurement_sha256": "c208cb17e7580b0e944aede1382a5c063ecdfcf4fa189e5d94763d8ea9606238",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 503.6583898999088,
+            "max_s": 5.974943000008352
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 16.210126199905062,
+            "max_s": 0.19433549998211674
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 12.220572500140406,
+            "max_s": 0.17235440001240931
+          },
+          "mo_selectblock": {
+            "count": 2784,
+            "elapsed_s": 5.646565100207226,
+            "max_s": 0.010547099984250963
+          },
+          "mi_addnode": {
+            "count": 29952,
+            "elapsed_s": 5.2149434995953925,
+            "max_s": 0.003709400014486164
+          },
+          "mi_addarc": {
+            "count": 7296,
+            "elapsed_s": 4.900767600425752,
+            "max_s": 0.0032765000069048256
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.03956869995454326,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 27096,
+              "cpu_mask": 16384
+            }
+          ],
+          "core_index": 7,
+          "cpu_mask": 16384,
+          "acquired_at": "2026-10-16T04:10:42.802863+00:00",
+          "released_at": "2026-10-16T04:20:50.899215+00:00"
+        }
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__high_current",
+        "phase": "A",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "485770e1d00c8657b600a16037ada50229ff00d72e4b81a8a5d63154909be6be",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "67f50bb166664c16d617125296886f7d319e3cac7ee04b02ad6721b2eab141ec",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "cd98263cfa5567d55964239399ecccc6a1990c2d646f828214e9bd2b346fa085",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 639.0599562000134,
+        "producer_wall_s": 636.6513170000107,
+        "archived_producer_wall_s": 696.6647319999975,
+        "result_sha256": "f4c68f74b36d274053ddb7f275d8d291a16cf92a0ebc220156b138e74529893d",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 562.21875,
+          "solver_kernel_cpu_s": 14.15625,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 31756288,
+          "python_cpu_s": 40.8125,
+          "python_memory": {
+            "PageFaultCount": 281876,
+            "PeakWorkingSetSize": 133382144,
+            "WorkingSetSize": 113598464,
+            "QuotaPeakPagedPoolUsage": 278760,
+            "QuotaPagedPoolUsage": 277704,
+            "QuotaPeakNonPagedPoolUsage": 50536,
+            "QuotaNonPagedPoolUsage": 33584,
+            "PagefileUsage": 600195072,
+            "PeakPagefileUsage": 620109824
+          }
+        },
+        "femm_pids": [
+          28084
+        ],
+        "archived_measurement_sha256": "01409ee2d67b7aab4f58877bb9b395305814b8887fd254ebf5e1f38e1c70912f",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 529.0303852001962,
+            "max_s": 6.370964200003073
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 17.497403100162046,
+            "max_s": 0.21863229997688904
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 12.87741400016239,
+            "max_s": 0.17572800000198185
+          },
+          "mi_addnode": {
+            "count": 29952,
+            "elapsed_s": 6.235278201347683,
+            "max_s": 0.028036799980327487
+          },
+          "mo_selectblock": {
+            "count": 2784,
+            "elapsed_s": 6.061423199687852,
+            "max_s": 0.008949699986260384
+          },
+          "mi_addarc": {
+            "count": 7296,
+            "elapsed_s": 5.534995599329704,
+            "max_s": 0.008389900001930073
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.04536479993839748,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 28084,
+              "cpu_mask": 16
+            }
+          ],
+          "core_index": 2,
+          "cpu_mask": 16,
+          "acquired_at": "2026-10-16T04:15:37.768030+00:00",
+          "released_at": "2026-10-16T04:26:16.030876+00:00"
+        }
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__tight_airgap",
+        "phase": "A",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "ee1aacffc5622cc9f78232e80dcdc90cefbfa94fdb8a93052af674864b663abe",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "0c435d1bb1dcaf591e97da68b62d3d960072f4c28a5ad4963b2141e5d46ac997",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "57ccba6776b03266dc46286c974a9bdff00abb745dee589919e633fff4956d11",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 651.0725112000073,
+        "producer_wall_s": 648.5732619000191,
+        "archived_producer_wall_s": 708.9449004999988,
+        "result_sha256": "bc9c7d749202b164b7de901d8fdec6e5e30096a1ba8c2a2b869c323d9e9b26b3",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 539.0,
+          "solver_kernel_cpu_s": 31.0625,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 31596544,
+          "python_cpu_s": 41.828125,
+          "python_memory": {
+            "PageFaultCount": 275306,
+            "PeakWorkingSetSize": 135368704,
+            "WorkingSetSize": 114323456,
+            "QuotaPeakPagedPoolUsage": 278760,
+            "QuotaPagedPoolUsage": 277704,
+            "QuotaPeakNonPagedPoolUsage": 50536,
+            "QuotaNonPagedPoolUsage": 33720,
+            "PagefileUsage": 601362432,
+            "PeakPagefileUsage": 622063616
+          }
+        },
+        "femm_pids": [
+          13368
+        ],
+        "archived_measurement_sha256": "b6d8b9d20961a1ff88d6c79906d3e1fde389cb35baec7d3fd2eb2f6ddf74ee7c",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 542.5169948999246,
+            "max_s": 6.546817700000247
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 17.160392100107856,
+            "max_s": 0.2060238999838475
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 12.717347199999494,
+            "max_s": 0.16348400001879781
+          },
+          "mo_selectblock": {
+            "count": 2784,
+            "elapsed_s": 6.01580499985721,
+            "max_s": 0.013262199994642287
+          },
+          "mi_addnode": {
+            "count": 29952,
+            "elapsed_s": 5.5880299963464495,
+            "max_s": 0.017876500001875684
+          },
+          "mi_addarc": {
+            "count": 7296,
+            "elapsed_s": 5.1587854004174005,
+            "max_s": 0.007004599989159033
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.039039499970385805,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 13368,
+              "cpu_mask": 1
+            }
+          ],
+          "core_index": 0,
+          "cpu_mask": 1,
+          "acquired_at": "2026-10-16T04:10:42.379582+00:00",
+          "released_at": "2026-10-16T04:21:32.617730+00:00"
+        }
+      },
+      {
+        "case_id": "spm_8p12s_reference_angle30__baseline",
+        "phase": "A",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "b0e108050592c6a266dc2542920b3f3be607050e265acb2ec6218a8e6018dcf7",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "bd5a17ad23c1b324761e2b036a69f52d57936a44728d15d5f983dfcb4cdc854b",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "7f7e3b37e81123cad17e0fec45d1948ba58e1a5b844a3e5af5b36af306e7ec41",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 661.047750400001,
+        "producer_wall_s": 658.5486361000221,
+        "archived_producer_wall_s": 742.8823391000042,
+        "result_sha256": "55234c3cf14a200e773174c53b9863ae488ebb91945ea2cf1c096826b0c8431b",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 582.078125,
+          "solver_kernel_cpu_s": 14.171875,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 34533376,
+          "python_cpu_s": 44.890625,
+          "python_memory": {
+            "PageFaultCount": 314123,
+            "PeakWorkingSetSize": 142217216,
+            "WorkingSetSize": 118366208,
+            "QuotaPeakPagedPoolUsage": 278760,
+            "QuotaPagedPoolUsage": 277704,
+            "QuotaPeakNonPagedPoolUsage": 51352,
+            "QuotaNonPagedPoolUsage": 34264,
+            "PagefileUsage": 604344320,
+            "PeakPagefileUsage": 629043200
+          }
+        },
+        "femm_pids": [
+          33544
+        ],
+        "archived_measurement_sha256": "4988a526cc3359609ac94eff1340fc760864845d59b77766012884d8bbf5b6c9",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 550.3310375997098,
+            "max_s": 6.559953799995128
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 17.69800679993932,
+            "max_s": 0.22070200002053753
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 13.109646799857728,
+            "max_s": 0.16925219999393448
+          },
+          "mo_selectblock": {
+            "count": 2784,
+            "elapsed_s": 5.825160299806157,
+            "max_s": 0.0067820000112988055
+          },
+          "mi_addnode": {
+            "count": 29952,
+            "elapsed_s": 5.1943454999127425,
+            "max_s": 0.006202299991855398
+          },
+          "mi_addarc": {
+            "count": 7296,
+            "elapsed_s": 4.7957851998799015,
+            "max_s": 0.005752000026404858
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.036351599876070395,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 33544,
+              "cpu_mask": 1024
+            }
+          ],
+          "core_index": 5,
+          "cpu_mask": 1024,
+          "acquired_at": "2026-10-16T04:09:18.402561+00:00",
+          "released_at": "2026-10-16T04:20:18.663179+00:00"
+        }
+      },
+      {
+        "case_id": "ipm_flat_12s10p_fscw_contract",
+        "phase": "B",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "bb95f4e7bd4ef6fa27e7cc4745c81b21f9c04e41435bb1818b2b99de7d0aec3b",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "9f58d67d614d1361ae99534ad095eb54dff87f9c1206f6a64a6f20519ca56fe9",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "c142c416d11871eac3c2597f067bcd36ffc54aa7d5696caeb8f61ff526cabd1f",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 1459.8091787000012,
+        "producer_wall_s": 1457.5723494999984,
+        "archived_producer_wall_s": 1503.0009744000054,
+        "result_sha256": "98ff7896583973372d0925b5c57f1d95662565aa35e01b4ae61ae0e371a96fa2",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 1337.109375,
+          "solver_kernel_cpu_s": 21.96875,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 40591360,
+          "python_cpu_s": 81.71875,
+          "python_memory": {
+            "PageFaultCount": 432534,
+            "PeakWorkingSetSize": 167251968,
+            "WorkingSetSize": 135688192,
+            "QuotaPeakPagedPoolUsage": 277840,
+            "QuotaPagedPoolUsage": 275864,
+            "QuotaPeakNonPagedPoolUsage": 53904,
+            "QuotaNonPagedPoolUsage": 36168,
+            "PagefileUsage": 621682688,
+            "PeakPagefileUsage": 654671872
+          }
+        },
+        "femm_pids": [
+          29600
+        ],
+        "archived_measurement_sha256": "95941452576eb6acfc519862987f22e831cbe61617c5edbcac590b41b3a5c220",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 1299.3889941998932,
+            "max_s": 16.62796270000399
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 22.04840210013208,
+            "max_s": 0.2614581999951042
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 16.133494999754475,
+            "max_s": 0.1862562999885995
+          },
+          "mo_selectblock": {
+            "count": 2976,
+            "elapsed_s": 7.9422893000009935,
+            "max_s": 0.007877899974118918
+          },
+          "mi_addnode": {
+            "count": 43776,
+            "elapsed_s": 7.078766600374365,
+            "max_s": 0.012335600011283532
+          },
+          "mo_blockintegral": {
+            "count": 1296,
+            "elapsed_s": 4.9105704999528825,
+            "max_s": 0.03579399999580346
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.0397073999629356,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 29600,
+              "cpu_mask": 64
+            }
+          ],
+          "core_index": 3,
+          "cpu_mask": 64,
+          "acquired_at": "2026-10-16T03:39:59.508716+00:00",
+          "released_at": "2026-10-16T04:04:18.578245+00:00"
+        }
+      },
+      {
+        "case_id": "ipm_flat_24s16p_industrial_contract",
+        "phase": "B",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "5466bbf8847c4ca547896f690d82f2416b72384475ef41a273ac8160521d9185",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "4f2af1d99f60bc1114671665e60caf8cfa69fc331479cfe164c6e0fd31f92ce1",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "88b0e205ebb10a73bab367ade934f4c7cc81360d8900b0e4363c741b5a6a1eb3",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 2015.099155999982,
+        "producer_wall_s": 2013.0080174999894,
+        "archived_producer_wall_s": 2054.1303785000055,
+        "result_sha256": "5f028c586027b2f5145ee6d48e6825a1a50c40e0c89ec17791da0b5a10c98d92",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 1839.78125,
+          "solver_kernel_cpu_s": 33.359375,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 56692736,
+          "python_cpu_s": 120.609375,
+          "python_memory": {
+            "PageFaultCount": 782595,
+            "PeakWorkingSetSize": 227278848,
+            "WorkingSetSize": 173654016,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275624,
+            "QuotaPeakNonPagedPoolUsage": 60192,
+            "QuotaNonPagedPoolUsage": 40656,
+            "PagefileUsage": 659943424,
+            "PeakPagefileUsage": 714153984
+          }
+        },
+        "femm_pids": [
+          19220
+        ],
+        "archived_measurement_sha256": "aa10e43af32b4570eb8c0c83846bfd4125663c12fd31b0d5a2a38ddf2c92a7fe",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 1771.316642199934,
+            "max_s": 24.932284400012577
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 32.43827820001752,
+            "max_s": 0.4368959999992512
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 23.04562240015366,
+            "max_s": 0.25110019999556243
+          },
+          "mo_selectblock": {
+            "count": 5280,
+            "elapsed_s": 19.791377899964573,
+            "max_s": 0.01136819997918792
+          },
+          "mi_addnode": {
+            "count": 76032,
+            "elapsed_s": 11.632530303410022,
+            "max_s": 0.004448399995453656
+          },
+          "mo_blockintegral": {
+            "count": 2448,
+            "elapsed_s": 8.03202730033081,
+            "max_s": 0.05093460000352934
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.026778500177897513,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 19220,
+              "cpu_mask": 64
+            }
+          ],
+          "core_index": 3,
+          "cpu_mask": 64,
+          "acquired_at": "2026-10-16T02:39:29.930252+00:00",
+          "released_at": "2026-10-16T03:13:04.362432+00:00"
+        }
+      },
+      {
+        "case_id": "ipm_flat_4p12s_micro_contract",
+        "phase": "B",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "2c8cb06fbb9fcd45129ab0a668d1d3de51b8d18f8193df8dd89cc7cd9eb688c9",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "668717149ea6c5addeca807687cb250841afb738b537b1adc2c0c5bed01a576f",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "7a3b2e86a547040187dd05cb6e636339812f2cf6915577422a0e35a32e00662e",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 367.785139900021,
+        "producer_wall_s": 365.42424480000045,
+        "archived_producer_wall_s": 472.89579409999715,
+        "result_sha256": "29c280248a0ecebff23fdd80a69b1296a651546c71ab943b0a93c3b22ffd37f6",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 269.1875,
+          "solver_kernel_cpu_s": 20.828125,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 31801344,
+          "python_cpu_s": 46.453125,
+          "python_memory": {
+            "PageFaultCount": 287204,
+            "PeakWorkingSetSize": 134754304,
+            "WorkingSetSize": 112832512,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275848,
+            "QuotaPeakNonPagedPoolUsage": 50504,
+            "QuotaNonPagedPoolUsage": 33448,
+            "PagefileUsage": 599785472,
+            "PeakPagefileUsage": 622092288
+          }
+        },
+        "femm_pids": [
+          33684
+        ],
+        "archived_measurement_sha256": "7e0566fe5d70ad64b32a8b81b3cc29c1d7b2b49369f95bec93433156e7c856fe",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 255.21710729997722,
+            "max_s": 3.0672945999831427
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 16.844488099886803,
+            "max_s": 0.20940029999474064
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 12.646362199971918,
+            "max_s": 0.15684029998374172
+          },
+          "mi_addnode": {
+            "count": 29952,
+            "elapsed_s": 6.260333698184695,
+            "max_s": 0.02387170001748018
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 5.132815000280971,
+            "max_s": 0.013972599990665913
+          },
+          "mi_addarc": {
+            "count": 5760,
+            "elapsed_s": 4.300054298742907,
+            "max_s": 0.003577199997380376
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.038721900375094265,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 33684,
+              "cpu_mask": 1
+            }
+          ],
+          "core_index": 0,
+          "cpu_mask": 1,
+          "acquired_at": "2026-10-16T04:21:34.821657+00:00",
+          "released_at": "2026-10-16T04:27:41.797704+00:00"
+        }
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+        "phase": "B",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "d35834a5bda42a5650d10a5006bdb2210d2a5a413641eec20c5037b36720dab0",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "e1c405d9432280648f320741929ab01dcb7dfd14b4df05112fe60b99026d93ed",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "98b63cd5d2775a3d25e253d7c433c37e61f43f3ec2d1c4fe361921b79d924924",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 1304.742807600007,
+        "producer_wall_s": 1302.3534974999784,
+        "archived_producer_wall_s": 1052.1761990000086,
+        "result_sha256": "923c6ba246339b784320b8606064ae478388fbaeabb7cb8ef45079277d4f0036",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 1203.328125,
+          "solver_kernel_cpu_s": 23.484375,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 38187008,
+          "python_cpu_s": 52.90625,
+          "python_memory": {
+            "PageFaultCount": 371875,
+            "PeakWorkingSetSize": 154931200,
+            "WorkingSetSize": 126664704,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275848,
+            "QuotaPeakNonPagedPoolUsage": 52744,
+            "QuotaNonPagedPoolUsage": 35080,
+            "PagefileUsage": 613367808,
+            "PeakPagefileUsage": 641884160
+          }
+        },
+        "femm_pids": [
+          29492
+        ],
+        "archived_measurement_sha256": "410050a50dff68d7f42653be8502b4647e34260402a50efe39a3abd1a84a3524",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 1164.7492847000249,
+            "max_s": 18.876272100023925
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 24.794038300053217,
+            "max_s": 0.33229359998949803
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 17.440366700058803,
+            "max_s": 0.2623338999983389
+          },
+          "mo_selectblock": {
+            "count": 2784,
+            "elapsed_s": 8.311068899871316,
+            "max_s": 0.014169500005664304
+          },
+          "mi_addnode": {
+            "count": 39168,
+            "elapsed_s": 8.11243589600781,
+            "max_s": 0.003950100013753399
+          },
+          "mo_blockintegral": {
+            "count": 1296,
+            "elapsed_s": 4.460537400358589,
+            "max_s": 0.033812500012572855
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.035487499728333205,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 29492,
+              "cpu_mask": 4
+            }
+          ],
+          "core_index": 1,
+          "cpu_mask": 4,
+          "acquired_at": "2026-10-16T04:05:19.972701+00:00",
+          "released_at": "2026-10-16T04:27:03.900285+00:00"
+        }
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_contract",
+        "phase": "B",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "325234a93c8a6e81739596f90b97a0d16b1d4afaa5d671a409a69233b97dd794",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "1751a67667e7cf68d982fe9fc3d09c5dbb9fa0a9e1ec2ea975aff8ae80f533a7",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "d8ab87b47981834781fd20398e0f3974d7a07ecc53988acf7dfd950201001f84",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 959.6033334999811,
+        "producer_wall_s": 957.2571123999951,
+        "archived_producer_wall_s": 950.1346181999979,
+        "result_sha256": "78f3c9300bece0b6a21fa7dd606f312367ad733d0e30b2a423cf1312cfb3b1d3",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 850.34375,
+          "solver_kernel_cpu_s": 20.03125,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 37183488,
+          "python_cpu_s": 67.953125,
+          "python_memory": {
+            "PageFaultCount": 358808,
+            "PeakWorkingSetSize": 153591808,
+            "WorkingSetSize": 126255104,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275848,
+            "QuotaPeakNonPagedPoolUsage": 52544,
+            "QuotaNonPagedPoolUsage": 34944,
+            "PagefileUsage": 612855808,
+            "PeakPagefileUsage": 639987712
+          }
+        },
+        "femm_pids": [
+          18952
+        ],
+        "archived_measurement_sha256": "d8cac3979fb1be5e826205a35b7ab3b1592bc7f525199b4b21408ccfa6b96c58",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 816.5044500999793,
+            "max_s": 11.783789099979913
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 20.53805240005022,
+            "max_s": 0.2802259000018239
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 14.972933200071566,
+            "max_s": 0.1898656000266783
+          },
+          "mo_selectblock": {
+            "count": 2784,
+            "elapsed_s": 7.230255599803058,
+            "max_s": 0.010084599984111264
+          },
+          "mi_addnode": {
+            "count": 39168,
+            "elapsed_s": 7.059954800410196,
+            "max_s": 0.00646420000703074
+          },
+          "mo_blockintegral": {
+            "count": 1296,
+            "elapsed_s": 3.9754555000108667,
+            "max_s": 0.03226439998252317
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.038667599961627275,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 18952,
+              "cpu_mask": 4096
+            }
+          ],
+          "core_index": 6,
+          "cpu_mask": 4096,
+          "acquired_at": "2026-10-16T04:05:20.310380+00:00",
+          "released_at": "2026-10-16T04:21:19.106552+00:00"
+        }
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+        "phase": "B",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "804a39124334baaf25a869b107c1ca15dc3b159cff48d68ac9be4525f9654774",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "0f2baa0523193c271f654fad49646be63a435cd5f1710482d62479ccb8e9f3b8",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "d6bac3319a19841c62220819c82e4f7626e4974a882f2c45313d4dae081f3261",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 1499.3341823000228,
+        "producer_wall_s": 1497.2831043000042,
+        "archived_producer_wall_s": 1296.6927656999906,
+        "result_sha256": "0f193d8805b9a47fdf09fb9664dcda8fa95e4f242184b6290fd7387a4a198f6c",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 1381.84375,
+          "solver_kernel_cpu_s": 22.109375,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 39157760,
+          "python_cpu_s": 71.09375,
+          "python_memory": {
+            "PageFaultCount": 410708,
+            "PeakWorkingSetSize": 162979840,
+            "WorkingSetSize": 134676480,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275848,
+            "QuotaPeakNonPagedPoolUsage": 53408,
+            "QuotaNonPagedPoolUsage": 35896,
+            "PagefileUsage": 621117440,
+            "PeakPagefileUsage": 649564160
+          }
+        },
+        "femm_pids": [
+          19804
+        ],
+        "archived_measurement_sha256": "74630240647eadc8a9b6171fe19787158d63ba1680dddb28f72b9e2d380f6915",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 1351.0139331001265,
+            "max_s": 21.367048799991608
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 21.708247600035975,
+            "max_s": 0.2689728999976069
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 16.091594499856,
+            "max_s": 0.21027999999932945
+          },
+          "mo_selectblock": {
+            "count": 2784,
+            "elapsed_s": 7.42419759958284,
+            "max_s": 0.013095300004351884
+          },
+          "mi_addnode": {
+            "count": 39168,
+            "elapsed_s": 7.0501613976375666,
+            "max_s": 0.011394400004064664
+          },
+          "mo_blockintegral": {
+            "count": 1296,
+            "elapsed_s": 4.262561699695652,
+            "max_s": 0.030101199983619153
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.04030300004524179,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 19804,
+              "cpu_mask": 64
+            }
+          ],
+          "core_index": 3,
+          "cpu_mask": 64,
+          "acquired_at": "2026-10-16T04:04:20.522241+00:00",
+          "released_at": "2026-10-16T04:29:19.177220+00:00"
+        }
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_baseline_contract",
+        "phase": "B",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "047eac99a4fe6c4a4059bfbbb5341708d75147f57969556e48b2854c58ef1913",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "7493e90548ddaab62761564d386c96a58af1609511d12d385b050cb7a3aab7d3",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "e70b359cdb116630923fecc934de791f310275ca94adbab710c3e6adfab9778e",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 1567.9818555999955,
+        "producer_wall_s": 1565.811433099996,
+        "archived_producer_wall_s": 1572.1137507999956,
+        "result_sha256": "b7552238dea38b0d13ada4368d93244ff5c97927f398efc65349c610a2344cb0",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 1425.078125,
+          "solver_kernel_cpu_s": 25.953125,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 42106880,
+          "python_cpu_s": 96.703125,
+          "python_memory": {
+            "PageFaultCount": 436308,
+            "PeakWorkingSetSize": 168960000,
+            "WorkingSetSize": 136884224,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275848,
+            "QuotaPeakNonPagedPoolUsage": 54208,
+            "QuotaNonPagedPoolUsage": 36304,
+            "PagefileUsage": 624455680,
+            "PeakPagefileUsage": 655331328
+          }
+        },
+        "femm_pids": [
+          15484
+        ],
+        "archived_measurement_sha256": "99c1341ea66fd4f26d1ffb272b42ba203f0e03182c2fcafde0679635c6e7555e",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 1381.7810039001633,
+            "max_s": 21.13809590000892
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 23.07887369961827,
+            "max_s": 0.30316290000337176
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 16.873080600227695,
+            "max_s": 0.2472694999887608
+          },
+          "mo_selectblock": {
+            "count": 3552,
+            "elapsed_s": 11.351763199956622,
+            "max_s": 0.011677700007567182
+          },
+          "mi_addnode": {
+            "count": 57600,
+            "elapsed_s": 9.957992299518082,
+            "max_s": 0.014901499991538003
+          },
+          "mi_addsegment": {
+            "count": 14592,
+            "elapsed_s": 5.9882067006547,
+            "max_s": 0.0026566000015009195
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.04173369993804954,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 15484,
+              "cpu_mask": 16
+            }
+          ],
+          "core_index": 2,
+          "cpu_mask": 16,
+          "acquired_at": "2026-10-16T03:18:27.633986+00:00",
+          "released_at": "2026-10-16T03:44:34.911057+00:00"
+        }
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+        "phase": "B",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "5f25e8bba467f760e4521d901836c136186ab5c5e238f37a3f7387927a46f0e7",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "acbd6492d90dbf4b9d751f39558552255aae1dd33789773afdb3e65721cf49c3",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "f1c4d98419dfcba8210068377edb0eae6a646f76a2c7faa66e2b2777d17aac1e",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 1499.5073188999959,
+        "producer_wall_s": 1497.2158517999924,
+        "archived_producer_wall_s": 1491.5853321000031,
+        "result_sha256": "3a065f53a7b7cbb154df167f4bc9960db2c1159b7ee9c0e40235c61f6a57d223",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 1355.6875,
+          "solver_kernel_cpu_s": 25.15625,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 41447424,
+          "python_cpu_s": 96.5625,
+          "python_memory": {
+            "PageFaultCount": 421500,
+            "PeakWorkingSetSize": 165335040,
+            "WorkingSetSize": 133095424,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275848,
+            "QuotaPeakNonPagedPoolUsage": 53816,
+            "QuotaNonPagedPoolUsage": 35896,
+            "PagefileUsage": 619831296,
+            "PeakPagefileUsage": 651661312
+          }
+        },
+        "femm_pids": [
+          7028
+        ],
+        "archived_measurement_sha256": "300ba0e6c74f24fc947c79b46174ed3119fff19a2cd2bec3b5cb2194fb1030eb",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 1314.9327082000964,
+            "max_s": 20.79593960000784
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 21.83360959982383,
+            "max_s": 0.27472700001089834
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 16.145946399949025,
+            "max_s": 0.224880599998869
+          },
+          "mo_selectblock": {
+            "count": 3552,
+            "elapsed_s": 11.169250899431063,
+            "max_s": 0.009219800005666912
+          },
+          "mi_addnode": {
+            "count": 57600,
+            "elapsed_s": 10.161753000342287,
+            "max_s": 0.008068499999353662
+          },
+          "mi_addsegment": {
+            "count": 14592,
+            "elapsed_s": 6.128485397435725,
+            "max_s": 0.0025334999954793602
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.05011500004911795,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 7028,
+              "cpu_mask": 1024
+            }
+          ],
+          "core_index": 5,
+          "cpu_mask": 1024,
+          "acquired_at": "2026-10-16T03:44:17.554593+00:00",
+          "released_at": "2026-10-16T04:09:16.325940+00:00"
+        }
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_narrow_angle_contract",
+        "phase": "B",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "8d94ba394cface263cb29d700fb12f9ce0b641f76e919d04bed06dd28f742b26",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "96f66e0cbfdd523d1c8901ab4ca0bff38e21cdcaa615cc7edde99065b5923e74",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "ccbd5d302e79965c4d063aee215cd8e509e94899053023e19fb352dae7ffec46",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 1612.042130899994,
+        "producer_wall_s": 1609.832527199993,
+        "archived_producer_wall_s": 1619.7890627000015,
+        "result_sha256": "0bbc90f1d89c5fc2d492767cf5ce2f78df581fad71b5ffa3941a45ae7445aa44",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 1465.296875,
+          "solver_kernel_cpu_s": 25.46875,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 42573824,
+          "python_cpu_s": 101.375,
+          "python_memory": {
+            "PageFaultCount": 442987,
+            "PeakWorkingSetSize": 169836544,
+            "WorkingSetSize": 137601024,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275848,
+            "QuotaPeakNonPagedPoolUsage": 54224,
+            "QuotaNonPagedPoolUsage": 36304,
+            "PagefileUsage": 624095232,
+            "PeakPagefileUsage": 657092608
+          }
+        },
+        "femm_pids": [
+          3080
+        ],
+        "archived_measurement_sha256": "c019670887d0e8a13179c0feb34af20dd1c4ceee4e5dd052ee9bcb11696beef0",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 1424.065821399825,
+            "max_s": 21.271272600017255
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 22.49467450013617,
+            "max_s": 0.2695745000091847
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 16.355992700118804,
+            "max_s": 0.2069238999974914
+          },
+          "mo_selectblock": {
+            "count": 3552,
+            "elapsed_s": 10.94270780053921,
+            "max_s": 0.010193599999183789
+          },
+          "mi_addnode": {
+            "count": 57600,
+            "elapsed_s": 9.560655598994344,
+            "max_s": 0.016113000019686297
+          },
+          "mi_addsegment": {
+            "count": 14592,
+            "elapsed_s": 5.845698600431206,
+            "max_s": 0.0022837000142317265
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.053410999884363264,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 3080,
+              "cpu_mask": 64
+            }
+          ],
+          "core_index": 3,
+          "cpu_mask": 64,
+          "acquired_at": "2026-10-16T03:13:06.241338+00:00",
+          "released_at": "2026-10-16T03:39:57.571357+00:00"
+        }
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+        "phase": "B",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "ec5b269154eca855318306fab32a98166c91bd00f2543672b5ea8b1840b63787",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "3910391bbf1b72a969eaddeb8bf106db7d0b5bbcec484a0c6ed06fac57bf943d",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "38070046f9683bc14f0d18a48e27bd48b80e9234b8089b2c5ab1bc070bfb76ce",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 1616.7700375999848,
+        "producer_wall_s": 1614.684786400001,
+        "archived_producer_wall_s": 1597.5066560999985,
+        "result_sha256": "1f625a355015bba92e3fa7e7b5b8280faa289be1c479782dbe7c699b5657533c",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 1435.515625,
+          "solver_kernel_cpu_s": 33.09375,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 43069440,
+          "python_cpu_s": 99.34375,
+          "python_memory": {
+            "PageFaultCount": 436297,
+            "PeakWorkingSetSize": 169127936,
+            "WorkingSetSize": 136462336,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275848,
+            "QuotaPeakNonPagedPoolUsage": 54088,
+            "QuotaNonPagedPoolUsage": 36168,
+            "PagefileUsage": 622792704,
+            "PeakPagefileUsage": 656179200
+          }
+        },
+        "femm_pids": [
+          10936
+        ],
+        "archived_measurement_sha256": "8fcf9c65517baae6b86f69f0b938197c7673bc206e73bd75821926ca9bf0b4f5",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 1428.7835911001894,
+            "max_s": 22.32768409998971
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 23.284017600148218,
+            "max_s": 0.37569820001954213
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 16.687107600067975,
+            "max_s": 0.2021965000021737
+          },
+          "mo_selectblock": {
+            "count": 3552,
+            "elapsed_s": 11.302937900385587,
+            "max_s": 0.022177500010002404
+          },
+          "mi_addnode": {
+            "count": 57600,
+            "elapsed_s": 9.714580702508101,
+            "max_s": 0.008720199984963983
+          },
+          "mi_addsegment": {
+            "count": 14592,
+            "elapsed_s": 5.848037402291084,
+            "max_s": 0.004754099994897842
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.07435970011283644,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 10936,
+              "cpu_mask": 256
+            }
+          ],
+          "core_index": 4,
+          "cpu_mask": 256,
+          "acquired_at": "2026-10-16T03:13:06.576537+00:00",
+          "released_at": "2026-10-16T03:40:02.655424+00:00"
+        }
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_thin_bridge_contract",
+        "phase": "B",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "285423811e4a6bd9ff883d1f3208427b88bc37f69e7f52a8406e48f94bf7d819",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "13c5e43f6d2cf2a5e1817b89bb3b3cf717a7a37218de16e8b5531c1d122311b0",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "54598bae34d34d4a0096bd7d43881d3780982dda166587d87301d65d8dd08a6e",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 1523.8365152000042,
+        "producer_wall_s": 1521.6216694999894,
+        "archived_producer_wall_s": 1500.4336664999864,
+        "result_sha256": "d0772baad3d4b2285721b011c3f885368cfb77f85efeea960fdc1393b9169024",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 1347.859375,
+          "solver_kernel_cpu_s": 29.96875,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 42283008,
+          "python_cpu_s": 98.5,
+          "python_memory": {
+            "PageFaultCount": 429524,
+            "PeakWorkingSetSize": 167862272,
+            "WorkingSetSize": 135262208,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275848,
+            "QuotaPeakNonPagedPoolUsage": 54072,
+            "QuotaNonPagedPoolUsage": 36168,
+            "PagefileUsage": 621772800,
+            "PeakPagefileUsage": 654155776
+          }
+        },
+        "femm_pids": [
+          32592
+        ],
+        "archived_measurement_sha256": "88240ff835f01b9656a5ed4dc341a1e2b3f15b701ea882cb74fc9cb47e7625cd",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 1335.5229015001678,
+            "max_s": 22.417086200002814
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 23.25769850006327,
+            "max_s": 0.3072290999989491
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 16.891180399921723,
+            "max_s": 0.2203678000078071
+          },
+          "mo_selectblock": {
+            "count": 3552,
+            "elapsed_s": 11.868310899095377,
+            "max_s": 0.0227143999945838
+          },
+          "mi_addnode": {
+            "count": 57600,
+            "elapsed_s": 9.895259898941731,
+            "max_s": 0.00821849997737445
+          },
+          "mi_addsegment": {
+            "count": 14592,
+            "elapsed_s": 5.973780100146541,
+            "max_s": 0.0025910999975167215
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.07830290019046515,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 32592,
+              "cpu_mask": 256
+            }
+          ],
+          "core_index": 4,
+          "cpu_mask": 256,
+          "acquired_at": "2026-10-16T03:40:04.490368+00:00",
+          "released_at": "2026-10-16T04:05:27.589527+00:00"
+        }
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+        "phase": "B",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "bd5fd8805415bb08f1fc5c6857ccdb666fb02547f20dd067fd2bdb1ab298a580",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "6ae03b6fc33b13ccc5207b06a6058b0f11e7d74bdcd91b5e6caadfa3aa0a7dde",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "2e95b2897e3adf1cfc6d00fce15ef931d3281b2a1af542a9c66941feb1df8c08",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 1548.4553376999975,
+        "producer_wall_s": 1546.2962221000053,
+        "archived_producer_wall_s": 1509.6317756999924,
+        "result_sha256": "454c476bc321360b1f6432e8decf1c3dde9fc75582d0a25058f191e690337aa5",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 1401.015625,
+          "solver_kernel_cpu_s": 26.421875,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 43417600,
+          "python_cpu_s": 100.125,
+          "python_memory": {
+            "PageFaultCount": 435038,
+            "PeakWorkingSetSize": 169807872,
+            "WorkingSetSize": 136732672,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275848,
+            "QuotaPeakNonPagedPoolUsage": 54240,
+            "QuotaNonPagedPoolUsage": 36304,
+            "PagefileUsage": 623591424,
+            "PeakPagefileUsage": 656523264
+          }
+        },
+        "femm_pids": [
+          6580
+        ],
+        "archived_measurement_sha256": "01ae3a675ec3a8d07c7729cc68df5357f9973d0e84053d50734c38eb9ee6eff3",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 1359.6624084998039,
+            "max_s": 20.402423999999883
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 22.958611899928655,
+            "max_s": 0.29646820001653396
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 16.72761120009818,
+            "max_s": 0.2217258999880869
+          },
+          "mo_selectblock": {
+            "count": 3552,
+            "elapsed_s": 11.4226942989917,
+            "max_s": 0.010445799998706207
+          },
+          "mi_addnode": {
+            "count": 57600,
+            "elapsed_s": 9.902451100497274,
+            "max_s": 0.005465299997013062
+          },
+          "mi_addsegment": {
+            "count": 14592,
+            "elapsed_s": 6.030932101042708,
+            "max_s": 0.002323299995623529
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.04190510016633198,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 6580,
+              "cpu_mask": 1024
+            }
+          ],
+          "core_index": 5,
+          "cpu_mask": 1024,
+          "acquired_at": "2026-10-16T03:18:27.973930+00:00",
+          "released_at": "2026-10-16T03:44:15.726496+00:00"
+        }
+      },
+      {
+        "case_id": "spm_12p36s_distributed_femm_validation",
+        "phase": "C",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "07985755c4820491351e5a543583a33a74c2cfd8e5e8ea2a6b678821ab8f9e53",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "64218960bd4c91e573dfe6b8d2935ce39c7333802a93efa98c5c13d82c179958",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "564f007c2130b08d36ddd86ca76b0df73ba9736c89841d0ba6d2b9c62c19c0d2",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 2336.5860673999996,
+        "producer_wall_s": 2334.2510126999987,
+        "archived_producer_wall_s": 2133.2519268000033,
+        "result_sha256": "b262f225a4757a96f6bdcdd030897a93f2bd8e3eadcf2d78d8c45c85a469a834",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 2104.265625,
+          "solver_kernel_cpu_s": 111.109375,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 73539584,
+          "python_cpu_s": 99.140625,
+          "python_memory": {
+            "PageFaultCount": 858503,
+            "PeakWorkingSetSize": 242434048,
+            "WorkingSetSize": 184532992,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275624,
+            "QuotaPeakNonPagedPoolUsage": 61704,
+            "QuotaNonPagedPoolUsage": 42152,
+            "PagefileUsage": 670666752,
+            "PeakPagefileUsage": 728932352
+          }
+        },
+        "femm_pids": [
+          22928
+        ],
+        "archived_measurement_sha256": "a74eb04b165252b3b4a34997dc7bba2f9052685191cbccaaa2663c16760fcec9",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 2031.5835449999431,
+            "max_s": 33.324127200001385
+          },
+          "mo_selectblock": {
+            "count": 15264,
+            "elapsed_s": 63.892973602283746,
+            "max_s": 0.023322599998209625
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 35.224227299855556,
+            "max_s": 0.43332790001295507
+          },
+          "mo_blockintegral": {
+            "count": 27792,
+            "elapsed_s": 25.862749094958417,
+            "max_s": 0.06831490001059137
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 25.44613720016787,
+            "max_s": 0.3771662999934051
+          },
+          "mi_addarc": {
+            "count": 20736,
+            "elapsed_s": 16.5816589978931,
+            "max_s": 0.010199700016528368
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.03252000006614253,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 22928,
+              "cpu_mask": 16
+            }
+          ],
+          "core_index": 2,
+          "cpu_mask": 16,
+          "acquired_at": "2026-10-16T02:39:29.614856+00:00",
+          "released_at": "2026-10-16T03:18:25.531587+00:00"
+        }
+      },
+      {
+        "case_id": "spm_8p24s_distributed_femm_validation",
+        "phase": "C",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "e4c88c530ddfa5d93a2ad62e40c2f74c6dd111eac5fa20a09cfa1de26e09e05d",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "824a39138593430c8130e83b4f4ce733fde0b55ded2340cb504f6a77e0022604",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "53018b0f0f02f93d3c2091065ded2a171f7ce02951b27a1cd978fbc12375e367",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 1859.286881500011,
+        "producer_wall_s": 1856.7297835000209,
+        "archived_producer_wall_s": 1441.723152000006,
+        "result_sha256": "391d4d666057cb43169ce1d99c35713ca0a851f26f1938b189e3207f01b909f3",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 1670.984375,
+          "solver_kernel_cpu_s": 68.46875,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 58773504,
+          "python_cpu_s": 95.703125,
+          "python_memory": {
+            "PageFaultCount": 552618,
+            "PeakWorkingSetSize": 194609152,
+            "WorkingSetSize": 155615232,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275848,
+            "QuotaPeakNonPagedPoolUsage": 56656,
+            "QuotaNonPagedPoolUsage": 38344,
+            "PagefileUsage": 641773568,
+            "PeakPagefileUsage": 681017344
+          }
+        },
+        "femm_pids": [
+          30416
+        ],
+        "archived_measurement_sha256": "8cddddaa2ab80a2cdf565b1b762766a08a3bd97afb53aa7e3dc7a5bf5077a913",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 1627.6705241001619,
+            "max_s": 26.620043700007955
+          },
+          "mo_selectblock": {
+            "count": 10272,
+            "elapsed_s": 32.87503200149513,
+            "max_s": 0.01742359998752363
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 27.29996900007245,
+            "max_s": 0.35097379999933764
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 19.471557100187056,
+            "max_s": 0.26385379998828284
+          },
+          "mo_blockintegral": {
+            "count": 18576,
+            "elapsed_s": 16.11684079832048,
+            "max_s": 0.05238499998813495
+          },
+          "mi_addarc": {
+            "count": 14208,
+            "elapsed_s": 10.692711700947257,
+            "max_s": 0.016867099999217317
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.053228499920805916,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 30416,
+              "cpu_mask": 16
+            }
+          ],
+          "core_index": 2,
+          "cpu_mask": 16,
+          "acquired_at": "2026-10-16T03:44:36.869871+00:00",
+          "released_at": "2026-10-16T04:15:35.386111+00:00"
+        }
+      },
+      {
+        "case_id": "spm_8p48s_chorded_5_6",
+        "phase": "C",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "78162930eda8fe07d822798e7fc514f8b1293bd15cb4e8f4bb30f127af2b553e",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "e3fba40f291b4adeb1d7b8252c6c86c71c7da62f89343bdd384fd2913b30a7e8",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "38e743504ac129cd371679b0baf791c7bb1da88b610439eed29ac85d87b4709c",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 5149.100706199999,
+        "producer_wall_s": 5146.748201599985,
+        "archived_producer_wall_s": 2641.949727200001,
+        "result_sha256": "9000dc2c1726cf775fd16d84536a7e03e364e611661fcbbab7307e15d593cc26",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 4773.9375,
+          "solver_kernel_cpu_s": 167.21875,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 83615744,
+          "python_cpu_s": 175.484375,
+          "python_memory": {
+            "PageFaultCount": 1350886,
+            "PeakWorkingSetSize": 279883776,
+            "WorkingSetSize": 209199104,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275624,
+            "QuotaPeakNonPagedPoolUsage": 67336,
+            "QuotaNonPagedPoolUsage": 46096,
+            "PagefileUsage": 695959552,
+            "PeakPagefileUsage": 767848448
+          }
+        },
+        "femm_pids": [
+          16112
+        ],
+        "archived_measurement_sha256": "d0b4e6a5e90051b4b3671ff21f7c80b7b6852db9a7a5f5652e8d9acc215eaa21",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 4681.953223299992,
+            "max_s": 64.18873810002697
+          },
+          "mo_selectblock": {
+            "count": 19488,
+            "elapsed_s": 103.02736500071478,
+            "max_s": 0.030274799995822832
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 43.65229210004327,
+            "max_s": 0.7737659999984317
+          },
+          "mo_blockintegral": {
+            "count": 37008,
+            "elapsed_s": 42.378254101698985,
+            "max_s": 0.08901060000061989
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 30.840225800086046,
+            "max_s": 0.4543252000003122
+          },
+          "mi_addarc": {
+            "count": 25728,
+            "elapsed_s": 23.789007498067804,
+            "max_s": 0.009115900000324473
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.03502719980315305,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 16112,
+              "cpu_mask": 4
+            }
+          ],
+          "core_index": 1,
+          "cpu_mask": 4,
+          "acquired_at": "2026-10-16T02:39:29.306426+00:00",
+          "released_at": "2026-10-16T04:05:17.696009+00:00"
+        }
+      },
+      {
+        "case_id": "spm_8p48s_distributed_femm_validation",
+        "phase": "C",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "03056686ecd4f285e7c9ea2988815ac9fb9c4b256d4027860ae1b4db2eb07fee",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "a1af7ba6e44000339904f55a2d8f6c75050f5016d5d33b14dfd56f5a034793f8",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "9e1b9d6fef216d2728779498f22f42a58d0211adef2ce5175aa24db6a51434c5",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 5471.409681899997,
+        "producer_wall_s": 5468.731771199993,
+        "archived_producer_wall_s": 2656.463218699995,
+        "result_sha256": "7009822476b633558863322e7dfe85406825ad39b83e13c766e1e3870057c93c",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 4788.109375,
+          "solver_kernel_cpu_s": 310.328125,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 81301504,
+          "python_cpu_s": 169.515625,
+          "python_memory": {
+            "PageFaultCount": 1303855,
+            "PeakWorkingSetSize": 277590016,
+            "WorkingSetSize": 202391552,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275624,
+            "QuotaPeakNonPagedPoolUsage": 66856,
+            "QuotaNonPagedPoolUsage": 45144,
+            "PagefileUsage": 689172480,
+            "PeakPagefileUsage": 765038592
+          }
+        },
+        "femm_pids": [
+          17232
+        ],
+        "archived_measurement_sha256": "a94e1c5b9fa581a430b15272895dde6fc7aa131a827289d71c0df2bf2018fe65",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 5001.594627800136,
+            "max_s": 70.76831300000777
+          },
+          "mo_selectblock": {
+            "count": 19488,
+            "elapsed_s": 105.94705510011408,
+            "max_s": 0.030230300006223843
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 44.04589600011241,
+            "max_s": 0.5760865000193007
+          },
+          "mo_blockintegral": {
+            "count": 37008,
+            "elapsed_s": 43.92111419979483,
+            "max_s": 0.0905514000041876
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 31.519014799938304,
+            "max_s": 0.45512450000387616
+          },
+          "mi_addarc": {
+            "count": 25728,
+            "elapsed_s": 24.270539899967844,
+            "max_s": 0.011794199992436916
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 59.99999999999996,
+          "readiness_wait_s": 0.045985199918504804,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 17232,
+              "cpu_mask": 1
+            }
+          ],
+          "core_index": 0,
+          "cpu_mask": 1,
+          "acquired_at": "2026-10-16T02:39:29.012315+00:00",
+          "released_at": "2026-10-16T04:10:39.675819+00:00"
+        }
+      },
+      {
+        "case_id": "spm_14p12s_high_pole",
+        "phase": "D",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "99f383d4280b935c283793225047ed149f767244f5e4dc77c0075240c4c92101",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "17017285464cdb9d5db2dd979ba431a040257b0827326dff6bbd734b6f4e7d18",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 96,
+            "canonical_sha256": "e4ab28639a8d8fbdee7b6c1a142813a0f13372f65e7f8586db86dde07a5855ee",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 717.0352586999943,
+        "producer_wall_s": 714.6100471999962,
+        "archived_producer_wall_s": 919.7253745999915,
+        "result_sha256": "92c4b2347ca836d93a116f55ddff3926d7d4f01b5127e77f551e5b80d5ff550c",
+        "payload_cache": {
+          "builds": 96,
+          "reuses": 96
+        },
+        "resources": {
+          "solver_user_cpu_s": 567.15625,
+          "solver_kernel_cpu_s": 26.859375,
+          "solver_process_count": 289,
+          "solver_peak_job_commit_bytes": 37437440,
+          "python_cpu_s": 91.25,
+          "python_memory": {
+            "PageFaultCount": 629475,
+            "PeakWorkingSetSize": 153673728,
+            "WorkingSetSize": 127492096,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275280,
+            "QuotaPeakNonPagedPoolUsage": 52344,
+            "QuotaNonPagedPoolUsage": 35080,
+            "PagefileUsage": 613535744,
+            "PeakPagefileUsage": 641093632
+          }
+        },
+        "femm_pids": [
+          26460
+        ],
+        "archived_measurement_sha256": "1b6890b9bb8f399b14c9a0d41b9889509016d955b4bf47a4a0a544d72ea1eb6e",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 96,
+            "elapsed_s": 533.5695549998491,
+            "max_s": 7.938011999998707
+          },
+          "mi_createmesh": {
+            "count": 96,
+            "elapsed_s": 20.960644200007664,
+            "max_s": 0.29749090000404976
+          },
+          "mo_selectblock": {
+            "count": 6720,
+            "elapsed_s": 17.24962489993777,
+            "max_s": 0.013716099987505004
+          },
+          "mi_loadsolution": {
+            "count": 96,
+            "elapsed_s": 15.235618499893462,
+            "max_s": 0.2178243999951519
+          },
+          "mo_blockintegral": {
+            "count": 2592,
+            "elapsed_s": 8.510685100714909,
+            "max_s": 0.03957389999413863
+          },
+          "mi_addnode": {
+            "count": 36864,
+            "elapsed_s": 6.995760599558707,
+            "max_s": 0.012096699996618554
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 96,
+          "omitted_field_frame_writes": 192
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 96,
+          "loaded_mesh_checks": 96,
+          "replaced_settle_s": 67.20000000000012,
+          "readiness_wait_s": 0.07031589999678545,
+          "analysis_calls": 96
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 26460,
+              "cpu_mask": 256
+            }
+          ],
+          "core_index": 4,
+          "cpu_mask": 256,
+          "acquired_at": "2026-10-16T04:05:29.696448+00:00",
+          "released_at": "2026-10-16T04:17:25.969994+00:00"
+        }
+      },
+      {
+        "case_id": "spm_4p12s_small",
+        "phase": "D",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "b7138720fb8d4ce6436e1c5647285d32af1a2b4e0ab5611014e1bd576e337241",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "2e40852cf26c6cd098928070d53e0bc8cd8cde202192f7cbae9496e3f3e7159e",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "593c128a010b16b66c22e5fc3f1819bf666843ebddab4d1c67a2d4d8f034cdec",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 202.24972180000623,
+        "producer_wall_s": 200.17582200001925,
+        "archived_producer_wall_s": 324.71293899999,
+        "result_sha256": "d23855691300a7402863c9a0320199b20a8a99b2ab814fb73c8d83926408b6a5",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 159.640625,
+          "solver_kernel_cpu_s": 6.515625,
+          "solver_process_count": 145,
+          "solver_peak_job_commit_bytes": 29061120,
+          "python_cpu_s": 24.34375,
+          "python_memory": {
+            "PageFaultCount": 257565,
+            "PeakWorkingSetSize": 129449984,
+            "WorkingSetSize": 113192960,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275280,
+            "QuotaPeakNonPagedPoolUsage": 49776,
+            "QuotaNonPagedPoolUsage": 33176,
+            "PagefileUsage": 600444928,
+            "PeakPagefileUsage": 616271872
+          }
+        },
+        "femm_pids": [
+          38400
+        ],
+        "archived_measurement_sha256": "0161d994d10cee653f6a8d37c6d21ea4bfec7404e55f29a0b6232b571eada8f2",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 48,
+            "elapsed_s": 139.81709549989318,
+            "max_s": 3.414707099989755
+          },
+          "mi_createmesh": {
+            "count": 48,
+            "elapsed_s": 8.244319999939762,
+            "max_s": 0.2386794999765698
+          },
+          "mi_loadsolution": {
+            "count": 48,
+            "elapsed_s": 6.0172051000990905,
+            "max_s": 0.17157060001045465
+          },
+          "mo_selectblock": {
+            "count": 2400,
+            "elapsed_s": 4.100029300054302,
+            "max_s": 0.00670580001315102
+          },
+          "mo_blockintegral": {
+            "count": 1296,
+            "elapsed_s": 3.454825799824903,
+            "max_s": 0.02854739999747835
+          },
+          "mi_addnode": {
+            "count": 12672,
+            "elapsed_s": 2.3439221980515867,
+            "max_s": 0.013990000006742775
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 48,
+          "loaded_mesh_checks": 48,
+          "replaced_settle_s": 33.59999999999999,
+          "readiness_wait_s": 0.013351499976124614,
+          "analysis_calls": 48
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 38400,
+              "cpu_mask": 4
+            }
+          ],
+          "core_index": 1,
+          "cpu_mask": 4,
+          "acquired_at": "2026-10-16T04:27:06.379699+00:00",
+          "released_at": "2026-10-16T04:30:27.895454+00:00"
+        }
+      },
+      {
+        "case_id": "spm_8p12s_reference",
+        "phase": "D",
+        "physical_payload_exact": true,
+        "physical_payload_sha256": "d0acb8b82df32637de56f69ca83f81c4b9439d599e4f2d1cf4d109a5993841ab",
+        "audits": {
+          "flux_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "d04658520dec36f9aa20d7410303a8d9b0526d4f03fdb9b3e67a3923c4c2d38a",
+            "exact": true
+          },
+          "source_extraction_evidence": {
+            "count": 48,
+            "canonical_sha256": "07762fd83257ae8fb189259aa32830979e865f138188e69d8c043b0851fabd0d",
+            "exact": true
+          }
+        },
+        "worker_wall_s": 366.3191979000112,
+        "producer_wall_s": 364.14948729999014,
+        "archived_producer_wall_s": 468.5354456000059,
+        "result_sha256": "ebfe91d1bbace47a6f9f18bd70025a7ebe0102a0fbe529692d532188b188387e",
+        "payload_cache": {
+          "builds": 48,
+          "reuses": 48
+        },
+        "resources": {
+          "solver_user_cpu_s": 296.515625,
+          "solver_kernel_cpu_s": 11.5,
+          "solver_process_count": 145,
+          "solver_peak_job_commit_bytes": 30887936,
+          "python_cpu_s": 38.140625,
+          "python_memory": {
+            "PageFaultCount": 309234,
+            "PeakWorkingSetSize": 141766656,
+            "WorkingSetSize": 119255040,
+            "QuotaPeakPagedPoolUsage": 277824,
+            "QuotaPagedPoolUsage": 275280,
+            "QuotaPeakNonPagedPoolUsage": 51152,
+            "QuotaNonPagedPoolUsage": 34128,
+            "PagefileUsage": 606429184,
+            "PeakPagefileUsage": 628809728
+          }
+        },
+        "femm_pids": [
+          29680
+        ],
+        "archived_measurement_sha256": "181d9bd7151b2866c5a12a78a7d992a356b194b60ef08b90099f3e2e24df91d1",
+        "top_commands": {
+          "mi_analyze": {
+            "count": 48,
+            "elapsed_s": 284.23801299990737,
+            "max_s": 7.567122600012226
+          },
+          "mi_createmesh": {
+            "count": 48,
+            "elapsed_s": 9.404754399962258,
+            "max_s": 0.27778820000821725
+          },
+          "mi_loadsolution": {
+            "count": 48,
+            "elapsed_s": 6.829293999966467,
+            "max_s": 0.18850789999123663
+          },
+          "mo_selectblock": {
+            "count": 2784,
+            "elapsed_s": 5.722989600035362,
+            "max_s": 0.007325899990973994
+          },
+          "mo_blockintegral": {
+            "count": 1296,
+            "elapsed_s": 3.9472011002362706,
+            "max_s": 0.032239699998172
+          },
+          "mi_addnode": {
+            "count": 14976,
+            "elapsed_s": 2.9899196019105148,
+            "max_s": 0.008371199975954369
+          }
+        },
+        "benchmark_output_counts": {
+          "omitted_contours": 48,
+          "omitted_field_frame_writes": 96
+        },
+        "readiness_counts": {
+          "fresh_answer_checks": 48,
+          "loaded_mesh_checks": 48,
+          "replaced_settle_s": 33.59999999999999,
+          "readiness_wait_s": 0.031196100113447756,
+          "analysis_calls": 48
+        },
+        "physical_core_affinity": {
+          "policy": "one logical CPU from each distinct physical core, exclusive within this run",
+          "physical_core_masks": [
+            3,
+            12,
+            48,
+            192,
+            768,
+            3072,
+            12288,
+            49152
+          ],
+          "lease_scope_sha256_prefix": "2c848be154c11df0",
+          "assignments": [
+            {
+              "pid": 29680,
+              "cpu_mask": 256
+            }
+          ],
+          "core_index": 4,
+          "cpu_mask": 256,
+          "acquired_at": "2026-10-16T04:24:05.386808+00:00",
+          "released_at": "2026-10-16T04:30:10.951848+00:00"
+        }
+      }
+    ],
+    "retained_bytes": 505702712,
+    "all_physical_payloads_and_audits_exact": true
+  },
+  "phases": {
+    "A": {
+      "case_count": 10,
+      "summed_new_case_runtime_s": 4646.97855010003,
+      "summed_archived_case_runtime_s": 5701.006948399998,
+      "all_physical_payloads_and_audits_exact": true
+    },
+    "B": {
+      "case_count": 12,
+      "summed_new_case_runtime_s": 16948.360816099943,
+      "summed_archived_case_runtime_s": 16620.090973799983,
+      "all_physical_payloads_and_audits_exact": true
+    },
+    "C": {
+      "case_count": 4,
+      "summed_new_case_runtime_s": 14806.460768999998,
+      "summed_archived_case_runtime_s": 8873.388024700005,
+      "all_physical_payloads_and_audits_exact": true
+    },
+    "D": {
+      "case_count": 3,
+      "summed_new_case_runtime_s": 1278.9353565000056,
+      "summed_archived_case_runtime_s": 1712.9737591999874,
+      "all_physical_payloads_and_audits_exact": true
+    }
+  },
+  "observed_ratio_to_historical_serial_span": 4.897871008703917,
+  "observed_runtime_reduction_pct": 79.58296577792845,
+  "limitations": [
+    "One new full-suite observation versus the archived serial collection on the same host; not a repeated idle-host control.",
+    "FEMM reference collection only; native collection, bundle assembly, numerical evaluation and report rendering are separate stages.",
+    "Metrics mode omits visualization contour segments and field-frame JSON; physical fields and all registered physical outputs/audits are retained.",
+    "Windows readiness checks replace only pinned settle sites, with fresh-answer and loaded-mesh probes; Wine and retry behavior are unchanged.",
+    "The physical source is the frozen v3 pin; later motor-discovery changes require their own compatible references.",
+    "Unsupported cases, YELLOW/FAIL outcomes and scientific-review requirements are unchanged; this is not a qualification upgrade."
+  ],
+  "summed_femm_analysis_elapsed_s": 32873.94021449977,
+  "femm_analysis_share_of_summed_case_wall_pct": 87.24336132382818,
+  "local_bundle_assembly": {
+    "status": "REVIEW_REQUIRED",
+    "record_count": 29,
+    "bundle_sha256": "bfa13e2022a77a0b248a34de347bd4acfdb775cdebc0aa281ee2f00b8e16d96e",
+    "collection_manifest_sha256": "c7130849feaec0e1b549228660e15d395db2389578fc14b64ce25e0ccb5c2aca",
+    "collection_provenance_sha256": "429850dc3fa44949da71728b0c489ee0360ecf6cd464dda3dc146e7b9cc0506f",
+    "assembly_runtime_s": 3.495298499998171,
+    "smoke_gate": {
+      "status": "PASS",
+      "checks": {
+        "avg_torque_Nm": {
+          "actual": 0.47707813670238686,
+          "target": 0.477555,
+          "relative_limit": 0.001,
+          "pass": true
+        },
+        "back_emf_fundamental_V": {
+          "actual": 4.987861316206636,
+          "target": 4.987841,
+          "relative_limit": 0.001,
+          "pass": true
+        },
+        "lambda_pm_Wb": {
+          "actual": 0.011226632314274232,
+          "target": 0.011227,
+          "relative_limit": 0.001,
+          "pass": true
+        },
+        "energy_balance_ratio": {
+          "actual": 1.0016241292263757,
+          "target": 1.0,
+          "absolute_limit": 0.015,
+          "pass": true
+        }
+      }
+    },
+    "assembly_source_sha256": "6590e235c40bee07d1da91d1704bdcffdf9e66019853b6aad8d9c32f89b26783"
+  },
+  "local_validation_bridge": {
+    "schema": "coilem.local_reference_bridge_check/v1",
+    "status": "LOCAL_CANDIDATE_REVIEW_REQUIRED",
+    "record_count": 29,
+    "all_physical_results_exact": true,
+    "published_suite_unchanged": true,
+    "physical_requests_gates_and_validation_frames_unchanged": true,
+    "published_suite_sha256": "9d8cd79e60d0b908e072504a1886db7873f13047609697897ffdcccb81825743",
+    "candidate_suite_sha256": "a4684de380cd5df4199f91b4588dcd90caf7f4f6b52bebe2eea4b16a48911528",
+    "original_bundle_sha256": "95450ffcb909ed20caf514548f741c15611087a3482657c87add4255b308ba63",
+    "candidate_bundle_sha256": "bfa13e2022a77a0b248a34de347bd4acfdb775cdebc0aa281ee2f00b8e16d96e",
+    "candidate_manifest_sha256": "5699c085472f5684238894d07e41b2ec16a13f7e396a43021a64573243c6a4d7",
+    "checks": [
+      {
+        "case_id": "spm_14p12s_high_pole",
+        "physical_result_exact": true,
+        "physical_result_sha256": "34bcd8d4a8191178910e48c070669650b02e46915c088f5aa845e17768165dbf",
+        "original_record_sha256": "061710daa4cf331a97eaeb50aa3372a69a7f7e8d7fbc874947b9836e153dd161",
+        "new_record_sha256": "da8f695a82705f9c86145f43132fa7a9efbbfc029061ced560fc7fbf9d05ac40"
+      },
+      {
+        "case_id": "spm_4p12s_small",
+        "physical_result_exact": true,
+        "physical_result_sha256": "d877ee61387f5cd8d2b7eb22c6ff8dddba36742fd428849df7bf90ab5bf94abd",
+        "original_record_sha256": "6cd966f3d2dc43120326a5f32a1c11f25de75097b95de8ccc1f9f456d212768f",
+        "new_record_sha256": "3959a2e8d73dfd10facb18522e1d5f3b9699fd1a5943388ee1af773d9075848b"
+      },
+      {
+        "case_id": "spm_8p12s_reference",
+        "physical_result_exact": true,
+        "physical_result_sha256": "1d0447a282d4c0e7094816821cc986e6fb6b4e98a86a064ee98d86e979759ece",
+        "original_record_sha256": "72dc3c15777846ff7da71cc57ee3b93ab51e7b8ff8a72e35f0cac83395a9a0ad",
+        "new_record_sha256": "9371ebca0f72a9714370637b5f75d0d50b63b44263f2c481bacf7f4dada01593"
+      },
+      {
+        "case_id": "ipm_flat_12s10p_fscw_contract",
+        "physical_result_exact": true,
+        "physical_result_sha256": "e8bc754b692dae8167fd8a803fcd719476b827dc74d220cb25d64216dd4221bd",
+        "original_record_sha256": "6a5b716c8cdd7d9c69e24c8ce03d47f0dbdc2bdef98b185a374d221f71907314",
+        "new_record_sha256": "989689193e6dfc8748fe653f904aaee4e11e98d4c8f058d93f9c92c27f4ffb84"
+      },
+      {
+        "case_id": "ipm_flat_24s16p_industrial_contract",
+        "physical_result_exact": true,
+        "physical_result_sha256": "0d7974872cf36bec5ee2594eed871e161f6892a263a1123038a54372ffac6082",
+        "original_record_sha256": "db9826b250ef22556c0451c4e89f92b800a0e403c75058dbf3e7416ad058f325",
+        "new_record_sha256": "9c9b0606d7283758abff2bc58a7d8c65cd1f430c819b1988c0d14ed015384a4b"
+      },
+      {
+        "case_id": "ipm_flat_4p12s_micro_contract",
+        "physical_result_exact": true,
+        "physical_result_sha256": "5cb0b59195a39cb737dc719d58ca4877ebe7c997ab61004a65652ad4a9eea0a3",
+        "original_record_sha256": "85aad63946503e747a894abf06b6f3fecb867bb603020280fca8fe835195406a",
+        "new_record_sha256": "1ab28028c03b38ec8e10c86e88dabad761ab63cac747e38b53c28ae3360e31b0"
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+        "physical_result_exact": true,
+        "physical_result_sha256": "47c1247919a9df6b48f440b47f0d4fdbd753aea80c6e3ef96141b3b0ada902ae",
+        "original_record_sha256": "78a8e91a032277a07fb5825f3f12aefa0c8747e42dbd92801d39f074f82bfe51",
+        "new_record_sha256": "02c68be5f33f3a5fa0de85e23259f90e384794f83d90b08a2af5db10169cc2e9"
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_contract",
+        "physical_result_exact": true,
+        "physical_result_sha256": "9eba58f9b5f940b51f0396102aa5e3d0c42a424ac92be0fd79f786ca6baaef6d",
+        "original_record_sha256": "fb426da74cd514f2c9da813d627157fe6123abb2ef016b2d9a4a11cc42049918",
+        "new_record_sha256": "4147c529f59deb70501634a343fcd12f63d4b4368731c514bbcaa36f7790e283"
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+        "physical_result_exact": true,
+        "physical_result_sha256": "79095e5259b47da2bba265d8ae07fb0e19a58bc8fd4860bd2b6c9c5dd0d5582f",
+        "original_record_sha256": "b661cd9bd50a8ab411920c30a883751f7357c88b7e04a0da104af207202ca5fa",
+        "new_record_sha256": "9a01f9337be2551f5e489dd2e245d70e799db0006d2920261002f54b94890b8f"
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_baseline_contract",
+        "physical_result_exact": true,
+        "physical_result_sha256": "4e35d78d015f9c3b81567ea59a3b0156011f60272c4a6eabe457b880d7b7831c",
+        "original_record_sha256": "0badc2ef57195382e0881723630fdca43e6cea6900ce254b165e4cbc7115d3d9",
+        "new_record_sha256": "3a8bea31b79cfa860bb4f7c7ce409576d03eb464d10795d0d9c5614597d3bcdf"
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_narrow_angle_contract",
+        "physical_result_exact": true,
+        "physical_result_sha256": "6b8d80a839ccfc05102193563fa4552fcd479e814e4888d6d800ee4f065e2770",
+        "original_record_sha256": "58d0a8d9ae19d55e6ba93779b299fb2e25c45d1f832cc002471a115b939a1090",
+        "new_record_sha256": "415045f655e7b5c5ad42795b06956d3c2d428e07ab5d696a44894119bc803a06"
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+        "physical_result_exact": true,
+        "physical_result_sha256": "de5ed111c7bd99de1b186ea80dad2ee290cbdd63f52714d96a8f6bad70293769",
+        "original_record_sha256": "f938c884b6214cdf81f496cad53bc005c582198eaf5681f33335b15dbd7f9e10",
+        "new_record_sha256": "17f8583e739b40ee292cfbe8590a5374884230836c9207ad076a3caf0a97ce35"
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_thin_bridge_contract",
+        "physical_result_exact": true,
+        "physical_result_sha256": "c67bd9025d9f3863b4074f6c25ba7b30288cff8787439d3626e7c8e47ea4eaa1",
+        "original_record_sha256": "cd802364064102c3239280f076c5780d08c384203cbdf31b7665513150d3923c",
+        "new_record_sha256": "ddf7679226e3e70d00c95685c965d4edfd52d74ee683d09ce07a4a1724651626"
+      },
+      {
+        "case_id": "spm_12p36s_distributed_femm_validation",
+        "physical_result_exact": true,
+        "physical_result_sha256": "8edf9073036ca2ba371316afcec250a85bbfd840d704ead5276a0bf533a51488",
+        "original_record_sha256": "826da018bceb23f2d44a263ef3a0034d23c3783e97e0734eeca347d14637edde",
+        "new_record_sha256": "00a60a69840698d609754d765ea486b1b29c050152d9c942c0a6c57f17d291fb"
+      },
+      {
+        "case_id": "spm_4p12s_simple__baseline",
+        "physical_result_exact": true,
+        "physical_result_sha256": "64c0816745f2876feb3d3ceb4316cdc3fae6d60bca455a9bddf97e43778dac50",
+        "original_record_sha256": "5d3edfdef32ae6276571b3da60a42119766babebafad060bfa254dbcbde19f78",
+        "new_record_sha256": "147adef8df2851158c762c67fdf80504ab278bf9cb1d577189485aa963813a4e"
+      },
+      {
+        "case_id": "spm_4p12s_simple__high_current",
+        "physical_result_exact": true,
+        "physical_result_sha256": "67788781fde53d1cc0ed2b940b8038dc92030a80911c5e7cc140370e15c240cb",
+        "original_record_sha256": "e27694a3c7f210d3e60db76e0b587f4767d9b1d5b8d850bc2905b889c279cae0",
+        "new_record_sha256": "2dd125f0ce4ff54524d3e9119b04c2670e3e5f280788eca54a8fc7e3d73a09b1"
+      },
+      {
+        "case_id": "spm_4p12s_simple__tight_airgap",
+        "physical_result_exact": true,
+        "physical_result_sha256": "c88fc93b1271ae505f98591b64bf8efaf0af51a2bc7881c7fbb9629f728cac15",
+        "original_record_sha256": "c5d4c80f8cfd93616f22802fce47dac4bc0619d87048d17f7043868c527f582d",
+        "new_record_sha256": "d6067336bebd1782294e80e629f82193ee549981fa60a01cb45b60af5f93ec14"
+      },
+      {
+        "case_id": "spm_4p12s_simple_noload__baseline",
+        "physical_result_exact": true,
+        "physical_result_sha256": "89d17b6fa21f5a11b249827a41ea804b3ac37bbdf192468d77c6df3a925ada82",
+        "original_record_sha256": "3e15889fd0353da7c6be46ec72d950059891debdd3c68dec4422e79e9a7e6df4",
+        "new_record_sha256": "6866223a87b8d575877ae3593545414e1ae90b3e8b92cba175aa85433b806fee"
+      },
+      {
+        "case_id": "spm_4p12s_simple_noload__high_current",
+        "physical_result_exact": true,
+        "physical_result_sha256": "d06827802c87b02c317a3651c6d7ff86cd65dd193325c0b7f41e288a0a46664d",
+        "original_record_sha256": "7f966cbb156d044b82c477965ea6a89da6fd7af89db1e2127d86b5464d356038",
+        "new_record_sha256": "2c60203399ec25beb3c2f0e2d4096db85bbf7aae09d9e57d7de251a4ce9a09f8"
+      },
+      {
+        "case_id": "spm_4p12s_simple_noload__tight_airgap",
+        "physical_result_exact": true,
+        "physical_result_sha256": "6f734b6b3189a03ba10e6525ba2d1ca821345a0d7b4819ad8ef122f0dfe10236",
+        "original_record_sha256": "df58381d7531da345443904515657a6e1695273988abe82fb6afb09316007322",
+        "new_record_sha256": "745c5aa4b8fb25de2efac4aad01222f86958e45102f3cbf3f77c2929cb0c76ce"
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__baseline",
+        "physical_result_exact": true,
+        "physical_result_sha256": "211155c7643a5163abf1d83e9b64ad75104a9a4f01b16f8a9d163e4bd02148c0",
+        "original_record_sha256": "ea21f90fd27b8e693c62374bb0c811e37752d800d2ee6896385e8f60423e78a8",
+        "new_record_sha256": "5cf1180a39995c9654879716447dd682c9af29ed4942142734710ae5d53cd28d"
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__high_current",
+        "physical_result_exact": true,
+        "physical_result_sha256": "39c4a8c4081b7f9899ec5f9a1c21e6af146725ea793979f9e88677a264204612",
+        "original_record_sha256": "4bffd56541e23dfd674cf20344b14f1c7495938fbe5ca1572f39fc020bceab71",
+        "new_record_sha256": "a33ef9f808e4c66fbcc045e7eb1eae0abfff40b14a31f474b588d882edf95b83"
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__tight_airgap",
+        "physical_result_exact": true,
+        "physical_result_sha256": "bccab9b60e4bb20ad9a35dd988ef1c8e8d809dddebf951371e660f8f231e072f",
+        "original_record_sha256": "f3c38862ca4f5bcb0f848a3e5a7292d54fcfb73f984daa3dded1f35842107944",
+        "new_record_sha256": "a5a737411621cf2d524099f3970819ea88ff51ee3563de45ab17013b29a7f101"
+      },
+      {
+        "case_id": "spm_8p12s_reference_angle30__baseline",
+        "physical_result_exact": true,
+        "physical_result_sha256": "24e46dc19a84d4cdf543868683c397a62a72969607493e5c82dcce66f74e046d",
+        "original_record_sha256": "b0de9eb761b5cb02d6031d3410f684e9d83f397b19d469175ed48161600508da",
+        "new_record_sha256": "cad15d8c2355b45bc6db9f8594ac12e520327cd84007595495a2a36db615a48a"
+      },
+      {
+        "case_id": "spm_8p24s_distributed_femm_validation",
+        "physical_result_exact": true,
+        "physical_result_sha256": "89a11c3d1f90a2556bfdb2c342c26fa7b5283ba927893c41452d3f41bd60540a",
+        "original_record_sha256": "42daeb1110ccc56af32b8784f71e5757a08089c9e24a68af20e542c3c9bbebf0",
+        "new_record_sha256": "b15d66e0172a70f95e4799c9c0886434d5305bf9271e34be3fe304208b6728ed"
+      },
+      {
+        "case_id": "spm_8p48s_chorded_5_6",
+        "physical_result_exact": true,
+        "physical_result_sha256": "9f53e8c5a815bd922f89bed568bab235f93474c95e49a388f69bcd3bd153e9f6",
+        "original_record_sha256": "dc603932a63ac3038ddb58bab4f31fa5d3b11585277930dfd3b365d0ce5e9f41",
+        "new_record_sha256": "6227986f8536f7ec5288cd6d8805a5b096edfebdfce8096810ab8a33dabebbba"
+      },
+      {
+        "case_id": "spm_8p48s_distributed_femm_validation",
+        "physical_result_exact": true,
+        "physical_result_sha256": "a556e447600d50fe6ee9d763f376018da1a81d2ffc483e44daafa33c7504d48a",
+        "original_record_sha256": "0f7c011d4d83c9c36a4e0330ccd4de4944bfba938be479d1622a2e6d56409701",
+        "new_record_sha256": "42b14da53398fc78c4a74452a66f502cec2e9def4f011abcc4af1c7466f8e807"
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+        "physical_result_exact": true,
+        "physical_result_sha256": "45e99eb40c968b92ebf02ffd3fd0546ab2588681aef808342c6ea3252f6cb978",
+        "original_record_sha256": "d0c41dc4dd07833f12af2c92dabbb4c6053e0084fe1a8af68a4047b98997731b",
+        "new_record_sha256": "d747d9f9e79f4d899fef4bf4f1e2aeef6b0910c4adbba75d8d664257d883f677"
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+        "physical_result_exact": true,
+        "physical_result_sha256": "43072fec84749b4265f573dcca814dba263d05c4774107a504972696c94eb11d",
+        "original_record_sha256": "68d3fbc08cba2888deb0dce683b4aac632dda753ad8a6cd979b086ead1d07bdb",
+        "new_record_sha256": "4875166aa3261fa113ffed32fd06a60bfeb0b7a309ce9cd3c70d902c67d3392e"
+      }
+    ],
+    "bridge_source_sha256": "00c8292fdfe2413469989e914d60b20be95f2a24980619016c30eb823a7f015a",
+    "limitations": [
+      "Technical compatibility check only; no new native collection or scientific qualification.",
+      "Published suite and reference registry are unchanged; this is an explicit local candidate."
+    ]
+  },
+  "historical_assembly_replay_check": {
+    "status": "PASS",
+    "scope": "Historical fixture replay tests assembly only; no new solve/performance claim",
+    "record_count": 29,
+    "all_reference_record_bytes_exact": true,
+    "validation_status": "REVIEW_REQUIRED",
+    "assembly_source_sha256": "6590e235c40bee07d1da91d1704bdcffdf9e66019853b6aad8d9c32f89b26783"
+  },
+  "recorded_concurrency_check": {
+    "schema": "coilem.recorded_concurrency_check/v1",
+    "status": "PASS",
+    "record_count": 29,
+    "run_manifest_sha256": "c7130849feaec0e1b549228660e15d395db2389578fc14b64ce25e0ccb5c2aca",
+    "worker_limit": 8,
+    "worker_budget": 8,
+    "peak_recorded_workers": 8,
+    "peak_recorded_worker_cost": 8,
+    "peak_recorded_large_jobs": 4,
+    "all_worker_intervals_within_limits": true,
+    "all_recorded_core_leases_exclusive": true,
+    "all_recorded_process_assignments_match": true,
+    "audit_source_sha256": "801bf768147933fa3da6f26f7c15e9ed18f42328593c1d083ddb78dfd0c16b7d"
+  }
+}

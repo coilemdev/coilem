@@ -51,6 +51,11 @@ _ACTIVE_RUNS_LOCK = threading.Lock()
 _ACTIVE_PARTIAL_RUNS: set[Path] = set()
 
 
+# The replay package is built from the stored run when downloaded.
+PACKAGE_MODE_ON_DEMAND = "on_demand"
+EXPORT_SCRATCH_MAX_AGE_S = 60 * 60
+
+
 class SolveWorkspaceError(RuntimeError):
     """Raised when a durable solve run cannot be stored or resolved safely."""
 
@@ -91,6 +96,22 @@ def _sha256_file(path: Path) -> str:
     with path.open("rb") as handle:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _copy_file_sha256(source: Path, target: Path) -> str:
+    """Copy ``source`` to ``target`` like ``shutil.copy2``; return the SHA-256 of the bytes copied.
+
+    Each artifact is read once. Hashing the source, copying it and then hashing
+    the copy read it three times, and the second hash re-read bytes just written
+    through the OS cache, so it added no integrity check.
+    """
+    digest = hashlib.sha256()
+    with source.open("rb") as reader, target.open("wb") as writer:
+        for chunk in iter(lambda: reader.read(1024 * 1024), b""):
+            digest.update(chunk)
+            writer.write(chunk)
+    shutil.copystat(source, target)
     return digest.hexdigest()
 
 
@@ -446,11 +467,19 @@ class SolveRunWriter:
                         retained = copied.get(source_key)
                         if retained is None:
                             suffixes = "".join(source.suffixes[-2:]) or ".bin"
-                            source_hash = _sha256_file(source)
+                            # The name carries the content hash, so copy under a
+                            # temporary name and rename once the hash is known.
+                            artifacts_dir = self.partial_path / "artifacts"
+                            artifacts_dir.mkdir(parents=True, exist_ok=True)
+                            copying = artifacts_dir / f".{len(copied) + 1:04d}.copying"
+                            try:
+                                source_hash = _copy_file_sha256(source, copying)
+                            except BaseException:
+                                copying.unlink(missing_ok=True)
+                                raise
                             relative = f"artifacts/{len(copied) + 1:04d}-{source_hash[:12]}{suffixes}"
                             target = self.partial_path / relative
-                            target.parent.mkdir(parents=True, exist_ok=True)
-                            shutil.copy2(source, target)
+                            copying.replace(target)
                             retained_id = _encode_run_artifact_id(
                                 self.project_slug,
                                 self.run_id,
@@ -461,7 +490,7 @@ class SolveRunWriter:
                             self._artifact_records.append(
                                 {
                                     "relative_path": relative,
-                                    "sha256": _sha256_file(target),
+                                    "sha256": source_hash,
                                     "size_bytes": target.stat().st_size,
                                 }
                             )
@@ -534,21 +563,14 @@ class SolveRunWriter:
             "source": "immutable_stored_run",
             "pdf_sha256": _sha256_bytes(pdf_bytes),
             "csv_sha256": _sha256_bytes(csv_bytes),
-            # The archive contains this manifest, so its own byte hash cannot
-            # be embedded without a circular dependency.  The package copy
-            # records this field as null; the authoritative on-disk manifest
-            # is finalized with the archive hash immediately afterward.
+            # The package is no longer stored: it repeated every artifact, about
+            # half of a run. It is built from this verified run folder when it
+            # is downloaded, so it has no stored hash; each file it contains is
+            # bound by this manifest instead.
             "package_sha256": None,
+            "package_mode": PACKAGE_MODE_ON_DEMAND,
             "deterministic_except_stored_run_timestamps": True,
         }
-        _atomic_write_json(self.partial_path / "manifest.json", manifest)
-        package_path = self.partial_path / "report" / "run-package.zip"
-        write_replayable_run_package(
-            self.partial_path,
-            package_path,
-            completed_at=completed_at,
-        )
-        manifest["exports"]["package_sha256"] = _sha256_file(package_path)
         _atomic_write_json(self.partial_path / "manifest.json", manifest)
         if self.workspace.usage_bytes() > self.workspace.max_bytes:
             for generated in (
@@ -793,6 +815,8 @@ class SolveWorkspace:
         export_bindings = manifest.get("exports")
         if isinstance(files, Mapping) and isinstance(export_bindings, Mapping):
             for export_name in ("pdf", "csv", "package"):
+                if export_name == "package" and export_bindings.get("package_mode") == PACKAGE_MODE_ON_DEMAND:
+                    continue
                 relative = files.get(export_name)
                 expected_hash = export_bindings.get(f"{export_name}_sha256")
                 if not isinstance(relative, str) or not isinstance(expected_hash, str):
@@ -940,6 +964,9 @@ class SolveWorkspace:
             raise SolveWorkspaceError(
                 "The stored run failed its integrity check. Restore the missing artifact or start a new analysis before exporting."
             )
+        exports = manifest.get("exports")
+        if export_name == "package" and isinstance(exports, Mapping) and exports.get("package_mode") == PACKAGE_MODE_ON_DEMAND:
+            return self._build_package_export(project_slug, run_id, manifest)
         files = manifest.get("files")
         relative = files.get(export_name) if isinstance(files, Mapping) else None
         if not isinstance(relative, str):
@@ -952,6 +979,46 @@ class SolveWorkspace:
             raise SolveWorkspaceError(
                 f"The stored {export_name} export is missing. Open the project and start a new analysis to rebuild the immutable run."
             ) from exc
+
+    @property
+    def export_scratch_root(self) -> Path:
+        """Where download-only exports are built; outside ``solves`` and its budget."""
+
+        return self.root / "exports"
+
+    def is_export_scratch(self, path: Path) -> bool:
+        return _inside(self.export_scratch_root, path)
+
+    def _build_package_export(self, project_slug: str, run_id: str, manifest: Mapping[str, Any]) -> Path:
+        """Build a verified run's replay package into a temporary file.
+
+        The caller (the download route) deletes it once sent. ZIP entries carry
+        the run's completion time, so the same run always gives the same bytes.
+        """
+
+        run = self.resolve_run(project_slug, run_id)
+        scratch = self.export_scratch_root
+        self._require_safe_path(scratch)
+        scratch.mkdir(parents=True, exist_ok=True)
+        # A download interrupted before cleanup leaves its file; drop old ones.
+        cutoff = datetime.now(timezone.utc).timestamp() - EXPORT_SCRATCH_MAX_AGE_S
+        for stale in scratch.glob("*.zip"):
+            try:
+                if stale.stat().st_mtime < cutoff:
+                    stale.unlink()
+            except OSError:
+                continue
+        target = scratch / f"{project_slug}-{run_id}-{uuid.uuid4().hex[:8]}.zip"
+        try:
+            write_replayable_run_package(
+                run,
+                target,
+                completed_at=str(manifest.get("completed_at") or ""),
+            )
+        except BaseException:
+            target.unlink(missing_ok=True)
+            raise
+        return target
 
     def list_runs(self, *, include_partial: bool = True) -> list[dict[str, Any]]:
         self._require_safe_path(self.solves_root)

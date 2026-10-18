@@ -2,21 +2,28 @@
 
 from __future__ import annotations
 
-import gzip
 import hashlib
 import json
+import math
 import threading
 import time
 from collections import OrderedDict
 from concurrent.futures import Future
 from typing import Any, Callable, Iterator
 
-from backend.field_artifacts import resolve_solve_cache_artifact_id
+from backend.field_artifacts import (
+    airgap_trace_profile_from_records,
+    read_field_line_frame_artifact,
+    resolve_solve_cache_artifact_id,
+)
 from backend.models import MotorConfig, SolveOptionsConfig
 from backend.solver import Magneto2DSolver
 
-_ARMATURE_CACHE_VERSION = "armature-field-sweep-v1"
+_ARMATURE_CACHE_VERSION = "armature-field-sweep-v2"
 _ARMATURE_CACHE_LIMIT = 4
+# Angular bins of each stator-only frame's air-gap profile: enough to fit the
+# working harmonic and the slot harmonics the field viewer compares it with.
+_AIRGAP_PROFILE_BINS = 120
 _armature_cache_lock = threading.Lock()
 _armature_cache: "OrderedDict[str, dict[str, Any]]" = OrderedDict()
 _armature_in_flight: dict[str, Future[dict[str, Any]]] = {}
@@ -159,8 +166,7 @@ def _hydrate_armature_frame_artifact(payload: dict[str, Any]) -> dict[str, Any]:
         return payload
     try:
         path = resolve_solve_cache_artifact_id(artifact_id)
-        with gzip.open(path, "rt", encoding="utf-8") as fh:
-            artifact_payload = json.load(fh)
+        artifact_payload = read_field_line_frame_artifact(path)
         full_frame = artifact_payload.get("field_line_frame")
         if not isinstance(full_frame, dict):
             return payload
@@ -169,9 +175,64 @@ def _hydrate_armature_frame_artifact(payload: dict[str, Any]) -> dict[str, Any]:
         return payload
 
 
+def _airgap_profile(frame: dict[str, Any]) -> dict[str, Any] | None:
+    """Binned air-gap Br and Bt of a full field frame, from its air-gap elements.
+
+    The field viewer reads the stator field's pole positions from this profile:
+    its pole labels and, in the Stator + PM view, its field axes (#120).
+    """
+
+    nodes = frame.get("nodes_mm")
+    triangles = frame.get("triangles")
+    regions = frame.get("regions")
+    bx_values = frame.get("element_bx_t")
+    by_values = frame.get("element_by_t")
+    if not all(isinstance(value, list) for value in (nodes, triangles, regions, bx_values, by_values)):
+        return None
+    if not len(triangles) == len(regions) == len(bx_values) == len(by_values):
+        return None
+    records: dict[str, list[float]] = {
+        "centroid_x_mm": [],
+        "centroid_y_mm": [],
+        "b_magnitude_t": [],
+        "b_radial_t": [],
+        "b_tangential_t": [],
+    }
+    for triangle, region, bx_t, by_t in zip(triangles, regions, bx_values, by_values):
+        if "airgap" not in str(region).lower() or not isinstance(triangle, list) or len(triangle) != 3:
+            continue
+        try:
+            points = [nodes[int(index)] for index in triangle]
+            cx = sum(float(point[0]) for point in points) / 3.0
+            cy = sum(float(point[1]) for point in points) / 3.0
+            bx = float(bx_t)
+            by = float(by_t)
+        except (IndexError, TypeError, ValueError):
+            continue
+        radius = math.hypot(cx, cy)
+        if not all(math.isfinite(value) for value in (cx, cy, bx, by)) or radius <= 0.0:
+            continue
+        records["centroid_x_mm"].append(cx)
+        records["centroid_y_mm"].append(cy)
+        records["b_magnitude_t"].append(math.hypot(bx, by))
+        records["b_radial_t"].append((bx * cx + by * cy) / radius)
+        records["b_tangential_t"].append((by * cx - bx * cy) / radius)
+    if not records["centroid_x_mm"]:
+        return None
+    try:
+        span_deg = float(frame.get("total_span_deg") or 360.0)
+    except (TypeError, ValueError):
+        span_deg = 360.0
+    return airgap_trace_profile_from_records(records, bin_count=_AIRGAP_PROFILE_BINS, span_deg=span_deg)
+
+
 def _slim_armature_frame(frame: Any) -> dict[str, Any]:
     payload = frame.model_dump(mode="json") if hasattr(frame, "model_dump") else dict(frame)
     payload = _hydrate_armature_frame_artifact(payload)
+    if payload.get("airgap_brbt") is None:
+        profile = _airgap_profile(payload)
+        if profile is not None:
+            payload["airgap_brbt"] = profile
     # Contours and airgap records are the exact values the UI needs. The
     # repeated solve mesh and per-element arrays stay in the normal artifact
     # cache to keep this one-shot HTTP response bounded.

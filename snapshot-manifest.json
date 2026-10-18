@@ -60,8 +60,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 9042,
-      "sha256": "420e3758fd297c5d1fc417f22c662e0ca72e5487db39aa0b2f1f82fe4b6d1c75"
+      "bytes": 9396,
+      "sha256": "c6abe20cc04765b7c539bcde07d993f767a16d806f638a2fd41805b84403aad9"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -102,6 +102,76 @@
       "path": "backend/back_emf_harmonics.py",
       "bytes": 5901,
       "sha256": "2e0e5538312c31d0dbe101a2a8887163deaab6e4e0d81925a21ae8b5af451c11"
+    },
+    {
+      "path": "backend/benchmark_suite/__init__.py",
+      "bytes": 335,
+      "sha256": "10d7206c8eea1eb866da061e9008887576c4b7f2fdb9f2c4d715761b9196de1b"
+    },
+    {
+      "path": "backend/benchmark_suite/abc_metrics.py",
+      "bytes": 4433,
+      "sha256": "206570f11d661feb2c95e4cf5ed939ddec0b1adc9c760b91631fd39b013767b8"
+    },
+    {
+      "path": "backend/benchmark_suite/bldc_metrics.py",
+      "bytes": 16680,
+      "sha256": "79b912dc1190ceaebdcbcb5ec0eea83f519063b9a16783bd5b80a2c31c447716"
+    },
+    {
+      "path": "backend/benchmark_suite/cli.py",
+      "bytes": 20797,
+      "sha256": "e1e6106a664527f03af89bdb23b10ad19d83cf185e7fb2f246e2eec08b299fcb"
+    },
+    {
+      "path": "backend/benchmark_suite/command.py",
+      "bytes": 7688,
+      "sha256": "70048689414f727e7d9ce9c297b9662e6d64080fd518b0597cf8570be47dfbfe"
+    },
+    {
+      "path": "backend/benchmark_suite/contract.py",
+      "bytes": 6708,
+      "sha256": "40c014b356b6616b31d9e4677c4fa25b7f33dbf9692340bf15206444bbf40db9"
+    },
+    {
+      "path": "backend/benchmark_suite/hardware.py",
+      "bytes": 3327,
+      "sha256": "6204d74fca84aad9297d368cbe03027277d7724e518c5ff747c767e541fb18cb"
+    },
+    {
+      "path": "backend/benchmark_suite/metrics.py",
+      "bytes": 6466,
+      "sha256": "1c54eee6f036c360da2cb42a41261f6360fade9908defcc2862562503ec1052a"
+    },
+    {
+      "path": "backend/benchmark_suite/physics.py",
+      "bytes": 2739,
+      "sha256": "348afbb089361e635526be4dee28eb2b554e72b58ef071cd3327fec843deb81c"
+    },
+    {
+      "path": "backend/benchmark_suite/record.py",
+      "bytes": 10648,
+      "sha256": "37b83a6e5aa3cfd2d47bd5ff8f390e912ef5ba90ebd7e06f0c126b03332f795b"
+    },
+    {
+      "path": "backend/benchmark_suite/references.py",
+      "bytes": 3526,
+      "sha256": "563ab74ec26c7cfdf8ad1876e13e24d9e57a9534f2417f08f246710a1f72d9d2"
+    },
+    {
+      "path": "backend/benchmark_suite/report.py",
+      "bytes": 28783,
+      "sha256": "0fbc7eab5c9ffc4f17d1e2472c6782002307804152abcf8224a7be414194bf98"
+    },
+    {
+      "path": "backend/benchmark_suite/share.py",
+      "bytes": 8997,
+      "sha256": "c26023448d3169f7b2269b2053aec03a322d3b60cb4099e641a8381d3d73f720"
+    },
+    {
+      "path": "backend/benchmark_suite/worker.py",
+      "bytes": 4246,
+      "sha256": "53447bd76e3c88afbee3ba14fcb90958642b9eb6dea038a7819cc26146f4dd93"
     },
     {
       "path": "backend/custom_materials.py",
@@ -170,18 +240,18 @@
     },
     {
       "path": "backend/field_artifacts.py",
-      "bytes": 11547,
-      "sha256": "379b89960bd89b3c23c854c2b9db936f942552cb2365f024250084653eeede1d"
+      "bytes": 16475,
+      "sha256": "bc6833736c881c441f260aa2d3c9e3aaa71f42930d34e855fa5172da53683559"
     },
     {
       "path": "backend/field_composition.py",
-      "bytes": 13760,
-      "sha256": "a3004702506189d0bb2ea27a9fc84f12c60311825c112efbcc71dfce3f52ae10"
+      "bytes": 16342,
+      "sha256": "53e4a43949f217d95a9acfba3a5565382e9494646437a3fa5ee5096f726f25e7"
     },
     {
       "path": "backend/field_lines.py",
-      "bytes": 16573,
-      "sha256": "ddde2f12c118374ca7048a9c190502ac838bfdb48a4d148729e9a68f78be41c9"
+      "bytes": 31236,
+      "sha256": "3fbf0def71ecc1402b883b3692a07aac5083f30aeaac026747452ec257196a26"
     },
     {
       "path": "backend/geometry.py",
@@ -210,8 +280,8 @@
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 74344,
-      "sha256": "7fc06b773b7b0546e86edfcdf81136564dc7693e2a556334b249da7662f73d65"
+      "bytes": 75184,
+      "sha256": "764e31391894685f1a259a90c7dbb562d612f585a92cef91761a5d6ae783f53f"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -280,13 +350,18 @@
     },
     {
       "path": "backend/launcher.py",
-      "bytes": 19562,
-      "sha256": "38d70a6b51f9aed61064242a47a9b1e3cf1914643d1de64bad0d3a40bc949ce8"
+      "bytes": 19883,
+      "sha256": "b2da34a85cd8d80d8c20e954e81f01bb665abd2ecb4376e4851cbcfcb4277408"
     },
     {
       "path": "backend/local_file_safety.py",
       "bytes": 1140,
       "sha256": "9d6430cac80c866ab54e2cdcaeaf2a08435265a23ba75f365925e84b1e7083ac"
+    },
+    {
+      "path": "backend/local_paths.py",
+      "bytes": 1414,
+      "sha256": "c9a0855930f0aa36d520cfcbea5da2222ce569c5ac199677f10e2dce50a9141a"
     },
     {
       "path": "backend/logging_utils.py",
@@ -340,8 +415,8 @@
     },
     {
       "path": "backend/models/config.py",
-      "bytes": 26570,
-      "sha256": "6f7b04272c5740bb02bed64dcdf7af4486ced9851a1b9e4c01d58ba56d75558e"
+      "bytes": 26997,
+      "sha256": "d2a919a0cb673ed557a63564c28a0ff51adf5436dfc7ffb9b381d9d2322d41dc"
     },
     {
       "path": "backend/models/errors.py",
@@ -380,18 +455,18 @@
     },
     {
       "path": "backend/preview.py",
-      "bytes": 39014,
-      "sha256": "704ad1cd0eecfaca80c0ba57783bdb4101fd61c35de1c2917aa41ebcafb561e5"
+      "bytes": 39043,
+      "sha256": "9d95bd235b3f2564b5c4fc6482adb549d01ac1ba25c6a9ce0da5c6e0cbf4eb28"
     },
     {
       "path": "backend/preview_from_ir.py",
-      "bytes": 9082,
-      "sha256": "3a3e9b8ec32cb28f00b40a896f66f616e56bd21e5957ad9c55c218b07c5e628c"
+      "bytes": 10654,
+      "sha256": "2f7c8764abdd35c4183ac4e63d27c304c38ec3cea7aa6e1a805c0dd2876b90b4"
     },
     {
       "path": "backend/public_field_playback.py",
-      "bytes": 26474,
-      "sha256": "548d90598572c72f9fac405f47688c88b8c6009425cc7ec3a648b418d7e38211"
+      "bytes": 28067,
+      "sha256": "71dc998a60567142723ad64041de6048d5074bc5e85b00452b4528ab53f6b51d"
     },
     {
       "path": "backend/public_field_playback_contract.py",
@@ -415,8 +490,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 53463,
-      "sha256": "a888c2dae3e36f2bb996935bebc487a839dc9b399a289a1dcb94328d348974d8"
+      "bytes": 53513,
+      "sha256": "befde85f42682921b406c13730951388faa8d624fee26950b63af594e5456d06"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -435,13 +510,13 @@
     },
     {
       "path": "backend/public_routes/runs.py",
-      "bytes": 5743,
-      "sha256": "f9270bed900c9deb9748f014e0fcafd25b34eb2968696e5a9e0474e88d34c894"
+      "bytes": 6031,
+      "sha256": "186e44cf0512ed3a8fa42b058097e1a81d12041f8319d5f30824828df07b35aa"
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 51250,
-      "sha256": "7fcaa62f30bf2b86cffe1ae8c705c9d451b64bd3bea817463c0f94924b6d76c7"
+      "bytes": 51560,
+      "sha256": "5d9c9bf19d6d47c9b206466e182121ced9d7aaae0e515d67bd98dcdaf605d4cd"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -460,23 +535,23 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 6481,
-      "sha256": "a8b2d50a4b3d23fc70fb81d0cfd05e77c71ae6de2ab4eef637819cb354d455c7"
+      "bytes": 6735,
+      "sha256": "eec1a879d97c8be51077bb95a3323f0501b73dfafe1f116d1d44d0e034bc1d1e"
     },
     {
       "path": "backend/resources.py",
-      "bytes": 6860,
-      "sha256": "f643d73b09ba46c4ed51a9ef667ca5fd4221df82fbefdaec5f4f82fe8e1027a9"
+      "bytes": 8283,
+      "sha256": "0a583d00f3b7af405955f5be94d31080f1055b652c1ffa8b325b571d982d1997"
     },
     {
       "path": "backend/solve_estimate.py",
-      "bytes": 6183,
-      "sha256": "2fa2afa838be11c87e3058af3e4302ac00180993c18ff3360ccae4add7cf55be"
+      "bytes": 6473,
+      "sha256": "ab5b446b5036548e9d9093f7129e3060391b2cfd2ae6fcb2387d6f099eb49010"
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 41902,
-      "sha256": "d84c691e311762ea039c906755ee98e53269dc548669dd0a6ccd4371cb5e502e"
+      "bytes": 44873,
+      "sha256": "48cc7721d9ad8e8bbb258fe66fc254d989c3717b32c6246a9bb941aabf509cd0"
     },
     {
       "path": "backend/solver/__init__.py",
@@ -520,8 +595,8 @@
     },
     {
       "path": "backend/topology_provenance.py",
-      "bytes": 8785,
-      "sha256": "17dc1de253182afef89071898481b16ce1646136722fb0cf87662fe625c4c9f5"
+      "bytes": 9106,
+      "sha256": "dc2aea3737aa67fd11adbdb40ae671cb3a64c546094f736ceea175d0fcbd1d8d"
     },
     {
       "path": "backend/torque_metrics.py",
@@ -540,13 +615,13 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 6164,
-      "sha256": "9404804743a6146b743f3abd221ec20895e9cb3c868125f52ea8110a50f3f522"
+      "bytes": 7710,
+      "sha256": "d29e895a292354d1a12c5d824b0531919a42c102c6077cbd94d71c868355a217"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
       "bytes": 6698,
-      "sha256": "3de54da64a9a6e17436b06ccd33a90d346cb209c12f920f4115ebf670e52fbeb"
+      "sha256": "a9e9764a335de83d5ca6b20b1b72c52297be208c0c0255bc1226a33e3a266b9a"
     },
     {
       "path": "benchmarks/abcd-v1.1/benchmark_spec.json",
@@ -556,7 +631,7 @@
     {
       "path": "benchmarks/abcd-v1.2/README.md",
       "bytes": 2379,
-      "sha256": "5bea41cd01388429b3d4a03fc5e3ccf5b96fc3e06d8001032823299be3089b5b"
+      "sha256": "32c533dc11da7a522382c07786e7c5803790618396f6dab6ed40655a9f64cd8b"
     },
     {
       "path": "benchmarks/abcd-v1.2/benchmark_spec.json",
@@ -570,8 +645,8 @@
     },
     {
       "path": "benchmarks/abcd-v1.3/README.md",
-      "bytes": 4157,
-      "sha256": "20cdafa0378155f6c1ea9ca800dd15962155d172dbf47103a6b250294736a1ce"
+      "bytes": 4522,
+      "sha256": "d7c18b168cb3161bf443d9eda30af63f0bef212fec78ff0aea9fffa9bed8370f"
     },
     {
       "path": "benchmarks/abcd-v1.3/benchmark_spec.json",
@@ -2449,6 +2524,341 @@
       "sha256": "9e8f5e2e25f80dddbe3a5d02c882ff9a46980cc298e39c0f0fa1484c741d6b11"
     },
     {
+      "path": "benchmarks/performance-112/README.md",
+      "bytes": 5123,
+      "sha256": "345e850750b99a76fc0d9080ecaa79494b0544d07d4fd4f1d7348419bd18f898"
+    },
+    {
+      "path": "benchmarks/performance-112/contention-summary.json",
+      "bytes": 55015,
+      "sha256": "d915a43eea3e07fc26a4653a6c3caca56c5955a3a112660a1d2bb8ecae45c668"
+    },
+    {
+      "path": "benchmarks/performance-112/contention.md",
+      "bytes": 4517,
+      "sha256": "8038bb0f788c3109db89af2d80dff1e6d12bdafb55a235ff625f2ed56803aab1"
+    },
+    {
+      "path": "benchmarks/performance-112/femm5-mesh-convergence-summary.json",
+      "bytes": 120715,
+      "sha256": "1a6933e3ea36409e9fdcab576bf612818a431e5100f589e26ba4262d48bedb55"
+    },
+    {
+      "path": "benchmarks/performance-112/femm5-mesh-convergence.md",
+      "bytes": 10197,
+      "sha256": "88383da9ff9f48176ab20a386578e1a22c7eed8dae34352e76fa5ed0d1c6832a"
+    },
+    {
+      "path": "benchmarks/performance-112/femm5-mesh-convergence.svg",
+      "bytes": 28446,
+      "sha256": "83e5e6c7f66fb5cc142c1fe1ec9ec371e2acda507e912debbf6e303bde7a8ee5"
+    },
+    {
+      "path": "benchmarks/performance-112/femm5-pilot-summary.json",
+      "bytes": 80056,
+      "sha256": "f4c2e89bf31098e0b63bf80d3d522d11e1318a8558be6a6a396fb7c5c8d5d63e"
+    },
+    {
+      "path": "benchmarks/performance-112/femm5-pilot.md",
+      "bytes": 7539,
+      "sha256": "e694b4b00cc41f19d77dfb9ada5a1d48776605a005be18fcdf97cabd3f2a7adc"
+    },
+    {
+      "path": "benchmarks/performance-112/full-suite-summary.json",
+      "bytes": 136842,
+      "sha256": "1da18892691f2d13c3f8bb1619e161e80614bbeb538c91c19b566b2e76bf5f0f"
+    },
+    {
+      "path": "benchmarks/performance-112/full-suite.md",
+      "bytes": 5999,
+      "sha256": "4a058d156287d815caff53f1cc4528a0f614b8f91273db0d49b1bbf91041bc5a"
+    },
+    {
+      "path": "benchmarks/performance-112/large-model-summary.json",
+      "bytes": 18320,
+      "sha256": "49fb8a96dafcaca2e6d6e89f6de875dac4ac8f6df27a4f01ce5a076d30033fe1"
+    },
+    {
+      "path": "benchmarks/performance-112/large-model.md",
+      "bytes": 3225,
+      "sha256": "2349241f08c44cd80e108aa17be8ad628bf5ce519858c74293988f54127d54fe"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/README.md",
+      "bytes": 4815,
+      "sha256": "185a64ba8edd5128519b6767108b00f909426556e1b286190ae94fc22bc5448b"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/artifact_manifest.json",
+      "bytes": 5714,
+      "sha256": "422ee29f75681491775374a257670ba8fdcbc17865a3c236c1852ae92b3a878d"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/benchmark_report.md",
+      "bytes": 5894,
+      "sha256": "ab216cccf82ffeb255cebba9b25137190375a96426b7b74d6bbc3aceb16b0148"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/benchmark_results.csv",
+      "bytes": 17010,
+      "sha256": "0789019f8e53fb2b3fdd3dd977211c423d6021e88508621707892261a32f9a34"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/benchmark_summary.json",
+      "bytes": 1826105,
+      "sha256": "e447f2c41d403c0834d724e5c20c06e3210b7bbf0eae049bbc7fd24018c063a3"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/candidate-suite.json",
+      "bytes": 19062,
+      "sha256": "8c469cdc10900688edabab34c8a14baf79db3cf00a992ca5a1b8542e23f8302a"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/coilem_benchmark_report.html",
+      "bytes": 398876,
+      "sha256": "a281ecf7db38d8d0f6d41c2e8234610a99f2d8b0b3e3eec6b302c33226f2a8eb"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/coilem_benchmark_report.pdf",
+      "bytes": 139611,
+      "sha256": "34b50bfccbc79091ae9b42f0ff834e789dca070e63608f29fa346fe8f4d1f840"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/comparison-to-main.json",
+      "bytes": 26422,
+      "sha256": "aa94c4225315ea3c35d3982ac17dbc9f16a383acd3d1e81a65ea147e1cfdf001"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1604,
+      "sha256": "15423a47ebbf8509a7935c60d5c45404b8ee186f37dd266dec9e3f2a01560e34"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1607,
+      "sha256": "e328650573ad963181a7cf2292f6fe924d866c792d79c2a32137da2f9522fae0"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1606,
+      "sha256": "68b4e61d69cbc4673eba7ec92d0609862b1cf0283fa8391bf174b8d6c55b7c59"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2503,
+      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2503,
+      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2503,
+      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2502,
+      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2502,
+      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2502,
+      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1594,
+      "sha256": "3d78ae3d4175a933e18d04b9d45c7bddaff1db6e8355c21675dbe4da2934392c"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1596,
+      "sha256": "2081d6ab448377574d76cdd8c86724d07368fd09093bab02d111bfb589d5d709"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1595,
+      "sha256": "a77a7fbd94ed2a06659067f6501b029f612f09877128361268c76c5f9e268604"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2506,
+      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2506,
+      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1640,
+      "sha256": "dd91d0757a826b34c3fde5e813bdfdc385bc048ce477a172c5bfbf292ff6703b"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1642,
+      "sha256": "4e53c05733eb4d81cc3205e743f12fb473065142827f4e38327bd035caf7545c"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1641,
+      "sha256": "1825fe88e7ddf36234aa984f0fbbd30e894bfb34a6030fc02a348c883bf18ffa"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2550,
+      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/publication.json",
+      "bytes": 7595,
+      "sha256": "10d71db33f38d5586091e49cf95899309ef4fa1ccb0c82fa19a0589a1a37304e"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/run_manifest.json",
+      "bytes": 45413,
+      "sha256": "bac4c1376648f9f6c3fa218c7680d4bd2838763d86d84d2c00c24e2fe9120fc5"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/timings.json",
+      "bytes": 14212,
+      "sha256": "45e6abda345b15955f9f27c4732c2a5105707c77a23bd28e2dd29659a5ca8d09"
+    },
+    {
+      "path": "benchmarks/performance-112/native-20261016/verification.json",
+      "bytes": 3613,
+      "sha256": "cba05a3c426d40312f85c2a6913885a8edee46597d9c2671ab8c2744955d4c8d"
+    },
+    {
+      "path": "benchmarks/performance-112/pilot-summary.json",
+      "bytes": 5836,
+      "sha256": "3d387e0bdf2cb71a5182962f18f4b48fdb8dbb27d09cfb7965dad0f7e4f697a1"
+    },
+    {
+      "path": "benchmarks/performance-112/repeat-20261016.json",
+      "bytes": 43462,
+      "sha256": "e421b47f719214fc52c97fc803b05bc54627129d74876e0f309d118e2756d57f"
+    },
+    {
+      "path": "benchmarks/performance-112/repeat-20261016.md",
+      "bytes": 5048,
+      "sha256": "16564ae7b02f4b7d66aff7b0e31f812fffd7bdf907208346e431f355770a62cf"
+    },
+    {
+      "path": "benchmarks/performance-112/scaling-summary.json",
+      "bytes": 67099,
+      "sha256": "848016322c442db5dce9915573bd1e20155cda61480cede41aceb6db8b81fbef"
+    },
+    {
+      "path": "benchmarks/performance-112/scaling.md",
+      "bytes": 4163,
+      "sha256": "0dd989883dabb17c6e7a60fdb22d40d7eee9dcb93cf06d42d774b7af54f583d2"
+    },
+    {
+      "path": "benchmarks/performance-112/worker-costs.json",
+      "bytes": 5945,
+      "sha256": "5d33e0485264539cce63b88aab38048d3ca3e499beef9b89a74f1a6fb02cd758"
+    },
+    {
       "path": "benchmarks/pr100-v3-handoff/README.md",
       "bytes": 10798,
       "sha256": "7035d7360a6047f961931fbfd50dddcbc45ac36b365ff48fbd05331a25fa1534"
@@ -2462,6 +2872,21 @@
       "path": "benchmarks/preview-evidence/results.json",
       "bytes": 764856,
       "sha256": "324e8d5a482e9d5c94abf5f7af6e23f8cd7a6422cee1452fbf54f90fa427ce0f"
+    },
+    {
+      "path": "benchmarks/records/README.md",
+      "bytes": 5268,
+      "sha256": "208872c05ffe81c0e1aa0de0f38d1c90898bf62f5e2c97b1d6a00c5dcfd3b53c"
+    },
+    {
+      "path": "benchmarks/records/macos-arm64.json",
+      "bytes": 23581,
+      "sha256": "95253701638c05e901662c532a7e97bb939a796a9fc03c89c4fc327b6d74a82f"
+    },
+    {
+      "path": "benchmarks/records/windows-x86_64.json",
+      "bytes": 23561,
+      "sha256": "9a459e31f9f97a22bc2b72cc4e3b8da332a088f99bba6b5ee0c415d2aaebbcda"
     },
     {
       "path": "benchmarks/reference-baselines/ipm-high-output-v1/ipm_flat_12s10p_fscw_contract.json",
@@ -3399,6 +3824,246 @@
       "sha256": "e8574dcb6daa2c0337b95f2be4cd47e5bf213efc52b53e15d1a8c601564032cd"
     },
     {
+      "path": "benchmarks/windows-native-20261018-f390b25/README.md",
+      "bytes": 4492,
+      "sha256": "8777e34ecd661ff5e975a8d8234d957b856a383ce5a749ef4d282a4781559819"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/artifact_manifest.json",
+      "bytes": 5631,
+      "sha256": "855ffb42ec104f29ccb0fb04b3271a0e0a157aec11d430b2cf269b280d7de4e7"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/benchmark_report.md",
+      "bytes": 5894,
+      "sha256": "b0a9ada37d666217edb31a1ab7374e0ce78d4cbc5fe80b13e340096845eed971"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/benchmark_results.csv",
+      "bytes": 17010,
+      "sha256": "0789019f8e53fb2b3fdd3dd977211c423d6021e88508621707892261a32f9a34"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/benchmark_summary.json",
+      "bytes": 1826541,
+      "sha256": "b56e6e3a4f53fdd7d9cbb1ef30c4105d116788b961218fa5ca423dca17c79e60"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/coilem_benchmark_report.html",
+      "bytes": 399060,
+      "sha256": "c7a2a76f9c3f317c16d15fe8cac4a555ec658e0a0a6540ab35a2f2530a743de6"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/console.txt",
+      "bytes": 4564,
+      "sha256": "1a5848ef3897b47fabcdac250064592f6f2d94cad63fbab70a8147e677aa208c"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/environment.json",
+      "bytes": 3980,
+      "sha256": "e49f31903374ce58dc0c3808b26aef1f0bc70e64106b8ff7f0e98ab11a09c23e"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1604,
+      "sha256": "15423a47ebbf8509a7935c60d5c45404b8ee186f37dd266dec9e3f2a01560e34"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1607,
+      "sha256": "e328650573ad963181a7cf2292f6fe924d866c792d79c2a32137da2f9522fae0"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1606,
+      "sha256": "68b4e61d69cbc4673eba7ec92d0609862b1cf0283fa8391bf174b8d6c55b7c59"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2503,
+      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2503,
+      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2503,
+      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2502,
+      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2502,
+      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2502,
+      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1594,
+      "sha256": "3d78ae3d4175a933e18d04b9d45c7bddaff1db6e8355c21675dbe4da2934392c"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1596,
+      "sha256": "2081d6ab448377574d76cdd8c86724d07368fd09093bab02d111bfb589d5d709"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1595,
+      "sha256": "a77a7fbd94ed2a06659067f6501b029f612f09877128361268c76c5f9e268604"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2506,
+      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2506,
+      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1640,
+      "sha256": "dd91d0757a826b34c3fde5e813bdfdc385bc048ce477a172c5bfbf292ff6703b"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1642,
+      "sha256": "4e53c05733eb4d81cc3205e743f12fb473065142827f4e38327bd035caf7545c"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1641,
+      "sha256": "1825fe88e7ddf36234aa984f0fbbd30e894bfb34a6030fc02a348c883bf18ffa"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2550,
+      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/raw-report-hashes.json",
+      "bytes": 5082,
+      "sha256": "f6c83a1f3102002cee9d5d8ae33996fbab0f600f4bec7907d81c494c01f99e8b"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/run_manifest.json",
+      "bytes": 45414,
+      "sha256": "7ecaa1408f305d28de770fa3e3b34641b56de27d9aff2ef0f21692329efe8868"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/self-check-differences.json",
+      "bytes": 4815,
+      "sha256": "30e5b93dd10f30961ceecacefa4b985d3e8eb5fc65adb1279cee721a3fda7664"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/self-check-windows-x86_64.json",
+      "bytes": 23525,
+      "sha256": "69503ef105387c033c445085f081019e321e0102ee7392f3149c093e963123fb"
+    },
+    {
       "path": "benchmarks/windows-process-pools-20261012-02fa24b/README.md",
       "bytes": 5024,
       "sha256": "c1bf66d1415ae673fd39ec41ca7fc460ab031dcba05f390160a9c0fcf8ad094f"
@@ -4324,6 +4989,11 @@
       "sha256": "54ec6b85b36f1e1beec6083c672b06b7d6b7d8b3af4acecdbbe548ef8e432c02"
     },
     {
+      "path": "docs/BENCHMARK_PERFORMANCE.md",
+      "bytes": 14128,
+      "sha256": "33c7875e199d7e07165dc9b46a99033662ec753dbae9892a6e01db3c4865f387"
+    },
+    {
       "path": "docs/ELMER.md",
       "bytes": 6064,
       "sha256": "1068d2db3c4e7a8b6113aaa1ca0ab93a38067944d7e42beeafa01a97baed69d0"
@@ -4340,8 +5010,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 13410,
-      "sha256": "49a537d6010bb4b89ff08b04497ad7e7911f948240bc708a54b7c2d825f38f75"
+      "bytes": 13699,
+      "sha256": "d45490712d4c1627352877585be084d2be3e62af1e033d8e7475dfb3e1cd137a"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -4360,8 +5030,8 @@
     },
     {
       "path": "docs/NUMERICAL_EVIDENCE.md",
-      "bytes": 19639,
-      "sha256": "092b2b734a4f646d8d1655db64c234c80addc9fec961913d8f36ad8732d0f9dc"
+      "bytes": 19813,
+      "sha256": "8f1d1497db1cd9699ef183c5d8c9616fa0c1c413ca8eb241b8811a69bb8743a0"
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
@@ -4370,8 +5040,8 @@
     },
     {
       "path": "docs/RELEASING.md",
-      "bytes": 10942,
-      "sha256": "e690bc0d26e6bb6efacc4384e7f396a72b3888138e38d6da8585448568f3a8c1"
+      "bytes": 11317,
+      "sha256": "5157fdcfbfedec0acf625a014d06fd48a5a8ffd7ff6e98be758ceeceb6ca5d47"
     },
     {
       "path": "docs/RUNTIME_SETTINGS.md",
@@ -4379,9 +5049,14 @@
       "sha256": "80a13340dfcc798097abb26134949b7f630e6934d42d9ef0531a620fb94e3d50"
     },
     {
+      "path": "docs/TEACHING_MULTIPOLE_MOTOR.md",
+      "bytes": 4009,
+      "sha256": "b134a56cd2a1c04f3de94f3e2bbdfbc40066296194bead8c13d9add796597123"
+    },
+    {
       "path": "docs/VALIDATION.md",
-      "bytes": 22970,
-      "sha256": "425be00ba4bb63b4fc7373e66fc0d180dc33d1836947e5fc07e01c51c469400c"
+      "bytes": 25146,
+      "sha256": "2ded9fda33a1d96d1aa4bfaf6beded9bc2f847fa8e3a5d4f985eede6f0f943a0"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -4580,8 +5255,8 @@
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/report-v1.md",
-      "bytes": 12199,
-      "sha256": "289fefba7f34b9fe559a9df325d94ea9150af0185aac3039d4cb9892f9585449"
+      "bytes": 12203,
+      "sha256": "cebdde40b19fa91dc871b7d1366e6daf345d1af10c1b123d0b4a7f8450e102c9"
     },
     {
       "path": "docs/hardware-validation/ornl-prius-2004/rotor-pocket-measurements.json",
@@ -4645,8 +5320,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 1829,
-      "sha256": "7f2ba6fdf77495ce751899892c3ad1f6366a8d039d8a39043dfbf6b461d47a89"
+      "bytes": 2118,
+      "sha256": "b6c9c006db041b31338fa978e4df68ea50c30c8600dc22455ea7813ff714d143"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -4684,9 +5359,24 @@
       "sha256": "206e0c3c63ddf9e11d28f6d4a60d4227eaac4757d0fb06ab538fd8b1d4db6e3f"
     },
     {
+      "path": "frontend/scripts/test-design-errors.mjs",
+      "bytes": 5205,
+      "sha256": "ec7c1bbd67974e5a005f5803c63b8b5bb0c92c0037b0ecb9f0ad33a4e841420a"
+    },
+    {
       "path": "frontend/scripts/test-design-file-defaults.mjs",
-      "bytes": 4779,
-      "sha256": "b03a28241f360dfe64756fba073929a80aafc1d96182377403a00f7350c51b65"
+      "bytes": 5505,
+      "sha256": "f799b02c3a578d3ac1aa1be4de1dfeb27a8e822ea7d2234719d654c611f3fbf4"
+    },
+    {
+      "path": "frontend/scripts/test-field-axes.mjs",
+      "bytes": 2977,
+      "sha256": "39aef41d7087a48b455b04a8db3780a0d4a3868b478019c434f5fd57861b4b3f"
+    },
+    {
+      "path": "frontend/scripts/test-field-legend-fit.mjs",
+      "bytes": 3360,
+      "sha256": "885829f1fcfedd30c26dd4ddb5f26b615fdeb7f7d75f41aed479ad101eebaa71"
     },
     {
       "path": "frontend/scripts/test-field-playback-timing.mjs",
@@ -4694,14 +5384,34 @@
       "sha256": "772e47122f0d5154706aa5c542f0dd4fb27a8c826d006661cc8fa42485834aa3"
     },
     {
+      "path": "frontend/scripts/test-field-position-link.mjs",
+      "bytes": 1194,
+      "sha256": "fe729502845f13e119ffa0321d2138da9110ec42c58f79a7e825beff4efea8f7"
+    },
+    {
+      "path": "frontend/scripts/test-field-probe-region.mjs",
+      "bytes": 3514,
+      "sha256": "0a01699dfcf1178236caf7dfd204d269d5f763879904da2b43559f5d1f0e9d70"
+    },
+    {
       "path": "frontend/scripts/test-flat-ipm-burial-health.mjs",
       "bytes": 4955,
       "sha256": "7c6b67897ce144407844dbba3a9ec0ed7f55193d647b3879a1ff99b639b33f36"
     },
     {
+      "path": "frontend/scripts/test-flux-color-scale.mjs",
+      "bytes": 3018,
+      "sha256": "1d715df3b2270a0072143adedef33aa7605ef10c6981706c17f685554237c18e"
+    },
+    {
       "path": "frontend/scripts/test-lesson-ten-bemf.mjs",
       "bytes": 3646,
       "sha256": "61e991f0823f2ca6aeeccf5f14950ef350d9d3d5e826ba552864f9bcd7e2651d"
+    },
+    {
+      "path": "frontend/scripts/test-magnet-coverage.mjs",
+      "bytes": 2089,
+      "sha256": "f0637c36da3daaeccf73203d4abe7adf991514b6b34fd32888c6344b5e84a2da"
     },
     {
       "path": "frontend/scripts/test-mesh-quality.mjs",
@@ -4710,8 +5420,8 @@
     },
     {
       "path": "frontend/scripts/test-motor-constants.mjs",
-      "bytes": 3927,
-      "sha256": "f4526bbaee3dcbbafabf2cc82ab34eeebee679d21dc13588812b326c51a99841"
+      "bytes": 4204,
+      "sha256": "f85457080dd26d1c90dc9a4084ab0bb533db3ff7aa5ae129dca8133ff5b08cd2"
     },
     {
       "path": "frontend/scripts/test-public-airgap-ux.mjs",
@@ -4725,8 +5435,8 @@
     },
     {
       "path": "frontend/scripts/test-public-boundary.mjs",
-      "bytes": 5352,
-      "sha256": "f73074a8e8cf1d6926d06274f9684120d673814623f18c66279f378b3b3fde29"
+      "bytes": 5457,
+      "sha256": "4796ad621b0b759729c0e423beb5231bc50bfea46a2b934945186dc65f3f6cd4"
     },
     {
       "path": "frontend/scripts/test-public-bundle.mjs",
@@ -4735,13 +5445,13 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 108811,
-      "sha256": "eedd78457093a52f88122296c82b48c565c185117ae3bba5de905a7e2971e606"
+      "bytes": 146561,
+      "sha256": "dc468867393bb8fbed38bf32f6a5a2962d75c4e9713b5942721ae3e6a0d53967"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
-      "bytes": 2595,
-      "sha256": "816084e9c12b12db363f17988de02b3addc3a0f6d81bf15b07b5dc534573314b"
+      "bytes": 3084,
+      "sha256": "3fec1086f541be5038efc677a00adb4b7f88d27da5c8397ad52400f4f65844cf"
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
@@ -5015,8 +5725,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/fieldPolarityCues.ts",
-      "bytes": 2131,
-      "sha256": "214682e372a4b8b473b570b262a31bf05e4d8a9aa4bc51c8380ee085c7e0f070"
+      "bytes": 3415,
+      "sha256": "923aa61ae3b0c3f354361c2891023e891afb579bc838ef4a4e52b2a46816f2a1"
     },
     {
       "path": "frontend/src/components/tutorials/follow-flux-three.css",
@@ -5125,8 +5835,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 70465,
-      "sha256": "14f8457052751b147d1c1e3427cba2371af52e60831de9b9eb18a03147fd1632"
+      "bytes": 71009,
+      "sha256": "fd416c60e77b18dce87f2e99613a58c0bbbbf133647a4691dbcc3d8037a85928"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -5135,8 +5845,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 184363,
-      "sha256": "eb961fd5e45e44100e125981768106fce18e069c8d9e7db1061c6ab26e11b71a"
+      "bytes": 216556,
+      "sha256": "705d2050876c798c3080ae2af734fdcd42ffd01b60f1508900a2aea772a157df"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5145,8 +5855,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 38610,
-      "sha256": "64073f28f2fca56c145184fb37fa467d35b13420c907b6945d3660d46ae8dcca"
+      "bytes": 55272,
+      "sha256": "c7618d0cde4bd758b52d75eecf02cf4866ebeb367622b70cbe92c7c35c62dc30"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -5160,13 +5870,13 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 47400,
-      "sha256": "68a2f20bbb557c39008eca9d79ddb672091eeb2856b55cf967f264a2a2712dc1"
+      "bytes": 47768,
+      "sha256": "20a89d4000b76c1b80121e4e12a002f4ba264a952865c8a298e10033db40b395"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
-      "bytes": 2993,
-      "sha256": "f07317fff5ab8a18d5885d39d133aea50f53290292cd340d5d2b3f793db2b607"
+      "bytes": 3102,
+      "sha256": "edb83771dbfb8c0ff1270dc3eab4c64b34782dc6f5d30785b355b2c84160af95"
     },
     {
       "path": "frontend/src/public/PublicLanding.tsx",
@@ -5175,8 +5885,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 80027,
-      "sha256": "49c55615439bca2536bf682d1f1103d93dd0213028e9bff7542744a80450344e"
+      "bytes": 80094,
+      "sha256": "a17855aabe2ecddac7b53b6fc0e6423921552c1d356823097a8c351bb6511eae"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
@@ -5185,13 +5895,18 @@
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
-      "bytes": 6317,
-      "sha256": "5ef14e6f534670fbb395fb89655e5c0d8476bcae3480588ad97c87112adef800"
+      "bytes": 8191,
+      "sha256": "f393e798527761bcf85de34a9c1a7c49881933093bcc5e149e961173ad25fb95"
+    },
+    {
+      "path": "frontend/src/public/RpmField.tsx",
+      "bytes": 2663,
+      "sha256": "d3f7d1ba52373c604cc30050c151175648af28c73b87749ff70433d1da45c1ec"
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 51243,
-      "sha256": "02781349b905d414252a7726bc5de8e427705dbf9079febedc23996247e1739e"
+      "bytes": 56111,
+      "sha256": "9f2de9c651569573341b0cefbc8eae81d51fd25658910dfe6bd5d1df58dcdf09"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -5205,8 +5920,8 @@
     },
     {
       "path": "frontend/src/public/WaveformReadout.tsx",
-      "bytes": 6486,
-      "sha256": "e11d57dd065df974058b6b02e01b6f702fc4da9b8d5d2ee5c4db2c3b532f1c90"
+      "bytes": 6506,
+      "sha256": "2647d1bab21ce42f9fdee6cd919d9809cf57349c14e58e5327d0f5cd67f10f2b"
     },
     {
       "path": "frontend/src/public/WindingLayoutView.tsx",
@@ -5254,6 +5969,11 @@
       "sha256": "77326cc259e5da071304f72c1f3aff4e1a208f10705bf959a74af58b1ecf62c6"
     },
     {
+      "path": "frontend/src/public/designErrors.ts",
+      "bytes": 4673,
+      "sha256": "967bdce9d3a8fd5653e8866494c119f5134f05ded43997c99d5e5ec77f7031a0"
+    },
+    {
       "path": "frontend/src/public/designFile.ts",
       "bytes": 11441,
       "sha256": "e4fa94560257411f3a9a9eb4979dc28ba696d5def02df32e8089d664c9da67bc"
@@ -5265,8 +5985,8 @@
     },
     {
       "path": "frontend/src/public/exampleDesigns.ts",
-      "bytes": 3125,
-      "sha256": "0bf3f379a2b4bea1076f4830e84fb6a01802729e8a66f2b209a700fe4bb1bea5"
+      "bytes": 3381,
+      "sha256": "d939c55468e098cb41cbd8b13925a1bac0eccf2d8359361e09a6dfd625a6dacb"
     },
     {
       "path": "frontend/src/public/examples/honda_accord_2005.coilem",
@@ -5277,6 +5997,11 @@
       "path": "frontend/src/public/examples/ornl_prius_2004_holem50.coilem",
       "bytes": 3030,
       "sha256": "385245790bea2051c4347f2939636ede14e93b063402a8ad91fb58f658d2bd74"
+    },
+    {
+      "path": "frontend/src/public/examples/rotating_field_6p36s.coilem",
+      "bytes": 2437,
+      "sha256": "a349fcfa32b1b4ee429ff7b2a0522dd4467c9c011b922a523cf3dbfecb7dbbed"
     },
     {
       "path": "frontend/src/public/examples/validation_ipm_10p_v_shape_medium.openem",
@@ -5299,14 +6024,24 @@
       "sha256": "cc74a4cca94a23ac0da8ca51f047d613b5d93de3e1a882058bbecb7ab1a9e925"
     },
     {
+      "path": "frontend/src/public/fieldAxes.ts",
+      "bytes": 1486,
+      "sha256": "955232c4af710fbabcbb941281a8dde2dc624fb504dcf5041622b2f6e67c90a3"
+    },
+    {
+      "path": "frontend/src/public/fieldLegendFit.ts",
+      "bytes": 1942,
+      "sha256": "65b30ae01622335dbf9d040be221ad9200e0e9eb909c22ba27f39f0306ff66aa"
+    },
+    {
       "path": "frontend/src/public/fieldPlaybackContract.ts",
-      "bytes": 5338,
-      "sha256": "27c348879936e491fa8bc5bef40de065661711b96b393954cd9a827a2bfa231d"
+      "bytes": 4997,
+      "sha256": "ffa809e41307b02a113b8a57d6ff1640facc414e1f889f7bdf84d6e3c0cb9d75"
     },
     {
       "path": "frontend/src/public/fieldPlaybackRasterizer.ts",
-      "bytes": 5435,
-      "sha256": "9f4514df097baba9bb7d0c10d1e3baace38b29812ff09f2d6b832c94393173e9"
+      "bytes": 5713,
+      "sha256": "0cc11d3f916d4a9f2bc996f96d168b148327676b7c47ae5458fd8a0fc167af04"
     },
     {
       "path": "frontend/src/public/fieldPlaybackTiming.ts",
@@ -5315,8 +6050,18 @@
     },
     {
       "path": "frontend/src/public/fieldPlaybackWorker.ts",
-      "bytes": 8330,
-      "sha256": "ce407a01ed2a4ba017df3c4475eba02cacd7e0f0b7d4a6b104ef31edcbcef9e4"
+      "bytes": 8317,
+      "sha256": "96c1e25999a9bb81d0c6dd584a6ccb743c3431c330813d7e69ecac44600050de"
+    },
+    {
+      "path": "frontend/src/public/fieldPositionLink.ts",
+      "bytes": 1686,
+      "sha256": "3cd1de4042d18c453ae62c228758240b3b57ff2b41ca6d8ad0ca0dcb65129ea5"
+    },
+    {
+      "path": "frontend/src/public/fieldProbeRegion.ts",
+      "bytes": 4770,
+      "sha256": "80021a9faceb977393d2d275f0997d9eabbc089c76984df803456998c266a97d"
     },
     {
       "path": "frontend/src/public/fieldViewportRange.ts",
@@ -5327,6 +6072,11 @@
       "path": "frontend/src/public/flatIpmBurialHealth.ts",
       "bytes": 4253,
       "sha256": "d4bc22c1a84c98342a5daf0195ca8d2d5416b0e48b5f41bc38262a79e28d2a7b"
+    },
+    {
+      "path": "frontend/src/public/fluxColorScale.ts",
+      "bytes": 4536,
+      "sha256": "931357e75db566eb4f8c626a4795701fcc4b39c611daedc7ae5e4b8dad9d96cc"
     },
     {
       "path": "frontend/src/public/guidedConfigRepair.ts",
@@ -5400,8 +6150,13 @@
     },
     {
       "path": "frontend/src/public/machineConstants.ts",
-      "bytes": 3675,
-      "sha256": "a6778cbbcb473fe2b84b181b17d8cec042815269211e0a0e578d075715b32c26"
+      "bytes": 4143,
+      "sha256": "cf05c7bac517df048ac1410c8ee498b1d95e27c1d70fb8bc7f6b5981909f373b"
+    },
+    {
+      "path": "frontend/src/public/magnetCoverage.ts",
+      "bytes": 1102,
+      "sha256": "f42254517c49492dc95014537cb9eb30863f3ffa1e9e81bd50e0575258093571"
     },
     {
       "path": "frontend/src/public/magnetPoleFaces.ts",
@@ -5420,8 +6175,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 18356,
-      "sha256": "d3362b8b111ff74d9c3da75d5777ff4f6a424bdc3eb1b7d036270368fb2a607d"
+      "bytes": 19232,
+      "sha256": "cca228338c8954c00b92ae3cd4231d0064e017d3821da55cd96512e4bf548564"
     },
     {
       "path": "frontend/src/public/motorAirgap.ts",
@@ -5435,8 +6190,8 @@
     },
     {
       "path": "frontend/src/public/resultMetrics.ts",
-      "bytes": 2962,
-      "sha256": "ee8b5d839e47916fd7d16b52002e2eb5573ffbf6db6c5a066fda38cd5b6764e4"
+      "bytes": 3732,
+      "sha256": "9798d6ec71161433aa086cc56549419f33d585b962db66d422f697d096cf652f"
     },
     {
       "path": "frontend/src/public/solvePlan.ts",
@@ -5450,8 +6205,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 231572,
-      "sha256": "31faffc55cc58c04116426e49ad8245dc5cd8bbaf0da216f3031a1d611fdba89"
+      "bytes": 261434,
+      "sha256": "c360a7d0b107ceebb76bc7a19f5442cc447121fddf0b0ffc7b5f781614752983"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -5485,8 +6240,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 15644,
-      "sha256": "b3d5f71f884ae7190b7bd030f8a86c04a48db5d69a5c3e81281293a9049417cc"
+      "bytes": 16291,
+      "sha256": "2a7d575407306141ef34e9904815eb5bb0c5f01ba55bc0bb8842652046c80afc"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -5590,8 +6345,8 @@
     },
     {
       "path": "setup.py",
-      "bytes": 10240,
-      "sha256": "d2b545d92a84218a1c23ef31ec0a74aaef9366bbbb38398f1ad61e230fad6164"
+      "bytes": 10680,
+      "sha256": "cb61d19903298ae8fb9f03e7da01531641d296ef4b322927c89f4f4b958649ad"
     },
     {
       "path": "solvers/magneto2d/Cargo.lock",
@@ -5849,24 +6604,49 @@
       "sha256": "cc91ebe104dbaf92cc784868428ac2ceac456a6cee63ab92e817fa6e6160d40d"
     },
     {
+      "path": "tests/test_benchmark_command.py",
+      "bytes": 14508,
+      "sha256": "edd43ec1d6c1f6808c1b471333c8fdec44096a786a2ea71509868bba41f417c4"
+    },
+    {
+      "path": "tests/test_benchmark_runtime.py",
+      "bytes": 4000,
+      "sha256": "c09fa8a470b9b6d0c562fb2524f5acb9e214c257a8bd08def253624cf783594f"
+    },
+    {
       "path": "tests/test_benchmark_suite.py",
-      "bytes": 27849,
-      "sha256": "06df25c696d75570ed27b49d87c3919eacdf18da1f00c5d98bfa4c748fc8f7ce"
+      "bytes": 30515,
+      "sha256": "4ec6029a89b570f016d8cdbc9e04970b9bfca734a654634c4e75407829c7a0e8"
     },
     {
       "path": "tests/test_bldc_angle_contract.py",
-      "bytes": 6846,
-      "sha256": "32c1035b6336e501e86fe5698c4030e7ace47ab8f6c31819bc29a388c19462f0"
+      "bytes": 6856,
+      "sha256": "247fa7d7bd0573187b08d519d2845eb8cf5f4aae908fba7466aa415279629626"
     },
     {
       "path": "tests/test_experimental_holem50.py",
-      "bytes": 9328,
-      "sha256": "f149dbadaf501a9e9d7d44f91c708dde43e4b2b3cfaf643cf6a37004ff0f0cf2"
+      "bytes": 9336,
+      "sha256": "b4ba26815af6db48f8ddf34ddfaea27cc0c906e4ad595ec57909471e24fc8c14"
     },
     {
       "path": "tests/test_experimental_rotor_switch.py",
       "bytes": 3508,
       "sha256": "6c9b0504dfca472880ae6d2b409963ae870087e96ecc6fe0958c9f9b19ea2733"
+    },
+    {
+      "path": "tests/test_field_composition_airgap.py",
+      "bytes": 3104,
+      "sha256": "f5a86d1fc3e80d1ca3db6bb9d60e14d65ba0d532a3bdf9c4ce20c1b648a12b2c"
+    },
+    {
+      "path": "tests/test_field_frame_storage.py",
+      "bytes": 5305,
+      "sha256": "5e49cda17ce913788dde60bf374cd2769137e69cea827a596fbc9b356f3235c8"
+    },
+    {
+      "path": "tests/test_field_lines_numpy.py",
+      "bytes": 9313,
+      "sha256": "e2bfbb122cd018e381e1557d6cde58e99f04466af4df8cd8defa962899ea5637"
     },
     {
       "path": "tests/test_gmsh_sigpipe.py",
@@ -5905,13 +6685,13 @@
     },
     {
       "path": "tests/test_installed_resources.py",
-      "bytes": 10171,
-      "sha256": "2655c03ca9b0c15c463398155119702625d56009ade0a7d4639b55035257ae8e"
+      "bytes": 10215,
+      "sha256": "56081bd2e9c0b8ca943103a3563255dd616606f12dd17c559f6b07cb06cd9220"
     },
     {
       "path": "tests/test_late_reference_comparison.py",
-      "bytes": 13524,
-      "sha256": "4dcaf10ddb8a2f4956f236f74a01323d04c3134aae652ea64c703a11d783eacf"
+      "bytes": 13782,
+      "sha256": "cdf4098d1268f6d74e7ac4f44a0f0948bfc9ae875847fac4365ff4296d00a4a8"
     },
     {
       "path": "tests/test_launcher.py",
@@ -5954,6 +6734,11 @@
       "sha256": "77051b351b4d60f6283ae32ef84cced3a0ed2fbd11e7a062f2ec128089f07edc"
     },
     {
+      "path": "tests/test_mesh_build.py",
+      "bytes": 3774,
+      "sha256": "e287d22d9af8ac66d94f9d80e884eb716e3cdb29d20f51e4ded4d8d08925b988"
+    },
+    {
       "path": "tests/test_mesh_signature_tooth_shoe.py",
       "bytes": 3637,
       "sha256": "c0d3bdfb94ebb20ab188e71804c7987776e310bd2d9990bf35eaa145f3acfac8"
@@ -5969,14 +6754,19 @@
       "sha256": "7982aff96eb3c5a3714404080aacce322d7cc85e8238467b4e67b330c74953f8"
     },
     {
+      "path": "tests/test_payload_reuse.py",
+      "bytes": 2698,
+      "sha256": "7e74e645c876a03e975593a2ddccaf8f9fee0628452b1c95e1ce398727443366"
+    },
+    {
       "path": "tests/test_postsolve_pipeline.py",
       "bytes": 6629,
       "sha256": "048ac4984ae66c17658e3fe0c2e393fda63431b7ea74aea9b6890744f7fbeac7"
     },
     {
       "path": "tests/test_prius_benchmark_case.py",
-      "bytes": 11186,
-      "sha256": "a5ecffba81c88589a6ffb6f1bac05c0fb5730570bd3ca396c678d78a57a12580"
+      "bytes": 11200,
+      "sha256": "2b171036e0173e25db1aa809e5c8cd983df7d301fe3ffaf9d246e83b8c6243dd"
     },
     {
       "path": "tests/test_public_cancellation.py",
@@ -5990,13 +6780,13 @@
     },
     {
       "path": "tests/test_public_field_playback.py",
-      "bytes": 12831,
-      "sha256": "068d919cfa2fe96f4ae6c91d40afb14aa90d0d630c8eb847da272e2f5def812e"
+      "bytes": 16427,
+      "sha256": "27af0046b26a9afea88f5b51a8b7970d62695065436862cd717eb9eca64cd270"
     },
     {
       "path": "tests/test_public_report_exports.py",
-      "bytes": 27148,
-      "sha256": "17d1fc7f64d35356bccc8e417b353b9b8d92d9459bd5d54ad862ff8d1f5fe259"
+      "bytes": 30156,
+      "sha256": "167d2f1f68c9981f0e76b534444623979df7648d2cd684491e930c5baefe66bf"
     },
     {
       "path": "tests/test_public_security.py",
@@ -6030,18 +6820,33 @@
     },
     {
       "path": "tests/test_qualification.py",
-      "bytes": 14166,
-      "sha256": "e5f729588b359752642106a40a8b6fb86f597f4ac0b17aa683e3b463badfafbd"
+      "bytes": 13975,
+      "sha256": "073161ca754b8496799d4726c108aeb58e7067d93f4342f8252eae192af07fc8"
+    },
+    {
+      "path": "tests/test_reference_recovery.py",
+      "bytes": 13029,
+      "sha256": "6e367bc4b58f4bede4e0804bea37899bb206b6656d7b3ecde3e3b7f0cf9ebeea"
+    },
+    {
+      "path": "tests/test_reference_runner.py",
+      "bytes": 11608,
+      "sha256": "41d3017b9dbb1ed7622e04647c7df5a1bd4531774f84cbd11409844338a92cc7"
     },
     {
       "path": "tests/test_release_tools.py",
-      "bytes": 30218,
-      "sha256": "39612257d20634219f92ec7d509ae0daf17b7f3bf8cb189297f362fc4b4d45bd"
+      "bytes": 30265,
+      "sha256": "cd290b78012f57c567950ac9a499440df22445f6b3be004e4dca66218d9e3433"
     },
     {
       "path": "tests/test_slot_layer_split.py",
-      "bytes": 4617,
-      "sha256": "7cdd0d69a32510bb1cbf9ae590320a03c0cfa9f34b794d442e8a43a71e5d6399"
+      "bytes": 7905,
+      "sha256": "aa937b0dc5c16413a30f3963c78bb020fcc37e572b6b8afff88ffd63750cce9d"
+    },
+    {
+      "path": "tests/test_solve_cache_raw_outputs.py",
+      "bytes": 5076,
+      "sha256": "0a818a6c45d86f785f383f13a50bd2c51c9ed8bcaf75f572c01c80815671e8f9"
     },
     {
       "path": "tests/test_solve_estimate.py",
@@ -6055,8 +6860,8 @@
     },
     {
       "path": "tests/test_solve_workspace.py",
-      "bytes": 22220,
-      "sha256": "db3ad88a797164357e4bcf96ca6b3e89438c2b00c1fe4c15263439dcc5752961"
+      "bytes": 22787,
+      "sha256": "21be4b7252659f59d09e1f6be898f6b279a3acd2d14ec79ad75ef77711304419"
     },
     {
       "path": "tests/test_sweep_planning.py",
@@ -6084,54 +6889,29 @@
       "sha256": "72a72eb8f34af191d0a17334ac6908c76159062655fc11e9428783f8c33bff65"
     },
     {
-      "path": "tools/benchmark_suite/__init__.py",
-      "bytes": 335,
-      "sha256": "b1db87be752e01fc4048bc64a67f300e2ef63c19d32772a66266a507d6b7075d"
+      "path": "tools/analyze_benchmark_runtime.py",
+      "bytes": 8455,
+      "sha256": "60a0cd92f1e11ed2d33ddd75433b37dd7f9598ed03eb4b74f69879e68b5b960c"
     },
     {
-      "path": "tools/benchmark_suite/abc_metrics.py",
-      "bytes": 4433,
-      "sha256": "206570f11d661feb2c95e4cf5ed939ddec0b1adc9c760b91631fd39b013767b8"
+      "path": "tools/benchmark_suite/external.py",
+      "bytes": 23421,
+      "sha256": "63e8a1dce6707443b7c6c29e0fe96f3491443ddc0ad35d9ff18c4566b218e074"
     },
     {
-      "path": "tools/benchmark_suite/bldc_metrics.py",
-      "bytes": 16680,
-      "sha256": "79b912dc1190ceaebdcbcb5ec0eea83f519063b9a16783bd5b80a2c31c447716"
+      "path": "tools/benchmark_suite/external_contract.py",
+      "bytes": 2188,
+      "sha256": "3d89f253a4da164b69e11c9cbadb58ef0d0a7fdc7afda920a1a6d88177d81012"
     },
     {
-      "path": "tools/benchmark_suite/cli.py",
-      "bytes": 18817,
-      "sha256": "74486eccf70f2df46349ecb5aeaf80987d8df0d9e3550baffe925be3aef46319"
+      "path": "tools/benchmark_suite/payload_reuse.py",
+      "bytes": 1888,
+      "sha256": "e2da9fb4bdba5bfa8194dda8a927bef450b31ff8e33bd1f3bf06781e38508d82"
     },
     {
-      "path": "tools/benchmark_suite/contract.py",
-      "bytes": 4722,
-      "sha256": "0e48fbb43074cf069e55b1110c3e5c2693825ebab418a28cc6ae5ab424664dd2"
-    },
-    {
-      "path": "tools/benchmark_suite/hardware.py",
-      "bytes": 3327,
-      "sha256": "6204d74fca84aad9297d368cbe03027277d7724e518c5ff747c767e541fb18cb"
-    },
-    {
-      "path": "tools/benchmark_suite/metrics.py",
-      "bytes": 6462,
-      "sha256": "a3f501794e89ea01256edab3d75eab440df46fcafef37ccb1d4c7fb841b57c27"
-    },
-    {
-      "path": "tools/benchmark_suite/references.py",
-      "bytes": 3522,
-      "sha256": "8578999697e86fd5582ca088f5013ed9522060605b799da69db58627b93809d6"
-    },
-    {
-      "path": "tools/benchmark_suite/report.py",
-      "bytes": 28769,
-      "sha256": "cbc454e0db72dbcf24142d01136c97b191015ce8db91c0f96d7c6f1793cb5a20"
-    },
-    {
-      "path": "tools/benchmark_suite/worker.py",
-      "bytes": 4183,
-      "sha256": "741e83560518eb530113ba3c0d21a1acd12956a1ab6a5b99b64d04c3b5693637"
+      "path": "tools/build_benchmark_record.py",
+      "bytes": 5071,
+      "sha256": "acff7863ae6dc7e619fc87cc87838db4c248631a7aab295895c1464ef48721b8"
     },
     {
       "path": "tools/experimental_solve.py",
@@ -6185,8 +6965,8 @@
     },
     {
       "path": "tools/release/acceptance.py",
-      "bytes": 22039,
-      "sha256": "22350ab5b8ba0310e3ae7f6525464c392ae1fb008cac749502bb8cad0204adfa"
+      "bytes": 22641,
+      "sha256": "a1d08f565ae34863fbed680b2daa9a27c21382235f326720fe751171e38f6e6e"
     },
     {
       "path": "tools/release/artifacts.py",
@@ -6235,8 +7015,8 @@
     },
     {
       "path": "tools/release/verify_wheel.py",
-      "bytes": 10011,
-      "sha256": "80338462f0bc39d9cb45bbcb61ebd17f1772fd5b85015ab9a426a0889651730c"
+      "bytes": 10155,
+      "sha256": "c8e9bc561aae9ad472679b1dc42b5b77cc8b19180dc999abe82e0a91940c11b6"
     },
     {
       "path": "tools/release/version.py",
@@ -6250,18 +7030,23 @@
     },
     {
       "path": "tools/report_benchmark_against_reference.py",
-      "bytes": 19937,
-      "sha256": "c1bbc90b616a447439ae712e1202716395bf1a29a6450690ddbb41bb0fa06f95"
+      "bytes": 20151,
+      "sha256": "22532d9a02cd2825b4a5f65636631b55571e81f6cc1cd77ebcef6885682086cc"
     },
     {
       "path": "tools/run_benchmarks.py",
-      "bytes": 176,
-      "sha256": "08c44bec8a7ac59cd9ea04079c22f1cbaae6a0e777203b1bba69d3d512beeaf9"
+      "bytes": 178,
+      "sha256": "17db966b4d45ca6f19658b19ef5185264a5bebd87099821a28374e23dea7932f"
     },
     {
       "path": "tools/run_public_benchmark.py",
       "bytes": 5790,
       "sha256": "2cd224b20c7681a6baae705c29ccc7ce9bdc8b26d0e23592a22c0a494b4f5cd9"
+    },
+    {
+      "path": "tools/run_reference_benchmark.py",
+      "bytes": 192,
+      "sha256": "5480b63cdc78f75b69d30507256b000a5eee02449d6e87aab099f104d4a7efce"
     },
     {
       "path": "tools/smoke_public_runtime.py",
@@ -6270,8 +7055,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 20732,
-      "sha256": "95f1793f9499e6a7372b800cf5ed4aadeded59235cfff7245a7c08091bf8eaa9"
+      "bytes": 21308,
+      "sha256": "3222fe7f0fabb69fe1e5e33b629acba4dd3ef94e2adef6a358b48a23f1519f8e"
     }
   ],
   "public_patches": [
@@ -8566,6 +9351,918 @@
       "path": "tools/benchmark_suite/report.py",
       "source_sha256": "b824617f4bd29a0d455a4063a07989f17f68cb0a90aa3d49734465d8ec93e5bc",
       "reason": "Show the energy-balance diagnostic for coilEM and the reference in the benchmark report (#80)."
+    },
+    {
+      "base_commit": "6b3646ade5c8fcfecf09edc8b945fb588a9eeb00",
+      "path": "backend/field_lines.py",
+      "source_sha256": "ddde2f12c118374ca7048a9c190502ac838bfdb48a4d148729e9a68f78be41c9",
+      "reason": "Compute element B, contour levels and contour segments with numpy, bit-identical to the per-triangle loops, which remain for inputs numpy cannot match exactly (#38 lever 4)."
+    },
+    {
+      "base_commit": "c03264350df0005e935ba3739396b1637a603939",
+      "path": "backend/public_field_playback.py",
+      "source_sha256": "548d90598572c72f9fac405f47688c88b8c6009425cc7ec3a648b418d7e38211",
+      "reason": "Reuse a frame's view geometry and drawable triangles for its loaded composition instead of building them twice (#38 lever 3)."
+    },
+    {
+      "base_commit": "c03264350df0005e935ba3739396b1637a603939",
+      "path": "backend/solve_workspace.py",
+      "source_sha256": "d84c691e311762ea039c906755ee98e53269dc548669dd0a6ccd4371cb5e502e",
+      "reason": "Hash each retained artifact while copying it, so saving reads it once instead of three times (#38 lever 3)."
+    },
+    {
+      "base_commit": "c03264350df0005e935ba3739396b1637a603939",
+      "path": "tests/test_public_field_playback.py",
+      "source_sha256": "068d919cfa2fe96f4ae6c91d40afb14aa90d0d630c8eb847da272e2f5def812e",
+      "reason": "Test that a composition renders identically from the frame's shared geometry, and that each plot's triangles are built once (#38 lever 3)."
+    },
+    {
+      "base_commit": "c03264350df0005e935ba3739396b1637a603939",
+      "path": "tests/test_solve_workspace.py",
+      "source_sha256": "db3ad88a797164357e4bcf96ca6b3e89438c2b00c1fe4c15263439dcc5752961",
+      "reason": "Test that a retained artifact's name and record carry the hash of its bytes and leave no temporary copy (#38 lever 3)."
+    },
+    {
+      "base_commit": "f225c3198d059c548de92c662ac2480b66e7711c",
+      "path": "backend/gmsh_solver.py",
+      "source_sha256": "7fc06b773b7b0546e86edfcdf81136564dc7693e2a556334b249da7662f73d65",
+      "reason": "Integrate Gmsh mesh-size fields along curves to the precision solve_params.mesh_build selects: 1e-9 for Precise, the default the benchmark measured, or 1e-6 for Fast."
+    },
+    {
+      "base_commit": "f225c3198d059c548de92c662ac2480b66e7711c",
+      "path": "backend/models/config.py",
+      "source_sha256": "6f7b04272c5740bb02bed64dcdf7af4486ced9851a1b9e4c01d58ba56d75558e",
+      "reason": "Add solve_params.mesh_build: Precise (default) or Fast Gmsh node placement."
+    },
+    {
+      "base_commit": "f225c3198d059c548de92c662ac2480b66e7711c",
+      "path": "backend/public_report.py",
+      "source_sha256": "a888c2dae3e36f2bb996935bebc487a839dc9b399a289a1dcb94328d348974d8",
+      "reason": "Show the mesh build among a run's settings."
+    },
+    {
+      "base_commit": "f225c3198d059c548de92c662ac2480b66e7711c",
+      "path": "backend/qualification.py",
+      "source_sha256": "a8b2d50a4b3d23fc70fb81d0cfd05e77c71ae6de2ab4eef637819cb354d455c7",
+      "reason": "Mark designs solved with the Fast mesh build experimental, because the benchmark measured Precise meshes."
+    },
+    {
+      "base_commit": "f225c3198d059c548de92c662ac2480b66e7711c",
+      "path": "backend/solve_estimate.py",
+      "source_sha256": "2fa2afa838be11c87e3058af3e4302ac00180993c18ff3360ccae4add7cf55be",
+      "reason": "Shorten the meshing part of the run-time estimate for the Fast mesh build."
+    },
+    {
+      "base_commit": "f225c3198d059c548de92c662ac2480b66e7711c",
+      "path": "backend/topology_provenance.py",
+      "source_sha256": "17dc1de253182afef89071898481b16ce1646136722fb0cf87662fe625c4c9f5",
+      "reason": "Record a Fast mesh build in the mesh policy, so cached meshes of one build are never reused for the other; Precise adds no key, so earlier meshes keep their signatures and evidence."
+    },
+    {
+      "base_commit": "f225c3198d059c548de92c662ac2480b66e7711c",
+      "path": "docs/GETTING_STARTED.md",
+      "source_sha256": "49a537d6010bb4b89ff08b04497ad7e7911f948240bc708a54b7c2d825f38f75",
+      "reason": "Explain the Precise and Fast mesh builds."
+    },
+    {
+      "base_commit": "f225c3198d059c548de92c662ac2480b66e7711c",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "398b5890e853eb6a3ea5e945dc3d75bb9e65b8a90e25a0e3e16bde64ba57d392",
+      "reason": "List the Fast mesh build among experimental combinations."
+    },
+    {
+      "base_commit": "f225c3198d059c548de92c662ac2480b66e7711c",
+      "path": "frontend/scripts/test-design-file-defaults.mjs",
+      "source_sha256": "b03a28241f360dfe64756fba073929a80aafc1d96182377403a00f7350c51b65",
+      "reason": "Test that designs default to the Precise mesh build and keep Fast when saved with it."
+    },
+    {
+      "base_commit": "f225c3198d059c548de92c662ac2480b66e7711c",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "14f8457052751b147d1c1e3427cba2371af52e60831de9b9eb18a03147fd1632",
+      "reason": "Accept the mesh build as a mesh setting."
+    },
+    {
+      "base_commit": "f225c3198d059c548de92c662ac2480b66e7711c",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "76141cfbfa34ed25b01511a7361f7feb3a99472898ad7356272e2ebb1c9e3626",
+      "reason": "Add the Mesh build choice (Precise or Fast) to Mesh preparation."
+    },
+    {
+      "base_commit": "f225c3198d059c548de92c662ac2480b66e7711c",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "d3362b8b111ff74d9c3da75d5777ff4f6a424bdc3eb1b7d036270368fb2a607d",
+      "reason": "Add mesh_build to the design model, Precise by default."
+    },
+    {
+      "base_commit": "f225c3198d059c548de92c662ac2480b66e7711c",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "4625a6b2635c9c2f369e9d4490061d77f18c9976946473142a889a79e348c707",
+      "reason": "Style the Mesh build choice and its note."
+    },
+    {
+      "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "14f8457052751b147d1c1e3427cba2371af52e60831de9b9eb18a03147fd1632",
+      "reason": "Keep geometry-preview and mesh errors whole and show parallel-paths faults in plain words with the fixes that work."
+    },
+    {
+      "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "eb961fd5e45e44100e125981768106fce18e069c8d9e7db1061c6ab26e11b71a",
+      "reason": "Show a warning instead of a green check on the Design section whose field the current error names."
+    },
+    {
+      "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",
+      "path": "frontend/package.json",
+      "source_sha256": "7f2ba6fdf77495ce751899892c3ad1f6366a8d039d8a39043dfbf6b461d47a89",
+      "reason": "Run the design-error tests with the public UI tests."
+    },
+    {
+      "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "eedd78457093a52f88122296c82b48c565c185117ae3bba5de905a7e2971e606",
+      "reason": "Check that design errors keep their field, use the plain wording and flag their section."
+    },
+    {
+      "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",
+      "path": "backend/preview_from_ir.py",
+      "source_sha256": "3a3e9b8ec32cb28f00b40a896f66f616e56bd21e5957ad9c55c218b07c5e628c",
+      "reason": "Place each split coil side's in/out marker at the area centroid of its own layer region instead of at fixed slot fractions, so two-layer markers sit centred in their half-slot."
+    },
+    {
+      "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",
+      "path": "backend/preview.py",
+      "source_sha256": "704ad1cd0eecfaca80c0ba57783bdb4101fd61c35de1c2917aa41ebcafb561e5",
+      "reason": "Pass the split coil sides' centroids from the geometry IR to the in/out marker placement."
+    },
+    {
+      "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",
+      "path": "tests/test_slot_layer_split.py",
+      "source_sha256": "7cdd0d69a32510bb1cbf9ae590320a03c0cfa9f34b794d442e8a43a71e5d6399",
+      "reason": "Assert each in/out marker sits at its own coil side's centroid for two-layer slots, and that whole-slot markers keep their place."
+    },
+    {
+      "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "64073f28f2fca56c145184fb37fa467d35b13420c907b6945d3660d46ae8dcca",
+      "reason": "Draw a second field's lines over the first in cyan with a dark halo, with matching direction arrows and a lines legend in place of the flux-density legend (#120)."
+    },
+    {
+      "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "02781349b905d414252a7726bc5de8e427705dbf9079febedc23996247e1739e",
+      "reason": "Add the Stator + PM view: the stator-only field with the PM-only field's lines at the same rotor position, loaded, preloaded and played together, without a flux-density map (#120)."
+    },
+    {
+      "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "31faffc55cc58c04116426e49ad8245dc5cd8bbaf0da216f3031a1d611fdba89",
+      "reason": "Style the PM overlay arrows and lines legend, and move the field sources to a second toolbar row in narrow viewers (#120)."
+    },
+    {
+      "base_commit": "560ad4969a06e9cde2e78b543b618a6429a8187c",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "eedd78457093a52f88122296c82b48c565c185117ae3bba5de905a7e2971e606",
+      "reason": "Check the Stator + PM view, its overlay colours, legend and toolbar layout (#120)."
+    },
+    {
+      "base_commit": "69a573486535bbd752cdc939ae88b105fcc66947",
+      "path": "backend/field_composition.py",
+      "source_sha256": "a3004702506189d0bb2ea27a9fc84f12c60311825c112efbcc71dfce3f52ae10",
+      "reason": "Keep each stator-only frame's air-gap Br/Bt profile in the cached sweep (cache v2), so the viewer can place stator pole labels and field axes (#120)."
+    },
+    {
+      "base_commit": "69a573486535bbd752cdc939ae88b105fcc66947",
+      "path": "frontend/package.json",
+      "source_sha256": "7f2ba6fdf77495ce751899892c3ad1f6366a8d039d8a39043dfbf6b461d47a89",
+      "reason": "Run the field-axes tests with the public UI tests (#120)."
+    },
+    {
+      "base_commit": "69a573486535bbd752cdc939ae88b105fcc66947",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "afbea14902afe8a1e51bfe40b1ec76fd4e4e306783b2c18f8dc4326976c57dc6",
+      "reason": "Check the field-axis arrows, the stator lead readout, the caption and the Stator + PM defaults (#120)."
+    },
+    {
+      "base_commit": "69a573486535bbd752cdc939ae88b105fcc66947",
+      "path": "frontend/src/components/tutorials/fieldPolarityCues.ts",
+      "source_sha256": "214682e372a4b8b473b570b262a31bf05e4d8a9aa4bc51c8380ee085c7e0f070",
+      "reason": "Expose the air-gap harmonic fit and the strongest pole-pair order, used by the stator pole labels and the field axes (#120)."
+    },
+    {
+      "base_commit": "69a573486535bbd752cdc939ae88b105fcc66947",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "70ebfb9392d2e8ef67ab4b6fd6d5288646f072bb613b2ff90d9403e1aa0b47d2",
+      "reason": "Draw each field's working-harmonic axis arrows, the stator lead arc and readout, and a caption explaining why the fields turn (#120)."
+    },
+    {
+      "base_commit": "69a573486535bbd752cdc939ae88b105fcc66947",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "85ddc5628aee09ea3a7cd27420cf60711620e5ab66161206780078478a071122",
+      "reason": "Show the field axes in Stator + PM, with pole labels on and low line density when the view is chosen (#120)."
+    },
+    {
+      "base_commit": "69a573486535bbd752cdc939ae88b105fcc66947",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "40d28ca47beaeefd96aceb2e2fe8829a514deb37d72e6e1eeb39173051ee1ae7",
+      "reason": "Style the field-axis arrows, the lead readout and the caption strip (#120)."
+    },
+    {
+      "base_commit": "9efaf6505c06adaf7a2b356640bcfdc1a92ca525",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "ab77dc524c39fb1789191788130b24d948674a370158466a1f2170571f20724a",
+      "reason": "Replace the four field sources with Resultant plus a PM/Stator pair: either alone, or both to overlay their field lines (#120)."
+    },
+    {
+      "base_commit": "9efaf6505c06adaf7a2b356640bcfdc1a92ca525",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "a359050c2be2c149c240d8249fc8490bc16a640e78a390ed92955f1eb4776200",
+      "reason": "Style the PM/Stator pair, colour its dots like the overlay lines when both are on, and keep the sources on the first toolbar row down to 600 px (#120)."
+    },
+    {
+      "base_commit": "9efaf6505c06adaf7a2b356640bcfdc1a92ca525",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "e1a6e246de259bc347c4c7bfc0b07d31a0924f036e555070dbdf614dd5394f1e",
+      "reason": "Check the Resultant button, the PM/Stator pair and its toggle rule, and the 600 px toolbar wrap (#120)."
+    },
+    {
+      "base_commit": "195753cb54f40921c0106a6794bef1684b6df2dc",
+      "path": "tools/benchmark_suite/external.py",
+      "source_sha256": "23cd9cfe71c92ab8685c8f38d921cd4a4228098956cb453f37b315b48d8a517d",
+      "reason": "Remember when the controller stopped a worker during an interrupt, so --resume keeps a result written just before the stop instead of reading its signal exit code as a producer failure."
+    },
+    {
+      "base_commit": "195753cb54f40921c0106a6794bef1684b6df2dc",
+      "path": "tests/test_reference_recovery.py",
+      "source_sha256": "da6e7b242f508340cd51eef758296057dc4568803cc98d93afadea642869c321",
+      "reason": "Cover a worker that writes its result and is then stopped by the interrupt's cleanup: the run records INTERRUPTED and --resume completes without --retry-failed."
+    },
+    {
+      "base_commit": "258aaaa4c075ad4c16705ed4f95ad53168176d7d",
+      "path": "frontend/src/public/machineConstants.ts",
+      "source_sha256": "a6778cbbcb473fe2b84b181b17d8cec042815269211e0a0e578d075715b32c26",
+      "reason": "Give Kt and Ke one value each in datasheet units (per rms ampere; V/krpm line-to-line rms), with the stored SI peak value as a hover hint."
+    },
+    {
+      "base_commit": "258aaaa4c075ad4c16705ed4f95ad53168176d7d",
+      "path": "frontend/src/public/MotorConstants.tsx",
+      "source_sha256": "f07317fff5ab8a18d5885d39d133aea50f53290292cd340d5d2b3f793db2b607",
+      "reason": "Show Kt and Ke on one row each and put their SI value in the cell's hover hint and screen-reader text."
+    },
+    {
+      "base_commit": "258aaaa4c075ad4c16705ed4f95ad53168176d7d",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "19194024303a01f02c5d0f68ee1c357380da2a61f3ed953e6960ace8f43eb980",
+      "reason": "Underline Kt and Ke with a faint dash to show they carry an SI hint."
+    },
+    {
+      "base_commit": "258aaaa4c075ad4c16705ed4f95ad53168176d7d",
+      "path": "frontend/scripts/test-motor-constants.mjs",
+      "source_sha256": "f4526bbaee3dcbbafabf2cc82ab34eeebee679d21dc13588812b326c51a99841",
+      "reason": "Test the single datasheet value and the SI hint for Kt and Ke."
+    },
+    {
+      "base_commit": "258aaaa4c075ad4c16705ed4f95ad53168176d7d",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "52e4d49c5d2b2ca576a71692e4380f04313e06cacd26623595942a035c748370",
+      "reason": "Check the one-row Kt and Ke and their hint."
+    },
+    {
+      "base_commit": "4ed1fcd6738b40750fb2df870c917b49d660cd4e",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "43395341143b24b885cab3d1f69111d4ac4eb1c1bacbd9e8d5489f9583e14f69",
+      "reason": "Move the field viewer's controls into a two-row dock below the motor: playback, then field source, Show toggles, line density and zoom; one info popover holds the field details."
+    },
+    {
+      "base_commit": "4ed1fcd6738b40750fb2df870c917b49d660cd4e",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "08a95471d0d887e9fe9e1f2b1b5203c778e0f41ac3967f6d328d6d189aa8e832",
+      "reason": "Let a host render the zoom controls into its own slot (the solved-field dock) through a portal instead of over the plot."
+    },
+    {
+      "base_commit": "4ed1fcd6738b40750fb2df870c917b49d660cd4e",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "66a9c34f66b1b2b54844ff7c2289de641e58646f40832086bc5678fa1f41f6c8",
+      "reason": "Style the control dock, an upward Show menu for narrow viewers, the info popover's field details, and move the |B| scale up now that the canvas corners are free."
+    },
+    {
+      "base_commit": "4ed1fcd6738b40750fb2df870c917b49d660cd4e",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "1f9eb359c7cd6c3641b86f395be0877de130106141114629ca4de241a9dab29c",
+      "reason": "Check the dock layout, the zoom portal, the Show menu and the info popover in place of the floating controls."
+    },
+    {
+      "base_commit": "4ed1fcd6738b40750fb2df870c917b49d660cd4e",
+      "path": "frontend/scripts/test-public-boundary.mjs",
+      "source_sha256": "f73074a8e8cf1d6926d06274f9684120d673814623f18c66279f378b3b3fde29",
+      "reason": "Allow react-dom, the package behind react-dom/client, for createPortal."
+    },
+    {
+      "base_commit": "3cdc19aa698aa09d893ab3e6ace5da4e1a28e647",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "1ea3817658e25452ef370dc545f6c47911f1d950d4a4a6a81129e140c937df22",
+      "reason": "Show Completed results as a list like the motor constants: one row per value, right-aligned numbers, units in their own column, a rule between torque, back-EMF, flux-density and timing rows."
+    },
+    {
+      "base_commit": "3cdc19aa698aa09d893ab3e6ace5da4e1a28e647",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "a43e6bff7e29773ab95175019f1cba4f8aed3f64360b2bf3c054d495dad271b3",
+      "reason": "Replace the result tiles' styles with the list's group rule, reusing the motor-constants table styles."
+    },
+    {
+      "base_commit": "3cdc19aa698aa09d893ab3e6ace5da4e1a28e647",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "70c8f6db26d829895d909f35c7c07e4548261d85bccc675729bb806bef26143e",
+      "reason": "Check the Completed results list in place of the tiles."
+    },
+    {
+      "base_commit": "b0916271cd376e555c456a7daef011de27b3cf35",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "10dfa47da74e593072853b2765894b8c10e3b3a3b2e3e2c3eaf4127cd4bb7a7d",
+      "reason": "Give the Design, Geometry and Mesh views their controls in a section below the motor that fits its content and can be dragged taller or shorter, with larger buttons; on the Solve page the view tabs, fullscreen and the regions readout sit on a strip at the top of that section."
+    },
+    {
+      "base_commit": "b0916271cd376e555c456a7daef011de27b3cf35",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "dff36c375bef6fdbca4f4d918237ca3c4491206c7e3e675997d9cbbc27f18026",
+      "reason": "Move the Geometry / Mesh / Field solution tabs and fullscreen from the top bar onto a strip at the top of the field dock."
+    },
+    {
+      "base_commit": "b0916271cd376e555c456a7daef011de27b3cf35",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "4631058103fad2be55e06786a7f44d402d4b7fbfcb7fc22561e4135e21bd01fb",
+      "reason": "Style the resizable control section, its drag handle and the tabs strip; enlarge the viewport controls; drop the field viewer's top bar."
+    },
+    {
+      "base_commit": "b0916271cd376e555c456a7daef011de27b3cf35",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "2cf49fec70eb9f6b3fe056fdedf82ee7e0fc4d6bb3d87e65851f656a368b0fbc",
+      "reason": "Check the resizable section, its handle and fit, the tabs strips and the larger controls."
+    },
+    {
+      "base_commit": "3c2afae20d28486255025b297a528782981ead52",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "f9b76cd629f707cf3d789d1f4c6458f134c33f4e6387065897e2632e73e298b8",
+      "reason": "Make the motor view tabs the Design panel's title bar."
+    },
+    {
+      "base_commit": "3c2afae20d28486255025b297a528782981ead52",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "31d7e9c3721e3b699b66d8d7bf3c37ca87fc293d90fe27109ac1cb2701560d24",
+      "reason": "Style each bottom panel's strip as a title bar with an underlined selected tab."
+    },
+    {
+      "base_commit": "3c2afae20d28486255025b297a528782981ead52",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "3d8ab25ae069d63c4af3501fd1f26f2a55649e196136d4eab58067fcd250e495",
+      "reason": "Cover the panel title bar and its tab styling."
+    },
+    {
+      "base_commit": "a93c06df73460ca0519f96a446e56aed240a88f1",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "56b48b2ff2c1c68a459b1432a51047ae9789f47a17665da0283c2dc09596e484",
+      "reason": "Give every bottom panel one level of tabs and a fixed readout, zoom and fullscreen at the title bar's end."
+    },
+    {
+      "base_commit": "a93c06df73460ca0519f96a446e56aed240a88f1",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "68a2f20bbb557c39008eca9d79ddb672091eeb2856b55cf967f264a2a2712dc1",
+      "reason": "Let the 2D canvas put its zoom controls in the panel's title bar."
+    },
+    {
+      "base_commit": "a93c06df73460ca0519f96a446e56aed240a88f1",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "07506e4557b0832101162f411dd8e83634f4f5e1f12aec7473d5e38cea49647a",
+      "reason": "Move the field view's zoom controls into its title bar beside fullscreen."
+    },
+    {
+      "base_commit": "a93c06df73460ca0519f96a446e56aed240a88f1",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "7fe55fd6edd32b0d394e97171689a347f96f0dad8dfb6d99b55b38aa5e3e2b08",
+      "reason": "Style the title bar's end group and drop the floating fullscreen offsets."
+    },
+    {
+      "base_commit": "a93c06df73460ca0519f96a446e56aed240a88f1",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "1bc2d14cf62d1cb2e2247b1c8e4f8b33b52cb24c2604fe1c24a9f946199dbe7c",
+      "reason": "Cover the one-level tabs and the title bar's end group."
+    },
+    {
+      "base_commit": "e6fc5317744aa3b5eebab5573abbdbb4872aa906",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "e633092362cb7619a150c3d84098fc70bcaee44fcc96d99a4aa037df52b76de8",
+      "reason": "Label each panel control group and give choices and layers their own shapes."
+    },
+    {
+      "base_commit": "e6fc5317744aa3b5eebab5573abbdbb4872aa906",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "8047e475c364c1be52fbcd38d5c506e6f33bff605d9e1e3fe2ffa52d9dc92f17",
+      "reason": "Style segmented choices, dot toggles and group labels in the motor panels."
+    },
+    {
+      "base_commit": "e6fc5317744aa3b5eebab5573abbdbb4872aa906",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "52b4ae4bdd1f0c7c283139b75ce1c4550a7f7b1b422fd1f53e0aae8158317854",
+      "reason": "Cover the labelled groups and the two control shapes."
+    },
+    {
+      "base_commit": "43488ec597273997ad6258b087d299bf42d90a0e",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "586625a676c550b8f5e10870c53fa9fea9e20f0d35d20ac3adea144b166def1c",
+      "reason": "Move the winding legend to the canvas corner and give the rotor preview the field transport."
+    },
+    {
+      "base_commit": "43488ec597273997ad6258b087d299bf42d90a0e",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "a45d9c0e8ec50d3dc9a5cccfaf06d342d5b7e16016e1e0837ba3ef52ff1799a5",
+      "reason": "Style the canvas legend and the preview transport, and fit narrow title bars."
+    },
+    {
+      "base_commit": "43488ec597273997ad6258b087d299bf42d90a0e",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "eec4a40c087fdcf741bc301f72de89c485b86b5fa2eb7948bb9e586ac6bedeac",
+      "reason": "Cover the canvas legend and the shared preview transport."
+    },
+    {
+      "base_commit": "6ddba14b8b18a0cd8190eb51a2bbb9ac6084efc1",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "3349a52de5425d93a85d134e728a91e4f9c2ef05399102a8138b8a64a9430c06",
+      "reason": "Give the field panel the shared readout and labelled line-density slider."
+    },
+    {
+      "base_commit": "6ddba14b8b18a0cd8190eb51a2bbb9ac6084efc1",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "6edb9b4d2142021b6769d4d63d20c442cd1bf6364c8c6768f637ff0011945020",
+      "reason": "Match the field panel to the motor panels' layout, controls, sizes and type."
+    },
+    {
+      "base_commit": "6ddba14b8b18a0cd8190eb51a2bbb9ac6084efc1",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "2e8cb4e328ba6bea6aa3536521a3aeff6d272ac8504204a7057a2fe4fc1a2b62",
+      "reason": "Cover the field panel's shared panel styling."
+    },
+    {
+      "base_commit": "485c82110ebc6c664e8c5ddde967528f091da471",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "26e8f442c63bff8ce4ac4ff9ceacea3fa5d935041646612be0f0f4e5ca8b6876",
+      "reason": "Order the field panel by task and keep only the main layers in view."
+    },
+    {
+      "base_commit": "485c82110ebc6c664e8c5ddde967528f091da471",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "6146871457ff5cdb71d5809439c56d4183a296d423a9cf3b8c33ecd685ee76bd",
+      "reason": "Style the reordered field panel, its More menu and line-density choice."
+    },
+    {
+      "base_commit": "485c82110ebc6c664e8c5ddde967528f091da471",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "f214285851f9c1a5d80f1f2d1c7cdf18f6062d6e5622babd529f41584a6ec9d7",
+      "reason": "Cover the field panel's order, More menu and density choice."
+    },
+    {
+      "base_commit": "5ab85f525feb69378ca6eb4ae2cf5b80d95c79b7",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "fa9128b889c3b209bdea79c01bbb8b32dbe4edd3b7f9d76932ab33bd1235e0d6",
+      "reason": "Keep the playback row still while playing: stall note in the position label, frame count in field details."
+    },
+    {
+      "base_commit": "5ab85f525feb69378ca6eb4ae2cf5b80d95c79b7",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "a938ac811f3dfb0f4d06dd0d9e5c473f64dfca4ab78d46b314dc82894035a781",
+      "reason": "Give the field playback row fixed columns and steady-width numbers."
+    },
+    {
+      "base_commit": "5ab85f525feb69378ca6eb4ae2cf5b80d95c79b7",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "08c9bc48241962bb27cf04626b1544a59178d093bc048dd69aca5f485ee9e982",
+      "reason": "Cover the fixed playback row and where the frame status moved."
+    },
+    {
+      "base_commit": "143beab22955c8406cfa1b2e5507afc504acdc95",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "bd7fd5d9736d15a40e47a7918f0bc1231b7fb1449a988f8e95e08dc18b42b04b",
+      "reason": "Shorten the field position readout with an ellipsis on narrow panels."
+    },
+    {
+      "base_commit": "143beab22955c8406cfa1b2e5507afc504acdc95",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "648ac6c7de35986eee68dd81414083d26c9216eba1ffe90e71735f5b867b1c88",
+      "reason": "Cover the position readout's ellipsis."
+    },
+    {
+      "base_commit": "0063eb3650cda0ae9dfe61fa9069bf721e2c5c63",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "c437474729d9f41f261f64e10d841a158610156886bcececea6e3aff0ff12775",
+      "reason": "Open completed results on four key numbers with a toggle for the rest."
+    },
+    {
+      "base_commit": "0063eb3650cda0ae9dfe61fa9069bf721e2c5c63",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "757249edfb747c990fb8a25adcbfd4fdd3cdd7b602804a7e42ad834fca58a68f",
+      "reason": "Style the completed results toggle."
+    },
+    {
+      "base_commit": "0063eb3650cda0ae9dfe61fa9069bf721e2c5c63",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "82e6f910bc39207f892c45109510171e4bc737db701894b7da891819f188eff8",
+      "reason": "Cover the compact completed results and its toggle."
+    },
+    {
+      "base_commit": "ee029a239edbac996d15b934a2fe39175abcc370",
+      "path": "backend/solve_workspace.py",
+      "source_sha256": "39efa404a3410b8a17c8023ceaa567566ab53482d1d1711b3b48b81034df1702",
+      "reason": "Build a run's replay package on download instead of storing a second copy of every artifact."
+    },
+    {
+      "base_commit": "ee029a239edbac996d15b934a2fe39175abcc370",
+      "path": "backend/public_routes/runs.py",
+      "source_sha256": "f9270bed900c9deb9748f014e0fcafd25b34eb2968696e5a9e0474e88d34c894",
+      "reason": "Remove a package built for a download once it has been sent."
+    },
+    {
+      "base_commit": "ee029a239edbac996d15b934a2fe39175abcc370",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "17d1fc7f64d35356bccc8e417b353b9b8d92d9459bd5d54ad862ff8d1f5fe259",
+      "reason": "Cover the on-demand replay package, its integrity and its cleanup."
+    },
+    {
+      "base_commit": "ee029a239edbac996d15b934a2fe39175abcc370",
+      "path": "tests/test_solve_workspace.py",
+      "source_sha256": "3dd440510fbe3540f0151fd68e8e15fef946a638f30de2f5382343afb6445025",
+      "reason": "A completed run no longer stores its replay package."
+    },
+    {
+      "base_commit": "da501e99e78677aac89c33a13eb519310d5656f0",
+      "path": "backend/field_artifacts.py",
+      "source_sha256": "379b89960bd89b3c23c854c2b9db936f942552cb2365f024250084653eeede1d",
+      "reason": "Store a PM-only plot's mesh parts once when they equal the frame's, and restore them on read."
+    },
+    {
+      "base_commit": "da501e99e78677aac89c33a13eb519310d5656f0",
+      "path": "backend/field_composition.py",
+      "source_sha256": "370482a84a5931567801d1f2788ee35aad9193e9432a2b9f10ccf0cb45db1cc0",
+      "reason": "Read field frames through the shared loader."
+    },
+    {
+      "base_commit": "da501e99e78677aac89c33a13eb519310d5656f0",
+      "path": "backend/public_field_playback.py",
+      "source_sha256": "e61142f5092a2b244facccf3b56ccccc5bdf0f3f8802073deeec4220278a6dc1",
+      "reason": "Write the geometry, flux and mesh playback layers as lossless WebP; read frames through the shared loader."
+    },
+    {
+      "base_commit": "da501e99e78677aac89c33a13eb519310d5656f0",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "7fcaa62f30bf2b86cffe1ae8c705c9d451b64bd3bea817463c0f94924b6d76c7",
+      "reason": "Serve field frames through the shared loader."
+    },
+    {
+      "base_commit": "da501e99e78677aac89c33a13eb519310d5656f0",
+      "path": "tests/test_public_field_playback.py",
+      "source_sha256": "a2e2f7a8ed27f10376f83e3ef920b95f57cb5894ff7521830b796547da7f6649",
+      "reason": "Expect lossless WebP geometry, flux and mesh layers."
+    },
+    {
+      "base_commit": "68e6eed437a47fea2e470186cf70884951c3d75e",
+      "path": "backend/field_artifacts.py",
+      "source_sha256": "c169346804a9f2ebd1148c892a18fc49936176f7475fee963f9964e473806622",
+      "reason": "Find a result's solve-cache folders and delete their raw solver output once the run is saved."
+    },
+    {
+      "base_commit": "68e6eed437a47fea2e470186cf70884951c3d75e",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "e097715f7823bbc971ecc2a86533eb8646df03e6eb2e129201d347208fe70827",
+      "reason": "Delete a saved run's raw solver output from its solve-cache folder unless kept."
+    },
+    {
+      "base_commit": "15d5a24b3c97af4b3c5257d98bdbe15047728c63",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "5ec783cbe1a19a8f601bec1c72f0d83a4e7f22223cb3fb1b7b32eb4ebe32135f",
+      "reason": "Remove the run-time estimate note under the accuracy plan."
+    },
+    {
+      "base_commit": "d6db14ecdb566246bbf370ffb33676b26e133d9d",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "3bcd3fb91b5128ddd2a5e0792cd8b4329eed205ee22a9515486fac1cd52bdb0f",
+      "reason": "Drop the Mesh tab's title-bar readout; the run plan shows the element count and quality."
+    },
+    {
+      "base_commit": "d6db14ecdb566246bbf370ffb33676b26e133d9d",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "d9b45838862a583e0939e1c8be8d56ad4012fd754b6c19ffd7c37094e044cae8",
+      "reason": "The Mesh tab's title bar has no readout."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "backend/public_field_playback.py",
+      "source_sha256": "0465d38e6650660b5c4389e68a0f22f3220726636561699149d8abe5c002979d",
+      "reason": "Draw playback flux layers on one fixed 0-2.0 T scale with magenta above it, and record the scale in the legend."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "tests/test_public_field_playback.py",
+      "source_sha256": "e33e0b2219c592302750482828dc9cc249482200666753c0ed6b2508deb70e5a",
+      "reason": "Cover the fixed flux scale, the over-range colour and the legend's scale."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "362a014efe5e8e4c872bff54bf23ea59d8d0fed6389ce09e2737513f4fb50cda",
+      "reason": "Pass the material catalog and the steel's saturation ticks to the field plots."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "0167d1684d87d038d2cbef8770856a366e44af892c2a15856751590198afccd3",
+      "reason": "Colour the detail view on the fixed scale, add Fit view, and show the over-range band and steel ticks in the legend."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "d83eda46ead18e163eaa71896d9e574b662c3389617139db440d3a86265fc04d",
+      "reason": "Default to the fixed flux scale; Fit view replaces Sweep and applies to a stopped frame."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "frontend/src/public/fieldPlaybackContract.ts",
+      "source_sha256": "27c348879936e491fa8bc5bef40de065661711b96b393954cd9a827a2bfa231d",
+      "reason": "Carry each playback image's colour scale; drop the sweep maximum."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "frontend/src/public/fieldPlaybackRasterizer.ts",
+      "source_sha256": "9f4514df097baba9bb7d0c10d1e3baace38b29812ff09f2d6b832c94393173e9",
+      "reason": "Pass a playback image's colour scale to the plot."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "frontend/src/public/fieldPlaybackWorker.ts",
+      "source_sha256": "ce407a01ed2a4ba017df3c4475eba02cacd7e0f0b7d4a6b104ef31edcbcef9e4",
+      "reason": "Draw worker flux layers on the fixed scale."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "d3362b8b111ff74d9c3da75d5777ff4f6a424bdc3eb1b7d036270368fb2a607d",
+      "reason": "Type the playback colour scale."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "6b6a10bf01ad83d0351aa86b452fd32d217fd1cf301d9c5d111c4d36f0a29cc0",
+      "reason": "Style the fixed-scale legend's over-range swatch and steel ticks."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "78972ea62c22f4493733314da2e15d112c726f9afb5e9fa6f1e1e23784da1da6",
+      "reason": "Cover the fixed flux scale, Fit view and the legend."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "frontend/package.json",
+      "source_sha256": "261e1543b0dbfa07b1ea5165d663f522a0c31c7c088819275431ad378d308e91",
+      "reason": "Run the flux colour-scale test with the public UI tests."
+    },
+    {
+      "base_commit": "2f5ebb9d0a3715e288de75ecd37a0996eeaee4e0",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "0bc31ddb4ed8b86f0785398919312961063fa2cf4481b280f6108cf1d88d5313",
+      "reason": "Give the field panel's toggles, line density and readout short forms for narrow panels."
+    },
+    {
+      "base_commit": "2f5ebb9d0a3715e288de75ecd37a0996eeaee4e0",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "09cf5c22affe41e53bbbc9337a5d93d3a6ba3f8a526d6490473e67170165b543",
+      "reason": "Keep the field panel to two lines by tightening and shortening its controls on narrower panels."
+    },
+    {
+      "base_commit": "2f5ebb9d0a3715e288de75ecd37a0996eeaee4e0",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "6841e6c77cf958f4eb7bb100f5fb478a8b42aaa5e7638e8f5559276f157df731",
+      "reason": "Cover the field panel's narrow-width short forms."
+    },
+    {
+      "base_commit": "559ddbc0f80590a624e5f7d66497e8c9e8c603f9",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "14c3b03d7dde592bdfed0deb31ea87e11eeedc85257508189f8b60e8b463bad4",
+      "reason": "Set the field playback speed in a small RPM number field instead of a slider."
+    },
+    {
+      "base_commit": "559ddbc0f80590a624e5f7d66497e8c9e8c603f9",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "1aab9d1cc180d3abf3fb906fada2a3b605227e68d424dbae7b6045b65660d7f8",
+      "reason": "Set the Design preview speed in the same RPM number field."
+    },
+    {
+      "base_commit": "559ddbc0f80590a624e5f7d66497e8c9e8c603f9",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "c127def99772dfb3e016f377b19db2d2517565ff34027456451ab27d8f1da57f",
+      "reason": "Style the RPM number field and drop the speed slider's styles."
+    },
+    {
+      "base_commit": "559ddbc0f80590a624e5f7d66497e8c9e8c603f9",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "8b62dc4437c59abb7fb8852376925c69bf1d2aa470ca309c95d49a74d5bfd736",
+      "reason": "Cover the RPM number field in both places."
+    },
+    {
+      "base_commit": "e63abccaa2f0d02377264dd2f69dd7445246369e",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "9d44c0d53006b8de31a83a885fdc3cbee033ab2bfb88c33627569d25d4514a1f",
+      "reason": "Shorten the Field solution tab on narrow panels, put Element quality on one line, and read a hovered position on the Solve-tab waveforms."
+    },
+    {
+      "base_commit": "e63abccaa2f0d02377264dd2f69dd7445246369e",
+      "path": "frontend/src/public/WaveformReadout.tsx",
+      "source_sha256": "e11d57dd065df974058b6b02e01b6f702fc4da9b8d5d2ee5c4db2c3b532f1c90",
+      "reason": "Clear a pinned readout when clicking outside a Solve-tab waveform too."
+    },
+    {
+      "base_commit": "e63abccaa2f0d02377264dd2f69dd7445246369e",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "ad1bdceb966f78e4fbe23b3599532da1eb7b878c9e12d62c86f8a3ea1b52fc26",
+      "reason": "Keep the panels inside a narrow stage, put Element quality on one line, and style the Solve-tab waveform readout."
+    },
+    {
+      "base_commit": "e63abccaa2f0d02377264dd2f69dd7445246369e",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "901ec58fe1e010e07a285284409196b7294f88325d79e756dc9f3fb02774a5bd",
+      "reason": "Cover the narrow-stage title bar, the one-line Element quality and the Solve-tab waveform readout."
+    },
+    {
+      "base_commit": "b4e1852cade4364db2e1387e9d1edbd9c3a30526",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "8966116493144276182b0d97757b721f7d4dc2275a4fc465fd65a6732644b195",
+      "reason": "Collapse the Solve setup's sections with Design's section block, one open at a time, with a one-line summary when closed."
+    },
+    {
+      "base_commit": "b4e1852cade4364db2e1387e9d1edbd9c3a30526",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "2b212395b2d972edbc983a1d5bafab7f75adf03bc40962f628cdf9080bd8dfe7",
+      "reason": "Share Design's section styles with the Solve setup and drop the old setup-section and Advanced options styles."
+    },
+    {
+      "base_commit": "b4e1852cade4364db2e1387e9d1edbd9c3a30526",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "f128b2c27a390ee853c94a478e016d34382b542247cc12256eab2909b2969521",
+      "reason": "Cover the collapsible Solve setup sections."
+    },
+    {
+      "base_commit": "baa602a68eed4f776dfcc4e65711d586440c38e8",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "64639a32120c99d63e85b2ebea52af162fa91db3d3e3266b99e232468275e9bd",
+      "reason": "Fit the motor beside the flux legend drawn over the field view, measured from each legend label."
+    },
+    {
+      "base_commit": "baa602a68eed4f776dfcc4e65711d586440c38e8",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "8f77a4474b696ec662120f391fbd1b8db264d45fb68a2f051b077c792fb2b24f",
+      "reason": "Cover the motor fit beside the flux legend."
+    },
+    {
+      "base_commit": "baa602a68eed4f776dfcc4e65711d586440c38e8",
+      "path": "frontend/package.json",
+      "source_sha256": "e55e316acbddfd1c806e0bb6bc8e62f17f681b8ab14045c31b1269b14d04e5da",
+      "reason": "Run the legend-fit test with the public UI tests."
+    },
+    {
+      "base_commit": "ce9fdc8015ce57a02460aec6b50b7c0e25a9c82d",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "7b0497328041efa3ee66bde00e938ef91c28e747033448a79c8838e9a2addc3d",
+      "reason": "Give the field probe the hovered element's radius."
+    },
+    {
+      "base_commit": "ce9fdc8015ce57a02460aec6b50b7c0e25a9c82d",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "1aa9a20da19e144ccf3d988244b17c73346ed78d0aae37560f7ea15773a2e5e6",
+      "reason": "Describe the probed element with the shared region naming."
+    },
+    {
+      "base_commit": "ce9fdc8015ce57a02460aec6b50b7c0e25a9c82d",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "8d2770c5e94ecf3a53e6339e43021fd1779fcd22d8d5b1d28f4c0766c1a34df2",
+      "reason": "Cover the probe's region naming."
+    },
+    {
+      "base_commit": "ce9fdc8015ce57a02460aec6b50b7c0e25a9c82d",
+      "path": "frontend/package.json",
+      "source_sha256": "d637904761387ca375e7dd731ce3dcb28d0e912ff10a471ce4bdf1ebee7ede73",
+      "reason": "Run the probe region test with the public UI tests."
+    },
+    {
+      "base_commit": "617ffe3193839e7db259987ce9481b1aca98c6a2",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "08202cdc91f796c198f6fed212f3de62e97662c355322483fffc4b36c5b4b6e4",
+      "reason": "Replace the position slider with play and stop, follow positions picked on the result curves, show the position in the title bar, and draw PM-only lines in the PM colour."
+    },
+    {
+      "base_commit": "617ffe3193839e7db259987ce9481b1aca98c6a2",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "639609e840ea5caa25ece82e9213e84328570058ddc028e62856c3bb8d5bc00f",
+      "reason": "Link the Run plan's torque and back-EMF curves to the field view: hovering sets its position, and its position shows as a playhead."
+    },
+    {
+      "base_commit": "617ffe3193839e7db259987ce9481b1aca98c6a2",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "1da6444fc1fea7ec146dcd6babab49110a94fbdb93995c60111cf30ef19200e5",
+      "reason": "Draw PM-only field lines and arrows in the PM colour, and keep every hook before the empty-plot return."
+    },
+    {
+      "base_commit": "617ffe3193839e7db259987ce9481b1aca98c6a2",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "ec73f341ded4174a69efc077e12dc7210c1b978c9853439c9de796af13d5ce0c",
+      "reason": "Lay out the field transport like the Geometry preview, drop the slider styles, style the curve playhead, and colour PM and Stator buttons by their lines."
+    },
+    {
+      "base_commit": "617ffe3193839e7db259987ce9481b1aca98c6a2",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "592da6ec74f16aa2e8453d956133016efa69f8dcc2679d99b369208ba25e5799",
+      "reason": "Cover the play/stop transport, the curve-driven position, PM colours and the plot's hook order."
+    },
+    {
+      "base_commit": "617ffe3193839e7db259987ce9481b1aca98c6a2",
+      "path": "frontend/package.json",
+      "source_sha256": "8c55ae3705c8b53182fa41bfca797e5bd089a66cf6cb7eb5780eed6cabb6479d",
+      "reason": "Run the field position link test with the public UI tests."
+    },
+    {
+      "base_commit": "9ecf809ee78b8fa12d41cf773505fbd7aaed3bef",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "1782cb55a043e533f172214b8d395496a1b892ab504a6a9dfe8f8a5337dd6978",
+      "reason": "Show the Stator + PM legend as one line above the view and move its notes and the arrows caption into its tooltip."
+    },
+    {
+      "base_commit": "9ecf809ee78b8fa12d41cf773505fbd7aaed3bef",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "3dace0b9843ad85c0395cddc27c361bd60ab3800416e3be07bc9e42f2b48084a",
+      "reason": "Lay the Stator + PM legend out as one line above the view, with a short lead on narrow panels; drop the caption styles."
+    },
+    {
+      "base_commit": "9ecf809ee78b8fa12d41cf773505fbd7aaed3bef",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "a81f26c18873ce10331460e9680b1eeeb6488b75a20f04759608b8aef7bfdf89",
+      "reason": "Cover the one-line Stator + PM legend and the removed caption."
+    },
+    {
+      "base_commit": "e446a57152eae1055f15b61c5f5fe1c96b5db939",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "6a280a45931e5f9d89bb635516770618d99b784ca65135b058974ac76a95da30",
+      "reason": "Show the local backend as one status chip."
+    },
+    {
+      "base_commit": "e446a57152eae1055f15b61c5f5fe1c96b5db939",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "d774171b3be5ccaecd81297adfb1bec330cda43685df893697a766e5de4b3fa3",
+      "reason": "Make the top bar a flush 46 px strip with 30 px controls, and size the workspace from its height."
+    },
+    {
+      "base_commit": "e446a57152eae1055f15b61c5f5fe1c96b5db939",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "449276ed665ad71949e9aaf322abec8fde7e3ebfc386047e566ad2d264ede8b0",
+      "reason": "Cover the compact top bar and the backend chip."
+    },
+    {
+      "base_commit": "b1b0798a7e566f32cf5c1fb2b3395807423d1bee",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "539f64cccc427c6c2cfee47ac9c7de10b5d01a1a8d0c2f79aae963e155b5381b",
+      "reason": "Show SPM pole coverage derived from magnet width in the Design row, health tile and check, and magnet card."
+    },
+    {
+      "base_commit": "b1b0798a7e566f32cf5c1fb2b3395807423d1bee",
+      "path": "frontend/src/public/PublicMotor3D.tsx",
+      "source_sha256": "49c55615439bca2536bf682d1f1103d93dd0213028e9bff7542744a80450344e",
+      "reason": "Size the 3D view's SPM magnets from the width-derived coverage."
+    },
+    {
+      "base_commit": "b1b0798a7e566f32cf5c1fb2b3395807423d1bee",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "0bd61ac4b17e26d3a564b05f3e6622c1c873d9221447df940bbbbb440b195baf",
+      "reason": "Cover the width-derived SPM coverage."
+    },
+    {
+      "base_commit": "b1b0798a7e566f32cf5c1fb2b3395807423d1bee",
+      "path": "frontend/package.json",
+      "source_sha256": "fb77a24863a32f806515fa762a2af1e18174505622a6d65c503a9ff5ff85e303",
+      "reason": "Run the magnet coverage test with the public UI tests."
+    },
+    {
+      "base_commit": "d9fb57e1662243e2d8e12e8f8db99d97ef999a7a",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "31acff9350415891e6b77a762690c99e7c27d74a18af7fc049b2a868a9966b24",
+      "reason": "Set the example SPM 8p/12s magnet width to 31.8 mm, its cogging minimum."
+    },
+    {
+      "base_commit": "d9fb57e1662243e2d8e12e8f8db99d97ef999a7a",
+      "path": "frontend/scripts/test-magnet-coverage.mjs",
+      "source_sha256": "9a6161d05bd4ed85153fe06f8154552b5517fd166bddad613e02fecf24c3ae83",
+      "reason": "Read the example's width from the default config."
+    },
+    {
+      "base_commit": "d42f1600c50cd380f8ea888d65822b1bfe30e76b",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "33306593c15421c3e779db184d32f39166a5a8863708cfebf4fdfad15dee2c70",
+      "reason": "Find the backend status chip by its accessible name and open each Solve setup section before using its controls."
     }
   ]
 }

@@ -13,6 +13,9 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
+from backend.benchmark_suite.contract import DEFAULT_BUNDLE, SPEC, sha
+from backend.benchmark_suite.physics import physics_sources
+from backend.benchmark_suite.references import load_bundle, load_suite
 from backend.models import MotorConfig
 from backend.public_main import app
 from backend.public_routes.solve import _store_public_result
@@ -23,38 +26,12 @@ FIXTURES = Path("benchmarks/main-20261009-bad71d9/fixtures")
 SPM_CONCENTRATED = json.loads(Path("tests/fixtures/spm_4p12s_simple.json").read_text(encoding="utf-8"))
 REPORT = json.loads(Path(QUALIFICATION_REPORT).read_text(encoding="utf-8"))
 
-# The sources that decide what the report measured: winding layout, current angle
-# and axis, slot and layer geometry, meshes and angle grids, materials, field
-# extraction and the native solver. Changing any of them needs a new report
-# before a combination keeps its qualified status.
-PHYSICS_SOURCES = (
-    "backend/airgap_sampling.py",
-    "backend/back_emf_harmonics.py",
-    "backend/excitation.py",
-    "backend/geometry.py",
-    "backend/geometry_drawer.py",
-    "backend/geometry_ir.py",
-    "backend/geometry_ir_tessellation.py",
-    "backend/gmsh_mesh_rotation.py",
-    "backend/gmsh_solver.py",
-    "backend/magneto2d_adapter/__init__.py",
-    "backend/material_catalog.py",
-    "backend/material_contract.py",
-    "backend/solver/__init__.py",
-    "backend/solver/_helpers.py",
-    "backend/solver_contract.py",
-    "backend/steel_flux_metrics.py",
-    "backend/sweep_planning.py",
-    "backend/torque_metrics.py",
-    "backend/winding_utils.py",
-    "materials/electrical-steel/M350-50A.csv",
-    "solvers/magneto2d/Cargo.lock",
-    *sorted(
-        path.as_posix()
-        for path in Path("solvers/magneto2d/src").rglob("*.rs")
-        if path.name not in ("tests.rs", "teaching.rs") and "thermal" not in path.parts
-    ),
-)
+# The sources that decide what the report measured (backend/benchmark_suite/physics.py):
+# winding layout, current angle and axis, slot and layer geometry, meshes and angle
+# grids, materials, field extraction and the native solver. Changing any of them
+# needs a new report before a combination keeps its qualified status, and a new
+# benchmark record before `coilem benchmark` can match one (#71).
+PHYSICS_SOURCES = physics_sources(Path(__file__).resolve().parents[1])
 
 
 def _fixture(name: str) -> MotorConfig:
@@ -94,17 +71,23 @@ def test_qualified_combinations_name_their_evidence(fixture: str, reason: str) -
     qualification = classify_qualification(_fixture(fixture))
     assert qualification["status"] == "qualified"
     assert qualification["reason"].startswith(reason)
-    assert qualification["basis"] == "coilEM benchmark report, measured at 738d951"
+    assert qualification["basis"] == "coilEM benchmark report, measured at f390b25"
     assert qualification["reference"].endswith("docs/VALIDATION.md#qualification-status")
 
 
 def test_basis_names_the_measured_commit_and_reference() -> None:
     run = REPORT["run"]
+    spec = load_suite(SPEC)
+    reference, _, bundle_sha = load_bundle(DEFAULT_BUNDLE, spec)
     assert run["status"] == "COMPLETE" and run["identity"]["dirty"] is False
-    assert run["identity"]["commit"] == run["reference_commit"]
     assert run["identity"]["commit"][:7] in QUALIFICATION_BASIS
-    # The six-step claim rests on the winding-axis current check.
-    assert run["comparison"]["evaluation_contract"]["version"] == "1.3.0"
+    assert run["reference_mode"] == "FROZEN_REFERENCE"
+    assert run["reference_commit"] == reference["reference_commit"]
+    assert run["selection"]["bundle_sha256"] == bundle_sha
+    assert run["selection"]["spec_sha256"] == sha(SPEC)
+    # This run measured the winding-axis protocol directly; the frozen reference
+    # still names its own earlier measured commit and registered validation bridge.
+    assert run["identity"]["protocol_version"] == spec["protocol_version"] == "1.3.0"
 
 
 @pytest.mark.parametrize("path", PHYSICS_SOURCES)

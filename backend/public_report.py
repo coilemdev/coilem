@@ -461,6 +461,7 @@ _SETTING_LABELS = {
     "current_amplitude_A": "Phase current",
     "motor_input_dc_bus_V": "DC bus voltage",
     "linear_steel_mu_rel": "Linear steel relative permeability",
+    "mesh_build": "Mesh build",
     "back_emf": "Back EMF",
     "thd_analysis": "THD analysis",
 }
@@ -526,6 +527,7 @@ _SOLVE_PLAN_SETTINGS = (
     "mesher",
     "mesh_source",
     "corner_refinement",
+    "mesh_build",
     "slot_sidewall_refinement",
     "rotor_rotation_model",
     "torque_method",

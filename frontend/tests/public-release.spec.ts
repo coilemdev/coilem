@@ -21,6 +21,13 @@ async function openMoreRunActions(page: Page): Promise<void> {
   await expect(page.getByRole('group', { name: 'More run actions' })).toBeVisible();
 }
 
+// The Solve setup shows one section at a time; open the one whose controls come next.
+async function openSetupSection(page: Page, section: 'operating' | 'plan'): Promise<void> {
+  const header = page.locator(`button[aria-controls="param-group-content-${section}"]`);
+  if ((await header.getAttribute('aria-expanded')) !== 'true') await header.click();
+  await expect(header).toHaveAttribute('aria-expanded', 'true');
+}
+
 async function downloadReports(page: Page, info: TestInfo, mode: Excitation): Promise<void> {
   for (const [label, extension, signature] of [
     ['Download PDF', 'pdf', '%PDF-'],
@@ -48,6 +55,7 @@ async function downloadReports(page: Page, info: TestInfo, mode: Excitation): Pr
 }
 
 async function solveStandard(page: Page, mode: Excitation): Promise<void> {
+  await openSetupSection(page, 'plan');
   const standard = page.getByRole('button', { name: /Standard.*Medium mesh/ });
   await standard.click();
   await expect(standard).toHaveAttribute('aria-pressed', 'true');
@@ -95,10 +103,10 @@ test.describe('public developer preview release rehearsal', () => {
 
   test('loads every bundled example as the geometry its file describes', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByRole('status').filter({ hasText: 'Local: ready' })).toBeVisible();
+    await expect(page.getByRole('status', { name: 'Local backend: ready', exact: true })).toBeVisible();
     await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
     // The files define no tooth shoes, so none may be inherited from the starter motor.
-    for (const [label, slots] of [['IPM 10p V-shape', 12], ['IPM 14p flat buried', 18], ['SPM 24p', 27]] as const) {
+    for (const [label, slots] of [['IPM 10p V-shape', 12], ['IPM 14p flat buried', 18], ['SPM 24p', 27], ['SPM 6p/36s', 36]] as const) {
       await page.getByRole('button', { name: 'Design file menu', exact: true }).click();
       await page.getByRole('menuitem', { name: 'Examples', exact: true }).hover();
       const previewed = page.waitForResponse((response) => (
@@ -137,7 +145,7 @@ test.describe('public developer preview release rehearsal', () => {
     });
     await test.step('capture the public landing page and reopen a saved example', async () => {
       await page.goto('/');
-      await expect(page.getByRole('status').filter({ hasText: 'Local: ready' })).toBeVisible();
+      await expect(page.getByRole('status', { name: 'Local backend: ready', exact: true })).toBeVisible();
       await expect(page.getByRole('button', { name: 'Use Example Motor', exact: true })).toBeVisible();
       await page.evaluate(() => document.fonts.ready);
       await mkdir(dirname(landingScreenshot), { recursive: true });
@@ -168,6 +176,7 @@ test.describe('public developer preview release rehearsal', () => {
     });
 
     await test.step('solve the sinusoidal example at Standard quality and download its reports', async () => {
+      await openSetupSection(page, 'operating');
       await expect(page.getByRole('radio', { name: /Sinusoidal/ })).toHaveAttribute('aria-checked', 'true');
       await solveStandard(page, 'sinusoidal');
       await expect(page.locator('.public-report-provenance')).toContainText('Sinusoidal');
@@ -190,12 +199,14 @@ test.describe('public developer preview release rehearsal', () => {
         await openMoreRunActions(page);
         await page.getByRole('button', { name: 'Rerun settings', exact: true }).click();
         await pendingPreview;
+        await openSetupSection(page, 'plan');
         await expect(page.getByRole('button', { name: /Standard.*Medium mesh/ })).toBeEnabled();
       } finally {
         releasePreview();
       }
       await expect(page.getByRole('status').filter({ hasText: /settings restored/ })).toBeVisible();
       await expect(page.getByRole('navigation', { name: 'Motor workflow' }).getByRole('button', { name: /Results$/ })).toBeDisabled();
+      await openSetupSection(page, 'operating');
       await page.getByRole('radio', { name: /Ideal six-step/ }).click();
       await expect(page.getByLabel(/Conducting phase current/)).toBeVisible();
       await solveStandard(page, 'ideal_six_step_120');

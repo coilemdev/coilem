@@ -344,6 +344,15 @@ class SolveParams(BaseModel):
             "Enable adaptive Gmsh refinement near magnet corners and slot openings."
         ),
     )
+    mesh_build: Literal["precise", "fast"] = Field(
+        default="precise",
+        description=(
+            "How exactly Gmsh places nodes along curves. 'precise' integrates "
+            "the mesh-size field to 1e-9, as the benchmark report measured; "
+            "'fast' integrates it to 1e-6, about 4x faster per mesh with "
+            "element counts within 1%, moving results at mesh-noise level."
+        ),
+    )
     slot_sidewall_refinement: bool = Field(
         default=False,
         description=(

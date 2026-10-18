@@ -156,7 +156,7 @@ def test_installation_without_packaged_files_fails_clearly(monkeypatch, tmp_path
 def test_build_rejects_data_that_differs_from_the_snapshot_manifest(monkeypatch, tmp_path: Path) -> None:
     setup_module = _load_setup()
     shutil.copy(REPO_ROOT / "snapshot-manifest.json", tmp_path / "snapshot-manifest.json")
-    for relative in (*resources.PACKAGED_DATA_FILES, *resources.PACKAGE_DATA_FILES):
+    for relative in (*resources.PACKAGED_DATA_FILES, *resources.PACKAGE_DATA_FILES, *resources.benchmark_data_files(REPO_ROOT)):
         (tmp_path / relative).parent.mkdir(parents=True, exist_ok=True)
         shutil.copy(REPO_ROOT / relative, tmp_path / relative)
     monkeypatch.setattr(setup_module, "ROOT", tmp_path)

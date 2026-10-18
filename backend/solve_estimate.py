@@ -26,6 +26,9 @@ _FIXED_S = 8.4
 # Seconds per base mesh per 1000 elements, with the reference producer pool.
 _MESH_S_PER_KELEMENT = 0.0394
 _REFERENCE_MESH_WORKERS = 8
+# Fast mesh build (solve_params.mesh_build): the meshing stage took 0.47x
+# (IPM 14p) and 0.71x (SPM 24p) of its Precise time in one timed pass.
+_FAST_MESH_FACTOR = 0.6
 # Seconds per loaded position per 1000 elements: field playback and saving.
 _FINALIZE_S_PER_KELEMENT = 0.0605
 # The ten calibration runs took 0.82x to 1.32x the central estimate
@@ -126,6 +129,8 @@ def estimate_solve(config: MotorConfig, *, mesh_elements: int | None = None, sol
     kelements = elements / 1000.0
     workers = mesh_workers(work["mesh_jobs"])
     mesh_s = _MESH_S_PER_KELEMENT * work["base_meshes"] * kelements * min(_REFERENCE_MESH_WORKERS, work["mesh_jobs"]) / workers
+    if config.solve_params is not None and config.solve_params.mesh_build == "fast":
+        mesh_s *= _FAST_MESH_FACTOR
     seconds = _FIXED_S + mesh_s + _FINALIZE_S_PER_KELEMENT * work["loaded"] * kelements
     if solver_id == "elmer":
         seconds *= _ELMER_FACTOR

@@ -13,14 +13,12 @@ import {
   warmFieldResultPlot,
   type FieldColorRangeMode,
   type FieldLineDensity,
+  type FieldLineOverlay,
   type FieldProbe,
-  type FieldProbeDescription,
   type FieldResultRaster,
 } from './FieldResultPlot';
-import {
-  fieldPlaybackSweepMaxT,
-  normalizeFieldPlaybackManifest,
-} from './fieldPlaybackContract';
+import { normalizeFieldPlaybackManifest } from './fieldPlaybackContract';
+import { statorSteelSaturationTicks } from './fluxColorScale';
 import {
   FieldPlaybackRasterizer,
   type FieldRasterSource,
@@ -35,8 +33,6 @@ import {
   playbackSpanOf,
   playbackStrideFrameIndex,
   positionSliderFrameIndex,
-  positionSliderRange,
-  positionSliderValue,
   PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM,
   PUBLIC_FIELD_PLAYBACK_MAX_RPM,
   PUBLIC_FIELD_PLAYBACK_MIN_RPM,
@@ -47,9 +43,13 @@ import {
   windowPlaybackFrameIndex,
 } from './fieldPlaybackTiming';
 import { LatestFrameLoader } from './latestFrameLoader';
+import { RpmField } from './RpmField';
+import { describeFieldProbe } from './fieldProbeRegion';
+import type { FieldPositionLink } from './fieldPositionLink';
 import { rotorAirgapBoundaryRadiusMm } from './motorAirgap';
 import type {
   GeometryPreview,
+  MaterialCatalog,
   MotorConfig,
   PublicAirgapProfileDescriptor,
   PublicArmatureFieldComposition,
@@ -60,6 +60,12 @@ import type {
 } from './model';
 
 type FieldSource = 'resultant' | 'pm' | 'armature';
+// Stator + PM draws the PM-only field's lines over the stator-only field (#120).
+type FieldView = FieldSource | 'stator_pm';
+// A stator frame pairs with the PM frame at the same rotor position.
+const OVERLAY_ANGLE_TOLERANCE_DEG = 1e-3;
+// Public playback turns clockwise (the solve angle convention).
+const CLOCKWISE_FIELD_AXES = { rotation: 'clockwise' } as const;
 const IDLE_BUFFER_FRAMES = 4;
 const DETAIL_VIEWPORT_SCALE = 1.08;
 const MAX_PLAYBACK_CATCHUP_MS = 250;
@@ -127,78 +133,12 @@ function evictRasters(
   }
 }
 
-function readableFieldRegion(region: string): string {
-  const normalized = region.replace(/[_-]+/g, ' ').trim();
-  if (/stator.*tooth|tooth.*stator/i.test(normalized)) return 'Stator tooth';
-  if (/stator.*yoke|yoke.*stator/i.test(normalized)) return 'Stator yoke';
-  if (/stator/i.test(normalized)) return 'Stator steel';
-  if (/rotor/i.test(normalized)) return 'Rotor steel';
-  if (/magnet/i.test(normalized)) return 'Permanent magnet';
-  if (/slot|winding|coil|copper/i.test(normalized)) return 'Winding region';
-  if (/air.?gap/i.test(normalized)) return 'Air gap';
-  if (/air/i.test(normalized)) return 'Air';
-  return normalized || 'Unclassified region';
-}
-
-function describeFieldProbe(probe: FieldProbe, config: MotorConfig): FieldProbeDescription {
-  const regionLabel = readableFieldRegion(probe.region);
-  const isStatorSteel = /stator|tooth|yoke/i.test(probe.region);
-  const isRotorSteel = /rotor/i.test(probe.region) && !/magnet/i.test(probe.region);
-  if (isStatorSteel || isRotorSteel) {
-    const materialLabel = isStatorSteel
-      ? config.materials.stator_steel
-      : config.materials.rotor_steel;
-    if (probe.bMagT >= 1.6) {
-      return {
-        regionLabel,
-        materialLabel,
-        saturationLabel: 'Above the 1.4–1.6 T reference knee',
-        saturationTone: 'warning',
-      };
-    }
-    if (probe.bMagT >= 1.4) {
-      return {
-        regionLabel,
-        materialLabel,
-        saturationLabel: 'Within the 1.4–1.6 T reference knee',
-        saturationTone: 'warning',
-      };
-    }
-    return {
-      regionLabel,
-      materialLabel,
-      saturationLabel: 'Below the 1.4–1.6 T reference knee',
-      saturationTone: 'good',
-    };
-  }
-  if (/magnet/i.test(probe.region)) {
-    return {
-      regionLabel,
-      materialLabel: config.materials.magnet_grade,
-      saturationLabel: 'Steel saturation does not apply',
-      saturationTone: 'neutral',
-    };
-  }
-  if (/slot|winding|coil|copper/i.test(probe.region)) {
-    return {
-      regionLabel,
-      materialLabel: config.materials.conductor,
-      saturationLabel: 'Approximately nonmagnetic · μr ≈ 1',
-      saturationTone: 'neutral',
-    };
-  }
-  return {
-    regionLabel,
-    materialLabel: /air/i.test(probe.region) ? 'Air' : 'Solver region',
-    saturationLabel: 'No steel saturation assessment',
-    saturationTone: 'neutral',
-  };
-}
-
 interface SolvedFieldViewerProps {
   viewControls: ReactNode;
   expandControl?: ReactNode;
   config: MotorConfig;
+  /** The material catalog, for the stator steel's knee and saturation ticks. */
+  materials?: MaterialCatalog | null;
   geometry: GeometryPreview | null;
   result: SolveResult;
   armature: PublicArmatureFieldComposition | null;
@@ -208,6 +148,8 @@ interface SolvedFieldViewerProps {
   magnetoCompositionAvailable: boolean;
   onRequestArmature: () => void;
   onCancelArmature: () => void;
+  /** The Solve tab's waveform plots: they set the field's position and show it. */
+  positionLink?: FieldPositionLink;
 }
 
 function nearestFrame(
@@ -264,6 +206,7 @@ export function SolvedFieldViewer({
   viewControls,
   expandControl,
   config,
+  materials = null,
   geometry,
   result,
   armature,
@@ -273,6 +216,7 @@ export function SolvedFieldViewer({
   magnetoCompositionAvailable,
   onRequestArmature,
   onCancelArmature,
+  positionLink,
 }: SolvedFieldViewerProps) {
   const resultantFrames = useMemo(
     () => playbackDescriptors(result.field_playback, result.field_line_frames ?? []),
@@ -286,7 +230,11 @@ export function SolvedFieldViewer({
     ),
     [armature?.airgap_profiles, armature?.field_playback, armature?.frames],
   );
-  const [source, setSource] = useState<FieldSource>('resultant');
+  const [view, setView] = useState<FieldView>('resultant');
+  const overlayActive = view === 'stator_pm';
+  // Stator + PM loads, caches and plays the stator field as Stator only does;
+  // the PM frame at the same position loads beside it.
+  const source: FieldSource = overlayActive ? 'armature' : view;
   const sourceRef = useRef<FieldSource>('resultant');
   sourceRef.current = source;
   const [frameIndex, setFrameIndex] = useState(0);
@@ -299,13 +247,13 @@ export function SolvedFieldViewer({
   const [showAirgap, setShowAirgap] = useState(false);
   const [showPoleLabels, setShowPoleLabels] = useState(false);
   const [fieldLineDensity, setFieldLineDensity] = useState<FieldLineDensity>('medium');
-  const [colorRangeMode, setColorRangeMode] = useState<FieldColorRangeMode>('viewport');
+  const [colorRangeMode, setColorRangeMode] = useState<FieldColorRangeMode>('fixed');
+  const saturationTicks = useMemo(() => statorSteelSaturationTicks(config, materials), [config, materials]);
   const [playing, setPlaying] = useState(false);
   const [playbackRpm, setPlaybackRpm] = useState(PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM);
   const playbackRpmRef = useRef(PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM);
   playbackRpmRef.current = playbackRpm;
   const playbackElectricalAngleRef = useRef(0);
-  const playbackSliderRef = useRef<HTMLInputElement>(null);
   const [playbackWaiting, setPlaybackWaiting] = useState(false);
   const [frameCache, setFrameCache] = useState<Record<string, PublicFieldLinePlot>>({});
   const [rasterCache, setRasterCache] = useState<Record<string, FieldResultRaster>>({});
@@ -327,6 +275,8 @@ export function SolvedFieldViewer({
     raster: FieldResultRaster;
     angleDeg: number;
   } | null>(null);
+  // The last PM overlay drawn, kept while the next position's decodes.
+  const [heldOverlayRaster, setHeldOverlayRaster] = useState<FieldResultRaster | null>(null);
   // While the slider is dragged, only its newest position loads (#59).
   const [scrubbing, setScrubbing] = useState(false);
   const [scrubDirection, setScrubDirection] = useState<1 | -1>(1);
@@ -379,7 +329,6 @@ export function SolvedFieldViewer({
   const playbackSpan = useMemo(() => playbackSpanOf(angleFrames), [angleFrames]);
   const playbackSpanRef = useRef(playbackSpan);
   playbackSpanRef.current = playbackSpan;
-  const sliderRange = positionSliderRange(playbackSpan);
   const streamingArmatureFrame = source === 'armature' && armatureBusy
     ? armatureFrames[armatureFrames.length - 1] ?? null
     : null;
@@ -390,6 +339,24 @@ export function SolvedFieldViewer({
   const descriptor = streamingArmatureFrame ?? nearestFrame(sourceFrames, electricalAngleDeg);
   const artifactId = descriptor?.field_frame_artifact.artifact_id ?? null;
   const exactFrameSettled = artifactId !== null && settledArtifactId === artifactId;
+  const overlayDescriptor = overlayActive && descriptor
+    ? nearestFrame(resultantFrames, descriptor.angle_deg)
+    : null;
+  const overlayArtifactId = overlayDescriptor && descriptor
+    && Math.abs(overlayDescriptor.angle_deg - descriptor.angle_deg) <= OVERLAY_ANGLE_TOLERANCE_DEG
+    ? overlayDescriptor.field_frame_artifact.artifact_id
+    : null;
+  const overlayRasterKeyRef = useRef<string | null>(null);
+  overlayRasterKeyRef.current = overlayArtifactId ? rasterCacheKey(overlayArtifactId, 'pm') : null;
+  const overlayRaster = overlayArtifactId ? cachedRaster(rasterCache, overlayArtifactId, 'pm', false) ?? null : null;
+  const overlayPlot = overlayArtifactId ? frameCache[overlayArtifactId]?.noload_plot ?? null : null;
+  const visibleOverlayRaster = overlayActive ? overlayRaster ?? heldOverlayRaster : null;
+  const fieldLineOverlay = useMemo<FieldLineOverlay | null>(
+    () => (overlayActive && (visibleOverlayRaster || overlayPlot)
+      ? { raster: visibleOverlayRaster, plot: overlayPlot }
+      : null),
+    [overlayActive, overlayPlot, visibleOverlayRaster],
+  );
   const activeRasterKey = artifactId ? rasterCacheKey(artifactId, source, showMesh) : null;
   activeRasterKeyRef.current = activeRasterKey;
   const activeRaster = artifactId ? cachedRaster(rasterCache, artifactId, source, showMesh) ?? null : null;
@@ -431,16 +398,6 @@ export function SolvedFieldViewer({
     const values = visiblePlot?.element_b_mag_t.filter(Number.isFinite) ?? [];
     return values.reduce((peak, value) => Math.max(peak, value), 0);
   }, [activeDetailRaster?.maxB, visiblePlot, visibleRaster?.maxB]);
-  const sweepScaleMaxT = useMemo(() => {
-    const playbackFrames = sourceFrames.flatMap((frame) => (
-      frame.playback_frame ? [frame.playback_frame] : []
-    ));
-    return Math.max(
-      0.001,
-      currentPeakBT,
-      fieldPlaybackSweepMaxT(playbackFrames, source) ?? 0,
-    );
-  }, [currentPeakBT, source, sourceFrames]);
   const describeProbe = useCallback(
     (probe: FieldProbe) => describeFieldProbe(probe, config),
     [config],
@@ -473,7 +430,7 @@ export function SolvedFieldViewer({
   const rasterCacheLimit = publicFieldPlaybackCacheFrames(
     playbackRpm,
     Math.ceil(angleFrames.length / playbackStride),
-  );
+  ) * (overlayActive ? 2 : 1);
   const rasterCacheLimitRef = useRef(rasterCacheLimit);
   rasterCacheLimitRef.current = rasterCacheLimit;
   const playbackLookaheadIndices = useMemo(
@@ -540,11 +497,19 @@ export function SolvedFieldViewer({
     preloadIndices.flatMap((preloadIndex) => {
       const preloadAngle = angleFrames[preloadIndex]?.angle_deg ?? 0;
       const preloadArtifactId = nearestFrame(sourceFrames, preloadAngle)?.field_frame_artifact.artifact_id;
-      return preloadArtifactId
-        ? [rasterCacheKey(preloadArtifactId, source), rasterCacheKey(preloadArtifactId, source, true)]
-        : [];
+      const overlayArtifactIdAhead = overlayActive
+        ? nearestFrame(resultantFrames, preloadAngle)?.field_frame_artifact.artifact_id
+        : null;
+      return [
+        ...(preloadArtifactId
+          ? [rasterCacheKey(preloadArtifactId, source), rasterCacheKey(preloadArtifactId, source, true)]
+          : []),
+        ...(overlayArtifactIdAhead
+          ? [rasterCacheKey(overlayArtifactIdAhead, 'pm'), rasterCacheKey(overlayArtifactIdAhead, 'pm', true)]
+          : []),
+      ];
     }),
-  ), [angleFrames, preloadIndices, source, sourceFrames]);
+  ), [angleFrames, overlayActive, preloadIndices, resultantFrames, source, sourceFrames]);
   const upcomingRasterKeysRef = useRef(upcomingRasterKeys);
   upcomingRasterKeysRef.current = upcomingRasterKeys;
   const keptRasterKeys = useCallback((loadedKey?: string): Set<string> => {
@@ -553,6 +518,10 @@ export function SolvedFieldViewer({
     if (activeRasterKeyRef.current) {
       keep.add(activeRasterKeyRef.current);
       keep.add(activeRasterKeyRef.current.replace(/^([^:]+):mesh:/, '$1:'));
+    }
+    if (overlayRasterKeyRef.current) {
+      keep.add(overlayRasterKeyRef.current);
+      keep.add(overlayRasterKeyRef.current.replace(/^([^:]+):/, '$1:mesh:'));
     }
     return keep;
   }, []);
@@ -599,9 +568,9 @@ export function SolvedFieldViewer({
   const loadVisualFrame = useCallback((
     requestedDescriptor: PublicFieldFrameDescriptor,
     requestedSource: FieldRasterSource,
+    withMesh = showMeshRef.current,
   ): Promise<FieldResultRaster | null> => {
     const requestedArtifactId = requestedDescriptor.field_frame_artifact.artifact_id;
-    const withMesh = showMeshRef.current;
     const key = rasterCacheKey(requestedArtifactId, requestedSource, withMesh);
     const cached = cachedRaster(rasterCacheRef.current, requestedArtifactId, requestedSource, withMesh);
     if (cached) return Promise.resolve(cached);
@@ -659,17 +628,26 @@ export function SolvedFieldViewer({
     const shown = new Set(Object.values(rasterCache));
     if (detailRaster) shown.add(detailRaster.raster);
     if (heldRaster) shown.add(heldRaster.raster);
+    if (heldOverlayRaster) shown.add(heldOverlayRaster);
     retiredRastersRef.current.forEach((raster) => {
       if (shown.has(raster)) return;
       closeRaster(raster);
       retiredRastersRef.current.delete(raster);
     });
-  }, [detailRaster, heldRaster, rasterCache]);
+  }, [detailRaster, heldOverlayRaster, heldRaster, rasterCache]);
 
   const drawnRaster = activeRaster ?? meshlessRaster;
   useEffect(() => {
     if (drawnRaster) setHeldRaster({ source, raster: drawnRaster, angleDeg: electricalAngleDeg });
   }, [drawnRaster, electricalAngleDeg, source]);
+
+  useEffect(() => {
+    if (overlayRaster) setHeldOverlayRaster(overlayRaster);
+  }, [overlayRaster]);
+
+  useEffect(() => {
+    if (!overlayActive) setHeldOverlayRaster(null);
+  }, [overlayActive]);
 
   useEffect(() => () => {
     if (scrubIdleTimerRef.current !== null) window.clearTimeout(scrubIdleTimerRef.current);
@@ -682,7 +660,8 @@ export function SolvedFieldViewer({
     rasterCacheRef.current = {};
     frameRequestsRef.current.clear();
     rasterRequestsRef.current.clear();
-    setSource('resultant');
+    setView('resultant');
+    setHeldOverlayRaster(null);
     setFrameIndex(0);
     frameIndexRef.current = 0;
     playbackElectricalAngleRef.current = 0;
@@ -694,7 +673,7 @@ export function SolvedFieldViewer({
     frameLoaderRef.current.clear();
     setRetainedPlot(null);
     setFieldViewportScale(1);
-    setColorRangeMode('viewport');
+    setColorRangeMode('fixed');
     setDetailPlot(null);
     replaceDetailRaster(null);
     detailRequestRef.current += 1;
@@ -705,18 +684,6 @@ export function SolvedFieldViewer({
     frameIndexRef.current = boundedIndex;
   }, [boundedIndex]);
 
-  const syncPlaybackSlider = useCallback((electricalAngle: number) => {
-    if (!playbackSliderRef.current) return;
-    playbackSliderRef.current.value = String(
-      positionSliderValue(playbackSpanRef.current, electricalAngle),
-    );
-  }, []);
-
-  useEffect(() => {
-    if (!playing && playbackSliderRef.current) {
-      syncPlaybackSlider(playbackElectricalAngleRef.current);
-    }
-  }, [boundedIndex, playing, syncPlaybackSlider]);
 
   useEffect(() => {
     const cacheLimit = publicFieldPlaybackCacheFrames(playbackRpm);
@@ -778,15 +745,25 @@ export function SolvedFieldViewer({
             cachedRaster(rasterCacheRef.current, nextArtifactId, source, showMeshRef.current)
             || frameCacheRef.current[nextArtifactId]
           );
+        const nextOverlay = overlayActive ? nearestFrame(resultantFrames, nextAngle) : null;
+        const nextOverlayId = nextOverlay?.field_frame_artifact.artifact_id;
+        const nextOverlayReady = !nextOverlayId
+          || cachedRaster(rasterCacheRef.current, nextOverlayId, 'pm', false)
+          || frameCacheRef.current[nextOverlayId];
         if (nextDescriptor && nextArtifactId && !nextReady) {
           void loadVisualFrame(nextDescriptor, source).catch(() => {
             setPlaybackWaiting(false);
             setPlaying(false);
           });
           setPlaybackWaiting(true);
+        } else if (nextOverlay && !nextOverlayReady) {
+          void loadVisualFrame(nextOverlay, 'pm', false).catch(() => {
+            setPlaybackWaiting(false);
+            setPlaying(false);
+          });
+          setPlaybackWaiting(true);
         } else {
           playbackElectricalAngleRef.current = nextPlaybackAngleDeg;
-          syncPlaybackSlider(nextPlaybackAngleDeg);
           if (nextIndex !== frameIndexRef.current) {
             frameIndexRef.current = nextIndex;
             setFrameIndex(nextIndex);
@@ -802,13 +779,14 @@ export function SolvedFieldViewer({
   }, [
     angleFrames,
     loadVisualFrame,
+    overlayActive,
     playing,
     polePairs,
     playbackSpan,
     playbackSpanDeg,
+    resultantFrames,
     source,
     sourceFrames,
-    syncPlaybackSlider,
   ]);
 
   useEffect(() => {
@@ -904,16 +882,51 @@ export function SolvedFieldViewer({
       ) {
         void loadVisualFrame(preloadDescriptor, source).catch(() => undefined);
       }
+      const preloadOverlay = overlayActive ? nearestFrame(resultantFrames, preloadAngle) : null;
+      const preloadOverlayId = preloadOverlay?.field_frame_artifact.artifact_id;
+      if (
+        preloadOverlay
+        && preloadOverlayId
+        && !cachedRaster(rasterCacheRef.current, preloadOverlayId, 'pm', false)
+        && !frameCacheRef.current[preloadOverlayId]
+      ) {
+        void loadVisualFrame(preloadOverlay, 'pm', false).catch(() => undefined);
+      }
     }
   }, [
     angleFrames,
     loadVisualFrame,
+    overlayActive,
     playing,
     preloadIndices,
+    resultantFrames,
     scrubbing,
     showMesh,
     source,
     sourceFrames,
+  ]);
+
+  useEffect(() => {
+    // The PM frame on screen in Stator + PM: its playback raster at once, and
+    // its exact frame once the stator frame has settled.
+    if (!overlayActive || !overlayDescriptor || !overlayArtifactId) return;
+    if (
+      !cachedRaster(rasterCacheRef.current, overlayArtifactId, 'pm', false)
+      && !frameCacheRef.current[overlayArtifactId]
+    ) {
+      void loadVisualFrame(overlayDescriptor, 'pm', false).catch(() => undefined);
+    }
+    if (!playing && exactFrameSettled && !frameCacheRef.current[overlayArtifactId]) {
+      void loadFrame(overlayArtifactId).catch(() => undefined);
+    }
+  }, [
+    exactFrameSettled,
+    loadFrame,
+    loadVisualFrame,
+    overlayActive,
+    overlayArtifactId,
+    overlayDescriptor,
+    playing,
   ]);
 
   useEffect(() => {
@@ -969,41 +982,93 @@ export function SolvedFieldViewer({
     void loadFrame(artifactId).catch(() => undefined);
   }, [activePlot, artifactId, exactFrameSettled, loadFrame, playing]);
 
-  const selectSource = (nextSource: FieldSource) => {
+  const selectSource = (nextView: FieldView) => {
+    const nextSource: FieldSource = nextView === 'stator_pm' ? 'armature' : nextView;
     if (nextSource === 'armature' && !magnetoCompositionAvailable) return;
-    setSource(nextSource);
+    if (nextView === 'stator_pm' && !pmAvailable) return;
+    setView(nextView);
     setPlaying(false);
     setPlaybackWaiting(false);
     if (nextSource !== 'armature') setRetainedPlot(null);
+    if (nextView === 'stator_pm') {
+      // Stator + PM shows no flux-density map, so it has no colour range to hold.
+      setColorRangeMode('fixed');
+      // Pole labels and fewer lines keep the two fields' poles readable.
+      setShowPoleLabels(true);
+      setFieldLineDensity('low');
+    }
     setDetailPlot(null);
     replaceDetailRaster(null);
     detailRequestRef.current += 1;
     if (nextSource === 'armature' && !armature && !armatureBusy) onRequestArmature();
   };
 
-  const togglePlayback = () => {
-    if (playing) {
-      setPlaying(false);
-      setPlaybackWaiting(false);
-      return;
-    }
-    frameIndexRef.current = 0;
-    playbackElectricalAngleRef.current = angleFrames[0]?.angle_deg ?? 0;
-    syncPlaybackSlider(playbackElectricalAngleRef.current);
-    setFrameIndex(0);
-    setPlaybackWaiting(false);
-    setPlaying(true);
+  // PM and Stator are one group: either alone, or both to overlay their lines.
+  // Turning the last one off falls back to Resultant.
+  const pmShown = view === 'pm' || view === 'stator_pm';
+  const statorShown = view === 'armature' || view === 'stator_pm';
+  const toggleSeparateField = (part: 'pm' | 'armature') => {
+    const nextPm = part === 'pm' ? !pmShown : pmShown;
+    const nextStator = part === 'armature' ? !statorShown : statorShown;
+    selectSource(nextPm && nextStator ? 'stator_pm' : nextPm ? 'pm' : nextStator ? 'armature' : 'resultant');
   };
 
-  const sourceLabel = source === 'resultant' ? 'Resultant field' : source === 'pm' ? 'PM-only field' : 'Stator-current field';
-  const sourceDetail = source === 'resultant'
-    ? 'Permanent magnets and stator current'
-    : source === 'pm'
-      ? 'Exact zero-current Magneto2D frames'
-      : 'PM remanence off · exact stator field';
+  // Play and pause from the shown position; stop goes back to the first, as
+  // in the Geometry preview.
+  const togglePlayback = () => {
+    setPlaybackWaiting(false);
+    setPlaying(!playing);
+  };
+  const stopPlayback = () => {
+    setPlaying(false);
+    setPlaybackWaiting(false);
+    frameIndexRef.current = 0;
+    playbackElectricalAngleRef.current = angleFrames[0]?.angle_deg ?? 0;
+    setFrameIndex(0);
+  };
+
+  // A position picked on a torque or back-EMF curve: pause and show the nearest
+  // solved position, preloading its neighbours in the direction of travel.
+  const scrubToAngle = (angleDeg: number) => {
+    if (angleFrames.length < 2) return;
+    const nextIndex = positionSliderFrameIndex(angleFrames, angleDeg, playbackSpan);
+    const direction = angleDeg >= playbackElectricalAngleRef.current ? 1 : -1;
+    if (direction !== scrubDirection) setScrubDirection(direction);
+    setScrubbing(true);
+    if (scrubIdleTimerRef.current !== null) window.clearTimeout(scrubIdleTimerRef.current);
+    scrubIdleTimerRef.current = window.setTimeout(() => {
+      scrubIdleTimerRef.current = null;
+      setScrubbing(false);
+    }, EXACT_FRAME_SETTLE_MS);
+    setPlaying(false);
+    setPlaybackWaiting(false);
+    frameIndexRef.current = nextIndex;
+    playbackElectricalAngleRef.current = angleFrames[nextIndex]?.angle_deg ?? angleDeg;
+    setFrameIndex(nextIndex);
+  };
+  const scrubToAngleRef = useRef(scrubToAngle);
+  scrubToAngleRef.current = scrubToAngle;
+  useEffect(() => positionLink?.subscribeRequests((angleDeg) => scrubToAngleRef.current(angleDeg)), [positionLink]);
+  // The curves mark the shown position.
+  useEffect(() => {
+    positionLink?.setPlayhead(angleFrames.length > 0 ? electricalAngleDeg : null);
+  }, [angleFrames.length, electricalAngleDeg, positionLink]);
+  useEffect(() => () => positionLink?.setPlayhead(null), [positionLink]);
+
+  const sourceLabel = overlayActive
+    ? 'Stator and PM field lines'
+    : source === 'resultant' ? 'Resultant field' : source === 'pm' ? 'PM-only field' : 'Stator-current field';
+  const sourceDetail = overlayActive
+    ? 'Separate solves: in saturated steel the resultant is not their sum.'
+    : source === 'resultant'
+      ? 'Permanent magnets and stator current'
+      : source === 'pm'
+        ? 'Exact zero-current Magneto2D frames'
+        : 'PM remanence off · exact stator field';
   const setRangeMode = (nextMode: FieldColorRangeMode) => {
     setColorRangeMode(nextMode);
-    if (nextMode === 'sweep') {
+    // Playback images use the fixed scale, so Fit view applies to a stopped frame.
+    if (nextMode === 'viewport') {
       setPlaying(false);
       setPlaybackWaiting(false);
     }
@@ -1021,87 +1086,57 @@ export function SolvedFieldViewer({
     : frameLoading
       ? 'Preparing solved geometry, flux density, and contours'
       : source === 'armature' && !armature
-        ? armatureError ?? 'Select Stator only to compute the cached Br = 0 sweep.'
+        ? armatureError ?? 'Select Stator to compute the cached Br = 0 sweep.'
         : frameError;
-  const renderLayerButtons = () => (
+  // The plot portals its zoom controls into the dock, off the field (#120 follow-up).
+  const [zoomSlot, setZoomSlot] = useState<HTMLSpanElement | null>(null);
+  // Flux density and field lines change what the picture means, so they stay
+  // in view; the reference layers wait in More, which counts how many are on.
+  const renderMoreLayerButtons = () => (
     <>
-      {hasMagnets && <button type="button" aria-pressed={showMagnets} onClick={() => setShowMagnets((value) => !value)}><i aria-hidden="true" />{source === 'armature' ? 'PM reference' : 'Magnets'}</button>}
-      <button type="button" aria-pressed={showHeatmap} onClick={() => setShowHeatmap((value) => !value)}><i aria-hidden="true" />Flux density</button>
+      {hasMagnets && <button type="button" aria-pressed={showMagnets} onClick={() => setShowMagnets((value) => !value)}><i aria-hidden="true" />{source === 'armature' && !overlayActive ? 'PM reference' : 'Magnets'}</button>}
       <button type="button" aria-pressed={showMesh} onClick={() => setShowMesh((value) => !value)}><i aria-hidden="true" />Mesh</button>
       <button type="button" aria-pressed={showAirgap} onClick={() => setShowAirgap((value) => !value)}><i aria-hidden="true" />Airgap</button>
-      <button type="button" aria-pressed={showFieldLines} onClick={() => setShowFieldLines((value) => !value)}><i aria-hidden="true" />Field lines</button>
       {(hasMagnets || source === 'armature') && <button type="button" aria-pressed={showPoleLabels} onClick={() => setShowPoleLabels((value) => !value)}><i aria-hidden="true" />Pole labels</button>}
     </>
   );
-  const renderDensityControl = (inline = false) => {
+  const moreLayersOn = [
+    hasMagnets && showMagnets,
+    showMesh,
+    showAirgap,
+    (hasMagnets || source === 'armature') && showPoleLabels,
+  ].filter(Boolean).length;
+  // Line density sits right after Field lines as a three-way choice, and only
+  // while the lines are shown.
+  const renderDensityControl = () => {
     const densityAdjustable = !playing && Boolean(exactVectorPlot);
     const displayedDensity = exactVectorPlot ? fieldLineDensity : 'medium';
-    const densityIndex = Math.max(0, FIELD_LINE_DENSITY_STOPS.indexOf(displayedDensity));
-    const densityLabel = displayedDensity === 'medium'
-      ? 'Medium'
-      : `${displayedDensity.charAt(0).toUpperCase()}${displayedDensity.slice(1)}`;
     const densityTitle = playing
       ? 'Playback uses medium field-line density. Pause to adjust the exact frame.'
       : densityAdjustable
-        ? `${densityLabel} field-line density`
+        ? 'Field-line density'
         : 'Loading the exact frame before field-line density can be changed.';
     return (
-      <label className={`public-field-density-control${inline ? ' public-field-density-control-inline' : ''}`}>
-        <span>{inline ? 'Lines' : 'Line density'}</span>
-        <input
-          type="range"
-          min="0"
-          max="2"
-          step="1"
-          value={densityIndex}
-          disabled={!densityAdjustable}
-          aria-label="Field-line density"
-          aria-valuetext={densityLabel}
-          title={densityTitle}
-          style={{ ['--public-field-density-progress' as never]: `${densityIndex * 50}%` }}
-          onChange={(event) => {
-            const nextDensity = FIELD_LINE_DENSITY_STOPS[Number(event.currentTarget.value)];
-            if (nextDensity) setFieldLineDensity(nextDensity);
-          }}
-        />
-        <small aria-hidden="true"><span>Low</span><span>Med</span><span>High</span></small>
-      </label>
+      <span className="public-field-density-choice" role="group" aria-label="Field-line density" title={densityTitle}>
+        {FIELD_LINE_DENSITY_STOPS.map((stop) => (
+          <button
+            type="button"
+            aria-pressed={displayedDensity === stop}
+            disabled={!densityAdjustable}
+            onClick={() => setFieldLineDensity(stop)}
+            aria-label={`${stop === 'low' ? 'Low' : stop === 'medium' ? 'Medium' : 'High'} line density`}
+            key={stop}
+          >
+            <span className="public-field-density-long">{stop === 'low' ? 'Low' : stop === 'medium' ? 'Med' : 'High'}</span>
+            <span className="public-field-density-short" aria-hidden="true">{stop === 'low' ? 'L' : stop === 'medium' ? 'M' : 'H'}</span>
+          </button>
+        ))}
+      </span>
     );
   };
 
   return (
     <section className="public-solved-field-viewer" aria-label="Completed field solution">
-      <div className="public-solved-field-toolbar">
-        {viewControls}
-        <div className="public-field-toolbar-groups">
-          <div className="public-field-control-cluster">
-            <span>Source</span>
-            <div className="public-field-source-controls" role="group" aria-label="Field composition">
-              <button type="button" aria-label="Resultant field, permanent magnets plus stator current" title="Permanent magnets plus stator current" aria-pressed={source === 'resultant'} onClick={() => selectSource('resultant')}><strong>Resultant</strong></button>
-              <button type="button" aria-label="PM-only field, zero current" title="Exact zero-current Magneto2D field" aria-pressed={source === 'pm'} disabled={!pmAvailable} onClick={() => selectSource('pm')}><strong>PM only</strong></button>
-              <button type="button" aria-label="Stator-current-only field, permanent-magnet remanence disabled" title={magnetoCompositionAvailable ? 'Exact zero-remanence Magneto2D field' : 'Stator-only composition is available for Magneto2D results'} aria-pressed={source === 'armature'} disabled={!magnetoCompositionAvailable} onClick={() => selectSource('armature')}><strong>Stator only</strong></button>
-            </div>
-          </div>
-          <div className="public-field-control-cluster public-field-overlay-cluster">
-            <span>Overlays</span>
-            <div className="public-field-layer-controls public-field-layer-controls-inline" role="group" aria-label="Field solution overlays">
-              {renderLayerButtons()}
-            </div>
-          </div>
-        </div>
-        <div className="public-field-toolbar-end">
-          <details className="public-field-layer-menu">
-            <summary>Overlays</summary>
-            <div className="public-field-layer-controls" role="group" aria-label="Field solution overlays">
-              {renderLayerButtons()}
-              {showFieldLines && renderDensityControl()}
-            </div>
-          </details>
-          {showFieldLines && renderDensityControl(true)}
-          {expandControl}
-        </div>
-      </div>
-
       <div className="public-solved-field-canvas">
         {source === 'armature' && armatureBusy && (
           <div
@@ -1128,42 +1163,30 @@ export function SolvedFieldViewer({
         )}
         {(activeDetailRaster || visibleRaster || visiblePlot) && (
           <>
-            <details className="public-field-summary">
-              <summary>Field details</summary>
-              <div className="public-field-summary-panel">
-                <span>Field composition</span>
-                <strong>{sourceLabel}</strong>
-                <p>{sourceDetail}</p>
-                <dl>
-                  <div><dt>Peak |B|</dt><dd>{currentPeakBT.toFixed(3)} T</dd></div>
-                  <div><dt>Position</dt><dd>{electricalAngleDeg.toFixed(1)}° elec</dd></div>
-                </dl>
-              </div>
-            </details>
             <FieldResultPlot
               plot={visiblePlot}
               raster={activeDetailRaster ?? visibleRaster}
               highResolutionPlot={exactVectorPlot}
-              probeEnabled={!playing && Boolean(exactVectorPlot)}
+              probeEnabled={!playing && Boolean(exactVectorPlot) && !overlayActive}
               geometry={geometry}
               magnetRotationDeg={(heldFrame?.angleDeg ?? electricalAngleDeg) / polePairs}
               showMagnets={showMagnets}
               showAirgap={showAirgap}
               airgapInnerRadiusMm={rotorAirgapBoundaryRadiusMm(config)}
               showMagnetPolarityLabels={showPoleLabels}
-              magnetReference={source === 'armature'}
+              magnetReference={source === 'armature' && !overlayActive}
               showStatorPolarity={source === 'armature' && showPoleLabels}
               showPolarityLegend={source === 'armature' && showPoleLabels}
               statorPolarityProfile={descriptor?.airgap_brbt ?? exactVectorPlot?.airgap_brbt}
               statorPolarityRotationDeg={statorPolarityRotationDeg}
               statorInnerRadiusMm={config.stator.ID_mm / 2}
               poles={config.rotor.pole_count}
-              showHeatmap={showHeatmap}
+              showHeatmap={showHeatmap && !overlayActive}
               showMesh={showMesh}
               showFieldLines={showFieldLines}
               fieldLineDensity={exactVectorPlot ? fieldLineDensity : 'medium'}
               colorRangeMode={colorRangeMode}
-              sweepScaleMaxT={sweepScaleMaxT}
+              saturationTicks={saturationTicks}
               showRangeControl
               onColorRangeModeChange={setRangeMode}
               showControls={false}
@@ -1172,6 +1195,10 @@ export function SolvedFieldViewer({
               subtitle={sourceDetail}
               describeProbe={describeProbe}
               onViewportScaleSettled={setFieldViewportScale}
+              overlay={fieldLineOverlay}
+              pmLines={source === 'pm'}
+              fieldAxes={overlayActive ? CLOCKWISE_FIELD_AXES : null}
+              navigationSlot={zoomSlot}
             />
           </>
         )}
@@ -1182,80 +1209,99 @@ export function SolvedFieldViewer({
         </div>}
       </div>
 
-      <div className="public-field-playback">
-        <button
-          className="public-field-transport-play"
-          type="button"
-          aria-label={playing ? 'Pause clockwise field playback' : 'Play field clockwise'}
-          title={colorRangeMode === 'sweep'
-            ? 'Switch the flux-density range to View to animate.'
-            : 'Clockwise — follows the public solve angle convention'}
-          disabled={angleFrames.length < 2 || colorRangeMode === 'sweep'}
-          onClick={togglePlayback}
-        >
-          {playing ? 'Ⅱ' : '▶'}
-        </button>
-        <label className="public-field-position-control">
-          <span><strong>Position</strong><em>{boundedIndex + 1} / {Math.max(1, angleFrames.length)}</em></span>
-          <input
-            ref={playbackSliderRef}
-            type="range"
-            min={sliderRange.min}
-            max={sliderRange.max}
-            step="any"
-            defaultValue={sliderRange.min}
+      {/* The dock reads in the order you work: the title bar, then what the
+          field shows, then playback through the solved positions. */}
+      <div className="public-field-dock">
+        <div className="public-dock-strip">
+          {viewControls}
+          <div className="public-dock-strip-end">
+            {(activeDetailRaster || visibleRaster || visiblePlot) && (
+              <div className="viewport-cad-status">
+                {playbackWaiting && <small className="public-field-playback-buffering" aria-live="polite">Buffering… </small>}
+                {electricalAngleDeg.toFixed(1)}° elec<span className="public-field-text-long"> · peak |B| {currentPeakBT.toFixed(2)} T</span>
+              </div>
+            )}
+            <details className="public-field-physics-info">
+              <summary aria-label="Field details" title="Field details">i</summary>
+              <div className="public-field-summary-panel">
+                <span>Field composition</span>
+                <strong>{sourceLabel}</strong>
+                <p>{sourceDetail}</p>
+                {(activeDetailRaster || visibleRaster || visiblePlot) && (
+                  <dl>
+                    <div><dt>Peak |B|</dt><dd>{currentPeakBT.toFixed(3)} T</dd></div>
+                    <div><dt>Position</dt><dd>{electricalAngleDeg.toFixed(1)}° elec</dd></div>
+                    <div><dt>Mechanical</dt><dd>{mechanicalAngleDeg.toFixed(2)}°</dd></div>
+                    <div><dt>Playback</dt><dd>Clockwise</dd></div>
+                    <div><dt>Frames</dt><dd>{bufferStatus}</dd></div>
+                  </dl>
+                )}
+                <p className="public-field-summary-note">PM-only and Stator-only are separate nonlinear solves; their arithmetic sum is not assumed to equal the Resultant field when steel is saturated.</p>
+              </div>
+            </details>
+            <span className="public-field-zoom-slot" ref={setZoomSlot} />
+            {expandControl}
+          </div>
+        </div>
+        <div className="public-field-dock-controls" role="toolbar" aria-label="Field display">
+          <div className="public-field-control-cluster">
+            <span>Field</span>
+            <div className="public-field-source-controls" role="group" aria-label="Field composition">
+              <button type="button" aria-label="Resultant field, permanent magnets plus stator current" title="Permanent magnets plus stator current" aria-pressed={view === 'resultant'} onClick={() => selectSource('resultant')}><strong>Resultant</strong></button>
+              <span className={`public-field-source-pair${overlayActive ? ' is-both' : ''}`} role="group" aria-label="Separate fields: PM, Stator, or both together" title="Pick PM, Stator, or both to draw their field lines together">
+                <button type="button" className="is-pm" aria-label="PM-only field, zero current" title="Exact zero-current Magneto2D field" aria-pressed={pmShown} disabled={!pmAvailable} onClick={() => toggleSeparateField('pm')}><strong>PM</strong></button>
+                <button type="button" className="is-stator" aria-label="Stator-current-only field, permanent-magnet remanence disabled" title={magnetoCompositionAvailable ? 'Exact zero-remanence Magneto2D field' : 'Stator-only composition is available for Magneto2D results'} aria-pressed={statorShown} disabled={!magnetoCompositionAvailable} onClick={() => toggleSeparateField('armature')}><strong>Stator</strong></button>
+              </span>
+            </div>
+          </div>
+          <div className="public-field-control-cluster public-field-overlay-cluster">
+            <span>Show</span>
+            <div className="public-field-layer-controls public-field-layer-controls-inline" role="group" aria-label="Field solution overlays">
+              <button type="button" aria-pressed={showHeatmap && !overlayActive} disabled={overlayActive} title={overlayActive ? 'Off while PM and Stator are both shown: one |B| map cannot belong to both fields' : undefined} onClick={() => setShowHeatmap((value) => !value)} aria-label="Flux density"><i aria-hidden="true" /><span className="public-field-text-long">Flux density</span><span className="public-field-text-short" aria-hidden="true">Flux</span></button>
+              <button type="button" aria-pressed={showFieldLines} onClick={() => setShowFieldLines((value) => !value)} aria-label="Field lines"><i aria-hidden="true" /><span className="public-field-text-long">Field lines</span><span className="public-field-text-short" aria-hidden="true">Lines</span></button>
+              {showFieldLines && renderDensityControl()}
+            </div>
+            <details className="public-field-layer-menu">
+              <summary>More{moreLayersOn > 0 && <em>{moreLayersOn} on</em>}</summary>
+              <div className="public-field-layer-controls" role="group" aria-label="More field layers">
+                {renderMoreLayerButtons()}
+              </div>
+            </details>
+          </div>
+        </div>
+        <div className="public-field-playback">
+          <button
+            className="public-field-transport-play"
+            type="button"
+            aria-label={playing ? 'Pause clockwise field playback' : 'Play field clockwise'}
+            title={colorRangeMode === 'viewport'
+              ? 'Switch the flux-density range to Fixed to animate.'
+              : 'Clockwise — follows the public solve angle convention'}
+            disabled={angleFrames.length < 2 || colorRangeMode === 'viewport'}
+            onClick={togglePlayback}
+          >
+            {playing ? 'Ⅱ' : '▶'}
+          </button>
+          <button
+            className="public-field-transport-play"
+            type="button"
+            aria-label="Stop and go to the first position"
+            title="Stop and go to the first position"
             disabled={angleFrames.length < 2}
-            aria-label="Solved rotor position"
-            onChange={(event) => {
-              const nextPlaybackAngleDeg = Number(event.target.value);
-              const nextIndex = positionSliderFrameIndex(angleFrames, nextPlaybackAngleDeg, playbackSpan);
-              const direction = nextPlaybackAngleDeg >= playbackElectricalAngleRef.current ? 1 : -1;
-              if (direction !== scrubDirection) setScrubDirection(direction);
-              setScrubbing(true);
-              if (scrubIdleTimerRef.current !== null) window.clearTimeout(scrubIdleTimerRef.current);
-              scrubIdleTimerRef.current = window.setTimeout(() => {
-                scrubIdleTimerRef.current = null;
-                setScrubbing(false);
-              }, EXACT_FRAME_SETTLE_MS);
-              setPlaying(false);
-              setPlaybackWaiting(false);
-              frameIndexRef.current = nextIndex;
-              playbackElectricalAngleRef.current = nextPlaybackAngleDeg;
-              setFrameIndex(nextIndex);
-            }}
-          />
-        </label>
-        <label
-          className="public-field-playback-rpm"
-          title="Visual playback speed — not the solve operating point"
-        >
-          <span className="public-field-transport-label"><strong>Playback speed</strong><em>{Math.round(playbackRpm)} RPM</em></span>
-          <input
-            type="range"
+            onClick={stopPlayback}
+          >
+            ■
+          </button>
+          <RpmField
+            value={playbackRpm}
             min={PUBLIC_FIELD_PLAYBACK_MIN_RPM}
             max={PUBLIC_FIELD_PLAYBACK_MAX_RPM}
-            step={1}
-            value={playbackRpm}
-            aria-label="Playback speed (RPM)"
-            onChange={(event) => setPlaybackRpm(Number(event.target.value))}
-            style={{
-              ['--playback-rpm-progress' as never]: (
-                ((playbackRpm - PUBLIC_FIELD_PLAYBACK_MIN_RPM)
-                  / (PUBLIC_FIELD_PLAYBACK_MAX_RPM - PUBLIC_FIELD_PLAYBACK_MIN_RPM))
-                * 100
-              ).toFixed(1),
-            }}
+            label="Speed"
+            ariaLabel="Playback speed (RPM)"
+            title="Visual playback speed — not the solve operating point. Type a number or use the arrows; Shift+arrow steps by 10."
+            onChange={setPlaybackRpm}
           />
-        </label>
-        <span className="public-field-playback-meta" aria-live="polite">
-          <span><small>Mechanical</small><strong>{mechanicalAngleDeg.toFixed(2)}°</strong></span>
-          <span><small>Electrical</small><strong>{electricalAngleDeg.toFixed(1)}°</strong></span>
-          <em className={playbackWaiting ? 'is-buffering' : ''}>CW · {bufferStatus}</em>
-        </span>
-        <details className="public-field-physics-info">
-          <summary aria-label="About field composition" title="About field composition">i</summary>
-          <p>PM-only and Stator-only are separate nonlinear solves; their arithmetic sum is not assumed to equal the Resultant field when steel is saturated.</p>
-        </details>
+        </div>
       </div>
     </section>
   );

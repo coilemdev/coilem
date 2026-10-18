@@ -6,6 +6,7 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
 import { buildConcentratedCoil, buildWindingHarness } from './coil3d';
 import { deriveStatorSectionWidths } from './dimensionAnnotations';
 import { publicFlatIpmMagnetCenterRadiusMm } from './flatIpmBurialHealth';
+import { magnetPoleCoverage } from './magnetCoverage';
 import type { MotorConfig, PublicMotorComponentSelection } from './model';
 import { PUBLIC_MOTOR_COLORS, PUBLIC_PHASE_COLORS, renderTargetColor } from './motorPalette';
 import { concentratedUsesToothCoils, toothCoilAssignments } from './toothCoils';
@@ -1242,7 +1243,7 @@ export function PublicMotor3D({
       const magnetInnerRadius = rotorRadius;
       const magnetOuterRadius = rotorRadius + config.rotor.magnet_thickness_mm;
       const magnetSplitRadius = (magnetInnerRadius + magnetOuterRadius) / 2;
-      const magnetHalfSpan = Math.max(0.04, polePitch * config.rotor.magnet_embrace / 2);
+      const magnetHalfSpan = Math.max(0.04, polePitch * Math.min(1, magnetPoleCoverage(config)) / 2);
       const airgapHalfGeometry = extrude(
         sectorShape(magnetSplitRadius, magnetOuterRadius, magnetHalfSpan),
         stackDepth * 0.91,

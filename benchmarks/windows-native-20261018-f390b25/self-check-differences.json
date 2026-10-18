@@ -1,0 +1,172 @@
+{
+  "comparison": "exact equality; no numerical tolerances applied",
+  "verdicts_gates_values_identical": true,
+  "case_differences": [],
+  "metadata_differences": [
+    {
+      "field": "case_runtime_s.ipm_flat_12s10p_fscw_contract",
+      "committed": 98.7,
+      "measured": 92.1
+    },
+    {
+      "field": "case_runtime_s.ipm_flat_24s16p_industrial_contract",
+      "committed": 107.0,
+      "measured": 102.8
+    },
+    {
+      "field": "case_runtime_s.ipm_flat_4p12s_micro_contract",
+      "committed": 87.4,
+      "measured": 77.8
+    },
+    {
+      "field": "case_runtime_s.ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "committed": 183.7,
+      "measured": 171.7
+    },
+    {
+      "field": "case_runtime_s.ipm_flat_8p12s_fsae_contract",
+      "committed": 159.6,
+      "measured": 151.9
+    },
+    {
+      "field": "case_runtime_s.ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "committed": 145.9,
+      "measured": 136.8
+    },
+    {
+      "field": "case_runtime_s.ipm_vshape_8p12s_baseline_contract",
+      "committed": 101.1,
+      "measured": 92.7
+    },
+    {
+      "field": "case_runtime_s.ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "committed": 112.2,
+      "measured": 104.5
+    },
+    {
+      "field": "case_runtime_s.ipm_vshape_8p12s_narrow_angle_contract",
+      "committed": 104.5,
+      "measured": 98.7
+    },
+    {
+      "field": "case_runtime_s.ipm_vshape_8p12s_pocket_offset_contract",
+      "committed": 94.9,
+      "measured": 91.0
+    },
+    {
+      "field": "case_runtime_s.ipm_vshape_8p12s_thin_bridge_contract",
+      "committed": 79.7,
+      "measured": 75.6
+    },
+    {
+      "field": "case_runtime_s.ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "committed": 88.1,
+      "measured": 84.3
+    },
+    {
+      "field": "case_runtime_s.spm_12p36s_distributed_femm_validation",
+      "committed": 48.4,
+      "measured": 46.9
+    },
+    {
+      "field": "case_runtime_s.spm_14p12s_high_pole",
+      "committed": 189.0,
+      "measured": 172.4
+    },
+    {
+      "field": "case_runtime_s.spm_4p12s_simple__baseline",
+      "committed": 59.9,
+      "measured": 50.8
+    },
+    {
+      "field": "case_runtime_s.spm_4p12s_simple__high_current",
+      "committed": 57.5,
+      "measured": 50.0
+    },
+    {
+      "field": "case_runtime_s.spm_4p12s_simple__tight_airgap",
+      "committed": 41.0,
+      "measured": 37.2
+    },
+    {
+      "field": "case_runtime_s.spm_4p12s_simple_noload__baseline",
+      "committed": 59.3,
+      "measured": 53.3
+    },
+    {
+      "field": "case_runtime_s.spm_4p12s_simple_noload__high_current",
+      "committed": 55.6,
+      "measured": 49.6
+    },
+    {
+      "field": "case_runtime_s.spm_4p12s_simple_noload__tight_airgap",
+      "committed": 44.3,
+      "measured": 39.9
+    },
+    {
+      "field": "case_runtime_s.spm_4p12s_small",
+      "committed": 111.5,
+      "measured": 90.4
+    },
+    {
+      "field": "case_runtime_s.spm_8p12s_concentrated__baseline",
+      "committed": 95.2,
+      "measured": 78.8
+    },
+    {
+      "field": "case_runtime_s.spm_8p12s_concentrated__high_current",
+      "committed": 90.2,
+      "measured": 78.6
+    },
+    {
+      "field": "case_runtime_s.spm_8p12s_concentrated__tight_airgap",
+      "committed": 96.4,
+      "measured": 83.7
+    },
+    {
+      "field": "case_runtime_s.spm_8p12s_reference",
+      "committed": 123.0,
+      "measured": 109.3
+    },
+    {
+      "field": "case_runtime_s.spm_8p12s_reference_angle30__baseline",
+      "committed": 85.8,
+      "measured": 73.8
+    },
+    {
+      "field": "case_runtime_s.spm_8p24s_distributed_femm_validation",
+      "committed": 47.1,
+      "measured": 47.5
+    },
+    {
+      "field": "case_runtime_s.spm_8p48s_chorded_5_6",
+      "committed": 119.6,
+      "measured": 116.0
+    },
+    {
+      "field": "case_runtime_s.spm_8p48s_distributed_femm_validation",
+      "committed": 46.9,
+      "measured": 45.4
+    },
+    {
+      "field": "evaluation",
+      "committed": "Graded from the recorded measurements (harness 1.3.0, protocol 1.1.0) against suite 1.3.0 and the frozen reference bundle, with zero field solves.",
+      "measured": "Graded from the recorded measurements (harness 1.5.0, protocol 1.3.0) against suite 1.3.0 and the frozen reference bundle, with zero field solves."
+    },
+    {
+      "field": "measured_commit",
+      "committed": "738d9516e8500c5996c772bd96470472cbb9a0f9",
+      "measured": "f390b252d8c7dddc3b7ff9f2c1c4f6cbf1d10d4c"
+    },
+    {
+      "field": "physics_files.backend/gmsh_solver.py",
+      "committed": "7fc06b773b7b0546e86edfcdf81136564dc7693e2a556334b249da7662f73d65",
+      "measured": "764e31391894685f1a259a90c7dbb562d612f585a92cef91761a5d6ae783f53f"
+    },
+    {
+      "field": "source",
+      "committed": "benchmarks/windows-v3-20261015-738d951",
+      "measured": "report"
+    }
+  ]
+}

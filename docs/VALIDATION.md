@@ -12,7 +12,7 @@ report yet. Passing CI
 alone does not establish numerical accuracy.
 
 The unreleased 0.4.0 application on `main` changes the winding model and
-qualifies against the [Magneto2D versus FEMM v3 report](../benchmarks/windows-v3-20261015-738d951/README.md)
+qualifies against the [Windows requalification report](../benchmarks/windows-native-20261018-f390b25/README.md)
 instead; see [Qualification status](#qualification-status).
 
 See [Numerical evidence](NUMERICAL_EVIDENCE.md) for measured comparisons and
@@ -131,6 +131,11 @@ on macOS, Windows and Linux:
 python -m tools.run_benchmarks --phases A B C D --out-dir ../benchmark-output/my-run --pdf
 ```
 
+Harness 1.5.0 also runs from an installed coilEM, with no checkout: `coilem
+benchmark` solves the current suite, grades it against the frozen FEMM v3
+reference, and matches it against the [published record](../benchmarks/records/README.md)
+for the platform (see [Run the benchmark yourself](#run-the-benchmark-yourself)).
+
 Historical protocol 1.0.0 remains selectable with `--suite` and its matching
 `--reference-bundle`. Changed physical inputs require new matched references;
 changing only the candidate solver can reuse compatible frozen data.
@@ -143,11 +148,39 @@ meshing/field solves and matched FEMM qualification are needed before enabling
 public support. Numerical status remains UNSUPPORTED; no comparison was
 performed and no delivery date is claimed.
 
+## Run the benchmark yourself
+
+An installed coilEM carries the A/B/C/D suite, its frozen FEMM v3 reference
+and the [published records](../benchmarks/records/README.md), so anyone can
+check their own installation:
+
+```sh
+coilem benchmark --quick    # one case per phase, about 5 minutes
+coilem benchmark            # all 30 cases, about 50 minutes
+coilem benchmark --list     # the cases and the record's times
+```
+
+`--phase B` runs one phase (repeatable), and `--out` names the output folder.
+The command solves each case with the installed Magneto2D and grades it
+against the frozen reference with the gates above. It then matches the outcome
+against the record for the platform. A match needs the same verdicts and gate
+statuses, and mean torque, back-EMF fundamental and back-EMF peak within
+0.5%, 0.05% and 1.5% of the record. Those tolerances come from the measured
+difference between macOS and Windows. The physics sources are checked by hash
+first, so a release with unchanged physics is matched against a record
+measured at an earlier commit.
+
+Each case's solver files are deleted when it finishes. The run stops before a
+case if the output drive has less than 3 GB free; `--resume --out <folder>`
+continues it. The output folder holds the full report under `report/` and a
+shareable Markdown and JSON report under `share/`. The shareable report names
+no local paths and passes the publication path check.
+
 ## Qualification status
 
-The maintainers accept the [Magneto2D versus FEMM v3 report](../benchmarks/windows-v3-20261015-738d951/README.md)
+The maintainers accept the [Windows requalification report](../benchmarks/windows-native-20261018-f390b25/README.md)
 as the numerical qualification record for the application on `main`. It
-measured commit `738d951` on Windows against the matched
+measured commit `f390b25` on Windows with the Precise mesh default against the matched
 [FEMM v3 references](../benchmarks/reference-baselines/ipm-high-output-v3/manifest.json),
 so it covers the 0.4.0 winding model: full slot-side turns in flux linkage
 (#80), tooth coils for fractional-slot concentrated windings, the current angle
@@ -155,14 +188,17 @@ measured from phase A's own axis and conformal two-layer slots (#91, #85).
 Earlier reports measured the previous winding model, so their PASS results no
 longer qualify these combinations; report v1.1 remains the record for coilEM
 0.3.x. A combination is qualified when every registered fixture for it passes
-its FEMM parity gates in the v3 report. Failed, YELLOW and unsupported outcomes
+its FEMM parity gates in the report. Failed, YELLOW and unsupported outcomes
 remain visible and are not waived by the aggregate pass count.
 
-The six-step rows pass under evaluation protocol 1.3.0, which checks the
-commanded currents against phase A's winding axis. That protocol was registered
-after the fields were measured. The report retains the fixed-axis protocol 1.1.0
-evaluation, including its golden-sequence FAILs for the 8-pole and 14-pole
-12-slot fixtures. The FEMM v3 bundle keeps `REVIEW_REQUIRED` for limitations
+The new run measured protocol 1.3.0 directly, including the six-step checks of
+commanded currents against phase A's winding axis. Every verdict, gate and
+recorded numerical value equals the [October 15 Windows v3 comparison](../benchmarks/windows-v3-20261015-738d951/README.md).
+That historical comparison retains its post hoc evaluation and fixed-axis
+protocol 1.1.0 golden-sequence FAILs for the 8-pole and 14-pole 12-slot fixtures.
+The macOS record remains at `738d951`; its source guard reports NOT_COMPARABLE
+until a new macOS run measures the changed mesh source. Fast mesh remains
+experimental. The FEMM v3 bundle keeps `REVIEW_REQUIRED` for limitations
 outside these gates, such as steel-loss estimates, the Kt current base and
 peak flux-density sampling. Release qualification remains a separate step.
 
@@ -187,6 +223,8 @@ They are experimental:
 - SPM with distributed windings under ideal six-step excitation;
 - SPM with single-layer distributed windings;
 - two-layer concentrated windings (a coil on every tooth);
+- any combination solved with the **Fast** mesh build, because the
+  benchmark measured meshes built with Precise node placement;
 - flat-buried or V-shape IPM with distributed windings; and
 - Halbach, lessons and generic field mode, which are outside A/B/C/D.
 

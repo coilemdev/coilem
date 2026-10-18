@@ -85,7 +85,7 @@ def test_hybrid_raster_manifest_keeps_numerical_frames_for_exact_zoom_detail(
     assert manifest is not None
     assert manifest["schema_version"] == "coilem.field_playback.v2"
     assert manifest["encoding"] == "layered-raster-v1"
-    assert manifest["renderer_revision"] == "medium-contours-mesh-v2"
+    assert manifest["renderer_revision"] == "medium-contours-mesh-fixed-flux-scale-v3"
     assert manifest["width_px"] == 1536
     assert manifest["height_px"] == 1536
     assert "detail_width_px" not in manifest
@@ -113,8 +113,8 @@ def test_hybrid_raster_manifest_keeps_numerical_frames_for_exact_zoom_detail(
     assert (
         cache_dir / "field_playback" / "resultant_pm" / "manifest.json"
     ).is_file()
-    assert len(list((cache_dir / "field_playback").rglob("*.png"))) == 8
-    assert len(list((cache_dir / "field_playback").rglob("*.webp"))) == 4
+    assert len(list((cache_dir / "field_playback").rglob("*.png"))) == 0
+    assert len(list((cache_dir / "field_playback").rglob("*.webp"))) == 12
     assert manifest["numerical_snapshots"] == [
         {
             "artifact_id": "source-0",
@@ -147,10 +147,12 @@ def test_hybrid_raster_manifest_keeps_numerical_frames_for_exact_zoom_detail(
                 "magnitude": pytest.approx(composition["legend"]["max"] * 7 / 12),
             },
         ]
+        # Geometry, flux density and mesh are lossless WebP (PNG's pixels at
+        # under half the bytes); field lines stay lossy WebP.
         expected_formats = {
-            "geometry": ("PNG", "image/png"),
-            "flux_density": ("PNG", "image/png"),
-            "mesh": ("PNG", "image/png"),
+            "geometry": ("WEBP", "image/webp"),
+            "flux_density": ("WEBP", "image/webp"),
+            "mesh": ("WEBP", "image/webp"),
             "field_lines": ("WEBP", "image/webp"),
         }
         for layer, (image_format, media_type) in expected_formats.items():
@@ -367,3 +369,86 @@ def test_v2_contract_supports_tutorial_timelines_and_arbitrary_compositions() ->
     cue["dy"] = 0.0
     with pytest.raises(FieldPlaybackContractError, match="direction must be non-zero"):
         validate_field_playback_v2(zero_direction)
+
+
+def test_composition_reuses_the_frame_geometry_exactly(monkeypatch, tmp_path) -> None:
+    """Passing the frame's own geometry renders the same layers, and the frame builds it once per plot."""
+
+    from PIL import ImageDraw, ImageFilter
+
+    cache_dir = tmp_path / "magneto2d-test"
+    source = cache_dir / "field_line_frames" / "frame_000.json.gz"
+    _write_frame(source, 0.0)
+    _configure_artifact_ids(monkeypatch, cache_dir, {"source-0": source})
+
+    plot = _plot(0.0)
+    refs = {"base_ref": {"artifact_id": "base"}, "mesh_ref": {"artifact_id": "mesh"}}
+    rendered = {}
+    for label, geometry in (("own", None), ("shared", public_field_playback._drawable_geometry(plot))):
+        output_dir = cache_dir / label
+        output_dir.mkdir()
+        rendered[label] = public_field_playback._render_composition(
+            Image,
+            ImageDraw,
+            ImageFilter,
+            plot,
+            output_dir=output_dir,
+            frame_index=0,
+            composition="resultant",
+            geometry=geometry,
+            **refs,
+        )
+    # Layer artifact ids name their output folder; everything else must match.
+    assert json.dumps(rendered["own"]).replace("own/", "") == json.dumps(rendered["shared"]).replace("shared/", "")
+    for path in (cache_dir / "own").iterdir():
+        assert path.read_bytes() == (cache_dir / "shared" / path.name).read_bytes()
+
+    built = []
+    triangles = public_field_playback._triangles
+    monkeypatch.setattr(
+        public_field_playback,
+        "_triangles",
+        lambda plot, nodes: built.append(plot["element_b_mag_t"][0]) or triangles(plot, nodes),
+    )
+    output_dir = cache_dir / "frame"
+    output_dir.mkdir()
+    public_field_playback._package_playback_frame(
+        0, "source-0", str(cache_dir), str(output_dir), "resultant_pm", 0.0
+    )
+    # The loaded plot (|B| 0.5) once, the no-load plot (|B| 0.375) once.
+    assert built == [0.5, 0.375]
+
+
+def test_flux_colours_use_one_fixed_scale_with_magenta_above_two_tesla() -> None:
+    """A single hot element no longer sets the top of the colour scale."""
+
+    colors = public_field_playback._HEAT_COLORS
+    assert public_field_playback._flux_color(0.0) == colors[0]
+    assert public_field_playback._flux_color(0.24) == colors[0]
+    assert public_field_playback._flux_color(1.39) == colors[5]
+    assert public_field_playback._flux_color(1.99) == colors[7]
+    assert public_field_playback._flux_color(2.0) == colors[7]
+    assert public_field_playback._flux_color(2.64) == (244, 60, 245, 255)
+    assert public_field_playback.FLUX_COLOR_SCALE == {
+        "kind": "fixed",
+        "min": 0.0,
+        "max": 2.0,
+        "over_range_color": "#f43cf5",
+    }
+
+
+def test_heat_layer_keeps_the_data_range_but_colours_by_the_fixed_scale() -> None:
+    pytest.importorskip("PIL")
+    from PIL import Image, ImageDraw
+
+    plot = _plot(0.0)
+    plot["element_b_mag_t"] = [0.5, 2.6]
+    _, point, triangles = public_field_playback._drawable_geometry(plot)
+    image, min_b, max_b = public_field_playback._render_heat(Image, ImageDraw, plot, triangles, point)
+
+    assert (min_b, max_b) == (0.5, 2.6)
+    colors = {color for _, color in image.getcolors(maxcolors=4096)}
+    assert (244, 60, 245, 255) in colors
+    assert public_field_playback._HEAT_COLORS[2] in colors
+    # A per-frame scale would have made 0.5 T the bottom colour.
+    assert public_field_playback._HEAT_COLORS[0] not in colors

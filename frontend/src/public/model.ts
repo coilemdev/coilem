@@ -13,6 +13,8 @@ export const HOLEM50_FIELDS = [
 export type HoleM50Field = typeof HOLEM50_FIELDS[number];
 export type SolveQuality = 'quick' | 'standard' | 'fine' | 'custom';
 export type MeshDensity = 'coarse' | 'normal' | 'fine' | 'very_fine';
+/** How exactly Gmsh places nodes along curves: Precise is what the benchmark measured. */
+export type MeshBuild = 'precise' | 'fast';
 
 export const PUBLIC_MAGNETO2D_SETTINGS = {
   torque_method: 'weighted_stress',
@@ -121,6 +123,7 @@ export interface MotorConfig {
     mesh_source: 'native';
     mesher: 'gmsh';
     corner_refinement: boolean;
+    mesh_build: MeshBuild;
     rotor_rotation_model: 'remesh_per_step';
     torque_method: 'contour' | 'arkkio' | 'weighted_stress';
     nonlinear_solver: 'picard' | 'newton';
@@ -269,6 +272,14 @@ export interface PublicFieldVectorCue {
   magnitude?: number;
 }
 
+/** The colour scale a playback image was drawn with (a fixed 0–2.0 T scale). */
+export interface PublicFieldColorScale {
+  kind: 'fixed';
+  min: number;
+  max: number;
+  over_range_color: string;
+}
+
 export interface PublicFieldPlaybackComposition {
   base: PublicFieldPlaybackArtifact;
   flux_density: PublicFieldPlaybackArtifact;
@@ -283,6 +294,8 @@ export interface PublicFieldPlaybackComposition {
   view_box: string;
   min_b_t: number;
   max_b_t: number;
+  /** Absent for images drawn before the fixed scale, which used min_b_t–max_b_t. */
+  color_scale?: PublicFieldColorScale | null;
   triangle_count: number;
   contour_level_count: number;
   contour_segment_count: number;
@@ -344,6 +357,7 @@ export interface PublicFieldPlaybackVisualV2 {
     unit: string;
     min: number;
     max: number;
+    color_scale?: PublicFieldColorScale;
   };
   statistics?: Record<string, string | number | boolean | null>;
 }
@@ -570,7 +584,11 @@ export const DEFAULT_CONFIG: MotorConfig = {
     OD_mm: 110,
     ID_mm: 30,
     magnet_thickness_mm: 4,
-    magnet_width_mm: 31.4,
+    // 31.8 mm (71% of the pole at the magnet's centre radius) sits on this
+    // motor's cogging minimum: at Standard accuracy it gives 10.67 N·m with
+    // 10.5% torque ripple, against 10.59 N·m and 17.8% at the former 31.4 mm.
+    // Ripple rises fast either side (about 30% at 31.0 mm, 25% at 32.2 mm).
+    magnet_width_mm: 31.8,
     pole_count: 8,
     magnet_embrace: 0.7,
     bridge_thickness_mm: 1,
@@ -604,6 +622,7 @@ export const DEFAULT_CONFIG: MotorConfig = {
     mesh_source: 'native',
     mesher: 'gmsh',
     corner_refinement: true,
+    mesh_build: 'precise',
     rotor_rotation_model: 'remesh_per_step',
     torque_method: 'weighted_stress',
     nonlinear_solver: 'picard',

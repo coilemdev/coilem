@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, type ReactNode } from 'react';
 import { MotorConstants } from './MotorConstants';
 import type { MaterialCatalog, MotorConfig, SolveResult } from './model';
 import {
@@ -7,6 +7,7 @@ import {
   formatFrequencyHz,
   loadingScaleMaxT,
   saturationKneeRangeT,
+  sharedSparklinePaths,
   sparklinePath,
   torqueRange,
 } from './resultMetrics';
@@ -15,6 +16,9 @@ const TIMING_HELP = 'Solver time is the wall-clock time for meshing, solving and
   + 'Total elapsed also covers playback images and saving, measured in the browser through receipt of the saved result.';
 const SPARKLINE_WIDTH = 132;
 const SPARKLINE_HEIGHT = 36;
+// The Back EMF value is smaller than the torque hero's, so its sparkline is
+// shorter and keeps the three headline values on one line.
+const EMF_SPARKLINE_HEIGHT = 26;
 
 function fixed(value: number | null | undefined, digits = 2): string {
   return typeof value === 'number' && Number.isFinite(value) ? value.toFixed(digits) : '—';
@@ -28,9 +32,10 @@ interface ResultSummaryProps {
   sixStep: boolean;
   completeLoadedCycle: boolean;
   thdLabel: string;
-  solverLabel: string;
-  torqueMethod: string;
-  nonlinearSolver: string;
+  /** Every run setting, label then value, shown when Run settings is expanded. */
+  settings: Array<{ label: string; value: string }>;
+  /** The model assumptions note, shown under the settings when expanded. */
+  assumptions: ReactNode;
 }
 
 function LoadingBar({ label, valueT, scaleMaxT, knee }: { label: string; valueT: number; scaleMaxT: number; knee: [number, number] | null }) {
@@ -47,9 +52,9 @@ function LoadingBar({ label, valueT, scaleMaxT, knee }: { label: string; valueT:
 }
 
 /**
- * The Results summary (#99 part B): the operating point, the headline numbers
- * with their conventions, motor constants beside magnetic loading, and the
- * run timings demoted to one footer line.
+ * The Results summary (#99 part B): the run settings and model assumptions as
+ * one collapsed line (#110), the headline numbers with their conventions, motor constants beside
+ * magnetic loading, and the run timings demoted to one footer line.
  */
 export function ResultSummary({
   result,
@@ -58,16 +63,22 @@ export function ResultSummary({
   sixStep,
   completeLoadedCycle,
   thdLabel,
-  solverLabel,
-  torqueMethod,
-  nonlinearSolver,
+  settings,
+  assumptions,
 }: ResultSummaryProps) {
   const loadingHeadingId = useId();
+  const assumptionsHeadingId = useId();
   const { summary, solve_metadata: metadata } = result;
   const rpm = config.solve_params.rated_speed_rpm;
   const preview = sixStep && !completeLoadedCycle ? ' · preview only' : '';
   const range = torqueRange(result.torque_waveform.torque_Nm);
   const sparkline = sparklinePath(result.torque_waveform.torque_Nm, SPARKLINE_WIDTH, SPARKLINE_HEIGHT);
+  // Phases A, B and C on one scale, in the Back EMF chart's colours.
+  const emfSparklines = sharedSparklinePaths(
+    [result.back_emf_waveform.phase_a_V, result.back_emf_waveform.phase_b_V, result.back_emf_waveform.phase_c_V],
+    SPARKLINE_WIDTH,
+    EMF_SPARKLINE_HEIGHT,
+  );
   const power = electromagneticPower(summary.avg_torque_Nm, rpm);
   const scaleMaxT = loadingScaleMaxT([summary.peak_flux_density_teeth_T, summary.peak_flux_density_yoke_T]);
   const knee = saturationKneeRangeT(materials, config.materials.stator_steel);
@@ -83,18 +94,31 @@ export function ResultSummary({
     sixStep ? 'Ideal six-step (120°)' : 'Sinusoidal',
     `${metadata.rotor_positions} positions · ${metadata.mesh_density || 'native'} mesh`,
   ];
+  // Solver, torque method and positions are in Run settings, so the footer
+  // keeps only the timings.
   const timings = [
     `Solver ${fixed(summary.solve_time_s, 1)} s`,
     ...(result.workflow_elapsed_s != null ? [`total elapsed ${fixed(result.workflow_elapsed_s, 1)} s`] : []),
-    `${metadata.rotor_positions} rotor positions`,
-    `${solverLabel}, ${torqueMethod} torque, ${nonlinearSolver}`,
   ];
 
   return (
     <div className="public-result-summary">
-      <ul className="public-operating-point" aria-label="Operating point">
-        {chips.map((chip) => <li key={chip}>{chip}</li>)}
-      </ul>
+      <details className="public-run-settings">
+        <summary>
+          <span className="public-run-settings-label">Run settings</span>
+          <ul className="public-operating-point" aria-label="Operating point">
+            {chips.map((chip) => <li key={chip}>{chip}</li>)}
+          </ul>
+          <span className="public-run-settings-toggle" aria-hidden="true">Settings &amp; assumptions</span>
+        </summary>
+        <dl className="public-report-provenance">
+          {settings.map(({ label, value }) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}
+        </dl>
+        <section className="public-run-settings-assumptions" role="note" aria-labelledby={assumptionsHeadingId}>
+          <h4 id={assumptionsHeadingId}>Model assumptions</h4>
+          <div className="public-report-assumptions-body">{assumptions}</div>
+        </section>
+      </details>
       <div className="public-result-headline">
         <article className="public-result-hero">
           <span>Average torque{preview}</span>
@@ -111,9 +135,16 @@ export function ResultSummary({
             {range ? ` · ${fixed(range.min)} – ${fixed(range.max)} N·m` : ''}
           </p>
         </article>
-        <article>
+        <article className="public-result-emf">
           <span>Back EMF</span>
-          <strong>{fixed(summary.back_emf_fundamental_V)} <small>V</small></strong>
+          <div>
+            <strong>{fixed(summary.back_emf_fundamental_V)} <small>V</small></strong>
+            {emfSparklines.some(Boolean) && (
+              <svg viewBox={`0 0 ${SPARKLINE_WIDTH} ${EMF_SPARKLINE_HEIGHT}`} width={SPARKLINE_WIDTH} height={EMF_SPARKLINE_HEIGHT} aria-hidden="true">
+                {emfSparklines.map((path, index) => path && <path key={index} className={`phase-${'abc'[index]}`} d={path} />)}
+              </svg>
+            )}
+          </div>
           <p>Fundamental, rms line-to-neutral at {rpm.toLocaleString()} rpm</p>
         </article>
         <article>

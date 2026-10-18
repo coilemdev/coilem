@@ -7,6 +7,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
   type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
@@ -31,6 +32,7 @@ import {
   type DimensionId,
 } from './dimensionAnnotations';
 import { FieldResultPlot } from './FieldResultPlot';
+import { statorSteelSaturationTicks } from './fluxColorScale';
 import {
   MaterialAssignmentStrip,
   MaterialBehaviorView,
@@ -41,9 +43,20 @@ import {
 import { PublicMotor3D } from './PublicMotor3D';
 import { SolvedFieldViewer } from './SolvedFieldViewer';
 import { WaveformChart } from './WaveformChart';
+import { WaveformReadoutMarker, useWaveformReadout } from './WaveformReadout';
+import { createFieldPositionLink, type FieldPositionLink } from './fieldPositionLink';
+import {
+  formatWaveformReadoutAngle,
+  formatWaveformReadoutValue,
+  nearestWaveformReadoutIndex,
+  waveformReadoutAngles,
+  waveformReadoutValues,
+  type WaveformReadoutSeries,
+} from './chartReadout';
 import { BldcTorqueCurrentChart } from './BldcTorqueCurrentChart';
 import { PublicRunComparison } from './PublicRunComparison';
 import { MotorConstants } from './MotorConstants';
+import { hasMotorConstants, motorConstantsView } from './machineConstants';
 import { ResultSummary } from './ResultSummary';
 import { publicExampleOptions, type PublicExampleId } from './exampleDesigns';
 import {
@@ -72,6 +85,9 @@ import { HOLEM50_FIELDS } from './model';
 import type { PublicRunExportKind } from './api';
 import type { PublicSolveProgress } from './api';
 import { LessonProgressStepper } from '../components/tutorials/LessonProgressStepper';
+import { designErrorSection } from './designErrors';
+import { magnetPoleCoveragePct } from './magnetCoverage';
+import { RpmField } from './RpmField';
 import type { LearningLessonHeaderProgress } from '../components/tutorials/lessonStage';
 import {
   publicMeshQualityBand,
@@ -152,8 +168,8 @@ interface CoilEmWorkspaceProps {
   onConvertProjectSteelToM350: () => void;
   onImportSteel: (material: CustomSteel, target: SteelTarget) => void;
   onMeshSettingChange: (
-    field: 'mesh_density' | 'corner_refinement',
-    value: MotorConfig['solve_params']['mesh_density'] | boolean,
+    field: 'mesh_density' | 'corner_refinement' | 'mesh_build',
+    value: MotorConfig['solve_params']['mesh_density'] | MotorConfig['solve_params']['mesh_build'] | boolean,
   ) => void;
   onSolvePlanChange: (solvePlan: PublicSolvePreset) => void;
   onCustomSweepChange: (stepDeg: number) => void;
@@ -232,9 +248,18 @@ function ExcitationRunPlanPreview({ config }: { config: MotorConfig }) {
   const operatingIdentity = sixStep
     ? `${formatNumber(config.solve_params.current_amplitude_A, 1)} A ${currentConvention} · ${formatNumber(config.solve_params.commutation_advance_deg, 1)}° advance`
     : `${formatNumber(config.solve_params.current_amplitude_A, 1)} A ${currentConvention} · ${formatNumber(config.solve_params.current_angle_deg, 1)}° current angle`;
+  // The y-axis reads the peak: the six-step plateau, or the sinusoid's crest
+  // (√2 × the rms input under the rms convention) (#110).
+  const peakCurrentA = !sixStep && config.solve_params.current_amplitude_convention === 'rms'
+    ? config.solve_params.current_amplitude_A * Math.SQRT2
+    : config.solve_params.current_amplitude_A;
+  const peakLabel = `${formatNumber(peakCurrentA, 1)} A`;
+  const peakY = RUN_PLAN_WAVEFORM_CENTER_Y - RUN_PLAN_WAVEFORM_AMPLITUDE;
+  const troughY = RUN_PLAN_WAVEFORM_CENTER_Y + RUN_PLAN_WAVEFORM_AMPLITUDE;
+  const yPercent = (y: number) => `${(100 * y) / RUN_PLAN_WAVEFORM_HEIGHT}%`;
   const accessibleDescription = sixStep
-    ? 'Ideal six-step BLDC phase currents. Two phases conduct at positive and negative plateau current while one phase floats in each of six sectors.'
-    : 'Balanced sinusoidal phase currents. Phase A, B, and C are shifted by 120 electrical degrees.';
+    ? `Ideal six-step BLDC phase currents. Two phases conduct at positive and negative plateau current of ${peakLabel} while one phase floats in each of six sectors.`
+    : `Balanced sinusoidal phase currents with a ${peakLabel} peak. Phase A, B, and C are shifted by 120 electrical degrees.`;
   const paths = sixStep
     ? [runPlanSixStepPath(0), runPlanSixStepPath(1), runPlanSixStepPath(2)]
     : [
@@ -252,28 +277,38 @@ function ExcitationRunPlanPreview({ config }: { config: MotorConfig }) {
         </div>
         <small>{sixStep ? '120° conduction' : 'Three-phase'}</small>
       </div>
-      <svg
-        className="public-excitation-preview-plot"
-        viewBox={`0 0 ${RUN_PLAN_WAVEFORM_WIDTH} ${RUN_PLAN_WAVEFORM_HEIGHT}`}
-        role="img"
-        aria-label={accessibleDescription}
-      >
-        <title>{accessibleDescription}</title>
-        <line className="axis" x1="0" y1={RUN_PLAN_WAVEFORM_CENTER_Y} x2={RUN_PLAN_WAVEFORM_WIDTH} y2={RUN_PLAN_WAVEFORM_CENTER_Y} />
-        {sixStep && Array.from({ length: 7 }, (_, index) => (
-          <line
-            className="sector"
-            x1={index * RUN_PLAN_WAVEFORM_WIDTH / 6}
-            y1="6"
-            x2={index * RUN_PLAN_WAVEFORM_WIDTH / 6}
-            y2={RUN_PLAN_WAVEFORM_HEIGHT - 6}
-            key={index}
-          />
-        ))}
-        {paths.map((path, index) => (
-          <path className={`phase phase-${String.fromCharCode(97 + index)}`} d={path} key={index} />
-        ))}
-      </svg>
+      <div className="public-excitation-preview-chart">
+        <div className="public-excitation-preview-axis" aria-hidden="true">
+          <span style={{ top: yPercent(peakY) }}>{peakLabel}</span>
+          <span style={{ top: yPercent(RUN_PLAN_WAVEFORM_CENTER_Y) }}>0</span>
+          <span style={{ top: yPercent(troughY) }}>−{peakLabel}</span>
+        </div>
+        <svg
+          className="public-excitation-preview-plot"
+          viewBox={`0 0 ${RUN_PLAN_WAVEFORM_WIDTH} ${RUN_PLAN_WAVEFORM_HEIGHT}`}
+          preserveAspectRatio="none"
+          role="img"
+          aria-label={accessibleDescription}
+        >
+          <title>{accessibleDescription}</title>
+          <line className="peak" x1="0" y1={peakY} x2={RUN_PLAN_WAVEFORM_WIDTH} y2={peakY} />
+          <line className="peak" x1="0" y1={troughY} x2={RUN_PLAN_WAVEFORM_WIDTH} y2={troughY} />
+          <line className="axis" x1="0" y1={RUN_PLAN_WAVEFORM_CENTER_Y} x2={RUN_PLAN_WAVEFORM_WIDTH} y2={RUN_PLAN_WAVEFORM_CENTER_Y} />
+          {sixStep && Array.from({ length: 7 }, (_, index) => (
+            <line
+              className="sector"
+              x1={index * RUN_PLAN_WAVEFORM_WIDTH / 6}
+              y1="6"
+              x2={index * RUN_PLAN_WAVEFORM_WIDTH / 6}
+              y2={RUN_PLAN_WAVEFORM_HEIGHT - 6}
+              key={index}
+            />
+          ))}
+          {paths.map((path, index) => (
+            <path className={`phase phase-${String.fromCharCode(97 + index)}`} d={path} key={index} />
+          ))}
+        </svg>
+      </div>
       <div className="public-excitation-preview-footer">
         <span className="public-excitation-preview-legend" aria-label="Phase colors">
           <i className="phase-a" />A <i className="phase-b" />B <i className="phase-c" />C
@@ -320,6 +355,50 @@ function StatusGlyph({ tone = 'good' }: { tone?: 'good' | 'info' | 'warning' }) 
   return (
     <span className={`public-status-glyph ${tone}`} aria-hidden="true">
       {tone === 'good' ? '✓' : tone === 'info' ? 'i' : '!'}
+    </span>
+  );
+}
+
+type StatusTagTone = 'good' | 'info' | 'warning' | 'running';
+
+/** A short status pill whose details open on hover or keyboard focus, so run
+ * status and qualification don't take a full-width card each (#110). */
+function StatusTag({
+  tone,
+  label,
+  heading,
+  children,
+  placement = 'below',
+  align = 'start',
+  role,
+  ariaLabel,
+  ariaBusy,
+}: {
+  tone: StatusTagTone;
+  label: string;
+  heading?: string;
+  children?: ReactNode;
+  placement?: 'above' | 'below';
+  align?: 'start' | 'end';
+  role?: 'status' | 'note';
+  ariaLabel?: string;
+  ariaBusy?: boolean;
+}) {
+  const detailsId = useId();
+  return (
+    <span
+      className={`public-status-tag is-${tone} opens-${placement} align-${align}`}
+      role={role}
+      aria-label={ariaLabel}
+      aria-busy={ariaBusy}
+    >
+      <button type="button" className="public-status-tag-pill" aria-describedby={detailsId}>
+        <i aria-hidden="true" />{label}
+      </button>
+      <span className="public-status-tag-details" id={detailsId}>
+        {heading && <strong>{heading}</strong>}
+        {children}
+      </span>
     </span>
   );
 }
@@ -639,11 +718,17 @@ export function CoilEmTopBar({
             <path d="M12 7.5V12l3 1.8" />
           </svg>
         </button>}
+        {/* One chip for the local backend: "● Local" when ready, the state in
+            words otherwise, and the full sentence as its tooltip. */}
         <div className="topbar-utility-panel">
-          <span className="public-backend-select">Local backend</span>
-          <span className={`backend-status ${connectionStatus === 'online' ? 'connected' : connectionStatus === 'checking' ? 'checking' : 'disconnected'}`} role="status">
+          <span
+            className={`backend-status ${connectionStatus === 'online' ? 'connected' : connectionStatus === 'checking' ? 'checking' : 'disconnected'}`}
+            role="status"
+            title={`Local backend: ${connectionStatus === 'online' ? 'ready' : connectionStatus === 'checking' ? 'checking' : 'not running'}`}
+            aria-label={`Local backend: ${connectionStatus === 'online' ? 'ready' : connectionStatus === 'checking' ? 'checking' : 'not running'}`}
+          >
             <span className="status-dot" aria-hidden="true" />
-            <span className="status-text">Local: {connectionStatus === 'online' ? 'ready' : connectionStatus === 'checking' ? 'checking' : 'not running'}</span>
+            <span className="status-text">Local{connectionStatus === 'online' ? '' : connectionStatus === 'checking' ? ' · checking' : ' · offline'}</span>
           </span>
         </div>
       </div>
@@ -821,7 +906,7 @@ function componentFacts(
         ...(config.topology === 'IPM' && config.rotor.ipm_topology === 'flat_buried'
           ? ([['Outer bridge', `${config.rotor.bridge_thickness_mm} mm`]] as Array<[string, string]>)
           : []),
-        ['Pole coverage', `${Math.round(config.rotor.magnet_embrace * 100)}%`],
+        ['Pole coverage', `${magnetPoleCoveragePct(config)}%`],
       ];
     case 'winding': {
       const facts: Array<[string, string]> = [
@@ -898,39 +983,50 @@ function ComponentDetailCard({ selection, config, geometry, onClose }: {
   );
 }
 
-function ParameterSectionBlock({
+/** A collapsible panel section: Design's parameter groups and the Solve setup. */
+function ParameterSectionBlock<Id extends string = PublicParameterSection>({
   id,
   label,
   summary,
   active,
+  attention = false,
   onToggle,
   children,
   nextLabel,
   onNext,
+  guide,
+  sectionRef,
+  className,
 }: {
-  id: PublicParameterSection;
+  id: Id;
   label: string;
   summary: string;
   active: boolean;
-  onToggle: (id: PublicParameterSection) => void;
+  /** The current design error names a field in this section. */
+  attention?: boolean;
+  onToggle: (id: Id) => void;
   children: ReactNode;
   nextLabel?: string;
   onNext?: () => void;
+  /** The guided tour's target name; defaults to `section-<id>`. */
+  guide?: string;
+  sectionRef?: Ref<HTMLElement>;
+  className?: string;
 }) {
   return (
-    <section className="param-group" data-guide={`section-${id}`} data-guide-active={active ? 'true' : 'false'}>
+    <section ref={sectionRef} className={`param-group${className ? ` ${className}` : ''}`} data-guide={guide ?? `section-${id}`} data-guide-active={active ? 'true' : 'false'}>
       <button
         type="button"
-        className={`param-group-header status-complete${active ? '' : ' collapsed'}`}
+        className={`param-group-header ${attention ? 'status-attention' : 'status-complete'}${active ? '' : ' collapsed'}`}
         // The chevron is aria-hidden, so without this the header gave no clue
         // that it opens and closes anything.
         aria-expanded={active}
         aria-controls={`param-group-content-${id}`}
         onClick={() => onToggle(id)}
       >
-        <StatusGlyph />
+        <StatusGlyph tone={attention ? 'warning' : 'good'} />
         <span className="param-group-titles">
-          <span className="param-group-label">{label}</span>
+          <span className="param-group-label">{label}{attention && <span className="public-visually-hidden"> needs attention</span>}</span>
           {!active && <span className="param-group-chip">{summary}</span>}
         </span>
         <span className="chevron" aria-hidden="true">▼</span>
@@ -943,8 +1039,8 @@ function ParameterSectionBlock({
   );
 }
 
-function ParameterPanel({ config, materials, geometry, geometryStale, busy, error, notice, blankDesign = false, guidedActive, guidedDesignSection, selectedComponent, experimentalRotors, onTopologyChange, onSectionChange, onDesignSectionVisit, onConvertProjectSteelToM350, onImportSteel, onReset, onRefreshGeometry, onNext, onClearComponent }: Pick<CoilEmWorkspaceProps,
-  'config' | 'materials' | 'geometry' | 'geometryStale' | 'busy' | 'error' | 'notice' | 'blankDesign' | 'experimentalRotors' | 'onTopologyChange' | 'onSectionChange' | 'onDesignSectionVisit' | 'onConvertProjectSteelToM350' | 'onImportSteel' | 'onReset' | 'onRefreshGeometry'
+function ParameterPanel({ config, materials, geometry, geometryStale, busy, error, errorDetails, notice, blankDesign = false, guidedActive, guidedDesignSection, selectedComponent, experimentalRotors, onTopologyChange, onSectionChange, onDesignSectionVisit, onConvertProjectSteelToM350, onImportSteel, onReset, onRefreshGeometry, onNext, onClearComponent }: Pick<CoilEmWorkspaceProps,
+  'config' | 'materials' | 'geometry' | 'geometryStale' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'blankDesign' | 'experimentalRotors' | 'onTopologyChange' | 'onSectionChange' | 'onDesignSectionVisit' | 'onConvertProjectSteelToM350' | 'onImportSteel' | 'onReset' | 'onRefreshGeometry'
 > & {
   guidedActive?: boolean;
   guidedDesignSection?: PublicParameterSection | null;
@@ -982,6 +1078,9 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
   // leaves it held indefinitely — so an unsuppressed note would keep explaining a
   // shape the user has already changed.
   const geometryWarnings = currentGeometryWarnings(geometry, geometryStale);
+  // Every section header showed a green check, even beside "Winding needs
+  // attention"; the one holding the faulty field now shows the warning instead.
+  const errorSection = error ? designErrorSection(errorDetails) : null;
   const statorWidths = deriveStatorSectionWidths(
     config,
     geometryStale ? null : geometry,
@@ -1045,7 +1144,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
     set('stator', 'slot_opening_mm', 'advanced')(boreSlotOpeningMm);
   };
   const airgap = Math.max(0, (config.stator.ID_mm - config.rotor.OD_mm) / 2 - (config.topology === 'SPM' ? config.rotor.magnet_thickness_mm : 0));
-  const coverage = Math.round(config.rotor.magnet_embrace * 100);
+  const coverage = magnetPoleCoveragePct(config);
   const steelChoices = (current: string) => [
     ...(!materials.steels.includes(current)
       ? [{ value: current, label: 'Choose a supported steel', disabled: true }]
@@ -1191,7 +1290,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
           )}
         </div>}
 
-      {matchesSearch('stator') && <ParameterSectionBlock id="stator" label="Stator Geometry" active={Boolean(normalizedSearch) || activeSection === 'stator'} onToggle={toggle} summary={`${config.stator.OD_mm} mm OD · ${config.stator.slot_count} slots · ${config.stator.stack_length_mm} mm stack`} nextLabel={normalizedSearch ? undefined : 'Rotor & Magnets'} onNext={normalizedSearch ? undefined : setNext('rotor')}>
+      {matchesSearch('stator') && <ParameterSectionBlock id="stator" attention={errorSection === 'stator'} label="Stator Geometry" active={Boolean(normalizedSearch) || activeSection === 'stator'} onToggle={toggle} summary={`${config.stator.OD_mm} mm OD · ${config.stator.slot_count} slots · ${config.stator.stack_length_mm} mm stack`} nextLabel={normalizedSearch ? undefined : 'Rotor & Magnets'} onNext={normalizedSearch ? undefined : setNext('rotor')}>
         <NumberRow label="Outer Diameter" value={config.stator.OD_mm} unit="mm" min={30} step={1} disabled={disabled} onChange={set('stator', 'OD_mm', 'stator')} />
         <NumberRow label="Inner Diameter" value={config.stator.ID_mm} unit="mm" min={20} step={1} disabled={disabled} onChange={set('stator', 'ID_mm', 'stator')} />
         <NumberRow label="Slot Count" value={config.stator.slot_count} min={6} step={1} disabled={disabled} onChange={set('stator', 'slot_count', 'stator')} />
@@ -1199,7 +1298,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         <div className="fable-derived"><span className="fable-derived-fx">ƒ</span><span>slot pitch {(360 / config.stator.slot_count).toFixed(1)}° · bore pitch {(Math.PI * config.stator.ID_mm / config.stator.slot_count).toFixed(1)} mm</span></div>
       </ParameterSectionBlock>}
 
-      {matchesSearch('rotor') && <ParameterSectionBlock id="rotor" label="Rotor & Magnets" active={Boolean(normalizedSearch) || activeSection === 'rotor'} onToggle={toggle} summary={`${config.rotor.pole_count} poles · ${config.rotor.OD_mm} mm rotor · ${config.rotor.magnet_thickness_mm} mm magnet`} nextLabel={normalizedSearch ? undefined : 'Advanced Geometry'} onNext={normalizedSearch ? undefined : setNext('advanced')}>
+      {matchesSearch('rotor') && <ParameterSectionBlock id="rotor" attention={errorSection === 'rotor'} label="Rotor & Magnets" active={Boolean(normalizedSearch) || activeSection === 'rotor'} onToggle={toggle} summary={`${config.rotor.pole_count} poles · ${config.rotor.OD_mm} mm rotor · ${config.rotor.magnet_thickness_mm} mm magnet`} nextLabel={normalizedSearch ? undefined : 'Advanced Geometry'} onNext={normalizedSearch ? undefined : setNext('advanced')}>
         <NumberRow label="Pole Count" value={config.rotor.pole_count} min={2} max={32} step={2} disabled={disabled} onChange={set('rotor', 'pole_count', 'rotor')} />
         <NumberRow label="Rotor OD" value={config.rotor.OD_mm} unit="mm" min={15} step={1} disabled={disabled} onChange={set('rotor', 'OD_mm', 'rotor')} />
         <div className="param-row public-param-row public-derived-row"><span className="param-label">Air Gap<small>mm</small></span><strong>{airgap.toFixed(2)}</strong></div>
@@ -1230,12 +1329,13 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
           />
         )}
         {config.rotor.ipm_topology !== 'pyleecan_holem50' && (
-          <div className="param-row public-param-row public-derived-row"><span className="param-label">Coverage<small>%</small></span><strong>{coverage}</strong></div>
+          // A surface magnet's coverage follows from its width, as the geometry builds it.
+          <div className="param-row public-param-row public-derived-row"><span className="param-label">Coverage<small>{config.topology === 'SPM' ? '% · calc' : '%'}</small></span><strong>{coverage}</strong></div>
         )}
         <SelectRow label="Magnet Grade" value={config.materials.magnet_grade} choices={materials.magnet_grades.map((value) => ({ value, label: value }))} disabled={disabled} onChange={set('materials', 'magnet_grade', 'rotor')} />
       </ParameterSectionBlock>}
 
-      {matchesSearch('advanced') && <ParameterSectionBlock id="advanced" label="Advanced Geometry" active={Boolean(normalizedSearch) || activeSection === 'advanced'} onToggle={toggle} summary={`bore tooth ${statorWidths.boreToothWidthMm.toFixed(1)} · yoke tooth ${config.stator.tooth_width_mm} · yoke ${config.stator.yoke_thickness_mm}`} nextLabel={normalizedSearch ? undefined : 'Winding'} onNext={normalizedSearch ? undefined : setNext('winding')}>
+      {matchesSearch('advanced') && <ParameterSectionBlock id="advanced" attention={errorSection === 'advanced'} label="Advanced Geometry" active={Boolean(normalizedSearch) || activeSection === 'advanced'} onToggle={toggle} summary={`bore tooth ${statorWidths.boreToothWidthMm.toFixed(1)} · yoke tooth ${config.stator.tooth_width_mm} · yoke ${config.stator.yoke_thickness_mm}`} nextLabel={normalizedSearch ? undefined : 'Winding'} onNext={normalizedSearch ? undefined : setNext('winding')}>
         <NumberRow label="Bore Tooth Width" value={Number(statorWidths.boreToothWidthMm.toFixed(1))} unit="mm" hint="Tangential tooth width at the stator bore. Bore slot opening is calculated from the remaining pitch." min={minimumBoreToothWidthMm} max={maximumBoreToothWidthMm} step={0.1} disabled={disabled} onChange={setBoreToothWidth} />
         <NumberRow label="Yoke Tooth Width" value={config.stator.tooth_width_mm} unit="mm" hint="Tangential tooth-body width where the slot terminates beside the yoke." min={2} step={0.1} disabled={disabled} onChange={set('stator', 'tooth_width_mm', 'advanced')} />
         <NumberRow label="Yoke Thick." value={config.stator.yoke_thickness_mm} unit="mm" min={1} step={0.1} disabled={disabled} onChange={set('stator', 'yoke_thickness_mm', 'advanced')} />
@@ -1292,7 +1392,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         </>}
       </ParameterSectionBlock>}
 
-      {matchesSearch('winding') && <ParameterSectionBlock id="winding" label="Winding" active={Boolean(normalizedSearch) || activeSection === 'winding'} onToggle={toggle} summary={`${config.winding.type}${showLayerRow ? ` · ${layerWording.summary[layerCount]}` : ''} · ${config.winding.turns_per_coil} turns × ${config.winding.parallel_paths}p`} nextLabel={normalizedSearch ? undefined : 'Materials'} onNext={normalizedSearch ? undefined : setNext('materials')}>
+      {matchesSearch('winding') && <ParameterSectionBlock id="winding" attention={errorSection === 'winding'} label="Winding" active={Boolean(normalizedSearch) || activeSection === 'winding'} onToggle={toggle} summary={`${config.winding.type}${showLayerRow ? ` · ${layerWording.summary[layerCount]}` : ''} · ${config.winding.turns_per_coil} turns × ${config.winding.parallel_paths}p`} nextLabel={normalizedSearch ? undefined : 'Materials'} onNext={normalizedSearch ? undefined : setNext('materials')}>
         <SelectRow label="Type" value={config.winding.type} choices={[{ value: 'concentrated', label: 'Concentrated' }, { value: 'distributed', label: 'Distributed' }]} disabled={disabled} onChange={set('winding', 'type', 'winding')} />
         {showLayerRow && <SelectRow
           label={layerWording.label}
@@ -1315,7 +1415,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         <NumberRow label="Phase Current" value={config.solve_params.current_amplitude_A} unit="A rms" min={0} step={0.5} disabled={disabled} onChange={set('solve_params', 'current_amplitude_A', 'winding')} />
       </ParameterSectionBlock>}
 
-      {matchesSearch('materials') && <ParameterSectionBlock id="materials" label="Materials" active={Boolean(normalizedSearch) || activeSection === 'materials'} onToggle={toggle} summary={`${steelDisplayName(config, config.materials.stator_steel)} stator · ${steelDisplayName(config, config.materials.rotor_steel)} rotor`}>
+      {matchesSearch('materials') && <ParameterSectionBlock id="materials" attention={errorSection === 'materials'} label="Materials" active={Boolean(normalizedSearch) || activeSection === 'materials'} onToggle={toggle} summary={`${steelDisplayName(config, config.materials.stator_steel)} stator · ${steelDisplayName(config, config.materials.rotor_steel)} rotor`}>
         <SelectRow label="Stator Steel" value={config.materials.stator_steel} choices={steelChoices(config.materials.stator_steel)} disabled={disabled} onChange={set('materials', 'stator_steel', 'materials')} />
         <SelectRow label="Rotor Steel" value={config.materials.rotor_steel} choices={steelChoices(config.materials.rotor_steel)} disabled={disabled} onChange={set('materials', 'rotor_steel', 'materials')} />
         {hasUnsupportedSteel && (
@@ -1460,6 +1560,15 @@ function ViewportExpandButton({
   );
 }
 
+// The Design and Mesh views keep their controls in a section below the motor;
+// its height can be dragged between these limits.
+const VIEWPORT_DOCK_DEFAULT_HEIGHT = 64;
+// With the Solve page's view tabs on a strip above the controls.
+const VIEWPORT_DOCK_DEFAULT_HEIGHT_WITH_STRIP = 104;
+const VIEWPORT_DOCK_MIN_HEIGHT = 48;
+const VIEWPORT_DOCK_MAX_FRACTION = 0.45;
+const VIEWPORT_DOCK_STEP = 16;
+
 function ViewportChrome({
   config,
   materials,
@@ -1482,7 +1591,10 @@ function ViewportChrome({
   onMeshDisplayModeChange,
   onShowMeshEdgesChange,
   onFocusedMeshElementChange,
+  dockStrip,
 }: Pick<CoilEmWorkspaceProps, 'config' | 'materials' | 'geometry' | 'mesh' | 'geometryStale' | 'busy' | 'meshElements' | 'meshQuality'> & {
+  /** Shown on a strip at the top of the bottom section (the Solve page's view tabs). */
+  dockStrip?: ReactNode;
   mode: 'geometry' | 'mesh';
   stale: boolean;
   showConfigurationLabel?: boolean;
@@ -1519,6 +1631,83 @@ function ViewportChrome({
   const [threeResetSignal, setThreeResetSignal] = useState(0);
   const [hoveredMeshElement, setHoveredMeshElement] = useState<PublicMeshElementSelection | null>(null);
   const [showMeshNavigationHint, setShowMeshNavigationHint] = useState(false);
+  const viewportRef = useRef<HTMLElement | null>(null);
+  const bottomBarRef = useRef<HTMLDivElement | null>(null);
+  // The 2D canvas puts its zoom controls in the title bar, beside fullscreen.
+  const [navigationSlot, setNavigationSlot] = useState<HTMLSpanElement | null>(null);
+  // The section fits its controls until it is dragged; double-click returns to fitting.
+  const [dockFitHeight, setDockFitHeight] = useState(dockStrip || mode === 'geometry' ? VIEWPORT_DOCK_DEFAULT_HEIGHT_WITH_STRIP : VIEWPORT_DOCK_DEFAULT_HEIGHT);
+  const [dockUserHeight, setDockUserHeight] = useState<number | null>(null);
+  const dockHeight = dockUserHeight ?? dockFitHeight;
+  const [dockResizing, setDockResizing] = useState(false);
+  const dockDragRef = useRef<{ startY: number; startHeight: number } | null>(null);
+  const maxDockHeight = useCallback(() => Math.max(
+    VIEWPORT_DOCK_MIN_HEIGHT,
+    Math.round((viewportRef.current?.clientHeight ?? 600) * VIEWPORT_DOCK_MAX_FRACTION),
+  ), []);
+  const clampDockHeight = useCallback((height: number) => (
+    Math.min(maxDockHeight(), Math.max(VIEWPORT_DOCK_MIN_HEIGHT, Math.round(height)))
+  ), [maxDockHeight]);
+  const handleDockResizeStart = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    dockDragRef.current = { startY: event.clientY, startHeight: dockHeight };
+    setDockUserHeight(dockHeight);
+    setDockResizing(true);
+  };
+  const handleDockResizeKey = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    const keyHeights: Partial<Record<string, number>> = {
+      ArrowUp: dockHeight + VIEWPORT_DOCK_STEP,
+      ArrowDown: dockHeight - VIEWPORT_DOCK_STEP,
+      Home: VIEWPORT_DOCK_MIN_HEIGHT,
+      End: maxDockHeight(),
+    };
+    const nextHeight = keyHeights[event.key];
+    if (nextHeight === undefined) return;
+    event.preventDefault();
+    setDockUserHeight(clampDockHeight(nextHeight));
+  };
+  useEffect(() => {
+    if (!dockResizing) return undefined;
+    // The handle sits on the section's top edge, so dragging up makes it taller.
+    const handlePointerMove = (event: PointerEvent) => {
+      const drag = dockDragRef.current;
+      if (drag) setDockUserHeight(clampDockHeight(drag.startHeight + drag.startY - event.clientY));
+    };
+    const handlePointerUp = () => {
+      dockDragRef.current = null;
+      setDockResizing(false);
+    };
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerup', handlePointerUp);
+    window.addEventListener('pointercancel', handlePointerUp);
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerup', handlePointerUp);
+      window.removeEventListener('pointercancel', handlePointerUp);
+    };
+  }, [clampDockHeight, dockResizing]);
+  useEffect(() => {
+    const bar = bottomBarRef.current;
+    if (!bar || typeof ResizeObserver === 'undefined') return undefined;
+    // Fit the section to its controls, however many lines they wrap onto.
+    // The control groups flow as the bar's own items, so measure them, not their wrapper.
+    const items = () => Array.from(bar.querySelectorAll<HTMLElement>(':scope > *, :scope > .viewport-controls > *'));
+    const measure = () => {
+      const style = window.getComputedStyle(bar);
+      const barTop = bar.getBoundingClientRect().top;
+      const contentBottom = items().reduce((bottom, item) => {
+        const rect = item.getBoundingClientRect();
+        return rect.height > 0 ? Math.max(bottom, rect.bottom - barTop + bar.scrollTop) : bottom;
+      }, 0);
+      if (contentBottom > 0) setDockFitHeight(clampDockHeight(contentBottom + parseFloat(style.paddingBottom)));
+    };
+    const observer = new ResizeObserver(measure);
+    observer.observe(bar);
+    items().forEach((item) => observer.observe(item));
+    measure();
+    return () => observer.disconnect();
+  }, [clampDockHeight, dockStrip, mode, viewportMode]);
   const animationFrameRef = useRef(0);
   const introAnimationFrameRef = useRef(0);
   const introCompleteRef = useRef(!designIntroEnabled);
@@ -1659,12 +1848,45 @@ function ViewportChrome({
   }, [focusedMeshElementIndex, mesh, meshQualitySummary, mode]);
   const activeMeshElement = hoveredMeshElement ?? focusedMeshElement;
 
+  // The geometry views' title bar ends with the regions readout. The Mesh tab
+  // has none: its element count and quality are in the run plan beside it.
+  const cadStatus = mode === 'mesh' ? null : (
+    <div className="viewport-cad-status">
+      {geometry?.regions.length ?? 0} regions · {geometry ? formatNumber(geometry.generation_time_ms, 0) : '—'} ms
+    </div>
+  );
+  const primaryViewModes = mode === 'geometry' ? (
+    <span className="vc-group public-primary-view-modes" role="group" aria-label="Motor view mode">
+      {(['2d', '3d', 'materials', 'layout'] as const).map((viewMode) => {
+        return (
+          <button
+            type="button"
+            className={viewportMode === viewMode ? 'is-active' : ''}
+            aria-label={`Show ${viewMode === '2d' ? '2D motor' : viewMode === '3d' ? '3D motor' : viewMode} view`}
+            aria-pressed={viewportMode === viewMode}
+            onClick={() => selectViewportMode(viewMode)}
+            key={viewMode}
+          >
+            {viewMode === '2d' ? '2D' : viewMode === '3d' ? '3D' : viewMode === 'materials' ? 'Materials' : 'Layout'}
+          </button>
+        );
+      })}
+    </span>
+  ) : null;
+  // The panel's title bar holds one level of tabs: the page's own on the Solve
+  // page, where Geometry is the 2D section that gets solved, and the motor view
+  // tabs on Design. Its right end is the same everywhere: readout, zoom, fullscreen.
+  const titleBar = dockStrip ?? primaryViewModes;
+
   return (
-    <section className={`viewport viewport-cad viewport-cad-grid public-motor-viewport${onExpandToggle ? ' is-expandable' : ''}${viewportMode === 'materials' ? ' is-materials-view' : ''}${showMaterialAssignment ? ' is-material-assignment' : ''}${showMaterialBehavior ? ' is-material-behavior' : ''}`}>
+    <section
+      ref={viewportRef}
+      className={`viewport viewport-cad viewport-cad-grid public-motor-viewport${viewportMode === 'materials' ? ' is-materials-view' : ''}${showMaterialAssignment ? ' is-material-assignment' : ''}${showMaterialBehavior ? ' is-material-behavior' : ''}${dockResizing ? ' is-dock-resizing' : ''}`}
+      style={{ ['--viewport-dock-height' as never]: `${dockHeight}px` }}
+    >
       {showConfigurationLabel && (
         <div className="viewport-label viewport-label-cad">{config.topology} {config.rotor.pole_count}p/{config.stator.slot_count}s</div>
       )}
-      {onExpandToggle && <ViewportExpandButton expanded={isExpanded} onToggle={onExpandToggle} />}
       {showDimensionReadout && (
         <DimensionReadout
           annotations={dimensionAnnotations}
@@ -1736,6 +1958,7 @@ function ViewportChrome({
                   element?.index === focusedMeshElementIndex ? null : element?.index ?? null,
                 )
                 : undefined}
+              navigationSlot={navigationSlot}
             />
           )}
         </div>
@@ -1845,107 +2068,140 @@ function ViewportChrome({
           <small>{activeMeshElement.region.replace(/[_-]+/g, ' ')}</small>
         </div>
       )}
-      <div className="viewport-bottom-bar">
+      {/* Legends are read, not clicked, so they sit in the canvas's top-right
+          corner as the field view's do, and the panel below holds controls only. */}
+      {viewportMode === '2d' && mode === 'geometry' && (
+        <div className="public-winding-key public-canvas-legend" aria-label="Winding phase and current direction legend">
+          <span><i className="phase-a" />A</span>
+          <span><i className="phase-b" />B</span>
+          <span><i className="phase-c" />C</span>
+          <span className="direction-key">⊙ out · ⊗ in</span>
+        </div>
+      )}
+      <div
+        className="viewport-dock-resize"
+        role="separator"
+        aria-label="Resize the motor view controls"
+        aria-orientation="horizontal"
+        aria-valuemin={VIEWPORT_DOCK_MIN_HEIGHT}
+        aria-valuemax={maxDockHeight()}
+        aria-valuenow={dockHeight}
+        tabIndex={0}
+        title="Drag to resize the controls"
+        onDoubleClick={() => setDockUserHeight(null)}
+        onKeyDown={handleDockResizeKey}
+        onPointerDown={handleDockResizeStart}
+      />
+      <div ref={bottomBarRef} className={`viewport-bottom-bar${titleBar ? ' has-dock-strip' : ''}`}>
+        {titleBar && (
+          <div className="public-dock-strip">
+            {titleBar}
+            <div className="public-dock-strip-end">
+              {cadStatus}
+              <span className="public-dock-nav-slot" ref={setNavigationSlot} />
+              {viewportMode === '3d' && (
+                <button type="button" className="public-dock-reset-view" onClick={() => setThreeResetSignal((value) => value + 1)}>Reset view</button>
+              )}
+              {onExpandToggle && <ViewportExpandButton expanded={isExpanded} inline onToggle={onExpandToggle} />}
+            </div>
+          </div>
+        )}
         <div className="viewport-controls viewport-controls-cad" aria-label="Motor view and overlay controls">
+          {/* Each group has a small label and one of two shapes: a segmented
+              control picks one way to draw the view, a dot toggle switches a
+              layer on or off on its own. Tabs in the title bar pick the view. */}
           {mode === 'mesh' && (
             <span className="vc-group public-mesh-inspection-controls" role="group" aria-label="Mesh inspection controls">
+              <span className="public-dock-group-label" aria-hidden="true">Color by</span>
+              <span className="public-dock-segmented">
+                <button
+                  type="button"
+                  aria-pressed={meshDisplayMode === 'geometry'}
+                  title="Color each element by its region"
+                  onClick={() => onMeshDisplayModeChange?.('geometry')}
+                >
+                  Regions
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={meshDisplayMode === 'quality'}
+                  title="Quality heatmap: color each element by its shape quality"
+                  onClick={() => onMeshDisplayModeChange?.('quality')}
+                >
+                  Quality
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={meshDisplayMode === 'problems'}
+                  disabled={!meshQualitySummary?.weakElementIndices.length}
+                  onClick={() => {
+                    onMeshDisplayModeChange?.('problems');
+                    onFocusedMeshElementChange?.(meshQualitySummary?.weakElementIndices[0] ?? null);
+                  }}
+                >
+                  Weak elements{meshQualitySummary ? ` ${meshQualitySummary.weakElementIndices.length}` : ''}
+                </button>
+              </span>
+            </span>
+          )}
+          {mode === 'mesh' && (
+            <span className="vc-group public-mesh-layer-controls" role="group" aria-label="Mesh layers">
+              <span className="public-dock-group-label" aria-hidden="true">Show</span>
               <button
                 type="button"
-                className={meshDisplayMode === 'geometry' ? 'is-active' : ''}
-                aria-pressed={meshDisplayMode === 'geometry'}
-                onClick={() => onMeshDisplayModeChange?.('geometry')}
-              >
-                Geometry overlay
-              </button>
-              <button
-                type="button"
-                className={showMeshEdges ? 'is-active' : ''}
+                className="public-dock-toggle"
                 aria-pressed={showMeshEdges}
                 onClick={() => onShowMeshEdgesChange?.(!showMeshEdges)}
               >
                 Element edges
               </button>
-              <button
-                type="button"
-                className={meshDisplayMode === 'quality' ? 'is-active' : ''}
-                aria-pressed={meshDisplayMode === 'quality'}
-                onClick={() => onMeshDisplayModeChange?.(meshDisplayMode === 'quality' ? 'geometry' : 'quality')}
-              >
-                Quality heatmap
-              </button>
-              <button
-                type="button"
-                className={meshDisplayMode === 'problems' ? 'is-active' : ''}
-                aria-pressed={meshDisplayMode === 'problems'}
-                disabled={!meshQualitySummary?.weakElementIndices.length}
-                onClick={() => {
-                  const nextMode = meshDisplayMode === 'problems' ? 'geometry' : 'problems';
-                  onMeshDisplayModeChange?.(nextMode);
-                  if (nextMode === 'problems') {
-                    onFocusedMeshElementChange?.(meshQualitySummary?.weakElementIndices[0] ?? null);
-                  }
-                }}
-              >
-                Weak elements{meshQualitySummary ? ` ${meshQualitySummary.weakElementIndices.length}` : ''}
-              </button>
             </span>
           )}
-          {mode === 'geometry' && <span className="vc-group public-primary-view-modes" role="group" aria-label="Motor view mode">
-            {(['2d', '3d', 'materials', 'layout'] as const).map((viewMode) => {
-              return (
-                <button
-                  type="button"
-                  className={viewportMode === viewMode ? 'is-active' : ''}
-                  aria-label={`Show ${viewMode === '2d' ? '2D motor' : viewMode === '3d' ? '3D motor' : viewMode} view`}
-                  aria-pressed={viewportMode === viewMode}
-                  onClick={() => selectViewportMode(viewMode)}
-                  key={viewMode}
-                >
-                  {viewMode === '2d' ? '2D' : viewMode === '3d' ? '3D' : viewMode === 'materials' ? 'Materials' : 'Layout'}
-                </button>
-              );
-            })}
-          </span>}
           {viewportMode === 'materials' && mode === 'geometry' && (
             <span className="vc-group public-material-subview-controls" role="group" aria-label="Materials view mode">
-              {([
-                ['assignment', 'Assignment'],
-                ['behavior', 'Behavior'],
-              ] as Array<[PublicMaterialSubview, string]>).map(([value, label]) => (
-                <button
-                  type="button"
-                  className={materialSubview === value ? 'is-active' : ''}
-                  aria-pressed={materialSubview === value}
-                  onClick={() => setMaterialSubview(value)}
-                  key={value}
-                >
-                  {label}
-                </button>
-              ))}
+              <span className="public-dock-group-label" aria-hidden="true">Show</span>
+              <span className="public-dock-segmented">
+                {([
+                  ['assignment', 'Assignment'],
+                  ['behavior', 'Behavior'],
+                ] as Array<[PublicMaterialSubview, string]>).map(([value, label]) => (
+                  <button
+                    type="button"
+                    aria-pressed={materialSubview === value}
+                    onClick={() => setMaterialSubview(value)}
+                    key={value}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </span>
             </span>
           )}
           {viewportMode === '2d' && mode === 'geometry' && (
             <span className="vc-group public-view-modes" role="group" aria-label="2D display layers">
-              {([
-                ['dimensions', 'Dims'],
-                ['slots', 'Slots'],
-                ['windings', 'Winding'],
-                ['phases', 'Phases'],
-              ] as Array<[PublicCanvasLayer, string]>).map(([layer, label]) => (
-                <button
-                  type="button"
-                  className={canvasLayer === layer ? 'is-active' : ''}
-                  aria-pressed={canvasLayer === layer}
-                  title={canvasLayer === layer ? `Hide the ${label.toLowerCase()} overlay` : `Show ${label.toLowerCase()}`}
-                  // Clicking the active layer turns it off, which is the only way to
-                  // get the bare cross-section: these read as toggles, and Dims in
-                  // particular puts a legend and dashed lines over the motor.
-                  onClick={() => setCanvasLayer((current) => (current === layer ? 'none' : layer))}
-                  key={layer}
-                >
-                  {label}
-                </button>
-              ))}
+              <span className="public-dock-group-label" aria-hidden="true">Overlay</span>
+              <span className="public-dock-segmented">
+                {([
+                  ['none', 'None'],
+                  ['dimensions', 'Dims'],
+                  ['slots', 'Slots'],
+                  ['windings', 'Winding'],
+                  ['phases', 'Phases'],
+                ] as Array<[PublicCanvasLayer, string]>).map(([layer, label]) => (
+                  <button
+                    type="button"
+                    aria-pressed={canvasLayer === layer}
+                    title={layer === 'none' ? 'Show the bare cross-section' : canvasLayer === layer ? `Hide the ${label.toLowerCase()} overlay` : `Show ${label.toLowerCase()}`}
+                    // One overlay at a time. None, or clicking the active one again,
+                    // leaves the bare cross-section: Dims in particular puts a
+                    // legend and dashed lines over the motor.
+                    onClick={() => setCanvasLayer((current) => (current === layer ? 'none' : layer))}
+                    key={layer}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </span>
             </span>
           )}
           {viewportMode === '2d'
@@ -1953,70 +2209,71 @@ function ViewportChrome({
             && (config.topology === 'SPM'
               || (config.topology === 'IPM' && config.rotor.ipm_topology === 'v_shape')) && (
             <span className="vc-group public-polarity-view" role="group" aria-label="Magnet polarity display">
-              {([
-                ['dominant', 'Pole', 'Dominant pole', 'Color each magnet by the pole facing the airgap.'],
-                ['split', 'Split', 'Split view', 'Show both poles for orientation. The FEM magnet remains one region.'],
-              ] as Array<[PublicMagnetPolarityView, string, string, string]>).map(([value, label, ariaLabel, title]) => (
-                <button
-                  type="button"
-                  className={magnetPolarityView === value ? 'is-active' : ''}
-                  aria-pressed={magnetPolarityView === value}
-                  aria-label={ariaLabel}
-                  title={title}
-                  onClick={() => setMagnetPolarityView(value)}
-                  key={value}
-                >
-                  {label}
-                </button>
-              ))}
-            </span>
-          )}
-          {viewportMode === '2d' && mode === 'geometry' && (
-            <span className="public-winding-key" aria-label="Winding phase and current direction legend">
-              <span><i className="phase-a" />A</span>
-              <span><i className="phase-b" />B</span>
-              <span><i className="phase-c" />C</span>
-              <span className="direction-key">⊙ out · ⊗ in</span>
+              <span className="public-dock-group-label" aria-hidden="true">Magnets</span>
+              <span className="public-dock-segmented">
+                {([
+                  ['dominant', 'Pole', 'Dominant pole', 'Color each magnet by the pole facing the airgap.'],
+                  ['split', 'Split', 'Split view', 'Show both poles for orientation. The FEM magnet remains one region.'],
+                ] as Array<[PublicMagnetPolarityView, string, string, string]>).map(([value, label, ariaLabel, title]) => (
+                  <button
+                    type="button"
+                    aria-pressed={magnetPolarityView === value}
+                    aria-label={ariaLabel}
+                    title={title}
+                    onClick={() => setMagnetPolarityView(value)}
+                    key={value}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </span>
             </span>
           )}
           {viewportMode === '3d' && (
-            <>
-              <span className="vc-group"><button type="button" onClick={() => setThreeResetSignal((value) => value + 1)}>Reset view</button></span>
-              <span className="vc-group public-explode-controls">
-                <button
-                  type="button"
-                  className={explodedAmount > 0.04 ? 'is-active' : ''}
-                  aria-pressed={explodedAmount > 0.04}
-                  onClick={() => setExplodedAmount((value) => (value > 0.04 ? 0 : 1))}
-                >
-                  {explodedAmount > 0.04 ? 'Assemble' : 'Explode'}
-                </button>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  step="1"
-                  value={Math.round(explodedAmount * 100)}
-                  aria-label="Exploded view amount"
-                  title={`Exploded view: ${Math.round(explodedAmount * 100)}%`}
-                  onChange={(event) => setExplodedAmount(Number(event.target.value) / 100)}
-                />
-                <output aria-live="polite">{Math.round(explodedAmount * 100)}%</output>
-              </span>
-            </>
+            <span className="vc-group public-explode-controls" role="group" aria-label="Exploded view">
+              <span className="public-dock-group-label" aria-hidden="true">Explode</span>
+              <button
+                type="button"
+                className="public-dock-toggle"
+                aria-pressed={explodedAmount > 0.04}
+                title={explodedAmount > 0.04 ? 'Assemble the motor' : 'Explode the motor into its parts'}
+                onClick={() => setExplodedAmount((value) => (value > 0.04 ? 0 : 1))}
+              >
+                Exploded
+              </button>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                step="1"
+                value={Math.round(explodedAmount * 100)}
+                aria-label="Exploded view amount"
+                title={`Exploded view: ${Math.round(explodedAmount * 100)}%`}
+                onChange={(event) => setExplodedAmount(Number(event.target.value) / 100)}
+              />
+              <output aria-live="polite">{Math.round(explodedAmount * 100)}%</output>
+            </span>
           )}
-          {showPlayback && <span className="vc-group public-playback">
-            <button type="button" className={isAnimating ? 'is-active' : ''} aria-label={isAnimating ? 'Pause preview' : 'Play preview'} onClick={() => setIsAnimating((value) => !value)}>{isAnimating ? 'Ⅱ' : '▶'}</button>
-            <button type="button" aria-label="Stop and reset preview" onClick={() => { setIsAnimating(false); setRotorAngleDeg(0); }}>■</button>
-            <input type="range" min="1" max="100" value={animationRpm} onChange={(event) => setAnimationRpm(Number(event.target.value))} aria-label="Preview speed (RPM)" />
-            <span>{animationRpm} RPM</span>
-          </span>}
+          {/* The rotor preview uses the field playback's transport: the same
+              play button and the same speed field. */}
+          {showPlayback && (
+            <span className="vc-group public-preview-transport" role="group" aria-label="Rotor preview">
+              <span className="public-dock-group-label" aria-hidden="true">Preview</span>
+              <button type="button" className="public-field-transport-play" aria-label={isAnimating ? 'Pause preview' : 'Play preview'} onClick={() => setIsAnimating((value) => !value)}>{isAnimating ? 'Ⅱ' : '▶'}</button>
+              <button type="button" className="public-field-transport-play" aria-label="Stop and reset preview" onClick={() => { setIsAnimating(false); setRotorAngleDeg(0); }}>■</button>
+              <RpmField
+                value={animationRpm}
+                min={1}
+                max={100}
+                label="Speed"
+                ariaLabel="Preview speed (RPM)"
+                title="Preview speed — not the solve operating point. Type a number or use the arrows; Shift+arrow steps by 10."
+                onChange={setAnimationRpm}
+              />
+            </span>
+          )}
         </div>
-        {mode === 'geometry' && viewportMode !== 'materials' && (
-          <div className="viewport-cad-status">
-            {geometry?.regions.length ?? 0} regions · {geometry ? formatNumber(geometry.generation_time_ms, 0) : '—'} ms
-          </div>
-        )}
+        {!titleBar && cadStatus}
       </div>
     </section>
   );
@@ -2091,6 +2348,24 @@ function QualificationNote({ qualification }: { qualification: PublicQualificati
   );
 }
 
+/** The same status, reason and caveats as QualificationNote, as a Solve-page
+ * tag. Experimental and Unsupported keep the warning tone (#110). */
+function QualificationTag({ qualification }: { qualification: PublicQualification }) {
+  return (
+    <StatusTag
+      tone={qualification.status === 'qualified' ? 'good' : 'warning'}
+      label={QUALIFICATION_LABELS[qualification.status]}
+      align="end"
+      role="note"
+      ariaLabel="Benchmark qualification"
+    >
+      <span>{qualification.reason}</span>
+      {qualification.caveats.map((caveat) => <span key={caveat}>{caveat}</span>)}
+      <a href={QUALIFICATION_DOCS_URL} target="_blank" rel="noreferrer">How designs are qualified</a>
+    </StatusTag>
+  );
+}
+
 type DesignHealthSeverity = 'positive' | 'info' | 'warning';
 
 interface DesignHealthIssue {
@@ -2128,7 +2403,7 @@ function HealthPanel({
   }
   const airgap = magneticAirgapMm(config);
   const airgapHealth = publicAirgapHealth(airgap);
-  const coverage = Math.round(config.rotor.magnet_embrace * 100);
+  const coverage = magnetPoleCoveragePct(config);
   const burialHealth = publicFlatIpmBurialHealth(config);
   const statorWidths = deriveStatorSectionWidths(config, geometryStale ? null : geometry);
   const toothWidthAdvisory = currentToothWidthAdvisory(geometry, geometryStale);
@@ -2223,6 +2498,13 @@ const RUN_PLAN_RESIZE_STEP = 32;
 const RUN_PLAN_COMFORT_MAX_WIDTH = 368;
 const RUN_PLAN_ACTIVE_WIDTH = 440;
 const RUN_PLAN_COMFORT_VIEWPORT = '(min-width: 1800px) and (min-height: 900px)';
+// The Analysis setup panel resizes like the Run plan (#110). Its narrowest is
+// the compact rail width the stylesheet uses below 1220 px.
+const SETUP_MIN_WIDTH = 284;
+const SETUP_MAX_WIDTH = 640;
+// Width kept for the viewport, the workspace padding and the gaps whenever
+// either side panel grows.
+const SOLVE_STAGE_RESERVE = 368;
 
 function defaultRunPlanWidth(): number {
   if (typeof window === 'undefined' || !window.matchMedia(RUN_PLAN_COMFORT_VIEWPORT).matches) {
@@ -2269,6 +2551,9 @@ function solveStageLabel(progress: PublicSolveProgress | null, busy: PublicBusyA
   return stage.replace(/_/g, ' ');
 }
 
+const subscribeToNothing = () => () => {};
+const noPlayhead = () => null;
+
 function CompactLiveChart({
   label,
   unit,
@@ -2278,6 +2563,7 @@ function CompactLiveChart({
   emptyStatus = '0 samples',
   emptyMessage = 'Waiting for samples',
   emptyWorking = false,
+  positionLink,
 }: {
   label: string;
   unit: string;
@@ -2287,9 +2573,42 @@ function CompactLiveChart({
   emptyStatus?: string;
   emptyMessage?: string;
   emptyWorking?: boolean;
+  /** Links a completed plot to the field view: hovering moves the field, playback shows here. */
+  positionLink?: FieldPositionLink;
 }) {
   const plottedSeries = series.filter((item) => item.values.length === angles.length);
-  if (angles.length === 0 || plottedSeries.length === 0) {
+  const hasSamples = angles.length > 0 && plottedSeries.length > 0;
+  const width = 272;
+  const height = 92;
+  const padding = { top: 10, right: 8, bottom: 12, left: 38 };
+  const minX = hasSamples ? Math.min(...angles) : 0;
+  const maxX = hasSamples ? Math.max(...angles) : 0;
+  // Hover reads a solved position, as on the Results plots: a mouse hover
+  // previews one, a click keeps it, and arrow keys step when the plot has focus.
+  const readoutSeries: WaveformReadoutSeries[] = plottedSeries.map((item) => ({
+    key: item.label,
+    label: item.label,
+    color: item.color,
+    unit,
+    angles,
+    values: item.values,
+  }));
+  const readout = useWaveformReadout({
+    angles: waveformReadoutAngles(readoutSeries),
+    angleAtX: (svgX) => minX + ((svgX - padding.left) / (width - padding.left - padding.right)) * Math.max(maxX - minX, 1),
+    dataKey: `${state}|${label}`,
+  });
+  // The hovered or kept position moves the field view; the field's position
+  // shows as a playhead on the curve.
+  const requestedAngle = readout.shownAngle;
+  useEffect(() => {
+    if (requestedAngle !== null) positionLink?.requestAngle(requestedAngle);
+  }, [positionLink, requestedAngle]);
+  const playheadAngle = useSyncExternalStore(
+    positionLink?.subscribePlayhead ?? subscribeToNothing,
+    positionLink?.getPlayhead ?? noPlayhead,
+  );
+  if (!hasSamples) {
     return (
       <div className={`public-live-chart waiting${emptyWorking ? ' is-processing' : ''}`} aria-label={`${label}: ${emptyMessage}`}>
         <div className="public-live-chart-heading"><strong>{label}</strong><span>{emptyStatus}</span></div>
@@ -2298,11 +2617,6 @@ function CompactLiveChart({
     );
   }
 
-  const width = 272;
-  const height = 92;
-  const padding = { top: 10, right: 8, bottom: 12, left: 38 };
-  const minX = Math.min(...angles);
-  const maxX = Math.max(...angles);
   const allValues = plottedSeries.flatMap((item) => item.values);
   const rawMinY = Math.min(...allValues);
   const rawMaxY = Math.max(...allValues);
@@ -2319,12 +2633,46 @@ function CompactLiveChart({
   const pathFor = (values: number[]) => values
     .map((value, index) => `${index === 0 ? 'M' : 'L'} ${x(angles[index]).toFixed(2)} ${y(value).toFixed(2)}`)
     .join(' ');
+  const shownAngle = readout.shownAngle;
+  const readoutValues = shownAngle === null ? [] : waveformReadoutValues(readoutSeries, shownAngle);
+  const readoutText = (value: number | null) => value === null ? 'not solved' : formatWaveformReadoutValue(value, unit);
+  const readoutAngles = waveformReadoutAngles(readoutSeries);
+  const playheadIndex = playheadAngle === null || playheadAngle < minX - 1e-6 || playheadAngle > maxX + 1e-6
+    ? -1
+    : nearestWaveformReadoutIndex(readoutAngles, playheadAngle);
+  const playheadOnCurve = playheadIndex >= 0 && readoutAngles[playheadIndex] !== shownAngle
+    ? readoutAngles[playheadIndex]
+    : null;
+  const playheadValues = playheadOnCurve === null ? [] : waveformReadoutValues(readoutSeries, playheadOnCurve);
 
   return (
     <div className="public-live-chart">
-      <div className="public-live-chart-heading"><strong>{label}</strong><span>{angles.length} {angles.length === 1 ? 'sample' : 'samples'}</span></div>
-      {plottedSeries.length > 1 && <div className="public-live-chart-legend">{plottedSeries.map((item) => <span key={item.label}><i style={{ backgroundColor: item.color }} />{item.label}</span>)}</div>}
-      <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`${state === 'live' ? 'Live' : 'Completed'} ${label} curve from ${angles.length} solver samples`}>
+      {/* The sample count gives way to the hovered position; with one trace its
+          value follows, and with several each value sits by its legend swatch. */}
+      <div className="public-live-chart-heading">
+        <strong>{label}</strong>
+        <span
+          id={readout.readoutId}
+          className={shownAngle === null ? undefined : `public-live-chart-readout${readout.previewing ? ' is-preview' : ''}`}
+          aria-live={shownAngle === null ? 'off' : 'polite'}
+        >
+          {shownAngle === null
+            ? `${angles.length} ${angles.length === 1 ? 'sample' : 'samples'}`
+            : <>{formatWaveformReadoutAngle(shownAngle)} elec{plottedSeries.length === 1 && readoutValues[0] ? <> · <b>{readoutText(readoutValues[0].value)}</b></> : null}</>}
+        </span>
+      </div>
+      {plottedSeries.length > 1 && <div className="public-live-chart-legend">{plottedSeries.map((item) => {
+        const shown = readoutValues.find((value) => value.key === item.label);
+        return <span key={item.label}><i style={{ backgroundColor: item.color }} />{item.label}{shown && <b>{readoutText(shown.value)}</b>}</span>;
+      })}</div>}
+      <div
+        className="public-waveform-plot public-live-chart-plot"
+        role="group"
+        aria-label={`${label} plot`}
+        title={positionLink ? 'Move along the curve to show that position in the field view; click to keep it' : undefined}
+        {...readout.plotProps}
+      >
+      <svg ref={readout.svgRef} viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`${state === 'live' ? 'Live' : 'Completed'} ${label} curve from ${angles.length} solver samples`}>
         {yTickValues.map((tickValue) => (
           <g key={tickValue}>
             <line x1={padding.left} x2={width - padding.right} y1={y(tickValue)} y2={y(tickValue)} />
@@ -2337,7 +2685,23 @@ function CompactLiveChart({
         })}
         <text x={padding.left} y={height - 2}>{formatNumber(minX, 0)}°</text>
         <text x={width - padding.right} y={height - 2} textAnchor="end">{formatNumber(maxX, 0)}° · {unit}</text>
+        {playheadOnCurve !== null && (
+          <g className="public-live-chart-playhead" aria-hidden="true">
+            <line x1={x(playheadOnCurve)} x2={x(playheadOnCurve)} y1={padding.top} y2={height - padding.bottom} />
+            {playheadValues.flatMap((item) => item.value === null ? [] : [<circle key={item.key} cx={x(playheadOnCurve)} cy={y(item.value)} r="2.5" fill={item.color} />])}
+          </g>
+        )}
+        {shownAngle !== null && (
+          <WaveformReadoutMarker
+            x={x(shownAngle)}
+            top={padding.top}
+            bottom={height - padding.bottom}
+            points={readoutValues.flatMap((item) => item.value === null ? [] : [{ key: item.key, y: y(item.value), color: item.color }])}
+            previewing={readout.previewing}
+          />
+        )}
       </svg>
+      </div>
     </div>
   );
 }
@@ -2422,44 +2786,190 @@ function LiveSolveMonitor({ busy, progress, liveSamples, progressPercent }: Pick
   );
 }
 
-function CompletedResultMonitor({ result, onOpenReport }: { result: SolveResult; onOpenReport: () => void }) {
+function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result: SolveResult; onOpenReport: () => void; positionLink?: FieldPositionLink }) {
   const [activePlot, setActivePlot] = useState<'torque' | 'back-emf'>('torque');
   const sixStep = resultUsesSixStep(result);
   const completeCycle = result.solve_metadata.loaded_cycle_complete === true;
   const thdLabel = result.back_emf_harmonic_analysis
     ? 'Back EMF THD H12'
     : 'Back EMF THD legacy';
+  const resultsHeadingId = useId();
+  const allResultsId = useId();
+  const [showAllResults, setShowAllResults] = useState(false);
+  const preview = sixStep && !completeCycle ? ' · preview' : '';
+  // The panel opens on the few numbers people check first; the rest are one
+  // click away, and Full results has everything.
+  const constants = hasMotorConstants(result.summary) ? motorConstantsView(result.summary) : null;
+  const showKt = constants !== null && constants.kt.value !== null;
+  const allResultCount = 7 + (result.workflow_elapsed_s != null ? 1 : 0) + (constants ? 4 : 0);
+  // Read like the motor constants below: one row per value, numbers in one
+  // right-aligned column, units beside them, a rule between groups.
+  const resultRow = (label: string, value: string, unit: string, groupStart = false) => (
+    <tr className={groupStart ? 'is-group-start' : undefined}>
+      <th scope="row">{label}</th>
+      <td className="motor-constants-value">{value}</td>
+      <td className="motor-constants-unit">{unit}</td>
+    </tr>
+  );
 
   return (
     <section className="public-completed-results" aria-label="Completed solver results">
       <div className="public-completed-results-heading">
-        <div><span className="public-section-kicker">Completed results</span><strong>Solver waveforms</strong></div>
+        <span className="public-section-kicker">Completed results</span>
         <button type="button" data-guide="open-report" onClick={onOpenReport}>Full results →</button>
       </div>
-      <dl className="public-result-metrics">
-        <div><dt>Average torque{sixStep && !completeCycle ? ' · preview' : ''}</dt><dd>{formatNumber(result.summary.avg_torque_Nm)} N·m</dd></div>
-        <div><dt>Torque ripple{sixStep && !completeCycle ? ' · preview' : ''}</dt><dd>{formatNumber(result.summary.torque_ripple_pct)} %</dd></div>
-        <div><dt>Back EMF</dt><dd>{formatNumber(result.summary.back_emf_fundamental_V)} V</dd></div>
-        <div><dt>{thdLabel}</dt><dd>{formatNumber(result.summary.back_emf_thd_pct)} %</dd></div>
-        <div><dt>Peak tooth B</dt><dd>{formatNumber(result.summary.peak_flux_density_teeth_T)} T</dd></div>
-        <div><dt>Peak yoke B</dt><dd>{formatNumber(result.summary.peak_flux_density_yoke_T)} T</dd></div>
-        <div><dt>Solver time</dt><dd>{formatNumber(result.summary.solve_time_s, 1)} s</dd></div>
-        {result.workflow_elapsed_s != null && <div><dt>Total elapsed</dt><dd>{formatNumber(result.workflow_elapsed_s, 1)} s</dd></div>}
-      </dl>
-      <MotorConstants summary={result.summary} />
+      {showAllResults ? (
+        <div id={allResultsId}>
+          <section className="motor-constants public-result-list" aria-labelledby={resultsHeadingId}>
+            <h3 id={resultsHeadingId}>Performance</h3>
+            <table>
+              <tbody>
+                {resultRow(`Average torque${preview}`, formatNumber(result.summary.avg_torque_Nm), 'N·m')}
+                {resultRow(`Torque ripple${preview}`, formatNumber(result.summary.torque_ripple_pct), '%')}
+                {resultRow('Back EMF', formatNumber(result.summary.back_emf_fundamental_V), 'V', true)}
+                {resultRow(thdLabel, formatNumber(result.summary.back_emf_thd_pct), '%')}
+                {resultRow('Peak tooth B', formatNumber(result.summary.peak_flux_density_teeth_T), 'T', true)}
+                {resultRow('Peak yoke B', formatNumber(result.summary.peak_flux_density_yoke_T), 'T')}
+                {resultRow('Solver time', formatNumber(result.summary.solve_time_s, 1), 's', true)}
+                {result.workflow_elapsed_s != null && resultRow('Total elapsed', formatNumber(result.workflow_elapsed_s, 1), 's')}
+              </tbody>
+            </table>
+          </section>
+          <MotorConstants summary={result.summary} />
+        </div>
+      ) : (
+        <section id={allResultsId} className="motor-constants public-result-list" aria-labelledby={resultsHeadingId}>
+          <h3 id={resultsHeadingId}>Key results</h3>
+          <table>
+            <tbody>
+              {resultRow(`Average torque${preview}`, formatNumber(result.summary.avg_torque_Nm), 'N·m')}
+              {resultRow(`Torque ripple${preview}`, formatNumber(result.summary.torque_ripple_pct), '%')}
+              {resultRow('Back EMF', formatNumber(result.summary.back_emf_fundamental_V), 'V')}
+              {showKt && constants && resultRow('Kt torque constant', constants.kt.text, constants.kt.unit)}
+            </tbody>
+          </table>
+        </section>
+      )}
+      <button
+        type="button"
+        className="public-result-list-toggle"
+        aria-expanded={showAllResults}
+        aria-controls={allResultsId}
+        onClick={() => setShowAllResults((value) => !value)}
+      >
+        {showAllResults ? 'Show fewer' : `All ${allResultCount} results`}
+        <span aria-hidden="true">{showAllResults ? '▴' : '▾'}</span>
+      </button>
+      {/* The waveform heading labels the plots below it, not the metrics and
+          constants above (#110). */}
+      <strong className="public-completed-waveforms-heading">Solver waveforms</strong>
       <div className="public-compact-result-tabs" role="tablist" aria-label="Completed result plots">
         <button type="button" role="tab" aria-selected={activePlot === 'torque'} className={activePlot === 'torque' ? 'active' : ''} onClick={() => setActivePlot('torque')}>Torque</button>
         <button type="button" role="tab" aria-selected={activePlot === 'back-emf'} className={activePlot === 'back-emf' ? 'active' : ''} onClick={() => setActivePlot('back-emf')}>Back EMF</button>
       </div>
       {activePlot === 'torque' && sixStep && result.phase_current_waveform
         ? <BldcTorqueCurrentChart angles={result.torque_waveform.electrical_angle_deg} torqueNm={result.torque_waveform.torque_Nm} phaseA={result.phase_current_waveform.phase_a_A} phaseB={result.phase_current_waveform.phase_b_A} phaseC={result.phase_current_waveform.phase_c_A} commutationAdvanceDeg={result.solve_metadata.commutation_advance_deg ?? 0} cycleComplete={completeCycle} />
-        : activePlot === 'torque' && <CompactLiveChart state="complete" label="Torque" unit="N·m" angles={result.torque_waveform.electrical_angle_deg} series={[{ label: 'Torque', values: result.torque_waveform.torque_Nm, color: '#f59e0b' }]} />}
+        : activePlot === 'torque' && <CompactLiveChart state="complete" positionLink={positionLink} label="Torque" unit="N·m" angles={result.torque_waveform.electrical_angle_deg} series={[{ label: 'Torque', values: result.torque_waveform.torque_Nm, color: '#f59e0b' }]} />}
       {activePlot === 'back-emf' && <>
-        <CompactLiveChart state="complete" label="Three-phase back EMF" unit="V" angles={result.back_emf_waveform.electrical_angle_deg} series={[{ label: 'A', values: result.back_emf_waveform.phase_a_V, color: '#f87171' }, { label: 'B', values: result.back_emf_waveform.phase_b_V, color: '#4ade80' }, { label: 'C', values: result.back_emf_waveform.phase_c_V, color: '#60a5fa' }]} />
+        <CompactLiveChart state="complete" positionLink={positionLink} label="Three-phase back EMF" unit="V" angles={result.back_emf_waveform.electrical_angle_deg} series={[{ label: 'A', values: result.back_emf_waveform.phase_a_V, color: '#f87171' }, { label: 'B', values: result.back_emf_waveform.phase_b_V, color: '#4ade80' }, { label: 'C', values: result.back_emf_waveform.phase_c_V, color: '#60a5fa' }]} />
         {result.back_emf_harmonic_analysis && <BackEMFHarmonicSpectrum analysis={result.back_emf_harmonic_analysis} compact />}
       </>}
-      <p>Spatial flux density and field lines remain visible in the solved-field viewport.</p>
+      <p>Move along a curve to show that position in the field view; click to keep it.</p>
     </section>
+  );
+}
+
+type BackEmfHarmonic = NonNullable<SolveResult['back_emf_harmonic_analysis']>['harmonics'][number];
+
+/** Below this a harmonic shows as 0.00% of H1, so it gets no bar or label. */
+const HARMONIC_ZERO_PCT = 0.005;
+/** Orders under 1% of H1 keep a 2 px stub; their values are in the tooltip
+ * and the table, so the labels stay on the harmonics that matter. */
+const HARMONIC_LABEL_MIN_PCT = 1;
+
+function harmonicCapLabel(pct: number): string {
+  if (pct >= 99.95) return '100';
+  return pct >= 1 ? pct.toFixed(1) : pct.toFixed(2);
+}
+
+/** Vertical spectrum, like an FFT plot: one column per order, height = phase A
+ * as a percentage of H1 on a linear axis. Hover or focus a column for its
+ * frequency and voltages; the table below keeps every value (#110). */
+function HarmonicSpectrumChart({ harmonics, compact }: { harmonics: BackEmfHarmonic[]; compact: boolean }) {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const values = harmonics.map((harmonic) => Math.max(0, harmonic.phase_a_pct_fundamental ?? 0));
+  const axisMax = Math.max(100, Math.ceil(Math.max(...values) / 25) * 25);
+  const tickStep = compact ? axisMax / 2 : axisMax / 4;
+  const ticks = Array.from({ length: Math.round(axisMax / tickStep) + 1 }, (_, index) => index * tickStep);
+  // Dense spectra (H24) label H1 and at most the three largest harmonics, and
+  // every other order on the x-axis, so labels never collide.
+  const dense = harmonics.length > 12;
+  const largest = new Set(
+    values
+      .map((value, index) => ({ value, index }))
+      .filter(({ index }) => harmonics[index].order !== 1)
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 3)
+      .map(({ index }) => index),
+  );
+  const labelled = (index: number) => harmonics[index].order === 1
+    || (values[index] >= HARMONIC_LABEL_MIN_PCT && (!dense || largest.has(index)));
+  const active = activeIndex === null ? null : harmonics[activeIndex];
+  const activeAlign = activeIndex === null
+    ? 'center'
+    : activeIndex <= 1 ? 'start' : activeIndex >= harmonics.length - 2 ? 'end' : 'center';
+
+  return (
+    <div className={`public-harmonic-chart${compact ? ' compact' : ''}`} role="group" aria-label="Phase A back EMF harmonics as a percentage of H1">
+      <span className="public-harmonic-chart-unit" aria-hidden="true">% of H1</span>
+      <div className="public-harmonic-chart-y" aria-hidden="true">
+        {ticks.map((tick) => <span key={tick} style={{ bottom: `${(100 * tick) / axisMax}%` }}>{tick}</span>)}
+      </div>
+      <div className="public-harmonic-chart-plot" onPointerLeave={() => setActiveIndex(null)}>
+        {ticks.map((tick) => <i key={tick} className="public-harmonic-chart-grid" style={{ bottom: `${(100 * tick) / axisMax}%` }} aria-hidden="true" />)}
+        <div className="public-harmonic-chart-columns" style={{ gridTemplateColumns: `repeat(${harmonics.length}, minmax(0, 1fr))` }}>
+          {harmonics.map((harmonic, index) => {
+            const pct = values[index];
+            const height = (100 * pct) / axisMax;
+            return (
+              <span
+                key={harmonic.order}
+                className={`public-harmonic-column${activeIndex === index ? ' is-active' : ''}`}
+                role="img"
+                tabIndex={0}
+                aria-label={`H${harmonic.order}, ${formatNumber(harmonic.frequency_Hz, 0)} Hz: ${formatNumber(pct, 2)}% of H1; phase A ${formatNumber(harmonic.phase_a_rms_V, 3)} V; line AB ${formatNumber(harmonic.line_ab_rms_V, 3)} V rms`}
+                onPointerEnter={() => setActiveIndex(index)}
+                onFocus={() => setActiveIndex(index)}
+                onBlur={() => setActiveIndex((current) => current === index ? null : current)}
+              >
+                {pct >= HARMONIC_ZERO_PCT && <i className="public-harmonic-column-bar" style={{ height: `${height}%` }} />}
+                {labelled(index) && (
+                  <em className="public-harmonic-column-value" style={{ bottom: `${height}%` }} aria-hidden="true">{harmonicCapLabel(pct)}</em>
+                )}
+              </span>
+            );
+          })}
+        </div>
+        {active && activeIndex !== null && (
+          <div
+            className={`public-harmonic-chart-tooltip align-${activeAlign}`}
+            style={{
+              left: `${(100 * (activeIndex + 0.5)) / harmonics.length}%`,
+              // Tall columns keep the tooltip inside the plot, over the bar.
+              bottom: `calc(${Math.min(55, (100 * values[activeIndex]) / axisMax)}% + 16px)`,
+            }}
+            aria-hidden="true"
+          >
+            <strong>{formatNumber(values[activeIndex], 2)}% of H1</strong>
+            <span>H{active.order} · {formatNumber(active.frequency_Hz, active.frequency_Hz < 100 ? 1 : 0)} Hz</span>
+            <span>Phase A {formatNumber(active.phase_a_rms_V, 3)} V · Line AB {formatNumber(active.line_ab_rms_V, 3)} V</span>
+          </div>
+        )}
+      </div>
+      <div className="public-harmonic-chart-x" style={{ gridTemplateColumns: `repeat(${harmonics.length}, minmax(0, 1fr))` }} aria-hidden="true">
+        {harmonics.map((harmonic, index) => <span key={harmonic.order}>{!dense || index % 2 === 0 ? `H${harmonic.order}` : ''}</span>)}
+      </div>
+    </div>
   );
 }
 
@@ -2487,30 +2997,38 @@ function BackEMFHarmonicSpectrum({
       <dl className="public-harmonic-thd-metrics">
         {thdMetrics.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{formatNumber(value)}%</dd></div>)}
       </dl>
+      <HarmonicSpectrumChart harmonics={analysis.harmonics} compact={compact} />
       <div className="public-harmonic-table" role="table" aria-label="Harmonic order, frequency, and RMS voltage">
         <div className="public-harmonic-row header" role="row"><span>Order</span><span>Frequency</span><span>Phase A / H1</span><span>Phase A</span><span>Line AB</span></div>
-        {analysis.harmonics.map((harmonic) => {
-          const phasePct = harmonic.phase_a_pct_fundamental ?? 0;
-          return (
-            <div className="public-harmonic-row" role="row" key={harmonic.order}>
-              <strong>H{harmonic.order}</strong>
-              <span>{formatNumber(harmonic.frequency_Hz, harmonic.frequency_Hz < 100 ? 1 : 0)} Hz</span>
-              <span className="public-harmonic-bar"><i style={{ width: `${Math.min(100, Math.max(phasePct > 0 ? 2 : 0, phasePct))}%` }} /><em>{formatNumber(phasePct, 2)}%</em></span>
-              <span>{formatNumber(harmonic.phase_a_rms_V, 3)} V</span>
-              <span>{formatNumber(harmonic.line_ab_rms_V, 3)} V</span>
-            </div>
-          );
-        })}
+        {analysis.harmonics.map((harmonic) => (
+          <div className="public-harmonic-row" role="row" key={harmonic.order}>
+            <strong>H{harmonic.order}</strong>
+            <span>{formatNumber(harmonic.frequency_Hz, harmonic.frequency_Hz < 100 ? 1 : 0)} Hz</span>
+            <span>{formatNumber(harmonic.phase_a_pct_fundamental ?? 0, 2)}%</span>
+            <span>{formatNumber(harmonic.phase_a_rms_V, 3)} V</span>
+            <span>{formatNumber(harmonic.line_ab_rms_V, 3)} V</span>
+          </div>
+        ))}
       </div>
       <p>All electrical orders are retained, including even and triplen harmonics. Line-to-line values show natural triplen cancellation. RMS values come from a periodic no-load flux-linkage DFT.</p>
     </section>
   );
 }
 
+type SolveSetupSection = 'solver' | 'operating' | 'plan' | 'advanced';
+
 function SolveStage({ config, materials, geometry, mesh, validation, validationChecking, validationError, result, armatureField, armatureFieldError, progress, liveSamples, busy, error, errorDetails, notice, progressPercent, meshElements, meshQuality, selectedSolver, elmerCapability, onBack, onOpenReport, onGenerateMesh, onStartSolve, onCancelSolve, onRequestArmatureField, onCancelArmatureField, onMeshSettingChange, onSolvePlanChange, onCustomSweepChange, onSolveSettingChange, onSolverChange, onManageRuns }: Pick<CoilEmWorkspaceProps,
   'config' | 'materials' | 'geometry' | 'mesh' | 'validation' | 'validationChecking' | 'validationError' | 'result' | 'armatureField' | 'armatureFieldError' | 'progress' | 'liveSamples' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'progressPercent' | 'meshElements' | 'meshQuality' | 'selectedSolver' | 'elmerCapability' | 'onGenerateMesh' | 'onStartSolve' | 'onCancelSolve' | 'onRequestArmatureField' | 'onCancelArmatureField' | 'onMeshSettingChange' | 'onSolvePlanChange' | 'onCustomSweepChange' | 'onSolveSettingChange' | 'onSolverChange'
 > & { onBack: () => void; onOpenReport: () => void; onManageRuns?: () => void }) {
-  const [advancedOpen, setAdvancedOpen] = useState(false);
+  // The setup sections open one at a time, as Design's do. The accuracy plan
+  // starts open: it is the choice made on every run, and the guided tour's
+  // solve step points at it.
+  const [openSetupSection, setOpenSetupSection] = useState<SolveSetupSection | null>('plan');
+  // The result plots set the field view's position, and show it.
+  const fieldPositionLink = useMemo(createFieldPositionLink, []);
+  const toggleSetupSection = (section: SolveSetupSection) => setOpenSetupSection((current) => current === section ? null : section);
+  const advancedOpen = openSetupSection === 'advanced';
+  const setAdvancedOpen = (open: boolean) => setOpenSetupSection((current) => open ? 'advanced' : current === 'advanced' ? null : current);
   const [customSweepOpen, setCustomSweepOpen] = useState(
     () => config.solve_params.solve_quality === 'custom',
   );
@@ -2523,9 +3041,11 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
   const [analysisDetailsOpen, setAnalysisDetailsOpen] = useState(() => !result);
   const [elementQualityDetailsOpen, setElementQualityDetailsOpen] = useState(() => !result);
   const [runPlanWidth, setRunPlanWidth] = useState(defaultRunPlanWidth);
-  const [resizingRunPlan, setResizingRunPlan] = useState(false);
+  // null keeps the stylesheet's rail width until the user drags the handle.
+  const [setupWidth, setSetupWidth] = useState<number | null>(null);
+  const [resizingPanel, setResizingPanel] = useState<'setup' | 'runPlan' | null>(null);
   const completedResultAvailableRef = useRef(Boolean(result));
-  const advancedOptionsRef = useRef<HTMLDetailsElement>(null);
+  const advancedOptionsRef = useRef<HTMLElement>(null);
   const nonlinearSolverRef = useRef<HTMLSelectElement>(null);
   const fineMeshRef = useRef<HTMLButtonElement>(null);
   const recoveryFocusTargetRef = useRef<HTMLElement | null>(null);
@@ -2533,7 +3053,9 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
   const runPlanScrollRef = useRef<HTMLDivElement>(null);
   const runPlanAutoExpandedRef = useRef(false);
   const runPlanUserSizedRef = useRef(false);
-  const runPlanDragRef = useRef<{ startX: number; startWidth: number } | null>(null);
+  const panelDragRef = useRef<{ panel: 'setup' | 'runPlan'; startX: number; startWidth: number } | null>(null);
+  const setupRef = useRef<HTMLElement>(null);
+  const runPlanRef = useRef<HTMLElement>(null);
   const solvePlans: Array<{ value: PublicSolvePreset; label: string; meshLabel: string; tradeoff: string; recommended?: boolean }> = [
     { value: 'quick', label: 'Preview', meshLabel: 'Coarse mesh', tradeoff: 'Fast iteration' },
     { value: 'standard', label: 'Standard', meshLabel: 'Medium mesh', tradeoff: 'Balanced', recommended: true },
@@ -2553,6 +3075,11 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
     { value: 'coarse', label: 'Coarse' },
     { value: 'normal', label: 'Medium' },
     { value: 'fine', label: 'Fine' },
+  ];
+  const meshBuild = config.solve_params.mesh_build ?? 'precise';
+  const meshBuildChoices: Array<{ value: MotorConfig['solve_params']['mesh_build']; label: string; title: string }> = [
+    { value: 'precise', label: 'Precise', title: 'Places mesh nodes as the benchmark report measured.' },
+    { value: 'fast', label: 'Fast', title: 'About 4x faster meshing. Results move at mesh-noise level and are experimental.' },
   ];
   const appliedRefinement = mesh?.mesh_info.corner_refinement === true;
   const meshQualitySummary = useMemo(() => summarizePublicMeshQuality(mesh), [mesh]);
@@ -2600,6 +3127,14 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
   const meshDensityLabel = config.solve_params.mesh_density === 'normal'
     ? 'Medium'
     : config.solve_params.mesh_density.replace('_', ' ');
+  const operatingSummary = [
+    sixStepSelected ? 'Six-step 120°' : 'Sinusoidal',
+    `${Number(config.solve_params.current_amplitude_A.toFixed(2))} A ${sixStepSelected ? 'plateau' : config.solve_params.current_amplitude_convention}`,
+    `${config.solve_params.rated_speed_rpm} rpm`,
+  ].join(' · ');
+  const planMeshLabel = solvePlans.find((plan) => plan.value === config.solve_params.solve_quality)?.meshLabel;
+  const planSummary = [planLabel, planMeshLabel, estimatedTimeText].filter(Boolean).join(' · ');
+  const advancedSummary = `${torqueMethodLabel} · ${nonlinearSolverLabel} · ${linearSolverLabel} · ${validation ? `${validation.sweep_positions}p` : '…'} · ${meshDensityLabel}${meshBuild === 'fast' ? ' · Fast mesh' : ''}`;
   const runReady = Boolean(mesh)
     && Boolean(validation?.valid)
     && selectedSolverAvailable
@@ -2627,17 +3162,25 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
   const finalizingResults = solveInProgress && isPublicSolveFinalizing(progress);
   const runDisabled = busy === 'mesh'
     || (busy !== 'solve' && busy !== 'field' && !runReady);
-  const runReadinessTitle = solveInProgress
+  // [tag label, popover heading]
+  const [runReadinessTag, runReadinessTitle] = solveInProgress
     ? finalizingResults
-      ? 'Finalizing results'
-      : 'Analysis in progress'
+      ? ['Finalizing', 'Finalizing results']
+      : ['Running', 'Analysis in progress']
     : busy === 'mesh'
-      ? 'Preparing mesh'
+      ? ['Preparing mesh', 'Preparing mesh']
       : validationChecking
-        ? 'Checking setup'
+        ? ['Checking', 'Checking setup']
         : runReady
-          ? 'Ready to run'
-          : 'Review before running';
+          ? ['Ready to run', 'Ready to run']
+          : ['Needs review', 'Review before running'];
+  const runReadinessTone: StatusTagTone = solveInProgress || busy === 'mesh'
+    ? 'running'
+    : runReady
+      ? 'good'
+      : validationError || validation?.valid === false
+        ? 'warning'
+        : 'info';
   const runReadinessCopy = validationError
     ? validationError
     : solveInProgress
@@ -2656,25 +3199,38 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
     : runReady
       ? 'good'
       : 'info';
-  const actionStatus = error
-    ? convergenceFailed ? 'Convergence failed — review solver settings' : 'Review the request details before running'
+  // [tag label, popover heading]
+  const [actionTag, actionStatus] = error
+    ? convergenceFailed
+      ? ['Convergence failed', 'Convergence failed — review solver settings']
+      : ['Needs review', 'Review the request details before running']
     : busy === 'solve'
-      ? finalizingResults ? 'Preparing playback and saving results' : 'Analysis running locally'
+      ? finalizingResults
+        ? ['Finalizing', 'Preparing playback and saving results']
+        : ['Running', 'Analysis running locally']
       : busy === 'mesh'
-        ? 'Preparing the native mesh'
+        ? ['Preparing mesh', 'Preparing the native mesh']
         : busy === 'field'
-          ? 'Computing the stator-only field'
+          ? ['Stator field', 'Computing the stator-only field']
           : result
-            ? 'Analysis complete — view your results'
+            ? ['Complete', 'Analysis complete — view your results']
             : validationError
-              ? 'Run estimate unavailable — check the local backend'
+              ? ['No estimate', 'Run estimate unavailable — check the local backend']
               : validationChecking
-                ? 'Checking inputs and estimating the run'
+                ? ['Checking', 'Checking inputs and estimating the run']
                 : runReady
-                  ? 'Ready to run'
+                  ? ['Ready to run', 'Ready to run']
                   : mesh
-                    ? 'Review the setup before running'
-              : 'Prepare a mesh to continue';
+                    ? ['Needs review', 'Review the setup before running']
+                    : ['Mesh needed', 'Prepare a mesh to continue'];
+  const actionTagTone: StatusTagTone = actionTone === 'warning'
+    ? 'warning'
+    : busy !== null
+      ? 'running'
+      : actionTone;
+  const actionDetails = error
+    ? convergenceFailed ? errorDetails?.message ?? error : error
+    : runReadinessCopy;
 
   useEffect(() => {
     if (!notice) return undefined;
@@ -2738,20 +3294,38 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
     return () => window.removeEventListener('keydown', restoreOnEscape);
   }, [solveViewportExpanded]);
 
+  // Each side panel's limit leaves the viewport its reserve beside the other
+  // panel's rendered width, read from the DOM so window-resize handlers see the
+  // current layout.
+  const renderedWidth = (panel: HTMLElement | null, fallback: number) => panel?.offsetWidth || fallback;
   const maxRunPlanWidth = () => typeof window === 'undefined'
     ? RUN_PLAN_MAX_WIDTH
-    : Math.max(RUN_PLAN_MIN_WIDTH, Math.min(RUN_PLAN_MAX_WIDTH, window.innerWidth - 680));
+    : Math.max(RUN_PLAN_MIN_WIDTH, Math.min(
+      RUN_PLAN_MAX_WIDTH,
+      window.innerWidth - renderedWidth(setupRef.current, RUN_PLAN_MIN_WIDTH) - SOLVE_STAGE_RESERVE,
+    ));
   const clampRunPlanWidth = (value: number) => Math.max(RUN_PLAN_MIN_WIDTH, Math.min(maxRunPlanWidth(), value));
+  const maxSetupWidth = () => typeof window === 'undefined'
+    ? SETUP_MAX_WIDTH
+    : Math.max(SETUP_MIN_WIDTH, Math.min(
+      SETUP_MAX_WIDTH,
+      window.innerWidth - renderedWidth(runPlanRef.current, RUN_PLAN_MIN_WIDTH) - SOLVE_STAGE_RESERVE,
+    ));
+  const clampSetupWidth = (value: number) => Math.max(SETUP_MIN_WIDTH, Math.min(maxSetupWidth(), value));
 
   useEffect(() => {
-    const syncAutomaticRunPlanWidth = () => {
-      if (runPlanUserSizedRef.current) return;
+    const syncPanelWidths = () => {
+      setSetupWidth((width) => width === null ? null : clampSetupWidth(width));
+      if (runPlanUserSizedRef.current) {
+        setRunPlanWidth((width) => clampRunPlanWidth(width));
+        return;
+      }
       setRunPlanWidth(runPlanAutoExpandedRef.current
         ? clampRunPlanWidth(RUN_PLAN_ACTIVE_WIDTH)
         : defaultRunPlanWidth());
     };
-    window.addEventListener('resize', syncAutomaticRunPlanWidth);
-    return () => window.removeEventListener('resize', syncAutomaticRunPlanWidth);
+    window.addEventListener('resize', syncPanelWidths);
+    return () => window.removeEventListener('resize', syncPanelWidths);
   }, []);
 
   const handleRunPlanResizeStart = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -2759,8 +3333,8 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
     event.preventDefault();
     runPlanAutoExpandedRef.current = false;
     runPlanUserSizedRef.current = true;
-    runPlanDragRef.current = { startX: event.clientX, startWidth: runPlanWidth };
-    setResizingRunPlan(true);
+    panelDragRef.current = { panel: 'runPlan', startX: event.clientX, startWidth: runPlanWidth };
+    setResizingPanel('runPlan');
   };
   const handleRunPlanResizeKey = (event: ReactKeyboardEvent<HTMLDivElement>) => {
     const keyWidths: Partial<Record<string, number>> = {
@@ -2783,6 +3357,31 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
     setRunPlanWidth(defaultRunPlanWidth());
   };
 
+  // The setup handle sits on the panel's right edge, so it grows rightwards.
+  const handleSetupResizeStart = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    panelDragRef.current = {
+      panel: 'setup',
+      startX: event.clientX,
+      startWidth: renderedWidth(setupRef.current, SETUP_MIN_WIDTH),
+    };
+    setResizingPanel('setup');
+  };
+  const handleSetupResizeKey = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    const currentWidth = renderedWidth(setupRef.current, SETUP_MIN_WIDTH);
+    const keyWidths: Partial<Record<string, number>> = {
+      ArrowRight: currentWidth + RUN_PLAN_RESIZE_STEP,
+      ArrowLeft: currentWidth - RUN_PLAN_RESIZE_STEP,
+      Home: SETUP_MIN_WIDTH,
+      End: maxSetupWidth(),
+    };
+    const nextWidth = keyWidths[event.key];
+    if (nextWidth === undefined) return;
+    event.preventDefault();
+    setSetupWidth(clampSetupWidth(nextWidth));
+  };
+
   const handleStartSolve = () => {
     runPlanAutoExpandedRef.current = true;
     setAnalysisDetailsOpen(true);
@@ -2800,15 +3399,16 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
   };
 
   useEffect(() => {
-    if (!resizingRunPlan) return undefined;
+    if (!resizingPanel) return undefined;
     const handlePointerMove = (event: PointerEvent) => {
-      if (!runPlanDragRef.current) return;
-      const { startX, startWidth } = runPlanDragRef.current;
-      setRunPlanWidth(clampRunPlanWidth(startWidth + startX - event.clientX));
+      if (!panelDragRef.current) return;
+      const { panel, startX, startWidth } = panelDragRef.current;
+      if (panel === 'setup') setSetupWidth(clampSetupWidth(startWidth + event.clientX - startX));
+      else setRunPlanWidth(clampRunPlanWidth(startWidth + startX - event.clientX));
     };
     const handlePointerUp = () => {
-      runPlanDragRef.current = null;
-      setResizingRunPlan(false);
+      panelDragRef.current = null;
+      setResizingPanel(null);
     };
     window.addEventListener('pointermove', handlePointerMove);
     window.addEventListener('pointerup', handlePointerUp);
@@ -2818,13 +3418,13 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
       window.removeEventListener('pointerup', handlePointerUp);
       window.removeEventListener('pointercancel', handlePointerUp);
     };
-  }, [resizingRunPlan]);
+  }, [resizingPanel]);
 
   const solveViewportSwitch = (
     <div className="public-solve-view-switch" role="group" aria-label="Solve viewport">
       <button type="button" aria-pressed={solveView === 'geometry'} onClick={() => setSolveView('geometry')}>Geometry</button>
       <button type="button" aria-pressed={solveView === 'mesh'} disabled={!mesh} onClick={() => setSolveView('mesh')}>Mesh</button>
-      <button type="button" aria-pressed={solveView === 'field'} disabled={!result?.field_line_plot} onClick={() => setSolveView('field')}>Field solution</button>
+      <button type="button" aria-label="Field solution" aria-pressed={solveView === 'field'} disabled={!result?.field_line_plot} onClick={() => setSolveView('field')}><span className="public-solve-tab-long">Field solution</span><span className="public-solve-tab-short" aria-hidden="true">Field</span></button>
     </div>
   );
 
@@ -2839,12 +3439,30 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
           <button type="button" aria-label="Dismiss update" onClick={() => setTransientNotice(null)}>×</button>
         </div>
       )}
-    <div className={`public-solve-workspace${resizingRunPlan ? ' is-resizing-run-plan' : ''}${solveInProgress ? ' is-run-plan-focused' : ''}${solveViewportExpanded ? ' is-viewport-expanded' : ''}`}>
-      <aside className="public-solve-setup">
+    <div className={`public-solve-workspace${resizingPanel === 'runPlan' ? ' is-resizing-run-plan' : ''}${resizingPanel === 'setup' ? ' is-resizing-setup' : ''}${solveInProgress ? ' is-run-plan-focused' : ''}${solveViewportExpanded ? ' is-viewport-expanded' : ''}`}>
+      <aside
+        ref={setupRef}
+        className="public-solve-setup"
+        style={setupWidth === null ? undefined : { width: setupWidth, minWidth: setupWidth }}
+      >
+        <div
+          className="public-solve-setup-resizer"
+          role="separator"
+          aria-label="Resize analysis setup panel"
+          aria-orientation="vertical"
+          aria-valuemin={SETUP_MIN_WIDTH}
+          aria-valuemax={maxSetupWidth()}
+          aria-valuenow={Math.round(setupWidth ?? defaultRunPlanWidth())}
+          tabIndex={0}
+          title="Drag to resize setup panel"
+          onDoubleClick={() => setSetupWidth(null)}
+          onKeyDown={handleSetupResizeKey}
+          onPointerDown={handleSetupResizeStart}
+        />
+        <div className="public-solve-setup-frame">
         <div className="mesh-panel-header"><span className="mesh-panel-header-title">Analysis setup</span></div>
         <div className="public-solve-setup-scroll">
-        {elmerCapability.feature_enabled && <div className="public-setup-section public-solver-section">
-          <span className="public-section-kicker">Solver</span>
+        {elmerCapability.feature_enabled && <ParameterSectionBlock id="solver" label="Solver" summary={selectedSolver === 'elmer' ? 'Elmer FEM' : 'Magneto2D · built in'} active={openSetupSection === 'solver'} onToggle={toggleSetupSection} className="public-solver-section">
           <div className="public-solver-selector" role="radiogroup" aria-label="Electromagnetic solver">
             <button
               type="button"
@@ -2876,9 +3494,8 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
             </button>
           </div>
           {!elmerAvailable && <p className="public-solver-diagnostic">{elmerCapability.reason || 'Qualified Elmer 26.2 runtime not detected.'}</p>}
-        </div>}
-        <div className="public-setup-section">
-          <span className="public-section-kicker">Operating point</span>
+        </ParameterSectionBlock>}
+        <ParameterSectionBlock id="operating" label="Operating point" summary={operatingSummary} active={openSetupSection === 'operating'} onToggle={toggleSetupSection}>
           <div className="public-excitation-selector" role="radiogroup" aria-label="Stator excitation">
             <button
               type="button"
@@ -2914,9 +3531,8 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
             <span>{sixStepSelected ? 'Wye · plateau current' : `${config.solve_params.current_amplitude_convention.toUpperCase()} phase current`}</span>
           </div>
           {sixStepSelected && <div className="public-six-step-limitation" role="note"><strong>Phase connection: Wye (MVP)</strong><span>Ideal current excitation only — no PWM, switching ripple, Hall timing, dead time, or ESC dynamics.</span></div>}
-        </div>
-        <div className="public-setup-section" data-guide="solve-plan">
-          <span className="public-section-kicker">Accuracy plan</span>
+        </ParameterSectionBlock>
+        <ParameterSectionBlock id="plan" label="Accuracy plan" summary={planSummary} active={openSetupSection === 'plan'} onToggle={toggleSetupSection} guide="solve-plan">
           <div className="public-choice-row public-solve-plan-choices">
             {solvePlans.map((plan) => (
               <button
@@ -2986,18 +3602,18 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
           {config.solve_params.solve_quality === 'quick' && (
             <p className="public-plan-advisory">Preview is intended for iteration, not final result sign-off.</p>
           )}
-        </div>
-        <p className="public-timing-note">Run-time estimate covering meshing, solving, playback and saving, from the prepared mesh. It varies by computer.</p>
-        <details ref={advancedOptionsRef} className="public-advanced-options" open={advancedOpen} onToggle={(event) => setAdvancedOpen(event.currentTarget.open)}>
-          <summary>
-            <span>Advanced options</span>
-            <small>{torqueMethodLabel} · {nonlinearSolverLabel} · {linearSolverLabel} · {validation ? `${validation.sweep_positions}p` : '…'} · {meshDensityLabel}</small>
-          </summary>
+        </ParameterSectionBlock>
+        <ParameterSectionBlock id="advanced" label="Advanced options" summary={advancedSummary} active={advancedOpen} attention={convergenceFailed} onToggle={toggleSetupSection} sectionRef={advancedOptionsRef} className="public-advanced-options">
           <div className="public-advanced-body">
             <section className="public-advanced-section public-advanced-mesh-section" aria-labelledby="public-mesh-preparation-heading">
               <span className="public-section-kicker" id="public-mesh-preparation-heading">Mesh preparation</span>
               <div className="mesh-segmented-control">{densityChoices.map((choice) => <button ref={choice.value === 'fine' ? fineMeshRef : undefined} type="button" className={config.solve_params.mesh_density === choice.value ? 'active' : ''} aria-pressed={config.solve_params.mesh_density === choice.value} disabled={busy !== null} onClick={() => onMeshSettingChange('mesh_density', choice.value)} key={choice.value}>{choice.label}</button>)}</div>
               <label className="public-check-row"><input type="checkbox" checked={config.solve_params.corner_refinement} disabled={busy !== null} onChange={(event) => onMeshSettingChange('corner_refinement', event.target.checked)} /> Corner refinement</label>
+              <div className="public-mesh-build" role="group" aria-labelledby="public-mesh-build-label">
+                <span id="public-mesh-build-label">Mesh build</span>
+                <div className="mesh-segmented-control">{meshBuildChoices.map((choice) => <button type="button" className={meshBuild === choice.value ? 'active' : ''} aria-pressed={meshBuild === choice.value} title={choice.title} disabled={busy !== null} onClick={() => onMeshSettingChange('mesh_build', choice.value)} key={choice.value}>{choice.label}</button>)}</div>
+              </div>
+              {meshBuild === 'fast' && <p className="public-mesh-build-note">About 4× faster meshing. Results move at mesh-noise level and are marked experimental.</p>}
               <button className="public-prepare-mesh-btn" type="button" disabled={busy !== null} onClick={onGenerateMesh}>{busy === 'mesh' ? 'Preparing mesh…' : mesh ? 'Regenerate mesh' : 'Prepare mesh'}</button>
             </section>
             <section className="public-advanced-section public-advanced-controls-section" aria-labelledby="public-electromagnetic-controls-heading">
@@ -3026,13 +3642,13 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               </div>
             </section>
           </div>
-        </details>
+        </ParameterSectionBlock>
         </div>
         <div className="public-solve-footer">
-          <div className={`validation-ok${actionTone === 'warning' ? ' has-error' : ''}`}><StatusGlyph tone={actionTone} />{actionStatus}</div>
           <div className="public-run-consequence">
-            <span>{positionsText}</span>
-            <span>{outputLabels.length} outputs</span>
+            <StatusTag tone={actionTagTone} label={actionTag} heading={actionStatus} placement="above">
+              <span>{actionDetails}</span>
+            </StatusTag>
             <strong>{estimatedTimeText}</strong>
           </div>
           {completedAnalysisAvailable ? (
@@ -3045,12 +3661,13 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
           )}
           <button className="public-back-link" type="button" onClick={onBack}>← Back to Design</button>
         </div>
+        </div>
       </aside>
       <div className="public-live-stage">
-        {solveView !== 'field' && solveViewportSwitch}
         {solveView === 'field' && result
           ? (
             <SolvedFieldViewer
+              materials={materials}
               viewControls={solveViewportSwitch}
               expandControl={(
                 <ViewportExpandButton
@@ -3067,6 +3684,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               armatureError={armatureFieldError}
               armatureProgress={busy === 'field' ? progress : null}
               magnetoCompositionAvailable={selectedSolver === 'magneto2d'}
+              positionLink={fieldPositionLink}
               onRequestArmature={onRequestArmatureField}
               onCancelArmature={onCancelArmatureField}
             />
@@ -3085,6 +3703,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               meshQuality={meshQuality}
               showConfigurationLabel={false}
               enableDesignIntro={false}
+              dockStrip={solveViewportSwitch}
               isExpanded={solveViewportExpanded}
               onExpandToggle={() => setSolveViewportExpanded((expanded) => !expanded)}
               meshDisplayMode={meshDisplayMode}
@@ -3097,7 +3716,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
             />
           )}
       </div>
-      <aside className="public-run-plan" style={{ width: runPlanWidth, minWidth: runPlanWidth }}>
+      <aside ref={runPlanRef} className="public-run-plan" style={{ width: runPlanWidth, minWidth: runPlanWidth }}>
         <div
           className="public-run-plan-resizer"
           role="separator"
@@ -3113,7 +3732,24 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
           onPointerDown={handleRunPlanResizeStart}
         />
         <div ref={runPlanScrollRef} className="public-run-plan-scroll">
-        <div className="mesh-panel-header"><span className="mesh-panel-header-title">Run plan</span></div>
+        <div className="mesh-panel-header">
+          <span className="mesh-panel-header-title">Run plan</span>
+          {!error && (
+            <div className="public-run-plan-tags">
+              <StatusTag
+                tone={runReadinessTone}
+                label={runReadinessTag}
+                heading={runReadinessTitle}
+                align="end"
+                role="status"
+                ariaBusy={solveInProgress}
+              >
+                <span>{runReadinessCopy}</span>
+              </StatusTag>
+              {validationQualification && <QualificationTag qualification={validationQualification} />}
+            </div>
+          )}
+        </div>
         <details
           className="public-run-plan-section public-run-analysis"
           open={analysisDetailsOpen}
@@ -3137,11 +3773,6 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               </>}
               {onManageRuns && <button type="button" onClick={onManageRuns}>Manage previous runs</button>}
             </div>}
-            {!error && <div className={`public-run-readiness${runReady && !solveInProgress ? ' is-ready' : ''}${solveInProgress ? ' is-running' : ''}${validationError || validation?.valid === false ? ' needs-review' : ''}`} role="status" aria-busy={solveInProgress}>
-              <StatusGlyph tone={runReady && !solveInProgress ? 'good' : validationError || validation?.valid === false ? 'warning' : 'info'} />
-              <div><strong>{runReadinessTitle}</strong><span>{runReadinessCopy}</span></div>
-            </div>}
-            {!error && validationQualification && <QualificationNote qualification={validationQualification} />}
             <ExcitationRunPlanPreview config={config} />
             {(busy === 'mesh' || busy === 'solve') && <LiveSolveMonitor busy={busy} progress={progress} liveSamples={liveSamples} progressPercent={progressPercent} />}
             <dl className="public-quality-list">
@@ -3181,9 +3812,17 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
             open={elementQualityDetailsOpen}
             onToggle={(event) => setElementQualityDetailsOpen(event.currentTarget.open)}
           >
-            <summary className="public-mesh-quality-heading">
-              <div><span className="public-section-kicker">Element quality</span><strong>{qualityPasses ? 'Solver gate passed' : 'Solver gate failed'}</strong></div>
-              <span className="public-mesh-quality-meta">{weakElementCount > 0 ? `${weakElementCount} weak` : 'No weak elements'}</span>
+            {/* One line: the title, then the gate result with any weak count. */}
+            <summary
+              className="public-mesh-quality-heading"
+              title={`Solver gate ${qualityPasses ? 'passed' : 'failed'}; ${weakElementCount > 0 ? `${weakElementCount.toLocaleString()} weak ${weakElementCount === 1 ? 'element' : 'elements'}` : 'no weak elements'}`}
+            >
+              <span className="public-section-kicker">Element quality</span>
+              <strong className={qualityPasses ? 'is-pass' : 'is-fail'}>
+                {weakElementCount > 0
+                  ? `${qualityPasses ? 'Passed' : 'Failed'} · ${weakElementCount.toLocaleString()} weak`
+                  : `Solver gate ${qualityPasses ? 'passed' : 'failed'}`}
+              </strong>
             </summary>
             <div className="public-mesh-quality-body">
               {weakElementCount > 0 && (
@@ -3224,7 +3863,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
             </div>
           </details>
         )}
-        {result && <CompletedResultMonitor result={result} onOpenReport={onOpenReport} />}
+        {result && <CompletedResultMonitor result={result} onOpenReport={onOpenReport} positionLink={fieldPositionLink} />}
         </div>
       </aside>
     </div>
@@ -3315,6 +3954,30 @@ function ReportStage({
   const materialName = config.materials.stator_steel === config.materials.rotor_steel
     ? steelDisplayName(config, config.materials.stator_steel)
     : `${steelDisplayName(config, config.materials.stator_steel)} stator / ${steelDisplayName(config, config.materials.rotor_steel)} rotor`;
+  // Every run setting, shown when the Results page's Run settings line is
+  // expanded (#110), in the order the old settings block listed them.
+  const reportSettings: Array<{ label: string; value: string }> = [
+    { label: 'Project', value: projectName },
+    { label: 'Material', value: materialName },
+    {
+      label: sixStep ? 'Conducting phase current' : 'Phase current',
+      value: `${formatNumber(config.solve_params.current_amplitude_A)} A ${sixStep ? 'plateau' : config.solve_params.current_amplitude_convention}`,
+    },
+    { label: 'Excitation', value: sixStep ? 'Ideal six-step (120°)' : 'Sinusoidal' },
+    ...(reportQualification ? [{ label: 'Qualification', value: QUALIFICATION_LABELS[reportQualification.status] }] : []),
+    ...(sixStep ? [
+      { label: 'Commutation advance', value: `${formatNumber(result.solve_metadata.commutation_advance_deg ?? config.solve_params.commutation_advance_deg)}° electrical` },
+      { label: 'Phase connection', value: 'Wye (MVP)' },
+    ] : []),
+    { label: 'Rated speed', value: `${formatNumber(config.solve_params.rated_speed_rpm, 0)} rpm` },
+    { label: 'Solver', value: result.solve_metadata.solver_name },
+    { label: 'Torque method', value: torqueMethod },
+    { label: 'Nonlinear solver', value: nonlinearSolver },
+    { label: 'Requested linear solver', value: requestedLinearSolver },
+    { label: 'Mesh elements', value: result.solve_metadata.mesh_element_count.toLocaleString() },
+    { label: 'Rotor positions', value: String(result.solve_metadata.rotor_positions) },
+    { label: 'Mesh density', value: result.solve_metadata.mesh_density || 'native' },
+  ];
   const runSavedAction = async (
     action: string,
     workingMessage: string,
@@ -3393,20 +4056,14 @@ function ReportStage({
         sixStep={sixStep}
         completeLoadedCycle={completeLoadedCycle}
         thdLabel={reportThdLabel}
-        solverLabel={reportSolverLabel}
-        torqueMethod={torqueMethod}
-        nonlinearSolver={nonlinearSolver}
-      />
-      <div className="public-report-provenance"><span>Project</span><strong>{projectName}</strong><span>Material</span><strong>{materialName}</strong>{sixStep ? <span>Conducting phase current</span> : <span>Phase current</span>}<strong>{formatNumber(config.solve_params.current_amplitude_A)} A {sixStep ? 'plateau' : config.solve_params.current_amplitude_convention}</strong><span>Excitation</span><strong>{sixStep ? 'Ideal six-step (120°)' : 'Sinusoidal'}</strong>{reportQualification && <><span>Qualification</span><strong>{QUALIFICATION_LABELS[reportQualification.status]}</strong></>}{sixStep && <><span>Commutation advance</span><strong>{formatNumber(result.solve_metadata.commutation_advance_deg ?? config.solve_params.commutation_advance_deg)}° electrical</strong><span>Phase connection</span><strong>Wye (MVP)</strong></>}<span>Rated speed</span><strong>{formatNumber(config.solve_params.rated_speed_rpm, 0)} rpm</strong><span>Solver</span><strong>{result.solve_metadata.solver_name}</strong><span>Torque method</span><strong>{torqueMethod}</strong><span>Nonlinear solver</span><strong>{nonlinearSolver}</strong><span>Requested linear solver</span><strong>{requestedLinearSolver}</strong><span>Mesh elements</span><strong>{result.solve_metadata.mesh_element_count.toLocaleString()}</strong><span>Rotor positions</span><strong>{result.solve_metadata.rotor_positions}</strong><span>Mesh density</span><strong>{result.solve_metadata.mesh_density || 'native'}</strong></div>
-      <div className="public-report-assumptions" role="note">
-        <details>
-          <summary>Model assumptions</summary>
-          <div className="public-report-assumptions-body">
+        settings={reportSettings}
+        assumptions={(
+          <>
             <span>{sixStep ? 'Ideal current excitation only — no PWM, switching ripple, Hall timing, dead time, ESC dynamics, switching loss, or startup behavior. ' : ''}This is an electromagnetic result only. {config.materials.stator_steel.startsWith('custom:') || config.materials.rotor_steel.startsWith('custom:') ? 'Custom steel uses your imported B-H data.' : 'M350-50A is an open reference B-H model;'} Supplier-specific loss data and temperature prediction are not included.</span>
             <a href="https://github.com/coilemdev/coilem/blob/main/MATERIALS.md#electrical-steel" target="_blank" rel="noreferrer">Review material provenance</a>
-          </div>
-        </details>
-      </div>
+          </>
+        )}
+      />
       <div className="public-report-plot-tabs" role="tablist" aria-label="Result plots">
         <button type="button" role="tab" aria-selected={activePlot === 'torque'} className={activePlot === 'torque' ? 'active' : ''} onClick={() => setActivePlot('torque')}>Torque</button>
         <button type="button" role="tab" aria-selected={activePlot === 'back-emf'} className={activePlot === 'back-emf' ? 'active' : ''} onClick={() => setActivePlot('back-emf')}>Back EMF</button>
@@ -3422,7 +4079,7 @@ function ReportStage({
           : <WaveformChart angles={result.back_emf_waveform.electrical_angle_deg} series={[{ label: 'Vab · line-line', values: backEmfLine.ab, color: '#f87171' }, { label: 'Vbc · line-line', values: backEmfLine.bc, color: '#4ade80' }, { label: 'Vca · line-line', values: backEmfLine.ca, color: '#60a5fa' }]} label="Back EMF · line-line" unit="V" />}
         {result.back_emf_harmonic_analysis && <BackEMFHarmonicSpectrum analysis={result.back_emf_harmonic_analysis} />}
       </>}
-      {activePlot === 'field-map' && fieldPlot && <FieldResultPlot plot={fieldPlot} />}
+      {activePlot === 'field-map' && fieldPlot && <FieldResultPlot plot={fieldPlot} saturationTicks={statorSteelSaturationTicks(config, materials)} />}
       </>}
     </div>
   );
@@ -3501,6 +4158,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
                   geometryStale={props.geometryStale}
                   busy={props.busy}
                   error={props.error}
+                  errorDetails={props.errorDetails}
                   notice={props.notice}
                   blankDesign={props.blankDesign}
                   guidedActive={props.guidedActive}

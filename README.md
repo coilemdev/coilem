@@ -160,11 +160,16 @@ Elmer is an optional development-only lane; see [its setup](docs/ELMER.md).
 
 ## Reproducibility and contributing
 
-Run the versioned A/B/C/D suite (SPM, IPM, Distributed Winding and BLDC) from the
-checkout with `python -m tools.run_benchmarks --out-dir ../benchmark-output/my-run --pdf`.
-It measures the current public native solver against saved FEMM data, with no
-reference solver installation or adapter required. See the [benchmark commands,
-reference compatibility and version policy](benchmarks/abcd-v1.3/README.md).
+Run the versioned A/B/C/D suite (SPM, IPM, Distributed Winding and BLDC) on
+your own computer with `coilem benchmark`, or `coilem benchmark --quick` for one
+case per phase in about 5 minutes. It solves each case with the installed
+Magneto2D and grades it against the frozen FEMM reference that ships with
+coilEM. It then checks that the result matches the [published record](benchmarks/records/README.md)
+for your platform, and writes a shareable report with no local paths. It needs
+no Git, Rust, Node.js or FEMM. From a checkout, `python -m tools.run_benchmarks
+--out-dir ../benchmark-output/my-run --pdf` runs the same suite with the
+developer options. See the [benchmark commands, reference compatibility and
+version policy](benchmarks/abcd-v1.3/README.md).
 
 The public Magneto2D path ignores inherited numerical solver switches. It derives
 native options from the request and records its environment policy and options
