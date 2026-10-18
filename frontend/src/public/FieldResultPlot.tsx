@@ -1,5 +1,6 @@
 import {
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -25,6 +26,7 @@ import {
   ViewportNavigationControls,
 } from './ViewportNavigation';
 import { rotorNorthAxisDeg, statorLeadElecDeg } from './fieldAxes';
+import { motorFitWidthBesideLegend } from './fieldLegendFit';
 import {
   fieldRangeForViewport,
   type FieldViewportRange,
@@ -872,6 +874,45 @@ export function FieldResultPlot({
   const legendTicks = saturationTicks.filter((tick) => (
     legendScale.overAboveT !== null && tick.bT > legendScale.minB && tick.bT < legendScale.maxB
   ));
+  // Where the flux legend is drawn over the view (the Solve tab), the motor is
+  // fitted beside it, never under its labels; the canvas, its overlays and the
+  // probe all live in the narrowed box. Below the plot (Results) nothing moves.
+  const plotRootRef = useRef<HTMLElement>(null);
+  const legendRef = useRef<HTMLDivElement>(null);
+  const [motorFitWidth, setMotorFitWidth] = useState<number | null>(null);
+  const legendShown = !overlay;
+  useLayoutEffect(() => {
+    const root = plotRootRef.current;
+    const box = navigation.viewportRef.current;
+    const legend = legendRef.current;
+    if (!root || !box || !legend) {
+      setMotorFitWidth(null);
+      return undefined;
+    }
+    const measure = () => {
+      const boxRect = box.getBoundingClientRect();
+      // Every label, which sit outside the legend's own box (the colour bar),
+      // in px from the view's left and top edges.
+      const parts = [legend, ...legend.querySelectorAll<HTMLElement>('*')]
+        .filter((element) => !element.classList.contains('public-visually-hidden'))
+        .map((element) => element.getBoundingClientRect())
+        .filter((rect) => rect.width > 0 && rect.height > 0)
+        .map((rect) => ({
+          left: rect.left - boxRect.left,
+          top: rect.top - boxRect.top,
+          bottom: rect.bottom - boxRect.top,
+        }));
+      const next = motorFitWidthBesideLegend(root.clientWidth, box.clientHeight, parts);
+      setMotorFitWidth((current) => (
+        current === next || (current !== null && next !== null && Math.abs(current - next) < 0.5) ? current : next
+      ));
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(root);
+    observer.observe(legend);
+    return () => observer.disconnect();
+  }, [legendShown, legendTicks.length, legendScale.fixed, legendScale.overAboveT, showRangeControl]);
   const triangleCount = raster?.triangleCount ?? prepared?.triangleCount ?? 0;
   const contourLevelCount = raster?.contourLevelCount ?? plot?.contour_levels.length ?? 0;
   const availableDirectionCues = raster?.vectorCues ?? prepared?.vectorCues ?? [];
@@ -1023,7 +1064,7 @@ export function FieldResultPlot({
   const probeDescription = probe ? describeProbe(probe) : null;
 
   return (
-    <section className="public-field-result" aria-label="Solved magnetic field map">
+    <section className="public-field-result" aria-label="Solved magnetic field map" ref={plotRootRef}>
       {showHeading && <div className="public-field-result-heading">
         <div>
           <strong>{title}</strong>
@@ -1044,6 +1085,7 @@ export function FieldResultPlot({
       <div
         className={`public-field-result-canvas public-viewport-navigation${navigation.panEnabled ? ' is-pannable' : ''}${navigation.isDragging ? ' is-dragging' : ''}`}
         ref={navigation.viewportRef}
+        style={motorFitWidth === null ? undefined : { flex: `0 0 ${motorFitWidth.toFixed(1)}px` }}
         title="Use the mouse wheel to zoom; drag to pan when zoomed"
         {...navigation.bind}
         onPointerMove={handlePointerMove}
@@ -1177,7 +1219,7 @@ export function FieldResultPlot({
             </p>
           )}
         </>
-      ) : <div className={`public-field-result-legend${legendScale.fixed ? ' is-fixed' : ''}`}>
+      ) : <div className={`public-field-result-legend${legendScale.fixed ? ' is-fixed' : ''}`} ref={legendRef}>
         <strong>Flux density <span>|B| (T)</span></strong>
         <span className="is-min">{legendLabel(legendScale.minB)}</span>
         <i aria-hidden="true">
