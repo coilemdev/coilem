@@ -33,7 +33,7 @@ export interface PublicExampleOption {
 
 export const PUBLIC_EXAMPLE_OPTIONS: readonly PublicExampleOption[] = [
   { id: 'spm-8p12s', label: 'SPM 8p/12s', detail: 'Starter motor' },
-  { id: 'rotating-field-6p36s', label: 'Rotating field 6p/36s', detail: 'Three pole pairs · distributed winding' },
+  { id: 'rotating-field-6p36s', label: 'SPM 6p/36s', detail: 'Three pole pairs · distributed winding' },
   { id: 'ipm-10p-v-shape-medium', label: 'IPM 10p V-shape', detail: 'Medium' },
   { id: 'ipm-14p-flat-buried-large', label: 'IPM 14p flat buried', detail: 'Large' },
   { id: 'spm-24p-small', label: 'SPM 24p', detail: 'Small' },
