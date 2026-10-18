@@ -24,6 +24,7 @@ from backend.solver import _clockwise_excitation_config
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "benchmarks/main-20261009-bad71d9/fixtures"
 SINE_VECTORS = json.loads((ROOT / "tests/fixtures/public_sine_phase_current_vectors.json").read_text(encoding="utf-8"))
+LAYOUTS = json.loads((ROOT / "tests/fixtures/phase_drive_winding_layouts.json").read_text(encoding="utf-8"))
 
 
 def _fixture(name: str) -> MotorConfig:
@@ -61,3 +62,26 @@ def test_sine_vectors_follow_the_launch_surface_solve(vector: dict) -> None:
     source = 90.0 - vector["rotor_electrical_angle_deg"] - vector["current_angle_deg"] - vector["phase_axis_offset_elec_deg"]
     closed_form = [math.sin(math.radians(source - 120.0 * k)) for k in range(3)]
     assert closed_form == pytest.approx(vector["phase_current"], abs=1e-9)
+
+
+@pytest.mark.parametrize("case", LAYOUTS["cases"], ids=lambda case: case["fixture"][:24])
+def test_tooth_pole_layouts_match_the_preview(case: dict) -> None:
+    """The layouts the frontend checks its tooth poles against are the preview's."""
+    config = _fixture(case["fixture"])
+    preview = generate_preview(config)
+    assert case["slot_count"] == config.stator.slot_count
+    assert case["pole_count"] == config.rotor.pole_count
+    assert case["phase_axis_offset_elec_deg"] == pytest.approx(preview.metadata["phase_axis_offset_elec_deg"], abs=1e-9)
+    assert case["winding_layout"] == [
+        {"slot_index": side.slot_index, "layer": side.layer, "phase": side.phase, "direction": side.direction}
+        for side in preview.winding_layout
+    ]
+    # Rotor N axis at rotor angle 0: the mean direction of the N magnets, electrically.
+    pairs = config.rotor.pole_count // 2
+    total = 0j
+    for region in preview.regions:
+        if region.region_type.startswith("magnet_n"):
+            x = sum(point[0] for point in region.points) / len(region.points)
+            y = sum(point[1] for point in region.points) / len(region.points)
+            total += complex(math.cos(pairs * math.atan2(y, x)), math.sin(pairs * math.atan2(y, x)))
+    assert math.degrees(math.atan2(total.imag, total.real)) % 360 == pytest.approx(case["rotor_n_axis_elec_deg"], abs=0.01)

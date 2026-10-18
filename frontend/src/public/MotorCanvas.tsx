@@ -26,6 +26,9 @@ import {
   phaseDriveFrame,
   phaseStrips,
   rotorElectricalDeg,
+  slotCurrents,
+  toothIndexAt,
+  toothPoles,
   waveformTrace,
   type PhaseDrive,
   type Rect,
@@ -535,6 +538,12 @@ function drawGeometry(
   const phaseLevels: PhaseLevels | null = currents
     ? { A: Math.abs(currents[0]), B: Math.abs(currents[1]), C: Math.abs(currents[2]) }
     : null;
+  // ...and each stator tooth turns N or S with the slot currents either side of it.
+  const statorSlotCount = Number(data.metadata.slot_count || 0);
+  const poleByTooth = currents && data.winding_layout?.length && statorSlotCount > 0
+    ? toothPoles(slotCurrents(data.winding_layout, statorSlotCount, currents))
+    : null;
+  const toothPoleLabels: Array<{ x: number; y: number; north: boolean; strength: number; size: number }> = [];
   const { map, scale } = fitTransform(points, width, height, viewportScale, pan, driveFrame?.motor);
   const slotCount = Number(data.metadata.slot_count || 0);
   // Slots draw as the backend lays them out (#91): a single-layer tooth-coil slot
@@ -648,6 +657,24 @@ function drawGeometry(
     context.globalAlpha = /air/i.test(region.region_type) ? 0.45 : 0.94;
     context.fill();
     context.globalAlpha = 1;
+    if (poleByTooth && /stator_tooth/i.test(region.region_type)) {
+      // The tooth as an electromagnet pole: red N, blue S, as the magnets are, and
+      // as strong as its share of the stator MMF.
+      const [meanX, meanY] = region.points.reduce<[number, number]>(
+        (sum, [x, y]) => [sum[0] + x / region.points.length, sum[1] + y / region.points.length],
+        [0, 0],
+      );
+      const strength = poleByTooth[toothIndexAt(Math.atan2(meanY, meanX), statorSlotCount)] ?? 0;
+      if (Math.abs(strength) > 0.06) {
+        context.fillStyle = strength > 0 ? PUBLIC_MOTOR_COLORS.magnetNorth : PUBLIC_MOTOR_COLORS.magnetSouth;
+        context.globalAlpha = 0.14 + 0.5 * Math.abs(strength);
+        context.fill();
+        context.globalAlpha = 1;
+        const [labelX, labelY] = map([meanX, meanY]);
+        const toothWidthPx = (2 * Math.PI * Math.hypot(labelX - origin[0], labelY - origin[1])) / statorSlotCount * 0.42;
+        toothPoleLabels.push({ x: labelX, y: labelY, north: strength > 0, strength: Math.abs(strength), size: Math.min(14, toothWidthPx * 0.55) });
+      }
+    }
     if (isVShapeMagnet && usesSplitPolarity) {
       drawVShapeMagnetPolarityHalves(
         context,
@@ -739,6 +766,20 @@ function drawGeometry(
   pendingMarkers.forEach((marker) => {
     drawCurrentMarker(context, marker.x, marker.y, marker.radius, marker.outOfPage, marker.ring);
   });
+
+  // N / S on the teeth that are clearly poles, where a letter fits.
+  if (toothPoleLabels.length) {
+    context.save();
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    for (const label of toothPoleLabels) {
+      if (label.size < 8 || label.strength < 0.3) continue;
+      context.font = `800 ${label.size.toFixed(1)}px ui-monospace, monospace`;
+      context.fillStyle = `rgba(248, 250, 252, ${(0.45 + 0.55 * label.strength).toFixed(2)})`;
+      context.fillText(label.north ? 'N' : 'S', label.x, label.y + 0.5);
+    }
+    context.restore();
+  }
 
   // Phases is only the phase colours changing as the rotor turns, so it carries
   // no slot labels; Slots and Winding do.

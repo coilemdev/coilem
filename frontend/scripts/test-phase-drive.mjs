@@ -11,6 +11,9 @@ const {
   phaseDriveFrame,
   phaseStrips,
   rotorElectricalDeg,
+  slotCurrents,
+  toothIndexAt,
+  toothPoles,
   waveformTrace,
 } = await importTypeScriptModule(new URL('../src/public/phaseDrive.ts', import.meta.url));
 
@@ -74,6 +77,51 @@ for (const [width, height] of [[480, 420], [760, 600], [1440, 700]]) {
       assert.equal(endX, strip.x + strip.width - STRIP_END);
       assert.ok(Math.abs((mid - endY) / (strip.height * 0.38) - phaseCurrents(sixStepDrive, now)[phaseIndex]) < 1e-9, 'trace ends at the current value now');
       assert.ok(trace.every(([x, y], index) => y >= strip.y && y <= strip.y + strip.height && (index === 0 || x > trace[index - 1][0])), 'trace inside its strip, left to right');
+    }
+  }
+}
+
+// Tooth poles. One coil round tooth 0, current out of the page in slot 0 and into
+// it in slot 1: by the right-hand rule its flux leaves tooth 0's face, an N pole.
+const lone = toothPoles([1, -1, 0, 0, 0, 0]);
+assert.equal(lone.indexOf(Math.max(...lone)), 0);
+assert.equal(Math.max(...lone), 1);
+assert.ok(Math.abs(lone.reduce((total, value) => total + value, 0)) < 1e-12, 'no net pole');
+assert.equal(toothIndexAt(Math.PI / 12, 12), 0);
+assert.equal(toothIndexAt(-Math.PI / 12, 12), 11);
+assert.equal(toothIndexAt(2 * Math.PI + 0.01, 12), 0);
+close(slotCurrents([
+  { slot_index: 0, phase: 'A', direction: 'in' },
+  { slot_index: 0, phase: 'B', direction: 'out' },
+  { slot_index: 1, phase: 'C', direction: 'out' },
+], 2, [1, 0.5, -1]), [0.25, 1], 'slot currents: shared slots split, in is out of the page');
+
+// The poles turn with the rotor and lead it by 90 degrees electrical at gamma = 0:
+// the stator N axis sits counter-clockwise of the rotor's N, so stator S, ahead in
+// the clockwise direction of motoring, pulls it round. Layouts and the rotor axis
+// are the backend preview's (test_public_phase_drive.py keeps them current).
+const layouts = await fixture('phase_drive_winding_layouts.json');
+const elecAxis = (poles, slotCount, pairs) => {
+  let re = 0; let im = 0;
+  poles.forEach((value, k) => {
+    const angle = pairs * (k + 0.5) * (2 * Math.PI / slotCount);
+    re += value * Math.cos(angle); im += value * Math.sin(angle);
+  });
+  return ((Math.atan2(im, re) * 180 / Math.PI) + 360) % 360;
+};
+const wrapDiff = (a, b) => ((a - b) % 360 + 540) % 360 - 180;
+for (const layout of layouts.cases) {
+  const pairs = layout.pole_count / 2;
+  for (const mode of ['sinusoidal', 'ideal_six_step_120']) {
+    const caseDrive = drive({ mode, axisOffsetDeg: layout.phase_axis_offset_elec_deg, poleCount: layout.pole_count });
+    for (const rotorMechDeg of [0, 3, 10, 27.5, 44]) {
+      const theta = rotorElectricalDeg(rotorMechDeg, layout.pole_count);
+      const poles = toothPoles(slotCurrents(layout.winding_layout, layout.slot_count, phaseCurrents(caseDrive, theta)));
+      // The rotor turns clockwise: its N axis moves back by theta, electrically.
+      const rotorN = layout.rotor_n_axis_elec_deg - theta;
+      const lead = wrapDiff(elecAxis(poles, layout.slot_count, pairs), rotorN);
+      const tolerance = mode === 'sinusoidal' ? 3 : 33;
+      assert.ok(Math.abs(lead - 90) <= tolerance, `${layout.fixture} ${mode} at ${rotorMechDeg} deg: stator N leads rotor N by ${lead.toFixed(1)} elec`);
     }
   }
 }

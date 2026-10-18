@@ -5425,8 +5425,8 @@
     },
     {
       "path": "frontend/scripts/test-phase-drive.mjs",
-      "bytes": 5178,
-      "sha256": "ea1419e512ecf3d3f9ca2fad17a187469e3c1656d90ef0fd6725eed0e7badad8"
+      "bytes": 7752,
+      "sha256": "0842f771eb1c4875b79a5a639a1a1f45e40522c24fdeb892854c927378569859"
     },
     {
       "path": "frontend/scripts/test-public-airgap-ux.mjs",
@@ -5450,8 +5450,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 149262,
-      "sha256": "0d5209d0e971b72388bf74bfe1e64ff01b5103cf043cf281c98ae13404bd692d"
+      "bytes": 149673,
+      "sha256": "2c47577bbbfdfd9126ab545127a068ef964ded8166ac4428c2e419563ca1325c"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5875,8 +5875,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 53879,
-      "sha256": "7d63c5dcbca109e3295419ddac09e57c2fbee5f5c892c83e8e6c0bb2edcbca58"
+      "bytes": 56036,
+      "sha256": "b97db1c34adf252e71884deb85c99bfcc8f03f673f7af6824b895b324903ee01"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -6195,8 +6195,8 @@
     },
     {
       "path": "frontend/src/public/phaseDrive.ts",
-      "bytes": 5324,
-      "sha256": "30647546cf789e39528ef5ee9e15d658c2a1ceb6076d38de86c816011f13516b"
+      "bytes": 7527,
+      "sha256": "cc097033243c6579298e856b8cabb9a3cb2c4534ebf75390c4b2af05afd21213"
     },
     {
       "path": "frontend/src/public/resultMetrics.ts",
@@ -6594,6 +6594,11 @@
       "sha256": "0914644d93f05fa5738534c518e2ecffeca2d129d8a38fbe8b8df2f65c695b86"
     },
     {
+      "path": "tests/fixtures/phase_drive_winding_layouts.json",
+      "bytes": 15760,
+      "sha256": "f9b0985ee0f82803a8953408d74ea24b844e1f3efcf95796645a5c03c8d27a0c"
+    },
+    {
       "path": "tests/fixtures/public_sine_phase_current_vectors.json",
       "bytes": 9081,
       "sha256": "8b6077ac1e31f044da89449fb45df4069230292940a8f6a9b1911e2e77711ca5"
@@ -6800,8 +6805,8 @@
     },
     {
       "path": "tests/test_public_phase_drive.py",
-      "bytes": 3096,
-      "sha256": "60319c9aaca20db172a0b3cb8661d48fb8fbbe21c246f8254c69a83e667b8345"
+      "bytes": 4576,
+      "sha256": "673bbd84fbaffad01a2263fc56e4b5f9d1d62a0af0c25fb73935d8c740f176ad"
     },
     {
       "path": "tests/test_public_report_exports.py",
@@ -10343,6 +10348,36 @@
       "path": "frontend/src/public/styles.css",
       "source_sha256": "c360a7d0b107ceebb76bc7a19f5442cc447121fddf0b0ffc7b5f781614752983",
       "reason": "Style the collapsed Design health strip"
+    },
+    {
+      "base_commit": "1efeddb688cf918b610fc07eeedfbe266e4d2b63",
+      "path": "frontend/src/public/phaseDrive.ts",
+      "source_sha256": "30647546cf789e39528ef5ee9e15d658c2a1ceb6076d38de86c816011f13516b",
+      "reason": "Derive each stator tooth's N/S pole from the slot currents"
+    },
+    {
+      "base_commit": "1efeddb688cf918b610fc07eeedfbe266e4d2b63",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "7d63c5dcbca109e3295419ddac09e57c2fbee5f5c892c83e8e6c0bb2edcbca58",
+      "reason": "Phases: tint each stator tooth N red or S blue by its pole strength"
+    },
+    {
+      "base_commit": "1efeddb688cf918b610fc07eeedfbe266e4d2b63",
+      "path": "frontend/scripts/test-phase-drive.mjs",
+      "source_sha256": "ea1419e512ecf3d3f9ca2fad17a187469e3c1656d90ef0fd6725eed0e7badad8",
+      "reason": "Check tooth poles lead the rotor N axis by 90 degrees electrical"
+    },
+    {
+      "base_commit": "1efeddb688cf918b610fc07eeedfbe266e4d2b63",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "0d5209d0e971b72388bf74bfe1e64ff01b5103cf043cf281c98ae13404bd692d",
+      "reason": "Pin the Phases tooth poles"
+    },
+    {
+      "base_commit": "1efeddb688cf918b610fc07eeedfbe266e4d2b63",
+      "path": "tests/test_public_phase_drive.py",
+      "source_sha256": "60319c9aaca20db172a0b3cb8661d48fb8fbbe21c246f8254c69a83e667b8345",
+      "reason": "Keep the tooth-pole winding layout fixture equal to the preview"
     }
   ]
 }

@@ -129,3 +129,49 @@ export function waveformTrace(
     return [left + (right - left) * t, mid - value * amplitude];
   });
 }
+
+export interface WindingSide {
+  slot_index: number;
+  phase: 'A' | 'B' | 'C';
+  direction: 'in' | 'out';
+}
+
+/**
+ * Net current out of the page in each slot, as a share of a full slot's
+ * conductors. An "in" side carries +J, out of the page (the solver's source sign,
+ * and the cross-section's ⊙); each side holds an equal share of its slot.
+ */
+export function slotCurrents(sides: WindingSide[], slotCount: number, currents: [number, number, number]): number[] {
+  const perSlot = new Array<number>(slotCount).fill(0);
+  sides.forEach((side) => { if (side.slot_index >= 0 && side.slot_index < slotCount) perSlot[side.slot_index] += 1; });
+  const out = new Array<number>(slotCount).fill(0);
+  const phaseIndex = { A: 0, B: 1, C: 2 } as const;
+  sides.forEach((side) => {
+    if (side.slot_index < 0 || side.slot_index >= slotCount) return;
+    out[side.slot_index] += (side.direction === 'in' ? 1 : -1) * currents[phaseIndex[side.phase]] / perSlot[side.slot_index];
+  });
+  return out;
+}
+
+/**
+ * Each tooth's pole at its face toward the rotor, N positive, scaled so the
+ * strongest is 1. Tooth k sits between slots k and k+1. Going round the bore
+ * counter-clockwise, Ampere's law steps the airgap MMF (rotor to stator positive)
+ * down by each slot's out-of-page current, so the flux a tooth sends into the
+ * airgap — an N pole — follows the running sum of slot currents, about its mean.
+ */
+export function toothPoles(currentsBySlot: number[]): number[] {
+  let running = 0;
+  const sums = currentsBySlot.map((current) => (running += current));
+  const mean = sums.reduce((total, value) => total + value, 0) / Math.max(1, sums.length);
+  const poles = sums.map((value) => value - mean);
+  const peak = Math.max(0, ...poles.map(Math.abs));
+  return peak > 1e-9 ? poles.map((value) => value / peak) : poles.map(() => 0);
+}
+
+/** The tooth at an angle (radians, counter-clockwise from +x): tooth k spans slots k to k+1. */
+export function toothIndexAt(angleRad: number, slotCount: number): number {
+  const pitch = (2 * Math.PI) / Math.max(1, slotCount);
+  const turn = ((angleRad % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+  return Math.floor(turn / pitch) % Math.max(1, slotCount);
+}
