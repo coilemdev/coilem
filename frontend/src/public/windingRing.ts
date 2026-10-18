@@ -96,6 +96,27 @@ export function slotSideCentre(
   return polar((inner + outer) / 2, centre);
 }
 
+/** Share of a coil side's narrower dimension the ⊙ / ⊗ marker spans, and its cap. */
+const MARKER_FILL = 0.8;
+const MAX_MARKER_RADIUS = 26;
+
+/**
+ * Outer radius of the current-direction marker, the same in every slot: as big as
+ * fits the narrowest coil side (the innermost layer of a radial split), so the
+ * direction still reads when the ring is zoomed out to fit.
+ */
+export function slotMarkerRadius(slotCount: number, layers: number, split: SlotLayerSplit): number {
+  const count = Math.max(1, layers);
+  const { inner, outer } = WINDING_RING;
+  let angularWidth = 2 * (Math.PI / Math.max(1, slotCount)) * SLOT_FILL;
+  let depth = outer - inner;
+  if (split === 'radial' && count > 1) depth /= count;
+  if (split === 'tangential' && count > 1) angularWidth /= count;
+  // Half the side's width at its centre: the distance from there to either edge.
+  const halfWidth = (inner + depth / 2) * Math.sin(angularWidth / 2);
+  return Math.min(MAX_MARKER_RADIUS, MARKER_FILL * Math.min(halfWidth, depth / 2));
+}
+
 /** Slots between a coil's two sides the short way round the ring. */
 export function coilSpanSlots(slotIn: number, slotOut: number, slotCount: number): number {
   const forward = (((slotOut - slotIn) % slotCount) + slotCount) % slotCount;

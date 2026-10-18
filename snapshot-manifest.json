@@ -5445,8 +5445,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 148567,
-      "sha256": "023656998bf0115ade6741a2cc433438730ae73340db4ac877b010984a73ecd1"
+      "bytes": 149206,
+      "sha256": "95978d429171917a1de18ef013c68aa3c46b53f6f2644291760af8f7c2709f78"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5465,8 +5465,8 @@
     },
     {
       "path": "frontend/scripts/test-winding-ring.mjs",
-      "bytes": 3668,
-      "sha256": "79183d00ba368184d4cd762f0019958432dcd8e4f09cfe6242728fadcbf62cb3"
+      "bytes": 5709,
+      "sha256": "7e3d6006b32ef46b87103f541c5cb97e3112693601156d200f47e8b8509826a0"
     },
     {
       "path": "frontend/scripts/test-winding-wiring.mjs",
@@ -5935,8 +5935,8 @@
     },
     {
       "path": "frontend/src/public/WindingLayoutView.tsx",
-      "bytes": 19521,
-      "sha256": "43fee052542bd3e75f780039c7458f0b97aa9f41bb54e54a785fa15513780ac8"
+      "bytes": 20205,
+      "sha256": "8a018442723c0fe2dafb284f3e6bb7fe09c7e52ed9039e651f35d20bd0283165"
     },
     {
       "path": "frontend/src/public/api.ts",
@@ -6215,8 +6215,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 261602,
-      "sha256": "4a56ee53d1e6122c3342495262a568e4c9797dce280a2e2164e44ea51285a40a"
+      "bytes": 261940,
+      "sha256": "c26d1a53d2a65a6a443f9d756b84423178219cb92ba3de254298372d96dc0b4c"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -6240,8 +6240,8 @@
     },
     {
       "path": "frontend/src/public/windingRing.ts",
-      "bytes": 5078,
-      "sha256": "54b91a63afb4b7397ac77c99a8963e07abfcad45e7bdf521708dad8f656817e5"
+      "bytes": 6097,
+      "sha256": "1d3c62d62fe996a2601bc115195e2c337edfb92fd47a9a54fc2474f3cc39a239"
     },
     {
       "path": "frontend/src/public/windingWiring.ts",
@@ -10337,6 +10337,36 @@
       "path": "frontend/src/public/styles.css",
       "source_sha256": "a8fa601dc872a387a09bdd4aec14bc7488ddcf9928dd4cc7954d22e432fbd7a0",
       "reason": "Style the wiring's leads, jumpers and U-turns as unfilled wires"
+    },
+    {
+      "base_commit": "ba5cedbd7b82296a20f2a306a2031a1bc56cb564",
+      "path": "frontend/src/public/windingRing.ts",
+      "source_sha256": "54b91a63afb4b7397ac77c99a8963e07abfcad45e7bdf521708dad8f656817e5",
+      "reason": "Size the ring's current-direction markers to fill the narrowest coil side"
+    },
+    {
+      "base_commit": "ba5cedbd7b82296a20f2a306a2031a1bc56cb564",
+      "path": "frontend/src/public/WindingLayoutView.tsx",
+      "source_sha256": "43fee052542bd3e75f780039c7458f0b97aa9f41bb54e54a785fa15513780ac8",
+      "reason": "Draw the ring's direction markers as shapes, larger, with in sides out of the page as in the cross-section"
+    },
+    {
+      "base_commit": "ba5cedbd7b82296a20f2a306a2031a1bc56cb564",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "4a56ee53d1e6122c3342495262a568e4c9797dce280a2e2164e44ea51285a40a",
+      "reason": "Style the ring's drawn direction markers like the 2D view's"
+    },
+    {
+      "base_commit": "ba5cedbd7b82296a20f2a306a2031a1bc56cb564",
+      "path": "frontend/scripts/test-winding-ring.mjs",
+      "source_sha256": "79183d00ba368184d4cd762f0019958432dcd8e4f09cfe6242728fadcbf62cb3",
+      "reason": "Check the ring's direction markers fit their coil sides"
+    },
+    {
+      "base_commit": "ba5cedbd7b82296a20f2a306a2031a1bc56cb564",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "023656998bf0115ade6741a2cc433438730ae73340db4ac877b010984a73ecd1",
+      "reason": "Pin the ring's direction mapping and drawn markers"
     }
   ]
 }

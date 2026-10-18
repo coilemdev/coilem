@@ -681,6 +681,13 @@ assert.match(windingLayoutSource, /How the solver reads this/);
 assert.match(windingLayoutSource, /Winding layout/);
 assert.match(windingLayoutSource, /className={`wl-ring public-viewport-navigation/);
 assert.match(windingLayoutSource, /endTurnPath\(coil\.slot_in, coil\.slot_out, slotCount\)/);
+// The ring marks direction as the cross-section does: an "in" side carries +J
+// (backend gmsh_solver), out of the x-y page, so it is ⊙. Drawn markers sized to
+// the slot (test-winding-ring.mjs checks the fit), not a typed glyph.
+assert.match(windingLayoutSource, /const outOfPage = side\.direction === 'in';/);
+assert.match(windingLayoutSource, /<CurrentMarker x=\{markerX\} y=\{markerY\} radius=\{markerRadius\} outOfPage=\{outOfPage\}/);
+assert.match(windingLayoutSource, /const markerRadius = slotMarkerRadius\(slotCount, ringLayers, layerSplit\);/);
+assert.doesNotMatch(windingLayoutSource, /side\.direction === 'out' \? '⊙'/);
 // The ring zooms and pans like the 2D view, with its controls in the same bottom-bar slot.
 assert.match(windingLayoutSource, /const navigation = useViewportNavigation\(\);/);
 assert.match(windingLayoutSource, /createPortal\(\s*<ViewportNavigationControls/);

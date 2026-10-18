@@ -10,6 +10,7 @@ const {
   endTurnPath,
   polar,
   slotAngle,
+  slotMarkerRadius,
   slotSideCentre,
 } = await importTypeScriptModule(new URL('../src/public/windingRing.ts', import.meta.url));
 
@@ -62,5 +63,36 @@ assert.ok(inner < outer, 'radial: layer 1 is nearer the bore');
 const before = angleOf(slotSideCentre(2, 12, 1, 2, 'tangential'));
 const after = angleOf(slotSideCentre(2, 12, 2, 2, 'tangential'));
 assert.ok(before < slotAngle(2, 12) && after > slotAngle(2, 12), 'tangential: layer 1 on the side of the tooth before the slot');
+
+// The ⊙ / ⊗ marker fills most of the narrowest coil side but stays inside every
+// side it marks: clear of both radial edges and of the side's inner and outer arcs.
+for (const slotCount of [6, 9, 12, 18, 24, 36, 48, 72]) {
+  for (const [layers, split] of [[1, null], [2, 'radial'], [2, 'tangential']]) {
+    const label = `${slotCount} slots, ${layers} layer${layers > 1 ? `s ${split}` : ''}`;
+    const marker = slotMarkerRadius(slotCount, layers, split);
+    const half = (Math.PI / slotCount) * 0.62;
+    const depth = (WINDING_RING.outer - WINDING_RING.inner) / (split === 'radial' ? layers : 1);
+    const width = (2 * half) / (split === 'tangential' ? layers : 1);
+    for (let layer = 1; layer <= layers; layer += 1) {
+      const slotIndex = 3;
+      const centre = slotSideCentre(slotIndex, slotCount, layer, layers, split);
+      const r = radius(centre);
+      const angle = angleOf(centre);
+      // The side's own edges, as slotSidePath draws them.
+      const a0 = slotAngle(slotIndex, slotCount) - half + (split === 'tangential' ? (layer - 1) * width : 0);
+      const a1 = a0 + width;
+      const r0 = WINDING_RING.inner + (split === 'radial' ? (layer - 1) * depth : 0);
+      const r1 = r0 + depth;
+      assert.ok(r * Math.sin(angle - a0) >= marker - 1e-9 && r * Math.sin(a1 - angle) >= marker - 1e-9, `${label} layer ${layer}: marker clear of the slot's sides`);
+      assert.ok(r - marker >= r0 && r + marker <= r1, `${label} layer ${layer}: marker clear of the slot's ends`);
+    }
+    // Most of the narrower dimension, so it reads at Fit; capped for few, wide slots.
+    const centreRadius = WINDING_RING.inner + depth / 2;
+    const narrowHalf = Math.min(centreRadius * Math.sin(width / 2), depth / 2);
+    assert.ok(marker >= Math.min(26, 0.75 * narrowHalf), `${label}: marker fills its side (${marker.toFixed(1)} of ${narrowHalf.toFixed(1)})`);
+  }
+}
+// SPM 6p/36s: about 14.5 units, against a typed glyph of about 8 before.
+assert.ok(slotMarkerRadius(36, 1, null) > 14, '6p/36s marker');
 
 console.log('winding ring checks passed');

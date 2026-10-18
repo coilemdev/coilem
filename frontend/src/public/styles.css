@@ -2627,7 +2627,12 @@ body {
 .public-winding-layout .wl-ring-back { stroke-dasharray: 6 8; opacity: 0.6; }
 .public-winding-layout .wl-ring-slot { stroke-width: 2.2; stroke-linejoin: round; }
 .public-winding-layout .wl-ring-slot.is-empty { fill: none; stroke: var(--border-subtle); }
-.public-winding-layout .wl-ring-glyph { font-family: var(--font-mono); font-weight: 700; pointer-events: none; }
+/* Current direction, drawn like the 2D view's markers: a dark disc in a phase
+   ring, with a light dot (out of the page) or cross (into it). */
+.public-winding-layout .wl-ring-marker { pointer-events: none; }
+.public-winding-layout .wl-ring-marker-disc { fill: rgba(8, 10, 14, 0.82); }
+.public-winding-layout .wl-ring-marker-dot { fill: #f8fafc; }
+.public-winding-layout .wl-ring-marker-cross { fill: none; stroke: #f8fafc; stroke-linecap: round; }
 .public-winding-layout .wl-ring-number { fill: var(--text-muted); font-family: var(--font-mono); font-weight: 700; }
 .public-winding-layout .wl-ring-end-turn { fill: none; stroke-width: 4; stroke-linecap: round; opacity: 0.85; }
 .public-winding-layout .wl-ring-end-turn:hover { stroke-width: 7; opacity: 1; }

@@ -20,6 +20,7 @@ import {
   endTurnPath,
   polar,
   slotAngle,
+  slotMarkerRadius,
   slotSideCentre,
   slotSidePath,
   type SlotLayerSplit,
@@ -34,6 +35,38 @@ import {
 } from './windingWiring';
 
 const PHASES: PublicPhaseId[] = ['A', 'B', 'C'];
+
+/**
+ * A coil side's current direction, drawn the way the 2D view draws it (MotorCanvas
+ * drawCurrentMarker): a dark disc ringed in the phase colour with a light dot for
+ * current out of the page or a cross for into it. Drawn rather than typed, so it
+ * can fill its slot side and the dot stays round in every font.
+ */
+function CurrentMarker({ x, y, radius, outOfPage, colour }: {
+  x: number;
+  y: number;
+  /** Outer edge, ring stroke included. */
+  radius: number;
+  outOfPage: boolean;
+  colour: string;
+}) {
+  const ring = radius / 1.09;
+  const reach = ring * 0.52;
+  return (
+    <g className="wl-ring-marker" transform={`translate(${x.toFixed(2)} ${y.toFixed(2)})`}>
+      <circle className="wl-ring-marker-disc" r={ring} stroke={colour} strokeWidth={ring * 0.18} />
+      {outOfPage ? (
+        <circle className="wl-ring-marker-dot" r={ring * 0.34} />
+      ) : (
+        <path
+          className="wl-ring-marker-cross"
+          d={`M ${-reach} ${-reach} L ${reach} ${reach} M ${reach} ${-reach} L ${-reach} ${reach}`}
+          strokeWidth={ring * 0.22}
+        />
+      )}
+    </g>
+  );
+}
 
 /**
  * One phase drawn as wiring rather than as a list of groups.
@@ -217,11 +250,8 @@ export function WindingLayoutView({ config, geometry, navigationSlot = null }: {
     ? metadata.slot_layer_split
     : null;
   const ringLayers = layerSplit ? layerCount : 1;
-  // Glyph and number sizes follow the space a slot side and a slot pitch have.
-  const pitchAtSlots = (2 * Math.PI * ((WINDING_RING.inner + WINDING_RING.outer) / 2)) / slotCount;
-  const sideWidth = pitchAtSlots * 0.62 / (layerSplit === 'tangential' ? ringLayers : 1);
-  const sideDepth = (WINDING_RING.outer - WINDING_RING.inner) / (layerSplit === 'radial' ? ringLayers : 1);
-  const glyphSize = Math.max(10, Math.min(30, Math.min(sideWidth, sideDepth) * 0.72));
+  // Marker and number sizes follow the space a slot side and a slot pitch have.
+  const markerRadius = slotMarkerRadius(slotCount, ringLayers, layerSplit);
   const numberSize = Math.max(12, Math.min(22, ((2 * Math.PI * WINDING_RING.numbers) / slotCount) * 0.42));
   const numberStep = slotCount > 48 ? 2 : 1;
   // Each wiring sits beside its phase tag, so it has the section's width less the tag.
@@ -292,7 +322,10 @@ export function WindingLayoutView({ config, geometry, navigationSlot = null }: {
                   ) : sides.map((side) => {
                     const colour = PUBLIC_PHASE_COLORS[side.phase];
                     const layer = layerSplit ? side.layer : 1;
-                    const [glyphX, glyphY] = slotSideCentre(slotIndex, slotCount, layer, ringLayers, layerSplit);
+                    const [markerX, markerY] = slotSideCentre(slotIndex, slotCount, layer, ringLayers, layerSplit);
+                    // The solver drives an "in" side at +J, which in the x-y plane is
+                    // out of the page; the cross-section marks it ⊙ too.
+                    const outOfPage = side.direction === 'in';
                     return (
                       <g key={`${side.layer}-${side.phase}-${side.direction}`}>
                         <path
@@ -301,20 +334,10 @@ export function WindingLayoutView({ config, geometry, navigationSlot = null }: {
                           fill={`${colour}3d`}
                           stroke={colour}
                         >
-                          <title>{`Slot ${slotNumber}${layerCount > 1 ? ` layer ${side.layer}` : ''}: phase ${side.phase}, current ${side.direction === 'out' ? 'out of' : 'into'} the page`}</title>
+                          <title>{`Slot ${slotNumber}${layerCount > 1 ? ` layer ${side.layer}` : ''}: phase ${side.phase}, current ${outOfPage ? 'out of' : 'into'} the page`}</title>
                         </path>
-                        {/* Same glyphs the cross-section uses, so the two views tie together. */}
-                        <text
-                          className="wl-ring-glyph"
-                          x={glyphX}
-                          y={glyphY}
-                          fill={colour}
-                          fontSize={glyphSize}
-                          textAnchor="middle"
-                          dominantBaseline="central"
-                        >
-                          {side.direction === 'out' ? '⊙' : '⊗'}
-                        </text>
+                        {/* The cross-section's ⊙ / ⊗, so the two views tie together. */}
+                        <CurrentMarker x={markerX} y={markerY} radius={markerRadius} outOfPage={outOfPage} colour={colour} />
                       </g>
                     );
                   })}
