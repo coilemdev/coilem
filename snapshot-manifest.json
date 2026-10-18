@@ -240,8 +240,8 @@
     },
     {
       "path": "backend/field_artifacts.py",
-      "bytes": 13651,
-      "sha256": "c169346804a9f2ebd1148c892a18fc49936176f7475fee963f9964e473806622"
+      "bytes": 16475,
+      "sha256": "bc6833736c881c441f260aa2d3c9e3aaa71f42930d34e855fa5172da53683559"
     },
     {
       "path": "backend/field_composition.py",
@@ -515,8 +515,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 51221,
-      "sha256": "e097715f7823bbc971ecc2a86533eb8646df03e6eb2e129201d347208fe70827"
+      "bytes": 51560,
+      "sha256": "5d9c9bf19d6d47c9b206466e182121ced9d7aaae0e515d67bd98dcdaf605d4cd"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -6549,6 +6549,11 @@
       "sha256": "aa937b0dc5c16413a30f3963c78bb020fcc37e572b6b8afff88ffd63750cce9d"
     },
     {
+      "path": "tests/test_solve_cache_raw_outputs.py",
+      "bytes": 5076,
+      "sha256": "0a818a6c45d86f785f383f13a50bd2c51c9ed8bcaf75f572c01c80815671e8f9"
+    },
+    {
       "path": "tests/test_solve_estimate.py",
       "bytes": 4802,
       "sha256": "40b6589ce1b3590b30ddcc404c9648c19113ceb24b08e30cd4a978defd0e8bf8"
@@ -9621,6 +9626,18 @@
       "path": "tests/test_public_field_playback.py",
       "source_sha256": "a2e2f7a8ed27f10376f83e3ef920b95f57cb5894ff7521830b796547da7f6649",
       "reason": "Expect lossless WebP geometry, flux and mesh layers."
+    },
+    {
+      "base_commit": "68e6eed437a47fea2e470186cf70884951c3d75e",
+      "path": "backend/field_artifacts.py",
+      "source_sha256": "c169346804a9f2ebd1148c892a18fc49936176f7475fee963f9964e473806622",
+      "reason": "Find a result's solve-cache folders and delete their raw solver output once the run is saved."
+    },
+    {
+      "base_commit": "68e6eed437a47fea2e470186cf70884951c3d75e",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "e097715f7823bbc971ecc2a86533eb8646df03e6eb2e129201d347208fe70827",
+      "reason": "Delete a saved run's raw solver output from its solve-cache folder unless kept."
     }
   ]
 }

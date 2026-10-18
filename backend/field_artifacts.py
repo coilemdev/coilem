@@ -6,6 +6,8 @@ import base64
 import gzip
 import json
 import math
+import os
+import re
 from pathlib import Path
 from typing import Any
 
@@ -24,6 +26,78 @@ def solve_cache_root() -> Path:
     from backend.solve_workspace import user_data_root
 
     return user_data_root() / "solve_cache"
+
+
+# Raw per-position Magneto2D output (inputs, meshes, reports, diagnostics,
+# provenance) at the top of a solve's cache folder: about two thirds of it.
+# The solve reads these only while it assembles its result; the field frames
+# and playback layers it keeps live in subfolders and stay.
+_RAW_SOLVER_OUTPUT = re.compile(
+    r"^(sweep|single)(_pos\d{3}_(loaded|noload))?_(input|mesh|report|nonlinear_diagnostics|provenance)\.json$"
+)
+SOLVE_CACHE_DIR_PREFIX = "magneto2d-"
+
+
+def keep_raw_solver_outputs() -> bool:
+    """Whether to keep raw solver output after a saved run.
+
+    Keeping it is a storage choice, read from the environment like the cache
+    and workspace limits. The solver's own use of these switches is isolated
+    in the public build, where it always writes the raw output.
+    """
+
+    for name in ("COILEM_MAGNETO2D_PERSIST_RAW_ARTIFACTS", "COILEM_MAGNETO2D_PERSIST_ARTIFACTS"):
+        value = os.environ.get(name)
+        if value is not None:
+            return value.strip().lower() in {"1", "true", "yes", "on"}
+    return False
+
+
+def solve_cache_folders(result: Any) -> set[Path]:
+    """The Magneto2D solve-cache folders whose artifacts a result references."""
+
+    root = solve_cache_root().resolve()
+    folders: set[Path] = set()
+
+    def visit(value: Any) -> None:
+        if isinstance(value, dict):
+            artifact_id = value.get("artifact_id")
+            if isinstance(artifact_id, str) and artifact_id:
+                try:
+                    relative = resolve_solve_cache_artifact_id(artifact_id).relative_to(root)
+                except ValueError:
+                    relative = None
+                if relative is not None and len(relative.parts) > 1 and relative.parts[0].startswith(SOLVE_CACHE_DIR_PREFIX):
+                    folders.add(root / relative.parts[0])
+            for child in value.values():
+                visit(child)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child)
+
+    visit(result)
+    return folders
+
+
+def prune_raw_solver_outputs(folders: set[Path]) -> int:
+    """Delete raw solver output from finished solves' cache folders; return the bytes freed."""
+
+    root = solve_cache_root().resolve()
+    freed = 0
+    for folder in folders:
+        folder = folder.resolve()
+        if folder.parent != root or not folder.name.startswith(SOLVE_CACHE_DIR_PREFIX) or not folder.is_dir():
+            continue
+        for candidate in folder.iterdir():
+            if not _RAW_SOLVER_OUTPUT.match(candidate.name) or candidate.is_symlink() or not candidate.is_file():
+                continue
+            try:
+                size = candidate.stat().st_size
+                candidate.unlink()
+            except OSError:
+                continue
+            freed += size
+    return freed
 
 
 def _b64url_encode(value: str) -> str:
