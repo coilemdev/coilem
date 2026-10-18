@@ -5185,8 +5185,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 134151,
-      "sha256": "6841e6c77cf958f4eb7bb100f5fb478a8b42aaa5e7638e8f5559276f157df731"
+      "bytes": 135309,
+      "sha256": "8b62dc4437c59abb7fb8852376925c69bf1d2aa470ca309c95d49a74d5bfd736"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5640,8 +5640,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 58659,
-      "sha256": "0bc31ddb4ed8b86f0785398919312961063fa2cf4481b280f6108cf1d88d5313"
+      "bytes": 59294,
+      "sha256": "14c3b03d7dde592bdfed0deb31ea87e11eeedc85257508189f8b60e8b463bad4"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -5920,8 +5920,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 259327,
-      "sha256": "fffbf6dadb8d945a3db3727b1d04c72ccb92ba1688a7dc7f305425d7c406a892"
+      "bytes": 260660,
+      "sha256": "295afa6bbcb65a83030f2c0929dad2386fac50f40f2efbc6c4002abf55f0a525"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -9738,6 +9738,24 @@
       "path": "frontend/package.json",
       "source_sha256": "261e1543b0dbfa07b1ea5165d663f522a0c31c7c088819275431ad378d308e91",
       "reason": "Run the flux colour-scale test with the public UI tests."
+    },
+    {
+      "base_commit": "2f5ebb9d0a3715e288de75ecd37a0996eeaee4e0",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "0bc31ddb4ed8b86f0785398919312961063fa2cf4481b280f6108cf1d88d5313",
+      "reason": "Give the field panel's toggles, line density and readout short forms for narrow panels."
+    },
+    {
+      "base_commit": "2f5ebb9d0a3715e288de75ecd37a0996eeaee4e0",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "09cf5c22affe41e53bbbc9337a5d93d3a6ba3f8a526d6490473e67170165b543",
+      "reason": "Keep the field panel to two lines by tightening and shortening its controls on narrower panels."
+    },
+    {
+      "base_commit": "2f5ebb9d0a3715e288de75ecd37a0996eeaee4e0",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "6841e6c77cf958f4eb7bb100f5fb478a8b42aaa5e7638e8f5559276f157df731",
+      "reason": "Cover the field panel's narrow-width short forms."
     }
   ]
 }

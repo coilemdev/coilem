@@ -1177,9 +1177,11 @@ export function SolvedFieldViewer({
             aria-pressed={displayedDensity === stop}
             disabled={!densityAdjustable}
             onClick={() => setFieldLineDensity(stop)}
+            aria-label={`${stop === 'low' ? 'Low' : stop === 'medium' ? 'Medium' : 'High'} line density`}
             key={stop}
           >
-            {stop === 'low' ? 'Low' : stop === 'medium' ? 'Med' : 'High'}
+            <span className="public-field-density-long">{stop === 'low' ? 'Low' : stop === 'medium' ? 'Med' : 'High'}</span>
+            <span className="public-field-density-short" aria-hidden="true">{stop === 'low' ? 'L' : stop === 'medium' ? 'M' : 'H'}</span>
           </button>
         ))}
       </span>
@@ -1266,7 +1268,7 @@ export function SolvedFieldViewer({
           {viewControls}
           <div className="public-dock-strip-end">
             {(activeDetailRaster || visibleRaster || visiblePlot) && (
-              <div className="viewport-cad-status">{angleFrames.length} positions · peak |B| {currentPeakBT.toFixed(2)} T</div>
+              <div className="viewport-cad-status"><span className="public-field-text-long">{angleFrames.length} positions · </span>peak |B| {currentPeakBT.toFixed(2)} T</div>
             )}
             <details className="public-field-physics-info">
               <summary aria-label="Field details" title="Field details">i</summary>
@@ -1304,8 +1306,8 @@ export function SolvedFieldViewer({
           <div className="public-field-control-cluster public-field-overlay-cluster">
             <span>Show</span>
             <div className="public-field-layer-controls public-field-layer-controls-inline" role="group" aria-label="Field solution overlays">
-              <button type="button" aria-pressed={showHeatmap && !overlayActive} disabled={overlayActive} title={overlayActive ? 'Off while PM and Stator are both shown: one |B| map cannot belong to both fields' : undefined} onClick={() => setShowHeatmap((value) => !value)}><i aria-hidden="true" />Flux density</button>
-              <button type="button" aria-pressed={showFieldLines} onClick={() => setShowFieldLines((value) => !value)}><i aria-hidden="true" />Field lines</button>
+              <button type="button" aria-pressed={showHeatmap && !overlayActive} disabled={overlayActive} title={overlayActive ? 'Off while PM and Stator are both shown: one |B| map cannot belong to both fields' : undefined} onClick={() => setShowHeatmap((value) => !value)} aria-label="Flux density"><i aria-hidden="true" /><span className="public-field-text-long">Flux density</span><span className="public-field-text-short" aria-hidden="true">Flux</span></button>
+              <button type="button" aria-pressed={showFieldLines} onClick={() => setShowFieldLines((value) => !value)} aria-label="Field lines"><i aria-hidden="true" /><span className="public-field-text-long">Field lines</span><span className="public-field-text-short" aria-hidden="true">Lines</span></button>
               {showFieldLines && renderDensityControl()}
             </div>
             <details className="public-field-layer-menu">

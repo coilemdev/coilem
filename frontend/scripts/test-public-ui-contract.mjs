@@ -822,7 +822,7 @@ assert.match(motorCanvasSource, /return navigationSlot \? createPortal\(zoomCont
 // The Mesh tab's title bar has no readout: its element count and quality are in the run plan.
 assert.match(workspaceSource, /const cadStatus = mode === 'mesh' \? null : \(/);
 assert.doesNotMatch(workspaceSource, /elements\{meshQualitySummary \? ` · min q/);
-assert.match(solvedFieldSource, /<div className="public-dock-strip-end">\s*\{\(activeDetailRaster \|\| visibleRaster \|\| visiblePlot\) && \(\s*<div className="viewport-cad-status">\{angleFrames\.length\} positions · peak \|B\| \{currentPeakBT\.toFixed\(2\)\} T<\/div>\s*\)\}\s*<details className="public-field-physics-info">[\s\S]*?<\/details>\s*<span className="public-field-zoom-slot" ref=\{setZoomSlot\} \/>\s*\{expandControl\}/);
+assert.match(solvedFieldSource, /<div className="public-dock-strip-end">\s*\{\(activeDetailRaster \|\| visibleRaster \|\| visiblePlot\) && \(\s*<div className="viewport-cad-status"><span className="public-field-text-long">\{angleFrames\.length\} positions · <\/span>peak \|B\| \{currentPeakBT\.toFixed\(2\)\} T<\/div>\s*\)\}\s*<details className="public-field-physics-info">[\s\S]*?<\/details>\s*<span className="public-field-zoom-slot" ref=\{setZoomSlot\} \/>\s*\{expandControl\}/);
 // The field panel matches the motor panels: full width, same title bar,
 // segmented field choice, dot toggles and labelled slider boxes.
 assert.match(styleSource, /\.public-field-dock \{ border: 0; border-top: 1px solid var\(--border-default\); border-radius: 0;/);
@@ -834,10 +834,18 @@ assert.doesNotMatch(styleSource, /public-field-density-control/);
 // density right after them; the reference layers wait in More, which counts
 // how many are on. The angle and frame details live in the title bar's ⓘ.
 assert.match(solvedFieldSource, /<div className="public-field-dock">\s*<div className="public-dock-strip">[\s\S]*?<div className="public-field-dock-controls" role="toolbar" aria-label="Field display">[\s\S]*?<div className="public-field-playback">/);
-assert.match(solvedFieldSource, /aria-label="Field solution overlays">\s*<button[\s\S]*?\/>Flux density<\/button>\s*<button[\s\S]*?\/>Field lines<\/button>\s*\{showFieldLines && renderDensityControl\(\)\}/);
+assert.match(solvedFieldSource, /aria-label="Field solution overlays">\s*<button[\s\S]*?aria-label="Flux density"[\s\S]*?<\/button>\s*<button[\s\S]*?aria-label="Field lines"[\s\S]*?<\/button>\s*\{showFieldLines && renderDensityControl\(\)\}/);
+// The field panel stays two lines (controls, then playback): narrower panels
+// tighten the controls, then shorten the two toggles and the readout.
+assert.match(solvedFieldSource, /<span className="public-field-text-long">Flux density<\/span><span className="public-field-text-short" aria-hidden="true">Flux<\/span>/);
+assert.match(solvedFieldSource, /<span className="public-field-text-long">\{angleFrames\.length\} positions · <\/span>peak \|B\|/);
+assert.match(styleSource, /@container \(max-width: 900px\) \{\s*\.public-field-dock \.public-field-dock-controls \{ gap: 8px; \}/);
+assert.match(styleSource, /@container \(max-width: 720px\) \{\s*\.public-field-dock \.public-field-text-long \{ display: none; \}/);
 assert.match(solvedFieldSource, /<summary>More\{moreLayersOn > 0 && <em>\{moreLayersOn\} on<\/em>\}<\/summary>\s*<div className="public-field-layer-controls" role="group" aria-label="More field layers">\s*\{renderMoreLayerButtons\(\)\}/);
 assert.match(solvedFieldSource, /<span className="public-field-density-choice" role="group" aria-label="Field-line density" title=\{densityTitle\}>/);
-assert.match(solvedFieldSource, /\{stop === 'low' \? 'Low' : stop === 'medium' \? 'Med' : 'High'\}/);
+assert.match(solvedFieldSource, /<span className="public-field-density-long">\{stop === 'low' \? 'Low' : stop === 'medium' \? 'Med' : 'High'\}<\/span>/);
+assert.match(solvedFieldSource, /<span className="public-field-density-short" aria-hidden="true">\{stop === 'low' \? 'L' : stop === 'medium' \? 'M' : 'H'\}<\/span>/);
+assert.match(styleSource, /@container \(max-width: 620px\) \{\s*\.public-field-dock \.public-field-density-long \{ display: none; \}/);
 assert.match(solvedFieldSource, /<em>\{boundedIndex \+ 1\} \/ \{Math\.max\(1, angleFrames\.length\)\} · \{electricalAngleDeg\.toFixed\(1\)\}° elec<\/em>/);
 // Nothing in the playback row changes size while it plays (the speed and
 // position sliders jittered when a frame-status column came and went): the
