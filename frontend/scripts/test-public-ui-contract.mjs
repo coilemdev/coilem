@@ -105,6 +105,7 @@ const halbachStyleSource = await readFile(
 const waveformSource = await readFile(path.join(frontendRoot, 'src/public/WaveformChart.tsx'), 'utf8');
 const waveformReadoutSource = await readFile(path.join(frontendRoot, 'src/public/WaveformReadout.tsx'), 'utf8');
 const fieldResultSource = await readFile(path.join(frontendRoot, 'src/public/FieldResultPlot.tsx'), 'utf8');
+const packageSource = await readFile(path.join(frontendRoot, 'package.json'), 'utf8');
 const solvedFieldSource = await readFile(path.join(frontendRoot, 'src/public/SolvedFieldViewer.tsx'), 'utf8');
 const playbackContractSource = await readFile(path.join(frontendRoot, 'src/public/fieldPlaybackContract.ts'), 'utf8');
 const playbackTimingSource = await readFile(path.join(frontendRoot, 'src/public/fieldPlaybackTiming.ts'), 'utf8');
@@ -875,6 +876,14 @@ assert.match(workspaceSource, /aria-label="Field solution" aria-pressed=\{solveV
 assert.match(styleSource, /@container \(max-width: 460px\) \{\s*\.public-motor-viewport \.public-dock-strip \.public-primary-view-modes button,\s*\.public-dock-strip \.public-solve-view-switch button \{ padding: 0 7px; \}\s*\.public-dock-strip \.public-solve-tab-long \{ display: none; \}/);
 assert.match(styleSource, /@container \(max-width: 380px\) \{\s*\.public-field-dock \.public-field-physics-info \{ display: none; \}/);
 assert.match(styleSource, /@container \(max-width: 340px\) \{\s*\.public-dock-strip-end \.public-viewport-nav-controls button:not\(\.is-fit\) \{ display: none; \}/);
+// The flux legend never covers the motor: the field view's canvas box narrows
+// so the motor moves left (and shrinks only if it must), checked against each
+// legend label at its height; a legend below the plot (Results) moves nothing.
+assert.match(fieldResultSource, /const next = motorFitWidthBesideLegend\(root\.clientWidth, box\.clientHeight, parts\);/);
+assert.match(fieldResultSource, /\.filter\(\(element\) => !element\.classList\.contains\('public-visually-hidden'\)\)/);
+assert.match(fieldResultSource, /style=\{motorFitWidth === null \? undefined : \{ flex: `0 0 \$\{motorFitWidth\.toFixed\(1\)\}px` \}\}/);
+assert.match(fieldResultSource, /className=\{`public-field-result-legend\$\{legendScale\.fixed \? ' is-fixed' : ''\}`\} ref=\{legendRef\}/);
+assert.match(packageSource, /node scripts\/test-field-legend-fit\.mjs/);
 assert.match(solvedFieldSource, /<em>\{boundedIndex \+ 1\} \/ \{Math\.max\(1, angleFrames\.length\)\} · \{electricalAngleDeg\.toFixed\(1\)\}° elec<\/em>/);
 // Nothing in the playback row changes size while it plays (the speed and
 // position sliders jittered when a frame-status column came and went): the

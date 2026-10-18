@@ -5080,8 +5080,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 1946,
-      "sha256": "e55e316acbddfd1c806e0bb6bc8e62f17f681b8ab14045c31b1269b14d04e5da"
+      "bytes": 1988,
+      "sha256": "d637904761387ca375e7dd731ce3dcb28d0e912ff10a471ce4bdf1ebee7ede73"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -5132,6 +5132,11 @@
       "path": "frontend/scripts/test-field-axes.mjs",
       "bytes": 2977,
       "sha256": "39aef41d7087a48b455b04a8db3780a0d4a3868b478019c434f5fd57861b4b3f"
+    },
+    {
+      "path": "frontend/scripts/test-field-legend-fit.mjs",
+      "bytes": 3360,
+      "sha256": "885829f1fcfedd30c26dd4ddb5f26b615fdeb7f7d75f41aed479ad101eebaa71"
     },
     {
       "path": "frontend/scripts/test-field-playback-timing.mjs",
@@ -5185,8 +5190,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 139990,
-      "sha256": "8f77a4474b696ec662120f391fbd1b8db264d45fb68a2f051b077c792fb2b24f"
+      "bytes": 140911,
+      "sha256": "8d2770c5e94ecf3a53e6339e43021fd1779fcd22d8d5b1d28f4c0766c1a34df2"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5595,8 +5600,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 52130,
-      "sha256": "64639a32120c99d63e85b2ebea52af162fa91db3d3e3266b99e232468275e9bd"
+      "bytes": 54214,
+      "sha256": "7b0497328041efa3ee66bde00e938ef91c28e747033448a79c8838e9a2addc3d"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -5767,6 +5772,11 @@
       "path": "frontend/src/public/fieldAxes.ts",
       "bytes": 1486,
       "sha256": "955232c4af710fbabcbb941281a8dde2dc624fb504dcf5041622b2f6e67c90a3"
+    },
+    {
+      "path": "frontend/src/public/fieldLegendFit.ts",
+      "bytes": 1942,
+      "sha256": "65b30ae01622335dbf9d040be221ad9200e0e9eb909c22ba27f39f0306ff66aa"
     },
     {
       "path": "frontend/src/public/fieldPlaybackContract.ts",
@@ -9827,6 +9837,24 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "f128b2c27a390ee853c94a478e016d34382b542247cc12256eab2909b2969521",
       "reason": "Cover the collapsible Solve setup sections."
+    },
+    {
+      "base_commit": "baa602a68eed4f776dfcc4e65711d586440c38e8",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "64639a32120c99d63e85b2ebea52af162fa91db3d3e3266b99e232468275e9bd",
+      "reason": "Fit the motor beside the flux legend drawn over the field view, measured from each legend label."
+    },
+    {
+      "base_commit": "baa602a68eed4f776dfcc4e65711d586440c38e8",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "8f77a4474b696ec662120f391fbd1b8db264d45fb68a2f051b077c792fb2b24f",
+      "reason": "Cover the motor fit beside the flux legend."
+    },
+    {
+      "base_commit": "baa602a68eed4f776dfcc4e65711d586440c38e8",
+      "path": "frontend/package.json",
+      "source_sha256": "e55e316acbddfd1c806e0bb6bc8e62f17f681b8ab14045c31b1269b14d04e5da",
+      "reason": "Run the legend-fit test with the public UI tests."
     }
   ]
 }
