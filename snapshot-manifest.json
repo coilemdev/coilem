@@ -5180,8 +5180,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 131434,
-      "sha256": "08c9bc48241962bb27cf04626b1544a59178d093bc048dd69aca5f485ee9e982"
+      "bytes": 131618,
+      "sha256": "648ac6c7de35986eee68dd81414083d26c9216eba1ffe90e71735f5b867b1c88"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5635,8 +5635,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 58468,
-      "sha256": "fa9128b889c3b209bdea79c01bbb8b32dbe4edd3b7f9d76932ab33bd1235e0d6"
+      "bytes": 58604,
+      "sha256": "d83eda46ead18e163eaa71896d9e574b662c3389617139db440d3a86265fc04d"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -5910,8 +5910,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 256269,
-      "sha256": "a938ac811f3dfb0f4d06dd0d9e5c473f64dfca4ab78d46b314dc82894035a781"
+      "bytes": 255447,
+      "sha256": "bd7fd5d9736d15a40e47a7918f0bc1231b7fb1449a988f8e95e08dc18b42b04b"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -9431,6 +9431,24 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "f214285851f9c1a5d80f1f2d1c7cdf18f6062d6e5622babd529f41584a6ec9d7",
       "reason": "Cover the field panel's order, More menu and density choice."
+    },
+    {
+      "base_commit": "5ab85f525feb69378ca6eb4ae2cf5b80d95c79b7",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "fa9128b889c3b209bdea79c01bbb8b32dbe4edd3b7f9d76932ab33bd1235e0d6",
+      "reason": "Keep the playback row still while playing: stall note in the position label, frame count in field details."
+    },
+    {
+      "base_commit": "5ab85f525feb69378ca6eb4ae2cf5b80d95c79b7",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "a938ac811f3dfb0f4d06dd0d9e5c473f64dfca4ab78d46b314dc82894035a781",
+      "reason": "Give the field playback row fixed columns and steady-width numbers."
+    },
+    {
+      "base_commit": "5ab85f525feb69378ca6eb4ae2cf5b80d95c79b7",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "08c9bc48241962bb27cf04626b1544a59178d093bc048dd69aca5f485ee9e982",
+      "reason": "Cover the fixed playback row and where the frame status moved."
     }
   ]
 }
