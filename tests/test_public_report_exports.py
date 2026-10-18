@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import io
 import json
 import zipfile
@@ -354,7 +355,16 @@ def test_stored_pdf_csv_and_package_are_bound_to_one_immutable_run(
         assert archive.read("report/report.pdf") == pdf_bytes
         assert archive.read("report/report.csv") == csv_bytes
 
-    assert manifest["exports"]["package_sha256"]
+    # The package is not stored with the run (it repeated every artifact); it
+    # is built for the download, outside the run budget, and always the same.
+    assert manifest["exports"]["package_sha256"] is None
+    assert manifest["exports"]["package_mode"] == "on_demand"
+    assert not (location.path / "report" / "run-package.zip").exists()
+    assert workspace.is_export_scratch(package_path)
+    assert not workspace.is_export_scratch(location.path)
+    rebuilt = workspace.resolve_export(location.project_slug, location.run_id, "package")
+    assert rebuilt != package_path
+    assert rebuilt.read_bytes() == package_path.read_bytes()
 
 
 def test_six_step_exports_preserve_drive_identity_waveforms_and_limits(
@@ -430,31 +440,80 @@ def test_six_step_exports_preserve_drive_identity_waveforms_and_limits(
     assert "setting,solve_params.commutation_advance_deg,,7.5," in csv_text
     assert "Ideal six-step is an ideal current excitation only" in csv_text
 
-    with zipfile.ZipFile(location.path / "report" / "run-package.zip") as archive:
+    package_path = workspace.resolve_export(location.project_slug, location.run_id, "package")
+    with zipfile.ZipFile(package_path) as archive:
         packaged_result = json.loads(archive.read("result.json"))
         assert packaged_result["phase_current_waveform"] == result["phase_current_waveform"]
         packaged_request = json.loads(archive.read("request.json"))
         assert packaged_request["resolved_config"]["solve_params"]["excitation_mode"] == "ideal_six_step_120"
 
 
-def test_tampered_replay_package_fails_integrity_check(
+def test_tampered_run_builds_no_replay_package(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     workspace, location = _complete_run(tmp_path, monkeypatch)
-    package_path = location.path / "report" / "run-package.zip"
-    package_path.write_bytes(package_path.read_bytes() + b"tampered")
+    pdf_path = location.path / "report" / "report.pdf"
+    pdf_path.write_bytes(pdf_path.read_bytes() + b"tampered")
 
     loaded = workspace.load_run(location.project_slug, location.run_id)
 
     assert loaded["integrity"]["valid"] is False
-    assert loaded["integrity"]["export_mismatches"] == ["package"]
+    assert loaded["integrity"]["export_mismatches"] == ["pdf"]
     with pytest.raises(SolveWorkspaceError, match="integrity check"):
         workspace.resolve_export(
             location.project_slug,
             location.run_id,
             "package",
         )
+    assert not list(workspace.export_scratch_root.glob("*.zip"))
+
+
+def test_stored_replay_package_of_an_older_run_is_still_verified(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Runs saved before packages were built on download keep their stored zip."""
+
+    workspace, location = _complete_run(tmp_path, monkeypatch)
+    manifest_path = location.path / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    del manifest["exports"]["package_mode"]
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    package_path = location.path / "report" / "run-package.zip"
+    write_replayable_run_package(location.path, package_path, completed_at=manifest["completed_at"])
+    manifest["exports"]["package_sha256"] = hashlib.sha256(package_path.read_bytes()).hexdigest()
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+    loaded = workspace.load_run(location.project_slug, location.run_id)
+    assert loaded["integrity"]["valid"] is True
+    assert workspace.resolve_export(location.project_slug, location.run_id, "package") == package_path.resolve()
+
+    package_path.write_bytes(package_path.read_bytes() + b"tampered")
+    loaded = workspace.load_run(location.project_slug, location.run_id)
+    assert loaded["integrity"]["valid"] is False
+    assert loaded["integrity"]["export_mismatches"] == ["package"]
+    with pytest.raises(SolveWorkspaceError, match="integrity check"):
+        workspace.resolve_export(location.project_slug, location.run_id, "package")
+
+
+def test_package_download_is_built_for_the_request_and_removed_after(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from fastapi.testclient import TestClient
+
+    from backend.public_main import app
+
+    workspace, location = _complete_run(tmp_path, monkeypatch)
+    monkeypatch.setenv("COILEM_USER_DATA_ROOT", str(tmp_path / "data"))
+    client = TestClient(app, base_url="http://127.0.0.1")
+    response = client.get(f"/runs/{location.project_slug}/{location.run_id}/package.zip")
+    assert response.status_code == 200
+    with zipfile.ZipFile(io.BytesIO(response.content)) as archive:
+        assert "result.json" in archive.namelist()
+    assert not list(workspace.export_scratch_root.glob("*.zip"))
+    assert not (location.path / "report" / "run-package.zip").exists()
 
 
 def test_missing_or_older_run_export_fails_with_migration_guidance(

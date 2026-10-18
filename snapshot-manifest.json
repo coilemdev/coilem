@@ -510,8 +510,8 @@
     },
     {
       "path": "backend/public_routes/runs.py",
-      "bytes": 5743,
-      "sha256": "f9270bed900c9deb9748f014e0fcafd25b34eb2968696e5a9e0474e88d34c894"
+      "bytes": 6031,
+      "sha256": "186e44cf0512ed3a8fa42b058097e1a81d12041f8319d5f30824828df07b35aa"
     },
     {
       "path": "backend/public_routes/solve.py",
@@ -550,8 +550,8 @@
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 43098,
-      "sha256": "39efa404a3410b8a17c8023ceaa567566ab53482d1d1711b3b48b81034df1702"
+      "bytes": 44873,
+      "sha256": "48cc7721d9ad8e8bbb258fe66fc254d989c3717b32c6246a9bb941aabf509cd0"
     },
     {
       "path": "backend/solver/__init__.py",
@@ -6485,8 +6485,8 @@
     },
     {
       "path": "tests/test_public_report_exports.py",
-      "bytes": 27148,
-      "sha256": "17d1fc7f64d35356bccc8e417b353b9b8d92d9459bd5d54ad862ff8d1f5fe259"
+      "bytes": 30156,
+      "sha256": "167d2f1f68c9981f0e76b534444623979df7648d2cd684491e930c5baefe66bf"
     },
     {
       "path": "tests/test_public_security.py",
@@ -6555,8 +6555,8 @@
     },
     {
       "path": "tests/test_solve_workspace.py",
-      "bytes": 22702,
-      "sha256": "3dd440510fbe3540f0151fd68e8e15fef946a638f30de2f5382343afb6445025"
+      "bytes": 22787,
+      "sha256": "21be4b7252659f59d09e1f6be898f6b279a3acd2d14ec79ad75ef77711304419"
     },
     {
       "path": "tests/test_sweep_planning.py",
@@ -9562,6 +9562,30 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "82e6f910bc39207f892c45109510171e4bc737db701894b7da891819f188eff8",
       "reason": "Cover the compact completed results and its toggle."
+    },
+    {
+      "base_commit": "ee029a239edbac996d15b934a2fe39175abcc370",
+      "path": "backend/solve_workspace.py",
+      "source_sha256": "39efa404a3410b8a17c8023ceaa567566ab53482d1d1711b3b48b81034df1702",
+      "reason": "Build a run's replay package on download instead of storing a second copy of every artifact."
+    },
+    {
+      "base_commit": "ee029a239edbac996d15b934a2fe39175abcc370",
+      "path": "backend/public_routes/runs.py",
+      "source_sha256": "f9270bed900c9deb9748f014e0fcafd25b34eb2968696e5a9e0474e88d34c894",
+      "reason": "Remove a package built for a download once it has been sent."
+    },
+    {
+      "base_commit": "ee029a239edbac996d15b934a2fe39175abcc370",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "17d1fc7f64d35356bccc8e417b353b9b8d92d9459bd5d54ad862ff8d1f5fe259",
+      "reason": "Cover the on-demand replay package, its integrity and its cleanup."
+    },
+    {
+      "base_commit": "ee029a239edbac996d15b934a2fe39175abcc370",
+      "path": "tests/test_solve_workspace.py",
+      "source_sha256": "3dd440510fbe3540f0151fd68e8e15fef946a638f30de2f5382343afb6445025",
+      "reason": "A completed run no longer stores its replay package."
     }
   ]
 }

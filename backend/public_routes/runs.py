@@ -7,6 +7,7 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import FileResponse
+from starlette.background import BackgroundTask
 
 from backend.solve_workspace import (
     RUN_MANIFEST_SCHEMA,
@@ -55,8 +56,9 @@ def _run_export(
     extension: str,
     media_type: str,
 ) -> FileResponse:
+    workspace = SolveWorkspace()
     try:
-        export = SolveWorkspace().resolve_export(
+        export = workspace.resolve_export(
             project_slug,
             run_id,
             export_name,
@@ -65,10 +67,13 @@ def _run_export(
         raise _not_found(exc) from exc
     except (OSError, SolveWorkspaceError, ValueError) as exc:
         raise _export_unavailable(exc) from exc
+    # A package is built for this download only; remove it once it is sent.
+    cleanup = BackgroundTask(export.unlink, missing_ok=True) if workspace.is_export_scratch(export) else None
     return FileResponse(
         export,
         media_type=media_type,
         filename=f"coilem-{project_slug}-{run_id}.{extension}",
+        background=cleanup,
     )
 
 

@@ -279,7 +279,8 @@ def test_complete_run_is_atomic_replayable_and_integrity_bound(
     } <= {path.name for path in location.path.iterdir()}
     assert (location.path / "report" / "report.pdf").is_file()
     assert (location.path / "report" / "report.csv").is_file()
-    assert (location.path / "report" / "run-package.zip").is_file()
+    # The replay package is built when it is downloaded, not stored with the run.
+    assert not (location.path / "report" / "run-package.zip").exists()
 
     # A fresh workspace instance is the application-restart boundary.
     loaded = SolveWorkspace(tmp_path / "data").load_run(
