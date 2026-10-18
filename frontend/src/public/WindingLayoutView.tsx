@@ -285,157 +285,161 @@ export function WindingLayoutView({ config, geometry, navigationSlot = null }: {
         </div>
       </header>
 
-      {/* The stator as a ring of slots, in the cross-section's orientation, with
-          each coil's end turn outside it: a hop between neighbours for a tooth
-          coil, an arc across its span for a distributed one. */}
-      <div
-        className={`wl-ring public-viewport-navigation${navigation.panEnabled ? ' is-pannable' : ''}${navigation.isDragging ? ' is-dragging' : ''}`}
-        ref={navigation.viewportRef}
-        {...navigation.bind}
-      >
-        <div className="public-viewport-navigation-content" style={navigation.contentStyle}>
-          <svg
-            className="wl-ring-svg"
-            viewBox={`${-WINDING_RING_EXTENT} ${-WINDING_RING_EXTENT} ${2 * WINDING_RING_EXTENT} ${2 * WINDING_RING_EXTENT}`}
-            preserveAspectRatio="xMidYMid meet"
-            role="img"
-            aria-label={`${slotCount} slots around the bore, numbered counter-clockwise from slot 1 at three o'clock, with each coil's end turn`}
-          >
-            <circle className="wl-ring-bore" r={WINDING_RING.inner} />
-            <circle className="wl-ring-back" r={WINDING_RING.outer} />
-            {coils.map((coil) => (
-              <path
-                key={coil.coil_index}
-                className="wl-ring-end-turn"
-                d={endTurnPath(coil.slot_in, coil.slot_out, slotCount)}
-                stroke={PUBLIC_PHASE_COLORS[coil.phase]}
-              >
-                <title>{`Coil ${coil.coil_index + 1} · phase ${coil.phase} · slots ${slotLabel(coil.slot_in)}→${slotLabel(coil.slot_out)}`}</title>
-              </path>
-            ))}
-            {Array.from({ length: slotCount }, (_, index) => index).map((slotIndex) => {
-              const sides = slots.filter((slot) => slot.slot_index === slotIndex);
-              const slotNumber = slotLabel(slotIndex);
-              const [numberX, numberY] = polar(WINDING_RING.numbers, slotAngle(slotIndex, slotCount));
-              return (
-                <g key={slotIndex}>
-                  {sides.length === 0 ? (
-                    <path className="wl-ring-slot is-empty" d={slotSidePath(slotIndex, slotCount, 1, 1, null)}>
-                      <title>{`Slot ${slotNumber}: no winding`}</title>
-                    </path>
-                  ) : sides.map((side) => {
-                    const colour = PUBLIC_PHASE_COLORS[side.phase];
-                    const layer = layerSplit ? side.layer : 1;
-                    const [markerX, markerY] = slotSideCentre(slotIndex, slotCount, layer, ringLayers, layerSplit);
-                    // The solver drives an "in" side at +J, which in the x-y plane is
-                    // out of the page; the cross-section marks it ⊙ too.
-                    const outOfPage = side.direction === 'in';
-                    return (
-                      <g key={`${side.layer}-${side.phase}-${side.direction}`}>
-                        <path
-                          className="wl-ring-slot"
-                          d={slotSidePath(slotIndex, slotCount, layer, ringLayers, layerSplit)}
-                          fill={`${colour}3d`}
-                          stroke={colour}
-                        >
-                          <title>{`Slot ${slotNumber}${layerCount > 1 ? ` layer ${side.layer}` : ''}: phase ${side.phase}, current ${outOfPage ? 'out of' : 'into'} the page`}</title>
-                        </path>
-                        {/* The cross-section's ⊙ / ⊗, so the two views tie together. */}
-                        <CurrentMarker x={markerX} y={markerY} radius={markerRadius} outOfPage={outOfPage} colour={colour} />
-                      </g>
-                    );
-                  })}
-                  {slotIndex % numberStep === 0 ? (
-                    <text
-                      className="wl-ring-number"
-                      x={numberX}
-                      y={numberY}
-                      fontSize={numberSize}
-                      textAnchor="middle"
-                      dominantBaseline="central"
-                    >
-                      {slotNumber}
-                    </text>
-                  ) : null}
-                </g>
-              );
-            })}
-          </svg>
-        </div>
-      </div>
-      {navigationSlot ? createPortal(
-        <ViewportNavigationControls
-          scale={navigation.scale}
-          onZoomIn={navigation.zoomIn}
-          onZoomOut={navigation.zoomOut}
-          onReset={navigation.reset}
-          fitSubject="winding"
-        />,
-        navigationSlot,
-      ) : null}
-
-      <section className="wl-paths" ref={pathsRef} aria-label="Parallel paths per phase">
-        <div className="wl-paths-heading">
-          <strong>Parallel paths</strong>
-          <span>
-            {phaseCurrentA !== null
-              ? `${phaseCurrentA} A ${currentConvention} into each phase terminal, splitting across ${pathCount} branch${pathCount === 1 ? '' : 'es'}${pathCount > 1 ? ` at ${(phaseCurrentA / pathCount).toFixed(1)} A each` : ''}, and rejoining at neutral`
-              : `Each phase's coils split into ${pathCount} branch${pathCount === 1 ? '' : 'es'}`}
-          </span>
-          <button
-            type="button"
-            className="wl-paths-help-toggle"
-            aria-expanded={pathsHelpOpen}
-            aria-controls={pathsHelpId}
-            onClick={() => setPathsHelpOpen((open) => !open)}
-          >
-            <span className="wl-paths-help-icon" aria-hidden="true">i</span>
-            Does the solver use this wiring?
-          </button>
-        </div>
-        {pathsHelpOpen ? (
-          <p className="wl-paths-help" id={pathsHelpId}>
-            <strong>Not directly.</strong> The branches are drawn in slot order, a common
-            way to connect them. The solver gives every coil the phase current divided by
-            the number of paths, so the number of paths changes the result but which coils
-            share a branch does not. Current circulating between unequal branches is not
-            modeled.
-          </p>
-        ) : null}
-        <div className="wl-paths-content">
-          <div className="wl-phase-list">
-            {PHASES.map((phase) => {
-              const phaseCoils = coils.filter((coil) => coil.phase === phase);
-              const branches = branchesForPhase(phaseCoils, pathCount);
-              const uneven = phaseCoils.length % pathCount !== 0;
-              return (
-                <div className="wl-phase-row" key={phase}>
-                  <span
-                    className="wl-phase-tag"
-                    style={{ borderColor: PUBLIC_PHASE_COLORS[phase], color: PUBLIC_PHASE_COLORS[phase] }}
-                  >
-                    {phase}
-                  </span>
-                  <PhaseWiring
-                    phase={phase}
-                    branches={branches}
-                    pathCount={pathCount}
-                    slotLabel={slotLabel}
-                    phaseCurrentA={phaseCurrentA}
-                    convention={currentConvention}
-                    perRow={wiringPerRow}
-                  />
-                  {uneven ? (
-                    <span className="wl-uneven">
-                      {phaseCoils.length} coils do not divide into {pathCount} equal branches
-                    </span>
-                  ) : null}
-                </div>
-              );
-            })}
+      {/* The ring and the paths below the header: stacked in a narrow panel, side by
+          side (ring left, paths right) in a wide one, so both stay on screen. */}
+      <div className="wl-body">
+        {/* The stator as a ring of slots, in the cross-section's orientation, with
+            each coil's end turn outside it: a hop between neighbours for a tooth
+            coil, an arc across its span for a distributed one. */}
+        <div
+          className={`wl-ring public-viewport-navigation${navigation.panEnabled ? ' is-pannable' : ''}${navigation.isDragging ? ' is-dragging' : ''}`}
+          ref={navigation.viewportRef}
+          {...navigation.bind}
+        >
+          <div className="public-viewport-navigation-content" style={navigation.contentStyle}>
+            <svg
+              className="wl-ring-svg"
+              viewBox={`${-WINDING_RING_EXTENT} ${-WINDING_RING_EXTENT} ${2 * WINDING_RING_EXTENT} ${2 * WINDING_RING_EXTENT}`}
+              preserveAspectRatio="xMidYMid meet"
+              role="img"
+              aria-label={`${slotCount} slots around the bore, numbered counter-clockwise from slot 1 at three o'clock, with each coil's end turn`}
+            >
+              <circle className="wl-ring-bore" r={WINDING_RING.inner} />
+              <circle className="wl-ring-back" r={WINDING_RING.outer} />
+              {coils.map((coil) => (
+                <path
+                  key={coil.coil_index}
+                  className="wl-ring-end-turn"
+                  d={endTurnPath(coil.slot_in, coil.slot_out, slotCount)}
+                  stroke={PUBLIC_PHASE_COLORS[coil.phase]}
+                >
+                  <title>{`Coil ${coil.coil_index + 1} · phase ${coil.phase} · slots ${slotLabel(coil.slot_in)}→${slotLabel(coil.slot_out)}`}</title>
+                </path>
+              ))}
+              {Array.from({ length: slotCount }, (_, index) => index).map((slotIndex) => {
+                const sides = slots.filter((slot) => slot.slot_index === slotIndex);
+                const slotNumber = slotLabel(slotIndex);
+                const [numberX, numberY] = polar(WINDING_RING.numbers, slotAngle(slotIndex, slotCount));
+                return (
+                  <g key={slotIndex}>
+                    {sides.length === 0 ? (
+                      <path className="wl-ring-slot is-empty" d={slotSidePath(slotIndex, slotCount, 1, 1, null)}>
+                        <title>{`Slot ${slotNumber}: no winding`}</title>
+                      </path>
+                    ) : sides.map((side) => {
+                      const colour = PUBLIC_PHASE_COLORS[side.phase];
+                      const layer = layerSplit ? side.layer : 1;
+                      const [markerX, markerY] = slotSideCentre(slotIndex, slotCount, layer, ringLayers, layerSplit);
+                      // The solver drives an "in" side at +J, which in the x-y plane is
+                      // out of the page; the cross-section marks it ⊙ too.
+                      const outOfPage = side.direction === 'in';
+                      return (
+                        <g key={`${side.layer}-${side.phase}-${side.direction}`}>
+                          <path
+                            className="wl-ring-slot"
+                            d={slotSidePath(slotIndex, slotCount, layer, ringLayers, layerSplit)}
+                            fill={`${colour}3d`}
+                            stroke={colour}
+                          >
+                            <title>{`Slot ${slotNumber}${layerCount > 1 ? ` layer ${side.layer}` : ''}: phase ${side.phase}, current ${outOfPage ? 'out of' : 'into'} the page`}</title>
+                          </path>
+                          {/* The cross-section's ⊙ / ⊗, so the two views tie together. */}
+                          <CurrentMarker x={markerX} y={markerY} radius={markerRadius} outOfPage={outOfPage} colour={colour} />
+                        </g>
+                      );
+                    })}
+                    {slotIndex % numberStep === 0 ? (
+                      <text
+                        className="wl-ring-number"
+                        x={numberX}
+                        y={numberY}
+                        fontSize={numberSize}
+                        textAnchor="middle"
+                        dominantBaseline="central"
+                      >
+                        {slotNumber}
+                      </text>
+                    ) : null}
+                  </g>
+                );
+              })}
+            </svg>
           </div>
         </div>
-      </section>
+        {navigationSlot ? createPortal(
+          <ViewportNavigationControls
+            scale={navigation.scale}
+            onZoomIn={navigation.zoomIn}
+            onZoomOut={navigation.zoomOut}
+            onReset={navigation.reset}
+            fitSubject="winding"
+          />,
+          navigationSlot,
+        ) : null}
+
+        <section className="wl-paths" ref={pathsRef} aria-label="Parallel paths per phase">
+          <div className="wl-paths-heading">
+            <strong>Parallel paths</strong>
+            <span>
+              {phaseCurrentA !== null
+                ? `${phaseCurrentA} A ${currentConvention} into each phase terminal, splitting across ${pathCount} branch${pathCount === 1 ? '' : 'es'}${pathCount > 1 ? ` at ${(phaseCurrentA / pathCount).toFixed(1)} A each` : ''}, and rejoining at neutral`
+                : `Each phase's coils split into ${pathCount} branch${pathCount === 1 ? '' : 'es'}`}
+            </span>
+            <button
+              type="button"
+              className="wl-paths-help-toggle"
+              aria-expanded={pathsHelpOpen}
+              aria-controls={pathsHelpId}
+              onClick={() => setPathsHelpOpen((open) => !open)}
+            >
+              <span className="wl-paths-help-icon" aria-hidden="true">i</span>
+              Does the solver use this wiring?
+            </button>
+          </div>
+          {pathsHelpOpen ? (
+            <p className="wl-paths-help" id={pathsHelpId}>
+              <strong>Not directly.</strong> The branches are drawn in slot order, a common
+              way to connect them. The solver gives every coil the phase current divided by
+              the number of paths, so the number of paths changes the result but which coils
+              share a branch does not. Current circulating between unequal branches is not
+              modeled.
+            </p>
+          ) : null}
+          <div className="wl-paths-content">
+            <div className="wl-phase-list">
+              {PHASES.map((phase) => {
+                const phaseCoils = coils.filter((coil) => coil.phase === phase);
+                const branches = branchesForPhase(phaseCoils, pathCount);
+                const uneven = phaseCoils.length % pathCount !== 0;
+                return (
+                  <div className="wl-phase-row" key={phase}>
+                    <span
+                      className="wl-phase-tag"
+                      style={{ borderColor: PUBLIC_PHASE_COLORS[phase], color: PUBLIC_PHASE_COLORS[phase] }}
+                    >
+                      {phase}
+                    </span>
+                    <PhaseWiring
+                      phase={phase}
+                      branches={branches}
+                      pathCount={pathCount}
+                      slotLabel={slotLabel}
+                      phaseCurrentA={phaseCurrentA}
+                      convention={currentConvention}
+                      perRow={wiringPerRow}
+                    />
+                    {uneven ? (
+                      <span className="wl-uneven">
+                        {phaseCoils.length} coils do not divide into {pathCount} equal branches
+                      </span>
+                    ) : null}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   );
 }

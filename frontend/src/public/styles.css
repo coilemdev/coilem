@@ -2564,16 +2564,25 @@ body {
   padding: 46px 18px 60px;
   /* The container does not scroll; the paths section does. */
   overflow: hidden;
+  /* The body below lays out by this view's width, not the window's. */
+  container-type: inline-size;
 }
 
-/* The header keeps its height; the ring and the paths share the rest half and
-   half, so the ring always fits the top half and the paths scroll in theirs. */
+/* The header keeps its height; the ring and the paths share the rest. In a
+   narrow panel they stack half and half, so the ring always fits the top half
+   and the paths scroll in theirs. */
 .public-winding-layout > header { flex: 0 0 auto; }
+.public-winding-layout .wl-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+}
 .public-winding-layout .wl-ring { flex: 1 1 50%; min-height: 0; }
 
 .public-winding-layout > header,
-.public-winding-layout .wl-ring,
-.public-winding-layout .wl-paths {
+.public-winding-layout .wl-body {
   width: min(100%, 1180px);
   margin-inline: auto;
 }
@@ -2640,8 +2649,8 @@ body {
 /* Parallel paths — the part with no equivalent anywhere else in the app. */
 .public-winding-layout .wl-paths {
   display: grid;
-  /* The bottom half, which scrolls when the branches do not fit. min-height: 0
-     is what lets a grid/flex child actually scroll. */
+  /* The bottom half (or the right, side by side), which scrolls when the
+     branches do not fit. min-height: 0 is what lets a grid/flex child scroll. */
   flex: 1 1 50%;
   min-height: 0;
   overflow-y: auto;
@@ -2650,6 +2659,21 @@ body {
   padding-top: 4px;
   border-top: 1px solid var(--border-subtle);
 }
+
+/* With room, side by side: the ring on the left and the parallel paths on the
+   right, both the full height, so the wiring and the ring show at once. */
+@container (min-width: 720px) {
+  .public-winding-layout .wl-body { flex-direction: row; }
+  .public-winding-layout .wl-ring { flex: 1 1 0; min-width: 0; }
+  .public-winding-layout .wl-paths {
+    flex: 1.15 1 0;
+    min-width: 0;
+    padding: 0 0 0 14px;
+    border-top: 0;
+    border-left: 1px solid var(--border-subtle);
+  }
+}
+
 .public-winding-layout .wl-paths-heading {
   display: flex;
   flex-wrap: wrap;

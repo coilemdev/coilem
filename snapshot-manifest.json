@@ -5445,8 +5445,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 149738,
-      "sha256": "5aa1dbe6b2b3ab2791030b08819d10b2903cb7ef897cf96d9d08edb72188f21d"
+      "bytes": 150289,
+      "sha256": "0b651da1e6a0174d5250a3c0d5cfddcbd8b68b1b602775fff5435f6038944b07"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5935,8 +5935,8 @@
     },
     {
       "path": "frontend/src/public/WindingLayoutView.tsx",
-      "bytes": 20806,
-      "sha256": "9a846fd083a6c6fd5dfed6a3850a4c94b2c327d3835ddbcbbb31f52d82c08fdb"
+      "bytes": 21320,
+      "sha256": "cb09dcc6ad0aa07d2e8e1b3ee38088f4f0710e2e0ee8d8b36de84f0f90055b90"
     },
     {
       "path": "frontend/src/public/api.ts",
@@ -6215,8 +6215,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 262311,
-      "sha256": "6ce89c5702877674101e4ae010939be5433bc85f44f65697d8df6a12aeb2b805"
+      "bytes": 263047,
+      "sha256": "dc17dca49f397d560cba0caf1dcadfc565a5f09b6d1176b1102c62bfb8f2fd21"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -10385,6 +10385,24 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "95978d429171917a1de18ef013c68aa3c46b53f6f2644291760af8f7c2709f78",
       "reason": "Pin the parallel-paths solver question in place of the info box"
+    },
+    {
+      "base_commit": "70ead979d57238846477868a4c1c4e07f4452389",
+      "path": "frontend/src/public/WindingLayoutView.tsx",
+      "source_sha256": "9a846fd083a6c6fd5dfed6a3850a4c94b2c327d3835ddbcbbb31f52d82c08fdb",
+      "reason": "Wrap the ring and the parallel paths in one body so they can sit side by side"
+    },
+    {
+      "base_commit": "70ead979d57238846477868a4c1c4e07f4452389",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "6ce89c5702877674101e4ae010939be5433bc85f44f65697d8df6a12aeb2b805",
+      "reason": "Put the ring left and the parallel paths right when the Layout view is wide"
+    },
+    {
+      "base_commit": "70ead979d57238846477868a4c1c4e07f4452389",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "5aa1dbe6b2b3ab2791030b08819d10b2903cb7ef897cf96d9d08edb72188f21d",
+      "reason": "Pin the Layout view's side-by-side body and its container query"
     }
   ]
 }

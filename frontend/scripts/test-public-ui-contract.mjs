@@ -1311,9 +1311,14 @@ assert.match(styleSource, /\.public-solve-workspace\.is-viewport-expanded \.publ
 assert.match(styleSource, /\.design-workspace\.is-viewport-expanded \.public-3d-part-toggles,[\s\S]*?\.public-solve-workspace\.is-viewport-expanded \.public-3d-part-toggles \{[\s\S]*?top: 16px;[\s\S]*?left: 112px;/);
 assert.match(styleSource, /\.public-viewport-expand \{/);
 assert.match(styleSource, /\.public-motor-viewport \.viewport-bottom-bar \{[^}]*bottom: 0;/);
-assert.match(styleSource, /\.public-winding-layout \.wl-ring,[\s\S]*?width: min\(100%, 1180px\);[\s\S]*?margin-inline: auto;/);
-// The ring fits the top half; the paths take the bottom half and scroll.
+assert.match(styleSource, /\.public-winding-layout > header,\s*\.public-winding-layout \.wl-body \{\s*width: min\(100%, 1180px\);\s*margin-inline: auto;/);
+// Narrow, the ring fits the top half and the paths take the bottom half and scroll.
 assert.match(styleSource, /\.public-winding-layout \.wl-ring \{ flex: 1 1 50%; min-height: 0; \}/);
+// Wide, the ring sits left and the paths right, both full height, laid out by the
+// view's own width.
+assert.match(windingLayoutSource, /<div className="wl-body">\s*\{\/\* The stator as a ring/);
+assert.match(styleSource, /\.public-winding-layout \{[^}]*container-type: inline-size;/);
+assert.match(styleSource, /@container \(min-width: 720px\) \{\s*\.public-winding-layout \.wl-body \{ flex-direction: row; \}[\s\S]*?\.public-winding-layout \.wl-paths \{[^}]*border-left: 1px solid var\(--border-subtle\);/);
 // The wiring column is as wide as its wiring; the solver note opens above it, never on it.
 assert.match(styleSource, /\.public-winding-layout \.wl-phase-list \{[^}]*flex: 0 1 auto;[^}]*overflow-x: auto;/);
 assert.match(styleSource, /\.public-winding-layout \.wl-chips \{[^}]*flex: 1 0 100%;[^}]*flex-wrap: nowrap;/);
