@@ -128,6 +128,14 @@ export class FieldPlaybackRasterizer {
         viewBox: composition.view_box,
         minB: composition.min_b_t,
         maxB: composition.max_b_t,
+        colorScale: composition.color_scale?.kind === 'fixed'
+          ? {
+            minB: composition.color_scale.min,
+            maxB: composition.color_scale.max,
+            overAboveT: composition.color_scale.max,
+            fixed: true,
+          }
+          : null,
         triangleCount: composition.triangle_count,
         contourLevelCount: composition.contour_level_count,
         contourSegmentCount: composition.contour_segment_count,

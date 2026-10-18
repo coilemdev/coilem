@@ -465,8 +465,8 @@
     },
     {
       "path": "backend/public_field_playback.py",
-      "bytes": 27216,
-      "sha256": "0465d38e6650660b5c4389e68a0f22f3220726636561699149d8abe5c002979d"
+      "bytes": 28067,
+      "sha256": "71dc998a60567142723ad64041de6048d5074bc5e85b00452b4528ab53f6b51d"
     },
     {
       "path": "backend/public_field_playback_contract.py",
@@ -5080,8 +5080,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 1904,
-      "sha256": "261e1543b0dbfa07b1ea5165d663f522a0c31c7c088819275431ad378d308e91"
+      "bytes": 1946,
+      "sha256": "e55e316acbddfd1c806e0bb6bc8e62f17f681b8ab14045c31b1269b14d04e5da"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -5144,6 +5144,11 @@
       "sha256": "7c6b67897ce144407844dbba3a9ec0ed7f55193d647b3879a1ff99b639b33f36"
     },
     {
+      "path": "frontend/scripts/test-flux-color-scale.mjs",
+      "bytes": 3018,
+      "sha256": "1d715df3b2270a0072143adedef33aa7605ef10c6981706c17f685554237c18e"
+    },
+    {
       "path": "frontend/scripts/test-lesson-ten-bemf.mjs",
       "bytes": 3646,
       "sha256": "61e991f0823f2ca6aeeccf5f14950ef350d9d3d5e826ba552864f9bcd7e2651d"
@@ -5180,8 +5185,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 132585,
-      "sha256": "78972ea62c22f4493733314da2e15d112c726f9afb5e9fa6f1e1e23784da1da6"
+      "bytes": 134151,
+      "sha256": "6841e6c77cf958f4eb7bb100f5fb478a8b42aaa5e7638e8f5559276f157df731"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5580,8 +5585,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 207816,
-      "sha256": "362a014efe5e8e4c872bff54bf23ea59d8d0fed6389ce09e2737513f4fb50cda"
+      "bytes": 207979,
+      "sha256": "1aab9d1cc180d3abf3fb906fada2a3b605227e68d424dbae7b6045b65660d7f8"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5590,8 +5595,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 49759,
-      "sha256": "0167d1684d87d038d2cbef8770856a366e44af892c2a15856751590198afccd3"
+      "bytes": 52130,
+      "sha256": "64639a32120c99d63e85b2ebea52af162fa91db3d3e3266b99e232468275e9bd"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -5635,8 +5640,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 58604,
-      "sha256": "d83eda46ead18e163eaa71896d9e574b662c3389617139db440d3a86265fc04d"
+      "bytes": 58659,
+      "sha256": "0bc31ddb4ed8b86f0785398919312961063fa2cf4481b280f6108cf1d88d5313"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -5760,13 +5765,13 @@
     },
     {
       "path": "frontend/src/public/fieldPlaybackContract.ts",
-      "bytes": 5338,
-      "sha256": "27c348879936e491fa8bc5bef40de065661711b96b393954cd9a827a2bfa231d"
+      "bytes": 4997,
+      "sha256": "ffa809e41307b02a113b8a57d6ff1640facc414e1f889f7bdf84d6e3c0cb9d75"
     },
     {
       "path": "frontend/src/public/fieldPlaybackRasterizer.ts",
-      "bytes": 5435,
-      "sha256": "9f4514df097baba9bb7d0c10d1e3baace38b29812ff09f2d6b832c94393173e9"
+      "bytes": 5713,
+      "sha256": "0cc11d3f916d4a9f2bc996f96d168b148327676b7c47ae5458fd8a0fc167af04"
     },
     {
       "path": "frontend/src/public/fieldPlaybackTiming.ts",
@@ -5775,8 +5780,8 @@
     },
     {
       "path": "frontend/src/public/fieldPlaybackWorker.ts",
-      "bytes": 8330,
-      "sha256": "ce407a01ed2a4ba017df3c4475eba02cacd7e0f0b7d4a6b104ef31edcbcef9e4"
+      "bytes": 8317,
+      "sha256": "96c1e25999a9bb81d0c6dd584a6ccb743c3431c330813d7e69ecac44600050de"
     },
     {
       "path": "frontend/src/public/fieldViewportRange.ts",
@@ -5787,6 +5792,11 @@
       "path": "frontend/src/public/flatIpmBurialHealth.ts",
       "bytes": 4253,
       "sha256": "d4bc22c1a84c98342a5daf0195ca8d2d5416b0e48b5f41bc38262a79e28d2a7b"
+    },
+    {
+      "path": "frontend/src/public/fluxColorScale.ts",
+      "bytes": 4536,
+      "sha256": "931357e75db566eb4f8c626a4795701fcc4b39c611daedc7ae5e4b8dad9d96cc"
     },
     {
       "path": "frontend/src/public/guidedConfigRepair.ts",
@@ -5880,8 +5890,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 18356,
-      "sha256": "d3362b8b111ff74d9c3da75d5777ff4f6a424bdc3eb1b7d036270368fb2a607d"
+      "bytes": 18732,
+      "sha256": "31acff9350415891e6b77a762690c99e7c27d74a18af7fc049b2a868a9966b24"
     },
     {
       "path": "frontend/src/public/motorAirgap.ts",
@@ -5910,8 +5920,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 256310,
-      "sha256": "6b6a10bf01ad83d0351aa86b452fd32d217fd1cf301d9c5d111c4d36f0a29cc0"
+      "bytes": 258955,
+      "sha256": "09cf5c22affe41e53bbbc9337a5d93d3a6ba3f8a526d6490473e67170165b543"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -6480,8 +6490,8 @@
     },
     {
       "path": "tests/test_public_field_playback.py",
-      "bytes": 14914,
-      "sha256": "e33e0b2219c592302750482828dc9cc249482200666753c0ed6b2508deb70e5a"
+      "bytes": 16427,
+      "sha256": "27af0046b26a9afea88f5b51a8b7970d62695065436862cd717eb9eca64cd270"
     },
     {
       "path": "tests/test_public_report_exports.py",
@@ -9573,6 +9583,78 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "d9b45838862a583e0939e1c8be8d56ad4012fd754b6c19ffd7c37094e044cae8",
       "reason": "The Mesh tab's title bar has no readout."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "backend/public_field_playback.py",
+      "source_sha256": "0465d38e6650660b5c4389e68a0f22f3220726636561699149d8abe5c002979d",
+      "reason": "Draw playback flux layers on one fixed 0-2.0 T scale with magenta above it, and record the scale in the legend."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "tests/test_public_field_playback.py",
+      "source_sha256": "e33e0b2219c592302750482828dc9cc249482200666753c0ed6b2508deb70e5a",
+      "reason": "Cover the fixed flux scale, the over-range colour and the legend's scale."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "362a014efe5e8e4c872bff54bf23ea59d8d0fed6389ce09e2737513f4fb50cda",
+      "reason": "Pass the material catalog and the steel's saturation ticks to the field plots."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "0167d1684d87d038d2cbef8770856a366e44af892c2a15856751590198afccd3",
+      "reason": "Colour the detail view on the fixed scale, add Fit view, and show the over-range band and steel ticks in the legend."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "d83eda46ead18e163eaa71896d9e574b662c3389617139db440d3a86265fc04d",
+      "reason": "Default to the fixed flux scale; Fit view replaces Sweep and applies to a stopped frame."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "frontend/src/public/fieldPlaybackContract.ts",
+      "source_sha256": "27c348879936e491fa8bc5bef40de065661711b96b393954cd9a827a2bfa231d",
+      "reason": "Carry each playback image's colour scale; drop the sweep maximum."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "frontend/src/public/fieldPlaybackRasterizer.ts",
+      "source_sha256": "9f4514df097baba9bb7d0c10d1e3baace38b29812ff09f2d6b832c94393173e9",
+      "reason": "Pass a playback image's colour scale to the plot."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "frontend/src/public/fieldPlaybackWorker.ts",
+      "source_sha256": "ce407a01ed2a4ba017df3c4475eba02cacd7e0f0b7d4a6b104ef31edcbcef9e4",
+      "reason": "Draw worker flux layers on the fixed scale."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "d3362b8b111ff74d9c3da75d5777ff4f6a424bdc3eb1b7d036270368fb2a607d",
+      "reason": "Type the playback colour scale."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "6b6a10bf01ad83d0351aa86b452fd32d217fd1cf301d9c5d111c4d36f0a29cc0",
+      "reason": "Style the fixed-scale legend's over-range swatch and steel ticks."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "78972ea62c22f4493733314da2e15d112c726f9afb5e9fa6f1e1e23784da1da6",
+      "reason": "Cover the fixed flux scale, Fit view and the legend."
+    },
+    {
+      "base_commit": "7628cdb3b69ffb8747149725b8e8999c97135458",
+      "path": "frontend/package.json",
+      "source_sha256": "261e1543b0dbfa07b1ea5165d663f522a0c31c7c088819275431ad378d308e91",
+      "reason": "Run the flux colour-scale test with the public UI tests."
     }
   ]
 }

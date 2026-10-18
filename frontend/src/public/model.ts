@@ -269,6 +269,14 @@ export interface PublicFieldVectorCue {
   magnitude?: number;
 }
 
+/** The colour scale a playback image was drawn with (a fixed 0–2.0 T scale). */
+export interface PublicFieldColorScale {
+  kind: 'fixed';
+  min: number;
+  max: number;
+  over_range_color: string;
+}
+
 export interface PublicFieldPlaybackComposition {
   base: PublicFieldPlaybackArtifact;
   flux_density: PublicFieldPlaybackArtifact;
@@ -283,6 +291,8 @@ export interface PublicFieldPlaybackComposition {
   view_box: string;
   min_b_t: number;
   max_b_t: number;
+  /** Absent for images drawn before the fixed scale, which used min_b_t–max_b_t. */
+  color_scale?: PublicFieldColorScale | null;
   triangle_count: number;
   contour_level_count: number;
   contour_segment_count: number;
@@ -344,6 +354,7 @@ export interface PublicFieldPlaybackVisualV2 {
     unit: string;
     min: number;
     max: number;
+    color_scale?: PublicFieldColorScale;
   };
   statistics?: Record<string, string | number | boolean | null>;
 }

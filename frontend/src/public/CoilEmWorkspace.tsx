@@ -31,6 +31,7 @@ import {
   type DimensionId,
 } from './dimensionAnnotations';
 import { FieldResultPlot } from './FieldResultPlot';
+import { statorSteelSaturationTicks } from './fluxColorScale';
 import {
   MaterialAssignmentStrip,
   MaterialBehaviorView,
@@ -3538,6 +3539,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
         {solveView === 'field' && result
           ? (
             <SolvedFieldViewer
+              materials={materials}
               viewControls={solveViewportSwitch}
               expandControl={(
                 <ViewportExpandButton
@@ -3940,7 +3942,7 @@ function ReportStage({
           : <WaveformChart angles={result.back_emf_waveform.electrical_angle_deg} series={[{ label: 'Vab · line-line', values: backEmfLine.ab, color: '#f87171' }, { label: 'Vbc · line-line', values: backEmfLine.bc, color: '#4ade80' }, { label: 'Vca · line-line', values: backEmfLine.ca, color: '#60a5fa' }]} label="Back EMF · line-line" unit="V" />}
         {result.back_emf_harmonic_analysis && <BackEMFHarmonicSpectrum analysis={result.back_emf_harmonic_analysis} />}
       </>}
-      {activePlot === 'field-map' && fieldPlot && <FieldResultPlot plot={fieldPlot} />}
+      {activePlot === 'field-map' && fieldPlot && <FieldResultPlot plot={fieldPlot} saturationTicks={statorSteelSaturationTicks(config, materials)} />}
       </>}
     </div>
   );

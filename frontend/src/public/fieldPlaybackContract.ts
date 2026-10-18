@@ -15,18 +15,6 @@ export interface NormalizedFieldPlaybackSequence {
   frames: PublicFieldPlaybackFrame[];
 }
 
-export function fieldPlaybackSweepMaxT(
-  frames: readonly PublicFieldPlaybackFrame[],
-  compositionId: string,
-): number | null {
-  let maximum = Number.NEGATIVE_INFINITY;
-  frames.forEach((frame) => {
-    const value = frame.compositions[compositionId]?.max_b_t;
-    if (Number.isFinite(value)) maximum = Math.max(maximum, value);
-  });
-  return Number.isFinite(maximum) ? maximum : null;
-}
-
 const LEGACY_LAYERS: PublicFieldPlaybackLayerDefinition[] = [
   {
     id: 'geometry',
@@ -103,6 +91,7 @@ function normalizeV2Visual(
     view_box: visual.view_box,
     min_b_t: visual.legend?.min ?? 0,
     max_b_t: visual.legend?.max ?? 0,
+    color_scale: visual.legend?.color_scale ?? null,
     triangle_count: statistic(visual.statistics, 'triangle_count'),
     contour_level_count: statistic(visual.statistics, 'contour_level_count'),
     contour_segment_count: statistic(visual.statistics, 'contour_segment_count'),

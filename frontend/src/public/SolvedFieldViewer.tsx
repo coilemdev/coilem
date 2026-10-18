@@ -18,10 +18,8 @@ import {
   type FieldProbeDescription,
   type FieldResultRaster,
 } from './FieldResultPlot';
-import {
-  fieldPlaybackSweepMaxT,
-  normalizeFieldPlaybackManifest,
-} from './fieldPlaybackContract';
+import { normalizeFieldPlaybackManifest } from './fieldPlaybackContract';
+import { statorSteelSaturationTicks } from './fluxColorScale';
 import {
   FieldPlaybackRasterizer,
   type FieldRasterSource,
@@ -51,6 +49,7 @@ import { LatestFrameLoader } from './latestFrameLoader';
 import { rotorAirgapBoundaryRadiusMm } from './motorAirgap';
 import type {
   GeometryPreview,
+  MaterialCatalog,
   MotorConfig,
   PublicAirgapProfileDescriptor,
   PublicArmatureFieldComposition,
@@ -206,6 +205,8 @@ interface SolvedFieldViewerProps {
   viewControls: ReactNode;
   expandControl?: ReactNode;
   config: MotorConfig;
+  /** The material catalog, for the stator steel's knee and saturation ticks. */
+  materials?: MaterialCatalog | null;
   geometry: GeometryPreview | null;
   result: SolveResult;
   armature: PublicArmatureFieldComposition | null;
@@ -271,6 +272,7 @@ export function SolvedFieldViewer({
   viewControls,
   expandControl,
   config,
+  materials = null,
   geometry,
   result,
   armature,
@@ -310,7 +312,8 @@ export function SolvedFieldViewer({
   const [showAirgap, setShowAirgap] = useState(false);
   const [showPoleLabels, setShowPoleLabels] = useState(false);
   const [fieldLineDensity, setFieldLineDensity] = useState<FieldLineDensity>('medium');
-  const [colorRangeMode, setColorRangeMode] = useState<FieldColorRangeMode>('viewport');
+  const [colorRangeMode, setColorRangeMode] = useState<FieldColorRangeMode>('fixed');
+  const saturationTicks = useMemo(() => statorSteelSaturationTicks(config, materials), [config, materials]);
   const [playing, setPlaying] = useState(false);
   const [playbackRpm, setPlaybackRpm] = useState(PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM);
   const playbackRpmRef = useRef(PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM);
@@ -462,16 +465,6 @@ export function SolvedFieldViewer({
     const values = visiblePlot?.element_b_mag_t.filter(Number.isFinite) ?? [];
     return values.reduce((peak, value) => Math.max(peak, value), 0);
   }, [activeDetailRaster?.maxB, visiblePlot, visibleRaster?.maxB]);
-  const sweepScaleMaxT = useMemo(() => {
-    const playbackFrames = sourceFrames.flatMap((frame) => (
-      frame.playback_frame ? [frame.playback_frame] : []
-    ));
-    return Math.max(
-      0.001,
-      currentPeakBT,
-      fieldPlaybackSweepMaxT(playbackFrames, source) ?? 0,
-    );
-  }, [currentPeakBT, source, sourceFrames]);
   const describeProbe = useCallback(
     (probe: FieldProbe) => describeFieldProbe(probe, config),
     [config],
@@ -747,7 +740,7 @@ export function SolvedFieldViewer({
     frameLoaderRef.current.clear();
     setRetainedPlot(null);
     setFieldViewportScale(1);
-    setColorRangeMode('viewport');
+    setColorRangeMode('fixed');
     setDetailPlot(null);
     replaceDetailRaster(null);
     detailRequestRef.current += 1;
@@ -1080,7 +1073,7 @@ export function SolvedFieldViewer({
     if (nextSource !== 'armature') setRetainedPlot(null);
     if (nextView === 'stator_pm') {
       // Stator + PM shows no flux-density map, so it has no colour range to hold.
-      setColorRangeMode('viewport');
+      setColorRangeMode('fixed');
       // Pole labels and fewer lines keep the two fields' poles readable.
       setShowPoleLabels(true);
       setFieldLineDensity('low');
@@ -1127,7 +1120,8 @@ export function SolvedFieldViewer({
         : 'PM remanence off · exact stator field';
   const setRangeMode = (nextMode: FieldColorRangeMode) => {
     setColorRangeMode(nextMode);
-    if (nextMode === 'sweep') {
+    // Playback images use the fixed scale, so Fit view applies to a stopped frame.
+    if (nextMode === 'viewport') {
       setPlaying(false);
       setPlaybackWaiting(false);
     }
@@ -1243,7 +1237,7 @@ export function SolvedFieldViewer({
               showFieldLines={showFieldLines}
               fieldLineDensity={exactVectorPlot ? fieldLineDensity : 'medium'}
               colorRangeMode={colorRangeMode}
-              sweepScaleMaxT={sweepScaleMaxT}
+              saturationTicks={saturationTicks}
               showRangeControl
               onColorRangeModeChange={setRangeMode}
               showControls={false}
@@ -1327,10 +1321,10 @@ export function SolvedFieldViewer({
             className="public-field-transport-play"
             type="button"
             aria-label={playing ? 'Pause clockwise field playback' : 'Play field clockwise'}
-            title={colorRangeMode === 'sweep'
-              ? 'Switch the flux-density range to View to animate.'
+            title={colorRangeMode === 'viewport'
+              ? 'Switch the flux-density range to Fixed to animate.'
               : 'Clockwise — follows the public solve angle convention'}
-            disabled={angleFrames.length < 2 || colorRangeMode === 'sweep'}
+            disabled={angleFrames.length < 2 || colorRangeMode === 'viewport'}
             onClick={togglePlayback}
           >
             {playing ? 'Ⅱ' : '▶'}

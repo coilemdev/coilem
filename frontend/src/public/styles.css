@@ -4539,3 +4539,30 @@ body {
 .public-result-list-toggle { display: flex; width: 100%; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; padding: 7px 10px; border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-muted); background: transparent; font: 600 12px var(--font-mono); cursor: pointer; }
 .public-result-list-toggle:hover { border-color: var(--border-accent); color: var(--text-accent); }
 .public-result-list-toggle span { font-size: 10px; }
+/* Fixed flux-density scale: one 0–2.0 T bar for every frame and design, the
+   stator steel's knee and saturation marked on it, and a magenta swatch for
+   values above 2.0 T. */
+.public-field-result-legend i { position: relative; }
+.public-field-result-legend > strong,
+.public-field-result-legend > .is-min,
+.public-field-result-legend > i,
+.public-field-result-legend > .is-mid,
+.public-field-result-legend > .is-max { order: 0; }
+.public-field-result-legend > .is-over { order: 1; }
+.public-field-result-legend > .public-field-range-control,
+.public-field-result-legend > small { order: 2; }
+.public-field-result-legend.is-fixed { padding-bottom: 12px; }
+.public-field-legend-tick { position: absolute; top: -3px; bottom: -3px; left: var(--tick-at); width: 2px; margin-left: -1px; border-radius: 1px; background: rgba(241,245,249,.92); box-shadow: 0 0 0 1px rgba(7,9,14,.65); }
+.public-field-legend-tick em { position: absolute; top: calc(100% + 2px); left: 50%; color: var(--text-secondary); font: 9px var(--font-mono); font-style: normal; white-space: nowrap; transform: translateX(-50%); }
+.public-field-result-legend .is-over { display: inline-flex; align-items: center; gap: 4px; color: var(--text-secondary); white-space: nowrap; }
+.public-field-result-legend .is-over b { width: 12px; height: 8px; border-radius: 2px; background: #f43cf5; }
+/* On the solve page the bar stands at the canvas edge: the swatch sits just
+   above it, with the range buttons and title moved up to make room. */
+.public-solved-field-canvas .public-field-result-legend { top: 84px; }
+.public-solved-field-canvas .public-field-result-legend.is-fixed { padding: 0; }
+.public-solved-field-canvas .public-field-result-legend > strong { bottom: calc(100% + 54px); }
+.public-solved-field-canvas .public-field-result-legend .public-field-range-control { bottom: calc(100% + 26px); }
+.public-solved-field-canvas .public-field-result-legend > .is-over { right: -1px; bottom: calc(100% + 4px); flex-direction: row-reverse; gap: 6px; padding: 0; border: 0; background: transparent; font: 600 10px var(--font-mono); }
+.public-solved-field-canvas .public-field-result-legend > .is-over b { width: 12px; height: 14px; border-radius: 3px; box-shadow: 0 0 0 1px rgba(148,163,184,.2); }
+.public-solved-field-canvas .public-field-legend-tick { top: auto; right: -4px; bottom: var(--tick-at); left: -4px; width: auto; height: 2px; margin: 0 0 -1px; }
+.public-solved-field-canvas .public-field-legend-tick em { top: 50%; right: calc(100% + 4px); left: auto; padding: 1px 4px; border-radius: 4px; background: rgba(7,9,14,.82); font-size: 10px; transform: translateY(-50%); }
