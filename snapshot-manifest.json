@@ -455,8 +455,8 @@
     },
     {
       "path": "backend/preview.py",
-      "bytes": 39043,
-      "sha256": "9d95bd235b3f2564b5c4fc6482adb549d01ac1ba25c6a9ce0da5c6e0cbf4eb28"
+      "bytes": 39596,
+      "sha256": "e465d1652d71a43a3a7e57526cd24e25adfca8d540389e4430d4125421579af1"
     },
     {
       "path": "backend/preview_from_ir.py",
@@ -5320,8 +5320,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2118,
-      "sha256": "b6c9c006db041b31338fa978e4df68ea50c30c8600dc22455ea7813ff714d143"
+      "bytes": 2155,
+      "sha256": "7c70725fd558ef3ccae068447982e8a54941a2fee70cb1df3523d3ceb0458278"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -5424,6 +5424,11 @@
       "sha256": "f85457080dd26d1c90dc9a4084ab0bb533db3ff7aa5ae129dca8133ff5b08cd2"
     },
     {
+      "path": "frontend/scripts/test-phase-drive.mjs",
+      "bytes": 5178,
+      "sha256": "ea1419e512ecf3d3f9ca2fad17a187469e3c1656d90ef0fd6725eed0e7badad8"
+    },
+    {
       "path": "frontend/scripts/test-public-airgap-ux.mjs",
       "bytes": 2732,
       "sha256": "63dc2966cb3e82fbbdcab31d29110cef55c05352ef5254353e4a9ffeb653d282"
@@ -5445,8 +5450,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 147805,
-      "sha256": "19ea392d548cd3649020f95ddab450ce9a5b7b4fb98d79b852e260f49d620918"
+      "bytes": 149262,
+      "sha256": "0d5209d0e971b72388bf74bfe1e64ff01b5103cf043cf281c98ae13404bd692d"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5845,8 +5850,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 217584,
-      "sha256": "f10b3ccc55dff4d932dd8d7af13d48886d1b1acbb94e825dfea570e17e1278b5"
+      "bytes": 219318,
+      "sha256": "5d3297a3a37a9eb0d1384bdb0996496fa3dbcecae298c558a4c18d4f2c3e3ff0"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5870,8 +5875,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 47870,
-      "sha256": "fc57d98d69bf2f0e747376663f76cbe94e983277ec44ff3d8095edb3458fa14d"
+      "bytes": 53879,
+      "sha256": "7d63c5dcbca109e3295419ddac09e57c2fbee5f5c892c83e8e6c0bb2edcbca58"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -6189,6 +6194,11 @@
       "sha256": "40d69d324708b41486ee891c31d9a43e2e4bef0b00d2cc10f3bf96a92e737072"
     },
     {
+      "path": "frontend/src/public/phaseDrive.ts",
+      "bytes": 5324,
+      "sha256": "30647546cf789e39528ef5ee9e15d658c2a1ceb6076d38de86c816011f13516b"
+    },
+    {
       "path": "frontend/src/public/resultMetrics.ts",
       "bytes": 3732,
       "sha256": "9798d6ec71161433aa086cc56549419f33d585b962db66d422f697d096cf652f"
@@ -6205,8 +6215,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 261434,
-      "sha256": "c360a7d0b107ceebb76bc7a19f5442cc447121fddf0b0ffc7b5f781614752983"
+      "bytes": 262986,
+      "sha256": "f532909a6fba958e9c952d8ccff5aff554ebaffb0d19f87ae7bc2f4ecd4420ea"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -6584,6 +6594,11 @@
       "sha256": "0914644d93f05fa5738534c518e2ecffeca2d129d8a38fbe8b8df2f65c695b86"
     },
     {
+      "path": "tests/fixtures/public_sine_phase_current_vectors.json",
+      "bytes": 9081,
+      "sha256": "8b6077ac1e31f044da89449fb45df4069230292940a8f6a9b1911e2e77711ca5"
+    },
+    {
       "path": "tests/fixtures/solve_time_calibration.json",
       "bytes": 10098,
       "sha256": "603f5d1a641b8d59277c9a604346cf692dcf29f12b9bb825c93a5a0d9d0cd1f2"
@@ -6782,6 +6797,11 @@
       "path": "tests/test_public_field_playback.py",
       "bytes": 16427,
       "sha256": "27af0046b26a9afea88f5b51a8b7970d62695065436862cd717eb9eca64cd270"
+    },
+    {
+      "path": "tests/test_public_phase_drive.py",
+      "bytes": 3096,
+      "sha256": "60319c9aaca20db172a0b3cb8661d48fb8fbbe21c246f8254c69a83e667b8345"
     },
     {
       "path": "tests/test_public_report_exports.py",
@@ -10287,6 +10307,42 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "54b6feefc50ec07fa4e24fa847657e2d24b74757dbdeb5360df492a820a9e63d",
       "reason": "Pin that the Phases layer carries no slot labels"
+    },
+    {
+      "base_commit": "724b7b00105e8fb2fdf14b67fb2855f2b86a73f3",
+      "path": "backend/preview.py",
+      "source_sha256": "9d95bd235b3f2564b5c4fc6482adb549d01ac1ba25c6a9ce0da5c6e0cbf4eb28",
+      "reason": "Report phase A's axis offset in the preview metadata for the 2D Phases drive preview"
+    },
+    {
+      "base_commit": "724b7b00105e8fb2fdf14b67fb2855f2b86a73f3",
+      "path": "frontend/package.json",
+      "source_sha256": "b6c9c006db041b31338fa978e4df68ea50c30c8600dc22455ea7813ff714d143",
+      "reason": "Run the phase drive checks in the public UI test chain"
+    },
+    {
+      "base_commit": "724b7b00105e8fb2fdf14b67fb2855f2b86a73f3",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "19ea392d548cd3649020f95ddab450ce9a5b7b4fb98d79b852e260f49d620918",
+      "reason": "Pin the Phases drive panel and the collapsible Design health rail"
+    },
+    {
+      "base_commit": "724b7b00105e8fb2fdf14b67fb2855f2b86a73f3",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "f10b3ccc55dff4d932dd8d7af13d48886d1b1acbb94e825dfea570e17e1278b5",
+      "reason": "Let Design health collapse to a status strip"
+    },
+    {
+      "base_commit": "724b7b00105e8fb2fdf14b67fb2855f2b86a73f3",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "fc57d98d69bf2f0e747376663f76cbe94e983277ec44ff3d8095edb3458fa14d",
+      "reason": "Phases: motor right and smaller beside the solve's A/B/C waveforms wired into it"
+    },
+    {
+      "base_commit": "724b7b00105e8fb2fdf14b67fb2855f2b86a73f3",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "c360a7d0b107ceebb76bc7a19f5442cc447121fddf0b0ffc7b5f781614752983",
+      "reason": "Style the collapsed Design health strip"
     }
   ]
 }

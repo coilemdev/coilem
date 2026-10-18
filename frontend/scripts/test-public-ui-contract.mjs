@@ -189,7 +189,13 @@ assert.doesNotMatch(workspaceSource, /setExamplesMenuOpen\(\(open\) => !open\)/)
 assert.match(workspaceSource, /className="workflow-stepper workflow-stepper-inline"/);
 assert.match(workspaceSource, /design-workspace workflow-stage-content\$\{designViewportExpanded/);
 assert.match(workspaceSource, /className="design-workspace-main"/);
-assert.match(workspaceSource, /className="design-workspace-health"/);
+assert.match(workspaceSource, /className=\{`design-workspace-health\$\{designHealthCollapsed \? ' is-collapsed' : ''\}`\}/);
+// Design health folds to a strip that keeps its status icon, and opens again from it.
+assert.match(workspaceSource, /collapsed=\{designHealthCollapsed\} onCollapsedChange=\{setDesignHealthCollapsed\}/);
+assert.match(workspaceSource, /if \(collapsed\) return collapsedStrip\(tone, ready \? '✓'/);
+assert.match(workspaceSource, /className="design-health-collapse"\s*aria-expanded="true"\s*aria-label="Collapse design health"/);
+assert.match(workspaceSource, /className="design-health-expand"\s*aria-expanded="false"/);
+assert.match(styleSource, /\.public-coilem-shell \.design-workspace-health\.is-collapsed \{ width: 46px; min-width: 46px; \}/);
 assert.match(workspaceSource, /currentGeometryWarnings\(geometry, geometryStale\)/);
 assert.match(workspaceSource, /currentToothWidthAdvisory\(geometry, geometryStale\)/);
 assert.match(workspaceSource, /'Bore tooth is much narrower' : 'Bore tooth is slightly narrower'/);
@@ -639,6 +645,13 @@ assert.match(workspaceSource, /onClick=\{\(\) => setCanvasLayer\(\(current\) => 
 // With Phases on, the motor shows only the phase colours changing: no slot labels.
 assert.match(motorCanvasSource, /\n  if \(layer === 'slots' \|\| layer === 'windings'\) \{\n    context\.textAlign = 'center';/);
 assert.doesNotMatch(motorCanvasSource, /layer === 'windings' \|\| layer === 'phases'\) \{\n    context\.textAlign/);
+// Phases: the motor moves right, smaller, beside A / B / C waveforms wired into it,
+// all driven by the solve's own terminal currents (phaseDrive.ts, test-phase-drive.mjs).
+assert.match(motorCanvasSource, /const driveFrame = layer === 'phases' && phaseDrive \? phaseDriveFrame\(width, height\) : null;/);
+assert.match(motorCanvasSource, /fitTransform\(points, width, height, viewportScale, pan, driveFrame\?\.motor\)/);
+assert.match(motorCanvasSource, /drawPhaseDrive\(context, driveFrame\.panel, phaseDrive, rotorElecDeg, currents, origin, outerRadiusPx\)/);
+assert.match(motorCanvasSource, /axisOffsetDeg: Number\.isFinite\(metadataAxis\) \? metadataAxis : 0,/);
+assert.doesNotMatch(motorCanvasSource, /Math\.sin\(\(rotorAngleDeg \+ phaseOffset\)/);
 assert.doesNotMatch(workspaceSource, /public-field-playback-rpm|playback-rpm-progress/);
 assert.match(workspaceSource, /<div className="public-winding-key public-canvas-legend" aria-label="Winding phase and current direction legend">/);
 assert.ok(workspaceSource.indexOf('public-canvas-legend') < workspaceSource.indexOf('className="viewport-dock-resize"'), 'the winding legend is on the canvas, not in the panel');

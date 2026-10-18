@@ -2399,8 +2399,42 @@ function HealthPanel({
   mesh,
   geometryStale,
   blankDesign = false,
-}: Pick<CoilEmWorkspaceProps, 'config' | 'error' | 'geometry' | 'mesh' | 'geometryStale' | 'blankDesign'>) {
+  collapsed = false,
+  onCollapsedChange,
+}: Pick<CoilEmWorkspaceProps, 'config' | 'error' | 'geometry' | 'mesh' | 'geometryStale' | 'blankDesign'> & {
+  /** Folded to a strip that keeps the status, to give the motor view the room. */
+  collapsed?: boolean;
+  onCollapsedChange?: (collapsed: boolean) => void;
+}) {
+  const collapseButton = onCollapsedChange ? (
+    <button
+      type="button"
+      className="design-health-collapse"
+      aria-expanded="true"
+      aria-label="Collapse design health"
+      title="Collapse design health"
+      onClick={() => onCollapsedChange(true)}
+    >
+      ›
+    </button>
+  ) : null;
+  const collapsedStrip = (tone: 'good' | 'warning' | 'updating', icon: string, label: string) => (
+    <aside className={`design-health-panel is-collapsed tone-${tone}`}>
+      <button
+        type="button"
+        className="design-health-expand"
+        aria-expanded="false"
+        aria-label={`Show design health: ${label}`}
+        title={`Show design health · ${label}`}
+        onClick={() => onCollapsedChange?.(false)}
+      >
+        <span className="public-health-status-icon" aria-hidden="true">{icon}</span>
+        <span className="design-health-expand-label">Design health</span>
+      </button>
+    </aside>
+  );
   if (blankDesign) {
+    if (collapsed) return collapsedStrip('updating', '○', 'Blank design');
     return (
       <aside className="design-health-panel tone-updating">
         <div className="design-health-header">
@@ -2408,6 +2442,7 @@ function HealthPanel({
             <div className="design-health-eyebrow">Design Health</div>
             <div className="design-health-caption">Checks begin after the first design change.</div>
           </div>
+          {collapseButton}
         </div>
         <div className="public-health-status-card updating" role="status">
           <div className="public-health-status-icon" aria-hidden="true">○</div>
@@ -2470,9 +2505,10 @@ function HealthPanel({
         ? 'Valid to solve · review design'
         : 'Review before solving';
 
+  if (collapsed) return collapsedStrip(tone, ready ? '✓' : tone === 'updating' ? '↻' : '!', statusLabel);
   return (
     <aside className={`design-health-panel tone-${tone}`}>
-      <div className="design-health-header"><div><div className="design-health-eyebrow">Design Health</div><div className="design-health-caption">Basic heuristic checks for the current draft.</div></div></div>
+      <div className="design-health-header"><div><div className="design-health-eyebrow">Design Health</div><div className="design-health-caption">Basic heuristic checks for the current draft.</div></div>{collapseButton}</div>
       <div className={`public-health-status-card ${tone}`} role="status">
         <div className="public-health-status-icon" aria-hidden="true">{ready ? '✓' : tone === 'updating' ? '↻' : '!'}</div>
         <div>
@@ -4108,6 +4144,9 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
   const designHealth = useMemo(() => ({ geometry: props.geometry, mesh: props.mesh }), [props.geometry, props.mesh]);
   const [selectedComponent, setSelectedComponent] = useState<PublicMotorComponentSelection | null>(null);
   const [designViewportExpanded, setDesignViewportExpanded] = useState(false);
+  // Design health folds to a status strip, so the motor view (and the Phases
+  // waveforms) can have its width without hiding the parameters too.
+  const [designHealthCollapsed, setDesignHealthCollapsed] = useState(false);
   const [liveEditHighlight, setLiveEditHighlight] = useState<PublicMotorComponentKind | null>(null);
   const [runHistoryOpen, setRunHistoryOpen] = useState(false);
 
@@ -4220,7 +4259,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
                   />
                 )}
               </div>
-              <div className="design-workspace-health"><div className="design-workspace-health-scroll"><HealthPanel config={props.config} error={props.error} geometry={designHealth.geometry} mesh={designHealth.mesh} geometryStale={props.geometryStale} blankDesign={props.blankDesign} /></div></div>
+              <div className={`design-workspace-health${designHealthCollapsed ? ' is-collapsed' : ''}`}><div className="design-workspace-health-scroll"><HealthPanel config={props.config} error={props.error} geometry={designHealth.geometry} mesh={designHealth.mesh} geometryStale={props.geometryStale} blankDesign={props.blankDesign} collapsed={designHealthCollapsed} onCollapsedChange={setDesignHealthCollapsed} /></div></div>
               {props.editFeedback && (
                 <div className="public-design-edit-toast" role="status" aria-live="polite">
                   <span className="public-design-edit-toast-icon" aria-hidden="true">✓</span>

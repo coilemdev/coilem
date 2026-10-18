@@ -775,6 +775,18 @@ body {
 .public-coilem-shell .design-workspace.is-viewport-expanded .design-workspace-health { display: none; }
 .public-coilem-shell .design-workspace-health { display: flex; width: var(--public-workspace-rail-width); min-width: var(--public-workspace-rail-width); min-height: 0; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 16px; background: rgba(18, 20, 27, 0.82); box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5); }
 .public-coilem-shell .design-workspace-health-scroll { width: 100%; min-height: 0; overflow-y: auto; }
+/* Collapsed, Design health is a strip that keeps the status icon; clicking it
+   opens the panel again. */
+.public-coilem-shell .design-workspace-health.is-collapsed { width: 46px; min-width: 46px; }
+.public-coilem-shell .design-health-panel.is-collapsed { padding: 8px 0; }
+.public-coilem-shell .design-health-collapse { flex: 0 0 auto; width: 26px; height: 26px; border: 1px solid var(--border-default); border-radius: 8px; color: var(--text-muted); background: transparent; font: 700 15px var(--font-mono); line-height: 1; cursor: pointer; }
+.public-coilem-shell .design-health-collapse:hover { border-color: var(--border-accent); color: var(--text-accent); }
+.public-coilem-shell .design-health-expand { display: flex; width: 100%; min-height: 100%; flex-direction: column; align-items: center; gap: 12px; padding: 6px 0; border: 0; color: var(--text-muted); background: transparent; cursor: pointer; }
+.public-coilem-shell .design-health-expand:hover { color: var(--text-accent); }
+.public-coilem-shell .design-health-expand .public-health-status-icon { width: 28px; height: 28px; font-size: 14px; }
+.public-coilem-shell .design-health-panel.is-collapsed.tone-warning .public-health-status-icon { color: #1c1602; background: var(--warning); }
+.public-coilem-shell .design-health-panel.is-collapsed.tone-updating .public-health-status-icon { color: #04161a; background: var(--info); }
+.public-coilem-shell .design-health-expand-label { font: 700 9px var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; writing-mode: vertical-rl; }
 
 .public-parameter-panel {
   width: var(--public-workspace-rail-width);
