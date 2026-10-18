@@ -9,6 +9,7 @@
  * parallel paths, which had no representation anywhere in the app (the
  * cross-section is pixel-identical for 1, 2 or 4), are drawn as wiring.
  */
+import { useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { GeometryPreview, MotorConfig, PublicWindingCoil } from './model';
 import { PUBLIC_PHASE_COLORS, type PublicPhaseId } from './motorPalette';
@@ -23,47 +24,16 @@ import {
   slotSidePath,
   type SlotLayerSplit,
 } from './windingRing';
+import {
+  COIL_H,
+  COIL_W,
+  PHASE_TAG_SPACE,
+  branchesForPhase,
+  coilsPerRow,
+  layoutPhaseWiring,
+} from './windingWiring';
 
 const PHASES: PublicPhaseId[] = ['A', 'B', 'C'];
-
-/**
- * Coils split into `pathCount` branches, evenly, in slot order.
- *
- * The solver models parallel paths only as a divisor on branch current — it has no
- * branch topology — so this grouping is the conventional reading rather than
- * something read back from the model, and the view says so. When the count does not
- * divide the coils the remainder is left over, which is the case the caller warns
- * about.
- */
-function branchesForPhase(
-  coils: PublicWindingCoil[],
-  pathCount: number,
-): PublicWindingCoil[][] {
-  const ordered = [...coils].sort((a, b) => a.slot_in - b.slot_in);
-  const paths = Math.max(1, Math.floor(pathCount));
-  if (paths <= 1 || ordered.length === 0) return [ordered];
-  const per = Math.floor(ordered.length / paths);
-  if (per < 1) return ordered.map((coil) => [coil]);
-  const groups: PublicWindingCoil[][] = [];
-  for (let index = 0; index < paths; index += 1) {
-    groups.push(ordered.slice(index * per, (index + 1) * per));
-  }
-  const remainder = ordered.slice(paths * per);
-  if (remainder.length) groups.push(remainder);
-  return groups;
-}
-
-/** Wiring-diagram geometry, in px. */
-const COIL_W = 52;
-const COIL_H = 20;
-const JUMPER = 18;
-const BRANCH_ROW = 32;
-/** Room for the "path n" gutter, so the label cannot sit on the terminal bus. */
-const LABEL_GUTTER = 46;
-/** Lead length either side of the chain, long enough to carry a current label. */
-const LEAD = 34;
-/** Band above the rows for the incoming current and the neutral marker. */
-const TOP_BAND = 15;
 
 /**
  * One phase drawn as wiring rather than as a list of groups.
@@ -74,26 +44,24 @@ const TOP_BAND = 15;
  * coils group together read as sorting; drawing terminal → coil → jumper → coil →
  * neutral shows that a=1 is one long chain and a=4 is four short ones in parallel,
  * and labelling the leads shows the phase current dividing as it goes.
+ *
+ * A chain longer than the panel is wide wraps like a snake, row after row with a
+ * U-turn at each end (see windingWiring.ts), so a=1 on a 36-slot machine is still
+ * one chain without running off the side.
  */
-function PhaseWiring({ phase, branches, pathCount, slotLabel, phaseCurrentA, convention }: {
+function PhaseWiring({ phase, branches, pathCount, slotLabel, phaseCurrentA, convention, perRow }: {
   phase: PublicPhaseId;
   branches: PublicWindingCoil[][];
   pathCount: number;
   slotLabel: (slotIndex: number) => number;
   phaseCurrentA: number | null;
   convention: 'rms' | 'peak' | 'plateau';
+  /** Coils that fit one row of the panel. */
+  perRow: number;
 }) {
   const colour = PUBLIC_PHASE_COLORS[phase];
-  const longest = branches.reduce((max, branch) => Math.max(max, branch.length), 0);
-  const chainWidth = longest * COIL_W + Math.max(0, longest - 1) * JUMPER;
-  const terminalX = LABEL_GUTTER;
-  const chainX = terminalX + LEAD;
-  const neutralX = chainX + chainWidth + LEAD;
-  const width = neutralX + 16;
-  const height = TOP_BAND + Math.max(1, branches.length) * BRANCH_ROW;
-  const rowY = (index: number) => TOP_BAND + index * BRANCH_ROW + BRANCH_ROW / 2;
-  const firstY = rowY(0);
-  const lastY = rowY(branches.length - 1);
+  const layout = layoutPhaseWiring(branches.map((branch) => branch.length), perRow);
+  const { terminalX, chainX, terminalBus, neutralBus } = layout;
 
   // What the solver actually does with the path count: divide the branch current.
   // Only true while the branches match, which is why the uneven case says so
@@ -104,17 +72,17 @@ function PhaseWiring({ phase, branches, pathCount, slotLabel, phaseCurrentA, con
 
   return (
     <svg
-      className="wl-wiring"
-      width={width}
-      height={height}
+      className={`wl-wiring${layout.wrapped ? ' is-wrapped' : ''}`}
+      width={layout.width}
+      height={layout.height}
       role="img"
       aria-label={`Phase ${phase}: ${branches.length} branch${branches.length === 1 ? '' : 'es'} between terminal and neutral, ${branches.map((b) => `${b.length} coil${b.length === 1 ? '' : 's'}`).join(', ')}${branchCurrentA !== null && evenSplit ? `, ${amps(branchCurrentA)} per branch` : ''}`}
     >
       {/* Terminal and neutral buses: the two junctions every branch shares. */}
-      {branches.length > 1 ? (
+      {terminalBus && neutralBus ? (
         <>
-          <line x1={terminalX} y1={firstY} x2={terminalX} y2={lastY} stroke={colour} strokeWidth={1.6} />
-          <line x1={neutralX} y1={firstY} x2={neutralX} y2={lastY} stroke={colour} strokeWidth={1.6} />
+          <line x1={terminalBus.x} y1={terminalBus.y1} x2={terminalBus.x} y2={terminalBus.y2} stroke={colour} strokeWidth={1.6} />
+          <line x1={neutralBus.x} y1={neutralBus.y1} x2={neutralBus.x} y2={neutralBus.y2} stroke={colour} strokeWidth={1.6} />
         </>
       ) : null}
 
@@ -122,22 +90,26 @@ function PhaseWiring({ phase, branches, pathCount, slotLabel, phaseCurrentA, con
           names the phase, so the terminal carries the current rather than a letter
           that repeated it and collided with the path label. */}
       {phaseCurrentA !== null ? (
-        <text x={terminalX} y={TOP_BAND - 4} className="wl-wiring-current is-total" textAnchor="middle">
+        <text x={layout.totalCurrentLabel.x} y={layout.totalCurrentLabel.y} className="wl-wiring-current is-total" textAnchor="middle">
           {amps(phaseCurrentA)} {convention}
         </text>
       ) : null}
-      <text x={neutralX} y={TOP_BAND - 4} className="wl-wiring-node" textAnchor="middle">N</text>
+      {/* N at the neutral end: above it on the right, or in the gutter under
+          "path 1" when a lone wrapped branch ends on the left. */}
+      <text x={layout.neutralLabel.x} y={layout.neutralLabel.y} className="wl-wiring-node" textAnchor={layout.neutralLabel.anchor}>N</text>
 
       {branches.map((branch, branchIndex) => {
-        const y = rowY(branchIndex);
+        const placed = layout.branches[branchIndex];
+        const y = placed.startY;
         // A group beyond the requested count is the remainder of an uneven split.
         const leftover = branches.length > pathCount && branchIndex === branches.length - 1;
-        const chainEnd = chainX + branch.length * COIL_W + Math.max(0, branch.length - 1) * JUMPER;
         const leadStroke = leftover ? '#f87171' : colour;
         return (
           <g key={branchIndex}>
-            <line x1={terminalX} y1={y} x2={chainX} y2={y} stroke={leadStroke} strokeWidth={1.6} strokeDasharray={leftover ? '3 2' : undefined} />
-            <line x1={chainEnd} y1={y} x2={neutralX} y2={y} stroke={leadStroke} strokeWidth={1.6} strokeDasharray={leftover ? '3 2' : undefined} />
+            <path className="wl-wiring-wire" d={placed.leadIn} stroke={leadStroke} strokeDasharray={leftover ? '3 2' : undefined} />
+            {/* Out to neutral; a branch that ends on the left with a bus to reach
+                returns under its last row. */}
+            <path className="wl-wiring-wire" d={placed.leadOut} stroke={leadStroke} strokeDasharray={leftover ? '3 2' : undefined} />
 
             {/* Branch current on the incoming lead. */}
             {branchCurrentA !== null ? (
@@ -152,17 +124,17 @@ function PhaseWiring({ phase, branches, pathCount, slotLabel, phaseCurrentA, con
             ) : null}
 
             {branch.map((coil, coilIndex) => {
-              const x = chainX + coilIndex * (COIL_W + JUMPER);
+              const { x, y: coilY } = placed.coils[coilIndex];
               return (
                 <g key={coil.coil_index}>
                   {/* The jumper between coils in series — the join that disappears
-                      as paths increase. */}
+                      as paths increase — or, at a row end, the U-turn to the next row. */}
                   {coilIndex > 0 ? (
-                    <line x1={x - JUMPER} y1={y} x2={x} y2={y} stroke={colour} strokeWidth={1.6} />
+                    <path className="wl-wiring-wire" d={placed.joins[coilIndex - 1]} stroke={colour} />
                   ) : null}
                   <rect
                     x={x}
-                    y={y - COIL_H / 2}
+                    y={coilY - COIL_H / 2}
                     width={COIL_W}
                     height={COIL_H}
                     rx={4}
@@ -170,7 +142,7 @@ function PhaseWiring({ phase, branches, pathCount, slotLabel, phaseCurrentA, con
                     stroke={colour}
                     strokeWidth={1}
                   />
-                  <text x={x + COIL_W / 2} y={y + 3.5} className="wl-wiring-coil" textAnchor="middle">
+                  <text x={x + COIL_W / 2} y={coilY + 3.5} className="wl-wiring-coil" textAnchor="middle">
                     {slotLabel(coil.slot_in)}&ndash;{slotLabel(coil.slot_out)}
                   </text>
                   <title>{`Phase ${phase} coil in slots ${slotLabel(coil.slot_in)} and ${slotLabel(coil.slot_out)}`}</title>
@@ -198,6 +170,21 @@ export function WindingLayoutView({ config, geometry, navigationSlot = null }: {
   // pointer, drag once zoomed in, and the same - / + / Fit controls.
   const navigation = useViewportNavigation();
   const slots = geometry?.winding_layout ?? [];
+  // The wiring wraps to the width the paths section has, so follow the panel as
+  // it resizes. Measured before paint, so a long chain never shows unwrapped first.
+  const pathsRef = useRef<HTMLElement | null>(null);
+  const [pathsWidth, setPathsWidth] = useState<number | null>(null);
+  const hasLayout = slots.length > 0;
+  useLayoutEffect(() => {
+    const section = pathsRef.current;
+    if (!section) return undefined;
+    const measure = () => setPathsWidth(section.clientWidth);
+    measure();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const observer = new ResizeObserver(measure);
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, [hasLayout]);
   const coils = geometry?.winding_coils ?? [];
   const slotCount = config.stator.slot_count;
   const pathCount = Math.max(1, config.winding.parallel_paths);
@@ -210,7 +197,7 @@ export function WindingLayoutView({ config, geometry, navigationSlot = null }: {
     : null;
   const currentConvention = config.solve_params?.current_amplitude_convention ?? 'rms';
 
-  if (!slots.length) {
+  if (!hasLayout) {
     return (
       <div className="public-winding-layout is-empty">
         Start the local backend to load the winding layout.
@@ -237,6 +224,8 @@ export function WindingLayoutView({ config, geometry, navigationSlot = null }: {
   const glyphSize = Math.max(10, Math.min(30, Math.min(sideWidth, sideDepth) * 0.72));
   const numberSize = Math.max(12, Math.min(22, ((2 * Math.PI * WINDING_RING.numbers) / slotCount) * 0.42));
   const numberStep = slotCount > 48 ? 2 : 1;
+  // Each wiring sits beside its phase tag, so it has the section's width less the tag.
+  const wiringPerRow = coilsPerRow(pathsWidth === null ? null : pathsWidth - PHASE_TAG_SPACE);
 
   return (
     <div className="public-winding-layout">
@@ -358,7 +347,7 @@ export function WindingLayoutView({ config, geometry, navigationSlot = null }: {
         navigationSlot,
       ) : null}
 
-      <section className="wl-paths" aria-label="Parallel paths per phase">
+      <section className="wl-paths" ref={pathsRef} aria-label="Parallel paths per phase">
         <div className="wl-paths-heading">
           <strong>Parallel paths</strong>
           <span>
@@ -388,6 +377,7 @@ export function WindingLayoutView({ config, geometry, navigationSlot = null }: {
                     slotLabel={slotLabel}
                     phaseCurrentA={phaseCurrentA}
                     convention={currentConvention}
+                    perRow={wiringPerRow}
                   />
                   {uneven ? (
                     <span className="wl-uneven">

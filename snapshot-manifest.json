@@ -5320,8 +5320,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2156,
-      "sha256": "f532e411fdf549c30ed4ce4570ef43b349316ebc7b16a8ee3e777246151a95b7"
+      "bytes": 2196,
+      "sha256": "fdbfa87339f99e0e11f5f17d84bed52d1f702b6ab01e97dc40fd1c4045b72576"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -5445,8 +5445,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 147401,
-      "sha256": "f76d48d7a5caed4e80e93459e493305fba5c2c3b453ebe9f4b9dde751f8634d2"
+      "bytes": 148567,
+      "sha256": "023656998bf0115ade6741a2cc433438730ae73340db4ac877b010984a73ecd1"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5467,6 +5467,11 @@
       "path": "frontend/scripts/test-winding-ring.mjs",
       "bytes": 3668,
       "sha256": "79183d00ba368184d4cd762f0019958432dcd8e4f09cfe6242728fadcbf62cb3"
+    },
+    {
+      "path": "frontend/scripts/test-winding-wiring.mjs",
+      "bytes": 12851,
+      "sha256": "e6e6dad3a1329ffc4ac135318a15acb36d711f378a407698c584f04d273dc143"
     },
     {
       "path": "frontend/src/api/projectSchema.ts",
@@ -5930,8 +5935,8 @@
     },
     {
       "path": "frontend/src/public/WindingLayoutView.tsx",
-      "bytes": 19555,
-      "sha256": "2de6bbed4e4331655c61550e027580b4761a4a9261aaa648ee33df88c3cdb6e6"
+      "bytes": 19521,
+      "sha256": "43fee052542bd3e75f780039c7458f0b97aa9f41bb54e54a785fa15513780ac8"
     },
     {
       "path": "frontend/src/public/api.ts",
@@ -6210,8 +6215,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 261312,
-      "sha256": "a8fa601dc872a387a09bdd4aec14bc7488ddcf9928dd4cc7954d22e432fbd7a0"
+      "bytes": 261602,
+      "sha256": "4a56ee53d1e6122c3342495262a568e4c9797dce280a2e2164e44ea51285a40a"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -6237,6 +6242,11 @@
       "path": "frontend/src/public/windingRing.ts",
       "bytes": 5078,
       "sha256": "54b91a63afb4b7397ac77c99a8963e07abfcad45e7bdf521708dad8f656817e5"
+    },
+    {
+      "path": "frontend/src/public/windingWiring.ts",
+      "bytes": 9560,
+      "sha256": "c73b4b3b5e7139b2f52eb0e6dfb46f4ea295465b53166c204d7e7149cb76e84e"
     },
     {
       "path": "frontend/src/styles/templateselector.css",
@@ -10303,6 +10313,30 @@
       "path": "frontend/src/public/styles.css",
       "source_sha256": "4625a6b2635c9c2f369e9d4490061d77f18c9976946473142a889a79e348c707",
       "reason": "Style the Mesh build choice and its note."
+    },
+    {
+      "base_commit": "0fe48f6650e99410f04ac22ed7edc4a360cb00e9",
+      "path": "frontend/package.json",
+      "source_sha256": "f532e411fdf549c30ed4ce4570ef43b349316ebc7b16a8ee3e777246151a95b7",
+      "reason": "Run the new winding wiring layout checks in the public UI test chain"
+    },
+    {
+      "base_commit": "0fe48f6650e99410f04ac22ed7edc4a360cb00e9",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "f76d48d7a5caed4e80e93459e493305fba5c2c3b453ebe9f4b9dde751f8634d2",
+      "reason": "Pin the Layout view's wrapped parallel-paths wiring and its width measurement"
+    },
+    {
+      "base_commit": "0fe48f6650e99410f04ac22ed7edc4a360cb00e9",
+      "path": "frontend/src/public/WindingLayoutView.tsx",
+      "source_sha256": "2de6bbed4e4331655c61550e027580b4761a4a9261aaa648ee33df88c3cdb6e6",
+      "reason": "Wrap long parallel-path chains like a snake to the measured panel width"
+    },
+    {
+      "base_commit": "0fe48f6650e99410f04ac22ed7edc4a360cb00e9",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "a8fa601dc872a387a09bdd4aec14bc7488ddcf9928dd4cc7954d22e432fbd7a0",
+      "reason": "Style the wiring's leads, jumpers and U-turns as unfilled wires"
     }
   ]
 }

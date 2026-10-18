@@ -2665,7 +2665,9 @@ body {
 .public-winding-layout .wl-phase-list {
   display: grid;
   /* As wide as its widest wiring, so the info box beside it wraps underneath
-     rather than sitting on the wiring; on its own line it scrolls sideways. */
+     rather than sitting on the wiring. A chain wider than the section wraps
+     into rows (windingWiring.ts), so this scrolls sideways only below the
+     fewest coils a row holds. */
   min-width: 0;
   max-width: 100%;
   flex: 0 1 auto;
@@ -2690,6 +2692,8 @@ body {
   font: 800 11px var(--font-mono);
 }
 .public-winding-layout .wl-wiring { display: block; overflow: visible; }
+/* Leads, jumpers and the U-turns of a wrapped chain; colour comes from the phase. */
+.public-winding-layout .wl-wiring-wire { fill: none; stroke-width: 1.6; stroke-linejoin: round; }
 .public-winding-layout .wl-wiring-node { fill: var(--text-secondary); font: 800 9px var(--font-mono); }
 .public-winding-layout .wl-wiring-coil { fill: var(--text-primary); font: 700 9px var(--font-mono); }
 .public-winding-layout .wl-wiring-label { fill: var(--text-muted); font: 700 7px var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; }

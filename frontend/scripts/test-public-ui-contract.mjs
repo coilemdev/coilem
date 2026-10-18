@@ -686,6 +686,18 @@ assert.match(windingLayoutSource, /const navigation = useViewportNavigation\(\);
 assert.match(windingLayoutSource, /createPortal\(\s*<ViewportNavigationControls/);
 assert.match(workspaceSource, /<WindingLayoutView config=\{config\} geometry=\{geometry \?\? null\} navigationSlot=\{navigationSlot\} \/>/);
 assert.match(windingLayoutSource, /Parallel paths/);
+// A long chain wraps like a snake to the width the paths section has, measured
+// before paint and followed as the panel resizes; the layout itself is checked in
+// test-winding-wiring.mjs.
+assert.match(windingLayoutSource, /from '\.\/windingWiring'/);
+assert.match(windingLayoutSource, /const layout = layoutPhaseWiring\(branches\.map\(\(branch\) => branch\.length\), perRow\);/);
+assert.match(windingLayoutSource, /<section className="wl-paths" ref=\{pathsRef\}/);
+assert.match(windingLayoutSource, /useLayoutEffect\(\(\) => \{[\s\S]*?new ResizeObserver\(measure\)[\s\S]*?observer\.disconnect\(\)/);
+assert.match(windingLayoutSource, /coilsPerRow\(pathsWidth === null \? null : pathsWidth - PHASE_TAG_SPACE\)/);
+assert.match(windingLayoutSource, /d=\{placed\.joins\[coilIndex - 1\]\}/);
+assert.match(windingLayoutSource, /textAnchor=\{layout\.neutralLabel\.anchor\}>N</);
+assert.match(windingLayoutSource, /\{leftover \? 'left over' : `path \$\{branchIndex \+ 1\}`\}/);
+assert.match(windingLayoutSource, /\{slotLabel\(coil\.slot_in\)\}&ndash;\{slotLabel\(coil\.slot_out\)\}/);
 assert.match(workspaceSource, /public-component-detail-card/);
 assert.match(workspaceSource, /Selected component/);
 assert.match(workspaceSource, /public-component-canvas-label/);
@@ -1296,6 +1308,7 @@ assert.match(styleSource, /\.public-winding-layout \.wl-chips \{[^}]*flex: 1 0 1
 assert.match(styleSource, /\.public-winding-layout \.wl-paths-content \{[^}]*flex-wrap: wrap;/);
 assert.match(styleSource, /\.public-winding-layout \.wl-paths-info \{[^}]*max-width: 240px;/);
 assert.match(styleSource, /\.public-winding-layout \.wl-phase-row \{[^}]*justify-content: center;/);
+assert.match(styleSource, /\.public-winding-layout \.wl-wiring-wire \{ fill: none;/);
 assert.match(playbackRasterizerSource, /navigator\.hardwareConcurrency/);
 assert.match(playbackRasterizerSource, /new Worker\(new URL\('\.\/fieldPlaybackWorker\.ts'/);
 assert.match(playbackRasterizerSource, /\/solve\/playback-frame\//);
