@@ -636,6 +636,9 @@ assert.doesNotMatch(workspaceSource, /\['phases', 'Phases'\]/);
 assert.match(workspaceSource, /const pressed = canvasLayer === layer \|\| \(layer === 'windings' && canvasLayer === 'phases'\);/);
 assert.match(workspaceSource, /onChange=\{setAnimationRpm\}\s*\/>[\s\S]{0,400}?\{viewportMode === '2d' && \(\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{canvasLayer === 'phases'\}/);
 assert.match(workspaceSource, /onClick=\{\(\) => setCanvasLayer\(\(current\) => \(current === 'phases' \? 'windings' : 'phases'\)\)\}\s*>\s*Phases\s*<\/button>/);
+// With Phases on, the motor shows only the phase colours changing: no slot labels.
+assert.match(motorCanvasSource, /\n  if \(layer === 'slots' \|\| layer === 'windings'\) \{\n    context\.textAlign = 'center';/);
+assert.doesNotMatch(motorCanvasSource, /layer === 'windings' \|\| layer === 'phases'\) \{\n    context\.textAlign/);
 assert.doesNotMatch(workspaceSource, /public-field-playback-rpm|playback-rpm-progress/);
 assert.match(workspaceSource, /<div className="public-winding-key public-canvas-legend" aria-label="Winding phase and current direction legend">/);
 assert.ok(workspaceSource.indexOf('public-canvas-legend') < workspaceSource.indexOf('className="viewport-dock-resize"'), 'the winding legend is on the canvas, not in the panel');

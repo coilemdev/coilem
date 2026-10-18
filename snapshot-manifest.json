@@ -5445,8 +5445,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 147474,
-      "sha256": "54b6feefc50ec07fa4e24fa847657e2d24b74757dbdeb5360df492a820a9e63d"
+      "bytes": 147805,
+      "sha256": "19ea392d548cd3649020f95ddab450ce9a5b7b4fb98d79b852e260f49d620918"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5870,8 +5870,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 47768,
-      "sha256": "20a89d4000b76c1b80121e4e12a002f4ba264a952865c8a298e10033db40b395"
+      "bytes": 47870,
+      "sha256": "fc57d98d69bf2f0e747376663f76cbe94e983277ec44ff3d8095edb3458fa14d"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -10275,6 +10275,18 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "dc468867393bb8fbed38bf32f6a5a2962d75c4e9713b5942721ae3e6a0d53967",
       "reason": "Pin Phases as a preview toggle rather than a static overlay"
+    },
+    {
+      "base_commit": "15bdd52e9ce577ff9ed1de24cb12148dcc5abdef",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "20a89d4000b76c1b80121e4e12a002f4ba264a952865c8a298e10033db40b395",
+      "reason": "Draw no slot labels on the Phases layer, only the phase colours changing"
+    },
+    {
+      "base_commit": "15bdd52e9ce577ff9ed1de24cb12148dcc5abdef",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "54b6feefc50ec07fa4e24fa847657e2d24b74757dbdeb5360df492a820a9e63d",
+      "reason": "Pin that the Phases layer carries no slot labels"
     }
   ]
 }

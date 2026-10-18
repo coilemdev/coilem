@@ -713,7 +713,9 @@ function drawGeometry(
     drawCurrentMarker(context, marker.x, marker.y, marker.radius, marker.outOfPage, marker.ring);
   });
 
-  if (layer === 'slots' || layer === 'windings' || layer === 'phases') {
+  // Phases is only the phase colours changing as the rotor turns, so it carries
+  // no slot labels; Slots and Winding do.
+  if (layer === 'slots' || layer === 'windings') {
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     for (const region of data.regions) {
