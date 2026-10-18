@@ -348,7 +348,7 @@ assert.match(workspaceSource, />Open project</);
 assert.match(workspaceSource, />Rerun settings</);
 assert.match(workspaceSource, />Compare runs</);
 assert.match(workspaceSource, /PublicRunComparison/);
-assert.match(workspaceSource, /elmerCapability\.feature_enabled && <div className="public-setup-section public-solver-section">/);
+assert.match(workspaceSource, /elmerCapability\.feature_enabled && <ParameterSectionBlock id="solver" label="Solver"/);
 assert.match(workspaceSource, /aria-label="Previous runs"/);
 assert.match(workspaceSource, /Review or compare completed analyses without starting another solve/);
 assert.match(workspaceSource, /<PublicRunComparison manageRuns/);
@@ -700,7 +700,7 @@ assert.match(workspaceSource, /className="public-custom-sweep-estimate" aria-liv
 assert.match(styleSource, /\.public-custom-sweep-body \{[\s\S]*?grid-template-columns: minmax\(0, 1fr\) minmax\(118px, \.95fr\)/);
 assert.match(workspaceSource, /\(recoveryTarget \?\? advancedOptionsRef\.current\)\?\.scrollIntoView/);
 assert.match(workspaceSource, /block: recoveryTarget \? 'center' : 'start'/);
-assert.match(workspaceSource, /ref=\{advancedOptionsRef\} className="public-advanced-options"/);
+assert.match(workspaceSource, /sectionRef=\{advancedOptionsRef\} className="public-advanced-options"/);
 assert.match(modelSource, /SolveQuality = 'quick' \| 'standard' \| 'fine' \| 'custom'/);
 assert.match(workspaceSource, /label: 'Preview'/);
 assert.match(workspaceSource, /label: 'Standard'/);
@@ -800,9 +800,18 @@ assert.match(workspaceSource, /setAnalysisDetailsOpen\(!resultAvailable\)/);
 assert.match(workspaceSource, /setElementQualityDetailsOpen\(!resultAvailable\)/);
 assert.match(styleSource, /\.public-run-plan-section > summary::after \{[\s\S]*?content: '▼';[\s\S]*?rotate\(-90deg\);/);
 assert.match(styleSource, /\.public-run-plan-section\[open\] > summary::after \{[\s\S]*?rotate\(0\);/);
-assert.match(styleSource, /\.public-advanced-options > summary::after \{[^}]*font-size: 8px;[^}]*content: '▼';[^}]*rotate\(-90deg\);/);
-assert.match(styleSource, /\.public-advanced-options\[open\] > summary::after \{[^}]*rotate\(0\);/);
-assert.doesNotMatch(styleSource, /\.public-advanced-options > summary::after \{[^}]*content: '⌄'/);
+// The Solve setup's sections collapse like Design's: one shared section block
+// and one look, one section open at a time, the accuracy plan open first.
+assert.match(workspaceSource, /function ParameterSectionBlock<Id extends string = PublicParameterSection>/);
+assert.match(workspaceSource, /<ParameterSectionBlock id="operating" label="Operating point" summary=\{operatingSummary\} active=\{openSetupSection === 'operating'\} onToggle=\{toggleSetupSection\}>/);
+assert.match(workspaceSource, /<ParameterSectionBlock id="plan" label="Accuracy plan" summary=\{planSummary\} active=\{openSetupSection === 'plan'\} onToggle=\{toggleSetupSection\} guide="solve-plan">/);
+assert.match(workspaceSource, /<ParameterSectionBlock id="advanced" label="Advanced options" summary=\{advancedSummary\} active=\{advancedOpen\} attention=\{convergenceFailed\}/);
+assert.match(workspaceSource, /useState<SolveSetupSection \| null>\('plan'\)/);
+assert.match(workspaceSource, /const setAdvancedOpen = \(open: boolean\) => setOpenSetupSection/);
+assert.doesNotMatch(workspaceSource, /public-setup-section|<details ref=\{advancedOptionsRef\}/);
+assert.match(styleSource, /\.public-parameter-panel \.param-group-header\.collapsed \.chevron,\s*\.public-solve-setup \.param-group-header\.collapsed \.chevron \{ transform: rotate\(-90deg\); \}/);
+assert.match(styleSource, /\.public-parameter-panel \.param-group-content\.collapsed,\s*\.public-solve-setup \.param-group-content\.collapsed \{ display: none; \}/);
+assert.doesNotMatch(styleSource, /\.public-advanced-options > summary/);
 // Completed results read as a list like the motor constants: one row per value,
 // numbers right-aligned, units in their own column, a rule between groups.
 assert.doesNotMatch(workspaceSource, /className="public-result-metrics"/);
@@ -1751,11 +1760,11 @@ assert.ok(
   'IPM layout selection must appear before stator geometry',
 );
 assert.doesNotMatch(workspaceSource, /<SelectRow label="Rotor Layout"/);
-assert.match(workspaceSource, /data-guide=\{`section-\$\{id\}`\}/);
+assert.match(workspaceSource, /data-guide=\{guide \?\? `section-\$\{id\}`\}/);
 assert.match(workspaceSource, /data-guide-active=\{active \? 'true' : 'false'\}/);
 assert.match(workspaceSource, /setActiveSection\(guidedDesignSection \?\? null\)/);
 assert.match(workspaceSource, /data-guide="design-continue"/);
-assert.match(workspaceSource, /data-guide="solve-plan"/);
+assert.match(workspaceSource, /guide="solve-plan"/);
 assert.match(workspaceSource, /data-guide="solve-run"/);
 assert.match(workspaceSource, /data-guide="open-report"/);
 assert.match(workspaceSource, /Review source and limitations/);

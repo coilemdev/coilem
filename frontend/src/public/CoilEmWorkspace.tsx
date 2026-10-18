@@ -973,7 +973,8 @@ function ComponentDetailCard({ selection, config, geometry, onClose }: {
   );
 }
 
-function ParameterSectionBlock({
+/** A collapsible panel section: Design's parameter groups and the Solve setup. */
+function ParameterSectionBlock<Id extends string = PublicParameterSection>({
   id,
   label,
   summary,
@@ -983,20 +984,27 @@ function ParameterSectionBlock({
   children,
   nextLabel,
   onNext,
+  guide,
+  sectionRef,
+  className,
 }: {
-  id: PublicParameterSection;
+  id: Id;
   label: string;
   summary: string;
   active: boolean;
   /** The current design error names a field in this section. */
   attention?: boolean;
-  onToggle: (id: PublicParameterSection) => void;
+  onToggle: (id: Id) => void;
   children: ReactNode;
   nextLabel?: string;
   onNext?: () => void;
+  /** The guided tour's target name; defaults to `section-<id>`. */
+  guide?: string;
+  sectionRef?: Ref<HTMLElement>;
+  className?: string;
 }) {
   return (
-    <section className="param-group" data-guide={`section-${id}`} data-guide-active={active ? 'true' : 'false'}>
+    <section ref={sectionRef} className={`param-group${className ? ` ${className}` : ''}`} data-guide={guide ?? `section-${id}`} data-guide-active={active ? 'true' : 'false'}>
       <button
         type="button"
         className={`param-group-header ${attention ? 'status-attention' : 'status-complete'}${active ? '' : ' collapsed'}`}
@@ -2960,10 +2968,18 @@ function BackEMFHarmonicSpectrum({
   );
 }
 
+type SolveSetupSection = 'solver' | 'operating' | 'plan' | 'advanced';
+
 function SolveStage({ config, materials, geometry, mesh, validation, validationChecking, validationError, result, armatureField, armatureFieldError, progress, liveSamples, busy, error, errorDetails, notice, progressPercent, meshElements, meshQuality, selectedSolver, elmerCapability, onBack, onOpenReport, onGenerateMesh, onStartSolve, onCancelSolve, onRequestArmatureField, onCancelArmatureField, onMeshSettingChange, onSolvePlanChange, onCustomSweepChange, onSolveSettingChange, onSolverChange, onManageRuns }: Pick<CoilEmWorkspaceProps,
   'config' | 'materials' | 'geometry' | 'mesh' | 'validation' | 'validationChecking' | 'validationError' | 'result' | 'armatureField' | 'armatureFieldError' | 'progress' | 'liveSamples' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'progressPercent' | 'meshElements' | 'meshQuality' | 'selectedSolver' | 'elmerCapability' | 'onGenerateMesh' | 'onStartSolve' | 'onCancelSolve' | 'onRequestArmatureField' | 'onCancelArmatureField' | 'onMeshSettingChange' | 'onSolvePlanChange' | 'onCustomSweepChange' | 'onSolveSettingChange' | 'onSolverChange'
 > & { onBack: () => void; onOpenReport: () => void; onManageRuns?: () => void }) {
-  const [advancedOpen, setAdvancedOpen] = useState(false);
+  // The setup sections open one at a time, as Design's do. The accuracy plan
+  // starts open: it is the choice made on every run, and the guided tour's
+  // solve step points at it.
+  const [openSetupSection, setOpenSetupSection] = useState<SolveSetupSection | null>('plan');
+  const toggleSetupSection = (section: SolveSetupSection) => setOpenSetupSection((current) => current === section ? null : section);
+  const advancedOpen = openSetupSection === 'advanced';
+  const setAdvancedOpen = (open: boolean) => setOpenSetupSection((current) => open ? 'advanced' : current === 'advanced' ? null : current);
   const [customSweepOpen, setCustomSweepOpen] = useState(
     () => config.solve_params.solve_quality === 'custom',
   );
@@ -2980,7 +2996,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
   const [setupWidth, setSetupWidth] = useState<number | null>(null);
   const [resizingPanel, setResizingPanel] = useState<'setup' | 'runPlan' | null>(null);
   const completedResultAvailableRef = useRef(Boolean(result));
-  const advancedOptionsRef = useRef<HTMLDetailsElement>(null);
+  const advancedOptionsRef = useRef<HTMLElement>(null);
   const nonlinearSolverRef = useRef<HTMLSelectElement>(null);
   const fineMeshRef = useRef<HTMLButtonElement>(null);
   const recoveryFocusTargetRef = useRef<HTMLElement | null>(null);
@@ -3057,6 +3073,14 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
   const meshDensityLabel = config.solve_params.mesh_density === 'normal'
     ? 'Medium'
     : config.solve_params.mesh_density.replace('_', ' ');
+  const operatingSummary = [
+    sixStepSelected ? 'Six-step 120°' : 'Sinusoidal',
+    `${Number(config.solve_params.current_amplitude_A.toFixed(2))} A ${sixStepSelected ? 'plateau' : config.solve_params.current_amplitude_convention}`,
+    `${config.solve_params.rated_speed_rpm} rpm`,
+  ].join(' · ');
+  const planMeshLabel = solvePlans.find((plan) => plan.value === config.solve_params.solve_quality)?.meshLabel;
+  const planSummary = [planLabel, planMeshLabel, estimatedTimeText].filter(Boolean).join(' · ');
+  const advancedSummary = `${torqueMethodLabel} · ${nonlinearSolverLabel} · ${linearSolverLabel} · ${validation ? `${validation.sweep_positions}p` : '…'} · ${meshDensityLabel}`;
   const runReady = Boolean(mesh)
     && Boolean(validation?.valid)
     && selectedSolverAvailable
@@ -3384,8 +3408,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
         <div className="public-solve-setup-frame">
         <div className="mesh-panel-header"><span className="mesh-panel-header-title">Analysis setup</span></div>
         <div className="public-solve-setup-scroll">
-        {elmerCapability.feature_enabled && <div className="public-setup-section public-solver-section">
-          <span className="public-section-kicker">Solver</span>
+        {elmerCapability.feature_enabled && <ParameterSectionBlock id="solver" label="Solver" summary={selectedSolver === 'elmer' ? 'Elmer FEM' : 'Magneto2D · built in'} active={openSetupSection === 'solver'} onToggle={toggleSetupSection} className="public-solver-section">
           <div className="public-solver-selector" role="radiogroup" aria-label="Electromagnetic solver">
             <button
               type="button"
@@ -3417,9 +3440,8 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
             </button>
           </div>
           {!elmerAvailable && <p className="public-solver-diagnostic">{elmerCapability.reason || 'Qualified Elmer 26.2 runtime not detected.'}</p>}
-        </div>}
-        <div className="public-setup-section">
-          <span className="public-section-kicker">Operating point</span>
+        </ParameterSectionBlock>}
+        <ParameterSectionBlock id="operating" label="Operating point" summary={operatingSummary} active={openSetupSection === 'operating'} onToggle={toggleSetupSection}>
           <div className="public-excitation-selector" role="radiogroup" aria-label="Stator excitation">
             <button
               type="button"
@@ -3455,9 +3477,8 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
             <span>{sixStepSelected ? 'Wye · plateau current' : `${config.solve_params.current_amplitude_convention.toUpperCase()} phase current`}</span>
           </div>
           {sixStepSelected && <div className="public-six-step-limitation" role="note"><strong>Phase connection: Wye (MVP)</strong><span>Ideal current excitation only — no PWM, switching ripple, Hall timing, dead time, or ESC dynamics.</span></div>}
-        </div>
-        <div className="public-setup-section" data-guide="solve-plan">
-          <span className="public-section-kicker">Accuracy plan</span>
+        </ParameterSectionBlock>
+        <ParameterSectionBlock id="plan" label="Accuracy plan" summary={planSummary} active={openSetupSection === 'plan'} onToggle={toggleSetupSection} guide="solve-plan">
           <div className="public-choice-row public-solve-plan-choices">
             {solvePlans.map((plan) => (
               <button
@@ -3527,12 +3548,8 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
           {config.solve_params.solve_quality === 'quick' && (
             <p className="public-plan-advisory">Preview is intended for iteration, not final result sign-off.</p>
           )}
-        </div>
-        <details ref={advancedOptionsRef} className="public-advanced-options" open={advancedOpen} onToggle={(event) => setAdvancedOpen(event.currentTarget.open)}>
-          <summary>
-            <span>Advanced options</span>
-            <small>{torqueMethodLabel} · {nonlinearSolverLabel} · {linearSolverLabel} · {validation ? `${validation.sweep_positions}p` : '…'} · {meshDensityLabel}</small>
-          </summary>
+        </ParameterSectionBlock>
+        <ParameterSectionBlock id="advanced" label="Advanced options" summary={advancedSummary} active={advancedOpen} attention={convergenceFailed} onToggle={toggleSetupSection} sectionRef={advancedOptionsRef} className="public-advanced-options">
           <div className="public-advanced-body">
             <section className="public-advanced-section public-advanced-mesh-section" aria-labelledby="public-mesh-preparation-heading">
               <span className="public-section-kicker" id="public-mesh-preparation-heading">Mesh preparation</span>
@@ -3566,7 +3583,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               </div>
             </section>
           </div>
-        </details>
+        </ParameterSectionBlock>
         </div>
         <div className="public-solve-footer">
           <div className="public-run-consequence">

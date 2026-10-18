@@ -5185,8 +5185,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 138766,
-      "sha256": "f128b2c27a390ee853c94a478e016d34382b542247cc12256eab2909b2969521"
+      "bytes": 139990,
+      "sha256": "8f77a4474b696ec662120f391fbd1b8db264d45fb68a2f051b077c792fb2b24f"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5585,8 +5585,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 210810,
-      "sha256": "8966116493144276182b0d97757b721f7d4dc2275a4fc465fd65a6732644b195"
+      "bytes": 212527,
+      "sha256": "639609e840ea5caa25ece82e9213e84328570058ddc028e62856c3bb8d5bc00f"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5925,8 +5925,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 262468,
-      "sha256": "2b212395b2d972edbc983a1d5bafab7f75adf03bc40962f628cdf9080bd8dfe7"
+      "bytes": 262087,
+      "sha256": "ec73f341ded4174a69efc077e12dc7210c1b978c9853439c9de796af13d5ce0c"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -9726,6 +9726,24 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "901ec58fe1e010e07a285284409196b7294f88325d79e756dc9f3fb02774a5bd",
       "reason": "Cover the narrow-stage title bar, the one-line Element quality and the Solve-tab waveform readout."
+    },
+    {
+      "base_commit": "b4e1852cade4364db2e1387e9d1edbd9c3a30526",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "8966116493144276182b0d97757b721f7d4dc2275a4fc465fd65a6732644b195",
+      "reason": "Collapse the Solve setup's sections with Design's section block, one open at a time, with a one-line summary when closed."
+    },
+    {
+      "base_commit": "b4e1852cade4364db2e1387e9d1edbd9c3a30526",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "2b212395b2d972edbc983a1d5bafab7f75adf03bc40962f628cdf9080bd8dfe7",
+      "reason": "Share Design's section styles with the Solve setup and drop the old setup-section and Advanced options styles."
+    },
+    {
+      "base_commit": "b4e1852cade4364db2e1387e9d1edbd9c3a30526",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "f128b2c27a390ee853c94a478e016d34382b542247cc12256eab2909b2969521",
+      "reason": "Cover the collapsible Solve setup sections."
     }
   ]
 }
