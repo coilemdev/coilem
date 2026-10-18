@@ -2544,10 +2544,10 @@ body {
   height: auto;
 }
 
-/* ── Layout view: the winding unrolled ──────────────────────────────────────
-   A linear slot strip instead of the annulus. The cross-section cannot show slot
-   order, coil spans, or parallel paths (it is pixel-identical for 1, 2 or 4
-   paths), which is what this view is for. */
+/* ── Layout view: the winding as a wiring diagram ─────────────────────────
+   The top half is the stator as a ring of slots with each coil's end turn
+   outside it; the bottom half draws the parallel paths, which the
+   cross-section cannot show (it is pixel-identical for 1, 2 or 4 paths). */
 .public-winding-layout {
   position: absolute;
   inset: 0;
@@ -2555,20 +2555,17 @@ body {
   flex-direction: column;
   gap: 14px;
   padding: 46px 18px 60px;
-  /* The container does not scroll; the paths section does. Scrolling here let the
-     strip be squeezed instead of scrolled. */
+  /* The container does not scroll; the paths section does. */
   overflow: hidden;
 }
 
-/* flex: 0 0 auto on both, so neither can be shrunk away. With 4 paths the wiring
-   section grows past the viewport and flexbox was collapsing the slot strip to
-   nothing to make room — the strip vanished entirely rather than the overflow
-   being scrolled. */
+/* The header keeps its height; the ring and the paths share the rest half and
+   half, so the ring always fits the top half and the paths scroll in theirs. */
 .public-winding-layout > header { flex: 0 0 auto; }
-.public-winding-layout .wl-scroll { flex: 0 0 auto; }
+.public-winding-layout .wl-ring { flex: 1 1 50%; min-height: 0; }
 
 .public-winding-layout > header,
-.public-winding-layout .wl-scroll,
+.public-winding-layout .wl-ring,
 .public-winding-layout .wl-paths {
   width: min(100%, 1180px);
   margin-inline: auto;
@@ -2613,36 +2610,27 @@ body {
 }
 .public-winding-layout .wl-chips span.is-accent { border-color: rgba(245, 158, 11, 0.42); color: var(--text-accent); background: rgba(245, 158, 11, 0.08); }
 
-/* One scroller so the coil arcs and the slots they join cannot drift apart. */
-.public-winding-layout .wl-scroll { overflow-x: auto; padding-bottom: 6px; }
-.public-winding-layout .wl-strip { display: flex; flex-direction: column; margin-inline: auto; }
-.public-winding-layout .wl-arcs { display: block; overflow: visible; }
-.public-winding-layout .wl-slots { display: flex; margin: 0; padding: 0; list-style: none; }
-.public-winding-layout .wl-slots > li { display: flex; flex: 0 0 auto; flex-direction: column; align-items: center; gap: 4px; padding: 0 3px; }
-.public-winding-layout .wl-slot-number { color: var(--text-muted); font: 700 10px var(--font-mono); }
-.public-winding-layout .wl-slot-body { display: flex; width: 100%; flex-direction: column; gap: 3px; }
-
-.public-winding-layout .wl-side {
-  display: flex;
-  min-height: 44px;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1px;
-  border: 1px solid;
-  border-radius: 6px;
-}
-.public-winding-layout .wl-side b { font: 700 7px var(--font-mono); opacity: 0.75; }
-.public-winding-layout .wl-side strong { font: 800 14px var(--font-mono); }
-.public-winding-layout .wl-side em { font-style: normal; font-size: 11px; opacity: 0.9; }
-.public-winding-layout .wl-side.is-empty { border-color: var(--border-subtle); color: var(--text-muted); }
+/* The ring scales to the smaller side of its half (viewBox, meet). Stroke widths
+   are in viewBox units so they scale with it. */
+/* Pinned to the zoom layer's box: in its grid a percentage height did not
+   resolve, and the square SVG grew to the full width, below the half. */
+.public-winding-layout .wl-ring-svg { position: absolute; inset: 0; display: block; width: 100%; height: 100%; overflow: visible; }
+.public-winding-layout .wl-ring-bore,
+.public-winding-layout .wl-ring-back { fill: none; stroke: var(--border-default); stroke-width: 2; }
+.public-winding-layout .wl-ring-back { stroke-dasharray: 6 8; opacity: 0.6; }
+.public-winding-layout .wl-ring-slot { stroke-width: 2.2; stroke-linejoin: round; }
+.public-winding-layout .wl-ring-slot.is-empty { fill: none; stroke: var(--border-subtle); }
+.public-winding-layout .wl-ring-glyph { font-family: var(--font-mono); font-weight: 700; pointer-events: none; }
+.public-winding-layout .wl-ring-number { fill: var(--text-muted); font-family: var(--font-mono); font-weight: 700; }
+.public-winding-layout .wl-ring-end-turn { fill: none; stroke-width: 4; stroke-linecap: round; opacity: 0.85; }
+.public-winding-layout .wl-ring-end-turn:hover { stroke-width: 7; opacity: 1; }
 
 /* Parallel paths — the part with no equivalent anywhere else in the app. */
 .public-winding-layout .wl-paths {
   display: grid;
-  /* The one part allowed to flex, and the one that scrolls when the branches do
-     not fit. min-height: 0 is what lets a grid/flex child actually scroll. */
-  flex: 1 1 auto;
+  /* The bottom half, which scrolls when the branches do not fit. min-height: 0
+     is what lets a grid/flex child actually scroll. */
+  flex: 1 1 50%;
   min-height: 0;
   overflow-y: auto;
   align-content: start;
@@ -2669,8 +2657,12 @@ body {
 }
 .public-winding-layout .wl-phase-list {
   display: grid;
-  min-width: min(100%, 300px);
-  flex: 0 1 320px;
+  /* As wide as its widest wiring, so the info box beside it wraps underneath
+     rather than sitting on the wiring; on its own line it scrolls sideways. */
+  min-width: 0;
+  max-width: 100%;
+  flex: 0 1 auto;
+  overflow-x: auto;
   gap: 8px;
 }
 .public-winding-layout .wl-phase-row {

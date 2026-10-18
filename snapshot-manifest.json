@@ -5080,8 +5080,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2118,
-      "sha256": "b6c9c006db041b31338fa978e4df68ea50c30c8600dc22455ea7813ff714d143"
+      "bytes": 2156,
+      "sha256": "f532e411fdf549c30ed4ce4570ef43b349316ebc7b16a8ee3e777246151a95b7"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -5205,8 +5205,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 146561,
-      "sha256": "dc468867393bb8fbed38bf32f6a5a2962d75c4e9713b5942721ae3e6a0d53967"
+      "bytes": 147401,
+      "sha256": "f76d48d7a5caed4e80e93459e493305fba5c2c3b453ebe9f4b9dde751f8634d2"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5222,6 +5222,11 @@
       "path": "frontend/scripts/test-tooth-coil-repair.mjs",
       "bytes": 5435,
       "sha256": "6808ab126570cab3b8f1988a239b4f4fb32411f42e505a6573524bd0a339b3f1"
+    },
+    {
+      "path": "frontend/scripts/test-winding-ring.mjs",
+      "bytes": 3668,
+      "sha256": "79183d00ba368184d4cd762f0019958432dcd8e4f09cfe6242728fadcbf62cb3"
     },
     {
       "path": "frontend/src/api/projectSchema.ts",
@@ -5605,8 +5610,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 215292,
-      "sha256": "834726c8b800f9345ea4bd0813cb5d24299a17766a19cabaaf9438f6a903f54d"
+      "bytes": 215324,
+      "sha256": "1aba2b3ae348e88f4a595b12fa69132939f0f019bd92ca928bcc33c6216682a7"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5685,8 +5690,8 @@
     },
     {
       "path": "frontend/src/public/WindingLayoutView.tsx",
-      "bytes": 17517,
-      "sha256": "2e3fc465fcebe43ea8a2f08690d2b5f15e07bae74ae8de381a776e12bdd7b3dd"
+      "bytes": 19555,
+      "sha256": "2de6bbed4e4331655c61550e027580b4761a4a9261aaa648ee33df88c3cdb6e6"
     },
     {
       "path": "frontend/src/public/api.ts",
@@ -5965,8 +5970,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 261062,
-      "sha256": "83aba621a3edf5a89ba1d9ae9e5ce23ebb1b0ffaa90144546d1750171c0c0fb0"
+      "bytes": 260940,
+      "sha256": "6060c6ef2239bb73a7ebe43b718ed1614a844a8e1d2cbcbefbbe8a3aad7bc5c3"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -5987,6 +5992,11 @@
       "path": "frontend/src/public/tutorials/publicLessonSolveClient.ts",
       "bytes": 14808,
       "sha256": "be5df38663db208ee5fd80576c4a9d46916247fe92be6cbeb72cc59212f2d9f3"
+    },
+    {
+      "path": "frontend/src/public/windingRing.ts",
+      "bytes": 5078,
+      "sha256": "54b91a63afb4b7397ac77c99a8963e07abfcad45e7bdf521708dad8f656817e5"
     },
     {
       "path": "frontend/src/styles/templateselector.css",
@@ -9940,6 +9950,36 @@
       "path": "frontend/tests/public-release.spec.ts",
       "source_sha256": "33306593c15421c3e779db184d32f39166a5a8863708cfebf4fdfad15dee2c70",
       "reason": "Find the backend status chip by its accessible name and open each Solve setup section before using its controls."
+    },
+    {
+      "base_commit": "0bea2af37a5ecc5bf207c19cb5dd7e584887d83b",
+      "path": "frontend/src/public/WindingLayoutView.tsx",
+      "source_sha256": "2e3fc465fcebe43ea8a2f08690d2b5f15e07bae74ae8de381a776e12bdd7b3dd",
+      "reason": "Draw the Layout view's slots and coil end turns as a ring in the top half, zoomable like the 2D view."
+    },
+    {
+      "base_commit": "0bea2af37a5ecc5bf207c19cb5dd7e584887d83b",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "834726c8b800f9345ea4bd0813cb5d24299a17766a19cabaaf9438f6a903f54d",
+      "reason": "Pass the bottom bar's zoom slot to the Layout view."
+    },
+    {
+      "base_commit": "0bea2af37a5ecc5bf207c19cb5dd7e584887d83b",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "83aba621a3edf5a89ba1d9ae9e5ce23ebb1b0ffaa90144546d1750171c0c0fb0",
+      "reason": "Style the winding ring; size the wiring column to its wiring so the info box no longer covers it."
+    },
+    {
+      "base_commit": "0bea2af37a5ecc5bf207c19cb5dd7e584887d83b",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "dc468867393bb8fbed38bf32f6a5a2962d75c4e9713b5942721ae3e6a0d53967",
+      "reason": "Check the ring, its zoom wiring and the info box layout."
+    },
+    {
+      "base_commit": "0bea2af37a5ecc5bf207c19cb5dd7e584887d83b",
+      "path": "frontend/package.json",
+      "source_sha256": "b6c9c006db041b31338fa978e4df68ea50c30c8600dc22455ea7813ff714d143",
+      "reason": "Run the winding ring checks."
     }
   ]
 }

@@ -665,7 +665,8 @@ assert.match(styleSource, /\.public-material-assignment-grid \{[^}]*repeat\(4, m
 assert.match(styleSource, /\.public-material-behavior-view/);
 // The Layout view moved out of CoilEmWorkspace into its own component, so assert
 // the new wiring: the workspace mounts it, and the view still names itself and
-// draws the two things only it can show — the slot strip and the parallel paths.
+// draws the two things only it can show — the slot ring with its end turns and the
+// parallel paths.
 assert.match(workspaceSource, /<WindingLayoutView/);
 assert.match(workspaceSource, /public-viewport-expand/);
 assert.match(workspaceSource, /Expand motor view/);
@@ -678,7 +679,12 @@ assert.match(windingLayoutSource, /turns\/path/);
 assert.match(windingLayoutSource, /className="wl-paths-info"/);
 assert.match(windingLayoutSource, /How the solver reads this/);
 assert.match(windingLayoutSource, /Winding layout/);
-assert.match(windingLayoutSource, /wl-slots/);
+assert.match(windingLayoutSource, /className={`wl-ring public-viewport-navigation/);
+assert.match(windingLayoutSource, /endTurnPath\(coil\.slot_in, coil\.slot_out, slotCount\)/);
+// The ring zooms and pans like the 2D view, with its controls in the same bottom-bar slot.
+assert.match(windingLayoutSource, /const navigation = useViewportNavigation\(\);/);
+assert.match(windingLayoutSource, /createPortal\(\s*<ViewportNavigationControls/);
+assert.match(workspaceSource, /<WindingLayoutView config=\{config\} geometry=\{geometry \?\? null\} navigationSlot=\{navigationSlot\} \/>/);
 assert.match(windingLayoutSource, /Parallel paths/);
 assert.match(workspaceSource, /public-component-detail-card/);
 assert.match(workspaceSource, /Selected component/);
@@ -1281,8 +1287,11 @@ assert.match(styleSource, /\.public-solve-workspace\.is-viewport-expanded \.publ
 assert.match(styleSource, /\.design-workspace\.is-viewport-expanded \.public-3d-part-toggles,[\s\S]*?\.public-solve-workspace\.is-viewport-expanded \.public-3d-part-toggles \{[\s\S]*?top: 16px;[\s\S]*?left: 112px;/);
 assert.match(styleSource, /\.public-viewport-expand \{/);
 assert.match(styleSource, /\.public-motor-viewport \.viewport-bottom-bar \{[^}]*bottom: 0;/);
-assert.match(styleSource, /\.public-winding-layout \.wl-scroll,[\s\S]*?width: min\(100%, 1180px\);[\s\S]*?margin-inline: auto;/);
-assert.match(styleSource, /\.public-winding-layout \.wl-strip \{[^}]*margin-inline: auto;/);
+assert.match(styleSource, /\.public-winding-layout \.wl-ring,[\s\S]*?width: min\(100%, 1180px\);[\s\S]*?margin-inline: auto;/);
+// The ring fits the top half; the paths take the bottom half and scroll.
+assert.match(styleSource, /\.public-winding-layout \.wl-ring \{ flex: 1 1 50%; min-height: 0; \}/);
+// The wiring column is as wide as its wiring, so the info box wraps instead of covering it.
+assert.match(styleSource, /\.public-winding-layout \.wl-phase-list \{[^}]*flex: 0 1 auto;[^}]*overflow-x: auto;/);
 assert.match(styleSource, /\.public-winding-layout \.wl-chips \{[^}]*flex: 1 0 100%;[^}]*flex-wrap: nowrap;/);
 assert.match(styleSource, /\.public-winding-layout \.wl-paths-content \{[^}]*flex-wrap: wrap;/);
 assert.match(styleSource, /\.public-winding-layout \.wl-paths-info \{[^}]*max-width: 240px;/);

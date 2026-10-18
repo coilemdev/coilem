@@ -1,21 +1,30 @@
 /**
- * The Layout view: the winding as a linear slot strip rather than a cross-section.
+ * The Layout view: the winding drawn as a wiring diagram.
  *
- * The annulus answers spatial questions — is the phase distribution symmetric,
- * where does a belt sit relative to a magnet. It cannot answer sequential ones:
- * on a ring, slot 12 -> 1 wraps behind the shaft and a coil span is a chord you
- * have to trace. Unrolled, slot order and coil spans are just things you can
- * count. Parallel paths in particular had no representation anywhere in the app —
- * the cross-section is pixel-identical for 1, 2 or 4 — which is what this view
- * exists to show.
+ * The top half is the stator as a ring of numbered slots, each coil side in its
+ * phase colour with its current direction, and every coil's end turn arcing from
+ * one side to the other outside the ring. It keeps the cross-section's
+ * orientation, so a phase belt sits where it does in the 2D view, and the end
+ * turns show how the coils join slots, which the cross-section cannot. Below,
+ * parallel paths, which had no representation anywhere in the app (the
+ * cross-section is pixel-identical for 1, 2 or 4), are drawn as wiring.
  */
+import { createPortal } from 'react-dom';
 import type { GeometryPreview, MotorConfig, PublicWindingCoil } from './model';
 import { PUBLIC_PHASE_COLORS, type PublicPhaseId } from './motorPalette';
+import { useViewportNavigation, ViewportNavigationControls } from './ViewportNavigation';
+import {
+  WINDING_RING,
+  WINDING_RING_EXTENT,
+  endTurnPath,
+  polar,
+  slotAngle,
+  slotSideCentre,
+  slotSidePath,
+  type SlotLayerSplit,
+} from './windingRing';
 
 const PHASES: PublicPhaseId[] = ['A', 'B', 'C'];
-/** Column pitch. Wide enough for a phase letter and a direction glyph. */
-const SLOT_PX = 46;
-const ARC_HEIGHT = 44;
 
 /**
  * Coils split into `pathCount` branches, evenly, in slot order.
@@ -179,10 +188,15 @@ function PhaseWiring({ phase, branches, pathCount, slotLabel, phaseCurrentA, con
   );
 }
 
-export function WindingLayoutView({ config, geometry }: {
+export function WindingLayoutView({ config, geometry, navigationSlot = null }: {
   config: MotorConfig;
   geometry: GeometryPreview | null;
+  /** The bottom bar's zoom slot, where the 2D view puts its controls too. */
+  navigationSlot?: HTMLElement | null;
 }) {
+  // Zoom and pan the ring the way the 2D view zooms the motor: wheel about the
+  // pointer, drag once zoomed in, and the same - / + / Fit controls.
+  const navigation = useViewportNavigation();
   const slots = geometry?.winding_layout ?? [];
   const coils = geometry?.winding_coils ?? [];
   const slotCount = config.stator.slot_count;
@@ -207,12 +221,22 @@ export function WindingLayoutView({ config, geometry }: {
   // Turns the field carries per slot; series turns per phase is S*N/6 because each
   // physical turn has two active sides. See backend/winding_utils.py.
   const seriesTurnsPerPhase = (slotCount * config.winding.turns_per_coil) / 6;
-  const stripWidth = slotCount * SLOT_PX;
   // The payload indexes slots from 0 (winding_layout.slot_index and
   // winding_coils.slot_in/out all run 0..slotCount-1). Everything shown to the
   // reader is 1-based, the way a slot would be numbered on a drawing.
-  const slotCentre = (slotIndex: number) => ((slotIndex + 0.5) * SLOT_PX);
   const slotLabel = (slotIndex: number) => slotIndex + 1;
+  // How a two-layer slot divides, as the geometry builds it.
+  const layerSplit: SlotLayerSplit = metadata.slot_layer_split === 'radial' || metadata.slot_layer_split === 'tangential'
+    ? metadata.slot_layer_split
+    : null;
+  const ringLayers = layerSplit ? layerCount : 1;
+  // Glyph and number sizes follow the space a slot side and a slot pitch have.
+  const pitchAtSlots = (2 * Math.PI * ((WINDING_RING.inner + WINDING_RING.outer) / 2)) / slotCount;
+  const sideWidth = pitchAtSlots * 0.62 / (layerSplit === 'tangential' ? ringLayers : 1);
+  const sideDepth = (WINDING_RING.outer - WINDING_RING.inner) / (layerSplit === 'radial' ? ringLayers : 1);
+  const glyphSize = Math.max(10, Math.min(30, Math.min(sideWidth, sideDepth) * 0.72));
+  const numberSize = Math.max(12, Math.min(22, ((2 * Math.PI * WINDING_RING.numbers) / slotCount) * 0.42));
+  const numberStep = slotCount > 48 ? 2 : 1;
 
   return (
     <div className="public-winding-layout">
@@ -238,90 +262,101 @@ export function WindingLayoutView({ config, geometry }: {
         </div>
       </header>
 
-      <div className="wl-scroll">
-        <div className="wl-strip" style={{ width: `${stripWidth}px` }}>
-          {/* Coil spans. Drawn over the strip so a coil's two sides read as one
-              thing; concentrated coils hop between neighbours, distributed ones
-              arc across their span. */}
+      {/* The stator as a ring of slots, in the cross-section's orientation, with
+          each coil's end turn outside it: a hop between neighbours for a tooth
+          coil, an arc across its span for a distributed one. */}
+      <div
+        className={`wl-ring public-viewport-navigation${navigation.panEnabled ? ' is-pannable' : ''}${navigation.isDragging ? ' is-dragging' : ''}`}
+        ref={navigation.viewportRef}
+        {...navigation.bind}
+      >
+        <div className="public-viewport-navigation-content" style={navigation.contentStyle}>
           <svg
-            className="wl-arcs"
-            width={stripWidth}
-            height={ARC_HEIGHT}
+            className="wl-ring-svg"
+            viewBox={`${-WINDING_RING_EXTENT} ${-WINDING_RING_EXTENT} ${2 * WINDING_RING_EXTENT} ${2 * WINDING_RING_EXTENT}`}
+            preserveAspectRatio="xMidYMid meet"
             role="img"
-            aria-label="Coil spans between slots"
+            aria-label={`${slotCount} slots around the bore, numbered counter-clockwise from slot 1 at three o'clock, with each coil's end turn`}
           >
-            {coils.map((coil) => {
-              const from = slotCentre(coil.slot_in);
-              const to = slotCentre(coil.slot_out);
-              // A coil that wraps past the last slot would draw backwards across the
-              // whole strip, so it is marked at each end instead of joined.
-              const wraps = Math.abs(to - from) > slotCount * SLOT_PX * 0.5;
-              const colour = PUBLIC_PHASE_COLORS[coil.phase];
-              if (wraps) {
-                return [from, to].map((x, index) => (
-                  <line
-                    key={`${coil.coil_index}-wrap-${index}`}
-                    x1={x}
-                    y1={ARC_HEIGHT - 2}
-                    x2={x}
-                    y2={ARC_HEIGHT - 14}
-                    stroke={colour}
-                    strokeWidth={1.5}
-                    strokeDasharray="3 3"
-                  />
-                ));
-              }
+            <circle className="wl-ring-bore" r={WINDING_RING.inner} />
+            <circle className="wl-ring-back" r={WINDING_RING.outer} />
+            {coils.map((coil) => (
+              <path
+                key={coil.coil_index}
+                className="wl-ring-end-turn"
+                d={endTurnPath(coil.slot_in, coil.slot_out, slotCount)}
+                stroke={PUBLIC_PHASE_COLORS[coil.phase]}
+              >
+                <title>{`Coil ${coil.coil_index + 1} · phase ${coil.phase} · slots ${slotLabel(coil.slot_in)}→${slotLabel(coil.slot_out)}`}</title>
+              </path>
+            ))}
+            {Array.from({ length: slotCount }, (_, index) => index).map((slotIndex) => {
+              const sides = slots.filter((slot) => slot.slot_index === slotIndex);
+              const slotNumber = slotLabel(slotIndex);
+              const [numberX, numberY] = polar(WINDING_RING.numbers, slotAngle(slotIndex, slotCount));
               return (
-                <path
-                  key={coil.coil_index}
-                  d={`M ${from} ${ARC_HEIGHT - 2} C ${from} ${ARC_HEIGHT * 0.3}, ${to} ${ARC_HEIGHT * 0.3}, ${to} ${ARC_HEIGHT - 2}`}
-                  fill="none"
-                  stroke={colour}
-                  strokeWidth={1.5}
-                  opacity={0.85}
-                >
-                  <title>{`Coil ${coil.coil_index + 1} · phase ${coil.phase} · slots ${slotLabel(coil.slot_in)}→${slotLabel(coil.slot_out)}`}</title>
-                </path>
+                <g key={slotIndex}>
+                  {sides.length === 0 ? (
+                    <path className="wl-ring-slot is-empty" d={slotSidePath(slotIndex, slotCount, 1, 1, null)}>
+                      <title>{`Slot ${slotNumber}: no winding`}</title>
+                    </path>
+                  ) : sides.map((side) => {
+                    const colour = PUBLIC_PHASE_COLORS[side.phase];
+                    const layer = layerSplit ? side.layer : 1;
+                    const [glyphX, glyphY] = slotSideCentre(slotIndex, slotCount, layer, ringLayers, layerSplit);
+                    return (
+                      <g key={`${side.layer}-${side.phase}-${side.direction}`}>
+                        <path
+                          className="wl-ring-slot"
+                          d={slotSidePath(slotIndex, slotCount, layer, ringLayers, layerSplit)}
+                          fill={`${colour}3d`}
+                          stroke={colour}
+                        >
+                          <title>{`Slot ${slotNumber}${layerCount > 1 ? ` layer ${side.layer}` : ''}: phase ${side.phase}, current ${side.direction === 'out' ? 'out of' : 'into'} the page`}</title>
+                        </path>
+                        {/* Same glyphs the cross-section uses, so the two views tie together. */}
+                        <text
+                          className="wl-ring-glyph"
+                          x={glyphX}
+                          y={glyphY}
+                          fill={colour}
+                          fontSize={glyphSize}
+                          textAnchor="middle"
+                          dominantBaseline="central"
+                        >
+                          {side.direction === 'out' ? '⊙' : '⊗'}
+                        </text>
+                      </g>
+                    );
+                  })}
+                  {slotIndex % numberStep === 0 ? (
+                    <text
+                      className="wl-ring-number"
+                      x={numberX}
+                      y={numberY}
+                      fontSize={numberSize}
+                      textAnchor="middle"
+                      dominantBaseline="central"
+                    >
+                      {slotNumber}
+                    </text>
+                  ) : null}
+                </g>
               );
             })}
           </svg>
-
-          <ol className="wl-slots" aria-label="Slots in order">
-            {Array.from({ length: slotCount }, (_, index) => index).map((slotIndex) => {
-              const sides = slots
-                .filter((slot) => slot.slot_index === slotIndex)
-                .sort((a, b) => a.layer - b.layer);
-              const slotNumber = slotLabel(slotIndex);
-              return (
-                <li key={slotIndex} style={{ width: `${SLOT_PX}px` }}>
-                  <span className="wl-slot-number">{slotNumber}</span>
-                  <div className="wl-slot-body">
-                    {sides.length === 0
-                      ? <span className="wl-side is-empty" aria-label="no winding">—</span>
-                      : sides.map((side) => (
-                        <span
-                          key={`${side.layer}-${side.phase}-${side.direction}`}
-                          className="wl-side"
-                          style={{
-                            background: `${PUBLIC_PHASE_COLORS[side.phase]}2e`,
-                            borderColor: PUBLIC_PHASE_COLORS[side.phase],
-                            color: PUBLIC_PHASE_COLORS[side.phase],
-                          }}
-                          title={`Slot ${slotNumber} layer ${side.layer}: phase ${side.phase}, current ${side.direction === 'out' ? 'out of' : 'into'} the page`}
-                        >
-                          {layerCount > 1 ? <b>L{side.layer}</b> : null}
-                          <strong>{side.phase}</strong>
-                          {/* Same glyphs the cross-section uses, so the two views tie together. */}
-                          <em>{side.direction === 'out' ? '⊙' : '⊗'}</em>
-                        </span>
-                      ))}
-                  </div>
-                </li>
-              );
-            })}
-          </ol>
         </div>
       </div>
+      {navigationSlot ? createPortal(
+        <ViewportNavigationControls
+          scale={navigation.scale}
+          onZoomIn={navigation.zoomIn}
+          onZoomOut={navigation.zoomOut}
+          onReset={navigation.reset}
+          fitSubject="winding"
+        />,
+        navigationSlot,
+      ) : null}
 
       <section className="wl-paths" aria-label="Parallel paths per phase">
         <div className="wl-paths-heading">

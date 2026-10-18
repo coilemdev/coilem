@@ -1,0 +1,66 @@
+import assert from 'node:assert/strict';
+import { importTypeScriptModule } from './import-typescript-module.mjs';
+
+// The Layout view's ring: slots in the cross-section's orientation, end turns
+// outside the stator the short way round, two-layer slots split as the geometry does.
+const {
+  WINDING_RING,
+  WINDING_RING_EXTENT,
+  coilSpanSlots,
+  endTurnPath,
+  polar,
+  slotAngle,
+  slotSideCentre,
+} = await importTypeScriptModule(new URL('../src/public/windingRing.ts', import.meta.url));
+
+const close = (actual, expected, label, tolerance = 1e-9) => assert.ok(Math.abs(actual - expected) <= tolerance, `${label}: ${actual} != ${expected}`);
+const points = (path) => [...path.matchAll(/(-?\d+\.\d+) (-?\d+\.\d+)/g)].map((match) => [Number(match[1]), Number(match[2])]);
+const radius = ([x, y]) => Math.hypot(x, y);
+const angleOf = ([x, y]) => Math.atan2(-y, x);
+
+// Slot 1 at three o'clock, numbering counter-clockwise (y up on screen).
+const [x0, y0] = polar(100, slotAngle(0, 36));
+close(x0, 100, 'slot 1 x'); close(y0, 0, 'slot 1 y');
+const [x9, y9] = polar(100, slotAngle(9, 36));
+close(x9, 0, 'slot 10 x', 1e-9); close(y9, -100, 'slot 10 is at twelve o\'clock (screen y up)', 1e-9);
+
+// Spans the short way round, across slot 1 as well.
+assert.equal(coilSpanSlots(0, 6, 36), 6);
+assert.equal(coilSpanSlots(33, 3, 36), 6);
+assert.equal(coilSpanSlots(3, 33, 36), 6);
+
+for (const [label, slotIn, slotOut, slotCount] of [
+  ['distributed 6p/36s coil', 0, 6, 36],
+  ['coil across slot 1', 33, 3, 36],
+  ['tooth coil', 4, 5, 12],
+  ['half the ring (2-pole full pitch)', 0, 6, 12],
+]) {
+  const path = points(endTurnPath(slotIn, slotOut, slotCount));
+  // Starts and ends at the end-turn radius in its two slots...
+  close(radius(path[0]), WINDING_RING.endTurn, `${label}: starts at the end-turn radius`, 0.02);
+  close(radius(path.at(-1)), WINDING_RING.endTurn, `${label}: ends at the end-turn radius`, 0.02);
+  close(angleOf(path[0]), Math.atan2(Math.sin(slotAngle(slotIn, slotCount)), Math.cos(slotAngle(slotIn, slotCount))), `${label}: leaves its first slot`, 1e-4);
+  close(angleOf(path.at(-1)), Math.atan2(Math.sin(slotAngle(slotOut, slotCount)), Math.cos(slotAngle(slotOut, slotCount))), `${label}: reaches its second slot`, 1e-4);
+  // ...stays outside the stator, even for half the ring, and inside the drawing.
+  assert.ok(path.every((p) => radius(p) >= WINDING_RING.endTurn - 0.02), `${label}: stays outside the stator`);
+  assert.ok(path.every((p) => Math.abs(p[0]) <= WINDING_RING_EXTENT && Math.abs(p[1]) <= WINDING_RING_EXTENT), `${label}: fits the viewBox`);
+}
+
+// A coil across slot 1 goes the short way, through three o'clock, not round the back.
+const across = points(endTurnPath(33, 3, 36));
+assert.ok(across.every(([x]) => x > 0), 'coil 34→4 stays on the right of the ring');
+
+// A wider coil bulges further than a tooth coil.
+const peak = (path) => Math.max(...points(path).map(radius));
+assert.ok(peak(endTurnPath(0, 6, 36)) > peak(endTurnPath(0, 1, 36)), 'a distributed coil bulges further than a tooth coil');
+
+// Two-layer slots: radial puts layer 1 at the bore; tangential puts layer 1 on the
+// side of the tooth before the slot (lower angle).
+const inner = radius(slotSideCentre(2, 36, 1, 2, 'radial'));
+const outer = radius(slotSideCentre(2, 36, 2, 2, 'radial'));
+assert.ok(inner < outer, 'radial: layer 1 is nearer the bore');
+const before = angleOf(slotSideCentre(2, 12, 1, 2, 'tangential'));
+const after = angleOf(slotSideCentre(2, 12, 2, 2, 'tangential'));
+assert.ok(before < slotAngle(2, 12) && after > slotAngle(2, 12), 'tangential: layer 1 on the side of the tooth before the slot');
+
+console.log('winding ring checks passed');
