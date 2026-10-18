@@ -5200,8 +5200,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 143643,
-      "sha256": "a81f26c18873ce10331460e9680b1eeeb6488b75a20f04759608b8aef7bfdf89"
+      "bytes": 144544,
+      "sha256": "449276ed665ad71949e9aaf322abec8fde7e3ebfc386047e566ad2d264ede8b0"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5610,8 +5610,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 54993,
-      "sha256": "1782cb55a043e533f172214b8d395496a1b892ab504a6a9dfe8f8a5337dd6978"
+      "bytes": 55272,
+      "sha256": "c7618d0cde4bd758b52d75eecf02cf4866ebeb367622b70cbe92c7c35c62dc30"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -5955,8 +5955,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 261495,
-      "sha256": "d83904c4eb8461bc2c17f4c63b553dc42c3e64023a6a57dfd1fa12499f3e830d"
+      "bytes": 261527,
+      "sha256": "3b140bdab06eae5b280875106946ae9dd32c41e3cbe6a3860911c8ed85219d69"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -9935,6 +9935,24 @@
       "path": "frontend/package.json",
       "source_sha256": "8c55ae3705c8b53182fa41bfca797e5bd089a66cf6cb7eb5780eed6cabb6479d",
       "reason": "Run the field position link test with the public UI tests."
+    },
+    {
+      "base_commit": "9ecf809ee78b8fa12d41cf773505fbd7aaed3bef",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "1782cb55a043e533f172214b8d395496a1b892ab504a6a9dfe8f8a5337dd6978",
+      "reason": "Show the Stator + PM legend as one line above the view and move its notes and the arrows caption into its tooltip."
+    },
+    {
+      "base_commit": "9ecf809ee78b8fa12d41cf773505fbd7aaed3bef",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "3dace0b9843ad85c0395cddc27c361bd60ab3800416e3be07bc9e42f2b48084a",
+      "reason": "Lay the Stator + PM legend out as one line above the view, with a short lead on narrow panels; drop the caption styles."
+    },
+    {
+      "base_commit": "9ecf809ee78b8fa12d41cf773505fbd7aaed3bef",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "a81f26c18873ce10331460e9680b1eeeb6488b75a20f04759608b8aef7bfdf89",
+      "reason": "Cover the one-line Stator + PM legend and the removed caption."
     }
   ]
 }

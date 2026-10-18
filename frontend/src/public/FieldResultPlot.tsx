@@ -1078,9 +1078,18 @@ export function FieldResultPlot({
     });
   };
   const probeDescription = probe ? describeProbe(probe) : null;
+  const linesLegendNote = [
+    'Separate solves: in saturated steel the resultant is not their sum.',
+    hasFieldAxes && leadElecDeg !== null
+      ? `Arrows: each field's ${axisPolePairs}-pole-pair flux pointing outward. ${leadElecDeg >= 0 ? 'The magnets are pulled after the stator field.' : 'The stator field holds the magnets back.'}`
+      : null,
+    hasFieldAxes && leadElecDeg !== null && statorStrongestPolePairs !== null && statorStrongestPolePairs !== axisPolePairs
+      ? `The stator's stronger ${statorStrongestPolePairs}-pole-pair part gives no steady torque and can make its lines seem to turn the other way.`
+      : null,
+  ].filter(Boolean).join(' ');
 
   return (
-    <section className="public-field-result" aria-label="Solved magnetic field map" ref={plotRootRef}>
+    <section className={`public-field-result${overlay ? ' has-lines-legend' : ''}`} aria-label="Solved magnetic field map" ref={plotRootRef}>
       {showHeading && <div className="public-field-result-heading">
         <div>
           <strong>{title}</strong>
@@ -1212,29 +1221,18 @@ export function FieldResultPlot({
         )}
       </div>
       {overlay ? (
-        <>
-          <div className="public-field-lines-legend" aria-label="Field-line colours">
-            <span><i className="is-stator" aria-hidden="true" />Stator</span>
-            <span><i className="is-pm" aria-hidden="true" />PM</span>
-            {hasFieldAxes && leadElecDeg !== null && (
-              <strong className="public-field-lead">
-                Stator {leadElecDeg >= 0 ? 'leads' : 'lags'} magnets by {Math.round(Math.abs(leadElecDeg))}° elec
-              </strong>
-            )}
-            <small>Separate solves: in saturated steel the resultant is not their sum.</small>
-          </div>
+        // One line above the view: the two line colours and the stator lead.
+        // The longer notes are its tooltip, not text over the motor.
+        <div className="public-field-lines-legend" aria-label="Field-line colours" title={linesLegendNote}>
+          <span><i className="is-stator" aria-hidden="true" />Stator</span>
+          <span><i className="is-pm" aria-hidden="true" />PM</span>
           {hasFieldAxes && leadElecDeg !== null && (
-            <p className="public-field-axes-caption">
-              Arrows: each field&apos;s {axisPolePairs}-pole-pair flux pointing outward.{' '}
-              {leadElecDeg >= 0 ? 'The magnets are pulled after the stator field.' : 'The stator field holds the magnets back.'}
-              {statorStrongestPolePairs !== null && statorStrongestPolePairs !== axisPolePairs && (
-                <>
-                  {' '}The stator&apos;s stronger {statorStrongestPolePairs}-pole-pair part gives no steady torque and can make its lines seem to turn the other way.
-                </>
-              )}
-            </p>
+            <strong className="public-field-lead">
+              <span className="public-field-lead-long">Stator {leadElecDeg >= 0 ? 'leads' : 'lags'} magnets by {Math.round(Math.abs(leadElecDeg))}° elec</span>
+              <span className="public-field-lead-short" aria-hidden="true">Stator {leadElecDeg >= 0 ? 'leads' : 'lags'} {Math.round(Math.abs(leadElecDeg))}°</span>
+            </strong>
           )}
-        </>
+        </div>
       ) : <div className={`public-field-result-legend${legendScale.fixed ? ' is-fixed' : ''}`} ref={legendRef}>
         <strong>Flux density <span>|B| (T)</span></strong>
         <span className="is-min">{legendLabel(legendScale.minB)}</span>
