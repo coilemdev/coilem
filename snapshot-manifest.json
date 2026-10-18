@@ -5080,8 +5080,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 1988,
-      "sha256": "d637904761387ca375e7dd731ce3dcb28d0e912ff10a471ce4bdf1ebee7ede73"
+      "bytes": 2032,
+      "sha256": "8c55ae3705c8b53182fa41bfca797e5bd089a66cf6cb7eb5780eed6cabb6479d"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -5144,6 +5144,11 @@
       "sha256": "772e47122f0d5154706aa5c542f0dd4fb27a8c826d006661cc8fa42485834aa3"
     },
     {
+      "path": "frontend/scripts/test-field-probe-region.mjs",
+      "bytes": 3514,
+      "sha256": "0a01699dfcf1178236caf7dfd204d269d5f763879904da2b43559f5d1f0e9d70"
+    },
+    {
       "path": "frontend/scripts/test-flat-ipm-burial-health.mjs",
       "bytes": 4955,
       "sha256": "7c6b67897ce144407844dbba3a9ec0ed7f55193d647b3879a1ff99b639b33f36"
@@ -5190,8 +5195,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 140911,
-      "sha256": "8d2770c5e94ecf3a53e6339e43021fd1779fcd22d8d5b1d28f4c0766c1a34df2"
+      "bytes": 141424,
+      "sha256": "592da6ec74f16aa2e8453d956133016efa69f8dcc2679d99b369208ba25e5799"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5600,8 +5605,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 54214,
-      "sha256": "7b0497328041efa3ee66bde00e938ef91c28e747033448a79c8838e9a2addc3d"
+      "bytes": 54437,
+      "sha256": "1da6444fc1fea7ec146dcd6babab49110a94fbdb93995c60111cf30ef19200e5"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -5650,8 +5655,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 58781,
-      "sha256": "1aa9a20da19e144ccf3d988244b17c73346ed78d0aae37560f7ea15773a2e5e6"
+      "bytes": 56458,
+      "sha256": "08202cdc91f796c198f6fed212f3de62e97662c355322483fffc4b36c5b4b6e4"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -5797,6 +5802,11 @@
       "path": "frontend/src/public/fieldPlaybackWorker.ts",
       "bytes": 8317,
       "sha256": "96c1e25999a9bb81d0c6dd584a6ccb743c3431c330813d7e69ecac44600050de"
+    },
+    {
+      "path": "frontend/src/public/fieldProbeRegion.ts",
+      "bytes": 4770,
+      "sha256": "80021a9faceb977393d2d275f0997d9eabbc089c76984df803456998c266a97d"
     },
     {
       "path": "frontend/src/public/fieldViewportRange.ts",
@@ -9772,6 +9782,30 @@
       "path": "frontend/package.json",
       "source_sha256": "e55e316acbddfd1c806e0bb6bc8e62f17f681b8ab14045c31b1269b14d04e5da",
       "reason": "Run the legend-fit test with the public UI tests."
+    },
+    {
+      "base_commit": "ce9fdc8015ce57a02460aec6b50b7c0e25a9c82d",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "7b0497328041efa3ee66bde00e938ef91c28e747033448a79c8838e9a2addc3d",
+      "reason": "Give the field probe the hovered element's radius."
+    },
+    {
+      "base_commit": "ce9fdc8015ce57a02460aec6b50b7c0e25a9c82d",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "1aa9a20da19e144ccf3d988244b17c73346ed78d0aae37560f7ea15773a2e5e6",
+      "reason": "Describe the probed element with the shared region naming."
+    },
+    {
+      "base_commit": "ce9fdc8015ce57a02460aec6b50b7c0e25a9c82d",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "8d2770c5e94ecf3a53e6339e43021fd1779fcd22d8d5b1d28f4c0766c1a34df2",
+      "reason": "Cover the probe's region naming."
+    },
+    {
+      "base_commit": "ce9fdc8015ce57a02460aec6b50b7c0e25a9c82d",
+      "path": "frontend/package.json",
+      "source_sha256": "d637904761387ca375e7dd731ce3dcb28d0e912ff10a471ce4bdf1ebee7ede73",
+      "reason": "Run the probe region test with the public UI tests."
     }
   ]
 }

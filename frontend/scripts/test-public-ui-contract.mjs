@@ -884,6 +884,12 @@ assert.match(fieldResultSource, /\.filter\(\(element\) => !element\.classList\.c
 assert.match(fieldResultSource, /style=\{motorFitWidth === null \? undefined : \{ flex: `0 0 \$\{motorFitWidth\.toFixed\(1\)\}px` \}\}/);
 assert.match(fieldResultSource, /className=\{`public-field-result-legend\$\{legendScale\.fixed \? ' is-fixed' : ''\}`\} ref=\{legendRef\}/);
 assert.match(packageSource, /node scripts\/test-field-legend-fit\.mjs/);
+// The probe names magnet_pocket_air as air (shaft bore or the air around the
+// magnets), from the element's own radius; tests/field-probe-region covers it.
+assert.match(packageSource, /node scripts\/test-field-probe-region\.mjs/);
+assert.match(solvedFieldSource, /import \{ describeFieldProbe \} from '\.\/fieldProbeRegion';/);
+assert.doesNotMatch(solvedFieldSource, /function readableFieldRegion/);
+assert.match(fieldResultSource, /radiusMm: Math\.hypot\(\(ax \+ bx \+ cx\) \/ 3, \(ay \+ by \+ cy\) \/ 3\),/);
 assert.match(solvedFieldSource, /<em>\{boundedIndex \+ 1\} \/ \{Math\.max\(1, angleFrames\.length\)\} · \{electricalAngleDeg\.toFixed\(1\)\}° elec<\/em>/);
 // Nothing in the playback row changes size while it plays (the speed and
 // position sliders jittered when a frame-status column came and went): the

@@ -60,6 +60,8 @@ export interface FieldProbe {
   bMagT: number;
   bxT: number | null;
   byT: number | null;
+  /** The element's distance from the axis (its centroid), in mm. */
+  radiusMm?: number | null;
 }
 
 export interface FieldProbeDescription {
@@ -1053,12 +1055,14 @@ export function FieldResultPlot({
     }
     const bxT = sourcePlot.element_bx_t?.[record.index];
     const byT = sourcePlot.element_by_t?.[record.index];
+    const [[ax, ay], [bx, by], [cx, cy]] = record.points;
     setProbe({
       elementIndex: record.index,
       region: sourcePlot.regions[record.index] ?? 'unclassified',
       bMagT: record.value ?? 0,
       bxT: Number.isFinite(bxT) ? bxT ?? null : null,
       byT: Number.isFinite(byT) ? byT ?? null : null,
+      radiusMm: Math.hypot((ax + bx + cx) / 3, (ay + by + cy) / 3),
     });
   };
   const probeDescription = probe ? describeProbe(probe) : null;

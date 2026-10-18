@@ -15,7 +15,6 @@ import {
   type FieldLineDensity,
   type FieldLineOverlay,
   type FieldProbe,
-  type FieldProbeDescription,
   type FieldResultRaster,
 } from './FieldResultPlot';
 import { normalizeFieldPlaybackManifest } from './fieldPlaybackContract';
@@ -47,6 +46,7 @@ import {
 } from './fieldPlaybackTiming';
 import { LatestFrameLoader } from './latestFrameLoader';
 import { RpmField } from './RpmField';
+import { describeFieldProbe } from './fieldProbeRegion';
 import { rotorAirgapBoundaryRadiusMm } from './motorAirgap';
 import type {
   GeometryPreview,
@@ -132,74 +132,6 @@ function evictRasters(
     delete cache[key];
     excess -= 1;
   }
-}
-
-function readableFieldRegion(region: string): string {
-  const normalized = region.replace(/[_-]+/g, ' ').trim();
-  if (/stator.*tooth|tooth.*stator/i.test(normalized)) return 'Stator tooth';
-  if (/stator.*yoke|yoke.*stator/i.test(normalized)) return 'Stator yoke';
-  if (/stator/i.test(normalized)) return 'Stator steel';
-  if (/rotor/i.test(normalized)) return 'Rotor steel';
-  if (/magnet/i.test(normalized)) return 'Permanent magnet';
-  if (/slot|winding|coil|copper/i.test(normalized)) return 'Winding region';
-  if (/air.?gap/i.test(normalized)) return 'Air gap';
-  if (/air/i.test(normalized)) return 'Air';
-  return normalized || 'Unclassified region';
-}
-
-function describeFieldProbe(probe: FieldProbe, config: MotorConfig): FieldProbeDescription {
-  const regionLabel = readableFieldRegion(probe.region);
-  const isStatorSteel = /stator|tooth|yoke/i.test(probe.region);
-  const isRotorSteel = /rotor/i.test(probe.region) && !/magnet/i.test(probe.region);
-  if (isStatorSteel || isRotorSteel) {
-    const materialLabel = isStatorSteel
-      ? config.materials.stator_steel
-      : config.materials.rotor_steel;
-    if (probe.bMagT >= 1.6) {
-      return {
-        regionLabel,
-        materialLabel,
-        saturationLabel: 'Above the 1.4–1.6 T reference knee',
-        saturationTone: 'warning',
-      };
-    }
-    if (probe.bMagT >= 1.4) {
-      return {
-        regionLabel,
-        materialLabel,
-        saturationLabel: 'Within the 1.4–1.6 T reference knee',
-        saturationTone: 'warning',
-      };
-    }
-    return {
-      regionLabel,
-      materialLabel,
-      saturationLabel: 'Below the 1.4–1.6 T reference knee',
-      saturationTone: 'good',
-    };
-  }
-  if (/magnet/i.test(probe.region)) {
-    return {
-      regionLabel,
-      materialLabel: config.materials.magnet_grade,
-      saturationLabel: 'Steel saturation does not apply',
-      saturationTone: 'neutral',
-    };
-  }
-  if (/slot|winding|coil|copper/i.test(probe.region)) {
-    return {
-      regionLabel,
-      materialLabel: config.materials.conductor,
-      saturationLabel: 'Approximately nonmagnetic · μr ≈ 1',
-      saturationTone: 'neutral',
-    };
-  }
-  return {
-    regionLabel,
-    materialLabel: /air/i.test(probe.region) ? 'Air' : 'Solver region',
-    saturationLabel: 'No steel saturation assessment',
-    saturationTone: 'neutral',
-  };
 }
 
 interface SolvedFieldViewerProps {
