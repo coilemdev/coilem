@@ -1,0 +1,2173 @@
+{
+  "schema": "coilem.main_femm_repeat_comparison/v1",
+  "generated_at": "2026-10-18T22:07:36.336130+00:00",
+  "status": "PASS",
+  "validation_status": "REVIEW_REQUIRED",
+  "main_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+  "main_checkout": "<measured-main>",
+  "main_checkout_clean_at_completion": true,
+  "run_directory": "<fresh-femm-run>",
+  "previous_run_directory": "<previous-femm-run>",
+  "run_manifest_sha256": "f4e5e720621fe0b259479d6db250603911117217c62d57b8131490993d8c2ce8",
+  "previous_manifest_sha256": "8bfcdbc4abcbf4709c13aa038ff089b0aa9039f833eeedcef3be73fd5bc95f51",
+  "comparison_source_sha256": "18b7361f6908f35eec05528263a18d10ceb90abc18cf2834f9ca8fc135abfd17",
+  "case_count": 29,
+  "all_physical_payloads_and_audits_exact": true,
+  "wall_s": 6544.721603700018,
+  "previous_wall_s": 6654.354416499991,
+  "wall_delta_s": -109.63281279997318,
+  "wall_delta_pct": -1.6475349213160295,
+  "execution_policy_same": true,
+  "phases": [
+    {
+      "phase": "A",
+      "cases": 10,
+      "exact_cases": 10,
+      "worker_sum_s": 4715.84641830012,
+      "previous_worker_sum_s": 4728.440895900043,
+      "worker_sum_delta_pct": -0.26635582165875915
+    },
+    {
+      "phase": "B",
+      "cases": 12,
+      "exact_cases": 12,
+      "worker_sum_s": 16917.081998399924,
+      "previous_worker_sum_s": 17073.263792400016,
+      "worker_sum_delta_pct": -0.9147740929863368
+    },
+    {
+      "phase": "C",
+      "cases": 4,
+      "exact_cases": 4,
+      "worker_sum_s": 14360.34742439998,
+      "previous_worker_sum_s": 14824.514873399981,
+      "worker_sum_delta_pct": -3.1310801936113797
+    },
+    {
+      "phase": "D",
+      "cases": 3,
+      "exact_cases": 3,
+      "worker_sum_s": 1300.2443887000554,
+      "previous_worker_sum_s": 1241.5087691999797,
+      "worker_sum_delta_pct": 4.73098708259021
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "spm_4p12s_simple__baseline",
+      "phase": "A",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -0.47707813670238686,
+          "previous": -0.47707813670238686,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 32.275951691787554,
+          "previous": 32.275951691787554,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 4.987861316206636,
+          "previous": 4.987861316206636,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.047707813670238686,
+          "previous": -0.047707813670238686,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.022453264628548464,
+          "previous": 0.022453264628548464,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.011226632314274232,
+          "previous": 0.011226632314274232,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 1.2458324573169681,
+          "previous": 1.2458324573169681,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 1.4468535629881245,
+          "previous": 1.4468535629881245,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "996704d20eee13c2af2cd768bef3a0db14f9252dc605bf778ef9a9919dd00295",
+      "previous_physical_payload_sha256": "996704d20eee13c2af2cd768bef3a0db14f9252dc605bf778ef9a9919dd00295",
+      "result_sha256": "03b9c4998e674c586af1d6655dd932a3fa0c94d51d4c981b4d8c7a3d9940a741",
+      "previous_result_sha256": "0ad58c728625376b70658eab37ce97e1b78ac07adb4e5ff30325c0385796cc84",
+      "worker_wall_s": 385.77495380002074,
+      "previous_worker_wall_s": 391.39094599999953,
+      "worker_wall_delta_s": -5.615992199978791,
+      "worker_wall_delta_pct": -1.4348804583688035
+    },
+    {
+      "case_id": "spm_4p12s_simple__high_current",
+      "phase": "A",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -0.7160095503741396,
+          "previous": -0.7160095503741396,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 23.25966170533165,
+          "previous": 23.25966170533165,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 4.987861316206636,
+          "previous": 4.987861316206636,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.04773397002494264,
+          "previous": -0.04773397002494264,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.022453264628548464,
+          "previous": 0.022453264628548464,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.011226632314274232,
+          "previous": 0.011226632314274232,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 1.2675447034822582,
+          "previous": 1.2675447034822582,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 1.470963154856646,
+          "previous": 1.470963154856646,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "a800aea8cedb7beeacbfe07f6df154186d9417dc1fda9158931d0294eb0da8e5",
+      "previous_physical_payload_sha256": "a800aea8cedb7beeacbfe07f6df154186d9417dc1fda9158931d0294eb0da8e5",
+      "result_sha256": "54a44889a273f7c890d1c0d7b867e55047245640098674fd41869ab60fad64f5",
+      "previous_result_sha256": "21be74353ee874a8d94bb8f4ecca576644139ddd42c69b5483fe7d521acdecb7",
+      "worker_wall_s": 380.73876370000653,
+      "previous_worker_wall_s": 369.0567261999822,
+      "worker_wall_delta_s": 11.682037500024308,
+      "worker_wall_delta_pct": 3.165377209164899
+    },
+    {
+      "case_id": "spm_4p12s_simple__tight_airgap",
+      "phase": "A",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -0.5850121670208286,
+          "previous": -0.5850121670208286,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 83.23546098828305,
+          "previous": 83.23546098828305,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 6.100531510669175,
+          "previous": 6.100531510669175,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.05850121670208286,
+          "previous": -0.05850121670208286,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.027462040281430084,
+          "previous": 0.027462040281430084,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.013731020140715042,
+          "previous": 0.013731020140715042,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 1.5332041932059899,
+          "previous": 1.5332041932059899,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 1.7745539189828778,
+          "previous": 1.7745539189828778,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "508ff0173a70cb5e6eb110ee3f63dd7c94bc42162ca25b8cf0d9ef52c52e6d98",
+      "previous_physical_payload_sha256": "508ff0173a70cb5e6eb110ee3f63dd7c94bc42162ca25b8cf0d9ef52c52e6d98",
+      "result_sha256": "76cc5202a37939988c3ccd76414c41761dfd4bb1f54070bd4aad650370c18fab",
+      "previous_result_sha256": "10f5907a94628d16accdb099ced02c4b7499cb381050c517e920461ffe09397d",
+      "worker_wall_s": 310.7890408000094,
+      "previous_worker_wall_s": 339.6947761000192,
+      "worker_wall_delta_s": -28.905735300009837,
+      "worker_wall_delta_pct": -8.509325822396185
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__baseline",
+      "phase": "A",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": 0.0006416471211330108,
+          "previous": 0.0006416471211330108,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 23431.61700776406,
+          "previous": 23431.61700776406,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 4.987861316206636,
+          "previous": 4.987861316206636,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": null,
+          "previous": null,
+          "absolute_delta": null
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.022453264628548464,
+          "previous": 0.022453264628548464,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.011226632314274232,
+          "previous": 0.011226632314274232,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 1.206366305669035,
+          "previous": 1.206366305669035,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 1.401423733050698,
+          "previous": 1.401423733050698,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "51ae7c6d1676aeeaa5e8ab6cb0f8fa946674b00a77be8ab1c6eae16858d5a9e0",
+      "previous_physical_payload_sha256": "51ae7c6d1676aeeaa5e8ab6cb0f8fa946674b00a77be8ab1c6eae16858d5a9e0",
+      "result_sha256": "9c4843cc17bb874022eb4cfbeaae5870533cdcb8ff04d214681f02bb690bd6ec",
+      "previous_result_sha256": "88ee09af9727e84290484d6685733860e4fe4ac8d79dd90ef96affae0a159bb1",
+      "worker_wall_s": 400.948301299999,
+      "previous_worker_wall_s": 383.8380569999863,
+      "worker_wall_delta_s": 17.11024430001271,
+      "worker_wall_delta_pct": 4.457672705448612
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__high_current",
+      "phase": "A",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -0.23802840224855895,
+          "previous": -0.23802840224855895,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 62.462511920297835,
+          "previous": 62.462511920297835,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 4.987861316206636,
+          "previous": 4.987861316206636,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.04760568044971179,
+          "previous": -0.04760568044971179,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.022453264628548464,
+          "previous": 0.022453264628548464,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.011226632314274232,
+          "previous": 0.011226632314274232,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 1.2234815130168764,
+          "previous": 1.2234815130168764,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 1.4224445108116914,
+          "previous": 1.4224445108116914,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "9b39c8a38e864edaa7f0089943e06971349924ed3b3af60b5ee8d1a2b4aa600f",
+      "previous_physical_payload_sha256": "9b39c8a38e864edaa7f0089943e06971349924ed3b3af60b5ee8d1a2b4aa600f",
+      "result_sha256": "7cbee4bad66ba3fa10103803393703cb488dd91ba967e9f842739c1364f51533",
+      "previous_result_sha256": "2d88c1752913f981d425def8e3ec1d522654ccd79eec88869847f1bfb5666c36",
+      "worker_wall_s": 379.32343260000926,
+      "previous_worker_wall_s": 385.7425254000118,
+      "worker_wall_delta_s": -6.419092800002545,
+      "worker_wall_delta_pct": -1.6640874099494218
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__tight_airgap",
+      "phase": "A",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -0.0017798704484237222,
+          "previous": -0.0017798704484237222,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 27503.78800182217,
+          "previous": 27503.78800182217,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 6.100531510669175,
+          "previous": 6.100531510669175,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": null,
+          "previous": null,
+          "absolute_delta": null
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.027462040281430084,
+          "previous": 0.027462040281430084,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.013731020140715042,
+          "previous": 0.013731020140715042,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 1.4977706305451395,
+          "previous": 1.4977706305451395,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 1.7373449144534905,
+          "previous": 1.7373449144534905,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "d38534aa36bb999a47863674d6de6567f381fdf5c0a340dcd445f56169457dae",
+      "previous_physical_payload_sha256": "d38534aa36bb999a47863674d6de6567f381fdf5c0a340dcd445f56169457dae",
+      "result_sha256": "a855a92b60d16f18e50e4d6c8d079f25baf2f4c147854f145ea3ca5b3749b906",
+      "previous_result_sha256": "fb7e4c8d3fb3836a8d2ff8a4b763efa05b66c9a9f153ce7628e0744d001bb6cf",
+      "worker_wall_s": 311.2023913000012,
+      "previous_worker_wall_s": 319.6983981000085,
+      "worker_wall_delta_s": -8.496006800007308,
+      "worker_wall_delta_pct": -2.657506840978785
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__baseline",
+      "phase": "A",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -2.213722975816425,
+          "previous": -2.213722975816425,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 33.49452463136682,
+          "previous": 33.49452463136682,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 16.28295203252614,
+          "previous": 16.28295203252614,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.11068614879082125,
+          "previous": -0.11068614879082125,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.073299036950434,
+          "previous": 0.073299036950434,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.0183247592376085,
+          "previous": 0.0183247592376085,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 1.4110679981843677,
+          "previous": 1.4110679981843677,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 1.2905304524357937,
+          "previous": 1.2905304524357937,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "1a28d88f1291f71dd2ae84f6a0cf4709c7dff986535313d281bf033f756f00e8",
+      "previous_physical_payload_sha256": "1a28d88f1291f71dd2ae84f6a0cf4709c7dff986535313d281bf033f756f00e8",
+      "result_sha256": "5c0c7ee7868198a09bf5525d3ec771bbfca618da725b6e7666221688a1ffe52c",
+      "previous_result_sha256": "0f302dd8b1230d00e9c494bfce976dc8ef4a7406c6f32a88b850ff18ee1ee568",
+      "worker_wall_s": 609.0796255000168,
+      "previous_worker_wall_s": 614.3045244000095,
+      "worker_wall_delta_s": -5.224898899992695,
+      "worker_wall_delta_pct": -0.8505388927577684
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__high_current",
+      "phase": "A",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -3.314990749413352,
+          "previous": -3.314990749413352,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 22.010697722256463,
+          "previous": 22.010697722256463,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 16.28295203252614,
+          "previous": 16.28295203252614,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.11049969164711174,
+          "previous": -0.11049969164711174,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.073299036950434,
+          "previous": 0.073299036950434,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.0183247592376085,
+          "previous": 0.0183247592376085,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 1.410809493278247,
+          "previous": 1.410809493278247,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 1.311651438530894,
+          "previous": 1.311651438530894,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "485770e1d00c8657b600a16037ada50229ff00d72e4b81a8a5d63154909be6be",
+      "previous_physical_payload_sha256": "485770e1d00c8657b600a16037ada50229ff00d72e4b81a8a5d63154909be6be",
+      "result_sha256": "b91ae796605ed9f4fd85eb830311a2041e36644d96f2ca301607fb7b43d6cf81",
+      "previous_result_sha256": "2cb8017d7792dcfe5ec4d44f22e45c653d08e6ee5659dcf656c4f9e4ca75311c",
+      "worker_wall_s": 599.4965634000255,
+      "previous_worker_wall_s": 615.7863036000053,
+      "worker_wall_delta_s": -16.28974019997986,
+      "worker_wall_delta_pct": -2.6453560439306467
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__tight_airgap",
+      "phase": "A",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -2.3570650171825154,
+          "previous": -2.3570650171825154,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 50.90775982328282,
+          "previous": 50.90775982328282,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 17.36084721007382,
+          "previous": 17.36084721007382,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.11785325085912576,
+          "previous": -0.11785325085912576,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.07815127002770018,
+          "previous": 0.07815127002770018,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.019537817506925046,
+          "previous": 0.019537817506925046,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 1.5128393021099393,
+          "previous": 1.5128393021099393,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 1.332780545332875,
+          "previous": 1.332780545332875,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "ee1aacffc5622cc9f78232e80dcdc90cefbfa94fdb8a93052af674864b663abe",
+      "previous_physical_payload_sha256": "ee1aacffc5622cc9f78232e80dcdc90cefbfa94fdb8a93052af674864b663abe",
+      "result_sha256": "bcc96a2659e331251a3aed50c211ba5fbd276fc83da908dd266bb826fe7f201b",
+      "previous_result_sha256": "dae66ce9859254740d23dae4288ce0f33bfedfe74dae8231cc936a56d92f7a6c",
+      "worker_wall_s": 640.6631530000013,
+      "previous_worker_wall_s": 650.2986435000203,
+      "worker_wall_delta_s": -9.635490500018932,
+      "worker_wall_delta_pct": -1.4817023834094223
+    },
+    {
+      "case_id": "spm_8p12s_reference_angle30__baseline",
+      "phase": "A",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -16.67111177934336,
+          "previous": -16.67111177934336,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 143.0167204192473,
+          "previous": 143.0167204192473,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 39.95782669245096,
+          "previous": 39.95782669245096,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.3334222355868672,
+          "previous": -0.3334222355868672,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.17987341664695766,
+          "previous": 0.17987341664695766,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.044968354161739416,
+          "previous": 0.044968354161739416,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 1.5451210035660283,
+          "previous": 1.5451210035660283,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 0.7582196995778476,
+          "previous": 0.7582196995778476,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "b0e108050592c6a266dc2542920b3f3be607050e265acb2ec6218a8e6018dcf7",
+      "previous_physical_payload_sha256": "b0e108050592c6a266dc2542920b3f3be607050e265acb2ec6218a8e6018dcf7",
+      "result_sha256": "e2312d9c1e8b546ae46d866e659d616f995f4d613e5298cb6a34b8776bc2413d",
+      "previous_result_sha256": "3fb7c699d41eb22b8ae5b6840deff9f9f706fbc47fee3ad9ff10318d104c7d6f",
+      "worker_wall_s": 697.8301929000299,
+      "previous_worker_wall_s": 658.6299956000003,
+      "worker_wall_delta_s": 39.200197300029686,
+      "worker_wall_delta_pct": 5.9517783219573905
+    },
+    {
+      "case_id": "ipm_flat_12s10p_fscw_contract",
+      "phase": "B",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -4.802330867718946,
+          "previous": -4.802330867718946,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 21.37574684616715,
+          "previous": 21.37574684616715,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 23.469819923549004,
+          "previous": 23.469819923549004,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.16007769559063154,
+          "previous": -0.16007769559063154,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.10565130907220147,
+          "previous": 0.10565130907220147,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.021130261814440294,
+          "previous": 0.021130261814440294,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 0.9320136861043605,
+          "previous": 0.9320136861043605,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 0.7833703484496561,
+          "previous": 0.7833703484496561,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "bb95f4e7bd4ef6fa27e7cc4745c81b21f9c04e41435bb1818b2b99de7d0aec3b",
+      "previous_physical_payload_sha256": "bb95f4e7bd4ef6fa27e7cc4745c81b21f9c04e41435bb1818b2b99de7d0aec3b",
+      "result_sha256": "f3cb1d2a2247a7a4b48e02601862e110c545e390b2d91cb8060341a162c47ee1",
+      "previous_result_sha256": "2f9613d121d35911559299286563f3ff009eaac7b05d1c6e255bceb4132f5ad5",
+      "worker_wall_s": 1496.1211248000036,
+      "previous_worker_wall_s": 1529.7791948000086,
+      "worker_wall_delta_s": -33.658070000004955,
+      "worker_wall_delta_pct": -2.200191381502292
+    },
+    {
+      "case_id": "ipm_flat_24s16p_industrial_contract",
+      "phase": "B",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -19.713747841736932,
+          "previous": -19.713747841736932,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 12.657410151997912,
+          "previous": 12.657410151997912,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 28.927184551537966,
+          "previous": 28.927184551537966,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.1971374784173693,
+          "previous": -0.1971374784173693,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.13021808116118705,
+          "previous": 0.13021808116118705,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.01627726014514838,
+          "previous": 0.01627726014514838,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 0.6051888660880332,
+          "previous": 0.6051888660880332,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 0.09962311397583976,
+          "previous": 0.09962311397583976,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "5466bbf8847c4ca547896f690d82f2416b72384475ef41a273ac8160521d9185",
+      "previous_physical_payload_sha256": "5466bbf8847c4ca547896f690d82f2416b72384475ef41a273ac8160521d9185",
+      "result_sha256": "74e1ca83cfb7570858542284ade68dbb2ce050befe1df1d1dcfb310dac727ddd",
+      "previous_result_sha256": "06087a6d3deff94ed179f86ad961f99c91b7f60c1d27d395be56da82099c5f90",
+      "worker_wall_s": 2018.5259309999528,
+      "previous_worker_wall_s": 2161.4175632999977,
+      "worker_wall_delta_s": -142.89163230004488,
+      "worker_wall_delta_pct": -6.611014675104309
+    },
+    {
+      "case_id": "ipm_flat_4p12s_micro_contract",
+      "phase": "B",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -0.02168835183534994,
+          "previous": -0.02168835183534994,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 13.97940705024356,
+          "previous": 13.97940705024356,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 0.45172130700683105,
+          "previous": 0.45172130700683105,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.004337670367069988,
+          "previous": -0.004337670367069988,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.0020334603152703163,
+          "previous": 0.0020334603152703163,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.0010167301576351582,
+          "previous": 0.0010167301576351582,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 0.10969382541613389,
+          "previous": 0.10969382541613389,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 0.14312749363049126,
+          "previous": 0.14312749363049126,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "2c8cb06fbb9fcd45129ab0a668d1d3de51b8d18f8193df8dd89cc7cd9eb688c9",
+      "previous_physical_payload_sha256": "2c8cb06fbb9fcd45129ab0a668d1d3de51b8d18f8193df8dd89cc7cd9eb688c9",
+      "result_sha256": "46faa790fe969ccbfed2dab5f699226e57b29f143b0ddb437d9321b682eb66c4",
+      "previous_result_sha256": "f2ab6cf55326486133bcb4e445b247f9dd0af50fe1be8b3187bb448e54fdceed",
+      "worker_wall_s": 342.81544310000027,
+      "previous_worker_wall_s": 356.908649399993,
+      "worker_wall_delta_s": -14.093206299992744,
+      "worker_wall_delta_pct": -3.9486872407505813
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "phase": "B",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -2.1136881494533033,
+          "previous": -2.1136881494533033,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 25.196469299780873,
+          "previous": 25.196469299780873,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 7.049082949157114,
+          "previous": 7.049082949157114,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.042273762989066065,
+          "previous": -0.042273762989066065,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.03173202196535501,
+          "previous": 0.03173202196535501,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.007933005491338753,
+          "previous": 0.007933005491338753,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 0.3022182622039199,
+          "previous": 0.3022182622039199,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 0.1771808160853456,
+          "previous": 0.1771808160853456,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "d35834a5bda42a5650d10a5006bdb2210d2a5a413641eec20c5037b36720dab0",
+      "previous_physical_payload_sha256": "d35834a5bda42a5650d10a5006bdb2210d2a5a413641eec20c5037b36720dab0",
+      "result_sha256": "ae2036132f87a24516cbda2319f855e42e32e428698873de7bde6d31d77afbf1",
+      "previous_result_sha256": "b3446277235da8866638f1c6b35feb7cd6674307ab720f6101c7f9e7fda39eb0",
+      "worker_wall_s": 1135.8782630999922,
+      "previous_worker_wall_s": 1142.090512900002,
+      "worker_wall_delta_s": -6.212249800009886,
+      "worker_wall_delta_pct": -0.543936730919492
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract",
+      "phase": "B",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -2.6009666084462246,
+          "previous": -2.6009666084462246,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 14.93478859474671,
+          "previous": 14.93478859474671,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 7.677819979606976,
+          "previous": 7.677819979606976,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.052019332168924494,
+          "previous": -0.052019332168924494,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.0345623330007859,
+          "previous": 0.0345623330007859,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.008640583250196475,
+          "previous": 0.008640583250196475,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 0.3589882063218503,
+          "previous": 0.3589882063218503,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 0.22157994117677948,
+          "previous": 0.22157994117677948,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "325234a93c8a6e81739596f90b97a0d16b1d4afaa5d671a409a69233b97dd794",
+      "previous_physical_payload_sha256": "325234a93c8a6e81739596f90b97a0d16b1d4afaa5d671a409a69233b97dd794",
+      "result_sha256": "bbfc7d8c42c1572637c6508ef2646c7b0bde71636b7040f2aaeb0dde36b39639",
+      "previous_result_sha256": "e82957c86d207af78ab0457844dc7c20725a0e4bba00a09812fc711b2904600e",
+      "worker_wall_s": 1112.127972199989,
+      "previous_worker_wall_s": 1008.5276752000209,
+      "worker_wall_delta_s": 103.60029699996812,
+      "worker_wall_delta_pct": 10.272429755526646
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "phase": "B",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -3.2413855533842018,
+          "previous": -3.2413855533842018,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 24.307907234131413,
+          "previous": 24.307907234131413,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 9.572618578956156,
+          "previous": 9.572618578956156,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.06482771106768404,
+          "previous": -0.06482771106768404,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.04309192347491439,
+          "previous": 0.04309192347491439,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.010772980868728597,
+          "previous": 0.010772980868728597,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 0.462827123505178,
+          "previous": 0.462827123505178,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 0.25994347211821744,
+          "previous": 0.25994347211821744,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "804a39124334baaf25a869b107c1ca15dc3b159cff48d68ac9be4525f9654774",
+      "previous_physical_payload_sha256": "804a39124334baaf25a869b107c1ca15dc3b159cff48d68ac9be4525f9654774",
+      "result_sha256": "caf32f60a1fa497f7ab92b927398929a259cc3d6d58c0ece880d46e16418b098",
+      "previous_result_sha256": "622707d514b2ec749240d238fd99ea421234678f72e31afe05a96699cbd9c523",
+      "worker_wall_s": 1544.3170767999836,
+      "previous_worker_wall_s": 1553.9236951000057,
+      "worker_wall_delta_s": -9.606618300022092,
+      "worker_wall_delta_pct": -0.618216861633214
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_baseline_contract",
+      "phase": "B",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -0.8445217132085053,
+          "previous": -0.8445217132085053,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 45.2488801491186,
+          "previous": 45.2488801491186,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 2.174460279758134,
+          "previous": 2.174460279758134,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.016890434264170105,
+          "previous": -0.016890434264170105,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.009788510343508966,
+          "previous": 0.009788510343508966,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.0024471275858772416,
+          "previous": 0.0024471275858772416,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 0.6032368920005551,
+          "previous": 0.6032368920005551,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 0.3758572086643927,
+          "previous": 0.3758572086643927,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "047eac99a4fe6c4a4059bfbbb5341708d75147f57969556e48b2854c58ef1913",
+      "previous_physical_payload_sha256": "047eac99a4fe6c4a4059bfbbb5341708d75147f57969556e48b2854c58ef1913",
+      "result_sha256": "ac073be930895a9075990df521c4e9f444a0270f1ee9047608e4ef910317669f",
+      "previous_result_sha256": "4497516e12f062caa55609fe4cc66714d5cd2ff9971a580b56c03cf950085fa8",
+      "worker_wall_s": 1576.5272181000328,
+      "previous_worker_wall_s": 1569.754040800006,
+      "worker_wall_delta_s": 6.773177300026873,
+      "worker_wall_delta_pct": 0.43148016338756534
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "phase": "B",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -0.637334285711214,
+          "previous": -0.637334285711214,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 21.617643059320326,
+          "previous": 21.617643059320326,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 1.440750775162847,
+          "previous": 1.440750775162847,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.01274668571422428,
+          "previous": -0.01274668571422428,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.006485657151975547,
+          "previous": 0.006485657151975547,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.0016214142879938868,
+          "previous": 0.0016214142879938868,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 0.6065783543008763,
+          "previous": 0.6065783543008763,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 0.3375854402911264,
+          "previous": 0.3375854402911264,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "5f25e8bba467f760e4521d901836c136186ab5c5e238f37a3f7387927a46f0e7",
+      "previous_physical_payload_sha256": "5f25e8bba467f760e4521d901836c136186ab5c5e238f37a3f7387927a46f0e7",
+      "result_sha256": "44be27ca432e13a223e572e1c4ba1da24e67218633d72ec5059ff7251bd626f5",
+      "previous_result_sha256": "3ba71dc0866cfd5ef0a094fddc4993e73bfd817d2afac9c265bdf0c1592308bd",
+      "worker_wall_s": 1460.1344447999727,
+      "previous_worker_wall_s": 1625.602802599984,
+      "worker_wall_delta_s": -165.4683578000113,
+      "worker_wall_delta_pct": -10.178892256790018
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_narrow_angle_contract",
+      "phase": "B",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -0.8436246591339587,
+          "previous": -0.8436246591339587,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 61.91112965358288,
+          "previous": 61.91112965358288,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 2.1811936566781,
+          "previous": 2.1811936566781,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.016872493182679173,
+          "previous": -0.016872493182679173,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.009818821189028373,
+          "previous": 0.009818821189028373,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.0024547052972570932,
+          "previous": 0.0024547052972570932,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 0.6048719881585191,
+          "previous": 0.6048719881585191,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 0.37881552399832735,
+          "previous": 0.37881552399832735,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "8d94ba394cface263cb29d700fb12f9ce0b641f76e919d04bed06dd28f742b26",
+      "previous_physical_payload_sha256": "8d94ba394cface263cb29d700fb12f9ce0b641f76e919d04bed06dd28f742b26",
+      "result_sha256": "9a2470f3731a511ec0a4441d569e07bf880583eae6afc9f86125338d8dea07b8",
+      "previous_result_sha256": "d10e12d25433fb8400f7f657a4aedacf8df522b985e2e06e7a2ebccc72a66dc6",
+      "worker_wall_s": 1645.4574285999988,
+      "previous_worker_wall_s": 1576.6748105000006,
+      "worker_wall_delta_s": 68.78261809999822,
+      "worker_wall_delta_pct": 4.3625113842077345
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "phase": "B",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -1.0401980737625605,
+          "previous": -1.0401980737625605,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 23.530754875378335,
+          "previous": 23.530754875378335,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 2.1741767661547295,
+          "previous": 2.1741767661547295,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.02080396147525121,
+          "previous": -0.02080396147525121,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.009787234083893979,
+          "previous": 0.009787234083893979,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.0024468085209734948,
+          "previous": 0.0024468085209734948,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 0.5682301086875983,
+          "previous": 0.5682301086875983,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 0.32951889940628026,
+          "previous": 0.32951889940628026,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "ec5b269154eca855318306fab32a98166c91bd00f2543672b5ea8b1840b63787",
+      "previous_physical_payload_sha256": "ec5b269154eca855318306fab32a98166c91bd00f2543672b5ea8b1840b63787",
+      "result_sha256": "940b3a5c1fbcbf190c730e81e37ce0197480f320c5a10a81a4a531ecf06cb9e6",
+      "previous_result_sha256": "3d9523f7006fa576a2482480fd5c7bcec07ba7f91e731c30f726d1bd9e9b94ff",
+      "worker_wall_s": 1555.9341327999718,
+      "previous_worker_wall_s": 1552.294138600002,
+      "worker_wall_delta_s": 3.6399941999698058,
+      "worker_wall_delta_pct": 0.23449126743806392
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_thin_bridge_contract",
+      "phase": "B",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -2.5381174647600235,
+          "previous": -2.5381174647600235,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 75.18267010765472,
+          "previous": 75.18267010765472,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 7.359592765688399,
+          "previous": 7.359592765688399,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.05076234929520047,
+          "previous": -0.05076234929520047,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.03312980723610534,
+          "previous": 0.03312980723610534,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.008282451809026335,
+          "previous": 0.008282451809026335,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 0.7070673778404987,
+          "previous": 0.7070673778404987,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 0.43837400956644573,
+          "previous": 0.43837400956644573,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "285423811e4a6bd9ff883d1f3208427b88bc37f69e7f52a8406e48f94bf7d819",
+      "previous_physical_payload_sha256": "285423811e4a6bd9ff883d1f3208427b88bc37f69e7f52a8406e48f94bf7d819",
+      "result_sha256": "bd14a7ffcaf812d275df96ffefa78de43da2a709414d11ab74242baa06346351",
+      "previous_result_sha256": "73cb8e883baaa57cd74a52030b534ff44a468e49a0909d1e1669609b36282fd8",
+      "worker_wall_s": 1537.205694400007,
+      "previous_worker_wall_s": 1460.741569100006,
+      "worker_wall_delta_s": 76.46412530000089,
+      "worker_wall_delta_pct": 5.234610071863166
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "phase": "B",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -0.7560580167244307,
+          "previous": -0.7560580167244307,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 27.92069307240676,
+          "previous": 27.92069307240676,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 1.8844556108424837,
+          "previous": 1.8844556108424837,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.015121160334488615,
+          "previous": -0.015121160334488615,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.00848303066757647,
+          "previous": 0.00848303066757647,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.0021207576668941176,
+          "previous": 0.0021207576668941176,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 0.5948020435906141,
+          "previous": 0.5948020435906141,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 0.36776524951539447,
+          "previous": 0.36776524951539447,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "bd5fd8805415bb08f1fc5c6857ccdb666fb02547f20dd067fd2bdb1ab298a580",
+      "previous_physical_payload_sha256": "bd5fd8805415bb08f1fc5c6857ccdb666fb02547f20dd067fd2bdb1ab298a580",
+      "result_sha256": "dd1e2dbf8bbd9a691e50ac6ccad702b8f929e9e1a2e7ab95cb197b72486760fb",
+      "previous_result_sha256": "1a6d5375e09b7e2633f01d924c0b408836545b991657fcfb9028879719ce6d60",
+      "worker_wall_s": 1492.03726870002,
+      "previous_worker_wall_s": 1535.549140099989,
+      "worker_wall_delta_s": -43.511871399969095,
+      "worker_wall_delta_pct": -2.833635880720542
+    },
+    {
+      "case_id": "spm_12p36s_distributed_femm_validation",
+      "phase": "C",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -6.486145667030283,
+          "previous": -6.486145667030283,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 356.71500676937507,
+          "previous": 356.71500676937507,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 120.46092633451428,
+          "previous": 120.46092633451428,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.8107682083787854,
+          "previous": -0.8107682083787854,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.5422646871918122,
+          "previous": 0.5422646871918122,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.09037744786530204,
+          "previous": 0.09037744786530204,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 1.280277824136051,
+          "previous": 1.280277824136051,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 0.8135422980004332,
+          "previous": 0.8135422980004332,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "07985755c4820491351e5a543583a33a74c2cfd8e5e8ea2a6b678821ab8f9e53",
+      "previous_physical_payload_sha256": "07985755c4820491351e5a543583a33a74c2cfd8e5e8ea2a6b678821ab8f9e53",
+      "result_sha256": "8e736abb5b713c4cc561746676e99ab1c56249f96dbff0b13172c841e43e9a20",
+      "previous_result_sha256": "7a71f2c38b56a59525dba0fe210559a03bf70cb56871d66d2e36166a77761010",
+      "worker_wall_s": 2246.459218600008,
+      "previous_worker_wall_s": 2552.3366891999904,
+      "worker_wall_delta_s": -305.8774705999822,
+      "worker_wall_delta_pct": -11.98421320722608
+    },
+    {
+      "case_id": "spm_8p24s_distributed_femm_validation",
+      "phase": "C",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -6.658603211139842,
+          "previous": -6.658603211139842,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 293.1781430747059,
+          "previous": 293.1781430747059,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 121.04526231767595,
+          "previous": 121.04526231767595,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.8323254013924802,
+          "previous": -0.8323254013924802,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.544895123290603,
+          "previous": 0.544895123290603,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.13622378082265074,
+          "previous": 0.13622378082265074,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 1.3042231144376444,
+          "previous": 1.3042231144376444,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 0.8687768886677806,
+          "previous": 0.8687768886677806,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "e4c88c530ddfa5d93a2ad62e40c2f74c6dd111eac5fa20a09cfa1de26e09e05d",
+      "previous_physical_payload_sha256": "e4c88c530ddfa5d93a2ad62e40c2f74c6dd111eac5fa20a09cfa1de26e09e05d",
+      "result_sha256": "0a3fe83b33a6fbfee47a7d812026a3804c2801585c62d80f3a5cee5c269d7670",
+      "previous_result_sha256": "d7c75d78d878fa89f5115bb77618f69acb4e635d4c7d4c86f599fc8f0f6397c8",
+      "worker_wall_s": 2032.6182620999753,
+      "previous_worker_wall_s": 2050.566022300016,
+      "worker_wall_delta_s": -17.947760200040648,
+      "worker_wall_delta_pct": -0.8752588312133214
+    },
+    {
+      "case_id": "spm_8p48s_chorded_5_6",
+      "phase": "C",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -6.06525694051841,
+          "previous": -6.06525694051841,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 198.90463145922587,
+          "previous": 198.90463145922587,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 112.28518744435364,
+          "previous": 112.28518744435364,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.7581571175648012,
+          "previous": -0.7581571175648012,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.5054609315945531,
+          "previous": 0.5054609315945531,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.12636523289863827,
+          "previous": 0.12636523289863827,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 1.425908584615519,
+          "previous": 1.425908584615519,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 0.8407784331425744,
+          "previous": 0.8407784331425744,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "78162930eda8fe07d822798e7fc514f8b1293bd15cb4e8f4bb30f127af2b553e",
+      "previous_physical_payload_sha256": "78162930eda8fe07d822798e7fc514f8b1293bd15cb4e8f4bb30f127af2b553e",
+      "result_sha256": "032ec1c1be6ab8aa46b0d52705a3cb97039352e18f9941263a7f3576657cb353",
+      "previous_result_sha256": "d9f2243b1bd44544bc32752c64fc84fd8b0e4c015b16edbd43369e839de121b9",
+      "worker_wall_s": 4930.887667800009,
+      "previous_worker_wall_s": 5080.271418999997,
+      "worker_wall_delta_s": -149.38375119998818,
+      "worker_wall_delta_pct": -2.940467917546674
+    },
+    {
+      "case_id": "spm_8p48s_distributed_femm_validation",
+      "phase": "C",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -6.2796738980477285,
+          "previous": -6.2796738980477285,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 203.94356900810357,
+          "previous": 203.94356900810357,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 116.1916620088623,
+          "previous": 116.1916620088623,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": -0.7849592372559661,
+          "previous": -0.7849592372559661,
+          "absolute_delta": 0.0
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": 0.5230462455399525,
+          "previous": 0.5230462455399525,
+          "absolute_delta": 0.0
+        },
+        "lambda_pm_Wb": {
+          "current": 0.13076156138498812,
+          "previous": 0.13076156138498812,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 1.426641922186618,
+          "previous": 1.426641922186618,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 0.8391789885719076,
+          "previous": 0.8391789885719076,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "03056686ecd4f285e7c9ea2988815ac9fb9c4b256d4027860ae1b4db2eb07fee",
+      "previous_physical_payload_sha256": "03056686ecd4f285e7c9ea2988815ac9fb9c4b256d4027860ae1b4db2eb07fee",
+      "result_sha256": "2c7865b4317eda87be1b5b873a8ec5b75727275d87898a22c101753a8224eeea",
+      "previous_result_sha256": "14c53824974d60c85cc83e53298e5dd9dc81d87e5ad09d7e9b1bdfe1d4138b2d",
+      "worker_wall_s": 5150.382275899989,
+      "previous_worker_wall_s": 5141.340742899978,
+      "worker_wall_delta_s": 9.041533000010531,
+      "worker_wall_delta_pct": 0.17585943924249836
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -3.3583047004896684,
+          "previous": -3.3583047004896684,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 13.62406697783552,
+          "previous": 13.62406697783552,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 0.0,
+          "previous": 0.0,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": null,
+          "previous": null,
+          "absolute_delta": null
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": null,
+          "previous": null,
+          "absolute_delta": null
+        },
+        "lambda_pm_Wb": {
+          "current": null,
+          "previous": null,
+          "absolute_delta": null
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 0.9595390524132776,
+          "previous": 0.9595390524132776,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 0.7509857758179614,
+          "previous": 0.7509857758179614,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "99f383d4280b935c283793225047ed149f767244f5e4dc77c0075240c4c92101",
+      "previous_physical_payload_sha256": "99f383d4280b935c283793225047ed149f767244f5e4dc77c0075240c4c92101",
+      "result_sha256": "2c19156b463da389ae30985d69d31cc743e84940df3a80db0e9e2ed83c29bdef",
+      "previous_result_sha256": "ec207b8bd8fe81ced877518d283ce2df869ec9cd01c37615d866f33859d53948",
+      "worker_wall_s": 747.2657638000092,
+      "previous_worker_wall_s": 675.7151156000036,
+      "worker_wall_delta_s": 71.55064820000553,
+      "worker_wall_delta_pct": 10.58887784928
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "phase": "D",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -0.572900463351055,
+          "previous": -0.572900463351055,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 33.09788136956122,
+          "previous": 33.09788136956122,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 0.0,
+          "previous": 0.0,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": null,
+          "previous": null,
+          "absolute_delta": null
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": null,
+          "previous": null,
+          "absolute_delta": null
+        },
+        "lambda_pm_Wb": {
+          "current": null,
+          "previous": null,
+          "absolute_delta": null
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 1.204608540620619,
+          "previous": 1.204608540620619,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 1.3978621199860282,
+          "previous": 1.3978621199860282,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "b7138720fb8d4ce6436e1c5647285d32af1a2b4e0ab5611014e1bd576e337241",
+      "previous_physical_payload_sha256": "b7138720fb8d4ce6436e1c5647285d32af1a2b4e0ab5611014e1bd576e337241",
+      "result_sha256": "6cd463876b670d7e5de2a1016e00d6d2788f1e5af6dba0e7aa631aac3026c187",
+      "previous_result_sha256": "a613b8c0ca29aa250d90071a0be1d20d06883ed38d8c287a23d1f24735cbe561",
+      "worker_wall_s": 204.62769730004948,
+      "previous_worker_wall_s": 202.56877399998484,
+      "worker_wall_delta_s": 2.0589233000646345,
+      "worker_wall_delta_pct": 1.0164070500149114
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "phase": "D",
+      "checks": {
+        "physical_payload_exact_to_previous": true,
+        "physical_payload_exact_to_frozen_v3": true,
+        "flux_audit_exact_to_previous": true,
+        "source_audit_exact_to_previous": true,
+        "flux_audit_exact_to_frozen_v3": true,
+        "source_audit_exact_to_frozen_v3": true,
+        "main_compatibility_record_exact": true
+      },
+      "all_exact": true,
+      "metrics": {
+        "avg_torque_Nm": {
+          "current": -14.62629077430519,
+          "previous": -14.62629077430519,
+          "absolute_delta": 0.0
+        },
+        "torque_ripple_pct": {
+          "current": 176.1583033238214,
+          "previous": 176.1583033238214,
+          "absolute_delta": 0.0
+        },
+        "back_emf_fundamental_V": {
+          "current": 0.0,
+          "previous": 0.0,
+          "absolute_delta": 0.0
+        },
+        "Kt_Nm_per_A": {
+          "current": null,
+          "previous": null,
+          "absolute_delta": null
+        },
+        "Ke_Vs_per_rad_mech": {
+          "current": null,
+          "previous": null,
+          "absolute_delta": null
+        },
+        "lambda_pm_Wb": {
+          "current": null,
+          "previous": null,
+          "absolute_delta": null
+        },
+        "peak_flux_density_teeth_T": {
+          "current": 1.552830424224152,
+          "previous": 1.552830424224152,
+          "absolute_delta": 0.0
+        },
+        "peak_flux_density_yoke_T": {
+          "current": 0.7558516641082739,
+          "previous": 0.7558516641082739,
+          "absolute_delta": 0.0
+        }
+      },
+      "physical_payload_sha256": "d0acb8b82df32637de56f69ca83f81c4b9439d599e4f2d1cf4d109a5993841ab",
+      "previous_physical_payload_sha256": "d0acb8b82df32637de56f69ca83f81c4b9439d599e4f2d1cf4d109a5993841ab",
+      "result_sha256": "b1a47e65048327efbba478eb4402136426fbcb9c4b476fc5e8f504d8a8ae5298",
+      "previous_result_sha256": "b8088823000a0c30841a06870b10b0de3e8ffa8336f015b8e1e6193085376041",
+      "worker_wall_s": 348.3509275999968,
+      "previous_worker_wall_s": 363.22487959999125,
+      "worker_wall_delta_s": -14.87395199999446,
+      "worker_wall_delta_pct": -4.094970591324776
+    }
+  ],
+  "main_compatibility": {
+    "schema": "coilem.main_femm_compatibility/v1",
+    "main_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+    "main_checkout_clean": true,
+    "registered_suite_sha256": "9d8cd79e60d0b908e072504a1886db7873f13047609697897ffdcccb81825743",
+    "registered_protocol_version": "1.3.0",
+    "reference_validation_bridge": {
+      "schema": "coilem.reference_validation_bridge/v1",
+      "measured_protocol_version": "1.1.0",
+      "reference_commit": "738d9516e8500c5996c772bd96470472cbb9a0f9",
+      "manifest_sha256": "b5178463b9746ea2ca7604ab24b97f221905e495bcfa22bc5169c7f7a9fd4008",
+      "six_step_protocol_sha256": {
+        "spm_14p12s_high_pole": "10170a6cf48f89aa9c86337722fd1086abe98109d7751b6860c2f4249f161c59",
+        "spm_4p12s_small": "bba51d89538650dbbe3d3e600e198f6aa5b5cac7ca2345241ebdfea671634d2f",
+        "spm_8p12s_reference": "04cc1a160aba2940152c1a5d7fdf9d47f8a5a7398f9cbaad91b5bae635757bda"
+      },
+      "reason": "Identical registered physical inputs, material and coordinate contract; only current-sector validation frame changes. Original manifest/records are immutable."
+    },
+    "registered_requests": {
+      "spm_4p12s_simple__baseline": {
+        "phase": "A",
+        "fixture_sha256": "8683cfb2785aab77e2627428e1d85e9d339656b832cc1d28f0f9c71b2376ba44",
+        "input_sha256": "8ac64a2b2f44e6c535bac1a67d900047a4c9f6ec6fea5f7d9ee26e429f4dd27b"
+      },
+      "spm_4p12s_simple__high_current": {
+        "phase": "A",
+        "fixture_sha256": "0aa890a7f91080d325531249fe35db5e83a1188f7c4d2a924e8dd7aca58255c2",
+        "input_sha256": "cd897180782c144ca2796abef4e94f46591f3f619dfcdb0bad20f95624ff9cd9"
+      },
+      "spm_4p12s_simple__tight_airgap": {
+        "phase": "A",
+        "fixture_sha256": "8ac45848dd6e64b1056d6126dd8cc581e662b4a944fd2c505382b1c8feeedcda",
+        "input_sha256": "42dd5d5a40a226a5cf1c9692e8d6b41b5865ceefc5fa2b8d0798866a6aeec5d1"
+      },
+      "spm_4p12s_simple_noload__baseline": {
+        "phase": "A",
+        "fixture_sha256": "a2ea56eb54efd8121ba18bd56cf2aebb8cdee00fc45a34bf3b6a9279fe9d6441",
+        "input_sha256": "f7a1e9d89d541798352fa7ef6e5b7191559b2f41cd9b000be3b87201c367e03f"
+      },
+      "spm_4p12s_simple_noload__high_current": {
+        "phase": "A",
+        "fixture_sha256": "eb6ac4ab542644145605bc75689c5f59ff2a11bb44d48010fd2e469414cc5c38",
+        "input_sha256": "7031ccabb86b8072fd7df2cc0adcd25ea792c62d1d08320d8c9feb3742382b0a"
+      },
+      "spm_4p12s_simple_noload__tight_airgap": {
+        "phase": "A",
+        "fixture_sha256": "e0ab8c2b89bd7f562c9c797763c6155f2c27f122fe6c177f5c69e8e4db021697",
+        "input_sha256": "68986a13cb1beaceff8634f205838b60b30a97e0c8768de5e02ea3d027c79d7b"
+      },
+      "spm_8p12s_concentrated__baseline": {
+        "phase": "A",
+        "fixture_sha256": "e63edcc854d01e6c7ddb0c9ef83e6c6212bbb5ee10cf60de2e8f395219c342c7",
+        "input_sha256": "0fad5d88fdbc263496008238a1ac95bf9644cafa212164364ac400a880bfb189"
+      },
+      "spm_8p12s_concentrated__high_current": {
+        "phase": "A",
+        "fixture_sha256": "09f98ac8d479dfb1d5df1d44123ce498d37a7b43a769c4bdfa5c765044669dd9",
+        "input_sha256": "ae9364321c17f4dbeaffa73b919ea34329f1ebbe0d60e671a095c3e3489e8d66"
+      },
+      "spm_8p12s_concentrated__tight_airgap": {
+        "phase": "A",
+        "fixture_sha256": "d0a534dfba20d13a3a0ea96ac7a0e4640a9261dcb68dd095f86233a74c2a2969",
+        "input_sha256": "8c71b0116931037a5f0c04b041e70d2bf18dc58d582e9da2ac841fc4a2c534ae"
+      },
+      "spm_8p12s_reference_angle30__baseline": {
+        "phase": "A",
+        "fixture_sha256": "e9188508875a6b9b900229cec0dce6f8bfff862433bcd48eae666b1d26deeefd",
+        "input_sha256": "640c03a944a039ab5770d7fa44b1ae4b5458fa3fe7f005c51a3c30343cfb6c95"
+      },
+      "ipm_flat_12s10p_fscw_contract": {
+        "phase": "B",
+        "fixture_sha256": "74358dbc72618a8d79432bbd8420a5ff5ad1936c8419ca3ceacfaa42642fa680",
+        "input_sha256": "86f59356d594916ae7f774e1be77f16821c48c1c29e13ba241d308efe3bc655c"
+      },
+      "ipm_flat_24s16p_industrial_contract": {
+        "phase": "B",
+        "fixture_sha256": "e7b4bf9b187c57976de7ef7851e62db63dbb0ff90196060f1d927cac32203402",
+        "input_sha256": "7a935a36d5c17e76bbfd97dc74de720a10c40190d5e77eecce75122da3ab46c3"
+      },
+      "ipm_flat_4p12s_micro_contract": {
+        "phase": "B",
+        "fixture_sha256": "907592fae67a43464976f9c8153a0a82f7abbac51cb5fd5e4d489dbe79a70119",
+        "input_sha256": "3dfc832ffcce6cb300967c83dd611e27d10dac8bb3004ccdb7ffd1e8c259194b"
+      },
+      "ipm_flat_8p12s_fsae_angled_pocket_contract": {
+        "phase": "B",
+        "fixture_sha256": "b1b664d37b65facde4941cd362b2fe1a3fbcbba94677a2e15ab2b6a6e85e874b",
+        "input_sha256": "b6bff40deb14d9f1587e971bea08f0408ff77059dc3f86668793da87fe4f027b"
+      },
+      "ipm_flat_8p12s_fsae_contract": {
+        "phase": "B",
+        "fixture_sha256": "8070cb6d1281f900beed45ca729211327534b263db6ca28e4d9d2b58d2c15904",
+        "input_sha256": "131abdcb3b9e19371b7f1b53e2b6e462c31a876a8b7540b2566d772a20aaa74b"
+      },
+      "ipm_flat_8p12s_fsae_thin_bridge_contract": {
+        "phase": "B",
+        "fixture_sha256": "3d02199dc695dd6fd6d985ae9be5f66b10015ff1c45ecdf21015ba92ee30bef5",
+        "input_sha256": "1d6748db16adfad0e56329248de6fb30fea79875a0ed002f0ce0f283cb20ca63"
+      },
+      "ipm_vshape_8p12s_baseline_contract": {
+        "phase": "B",
+        "fixture_sha256": "0b74642e6e9cccd3b6cc4db05e934a4fccce8b0929cbf646d91d97b16d51a96f",
+        "input_sha256": "29ecdb6f3f070930fc3e8ae71642950bd2852513ca6795d9f7eebcb4d848dce1"
+      },
+      "ipm_vshape_8p12s_deep_apex_high_output_v1": {
+        "phase": "B",
+        "fixture_sha256": "5c0ce6a13157f4b509278fd7ce6497ae50f813419f0469303d01b468053ad579",
+        "input_sha256": "65ba62cff333a4bff4149e5b3040717ef780caf8576cb0a0e0b2d3e1754ebf8e"
+      },
+      "ipm_vshape_8p12s_narrow_angle_contract": {
+        "phase": "B",
+        "fixture_sha256": "ba4e05a68783179e905416912dfcf1be03c757bd7ff13ea7f413b37617534441",
+        "input_sha256": "921ccc975000bd3c6bcb07626ae5ce6cc899173c026ed97071f64492248c20fa"
+      },
+      "ipm_vshape_8p12s_pocket_offset_contract": {
+        "phase": "B",
+        "fixture_sha256": "63de352f24f9a62eeb4de789758217e66f37ce09743373e45028865fb0dc559f",
+        "input_sha256": "8e294a68dc235fa1f930db1f614f1c75107f1f7653a02ec4505d6aa7e0948ea9"
+      },
+      "ipm_vshape_8p12s_thin_bridge_contract": {
+        "phase": "B",
+        "fixture_sha256": "69366d5331fbd7f54c8f5c718ec3fb582609908be3a56f622d041cb70fd0bd5e",
+        "input_sha256": "7f6e11619eb08fc65478147423811b9046dd4ef5ce2447258fe8f38270f001a6"
+      },
+      "ipm_vshape_8p12s_wide_angle_high_output_v1": {
+        "phase": "B",
+        "fixture_sha256": "4b64ba12009d85110f08bb03804b96d17f6e79a751c088298ac17123680f77c4",
+        "input_sha256": "28e134698c83fd6ef7f0f898ef84306f73139a3fd46102617501f0bc7d24adfb"
+      },
+      "spm_12p36s_distributed_femm_validation": {
+        "phase": "C",
+        "fixture_sha256": "75f68857d14aba7bb1d92d3388185ac91a692ae4d0adf6d3dc5b5fccfb5b0fea",
+        "input_sha256": "3610eb62a7a9398d7247e8723e804216bcdeab41fe7f86dda782cf5da5524796"
+      },
+      "spm_8p24s_distributed_femm_validation": {
+        "phase": "C",
+        "fixture_sha256": "394869d4f25cad92342e5d29c438ae742728ff459934f1dddb5e63f479fc2125",
+        "input_sha256": "393f55527b8bd46528a703b3d4e20b28b5df635904c3a8a4037a5eb1f4c8754c"
+      },
+      "spm_8p48s_chorded_5_6": {
+        "phase": "C",
+        "fixture_sha256": "06a5da2f2fdf8368daf988fa8d9311f3526ac3adc6c0e29e2882f31e9dc56e8f",
+        "input_sha256": "51ae710cb7722870b32b7b87c58fceeb24ef9b716c2bd34e27f7afe5c4cb44a1"
+      },
+      "spm_8p48s_distributed_femm_validation": {
+        "phase": "C",
+        "fixture_sha256": "0020b4a8084c251f6b17cbc6fb1f4d3293bbc057502b846da0f10481689e5090",
+        "input_sha256": "24a803fcea4ef95c95411b33863d6abe0af7e328786f8d6cc6c26560bf870c34"
+      },
+      "spm_14p12s_high_pole": {
+        "phase": "D",
+        "fixture_sha256": "2da4d771bdf7a367b4dd6c88bc4ccb41c1d03dd163d341fc99ec3b6aa3016d00",
+        "input_sha256": "715fd362ac31d3801c0c4eb084f1b64959b3a7128d75966671a890a3960aa8bc"
+      },
+      "spm_4p12s_small": {
+        "phase": "D",
+        "fixture_sha256": "7b14bb32c5c46f0fdb2652b6306bad65093eebb073180d4cd932e5923377dc45",
+        "input_sha256": "0d905ab6916a5f956f88b185a7c1514623db69138aa242102b4ab2b9c469261b"
+      },
+      "spm_8p12s_reference": {
+        "phase": "D",
+        "fixture_sha256": "c7c0657f31d62e1ddb62edcc07fa6838370a937aa6cdc4580d3cd443b6f0808c",
+        "input_sha256": "27d44ba712a94358558622addf3281b66933b5abc89792d3d6aab0a3fcfe6e36"
+      }
+    },
+    "shared_femm_sources": {
+      "winding_utils": "63c58cdf306665ed8b184b36072c8feb312033afddfb0c6097ec476152578954",
+      "excitation": "7e2dead86d3db978cd641fcfe203a2e747f5b48076be0483eff841f84bb9aa84",
+      "geometry_drawer": "df695284a5acc9b64ac800fd59fff1530a34f8de0b9f9e8b15b190df8a601584",
+      "geometry_ir": "c854de3f60d054660b9616cdb752a32835b12c445f497adb7ee24eb0ebf4f8bb",
+      "geometry": "88828611cc3019c2d8c602aa717ae722311102bf4f0ef225bb4bf9e27d43f673",
+      "solver_environment": "9f623790efdcdc915cc693bb16cb4675bcbc1c21188176caccfe53fb3984b06f"
+    },
+    "current_physics_sources": {
+      "backend/airgap_sampling.py": "958520a6b21d7f31245b3b6bd1c47d3f66f5e13c090557cc4330ae2199602a46",
+      "backend/back_emf_harmonics.py": "2e0e5538312c31d0dbe101a2a8887163deaab6e4e0d81925a21ae8b5af451c11",
+      "backend/excitation.py": "7e2dead86d3db978cd641fcfe203a2e747f5b48076be0483eff841f84bb9aa84",
+      "backend/geometry.py": "88828611cc3019c2d8c602aa717ae722311102bf4f0ef225bb4bf9e27d43f673",
+      "backend/geometry_drawer.py": "df695284a5acc9b64ac800fd59fff1530a34f8de0b9f9e8b15b190df8a601584",
+      "backend/geometry_ir.py": "c854de3f60d054660b9616cdb752a32835b12c445f497adb7ee24eb0ebf4f8bb",
+      "backend/geometry_ir_tessellation.py": "4efd902bad677863c27ab2c379b480affe880a690bb8c59efef5c506ee4abfec",
+      "backend/gmsh_mesh_rotation.py": "c872864083c037c6d56acb3fe630ba0540fb61b54bb37f10ff1c90fbe4839529",
+      "backend/gmsh_solver.py": "764e31391894685f1a259a90c7dbb562d612f585a92cef91761a5d6ae783f53f",
+      "backend/magneto2d_adapter/__init__.py": "0ffba926d459e54c6e83943be4b4855bd0cfe20ba05586f1273e6575f5405baa",
+      "backend/material_catalog.py": "4227dfbbddd82167b780f2284de59bcc0db69840a865de145612a9dda99fa198",
+      "backend/material_contract.py": "a171739b17fbd29047b5b1747c14f2b3094a845ec50ba3b02764512b4105fd07",
+      "backend/solver/__init__.py": "696af12acd2ab91099cecd024486f8678277c1050d0e6fdde259a6c7b4ce8f8a",
+      "backend/solver/_helpers.py": "d422325c9fd1efcba023fcffb45db0ebc55a0fccdf5d0540599b2ebae93b8e18",
+      "backend/solver_contract.py": "fcc680bdfb83c9a1a960c71f9a0f20c9d4149b09d5931c320a0e7d51f65c5046",
+      "backend/steel_flux_metrics.py": "8e2a9d89aa3b50272ad40d60e69d34da321e10bbf1860bf4b0a426601d59ea69",
+      "backend/sweep_planning.py": "1a36902ae5e1eb460228200c5ea9f93e463cd56c14c7a21db2a154fe848d8d14",
+      "backend/torque_metrics.py": "1174aded8f337de4105cd0d1f3b03a38f8256f9aa868b129539637ff3c419e68",
+      "backend/winding_utils.py": "63c58cdf306665ed8b184b36072c8feb312033afddfb0c6097ec476152578954",
+      "materials/electrical-steel/M350-50A.csv": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+      "solvers/magneto2d/Cargo.lock": "1c963a3a9e0dd242d2d8dded6ae91c39bc7675ebe63c742195fb62d2674d5fbe",
+      "solvers/magneto2d/src/assembly.rs": "4f360ca4ae50cc7a26c772843b7cdf70078d0e294abbd342ba90405ce85cd8bb",
+      "solvers/magneto2d/src/field.rs": "3f21a82ed7c0c93ac452fa2fd00cd0570077aabc976e666f974427e87dfd8786",
+      "solvers/magneto2d/src/lib.rs": "8969b5f87342662624715f873cbfbcd63e1bdd360313d788c631d2ec26491b04",
+      "solvers/magneto2d/src/magnet_fraction.rs": "095c7ac9c8eb2d00c4c268855f4a1e61a1500b0b6a69ebbe8f0ece48e58edc2a",
+      "solvers/magneto2d/src/main.rs": "48f811c7b0175cb84568c4997ed678244c0b6323f5407817a579a09b8fcabe4a",
+      "solvers/magneto2d/src/materials.rs": "42c6fcda5430f904a240c7fabb7e35d6ad209a2f98247c332846be5b3e7b5b77",
+      "solvers/magneto2d/src/mesh.rs": "f6cc1bf9fa850668e2eaeaf409d51547837a34a774f0ed77dab194d835f2cac3",
+      "solvers/magneto2d/src/motor.rs": "0aa189fb0ca601ebe1b9069609965931d4860d6ac5bafc06a8431f88f8b11840",
+      "solvers/magneto2d/src/postprocess.rs": "ff9b7d727df7a4610f7d1c22e6c48771c260b50c18f6de4671d3d59558c14838",
+      "solvers/magneto2d/src/postprocess/summary.rs": "7e582df8d8633e8dd46e7f44f15f32424dc5a8ebace32886f69d0769ff5ce010",
+      "solvers/magneto2d/src/postprocess/torque/env_flags.rs": "bb48c6944a22c0566815f9dfe67485e8a3c53836501dbc2e971a7c9118467a4b",
+      "solvers/magneto2d/src/postprocess/torque/localization.rs": "fc850cee925b0158be741b3d3e2a616144218ff563d00e180fbc09fe0fb4d5c8",
+      "solvers/magneto2d/src/postprocess/torque/mod.rs": "34c26821199e6d1c49d1be34e4db3b89627dd41676960ec1b8f20e00816410ba",
+      "solvers/magneto2d/src/run_config.rs": "7a588d6e47cacbfbf2ecf046f0b8fb0d028cd5b5bc85d39c3fa08fc528c66e54",
+      "solvers/magneto2d/src/schema.rs": "81a2b611c15736cb7851af8dd33f0260c48a3e2e1103bf21b6a17e8640cf83cd",
+      "solvers/magneto2d/src/solve/context.rs": "358956e298d85d2ba6ff8c896f3d1a429d746b8d840c6ad2f715486629480bdc",
+      "solvers/magneto2d/src/solve/mesh_metadata.rs": "a9d2a61aae3d4c02b49edfdd9ffce38e196bcb860688afb6c21d62411d3115b9",
+      "solvers/magneto2d/src/solve/metrics.rs": "cde1d765e21376773d93f8f7541954a82e8e6fffc08dcfb94cd74f683139be60",
+      "solvers/magneto2d/src/solve/mod.rs": "79cdc5358a33db0f1f6822152ba12667d40682beac1c53b43a5b228f928db9fd",
+      "solvers/magneto2d/src/solve/model/ipm.rs": "4c48ee72bf5964fd89de9ac5db8af4bd973f6e3ebfa46310edb84b30e398a6e0",
+      "solvers/magneto2d/src/solve/model/mod.rs": "714736b57d6ef1d2ec77f2e07846b10bb7fe29957e195a4e9f5e2af1576cad91",
+      "solvers/magneto2d/src/solve/model/spm.rs": "7f7d1009a5b84672e155475e99ae3e07c7956d9e0b9d976ad9e474019589ffd3",
+      "solvers/magneto2d/src/solve/newton.rs": "045ab39fcf590e2fc6817698eea063325d356591d27922e65fc9df467f39ef4d",
+      "solvers/magneto2d/src/solve/nonlinear.rs": "f1c1880d9e330b427f077ec5f82b327db0532bc0eb64013c29316d3a2504f320",
+      "solvers/magneto2d/src/solve/picard.rs": "2bcd58d6609db9f059263dfd429ea5f024e2bc94ee922cb18666229012e3d5fe",
+      "solvers/magneto2d/src/solve/problem.rs": "ea94c3e616ccfbeb8237da97a166265d8692b38223a45977e98aa90d2d5e345c",
+      "solvers/magneto2d/src/solve/types.rs": "cebe1b569d8711565c2dc8ab480ff9a4c704bc4afe38a3378a7d488acb472d57",
+      "solvers/magneto2d/src/sources.rs": "27bddb72c8830a2f736f586f50db8eff883e5350eb4647a90dd6eed362af6118",
+      "solvers/magneto2d/src/sparse.rs": "b4caa680a8665afc39e77f320eca1836261add97b22b6533919a1dda54048ac9"
+    },
+    "differences_from_historical_native_physics": [
+      "backend/gmsh_solver.py"
+    ],
+    "interpretation": "All registered FEMM requests and FEMM-relevant shared sources are unchanged. The changed Gmsh mesher is not used by this FEMM producer. The private FEMM producer retains its original measured source identity and guards.",
+    "adapter_public_model_source_sha256": {
+      "backend/models/__init__.py": "e004067980b6a61c9811f74e5a1e337f827673c95128e986883d81a69b9f4128",
+      "backend/models/config.py": "d2a919a0cb673ed557a63564c28a0ff51adf5436dfc7ffb9b381d9d2322d41dc",
+      "backend/models/errors.py": "a31f9c3683f9eee4a2c9490f6d7f468590815903a00c4330b2f6c5cfbc5f18b9",
+      "backend/models/field.py": "d5a16aa60ee1cfdf3802dc90d10b404a35cff7c81d9f1fc4b6bad292cc31e7a4",
+      "backend/models/geometry.py": "ad7ee8acb567b9aa22a73329523734f0f67e7f98a4f349da4bc0ad387758ab0c",
+      "backend/models/mesh.py": "b739ab587d7db3b300994926eb59932c4e1992660bb7fe8950bf1940528b082e",
+      "backend/models/result.py": "34d42f29fd8442e21d94a09cc0d3e72a4da556139c3842a9e91c4f5113790b0d",
+      "backend/models/waveforms.py": "c1a0ed0f29043b8a4cf6c2d4a9667726c8c71f59bf75aab6b7ed9fbcab334b70"
+    }
+  },
+  "execution_change_from_previous": {
+    "file": "tools/benchmark_suite/payload_reuse.py",
+    "previous_sha256": "56f0876201e18682e8e6130ac7392f90df8fc9a39433d7eb6a9adbdab69cad7e",
+    "main_sha256": "e2da9fb4bdba5bfa8194dda8a927bef450b31ff8e33bd1f3bf06781e38508d82",
+    "reviewed_change": "Array-safe comparison of cached builder options; projection, field builder, FEMM inputs and extraction remain unchanged. Fresh outputs and audits are compared independently after measurement."
+  },
+  "interpretation": "Exact comparisons exclude only recorded timestamps, cache locations and elapsed timings. Full normalized physical results, raw/public waveforms, mesh counts, model/current contracts and both extraction audits are retained. This repeat does not promote the scientific qualification of the frozen REVIEW_REQUIRED FEMM baseline.",
+  "operational_audits": {
+    "ownership": {
+      "file": "ownership-audit.json",
+      "sha256": "6775ac43a2b6111d594c389a7a40c1709e61ba021140331f5b0eff672988e633",
+      "status": "PASS"
+    },
+    "concurrency": {
+      "file": "concurrency-check.json",
+      "sha256": "8ab9488895d694a252c55a638054191173998d9fc1a5e99be5ecfe1ee7f1ca67",
+      "status": "PASS"
+    },
+    "legacy_numeric_pid_uniqueness_check": "FAILED due to one later recycled numeric PID; retained in ownership-audit.json with the successful session-marker and nonoverlap audit"
+  }
+}

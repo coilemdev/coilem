@@ -3,6 +3,7 @@
   "benchmark_results.csv": "0789019f8e53fb2b3fdd3dd977211c423d6021e88508621707892261a32f9a34",
   "benchmark_summary.json": "b56e6e3a4f53fdd7d9cbb1ef30c4105d116788b961218fa5ca423dca17c79e60",
   "coilem_benchmark_report.html": "c7a2a76f9c3f317c16d15fe8cac4a555ec658e0a0a6540ab35a2f2530a743de6",
+  "coilem_benchmark_report.pdf": "d741a96c7aad7c7395549467edd167eff8b306430721f5d9b253f29fe46dfa0c",
   "console.txt": "1a5848ef3897b47fabcdac250064592f6f2d94cad63fbab70a8147e677aa208c",
   "environment.json": "e49f31903374ce58dc0c3808b26aef1f0bc70e64106b8ff7f0e98ab11a09c23e",
   "fixtures/ipm_flat_12s10p_fscw_contract__native.json": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290",
@@ -41,8 +42,9 @@
   "fixtures/spm_8p24s_distributed_femm_validation__native.json": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829",
   "fixtures/spm_8p48s_chorded_5_6__native.json": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136",
   "fixtures/spm_8p48s_distributed_femm_validation__native.json": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357",
+  "pdf-publication.json": "69a29106801d95e32ceb228204e3e30ce523f10a22bb35e4ea8d24cfc8d32510",
   "raw-report-hashes.json": "f6c83a1f3102002cee9d5d8ae33996fbab0f600f4bec7907d81c494c01f99e8b",
-  "README.md": "8777e34ecd661ff5e975a8d8234d957b856a383ce5a749ef4d282a4781559819",
+  "README.md": "c0406ab904befb46f9b916508fdb8a0e39ad1ffb8912f2484c7ff7bbfff92d0a",
   "run_manifest.json": "7ecaa1408f305d28de770fa3e3b34641b56de27d9aff2ef0f21692329efe8868",
   "self-check-differences.json": "30e5b93dd10f30961ceecacefa4b985d3e8eb5fc65adb1279cee721a3fda7664",
   "self-check-windows-x86_64.json": "69503ef105387c033c445085f081019e321e0102ee7392f3149c093e963123fb"
