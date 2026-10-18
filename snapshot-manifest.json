@@ -240,13 +240,13 @@
     },
     {
       "path": "backend/field_artifacts.py",
-      "bytes": 11547,
-      "sha256": "379b89960bd89b3c23c854c2b9db936f942552cb2365f024250084653eeede1d"
+      "bytes": 13651,
+      "sha256": "c169346804a9f2ebd1148c892a18fc49936176f7475fee963f9964e473806622"
     },
     {
       "path": "backend/field_composition.py",
-      "bytes": 16346,
-      "sha256": "370482a84a5931567801d1f2788ee35aad9193e9432a2b9f10ccf0cb45db1cc0"
+      "bytes": 16342,
+      "sha256": "53e4a43949f217d95a9acfba3a5565382e9494646437a3fa5ee5096f726f25e7"
     },
     {
       "path": "backend/field_lines.py",
@@ -465,8 +465,8 @@
     },
     {
       "path": "backend/public_field_playback.py",
-      "bytes": 26926,
-      "sha256": "e61142f5092a2b244facccf3b56ccccc5bdf0f3f8802073deeec4220278a6dc1"
+      "bytes": 27216,
+      "sha256": "0465d38e6650660b5c4389e68a0f22f3220726636561699149d8abe5c002979d"
     },
     {
       "path": "backend/public_field_playback_contract.py",
@@ -515,8 +515,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 51250,
-      "sha256": "7fcaa62f30bf2b86cffe1ae8c705c9d451b64bd3bea817463c0f94924b6d76c7"
+      "bytes": 51221,
+      "sha256": "e097715f7823bbc971ecc2a86533eb8646df03e6eb2e129201d347208fe70827"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -6344,6 +6344,11 @@
       "sha256": "f5a86d1fc3e80d1ca3db6bb9d60e14d65ba0d532a3bdf9c4ce20c1b648a12b2c"
     },
     {
+      "path": "tests/test_field_frame_storage.py",
+      "bytes": 5305,
+      "sha256": "5e49cda17ce913788dde60bf374cd2769137e69cea827a596fbc9b356f3235c8"
+    },
+    {
       "path": "tests/test_field_lines_numpy.py",
       "bytes": 9313,
       "sha256": "e2bfbb122cd018e381e1557d6cde58e99f04466af4df8cd8defa962899ea5637"
@@ -6475,8 +6480,8 @@
     },
     {
       "path": "tests/test_public_field_playback.py",
-      "bytes": 14768,
-      "sha256": "a2e2f7a8ed27f10376f83e3ef920b95f57cb5894ff7521830b796547da7f6649"
+      "bytes": 14914,
+      "sha256": "e33e0b2219c592302750482828dc9cc249482200666753c0ed6b2508deb70e5a"
     },
     {
       "path": "tests/test_public_report_exports.py",
@@ -9503,6 +9508,36 @@
       "path": "tests/test_solve_workspace.py",
       "source_sha256": "3dd440510fbe3540f0151fd68e8e15fef946a638f30de2f5382343afb6445025",
       "reason": "A completed run no longer stores its replay package."
+    },
+    {
+      "base_commit": "da501e99e78677aac89c33a13eb519310d5656f0",
+      "path": "backend/field_artifacts.py",
+      "source_sha256": "379b89960bd89b3c23c854c2b9db936f942552cb2365f024250084653eeede1d",
+      "reason": "Store a PM-only plot's mesh parts once when they equal the frame's, and restore them on read."
+    },
+    {
+      "base_commit": "da501e99e78677aac89c33a13eb519310d5656f0",
+      "path": "backend/field_composition.py",
+      "source_sha256": "370482a84a5931567801d1f2788ee35aad9193e9432a2b9f10ccf0cb45db1cc0",
+      "reason": "Read field frames through the shared loader."
+    },
+    {
+      "base_commit": "da501e99e78677aac89c33a13eb519310d5656f0",
+      "path": "backend/public_field_playback.py",
+      "source_sha256": "e61142f5092a2b244facccf3b56ccccc5bdf0f3f8802073deeec4220278a6dc1",
+      "reason": "Write the geometry, flux and mesh playback layers as lossless WebP; read frames through the shared loader."
+    },
+    {
+      "base_commit": "da501e99e78677aac89c33a13eb519310d5656f0",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "7fcaa62f30bf2b86cffe1ae8c705c9d451b64bd3bea817463c0f94924b6d76c7",
+      "reason": "Serve field frames through the shared loader."
+    },
+    {
+      "base_commit": "da501e99e78677aac89c33a13eb519310d5656f0",
+      "path": "tests/test_public_field_playback.py",
+      "source_sha256": "a2e2f7a8ed27f10376f83e3ef920b95f57cb5894ff7521830b796547da7f6649",
+      "reason": "Expect lossless WebP geometry, flux and mesh layers."
     }
   ]
 }

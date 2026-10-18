@@ -3,8 +3,10 @@
 The native solver writes exact numerical JSON frames for diagnostics,
 post-processing, and resolution-independent inspection. Browser playback uses
 independently toggleable high-resolution raster layers so animation does not
-need to download or rasterize those full arrays. Flat geometry and heatmap
-layers use lossless PNG; detailed field lines use WebP.
+need to download or rasterize those full arrays. Flat geometry, heatmap and
+mesh layers use lossless WebP (the same pixels as PNG at well under half the
+size); detailed field lines use lossy WebP, which their antialiased strokes
+compress far better than lossless.
 
 One numerical frame is retained for every raster frame behind the lazy
 field-frame endpoint. This keeps animation network usage lightweight while
@@ -17,7 +19,6 @@ limit bound storage.
 
 from __future__ import annotations
 
-import gzip
 import json
 import math
 import os
@@ -28,6 +29,7 @@ from typing import Any, Literal
 
 from backend.field_artifacts import (
     encode_solve_cache_artifact_id,
+    read_field_line_frame_artifact,
     resolve_solve_cache_artifact_id,
 )
 from backend.public_field_playback_contract import (
@@ -90,8 +92,7 @@ def _load_frame(artifact_id: str) -> tuple[Path, dict[str, Any]]:
         or not path.name.endswith(".json.gz")
     ):
         raise ValueError("field playback source is not a numerical field frame")
-    with gzip.open(path, "rt", encoding="utf-8") as handle:
-        artifact = json.load(handle)
+    artifact = read_field_line_frame_artifact(path)
     frame = artifact.get("field_line_frame")
     if not isinstance(frame, dict):
         raise ValueError("field playback source has no field frame")
@@ -326,19 +327,23 @@ def _save_webp(image: Any, path: Path, *, quality: int) -> dict[str, Any]:
     }
 
 
-def _save_png(image: Any, path: Path) -> dict[str, Any]:
+def _save_lossless_webp(image: Any, path: Path) -> dict[str, Any]:
     temporary = path.with_name(f".{path.name}.tmp")
-    # Level 3 encodes in about 60% of level 6's time for files about 25%
-    # larger; PNG is lossless, so the pixels are the same.
+    # Lossless WebP keeps every pixel. Its fastest setting writes these 1536 px
+    # layers in about half of PNG level 3's time at 44% of the bytes; the
+    # slower settings shrink them only a little more.
     image.save(
         temporary,
-        format="PNG",
-        compress_level=3,
+        format="WEBP",
+        lossless=True,
+        quality=0,
+        method=0,
+        exact=True,
     )
     temporary.replace(path)
     return {
         "artifact_id": encode_solve_cache_artifact_id(path),
-        "media_type": "image/png",
+        "media_type": "image/webp",
         "byte_count": path.stat().st_size,
     }
 
@@ -516,9 +521,9 @@ def _render_composition(
         segments,
         point,
     )
-    heat_ref = _save_png(
+    heat_ref = _save_lossless_webp(
         heat,
-        output_dir / f"frame_{frame_index:04d}_{composition}_flux.png",
+        output_dir / f"frame_{frame_index:04d}_{composition}_flux.webp",
     )
     lines_ref = _save_webp(
         lines,
@@ -558,14 +563,14 @@ def _layer_catalog() -> list[dict[str, Any]]:
             "id": "geometry",
             "label": "Geometry",
             "role": "geometry",
-            "media_type": "image/png",
+            "media_type": "image/webp",
             "default_visible": True,
         },
         {
             "id": "flux_density",
             "label": "Flux density",
             "role": "scalar",
-            "media_type": "image/png",
+            "media_type": "image/webp",
             "default_visible": True,
             "quantity": "magnetic_flux_density",
             "unit": "T",
@@ -583,7 +588,7 @@ def _layer_catalog() -> list[dict[str, Any]]:
             "id": "mesh",
             "label": "Mesh",
             "role": "annotations",
-            "media_type": "image/png",
+            "media_type": "image/webp",
             "default_visible": False,
         },
     ]
@@ -661,14 +666,14 @@ def _package_playback_frame(
     geometry = _drawable_geometry(outer)
     _, point, triangles = geometry
     base = _render_base(Image, ImageDraw, triangles, point)
-    base_ref = _save_png(
+    base_ref = _save_lossless_webp(
         base,
-        output_dir / f"frame_{frame_index:04d}_base.png",
+        output_dir / f"frame_{frame_index:04d}_base.webp",
     )
     mesh = _render_mesh(Image, ImageDraw, triangles, point)
-    mesh_ref = _save_png(
+    mesh_ref = _save_lossless_webp(
         mesh,
-        output_dir / f"frame_{frame_index:04d}_mesh.png",
+        output_dir / f"frame_{frame_index:04d}_mesh.webp",
     )
     compositions: dict[str, Any] = {
         "armature" if mode == "armature" else "resultant": _render_composition(

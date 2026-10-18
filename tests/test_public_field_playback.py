@@ -113,8 +113,8 @@ def test_hybrid_raster_manifest_keeps_numerical_frames_for_exact_zoom_detail(
     assert (
         cache_dir / "field_playback" / "resultant_pm" / "manifest.json"
     ).is_file()
-    assert len(list((cache_dir / "field_playback").rglob("*.png"))) == 8
-    assert len(list((cache_dir / "field_playback").rglob("*.webp"))) == 4
+    assert len(list((cache_dir / "field_playback").rglob("*.png"))) == 0
+    assert len(list((cache_dir / "field_playback").rglob("*.webp"))) == 12
     assert manifest["numerical_snapshots"] == [
         {
             "artifact_id": "source-0",
@@ -147,10 +147,12 @@ def test_hybrid_raster_manifest_keeps_numerical_frames_for_exact_zoom_detail(
                 "magnitude": pytest.approx(composition["legend"]["max"] * 7 / 12),
             },
         ]
+        # Geometry, flux density and mesh are lossless WebP (PNG's pixels at
+        # under half the bytes); field lines stay lossy WebP.
         expected_formats = {
-            "geometry": ("PNG", "image/png"),
-            "flux_density": ("PNG", "image/png"),
-            "mesh": ("PNG", "image/png"),
+            "geometry": ("WEBP", "image/webp"),
+            "flux_density": ("WEBP", "image/webp"),
+            "mesh": ("WEBP", "image/webp"),
             "field_lines": ("WEBP", "image/webp"),
         }
         for layer, (image_format, media_type) in expected_formats.items():

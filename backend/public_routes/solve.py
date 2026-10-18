@@ -5,7 +5,6 @@ from __future__ import annotations
 import asyncio
 import contextvars
 import errno
-import gzip
 import json
 import re
 import threading
@@ -21,7 +20,7 @@ from backend.elmer.errors import (
     ElmerUnavailableError,
     ElmerUnsupportedError,
 )
-from backend.field_artifacts import resolve_solve_cache_artifact_id
+from backend.field_artifacts import read_field_line_frame_artifact, resolve_solve_cache_artifact_id
 from backend.field_composition import solve_armature_field_sweep
 from backend.geometry import validate_geometry, winding_feasibility_warnings
 from backend.gmsh_solver import GmshUnavailableError
@@ -714,8 +713,7 @@ def get_public_field_frame(artifact_id: str) -> dict[str, Any]:
     ):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="field frame not found")
     try:
-        with gzip.open(path, "rt", encoding="utf-8") as handle:
-            artifact_payload = json.load(handle)
+        artifact_payload = read_field_line_frame_artifact(path)
     except (OSError, json.JSONDecodeError) as exc:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

@@ -49,6 +49,53 @@ def _write_json_gz(path: Path, payload: dict[str, Any]) -> None:
         fh.write(data)
 
 
+# A frame's PM-only (no-load) plot is solved on the frame's own mesh, so its
+# triangles and regions repeat the frame's, and often its nodes too: up to a
+# sixth of every stored frame. Each part that is exactly equal is stored once
+# and listed under NOLOAD_MESH_FROM_FRAME; the reader restores it. Nodes the
+# no-load solve placed differently, even in the last digit, stay as solved.
+_SHARED_MESH_KEYS = ("nodes_mm", "triangles", "regions")
+NOLOAD_MESH_FROM_FRAME = "mesh_from_frame"
+
+
+def _share_noload_mesh(frame: dict[str, Any]) -> dict[str, Any]:
+    """Return ``frame`` with its no-load plot pointing at the frame's own mesh parts."""
+
+    noload = frame.get("noload_plot")
+    if not isinstance(noload, dict):
+        return frame
+    shared = [key for key in _SHARED_MESH_KEYS if key in noload and key in frame and noload[key] == frame[key]]
+    if not shared:
+        return frame
+    slim = {key: value for key, value in noload.items() if key not in shared}
+    slim[NOLOAD_MESH_FROM_FRAME] = shared
+    return {**frame, "noload_plot": slim}
+
+
+def restore_noload_mesh(frame: dict[str, Any]) -> dict[str, Any]:
+    """Undo ``_share_noload_mesh``; frames stored before it are returned as they are."""
+
+    noload = frame.get("noload_plot")
+    shared = noload.get(NOLOAD_MESH_FROM_FRAME) if isinstance(noload, dict) else None
+    if not isinstance(shared, list):
+        return frame
+    restored = {key: value for key, value in noload.items() if key != NOLOAD_MESH_FROM_FRAME}
+    for key in shared:
+        if key in _SHARED_MESH_KEYS and key in frame:
+            restored[key] = frame[key]
+    return {**frame, "noload_plot": restored}
+
+
+def read_field_line_frame_artifact(path: Path) -> dict[str, Any]:
+    """Read a stored field-frame artifact with its no-load plot complete again."""
+
+    with gzip.open(path, "rt", encoding="utf-8") as fh:
+        payload = json.load(fh)
+    if isinstance(payload, dict) and isinstance(payload.get("field_line_frame"), dict):
+        payload["field_line_frame"] = restore_noload_mesh(payload["field_line_frame"])
+    return payload
+
+
 def encode_solve_cache_artifact_id(path: Path) -> str:
     """Return an opaque id for a file under the solve-cache root."""
 
@@ -302,7 +349,7 @@ def write_field_line_frame_artifact(
     if frame is None or cache_dir is None:
         return None
     try:
-        frame_payload = dict(frame)
+        frame_payload = _share_noload_mesh(dict(frame))
         frame_payload.pop("field_frame_artifact", None)
         artifact_dir = cache_dir / "field_line_frames"
         artifact_dir.mkdir(parents=True, exist_ok=True)

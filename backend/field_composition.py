@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import gzip
 import hashlib
 import json
 import math
@@ -12,7 +11,11 @@ from collections import OrderedDict
 from concurrent.futures import Future
 from typing import Any, Callable, Iterator
 
-from backend.field_artifacts import airgap_trace_profile_from_records, resolve_solve_cache_artifact_id
+from backend.field_artifacts import (
+    airgap_trace_profile_from_records,
+    read_field_line_frame_artifact,
+    resolve_solve_cache_artifact_id,
+)
 from backend.models import MotorConfig, SolveOptionsConfig
 from backend.solver import Magneto2DSolver
 
@@ -163,8 +166,7 @@ def _hydrate_armature_frame_artifact(payload: dict[str, Any]) -> dict[str, Any]:
         return payload
     try:
         path = resolve_solve_cache_artifact_id(artifact_id)
-        with gzip.open(path, "rt", encoding="utf-8") as fh:
-            artifact_payload = json.load(fh)
+        artifact_payload = read_field_line_frame_artifact(path)
         full_frame = artifact_payload.get("field_line_frame")
         if not isinstance(full_frame, dict):
             return payload
