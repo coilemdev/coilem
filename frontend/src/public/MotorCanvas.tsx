@@ -19,6 +19,7 @@ import {
   computeSpmMagnetPolarityHalves,
 } from './magnetPoleFaces';
 import { PUBLIC_MOTOR_COLORS, PUBLIC_PHASE_COLORS } from './motorPalette';
+import { polygonLabelSpot } from './canvasLabels';
 import {
   STRIP_END,
   STRIP_LABEL,
@@ -364,14 +365,22 @@ function magnetAirgapPolarity(regionType: string): 'north' | 'south' {
   return poleIndex % 2 === 0 ? 'north' : 'south';
 }
 
+/** A magnet, or one pole's half of it, to letter N or S; canvas px. */
+interface MagnetPoleLabel {
+  points: Array<[number, number]>;
+  north: boolean;
+  /** Split view: each half's own pole, lettered when both fit. */
+  halves?: MagnetPoleLabel[] | null;
+}
+
 function drawVShapeMagnetPolarityHalves(
   context: CanvasRenderingContext2D,
   magnetPoints: Array<[number, number]>,
   map: (point: [number, number]) => [number, number],
   regionType: string,
-): void {
+): MagnetPoleLabel[] | null {
   const faces = computeMagnetPoleFaces(magnetPoints);
-  if (!faces) return;
+  if (!faces) return null;
 
   const airgapIsNorth = magnetAirgapPolarity(regionType) === 'north';
   const airgapColor = airgapIsNorth
@@ -415,6 +424,10 @@ function drawVShapeMagnetPolarityHalves(
   fillHalf(airgapHalf, airgapColor);
   fillHalf(backHalf, backColor);
   context.restore();
+  return [
+    { points: airgapHalf.map(map), north: airgapIsNorth },
+    { points: backHalf.map(map), north: !airgapIsNorth },
+  ].filter((half) => half.points.length >= 3);
 }
 
 function drawSpmMagnetPolarityHalves(
@@ -422,9 +435,9 @@ function drawSpmMagnetPolarityHalves(
   magnetPoints: Array<[number, number]>,
   map: (point: [number, number]) => [number, number],
   regionType: string,
-): void {
+): MagnetPoleLabel[] | null {
   const halves = computeSpmMagnetPolarityHalves(magnetPoints);
-  if (!halves) return;
+  if (!halves) return null;
 
   const airgapIsNorth = magnetAirgapPolarity(regionType) === 'north';
   const drawHalf = (points: Array<[number, number]>, color: string) => {
@@ -449,6 +462,10 @@ function drawSpmMagnetPolarityHalves(
     airgapIsNorth ? PUBLIC_MOTOR_COLORS.magnetSouth : PUBLIC_MOTOR_COLORS.magnetNorth,
   );
   context.restore();
+  return [
+    { points: halves.airgapHalf.map(map), north: airgapIsNorth },
+    { points: halves.backHalf.map(map), north: !airgapIsNorth },
+  ].filter((half) => half.points.length >= 3);
 }
 
 /**
@@ -548,6 +565,7 @@ function drawGeometry(
     ? toothPoles(slotCurrents(data.winding_layout, statorSlotCount, currents))
     : null;
   const toothPoleLabels: Array<{ x: number; y: number; north: boolean; strength: number; size: number }> = [];
+  const magnetPoleLabels: MagnetPoleLabel[] = [];
   const { map, scale } = fitTransform(points, width, height, viewportScale, pan, driveFrame?.motor);
   const slotCount = Number(data.metadata.slot_count || 0);
   // Slots draw as the backend lays them out (#91): a single-layer tooth-coil slot
@@ -679,20 +697,25 @@ function drawGeometry(
         toothPoleLabels.push({ x: labelX, y: labelY, north: strength > 0, strength: Math.abs(strength), size: Math.min(14, toothWidthPx * 0.55) });
       }
     }
+    let splitHalves: MagnetPoleLabel[] | null = null;
     if (isVShapeMagnet && usesSplitPolarity) {
-      drawVShapeMagnetPolarityHalves(
+      splitHalves = drawVShapeMagnetPolarityHalves(
         context,
         transformedPoints,
         map,
         region.region_type,
       );
     } else if (isSpmMagnet && usesSplitPolarity) {
-      drawSpmMagnetPolarityHalves(
+      splitHalves = drawSpmMagnetPolarityHalves(
         context,
         transformedPoints,
         map,
         region.region_type,
       );
+    }
+    if (/magnet/i.test(region.region_type)) {
+      // Every magnet says which pole faces the airgap; split, each half its own.
+      magnetPoleLabels.push({ points: canvasPoints, north: magnetAirgapPolarity(region.region_type) === 'north', halves: splitHalves });
     }
     context.strokeStyle = 'rgba(6, 8, 12, 0.68)';
     context.lineWidth = Math.max(0.7, Math.min(1.5, scale * 0.035));
@@ -770,6 +793,41 @@ function drawGeometry(
   pendingMarkers.forEach((marker) => {
     drawCurrentMarker(context, marker.x, marker.y, marker.radius, marker.outOfPage, marker.ring);
   });
+
+  // N / S on every magnet, upright. A thin SPM magnet is narrower than a readable
+  // letter, so the letter may overhang its band (outlined to stay legible); only a
+  // magnet too short for it goes unlabelled.
+  if (magnetPoleLabels.length) {
+    context.save();
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.lineJoin = 'round';
+    const letter = (north: boolean, x: number, y: number, size: number) => {
+      context.font = `800 ${size.toFixed(1)}px ui-monospace, monospace`;
+      context.lineWidth = Math.max(2, size * 0.24);
+      context.strokeStyle = 'rgba(8, 10, 14, 0.5)';
+      context.strokeText(north ? 'N' : 'S', x, y + 0.5);
+      context.fillStyle = '#f8fafc';
+      context.fillText(north ? 'N' : 'S', x, y + 0.5);
+    };
+    for (const label of magnetPoleLabels) {
+      // Split: each half its own letter, but only where both fit inside their
+      // halves; two letters overhanging a thin band would run into each other.
+      const halfSpots = (label.halves ?? []).map((half) => ({ half, spot: polygonLabelSpot(half.points, origin) }));
+      const halvesFit = halfSpots.length === 2
+        && halfSpots.every(({ spot }) => spot.thickness * 0.85 >= 8 && spot.span >= spot.thickness * 0.85 * 1.6);
+      if (halvesFit) {
+        halfSpots.forEach(({ half, spot }) => letter(half.north, spot.x, spot.y, Math.min(14, spot.thickness * 0.85)));
+        continue;
+      }
+      // Otherwise the pole facing the airgap, as the Pole view colours it.
+      const spot = polygonLabelSpot(label.points, origin);
+      const size = Math.min(14, Math.max(9, spot.thickness * 0.8));
+      if (spot.span < size * 1.6) continue;
+      letter(label.north, spot.x, spot.y, size);
+    }
+    context.restore();
+  }
 
   // N / S on the teeth that are clearly poles, where a letter fits.
   if (toothPoleLabels.length) {

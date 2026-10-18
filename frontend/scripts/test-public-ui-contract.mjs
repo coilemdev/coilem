@@ -660,6 +660,11 @@ assert.match(workspaceSource, /const \[showToothPoles, setShowToothPoles\] = use
 assert.match(workspaceSource, />\s*Phases\s*<\/button>\s*\)\}\s*\{viewportMode === '2d' && \(\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{showToothPoles\}[\s\S]*?>\s*Tooth poles\s*<\/button>/);
 assert.match(workspaceSource, /showToothPoles=\{viewportMode === '2d' && showToothPoles\}/);
 assert.match(motorCanvasSource, /strength > 0 \? PUBLIC_MOTOR_COLORS\.magnetNorth : PUBLIC_MOTOR_COLORS\.magnetSouth/);
+// Every magnet is lettered N / S by the pole facing the airgap; in the Split view each
+// half carries its own (placement: canvasLabels.ts, test-canvas-labels.mjs).
+assert.match(motorCanvasSource, /magnetPoleLabels\.push\(\{ points: canvasPoints, north: magnetAirgapPolarity\(region\.region_type\) === 'north', halves: splitHalves \}\);/);
+assert.match(motorCanvasSource, /const halvesFit = halfSpots\.length === 2/);
+assert.match(motorCanvasSource, /const spot = polygonLabelSpot\(label\.points, origin\);/);
 assert.doesNotMatch(workspaceSource, /public-field-playback-rpm|playback-rpm-progress/);
 assert.match(workspaceSource, /<div className="public-winding-key public-canvas-legend" aria-label="Winding phase and current direction legend">/);
 assert.ok(workspaceSource.indexOf('public-canvas-legend') < workspaceSource.indexOf('className="viewport-dock-resize"'), 'the winding legend is on the canvas, not in the panel');

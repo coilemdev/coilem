@@ -5320,8 +5320,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2155,
-      "sha256": "7c70725fd558ef3ccae068447982e8a54941a2fee70cb1df3523d3ceb0458278"
+      "bytes": 2194,
+      "sha256": "accdb586601d464847d5493c7379e91600505142cc4af728744bc7ac51b7ebf8"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -5347,6 +5347,11 @@
       "path": "frontend/scripts/test-bldc-chart-paths.mjs",
       "bytes": 5104,
       "sha256": "1d7a2c25dbdf42708728e2066ea15ce50e9832321c8f03fcd51e31f2ec82e709"
+    },
+    {
+      "path": "frontend/scripts/test-canvas-labels.mjs",
+      "bytes": 2753,
+      "sha256": "99945cef840df5da3e13a435fe29e16d1a2fc38c6e28f85895e8fa78394357c5"
     },
     {
       "path": "frontend/scripts/test-chart-readout.mjs",
@@ -5450,8 +5455,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 150363,
-      "sha256": "178e7a842fbef9beed687705f0fd108384f6d75d88fbc20d5a58d07bf17f4a85"
+      "bytes": 150874,
+      "sha256": "6109e0ff7dce9a05ce3759e6bd0c3646cd2dc828e7d5de0b3cff3b1ee1537311"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5875,8 +5880,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 56336,
-      "sha256": "41efa00a5ce2a3db3d4a0f55476a78d1bef07e4588b6606c7d94dcabf056d0b4"
+      "bytes": 59223,
+      "sha256": "a3bbde3c73869b8cef46484bba48fd6fdf853b4ca62bdb52b95d0e1fb6954af0"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -5947,6 +5952,11 @@
       "path": "frontend/src/public/bldcChartPaths.ts",
       "bytes": 1151,
       "sha256": "5630590265b8d02821ba60706eb007447568abf83a66ca92730fe08528f69a78"
+    },
+    {
+      "path": "frontend/src/public/canvasLabels.ts",
+      "bytes": 2259,
+      "sha256": "3eff7fbd69561f6d5111ef061da503099c9ded5e3ed999f6e7cda3a258c74e30"
     },
     {
       "path": "frontend/src/public/chartAxis.ts",
@@ -10402,6 +10412,24 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "2c47577bbbfdfd9126ab545127a068ef964ded8166ac4428c2e419563ca1325c",
       "reason": "Pin the independent Tooth poles toggle"
+    },
+    {
+      "base_commit": "948b87fcc383c9924359c48eb48a087e22ced437",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "41efa00a5ce2a3db3d4a0f55476a78d1bef07e4588b6606c7d94dcabf056d0b4",
+      "reason": "Letter every rotor magnet N or S by the pole facing the airgap"
+    },
+    {
+      "base_commit": "948b87fcc383c9924359c48eb48a087e22ced437",
+      "path": "frontend/package.json",
+      "source_sha256": "7c70725fd558ef3ccae068447982e8a54941a2fee70cb1df3523d3ceb0458278",
+      "reason": "Run the canvas label checks in the public UI test chain"
+    },
+    {
+      "base_commit": "948b87fcc383c9924359c48eb48a087e22ced437",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "178e7a842fbef9beed687705f0fd108384f6d75d88fbc20d5a58d07bf17f4a85",
+      "reason": "Pin the magnet N / S letters"
     }
   ]
 }
