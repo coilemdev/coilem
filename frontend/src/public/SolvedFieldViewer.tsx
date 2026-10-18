@@ -46,6 +46,7 @@ import {
   windowPlaybackFrameIndex,
 } from './fieldPlaybackTiming';
 import { LatestFrameLoader } from './latestFrameLoader';
+import { RpmField } from './RpmField';
 import { rotorAirgapBoundaryRadiusMm } from './motorAirgap';
 import type {
   GeometryPreview,
@@ -1367,28 +1368,15 @@ export function SolvedFieldViewer({
               }}
             />
           </label>
-          <label
-            className="public-field-playback-rpm"
-            title="Visual playback speed — not the solve operating point"
-          >
-            <span className="public-field-transport-label"><strong>Playback speed</strong><em>{Math.round(playbackRpm)} RPM</em></span>
-            <input
-              type="range"
-              min={PUBLIC_FIELD_PLAYBACK_MIN_RPM}
-              max={PUBLIC_FIELD_PLAYBACK_MAX_RPM}
-              step={1}
-              value={playbackRpm}
-              aria-label="Playback speed (RPM)"
-              onChange={(event) => setPlaybackRpm(Number(event.target.value))}
-              style={{
-                ['--playback-rpm-progress' as never]: (
-                  ((playbackRpm - PUBLIC_FIELD_PLAYBACK_MIN_RPM)
-                    / (PUBLIC_FIELD_PLAYBACK_MAX_RPM - PUBLIC_FIELD_PLAYBACK_MIN_RPM))
-                  * 100
-                ).toFixed(1),
-              }}
-            />
-          </label>
+          <RpmField
+            value={playbackRpm}
+            min={PUBLIC_FIELD_PLAYBACK_MIN_RPM}
+            max={PUBLIC_FIELD_PLAYBACK_MAX_RPM}
+            label="Speed"
+            ariaLabel="Playback speed (RPM)"
+            title="Visual playback speed — not the solve operating point. Type a number or use the arrows; Shift+arrow steps by 10."
+            onChange={setPlaybackRpm}
+          />
         </div>
       </div>
     </section>

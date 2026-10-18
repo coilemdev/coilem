@@ -75,6 +75,7 @@ import type { PublicRunExportKind } from './api';
 import type { PublicSolveProgress } from './api';
 import { LessonProgressStepper } from '../components/tutorials/LessonProgressStepper';
 import { designErrorSection } from './designErrors';
+import { RpmField } from './RpmField';
 import type { LearningLessonHeaderProgress } from '../components/tutorials/lessonStage';
 import {
   publicMeshQualityBand,
@@ -2227,24 +2228,21 @@ function ViewportChrome({
             </span>
           )}
           {/* The rotor preview uses the field playback's transport: the same
-              play button and the same labelled speed slider. */}
+              play button and the same speed field. */}
           {showPlayback && (
             <span className="vc-group public-preview-transport" role="group" aria-label="Rotor preview">
               <span className="public-dock-group-label" aria-hidden="true">Preview</span>
               <button type="button" className="public-field-transport-play" aria-label={isAnimating ? 'Pause preview' : 'Play preview'} onClick={() => setIsAnimating((value) => !value)}>{isAnimating ? 'Ⅱ' : '▶'}</button>
               <button type="button" className="public-field-transport-play" aria-label="Stop and reset preview" onClick={() => { setIsAnimating(false); setRotorAngleDeg(0); }}>■</button>
-              <label className="public-field-playback-rpm" title="Preview speed — not the solve operating point">
-                <span className="public-field-transport-label"><strong>Playback speed</strong><em>{animationRpm} RPM</em></span>
-                <input
-                  type="range"
-                  min="1"
-                  max="100"
-                  value={animationRpm}
-                  aria-label="Preview speed (RPM)"
-                  onChange={(event) => setAnimationRpm(Number(event.target.value))}
-                  style={{ ['--playback-rpm-progress' as never]: (((animationRpm - 1) / 99) * 100).toFixed(1) }}
-                />
-              </label>
+              <RpmField
+                value={animationRpm}
+                min={1}
+                max={100}
+                label="Speed"
+                ariaLabel="Preview speed (RPM)"
+                title="Preview speed — not the solve operating point. Type a number or use the arrows; Shift+arrow steps by 10."
+                onChange={setAnimationRpm}
+              />
             </span>
           )}
         </div>
