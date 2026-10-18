@@ -2186,21 +2186,25 @@ function ViewportChrome({
                   ['dimensions', 'Dims'],
                   ['slots', 'Slots'],
                   ['windings', 'Winding'],
-                  ['phases', 'Phases'],
-                ] as Array<[PublicCanvasLayer, string]>).map(([layer, label]) => (
-                  <button
-                    type="button"
-                    aria-pressed={canvasLayer === layer}
-                    title={layer === 'none' ? 'Show the bare cross-section' : canvasLayer === layer ? `Hide the ${label.toLowerCase()} overlay` : `Show ${label.toLowerCase()}`}
-                    // One overlay at a time. None, or clicking the active one again,
-                    // leaves the bare cross-section: Dims in particular puts a
-                    // legend and dashed lines over the motor.
-                    onClick={() => setCanvasLayer((current) => (current === layer ? 'none' : layer))}
-                    key={layer}
-                  >
-                    {label}
-                  </button>
-                ))}
+                ] as Array<[PublicCanvasLayer, string]>).map(([layer, label]) => {
+                  // Phases is the winding overlay shaded by phase current, so
+                  // Winding stays pressed under it and turns both off.
+                  const pressed = canvasLayer === layer || (layer === 'windings' && canvasLayer === 'phases');
+                  return (
+                    <button
+                      type="button"
+                      aria-pressed={pressed}
+                      title={layer === 'none' ? 'Show the bare cross-section' : pressed ? `Hide the ${label.toLowerCase()} overlay` : `Show ${label.toLowerCase()}`}
+                      // One overlay at a time. None, or clicking the active one again,
+                      // leaves the bare cross-section: Dims in particular puts a
+                      // legend and dashed lines over the motor.
+                      onClick={() => setCanvasLayer(pressed ? 'none' : layer)}
+                      key={layer}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
               </span>
             </span>
           )}
@@ -2270,6 +2274,20 @@ function ViewportChrome({
                 title="Preview speed — not the solve operating point. Type a number or use the arrows; Shift+arrow steps by 10."
                 onChange={setAnimationRpm}
               />
+              {/* Phases only means something while the rotor turns: it shades the
+                  winding overlay by each phase's current, so it sits with the
+                  preview rather than among the static overlays. */}
+              {viewportMode === '2d' && (
+                <button
+                  type="button"
+                  className="public-dock-toggle"
+                  aria-pressed={canvasLayer === 'phases'}
+                  title={canvasLayer === 'phases' ? 'Stop shading the winding by phase current' : 'Shade the winding by phase current as the rotor turns'}
+                  onClick={() => setCanvasLayer((current) => (current === 'phases' ? 'windings' : 'phases'))}
+                >
+                  Phases
+                </button>
+              )}
             </span>
           )}
         </div>
