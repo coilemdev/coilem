@@ -5580,8 +5580,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 208195,
-      "sha256": "5ec783cbe1a19a8f601bec1c72f0d83a4e7f22223cb3fb1b7b32eb4ebe32135f"
+      "bytes": 208036,
+      "sha256": "3bcd3fb91b5128ddd2a5e0792cd8b4329eed205ee22a9515486fac1cd52bdb0f"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -9555,6 +9555,12 @@
       "path": "backend/public_routes/solve.py",
       "source_sha256": "e097715f7823bbc971ecc2a86533eb8646df03e6eb2e129201d347208fe70827",
       "reason": "Delete a saved run's raw solver output from its solve-cache folder unless kept."
+    },
+    {
+      "base_commit": "15d5a24b3c97af4b3c5257d98bdbe15047728c63",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "5ec783cbe1a19a8f601bec1c72f0d83a4e7f22223cb3fb1b7b32eb4ebe32135f",
+      "reason": "Remove the run-time estimate note under the accuracy plan."
     }
   ]
 }

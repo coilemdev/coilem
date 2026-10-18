@@ -3481,7 +3481,6 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
             <p className="public-plan-advisory">Preview is intended for iteration, not final result sign-off.</p>
           )}
         </div>
-        <p className="public-timing-note">Run-time estimate covering meshing, solving, playback and saving, from the prepared mesh. It varies by computer.</p>
         <details ref={advancedOptionsRef} className="public-advanced-options" open={advancedOpen} onToggle={(event) => setAdvancedOpen(event.currentTarget.open)}>
           <summary>
             <span>Advanced options</span>
