@@ -1,5 +1,14 @@
 # Benchmark reports and protocols
 
+The [2026-10-18 Windows requalification](windows-native-20261018-f390b25/README.md)
+is the active qualification evidence for the Precise mesh default at `f390b25`.
+All 35 supported jobs completed against the frozen FEMM v3 reference, with
+**28 PASS, 1 YELLOW and one planned unsupported Prius**. Every recorded verdict,
+gate and numerical value is identical to the Windows v3 record at `738d951`.
+The new [Windows record](records/windows-x86_64.json) carries the measured
+physics hashes; Fast mesh remains experimental. The historical macOS record
+has not been remeasured for this source change.
+
 The [2026-10-16 matched Windows repeat](performance-112/native-20261016/README.md)
 includes the full 64-page PDF, HTML, CSV and numerical JSON against the fresh
 29-case FEMM 4.2 collection. Native collection took **43m40s**; all 35 native job

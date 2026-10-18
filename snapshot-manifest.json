@@ -535,8 +535,8 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 6717,
-      "sha256": "92741646bfa2377d71f008664c2e768e197f25ea0019d4befd85d2d8bc45bd34"
+      "bytes": 6735,
+      "sha256": "eec1a879d97c8be51077bb95a3323f0501b73dfafe1f116d1d44d0e034bc1d1e"
     },
     {
       "path": "backend/resources.py",
@@ -615,8 +615,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 7113,
-      "sha256": "7cd81dcdd306daf53bc2b3423c9f543cff06c0355a5ba255d442ed8fd9e5fa9e"
+      "bytes": 7710,
+      "sha256": "d29e895a292354d1a12c5d824b0531919a42c102c6077cbd94d71c868355a217"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -2875,8 +2875,8 @@
     },
     {
       "path": "benchmarks/records/README.md",
-      "bytes": 4529,
-      "sha256": "a8f46fa49d10f4189dc923bfdc9870ab10d86d61851920ca67c9eb3bb76140c7"
+      "bytes": 5268,
+      "sha256": "208872c05ffe81c0e1aa0de0f38d1c90898bf62f5e2c97b1d6a00c5dcfd3b53c"
     },
     {
       "path": "benchmarks/records/macos-arm64.json",
@@ -2885,8 +2885,8 @@
     },
     {
       "path": "benchmarks/records/windows-x86_64.json",
-      "bytes": 23560,
-      "sha256": "9191c7318012539f22cfa88243e4fd388645465b2da62f78ea3a12cf235c0089"
+      "bytes": 23561,
+      "sha256": "9a459e31f9f97a22bc2b72cc4e3b8da332a088f99bba6b5ee0c415d2aaebbcda"
     },
     {
       "path": "benchmarks/reference-baselines/ipm-high-output-v1/ipm_flat_12s10p_fscw_contract.json",
@@ -3822,6 +3822,246 @@
       "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/run_manifest.json",
       "bytes": 44011,
       "sha256": "e8574dcb6daa2c0337b95f2be4cd47e5bf213efc52b53e15d1a8c601564032cd"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/README.md",
+      "bytes": 4492,
+      "sha256": "8777e34ecd661ff5e975a8d8234d957b856a383ce5a749ef4d282a4781559819"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/artifact_manifest.json",
+      "bytes": 5631,
+      "sha256": "855ffb42ec104f29ccb0fb04b3271a0e0a157aec11d430b2cf269b280d7de4e7"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/benchmark_report.md",
+      "bytes": 5894,
+      "sha256": "b0a9ada37d666217edb31a1ab7374e0ce78d4cbc5fe80b13e340096845eed971"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/benchmark_results.csv",
+      "bytes": 17010,
+      "sha256": "0789019f8e53fb2b3fdd3dd977211c423d6021e88508621707892261a32f9a34"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/benchmark_summary.json",
+      "bytes": 1826541,
+      "sha256": "b56e6e3a4f53fdd7d9cbb1ef30c4105d116788b961218fa5ca423dca17c79e60"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/coilem_benchmark_report.html",
+      "bytes": 399060,
+      "sha256": "c7a2a76f9c3f317c16d15fe8cac4a555ec658e0a0a6540ab35a2f2530a743de6"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/console.txt",
+      "bytes": 4564,
+      "sha256": "1a5848ef3897b47fabcdac250064592f6f2d94cad63fbab70a8147e677aa208c"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/environment.json",
+      "bytes": 3980,
+      "sha256": "e49f31903374ce58dc0c3808b26aef1f0bc70e64106b8ff7f0e98ab11a09c23e"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1604,
+      "sha256": "15423a47ebbf8509a7935c60d5c45404b8ee186f37dd266dec9e3f2a01560e34"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1607,
+      "sha256": "e328650573ad963181a7cf2292f6fe924d866c792d79c2a32137da2f9522fae0"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1606,
+      "sha256": "68b4e61d69cbc4673eba7ec92d0609862b1cf0283fa8391bf174b8d6c55b7c59"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2503,
+      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2503,
+      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2503,
+      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2502,
+      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2502,
+      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2502,
+      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1594,
+      "sha256": "3d78ae3d4175a933e18d04b9d45c7bddaff1db6e8355c21675dbe4da2934392c"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1596,
+      "sha256": "2081d6ab448377574d76cdd8c86724d07368fd09093bab02d111bfb589d5d709"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1595,
+      "sha256": "a77a7fbd94ed2a06659067f6501b029f612f09877128361268c76c5f9e268604"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2506,
+      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2506,
+      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1640,
+      "sha256": "dd91d0757a826b34c3fde5e813bdfdc385bc048ce477a172c5bfbf292ff6703b"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1642,
+      "sha256": "4e53c05733eb4d81cc3205e743f12fb473065142827f4e38327bd035caf7545c"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1641,
+      "sha256": "1825fe88e7ddf36234aa984f0fbbd30e894bfb34a6030fc02a348c883bf18ffa"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2550,
+      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/raw-report-hashes.json",
+      "bytes": 5082,
+      "sha256": "f6c83a1f3102002cee9d5d8ae33996fbab0f600f4bec7907d81c494c01f99e8b"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/run_manifest.json",
+      "bytes": 45414,
+      "sha256": "7ecaa1408f305d28de770fa3e3b34641b56de27d9aff2ef0f21692329efe8868"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/self-check-differences.json",
+      "bytes": 4815,
+      "sha256": "30e5b93dd10f30961ceecacefa4b985d3e8eb5fc65adb1279cee721a3fda7664"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/self-check-windows-x86_64.json",
+      "bytes": 23525,
+      "sha256": "69503ef105387c033c445085f081019e321e0102ee7392f3149c093e963123fb"
     },
     {
       "path": "benchmarks/windows-process-pools-20261012-02fa24b/README.md",
@@ -4815,8 +5055,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 24838,
-      "sha256": "9889bfa072f76435947835002bb5e01c91aa5e4835d6eeec515d47bc66cb781e"
+      "bytes": 25146,
+      "sha256": "2ded9fda33a1d96d1aa4bfaf6beded9bc2f847fa8e3a5d4f985eede6f0f943a0"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -6365,8 +6605,8 @@
     },
     {
       "path": "tests/test_benchmark_command.py",
-      "bytes": 12821,
-      "sha256": "16db67f674d6b86fbd59e7b168aa0edbdd899b5651b36f601c4cf68fddcdc98e"
+      "bytes": 14508,
+      "sha256": "edd43ec1d6c1f6808c1b471333c8fdec44096a786a2ea71509868bba41f417c4"
     },
     {
       "path": "tests/test_benchmark_runtime.py",
@@ -6580,8 +6820,8 @@
     },
     {
       "path": "tests/test_qualification.py",
-      "bytes": 13455,
-      "sha256": "b90bf7a7b14bfbb32b4a4e1e02d335ac7ed6b10ab5f1364e3d1ee57a4a1a0d30"
+      "bytes": 13975,
+      "sha256": "073161ca754b8496799d4726c108aeb58e7067d93f4342f8252eae192af07fc8"
     },
     {
       "path": "tests/test_reference_recovery.py",
@@ -6670,8 +6910,8 @@
     },
     {
       "path": "tools/build_benchmark_record.py",
-      "bytes": 5067,
-      "sha256": "b21796fd725801ba27cbfaa693a7dfe3437cf9ac7fae897ae42ced0d05273b3e"
+      "bytes": 5071,
+      "sha256": "acff7863ae6dc7e619fc87cc87838db4c248631a7aab295895c1464ef48721b8"
     },
     {
       "path": "tools/experimental_solve.py",
@@ -6815,8 +7055,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 21236,
-      "sha256": "45e505b5e769008137306770fb9d1889a909a65b4ed42110238af2602d5224a1"
+      "bytes": 21308,
+      "sha256": "3222fe7f0fabb69fe1e5e33b629acba4dd3ef94e2adef6a358b48a23f1519f8e"
     }
   ],
   "public_patches": [
@@ -8348,7 +8588,7 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B \u00c3\u00a2\u00cb\u2020\u00e2\u20ac\u2122 Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B Ã¢Ë†â€™ Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
@@ -8378,13 +8618,13 @@
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45\u00c3\u201a\u00c2\u00b0 (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45Ã‚Â° (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45\u00c3\u201a\u00c2\u00b0 over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45Ã‚Â° over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "a482ff6e2bd9616d2ece2a68f8fa2f2c49aae45c",
@@ -8402,7 +8642,7 @@
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00c3\u201a\u00c2\u00b0 (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45Ã‚Â° (#52 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",

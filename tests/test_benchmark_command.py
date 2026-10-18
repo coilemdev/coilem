@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
@@ -23,7 +24,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 RECORDS = REPO_ROOT / resources.BENCHMARK_RECORDS_DIR
 EVIDENCE = {
     "macos-arm64": REPO_ROOT / "benchmarks/macos-native-20261015-738d951",
-    "windows-x86_64": REPO_ROOT / "benchmarks/windows-v3-20261015-738d951",
+    "windows-x86_64": REPO_ROOT / "benchmarks/windows-native-20261018-f390b25",
 }
 MATCHING_PHYSICS = {"status": "MATCH", "files": 0, "differs": [], "unverified": []}
 # Home-directory paths, joined at run time so this file passes the publication path check.
@@ -57,7 +58,8 @@ def test_records_are_rebuilt_exactly_from_the_committed_evidence(key: str, tmp_p
     assert build_record_main([str(EVIDENCE[key]), "--out", str(tmp_path / "record.json")]) == 0
     assert (tmp_path / "record.json").read_text(encoding="utf-8") == (RECORDS / f"{key}.json").read_text(encoding="utf-8")
     published = read(RECORDS / f"{key}.json")
-    assert published["platform"] == key and published["measured_commit"].startswith("738d951")
+    assert published["platform"] == key
+    assert published["measured_commit"] == read(EVIDENCE[key] / "benchmark_summary.json")["run"]["identity"]["commit"]
     assert set(published["physics_files"]) == set(physics_sources(REPO_ROOT))
 
 
@@ -66,6 +68,34 @@ def test_regrading_reproduces_the_published_windows_comparison(graded) -> None:
     for row in graded["windows-x86_64"]["rows"]:
         assert row["status"] == published[row["id"]]["status"]
         assert record.gate_statuses(row["evaluation"]) == record.gate_statuses(published[row["id"]]["evaluation"])
+
+
+def test_windows_requalification_preserves_previous_verdicts_gates_and_values() -> None:
+    previous, _ = regrade(read(REPO_ROOT / "benchmarks/windows-v3-20261015-738d951/benchmark_summary.json"))
+    assert read(RECORDS / "windows-x86_64.json")["cases"] == {
+        row["id"]: record.case_record(row) for row in previous["rows"]
+    }
+
+
+def test_windows_requalification_publication_hashes_and_self_check() -> None:
+    evidence = EVIDENCE["windows-x86_64"]
+    manifest = read(evidence / "artifact_manifest.json")
+    published = {path.relative_to(evidence).as_posix(): path for path in evidence.rglob("*")
+                 if path.is_file() and path.name != "artifact_manifest.json"}
+    assert set(manifest) == set(published)
+    for relative, path in published.items():
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == manifest[relative], relative
+        assert path.suffix not in (".pdf", ".log") and "jobs" not in path.relative_to(evidence).parts
+    assert read(evidence / "self-check-windows-x86_64.json")["cases"] == read(RECORDS / "windows-x86_64.json")["cases"]
+
+
+def test_historical_macos_record_keeps_its_measured_physics_guard(graded) -> None:
+    published = read(RECORDS / "macos-arm64.json")
+    physics = record.check_physics(published)
+    assert physics == {"status": "DIFFERS", "files": 50, "differs": ["backend/gmsh_solver.py"], "unverified": []}
+    comparison = record.compare_run(graded["macos-arm64"]["rows"], published, physics=physics)
+    assert comparison["matched"] == comparison["compared"] == 30
+    assert comparison["status"] == "NOT_COMPARABLE"
 
 
 @pytest.mark.parametrize(("run", "against"), [("macos-arm64", "windows-x86_64"), ("windows-x86_64", "macos-arm64")])
@@ -114,7 +144,7 @@ def test_unsupported_and_failed_cases_must_match_too(graded) -> None:
 
 
 def test_physics_check_reads_this_checkout_and_names_a_change(monkeypatch) -> None:
-    published = read(RECORDS / "macos-arm64.json")
+    published = read(RECORDS / "windows-x86_64.json")
     assert record.check_physics(published) == {"status": "MATCH", "files": 50, "differs": [], "unverified": []}
     changed = copy.deepcopy(published)
     changed["physics_files"]["backend/torque_metrics.py"] = "0" * 64

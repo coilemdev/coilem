@@ -7,7 +7,7 @@ would, and a published comparison is reproduced exactly. Every measured
 request must be the one the suite registers, and the run must have measured
 every physics source the record names.
 
-    python -m tools.build_benchmark_record benchmarks/windows-v3-20261015-738d951 \\
+    python -m tools.build_benchmark_record benchmarks/windows-native-20261018-f390b25 \\
         --out benchmarks/records/windows-x86_64.json
 """
 

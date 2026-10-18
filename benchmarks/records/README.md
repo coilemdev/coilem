@@ -17,8 +17,18 @@ for its estimates.
 
 | Record | Measured at | Evidence | Outcome |
 | --- | --- | --- | --- |
-| [`macos-arm64.json`](macos-arm64.json) | `738d951` | [macOS native run](../macos-native-20261015-738d951/README.md) | 28 PASS, 1 YELLOW, 1 unsupported |
-| [`windows-x86_64.json`](windows-x86_64.json) | `738d951` | [Windows run with FEMM v3](../windows-v3-20261015-738d951/README.md) | 28 PASS, 1 YELLOW, 1 unsupported |
+| [`macos-arm64.json`](macos-arm64.json) | `738d951` | [Historical macOS native run](../macos-native-20261015-738d951/README.md) | 28 PASS, 1 YELLOW, 1 unsupported |
+| [`windows-x86_64.json`](windows-x86_64.json) | `f390b25` | [Windows Precise mesh requalification](../windows-native-20261018-f390b25/README.md) | 28 PASS, 1 YELLOW, 1 unsupported |
+
+The Windows run measured the current Precise mesh source and reproduces every
+verdict, gate and recorded value of the previous Windows record exactly. Its
+record was rebuilt from those measurements, including the new source hashes
+and case times. Fast mesh remains experimental.
+
+The macOS record retains its original measurements and source hashes. It has
+not been remeasured for the change to `backend/gmsh_solver.py`, so a current
+macOS run reports **NOT_COMPARABLE** against it until new macOS evidence is
+collected. Numerical agreement alone does not bypass the source guard.
 
 There is no Linux record yet. On Linux x86_64, `coilem benchmark` matches
 against the Windows x86_64 record and says so. The tolerances below come from
@@ -69,7 +79,7 @@ cases, using at most 43% of any tolerance.
 Records are built from committed evidence, never edited by hand:
 
 ```sh
-python -m tools.build_benchmark_record benchmarks/windows-v3-20261015-738d951 \
+python -m tools.build_benchmark_record benchmarks/windows-native-20261018-f390b25 \
     --out benchmarks/records/windows-x86_64.json
 ```
 
@@ -82,14 +92,15 @@ solves. It refuses a run that:
 - lacks a physics-source hash.
 
 The two records above were graded this way. The Windows grading reproduces
-the published v3 comparison exactly. The macOS run was native-only (no FEMM
+the published requalification exactly. The macOS run was native-only (no FEMM
 comparison), so this is its first grading against the frozen reference.
 `tests/test_benchmark_command.py` rebuilds both records and requires them to
 be byte-identical.
 
-A release whose physics sources change needs a new complete run on each
-platform. Commit its evidence beside the others and rebuild the records from
-it.
+A platform whose physics sources change needs a new complete run before its
+record can match that source. Commit its evidence beside the others and
+rebuild its record from it; historical platform records retain their measured
+identity and continue to enforce the source guard.
 
 ## Reproduce this record
 

@@ -12,7 +12,7 @@ report yet. Passing CI
 alone does not establish numerical accuracy.
 
 The unreleased 0.4.0 application on `main` changes the winding model and
-qualifies against the [Magneto2D versus FEMM v3 report](../benchmarks/windows-v3-20261015-738d951/README.md)
+qualifies against the [Windows requalification report](../benchmarks/windows-native-20261018-f390b25/README.md)
 instead; see [Qualification status](#qualification-status).
 
 See [Numerical evidence](NUMERICAL_EVIDENCE.md) for measured comparisons and
@@ -178,9 +178,9 @@ no local paths and passes the publication path check.
 
 ## Qualification status
 
-The maintainers accept the [Magneto2D versus FEMM v3 report](../benchmarks/windows-v3-20261015-738d951/README.md)
+The maintainers accept the [Windows requalification report](../benchmarks/windows-native-20261018-f390b25/README.md)
 as the numerical qualification record for the application on `main`. It
-measured commit `738d951` on Windows against the matched
+measured commit `f390b25` on Windows with the Precise mesh default against the matched
 [FEMM v3 references](../benchmarks/reference-baselines/ipm-high-output-v3/manifest.json),
 so it covers the 0.4.0 winding model: full slot-side turns in flux linkage
 (#80), tooth coils for fractional-slot concentrated windings, the current angle
@@ -188,14 +188,17 @@ measured from phase A's own axis and conformal two-layer slots (#91, #85).
 Earlier reports measured the previous winding model, so their PASS results no
 longer qualify these combinations; report v1.1 remains the record for coilEM
 0.3.x. A combination is qualified when every registered fixture for it passes
-its FEMM parity gates in the v3 report. Failed, YELLOW and unsupported outcomes
+its FEMM parity gates in the report. Failed, YELLOW and unsupported outcomes
 remain visible and are not waived by the aggregate pass count.
 
-The six-step rows pass under evaluation protocol 1.3.0, which checks the
-commanded currents against phase A's winding axis. That protocol was registered
-after the fields were measured. The report retains the fixed-axis protocol 1.1.0
-evaluation, including its golden-sequence FAILs for the 8-pole and 14-pole
-12-slot fixtures. The FEMM v3 bundle keeps `REVIEW_REQUIRED` for limitations
+The new run measured protocol 1.3.0 directly, including the six-step checks of
+commanded currents against phase A's winding axis. Every verdict, gate and
+recorded numerical value equals the [October 15 Windows v3 comparison](../benchmarks/windows-v3-20261015-738d951/README.md).
+That historical comparison retains its post hoc evaluation and fixed-axis
+protocol 1.1.0 golden-sequence FAILs for the 8-pole and 14-pole 12-slot fixtures.
+The macOS record remains at `738d951`; its source guard reports NOT_COMPARABLE
+until a new macOS run measures the changed mesh source. Fast mesh remains
+experimental. The FEMM v3 bundle keeps `REVIEW_REQUIRED` for limitations
 outside these gates, such as steel-loss estimates, the Kt current base and
 peak flux-density sampling. Release qualification remains a separate step.
 

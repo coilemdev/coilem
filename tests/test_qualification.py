@@ -13,7 +13,9 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
+from backend.benchmark_suite.contract import DEFAULT_BUNDLE, SPEC, sha
 from backend.benchmark_suite.physics import physics_sources
+from backend.benchmark_suite.references import load_bundle, load_suite
 from backend.models import MotorConfig
 from backend.public_main import app
 from backend.public_routes.solve import _store_public_result
@@ -69,17 +71,23 @@ def test_qualified_combinations_name_their_evidence(fixture: str, reason: str) -
     qualification = classify_qualification(_fixture(fixture))
     assert qualification["status"] == "qualified"
     assert qualification["reason"].startswith(reason)
-    assert qualification["basis"] == "coilEM benchmark report, measured at 738d951"
+    assert qualification["basis"] == "coilEM benchmark report, measured at f390b25"
     assert qualification["reference"].endswith("docs/VALIDATION.md#qualification-status")
 
 
 def test_basis_names_the_measured_commit_and_reference() -> None:
     run = REPORT["run"]
+    spec = load_suite(SPEC)
+    reference, _, bundle_sha = load_bundle(DEFAULT_BUNDLE, spec)
     assert run["status"] == "COMPLETE" and run["identity"]["dirty"] is False
-    assert run["identity"]["commit"] == run["reference_commit"]
     assert run["identity"]["commit"][:7] in QUALIFICATION_BASIS
-    # The six-step claim rests on the winding-axis current check.
-    assert run["comparison"]["evaluation_contract"]["version"] == "1.3.0"
+    assert run["reference_mode"] == "FROZEN_REFERENCE"
+    assert run["reference_commit"] == reference["reference_commit"]
+    assert run["selection"]["bundle_sha256"] == bundle_sha
+    assert run["selection"]["spec_sha256"] == sha(SPEC)
+    # This run measured the winding-axis protocol directly; the frozen reference
+    # still names its own earlier measured commit and registered validation bridge.
+    assert run["identity"]["protocol_version"] == spec["protocol_version"] == "1.3.0"
 
 
 @pytest.mark.parametrize("path", PHYSICS_SOURCES)
