@@ -9,7 +9,7 @@
  * parallel paths, which had no representation anywhere in the app (the
  * cross-section is pixel-identical for 1, 2 or 4), are drawn as wiring.
  */
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useId, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { GeometryPreview, MotorConfig, PublicWindingCoil } from './model';
 import { PUBLIC_PHASE_COLORS, type PublicPhaseId } from './motorPalette';
@@ -207,6 +207,10 @@ export function WindingLayoutView({ config, geometry, navigationSlot = null }: {
   // it resizes. Measured before paint, so a long chain never shows unwrapped first.
   const pathsRef = useRef<HTMLElement | null>(null);
   const [pathsWidth, setPathsWidth] = useState<number | null>(null);
+  // What the solver makes of the wiring, behind a question the reader can open,
+  // so it never takes the wiring's room unasked.
+  const [pathsHelpOpen, setPathsHelpOpen] = useState(false);
+  const pathsHelpId = useId();
   const hasLayout = slots.length > 0;
   useLayoutEffect(() => {
     const section = pathsRef.current;
@@ -378,7 +382,26 @@ export function WindingLayoutView({ config, geometry, navigationSlot = null }: {
               ? `${phaseCurrentA} A ${currentConvention} into each phase terminal, splitting across ${pathCount} branch${pathCount === 1 ? '' : 'es'}${pathCount > 1 ? ` at ${(phaseCurrentA / pathCount).toFixed(1)} A each` : ''}, and rejoining at neutral`
               : `Each phase's coils split into ${pathCount} branch${pathCount === 1 ? '' : 'es'}`}
           </span>
+          <button
+            type="button"
+            className="wl-paths-help-toggle"
+            aria-expanded={pathsHelpOpen}
+            aria-controls={pathsHelpId}
+            onClick={() => setPathsHelpOpen((open) => !open)}
+          >
+            <span className="wl-paths-help-icon" aria-hidden="true">i</span>
+            Does the solver use this wiring?
+          </button>
         </div>
+        {pathsHelpOpen ? (
+          <p className="wl-paths-help" id={pathsHelpId}>
+            <strong>Not directly.</strong> The branches are drawn in slot order, a common
+            way to connect them. The solver gives every coil the phase current divided by
+            the number of paths, so the number of paths changes the result but which coils
+            share a branch does not. Current circulating between unequal branches is not
+            modeled.
+          </p>
+        ) : null}
         <div className="wl-paths-content">
           <div className="wl-phase-list">
             {PHASES.map((phase) => {
@@ -411,17 +434,6 @@ export function WindingLayoutView({ config, geometry, navigationSlot = null }: {
               );
             })}
           </div>
-          <aside className="wl-paths-info" aria-label="How parallel paths are modeled">
-            <span className="wl-paths-info-icon" aria-hidden="true">i</span>
-            <div>
-              <strong>How the solver reads this</strong>
-              <p>
-                Coils split evenly in slot order. The solver divides branch current
-                by the path count, modeling the electrical effect rather than the
-                physical wiring.
-              </p>
-            </div>
-          </aside>
         </div>
       </section>
     </div>

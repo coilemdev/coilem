@@ -676,8 +676,13 @@ assert.match(workspaceSource, /solveViewportExpanded/);
 assert.match(workspaceSource, /expandControl=/);
 assert.match(windingLayoutSource, /cond\.\/slot/);
 assert.match(windingLayoutSource, /turns\/path/);
-assert.match(windingLayoutSource, /className="wl-paths-info"/);
-assert.match(windingLayoutSource, /How the solver reads this/);
+// What the solver makes of the wiring is a question the reader opens, not a box
+// beside the wiring.
+assert.doesNotMatch(windingLayoutSource, /wl-paths-info/);
+assert.match(windingLayoutSource, /className="wl-paths-help-toggle"\s*aria-expanded=\{pathsHelpOpen\}\s*aria-controls=\{pathsHelpId\}/);
+assert.match(windingLayoutSource, /Does the solver use this wiring\?/);
+assert.match(windingLayoutSource, /\{pathsHelpOpen \? \(\s*<p className="wl-paths-help" id=\{pathsHelpId\}>/);
+assert.match(windingLayoutSource, /every coil the phase current divided by\s+the number of paths/);
 assert.match(windingLayoutSource, /Winding layout/);
 assert.match(windingLayoutSource, /className={`wl-ring public-viewport-navigation/);
 assert.match(windingLayoutSource, /endTurnPath\(coil\.slot_in, coil\.slot_out, slotCount\)/);
@@ -1309,11 +1314,12 @@ assert.match(styleSource, /\.public-motor-viewport \.viewport-bottom-bar \{[^}]*
 assert.match(styleSource, /\.public-winding-layout \.wl-ring,[\s\S]*?width: min\(100%, 1180px\);[\s\S]*?margin-inline: auto;/);
 // The ring fits the top half; the paths take the bottom half and scroll.
 assert.match(styleSource, /\.public-winding-layout \.wl-ring \{ flex: 1 1 50%; min-height: 0; \}/);
-// The wiring column is as wide as its wiring, so the info box wraps instead of covering it.
+// The wiring column is as wide as its wiring; the solver note opens above it, never on it.
 assert.match(styleSource, /\.public-winding-layout \.wl-phase-list \{[^}]*flex: 0 1 auto;[^}]*overflow-x: auto;/);
 assert.match(styleSource, /\.public-winding-layout \.wl-chips \{[^}]*flex: 1 0 100%;[^}]*flex-wrap: nowrap;/);
 assert.match(styleSource, /\.public-winding-layout \.wl-paths-content \{[^}]*flex-wrap: wrap;/);
-assert.match(styleSource, /\.public-winding-layout \.wl-paths-info \{[^}]*max-width: 240px;/);
+assert.match(styleSource, /\.public-winding-layout \.wl-paths-help \{[^}]*justify-self: center;[^}]*max-width: 460px;/);
+assert.doesNotMatch(styleSource, /\.wl-paths-info/);
 assert.match(styleSource, /\.public-winding-layout \.wl-phase-row \{[^}]*justify-content: center;/);
 assert.match(styleSource, /\.public-winding-layout \.wl-wiring-wire \{ fill: none;/);
 assert.match(playbackRasterizerSource, /navigator\.hardwareConcurrency/);
