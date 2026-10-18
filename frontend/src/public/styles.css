@@ -4531,9 +4531,31 @@ body {
 .public-field-dock .public-field-layer-controls .public-field-density-choice button[aria-pressed="true"] { color: var(--text-accent); background: rgba(245,158,11,.14); box-shadow: inset 0 0 0 1px rgba(245,158,11,.32); }
 .public-field-dock .public-field-overlay-cluster { flex-wrap: wrap; row-gap: 8px; }
 .public-field-dock .public-field-layer-controls-inline { flex-wrap: wrap; align-items: center; gap: 8px; }
-@container (max-width: 720px) {
+/* The field panel stays two lines, controls then playback: below 900 px the
+   controls tighten, and below 720 px the two layer toggles and the title-bar
+   readout shorten, before anything wraps. */
+.public-field-dock .public-field-text-short { display: none; }
+@container (max-width: 900px) {
+  .public-field-dock .public-field-dock-controls { gap: 8px; }
+  .public-field-dock .public-field-control-cluster,
+  .public-field-dock .public-field-layer-controls-inline { gap: 6px; }
+  .public-field-dock .public-field-dock-controls .public-field-source-controls button { padding: 0 9px; font-size: 12px; }
   .public-field-dock .public-field-layer-controls button,
-  .public-field-dock .public-field-layer-menu > summary { padding: 0 10px; font-size: 12px; }
+  .public-field-dock .public-field-layer-menu > summary { gap: 6px; padding: 0 10px; font-size: 12px; }
+  .public-field-dock .public-field-layer-controls .public-field-density-choice button { padding: 0 7px; font-size: 11px; }
+}
+@container (max-width: 780px) {
+  .public-field-dock .viewport-cad-status .public-field-text-long { display: none; }
+}
+@container (max-width: 720px) {
+  .public-field-dock .public-field-text-long { display: none; }
+  .public-field-dock .public-field-text-short { display: inline; }
+}
+.public-field-dock .public-field-density-short { display: none; }
+@container (max-width: 620px) {
+  .public-field-dock .public-field-density-long { display: none; }
+  .public-field-dock .public-field-density-short { display: inline; }
+  .public-field-dock .public-field-dock-controls .public-field-source-controls button { padding: 0 7px; }
 }
 /* Completed results open on four key numbers; one toggle shows the rest. */
 .public-result-list-toggle { display: flex; width: 100%; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; padding: 7px 10px; border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-muted); background: transparent; font: 600 12px var(--font-mono); cursor: pointer; }
