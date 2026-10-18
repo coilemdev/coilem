@@ -5080,8 +5080,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2032,
-      "sha256": "8c55ae3705c8b53182fa41bfca797e5bd089a66cf6cb7eb5780eed6cabb6479d"
+      "bytes": 2077,
+      "sha256": "fb77a24863a32f806515fa762a2af1e18174505622a6d65c503a9ff5ff85e303"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -5144,6 +5144,11 @@
       "sha256": "772e47122f0d5154706aa5c542f0dd4fb27a8c826d006661cc8fa42485834aa3"
     },
     {
+      "path": "frontend/scripts/test-field-position-link.mjs",
+      "bytes": 1194,
+      "sha256": "fe729502845f13e119ffa0321d2138da9110ec42c58f79a7e825beff4efea8f7"
+    },
+    {
       "path": "frontend/scripts/test-field-probe-region.mjs",
       "bytes": 3514,
       "sha256": "0a01699dfcf1178236caf7dfd204d269d5f763879904da2b43559f5d1f0e9d70"
@@ -5195,8 +5200,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 141424,
-      "sha256": "592da6ec74f16aa2e8453d956133016efa69f8dcc2679d99b369208ba25e5799"
+      "bytes": 143643,
+      "sha256": "a81f26c18873ce10331460e9680b1eeeb6488b75a20f04759608b8aef7bfdf89"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5595,8 +5600,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 212527,
-      "sha256": "639609e840ea5caa25ece82e9213e84328570058ddc028e62856c3bb8d5bc00f"
+      "bytes": 214740,
+      "sha256": "6a280a45931e5f9d89bb635516770618d99b784ca65135b058974ac76a95da30"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5605,8 +5610,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 54437,
-      "sha256": "1da6444fc1fea7ec146dcd6babab49110a94fbdb93995c60111cf30ef19200e5"
+      "bytes": 54993,
+      "sha256": "1782cb55a043e533f172214b8d395496a1b892ab504a6a9dfe8f8a5337dd6978"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -5655,8 +5660,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 56458,
-      "sha256": "08202cdc91f796c198f6fed212f3de62e97662c355322483fffc4b36c5b4b6e4"
+      "bytes": 56111,
+      "sha256": "9f2de9c651569573341b0cefbc8eae81d51fd25658910dfe6bd5d1df58dcdf09"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -5804,6 +5809,11 @@
       "sha256": "96c1e25999a9bb81d0c6dd584a6ccb743c3431c330813d7e69ecac44600050de"
     },
     {
+      "path": "frontend/src/public/fieldPositionLink.ts",
+      "bytes": 1686,
+      "sha256": "3cd1de4042d18c453ae62c228758240b3b57ff2b41ca6d8ad0ca0dcb65129ea5"
+    },
+    {
       "path": "frontend/src/public/fieldProbeRegion.ts",
       "bytes": 4770,
       "sha256": "80021a9faceb977393d2d275f0997d9eabbc089c76984df803456998c266a97d"
@@ -5945,8 +5955,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 262087,
-      "sha256": "ec73f341ded4174a69efc077e12dc7210c1b978c9853439c9de796af13d5ce0c"
+      "bytes": 261123,
+      "sha256": "3dace0b9843ad85c0395cddc27c361bd60ab3800416e3be07bc9e42f2b48084a"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -9806,6 +9816,42 @@
       "path": "frontend/package.json",
       "source_sha256": "d637904761387ca375e7dd731ce3dcb28d0e912ff10a471ce4bdf1ebee7ede73",
       "reason": "Run the probe region test with the public UI tests."
+    },
+    {
+      "base_commit": "617ffe3193839e7db259987ce9481b1aca98c6a2",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "08202cdc91f796c198f6fed212f3de62e97662c355322483fffc4b36c5b4b6e4",
+      "reason": "Replace the position slider with play and stop, follow positions picked on the result curves, show the position in the title bar, and draw PM-only lines in the PM colour."
+    },
+    {
+      "base_commit": "617ffe3193839e7db259987ce9481b1aca98c6a2",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "639609e840ea5caa25ece82e9213e84328570058ddc028e62856c3bb8d5bc00f",
+      "reason": "Link the Run plan's torque and back-EMF curves to the field view: hovering sets its position, and its position shows as a playhead."
+    },
+    {
+      "base_commit": "617ffe3193839e7db259987ce9481b1aca98c6a2",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "1da6444fc1fea7ec146dcd6babab49110a94fbdb93995c60111cf30ef19200e5",
+      "reason": "Draw PM-only field lines and arrows in the PM colour, and keep every hook before the empty-plot return."
+    },
+    {
+      "base_commit": "617ffe3193839e7db259987ce9481b1aca98c6a2",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "ec73f341ded4174a69efc077e12dc7210c1b978c9853439c9de796af13d5ce0c",
+      "reason": "Lay out the field transport like the Geometry preview, drop the slider styles, style the curve playhead, and colour PM and Stator buttons by their lines."
+    },
+    {
+      "base_commit": "617ffe3193839e7db259987ce9481b1aca98c6a2",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "592da6ec74f16aa2e8453d956133016efa69f8dcc2679d99b369208ba25e5799",
+      "reason": "Cover the play/stop transport, the curve-driven position, PM colours and the plot's hook order."
+    },
+    {
+      "base_commit": "617ffe3193839e7db259987ce9481b1aca98c6a2",
+      "path": "frontend/package.json",
+      "source_sha256": "8c55ae3705c8b53182fa41bfca797e5bd089a66cf6cb7eb5780eed6cabb6479d",
+      "reason": "Run the field position link test with the public UI tests."
     }
   ]
 }

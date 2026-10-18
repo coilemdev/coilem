@@ -33,8 +33,6 @@ import {
   playbackSpanOf,
   playbackStrideFrameIndex,
   positionSliderFrameIndex,
-  positionSliderRange,
-  positionSliderValue,
   PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM,
   PUBLIC_FIELD_PLAYBACK_MAX_RPM,
   PUBLIC_FIELD_PLAYBACK_MIN_RPM,
@@ -47,6 +45,7 @@ import {
 import { LatestFrameLoader } from './latestFrameLoader';
 import { RpmField } from './RpmField';
 import { describeFieldProbe } from './fieldProbeRegion';
+import type { FieldPositionLink } from './fieldPositionLink';
 import { rotorAirgapBoundaryRadiusMm } from './motorAirgap';
 import type {
   GeometryPreview,
@@ -149,6 +148,8 @@ interface SolvedFieldViewerProps {
   magnetoCompositionAvailable: boolean;
   onRequestArmature: () => void;
   onCancelArmature: () => void;
+  /** The Solve tab's waveform plots: they set the field's position and show it. */
+  positionLink?: FieldPositionLink;
 }
 
 function nearestFrame(
@@ -215,6 +216,7 @@ export function SolvedFieldViewer({
   magnetoCompositionAvailable,
   onRequestArmature,
   onCancelArmature,
+  positionLink,
 }: SolvedFieldViewerProps) {
   const resultantFrames = useMemo(
     () => playbackDescriptors(result.field_playback, result.field_line_frames ?? []),
@@ -252,7 +254,6 @@ export function SolvedFieldViewer({
   const playbackRpmRef = useRef(PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM);
   playbackRpmRef.current = playbackRpm;
   const playbackElectricalAngleRef = useRef(0);
-  const playbackSliderRef = useRef<HTMLInputElement>(null);
   const [playbackWaiting, setPlaybackWaiting] = useState(false);
   const [frameCache, setFrameCache] = useState<Record<string, PublicFieldLinePlot>>({});
   const [rasterCache, setRasterCache] = useState<Record<string, FieldResultRaster>>({});
@@ -328,7 +329,6 @@ export function SolvedFieldViewer({
   const playbackSpan = useMemo(() => playbackSpanOf(angleFrames), [angleFrames]);
   const playbackSpanRef = useRef(playbackSpan);
   playbackSpanRef.current = playbackSpan;
-  const sliderRange = positionSliderRange(playbackSpan);
   const streamingArmatureFrame = source === 'armature' && armatureBusy
     ? armatureFrames[armatureFrames.length - 1] ?? null
     : null;
@@ -684,18 +684,6 @@ export function SolvedFieldViewer({
     frameIndexRef.current = boundedIndex;
   }, [boundedIndex]);
 
-  const syncPlaybackSlider = useCallback((electricalAngle: number) => {
-    if (!playbackSliderRef.current) return;
-    playbackSliderRef.current.value = String(
-      positionSliderValue(playbackSpanRef.current, electricalAngle),
-    );
-  }, []);
-
-  useEffect(() => {
-    if (!playing && playbackSliderRef.current) {
-      syncPlaybackSlider(playbackElectricalAngleRef.current);
-    }
-  }, [boundedIndex, playing, syncPlaybackSlider]);
 
   useEffect(() => {
     const cacheLimit = publicFieldPlaybackCacheFrames(playbackRpm);
@@ -776,7 +764,6 @@ export function SolvedFieldViewer({
           setPlaybackWaiting(true);
         } else {
           playbackElectricalAngleRef.current = nextPlaybackAngleDeg;
-          syncPlaybackSlider(nextPlaybackAngleDeg);
           if (nextIndex !== frameIndexRef.current) {
             frameIndexRef.current = nextIndex;
             setFrameIndex(nextIndex);
@@ -800,7 +787,6 @@ export function SolvedFieldViewer({
     resultantFrames,
     source,
     sourceFrames,
-    syncPlaybackSlider,
   ]);
 
   useEffect(() => {
@@ -1027,19 +1013,47 @@ export function SolvedFieldViewer({
     selectSource(nextPm && nextStator ? 'stator_pm' : nextPm ? 'pm' : nextStator ? 'armature' : 'resultant');
   };
 
+  // Play and pause from the shown position; stop goes back to the first, as
+  // in the Geometry preview.
   const togglePlayback = () => {
-    if (playing) {
-      setPlaying(false);
-      setPlaybackWaiting(false);
-      return;
-    }
+    setPlaybackWaiting(false);
+    setPlaying(!playing);
+  };
+  const stopPlayback = () => {
+    setPlaying(false);
+    setPlaybackWaiting(false);
     frameIndexRef.current = 0;
     playbackElectricalAngleRef.current = angleFrames[0]?.angle_deg ?? 0;
-    syncPlaybackSlider(playbackElectricalAngleRef.current);
     setFrameIndex(0);
-    setPlaybackWaiting(false);
-    setPlaying(true);
   };
+
+  // A position picked on a torque or back-EMF curve: pause and show the nearest
+  // solved position, preloading its neighbours in the direction of travel.
+  const scrubToAngle = (angleDeg: number) => {
+    if (angleFrames.length < 2) return;
+    const nextIndex = positionSliderFrameIndex(angleFrames, angleDeg, playbackSpan);
+    const direction = angleDeg >= playbackElectricalAngleRef.current ? 1 : -1;
+    if (direction !== scrubDirection) setScrubDirection(direction);
+    setScrubbing(true);
+    if (scrubIdleTimerRef.current !== null) window.clearTimeout(scrubIdleTimerRef.current);
+    scrubIdleTimerRef.current = window.setTimeout(() => {
+      scrubIdleTimerRef.current = null;
+      setScrubbing(false);
+    }, EXACT_FRAME_SETTLE_MS);
+    setPlaying(false);
+    setPlaybackWaiting(false);
+    frameIndexRef.current = nextIndex;
+    playbackElectricalAngleRef.current = angleFrames[nextIndex]?.angle_deg ?? angleDeg;
+    setFrameIndex(nextIndex);
+  };
+  const scrubToAngleRef = useRef(scrubToAngle);
+  scrubToAngleRef.current = scrubToAngle;
+  useEffect(() => positionLink?.subscribeRequests((angleDeg) => scrubToAngleRef.current(angleDeg)), [positionLink]);
+  // The curves mark the shown position.
+  useEffect(() => {
+    positionLink?.setPlayhead(angleFrames.length > 0 ? electricalAngleDeg : null);
+  }, [angleFrames.length, electricalAngleDeg, positionLink]);
+  useEffect(() => () => positionLink?.setPlayhead(null), [positionLink]);
 
   const sourceLabel = overlayActive
     ? 'Stator and PM field lines'
@@ -1182,6 +1196,7 @@ export function SolvedFieldViewer({
               describeProbe={describeProbe}
               onViewportScaleSettled={setFieldViewportScale}
               overlay={fieldLineOverlay}
+              pmLines={source === 'pm'}
               fieldAxes={overlayActive ? CLOCKWISE_FIELD_AXES : null}
               navigationSlot={zoomSlot}
             />
@@ -1201,7 +1216,10 @@ export function SolvedFieldViewer({
           {viewControls}
           <div className="public-dock-strip-end">
             {(activeDetailRaster || visibleRaster || visiblePlot) && (
-              <div className="viewport-cad-status"><span className="public-field-text-long">{angleFrames.length} positions · </span>peak |B| {currentPeakBT.toFixed(2)} T</div>
+              <div className="viewport-cad-status">
+                {playbackWaiting && <small className="public-field-playback-buffering" aria-live="polite">Buffering… </small>}
+                {electricalAngleDeg.toFixed(1)}° elec<span className="public-field-text-long"> · peak |B| {currentPeakBT.toFixed(2)} T</span>
+              </div>
             )}
             <details className="public-field-physics-info">
               <summary aria-label="Field details" title="Field details">i</summary>
@@ -1264,42 +1282,16 @@ export function SolvedFieldViewer({
           >
             {playing ? 'Ⅱ' : '▶'}
           </button>
-          <label className="public-field-position-control">
-            {/* Nothing in this row changes size while playing: a stall shows
-                inside the label, and the frame count is in the field details. */}
-            <span>
-              <strong>Position</strong>
-              {playbackWaiting && <small className="public-field-playback-buffering" aria-live="polite">Buffering…</small>}
-              <em>{boundedIndex + 1} / {Math.max(1, angleFrames.length)} · {electricalAngleDeg.toFixed(1)}° elec</em>
-            </span>
-            <input
-              ref={playbackSliderRef}
-              type="range"
-              min={sliderRange.min}
-              max={sliderRange.max}
-              step="any"
-              defaultValue={sliderRange.min}
-              disabled={angleFrames.length < 2}
-              aria-label="Solved rotor position"
-              onChange={(event) => {
-                const nextPlaybackAngleDeg = Number(event.target.value);
-                const nextIndex = positionSliderFrameIndex(angleFrames, nextPlaybackAngleDeg, playbackSpan);
-                const direction = nextPlaybackAngleDeg >= playbackElectricalAngleRef.current ? 1 : -1;
-                if (direction !== scrubDirection) setScrubDirection(direction);
-                setScrubbing(true);
-                if (scrubIdleTimerRef.current !== null) window.clearTimeout(scrubIdleTimerRef.current);
-                scrubIdleTimerRef.current = window.setTimeout(() => {
-                  scrubIdleTimerRef.current = null;
-                  setScrubbing(false);
-                }, EXACT_FRAME_SETTLE_MS);
-                setPlaying(false);
-                setPlaybackWaiting(false);
-                frameIndexRef.current = nextIndex;
-                playbackElectricalAngleRef.current = nextPlaybackAngleDeg;
-                setFrameIndex(nextIndex);
-              }}
-            />
-          </label>
+          <button
+            className="public-field-transport-play"
+            type="button"
+            aria-label="Stop and go to the first position"
+            title="Stop and go to the first position"
+            disabled={angleFrames.length < 2}
+            onClick={stopPlayback}
+          >
+            ■
+          </button>
           <RpmField
             value={playbackRpm}
             min={PUBLIC_FIELD_PLAYBACK_MIN_RPM}

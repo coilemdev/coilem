@@ -7,6 +7,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
   type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
@@ -43,9 +44,11 @@ import { PublicMotor3D } from './PublicMotor3D';
 import { SolvedFieldViewer } from './SolvedFieldViewer';
 import { WaveformChart } from './WaveformChart';
 import { WaveformReadoutMarker, useWaveformReadout } from './WaveformReadout';
+import { createFieldPositionLink, type FieldPositionLink } from './fieldPositionLink';
 import {
   formatWaveformReadoutAngle,
   formatWaveformReadoutValue,
+  nearestWaveformReadoutIndex,
   waveformReadoutAngles,
   waveformReadoutValues,
   type WaveformReadoutSeries,
@@ -2540,6 +2543,9 @@ function solveStageLabel(progress: PublicSolveProgress | null, busy: PublicBusyA
   return stage.replace(/_/g, ' ');
 }
 
+const subscribeToNothing = () => () => {};
+const noPlayhead = () => null;
+
 function CompactLiveChart({
   label,
   unit,
@@ -2549,6 +2555,7 @@ function CompactLiveChart({
   emptyStatus = '0 samples',
   emptyMessage = 'Waiting for samples',
   emptyWorking = false,
+  positionLink,
 }: {
   label: string;
   unit: string;
@@ -2558,6 +2565,8 @@ function CompactLiveChart({
   emptyStatus?: string;
   emptyMessage?: string;
   emptyWorking?: boolean;
+  /** Links a completed plot to the field view: hovering moves the field, playback shows here. */
+  positionLink?: FieldPositionLink;
 }) {
   const plottedSeries = series.filter((item) => item.values.length === angles.length);
   const hasSamples = angles.length > 0 && plottedSeries.length > 0;
@@ -2581,6 +2590,16 @@ function CompactLiveChart({
     angleAtX: (svgX) => minX + ((svgX - padding.left) / (width - padding.left - padding.right)) * Math.max(maxX - minX, 1),
     dataKey: `${state}|${label}`,
   });
+  // The hovered or kept position moves the field view; the field's position
+  // shows as a playhead on the curve.
+  const requestedAngle = readout.shownAngle;
+  useEffect(() => {
+    if (requestedAngle !== null) positionLink?.requestAngle(requestedAngle);
+  }, [positionLink, requestedAngle]);
+  const playheadAngle = useSyncExternalStore(
+    positionLink?.subscribePlayhead ?? subscribeToNothing,
+    positionLink?.getPlayhead ?? noPlayhead,
+  );
   if (!hasSamples) {
     return (
       <div className={`public-live-chart waiting${emptyWorking ? ' is-processing' : ''}`} aria-label={`${label}: ${emptyMessage}`}>
@@ -2609,6 +2628,14 @@ function CompactLiveChart({
   const shownAngle = readout.shownAngle;
   const readoutValues = shownAngle === null ? [] : waveformReadoutValues(readoutSeries, shownAngle);
   const readoutText = (value: number | null) => value === null ? 'not solved' : formatWaveformReadoutValue(value, unit);
+  const readoutAngles = waveformReadoutAngles(readoutSeries);
+  const playheadIndex = playheadAngle === null || playheadAngle < minX - 1e-6 || playheadAngle > maxX + 1e-6
+    ? -1
+    : nearestWaveformReadoutIndex(readoutAngles, playheadAngle);
+  const playheadOnCurve = playheadIndex >= 0 && readoutAngles[playheadIndex] !== shownAngle
+    ? readoutAngles[playheadIndex]
+    : null;
+  const playheadValues = playheadOnCurve === null ? [] : waveformReadoutValues(readoutSeries, playheadOnCurve);
 
   return (
     <div className="public-live-chart">
@@ -2630,7 +2657,13 @@ function CompactLiveChart({
         const shown = readoutValues.find((value) => value.key === item.label);
         return <span key={item.label}><i style={{ backgroundColor: item.color }} />{item.label}{shown && <b>{readoutText(shown.value)}</b>}</span>;
       })}</div>}
-      <div className="public-waveform-plot public-live-chart-plot" role="group" aria-label={`${label} plot`} {...readout.plotProps}>
+      <div
+        className="public-waveform-plot public-live-chart-plot"
+        role="group"
+        aria-label={`${label} plot`}
+        title={positionLink ? 'Move along the curve to show that position in the field view; click to keep it' : undefined}
+        {...readout.plotProps}
+      >
       <svg ref={readout.svgRef} viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`${state === 'live' ? 'Live' : 'Completed'} ${label} curve from ${angles.length} solver samples`}>
         {yTickValues.map((tickValue) => (
           <g key={tickValue}>
@@ -2644,6 +2677,12 @@ function CompactLiveChart({
         })}
         <text x={padding.left} y={height - 2}>{formatNumber(minX, 0)}°</text>
         <text x={width - padding.right} y={height - 2} textAnchor="end">{formatNumber(maxX, 0)}° · {unit}</text>
+        {playheadOnCurve !== null && (
+          <g className="public-live-chart-playhead" aria-hidden="true">
+            <line x1={x(playheadOnCurve)} x2={x(playheadOnCurve)} y1={padding.top} y2={height - padding.bottom} />
+            {playheadValues.flatMap((item) => item.value === null ? [] : [<circle key={item.key} cx={x(playheadOnCurve)} cy={y(item.value)} r="2.5" fill={item.color} />])}
+          </g>
+        )}
         {shownAngle !== null && (
           <WaveformReadoutMarker
             x={x(shownAngle)}
@@ -2739,7 +2778,7 @@ function LiveSolveMonitor({ busy, progress, liveSamples, progressPercent }: Pick
   );
 }
 
-function CompletedResultMonitor({ result, onOpenReport }: { result: SolveResult; onOpenReport: () => void }) {
+function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result: SolveResult; onOpenReport: () => void; positionLink?: FieldPositionLink }) {
   const [activePlot, setActivePlot] = useState<'torque' | 'back-emf'>('torque');
   const sixStep = resultUsesSixStep(result);
   const completeCycle = result.solve_metadata.loaded_cycle_complete === true;
@@ -2822,12 +2861,12 @@ function CompletedResultMonitor({ result, onOpenReport }: { result: SolveResult;
       </div>
       {activePlot === 'torque' && sixStep && result.phase_current_waveform
         ? <BldcTorqueCurrentChart angles={result.torque_waveform.electrical_angle_deg} torqueNm={result.torque_waveform.torque_Nm} phaseA={result.phase_current_waveform.phase_a_A} phaseB={result.phase_current_waveform.phase_b_A} phaseC={result.phase_current_waveform.phase_c_A} commutationAdvanceDeg={result.solve_metadata.commutation_advance_deg ?? 0} cycleComplete={completeCycle} />
-        : activePlot === 'torque' && <CompactLiveChart state="complete" label="Torque" unit="N·m" angles={result.torque_waveform.electrical_angle_deg} series={[{ label: 'Torque', values: result.torque_waveform.torque_Nm, color: '#f59e0b' }]} />}
+        : activePlot === 'torque' && <CompactLiveChart state="complete" positionLink={positionLink} label="Torque" unit="N·m" angles={result.torque_waveform.electrical_angle_deg} series={[{ label: 'Torque', values: result.torque_waveform.torque_Nm, color: '#f59e0b' }]} />}
       {activePlot === 'back-emf' && <>
-        <CompactLiveChart state="complete" label="Three-phase back EMF" unit="V" angles={result.back_emf_waveform.electrical_angle_deg} series={[{ label: 'A', values: result.back_emf_waveform.phase_a_V, color: '#f87171' }, { label: 'B', values: result.back_emf_waveform.phase_b_V, color: '#4ade80' }, { label: 'C', values: result.back_emf_waveform.phase_c_V, color: '#60a5fa' }]} />
+        <CompactLiveChart state="complete" positionLink={positionLink} label="Three-phase back EMF" unit="V" angles={result.back_emf_waveform.electrical_angle_deg} series={[{ label: 'A', values: result.back_emf_waveform.phase_a_V, color: '#f87171' }, { label: 'B', values: result.back_emf_waveform.phase_b_V, color: '#4ade80' }, { label: 'C', values: result.back_emf_waveform.phase_c_V, color: '#60a5fa' }]} />
         {result.back_emf_harmonic_analysis && <BackEMFHarmonicSpectrum analysis={result.back_emf_harmonic_analysis} compact />}
       </>}
-      <p>Spatial flux density and field lines remain visible in the solved-field viewport.</p>
+      <p>Move along a curve to show that position in the field view; click to keep it.</p>
     </section>
   );
 }
@@ -2977,6 +3016,8 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
   // starts open: it is the choice made on every run, and the guided tour's
   // solve step points at it.
   const [openSetupSection, setOpenSetupSection] = useState<SolveSetupSection | null>('plan');
+  // The result plots set the field view's position, and show it.
+  const fieldPositionLink = useMemo(createFieldPositionLink, []);
   const toggleSetupSection = (section: SolveSetupSection) => setOpenSetupSection((current) => current === section ? null : section);
   const advancedOpen = openSetupSection === 'advanced';
   const setAdvancedOpen = (open: boolean) => setOpenSetupSection((current) => open ? 'advanced' : current === 'advanced' ? null : current);
@@ -3625,6 +3666,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               armatureError={armatureFieldError}
               armatureProgress={busy === 'field' ? progress : null}
               magnetoCompositionAvailable={selectedSolver === 'magneto2d'}
+              positionLink={fieldPositionLink}
               onRequestArmature={onRequestArmatureField}
               onCancelArmature={onCancelArmatureField}
             />
@@ -3803,7 +3845,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
             </div>
           </details>
         )}
-        {result && <CompletedResultMonitor result={result} onOpenReport={onOpenReport} />}
+        {result && <CompletedResultMonitor result={result} onOpenReport={onOpenReport} positionLink={fieldPositionLink} />}
         </div>
       </aside>
     </div>

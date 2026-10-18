@@ -476,7 +476,7 @@ assert.match(waveformReadoutSource, /'not solved at this angle'/);
 assert.match(styleSource, /\.public-waveform-plot:focus-visible \{/);
 // The Solve tab's waveform plots read a hovered position with the same readout.
 assert.match(workspaceSource, /const readout = useWaveformReadout\(\{\s*angles: waveformReadoutAngles\(readoutSeries\),/);
-assert.match(workspaceSource, /<div className="public-waveform-plot public-live-chart-plot" role="group" aria-label=\{`\$\{label\} plot`\} \{\.\.\.readout\.plotProps\}>\s*<svg ref=\{readout\.svgRef\}/);
+assert.match(workspaceSource, /className="public-waveform-plot public-live-chart-plot"\s*role="group"\s*aria-label=\{`\$\{label\} plot`\}[\s\S]{0,240}?\{\.\.\.readout\.plotProps\}\s*>\s*<svg ref=\{readout\.svgRef\}/);
 assert.match(workspaceSource, /<WaveformReadoutMarker\s+x=\{x\(shownAngle\)\}/);
 assert.match(waveformReadoutSource, /closest\('\.chart-shell, \.public-live-chart'\)/);
 assert.match(styleSource, /\.public-live-chart \.public-waveform-marker line \{ stroke: var\(--text-secondary\); stroke-width: 1; \}/);
@@ -845,7 +845,7 @@ assert.match(motorCanvasSource, /return navigationSlot \? createPortal\(zoomCont
 // The Mesh tab's title bar has no readout: its element count and quality are in the run plan.
 assert.match(workspaceSource, /const cadStatus = mode === 'mesh' \? null : \(/);
 assert.doesNotMatch(workspaceSource, /elements\{meshQualitySummary \? ` · min q/);
-assert.match(solvedFieldSource, /<div className="public-dock-strip-end">\s*\{\(activeDetailRaster \|\| visibleRaster \|\| visiblePlot\) && \(\s*<div className="viewport-cad-status"><span className="public-field-text-long">\{angleFrames\.length\} positions · <\/span>peak \|B\| \{currentPeakBT\.toFixed\(2\)\} T<\/div>\s*\)\}\s*<details className="public-field-physics-info">[\s\S]*?<\/details>\s*<span className="public-field-zoom-slot" ref=\{setZoomSlot\} \/>\s*\{expandControl\}/);
+assert.match(solvedFieldSource, /<div className="public-dock-strip-end">\s*\{\(activeDetailRaster \|\| visibleRaster \|\| visiblePlot\) && \(\s*<div className="viewport-cad-status">\s*\{playbackWaiting && <small className="public-field-playback-buffering" aria-live="polite">Buffering… <\/small>\}\s*\{electricalAngleDeg\.toFixed\(1\)\}° elec<span className="public-field-text-long"> · peak \|B\| \{currentPeakBT\.toFixed\(2\)\} T<\/span>\s*<\/div>\s*\)\}\s*<details className="public-field-physics-info">[\s\S]*?<\/details>\s*<span className="public-field-zoom-slot" ref=\{setZoomSlot\} \/>\s*\{expandControl\}/);
 // The field panel matches the motor panels: full width, same title bar,
 // segmented field choice, dot toggles and labelled slider boxes.
 assert.match(styleSource, /\.public-field-dock \{ border: 0; border-top: 1px solid var\(--border-default\); border-radius: 0;/);
@@ -861,7 +861,7 @@ assert.match(solvedFieldSource, /aria-label="Field solution overlays">\s*<button
 // The field panel stays two lines (controls, then playback): narrower panels
 // tighten the controls, then shorten the two toggles and the readout.
 assert.match(solvedFieldSource, /<span className="public-field-text-long">Flux density<\/span><span className="public-field-text-short" aria-hidden="true">Flux<\/span>/);
-assert.match(solvedFieldSource, /<span className="public-field-text-long">\{angleFrames\.length\} positions · <\/span>peak \|B\|/);
+assert.match(solvedFieldSource, /\{electricalAngleDeg\.toFixed\(1\)\}° elec<span className="public-field-text-long"> · peak \|B\|/);
 assert.match(styleSource, /@container \(max-width: 900px\) \{\s*\.public-field-dock \.public-field-dock-controls \{ gap: 8px; \}/);
 assert.match(styleSource, /@container \(max-width: 720px\) \{\s*\.public-field-dock \.public-field-text-long \{ display: none; \}/);
 assert.match(solvedFieldSource, /<summary>More\{moreLayersOn > 0 && <em>\{moreLayersOn\} on<\/em>\}<\/summary>\s*<div className="public-field-layer-controls" role="group" aria-label="More field layers">\s*\{renderMoreLayerButtons\(\)\}/);
@@ -890,18 +890,32 @@ assert.match(packageSource, /node scripts\/test-field-probe-region\.mjs/);
 assert.match(solvedFieldSource, /import \{ describeFieldProbe \} from '\.\/fieldProbeRegion';/);
 assert.doesNotMatch(solvedFieldSource, /function readableFieldRegion/);
 assert.match(fieldResultSource, /radiusMm: Math\.hypot\(\(ax \+ bx \+ cx\) \/ 3, \(ay \+ by \+ cy\) \/ 3\),/);
-assert.match(solvedFieldSource, /<em>\{boundedIndex \+ 1\} \/ \{Math\.max\(1, angleFrames\.length\)\} · \{electricalAngleDeg\.toFixed\(1\)\}° elec<\/em>/);
 // Nothing in the playback row changes size while it plays (the speed and
 // position sliders jittered when a frame-status column came and went): the
 // row has fixed columns, a stall shows inside the position label, and the
 // frame count is in the field details.
 assert.doesNotMatch(solvedFieldSource, /public-field-playback-meta/);
-assert.match(solvedFieldSource, /\{playbackWaiting && <small className="public-field-playback-buffering" aria-live="polite">Buffering…<\/small>\}/);
+// Playback matches the Geometry preview: play/pause, stop and the speed. The
+// position is set on the Run plan's torque and back-EMF curves (no slider) and
+// shows in the title bar; play resumes there, stop goes back to the first.
+assert.doesNotMatch(solvedFieldSource, /type="range"|Solved rotor position|public-field-position-control|playbackSliderRef/);
+assert.match(solvedFieldSource, /aria-label="Stop and go to the first position"/);
+assert.match(solvedFieldSource, /const togglePlayback = \(\) => \{\s*setPlaybackWaiting\(false\);\s*setPlaying\(!playing\);\s*\};/);
+assert.match(solvedFieldSource, /const stopPlayback = \(\) => \{[\s\S]*?setFrameIndex\(0\);\s*\};/);
+assert.match(solvedFieldSource, /positionLink\?\.subscribeRequests\(\(angleDeg\) => scrubToAngleRef\.current\(angleDeg\)\)/);
+assert.match(solvedFieldSource, /positionLink\?\.setPlayhead\(angleFrames\.length > 0 \? electricalAngleDeg : null\)/);
+assert.match(workspaceSource, /const fieldPositionLink = useMemo\(createFieldPositionLink, \[\]\);/);
+assert.match(workspaceSource, /positionLink=\{fieldPositionLink\}\s*onRequestArmature=\{onRequestArmatureField\}/);
+assert.match(workspaceSource, /<CompletedResultMonitor result=\{result\} onOpenReport=\{onOpenReport\} positionLink=\{fieldPositionLink\} \/>/);
+assert.match(workspaceSource, /if \(requestedAngle !== null\) positionLink\?\.requestAngle\(requestedAngle\);/);
+assert.match(workspaceSource, /<g className="public-live-chart-playhead" aria-hidden="true">/);
+assert.match(workspaceSource, /Move along a curve to show that position in the field view; click to keep it\./);
+assert.match(styleSource, /\.public-live-chart \.public-live-chart-playhead line \{ stroke: var\(--accent-primary\);/);
+assert.match(packageSource, /node scripts\/test-field-position-link\.mjs/);
 assert.match(solvedFieldSource, /<div><dt>Frames<\/dt><dd>\{bufferStatus\}<\/dd><\/div>/);
 assert.match(solvedFieldSource, /<div><dt>Mechanical<\/dt><dd>\{mechanicalAngleDeg\.toFixed\(2\)\}°<\/dd><\/div>/);
-assert.match(styleSource, /\.public-field-dock > \.public-field-playback \{ grid-template-columns: 36px minmax\(0,1fr\) auto;/);
+assert.match(styleSource, /\.public-field-dock > \.public-field-playback \{ display: flex; align-items: center; gap: 8px; padding: 0 16px 8px; \}/);
 assert.doesNotMatch(styleSource, /\.public-field-playback-rpm|playback-rpm-progress/);
-assert.match(styleSource, /\.public-field-dock \.public-field-position-control em \{ min-width: 0; overflow: hidden; text-overflow: ellipsis; \}/);
 assert.match(styleSource, /\.public-dock-strip-end \{ display: flex;[^}]*margin-left: auto; \}/);
 assert.match(styleSource, /\.public-motor-viewport \.public-dock-strip-end \.viewport-cad-status \{[^}]*border: 0;[^}]*background: transparent;/);
 assert.match(solvedFieldSource, /<div className="public-field-dock">\s*<div className="public-dock-strip">\s*\{viewControls\}\s*<div className="public-dock-strip-end">/);
@@ -1074,6 +1088,19 @@ assert.match(solvedFieldSource, /magnetReference=\{source === 'armature' && !ove
 assert.doesNotMatch(solvedFieldSource, />Stator \+ PM</);
 assert.match(solvedFieldSource, /aria-pressed=\{view === 'resultant'\}/);
 assert.match(solvedFieldSource, /className=\{`public-field-source-pair\$\{overlayActive \? ' is-both' : ''\}`\}/);
+// PM lines, arrows and the PM button are blue wherever PM shows, alone or with
+// the stator, and Stator is always orange.
+assert.match(solvedFieldSource, /pmLines=\{source === 'pm'\}/);
+assert.match(fieldResultSource, /drawFieldLines\(context, prepared, fieldLineDensity, pmLines\)/);
+assert.match(fieldResultSource, /if \(pmLines\) \{\s*context\.globalAlpha = OVERLAY_LINE_ALPHA;\s*context\.drawImage\(overlayLineLayer\(layers\.lines\), x, y, drawSize, drawSize\);/);
+assert.match(fieldResultSource, /className=\{`public-field-direction-cue\$\{pmLines \? ' is-overlay' : ''\}`\}/);
+assert.match(styleSource, /\.public-field-dock \.public-field-dock-controls \.public-field-source-pair \.is-pm\[aria-pressed="true"\] \{ color: #5ed3f3;/);
+assert.doesNotMatch(styleSource, /\.public-field-source-pair\.is-both \.is-pm/);
+// Every hook in the field plot runs before it returns nothing for a plot without data.
+assert.ok(
+  fieldResultSource.indexOf('if (!prepared && !raster) return null;') > fieldResultSource.indexOf('useLayoutEffect(() => {'),
+  'the plot returns early only after its last hook',
+);
 assert.match(solvedFieldSource, /aria-pressed=\{pmShown\} disabled=\{!pmAvailable\} onClick=\{\(\) => toggleSeparateField\('pm'\)\}/);
 assert.match(solvedFieldSource, /aria-pressed=\{statorShown\} disabled=\{!magnetoCompositionAvailable\} onClick=\{\(\) => toggleSeparateField\('armature'\)\}/);
 assert.match(solvedFieldSource, /selectSource\(nextPm && nextStator \? 'stator_pm' : nextPm \? 'pm' : nextStator \? 'armature' : 'resultant'\)/);
@@ -1116,7 +1143,6 @@ assert.match(solvedFieldSource, /const statorPolarityRotationDeg = source === 'a
 assert.match(solvedFieldSource, /\? -mechanicalAngleDeg/);
 assert.match(solvedFieldSource, /statorPolarityRotationDeg=\{statorPolarityRotationDeg\}/);
 assert.match(fieldResultSource, /cue\.angleDeg \+ statorPolarityRotationDeg/);
-assert.match(solvedFieldSource, /Solved rotor position/);
 assert.match(resultSummarySource, /Solver time is the wall-clock time for meshing, solving and building the result/);
 assert.doesNotMatch(workspaceSource, /may sum parallel tasks/);
 assert.match(solvedFieldSource, /setPlaying/);
@@ -1138,20 +1164,16 @@ assert.match(solvedFieldSource, /Play field clockwise/);
 // The electrical angle rides on the position readout; the mechanical angle and
 // the clockwise direction are in the field details, and the frame status shows
 // only while frames are still loading.
-assert.match(solvedFieldSource, /° elec<\/em>/);
+assert.match(solvedFieldSource, /\{electricalAngleDeg\.toFixed\(1\)\}° elec<span/);
 assert.match(solvedFieldSource, /<div><dt>Playback<\/dt><dd>Clockwise<\/dd><\/div>/);
 assert.doesNotMatch(solvedFieldSource, /MAX_CACHED_FRAMES/);
 assert.match(solvedFieldSource, /window\.requestAnimationFrame\(animate\)/);
 assert.match(solvedFieldSource, /advancePlaybackElectricalAngle/);
-assert.match(solvedFieldSource, /const nextIndex = positionSliderFrameIndex\(angleFrames, nextPlaybackAngleDeg, playbackSpan\)/);
+assert.match(solvedFieldSource, /const nextIndex = positionSliderFrameIndex\(angleFrames, angleDeg, playbackSpan\)/);
 assert.match(solvedFieldSource, /playbackCycleSpanDeg/);
 assert.match(solvedFieldSource, /normalizePlaybackElectricalAngle/);
-assert.match(solvedFieldSource, /playbackSliderRef\.current\.value/);
-assert.match(solvedFieldSource, /step="any"/);
 assert.match(solvedFieldSource, /for \(const preloadIndex of preloadIndices\)/);
-// #59: a Preview window is covered once by the slider and loops in order when played.
-assert.match(solvedFieldSource, /min=\{sliderRange\.min\}\s*max=\{sliderRange\.max\}/);
-assert.match(solvedFieldSource, /positionSliderValue\(playbackSpanRef\.current, electricalAngle\)/);
+// #59: a Preview window loops in order when played.
 assert.match(solvedFieldSource, /playbackSpan\.windowed\s*\? advanceWindowPlaybackAngle\(/);
 assert.match(solvedFieldSource, /windowPlaybackFrameIndex\(angleFrames, nextPlaybackAngleDeg, playbackSpan\)/);
 // #59: dragging loads only the newest position, preloads nothing until it rests,
@@ -1195,7 +1217,6 @@ assert.match(rpmFieldSource, /const clamp = \(rpm: number\) => Math\.min\(max, M
 assert.match(rpmFieldSource, /event\.shiftKey/);
 assert.match(rpmFieldSource, /commit\(event\.currentTarget\.value\);/);
 assert.match(rpmFieldSource, /cancelledRef\.current = true;\s+onChange\(valueBeforeEditRef\.current\);/);
-assert.match(styleSource, /\.public-field-position-control > span \{ display: flex;/);
 assert.match(solvedFieldSource, /Buffering next frame/);
 assert.match(solvedFieldSource, /DETAIL_VIEWPORT_SCALE/);
 assert.match(solvedFieldSource, /detailRequestRef/);
@@ -1359,8 +1380,8 @@ assert.doesNotMatch(workspaceSource, /Math\.max\(maxY - minY, 1\)/);
 assert.match(styleSource, /\.public-live-chart svg \.public-live-chart-y-value/);
 assert.match(workspaceSource, /Completed solver results/);
 assert.match(workspaceSource, /Completed result plots/);
-assert.match(workspaceSource, /state="complete" label="Torque"/);
-assert.match(workspaceSource, /state="complete" label="Three-phase back EMF"/);
+assert.match(workspaceSource, /state="complete" positionLink=\{positionLink\} label="Torque"/);
+assert.match(workspaceSource, /state="complete" positionLink=\{positionLink\} label="Three-phase back EMF"/);
 assert.doesNotMatch(workspaceSource, /state="complete" label="Cogging torque"/);
 assert.match(workspaceSource, /Resize completed results panel/);
 assert.match(workspaceSource, /role="separator"/);

@@ -533,6 +533,7 @@ export function FieldResultPlot({
   onViewportScaleSettled,
   overlay = null,
   fieldAxes = null,
+  pmLines = false,
   navigationSlot = null,
 }: {
   plot?: PublicFieldLinePlot | null;
@@ -568,6 +569,8 @@ export function FieldResultPlot({
   describeProbe?: (probe: FieldProbe) => FieldProbeDescription;
   onViewportScaleSettled?: (scale: number) => void;
   overlay?: FieldLineOverlay | null;
+  /** Draw the field's own lines and arrows in the PM colour (the PM-only view). */
+  pmLines?: boolean;
   fieldAxes?: FieldAxesOptions | null;
   /** Render the zoom controls here instead of over the plot (the solved-field viewer's control dock). */
   navigationSlot?: HTMLElement | null;
@@ -744,7 +747,7 @@ export function FieldResultPlot({
         drawBase(context, prepared);
         if (showHeatmap) drawHeat(context, prepared, visibleRange ? fittedFluxScale(visibleRange.minB, visibleRange.maxB) : FIXED_FLUX_SCALE);
         if (showMesh) drawMeshEdges(context, prepared, navigation.scale);
-        if (showFieldLines) drawFieldLines(context, prepared, fieldLineDensity);
+        if (showFieldLines) drawFieldLines(context, prepared, fieldLineDensity, pmLines);
         drawOverlayLines(context, true);
         context.restore();
         return;
@@ -810,14 +813,20 @@ export function FieldResultPlot({
             centerX + (baseOffsetX - viewX * baseScale - centerX) * navigation.scale + panX,
             centerY + (baseOffsetY - viewY * baseScale - centerY) * navigation.scale + panY,
           );
-          drawFieldLines(context, prepared, fieldLineDensity);
+          drawFieldLines(context, prepared, fieldLineDensity, pmLines);
           context.restore();
         } else {
           context.save();
           // Playback rasters are authored with the medium contour stride. Do
           // not imply low/high density by changing only the image opacity.
-          context.globalAlpha = 0.68;
-          context.drawImage(layers.lines, x, y, drawSize, drawSize);
+          // PM-only lines take the PM colour, as in the Stator + PM view.
+          if (pmLines) {
+            context.globalAlpha = OVERLAY_LINE_ALPHA;
+            context.drawImage(overlayLineLayer(layers.lines), x, y, drawSize, drawSize);
+          } else {
+            context.globalAlpha = 0.68;
+            context.drawImage(layers.lines, x, y, drawSize, drawSize);
+          }
           context.restore();
         }
         const primarySquare = rasterWorldSquare(raster?.viewBox ?? prepared?.viewBox ?? '');
@@ -850,6 +859,7 @@ export function FieldResultPlot({
     navigation.scale,
     overlay,
     overlayPrepared,
+    pmLines,
     prepared,
     raster,
     showFieldLines,
@@ -857,7 +867,6 @@ export function FieldResultPlot({
     showMesh,
   ]);
 
-  if (!prepared && !raster) return null;
   const hasHeatmap = raster ? true : prepared?.heatBucketCounts.some((count) => count > 0) ?? false;
   const hasMesh = Boolean(raster?.mesh || (prepared?.triangleCount ?? 0) > 0);
   const hasFieldLines = raster ? raster.contourSegmentCount > 0 : (prepared?.contourCount ?? 0) > 0;
@@ -915,6 +924,9 @@ export function FieldResultPlot({
     observer.observe(legend);
     return () => observer.disconnect();
   }, [legendShown, legendTicks.length, legendScale.fixed, legendScale.overAboveT, showRangeControl]);
+
+  // Every hook is above this line, so a plot that has no data yet keeps the same hooks.
+  if (!prepared && !raster) return null;
   const triangleCount = raster?.triangleCount ?? prepared?.triangleCount ?? 0;
   const contourLevelCount = raster?.contourLevelCount ?? plot?.contour_levels.length ?? 0;
   const availableDirectionCues = raster?.vectorCues ?? prepared?.vectorCues ?? [];
@@ -1113,7 +1125,7 @@ export function FieldResultPlot({
                 return (
                   <g
                     transform={`translate(${cue.x} ${-cue.y}) rotate(${screenAngleDeg})`}
-                    className="public-field-direction-cue"
+                    className={`public-field-direction-cue${pmLines ? ' is-overlay' : ''}`}
                     key={`field-direction-${index}`}
                   >
                     <path d={arrowPath} style={style} />
