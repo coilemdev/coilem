@@ -143,18 +143,37 @@ const elecAxis = (poles, slotCount, pairs) => {
   return ((Math.atan2(im, re) * 180 / Math.PI) + 360) % 360;
 };
 const wrapDiff = (a, b) => ((a - b) % 360 + 540) % 360 - 180;
+// Stepped through a whole electrical cycle, 1 degree at a time:
+// - sine: the stator field turns smoothly with the rotor, the lead never moves;
+// - six-step: it sits in exactly 6 places 60 degrees apart and the lead saws from
+//   120 down to 60 before each commutation, the ideal 120-degree pattern.
+// (About 1 degree of the 90 is the rotor axis taken from the magnet centroids.)
 for (const layout of layouts.cases) {
   const pairs = layout.pole_count / 2;
   for (const mode of ['sinusoidal', 'ideal_six_step_120']) {
     const caseDrive = drive({ mode, axisOffsetDeg: layout.phase_axis_offset_elec_deg, poleCount: layout.pole_count });
-    for (const rotorMechDeg of [0, 3, 10, 27.5, 44]) {
-      const theta = rotorElectricalDeg(rotorMechDeg, layout.pole_count);
+    const leads = [];
+    const statorAxes = new Set();
+    for (let stepDeg = 0; stepDeg < 360; stepDeg += 1) {
+      const theta = rotorElectricalDeg(stepDeg / pairs, layout.pole_count);
       const poles = toothPoles(slotCurrents(layout.winding_layout, layout.slot_count, phaseCurrents(caseDrive, theta)));
+      const statorAxis = elecAxis(poles, layout.slot_count, pairs);
+      statorAxes.add(Math.round(statorAxis) % 360);
       // The rotor turns clockwise: its N axis moves back by theta, electrically.
-      const rotorN = layout.rotor_n_axis_elec_deg - theta;
-      const lead = wrapDiff(elecAxis(poles, layout.slot_count, pairs), rotorN);
-      const tolerance = mode === 'sinusoidal' ? 3 : 33;
-      assert.ok(Math.abs(lead - 90) <= tolerance, `${layout.fixture} ${mode} at ${rotorMechDeg} deg: stator N leads rotor N by ${lead.toFixed(1)} elec`);
+      leads.push(wrapDiff(statorAxis, layout.rotor_n_axis_elec_deg - theta));
+    }
+    const low = Math.min(...leads);
+    const high = Math.max(...leads);
+    const label = `${layout.fixture} ${mode}`;
+    if (mode === 'sinusoidal') {
+      assert.ok(high - low < 0.1, `${label}: the lead holds (${low.toFixed(2)}..${high.toFixed(2)})`);
+      assert.ok(Math.abs((low + high) / 2 - 90) <= 1.5, `${label}: stator N leads rotor N by 90 elec (${low.toFixed(2)})`);
+      assert.equal(statorAxes.size, 360, `${label}: the stator field turns with every step`);
+    } else {
+      assert.ok(low >= 59 && high <= 121.5, `${label}: the lead stays within 60..120 elec (${low.toFixed(2)}..${high.toFixed(2)})`);
+      const axes = [...statorAxes].sort((a, b) => a - b);
+      assert.equal(axes.length, 6, `${label}: six stator positions a cycle (${axes})`);
+      axes.forEach((axis, index) => index && assert.equal(axis - axes[index - 1], 60, `${label}: 60 degrees apart (${axes})`));
     }
   }
 }

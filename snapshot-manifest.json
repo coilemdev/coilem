@@ -5430,8 +5430,8 @@
     },
     {
       "path": "frontend/scripts/test-phase-drive.mjs",
-      "bytes": 9765,
-      "sha256": "8d91a413b45b603aee4e6534cef582b6e67bc12f5045f8a9a2248b49ba3b2b5b"
+      "bytes": 10960,
+      "sha256": "18d1816e74cf7ca7745578557a4262e9754caf9d256b78c3864d3ae943ee7ce2"
     },
     {
       "path": "frontend/scripts/test-public-airgap-ux.mjs",
@@ -10460,6 +10460,12 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "6109e0ff7dce9a05ce3759e6bd0c3646cd2dc828e7d5de0b3cff3b1ee1537311",
       "reason": "Pin the Phases scope frequency readouts"
+    },
+    {
+      "base_commit": "3f836201228804dda25b27da17ea30f49f95b102",
+      "path": "frontend/scripts/test-phase-drive.mjs",
+      "source_sha256": "8d91a413b45b603aee4e6534cef582b6e67bc12f5045f8a9a2248b49ba3b2b5b",
+      "reason": "Sweep the tooth-pole lead through a whole electrical cycle in 1 degree steps"
     }
   ]
 }
