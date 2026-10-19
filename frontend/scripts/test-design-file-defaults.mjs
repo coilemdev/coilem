@@ -91,3 +91,18 @@ const fastDesign = cloneDefaultConfig();
 fastDesign.solve_params.mesh_build = 'fast';
 assert.equal(parseDesignFile(serializeDesignFile(fastDesign, 'Fast mesh')).config.solve_params.mesh_build, 'fast');
 console.log('mesh build defaults passed');
+
+// The wire is an object the section merge would drop, and the winding
+// temperature defaults to null; both survive a save and reload (#136).
+const wired = cloneDefaultConfig();
+assert.equal(wired.solve_params.winding_temperature_C, null, 'an unset winding temperature means 20 °C');
+assert.equal(wired.winding.wire, undefined, 'new designs derive their wire');
+wired.winding.wire = { wire_bare_diameter_mm: 0.9, strands_in_hand: 4, end_turn_extension_mm: 12, bogus: 'x' };
+wired.solve_params.winding_temperature_C = 120;
+const reloadedWire = parseDesignFile(serializeDesignFile(wired, 'Wired')).config;
+assert.deepEqual(reloadedWire.winding.wire, { wire_bare_diameter_mm: 0.9, strands_in_hand: 4, end_turn_extension_mm: 12 });
+assert.equal(reloadedWire.solve_params.winding_temperature_C, 120);
+const badWire = cloneDefaultConfig();
+badWire.winding.wire = { wire_bare_diameter_mm: -1 };
+assert.equal(parseDesignFile(serializeDesignFile(badWire, 'Bad wire')).config.winding.wire, undefined, 'an unusable wire is dropped');
+console.log('wire and winding temperature round-trip passed');

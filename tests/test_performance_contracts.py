@@ -259,19 +259,20 @@ def test_existing_designs_and_results_load_unchanged():
         assert SolveMetadata.model_fields[name].default is None
 
 
-@pytest.mark.parametrize(
-    ("section", "field", "value"),
-    [
-        ("winding", "wire", {"wire_bare_diameter_mm": 0.8}),
-        ("solve_params", "winding_temperature_C", 120.0),
-        ("solve_params", "mechanical_loss_W", 15.0),
-    ],
-)
-def test_performance_inputs_are_refused_until_a_solve_uses_them(section, field, value):
+def test_performance_inputs_are_refused_until_a_solve_uses_them():
     raw = deepcopy(VALID_CONFIG)
-    raw[section][field] = value
+    raw["solve_params"]["mechanical_loss_W"] = 15.0
     with pytest.raises(ValidationError, match="not supported by this preview yet"):
         MotorConfig.model_validate(raw)
+
+
+def test_wire_and_winding_temperature_are_accepted_now_resistance_uses_them():
+    raw = deepcopy(VALID_CONFIG)
+    raw["winding"]["wire"] = {"wire_bare_diameter_mm": 0.8}
+    raw["solve_params"]["winding_temperature_C"] = 120.0
+    config = MotorConfig.model_validate(raw)
+    assert config.winding.wire.wire_bare_diameter_mm == 0.8
+    assert config.solve_params.winding_temperature_C == 120.0
 
 
 def test_loss_breakdown_stays_out_of_public_results_until_losses_ship():
