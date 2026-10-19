@@ -24,6 +24,10 @@ Each native single-angle `solve_info.nonlinear_convergence` contains:
   Historical reporting-only records identify the legacy relaxed Picard test
   and RHS-normalized Newton test explicitly; do not reinterpret their values
   under the new definitions.
+- Newton also records `rhs_scaled_residual` = `L2(f - K(A) A) / L2(f)`,
+  `initial_rhs_scaled_residual`, and `absolute_residual_floor`. Its stage-relative
+  test is accepted alternatively when the RHS-scaled residual is at or below
+  the floor. Older records omit these fields; do not infer them from defaults.
 - `solution_reused`: congruent positions retain their source solve's convergence
   evidence and counts. The legacy per-position iteration arrays still use zero
   for Python-owned reused positions where no new solve ran.
@@ -45,8 +49,13 @@ count, and `nonlinear_max_iterations_used`, `nonlinear_median_iterations`,
 The mismatch summary includes reused evidence. Raw values with different
 definitions must not be presented as equivalent error measures; the
 method-specific mismatch divided by its tolerance is the comparable threshold
-ratio. A single metadata tolerance is null for a mixed-method sweep; individual
-records remain authoritative.
+ratio. Newton's OR test uses the smaller of the relative and absolute-floor
+threshold ratios, so a field accepted at the floor does not raise a false warning.
+`nonlinear_tolerance_settings` retains each distinct threshold with its method,
+residual definition and optional floor. A single metadata tolerance is null if
+these settings differ, even when Picard and Newton have equal numeric thresholds.
+`nonlinear_tolerance_method` labels a single setting; individual position records
+remain authoritative. Missing records never use a current-default estimate.
 
 Historical results without records retain null fields, meaning **not recorded**.
 Iteration counts or a saved tolerance alone cannot reconstruct a final mismatch.
@@ -60,7 +69,11 @@ continuation stage, using the same constrained equations in numerator and
 denominator. Its existing RHS normalization cancels in this ratio because
 sources and constraints remain fixed within a stage. Large PM or boundary
 terms therefore cannot hide a large fraction of the initial nonlinear defect.
-An exactly zero initial defect is accepted as zero.
+An exactly zero initial defect is accepted as zero. A nearly converged stage is
+also accepted when its RHS-scaled residual is at or below `1e-8`, chosen from
+the tight linear-solve tolerance. This absolute floor avoids demanding arbitrary
+relative reduction of an already tiny initial defect. The relative residual is
+still recorded unchanged, together with the RHS-scaled residual and floor.
 
 | Preset | Picard raw mismatch tolerance | Newton stage-relative residual tolerance |
 | --- | ---: | ---: |
@@ -87,7 +100,8 @@ The Results block and dedicated PDF/CSV presentation remain separate work.
 Their contract is to show preset, mesh elements, maximum and median iterations,
 and method-labelled final mismatch. Render absent evidence as **not recorded**.
 Warn if any recorded stage used at least 80% of its cap, or a method-specific
-final mismatch exceeds its recorded tolerance (ratio greater than 1). Reused
+final mismatch exceeds the recorded stopping test (ratio greater than 1, using
+both alternatives for Newton). Reused
 positions inherit their source field's warning; a fallback should be identified.
 Keep numerical stopping, spatial mesh error and reference limitations distinct.
 

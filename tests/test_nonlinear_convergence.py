@@ -60,6 +60,33 @@ def test_historical_convergence_is_not_inferred_from_counts_or_current_defaults(
     assert old.nonlinear_worst_final_mismatch is None
     assert old.nonlinear_max_iterations_used is None
     assert old.solve_quality is None
+    assert old.nonlinear_tolerance_method is None
+    assert old.nonlinear_tolerance_settings is None
+
+
+def test_equal_numeric_tolerances_from_different_methods_still_need_labels():
+    picard, newton = record(), record("newton")
+    newton["tolerance"] = picard["tolerance"]
+    _, metadata = convergence_fields({"loaded_nonlinear_convergence": [picard, newton]})
+    assert metadata["nonlinear_tolerance"] is None
+    assert metadata["nonlinear_tolerance_method"] is None
+    assert {s["method"] for s in metadata["nonlinear_tolerance_settings"]} == {"picard", "newton"}
+
+
+def test_newton_absolute_floor_is_recorded_and_does_not_raise_a_false_warning():
+    newton = record("newton", 1)
+    newton.update(scaled_residual=1.0, initial_rhs_scaled_residual=5e-9,
+                  rhs_scaled_residual=5e-9, absolute_residual_floor=1e-8)
+    result, metadata = convergence_fields({"loaded_nonlinear_convergence": [newton]})
+    assert result["loaded_nonlinear_convergence"][0].initial_rhs_scaled_residual == 5e-9
+    assert metadata["nonlinear_tolerance"] == 0.01
+    assert metadata["nonlinear_tolerance_method"] == "newton"
+    assert metadata["nonlinear_tolerance_settings"][0]["absolute_residual_floor"] == 1e-8
+    assert metadata["nonlinear_worst_tolerance_ratio"] == pytest.approx(0.5)
+    # Older Newton records without a floor retain their original warning test.
+    newton.pop("absolute_residual_floor")
+    _, old_metadata = convergence_fields({"loaded_nonlinear_convergence": [newton]})
+    assert old_metadata["nonlinear_worst_tolerance_ratio"] == pytest.approx(100)
 
 
 def test_aggregate_and_public_result_keep_loaded_and_no_load_evidence():

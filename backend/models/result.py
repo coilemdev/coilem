@@ -48,11 +48,23 @@ class NonlinearConvergence(BaseModel):
     stage_iteration_cap: int = Field(ge=1)
     raw_max_residual: float | None = Field(default=None, ge=0, allow_inf_nan=False)
     scaled_residual: float | None = Field(default=None, ge=0, allow_inf_nan=False)
+    rhs_scaled_residual: float | None = Field(default=None, ge=0, allow_inf_nan=False)
+    initial_rhs_scaled_residual: float | None = Field(default=None, ge=0, allow_inf_nan=False)
+    absolute_residual_floor: float | None = Field(default=None, gt=0, lt=1, allow_inf_nan=False)
     residual_definition: str
     tolerance: float = Field(ge=0, lt=1, allow_inf_nan=False)
     stopping_test: str
     solution_reused: bool = False
     fallback_from: str | None = None
+
+
+class NonlinearToleranceSetting(BaseModel):
+    """A recorded threshold, labelled by method and residual definition."""
+
+    method: Literal["picard", "newton"]
+    residual_definition: str
+    tolerance: float = Field(gt=0, lt=1, allow_inf_nan=False)
+    absolute_residual_floor: float | None = Field(default=None, gt=0, lt=1, allow_inf_nan=False)
 
 
 class SolveMetadata(BaseModel):
@@ -98,6 +110,8 @@ class SolveMetadata(BaseModel):
         "weighted_stress_centered",
     ] | None = None
     nonlinear_tolerance: float | None = Field(default=None, gt=0, lt=1)
+    nonlinear_tolerance_method: Literal["picard", "newton"] | None = None
+    nonlinear_tolerance_settings: list[NonlinearToleranceSetting] | None = None
     solve_quality: Literal["quick", "standard", "fine", "custom"] | None = None
     nonlinear_max_iterations_used: int | None = Field(default=None, ge=1)
     nonlinear_median_iterations: float | None = Field(default=None, ge=1)

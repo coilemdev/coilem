@@ -40,7 +40,6 @@ from backend.magneto2d_adapter import (
     build_magneto2d_payload,
     cancel_active_magneto2d_processes,
     estimate_magneto2d_cogging_positions,
-    estimate_magneto2d_nonlinear_tolerance,
     estimate_magneto2d_sweep_angle_grid,
     estimate_magneto2d_sweep_positions,
     get_cached_solve_mesh_artifact,
@@ -2811,7 +2810,6 @@ class Magneto2DSolver(Solver):
         from backend.solver.convergence import convergence_fields
 
         convergence_result, convergence_metadata = convergence_fields(sweep)
-        recorded_tolerance = convergence_metadata.pop("nonlinear_tolerance", estimate_magneto2d_nonlinear_tolerance(config))
         return SolveResult(
             **convergence_result,
             summary=SolveSummary(
@@ -2972,7 +2970,6 @@ class Magneto2DSolver(Solver):
                 # cached reports, so echoing only the request is not valid
                 # execution provenance.
                 torque_method=_solve_metadata_torque_method(torque_metric),
-                nonlinear_tolerance=recorded_tolerance,
                 solve_quality=config.solve_params.solve_quality,
                 **convergence_metadata,
                 topology=config.topology,

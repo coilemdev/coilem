@@ -17,6 +17,10 @@ use super::{
     solve_linear_system, AngleProgressContext, MotorLinearSolvePolicy, SolveMatrixPattern,
 };
 
+/// The correction solve cannot justify demanding unlimited relative reduction
+/// from an initial defect already at the tight linear solver's accuracy.
+pub(super) const NEWTON_RHS_RESIDUAL_FLOOR: f64 = super::LINEAR_SOLVE_TIGHT_TOL;
+
 struct NewtonAcceptedStep {
     az: Vec<f64>,
     fields: Vec<ElementField>,
@@ -261,6 +265,12 @@ fn solve_newton_correction(
         profile.residual_eval_ms += elapsed_ms(residual_eval_start);
     }
 
+    // Avoid an unnecessary correction (or failed line search) for a field
+    // already at the linear solve's accuracy, including a near-exact warm start.
+    if residual_norm <= NEWTON_RHS_RESIDUAL_FLOOR {
+        return Ok((vec![0.0; az.len()], residual_norm, elapsed_ms(asm_start), 0));
+    }
+
     let mut tangent_rhs = rhs;
     let mut tangent = if let Some(matrix_pattern) = matrix_pattern {
         let tangent_start = Instant::now();
@@ -334,7 +344,7 @@ fn solve_newton_correction(
             &tangent,
             &tangent_rhs,
             5000,
-            1.0e-8,
+            super::LINEAR_SOLVE_TIGHT_TOL,
             None,
             linear_policy.pcg,
         )?;
@@ -345,7 +355,7 @@ fn solve_newton_correction(
             &tangent,
             &tangent_rhs,
             5000,
-            1.0e-8,
+            super::LINEAR_SOLVE_TIGHT_TOL,
             None,
             linear_policy.pcg,
         )?
@@ -434,7 +444,7 @@ fn line_search_step(
         }
         if candidate_residual.is_finite() {
             best_residual = best_residual.min(candidate_residual);
-            if candidate_residual <= accept_below {
+            if candidate_residual <= accept_below || candidate_residual <= NEWTON_RHS_RESIDUAL_FLOOR {
                 if let Some(profile) = profile.as_deref_mut() {
                     profile.line_search_total_ms += elapsed_ms(line_search_start);
                 }
@@ -476,7 +486,18 @@ pub(super) fn initial_scaled_residual(residual: f64, initial: f64) -> f64 {
     residual / initial.max(1.0e-30)
 }
 
-fn convergence_record(history: &[f64], config: NonlinearSolveConfig) -> NonlinearConvergence {
+pub(super) fn newton_has_converged(residual: f64, initial: f64, tolerance: f64) -> bool {
+    residual.is_finite()
+        && (initial_scaled_residual(residual, initial) <= tolerance
+            || residual <= NEWTON_RHS_RESIDUAL_FLOOR)
+}
+
+fn convergence_record(
+    history: &[f64],
+    rhs_residual: f64,
+    initial: f64,
+    config: NonlinearSolveConfig,
+) -> NonlinearConvergence {
     NonlinearConvergence {
         method: "newton".into(),
         iterations: history.len(),
@@ -485,9 +506,12 @@ fn convergence_record(history: &[f64], config: NonlinearSolveConfig) -> Nonlinea
         stage_iteration_cap: config.max_iterations,
         raw_max_residual: None,
         scaled_residual: history.last().copied(),
-        residual_definition: "L2(f - K(A) A) / L2(f - K(A0) A0), initial nonlinear residual of each continuation stage, after model constraints".into(),
+        rhs_scaled_residual: Some(rhs_residual),
+        initial_rhs_scaled_residual: Some(initial),
+        absolute_residual_floor: Some(NEWTON_RHS_RESIDUAL_FLOOR),
+        residual_definition: "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage".into(),
         tolerance: config.newton_convergence_threshold,
-        stopping_test: "scaled_residual <= tolerance at every continuation stage".into(),
+        stopping_test: "scaled_residual <= tolerance OR rhs_scaled_residual <= absolute_residual_floor at every continuation stage".into(),
         solution_reused: false,
         fallback_from: None,
     }
@@ -587,10 +611,10 @@ fn run_newton_stage(
         total_solve_ms += solve_ms;
         let reference = *initial_residual.get_or_insert(residual);
         let scaled_residual = initial_scaled_residual(residual, reference);
-        if scaled_residual <= convergence_threshold {
+        if newton_has_converged(residual, reference, convergence_threshold) {
             residual_history.push(scaled_residual);
             return Ok(NonlinearLoopOutput {
-                convergence: convergence_record(&residual_history, nonlinear_config),
+                convergence: convergence_record(&residual_history, residual, reference, nonlinear_config),
                 materials,
                 az,
                 fields,
@@ -670,9 +694,9 @@ fn run_newton_stage(
         fields = accepted.fields;
         materials = accepted.materials;
 
-        if accepted_scaled_residual <= convergence_threshold {
+        if newton_has_converged(accepted.residual, reference, convergence_threshold) {
             return Ok(NonlinearLoopOutput {
-                convergence: convergence_record(&residual_history, nonlinear_config),
+                convergence: convergence_record(&residual_history, accepted.residual, reference, nonlinear_config),
                 materials,
                 az,
                 fields,

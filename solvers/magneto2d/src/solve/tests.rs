@@ -2835,15 +2835,28 @@ fn nonlinear_convergence_json_keeps_raw_picard_and_scaled_newton_distinct() {
     newton.method = "newton".into();
     newton.raw_max_residual = None;
     newton.scaled_residual = Some(0.003);
+    newton.rhs_scaled_residual = Some(3.0e-6);
+    newton.initial_rhs_scaled_residual = Some(0.001);
+    newton.absolute_residual_floor = Some(super::LINEAR_SOLVE_TIGHT_TOL);
     newton.stage_iterations = vec![4, 5, 8];
     newton.max_iterations = 300;
     newton.fallback_from = None;
     let json = serde_json::to_value(&newton).unwrap();
     assert!(json["raw_max_residual"].is_null());
     assert_eq!(json["scaled_residual"], 0.003);
+    assert_eq!(json["rhs_scaled_residual"], 3.0e-6);
+    assert_eq!(json["initial_rhs_scaled_residual"], 0.001);
+    assert_eq!(json["absolute_residual_floor"], 1.0e-8);
     assert_eq!(json["stage_iterations"], serde_json::json!([4, 5, 8]));
     assert!(newton.reused().solution_reused);
     assert!(!newton.solution_reused);
+    let mut old_json = json;
+    for key in ["rhs_scaled_residual", "initial_rhs_scaled_residual", "absolute_residual_floor"] {
+        old_json.as_object_mut().unwrap().remove(key);
+    }
+    let old: NonlinearConvergence = serde_json::from_value(old_json).unwrap();
+    assert_eq!(old.absolute_residual_floor, None);
+    assert_eq!(old.rhs_scaled_residual, None);
 }
 
 
@@ -2858,4 +2871,19 @@ fn newton_stopping_requires_reduction_of_the_initial_nonlinear_defect() {
     assert!((initial_scaled_residual(0.003, 0.01)
         - initial_scaled_residual(0.03, 0.1)).abs() < 1.0e-14);
     assert_eq!(initial_scaled_residual(0.0, 0.0), 0.0);
+}
+
+#[test]
+fn newton_accepts_a_tiny_initial_defect_without_demanding_sub_floor_reduction() {
+    use super::newton::{initial_scaled_residual, newton_has_converged, NEWTON_RHS_RESIDUAL_FLOOR};
+    let tiny = NEWTON_RHS_RESIDUAL_FLOOR * 0.5;
+    // Relative reduction alone is one at the start, so would reject this field
+    // and risk a failed line search even though the absolute defect is tiny.
+    assert_eq!(initial_scaled_residual(tiny, tiny), 1.0);
+    assert!(newton_has_converged(tiny, tiny, 1.0e-5));
+    assert!(!newton_has_converged(NEWTON_RHS_RESIDUAL_FLOOR * 2.0, NEWTON_RHS_RESIDUAL_FLOOR * 2.0, 1.0e-5));
+    assert!(!newton_has_converged(0.03, 0.1, 1.0e-5));
+    assert!(newton_has_converged(1.0e-7, 0.1, 1.0e-5));
+    assert!(!newton_has_converged(f64::NAN, tiny, 1.0e-5));
+    assert!(!newton_has_converged(f64::INFINITY, tiny, 1.0e-5));
 }

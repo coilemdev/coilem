@@ -445,8 +445,8 @@
     },
     {
       "path": "backend/models/result.py",
-      "bytes": 5832,
-      "sha256": "bc9e29052aae72548505d3824113502d44267f0f32e7c04b5b80af6e572fcb69"
+      "bytes": 6616,
+      "sha256": "d5076f389c5522ee2d9dfb665fbf7de7b1e1d2d73039c3dac9b6d953908aa4c5"
     },
     {
       "path": "backend/models/waveforms.py",
@@ -580,8 +580,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 143719,
-      "sha256": "102e6974cd906bd85bba412aea0e235c2221012c1a80cf4fe8399836e21b919d"
+      "bytes": 143494,
+      "sha256": "94e5c2e37425876a07424e42c21913c8137e0b57ee3698346b3d94181b18140b"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -600,8 +600,8 @@
     },
     {
       "path": "backend/solver/convergence.py",
-      "bytes": 2190,
-      "sha256": "06c9491b762dc766289c2fc4a06e5cf9e8f078338dae0a1eadbe94b73cdbc9a0"
+      "bytes": 2891,
+      "sha256": "ef8aff1cc1d91bcd9a30b87a7d9d0ec743712dcf853c493de0a2b5432ab77e93"
     },
     {
       "path": "backend/solver_contract.py",
@@ -5375,8 +5375,8 @@
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE.md",
-      "bytes": 5607,
-      "sha256": "8b804689b836a578fa3da3cb7ad317073fb8e8ae333c2174eaf2c330a16b67c4"
+      "bytes": 6747,
+      "sha256": "9934d35cd6a5ee3777d5e8df71eae86ac0325797ae017a358077804b0e2def62"
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE_WINDOWS.json",
@@ -7020,8 +7020,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/newton.rs",
-      "bytes": 27769,
-      "sha256": "973a2644ab3e81aaa113f8861c037f7c6ac828ef8d00d858e5e1f122e927f345"
+      "bytes": 29042,
+      "sha256": "98c38d3b41c25734ef707e2791e2eb0c7ab47c1332b8b20788b0263b72a09aae"
     },
     {
       "path": "solvers/magneto2d/src/solve/nonlinear.rs",
@@ -7030,8 +7030,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/picard.rs",
-      "bytes": 16217,
-      "sha256": "60d9512b5555cdfd05eec210d7fabd871d2bc104f4ed27108bf0f1c472863556"
+      "bytes": 16346,
+      "sha256": "a117d2f9d19a98ba43c3e6f4c318ec2e3c2b060e959e551746290feb9f2069ca"
     },
     {
       "path": "solvers/magneto2d/src/solve/problem.rs",
@@ -7040,13 +7040,13 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/tests.rs",
-      "bytes": 99919,
-      "sha256": "f2b8db8c54520c1f465dc196474af00f7664bd1de9d02f3dc50e06a5815dc97d"
+      "bytes": 101487,
+      "sha256": "626791c3bc67aa1cc3991fd6a8dce545b6014aacf2541ef408d1a5c1591b492a"
     },
     {
       "path": "solvers/magneto2d/src/solve/types.rs",
-      "bytes": 16019,
-      "sha256": "5b513c303fd5f0eaaa2a23e719fbe855a818c118990b943d15f5f7814eac550f"
+      "bytes": 16286,
+      "sha256": "697aa65a80474b91740081284e5744bde86ad26684972842ac27c8f85b7c1eba"
     },
     {
       "path": "solvers/magneto2d/src/sources.rs",
@@ -7315,8 +7315,8 @@
     },
     {
       "path": "tests/test_nonlinear_convergence.py",
-      "bytes": 5133,
-      "sha256": "855cade407b0b58f45692b9c16314b1ce28ed91f26ab46f06f1a1b3dadf9e7d6"
+      "bytes": 6711,
+      "sha256": "60adbfe6effe71694397a4047d63043768d3e1ea2f62efc1ebd3597c7e020d85"
     },
     {
       "path": "tests/test_ornl_prius_comparison.py",
@@ -12433,6 +12433,60 @@
       "path": "docs/NONLINEAR_CONVERGENCE_WINDOWS.md",
       "source_sha256": null,
       "reason": "Record complete Windows validation with locked dependencies."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "backend/models/result.py",
+      "source_sha256": "fe289d2b40f8ec66343e65e8599102aa1446e09a325bb7188c7b01a22aafd21b",
+      "reason": "Guard near-converged Newton stages and label recorded thresholds by method."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "d906d5f06250c59c8df88ef8517959cda60c7a83e1ec72425e8ef780fd9a6e25",
+      "reason": "Guard near-converged Newton stages and label recorded thresholds by method."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "backend/solver/convergence.py",
+      "source_sha256": null,
+      "reason": "Guard near-converged Newton stages and label recorded thresholds by method."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "docs/NONLINEAR_CONVERGENCE.md",
+      "source_sha256": null,
+      "reason": "Guard near-converged Newton stages and label recorded thresholds by method."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "solvers/magneto2d/src/solve/newton.rs",
+      "source_sha256": "045ab39fcf590e2fc6817698eea063325d356591d27922e65fc9df467f39ef4d",
+      "reason": "Guard near-converged Newton stages and label recorded thresholds by method."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "solvers/magneto2d/src/solve/picard.rs",
+      "source_sha256": "2bcd58d6609db9f059263dfd429ea5f024e2bc94ee922cb18666229012e3d5fe",
+      "reason": "Guard near-converged Newton stages and label recorded thresholds by method."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "solvers/magneto2d/src/solve/tests.rs",
+      "source_sha256": "0b1aec76d2fa138d274544350f0483bcd6631a1544fb81834dbef621deb7feb7",
+      "reason": "Guard near-converged Newton stages and label recorded thresholds by method."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "solvers/magneto2d/src/solve/types.rs",
+      "source_sha256": "cebe1b569d8711565c2dc8ab480ff9a4c704bc4afe38a3378a7d488acb472d57",
+      "reason": "Guard near-converged Newton stages and label recorded thresholds by method."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "tests/test_nonlinear_convergence.py",
+      "source_sha256": null,
+      "reason": "Guard near-converged Newton stages and label recorded thresholds by method."
     }
   ]
 }
