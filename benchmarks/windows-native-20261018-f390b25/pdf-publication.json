@@ -1,0 +1,157 @@
+{
+  "schema": "coilem.benchmark_pdf_publication/v1",
+  "measured_commit": "f390b252d8c7dddc3b7ff9f2c1c4f6cbf1d10d4c",
+  "original_pdf_sha256": "d741a96c7aad7c7395549467edd167eff8b306430721f5d9b253f29fe46dfa0c",
+  "published_pdf_sha256": "d741a96c7aad7c7395549467edd167eff8b306430721f5d9b253f29fe46dfa0c",
+  "byte_for_byte_unchanged": true,
+  "pages": 64,
+  "relative_fixture_links": [
+    {
+      "page": 3,
+      "target": "fixtures/spm_4p12s_simple__baseline__native.json"
+    },
+    {
+      "page": 5,
+      "target": "fixtures/spm_4p12s_simple__high_current__native.json"
+    },
+    {
+      "page": 7,
+      "target": "fixtures/spm_4p12s_simple__tight_airgap__native.json"
+    },
+    {
+      "page": 9,
+      "target": "fixtures/spm_4p12s_simple_noload__baseline__native.json"
+    },
+    {
+      "page": 11,
+      "target": "fixtures/spm_4p12s_simple_noload__high_current__native.json"
+    },
+    {
+      "page": 13,
+      "target": "fixtures/spm_4p12s_simple_noload__tight_airgap__native.json"
+    },
+    {
+      "page": 15,
+      "target": "fixtures/spm_8p12s_concentrated__baseline__native.json"
+    },
+    {
+      "page": 17,
+      "target": "fixtures/spm_8p12s_concentrated__high_current__native.json"
+    },
+    {
+      "page": 19,
+      "target": "fixtures/spm_8p12s_concentrated__tight_airgap__native.json"
+    },
+    {
+      "page": 21,
+      "target": "fixtures/spm_8p12s_reference_angle30__baseline__native.json"
+    },
+    {
+      "page": 23,
+      "target": "fixtures/ipm_flat_12s10p_fscw_contract__native.json"
+    },
+    {
+      "page": 25,
+      "target": "fixtures/ipm_flat_24s16p_industrial_contract__native.json"
+    },
+    {
+      "page": 27,
+      "target": "fixtures/ipm_flat_4p12s_micro_contract__native.json"
+    },
+    {
+      "page": 29,
+      "target": "fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json"
+    },
+    {
+      "page": 31,
+      "target": "fixtures/ipm_flat_8p12s_fsae_contract__native.json"
+    },
+    {
+      "page": 33,
+      "target": "fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json"
+    },
+    {
+      "page": 35,
+      "target": "fixtures/ipm_vshape_8p12s_baseline_contract__native.json"
+    },
+    {
+      "page": 37,
+      "target": "fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json"
+    },
+    {
+      "page": 39,
+      "target": "fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json"
+    },
+    {
+      "page": 41,
+      "target": "fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json"
+    },
+    {
+      "page": 43,
+      "target": "fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json"
+    },
+    {
+      "page": 45,
+      "target": "fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json"
+    },
+    {
+      "page": 47,
+      "target": "fixtures/ornl_prius_2004_ipm__native.json"
+    },
+    {
+      "page": 48,
+      "target": "fixtures/spm_12p36s_distributed_femm_validation__native.json"
+    },
+    {
+      "page": 50,
+      "target": "fixtures/spm_8p24s_distributed_femm_validation__native.json"
+    },
+    {
+      "page": 52,
+      "target": "fixtures/spm_8p48s_chorded_5_6__native.json"
+    },
+    {
+      "page": 54,
+      "target": "fixtures/spm_8p48s_distributed_femm_validation__native.json"
+    },
+    {
+      "page": 56,
+      "target": "fixtures/spm_14p12s_high_pole__native-standard.json"
+    },
+    {
+      "page": 56,
+      "target": "fixtures/spm_14p12s_high_pole__native-fine.json"
+    },
+    {
+      "page": 56,
+      "target": "fixtures/spm_14p12s_high_pole__analytical.json"
+    },
+    {
+      "page": 59,
+      "target": "fixtures/spm_4p12s_small__native-standard.json"
+    },
+    {
+      "page": 59,
+      "target": "fixtures/spm_4p12s_small__native-fine.json"
+    },
+    {
+      "page": 59,
+      "target": "fixtures/spm_4p12s_small__analytical.json"
+    },
+    {
+      "page": 62,
+      "target": "fixtures/spm_8p12s_reference__native-standard.json"
+    },
+    {
+      "page": 62,
+      "target": "fixtures/spm_8p12s_reference__native-fine.json"
+    },
+    {
+      "page": 62,
+      "target": "fixtures/spm_8p12s_reference__analytical.json"
+    }
+  ],
+  "all_fixture_targets_exist": true,
+  "visual_review": "All 64 pages rendered and reviewed in four contact sheets; cover also inspected at full render size. Original measured identity, plots and recorded outcomes retained.",
+  "field_solves_during_publication": 0
+}

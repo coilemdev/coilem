@@ -1,0 +1,31 @@
+{
+  "schema": "coilem.benchmark_publication/v1",
+  "packaged_at": "2026-10-18T23:12:14.163262+00:00",
+  "purpose": "v0.4.0 release planning; completed reference-repeat evidence, not a future tagged-candidate run",
+  "measured_main_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+  "reference_physical_commit": "738d9516e8500c5996c772bd96470472cbb9a0f9",
+  "run_manifest_sha256": "f4e5e720621fe0b259479d6db250603911117217c62d57b8131490993d8c2ce8",
+  "previous_manifest_sha256": "8bfcdbc4abcbf4709c13aa038ff089b0aa9039f833eeedcef3be73fd5bc95f51",
+  "raw_artifact_sha256": {
+    "comparison.json": "7a97f01e902449f85c4bd3f2f9fcad03fe2b2b6d3db1f581f9a221e550c4e682",
+    "ownership-audit.json": "6775ac43a2b6111d594c389a7a40c1709e61ba021140331f5b0eff672988e633",
+    "concurrency-check.json": "8ab9488895d694a252c55a638054191173998d9fc1a5e99be5ecfe1ee7f1ca67",
+    "session.json": "c5a6ea013a2609a3d56560f8f143b53137a5c1c7d4afa3d3b7ea4950f436728e"
+  },
+  "published_artifact_sha256": {
+    "comparison.json": "7b6a1e1cc105ee6e65d6a2d466d623dc693b73593bc1a37f0ca0eb7273dd2f6e",
+    "ownership-audit.json": "6775ac43a2b6111d594c389a7a40c1709e61ba021140331f5b0eff672988e633",
+    "concurrency-check.json": "8ab9488895d694a252c55a638054191173998d9fc1a5e99be5ecfe1ee7f1ca67",
+    "session.json": "4af24c0f2deb279045520d1df378897c68b4afd53f39ca65a5847d08ca13c22a"
+  },
+  "physical_values_and_verdicts_unchanged": true,
+  "physical_comparison_excludes": "timestamps, cache paths and elapsed timing fields only",
+  "local_paths_normalized": true,
+  "private_producer_code_included": false,
+  "raw_requests_results_and_femm_files_included": false,
+  "field_solves_during_publication": 0,
+  "reference_version": "v3",
+  "validation_protocol": "1.3.0",
+  "scientific_validation_status": "REVIEW_REQUIRED",
+  "pid_audit": "One numeric PID recycled after a 120.102408-second gap; all 29 session markers distinct. Original PID-only assertion failure retained in ownership-audit.json; session and concurrency checks passed."
+}

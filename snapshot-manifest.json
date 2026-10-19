@@ -55,8 +55,8 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 1971,
-      "sha256": "1578fbe64d3e47a73080b4bb7143e86e207c771646ceb8badddb01b5dc266615"
+      "bytes": 2333,
+      "sha256": "d21a2acd94aad62d5424c3a043210a11ecaeb0d272e0bd82eabd2f1e954c9ea1"
     },
     {
       "path": "README.md",
@@ -615,8 +615,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 7710,
-      "sha256": "d29e895a292354d1a12c5d824b0531919a42c102c6077cbd94d71c868355a217"
+      "bytes": 8144,
+      "sha256": "8c48345727e407932c3e1dbbf95fa510ce3d2caf7bb661fd710deb1fb6b7c3e8"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -677,6 +677,41 @@
       "path": "benchmarks/abcd-v1/benchmark_spec.json",
       "bytes": 16768,
       "sha256": "2f79b23ed275d0829d2c6e7d16f0592fddd6e3fb848b1420822707756c7752ae"
+    },
+    {
+      "path": "benchmarks/femm-main-20261018-0417736/README.md",
+      "bytes": 5763,
+      "sha256": "efb99fd36ee602112469b709dbea4ac33ff0adab64cad2aa7d298d21a7d3b88b"
+    },
+    {
+      "path": "benchmarks/femm-main-20261018-0417736/artifact_manifest.json",
+      "bytes": 541,
+      "sha256": "d0bf81b736f5e228fba854bc1a85a31cb1dee08bb5aeaa6521276114cadd0b48"
+    },
+    {
+      "path": "benchmarks/femm-main-20261018-0417736/comparison.json",
+      "bytes": 87811,
+      "sha256": "7b6a1e1cc105ee6e65d6a2d466d623dc693b73593bc1a37f0ca0eb7273dd2f6e"
+    },
+    {
+      "path": "benchmarks/femm-main-20261018-0417736/concurrency-check.json",
+      "bytes": 565,
+      "sha256": "8ab9488895d694a252c55a638054191173998d9fc1a5e99be5ecfe1ee7f1ca67"
+    },
+    {
+      "path": "benchmarks/femm-main-20261018-0417736/ownership-audit.json",
+      "bytes": 17598,
+      "sha256": "6775ac43a2b6111d594c389a7a40c1709e61ba021140331f5b0eff672988e633"
+    },
+    {
+      "path": "benchmarks/femm-main-20261018-0417736/publication.json",
+      "bytes": 2013,
+      "sha256": "e0c365ff5734c7ed65d007fac8e621b29c1aad506cfade6604e3ec2425aab00b"
+    },
+    {
+      "path": "benchmarks/femm-main-20261018-0417736/session.json",
+      "bytes": 918,
+      "sha256": "4af24c0f2deb279045520d1df378897c68b4afd53f39ca65a5847d08ca13c22a"
     },
     {
       "path": "benchmarks/ipm-high-output-20261011-af56962/README.md",
@@ -3514,6 +3549,11 @@
       "sha256": "082f841c598fb32bc90a2528950ff1aff31a215457a3bd0a42a120b1fb7b1280"
     },
     {
+      "path": "benchmarks/v0.4.0/README.md",
+      "bytes": 5088,
+      "sha256": "4a6097199ec03976809bdc38b7ccc349df3e8779c17a100844283aab293f0452"
+    },
+    {
       "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/README.md",
       "bytes": 6317,
       "sha256": "c1a83aba1e3cbfd17828079888657769acb75177364d237c4d2ee309a1ae2a63"
@@ -3825,13 +3865,13 @@
     },
     {
       "path": "benchmarks/windows-native-20261018-f390b25/README.md",
-      "bytes": 4492,
-      "sha256": "8777e34ecd661ff5e975a8d8234d957b856a383ce5a749ef4d282a4781559819"
+      "bytes": 4699,
+      "sha256": "c0406ab904befb46f9b916508fdb8a0e39ad1ffb8912f2484c7ff7bbfff92d0a"
     },
     {
       "path": "benchmarks/windows-native-20261018-f390b25/artifact_manifest.json",
-      "bytes": 5631,
-      "sha256": "855ffb42ec104f29ccb0fb04b3271a0e0a157aec11d430b2cf269b280d7de4e7"
+      "bytes": 5826,
+      "sha256": "f1720d48b908a7087d89e717c6ce8a1c6d2e2a518fa393fe63060873ea59bd39"
     },
     {
       "path": "benchmarks/windows-native-20261018-f390b25/benchmark_report.md",
@@ -3852,6 +3892,11 @@
       "path": "benchmarks/windows-native-20261018-f390b25/coilem_benchmark_report.html",
       "bytes": 399060,
       "sha256": "c7a2a76f9c3f317c16d15fe8cac4a555ec658e0a0a6540ab35a2f2530a743de6"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/coilem_benchmark_report.pdf",
+      "bytes": 139613,
+      "sha256": "d741a96c7aad7c7395549467edd167eff8b306430721f5d9b253f29fe46dfa0c"
     },
     {
       "path": "benchmarks/windows-native-20261018-f390b25/console.txt",
@@ -4042,6 +4087,11 @@
       "path": "benchmarks/windows-native-20261018-f390b25/fixtures/spm_8p48s_distributed_femm_validation__native.json",
       "bytes": 2504,
       "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/windows-native-20261018-f390b25/pdf-publication.json",
+      "bytes": 4380,
+      "sha256": "69a29106801d95e32ceb228204e3e30ce523f10a22bb35e4ea8d24cfc8d32510"
     },
     {
       "path": "benchmarks/windows-native-20261018-f390b25/raw-report-hashes.json",
@@ -5037,6 +5087,11 @@
       "path": "docs/PUBLIC_BOUNDARY.md",
       "bytes": 10419,
       "sha256": "884e0ac399db75a0b24ddae940cd788c0ecbcd213426faf45e0f6ec2bc205d50"
+    },
+    {
+      "path": "docs/RELEASE_0_4_0.md",
+      "bytes": 9734,
+      "sha256": "b55fa1d163cb7d5ed1646502827a72a26c5f79cafb8ad82c61770752c542e0ab"
     },
     {
       "path": "docs/RELEASING.md",
@@ -6605,8 +6660,8 @@
     },
     {
       "path": "tests/test_benchmark_command.py",
-      "bytes": 14508,
-      "sha256": "edd43ec1d6c1f6808c1b471333c8fdec44096a786a2ea71509868bba41f417c4"
+      "bytes": 15192,
+      "sha256": "d8a5728ab4a5e64023373b6846f78ac4211aefd03fde0b12b5632db44c132da6"
     },
     {
       "path": "tests/test_benchmark_runtime.py",
@@ -7055,8 +7110,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 21308,
-      "sha256": "3222fe7f0fabb69fe1e5e33b629acba4dd3ef94e2adef6a358b48a23f1519f8e"
+      "bytes": 21396,
+      "sha256": "887ddbab11238f6d5d3233af4f30d8e84ff316686ed5c79fb45f9d589a97a6e0"
     }
   ],
   "public_patches": [
@@ -8588,7 +8643,7 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B Ã¢Ë†â€™ Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B \u00c3\u0192\u00c2\u00a2\u00c3\u2039\u00e2\u20ac\u00a0\u00c3\u00a2\u00e2\u201a\u00ac\u00e2\u201e\u00a2 Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
@@ -8618,13 +8673,13 @@
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45Ã‚Â° (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45Ã‚Â° over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "a482ff6e2bd9616d2ece2a68f8fa2f2c49aae45c",
@@ -8642,7 +8697,7 @@
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45Ã‚Â° (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 (#52 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
@@ -10263,6 +10318,42 @@
       "path": "frontend/tests/public-release.spec.ts",
       "source_sha256": "33306593c15421c3e779db184d32f39166a5a8863708cfebf4fdfad15dee2c70",
       "reason": "Find the backend status chip by its accessible name and open each Solve setup section before using its controls."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "PUBLICATION_STATUS.md",
+      "source_sha256": "1578fbe64d3e47a73080b4bb7143e86e207c771646ceb8badddb01b5dc266615",
+      "reason": "Publish v0.4.0 release-planning benchmarks and preserve the complete measured native PDF and provenance."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "benchmarks/README.md",
+      "source_sha256": "d29e895a292354d1a12c5d824b0531919a42c102c6077cbd94d71c868355a217",
+      "reason": "Publish v0.4.0 release-planning benchmarks and preserve the complete measured native PDF and provenance."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "benchmarks/windows-native-20261018-f390b25/README.md",
+      "source_sha256": "8777e34ecd661ff5e975a8d8234d957b856a383ce5a749ef4d282a4781559819",
+      "reason": "Publish v0.4.0 release-planning benchmarks and preserve the complete measured native PDF and provenance."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "benchmarks/windows-native-20261018-f390b25/artifact_manifest.json",
+      "source_sha256": "855ffb42ec104f29ccb0fb04b3271a0e0a157aec11d430b2cf269b280d7de4e7",
+      "reason": "Publish v0.4.0 release-planning benchmarks and preserve the complete measured native PDF and provenance."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "3222fe7f0fabb69fe1e5e33b629acba4dd3ef94e2adef6a358b48a23f1519f8e",
+      "reason": "Publish v0.4.0 release-planning benchmarks and preserve the complete measured native PDF and provenance."
+    },
+    {
+      "base_commit": "b505f67a62d7ceeaf6b6456546bd0bac88de8565",
+      "path": "tests/test_benchmark_command.py",
+      "source_sha256": "edd43ec1d6c1f6808c1b471333c8fdec44096a786a2ea71509868bba41f417c4",
+      "reason": "Verify the one reviewed native report PDF against its original hash and publication provenance while retaining raw log/job exclusions."
     }
   ]
 }

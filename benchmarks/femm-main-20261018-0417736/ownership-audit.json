@@ -1,0 +1,354 @@
+{
+  "schema": "coilem.femm_owned_session_check/v1",
+  "status": "PASS",
+  "generated_at": "2026-10-18T22:08:34.711852+00:00",
+  "run_manifest_sha256": "f4e5e720621fe0b259479d6db250603911117217c62d57b8131490993d8c2ce8",
+  "audit_source_sha256": "64290ae3e14261f5178ba4e021251ec76a83e82234c29cde12465ba750cc8c45",
+  "pinned_ownership_source_sha256": "4ddb157d36395bb73a7a5fc26287a1f1e177f17ca969e15b7b959c2554784f99",
+  "case_count": 29,
+  "unique_owned_markers": 29,
+  "distinct_numeric_pids": 28,
+  "all_attempt_records_match_results": true,
+  "all_fresh_markers_unique": true,
+  "all_femm_assignments_match_owned_sessions": true,
+  "all_recycled_pid_intervals_nonoverlapping": true,
+  "recycled_numeric_pids": [
+    {
+      "pid": 36740,
+      "earlier_case": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "later_case": "spm_8p12s_reference",
+      "gap_s": 120.102408,
+      "distinct_markers": [
+        "f112_10318103f7ad",
+        "f112_9e8da91200c4"
+      ]
+    }
+  ],
+  "legacy_verifier": {
+    "source_sha256": "5f30b35f8000aee8bfcb3a4a6000f7048e3c4982a252832f9193182a2dd7bcce",
+    "physical_payload_and_extraction_checks": "Passed for every case before the PID assertion",
+    "numeric_pid_uniqueness_assertion": "FAILED",
+    "reason": "One Windows PID was recycled after its earlier owned case ended. The pinned DispatchEx/kill-on-job-close ownership source, distinct markers and separate intervals establish separate owned sessions. This audit preserves the legacy failure and checks the actual session identities without changing producer or evidence."
+  },
+  "cases": [
+    {
+      "case_id": "spm_4p12s_simple__baseline",
+      "pid": 30020,
+      "marker": "f112_976ddb28f5c4",
+      "started_at": "2026-10-18T21:56:42.297055+00:00",
+      "completed_at": "2026-10-18T22:03:08.401529+00:00",
+      "core_acquired_at": "2026-10-18T21:56:43.606351+00:00",
+      "core_released_at": "2026-10-18T22:03:07.222371+00:00",
+      "automation_sha256": "0bb96213c907be5a67d31dac1df4be49e1208d1c4298e47a951bb315bc470f32",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "spm_4p12s_simple__high_current",
+      "pid": 9724,
+      "marker": "f112_8a59bad7103b",
+      "started_at": "2026-10-18T21:55:47.746445+00:00",
+      "completed_at": "2026-10-18T22:02:08.874488+00:00",
+      "core_acquired_at": "2026-10-18T21:55:49.171202+00:00",
+      "core_released_at": "2026-10-18T22:02:07.614074+00:00",
+      "automation_sha256": "6d33123cc1021e9a50abfb2f5c5f8e5f3608eb2c3f509c1a8290ad431eb18b57",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "spm_4p12s_simple__tight_airgap",
+      "pid": 10644,
+      "marker": "f112_a28e847de629",
+      "started_at": "2026-10-18T22:02:10.036173+00:00",
+      "completed_at": "2026-10-18T22:07:21.121184+00:00",
+      "core_acquired_at": "2026-10-18T22:02:11.240700+00:00",
+      "core_released_at": "2026-10-18T22:07:20.197708+00:00",
+      "automation_sha256": "14f2faddece2a5b6606c3db483dfb4702fd488213191fb6784fbbc2b555e7901",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__baseline",
+      "pid": 35620,
+      "marker": "f112_5b94bcc7f7cf",
+      "started_at": "2026-10-18T21:56:02.048329+00:00",
+      "completed_at": "2026-10-18T22:02:43.292137+00:00",
+      "core_acquired_at": "2026-10-18T21:56:03.273909+00:00",
+      "core_released_at": "2026-10-18T22:02:42.020353+00:00",
+      "automation_sha256": "43480f3c1664ff93e5bc85cea51430bcd849f21542660938c345508f1e8f6d47",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__high_current",
+      "pid": 29352,
+      "marker": "f112_e92715c593a7",
+      "started_at": "2026-10-18T21:55:53.234124+00:00",
+      "completed_at": "2026-10-18T22:02:12.847678+00:00",
+      "core_acquired_at": "2026-10-18T21:55:54.363125+00:00",
+      "core_released_at": "2026-10-18T22:02:11.700122+00:00",
+      "automation_sha256": "f80f8ef3bfa3d05a44f5dd7fc393641689a4b0eaadb3396aaf4d307b157b228a",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__tight_airgap",
+      "pid": 25292,
+      "marker": "f112_661984cd1019",
+      "started_at": "2026-10-18T22:02:13.893602+00:00",
+      "completed_at": "2026-10-18T22:07:25.314828+00:00",
+      "core_acquired_at": "2026-10-18T22:02:15.025966+00:00",
+      "core_released_at": "2026-10-18T22:07:24.470723+00:00",
+      "automation_sha256": "86322198f8fcd1559f844df29c3dae4de53517fb1d9b3626b03356c0f225dee7",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__baseline",
+      "pid": 38104,
+      "marker": "f112_770956e768a2",
+      "started_at": "2026-10-18T21:45:07.720174+00:00",
+      "completed_at": "2026-10-18T21:55:17.254790+00:00",
+      "core_acquired_at": "2026-10-18T21:45:08.916052+00:00",
+      "core_released_at": "2026-10-18T21:55:15.804374+00:00",
+      "automation_sha256": "4a6f53c79aee79dc60ac343d769cfb7149773d1cd2510f0a61a63465c7790cff",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__high_current",
+      "pid": 30884,
+      "marker": "f112_a18a9b6bbcc5",
+      "started_at": "2026-10-18T21:55:18.400596+00:00",
+      "completed_at": "2026-10-18T22:05:18.216212+00:00",
+      "core_acquired_at": "2026-10-18T21:55:19.669635+00:00",
+      "core_released_at": "2026-10-18T22:05:17.171725+00:00",
+      "automation_sha256": "ae5c310df6513948efb9b2dc64667d889a7ce0afdc6e60ebbbe4cfe4f643f327",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__tight_airgap",
+      "pid": 36884,
+      "marker": "f112_e6fbe5f80f90",
+      "started_at": "2026-10-18T21:45:05.394199+00:00",
+      "completed_at": "2026-10-18T21:55:46.493583+00:00",
+      "core_acquired_at": "2026-10-18T21:45:06.594388+00:00",
+      "core_released_at": "2026-10-18T21:55:45.062580+00:00",
+      "automation_sha256": "84371e94ab25120710b68a9f0a9bb36e8ab30dff68136bacf09ce3a0a45da220",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "spm_8p12s_reference_angle30__baseline",
+      "pid": 36584,
+      "marker": "f112_8648d02cfc3c",
+      "started_at": "2026-10-18T21:44:13.941697+00:00",
+      "completed_at": "2026-10-18T21:55:52.164534+00:00",
+      "core_acquired_at": "2026-10-18T21:44:15.168516+00:00",
+      "core_released_at": "2026-10-18T21:55:50.960747+00:00",
+      "automation_sha256": "27c396013182d84efac798a05d468d8e1fab184e4c4d9b9cde0eb88c3fb3f6ff",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "ipm_flat_12s10p_fscw_contract",
+      "pid": 17800,
+      "marker": "f112_3b986cf4478a",
+      "started_at": "2026-10-18T21:17:59.944906+00:00",
+      "completed_at": "2026-10-18T21:42:56.372953+00:00",
+      "core_acquired_at": "2026-10-18T21:18:01.094457+00:00",
+      "core_released_at": "2026-10-18T21:42:55.221692+00:00",
+      "automation_sha256": "9da91abad817930126b5e710523d68f4ff3a3df8a913200f5295f40072fddb68",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "ipm_flat_24s16p_industrial_contract",
+      "pid": 12736,
+      "marker": "f112_90ba8ca06964",
+      "started_at": "2026-10-18T20:18:22.464753+00:00",
+      "completed_at": "2026-10-18T20:52:01.356382+00:00",
+      "core_acquired_at": "2026-10-18T20:18:23.396562+00:00",
+      "core_released_at": "2026-10-18T20:52:00.249602+00:00",
+      "automation_sha256": "d2b4f3f19659f286eaf6b21d7ebca7d156e65e9f61cf6d0fab9b0f9bb98c0a5b",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "ipm_flat_4p12s_micro_contract",
+      "pid": 240,
+      "marker": "f112_45e45325e666",
+      "started_at": "2026-10-18T21:59:31.992526+00:00",
+      "completed_at": "2026-10-18T22:05:15.145564+00:00",
+      "core_acquired_at": "2026-10-18T21:59:33.210859+00:00",
+      "core_released_at": "2026-10-18T22:05:13.999157+00:00",
+      "automation_sha256": "08cbb1156fc9fc46925c16f703ba10a3576bb821f012e119a4980b9e74e3bd9d",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "pid": 36740,
+      "marker": "f112_10318103f7ad",
+      "started_at": "2026-10-18T21:40:34.669318+00:00",
+      "completed_at": "2026-10-18T21:59:30.850784+00:00",
+      "core_acquired_at": "2026-10-18T21:40:35.787508+00:00",
+      "core_released_at": "2026-10-18T21:59:29.634907+00:00",
+      "automation_sha256": "faee6d371e13dd6214edd409dbea9ccd0c8b948abc4fb63a80224d566f6b1118",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract",
+      "pid": 24820,
+      "marker": "f112_6709a9c028e4",
+      "started_at": "2026-10-18T21:42:57.411065+00:00",
+      "completed_at": "2026-10-18T22:01:29.869446+00:00",
+      "core_acquired_at": "2026-10-18T21:42:58.554860+00:00",
+      "core_released_at": "2026-10-18T22:01:28.627386+00:00",
+      "automation_sha256": "5642ec04a038b4cbd2903d4b55b5ba5ac03816ac58efa772e7a32a69a7b6bd61",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "pid": 28028,
+      "marker": "f112_ee57fc68a117",
+      "started_at": "2026-10-18T21:40:34.215103+00:00",
+      "completed_at": "2026-10-18T22:06:18.834334+00:00",
+      "core_acquired_at": "2026-10-18T21:40:35.319569+00:00",
+      "core_released_at": "2026-10-18T22:06:17.867496+00:00",
+      "automation_sha256": "0d10ce448452fe1209c4292933d3dd8bf7ed7323e5a3b1560feb7b0b8385e9d3",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_baseline_contract",
+      "pid": 23788,
+      "marker": "f112_f25f6e8ffafc",
+      "started_at": "2026-10-18T20:55:50.018341+00:00",
+      "completed_at": "2026-10-18T21:22:06.798555+00:00",
+      "core_acquired_at": "2026-10-18T20:55:51.079745+00:00",
+      "core_released_at": "2026-10-18T21:22:05.776165+00:00",
+      "automation_sha256": "7ac43328f082809282c992f4ce403388d2bcf629083bed55569a232a0c87ce2f",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "pid": 25396,
+      "marker": "f112_e4db2b7a8e43",
+      "started_at": "2026-10-18T21:20:43.807458+00:00",
+      "completed_at": "2026-10-18T21:45:04.311705+00:00",
+      "core_acquired_at": "2026-10-18T21:20:44.919466+00:00",
+      "core_released_at": "2026-10-18T21:45:03.027802+00:00",
+      "automation_sha256": "8801da185acbf6c2b6e9a07a476db5fbe486eee00a350f6a62619b382e0e38a3",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_narrow_angle_contract",
+      "pid": 38060,
+      "marker": "f112_f76535762759",
+      "started_at": "2026-10-18T20:52:02.326149+00:00",
+      "completed_at": "2026-10-18T21:19:28.150293+00:00",
+      "core_acquired_at": "2026-10-18T20:52:03.343711+00:00",
+      "core_released_at": "2026-10-18T21:19:27.014951+00:00",
+      "automation_sha256": "463d39fa8fd1faf80770e1722888a7b8469500a546ee91536f2b43843d330a73",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "pid": 34640,
+      "marker": "f112_d033b7084d2a",
+      "started_at": "2026-10-18T20:52:02.751441+00:00",
+      "completed_at": "2026-10-18T21:17:58.935289+00:00",
+      "core_acquired_at": "2026-10-18T20:52:03.742216+00:00",
+      "core_released_at": "2026-10-18T21:17:57.823066+00:00",
+      "automation_sha256": "3f8e6506803f31f9905ce000ca66609ccaa8bc9c96643862e05d2706bbae1c84",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_thin_bridge_contract",
+      "pid": 38196,
+      "marker": "f112_fa0eedc97568",
+      "started_at": "2026-10-18T21:19:29.125929+00:00",
+      "completed_at": "2026-10-18T21:45:06.601419+00:00",
+      "core_acquired_at": "2026-10-18T21:19:30.178717+00:00",
+      "core_released_at": "2026-10-18T21:45:05.440917+00:00",
+      "automation_sha256": "609cb8bd2436a8f7a625500847fcd9bd1a0f77608eb3251a68512bf31cc01003",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "pid": 31068,
+      "marker": "f112_a904fe592bbd",
+      "started_at": "2026-10-18T20:55:50.461384+00:00",
+      "completed_at": "2026-10-18T21:20:42.790374+00:00",
+      "core_acquired_at": "2026-10-18T20:55:51.511818+00:00",
+      "core_released_at": "2026-10-18T21:20:41.700757+00:00",
+      "automation_sha256": "83b57ac09f21ea18c005f63d3efbf9928463e5a6f1aa161d26463355e0ff7fd3",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "spm_12p36s_distributed_femm_validation",
+      "pid": 28304,
+      "marker": "f112_ebd583b3ee0d",
+      "started_at": "2026-10-18T20:18:22.074075+00:00",
+      "completed_at": "2026-10-18T20:55:49.049723+00:00",
+      "core_acquired_at": "2026-10-18T20:18:23.007833+00:00",
+      "core_released_at": "2026-10-18T20:55:47.751895+00:00",
+      "automation_sha256": "c9995a349e94bc733644f1d4ab5bd8bd74ce35ec6fea45861593cb8df055466c",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "spm_8p24s_distributed_femm_validation",
+      "pid": 3780,
+      "marker": "f112_49d06b80dda8",
+      "started_at": "2026-10-18T21:22:07.768431+00:00",
+      "completed_at": "2026-10-18T21:56:00.861066+00:00",
+      "core_acquired_at": "2026-10-18T21:22:08.822038+00:00",
+      "core_released_at": "2026-10-18T21:55:59.507800+00:00",
+      "automation_sha256": "a2935bdbdf2af9bea654ea497486ac94e957cf1562dd9453139678b5266d0840",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "spm_8p48s_chorded_5_6",
+      "pid": 28884,
+      "marker": "f112_fc2649444cfb",
+      "started_at": "2026-10-18T20:18:21.720140+00:00",
+      "completed_at": "2026-10-18T21:40:33.172113+00:00",
+      "core_acquired_at": "2026-10-18T20:18:22.619418+00:00",
+      "core_released_at": "2026-10-18T21:40:31.586893+00:00",
+      "automation_sha256": "8bcb8618e033a6afc5c78bc02eeb9510d4098375533d2c9db1d496b6853006eb",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "spm_8p48s_distributed_femm_validation",
+      "pid": 35144,
+      "marker": "f112_65edab9dee23",
+      "started_at": "2026-10-18T20:18:21.364048+00:00",
+      "completed_at": "2026-10-18T21:44:12.374196+00:00",
+      "core_acquired_at": "2026-10-18T20:18:22.231464+00:00",
+      "core_released_at": "2026-10-18T21:44:10.790651+00:00",
+      "automation_sha256": "5b6627f76fbda14f105af65a1e690b2ebe89266dbb88e060eb0ebf130a36f0d9",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "pid": 31452,
+      "marker": "f112_36692a5465fa",
+      "started_at": "2026-10-18T21:44:13.441349+00:00",
+      "completed_at": "2026-10-18T21:56:41.077839+00:00",
+      "core_acquired_at": "2026-10-18T21:44:14.672893+00:00",
+      "core_released_at": "2026-10-18T21:56:39.746137+00:00",
+      "automation_sha256": "31a65da163b045b8730cb78cf6e199fab742a5979d393e8a6623570d4385fc29",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "pid": 27308,
+      "marker": "f112_7ce4951adc35",
+      "started_at": "2026-10-18T22:02:44.417930+00:00",
+      "completed_at": "2026-10-18T22:06:09.298862+00:00",
+      "core_acquired_at": "2026-10-18T22:02:45.703878+00:00",
+      "core_released_at": "2026-10-18T22:06:08.356895+00:00",
+      "automation_sha256": "a224cd47fc14e7c81623aa7a505025e7d1d178c0956ebb183f9776fb70ee974c",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "pid": 36740,
+      "marker": "f112_9e8da91200c4",
+      "started_at": "2026-10-18T22:01:30.953192+00:00",
+      "completed_at": "2026-10-18T22:07:19.626374+00:00",
+      "core_acquired_at": "2026-10-18T22:01:32.194646+00:00",
+      "core_released_at": "2026-10-18T22:07:18.688658+00:00",
+      "automation_sha256": "64350cc5586029a9c3cb29d541cb74aff3d5b1c2952daa363345e242eaf6a5e1",
+      "marker_file_sha256": "9c2e59feb42a37adddf2b43f9328b03e6269ee9456c5c114b263d8e8ecaccfb3"
+    }
+  ]
+}
