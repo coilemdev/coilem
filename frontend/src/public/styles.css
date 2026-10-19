@@ -912,6 +912,7 @@ body {
 .public-parameter-panel .ipm-layout-card small { color: var(--text-muted); font-size: 7px; line-height: 1.35; }
 .public-parameter-panel .ipm-layout-card.active small { color: var(--text-secondary); }
 .public-parameter-panel .ipm-layout-note { margin-top: 8px; color: var(--text-muted); font-size: 8px; line-height: 1.45; }
+.public-parameter-panel .public-winding-note { margin: 2px 0 6px; color: var(--text-muted); font-size: 11px; line-height: 1.45; }
 
 /* Collapsible panel sections: Design's parameter groups and the Solve setup
    share one look (status glyph, title, one-line summary when closed, chevron). */
@@ -1665,9 +1666,20 @@ body {
 .public-field-lines-legend .is-stator { background: #ffd166; box-shadow: 0 0 4px rgba(255,145,0,.9); }
 .public-field-lines-legend .is-pm { background: #5ed3f3; box-shadow: 0 0 0 1px rgba(3,10,20,.9), 0 0 4px rgba(94,211,243,.7); }
 .public-field-lines-legend .public-field-lead { color: var(--text-primary); font-size: 10px; font-weight: 700; }
-.public-field-axis { fill: none; stroke-width: 2.4px; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
-.public-field-axis.is-stator { stroke: #ffb547; filter: drop-shadow(0 0 2px rgba(0,0,0,.95)); }
-.public-field-axis.is-pm { stroke: #5ed3f3; filter: drop-shadow(0 0 2px rgba(0,0,0,.95)); }
+.public-field-axis { fill: none; stroke-width: .8px; stroke-linecap: round; stroke-linejoin: round; }
+.public-field-axis path { vector-effect: non-scaling-stroke; }
+/* Dashed shafts keep the axis arrows light over the field lines; the heads stay solid. */
+.public-field-axis-shaft { stroke-dasharray: 4 3; }
+.public-field-axis-ray { fill: none; stroke-width: .8px; stroke-dasharray: 2 3; stroke-linecap: round; opacity: .8; vector-effect: non-scaling-stroke; }
+.public-field-axis-ray.is-stator { stroke: #ffb547; }
+.public-field-axis-ray.is-pm { stroke: #5ed3f3; }
+/* The lead-angle label and its "?" carry the why-90-elec tooltip. */
+.public-field-axis-help { pointer-events: auto; cursor: help; }
+.public-field-axis-help .public-field-axis-label { pointer-events: auto; }
+.public-field-axis-help-badge circle { fill: rgba(3,7,18,.88); stroke: rgba(241,245,249,.85); stroke-width: 1px; vector-effect: non-scaling-stroke; }
+.public-field-axis-help-badge text { fill: #f8fafc; text-anchor: middle; dominant-baseline: central; font-family: var(--font-mono); font-weight: 700; }
+.public-field-axis.is-stator { stroke: #ffb547; filter: drop-shadow(0 0 1px rgba(0,0,0,.95)); }
+.public-field-axis.is-pm { stroke: #5ed3f3; filter: drop-shadow(0 0 1px rgba(0,0,0,.95)); }
 .public-field-axis-arc { fill: none; stroke: rgba(241,245,249,.8); stroke-width: 1.4px; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
 .public-field-axis-label { fill: #f8fafc; stroke: rgba(3,7,18,.9); stroke-width: .12; paint-order: stroke; text-anchor: middle; dominant-baseline: central; font-family: var(--font-mono); font-weight: 700; pointer-events: none; }
 @keyframes public-field-direction-flow {
@@ -1740,16 +1752,6 @@ body {
 .public-solved-field-canvas .public-field-result-canvas > canvas { position: absolute; inset: 0; }
 .public-solved-field-canvas .public-field-result-canvas canvas,
 .public-solved-field-canvas .public-field-result-canvas svg { width: 100%; height: 100%; max-height: none; }
-.public-field-stream-status { position: absolute; z-index: 12; top: 12px; left: 50%; display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; min-width: 250px; gap: 4px 12px; padding: 8px 11px; border: 1px solid rgba(103,232,249,.34); border-radius: 9px; color: var(--text-secondary); background: rgba(7,9,14,.9); box-shadow: var(--shadow-md); transform: translateX(-50%); backdrop-filter: blur(12px); pointer-events: none; }
-.public-field-stream-status span, .public-field-stream-status progress { grid-column: 1 / -1; }
-.public-field-stream-status button { pointer-events: auto; padding: 3px 10px; border: 1px solid rgba(239,68,68,.55); border-radius: 999px; color: #fecaca; background: rgba(127,29,29,.34); font: 700 9px var(--font-mono); cursor: pointer; }
-.public-field-stream-status button:hover, .public-field-stream-status button:focus-visible { background: rgba(127,29,29,.6); }
-.public-field-stream-status span { color: var(--info); font: 700 7px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
-.public-field-stream-status strong { color: var(--text-primary); font-size: 10px; }
-.public-field-stream-status progress { width: 100%; height: 3px; overflow: hidden; border: 0; border-radius: 999px; color: var(--info); background: rgba(148,163,184,.16); }
-.public-field-stream-status progress::-webkit-progress-bar { border-radius: inherit; background: rgba(148,163,184,.16); }
-.public-field-stream-status progress::-webkit-progress-value { border-radius: inherit; background: linear-gradient(90deg, var(--accent-primary), var(--info)); transition: width .18s ease; }
-.public-field-stream-status progress::-moz-progress-bar { border-radius: inherit; background: linear-gradient(90deg, var(--accent-primary), var(--info)); }
 .public-field-summary-panel { display: grid; min-width: 188px; gap: 2px; padding: 10px 11px; border: 1px solid rgba(148,163,184,.2); border-left: 2px solid var(--accent-primary); border-radius: 9px; background: rgba(7,9,14,.88); box-shadow: var(--shadow-sm); backdrop-filter: blur(10px); }
 .public-field-summary-panel > span { color: var(--text-faint); font: 700 7px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; }
 .public-field-summary-panel > strong { color: var(--text-primary); font-size: 12px; }
@@ -2451,6 +2453,7 @@ body {
 .public-project-menu .public-project-examples-menu button { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 14px; }
 .public-project-examples-menu strong { color: inherit; font-weight: 600; }
 .public-project-examples-menu small { color: var(--text-muted); font: 9.5px var(--font-mono); text-transform: uppercase; letter-spacing: .04em; }
+.public-project-examples-menu .public-example-experimental-tag { display: inline-block; margin-left: 8px; padding: 1px 6px; border: 1px solid rgba(245,158,11,.45); border-radius: 999px; background: rgba(245,158,11,.16); color: #fbbf24; font: 700 8px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; vertical-align: middle; }
 .public-project-examples-menu .public-project-example-group-label { padding: 6px 10px 3px; color: var(--text-muted); font: 700 8px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; }
 
 @media (max-width: 1200px) {

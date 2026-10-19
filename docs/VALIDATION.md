@@ -132,7 +132,7 @@ on macOS, Windows and Linux:
 python -m tools.run_benchmarks --phases A B C D --out-dir ../benchmark-output/my-run --pdf
 ```
 
-Harness 1.5.0 also runs from an installed coilEM, with no checkout: `coilem
+Harness 1.5.1 also runs from an installed coilEM, with no checkout: `coilem
 benchmark` solves the current suite, grades it against the frozen FEMM v3
 reference, and matches it against the [published record](../benchmarks/records/README.md)
 for the platform (see [Run the benchmark yourself](#run-the-benchmark-yourself)).

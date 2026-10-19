@@ -284,13 +284,20 @@ const runPlanIndex = workspaceSource.indexOf('className="public-run-plan"');
 assert.ok(solveFooterIndex >= 0 && runActionIndex > solveFooterIndex && runActionIndex < runPlanIndex, 'Run analysis belongs in the left solve footer');
 assert.match(workspaceSource, /export type PublicWorkflowStep = 'design' \| 'solve' \| 'report'/);
 // A running stator-only field can be canceled like a solve, from the run
-// button and from the field viewer's progress overlay.
+// button. It reports in the Run plan's live card like a solve, not in a
+// progress overlay over the field.
 assert.match(workspaceSource, /busy === 'field' \? onCancelArmatureField/);
 assert.match(workspaceSource, /'■ Cancel stator field'/);
-assert.match(workspaceSource, /onCancelArmature=\{onCancelArmatureField\}/);
-assert.match(solvedFieldSource, /aria-label="Cancel the stator-only field" onClick=\{onCancelArmature\}/);
+assert.doesNotMatch(workspaceSource, /onCancelArmature=/);
+assert.doesNotMatch(solvedFieldSource, /onCancelArmature|armatureProgress/);
+assert.match(workspaceSource, /\(busy === 'mesh' \|\| busy === 'solve' \|\| busy === 'field'\) && <LiveSolveMonitor/);
+assert.match(workspaceSource, /\{statorField \? 'Stator field extraction' : 'Live solve'\}/);
+assert.match(workspaceSource, /Magnets off \(Br = 0\), solved at each rotor position for the Stator view\./);
+assert.match(workspaceSource, /\{!statorField && <>\s*<CompactLiveChart/);
+// Completed results collapse the Analysis section; the stator-only run opens it for its card and restores it after.
+assert.match(workspaceSource, /if \(busy === 'field'\) \{\s*if \(analysisOpenBeforeFieldRef\.current !== null\) return;\s*analysisOpenBeforeFieldRef\.current = analysisDetailsOpen;\s*setAnalysisDetailsOpen\(true\);/);
+assert.match(workspaceSource, /if \(!error\) setAnalysisDetailsOpen\(analysisOpenBeforeFieldRef\.current\);/);
 assert.match(appSource, /const cancelArmatureField = async \(\) => \{[\s\S]*?armatureFieldController\.current\?\.abort\(\);[\s\S]*?await cancelPublicSolve\(\);/);
-assert.match(styleSource, /\.public-field-stream-status button \{ pointer-events: auto;/);
 assert.match(workspaceSource, /\{ id: 'report', label: 'Results', available: resultReady \}/);
 assert.match(workspaceSource, /Full results →/);
 assert.doesNotMatch(workspaceSource, /\{ id: 'report', label: 'Report'/);
@@ -374,6 +381,9 @@ assert.match(workspaceSource, /publicExampleOptions\(experimentalRotors, 'motor'
 // Hardware-validated motors get their own group, shown only when one is available to this launch.
 assert.match(workspaceSource, /publicExampleOptions\(experimentalRotors, 'benchmark'\)\.length > 0/);
 assert.match(workspaceSource, />Benchmarks</);
+// Benchmarks are experimental for now: every entry carries a yellow Experimental tag.
+assert.match(workspaceSource, /publicExampleOptions\(experimentalRotors, 'benchmark'\)\.map\(\(example\) => \([\s\S]*?<strong>\{example\.label\}<span className=\"public-example-experimental-tag\">Experimental<\/span><\/strong>/);
+assert.match(styleSource, /\.public-project-examples-menu \.public-example-experimental-tag \{[^}]*color: #fbbf24;/);
 assert.match(exampleDesignsSource, /Boolean\(option\.benchmark\) === \(group === 'benchmark'\)/);
 assert.match(exampleDesignsSource, /id: 'ornl-prius-2004-holem50',[\s\S]*?experimental: true,[\s\S]*?benchmark: true/);
 assert.match(workspaceSource, /public-project-submenu-trigger/);
@@ -1155,10 +1165,8 @@ assert.match(styleSource, /\.public-dock-strip-end \.public-viewport-nav-control
 assert.match(styleSource, /@container \(max-width: 720px\) \{[^@]*\.public-field-zoom-slot \.public-viewport-nav-controls > span \{ display: none; \}/);
 assert.match(solvedFieldSource, /className="public-field-physics-info"/);
 assert.match(solvedFieldSource, /Solving the zero-remanence rotor sweep locally/);
-assert.match(solvedFieldSource, /className="public-field-stream-status"/);
-assert.match(solvedFieldSource, /Live Magneto2D stator field/);
-assert.match(solvedFieldSource, /Previous resultant field · waiting for first stator frame/);
-assert.match(styleSource, /\.public-field-stream-status/);
+assert.doesNotMatch(solvedFieldSource, /public-field-stream-status|waiting for first stator frame/);
+assert.doesNotMatch(styleSource, /\.public-field-stream-status/);
 assert.doesNotMatch(solvedFieldSource, /className="public-field-loading-visual"/);
 assert.doesNotMatch(styleSource, /public-field-loading-spin/);
 assert.doesNotMatch(solvedFieldSource, /className="public-field-physics-note"/);
@@ -1224,6 +1232,18 @@ assert.doesNotMatch(fieldResultSource, /public-field-axes-caption/);
 assert.doesNotMatch(styleSource, /public-field-axes-caption/);
 assert.match(fieldResultSource, /strongestAirgapPolePairs\(statorPolarityProfile, axisPolePairs \* 4\)/);
 assert.match(styleSource, /\.public-field-axis\.is-stator \{ stroke: #ffb547;/);
+assert.match(styleSource, /\.public-field-axis \{ fill: none; stroke-width: \.8px;/);
+assert.match(styleSource, /\.public-field-axis-shaft \{ stroke-dasharray: 4 3; \}/);
+// Centre lines to the marked rotor arrow and the stator arrow ahead of it frame the lead angle.
+assert.match(fieldResultSource, /polar\(axisRotorRadius \* 0\.62, arcRotorDeg\)/);
+assert.match(fieldResultSource, /polar\(axisStatorRadius \* 1\.04, arcRotorDeg \+ arcSpanDeg\)/);
+assert.match(fieldResultSource, /className=\"public-field-axis-ray is-pm\" d=\{`M 0 0 L \$\{rayRotorX\} \$\{rayRotorY\}`\}/);
+assert.match(fieldResultSource, /className=\"public-field-axis-ray is-stator\" d=\{`M 0 0 L \$\{rayStatorX\} \$\{rayStatorY\}`\}/);
+// The lead label's \"?\" explains why 90° elec is not a right angle on screen.
+assert.match(fieldResultSource, /<g className=\"public-field-axis-help\">\s*<title>\{leadAngleExplanation\(leadElecDeg \?\? 0, axisPolePairs\)\}<\/title>/);
+assert.match(styleSource, /\.public-field-axis-help \{ pointer-events: auto; cursor: help; \}/);
+assert.match(fieldResultSource, /fieldAxisArrowPaths\(axisStatorRadius \* 1\.04, axisStatorRadius \* 1\.32, angle\)/);
+assert.match(fieldResultSource, /<path className=\"public-field-axis-shaft\" d=\{arrow\.shaft\} \/>/);
 assert.match(solvedFieldSource, /showPolarityLegend=\{source === 'armature' && showPoleLabels\}/);
 assert.match(solvedFieldSource, /showStatorPolarity=\{source === 'armature' && showPoleLabels\}/);
 assert.match(solvedFieldSource, /nearestAirgapProfile/);
@@ -1863,6 +1883,12 @@ assert.match(workspaceSource, /disabled: !available/);
 assert.match(workspaceSource, /Coils per Phase/);
 assert.match(workspaceSource, /set\('winding', 'layers', 'winding'\)\(Number\(value\)\)/);
 assert.match(appSource, /parallelPathsDividing\(layerCoilsPerPhase, config\.winding\.parallel_paths\)/);
+// A type change drops the second layer a q >= 1 concentrated layout cannot wind and
+// says so; a file loaded with two keeps its Layers row so the user can fix it.
+assert.match(workspaceSource, /set\('winding', 'type', 'winding'\)/);
+assert.match(appSource, /section === 'winding' && field === 'type'\s*\? \{ \.\.\.config, winding: windingForType\(config, value as MotorConfig\['winding'\]\['type'\]\) \}/);
+assert.match(appSource, /consequence = `\$\{consequence\} · layers \$\{previous\.winding\.layers\} → \$\{next\.winding\.layers\}`/);
+assert.match(workspaceSource, /const showLayerRow = !\(layerWording\.hidden && layerCount === 1\);/);
 // Design errors keep their field so the parallel-paths check reads in plain words
 // and the section holding the field shows a warning instead of a green check.
 assert.match(appSource, /const error = errorDetails \? designErrorText\(errorDetails, config\) : null;/);

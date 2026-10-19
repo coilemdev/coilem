@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from 'react';
 
-import { getPublicFieldFrame, type PublicSolveProgress } from './api';
+import { getPublicFieldFrame } from './api';
 import {
   FieldResultPlot,
   warmFieldResultPlot,
@@ -144,10 +144,8 @@ interface SolvedFieldViewerProps {
   armature: PublicArmatureFieldComposition | null;
   armatureBusy: boolean;
   armatureError: string | null;
-  armatureProgress: PublicSolveProgress | null;
   magnetoCompositionAvailable: boolean;
   onRequestArmature: () => void;
-  onCancelArmature: () => void;
   /** The Solve tab's waveform plots: they set the field's position and show it. */
   positionLink?: FieldPositionLink;
 }
@@ -212,10 +210,8 @@ export function SolvedFieldViewer({
   armature,
   armatureBusy,
   armatureError,
-  armatureProgress,
   magnetoCompositionAvailable,
   onRequestArmature,
-  onCancelArmature,
   positionLink,
 }: SolvedFieldViewerProps) {
   const resultantFrames = useMemo(
@@ -1138,29 +1134,6 @@ export function SolvedFieldViewer({
   return (
     <section className="public-solved-field-viewer" aria-label="Completed field solution">
       <div className="public-solved-field-canvas">
-        {source === 'armature' && armatureBusy && (
-          <div
-            className="public-field-stream-status"
-            role="status"
-            aria-label="Stator-current field solve progress"
-          >
-            <span>
-              {armatureFrames.length > 0
-                ? 'Live Magneto2D stator field'
-                : 'Previous resultant field · waiting for first stator frame'}
-            </span>
-            <strong>
-              {armatureProgress && armatureProgress.total > 0
-                ? `Position ${Math.min(armatureProgress.position, armatureProgress.total)} / ${armatureProgress.total}`
-                : 'Preparing exact field…'}
-            </strong>
-            <button type="button" aria-label="Cancel the stator-only field" onClick={onCancelArmature}>Cancel</button>
-            <progress
-              max={Math.max(1, armatureProgress?.total ?? 1)}
-              value={Math.max(0, armatureProgress?.position ?? 0)}
-            />
-          </div>
-        )}
         {(activeDetailRaster || visibleRaster || visiblePlot) && (
           <>
             <FieldResultPlot

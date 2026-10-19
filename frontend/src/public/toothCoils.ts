@@ -167,6 +167,20 @@ export function windingLayerWording(slotCount: number, poleCount: number, windin
   };
 }
 
+/**
+ * Why a balanced concentrated layout with q >= 1 (6p/36s) has no Wound teeth
+ * choice, or null when the note does not apply. An info note, not an error: the
+ * layout still solves, as full-pitch coils with one phase per slot. The suggested
+ * slot count is the q = 1/2 tooth-coil layout, 1.5 slots per pole.
+ */
+export function wholeSlotConcentratedNote(slotCount: number, poleCount: number, windingType: string): string | null {
+  if (windingType !== 'concentrated' || poleCount % 2 !== 0) return null;
+  if (concentratedUsesToothCoils(slotCount, poleCount) || !concentratedLayoutIsBalanced(slotCount, poleCount)) return null;
+  return `For ${poleCount}p/${slotCount}s, coilEM's Concentrated option uses full-pitch coils with one phase per slot, `
+    + "so Wound teeth doesn't apply. For tooth coils in coilEM with "
+    + `${poleCount} poles, use fewer than ${3 * poleCount} slots, such as ${(3 * poleCount) / 2}.`;
+}
+
 /** Coils each phase has, which parallel paths must divide (backend/geometry.py validate_geometry). */
 export function coilsPerPhase(slotCount: number, poleCount: number, windingType: string, layers: number): number {
   if (windingType === 'distributed') return Math.floor(slotCount / 6);

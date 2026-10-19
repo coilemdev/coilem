@@ -182,6 +182,13 @@ no Git, Rust, Node.js or FEMM. From a checkout, `python -m tools.run_benchmarks
 developer options. See the [benchmark commands, reference compatibility and
 version policy](benchmarks/abcd-v1.3/README.md).
 
+The [motor benchmark collection](benchmarks/models-v1/README.md) also includes
+Pyleecan Prius 8p48s and the exploratory Honda Accord 2005 comparison. From a
+clean checkout, `python -m tools.run_model_benchmarks --list` lists the named
+selections; `--out ../benchmark-output/all-models` runs all three workflows.
+Prius has software acceptance checks; Honda retains its hardware residuals
+without a pass/fail claim. Deferred legacy ORNL Prius coverage is separate.
+
 The public Magneto2D path ignores inherited numerical solver switches. It derives
 native options from the request and records its environment policy and options
 in new motor results. [Runtime settings](docs/RUNTIME_SETTINGS.md) lists public

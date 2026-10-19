@@ -10,7 +10,9 @@ type Excitation = 'sinusoidal' | 'ideal_six_step_120';
 type RunRecord = { project_slug: string; run_id: string; status: string };
 
 async function runList(page: Page): Promise<RunRecord[]> {
-  const response = await page.request.get(`${apiUrl}/runs`);
+  // Long solves can leave an idle keep-alive socket closed by the server.
+  // Retry only ECONNRESET on read-only requests; HTTP errors still fail below.
+  const response = await page.request.get(`${apiUrl}/runs`, { maxRetries: 2 });
   expect(response.ok()).toBe(true);
   return (await response.json()).runs as RunRecord[];
 }
@@ -221,7 +223,7 @@ test.describe('public developer preview release rehearsal', () => {
     expect(completed).toHaveLength(2);
     const savedModes: string[] = [];
     for (const run of completed) {
-      const response = await page.request.get(`${apiUrl}/runs/${run.project_slug}/${run.run_id}`);
+      const response = await page.request.get(`${apiUrl}/runs/${run.project_slug}/${run.run_id}`, { maxRetries: 2 });
       expect(response.ok()).toBe(true);
       const stored = await response.json();
       expect(stored.integrity.valid).toBe(true);
@@ -262,7 +264,7 @@ test.describe('public developer preview release rehearsal', () => {
       const retained = (await runList(page)).filter((run) => run.status === 'complete');
       expect(retained.map((run) => run.run_id).sort()).toEqual(completed.map((run) => run.run_id).sort());
       for (const run of retained) {
-        const response = await page.request.get(`${apiUrl}/runs/${run.project_slug}/${run.run_id}`);
+        const response = await page.request.get(`${apiUrl}/runs/${run.project_slug}/${run.run_id}`, { maxRetries: 2 });
         expect((await response.json()).integrity.valid).toBe(true);
       }
     });
