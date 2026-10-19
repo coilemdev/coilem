@@ -349,6 +349,11 @@
       "sha256": "74f7984e5c33d544fe3a1fd09078d08363d82f157e4f22f8f392e3089d442965"
     },
     {
+      "path": "backend/iron_loss.py",
+      "bytes": 10986,
+      "sha256": "c17ee6f08f7f8a2564e59f9b5f7f7fa0875fc72dead3232a546faced11b3ad00"
+    },
+    {
       "path": "backend/launcher.py",
       "bytes": 19883,
       "sha256": "b2da34a85cd8d80d8c20e954e81f01bb665abd2ecb4376e4851cbcfcb4277408"
@@ -6754,6 +6759,11 @@
       "sha256": "56081bd2e9c0b8ca943103a3563255dd616606f12dd17c559f6b07cb06cd9220"
     },
     {
+      "path": "tests/test_iron_loss.py",
+      "bytes": 7825,
+      "sha256": "5a51f684328fff6fd8b61f63aad7cc0d339afc4d92eeb5d235b135fc4bc2216e"
+    },
+    {
       "path": "tests/test_late_reference_comparison.py",
       "bytes": 13782,
       "sha256": "cdf4098d1268f6d74e7ac4f44a0f0948bfc9ae875847fac4365ff4296d00a4a8"
@@ -10411,6 +10421,18 @@
       "path": "tests/test_performance_contracts.py",
       "source_sha256": null,
       "reason": "Fix the shared performance contracts for 0.5.0 (#143): d/q flux linkage, loss breakdown, flux-linkage map, torque-speed envelope, efficiency map, wire spec and operating temperatures. New inputs are refused until the features that use them ship; solve results are unchanged."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "backend/iron_loss.py",
+      "source_sha256": null,
+      "reason": "Add the M350-50A iron-loss model for #138: harmonic Steinmetz coefficients derived from the EN 10106 50 Hz loss limits, the classical lamination eddy-current term and a cited mill resistivity, and stator flux histories across per-angle and slot-pitch-rotated meshes. Not yet wired into solves or results."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "tests/test_iron_loss.py",
+      "source_sha256": null,
+      "reason": "Add the M350-50A iron-loss model for #138: harmonic Steinmetz coefficients derived from the EN 10106 50 Hz loss limits, the classical lamination eddy-current term and a cited mill resistivity, and stator flux histories across per-angle and slot-pitch-rotated meshes. Not yet wired into solves or results."
     }
   ]
 }
