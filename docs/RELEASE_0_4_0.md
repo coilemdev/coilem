@@ -1,5 +1,12 @@
 # coilEM v0.4.0 release plan
 
+The first frozen candidate, `4b88c4e1687acd6c40d37af2ee4d33348824734e`, now has
+complete sealed Windows/macOS A/B/C/D, Prius and package qualification evidence.
+The [post-freeze integration addendum](RELEASE_0_4_0_INTEGRATION.md) records the
+#146–149 release stack and the checks needed to carry that numerical evidence
+to the updated candidate. The original planning checklist below retains its
+baseline context; it does not replace the external qualification receipts.
+
 Original planning baseline: October 18, 2026, public main
 `0417736249ae2926e05612ac58926cdc76cc8868`. The development evidence below
 adds the subsequent Pyleecan implementation and its regression run. Preparation

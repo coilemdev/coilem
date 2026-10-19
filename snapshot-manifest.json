@@ -5380,8 +5380,13 @@
     },
     {
       "path": "docs/RELEASE_0_4_0.md",
-      "bytes": 12194,
-      "sha256": "dca64db6e19430edb2e449bb99fdb5db2301ed10b73a3bfd7b32f29e2037d3bf"
+      "bytes": 12668,
+      "sha256": "340126f2028a092c0c2fa3f9257dbecf17a127de27b77cfde27b5df3dc5c41f6"
+    },
+    {
+      "path": "docs/RELEASE_0_4_0_INTEGRATION.md",
+      "bytes": 4933,
+      "sha256": "19fd387805d56a665f305d2ed6330ee64492d4d5bb041cac07fbda6b0b0bee33"
     },
     {
       "path": "docs/RELEASING.md",
