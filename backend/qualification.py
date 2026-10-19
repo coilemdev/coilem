@@ -67,6 +67,9 @@ def _distributed_pitch(config: MotorConfig) -> str | None:
 
 
 def _combination(config: MotorConfig) -> tuple[QualificationStatus, str]:
+    if config.geometry_reference == "pyleecan_prius_2004":
+        return ("experimental", "Pyleecan Prius software reference: pinned geometry and materials; "
+                "measured hardware identity and release qualification remain separate.")
     winding = config.winding
     rotor = config.rotor
     six_step = config.solve_params is not None and config.solve_params.excitation_mode == "ideal_six_step_120"

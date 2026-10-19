@@ -1,0 +1,289 @@
+{
+  "openem_schema_version": 4,
+  "openem_version": "0.3.1",
+  "name": "Pyleecan 2004 Prius \u2014 tutorial BEMF",
+  "description": "Exact pinned software reference: 1000 rpm, 20 C magnets, zero phase current. Full electrical cycle with 100 poses; upstream uses 50 half-cycle poses and anti-periodic reconstruction. Software reproduction, not hardware validation.",
+  "schema_version": "1.0",
+  "geometry_reference": "pyleecan_prius_2004",
+  "topology": "IPM",
+  "stator": {
+    "OD_mm": 269.24,
+    "ID_mm": 161.9,
+    "slot_count": 48,
+    "stack_length_mm": 83.82,
+    "slot_opening_mm": 1.93,
+    "tooth_width_mm": 7.086189721925985,
+    "yoke_thickness_mm": 19.37,
+    "tooth_shoe_enabled": false,
+    "tooth_shoe_height_mm": 1.0,
+    "tooth_shoe_overhang_mm": 0.5
+  },
+  "rotor": {
+    "OD_mm": 160.4,
+    "ID_mm": 110.64,
+    "magnet_thickness_mm": 6.5,
+    "magnet_width_mm": 18.9,
+    "pole_count": 8,
+    "magnet_embrace": 0.67,
+    "bridge_thickness_mm": 1.5,
+    "ipm_topology": "pyleecan_holem50",
+    "flat_buried_magnet_shape": "straight",
+    "side_bridge_thickness_mm": 1.5,
+    "pocket_clearance_mm": 0.0,
+    "magnet_angle_deg": 0.0,
+    "v_angle_deg": 60.0,
+    "v_depth_mm": 21.0,
+    "inner_web_thickness_mm": 7.0,
+    "outer_bridge_thickness_mm": 1.5,
+    "holem50_w0_mm": 42.0,
+    "holem50_w1_mm": 0.0,
+    "holem50_w2_mm": 0.0,
+    "holem50_w3_mm": 14.0,
+    "holem50_w4_mm": 18.9,
+    "holem50_h0_mm": 10.96,
+    "holem50_h1_mm": 1.5,
+    "holem50_h2_mm": 1.0,
+    "holem50_h3_mm": 6.5,
+    "holem50_h4_mm": 0.0,
+    "flux_barrier_count": null,
+    "barrier_widths_mm": null
+  },
+  "winding": {
+    "type": "distributed",
+    "turns_per_coil": 9,
+    "layers": 1,
+    "parallel_paths": 1,
+    "coil_span": 6
+  },
+  "materials": {
+    "stator_steel": "custom:1b06dcfa45eec99d88856ad3b26df6a890cea2b5c4e247abfd55367660db42ec",
+    "rotor_steel": "custom:1b06dcfa45eec99d88856ad3b26df6a890cea2b5c4e247abfd55367660db42ec",
+    "magnet_grade": "Prius_2004_NdFeB",
+    "conductor": "copper",
+    "custom_steels": {
+      "custom:1b06dcfa45eec99d88856ad3b26df6a890cea2b5c4e247abfd55367660db42ec": {
+        "id": "custom:1b06dcfa45eec99d88856ad3b26df6a890cea2b5c4e247abfd55367660db42ec",
+        "name": "Pyleecan M400-50A",
+        "source": "Published Pyleecan Toyota_Prius.json, exact FEMM B-H points",
+        "lamination_thickness_mm": null,
+        "bh_curve": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.5,
+            100.0
+          ],
+          [
+            0.7,
+            150.0
+          ],
+          [
+            0.8,
+            180.0
+          ],
+          [
+            0.9,
+            200.0
+          ],
+          [
+            1.0,
+            250.0
+          ],
+          [
+            1.05,
+            300.0
+          ],
+          [
+            1.1,
+            350.0
+          ],
+          [
+            1.15,
+            450.0
+          ],
+          [
+            1.2,
+            550.0
+          ],
+          [
+            1.225,
+            650.0
+          ],
+          [
+            1.25,
+            750.0
+          ],
+          [
+            1.275,
+            850.0
+          ],
+          [
+            1.3,
+            950.0
+          ],
+          [
+            1.325,
+            1100.0
+          ],
+          [
+            1.35,
+            1250.0
+          ],
+          [
+            1.375,
+            1400.0
+          ],
+          [
+            1.4,
+            1550.0
+          ],
+          [
+            1.425,
+            1700.0
+          ],
+          [
+            1.45,
+            1900.0
+          ],
+          [
+            1.475,
+            2150.0
+          ],
+          [
+            1.5,
+            2450.0
+          ],
+          [
+            1.525,
+            2750.0
+          ],
+          [
+            1.55,
+            3150.0
+          ],
+          [
+            1.575,
+            3600.0
+          ],
+          [
+            1.6,
+            4100.0
+          ],
+          [
+            1.625,
+            4700.0
+          ],
+          [
+            1.65,
+            5250.0
+          ],
+          [
+            1.675,
+            6000.0
+          ],
+          [
+            1.7,
+            6700.0
+          ],
+          [
+            1.725,
+            7500.0
+          ],
+          [
+            1.75,
+            8650.0
+          ],
+          [
+            1.775,
+            9500.0
+          ],
+          [
+            1.8,
+            10750.0
+          ],
+          [
+            1.85,
+            14500.0
+          ],
+          [
+            1.9,
+            19500.0
+          ],
+          [
+            1.95,
+            25000.0
+          ],
+          [
+            2.0,
+            33000.0
+          ],
+          [
+            2.05,
+            44000.0
+          ],
+          [
+            2.1,
+            57000.0
+          ],
+          [
+            2.15,
+            74000.0
+          ],
+          [
+            2.2,
+            96000.0
+          ],
+          [
+            2.25,
+            130000.0
+          ],
+          [
+            2.3,
+            170000.0
+          ]
+        ],
+        "curve_sha256": "a057ad7be7d38bd148b7ea67b8dbf64d0874c9226efb8c9cbea6dcd284566899"
+      }
+    }
+  },
+  "solve_params": {
+    "solve_quality": "custom",
+    "rotor_sweep_range_deg": 360.0,
+    "rotor_step_deg": 3.6,
+    "mesh_density": "normal",
+    "mesh_source": "native",
+    "mesher": "gmsh",
+    "corner_refinement": false,
+    "slot_sidewall_refinement": false,
+    "current_amplitude_A": 0,
+    "current_amplitude_convention": "peak",
+    "current_angle_deg": 140,
+    "excitation_mode": "sinusoidal",
+    "commutation_advance_deg": 0.0,
+    "phase_connection": "wye",
+    "rated_speed_rpm": 1000,
+    "magnet_temperature_C": 20,
+    "motor_input_dc_bus_V": 500.0,
+    "max_nonlinear_iterations": 200,
+    "nonlinear_solver": "newton",
+    "linear_solver_preconditioner": "direct",
+    "linear_steel_mu_rel": null,
+    "magneto2d_workers": 1,
+    "stream_noload_field_lines": false,
+    "field_composition_source": "resultant",
+    "rotor_rotation_model": "remesh_per_step",
+    "torque_method": "weighted_stress",
+    "mesh_build": "precise"
+  },
+  "solve_options": {
+    "torque_sweep": true,
+    "back_emf": true,
+    "flux_density": false,
+    "cogging_torque": false,
+    "torque_speed_envelope": false,
+    "thd_analysis": false
+  },
+  "reference_case": "prius-2004-tutorial-bemf-v1"
+}

@@ -760,6 +760,12 @@ def _magneto2d_env_overrides(config: MotorConfig) -> dict[str, str]:
     }.get(str(torque_method), "contour")
     overrides["MAGNETO2D_COGGING_TORQUE_METHOD"] = cogging_method_env
 
+    if config.geometry_reference == "pyleecan_prius_2004":
+        from backend.reference_models.prius import magnet_br_factor
+
+        overrides.update(COILEM_MAGNET_BR_SCALE="0" if armature_only_field else str(magnet_br_factor(config)), MAGNETO2D_NONLINEAR_TOL="1e-8",
+                         MAGNETO2D_NEWTON_TOL="1e-9", MAGNETO2D_NONLINEAR_MAX_ITER=str(config.solve_params.max_nonlinear_iterations or 200))
+
     return overrides
 
 

@@ -180,6 +180,14 @@ def resolve_phase_current_sample(
             sector_index=None,
         )
 
+    if config.geometry_reference == "pyleecan_prius_2004":
+        # The published Phi0 is measured from its d-axis. Geometry is reflected
+        # into the public clockwise frame; the phase labels and Jz are retained.
+        angle = (rotor_electrical_angle_deg if clockwise_positive else -rotor_electrical_angle_deg) + sp.current_angle_deg
+        peak = _sine_peak_current_a(config)
+        currents = tuple(peak * math.cos(math.radians(angle + offset)) for offset in (0, -120, 120))
+        return PhaseCurrentSample(SINUSOIDAL, currents, wrap_360(rotor_electrical_angle_deg), angle + 90, None)
+
     if sp.excitation_mode == IDEAL_SIX_STEP_120:
         if sp.current_amplitude_convention != "plateau":
             raise ValueError(

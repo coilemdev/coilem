@@ -80,8 +80,8 @@
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
-      "bytes": 16671,
-      "sha256": "bd0207bf5296f1cfc395cc224953d25cc69cd0f6b5605748fabd0a8c566529ea"
+      "bytes": 28840,
+      "sha256": "fb768bc0bef0dad16adeacea333c7d3cc1398406af80c3bc6504891416a882af"
     },
     {
       "path": "TRADEMARKS.md",
@@ -130,8 +130,8 @@
     },
     {
       "path": "backend/benchmark_suite/contract.py",
-      "bytes": 6708,
-      "sha256": "40c014b356b6616b31d9e4677c4fa25b7f33dbf9692340bf15206444bbf40db9"
+      "bytes": 6924,
+      "sha256": "374371a1873e0798a8c9ba1a668f9454bafd7c4bcf17e8defae1d18514ad63c4"
     },
     {
       "path": "backend/benchmark_suite/hardware.py",
@@ -145,13 +145,13 @@
     },
     {
       "path": "backend/benchmark_suite/physics.py",
-      "bytes": 2739,
-      "sha256": "348afbb089361e635526be4dee28eb2b554e72b58ef071cd3327fec843deb81c"
+      "bytes": 2907,
+      "sha256": "02e647cdbda407f068fccbcc0f4ac3fe2cced6042881cf352325fff29ca7b91a"
     },
     {
       "path": "backend/benchmark_suite/record.py",
-      "bytes": 10648,
-      "sha256": "37b83a6e5aa3cfd2d47bd5ff8f390e912ef5ba90ebd7e06f0c126b03332f795b"
+      "bytes": 10789,
+      "sha256": "3e84cd2419b395ffac51a95b96643bd0a51f54fd956a95329639f3233322d2c0"
     },
     {
       "path": "backend/benchmark_suite/references.py",
@@ -230,8 +230,8 @@
     },
     {
       "path": "backend/excitation.py",
-      "bytes": 8522,
-      "sha256": "7e2dead86d3db978cd641fcfe203a2e747f5b48076be0483eff841f84bb9aa84"
+      "bytes": 9123,
+      "sha256": "58419d436989bb1ac588e2404c82348c63695dbbe66c6977fae131f0210d9a28"
     },
     {
       "path": "backend/export_safety.py",
@@ -265,8 +265,8 @@
     },
     {
       "path": "backend/geometry_ir.py",
-      "bytes": 65987,
-      "sha256": "c854de3f60d054660b9616cdb752a32835b12c445f497adb7ee24eb0ebf4f8bb"
+      "bytes": 66138,
+      "sha256": "6c5404b069e325d990587a78047cdbffc3a0f0a69dabf06ae3cd4aff32d7dfd7"
     },
     {
       "path": "backend/geometry_ir_tessellation.py",
@@ -280,8 +280,8 @@
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 75184,
-      "sha256": "764e31391894685f1a259a90c7dbb562d612f585a92cef91761a5d6ae783f53f"
+      "bytes": 75391,
+      "sha256": "5cfd97444c6b8e365d9164efa8a73f549ab8b5be9e5903812c2b678f430bd959"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -375,8 +375,8 @@
     },
     {
       "path": "backend/magneto2d_adapter/__init__.py",
-      "bytes": 72940,
-      "sha256": "0ffba926d459e54c6e83943be4b4855bd0cfe20ba05586f1273e6575f5405baa"
+      "bytes": 73353,
+      "sha256": "8fc9dda286554657b2743fc1bd83339be1dcffe07ac5a8e6396e0e472753aa6b"
     },
     {
       "path": "backend/magneto2d_adapter/_state.py",
@@ -415,8 +415,8 @@
     },
     {
       "path": "backend/models/config.py",
-      "bytes": 26997,
-      "sha256": "d2a919a0cb673ed557a63564c28a0ff51adf5436dfc7ffb9b381d9d2322d41dc"
+      "bytes": 27989,
+      "sha256": "1e54d3c53dc32a1cab28f5dcaf8f36d505d0ca88b0d3a8bcebdc581594ec9e9c"
     },
     {
       "path": "backend/models/errors.py",
@@ -430,8 +430,8 @@
     },
     {
       "path": "backend/models/geometry.py",
-      "bytes": 3166,
-      "sha256": "ad7ee8acb567b9aa22a73329523734f0f67e7f98a4f349da4bc0ad387758ab0c"
+      "bytes": 3375,
+      "sha256": "25528b3a8c32730d8860ba2f4f3792496597a87f7e25e78808d8886449b74f2e"
     },
     {
       "path": "backend/models/mesh.py",
@@ -440,8 +440,8 @@
     },
     {
       "path": "backend/models/result.py",
-      "bytes": 4270,
-      "sha256": "34d42f29fd8442e21d94a09cc0d3e72a4da556139c3842a9e91c4f5113790b0d"
+      "bytes": 4435,
+      "sha256": "fe289d2b40f8ec66343e65e8599102aa1446e09a325bb7188c7b01a22aafd21b"
     },
     {
       "path": "backend/models/waveforms.py",
@@ -460,8 +460,8 @@
     },
     {
       "path": "backend/preview_from_ir.py",
-      "bytes": 10654,
-      "sha256": "2f7c8764abdd35c4183ac4e63d27c304c38ec3cea7aa6e1a805c0dd2876b90b4"
+      "bytes": 11203,
+      "sha256": "dcad2fb353bea0b38efec10ca7e59459d83f9830e50b931d10594963ce1dcad2"
     },
     {
       "path": "backend/public_field_playback.py",
@@ -485,8 +485,8 @@
     },
     {
       "path": "backend/public_policy.py",
-      "bytes": 12038,
-      "sha256": "88ef6fd4e551ce3a1ae0eb22bdc4ce84e3919c487fd663ba52df3025d0cc9374"
+      "bytes": 12152,
+      "sha256": "711d20c6a27287adde2a97209ca4d2e7148dfa6203d6631392f274ecbeacecbe"
     },
     {
       "path": "backend/public_report.py",
@@ -535,13 +535,33 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 6735,
-      "sha256": "eec1a879d97c8be51077bb95a3323f0501b73dfafe1f116d1d44d0e034bc1d1e"
+      "bytes": 6984,
+      "sha256": "9fc70f6c3ac0fa8b4cc9a8ba4443a844a4c591062a534f7bb34f5ceb0a59a98c"
+    },
+    {
+      "path": "backend/reference_models/__init__.py",
+      "bytes": 83,
+      "sha256": "bb4c43d7ddb7acb9fbf3a29b5cca4a37571af59fb1bf66175c8bd326f66339bc"
+    },
+    {
+      "path": "backend/reference_models/prius.py",
+      "bytes": 11489,
+      "sha256": "53c17586432dcbcaf09d0296649b8368846870d67cc307945819098251005377"
+    },
+    {
+      "path": "backend/reference_models/pyleecan_prius_2004.json",
+      "bytes": 140905,
+      "sha256": "3fd70d01f18a814661c055706ee18314a32670a413cec8a686665230b21c4f7e"
+    },
+    {
+      "path": "backend/reference_models/pyleecan_prius_2004_config.json",
+      "bytes": 6353,
+      "sha256": "550a82fcb407c5cfdb68b57d894d8924cc9f54d2a743afab7ec7a952d6d11ade"
     },
     {
       "path": "backend/resources.py",
-      "bytes": 8283,
-      "sha256": "0a583d00f3b7af405955f5be94d31080f1055b652c1ffa8b325b571d982d1997"
+      "bytes": 8404,
+      "sha256": "911f41b73cf5b08f4900330cf5af4590e0fdf825ae7f941735d8e4f5352e7a23"
     },
     {
       "path": "backend/solve_estimate.py",
@@ -555,8 +575,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 142122,
-      "sha256": "696af12acd2ab91099cecd024486f8678277c1050d0e6fdde259a6c7b4ce8f8a"
+      "bytes": 143106,
+      "sha256": "dccc534d52cef672929a0ff5b22be255e8d94e11d474a8078a9a047e574cf5dd"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -595,8 +615,8 @@
     },
     {
       "path": "backend/topology_provenance.py",
-      "bytes": 9106,
-      "sha256": "dc2aea3737aa67fd11adbdb40ae671cb3a64c546094f736ceea175d0fcbd1d8d"
+      "bytes": 9407,
+      "sha256": "5e7e205348f731f2a57bdb3e362984c58a8c5711d26d08a22419b2b940b8e046"
     },
     {
       "path": "backend/torque_metrics.py",
@@ -5064,6 +5084,36 @@
       "sha256": "6bc2a602672fe8ae9558fe1b94f236517f8ccbe438fefaf0d2826a034703ce63"
     },
     {
+      "path": "docs/benchmarks/pyleecan-prius-v1/pyleecan-loaded-results.json",
+      "bytes": 471705,
+      "sha256": "0f012e15daf5a5bd03f378bddb781097b8938e6f1c7db8444b03ffa4381ec43a"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/pyleecan-loaded.svg",
+      "bytes": 76376,
+      "sha256": "9258b57953f319756a744135776c0d22dbc40ff56ed0a11e5d54701ffccdcba7"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/pyleecan-reference-input.json",
+      "bytes": 4925,
+      "sha256": "eb9478c402b3c11524f009faf0f68ab1b128f6443c3dab3b792dbc2f5a7f506a"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/pyleecan-tutorial-bemf.svg",
+      "bytes": 57389,
+      "sha256": "09632c78a1e45b62f595dde0e79ea98a69e8f7c80f0d710764452e0170a8136b"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/pyleecan-tutorial-results.json",
+      "bytes": 241408,
+      "sha256": "dea27a8970ed8b1bf3162819acd0471136b63be047cfe77646999c6a1b05ba3b"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/pyleecan-ui-results.json",
+      "bytes": 63705,
+      "sha256": "0bbb694bf2f09913f96787f2261a8045c766690532810860f509e8f94385eb2c"
+    },
+    {
       "path": "docs/examples/follow-flux-magnet-iron-report.json",
       "bytes": 2897435,
       "sha256": "25bbe57352a4307d176d0dcc8c22f1c1466922dcad4092bff63c5f14b2d901d3"
@@ -5365,8 +5415,8 @@
     },
     {
       "path": "frontend/scripts/test-design-file-defaults.mjs",
-      "bytes": 5505,
-      "sha256": "f799b02c3a578d3ac1aa1be4de1dfeb27a8e822ea7d2234719d654c611f3fbf4"
+      "bytes": 6812,
+      "sha256": "2cd3431e79d4bf6ff10a30324914aaa29280ce10ea95864ab6cc4c9abb3b2a22"
     },
     {
       "path": "frontend/scripts/test-field-axes.mjs",
@@ -5440,8 +5490,8 @@
     },
     {
       "path": "frontend/scripts/test-public-bundle.mjs",
-      "bytes": 1251,
-      "sha256": "398e7f4ae43445ad1f88b39254c5dc53040657ec30428585927ba9ac872dcc37"
+      "bytes": 1466,
+      "sha256": "72b16140d94a28db506d0f002f96bf7adb7868cac2f191f4f0643958e4a399c1"
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
@@ -5835,8 +5885,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 71009,
-      "sha256": "fd416c60e77b18dce87f2e99613a58c0bbbbf133647a4691dbcc3d8037a85928"
+      "bytes": 71155,
+      "sha256": "4c6eda0542da81c829a0391ebb4085922fd6e9ded60192a8eb10ae157af77b74"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -5845,8 +5895,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 216556,
-      "sha256": "705d2050876c798c3080ae2af734fdcd42ffd01b60f1508900a2aea772a157df"
+      "bytes": 217140,
+      "sha256": "d3bceaa9a61b3e726e035ff1f197591a0e3a40636ca5b267c523240e4cb565d8"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5870,8 +5920,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 47768,
-      "sha256": "20a89d4000b76c1b80121e4e12a002f4ba264a952865c8a298e10033db40b395"
+      "bytes": 48515,
+      "sha256": "ec87eb419e997bd590ce1c3c30d3bd2b015cf5d50330cc6116e9de2ff97fee6c"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -5885,13 +5935,18 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 80094,
-      "sha256": "a17855aabe2ecddac7b53b6fc0e6423921552c1d356823097a8c351bb6511eae"
+      "bytes": 80319,
+      "sha256": "d1e8bea4af5b47cd76c491417a7d1313ff1536d17d45358ba4ad17380e4b8afc"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "bytes": 23042,
       "sha256": "c99d00b86d1d63b318a4f1a296dc356263f8c16d7d76ae6c53f0fc7dc8b9e29b"
+    },
+    {
+      "path": "frontend/src/public/ReferenceMotor3D.tsx",
+      "bytes": 10422,
+      "sha256": "dd8f8bdbc35c96028c782d9b0d64addd2e529b6ee0ac01344fe37d21106cd8a5"
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
@@ -5975,8 +6030,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "bytes": 11441,
-      "sha256": "e4fa94560257411f3a9a9eb4979dc28ba696d5def02df32e8089d664c9da67bc"
+      "bytes": 13226,
+      "sha256": "e7b0812d411cc71f7b241e4b2b15aaa2d6f639d9dff8155fa1435949cb5f7880"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -5985,8 +6040,8 @@
     },
     {
       "path": "frontend/src/public/exampleDesigns.ts",
-      "bytes": 3381,
-      "sha256": "d939c55468e098cb41cbd8b13925a1bac0eccf2d8359361e09a6dfd625a6dacb"
+      "bytes": 4027,
+      "sha256": "d962b7cba15f242e68fc6bbc30c1f506f8ddb406026a9b3fc75711c144650fbc"
     },
     {
       "path": "frontend/src/public/examples/honda_accord_2005.coilem",
@@ -5997,6 +6052,16 @@
       "path": "frontend/src/public/examples/ornl_prius_2004_holem50.coilem",
       "bytes": 3030,
       "sha256": "385245790bea2051c4347f2939636ede14e93b063402a8ad91fb58f658d2bd74"
+    },
+    {
+      "path": "frontend/src/public/examples/prius-2004-loaded-torque-v1.coilem",
+      "bytes": 6717,
+      "sha256": "bce41b796285f52505f7762df3027eb4b7eea0b5664336f487f66ccf6ae73673"
+    },
+    {
+      "path": "frontend/src/public/examples/prius-2004-tutorial-bemf-v1.coilem",
+      "bytes": 6713,
+      "sha256": "e5bbd4861eeebf88aafeb09107fa3d1e43bbeef1f47ede2968736de391ef0db0"
     },
     {
       "path": "frontend/src/public/examples/rotating_field_6p36s.coilem",
@@ -6175,8 +6240,18 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 19232,
-      "sha256": "cca228338c8954c00b92ae3cd4231d0064e017d3821da55cd96512e4bf548564"
+      "bytes": 19669,
+      "sha256": "e61647f7f4cf49929259ebb713cee22fd376e6fb30c97530129c3afc25619aac"
+    },
+    {
+      "path": "frontend/src/public/motor3DCamera.ts",
+      "bytes": 664,
+      "sha256": "4eafcc41a5b585bcb302642d03000ee2fa5e74cc2610a9e3780952dcc3fcfe3d"
+    },
+    {
+      "path": "frontend/src/public/motor3DStyle.ts",
+      "bytes": 3429,
+      "sha256": "bfcaf0369b0814537080df547cccecb2d508c5f7463e95b026f93cf4630c128e"
     },
     {
       "path": "frontend/src/public/motorAirgap.ts",
@@ -6187,6 +6262,16 @@
       "path": "frontend/src/public/motorPalette.ts",
       "bytes": 2646,
       "sha256": "40d69d324708b41486ee891c31d9a43e2e4bef0b00d2cc10f3bf96a92e737072"
+    },
+    {
+      "path": "frontend/src/public/previewContours.ts",
+      "bytes": 942,
+      "sha256": "74faf4b483e3a1bd000272707fab8ca5deae0b875cafe6095b9a02c39e793e67"
+    },
+    {
+      "path": "frontend/src/public/referenceMotorGeometry.ts",
+      "bytes": 848,
+      "sha256": "5c4cf01308ce810dda1450b9423ca420892a2db017fcb0c799a8cc138141577d"
     },
     {
       "path": "frontend/src/public/resultMetrics.ts",
@@ -6240,8 +6325,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 16291,
-      "sha256": "2a7d575407306141ef34e9904815eb5bb0c5f01ba55bc0bb8842652046c80afc"
+      "bytes": 18287,
+      "sha256": "71b7f06795501685b22ace253cd9d3caa752707a2d407e4a530d318008d45a35"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -6819,6 +6904,26 @@
       "sha256": "41a1e53fe989bad27a64d8c9d7bd11a998af5189358c808b226e1a0bf263e511"
     },
     {
+      "path": "tests/test_pyleecan_bemf_compare.py",
+      "bytes": 1996,
+      "sha256": "043d599b35c48138c058fb111f5438e84fb7b5e6f2cf9143e337e1f4b76aa4e0"
+    },
+    {
+      "path": "tests/test_pyleecan_loaded_compare.py",
+      "bytes": 8348,
+      "sha256": "939dcb6093cf129fd08172808af9fbc20862272340a661af6ab021a82517fa62"
+    },
+    {
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "bytes": 11361,
+      "sha256": "be90e7f4f935ee6f05c08b162f7b51f205e17e167d11cbf0e102d7c9d4c694f2"
+    },
+    {
+      "path": "tests/test_pyleecan_tutorial.py",
+      "bytes": 2403,
+      "sha256": "17478dffeb05aded97d2cb9382505c293c6bef087485d6e006f11782421333c8"
+    },
+    {
       "path": "tests/test_qualification.py",
       "bytes": 13975,
       "sha256": "073161ca754b8496799d4726c108aeb58e7067d93f4342f8252eae192af07fc8"
@@ -6894,6 +6999,11 @@
       "sha256": "60a0cd92f1e11ed2d33ddd75433b37dd7f9598ed03eb4b74f69879e68b5b960c"
     },
     {
+      "path": "tools/benchmark_prius.py",
+      "bytes": 8471,
+      "sha256": "6acec522ac60bdeeea110667c3d9b3a3c539ae6c526f86cee538c032ccc78c0c"
+    },
+    {
       "path": "tools/benchmark_suite/external.py",
       "bytes": 23421,
       "sha256": "63e8a1dce6707443b7c6c29e0fe96f3491443ddc0ad35d9ff18c4566b218e074"
@@ -6910,13 +7020,33 @@
     },
     {
       "path": "tools/build_benchmark_record.py",
-      "bytes": 5071,
-      "sha256": "acff7863ae6dc7e619fc87cc87838db4c248631a7aab295895c1464ef48721b8"
+      "bytes": 5724,
+      "sha256": "94ccf8ed7a20b3efb50139456e6826c5de41636e58f7c1f1039e603a7cd0cb57"
+    },
+    {
+      "path": "tools/compare_pyleecan_bemf.py",
+      "bytes": 12946,
+      "sha256": "a26334e478ac3f8a54bc48e6c9b5a6dd9846853565e6b4d02e0305ef989e3bf9"
+    },
+    {
+      "path": "tools/compare_pyleecan_loaded.py",
+      "bytes": 13632,
+      "sha256": "01d02c0c1b0651ae2ffbf1b2ae15c021b0dbd73146f14aa56b5957cc64adcda6"
+    },
+    {
+      "path": "tools/compare_pyleecan_tutorial.py",
+      "bytes": 14824,
+      "sha256": "c6f6157eb188e30a0bb52f96809102e69f163baee2e075555dab6b23ac01c84b"
     },
     {
       "path": "tools/experimental_solve.py",
       "bytes": 4202,
       "sha256": "6a50b22ee7800f0f22f056288e6c3b54c297dbc5244f1427f9861458e230e8ab"
+    },
+    {
+      "path": "tools/export_pyleecan_prius_geometry.py",
+      "bytes": 5729,
+      "sha256": "e19d9ff61faa39de3677ac9d57014506cb0a120f4d6cb64ecf9562ef86766e05"
     },
     {
       "path": "tools/fit_ornl_prius_holem50.py",
@@ -6957,6 +7087,31 @@
       "path": "tools/plot_ornl_prius_comparison.py",
       "bytes": 7589,
       "sha256": "ed686f57028435f2b212a749e5d51a71fb4056d85300392463ca4dc2ff07cea6"
+    },
+    {
+      "path": "tools/pyleecan_prius_loaded_compare.py",
+      "bytes": 13129,
+      "sha256": "2fd373c9bb4132d0fc2464250d8aae32ca2d4e61f04dd3fbc9fb300b9bbb12df"
+    },
+    {
+      "path": "tools/pyleecan_prius_loaded_reference.py",
+      "bytes": 6594,
+      "sha256": "141e083d862e13c50340c14c139ed8ab5def602cc92572625623b6b3691ca29f"
+    },
+    {
+      "path": "tools/pyleecan_prius_mesh_compare.py",
+      "bytes": 13686,
+      "sha256": "a88073d613ba6fe661c2c743bb7606558b23344df651b13b5910984d8ceffa8d"
+    },
+    {
+      "path": "tools/pyleecan_prius_reference.py",
+      "bytes": 5964,
+      "sha256": "f9166e17c781c855370d0caad668144f881e1011d1320068752937483819c34c"
+    },
+    {
+      "path": "tools/pyleecan_prius_tutorial.py",
+      "bytes": 5313,
+      "sha256": "131adce7b89d059cf8e2cd003a5c7d23fef32ebc9d5508aed20fdad145ed57d6"
     },
     {
       "path": "tools/release/__init__.py",
@@ -10263,6 +10418,174 @@
       "path": "frontend/tests/public-release.spec.ts",
       "source_sha256": "33306593c15421c3e779db184d32f39166a5a8863708cfebf4fdfad15dee2c70",
       "reason": "Find the backend status chip by its accessible name and open each Solve setup section before using its controls."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "THIRD_PARTY_NOTICES.md",
+      "source_sha256": "bd0207bf5296f1cfc395cc224953d25cc69cd0f6b5605748fabd0a8c566529ea",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/benchmark_suite/contract.py",
+      "source_sha256": "40c014b356b6616b31d9e4677c4fa25b7f33dbf9692340bf15206444bbf40db9",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/benchmark_suite/physics.py",
+      "source_sha256": "348afbb089361e635526be4dee28eb2b554e72b58ef071cd3327fec843deb81c",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/benchmark_suite/record.py",
+      "source_sha256": "37b83a6e5aa3cfd2d47bd5ff8f390e912ef5ba90ebd7e06f0c126b03332f795b",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/excitation.py",
+      "source_sha256": "7e2dead86d3db978cd641fcfe203a2e747f5b48076be0483eff841f84bb9aa84",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/geometry_ir.py",
+      "source_sha256": "c854de3f60d054660b9616cdb752a32835b12c445f497adb7ee24eb0ebf4f8bb",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/gmsh_solver.py",
+      "source_sha256": "764e31391894685f1a259a90c7dbb562d612f585a92cef91761a5d6ae783f53f",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/magneto2d_adapter/__init__.py",
+      "source_sha256": "0ffba926d459e54c6e83943be4b4855bd0cfe20ba05586f1273e6575f5405baa",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/models/config.py",
+      "source_sha256": "d2a919a0cb673ed557a63564c28a0ff51adf5436dfc7ffb9b381d9d2322d41dc",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/models/geometry.py",
+      "source_sha256": "ad7ee8acb567b9aa22a73329523734f0f67e7f98a4f349da4bc0ad387758ab0c",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/models/result.py",
+      "source_sha256": "34d42f29fd8442e21d94a09cc0d3e72a4da556139c3842a9e91c4f5113790b0d",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/preview_from_ir.py",
+      "source_sha256": "2f7c8764abdd35c4183ac4e63d27c304c38ec3cea7aa6e1a805c0dd2876b90b4",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/public_policy.py",
+      "source_sha256": "88ef6fd4e551ce3a1ae0eb22bdc4ce84e3919c487fd663ba52df3025d0cc9374",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/qualification.py",
+      "source_sha256": "eec1a879d97c8be51077bb95a3323f0501b73dfafe1f116d1d44d0e034bc1d1e",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/resources.py",
+      "source_sha256": "0a583d00f3b7af405955f5be94d31080f1055b652c1ffa8b325b571d982d1997",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "696af12acd2ab91099cecd024486f8678277c1050d0e6fdde259a6c7b4ce8f8a",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/topology_provenance.py",
+      "source_sha256": "dc2aea3737aa67fd11adbdb40ae671cb3a64c546094f736ceea175d0fcbd1d8d",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/scripts/test-design-file-defaults.mjs",
+      "source_sha256": "f799b02c3a578d3ac1aa1be4de1dfeb27a8e822ea7d2234719d654c611f3fbf4",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/scripts/test-public-bundle.mjs",
+      "source_sha256": "398e7f4ae43445ad1f88b39254c5dc53040657ec30428585927ba9ac872dcc37",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "fd416c60e77b18dce87f2e99613a58c0bbbbf133647a4691dbcc3d8037a85928",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "705d2050876c798c3080ae2af734fdcd42ffd01b60f1508900a2aea772a157df",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "20a89d4000b76c1b80121e4e12a002f4ba264a952865c8a298e10033db40b395",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/src/public/PublicMotor3D.tsx",
+      "source_sha256": "a17855aabe2ecddac7b53b6fc0e6423921552c1d356823097a8c351bb6511eae",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "e4fa94560257411f3a9a9eb4979dc28ba696d5def02df32e8089d664c9da67bc",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/src/public/exampleDesigns.ts",
+      "source_sha256": "d939c55468e098cb41cbd8b13925a1bac0eccf2d8359361e09a6dfd625a6dacb",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "cca228338c8954c00b92ae3cd4231d0064e017d3821da55cd96512e4bf548564",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "2a7d575407306141ef34e9904815eb5bb0c5f01ba55bc0bb8842652046c80afc",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "tools/build_benchmark_record.py",
+      "source_sha256": "acff7863ae6dc7e619fc87cc87838db4c248631a7aab295895c1464ef48721b8",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
     }
   ]
 }

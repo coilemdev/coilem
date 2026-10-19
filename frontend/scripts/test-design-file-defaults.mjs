@@ -91,3 +91,24 @@ const fastDesign = cloneDefaultConfig();
 fastDesign.solve_params.mesh_build = 'fast';
 assert.equal(parseDesignFile(serializeDesignFile(fastDesign, 'Fast mesh')).config.solve_params.mesh_build, 'fast');
 console.log('mesh build defaults passed');
+
+for (const caseId of ['prius-2004-tutorial-bemf-v1', 'prius-2004-loaded-torque-v1']) {
+  const file = JSON.parse(await readFile(new URL(`${caseId}.coilem`, examplesDir), 'utf8'));
+  const first = parseDesignFile(JSON.stringify(file)).config;
+  const reopened = parseDesignFile(serializeDesignFile(first, caseId)).config;
+  assert.equal(first.geometry_reference, 'pyleecan_prius_2004');
+  assert.equal(first.reference_case, caseId);
+  assert.deepEqual(reopened, first);
+  for (const section of ['stator', 'rotor', 'winding', 'materials']) {
+    for (const [key, value] of Object.entries(file[section])) {
+      if (value === null && first[section][key] === undefined) continue; // backend null defaults
+      assert.deepEqual(first[section][key], value, `${caseId}: changed fixed ${section}.${key}`);
+    }
+  }
+  assert.equal(first.solve_params.magnet_temperature_C, file.solve_params.magnet_temperature_C);
+  assert.equal(first.solve_params.max_nonlinear_iterations, 200);
+  assert.equal(first.solve_params.current_angle_deg, 140);
+  const wrong = structuredClone(file); wrong.solve_params.magnet_temperature_C = 99;
+  assert.throws(() => parseDesignFile(JSON.stringify(wrong)), /magnet temperature/);
+}
+console.log('both Pyleecan reference cases preserve source identity and fixed model on save/reopen');

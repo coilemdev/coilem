@@ -1,3 +1,4 @@
+import { ReferenceMotor3D } from './ReferenceMotor3D';
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -552,7 +553,11 @@ function makeChipSprite(text: string): { sprite: THREE.Sprite; texture: THREE.Ca
   return { sprite, texture };
 }
 
-export function PublicMotor3D({
+export function PublicMotor3D(props: PublicMotor3DProps) {
+  return props.config.geometry_reference ? <ReferenceMotor3D {...props} /> : <ParametricMotor3D {...props} />;
+}
+
+function ParametricMotor3D({
   config,
   resetSignal,
   rotorAngleDeg,
