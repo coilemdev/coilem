@@ -1,14 +1,19 @@
 # v0.4.0 integration after the measured candidate
 
-The release stack is **#146 -> #147 -> #148 -> #149**. Every later head includes
-the preceding heads and preserves the original PR commits. #146 targets `main`;
+The native GitHub release stack is **#151: #146 -> #147 -> #148 -> #149**.
+Every later head includes the preceding heads and preserves the original PR
+commits. #146 targets `main`;
 #147 targets `fix/concentrated-type-layers` (#146), #148 targets
 `fix/wound-teeth-hidden-note` (#147), and #149 targets
 `fix/thinner-field-axis-arrows` (#148). Each PR therefore shows its own changes.
-Merge from #146 upward with merge commits. After a predecessor lands, retarget
-the next PR to `main` and require its checks before merging. Also require the
-combined stack's CI and package acceptance before releasing. The top branch
-remains the complete stack for local testing.
+After all required checks pass, use the stack merge control on #149 to merge
+all four PRs into `main` together, selecting the merge-commit method. GitHub
+checks the entire selected group against `main`'s requirements and lands the
+PRs in order. From the official `github/gh-stack` CLI extension, the equivalent
+command is `gh stack merge 149 --merge`. Individual merges can still proceed
+from the bottom upward; GitHub updates the remaining stack automatically.
+Also require the combined stack's CI and package acceptance before releasing.
+The top branch remains the complete stack for local testing.
 
 | PR | Scope | Review follow-up |
 | --- | --- | --- |
