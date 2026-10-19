@@ -8,6 +8,7 @@ import {
   type PublicRunStoragePolicy,
 } from './api';
 import type { SolveResult } from './model';
+import { torqueRippleView } from './resultMetrics';
 import { WaveformChart } from './WaveformChart';
 
 interface LoadedRun {
@@ -28,7 +29,8 @@ const METRICS: Array<{
   value: (result: SolveResult) => number | null | undefined;
 }> = [
   { label: 'Average torque', unit: 'N·m', value: (run) => run.summary.avg_torque_Nm },
-  { label: 'Torque ripple', unit: '%', deltaUnit: 'pp', value: (run) => run.summary.torque_ripple_pct },
+  // No percentage where it means nothing (no current, near-zero average).
+  { label: 'Torque ripple', unit: '%', deltaUnit: 'pp', value: (run) => torqueRippleView(run).ripplePct },
   { label: 'Back EMF', unit: 'V', value: (run) => run.summary.back_emf_fundamental_V },
   { label: 'Peak tooth B', unit: 'T', value: (run) => run.summary.peak_flux_density_teeth_T },
   { label: 'Peak yoke B', unit: 'T', value: (run) => run.summary.peak_flux_density_yoke_T },

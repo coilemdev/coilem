@@ -5875,13 +5875,13 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 155409,
-      "sha256": "fd17db867e643ab1c719554788cb3c0e7322256e0208f99f26d7bf741241d1be"
+      "bytes": 156054,
+      "sha256": "38fcb0baee32c7674d38ae7890bec0c2d7219d0539940bac1eae4a9e4509cb9a"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
-      "bytes": 3084,
-      "sha256": "3fec1086f541be5038efc677a00adb4b7f88d27da5c8397ad52400f4f65844cf"
+      "bytes": 4732,
+      "sha256": "17f616ef46903af546d67cade9d6cdf16e85ea89e3f0f526b84649bcf97e669c"
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
@@ -6290,8 +6290,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 222244,
-      "sha256": "1200cc7326b4d891b198907a4649f5411914d797cd32ce29c56a36042cd836ff"
+      "bytes": 222673,
+      "sha256": "9657400d7bc6ac0923d552f4e6520a46e3363aa5ed136fab672ba5b98c773d48"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -6335,8 +6335,8 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 23042,
-      "sha256": "c99d00b86d1d63b318a4f1a296dc356263f8c16d7d76ae6c53f0fc7dc8b9e29b"
+      "bytes": 23171,
+      "sha256": "ac74be91ac4116c98dfeb540c121cd7284cea786ce6a043a4c4a938628697c8e"
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
@@ -6345,8 +6345,8 @@
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
-      "bytes": 8191,
-      "sha256": "f393e798527761bcf85de34a9c1a7c49881933093bcc5e149e961173ad25fb95"
+      "bytes": 8404,
+      "sha256": "546d34e9bf5f5b1272c504ff6d1027ca5b76b9c7c61a8333c04f128ce5f08072"
     },
     {
       "path": "frontend/src/public/RpmField.tsx",
@@ -6685,8 +6685,8 @@
     },
     {
       "path": "frontend/src/public/resultMetrics.ts",
-      "bytes": 3732,
-      "sha256": "9798d6ec71161433aa086cc56549419f33d585b962db66d422f697d096cf652f"
+      "bytes": 6020,
+      "sha256": "9d1ebe35d11099869e94fc3832620487adcf576a4e234c6499980cbd9820a361"
     },
     {
       "path": "frontend/src/public/solvePlan.ts",
@@ -12100,6 +12100,42 @@
       "path": "tests/test_public_candidate.py",
       "source_sha256": "4d284e07b09f17698671afa3f0502ff3250e9cbabb2ea0adab7610fd947485d4",
       "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "5ae948b08d0f5db588704165884d02a1b57e1c43",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "fd17db867e643ab1c719554788cb3c0e7322256e0208f99f26d7bf741241d1be",
+      "reason": "Show cogging peak-to-peak instead of a meaningless ripple percentage when the current is zero or the average torque is near zero."
+    },
+    {
+      "base_commit": "7c382685334ca0fc0883681dc4d171b31be934e0",
+      "path": "frontend/scripts/test-result-summary.mjs",
+      "source_sha256": "3fec1086f541be5038efc677a00adb4b7f88d27da5c8397ad52400f4f65844cf",
+      "reason": "Show cogging peak-to-peak instead of a meaningless ripple percentage when the current is zero or the average torque is near zero."
+    },
+    {
+      "base_commit": "5ae948b08d0f5db588704165884d02a1b57e1c43",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "1200cc7326b4d891b198907a4649f5411914d797cd32ce29c56a36042cd836ff",
+      "reason": "Show cogging peak-to-peak instead of a meaningless ripple percentage when the current is zero or the average torque is near zero."
+    },
+    {
+      "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "source_sha256": "c99d00b86d1d63b318a4f1a296dc356263f8c16d7d76ae6c53f0fc7dc8b9e29b",
+      "reason": "Show cogging peak-to-peak instead of a meaningless ripple percentage when the current is zero or the average torque is near zero."
+    },
+    {
+      "base_commit": "7c382685334ca0fc0883681dc4d171b31be934e0",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "f393e798527761bcf85de34a9c1a7c49881933093bcc5e149e961173ad25fb95",
+      "reason": "Show cogging peak-to-peak instead of a meaningless ripple percentage when the current is zero or the average torque is near zero."
+    },
+    {
+      "base_commit": "7c382685334ca0fc0883681dc4d171b31be934e0",
+      "path": "frontend/src/public/resultMetrics.ts",
+      "source_sha256": "9798d6ec71161433aa086cc56549419f33d585b962db66d422f697d096cf652f",
+      "reason": "Show cogging peak-to-peak instead of a meaningless ripple percentage when the current is zero or the average torque is near zero."
     }
   ]
 }

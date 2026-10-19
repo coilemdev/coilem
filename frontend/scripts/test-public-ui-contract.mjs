@@ -1008,7 +1008,12 @@ assert.match(styleSource, /\.public-motor-viewport \.viewport-bottom-bar \{ posi
 assert.match(styleSource, /\.viewport-dock-resize \{[^}]*bottom: calc\(var\(--viewport-dock-height\) - 5px\);[^}]*cursor: row-resize;/);
 assert.match(styleSource, /\.public-motor-viewport \.viewport-bottom-bar \.viewport-controls button,\s*\.public-motor-viewport \.viewport-bottom-bar \.public-polarity-view button \{ min-width: 40px; height: 36px;[^}]*font-size: 13px; \}/);
 // Percentages keep their unit apart from the number: its own column in the list.
-assert.match(workspaceSource, /formatNumber\(result\.summary\.torque_ripple_pct\), '%'\)/);
+assert.match(workspaceSource, /formatNumber\(ripple\.ripplePct\), ripple\.ripplePct === null \? '' : '%', false, ripple\.note \?\? undefined\)/);
+// No current: ripple % is left out and the cogging swing shown (resultMetrics torqueRippleView).
+assert.match(workspaceSource, /\{ripple\.ripplePct === null && resultRow\(ripple\.peakToPeakLabel, formatNumber\(ripple\.peakToPeakNm\), 'N·m'/);
+assert.doesNotMatch(workspaceSource, /result\.summary\.torque_ripple_pct/);
+assert.equal((workspaceSource.match(/\{rippleRows\}/g) ?? []).length, 2, 'Key results and Performance share the ripple rows');
+assert.match(resultSummarySource, /ripple\.ripplePct === null\s*\? `\$\{ripple\.peakToPeakLabel\} \$\{fixed\(ripple\.peakToPeakNm\)\} N·m`/);
 assert.match(workspaceSource, /formatNumber\(result\.summary\.back_emf_thd_pct\), '%'\)/);
 assert.doesNotMatch(workspaceSource, /(?:torque_ripple_pct|back_emf_thd_pct)\)\}%/);
 assert.doesNotMatch(workspaceSource, /Validate on run/i);
