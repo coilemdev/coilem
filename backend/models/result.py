@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 
 from .field import FieldLineFrame, FieldLinePlot, FieldMovieManifest, SlotExcitationContribution, SlotExcitationFrame
 from .mesh import FluxDensityMap
-from .performance import DqFluxLinkage, LossBreakdown
+from .performance import DqFluxLinkage, IronLoss, LossBreakdown
 from .waveforms import (
     BackEMFHarmonicAnalysis,
     BackEMFWaveform,
@@ -37,6 +37,7 @@ class SolveSummary(BaseModel):
     rms_flux_density_yoke_T: float | None = Field(default=None, ge=0)
     dq_flux_linkage: DqFluxLinkage | None = None
     loss_breakdown: LossBreakdown | None = None
+    iron_loss: IronLoss | None = None
     slot_excitation_contributions: list[SlotExcitationContribution] | None = None
     solve_time_s: float = Field(ge=0)
 

@@ -50,6 +50,23 @@ export interface LossBreakdown {
   efficiency_pct?: number | null;
 }
 
+/** Stator iron loss at the solved point (#138); not in public results until the model is documented. */
+export interface IronLoss {
+  status: PerformanceOutputStatus;
+  status_reason?: string | null;
+  model: 'grade_limit_harmonic_steinmetz';
+  steel: string;
+  electrical_frequency_Hz?: number | null;
+  iron_loss_W?: number | null;
+  iron_hysteresis_loss_W?: number | null;
+  iron_eddy_loss_W?: number | null;
+  stator_iron_mass_kg?: number | null;
+  share_above_validated_frequency?: number | null;
+  share_above_validated_flux_density?: number | null;
+  validated_max_frequency_Hz: number;
+  validated_max_flux_density_T: number;
+}
+
 export interface FluxLinkageMapPoint {
   current_peak_A: number;
   gamma_deg: number;

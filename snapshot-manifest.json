@@ -350,8 +350,8 @@
     },
     {
       "path": "backend/iron_loss.py",
-      "bytes": 10986,
-      "sha256": "c17ee6f08f7f8a2564e59f9b5f7f7fa0875fc72dead3232a546faced11b3ad00"
+      "bytes": 16506,
+      "sha256": "7b7c9e64c5a2f621b4729c46e8f1996ce2a89ba6c46d971b6eda26c7ad1ce64f"
     },
     {
       "path": "backend/launcher.py",
@@ -415,8 +415,8 @@
     },
     {
       "path": "backend/models/__init__.py",
-      "bytes": 2365,
-      "sha256": "d20636d0c69095f501b72e1a6ec5930901ba7804c01bb4eea9f7153455271a7b"
+      "bytes": 2395,
+      "sha256": "2ea5fc34ce07de8eb179fe986b3e821c6beeaaa086f936cab2d1c3cb71694093"
     },
     {
       "path": "backend/models/config.py",
@@ -445,13 +445,13 @@
     },
     {
       "path": "backend/models/performance.py",
-      "bytes": 13238,
-      "sha256": "5a6de4b16791aee7f65c6dc2ddc19132e3847cd0d86890fa607ecd9181d9d65c"
+      "bytes": 15065,
+      "sha256": "351dc5e56834f11cbabd1cfa99eacfdddc59fafa111d227005be5073c3b206e1"
     },
     {
       "path": "backend/models/result.py",
-      "bytes": 4863,
-      "sha256": "75907a4cc8e7944f066592c4d050e8744f1ec831ac80f6250bb4fe4d9b56fbdf"
+      "bytes": 4911,
+      "sha256": "a6fa296e522d0e9f6fead73cd172e0899abbe0e8cf4d3dc13224e73ffa300a78"
     },
     {
       "path": "backend/models/waveforms.py",
@@ -525,8 +525,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 51560,
-      "sha256": "5d9c9bf19d6d47c9b206466e182121ced9d7aaae0e515d67bd98dcdaf605d4cd"
+      "bytes": 51728,
+      "sha256": "c4ce1d6e83100c03e66278e89692f90b1842eaa6c9e9b5f3101646feaccbfbe2"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -565,8 +565,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 142122,
-      "sha256": "696af12acd2ab91099cecd024486f8678277c1050d0e6fdde259a6c7b4ce8f8a"
+      "bytes": 145860,
+      "sha256": "8a69592dcae06f22377e8ef8c509ca3317568179cbc8676c85bed47590eba088"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -6255,8 +6255,8 @@
     },
     {
       "path": "frontend/src/public/performance.ts",
-      "bytes": 4082,
-      "sha256": "975be9119c22a8cfd7d4faaa97e530b558cbb7d6441c47fdb2e8fcea2703cc57"
+      "bytes": 4720,
+      "sha256": "53eb367b1d6e96ecb38905a8723886570e6606fc4667c6b40b70ecafcd722d5e"
     },
     {
       "path": "frontend/src/public/resultMetrics.ts",
@@ -6760,8 +6760,8 @@
     },
     {
       "path": "tests/test_iron_loss.py",
-      "bytes": 7825,
-      "sha256": "5a51f684328fff6fd8b61f63aad7cc0d339afc4d92eeb5d235b135fc4bc2216e"
+      "bytes": 11109,
+      "sha256": "b1ded8099b7d03ace2ba25af66a245a5b6ebb33f969ed19ce0544ba6d65727bb"
     },
     {
       "path": "tests/test_late_reference_comparison.py",
@@ -6955,8 +6955,8 @@
     },
     {
       "path": "tests/test_windows_field_frame_pool.py",
-      "bytes": 4574,
-      "sha256": "caedc891aa678952edd9afd41b58c2bd9891d7bee8b5315f821faeb88a20cb73"
+      "bytes": 5570,
+      "sha256": "aca2c20e80585355cfb454d2662952bb9f1c9ac2567e141da8bb24e5c83f7460"
     },
     {
       "path": "tests/test_windows_mesh_pool.py",
@@ -10433,6 +10433,60 @@
       "path": "tests/test_iron_loss.py",
       "source_sha256": null,
       "reason": "Add the M350-50A iron-loss model for #138: harmonic Steinmetz coefficients derived from the EN 10106 50 Hz loss limits, the classical lamination eddy-current term and a cited mill resistivity, and stator flux histories across per-angle and slot-pitch-rotated meshes. Not yet wired into solves or results."
+    },
+    {
+      "base_commit": "113507b739c9c07f24c9fb4dba449290e777638c",
+      "path": "backend/iron_loss.py",
+      "source_sha256": "c17ee6f08f7f8a2564e59f9b5f7f7fa0875fc72dead3232a546faced11b3ad00",
+      "reason": "Wire M350-50A iron loss into the live sweep for #138: frame workers keep each position's stator field when the sweep spans one electrical cycle, and the summary carries an experimental IronLoss record, or the reason it is unavailable. Kept out of public results until documented."
+    },
+    {
+      "base_commit": "113507b739c9c07f24c9fb4dba449290e777638c",
+      "path": "backend/models/__init__.py",
+      "source_sha256": "d20636d0c69095f501b72e1a6ec5930901ba7804c01bb4eea9f7153455271a7b",
+      "reason": "Wire M350-50A iron loss into the live sweep for #138: frame workers keep each position's stator field when the sweep spans one electrical cycle, and the summary carries an experimental IronLoss record, or the reason it is unavailable. Kept out of public results until documented."
+    },
+    {
+      "base_commit": "113507b739c9c07f24c9fb4dba449290e777638c",
+      "path": "backend/models/performance.py",
+      "source_sha256": "5a6de4b16791aee7f65c6dc2ddc19132e3847cd0d86890fa607ecd9181d9d65c",
+      "reason": "Wire M350-50A iron loss into the live sweep for #138: frame workers keep each position's stator field when the sweep spans one electrical cycle, and the summary carries an experimental IronLoss record, or the reason it is unavailable. Kept out of public results until documented."
+    },
+    {
+      "base_commit": "113507b739c9c07f24c9fb4dba449290e777638c",
+      "path": "backend/models/result.py",
+      "source_sha256": "75907a4cc8e7944f066592c4d050e8744f1ec831ac80f6250bb4fe4d9b56fbdf",
+      "reason": "Wire M350-50A iron loss into the live sweep for #138: frame workers keep each position's stator field when the sweep spans one electrical cycle, and the summary carries an experimental IronLoss record, or the reason it is unavailable. Kept out of public results until documented."
+    },
+    {
+      "base_commit": "113507b739c9c07f24c9fb4dba449290e777638c",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "5d9c9bf19d6d47c9b206466e182121ced9d7aaae0e515d67bd98dcdaf605d4cd",
+      "reason": "Wire M350-50A iron loss into the live sweep for #138: frame workers keep each position's stator field when the sweep spans one electrical cycle, and the summary carries an experimental IronLoss record, or the reason it is unavailable. Kept out of public results until documented."
+    },
+    {
+      "base_commit": "113507b739c9c07f24c9fb4dba449290e777638c",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "696af12acd2ab91099cecd024486f8678277c1050d0e6fdde259a6c7b4ce8f8a",
+      "reason": "Wire M350-50A iron loss into the live sweep for #138: frame workers keep each position's stator field when the sweep spans one electrical cycle, and the summary carries an experimental IronLoss record, or the reason it is unavailable. Kept out of public results until documented."
+    },
+    {
+      "base_commit": "113507b739c9c07f24c9fb4dba449290e777638c",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "975be9119c22a8cfd7d4faaa97e530b558cbb7d6441c47fdb2e8fcea2703cc57",
+      "reason": "Wire M350-50A iron loss into the live sweep for #138: frame workers keep each position's stator field when the sweep spans one electrical cycle, and the summary carries an experimental IronLoss record, or the reason it is unavailable. Kept out of public results until documented."
+    },
+    {
+      "base_commit": "113507b739c9c07f24c9fb4dba449290e777638c",
+      "path": "tests/test_iron_loss.py",
+      "source_sha256": "5a51f684328fff6fd8b61f63aad7cc0d339afc4d92eeb5d235b135fc4bc2216e",
+      "reason": "Wire M350-50A iron loss into the live sweep for #138: frame workers keep each position's stator field when the sweep spans one electrical cycle, and the summary carries an experimental IronLoss record, or the reason it is unavailable. Kept out of public results until documented."
+    },
+    {
+      "base_commit": "113507b739c9c07f24c9fb4dba449290e777638c",
+      "path": "tests/test_windows_field_frame_pool.py",
+      "source_sha256": "caedc891aa678952edd9afd41b58c2bd9891d7bee8b5315f821faeb88a20cb73",
+      "reason": "Wire M350-50A iron loss into the live sweep for #138: frame workers keep each position's stator field when the sweep spans one electrical cycle, and the summary carries an experimental IronLoss record, or the reason it is unavailable. Kept out of public results until documented."
     }
   ]
 }

@@ -27,13 +27,23 @@ mesh once.
 
 from __future__ import annotations
 
+import hashlib
 import math
 from dataclasses import dataclass
-from typing import Sequence
+from typing import Any, Sequence, Union
 
 import numpy as np
 
-STATOR_IRON_REGIONS = ("stator_tooth", "stator_yoke")
+from backend.models import IronLoss, MotorConfig
+from backend.steel_flux_metrics import _field_frame_from_artifact_ref, _steel_region_bucket
+
+IRON_LOSS_STEEL = "M350-50A"
+IRON_LOSS_STATUS_REASON = (
+    "Estimated from the M350-50A grade limits and the lamination eddy-current term; "
+    "not checked against a measured motor."
+)
+_MIN_CYCLE_POSITIONS = 8
+_ANGLE_TOLERANCE_DEG = 1e-6
 # The grade limits fix the model at 50 Hz between 1.0 T and 1.5 T; the
 # frequency range is where the method was checked against measured sheet.
 VALIDATED_MAX_FREQUENCY_HZ = 1000.0
@@ -110,6 +120,50 @@ class FieldFrame:
             by_t=np.asarray(payload["element_by_t"], dtype=float),
         )
 
+    def stator_sample(self, pole_pitches: int | None = None) -> StatorFieldSample:
+        index = _stator_elements(self.regions)
+        corners = self.nodes_mm[self.triangles[index]]
+        return StatorFieldSample(
+            corners_mm=corners,
+            bx_t=self.bx_t[index],
+            by_t=self.by_t[index],
+            signature=hashlib.sha1(np.round(corners, 3).tobytes()).hexdigest(),
+            pole_pitches=pole_pitches,
+        )
+
+
+@dataclass(frozen=True)
+class StatorFieldSample:
+    """The stator iron part of one position's frame: what iron loss needs, and no more."""
+
+    corners_mm: np.ndarray  # (stator elements, 3, 2)
+    bx_t: np.ndarray
+    by_t: np.ndarray
+    signature: str  # equal for positions that share a stator triangulation
+    pole_pitches: int | None = None
+
+
+def stator_field_sample(payload: Any) -> StatorFieldSample | None:
+    """Stator sample from a field-frame payload, loading its artifact when needed."""
+
+    frame = payload if isinstance(payload, dict) else None
+    if frame is None or not isinstance(frame.get("triangles"), list):
+        frame = _field_frame_from_artifact_ref(payload)
+    if frame is None:
+        return None
+    try:
+        field_frame = FieldFrame.from_payload(frame)
+    except (KeyError, TypeError, ValueError):
+        return None
+    count = len(field_frame.triangles)
+    if count == 0 or len(field_frame.regions) != count or len(field_frame.bx_t) != count or len(field_frame.by_t) != count:
+        return None
+    pole_pitches = frame.get("n_pole_pitches")
+    return field_frame.stator_sample(pole_pitches if isinstance(pole_pitches, int) and pole_pitches > 0 else None)
+
+
+FrameLike = Union[FieldFrame, StatorFieldSample]
+
 
 @dataclass(frozen=True)
 class StatorFluxHistory:
@@ -134,32 +188,28 @@ class IronLossEstimate:
         return self.hysteresis_w + self.eddy_w
 
 
-def stator_flux_history(frames: Sequence[FieldFrame]) -> StatorFluxHistory:
+def stator_flux_history(frames: Sequence[FrameLike]) -> StatorFluxHistory:
     """Collect stator element fields over positions on the first frame's elements."""
 
-    if len(frames) < 2:
+    samples = [frame.stator_sample() if isinstance(frame, FieldFrame) else frame for frame in frames]
+    if len(samples) < 2:
         raise ValueError("iron loss needs at least two rotor positions")
-    reference = frames[0]
-    ref_index = _stator_elements(reference)
-    if ref_index.size == 0:
+    ref_corners = samples[0].corners_mm
+    if len(ref_corners) == 0:
         raise ValueError("the reference frame has no stator iron elements")
-    ref_corners = reference.nodes_mm[reference.triangles[ref_index]]
     ref_keys = _triangle_keys(ref_corners)
     centroids = ref_corners.mean(axis=1)
 
-    bx = np.empty((len(frames), ref_index.size))
-    by = np.empty((len(frames), ref_index.size))
-    mappings: dict[bytes, np.ndarray] = {}
-    for position, frame in enumerate(frames):
-        index = _stator_elements(frame)
-        corners = frame.nodes_mm[frame.triangles[index]]
-        signature = np.round(corners, 3).tobytes()
-        mapping = mappings.get(signature)
+    bx = np.empty((len(samples), len(ref_corners)))
+    by = np.empty((len(samples), len(ref_corners)))
+    mappings: dict[str, np.ndarray] = {}
+    for position, sample in enumerate(samples):
+        mapping = mappings.get(sample.signature)
         if mapping is None:
-            mapping = _map_reference_elements(ref_keys, centroids, index, corners)
-            mappings[signature] = mapping
-        bx[position] = frame.bx_t[mapping]
-        by[position] = frame.by_t[mapping]
+            mapping = _map_reference_elements(ref_keys, centroids, sample.corners_mm)
+            mappings[sample.signature] = mapping
+        bx[position] = sample.bx_t[mapping]
+        by[position] = sample.by_t[mapping]
 
     area_m2 = 0.5 * np.abs(
         (ref_corners[:, 1, 0] - ref_corners[:, 0, 0]) * (ref_corners[:, 2, 1] - ref_corners[:, 0, 1])
@@ -211,8 +261,89 @@ def harmonic_iron_loss(
     )
 
 
-def _stator_elements(frame: FieldFrame) -> np.ndarray:
-    return np.nonzero(np.isin(np.asarray(frame.regions), STATOR_IRON_REGIONS))[0]
+def estimate_iron_loss(
+    config: MotorConfig,
+    samples: Sequence[StatorFieldSample | None],
+    angles_elec_deg: Sequence[float],
+    *,
+    coefficients: SteinmetzCoefficients = M350_50A_LOSS,
+) -> IronLoss:
+    """Iron loss for a loaded sweep, or the reason it is unavailable. Never raises."""
+
+    steel = _stator_steel(config)
+    speed_rpm = float(config.solve_params.rated_speed_rpm) if config.solve_params else 0.0
+
+    def unavailable(reason: str) -> IronLoss:
+        return IronLoss(
+            status="unavailable",
+            status_reason=reason,
+            steel=steel,
+            validated_max_frequency_Hz=VALIDATED_MAX_FREQUENCY_HZ,
+            validated_max_flux_density_T=VALIDATED_MAX_FLUX_DENSITY_T,
+        )
+
+    reason = iron_loss_unavailable_reason(config, angles_elec_deg)
+    if reason is not None:
+        return unavailable(reason)
+    if len(samples) != len(angles_elec_deg) or any(sample is None for sample in samples):
+        return unavailable("A rotor position's stator field was not available.")
+    try:
+        history = stator_flux_history(samples)
+        pole_count = config.rotor.pole_count
+        pole_pitches = samples[0].pole_pitches or pole_count
+        frequency = speed_rpm * (pole_count // 2) / 60.0
+        estimate = harmonic_iron_loss(
+            history,
+            electrical_frequency_hz=frequency,
+            stack_length_m=config.stator.stack_length_mm * 1e-3,
+            machine_scale=pole_count / pole_pitches,
+            coefficients=coefficients,
+        )
+    except ValueError as exc:
+        return unavailable(f"Iron loss could not be computed: {exc}.")
+    return IronLoss(
+        status="experimental",
+        status_reason=IRON_LOSS_STATUS_REASON,
+        steel=steel,
+        electrical_frequency_Hz=frequency,
+        iron_loss_W=estimate.total_w,
+        iron_hysteresis_loss_W=estimate.hysteresis_w,
+        iron_eddy_loss_W=estimate.eddy_w,
+        stator_iron_mass_kg=estimate.stator_iron_mass_kg,
+        share_above_validated_frequency=min(1.0, estimate.share_above_validated_frequency),
+        share_above_validated_flux_density=min(1.0, estimate.share_above_validated_flux_density),
+        validated_max_frequency_Hz=VALIDATED_MAX_FREQUENCY_HZ,
+        validated_max_flux_density_T=VALIDATED_MAX_FLUX_DENSITY_T,
+    )
+
+
+def iron_loss_unavailable_reason(config: MotorConfig, angles_elec_deg: Sequence[float]) -> str | None:
+    """Why a sweep cannot have iron loss, checked before any field is collected."""
+
+    steel = _stator_steel(config)
+    if steel != IRON_LOSS_STEEL:
+        return f"No cited loss data for {steel}; iron loss is available for {IRON_LOSS_STEEL} only."
+    if config.solve_params is None or config.solve_params.rated_speed_rpm <= 0:
+        return "Iron loss needs a nonzero speed."
+    if not _is_full_uniform_cycle(angles_elec_deg):
+        return "Iron loss needs the loaded sweep to cover one full electrical cycle in equal steps."
+    return None
+
+
+def _stator_steel(config: MotorConfig) -> str:
+    return config.materials.stator_steel if config.materials else IRON_LOSS_STEEL
+
+
+def _is_full_uniform_cycle(angles_elec_deg: Sequence[float]) -> bool:
+    count = len(angles_elec_deg)
+    if count < _MIN_CYCLE_POSITIONS:
+        return False
+    step = 360.0 / count
+    return all(abs(float(angle) - float(angles_elec_deg[0]) - index * step) <= _ANGLE_TOLERANCE_DEG for index, angle in enumerate(angles_elec_deg))
+
+
+def _stator_elements(regions: Sequence[str]) -> np.ndarray:
+    return np.asarray([index for index, region in enumerate(regions) if _steel_region_bucket(region) is not None], dtype=int)
 
 
 def _triangle_keys(corners: np.ndarray) -> list[bytes]:
@@ -222,13 +353,10 @@ def _triangle_keys(corners: np.ndarray) -> list[bytes]:
     return [triangle.tobytes() for triangle in rounded]
 
 
-def _map_reference_elements(
-    ref_keys: list[bytes],
-    centroids: np.ndarray,
-    index: np.ndarray,
-    corners: np.ndarray,
-) -> np.ndarray:
-    by_key = dict(zip(_triangle_keys(corners), index))
+def _map_reference_elements(ref_keys: list[bytes], centroids: np.ndarray, corners: np.ndarray) -> np.ndarray:
+    """Index into ``corners`` (one position's stator elements) for each reference element."""
+
+    by_key = {key: position for position, key in enumerate(_triangle_keys(corners))}
     direct = [by_key.get(key, -1) for key in ref_keys]
     if all(element >= 0 for element in direct):
         return np.asarray(direct, dtype=int)
@@ -236,7 +364,7 @@ def _map_reference_elements(
     if np.any(local < 0):
         missing = int(np.sum(local < 0))
         raise ValueError(f"{missing} stator elements fall outside a rotated position's stator mesh")
-    return index[local]
+    return local
 
 
 def _locate(points: np.ndarray, corners: np.ndarray) -> np.ndarray:

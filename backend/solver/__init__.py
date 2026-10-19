@@ -34,6 +34,12 @@ from backend.gmsh_mesh_rotation import (
     slot_current_pattern_matches,
 )
 from backend.gmsh_solver import run_gmsh_mesh_preview
+from backend.iron_loss import (
+    StatorFieldSample,
+    estimate_iron_loss,
+    iron_loss_unavailable_reason,
+    stator_field_sample,
+)
 from backend.machine_constants import compute_machine_constants
 from backend.magneto2d_adapter import (
     Magneto2DUnsupportedError,
@@ -51,6 +57,7 @@ from backend.magneto2d_adapter import (
 from backend.mesh_evidence import build_solve_mesh_evidence
 from backend.models import (
     BackEMFWaveform,
+    IronLoss,
     MotorConfig,
     PhaseCurrentWaveform,
     SolveMetadata,
@@ -890,6 +897,41 @@ def _validated_steel_flux_density_rms(value: Any) -> dict[str, float | None] | N
     return result if result["teeth"] is not None or result["yoke"] is not None else None
 
 
+def _iron_loss_record(
+    config: MotorConfig,
+    samples: list[StatorFieldSample | None],
+    angles_elec_deg: list[float],
+) -> dict[str, Any]:
+    """Iron loss for the sweep report. It is an extra result, so it never fails a solve."""
+
+    try:
+        return estimate_iron_loss(config, samples, angles_elec_deg).model_dump(mode="json")
+    except Exception as exc:  # noqa: BLE001 - any failure becomes an "unavailable" status
+        return {
+            "status": "unavailable",
+            "status_reason": f"Iron loss could not be computed: {type(exc).__name__}.",
+            "steel": config.materials.stator_steel if config.materials else "",
+            "validated_max_frequency_Hz": 1000.0,
+            "validated_max_flux_density_T": 1.5,
+        }
+
+
+def _frame_angle_deg(frame: Any) -> float:
+    value = frame.get("angle_deg") if isinstance(frame, dict) else getattr(frame, "angle_deg", None)
+    return float(value) if isinstance(value, (int, float)) else float("nan")
+
+
+def _validated_iron_loss(value: Any) -> IronLoss | None:
+    """Return a sweep report's iron-loss record, or None when absent or malformed."""
+
+    if not isinstance(value, dict):
+        return None
+    try:
+        return IronLoss.model_validate(value)
+    except ValueError:
+        return None
+
+
 def _build_field_line_frame_in_subprocess(
     idx: int,
     loaded_report: dict[str, Any],
@@ -897,11 +939,18 @@ def _build_field_line_frame_in_subprocess(
     noload_report: dict[str, Any] | None,
     solve_cache_dir_text: str | None,
     include_live_frame: bool,
-) -> tuple[int, dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None]:
+    capture_stator_field: bool = False,
+) -> tuple[
+    int,
+    dict[str, Any] | None,
+    dict[str, Any] | None,
+    dict[str, Any] | None,
+    StatorFieldSample | None,
+]:
     check_process_worker_cancelled()
     frame = _field_line_frame_from_report(loaded_report, angle_elec_deg, noload_report)
     if frame is None:
-        return idx, None, None, None
+        return idx, None, None, None, None
 
     attached = _attach_field_frame_artifacts(
         [frame],
@@ -918,8 +967,11 @@ def _build_field_line_frame_in_subprocess(
     # for a 48-position IPM run).
     steel_accumulator = new_steel_flux_density_rms_accumulator()
     update_steel_flux_density_rms_accumulator(steel_accumulator, frame_payload)
+    # The stator part of the field is what iron loss needs from each position,
+    # taken here for the same reason.
+    stator_sample = stator_field_sample(frame_payload) if capture_stator_field else None
     check_process_worker_cancelled()
-    return idx, _slim_result_field_frame(frame_payload), live_frame, steel_accumulator
+    return idx, _slim_result_field_frame(frame_payload), live_frame, steel_accumulator, stator_sample
 
 
 def _solve_with_per_angle_producer_meshes(
@@ -1659,13 +1711,16 @@ def _solve_with_per_angle_producer_meshes(
 
         precomputed_field_line_frames: list[dict[str, Any]] | None = None
         precomputed_steel_flux_density_rms: dict[str, float | None] | None = None
+        precomputed_iron_loss: dict[str, Any] | None = None
         if not compact_qa_report:
             field_frame_start = time.perf_counter()
             field_line_frames_ordered: list[dict[str, Any] | None] = [None] * len(loaded_reports)
             live_field_frames_ordered: list[dict[str, Any] | None] = [None] * len(loaded_reports)
             steel_accumulators_ordered: list[dict[str, Any] | None] = [None] * len(loaded_reports)
+            stator_samples_ordered: list[StatorFieldSample | None] = [None] * len(loaded_reports)
+            capture_stator_field = iron_loss_unavailable_reason(config, angles_elec_deg) is None
             field_frame_jobs: list[
-                tuple[int, dict[str, Any], float, dict[str, Any] | None, str | None, bool]
+                tuple[int, dict[str, Any], float, dict[str, Any] | None, str | None, bool, bool]
             ] = [
                 (
                     idx,
@@ -1678,6 +1733,7 @@ def _solve_with_per_angle_producer_meshes(
                     ),
                     str(solve_cache_dir) if solve_cache_dir is not None else None,
                     _should_stream_live_field_frame(idx, len(loaded_reports)),
+                    capture_stator_field,
                 )
                 for idx in range(len(loaded_reports))
             ]
@@ -1692,6 +1748,7 @@ def _solve_with_per_angle_producer_meshes(
                                 dict[str, Any] | None,
                                 dict[str, Any] | None,
                                 dict[str, Any] | None,
+                                StatorFieldSample | None,
                             ]
                         ],
                         int,
@@ -1701,22 +1758,24 @@ def _solve_with_per_angle_producer_meshes(
                             check_cancelled()
                         frame_futures[frame_pool.submit(_build_field_line_frame_in_subprocess, *frame_job)] = frame_job[0]
                     for frame_future in completed_process_futures(frame_futures, check_cancelled):
-                        idx, field_line_frame, live_field_frame, steel_accumulator = (
+                        idx, field_line_frame, live_field_frame, steel_accumulator, stator_sample = (
                             frame_future.result()
                         )
                         field_line_frames_ordered[idx] = field_line_frame
                         live_field_frames_ordered[idx] = live_field_frame
                         steel_accumulators_ordered[idx] = steel_accumulator
+                        stator_samples_ordered[idx] = stator_sample
             else:
                 for frame_job in field_frame_jobs:
                     if check_cancelled is not None:
                         check_cancelled()
-                    frame_idx, field_line_frame, live_field_frame, steel_accumulator = (
+                    frame_idx, field_line_frame, live_field_frame, steel_accumulator, stator_sample = (
                         _build_field_line_frame_in_subprocess(*frame_job)
                     )
                     field_line_frames_ordered[frame_idx] = field_line_frame
                     live_field_frames_ordered[frame_idx] = live_field_frame
                     steel_accumulators_ordered[frame_idx] = steel_accumulator
+                    stator_samples_ordered[frame_idx] = stator_sample
 
             precomputed_field_line_frames = [
                 frame for frame in field_line_frames_ordered if frame is not None
@@ -1726,6 +1785,20 @@ def _solve_with_per_angle_producer_meshes(
                 merge_steel_flux_density_rms_accumulator(steel_accumulator_total, steel_accumulator)
             precomputed_steel_flux_density_rms = finalize_steel_flux_density_rms(
                 steel_accumulator_total,
+            )
+            if check_cancelled is not None:
+                check_cancelled()
+            iron_loss_start = time.perf_counter()
+            precomputed_iron_loss = _iron_loss_record(
+                config,
+                stator_samples_ordered,
+                [float(angle) for angle in angles_elec_deg],
+            )
+            emit_timing_delta(
+                "iron_loss",
+                "Iron loss",
+                (time.perf_counter() - iron_loss_start) * 1000.0,
+                None,
             )
             emit_timing_delta(
                 "field_frame_extract",
@@ -1765,6 +1838,8 @@ def _solve_with_per_angle_producer_meshes(
             precomputed_field_line_frames=precomputed_field_line_frames,
             precomputed_steel_flux_density_rms=precomputed_steel_flux_density_rms,
         )
+        if precomputed_iron_loss is not None:
+            sweep_report["iron_loss"] = precomputed_iron_loss
         emit_timing_delta(
             "sweep_aggregation",
             "Sweep aggregation",
@@ -2689,6 +2764,20 @@ class Magneto2DSolver(Solver):
         steel_b_rms = _validated_steel_flux_density_rms(
             sweep_report.get("steel_flux_density_rms"),
         ) or steel_flux_density_rms_from_frames(field_line_frames or [])
+        iron_loss = _validated_iron_loss(sweep_report.get("iron_loss"))
+        if iron_loss is None and field_line_frames:
+            # Sweeps without per-position stator samples (the batch path, or a
+            # report cached before iron loss existed) read the frame artifacts,
+            # but only when the sweep can have iron loss at all.
+            frame_angles = [_frame_angle_deg(frame) for frame in field_line_frames]
+            readable = iron_loss_unavailable_reason(config, frame_angles) is None
+            iron_loss = _validated_iron_loss(
+                _iron_loss_record(
+                    config,
+                    [stator_field_sample(frame) if readable else None for frame in field_line_frames],
+                    frame_angles,
+                )
+            )
         slot_excitation_frames = _validated_slot_excitation_frames(sweep_report.get("slot_excitation_frames") or sweep.get("slot_excitation_frames"))
         if slot_excitation_frames is None:
             slot_excitation_frames = _validated_slot_excitation_frames(
@@ -2840,6 +2929,7 @@ class Magneto2DSolver(Solver):
                 peak_flux_density_yoke_T=single_results["peak_b_yoke_t"],
                 rms_flux_density_teeth_T=steel_b_rms.get("teeth") if steel_b_rms else None,
                 rms_flux_density_yoke_T=steel_b_rms.get("yoke") if steel_b_rms else None,
+                iron_loss=iron_loss,
                 efficiency_pct=efficiency,
                 loss_breakdown=loss_breakdown,
                 weight_inertia=weight_inertia,

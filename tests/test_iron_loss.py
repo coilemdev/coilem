@@ -2,19 +2,29 @@
 
 from __future__ import annotations
 
+import json
 import math
+from pathlib import Path
 
 import numpy as np
 import pytest
+from pydantic import ValidationError
 
 from backend.iron_loss import (
     M350_50A_LOSS,
     VALIDATED_MAX_FLUX_DENSITY_T,
     FieldFrame,
     SteinmetzCoefficients,
+    estimate_iron_loss,
     grade_limit_coefficients,
     harmonic_iron_loss,
     stator_flux_history,
+)
+from backend.models import IronLoss, MotorConfig
+from backend.public_routes import solve as public_solve
+
+CONFIG = MotorConfig.model_validate(
+    json.loads((Path(__file__).resolve().parent / "fixtures" / "spm_4p12s_simple.json").read_text(encoding="utf-8"))
 )
 
 STACK_M = 0.05
@@ -168,3 +178,65 @@ def test_a_single_position_is_rejected():
     nodes, triangles, _ = _grid_mesh()
     with pytest.raises(ValueError, match="two rotor positions"):
         stator_flux_history([_frame(nodes, triangles, np.ones(len(triangles)), np.zeros(len(triangles)))])
+
+
+def _cycle(positions: int = 16):
+    return [360.0 * k / positions for k in range(positions)]
+
+
+def _samples(peak_t: float, positions: int = 16, pole_pitches: int | None = None):
+    return [frame.stator_sample(pole_pitches) for frame in _uniform_frames(lambda theta: peak_t * math.cos(theta), positions)]
+
+
+def test_estimate_reports_an_experimental_loss_for_m350_50a():
+    estimate = estimate_iron_loss(CONFIG, _samples(1.0, pole_pitches=2), _cycle())
+    poles = CONFIG.rotor.pole_count
+    frequency = CONFIG.solve_params.rated_speed_rpm * (poles // 2) / 60.0
+    mass = (2e-3 * 2e-3) * CONFIG.stator.stack_length_mm * 1e-3 * 7650.0 * poles / 2
+    assert estimate.status == "experimental"
+    assert estimate.electrical_frequency_Hz == pytest.approx(frequency)
+    assert estimate.stator_iron_mass_kg == pytest.approx(mass)
+    assert estimate.iron_loss_W == pytest.approx(mass * M350_50A_LOSS.specific_loss_w_per_kg(frequency, 1.0))
+    assert estimate.iron_loss_W == pytest.approx(estimate.iron_hysteresis_loss_W + estimate.iron_eddy_loss_W)
+
+
+@pytest.mark.parametrize(
+    ("change", "angles", "reason"),
+    [
+        ({"materials": CONFIG.materials.model_copy(update={"stator_steel": "custom-abc"})}, _cycle(), "No cited loss data"),
+        ({"solve_params": CONFIG.solve_params.model_copy(update={"rated_speed_rpm": 0})}, _cycle(), "nonzero speed"),
+        ({}, [180.0 * k / 15 for k in range(16)], "full electrical cycle"),
+        ({}, _cycle(4), "full electrical cycle"),
+    ],
+)
+def test_estimate_says_why_iron_loss_is_unavailable(change, angles, reason):
+    config = CONFIG.model_copy(update=change)
+    estimate = estimate_iron_loss(config, _samples(1.0, positions=len(angles)), angles)
+    assert estimate.status == "unavailable"
+    assert reason in estimate.status_reason
+    assert estimate.iron_loss_W is None
+
+
+def test_estimate_without_a_position_sample_is_unavailable():
+    samples = _samples(1.0)
+    samples[3] = None
+    estimate = estimate_iron_loss(CONFIG, samples, _cycle())
+    assert estimate.status == "unavailable"
+    assert "stator field" in estimate.status_reason
+
+
+def test_iron_loss_record_rules():
+    limits = {"steel": "M350-50A", "validated_max_frequency_Hz": 1000.0, "validated_max_flux_density_T": 1.5}
+    with pytest.raises(ValidationError, match="status_reason"):
+        IronLoss(status="unavailable", **limits)
+    with pytest.raises(ValidationError, match="must not carry values"):
+        IronLoss(status="unavailable", status_reason="no", iron_loss_W=1.0, **limits)
+    with pytest.raises(ValidationError, match="must equal iron_loss_W"):
+        IronLoss(
+            status="experimental", electrical_frequency_Hz=100.0, iron_loss_W=3.0, iron_hysteresis_loss_W=1.0,
+            iron_eddy_loss_W=1.0, stator_iron_mass_kg=0.2, **limits,
+        )
+
+
+def test_iron_loss_stays_out_of_public_results():
+    assert "iron_loss" in public_solve._EXCLUDED_SUMMARY_FIELDS

@@ -118,6 +118,39 @@ class LossBreakdown(BaseModel):
         return self
 
 
+class IronLoss(BaseModel):
+    """Stator iron loss over one electrical period at the solved operating point."""
+
+    status: OutputStatus
+    status_reason: Optional[str] = None
+    model: Literal["grade_limit_harmonic_steinmetz"] = "grade_limit_harmonic_steinmetz"
+    steel: str
+    electrical_frequency_Hz: Optional[float] = Field(default=None, gt=0)
+    iron_loss_W: Optional[float] = Field(default=None, ge=0)
+    iron_hysteresis_loss_W: Optional[float] = Field(default=None, ge=0)
+    iron_eddy_loss_W: Optional[float] = Field(default=None, ge=0)
+    stator_iron_mass_kg: Optional[float] = Field(default=None, ge=0)
+    share_above_validated_frequency: Optional[float] = Field(default=None, ge=0, le=1)
+    share_above_validated_flux_density: Optional[float] = Field(default=None, ge=0, le=1)
+    validated_max_frequency_Hz: float = Field(gt=0)
+    validated_max_flux_density_T: float = Field(gt=0)
+
+    @model_validator(mode="after")
+    def values_follow_status(self):
+        values = (self.iron_loss_W, self.iron_hysteresis_loss_W, self.iron_eddy_loss_W, self.stator_iron_mass_kg)
+        if self.status == "unavailable":
+            if not self.status_reason:
+                raise ValueError("unavailable iron loss needs a status_reason")
+            if any(value is not None for value in values):
+                raise ValueError("unavailable iron loss must not carry values")
+            return self
+        if any(value is None for value in values) or self.electrical_frequency_Hz is None:
+            raise ValueError("an iron-loss estimate needs its loss, mass and frequency values")
+        if abs(self.iron_hysteresis_loss_W + self.iron_eddy_loss_W - self.iron_loss_W) > _SUM_TOLERANCE_W:
+            raise ValueError("iron_hysteresis_loss_W + iron_eddy_loss_W must equal iron_loss_W")
+        return self
+
+
 class FluxLinkageMapPoint(BaseModel):
     """One solved (|I|, γ) point of a flux-linkage map."""
 
