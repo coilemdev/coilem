@@ -287,3 +287,30 @@ def test_preview_symbols_and_winding_layout_use_the_same_published_labels_as_the
     for coil in preview.winding_coils:
         assert actual[coil.slot_in][0] == actual[coil.slot_out][0] == coil.phase
         assert actual[coil.slot_in][1] != actual[coil.slot_out][1]
+
+
+def test_published_app_evidence_keeps_complete_actual_grids_and_its_measured_sources():
+    folder = ROOT / "docs/benchmarks/pyleecan-prius-v1"
+    report = json.loads((folder / "app-results.json").read_text(encoding="utf-8"))
+    registration = json.loads((folder / "app-registration.json").read_text(encoding="utf-8"))
+    assert registration["complete"] is True and registration["source_dirty"] is False
+    assert report["field_source_commit"] == registration["source_commit"]
+    assert report["registration_sha256"] == hashlib.sha256((folder / "app-registration.json").read_bytes()).hexdigest()
+    assert report["protocol_sha256"] == hashlib.sha256((folder / "protocol.json").read_bytes()).hexdigest()
+    assert report["analysis_runner_sha256"] == hashlib.sha256((ROOT / "tools/report_prius_benchmark.py").read_bytes()).hexdigest()
+    assert report["source_sha256"] == registration["source_sha256"]
+    for name, digest in report["source_sha256"].items():
+        assert hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == digest, name
+    for name, digest in report["historical_evidence_sha256"].items():
+        assert hashlib.sha256((folder / name).read_bytes()).hexdigest() == digest, name
+    assert report["all_software_checks_pass"] and all(report["checks"].values())
+    assert len(report["checks"]) == 10 and len(report["jobs"]) == 17
+    assert sum(a["actual_loaded_fields"] for a in report["audits"].values()) == 436
+    assert sum(a["actual_noload_fields"] for a in report["audits"].values()) == 132
+    assert sum(len(a["field_reports"]) for a in report["audits"].values()) == 568
+    assert [row["Phi0_deg"] for row in report["curve"]] == list(range(60, 181, 10))
+    # Reproduce the declared waveform metric from the actual published samples.
+    phases = np.asarray(report["tutorial"]["app_phase_voltage_V"])
+    ab = phases[:, 0] - phases[:, 1]
+    assert np.sqrt(np.mean(ab**2)) == pytest.approx(report["tutorial"]["sampled_AB_rms_V"], abs=1e-12)
+    assert report["qualified"] is False

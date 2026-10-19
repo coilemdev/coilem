@@ -159,6 +159,8 @@ def analyze(run):
     femm_peak_control = next(row["refined_mean_Nm"] for row in loaded_reference["sampling_refinement"]["FEMM_published"]["rows"]
                              if row["current_angle_deg"] == 140)
     controls = {name: {"mean_torque_Nm": jobs[name]["metrics"]["mean_torque_Nm"],
+                       "actual_positions": jobs[name]["metrics"]["loaded_actual_positions"],
+                       "first_pose_mesh_triangles": jobs[name]["solve_metadata"]["mesh_element_count"],
                        "change_from_normal_32_Nm": jobs[name]["metrics"]["mean_torque_Nm"] - baseline,
                        "change_normalized_to_reference_peak": abs(jobs[name]["metrics"]["mean_torque_Nm"] - baseline) / 353}
                 for name in ("angular-64", "mesh-fine-32")}
@@ -196,7 +198,9 @@ def analyze(run):
                                            ("pyleecan-tutorial-results.json", "pyleecan-loaded-results.json", "pyleecan-ui-results.json")},
             "analysis_runner_sha256": digest(Path(__file__)), "analysis_numpy": np.__version__,
             "checks": checks, "all_software_checks_pass": all(checks.values()), "tutorial": bemf, "hardware_context": hardware_context,
-            "loaded": {"app_mean_Nm": baseline, "retained_FEMM_16_half_cycle_mean_Nm": femm_peak_control,
+            "loaded": {"app_mean_Nm": baseline,
+                       "first_pose_mesh_triangles": jobs["loaded-torque-32"]["solve_metadata"]["mesh_element_count"],
+                       "retained_FEMM_16_half_cycle_mean_Nm": femm_peak_control,
                        "difference_to_FEMM_relative": baseline / femm_peak_control - 1},
             "curve": curve, "curve_upstream_RMSE_Nm": rms(np.asarray([row["app_minus_upstream_Nm"] for row in curve])),
             "controls": controls, "jobs": registration["jobs"], "audits": audits}
@@ -217,11 +221,16 @@ def markdown(data):
         lines.append(f"| {row['Phi0_deg']} | {row['upstream_Nm']} | {row['retained_FEMM_Nm']:.6f} | {row['app_Nm']:.6f} | "
                      f"{row['app_minus_FEMM_Nm']:+.6f} | {row['app_minus_upstream_Nm']:+.6f} |")
     lines += ["", f"Full-curve upstream RMS error: **{data['curve_upstream_RMSE_Nm']:.6f} Nm**. All thirteen discrepancies remain in the result.", "",
-              "| Independent refinement at Phi0=140 degrees | Mean Nm | Change from normal 32 Nm |",
-              "| --- | ---: | ---: |"]
+              "| Independent refinement at Phi0=140 degrees | Actual poses | First-pose triangles | Mean Nm | Change from normal 32 Nm |",
+              "| --- | ---: | ---: | ---: | ---: |"]
     for name, control in data["controls"].items():
-        lines.append(f"| {name} | {control['mean_torque_Nm']:.6f} | {control['change_from_normal_32_Nm']:+.6f} |")
-    lines += ["", "| Check | Outcome |", "| --- | --- |"]
+        lines.append(f"| {name} | {control['actual_positions']} | {control['first_pose_mesh_triangles']} | "
+                     f"{control['mean_torque_Nm']:.6f} | {control['change_from_normal_32_Nm']:+.6f} |")
+    normal_triangles = loaded["first_pose_mesh_triangles"]
+    fine_triangles = data["controls"]["mesh-fine-32"]["first_pose_mesh_triangles"]
+    lines += ["", f"The Normal 32 baseline has {normal_triangles:,} first-pose triangles. Fine changes this model to {fine_triangles:,} "
+              f"({100*(fine_triangles/normal_triangles-1):+.1f}%); this mesh change bounds observed sensitivity "
+              "rather than establishing systematic spatial convergence.", "", "| Check | Outcome |", "| --- | --- |"]
     lines += [f"| {name} | {'PASS' if passed else 'FAIL'} |" for name, passed in data["checks"].items()]
     h = data["hardware_context"]
     lines += ["", f"Hardware context at 1000 rpm: ORNL records {h['ORNL_1000rpm_line_RMS_V']} V line RMS and "

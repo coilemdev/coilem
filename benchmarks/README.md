@@ -7,6 +7,12 @@ The [v0.4.0 release-planning report](v0.4.0/README.md) brings together the full
 the native **28 PASS / 1 YELLOW / planned unsupported Prius** outcomes, and
 the [remaining release gates](../docs/RELEASE_0_4_0.md).
 
+The separate [Pyleecan Prius software benchmark](../docs/benchmarks/pyleecan-prius-v1/README.md)
+ships two fixed workspace cases and records 17 development jobs / 568 field
+reports, with all 10 software checks passing. It retains the complete torque
+curve, tutorial waveform, source hashes and refinement controls. This does not
+resolve the legacy ORNL hardware fixture or the final v0.4.0 candidate gate.
+
 The [2026-10-18 Windows requalification](windows-native-20261018-f390b25/README.md)
 is the active qualification evidence for the Precise mesh default at `f390b25`.
 All 35 supported jobs completed against the frozen FEMM v3 reference, with

@@ -11,6 +11,46 @@ The application remains 0.3.1 and Magneto2D remains 0.3.3. These are development
 candidate measurements. The final v0.4.0 candidate must rerun the selected
 benchmark after its code and numerical settings are frozen.
 
+## Fresh public-app results
+
+The complete Windows run measured clean commit
+`d993d7674354cc723ad107e7a5452477c5f660ea`: **17 jobs, 568 actual field reports,
+10/10 software checks passing**. [Full results and all thirteen torque points](app-results.md),
+[waveforms, source identities and artifact hashes](app-results.json), and the
+[original complete registration](app-registration.json) retain the measured conditions.
+
+| Measurement | Fresh app | Retained reference | Difference |
+| --- | ---: | ---: | ---: |
+| Tutorial AB sampled RMS, 1000 rpm / 20°C / 0 A | 107.513838 V | 107.558193 V | −0.0412% |
+| Tutorial AB sampled peak | 171.833919 V | 171.330191 V | +0.2940% |
+| Tutorial AB waveform relative L2 | 0.3983% | Fixed frame mapping, no fit | — |
+| Loaded mean, 2000 rpm / 60°C / 250 A peak / Φ₀=140° | 353.950530 Nm | 354.953115 Nm, FEMM 16-pose half-cycle control | −0.2825% |
+| Maximum mean difference across all thirteen current angles | 2.228438 Nm | FEMM, same physical model | 0.6282% of FEMM peak |
+| Entire curve RMS difference from upstream transcription | 11.445109 Nm | All thirteen upstream values retained | No hardware verdict |
+
+![Complete tutorial waveform and loaded torque-angle comparison](app-results.svg)
+
+The independent 64-position control gives **353.951971 Nm** (+0.001441 Nm
+from Normal/32). Fine/32 gives **353.933789 Nm** (−0.016741 Nm), with **82,872**
+first-pose triangles versus Normal's **77,308**, a 7.2% increase. These controls
+bound the observed loaded-mean sensitivity; they do not establish systematic
+spatial convergence or refine every requested output. The maximum final
+residual is **9.9658e-10**, current-source error **2.2737e-13 A**, and absolute
+source/linkage duality error **5.6843e-14 J** across all 568 retained reports.
+
+The collection ran from **00:30:25 to 01:25:14 UTC on October 19, 2026**
+(October 18 locally): **54m49.3s**, including artifact compression. Per-job solve
+wall times total **40m18.7s** and exclude the later gzip archives. Frontend
+build/browser checks also ran on the host during this collection, so these
+are informational timings. Python was 3.12.14, Gmsh 4.15.2, NumPy 2.4.6 and
+Pydantic 2.13.4. The native binary SHA-256 was
+`5bc90b1c45b56eb12d472ff21082b8182ef909c8316294e873ddd71b0399de8d`.
+
+Raw meshes, native inputs/reports and portable solver results remain retained
+locally; the JSON records their original hashes. The original registration is
+published byte-for-byte. This is development evidence for #126; the final
+v0.4.0 candidate rerun remains outstanding.
+
 ## Load the two cases
 
 In the normal workspace, use **Design file menu → Examples → Benchmarks**:
@@ -253,6 +293,7 @@ binary. Keep generated output outside the source checkout:
 ```powershell
 cargo build --release --locked --manifest-path solvers/magneto2d/Cargo.toml
 python -m tools.benchmark_prius --out ../benchmark-output/prius-v1 --curve --refinement
+python -m tools.report_prius_benchmark ../benchmark-output/prius-v1 --out ../benchmark-output/prius-v1-report
 ```
 
 The runner uses the ordinary public parser and `Magneto2DSolver` with the public
@@ -261,6 +302,10 @@ hash, native binary hash, environment, actual output waveforms, and residual
 histories in the retained native reports. Raw local input/mesh/report artifacts
 are also retained as gzip with original-byte hashes. Portable results remove
 machine paths. A source change during the run makes the runner fail.
+
+The report command audits a complete collection and emits JSON and Markdown;
+add `--plot` in an optional Matplotlib environment for the standalone SVG.
+The published report keeps its Markdown, JSON, SVG and protocol README together.
 
 For one job, use `--only loaded-torque-32`; curve jobs also need `--curve`, and
 refinement jobs need `--refinement`. Use a fresh output directory for each run.

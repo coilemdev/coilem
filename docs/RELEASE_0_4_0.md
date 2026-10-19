@@ -17,6 +17,7 @@ not complete the release scope.
 | --- | --- | --- |
 | Windows native A/B/C/D, Precise mesh | 35 supported jobs complete at `f390b25`; 28 PASS, 1 YELLOW, planned unsupported Prius; 41m54.5s | Run the final release candidate and retain its own identity |
 | Fresh FEMM 4.2 repeat | 29/29 physical payloads and flux/source audits exactly match both the October 16 repeat and frozen v3; 1h49m05s, 1.65% faster | Keep reference v3/protocol 1.3.0; new physical requests need separate matched reference evidence |
+| Pyleecan Prius development evidence | [17 jobs / 568 fields / 10 software checks pass](benchmarks/pyleecan-prius-v1/app-results.md) at `d993d76`; both fixed workspace cases and full curve/controls retained | Repeat on the frozen final candidate; #126 remains open for that gate |
 | Main CI | [Successful run at `0417736`](https://github.com/coilemdev/coilem/actions/runs/39162186237) | Require success again on the final candidate |
 | Wheel rehearsals | [Successful earlier PR rehearsal](https://github.com/coilemdev/coilem/actions/runs/39049745989) | Rehearse the exact final candidate on all four wheel targets |
 | macOS numerical evidence | Historical record at `738d951`; the current source guard reports NOT_COMPARABLE for the changed mesh source | Collect and review a current full native record before claiming current macOS numerical parity |
@@ -36,6 +37,9 @@ measured Precise. FEMM agreement is not a hardware-validation claim.
   and normal Design/Solve execution. Publish the no-load 20 C case and loaded
   60 C case, refinement controls, full tested curves, matching-input FEMM
   comparisons, discrepancies and reproducible source/runtime identities.
+  The [fixed examples and complete development report](benchmarks/pyleecan-prius-v1/README.md)
+  now supply this foundation, including Design/Solve and save/reopen checks.
+  Keep this item open for the final-candidate rerun in section 3.
 - [ ] [#69: ORNL hardware correlation](https://github.com/coilemdev/coilem/issues/69)
   and [#82: measured Prius benchmark](https://github.com/coilemdev/coilem/issues/82):
   review the remaining issue criteria and their existing evidence. Keep the

@@ -55,8 +55,8 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 2333,
-      "sha256": "d21a2acd94aad62d5424c3a043210a11ecaeb0d272e0bd82eabd2f1e954c9ea1"
+      "bytes": 2724,
+      "sha256": "be43a2af49e72eef4fb9c1f26846d722cbb051b0be6b6dc494f3ea1d873f7302"
     },
     {
       "path": "README.md",
@@ -635,8 +635,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 8144,
-      "sha256": "8c48345727e407932c3e1dbbf95fa510ce3d2caf7bb661fd710deb1fb6b7c3e8"
+      "bytes": 8551,
+      "sha256": "914839fbbd8d8074d80dd86e71282267ae2680261966a570e733fe7d59be0dbd"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -3570,8 +3570,8 @@
     },
     {
       "path": "benchmarks/v0.4.0/README.md",
-      "bytes": 5088,
-      "sha256": "4a6097199ec03976809bdc38b7ccc349df3e8779c17a100844283aab293f0452"
+      "bytes": 7044,
+      "sha256": "cbeec27b0691312ef718c5b01bacdae3f903f74bddf9fce8fc4451d7982cb537"
     },
     {
       "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/README.md",
@@ -5110,8 +5110,8 @@
     },
     {
       "path": "docs/RELEASE_0_4_0.md",
-      "bytes": 9734,
-      "sha256": "b55fa1d163cb7d5ed1646502827a72a26c5f79cafb8ad82c61770752c542e0ab"
+      "bytes": 10254,
+      "sha256": "8fb5f5cbb9f41dd4e47c388aa48dfcf85c38087daa66f30835835f34f06a79f9"
     },
     {
       "path": "docs/RELEASING.md",
@@ -5140,13 +5140,38 @@
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
-      "bytes": 18184,
-      "sha256": "33498650de4b09692a962b7779063b37701dc791ace232df378d27b6b464ab2b"
+      "bytes": 21095,
+      "sha256": "7dba13307591b880597cf47f6644ed592eb0e43872773a87360d4d92bfa4bf24"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/app-design-3d.png",
       "bytes": 744462,
       "sha256": "4b75b03b5d9c61df42700e8d22bc15627d65a95409ec685a84f7093913b396bc"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/app-registration.json",
+      "bytes": 304814,
+      "sha256": "577a8d4585a79d328b406b1ee26f2d12e7124d28dbf1dacdf27e9c6ee00d7360"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/app-results.json",
+      "bytes": 1172838,
+      "sha256": "697ccfbf9c8f85387e3df08534e56debc9fb225aeea519d80d301f21e34d4191"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/app-results.md",
+      "bytes": 3129,
+      "sha256": "eb6f10957163b2c2aa690334e115eb1ba039942ff4eb15bdaf2f59675eb77cdf"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/app-results.svg",
+      "bytes": 80534,
+      "sha256": "ff7a38794ac3cd644a4d65d8bec962445d57ffc875eb75d3005b78435c174d5a"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/artifact-manifest.json",
+      "bytes": 1324,
+      "sha256": "c4fccd0bb9c6957ab83d703db4e30c9848335db30bc6b9737fdfebbbe394feeb"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/protocol.json",
@@ -6990,8 +7015,8 @@
     },
     {
       "path": "tests/test_pyleecan_reference_fixture.py",
-      "bytes": 15031,
-      "sha256": "0ce0c369997422643f71bd9a1ddecb9be76ac4e2d8bc5bca0db649ed41a3f77d"
+      "bytes": 17053,
+      "sha256": "e9b0430c34fe765898ded7db8fa3f1b9a3bb68baf7d9468183b73c6617c36837"
     },
     {
       "path": "tests/test_pyleecan_tutorial.py",
@@ -7265,8 +7290,8 @@
     },
     {
       "path": "tools/report_prius_benchmark.py",
-      "bytes": 19835,
-      "sha256": "faccbdd8e1a3eae34a3ec5b27962c5e83e0f898f8734e920d660d1ef44ec401e"
+      "bytes": 20777,
+      "sha256": "97ba2c2c2921161f868ca05b9eeab903c66bbbb40e88b5555b006db95984a274"
     },
     {
       "path": "tools/run_benchmarks.py",
@@ -7290,8 +7315,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 21477,
-      "sha256": "09707491fa5b77957596d3f669ae9a3718449b1c046ea6c818e1bbb336dbb803"
+      "bytes": 21633,
+      "sha256": "fc11f61b433748f6829297f30c72738ea887481d11936087620c7a554385d9ab"
     }
   ],
   "public_patches": [
@@ -10906,6 +10931,54 @@
       "path": "backend/benchmark_suite/report.py",
       "source_sha256": "0fbc7eab5c9ffc4f17d1e2472c6782002307804152abcf8224a7be414194bf98",
       "reason": "Distinguish the legacy unsupported ORNL row from the fixed Pyleecan references."
+    },
+    {
+      "base_commit": "fde169b59e9cb750bd05fb074153709e921fda0a",
+      "path": "PUBLICATION_STATUS.md",
+      "source_sha256": "d21a2acd94aad62d5424c3a043210a11ecaeb0d272e0bd82eabd2f1e954c9ea1",
+      "reason": "Publish the complete #126 development benchmark, source audit and release-plan links."
+    },
+    {
+      "base_commit": "fde169b59e9cb750bd05fb074153709e921fda0a",
+      "path": "benchmarks/README.md",
+      "source_sha256": "8c48345727e407932c3e1dbbf95fa510ce3d2caf7bb661fd710deb1fb6b7c3e8",
+      "reason": "Publish the complete #126 development benchmark, source audit and release-plan links."
+    },
+    {
+      "base_commit": "fde169b59e9cb750bd05fb074153709e921fda0a",
+      "path": "benchmarks/v0.4.0/README.md",
+      "source_sha256": "4a6097199ec03976809bdc38b7ccc349df3e8779c17a100844283aab293f0452",
+      "reason": "Publish the complete #126 development benchmark, source audit and release-plan links."
+    },
+    {
+      "base_commit": "fde169b59e9cb750bd05fb074153709e921fda0a",
+      "path": "docs/RELEASE_0_4_0.md",
+      "source_sha256": "b55fa1d163cb7d5ed1646502827a72a26c5f79cafb8ad82c61770752c542e0ab",
+      "reason": "Publish the complete #126 development benchmark, source audit and release-plan links."
+    },
+    {
+      "base_commit": "fde169b59e9cb750bd05fb074153709e921fda0a",
+      "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
+      "source_sha256": "33498650de4b09692a962b7779063b37701dc791ace232df378d27b6b464ab2b",
+      "reason": "Publish the complete #126 development benchmark, source audit and release-plan links."
+    },
+    {
+      "base_commit": "fde169b59e9cb750bd05fb074153709e921fda0a",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "0ce0c369997422643f71bd9a1ddecb9be76ac4e2d8bc5bca0db649ed41a3f77d",
+      "reason": "Publish the complete #126 development benchmark, source audit and release-plan links."
+    },
+    {
+      "base_commit": "fde169b59e9cb750bd05fb074153709e921fda0a",
+      "path": "tools/report_prius_benchmark.py",
+      "source_sha256": "faccbdd8e1a3eae34a3ec5b27962c5e83e0f898f8734e920d660d1ef44ec401e",
+      "reason": "Publish the complete #126 development benchmark, source audit and release-plan links."
+    },
+    {
+      "base_commit": "fde169b59e9cb750bd05fb074153709e921fda0a",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "09707491fa5b77957596d3f669ae9a3718449b1c046ea6c818e1bbb336dbb803",
+      "reason": "Publish the complete #126 development benchmark, source audit and release-plan links."
     }
   ]
 }
