@@ -150,8 +150,8 @@
     },
     {
       "path": "backend/benchmark_suite/physics.py",
-      "bytes": 2907,
-      "sha256": "02e647cdbda407f068fccbcc0f4ac3fe2cced6042881cf352325fff29ca7b91a"
+      "bytes": 2950,
+      "sha256": "42d3c2b7937c477c60756cd1531af94fc8f1de214b637dff57b2123d5bfb19bb"
     },
     {
       "path": "backend/benchmark_suite/record.py",
@@ -12393,6 +12393,12 @@
       "path": "tests/test_nonlinear_convergence.py",
       "source_sha256": null,
       "reason": "Require unrelaxed Picard mismatch and stage-relative Newton residual reduction with recorded preset tolerances (#11)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "backend/benchmark_suite/physics.py",
+      "source_sha256": "02e647cdbda407f068fccbcc0f4ac3fe2cced6042881cf352325fff29ca7b91a",
+      "reason": "Track motor nonlinear tolerance defaults in physics source identities before the release qualification rerun (#11)."
     }
   ]
 }
