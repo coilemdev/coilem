@@ -1363,6 +1363,7 @@ export function App() {
       const parsed = parseDesignFile(await file.text());
       rememberPresetSweep(parsed.config);
       setConfig(parsed.config);
+      if (parsed.config.geometry_reference) setSelectedSolver("magneto2d");
       setGeometry(null);
       setEditFeedback(null);
       setDesignName(parsed.name ?? designFileBaseName(file.name));
@@ -1384,6 +1385,7 @@ export function App() {
     const example = createPublicExampleDesign(exampleId);
     rememberPresetSweep(example.config);
     setConfig(example.config);
+    if (example.config.geometry_reference) setSelectedSolver("magneto2d");
     setGeometry(null);
     setEditFeedback(null);
     setDesignName(example.name);
@@ -1459,7 +1461,7 @@ export function App() {
       const storedSolver = submittedRequest && typeof submittedRequest === 'object'
         ? (submittedRequest as PublicJson).solver
         : null;
-      const replaySolver: PublicSolverId = storedSolver === 'elmer' ? 'elmer' : 'magneto2d';
+      const replaySolver: PublicSolverId = storedSolver === 'elmer' && !parsed.config.geometry_reference ? 'elmer' : 'magneto2d';
       rememberPresetSweep(parsed.config);
       setConfig(parsed.config);
       setGeometry(null);

@@ -273,3 +273,17 @@ def test_exact_winding_linkage_is_dual_to_the_applied_mesh_current():
     shifted = {"results": {}, "field_plot": {"az_nodal": (az + .3).tolist()}}
     prius.extract_winding_report(shifted, cfg, artifact)
     assert shifted["reference_winding_extraction"]["phase_flux_linkage_Wb"] == pytest.approx(audit["phase_flux_linkage_Wb"], abs=1e-14)
+
+
+def test_preview_symbols_and_winding_layout_use_the_same_published_labels_as_the_solver():
+    from backend.preview import generate_preview
+
+    preview = generate_preview(config())
+    actual = {slot.slot_index: (slot.phase, slot.direction) for slot in preview.winding_layout}
+    expected = {s["winding"]["slot"]: (s["winding"]["phase"], s["winding"]["direction"])
+                for s in prius.source()["surfaces"] if "winding" in s}
+    assert actual == expected
+    assert len(preview.winding_coils) == 24
+    for coil in preview.winding_coils:
+        assert actual[coil.slot_in][0] == actual[coil.slot_out][0] == coil.phase
+        assert actual[coil.slot_in][1] != actual[coil.slot_out][1]

@@ -60,8 +60,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 9396,
-      "sha256": "c6abe20cc04765b7c539bcde07d993f767a16d806f638a2fd41805b84403aad9"
+      "bytes": 9811,
+      "sha256": "158ea73642af1364afebdf472239235a7a573021671cccf0e8b4e19af3d671f6"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -455,8 +455,8 @@
     },
     {
       "path": "backend/preview.py",
-      "bytes": 39043,
-      "sha256": "9d95bd235b3f2564b5c4fc6482adb549d01ac1ba25c6a9ce0da5c6e0cbf4eb28"
+      "bytes": 39560,
+      "sha256": "50f2f534cebf28a48d4ecc089184228c973fc782d7f756275badc2a10e29b246"
     },
     {
       "path": "backend/preview_from_ir.py",
@@ -5075,8 +5075,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 25146,
-      "sha256": "2ded9fda33a1d96d1aa4bfaf6beded9bc2f847fa8e3a5d4f985eede6f0f943a0"
+      "bytes": 25804,
+      "sha256": "c769a1e0809127b8860d4cf632439ed04cdd759f86d7a0aeee3028ef2d9a4d18"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -5895,8 +5895,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 71155,
-      "sha256": "4c6eda0542da81c829a0391ebb4085922fd6e9ded60192a8eb10ae157af77b74"
+      "bytes": 71343,
+      "sha256": "1db1114e1aa53ff5c62d00c6babcbaf672b72209e1c8c211e9070963a00cf89c"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -5905,8 +5905,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 217528,
-      "sha256": "63503ed3603012346b59b06e764ab947e71aeb98452a3f86b2cdcf061e5e79a4"
+      "bytes": 218307,
+      "sha256": "1cee55ac0a8e5398f1ec8574ccf96326301a51786c7051f5ebd26179700d859a"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -6335,8 +6335,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 18287,
-      "sha256": "71b7f06795501685b22ace253cd9d3caa752707a2d407e4a530d318008d45a35"
+      "bytes": 19171,
+      "sha256": "5cde1fbb5bf14763aeb50224f316dd4ae54359dcb81ca0ab513a1b85da279f9b"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -6925,8 +6925,8 @@
     },
     {
       "path": "tests/test_pyleecan_reference_fixture.py",
-      "bytes": 14330,
-      "sha256": "aca962fb31f84f9422a556a409c3a58660d34567112391cf306f9521a3fe9b3e"
+      "bytes": 15031,
+      "sha256": "0ce0c369997422643f71bd9a1ddecb9be76ac4e2d8bc5bca0db649ed41a3f77d"
     },
     {
       "path": "tests/test_pyleecan_tutorial.py",
@@ -7197,6 +7197,11 @@
       "path": "tools/report_benchmark_against_reference.py",
       "bytes": 20151,
       "sha256": "22532d9a02cd2825b4a5f65636631b55571e81f6cc1cd77ebcef6885682086cc"
+    },
+    {
+      "path": "tools/report_prius_benchmark.py",
+      "bytes": 18042,
+      "sha256": "a99f17d5423c4d3df4867a5708a76d0d3351b90f41d0f6ac4a352d9e5f867176"
     },
     {
       "path": "tools/run_benchmarks.py",
@@ -8753,7 +8758,7 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B Ã¢Ë†â€™ Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B \u00c3\u00a2\u00cb\u2020\u00e2\u20ac\u2122 Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
@@ -8783,13 +8788,13 @@
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45Ã‚Â° (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45\u00c3\u201a\u00c2\u00b0 (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45Ã‚Â° over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45\u00c3\u201a\u00c2\u00b0 over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "a482ff6e2bd9616d2ece2a68f8fa2f2c49aae45c",
@@ -8807,7 +8812,7 @@
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45Ã‚Â° (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00c3\u201a\u00c2\u00b0 (#52 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
@@ -10674,6 +10679,48 @@
       "path": "tests/test_pyleecan_reference_fixture.py",
       "source_sha256": "d5dcc1fc52c478a7126c161765df8efbb113c0aa692b22a4fa928e05c2225739",
       "reason": "Complete #126 reference winding extraction, installed assets and explicit report conventions."
+    },
+    {
+      "base_commit": "d993d7674354cc723ad107e7a5452477c5f660ea",
+      "path": "README.md",
+      "source_sha256": "c6abe20cc04765b7c539bcde07d993f767a16d806f638a2fd41805b84403aad9",
+      "reason": "Complete #126 public workspace controls, exact winding preview and benchmark reporting."
+    },
+    {
+      "base_commit": "d993d7674354cc723ad107e7a5452477c5f660ea",
+      "path": "backend/preview.py",
+      "source_sha256": "9d95bd235b3f2564b5c4fc6482adb549d01ac1ba25c6a9ce0da5c6e0cbf4eb28",
+      "reason": "Complete #126 public workspace controls, exact winding preview and benchmark reporting."
+    },
+    {
+      "base_commit": "d993d7674354cc723ad107e7a5452477c5f660ea",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "2ded9fda33a1d96d1aa4bfaf6beded9bc2f847fa8e3a5d4f985eede6f0f943a0",
+      "reason": "Complete #126 public workspace controls, exact winding preview and benchmark reporting."
+    },
+    {
+      "base_commit": "d993d7674354cc723ad107e7a5452477c5f660ea",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "4c6eda0542da81c829a0391ebb4085922fd6e9ded60192a8eb10ae157af77b74",
+      "reason": "Complete #126 public workspace controls, exact winding preview and benchmark reporting."
+    },
+    {
+      "base_commit": "d993d7674354cc723ad107e7a5452477c5f660ea",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "63503ed3603012346b59b06e764ab947e71aeb98452a3f86b2cdcf061e5e79a4",
+      "reason": "Complete #126 public workspace controls, exact winding preview and benchmark reporting."
+    },
+    {
+      "base_commit": "d993d7674354cc723ad107e7a5452477c5f660ea",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "71b7f06795501685b22ace253cd9d3caa752707a2d407e4a530d318008d45a35",
+      "reason": "Complete #126 public workspace controls, exact winding preview and benchmark reporting."
+    },
+    {
+      "base_commit": "d993d7674354cc723ad107e7a5452477c5f660ea",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "aca962fb31f84f9422a556a409c3a58660d34567112391cf306f9521a3fe9b3e",
+      "reason": "Complete #126 public workspace controls, exact winding preview and benchmark reporting."
     }
   ]
 }

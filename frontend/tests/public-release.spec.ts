@@ -300,4 +300,15 @@ test('loads both exact Pyleecan Prius cases through the public Design and Solve 
     expect(checked.status()).toBe(200);
     expect((await checked.json()).valid).toBe(true);
   }
+  const validated = page.waitForResponse(r => r.request().method() === 'POST' && new URL(r.url()).pathname === '/solve/validate');
+  await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+  const validation = await validated;
+  expect(validation.status()).toBe(200);
+  expect((await validation.json()).valid).toBe(true);
+  expect(validation.request().postDataJSON().solver).toBe('magneto2d');
+  await openSetupSection(page, 'operating');
+  await expect(page.getByText('Pyleecan software reference · 60°C magnets', { exact: false })).toBeVisible();
+  await page.getByRole('button', { name: '← Back to Design', exact: true }).click();
+  await page.getByRole('button', { name: 'Show 2D motor view', exact: true }).click();
+  await page.screenshot({ path: fileURLToPath(new URL('../test-results/prius-reference.png', import.meta.url)), fullPage: true });
 });

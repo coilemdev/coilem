@@ -906,7 +906,7 @@ function componentFacts(
         ...(config.topology === 'IPM' && config.rotor.ipm_topology === 'flat_buried'
           ? ([['Outer bridge', `${config.rotor.bridge_thickness_mm} mm`]] as Array<[string, string]>)
           : []),
-        ['Pole coverage', `${magnetPoleCoveragePct(config)}%`],
+        ...(config.geometry_reference ? [] : [['Pole coverage', `${magnetPoleCoveragePct(config)}%`]] as Array<[string, string]>),
       ];
     case 'winding': {
       const facts: Array<[string, string]> = [
@@ -1280,7 +1280,9 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
               {config.rotor.ipm_topology === 'pyleecan_holem50' ? (
                 <p className="ipm-layout-note ipm-experimental-note" role="note">
                   <strong>HoleM50 (experimental). </strong>
-                  {experimentalRotors?.enabled
+                  {config.geometry_reference
+                    ? 'Pinned published model. Its analytic curves, winding and materials are fixed; no startup flag is required.'
+                    : experimentalRotors?.enabled
                     ? 'An experimental rotor path: not public support, and results carry no qualification claim. Pick a layout above to switch to a public rotor.'
                     : `This rotor needs coilEM started with ${experimentalRotors?.switch ?? 'COILEM_EXPERIMENTAL_ROTORS'}=1 to preview and solve.`}
                 </p>
@@ -2417,7 +2419,9 @@ function HealthPanel({
     }] : []),
     airgapHealth,
     ...(burialHealth ? [burialHealth] : []),
-    { severity: coverage >= 55 && coverage <= 90 ? 'positive' : 'warning', title: coverage >= 55 && coverage <= 90 ? 'Magnet coverage is in a practical range' : 'Magnet coverage needs review', copy: `${coverage}% pole coverage for the current rotor.` },
+    { severity: config.geometry_reference || coverage >= 55 && coverage <= 90 ? 'positive' : 'warning',
+      title: config.geometry_reference ? 'Pinned published geometry' : coverage >= 55 && coverage <= 90 ? 'Magnet coverage is in a practical range' : 'Magnet coverage needs review',
+      copy: config.geometry_reference ? 'Analytic SlotW11 and HoleM50 curves; geometry is fixed for this software reference.' : `${coverage}% pole coverage for the current rotor.` },
     { severity: config.stator.slot_count % 3 === 0 ? 'positive' : 'warning', title: config.stator.slot_count % 3 === 0 ? 'Slot count supports three phases' : 'Slot count does not divide across three phases', copy: `${config.stator.slot_count} stator slots across three phases.` },
     { severity: geometry && !geometryStale ? 'positive' : 'info', title: geometry && !geometryStale ? 'Geometry preview is current' : 'Updating geometry preview', copy: geometry && !geometryStale ? `${geometry.regions.length} regions returned by the local backend.` : 'The preview will refresh after the local backend responds.' },
     ...(qualification ? [{
@@ -2465,7 +2469,7 @@ function HealthPanel({
       </div>
       <div className="design-health-metrics">
         <div className="design-health-metric"><span>Airgap</span><strong>{airgap.toFixed(2)} mm</strong></div>
-        <div className="design-health-metric"><span>Coverage</span><strong>{coverage}%</strong></div>
+        <div className="design-health-metric"><span>{config.geometry_reference ? 'Reference' : 'Coverage'}</span><strong>{config.geometry_reference ? 'Pyleecan' : `${coverage}%`}</strong></div>
         <div className="design-health-metric"><span>Q</span><strong>{config.stator.slot_count / Math.max(1, config.rotor.pole_count * 3)} </strong></div>
       </div>
       <div className="public-check-heading"><span>Pre-solve checks</span><strong>{positiveCount} ✓{infoCount > 0 ? ` · ${infoCount} i` : ''}{warningCount > 0 ? ` · ${warningCount} △` : ''}</strong></div>
@@ -3480,10 +3484,12 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               type="button"
               role="radio"
               aria-checked={selectedSolver === 'elmer'}
-              aria-disabled={!elmerAvailable || busy !== null || sixStepSelected}
+              aria-disabled={!elmerAvailable || busy !== null || sixStepSelected || Boolean(config.geometry_reference)}
               className={selectedSolver === 'elmer' ? 'active' : ''}
-              disabled={!elmerAvailable || busy !== null || sixStepSelected}
-              title={sixStepSelected
+              disabled={!elmerAvailable || busy !== null || sixStepSelected || Boolean(config.geometry_reference)}
+              title={config.geometry_reference
+                ? 'The Pyleecan reference uses the native Magneto2D solver and its embedded steel curve.'
+                : sixStepSelected
                 ? 'Ideal six-step excitation uses Magneto2D in the MVP.'
                 : !elmerAvailable
                   ? elmerCapability.reason || 'Qualified Elmer 26.2 runtime not detected.'
