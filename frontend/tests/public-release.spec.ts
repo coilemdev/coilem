@@ -311,4 +311,9 @@ test('loads both exact Pyleecan Prius cases through the public Design and Solve 
   }
   await page.getByRole('button', { name: 'Show 2D motor view', exact: true }).click();
   await page.screenshot({ path: fileURLToPath(new URL('../test-results/prius-reference.png', import.meta.url)), fullPage: true });
+  await page.getByRole('button', { name: 'Show 3D motor view', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Show 2D motor view', exact: true })).toBeVisible();
+  await expect(page.getByText('Loading reference geometry…', { exact: true })).toBeHidden();
+  await expect(page.locator('.public-viewport-message')).toHaveCount(0);
+  await page.screenshot({ path: fileURLToPath(new URL('../test-results/prius-reference-3d.png', import.meta.url)), fullPage: true });
 });

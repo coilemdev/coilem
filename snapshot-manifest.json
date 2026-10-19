@@ -5960,8 +5960,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 218307,
-      "sha256": "1cee55ac0a8e5398f1ec8574ccf96326301a51786c7051f5ebd26179700d859a"
+      "bytes": 218339,
+      "sha256": "881fdc32150cb03c1278a8b9b4aac2357a547d070745f724cd5559828eb72180"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -6000,8 +6000,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 80319,
-      "sha256": "d1e8bea4af5b47cd76c491417a7d1313ff1536d17d45358ba4ad17380e4b8afc"
+      "bytes": 80373,
+      "sha256": "cc39d3690a357af3cbbfec749836d7c78b207340641a7371ba3bec2066c5022a"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
@@ -6390,8 +6390,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 19201,
-      "sha256": "10d60272824b84729a900742740105211d1c32a950f9d80666968788c85c4efa"
+      "bytes": 19691,
+      "sha256": "334b5ca1386b39bd0c9f6e6510c90604bbabe0d3473de40dd67620d49d31dd4c"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -10848,6 +10848,24 @@
       "path": "tools/report_prius_benchmark.py",
       "source_sha256": "a99f17d5423c4d3df4867a5708a76d0d3351b90f41d0f6ac4a352d9e5f867176",
       "reason": "Verify both Prius Solve routes and bind report audits to retained results."
+    },
+    {
+      "base_commit": "8aaf9821a44019c443939ef5402ab40d9643dedb",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "1cee55ac0a8e5398f1ec8574ccf96326301a51786c7051f5ebd26179700d859a",
+      "reason": "Reuse the actual workspace preview for the Prius 3D view and verify rendering."
+    },
+    {
+      "base_commit": "8aaf9821a44019c443939ef5402ab40d9643dedb",
+      "path": "frontend/src/public/PublicMotor3D.tsx",
+      "source_sha256": "d1e8bea4af5b47cd76c491417a7d1313ff1536d17d45358ba4ad17380e4b8afc",
+      "reason": "Reuse the actual workspace preview for the Prius 3D view and verify rendering."
+    },
+    {
+      "base_commit": "8aaf9821a44019c443939ef5402ab40d9643dedb",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "10d60272824b84729a900742740105211d1c32a950f9d80666968788c85c4efa",
+      "reason": "Reuse the actual workspace preview for the Prius 3D view and verify rendering."
     }
   ]
 }

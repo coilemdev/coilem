@@ -8,12 +8,13 @@ import { buildConcentratedCoil, buildWindingHarness } from './coil3d';
 import { deriveStatorSectionWidths } from './dimensionAnnotations';
 import { publicFlatIpmMagnetCenterRadiusMm } from './flatIpmBurialHealth';
 import { magnetPoleCoverage } from './magnetCoverage';
-import type { MotorConfig, PublicMotorComponentSelection } from './model';
+import type { GeometryPreview, MotorConfig, PublicMotorComponentSelection } from './model';
 import { PUBLIC_MOTOR_COLORS, PUBLIC_PHASE_COLORS, renderTargetColor } from './motorPalette';
 import { concentratedUsesToothCoils, toothCoilAssignments } from './toothCoils';
 
 interface PublicMotor3DProps {
   config: MotorConfig;
+  geometry?: GeometryPreview | null;
   resetSignal: number;
   rotorAngleDeg: number;
   explodedAmount: number;

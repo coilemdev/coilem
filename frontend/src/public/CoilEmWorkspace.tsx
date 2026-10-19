@@ -1908,6 +1908,7 @@ function ViewportChrome({
         >
           <PublicMotor3D
             config={config}
+            geometry={geometry}
             resetSignal={threeResetSignal}
             rotorAngleDeg={rotorAngleDeg}
             explodedAmount={explodedAmount}
