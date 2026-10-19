@@ -160,8 +160,8 @@
     },
     {
       "path": "backend/benchmark_suite/report.py",
-      "bytes": 28783,
-      "sha256": "0fbc7eab5c9ffc4f17d1e2472c6782002307804152abcf8224a7be414194bf98"
+      "bytes": 28921,
+      "sha256": "d48e827a8cc33d083ed7017ad68f70ed0a631b54371dd6a1263de3b50bd694ac"
     },
     {
       "path": "backend/benchmark_suite/share.py",
@@ -10900,6 +10900,12 @@
       "path": "tools/report_prius_benchmark.py",
       "source_sha256": "3bf3801bb97cbd03614f7140df7ae0491bed0b662ebb0f680f3cc575719fcff2",
       "reason": "Retain the unresolved ORNL voltage gap and distinct model/temperature assumptions."
+    },
+    {
+      "base_commit": "dc499553f90e804136267bcb22068d99db1d19ac",
+      "path": "backend/benchmark_suite/report.py",
+      "source_sha256": "0fbc7eab5c9ffc4f17d1e2472c6782002307804152abcf8224a7be414194bf98",
+      "reason": "Distinguish the legacy unsupported ORNL row from the fixed Pyleecan references."
     }
   ]
 }
