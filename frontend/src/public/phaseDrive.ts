@@ -10,6 +10,8 @@
  *
  * - sine: i_k = sin(90 - theta - gamma - axis - 120 k);
  * - six-step: the public sector table at floor((theta + axis + advance) / 60).
+ * - Pyleecan reference: cos(theta + Phi0 + [0, -120, 120]), from its d-axis.
+ * Zero terminal-current magnitude produces zero excitation in every mode.
  *
  * `axis` is phase A's axis, which the preview reports
  * (metadata.phase_axis_offset_elec_deg). tests/fixtures/public_sine_phase_current_vectors.json
@@ -20,8 +22,11 @@ export type ExcitationMode = 'sinusoidal' | 'ideal_six_step_120';
 
 export interface PhaseDrive {
   mode: ExcitationMode;
-  /** gamma, from the q-axis; sine drive only. */
+  /** Displayed angle, interpreted using the preview's explicit convention. */
   currentAngleDeg: number;
+  currentAngleReference: 'q_axis' | 'pyleecan_d_axis';
+  /** Shape is normalized, but a zero-current case has no excitation. */
+  currentAmplitudeA: number;
   /** Six-step only. */
   commutationAdvanceDeg: number;
   /** Phase A's axis in electrical degrees, from the geometry preview. */
@@ -51,6 +56,7 @@ export function rotorElectricalDeg(rotorMechDeg: number, poleCount: number): num
 
 /** A / B / C terminal currents at a rotor electrical angle, each in -1..1. */
 export function phaseCurrents(drive: PhaseDrive, rotorElecDeg: number): [number, number, number] {
+  if (!(drive.currentAmplitudeA > 0)) return [0, 0, 0];
   if (drive.mode === 'ideal_six_step_120') {
     let effective = wrap360(rotorElecDeg + drive.axisOffsetDeg + drive.commutationAdvanceDeg);
     // Snap representation noise onto a commutation boundary, as the backend does.
@@ -58,6 +64,11 @@ export function phaseCurrents(drive: PhaseDrive, rotorElecDeg: number): [number,
     if (Math.abs(effective - boundary) <= 1e-12) effective = wrap360(boundary);
     const [a, b, c] = PUBLIC_SIX_STEP_TABLE[Math.floor(effective / 60) % 6];
     return [a, b, c];
+  }
+  if (drive.currentAngleReference === 'pyleecan_d_axis') {
+    const source = rotorElecDeg + drive.currentAngleDeg;
+    const at = (offset: number) => Math.cos(((source + offset) * Math.PI) / 180);
+    return [at(0), at(-120), at(120)];
   }
   const source = 90 - rotorElecDeg - drive.currentAngleDeg - drive.axisOffsetDeg;
   const at = (offset: number) => Math.sin(((source - offset) * Math.PI) / 180);

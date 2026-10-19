@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
 import { createPortal } from 'react-dom';
 
 import {
@@ -20,6 +20,7 @@ import {
 } from './magnetPoleFaces';
 import { PUBLIC_MOTOR_COLORS, PUBLIC_PHASE_COLORS } from './motorPalette';
 import { polygonLabelSpot } from './canvasLabels';
+import { fitTransform } from './viewportTransform';
 import {
   PHASE_SCOPE_WINDOW_S,
   STRIP_END,
@@ -494,43 +495,6 @@ function regionFill(regionType: string, sourceFill: string | null | undefined, l
     return phaseFill(winding.phase, layer, phaseLevels);
   }
   return sourceFill || regionColor(regionType);
-}
-
-function fitTransform(
-  points: Array<[number, number]>,
-  width: number,
-  height: number,
-  viewportScale = 1,
-  pan: [number, number] = [0, 0],
-  /** Part of the canvas to fit into; the whole canvas by default. */
-  frame?: Rect,
-): { map: (point: [number, number]) => [number, number]; scale: number } {
-  const box = frame ?? { x: 0, y: 0, width, height };
-  const xs = points.map(([x]) => x);
-  const ys = points.map(([, y]) => y);
-  const minX = Math.min(...xs);
-  const maxX = Math.max(...xs);
-  const minY = Math.min(...ys);
-  const maxY = Math.max(...ys);
-  const spanX = Math.max(maxX - minX, 1);
-  const spanY = Math.max(maxY - minY, 1);
-  const padding = Math.min(box.width, box.height) * 0.075;
-  const scale = Math.min((box.width - padding * 2) / spanX, (box.height - padding * 2) / spanY);
-  const offsetX = box.x + (box.width - spanX * scale) / 2 - minX * scale;
-  const offsetY = box.y + (box.height - spanY * scale) / 2 + maxY * scale;
-  const centerX = box.x + box.width / 2;
-  const centerY = box.y + box.height / 2;
-  return {
-    scale: scale * viewportScale,
-    map: ([x, y]) => {
-      const fittedX = offsetX + x * scale;
-      const fittedY = offsetY - y * scale;
-      return [
-        centerX + (fittedX - centerX) * viewportScale + pan[0],
-        centerY + (fittedY - centerY) * viewportScale + pan[1],
-      ];
-    },
-  };
 }
 
 function drawGeometry(
@@ -1365,6 +1329,9 @@ export function MotorCanvas({
     ? {
       mode: solveParams.excitation_mode,
       currentAngleDeg: solveParams.current_angle_deg,
+      currentAngleReference: geometry?.metadata.phase_current_convention === 'pyleecan_d_axis'
+        || config?.geometry_reference === 'pyleecan_prius_2004' ? 'pyleecan_d_axis' : 'q_axis',
+      currentAmplitudeA: solveParams.current_amplitude_A,
       commutationAdvanceDeg: solveParams.commutation_advance_deg,
       axisOffsetDeg: Number.isFinite(metadataAxis) ? metadataAxis : 0,
       poleCount: Number.isFinite(metadataPoles) && metadataPoles > 0 ? metadataPoles : config?.rotor.pole_count ?? 2,
@@ -1372,16 +1339,23 @@ export function MotorCanvas({
     : null), [
     solveParams?.excitation_mode,
     solveParams?.current_angle_deg,
+    solveParams?.current_amplitude_A,
     solveParams?.commutation_advance_deg,
     metadataAxis,
     metadataPoles,
     config?.rotor.pole_count,
+    config?.geometry_reference,
+    geometry?.metadata.phase_current_convention,
   ]);
   const hitRegionsRef = useRef<HitRegion[]>([]);
   const dimensionHitsRef = useRef<DimensionHit[]>([]);
   const meshHitsRef = useRef<MeshTriangleHit[]>([]);
   const [hoveredComponent, setHoveredComponent] = useState<PublicMotorComponentSelection | null>(null);
-  const navigation = useViewportNavigation();
+  const phaseFrameEnabled = mode === 'geometry' && layer === 'phases' && phaseDrive !== null;
+  const navigationFrame = useCallback((width: number, height: number) => (
+    phaseFrameEnabled ? phaseDriveFrame(width, height)?.motor ?? null : null
+  ), [phaseFrameEnabled]);
+  const navigation = useViewportNavigation(undefined, navigationFrame);
   const annotations = useMemo(
     () => (config && layer === 'dimensions' ? buildDimensionAnnotations(config, geometry) : []),
     [config, geometry, layer],

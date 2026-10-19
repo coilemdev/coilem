@@ -23,7 +23,7 @@ const {
 } = await importTypeScriptModule(new URL('../src/public/phaseDrive.ts', import.meta.url));
 
 const fixture = async (name) => JSON.parse(await readFile(new URL(`../../tests/fixtures/${name}`, import.meta.url), 'utf8'));
-const drive = (overrides) => ({ mode: 'sinusoidal', currentAngleDeg: 0, commutationAdvanceDeg: 0, axisOffsetDeg: 0, poleCount: 8, ...overrides });
+const drive = (overrides) => ({ mode: 'sinusoidal', currentAngleReference: 'q_axis', currentAmplitudeA: 1, currentAngleDeg: 0, commutationAdvanceDeg: 0, axisOffsetDeg: 0, poleCount: 8, ...overrides });
 const close = (actual, expected, label, tolerance = 1e-9) => actual.forEach((value, index) => assert.ok(Math.abs(value - expected[index]) <= tolerance, `${label}: ${actual} != ${expected}`));
 
 // Six-step: the public clockwise sector table, boundaries included.
@@ -179,3 +179,22 @@ for (const layout of layouts.cases) {
 }
 
 console.log('phase drive checks passed');
+
+// Reference presets use the published d-axis Phi0 and retained A/B/C order.
+// These samples come from the public solver resolver, including zero current.
+const prius = await fixture('prius_phase_drive_vectors.json');
+for (const vector of prius.vectors) {
+  const shown = phaseCurrents(drive({ currentAngleReference: 'pyleecan_d_axis', currentAmplitudeA: vector.current_amplitude_A,
+    currentAngleDeg: vector.current_angle_deg, axisOffsetDeg: 15 }), vector.rotor_electrical_angle_deg);
+  close(shown, vector.normalized_current, `${vector.case_id} at ${vector.rotor_electrical_angle_deg}`);
+}
+for (const mode of ['sinusoidal', 'ideal_six_step_120']) {
+  for (let theta = 0; theta < 360; theta += 15) {
+    const current = phaseCurrents(drive({ mode, currentAmplitudeA: 0 }), theta);
+    assert.deepEqual(current, [0, 0, 0]);
+    assert.ok(toothPoles(slotCurrents(layouts.cases[0].winding_layout, layouts.cases[0].slot_count, current)).every(x => x === 0));
+    const trace = waveformTrace(drive({ mode, currentAmplitudeA: 0 }), 0, theta, scopeStrip);
+    assert.ok(trace.every(([, y]) => y === scopeStrip.height / 2), 'zero-current traces stay flat');
+  }
+}
+console.log('Prius convention and zero-current checks passed');

@@ -274,6 +274,19 @@ test.describe('public developer preview release rehearsal', () => {
 
 
 test('loads both exact Pyleecan Prius cases through the public Design and Solve routes', async ({ page }) => {
+  // Observe the rendered motor origin so the real wheel handler and drawing
+  // transform must agree, including the shifted frame beside the phase scope.
+  await page.addInitScript(() => {
+    const original = CanvasRenderingContext2D.prototype.createRadialGradient;
+    CanvasRenderingContext2D.prototype.createRadialGradient = function (...args) {
+      const [x, y, inner, , , outer] = args;
+      if (this.canvas.matches('.motor-canvas') && Math.abs(inner / outer - 0.82 / 1.2) < 1e-9) {
+        this.canvas.dataset.motorOrigin = JSON.stringify([x - outer * 0.04 / 1.2, y - outer * 0.09 / 1.2]);
+        this.canvas.dataset.motorRadius = String(outer / 1.2);
+      }
+      return original.apply(this, args);
+    };
+  });
   await page.goto('/');
   await expect(page.getByRole('status', { name: 'Local backend: ready', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
@@ -294,6 +307,28 @@ test('loads both exact Pyleecan Prius cases through the public Design and Solve 
     const data = await response.json();
     expect(data.regions.filter((r: {loops?: unknown[]}) => r.loops?.length)).toHaveLength(91);
     expect(data.regions.find((r: {region_type: string}) => r.region_type === 'rotor_core').loops).toHaveLength(10);
+    expect(data.metadata.phase_current_convention).toBe('pyleecan_d_axis');
+    await page.getByRole('button', { name: 'Show 2D motor view', exact: true }).click();
+    await page.getByRole('button', { name: 'Stop and reset preview', exact: true }).click();
+    await page.getByRole('button', { name: 'Phases', exact: true }).click();
+    const phaseCanvas = page.getByLabel('geometry motor view, phases layer', { exact: true });
+    await expect(phaseCanvas).toHaveAttribute('data-motor-origin', /\[/);
+    const before = JSON.parse((await phaseCanvas.getAttribute('data-motor-origin'))!) as number[];
+    const radius = Number(await phaseCanvas.getAttribute('data-motor-radius'));
+    const bounds = (await phaseCanvas.boundingBox())!;
+    // The scope must be visible: at this width the motor is right of centre.
+    expect(before[0]).toBeGreaterThan(bounds.width / 2 + 50);
+    await page.mouse.move(bounds.x + before[0], bounds.y + before[1]);
+    await page.mouse.wheel(0, -Math.log(2) / 0.0012);
+    await expect(page.getByRole('button', { name: 'Fit motor to view', exact: true })).toBeEnabled();
+    await expect.poll(async () => Number(await phaseCanvas.getAttribute('data-motor-radius')) / radius).toBeCloseTo(2, 3);
+    // Chromium rounds wheel pointer coordinates to CSS pixels.
+    await expect.poll(async () => {
+      const after = JSON.parse((await phaseCanvas.getAttribute('data-motor-origin'))!) as number[];
+      return Math.hypot(after[0] - before[0], after[1] - before[1]);
+    }).toBeLessThan(1.5);
+    await page.getByRole('button', { name: 'Fit motor to view', exact: true }).click();
+    await page.getByRole('button', { name: 'Phases', exact: true }).click();
     await expect(page.getByText('Published Pyleecan geometry, winding and materials are fixed.', { exact: false })).toBeVisible();
     await expect(page.getByText('No affiliation with or endorsement by EOMYS, the Pyleecan project, or Toyota.', { exact: false })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeEnabled();

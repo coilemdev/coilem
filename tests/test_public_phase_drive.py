@@ -19,12 +19,16 @@ import pytest
 from backend.excitation import phase_axis_offset_deg, resolve_phase_current_sample
 from backend.models import MotorConfig
 from backend.preview import generate_preview
+from backend.reference_models.prius import case_config
 from backend.solver import _clockwise_excitation_config
+
+pytestmark = pytest.mark.pr
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "benchmarks/main-20261009-bad71d9/fixtures"
 SINE_VECTORS = json.loads((ROOT / "tests/fixtures/public_sine_phase_current_vectors.json").read_text(encoding="utf-8"))
 LAYOUTS = json.loads((ROOT / "tests/fixtures/phase_drive_winding_layouts.json").read_text(encoding="utf-8"))
+PRIUS_VECTORS = json.loads((ROOT / "tests/fixtures/prius_phase_drive_vectors.json").read_text(encoding="utf-8"))
 
 
 def _fixture(name: str) -> MotorConfig:
@@ -45,6 +49,7 @@ def test_preview_reports_the_axis_the_excitation_subtracts(fixture: str, axis_de
     metadata = generate_preview(config).metadata
     assert metadata["phase_axis_offset_elec_deg"] == pytest.approx(phase_axis_offset_deg(config), abs=1e-9)
     assert metadata["phase_axis_offset_elec_deg"] == pytest.approx(axis_deg, abs=1e-9)
+    assert metadata["phase_current_convention"] == "q_axis"
 
 
 def _vector_id(vector: dict) -> str:
@@ -89,3 +94,19 @@ def test_tooth_pole_layouts_match_the_preview(case: dict) -> None:
             y = sum(point[1] for point in region.points) / len(region.points)
             total += complex(math.cos(pairs * math.atan2(y, x)), math.sin(pairs * math.atan2(y, x)))
     assert math.degrees(math.atan2(total.imag, total.real)) % 360 == pytest.approx(case["rotor_n_axis_elec_deg"], abs=0.01)
+
+
+@pytest.mark.parametrize("vector", PRIUS_VECTORS["vectors"])
+def test_prius_preview_vectors_follow_both_public_and_native_resolvers(vector: dict) -> None:
+    config = MotorConfig.model_validate(case_config(vector["case_id"]))
+    config.solve_params.current_angle_deg = vector["current_angle_deg"]
+    theta = vector["rotor_electrical_angle_deg"]
+    assert generate_preview(config).metadata["phase_current_convention"] == "pyleecan_d_axis"
+    public = resolve_phase_current_sample(config, theta, clockwise_positive=True)
+    native = resolve_phase_current_sample(_clockwise_excitation_config(config), -theta)
+    assert public.phase_current_a == pytest.approx(vector["phase_current_A"], abs=1e-9)
+    assert native.phase_current_a == pytest.approx(vector["phase_current_A"], abs=1e-9)
+    amplitude = config.solve_params.current_amplitude_A
+    assert amplitude == vector["current_amplitude_A"]
+    normalized = [x / amplitude if amplitude else 0.0 for x in native.phase_current_a]
+    assert normalized == pytest.approx(vector["normalized_current"], abs=1e-9)
