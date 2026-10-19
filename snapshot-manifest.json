@@ -5795,8 +5795,8 @@
     },
     {
       "path": "frontend/scripts/test-field-axes.mjs",
-      "bytes": 2977,
-      "sha256": "39aef41d7087a48b455b04a8db3780a0d4a3868b478019c434f5fd57861b4b3f"
+      "bytes": 6115,
+      "sha256": "2259c0bf1a6566428674fd7e2340753e99fa00044cee49e5cb01522d9a447319"
     },
     {
       "path": "frontend/scripts/test-field-legend-fit.mjs",
@@ -5875,8 +5875,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 155409,
-      "sha256": "fd17db867e643ab1c719554788cb3c0e7322256e0208f99f26d7bf741241d1be"
+      "bytes": 156673,
+      "sha256": "78104776d859ba7ae286508a5adec1d37b2f54836e802bc82cfcc8cee4d3e620"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6300,8 +6300,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 55272,
-      "sha256": "c7618d0cde4bd758b52d75eecf02cf4866ebeb367622b70cbe92c7c35c62dc30"
+      "bytes": 56545,
+      "sha256": "6d35e09fff36f1dc32f1a4610bee30a556feb2421a8eae0aa483ee6fa4d93636"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -6490,8 +6490,8 @@
     },
     {
       "path": "frontend/src/public/fieldAxes.ts",
-      "bytes": 1486,
-      "sha256": "955232c4af710fbabcbb941281a8dde2dc624fb504dcf5041622b2f6e67c90a3"
+      "bytes": 4269,
+      "sha256": "5c19b3c9a6eeb7c6f03eace3eff325e0c75630f12907d3fab22db72a73ee27ab"
     },
     {
       "path": "frontend/src/public/fieldLegendFit.ts",
@@ -6700,8 +6700,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 264768,
-      "sha256": "cb1d0b142d500dc21774c61f07a40b68e1abe2878a51e416aed1c857d22f4565"
+      "bytes": 265706,
+      "sha256": "0588b77f07ab8f13ed52a24bd0001a609b766e1f6ccae22b9aa598465b45dfdb"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -12100,6 +12100,36 @@
       "path": "tests/test_public_candidate.py",
       "source_sha256": "4d284e07b09f17698671afa3f0502ff3250e9cbabb2ea0adab7610fd947485d4",
       "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "75aaf62939c80b7c2ec6e37eedc5d053af920847",
+      "path": "frontend/scripts/test-field-axes.mjs",
+      "source_sha256": "39aef41d7087a48b455b04a8db3780a0d4a3868b478019c434f5fd57861b4b3f",
+      "reason": "Draw the Stator + PM field-axis arrows thin and dashed, with solid fine heads; frame the lead angle with two centre lines and explain electrical degrees in a ? tooltip."
+    },
+    {
+      "base_commit": "5ae948b08d0f5db588704165884d02a1b57e1c43",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "fd17db867e643ab1c719554788cb3c0e7322256e0208f99f26d7bf741241d1be",
+      "reason": "Draw the Stator + PM field-axis arrows thin and dashed, with solid fine heads; frame the lead angle with two centre lines and explain electrical degrees in a ? tooltip."
+    },
+    {
+      "base_commit": "e446a57152eae1055f15b61c5f5fe1c96b5db939",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "c7618d0cde4bd758b52d75eecf02cf4866ebeb367622b70cbe92c7c35c62dc30",
+      "reason": "Draw the Stator + PM field-axis arrows thin and dashed, with solid fine heads; frame the lead angle with two centre lines and explain electrical degrees in a ? tooltip."
+    },
+    {
+      "base_commit": "75aaf62939c80b7c2ec6e37eedc5d053af920847",
+      "path": "frontend/src/public/fieldAxes.ts",
+      "source_sha256": "955232c4af710fbabcbb941281a8dde2dc624fb504dcf5041622b2f6e67c90a3",
+      "reason": "Draw the Stator + PM field-axis arrows thin and dashed, with solid fine heads; frame the lead angle with two centre lines and explain electrical degrees in a ? tooltip."
+    },
+    {
+      "base_commit": "5ae948b08d0f5db588704165884d02a1b57e1c43",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "cb1d0b142d500dc21774c61f07a40b68e1abe2878a51e416aed1c857d22f4565",
+      "reason": "Draw the Stator + PM field-axis arrows thin and dashed, with solid fine heads; frame the lead angle with two centre lines and explain electrical degrees in a ? tooltip."
     }
   ]
 }

@@ -25,7 +25,7 @@ import {
   useViewportNavigation,
   ViewportNavigationControls,
 } from './ViewportNavigation';
-import { rotorNorthAxisDeg, statorLeadElecDeg } from './fieldAxes';
+import { fieldAxisArrowPaths, leadAngleExplanation, rotorNorthAxisDeg, statorLeadElecDeg } from './fieldAxes';
 import { motorFitWidthBesideLegend } from './fieldLegendFit';
 import {
   fieldRangeForViewport,
@@ -987,14 +987,6 @@ export function FieldResultPlot({
     const angleRad = (angleDeg * Math.PI) / 180;
     return [radius * Math.cos(angleRad), -radius * Math.sin(angleRad)] as const;
   };
-  const axisArrow = (fromRadius: number, toRadius: number, angleDeg: number) => {
-    const [x1, y1] = polar(fromRadius, angleDeg);
-    const [x2, y2] = polar(toRadius, angleDeg);
-    const head = (toRadius - fromRadius) * 0.28;
-    const [hx1, hy1] = polar(toRadius - head, angleDeg + 4);
-    const [hx2, hy2] = polar(toRadius - head, angleDeg - 4);
-    return `M ${x1} ${y1} L ${x2} ${y2} M ${hx1} ${hy1} L ${x2} ${y2} L ${hx2} ${hy2}`;
-  };
   const axisPitchDeg = 360 / axisPolePairs;
   const axisAngles = (startDeg: number) => Array.from(
     { length: axisPolePairs },
@@ -1014,7 +1006,12 @@ export function FieldResultPlot({
   const [arcX1, arcY1] = polar(arcRadius, arcRotorDeg);
   const [arcX2, arcY2] = polar(arcRadius, arcRotorDeg + arcSpanDeg);
   const [arcLabelX, arcLabelY] = polar(arcRadius * 0.8, arcRotorDeg + arcSpanDeg / 2);
+  // Two lines from the centre to the marked rotor arrow and the stator arrow
+  // ahead of it, so the lead angle reads as an angle at the shaft.
+  const [rayRotorX, rayRotorY] = polar(axisRotorRadius * 0.62, arcRotorDeg);
+  const [rayStatorX, rayStatorY] = polar(axisStatorRadius * 1.04, arcRotorDeg + arcSpanDeg);
   const axisFontSize = Math.max(1.2, axisRotorRadius * 0.07);
+  const leadLabel = `${Math.round(Math.abs(leadElecDeg ?? 0))}° elec`;
   const visibleLayerLabel = [
     showHeatmap && hasHeatmap ? 'flux-density heatmap' : null,
     showMesh && hasMesh ? 'solver mesh edges' : null,
@@ -1083,6 +1080,7 @@ export function FieldResultPlot({
     hasFieldAxes && leadElecDeg !== null
       ? `Arrows: each field's ${axisPolePairs}-pole-pair flux pointing outward. ${leadElecDeg >= 0 ? 'The magnets are pulled after the stator field.' : 'The stator field holds the magnets back.'}`
       : null,
+    hasFieldAxes && leadElecDeg !== null ? leadAngleExplanation(leadElecDeg, axisPolePairs) : null,
     hasFieldAxes && leadElecDeg !== null && statorStrongestPolePairs !== null && statorStrongestPolePairs !== axisPolePairs
       ? `The stator's stronger ${statorStrongestPolePairs}-pole-pair part gives no steady torque and can make its lines seem to turn the other way.`
       : null,
@@ -1164,19 +1162,40 @@ export function FieldResultPlot({
               )}
               {hasFieldAxes && statorAxisDeg !== null && rotorAxisDeg !== null && (
                 <g className="public-field-axes">
-                  {axisAngles(rotorAxisDeg).map((angle) => (
-                    <path className="public-field-axis is-pm" d={axisArrow(axisRotorRadius * 0.62, axisRotorRadius * 0.96, angle)} key={`pm-axis-${angle}`} />
-                  ))}
-                  {axisAngles(statorAxisDeg).map((angle) => (
-                    <path className="public-field-axis is-stator" d={axisArrow(axisStatorRadius * 1.04, axisStatorRadius * 1.32, angle)} key={`stator-axis-${angle}`} />
-                  ))}
+                  <path className="public-field-axis-ray is-pm" d={`M 0 0 L ${rayRotorX} ${rayRotorY}`} />
+                  <path className="public-field-axis-ray is-stator" d={`M 0 0 L ${rayStatorX} ${rayStatorY}`} />
+                  {axisAngles(rotorAxisDeg).map((angle) => {
+                    const arrow = fieldAxisArrowPaths(axisRotorRadius * 0.62, axisRotorRadius * 0.96, angle);
+                    return (
+                      <g className="public-field-axis is-pm" key={`pm-axis-${angle}`}>
+                        <path className="public-field-axis-shaft" d={arrow.shaft} />
+                        <path d={arrow.head} />
+                      </g>
+                    );
+                  })}
+                  {axisAngles(statorAxisDeg).map((angle) => {
+                    const arrow = fieldAxisArrowPaths(axisStatorRadius * 1.04, axisStatorRadius * 1.32, angle);
+                    return (
+                      <g className="public-field-axis is-stator" key={`stator-axis-${angle}`}>
+                        <path className="public-field-axis-shaft" d={arrow.shaft} />
+                        <path d={arrow.head} />
+                      </g>
+                    );
+                  })}
                   <path
                     className="public-field-axis-arc"
                     d={`M ${arcX1} ${arcY1} A ${arcRadius} ${arcRadius} 0 0 ${arcSpanDeg > 0 ? 0 : 1} ${arcX2} ${arcY2}`}
                   />
-                  <text className="public-field-axis-label" x={arcLabelX} y={arcLabelY} style={{ fontSize: axisFontSize }}>
-                    {Math.round(Math.abs(leadElecDeg ?? 0))}° elec
-                  </text>
+                  <g className="public-field-axis-help">
+                    <title>{leadAngleExplanation(leadElecDeg ?? 0, axisPolePairs)}</title>
+                    <text className="public-field-axis-label" x={arcLabelX} y={arcLabelY} style={{ fontSize: axisFontSize }}>
+                      {leadLabel}
+                    </text>
+                    <g className="public-field-axis-help-badge" transform={`translate(${arcLabelX + axisFontSize * (leadLabel.length * 0.3 + 0.9)} ${arcLabelY})`}>
+                      <circle r={axisFontSize * 0.62} />
+                      <text style={{ fontSize: axisFontSize * 0.85 }}>?</text>
+                    </g>
+                  </g>
                 </g>
               )}
               {hasStatorPolarityCues && statorPolarityCues.map((cue, index) => {

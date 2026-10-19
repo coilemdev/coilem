@@ -1665,9 +1665,20 @@ body {
 .public-field-lines-legend .is-stator { background: #ffd166; box-shadow: 0 0 4px rgba(255,145,0,.9); }
 .public-field-lines-legend .is-pm { background: #5ed3f3; box-shadow: 0 0 0 1px rgba(3,10,20,.9), 0 0 4px rgba(94,211,243,.7); }
 .public-field-lines-legend .public-field-lead { color: var(--text-primary); font-size: 10px; font-weight: 700; }
-.public-field-axis { fill: none; stroke-width: 2.4px; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
-.public-field-axis.is-stator { stroke: #ffb547; filter: drop-shadow(0 0 2px rgba(0,0,0,.95)); }
-.public-field-axis.is-pm { stroke: #5ed3f3; filter: drop-shadow(0 0 2px rgba(0,0,0,.95)); }
+.public-field-axis { fill: none; stroke-width: .8px; stroke-linecap: round; stroke-linejoin: round; }
+.public-field-axis path { vector-effect: non-scaling-stroke; }
+/* Dashed shafts keep the axis arrows light over the field lines; the heads stay solid. */
+.public-field-axis-shaft { stroke-dasharray: 4 3; }
+.public-field-axis-ray { fill: none; stroke-width: .8px; stroke-dasharray: 2 3; stroke-linecap: round; opacity: .8; vector-effect: non-scaling-stroke; }
+.public-field-axis-ray.is-stator { stroke: #ffb547; }
+.public-field-axis-ray.is-pm { stroke: #5ed3f3; }
+/* The lead-angle label and its "?" carry the why-90-elec tooltip. */
+.public-field-axis-help { pointer-events: auto; cursor: help; }
+.public-field-axis-help .public-field-axis-label { pointer-events: auto; }
+.public-field-axis-help-badge circle { fill: rgba(3,7,18,.88); stroke: rgba(241,245,249,.85); stroke-width: 1px; vector-effect: non-scaling-stroke; }
+.public-field-axis-help-badge text { fill: #f8fafc; text-anchor: middle; dominant-baseline: central; font-family: var(--font-mono); font-weight: 700; }
+.public-field-axis.is-stator { stroke: #ffb547; filter: drop-shadow(0 0 1px rgba(0,0,0,.95)); }
+.public-field-axis.is-pm { stroke: #5ed3f3; filter: drop-shadow(0 0 1px rgba(0,0,0,.95)); }
 .public-field-axis-arc { fill: none; stroke: rgba(241,245,249,.8); stroke-width: 1.4px; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
 .public-field-axis-label { fill: #f8fafc; stroke: rgba(3,7,18,.9); stroke-width: .12; paint-order: stroke; text-anchor: middle; dominant-baseline: central; font-family: var(--font-mono); font-weight: 700; pointer-events: none; }
 @keyframes public-field-direction-flow {

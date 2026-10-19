@@ -3,7 +3,7 @@ import { importTypeScriptModule } from './import-typescript-module.mjs';
 
 // Stator + PM axes (#120): where each field's working harmonic carries flux
 // outward across the gap, and how far the stator field leads the magnets.
-const { rotorNorthAxisDeg, statorLeadElecDeg } = await importTypeScriptModule(
+const { fieldAxisArrowPaths, leadAngleExplanation, rotorNorthAxisDeg, statorLeadElecDeg } = await importTypeScriptModule(
   new URL('../src/public/fieldAxes.ts', import.meta.url),
 );
 const { airgapHarmonic, deriveMagneticPolarityCues, strongestAirgapPolePairs } = await importTypeScriptModule(
@@ -56,4 +56,55 @@ close(cues[0].angleDeg, 10, 'first stator cue', 1e-3);
 assert.equal(cues[0].label, 'S');
 assert.equal(cues[1].label, 'N');
 
-console.log('field axes: magnet north axis, stator lead, working harmonic and strongest pattern pass');
+// The stator centre line sits at the rotor axis plus the lead turned into
+// mechanical degrees (signed by rotation), which is always one of the stator
+// arrows: rotor + span equals the stator axis modulo one pole-pair pitch.
+for (const rotation of ['clockwise', 'counterclockwise']) {
+  for (const [statorDeg, rotorDeg, polePairs] of [[-22.5, 0, 4], [10, 37, 12], [200, 3, 2]]) {
+    const span = (rotation === 'clockwise' ? -1 : 1) * statorLeadElecDeg(statorDeg, rotorDeg, polePairs, rotation) / polePairs;
+    const pitch = 360 / polePairs;
+    const offset = (((rotorDeg + span - statorDeg) % pitch) + pitch) % pitch;
+    assert.ok(offset < 1e-9 || pitch - offset < 1e-9, `${rotation} ${statorDeg}/${rotorDeg}/${polePairs}: ${offset}`);
+  }
+}
+
+// Axis arrows: a straight (dashed) shaft and a fine solid chevron head, the same shape on the
+// rotor and on the larger stator ring (the head used to be a fixed +-4 degrees,
+// wider than long on the stator).
+const arrowPoints = (path) => {
+  const numbers = path.match(/-?\d+(?:\.\d+)?(?:e-?\d+)?/g).map(Number);
+  return Array.from({ length: numbers.length / 2 }, (_, index) => [numbers[2 * index], numbers[2 * index + 1]]);
+};
+for (const [from, to, angle] of [[20, 31, 90], [52, 66, 37.5], [52, 66, -150]]) {
+  const label = `arrow ${from}->${to} at ${angle} deg`;
+  const { shaft, head: headPath } = fieldAxisArrowPaths(from, to, angle);
+  const [tail, tip] = arrowPoints(shaft);
+  const [sideA, tipAgain, sideB] = arrowPoints(headPath);
+  const rad = (angle * Math.PI) / 180;
+  close(tail[0], from * Math.cos(rad), `${label} tail x`);
+  close(tail[1], -from * Math.sin(rad), `${label} tail y`);
+  close(tip[0], to * Math.cos(rad), `${label} tip x`);
+  close(tip[1], -to * Math.sin(rad), `${label} tip y`);
+  assert.deepEqual(tipAgain, tip, label);
+  const head = (to - from) * 0.24;
+  for (const side of [sideA, sideB]) {
+    close(Math.hypot(side[0] - tip[0], side[1] - tip[1]), Math.hypot(head, head * 0.42), `${label} head edge`);
+  }
+  // Narrower than long: the two barbs sit 0.84 head lengths apart.
+  close(Math.hypot(sideA[0] - sideB[0], sideA[1] - sideB[1]), head * 0.84, `${label} head width`);
+}
+
+// The "?" on the lead label says why 90 deg elec is not a right angle on screen.
+assert.equal(
+  leadAngleExplanation(90, 12),
+  'Why 90° elec when the lines are only 7.5° apart? With 12 pole pairs the field pattern repeats every 30° '
+    + 'around the motor, so 360° elec is 30° of rotation and 7.5° × 12 = 90° elec. Electrical degrees measure '
+    + 'position within one N–S pole pair: at 90° elec the stator field sits halfway between magnet poles, where '
+    + 'the magnet torque per amp is largest.',
+);
+assert.match(leadAngleExplanation(89.6, 4), /only 22\.5° apart\? With 4 pole pairs the field pattern repeats every 90° /);
+assert.match(leadAngleExplanation(89, 4), /22\.3° × 4 ≈ 89° elec/);
+assert.match(leadAngleExplanation(-60, 4), /holds them back\.$/);
+assert.match(leadAngleExplanation(90, 1), /^On a 2-pole motor one turn is 360° elec, so the two lines are 90° apart\./);
+
+console.log('field axes: magnet north axis, stator lead, working harmonic and strongest pattern, axis arrow shape pass');
