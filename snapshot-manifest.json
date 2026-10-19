@@ -5875,8 +5875,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 156673,
-      "sha256": "78104776d859ba7ae286508a5adec1d37b2f54836e802bc82cfcc8cee4d3e620"
+      "bytes": 157305,
+      "sha256": "646e635b4aa38cf8408b135e93db8c3ed50726080a179145e86654475306ce29"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6290,8 +6290,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 222244,
-      "sha256": "1200cc7326b4d891b198907a4649f5411914d797cd32ce29c56a36042cd836ff"
+      "bytes": 223760,
+      "sha256": "85a4fe4f893ca083cd20108dd6f4d0dbecf27123f2ecbb72761af4d37a09af9a"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -6355,8 +6355,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 56111,
-      "sha256": "9f2de9c651569573341b0cefbc8eae81d51fd25658910dfe6bd5d1df58dcdf09"
+      "bytes": 54956,
+      "sha256": "3adf052069e3928915f0d4e2248f0cd917b041c061511817a4bb9d4b4f09e94e"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -6700,8 +6700,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 265706,
-      "sha256": "0588b77f07ab8f13ed52a24bd0001a609b766e1f6ccae22b9aa598465b45dfdb"
+      "bytes": 263932,
+      "sha256": "f5532cbb3676ab84c80f2d6eacec146e10a4914127f077f8130bae14c495b365"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -12130,6 +12130,30 @@
       "path": "frontend/src/public/styles.css",
       "source_sha256": "cb1d0b142d500dc21774c61f07a40b68e1abe2878a51e416aed1c857d22f4565",
       "reason": "Draw the Stator + PM field-axis arrows thin and dashed, with solid fine heads; frame the lead angle with two centre lines and explain electrical degrees in a ? tooltip."
+    },
+    {
+      "base_commit": "6172f3b5018039f900b5dc8daedf76b10495275e",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "78104776d859ba7ae286508a5adec1d37b2f54836e802bc82cfcc8cee4d3e620",
+      "reason": "Report the stator-only field run in the Run plan's live card like a solve, without the progress overlay on the field."
+    },
+    {
+      "base_commit": "5ae948b08d0f5db588704165884d02a1b57e1c43",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "1200cc7326b4d891b198907a4649f5411914d797cd32ce29c56a36042cd836ff",
+      "reason": "Report the stator-only field run in the Run plan's live card like a solve, without the progress overlay on the field."
+    },
+    {
+      "base_commit": "9ecf809ee78b8fa12d41cf773505fbd7aaed3bef",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "9f2de9c651569573341b0cefbc8eae81d51fd25658910dfe6bd5d1df58dcdf09",
+      "reason": "Report the stator-only field run in the Run plan's live card like a solve, without the progress overlay on the field."
+    },
+    {
+      "base_commit": "6172f3b5018039f900b5dc8daedf76b10495275e",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "0588b77f07ab8f13ed52a24bd0001a609b766e1f6ccae22b9aa598465b45dfdb",
+      "reason": "Report the stator-only field run in the Run plan's live card like a solve, without the progress overlay on the field."
     }
   ]
 }
