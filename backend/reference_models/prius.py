@@ -46,6 +46,71 @@ def report_reference_sources(report, config, artifact):
     }
 
 
+def extract_winding_report(report, config, artifact):
+    """Integrate nodal Az using the reference's actual region/phase/turn labels.
+
+    Generic polar slot bins do not retain the imported winding after reflection.
+    This uses the same signed winding functional as the explicit current source,
+    preserving sum(lambda_phase * I_phase) = L * integral(Az * Jz dA).
+    """
+    import numpy as np
+
+    nodes = np.asarray(artifact["mesh"]["nodes"], dtype=float)
+    tri = np.asarray(artifact["mesh"]["triangles"], dtype=int)
+    az = np.asarray(report["field_plot"]["az_nodal"], dtype=float)
+    if az.shape != (len(nodes),) or not np.isfinite(az).all():
+        raise ValueError("Reference linkage extraction requires finite nodal Az for the actual mesh")
+    a, b = nodes[tri[:, 1]] - nodes[tri[:, 0]], nodes[tri[:, 2]] - nodes[tri[:, 0]]
+    areas = abs(a[:, 0] * b[:, 1] - a[:, 1] * b[:, 0]) * .5e-6
+    element_az = az[tri].mean(axis=1)
+    centroids = nodes[tri].mean(axis=1)
+    ids = np.asarray(artifact["element_region_ids"])
+    densities = np.asarray(artifact["element_current_density_a_per_m2"], dtype=float)
+    flux = np.zeros(3)
+    flux_rows, current_rows = [], []
+    for region in artifact["physics_contract"]["regions"]:
+        if region["kind"] != "SlotWinding":
+            continue
+        w = region["winding"]
+        selected = ids == region["id"]
+        area_m2 = float(areas[selected].sum())
+        if not np.isfinite(area_m2) or area_m2 <= 0:
+            raise ValueError(f"Reference winding {region['id']} has no finite meshed area")
+        average = float(np.dot(element_az[selected], areas[selected]) / area_m2)
+        sign = 1 if w["direction"] == "in" else -1
+        turns = config.winding.turns_per_coil
+        contribution = sign * turns * config.stator.stack_length_mm * .001 * average
+        flux["ABC".index(w["phase"])] += contribution
+        center = np.average(centroids[selected], weights=areas[selected], axis=0)
+        common = {"slot_index_modeled": w["slot_index"], "slot_index_global": w["slot_index"],
+                  "phase": w["phase"], "direction": w["direction"], "turns_per_coil": turns,
+                  "center_angle_mech_deg": math.degrees(math.atan2(center[1], center[0])) % 360,
+                  "slot_area_m2": area_m2}
+        flux_rows.append({**common, "az_reference_wb_per_m": 0., "az_avg_wb_per_m": average,
+                          "az_effective_wb_per_m": average, "contribution_wb": contribution})
+        ampere_turns = float(np.dot(densities[selected], areas[selected]))
+        current_rows.append({**common, "effective_current_density_a_per_m2": ampere_turns / area_m2,
+                             "integrated_amp_turns_a": ampere_turns, "slot_current_a": ampere_turns / turns,
+                             "phase_current_a": ampere_turns / (sign * turns)})
+    if len(flux_rows) != 48:
+        raise ValueError("Reference linkage extraction requires all 48 published winding regions")
+    results = report["results"]
+    report["native_generic_winding_extraction"] = {
+        key: results.get(key) for key in ("flux_linkage_a_wb", "flux_linkage_b_wb", "flux_linkage_c_wb",
+                                         "slot_flux_linkage_contributions", "slot_excitation_contributions")
+    }
+    results.update({f"flux_linkage_{phase}_wb": float(value) for phase, value in zip("abc", flux)})
+    results["slot_flux_linkage_contributions"] = flux_rows
+    results["slot_excitation_contributions"] = current_rows
+    report["reference_winding_extraction"] = {
+        "version": "published-region-winding/v1", "geometry_asset_sha256": geometry_asset_sha256(),
+        "flux_rule": "signed turns * physical stack length * area-weighted nodal Az in each exact winding region",
+        "phase_flux_linkage_Wb": flux.tolist(),
+        "sum_phase_flux_current_J": float(np.dot(flux, artifact["physics_contract"]["provenance"]["phase_current_A"])),
+        "integral_Az_Jz_L_J": float(np.dot(element_az * densities, areas) * config.stator.stack_length_mm * .001),
+    }
+
+
 def case_config(case_id):
     """A fresh, versioned reference preset; callers may vary operating/accuracy controls."""
     config = copy.deepcopy(fixture())

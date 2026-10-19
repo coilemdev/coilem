@@ -1272,9 +1272,10 @@ def run_magneto2d_report(
         )
         report["solver_environment"] = solver_environment
         if config.geometry_reference == "pyleecan_prius_2004":
-            from backend.reference_models.prius import report_reference_sources
+            from backend.reference_models.prius import extract_winding_report, report_reference_sources
 
             report_reference_sources(report, config, solve_mesh_artifact)
+            extract_winding_report(report, config, solve_mesh_artifact)
             appendable = False
         if persist_artifacts_dir is not None:
             shutil.copy2(input_path, persist_artifacts_dir / f"{prefix}_input.json")

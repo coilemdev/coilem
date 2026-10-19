@@ -29,8 +29,7 @@ export interface PublicExampleOption {
   /** Needs the local app started with COILEM_EXPERIMENTAL_ROTORS=1. */
   experimental?: boolean;
   /**
-   * A real motor that coilEM has been compared against published hardware
-   * measurements. Listed under Benchmarks. Its design file holds only public
+   * A motor compared against published hardware or a published software model. Listed under Benchmarks. Its design file holds only public
    * facts from the cited source, never licensed or proprietary data.
    */
   benchmark?: boolean;

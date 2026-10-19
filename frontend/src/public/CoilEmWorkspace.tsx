@@ -1413,7 +1413,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         </div>
         <NumberRow label="Turns / Coil" value={config.winding.turns_per_coil} min={1} step={1} disabled={disabled} onChange={set('winding', 'turns_per_coil', 'winding')} />
         <NumberRow label="Parallel Paths" value={config.winding.parallel_paths} min={1} step={1} disabled={disabled} onChange={set('winding', 'parallel_paths', 'winding')} />
-        <NumberRow label="Phase Current" value={config.solve_params.current_amplitude_A} unit="A rms" min={0} step={0.5} disabled={disabled} onChange={set('solve_params', 'current_amplitude_A', 'winding')} />
+        <NumberRow label="Phase Current" value={config.solve_params.current_amplitude_A} unit={`A ${config.solve_params.current_amplitude_convention}`} min={0} step={0.5} disabled={disabled} onChange={set('solve_params', 'current_amplitude_A', 'winding')} />
       </ParameterSectionBlock>}
 
       {matchesSearch('materials') && <ParameterSectionBlock id="materials" attention={errorSection === 'materials'} label="Materials" active={Boolean(normalizedSearch) || activeSection === 'materials'} onToggle={toggle} summary={`${steelDisplayName(config, config.materials.stator_steel)} stator · ${steelDisplayName(config, config.materials.rotor_steel)} rotor`}>
@@ -3961,6 +3961,11 @@ function ReportStage({
   const reportSettings: Array<{ label: string; value: string }> = [
     { label: 'Project', value: projectName },
     { label: 'Material', value: materialName },
+    ...(config.geometry_reference ? [
+      { label: 'Reference case', value: config.reference_case ?? 'Not recorded' },
+      { label: 'Magnet temperature', value: `${config.solve_params.magnet_temperature_C}°C` },
+      { label: 'Pyleecan Φ₀ (d-axis)', value: `${config.solve_params.current_angle_deg}° electrical` },
+    ] : []),
     {
       label: sixStep ? 'Conducting phase current' : 'Phase current',
       value: `${formatNumber(config.solve_params.current_amplitude_A)} A ${sixStep ? 'plateau' : config.solve_params.current_amplitude_convention}`,

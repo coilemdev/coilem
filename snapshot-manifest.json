@@ -375,8 +375,8 @@
     },
     {
       "path": "backend/magneto2d_adapter/__init__.py",
-      "bytes": 73602,
-      "sha256": "348da7003d82b3200d870e792405e8a8c2a6a965797e10a671d667d371bccc69"
+      "bytes": 73698,
+      "sha256": "a71df849483ec8cfa6ababf3a7a6f4487fe216ff04a7e77e39b1b59ff03e0421"
     },
     {
       "path": "backend/magneto2d_adapter/_state.py",
@@ -490,8 +490,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 53513,
-      "sha256": "befde85f42682921b406c13730951388faa8d624fee26950b63af594e5456d06"
+      "bytes": 54086,
+      "sha256": "66f33e489f915240886da64a51b1e8b6913a102b7d2bde8ee6e150fde2d96ba9"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -545,8 +545,8 @@
     },
     {
       "path": "backend/reference_models/prius.py",
-      "bytes": 12562,
-      "sha256": "ec4553fda5453a3796a5b0f824853493d6f4a3d733eb77a5d9df488f659c818b"
+      "bytes": 16613,
+      "sha256": "a8fe330a05d5f0ee84b68950f726672808fb374b353a91f9d5b757f2d81afa3f"
     },
     {
       "path": "backend/reference_models/pyleecan_prius_2004.json",
@@ -5084,6 +5084,16 @@
       "sha256": "6bc2a602672fe8ae9558fe1b94f236517f8ccbe438fefaf0d2826a034703ce63"
     },
     {
+      "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
+      "bytes": 16077,
+      "sha256": "17d4705fd3aad273e8d8c2c5d062d9682378c6c11be367e6f374ad295114b8e9"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/protocol.json",
+      "bytes": 1662,
+      "sha256": "42adbb9b7803b11eae7d05e4bd347ef1c3f672b81cb8fee858064db97e407a77"
+    },
+    {
       "path": "docs/benchmarks/pyleecan-prius-v1/pyleecan-loaded-results.json",
       "bytes": 471705,
       "sha256": "0f012e15daf5a5bd03f378bddb781097b8938e6f1c7db8444b03ffa4381ec43a"
@@ -5895,8 +5905,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 217140,
-      "sha256": "d3bceaa9a61b3e726e035ff1f197591a0e3a40636ca5b267c523240e4cb565d8"
+      "bytes": 217528,
+      "sha256": "63503ed3603012346b59b06e764ab947e71aeb98452a3f86b2cdcf061e5e79a4"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -6040,8 +6050,8 @@
     },
     {
       "path": "frontend/src/public/exampleDesigns.ts",
-      "bytes": 4027,
-      "sha256": "d962b7cba15f242e68fc6bbc30c1f506f8ddb406026a9b3fc75711c144650fbc"
+      "bytes": 4013,
+      "sha256": "fb04d423b8d483ccd2c042883b3759b300316602a2663a9afdc1c24c55201951"
     },
     {
       "path": "frontend/src/public/examples/honda_accord_2005.coilem",
@@ -6345,8 +6355,8 @@
     },
     {
       "path": "pyproject.toml",
-      "bytes": 1742,
-      "sha256": "ecd948e616491e0c7aaf59aa86adbcde40bbc8375858e68cfac9437bb4cd4ed2"
+      "bytes": 1769,
+      "sha256": "fe251c3ac4ce9dcd2e725126f93eeb284feb945dd4ada6ac83dafe623e8d3674"
     },
     {
       "path": "references/benchmark_configs/validation_ipm_10p_v_shape_medium.openem",
@@ -6770,8 +6780,8 @@
     },
     {
       "path": "tests/test_installed_resources.py",
-      "bytes": 10215,
-      "sha256": "56081bd2e9c0b8ca943103a3563255dd616606f12dd17c559f6b07cb06cd9220"
+      "bytes": 11238,
+      "sha256": "8c93aa259316fc07c9a2a9a4a69d8cccb6936f33c2a5f97cd2a52cc2fc0fedc5"
     },
     {
       "path": "tests/test_late_reference_comparison.py",
@@ -6870,8 +6880,8 @@
     },
     {
       "path": "tests/test_public_report_exports.py",
-      "bytes": 30156,
-      "sha256": "167d2f1f68c9981f0e76b534444623979df7648d2cd684491e930c5baefe66bf"
+      "bytes": 30750,
+      "sha256": "ad5f0909966caad0a7fa96b9a25b83aa4f321d62526379f8c38b74c7898037bb"
     },
     {
       "path": "tests/test_public_security.py",
@@ -6915,8 +6925,8 @@
     },
     {
       "path": "tests/test_pyleecan_reference_fixture.py",
-      "bytes": 13012,
-      "sha256": "d5dcc1fc52c478a7126c161765df8efbb113c0aa692b22a4fa928e05c2225739"
+      "bytes": 14330,
+      "sha256": "aca962fb31f84f9422a556a409c3a58660d34567112391cf306f9521a3fe9b3e"
     },
     {
       "path": "tests/test_pyleecan_tutorial.py",
@@ -10610,6 +10620,60 @@
       "path": "tests/test_pyleecan_reference_fixture.py",
       "source_sha256": "be90e7f4f935ee6f05c08b162f7b51f205e17e167d11cbf0e102d7c9d4c694f2",
       "reason": "Persist the actual reference d-axis current convention, including zero-current no-load provenance."
+    },
+    {
+      "base_commit": "0b6365068b1da1ee4f61050f5535dd35e1742d1b",
+      "path": "backend/magneto2d_adapter/__init__.py",
+      "source_sha256": "348da7003d82b3200d870e792405e8a8c2a6a965797e10a671d667d371bccc69",
+      "reason": "Complete #126 reference winding extraction, installed assets and explicit report conventions."
+    },
+    {
+      "base_commit": "0b6365068b1da1ee4f61050f5535dd35e1742d1b",
+      "path": "backend/public_report.py",
+      "source_sha256": "befde85f42682921b406c13730951388faa8d624fee26950b63af594e5456d06",
+      "reason": "Complete #126 reference winding extraction, installed assets and explicit report conventions."
+    },
+    {
+      "base_commit": "0b6365068b1da1ee4f61050f5535dd35e1742d1b",
+      "path": "backend/reference_models/prius.py",
+      "source_sha256": "ec4553fda5453a3796a5b0f824853493d6f4a3d733eb77a5d9df488f659c818b",
+      "reason": "Complete #126 reference winding extraction, installed assets and explicit report conventions."
+    },
+    {
+      "base_commit": "0b6365068b1da1ee4f61050f5535dd35e1742d1b",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "d3bceaa9a61b3e726e035ff1f197591a0e3a40636ca5b267c523240e4cb565d8",
+      "reason": "Complete #126 reference winding extraction, installed assets and explicit report conventions."
+    },
+    {
+      "base_commit": "0b6365068b1da1ee4f61050f5535dd35e1742d1b",
+      "path": "frontend/src/public/exampleDesigns.ts",
+      "source_sha256": "d962b7cba15f242e68fc6bbc30c1f506f8ddb406026a9b3fc75711c144650fbc",
+      "reason": "Complete #126 reference winding extraction, installed assets and explicit report conventions."
+    },
+    {
+      "base_commit": "0b6365068b1da1ee4f61050f5535dd35e1742d1b",
+      "path": "pyproject.toml",
+      "source_sha256": "ecd948e616491e0c7aaf59aa86adbcde40bbc8375858e68cfac9437bb4cd4ed2",
+      "reason": "Complete #126 reference winding extraction, installed assets and explicit report conventions."
+    },
+    {
+      "base_commit": "0b6365068b1da1ee4f61050f5535dd35e1742d1b",
+      "path": "tests/test_installed_resources.py",
+      "source_sha256": "56081bd2e9c0b8ca943103a3563255dd616606f12dd17c559f6b07cb06cd9220",
+      "reason": "Complete #126 reference winding extraction, installed assets and explicit report conventions."
+    },
+    {
+      "base_commit": "0b6365068b1da1ee4f61050f5535dd35e1742d1b",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "167d2f1f68c9981f0e76b534444623979df7648d2cd684491e930c5baefe66bf",
+      "reason": "Complete #126 reference winding extraction, installed assets and explicit report conventions."
+    },
+    {
+      "base_commit": "0b6365068b1da1ee4f61050f5535dd35e1742d1b",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "d5dcc1fc52c478a7126c161765df8efbb113c0aa692b22a4fa928e05c2225739",
+      "reason": "Complete #126 reference winding extraction, installed assets and explicit report conventions."
     }
   ]
 }

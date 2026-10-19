@@ -253,3 +253,23 @@ def test_no_load_report_does_not_retain_the_loaded_phase_current_provenance():
     assert report["operating_point"]["phase_current_A"] == [0, 0, 0]
     assert original["physics_contract"]["provenance"]["phase_current_A"] == [100, -50, -50]
     assert zeroed["element_current_density_a_per_m2"] == [0, 0]
+
+
+@pytest.mark.skipif(not GMSH_AVAILABLE, reason="requires Gmsh")
+def test_exact_winding_linkage_is_dual_to_the_applied_mesh_current():
+    cfg = config()
+    artifact = run_gmsh_mesh_preview(cfg, rotor_angle_deg=-7.5)["solve_mesh_artifact"]
+    nodes = np.asarray(artifact["mesh"]["nodes"])
+    az = .01 * np.sin(nodes[:, 0] / 100) + .015 * np.cos(nodes[:, 1] / 100)
+    report = {"results": {}, "field_plot": {"az_nodal": az.tolist()}}
+    prius.extract_winding_report(report, cfg, artifact)
+    audit = report["reference_winding_extraction"]
+    assert audit["sum_phase_flux_current_J"] == pytest.approx(audit["integral_Az_Jz_L_J"], abs=1e-12)
+    assert len(report["results"]["slot_flux_linkage_contributions"]) == 48
+    currents = artifact["physics_contract"]["provenance"]["phase_current_A"]
+    for row in report["results"]["slot_excitation_contributions"]:
+        assert row["phase_current_a"] == pytest.approx(currents["ABC".index(row["phase"])], abs=1e-10)
+    # Gauge invariance follows from the signed, balanced turns of each phase.
+    shifted = {"results": {}, "field_plot": {"az_nodal": (az + .3).tolist()}}
+    prius.extract_winding_report(shifted, cfg, artifact)
+    assert shifted["reference_winding_extraction"]["phase_flux_linkage_Wb"] == pytest.approx(audit["phase_flux_linkage_Wb"], abs=1e-14)
