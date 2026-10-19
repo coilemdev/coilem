@@ -752,6 +752,9 @@ def _zero_current_solve_mesh_artifact(solve_mesh_artifact: dict[str, Any]) -> di
                 region["winding"] = {**winding, "current_density_a_per_m2": 0.0}
             zeroed_regions.append(region)
         artifact["physics_contract"] = {**contract, "regions": zeroed_regions}
+        provenance = contract.get("provenance")
+        if isinstance(provenance, dict) and "phase_current_A" in provenance:
+            artifact["physics_contract"]["provenance"] = {**provenance, "phase_current_A": [0.0, 0.0, 0.0]}
 
     return artifact
 

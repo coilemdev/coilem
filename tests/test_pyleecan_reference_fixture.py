@@ -221,3 +221,35 @@ def test_both_registered_cases_are_loadable_without_research_flags(case_id, monk
     ui.pop("geometry_reference")
     with pytest.raises(PublicConfigError):
         parse_public_motor_config(ui)
+
+
+def test_saved_native_report_names_the_actual_explicit_current_convention():
+    cfg = config()
+    original = {"current_angle_reference": "gamma from q-axis"}
+    report = {"operating_point": original}
+    currents = [-191.51111077974448, 234.9231551964771, -43.412044416732584]
+    artifact = {"physics_contract": {"provenance": {"phase_current_A": currents}}}
+    prius.report_reference_sources(report, cfg, artifact)
+    assert report["native_input_operating_point"] is original
+    actual = report["operating_point"]
+    assert actual["phase_current_A"] == currents
+    assert "Pyleecan d-axis Phi0" in actual["current_angle_reference"]
+    assert "generic CLI sine formula is unused" in actual["resolution_rule"]
+    assert actual["magnet_temperature_C"] == 60
+    assert actual["geometry_asset_sha256"] == prius.geometry_asset_sha256()
+    with pytest.raises(ValueError, match="explicit native Gmsh"):
+        prius.report_reference_sources({}, cfg, None)
+
+
+def test_no_load_report_does_not_retain_the_loaded_phase_current_provenance():
+    from backend.solver import _zero_current_solve_mesh_artifact
+
+    cfg = config()
+    original = {"physics_contract": {"regions": [], "provenance": {"phase_current_A": [100, -50, -50]}},
+                "element_current_density_a_per_m2": [1, -1]}
+    zeroed = _zero_current_solve_mesh_artifact(original)
+    report = {}
+    prius.report_reference_sources(report, cfg, zeroed)
+    assert report["operating_point"]["phase_current_A"] == [0, 0, 0]
+    assert original["physics_contract"]["provenance"]["phase_current_A"] == [100, -50, -50]
+    assert zeroed["element_current_density_a_per_m2"] == [0, 0]

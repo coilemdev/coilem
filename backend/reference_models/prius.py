@@ -26,6 +26,26 @@ def magnet_br_factor(config):
     return 1 - 0.001 * (config.solve_params.magnet_temperature_C - 20)
 
 
+def report_reference_sources(report, config, artifact):
+    """Describe the explicit meshed currents rather than the CLI's unused sine formula."""
+    if artifact is None:
+        raise ValueError("The published reference requires its explicit native Gmsh source artifact")
+    provenance = artifact["physics_contract"]["provenance"]
+    currents = provenance["phase_current_A"]
+    original = report.get("operating_point", {})
+    report["native_input_operating_point"] = original
+    report["operating_point"] = {
+        **original,
+        "current_angle_reference": "Pyleecan d-axis Phi0, degrees electrical",
+        "resolution_rule": "Explicit signed phase currents divided by each actual meshed slot area; generic CLI sine formula is unused",
+        "sweep_current_rule": "I_peak*cos(theta_clockwise_electrical + Phi0 + [0,-120,120] degrees)",
+        "phase_current_A": currents,
+        "case_id": config.reference_case,
+        "magnet_temperature_C": config.solve_params.magnet_temperature_C,
+        "geometry_asset_sha256": geometry_asset_sha256(),
+    }
+
+
 def case_config(case_id):
     """A fresh, versioned reference preset; callers may vary operating/accuracy controls."""
     config = copy.deepcopy(fixture())

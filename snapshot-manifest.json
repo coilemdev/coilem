@@ -375,8 +375,8 @@
     },
     {
       "path": "backend/magneto2d_adapter/__init__.py",
-      "bytes": 73353,
-      "sha256": "8fc9dda286554657b2743fc1bd83339be1dcffe07ac5a8e6396e0e472753aa6b"
+      "bytes": 73602,
+      "sha256": "348da7003d82b3200d870e792405e8a8c2a6a965797e10a671d667d371bccc69"
     },
     {
       "path": "backend/magneto2d_adapter/_state.py",
@@ -545,8 +545,8 @@
     },
     {
       "path": "backend/reference_models/prius.py",
-      "bytes": 11489,
-      "sha256": "53c17586432dcbcaf09d0296649b8368846870d67cc307945819098251005377"
+      "bytes": 12562,
+      "sha256": "ec4553fda5453a3796a5b0f824853493d6f4a3d733eb77a5d9df488f659c818b"
     },
     {
       "path": "backend/reference_models/pyleecan_prius_2004.json",
@@ -575,8 +575,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 143106,
-      "sha256": "dccc534d52cef672929a0ff5b22be255e8d94e11d474a8078a9a047e574cf5dd"
+      "bytes": 143339,
+      "sha256": "d906d5f06250c59c8df88ef8517959cda60c7a83e1ec72425e8ef780fd9a6e25"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -6915,8 +6915,8 @@
     },
     {
       "path": "tests/test_pyleecan_reference_fixture.py",
-      "bytes": 11361,
-      "sha256": "be90e7f4f935ee6f05c08b162f7b51f205e17e167d11cbf0e102d7c9d4c694f2"
+      "bytes": 13012,
+      "sha256": "d5dcc1fc52c478a7126c161765df8efbb113c0aa692b22a4fa928e05c2225739"
     },
     {
       "path": "tests/test_pyleecan_tutorial.py",
@@ -10586,6 +10586,30 @@
       "path": "tools/build_benchmark_record.py",
       "source_sha256": "acff7863ae6dc7e619fc87cc87838db4c248631a7aab295895c1464ef48721b8",
       "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "cfddc0c7f566c05c4040f6d15087b29959a6c8f0",
+      "path": "backend/reference_models/prius.py",
+      "source_sha256": "53c17586432dcbcaf09d0296649b8368846870d67cc307945819098251005377",
+      "reason": "Persist the actual reference d-axis current convention, including zero-current no-load provenance."
+    },
+    {
+      "base_commit": "cfddc0c7f566c05c4040f6d15087b29959a6c8f0",
+      "path": "backend/magneto2d_adapter/__init__.py",
+      "source_sha256": "8fc9dda286554657b2743fc1bd83339be1dcffe07ac5a8e6396e0e472753aa6b",
+      "reason": "Persist the actual reference d-axis current convention, including zero-current no-load provenance."
+    },
+    {
+      "base_commit": "cfddc0c7f566c05c4040f6d15087b29959a6c8f0",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "dccc534d52cef672929a0ff5b22be255e8d94e11d474a8078a9a047e574cf5dd",
+      "reason": "Persist the actual reference d-axis current convention, including zero-current no-load provenance."
+    },
+    {
+      "base_commit": "cfddc0c7f566c05c4040f6d15087b29959a6c8f0",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "be90e7f4f935ee6f05c08b162f7b51f205e17e167d11cbf0e102d7c9d4c694f2",
+      "reason": "Persist the actual reference d-axis current convention, including zero-current no-load provenance."
     }
   ]
 }
