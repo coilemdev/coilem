@@ -649,7 +649,7 @@ assert.doesNotMatch(motorCanvasSource, /layer === 'windings' \|\| layer === 'pha
 // all driven by the solve's own terminal currents (phaseDrive.ts, test-phase-drive.mjs).
 assert.match(motorCanvasSource, /const driveFrame = layer === 'phases' && phaseDrive \? phaseDriveFrame\(width, height\) : null;/);
 assert.match(motorCanvasSource, /fitTransform\(points, width, height, viewportScale, pan, driveFrame\?\.motor\)/);
-assert.match(motorCanvasSource, /drawPhaseDrive\(context, driveFrame\.panel, phaseDrive, rotorElecDeg, currents, origin, outerRadiusPx\)/);
+assert.match(motorCanvasSource, /drawPhaseDrive\(context, driveFrame\.panel, phaseDrive, rotorElecDeg, currents, origin, outerRadiusPx, previewRpm\)/);
 assert.match(motorCanvasSource, /axisOffsetDeg: Number\.isFinite\(metadataAxis\) \? metadataAxis : 0,/);
 assert.doesNotMatch(motorCanvasSource, /Math\.sin\(\(rotorAngleDeg \+ phaseOffset\)/);
 // ...and each stator tooth shows the pole the slot currents make it, N red / S blue.
@@ -664,6 +664,12 @@ assert.match(motorCanvasSource, /strength > 0 \? PUBLIC_MOTOR_COLORS\.magnetNort
 // half carries its own (placement: canvasLabels.ts, test-canvas-labels.mjs).
 assert.match(motorCanvasSource, /magnetPoleLabels\.push\(\{ points: canvasPoints, north: magnetAirgapPolarity\(region\.region_type\) === 'north', halves: splitHalves \}\);/);
 assert.match(motorCanvasSource, /const halvesFit = halfSpots\.length === 2/);
+// The Phases strips are a 1 s scope at the preview speed, frequency shown in the
+// heading and in each strip (test-phase-drive.mjs checks the cycle count).
+assert.match(workspaceSource, /previewRpm=\{animationRpm\}/);
+assert.match(motorCanvasSource, /const frequencyHz = electricalFrequencyHz\(previewRpm, drive\.poleCount\);/);
+assert.match(motorCanvasSource, /waveformTrace\(drive, index, rotorElecDeg, strip, windowElecDeg\)/);
+assert.match(motorCanvasSource, /context\.fillText\(formatHz\(frequencyHz\), right - STRIP_END, strip\.y \+ 4\);/);
 assert.match(motorCanvasSource, /const spot = polygonLabelSpot\(label\.points, origin\);/);
 assert.doesNotMatch(workspaceSource, /public-field-playback-rpm|playback-rpm-progress/);
 assert.match(workspaceSource, /<div className="public-winding-key public-canvas-legend" aria-label="Winding phase and current direction legend">/);

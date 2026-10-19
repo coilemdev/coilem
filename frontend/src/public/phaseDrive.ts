@@ -107,25 +107,52 @@ export function phaseStrips(panel: Rect): Rect[] {
 export const STRIP_LABEL = 22;
 export const STRIP_END = 8;
 
+/** A trace's peak, as a share of its strip's height. */
+export const TRACE_AMPLITUDE = 0.34;
+
+/** How much time the waveform strips show, like a scope's sweep. */
+export const PHASE_SCOPE_WINDOW_S = 1;
+
+/** Electrical frequency at a shaft speed: rev/s times pole pairs. */
+export function electricalFrequencyHz(rpm: number, poleCount: number): number {
+  return (Math.max(0, rpm) / 60) * Math.max(1, Math.floor(poleCount / 2));
+}
+
+/** Electrical degrees the rotor sweeps in the scope window at that speed. */
+export function scopeWindowElecDeg(rpm: number, poleCount: number, windowS = PHASE_SCOPE_WINDOW_S): number {
+  return 360 * electricalFrequencyHz(rpm, poleCount) * windowS;
+}
+
+/** "2.1 Hz", "0.30 Hz", "12 Hz". */
+export function formatHz(hz: number): string {
+  if (hz >= 10) return `${hz.toFixed(0)} Hz`;
+  if (hz >= 1) return `${hz.toFixed(1)} Hz`;
+  return `${hz.toFixed(2)} Hz`;
+}
+
 /**
- * A phase's current over the last electrical cycle, scrolling like a scope: the
- * right end is now, where the wire leaves, and the trace moves left as the rotor
- * turns. Points in canvas px.
+ * A phase's current over the last `windowElecDeg` of rotor travel, scrolling like
+ * a scope: the right end is now, where the wire leaves, and the trace moves left
+ * as the rotor turns. With the window set to the scope's time window at the
+ * preview speed, the strip shows the cycles a real drive would in that time.
+ * Points in canvas px.
  */
 export function waveformTrace(
   drive: PhaseDrive,
   phaseIndex: number,
   rotorElecDeg: number,
   strip: Rect,
-  samples = 180,
+  windowElecDeg = 360,
+  samples = Math.min(1440, Math.max(180, Math.ceil((windowElecDeg / 360) * 72))),
 ): Array<[number, number]> {
   const left = strip.x + STRIP_LABEL;
   const right = strip.x + strip.width - STRIP_END;
   const mid = strip.y + strip.height / 2;
-  const amplitude = strip.height * 0.38;
+  // Headroom above the peaks for the strip's frequency label.
+  const amplitude = strip.height * TRACE_AMPLITUDE;
   return Array.from({ length: samples + 1 }, (_, step) => {
     const t = step / samples;
-    const value = phaseCurrents(drive, wrap360(rotorElecDeg - (1 - t) * 360))[phaseIndex];
+    const value = phaseCurrents(drive, wrap360(rotorElecDeg - (1 - t) * windowElecDeg))[phaseIndex];
     return [left + (right - left) * t, mid - value * amplitude];
   });
 }

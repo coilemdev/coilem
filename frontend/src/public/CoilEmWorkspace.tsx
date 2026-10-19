@@ -1951,6 +1951,7 @@ function ViewportChrome({
               onDimensionSelect={showDimensionReadout ? setActiveDimension : undefined}
               magnetPolarityView={magnetPolarityView}
               showToothPoles={viewportMode === '2d' && showToothPoles}
+              previewRpm={animationRpm}
               meshDisplayMode={meshDisplayMode}
               showMeshEdges={showMeshEdges}
               meshQualities={meshQualitySummary?.qualities}

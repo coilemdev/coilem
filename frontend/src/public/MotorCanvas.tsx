@@ -21,8 +21,11 @@ import {
 import { PUBLIC_MOTOR_COLORS, PUBLIC_PHASE_COLORS } from './motorPalette';
 import { polygonLabelSpot } from './canvasLabels';
 import {
+  PHASE_SCOPE_WINDOW_S,
   STRIP_END,
   STRIP_LABEL,
+  electricalFrequencyHz,
+  formatHz,
   phaseCurrents,
   phaseDriveFrame,
   phaseStrips,
@@ -74,6 +77,8 @@ interface MotorCanvasProps {
   magnetPolarityView?: PublicMagnetPolarityView;
   /** Tint each stator tooth N / S by the pole the drive currents make it. */
   showToothPoles?: boolean;
+  /** Preview speed: the Phases waveforms show the electrical frequency it makes. */
+  previewRpm?: number;
   meshDisplayMode?: PublicMeshDisplayMode;
   showMeshEdges?: boolean;
   meshQualities?: number[];
@@ -547,6 +552,7 @@ function drawGeometry(
   magnetPolarityView: PublicMagnetPolarityView,
   phaseDrive: PhaseDrive | null,
   showToothPoles: boolean,
+  previewRpm: number,
 ): void {
   const points = data.regions.flatMap((region) => region.points);
   if (points.length === 0) return;
@@ -956,7 +962,7 @@ function drawGeometry(
   }
 
   if (driveFrame && phaseDrive && currents) {
-    drawPhaseDrive(context, driveFrame.panel, phaseDrive, rotorElecDeg, currents, origin, outerRadiusPx);
+    drawPhaseDrive(context, driveFrame.panel, phaseDrive, rotorElecDeg, currents, origin, outerRadiusPx, previewRpm);
   }
 }
 
@@ -974,8 +980,13 @@ function drawPhaseDrive(
   currents: [number, number, number],
   origin: [number, number],
   statorRadiusPx: number,
+  previewRpm: number,
 ): void {
   const phases = ['A', 'B', 'C'] as const;
+  // A scope with a fixed sweep: the strips hold the cycles the drive runs in that
+  // time at the preview speed, so twice the speed shows twice as many.
+  const frequencyHz = electricalFrequencyHz(previewRpm, drive.poleCount);
+  const windowElecDeg = 360 * frequencyHz * PHASE_SCOPE_WINDOW_S;
   const strips = phaseStrips(panel);
   const lead = Math.max(10, statorRadiusPx * 0.08);
   // A above, C below, so the wires do not cross.
@@ -990,7 +1001,12 @@ function drawPhaseDrive(
   context.font = '700 10px ui-monospace, monospace';
   context.textAlign = 'left';
   context.textBaseline = 'bottom';
-  context.fillText(drive.mode === 'ideal_six_step_120' ? 'SIX-STEP DRIVE' : 'SINE DRIVE', panel.x, panel.y - 6);
+  context.fillText(`${drive.mode === 'ideal_six_step_120' ? 'SIX-STEP DRIVE' : 'SINE DRIVE'} · ${formatHz(frequencyHz)}`, panel.x, panel.y - 6);
+  // What sets the frequency, and the sweep the strips show.
+  context.fillStyle = 'rgba(148, 163, 184, 0.6)';
+  context.font = '600 9px ui-monospace, monospace';
+  context.textBaseline = 'top';
+  context.fillText(`${Math.max(1, Math.floor(drive.poleCount / 2))} pole pairs × ${(previewRpm / 60).toFixed(2)} rev/s · last ${PHASE_SCOPE_WINDOW_S} s`, panel.x, panel.y + panel.height + 6);
 
   strips.forEach((strip, index) => {
     const colour = PHASE_COLORS[phases[index]];
@@ -1020,8 +1036,14 @@ function drawPhaseDrive(
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.fillText(phases[index], strip.x + STRIP_LABEL / 2, mid + 0.5);
+    // The wave's frequency, in its own plot.
+    context.fillStyle = 'rgba(148, 163, 184, 0.72)';
+    context.font = '700 9px ui-monospace, monospace';
+    context.textAlign = 'right';
+    context.textBaseline = 'top';
+    context.fillText(formatHz(frequencyHz), right - STRIP_END, strip.y + 4);
 
-    const trace = waveformTrace(drive, index, rotorElecDeg, strip);
+    const trace = waveformTrace(drive, index, rotorElecDeg, strip, windowElecDeg);
     context.beginPath();
     context.moveTo(trace[0][0], trace[0][1]);
     for (const [x, y] of trace.slice(1)) context.lineTo(x, y);
@@ -1307,6 +1329,7 @@ export function MotorCanvas({
   onDimensionSelect,
   magnetPolarityView = 'dominant',
   showToothPoles = false,
+  previewRpm = 18,
   meshDisplayMode = 'geometry',
   showMeshEdges = true,
   meshQualities = EMPTY_MESH_QUALITIES,
@@ -1415,6 +1438,7 @@ export function MotorCanvas({
           magnetPolarityView,
           phaseDrive,
           showToothPoles,
+          previewRpm,
         );
       } else if (mode === 'mesh' && mesh) {
         drawMesh(
@@ -1455,6 +1479,7 @@ export function MotorCanvas({
     mode,
     phaseDrive,
     showToothPoles,
+    previewRpm,
     navigation.pan.x,
     navigation.pan.y,
     navigation.scale,

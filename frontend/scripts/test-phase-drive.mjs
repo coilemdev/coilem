@@ -6,7 +6,12 @@ import { importTypeScriptModule } from './import-typescript-module.mjs';
 // solve drives, checked against vectors the backend tests pin to the solver.
 const {
   PHASE_DRIVE_MIN_WIDTH,
+  PHASE_SCOPE_WINDOW_S,
   STRIP_END,
+  TRACE_AMPLITUDE,
+  electricalFrequencyHz,
+  formatHz,
+  scopeWindowElecDeg,
   phaseCurrents,
   phaseDriveFrame,
   phaseStrips,
@@ -75,11 +80,39 @@ for (const [width, height] of [[480, 420], [760, 600], [1440, 700]]) {
       const [endX, endY] = trace[trace.length - 1];
       const mid = strip.y + strip.height / 2;
       assert.equal(endX, strip.x + strip.width - STRIP_END);
-      assert.ok(Math.abs((mid - endY) / (strip.height * 0.38) - phaseCurrents(sixStepDrive, now)[phaseIndex]) < 1e-9, 'trace ends at the current value now');
+      assert.ok(Math.abs((mid - endY) / (strip.height * TRACE_AMPLITUDE) - phaseCurrents(sixStepDrive, now)[phaseIndex]) < 1e-9, 'trace ends at the current value now');
       assert.ok(trace.every(([x, y], index) => y >= strip.y && y <= strip.y + strip.height && (index === 0 || x > trace[index - 1][0])), 'trace inside its strip, left to right');
     }
   }
 }
+
+// The strips are a scope with a fixed sweep: the electrical frequency is rev/s
+// times pole pairs, so at 18 rpm IPM 14p shows 2.1 cycles in its second and twice
+// the speed shows twice as many.
+assert.equal(PHASE_SCOPE_WINDOW_S, 1);
+assert.ok(Math.abs(electricalFrequencyHz(18, 14) - 2.1) < 1e-12);
+assert.ok(Math.abs(electricalFrequencyHz(18, 8) - 1.2) < 1e-12);
+assert.ok(Math.abs(electricalFrequencyHz(2400, 14) - 280) < 1e-9, 'rated speed: 280 Hz');
+assert.ok(Math.abs(scopeWindowElecDeg(18, 14) - 756) < 1e-9);
+assert.deepEqual([formatHz(2.1), formatHz(0.3), formatHz(11.67)], ['2.1 Hz', '0.30 Hz', '12 Hz']);
+const scopeStrip = { x: 0, y: 0, width: 330, height: 90 };
+const crossings = (rpm, poles, mode = 'sinusoidal') => {
+  const values = waveformTrace(drive({ mode, poleCount: poles }), 0, 123, scopeStrip, scopeWindowElecDeg(rpm, poles))
+    .map(([, y]) => scopeStrip.height / 2 - y);
+  let count = 0;
+  for (let i = 1; i < values.length; i += 1) if ((values[i - 1] < 0) !== (values[i] < 0)) count += 1;
+  return count;
+};
+// Two sign changes a cycle: 2.1 cycles is 4 or 5, 4.2 cycles 8 or 9.
+assert.ok([4, 5].includes(crossings(18, 14)), `18 rpm, 14 poles: ${crossings(18, 14)} crossings`);
+assert.ok([8, 9].includes(crossings(36, 14)), `36 rpm, 14 poles: ${crossings(36, 14)} crossings`);
+assert.ok([22, 23, 24].includes(crossings(100, 14)), `100 rpm, 14 poles: ${crossings(100, 14)} crossings`);
+// The scroll is the real time base: one second later the trace has moved by the
+// sweep, so the value now was at the left end... one window back.
+const window = scopeWindowElecDeg(18, 14);
+const later = waveformTrace(drive({ poleCount: 14 }), 0, 123 + window, scopeStrip, window);
+const earlier = waveformTrace(drive({ poleCount: 14 }), 0, 123, scopeStrip, window);
+assert.ok(Math.abs(later[0][1] - earlier[earlier.length - 1][1]) < 1e-9, 'the sweep is one second of rotor travel');
 
 // Tooth poles. One coil round tooth 0, current out of the page in slot 0 and into
 // it in slot 1: by the right-hand rule its flux leaves tooth 0's face, an N pole.

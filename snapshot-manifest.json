@@ -5430,8 +5430,8 @@
     },
     {
       "path": "frontend/scripts/test-phase-drive.mjs",
-      "bytes": 7752,
-      "sha256": "0842f771eb1c4875b79a5a639a1a1f45e40522c24fdeb892854c927378569859"
+      "bytes": 9765,
+      "sha256": "8d91a413b45b603aee4e6534cef582b6e67bc12f5045f8a9a2248b49ba3b2b5b"
     },
     {
       "path": "frontend/scripts/test-public-airgap-ux.mjs",
@@ -5455,8 +5455,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 150874,
-      "sha256": "6109e0ff7dce9a05ce3759e6bd0c3646cd2dc828e7d5de0b3cff3b1ee1537311"
+      "bytes": 151435,
+      "sha256": "8bfc03f6345c6fb95964b3d74b65ab6613c0473abea963211e85f3f240ca9aa9"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5855,8 +5855,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 220064,
-      "sha256": "415b3dd75d20d6bfb85a565965d45881526fb3fcbc703fb100f8a5e508d977de"
+      "bytes": 220104,
+      "sha256": "bf1cc880f05f2b85640e96786d5d917de8e858a85479467f1284a6117b19208e"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5880,8 +5880,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 59223,
-      "sha256": "a3bbde3c73869b8cef46484bba48fd6fdf853b4ca62bdb52b95d0e1fb6954af0"
+      "bytes": 60534,
+      "sha256": "a0a143a74909abd0de87fed187de6d80ff555770ccd8931b95303f51d7901c07"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -6205,8 +6205,8 @@
     },
     {
       "path": "frontend/src/public/phaseDrive.ts",
-      "bytes": 7527,
-      "sha256": "cc097033243c6579298e856b8cabb9a3cb2c4534ebf75390c4b2af05afd21213"
+      "bytes": 8745,
+      "sha256": "e62d2345187b1eca96cea74b161a7c40d65186b94049685296b1a532fafd20bb"
     },
     {
       "path": "frontend/src/public/resultMetrics.ts",
@@ -10430,6 +10430,36 @@
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "178e7a842fbef9beed687705f0fd108384f6d75d88fbc20d5a58d07bf17f4a85",
       "reason": "Pin the magnet N / S letters"
+    },
+    {
+      "base_commit": "95d58677cea83bdbae882c62200f724ac1efc1b5",
+      "path": "frontend/src/public/phaseDrive.ts",
+      "source_sha256": "cc097033243c6579298e856b8cabb9a3cb2c4534ebf75390c4b2af05afd21213",
+      "reason": "Make the Phases strips a 1 s scope: electrical frequency from preview rpm and pole pairs"
+    },
+    {
+      "base_commit": "95d58677cea83bdbae882c62200f724ac1efc1b5",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "a3bbde3c73869b8cef46484bba48fd6fdf853b4ca62bdb52b95d0e1fb6954af0",
+      "reason": "Draw the Phases strips at the preview speed with their frequency in the heading and each plot"
+    },
+    {
+      "base_commit": "95d58677cea83bdbae882c62200f724ac1efc1b5",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "415b3dd75d20d6bfb85a565965d45881526fb3fcbc703fb100f8a5e508d977de",
+      "reason": "Pass the preview speed to the 2D canvas"
+    },
+    {
+      "base_commit": "95d58677cea83bdbae882c62200f724ac1efc1b5",
+      "path": "frontend/scripts/test-phase-drive.mjs",
+      "source_sha256": "0842f771eb1c4875b79a5a639a1a1f45e40522c24fdeb892854c927378569859",
+      "reason": "Check the scope frequency, cycles per sweep and time base"
+    },
+    {
+      "base_commit": "95d58677cea83bdbae882c62200f724ac1efc1b5",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "6109e0ff7dce9a05ce3759e6bd0c3646cd2dc828e7d5de0b3cff3b1ee1537311",
+      "reason": "Pin the Phases scope frequency readouts"
     }
   ]
 }
