@@ -6660,8 +6660,8 @@
     },
     {
       "path": "tests/test_benchmark_command.py",
-      "bytes": 14508,
-      "sha256": "edd43ec1d6c1f6808c1b471333c8fdec44096a786a2ea71509868bba41f417c4"
+      "bytes": 15192,
+      "sha256": "d8a5728ab4a5e64023373b6846f78ac4211aefd03fde0b12b5632db44c132da6"
     },
     {
       "path": "tests/test_benchmark_runtime.py",
@@ -10348,6 +10348,12 @@
       "path": "tools/verify_snapshot.py",
       "source_sha256": "3222fe7f0fabb69fe1e5e33b629acba4dd3ef94e2adef6a358b48a23f1519f8e",
       "reason": "Publish v0.4.0 release-planning benchmarks and preserve the complete measured native PDF and provenance."
+    },
+    {
+      "base_commit": "b505f67a62d7ceeaf6b6456546bd0bac88de8565",
+      "path": "tests/test_benchmark_command.py",
+      "source_sha256": "edd43ec1d6c1f6808c1b471333c8fdec44096a786a2ea71509868bba41f417c4",
+      "reason": "Verify the one reviewed native report PDF against its original hash and publication provenance while retaining raw log/job exclusions."
     }
   ]
 }
