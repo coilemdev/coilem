@@ -5140,8 +5140,13 @@
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
-      "bytes": 16077,
-      "sha256": "17d4705fd3aad273e8d8c2c5d062d9682378c6c11be367e6f374ad295114b8e9"
+      "bytes": 16748,
+      "sha256": "5a2c260c41caad6031de087827292f2856febcd1fb0d7976a2d0835409ae26a5"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/app-design-3d.png",
+      "bytes": 744462,
+      "sha256": "4b75b03b5d9c61df42700e8d22bc15627d65a95409ec685a84f7093913b396bc"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/protocol.json",
@@ -5177,6 +5182,11 @@
       "path": "docs/benchmarks/pyleecan-prius-v1/pyleecan-ui-results.json",
       "bytes": 63705,
       "sha256": "0bbb694bf2f09913f96787f2261a8045c766690532810860f509e8f94385eb2c"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/workflow-validation.json",
+      "bytes": 10980,
+      "sha256": "c738a1fbb0d2b0874d8f667d9110d276c24c2e23e8a07d6a224a2c43acd7af5c"
     },
     {
       "path": "docs/examples/follow-flux-magnet-iron-report.json",
@@ -7280,8 +7290,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 21396,
-      "sha256": "887ddbab11238f6d5d3233af4f30d8e84ff316686ed5c79fb45f9d589a97a6e0"
+      "bytes": 21477,
+      "sha256": "09707491fa5b77957596d3f669ae9a3718449b1c046ea6c818e1bbb336dbb803"
     }
   ],
   "public_patches": [
@@ -10866,6 +10876,18 @@
       "path": "frontend/tests/public-release.spec.ts",
       "source_sha256": "10d60272824b84729a900742740105211d1c32a950f9d80666968788c85c4efa",
       "reason": "Reuse the actual workspace preview for the Prius 3D view and verify rendering."
+    },
+    {
+      "base_commit": "076998955e74bfcfecd527be20b2eaed7040290d",
+      "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
+      "source_sha256": "17d4705fd3aad273e8d8c2c5d062d9682378c6c11be367e6f374ad295114b8e9",
+      "reason": "Publish the pinned Prius workflow check and reviewed reference preview."
+    },
+    {
+      "base_commit": "076998955e74bfcfecd527be20b2eaed7040290d",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "887ddbab11238f6d5d3233af4f30d8e84ff316686ed5c79fb45f9d589a97a6e0",
+      "reason": "Publish the pinned Prius workflow check and reviewed reference preview."
     }
   ]
 }

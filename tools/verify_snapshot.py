@@ -71,6 +71,7 @@ FORBIDDEN_RUST_RUNTIME_MARKERS = {
     "struct DebugConfig",
 }
 ALLOWED_BINARY_SIGNATURES = {
+    "docs/benchmarks/pyleecan-prius-v1/app-design-3d.png": b"\x89PNG\r\n\x1a\n",
     "benchmarks/windows-native-20261018-f390b25/coilem_benchmark_report.pdf": b"%PDF-",
     "benchmarks/performance-112/native-20261016/coilem_benchmark_report.pdf": b"%PDF-",
     "benchmarks/windows-v3-20261015-738d951/coilem_benchmark_report.pdf": b"%PDF-",

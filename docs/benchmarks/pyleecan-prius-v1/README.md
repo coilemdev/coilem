@@ -34,6 +34,20 @@ retain the geometry reference, case ID, temperature and embedded material curve;
 the backend rejects an altered fixed model instead of substituting a generic
 slot, winding or steel. Case revisions that alter the protocol need a new ID.
 
+## Workspace validation
+
+The [workflow validation record](workflow-validation.json) pins the clean UI
+revision, tested source hashes and successful production-build/browser checks.
+Both fixed cases load, preview and enter Solve with their actual temperatures;
+the design-file contract checks preserve the complete model on save/reopen.
+The browser check validates routes and geometry. Field results are collected
+separately through the public solve pipeline described below.
+
+![Exact reference cross-section extruded in the normal workspace](app-design-3d.png)
+
+This preview extrudes the 2D reference through its physical stack length. It is
+not a 3D field calculation.
+
 ## Model and source identity
 
 The machine is [Toyota_Prius.json at cbfe7be3](https://github.com/Eomys/pyleecan/blob/cbfe7be3b8a50dbcdecccb655cc7ea74f2443890/pyleecan/Data/Machine/Toyota_Prius.json),
