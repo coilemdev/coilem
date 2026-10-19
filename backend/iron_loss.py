@@ -129,6 +129,8 @@ class FieldFrame:
             by_t=self.by_t[index],
             signature=hashlib.sha1(np.round(corners, 3).tobytes()).hexdigest(),
             pole_pitches=pole_pitches,
+            element_index=index,
+            in_teeth=np.asarray([_steel_region_bucket(self.regions[i]) == "teeth" for i in index], dtype=bool),
         )
 
 
@@ -141,6 +143,8 @@ class StatorFieldSample:
     by_t: np.ndarray
     signature: str  # equal for positions that share a stator triangulation
     pole_pitches: int | None = None
+    element_index: np.ndarray | None = None  # positions of these elements in the frame's triangle list
+    in_teeth: np.ndarray | None = None  # True for tooth elements, False for yoke
 
 
 def stator_field_sample(payload: Any) -> StatorFieldSample | None:
@@ -173,6 +177,7 @@ class StatorFluxHistory:
     by_t: np.ndarray  # (positions, elements)
     area_m2: np.ndarray  # (elements,)
     distinct_meshes: int
+    in_teeth: np.ndarray | None = None  # (elements,)
 
 
 @dataclass(frozen=True)
@@ -182,6 +187,9 @@ class IronLossEstimate:
     stator_iron_mass_kg: float
     share_above_validated_frequency: float
     share_above_validated_flux_density: float
+    element_w_per_kg: np.ndarray | None = None  # (elements,) of the reference frame
+    teeth_w: float | None = None
+    yoke_w: float | None = None
 
     @property
     def total_w(self) -> float:
@@ -215,7 +223,9 @@ def stator_flux_history(frames: Sequence[FrameLike]) -> StatorFluxHistory:
         (ref_corners[:, 1, 0] - ref_corners[:, 0, 0]) * (ref_corners[:, 2, 1] - ref_corners[:, 0, 1])
         - (ref_corners[:, 2, 0] - ref_corners[:, 0, 0]) * (ref_corners[:, 1, 1] - ref_corners[:, 0, 1])
     ) * 1e-6
-    return StatorFluxHistory(bx_t=bx, by_t=by, area_m2=area_m2, distinct_meshes=len(mappings))
+    return StatorFluxHistory(
+        bx_t=bx, by_t=by, area_m2=area_m2, distinct_meshes=len(mappings), in_teeth=samples[0].in_teeth
+    )
 
 
 def harmonic_iron_loss(
@@ -252,12 +262,21 @@ def harmonic_iron_loss(
     total = float(loss.sum())
     above_frequency = float(loss[frequency[:, 0] > VALIDATED_MAX_FREQUENCY_HZ].sum())
     above_flux_density = float(loss[amplitude > VALIDATED_MAX_FLUX_DENSITY_T].sum())
+    element_w = loss.sum(axis=0)
+    element_w_per_kg = np.divide(element_w, mass_kg, out=np.zeros_like(element_w), where=mass_kg > 0)
+    teeth_w = yoke_w = None
+    if history.in_teeth is not None and len(history.in_teeth) == len(element_w):
+        teeth_w = float(element_w[history.in_teeth].sum())
+        yoke_w = float(element_w[~history.in_teeth].sum())
     return IronLossEstimate(
         hysteresis_w=float(hysteresis.sum()),
         eddy_w=float(eddy.sum()),
         stator_iron_mass_kg=float(mass_kg.sum()),
         share_above_validated_frequency=above_frequency / total if total > 0 else 0.0,
         share_above_validated_flux_density=above_flux_density / total if total > 0 else 0.0,
+        element_w_per_kg=element_w_per_kg,
+        teeth_w=teeth_w,
+        yoke_w=yoke_w,
     )
 
 
@@ -269,6 +288,22 @@ def estimate_iron_loss(
     coefficients: SteinmetzCoefficients = M350_50A_LOSS,
 ) -> IronLoss:
     """Iron loss for a loaded sweep, or the reason it is unavailable. Never raises."""
+
+    return estimate_iron_loss_and_density(config, samples, angles_elec_deg, coefficients=coefficients)[0]
+
+
+def estimate_iron_loss_and_density(
+    config: MotorConfig,
+    samples: Sequence[StatorFieldSample | None],
+    angles_elec_deg: Sequence[float],
+    *,
+    coefficients: SteinmetzCoefficients = M350_50A_LOSS,
+) -> tuple[IronLoss, dict[str, list] | None]:
+    """The iron-loss record, and W/kg per stator element of the first position's frame.
+
+    The density is {"element_index": [...], "w_per_kg": [...]}, indices into
+    that frame's triangle list, or None when the loss is unavailable.
+    """
 
     steel = _stator_steel(config)
     speed_rpm = float(config.solve_params.rated_speed_rpm) if config.solve_params else 0.0
@@ -284,9 +319,9 @@ def estimate_iron_loss(
 
     reason = iron_loss_unavailable_reason(config, angles_elec_deg)
     if reason is not None:
-        return unavailable(reason)
+        return unavailable(reason), None
     if len(samples) != len(angles_elec_deg) or any(sample is None for sample in samples):
-        return unavailable("A rotor position's stator field was not available.")
+        return unavailable("A rotor position's stator field was not available."), None
     try:
         history = stator_flux_history(samples)
         pole_count = config.rotor.pole_count
@@ -300,8 +335,15 @@ def estimate_iron_loss(
             coefficients=coefficients,
         )
     except ValueError as exc:
-        return unavailable(f"Iron loss could not be computed: {exc}.")
-    return IronLoss(
+        return unavailable(f"Iron loss could not be computed: {exc}."), None
+    density = None
+    reference = samples[0]
+    if reference.element_index is not None and estimate.element_w_per_kg is not None:
+        density = {
+            "element_index": [int(index) for index in reference.element_index],
+            "w_per_kg": [float(value) for value in estimate.element_w_per_kg],
+        }
+    record = IronLoss(
         status="experimental",
         status_reason=IRON_LOSS_STATUS_REASON,
         steel=steel,
@@ -309,12 +351,15 @@ def estimate_iron_loss(
         iron_loss_W=estimate.total_w,
         iron_hysteresis_loss_W=estimate.hysteresis_w,
         iron_eddy_loss_W=estimate.eddy_w,
+        iron_teeth_loss_W=estimate.teeth_w,
+        iron_yoke_loss_W=estimate.yoke_w,
         stator_iron_mass_kg=estimate.stator_iron_mass_kg,
         share_above_validated_frequency=min(1.0, estimate.share_above_validated_frequency),
         share_above_validated_flux_density=min(1.0, estimate.share_above_validated_flux_density),
         validated_max_frequency_Hz=VALIDATED_MAX_FREQUENCY_HZ,
         validated_max_flux_density_T=VALIDATED_MAX_FLUX_DENSITY_T,
     )
+    return record, density
 
 
 def iron_loss_unavailable_reason(config: MotorConfig, angles_elec_deg: Sequence[float]) -> str | None:

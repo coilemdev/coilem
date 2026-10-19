@@ -63,10 +63,6 @@ _EXCLUDED_SUMMARY_FIELDS = frozenset(
     {
         "cogging_torque_Nm",
         "efficiency_pct",
-        "loss_breakdown",
-        # Computed for M350-50A, but kept out of public results until the
-        # model is documented in MATERIALS.md and shown with its status.
-        "iron_loss",
         "weight_inertia",
         "torque_speed_envelope",
         "thermal_estimate",

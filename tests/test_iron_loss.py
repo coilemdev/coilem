@@ -238,5 +238,5 @@ def test_iron_loss_record_rules():
         )
 
 
-def test_iron_loss_stays_out_of_public_results():
-    assert "iron_loss" in public_solve._EXCLUDED_SUMMARY_FIELDS
+def test_iron_loss_reaches_public_results():
+    assert "iron_loss" not in public_solve._EXCLUDED_SUMMARY_FIELDS

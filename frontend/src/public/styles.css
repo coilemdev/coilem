@@ -1228,6 +1228,31 @@ body {
 .motor-constants-status.is-ok { color: var(--success); }
 .motor-constants-status.is-check { color: var(--warning); }
 .motor-constants-note { margin: 5px 0 0; color: var(--text-muted); font-size: 8px; line-height: 1.4; }
+/* Losses & efficiency (#138). Series colors are the validated dark-surface categorical slots, in order. */
+.losses-card { --loss-copper-stack: #3987e5; --loss-copper-end: #d95926; --loss-iron-hysteresis: #199e70; --loss-iron-eddy: #c98500; --loss-mechanical: #d55181; }
+.losses-headline { display: flex; align-items: baseline; gap: 8px; margin: 2px 0 6px; }
+.losses-headline-label { color: var(--text-secondary); font: 400 9px var(--font-sans); }
+.losses-headline strong { color: var(--text-primary); font: 800 16px/1.2 var(--font-mono); font-variant-numeric: tabular-nums; }
+.losses-status { margin-left: 6px; padding: 0 5px; border: 1px solid currentColor; border-radius: 999px; font: 700 7px/1.6 var(--font-sans); letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+.losses-status.is-experimental { color: var(--warning); }
+.losses-status.is-unavailable { color: var(--text-muted); }
+.losses-status.is-qualified { color: var(--success); }
+.losses-card tr[title] th { cursor: help; }
+.losses-bar-block { margin-top: 8px; }
+.losses-bar { display: flex; gap: 2px; height: 10px; overflow: hidden; border-radius: 4px; }
+.losses-bar-segment { min-width: 2px; transition: opacity .12s; }
+.losses-bar-segment.is-dimmed { opacity: .35; }
+.losses-bar-readout { margin: 4px 0 3px; color: var(--text-secondary); font: 9px var(--font-mono); font-variant-numeric: tabular-nums; }
+.losses-legend { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.losses-legend li { display: grid; grid-template-columns: 8px 1fr auto; gap: 6px; align-items: center; color: var(--text-secondary); font: 9px var(--font-sans); }
+.losses-swatch { width: 8px; height: 8px; border-radius: 2px; }
+.losses-legend-value { color: var(--text-primary); font: 9px var(--font-mono); font-variant-numeric: tabular-nums; }
+.losses-density { display: grid; justify-items: center; gap: 4px; margin: 10px 0 0; }
+.losses-density canvas { cursor: crosshair; }
+.losses-density figcaption { display: grid; gap: 2px; width: 240px; }
+.losses-density-scale { height: 6px; border-radius: 3px; background: linear-gradient(90deg, #184f95, #2a78d6, #5598e7, #9ec5f4, #cde2fb); }
+.losses-density-labels { display: flex; justify-content: space-between; color: var(--text-muted); font: 8px var(--font-mono); }
+.losses-density-readout { min-height: 22px; color: var(--text-secondary); font-size: 8px; line-height: 1.4; }
 .public-timing-note { margin: 10px 14px; color: var(--text-muted); font-size: 11px; line-height: 1.5; }
 .public-live-stage > .public-motor-viewport { width: 100%; height: 100%; }
 .public-inspect-mesh-btn { position: absolute; z-index: 9; top: 16px; left: 16px; min-height: 32px; padding: 0 11px; border: 1px solid var(--border-default); border-radius: 999px; color: var(--text-secondary); background: rgba(15,17,23,.9); font-size: 10px; box-shadow: var(--shadow-md); }

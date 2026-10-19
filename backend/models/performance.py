@@ -114,8 +114,19 @@ class WindingResistance(BaseModel):
 
 
 class LossBreakdown(BaseModel):
-    """Losses and efficiency at the solved operating point."""
+    """Losses and efficiency at the solved operating point.
 
+    The solved torque is the electromagnetic torque. Iron and mechanical loss
+    act as a drag on the rotor, so the shaft delivers
+    P_shaft = T_em · ω − P_iron − P_mech, and the electrical input is
+    P_in = P_shaft + total loss = T_em · ω + P_copper.
+    """
+
+    speed_rpm: float = Field(ge=0)
+    phase_current_rms_A: float = Field(ge=0)
+    electromagnetic_torque_Nm: float
+    shaft_torque_Nm: float
+    electromagnetic_power_W: float
     phase_resistance_ohm: float = Field(ge=0)
     winding_temperature_C: float = Field(ge=-50.0, le=250.0)
     copper_loss_W: float = Field(ge=0)
@@ -128,9 +139,11 @@ class LossBreakdown(BaseModel):
     iron_loss_status_reason: Optional[str] = None
     mechanical_loss_W: float = Field(default=0.0, ge=0, description="User input; 0 when not stated")
     total_loss_W: float = Field(ge=0)
-    shaft_power_W: float = Field(ge=0)
-    input_power_W: float = Field(ge=0)
+    shaft_power_W: float
+    input_power_W: float
     efficiency_pct: Optional[float] = Field(default=None, ge=0, le=100)
+    efficiency_status: OutputStatus = "unavailable"
+    efficiency_status_reason: Optional[str] = None
 
     @model_validator(mode="after")
     def parts_must_add_up(self):
@@ -147,6 +160,8 @@ class LossBreakdown(BaseModel):
             raise ValueError("total_loss_W must equal copper + iron + mechanical loss")
         if abs(self.input_power_W - self.shaft_power_W - self.total_loss_W) > _SUM_TOLERANCE_W:
             raise ValueError("input_power_W must equal shaft_power_W + total_loss_W")
+        if self.efficiency_pct is None and self.efficiency_status != "unavailable":
+            raise ValueError("efficiency_status must be 'unavailable' when efficiency_pct is missing")
         return self
 
 
@@ -161,6 +176,8 @@ class IronLoss(BaseModel):
     iron_loss_W: Optional[float] = Field(default=None, ge=0)
     iron_hysteresis_loss_W: Optional[float] = Field(default=None, ge=0)
     iron_eddy_loss_W: Optional[float] = Field(default=None, ge=0)
+    iron_teeth_loss_W: Optional[float] = Field(default=None, ge=0)
+    iron_yoke_loss_W: Optional[float] = Field(default=None, ge=0)
     stator_iron_mass_kg: Optional[float] = Field(default=None, ge=0)
     share_above_validated_frequency: Optional[float] = Field(default=None, ge=0, le=1)
     share_above_validated_flux_density: Optional[float] = Field(default=None, ge=0, le=1)
@@ -180,6 +197,20 @@ class IronLoss(BaseModel):
             raise ValueError("an iron-loss estimate needs its loss, mass and frequency values")
         if abs(self.iron_hysteresis_loss_W + self.iron_eddy_loss_W - self.iron_loss_W) > _SUM_TOLERANCE_W:
             raise ValueError("iron_hysteresis_loss_W + iron_eddy_loss_W must equal iron_loss_W")
+        return self
+
+
+class IronLossDensity(BaseModel):
+    """Iron loss per kilogram of each element of the result's field_line_plot mesh."""
+
+    mesh: Literal["field_line_plot"] = "field_line_plot"
+    element_w_per_kg: list[Optional[float]] = Field(description="None outside the stator iron")
+    max_w_per_kg: float = Field(ge=0)
+
+    @model_validator(mode="after")
+    def values_must_be_non_negative(self):
+        if any(value is not None and value < 0 for value in self.element_w_per_kg):
+            raise ValueError("element_w_per_kg values must be non-negative")
         return self
 
 

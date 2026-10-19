@@ -36,10 +36,11 @@ from backend.gmsh_mesh_rotation import (
 from backend.gmsh_solver import run_gmsh_mesh_preview
 from backend.iron_loss import (
     StatorFieldSample,
-    estimate_iron_loss,
+    estimate_iron_loss_and_density,
     iron_loss_unavailable_reason,
     stator_field_sample,
 )
+from backend.loss_breakdown import iron_loss_density_on_plot, operating_point_losses
 from backend.machine_constants import compute_machine_constants
 from backend.magneto2d_adapter import (
     Magneto2DUnsupportedError,
@@ -58,6 +59,7 @@ from backend.mesh_evidence import build_solve_mesh_evidence
 from backend.models import (
     BackEMFWaveform,
     IronLoss,
+    IronLossDensity,
     MotorConfig,
     PhaseCurrentWaveform,
     SolveMetadata,
@@ -901,11 +903,15 @@ def _iron_loss_record(
     config: MotorConfig,
     samples: list[StatorFieldSample | None],
     angles_elec_deg: list[float],
-) -> dict[str, Any]:
-    """Iron loss for the sweep report. It is an extra result, so it never fails a solve."""
+) -> tuple[dict[str, Any], dict[str, Any] | None]:
+    """Iron loss for the sweep report, and its density on the first frame.
+
+    It is an extra result, so it never fails a solve.
+    """
 
     try:
-        return estimate_iron_loss(config, samples, angles_elec_deg).model_dump(mode="json")
+        record, density = estimate_iron_loss_and_density(config, samples, angles_elec_deg)
+        return record.model_dump(mode="json"), density
     except Exception as exc:  # noqa: BLE001 - any failure becomes an "unavailable" status
         return {
             "status": "unavailable",
@@ -913,7 +919,19 @@ def _iron_loss_record(
             "steel": config.materials.stator_steel if config.materials else "",
             "validated_max_frequency_Hz": 1000.0,
             "validated_max_flux_density_T": 1.5,
-        }
+        }, None
+
+
+def _iron_loss_density(density: Any, field_line_plot: Any) -> IronLossDensity | None:
+    """The iron-loss density spread over the result's field_line_plot mesh."""
+
+    if field_line_plot is None:
+        return None
+    spread = iron_loss_density_on_plot(density, field_line_plot.triangles, field_line_plot.regions)
+    if spread is None:
+        return None
+    values, maximum = spread
+    return IronLossDensity(element_w_per_kg=values, max_w_per_kg=maximum)
 
 
 def _frame_angle_deg(frame: Any) -> float:
@@ -1712,6 +1730,7 @@ def _solve_with_per_angle_producer_meshes(
         precomputed_field_line_frames: list[dict[str, Any]] | None = None
         precomputed_steel_flux_density_rms: dict[str, float | None] | None = None
         precomputed_iron_loss: dict[str, Any] | None = None
+        precomputed_iron_loss_density: dict[str, Any] | None = None
         if not compact_qa_report:
             field_frame_start = time.perf_counter()
             field_line_frames_ordered: list[dict[str, Any] | None] = [None] * len(loaded_reports)
@@ -1789,7 +1808,7 @@ def _solve_with_per_angle_producer_meshes(
             if check_cancelled is not None:
                 check_cancelled()
             iron_loss_start = time.perf_counter()
-            precomputed_iron_loss = _iron_loss_record(
+            precomputed_iron_loss, precomputed_iron_loss_density = _iron_loss_record(
                 config,
                 stator_samples_ordered,
                 [float(angle) for angle in angles_elec_deg],
@@ -1840,6 +1859,7 @@ def _solve_with_per_angle_producer_meshes(
         )
         if precomputed_iron_loss is not None:
             sweep_report["iron_loss"] = precomputed_iron_loss
+            sweep_report["iron_loss_density"] = precomputed_iron_loss_density
         emit_timing_delta(
             "sweep_aggregation",
             "Sweep aggregation",
@@ -2765,19 +2785,19 @@ class Magneto2DSolver(Solver):
             sweep_report.get("steel_flux_density_rms"),
         ) or steel_flux_density_rms_from_frames(field_line_frames or [])
         iron_loss = _validated_iron_loss(sweep_report.get("iron_loss"))
+        iron_loss_density_raw = sweep_report.get("iron_loss_density")
         if iron_loss is None and field_line_frames:
             # Sweeps without per-position stator samples (the batch path, or a
             # report cached before iron loss existed) read the frame artifacts,
             # but only when the sweep can have iron loss at all.
             frame_angles = [_frame_angle_deg(frame) for frame in field_line_frames]
             readable = iron_loss_unavailable_reason(config, frame_angles) is None
-            iron_loss = _validated_iron_loss(
-                _iron_loss_record(
-                    config,
-                    [stator_field_sample(frame) if readable else None for frame in field_line_frames],
-                    frame_angles,
-                )
+            fallback_record, iron_loss_density_raw = _iron_loss_record(
+                config,
+                [stator_field_sample(frame) if readable else None for frame in field_line_frames],
+                frame_angles,
             )
+            iron_loss = _validated_iron_loss(fallback_record)
         slot_excitation_frames = _validated_slot_excitation_frames(sweep_report.get("slot_excitation_frames") or sweep.get("slot_excitation_frames"))
         if slot_excitation_frames is None:
             slot_excitation_frames = _validated_slot_excitation_frames(
@@ -2794,7 +2814,8 @@ class Magneto2DSolver(Solver):
         summary_slot_excitation = single_results.get("slot_excitation_contributions")
         if summary_slot_excitation is None and slot_excitation_frames:
             summary_slot_excitation = [contribution.model_dump(mode="json") for contribution in slot_excitation_frames[0].contributions]
-        loss_breakdown = None
+        winding_record, loss_breakdown = operating_point_losses(config, avg_torque_nm, iron_loss)
+        iron_loss_density = _iron_loss_density(iron_loss_density_raw, field_line_plot)
         efficiency = None
         weight_inertia = None
         torque_speed_envelope = None
@@ -2930,6 +2951,7 @@ class Magneto2DSolver(Solver):
                 rms_flux_density_teeth_T=steel_b_rms.get("teeth") if steel_b_rms else None,
                 rms_flux_density_yoke_T=steel_b_rms.get("yoke") if steel_b_rms else None,
                 iron_loss=iron_loss,
+                winding_resistance=winding_record,
                 efficiency_pct=efficiency,
                 loss_breakdown=loss_breakdown,
                 weight_inertia=weight_inertia,
@@ -2979,6 +3001,7 @@ class Magneto2DSolver(Solver):
             field_line_plot=field_line_plot,
             field_line_frames=field_line_frames,
             slot_excitation_frames=slot_excitation_frames,
+            iron_loss_density=iron_loss_density,
             solve_metadata=SolveMetadata(
                 solver_name="magneto2d-rust-0.3.3",
                 solver_environment=single_report.get("solver_environment"),

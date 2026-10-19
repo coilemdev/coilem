@@ -50,8 +50,8 @@
     },
     {
       "path": "MATERIALS.md",
-      "bytes": 8554,
-      "sha256": "751a4ca113657aea0a0635c3cdcd4f57895811231562f927b533a8c1e290612a"
+      "bytes": 10074,
+      "sha256": "86bc0ea9bcf2d7b6520add0c389f6bbdf52ccf47cfc4e1aecd521caeab28f219"
     },
     {
       "path": "PUBLICATION_STATUS.md",
@@ -350,8 +350,8 @@
     },
     {
       "path": "backend/iron_loss.py",
-      "bytes": 16506,
-      "sha256": "7b7c9e64c5a2f621b4729c46e8f1996ce2a89ba6c46d971b6eda26c7ad1ce64f"
+      "bytes": 18603,
+      "sha256": "24d3e9568803349281bfe5897d170b2484099a4c731fe920004663046466cfc4"
     },
     {
       "path": "backend/launcher.py",
@@ -372,6 +372,11 @@
       "path": "backend/logging_utils.py",
       "bytes": 776,
       "sha256": "a0f4f289c013d2697e56f2fd9a5ca21e1a119cfb2d93bb490d499319278a9ea6"
+    },
+    {
+      "path": "backend/loss_breakdown.py",
+      "bytes": 5593,
+      "sha256": "7511951037179aa1dadaeffd4b33c85e8e8ef08965094daf8670003371b42a06"
     },
     {
       "path": "backend/machine_constants.py",
@@ -415,13 +420,13 @@
     },
     {
       "path": "backend/models/__init__.py",
-      "bytes": 2395,
-      "sha256": "2ea5fc34ce07de8eb179fe986b3e821c6beeaaa086f936cab2d1c3cb71694093"
+      "bytes": 2487,
+      "sha256": "2bb692a95ba2013d902511a4cb575dc751653b4746bb0a065c273b1381a26650"
     },
     {
       "path": "backend/models/config.py",
-      "bytes": 29073,
-      "sha256": "aa175744adf99da042452f38d5b97bd35f5b09203316b26ae423ec149c81afb4"
+      "bytes": 28672,
+      "sha256": "57b193bb031d9fbc9e5a0a0ed3e0b095a2c5172dc551f6f18ea8991fd51cd6d6"
     },
     {
       "path": "backend/models/errors.py",
@@ -445,13 +450,13 @@
     },
     {
       "path": "backend/models/performance.py",
-      "bytes": 16856,
-      "sha256": "3d1a6d57025b6f2e5f69056140003cd7dec4df6c2f62ffe2289d1219a5aee78f"
+      "bytes": 18276,
+      "sha256": "a9e3f5b0e476b69f58f11be269895f66aa77b0aee7cdbe633fdef1b3853b7f57"
     },
     {
       "path": "backend/models/result.py",
-      "bytes": 4911,
-      "sha256": "a6fa296e522d0e9f6fead73cd172e0899abbe0e8cf4d3dc13224e73ffa300a78"
+      "bytes": 5056,
+      "sha256": "f8afc53edb76650277eb5c694965b797d79f6957fa35d074fa5c8aa842ad0e71"
     },
     {
       "path": "backend/models/waveforms.py",
@@ -500,8 +505,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 53513,
-      "sha256": "befde85f42682921b406c13730951388faa8d624fee26950b63af594e5456d06"
+      "bytes": 65106,
+      "sha256": "f7f0e074647402e412c5856b06eb7d0406c220dd9a6b7ba79b4532f55299ffdd"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -525,8 +530,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 51728,
-      "sha256": "c4ce1d6e83100c03e66278e89692f90b1842eaa6c9e9b5f3101646feaccbfbe2"
+      "bytes": 51534,
+      "sha256": "669e2ab56e10cb8d17d78f8beee4af84eabc294eed6aaa8aa85f36a346c11c30"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -565,8 +570,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 145860,
-      "sha256": "8a69592dcae06f22377e8ef8c509ca3317568179cbc8676c85bed47590eba088"
+      "bytes": 147105,
+      "sha256": "14e585488b5f6169956938a5337ac8dc66adb988bc0cacd7bfeba3284331bc25"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -5390,8 +5395,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2162,
-      "sha256": "2290ee1decbb6a33ae4fcf64e6a1d049c7c83f944dfc386c160d97dff781aa1c"
+      "bytes": 2199,
+      "sha256": "aa5adf056641705eab84dd5d1ef7a30ed36c40ca3bd0330c1daabd7d109eebc0"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -5477,6 +5482,11 @@
       "path": "frontend/scripts/test-lesson-ten-bemf.mjs",
       "bytes": 3646,
       "sha256": "61e991f0823f2ca6aeeccf5f14950ef350d9d3d5e826ba552864f9bcd7e2651d"
+    },
+    {
+      "path": "frontend/scripts/test-losses-view.mjs",
+      "bytes": 3968,
+      "sha256": "71f923422d8676cf3178b2f6944b63104c015b6fa903efa2674b73d19f900d7c"
     },
     {
       "path": "frontend/scripts/test-magnet-coverage.mjs",
@@ -5939,6 +5949,11 @@
       "sha256": "42aa135f1f441f419ae1f61978db7be6a572e6b7a57d22baafe82d70421440d0"
     },
     {
+      "path": "frontend/src/public/LossesCard.tsx",
+      "bytes": 9055,
+      "sha256": "31670bdb7f1062de27120d81d5578504fed263e19ebbfb4551464e0835254076"
+    },
+    {
       "path": "frontend/src/public/MaterialWorkspace.tsx",
       "bytes": 28281,
       "sha256": "66a72b7c2b672bc5edeb2b66532838ad37c0a8b5a6f0284412995c7885074528"
@@ -5970,8 +5985,8 @@
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
-      "bytes": 8191,
-      "sha256": "f393e798527761bcf85de34a9c1a7c49881933093bcc5e149e961173ad25fb95"
+      "bytes": 8452,
+      "sha256": "0f84800466c3e6a5de073c98f3d36a7e960e7be64a52901cdc6db8c9724cc33e"
     },
     {
       "path": "frontend/src/public/RpmField.tsx",
@@ -6224,6 +6239,11 @@
       "sha256": "03789a09d067323780d331304e0add1e89ac655a0b9fd4e78fb82ed925b2d726"
     },
     {
+      "path": "frontend/src/public/lossesView.ts",
+      "bytes": 6863,
+      "sha256": "4d089d84f5f5c583eb89cfc923935a9f45be3656a497c8f5d2bb8f4a18c64831"
+    },
+    {
       "path": "frontend/src/public/machineConstants.ts",
       "bytes": 4143,
       "sha256": "cf05c7bac517df048ac1410c8ee498b1d95e27c1d70fb8bc7f6b5981909f373b"
@@ -6250,8 +6270,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 19874,
-      "sha256": "d9fef6b1c9436db9fe2614682ce35600803b4f6bffd8c2876bc0cd1ccad0ad7d"
+      "bytes": 20093,
+      "sha256": "7fd8fb268eae151a06d68b831d0756fef48e3383f921a661ef075a7f8c319075"
     },
     {
       "path": "frontend/src/public/motorAirgap.ts",
@@ -6265,8 +6285,8 @@
     },
     {
       "path": "frontend/src/public/performance.ts",
-      "bytes": 4720,
-      "sha256": "53eb367b1d6e96ecb38905a8723886570e6606fc4667c6b40b70ecafcd722d5e"
+      "bytes": 5359,
+      "sha256": "890e64a8f7033342db3d5c14ed88c45940a456a618918fcf611fd78573f93513"
     },
     {
       "path": "frontend/src/public/resultMetrics.ts",
@@ -6285,8 +6305,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 261499,
-      "sha256": "79a1b673941d16dbce2ffdaa66768727cf144361f47798407b7b086667a6b340"
+      "bytes": 263899,
+      "sha256": "e017ef2db0d33f3ebce42fa65e14253a237a4ba92c565ddf482d3db153524411"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -6775,8 +6795,8 @@
     },
     {
       "path": "tests/test_iron_loss.py",
-      "bytes": 11109,
-      "sha256": "b1ded8099b7d03ace2ba25af66a245a5b6ebb33f969ed19ce0544ba6d65727bb"
+      "bytes": 11108,
+      "sha256": "22f28610186e80223c75c929322a7d6159ff8780e9e6b0cefd5b5f0650ede205"
     },
     {
       "path": "tests/test_late_reference_comparison.py",
@@ -6819,6 +6839,11 @@
       "sha256": "1898ba2de6e96a98de61e2924bb558290c78b7284be73f82de191331366b512f"
     },
     {
+      "path": "tests/test_loss_breakdown.py",
+      "bytes": 6920,
+      "sha256": "494268bb62147cc5b1ec17db84fbd25d1f024230c91ef7a33f42a899093420f0"
+    },
+    {
       "path": "tests/test_magneto2d_cli_precision.py",
       "bytes": 1757,
       "sha256": "77051b351b4d60f6283ae32ef84cced3a0ed2fbd11e7a062f2ec128089f07edc"
@@ -6850,8 +6875,8 @@
     },
     {
       "path": "tests/test_performance_contracts.py",
-      "bytes": 11225,
-      "sha256": "0a20ebc73631c0371e587012999efabce1d0f7041f6e61d42e118b44d688efa5"
+      "bytes": 11533,
+      "sha256": "cbfe876be77f1e3a2fea64e25cffb528f1179fce3101a1f0c3143870c30cb2aa"
     },
     {
       "path": "tests/test_postsolve_pipeline.py",
@@ -10597,6 +10622,132 @@
       "path": "tests/test_winding_resistance.py",
       "source_sha256": null,
       "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "MATERIALS.md",
+      "source_sha256": "751a4ca113657aea0a0635c3cdcd4f57895811231562f927b533a8c1e290612a",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "backend/iron_loss.py",
+      "source_sha256": "7b7c9e64c5a2f621b4729c46e8f1996ce2a89ba6c46d971b6eda26c7ad1ce64f",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "backend/models/__init__.py",
+      "source_sha256": "2ea5fc34ce07de8eb179fe986b3e821c6beeaaa086f936cab2d1c3cb71694093",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "backend/models/config.py",
+      "source_sha256": "aa175744adf99da042452f38d5b97bd35f5b09203316b26ae423ec149c81afb4",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "backend/models/performance.py",
+      "source_sha256": "3d1a6d57025b6f2e5f69056140003cd7dec4df6c2f62ffe2289d1219a5aee78f",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "backend/models/result.py",
+      "source_sha256": "a6fa296e522d0e9f6fead73cd172e0899abbe0e8cf4d3dc13224e73ffa300a78",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "backend/public_report.py",
+      "source_sha256": "befde85f42682921b406c13730951388faa8d624fee26950b63af594e5456d06",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "c4ce1d6e83100c03e66278e89692f90b1842eaa6c9e9b5f3101646feaccbfbe2",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "8a69592dcae06f22377e8ef8c509ca3317568179cbc8676c85bed47590eba088",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "frontend/package.json",
+      "source_sha256": "2290ee1decbb6a33ae4fcf64e6a1d049c7c83f944dfc386c160d97dff781aa1c",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "f393e798527761bcf85de34a9c1a7c49881933093bcc5e149e961173ad25fb95",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "d9fef6b1c9436db9fe2614682ce35600803b4f6bffd8c2876bc0cd1ccad0ad7d",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "53eb367b1d6e96ecb38905a8723886570e6606fc4667c6b40b70ecafcd722d5e",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "79a1b673941d16dbce2ffdaa66768727cf144361f47798407b7b086667a6b340",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "tests/test_iron_loss.py",
+      "source_sha256": "b1ded8099b7d03ace2ba25af66a245a5b6ebb33f969ed19ce0544ba6d65727bb",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "tests/test_performance_contracts.py",
+      "source_sha256": "0a20ebc73631c0371e587012999efabce1d0f7041f6e61d42e118b44d688efa5",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "backend/loss_breakdown.py",
+      "source_sha256": null,
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "frontend/scripts/test-losses-view.mjs",
+      "source_sha256": null,
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "frontend/src/public/LossesCard.tsx",
+      "source_sha256": null,
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "frontend/src/public/lossesView.ts",
+      "source_sha256": null,
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": null,
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
     }
   ]
 }

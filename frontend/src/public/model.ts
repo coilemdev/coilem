@@ -1,6 +1,7 @@
 import type { AirgapBrBtProfile } from '../components/tutorials/lessonSolveTypes';
 import type { CustomSteel } from './customSteel';
-import type { DqFluxLinkage, LossBreakdown, WireSpec } from './performance';
+import type { DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, WireSpec } from './performance';
+import type { WindingResistance } from './windingResistance';
 
 export type Topology = 'SPM' | 'IPM';
 export type IpMTopology = 'flat_buried' | 'v_shape' | 'pyleecan_holem50';
@@ -435,6 +436,8 @@ export interface SolveResult {
     peak_flux_density_yoke_T: number;
     dq_flux_linkage?: DqFluxLinkage | null;
     loss_breakdown?: LossBreakdown | null;
+    iron_loss?: IronLoss | null;
+    winding_resistance?: WindingResistance | null;
     solve_time_s: number;
   };
   torque_waveform: {
@@ -512,6 +515,7 @@ export interface SolveResult {
     physics_contract_version?: string | null;
   };
   field_line_plot?: PublicFieldLinePlot | null;
+  iron_loss_density?: IronLossDensity | null;
   field_line_frames?: PublicFieldFrameDescriptor[] | null;
   field_playback?: PublicFieldPlaybackManifest | null;
   saved_run?: PublicSavedRun | null;
