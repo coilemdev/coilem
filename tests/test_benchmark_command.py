@@ -85,7 +85,17 @@ def test_windows_requalification_publication_hashes_and_self_check() -> None:
     assert set(manifest) == set(published)
     for relative, path in published.items():
         assert hashlib.sha256(path.read_bytes()).hexdigest() == manifest[relative], relative
-        assert path.suffix not in (".pdf", ".log") and "jobs" not in path.relative_to(evidence).parts
+        assert path.suffix != ".log" and "jobs" not in path.relative_to(evidence).parts
+    pdf_name = "coilem_benchmark_report.pdf"
+    original_pdf_sha = read(evidence / "raw-report-hashes.json")[pdf_name]
+    assert {name: manifest[name] for name, path in published.items() if path.suffix == ".pdf"} == {
+        pdf_name: original_pdf_sha,
+    }
+    pdf_publication = read(evidence / "pdf-publication.json")
+    assert pdf_publication["original_pdf_sha256"] == pdf_publication["published_pdf_sha256"] == original_pdf_sha
+    assert pdf_publication["byte_for_byte_unchanged"] and pdf_publication["pages"] == 64
+    assert len(pdf_publication["relative_fixture_links"]) == 36
+    assert all((evidence / link["target"]).is_file() for link in pdf_publication["relative_fixture_links"])
     assert read(evidence / "self-check-windows-x86_64.json")["cases"] == read(RECORDS / "windows-x86_64.json")["cases"]
 
 
