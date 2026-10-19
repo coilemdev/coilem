@@ -175,6 +175,16 @@ def analyze(run):
               "all_fields_converged": max(a["max_final_residual"] for a in audits.values()) < limits["native_final_residual"],
               "all_phase_currents": max(a["max_phase_current_error_A"] for a in audits.values()) < 1e-8,
               "source_linkage_duality": max(a["max_source_linkage_duality_absolute_J"] for a in audits.values()) < 1e-9}
+    hardware_path = ROOT / "docs/hardware-validation/ornl-prius-2004/target-back-emf.json"
+    hardware_row = next(row for row in read(hardware_path)["rows"] if row["motor_shaft_rpm"] == 1000)
+    hardware_context = {
+        "target_file": hardware_path.relative_to(ROOT).as_posix(), "target_sha256": digest(hardware_path),
+        "ORNL_1000rpm_line_RMS_V": hardware_row["back_emf_ll_rms_V"],
+        "ORNL_1000rpm_line_peak_V": hardware_row["back_emf_ll_peak_V"],
+        "software_model_RMS_difference_relative": bemf["sampled_AB_rms_V"] / hardware_row["back_emf_ll_rms_V"] - 1,
+        "software_model_peak_difference_relative": bemf["sampled_AB_peak_V"] / hardware_row["back_emf_ll_peak_V"] - 1,
+        "status": "Context only; no hardware verdict. Software model uses 20 C magnets; ORNL recorded nominal 25 C oil, not magnet temperature.",
+    }
     return {"schema": "coilem.pyleecan_prius_public_app_report/v1", "qualified": False,
             "interpretation": "Software reproduction; retain all upstream discrepancies. Final v0.4.0 candidate rerun remains required.",
             "field_source_commit": registration["source_commit"], "field_source_dirty": registration["source_dirty"],
@@ -185,7 +195,7 @@ def analyze(run):
             "historical_evidence_sha256": {name: digest(EVIDENCE / name) for name in
                                            ("pyleecan-tutorial-results.json", "pyleecan-loaded-results.json", "pyleecan-ui-results.json")},
             "analysis_runner_sha256": digest(Path(__file__)), "analysis_numpy": np.__version__,
-            "checks": checks, "all_software_checks_pass": all(checks.values()), "tutorial": bemf,
+            "checks": checks, "all_software_checks_pass": all(checks.values()), "tutorial": bemf, "hardware_context": hardware_context,
             "loaded": {"app_mean_Nm": baseline, "retained_FEMM_16_half_cycle_mean_Nm": femm_peak_control,
                        "difference_to_FEMM_relative": baseline / femm_peak_control - 1},
             "curve": curve, "curve_upstream_RMSE_Nm": rms(np.asarray([row["app_minus_upstream_Nm"] for row in curve])),
@@ -213,6 +223,11 @@ def markdown(data):
         lines.append(f"| {name} | {control['mean_torque_Nm']:.6f} | {control['change_from_normal_32_Nm']:+.6f} |")
     lines += ["", "| Check | Outcome |", "| --- | --- |"]
     lines += [f"| {name} | {'PASS' if passed else 'FAIL'} |" for name, passed in data["checks"].items()]
+    h = data["hardware_context"]
+    lines += ["", f"Hardware context at 1000 rpm: ORNL records {h['ORNL_1000rpm_line_RMS_V']} V line RMS and "
+              f"{h['ORNL_1000rpm_line_peak_V']} V peak. The 20 C software model differs by "
+              f"{100*h['software_model_RMS_difference_relative']:+.2f}% RMS and {100*h['software_model_peak_difference_relative']:+.2f}% peak. "
+              "ORNL's nominal 25 C oil is not a measured magnet temperature. This comparison has no hardware verdict."]
     lines += ["", "Actual app solves: 100 tutorial zero-current fields plus 100 separate no-load fields; "
               "32 loaded plus 32 no-load fields; 13 current angles × 16 full-cycle fields; 64 angular and 32 Fine mesh control fields.", "",
               "[JSON waveforms, identities and field hashes](app-results.json) · [Full protocol and interpretation](README.md)", "",

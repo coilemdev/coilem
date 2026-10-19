@@ -5140,8 +5140,8 @@
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
-      "bytes": 16748,
-      "sha256": "5a2c260c41caad6031de087827292f2856febcd1fb0d7976a2d0835409ae26a5"
+      "bytes": 18184,
+      "sha256": "33498650de4b09692a962b7779063b37701dc791ace232df378d27b6b464ab2b"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/app-design-3d.png",
@@ -7265,8 +7265,8 @@
     },
     {
       "path": "tools/report_prius_benchmark.py",
-      "bytes": 18441,
-      "sha256": "3bf3801bb97cbd03614f7140df7ae0491bed0b662ebb0f680f3cc575719fcff2"
+      "bytes": 19835,
+      "sha256": "faccbdd8e1a3eae34a3ec5b27962c5e83e0f898f8734e920d660d1ef44ec401e"
     },
     {
       "path": "tools/run_benchmarks.py",
@@ -10888,6 +10888,18 @@
       "path": "tools/verify_snapshot.py",
       "source_sha256": "887ddbab11238f6d5d3233af4f30d8e84ff316686ed5c79fb45f9d589a97a6e0",
       "reason": "Publish the pinned Prius workflow check and reviewed reference preview."
+    },
+    {
+      "base_commit": "285f95a31f077a9589a21dd139957c68a98bde13",
+      "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
+      "source_sha256": "5a2c260c41caad6031de087827292f2856febcd1fb0d7976a2d0835409ae26a5",
+      "reason": "Retain the unresolved ORNL voltage gap and distinct model/temperature assumptions."
+    },
+    {
+      "base_commit": "285f95a31f077a9589a21dd139957c68a98bde13",
+      "path": "tools/report_prius_benchmark.py",
+      "source_sha256": "3bf3801bb97cbd03614f7140df7ae0491bed0b662ebb0f680f3cc575719fcff2",
+      "reason": "Retain the unresolved ORNL voltage gap and distinct model/temperature assumptions."
     }
   ]
 }

@@ -224,6 +224,27 @@ The [versioned protocol](protocol.json) records the sampling, fixed waveform
 mapping and software-parity limits selected using the retained studies before
 the complete fresh run. It does not define hardware acceptance.
 
+## Remaining hardware discrepancy and model differences
+
+The [registered ORNL table](../../hardware-validation/ornl-prius-2004/target-back-emf.json)
+records **85.7 V line RMS / 150 V peak at 1000 motor-shaft rpm**, with nominal
+25°C oil. The software tutorial uses **20°C magnets**; the loaded reference uses
+**60°C magnets**. Oil temperature does not establish the magnet temperature,
+which ORNL did not record. The fresh report retains the direct one-speed
+voltage difference as context, with no hardware pass/fail or fitted correction.
+
+The separate [ORNL reconstruction report](../../hardware-validation/ornl-prius-2004/report-v1.md)
+retains its own frozen geometry and winding assumptions, M350-50A steel,
+Br = 1.235 T at an uncertain magnet test temperature, and a mean RMS excess of
+26.6% across twelve speeds. Its pocket dimensions were inferred from ORNL
+figures. This pinned Pyleecan model instead retains its analytic SlotW11/HoleM50
+curves, the published M400-50A curve and Br(20°C) = 1.24 T with the stated
+temperature coefficient. These models are not interchangeable. The earlier
+hardware residuals remain unresolved; close FEMM agreement for this software
+model cannot remove them. See the [hardware source audit](../../hardware-validation/ornl-prius-2004/source-audit.md)
+for measured versus inferred inputs. Axial leakage, skew and magnet condition
+have not been established as explanations by this 2D benchmark.
+
 ## Reproduce the public app benchmark
 
 Use the documented coilEM Python environment and build the current native
