@@ -125,6 +125,13 @@ The reference data is Apache-2.0, copyright EOMYS ENGINEERING and the Pyleecan
 developers. [THIRD_PARTY_NOTICES.md](../../../THIRD_PARTY_NOTICES.md#pyleecan-prius-reference-data)
 records attribution, the representation changes and the full license.
 
+Adapted from Pyleecan reference data. No affiliation with or endorsement by
+EOMYS, the Pyleecan project, or Toyota. Both bundled `.coilem` examples and
+designs saved from either reference case carry the source, copyright,
+conversion notice, affiliation statement and complete Apache-2.0 license in
+`reference_notice`. Older reference files gain this notice when saved again;
+operating-point experiments retain it.
+
 ## Frozen numerical and output conventions
 
 The app uses full native Gmsh geometry, precise node placement, normal mesh

@@ -295,6 +295,7 @@ test('loads both exact Pyleecan Prius cases through the public Design and Solve 
     expect(data.regions.filter((r: {loops?: unknown[]}) => r.loops?.length)).toHaveLength(91);
     expect(data.regions.find((r: {region_type: string}) => r.region_type === 'rotor_core').loops).toHaveLength(10);
     await expect(page.getByText('Published Pyleecan geometry, winding and materials are fixed.', { exact: false })).toBeVisible();
+    await expect(page.getByText('No affiliation with or endorsement by EOMYS, the Pyleecan project, or Toyota.', { exact: false })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeEnabled();
     const checked = await page.request.post(`${apiUrl}/solve/validate`, { data: request });
     expect(checked.status()).toBe(200);
@@ -307,6 +308,7 @@ test('loads both exact Pyleecan Prius cases through the public Design and Solve 
     expect(validation.request().postDataJSON().solver).toBe('magneto2d');
     await openSetupSection(page, 'operating');
     await expect(page.getByText(`Pyleecan software reference · ${temperature}°C magnets`, { exact: false })).toBeVisible();
+    await expect(page.getByText('No affiliation with or endorsement by EOMYS, the Pyleecan project, or Toyota.', { exact: false })).toBeVisible();
     await page.getByRole('button', { name: '← Back to Design', exact: true }).click();
   }
   await page.getByRole('button', { name: 'Show 2D motor view', exact: true }).click();

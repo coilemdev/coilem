@@ -339,6 +339,11 @@ The bundled fixture also carries the published B-H samples and winding data.
 Pyleecan and FEMM are optional research tools and are not runtime dependencies
 of this fixture. The upstream license follows in full.
 
+Adapted from Pyleecan reference data. No affiliation with or endorsement by
+EOMYS, the Pyleecan project, or Toyota. The standalone Prius `.coilem` examples
+and reference designs saved by the app include this attribution, a conversion
+notice and the full Apache-2.0 license in their `reference_notice` metadata.
+
 ```
                                  Apache License
                            Version 2.0, January 2004

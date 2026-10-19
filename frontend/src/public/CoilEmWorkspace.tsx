@@ -15,6 +15,7 @@ import {
 } from 'react';
 import type { PublicApiError } from './api';
 import { DESIGN_FILE_ACCEPT, DESIGN_FILE_EXTENSION } from './designFile';
+import { PYLEECAN_REFERENCE_NOTICE } from './pyleecanReferenceNotice';
 
 import {
   MotorCanvas,
@@ -1217,6 +1218,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
       )}
       <div className="panel-left-scroll">
         {config.geometry_reference && <div className="public-design-notice">Published Pyleecan geometry, winding and materials are fixed. Change operating conditions and accuracy in Solve.</div>}
+        {config.geometry_reference && <p className="public-design-notice">{PYLEECAN_REFERENCE_NOTICE.affiliation_notice}</p>}
         <div className="param-search-section" role="search">
           <label className="param-search-input-wrap">
             <span className="param-search-icon" aria-hidden="true">⌕</span>
@@ -3505,6 +3507,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
         </ParameterSectionBlock>}
         <ParameterSectionBlock id="operating" label="Operating point" summary={operatingSummary} active={openSetupSection === 'operating'} onToggle={toggleSetupSection}>
           {config.geometry_reference && <p className="public-design-notice">Pyleecan software reference · {config.solve_params.magnet_temperature_C}°C magnets · sinusoidal phase current. Φ₀ uses the published d-axis convention. This case does not validate ORNL hardware.</p>}
+          {config.geometry_reference && <p className="public-design-notice">{PYLEECAN_REFERENCE_NOTICE.affiliation_notice}</p>}
           <div className="public-excitation-selector" role="radiogroup" aria-label="Stator excitation">
             <button
               type="button"

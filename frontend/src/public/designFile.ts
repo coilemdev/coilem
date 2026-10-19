@@ -2,6 +2,7 @@ import { migrateProjectFile, COILEM_SCHEMA_VERSION } from '../api/projectSchema'
 import { applyPublicSolverSettings, cloneDefaultConfig, HOLEM50_FIELDS, PUBLIC_MAGNETO2D_SETTINGS } from './model';
 import type { MotorConfig } from './model';
 import { parseCustomSteels } from './customSteel';
+import { PYLEECAN_REFERENCE_NOTICE } from './pyleecanReferenceNotice';
 
 /**
  * Local `.coilem` design files, with legacy `.openem` import compatibility.
@@ -219,6 +220,8 @@ export function serializeDesignFile(config: MotorConfig, name: string): string {
       openem_schema_version: DESIGN_FILE_SCHEMA_VERSION,
       openem_version: COILEM_APP_VERSION,
       name: designFileBaseName(name),
+      ...(config.geometry_reference === 'pyleecan_prius_2004'
+        ? { reference_notice: PYLEECAN_REFERENCE_NOTICE } : {}),
       ...applyPublicSolverSettings(config),
     },
     null,

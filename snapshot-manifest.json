@@ -80,8 +80,8 @@
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
-      "bytes": 28840,
-      "sha256": "fb768bc0bef0dad16adeacea333c7d3cc1398406af80c3bc6504891416a882af"
+      "bytes": 29152,
+      "sha256": "3f41db781fd096df31fac2511f7657eb128952ed132885440054ec55813b8735"
     },
     {
       "path": "TRADEMARKS.md",
@@ -5400,8 +5400,8 @@
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
-      "bytes": 23771,
-      "sha256": "0ca9fd42535500388bd732c9f34fcc5e193fdb2fbf20021f2eb5779f88e63997"
+      "bytes": 24186,
+      "sha256": "c34c8195c746d3be60a56e876eb186350fb1556ea4df2204d1e3dfb1d34e961e"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/app-design-3d.png",
@@ -5431,7 +5431,7 @@
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/artifact-manifest.json",
       "bytes": 1429,
-      "sha256": "a271775533906b5fd3c6a7726f93f8cdf79d82b3ad68ed987729f2489d8b88ec"
+      "sha256": "91c9463191de0e4762187c386776309a3d0a11f48b12bbafb0ed53de4aa029f5"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/installed-wheel-validation.json",
@@ -5780,8 +5780,8 @@
     },
     {
       "path": "frontend/scripts/test-design-file-defaults.mjs",
-      "bytes": 6812,
-      "sha256": "2cd3431e79d4bf6ff10a30324914aaa29280ce10ea95864ab6cc4c9abb3b2a22"
+      "bytes": 8140,
+      "sha256": "5819b471e1f34fc909b82439116fc349715c3105ab8f515c0c67486e7528839d"
     },
     {
       "path": "frontend/scripts/test-field-axes.mjs",
@@ -6260,8 +6260,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 218339,
-      "sha256": "881fdc32150cb03c1278a8b9b4aac2357a547d070745f724cd5559828eb72180"
+      "bytes": 218664,
+      "sha256": "3a45265ba7b3980dfb16db7d548709b9a518b353d97fbe4f36cc388235c6dce1"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -6395,8 +6395,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "bytes": 13226,
-      "sha256": "e7b0812d411cc71f7b241e4b2b15aaa2d6f639d9dff8155fa1435949cb5f7880"
+      "bytes": 13424,
+      "sha256": "92610a9d5142ee6d67f058fb7b577703cda931241dc647be492644addbdb93e2"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -6420,13 +6420,13 @@
     },
     {
       "path": "frontend/src/public/examples/prius-2004-loaded-torque-v1.coilem",
-      "bytes": 6428,
-      "sha256": "2d8377922b8060b5cf0dfca4f972be2dd4c6a51941b35fc913dd34589e6db255"
+      "bytes": 19067,
+      "sha256": "8e3f15925030a79357da6f17f41f75f4ceee175d7460d3c8632c4a4852eee4a3"
     },
     {
       "path": "frontend/src/public/examples/prius-2004-tutorial-bemf-v1.coilem",
-      "bytes": 6424,
-      "sha256": "0cc3f63a975dc759a6d2bc798feaea5a979460499d5e7e76572644622eab5e05"
+      "bytes": 19063,
+      "sha256": "ee06b79568cf89a1ba95acf2abfed1e36d165dc820e9bb0f741792ed3d1059b5"
     },
     {
       "path": "frontend/src/public/examples/rotating_field_6p36s.coilem",
@@ -6634,6 +6634,11 @@
       "sha256": "74faf4b483e3a1bd000272707fab8ca5deae0b875cafe6095b9a02c39e793e67"
     },
     {
+      "path": "frontend/src/public/pyleecanReferenceNotice.ts",
+      "bytes": 12731,
+      "sha256": "c4d7ab36d3347424ecff5288aeb3cf6a7c9058e31614e72abb0ffaf60dd7039d"
+    },
+    {
       "path": "frontend/src/public/referenceMotorGeometry.ts",
       "bytes": 848,
       "sha256": "5c4cf01308ce810dda1450b9423ca420892a2db017fcb0c799a8cc138141577d"
@@ -6690,8 +6695,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 19691,
-      "sha256": "334b5ca1386b39bd0c9f6e6510c90604bbabe0d3473de40dd67620d49d31dd4c"
+      "bytes": 19985,
+      "sha256": "aaf7c7b05771bf06bfc05867d62828cb8ac16a67f6cd85feb1d10ad725701452"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -11398,6 +11403,60 @@
       "path": "tools/report_prius_benchmark.py",
       "source_sha256": "97ba2c2c2921161f868ca05b9eeab903c66bbbb40e88b5555b006db95984a274",
       "reason": "Harden Prius collection identity, freeze grading inputs, and resume only verified jobs while preserving historical field evidence."
+    },
+    {
+      "base_commit": "a3e83f50f7be3cd1c6defc50a69797e1f5bded7b",
+      "path": "THIRD_PARTY_NOTICES.md",
+      "source_sha256": "fb768bc0bef0dad16adeacea333c7d3cc1398406af80c3bc6504891416a882af",
+      "reason": "Carry Pyleecan attribution, conversion and affiliation notices with standalone and saved reference designs."
+    },
+    {
+      "base_commit": "a3e83f50f7be3cd1c6defc50a69797e1f5bded7b",
+      "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
+      "source_sha256": "0ca9fd42535500388bd732c9f34fcc5e193fdb2fbf20021f2eb5779f88e63997",
+      "reason": "Carry Pyleecan attribution, conversion and affiliation notices with standalone and saved reference designs."
+    },
+    {
+      "base_commit": "a3e83f50f7be3cd1c6defc50a69797e1f5bded7b",
+      "path": "docs/benchmarks/pyleecan-prius-v1/artifact-manifest.json",
+      "source_sha256": "a271775533906b5fd3c6a7726f93f8cdf79d82b3ad68ed987729f2489d8b88ec",
+      "reason": "Carry Pyleecan attribution, conversion and affiliation notices with standalone and saved reference designs."
+    },
+    {
+      "base_commit": "a3e83f50f7be3cd1c6defc50a69797e1f5bded7b",
+      "path": "frontend/scripts/test-design-file-defaults.mjs",
+      "source_sha256": "2cd3431e79d4bf6ff10a30324914aaa29280ce10ea95864ab6cc4c9abb3b2a22",
+      "reason": "Carry Pyleecan attribution, conversion and affiliation notices with standalone and saved reference designs."
+    },
+    {
+      "base_commit": "a3e83f50f7be3cd1c6defc50a69797e1f5bded7b",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "881fdc32150cb03c1278a8b9b4aac2357a547d070745f724cd5559828eb72180",
+      "reason": "Carry Pyleecan attribution, conversion and affiliation notices with standalone and saved reference designs."
+    },
+    {
+      "base_commit": "a3e83f50f7be3cd1c6defc50a69797e1f5bded7b",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "e7b0812d411cc71f7b241e4b2b15aaa2d6f639d9dff8155fa1435949cb5f7880",
+      "reason": "Carry Pyleecan attribution, conversion and affiliation notices with standalone and saved reference designs."
+    },
+    {
+      "base_commit": "a3e83f50f7be3cd1c6defc50a69797e1f5bded7b",
+      "path": "frontend/src/public/examples/prius-2004-loaded-torque-v1.coilem",
+      "source_sha256": "2d8377922b8060b5cf0dfca4f972be2dd4c6a51941b35fc913dd34589e6db255",
+      "reason": "Carry Pyleecan attribution, conversion and affiliation notices with standalone and saved reference designs."
+    },
+    {
+      "base_commit": "a3e83f50f7be3cd1c6defc50a69797e1f5bded7b",
+      "path": "frontend/src/public/examples/prius-2004-tutorial-bemf-v1.coilem",
+      "source_sha256": "0cc3f63a975dc759a6d2bc798feaea5a979460499d5e7e76572644622eab5e05",
+      "reason": "Carry Pyleecan attribution, conversion and affiliation notices with standalone and saved reference designs."
+    },
+    {
+      "base_commit": "a3e83f50f7be3cd1c6defc50a69797e1f5bded7b",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "334b5ca1386b39bd0c9f6e6510c90604bbabe0d3473de40dd67620d49d31dd4c",
+      "reason": "Carry Pyleecan attribution, conversion and affiliation notices with standalone and saved reference designs."
     }
   ]
 }
