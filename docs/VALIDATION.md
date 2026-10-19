@@ -12,7 +12,7 @@ report yet. Passing CI
 alone does not establish numerical accuracy.
 
 The unreleased 0.4.0 application on `main` changes the winding model and
-qualifies against the [Windows requalification report](../benchmarks/windows-native-20261018-f390b25/README.md)
+qualifies against the [Windows requalification report](../benchmarks/windows-prius-requal-20261018/README.md)
 instead; see [Qualification status](#qualification-status).
 
 See [Numerical evidence](NUMERICAL_EVIDENCE.md) for measured comparisons and
@@ -140,6 +140,17 @@ Historical protocol 1.0.0 remains selectable with `--suite` and its matching
 `--reference-bundle`. Changed physical inputs require new matched references;
 changing only the candidate solver can reuse compatible frozen data.
 
+### Pyleecan Prius software reference (#126)
+
+The [versioned Prius report](benchmarks/pyleecan-prius-v1/README.md) documents the
+exact pinned Pyleecan model in the normal Design/Solve workspace. Its tutorial
+BEMF and loaded-torque cases retain separate temperature/speed conditions and
+stable case IDs. It preserves the complete thirteen-angle upstream comparison,
+including discrepancies, independently checked explicit winding extraction,
+and mesh/angular controls. Software reproduction does not establish identity
+with the original Yang paper or measured ORNL hardware. The legacy registered
+ORNL A/B/C/D row below is unchanged and remains unsupported.
+
 ### Planned ORNL Prius coverage
 
 The planned item is ORNL Prius 2004: its HoleM50 rotor geometry is outside the
@@ -178,9 +189,9 @@ no local paths and passes the publication path check.
 
 ## Qualification status
 
-The maintainers accept the [Windows requalification report](../benchmarks/windows-native-20261018-f390b25/README.md)
+The maintainers accept the [Windows requalification report](../benchmarks/windows-prius-requal-20261018/README.md)
 as the numerical qualification record for the application on `main`. It
-measured commit `f390b25` on Windows with the Precise mesh default against the matched
+measured commit `5b6cb61` on Windows with the Precise mesh default against the matched
 [FEMM v3 references](../benchmarks/reference-baselines/ipm-high-output-v3/manifest.json),
 so it covers the 0.4.0 winding model: full slot-side turns in flux linkage
 (#80), tooth coils for fractional-slot concentrated windings, the current angle
@@ -197,7 +208,7 @@ recorded numerical value equals the [October 15 Windows v3 comparison](../benchm
 That historical comparison retains its post hoc evaluation and fixed-axis
 protocol 1.1.0 golden-sequence FAILs for the 8-pole and 14-pole 12-slot fixtures.
 The macOS record remains at `738d951`; its source guard reports NOT_COMPARABLE
-until a new macOS run measures the changed mesh source. Fast mesh remains
+until a new macOS run measures the changed mesh and reference-dispatch sources. Fast mesh remains
 experimental. The FEMM v3 bundle keeps `REVIEW_REQUIRED` for limitations
 outside these gates, such as steel-loss estimates, the Kt current base and
 peak flux-density sampling. Release qualification remains a separate step.

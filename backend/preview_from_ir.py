@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 
 from backend.geometry_ir import GeometryIR, GeometryIRRegion
-from backend.geometry_ir_tessellation import polygon_centroid, tessellate_ir_region
+from backend.geometry_ir_tessellation import polygon_centroid, tessellate_ir_loop, tessellate_ir_region
 from backend.models import GeometryRegion, WindingSlot
 
 PHASE_COLORS = {
@@ -51,6 +51,7 @@ def preview_regions_from_geometry_ir(
             GeometryRegion(
                 region_type=region_type,
                 points=points,
+                loops=[[[float(x), float(y)] for x, y in tessellate_ir_loop(loop)] for loop in region.loops],
                 fill=fill,
                 label=label,
                 text_label=text_label,
@@ -134,6 +135,13 @@ def _magnet_style(
     parts = source.split(":")
     if len(parts) >= 2 and parts[0] == "pm":
         polarity = parts[1]
+    elif region.magnetization_xy is not None:
+        # Imported references may carry vectors without the generic pm:N/S
+        # display hint. Use the actual outward magnetic component, rather
+        # than silently labeling every such magnet as north.
+        cx, cy = polygon_centroid(tessellate_ir_region(region))
+        mx, my = region.magnetization_xy
+        polarity = "N" if mx * cx + my * cy >= 0 else "S"
 
     magnet_idx = _trailing_index(region.region_id)
     pole_idx = _magnet_pole_key(magnet_idx, ipm_topology)

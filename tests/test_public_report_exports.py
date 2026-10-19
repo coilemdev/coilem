@@ -717,3 +717,16 @@ def test_pdf_plot_angle_axis_matches_the_apps_steps() -> None:
     assert _angle_axis_end([index * 7.5 for index in range(48)]) == 360.0
     assert _angle_axis_end([index * 3.75 for index in range(13)]) == 45.0
     assert _angle_axis_end([0.0, 30.0, 60.0, 90.0]) == 90.0
+
+
+@pytest.mark.parametrize("case_id,temperature", [
+    ("prius-2004-tutorial-bemf-v1", 20), ("prius-2004-loaded-torque-v1", 60),
+])
+def test_reference_export_keeps_case_temperature_and_angle_convention(case_id, temperature):
+    from backend.reference_models.prius import case_config
+
+    groups = dict(_design_setting_groups(case_config(case_id)))
+    reference = dict(groups["Published software reference"])
+    assert reference["Case ID"] == case_id
+    assert reference["Current angle convention"] == "Pyleecan d-axis Phi0"
+    assert reference["Magnet temperature"] == f"{temperature} C"

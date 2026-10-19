@@ -15,6 +15,7 @@ import {
 } from 'react';
 import type { PublicApiError } from './api';
 import { DESIGN_FILE_ACCEPT, DESIGN_FILE_EXTENSION } from './designFile';
+import { PYLEECAN_REFERENCE_NOTICE } from './pyleecanReferenceNotice';
 
 import {
   MotorCanvas,
@@ -906,7 +907,7 @@ function componentFacts(
         ...(config.topology === 'IPM' && config.rotor.ipm_topology === 'flat_buried'
           ? ([['Outer bridge', `${config.rotor.bridge_thickness_mm} mm`]] as Array<[string, string]>)
           : []),
-        ['Pole coverage', `${magnetPoleCoveragePct(config)}%`],
+        ...(config.geometry_reference ? [] : [['Pole coverage', `${magnetPoleCoveragePct(config)}%`]] as Array<[string, string]>),
       ];
     case 'winding': {
       const facts: Array<[string, string]> = [
@@ -1064,7 +1065,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
     if (next) onDesignSectionVisit(next);
     return next;
   });
-  const disabled = busy !== null;
+  const disabled = busy !== null || Boolean(config.geometry_reference);
   const set = (
     section: PublicEditableSection,
     field: string,
@@ -1205,7 +1206,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
           With nothing selected the content fits and nothing scrolls at all. */}
       <div className="panel-header">
         <span className="panel-header-title">Design</span>
-        <button className="public-panel-reset" type="button" disabled={disabled} onClick={onReset}>Reset</button>
+        <button className="public-panel-reset" type="button" disabled={busy !== null} onClick={onReset}>Reset</button>
       </div>
       {selectedComponent && (
         <ComponentDetailCard
@@ -1216,6 +1217,8 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         />
       )}
       <div className="panel-left-scroll">
+        {config.geometry_reference && <div className="public-design-notice">Published Pyleecan geometry, winding and materials are fixed. Change operating conditions and accuracy in Solve.</div>}
+        {config.geometry_reference && <p className="public-design-notice">{PYLEECAN_REFERENCE_NOTICE.affiliation_notice}</p>}
         <div className="param-search-section" role="search">
           <label className="param-search-input-wrap">
             <span className="param-search-icon" aria-hidden="true">⌕</span>
@@ -1279,7 +1282,9 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
               {config.rotor.ipm_topology === 'pyleecan_holem50' ? (
                 <p className="ipm-layout-note ipm-experimental-note" role="note">
                   <strong>HoleM50 (experimental). </strong>
-                  {experimentalRotors?.enabled
+                  {config.geometry_reference
+                    ? 'Pinned published model. Its analytic curves, winding and materials are fixed; no startup flag is required.'
+                    : experimentalRotors?.enabled
                     ? 'An experimental rotor path: not public support, and results carry no qualification claim. Pick a layout above to switch to a public rotor.'
                     : `This rotor needs coilEM started with ${experimentalRotors?.switch ?? 'COILEM_EXPERIMENTAL_ROTORS'}=1 to preview and solve.`}
                 </p>
@@ -1412,7 +1417,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         </div>
         <NumberRow label="Turns / Coil" value={config.winding.turns_per_coil} min={1} step={1} disabled={disabled} onChange={set('winding', 'turns_per_coil', 'winding')} />
         <NumberRow label="Parallel Paths" value={config.winding.parallel_paths} min={1} step={1} disabled={disabled} onChange={set('winding', 'parallel_paths', 'winding')} />
-        <NumberRow label="Phase Current" value={config.solve_params.current_amplitude_A} unit="A rms" min={0} step={0.5} disabled={disabled} onChange={set('solve_params', 'current_amplitude_A', 'winding')} />
+        <NumberRow label="Phase Current" value={config.solve_params.current_amplitude_A} unit={`A ${config.solve_params.current_amplitude_convention}`} min={0} step={0.5} disabled={disabled} onChange={set('solve_params', 'current_amplitude_A', 'winding')} />
       </ParameterSectionBlock>}
 
       {matchesSearch('materials') && <ParameterSectionBlock id="materials" attention={errorSection === 'materials'} label="Materials" active={Boolean(normalizedSearch) || activeSection === 'materials'} onToggle={toggle} summary={`${steelDisplayName(config, config.materials.stator_steel)} stator · ${steelDisplayName(config, config.materials.rotor_steel)} rotor`}>
@@ -1458,7 +1463,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
                   : 'Geometry needs attention'}
           </div>
         )}
-        <button type="button" className={`panel-next-btn ${error || blankDesign ? 'is-blocked' : 'is-ready'}`} disabled={Boolean(error) || blankDesign || disabled} onClick={onNext}>Continue to Solve</button>
+        <button type="button" className={`panel-next-btn ${error || blankDesign ? 'is-blocked' : 'is-ready'}`} disabled={Boolean(error) || blankDesign || busy !== null} onClick={onNext}>Continue to Solve</button>
         {blankDesign && <div className="panel-next-feedback">Change a design parameter to enable Solve.</div>}
         {error && <div className="panel-next-feedback is-error">{error}</div>}
         {error && geometryStale && !blankDesign && <button type="button" className="public-back-link" disabled={busy !== null} onClick={onRefreshGeometry}>Retry geometry preview</button>}
@@ -1905,6 +1910,7 @@ function ViewportChrome({
         >
           <PublicMotor3D
             config={config}
+            geometry={geometry}
             resetSignal={threeResetSignal}
             rotorAngleDeg={rotorAngleDeg}
             explodedAmount={explodedAmount}
@@ -2416,7 +2422,9 @@ function HealthPanel({
     }] : []),
     airgapHealth,
     ...(burialHealth ? [burialHealth] : []),
-    { severity: coverage >= 55 && coverage <= 90 ? 'positive' : 'warning', title: coverage >= 55 && coverage <= 90 ? 'Magnet coverage is in a practical range' : 'Magnet coverage needs review', copy: `${coverage}% pole coverage for the current rotor.` },
+    { severity: config.geometry_reference || coverage >= 55 && coverage <= 90 ? 'positive' : 'warning',
+      title: config.geometry_reference ? 'Pinned published geometry' : coverage >= 55 && coverage <= 90 ? 'Magnet coverage is in a practical range' : 'Magnet coverage needs review',
+      copy: config.geometry_reference ? 'Analytic SlotW11 and HoleM50 curves; geometry is fixed for this software reference.' : `${coverage}% pole coverage for the current rotor.` },
     { severity: config.stator.slot_count % 3 === 0 ? 'positive' : 'warning', title: config.stator.slot_count % 3 === 0 ? 'Slot count supports three phases' : 'Slot count does not divide across three phases', copy: `${config.stator.slot_count} stator slots across three phases.` },
     { severity: geometry && !geometryStale ? 'positive' : 'info', title: geometry && !geometryStale ? 'Geometry preview is current' : 'Updating geometry preview', copy: geometry && !geometryStale ? `${geometry.regions.length} regions returned by the local backend.` : 'The preview will refresh after the local backend responds.' },
     ...(qualification ? [{
@@ -2464,7 +2472,7 @@ function HealthPanel({
       </div>
       <div className="design-health-metrics">
         <div className="design-health-metric"><span>Airgap</span><strong>{airgap.toFixed(2)} mm</strong></div>
-        <div className="design-health-metric"><span>Coverage</span><strong>{coverage}%</strong></div>
+        <div className="design-health-metric"><span>{config.geometry_reference ? 'Reference' : 'Coverage'}</span><strong>{config.geometry_reference ? 'Pyleecan' : `${coverage}%`}</strong></div>
         <div className="design-health-metric"><span>Q</span><strong>{config.stator.slot_count / Math.max(1, config.rotor.pole_count * 3)} </strong></div>
       </div>
       <div className="public-check-heading"><span>Pre-solve checks</span><strong>{positiveCount} ✓{infoCount > 0 ? ` · ${infoCount} i` : ''}{warningCount > 0 ? ` · ${warningCount} △` : ''}</strong></div>
@@ -3479,10 +3487,12 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               type="button"
               role="radio"
               aria-checked={selectedSolver === 'elmer'}
-              aria-disabled={!elmerAvailable || busy !== null || sixStepSelected}
+              aria-disabled={!elmerAvailable || busy !== null || sixStepSelected || Boolean(config.geometry_reference)}
               className={selectedSolver === 'elmer' ? 'active' : ''}
-              disabled={!elmerAvailable || busy !== null || sixStepSelected}
-              title={sixStepSelected
+              disabled={!elmerAvailable || busy !== null || sixStepSelected || Boolean(config.geometry_reference)}
+              title={config.geometry_reference
+                ? 'The Pyleecan reference uses the native Magneto2D solver and its embedded steel curve.'
+                : sixStepSelected
                 ? 'Ideal six-step excitation uses Magneto2D in the MVP.'
                 : !elmerAvailable
                   ? elmerCapability.reason || 'Qualified Elmer 26.2 runtime not detected.'
@@ -3496,6 +3506,8 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
           {!elmerAvailable && <p className="public-solver-diagnostic">{elmerCapability.reason || 'Qualified Elmer 26.2 runtime not detected.'}</p>}
         </ParameterSectionBlock>}
         <ParameterSectionBlock id="operating" label="Operating point" summary={operatingSummary} active={openSetupSection === 'operating'} onToggle={toggleSetupSection}>
+          {config.geometry_reference && <p className="public-design-notice">Pyleecan software reference · {config.solve_params.magnet_temperature_C}°C magnets · sinusoidal phase current. Φ₀ uses the published d-axis convention. This case does not validate ORNL hardware.</p>}
+          {config.geometry_reference && <p className="public-design-notice">{PYLEECAN_REFERENCE_NOTICE.affiliation_notice}</p>}
           <div className="public-excitation-selector" role="radiogroup" aria-label="Stator excitation">
             <button
               type="button"
@@ -3633,7 +3645,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
                 <p className="public-solver-help">Picard is the default. Try Newton if a run fails to converge.</p>
               </>}
               {!sixStepSelected && <SelectRow label="Current convention" value={config.solve_params.current_amplitude_convention} disabled={busy !== null} choices={[{ value: 'rms', label: 'RMS' }, { value: 'peak', label: 'Peak' }]} onChange={(value) => onSolveSettingChange('current_amplitude_convention', value as MotorConfig['solve_params']['current_amplitude_convention'])} />}
-              {!sixStepSelected && <NumberRow label="Current angle" value={config.solve_params.current_angle_deg} unit="deg" min={-180} max={180} step={1} disabled={busy !== null} onChange={(value) => onSolveSettingChange('current_angle_deg', value)} />}
+              {!sixStepSelected && <NumberRow label={config.geometry_reference ? "Pyleecan Φ₀ (d-axis)" : "Current angle"} value={config.solve_params.current_angle_deg} unit="deg" min={-180} max={180} step={1} disabled={busy !== null} onChange={(value) => onSolveSettingChange('current_angle_deg', value)} />}
             </section>
             <section className="public-advanced-section public-advanced-output-section" aria-labelledby="public-generated-outputs-heading">
               <span className="public-section-kicker" id="public-generated-outputs-heading">Generated outputs</span>
@@ -3959,6 +3971,11 @@ function ReportStage({
   const reportSettings: Array<{ label: string; value: string }> = [
     { label: 'Project', value: projectName },
     { label: 'Material', value: materialName },
+    ...(config.geometry_reference ? [
+      { label: 'Reference case', value: config.reference_case ?? 'Not recorded' },
+      { label: 'Magnet temperature', value: `${config.solve_params.magnet_temperature_C}°C` },
+      { label: 'Pyleecan Φ₀ (d-axis)', value: `${config.solve_params.current_angle_deg}° electrical` },
+    ] : []),
     {
       label: sixStep ? 'Conducting phase current' : 'Phase current',
       value: `${formatNumber(config.solve_params.current_amplitude_A)} A ${sixStep ? 'plateau' : config.solve_params.current_amplitude_convention}`,

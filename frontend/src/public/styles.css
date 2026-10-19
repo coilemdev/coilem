@@ -607,7 +607,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  max-width: 230px;
+  max-width: 360px;
   min-width: 0;
   height: 30px;
   padding: 0 11px;
@@ -2426,7 +2426,7 @@ body {
    only counts inside it. While the menu is open, lift the whole bar above the
    workspace's floating toolbars (z-index 30–60) and below dialogs (120). */
 .public-coilem-shell .public-coilem-topbar.is-menu-open { z-index: 100; }
-.public-project-menu { position: absolute; top: calc(100% + 6px); left: 0; z-index: 80; min-width: 232px; display: grid; gap: 2px; padding: 6px; border: 1px solid var(--border-default); border-radius: 10px; background: rgba(13, 15, 21, 0.97); box-shadow: var(--shadow-md); backdrop-filter: blur(10px); }
+.public-project-menu { position: absolute; top: calc(100% + 6px); left: 0; z-index: 80; width: min(320px, calc(100vw - 160px)); display: grid; gap: 2px; padding: 6px; border: 1px solid var(--border-default); border-radius: 10px; background: rgba(13, 15, 21, 0.97); box-shadow: var(--shadow-md); backdrop-filter: blur(10px); }
 .public-project-menu button { display: block; width: 100%; padding: 8px 10px; border: 0; border-radius: 7px; background: transparent; color: var(--text-secondary); font: inherit; font-size: 12.5px; text-align: left; cursor: pointer; }
 .public-project-menu button:hover:not(:disabled) { background: rgba(245, 158, 11, 0.14); color: var(--text-primary); }
 .public-project-menu button:focus-visible { outline: 1px solid var(--accent); outline-offset: -1px; }
@@ -2435,14 +2435,15 @@ body {
 .public-project-menu .menu-note { display: block; padding: 5px 10px 4px; color: var(--text-muted); font-size: 10.5px; }
 .public-project-submenu { position: relative; }
 .public-project-menu .public-project-submenu-trigger { display: flex; align-items: center; justify-content: space-between; }
-.public-project-examples-menu { position: absolute; top: -6px; left: calc(100% - 2px); z-index: 81; min-width: 238px; display: grid; gap: 2px; padding: 6px; border: 1px solid var(--border-default); border-radius: 10px; background: rgba(13, 15, 21, 0.98); box-shadow: var(--shadow-md); backdrop-filter: blur(10px); }
-.public-project-menu .public-project-examples-menu button { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 14px; }
+.public-project-examples-menu { position: absolute; top: -6px; left: calc(100% - 2px); z-index: 81; width: min(680px, calc(100vw - 160px)); display: grid; gap: 2px; padding: 6px; border: 1px solid var(--border-default); border-radius: 10px; background: rgba(13, 15, 21, 0.98); box-shadow: var(--shadow-md); backdrop-filter: blur(10px); }
+.public-project-menu .public-project-examples-menu button { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 14px; }
 .public-project-examples-menu strong { color: inherit; font-weight: 600; }
 .public-project-examples-menu small { color: var(--text-muted); font: 9.5px var(--font-mono); text-transform: uppercase; letter-spacing: .04em; }
 .public-project-examples-menu .public-project-example-group-label { padding: 6px 10px 3px; color: var(--text-muted); font: 700 8px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; }
 
-@media (max-width: 620px) {
+@media (max-width: 1200px) {
   .public-project-examples-menu { top: calc(100% + 2px); left: 0; }
+  .public-project-menu .public-project-examples-menu button { grid-template-columns: minmax(0, 1fr); gap: 3px; }
 }
 
 .public-blank-design {

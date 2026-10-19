@@ -3,7 +3,7 @@
 docs/VALIDATION.md#qualification-status is the source: a combination of
 rotor, winding and excitation is qualified when every registered fixture for
 it passes its FEMM parity gates in QUALIFICATION_REPORT, which measured the
-current winding, current-angle, slot-layer and Precise mesh models at f390b25.
+current winding, current-angle, slot-layer and Precise mesh models at 5b6cb61.
 Combinations the benchmark did not measure, or measured with failures, are
 experimental. The result travels with previews, solve validation and saved
 runs, so the app and its exports say what the docs say.
@@ -23,10 +23,10 @@ QualificationStatus = Literal["qualified", "experimental", "unsupported"]
 # The basis, reasons and caveats travel in public preview, solve and saved-run
 # payloads, which must not name the reference solver or thermal analysis
 # (tools/smoke_public_runtime.py); docs/VALIDATION.md names the report in full.
-QUALIFICATION_BASIS = "coilEM benchmark report, measured at f390b25"
+QUALIFICATION_BASIS = "coilEM benchmark report, measured at 5b6cb61"
 # Repository path of the report behind every reason below. tests/test_qualification.py
 # checks the reasons against its outcomes and its sources against the current code.
-QUALIFICATION_REPORT = "benchmarks/windows-native-20261018-f390b25/benchmark_summary.json"
+QUALIFICATION_REPORT = "benchmarks/windows-prius-requal-20261018/benchmark_summary.json"
 QUALIFICATION_REFERENCE = "https://github.com/coilemdev/coilem/blob/main/docs/VALIDATION.md#qualification-status"
 _QUALIFIED_STEEL = "M350-50A"
 _QUALIFIED_IPM = "flat_buried"
@@ -67,6 +67,9 @@ def _distributed_pitch(config: MotorConfig) -> str | None:
 
 
 def _combination(config: MotorConfig) -> tuple[QualificationStatus, str]:
+    if config.geometry_reference == "pyleecan_prius_2004":
+        return ("experimental", "Pyleecan Prius software reference: pinned geometry and materials; "
+                "measured hardware identity and release qualification remain separate.")
     winding = config.winding
     rotor = config.rotor
     six_step = config.solve_params is not None and config.solve_params.excitation_mode == "ideal_six_step_120"

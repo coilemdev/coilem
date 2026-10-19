@@ -1,0 +1,753 @@
+{
+  "comparison_policy": "Exact equality of every verdict, gate and recorded value; separate tolerance-based comparison retained below",
+  "verdicts_gates_values_identical": true,
+  "exact_case_differences": [],
+  "tolerance_comparison": {
+    "status": "MATCH",
+    "platform": "windows-x86_64",
+    "record": {
+      "platform": "windows-x86_64",
+      "source": "benchmarks/windows-native-20261018-f390b25",
+      "measured_commit": "f390b252d8c7dddc3b7ff9f2c1c4f6cbf1d10d4c",
+      "environment": {
+        "platform": "Windows-11-10.0.26200-SP0",
+        "machine": "AMD64",
+        "python": "3.12.14",
+        "dependencies": {
+          "gmsh": "4.15.2",
+          "meshio": "5.3.5",
+          "numpy": "2.4.6",
+          "pydantic": "2.13.4"
+        }
+      }
+    },
+    "cross_platform": false,
+    "physics": {
+      "status": "MATCH",
+      "files": 0,
+      "differs": [],
+      "unverified": []
+    },
+    "matched": 30,
+    "compared": 30,
+    "cases": {
+      "spm_4p12s_simple__baseline": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 4.987267330463257,
+            "record": 4.987267330463257,
+            "tolerance": 0.0024936336652316283,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 6.68003904133744,
+            "record": 6.68003904133744,
+            "tolerance": 0.1002005856200616,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 0.4782802173506237,
+            "record": 0.4782802173506237,
+            "tolerance": 0.0023914010867531186,
+            "within": true
+          }
+        }
+      },
+      "spm_4p12s_simple__high_current": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 4.987267330463257,
+            "record": 4.987267330463257,
+            "tolerance": 0.0024936336652316283,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 6.68003904133744,
+            "record": 6.68003904133744,
+            "tolerance": 0.1002005856200616,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 0.7172376412100244,
+            "record": 0.7172376412100244,
+            "tolerance": 0.003586188206050122,
+            "within": true
+          }
+        }
+      },
+      "spm_4p12s_simple__tight_airgap": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 6.079537503948517,
+            "record": 6.079537503948517,
+            "tolerance": 0.0030397687519742585,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 8.688539281268968,
+            "record": 8.688539281268968,
+            "tolerance": 0.13032808921903452,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 0.5826230012358574,
+            "record": 0.5826230012358574,
+            "tolerance": 0.002913115006179287,
+            "within": true
+          }
+        }
+      },
+      "spm_4p12s_simple_noload__baseline": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 4.987267330463257,
+            "record": 4.987267330463257,
+            "tolerance": 0.0024936336652316283,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 6.68003904133744,
+            "record": 6.68003904133744,
+            "tolerance": 0.1002005856200616,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 5.46342814086812e-06,
+            "record": 5.46342814086812e-06,
+            "tolerance": 0.001,
+            "within": true
+          }
+        }
+      },
+      "spm_4p12s_simple_noload__high_current": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 4.987267330463257,
+            "record": 4.987267330463257,
+            "tolerance": 0.0024936336652316283,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 6.68003904133744,
+            "record": 6.68003904133744,
+            "tolerance": 0.1002005856200616,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 0.23917968929676894,
+            "record": 0.23917968929676894,
+            "tolerance": 0.0011958984464838448,
+            "within": true
+          }
+        }
+      },
+      "spm_4p12s_simple_noload__tight_airgap": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 6.079537503948517,
+            "record": 6.079537503948517,
+            "tolerance": 0.0030397687519742585,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 8.688539281268968,
+            "record": 8.688539281268968,
+            "tolerance": 0.13032808921903452,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": -0.00017900740467821101,
+            "record": -0.00017900740467821101,
+            "tolerance": 0.001,
+            "within": true
+          }
+        }
+      },
+      "spm_8p12s_concentrated__baseline": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 16.28280579068358,
+            "record": 16.28280579068358,
+            "tolerance": 0.00814140289534179,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 23.653214336957276,
+            "record": 23.653214336957276,
+            "tolerance": 0.35479821505435916,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 2.218019081246451,
+            "record": 2.218019081246451,
+            "tolerance": 0.011090095406232254,
+            "within": true
+          }
+        }
+      },
+      "spm_8p12s_concentrated__high_current": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 16.28280579068358,
+            "record": 16.28280579068358,
+            "tolerance": 0.00814140289534179,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 23.653214336957276,
+            "record": 23.653214336957276,
+            "tolerance": 0.35479821505435916,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 3.318539000877068,
+            "record": 3.318539000877068,
+            "tolerance": 0.01659269500438534,
+            "within": true
+          }
+        }
+      },
+      "spm_8p12s_concentrated__tight_airgap": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 17.351434588482917,
+            "record": 17.351434588482917,
+            "tolerance": 0.008675717294241459,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 25.201378609530064,
+            "record": 25.201378609530064,
+            "tolerance": 0.37802067914295095,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 2.351072605031795,
+            "record": 2.351072605031795,
+            "tolerance": 0.011755363025158977,
+            "within": true
+          }
+        }
+      },
+      "spm_8p12s_reference_angle30__baseline": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 39.91277073731156,
+            "record": 39.91277073731156,
+            "tolerance": 0.01995638536865578,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 63.05781016340082,
+            "record": 63.05781016340082,
+            "tolerance": 0.9458671524510123,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 16.617262984760952,
+            "record": 16.617262984760952,
+            "tolerance": 0.08308631492380476,
+            "within": true
+          }
+        }
+      },
+      "ipm_flat_12s10p_fscw_contract": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 23.585818683983813,
+            "record": 23.585818683983813,
+            "tolerance": 0.011792909341991908,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 38.27096028062046,
+            "record": 38.27096028062046,
+            "tolerance": 0.5740644042093068,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 4.830026820674141,
+            "record": 4.830026820674141,
+            "tolerance": 0.024150134103370708,
+            "within": true
+          }
+        }
+      },
+      "ipm_flat_24s16p_industrial_contract": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 28.87445590635828,
+            "record": 28.87445590635828,
+            "tolerance": 0.01443722795317914,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 42.14680229763587,
+            "record": 42.14680229763587,
+            "tolerance": 0.632202034464538,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 19.40114293109601,
+            "record": 19.40114293109601,
+            "tolerance": 0.09700571465548005,
+            "within": true
+          }
+        }
+      },
+      "ipm_flat_4p12s_micro_contract": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 0.44917035392957905,
+            "record": 0.44917035392957905,
+            "tolerance": 0.001,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 0.6332857763742975,
+            "record": 0.6332857763742975,
+            "tolerance": 0.009499286645614462,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 0.021444537184232615,
+            "record": 0.021444537184232615,
+            "tolerance": 0.001,
+            "within": true
+          }
+        }
+      },
+      "ipm_flat_8p12s_fsae_angled_pocket_contract": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 7.030390733105386,
+            "record": 7.030390733105386,
+            "tolerance": 0.003515195366552693,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 10.488682572482967,
+            "record": 10.488682572482967,
+            "tolerance": 0.1573302385872445,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 2.159146148291403,
+            "record": 2.159146148291403,
+            "tolerance": 0.010795730741457015,
+            "within": true
+          }
+        }
+      },
+      "ipm_flat_8p12s_fsae_contract": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 7.657992265080746,
+            "record": 7.657992265080746,
+            "tolerance": 0.003828996132540373,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 11.21582569416983,
+            "record": 11.21582569416983,
+            "tolerance": 0.16823738541254743,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 2.5721783953454374,
+            "record": 2.5721783953454374,
+            "tolerance": 0.012860891976727186,
+            "within": true
+          }
+        }
+      },
+      "ipm_flat_8p12s_fsae_thin_bridge_contract": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 9.550453409754498,
+            "record": 9.550453409754498,
+            "tolerance": 0.004775226704877249,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 14.113762245306669,
+            "record": 14.113762245306669,
+            "tolerance": 0.21170643367960001,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 3.17692750631275,
+            "record": 3.17692750631275,
+            "tolerance": 0.01588463753156375,
+            "within": true
+          }
+        }
+      },
+      "ipm_vshape_8p12s_baseline_contract": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 2.2191735612353023,
+            "record": 2.2191735612353023,
+            "tolerance": 0.0011095867806176511,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 3.758839435338425,
+            "record": 3.758839435338425,
+            "tolerance": 0.056382591530076374,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 0.8870780159156986,
+            "record": 0.8870780159156986,
+            "tolerance": 0.004435390079578493,
+            "within": true
+          }
+        }
+      },
+      "ipm_vshape_8p12s_deep_apex_high_output_v1": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 1.4890276292876903,
+            "record": 1.4890276292876903,
+            "tolerance": 0.001,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 2.172026032382301,
+            "record": 2.172026032382301,
+            "tolerance": 0.032580390485734516,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 0.6523435988489891,
+            "record": 0.6523435988489891,
+            "tolerance": 0.0032617179942449454,
+            "within": true
+          }
+        }
+      },
+      "ipm_vshape_8p12s_narrow_angle_contract": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 2.2550518007977214,
+            "record": 2.2550518007977214,
+            "tolerance": 0.0011275259003988608,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 3.7193355988566976,
+            "record": 3.7193355988566976,
+            "tolerance": 0.055790033982850464,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 0.8911146677069278,
+            "record": 0.8911146677069278,
+            "tolerance": 0.0044555733385346396,
+            "within": true
+          }
+        }
+      },
+      "ipm_vshape_8p12s_pocket_offset_contract": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 2.204661400342709,
+            "record": 2.204661400342709,
+            "tolerance": 0.0011023307001713546,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 3.3424633575242773,
+            "record": 3.3424633575242773,
+            "tolerance": 0.050136950362864155,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 1.1057394540620336,
+            "record": 1.1057394540620336,
+            "tolerance": 0.005528697270310168,
+            "within": true
+          }
+        }
+      },
+      "ipm_vshape_8p12s_thin_bridge_contract": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 7.415265076392062,
+            "record": 7.415265076392062,
+            "tolerance": 0.0037076325381960313,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 12.151479433227058,
+            "record": 12.151479433227058,
+            "tolerance": 0.18227219149840587,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 2.684196151858665,
+            "record": 2.684196151858665,
+            "tolerance": 0.013420980759293323,
+            "within": true
+          }
+        }
+      },
+      "ipm_vshape_8p12s_wide_angle_high_output_v1": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 1.9479152838657239,
+            "record": 1.9479152838657239,
+            "tolerance": 0.001,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 2.8380662029107757,
+            "record": 2.8380662029107757,
+            "tolerance": 0.04257099304366163,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 0.7809011924937868,
+            "record": 0.7809011924937868,
+            "tolerance": 0.003904505962468934,
+            "within": true
+          }
+        }
+      },
+      "ornl_prius_2004_ipm": {
+        "match": true,
+        "differences": [],
+        "values": {}
+      },
+      "spm_12p36s_distributed_femm_validation": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 120.18226451005395,
+            "record": 120.18226451005395,
+            "tolerance": 0.06009113225502698,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 167.0855797431758,
+            "record": 167.0855797431758,
+            "tolerance": 2.5062836961476367,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 4.959448930687874,
+            "record": 4.959448930687874,
+            "tolerance": 0.02479724465343937,
+            "within": true
+          }
+        }
+      },
+      "spm_8p24s_distributed_femm_validation": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 120.86064690115114,
+            "record": 120.86064690115114,
+            "tolerance": 0.06043032345057557,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 167.6010403781831,
+            "record": 167.6010403781831,
+            "tolerance": 2.5140156056727463,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 5.5251382594991405,
+            "record": 5.5251382594991405,
+            "tolerance": 0.027625691297495703,
+            "within": true
+          }
+        }
+      },
+      "spm_8p48s_chorded_5_6": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 112.06932766734272,
+            "record": 112.06932766734272,
+            "tolerance": 0.05603466383367136,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 163.1228238572148,
+            "record": 163.1228238572148,
+            "tolerance": 2.446842357858222,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 5.8954024208388685,
+            "record": 5.8954024208388685,
+            "tolerance": 0.029477012104194344,
+            "within": true
+          }
+        }
+      },
+      "spm_8p48s_distributed_femm_validation": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 116.02273644618995,
+            "record": 116.02273644618995,
+            "tolerance": 0.05801136822309498,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 164.8649620124152,
+            "record": 164.8649620124152,
+            "tolerance": 2.4729744301862278,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 6.196296718452879,
+            "record": 6.196296718452879,
+            "tolerance": 0.030981483592264394,
+            "within": true
+          }
+        }
+      },
+      "spm_14p12s_high_pole": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "analytical.mean_torque_Nm": {
+            "value": 0.3364472577295279,
+            "record": 0.3364472577295279,
+            "tolerance": 0.0016822362886476394,
+            "within": true
+          },
+          "native-fine.mean_torque_Nm": {
+            "value": 3.3613589947522997,
+            "record": 3.3613589947522997,
+            "tolerance": 0.0168067949737615,
+            "within": true
+          },
+          "native-standard.mean_torque_Nm": {
+            "value": 3.36004461038044,
+            "record": 3.36004461038044,
+            "tolerance": 0.0168002230519022,
+            "within": true
+          }
+        }
+      },
+      "spm_4p12s_small": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "analytical.mean_torque_Nm": {
+            "value": 0.05755365705471143,
+            "record": 0.05755365705471143,
+            "tolerance": 0.001,
+            "within": true
+          },
+          "native-fine.mean_torque_Nm": {
+            "value": 0.5751319217017291,
+            "record": 0.5751319217017291,
+            "tolerance": 0.0028756596085086454,
+            "within": true
+          },
+          "native-standard.mean_torque_Nm": {
+            "value": 0.574050023938528,
+            "record": 0.574050023938528,
+            "tolerance": 0.00287025011969264,
+            "within": true
+          }
+        }
+      },
+      "spm_8p12s_reference": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "analytical.mean_torque_Nm": {
+            "value": 1.4587614011941792,
+            "record": 1.4587614011941792,
+            "tolerance": 0.007293807005970896,
+            "within": true
+          },
+          "native-fine.mean_torque_Nm": {
+            "value": 14.565842137181262,
+            "record": 14.565842137181262,
+            "tolerance": 0.07282921068590631,
+            "within": true
+          },
+          "native-standard.mean_torque_Nm": {
+            "value": 14.567116430154774,
+            "record": 14.567116430154774,
+            "tolerance": 0.07283558215077388,
+            "within": true
+          }
+        }
+      }
+    }
+  },
+  "previous_measured_commit": "f390b252d8c7dddc3b7ff9f2c1c4f6cbf1d10d4c",
+  "previous_physics_guard": {
+    "status": "DIFFERS",
+    "files": 50,
+    "differs": [
+      "backend/excitation.py",
+      "backend/geometry_ir.py",
+      "backend/gmsh_solver.py",
+      "backend/magneto2d_adapter/__init__.py",
+      "backend/solver/__init__.py",
+      "backend/reference_models/prius.py",
+      "backend/reference_models/pyleecan_prius_2004.json",
+      "backend/reference_models/pyleecan_prius_2004_config.json"
+    ],
+    "unverified": []
+  }
+}

@@ -1,0 +1,406 @@
+{
+  "schema": "coilem.prius_installed_wheel_acceptance/v1",
+  "build": {
+    "application_version": "0.3.1",
+    "application_commit": "3e640ac7b5b6535380b9eceb9cd6bce757c15795",
+    "magneto2d_version": "0.3.3",
+    "magneto2d_target": "x86_64-pc-windows-msvc",
+    "magneto2d_sha256": "c89aaa2f3471c146a142d6a3a1e9f280e971687afc396daa51892c25e3995f1c",
+    "ui_bundle_sha256": "9e78072c92dd8fd42c51f9e7a94452fc15e3cea9f5cdea535506aa293adb7ca7",
+    "toolchain": {
+      "rustc": "rustc 1.95.0 (59807616e 2026-04-14)",
+      "cargo": "cargo 1.95.0 (f2d3ce0bd 2026-03-21)",
+      "node": "v24.19.0",
+      "npm": "11.17.0"
+    },
+    "magneto2d_physics_sources": {
+      "solvers/magneto2d/Cargo.lock": "1c963a3a9e0dd242d2d8dded6ae91c39bc7675ebe63c742195fb62d2674d5fbe",
+      "solvers/magneto2d/src/assembly.rs": "4f360ca4ae50cc7a26c772843b7cdf70078d0e294abbd342ba90405ce85cd8bb",
+      "solvers/magneto2d/src/field.rs": "3f21a82ed7c0c93ac452fa2fd00cd0570077aabc976e666f974427e87dfd8786",
+      "solvers/magneto2d/src/lib.rs": "8969b5f87342662624715f873cbfbcd63e1bdd360313d788c631d2ec26491b04",
+      "solvers/magneto2d/src/magnet_fraction.rs": "095c7ac9c8eb2d00c4c268855f4a1e61a1500b0b6a69ebbe8f0ece48e58edc2a",
+      "solvers/magneto2d/src/main.rs": "48f811c7b0175cb84568c4997ed678244c0b6323f5407817a579a09b8fcabe4a",
+      "solvers/magneto2d/src/materials.rs": "42c6fcda5430f904a240c7fabb7e35d6ad209a2f98247c332846be5b3e7b5b77",
+      "solvers/magneto2d/src/mesh.rs": "f6cc1bf9fa850668e2eaeaf409d51547837a34a774f0ed77dab194d835f2cac3",
+      "solvers/magneto2d/src/motor.rs": "0aa189fb0ca601ebe1b9069609965931d4860d6ac5bafc06a8431f88f8b11840",
+      "solvers/magneto2d/src/postprocess.rs": "ff9b7d727df7a4610f7d1c22e6c48771c260b50c18f6de4671d3d59558c14838",
+      "solvers/magneto2d/src/postprocess/summary.rs": "7e582df8d8633e8dd46e7f44f15f32424dc5a8ebace32886f69d0769ff5ce010",
+      "solvers/magneto2d/src/postprocess/torque/env_flags.rs": "bb48c6944a22c0566815f9dfe67485e8a3c53836501dbc2e971a7c9118467a4b",
+      "solvers/magneto2d/src/postprocess/torque/localization.rs": "fc850cee925b0158be741b3d3e2a616144218ff563d00e180fbc09fe0fb4d5c8",
+      "solvers/magneto2d/src/postprocess/torque/mod.rs": "34c26821199e6d1c49d1be34e4db3b89627dd41676960ec1b8f20e00816410ba",
+      "solvers/magneto2d/src/run_config.rs": "7a588d6e47cacbfbf2ecf046f0b8fb0d028cd5b5bc85d39c3fa08fc528c66e54",
+      "solvers/magneto2d/src/schema.rs": "81a2b611c15736cb7851af8dd33f0260c48a3e2e1103bf21b6a17e8640cf83cd",
+      "solvers/magneto2d/src/solve/context.rs": "358956e298d85d2ba6ff8c896f3d1a429d746b8d840c6ad2f715486629480bdc",
+      "solvers/magneto2d/src/solve/mesh_metadata.rs": "a9d2a61aae3d4c02b49edfdd9ffce38e196bcb860688afb6c21d62411d3115b9",
+      "solvers/magneto2d/src/solve/metrics.rs": "cde1d765e21376773d93f8f7541954a82e8e6fffc08dcfb94cd74f683139be60",
+      "solvers/magneto2d/src/solve/mod.rs": "79cdc5358a33db0f1f6822152ba12667d40682beac1c53b43a5b228f928db9fd",
+      "solvers/magneto2d/src/solve/model/ipm.rs": "4c48ee72bf5964fd89de9ac5db8af4bd973f6e3ebfa46310edb84b30e398a6e0",
+      "solvers/magneto2d/src/solve/model/mod.rs": "714736b57d6ef1d2ec77f2e07846b10bb7fe29957e195a4e9f5e2af1576cad91",
+      "solvers/magneto2d/src/solve/model/spm.rs": "7f7d1009a5b84672e155475e99ae3e07c7956d9e0b9d976ad9e474019589ffd3",
+      "solvers/magneto2d/src/solve/newton.rs": "045ab39fcf590e2fc6817698eea063325d356591d27922e65fc9df467f39ef4d",
+      "solvers/magneto2d/src/solve/nonlinear.rs": "f1c1880d9e330b427f077ec5f82b327db0532bc0eb64013c29316d3a2504f320",
+      "solvers/magneto2d/src/solve/picard.rs": "2bcd58d6609db9f059263dfd429ea5f024e2bc94ee922cb18666229012e3d5fe",
+      "solvers/magneto2d/src/solve/problem.rs": "ea94c3e616ccfbeb8237da97a166265d8692b38223a45977e98aa90d2d5e345c",
+      "solvers/magneto2d/src/solve/types.rs": "cebe1b569d8711565c2dc8ab480ff9a4c704bc4afe38a3378a7d488acb472d57",
+      "solvers/magneto2d/src/sources.rs": "27bddb72c8830a2f736f586f50db8eff883e5350eb4647a90dd6eed362af6118",
+      "solvers/magneto2d/src/sparse.rs": "b4caa680a8665afc39e77f320eca1836261add97b22b6533919a1dda54048ac9"
+    }
+  },
+  "physics_check": {
+    "status": "MATCH",
+    "files": 53,
+    "differs": [],
+    "unverified": []
+  },
+  "previews": [
+    {
+      "case_id": "prius-2004-tutorial-bemf-v1",
+      "magnet_temperature_C": 20.0,
+      "preview_physical_regions": 91
+    },
+    {
+      "case_id": "prius-2004-loaded-torque-v1",
+      "magnet_temperature_C": 60.0,
+      "preview_physical_regions": 91
+    }
+  ],
+  "native_smoke": {
+    "case_id": "prius-2004-tutorial-bemf-v1",
+    "actual_request": {
+      "schema_version": "1.0",
+      "geometry_reference": "pyleecan_prius_2004",
+      "reference_case": "prius-2004-tutorial-bemf-v1",
+      "topology": "IPM",
+      "stator": {
+        "OD_mm": 269.24,
+        "ID_mm": 161.9,
+        "slot_count": 48,
+        "stack_length_mm": 83.82,
+        "slot_opening_mm": 1.93,
+        "tooth_width_mm": 7.086189721925985,
+        "yoke_thickness_mm": 19.37,
+        "tooth_shoe_enabled": false,
+        "tooth_shoe_height_mm": 1.0,
+        "tooth_shoe_overhang_mm": 0.5
+      },
+      "rotor": {
+        "OD_mm": 160.4,
+        "ID_mm": 110.64,
+        "magnet_thickness_mm": 6.5,
+        "magnet_width_mm": 18.9,
+        "pole_count": 8,
+        "magnet_embrace": 0.67,
+        "bridge_thickness_mm": 1.5,
+        "ipm_topology": "pyleecan_holem50",
+        "flat_buried_magnet_shape": "straight",
+        "side_bridge_thickness_mm": 1.5,
+        "pocket_clearance_mm": 0.0,
+        "magnet_angle_deg": 0.0,
+        "v_angle_deg": 60.0,
+        "v_depth_mm": 21.0,
+        "inner_web_thickness_mm": 7.0,
+        "outer_bridge_thickness_mm": 1.5,
+        "holem50_w0_mm": 42.0,
+        "holem50_w1_mm": 0.0,
+        "holem50_w2_mm": 0.0,
+        "holem50_w3_mm": 14.0,
+        "holem50_w4_mm": 18.9,
+        "holem50_h0_mm": 10.96,
+        "holem50_h1_mm": 1.5,
+        "holem50_h2_mm": 1.0,
+        "holem50_h3_mm": 6.5,
+        "holem50_h4_mm": 0.0,
+        "flux_barrier_count": null,
+        "barrier_widths_mm": null
+      },
+      "winding": {
+        "type": "distributed",
+        "turns_per_coil": 9,
+        "layers": 1,
+        "parallel_paths": 1,
+        "coil_span": 6
+      },
+      "materials": {
+        "stator_steel": "custom:1b06dcfa45eec99d88856ad3b26df6a890cea2b5c4e247abfd55367660db42ec",
+        "rotor_steel": "custom:1b06dcfa45eec99d88856ad3b26df6a890cea2b5c4e247abfd55367660db42ec",
+        "magnet_grade": "Prius_2004_NdFeB",
+        "conductor": "copper",
+        "custom_steels": {
+          "custom:1b06dcfa45eec99d88856ad3b26df6a890cea2b5c4e247abfd55367660db42ec": {
+            "id": "custom:1b06dcfa45eec99d88856ad3b26df6a890cea2b5c4e247abfd55367660db42ec",
+            "name": "Pyleecan M400-50A",
+            "source": "Published Pyleecan Toyota_Prius.json, exact FEMM B-H points",
+            "lamination_thickness_mm": null,
+            "bh_curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                0.5,
+                100.0
+              ],
+              [
+                0.7,
+                150.0
+              ],
+              [
+                0.8,
+                180.0
+              ],
+              [
+                0.9,
+                200.0
+              ],
+              [
+                1.0,
+                250.0
+              ],
+              [
+                1.05,
+                300.0
+              ],
+              [
+                1.1,
+                350.0
+              ],
+              [
+                1.15,
+                450.0
+              ],
+              [
+                1.2,
+                550.0
+              ],
+              [
+                1.225,
+                650.0
+              ],
+              [
+                1.25,
+                750.0
+              ],
+              [
+                1.275,
+                850.0
+              ],
+              [
+                1.3,
+                950.0
+              ],
+              [
+                1.325,
+                1100.0
+              ],
+              [
+                1.35,
+                1250.0
+              ],
+              [
+                1.375,
+                1400.0
+              ],
+              [
+                1.4,
+                1550.0
+              ],
+              [
+                1.425,
+                1700.0
+              ],
+              [
+                1.45,
+                1900.0
+              ],
+              [
+                1.475,
+                2150.0
+              ],
+              [
+                1.5,
+                2450.0
+              ],
+              [
+                1.525,
+                2750.0
+              ],
+              [
+                1.55,
+                3150.0
+              ],
+              [
+                1.575,
+                3600.0
+              ],
+              [
+                1.6,
+                4100.0
+              ],
+              [
+                1.625,
+                4700.0
+              ],
+              [
+                1.65,
+                5250.0
+              ],
+              [
+                1.675,
+                6000.0
+              ],
+              [
+                1.7,
+                6700.0
+              ],
+              [
+                1.725,
+                7500.0
+              ],
+              [
+                1.75,
+                8650.0
+              ],
+              [
+                1.775,
+                9500.0
+              ],
+              [
+                1.8,
+                10750.0
+              ],
+              [
+                1.85,
+                14500.0
+              ],
+              [
+                1.9,
+                19500.0
+              ],
+              [
+                1.95,
+                25000.0
+              ],
+              [
+                2.0,
+                33000.0
+              ],
+              [
+                2.05,
+                44000.0
+              ],
+              [
+                2.1,
+                57000.0
+              ],
+              [
+                2.15,
+                74000.0
+              ],
+              [
+                2.2,
+                96000.0
+              ],
+              [
+                2.25,
+                130000.0
+              ],
+              [
+                2.3,
+                170000.0
+              ]
+            ],
+            "curve_sha256": "a057ad7be7d38bd148b7ea67b8dbf64d0874c9226efb8c9cbea6dcd284566899"
+          }
+        }
+      },
+      "solve_params": {
+        "solve_quality": "custom",
+        "rotor_sweep_range_deg": 360.0,
+        "rotor_step_deg": 30.0,
+        "mesh_density": "normal",
+        "mesh_source": "native",
+        "mesher": "gmsh",
+        "corner_refinement": false,
+        "mesh_build": "precise",
+        "slot_sidewall_refinement": false,
+        "current_amplitude_A": 0.0,
+        "current_amplitude_convention": "peak",
+        "current_angle_deg": 140.0,
+        "excitation_mode": "sinusoidal",
+        "commutation_advance_deg": 0.0,
+        "phase_connection": "wye",
+        "rated_speed_rpm": 1000,
+        "magnet_temperature_C": 20.0,
+        "motor_input_dc_bus_V": 500.0,
+        "max_nonlinear_iterations": 200,
+        "nonlinear_solver": "newton",
+        "linear_solver_preconditioner": "direct",
+        "linear_steel_mu_rel": null,
+        "magneto2d_workers": 1,
+        "stream_noload_field_lines": false,
+        "field_composition_source": "resultant",
+        "rotor_rotation_model": "remesh_per_step",
+        "torque_method": "weighted_stress"
+      },
+      "solve_options": {
+        "torque_sweep": true,
+        "back_emf": false,
+        "flux_density": false,
+        "cogging_torque": false,
+        "torque_speed_envelope": false,
+        "thd_analysis": false
+      }
+    },
+    "actual_positions": 12,
+    "mean_zero_current_torque_Nm": 0.0002965713218197756,
+    "geometry_asset_sha256": "3fd70d01f18a814661c055706ee18314a32670a413cec8a686665230b21c4f7e"
+  },
+  "interpretation": "Installed artifact acceptance on a reduced 12-position grid; independent of full benchmark qualification.",
+  "wheel": {
+    "filename": "coilem-0.3.1-py3-none-win_amd64.whl",
+    "sha256": "31df278e26a2fdf8cb2754809bebb181a342f40d5a3819a4e1d25887ece3096e",
+    "bytes": 6108270,
+    "reference_assets_sha256": {
+      "backend/reference_models/pyleecan_prius_2004.json": "3fd70d01f18a814661c055706ee18314a32670a413cec8a686665230b21c4f7e",
+      "backend/reference_models/pyleecan_prius_2004_config.json": "9709ff1b1b289eb2c1102da87b5a97596d4427e02aeda99320030832f698ed3a"
+    }
+  },
+  "source_identity": {
+    "public_commit": "3e640ac7b5b6535380b9eceb9cd6bce757c15795",
+    "build_commit_explicitly_set": true,
+    "source_checkout_imported": false,
+    "note": "The build explicitly set COILEM_BUILD_COMMIT to the public HEAD rather than using the original snapshot-export identity. The wheel and full field collections retain separate binary hashes."
+  },
+  "local_checks": {
+    "python_suite": {
+      "command": "python -m pytest -q tests",
+      "passed": 1113,
+      "skipped": 3,
+      "elapsed_s": 157.87,
+      "note": "Tested working-tree bytes were then committed at the public commit above; every tracked file was verified against the committed bytes before the wheel build."
+    },
+    "rust_suite": {
+      "command": "cargo test --locked --manifest-path solvers/magneto2d/Cargo.toml",
+      "passed": 261,
+      "failed": 0
+    },
+    "python_lint": {
+      "command": "python -m ruff check backend tools tests",
+      "status": "PASS"
+    },
+    "snapshot_publication_gate": {
+      "command": "python tools/verify_snapshot.py --publication",
+      "status": "PASS"
+    },
+    "frontend_build": {
+      "command": "npm run build",
+      "status": "PASS",
+      "context": "Rebuilt in this wheel build, including contracts, types and public bundle audit."
+    },
+    "browser_workflows": {
+      "evidence": "workflow-validation.json",
+      "scope": "Both exact examples through Design/Solve validation, visible temperatures and exact 2D/3D preview; retains its own clean tested commit."
+    }
+  },
+  "limits": "Local Windows development artifact; unchanged package version 0.3.1, no publication. The 12-position zero-current solve is reduced package acceptance, not the full registered Prius benchmark or a final-candidate cross-platform rehearsal."
+}
