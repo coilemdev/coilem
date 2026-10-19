@@ -2,6 +2,7 @@ import { migrateProjectFile, COILEM_SCHEMA_VERSION } from '../api/projectSchema'
 import { applyPublicSolverSettings, cloneDefaultConfig, HOLEM50_FIELDS, PUBLIC_MAGNETO2D_SETTINGS } from './model';
 import type { MotorConfig } from './model';
 import { parseCustomSteels } from './customSteel';
+import type { WireSpec } from './performance';
 
 /**
  * Local `.coilem` design files, with legacy `.openem` import compatibility.
@@ -64,6 +65,23 @@ export const LOADED_STATOR_FALLBACKS = {
   tooth_shoe_overhang_mm: 1.5,
 };
 
+const WIRE_OPTIONAL_NUMBERS = ['insulation_build_mm', 'end_turn_extension_mm', 'slot_fill_limit'] as const;
+
+/** The winding's wire, keeping only well-formed fields; null when absent or unusable. */
+function parseWire(raw: unknown): WireSpec | null {
+  if (!isRecord(raw)) return null;
+  const diameter = raw.wire_bare_diameter_mm;
+  if (typeof diameter !== 'number' || !Number.isFinite(diameter) || diameter <= 0) return null;
+  const wire: WireSpec = { wire_bare_diameter_mm: diameter };
+  const strands = raw.strands_in_hand;
+  if (typeof strands === 'number' && Number.isInteger(strands) && strands >= 1) wire.strands_in_hand = strands;
+  for (const field of WIRE_OPTIONAL_NUMBERS) {
+    const value = raw[field];
+    if (typeof value === 'number' && Number.isFinite(value)) wire[field] = value;
+  }
+  return wire;
+}
+
 /** Merge one config section onto its defaults, keeping only known keys whose
  * incoming value matches the default's primitive type. */
 function mergeSection<T extends Record<string, unknown>>(defaults: T, incoming: unknown): T {
@@ -123,6 +141,9 @@ export function parseDesignFile(text: string): ParsedDesignFile {
     solve_options: mergeSection(defaults.solve_options, source.solve_options),
   };
   config.schema_version = '1.0';
+  // The wire is an object, which the section merge does not carry (#136).
+  const wire = parseWire(isRecord(source.winding) ? source.winding.wire : undefined);
+  if (wire) config.winding.wire = wire;
   const customSteels = parseCustomSteels(isRecord(source.materials) ? source.materials.custom_steels : undefined);
   if (Object.keys(customSteels).length) config.materials.custom_steels = customSteels;
   for (const id of [config.materials.stator_steel, config.materials.rotor_steel]) {

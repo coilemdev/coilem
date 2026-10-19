@@ -415,8 +415,8 @@
     },
     {
       "path": "backend/models/config.py",
-      "bytes": 29376,
-      "sha256": "d1ccb891c14b3d28ccb8b6e9ee911628f994fcf06ea66b071b8faef9a20d4321"
+      "bytes": 29073,
+      "sha256": "aa175744adf99da042452f38d5b97bd35f5b09203316b26ae423ec149c81afb4"
     },
     {
       "path": "backend/models/errors.py",
@@ -440,8 +440,8 @@
     },
     {
       "path": "backend/models/performance.py",
-      "bytes": 13238,
-      "sha256": "5a6de4b16791aee7f65c6dc2ddc19132e3847cd0d86890fa607ecd9181d9d65c"
+      "bytes": 15029,
+      "sha256": "479de94fbc8fc6976dcdade082b6a1d24801894da19fd2310a2e3be5c38fcefa"
     },
     {
       "path": "backend/models/result.py",
@@ -460,8 +460,8 @@
     },
     {
       "path": "backend/preview.py",
-      "bytes": 39043,
-      "sha256": "9d95bd235b3f2564b5c4fc6482adb549d01ac1ba25c6a9ce0da5c6e0cbf4eb28"
+      "bytes": 39596,
+      "sha256": "3ad466668fdd056c06392bc8b0f749632ed9d2b8c1c48446d6c97465229dda62"
     },
     {
       "path": "backend/preview_from_ir.py",
@@ -612,6 +612,11 @@
       "path": "backend/tutorial_fields.py",
       "bytes": 133506,
       "sha256": "32d109b4e6e53ba078e9b7ee2ad4c7509e31881bf0ddd1cb0f35ec3f9f9b627c"
+    },
+    {
+      "path": "backend/winding_resistance.py",
+      "bytes": 10025,
+      "sha256": "540b403dcbc406bbab7301bc49a1c579698f082b0ec46ee010bc2be6c99c4e7d"
     },
     {
       "path": "backend/winding_utils.py",
@@ -5380,8 +5385,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2118,
-      "sha256": "b6c9c006db041b31338fa978e4df68ea50c30c8600dc22455ea7813ff714d143"
+      "bytes": 2162,
+      "sha256": "2290ee1decbb6a33ae4fcf64e6a1d049c7c83f944dfc386c160d97dff781aa1c"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -5425,8 +5430,8 @@
     },
     {
       "path": "frontend/scripts/test-design-file-defaults.mjs",
-      "bytes": 5505,
-      "sha256": "f799b02c3a578d3ac1aa1be4de1dfeb27a8e822ea7d2234719d654c611f3fbf4"
+      "bytes": 6594,
+      "sha256": "0af0976923cf3428e881b674d8405967919346d504c129e29dd5cbb618667a8b"
     },
     {
       "path": "frontend/scripts/test-field-axes.mjs",
@@ -5522,6 +5527,11 @@
       "path": "frontend/scripts/test-tooth-coil-repair.mjs",
       "bytes": 5435,
       "sha256": "6808ab126570cab3b8f1988a239b4f4fb32411f42e505a6573524bd0a339b3f1"
+    },
+    {
+      "path": "frontend/scripts/test-winding-resistance.mjs",
+      "bytes": 2353,
+      "sha256": "63509178593b8049a9466b976f3e57eb4ba4aaca0cc1fc6f4d01c1d50157e98c"
     },
     {
       "path": "frontend/src/api/projectSchema.ts",
@@ -5895,8 +5905,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 71009,
-      "sha256": "fd416c60e77b18dce87f2e99613a58c0bbbbf133647a4691dbcc3d8037a85928"
+      "bytes": 71449,
+      "sha256": "374b86b72a33675f0bfd68669bd1fa0c1e101c39fbf7e561d399859deb9bc330"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -5905,8 +5915,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 216556,
-      "sha256": "705d2050876c798c3080ae2af734fdcd42ffd01b60f1508900a2aea772a157df"
+      "bytes": 219237,
+      "sha256": "b3e83fe9e30c856cfe60906b41ffcd3641c90546f5d83402c89cb5dc7ff2b92f"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -6035,8 +6045,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "bytes": 11441,
-      "sha256": "e4fa94560257411f3a9a9eb4979dc28ba696d5def02df32e8089d664c9da67bc"
+      "bytes": 12511,
+      "sha256": "de3b309fd970632e2137fe8a689e641df58f80982a7647649d8d92dee98048f0"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -6235,8 +6245,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 19752,
-      "sha256": "68d00de9ceb2b3dbca291bb98bce1869652d2ce642e7fd5f4bcd913f7eda986f"
+      "bytes": 19874,
+      "sha256": "d9fef6b1c9436db9fe2614682ce35600803b4f6bffd8c2876bc0cd1ccad0ad7d"
     },
     {
       "path": "frontend/src/public/motorAirgap.ts",
@@ -6270,8 +6280,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 261434,
-      "sha256": "c360a7d0b107ceebb76bc7a19f5442cc447121fddf0b0ffc7b5f781614752983"
+      "bytes": 261499,
+      "sha256": "79a1b673941d16dbce2ffdaa66768727cf144361f47798407b7b086667a6b340"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -6292,6 +6302,11 @@
       "path": "frontend/src/public/tutorials/publicLessonSolveClient.ts",
       "bytes": 14808,
       "sha256": "be5df38663db208ee5fd80576c4a9d46916247fe92be6cbeb72cc59212f2d9f3"
+    },
+    {
+      "path": "frontend/src/public/windingResistance.ts",
+      "bytes": 4470,
+      "sha256": "147dbee8b1e4ddb525cda2a83f21a0ebad0ed8ea628c592d30c6cc55132a1e59"
     },
     {
       "path": "frontend/src/styles/templateselector.css",
@@ -6825,8 +6840,8 @@
     },
     {
       "path": "tests/test_performance_contracts.py",
-      "bytes": 11076,
-      "sha256": "5d60f819504a7f0ca3813aaf3adc5c3a204d4b777df3ba2669ec13e6041dd283"
+      "bytes": 11225,
+      "sha256": "0a20ebc73631c0371e587012999efabce1d0f7041f6e61d42e118b44d688efa5"
     },
     {
       "path": "tests/test_postsolve_pipeline.py",
@@ -6942,6 +6957,11 @@
       "path": "tests/test_tooth_coil_windings.py",
       "bytes": 10401,
       "sha256": "183395ca3662f2ca15d3b038ab3badfc42d5faee85b7c086f7e36e59f5b47a35"
+    },
+    {
+      "path": "tests/test_winding_resistance.py",
+      "bytes": 7326,
+      "sha256": "171c736dfec0fecd4cd14b9baecefb8f87ee7b3c542384cf720b2a93a5ad123c"
     },
     {
       "path": "tests/test_windows_field_frame_pool.py",
@@ -10411,6 +10431,96 @@
       "path": "tests/test_performance_contracts.py",
       "source_sha256": null,
       "reason": "Fix the shared performance contracts for 0.5.0 (#143): d/q flux linkage, loss breakdown, flux-linkage map, torque-speed envelope, efficiency map, wire spec and operating temperatures. New inputs are refused until the features that use them ship; solve results are unchanged."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "backend/models/config.py",
+      "source_sha256": "d1ccb891c14b3d28ccb8b6e9ee911628f994fcf06ea66b071b8faef9a20d4321",
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "backend/models/performance.py",
+      "source_sha256": "5a6de4b16791aee7f65c6dc2ddc19132e3847cd0d86890fa607ecd9181d9d65c",
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "backend/preview.py",
+      "source_sha256": "9d95bd235b3f2564b5c4fc6482adb549d01ac1ba25c6a9ce0da5c6e0cbf4eb28",
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "frontend/package.json",
+      "source_sha256": "b6c9c006db041b31338fa978e4df68ea50c30c8600dc22455ea7813ff714d143",
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "frontend/scripts/test-design-file-defaults.mjs",
+      "source_sha256": "f799b02c3a578d3ac1aa1be4de1dfeb27a8e822ea7d2234719d654c611f3fbf4",
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "fd416c60e77b18dce87f2e99613a58c0bbbbf133647a4691dbcc3d8037a85928",
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "705d2050876c798c3080ae2af734fdcd42ffd01b60f1508900a2aea772a157df",
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "e4fa94560257411f3a9a9eb4979dc28ba696d5def02df32e8089d664c9da67bc",
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "68d00de9ceb2b3dbca291bb98bce1869652d2ce642e7fd5f4bcd913f7eda986f",
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "c360a7d0b107ceebb76bc7a19f5442cc447121fddf0b0ffc7b5f781614752983",
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "tests/test_performance_contracts.py",
+      "source_sha256": "5d60f819504a7f0ca3813aaf3adc5c3a204d4b777df3ba2669ec13e6041dd283",
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "backend/winding_resistance.py",
+      "source_sha256": null,
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "frontend/scripts/test-winding-resistance.mjs",
+      "source_sha256": null,
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "frontend/src/public/windingResistance.ts",
+      "source_sha256": null,
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "tests/test_winding_resistance.py",
+      "source_sha256": null,
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
     }
   ]
 }
