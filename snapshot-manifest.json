@@ -7380,8 +7380,8 @@
     },
     {
       "path": "tests/test_winding_ring_geometry.py",
-      "bytes": 987,
-      "sha256": "2a69392a0a944d9ac0939d521268c45f2b6b623c39a60d0c49bee80d42761020"
+      "bytes": 1456,
+      "sha256": "3fb3c12ef1afa3563d0831cff0ca0c4d12995afdbfb5768b63205588d030f80b"
     },
     {
       "path": "tests/test_windows_field_frame_pool.py",
@@ -11691,6 +11691,12 @@
       "path": "frontend/tests/public-release.spec.ts",
       "source_sha256": "4cc4b8102643d10b3082e36cad8f14b4154d9411c5f66d7aa9cadec552e97b63",
       "reason": "Align the winding ring with actual preview slot geometry, including the reflected Prius; defer hardware correlation to v0.5.0."
+    },
+    {
+      "base_commit": "aec929204f93f3ea91ea8a4bf58108c86ece8ff2",
+      "path": "tests/test_winding_ring_geometry.py",
+      "source_sha256": "2a69392a0a944d9ac0939d521268c45f2b6b623c39a60d0c49bee80d42761020",
+      "reason": "Allow platform libm rounding in the exact Prius slot-coordinate fixture."
     }
   ]
 }
