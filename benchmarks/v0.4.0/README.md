@@ -1,9 +1,12 @@
-# v0.4.0 benchmark evidence for release planning
+# v0.4.0 benchmark evidence and candidate baseline
 
-This report compiles the completed evidence available on October 18, 2026.
-It is the starting point for the [v0.4.0 release plan](../../docs/RELEASE_0_4_0.md),
-not a claim that an unmeasured future tag has passed qualification. The
-application still identifies as 0.3.1; measured commits are retained below.
+This report compiles the development evidence collected on October 18–19, 2026.
+The October 19 source preparation identifies as 0.4.0 with Magneto2D 0.3.3.
+The measurements below retain their original commits and application versions;
+they are not restamped as final-candidate qualification. The
+[v0.4.0 release plan](../../docs/RELEASE_0_4_0.md) tracks the candidate freeze,
+full reruns, package acceptance and publication decision. Layout #133 and Phases
+#134 are included on main; hardware #69/#82 is deferred to v0.5.0.
 
 ## Pyleecan Prius development benchmark (#126)
 

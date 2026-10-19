@@ -7,8 +7,8 @@ the v0.4.0 release plan. It is distinct from the ORNL hardware correlation in
 establish measured Prius hardware accuracy. The original Yang 2013 paper's
 full text was not obtained, so paper-to-model identity remains unverified.
 
-The application remains 0.3.1 and Magneto2D remains 0.3.3. These are development
-candidate measurements. The final v0.4.0 candidate must rerun the selected
+The measured development application was 0.3.1 with Magneto2D 0.3.3. The source
+is now being prepared as 0.4.0; the measurements below keep their original identities. The final v0.4.0 candidate must rerun the selected
 benchmark after its code and numerical settings are frozen.
 
 ## Fresh public-app results
