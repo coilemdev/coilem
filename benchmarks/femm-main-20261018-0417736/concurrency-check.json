@@ -1,0 +1,15 @@
+{
+  "schema": "coilem.recorded_concurrency_check/v1",
+  "status": "PASS",
+  "record_count": 29,
+  "run_manifest_sha256": "f4e5e720621fe0b259479d6db250603911117217c62d57b8131490993d8c2ce8",
+  "worker_limit": 8,
+  "worker_budget": 8,
+  "peak_recorded_workers": 8,
+  "peak_recorded_worker_cost": 8,
+  "peak_recorded_large_jobs": 4,
+  "all_worker_intervals_within_limits": true,
+  "all_recorded_core_leases_exclusive": true,
+  "all_recorded_process_assignments_match": true,
+  "audit_source_sha256": "801bf768147933fa3da6f26f7c15e9ed18f42328593c1d083ddb78dfd0c16b7d"
+}

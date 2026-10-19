@@ -1,4 +1,4 @@
-# Windows Precise mesh requalification for PR #119
+# Windows Precise mesh requalification (October 18, 2026)
 
 The native A/B/C/D suite measured clean, detached commit
 **`f390b252d8c7dddc3b7ff9f2c1c4f6cbf1d10d4c`** on October 18, 2026.
@@ -55,6 +55,7 @@ Desktop/background processes and free disk observations are recorded in
 
 ## Evidence and verification
 
+[Full 64-page PDF](coilem_benchmark_report.pdf),
 [Markdown gate report](benchmark_report.md), [HTML plots](coilem_benchmark_report.html),
 [complete measurements](benchmark_summary.json), [results CSV](benchmark_results.csv),
 [fixture configurations](fixtures/), [run manifest](run_manifest.json),
@@ -70,9 +71,10 @@ policy. Local output and checkout roots were replaced with `<native-out>` and
 [artifact_manifest.json](artifact_manifest.json) hashes the published copies.
 [raw-report-hashes.json](raw-report-hashes.json) preserves the harness's original
 report manifest, including the unpublished local PDF's hash. All 71 registered
-raw request/result hashes were verified before publication. Raw per-job files,
-solver caches and the PDF are not included here; the full raw output remains
-on the measuring machine until PR #119 is merged.
+raw request/result hashes were verified before publication. The original 64-page PDF is now included byte-for-byte, with all 36 relative
+fixture links verified. [PDF publication provenance](pdf-publication.json)
+records its original hash and read-only rendering review. Raw per-job files
+and solver caches remain locally retained and are not included here.
 
 The active [Windows benchmark record](../records/windows-x86_64.json) is rebuilt
 from this folder with `tools.build_benchmark_record`, using zero field solves.

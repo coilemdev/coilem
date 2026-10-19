@@ -1,5 +1,12 @@
 # Release status
 
+The next release is being planned as **v0.4.0**. Its
+[release plan](docs/RELEASE_0_4_0.md) and
+[benchmark evidence report](benchmarks/v0.4.0/README.md) record the completed
+Windows/FEMM runs and the outstanding scope, final-candidate, platform and
+packaging checks. This preparation does not change the current package version
+or mark the release as published.
+
 The release is **coilEM 0.3.1 Developer Preview**, with **Magneto2D 0.3.3**.
 Its numerical qualification is the published [A/B/C/D benchmark report
 v1.1](benchmarks/main-20261009-bad71d9/benchmark_report.md). It qualifies the

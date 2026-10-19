@@ -1,5 +1,12 @@
 # Benchmark reports and protocols
 
+The [v0.4.0 release-planning report](v0.4.0/README.md) brings together the full
+64-page Windows native PDF and the fresh October 18 FEMM repeat on main:
+**29/29 exact physical results and extraction audits**, collected in
+**1h49m05s** (1.65% faster than October 16). It retains measured source pins,
+the native **28 PASS / 1 YELLOW / planned unsupported Prius** outcomes, and
+the [remaining release gates](../docs/RELEASE_0_4_0.md).
+
 The [2026-10-18 Windows requalification](windows-native-20261018-f390b25/README.md)
 is the active qualification evidence for the Precise mesh default at `f390b25`.
 All 35 supported jobs completed against the frozen FEMM v3 reference, with
