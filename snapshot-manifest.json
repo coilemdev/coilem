@@ -5,8 +5,8 @@
   "files": [
     {
       "path": ".gitattributes",
-      "bytes": 429,
-      "sha256": "f123efdc48cacee961de2b17de6c0ce834dc6a2602c2b841f9577806b6ec18c6"
+      "bytes": 455,
+      "sha256": "4c2489a1b5edf72241ce9ae004f17ae7ee4892160c3681ef453c90bd7c71c35b"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -10997,6 +10997,12 @@
       "path": "docs/benchmarks/pyleecan-prius-v1/artifact-manifest.json",
       "source_sha256": "c4fccd0bb9c6957ab83d703db4e30c9848335db30bc6b9737fdfebbbe394feeb",
       "reason": "Preserve original registration bytes and normalize the generated plot for portable hashes."
+    },
+    {
+      "base_commit": "b2a52c359ae597f72dc0099d5e7424c02f2afe85",
+      "path": ".gitattributes",
+      "source_sha256": "f123efdc48cacee961de2b17de6c0ce834dc6a2602c2b841f9577806b6ec18c6",
+      "reason": "Keep original registration line endings explicit in Git and whitespace checks."
     }
   ]
 }
