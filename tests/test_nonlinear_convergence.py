@@ -55,7 +55,7 @@ def test_historical_convergence_is_not_inferred_from_counts_or_current_defaults(
     fields, metadata = convergence_fields({"loaded_nonlinear_iterations": [10, 20]})
     assert fields["loaded_nonlinear_convergence"] is None
     assert fields["no_load_nonlinear_convergence"] is None
-    assert metadata == {}
+    assert metadata == {"nonlinear_tolerance": None}
     old = SolveMetadata(solver_name="magneto2d", mesh_element_count=100, rotor_positions=2, timestamp=datetime.now(timezone.utc))
     assert old.nonlinear_worst_final_mismatch is None
     assert old.nonlinear_max_iterations_used is None

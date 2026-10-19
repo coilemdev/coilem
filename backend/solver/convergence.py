@@ -23,7 +23,7 @@ def convergence_fields(sweep: dict) -> tuple[dict, dict]:
         iteration_key = f"{kind}_nonlinear_iterations"
         result[iteration_key] = sweep.get(iteration_key)
     if not records:
-        return result, {}
+        return result, {"nonlinear_tolerance": None}
     nonlinear = [v for v in records if v.method != "linear"]
     solved = [v.iterations for v in nonlinear if not v.solution_reused]
     mismatches = [(v.raw_max_residual if v.method == "picard" else v.scaled_residual, v.tolerance) for v in nonlinear]

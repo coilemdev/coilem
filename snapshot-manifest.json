@@ -600,8 +600,8 @@
     },
     {
       "path": "backend/solver/convergence.py",
-      "bytes": 2163,
-      "sha256": "bff10579d687a66bb41e1191e4df0eb595f6066c8808337ad18f2101e6c612a1"
+      "bytes": 2190,
+      "sha256": "06c9491b762dc766289c2fc4a06e5cf9e8f078338dae0a1eadbe94b73cdbc9a0"
     },
     {
       "path": "backend/solver_contract.py",
@@ -7305,8 +7305,8 @@
     },
     {
       "path": "tests/test_nonlinear_convergence.py",
-      "bytes": 4611,
-      "sha256": "3d36b392fc58de85f74bf5fa2f28aa622f70f187bff210baac8fc42edc285c44"
+      "bytes": 4638,
+      "sha256": "e623f859bd370070e42b01f2bff37e677084c4145849377a970b8d8b21f4da37"
     },
     {
       "path": "tests/test_ornl_prius_comparison.py",
@@ -12333,6 +12333,18 @@
       "path": "tests/test_nonlinear_convergence.py",
       "source_sha256": null,
       "reason": "Record method-specific motor nonlinear convergence and preserve unavailable historical evidence (#12)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "backend/solver/convergence.py",
+      "source_sha256": null,
+      "reason": "Keep nonlinear tolerance unavailable when retained reports lack convergence evidence (#12)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "tests/test_nonlinear_convergence.py",
+      "source_sha256": null,
+      "reason": "Keep nonlinear tolerance unavailable when retained reports lack convergence evidence (#12)."
     }
   ]
 }
