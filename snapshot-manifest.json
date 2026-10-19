@@ -5165,13 +5165,13 @@
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/app-results.svg",
-      "bytes": 78133,
-      "sha256": "22e87620ca820287cee5564b621d278c5a3b9309806b201d0c9c6c17a3ff0551"
+      "bytes": 76909,
+      "sha256": "c91311a7700d5929a99efe4da781781c12e91bbffcc773e989ab7092067e0ebe"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/artifact-manifest.json",
       "bytes": 1324,
-      "sha256": "e188f0da7b3d0d5248963e5392a2e49f94c7fc80823aee31c37c42d914752538"
+      "sha256": "8095b4835ff9be9b83b6fb2aea9b6c51c45af6199f1b8430ce6f23e821c82020"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/protocol.json",
@@ -11003,6 +11003,18 @@
       "path": ".gitattributes",
       "source_sha256": "f123efdc48cacee961de2b17de6c0ce834dc6a2602c2b841f9577806b6ec18c6",
       "reason": "Keep original registration line endings explicit in Git and whitespace checks."
+    },
+    {
+      "base_commit": "007d21e737cd74401d0b6c442c67e3350bdc50dd",
+      "path": "docs/benchmarks/pyleecan-prius-v1/app-results.svg",
+      "source_sha256": "22e87620ca820287cee5564b621d278c5a3b9309806b201d0c9c6c17a3ff0551",
+      "reason": "Normalize generated SVG whitespace while preserving all plotted values."
+    },
+    {
+      "base_commit": "007d21e737cd74401d0b6c442c67e3350bdc50dd",
+      "path": "docs/benchmarks/pyleecan-prius-v1/artifact-manifest.json",
+      "source_sha256": "e188f0da7b3d0d5248963e5392a2e49f94c7fc80823aee31c37c42d914752538",
+      "reason": "Normalize generated SVG whitespace while preserving all plotted values."
     }
   ]
 }
