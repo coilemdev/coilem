@@ -137,6 +137,12 @@ serves the UI and API together and opens `http://127.0.0.1:2645`. See
 - Solver-backed electromagnetics lessons and cylindrical and linear
   [Halbach workspaces](docs/HALBACH_ARRAY.md).
 
+The [Pyleecan 2004 Prius software benchmark](docs/benchmarks/pyleecan-prius-v1/README.md)
+adds two fixed examples under **Examples → Benchmarks**: tutorial BEMF at
+1000 rpm / 20°C and loaded torque at 2000 rpm / 60°C / 250 A peak. They preserve
+the pinned analytic model and embedded M400-50A curve through save and reopen.
+These experimental software references remain separate from ORNL hardware validation.
+
 ## Limits to understand
 
 Qualification means agreement with FEMM, a reference 2D finite-element solver,

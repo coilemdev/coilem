@@ -35,6 +35,17 @@ def test_checkout_reads_repository_files() -> None:
     assert resources.build_identity() == {"installation": "source"}
 
 
+def test_packaged_reference_assets_are_the_same_fixed_model(installed: Path) -> None:
+    from backend.reference_models import prius
+
+    for filename in ("pyleecan_prius_2004.json", "pyleecan_prius_2004_config.json"):
+        assert (installed / "reference_models" / filename).read_bytes() == (REPO_ROOT / "backend/reference_models" / filename).read_bytes()
+    geometry = json.loads((installed / "reference_models/pyleecan_prius_2004.json").read_text(encoding="utf-8"))
+    config = json.loads((installed / "reference_models/pyleecan_prius_2004_config.json").read_text(encoding="utf-8"))
+    assert geometry["source_machine_sha256"] == prius.source()["source_machine_sha256"]
+    assert config == prius.fixture()
+
+
 def test_prebuilt_artifacts_need_their_sidecars(tmp_path: Path, monkeypatch) -> None:
     bundle = tmp_path / "ui"
     bundle.mkdir()
@@ -85,6 +96,11 @@ def installed(tmp_path: Path, monkeypatch, request) -> Path:
     package = tmp_path / "site-packages" / "backend"
     package.mkdir(parents=True)
     shutil.copyfile(REPO_ROOT / "backend" / "__init__.py", package / "__init__.py")
+    # setuptools' build_py copies package data before the runtime staging hook.
+    for relative in resources.PACKAGE_DATA_FILES:
+        target = package / Path(relative).relative_to("backend")
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(REPO_ROOT / relative, target)
     _load_setup().stage_runtime_files(package, getattr(request, "param", "0.2.1"))
     for name in ("COILEM_BUILD_UI_DIST", "COILEM_BUILD_MAGNETO2D_BINARY", "COILEM_BUILD_COMMIT", "COILEM_MAGNETO2D_BINARY"):
         monkeypatch.delenv(name, raising=False)

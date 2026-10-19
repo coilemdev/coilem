@@ -82,8 +82,15 @@ def build_topology_geometry_provenance(
     if coil_span is not None:
         winding_payload["coil_span"] = coil_span
 
+    reference = {}
+    if _value(config, "geometry_reference") == "pyleecan_prius_2004":
+        from backend.reference_models.prius import geometry_asset_sha256
+
+        reference = {"geometry_reference": "pyleecan_prius_2004", "geometry_asset_sha256": geometry_asset_sha256()}
+
     return {
         "schema_version": TOPOLOGY_PROVENANCE_SCHEMA_VERSION,
+        **reference,
         "topology": _value(config, "topology"),
         "stator": {
             "OD_mm": _value(stator, "OD_mm"),

@@ -1,0 +1,218 @@
+{
+  "previous_measured_commit": "f390b252d8c7dddc3b7ff9f2c1c4f6cbf1d10d4c",
+  "policy": "Exact object equality: A/B/C summary except solve_time_s, and complete torque/current/back-EMF waveforms; D all recorded physical fields except solve_time_s. A/B/C solve_metadata is excluded and retains runtime/provenance changes in the original summaries.",
+  "lanes_compared": 35,
+  "all_identical": true,
+  "lanes": [
+    {
+      "case_id": "spm_4p12s_simple__baseline",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "spm_4p12s_simple__high_current",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "spm_4p12s_simple__tight_airgap",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__baseline",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__high_current",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__tight_airgap",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__baseline",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__high_current",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__tight_airgap",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "spm_8p12s_reference_angle30__baseline",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "ipm_flat_12s10p_fscw_contract",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "ipm_flat_24s16p_industrial_contract",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "ipm_flat_4p12s_micro_contract",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_baseline_contract",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_narrow_angle_contract",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_thin_bridge_contract",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "spm_12p36s_distributed_femm_validation",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "spm_8p24s_distributed_femm_validation",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "spm_8p48s_chorded_5_6",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "spm_8p48s_distributed_femm_validation",
+      "stage": "native",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "stage": "native-standard",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "stage": "native-fine",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "stage": "analytical",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "stage": "native-standard",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "stage": "native-fine",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "stage": "analytical",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "stage": "native-standard",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "stage": "native-fine",
+      "identical": true,
+      "different_fields": []
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "stage": "analytical",
+      "identical": true,
+      "different_fields": []
+    }
+  ]
+}

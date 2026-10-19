@@ -15,8 +15,10 @@ from backend.benchmark_suite.contract import DATA_ROOT, read, sha, write
 PLANNED_COVERAGE = {
     "ornl_prius_2004_ipm": {
         "label": "Planned coverage (not yet supported)",
-        "reason": "The Prius fixture uses HoleM50 rotor geometry; the public API currently accepts flat-buried and V-shape IPM only.",
-        "next_step": "Qualify the Prius geometry, native mesh and field solves against matched FEMM evidence before enabling public support.",
+        "reason": ("This legacy ORNL-derived HoleM50 fixture remains unsupported in the registered suite. "
+                   "The separate fixed Pyleecan software references have different case IDs and inputs."),
+        "next_step": ("Resolve the ORNL reconstruction and matched-reference scope separately; "
+                      "Pyleecan software reproduction does not qualify this legacy hardware fixture."),
     },
 }
 

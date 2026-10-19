@@ -37,6 +37,7 @@ import {
   type PhaseDrive,
   type Rect,
 } from './phaseDrive';
+import { pointInContours, previewContours, type Contour } from './previewContours';
 import {
   useViewportNavigation,
   ViewportNavigationControls,
@@ -96,6 +97,7 @@ export type PublicMagnetPolarityView = 'dominant' | 'split';
 
 interface HitRegion {
   points: Array<[number, number]>;
+  loops?: Contour[];
   selection: PublicMotorComponentSelection;
 }
 
@@ -212,7 +214,7 @@ function isRotorRegion(regionType: string): boolean {
   // `ipm_pocket_*`. They are cut into the rotor, so they must follow the
   // magnets during playback; leaving them stationary produces a second set of
   // "ghost" V outlines as soon as the rotor moves.
-  return /rotor|magnet|shaft|inter_pole_air|ipm_pocket/i.test(regionType) && !/stator/i.test(regionType);
+  return /rotor|magnet|shaft|inter_pole_air|ipm_pocket|pocket_air/i.test(regionType) && !/stator/i.test(regionType);
 }
 
 function componentSelectionFromRegion(regionType: string, regionIndex: number): PublicMotorComponentSelection | null {
@@ -584,6 +586,7 @@ function drawGeometry(
   const pendingMarkers: Array<{ x: number; y: number; radius: number; outOfPage: boolean; ring: string }> = [];
   interface ComponentPath {
     points: Array<[number, number]>;
+    loops?: Contour[];
     annulus?: {
       center: [number, number];
       innerRadiusPx: number;
@@ -597,8 +600,9 @@ function drawGeometry(
     selection: PublicMotorComponentSelection,
     canvasPoints: Array<[number, number]>,
     annulus?: ComponentPath['annulus'],
+    loops?: Contour[],
   ) => {
-    const componentPath = { points: canvasPoints, annulus };
+    const componentPath = { points: canvasPoints, annulus, loops };
     if (selectedComponent?.id === selection.id) selectedPaths.push(componentPath);
     if (hoveredComponent?.id === selection.id && selectedComponent?.id !== selection.id) {
       hoveredPaths.push(componentPath);
@@ -665,13 +669,16 @@ function drawGeometry(
     const usesSplitPolarity = magnetPolarityView === 'split'
       && (isSpmMagnet || isVShapeMagnet);
     const canvasPoints = transformedPoints.map(map);
-    const [firstX, firstY] = canvasPoints[0];
+    const canvasLoops = previewContours(region).map((loop) => loop.map((point) => map(
+      isRotorRegion(region.region_type) ? rotatePoint(point, -rotorAngleDeg) : point,
+    )));
     context.beginPath();
-    context.moveTo(firstX, firstY);
-    for (const [x, y] of canvasPoints.slice(1)) {
-      context.lineTo(x, y);
+    for (const loop of canvasLoops) {
+      if (!loop.length) continue;
+      context.moveTo(...loop[0]);
+      for (const [x, y] of loop.slice(1)) context.lineTo(x, y);
+      context.closePath();
     }
-    context.closePath();
     context.fillStyle = shadedRegionFill(
       context,
       region.region_type,
@@ -683,7 +690,7 @@ function drawGeometry(
       outerRadiusMm * scale,
     );
     context.globalAlpha = /air/i.test(region.region_type) ? 0.45 : 0.94;
-    context.fill();
+    context.fill('evenodd');
     context.globalAlpha = 1;
     if (poleByTooth && /stator_tooth/i.test(region.region_type)) {
       // The tooth as an electromagnet pole: red N, blue S, as the magnets are, and
@@ -725,7 +732,7 @@ function drawGeometry(
     }
     context.strokeStyle = 'rgba(6, 8, 12, 0.68)';
     context.lineWidth = Math.max(0.7, Math.min(1.5, scale * 0.035));
-    if (ANNULAR_REGIONS.test(region.region_type)) {
+    if (ANNULAR_REGIONS.test(region.region_type) && !region.loops?.length) {
       // Concentric boundaries: stroke true circles so the polygon's radial
       // closing seam never shows.
       context.beginPath();
@@ -755,18 +762,19 @@ function drawGeometry(
         role: 'One side of a concentrated coil wound around an adjacent tooth',
       };
     }
-    if (selection) hitRegions.push({ points: canvasPoints, selection });
+    if (selection) hitRegions.push({ points: canvasPoints, loops: canvasLoops, selection });
     if (selection) {
       trackComponentPath(
         selection,
         canvasPoints,
-        ANNULAR_REGIONS.test(region.region_type)
+        ANNULAR_REGIONS.test(region.region_type) && !region.loops?.length
           ? {
             center: origin,
             innerRadiusPx: innerRadiusMm * scale,
             outerRadiusPx: outerRadiusMm * scale,
           }
           : undefined,
+        canvasLoops,
       );
     }
   });
@@ -878,6 +886,15 @@ function drawGeometry(
   }
 
   const addComponentPath = (path: Path2D, componentPath: ComponentPath) => {
+    if (componentPath.loops) {
+      for (const loop of componentPath.loops) {
+        if (!loop.length) continue;
+        path.moveTo(...loop[0]);
+        for (const [x, y] of loop.slice(1)) path.lineTo(x, y);
+        path.closePath();
+      }
+      return;
+    }
     if (componentPath.annulus) {
       const { center, innerRadiusPx, outerRadiusPx: componentOuterRadiusPx } = componentPath.annulus;
       path.moveTo(center[0] + componentOuterRadiusPx, center[1]);
@@ -1499,7 +1516,7 @@ export function MotorCanvas({
     const point = pointerPoint(event);
     for (let index = hitRegionsRef.current.length - 1; index >= 0; index -= 1) {
       const region = hitRegionsRef.current[index];
-      if (region && pointInPolygon(point, region.points)) return region.selection;
+      if (region && pointInContours(point, region.loops ?? [region.points])) return region.selection;
     }
     return null;
   };

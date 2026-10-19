@@ -15,6 +15,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from backend.benchmark_suite import HARNESS_VERSION, PROTOCOL_VERSION, SUPPORTED_PROTOCOL_VERSIONS
+from backend.benchmark_suite.physics import PHYSICS_DATA_SOURCES
 from backend.resources import (
     BENCHMARK_REFERENCE_BUNDLE_DIR,
     BENCHMARK_SUITE_FILE,
@@ -122,6 +123,9 @@ def source_files():
         for path in sorted((root / directory).rglob("*")):
             if path.is_file() and path.suffix in suffixes:
                 sources[path.relative_to(root).as_posix()] = sha(path)
+    for name in PHYSICS_DATA_SOURCES:
+        if name.startswith("backend/") and (ROOT / name).is_file():
+            sources[name] = sha(ROOT / name)
     if CHECKOUT is not None:
         for name in ("tools/run_benchmarks.py", "solvers/magneto2d/Cargo.toml", "solvers/magneto2d/Cargo.lock", "snapshot-manifest.json"):
             sources[name] = sha(CHECKOUT / name)

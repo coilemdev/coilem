@@ -1,0 +1,234 @@
+{
+  "os": "Microsoft Windows 11 Home",
+  "version": "10.0.26200",
+  "build": "26200",
+  "cpu": "AMD Ryzen 7 7700 8-Core Processor",
+  "physical_cores": 8,
+  "logical_processors": 16,
+  "ram_bytes": 68441497600,
+  "python": "3.12.14",
+  "source_branch": "feat/pyleecan-prius-126",
+  "timing_context": "The native collection followed the separate Prius run and audit. No agent tests, builds or other solves ran concurrently. Periodic process ancestry samples observed no competing field solver; desktop and unsampled background activity are not controlled.",
+  "measured_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb",
+  "free_disk_bytes_before": 38530084864,
+  "solver_override_names": [],
+  "observed_field_processes_before": [],
+  "concurrency_checks": {
+    "ownership_method": "current registered worker ancestry",
+    "samples": 10,
+    "competing_field_processes_observed": 0,
+    "excluded_inconclusive_samples": 1,
+    "exclusion_reason": "The initial path-substring classifier could not establish process ownership; it was replaced by registered worker process ancestry. The original local log remains retained.",
+    "sampling_limit": "Periodic observations cannot rule out every transient or non-field workload."
+  },
+  "process_samples": [
+    {
+      "utc": "2026-10-19T01:34:10.6925077Z",
+      "ownership_method": "current registered worker ancestry",
+      "free_disk_bytes": 37959553024,
+      "field_processes": []
+    },
+    {
+      "utc": "2026-10-19T01:37:12.8672699Z",
+      "ownership_method": "current registered worker ancestry",
+      "free_disk_bytes": 38341054464,
+      "field_processes": [
+        {
+          "name": "magneto2d.exe",
+          "pid": 34732,
+          "belongs_to_current_run": true
+        },
+        {
+          "name": "magneto2d.exe",
+          "pid": 25944,
+          "belongs_to_current_run": true
+        },
+        {
+          "name": "magneto2d.exe",
+          "pid": 2296,
+          "belongs_to_current_run": true
+        }
+      ]
+    },
+    {
+      "utc": "2026-10-19T01:43:30.1184447Z",
+      "ownership_method": "current registered worker ancestry",
+      "free_disk_bytes": 37857103872,
+      "field_processes": [
+        {
+          "name": "magneto2d.exe",
+          "pid": 37544,
+          "belongs_to_current_run": true
+        },
+        {
+          "name": "magneto2d.exe",
+          "pid": 1952,
+          "belongs_to_current_run": true
+        },
+        {
+          "name": "magneto2d.exe",
+          "pid": 37652,
+          "belongs_to_current_run": true
+        },
+        {
+          "name": "magneto2d.exe",
+          "pid": 36852,
+          "belongs_to_current_run": true
+        },
+        {
+          "name": "magneto2d.exe",
+          "pid": 27852,
+          "belongs_to_current_run": true
+        },
+        {
+          "name": "magneto2d.exe",
+          "pid": 33960,
+          "belongs_to_current_run": true
+        },
+        {
+          "name": "magneto2d.exe",
+          "pid": 27220,
+          "belongs_to_current_run": true
+        },
+        {
+          "name": "magneto2d.exe",
+          "pid": 37620,
+          "belongs_to_current_run": true
+        }
+      ]
+    },
+    {
+      "utc": "2026-10-19T01:52:32.0931012Z",
+      "ownership_method": "current registered worker ancestry",
+      "free_disk_bytes": 37424050176,
+      "field_processes": [
+        {
+          "name": "magneto2d.exe",
+          "pid": 38656,
+          "belongs_to_current_run": true
+        },
+        {
+          "name": "magneto2d.exe",
+          "pid": 34780,
+          "belongs_to_current_run": true
+        },
+        {
+          "name": "magneto2d.exe",
+          "pid": 33968,
+          "belongs_to_current_run": true
+        },
+        {
+          "name": "magneto2d.exe",
+          "pid": 37584,
+          "belongs_to_current_run": true
+        },
+        {
+          "name": "magneto2d.exe",
+          "pid": 24924,
+          "belongs_to_current_run": true
+        },
+        {
+          "name": "magneto2d.exe",
+          "pid": 34488,
+          "belongs_to_current_run": true
+        }
+      ]
+    },
+    {
+      "utc": "2026-10-19T01:56:44.5935740Z",
+      "ownership_method": "current registered worker ancestry",
+      "free_disk_bytes": 38428000256,
+      "field_processes": [
+        {
+          "name": "magneto2d.exe",
+          "pid": 17832,
+          "belongs_to_current_run": true
+        },
+        {
+          "name": "magneto2d.exe",
+          "pid": 18516,
+          "belongs_to_current_run": true
+        },
+        {
+          "name": "magneto2d.exe",
+          "pid": 33564,
+          "belongs_to_current_run": true
+        }
+      ]
+    },
+    {
+      "utc": "2026-10-19T02:01:04.0316880Z",
+      "ownership_method": "current registered worker ancestry",
+      "free_disk_bytes": 38537084928,
+      "field_processes": []
+    },
+    {
+      "utc": "2026-10-19T02:04:11.0959185Z",
+      "ownership_method": "current registered worker ancestry",
+      "free_disk_bytes": 38475702272,
+      "field_processes": [
+        {
+          "name": "magneto2d.exe",
+          "pid": 25912,
+          "belongs_to_current_run": true
+        },
+        {
+          "name": "magneto2d.exe",
+          "pid": 37368,
+          "belongs_to_current_run": true
+        }
+      ]
+    },
+    {
+      "utc": "2026-10-19T02:07:04.8722378Z",
+      "ownership_method": "current registered worker ancestry",
+      "free_disk_bytes": 37906833408,
+      "field_processes": [
+        {
+          "name": "magneto2d.exe",
+          "pid": 14912,
+          "belongs_to_current_run": true
+        },
+        {
+          "name": "magneto2d.exe",
+          "pid": 31356,
+          "belongs_to_current_run": true
+        },
+        {
+          "name": "magneto2d.exe",
+          "pid": 17352,
+          "belongs_to_current_run": true
+        }
+      ]
+    },
+    {
+      "utc": "2026-10-19T02:10:09.6158476Z",
+      "ownership_method": "current registered worker ancestry",
+      "free_disk_bytes": 38034755584,
+      "field_processes": [
+        {
+          "name": "magneto2d.exe",
+          "pid": 23296,
+          "belongs_to_current_run": true
+        },
+        {
+          "name": "magneto2d.exe",
+          "pid": 30752,
+          "belongs_to_current_run": true
+        },
+        {
+          "name": "magneto2d.exe",
+          "pid": 1440,
+          "belongs_to_current_run": true
+        }
+      ]
+    },
+    {
+      "utc": "2026-10-19T02:13:07.7194710Z",
+      "ownership_method": "current registered worker ancestry",
+      "free_disk_bytes": 38382292992,
+      "field_processes": []
+    }
+  ],
+  "source_and_binary_identity_verified_before_and_after_each_supported_job": true
+}

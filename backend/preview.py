@@ -132,6 +132,15 @@ def generate_preview(config: MotorConfig) -> GeometryPreview:
             stator.slot_count, rotor.pole_count, winding.type, winding.turns_per_coil,
             stator.ID_mm, winding.layers, winding.parallel_paths, winding.coil_span
         )
+        if config.geometry_reference == "pyleecan_prius_2004":
+            from backend.reference_models.prius import source
+
+            winding_layout = [
+                WindingSlot(slot_index=surface["winding"]["slot"], phase=surface["winding"]["phase"],
+                            direction=surface["winding"]["direction"], layer=1)
+                for surface in source()["surfaces"] if "winding" in surface
+            ]
+            winding_metadata["winding_source"] = "published Pyleecan phase/sign matrix"
         winding_coils = _derive_winding_coils(
             winding_layout,
             stator.slot_count,

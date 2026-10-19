@@ -760,6 +760,12 @@ def _magneto2d_env_overrides(config: MotorConfig) -> dict[str, str]:
     }.get(str(torque_method), "contour")
     overrides["MAGNETO2D_COGGING_TORQUE_METHOD"] = cogging_method_env
 
+    if config.geometry_reference == "pyleecan_prius_2004":
+        from backend.reference_models.prius import magnet_br_factor
+
+        overrides.update(COILEM_MAGNET_BR_SCALE="0" if armature_only_field else str(magnet_br_factor(config)), MAGNETO2D_NONLINEAR_TOL="1e-8",
+                         MAGNETO2D_NEWTON_TOL="1e-9", MAGNETO2D_NONLINEAR_MAX_ITER=str(config.solve_params.max_nonlinear_iterations or 200))
+
     return overrides
 
 
@@ -1265,6 +1271,12 @@ def run_magneto2d_report(
             and report_text.rstrip().endswith("}")
         )
         report["solver_environment"] = solver_environment
+        if config.geometry_reference == "pyleecan_prius_2004":
+            from backend.reference_models.prius import extract_winding_report, report_reference_sources
+
+            report_reference_sources(report, config, solve_mesh_artifact)
+            extract_winding_report(report, config, solve_mesh_artifact)
+            appendable = False
         if persist_artifacts_dir is not None:
             shutil.copy2(input_path, persist_artifacts_dir / f"{prefix}_input.json")
             # The solver never writes solver_environment, so appending it to

@@ -676,6 +676,7 @@ export function App() {
     value: unknown,
     visitedSection?: PublicParameterSection,
   ) => {
+    if (config.geometry_reference && section !== "solve_params") return;
     // An edit is explicit ownership of the section, even if the submitted
     // value equals its current value. Never let a later coach stop silently
     // repair a section the user has already touched.
@@ -1362,6 +1363,8 @@ export function App() {
       const parsed = parseDesignFile(await file.text());
       rememberPresetSweep(parsed.config);
       setConfig(parsed.config);
+      if (parsed.config.geometry_reference) setSelectedSolver("magneto2d");
+      setGeometry(null);
       setEditFeedback(null);
       setDesignName(parsed.name ?? designFileBaseName(file.name));
       setBlankDesign(false);
@@ -1382,6 +1385,8 @@ export function App() {
     const example = createPublicExampleDesign(exampleId);
     rememberPresetSweep(example.config);
     setConfig(example.config);
+    if (example.config.geometry_reference) setSelectedSolver("magneto2d");
+    setGeometry(null);
     setEditFeedback(null);
     setDesignName(example.name);
     setBlankDesign(false);
@@ -1456,9 +1461,10 @@ export function App() {
       const storedSolver = submittedRequest && typeof submittedRequest === 'object'
         ? (submittedRequest as PublicJson).solver
         : null;
-      const replaySolver: PublicSolverId = storedSolver === 'elmer' ? 'elmer' : 'magneto2d';
+      const replaySolver: PublicSolverId = storedSolver === 'elmer' && !parsed.config.geometry_reference ? 'elmer' : 'magneto2d';
       rememberPresetSweep(parsed.config);
       setConfig(parsed.config);
+      setGeometry(null);
       setSelectedSolver(
         replaySolver === 'elmer' && elmerCapabilityIsReady(elmerCapability)
           ? 'elmer'
