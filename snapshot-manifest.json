@@ -5370,8 +5370,8 @@
     },
     {
       "path": "docs/RELEASE_0_4_0.md",
-      "bytes": 10709,
-      "sha256": "1cce2bd79f3d82cb087d36d6afa2f95d71efe6e85b1f85bca440edcea225e089"
+      "bytes": 10904,
+      "sha256": "906aded59a3873b02df7c6ddd876702749bdaa206f1c0cfe29c38e612c74212d"
     },
     {
       "path": "docs/RELEASING.md",
@@ -5400,8 +5400,8 @@
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
-      "bytes": 21095,
-      "sha256": "7dba13307591b880597cf47f6644ed592eb0e43872773a87360d4d92bfa4bf24"
+      "bytes": 21984,
+      "sha256": "8259894d5410eb0a75eb883c444281dabd0861785d6b00bad44fd2a342d65ae9"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/app-design-3d.png",
@@ -5430,8 +5430,13 @@
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/artifact-manifest.json",
-      "bytes": 1324,
-      "sha256": "8095b4835ff9be9b83b6fb2aea9b6c51c45af6199f1b8430ce6f23e821c82020"
+      "bytes": 1429,
+      "sha256": "a69ed35cc198226dad7b96833807ece19ec96e5c36e1d0ebb1237d4b5a71f198"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/installed-wheel-validation.json",
+      "bytes": 14390,
+      "sha256": "e2af08c951b03a8cdd26d0d7948c2cf3a11a4ce2929c0961c112fc0ffb62a75b"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/protocol.json",
@@ -11335,6 +11340,24 @@
       "path": "tests/test_qualification.py",
       "source_sha256": "073161ca754b8496799d4726c108aeb58e7067d93f4342f8252eae192af07fc8",
       "reason": "Retain the completed clean Prius-branch A/B/C/D regression, preserve prior numerical outcomes, and update measured-source qualification metadata."
+    },
+    {
+      "base_commit": "3e640ac7b5b6535380b9eceb9cd6bce757c15795",
+      "path": "docs/RELEASE_0_4_0.md",
+      "source_sha256": "1cce2bd79f3d82cb087d36d6afa2f95d71efe6e85b1f85bca440edcea225e089",
+      "reason": "Retain installed Windows wheel acceptance with an explicit public build identity and the remaining Prius/UI release-integration check."
+    },
+    {
+      "base_commit": "3e640ac7b5b6535380b9eceb9cd6bce757c15795",
+      "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
+      "source_sha256": "7dba13307591b880597cf47f6644ed592eb0e43872773a87360d4d92bfa4bf24",
+      "reason": "Retain installed Windows wheel acceptance with an explicit public build identity and the remaining Prius/UI release-integration check."
+    },
+    {
+      "base_commit": "3e640ac7b5b6535380b9eceb9cd6bce757c15795",
+      "path": "docs/benchmarks/pyleecan-prius-v1/artifact-manifest.json",
+      "source_sha256": "8095b4835ff9be9b83b6fb2aea9b6c51c45af6199f1b8430ce6f23e821c82020",
+      "reason": "Retain installed Windows wheel acceptance with an explicit public build identity and the remaining Prius/UI release-integration check."
     }
   ]
 }

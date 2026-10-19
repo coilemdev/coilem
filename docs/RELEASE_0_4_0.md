@@ -58,6 +58,9 @@ measured Precise. FEMM agreement is not a hardware-validation claim.
   and [Phases-preview PR #134](https://github.com/coilemdev/coilem/pull/134)
   belong in the final candidate; review and test them before the source freeze.
   They were open when this plan was written.
+  If selected, check their winding markers and drive currents against both
+  pinned Prius cases: their Pyleecan d-axis Phi0 convention differs from the
+  generic launch current-angle convention.
 - [ ] Keep CREATOR [#90](https://github.com/coilemdev/coilem/issues/90) as the
   milestone's license-dependent stretch goal unless the owner changes scope.
   Named presets [#127](https://github.com/coilemdev/coilem/issues/127) and other

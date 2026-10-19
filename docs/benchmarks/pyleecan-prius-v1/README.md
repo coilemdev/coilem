@@ -331,6 +331,21 @@ producer and comparison commands document their required inputs through
 `python -m tools.pyleecan_prius_loaded_reference --help` and
 `python -m tools.compare_pyleecan_loaded --help` in that optional runtime.
 
+## Development package acceptance
+
+The [installed Windows wheel check](installed-wheel-validation.json) records a
+local build at `3e640ac` with an explicitly stamped public commit, both
+reference JSON assets byte-identical to source, both 91-region previews and
+a successful **12-position** zero-current native solve with back-EMF disabled.
+All **53** installed physics sources match the Windows record. The wheel keeps
+its own binary hash; the full field collections retain their original hashes.
+The complete local Python suite passed **1113 tests / 3 skipped**, Rust passed
+**261**, and lint, snapshot/publication and frontend build checks passed.
+
+This reduced package check keeps the actual modified request. It does not
+replace the full 100-position tutorial, loaded curve/controls or final release
+walkthrough. The package version remains 0.3.1 and this artifact was not uploaded.
+
 ## Release acceptance still required
 
 The current cases remain experimental software references. Before tagging
