@@ -5,7 +5,7 @@
  */
 
 import { formatSignificant } from './machineConstants';
-import type { MaterialCatalog } from './model';
+import type { MaterialCatalog, SolveResult } from './model';
 
 /** Electrical frequency in Hz: f = rpm · poles / 120. */
 export function electricalFrequencyHz(rpm: number, poleCount: number): number {
@@ -29,6 +29,48 @@ export function electromagneticPower(avgTorqueNm: number, rpm: number): { text: 
 export function torqueRange(samples: readonly number[]): { min: number; max: number } | null {
   const finite = samples.filter((value) => Number.isFinite(value));
   return finite.length < 2 ? null : { min: Math.min(...finite), max: Math.max(...finite) };
+}
+
+/** How the torque ripple reads: a percentage, or the peak-to-peak swing when a percentage means nothing. */
+export interface TorqueRippleView {
+  /** Ripple in %, or null when the average torque is too small for one. */
+  ripplePct: number | null;
+  /** Peak-to-peak torque in N·m when ripplePct is null, else null. */
+  peakToPeakNm: number | null;
+  /** The peak-to-peak row's name: cogging with no current, a plain swing otherwise. */
+  peakToPeakLabel: string;
+  /** Why the percentage is left out, for a tooltip; null when it is shown. */
+  note: string | null;
+}
+
+// Below 1% of the swing the percentage would pass 10,000 % and says nothing.
+const RIPPLE_MIN_AVERAGE_FRACTION = 0.01;
+
+/**
+ * The solver reports ripple as (max − min) / |average| × 100. With no current
+ * the torque is cogging, which averages to zero, so a 16.7 N·m swing over a
+ * 0.005 N·m residual read as 330,000 %. Then, and whenever the average is under
+ * 1% of the swing, the percentage is left out and the swing shown instead.
+ */
+export function torqueRippleView(result: Pick<SolveResult, 'summary' | 'torque_waveform' | 'solve_metadata'>): TorqueRippleView {
+  const range = torqueRange(result.torque_waveform?.torque_Nm ?? []);
+  const peakToPeak = range ? range.max - range.min : null;
+  const current = result.solve_metadata?.current_amplitude_A;
+  const noLoad = typeof current === 'number' && Number.isFinite(current) && Math.abs(current) < 1e-9;
+  const average = result.summary.avg_torque_Nm;
+  const averageTooSmall = peakToPeak !== null && peakToPeak > 0 && Number.isFinite(average)
+    && Math.abs(average) < RIPPLE_MIN_AVERAGE_FRACTION * peakToPeak;
+  if (!noLoad && !averageTooSmall) {
+    return { ripplePct: result.summary.torque_ripple_pct, peakToPeakNm: null, peakToPeakLabel: 'Torque p-p', note: null };
+  }
+  return {
+    ripplePct: null,
+    peakToPeakNm: peakToPeak,
+    peakToPeakLabel: noLoad ? 'Cogging torque p-p' : 'Torque p-p',
+    note: noLoad
+      ? 'No current, so this torque is cogging: it averages to zero, and ripple as a percentage of the average has no meaning. The peak-to-peak swing is shown instead.'
+      : 'The average torque is close to zero, so ripple as a percentage of it has no meaning. The peak-to-peak swing is shown instead.',
+  };
 }
 
 /** An SVG path through the samples, scaled into width × height with a margin.
