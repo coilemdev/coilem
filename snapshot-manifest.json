@@ -410,13 +410,13 @@
     },
     {
       "path": "backend/models/__init__.py",
-      "bytes": 1958,
-      "sha256": "e004067980b6a61c9811f74e5a1e337f827673c95128e986883d81a69b9f4128"
+      "bytes": 2365,
+      "sha256": "d20636d0c69095f501b72e1a6ec5930901ba7804c01bb4eea9f7153455271a7b"
     },
     {
       "path": "backend/models/config.py",
-      "bytes": 26997,
-      "sha256": "d2a919a0cb673ed557a63564c28a0ff51adf5436dfc7ffb9b381d9d2322d41dc"
+      "bytes": 29376,
+      "sha256": "d1ccb891c14b3d28ccb8b6e9ee911628f994fcf06ea66b071b8faef9a20d4321"
     },
     {
       "path": "backend/models/errors.py",
@@ -439,9 +439,14 @@
       "sha256": "b739ab587d7db3b300994926eb59932c4e1992660bb7fe8950bf1940528b082e"
     },
     {
+      "path": "backend/models/performance.py",
+      "bytes": 13238,
+      "sha256": "5a6de4b16791aee7f65c6dc2ddc19132e3847cd0d86890fa607ecd9181d9d65c"
+    },
+    {
       "path": "backend/models/result.py",
-      "bytes": 4270,
-      "sha256": "34d42f29fd8442e21d94a09cc0d3e72a4da556139c3842a9e91c4f5113790b0d"
+      "bytes": 4863,
+      "sha256": "75907a4cc8e7944f066592c4d050e8744f1ec831ac80f6250bb4fe4d9b56fbdf"
     },
     {
       "path": "backend/models/waveforms.py",
@@ -6230,8 +6235,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 19232,
-      "sha256": "cca228338c8954c00b92ae3cd4231d0064e017d3821da55cd96512e4bf548564"
+      "bytes": 19752,
+      "sha256": "68d00de9ceb2b3dbca291bb98bce1869652d2ce642e7fd5f4bcd913f7eda986f"
     },
     {
       "path": "frontend/src/public/motorAirgap.ts",
@@ -6242,6 +6247,11 @@
       "path": "frontend/src/public/motorPalette.ts",
       "bytes": 2646,
       "sha256": "40d69d324708b41486ee891c31d9a43e2e4bef0b00d2cc10f3bf96a92e737072"
+    },
+    {
+      "path": "frontend/src/public/performance.ts",
+      "bytes": 4082,
+      "sha256": "975be9119c22a8cfd7d4faaa97e530b558cbb7d6441c47fdb2e8fcea2703cc57"
     },
     {
       "path": "frontend/src/public/resultMetrics.ts",
@@ -6812,6 +6822,11 @@
       "path": "tests/test_payload_reuse.py",
       "bytes": 2698,
       "sha256": "7e74e645c876a03e975593a2ddccaf8f9fee0628452b1c95e1ce398727443366"
+    },
+    {
+      "path": "tests/test_performance_contracts.py",
+      "bytes": 11076,
+      "sha256": "5d60f819504a7f0ca3813aaf3adc5c3a204d4b777df3ba2669ec13e6041dd283"
     },
     {
       "path": "tests/test_postsolve_pipeline.py",
@@ -10354,6 +10369,48 @@
       "path": "tests/test_benchmark_command.py",
       "source_sha256": "edd43ec1d6c1f6808c1b471333c8fdec44096a786a2ea71509868bba41f417c4",
       "reason": "Verify the one reviewed native report PDF against its original hash and publication provenance while retaining raw log/job exclusions."
+    },
+    {
+      "base_commit": "7764b6099c0e41eb4679c40c8383d088170646c3",
+      "path": "backend/models/__init__.py",
+      "source_sha256": "e004067980b6a61c9811f74e5a1e337f827673c95128e986883d81a69b9f4128",
+      "reason": "Fix the shared performance contracts for 0.5.0 (#143): d/q flux linkage, loss breakdown, flux-linkage map, torque-speed envelope, efficiency map, wire spec and operating temperatures. New inputs are refused until the features that use them ship; solve results are unchanged."
+    },
+    {
+      "base_commit": "7764b6099c0e41eb4679c40c8383d088170646c3",
+      "path": "backend/models/config.py",
+      "source_sha256": "d2a919a0cb673ed557a63564c28a0ff51adf5436dfc7ffb9b381d9d2322d41dc",
+      "reason": "Fix the shared performance contracts for 0.5.0 (#143): d/q flux linkage, loss breakdown, flux-linkage map, torque-speed envelope, efficiency map, wire spec and operating temperatures. New inputs are refused until the features that use them ship; solve results are unchanged."
+    },
+    {
+      "base_commit": "7764b6099c0e41eb4679c40c8383d088170646c3",
+      "path": "backend/models/result.py",
+      "source_sha256": "34d42f29fd8442e21d94a09cc0d3e72a4da556139c3842a9e91c4f5113790b0d",
+      "reason": "Fix the shared performance contracts for 0.5.0 (#143): d/q flux linkage, loss breakdown, flux-linkage map, torque-speed envelope, efficiency map, wire spec and operating temperatures. New inputs are refused until the features that use them ship; solve results are unchanged."
+    },
+    {
+      "base_commit": "7764b6099c0e41eb4679c40c8383d088170646c3",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "cca228338c8954c00b92ae3cd4231d0064e017d3821da55cd96512e4bf548564",
+      "reason": "Fix the shared performance contracts for 0.5.0 (#143): d/q flux linkage, loss breakdown, flux-linkage map, torque-speed envelope, efficiency map, wire spec and operating temperatures. New inputs are refused until the features that use them ship; solve results are unchanged."
+    },
+    {
+      "base_commit": "7764b6099c0e41eb4679c40c8383d088170646c3",
+      "path": "backend/models/performance.py",
+      "source_sha256": null,
+      "reason": "Fix the shared performance contracts for 0.5.0 (#143): d/q flux linkage, loss breakdown, flux-linkage map, torque-speed envelope, efficiency map, wire spec and operating temperatures. New inputs are refused until the features that use them ship; solve results are unchanged."
+    },
+    {
+      "base_commit": "7764b6099c0e41eb4679c40c8383d088170646c3",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": null,
+      "reason": "Fix the shared performance contracts for 0.5.0 (#143): d/q flux linkage, loss breakdown, flux-linkage map, torque-speed envelope, efficiency map, wire spec and operating temperatures. New inputs are refused until the features that use them ship; solve results are unchanged."
+    },
+    {
+      "base_commit": "7764b6099c0e41eb4679c40c8383d088170646c3",
+      "path": "tests/test_performance_contracts.py",
+      "source_sha256": null,
+      "reason": "Fix the shared performance contracts for 0.5.0 (#143): d/q flux linkage, loss breakdown, flux-linkage map, torque-speed envelope, efficiency map, wire spec and operating temperatures. New inputs are refused until the features that use them ship; solve results are unchanged."
     }
   ]
 }

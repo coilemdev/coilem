@@ -1,5 +1,6 @@
 import type { AirgapBrBtProfile } from '../components/tutorials/lessonSolveTypes';
 import type { CustomSteel } from './customSteel';
+import type { DqFluxLinkage, LossBreakdown, WireSpec } from './performance';
 
 export type Topology = 'SPM' | 'IPM';
 export type IpMTopology = 'flat_buried' | 'v_shape' | 'pyleecan_holem50';
@@ -107,6 +108,8 @@ export interface MotorConfig {
     layers: number;
     parallel_paths: number;
     coil_span?: number | null;
+    /** Conductor of each turn (#136); the backend refuses it until phase resistance ships. */
+    wire?: WireSpec | null;
   };
   materials: {
     stator_steel: string;
@@ -135,6 +138,10 @@ export interface MotorConfig {
     commutation_advance_deg: number;
     phase_connection: 'wye';
     rated_speed_rpm: number;
+    /** Operating temperatures and mechanical loss (#137, #138); refused by the backend until those ship. */
+    magnet_temperature_C?: number | null;
+    winding_temperature_C?: number | null;
+    mechanical_loss_W?: number | null;
   };
   solve_options: {
     torque_sweep: boolean;
@@ -426,6 +433,8 @@ export interface SolveResult {
     lambda_pm_Wb?: number | null;
     peak_flux_density_teeth_T: number;
     peak_flux_density_yoke_T: number;
+    dq_flux_linkage?: DqFluxLinkage | null;
+    loss_breakdown?: LossBreakdown | null;
     solve_time_s: number;
   };
   torque_waveform: {

@@ -248,6 +248,31 @@ class RotorConfig(BaseModel):
         return v
 
 
+class WireSpec(BaseModel):
+    """Conductor of each turn, used for slot fill and phase resistance."""
+
+    wire_bare_diameter_mm: float = Field(..., gt=0.05, le=10.0, description="Bare copper or aluminium diameter of one strand")
+    strands_in_hand: int = Field(default=1, ge=1, le=200, description="Parallel strands wound together as one turn")
+    insulation_build_mm: Optional[float] = Field(
+        default=None,
+        ge=0.0,
+        le=1.0,
+        description="Diametral increase from the enamel; omit to use the default for the wire size",
+    )
+    end_turn_extension_mm: Optional[float] = Field(
+        default=None,
+        ge=0.0,
+        le=200.0,
+        description="Axial overhang of each end turn beyond the stack; omit to derive it from the coil span",
+    )
+    slot_fill_limit: Optional[float] = Field(
+        default=None,
+        gt=0.0,
+        lt=1.0,
+        description="Largest copper fill of the slot area that is accepted; omit for the default",
+    )
+
+
 class WindingConfig(BaseModel):
     """Winding configuration."""
 
@@ -271,6 +296,10 @@ class WindingConfig(BaseModel):
             "Distributed-winding coil span in slots. Omit for full pitch (3q); "
             "short-pitch values are validated against the slot/pole combination."
         ),
+    )
+    wire: Optional[WireSpec] = Field(
+        default=None,
+        description="Conductor of each turn. Omit to keep the derived wire size of older designs.",
     )
 
 
@@ -430,6 +459,21 @@ class SolveParams(BaseModel):
             "derating. Omit to use the room-temperature catalog properties. "
             "This field is a manual input, not a solved thermal state."
         ),
+    )
+    winding_temperature_C: Optional[float] = Field(
+        default=None,
+        ge=-50.0,
+        le=250.0,
+        description=(
+            "Manual winding temperature [C] for phase resistance and copper loss. "
+            "Omit for 20 C. This field is a manual input, not a solved thermal state."
+        ),
+    )
+    mechanical_loss_W: Optional[float] = Field(
+        default=None,
+        ge=0.0,
+        le=1.0e6,
+        description="Friction and windage loss [W] included in efficiency. Omit for 0.",
     )
     motor_input_dc_bus_V: Optional[float] = Field(
         default=None,
@@ -675,4 +719,17 @@ class MotorConfig(BaseModel):
     def magnet_temperature_requires_coefficients(self):
         if self.solve_params is not None and self.solve_params.magnet_temperature_C is not None:
             raise ValueError("Magnet temperature is not supported by this preview.")
+        return self
+
+    @model_validator(mode="after")
+    def performance_inputs_not_yet_available(self):
+        """Refuse the performance inputs until a solve uses them, so none is silently ignored."""
+        if self.winding.wire is not None:
+            raise ValueError("winding.wire is not supported by this preview yet.")
+        sp = self.solve_params
+        if sp is not None:
+            if sp.winding_temperature_C is not None:
+                raise ValueError("solve_params.winding_temperature_C is not supported by this preview yet.")
+            if sp.mechanical_loss_W is not None:
+                raise ValueError("solve_params.mechanical_loss_W is not supported by this preview yet.")
         return self
