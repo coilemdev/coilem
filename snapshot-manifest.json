@@ -5,8 +5,8 @@
   "files": [
     {
       "path": ".gitattributes",
-      "bytes": 281,
-      "sha256": "3077a1e2193c544c8204a5f0f59898c2311f69b96e74aee5a1895e1b50e1c9ce"
+      "bytes": 429,
+      "sha256": "f123efdc48cacee961de2b17de6c0ce834dc6a2602c2b841f9577806b6ec18c6"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -5165,13 +5165,13 @@
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/app-results.svg",
-      "bytes": 80534,
-      "sha256": "ff7a38794ac3cd644a4d65d8bec962445d57ffc875eb75d3005b78435c174d5a"
+      "bytes": 78133,
+      "sha256": "22e87620ca820287cee5564b621d278c5a3b9309806b201d0c9c6c17a3ff0551"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/artifact-manifest.json",
       "bytes": 1324,
-      "sha256": "c4fccd0bb9c6957ab83d703db4e30c9848335db30bc6b9737fdfebbbe394feeb"
+      "sha256": "e188f0da7b3d0d5248963e5392a2e49f94c7fc80823aee31c37c42d914752538"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/protocol.json",
@@ -10979,6 +10979,24 @@
       "path": "tools/verify_snapshot.py",
       "source_sha256": "09707491fa5b77957596d3f669ae9a3718449b1c046ea6c818e1bbb336dbb803",
       "reason": "Publish the complete #126 development benchmark, source audit and release-plan links."
+    },
+    {
+      "base_commit": "8f04d20620d8c20e2673b8d1e86834df38862994",
+      "path": ".gitattributes",
+      "source_sha256": "3077a1e2193c544c8204a5f0f59898c2311f69b96e74aee5a1895e1b50e1c9ce",
+      "reason": "Preserve original registration bytes and normalize the generated plot for portable hashes."
+    },
+    {
+      "base_commit": "8f04d20620d8c20e2673b8d1e86834df38862994",
+      "path": "docs/benchmarks/pyleecan-prius-v1/app-registration.json",
+      "source_sha256": "76bbc2122327c6e489bfd8f062ffa24a4547a3b8491b9ed195eb8c1151268b5c",
+      "reason": "Preserve original registration bytes and normalize the generated plot for portable hashes."
+    },
+    {
+      "base_commit": "8f04d20620d8c20e2673b8d1e86834df38862994",
+      "path": "docs/benchmarks/pyleecan-prius-v1/artifact-manifest.json",
+      "source_sha256": "c4fccd0bb9c6957ab83d703db4e30c9848335db30bc6b9737fdfebbbe394feeb",
+      "reason": "Preserve original registration bytes and normalize the generated plot for portable hashes."
     }
   ]
 }

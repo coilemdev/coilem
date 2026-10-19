@@ -3,3 +3,6 @@
 benchmarks/main-20261009-bad71d9/fixtures/*.json -text -eol whitespace=cr-at-eol
 benchmarks/ipm-high-output-20261011-af56962/fixtures/*.json -text -eol whitespace=cr-at-eol
 *.pdf binary
+
+# Retain the complete benchmark registration byte-for-byte for its recorded SHA-256.
+docs/benchmarks/pyleecan-prius-v1/app-registration.json -text
