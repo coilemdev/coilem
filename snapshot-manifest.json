@@ -595,8 +595,8 @@
     },
     {
       "path": "backend/solver/_process_pool.py",
-      "bytes": 5956,
-      "sha256": "53619f5596380bfab581f20d7fc5dffc684384ecb20c477d534941cf95b41fbd"
+      "bytes": 6202,
+      "sha256": "30ce3ecfe5b819c226596ca222456b3fdff1d4b0e2b53f62628aa33875ed0a0f"
     },
     {
       "path": "backend/solver_contract.py",
@@ -7240,8 +7240,8 @@
     },
     {
       "path": "tests/test_launcher_shutdown.py",
-      "bytes": 27155,
-      "sha256": "4ef2789ea71745edeb6fdf852229bad32e2f9eb3583d85652f8fae843a139025"
+      "bytes": 31027,
+      "sha256": "89bd672d4a18c961091170d785d93dd72e71c42bbcb73f101b838665a55b6542"
     },
     {
       "path": "tests/test_linear_halbach_analytical.py",
