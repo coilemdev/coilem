@@ -21,7 +21,9 @@ and rejects changes to geometry, excitation, tolerances, stages, protocols or
 gates. Frozen reference records retain their measured input hashes. The wheel
 includes the old requests needed for these checks.
 
-This registration does not qualify the changed solver. Targeted results are
-recorded separately; the full A/B/C/D qualification rerun and new published
+This registration does not qualify the changed solver. The
+[targeted Windows checks](../../docs/NONLINEAR_CONVERGENCE_CAP200_WINDOWS.md)
+record all nine requests converging within 109 iterations and passing their
+existing gates. The full A/B/C/D qualification rerun and new published
 platform records remain work for the 0.5.0 freeze. Historical reports must not be
 relabelled as measurements of these requests.

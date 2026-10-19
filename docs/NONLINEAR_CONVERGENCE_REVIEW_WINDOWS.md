@@ -1,5 +1,9 @@
 # Windows convergence review follow-up
 
+The subsequent [cap-200 registration and rerun](NONLINEAR_CONVERGENCE_CAP200_WINDOWS.md)
+resolves the cap-100 blocker. This document retains the earlier review's
+registered inputs, diagnostics and findings.
+
 These are selected checks for PR #155, not the complete 0.5.0 qualification rerun. The registered cases and the app plans were measured at `af8ad1a8bf8432d364b819e79a2fd86c523aeccd`. The cap-200 diagnostics use the subsequent torque-only reporting fix, recorded per request. All runs retain the stricter convergence tolerances. Concurrent elapsed times are not performance comparisons.
 
 ## Changes made after review

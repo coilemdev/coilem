@@ -2,7 +2,9 @@
 
 This is the original before/after measurement record. The [review follow-up](NONLINEAR_CONVERGENCE_REVIEW_WINDOWS.md)
 adds exact registered benchmark checks, High accuracy/Custom coverage, iteration-cap diagnostics,
-the Newton residual floor, and the latest validation results.
+the Newton residual floor, and validation at that review point. The subsequent
+[cap-200 registration and rerun](NONLINEAR_CONVERGENCE_CAP200_WINDOWS.md) records
+the current registered checks and validation.
 
 These Standard/normal-mesh diagnostics are not a qualification rerun. All cases use 48 loaded and 48 no-load positions over one electrical cycle. Back-EMF is the phase-to-neutral RMS fundamental. Iteration max/median exclude reused positions.
 

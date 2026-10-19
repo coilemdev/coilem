@@ -700,8 +700,8 @@
     },
     {
       "path": "benchmarks/abcd-v1.4/README.md",
-      "bytes": 1448,
-      "sha256": "5010481c0549a86e47d75bded17cc52b8ea8a1e021ec7dba3df4434fc965e9cd"
+      "bytes": 1580,
+      "sha256": "f12ab410286e838ef78e91999eb5158e3b08bdfda32c11eb73c5f12912c67908"
     },
     {
       "path": "benchmarks/abcd-v1.4/benchmark_spec.json",
@@ -5430,8 +5430,18 @@
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE.md",
-      "bytes": 7117,
-      "sha256": "bf0c612f691c1c903ed6fc1907bd7878a4fbe27a78134c09507d9f6d40ebd68b"
+      "bytes": 7443,
+      "sha256": "cdcf6563a0e24f25589a33cde45105fc735ba45cdedc3ed4c6d11fadfb5fbe82"
+    },
+    {
+      "path": "docs/NONLINEAR_CONVERGENCE_CAP200_WINDOWS.json",
+      "bytes": 2319943,
+      "sha256": "c9c1d2e2d09241fb2901ee94742c5dafc42605d6d6c44c02c875ea47bda663a3"
+    },
+    {
+      "path": "docs/NONLINEAR_CONVERGENCE_CAP200_WINDOWS.md",
+      "bytes": 5363,
+      "sha256": "013fd0b34123b031b1b51b798b96d58cbd0cb11e6181df0899091e319e7e81a2"
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE_REVIEW_WINDOWS.json",
@@ -5440,8 +5450,8 @@
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE_REVIEW_WINDOWS.md",
-      "bytes": 7079,
-      "sha256": "2dc74fff6c032228e02b4b2133d7545303d5994538770c73707ff2ab0c33b44d"
+      "bytes": 7287,
+      "sha256": "062e1ee7c3a2eeb1e689ccc40720607679af31023442009f9398514d5ed7408f"
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE_WINDOWS.json",
@@ -5450,8 +5460,8 @@
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE_WINDOWS.md",
-      "bytes": 7178,
-      "sha256": "02974fe32651392c8dd5d4a863301b6a15d3af157e2129c34d8d3b2cbc9be27c"
+      "bytes": 7323,
+      "sha256": "e7874c01e956fb35e082ab51f540f2c9af2beab60b84597b122fef42c70e2f83"
     },
     {
       "path": "docs/NUMERICAL_EVIDENCE.md",
@@ -12845,6 +12855,42 @@
       "path": "tools/build_benchmark_record.py",
       "source_sha256": "94ccf8ed7a20b3efb50139456e6826c5de41636e58f7c1f1039e603a7cd0cb57",
       "reason": "Preserve historical benchmark request identities when replaying cap-100 evidence."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/README.md",
+      "source_sha256": null,
+      "reason": "Record registered cap-200 Windows checks while retaining freeze qualification guards."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "docs/NONLINEAR_CONVERGENCE.md",
+      "source_sha256": null,
+      "reason": "Record registered cap-200 Windows checks while retaining freeze qualification guards."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "docs/NONLINEAR_CONVERGENCE_CAP200_WINDOWS.json",
+      "source_sha256": null,
+      "reason": "Record registered cap-200 Windows checks while retaining freeze qualification guards."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "docs/NONLINEAR_CONVERGENCE_CAP200_WINDOWS.md",
+      "source_sha256": null,
+      "reason": "Record registered cap-200 Windows checks while retaining freeze qualification guards."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "docs/NONLINEAR_CONVERGENCE_REVIEW_WINDOWS.md",
+      "source_sha256": null,
+      "reason": "Record registered cap-200 Windows checks while retaining freeze qualification guards."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "docs/NONLINEAR_CONVERGENCE_WINDOWS.md",
+      "source_sha256": null,
+      "reason": "Record registered cap-200 Windows checks while retaining freeze qualification guards."
     }
   ]
 }

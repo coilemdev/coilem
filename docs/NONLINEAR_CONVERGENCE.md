@@ -113,5 +113,9 @@ matrix is rerun at the 0.5.0 freeze.
 The [Windows review follow-up](NONLINEAR_CONVERGENCE_REVIEW_WINDOWS.md) records
 the registered cap-100 failures and cap-200 headroom, all six V-shape gates,
 the exact Prius loaded control, and the app's High accuracy and Custom checks.
-Frozen benchmark requests require explicit registration at the freeze; their
-historical hashes are not changed by these diagnostics.
+The subsequent [cap-200 registration and Windows checks](NONLINEAR_CONVERGENCE_CAP200_WINDOWS.md)
+register all nine affected requests in suite 1.4 and pass their existing gates.
+A hash-bound cap-only bridge reuses immutable reference fields; historical
+request and reference hashes remain unchanged. Legacy record replay retains its
+original registered validation suite. Full qualification and new published
+platform records remain work for the 0.5.0 freeze.
