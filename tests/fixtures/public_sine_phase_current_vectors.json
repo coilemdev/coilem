@@ -1,0 +1,339 @@
+{
+  "schema": "coilem.public_sine_phase_current_vectors/v1",
+  "rotation_convention": "public_clockwise_positive",
+  "current_definition": "terminal current over the sine peak",
+  "resolver": "backend.excitation.resolve_phase_current_sample(backend.solver._clockwise_excitation_config(config), -rotor_electrical_angle_deg), the launch-surface path",
+  "closed_form": "i_k = sin(90 - theta - gamma - axis - 120 k)",
+  "vectors": [
+    {
+      "fixture": "spm_8p12s_concentrated__baseline.json",
+      "rotor_electrical_angle_deg": 0.0,
+      "current_angle_deg": 0.0,
+      "phase_axis_offset_elec_deg": 30.0,
+      "phase_current": [
+        0.866025403784,
+        -0.866025403784,
+        0.0
+      ]
+    },
+    {
+      "fixture": "spm_8p12s_concentrated__baseline.json",
+      "rotor_electrical_angle_deg": 37.5,
+      "current_angle_deg": 0.0,
+      "phase_axis_offset_elec_deg": 30.0,
+      "phase_current": [
+        0.382683432365,
+        -0.991444861374,
+        0.608761429009
+      ]
+    },
+    {
+      "fixture": "spm_8p12s_concentrated__baseline.json",
+      "rotor_electrical_angle_deg": 90.0,
+      "current_angle_deg": 0.0,
+      "phase_axis_offset_elec_deg": 30.0,
+      "phase_current": [
+        -0.5,
+        -0.5,
+        1.0
+      ]
+    },
+    {
+      "fixture": "spm_8p12s_concentrated__baseline.json",
+      "rotor_electrical_angle_deg": 200.0,
+      "current_angle_deg": 0.0,
+      "phase_axis_offset_elec_deg": 30.0,
+      "phase_current": [
+        -0.642787609687,
+        0.984807753012,
+        -0.342020143326
+      ]
+    },
+    {
+      "fixture": "spm_8p12s_concentrated__baseline.json",
+      "rotor_electrical_angle_deg": 315.0,
+      "current_angle_deg": 0.0,
+      "phase_axis_offset_elec_deg": 30.0,
+      "phase_current": [
+        0.965925826289,
+        -0.258819045103,
+        -0.707106781187
+      ]
+    },
+    {
+      "fixture": "spm_8p12s_concentrated__baseline.json",
+      "rotor_electrical_angle_deg": 0.0,
+      "current_angle_deg": 30.0,
+      "phase_axis_offset_elec_deg": 30.0,
+      "phase_current": [
+        0.5,
+        -1.0,
+        0.5
+      ]
+    },
+    {
+      "fixture": "spm_8p12s_concentrated__baseline.json",
+      "rotor_electrical_angle_deg": 37.5,
+      "current_angle_deg": 30.0,
+      "phase_axis_offset_elec_deg": 30.0,
+      "phase_current": [
+        -0.13052619222,
+        -0.793353340291,
+        0.923879532511
+      ]
+    },
+    {
+      "fixture": "spm_8p12s_concentrated__baseline.json",
+      "rotor_electrical_angle_deg": 90.0,
+      "current_angle_deg": 30.0,
+      "phase_axis_offset_elec_deg": 30.0,
+      "phase_current": [
+        -0.866025403784,
+        0.0,
+        0.866025403784
+      ]
+    },
+    {
+      "fixture": "spm_8p12s_concentrated__baseline.json",
+      "rotor_electrical_angle_deg": 200.0,
+      "current_angle_deg": 30.0,
+      "phase_axis_offset_elec_deg": 30.0,
+      "phase_current": [
+        -0.173648177667,
+        0.939692620786,
+        -0.766044443119
+      ]
+    },
+    {
+      "fixture": "spm_8p12s_concentrated__baseline.json",
+      "rotor_electrical_angle_deg": 315.0,
+      "current_angle_deg": 30.0,
+      "phase_axis_offset_elec_deg": 30.0,
+      "phase_current": [
+        0.965925826289,
+        -0.707106781187,
+        -0.258819045103
+      ]
+    },
+    {
+      "fixture": "spm_8p12s_concentrated__baseline.json",
+      "rotor_electrical_angle_deg": 0.0,
+      "current_angle_deg": -45.0,
+      "phase_axis_offset_elec_deg": 30.0,
+      "phase_current": [
+        0.965925826289,
+        -0.258819045103,
+        -0.707106781187
+      ]
+    },
+    {
+      "fixture": "spm_8p12s_concentrated__baseline.json",
+      "rotor_electrical_angle_deg": 37.5,
+      "current_angle_deg": -45.0,
+      "phase_axis_offset_elec_deg": 30.0,
+      "phase_current": [
+        0.923879532511,
+        -0.793353340291,
+        -0.13052619222
+      ]
+    },
+    {
+      "fixture": "spm_8p12s_concentrated__baseline.json",
+      "rotor_electrical_angle_deg": 90.0,
+      "current_angle_deg": -45.0,
+      "phase_axis_offset_elec_deg": 30.0,
+      "phase_current": [
+        0.258819045103,
+        -0.965925826289,
+        0.707106781187
+      ]
+    },
+    {
+      "fixture": "spm_8p12s_concentrated__baseline.json",
+      "rotor_electrical_angle_deg": 200.0,
+      "current_angle_deg": -45.0,
+      "phase_axis_offset_elec_deg": 30.0,
+      "phase_current": [
+        -0.996194698092,
+        0.573576436351,
+        0.422618261741
+      ]
+    },
+    {
+      "fixture": "spm_8p12s_concentrated__baseline.json",
+      "rotor_electrical_angle_deg": 315.0,
+      "current_angle_deg": -45.0,
+      "phase_axis_offset_elec_deg": 30.0,
+      "phase_current": [
+        0.5,
+        0.5,
+        -1.0
+      ]
+    },
+    {
+      "fixture": "spm_8p24s_distributed_femm_validation.json",
+      "rotor_electrical_angle_deg": 0.0,
+      "current_angle_deg": 0.0,
+      "phase_axis_offset_elec_deg": 0.0,
+      "phase_current": [
+        1.0,
+        -0.5,
+        -0.5
+      ]
+    },
+    {
+      "fixture": "spm_8p24s_distributed_femm_validation.json",
+      "rotor_electrical_angle_deg": 37.5,
+      "current_angle_deg": 0.0,
+      "phase_axis_offset_elec_deg": 0.0,
+      "phase_current": [
+        0.793353340291,
+        -0.923879532511,
+        0.13052619222
+      ]
+    },
+    {
+      "fixture": "spm_8p24s_distributed_femm_validation.json",
+      "rotor_electrical_angle_deg": 90.0,
+      "current_angle_deg": 0.0,
+      "phase_axis_offset_elec_deg": 0.0,
+      "phase_current": [
+        0.0,
+        -0.866025403784,
+        0.866025403784
+      ]
+    },
+    {
+      "fixture": "spm_8p24s_distributed_femm_validation.json",
+      "rotor_electrical_angle_deg": 200.0,
+      "current_angle_deg": 0.0,
+      "phase_axis_offset_elec_deg": 0.0,
+      "phase_current": [
+        -0.939692620786,
+        0.766044443119,
+        0.173648177667
+      ]
+    },
+    {
+      "fixture": "spm_8p24s_distributed_femm_validation.json",
+      "rotor_electrical_angle_deg": 315.0,
+      "current_angle_deg": 0.0,
+      "phase_axis_offset_elec_deg": 0.0,
+      "phase_current": [
+        0.707106781187,
+        0.258819045103,
+        -0.965925826289
+      ]
+    },
+    {
+      "fixture": "spm_8p24s_distributed_femm_validation.json",
+      "rotor_electrical_angle_deg": 0.0,
+      "current_angle_deg": 30.0,
+      "phase_axis_offset_elec_deg": 0.0,
+      "phase_current": [
+        0.866025403784,
+        -0.866025403784,
+        0.0
+      ]
+    },
+    {
+      "fixture": "spm_8p24s_distributed_femm_validation.json",
+      "rotor_electrical_angle_deg": 37.5,
+      "current_angle_deg": 30.0,
+      "phase_axis_offset_elec_deg": 0.0,
+      "phase_current": [
+        0.382683432365,
+        -0.991444861374,
+        0.608761429009
+      ]
+    },
+    {
+      "fixture": "spm_8p24s_distributed_femm_validation.json",
+      "rotor_electrical_angle_deg": 90.0,
+      "current_angle_deg": 30.0,
+      "phase_axis_offset_elec_deg": 0.0,
+      "phase_current": [
+        -0.5,
+        -0.5,
+        1.0
+      ]
+    },
+    {
+      "fixture": "spm_8p24s_distributed_femm_validation.json",
+      "rotor_electrical_angle_deg": 200.0,
+      "current_angle_deg": 30.0,
+      "phase_axis_offset_elec_deg": 0.0,
+      "phase_current": [
+        -0.642787609687,
+        0.984807753012,
+        -0.342020143326
+      ]
+    },
+    {
+      "fixture": "spm_8p24s_distributed_femm_validation.json",
+      "rotor_electrical_angle_deg": 315.0,
+      "current_angle_deg": 30.0,
+      "phase_axis_offset_elec_deg": 0.0,
+      "phase_current": [
+        0.965925826289,
+        -0.258819045103,
+        -0.707106781187
+      ]
+    },
+    {
+      "fixture": "spm_8p24s_distributed_femm_validation.json",
+      "rotor_electrical_angle_deg": 0.0,
+      "current_angle_deg": -45.0,
+      "phase_axis_offset_elec_deg": 0.0,
+      "phase_current": [
+        0.707106781187,
+        0.258819045103,
+        -0.965925826289
+      ]
+    },
+    {
+      "fixture": "spm_8p24s_distributed_femm_validation.json",
+      "rotor_electrical_angle_deg": 37.5,
+      "current_angle_deg": -45.0,
+      "phase_axis_offset_elec_deg": 0.0,
+      "phase_current": [
+        0.991444861374,
+        -0.382683432365,
+        -0.608761429009
+      ]
+    },
+    {
+      "fixture": "spm_8p24s_distributed_femm_validation.json",
+      "rotor_electrical_angle_deg": 90.0,
+      "current_angle_deg": -45.0,
+      "phase_axis_offset_elec_deg": 0.0,
+      "phase_current": [
+        0.707106781187,
+        -0.965925826289,
+        0.258819045103
+      ]
+    },
+    {
+      "fixture": "spm_8p24s_distributed_femm_validation.json",
+      "rotor_electrical_angle_deg": 200.0,
+      "current_angle_deg": -45.0,
+      "phase_axis_offset_elec_deg": 0.0,
+      "phase_current": [
+        -0.906307787037,
+        0.087155742748,
+        0.819152044289
+      ]
+    },
+    {
+      "fixture": "spm_8p24s_distributed_femm_validation.json",
+      "rotor_electrical_angle_deg": 315.0,
+      "current_angle_deg": -45.0,
+      "phase_axis_offset_elec_deg": 0.0,
+      "phase_current": [
+        0.0,
+        0.866025403784,
+        -0.866025403784
+      ]
+    }
+  ]
+}

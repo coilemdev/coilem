@@ -189,7 +189,13 @@ assert.doesNotMatch(workspaceSource, /setExamplesMenuOpen\(\(open\) => !open\)/)
 assert.match(workspaceSource, /className="workflow-stepper workflow-stepper-inline"/);
 assert.match(workspaceSource, /design-workspace workflow-stage-content\$\{designViewportExpanded/);
 assert.match(workspaceSource, /className="design-workspace-main"/);
-assert.match(workspaceSource, /className="design-workspace-health"/);
+assert.match(workspaceSource, /className=\{`design-workspace-health\$\{designHealthCollapsed \? ' is-collapsed' : ''\}`\}/);
+// Design health folds to a strip that keeps its status icon, and opens again from it.
+assert.match(workspaceSource, /collapsed=\{designHealthCollapsed\} onCollapsedChange=\{setDesignHealthCollapsed\}/);
+assert.match(workspaceSource, /if \(collapsed\) return collapsedStrip\(tone, ready \? '✓'/);
+assert.match(workspaceSource, /className="design-health-collapse"\s*aria-expanded="true"\s*aria-label="Collapse design health"/);
+assert.match(workspaceSource, /className="design-health-expand"\s*aria-expanded="false"/);
+assert.match(styleSource, /\.public-coilem-shell \.design-workspace-health\.is-collapsed \{ width: 46px; min-width: 46px; \}/);
 assert.match(workspaceSource, /currentGeometryWarnings\(geometry, geometryStale\)/);
 assert.match(workspaceSource, /currentToothWidthAdvisory\(geometry, geometryStale\)/);
 assert.match(workspaceSource, /'Bore tooth is much narrower' : 'Bore tooth is slightly narrower'/);
@@ -628,6 +634,43 @@ assert.match(workspaceSource, /showPlayback && \(\s*<span className="vc-group pu
 // legend sits in the canvas corner like the field view's legends.
 assert.match(workspaceSource, /<button type="button" className="public-field-transport-play" aria-label=\{isAnimating \? 'Pause preview' : 'Play preview'\}/);
 assert.match(workspaceSource, /<RpmField\s+value=\{animationRpm\}\s+min=\{1\}\s+max=\{100\}\s+label="Speed"\s+ariaLabel="Preview speed \(RPM\)"/);
+// Phases only means something while the rotor turns, so it is a toggle beside the
+// preview speed (2D only), not one of the static overlays; it is the winding overlay
+// shaded by phase current, so Winding stays pressed under it.
+assert.match(workspaceSource, /\['windings', 'Winding'\],\s*\] as Array<\[PublicCanvasLayer, string\]>\)/);
+assert.doesNotMatch(workspaceSource, /\['phases', 'Phases'\]/);
+assert.match(workspaceSource, /const pressed = canvasLayer === layer \|\| \(layer === 'windings' && canvasLayer === 'phases'\);/);
+assert.match(workspaceSource, /onChange=\{setAnimationRpm\}\s*\/>[\s\S]{0,400}?\{viewportMode === '2d' && \(\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{canvasLayer === 'phases'\}/);
+assert.match(workspaceSource, /onClick=\{\(\) => setCanvasLayer\(\(current\) => \(current === 'phases' \? 'windings' : 'phases'\)\)\}\s*>\s*Phases\s*<\/button>/);
+// With Phases on, the motor shows only the phase colours changing: no slot labels.
+assert.match(motorCanvasSource, /\n  if \(layer === 'slots' \|\| layer === 'windings'\) \{\n    context\.textAlign = 'center';/);
+assert.doesNotMatch(motorCanvasSource, /layer === 'windings' \|\| layer === 'phases'\) \{\n    context\.textAlign/);
+// Phases: the motor moves right, smaller, beside A / B / C waveforms wired into it,
+// all driven by the solve's own terminal currents (phaseDrive.ts, test-phase-drive.mjs).
+assert.match(motorCanvasSource, /const driveFrame = layer === 'phases' && phaseDrive \? phaseDriveFrame\(width, height\) : null;/);
+assert.match(motorCanvasSource, /fitTransform\(points, width, height, viewportScale, pan, driveFrame\?\.motor\)/);
+assert.match(motorCanvasSource, /drawPhaseDrive\(context, driveFrame\.panel, phaseDrive, rotorElecDeg, currents, origin, outerRadiusPx, previewRpm\)/);
+assert.match(motorCanvasSource, /axisOffsetDeg: Number\.isFinite\(metadataAxis\) \? metadataAxis : 0,/);
+assert.doesNotMatch(motorCanvasSource, /Math\.sin\(\(rotorAngleDeg \+ phaseOffset\)/);
+// ...and each stator tooth shows the pole the slot currents make it, N red / S blue.
+assert.match(motorCanvasSource, /const poleByTooth = showToothPoles && currents && data\.winding_layout\?\.length && statorSlotCount > 0\s*\? toothPoles\(slotCurrents\(data\.winding_layout, statorSlotCount, currents\)\)/);
+// Tooth poles has its own toggle beside Phases (2D only), so it works with or without it.
+assert.match(motorCanvasSource, /const currents = \(layer === 'phases' \|\| showToothPoles\) && phaseDrive \? phaseCurrents\(phaseDrive, rotorElecDeg\) : null;/);
+assert.match(workspaceSource, /const \[showToothPoles, setShowToothPoles\] = useState\(false\);/);
+assert.match(workspaceSource, />\s*Phases\s*<\/button>\s*\)\}\s*\{viewportMode === '2d' && \(\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{showToothPoles\}[\s\S]*?>\s*Tooth poles\s*<\/button>/);
+assert.match(workspaceSource, /showToothPoles=\{viewportMode === '2d' && showToothPoles\}/);
+assert.match(motorCanvasSource, /strength > 0 \? PUBLIC_MOTOR_COLORS\.magnetNorth : PUBLIC_MOTOR_COLORS\.magnetSouth/);
+// Every magnet is lettered N / S by the pole facing the airgap; in the Split view each
+// half carries its own (placement: canvasLabels.ts, test-canvas-labels.mjs).
+assert.match(motorCanvasSource, /magnetPoleLabels\.push\(\{ points: canvasPoints, north: magnetAirgapPolarity\(region\.region_type\) === 'north', halves: splitHalves \}\);/);
+assert.match(motorCanvasSource, /const halvesFit = halfSpots\.length === 2/);
+// The Phases strips are a 1 s scope at the preview speed, frequency shown in the
+// heading and in each strip (test-phase-drive.mjs checks the cycle count).
+assert.match(workspaceSource, /previewRpm=\{animationRpm\}/);
+assert.match(motorCanvasSource, /const frequencyHz = electricalFrequencyHz\(previewRpm, drive\.poleCount\);/);
+assert.match(motorCanvasSource, /waveformTrace\(drive, index, rotorElecDeg, strip, windowElecDeg\)/);
+assert.match(motorCanvasSource, /context\.fillText\(formatHz\(frequencyHz\), right - STRIP_END, strip\.y \+ 4\);/);
+assert.match(motorCanvasSource, /const spot = polygonLabelSpot\(label\.points, origin\);/);
 assert.doesNotMatch(workspaceSource, /public-field-playback-rpm|playback-rpm-progress/);
 assert.match(workspaceSource, /<div className="public-winding-key public-canvas-legend" aria-label="Winding phase and current direction legend">/);
 assert.ok(workspaceSource.indexOf('public-canvas-legend') < workspaceSource.indexOf('className="viewport-dock-resize"'), 'the winding legend is on the canvas, not in the panel');
@@ -1300,7 +1343,9 @@ assert.match(viewportNavigationSource, /const MIN_SCALE = 0\.5/);
 assert.match(viewportNavigationSource, /const DEFAULT_SCALE = 1/);
 assert.match(viewportNavigationSource, /useState\(DEFAULT_SCALE\)/);
 assert.match(viewportNavigationSource, /setScale\(DEFAULT_SCALE\)/);
-assert.match(viewportNavigationSource, /anchor\.x - \(anchor\.x - current\.x\) \* ratio/);
+assert.match(viewportNavigationSource, /anchoredZoomPan\(current, scale, nextScale, anchor\)/);
+assert.match(viewportNavigationSource, /viewportTransformOrigin\(rect\.width, rect\.height, frameForSize\?\.\(rect\.width, rect\.height\)/);
+assert.match(motorCanvasSource, /useViewportNavigation\(undefined, navigationFrame\)/);
 assert.match(viewportNavigationSource, /fitSubject = 'motor'/);
 assert.match(viewportNavigationSource, /Fit \$\{fitSubject\} to view/);
 assert.match(styleSource, /\.public-viewport-navigation\.is-pannable \{ cursor: grab; \}/);

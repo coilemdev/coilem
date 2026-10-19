@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
 import { createPortal } from 'react-dom';
 
 import {
@@ -19,6 +19,25 @@ import {
   computeSpmMagnetPolarityHalves,
 } from './magnetPoleFaces';
 import { PUBLIC_MOTOR_COLORS, PUBLIC_PHASE_COLORS } from './motorPalette';
+import { polygonLabelSpot } from './canvasLabels';
+import { fitTransform } from './viewportTransform';
+import {
+  PHASE_SCOPE_WINDOW_S,
+  STRIP_END,
+  STRIP_LABEL,
+  electricalFrequencyHz,
+  formatHz,
+  phaseCurrents,
+  phaseDriveFrame,
+  phaseStrips,
+  rotorElectricalDeg,
+  slotCurrents,
+  toothIndexAt,
+  toothPoles,
+  waveformTrace,
+  type PhaseDrive,
+  type Rect,
+} from './phaseDrive';
 import { pointInContours, previewContours, type Contour } from './previewContours';
 import {
   useViewportNavigation,
@@ -58,6 +77,10 @@ interface MotorCanvasProps {
   onDimensionSelect?: (dimension: DimensionId | null) => void;
   /** Display-only polarity treatment; it never changes geometry or solver inputs. */
   magnetPolarityView?: PublicMagnetPolarityView;
+  /** Tint each stator tooth N / S by the pole the drive currents make it. */
+  showToothPoles?: boolean;
+  /** Preview speed: the Phases waveforms show the electrical frequency it makes. */
+  previewRpm?: number;
   meshDisplayMode?: PublicMeshDisplayMode;
   showMeshEdges?: boolean;
   meshQualities?: number[];
@@ -264,10 +287,14 @@ function rotatePoint([x, y]: [number, number], angleDeg: number): [number, numbe
   return [x * cosine - y * sine, x * sine + y * cosine];
 }
 
-function phaseFill(phase: keyof typeof PHASE_COLORS, layer: PublicCanvasLayer, rotorAngleDeg: number): string {
-  if (layer === 'phases') {
-    const phaseOffset = phase === 'A' ? 0 : phase === 'B' ? -120 : 120;
-    const strength = 0.48 + Math.abs(Math.sin((rotorAngleDeg + phaseOffset) * Math.PI / 180)) * 0.52;
+/** How hard each phase is driven right now, 0..1 (phaseDrive.ts). */
+type PhaseLevels = Record<keyof typeof PHASE_COLORS, number>;
+
+function phaseFill(phase: keyof typeof PHASE_COLORS, layer: PublicCanvasLayer, phaseLevels: PhaseLevels | null): string {
+  if (layer === 'phases' && phaseLevels) {
+    // Each phase as bright as the current the solver drives through it at this
+    // rotor position, so a phase six-step switches off goes dark.
+    const strength = 0.48 + phaseLevels[phase] * 0.52;
     const color = PHASE_COLORS[phase];
     const red = Math.round(Number.parseInt(color.slice(1, 3), 16) * strength);
     const green = Math.round(Number.parseInt(color.slice(3, 5), 16) * strength);
@@ -346,14 +373,22 @@ function magnetAirgapPolarity(regionType: string): 'north' | 'south' {
   return poleIndex % 2 === 0 ? 'north' : 'south';
 }
 
+/** A magnet, or one pole's half of it, to letter N or S; canvas px. */
+interface MagnetPoleLabel {
+  points: Array<[number, number]>;
+  north: boolean;
+  /** Split view: each half's own pole, lettered when both fit. */
+  halves?: MagnetPoleLabel[] | null;
+}
+
 function drawVShapeMagnetPolarityHalves(
   context: CanvasRenderingContext2D,
   magnetPoints: Array<[number, number]>,
   map: (point: [number, number]) => [number, number],
   regionType: string,
-): void {
+): MagnetPoleLabel[] | null {
   const faces = computeMagnetPoleFaces(magnetPoints);
-  if (!faces) return;
+  if (!faces) return null;
 
   const airgapIsNorth = magnetAirgapPolarity(regionType) === 'north';
   const airgapColor = airgapIsNorth
@@ -397,6 +432,10 @@ function drawVShapeMagnetPolarityHalves(
   fillHalf(airgapHalf, airgapColor);
   fillHalf(backHalf, backColor);
   context.restore();
+  return [
+    { points: airgapHalf.map(map), north: airgapIsNorth },
+    { points: backHalf.map(map), north: !airgapIsNorth },
+  ].filter((half) => half.points.length >= 3);
 }
 
 function drawSpmMagnetPolarityHalves(
@@ -404,9 +443,9 @@ function drawSpmMagnetPolarityHalves(
   magnetPoints: Array<[number, number]>,
   map: (point: [number, number]) => [number, number],
   regionType: string,
-): void {
+): MagnetPoleLabel[] | null {
   const halves = computeSpmMagnetPolarityHalves(magnetPoints);
-  if (!halves) return;
+  if (!halves) return null;
 
   const airgapIsNorth = magnetAirgapPolarity(regionType) === 'north';
   const drawHalf = (points: Array<[number, number]>, color: string) => {
@@ -431,6 +470,10 @@ function drawSpmMagnetPolarityHalves(
     airgapIsNorth ? PUBLIC_MOTOR_COLORS.magnetSouth : PUBLIC_MOTOR_COLORS.magnetNorth,
   );
   context.restore();
+  return [
+    { points: halves.airgapHalf.map(map), north: airgapIsNorth },
+    { points: halves.backHalf.map(map), north: !airgapIsNorth },
+  ].filter((half) => half.points.length >= 3);
 }
 
 /**
@@ -439,7 +482,7 @@ function drawSpmMagnetPolarityHalves(
  */
 const ANNULAR_REGIONS = /^(stator_yoke|rotor_core|shaft)$/i;
 
-function regionFill(regionType: string, sourceFill: string | null | undefined, layer: PublicCanvasLayer, rotorAngleDeg: number): string {
+function regionFill(regionType: string, sourceFill: string | null | undefined, layer: PublicCanvasLayer, phaseLevels: PhaseLevels | null): string {
   const winding = windingToken(regionType);
   if (layer === 'materials') {
     if (/stator/i.test(regionType)) return PUBLIC_MOTOR_COLORS.statorSteel;
@@ -449,43 +492,9 @@ function regionFill(regionType: string, sourceFill: string | null | undefined, l
     if (winding || /winding/i.test(regionType)) return PUBLIC_MOTOR_COLORS.winding;
   }
   if (winding && (layer === 'windings' || layer === 'phases')) {
-    return phaseFill(winding.phase, layer, rotorAngleDeg);
+    return phaseFill(winding.phase, layer, phaseLevels);
   }
   return sourceFill || regionColor(regionType);
-}
-
-function fitTransform(
-  points: Array<[number, number]>,
-  width: number,
-  height: number,
-  viewportScale = 1,
-  pan: [number, number] = [0, 0],
-): { map: (point: [number, number]) => [number, number]; scale: number } {
-  const xs = points.map(([x]) => x);
-  const ys = points.map(([, y]) => y);
-  const minX = Math.min(...xs);
-  const maxX = Math.max(...xs);
-  const minY = Math.min(...ys);
-  const maxY = Math.max(...ys);
-  const spanX = Math.max(maxX - minX, 1);
-  const spanY = Math.max(maxY - minY, 1);
-  const padding = Math.min(width, height) * 0.075;
-  const scale = Math.min((width - padding * 2) / spanX, (height - padding * 2) / spanY);
-  const offsetX = (width - spanX * scale) / 2 - minX * scale;
-  const offsetY = (height - spanY * scale) / 2 + maxY * scale;
-  const centerX = width / 2;
-  const centerY = height / 2;
-  return {
-    scale: scale * viewportScale,
-    map: ([x, y]) => {
-      const fittedX = offsetX + x * scale;
-      const fittedY = offsetY - y * scale;
-      return [
-        centerX + (fittedX - centerX) * viewportScale + pan[0],
-        centerY + (fittedY - centerY) * viewportScale + pan[1],
-      ];
-    },
-  };
 }
 
 function drawGeometry(
@@ -507,10 +516,29 @@ function drawGeometry(
   hoveredDimension: DimensionId | null,
   dimensionHits: DimensionHit[],
   magnetPolarityView: PublicMagnetPolarityView,
+  phaseDrive: PhaseDrive | null,
+  showToothPoles: boolean,
+  previewRpm: number,
 ): void {
   const points = data.regions.flatMap((region) => region.points);
   if (points.length === 0) return;
-  const { map, scale } = fitTransform(points, width, height, viewportScale, pan);
+  // Phases: the motor moves right, a little smaller, to make room for the A / B / C
+  // waveforms wired into it, and its phases light with the currents they carry.
+  const driveFrame = layer === 'phases' && phaseDrive ? phaseDriveFrame(width, height) : null;
+  const rotorElecDeg = phaseDrive ? rotorElectricalDeg(rotorAngleDeg, phaseDrive.poleCount) : 0;
+  const currents = (layer === 'phases' || showToothPoles) && phaseDrive ? phaseCurrents(phaseDrive, rotorElecDeg) : null;
+  const phaseLevels: PhaseLevels | null = layer === 'phases' && currents
+    ? { A: Math.abs(currents[0]), B: Math.abs(currents[1]), C: Math.abs(currents[2]) }
+    : null;
+  // Tooth poles, with or without Phases: each stator tooth turns N or S with the
+  // slot currents either side of it.
+  const statorSlotCount = Number(data.metadata.slot_count || 0);
+  const poleByTooth = showToothPoles && currents && data.winding_layout?.length && statorSlotCount > 0
+    ? toothPoles(slotCurrents(data.winding_layout, statorSlotCount, currents))
+    : null;
+  const toothPoleLabels: Array<{ x: number; y: number; north: boolean; strength: number; size: number }> = [];
+  const magnetPoleLabels: MagnetPoleLabel[] = [];
+  const { map, scale } = fitTransform(points, width, height, viewportScale, pan, driveFrame?.motor);
   const slotCount = Number(data.metadata.slot_count || 0);
   // Slots draw as the backend lays them out (#91): a single-layer tooth-coil slot
   // holds one coil side, a two-layer one arrives as two side-by-side regions,
@@ -620,7 +648,7 @@ function drawGeometry(
       region.region_type,
       usesSplitPolarity
         ? PUBLIC_MOTOR_COLORS.magnetBody
-        : regionFill(region.region_type, region.fill, layer, rotorAngleDeg),
+        : regionFill(region.region_type, region.fill, layer, phaseLevels),
       origin,
       /shaft/i.test(region.region_type) ? 0 : innerRadiusMm * scale,
       outerRadiusMm * scale,
@@ -628,20 +656,43 @@ function drawGeometry(
     context.globalAlpha = /air/i.test(region.region_type) ? 0.45 : 0.94;
     context.fill('evenodd');
     context.globalAlpha = 1;
+    if (poleByTooth && /stator_tooth/i.test(region.region_type)) {
+      // The tooth as an electromagnet pole: red N, blue S, as the magnets are, and
+      // as strong as its share of the stator MMF.
+      const [meanX, meanY] = region.points.reduce<[number, number]>(
+        (sum, [x, y]) => [sum[0] + x / region.points.length, sum[1] + y / region.points.length],
+        [0, 0],
+      );
+      const strength = poleByTooth[toothIndexAt(Math.atan2(meanY, meanX), statorSlotCount)] ?? 0;
+      if (Math.abs(strength) > 0.06) {
+        context.fillStyle = strength > 0 ? PUBLIC_MOTOR_COLORS.magnetNorth : PUBLIC_MOTOR_COLORS.magnetSouth;
+        context.globalAlpha = 0.14 + 0.5 * Math.abs(strength);
+        context.fill();
+        context.globalAlpha = 1;
+        const [labelX, labelY] = map([meanX, meanY]);
+        const toothWidthPx = (2 * Math.PI * Math.hypot(labelX - origin[0], labelY - origin[1])) / statorSlotCount * 0.42;
+        toothPoleLabels.push({ x: labelX, y: labelY, north: strength > 0, strength: Math.abs(strength), size: Math.min(14, toothWidthPx * 0.55) });
+      }
+    }
+    let splitHalves: MagnetPoleLabel[] | null = null;
     if (isVShapeMagnet && usesSplitPolarity) {
-      drawVShapeMagnetPolarityHalves(
+      splitHalves = drawVShapeMagnetPolarityHalves(
         context,
         transformedPoints,
         map,
         region.region_type,
       );
     } else if (isSpmMagnet && usesSplitPolarity) {
-      drawSpmMagnetPolarityHalves(
+      splitHalves = drawSpmMagnetPolarityHalves(
         context,
         transformedPoints,
         map,
         region.region_type,
       );
+    }
+    if (/magnet/i.test(region.region_type)) {
+      // Every magnet says which pole faces the airgap; split, each half its own.
+      magnetPoleLabels.push({ points: canvasPoints, north: magnetAirgapPolarity(region.region_type) === 'north', halves: splitHalves });
     }
     context.strokeStyle = 'rgba(6, 8, 12, 0.68)';
     context.lineWidth = Math.max(0.7, Math.min(1.5, scale * 0.035));
@@ -721,7 +772,58 @@ function drawGeometry(
     drawCurrentMarker(context, marker.x, marker.y, marker.radius, marker.outOfPage, marker.ring);
   });
 
-  if (layer === 'slots' || layer === 'windings' || layer === 'phases') {
+  // N / S on every magnet, upright. A thin SPM magnet is narrower than a readable
+  // letter, so the letter may overhang its band (outlined to stay legible); only a
+  // magnet too short for it goes unlabelled.
+  if (magnetPoleLabels.length) {
+    context.save();
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.lineJoin = 'round';
+    const letter = (north: boolean, x: number, y: number, size: number) => {
+      context.font = `800 ${size.toFixed(1)}px ui-monospace, monospace`;
+      context.lineWidth = Math.max(2, size * 0.24);
+      context.strokeStyle = 'rgba(8, 10, 14, 0.5)';
+      context.strokeText(north ? 'N' : 'S', x, y + 0.5);
+      context.fillStyle = '#f8fafc';
+      context.fillText(north ? 'N' : 'S', x, y + 0.5);
+    };
+    for (const label of magnetPoleLabels) {
+      // Split: each half its own letter, but only where both fit inside their
+      // halves; two letters overhanging a thin band would run into each other.
+      const halfSpots = (label.halves ?? []).map((half) => ({ half, spot: polygonLabelSpot(half.points, origin) }));
+      const halvesFit = halfSpots.length === 2
+        && halfSpots.every(({ spot }) => spot.thickness * 0.85 >= 8 && spot.span >= spot.thickness * 0.85 * 1.6);
+      if (halvesFit) {
+        halfSpots.forEach(({ half, spot }) => letter(half.north, spot.x, spot.y, Math.min(14, spot.thickness * 0.85)));
+        continue;
+      }
+      // Otherwise the pole facing the airgap, as the Pole view colours it.
+      const spot = polygonLabelSpot(label.points, origin);
+      const size = Math.min(14, Math.max(9, spot.thickness * 0.8));
+      if (spot.span < size * 1.6) continue;
+      letter(label.north, spot.x, spot.y, size);
+    }
+    context.restore();
+  }
+
+  // N / S on the teeth that are clearly poles, where a letter fits.
+  if (toothPoleLabels.length) {
+    context.save();
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    for (const label of toothPoleLabels) {
+      if (label.size < 8 || label.strength < 0.3) continue;
+      context.font = `800 ${label.size.toFixed(1)}px ui-monospace, monospace`;
+      context.fillStyle = `rgba(248, 250, 252, ${(0.45 + 0.55 * label.strength).toFixed(2)})`;
+      context.fillText(label.north ? 'N' : 'S', label.x, label.y + 0.5);
+    }
+    context.restore();
+  }
+
+  // Phases is only the phase colours changing as the rotor turns, so it carries
+  // no slot labels; Slots and Winding do.
+  if (layer === 'slots' || layer === 'windings') {
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     for (const region of data.regions) {
@@ -839,6 +941,122 @@ function drawGeometry(
       dimensionHits,
     );
   }
+
+  if (driveFrame && phaseDrive && currents) {
+    drawPhaseDrive(context, driveFrame.panel, phaseDrive, rotorElecDeg, currents, origin, outerRadiusPx, previewRpm);
+  }
+}
+
+/**
+ * Phases: the A / B / C terminal currents as scrolling waveforms on the left (now
+ * at the right end), each wired to its lead out of the motor at nine o'clock. A
+ * wire is as bright and thick as its phase's current, so the phase six-step
+ * switches off goes dark with its slots.
+ */
+function drawPhaseDrive(
+  context: CanvasRenderingContext2D,
+  panel: Rect,
+  drive: PhaseDrive,
+  rotorElecDeg: number,
+  currents: [number, number, number],
+  origin: [number, number],
+  statorRadiusPx: number,
+  previewRpm: number,
+): void {
+  const phases = ['A', 'B', 'C'] as const;
+  // A scope with a fixed sweep: the strips hold the cycles the drive runs in that
+  // time at the preview speed, so twice the speed shows twice as many.
+  const frequencyHz = electricalFrequencyHz(previewRpm, drive.poleCount);
+  const windowElecDeg = 360 * frequencyHz * PHASE_SCOPE_WINDOW_S;
+  const strips = phaseStrips(panel);
+  const lead = Math.max(10, statorRadiusPx * 0.08);
+  // A above, C below, so the wires do not cross.
+  const leads = [16, 0, -16].map((offsetDeg) => {
+    const angle = Math.PI + (offsetDeg * Math.PI) / 180;
+    const at = (radius: number): [number, number] => [origin[0] + radius * Math.cos(angle), origin[1] + radius * Math.sin(angle)];
+    return { motor: at(statorRadiusPx), terminal: at(statorRadiusPx + lead) };
+  });
+
+  context.save();
+  context.fillStyle = 'rgba(148, 163, 184, 0.78)';
+  context.font = '700 10px ui-monospace, monospace';
+  context.textAlign = 'left';
+  context.textBaseline = 'bottom';
+  context.fillText(`${drive.mode === 'ideal_six_step_120' ? 'SIX-STEP DRIVE' : 'SINE DRIVE'} · ${formatHz(frequencyHz)}`, panel.x, panel.y - 6);
+  // What sets the frequency, and the sweep the strips show.
+  context.fillStyle = 'rgba(148, 163, 184, 0.6)';
+  context.font = '600 9px ui-monospace, monospace';
+  context.textBaseline = 'top';
+  context.fillText(`${Math.max(1, Math.floor(drive.poleCount / 2))} pole pairs × ${(previewRpm / 60).toFixed(2)} rev/s · last ${PHASE_SCOPE_WINDOW_S} s`, panel.x, panel.y + panel.height + 6);
+
+  strips.forEach((strip, index) => {
+    const colour = PHASE_COLORS[phases[index]];
+    const level = Math.abs(currents[index]);
+    const mid = strip.y + strip.height / 2;
+    const right = strip.x + strip.width;
+
+    context.beginPath();
+    if (typeof context.roundRect === 'function') context.roundRect(strip.x, strip.y, strip.width, strip.height, 8);
+    else context.rect(strip.x, strip.y, strip.width, strip.height);
+    context.fillStyle = 'rgba(12, 15, 21, 0.78)';
+    context.fill();
+    context.strokeStyle = 'rgba(148, 163, 184, 0.16)';
+    context.lineWidth = 1;
+    context.stroke();
+
+    context.setLineDash([3, 4]);
+    context.beginPath();
+    context.moveTo(strip.x + STRIP_LABEL, mid);
+    context.lineTo(right - STRIP_END, mid);
+    context.strokeStyle = 'rgba(148, 163, 184, 0.24)';
+    context.stroke();
+    context.setLineDash([]);
+
+    context.fillStyle = colour;
+    context.font = '800 11px ui-monospace, monospace';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText(phases[index], strip.x + STRIP_LABEL / 2, mid + 0.5);
+    // The wave's frequency, in its own plot.
+    context.fillStyle = 'rgba(148, 163, 184, 0.72)';
+    context.font = '700 9px ui-monospace, monospace';
+    context.textAlign = 'right';
+    context.textBaseline = 'top';
+    context.fillText(formatHz(frequencyHz), right - STRIP_END, strip.y + 4);
+
+    const trace = waveformTrace(drive, index, rotorElecDeg, strip, windowElecDeg);
+    context.beginPath();
+    context.moveTo(trace[0][0], trace[0][1]);
+    for (const [x, y] of trace.slice(1)) context.lineTo(x, y);
+    context.strokeStyle = colour;
+    context.lineWidth = 1.8;
+    context.lineJoin = 'round';
+    context.stroke();
+    const [nowX, nowY] = trace[trace.length - 1];
+    context.beginPath();
+    context.arc(nowX, nowY, 3.2, 0, Math.PI * 2);
+    context.fillStyle = colour;
+    context.fill();
+
+    // The wire from the waveform into the motor, as live as the current in it.
+    const { motor, terminal } = leads[index];
+    const reach = Math.max(24, (terminal[0] - right) * 0.5);
+    context.globalAlpha = 0.3 + 0.7 * level;
+    context.strokeStyle = colour;
+    context.lineWidth = 1.2 + 2 * level;
+    context.lineCap = 'round';
+    context.beginPath();
+    context.moveTo(right, mid);
+    context.bezierCurveTo(right + reach, mid, terminal[0] - reach, terminal[1], terminal[0], terminal[1]);
+    context.lineTo(motor[0], motor[1]);
+    context.stroke();
+    context.beginPath();
+    context.arc(terminal[0], terminal[1], 2.8, 0, Math.PI * 2);
+    context.fillStyle = colour;
+    context.fill();
+    context.globalAlpha = 1;
+  });
+  context.restore();
 }
 
 /**
@@ -1091,6 +1309,8 @@ export function MotorCanvas({
   hoveredDimension = null,
   onDimensionSelect,
   magnetPolarityView = 'dominant',
+  showToothPoles = false,
+  previewRpm = 18,
   meshDisplayMode = 'geometry',
   showMeshEdges = true,
   meshQualities = EMPTY_MESH_QUALITIES,
@@ -1101,11 +1321,41 @@ export function MotorCanvas({
   navigationSlot = null,
 }: MotorCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  // Phases: the solve's drive settings with the geometry's phase-A axis and poles.
+  const solveParams = config?.solve_params;
+  const metadataAxis = Number(geometry?.metadata.phase_axis_offset_elec_deg);
+  const metadataPoles = Number(geometry?.metadata.pole_count);
+  const phaseDrive = useMemo<PhaseDrive | null>(() => (solveParams
+    ? {
+      mode: solveParams.excitation_mode,
+      currentAngleDeg: solveParams.current_angle_deg,
+      currentAngleReference: geometry?.metadata.phase_current_convention === 'pyleecan_d_axis'
+        || config?.geometry_reference === 'pyleecan_prius_2004' ? 'pyleecan_d_axis' : 'q_axis',
+      currentAmplitudeA: solveParams.current_amplitude_A,
+      commutationAdvanceDeg: solveParams.commutation_advance_deg,
+      axisOffsetDeg: Number.isFinite(metadataAxis) ? metadataAxis : 0,
+      poleCount: Number.isFinite(metadataPoles) && metadataPoles > 0 ? metadataPoles : config?.rotor.pole_count ?? 2,
+    }
+    : null), [
+    solveParams?.excitation_mode,
+    solveParams?.current_angle_deg,
+    solveParams?.current_amplitude_A,
+    solveParams?.commutation_advance_deg,
+    metadataAxis,
+    metadataPoles,
+    config?.rotor.pole_count,
+    config?.geometry_reference,
+    geometry?.metadata.phase_current_convention,
+  ]);
   const hitRegionsRef = useRef<HitRegion[]>([]);
   const dimensionHitsRef = useRef<DimensionHit[]>([]);
   const meshHitsRef = useRef<MeshTriangleHit[]>([]);
   const [hoveredComponent, setHoveredComponent] = useState<PublicMotorComponentSelection | null>(null);
-  const navigation = useViewportNavigation();
+  const phaseFrameEnabled = mode === 'geometry' && layer === 'phases' && phaseDrive !== null;
+  const navigationFrame = useCallback((width: number, height: number) => (
+    phaseFrameEnabled ? phaseDriveFrame(width, height)?.motor ?? null : null
+  ), [phaseFrameEnabled]);
+  const navigation = useViewportNavigation(undefined, navigationFrame);
   const annotations = useMemo(
     () => (config && layer === 'dimensions' ? buildDimensionAnnotations(config, geometry) : []),
     [config, geometry, layer],
@@ -1177,6 +1427,9 @@ export function MotorCanvas({
           hoveredDimension,
           dimensionHitsRef.current,
           magnetPolarityView,
+          phaseDrive,
+          showToothPoles,
+          previewRpm,
         );
       } else if (mode === 'mesh' && mesh) {
         drawMesh(
@@ -1215,6 +1468,9 @@ export function MotorCanvas({
     meshQualityThreshold,
     magnetPolarityView,
     mode,
+    phaseDrive,
+    showToothPoles,
+    previewRpm,
     navigation.pan.x,
     navigation.pan.y,
     navigation.scale,

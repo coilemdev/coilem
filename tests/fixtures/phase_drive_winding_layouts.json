@@ -1,0 +1,969 @@
+{
+ "schema": "coilem.phase_drive_winding_layouts/v1",
+ "about": "Preview winding layouts and the rotor N axis (electrical degrees, CCW from +x, at rotor angle 0) the 2D Phases tooth poles are checked against. tests/test_public_phase_drive.py keeps it equal to generate_preview.",
+ "cases": [
+  {
+   "fixture": "spm_8p12s_concentrated__baseline.json",
+   "slot_count": 12,
+   "pole_count": 8,
+   "phase_axis_offset_elec_deg": 30.0,
+   "rotor_n_axis_elec_deg": 359.015,
+   "winding_layout": [
+    {
+     "slot_index": 0,
+     "layer": 1,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 1,
+     "layer": 1,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 2,
+     "layer": 1,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 3,
+     "layer": 1,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 4,
+     "layer": 1,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 5,
+     "layer": 1,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 6,
+     "layer": 1,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 7,
+     "layer": 1,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 8,
+     "layer": 1,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 9,
+     "layer": 1,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 10,
+     "layer": 1,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 11,
+     "layer": 1,
+     "phase": "C",
+     "direction": "in"
+    }
+   ]
+  },
+  {
+   "fixture": "spm_8p24s_distributed_femm_validation.json",
+   "slot_count": 24,
+   "pole_count": 8,
+   "phase_axis_offset_elec_deg": 0.0,
+   "rotor_n_axis_elec_deg": 359.042,
+   "winding_layout": [
+    {
+     "slot_index": 0,
+     "layer": 1,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 0,
+     "layer": 2,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 1,
+     "layer": 1,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 1,
+     "layer": 2,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 2,
+     "layer": 1,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 2,
+     "layer": 2,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 3,
+     "layer": 1,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 3,
+     "layer": 2,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 4,
+     "layer": 1,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 4,
+     "layer": 2,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 5,
+     "layer": 1,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 5,
+     "layer": 2,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 6,
+     "layer": 1,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 6,
+     "layer": 2,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 7,
+     "layer": 1,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 7,
+     "layer": 2,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 8,
+     "layer": 1,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 8,
+     "layer": 2,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 9,
+     "layer": 1,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 9,
+     "layer": 2,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 10,
+     "layer": 1,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 10,
+     "layer": 2,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 11,
+     "layer": 1,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 11,
+     "layer": 2,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 12,
+     "layer": 1,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 12,
+     "layer": 2,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 13,
+     "layer": 1,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 13,
+     "layer": 2,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 14,
+     "layer": 1,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 14,
+     "layer": 2,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 15,
+     "layer": 1,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 15,
+     "layer": 2,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 16,
+     "layer": 1,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 16,
+     "layer": 2,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 17,
+     "layer": 1,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 17,
+     "layer": 2,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 18,
+     "layer": 1,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 18,
+     "layer": 2,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 19,
+     "layer": 1,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 19,
+     "layer": 2,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 20,
+     "layer": 1,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 20,
+     "layer": 2,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 21,
+     "layer": 1,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 21,
+     "layer": 2,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 22,
+     "layer": 1,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 22,
+     "layer": 2,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 23,
+     "layer": 1,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 23,
+     "layer": 2,
+     "phase": "B",
+     "direction": "out"
+    }
+   ]
+  },
+  {
+   "fixture": "spm_8p48s_chorded_5_6.json",
+   "slot_count": 48,
+   "pole_count": 8,
+   "phase_axis_offset_elec_deg": 0.0,
+   "rotor_n_axis_elec_deg": 359.042,
+   "winding_layout": [
+    {
+     "slot_index": 0,
+     "layer": 1,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 0,
+     "layer": 2,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 1,
+     "layer": 1,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 1,
+     "layer": 2,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 2,
+     "layer": 1,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 2,
+     "layer": 2,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 3,
+     "layer": 1,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 3,
+     "layer": 2,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 4,
+     "layer": 1,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 4,
+     "layer": 2,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 5,
+     "layer": 1,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 5,
+     "layer": 2,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 6,
+     "layer": 1,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 6,
+     "layer": 2,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 7,
+     "layer": 1,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 7,
+     "layer": 2,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 8,
+     "layer": 1,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 8,
+     "layer": 2,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 9,
+     "layer": 1,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 9,
+     "layer": 2,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 10,
+     "layer": 1,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 10,
+     "layer": 2,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 11,
+     "layer": 1,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 11,
+     "layer": 2,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 12,
+     "layer": 1,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 12,
+     "layer": 2,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 13,
+     "layer": 1,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 13,
+     "layer": 2,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 14,
+     "layer": 1,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 14,
+     "layer": 2,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 15,
+     "layer": 1,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 15,
+     "layer": 2,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 16,
+     "layer": 1,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 16,
+     "layer": 2,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 17,
+     "layer": 1,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 17,
+     "layer": 2,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 18,
+     "layer": 1,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 18,
+     "layer": 2,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 19,
+     "layer": 1,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 19,
+     "layer": 2,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 20,
+     "layer": 1,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 20,
+     "layer": 2,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 21,
+     "layer": 1,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 21,
+     "layer": 2,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 22,
+     "layer": 1,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 22,
+     "layer": 2,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 23,
+     "layer": 1,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 23,
+     "layer": 2,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 24,
+     "layer": 1,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 24,
+     "layer": 2,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 25,
+     "layer": 1,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 25,
+     "layer": 2,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 26,
+     "layer": 1,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 26,
+     "layer": 2,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 27,
+     "layer": 1,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 27,
+     "layer": 2,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 28,
+     "layer": 1,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 28,
+     "layer": 2,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 29,
+     "layer": 1,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 29,
+     "layer": 2,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 30,
+     "layer": 1,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 30,
+     "layer": 2,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 31,
+     "layer": 1,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 31,
+     "layer": 2,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 32,
+     "layer": 1,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 32,
+     "layer": 2,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 33,
+     "layer": 1,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 33,
+     "layer": 2,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 34,
+     "layer": 1,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 34,
+     "layer": 2,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 35,
+     "layer": 1,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 35,
+     "layer": 2,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 36,
+     "layer": 1,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 36,
+     "layer": 2,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 37,
+     "layer": 1,
+     "phase": "A",
+     "direction": "in"
+    },
+    {
+     "slot_index": 37,
+     "layer": 2,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 38,
+     "layer": 1,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 38,
+     "layer": 2,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 39,
+     "layer": 1,
+     "phase": "C",
+     "direction": "out"
+    },
+    {
+     "slot_index": 39,
+     "layer": 2,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 40,
+     "layer": 1,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 40,
+     "layer": 2,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 41,
+     "layer": 1,
+     "phase": "B",
+     "direction": "in"
+    },
+    {
+     "slot_index": 41,
+     "layer": 2,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 42,
+     "layer": 1,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 42,
+     "layer": 2,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 43,
+     "layer": 1,
+     "phase": "A",
+     "direction": "out"
+    },
+    {
+     "slot_index": 43,
+     "layer": 2,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 44,
+     "layer": 1,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 44,
+     "layer": 2,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 45,
+     "layer": 1,
+     "phase": "C",
+     "direction": "in"
+    },
+    {
+     "slot_index": 45,
+     "layer": 2,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 46,
+     "layer": 1,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 46,
+     "layer": 2,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 47,
+     "layer": 1,
+     "phase": "B",
+     "direction": "out"
+    },
+    {
+     "slot_index": 47,
+     "layer": 2,
+     "phase": "A",
+     "direction": "in"
+    }
+   ]
+  }
+ ]
+}

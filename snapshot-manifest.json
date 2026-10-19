@@ -455,8 +455,8 @@
     },
     {
       "path": "backend/preview.py",
-      "bytes": 39560,
-      "sha256": "50f2f534cebf28a48d4ecc089184228c973fc782d7f756275badc2a10e29b246"
+      "bytes": 40353,
+      "sha256": "657b1ba6f67f1d4d3d15988ea34dd5d28e3e248d4e59967c4d5f27854287ffb8"
     },
     {
       "path": "backend/preview_from_ir.py",
@@ -5735,8 +5735,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2196,
-      "sha256": "fdbfa87339f99e0e11f5f17d84bed52d1f702b6ab01e97dc40fd1c4045b72576"
+      "bytes": 2316,
+      "sha256": "35ef1c017c793986dc5bb0b59b4fa2517c914b51daf7e753033853586a3a3a93"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -5762,6 +5762,11 @@
       "path": "frontend/scripts/test-bldc-chart-paths.mjs",
       "bytes": 5104,
       "sha256": "1d7a2c25dbdf42708728e2066ea15ce50e9832321c8f03fcd51e31f2ec82e709"
+    },
+    {
+      "path": "frontend/scripts/test-canvas-labels.mjs",
+      "bytes": 2753,
+      "sha256": "99945cef840df5da3e13a435fe29e16d1a2fc38c6e28f85895e8fa78394357c5"
     },
     {
       "path": "frontend/scripts/test-chart-readout.mjs",
@@ -5839,6 +5844,11 @@
       "sha256": "f85457080dd26d1c90dc9a4084ab0bb533db3ff7aa5ae129dca8133ff5b08cd2"
     },
     {
+      "path": "frontend/scripts/test-phase-drive.mjs",
+      "bytes": 12240,
+      "sha256": "10041ab3da2b7a4266305f31ee6ac8f773332f709edeee73eea0ee60d2b95837"
+    },
+    {
       "path": "frontend/scripts/test-public-airgap-ux.mjs",
       "bytes": 2732,
       "sha256": "63dc2966cb3e82fbbdcab31d29110cef55c05352ef5254353e4a9ffeb653d282"
@@ -5860,8 +5870,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 150301,
-      "sha256": "96da0f503e2c07f33c7610fc6a01a4d04fdc98f1e29d84eecf4b65bf56d10f9b"
+      "bytes": 155409,
+      "sha256": "fd17db867e643ab1c719554788cb3c0e7322256e0208f99f26d7bf741241d1be"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5877,6 +5887,11 @@
       "path": "frontend/scripts/test-tooth-coil-repair.mjs",
       "bytes": 5435,
       "sha256": "6808ab126570cab3b8f1988a239b4f4fb32411f42e505a6573524bd0a339b3f1"
+    },
+    {
+      "path": "frontend/scripts/test-viewport-transform.mjs",
+      "bytes": 1565,
+      "sha256": "c81995eb6c0599cd4d3054a1d1493511e33840ceceddff659492bf056ffb6b90"
     },
     {
       "path": "frontend/scripts/test-winding-ring.mjs",
@@ -6270,8 +6285,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 218696,
-      "sha256": "d8233fe530f8fd667991d9f727f3202bc3aba4faf5641ebaa28ac99e551a805f"
+      "bytes": 222244,
+      "sha256": "1200cc7326b4d891b198907a4649f5411914d797cd32ce29c56a36042cd836ff"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -6295,8 +6310,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 48515,
-      "sha256": "ec87eb419e997bd590ce1c3c30d3bd2b015cf5d50330cc6116e9de2ff97fee6c"
+      "bytes": 60653,
+      "sha256": "8f8b22ddd570cbd3ae121e0ab717eb0b5e12948861e9830038f139b23c0026f2"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -6340,8 +6355,8 @@
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
-      "bytes": 6246,
-      "sha256": "5724654d93fd4f95851948f589a5d72f60d47c3c0850440b38121511a0c5364e"
+      "bytes": 6451,
+      "sha256": "12b008ddba348dc82d4aab2da463dda5f28b9a97ba08051742d32e49e7747a9f"
     },
     {
       "path": "frontend/src/public/WaveformChart.tsx",
@@ -6372,6 +6387,11 @@
       "path": "frontend/src/public/bldcChartPaths.ts",
       "bytes": 1151,
       "sha256": "5630590265b8d02821ba60706eb007447568abf83a66ca92730fe08528f69a78"
+    },
+    {
+      "path": "frontend/src/public/canvasLabels.ts",
+      "bytes": 2259,
+      "sha256": "3eff7fbd69561f6d5111ef061da503099c9ded5e3ed999f6e7cda3a258c74e30"
     },
     {
       "path": "frontend/src/public/chartAxis.ts",
@@ -6639,6 +6659,11 @@
       "sha256": "40d69d324708b41486ee891c31d9a43e2e4bef0b00d2cc10f3bf96a92e737072"
     },
     {
+      "path": "frontend/src/public/phaseDrive.ts",
+      "bytes": 9381,
+      "sha256": "64b31ec2cabbd9c9f32f1cefc93eb953b69e98053393166267472063dbdbdce8"
+    },
+    {
       "path": "frontend/src/public/previewContours.ts",
       "bytes": 942,
       "sha256": "74faf4b483e3a1bd000272707fab8ca5deae0b875cafe6095b9a02c39e793e67"
@@ -6670,8 +6695,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 263216,
-      "sha256": "5e1867dbbcdd2b990099beacc9ae9d3a649649fd0484cfd1d09441913aee3184"
+      "bytes": 264768,
+      "sha256": "cb1d0b142d500dc21774c61f07a40b68e1abe2878a51e416aed1c857d22f4565"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -6692,6 +6717,11 @@
       "path": "frontend/src/public/tutorials/publicLessonSolveClient.ts",
       "bytes": 14808,
       "sha256": "be5df38663db208ee5fd80576c4a9d46916247fe92be6cbeb72cc59212f2d9f3"
+    },
+    {
+      "path": "frontend/src/public/viewportTransform.ts",
+      "bytes": 2177,
+      "sha256": "f9c62cb7a0387e646974b3655842e21d127f0e11ef40131363931135daea6290"
     },
     {
       "path": "frontend/src/public/windingRing.ts",
@@ -6715,8 +6745,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 20451,
-      "sha256": "2be4b92f4b527de768deade0a2c6c463d65cb1be305d424062997244dc9c55f8"
+      "bytes": 22866,
+      "sha256": "1d76220a3e28bb90b2078e2ed30f979f963ea71d1120b8cdefb095c5f119371f"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -7059,9 +7089,24 @@
       "sha256": "0914644d93f05fa5738534c518e2ecffeca2d129d8a38fbe8b8df2f65c695b86"
     },
     {
+      "path": "tests/fixtures/phase_drive_winding_layouts.json",
+      "bytes": 15760,
+      "sha256": "f9b0985ee0f82803a8953408d74ea24b844e1f3efcf95796645a5c03c8d27a0c"
+    },
+    {
+      "path": "tests/fixtures/prius_phase_drive_vectors.json",
+      "bytes": 9361,
+      "sha256": "a602b8912fcc8528049beab0d6dbc22637d6d7434f514aacd20726821dcbbcb2"
+    },
+    {
       "path": "tests/fixtures/prius_winding_ring.json",
       "bytes": 359446,
       "sha256": "32e16063b7fbc67c80a83c6d9f76f5c71afc61cb6cb8df3946e95f78a7acaeaf"
+    },
+    {
+      "path": "tests/fixtures/public_sine_phase_current_vectors.json",
+      "bytes": 9081,
+      "sha256": "8b6077ac1e31f044da89449fb45df4069230292940a8f6a9b1911e2e77711ca5"
     },
     {
       "path": "tests/fixtures/solve_time_calibration.json",
@@ -7267,6 +7312,11 @@
       "path": "tests/test_public_field_playback.py",
       "bytes": 16427,
       "sha256": "27af0046b26a9afea88f5b51a8b7970d62695065436862cd717eb9eca64cd270"
+    },
+    {
+      "path": "tests/test_public_phase_drive.py",
+      "bytes": 5965,
+      "sha256": "35801dc9a8af04e1774c33bb3407c2aa6344e839a34ddbd5f6e84f5f50feb646"
     },
     {
       "path": "tests/test_public_report_exports.py",
@@ -11531,6 +11581,228 @@
       "reason": "Name Prius examples by pole/slot count and case, and widen their design and examples menus."
     },
     {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "705d2050876c798c3080ae2af734fdcd42ffd01b60f1508900a2aea772a157df",
+      "reason": "Move the Phases overlay into the 2D preview row as a toggle beside the speed"
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "dc468867393bb8fbed38bf32f6a5a2962d75c4e9713b5942721ae3e6a0d53967",
+      "reason": "Pin Phases as a preview toggle rather than a static overlay"
+    },
+    {
+      "base_commit": "15bdd52e9ce577ff9ed1de24cb12148dcc5abdef",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "20a89d4000b76c1b80121e4e12a002f4ba264a952865c8a298e10033db40b395",
+      "reason": "Draw no slot labels on the Phases layer, only the phase colours changing"
+    },
+    {
+      "base_commit": "15bdd52e9ce577ff9ed1de24cb12148dcc5abdef",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "54b6feefc50ec07fa4e24fa847657e2d24b74757dbdeb5360df492a820a9e63d",
+      "reason": "Pin that the Phases layer carries no slot labels"
+    },
+    {
+      "base_commit": "724b7b00105e8fb2fdf14b67fb2855f2b86a73f3",
+      "path": "backend/preview.py",
+      "source_sha256": "9d95bd235b3f2564b5c4fc6482adb549d01ac1ba25c6a9ce0da5c6e0cbf4eb28",
+      "reason": "Report phase A's axis offset in the preview metadata for the 2D Phases drive preview"
+    },
+    {
+      "base_commit": "724b7b00105e8fb2fdf14b67fb2855f2b86a73f3",
+      "path": "frontend/package.json",
+      "source_sha256": "b6c9c006db041b31338fa978e4df68ea50c30c8600dc22455ea7813ff714d143",
+      "reason": "Run the phase drive checks in the public UI test chain"
+    },
+    {
+      "base_commit": "724b7b00105e8fb2fdf14b67fb2855f2b86a73f3",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "19ea392d548cd3649020f95ddab450ce9a5b7b4fb98d79b852e260f49d620918",
+      "reason": "Pin the Phases drive panel and the collapsible Design health rail"
+    },
+    {
+      "base_commit": "724b7b00105e8fb2fdf14b67fb2855f2b86a73f3",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "f10b3ccc55dff4d932dd8d7af13d48886d1b1acbb94e825dfea570e17e1278b5",
+      "reason": "Let Design health collapse to a status strip"
+    },
+    {
+      "base_commit": "724b7b00105e8fb2fdf14b67fb2855f2b86a73f3",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "fc57d98d69bf2f0e747376663f76cbe94e983277ec44ff3d8095edb3458fa14d",
+      "reason": "Phases: motor right and smaller beside the solve's A/B/C waveforms wired into it"
+    },
+    {
+      "base_commit": "724b7b00105e8fb2fdf14b67fb2855f2b86a73f3",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "c360a7d0b107ceebb76bc7a19f5442cc447121fddf0b0ffc7b5f781614752983",
+      "reason": "Style the collapsed Design health strip"
+    },
+    {
+      "base_commit": "1efeddb688cf918b610fc07eeedfbe266e4d2b63",
+      "path": "frontend/src/public/phaseDrive.ts",
+      "source_sha256": "30647546cf789e39528ef5ee9e15d658c2a1ceb6076d38de86c816011f13516b",
+      "reason": "Derive each stator tooth's N/S pole from the slot currents"
+    },
+    {
+      "base_commit": "1efeddb688cf918b610fc07eeedfbe266e4d2b63",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "7d63c5dcbca109e3295419ddac09e57c2fbee5f5c892c83e8e6c0bb2edcbca58",
+      "reason": "Phases: tint each stator tooth N red or S blue by its pole strength"
+    },
+    {
+      "base_commit": "1efeddb688cf918b610fc07eeedfbe266e4d2b63",
+      "path": "frontend/scripts/test-phase-drive.mjs",
+      "source_sha256": "ea1419e512ecf3d3f9ca2fad17a187469e3c1656d90ef0fd6725eed0e7badad8",
+      "reason": "Check tooth poles lead the rotor N axis by 90 degrees electrical"
+    },
+    {
+      "base_commit": "1efeddb688cf918b610fc07eeedfbe266e4d2b63",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "0d5209d0e971b72388bf74bfe1e64ff01b5103cf043cf281c98ae13404bd692d",
+      "reason": "Pin the Phases tooth poles"
+    },
+    {
+      "base_commit": "1efeddb688cf918b610fc07eeedfbe266e4d2b63",
+      "path": "tests/test_public_phase_drive.py",
+      "source_sha256": "60319c9aaca20db172a0b3cb8661d48fb8fbbe21c246f8254c69a83e667b8345",
+      "reason": "Keep the tooth-pole winding layout fixture equal to the preview"
+    },
+    {
+      "base_commit": "3902d872ad510c75dd2f637ce755d340216f1566",
+      "path": "tests/test_public_phase_drive.py",
+      "source_sha256": "673bbd84fbaffad01a2263fc56e4b5f9d1d62a0af0c25fb73935d8c740f176ad",
+      "reason": "Keep the sine vector ids under the 150-column lint limit"
+    },
+    {
+      "base_commit": "2e871c2994e3d7e3796a6ea2ace6855c7b543024",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "5d3297a3a37a9eb0d1384bdb0996496fa3dbcecae298c558a4c18d4f2c3e3ff0",
+      "reason": "Add a Tooth poles toggle beside Phases, independent of it"
+    },
+    {
+      "base_commit": "2e871c2994e3d7e3796a6ea2ace6855c7b543024",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "b97db1c34adf252e71884deb85c99bfcc8f03f673f7af6824b895b324903ee01",
+      "reason": "Draw tooth poles from their own toggle, with or without Phases"
+    },
+    {
+      "base_commit": "2e871c2994e3d7e3796a6ea2ace6855c7b543024",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "2c47577bbbfdfd9126ab545127a068ef964ded8166ac4428c2e419563ca1325c",
+      "reason": "Pin the independent Tooth poles toggle"
+    },
+    {
+      "base_commit": "948b87fcc383c9924359c48eb48a087e22ced437",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "41efa00a5ce2a3db3d4a0f55476a78d1bef07e4588b6606c7d94dcabf056d0b4",
+      "reason": "Letter every rotor magnet N or S by the pole facing the airgap"
+    },
+    {
+      "base_commit": "948b87fcc383c9924359c48eb48a087e22ced437",
+      "path": "frontend/package.json",
+      "source_sha256": "7c70725fd558ef3ccae068447982e8a54941a2fee70cb1df3523d3ceb0458278",
+      "reason": "Run the canvas label checks in the public UI test chain"
+    },
+    {
+      "base_commit": "948b87fcc383c9924359c48eb48a087e22ced437",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "178e7a842fbef9beed687705f0fd108384f6d75d88fbc20d5a58d07bf17f4a85",
+      "reason": "Pin the magnet N / S letters"
+    },
+    {
+      "base_commit": "95d58677cea83bdbae882c62200f724ac1efc1b5",
+      "path": "frontend/src/public/phaseDrive.ts",
+      "source_sha256": "cc097033243c6579298e856b8cabb9a3cb2c4534ebf75390c4b2af05afd21213",
+      "reason": "Make the Phases strips a 1 s scope: electrical frequency from preview rpm and pole pairs"
+    },
+    {
+      "base_commit": "95d58677cea83bdbae882c62200f724ac1efc1b5",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "a3bbde3c73869b8cef46484bba48fd6fdf853b4ca62bdb52b95d0e1fb6954af0",
+      "reason": "Draw the Phases strips at the preview speed with their frequency in the heading and each plot"
+    },
+    {
+      "base_commit": "95d58677cea83bdbae882c62200f724ac1efc1b5",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "415b3dd75d20d6bfb85a565965d45881526fb3fcbc703fb100f8a5e508d977de",
+      "reason": "Pass the preview speed to the 2D canvas"
+    },
+    {
+      "base_commit": "95d58677cea83bdbae882c62200f724ac1efc1b5",
+      "path": "frontend/scripts/test-phase-drive.mjs",
+      "source_sha256": "0842f771eb1c4875b79a5a639a1a1f45e40522c24fdeb892854c927378569859",
+      "reason": "Check the scope frequency, cycles per sweep and time base"
+    },
+    {
+      "base_commit": "95d58677cea83bdbae882c62200f724ac1efc1b5",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "6109e0ff7dce9a05ce3759e6bd0c3646cd2dc828e7d5de0b3cff3b1ee1537311",
+      "reason": "Pin the Phases scope frequency readouts"
+    },
+    {
+      "base_commit": "3f836201228804dda25b27da17ea30f49f95b102",
+      "path": "frontend/scripts/test-phase-drive.mjs",
+      "source_sha256": "8d91a413b45b603aee4e6534cef582b6e67bc12f5045f8a9a2248b49ba3b2b5b",
+      "reason": "Sweep the tooth-pole lead through a whole electrical cycle in 1 degree steps"
+    },
+    {
+      "base_commit": "af2164cec316d4a353f83a14f765ff81f73715e9",
+      "path": "backend/preview.py",
+      "source_sha256": "e63ce9b1738ba0cf2fa811b97c46aa68ddfb315ec2024a17beab90e15b8f2986",
+      "reason": "Fix Prius phase conventions, zero-current previews and shifted-frame zoom."
+    },
+    {
+      "base_commit": "af2164cec316d4a353f83a14f765ff81f73715e9",
+      "path": "frontend/package.json",
+      "source_sha256": "accdb586601d464847d5493c7379e91600505142cc4af728744bc7ac51b7ebf8",
+      "reason": "Fix Prius phase conventions, zero-current previews and shifted-frame zoom."
+    },
+    {
+      "base_commit": "af2164cec316d4a353f83a14f765ff81f73715e9",
+      "path": "frontend/scripts/test-phase-drive.mjs",
+      "source_sha256": "18d1816e74cf7ca7745578557a4262e9754caf9d256b78c3864d3ae943ee7ce2",
+      "reason": "Fix Prius phase conventions, zero-current previews and shifted-frame zoom."
+    },
+    {
+      "base_commit": "af2164cec316d4a353f83a14f765ff81f73715e9",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "8bfc03f6345c6fb95964b3d74b65ab6613c0473abea963211e85f3f240ca9aa9",
+      "reason": "Fix Prius phase conventions, zero-current previews and shifted-frame zoom."
+    },
+    {
+      "base_commit": "af2164cec316d4a353f83a14f765ff81f73715e9",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "1aad28d9958fd724088d90870602cc4af542d89c2d83bb109494f399bcca0e7e",
+      "reason": "Fix Prius phase conventions, zero-current previews and shifted-frame zoom."
+    },
+    {
+      "base_commit": "af2164cec316d4a353f83a14f765ff81f73715e9",
+      "path": "frontend/src/public/ViewportNavigation.tsx",
+      "source_sha256": "5724654d93fd4f95851948f589a5d72f60d47c3c0850440b38121511a0c5364e",
+      "reason": "Fix Prius phase conventions, zero-current previews and shifted-frame zoom."
+    },
+    {
+      "base_commit": "af2164cec316d4a353f83a14f765ff81f73715e9",
+      "path": "frontend/src/public/phaseDrive.ts",
+      "source_sha256": "e62d2345187b1eca96cea74b161a7c40d65186b94049685296b1a532fafd20bb",
+      "reason": "Fix Prius phase conventions, zero-current previews and shifted-frame zoom."
+    },
+    {
+      "base_commit": "af2164cec316d4a353f83a14f765ff81f73715e9",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "4cc4b8102643d10b3082e36cad8f14b4154d9411c5f66d7aa9cadec552e97b63",
+      "reason": "Fix Prius phase conventions, zero-current previews and shifted-frame zoom."
+    },
+    {
+      "base_commit": "af2164cec316d4a353f83a14f765ff81f73715e9",
+      "path": "tests/test_public_phase_drive.py",
+      "source_sha256": "ac129fcdabe709be07df626b9d6a3bf9bb9ca26f5eae414cdfb3f34e0d623e52",
+      "reason": "Fix Prius phase conventions, zero-current previews and shifted-frame zoom."
+    },
+    {
       "base_commit": "0bea2af37a5ecc5bf207c19cb5dd7e584887d83b",
       "path": "frontend/src/public/WindingLayoutView.tsx",
       "source_sha256": "2e3fc465fcebe43ea8a2f08690d2b5f15e07bae74ae8de381a776e12bdd7b3dd",
@@ -11697,6 +11969,54 @@
       "path": "tests/test_winding_ring_geometry.py",
       "source_sha256": "2a69392a0a944d9ac0939d521268c45f2b6b623c39a60d0c49bee80d42761020",
       "reason": "Allow platform libm rounding in the exact Prius slot-coordinate fixture."
+    },
+    {
+      "base_commit": "56ed435953560f2715a98ac02b5b8402245d2d69",
+      "path": "benchmarks/v0.4.0/README.md",
+      "source_sha256": "5b77880520956a4508c0120de76d99245dbff43b36fc16ba92051711e9e0bcf0",
+      "reason": "Integrate Layout main into Phases while preserving both test suites and publication provenance."
+    },
+    {
+      "base_commit": "56ed435953560f2715a98ac02b5b8402245d2d69",
+      "path": "docs/RELEASE_0_4_0.md",
+      "source_sha256": "906aded59a3873b02df7c6ddd876702749bdaa206f1c0cfe29c38e612c74212d",
+      "reason": "Integrate Layout main into Phases while preserving both test suites and publication provenance."
+    },
+    {
+      "base_commit": "56ed435953560f2715a98ac02b5b8402245d2d69",
+      "path": "frontend/package.json",
+      "source_sha256": "cf8ecc08bfb70fb2b073f24ea1a1a043ec5641a51acbc2af42162a17a1b6ff96",
+      "reason": "Integrate Layout main into Phases while preserving both test suites and publication provenance."
+    },
+    {
+      "base_commit": "56ed435953560f2715a98ac02b5b8402245d2d69",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "9fb792853ef52884f5fdc62cfa171905b2d491bd83ef2ceebe8f816da72cefa4",
+      "reason": "Integrate Layout main into Phases while preserving both test suites and publication provenance."
+    },
+    {
+      "base_commit": "56ed435953560f2715a98ac02b5b8402245d2d69",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "fa9d78a5d1eeab4b7ad54b588b40984a45e0690372c21a5d1b8f2cbf7b57166d",
+      "reason": "Integrate Layout main into Phases while preserving both test suites and publication provenance."
+    },
+    {
+      "base_commit": "56ed435953560f2715a98ac02b5b8402245d2d69",
+      "path": "frontend/src/public/WindingLayoutView.tsx",
+      "source_sha256": "2e3fc465fcebe43ea8a2f08690d2b5f15e07bae74ae8de381a776e12bdd7b3dd",
+      "reason": "Integrate Layout main into Phases while preserving both test suites and publication provenance."
+    },
+    {
+      "base_commit": "56ed435953560f2715a98ac02b5b8402245d2d69",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "974171f44e0f8761eccc34f1109be1b74ab9b48020b56601b8caad6f92c46e44",
+      "reason": "Integrate Layout main into Phases while preserving both test suites and publication provenance."
+    },
+    {
+      "base_commit": "56ed435953560f2715a98ac02b5b8402245d2d69",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "9c03b691377b11d3b475d500f48c05ca8dc85b83779f8d29f6b6ea7ef24b81d9",
+      "reason": "Integrate Layout main into Phases while preserving both test suites and publication provenance."
     }
   ]
 }
