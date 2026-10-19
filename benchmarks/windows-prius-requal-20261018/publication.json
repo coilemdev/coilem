@@ -1,0 +1,297 @@
+{
+  "measured_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb",
+  "source_dirty": false,
+  "registered_raw_files_verified": [
+    {
+      "file": "jobs/spm_4p12s_simple__baseline/native/request.json",
+      "sha256": "2f90ba9c25e92a9a72bbf9de0aeeccfbfcf27571b24a7228e20504dd69f825eb"
+    },
+    {
+      "file": "jobs/spm_4p12s_simple__baseline/native/result.json",
+      "sha256": "b60648831acdb113e1c18b84101b563b31fae19b1f7f6aef4b09c97916d65e25"
+    },
+    {
+      "file": "jobs/spm_4p12s_simple__high_current/native/request.json",
+      "sha256": "b006a11d56446bc52479ca87ff56e4ca70fd0a4b9c294879cfa4e6f542856007"
+    },
+    {
+      "file": "jobs/spm_4p12s_simple__high_current/native/result.json",
+      "sha256": "e8fe0c181abff5347127d11f39936dbb47ad87710e285cb429f072be7cf63e29"
+    },
+    {
+      "file": "jobs/spm_4p12s_simple__tight_airgap/native/request.json",
+      "sha256": "0f036063fbd7b18d9077d1c233e07c5cda22a728df1522c290e15e0d48e930e3"
+    },
+    {
+      "file": "jobs/spm_4p12s_simple__tight_airgap/native/result.json",
+      "sha256": "d8e62f5f3a668fa553f4663c0431009652fb5e046365a47c4537e67ea47035a5"
+    },
+    {
+      "file": "jobs/spm_4p12s_simple_noload__baseline/native/request.json",
+      "sha256": "3493ef3c2a596150d643c2b0f6bfe75d3ef0c524d09d2605f891ba7425599561"
+    },
+    {
+      "file": "jobs/spm_4p12s_simple_noload__baseline/native/result.json",
+      "sha256": "b41eab69716fc2f2afe7e2e9ec5a86681ecd141e73f43c115c6d38344dbc88ec"
+    },
+    {
+      "file": "jobs/spm_4p12s_simple_noload__high_current/native/request.json",
+      "sha256": "8c0d83612dab1d6c7078fed1cde406f49e01475ea9b20b512c7255b96990835e"
+    },
+    {
+      "file": "jobs/spm_4p12s_simple_noload__high_current/native/result.json",
+      "sha256": "706b1cc32253c467522650759f75d71e078a55231f659e27c4a57b60ca212be2"
+    },
+    {
+      "file": "jobs/spm_4p12s_simple_noload__tight_airgap/native/request.json",
+      "sha256": "d767f9ccb0b6769c3271a377138be83894eab78adba44aadbd49a7e11ee72025"
+    },
+    {
+      "file": "jobs/spm_4p12s_simple_noload__tight_airgap/native/result.json",
+      "sha256": "d2d1d27e5603f693d1b9af78656c7a02f4b0d0b320e05886aef14919cfc3d370"
+    },
+    {
+      "file": "jobs/spm_8p12s_concentrated__baseline/native/request.json",
+      "sha256": "296bf344fd9b3176409dd8018091a26e88d542d061923c0ef2d6edacc9f8c7d8"
+    },
+    {
+      "file": "jobs/spm_8p12s_concentrated__baseline/native/result.json",
+      "sha256": "26e348e9bc78b15c61328f97800e3c8bffadeab0d2fbc5600b716385c15bfcb1"
+    },
+    {
+      "file": "jobs/spm_8p12s_concentrated__high_current/native/request.json",
+      "sha256": "c8c11165bb800f96c4d0e5e8eeb76c316d5f399f784e84de4a75bfa5c07621dc"
+    },
+    {
+      "file": "jobs/spm_8p12s_concentrated__high_current/native/result.json",
+      "sha256": "583f1051007f5ee7e54d3528809737d626c3bb6825213fdcb04f503855661619"
+    },
+    {
+      "file": "jobs/spm_8p12s_concentrated__tight_airgap/native/request.json",
+      "sha256": "4e0b42a89afa6060d2437bf5ae98df5bdd79c869c1b0e54696d5e2ae2f264cfb"
+    },
+    {
+      "file": "jobs/spm_8p12s_concentrated__tight_airgap/native/result.json",
+      "sha256": "e0fee03abac5b472391eea22cecdd8e0d13ce092c25cf6ccc74094d9d1f79982"
+    },
+    {
+      "file": "jobs/spm_8p12s_reference_angle30__baseline/native/request.json",
+      "sha256": "143942ed22b9e20fe57af4512203b952f6e0ed95c05d0dad3cc1366246429f81"
+    },
+    {
+      "file": "jobs/spm_8p12s_reference_angle30__baseline/native/result.json",
+      "sha256": "5b8d6942ddb39ca2284812626b02efa8bae5704494585c7320931c8baf0c8f5e"
+    },
+    {
+      "file": "jobs/ipm_flat_12s10p_fscw_contract/native/request.json",
+      "sha256": "fd6231f448aa14db1d233b4ce6b00014aa1e9b37f6883a4cbb813a4f73b21668"
+    },
+    {
+      "file": "jobs/ipm_flat_12s10p_fscw_contract/native/result.json",
+      "sha256": "f27fcfda1073aa57a93c14abc80c863acc75b65b8ddf3f73515693ab0d34bf6f"
+    },
+    {
+      "file": "jobs/ipm_flat_24s16p_industrial_contract/native/request.json",
+      "sha256": "966a7a24d16683727a1e8be395e295b7a7160bb946d4b1d03bd3723cb2370d4a"
+    },
+    {
+      "file": "jobs/ipm_flat_24s16p_industrial_contract/native/result.json",
+      "sha256": "bdbe61996cdc74a1bf3b4a00e092b15a8b17a2197abbb8de7d85c814c667797f"
+    },
+    {
+      "file": "jobs/ipm_flat_4p12s_micro_contract/native/request.json",
+      "sha256": "0829fd47d74970de1fea18307d67ec5097391f49854787f233a0a1b4b3258603"
+    },
+    {
+      "file": "jobs/ipm_flat_4p12s_micro_contract/native/result.json",
+      "sha256": "b2f43993c23cabf78d1682529d199b9bdba68660741770175125bea6b193e990"
+    },
+    {
+      "file": "jobs/ipm_flat_8p12s_fsae_angled_pocket_contract/native/request.json",
+      "sha256": "ceb095c5df944ba8a05b175b6bb7420d593eb982b8f54745f3d58c228c3a1924"
+    },
+    {
+      "file": "jobs/ipm_flat_8p12s_fsae_angled_pocket_contract/native/result.json",
+      "sha256": "4f83d3a69dde360a2c0c8f7017666478d0509489b585bdf1a07f8af9244c2f38"
+    },
+    {
+      "file": "jobs/ipm_flat_8p12s_fsae_contract/native/request.json",
+      "sha256": "089790e5c7db9b638661e8ae2d51b9cebb2b52caf51774c63836ac42130a93aa"
+    },
+    {
+      "file": "jobs/ipm_flat_8p12s_fsae_contract/native/result.json",
+      "sha256": "06a920b11fac08a3ed4f03a9700f7f6652925a7823f81b9f87855507bdc44b56"
+    },
+    {
+      "file": "jobs/ipm_flat_8p12s_fsae_thin_bridge_contract/native/request.json",
+      "sha256": "fdc4cc4c7b61fea2eadfe5a8f64b6770763734f9a7eb77810c046c123f023c84"
+    },
+    {
+      "file": "jobs/ipm_flat_8p12s_fsae_thin_bridge_contract/native/result.json",
+      "sha256": "d19bf7e8bd23cf3166953005ae012597fede9903d95dc67feca82cbadecc9f91"
+    },
+    {
+      "file": "jobs/ipm_vshape_8p12s_baseline_contract/native/request.json",
+      "sha256": "81e869854b0dd949b7e97f5e63176573340c0fc8e385c1170ecefbe5e683c1b3"
+    },
+    {
+      "file": "jobs/ipm_vshape_8p12s_baseline_contract/native/result.json",
+      "sha256": "d3e39314a98229098878313808bbe50044248975682e97e0a5ec1e48f871fa59"
+    },
+    {
+      "file": "jobs/ipm_vshape_8p12s_deep_apex_high_output_v1/native/request.json",
+      "sha256": "778d0b262daf6f184f02449eae2299d5f31dfb679e2d884230bc80936d33ee84"
+    },
+    {
+      "file": "jobs/ipm_vshape_8p12s_deep_apex_high_output_v1/native/result.json",
+      "sha256": "395cd590106e6305e4822e4ad77aa6e76a7ebc33133981e87bc631b4ec0f09ee"
+    },
+    {
+      "file": "jobs/ipm_vshape_8p12s_narrow_angle_contract/native/request.json",
+      "sha256": "ab5e5c7f004f9f3a26ef5059e23a45700f26e820948118800dbcf05eb40c9f1e"
+    },
+    {
+      "file": "jobs/ipm_vshape_8p12s_narrow_angle_contract/native/result.json",
+      "sha256": "6f193d371c91f8b8c0735720c2ae5e7d55d472ffb4c08297828e419e4425de94"
+    },
+    {
+      "file": "jobs/ipm_vshape_8p12s_pocket_offset_contract/native/request.json",
+      "sha256": "27b1b6611b049e1a7bfa14a9a821db37593842adc9c2821172aef5e12c9cea62"
+    },
+    {
+      "file": "jobs/ipm_vshape_8p12s_pocket_offset_contract/native/result.json",
+      "sha256": "0309b1b49dd702674926863cad7943a749229bf6351fb15e9602294d74f7c43b"
+    },
+    {
+      "file": "jobs/ipm_vshape_8p12s_thin_bridge_contract/native/request.json",
+      "sha256": "7a66b3ccfbdf56d35dcfa0d7d133cf5cd29534ff11f40dc5ed278e1752b98c1f"
+    },
+    {
+      "file": "jobs/ipm_vshape_8p12s_thin_bridge_contract/native/result.json",
+      "sha256": "db35a3f399a1c060d41c2b5e2dcb10d5c87a2395f7d59aa7eb9ba017671967e0"
+    },
+    {
+      "file": "jobs/ipm_vshape_8p12s_wide_angle_high_output_v1/native/request.json",
+      "sha256": "44c412fb2e8cf2d553bba6da2e27166f0694053a17341bfdf81fee8cc79f6e6d"
+    },
+    {
+      "file": "jobs/ipm_vshape_8p12s_wide_angle_high_output_v1/native/result.json",
+      "sha256": "2c0c65dcc5d30e4b0d8bcf7958e9315b0c9fa4488efed0dcbe682530f98f3e1a"
+    },
+    {
+      "file": "jobs/ornl_prius_2004_ipm/native/request.json",
+      "sha256": "0273306fc96f4fc3b240d33d83475070abfe04d7ed202b3e490aab0ff3b231c7"
+    },
+    {
+      "file": "jobs/spm_12p36s_distributed_femm_validation/native/request.json",
+      "sha256": "8a841e46e971548f662308fbb9e0feceadcc24ed2d5530c395071b96228941a7"
+    },
+    {
+      "file": "jobs/spm_12p36s_distributed_femm_validation/native/result.json",
+      "sha256": "c8baefc0c9f38ad215d9b59cbfb324c76b3313b8e653be9d38ba3ab32e38ad24"
+    },
+    {
+      "file": "jobs/spm_8p24s_distributed_femm_validation/native/request.json",
+      "sha256": "5a1bb6895ec2b2648b51a386a396f5c0127028fafbf6f9cf9f5e57fc7aaf837d"
+    },
+    {
+      "file": "jobs/spm_8p24s_distributed_femm_validation/native/result.json",
+      "sha256": "2873e0ce5ce9f0ad410fff4efd11659d5f0e052477ce5d6f616945860d11d3ad"
+    },
+    {
+      "file": "jobs/spm_8p48s_chorded_5_6/native/request.json",
+      "sha256": "dd8f6634a4edb2cdf5f80abfa4d7861f6c12278699d8041dec5f42b3fa401ba2"
+    },
+    {
+      "file": "jobs/spm_8p48s_chorded_5_6/native/result.json",
+      "sha256": "dfd82b9e8d02d853d99cac94ab4c98eccd6be483189d68e892d66c163f9be0b1"
+    },
+    {
+      "file": "jobs/spm_8p48s_distributed_femm_validation/native/request.json",
+      "sha256": "eac9bff8fcb2fca1f0ba3ad74314c7ae506cc31fe36e660f964675dd8d3bae81"
+    },
+    {
+      "file": "jobs/spm_8p48s_distributed_femm_validation/native/result.json",
+      "sha256": "dd0038a68c35df08566a0fffad41f4d48af0a0ee0b99275a43abae3c92335266"
+    },
+    {
+      "file": "jobs/spm_14p12s_high_pole/native-standard/request.json",
+      "sha256": "6b8934d67cfe3d987c93d108dde02586335e505bc8c10dce6c3933177346343c"
+    },
+    {
+      "file": "jobs/spm_14p12s_high_pole/native-standard/result.json",
+      "sha256": "53e3f2cf64255047d556a83e42e0199b6665760acf70e2b251dd2974385985db"
+    },
+    {
+      "file": "jobs/spm_14p12s_high_pole/native-fine/request.json",
+      "sha256": "2350e9b4f24437517c13a14275a84ee0a92e5153486d9559544c32c8d37e5640"
+    },
+    {
+      "file": "jobs/spm_14p12s_high_pole/native-fine/result.json",
+      "sha256": "06fe4e3475063e50d2f5fa51a0ec25ebf9318f1c243e4999f2d07be5d36d4999"
+    },
+    {
+      "file": "jobs/spm_14p12s_high_pole/analytical/request.json",
+      "sha256": "6fee12304391cbc8a5681ce214f355be7bb31d3497b738f6b7c36a9c916816bd"
+    },
+    {
+      "file": "jobs/spm_14p12s_high_pole/analytical/result.json",
+      "sha256": "23be99318cf7fc775da013c580d76383ffe440d75f09eee28bd4c029ecb7af43"
+    },
+    {
+      "file": "jobs/spm_4p12s_small/native-standard/request.json",
+      "sha256": "358e5dbf038d0c3735130ebc947dcd0dd9ec76aaa43f956f2006916a0dbdb010"
+    },
+    {
+      "file": "jobs/spm_4p12s_small/native-standard/result.json",
+      "sha256": "e081fa3c33084bc5393ed772eb8e10ad1c11a007a511736accce902e63e7431f"
+    },
+    {
+      "file": "jobs/spm_4p12s_small/native-fine/request.json",
+      "sha256": "cefef4ee9b193055b14e1eac57597f8cb10d7dd590fbe44af7e21c7f896783ba"
+    },
+    {
+      "file": "jobs/spm_4p12s_small/native-fine/result.json",
+      "sha256": "e48dbbcb9eb7e298b04626909d0debf189798a34ed09ff396d3ea239a85aa817"
+    },
+    {
+      "file": "jobs/spm_4p12s_small/analytical/request.json",
+      "sha256": "15f22e8868c8aba3943cb809e639162d920b1dbae6ae61f6c6ac315248a2cfd0"
+    },
+    {
+      "file": "jobs/spm_4p12s_small/analytical/result.json",
+      "sha256": "c493dcb2440e7d61eb9521be85c2e365f811c2e632167650ef5b8630cc522f6f"
+    },
+    {
+      "file": "jobs/spm_8p12s_reference/native-standard/request.json",
+      "sha256": "cf6f1b030795793646b075807f8729e60312cbbc105e4df9d51170c7f82138ba"
+    },
+    {
+      "file": "jobs/spm_8p12s_reference/native-standard/result.json",
+      "sha256": "ef5e4572cd36ce2a7890e10a689e15b55f0f9f0ad3076793d0519976a94097bd"
+    },
+    {
+      "file": "jobs/spm_8p12s_reference/native-fine/request.json",
+      "sha256": "7fb3d7379ea2bd7738faf3b5916a7cc71aade228ca211b53cfe017dc781090f7"
+    },
+    {
+      "file": "jobs/spm_8p12s_reference/native-fine/result.json",
+      "sha256": "4062f7d8bcb79b605d5ed257d2c7db7c1be0adfe90a830eceae78b9f53dd4b6f"
+    },
+    {
+      "file": "jobs/spm_8p12s_reference/analytical/request.json",
+      "sha256": "45eea8ef659e3a054aca8dd713fae9908ef0a2ca222fd965ff219fca037e2337"
+    },
+    {
+      "file": "jobs/spm_8p12s_reference/analytical/result.json",
+      "sha256": "686af5741ad285f57a59616d9578dbcedc28b8cc1ffca225589b3e725c7c4042"
+    }
+  ],
+  "raw_summary_sha256": "8d28898308545f6c0b27a01f14e3d2f7bda69e8838b88250d27bafb6c448c4c9",
+  "raw_manifest_sha256": "dfdfd059ddb11b8689d15f7bb663ef331416b208536137a0a47194f628460268",
+  "started_at": "2026-10-19T01:31:02.847085+00:00",
+  "completed_at": "2026-10-19T02:13:05.810805+00:00",
+  "solve_collection_elapsed_s": 2522.96372,
+  "redactions": "Only local output and checkout paths; numerical values and gate outcomes preserved",
+  "pdf_byte_for_byte": true
+}

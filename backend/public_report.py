@@ -677,6 +677,13 @@ def _design_setting_groups(config: Mapping[str, Any]) -> list[tuple[str, list[tu
         ),
         ("Analyses", _setting_group(_mapping(config.get("solve_options")), ())),
     ]
+    if config.get("geometry_reference") == "pyleecan_prius_2004":
+        groups.insert(0, ("Published software reference", [
+            ("Case ID", _plain(config.get("reference_case"))),
+            ("Geometry reference", "pyleecan_prius_2004"),
+            ("Current angle convention", "Pyleecan d-axis Phi0"),
+            ("Magnet temperature", f"{_plain(solve_params.get('magnet_temperature_C'))} C"),
+        ]))
     return [(title, entries) for title, entries in groups if entries]
 
 
@@ -1346,7 +1353,9 @@ def build_public_run_pdf(
                         (f"{_plain(solve_params.get('current_amplitude_A'))} A {_plain(solve_params.get('current_amplitude_convention'))}").strip(),
                     ),
                     (
-                        "Commutation advance" if six_step else "Current angle",
+                        "Commutation advance" if six_step else (
+                            "Pyleecan d-axis Phi0" if _mapping(request.get("resolved_config")).get("geometry_reference") else "Current angle"
+                        ),
                         f"{_plain(solve_params.get('commutation_advance_deg') if six_step else solve_params.get('current_angle_deg'))} deg",
                     ),
                     ("Excitation", "Ideal six-step (120 deg)" if six_step else "Sinusoidal"),

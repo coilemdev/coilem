@@ -72,6 +72,8 @@ export interface PublicMotorComponentSelection {
 
 export interface MotorConfig {
   schema_version: '1.0';
+  geometry_reference?: 'pyleecan_prius_2004';
+  reference_case?: 'prius-2004-tutorial-bemf-v1' | 'prius-2004-loaded-torque-v1';
   topology: Topology;
   stator: {
     OD_mm: number;
@@ -139,10 +141,13 @@ export interface MotorConfig {
     commutation_advance_deg: number;
     phase_connection: 'wye';
     rated_speed_rpm: number;
-    /** Operating temperatures and mechanical loss (#137, #138); refused by the backend until those ship. */
     magnet_temperature_C?: number | null;
+    /** Winding temperature and mechanical loss (#136, #138); refused by the backend until those ship. */
     winding_temperature_C?: number | null;
     mechanical_loss_W?: number | null;
+    max_nonlinear_iterations?: number;
+    magneto2d_workers?: number;
+    motor_input_dc_bus_V?: number;
   };
   solve_options: {
     torque_sweep: boolean;
@@ -157,6 +162,8 @@ export interface MotorConfig {
 export interface PreviewRegion {
   region_type: string;
   points: Array<[number, number]>;
+  /** Outer contour followed by holes, without artificial connecting edges. */
+  loops?: Array<Array<[number, number]>> | null;
   fill?: string | null;
   label?: string | null;
 }
@@ -503,6 +510,7 @@ export interface SolveResult {
     phase_connection?: string | null;
     excitation_convention_version?: string | null;
     loaded_cycle_complete?: boolean | null;
+    back_emf_computed?: boolean | null;
     rated_speed_rpm?: number | null;
     mesher?: string | null;
     mesh_density?: string;

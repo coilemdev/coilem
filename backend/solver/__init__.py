@@ -94,7 +94,7 @@ from backend.sweep_planning import (
     full_cycle_back_emf_angle_grid as shared_full_cycle_back_emf_angle_grid,
 )
 from backend.sweep_planning import is_uniform_full_cycle_grid, no_load_field_frame_angles
-from backend.topology_provenance import build_mesh_signature_payload
+from backend.topology_provenance import build_mesh_signature_payload, build_topology_geometry_provenance
 from backend.torque_metrics import torque_at_q_axis_nm as _torque_at_q_axis_nm
 
 # The solver interface is core-owned; private implementations share it.
@@ -441,6 +441,8 @@ def _clockwise_excitation_config(config: MotorConfig) -> MotorConfig:
     mirrored = config.model_copy(deep=True)
     if mirrored.solve_params is None:
         raise ValueError("magneto2d solve requires solve_params")
+    if config.geometry_reference == "pyleecan_prius_2004":
+        return mirrored
     if mirrored.solve_params.excitation_mode == "ideal_six_step_120":
         # Six-step source synthesis is rotor-position based; gamma is not an
         # input. Mark the public frame explicitly and leave the ignored legacy
@@ -582,7 +584,7 @@ def _rebake_gmsh_artifact_for_config(
     exactly (gmsh_solver._current_density_by_ir_region) so a cache-reused
     artifact's currents are bit-comparable to a freshly meshed one.
     """
-    return rebake_solve_mesh_artifact_currents(
+    rebaked = rebake_solve_mesh_artifact_currents(
         artifact,
         phase_density_a_per_mm2=lambda elec_deg: compute_3phase_current_density_for_rotor_elec(
             config, elec_deg
@@ -591,6 +593,10 @@ def _rebake_gmsh_artifact_for_config(
             float(rotor_angle_mech_deg) * max(1, int(config.rotor.pole_count) // 2)
         ),
     )
+    if config.geometry_reference == "pyleecan_prius_2004":
+        from backend.reference_models.prius import exact_currents
+        exact_currents(rebaked, config, float(rebaked["rotor_angle_mech_deg"]))
+    return rebaked
 
 
 # ── Per-angle Gmsh mesh cache (reuse across operating points) ────────
@@ -755,6 +761,9 @@ def _zero_current_solve_mesh_artifact(solve_mesh_artifact: dict[str, Any]) -> di
                 region["winding"] = {**winding, "current_density_a_per_m2": 0.0}
             zeroed_regions.append(region)
         artifact["physics_contract"] = {**contract, "regions": zeroed_regions}
+        provenance = contract.get("provenance")
+        if isinstance(provenance, dict) and "phase_current_A" in provenance:
+            artifact["physics_contract"]["provenance"] = {**provenance, "phase_current_A": [0.0, 0.0, 0.0]}
 
     return artifact
 
@@ -1185,6 +1194,7 @@ def _solve_with_per_angle_producer_meshes(
         # grid no longer has it, so loaded results do not move by mesh noise.
         if (
             producer.source == "gmsh"
+            and not config.geometry_reference
             and gmsh_mesh_reuse_enabled()
             and (opts.back_emf or opts.thd_analysis)
             and len(angles_elec_deg) > 1
@@ -1322,7 +1332,7 @@ def _solve_with_per_angle_producer_meshes(
         # synthesized in handle_group_mesh_ready.
         derived_jobs_by_base_key: dict[int, list[tuple[dict[str, Any], int]]] = {}
         producer_jobs = mesh_jobs
-        if producer.source == "gmsh" and gmsh_mesh_reuse_enabled() and len(mesh_jobs) > 1:
+        if producer.source == "gmsh" and not config.geometry_reference and gmsh_mesh_reuse_enabled() and len(mesh_jobs) > 1:
             congruence_groups = slot_congruence_groups(
                 mesh_jobs, config.stator.slot_count
             )
@@ -3004,6 +3014,14 @@ class Magneto2DSolver(Solver):
             iron_loss_density=iron_loss_density,
             solve_metadata=SolveMetadata(
                 solver_name="magneto2d-rust-0.3.3",
+                reference_model=(
+                    {"geometry_reference": config.geometry_reference, "case_id": config.reference_case,
+                     "geometry_asset_sha256": build_topology_geometry_provenance(config)["geometry_asset_sha256"],
+                     "magnet_temperature_C": solve_params.magnet_temperature_C,
+                     "current_angle_convention": "Pyleecan d-axis Phi0", "qualified": False}
+                    if config.geometry_reference else None
+                ),
+                back_emf_computed=back_emf_requested,
                 solver_environment=single_report.get("solver_environment"),
                 mesh_element_count=mesh_info["num_triangles"],
                 rotor_positions=len(sweep["rotor_positions_elec_deg"]),

@@ -45,6 +45,7 @@ class SolveSummary(BaseModel):
 
 class SolveMetadata(BaseModel):
     solver_environment: dict | None = Field(default=None, description="Recorded native environment policy and request-derived options")
+    reference_model: dict | None = None
     solver_name: str
     mesh_element_count: int = Field(ge=100)
     rotor_positions: int = Field(ge=2)
@@ -56,6 +57,7 @@ class SolveMetadata(BaseModel):
     phase_connection: str | None = None
     excitation_convention_version: str | None = None
     loaded_cycle_complete: bool | None = None
+    back_emf_computed: bool | None = Field(default=None, description="Whether this run computed the no-load back-EMF sweep")
     rated_speed_rpm: int | None = Field(default=None, ge=0, le=30000)
     motor_input_dc_bus_V: float | None = Field(default=None, ge=1, le=2000)
     magnet_temperature_C: float | None = Field(default=None, ge=-50, le=300)

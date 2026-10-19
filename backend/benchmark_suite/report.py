@@ -9,14 +9,17 @@ import math
 import textwrap
 from collections import Counter
 
-from backend.benchmark_suite import PHASE_LABELS
+from backend.benchmark_suite import HARNESS_VERSION, PHASE_LABELS
 from backend.benchmark_suite.contract import DATA_ROOT, read, sha, write
 
 PLANNED_COVERAGE = {
     "ornl_prius_2004_ipm": {
-        "label": "Planned coverage (not yet supported)",
-        "reason": "The Prius fixture uses HoleM50 rotor geometry; the public API currently accepts flat-buried and V-shape IPM only.",
-        "next_step": "Qualify the Prius geometry, native mesh and field solves against matched FEMM evidence before enabling public support.",
+        "label": "Deferred hardware coverage (v0.5.0)",
+        "milestone": "v0.5.0",
+        "reason": ("This legacy ORNL-derived HoleM50 fixture remains unsupported in the registered suite. "
+                   "The separate fixed Pyleecan software references have different case IDs and inputs."),
+        "next_step": ("Resolve the ORNL reconstruction and matched-reference scope separately; "
+                      "Pyleecan software reproduction does not qualify this legacy hardware fixture."),
     },
 }
 
@@ -83,6 +86,16 @@ def display_outcome(row):
     return plan["label"] if plan else row["status"]
 
 
+def presentation_status(row):
+    """Keep deferred scope neutral without changing the recorded verdict."""
+    return "DEFERRED" if coverage_plan(row) else row["status"]
+
+
+def phase_presentation(rows):
+    active = Counter(row["status"] for row in rows if not coverage_plan(row))
+    return phase_display_status(active) if active else "DEFERRED"
+
+
 def phase_outcomes(rows):
     return ", ".join(f"{n} {label}" for label, n in sorted(Counter(display_outcome(row) for row in rows).items()))
 
@@ -103,8 +116,8 @@ def display_overall(status, rows):
     rejected = [row for row in rows if row["status"] == "UNSUPPORTED"]
     if status == "PASS_WITH_UNSUPPORTED" and rejected and all(coverage_plan(row) for row in rejected):
         if len(rejected) == len(rows):
-            return "Planned coverage (not yet supported)"
-        return "PASS with planned coverage (not yet supported)"
+            return "Deferred hardware coverage (v0.5.0); recorded status UNSUPPORTED"
+        return "PASS for supported cases; deferred hardware coverage (v0.5.0)"
     return status
 
 
@@ -289,18 +302,21 @@ def build(output, manifest, rows, *, pdf=False):
     )
     summary = {
         "schema": "coilem.benchmark_summary/v1",
+        "reporter_harness_version": HARNESS_VERSION,
         "status": overall,
         "counts": dict(counts),
         "phase_labels": PHASE_LABELS,
         "phase_order": list(PHASE_LABELS),
         "phase_summary_presentation": {
-            phase: phase_display_status(Counter(row["status"] for row in rows if row["phase"] == phase))
+            phase: phase_presentation([row for row in rows if row["phase"] == phase])
             for phase in PHASE_LABELS
             if any(row["phase"] == phase for row in rows)
         },
         "run": manifest,
         "rows": rows,
         "planned_coverage": {row["id"]: {**coverage_plan(row), "numerical_status": row["status"]} for row in rows if coverage_plan(row)},
+        "presentation_scope": "Phase colors cover active cases; explicitly deferred hardware rows are grey. "
+        "All raw statuses, counts, gates and the overall numerical status include the full registered selection.",
         "unsupported_capabilities": {"thermal": "No public thermal benchmark in this A/B/C/D protocol"},
     }
     write(report / "benchmark_summary.json", summary)
@@ -308,6 +324,7 @@ def build(output, manifest, rows, *, pdf=False):
         "body{font:15px Arial;max-width:1150px;margin:35px auto;padding:0 24px;color:#182636}table{border-collapse:collapse;width:100%}"
         "td,th{padding:10px;border-bottom:1px solid #dce3ed;text-align:left}th{background:#e4eaf2}"
         ".PASS{background:#effcf3;color:#16713d}.FAIL,.ERROR{background:#fff0f0;color:#aa2020}"
+        ".DEFERRED{background:#f0f2f5;color:#526071}"
         ".YELLOW,.INCOMPLETE,.UNSUPPORTED,.NOT_COMPARED,.NOT_EVALUATED,.PASS_WITH_UNSUPPORTED{background:#fff8e6;color:#835900}"
         "svg{width:49%;min-width:360px}pre{white-space:pre-wrap;overflow-wrap:anywhere}.case{break-before:page}"
         "@media print{svg{min-width:0}a{color:inherit}}"
@@ -316,7 +333,8 @@ def build(output, manifest, rows, *, pdf=False):
     parts = [
         f'<!doctype html><html lang="en"><meta charset="utf-8"><title>{title}</title><style>{styles}</style><body><h1>{title}</h1>',
         f'<p class="{overall}">Outcome: {display_overall(overall, rows)}</p><p>Harness {manifest["identity"]["harness_version"]}; '
-        f"protocol {manifest['identity']['protocol_version']}; Coilem commit {html.escape(manifest['identity']['commit'])}.</p>",
+        f"protocol {manifest['identity']['protocol_version']}; Coilem commit {html.escape(manifest['identity']['commit'])}. "
+        f"Report presentation {HARNESS_VERSION}.</p>",
         f"<p>{html.escape(evaluation_note(manifest))}</p>" if evaluation_note(manifest) else "",
         "<p>Orange solid = Coilem. Blue dashed = saved FEMM reference, drawn last so overlaps remain visible. "
         "Residual plots show small differences. Reference data is already in public clockwise coordinates.</p>",
@@ -329,6 +347,7 @@ def build(output, manifest, rows, *, pdf=False):
         f"Outcome: **{display_overall(overall, rows)}**",
         "",
         f"Harness {manifest['identity']['harness_version']}; protocol {manifest['identity']['protocol_version']}.",
+        f"Report presentation: {HARNESS_VERSION}.",
         f"Candidate commit: `{manifest['identity']['commit']}`. Reference mode: `{manifest['reference_mode']}`.",
         f"Reference commit: `{manifest.get('reference_commit') or 'none'}`. No reference solves executed.",
         evaluation_note(manifest),
@@ -346,9 +365,13 @@ def build(output, manifest, rows, *, pdf=False):
         markdown.append(f"| {phase} – {label} | {text} |")
     parts.append("</table>")
     parts.append(
-        "<p>Phase summary colors: green when every fixture passes; yellow for mixed outcomes or incomplete coverage; "
-        "red when more than 50% of recorded fixtures fail. Individual numerical verdicts retain their own status.</p>"
+        "<p>Phase summary colors: green when all active fixtures pass; yellow for mixed outcomes or incomplete active coverage; "
+        "red when more than 50% of active fixtures fail. Deferred hardware coverage is grey and outside the active release scope. "
+        "Raw verdicts, counts and the overall numerical status still include every registered fixture. "
+        "The legacy ORNL Prius row is distinct from the completed Pyleecan Prius software benchmark.</p>"
     )
+    markdown.extend(["", summary["presentation_scope"],
+                     "The legacy ORNL Prius row is distinct from the completed Pyleecan Prius software benchmark."])
     for phase, label in PHASE_LABELS.items():
         selected = [r for r in rows if r["phase"] == phase]
         if not selected:
@@ -357,7 +380,7 @@ def build(output, manifest, rows, *, pdf=False):
         for row in selected:
             link = next(iter(row["fixture_files"].values()))
             parts.append(
-                f'<tr class="{row["status"]}"><td><a href="{html.escape(link, quote=True)}">{html.escape(row["id"])}</a></td>'
+                f'<tr class="{presentation_status(row)}"><td><a href="{html.escape(link, quote=True)}">{html.escape(row["id"])}</a></td>'
                 f"<td>{display_outcome(row)}</td></tr>"
             )
             markdown.extend(["", f"- [{row['id']}]({link}): **{display_outcome(row)}**{energy_balance_text(row)}"])
@@ -468,6 +491,7 @@ def export_pdf(report, summary):
         story.extend([Paragraph(html.escape(evaluation_note(run)), styles["BodyText"]), Spacer(1, 8)])
     for text in (
         f"Harness {run['identity']['harness_version']}; protocol {run['identity']['protocol_version']}.",
+        f"Report presentation: {HARNESS_VERSION}.",
         f"Candidate commit: {run['identity']['commit']}",
         f"Reference: {run['reference_mode']}; commit {run.get('reference_commit') or 'none'}.",
         "Orange solid: Coilem; blue dashed: saved FEMM. No reference solves executed.",
@@ -483,7 +507,8 @@ def export_pdf(report, summary):
             ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
         ]
         for i, status in enumerate(statuses, 1):
-            shade = "#effcf3" if status == "PASS" else "#fff0f0" if status in ("FAIL", "ERROR") else "#fff8e6"
+            shade = ("#effcf3" if status == "PASS" else "#f0f2f5" if status == "DEFERRED"
+                     else "#fff0f0" if status in ("FAIL", "ERROR") else "#fff8e6")
             commands.append(("BACKGROUND", (0, i), (-1, i), colors.HexColor(shade)))
         result.setStyle(TableStyle(commands))
         return result
@@ -493,18 +518,20 @@ def export_pdf(report, summary):
     for phase, label in PHASE_LABELS.items():
         selected = [r for r in summary["rows"] if r["phase"] == phase]
         if selected:
-            counts = Counter(r["status"] for r in selected)
             overview.append([f"{phase} – {label}", phase_outcomes(selected)])
-            presentation.append(phase_display_status(counts))
+            presentation.append(phase_presentation(selected))
     story.append(table(overview, presentation))
     story.append(
-        Paragraph("Phase summary: green for all PASS; yellow for mixed or missing coverage; red for more than 50% FAIL.", styles["BodyText"])
+        Paragraph("Phase summary: green for all active PASS; yellow for mixed or missing active coverage; "
+                  "red for more than 50% active FAIL. Deferred hardware rows are grey. "
+                  "Raw statuses, counts and the overall numerical status retain the complete selection. "
+                  "Legacy ORNL Prius coverage is distinct from the Pyleecan software benchmark.", styles["BodyText"])
     )
     for phase, label in PHASE_LABELS.items():
         rows = [r for r in summary["rows"] if r["phase"] == phase]
         if rows and phase != "D":
             story.append(Paragraph(f"Phase {phase} – {label} results", styles["Heading2"]))
-            story.append(table([["Fixture", "Outcome"], *[[r["id"], display_outcome(r)] for r in rows]], [r["status"] for r in rows]))
+            story.append(table([["Fixture", "Outcome"], *[[r["id"], display_outcome(r)] for r in rows]], [presentation_status(r) for r in rows]))
     phase_d_shown = False
     for row in summary["rows"]:
         first_phase_d = row["phase"] == "D" and not phase_d_shown
@@ -514,7 +541,7 @@ def export_pdf(report, summary):
                 [
                     PageBreak(),
                     Paragraph("Phase D – BLDC results", styles["Heading2"]),
-                    table([["Fixture", "Outcome"], *[[r["id"], display_outcome(r)] for r in drows]], [r["status"] for r in drows]),
+                    table([["Fixture", "Outcome"], *[[r["id"], display_outcome(r)] for r in drows]], [presentation_status(r) for r in drows]),
                 ]
             )
             phase_d_shown = True

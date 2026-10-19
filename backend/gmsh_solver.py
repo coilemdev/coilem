@@ -923,7 +923,7 @@ def _build_ir_solve_mesh_artifact(
             region.region_id: _gmsh_physical_name(region) for region in ir.regions
         },
     }
-    return {
+    artifact = {
         "mesh": {
             "nodes": nodes_mm,
             "length_units": "mm",
@@ -982,6 +982,10 @@ def _build_ir_solve_mesh_artifact(
             },
         },
     }
+    if config.geometry_reference == "pyleecan_prius_2004":
+        from backend.reference_models.prius import exact_currents
+        exact_currents(artifact, config, rotor_angle_deg)
+    return artifact
 
 
 def _current_density_by_ir_region(

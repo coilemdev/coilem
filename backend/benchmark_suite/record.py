@@ -175,7 +175,9 @@ def installed_physics_hashes():
     from backend.magneto2d_adapter import MAGNETO2D_BINARY_ENV
 
     hashes = {path: sha(ROOT / path) if (ROOT / path).is_file() else None for path in PHYSICS_PYTHON_SOURCES}
-    hashes.update({path: sha(DATA_ROOT / path) if (DATA_ROOT / path).is_file() else None for path in PHYSICS_DATA_SOURCES})
+    hashes.update({path: sha((ROOT if path.startswith("backend/") else DATA_ROOT) / path)
+                   if ((ROOT if path.startswith("backend/") else DATA_ROOT) / path).is_file() else None
+                   for path in PHYSICS_DATA_SOURCES})
     if os.environ.get(MAGNETO2D_BINARY_ENV):
         solver = {}
     elif CHECKOUT is not None:
@@ -196,8 +198,8 @@ def check_physics(record):
             unverified.append(path)
         elif actual != expected:
             differs.append(path)
-    # A solver file the build has but the record lacks is a change too.
-    differs.extend(sorted(set(solver) - set(record["physics_files"])))
+    # A physics file the build has but the record lacks is a change too.
+    differs.extend(sorted((set(hashes) | set(solver)) - set(record["physics_files"])))
     status = "DIFFERS" if differs else "UNVERIFIED" if unverified else "MATCH"
     return {"status": status, "files": len(record["physics_files"]), "differs": differs, "unverified": unverified}
 

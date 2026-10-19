@@ -52,6 +52,7 @@ FORBIDDEN_PARTS = {
 }
 FORBIDDEN_SUFFIXES = {".ans", ".fem", ".log", ".pem", ".key"}
 ALLOWED_DATA_FILES = {
+    "benchmarks/windows-prius-requal-20261018/benchmark_results.csv",
     "materials/electrical-steel/M350-50A.csv",
     "frontend/public/materials/sample-custom-steel.csv",
     "benchmarks/performance-112/native-20261016/benchmark_results.csv",
@@ -71,6 +72,8 @@ FORBIDDEN_RUST_RUNTIME_MARKERS = {
     "struct DebugConfig",
 }
 ALLOWED_BINARY_SIGNATURES = {
+    "benchmarks/windows-prius-requal-20261018/coilem_benchmark_report.pdf": b"%PDF-",
+    "docs/benchmarks/pyleecan-prius-v1/app-design-3d.png": b"\x89PNG\r\n\x1a\n",
     "benchmarks/windows-native-20261018-f390b25/coilem_benchmark_report.pdf": b"%PDF-",
     "benchmarks/performance-112/native-20261016/coilem_benchmark_report.pdf": b"%PDF-",
     "benchmarks/windows-v3-20261015-738d951/coilem_benchmark_report.pdf": b"%PDF-",
