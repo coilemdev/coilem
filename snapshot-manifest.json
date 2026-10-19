@@ -65,8 +65,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 9870,
-      "sha256": "9a618dfe632b42662277130d42e6ea8683421101bea4efb1063dc4f7ef4aab6a"
+      "bytes": 10334,
+      "sha256": "ccd3bcce3044c620ce866c77ce3907b8b78417cefb613a4da4153f63d5e7d186"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -111,7 +111,7 @@
     {
       "path": "backend/benchmark_suite/__init__.py",
       "bytes": 335,
-      "sha256": "10d7206c8eea1eb866da061e9008887576c4b7f2fdb9f2c4d715761b9196de1b"
+      "sha256": "f38c0c09ec524419289ce39470429550340e2e6969a568a2315bbd9e14e30f97"
     },
     {
       "path": "backend/benchmark_suite/abc_metrics.py",
@@ -165,8 +165,8 @@
     },
     {
       "path": "backend/benchmark_suite/report.py",
-      "bytes": 28921,
-      "sha256": "d48e827a8cc33d083ed7017ad68f70ed0a631b54371dd6a1263de3b50bd694ac"
+      "bytes": 30549,
+      "sha256": "cb7fa762862b6e48c34904d01ad007634bb21c5a8320553c529ccc69748a807a"
     },
     {
       "path": "backend/benchmark_suite/share.py",
@@ -670,8 +670,8 @@
     },
     {
       "path": "benchmarks/abcd-v1.3/README.md",
-      "bytes": 4522,
-      "sha256": "d7c18b168cb3161bf443d9eda30af63f0bef212fec78ff0aea9fffa9bed8370f"
+      "bytes": 4912,
+      "sha256": "5b46cb6468e96fc9f1f5d942b13e08ca28e7728ba80e9beac424bb960b40ab3f"
     },
     {
       "path": "benchmarks/abcd-v1.3/benchmark_spec.json",
@@ -2584,6 +2584,11 @@
       "sha256": "9e8f5e2e25f80dddbe3a5d02c882ff9a46980cc298e39c0f0fa1484c741d6b11"
     },
     {
+      "path": "benchmarks/models-v1/README.md",
+      "bytes": 4550,
+      "sha256": "cff231675abb30fa0e01e0aa351020f19b69ae3033f5b00952a2ce148f3da33d"
+    },
+    {
       "path": "benchmarks/performance-112/README.md",
       "bytes": 5123,
       "sha256": "345e850750b99a76fc0d9080ecaa79494b0544d07d4fd4f1d7348419bd18f898"
@@ -3575,8 +3580,8 @@
     },
     {
       "path": "benchmarks/v0.4.0/README.md",
-      "bytes": 8716,
-      "sha256": "a28bbace5dfc4564b4063bd158571af76f5f492354542c9fb2c44342d7aff78b"
+      "bytes": 9185,
+      "sha256": "ee82cf89a8cc00a64f3f6b020324ee4944c7318c6d72b6ea6263affa9d500c22"
     },
     {
       "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/README.md",
@@ -5396,7 +5401,7 @@
     {
       "path": "docs/VALIDATION.md",
       "bytes": 26646,
-      "sha256": "7e7dad27d2d825ae80cb1c2f8108de74d3127d087d431728eda37d4685a5f5b5"
+      "sha256": "3c7041072737faf212d0829a09b632f68d238c085df4a541fc8b19f7b851cd56"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -7145,8 +7150,8 @@
     },
     {
       "path": "tests/test_benchmark_suite.py",
-      "bytes": 30515,
-      "sha256": "4ec6029a89b570f016d8cdbc9e04970b9bfca734a654634c4e75407829c7a0e8"
+      "bytes": 31242,
+      "sha256": "a73a1934f4d9f8bd0a2ae9ab2c048b68ff59c29a5852422c6d0d03375181bde9"
     },
     {
       "path": "tests/test_bldc_angle_contract.py",
@@ -7272,6 +7277,11 @@
       "path": "tests/test_mesh_signature_tooth_shoe.py",
       "bytes": 3637,
       "sha256": "c0d3bdfb94ebb20ab188e71804c7987776e310bd2d9990bf35eaa145f3acfac8"
+    },
+    {
+      "path": "tests/test_model_benchmarks.py",
+      "bytes": 6666,
+      "sha256": "df808fb43b598c9a4d3f79fb5af187e1a133956f03c70060c209f3b313df00fa"
     },
     {
       "path": "tests/test_native_processes.py",
@@ -7662,6 +7672,11 @@
       "path": "tools/run_benchmarks.py",
       "bytes": 178,
       "sha256": "17db966b4d45ca6f19658b19ef5185264a5bebd87099821a28374e23dea7932f"
+    },
+    {
+      "path": "tools/run_model_benchmarks.py",
+      "bytes": 12694,
+      "sha256": "a0052b4ccf4d604a61de65236b9389a77307d57a0c5df2c96f49b13bd2749dd6"
     },
     {
       "path": "tools/run_public_benchmark.py",
