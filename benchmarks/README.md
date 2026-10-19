@@ -13,11 +13,13 @@ reports, with all 10 software checks passing. It retains the complete torque
 curve, tutorial waveform, source hashes and refinement controls. This does not
 resolve the legacy ORNL hardware fixture or the final v0.4.0 candidate gate.
 
-The [2026-10-18 Windows requalification](windows-native-20261018-f390b25/README.md)
-is the active qualification evidence for the Precise mesh default at `f390b25`.
+The [Windows regression after Prius support](windows-prius-requal-20261018/README.md)
+is the active development qualification evidence at `5b6cb61`. It measures the
+shared mesh, excitation and linkage paths with the Precise default.
 All 35 supported jobs completed against the frozen FEMM v3 reference, with
 **28 PASS, 1 YELLOW and one planned unsupported Prius**. Every recorded verdict,
-gate and numerical value is identical to the Windows v3 record at `738d951`.
+gate and numerical value is identical to the preceding `f390b25` report and
+the Windows v3 record at `738d951`. The [earlier Precise requalification](windows-native-20261018-f390b25/README.md) remains retained.
 The new [Windows record](records/windows-x86_64.json) carries the measured
 physics hashes; Fast mesh remains experimental. The historical macOS record
 has not been remeasured for this source change.

@@ -34,7 +34,27 @@ magnet/oil temperature information and model assumptions. The legacy ORNL
 matrix row and separate #69/#82 work are unchanged. #126 still requires the
 actual final v0.4.0 candidate rerun; these are development measurements.
 
-## Complete A/B/C/D evidence
+## Fresh A/B/C/D regression after the Prius changes
+
+The [new complete native collection](../windows-prius-requal-20261018/README.md) measures clean
+`5b6cb61` after the exact Prius model changed shared meshing, excitation and
+flux extraction. All **35 supported jobs** complete with **28 PASS, 1 YELLOW
+and one planned unsupported legacy ORNL Prius**. Every recorded verdict,
+gate and numerical value is **exactly identical** to the earlier `f390b25`
+Windows report. The [current Windows record](../records/windows-x86_64.json)
+now retains all **53** measured physics sources; the historical macOS record
+keeps its original 50-file guard and reports NOT_COMPARABLE.
+
+The [original 64-page PDF](../windows-prius-requal-20261018/coilem_benchmark_report.pdf),
+[HTML](../windows-prius-requal-20261018/coilem_benchmark_report.html),
+[complete JSON](../windows-prius-requal-20261018/benchmark_summary.json),
+[CSV](../windows-prius-requal-20261018/benchmark_results.csv),
+[fixtures](../windows-prius-requal-20261018/fixtures/), and
+[exact comparison](../windows-prius-requal-20261018/comparison-to-prior.json) retain the full run.
+No FEMM reference fields or numerical limits changed. This is development
+regression evidence; it does not replace the frozen final-candidate gate.
+
+## Earlier complete A/B/C/D baseline
 
 | Phase | Native outcome | Fresh FEMM repeat |
 | --- | --- | --- |
@@ -57,8 +77,9 @@ are excluded from the physical comparison.
 
 These are separately collected native and reference runs. The native report
 read the registered frozen v3 bundle; the later FEMM run verifies that its
-reference physics remains exact. No new native fields or qualification verdicts
-were generated while assembling this report.
+reference physics remains exact. That earlier compilation generated no new
+native fields; the separately identified Prius-branch run above supplies the
+subsequent fresh native regression.
 
 ## Full reports and reproducible artifacts
 
@@ -110,7 +131,7 @@ hardware work [#69](https://github.com/coilemdev/coilem/issues/69) /
 supplies its software cases, references, controls and full curve; final-candidate
 measurements and the separate hardware work remain outstanding. Their outcomes cannot be inferred from the 29 supported FEMM cases.
 
-The macOS record predates the changed mesh source and is currently
+The macOS record predates the changed mesh and reference-dispatch sources and is currently
 NOT_COMPARABLE; Linux full numerical parity and Python 3.15 full numerical
 coverage are not established by these Windows measurements. Complete the
 release plan's scope, version, frozen-candidate benchmarks, wheel checks and

@@ -12,6 +12,9 @@ records the two pinned software references, normal workspace validation,
 complete curves and independent controls. Its 17 jobs / 568 field reports pass
 10 software checks. The final v0.4.0 candidate rerun and separate ORNL hardware
 correlation remain open; these measurements do not qualify a future tag.
+The separate [Windows A/B/C/D regression](benchmarks/windows-prius-requal-20261018/README.md)
+measures the shared-code changes at `5b6cb61` and preserves every recorded
+gate, verdict and value from the previous Windows report.
 
 The release is **coilEM 0.3.1 Developer Preview**, with **Magneto2D 0.3.3**.
 Its numerical qualification is the published [A/B/C/D benchmark report

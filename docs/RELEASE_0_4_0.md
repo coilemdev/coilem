@@ -1,12 +1,14 @@
 # coilEM v0.4.0 release plan
 
-Planning snapshot: October 18, 2026. Current public main is
-`0417736249ae2926e05612ac58926cdc76cc8868`; the application package is still
+Original planning baseline: October 18, 2026, public main
+`0417736249ae2926e05612ac58926cdc76cc8868`. The development evidence below
+adds the subsequent Pyleecan implementation and its regression run. The application package is still
 0.3.1 and Magneto2D is 0.3.3. This plan prepares the next developer preview.
 It does not mark v0.4.0 as released or replace measured source identities.
 
 The [benchmark evidence report](../benchmarks/v0.4.0/README.md) combines the
-completed Windows native requalification with the fresh FEMM repeat. The
+completed Windows native requalifications, fresh FEMM repeat and Pyleecan
+software benchmark. The
 [0.4.0 milestone](https://github.com/coilemdev/coilem/milestone/2) also contains
 unfinished benchmark work, so passing the existing A/B/C/D matrix alone does
 not complete the release scope.
@@ -15,12 +17,13 @@ not complete the release scope.
 
 | Item | Recorded result | Remaining work |
 | --- | --- | --- |
-| Windows native A/B/C/D, Precise mesh | 35 supported jobs complete at `f390b25`; 28 PASS, 1 YELLOW, planned unsupported Prius; 41m54.5s | Run the final release candidate and retain its own identity |
+| Prius-branch Windows A/B/C/D regression | [35 supported jobs / 28 PASS / 1 YELLOW](../benchmarks/windows-prius-requal-20261018/README.md) at `5b6cb61`; every recorded gate, verdict and value equals the preceding Windows report | Development evidence; repeat on the frozen final candidate |
+| Earlier Windows native A/B/C/D baseline, Precise mesh | 35 supported jobs complete at `f390b25`; 28 PASS, 1 YELLOW, planned unsupported Prius; 41m54.5s | Run the final release candidate and retain its own identity |
 | Fresh FEMM 4.2 repeat | 29/29 physical payloads and flux/source audits exactly match both the October 16 repeat and frozen v3; 1h49m05s, 1.65% faster | Keep reference v3/protocol 1.3.0; new physical requests need separate matched reference evidence |
 | Pyleecan Prius development evidence | [17 jobs / 568 fields / 10 software checks pass](benchmarks/pyleecan-prius-v1/app-results.md) at `d993d76`; both fixed workspace cases and full curve/controls retained | Repeat on the frozen final candidate; #126 remains open for that gate |
 | Main CI | [Successful run at `0417736`](https://github.com/coilemdev/coilem/actions/runs/39162186237) | Require success again on the final candidate |
 | Wheel rehearsals | [Successful earlier PR rehearsal](https://github.com/coilemdev/coilem/actions/runs/39049745989) | Rehearse the exact final candidate on all four wheel targets |
-| macOS numerical evidence | Historical record at `738d951`; the current source guard reports NOT_COMPARABLE for the changed mesh source | Collect and review a current full native record before claiming current macOS numerical parity |
+| macOS numerical evidence | Historical record at `738d951`; the current source guard reports NOT_COMPARABLE for the changed mesh and reference-dispatch sources | Collect and review a current full native record before claiming current macOS numerical parity |
 | Python 3.15 numerical evidence | Different locked NumPy/Pydantic pins; CI coverage exists, a full benchmark is not recorded | Measure it for any numerical claim, or explicitly retain the coverage limitation |
 
 The existing V-shape baseline's YELLOW result and all reference scientific

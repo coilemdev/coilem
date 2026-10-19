@@ -55,8 +55,8 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 2724,
-      "sha256": "be43a2af49e72eef4fb9c1f26846d722cbb051b0be6b6dc494f3ea1d873f7302"
+      "bytes": 2951,
+      "sha256": "04fcd7626e2f250cfeeb039bdac4ce6b93fd9c2e8d5ed225ac40554f3f81d9b4"
     },
     {
       "path": "README.md",
@@ -535,8 +535,8 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 6984,
-      "sha256": "9fc70f6c3ac0fa8b4cc9a8ba4443a844a4c591062a534f7bb34f5ceb0a59a98c"
+      "bytes": 6982,
+      "sha256": "af5558cdf6b048c568cf4598c227da4b60aef1707eb9c2dd702ac55305cef410"
     },
     {
       "path": "backend/reference_models/__init__.py",
@@ -635,8 +635,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 8551,
-      "sha256": "914839fbbd8d8074d80dd86e71282267ae2680261966a570e733fe7d59be0dbd"
+      "bytes": 8754,
+      "sha256": "8bb3014777563c215bcad4455c324d47be5a405da957504947068259b68a11a2"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -2930,8 +2930,8 @@
     },
     {
       "path": "benchmarks/records/README.md",
-      "bytes": 5268,
-      "sha256": "208872c05ffe81c0e1aa0de0f38d1c90898bf62f5e2c97b1d6a00c5dcfd3b53c"
+      "bytes": 5302,
+      "sha256": "b1ba6e2bd36832347f6ee7d3e9cb9f74cc1e6a820a3b559ba65832df33f5aaac"
     },
     {
       "path": "benchmarks/records/macos-arm64.json",
@@ -2940,8 +2940,8 @@
     },
     {
       "path": "benchmarks/records/windows-x86_64.json",
-      "bytes": 23561,
-      "sha256": "9a459e31f9f97a22bc2b72cc4e3b8da332a088f99bba6b5ee0c415d2aaebbcda"
+      "bytes": 23925,
+      "sha256": "366034058e016902d412b22ab93940e3b8cade85b398e2e13f52e32a10ed41cb"
     },
     {
       "path": "benchmarks/reference-baselines/ipm-high-output-v1/ipm_flat_12s10p_fscw_contract.json",
@@ -3570,8 +3570,8 @@
     },
     {
       "path": "benchmarks/v0.4.0/README.md",
-      "bytes": 7044,
-      "sha256": "cbeec27b0691312ef718c5b01bacdae3f903f74bddf9fce8fc4451d7982cb537"
+      "bytes": 8412,
+      "sha256": "5b77880520956a4508c0120de76d99245dbff43b36fc16ba92051711e9e0bcf0"
     },
     {
       "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/README.md",
@@ -4132,6 +4132,266 @@
       "path": "benchmarks/windows-native-20261018-f390b25/self-check-windows-x86_64.json",
       "bytes": 23525,
       "sha256": "69503ef105387c033c445085f081019e321e0102ee7392f3149c093e963123fb"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/README.md",
+      "bytes": 4692,
+      "sha256": "1738e6f41c8b1d788c34fb9eb98be3c8ed9e1299b2f55221bee2e71344be6347"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/artifact_manifest.json",
+      "bytes": 6016,
+      "sha256": "40e4c9166ea8d1aa46217979f4445a8f5a05b7429909300418ba94fa48b2b77d"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/benchmark_report.md",
+      "bytes": 5981,
+      "sha256": "6409af8a76f22586ebec9ff5a6cba2223d5e802f46452de8f215030228dff494"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/benchmark_results.csv",
+      "bytes": 17010,
+      "sha256": "0789019f8e53fb2b3fdd3dd977211c423d6021e88508621707892261a32f9a34"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/benchmark_summary.json",
+      "bytes": 1830966,
+      "sha256": "330445db11b4da8942d31115cddff63ccfbcd69c08854eb12998697a01bdf197"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/coilem_benchmark_report.html",
+      "bytes": 401225,
+      "sha256": "8c29300ce961572a8d17522e068c17cc7a9d16623e02e55b2a3b02dc027cbe88"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/coilem_benchmark_report.pdf",
+      "bytes": 139678,
+      "sha256": "d99475ac6b03b7fee61126aed7278190e50b5724ecdb7beb2262b5054f8941a0"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/comparison-to-prior.json",
+      "bytes": 23021,
+      "sha256": "88b3c201eb16821eeb6c67a20973732daf4d41b070017292196f71270f101698"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/console.txt",
+      "bytes": 4557,
+      "sha256": "47232aec46bc9accc4c422c5f60a43b0e80930f92176fbd38a774e0a07e870cb"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/environment.json",
+      "bytes": 6651,
+      "sha256": "e66835718d7c13319b9dfaeb8ccd11fef15b5f3c25ae98ca9581dcd8bc449363"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1604,
+      "sha256": "15423a47ebbf8509a7935c60d5c45404b8ee186f37dd266dec9e3f2a01560e34"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1607,
+      "sha256": "e328650573ad963181a7cf2292f6fe924d866c792d79c2a32137da2f9522fae0"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1606,
+      "sha256": "68b4e61d69cbc4673eba7ec92d0609862b1cf0283fa8391bf174b8d6c55b7c59"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2503,
+      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2503,
+      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2503,
+      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2502,
+      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2502,
+      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2502,
+      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1594,
+      "sha256": "3d78ae3d4175a933e18d04b9d45c7bddaff1db6e8355c21675dbe4da2934392c"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1596,
+      "sha256": "2081d6ab448377574d76cdd8c86724d07368fd09093bab02d111bfb589d5d709"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1595,
+      "sha256": "a77a7fbd94ed2a06659067f6501b029f612f09877128361268c76c5f9e268604"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2506,
+      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2506,
+      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1640,
+      "sha256": "dd91d0757a826b34c3fde5e813bdfdc385bc048ce477a172c5bfbf292ff6703b"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1642,
+      "sha256": "4e53c05733eb4d81cc3205e743f12fb473065142827f4e38327bd035caf7545c"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1641,
+      "sha256": "1825fe88e7ddf36234aa984f0fbbd30e894bfb34a6030fc02a348c883bf18ffa"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2550,
+      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/full-waveform-comparison.json",
+      "bytes": 5487,
+      "sha256": "2d75df4109db250da95b85f3063929eeaa641134a087c9f5b9a9d8eb098fb95e"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/pdf-publication.json",
+      "bytes": 4383,
+      "sha256": "38855815dc06a4cf981729caa48c61e41e9def5bd32b04faf20f324718784c88"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/publication.json",
+      "bytes": 12687,
+      "sha256": "2d45225f77f63791022a841371b9aff8f0a4ac2d1762de3c8047e2329fa2589d"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/raw-report-hashes.json",
+      "bytes": 5082,
+      "sha256": "67cb2aa89a58b280b2ff7f92cdd1fa2f2f86a1c17f0a351dd94510d127c52e95"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/run_manifest.json",
+      "bytes": 45900,
+      "sha256": "dfdfd059ddb11b8689d15f7bb663ef331416b208536137a0a47194f628460268"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/self-check-windows-x86_64.json",
+      "bytes": 23925,
+      "sha256": "366034058e016902d412b22ab93940e3b8cade85b398e2e13f52e32a10ed41cb"
     },
     {
       "path": "benchmarks/windows-process-pools-20261012-02fa24b/README.md",
@@ -5110,8 +5370,8 @@
     },
     {
       "path": "docs/RELEASE_0_4_0.md",
-      "bytes": 10254,
-      "sha256": "8fb5f5cbb9f41dd4e47c388aa48dfcf85c38087daa66f30835835f34f06a79f9"
+      "bytes": 10709,
+      "sha256": "1cce2bd79f3d82cb087d36d6afa2f95d71efe6e85b1f85bca440edcea225e089"
     },
     {
       "path": "docs/RELEASING.md",
@@ -5130,8 +5390,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 25804,
-      "sha256": "c769a1e0809127b8860d4cf632439ed04cdd759f86d7a0aeee3028ef2d9a4d18"
+      "bytes": 25824,
+      "sha256": "cc34bb9093452030f6bd71e3a2be9d3409d43d717d0df981ec99f5838e27bafd"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -6790,8 +7050,8 @@
     },
     {
       "path": "tests/test_benchmark_command.py",
-      "bytes": 15192,
-      "sha256": "d8a5728ab4a5e64023373b6846f78ac4211aefd03fde0b12b5632db44c132da6"
+      "bytes": 15903,
+      "sha256": "8b9fb97813c49fcb870d0ac14cbced80d8419afe676473971c3eac0300b3bc91"
     },
     {
       "path": "tests/test_benchmark_runtime.py",
@@ -7026,7 +7286,7 @@
     {
       "path": "tests/test_qualification.py",
       "bytes": 13975,
-      "sha256": "073161ca754b8496799d4726c108aeb58e7067d93f4342f8252eae192af07fc8"
+      "sha256": "26bffefb9c2605fd44a1ca0169a59188bc2bbbac80c6fc6e07ea3782bdbd76e1"
     },
     {
       "path": "tests/test_reference_recovery.py",
@@ -11015,6 +11275,66 @@
       "path": "docs/benchmarks/pyleecan-prius-v1/artifact-manifest.json",
       "source_sha256": "e188f0da7b3d0d5248963e5392a2e49f94c7fc80823aee31c37c42d914752538",
       "reason": "Normalize generated SVG whitespace while preserving all plotted values."
+    },
+    {
+      "base_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb",
+      "path": "PUBLICATION_STATUS.md",
+      "source_sha256": "be43a2af49e72eef4fb9c1f26846d722cbb051b0be6b6dc494f3ea1d873f7302",
+      "reason": "Retain the completed clean Prius-branch A/B/C/D regression, preserve prior numerical outcomes, and update measured-source qualification metadata."
+    },
+    {
+      "base_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb",
+      "path": "backend/qualification.py",
+      "source_sha256": "9fc70f6c3ac0fa8b4cc9a8ba4443a844a4c591062a534f7bb34f5ceb0a59a98c",
+      "reason": "Retain the completed clean Prius-branch A/B/C/D regression, preserve prior numerical outcomes, and update measured-source qualification metadata."
+    },
+    {
+      "base_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb",
+      "path": "benchmarks/README.md",
+      "source_sha256": "914839fbbd8d8074d80dd86e71282267ae2680261966a570e733fe7d59be0dbd",
+      "reason": "Retain the completed clean Prius-branch A/B/C/D regression, preserve prior numerical outcomes, and update measured-source qualification metadata."
+    },
+    {
+      "base_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb",
+      "path": "benchmarks/records/README.md",
+      "source_sha256": "208872c05ffe81c0e1aa0de0f38d1c90898bf62f5e2c97b1d6a00c5dcfd3b53c",
+      "reason": "Retain the completed clean Prius-branch A/B/C/D regression, preserve prior numerical outcomes, and update measured-source qualification metadata."
+    },
+    {
+      "base_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb",
+      "path": "benchmarks/records/windows-x86_64.json",
+      "source_sha256": "9a459e31f9f97a22bc2b72cc4e3b8da332a088f99bba6b5ee0c415d2aaebbcda",
+      "reason": "Retain the completed clean Prius-branch A/B/C/D regression, preserve prior numerical outcomes, and update measured-source qualification metadata."
+    },
+    {
+      "base_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb",
+      "path": "benchmarks/v0.4.0/README.md",
+      "source_sha256": "cbeec27b0691312ef718c5b01bacdae3f903f74bddf9fce8fc4451d7982cb537",
+      "reason": "Retain the completed clean Prius-branch A/B/C/D regression, preserve prior numerical outcomes, and update measured-source qualification metadata."
+    },
+    {
+      "base_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb",
+      "path": "docs/RELEASE_0_4_0.md",
+      "source_sha256": "8fb5f5cbb9f41dd4e47c388aa48dfcf85c38087daa66f30835835f34f06a79f9",
+      "reason": "Retain the completed clean Prius-branch A/B/C/D regression, preserve prior numerical outcomes, and update measured-source qualification metadata."
+    },
+    {
+      "base_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "c769a1e0809127b8860d4cf632439ed04cdd759f86d7a0aeee3028ef2d9a4d18",
+      "reason": "Retain the completed clean Prius-branch A/B/C/D regression, preserve prior numerical outcomes, and update measured-source qualification metadata."
+    },
+    {
+      "base_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb",
+      "path": "tests/test_benchmark_command.py",
+      "source_sha256": "d8a5728ab4a5e64023373b6846f78ac4211aefd03fde0b12b5632db44c132da6",
+      "reason": "Retain the completed clean Prius-branch A/B/C/D regression, preserve prior numerical outcomes, and update measured-source qualification metadata."
+    },
+    {
+      "base_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb",
+      "path": "tests/test_qualification.py",
+      "source_sha256": "073161ca754b8496799d4726c108aeb58e7067d93f4342f8252eae192af07fc8",
+      "reason": "Retain the completed clean Prius-branch A/B/C/D regression, preserve prior numerical outcomes, and update measured-source qualification metadata."
     }
   ]
 }
