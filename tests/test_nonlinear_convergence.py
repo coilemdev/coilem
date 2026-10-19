@@ -122,6 +122,26 @@ def test_nonfinite_recorded_mismatch_is_rejected():
         convergence_fields({"loaded_nonlinear_convergence": [bad]})
 
 
+def test_torque_only_run_does_not_require_a_no_load_convergence_array():
+    cfg = MotorConfig.model_validate_json(Path("tests/fixtures/spm_4p12s_simple.json").read_text())
+    cfg.solve_options = SolveOptionsConfig(back_emf=False, flux_density=False, thd_analysis=False)
+    native = {
+        "config_summary": {}, "mesh_info": {"num_triangles": 1000},
+        "operating_point": {"resolved_phase_current_peak_a": 5.0},
+        "solve_info": {"total_time_ms": 10, "nonlinear_iterations": 12, "nonlinear_convergence": record()},
+        "results": {"torque_nm": 1.0, "torque_arkkio_nm": 1.0, "peak_b_tooth_t": 1.0, "peak_b_yoke_t": 1.0},
+    }
+    report = _aggregate_per_angle_mesh_sweep(cfg, [native, native], None, [0.0, 180.0],
+                                             mesh_generation_time_ms=0, include_visual_frames=False)
+    result = Magneto2DSolver.build_result_from_reports(cfg, report, native)
+    assert result.loaded_nonlinear_convergence[0].iterations == 12
+    assert result.no_load_nonlinear_convergence is None
+    # The legacy aligned iteration placeholders are preserved, but cannot
+    # manufacture convergence evidence for an omitted no-load solve.
+    assert result.no_load_nonlinear_iterations == [0, 0]
+    assert result.solve_metadata.nonlinear_tolerance_method == "picard"
+
+
 @pytest.mark.parametrize("quality,tolerance", [("quick", 0.05), ("standard", 0.01), ("fine", 0.001), ("custom", 0.001)])
 def test_backend_preset_tolerance_matches_native_policy(quality, tolerance):
     from backend.magneto2d_adapter import estimate_magneto2d_nonlinear_tolerance

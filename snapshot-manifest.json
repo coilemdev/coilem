@@ -585,8 +585,8 @@
     },
     {
       "path": "backend/solver/_helpers.py",
-      "bytes": 61090,
-      "sha256": "85c89a4dc9dcce9b064950def1cb84160470b85d3080f25f93670f65181b167e"
+      "bytes": 61167,
+      "sha256": "501da88b80e60061d96fe46e69868a319916605a1f68e6c7f94cda3b42cc6a51"
     },
     {
       "path": "backend/solver/_mesh_pool.py",
@@ -7315,8 +7315,8 @@
     },
     {
       "path": "tests/test_nonlinear_convergence.py",
-      "bytes": 6711,
-      "sha256": "60adbfe6effe71694397a4047d63043768d3e1ea2f62efc1ebd3597c7e020d85"
+      "bytes": 8018,
+      "sha256": "d3ebf915ee488ade82fa44e761304c89002ba8405d035d442dd9f05603e71f0c"
     },
     {
       "path": "tests/test_ornl_prius_comparison.py",
@@ -12487,6 +12487,18 @@
       "path": "tests/test_nonlinear_convergence.py",
       "source_sha256": null,
       "reason": "Guard near-converged Newton stages and label recorded thresholds by method."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "backend/solver/_helpers.py",
+      "source_sha256": "d422325c9fd1efcba023fcffb45db0ebc55a0fccdf5d0540599b2ebae93b8e18",
+      "reason": "Retain absent no-load convergence for torque-only requests."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "tests/test_nonlinear_convergence.py",
+      "source_sha256": null,
+      "reason": "Retain absent no-load convergence for torque-only requests."
     }
   ]
 }
