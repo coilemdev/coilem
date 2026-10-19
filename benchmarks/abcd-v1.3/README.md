@@ -1,10 +1,16 @@
 # A/B/C/D protocol 1.3.0: winding-relative BLDC current validation
 
-Harness **1.5.0** defaults to this protocol and the complete `ipm-high-output-v3`
+Harness **1.5.1** defaults to this protocol and the complete `ipm-high-output-v3`
 FEMM bundle. The physical coordinate convention remains **public-clockwise-v2**.
 Only the BLDC golden-sector interpretation changes from protocol 1.1.0.
 Protocol 1.2.0 remains a separate experimental Prius extension; this suite keeps
 the measured 1.1.0 matrix (35 supported native jobs and one unsupported Prius).
+
+Harness 1.5.1 presents the legacy ORNL Prius row as grey deferred v0.5.0 hardware
+coverage. Active phase colours exclude that explicitly deferred row; all raw
+verdicts, counts, numerical gates and the overall status retain it. The
+[named model collection](../models-v1/README.md) adds runnable Pyleecan Prius
+and Honda Accord workflows without changing this suite or its reference bundle.
 
 PR #100 changed the tooth-coil source map and phase-A axis in both solvers at
 `738d9516e8500c5996c772bd96470472cbb9a0f9`. The old benchmark validator did not

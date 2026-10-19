@@ -1,6 +1,6 @@
 import type { PublicParameterSection } from './CoilEmWorkspace';
 import type { MotorConfig } from './model';
-import { coilsPerPhase, concentratedLayoutIsBalanced } from './toothCoils';
+import { coilsPerPhase, concentratedLayoutIsBalanced, concentratedUsesToothCoils } from './toothCoils';
 
 export interface GuidedConfigAdjustment {
   field: string;
@@ -39,6 +39,32 @@ export function parallelPathsDividing(coilsPerPhaseCount: number, current: numbe
     .filter((candidate) => coilsPerPhaseCount % candidate === 0)
     .reverse()
     .find((candidate) => candidate <= current) ?? 1;
+}
+
+/**
+ * The winding after Winding → Type changes. Concentrated layouts with q >= 1 wind
+ * one phase per slot in one layer only (backend/magneto2d_adapter rejects a second),
+ * so the two layers a distributed winding carries over drop to one. The parallel
+ * paths stay a divisor of the new coils per phase.
+ */
+export function windingForType(
+  config: MotorConfig,
+  type: MotorConfig['winding']['type'],
+): MotorConfig['winding'] {
+  const { slot_count: slotCount } = config.stator;
+  const { pole_count: poleCount } = config.rotor;
+  const layers = type === 'concentrated' && !concentratedUsesToothCoils(slotCount, poleCount)
+    ? 1
+    : config.winding.layers;
+  const typeCoilsPerPhase = coilsPerPhase(slotCount, poleCount, type, layers);
+  return {
+    ...config.winding,
+    type,
+    layers,
+    parallel_paths: typeCoilsPerPhase > 0
+      ? parallelPathsDividing(typeCoilsPerPhase, config.winding.parallel_paths)
+      : config.winding.parallel_paths,
+  };
 }
 
 /** Mirrors backend/geometry.py concentrated_winding_is_balanced. */
