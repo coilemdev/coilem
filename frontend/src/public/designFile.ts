@@ -27,7 +27,7 @@ export const DESIGN_FILE_EXTENSION = '.coilem';
 export const DESIGN_FILE_ACCEPT = `${DESIGN_FILE_EXTENSION},.openem,.json,application/json`;
 export const DESIGN_FILE_SCHEMA_VERSION = COILEM_SCHEMA_VERSION;
 /** Application version stamped into saved designs; tests/test_public_candidate.py keeps it in sync. */
-export const COILEM_APP_VERSION = '0.3.1';
+export const COILEM_APP_VERSION = '0.4.0';
 
 export interface ParsedDesignFile {
   name: string | null;

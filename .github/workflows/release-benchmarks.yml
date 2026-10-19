@@ -1,0 +1,72 @@
+name: coilEM release numerical benchmark
+
+# Dispatch at the frozen candidate ref. Field collection is intentionally
+# manual and separate from coarse CI smoke tests and package publication.
+on:
+  workflow_dispatch:
+    inputs:
+      runner:
+        description: Platform for the full native A/B/C/D collection
+        type: choice
+        options: [macos-15, windows-2022, ubuntu-24.04]
+        default: macos-15
+      python:
+        description: Locked Python runtime to measure
+        type: choice
+        options: ['3.12', '3.15']
+        default: '3.12'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-benchmark-${{ github.ref }}-${{ inputs.runner }}-${{ inputs.python }}
+  cancel-in-progress: false
+
+jobs:
+  benchmark:
+    name: Full native A/B/C/D (${{ inputs.runner }}, Python ${{ inputs.python }})
+    runs-on: ${{ inputs.runner }}
+    timeout-minutes: 180
+    defaults:
+      run:
+        shell: bash
+    env:
+      COILEM_BUILD_COMMIT: ${{ github.sha }}
+      RUST_TOOLCHAIN: '1.94.0'
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: ${{ inputs.python }}
+      - name: Install the documented Linux mesh libraries
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6 libxfixes3 libxft2 libxinerama1 libxrender1 libfontconfig1 libgomp1
+      - name: Install the locked backend environment
+        run: |
+          python -m pip install -r requirements.lock
+          python -m pip install -e ".[dev]"
+          python -m pip check
+      - name: Verify the source snapshot and publication contents
+        run: python tools/verify_snapshot.py --publication
+      - name: Build with the release Rust toolchain
+        run: |
+          rustup toolchain install "$RUST_TOOLCHAIN" --profile minimal
+          rustup default "$RUST_TOOLCHAIN"
+          cargo build --release --locked --manifest-path solvers/magneto2d/Cargo.toml
+      - name: Collect the complete registered suite against the frozen reference
+        env:
+          COILEM_USER_DATA_ROOT: ${{ runner.temp }}/coilem-release-benchmark-user-data
+        run: >-
+          python -m tools.run_benchmarks --phases A B C D --pdf
+          --out-dir "$RUNNER_TEMP/coilem-release-benchmark"
+      - name: Retain complete reports, fixtures and registered measurements
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: native-${{ inputs.runner }}-py${{ inputs.python }}-${{ github.sha }}
+          path: ${{ runner.temp }}/coilem-release-benchmark
+          if-no-files-found: warn
+          retention-days: 90

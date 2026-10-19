@@ -2,16 +2,17 @@
 
 Original planning baseline: October 18, 2026, public main
 `0417736249ae2926e05612ac58926cdc76cc8868`. The development evidence below
-adds the subsequent Pyleecan implementation and its regression run. The application package is still
-0.3.1 and Magneto2D is 0.3.3. This plan prepares the next developer preview.
+adds the subsequent Pyleecan implementation and its regression run. Preparation
+on October 19 starts from merged main `3b67492be295cf2a04645d2de17b6fbda55ef37a`.
+The source application is now 0.4.0 and Magneto2D remains 0.3.3.
 It does not mark v0.4.0 as released or replace measured source identities.
 
 The [benchmark evidence report](../benchmarks/v0.4.0/README.md) combines the
 completed Windows native requalifications, fresh FEMM repeat and Pyleecan
 software benchmark. The
-[0.4.0 milestone](https://github.com/coilemdev/coilem/milestone/2) also contains
-unfinished benchmark work, so passing the existing A/B/C/D matrix alone does
-not complete the release scope.
+[0.4.0 milestone](https://github.com/coilemdev/coilem/milestone/2) has
+only #126 still open, for the final-candidate Prius collection. Passing the
+existing development A/B/C/D matrix does not complete the final release gates.
 
 ## Current evidence
 
@@ -21,7 +22,7 @@ not complete the release scope.
 | Earlier Windows native A/B/C/D baseline, Precise mesh | 35 supported jobs complete at `f390b25`; 28 PASS, 1 YELLOW, planned unsupported Prius; 41m54.5s | Run the final release candidate and retain its own identity |
 | Fresh FEMM 4.2 repeat | 29/29 physical payloads and flux/source audits exactly match both the October 16 repeat and frozen v3; 1h49m05s, 1.65% faster | Keep reference v3/protocol 1.3.0; new physical requests need separate matched reference evidence |
 | Pyleecan Prius development evidence | [17 jobs / 568 fields / 10 software checks pass](benchmarks/pyleecan-prius-v1/app-results.md) at `d993d76`; both fixed workspace cases and full curve/controls retained | Repeat on the frozen final candidate; #126 remains open for that gate |
-| Main CI | [Successful run at `0417736`](https://github.com/coilemdev/coilem/actions/runs/39162186237) | Require success again on the final candidate |
+| UI integration CI | [All eight checks passed](https://github.com/coilemdev/coilem/actions/runs/39201577202) at `5ae948b`, merged as `3b67492` with the identical tree | Require success again on the versioned final candidate |
 | Wheel rehearsals | [Successful earlier PR rehearsal](https://github.com/coilemdev/coilem/actions/runs/39049745989) | Rehearse the exact final candidate on all four wheel targets |
 | macOS numerical evidence | Historical record at `738d951`; the current source guard reports NOT_COMPARABLE for the changed mesh and reference-dispatch sources | Collect and review a current full native record before claiming current macOS numerical parity |
 | Python 3.15 numerical evidence | Different locked NumPy/Pydantic pins; CI coverage exists, a full benchmark is not recorded | Measure it for any numerical claim, or explicitly retain the coverage limitation |
@@ -32,8 +33,9 @@ measured Precise. FEMM agreement is not a hardware-validation claim.
 
 ## 1. Resolve release scope before freezing the candidate
 
-- [ ] Complete or explicitly rescope the open milestone requirements. Do not
-  infer their completion from the legacy matrix's planned unsupported row.
+- [x] Select the 0.4.0 feature scope: merged stack, exact Prius examples, Layout
+  and Phases. Hardware #69/#82 moves to 0.5.0; #126 remains open for final
+  candidate measurement rather than additional feature work.
 - [ ] [#126: Pyleecan Prius software-model/workflow reproduction](https://github.com/coilemdev/coilem/issues/126):
   ship the pinned example with its actual geometry, winding, materials,
   temperature, current and angle conventions; verify design-file save/reopen
@@ -48,21 +50,20 @@ measured Precise. FEMM agreement is not a hardware-validation claim.
   to **v0.5.0**, following the release scope decision. They are not v0.4.0
   blockers. Preserve the existing hardware discrepancies and legacy unsupported
   row; the Pyleecan software reference does not establish hardware accuracy.
-- [ ] Review the Honda Accord evidence already on main for the final release
-  report; identify blind and fitted variants, model residuals and measured
-  source pins. Its [input/source record](hardware-validation/honda-accord-2005/README.md)
-  is distinct from the standard A/B/C/D qualification matrix.
-- [ ] Decide whether [Layout PR #133](https://github.com/coilemdev/coilem/pull/133)
-  and [Phases-preview PR #134](https://github.com/coilemdev/coilem/pull/134)
-  belong in the final candidate; review and test them before the source freeze.
-  They were open when this plan was written.
-  If selected, check their winding markers and drive currents against both
-  pinned Prius cases: their Pyleecan d-axis Phi0 convention differs from the
-  generic launch current-angle convention.
-- [ ] Keep CREATOR [#90](https://github.com/coilemdev/coilem/issues/90) as the
-  milestone's license-dependent stretch goal unless the owner changes scope.
-  Named presets [#127](https://github.com/coilemdev/coilem/issues/127) and other
-  following-release work are not prerequisites inferred by this plan.
+- [x] Review the existing Honda Accord evidence. The
+  [real-winding comparison](hardware-validation/honda-accord-2005/real-winding-comparison/README.md)
+  retains `738d951`/`50fe405`, the blind N35 assumption and simplified rotor.
+  Mean back-EMF error is +0.6%; mean peak-torque error is −3.6%, with residual
+  ranges retained in the report. There is no hardware pass/fail. A fitted
+  variant was planned but is not claimed as completed evidence.
+- [x] Include [Layout #133](https://github.com/coilemdev/coilem/pull/133) and
+  [Phases #134](https://github.com/coilemdev/coilem/pull/134), now merged on main.
+  Their combined production build, 202 focused Python tests and both exact-Prius
+  browser workflows pass. Actual slot coordinates, Pyleecan d-axis Phi0 currents,
+  zero-current behavior and shifted-frame wheel zoom have regression coverage.
+- [x] Keep license-dependent CREATOR [#90](https://github.com/coilemdev/coilem/issues/90)
+  and named presets [#127](https://github.com/coilemdev/coilem/issues/127) outside
+  the current 0.4.0 milestone. Neither is a prerequisite for this candidate.
 
 The merged stack supplies the winding/flux-linkage corrections, benchmark
 execution and reproduction tools, mesh-build controls and release hardening.
@@ -70,21 +71,22 @@ Their presence does not resolve an open issue's remaining acceptance criteria.
 
 ## 2. Prepare the version and release documentation
 
-- [ ] Bump `backend/__init__.py`, `frontend/package.json`, and both root package
-  versions in `frontend/package-lock.json` to **0.4.0** together.
-- [ ] Keep the Magneto2D version separate. Change it only for an intentional
-  solver release, with matching solver evidence and packaging metadata.
-- [ ] Rewrite `RELEASE_NOTES.md` around the final 0.4.0 behavior, measured
-  benchmarks, installation, migration and known limitations. Preserve earlier
-  release notes in Git history.
-- [ ] Update README, `PUBLICATION_STATUS.md`, `docs/VALIDATION.md`, benchmark
-  links, qualification records and the snapshot manifest consistently. Keep
-  the YELLOW case, unsupported scope and platform/runtime gaps explicit.
-- [ ] Check version/tag agreement with
-  `python -m tools.release.version --tag v0.4.0` after the bump.
+- [x] Bump `backend/__init__.py`, `frontend/package.json`, both root versions in
+  `frontend/package-lock.json`, and the design-file writer's application version
+  to **0.4.0** together. Bundled example creation versions and old reports retain
+  their original identities.
+- [x] Keep Magneto2D at **0.3.3**, with the existing locked solver sources.
+- [x] Rewrite `RELEASE_NOTES.md` around the selected behavior, measured baseline,
+  installation, saved-file migration and known limitations. Earlier release
+  notes remain in Git history.
+- [x] Align README, `PUBLICATION_STATUS.md`, `docs/VALIDATION.md`, evidence indexes
+  and the snapshot manifest. Preserve measured qualification-record identities,
+  the YELLOW/unsupported rows and platform/runtime gaps.
+- [x] Check version/tag agreement with
+  `python -m tools.release.version --tag v0.4.0`: prints `0.4.0`.
 
-This planning PR leaves the package version at 0.3.1. A number-only bump is
-not evidence that v0.4.0 has completed the release gates.
+Version preparation does not complete final qualification. The candidate SHA
+is recorded only after preparation checks and integration, before field collection.
 
 ## 3. Freeze and measure the final candidate
 
@@ -113,6 +115,25 @@ solver build:
 ```sh
 python -m tools.run_benchmarks --phases A B C D --out-dir ../benchmark-output/v0.4.0-candidate --pdf
 ```
+
+For macOS, dispatch [release-benchmarks.yml](../.github/workflows/release-benchmarks.yml)
+at the same frozen candidate ref, selecting `macos-15` and Python `3.12`.
+It runs the full A/B/C/D selection with the release Rust toolchain and locked
+runtime, and retains reports, fixtures and registered measurements for 90 days.
+Download and review those artifacts before they expire; a successful dispatch
+or build alone is not a completed numerical record. Windows/Linux and Python
+3.15 are explicit alternative selections, not implied parity claims.
+
+The separate complete Prius collection uses the same clean candidate:
+
+```sh
+python -m tools.benchmark_prius --out ../benchmark-output/v0.4.0-prius --curve --refinement
+python -m tools.report_prius_benchmark ../benchmark-output/v0.4.0-prius --out ../benchmark-output/v0.4.0-prius-report
+```
+
+Keep the freeze identity, workflow/run links, benchmark output hashes and
+acceptance decisions in the external release evidence. Do not modify the
+measured source merely to insert its own commit hash or generated reports.
 
 The current fresh FEMM repeat establishes unchanged reference results; it
 does not rerun the native fields on a future release commit. Keep the final
@@ -153,6 +174,6 @@ Ordinary CI success is not a substitute for its exact-candidate checks.
   and complete benchmark assets before making the release public.
 - [ ] Run a post-publication install check and retain the final evidence links.
 
-As of this planning snapshot, the release decision is **pending**. The useful
-next step is resolving the Prius and UI scope, then preparing and measuring
-one final candidate; the completed Windows/FEMM runs are its baseline evidence.
+The feature scope and version preparation are complete. The release decision
+remains **pending** final-candidate measurements, package acceptance and owner
+review. Preserve the existing Windows/FEMM/Prius runs as baseline evidence.

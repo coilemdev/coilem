@@ -1,47 +1,57 @@
 # Release status
 
-The next release is being planned as **v0.4.0**. Its
-[release plan](docs/RELEASE_0_4_0.md) and
-[benchmark evidence report](benchmarks/v0.4.0/README.md) record the completed
-Windows/FEMM runs and the outstanding scope, final-candidate, platform and
-packaging checks. This preparation does not change the current package version
-or mark the release as published.
+Prepared October 19, 2026: the source candidate is **coilEM 0.4.0 Developer
+Preview**, with **Magneto2D 0.3.3**. Version preparation is complete in source;
+final numerical qualification, wheel acceptance and publication remain pending.
+The [release plan](docs/RELEASE_0_4_0.md) tracks those gates. PyPI installation
+continues to select the published release until 0.4.0 is published.
 
-The [Pyleecan Prius development report](docs/benchmarks/pyleecan-prius-v1/README.md)
-records the two pinned software references, normal workspace validation,
-complete curves and independent controls. Its 17 jobs / 568 field reports pass
-10 software checks. The final v0.4.0 candidate rerun and separate ORNL hardware
-correlation remain open; these measurements do not qualify a future tag.
-The separate [Windows A/B/C/D regression](benchmarks/windows-prius-requal-20261018/README.md)
-measures the shared-code changes at `5b6cb61` and preserves every recorded
-gate, verdict and value from the previous Windows report.
+The [release notes](RELEASE_NOTES.md) describe the winding/flux corrections,
+mesh controls, exact Prius examples, Layout ring, Phases preview, field/results
+changes and migration limits. Layout #133 and Phases #134 are merged on main.
+New hardware correlation #69/#82 is deferred to v0.5.0. CREATOR #90 and named
+presets #127 are outside the current milestone.
 
-The release is **coilEM 0.3.1 Developer Preview**, with **Magneto2D 0.3.3**.
-Its numerical qualification is the published [A/B/C/D benchmark report
-v1.1](benchmarks/main-20261009-bad71d9/benchmark_report.md). It qualifies the
-tested SPM and flat-buried IPM combinations listed in [Validation](docs/VALIDATION.md#qualification-status);
-V-shape IPM and untested combinations remain experimental.
-Benchmark reports [v1.7](benchmarks/macos-rc-20261013-1fac3a1/README.md) (macOS) and [v1.8](benchmarks/windows-rc-20261013-1fac3a1/README.md) (Windows)
-measure coilEM 0.3.0, `1fac3a1`, and retain every verdict on both platforms:
-29 PASS, the planned unsupported Prius fixture and 42/42 BLDC gates. They do
-not change the qualified scope. coilEM 0.3.1 adds Python 3.15 support and
-leaves the application unchanged: on Python 3.11 to 3.14 it installs the same
-dependencies as 0.3.0, so these reports apply to it.
-It installs from PyPI with `uv tool install coilem`; see [Install](README.md#install)
-for the platforms its wheels are built and tested on. Passing CI does not
-establish engineering accuracy.
+## Evidence retained before the final freeze
 
-[Validation](docs/VALIDATION.md) records the qualified scope, evidence and
-current limits. [Release notes](RELEASE_NOTES.md) describe the available workflows.
-[Runtime settings](docs/RUNTIME_SETTINGS.md) explains the isolated native
-process environment and public configuration names.
+- [Windows A/B/C/D requalification](benchmarks/windows-prius-requal-20261018/README.md)
+  at `5b6cb61`: 35 supported jobs, 28 PASS, 1 YELLOW and a planned unsupported
+  legacy Prius row. All recorded gates and values match the preceding Windows
+  report; its record retains the 53 measured physics-source hashes.
+- [Pyleecan Prius development report](docs/benchmarks/pyleecan-prius-v1/README.md)
+  at `d993d76`: two fixed software references, 17 jobs, 568 field reports and
+  10 original software checks passing. The complete curve, controls and source
+  identities remain intact. Final-candidate collection is still tracked by #126.
+- [Fresh FEMM repeat](benchmarks/femm-main-20261018-0417736/README.md)
+  at `0417736`: 29/29 exact physical payloads and extraction audits. It verifies
+  the retained reference, without measuring native fields on a future candidate.
+- [Historical Honda comparison](docs/hardware-validation/honda-accord-2005/real-winding-comparison/README.md)
+  at `738d951`/`50fe405`: exploratory, blind N35 assumption, simplified rotor,
+  no hardware pass/fail. The planned fitted variant is not claimed as evidence.
 
-The source distribution includes no hosted service or FEMM implementation.
-Elmer is disabled by default and requires a separately installed runtime and
-an explicit development opt-in. Motor thermal requests are excluded.
+The [benchmark report](benchmarks/v0.4.0/README.md) links the complete artifacts.
+Historical qualification and measured commit IDs are preserved; changing the
+application version does not relabel them as final 0.4.0 measurements.
 
-The manifest records the original source export, listed public patches, and
-current file hashes. It does not certify
-numerical correctness or inspect repository history. Private vulnerability
-reporting is enabled. Tagging a release requires pinning the public commit,
-rerunning the A/B/C/D benchmark on it, and recording the platform walkthrough.
+## Gates before tagging
+
+Freeze one clean versioned commit, then retain its A/B/C/D and full Prius runs,
+source/binary/dependency hashes, complete reports and discrepancy review.
+The current macOS record remains NOT_COMPARABLE to the changed physics sources;
+a fresh full macOS run is required before claiming current numerical parity.
+Linux/Python 3.15 smoke coverage does not establish full numerical parity.
+
+Run the release-wheel workflow with `publish=none` on the exact candidate.
+All four wheel targets, supported Python versions, bare-Linux acceptance and
+installed-package walkthroughs must pass before the release decision. Owner
+acceptance of the remaining limitations precedes the matching tag and protected
+publication workflow. No final candidate SHA or completed release is asserted here.
+
+[Validation](docs/VALIDATION.md) records the qualified scope and limits.
+[Runtime settings](docs/RUNTIME_SETTINGS.md) documents the native environment.
+Elmer is disabled by default and requires a separate runtime and development
+opt-in. No hosted service, FEMM implementation or motor thermal solver is bundled.
+
+The snapshot manifest records original source provenance, listed public patches
+and current file hashes. It is an integrity check, not numerical certification
+or a review of repository history. Private vulnerability reporting is enabled.

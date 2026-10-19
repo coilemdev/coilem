@@ -29,6 +29,11 @@
       "sha256": "c0b81a9e0e6a68b2015becaf3a29091b96196a8ef119b0d4e31f6d9eb1a1ebf0"
     },
     {
+      "path": ".github/workflows/release-benchmarks.yml",
+      "bytes": 2880,
+      "sha256": "02efc7d45d69da755f7b4e8139f54aace13eee1ed1de8523363aaf8a1c453675"
+    },
+    {
       "path": ".github/workflows/release-wheels.yml",
       "bytes": 21716,
       "sha256": "f3fcc1517c0a81bb834fe847de82a4b8ca08a80e2874bc50843f24086891ad41"
@@ -55,18 +60,18 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 2951,
-      "sha256": "04fcd7626e2f250cfeeb039bdac4ce6b93fd9c2e8d5ed225ac40554f3f81d9b4"
+      "bytes": 3535,
+      "sha256": "c7e2b129b9137d126a487752535c0a79e525b11bc22d2f7cf682e3b7bd06b915"
     },
     {
       "path": "README.md",
-      "bytes": 9811,
-      "sha256": "158ea73642af1364afebdf472239235a7a573021671cccf0e8b4e19af3d671f6"
+      "bytes": 9870,
+      "sha256": "9a618dfe632b42662277130d42e6ea8683421101bea4efb1063dc4f7ef4aab6a"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 19380,
-      "sha256": "f2503f406fc405d8171018ca901439118e473d7c8ceac6080f44a3503c966386"
+      "bytes": 8707,
+      "sha256": "fa66e2a6094aee5d9aff953ad8792b8045d1a216e51fe175d6bf755eb98a3066"
     },
     {
       "path": "SECURITY.md",
@@ -91,7 +96,7 @@
     {
       "path": "backend/__init__.py",
       "bytes": 53,
-      "sha256": "a504ea60e52a6281ed93c0120ebb218eeceea9753767e95273b8449249bb3cf2"
+      "sha256": "36d9344447c94b9e5b3b2c74a329a63cee99b751171f2022df055fead7bd12cf"
     },
     {
       "path": "backend/airgap_sampling.py",
@@ -635,8 +640,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 8754,
-      "sha256": "8bb3014777563c215bcad4455c324d47be5a405da957504947068259b68a11a2"
+      "bytes": 8768,
+      "sha256": "03d39e19a4d58fe589140e7c0696b13a97da6a7da34c3038d6782e7851c1e66f"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -3570,8 +3575,8 @@
     },
     {
       "path": "benchmarks/v0.4.0/README.md",
-      "bytes": 8496,
-      "sha256": "251a529e534ec8920b873a766436211ffb7aa8ce61e42c882620bafa4496d164"
+      "bytes": 8716,
+      "sha256": "a28bbace5dfc4564b4063bd158571af76f5f492354542c9fb2c44342d7aff78b"
     },
     {
       "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/README.md",
@@ -5370,8 +5375,8 @@
     },
     {
       "path": "docs/RELEASE_0_4_0.md",
-      "bytes": 10819,
-      "sha256": "84af0a9dafdd4ff1c0e9fe42808c2bba8d101d8f2684ad3de8039211d7e95bbb"
+      "bytes": 12194,
+      "sha256": "dca64db6e19430edb2e449bb99fdb5db2301ed10b73a3bfd7b32f29e2037d3bf"
     },
     {
       "path": "docs/RELEASING.md",
@@ -5390,8 +5395,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 25824,
-      "sha256": "cc34bb9093452030f6bd71e3a2be9d3409d43d717d0df981ec99f5838e27bafd"
+      "bytes": 26646,
+      "sha256": "7e7dad27d2d825ae80cb1c2f8108de74d3127d087d431728eda37d4685a5f5b5"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -5400,8 +5405,8 @@
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
-      "bytes": 24189,
-      "sha256": "34b3fa3dfebf8bbf0e8d2b8073b8038da4086a9f12c9839028d6de638b620ee9"
+      "bytes": 24251,
+      "sha256": "c7452c402fb6beff8847929a56b64899feb50d431049cf03714d9441103bafa5"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/app-design-3d.png",
@@ -5731,12 +5736,12 @@
     {
       "path": "frontend/package-lock.json",
       "bytes": 63981,
-      "sha256": "46e5466c723c04d949140f0a5769b9c3372fdb2c90dae0c26e3609ccdb804ed3"
+      "sha256": "4f564e9bc63e57ed71ceee6c561924b96e469526692b6c8ee7cc397412cbef01"
     },
     {
       "path": "frontend/package.json",
       "bytes": 2316,
-      "sha256": "35ef1c017c793986dc5bb0b59b4fa2517c914b51daf7e753033853586a3a3a93"
+      "sha256": "f35719e531af14b32233764b15cfd725f9e90a3a930081f5d5d9a0d67ea79091"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -6426,7 +6431,7 @@
     {
       "path": "frontend/src/public/designFile.ts",
       "bytes": 13424,
-      "sha256": "92610a9d5142ee6d67f058fb7b577703cda931241dc647be492644addbdb93e2"
+      "sha256": "efb5a1b09f87a82927ef68c6a745233b86987b9cdabd6a18d191b4fdf7d62c97"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -7305,8 +7310,8 @@
     },
     {
       "path": "tests/test_public_candidate.py",
-      "bytes": 20059,
-      "sha256": "4d284e07b09f17698671afa3f0502ff3250e9cbabb2ea0adab7610fd947485d4"
+      "bytes": 20134,
+      "sha256": "317da5057a8d4c8d1571b780424067a28e5c357aae830204af5ddd849baf9e42"
     },
     {
       "path": "tests/test_public_field_playback.py",
@@ -12017,6 +12022,84 @@
       "path": "frontend/tests/public-release.spec.ts",
       "source_sha256": "9c03b691377b11d3b475d500f48c05ca8dc85b83779f8d29f6b6ea7ef24b81d9",
       "reason": "Integrate Layout main into Phases while preserving both test suites and publication provenance."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "PUBLICATION_STATUS.md",
+      "source_sha256": "04fcd7626e2f250cfeeb039bdac4ce6b93fd9c2e8d5ed225ac40554f3f81d9b4",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "README.md",
+      "source_sha256": "158ea73642af1364afebdf472239235a7a573021671cccf0e8b4e19af3d671f6",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "f2503f406fc405d8171018ca901439118e473d7c8ceac6080f44a3503c966386",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "backend/__init__.py",
+      "source_sha256": "a504ea60e52a6281ed93c0120ebb218eeceea9753767e95273b8449249bb3cf2",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "benchmarks/README.md",
+      "source_sha256": "8bb3014777563c215bcad4455c324d47be5a405da957504947068259b68a11a2",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "benchmarks/v0.4.0/README.md",
+      "source_sha256": "251a529e534ec8920b873a766436211ffb7aa8ce61e42c882620bafa4496d164",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "docs/RELEASE_0_4_0.md",
+      "source_sha256": "84af0a9dafdd4ff1c0e9fe42808c2bba8d101d8f2684ad3de8039211d7e95bbb",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "cc34bb9093452030f6bd71e3a2be9d3409d43d717d0df981ec99f5838e27bafd",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
+      "source_sha256": "34b3fa3dfebf8bbf0e8d2b8073b8038da4086a9f12c9839028d6de638b620ee9",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "frontend/package-lock.json",
+      "source_sha256": "46e5466c723c04d949140f0a5769b9c3372fdb2c90dae0c26e3609ccdb804ed3",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "frontend/package.json",
+      "source_sha256": "35ef1c017c793986dc5bb0b59b4fa2517c914b51daf7e753033853586a3a3a93",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "92610a9d5142ee6d67f058fb7b577703cda931241dc647be492644addbdb93e2",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "tests/test_public_candidate.py",
+      "source_sha256": "4d284e07b09f17698671afa3f0502ff3250e9cbabb2ea0adab7610fd947485d4",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
     }
   ]
 }
