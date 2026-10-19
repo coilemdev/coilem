@@ -1,0 +1,31 @@
+{
+  "main_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+  "main_status_before": "",
+  "started_at": "2026-10-18T16:18:18.5703860-04:00",
+  "python": "Python 3.11.0b4",
+  "cpu": [
+    {
+      "Name": "AMD Ryzen 7 7700 8-Core Processor              ",
+      "NumberOfCores": 8,
+      "NumberOfLogicalProcessors": 16
+    }
+  ],
+  "windows": [
+    {
+      "Caption": "Microsoft Windows 11 Home",
+      "Version": "10.0.26200",
+      "BuildNumber": "26200"
+    }
+  ],
+  "ram_bytes": 68441497600,
+  "free_disk_before": 52332720128,
+  "workers": 8,
+  "worker_budget": 8,
+  "compared_run": "femm-v3-stack-20261016-120441",
+  "solver": "FEMM 4.2, pinned audited private producer; current main scheduler and registered-request/source compatibility checks",
+  "exit_code": 0,
+  "completed_at": "2026-10-18T18:07:25.6967838-04:00",
+  "elapsed_s": 6545.6595502,
+  "main_status_after": "",
+  "free_disk_after": 51800842240
+}
