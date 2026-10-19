@@ -1863,6 +1863,12 @@ assert.match(workspaceSource, /disabled: !available/);
 assert.match(workspaceSource, /Coils per Phase/);
 assert.match(workspaceSource, /set\('winding', 'layers', 'winding'\)\(Number\(value\)\)/);
 assert.match(appSource, /parallelPathsDividing\(layerCoilsPerPhase, config\.winding\.parallel_paths\)/);
+// A type change drops the second layer a q >= 1 concentrated layout cannot wind and
+// says so; a file loaded with two keeps its Layers row so the user can fix it.
+assert.match(workspaceSource, /set\('winding', 'type', 'winding'\)/);
+assert.match(appSource, /section === 'winding' && field === 'type'\s*\? \{ \.\.\.config, winding: windingForType\(config, value as MotorConfig\['winding'\]\['type'\]\) \}/);
+assert.match(appSource, /consequence = `\$\{consequence\} · layers \$\{previous\.winding\.layers\} → \$\{next\.winding\.layers\}`/);
+assert.match(workspaceSource, /const showLayerRow = !\(layerWording\.hidden && layerCount === 1\);/);
 // Design errors keep their field so the parallel-paths check reads in plain words
 // and the section holding the field shows a warning instead of a green check.
 assert.match(appSource, /const error = errorDetails \? designErrorText\(errorDetails, config\) : null;/);

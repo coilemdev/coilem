@@ -5875,8 +5875,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 155409,
-      "sha256": "fd17db867e643ab1c719554788cb3c0e7322256e0208f99f26d7bf741241d1be"
+      "bytes": 156056,
+      "sha256": "61b5b629e0d225cf07c7c409e37dbf97e8633d4fe5b2260c631d1be3b63f5e91"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5890,8 +5890,8 @@
     },
     {
       "path": "frontend/scripts/test-tooth-coil-repair.mjs",
-      "bytes": 5435,
-      "sha256": "6808ab126570cab3b8f1988a239b4f4fb32411f42e505a6573524bd0a339b3f1"
+      "bytes": 8373,
+      "sha256": "a1a965fb3ea640dd2497b46b6bd48624fb3081fb06bcc7768e746d0606373392"
     },
     {
       "path": "frontend/scripts/test-viewport-transform.mjs",
@@ -6280,8 +6280,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 71343,
-      "sha256": "1db1114e1aa53ff5c62d00c6babcbaf672b72209e1c8c211e9070963a00cf89c"
+      "bytes": 71814,
+      "sha256": "0b9e1939d5952068f86cda6c2013c8c3f01a3ec61e9cfc1edf5a9b2dd985f826"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -6545,8 +6545,8 @@
     },
     {
       "path": "frontend/src/public/guidedConfigRepair.ts",
-      "bytes": 10388,
-      "sha256": "1fbf251e9a7b3a53c05b921ddaab58d2ceaab23efdce8e79f9dabaa52fa710e7"
+      "bytes": 11388,
+      "sha256": "bfa5c9b8fbf37545a1b0f254df2066ec10b0db0c0f6027d565533db657d2a2d5"
     },
     {
       "path": "frontend/src/public/halbach/Halbach2DViewport.tsx",
@@ -12100,6 +12100,30 @@
       "path": "tests/test_public_candidate.py",
       "source_sha256": "4d284e07b09f17698671afa3f0502ff3250e9cbabb2ea0adab7610fd947485d4",
       "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "5ae948b08d0f5db588704165884d02a1b57e1c43",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "fd17db867e643ab1c719554788cb3c0e7322256e0208f99f26d7bf741241d1be",
+      "reason": "Reset Layers to 1 when Winding > Type switches to Concentrated on a q >= 1 layout such as 6p/36s, keeping parallel paths a divisor."
+    },
+    {
+      "base_commit": "816c50fcf22071d6627ce474bd9206881e09899d",
+      "path": "frontend/scripts/test-tooth-coil-repair.mjs",
+      "source_sha256": "6808ab126570cab3b8f1988a239b4f4fb32411f42e505a6573524bd0a339b3f1",
+      "reason": "Reset Layers to 1 when Winding > Type switches to Concentrated on a q >= 1 layout such as 6p/36s, keeping parallel paths a divisor."
+    },
+    {
+      "base_commit": "13721112b79390383f4bb59738713cae16607fc1",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "1db1114e1aa53ff5c62d00c6babcbaf672b72209e1c8c211e9070963a00cf89c",
+      "reason": "Reset Layers to 1 when Winding > Type switches to Concentrated on a q >= 1 layout such as 6p/36s, keeping parallel paths a divisor."
+    },
+    {
+      "base_commit": "6f5fec1597f9bb71935f99c21b152d8b603a640f",
+      "path": "frontend/src/public/guidedConfigRepair.ts",
+      "source_sha256": "1fbf251e9a7b3a53c05b921ddaab58d2ceaab23efdce8e79f9dabaa52fa710e7",
+      "reason": "Reset Layers to 1 when Winding > Type switches to Concentrated on a q >= 1 layout such as 6p/36s, keeping parallel paths a divisor."
     }
   ]
 }

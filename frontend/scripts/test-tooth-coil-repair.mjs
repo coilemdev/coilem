@@ -10,6 +10,7 @@ const {
   concentratedUsesToothCoils,
   parallelPathsDividing,
   repairGuidedSection,
+  windingForType,
 } = await importTypeScriptModule(new URL('../src/public/guidedConfigRepair.ts', import.meta.url));
 const { windingLayerOptions, windingLayerWording } = await importTypeScriptModule(new URL('../src/public/toothCoils.ts', import.meta.url));
 const { cloneDefaultConfig } = await importTypeScriptModule(new URL('../src/public/model.ts', import.meta.url));
@@ -89,5 +90,45 @@ assert.deepEqual(
   repairGuidedSection(accord, 'winding').adjustments.map(({ field, next }) => [field, next]),
   [['winding.parallel_paths', 4]],
 );
+
+// Winding → Type: a q >= 1 concentrated layout winds one phase per slot in one
+// layer, so the two layers the SPM 6p/36s example carries as a distributed
+// winding drop to one instead of failing in Magneto2D.
+const example6p36s = JSON.parse(
+  await readFile(new URL('../src/public/examples/rotating_field_6p36s.coilem', import.meta.url), 'utf8'),
+);
+const spm6p36s = cloneDefaultConfig();
+spm6p36s.stator.slot_count = example6p36s.stator.slot_count;
+spm6p36s.rotor.pole_count = example6p36s.rotor.pole_count;
+spm6p36s.winding = { ...example6p36s.winding };
+assert.deepEqual([spm6p36s.stator.slot_count, spm6p36s.rotor.pole_count], [36, 6]);
+assert.deepEqual([spm6p36s.winding.type, spm6p36s.winding.layers], ['distributed', 2]);
+assert.equal(concentratedUsesToothCoils(36, 6), false);
+const windingFields = ({ type, layers, parallel_paths: paths }) => [type, layers, paths];
+assert.deepEqual(windingFields(windingForType(spm6p36s, 'concentrated')), ['concentrated', 1, 1]);
+assert.equal(windingForType(spm6p36s, 'concentrated').turns_per_coil, example6p36s.winding.turns_per_coil);
+// The parallel paths still divide the coils per phase after the reset: 6 paths
+// divide both the 6 distributed coils and the 12 whole-slot coils per phase...
+spm6p36s.winding.parallel_paths = 6;
+assert.equal(coilsPerPhase(36, 6, 'distributed', 2), 6);
+assert.equal(coilsPerPhase(36, 6, 'concentrated', 1), 12);
+assert.deepEqual(windingFields(windingForType(spm6p36s, 'concentrated')), ['concentrated', 1, 6]);
+// ...while 12 paths on the concentrated winding drop to 6 back on distributed.
+const concentrated6p36s = { ...spm6p36s, winding: windingForType(spm6p36s, 'concentrated') };
+concentrated6p36s.winding.parallel_paths = 12;
+assert.deepEqual(windingFields(windingForType(concentrated6p36s, 'distributed')), ['distributed', 1, 6]);
+// Tooth-coil layouts keep their layers: 8p/12s winds every tooth with two.
+const tooth8p12s = cloneDefaultConfig();
+assert.deepEqual([tooth8p12s.stator.slot_count, tooth8p12s.rotor.pole_count], [12, 8]);
+tooth8p12s.winding = { ...tooth8p12s.winding, type: 'distributed', layers: 2, parallel_paths: 2 };
+assert.deepEqual(windingFields(windingForType(tooth8p12s, 'concentrated')), ['concentrated', 2, 2]);
+tooth8p12s.winding.layers = 1;
+assert.deepEqual(windingFields(windingForType(tooth8p12s, 'concentrated')), ['concentrated', 1, 2]);
+// A file loaded with two layers on a q >= 1 concentrated layout is left alone; its
+// Layers row stays visible (only one layer hides it) so the user can fix it.
+const loaded6p36s = { ...spm6p36s, winding: { ...spm6p36s.winding, type: 'concentrated', layers: 2, parallel_paths: 1 } };
+assert.deepEqual(repairGuidedSection(loaded6p36s, 'winding').adjustments, []);
+assert.equal(windingLayerWording(36, 6, 'concentrated').hidden, true);
+assert.deepEqual(availability(36, 6, 'concentrated'), [[1, true, null], [2, false, 'needs a fractional-slot layout']]);
 
 console.log(`tooth-coil guided repair: ${layouts.length} shared layouts OK`);
