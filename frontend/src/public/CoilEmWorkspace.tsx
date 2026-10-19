@@ -2797,6 +2797,9 @@ function LiveSolveMonitor({ busy, progress, liveSamples, progressPercent }: Pick
     && typeof sample.phase_c_V === 'number');
   const currentPosition = progress?.position ?? 0;
   const totalPositions = progress?.total ?? 0;
+  // Selecting Stator runs a magnets-off sweep (busy 'field'); it reports here
+  // like a solve, with no torque or back-EMF samples to chart.
+  const statorField = busy === 'field';
   const finalizing = busy === 'solve' && isPublicSolveFinalizing(progress);
   const progressStarted = progressPercent > 0;
   const sweepComplete = finalizing
@@ -2806,7 +2809,7 @@ function LiveSolveMonitor({ busy, progress, liveSamples, progressPercent }: Pick
   useEffect(() => {
     const observedAtMs = Date.now();
     setDisplayElapsedSeconds(progress?.elapsed_s ?? 0);
-    if (busy !== 'solve') return undefined;
+    if (busy !== 'solve' && busy !== 'field') return undefined;
     const intervalId = window.setInterval(() => {
       setDisplayElapsedSeconds(projectedPublicSolveElapsedSeconds(
         progress?.elapsed_s,
@@ -2818,14 +2821,14 @@ function LiveSolveMonitor({ busy, progress, liveSamples, progressPercent }: Pick
   }, [busy, progress?.elapsed_s]);
 
   return (
-    <section className={`public-live-monitor${finalizing ? ' is-finalizing' : ''}`} aria-label="Live solve status" aria-busy={busy === 'solve'}>
-      <div className="public-live-monitor-heading"><span className="public-section-kicker">Live solve</span><strong>{solveStageLabel(progress, busy)}</strong></div>
+    <section className={`public-live-monitor${finalizing ? ' is-finalizing' : ''}`} aria-label={statorField ? 'Stator field extraction status' : 'Live solve status'} aria-busy={busy === 'solve' || statorField}>
+      <div className="public-live-monitor-heading"><span className="public-section-kicker">{statorField ? 'Stator field extraction' : 'Live solve'}</span><strong>{solveStageLabel(progress, busy)}</strong></div>
       {/* Empty with a shimmer until meshing or a field solve reports progress,
           then a fill that only grows; finalizing keeps the full bar (#53). */}
       <div
         className={`progress-track${progressStarted ? '' : ' is-waiting'}${finalizing ? ' is-finishing' : ''}`}
         role="progressbar"
-        aria-label={finalizing ? 'Post-processing solved field data' : 'Solve progress'}
+        aria-label={finalizing ? 'Post-processing solved field data' : statorField ? 'Stator field extraction progress' : 'Solve progress'}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={progressStarted ? Math.round(progressPercent) : undefined}
@@ -2841,10 +2844,20 @@ function LiveSolveMonitor({ busy, progress, liveSamples, progressPercent }: Pick
           </div>
         </div>
       )}
+      {statorField && (
+        <div className="public-finalization-status">
+          <i aria-hidden="true" />
+          <div>
+            <strong>Computing the stator-only field</strong>
+            <span>Magnets off (Br = 0), solved at each rotor position for the Stator view. Your completed results stay as they are.</span>
+          </div>
+        </div>
+      )}
       <dl className="public-live-stats">
         <div><dt>Total elapsed</dt><dd>{formatNumber(displayElapsedSeconds, 1)} s</dd></div>
         <div><dt>{finalizing ? 'Sweep' : 'Positions'}</dt><dd>{sweepComplete ? 'Complete' : `${currentPosition} / ${totalPositions > 0 ? totalPositions : '—'}`}</dd></div>
       </dl>
+      {!statorField && <>
       <CompactLiveChart
         label="Torque"
         unit="N·m"
@@ -2864,6 +2877,7 @@ function LiveSolveMonitor({ busy, progress, liveSamples, progressPercent }: Pick
         emptyMessage={finalizing ? 'Building waveform from solved fields' : 'Waiting for samples'}
         emptyWorking={finalizing}
       />
+      </>}
     </section>
   );
 }
@@ -3366,6 +3380,23 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
     if (error) setAnalysisDetailsOpen(true);
   }, [error, result]);
 
+  // Selecting Stator runs a stator-only sweep that reports in this section's
+  // live card, as a solve does, while the completed result stays. Open the
+  // section for it and put it back afterwards; a failure stays open (above).
+  const analysisOpenBeforeFieldRef = useRef<boolean | null>(null);
+  useEffect(() => {
+    if (busy === 'field') {
+      if (analysisOpenBeforeFieldRef.current !== null) return;
+      analysisOpenBeforeFieldRef.current = analysisDetailsOpen;
+      setAnalysisDetailsOpen(true);
+      window.requestAnimationFrame(() => runPlanScrollRef.current?.scrollTo({ top: 0 }));
+      return;
+    }
+    if (analysisOpenBeforeFieldRef.current === null) return;
+    if (!error) setAnalysisDetailsOpen(analysisOpenBeforeFieldRef.current);
+    analysisOpenBeforeFieldRef.current = null;
+  }, [analysisDetailsOpen, busy, error]);
+
   useEffect(() => {
     if (!solveViewportExpanded) return undefined;
     const restoreOnEscape = (event: KeyboardEvent) => {
@@ -3768,11 +3799,9 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               armature={armatureField}
               armatureBusy={busy === 'field'}
               armatureError={armatureFieldError}
-              armatureProgress={busy === 'field' ? progress : null}
               magnetoCompositionAvailable={selectedSolver === 'magneto2d'}
               positionLink={fieldPositionLink}
               onRequestArmature={onRequestArmatureField}
-              onCancelArmature={onCancelArmatureField}
             />
           )
           : (
@@ -3860,7 +3889,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               {onManageRuns && <button type="button" onClick={onManageRuns}>Manage previous runs</button>}
             </div>}
             <ExcitationRunPlanPreview config={config} />
-            {(busy === 'mesh' || busy === 'solve') && <LiveSolveMonitor busy={busy} progress={progress} liveSamples={liveSamples} progressPercent={progressPercent} />}
+            {(busy === 'mesh' || busy === 'solve' || busy === 'field') && <LiveSolveMonitor busy={busy} progress={progress} liveSamples={liveSamples} progressPercent={progressPercent} />}
             <dl className="public-quality-list">
               <div><dt>Solver</dt><dd>{solverLabel}</dd></div>
               <div><dt>Accuracy plan</dt><dd>{planLabel}</dd></div>

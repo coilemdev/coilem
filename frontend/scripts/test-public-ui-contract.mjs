@@ -284,13 +284,20 @@ const runPlanIndex = workspaceSource.indexOf('className="public-run-plan"');
 assert.ok(solveFooterIndex >= 0 && runActionIndex > solveFooterIndex && runActionIndex < runPlanIndex, 'Run analysis belongs in the left solve footer');
 assert.match(workspaceSource, /export type PublicWorkflowStep = 'design' \| 'solve' \| 'report'/);
 // A running stator-only field can be canceled like a solve, from the run
-// button and from the field viewer's progress overlay.
+// button. It reports in the Run plan's live card like a solve, not in a
+// progress overlay over the field.
 assert.match(workspaceSource, /busy === 'field' \? onCancelArmatureField/);
 assert.match(workspaceSource, /'■ Cancel stator field'/);
-assert.match(workspaceSource, /onCancelArmature=\{onCancelArmatureField\}/);
-assert.match(solvedFieldSource, /aria-label="Cancel the stator-only field" onClick=\{onCancelArmature\}/);
+assert.doesNotMatch(workspaceSource, /onCancelArmature=/);
+assert.doesNotMatch(solvedFieldSource, /onCancelArmature|armatureProgress/);
+assert.match(workspaceSource, /\(busy === 'mesh' \|\| busy === 'solve' \|\| busy === 'field'\) && <LiveSolveMonitor/);
+assert.match(workspaceSource, /\{statorField \? 'Stator field extraction' : 'Live solve'\}/);
+assert.match(workspaceSource, /Magnets off \(Br = 0\), solved at each rotor position for the Stator view\./);
+assert.match(workspaceSource, /\{!statorField && <>\s*<CompactLiveChart/);
+// Completed results collapse the Analysis section; the stator-only run opens it for its card and restores it after.
+assert.match(workspaceSource, /if \(busy === 'field'\) \{\s*if \(analysisOpenBeforeFieldRef\.current !== null\) return;\s*analysisOpenBeforeFieldRef\.current = analysisDetailsOpen;\s*setAnalysisDetailsOpen\(true\);/);
+assert.match(workspaceSource, /if \(!error\) setAnalysisDetailsOpen\(analysisOpenBeforeFieldRef\.current\);/);
 assert.match(appSource, /const cancelArmatureField = async \(\) => \{[\s\S]*?armatureFieldController\.current\?\.abort\(\);[\s\S]*?await cancelPublicSolve\(\);/);
-assert.match(styleSource, /\.public-field-stream-status button \{ pointer-events: auto;/);
 assert.match(workspaceSource, /\{ id: 'report', label: 'Results', available: resultReady \}/);
 assert.match(workspaceSource, /Full results →/);
 assert.doesNotMatch(workspaceSource, /\{ id: 'report', label: 'Report'/);
@@ -1158,10 +1165,8 @@ assert.match(styleSource, /\.public-dock-strip-end \.public-viewport-nav-control
 assert.match(styleSource, /@container \(max-width: 720px\) \{[^@]*\.public-field-zoom-slot \.public-viewport-nav-controls > span \{ display: none; \}/);
 assert.match(solvedFieldSource, /className="public-field-physics-info"/);
 assert.match(solvedFieldSource, /Solving the zero-remanence rotor sweep locally/);
-assert.match(solvedFieldSource, /className="public-field-stream-status"/);
-assert.match(solvedFieldSource, /Live Magneto2D stator field/);
-assert.match(solvedFieldSource, /Previous resultant field · waiting for first stator frame/);
-assert.match(styleSource, /\.public-field-stream-status/);
+assert.doesNotMatch(solvedFieldSource, /public-field-stream-status|waiting for first stator frame/);
+assert.doesNotMatch(styleSource, /\.public-field-stream-status/);
 assert.doesNotMatch(solvedFieldSource, /className="public-field-loading-visual"/);
 assert.doesNotMatch(styleSource, /public-field-loading-spin/);
 assert.doesNotMatch(solvedFieldSource, /className="public-field-physics-note"/);
@@ -1227,6 +1232,18 @@ assert.doesNotMatch(fieldResultSource, /public-field-axes-caption/);
 assert.doesNotMatch(styleSource, /public-field-axes-caption/);
 assert.match(fieldResultSource, /strongestAirgapPolePairs\(statorPolarityProfile, axisPolePairs \* 4\)/);
 assert.match(styleSource, /\.public-field-axis\.is-stator \{ stroke: #ffb547;/);
+assert.match(styleSource, /\.public-field-axis \{ fill: none; stroke-width: \.8px;/);
+assert.match(styleSource, /\.public-field-axis-shaft \{ stroke-dasharray: 4 3; \}/);
+// Centre lines to the marked rotor arrow and the stator arrow ahead of it frame the lead angle.
+assert.match(fieldResultSource, /polar\(axisRotorRadius \* 0\.62, arcRotorDeg\)/);
+assert.match(fieldResultSource, /polar\(axisStatorRadius \* 1\.04, arcRotorDeg \+ arcSpanDeg\)/);
+assert.match(fieldResultSource, /className=\"public-field-axis-ray is-pm\" d=\{`M 0 0 L \$\{rayRotorX\} \$\{rayRotorY\}`\}/);
+assert.match(fieldResultSource, /className=\"public-field-axis-ray is-stator\" d=\{`M 0 0 L \$\{rayStatorX\} \$\{rayStatorY\}`\}/);
+// The lead label's \"?\" explains why 90° elec is not a right angle on screen.
+assert.match(fieldResultSource, /<g className=\"public-field-axis-help\">\s*<title>\{leadAngleExplanation\(leadElecDeg \?\? 0, axisPolePairs\)\}<\/title>/);
+assert.match(styleSource, /\.public-field-axis-help \{ pointer-events: auto; cursor: help; \}/);
+assert.match(fieldResultSource, /fieldAxisArrowPaths\(axisStatorRadius \* 1\.04, axisStatorRadius \* 1\.32, angle\)/);
+assert.match(fieldResultSource, /<path className=\"public-field-axis-shaft\" d=\{arrow\.shaft\} \/>/);
 assert.match(solvedFieldSource, /showPolarityLegend=\{source === 'armature' && showPoleLabels\}/);
 assert.match(solvedFieldSource, /showStatorPolarity=\{source === 'armature' && showPoleLabels\}/);
 assert.match(solvedFieldSource, /nearestAirgapProfile/);
