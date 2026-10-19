@@ -1430,6 +1430,8 @@ def _aggregate_per_angle_mesh_sweep(
         "back_emf_harmonic_analysis": (
             harmonic_analysis.model_dump(mode="json") if harmonic_analysis is not None else None
         ),
+        "loaded_nonlinear_convergence": [report.get("solve_info", {}).get("nonlinear_convergence") for report in loaded_reports],
+        "no_load_nonlinear_convergence": [report.get("solve_info", {}).get("nonlinear_convergence") for report in no_load_reports],
         "loaded_nonlinear_iterations": [int(report.get("solve_info", {}).get("nonlinear_iterations", 0) or 0) for report in loaded_reports],
         "no_load_nonlinear_iterations": no_load_iters,
         "cogging_torque_nm": cogging_torque_peak_abs,

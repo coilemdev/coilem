@@ -2810,3 +2810,36 @@ fn balanced_winding_detection() {
     assert!(!balanced_three_phase_winding(10, 8));
     assert!(!balanced_three_phase_winding(0, 8));
 }
+
+
+#[test]
+fn nonlinear_convergence_json_keeps_raw_picard_and_scaled_newton_distinct() {
+    use super::types::NonlinearConvergence;
+    let mut picard = NonlinearConvergence::linear();
+    picard.method = "picard".into();
+    picard.iterations = 17;
+    picard.max_iterations = 100;
+    picard.stage_iterations = vec![17];
+    picard.stage_iteration_cap = 100;
+    picard.raw_max_residual = Some(0.4);
+    picard.tolerance = 0.05;
+    picard.residual_definition = "unrelaxed permeability".into();
+    let json = serde_json::to_value(&picard).unwrap();
+    assert_eq!(json["raw_max_residual"], 0.4);
+    assert!(json["scaled_residual"].is_null());
+    let round_trip: NonlinearConvergence = serde_json::from_value(json).unwrap();
+    assert_eq!(round_trip, picard);
+    let mut newton = picard.clone();
+    newton.method = "newton".into();
+    newton.raw_max_residual = None;
+    newton.scaled_residual = Some(0.003);
+    newton.stage_iterations = vec![4, 5, 8];
+    newton.max_iterations = 300;
+    newton.fallback_from = None;
+    let json = serde_json::to_value(&newton).unwrap();
+    assert!(json["raw_max_residual"].is_null());
+    assert_eq!(json["scaled_residual"], 0.003);
+    assert_eq!(json["stage_iterations"], serde_json::json!([4, 5, 8]));
+    assert!(newton.reused().solution_reused);
+    assert!(!newton.solution_reused);
+}

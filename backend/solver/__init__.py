@@ -2808,7 +2808,12 @@ class Magneto2DSolver(Solver):
             except Exception:
                 pass
 
+        from backend.solver.convergence import convergence_fields
+
+        convergence_result, convergence_metadata = convergence_fields(sweep)
+        recorded_tolerance = convergence_metadata.pop("nonlinear_tolerance", estimate_magneto2d_nonlinear_tolerance(config))
         return SolveResult(
+            **convergence_result,
             summary=SolveSummary(
                 avg_torque_Nm=avg_torque_nm,
                 avg_torque_energy_fd_Nm=_torque_in_ui_direction(
@@ -2967,7 +2972,9 @@ class Magneto2DSolver(Solver):
                 # cached reports, so echoing only the request is not valid
                 # execution provenance.
                 torque_method=_solve_metadata_torque_method(torque_metric),
-                nonlinear_tolerance=estimate_magneto2d_nonlinear_tolerance(config),
+                nonlinear_tolerance=recorded_tolerance,
+                solve_quality=config.solve_params.solve_quality,
+                **convergence_metadata,
                 topology=config.topology,
                 physics_contract_version=physics_contract_version,
                 region_source=region_source,

@@ -6,6 +6,49 @@ use crate::postprocess::{EnergyByRegionSummary, FieldSummary, MagnetFieldEnergyD
 use crate::sources::SlotExcitationContribution;
 use crate::sparse::PcgProfile;
 
+/// Nonlinear convergence of the field returned for one rotor position.
+/// Reused solutions retain their source solve's counts and mismatch.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct NonlinearConvergence {
+    pub method: String,
+    pub iterations: usize,
+    pub max_iterations: usize,
+    pub stage_iterations: Vec<usize>,
+    pub stage_iteration_cap: usize,
+    pub raw_max_residual: Option<f64>,
+    pub scaled_residual: Option<f64>,
+    pub residual_definition: String,
+    pub tolerance: f64,
+    pub stopping_test: String,
+    pub solution_reused: bool,
+    pub fallback_from: Option<String>,
+}
+
+impl NonlinearConvergence {
+    pub(super) fn linear() -> Self {
+        Self {
+            method: "linear".into(),
+            iterations: 1,
+            max_iterations: 1,
+            stage_iterations: vec![1],
+            stage_iteration_cap: 1,
+            raw_max_residual: None,
+            scaled_residual: None,
+            residual_definition: "linear material; no nonlinear mismatch".into(),
+            tolerance: 0.0,
+            stopping_test: "not applicable".into(),
+            solution_reused: false,
+            fallback_from: None,
+        }
+    }
+
+    pub(super) fn reused(&self) -> Self {
+        let mut record = self.clone();
+        record.solution_reused = true;
+        record
+    }
+}
+
 /// Full solve report (single angle).
 #[derive(Debug, Serialize)]
 pub struct SolveReport {
@@ -136,6 +179,8 @@ pub struct SweepData {
     pub slot_excitation_frames: Vec<SlotExcitationFrame>,
     pub loaded_nonlinear_iterations: Vec<usize>,
     pub no_load_nonlinear_iterations: Vec<usize>,
+    pub loaded_nonlinear_convergence: Vec<Option<NonlinearConvergence>>,
+    pub no_load_nonlinear_convergence: Vec<Option<NonlinearConvergence>>,
     pub core_loss_w: f64,
     pub hysteresis_loss_w: f64,
     pub eddy_current_loss_w: f64,
@@ -207,6 +252,7 @@ pub struct SolveInfo {
     pub nonlinear_enabled: bool,
     pub nonlinear_iterations: usize,
     pub nonlinear_residual_history: Vec<f64>,
+    pub nonlinear_convergence: NonlinearConvergence,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub profile: Option<SolveProfile>,
 }

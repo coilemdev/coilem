@@ -631,6 +631,9 @@ def derive_congruent_solve_report(
         for key in ("total_time_ms", "solve_time_ms", "assembly_time_ms"):
             if key in solve_info:
                 solve_info[key] = 0
+        convergence = solve_info.get("nonlinear_convergence")
+        if isinstance(convergence, dict):
+            convergence["solution_reused"] = True
         if "nonlinear_iterations" in solve_info:
             solve_info["nonlinear_iterations"] = 0
     report["solution_reuse"] = {

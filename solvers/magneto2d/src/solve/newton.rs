@@ -11,7 +11,7 @@ use crate::sparse::{
 
 use super::nonlinear::{nonlinear_iteration_diagnostic, NonlinearLoopOutput, NonlinearSolveConfig};
 use super::picard::update_nonlinear_materials;
-use super::types::SolveProfile;
+use super::types::{NonlinearConvergence, SolveProfile};
 use super::{
     apply_model_constraints, elapsed_ms, emit_angle_iteration_progress, emit_angle_solve_context,
     solve_linear_system, AngleProgressContext, MotorLinearSolvePolicy, SolveMatrixPattern,
@@ -469,6 +469,23 @@ fn line_search_step(
     ))
 }
 
+fn convergence_record(history: &[f64], config: NonlinearSolveConfig) -> NonlinearConvergence {
+    NonlinearConvergence {
+        method: "newton".into(),
+        iterations: history.len(),
+        max_iterations: config.max_iterations,
+        stage_iterations: vec![history.len()],
+        stage_iteration_cap: config.max_iterations,
+        raw_max_residual: None,
+        scaled_residual: history.last().copied(),
+        residual_definition: "L2(f - K(A) A) / L2(f), after model constraints".into(),
+        tolerance: config.newton_convergence_threshold,
+        stopping_test: "scaled_residual <= tolerance at every continuation stage".into(),
+        solution_reused: false,
+        fallback_from: None,
+    }
+}
+
 fn run_newton_stage(
     solve_mesh: &crate::mesh::TriMesh,
     n_pole_pitches: u32,
@@ -563,6 +580,7 @@ fn run_newton_stage(
         if residual <= convergence_threshold {
             residual_history.push(residual);
             return Ok(NonlinearLoopOutput {
+                convergence: convergence_record(&residual_history, nonlinear_config),
                 materials,
                 az,
                 fields,
@@ -643,6 +661,7 @@ fn run_newton_stage(
 
         if accepted.residual <= convergence_threshold {
             return Ok(NonlinearLoopOutput {
+                convergence: convergence_record(&residual_history, nonlinear_config),
                 materials,
                 az,
                 fields,
@@ -685,6 +704,8 @@ pub(super) fn run_newton_nonlinear_loop(
     mut profile: Option<&mut SolveProfile>,
 ) -> Result<NonlinearLoopOutput, String> {
     let stage_count = current_scales.len();
+    let mut stage_iterations = Vec::new();
+    let mut convergence = None;
     let mut total_assembly_ms = 0;
     let mut total_solve_ms = 0;
     let mut residual_history = Vec::new();
@@ -716,6 +737,8 @@ pub(super) fn run_newton_nonlinear_loop(
             matrix_pattern,
             profile.as_deref_mut(),
         )?;
+        stage_iterations.push(stage_output.convergence.iterations);
+        convergence = Some(stage_output.convergence);
         total_assembly_ms += stage_output.assembly_time_ms;
         total_solve_ms += stage_output.solve_time_ms;
         residual_history.extend(stage_output.residual_history);
@@ -728,7 +751,12 @@ pub(super) fn run_newton_nonlinear_loop(
     let az = az.ok_or_else(|| "newton continuation did not produce an A_z solution".to_string())?;
     let fields =
         fields.ok_or_else(|| "newton continuation did not produce element fields".to_string())?;
+    let mut convergence = convergence.ok_or("newton continuation has no stages")?;
+    convergence.iterations = stage_iterations.iter().sum();
+    convergence.max_iterations = nonlinear_config.max_iterations * stage_count;
+    convergence.stage_iterations = stage_iterations;
     Ok(NonlinearLoopOutput {
+        convergence,
         materials,
         az,
         fields,

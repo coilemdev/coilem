@@ -280,8 +280,8 @@
     },
     {
       "path": "backend/gmsh_mesh_rotation.py",
-      "bytes": 27596,
-      "sha256": "c872864083c037c6d56acb3fe630ba0540fb61b54bb37f10ff1c90fbe4839529"
+      "bytes": 27750,
+      "sha256": "e0173b720173d30beddb761e3cc59fd690ad97ba749b321f4c61980d780d235f"
     },
     {
       "path": "backend/gmsh_solver.py",
@@ -445,8 +445,8 @@
     },
     {
       "path": "backend/models/result.py",
-      "bytes": 4435,
-      "sha256": "fe289d2b40f8ec66343e65e8599102aa1446e09a325bb7188c7b01a22aafd21b"
+      "bytes": 5832,
+      "sha256": "bc9e29052aae72548505d3824113502d44267f0f32e7c04b5b80af6e572fcb69"
     },
     {
       "path": "backend/models/waveforms.py",
@@ -580,13 +580,13 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 143339,
-      "sha256": "d906d5f06250c59c8df88ef8517959cda60c7a83e1ec72425e8ef780fd9a6e25"
+      "bytes": 143719,
+      "sha256": "102e6974cd906bd85bba412aea0e235c2221012c1a80cf4fe8399836e21b919d"
     },
     {
       "path": "backend/solver/_helpers.py",
-      "bytes": 60828,
-      "sha256": "d422325c9fd1efcba023fcffb45db0ebc55a0fccdf5d0540599b2ebae93b8e18"
+      "bytes": 61090,
+      "sha256": "85c89a4dc9dcce9b064950def1cb84160470b85d3080f25f93670f65181b167e"
     },
     {
       "path": "backend/solver/_mesh_pool.py",
@@ -597,6 +597,11 @@
       "path": "backend/solver/_process_pool.py",
       "bytes": 6202,
       "sha256": "30ce3ecfe5b819c226596ca222456b3fdff1d4b0e2b53f62628aa33875ed0a0f"
+    },
+    {
+      "path": "backend/solver/convergence.py",
+      "bytes": 2163,
+      "sha256": "bff10579d687a66bb41e1191e4df0eb595f6066c8808337ad18f2101e6c612a1"
     },
     {
       "path": "backend/solver_contract.py",
@@ -5369,6 +5374,11 @@
       "sha256": "1c9e87dcc88f7ce2250e3bb95548f925bd1eb0cbc0e7acbe1ae3f6ae8b232f4c"
     },
     {
+      "path": "docs/NONLINEAR_CONVERGENCE.md",
+      "bytes": 3988,
+      "sha256": "bed3767c9a4905358a5b08a1ad1b6800e1dd5d2a6ccfda19da19502d72a2f0aa"
+    },
+    {
       "path": "docs/NUMERICAL_EVIDENCE.md",
       "bytes": 19813,
       "sha256": "8f1d1497db1cd9699ef183c5d8c9616fa0c1c413ca8eb241b8811a69bb8743a0"
@@ -6980,8 +6990,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/mod.rs",
-      "bytes": 153218,
-      "sha256": "79cdc5358a33db0f1f6822152ba12667d40682beac1c53b43a5b228f928db9fd"
+      "bytes": 154787,
+      "sha256": "692a241a7da55c6783c25625b1a3ab16cd046d66346afdbdd2e5250998423b37"
     },
     {
       "path": "solvers/magneto2d/src/solve/model/ipm.rs",
@@ -7000,18 +7010,18 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/newton.rs",
-      "bytes": 25628,
-      "sha256": "045ab39fcf590e2fc6817698eea063325d356591d27922e65fc9df467f39ef4d"
+      "bytes": 27039,
+      "sha256": "7a3e68c833ea2d0431762a5a4f6fcd8911f7479c944c862496c806e05da6b896"
     },
     {
       "path": "solvers/magneto2d/src/solve/nonlinear.rs",
-      "bytes": 16712,
-      "sha256": "f1c1880d9e330b427f077ec5f82b327db0532bc0eb64013c29316d3a2504f320"
+      "bytes": 16776,
+      "sha256": "e10f2e2b5252330b246c1a9379968cc903c2a01280a73c980c52d2d2dc351997"
     },
     {
       "path": "solvers/magneto2d/src/solve/picard.rs",
-      "bytes": 14763,
-      "sha256": "2bcd58d6609db9f059263dfd429ea5f024e2bc94ee922cb18666229012e3d5fe"
+      "bytes": 16212,
+      "sha256": "26fea4f0173f85930075bfe4e0bae4479d9c9ab1e4566d1d15b5e2a3609a4c62"
     },
     {
       "path": "solvers/magneto2d/src/solve/problem.rs",
@@ -7020,13 +7030,13 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/tests.rs",
-      "bytes": 97782,
-      "sha256": "0b1aec76d2fa138d274544350f0483bcd6631a1544fb81834dbef621deb7feb7"
+      "bytes": 99120,
+      "sha256": "4e080254dd046ad18e221c40432aa9ef229ee7d1d65c449dd03a66c7d533cd57"
     },
     {
       "path": "solvers/magneto2d/src/solve/types.rs",
-      "bytes": 14473,
-      "sha256": "cebe1b569d8711565c2dc8ab480ff9a4c704bc4afe38a3378a7d488acb472d57"
+      "bytes": 16019,
+      "sha256": "5b513c303fd5f0eaaa2a23e719fbe855a818c118990b943d15f5f7814eac550f"
     },
     {
       "path": "solvers/magneto2d/src/sources.rs",
@@ -7292,6 +7302,11 @@
       "path": "tests/test_native_processes.py",
       "bytes": 5172,
       "sha256": "bc4f556fd203fc16e86058e6cfa0cef82d91a78fc49d0870e12085b0bd28aa50"
+    },
+    {
+      "path": "tests/test_nonlinear_convergence.py",
+      "bytes": 4611,
+      "sha256": "3d36b392fc58de85f74bf5fa2f28aa622f70f187bff210baac8fc42edc285c44"
     },
     {
       "path": "tests/test_ornl_prius_comparison.py",
@@ -12240,6 +12255,84 @@
       "path": "frontend/src/public/styles.css",
       "source_sha256": "0588b77f07ab8f13ed52a24bd0001a609b766e1f6ccae22b9aa598465b45dfdb",
       "reason": "Report the stator-only field run in the Run plan's live card like a solve, without the progress overlay on the field."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "backend/gmsh_mesh_rotation.py",
+      "source_sha256": "c872864083c037c6d56acb3fe630ba0540fb61b54bb37f10ff1c90fbe4839529",
+      "reason": "Record method-specific motor nonlinear convergence and preserve unavailable historical evidence (#12)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "backend/models/result.py",
+      "source_sha256": "fe289d2b40f8ec66343e65e8599102aa1446e09a325bb7188c7b01a22aafd21b",
+      "reason": "Record method-specific motor nonlinear convergence and preserve unavailable historical evidence (#12)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "d906d5f06250c59c8df88ef8517959cda60c7a83e1ec72425e8ef780fd9a6e25",
+      "reason": "Record method-specific motor nonlinear convergence and preserve unavailable historical evidence (#12)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "backend/solver/_helpers.py",
+      "source_sha256": "d422325c9fd1efcba023fcffb45db0ebc55a0fccdf5d0540599b2ebae93b8e18",
+      "reason": "Record method-specific motor nonlinear convergence and preserve unavailable historical evidence (#12)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "backend/solver/convergence.py",
+      "source_sha256": null,
+      "reason": "Record method-specific motor nonlinear convergence and preserve unavailable historical evidence (#12)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "docs/NONLINEAR_CONVERGENCE.md",
+      "source_sha256": null,
+      "reason": "Record method-specific motor nonlinear convergence and preserve unavailable historical evidence (#12)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "solvers/magneto2d/src/solve/mod.rs",
+      "source_sha256": "79cdc5358a33db0f1f6822152ba12667d40682beac1c53b43a5b228f928db9fd",
+      "reason": "Record method-specific motor nonlinear convergence and preserve unavailable historical evidence (#12)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "solvers/magneto2d/src/solve/newton.rs",
+      "source_sha256": "045ab39fcf590e2fc6817698eea063325d356591d27922e65fc9df467f39ef4d",
+      "reason": "Record method-specific motor nonlinear convergence and preserve unavailable historical evidence (#12)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "solvers/magneto2d/src/solve/nonlinear.rs",
+      "source_sha256": "f1c1880d9e330b427f077ec5f82b327db0532bc0eb64013c29316d3a2504f320",
+      "reason": "Record method-specific motor nonlinear convergence and preserve unavailable historical evidence (#12)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "solvers/magneto2d/src/solve/picard.rs",
+      "source_sha256": "2bcd58d6609db9f059263dfd429ea5f024e2bc94ee922cb18666229012e3d5fe",
+      "reason": "Record method-specific motor nonlinear convergence and preserve unavailable historical evidence (#12)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "solvers/magneto2d/src/solve/tests.rs",
+      "source_sha256": "0b1aec76d2fa138d274544350f0483bcd6631a1544fb81834dbef621deb7feb7",
+      "reason": "Record method-specific motor nonlinear convergence and preserve unavailable historical evidence (#12)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "solvers/magneto2d/src/solve/types.rs",
+      "source_sha256": "cebe1b569d8711565c2dc8ab480ff9a4c704bc4afe38a3378a7d488acb472d57",
+      "reason": "Record method-specific motor nonlinear convergence and preserve unavailable historical evidence (#12)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "tests/test_nonlinear_convergence.py",
+      "source_sha256": null,
+      "reason": "Record method-specific motor nonlinear convergence and preserve unavailable historical evidence (#12)."
     }
   ]
 }

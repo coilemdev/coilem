@@ -90,6 +90,7 @@ pub(super) struct NonlinearLoopOutput {
     pub(super) az: Vec<f64>,
     pub(super) fields: Vec<ElementField>,
     pub(super) residual_history: Vec<f64>,
+    pub(super) convergence: super::types::NonlinearConvergence,
     pub(super) diagnostics: Vec<NonlinearIterationDiagnostic>,
     pub(super) assembly_time_ms: u64,
     pub(super) solve_time_ms: u64,
