@@ -288,7 +288,7 @@ have not been established as explanations by this 2D benchmark.
 ## Reproduce the public app benchmark
 
 Use the documented coilEM Python environment and build the current native
-binary. Keep generated output outside the source checkout:
+binary. Start from a clean commit and keep generated output outside the source checkout:
 
 ```powershell
 cargo build --release --locked --manifest-path solvers/magneto2d/Cargo.toml
@@ -301,17 +301,48 @@ clockwise surface. It records the exact case requests, every physics-source
 hash, native binary hash, environment, actual output waveforms, and residual
 histories in the retained native reports. Raw local input/mesh/report artifacts
 are also retained as gzip with original-byte hashes. Portable results remove
-machine paths. A source change during the run makes the runner fail.
+machine paths. New collections use registration **v2**. The common A/B/C/D
+identity and output-lock contracts guard the source, commit, runtime and solver
+binary before and after each job. A changed identity prevents that job from
+being accepted as complete.
+
+Before any fields run, the collector copies the protocol, tutorial/loaded/UI
+reference results and ORNL context table into `frozen-inputs/`, retaining their
+exact hashes. Analysis uses those copies and rejects changed frozen files;
+editing the current checkout's grading files cannot change a registered run's
+verdicts. Each job retains its actual request, environment, result hashes and
+before/after identities.
 
 The report command audits a complete collection and emits JSON and Markdown;
 add `--plot` in an optional Matplotlib environment for the standalone SVG.
 The published report keeps its Markdown, JSON, SVG and protocol README together.
 
 For one job, use `--only loaded-torque-32`; curve jobs also need `--curve`, and
-refinement jobs need `--refinement`. Use a fresh output directory for each run.
+refinement jobs need `--refinement`. Use a fresh output directory for each new run.
 `--only` records the selected job's full actual request rather than pretending
 to execute the entire suite. Current and mesh/angular experiments retain the
 case's source identity alongside their modified conditions.
+
+Resume a failed or interrupted **v2** collection with its saved selection:
+
+```powershell
+python -m tools.benchmark_prius --out ../benchmark-output/prius-v1 --resume
+```
+
+Resume verifies the original source/runtime/binary identity, frozen grading
+inputs and every completed request, result and retained artifact hash before
+skipping completed work. Failed/interrupted attempts remain in separate
+directories; a new attempt gets its own directory. Resume rejects a changed
+selection or changed artifacts. A completed, verified run executes no fields.
+
+The published development collection above remains its original **v1** evidence,
+including its original collector and analyzer hashes. Its numerical sources,
+registration, measurements and checks have not been restamped by these tooling
+fixes. V1 did not retain frozen grading copies or per-job identity checks, so
+it cannot be resumed as v2. Reanalyzing a local v1 collection requires the
+explicit `--legacy-unpinned` report option; the new output is labelled
+**post-hoc reanalysis** using the grading inputs selected at analysis time.
+That output is separate from the original published report.
 
 The tutorial and matched-mesh reference controls can be reproduced separately
 with the optional Pyleecan 1.5.0 / SciDataTool 2.5.0 / FEMM 4.2 environment.

@@ -11,8 +11,16 @@ from pathlib import Path
 
 import numpy as np
 
+from tools.prius_benchmark_contract import (
+    GRADING_INPUTS,
+    SCHEMA,
+    grading_inputs,
+    job_folder,
+    verify_completed_job,
+    verify_registered_identity,
+)
+
 ROOT = Path(__file__).resolve().parents[1]
-EVIDENCE = ROOT / "docs/benchmarks/pyleecan-prius-v1"
 
 
 def read(path):
@@ -24,7 +32,7 @@ def digest(path):
 
 
 def audit_job(run, job, asset_sha):
-    folder = run / job["job"]
+    folder = job_folder(run, job)
     for filename, key in [("request.json", "request_sha256"), ("result.json", "result_sha256"),
                           ("artifact-index.json", "artifact_index_sha256")]:
         if digest(folder / filename) != job[key]:
@@ -110,20 +118,27 @@ def audit_job(run, job, asset_sha):
             "artifact_index": read(folder / "artifact-index.json")}
 
 
-def analyze(run):
+def analyze(run, *, legacy_unpinned=False):
     registration = read(run / "registration.json")
     if not registration.get("complete") or registration.get("source_dirty"):
         raise ValueError("A complete clean-source app run is required")
+    inputs, grading = grading_inputs(run, registration, legacy_root=ROOT if legacy_unpinned else None)
+    if registration["schema"] == SCHEMA:
+        verify_registered_identity(registration)
+        if registration["status"] != "COMPLETE" or registration["binary_sha256"] != registration["identity"]["binary_sha256"]:
+            raise ValueError("Incomplete or inconsistent collection identity")
+        for job in registration["jobs"]:
+            verify_completed_job(run, job, registration["identity"])
     expected_jobs = {"tutorial-bemf-100", "loaded-torque-32", "angular-64", "mesh-fine-32",
                      *[f"curve-{angle}-16" for angle in range(60, 181, 10)]}
     jobs = {job["job"]: job for job in registration["jobs"]}
-    if set(jobs) != expected_jobs:
+    if set(jobs) != expected_jobs or len(jobs) != len(registration["jobs"]):
         raise ValueError("The full report requires both presets, all thirteen angles and both refinement controls")
-    protocol = read(EVIDENCE / "protocol.json")
+    protocol = inputs["protocol"]
     limits = protocol["limits"]
     audits = {name: audit_job(run, job, registration["geometry_asset_sha256"]) for name, job in jobs.items()}
-    tutorial = read(EVIDENCE / "pyleecan-tutorial-results.json")
-    loaded_reference = read(EVIDENCE / "pyleecan-loaded-results.json")
+    tutorial = inputs["tutorial"]
+    loaded_reference = inputs["loaded"]
     native_wave = jobs["tutorial-bemf-100"]["back_emf_waveform"]
     native = np.asarray([native_wave[f"phase_{phase}_V"] for phase in "abc"]).T
     if native.shape != (100, 3):
@@ -177,10 +192,9 @@ def analyze(run):
               "all_fields_converged": max(a["max_final_residual"] for a in audits.values()) < limits["native_final_residual"],
               "all_phase_currents": max(a["max_phase_current_error_A"] for a in audits.values()) < 1e-8,
               "source_linkage_duality": max(a["max_source_linkage_duality_absolute_J"] for a in audits.values()) < 1e-9}
-    hardware_path = ROOT / "docs/hardware-validation/ornl-prius-2004/target-back-emf.json"
-    hardware_row = next(row for row in read(hardware_path)["rows"] if row["motor_shaft_rpm"] == 1000)
+    hardware_row = next(row for row in inputs["hardware"]["rows"] if row["motor_shaft_rpm"] == 1000)
     hardware_context = {
-        "target_file": hardware_path.relative_to(ROOT).as_posix(), "target_sha256": digest(hardware_path),
+        "target_file": GRADING_INPUTS["hardware"], "target_sha256": grading["input_sha256"]["hardware"],
         "ORNL_1000rpm_line_RMS_V": hardware_row["back_emf_ll_rms_V"],
         "ORNL_1000rpm_line_peak_V": hardware_row["back_emf_ll_peak_V"],
         "software_model_RMS_difference_relative": bemf["sampled_AB_rms_V"] / hardware_row["back_emf_ll_rms_V"] - 1,
@@ -188,14 +202,16 @@ def analyze(run):
         "status": "Context only; no hardware verdict. Software model uses 20 C magnets; ORNL recorded nominal 25 C oil, not magnet temperature.",
     }
     return {"schema": "coilem.pyleecan_prius_public_app_report/v1", "qualified": False,
-            "interpretation": "Software reproduction; retain all upstream discrepancies. Final v0.4.0 candidate rerun remains required.",
+            "interpretation": ("Software reproduction; retain all upstream discrepancies. Final v0.4.0 candidate rerun remains required."
+                               + (" Post-hoc reanalysis: legacy inputs were not frozen during collection."
+                                  if not grading["frozen_before_fields"] else "")),
+            "grading_provenance": grading,
             "field_source_commit": registration["source_commit"], "field_source_dirty": registration["source_dirty"],
             "source_sha256": registration["source_sha256"], "binary_sha256": registration["binary_sha256"],
             "platform": registration["platform"], "python": registration["python"], "dependencies": registration["dependencies"],
             "started_utc": registration["started_utc"], "finished_utc": registration["finished_utc"],
-            "registration_sha256": digest(run / "registration.json"), "protocol_sha256": digest(EVIDENCE / "protocol.json"),
-            "historical_evidence_sha256": {name: digest(EVIDENCE / name) for name in
-                                           ("pyleecan-tutorial-results.json", "pyleecan-loaded-results.json", "pyleecan-ui-results.json")},
+            "registration_sha256": digest(run / "registration.json"), "protocol_sha256": grading["input_sha256"]["protocol"],
+            "historical_evidence_sha256": {Path(GRADING_INPUTS[key]).name: grading["input_sha256"][key] for key in ("tutorial", "loaded", "ui")},
             "analysis_runner_sha256": digest(Path(__file__)), "analysis_numpy": np.__version__,
             "checks": checks, "all_software_checks_pass": all(checks.values()), "tutorial": bemf, "hardware_context": hardware_context,
             "loaded": {"app_mean_Nm": baseline,
@@ -209,6 +225,9 @@ def analyze(run):
 def markdown(data):
     t, loaded = data["tutorial"], data["loaded"]
     lines = ["# Public app Prius benchmark", "", f"Measured clean candidate `{data['field_source_commit']}`.", "",
+             f"Grading: **{data['grading_provenance']['mode']}**. "
+             + ("Inputs were frozen before fields." if data["grading_provenance"]["frozen_before_fields"]
+                else "Post-hoc reanalysis using inputs selected after collection; no frozen-protocol claim."), "",
              f"Software checks: **{sum(data['checks'].values())}/{len(data['checks'])} pass**. Hardware qualification is not claimed.", "",
              f"Tutorial: **{t['sampled_AB_rms_V']:.6f} V AB sampled RMS**, {100*t['tutorial_line_rms_relative']:+.4f}% from the retained tutorial; "
              f"{t['sampled_AB_peak_V']:.6f} V absolute peak, {100*t['tutorial_line_waveform_relative_L2']:.4f}% waveform relative L2.", "",
@@ -274,8 +293,9 @@ def main():
     parser.add_argument("run", type=Path)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--plot", action="store_true", help="Also render app-results.svg (optional Matplotlib)")
+    parser.add_argument("--legacy-unpinned", action="store_true", help="Explicit post-hoc reanalysis of an old v1 run using current grading inputs")
     args = parser.parse_args()
-    data = analyze(args.run)
+    data = analyze(args.run, legacy_unpinned=args.legacy_unpinned)
     args.out.mkdir(parents=True, exist_ok=True)
     (args.out / "app-results.json").write_text(json.dumps(data, indent=2, allow_nan=False) + "\n", encoding="utf-8", newline="\n")
     (args.out / "app-results.md").write_text(markdown(data), encoding="utf-8", newline="\n")
