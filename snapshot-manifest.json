@@ -5385,8 +5385,8 @@
     },
     {
       "path": "docs/RELEASE_0_4_0_INTEGRATION.md",
-      "bytes": 4933,
-      "sha256": "19fd387805d56a665f305d2ed6330ee64492d4d5bb041cac07fbda6b0b0bee33"
+      "bytes": 5221,
+      "sha256": "c4d6f6e012afbbf15cfb96135033a7fdd8adeb68c4d67e8c7917fa29c6f3a97f"
     },
     {
       "path": "docs/RELEASING.md",

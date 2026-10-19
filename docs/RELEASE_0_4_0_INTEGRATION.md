@@ -1,10 +1,14 @@
 # v0.4.0 integration after the measured candidate
 
 The release stack is **#146 -> #147 -> #148 -> #149**. Every later head includes
-the preceding heads and preserves the original PR commits. All target `main`.
-The top PR, #149, can land the entire stack with a **merge commit**. This also
-keeps the included PR heads in main's ancestry. Review the combined top-PR diff
-and require its CI before merging.
+the preceding heads and preserves the original PR commits. #146 targets `main`;
+#147 targets `fix/concentrated-type-layers` (#146), #148 targets
+`fix/wound-teeth-hidden-note` (#147), and #149 targets
+`fix/thinner-field-axis-arrows` (#148). Each PR therefore shows its own changes.
+Merge from #146 upward with merge commits. After a predecessor lands, retarget
+the next PR to `main` and require its checks before merging. Also require the
+combined stack's CI and package acceptance before releasing. The top branch
+remains the complete stack for local testing.
 
 | PR | Scope | Review follow-up |
 | --- | --- | --- |
