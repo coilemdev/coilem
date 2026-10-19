@@ -1,5 +1,12 @@
 # v0.4.0 benchmark evidence and candidate baseline
 
+The [motor benchmark coverage and runnable selections](../models-v1/README.md)
+include **Pyleecan Prius 8p48s** and **Honda Accord 2005 16p24s** alongside the
+A/B/C/D matrix. The Prius entry is a software benchmark; Honda is an exploratory
+hardware comparison with no pass/fail. The legacy ORNL Prius matrix row is a
+different model and is deferred to v0.5.0. It does not represent missing
+Pyleecan coverage. Historical reports below retain their measured identities.
+
 This report compiles the development evidence collected on October 18–19, 2026.
 The October 19 source preparation identifies as 0.4.0 with Magneto2D 0.3.3.
 The measurements below retain their original commits and application versions;
