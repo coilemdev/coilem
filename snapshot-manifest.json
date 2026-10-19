@@ -5379,6 +5379,16 @@
       "sha256": "8b804689b836a578fa3da3cb7ad317073fb8e8ae333c2174eaf2c330a16b67c4"
     },
     {
+      "path": "docs/NONLINEAR_CONVERGENCE_WINDOWS.json",
+      "bytes": 627736,
+      "sha256": "8bc349807bfc08e42cbc4dae3052b5de8c84ab3d5976c0f1128ce4139ea96277"
+    },
+    {
+      "path": "docs/NONLINEAR_CONVERGENCE_WINDOWS.md",
+      "bytes": 6913,
+      "sha256": "517f87b81e17a6efee282b5c6177fe5364e33551484c8dd66f91b00755859a4b"
+    },
+    {
       "path": "docs/NUMERICAL_EVIDENCE.md",
       "bytes": 19813,
       "sha256": "8f1d1497db1cd9699ef183c5d8c9616fa0c1c413ca8eb241b8811a69bb8743a0"
@@ -12399,6 +12409,18 @@
       "path": "backend/benchmark_suite/physics.py",
       "source_sha256": "02e647cdbda407f068fccbcc0f4ac3fe2cced6042881cf352325fff29ca7b91a",
       "reason": "Track motor nonlinear tolerance defaults in physics source identities before the release qualification rerun (#11)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "docs/NONLINEAR_CONVERGENCE_WINDOWS.json",
+      "source_sha256": null,
+      "reason": "Publish targeted Windows convergence measurements and explicit validation limits for the stopping fix (#11)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "docs/NONLINEAR_CONVERGENCE_WINDOWS.md",
+      "source_sha256": null,
+      "reason": "Publish targeted Windows convergence measurements and explicit validation limits for the stopping fix (#11)."
     }
   ]
 }
