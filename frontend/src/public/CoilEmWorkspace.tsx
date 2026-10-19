@@ -628,14 +628,16 @@ export function CoilEmTopBar({
                       <>
                         <span className="menu-divider" role="presentation" />
                         <span className="public-project-example-group-label" role="presentation">Benchmarks</span>
+                        {/* Benchmarks are experimental for now: each carries a yellow tag. */}
                         {publicExampleOptions(experimentalRotors, 'benchmark').map((example) => (
                           <button
                             type="button"
                             role="menuitem"
                             key={example.id}
+                            title="Experimental for now: benchmark designs and their reference comparisons are still being qualified."
                             onClick={closeMenuThen(() => onLoadExample?.(example.id))}
                           >
-                            <strong>{example.label}</strong>
+                            <strong>{example.label}<span className="public-example-experimental-tag">Experimental</span></strong>
                             <small>{example.detail}</small>
                           </button>
                         ))}
