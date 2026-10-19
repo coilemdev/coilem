@@ -44,7 +44,7 @@ include = ["backend*"]
 # setup.py also copies the schemas, the M350-50A curve, the built UI and the
 # Magneto2D binary into wheels; see backend/resources.py.
 [tool.setuptools.package-data]
-backend = ["elmer/profiles/*.json", "mesh_profiles/*.json"]
+backend = ["elmer/profiles/*.json", "mesh_profiles/*.json", "reference_models/*.json"]
 
 [tool.ruff]
 target-version = "py310"

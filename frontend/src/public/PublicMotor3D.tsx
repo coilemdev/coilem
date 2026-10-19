@@ -1,3 +1,4 @@
+import { ReferenceMotor3D } from './ReferenceMotor3D';
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -7,12 +8,13 @@ import { buildConcentratedCoil, buildWindingHarness } from './coil3d';
 import { deriveStatorSectionWidths } from './dimensionAnnotations';
 import { publicFlatIpmMagnetCenterRadiusMm } from './flatIpmBurialHealth';
 import { magnetPoleCoverage } from './magnetCoverage';
-import type { MotorConfig, PublicMotorComponentSelection } from './model';
+import type { GeometryPreview, MotorConfig, PublicMotorComponentSelection } from './model';
 import { PUBLIC_MOTOR_COLORS, PUBLIC_PHASE_COLORS, renderTargetColor } from './motorPalette';
 import { concentratedUsesToothCoils, toothCoilAssignments } from './toothCoils';
 
 interface PublicMotor3DProps {
   config: MotorConfig;
+  geometry?: GeometryPreview | null;
   resetSignal: number;
   rotorAngleDeg: number;
   explodedAmount: number;
@@ -552,7 +554,11 @@ function makeChipSprite(text: string): { sprite: THREE.Sprite; texture: THREE.Ca
   return { sprite, texture };
 }
 
-export function PublicMotor3D({
+export function PublicMotor3D(props: PublicMotor3DProps) {
+  return props.config.geometry_reference ? <ReferenceMotor3D {...props} /> : <ParametricMotor3D {...props} />;
+}
+
+function ParametricMotor3D({
   config,
   resetSignal,
   rotorAngleDeg,

@@ -17,6 +17,10 @@ class GeometryRegion(BaseModel):
     points: list[list[float]] = Field(
         ..., description="Polygon vertices [[x, y], ...] in mm"
     )
+    loops: Optional[list[list[list[float]]]] = Field(
+        default=None,
+        description="Separate closed contours in mm: outer boundary followed by holes. Points is retained for older clients.",
+    )
     fill: str = Field(..., description="Hex color for SVG fill")
     label: str = Field(..., description="Human-readable label")
     text_label: Optional[str] = Field(default=None, description="Optional text to render at region center (e.g. N/S for magnets)")

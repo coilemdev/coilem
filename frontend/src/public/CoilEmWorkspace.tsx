@@ -15,6 +15,7 @@ import {
 } from 'react';
 import type { PublicApiError } from './api';
 import { DESIGN_FILE_ACCEPT, DESIGN_FILE_EXTENSION } from './designFile';
+import { PYLEECAN_REFERENCE_NOTICE } from './pyleecanReferenceNotice';
 
 import {
   MotorCanvas,
@@ -24,7 +25,7 @@ import {
   type PublicMeshElementSelection,
 } from './MotorCanvas';
 import { WindingLayoutView } from './WindingLayoutView';
-import { coilsPerPhase, windingLayerOptions, windingLayerWording } from './toothCoils';
+import { coilsPerPhase, wholeSlotConcentratedNote, windingLayerOptions, windingLayerWording } from './toothCoils';
 import {
   buildDimensionAnnotations,
   deriveStatorSectionWidths,
@@ -627,14 +628,16 @@ export function CoilEmTopBar({
                       <>
                         <span className="menu-divider" role="presentation" />
                         <span className="public-project-example-group-label" role="presentation">Benchmarks</span>
+                        {/* Benchmarks are experimental for now: each carries a yellow tag. */}
                         {publicExampleOptions(experimentalRotors, 'benchmark').map((example) => (
                           <button
                             type="button"
                             role="menuitem"
                             key={example.id}
+                            title="Experimental for now: benchmark designs and their reference comparisons are still being qualified."
                             onClick={closeMenuThen(() => onLoadExample?.(example.id))}
                           >
-                            <strong>{example.label}</strong>
+                            <strong>{example.label}<span className="public-example-experimental-tag">Experimental</span></strong>
                             <small>{example.detail}</small>
                           </button>
                         ))}
@@ -906,7 +909,7 @@ function componentFacts(
         ...(config.topology === 'IPM' && config.rotor.ipm_topology === 'flat_buried'
           ? ([['Outer bridge', `${config.rotor.bridge_thickness_mm} mm`]] as Array<[string, string]>)
           : []),
-        ['Pole coverage', `${magnetPoleCoveragePct(config)}%`],
+        ...(config.geometry_reference ? [] : [['Pole coverage', `${magnetPoleCoveragePct(config)}%`]] as Array<[string, string]>),
       ];
     case 'winding': {
       const facts: Array<[string, string]> = [
@@ -1064,7 +1067,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
     if (next) onDesignSectionVisit(next);
     return next;
   });
-  const disabled = busy !== null;
+  const disabled = busy !== null || Boolean(config.geometry_reference);
   const set = (
     section: PublicEditableSection,
     field: string,
@@ -1171,6 +1174,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
   const unavailableLayerReasons = windingLayerOptions(config.stator.slot_count, config.rotor.pole_count, config.winding.type)
     .filter(({ available }) => !available)
     .map(({ layers, reason }) => `${layerWording.choice[layers]} is unavailable: ${reason}.`);
+  const wholeSlotNote = wholeSlotConcentratedNote(config.stator.slot_count, config.rotor.pole_count, config.winding.type);
   const matchesSearch = (section: PublicParameterSection | 'topology') => (
     !normalizedSearch || searchTerms[section].includes(normalizedSearch)
   );
@@ -1205,7 +1209,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
           With nothing selected the content fits and nothing scrolls at all. */}
       <div className="panel-header">
         <span className="panel-header-title">Design</span>
-        <button className="public-panel-reset" type="button" disabled={disabled} onClick={onReset}>Reset</button>
+        <button className="public-panel-reset" type="button" disabled={busy !== null} onClick={onReset}>Reset</button>
       </div>
       {selectedComponent && (
         <ComponentDetailCard
@@ -1216,6 +1220,8 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         />
       )}
       <div className="panel-left-scroll">
+        {config.geometry_reference && <div className="public-design-notice">Published Pyleecan geometry, winding and materials are fixed. Change operating conditions and accuracy in Solve.</div>}
+        {config.geometry_reference && <p className="public-design-notice">{PYLEECAN_REFERENCE_NOTICE.affiliation_notice}</p>}
         <div className="param-search-section" role="search">
           <label className="param-search-input-wrap">
             <span className="param-search-icon" aria-hidden="true">⌕</span>
@@ -1279,7 +1285,9 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
               {config.rotor.ipm_topology === 'pyleecan_holem50' ? (
                 <p className="ipm-layout-note ipm-experimental-note" role="note">
                   <strong>HoleM50 (experimental). </strong>
-                  {experimentalRotors?.enabled
+                  {config.geometry_reference
+                    ? 'Pinned published model. Its analytic curves, winding and materials are fixed; no startup flag is required.'
+                    : experimentalRotors?.enabled
                     ? 'An experimental rotor path: not public support, and results carry no qualification claim. Pick a layout above to switch to a public rotor.'
                     : `This rotor needs coilEM started with ${experimentalRotors?.switch ?? 'COILEM_EXPERIMENTAL_ROTORS'}=1 to preview and solve.`}
                 </p>
@@ -1394,6 +1402,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
 
       {matchesSearch('winding') && <ParameterSectionBlock id="winding" attention={errorSection === 'winding'} label="Winding" active={Boolean(normalizedSearch) || activeSection === 'winding'} onToggle={toggle} summary={`${config.winding.type}${showLayerRow ? ` · ${layerWording.summary[layerCount]}` : ''} · ${config.winding.turns_per_coil} turns × ${config.winding.parallel_paths}p`} nextLabel={normalizedSearch ? undefined : 'Materials'} onNext={normalizedSearch ? undefined : setNext('materials')}>
         <SelectRow label="Type" value={config.winding.type} choices={[{ value: 'concentrated', label: 'Concentrated' }, { value: 'distributed', label: 'Distributed' }]} disabled={disabled} onChange={set('winding', 'type', 'winding')} />
+        {wholeSlotNote && <p className="public-winding-note" role="note">{wholeSlotNote}</p>}
         {showLayerRow && <SelectRow
           label={layerWording.label}
           value={String(config.winding.layers)}
@@ -1412,7 +1421,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         </div>
         <NumberRow label="Turns / Coil" value={config.winding.turns_per_coil} min={1} step={1} disabled={disabled} onChange={set('winding', 'turns_per_coil', 'winding')} />
         <NumberRow label="Parallel Paths" value={config.winding.parallel_paths} min={1} step={1} disabled={disabled} onChange={set('winding', 'parallel_paths', 'winding')} />
-        <NumberRow label="Phase Current" value={config.solve_params.current_amplitude_A} unit="A rms" min={0} step={0.5} disabled={disabled} onChange={set('solve_params', 'current_amplitude_A', 'winding')} />
+        <NumberRow label="Phase Current" value={config.solve_params.current_amplitude_A} unit={`A ${config.solve_params.current_amplitude_convention}`} min={0} step={0.5} disabled={disabled} onChange={set('solve_params', 'current_amplitude_A', 'winding')} />
       </ParameterSectionBlock>}
 
       {matchesSearch('materials') && <ParameterSectionBlock id="materials" attention={errorSection === 'materials'} label="Materials" active={Boolean(normalizedSearch) || activeSection === 'materials'} onToggle={toggle} summary={`${steelDisplayName(config, config.materials.stator_steel)} stator · ${steelDisplayName(config, config.materials.rotor_steel)} rotor`}>
@@ -1458,7 +1467,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
                   : 'Geometry needs attention'}
           </div>
         )}
-        <button type="button" className={`panel-next-btn ${error || blankDesign ? 'is-blocked' : 'is-ready'}`} disabled={Boolean(error) || blankDesign || disabled} onClick={onNext}>Continue to Solve</button>
+        <button type="button" className={`panel-next-btn ${error || blankDesign ? 'is-blocked' : 'is-ready'}`} disabled={Boolean(error) || blankDesign || busy !== null} onClick={onNext}>Continue to Solve</button>
         {blankDesign && <div className="panel-next-feedback">Change a design parameter to enable Solve.</div>}
         {error && <div className="panel-next-feedback is-error">{error}</div>}
         {error && geometryStale && !blankDesign && <button type="button" className="public-back-link" disabled={busy !== null} onClick={onRefreshGeometry}>Retry geometry preview</button>}
@@ -1618,6 +1627,9 @@ function ViewportChrome({
   ));
   const [introProgress, setIntroProgress] = useState(() => (designIntroEnabled ? 0 : 1));
   const [canvasLayer, setCanvasLayer] = useState<PublicCanvasLayer>('none');
+  // Each stator tooth's N / S pole as the rotor turns; its own toggle, so it
+  // works with or without Phases.
+  const [showToothPoles, setShowToothPoles] = useState(false);
   const [materialSubview, setMaterialSubview] = useState<PublicMaterialSubview>('assignment');
   const [materialTarget, setMaterialTarget] = useState<PublicMaterialTarget>('stator');
   const [previewMaterialTarget, setPreviewMaterialTarget] = useState<PublicMaterialTarget | null>(null);
@@ -1905,6 +1917,7 @@ function ViewportChrome({
         >
           <PublicMotor3D
             config={config}
+            geometry={geometry}
             resetSignal={threeResetSignal}
             rotorAngleDeg={rotorAngleDeg}
             explodedAmount={explodedAmount}
@@ -1930,7 +1943,7 @@ function ViewportChrome({
               onTargetChange={setMaterialTarget}
             />
           ) : showWindingLayout ? (
-            <WindingLayoutView config={config} geometry={geometry ?? null} />
+            <WindingLayoutView config={config} geometry={geometry ?? null} navigationSlot={navigationSlot} />
           ) : (
             <MotorCanvas
               geometry={geometry}
@@ -1947,6 +1960,8 @@ function ViewportChrome({
               hoveredDimension={showDimensionReadout ? hoveredDimension : null}
               onDimensionSelect={showDimensionReadout ? setActiveDimension : undefined}
               magnetPolarityView={magnetPolarityView}
+              showToothPoles={viewportMode === '2d' && showToothPoles}
+              previewRpm={animationRpm}
               meshDisplayMode={meshDisplayMode}
               showMeshEdges={showMeshEdges}
               meshQualities={meshQualitySummary?.qualities}
@@ -2186,21 +2201,25 @@ function ViewportChrome({
                   ['dimensions', 'Dims'],
                   ['slots', 'Slots'],
                   ['windings', 'Winding'],
-                  ['phases', 'Phases'],
-                ] as Array<[PublicCanvasLayer, string]>).map(([layer, label]) => (
-                  <button
-                    type="button"
-                    aria-pressed={canvasLayer === layer}
-                    title={layer === 'none' ? 'Show the bare cross-section' : canvasLayer === layer ? `Hide the ${label.toLowerCase()} overlay` : `Show ${label.toLowerCase()}`}
-                    // One overlay at a time. None, or clicking the active one again,
-                    // leaves the bare cross-section: Dims in particular puts a
-                    // legend and dashed lines over the motor.
-                    onClick={() => setCanvasLayer((current) => (current === layer ? 'none' : layer))}
-                    key={layer}
-                  >
-                    {label}
-                  </button>
-                ))}
+                ] as Array<[PublicCanvasLayer, string]>).map(([layer, label]) => {
+                  // Phases is the winding overlay shaded by phase current, so
+                  // Winding stays pressed under it and turns both off.
+                  const pressed = canvasLayer === layer || (layer === 'windings' && canvasLayer === 'phases');
+                  return (
+                    <button
+                      type="button"
+                      aria-pressed={pressed}
+                      title={layer === 'none' ? 'Show the bare cross-section' : pressed ? `Hide the ${label.toLowerCase()} overlay` : `Show ${label.toLowerCase()}`}
+                      // One overlay at a time. None, or clicking the active one again,
+                      // leaves the bare cross-section: Dims in particular puts a
+                      // legend and dashed lines over the motor.
+                      onClick={() => setCanvasLayer(pressed ? 'none' : layer)}
+                      key={layer}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
               </span>
             </span>
           )}
@@ -2270,6 +2289,31 @@ function ViewportChrome({
                 title="Preview speed — not the solve operating point. Type a number or use the arrows; Shift+arrow steps by 10."
                 onChange={setAnimationRpm}
               />
+              {/* Phases only means something while the rotor turns: it shades the
+                  winding overlay by each phase's current, so it sits with the
+                  preview rather than among the static overlays. */}
+              {viewportMode === '2d' && (
+                <button
+                  type="button"
+                  className="public-dock-toggle"
+                  aria-pressed={canvasLayer === 'phases'}
+                  title={canvasLayer === 'phases' ? 'Stop shading the winding by phase current' : 'Shade the winding by phase current as the rotor turns'}
+                  onClick={() => setCanvasLayer((current) => (current === 'phases' ? 'windings' : 'phases'))}
+                >
+                  Phases
+                </button>
+              )}
+              {viewportMode === '2d' && (
+                <button
+                  type="button"
+                  className="public-dock-toggle"
+                  aria-pressed={showToothPoles}
+                  title={showToothPoles ? 'Hide the stator teeth\'s N / S poles' : 'Show each stator tooth\'s N / S pole as the rotor turns'}
+                  onClick={() => setShowToothPoles((shown) => !shown)}
+                >
+                  Tooth poles
+                </button>
+              )}
             </span>
           )}
         </div>
@@ -2381,8 +2425,42 @@ function HealthPanel({
   mesh,
   geometryStale,
   blankDesign = false,
-}: Pick<CoilEmWorkspaceProps, 'config' | 'error' | 'geometry' | 'mesh' | 'geometryStale' | 'blankDesign'>) {
+  collapsed = false,
+  onCollapsedChange,
+}: Pick<CoilEmWorkspaceProps, 'config' | 'error' | 'geometry' | 'mesh' | 'geometryStale' | 'blankDesign'> & {
+  /** Folded to a strip that keeps the status, to give the motor view the room. */
+  collapsed?: boolean;
+  onCollapsedChange?: (collapsed: boolean) => void;
+}) {
+  const collapseButton = onCollapsedChange ? (
+    <button
+      type="button"
+      className="design-health-collapse"
+      aria-expanded="true"
+      aria-label="Collapse design health"
+      title="Collapse design health"
+      onClick={() => onCollapsedChange(true)}
+    >
+      ›
+    </button>
+  ) : null;
+  const collapsedStrip = (tone: 'good' | 'warning' | 'updating', icon: string, label: string) => (
+    <aside className={`design-health-panel is-collapsed tone-${tone}`}>
+      <button
+        type="button"
+        className="design-health-expand"
+        aria-expanded="false"
+        aria-label={`Show design health: ${label}`}
+        title={`Show design health · ${label}`}
+        onClick={() => onCollapsedChange?.(false)}
+      >
+        <span className="public-health-status-icon" aria-hidden="true">{icon}</span>
+        <span className="design-health-expand-label">Design health</span>
+      </button>
+    </aside>
+  );
   if (blankDesign) {
+    if (collapsed) return collapsedStrip('updating', '○', 'Blank design');
     return (
       <aside className="design-health-panel tone-updating">
         <div className="design-health-header">
@@ -2390,6 +2468,7 @@ function HealthPanel({
             <div className="design-health-eyebrow">Design Health</div>
             <div className="design-health-caption">Checks begin after the first design change.</div>
           </div>
+          {collapseButton}
         </div>
         <div className="public-health-status-card updating" role="status">
           <div className="public-health-status-icon" aria-hidden="true">○</div>
@@ -2416,7 +2495,9 @@ function HealthPanel({
     }] : []),
     airgapHealth,
     ...(burialHealth ? [burialHealth] : []),
-    { severity: coverage >= 55 && coverage <= 90 ? 'positive' : 'warning', title: coverage >= 55 && coverage <= 90 ? 'Magnet coverage is in a practical range' : 'Magnet coverage needs review', copy: `${coverage}% pole coverage for the current rotor.` },
+    { severity: config.geometry_reference || coverage >= 55 && coverage <= 90 ? 'positive' : 'warning',
+      title: config.geometry_reference ? 'Pinned published geometry' : coverage >= 55 && coverage <= 90 ? 'Magnet coverage is in a practical range' : 'Magnet coverage needs review',
+      copy: config.geometry_reference ? 'Analytic SlotW11 and HoleM50 curves; geometry is fixed for this software reference.' : `${coverage}% pole coverage for the current rotor.` },
     { severity: config.stator.slot_count % 3 === 0 ? 'positive' : 'warning', title: config.stator.slot_count % 3 === 0 ? 'Slot count supports three phases' : 'Slot count does not divide across three phases', copy: `${config.stator.slot_count} stator slots across three phases.` },
     { severity: geometry && !geometryStale ? 'positive' : 'info', title: geometry && !geometryStale ? 'Geometry preview is current' : 'Updating geometry preview', copy: geometry && !geometryStale ? `${geometry.regions.length} regions returned by the local backend.` : 'The preview will refresh after the local backend responds.' },
     ...(qualification ? [{
@@ -2452,9 +2533,10 @@ function HealthPanel({
         ? 'Valid to solve · review design'
         : 'Review before solving';
 
+  if (collapsed) return collapsedStrip(tone, ready ? '✓' : tone === 'updating' ? '↻' : '!', statusLabel);
   return (
     <aside className={`design-health-panel tone-${tone}`}>
-      <div className="design-health-header"><div><div className="design-health-eyebrow">Design Health</div><div className="design-health-caption">Basic heuristic checks for the current draft.</div></div></div>
+      <div className="design-health-header"><div><div className="design-health-eyebrow">Design Health</div><div className="design-health-caption">Basic heuristic checks for the current draft.</div></div>{collapseButton}</div>
       <div className={`public-health-status-card ${tone}`} role="status">
         <div className="public-health-status-icon" aria-hidden="true">{ready ? '✓' : tone === 'updating' ? '↻' : '!'}</div>
         <div>
@@ -2464,7 +2546,7 @@ function HealthPanel({
       </div>
       <div className="design-health-metrics">
         <div className="design-health-metric"><span>Airgap</span><strong>{airgap.toFixed(2)} mm</strong></div>
-        <div className="design-health-metric"><span>Coverage</span><strong>{coverage}%</strong></div>
+        <div className="design-health-metric"><span>{config.geometry_reference ? 'Reference' : 'Coverage'}</span><strong>{config.geometry_reference ? 'Pyleecan' : `${coverage}%`}</strong></div>
         <div className="design-health-metric"><span>Q</span><strong>{config.stator.slot_count / Math.max(1, config.rotor.pole_count * 3)} </strong></div>
       </div>
       <div className="public-check-heading"><span>Pre-solve checks</span><strong>{positiveCount} ✓{infoCount > 0 ? ` · ${infoCount} i` : ''}{warningCount > 0 ? ` · ${warningCount} △` : ''}</strong></div>
@@ -2715,6 +2797,9 @@ function LiveSolveMonitor({ busy, progress, liveSamples, progressPercent }: Pick
     && typeof sample.phase_c_V === 'number');
   const currentPosition = progress?.position ?? 0;
   const totalPositions = progress?.total ?? 0;
+  // Selecting Stator runs a magnets-off sweep (busy 'field'); it reports here
+  // like a solve, with no torque or back-EMF samples to chart.
+  const statorField = busy === 'field';
   const finalizing = busy === 'solve' && isPublicSolveFinalizing(progress);
   const progressStarted = progressPercent > 0;
   const sweepComplete = finalizing
@@ -2724,7 +2809,7 @@ function LiveSolveMonitor({ busy, progress, liveSamples, progressPercent }: Pick
   useEffect(() => {
     const observedAtMs = Date.now();
     setDisplayElapsedSeconds(progress?.elapsed_s ?? 0);
-    if (busy !== 'solve') return undefined;
+    if (busy !== 'solve' && busy !== 'field') return undefined;
     const intervalId = window.setInterval(() => {
       setDisplayElapsedSeconds(projectedPublicSolveElapsedSeconds(
         progress?.elapsed_s,
@@ -2736,14 +2821,14 @@ function LiveSolveMonitor({ busy, progress, liveSamples, progressPercent }: Pick
   }, [busy, progress?.elapsed_s]);
 
   return (
-    <section className={`public-live-monitor${finalizing ? ' is-finalizing' : ''}`} aria-label="Live solve status" aria-busy={busy === 'solve'}>
-      <div className="public-live-monitor-heading"><span className="public-section-kicker">Live solve</span><strong>{solveStageLabel(progress, busy)}</strong></div>
+    <section className={`public-live-monitor${finalizing ? ' is-finalizing' : ''}`} aria-label={statorField ? 'Stator field extraction status' : 'Live solve status'} aria-busy={busy === 'solve' || statorField}>
+      <div className="public-live-monitor-heading"><span className="public-section-kicker">{statorField ? 'Stator field extraction' : 'Live solve'}</span><strong>{solveStageLabel(progress, busy)}</strong></div>
       {/* Empty with a shimmer until meshing or a field solve reports progress,
           then a fill that only grows; finalizing keeps the full bar (#53). */}
       <div
         className={`progress-track${progressStarted ? '' : ' is-waiting'}${finalizing ? ' is-finishing' : ''}`}
         role="progressbar"
-        aria-label={finalizing ? 'Post-processing solved field data' : 'Solve progress'}
+        aria-label={finalizing ? 'Post-processing solved field data' : statorField ? 'Stator field extraction progress' : 'Solve progress'}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={progressStarted ? Math.round(progressPercent) : undefined}
@@ -2759,10 +2844,20 @@ function LiveSolveMonitor({ busy, progress, liveSamples, progressPercent }: Pick
           </div>
         </div>
       )}
+      {statorField && (
+        <div className="public-finalization-status">
+          <i aria-hidden="true" />
+          <div>
+            <strong>Computing the stator-only field</strong>
+            <span>Magnets off (Br = 0), solved at each rotor position for the Stator view. Your completed results stay as they are.</span>
+          </div>
+        </div>
+      )}
       <dl className="public-live-stats">
         <div><dt>Total elapsed</dt><dd>{formatNumber(displayElapsedSeconds, 1)} s</dd></div>
         <div><dt>{finalizing ? 'Sweep' : 'Positions'}</dt><dd>{sweepComplete ? 'Complete' : `${currentPosition} / ${totalPositions > 0 ? totalPositions : '—'}`}</dd></div>
       </dl>
+      {!statorField && <>
       <CompactLiveChart
         label="Torque"
         unit="N·m"
@@ -2782,6 +2877,7 @@ function LiveSolveMonitor({ busy, progress, liveSamples, progressPercent }: Pick
         emptyMessage={finalizing ? 'Building waveform from solved fields' : 'Waiting for samples'}
         emptyWorking={finalizing}
       />
+      </>}
     </section>
   );
 }
@@ -3284,6 +3380,23 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
     if (error) setAnalysisDetailsOpen(true);
   }, [error, result]);
 
+  // Selecting Stator runs a stator-only sweep that reports in this section's
+  // live card, as a solve does, while the completed result stays. Open the
+  // section for it and put it back afterwards; a failure stays open (above).
+  const analysisOpenBeforeFieldRef = useRef<boolean | null>(null);
+  useEffect(() => {
+    if (busy === 'field') {
+      if (analysisOpenBeforeFieldRef.current !== null) return;
+      analysisOpenBeforeFieldRef.current = analysisDetailsOpen;
+      setAnalysisDetailsOpen(true);
+      window.requestAnimationFrame(() => runPlanScrollRef.current?.scrollTo({ top: 0 }));
+      return;
+    }
+    if (analysisOpenBeforeFieldRef.current === null) return;
+    if (!error) setAnalysisDetailsOpen(analysisOpenBeforeFieldRef.current);
+    analysisOpenBeforeFieldRef.current = null;
+  }, [analysisDetailsOpen, busy, error]);
+
   useEffect(() => {
     if (!solveViewportExpanded) return undefined;
     const restoreOnEscape = (event: KeyboardEvent) => {
@@ -3479,10 +3592,12 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               type="button"
               role="radio"
               aria-checked={selectedSolver === 'elmer'}
-              aria-disabled={!elmerAvailable || busy !== null || sixStepSelected}
+              aria-disabled={!elmerAvailable || busy !== null || sixStepSelected || Boolean(config.geometry_reference)}
               className={selectedSolver === 'elmer' ? 'active' : ''}
-              disabled={!elmerAvailable || busy !== null || sixStepSelected}
-              title={sixStepSelected
+              disabled={!elmerAvailable || busy !== null || sixStepSelected || Boolean(config.geometry_reference)}
+              title={config.geometry_reference
+                ? 'The Pyleecan reference uses the native Magneto2D solver and its embedded steel curve.'
+                : sixStepSelected
                 ? 'Ideal six-step excitation uses Magneto2D in the MVP.'
                 : !elmerAvailable
                   ? elmerCapability.reason || 'Qualified Elmer 26.2 runtime not detected.'
@@ -3496,6 +3611,8 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
           {!elmerAvailable && <p className="public-solver-diagnostic">{elmerCapability.reason || 'Qualified Elmer 26.2 runtime not detected.'}</p>}
         </ParameterSectionBlock>}
         <ParameterSectionBlock id="operating" label="Operating point" summary={operatingSummary} active={openSetupSection === 'operating'} onToggle={toggleSetupSection}>
+          {config.geometry_reference && <p className="public-design-notice">Pyleecan software reference · {config.solve_params.magnet_temperature_C}°C magnets · sinusoidal phase current. Φ₀ uses the published d-axis convention. This case does not validate ORNL hardware.</p>}
+          {config.geometry_reference && <p className="public-design-notice">{PYLEECAN_REFERENCE_NOTICE.affiliation_notice}</p>}
           <div className="public-excitation-selector" role="radiogroup" aria-label="Stator excitation">
             <button
               type="button"
@@ -3633,7 +3750,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
                 <p className="public-solver-help">Picard is the default. Try Newton if a run fails to converge.</p>
               </>}
               {!sixStepSelected && <SelectRow label="Current convention" value={config.solve_params.current_amplitude_convention} disabled={busy !== null} choices={[{ value: 'rms', label: 'RMS' }, { value: 'peak', label: 'Peak' }]} onChange={(value) => onSolveSettingChange('current_amplitude_convention', value as MotorConfig['solve_params']['current_amplitude_convention'])} />}
-              {!sixStepSelected && <NumberRow label="Current angle" value={config.solve_params.current_angle_deg} unit="deg" min={-180} max={180} step={1} disabled={busy !== null} onChange={(value) => onSolveSettingChange('current_angle_deg', value)} />}
+              {!sixStepSelected && <NumberRow label={config.geometry_reference ? "Pyleecan Φ₀ (d-axis)" : "Current angle"} value={config.solve_params.current_angle_deg} unit="deg" min={-180} max={180} step={1} disabled={busy !== null} onChange={(value) => onSolveSettingChange('current_angle_deg', value)} />}
             </section>
             <section className="public-advanced-section public-advanced-output-section" aria-labelledby="public-generated-outputs-heading">
               <span className="public-section-kicker" id="public-generated-outputs-heading">Generated outputs</span>
@@ -3682,11 +3799,9 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               armature={armatureField}
               armatureBusy={busy === 'field'}
               armatureError={armatureFieldError}
-              armatureProgress={busy === 'field' ? progress : null}
               magnetoCompositionAvailable={selectedSolver === 'magneto2d'}
               positionLink={fieldPositionLink}
               onRequestArmature={onRequestArmatureField}
-              onCancelArmature={onCancelArmatureField}
             />
           )
           : (
@@ -3774,7 +3889,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               {onManageRuns && <button type="button" onClick={onManageRuns}>Manage previous runs</button>}
             </div>}
             <ExcitationRunPlanPreview config={config} />
-            {(busy === 'mesh' || busy === 'solve') && <LiveSolveMonitor busy={busy} progress={progress} liveSamples={liveSamples} progressPercent={progressPercent} />}
+            {(busy === 'mesh' || busy === 'solve' || busy === 'field') && <LiveSolveMonitor busy={busy} progress={progress} liveSamples={liveSamples} progressPercent={progressPercent} />}
             <dl className="public-quality-list">
               <div><dt>Solver</dt><dd>{solverLabel}</dd></div>
               <div><dt>Accuracy plan</dt><dd>{planLabel}</dd></div>
@@ -3959,6 +4074,11 @@ function ReportStage({
   const reportSettings: Array<{ label: string; value: string }> = [
     { label: 'Project', value: projectName },
     { label: 'Material', value: materialName },
+    ...(config.geometry_reference ? [
+      { label: 'Reference case', value: config.reference_case ?? 'Not recorded' },
+      { label: 'Magnet temperature', value: `${config.solve_params.magnet_temperature_C}°C` },
+      { label: 'Pyleecan Φ₀ (d-axis)', value: `${config.solve_params.current_angle_deg}° electrical` },
+    ] : []),
     {
       label: sixStep ? 'Conducting phase current' : 'Phase current',
       value: `${formatNumber(config.solve_params.current_amplitude_A)} A ${sixStep ? 'plateau' : config.solve_params.current_amplitude_convention}`,
@@ -4090,6 +4210,9 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
   const designHealth = useMemo(() => ({ geometry: props.geometry, mesh: props.mesh }), [props.geometry, props.mesh]);
   const [selectedComponent, setSelectedComponent] = useState<PublicMotorComponentSelection | null>(null);
   const [designViewportExpanded, setDesignViewportExpanded] = useState(false);
+  // Design health folds to a status strip, so the motor view (and the Phases
+  // waveforms) can have its width without hiding the parameters too.
+  const [designHealthCollapsed, setDesignHealthCollapsed] = useState(false);
   const [liveEditHighlight, setLiveEditHighlight] = useState<PublicMotorComponentKind | null>(null);
   const [runHistoryOpen, setRunHistoryOpen] = useState(false);
 
@@ -4202,7 +4325,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
                   />
                 )}
               </div>
-              <div className="design-workspace-health"><div className="design-workspace-health-scroll"><HealthPanel config={props.config} error={props.error} geometry={designHealth.geometry} mesh={designHealth.mesh} geometryStale={props.geometryStale} blankDesign={props.blankDesign} /></div></div>
+              <div className={`design-workspace-health${designHealthCollapsed ? ' is-collapsed' : ''}`}><div className="design-workspace-health-scroll"><HealthPanel config={props.config} error={props.error} geometry={designHealth.geometry} mesh={designHealth.mesh} geometryStale={props.geometryStale} blankDesign={props.blankDesign} collapsed={designHealthCollapsed} onCollapsedChange={setDesignHealthCollapsed} /></div></div>
               {props.editFeedback && (
                 <div className="public-design-edit-toast" role="status" aria-live="polite">
                   <span className="public-design-edit-toast-icon" aria-hidden="true">✓</span>

@@ -8,6 +8,7 @@ import {
   type PointerEvent as ReactPointerEvent,
   type WheelEvent as ReactWheelEvent,
 } from 'react';
+import { anchoredZoomPan, viewportTransformOrigin, type ViewportFrame } from './viewportTransform';
 
 interface Point {
   x: number;
@@ -30,7 +31,10 @@ function clamp(value: number, minimum: number, maximum: number): number {
   return Math.min(maximum, Math.max(minimum, value));
 }
 
-export function useViewportNavigation(maxScale = MAX_SCALE) {
+export function useViewportNavigation(
+  maxScale = MAX_SCALE,
+  frameForSize?: (width: number, height: number) => ViewportFrame | null,
+) {
   const viewportRef = useRef<HTMLDivElement>(null);
   const pointerStartRef = useRef<PointerStart | null>(null);
   const didDragRef = useRef(false);
@@ -56,11 +60,7 @@ export function useViewportNavigation(maxScale = MAX_SCALE) {
   ) => {
     const nextScale = clamp(requestedScale, MIN_SCALE, maxScale);
     if (Math.abs(nextScale - scale) < 1e-6) return;
-    const ratio = nextScale / scale;
-    setPan((current) => clampPan({
-      x: anchor.x - (anchor.x - current.x) * ratio,
-      y: anchor.y - (anchor.y - current.y) * ratio,
-    }, nextScale));
+    setPan((current) => clampPan(anchoredZoomPan(current, scale, nextScale, anchor), nextScale));
     setScale(nextScale);
   }, [clampPan, maxScale, scale]);
 
@@ -78,13 +78,14 @@ export function useViewportNavigation(maxScale = MAX_SCALE) {
   const onWheel = useCallback((event: ReactWheelEvent<HTMLDivElement>) => {
     event.preventDefault();
     const rect = event.currentTarget.getBoundingClientRect();
+    const origin = viewportTransformOrigin(rect.width, rect.height, frameForSize?.(rect.width, rect.height) ?? undefined);
     const anchor = {
-      x: event.clientX - rect.left - rect.width / 2,
-      y: event.clientY - rect.top - rect.height / 2,
+      x: event.clientX - rect.left - origin.x,
+      y: event.clientY - rect.top - origin.y,
     };
     const factor = Math.exp(-event.deltaY * 0.0012);
     setScaleAt(scale * factor, anchor);
-  }, [scale, setScaleAt]);
+  }, [frameForSize, scale, setScaleAt]);
 
   const onPointerDown = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
     if (

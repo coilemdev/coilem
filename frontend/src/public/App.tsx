@@ -30,7 +30,7 @@ import {
   type PublicWorkflowStep,
 } from './CoilEmWorkspace';
 import { PublicGuidedSetup } from './GuidedSetup';
-import { coilsPerPhase, parallelPathsDividing, repairGuidedSection } from './guidedConfigRepair';
+import { coilsPerPhase, parallelPathsDividing, repairGuidedSection, windingForType } from './guidedConfigRepair';
 import { designErrorText } from './designErrors';
 import { windingLayerWording } from './toothCoils';
 import { PublicLanding } from './PublicLanding';
@@ -448,6 +448,14 @@ function describeDesignEdit(
     const nextValue = editableValue(next, section, field);
     consequence = `${formatEditValue(field, previousValue)} → ${formatEditValue(field, nextValue)}`;
   }
+  // A switch to a q >= 1 concentrated layout drops a second layer it cannot wind.
+  if (
+    section === 'winding'
+    && field !== 'layers'
+    && previous.winding.layers !== next.winding.layers
+  ) {
+    consequence = `${consequence} · layers ${previous.winding.layers} → ${next.winding.layers}`;
+  }
   if (
     section === 'winding'
     && field !== 'parallel_paths'
@@ -676,6 +684,7 @@ export function App() {
     value: unknown,
     visitedSection?: PublicParameterSection,
   ) => {
+    if (config.geometry_reference && section !== "solve_params") return;
     // An edit is explicit ownership of the section, even if the submitted
     // value equals its current value. Never let a later coach stop silently
     // repair a section the user has already touched.
@@ -732,6 +741,8 @@ export function App() {
               : config.winding.parallel_paths,
           },
         }
+      : section === 'winding' && field === 'type'
+        ? { ...config, winding: windingForType(config, value as MotorConfig['winding']['type']) }
       : {
         ...config,
         [section]: { ...config[section], [field]: value },
@@ -1362,6 +1373,8 @@ export function App() {
       const parsed = parseDesignFile(await file.text());
       rememberPresetSweep(parsed.config);
       setConfig(parsed.config);
+      if (parsed.config.geometry_reference) setSelectedSolver("magneto2d");
+      setGeometry(null);
       setEditFeedback(null);
       setDesignName(parsed.name ?? designFileBaseName(file.name));
       setBlankDesign(false);
@@ -1382,6 +1395,8 @@ export function App() {
     const example = createPublicExampleDesign(exampleId);
     rememberPresetSweep(example.config);
     setConfig(example.config);
+    if (example.config.geometry_reference) setSelectedSolver("magneto2d");
+    setGeometry(null);
     setEditFeedback(null);
     setDesignName(example.name);
     setBlankDesign(false);
@@ -1456,9 +1471,10 @@ export function App() {
       const storedSolver = submittedRequest && typeof submittedRequest === 'object'
         ? (submittedRequest as PublicJson).solver
         : null;
-      const replaySolver: PublicSolverId = storedSolver === 'elmer' ? 'elmer' : 'magneto2d';
+      const replaySolver: PublicSolverId = storedSolver === 'elmer' && !parsed.config.geometry_reference ? 'elmer' : 'magneto2d';
       rememberPresetSweep(parsed.config);
       setConfig(parsed.config);
+      setGeometry(null);
       setSelectedSolver(
         replaySolver === 'elmer' && elmerCapabilityIsReady(elmerCapability)
           ? 'elmer'

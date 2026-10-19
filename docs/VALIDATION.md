@@ -1,19 +1,20 @@
 # Developer-preview validation
 
-The release is coilEM 0.3.1 with Magneto2D 0.3.3, a developer preview. Its numerical qualification is the published A/B/C/D benchmark
-report v1.1, which compares the native solver with fresh, matched FEMM
-references. Reports [v1.7](../benchmarks/macos-rc-20261013-1fac3a1/README.md) (macOS) and [v1.8](../benchmarks/windows-rc-20261013-1fac3a1/README.md)
-(Windows) measure coilEM 0.3.0 at `1fac3a17fca7501d054a12b64b4a0472916ade98`;
-they retain every verdict and do not change the qualified scope. coilEM 0.3.1
-adds Python 3.15 support and leaves the application unchanged: on Python 3.11
-to 3.14 it installs the same dependencies as 0.3.0, so these reports apply to
-it. Python 3.15 installs use newer numpy and pydantic and have no benchmark
-report yet. Passing CI
-alone does not establish numerical accuracy.
+The source candidate is coilEM 0.4.0 with Magneto2D 0.3.3. The
+[Windows requalification report](../benchmarks/windows-prius-requal-20261018/README.md)
+at `5b6cb61` supplies development qualification for the current winding model;
+see [Qualification status](#qualification-status). The
+[v0.4.0 evidence report](../benchmarks/v0.4.0/README.md) retains the complete
+Windows/FEMM and Pyleecan collections, their measured commits and limitations.
+Final-candidate benchmarks and installed-wheel acceptance remain open in the
+[release plan](RELEASE_0_4_0.md).
 
-The unreleased 0.4.0 application on `main` changes the winding model and
-qualifies against the [Windows requalification report](../benchmarks/windows-native-20261018-f390b25/README.md)
-instead; see [Qualification status](#qualification-status).
+Historical reports v1.1 and v1.7/v1.8 measure the 0.3.x winding model and keep
+their original identities. They do not measure the changed 0.4.0 application.
+The macOS record predates the current physics sources and is NOT_COMPARABLE;
+new macOS numerical parity needs a fresh full run. Linux and Python 3.15 full
+numerical parity have not been measured. Passing hosted CI or wheel acceptance
+does not establish that parity or hardware accuracy.
 
 See [Numerical evidence](NUMERICAL_EVIDENCE.md) for measured comparisons and
 [Local verification](VERIFICATION.md) for the build, browser and audit record.
@@ -131,7 +132,7 @@ on macOS, Windows and Linux:
 python -m tools.run_benchmarks --phases A B C D --out-dir ../benchmark-output/my-run --pdf
 ```
 
-Harness 1.5.0 also runs from an installed coilEM, with no checkout: `coilem
+Harness 1.5.1 also runs from an installed coilEM, with no checkout: `coilem
 benchmark` solves the current suite, grades it against the frozen FEMM v3
 reference, and matches it against the [published record](../benchmarks/records/README.md)
 for the platform (see [Run the benchmark yourself](#run-the-benchmark-yourself)).
@@ -140,13 +141,38 @@ Historical protocol 1.0.0 remains selectable with `--suite` and its matching
 `--reference-bundle`. Changed physical inputs require new matched references;
 changing only the candidate solver can reuse compatible frozen data.
 
-### Planned ORNL Prius coverage
+### Pyleecan Prius software reference (#126)
+
+The [versioned Prius report](benchmarks/pyleecan-prius-v1/README.md) documents the
+exact pinned Pyleecan model in the normal Design/Solve workspace. Its tutorial
+BEMF and loaded-torque cases retain separate temperature/speed conditions and
+stable case IDs. It preserves the complete thirteen-angle upstream comparison,
+including discrepancies, independently checked explicit winding extraction,
+and mesh/angular controls. Software reproduction does not establish identity
+with the original Yang paper or measured ORNL hardware. The legacy registered
+ORNL A/B/C/D row below is unchanged and remains unsupported.
+
+### ORNL Prius coverage deferred to v0.5.0
 
 The planned item is ORNL Prius 2004: its HoleM50 rotor geometry is outside the
 public flat-buried/V-shape IPM policy. Geometry helpers exist, but native
 meshing/field solves and matched FEMM qualification are needed before enabling
 public support. Numerical status remains UNSUPPORTED; no comparison was
-performed and no delivery date is claimed.
+performed. Hardware correlation #69/#82 is assigned to v0.5.0 and does not
+block the 0.4.0 software-model release.
+
+### Existing Honda Accord hardware comparison
+
+The [real-winding comparison](hardware-validation/honda-accord-2005/real-winding-comparison/README.md)
+retains its own pins: `738d951` for no-load/zero-position scans and `50fe405`
+for 198 locked-rotor solves. It uses the blind N35 assumption and simplified
+single-bar rotor; nothing was fitted and there is no hardware pass/fail.
+Mean back-EMF error across 18 speeds is +0.6% (−2.6% to +5.4%); mean peak-torque
+error across nine currents is −3.6% (−8.3% to +1.8%). Rotor approximation,
+unknown magnet grade, assumed steel and angular/cogging sampling remain limits.
+A fitted variant was planned but is not claimed as a completed measurement.
+These historical data do not extend A/B/C/D qualification or substitute for a
+final-candidate run.
 
 ## Run the benchmark yourself
 
@@ -178,9 +204,9 @@ no local paths and passes the publication path check.
 
 ## Qualification status
 
-The maintainers accept the [Windows requalification report](../benchmarks/windows-native-20261018-f390b25/README.md)
+The maintainers accept the [Windows requalification report](../benchmarks/windows-prius-requal-20261018/README.md)
 as the numerical qualification record for the application on `main`. It
-measured commit `f390b25` on Windows with the Precise mesh default against the matched
+measured commit `5b6cb61` on Windows with the Precise mesh default against the matched
 [FEMM v3 references](../benchmarks/reference-baselines/ipm-high-output-v3/manifest.json),
 so it covers the 0.4.0 winding model: full slot-side turns in flux linkage
 (#80), tooth coils for fractional-slot concentrated windings, the current angle
@@ -197,7 +223,7 @@ recorded numerical value equals the [October 15 Windows v3 comparison](../benchm
 That historical comparison retains its post hoc evaluation and fixed-axis
 protocol 1.1.0 golden-sequence FAILs for the 8-pole and 14-pole 12-slot fixtures.
 The macOS record remains at `738d951`; its source guard reports NOT_COMPARABLE
-until a new macOS run measures the changed mesh source. Fast mesh remains
+until a new macOS run measures the changed mesh and reference-dispatch sources. Fast mesh remains
 experimental. The FEMM v3 bundle keeps `REVIEW_REQUIRED` for limitations
 outside these gates, such as steel-loss estimates, the Kt current base and
 peak flux-density sampling. Release qualification remains a separate step.

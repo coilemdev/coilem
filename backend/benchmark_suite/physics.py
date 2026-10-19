@@ -30,6 +30,7 @@ PHYSICS_PYTHON_SOURCES = (
     "backend/magneto2d_adapter/__init__.py",
     "backend/material_catalog.py",
     "backend/material_contract.py",
+    "backend/reference_models/prius.py",
     "backend/solver/__init__.py",
     "backend/solver/_helpers.py",
     "backend/solver_contract.py",
@@ -38,7 +39,11 @@ PHYSICS_PYTHON_SOURCES = (
     "backend/torque_metrics.py",
     "backend/winding_utils.py",
 )
-PHYSICS_DATA_SOURCES = ("materials/electrical-steel/M350-50A.csv",)
+PHYSICS_DATA_SOURCES = (
+    "materials/electrical-steel/M350-50A.csv",
+    "backend/reference_models/pyleecan_prius_2004.json",
+    "backend/reference_models/pyleecan_prius_2004_config.json",
+)
 SOLVER_LOCK_FILE = "solvers/magneto2d/Cargo.lock"
 SOLVER_SOURCE_DIR = "solvers/magneto2d/src"
 # Build-identity key holding the solver sources an installed binary was built from.

@@ -46,6 +46,7 @@ from backend.winding_utils import (
     distributed_pitch_factor,
     distributed_slot_layer_assignments,
     tooth_coil_assignments,
+    winding_phase_axis_offset_elec_deg,
 )
 
 
@@ -131,6 +132,15 @@ def generate_preview(config: MotorConfig) -> GeometryPreview:
             stator.slot_count, rotor.pole_count, winding.type, winding.turns_per_coil,
             stator.ID_mm, winding.layers, winding.parallel_paths, winding.coil_span
         )
+        if config.geometry_reference == "pyleecan_prius_2004":
+            from backend.reference_models.prius import source
+
+            winding_layout = [
+                WindingSlot(slot_index=surface["winding"]["slot"], phase=surface["winding"]["phase"],
+                            direction=surface["winding"]["direction"], layer=1)
+                for surface in source()["surfaces"] if "winding" in surface
+            ]
+            winding_metadata["winding_source"] = "published Pyleecan phase/sign matrix"
         winding_coils = _derive_winding_coils(
             winding_layout,
             stator.slot_count,
@@ -138,6 +148,17 @@ def generate_preview(config: MotorConfig) -> GeometryPreview:
             float(winding_metadata.get("coil_span_slots", 1.0) or 1.0),
             rotor.pole_count,
             winding.layers,
+        )
+        # Generic phase A's axis. Explicit reference currents use the separate
+        # convention below, rather than this generic winding-axis correction.
+        # The 2D Phases preview needs it to light the phases the solver drives at
+        # each rotor position; the drive settings it combines with stay in the
+        # frontend, so changing them does not wait for a new preview.
+        winding_metadata["phase_axis_offset_elec_deg"] = winding_phase_axis_offset_elec_deg(
+            winding.type, stator.slot_count, rotor.pole_count, winding.layers, winding.coil_span
+        )
+        winding_metadata["phase_current_convention"] = (
+            "pyleecan_d_axis" if config.geometry_reference == "pyleecan_prius_2004" else "q_axis"
         )
 
     if geometry_ir is not None:

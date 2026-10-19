@@ -142,6 +142,9 @@ def build_geometry_ir(
     """Build the shared geometry IR from a motor configuration."""
 
     geom = geom or compute_geometry(config)
+    if config.geometry_reference == "pyleecan_prius_2004":
+        from backend.reference_models.prius import build
+        return build(config, geom)
     topology = str(config.topology).upper()
     ipm_topology = str(getattr(config.rotor, "ipm_topology", "") or "").lower()
     if topology == "SPM":

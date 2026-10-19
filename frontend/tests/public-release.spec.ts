@@ -10,7 +10,9 @@ type Excitation = 'sinusoidal' | 'ideal_six_step_120';
 type RunRecord = { project_slug: string; run_id: string; status: string };
 
 async function runList(page: Page): Promise<RunRecord[]> {
-  const response = await page.request.get(`${apiUrl}/runs`);
+  // Long solves can leave an idle keep-alive socket closed by the server.
+  // Retry only ECONNRESET on read-only requests; HTTP errors still fail below.
+  const response = await page.request.get(`${apiUrl}/runs`, { maxRetries: 2 });
   expect(response.ok()).toBe(true);
   return (await response.json()).runs as RunRecord[];
 }
@@ -221,7 +223,7 @@ test.describe('public developer preview release rehearsal', () => {
     expect(completed).toHaveLength(2);
     const savedModes: string[] = [];
     for (const run of completed) {
-      const response = await page.request.get(`${apiUrl}/runs/${run.project_slug}/${run.run_id}`);
+      const response = await page.request.get(`${apiUrl}/runs/${run.project_slug}/${run.run_id}`, { maxRetries: 2 });
       expect(response.ok()).toBe(true);
       const stored = await response.json();
       expect(stored.integrity.valid).toBe(true);
@@ -262,7 +264,7 @@ test.describe('public developer preview release rehearsal', () => {
       const retained = (await runList(page)).filter((run) => run.status === 'complete');
       expect(retained.map((run) => run.run_id).sort()).toEqual(completed.map((run) => run.run_id).sort());
       for (const run of retained) {
-        const response = await page.request.get(`${apiUrl}/runs/${run.project_slug}/${run.run_id}`);
+        const response = await page.request.get(`${apiUrl}/runs/${run.project_slug}/${run.run_id}`, { maxRetries: 2 });
         expect((await response.json()).integrity.valid).toBe(true);
       }
     });
@@ -270,4 +272,93 @@ test.describe('public developer preview release rehearsal', () => {
     expect(pageErrors).toEqual([]);
     expect(duplicateKeyWarnings).toEqual([]);
   });
+});
+
+
+test('loads both exact Pyleecan Prius cases through the public Design and Solve routes', async ({ page }) => {
+  // Observe the rendered motor origin so the real wheel handler and drawing
+  // transform must agree, including the shifted frame beside the phase scope.
+  await page.addInitScript(() => {
+    const original = CanvasRenderingContext2D.prototype.createRadialGradient;
+    CanvasRenderingContext2D.prototype.createRadialGradient = function (...args) {
+      const [x, y, inner, , , outer] = args;
+      if (this.canvas.matches('.motor-canvas') && Math.abs(inner / outer - 0.82 / 1.2) < 1e-9) {
+        this.canvas.dataset.motorOrigin = JSON.stringify([x - outer * 0.04 / 1.2, y - outer * 0.09 / 1.2]);
+        this.canvas.dataset.motorRadius = String(outer / 1.2);
+      }
+      return original.apply(this, args);
+    };
+  });
+  await page.goto('/');
+  await expect(page.getByRole('status', { name: 'Local backend: ready', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+  for (const [label, caseId, temperature] of [
+    ['Pyleecan Prius 8p48s · BEMF', 'prius-2004-tutorial-bemf-v1', 20],
+    ['Pyleecan Prius 8p48s · Loaded torque', 'prius-2004-loaded-torque-v1', 60],
+  ] as const) {
+    await page.getByRole('button', { name: 'Design file menu', exact: true }).click();
+    await page.getByRole('menuitem', { name: 'Examples', exact: true }).hover();
+    const previewed = page.waitForResponse(r => r.request().method() === 'POST' && new URL(r.url()).pathname === '/preview' && r.request().postDataJSON()?.reference_case === caseId);
+    await page.getByRole('menuitem', { name: new RegExp(`^${label}`) }).click();
+    const response = await previewed;
+    expect(response.status(), await response.text()).toBe(200);
+    const request = response.request().postDataJSON();
+    expect(request.solve_params.magnet_temperature_C).toBe(temperature);
+    expect(request.winding.coil_span).toBe(6);
+    expect(request.solve_params.max_nonlinear_iterations).toBe(200);
+    const data = await response.json();
+    expect(data.regions.filter((r: {loops?: unknown[]}) => r.loops?.length)).toHaveLength(91);
+    expect(data.regions.find((r: {region_type: string}) => r.region_type === 'rotor_core').loops).toHaveLength(10);
+    expect(data.metadata.phase_current_convention).toBe('pyleecan_d_axis');
+    await page.getByRole('button', { name: 'Show 2D motor view', exact: true }).click();
+    await page.getByRole('button', { name: 'Stop and reset preview', exact: true }).click();
+    await page.getByRole('button', { name: 'Phases', exact: true }).click();
+    const phaseCanvas = page.getByLabel('geometry motor view, phases layer', { exact: true });
+    await expect(phaseCanvas).toHaveAttribute('data-motor-origin', /\[/);
+    const before = JSON.parse((await phaseCanvas.getAttribute('data-motor-origin'))!) as number[];
+    const radius = Number(await phaseCanvas.getAttribute('data-motor-radius'));
+    const bounds = (await phaseCanvas.boundingBox())!;
+    // The scope must be visible: at this width the motor is right of centre.
+    expect(before[0]).toBeGreaterThan(bounds.width / 2 + 50);
+    await page.mouse.move(bounds.x + before[0], bounds.y + before[1]);
+    await page.mouse.wheel(0, -Math.log(2) / 0.0012);
+    await expect(page.getByRole('button', { name: 'Fit motor to view', exact: true })).toBeEnabled();
+    await expect.poll(async () => Number(await phaseCanvas.getAttribute('data-motor-radius')) / radius).toBeCloseTo(2, 3);
+    // Chromium rounds wheel pointer coordinates to CSS pixels.
+    await expect.poll(async () => {
+      const after = JSON.parse((await phaseCanvas.getAttribute('data-motor-origin'))!) as number[];
+      return Math.hypot(after[0] - before[0], after[1] - before[1]);
+    }).toBeLessThan(1.5);
+    await page.getByRole('button', { name: 'Fit motor to view', exact: true }).click();
+    await page.getByRole('button', { name: 'Phases', exact: true }).click();
+    await expect(page.getByText('Published Pyleecan geometry, winding and materials are fixed.', { exact: false })).toBeVisible();
+    await expect(page.getByText('No affiliation with or endorsement by EOMYS, the Pyleecan project, or Toyota.', { exact: false })).toBeVisible();
+    await page.getByRole('button', { name: 'Show layout view', exact: true }).click();
+    await expect(page.locator('.wl-ring-slot')).toHaveCount(48);
+    await expect(page.locator('.wl-ring-end-turn')).toHaveCount(24);
+    const slot13 = page.locator('.wl-ring-number').filter({ hasText: /^13$/ });
+    expect(Number(await slot13.getAttribute('y'))).toBeGreaterThan(250);
+    await page.getByRole('button', { name: 'Show 2D motor view', exact: true }).click();
+    await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeEnabled();
+    const checked = await page.request.post(`${apiUrl}/solve/validate`, { data: request });
+    expect(checked.status()).toBe(200);
+    expect((await checked.json()).valid).toBe(true);
+    const validated = page.waitForResponse(r => r.request().method() === 'POST' && new URL(r.url()).pathname === '/solve/validate');
+    await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+    const validation = await validated;
+    expect(validation.status()).toBe(200);
+    expect((await validation.json()).valid).toBe(true);
+    expect(validation.request().postDataJSON().solver).toBe('magneto2d');
+    await openSetupSection(page, 'operating');
+    await expect(page.getByText(`Pyleecan software reference · ${temperature}°C magnets`, { exact: false })).toBeVisible();
+    await expect(page.getByText('No affiliation with or endorsement by EOMYS, the Pyleecan project, or Toyota.', { exact: false })).toBeVisible();
+    await page.getByRole('button', { name: '← Back to Design', exact: true }).click();
+  }
+  await page.getByRole('button', { name: 'Show 2D motor view', exact: true }).click();
+  await page.screenshot({ path: fileURLToPath(new URL('../test-results/prius-reference.png', import.meta.url)), fullPage: true });
+  await page.getByRole('button', { name: 'Show 3D motor view', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Show 2D motor view', exact: true })).toBeVisible();
+  await expect(page.getByText('Loading reference geometry…', { exact: true })).toBeHidden();
+  await expect(page.locator('.public-viewport-message')).toHaveCount(0);
+  await page.screenshot({ path: fileURLToPath(new URL('../test-results/prius-reference-3d.png', import.meta.url)), fullPage: true });
 });

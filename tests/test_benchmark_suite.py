@@ -324,22 +324,35 @@ def test_prius_planned_label_preserves_policy_rejection_and_numerical_status(tmp
     summary = read(tmp_path / "report/benchmark_summary.json")
     assert summary["counts"] == {"UNSUPPORTED": 1}
     assert summary["rows"][0]["status"] == summary["rows"][0]["evaluation"]["status"] == "UNSUPPORTED"
-    assert summary["phase_summary_presentation"]["C"] == "YELLOW"
+    assert summary["phase_summary_presentation"]["C"] == "DEFERRED"
     assert summary["planned_coverage"][cid]["numerical_status"] == "UNSUPPORTED"
-    assert display_outcome(row) == "Planned coverage (not yet supported)"
+    assert display_outcome(row) == "Deferred hardware coverage (v0.5.0)"
     for name in ("coilem_benchmark_report.html", "benchmark_report.md"):
         content = (tmp_path / "report" / name).read_text(encoding="utf-8")
-        assert "Planned coverage (not yet supported)" in content
+        assert "Deferred hardware coverage (v0.5.0)" in content
         assert "HoleM50" in content
         assert "no comparison was performed" in content
     with (tmp_path / "report/benchmark_results.csv").open(newline="", encoding="utf-8") as stream:
         record = next(csv.DictReader(stream))
     assert record["status"] == "UNSUPPORTED"
-    assert record["coverage_label"] == "Planned coverage (not yet supported)"
+    assert record["coverage_label"] == "Deferred hardware coverage (v0.5.0)"
     # The roadmap label must not hide other outcomes or imply arbitrary unsupported cases are planned.
     for status in ("PASS", "FAIL", "INCOMPLETE", "NOT_COMPARED"):
         assert display_outcome({"id": cid, "status": status}) == status
     assert display_outcome({"id": "other", "status": "UNSUPPORTED"}) == "UNSUPPORTED"
+
+
+def test_deferred_scope_does_not_hide_active_warnings_or_other_unsupported_cases():
+    from backend.benchmark_suite.report import phase_presentation, presentation_status
+
+    deferred = {"id": "ornl_prius_2004_ipm", "status": "UNSUPPORTED"}
+    passed = {"id": "measured", "status": "PASS"}
+    assert phase_presentation([passed, deferred]) == "PASS"
+    assert presentation_status(deferred) == "DEFERRED"
+    assert phase_presentation([passed, {**deferred, "id": "unexpected"}]) == "YELLOW"
+    assert phase_presentation([deferred, {**passed, "status": "YELLOW"}]) == "YELLOW"
+    assert phase_presentation([{**deferred, "status": "FAIL"}]) == "FAIL"
+    assert presentation_status({**deferred, "status": "FAIL"}) == "FAIL"
 
 
 def test_canonical_request_hash_includes_speed_and_geometry():

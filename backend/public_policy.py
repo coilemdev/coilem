@@ -94,7 +94,7 @@ def parse_public_motor_config(body: dict[str, Any], *, allow_experimental_rotors
 
     solve_params = body.get("solve_params")
     if isinstance(solve_params, dict):
-        if solve_params.get("magnet_temperature_C") is not None:
+        if solve_params.get("magnet_temperature_C") is not None and body.get("geometry_reference") != "pyleecan_prius_2004":
             raise PublicConfigError(
                 "Manual magnet-temperature modeling is unavailable in this preview.",
                 field="solve_params.magnet_temperature_C",
@@ -247,7 +247,7 @@ def public_config_support_error(
 
     if config.topology == "IPM":
         ipm_topology = str(config.rotor.ipm_topology or "flat_buried")
-        experimental = allow_experimental_rotors or experimental_rotors_enabled()
+        experimental = allow_experimental_rotors or experimental_rotors_enabled() or config.geometry_reference == "pyleecan_prius_2004"
         accepted = SUPPORTED_PUBLIC_IPM_TOPOLOGIES | (EXPERIMENTAL_IPM_TOPOLOGIES if experimental else frozenset())
         if ipm_topology not in accepted:
             return PublicConfigError(

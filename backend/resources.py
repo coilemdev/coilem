@@ -48,6 +48,8 @@ PACKAGED_DATA_FILES = (
 PACKAGE_DATA_FILES = (
     "backend/elmer/profiles/v1.json",
     "backend/mesh_profiles/gmsh_profiles.json",
+    "backend/reference_models/pyleecan_prius_2004.json",
+    "backend/reference_models/pyleecan_prius_2004_config.json",
 )
 # ``coilem benchmark`` (#71) reads the registered suite, everything it
 # registers, the frozen reference bundle and the published per-platform

@@ -1,0 +1,390 @@
+{
+  "rotation_convention": "public_clockwise_positive",
+  "current_angle_reference": "pyleecan_d_axis",
+  "vectors": [
+    {
+      "case_id": "prius-2004-tutorial-bemf-v1",
+      "current_amplitude_A": 0.0,
+      "current_angle_deg": 140,
+      "rotor_electrical_angle_deg": 0,
+      "phase_current_A": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "normalized_current": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "prius-2004-tutorial-bemf-v1",
+      "current_amplitude_A": 0.0,
+      "current_angle_deg": 140,
+      "rotor_electrical_angle_deg": 30,
+      "phase_current_A": [
+        -0.0,
+        0.0,
+        0.0
+      ],
+      "normalized_current": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "prius-2004-tutorial-bemf-v1",
+      "current_amplitude_A": 0.0,
+      "current_angle_deg": 140,
+      "rotor_electrical_angle_deg": 90,
+      "phase_current_A": [
+        -0.0,
+        -0.0,
+        0.0
+      ],
+      "normalized_current": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "prius-2004-tutorial-bemf-v1",
+      "current_amplitude_A": 0.0,
+      "current_angle_deg": 140,
+      "rotor_electrical_angle_deg": 180,
+      "phase_current_A": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "normalized_current": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "prius-2004-tutorial-bemf-v1",
+      "current_amplitude_A": 0.0,
+      "current_angle_deg": 140,
+      "rotor_electrical_angle_deg": 270,
+      "phase_current_A": [
+        0.0,
+        0.0,
+        -0.0
+      ],
+      "normalized_current": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "prius-2004-tutorial-bemf-v1",
+      "current_amplitude_A": 0.0,
+      "current_angle_deg": 140,
+      "rotor_electrical_angle_deg": 359.9,
+      "phase_current_A": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "normalized_current": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "prius-2004-loaded-torque-v1",
+      "current_amplitude_A": 250.0,
+      "current_angle_deg": 0,
+      "rotor_electrical_angle_deg": 0,
+      "phase_current_A": [
+        250.0,
+        -124.99999999999994,
+        -124.99999999999994
+      ],
+      "normalized_current": [
+        1.0,
+        -0.4999999999999998,
+        -0.4999999999999998
+      ]
+    },
+    {
+      "case_id": "prius-2004-loaded-torque-v1",
+      "current_amplitude_A": 250.0,
+      "current_angle_deg": 0,
+      "rotor_electrical_angle_deg": 30,
+      "phase_current_A": [
+        216.50635094610968,
+        1.5308084989341916e-14,
+        -216.50635094610968
+      ],
+      "normalized_current": [
+        0.8660254037844387,
+        6.123233995736766e-17,
+        -0.8660254037844387
+      ]
+    },
+    {
+      "case_id": "prius-2004-loaded-torque-v1",
+      "current_amplitude_A": 250.0,
+      "current_angle_deg": 0,
+      "rotor_electrical_angle_deg": 90,
+      "phase_current_A": [
+        1.5308084989341916e-14,
+        216.50635094610968,
+        -216.50635094610965
+      ],
+      "normalized_current": [
+        6.123233995736766e-17,
+        0.8660254037844387,
+        -0.8660254037844386
+      ]
+    },
+    {
+      "case_id": "prius-2004-loaded-torque-v1",
+      "current_amplitude_A": 250.0,
+      "current_angle_deg": 0,
+      "rotor_electrical_angle_deg": 180,
+      "phase_current_A": [
+        -250.0,
+        125.00000000000003,
+        125.00000000000003
+      ],
+      "normalized_current": [
+        -1.0,
+        0.5000000000000001,
+        0.5000000000000001
+      ]
+    },
+    {
+      "case_id": "prius-2004-loaded-torque-v1",
+      "current_amplitude_A": 250.0,
+      "current_angle_deg": 0,
+      "rotor_electrical_angle_deg": 270,
+      "phase_current_A": [
+        -4.5924254968025744e-14,
+        -216.50635094610968,
+        216.50635094610965
+      ],
+      "normalized_current": [
+        -1.8369701987210297e-16,
+        -0.8660254037844387,
+        0.8660254037844386
+      ]
+    },
+    {
+      "case_id": "prius-2004-loaded-torque-v1",
+      "current_amplitude_A": 250.0,
+      "current_angle_deg": 0,
+      "rotor_electrical_angle_deg": 359.9,
+      "phase_current_A": [
+        249.99961922832193,
+        -125.37768428986443,
+        -124.62193493845741
+      ],
+      "normalized_current": [
+        0.9999984769132877,
+        -0.5015107371594577,
+        -0.49848773975382965
+      ]
+    },
+    {
+      "case_id": "prius-2004-loaded-torque-v1",
+      "current_amplitude_A": 250.0,
+      "current_angle_deg": 60,
+      "rotor_electrical_angle_deg": 0,
+      "phase_current_A": [
+        125.00000000000003,
+        125.00000000000003,
+        -250.0
+      ],
+      "normalized_current": [
+        0.5000000000000001,
+        0.5000000000000001,
+        -1.0
+      ]
+    },
+    {
+      "case_id": "prius-2004-loaded-torque-v1",
+      "current_amplitude_A": 250.0,
+      "current_angle_deg": 60,
+      "rotor_electrical_angle_deg": 30,
+      "phase_current_A": [
+        1.5308084989341916e-14,
+        216.50635094610968,
+        -216.50635094610965
+      ],
+      "normalized_current": [
+        6.123233995736766e-17,
+        0.8660254037844387,
+        -0.8660254037844386
+      ]
+    },
+    {
+      "case_id": "prius-2004-loaded-torque-v1",
+      "current_amplitude_A": 250.0,
+      "current_angle_deg": 60,
+      "rotor_electrical_angle_deg": 90,
+      "phase_current_A": [
+        -216.50635094610968,
+        216.50635094610968,
+        -4.5924254968025744e-14
+      ],
+      "normalized_current": [
+        -0.8660254037844387,
+        0.8660254037844387,
+        -1.8369701987210297e-16
+      ]
+    },
+    {
+      "case_id": "prius-2004-loaded-torque-v1",
+      "current_amplitude_A": 250.0,
+      "current_angle_deg": 60,
+      "rotor_electrical_angle_deg": 180,
+      "phase_current_A": [
+        -125.00000000000011,
+        -124.99999999999994,
+        250.0
+      ],
+      "normalized_current": [
+        -0.5000000000000004,
+        -0.4999999999999998,
+        1.0
+      ]
+    },
+    {
+      "case_id": "prius-2004-loaded-torque-v1",
+      "current_amplitude_A": 250.0,
+      "current_angle_deg": 60,
+      "rotor_electrical_angle_deg": 270,
+      "phase_current_A": [
+        216.5063509461096,
+        -216.50635094610965,
+        7.654042494670958e-14
+      ],
+      "normalized_current": [
+        0.8660254037844384,
+        -0.8660254037844386,
+        3.061616997868383e-16
+      ]
+    },
+    {
+      "case_id": "prius-2004-loaded-torque-v1",
+      "current_amplitude_A": 250.0,
+      "current_angle_deg": 60,
+      "rotor_electrical_angle_deg": 359.9,
+      "phase_current_A": [
+        125.37768428986446,
+        124.62193493845743,
+        -249.99961922832193
+      ],
+      "normalized_current": [
+        0.5015107371594578,
+        0.4984877397538297,
+        -0.9999984769132877
+      ]
+    },
+    {
+      "case_id": "prius-2004-loaded-torque-v1",
+      "current_amplitude_A": 250.0,
+      "current_angle_deg": 140,
+      "rotor_electrical_angle_deg": 0,
+      "phase_current_A": [
+        -191.51111077974448,
+        234.9231551964771,
+        -43.412044416732584
+      ],
+      "normalized_current": [
+        -0.7660444431189779,
+        0.9396926207859084,
+        -0.17364817766693033
+      ]
+    },
+    {
+      "case_id": "prius-2004-loaded-torque-v1",
+      "current_amplitude_A": 250.0,
+      "current_angle_deg": 140,
+      "rotor_electrical_angle_deg": 30,
+      "phase_current_A": [
+        -246.201938253052,
+        160.69690242163483,
+        85.50503583141725
+      ],
+      "normalized_current": [
+        -0.984807753012208,
+        0.6427876096865394,
+        0.342020143325669
+      ]
+    },
+    {
+      "case_id": "prius-2004-loaded-torque-v1",
+      "current_amplitude_A": 250.0,
+      "current_angle_deg": 140,
+      "rotor_electrical_angle_deg": 90,
+      "phase_current_A": [
+        -160.69690242163486,
+        -85.50503583141717,
+        246.201938253052
+      ],
+      "normalized_current": [
+        -0.6427876096865395,
+        -0.3420201433256687,
+        0.984807753012208
+      ]
+    },
+    {
+      "case_id": "prius-2004-loaded-torque-v1",
+      "current_amplitude_A": 250.0,
+      "current_angle_deg": 140,
+      "rotor_electrical_angle_deg": 180,
+      "phase_current_A": [
+        191.51111077974446,
+        -234.9231551964771,
+        43.41204441673261
+      ],
+      "normalized_current": [
+        0.7660444431189778,
+        -0.9396926207859084,
+        0.17364817766693044
+      ]
+    },
+    {
+      "case_id": "prius-2004-loaded-torque-v1",
+      "current_amplitude_A": 250.0,
+      "current_angle_deg": 140,
+      "rotor_electrical_angle_deg": 270,
+      "phase_current_A": [
+        160.6969024216349,
+        85.50503583141725,
+        -246.201938253052
+      ],
+      "normalized_current": [
+        0.6427876096865396,
+        0.342020143325669,
+        -0.984807753012208
+      ]
+    },
+    {
+      "case_id": "prius-2004-loaded-torque-v1",
+      "current_amplitude_A": 250.0,
+      "current_angle_deg": 140,
+      "rotor_electrical_angle_deg": 359.9,
+      "phase_current_A": [
+        -191.23035022960775,
+        235.07203175260477,
+        -43.84168152299681
+      ],
+      "normalized_current": [
+        -0.764921400918431,
+        0.9402881270104191,
+        -0.17536672609198722
+      ]
+    }
+  ]
+}

@@ -5,8 +5,8 @@
   "files": [
     {
       "path": ".gitattributes",
-      "bytes": 281,
-      "sha256": "3077a1e2193c544c8204a5f0f59898c2311f69b96e74aee5a1895e1b50e1c9ce"
+      "bytes": 455,
+      "sha256": "4c2489a1b5edf72241ce9ae004f17ae7ee4892160c3681ef453c90bd7c71c35b"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -27,6 +27,11 @@
       "path": ".github/workflows/ci.yml",
       "bytes": 6383,
       "sha256": "c0b81a9e0e6a68b2015becaf3a29091b96196a8ef119b0d4e31f6d9eb1a1ebf0"
+    },
+    {
+      "path": ".github/workflows/release-benchmarks.yml",
+      "bytes": 2880,
+      "sha256": "02efc7d45d69da755f7b4e8139f54aace13eee1ed1de8523363aaf8a1c453675"
     },
     {
       "path": ".github/workflows/release-wheels.yml",
@@ -55,18 +60,18 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 2333,
-      "sha256": "d21a2acd94aad62d5424c3a043210a11ecaeb0d272e0bd82eabd2f1e954c9ea1"
+      "bytes": 3535,
+      "sha256": "c7e2b129b9137d126a487752535c0a79e525b11bc22d2f7cf682e3b7bd06b915"
     },
     {
       "path": "README.md",
-      "bytes": 9396,
-      "sha256": "c6abe20cc04765b7c539bcde07d993f767a16d806f638a2fd41805b84403aad9"
+      "bytes": 10334,
+      "sha256": "ccd3bcce3044c620ce866c77ce3907b8b78417cefb613a4da4153f63d5e7d186"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 19380,
-      "sha256": "f2503f406fc405d8171018ca901439118e473d7c8ceac6080f44a3503c966386"
+      "bytes": 8707,
+      "sha256": "fa66e2a6094aee5d9aff953ad8792b8045d1a216e51fe175d6bf755eb98a3066"
     },
     {
       "path": "SECURITY.md",
@@ -80,8 +85,8 @@
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
-      "bytes": 16671,
-      "sha256": "bd0207bf5296f1cfc395cc224953d25cc69cd0f6b5605748fabd0a8c566529ea"
+      "bytes": 29152,
+      "sha256": "3f41db781fd096df31fac2511f7657eb128952ed132885440054ec55813b8735"
     },
     {
       "path": "TRADEMARKS.md",
@@ -91,7 +96,7 @@
     {
       "path": "backend/__init__.py",
       "bytes": 53,
-      "sha256": "a504ea60e52a6281ed93c0120ebb218eeceea9753767e95273b8449249bb3cf2"
+      "sha256": "36d9344447c94b9e5b3b2c74a329a63cee99b751171f2022df055fead7bd12cf"
     },
     {
       "path": "backend/airgap_sampling.py",
@@ -106,7 +111,7 @@
     {
       "path": "backend/benchmark_suite/__init__.py",
       "bytes": 335,
-      "sha256": "10d7206c8eea1eb866da061e9008887576c4b7f2fdb9f2c4d715761b9196de1b"
+      "sha256": "f38c0c09ec524419289ce39470429550340e2e6969a568a2315bbd9e14e30f97"
     },
     {
       "path": "backend/benchmark_suite/abc_metrics.py",
@@ -130,8 +135,8 @@
     },
     {
       "path": "backend/benchmark_suite/contract.py",
-      "bytes": 6708,
-      "sha256": "40c014b356b6616b31d9e4677c4fa25b7f33dbf9692340bf15206444bbf40db9"
+      "bytes": 6924,
+      "sha256": "374371a1873e0798a8c9ba1a668f9454bafd7c4bcf17e8defae1d18514ad63c4"
     },
     {
       "path": "backend/benchmark_suite/hardware.py",
@@ -145,13 +150,13 @@
     },
     {
       "path": "backend/benchmark_suite/physics.py",
-      "bytes": 2739,
-      "sha256": "348afbb089361e635526be4dee28eb2b554e72b58ef071cd3327fec843deb81c"
+      "bytes": 2907,
+      "sha256": "02e647cdbda407f068fccbcc0f4ac3fe2cced6042881cf352325fff29ca7b91a"
     },
     {
       "path": "backend/benchmark_suite/record.py",
-      "bytes": 10648,
-      "sha256": "37b83a6e5aa3cfd2d47bd5ff8f390e912ef5ba90ebd7e06f0c126b03332f795b"
+      "bytes": 10789,
+      "sha256": "3e84cd2419b395ffac51a95b96643bd0a51f54fd956a95329639f3233322d2c0"
     },
     {
       "path": "backend/benchmark_suite/references.py",
@@ -160,8 +165,8 @@
     },
     {
       "path": "backend/benchmark_suite/report.py",
-      "bytes": 28783,
-      "sha256": "0fbc7eab5c9ffc4f17d1e2472c6782002307804152abcf8224a7be414194bf98"
+      "bytes": 30549,
+      "sha256": "cb7fa762862b6e48c34904d01ad007634bb21c5a8320553c529ccc69748a807a"
     },
     {
       "path": "backend/benchmark_suite/share.py",
@@ -230,8 +235,8 @@
     },
     {
       "path": "backend/excitation.py",
-      "bytes": 8522,
-      "sha256": "7e2dead86d3db978cd641fcfe203a2e747f5b48076be0483eff841f84bb9aa84"
+      "bytes": 9123,
+      "sha256": "58419d436989bb1ac588e2404c82348c63695dbbe66c6977fae131f0210d9a28"
     },
     {
       "path": "backend/export_safety.py",
@@ -265,8 +270,8 @@
     },
     {
       "path": "backend/geometry_ir.py",
-      "bytes": 65987,
-      "sha256": "c854de3f60d054660b9616cdb752a32835b12c445f497adb7ee24eb0ebf4f8bb"
+      "bytes": 66138,
+      "sha256": "6c5404b069e325d990587a78047cdbffc3a0f0a69dabf06ae3cd4aff32d7dfd7"
     },
     {
       "path": "backend/geometry_ir_tessellation.py",
@@ -280,8 +285,8 @@
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 75184,
-      "sha256": "764e31391894685f1a259a90c7dbb562d612f585a92cef91761a5d6ae783f53f"
+      "bytes": 75391,
+      "sha256": "5cfd97444c6b8e365d9164efa8a73f549ab8b5be9e5903812c2b678f430bd959"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -375,8 +380,8 @@
     },
     {
       "path": "backend/magneto2d_adapter/__init__.py",
-      "bytes": 72940,
-      "sha256": "0ffba926d459e54c6e83943be4b4855bd0cfe20ba05586f1273e6575f5405baa"
+      "bytes": 73698,
+      "sha256": "a71df849483ec8cfa6ababf3a7a6f4487fe216ff04a7e77e39b1b59ff03e0421"
     },
     {
       "path": "backend/magneto2d_adapter/_state.py",
@@ -415,8 +420,8 @@
     },
     {
       "path": "backend/models/config.py",
-      "bytes": 29376,
-      "sha256": "d1ccb891c14b3d28ccb8b6e9ee911628f994fcf06ea66b071b8faef9a20d4321"
+      "bytes": 30368,
+      "sha256": "b97662868f28f6479be8063c76a6c821cd3bd247eaf91d346215df57b8b089cc"
     },
     {
       "path": "backend/models/errors.py",
@@ -430,8 +435,8 @@
     },
     {
       "path": "backend/models/geometry.py",
-      "bytes": 3166,
-      "sha256": "ad7ee8acb567b9aa22a73329523734f0f67e7f98a4f349da4bc0ad387758ab0c"
+      "bytes": 3375,
+      "sha256": "25528b3a8c32730d8860ba2f4f3792496597a87f7e25e78808d8886449b74f2e"
     },
     {
       "path": "backend/models/mesh.py",
@@ -445,8 +450,8 @@
     },
     {
       "path": "backend/models/result.py",
-      "bytes": 4863,
-      "sha256": "75907a4cc8e7944f066592c4d050e8744f1ec831ac80f6250bb4fe4d9b56fbdf"
+      "bytes": 5028,
+      "sha256": "c1dfcd98e85daaa81e39b82e91658a0a69a18eb6fcf6f8cb41c15b23b7abf660"
     },
     {
       "path": "backend/models/waveforms.py",
@@ -460,13 +465,13 @@
     },
     {
       "path": "backend/preview.py",
-      "bytes": 39043,
-      "sha256": "9d95bd235b3f2564b5c4fc6482adb549d01ac1ba25c6a9ce0da5c6e0cbf4eb28"
+      "bytes": 40353,
+      "sha256": "657b1ba6f67f1d4d3d15988ea34dd5d28e3e248d4e59967c4d5f27854287ffb8"
     },
     {
       "path": "backend/preview_from_ir.py",
-      "bytes": 10654,
-      "sha256": "2f7c8764abdd35c4183ac4e63d27c304c38ec3cea7aa6e1a805c0dd2876b90b4"
+      "bytes": 11203,
+      "sha256": "dcad2fb353bea0b38efec10ca7e59459d83f9830e50b931d10594963ce1dcad2"
     },
     {
       "path": "backend/public_field_playback.py",
@@ -490,13 +495,13 @@
     },
     {
       "path": "backend/public_policy.py",
-      "bytes": 12038,
-      "sha256": "88ef6fd4e551ce3a1ae0eb22bdc4ce84e3919c487fd663ba52df3025d0cc9374"
+      "bytes": 12152,
+      "sha256": "711d20c6a27287adde2a97209ca4d2e7148dfa6203d6631392f274ecbeacecbe"
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 53513,
-      "sha256": "befde85f42682921b406c13730951388faa8d624fee26950b63af594e5456d06"
+      "bytes": 54086,
+      "sha256": "66f33e489f915240886da64a51b1e8b6913a102b7d2bde8ee6e150fde2d96ba9"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -540,13 +545,33 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 6735,
-      "sha256": "eec1a879d97c8be51077bb95a3323f0501b73dfafe1f116d1d44d0e034bc1d1e"
+      "bytes": 6982,
+      "sha256": "af5558cdf6b048c568cf4598c227da4b60aef1707eb9c2dd702ac55305cef410"
+    },
+    {
+      "path": "backend/reference_models/__init__.py",
+      "bytes": 83,
+      "sha256": "bb4c43d7ddb7acb9fbf3a29b5cca4a37571af59fb1bf66175c8bd326f66339bc"
+    },
+    {
+      "path": "backend/reference_models/prius.py",
+      "bytes": 16613,
+      "sha256": "a8fe330a05d5f0ee84b68950f726672808fb374b353a91f9d5b757f2d81afa3f"
+    },
+    {
+      "path": "backend/reference_models/pyleecan_prius_2004.json",
+      "bytes": 140905,
+      "sha256": "3fd70d01f18a814661c055706ee18314a32670a413cec8a686665230b21c4f7e"
+    },
+    {
+      "path": "backend/reference_models/pyleecan_prius_2004_config.json",
+      "bytes": 6068,
+      "sha256": "9709ff1b1b289eb2c1102da87b5a97596d4427e02aeda99320030832f698ed3a"
     },
     {
       "path": "backend/resources.py",
-      "bytes": 8283,
-      "sha256": "0a583d00f3b7af405955f5be94d31080f1055b652c1ffa8b325b571d982d1997"
+      "bytes": 8404,
+      "sha256": "911f41b73cf5b08f4900330cf5af4590e0fdf825ae7f941735d8e4f5352e7a23"
     },
     {
       "path": "backend/solve_estimate.py",
@@ -560,8 +585,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 142122,
-      "sha256": "696af12acd2ab91099cecd024486f8678277c1050d0e6fdde259a6c7b4ce8f8a"
+      "bytes": 143339,
+      "sha256": "d906d5f06250c59c8df88ef8517959cda60c7a83e1ec72425e8ef780fd9a6e25"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -600,8 +625,8 @@
     },
     {
       "path": "backend/topology_provenance.py",
-      "bytes": 9106,
-      "sha256": "dc2aea3737aa67fd11adbdb40ae671cb3a64c546094f736ceea175d0fcbd1d8d"
+      "bytes": 9407,
+      "sha256": "5e7e205348f731f2a57bdb3e362984c58a8c5711d26d08a22419b2b940b8e046"
     },
     {
       "path": "backend/torque_metrics.py",
@@ -620,8 +645,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 8144,
-      "sha256": "8c48345727e407932c3e1dbbf95fa510ce3d2caf7bb661fd710deb1fb6b7c3e8"
+      "bytes": 8768,
+      "sha256": "03d39e19a4d58fe589140e7c0696b13a97da6a7da34c3038d6782e7851c1e66f"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -650,8 +675,8 @@
     },
     {
       "path": "benchmarks/abcd-v1.3/README.md",
-      "bytes": 4522,
-      "sha256": "d7c18b168cb3161bf443d9eda30af63f0bef212fec78ff0aea9fffa9bed8370f"
+      "bytes": 4912,
+      "sha256": "5b46cb6468e96fc9f1f5d942b13e08ca28e7728ba80e9beac424bb960b40ab3f"
     },
     {
       "path": "benchmarks/abcd-v1.3/benchmark_spec.json",
@@ -2564,6 +2589,11 @@
       "sha256": "9e8f5e2e25f80dddbe3a5d02c882ff9a46980cc298e39c0f0fa1484c741d6b11"
     },
     {
+      "path": "benchmarks/models-v1/README.md",
+      "bytes": 4550,
+      "sha256": "cff231675abb30fa0e01e0aa351020f19b69ae3033f5b00952a2ce148f3da33d"
+    },
+    {
       "path": "benchmarks/performance-112/README.md",
       "bytes": 5123,
       "sha256": "345e850750b99a76fc0d9080ecaa79494b0544d07d4fd4f1d7348419bd18f898"
@@ -2915,8 +2945,8 @@
     },
     {
       "path": "benchmarks/records/README.md",
-      "bytes": 5268,
-      "sha256": "208872c05ffe81c0e1aa0de0f38d1c90898bf62f5e2c97b1d6a00c5dcfd3b53c"
+      "bytes": 5302,
+      "sha256": "b1ba6e2bd36832347f6ee7d3e9cb9f74cc1e6a820a3b559ba65832df33f5aaac"
     },
     {
       "path": "benchmarks/records/macos-arm64.json",
@@ -2925,8 +2955,8 @@
     },
     {
       "path": "benchmarks/records/windows-x86_64.json",
-      "bytes": 23561,
-      "sha256": "9a459e31f9f97a22bc2b72cc4e3b8da332a088f99bba6b5ee0c415d2aaebbcda"
+      "bytes": 23925,
+      "sha256": "366034058e016902d412b22ab93940e3b8cade85b398e2e13f52e32a10ed41cb"
     },
     {
       "path": "benchmarks/reference-baselines/ipm-high-output-v1/ipm_flat_12s10p_fscw_contract.json",
@@ -3555,8 +3585,8 @@
     },
     {
       "path": "benchmarks/v0.4.0/README.md",
-      "bytes": 5088,
-      "sha256": "4a6097199ec03976809bdc38b7ccc349df3e8779c17a100844283aab293f0452"
+      "bytes": 9185,
+      "sha256": "ee82cf89a8cc00a64f3f6b020324ee4944c7318c6d72b6ea6263affa9d500c22"
     },
     {
       "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/README.md",
@@ -4117,6 +4147,266 @@
       "path": "benchmarks/windows-native-20261018-f390b25/self-check-windows-x86_64.json",
       "bytes": 23525,
       "sha256": "69503ef105387c033c445085f081019e321e0102ee7392f3149c093e963123fb"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/README.md",
+      "bytes": 4692,
+      "sha256": "1738e6f41c8b1d788c34fb9eb98be3c8ed9e1299b2f55221bee2e71344be6347"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/artifact_manifest.json",
+      "bytes": 6016,
+      "sha256": "40e4c9166ea8d1aa46217979f4445a8f5a05b7429909300418ba94fa48b2b77d"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/benchmark_report.md",
+      "bytes": 5981,
+      "sha256": "6409af8a76f22586ebec9ff5a6cba2223d5e802f46452de8f215030228dff494"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/benchmark_results.csv",
+      "bytes": 17010,
+      "sha256": "0789019f8e53fb2b3fdd3dd977211c423d6021e88508621707892261a32f9a34"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/benchmark_summary.json",
+      "bytes": 1830966,
+      "sha256": "330445db11b4da8942d31115cddff63ccfbcd69c08854eb12998697a01bdf197"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/coilem_benchmark_report.html",
+      "bytes": 401225,
+      "sha256": "8c29300ce961572a8d17522e068c17cc7a9d16623e02e55b2a3b02dc027cbe88"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/coilem_benchmark_report.pdf",
+      "bytes": 139678,
+      "sha256": "d99475ac6b03b7fee61126aed7278190e50b5724ecdb7beb2262b5054f8941a0"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/comparison-to-prior.json",
+      "bytes": 23021,
+      "sha256": "88b3c201eb16821eeb6c67a20973732daf4d41b070017292196f71270f101698"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/console.txt",
+      "bytes": 4557,
+      "sha256": "47232aec46bc9accc4c422c5f60a43b0e80930f92176fbd38a774e0a07e870cb"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/environment.json",
+      "bytes": 6651,
+      "sha256": "e66835718d7c13319b9dfaeb8ccd11fef15b5f3c25ae98ca9581dcd8bc449363"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1604,
+      "sha256": "15423a47ebbf8509a7935c60d5c45404b8ee186f37dd266dec9e3f2a01560e34"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1607,
+      "sha256": "e328650573ad963181a7cf2292f6fe924d866c792d79c2a32137da2f9522fae0"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1606,
+      "sha256": "68b4e61d69cbc4673eba7ec92d0609862b1cf0283fa8391bf174b8d6c55b7c59"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2503,
+      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2503,
+      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2503,
+      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2502,
+      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2502,
+      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2502,
+      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1594,
+      "sha256": "3d78ae3d4175a933e18d04b9d45c7bddaff1db6e8355c21675dbe4da2934392c"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1596,
+      "sha256": "2081d6ab448377574d76cdd8c86724d07368fd09093bab02d111bfb589d5d709"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1595,
+      "sha256": "a77a7fbd94ed2a06659067f6501b029f612f09877128361268c76c5f9e268604"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2506,
+      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2506,
+      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1640,
+      "sha256": "dd91d0757a826b34c3fde5e813bdfdc385bc048ce477a172c5bfbf292ff6703b"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1642,
+      "sha256": "4e53c05733eb4d81cc3205e743f12fb473065142827f4e38327bd035caf7545c"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1641,
+      "sha256": "1825fe88e7ddf36234aa984f0fbbd30e894bfb34a6030fc02a348c883bf18ffa"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2550,
+      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/full-waveform-comparison.json",
+      "bytes": 5487,
+      "sha256": "2d75df4109db250da95b85f3063929eeaa641134a087c9f5b9a9d8eb098fb95e"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/pdf-publication.json",
+      "bytes": 4383,
+      "sha256": "38855815dc06a4cf981729caa48c61e41e9def5bd32b04faf20f324718784c88"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/publication.json",
+      "bytes": 12687,
+      "sha256": "2d45225f77f63791022a841371b9aff8f0a4ac2d1762de3c8047e2329fa2589d"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/raw-report-hashes.json",
+      "bytes": 5082,
+      "sha256": "67cb2aa89a58b280b2ff7f92cdd1fa2f2f86a1c17f0a351dd94510d127c52e95"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/run_manifest.json",
+      "bytes": 45900,
+      "sha256": "dfdfd059ddb11b8689d15f7bb663ef331416b208536137a0a47194f628460268"
+    },
+    {
+      "path": "benchmarks/windows-prius-requal-20261018/self-check-windows-x86_64.json",
+      "bytes": 23925,
+      "sha256": "366034058e016902d412b22ab93940e3b8cade85b398e2e13f52e32a10ed41cb"
     },
     {
       "path": "benchmarks/windows-process-pools-20261012-02fa24b/README.md",
@@ -5095,8 +5385,13 @@
     },
     {
       "path": "docs/RELEASE_0_4_0.md",
-      "bytes": 9734,
-      "sha256": "b55fa1d163cb7d5ed1646502827a72a26c5f79cafb8ad82c61770752c542e0ab"
+      "bytes": 12668,
+      "sha256": "340126f2028a092c0c2fa3f9257dbecf17a127de27b77cfde27b5df3dc5c41f6"
+    },
+    {
+      "path": "docs/RELEASE_0_4_0_INTEGRATION.md",
+      "bytes": 5563,
+      "sha256": "faf12fd1056d005095dd4d06354e4991cbff7743dd27e4f62422ac5182c927ee"
     },
     {
       "path": "docs/RELEASING.md",
@@ -5115,13 +5410,93 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 25146,
-      "sha256": "2ded9fda33a1d96d1aa4bfaf6beded9bc2f847fa8e3a5d4f985eede6f0f943a0"
+      "bytes": 26646,
+      "sha256": "3c7041072737faf212d0829a09b632f68d238c085df4a541fc8b19f7b851cd56"
     },
     {
       "path": "docs/VERIFICATION.md",
       "bytes": 6748,
       "sha256": "6bc2a602672fe8ae9558fe1b94f236517f8ccbe438fefaf0d2826a034703ce63"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
+      "bytes": 24251,
+      "sha256": "c7452c402fb6beff8847929a56b64899feb50d431049cf03714d9441103bafa5"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/app-design-3d.png",
+      "bytes": 744462,
+      "sha256": "4b75b03b5d9c61df42700e8d22bc15627d65a95409ec685a84f7093913b396bc"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/app-registration.json",
+      "bytes": 304814,
+      "sha256": "577a8d4585a79d328b406b1ee26f2d12e7124d28dbf1dacdf27e9c6ee00d7360"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/app-results.json",
+      "bytes": 1172838,
+      "sha256": "697ccfbf9c8f85387e3df08534e56debc9fb225aeea519d80d301f21e34d4191"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/app-results.md",
+      "bytes": 3129,
+      "sha256": "eb6f10957163b2c2aa690334e115eb1ba039942ff4eb15bdaf2f59675eb77cdf"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/app-results.svg",
+      "bytes": 76909,
+      "sha256": "c91311a7700d5929a99efe4da781781c12e91bbffcc773e989ab7092067e0ebe"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/artifact-manifest.json",
+      "bytes": 1429,
+      "sha256": "5716e071d10d517e566217781352f3ee42ea89240167c049984e905fd944359c"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/installed-wheel-validation.json",
+      "bytes": 14390,
+      "sha256": "e2af08c951b03a8cdd26d0d7948c2cf3a11a4ce2929c0961c112fc0ffb62a75b"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/protocol.json",
+      "bytes": 1662,
+      "sha256": "42adbb9b7803b11eae7d05e4bd347ef1c3f672b81cb8fee858064db97e407a77"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/pyleecan-loaded-results.json",
+      "bytes": 471705,
+      "sha256": "0f012e15daf5a5bd03f378bddb781097b8938e6f1c7db8444b03ffa4381ec43a"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/pyleecan-loaded.svg",
+      "bytes": 76376,
+      "sha256": "9258b57953f319756a744135776c0d22dbc40ff56ed0a11e5d54701ffccdcba7"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/pyleecan-reference-input.json",
+      "bytes": 4925,
+      "sha256": "eb9478c402b3c11524f009faf0f68ab1b128f6443c3dab3b792dbc2f5a7f506a"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/pyleecan-tutorial-bemf.svg",
+      "bytes": 57389,
+      "sha256": "09632c78a1e45b62f595dde0e79ea98a69e8f7c80f0d710764452e0170a8136b"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/pyleecan-tutorial-results.json",
+      "bytes": 241408,
+      "sha256": "dea27a8970ed8b1bf3162819acd0471136b63be047cfe77646999c6a1b05ba3b"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/pyleecan-ui-results.json",
+      "bytes": 63705,
+      "sha256": "0bbb694bf2f09913f96787f2261a8045c766690532810860f509e8f94385eb2c"
+    },
+    {
+      "path": "docs/benchmarks/pyleecan-prius-v1/workflow-validation.json",
+      "bytes": 10980,
+      "sha256": "c738a1fbb0d2b0874d8f667d9110d276c24c2e23e8a07d6a224a2c43acd7af5c"
     },
     {
       "path": "docs/examples/follow-flux-magnet-iron-report.json",
@@ -5376,12 +5751,12 @@
     {
       "path": "frontend/package-lock.json",
       "bytes": 63981,
-      "sha256": "46e5466c723c04d949140f0a5769b9c3372fdb2c90dae0c26e3609ccdb804ed3"
+      "sha256": "4f564e9bc63e57ed71ceee6c561924b96e469526692b6c8ee7cc397412cbef01"
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2118,
-      "sha256": "b6c9c006db041b31338fa978e4df68ea50c30c8600dc22455ea7813ff714d143"
+      "bytes": 2316,
+      "sha256": "f35719e531af14b32233764b15cfd725f9e90a3a930081f5d5d9a0d67ea79091"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -5409,6 +5784,11 @@
       "sha256": "1d7a2c25dbdf42708728e2066ea15ce50e9832321c8f03fcd51e31f2ec82e709"
     },
     {
+      "path": "frontend/scripts/test-canvas-labels.mjs",
+      "bytes": 2753,
+      "sha256": "99945cef840df5da3e13a435fe29e16d1a2fc38c6e28f85895e8fa78394357c5"
+    },
+    {
       "path": "frontend/scripts/test-chart-readout.mjs",
       "bytes": 6820,
       "sha256": "cfc5fb93f2888eda0f48b103b88b3b3f443564e2bad0fa1d0a8a4fc72e3c8bf2"
@@ -5425,13 +5805,13 @@
     },
     {
       "path": "frontend/scripts/test-design-file-defaults.mjs",
-      "bytes": 5505,
-      "sha256": "f799b02c3a578d3ac1aa1be4de1dfeb27a8e822ea7d2234719d654c611f3fbf4"
+      "bytes": 8140,
+      "sha256": "5819b471e1f34fc909b82439116fc349715c3105ab8f515c0c67486e7528839d"
     },
     {
       "path": "frontend/scripts/test-field-axes.mjs",
-      "bytes": 2977,
-      "sha256": "39aef41d7087a48b455b04a8db3780a0d4a3868b478019c434f5fd57861b4b3f"
+      "bytes": 6115,
+      "sha256": "2259c0bf1a6566428674fd7e2340753e99fa00044cee49e5cb01522d9a447319"
     },
     {
       "path": "frontend/scripts/test-field-legend-fit.mjs",
@@ -5484,6 +5864,11 @@
       "sha256": "f85457080dd26d1c90dc9a4084ab0bb533db3ff7aa5ae129dca8133ff5b08cd2"
     },
     {
+      "path": "frontend/scripts/test-phase-drive.mjs",
+      "bytes": 12240,
+      "sha256": "10041ab3da2b7a4266305f31ee6ac8f773332f709edeee73eea0ee60d2b95837"
+    },
+    {
       "path": "frontend/scripts/test-public-airgap-ux.mjs",
       "bytes": 2732,
       "sha256": "63dc2966cb3e82fbbdcab31d29110cef55c05352ef5254353e4a9ffeb653d282"
@@ -5500,13 +5885,13 @@
     },
     {
       "path": "frontend/scripts/test-public-bundle.mjs",
-      "bytes": 1251,
-      "sha256": "398e7f4ae43445ad1f88b39254c5dc53040657ec30428585927ba9ac872dcc37"
+      "bytes": 1466,
+      "sha256": "72b16140d94a28db506d0f002f96bf7adb7868cac2f191f4f0643958e4a399c1"
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 146561,
-      "sha256": "dc468867393bb8fbed38bf32f6a5a2962d75c4e9713b5942721ae3e6a0d53967"
+      "bytes": 158387,
+      "sha256": "4adeeb69fc52043cc92fc1549e16e8953003881846bc1153076a0b1a97840914"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5520,8 +5905,23 @@
     },
     {
       "path": "frontend/scripts/test-tooth-coil-repair.mjs",
-      "bytes": 5435,
-      "sha256": "6808ab126570cab3b8f1988a239b4f4fb32411f42e505a6573524bd0a339b3f1"
+      "bytes": 9248,
+      "sha256": "e896db2b872e75cc944ac43a6ec27cf0401b06fad742b6cb71617c77e16098ef"
+    },
+    {
+      "path": "frontend/scripts/test-viewport-transform.mjs",
+      "bytes": 1565,
+      "sha256": "c81995eb6c0599cd4d3054a1d1493511e33840ceceddff659492bf056ffb6b90"
+    },
+    {
+      "path": "frontend/scripts/test-winding-ring.mjs",
+      "bytes": 7556,
+      "sha256": "939e1eb9eed1cbb8d1ac8ea6f6f947f9e99d1e0432c7f6f18bf534fb2bf3de4a"
+    },
+    {
+      "path": "frontend/scripts/test-winding-wiring.mjs",
+      "bytes": 12851,
+      "sha256": "e6e6dad3a1329ffc4ac135318a15acb36d711f378a407698c584f04d273dc143"
     },
     {
       "path": "frontend/src/api/projectSchema.ts",
@@ -5895,8 +6295,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 71009,
-      "sha256": "fd416c60e77b18dce87f2e99613a58c0bbbbf133647a4691dbcc3d8037a85928"
+      "bytes": 71814,
+      "sha256": "0b9e1939d5952068f86cda6c2013c8c3f01a3ec61e9cfc1edf5a9b2dd985f826"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -5905,8 +6305,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 216556,
-      "sha256": "705d2050876c798c3080ae2af734fdcd42ffd01b60f1508900a2aea772a157df"
+      "bytes": 224304,
+      "sha256": "082e229c083da3871bfb95c7094c51ddc38acd7abde5048fce7d7ba0988c4216"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -5915,8 +6315,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 55272,
-      "sha256": "c7618d0cde4bd758b52d75eecf02cf4866ebeb367622b70cbe92c7c35c62dc30"
+      "bytes": 56545,
+      "sha256": "6d35e09fff36f1dc32f1a4610bee30a556feb2421a8eae0aa483ee6fa4d93636"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -5930,8 +6330,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 47768,
-      "sha256": "20a89d4000b76c1b80121e4e12a002f4ba264a952865c8a298e10033db40b395"
+      "bytes": 60653,
+      "sha256": "8f8b22ddd570cbd3ae121e0ab717eb0b5e12948861e9830038f139b23c0026f2"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -5945,13 +6345,18 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 80094,
-      "sha256": "a17855aabe2ecddac7b53b6fc0e6423921552c1d356823097a8c351bb6511eae"
+      "bytes": 80373,
+      "sha256": "cc39d3690a357af3cbbfec749836d7c78b207340641a7371ba3bec2066c5022a"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "bytes": 23042,
       "sha256": "c99d00b86d1d63b318a4f1a296dc356263f8c16d7d76ae6c53f0fc7dc8b9e29b"
+    },
+    {
+      "path": "frontend/src/public/ReferenceMotor3D.tsx",
+      "bytes": 10422,
+      "sha256": "dd8f8bdbc35c96028c782d9b0d64addd2e529b6ee0ac01344fe37d21106cd8a5"
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
@@ -5965,13 +6370,13 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 56111,
-      "sha256": "9f2de9c651569573341b0cefbc8eae81d51fd25658910dfe6bd5d1df58dcdf09"
+      "bytes": 54956,
+      "sha256": "3adf052069e3928915f0d4e2248f0cd917b041c061511817a4bb9d4b4f09e94e"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
-      "bytes": 6246,
-      "sha256": "5724654d93fd4f95851948f589a5d72f60d47c3c0850440b38121511a0c5364e"
+      "bytes": 6451,
+      "sha256": "12b008ddba348dc82d4aab2da463dda5f28b9a97ba08051742d32e49e7747a9f"
     },
     {
       "path": "frontend/src/public/WaveformChart.tsx",
@@ -5985,8 +6390,8 @@
     },
     {
       "path": "frontend/src/public/WindingLayoutView.tsx",
-      "bytes": 17517,
-      "sha256": "2e3fc465fcebe43ea8a2f08690d2b5f15e07bae74ae8de381a776e12bdd7b3dd"
+      "bytes": 21457,
+      "sha256": "c5385089553aa17e0b0645b04ef5f7d246a6f13ef0052c8da393c450ca8346c9"
     },
     {
       "path": "frontend/src/public/api.ts",
@@ -6002,6 +6407,11 @@
       "path": "frontend/src/public/bldcChartPaths.ts",
       "bytes": 1151,
       "sha256": "5630590265b8d02821ba60706eb007447568abf83a66ca92730fe08528f69a78"
+    },
+    {
+      "path": "frontend/src/public/canvasLabels.ts",
+      "bytes": 2259,
+      "sha256": "3eff7fbd69561f6d5111ef061da503099c9ded5e3ed999f6e7cda3a258c74e30"
     },
     {
       "path": "frontend/src/public/chartAxis.ts",
@@ -6035,8 +6445,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "bytes": 11441,
-      "sha256": "e4fa94560257411f3a9a9eb4979dc28ba696d5def02df32e8089d664c9da67bc"
+      "bytes": 13424,
+      "sha256": "efb5a1b09f87a82927ef68c6a745233b86987b9cdabd6a18d191b4fdf7d62c97"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -6045,8 +6455,8 @@
     },
     {
       "path": "frontend/src/public/exampleDesigns.ts",
-      "bytes": 3381,
-      "sha256": "d939c55468e098cb41cbd8b13925a1bac0eccf2d8359361e09a6dfd625a6dacb"
+      "bytes": 4016,
+      "sha256": "ddf4fbcb0edfa38a1a1b3fea6d119e946b5001f891392b3a6f914cb518314313"
     },
     {
       "path": "frontend/src/public/examples/honda_accord_2005.coilem",
@@ -6057,6 +6467,16 @@
       "path": "frontend/src/public/examples/ornl_prius_2004_holem50.coilem",
       "bytes": 3030,
       "sha256": "385245790bea2051c4347f2939636ede14e93b063402a8ad91fb58f658d2bd74"
+    },
+    {
+      "path": "frontend/src/public/examples/prius-2004-loaded-torque-v1.coilem",
+      "bytes": 19068,
+      "sha256": "ea56a0f774f21828218861a77743381ae231c6287fb30a561aca41a342eff0e7"
+    },
+    {
+      "path": "frontend/src/public/examples/prius-2004-tutorial-bemf-v1.coilem",
+      "bytes": 19055,
+      "sha256": "dab733f5ce78d30954c6e94cc54fdac873b5cfa27f49c06509ea199df8d67305"
     },
     {
       "path": "frontend/src/public/examples/rotating_field_6p36s.coilem",
@@ -6085,8 +6505,8 @@
     },
     {
       "path": "frontend/src/public/fieldAxes.ts",
-      "bytes": 1486,
-      "sha256": "955232c4af710fbabcbb941281a8dde2dc624fb504dcf5041622b2f6e67c90a3"
+      "bytes": 4269,
+      "sha256": "5c19b3c9a6eeb7c6f03eace3eff325e0c75630f12907d3fab22db72a73ee27ab"
     },
     {
       "path": "frontend/src/public/fieldLegendFit.ts",
@@ -6140,8 +6560,8 @@
     },
     {
       "path": "frontend/src/public/guidedConfigRepair.ts",
-      "bytes": 10388,
-      "sha256": "1fbf251e9a7b3a53c05b921ddaab58d2ceaab23efdce8e79f9dabaa52fa710e7"
+      "bytes": 11388,
+      "sha256": "bfa5c9b8fbf37545a1b0f254df2066ec10b0db0c0f6027d565533db657d2a2d5"
     },
     {
       "path": "frontend/src/public/halbach/Halbach2DViewport.tsx",
@@ -6235,8 +6655,18 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 19752,
-      "sha256": "68d00de9ceb2b3dbca291bb98bce1869652d2ce642e7fd5f4bcd913f7eda986f"
+      "bytes": 20151,
+      "sha256": "2f5059fc33ac60d3b35397d45658b17ed8960d84632af21cc98b40dc01110799"
+    },
+    {
+      "path": "frontend/src/public/motor3DCamera.ts",
+      "bytes": 664,
+      "sha256": "4eafcc41a5b585bcb302642d03000ee2fa5e74cc2610a9e3780952dcc3fcfe3d"
+    },
+    {
+      "path": "frontend/src/public/motor3DStyle.ts",
+      "bytes": 3429,
+      "sha256": "bfcaf0369b0814537080df547cccecb2d508c5f7463e95b026f93cf4630c128e"
     },
     {
       "path": "frontend/src/public/motorAirgap.ts",
@@ -6252,6 +6682,26 @@
       "path": "frontend/src/public/performance.ts",
       "bytes": 4082,
       "sha256": "975be9119c22a8cfd7d4faaa97e530b558cbb7d6441c47fdb2e8fcea2703cc57"
+    },
+    {
+      "path": "frontend/src/public/phaseDrive.ts",
+      "bytes": 9381,
+      "sha256": "64b31ec2cabbd9c9f32f1cefc93eb953b69e98053393166267472063dbdbdce8"
+    },
+    {
+      "path": "frontend/src/public/previewContours.ts",
+      "bytes": 942,
+      "sha256": "74faf4b483e3a1bd000272707fab8ca5deae0b875cafe6095b9a02c39e793e67"
+    },
+    {
+      "path": "frontend/src/public/pyleecanReferenceNotice.ts",
+      "bytes": 12731,
+      "sha256": "c4d7ab36d3347424ecff5288aeb3cf6a7c9058e31614e72abb0ffaf60dd7039d"
+    },
+    {
+      "path": "frontend/src/public/referenceMotorGeometry.ts",
+      "bytes": 848,
+      "sha256": "5c4cf01308ce810dda1450b9423ca420892a2db017fcb0c799a8cc138141577d"
     },
     {
       "path": "frontend/src/public/resultMetrics.ts",
@@ -6270,13 +6720,13 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 261434,
-      "sha256": "c360a7d0b107ceebb76bc7a19f5442cc447121fddf0b0ffc7b5f781614752983"
+      "bytes": 264406,
+      "sha256": "747ab4d593d78e38d6986bf3f3b408bfa2af40d2089407dac7373f81ddb58b23"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
-      "bytes": 7892,
-      "sha256": "d876ce6bc3ad85a09dcfeb531645baae4b769f98299dbcafb5f003367ef35450"
+      "bytes": 8820,
+      "sha256": "6ffc1aec2725bdddf1a1342ca55c5418c80f1938d2331f9af8bb156ed008c9bf"
     },
     {
       "path": "frontend/src/public/tutorials/PublicTutorials.tsx",
@@ -6294,6 +6744,21 @@
       "sha256": "be5df38663db208ee5fd80576c4a9d46916247fe92be6cbeb72cc59212f2d9f3"
     },
     {
+      "path": "frontend/src/public/viewportTransform.ts",
+      "bytes": 2177,
+      "sha256": "f9c62cb7a0387e646974b3655842e21d127f0e11ef40131363931135daea6290"
+    },
+    {
+      "path": "frontend/src/public/windingRing.ts",
+      "bytes": 7344,
+      "sha256": "969934496be982437cfbfd9658aa1e406397d839618e1b7714d1af0d5cf30059"
+    },
+    {
+      "path": "frontend/src/public/windingWiring.ts",
+      "bytes": 9560,
+      "sha256": "c73b4b3b5e7139b2f52eb0e6dfb46f4ea295465b53166c204d7e7149cb76e84e"
+    },
+    {
       "path": "frontend/src/styles/templateselector.css",
       "bytes": 35185,
       "sha256": "9df405c4bbcc5fb3fbe85f1418c85789d804aca87b155c8d22c6c31960530b0d"
@@ -6305,8 +6770,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 16291,
-      "sha256": "2a7d575407306141ef34e9904815eb5bb0c5f01ba55bc0bb8842652046c80afc"
+      "bytes": 23078,
+      "sha256": "bb148dd6aae4813218a58cdd9c17f7051b93a052bcddc51f430a24094259159b"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -6325,8 +6790,8 @@
     },
     {
       "path": "pyproject.toml",
-      "bytes": 1742,
-      "sha256": "ecd948e616491e0c7aaf59aa86adbcde40bbc8375858e68cfac9437bb4cd4ed2"
+      "bytes": 1769,
+      "sha256": "fe251c3ac4ce9dcd2e725126f93eeb284feb945dd4ada6ac83dafe623e8d3674"
     },
     {
       "path": "references/benchmark_configs/validation_ipm_10p_v_shape_medium.openem",
@@ -6649,6 +7114,26 @@
       "sha256": "0914644d93f05fa5738534c518e2ecffeca2d129d8a38fbe8b8df2f65c695b86"
     },
     {
+      "path": "tests/fixtures/phase_drive_winding_layouts.json",
+      "bytes": 15760,
+      "sha256": "f9b0985ee0f82803a8953408d74ea24b844e1f3efcf95796645a5c03c8d27a0c"
+    },
+    {
+      "path": "tests/fixtures/prius_phase_drive_vectors.json",
+      "bytes": 9361,
+      "sha256": "a602b8912fcc8528049beab0d6dbc22637d6d7434f514aacd20726821dcbbcb2"
+    },
+    {
+      "path": "tests/fixtures/prius_winding_ring.json",
+      "bytes": 359446,
+      "sha256": "32e16063b7fbc67c80a83c6d9f76f5c71afc61cb6cb8df3946e95f78a7acaeaf"
+    },
+    {
+      "path": "tests/fixtures/public_sine_phase_current_vectors.json",
+      "bytes": 9081,
+      "sha256": "8b6077ac1e31f044da89449fb45df4069230292940a8f6a9b1911e2e77711ca5"
+    },
+    {
       "path": "tests/fixtures/solve_time_calibration.json",
       "bytes": 10098,
       "sha256": "603f5d1a641b8d59277c9a604346cf692dcf29f12b9bb825c93a5a0d9d0cd1f2"
@@ -6670,8 +7155,8 @@
     },
     {
       "path": "tests/test_benchmark_command.py",
-      "bytes": 15192,
-      "sha256": "d8a5728ab4a5e64023373b6846f78ac4211aefd03fde0b12b5632db44c132da6"
+      "bytes": 15903,
+      "sha256": "8b9fb97813c49fcb870d0ac14cbced80d8419afe676473971c3eac0300b3bc91"
     },
     {
       "path": "tests/test_benchmark_runtime.py",
@@ -6680,8 +7165,8 @@
     },
     {
       "path": "tests/test_benchmark_suite.py",
-      "bytes": 30515,
-      "sha256": "4ec6029a89b570f016d8cdbc9e04970b9bfca734a654634c4e75407829c7a0e8"
+      "bytes": 31242,
+      "sha256": "a73a1934f4d9f8bd0a2ae9ab2c048b68ff59c29a5852422c6d0d03375181bde9"
     },
     {
       "path": "tests/test_bldc_angle_contract.py",
@@ -6750,8 +7235,8 @@
     },
     {
       "path": "tests/test_installed_resources.py",
-      "bytes": 10215,
-      "sha256": "56081bd2e9c0b8ca943103a3563255dd616606f12dd17c559f6b07cb06cd9220"
+      "bytes": 11238,
+      "sha256": "8c93aa259316fc07c9a2a9a4a69d8cccb6936f33c2a5f97cd2a52cc2fc0fedc5"
     },
     {
       "path": "tests/test_late_reference_comparison.py",
@@ -6809,6 +7294,11 @@
       "sha256": "c0d3bdfb94ebb20ab188e71804c7987776e310bd2d9990bf35eaa145f3acfac8"
     },
     {
+      "path": "tests/test_model_benchmarks.py",
+      "bytes": 7201,
+      "sha256": "8ea3167e37def8eff7c9ab95c4a456527ab716835116111b7f1e9e0f33192707"
+    },
+    {
       "path": "tests/test_native_processes.py",
       "bytes": 5172,
       "sha256": "bc4f556fd203fc16e86058e6cfa0cef82d91a78fc49d0870e12085b0bd28aa50"
@@ -6839,14 +7329,19 @@
       "sha256": "2b171036e0173e25db1aa809e5c8cd983df7d301fe3ffaf9d246e83b8c6243dd"
     },
     {
+      "path": "tests/test_prius_benchmark_collection.py",
+      "bytes": 14664,
+      "sha256": "a64335880cc0a083ee2b586660d49e8609ca9158b4110ee2c8788c27c636b825"
+    },
+    {
       "path": "tests/test_public_cancellation.py",
       "bytes": 15116,
       "sha256": "848822429984ae5896b5187a7b943fb5c3685f1073a24dca0548a2e8f4a92507"
     },
     {
       "path": "tests/test_public_candidate.py",
-      "bytes": 20059,
-      "sha256": "4d284e07b09f17698671afa3f0502ff3250e9cbabb2ea0adab7610fd947485d4"
+      "bytes": 20134,
+      "sha256": "317da5057a8d4c8d1571b780424067a28e5c357aae830204af5ddd849baf9e42"
     },
     {
       "path": "tests/test_public_field_playback.py",
@@ -6854,9 +7349,14 @@
       "sha256": "27af0046b26a9afea88f5b51a8b7970d62695065436862cd717eb9eca64cd270"
     },
     {
+      "path": "tests/test_public_phase_drive.py",
+      "bytes": 5965,
+      "sha256": "35801dc9a8af04e1774c33bb3407c2aa6344e839a34ddbd5f6e84f5f50feb646"
+    },
+    {
       "path": "tests/test_public_report_exports.py",
-      "bytes": 30156,
-      "sha256": "167d2f1f68c9981f0e76b534444623979df7648d2cd684491e930c5baefe66bf"
+      "bytes": 30750,
+      "sha256": "ad5f0909966caad0a7fa96b9a25b83aa4f321d62526379f8c38b74c7898037bb"
     },
     {
       "path": "tests/test_public_security.py",
@@ -6889,9 +7389,29 @@
       "sha256": "41a1e53fe989bad27a64d8c9d7bd11a998af5189358c808b226e1a0bf263e511"
     },
     {
+      "path": "tests/test_pyleecan_bemf_compare.py",
+      "bytes": 1996,
+      "sha256": "043d599b35c48138c058fb111f5438e84fb7b5e6f2cf9143e337e1f4b76aa4e0"
+    },
+    {
+      "path": "tests/test_pyleecan_loaded_compare.py",
+      "bytes": 8348,
+      "sha256": "939dcb6093cf129fd08172808af9fbc20862272340a661af6ab021a82517fa62"
+    },
+    {
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "bytes": 17495,
+      "sha256": "1ce34bb97aece6042dbbcf7642db0a02b11c69c506749a4ad40f4af431a7b75b"
+    },
+    {
+      "path": "tests/test_pyleecan_tutorial.py",
+      "bytes": 2403,
+      "sha256": "17478dffeb05aded97d2cb9382505c293c6bef087485d6e006f11782421333c8"
+    },
+    {
       "path": "tests/test_qualification.py",
       "bytes": 13975,
-      "sha256": "073161ca754b8496799d4726c108aeb58e7067d93f4342f8252eae192af07fc8"
+      "sha256": "26bffefb9c2605fd44a1ca0169a59188bc2bbbac80c6fc6e07ea3782bdbd76e1"
     },
     {
       "path": "tests/test_reference_recovery.py",
@@ -6944,6 +7464,11 @@
       "sha256": "183395ca3662f2ca15d3b038ab3badfc42d5faee85b7c086f7e36e59f5b47a35"
     },
     {
+      "path": "tests/test_winding_ring_geometry.py",
+      "bytes": 1456,
+      "sha256": "3fb3c12ef1afa3563d0831cff0ca0c4d12995afdbfb5768b63205588d030f80b"
+    },
+    {
       "path": "tests/test_windows_field_frame_pool.py",
       "bytes": 4574,
       "sha256": "caedc891aa678952edd9afd41b58c2bd9891d7bee8b5315f821faeb88a20cb73"
@@ -6964,6 +7489,11 @@
       "sha256": "60a0cd92f1e11ed2d33ddd75433b37dd7f9598ed03eb4b74f69879e68b5b960c"
     },
     {
+      "path": "tools/benchmark_prius.py",
+      "bytes": 13019,
+      "sha256": "bb919798a7d9a8f325f640953b0d790258ba9bfcbcde64c66aa8c12ca049ceba"
+    },
+    {
       "path": "tools/benchmark_suite/external.py",
       "bytes": 23421,
       "sha256": "63e8a1dce6707443b7c6c29e0fe96f3491443ddc0ad35d9ff18c4566b218e074"
@@ -6980,13 +7510,33 @@
     },
     {
       "path": "tools/build_benchmark_record.py",
-      "bytes": 5071,
-      "sha256": "acff7863ae6dc7e619fc87cc87838db4c248631a7aab295895c1464ef48721b8"
+      "bytes": 5724,
+      "sha256": "94ccf8ed7a20b3efb50139456e6826c5de41636e58f7c1f1039e603a7cd0cb57"
+    },
+    {
+      "path": "tools/compare_pyleecan_bemf.py",
+      "bytes": 12946,
+      "sha256": "a26334e478ac3f8a54bc48e6c9b5a6dd9846853565e6b4d02e0305ef989e3bf9"
+    },
+    {
+      "path": "tools/compare_pyleecan_loaded.py",
+      "bytes": 13632,
+      "sha256": "01d02c0c1b0651ae2ffbf1b2ae15c021b0dbd73146f14aa56b5957cc64adcda6"
+    },
+    {
+      "path": "tools/compare_pyleecan_tutorial.py",
+      "bytes": 14824,
+      "sha256": "c6f6157eb188e30a0bb52f96809102e69f163baee2e075555dab6b23ac01c84b"
     },
     {
       "path": "tools/experimental_solve.py",
       "bytes": 4202,
       "sha256": "6a50b22ee7800f0f22f056288e6c3b54c297dbc5244f1427f9861458e230e8ab"
+    },
+    {
+      "path": "tools/export_pyleecan_prius_geometry.py",
+      "bytes": 5729,
+      "sha256": "e19d9ff61faa39de3677ac9d57014506cb0a120f4d6cb64ecf9562ef86766e05"
     },
     {
       "path": "tools/fit_ornl_prius_holem50.py",
@@ -7027,6 +7577,36 @@
       "path": "tools/plot_ornl_prius_comparison.py",
       "bytes": 7589,
       "sha256": "ed686f57028435f2b212a749e5d51a71fb4056d85300392463ca4dc2ff07cea6"
+    },
+    {
+      "path": "tools/prius_benchmark_contract.py",
+      "bytes": 6377,
+      "sha256": "c7e47e3fc909cae3090cd4101b6d6771a0299a105590b0a2bd8c0929d5e3d9a0"
+    },
+    {
+      "path": "tools/pyleecan_prius_loaded_compare.py",
+      "bytes": 13129,
+      "sha256": "2fd373c9bb4132d0fc2464250d8aae32ca2d4e61f04dd3fbc9fb300b9bbb12df"
+    },
+    {
+      "path": "tools/pyleecan_prius_loaded_reference.py",
+      "bytes": 6594,
+      "sha256": "141e083d862e13c50340c14c139ed8ab5def602cc92572625623b6b3691ca29f"
+    },
+    {
+      "path": "tools/pyleecan_prius_mesh_compare.py",
+      "bytes": 13686,
+      "sha256": "a88073d613ba6fe661c2c743bb7606558b23344df651b13b5910984d8ceffa8d"
+    },
+    {
+      "path": "tools/pyleecan_prius_reference.py",
+      "bytes": 5964,
+      "sha256": "f9166e17c781c855370d0caad668144f881e1011d1320068752937483819c34c"
+    },
+    {
+      "path": "tools/pyleecan_prius_tutorial.py",
+      "bytes": 5313,
+      "sha256": "131adce7b89d059cf8e2cd003a5c7d23fef32ebc9d5508aed20fdad145ed57d6"
     },
     {
       "path": "tools/release/__init__.py",
@@ -7104,9 +7684,19 @@
       "sha256": "22532d9a02cd2825b4a5f65636631b55571e81f6cc1cd77ebcef6885682086cc"
     },
     {
+      "path": "tools/report_prius_benchmark.py",
+      "bytes": 21940,
+      "sha256": "7d3e05fdb5d00b53e76210ef0e97c790bf15ea6d0ceb7ccdb345454ec9c2c092"
+    },
+    {
       "path": "tools/run_benchmarks.py",
       "bytes": 178,
       "sha256": "17db966b4d45ca6f19658b19ef5185264a5bebd87099821a28374e23dea7932f"
+    },
+    {
+      "path": "tools/run_model_benchmarks.py",
+      "bytes": 13041,
+      "sha256": "5f832ff53b2cb92ac1b404fd09ba8f3ff8131147f46dc8083fc0d50fb3687deb"
     },
     {
       "path": "tools/run_public_benchmark.py",
@@ -7125,8 +7715,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 21396,
-      "sha256": "887ddbab11238f6d5d3233af4f30d8e84ff316686ed5c79fb45f9d589a97a6e0"
+      "bytes": 21633,
+      "sha256": "fc11f61b433748f6829297f30c72738ea887481d11936087620c7a554385d9ab"
     }
   ],
   "public_patches": [
@@ -10369,6 +10959,1302 @@
       "path": "tests/test_benchmark_command.py",
       "source_sha256": "edd43ec1d6c1f6808c1b471333c8fdec44096a786a2ea71509868bba41f417c4",
       "reason": "Verify the one reviewed native report PDF against its original hash and publication provenance while retaining raw log/job exclusions."
+    },
+    {
+      "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
+      "reason": "Show Run B \u00c3\u00a2\u00cb\u2020\u00e2\u20ac\u2122 Run A in the Compare torque readout (#54)."
+    },
+    {
+      "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
+      "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
+      "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
+      "reason": "Label the six-step chart's electrical-angle axis every 45\u00c3\u201a\u00c2\u00b0 (#54 follow-up)."
+    },
+    {
+      "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
+      "path": "frontend/src/public/WaveformChart.tsx",
+      "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
+      "reason": "Label the electrical-angle axis at regular steps, 45\u00c3\u201a\u00c2\u00b0 over a full cycle (#54 follow-up)."
+    },
+    {
+      "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
+      "path": "backend/public_report.py",
+      "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00c3\u201a\u00c2\u00b0 (#52 follow-up)."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "THIRD_PARTY_NOTICES.md",
+      "source_sha256": "bd0207bf5296f1cfc395cc224953d25cc69cd0f6b5605748fabd0a8c566529ea",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/benchmark_suite/contract.py",
+      "source_sha256": "40c014b356b6616b31d9e4677c4fa25b7f33dbf9692340bf15206444bbf40db9",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/benchmark_suite/physics.py",
+      "source_sha256": "348afbb089361e635526be4dee28eb2b554e72b58ef071cd3327fec843deb81c",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/benchmark_suite/record.py",
+      "source_sha256": "37b83a6e5aa3cfd2d47bd5ff8f390e912ef5ba90ebd7e06f0c126b03332f795b",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/excitation.py",
+      "source_sha256": "7e2dead86d3db978cd641fcfe203a2e747f5b48076be0483eff841f84bb9aa84",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/geometry_ir.py",
+      "source_sha256": "c854de3f60d054660b9616cdb752a32835b12c445f497adb7ee24eb0ebf4f8bb",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/gmsh_solver.py",
+      "source_sha256": "764e31391894685f1a259a90c7dbb562d612f585a92cef91761a5d6ae783f53f",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/magneto2d_adapter/__init__.py",
+      "source_sha256": "0ffba926d459e54c6e83943be4b4855bd0cfe20ba05586f1273e6575f5405baa",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/models/config.py",
+      "source_sha256": "d2a919a0cb673ed557a63564c28a0ff51adf5436dfc7ffb9b381d9d2322d41dc",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/models/geometry.py",
+      "source_sha256": "ad7ee8acb567b9aa22a73329523734f0f67e7f98a4f349da4bc0ad387758ab0c",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/models/result.py",
+      "source_sha256": "34d42f29fd8442e21d94a09cc0d3e72a4da556139c3842a9e91c4f5113790b0d",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/preview_from_ir.py",
+      "source_sha256": "2f7c8764abdd35c4183ac4e63d27c304c38ec3cea7aa6e1a805c0dd2876b90b4",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/public_policy.py",
+      "source_sha256": "88ef6fd4e551ce3a1ae0eb22bdc4ce84e3919c487fd663ba52df3025d0cc9374",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/qualification.py",
+      "source_sha256": "eec1a879d97c8be51077bb95a3323f0501b73dfafe1f116d1d44d0e034bc1d1e",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/resources.py",
+      "source_sha256": "0a583d00f3b7af405955f5be94d31080f1055b652c1ffa8b325b571d982d1997",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "696af12acd2ab91099cecd024486f8678277c1050d0e6fdde259a6c7b4ce8f8a",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "backend/topology_provenance.py",
+      "source_sha256": "dc2aea3737aa67fd11adbdb40ae671cb3a64c546094f736ceea175d0fcbd1d8d",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/scripts/test-design-file-defaults.mjs",
+      "source_sha256": "f799b02c3a578d3ac1aa1be4de1dfeb27a8e822ea7d2234719d654c611f3fbf4",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/scripts/test-public-bundle.mjs",
+      "source_sha256": "398e7f4ae43445ad1f88b39254c5dc53040657ec30428585927ba9ac872dcc37",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "fd416c60e77b18dce87f2e99613a58c0bbbbf133647a4691dbcc3d8037a85928",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "705d2050876c798c3080ae2af734fdcd42ffd01b60f1508900a2aea772a157df",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "20a89d4000b76c1b80121e4e12a002f4ba264a952865c8a298e10033db40b395",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/src/public/PublicMotor3D.tsx",
+      "source_sha256": "a17855aabe2ecddac7b53b6fc0e6423921552c1d356823097a8c351bb6511eae",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "e4fa94560257411f3a9a9eb4979dc28ba696d5def02df32e8089d664c9da67bc",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/src/public/exampleDesigns.ts",
+      "source_sha256": "d939c55468e098cb41cbd8b13925a1bac0eccf2d8359361e09a6dfd625a6dacb",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "cca228338c8954c00b92ae3cd4231d0064e017d3821da55cd96512e4bf548564",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "2a7d575407306141ef34e9904815eb5bb0c5f01ba55bc0bb8842652046c80afc",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "tools/build_benchmark_record.py",
+      "source_sha256": "acff7863ae6dc7e619fc87cc87838db4c248631a7aab295895c1464ef48721b8",
+      "reason": "Issue #126: exact versioned Pyleecan Prius software references, normal Design/Solve workflow and reproducible evidence; preserve historical qualification hashes."
+    },
+    {
+      "base_commit": "cfddc0c7f566c05c4040f6d15087b29959a6c8f0",
+      "path": "backend/reference_models/prius.py",
+      "source_sha256": "53c17586432dcbcaf09d0296649b8368846870d67cc307945819098251005377",
+      "reason": "Persist the actual reference d-axis current convention, including zero-current no-load provenance."
+    },
+    {
+      "base_commit": "cfddc0c7f566c05c4040f6d15087b29959a6c8f0",
+      "path": "backend/magneto2d_adapter/__init__.py",
+      "source_sha256": "8fc9dda286554657b2743fc1bd83339be1dcffe07ac5a8e6396e0e472753aa6b",
+      "reason": "Persist the actual reference d-axis current convention, including zero-current no-load provenance."
+    },
+    {
+      "base_commit": "cfddc0c7f566c05c4040f6d15087b29959a6c8f0",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "dccc534d52cef672929a0ff5b22be255e8d94e11d474a8078a9a047e574cf5dd",
+      "reason": "Persist the actual reference d-axis current convention, including zero-current no-load provenance."
+    },
+    {
+      "base_commit": "cfddc0c7f566c05c4040f6d15087b29959a6c8f0",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "be90e7f4f935ee6f05c08b162f7b51f205e17e167d11cbf0e102d7c9d4c694f2",
+      "reason": "Persist the actual reference d-axis current convention, including zero-current no-load provenance."
+    },
+    {
+      "base_commit": "0b6365068b1da1ee4f61050f5535dd35e1742d1b",
+      "path": "backend/magneto2d_adapter/__init__.py",
+      "source_sha256": "348da7003d82b3200d870e792405e8a8c2a6a965797e10a671d667d371bccc69",
+      "reason": "Complete #126 reference winding extraction, installed assets and explicit report conventions."
+    },
+    {
+      "base_commit": "0b6365068b1da1ee4f61050f5535dd35e1742d1b",
+      "path": "backend/public_report.py",
+      "source_sha256": "befde85f42682921b406c13730951388faa8d624fee26950b63af594e5456d06",
+      "reason": "Complete #126 reference winding extraction, installed assets and explicit report conventions."
+    },
+    {
+      "base_commit": "0b6365068b1da1ee4f61050f5535dd35e1742d1b",
+      "path": "backend/reference_models/prius.py",
+      "source_sha256": "ec4553fda5453a3796a5b0f824853493d6f4a3d733eb77a5d9df488f659c818b",
+      "reason": "Complete #126 reference winding extraction, installed assets and explicit report conventions."
+    },
+    {
+      "base_commit": "0b6365068b1da1ee4f61050f5535dd35e1742d1b",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "d3bceaa9a61b3e726e035ff1f197591a0e3a40636ca5b267c523240e4cb565d8",
+      "reason": "Complete #126 reference winding extraction, installed assets and explicit report conventions."
+    },
+    {
+      "base_commit": "0b6365068b1da1ee4f61050f5535dd35e1742d1b",
+      "path": "frontend/src/public/exampleDesigns.ts",
+      "source_sha256": "d962b7cba15f242e68fc6bbc30c1f506f8ddb406026a9b3fc75711c144650fbc",
+      "reason": "Complete #126 reference winding extraction, installed assets and explicit report conventions."
+    },
+    {
+      "base_commit": "0b6365068b1da1ee4f61050f5535dd35e1742d1b",
+      "path": "pyproject.toml",
+      "source_sha256": "ecd948e616491e0c7aaf59aa86adbcde40bbc8375858e68cfac9437bb4cd4ed2",
+      "reason": "Complete #126 reference winding extraction, installed assets and explicit report conventions."
+    },
+    {
+      "base_commit": "0b6365068b1da1ee4f61050f5535dd35e1742d1b",
+      "path": "tests/test_installed_resources.py",
+      "source_sha256": "56081bd2e9c0b8ca943103a3563255dd616606f12dd17c559f6b07cb06cd9220",
+      "reason": "Complete #126 reference winding extraction, installed assets and explicit report conventions."
+    },
+    {
+      "base_commit": "0b6365068b1da1ee4f61050f5535dd35e1742d1b",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "167d2f1f68c9981f0e76b534444623979df7648d2cd684491e930c5baefe66bf",
+      "reason": "Complete #126 reference winding extraction, installed assets and explicit report conventions."
+    },
+    {
+      "base_commit": "0b6365068b1da1ee4f61050f5535dd35e1742d1b",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "d5dcc1fc52c478a7126c161765df8efbb113c0aa692b22a4fa928e05c2225739",
+      "reason": "Complete #126 reference winding extraction, installed assets and explicit report conventions."
+    },
+    {
+      "base_commit": "d993d7674354cc723ad107e7a5452477c5f660ea",
+      "path": "README.md",
+      "source_sha256": "c6abe20cc04765b7c539bcde07d993f767a16d806f638a2fd41805b84403aad9",
+      "reason": "Complete #126 public workspace controls, exact winding preview and benchmark reporting."
+    },
+    {
+      "base_commit": "d993d7674354cc723ad107e7a5452477c5f660ea",
+      "path": "backend/preview.py",
+      "source_sha256": "9d95bd235b3f2564b5c4fc6482adb549d01ac1ba25c6a9ce0da5c6e0cbf4eb28",
+      "reason": "Complete #126 public workspace controls, exact winding preview and benchmark reporting."
+    },
+    {
+      "base_commit": "d993d7674354cc723ad107e7a5452477c5f660ea",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "2ded9fda33a1d96d1aa4bfaf6beded9bc2f847fa8e3a5d4f985eede6f0f943a0",
+      "reason": "Complete #126 public workspace controls, exact winding preview and benchmark reporting."
+    },
+    {
+      "base_commit": "d993d7674354cc723ad107e7a5452477c5f660ea",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "4c6eda0542da81c829a0391ebb4085922fd6e9ded60192a8eb10ae157af77b74",
+      "reason": "Complete #126 public workspace controls, exact winding preview and benchmark reporting."
+    },
+    {
+      "base_commit": "d993d7674354cc723ad107e7a5452477c5f660ea",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "63503ed3603012346b59b06e764ab947e71aeb98452a3f86b2cdcf061e5e79a4",
+      "reason": "Complete #126 public workspace controls, exact winding preview and benchmark reporting."
+    },
+    {
+      "base_commit": "d993d7674354cc723ad107e7a5452477c5f660ea",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "71b7f06795501685b22ace253cd9d3caa752707a2d407e4a530d318008d45a35",
+      "reason": "Complete #126 public workspace controls, exact winding preview and benchmark reporting."
+    },
+    {
+      "base_commit": "d993d7674354cc723ad107e7a5452477c5f660ea",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "aca962fb31f84f9422a556a409c3a58660d34567112391cf306f9521a3fe9b3e",
+      "reason": "Complete #126 public workspace controls, exact winding preview and benchmark reporting."
+    },
+    {
+      "base_commit": "c0f184b4449e86b9886b7189f61ef00d054d480a",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "5cde1fbb5bf14763aeb50224f316dd4ae54359dcb81ca0ab513a1b85da279f9b",
+      "reason": "Verify both Prius Solve routes and bind report audits to retained results."
+    },
+    {
+      "base_commit": "c0f184b4449e86b9886b7189f61ef00d054d480a",
+      "path": "tools/report_prius_benchmark.py",
+      "source_sha256": "a99f17d5423c4d3df4867a5708a76d0d3351b90f41d0f6ac4a352d9e5f867176",
+      "reason": "Verify both Prius Solve routes and bind report audits to retained results."
+    },
+    {
+      "base_commit": "8aaf9821a44019c443939ef5402ab40d9643dedb",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "1cee55ac0a8e5398f1ec8574ccf96326301a51786c7051f5ebd26179700d859a",
+      "reason": "Reuse the actual workspace preview for the Prius 3D view and verify rendering."
+    },
+    {
+      "base_commit": "8aaf9821a44019c443939ef5402ab40d9643dedb",
+      "path": "frontend/src/public/PublicMotor3D.tsx",
+      "source_sha256": "d1e8bea4af5b47cd76c491417a7d1313ff1536d17d45358ba4ad17380e4b8afc",
+      "reason": "Reuse the actual workspace preview for the Prius 3D view and verify rendering."
+    },
+    {
+      "base_commit": "8aaf9821a44019c443939ef5402ab40d9643dedb",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "10d60272824b84729a900742740105211d1c32a950f9d80666968788c85c4efa",
+      "reason": "Reuse the actual workspace preview for the Prius 3D view and verify rendering."
+    },
+    {
+      "base_commit": "076998955e74bfcfecd527be20b2eaed7040290d",
+      "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
+      "source_sha256": "17d4705fd3aad273e8d8c2c5d062d9682378c6c11be367e6f374ad295114b8e9",
+      "reason": "Publish the pinned Prius workflow check and reviewed reference preview."
+    },
+    {
+      "base_commit": "076998955e74bfcfecd527be20b2eaed7040290d",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "887ddbab11238f6d5d3233af4f30d8e84ff316686ed5c79fb45f9d589a97a6e0",
+      "reason": "Publish the pinned Prius workflow check and reviewed reference preview."
+    },
+    {
+      "base_commit": "285f95a31f077a9589a21dd139957c68a98bde13",
+      "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
+      "source_sha256": "5a2c260c41caad6031de087827292f2856febcd1fb0d7976a2d0835409ae26a5",
+      "reason": "Retain the unresolved ORNL voltage gap and distinct model/temperature assumptions."
+    },
+    {
+      "base_commit": "285f95a31f077a9589a21dd139957c68a98bde13",
+      "path": "tools/report_prius_benchmark.py",
+      "source_sha256": "3bf3801bb97cbd03614f7140df7ae0491bed0b662ebb0f680f3cc575719fcff2",
+      "reason": "Retain the unresolved ORNL voltage gap and distinct model/temperature assumptions."
+    },
+    {
+      "base_commit": "dc499553f90e804136267bcb22068d99db1d19ac",
+      "path": "backend/benchmark_suite/report.py",
+      "source_sha256": "0fbc7eab5c9ffc4f17d1e2472c6782002307804152abcf8224a7be414194bf98",
+      "reason": "Distinguish the legacy unsupported ORNL row from the fixed Pyleecan references."
+    },
+    {
+      "base_commit": "fde169b59e9cb750bd05fb074153709e921fda0a",
+      "path": "PUBLICATION_STATUS.md",
+      "source_sha256": "d21a2acd94aad62d5424c3a043210a11ecaeb0d272e0bd82eabd2f1e954c9ea1",
+      "reason": "Publish the complete #126 development benchmark, source audit and release-plan links."
+    },
+    {
+      "base_commit": "fde169b59e9cb750bd05fb074153709e921fda0a",
+      "path": "benchmarks/README.md",
+      "source_sha256": "8c48345727e407932c3e1dbbf95fa510ce3d2caf7bb661fd710deb1fb6b7c3e8",
+      "reason": "Publish the complete #126 development benchmark, source audit and release-plan links."
+    },
+    {
+      "base_commit": "fde169b59e9cb750bd05fb074153709e921fda0a",
+      "path": "benchmarks/v0.4.0/README.md",
+      "source_sha256": "4a6097199ec03976809bdc38b7ccc349df3e8779c17a100844283aab293f0452",
+      "reason": "Publish the complete #126 development benchmark, source audit and release-plan links."
+    },
+    {
+      "base_commit": "fde169b59e9cb750bd05fb074153709e921fda0a",
+      "path": "docs/RELEASE_0_4_0.md",
+      "source_sha256": "b55fa1d163cb7d5ed1646502827a72a26c5f79cafb8ad82c61770752c542e0ab",
+      "reason": "Publish the complete #126 development benchmark, source audit and release-plan links."
+    },
+    {
+      "base_commit": "fde169b59e9cb750bd05fb074153709e921fda0a",
+      "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
+      "source_sha256": "33498650de4b09692a962b7779063b37701dc791ace232df378d27b6b464ab2b",
+      "reason": "Publish the complete #126 development benchmark, source audit and release-plan links."
+    },
+    {
+      "base_commit": "fde169b59e9cb750bd05fb074153709e921fda0a",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "0ce0c369997422643f71bd9a1ddecb9be76ac4e2d8bc5bca0db649ed41a3f77d",
+      "reason": "Publish the complete #126 development benchmark, source audit and release-plan links."
+    },
+    {
+      "base_commit": "fde169b59e9cb750bd05fb074153709e921fda0a",
+      "path": "tools/report_prius_benchmark.py",
+      "source_sha256": "faccbdd8e1a3eae34a3ec5b27962c5e83e0f898f8734e920d660d1ef44ec401e",
+      "reason": "Publish the complete #126 development benchmark, source audit and release-plan links."
+    },
+    {
+      "base_commit": "fde169b59e9cb750bd05fb074153709e921fda0a",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "09707491fa5b77957596d3f669ae9a3718449b1c046ea6c818e1bbb336dbb803",
+      "reason": "Publish the complete #126 development benchmark, source audit and release-plan links."
+    },
+    {
+      "base_commit": "8f04d20620d8c20e2673b8d1e86834df38862994",
+      "path": ".gitattributes",
+      "source_sha256": "3077a1e2193c544c8204a5f0f59898c2311f69b96e74aee5a1895e1b50e1c9ce",
+      "reason": "Preserve original registration bytes and normalize the generated plot for portable hashes."
+    },
+    {
+      "base_commit": "8f04d20620d8c20e2673b8d1e86834df38862994",
+      "path": "docs/benchmarks/pyleecan-prius-v1/app-registration.json",
+      "source_sha256": "76bbc2122327c6e489bfd8f062ffa24a4547a3b8491b9ed195eb8c1151268b5c",
+      "reason": "Preserve original registration bytes and normalize the generated plot for portable hashes."
+    },
+    {
+      "base_commit": "8f04d20620d8c20e2673b8d1e86834df38862994",
+      "path": "docs/benchmarks/pyleecan-prius-v1/artifact-manifest.json",
+      "source_sha256": "c4fccd0bb9c6957ab83d703db4e30c9848335db30bc6b9737fdfebbbe394feeb",
+      "reason": "Preserve original registration bytes and normalize the generated plot for portable hashes."
+    },
+    {
+      "base_commit": "b2a52c359ae597f72dc0099d5e7424c02f2afe85",
+      "path": ".gitattributes",
+      "source_sha256": "f123efdc48cacee961de2b17de6c0ce834dc6a2602c2b841f9577806b6ec18c6",
+      "reason": "Keep original registration line endings explicit in Git and whitespace checks."
+    },
+    {
+      "base_commit": "007d21e737cd74401d0b6c442c67e3350bdc50dd",
+      "path": "docs/benchmarks/pyleecan-prius-v1/app-results.svg",
+      "source_sha256": "22e87620ca820287cee5564b621d278c5a3b9309806b201d0c9c6c17a3ff0551",
+      "reason": "Normalize generated SVG whitespace while preserving all plotted values."
+    },
+    {
+      "base_commit": "007d21e737cd74401d0b6c442c67e3350bdc50dd",
+      "path": "docs/benchmarks/pyleecan-prius-v1/artifact-manifest.json",
+      "source_sha256": "e188f0da7b3d0d5248963e5392a2e49f94c7fc80823aee31c37c42d914752538",
+      "reason": "Normalize generated SVG whitespace while preserving all plotted values."
+    },
+    {
+      "base_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb",
+      "path": "PUBLICATION_STATUS.md",
+      "source_sha256": "be43a2af49e72eef4fb9c1f26846d722cbb051b0be6b6dc494f3ea1d873f7302",
+      "reason": "Retain the completed clean Prius-branch A/B/C/D regression, preserve prior numerical outcomes, and update measured-source qualification metadata."
+    },
+    {
+      "base_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb",
+      "path": "backend/qualification.py",
+      "source_sha256": "9fc70f6c3ac0fa8b4cc9a8ba4443a844a4c591062a534f7bb34f5ceb0a59a98c",
+      "reason": "Retain the completed clean Prius-branch A/B/C/D regression, preserve prior numerical outcomes, and update measured-source qualification metadata."
+    },
+    {
+      "base_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb",
+      "path": "benchmarks/README.md",
+      "source_sha256": "914839fbbd8d8074d80dd86e71282267ae2680261966a570e733fe7d59be0dbd",
+      "reason": "Retain the completed clean Prius-branch A/B/C/D regression, preserve prior numerical outcomes, and update measured-source qualification metadata."
+    },
+    {
+      "base_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb",
+      "path": "benchmarks/records/README.md",
+      "source_sha256": "208872c05ffe81c0e1aa0de0f38d1c90898bf62f5e2c97b1d6a00c5dcfd3b53c",
+      "reason": "Retain the completed clean Prius-branch A/B/C/D regression, preserve prior numerical outcomes, and update measured-source qualification metadata."
+    },
+    {
+      "base_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb",
+      "path": "benchmarks/records/windows-x86_64.json",
+      "source_sha256": "9a459e31f9f97a22bc2b72cc4e3b8da332a088f99bba6b5ee0c415d2aaebbcda",
+      "reason": "Retain the completed clean Prius-branch A/B/C/D regression, preserve prior numerical outcomes, and update measured-source qualification metadata."
+    },
+    {
+      "base_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb",
+      "path": "benchmarks/v0.4.0/README.md",
+      "source_sha256": "cbeec27b0691312ef718c5b01bacdae3f903f74bddf9fce8fc4451d7982cb537",
+      "reason": "Retain the completed clean Prius-branch A/B/C/D regression, preserve prior numerical outcomes, and update measured-source qualification metadata."
+    },
+    {
+      "base_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb",
+      "path": "docs/RELEASE_0_4_0.md",
+      "source_sha256": "8fb5f5cbb9f41dd4e47c388aa48dfcf85c38087daa66f30835835f34f06a79f9",
+      "reason": "Retain the completed clean Prius-branch A/B/C/D regression, preserve prior numerical outcomes, and update measured-source qualification metadata."
+    },
+    {
+      "base_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "c769a1e0809127b8860d4cf632439ed04cdd759f86d7a0aeee3028ef2d9a4d18",
+      "reason": "Retain the completed clean Prius-branch A/B/C/D regression, preserve prior numerical outcomes, and update measured-source qualification metadata."
+    },
+    {
+      "base_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb",
+      "path": "tests/test_benchmark_command.py",
+      "source_sha256": "d8a5728ab4a5e64023373b6846f78ac4211aefd03fde0b12b5632db44c132da6",
+      "reason": "Retain the completed clean Prius-branch A/B/C/D regression, preserve prior numerical outcomes, and update measured-source qualification metadata."
+    },
+    {
+      "base_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb",
+      "path": "tests/test_qualification.py",
+      "source_sha256": "073161ca754b8496799d4726c108aeb58e7067d93f4342f8252eae192af07fc8",
+      "reason": "Retain the completed clean Prius-branch A/B/C/D regression, preserve prior numerical outcomes, and update measured-source qualification metadata."
+    },
+    {
+      "base_commit": "3e640ac7b5b6535380b9eceb9cd6bce757c15795",
+      "path": "docs/RELEASE_0_4_0.md",
+      "source_sha256": "1cce2bd79f3d82cb087d36d6afa2f95d71efe6e85b1f85bca440edcea225e089",
+      "reason": "Retain installed Windows wheel acceptance with an explicit public build identity and the remaining Prius/UI release-integration check."
+    },
+    {
+      "base_commit": "3e640ac7b5b6535380b9eceb9cd6bce757c15795",
+      "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
+      "source_sha256": "7dba13307591b880597cf47f6644ed592eb0e43872773a87360d4d92bfa4bf24",
+      "reason": "Retain installed Windows wheel acceptance with an explicit public build identity and the remaining Prius/UI release-integration check."
+    },
+    {
+      "base_commit": "3e640ac7b5b6535380b9eceb9cd6bce757c15795",
+      "path": "docs/benchmarks/pyleecan-prius-v1/artifact-manifest.json",
+      "source_sha256": "8095b4835ff9be9b83b6fb2aea9b6c51c45af6199f1b8430ce6f23e821c82020",
+      "reason": "Retain installed Windows wheel acceptance with an explicit public build identity and the remaining Prius/UI release-integration check."
+    },
+    {
+      "base_commit": "377ea0ccb1e2d3b02cd17012c1e04ec424e43df1",
+      "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
+      "source_sha256": "8259894d5410eb0a75eb883c444281dabd0861785d6b00bad44fd2a342d65ae9",
+      "reason": "Harden Prius collection identity, freeze grading inputs, and resume only verified jobs while preserving historical field evidence."
+    },
+    {
+      "base_commit": "377ea0ccb1e2d3b02cd17012c1e04ec424e43df1",
+      "path": "docs/benchmarks/pyleecan-prius-v1/artifact-manifest.json",
+      "source_sha256": "a69ed35cc198226dad7b96833807ece19ec96e5c36e1d0ebb1237d4b5a71f198",
+      "reason": "Harden Prius collection identity, freeze grading inputs, and resume only verified jobs while preserving historical field evidence."
+    },
+    {
+      "base_commit": "377ea0ccb1e2d3b02cd17012c1e04ec424e43df1",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "e9b0430c34fe765898ded7db8fa3f1b9a3bb68baf7d9468183b73c6617c36837",
+      "reason": "Harden Prius collection identity, freeze grading inputs, and resume only verified jobs while preserving historical field evidence."
+    },
+    {
+      "base_commit": "377ea0ccb1e2d3b02cd17012c1e04ec424e43df1",
+      "path": "tools/benchmark_prius.py",
+      "source_sha256": "6acec522ac60bdeeea110667c3d9b3a3c539ae6c526f86cee538c032ccc78c0c",
+      "reason": "Harden Prius collection identity, freeze grading inputs, and resume only verified jobs while preserving historical field evidence."
+    },
+    {
+      "base_commit": "377ea0ccb1e2d3b02cd17012c1e04ec424e43df1",
+      "path": "tools/report_prius_benchmark.py",
+      "source_sha256": "97ba2c2c2921161f868ca05b9eeab903c66bbbb40e88b5555b006db95984a274",
+      "reason": "Harden Prius collection identity, freeze grading inputs, and resume only verified jobs while preserving historical field evidence."
+    },
+    {
+      "base_commit": "a3e83f50f7be3cd1c6defc50a69797e1f5bded7b",
+      "path": "THIRD_PARTY_NOTICES.md",
+      "source_sha256": "fb768bc0bef0dad16adeacea333c7d3cc1398406af80c3bc6504891416a882af",
+      "reason": "Carry Pyleecan attribution, conversion and affiliation notices with standalone and saved reference designs."
+    },
+    {
+      "base_commit": "a3e83f50f7be3cd1c6defc50a69797e1f5bded7b",
+      "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
+      "source_sha256": "0ca9fd42535500388bd732c9f34fcc5e193fdb2fbf20021f2eb5779f88e63997",
+      "reason": "Carry Pyleecan attribution, conversion and affiliation notices with standalone and saved reference designs."
+    },
+    {
+      "base_commit": "a3e83f50f7be3cd1c6defc50a69797e1f5bded7b",
+      "path": "docs/benchmarks/pyleecan-prius-v1/artifact-manifest.json",
+      "source_sha256": "a271775533906b5fd3c6a7726f93f8cdf79d82b3ad68ed987729f2489d8b88ec",
+      "reason": "Carry Pyleecan attribution, conversion and affiliation notices with standalone and saved reference designs."
+    },
+    {
+      "base_commit": "a3e83f50f7be3cd1c6defc50a69797e1f5bded7b",
+      "path": "frontend/scripts/test-design-file-defaults.mjs",
+      "source_sha256": "2cd3431e79d4bf6ff10a30324914aaa29280ce10ea95864ab6cc4c9abb3b2a22",
+      "reason": "Carry Pyleecan attribution, conversion and affiliation notices with standalone and saved reference designs."
+    },
+    {
+      "base_commit": "a3e83f50f7be3cd1c6defc50a69797e1f5bded7b",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "881fdc32150cb03c1278a8b9b4aac2357a547d070745f724cd5559828eb72180",
+      "reason": "Carry Pyleecan attribution, conversion and affiliation notices with standalone and saved reference designs."
+    },
+    {
+      "base_commit": "a3e83f50f7be3cd1c6defc50a69797e1f5bded7b",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "e7b0812d411cc71f7b241e4b2b15aaa2d6f639d9dff8155fa1435949cb5f7880",
+      "reason": "Carry Pyleecan attribution, conversion and affiliation notices with standalone and saved reference designs."
+    },
+    {
+      "base_commit": "a3e83f50f7be3cd1c6defc50a69797e1f5bded7b",
+      "path": "frontend/src/public/examples/prius-2004-loaded-torque-v1.coilem",
+      "source_sha256": "2d8377922b8060b5cf0dfca4f972be2dd4c6a51941b35fc913dd34589e6db255",
+      "reason": "Carry Pyleecan attribution, conversion and affiliation notices with standalone and saved reference designs."
+    },
+    {
+      "base_commit": "a3e83f50f7be3cd1c6defc50a69797e1f5bded7b",
+      "path": "frontend/src/public/examples/prius-2004-tutorial-bemf-v1.coilem",
+      "source_sha256": "0cc3f63a975dc759a6d2bc798feaea5a979460499d5e7e76572644622eab5e05",
+      "reason": "Carry Pyleecan attribution, conversion and affiliation notices with standalone and saved reference designs."
+    },
+    {
+      "base_commit": "a3e83f50f7be3cd1c6defc50a69797e1f5bded7b",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "334b5ca1386b39bd0c9f6e6510c90604bbabe0d3473de40dd67620d49d31dd4c",
+      "reason": "Carry Pyleecan attribution, conversion and affiliation notices with standalone and saved reference designs."
+    },
+    {
+      "base_commit": "7e3672294309c88d9152536441b4801a6403871d",
+      "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
+      "source_sha256": "c34c8195c746d3be60a56e876eb186350fb1556ea4df2204d1e3dfb1d34e961e",
+      "reason": "Name Prius examples by pole/slot count and case, and widen their design and examples menus."
+    },
+    {
+      "base_commit": "7e3672294309c88d9152536441b4801a6403871d",
+      "path": "docs/benchmarks/pyleecan-prius-v1/artifact-manifest.json",
+      "source_sha256": "91c9463191de0e4762187c386776309a3d0a11f48b12bbafb0ed53de4aa029f5",
+      "reason": "Name Prius examples by pole/slot count and case, and widen their design and examples menus."
+    },
+    {
+      "base_commit": "7e3672294309c88d9152536441b4801a6403871d",
+      "path": "frontend/src/public/exampleDesigns.ts",
+      "source_sha256": "fb04d423b8d483ccd2c042883b3759b300316602a2663a9afdc1c24c55201951",
+      "reason": "Name Prius examples by pole/slot count and case, and widen their design and examples menus."
+    },
+    {
+      "base_commit": "7e3672294309c88d9152536441b4801a6403871d",
+      "path": "frontend/src/public/examples/prius-2004-loaded-torque-v1.coilem",
+      "source_sha256": "8e3f15925030a79357da6f17f41f75f4ceee175d7460d3c8632c4a4852eee4a3",
+      "reason": "Name Prius examples by pole/slot count and case, and widen their design and examples menus."
+    },
+    {
+      "base_commit": "7e3672294309c88d9152536441b4801a6403871d",
+      "path": "frontend/src/public/examples/prius-2004-tutorial-bemf-v1.coilem",
+      "source_sha256": "ee06b79568cf89a1ba95acf2abfed1e36d165dc820e9bb0f741792ed3d1059b5",
+      "reason": "Name Prius examples by pole/slot count and case, and widen their design and examples menus."
+    },
+    {
+      "base_commit": "7e3672294309c88d9152536441b4801a6403871d",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "c360a7d0b107ceebb76bc7a19f5442cc447121fddf0b0ffc7b5f781614752983",
+      "reason": "Name Prius examples by pole/slot count and case, and widen their design and examples menus."
+    },
+    {
+      "base_commit": "7e3672294309c88d9152536441b4801a6403871d",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "aaf7c7b05771bf06bfc05867d62828cb8ac16a67f6cd85feb1d10ad725701452",
+      "reason": "Name Prius examples by pole/slot count and case, and widen their design and examples menus."
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "705d2050876c798c3080ae2af734fdcd42ffd01b60f1508900a2aea772a157df",
+      "reason": "Move the Phases overlay into the 2D preview row as a toggle beside the speed"
+    },
+    {
+      "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "dc468867393bb8fbed38bf32f6a5a2962d75c4e9713b5942721ae3e6a0d53967",
+      "reason": "Pin Phases as a preview toggle rather than a static overlay"
+    },
+    {
+      "base_commit": "15bdd52e9ce577ff9ed1de24cb12148dcc5abdef",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "20a89d4000b76c1b80121e4e12a002f4ba264a952865c8a298e10033db40b395",
+      "reason": "Draw no slot labels on the Phases layer, only the phase colours changing"
+    },
+    {
+      "base_commit": "15bdd52e9ce577ff9ed1de24cb12148dcc5abdef",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "54b6feefc50ec07fa4e24fa847657e2d24b74757dbdeb5360df492a820a9e63d",
+      "reason": "Pin that the Phases layer carries no slot labels"
+    },
+    {
+      "base_commit": "724b7b00105e8fb2fdf14b67fb2855f2b86a73f3",
+      "path": "backend/preview.py",
+      "source_sha256": "9d95bd235b3f2564b5c4fc6482adb549d01ac1ba25c6a9ce0da5c6e0cbf4eb28",
+      "reason": "Report phase A's axis offset in the preview metadata for the 2D Phases drive preview"
+    },
+    {
+      "base_commit": "724b7b00105e8fb2fdf14b67fb2855f2b86a73f3",
+      "path": "frontend/package.json",
+      "source_sha256": "b6c9c006db041b31338fa978e4df68ea50c30c8600dc22455ea7813ff714d143",
+      "reason": "Run the phase drive checks in the public UI test chain"
+    },
+    {
+      "base_commit": "724b7b00105e8fb2fdf14b67fb2855f2b86a73f3",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "19ea392d548cd3649020f95ddab450ce9a5b7b4fb98d79b852e260f49d620918",
+      "reason": "Pin the Phases drive panel and the collapsible Design health rail"
+    },
+    {
+      "base_commit": "724b7b00105e8fb2fdf14b67fb2855f2b86a73f3",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "f10b3ccc55dff4d932dd8d7af13d48886d1b1acbb94e825dfea570e17e1278b5",
+      "reason": "Let Design health collapse to a status strip"
+    },
+    {
+      "base_commit": "724b7b00105e8fb2fdf14b67fb2855f2b86a73f3",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "fc57d98d69bf2f0e747376663f76cbe94e983277ec44ff3d8095edb3458fa14d",
+      "reason": "Phases: motor right and smaller beside the solve's A/B/C waveforms wired into it"
+    },
+    {
+      "base_commit": "724b7b00105e8fb2fdf14b67fb2855f2b86a73f3",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "c360a7d0b107ceebb76bc7a19f5442cc447121fddf0b0ffc7b5f781614752983",
+      "reason": "Style the collapsed Design health strip"
+    },
+    {
+      "base_commit": "1efeddb688cf918b610fc07eeedfbe266e4d2b63",
+      "path": "frontend/src/public/phaseDrive.ts",
+      "source_sha256": "30647546cf789e39528ef5ee9e15d658c2a1ceb6076d38de86c816011f13516b",
+      "reason": "Derive each stator tooth's N/S pole from the slot currents"
+    },
+    {
+      "base_commit": "1efeddb688cf918b610fc07eeedfbe266e4d2b63",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "7d63c5dcbca109e3295419ddac09e57c2fbee5f5c892c83e8e6c0bb2edcbca58",
+      "reason": "Phases: tint each stator tooth N red or S blue by its pole strength"
+    },
+    {
+      "base_commit": "1efeddb688cf918b610fc07eeedfbe266e4d2b63",
+      "path": "frontend/scripts/test-phase-drive.mjs",
+      "source_sha256": "ea1419e512ecf3d3f9ca2fad17a187469e3c1656d90ef0fd6725eed0e7badad8",
+      "reason": "Check tooth poles lead the rotor N axis by 90 degrees electrical"
+    },
+    {
+      "base_commit": "1efeddb688cf918b610fc07eeedfbe266e4d2b63",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "0d5209d0e971b72388bf74bfe1e64ff01b5103cf043cf281c98ae13404bd692d",
+      "reason": "Pin the Phases tooth poles"
+    },
+    {
+      "base_commit": "1efeddb688cf918b610fc07eeedfbe266e4d2b63",
+      "path": "tests/test_public_phase_drive.py",
+      "source_sha256": "60319c9aaca20db172a0b3cb8661d48fb8fbbe21c246f8254c69a83e667b8345",
+      "reason": "Keep the tooth-pole winding layout fixture equal to the preview"
+    },
+    {
+      "base_commit": "3902d872ad510c75dd2f637ce755d340216f1566",
+      "path": "tests/test_public_phase_drive.py",
+      "source_sha256": "673bbd84fbaffad01a2263fc56e4b5f9d1d62a0af0c25fb73935d8c740f176ad",
+      "reason": "Keep the sine vector ids under the 150-column lint limit"
+    },
+    {
+      "base_commit": "2e871c2994e3d7e3796a6ea2ace6855c7b543024",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "5d3297a3a37a9eb0d1384bdb0996496fa3dbcecae298c558a4c18d4f2c3e3ff0",
+      "reason": "Add a Tooth poles toggle beside Phases, independent of it"
+    },
+    {
+      "base_commit": "2e871c2994e3d7e3796a6ea2ace6855c7b543024",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "b97db1c34adf252e71884deb85c99bfcc8f03f673f7af6824b895b324903ee01",
+      "reason": "Draw tooth poles from their own toggle, with or without Phases"
+    },
+    {
+      "base_commit": "2e871c2994e3d7e3796a6ea2ace6855c7b543024",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "2c47577bbbfdfd9126ab545127a068ef964ded8166ac4428c2e419563ca1325c",
+      "reason": "Pin the independent Tooth poles toggle"
+    },
+    {
+      "base_commit": "948b87fcc383c9924359c48eb48a087e22ced437",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "41efa00a5ce2a3db3d4a0f55476a78d1bef07e4588b6606c7d94dcabf056d0b4",
+      "reason": "Letter every rotor magnet N or S by the pole facing the airgap"
+    },
+    {
+      "base_commit": "948b87fcc383c9924359c48eb48a087e22ced437",
+      "path": "frontend/package.json",
+      "source_sha256": "7c70725fd558ef3ccae068447982e8a54941a2fee70cb1df3523d3ceb0458278",
+      "reason": "Run the canvas label checks in the public UI test chain"
+    },
+    {
+      "base_commit": "948b87fcc383c9924359c48eb48a087e22ced437",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "178e7a842fbef9beed687705f0fd108384f6d75d88fbc20d5a58d07bf17f4a85",
+      "reason": "Pin the magnet N / S letters"
+    },
+    {
+      "base_commit": "95d58677cea83bdbae882c62200f724ac1efc1b5",
+      "path": "frontend/src/public/phaseDrive.ts",
+      "source_sha256": "cc097033243c6579298e856b8cabb9a3cb2c4534ebf75390c4b2af05afd21213",
+      "reason": "Make the Phases strips a 1 s scope: electrical frequency from preview rpm and pole pairs"
+    },
+    {
+      "base_commit": "95d58677cea83bdbae882c62200f724ac1efc1b5",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "a3bbde3c73869b8cef46484bba48fd6fdf853b4ca62bdb52b95d0e1fb6954af0",
+      "reason": "Draw the Phases strips at the preview speed with their frequency in the heading and each plot"
+    },
+    {
+      "base_commit": "95d58677cea83bdbae882c62200f724ac1efc1b5",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "415b3dd75d20d6bfb85a565965d45881526fb3fcbc703fb100f8a5e508d977de",
+      "reason": "Pass the preview speed to the 2D canvas"
+    },
+    {
+      "base_commit": "95d58677cea83bdbae882c62200f724ac1efc1b5",
+      "path": "frontend/scripts/test-phase-drive.mjs",
+      "source_sha256": "0842f771eb1c4875b79a5a639a1a1f45e40522c24fdeb892854c927378569859",
+      "reason": "Check the scope frequency, cycles per sweep and time base"
+    },
+    {
+      "base_commit": "95d58677cea83bdbae882c62200f724ac1efc1b5",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "6109e0ff7dce9a05ce3759e6bd0c3646cd2dc828e7d5de0b3cff3b1ee1537311",
+      "reason": "Pin the Phases scope frequency readouts"
+    },
+    {
+      "base_commit": "3f836201228804dda25b27da17ea30f49f95b102",
+      "path": "frontend/scripts/test-phase-drive.mjs",
+      "source_sha256": "8d91a413b45b603aee4e6534cef582b6e67bc12f5045f8a9a2248b49ba3b2b5b",
+      "reason": "Sweep the tooth-pole lead through a whole electrical cycle in 1 degree steps"
+    },
+    {
+      "base_commit": "af2164cec316d4a353f83a14f765ff81f73715e9",
+      "path": "backend/preview.py",
+      "source_sha256": "e63ce9b1738ba0cf2fa811b97c46aa68ddfb315ec2024a17beab90e15b8f2986",
+      "reason": "Fix Prius phase conventions, zero-current previews and shifted-frame zoom."
+    },
+    {
+      "base_commit": "af2164cec316d4a353f83a14f765ff81f73715e9",
+      "path": "frontend/package.json",
+      "source_sha256": "accdb586601d464847d5493c7379e91600505142cc4af728744bc7ac51b7ebf8",
+      "reason": "Fix Prius phase conventions, zero-current previews and shifted-frame zoom."
+    },
+    {
+      "base_commit": "af2164cec316d4a353f83a14f765ff81f73715e9",
+      "path": "frontend/scripts/test-phase-drive.mjs",
+      "source_sha256": "18d1816e74cf7ca7745578557a4262e9754caf9d256b78c3864d3ae943ee7ce2",
+      "reason": "Fix Prius phase conventions, zero-current previews and shifted-frame zoom."
+    },
+    {
+      "base_commit": "af2164cec316d4a353f83a14f765ff81f73715e9",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "8bfc03f6345c6fb95964b3d74b65ab6613c0473abea963211e85f3f240ca9aa9",
+      "reason": "Fix Prius phase conventions, zero-current previews and shifted-frame zoom."
+    },
+    {
+      "base_commit": "af2164cec316d4a353f83a14f765ff81f73715e9",
+      "path": "frontend/src/public/MotorCanvas.tsx",
+      "source_sha256": "1aad28d9958fd724088d90870602cc4af542d89c2d83bb109494f399bcca0e7e",
+      "reason": "Fix Prius phase conventions, zero-current previews and shifted-frame zoom."
+    },
+    {
+      "base_commit": "af2164cec316d4a353f83a14f765ff81f73715e9",
+      "path": "frontend/src/public/ViewportNavigation.tsx",
+      "source_sha256": "5724654d93fd4f95851948f589a5d72f60d47c3c0850440b38121511a0c5364e",
+      "reason": "Fix Prius phase conventions, zero-current previews and shifted-frame zoom."
+    },
+    {
+      "base_commit": "af2164cec316d4a353f83a14f765ff81f73715e9",
+      "path": "frontend/src/public/phaseDrive.ts",
+      "source_sha256": "e62d2345187b1eca96cea74b161a7c40d65186b94049685296b1a532fafd20bb",
+      "reason": "Fix Prius phase conventions, zero-current previews and shifted-frame zoom."
+    },
+    {
+      "base_commit": "af2164cec316d4a353f83a14f765ff81f73715e9",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "4cc4b8102643d10b3082e36cad8f14b4154d9411c5f66d7aa9cadec552e97b63",
+      "reason": "Fix Prius phase conventions, zero-current previews and shifted-frame zoom."
+    },
+    {
+      "base_commit": "af2164cec316d4a353f83a14f765ff81f73715e9",
+      "path": "tests/test_public_phase_drive.py",
+      "source_sha256": "ac129fcdabe709be07df626b9d6a3bf9bb9ca26f5eae414cdfb3f34e0d623e52",
+      "reason": "Fix Prius phase conventions, zero-current previews and shifted-frame zoom."
+    },
+    {
+      "base_commit": "0bea2af37a5ecc5bf207c19cb5dd7e584887d83b",
+      "path": "frontend/src/public/WindingLayoutView.tsx",
+      "source_sha256": "2e3fc465fcebe43ea8a2f08690d2b5f15e07bae74ae8de381a776e12bdd7b3dd",
+      "reason": "Draw the Layout view's slots and coil end turns as a ring in the top half, zoomable like the 2D view."
+    },
+    {
+      "base_commit": "0bea2af37a5ecc5bf207c19cb5dd7e584887d83b",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "834726c8b800f9345ea4bd0813cb5d24299a17766a19cabaaf9438f6a903f54d",
+      "reason": "Pass the bottom bar's zoom slot to the Layout view."
+    },
+    {
+      "base_commit": "0bea2af37a5ecc5bf207c19cb5dd7e584887d83b",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "83aba621a3edf5a89ba1d9ae9e5ce23ebb1b0ffaa90144546d1750171c0c0fb0",
+      "reason": "Style the winding ring; size the wiring column to its wiring so the info box no longer covers it."
+    },
+    {
+      "base_commit": "0bea2af37a5ecc5bf207c19cb5dd7e584887d83b",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "dc468867393bb8fbed38bf32f6a5a2962d75c4e9713b5942721ae3e6a0d53967",
+      "reason": "Check the ring, its zoom wiring and the info box layout."
+    },
+    {
+      "base_commit": "0bea2af37a5ecc5bf207c19cb5dd7e584887d83b",
+      "path": "frontend/package.json",
+      "source_sha256": "b6c9c006db041b31338fa978e4df68ea50c30c8600dc22455ea7813ff714d143",
+      "reason": "Run the winding ring checks."
+    },
+    {
+      "base_commit": "0fe48f6650e99410f04ac22ed7edc4a360cb00e9",
+      "path": "frontend/package.json",
+      "source_sha256": "f532e411fdf549c30ed4ce4570ef43b349316ebc7b16a8ee3e777246151a95b7",
+      "reason": "Run the new winding wiring layout checks in the public UI test chain"
+    },
+    {
+      "base_commit": "0fe48f6650e99410f04ac22ed7edc4a360cb00e9",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "f76d48d7a5caed4e80e93459e493305fba5c2c3b453ebe9f4b9dde751f8634d2",
+      "reason": "Pin the Layout view's wrapped parallel-paths wiring and its width measurement"
+    },
+    {
+      "base_commit": "0fe48f6650e99410f04ac22ed7edc4a360cb00e9",
+      "path": "frontend/src/public/WindingLayoutView.tsx",
+      "source_sha256": "2de6bbed4e4331655c61550e027580b4761a4a9261aaa648ee33df88c3cdb6e6",
+      "reason": "Wrap long parallel-path chains like a snake to the measured panel width"
+    },
+    {
+      "base_commit": "0fe48f6650e99410f04ac22ed7edc4a360cb00e9",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "a8fa601dc872a387a09bdd4aec14bc7488ddcf9928dd4cc7954d22e432fbd7a0",
+      "reason": "Style the wiring's leads, jumpers and U-turns as unfilled wires"
+    },
+    {
+      "base_commit": "ba5cedbd7b82296a20f2a306a2031a1bc56cb564",
+      "path": "frontend/src/public/windingRing.ts",
+      "source_sha256": "54b91a63afb4b7397ac77c99a8963e07abfcad45e7bdf521708dad8f656817e5",
+      "reason": "Size the ring's current-direction markers to fill the narrowest coil side"
+    },
+    {
+      "base_commit": "ba5cedbd7b82296a20f2a306a2031a1bc56cb564",
+      "path": "frontend/src/public/WindingLayoutView.tsx",
+      "source_sha256": "43fee052542bd3e75f780039c7458f0b97aa9f41bb54e54a785fa15513780ac8",
+      "reason": "Draw the ring's direction markers as shapes, larger, with in sides out of the page as in the cross-section"
+    },
+    {
+      "base_commit": "ba5cedbd7b82296a20f2a306a2031a1bc56cb564",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "4a56ee53d1e6122c3342495262a568e4c9797dce280a2e2164e44ea51285a40a",
+      "reason": "Style the ring's drawn direction markers like the 2D view's"
+    },
+    {
+      "base_commit": "ba5cedbd7b82296a20f2a306a2031a1bc56cb564",
+      "path": "frontend/scripts/test-winding-ring.mjs",
+      "source_sha256": "79183d00ba368184d4cd762f0019958432dcd8e4f09cfe6242728fadcbf62cb3",
+      "reason": "Check the ring's direction markers fit their coil sides"
+    },
+    {
+      "base_commit": "ba5cedbd7b82296a20f2a306a2031a1bc56cb564",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "023656998bf0115ade6741a2cc433438730ae73340db4ac877b010984a73ecd1",
+      "reason": "Pin the ring's direction mapping and drawn markers"
+    },
+    {
+      "base_commit": "5b000f008c4c26327e43c6669992796df3ab5d53",
+      "path": "frontend/src/public/WindingLayoutView.tsx",
+      "source_sha256": "8a018442723c0fe2dafb284f3e6bb7fe09c7e52ed9039e651f35d20bd0283165",
+      "reason": "Turn the parallel-paths solver note into a question the reader opens, reworded"
+    },
+    {
+      "base_commit": "5b000f008c4c26327e43c6669992796df3ab5d53",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "c26d1a53d2a65a6a443f9d756b84423178219cb92ba3de254298372d96dc0b4c",
+      "reason": "Style the parallel-paths solver question and its answer"
+    },
+    {
+      "base_commit": "5b000f008c4c26327e43c6669992796df3ab5d53",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "95978d429171917a1de18ef013c68aa3c46b53f6f2644291760af8f7c2709f78",
+      "reason": "Pin the parallel-paths solver question in place of the info box"
+    },
+    {
+      "base_commit": "70ead979d57238846477868a4c1c4e07f4452389",
+      "path": "frontend/src/public/WindingLayoutView.tsx",
+      "source_sha256": "9a846fd083a6c6fd5dfed6a3850a4c94b2c327d3835ddbcbbb31f52d82c08fdb",
+      "reason": "Wrap the ring and the parallel paths in one body so they can sit side by side"
+    },
+    {
+      "base_commit": "70ead979d57238846477868a4c1c4e07f4452389",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "6ce89c5702877674101e4ae010939be5433bc85f44f65697d8df6a12aeb2b805",
+      "reason": "Put the ring left and the parallel paths right when the Layout view is wide"
+    },
+    {
+      "base_commit": "70ead979d57238846477868a4c1c4e07f4452389",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "5aa1dbe6b2b3ab2791030b08819d10b2903cb7ef897cf96d9d08edb72188f21d",
+      "reason": "Pin the Layout view's side-by-side body and its container query"
+    },
+    {
+      "base_commit": "5e4037c16523cadebb70e3ed69afe3def3c35fc8",
+      "path": "benchmarks/v0.4.0/README.md",
+      "source_sha256": "5b77880520956a4508c0120de76d99245dbff43b36fc16ba92051711e9e0bcf0",
+      "reason": "Align the winding ring with actual preview slot geometry, including the reflected Prius; defer hardware correlation to v0.5.0."
+    },
+    {
+      "base_commit": "5e4037c16523cadebb70e3ed69afe3def3c35fc8",
+      "path": "docs/RELEASE_0_4_0.md",
+      "source_sha256": "906aded59a3873b02df7c6ddd876702749bdaa206f1c0cfe29c38e612c74212d",
+      "reason": "Align the winding ring with actual preview slot geometry, including the reflected Prius; defer hardware correlation to v0.5.0."
+    },
+    {
+      "base_commit": "5e4037c16523cadebb70e3ed69afe3def3c35fc8",
+      "path": "frontend/scripts/test-winding-ring.mjs",
+      "source_sha256": "7e3d6006b32ef46b87103f541c5cb97e3112693601156d200f47e8b8509826a0",
+      "reason": "Align the winding ring with actual preview slot geometry, including the reflected Prius; defer hardware correlation to v0.5.0."
+    },
+    {
+      "base_commit": "5e4037c16523cadebb70e3ed69afe3def3c35fc8",
+      "path": "frontend/src/public/WindingLayoutView.tsx",
+      "source_sha256": "cb09dcc6ad0aa07d2e8e1b3ee38088f4f0710e2e0ee8d8b36de84f0f90055b90",
+      "reason": "Align the winding ring with actual preview slot geometry, including the reflected Prius; defer hardware correlation to v0.5.0."
+    },
+    {
+      "base_commit": "5e4037c16523cadebb70e3ed69afe3def3c35fc8",
+      "path": "frontend/src/public/windingRing.ts",
+      "source_sha256": "1d3c62d62fe996a2601bc115195e2c337edfb92fd47a9a54fc2474f3cc39a239",
+      "reason": "Align the winding ring with actual preview slot geometry, including the reflected Prius; defer hardware correlation to v0.5.0."
+    },
+    {
+      "base_commit": "5e4037c16523cadebb70e3ed69afe3def3c35fc8",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "0b651da1e6a0174d5250a3c0d5cfddcbd8b68b1b602775fff5435f6038944b07",
+      "reason": "Align the winding ring with actual preview slot geometry, including the reflected Prius; defer hardware correlation to v0.5.0."
+    },
+    {
+      "base_commit": "5e4037c16523cadebb70e3ed69afe3def3c35fc8",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "4cc4b8102643d10b3082e36cad8f14b4154d9411c5f66d7aa9cadec552e97b63",
+      "reason": "Align the winding ring with actual preview slot geometry, including the reflected Prius; defer hardware correlation to v0.5.0."
+    },
+    {
+      "base_commit": "aec929204f93f3ea91ea8a4bf58108c86ece8ff2",
+      "path": "tests/test_winding_ring_geometry.py",
+      "source_sha256": "2a69392a0a944d9ac0939d521268c45f2b6b623c39a60d0c49bee80d42761020",
+      "reason": "Allow platform libm rounding in the exact Prius slot-coordinate fixture."
+    },
+    {
+      "base_commit": "56ed435953560f2715a98ac02b5b8402245d2d69",
+      "path": "benchmarks/v0.4.0/README.md",
+      "source_sha256": "5b77880520956a4508c0120de76d99245dbff43b36fc16ba92051711e9e0bcf0",
+      "reason": "Integrate Layout main into Phases while preserving both test suites and publication provenance."
+    },
+    {
+      "base_commit": "56ed435953560f2715a98ac02b5b8402245d2d69",
+      "path": "docs/RELEASE_0_4_0.md",
+      "source_sha256": "906aded59a3873b02df7c6ddd876702749bdaa206f1c0cfe29c38e612c74212d",
+      "reason": "Integrate Layout main into Phases while preserving both test suites and publication provenance."
+    },
+    {
+      "base_commit": "56ed435953560f2715a98ac02b5b8402245d2d69",
+      "path": "frontend/package.json",
+      "source_sha256": "cf8ecc08bfb70fb2b073f24ea1a1a043ec5641a51acbc2af42162a17a1b6ff96",
+      "reason": "Integrate Layout main into Phases while preserving both test suites and publication provenance."
+    },
+    {
+      "base_commit": "56ed435953560f2715a98ac02b5b8402245d2d69",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "9fb792853ef52884f5fdc62cfa171905b2d491bd83ef2ceebe8f816da72cefa4",
+      "reason": "Integrate Layout main into Phases while preserving both test suites and publication provenance."
+    },
+    {
+      "base_commit": "56ed435953560f2715a98ac02b5b8402245d2d69",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "fa9d78a5d1eeab4b7ad54b588b40984a45e0690372c21a5d1b8f2cbf7b57166d",
+      "reason": "Integrate Layout main into Phases while preserving both test suites and publication provenance."
+    },
+    {
+      "base_commit": "56ed435953560f2715a98ac02b5b8402245d2d69",
+      "path": "frontend/src/public/WindingLayoutView.tsx",
+      "source_sha256": "2e3fc465fcebe43ea8a2f08690d2b5f15e07bae74ae8de381a776e12bdd7b3dd",
+      "reason": "Integrate Layout main into Phases while preserving both test suites and publication provenance."
+    },
+    {
+      "base_commit": "56ed435953560f2715a98ac02b5b8402245d2d69",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "974171f44e0f8761eccc34f1109be1b74ab9b48020b56601b8caad6f92c46e44",
+      "reason": "Integrate Layout main into Phases while preserving both test suites and publication provenance."
+    },
+    {
+      "base_commit": "56ed435953560f2715a98ac02b5b8402245d2d69",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "9c03b691377b11d3b475d500f48c05ca8dc85b83779f8d29f6b6ea7ef24b81d9",
+      "reason": "Integrate Layout main into Phases while preserving both test suites and publication provenance."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "PUBLICATION_STATUS.md",
+      "source_sha256": "04fcd7626e2f250cfeeb039bdac4ce6b93fd9c2e8d5ed225ac40554f3f81d9b4",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "README.md",
+      "source_sha256": "158ea73642af1364afebdf472239235a7a573021671cccf0e8b4e19af3d671f6",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "f2503f406fc405d8171018ca901439118e473d7c8ceac6080f44a3503c966386",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "backend/__init__.py",
+      "source_sha256": "a504ea60e52a6281ed93c0120ebb218eeceea9753767e95273b8449249bb3cf2",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "benchmarks/README.md",
+      "source_sha256": "8bb3014777563c215bcad4455c324d47be5a405da957504947068259b68a11a2",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "benchmarks/v0.4.0/README.md",
+      "source_sha256": "251a529e534ec8920b873a766436211ffb7aa8ce61e42c882620bafa4496d164",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "docs/RELEASE_0_4_0.md",
+      "source_sha256": "84af0a9dafdd4ff1c0e9fe42808c2bba8d101d8f2684ad3de8039211d7e95bbb",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "cc34bb9093452030f6bd71e3a2be9d3409d43d717d0df981ec99f5838e27bafd",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
+      "source_sha256": "34b3fa3dfebf8bbf0e8d2b8073b8038da4086a9f12c9839028d6de638b620ee9",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "frontend/package-lock.json",
+      "source_sha256": "46e5466c723c04d949140f0a5769b9c3372fdb2c90dae0c26e3609ccdb804ed3",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "frontend/package.json",
+      "source_sha256": "35ef1c017c793986dc5bb0b59b4fa2517c914b51daf7e753033853586a3a3a93",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "92610a9d5142ee6d67f058fb7b577703cda931241dc647be492644addbdb93e2",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "3b67492be295cf2a04645d2de17b6fbda55ef37a",
+      "path": "tests/test_public_candidate.py",
+      "source_sha256": "4d284e07b09f17698671afa3f0502ff3250e9cbabb2ea0adab7610fd947485d4",
+      "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "5ae948b08d0f5db588704165884d02a1b57e1c43",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "fd17db867e643ab1c719554788cb3c0e7322256e0208f99f26d7bf741241d1be",
+      "reason": "Reset Layers to 1 when Winding > Type switches to Concentrated on a q >= 1 layout such as 6p/36s, keeping parallel paths a divisor."
+    },
+    {
+      "base_commit": "816c50fcf22071d6627ce474bd9206881e09899d",
+      "path": "frontend/scripts/test-tooth-coil-repair.mjs",
+      "source_sha256": "6808ab126570cab3b8f1988a239b4f4fb32411f42e505a6573524bd0a339b3f1",
+      "reason": "Reset Layers to 1 when Winding > Type switches to Concentrated on a q >= 1 layout such as 6p/36s, keeping parallel paths a divisor."
+    },
+    {
+      "base_commit": "13721112b79390383f4bb59738713cae16607fc1",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "1db1114e1aa53ff5c62d00c6babcbaf672b72209e1c8c211e9070963a00cf89c",
+      "reason": "Reset Layers to 1 when Winding > Type switches to Concentrated on a q >= 1 layout such as 6p/36s, keeping parallel paths a divisor."
+    },
+    {
+      "base_commit": "6f5fec1597f9bb71935f99c21b152d8b603a640f",
+      "path": "frontend/src/public/guidedConfigRepair.ts",
+      "source_sha256": "1fbf251e9a7b3a53c05b921ddaab58d2ceaab23efdce8e79f9dabaa52fa710e7",
+      "reason": "Reset Layers to 1 when Winding > Type switches to Concentrated on a q >= 1 layout such as 6p/36s, keeping parallel paths a divisor."
+    },
+    {
+      "base_commit": "816c50fcf22071d6627ce474bd9206881e09899d",
+      "path": "frontend/scripts/test-tooth-coil-repair.mjs",
+      "source_sha256": "6808ab126570cab3b8f1988a239b4f4fb32411f42e505a6573524bd0a339b3f1",
+      "reason": "Explain why Wound teeth is hidden for q >= 1 concentrated layouts such as 6p/36s with an info note."
+    },
+    {
+      "base_commit": "5ae948b08d0f5db588704165884d02a1b57e1c43",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "1200cc7326b4d891b198907a4649f5411914d797cd32ce29c56a36042cd836ff",
+      "reason": "Explain why Wound teeth is hidden for q >= 1 concentrated layouts such as 6p/36s with an info note."
+    },
+    {
+      "base_commit": "5ae948b08d0f5db588704165884d02a1b57e1c43",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "cb1d0b142d500dc21774c61f07a40b68e1abe2878a51e416aed1c857d22f4565",
+      "reason": "Explain why Wound teeth is hidden for q >= 1 concentrated layouts such as 6p/36s with an info note."
+    },
+    {
+      "base_commit": "816c50fcf22071d6627ce474bd9206881e09899d",
+      "path": "frontend/src/public/toothCoils.ts",
+      "source_sha256": "d876ce6bc3ad85a09dcfeb531645baae4b769f98299dbcafb5f003367ef35450",
+      "reason": "Explain why Wound teeth is hidden for q >= 1 concentrated layouts such as 6p/36s with an info note."
+    },
+    {
+      "base_commit": "5ae948b08d0f5db588704165884d02a1b57e1c43",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "fd17db867e643ab1c719554788cb3c0e7322256e0208f99f26d7bf741241d1be",
+      "reason": "Tag the benchmark examples Experimental in yellow in the Examples menu."
+    },
+    {
+      "base_commit": "3ae03c6d260e8a40f6e1bd227cda59f2e7f5b2e1",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "a7085978edcbaabf5d600845173eebfa65f3adcd211f7da4d82ebe9d3308bc83",
+      "reason": "Tag the benchmark examples Experimental in yellow in the Examples menu."
+    },
+    {
+      "base_commit": "3ae03c6d260e8a40f6e1bd227cda59f2e7f5b2e1",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "dd8bf5753dff5d5d72dbbc9f0c0c8806fbd3fe1781dd5abad27eea904c8d874f",
+      "reason": "Tag the benchmark examples Experimental in yellow in the Examples menu."
+    },
+    {
+      "base_commit": "75aaf62939c80b7c2ec6e37eedc5d053af920847",
+      "path": "frontend/scripts/test-field-axes.mjs",
+      "source_sha256": "39aef41d7087a48b455b04a8db3780a0d4a3868b478019c434f5fd57861b4b3f",
+      "reason": "Draw the Stator + PM field-axis arrows thin and dashed, with solid fine heads; frame the lead angle with two centre lines and explain electrical degrees in a ? tooltip."
+    },
+    {
+      "base_commit": "5ae948b08d0f5db588704165884d02a1b57e1c43",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "fd17db867e643ab1c719554788cb3c0e7322256e0208f99f26d7bf741241d1be",
+      "reason": "Draw the Stator + PM field-axis arrows thin and dashed, with solid fine heads; frame the lead angle with two centre lines and explain electrical degrees in a ? tooltip."
+    },
+    {
+      "base_commit": "e446a57152eae1055f15b61c5f5fe1c96b5db939",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "c7618d0cde4bd758b52d75eecf02cf4866ebeb367622b70cbe92c7c35c62dc30",
+      "reason": "Draw the Stator + PM field-axis arrows thin and dashed, with solid fine heads; frame the lead angle with two centre lines and explain electrical degrees in a ? tooltip."
+    },
+    {
+      "base_commit": "75aaf62939c80b7c2ec6e37eedc5d053af920847",
+      "path": "frontend/src/public/fieldAxes.ts",
+      "source_sha256": "955232c4af710fbabcbb941281a8dde2dc624fb504dcf5041622b2f6e67c90a3",
+      "reason": "Draw the Stator + PM field-axis arrows thin and dashed, with solid fine heads; frame the lead angle with two centre lines and explain electrical degrees in a ? tooltip."
+    },
+    {
+      "base_commit": "5ae948b08d0f5db588704165884d02a1b57e1c43",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "cb1d0b142d500dc21774c61f07a40b68e1abe2878a51e416aed1c857d22f4565",
+      "reason": "Draw the Stator + PM field-axis arrows thin and dashed, with solid fine heads; frame the lead angle with two centre lines and explain electrical degrees in a ? tooltip."
+    },
+    {
+      "base_commit": "6172f3b5018039f900b5dc8daedf76b10495275e",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "78104776d859ba7ae286508a5adec1d37b2f54836e802bc82cfcc8cee4d3e620",
+      "reason": "Report the stator-only field run in the Run plan's live card like a solve, without the progress overlay on the field."
+    },
+    {
+      "base_commit": "5ae948b08d0f5db588704165884d02a1b57e1c43",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "1200cc7326b4d891b198907a4649f5411914d797cd32ce29c56a36042cd836ff",
+      "reason": "Report the stator-only field run in the Run plan's live card like a solve, without the progress overlay on the field."
+    },
+    {
+      "base_commit": "9ecf809ee78b8fa12d41cf773505fbd7aaed3bef",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "9f2de9c651569573341b0cefbc8eae81d51fd25658910dfe6bd5d1df58dcdf09",
+      "reason": "Report the stator-only field run in the Run plan's live card like a solve, without the progress overlay on the field."
+    },
+    {
+      "base_commit": "6172f3b5018039f900b5dc8daedf76b10495275e",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "0588b77f07ab8f13ed52a24bd0001a609b766e1f6ccae22b9aa598465b45dfdb",
+      "reason": "Report the stator-only field run in the Run plan's live card like a solve, without the progress overlay on the field."
     },
     {
       "base_commit": "7764b6099c0e41eb4679c40c8383d088170646c3",

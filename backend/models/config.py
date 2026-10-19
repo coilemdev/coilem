@@ -8,7 +8,9 @@ from backend.custom_materials import CustomSteel, is_custom_steel_id
 
 MIN_IPM_MAGNET_WIDTH_MM = 0.1
 MIN_SPM_MAGNET_WIDTH_MM = 5.0
-MIN_STATOR_SLOT_OPENING_MM = 2.0
+# The pinned SlotW11 reference has a 1.93 mm mouth. Editable designs keep
+# the existing 2 mm limit in MotorConfig below.
+MIN_STATOR_SLOT_OPENING_MM = 1.93
 MIN_STATOR_TOOTH_WIDTH_MM = 2.0
 
 
@@ -651,6 +653,10 @@ class MotorConfig(BaseModel):
     """Complete motor configuration."""
 
     schema_version: str = Field(default="1.0", description="Schema version")
+    geometry_reference: Optional[Literal["pyleecan_prius_2004"]] = Field(
+        default=None, description="Pinned published geometry; its geometry, winding and materials are fixed"
+    )
+    reference_case: Optional[Literal["prius-2004-tutorial-bemf-v1", "prius-2004-loaded-torque-v1"]] = None
     topology: Literal["IPM", "SPM"] = Field(default="IPM", description="Motor topology")
     stator: StatorConfig = Field(..., description="Stator configuration")
     rotor: RotorConfig = Field(..., description="Rotor configuration")
@@ -717,8 +723,16 @@ class MotorConfig(BaseModel):
 
     @model_validator(mode="after")
     def magnet_temperature_requires_coefficients(self):
+        if not self.geometry_reference and self.stator.slot_opening_mm < 2.0:
+            raise ValueError("Editable designs require slot_opening_mm >= 2 mm")
         if self.solve_params is not None and self.solve_params.magnet_temperature_C is not None:
-            raise ValueError("Magnet temperature is not supported by this preview.")
+            if self.geometry_reference != "pyleecan_prius_2004" or self.solve_params.magnet_temperature_C not in (20, 60):
+                raise ValueError("Magnet temperature is not supported by this preview.")
+        if self.reference_case and not self.geometry_reference:
+            raise ValueError("A reference case requires its pinned geometry reference")
+        if self.geometry_reference:
+            from backend.reference_models.prius import check_config
+            check_config(self)
         return self
 
     @model_validator(mode="after")
