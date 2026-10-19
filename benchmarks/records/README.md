@@ -18,7 +18,7 @@ for its estimates.
 | Record | Measured at | Evidence | Outcome |
 | --- | --- | --- | --- |
 | [`macos-arm64.json`](macos-arm64.json) | `738d951` | [Historical macOS native run](../macos-native-20261015-738d951/README.md) | 28 PASS, 1 YELLOW, 1 unsupported |
-| [`windows-x86_64.json`](windows-x86_64.json) | `f390b25` | [Windows Precise mesh requalification](../windows-native-20261018-f390b25/README.md) | 28 PASS, 1 YELLOW, 1 unsupported |
+| [`windows-x86_64.json`](windows-x86_64.json) | `5b6cb61` | [Windows Precise mesh requalification](../windows-prius-requal-20261018/README.md) | 28 PASS, 1 YELLOW, 1 unsupported |
 
 The Windows run measured the current Precise mesh source and reproduces every
 verdict, gate and recorded value of the previous Windows record exactly. Its
@@ -26,7 +26,7 @@ record was rebuilt from those measurements, including the new source hashes
 and case times. Fast mesh remains experimental.
 
 The macOS record retains its original measurements and source hashes. It has
-not been remeasured for the change to `backend/gmsh_solver.py`, so a current
+not been remeasured for the mesh and conditional reference-dispatch changes, so a current
 macOS run reports **NOT_COMPARABLE** against it until new macOS evidence is
 collected. Numerical agreement alone does not bypass the source guard.
 
@@ -39,7 +39,7 @@ meaningful.
 
 `coilem benchmark` first hashes the installation's physics sources and
 compares them with the record's. These are the Python modules, the material
-curve, and the Magneto2D Rust sources and lock file named in
+curve, pinned reference assets, and the Magneto2D Rust sources and lock file named in
 [`backend/benchmark_suite/physics.py`](../../backend/benchmark_suite/physics.py).
 A wheel carries the solver executable, not its Rust sources, so the build
 stamps their hashes into the package. This is how a 0.4.0 install is checked
@@ -79,7 +79,7 @@ cases, using at most 43% of any tolerance.
 Records are built from committed evidence, never edited by hand:
 
 ```sh
-python -m tools.build_benchmark_record benchmarks/windows-native-20261018-f390b25 \
+python -m tools.build_benchmark_record benchmarks/windows-prius-requal-20261018 \
     --out benchmarks/records/windows-x86_64.json
 ```
 

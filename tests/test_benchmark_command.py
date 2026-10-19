@@ -24,7 +24,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 RECORDS = REPO_ROOT / resources.BENCHMARK_RECORDS_DIR
 EVIDENCE = {
     "macos-arm64": REPO_ROOT / "benchmarks/macos-native-20261015-738d951",
-    "windows-x86_64": REPO_ROOT / "benchmarks/windows-native-20261018-f390b25",
+    "windows-x86_64": REPO_ROOT / "benchmarks/windows-prius-requal-20261018",
 }
 MATCHING_PHYSICS = {"status": "MATCH", "files": 0, "differs": [], "unverified": []}
 # Home-directory paths, joined at run time so this file passes the publication path check.
@@ -60,7 +60,11 @@ def test_records_are_rebuilt_exactly_from_the_committed_evidence(key: str, tmp_p
     published = read(RECORDS / f"{key}.json")
     assert published["platform"] == key
     assert published["measured_commit"] == read(EVIDENCE[key] / "benchmark_summary.json")["run"]["identity"]["commit"]
-    assert set(published["physics_files"]) == set(physics_sources(REPO_ROOT))
+    if key == "windows-x86_64":
+        assert set(published["physics_files"]) == set(physics_sources(REPO_ROOT))
+    else:
+        assert len(published["physics_files"]) == 50
+        assert not any(name.startswith("backend/reference_models/") for name in published["physics_files"])
 
 
 def test_regrading_reproduces_the_published_windows_comparison(graded) -> None:
@@ -77,8 +81,9 @@ def test_windows_requalification_preserves_previous_verdicts_gates_and_values() 
     }
 
 
-def test_windows_requalification_publication_hashes_and_self_check() -> None:
-    evidence = EVIDENCE["windows-x86_64"]
+@pytest.mark.parametrize("folder", ["windows-native-20261018-f390b25", "windows-prius-requal-20261018"])
+def test_windows_requalification_publication_hashes_and_self_check(folder) -> None:
+    evidence = REPO_ROOT / "benchmarks" / folder
     manifest = read(evidence / "artifact_manifest.json")
     published = {path.relative_to(evidence).as_posix(): path for path in evidence.rglob("*")
                  if path.is_file() and path.name != "artifact_manifest.json"}
@@ -96,13 +101,20 @@ def test_windows_requalification_publication_hashes_and_self_check() -> None:
     assert pdf_publication["byte_for_byte_unchanged"] and pdf_publication["pages"] == 64
     assert len(pdf_publication["relative_fixture_links"]) == 36
     assert all((evidence / link["target"]).is_file() for link in pdf_publication["relative_fixture_links"])
-    assert read(evidence / "self-check-windows-x86_64.json")["cases"] == read(RECORDS / "windows-x86_64.json")["cases"]
+    assert read(evidence / "self-check-windows-x86_64.json")["cases"] == {
+        row["id"]: record.case_record(row) for row in regrade(read(evidence / "benchmark_summary.json"))[0]["rows"]
+    }
 
 
 def test_historical_macos_record_keeps_its_measured_physics_guard(graded) -> None:
     published = read(RECORDS / "macos-arm64.json")
     physics = record.check_physics(published)
-    assert physics == {"status": "DIFFERS", "files": 50, "differs": ["backend/gmsh_solver.py"], "unverified": []}
+    assert physics == {"status": "DIFFERS", "files": 50, "differs": [
+        "backend/excitation.py", "backend/geometry_ir.py", "backend/gmsh_solver.py",
+        "backend/magneto2d_adapter/__init__.py", "backend/solver/__init__.py",
+        "backend/reference_models/prius.py", "backend/reference_models/pyleecan_prius_2004.json",
+        "backend/reference_models/pyleecan_prius_2004_config.json",
+    ], "unverified": []}
     comparison = record.compare_run(graded["macos-arm64"]["rows"], published, physics=physics)
     assert comparison["matched"] == comparison["compared"] == 30
     assert comparison["status"] == "NOT_COMPARABLE"
@@ -155,7 +167,7 @@ def test_unsupported_and_failed_cases_must_match_too(graded) -> None:
 
 def test_physics_check_reads_this_checkout_and_names_a_change(monkeypatch) -> None:
     published = read(RECORDS / "windows-x86_64.json")
-    assert record.check_physics(published) == {"status": "MATCH", "files": 50, "differs": [], "unverified": []}
+    assert record.check_physics(published) == {"status": "MATCH", "files": 53, "differs": [], "unverified": []}
     changed = copy.deepcopy(published)
     changed["physics_files"]["backend/torque_metrics.py"] = "0" * 64
     assert record.check_physics(changed)["differs"] == ["backend/torque_metrics.py"]

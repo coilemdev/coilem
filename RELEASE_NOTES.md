@@ -1,340 +1,146 @@
-# coilEM 0.3.1 Developer Preview
+# coilEM 0.4.0 Developer Preview
 
-coilEM 0.3.1 is a patch release of the 0.3 developer preview that supports
-Python 3.15, so the one-command install works on computers without an older
-Python. It is a developer preview of the local motor-design application and
-bundles Magneto2D 0.3.3 as its field solver; the application and solver use
-separate version numbers.
+Prepared October 19, 2026. The source identifies as coilEM 0.4.0 and bundles
+Magneto2D 0.3.3. Final-candidate qualification, installed-wheel acceptance and
+publication are tracked in the [release plan](docs/RELEASE_0_4_0.md).
+The measurements below retain their original source commits; they are the
+baseline for the final candidate, not measurements of an untested tag.
 
-## Install
+## Motor model and solve changes
+
+- Flux linkage credits the full slot-side turns. Fractional-slot concentrated
+  windings use a coil on each tooth, with the correct two-layer slot map and
+  parallel-path current. Sinusoidal current angle is measured from phase A's
+  own winding axis; ideal six-step uses the corresponding public sector table.
+  These corrections change affected results from 0.3.x. Recheck old comparisons
+  against the current winding model rather than expecting identical values.
+- Design exposes the supported winding layers and parallel paths and explains
+  invalid combinations. Distributed two-layer slots follow the physical
+  geometry in both meshing and visualization.
+- Precise is the qualified mesh-build default. Fast is a separate experimental
+  mesh-build control, independent of the Preview/Standard/High accuracy solve
+  plans; its lower construction cost does not establish numerical accuracy.
+- The motor-constants panel explains current and voltage conventions. Results
+  present Kt and Ke in datasheet units with SI values available, alongside the
+  stored operating point and model assumptions.
+
+## Exact Pyleecan Prius examples
+
+**Examples → Benchmarks** contains **Pyleecan Prius 8p48s · BEMF** and
+**Pyleecan Prius 8p48s · Loaded torque**. They load the pinned analytic geometry,
+explicit winding, magnet directions and embedded M400-50A curve:
+
+| Case | Reference operating point |
+| --- | --- |
+| Tutorial BEMF | 1000 rpm, 20°C magnets, zero phase current |
+| Loaded torque | 2000 rpm, 60°C magnets, 250 A peak, Pyleecan d-axis Phi0 = 140° |
+
+The model identity, case ID, temperature and current conventions survive
+save/reopen and saved-run replay. The model geometry, winding and material
+are fixed; operating-point and accuracy experiments retain their actual
+requests. The 2D and 3D previews use the same analytic contours, including holes.
+The 3D preview is an extrusion of the 2D model, not a 3D field solve.
+
+The [conversion notice](THIRD_PARTY_NOTICES.md#pyleecan-prius-reference-data)
+records source attribution and modifications. Attribution travels with saved
+reference designs. There is no affiliation with or endorsement by EOMYS,
+the Pyleecan project, or Toyota. Software-model reproduction does not establish
+identity with the original paper or measured hardware accuracy.
+
+## Layout, preview and results
+
+- Layout shows the winding as a ring with coil-side direction markers and end
+  turns. Slot positions come from the actual preview polygons, including the
+  reflected Prius clockwise numbering. Long parallel branches wrap within the
+  panel, and the solver explanation opens without covering the wiring.
+- Phases shows a one-second A/B/C current scope connected to the motor. Generic
+  sinusoidal, six-step and Pyleecan d-axis conventions follow the selected
+  solve. Zero-current examples show flat traces and no energized tooth tint.
+- Tooth poles is an independent 2D toggle, and rotor magnets carry readable N/S
+  labels. Wheel zoom uses the same motor origin as the shifted Phases drawing.
+- Design health and Solve setup collapse to leave more room for the motor.
+  Completed results lead with key values and a three-phase back-EMF sparkline;
+  the detailed run settings remain available.
+- The field view uses a fixed 0–2.0 T flux-density scale, supports combined
+  stator/PM field lines and axes, and links field position to result curves.
+  These displays do not extend the numerical qualification scope.
+- Stored field images use lossless WebP layers, shared PM mesh data is stored
+  once, and replay archives are generated on download. Deleting a run also
+  removes its raw solver cache. Existing saved designs and runs remain readable.
+- Release hardening improves process interruption and native Gmsh handling.
+  Minimal Linux installations get an actionable missing-library diagnostic.
+
+## Retained benchmark evidence
+
+The [v0.4.0 evidence report](benchmarks/v0.4.0/README.md) links the full PDFs,
+HTML, JSON/CSV, fixtures, reference identities and reproduction commands.
+
+| Collection | Measured source | Retained outcome |
+| --- | --- | --- |
+| Windows native A/B/C/D, Precise | `5b6cb61` | 35 supported jobs; 28 PASS, 1 YELLOW, one planned unsupported legacy Prius row; every gate and value matches the preceding Windows report |
+| Fresh FEMM 4.2 repeat | `0417736` | 29/29 physical payloads and extraction audits exactly match the retained reference; 1h49m05s |
+| Pyleecan Prius software benchmark | `d993d76` | 17 jobs, 568 field reports, 10 original software checks pass; complete thirteen-angle curve and separate angular/Fine controls |
+
+Tutorial line RMS is 107.513838 V versus 107.558193 V in the retained software
+reference (−0.0412%). Loaded mean torque is 353.950530 Nm versus 354.953115 Nm
+in the matched FEMM control (−0.2825%). The largest mean difference across the
+thirteen tested angles is 0.6282% of FEMM peak. The full report preserves the
+upstream discrepancies and limits of the refinement controls.
+
+The historical [Honda Accord correlation](docs/hardware-validation/honda-accord-2005/real-winding-comparison/README.md)
+uses the blind N35 assumption and simplified rotor, with no pass/fail verdict.
+Its existing results are not a new 0.4.0 hardware qualification. Separate Prius
+hardware correlation (#69/#82) is deferred to v0.5.0.
+
+## Installation and compatibility
+
+The published package installs with:
 
 ```sh
 uv tool install coilem
 coilem
 ```
 
-`uvx coilem` runs it once without installing. The [README](README.md#install)
-lists the supported platforms and how to install uv.
+Use `uv tool upgrade coilem` to upgrade after publication. Until 0.4.0 is
+published, these commands continue to resolve the published release; source
+and rehearsal wheels identify their own build commit and version.
+See [Install](README.md#install) for platform requirements and source setup.
 
-- Each platform's wheel carries the Magneto2D executable and the built UI, so
-  installing needs neither Rust nor Node.js. Wheels cover macOS 12 or newer on
-  Apple silicon, macOS 10.15 or newer on Intel, Linux x86_64 with glibc 2.27
-  or newer, and Windows x64, for Python 3.11 to 3.15.
-- The `coilem` launcher serves the UI and API together at
-  `http://127.0.0.1:2645` by default. Halbach autosaves and tutorial progress
-  saved in the browser under the development origin on port 5173 do not
-  appear at the packaged origin. Browser-saved state also stays with its
-  original port when the launcher falls back to another port. Saved motor
-  runs remain in the user-data folder.
-- Each wheel records its build identity: the application and Magneto2D
-  versions, the commit, and the binary and UI hashes. `/health`, saved-run
-  provenance and the PDF report show it.
+Wheels bundle the UI and Magneto2D, with Python 3.11–3.15 support on Windows
+x64, macOS Apple silicon/Intel and Linux x86_64. The release rehearsal must
+validate this candidate on all four wheel targets before publication.
+The launcher normally serves at `http://127.0.0.1:2645`; browser-local state
+stays with its original origin/port, and saved motor runs stay in the OS
+user-data folder. New `.coilem` and existing `.openem` design files are supported.
+New saves record application version 0.4.0; immutable historical results and
+bundled example creation versions retain their original identities.
 
-## Changes in 0.3.1
+## Qualification and remaining limits
 
-- Python 3.15 is supported. Without Python 3.11 to 3.14 on the computer, uv
-  chooses Python 3.15, and coilEM 0.3.0's pinned numpy, pydantic-core and
-  rpds-py have no wheels for it, so that install failed while building them
-  ([#72](https://github.com/coilemdev/coilem/issues/72)). On Python 3.15,
-  coilEM 0.3.1 installs numpy 2.5.4, pydantic 2.14.1 with pydantic-core
-  2.50.1, rpds-py 2026.9.1 and typing-inspection 0.4.4. NumPy 2.5 has no
-  Python 3.11 wheels, so Python 3.11 to 3.14 keep the 0.3.0 versions.
-- The install commands no longer need `--python 3.14`.
-- The application and solver are unchanged from 0.3.0. On Python 3.11 to 3.14,
-  0.3.1 installs the same dependencies as 0.3.0, so benchmark reports v1.7 and
-  v1.8 of 0.3.0 apply to it.
-- CI runs the installed-wheel acceptance test with Python 3.15 on every
-  platform and the full test suite with Python 3.15 on Linux, and audits each
-  supported Python's dependency pins.
+- Qualification covers the tested SPM and flat-buried IPM combinations in
+  [Validation](docs/VALIDATION.md#qualification-status), against matched FEMM
+  gates with M350-50A steel and Precise meshes. It is a fixture-based software
+  comparison, not a hardware certification.
+- V-shape IPM remains experimental. Its baseline peak back-EMF discrepancy is
+  14.778701% (YELLOW). Fast mesh, the fixed Prius references and unmeasured
+  combinations remain experimental. The legacy ORNL Prius matrix row remains
+  unsupported, distinct from the two exact Pyleecan examples.
+- The historical macOS record does not match the current physics-source guard.
+  Current macOS numerical parity needs a new full run. Linux and Python 3.15
+  full numerical parity are not established by hosted smoke/installation tests.
+- The frozen reference retains REVIEW_REQUIRED limitations, including steel
+  loss estimates, the Kt current base and peak-B sampling. Cogging, THD, losses,
+  thermal behavior and airgap harmonics are outside the qualification gates.
+- Six-step is an ideal wye current-commanded model without PWM, switching
+  ripple, dead time, startup or ESC dynamics. Motor results are 2D estimates.
+- Elmer is disabled, hidden, and not probed in the release environment;
+  `COILEM_ENABLE_ELMER=1` enables the separately installed development adapter.
+  FEMM is a data-only reference and is not bundled as a solver.
+- Halbach/tutorial workflows remain experimental. There is no dedicated
+  cogging results view, desktop installer, automatic update, hosted service,
+  account, telemetry or motor thermal solver in this release.
 
-## Changes since the 0.2.0 source preview
-
-- coilEM installs from PyPI, as above. Building from source is unchanged for
-  contributors.
-- The app shows each design's benchmark qualification status, with its
-  reason; see Qualification below.
-- An invalid design reports the specific reason and the field it concerns,
-  instead of "Motor configuration failed schema validation."
-- Bundled examples and design files that leave out the tooth-shoe settings now
-  load without tooth shoes, as the backend reads them. They used to inherit
-  the starter motor's shoes: the SPM 24p example then failed geometry
-  validation, and the two IPM examples solved with narrower slot mouths than
-  their files define. Saved runs keep the geometry they were solved with.
-- The Solve page estimates the whole run as a range, such as "about 2–4 min",
-  from the prepared mesh and the meshes and positions the solver will run. It
-  includes meshing and saving, and replaces a flat cost per rotor position
-  that missed IPM and larger runs by up to 2.4 times.
-- Clicking **Examples** in the design menu keeps its submenu open.
-- Cached meshes are now keyed by the stator tooth-shoe settings. Before, a
-  design that differed from the previous one only in its tooth shoe could
-  reuse that design's cached meshes within one session and solve on the wrong
-  geometry. Mesh provenance now records the tooth-shoe settings (mesh
-  signature v4), so mesh-evidence hashes differ from runs saved before this
-  change; numerical results do not.
-- Solves are faster on every platform, and Windows now meshes, extracts
-  field frames and renders playback in parallel worker processes. The
-  sections below cover these, the wall-clock solver time, the field position
-  slider, cancelling a stator-only field and faster mesh views.
-- Fixes from testing this release: Preview is faster than Standard on every
-  example again, the field Position slider follows a drag and stays inside a
-  Preview run's window, plots show their values on click, the saved-run PDF
-  lists only the design's own settings, and Ctrl+C stops a running solve
-  promptly. The sections below describe them.
-
-## Faster solves
-
-Magneto2D spent about 2 s per rotor position finding the airgap radii it
-samples torque and fields on. It now indexes the airgap triangles, so a
-position's solver process takes about a quarter of the time with identical
-results. A Standard run of the IPM 14p example took 146 s instead of 236 s,
-and the SPM 8p/12s example 106 s instead of 140 s.
-
-The work after the field sweep is also faster. Field-line frames skip
-triangles a contour level cannot cross and are written with the fast JSON
-encoder and light gzip. Playback images render in worker processes. The
-run package stores already-compressed files instead of deflating them again,
-and the steel flux-density summary is gathered while frames are built
-instead of re-reading every frame. With both changes the IPM 14p run took
-98 s and the SPM 8p/12s run 61 s. Frame and image files are about 10%
-larger. Results are unchanged; the steel RMS flux densities can differ in
-the 14th significant digit because their sums are added in a different order.
-
-The bookkeeping around each rotor position's solve no longer queues behind
-Python's global lock. Meshes are written for the solver as compact JSON,
-reports are saved without being re-serialized, the no-load copy of each mesh
-shares its arrays, copies use a faster method, and mesh-evidence hashes skip
-a per-value walk and reuse the mesh's serialized text. Hashes and results are
-unchanged. The IPM 14p run then took 76 s and the SPM 8p/12s run 48 s.
-
-Windows now generates independent Gmsh meshes in worker processes, with up
-to eight workers limited by the host CPU count. Playback sweeps with at least
-eight frames also use up to eight worker processes to render and encode the
-same image layers. Field-frame extraction also uses up to eight processes,
-limited by CPU, solve-worker and frame counts. All pools use Windows spawning.
-Frames and steel RMS contributions retain their angle order. Cancelling a solve
-skips queued meshes and frames, lets running work finish, and joins workers
-before releasing the solve lane.
-
-Preview used to sample its full-cycle Back-EMF at its 3.75° loaded step: 96
-no-load positions and up to 96 meshes, twice Standard's 48, so the IPM 14p
-example took longer in Preview than in Standard. Preview now samples Back-EMF
-on Standard's 48-position grid and keeps its 3.75° loaded window. On an
-Apple-silicon Mac the IPM 14p Preview took 43.5 s instead of 71.5 s (Standard
-79.5 s), and every example is faster in Preview than in Standard. Loaded
-torque, ripple and field playback are unchanged; Back-EMF values move by about
-0.2% with the coarser sampling.
-
-Installed applications can disable mesh, field-frame and playback pools with their
-individual `COILEM_MAGNETO2D_ALLOW_*_PROCESS_POOL` switches, or disable all Python
-pools with `COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL=0` before restarting. These
-disable-only compatibility controls keep numerical settings isolated and are
-not forwarded to Magneto2D.
-
-## Solver time
-
-The Solver time on the Results page and in the PDF and CSV reports is now the
-wall-clock time of meshing, solving and building the result. It used to add up
-every rotor position's solver time, although positions run in parallel, so a
-4-minute IPM 14p run reported over 20 minutes. Saved results keep that sum as
-solver CPU time. Runs saved before this change still show the summed value.
-
-## Field solution position slider
-
-Moving the Position slider on a solved field no longer freezes the page for
-seconds at each position. The slider shows each position's playback image
-straight away and loads the exact solver frame once it stops. Preparing that
-frame now takes about 0.15 s, down from about 2 s for each of the Resultant
-and PM-only fields. Fast scrubbing also no longer crashes the viewer with a
-"detached" image error.
-
-Playback no longer stalls at higher speeds. Above about 30 new frames per
-second, playback shows every second or third solved position, and a loop of
-up to 16 frames stays in memory after its first pass.
-
-On a Preview run the slider now covers just the solved 45° or 60° window, and
-playback loops within it. Before, the slider ran over a full 0–360° cycle, so
-moving it jumped the motor back to the start after a few positions. Dragging
-at normal speed no longer stutters: while you drag, the viewer loads the
-newest position first, shows each frame as it arrives, preloads neighbours in
-the drag direction, and skips the mesh layer unless it is shown.
-
-## Read values from plots
-
-Click or tap a point on the torque, Back-EMF and six-step plots on the
-Results and Compare pages to read its angle and values. The arrow keys step
-between solved positions, Home and End jump to the ends, and Escape or a click
-outside the plot clears the reading. Compare also shows Run B − Run A at that
-angle. Angle axes are labelled every 45° over a full cycle, or every 7.5° over
-a Preview window, in the app and in the PDF.
-
-## Cancel a stator-only field
-
-A running **Stator only** field can now be canceled from the run button,
-which reads **Cancel stator field** while it runs, or from the field view's
-progress overlay. The resultant field stays available. Before, the run held
-the solver until it finished, blocking any other solve.
-
-## Mesh view zoom and pan
-
-Zooming or panning the Mesh tab now redraws in about 45 ms instead of about a
-second for the 29k-element example mesh. The Halbach mesh views draw their
-meshes the same faster way.
-
-## Qualification
-
-Numerical qualification for this preview is the published [A/B/C/D benchmark
-report v1.1](benchmarks/main-20261009-bad71d9/benchmark_report.md). It compares
-Magneto2D with fresh, matched FEMM references across 30 fixtures: 27 PASS,
-2 FAIL and 1 unsupported. See [Validation](docs/VALIDATION.md#qualification-status)
-for the gates and limits.
-
-Benchmark reports [v1.7](benchmarks/macos-rc-20261013-1fac3a1/README.md) (macOS) and [v1.8](benchmarks/windows-rc-20261013-1fac3a1/README.md) (Windows)
-rerun the current selection on this release, `1fac3a1`: 29 PASS, the planned
-unsupported Prius fixture and 42/42 BLDC gates on both platforms. The current selection replaces the two
-failing low-output V-shape fixtures with higher-output designs, which pass; the
-original failures stay reproducible and V-shape IPM remains experimental. Every
-qualified fixture still passes, so the qualified scope is unchanged.
-
-- **Qualified:** these tested combinations, each with every v1.1 fixture
-  passing, using M350-50A steel, native Gmsh meshing and local Magneto2D:
-  - SPM with single-layer concentrated windings, under sinusoidal current
-    (Phase A) or ideal six-step excitation (Phase D);
-  - SPM with two-layer distributed windings, full pitch or 5/6 short pitch,
-    under sinusoidal current (Phase C); and
-  - flat-buried IPM with single-layer concentrated windings, under sinusoidal
-    current (Phase B).
-- **Experimental:**
-  - V-shape IPM (two of six fixtures fail);
-  - accepted combinations the benchmark did not measure: six-step with
-    distributed windings, single-layer distributed windings, and IPM with
-    distributed windings; and
-  - Halbach, tutorial and generic-field workflows.
-- **Unsupported:** multi-layer IPM rotors such as the Prius 2004 fixture.
-
-The app shows the current design's status, with its reason, in Design health
-and on the Solve and Results pages, and saved runs record it in their PDF and
-CSV reports.
-
-The guided SPM path includes both balanced sinusoidal current and ideal
-wye-connected 120-degree six-step excitation. Six-step runs preserve exact
-commanded phase currents on the torque grid, show the six commutation sectors,
-and export phase-neutral and line-to-line Back-EMF with the excitation identity.
-
-The preview includes:
-
-- geometry and native-mesh review;
-- Preview, Standard, and High accuracy (`fine`) solve plans;
-- loaded torque, Back-EMF, field playback, and material/solver provenance;
-- Back-EMF THD and H1-H12 spectrum for Standard, extended through H24 for
-  High accuracy; Preview intentionally omits an under-sampled THD value;
-- immutable local runs with PDF, CSV, and replay-package exports;
-- explicit storage usage and confirmed deletion of one saved or incomplete
-  run;
-- descriptive comparison of two saved Magneto2D runs; and
-- visually distinct sinusoidal and six-step run-plan previews, plus aligned
-  torque/current results for the guided ideal six-step workflow.
-
-Experimental non-motor workflows include solver-backed lessons and cylindrical
-and linear Halbach arrays. Halbach workspaces save/reopen design files and show
-reports in the current browser session. Cylindrical arrays additionally export
-report/problem/field JSON, sample CSV, design SVG/PNG, and PDF. These workflows
-are separate from motor saved-run history; the linear UI currently has no
-report downloads. See [Halbach arrays](docs/HALBACH_ARRAY.md).
-
-## Reliability and reporting updates
-
-- Completed Solve workflows lead with **View Results**, while retaining
-  access to run the analysis again and return to Design.
-- Newly generated saved-run PDFs include the motor's 2D geometry and a stored
-  solved flux-density heatmap. Existing immutable reports retain their
-  original content.
-- The saved-run PDF's settings page lists the resolved settings that apply to
-  the design: its stator, its rotor type, and the solve plan, including a
-  Preview run's stored sweep range. It used to print every configuration
-  field over several pages, including settings for other rotor types. Solver
-  and build provenance stay together on the first page.
-- Pressing Ctrl+C (Ctrl+Break on Windows) while a solve runs stops coilEM
-  within seconds. It cancels the solve, records the run as cancelled, ends
-  open solve streams and stops the solver's worker processes. Before, it could
-  reach the 20-second shutdown deadline and leave the launcher's record
-  behind. If a shutdown still takes longer than 20 seconds, the launcher
-  prints where it was waiting before it exits, and removes its record.
-- The live solve progress bar only moves forward. It used to step back when
-  meshing gave way to solving, and again while finalizing.
-- Solve-page updates, such as Gmsh mesh preparation, show in a thin banner
-  under the top bar instead of covering the field and results tabs.
-- The design menu opens above the motor view's tabs, and the Results
-  qualification note stays within the report column.
-- Narrow windows retain access to solve progress and completed reports, with
-  a visible **View Results** action.
-- A failed geometry preview recovers after the local backend reconnects,
-  preserving the latest draft. **Retry geometry preview** is also available.
-- Timing labels separate the estimated run time, solver timing, and total
-  elapsed time through playback preparation and saving. Total elapsed is
-  measured during the current session and is absent from older or reopened
-  results.
-- Reports identify the requested torque method and the method actually used;
-  missing provenance is shown as not recorded.
-- The public motor permanent-magnet catalog agrees with the bundled native
-  motor solver inputs; Halbach and Elmer use a separate legacy table described
-  in [Materials](MATERIALS.md).
-- Public CI builds and checks the exported source using locked runtime dependencies; development tools and the Rust toolchain are not fully pinned.
-
-## Known limitations
-
-- coilEM installs as a Python package from PyPI. There is no desktop
-  installer, code signing, notarization or automatic update; upgrade with
-  `uv tool upgrade coilem`.
-- CI tests the installed wheels on macOS 15 (Apple silicon and Intel), Ubuntu
-  22.04 and Windows Server 2022 with Python 3.11 to 3.15. Older systems down to
-  the stated minimums should work but are not tested; reports from other
-  systems are welcome. Linux and Windows on ARM are not supported, because
-  Gmsh publishes no wheels for them.
-- On a minimal Linux, such as a server or container, `libglu1-mesa` alone is
-  not enough: Gmsh also needs OpenGL and X11 client libraries, and `coilem`
-  stops with the name of the missing one. On Debian and Ubuntu, install them
-  with `sudo apt-get install libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6
-  libxfixes3 libxft2 libxinerama1 libxrender1 libfontconfig1 libgomp1`
-  ([#77](https://github.com/coilemdev/coilem/issues/77)). Desktop Ubuntu
-  usually has them already.
-- Under `uvx coilem` on macOS and Linux, one Ctrl+C reaches coilEM twice, so it
-  exits with code 130, and during a solve it prints `coilem: forced exit.` The
-  solve is still cancelled and recorded. `coilem` installed with
-  `uv tool install` or pipx is not affected
-  ([#76](https://github.com/coilemdev/coilem/issues/76)).
-- Benchmark reports v1.7 and v1.8 ran with Python 3.12 and the 0.3.0
-  dependencies. Python 3.15 installs use numpy 2.5.4 and pydantic 2.14.1 and
-  have no benchmark report yet; CI runs the tests and a benchmark smoke run
-  with Python 3.15.
-- The run-time estimate comes from runs timed on an Apple-silicon Mac before
-  the faster solves, so it tends to overstate run times there. It has not been
-  calibrated on Windows or Linux.
-- Qualification is agreement with FEMM, a reference 2D finite-element solver,
-  on the measured fixtures. It is not a hardware measurement or an engineering
-  certification, and it does not cover cogging, THD, airgap harmonics, losses
-  or thermal behavior. V-shape IPM, Halbach, tutorial, and generic-field
-  surfaces are experimental.
-- A dedicated cogging-torque results view is not included.
-- Compare is descriptive; it is not cross-solver parity, statistical
-  validation, or an engineering certification.
-- Elmer is disabled, hidden, and not probed in the release environment. Setting
-  `COILEM_ENABLE_ELMER=1` enables a development/testing adapter and does not
-  expand the release claim.
-- FEMM, thermal analysis, hosted services, accounts, telemetry, cloud storage,
-  and supplier-specific core-loss prediction are excluded.
-- Six-step support is an ideal current-commanded model for the guided
-  inner-rotor, wye-connected SPM example. PWM, switching/current ripple, Hall
-  timing, dead time, startup, delta windings, outer-rotor/outrunner geometry,
-  and dynamic ESC behavior are excluded.
-- Results are 2D electromagnetic estimates. They do not establish thermal,
-  demagnetization, structural, acoustic, manufacturing, or safety suitability.
-
-## Data and support
-
-Completed and incomplete run records are user-owned and are never silently
-deleted. Use **Manage previous runs** to inspect storage and explicitly delete one run
-when the workspace is full. Reopening or comparing a run never starts a solver.
-
-Use [GitHub Issues](https://github.com/coilemdev/coilem/issues) for reproducible
-bugs and usage questions. Report security vulnerabilities privately as
-described in [SECURITY.md](SECURITY.md).
+The remaining release work is to freeze one clean versioned candidate, rerun
+A/B/C/D and the full Prius collection, validate the installed wheels, and retain
+that exact candidate identity with the reports and release assets. Tagging and
+publication follow review of those results.

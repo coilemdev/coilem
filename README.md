@@ -7,22 +7,27 @@ Everything runs on your computer.
 
 Website: [coilem.com](https://coilem.com)
 
-The latest complete benchmark reports, [v1.7](benchmarks/macos-rc-20261013-1fac3a1/README.md) on macOS and
-[v1.8](benchmarks/windows-rc-20261013-1fac3a1/README.md) on Windows, measure the selected A/B/C/D matrix on
-coilEM 0.3.0 (`1fac3a1`): 29 PASS, one planned unsupported Prius fixture and
-42/42 BLDC gates on both platforms. The two platforms agree on every verdict
-and gate status. They run fresh Magneto2D fields against frozen, data-only
-FEMM references; no new FEMM solves were executed. The
-[benchmark index](benchmarks/README.md) retains earlier runs, the compiled
-v1.2 selection, archived runs and the scoped preview qualification record.
+The source is being prepared as **coilEM 0.4.0 Developer Preview**, with
+**Magneto2D 0.3.3**. The [release notes](RELEASE_NOTES.md) and
+[release plan](docs/RELEASE_0_4_0.md) track the final candidate and wheel checks.
+The PyPI install commands below continue to select the published release until
+0.4.0 is published.
+
+The [v0.4.0 evidence report](benchmarks/v0.4.0/README.md) retains the current
+Windows A/B/C/D development qualification: 35 supported jobs, 28 PASS,
+1 YELLOW and one planned unsupported legacy Prius row at `5b6cb61`.
+The separate exact Pyleecan Prius collection records 17 jobs and 568 fields
+at `d993d76`, with all 10 original software checks passing. These measured
+commits are the baseline for the final-candidate rerun, not measurements of
+a future tag. The [benchmark index](benchmarks/README.md) preserves the full
+reports, frozen FEMM references and earlier platform records.
 
 ![coilEM workspace](docs/images/coilem-landing-page.png)
 
-**Developer preview:** the published [A/B/C/D benchmark report
-v1.1](benchmarks/main-20261009-bad71d9/benchmark_report.md) qualifies these
-tested combinations against matched FEMM references, and reports
-[v1.7](benchmarks/macos-rc-20261013-1fac3a1/README.md) and [v1.8](benchmarks/windows-rc-20261013-1fac3a1/README.md) confirm that every qualified
-fixture still passes on coilEM 0.3.0, on macOS and Windows:
+**Developer preview:** the [Windows requalification report](benchmarks/windows-prius-requal-20261018/README.md)
+provides the development evidence for these tested combinations with the
+current winding model:
+
 - SPM with concentrated windings, under sinusoidal or ideal six-step current;
 - SPM with two-layer distributed windings, under sinusoidal current; and
 - flat-buried IPM with concentrated windings, under sinusoidal current.
@@ -137,6 +142,12 @@ serves the UI and API together and opens `http://127.0.0.1:2645`. See
 - Solver-backed electromagnetics lessons and cylindrical and linear
   [Halbach workspaces](docs/HALBACH_ARRAY.md).
 
+The [Pyleecan 2004 Prius software benchmark](docs/benchmarks/pyleecan-prius-v1/README.md)
+adds two fixed examples under **Examples → Benchmarks**: tutorial BEMF at
+1000 rpm / 20°C and loaded torque at 2000 rpm / 60°C / 250 A peak. They preserve
+the pinned analytic model and embedded M400-50A curve through save and reopen.
+These experimental software references remain separate from ORNL hardware validation.
+
 ## Limits to understand
 
 Qualification means agreement with FEMM, a reference 2D finite-element solver,
@@ -154,7 +165,7 @@ Six-step excitation models ideal commanded currents, without PWM, switching,
 ESC dynamics or thermal behavior. See [Release notes](RELEASE_NOTES.md) and
 [Materials](MATERIALS.md).
 
-The application is **coilEM 0.3.1** and the solver is **Magneto2D 0.3.3**.
+The source application is **coilEM 0.4.0** and the solver is **Magneto2D 0.3.3**.
 There are no accounts, hosted services or telemetry in this distribution.
 Elmer is an optional development-only lane; see [its setup](docs/ELMER.md).
 
@@ -170,6 +181,13 @@ no Git, Rust, Node.js or FEMM. From a checkout, `python -m tools.run_benchmarks
 --out-dir ../benchmark-output/my-run --pdf` runs the same suite with the
 developer options. See the [benchmark commands, reference compatibility and
 version policy](benchmarks/abcd-v1.3/README.md).
+
+The [motor benchmark collection](benchmarks/models-v1/README.md) also includes
+Pyleecan Prius 8p48s and the exploratory Honda Accord 2005 comparison. From a
+clean checkout, `python -m tools.run_model_benchmarks --list` lists the named
+selections; `--out ../benchmark-output/all-models` runs all three workflows.
+Prius has software acceptance checks; Honda retains its hardware residuals
+without a pass/fail claim. Deferred legacy ORNL Prius coverage is separate.
 
 The public Magneto2D path ignores inherited numerical solver switches. It derives
 native options from the request and records its environment policy and options

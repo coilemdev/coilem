@@ -189,7 +189,13 @@ assert.doesNotMatch(workspaceSource, /setExamplesMenuOpen\(\(open\) => !open\)/)
 assert.match(workspaceSource, /className="workflow-stepper workflow-stepper-inline"/);
 assert.match(workspaceSource, /design-workspace workflow-stage-content\$\{designViewportExpanded/);
 assert.match(workspaceSource, /className="design-workspace-main"/);
-assert.match(workspaceSource, /className="design-workspace-health"/);
+assert.match(workspaceSource, /className=\{`design-workspace-health\$\{designHealthCollapsed \? ' is-collapsed' : ''\}`\}/);
+// Design health folds to a strip that keeps its status icon, and opens again from it.
+assert.match(workspaceSource, /collapsed=\{designHealthCollapsed\} onCollapsedChange=\{setDesignHealthCollapsed\}/);
+assert.match(workspaceSource, /if \(collapsed\) return collapsedStrip\(tone, ready \? '✓'/);
+assert.match(workspaceSource, /className="design-health-collapse"\s*aria-expanded="true"\s*aria-label="Collapse design health"/);
+assert.match(workspaceSource, /className="design-health-expand"\s*aria-expanded="false"/);
+assert.match(styleSource, /\.public-coilem-shell \.design-workspace-health\.is-collapsed \{ width: 46px; min-width: 46px; \}/);
 assert.match(workspaceSource, /currentGeometryWarnings\(geometry, geometryStale\)/);
 assert.match(workspaceSource, /currentToothWidthAdvisory\(geometry, geometryStale\)/);
 assert.match(workspaceSource, /'Bore tooth is much narrower' : 'Bore tooth is slightly narrower'/);
@@ -278,13 +284,20 @@ const runPlanIndex = workspaceSource.indexOf('className="public-run-plan"');
 assert.ok(solveFooterIndex >= 0 && runActionIndex > solveFooterIndex && runActionIndex < runPlanIndex, 'Run analysis belongs in the left solve footer');
 assert.match(workspaceSource, /export type PublicWorkflowStep = 'design' \| 'solve' \| 'report'/);
 // A running stator-only field can be canceled like a solve, from the run
-// button and from the field viewer's progress overlay.
+// button. It reports in the Run plan's live card like a solve, not in a
+// progress overlay over the field.
 assert.match(workspaceSource, /busy === 'field' \? onCancelArmatureField/);
 assert.match(workspaceSource, /'■ Cancel stator field'/);
-assert.match(workspaceSource, /onCancelArmature=\{onCancelArmatureField\}/);
-assert.match(solvedFieldSource, /aria-label="Cancel the stator-only field" onClick=\{onCancelArmature\}/);
+assert.doesNotMatch(workspaceSource, /onCancelArmature=/);
+assert.doesNotMatch(solvedFieldSource, /onCancelArmature|armatureProgress/);
+assert.match(workspaceSource, /\(busy === 'mesh' \|\| busy === 'solve' \|\| busy === 'field'\) && <LiveSolveMonitor/);
+assert.match(workspaceSource, /\{statorField \? 'Stator field extraction' : 'Live solve'\}/);
+assert.match(workspaceSource, /Magnets off \(Br = 0\), solved at each rotor position for the Stator view\./);
+assert.match(workspaceSource, /\{!statorField && <>\s*<CompactLiveChart/);
+// Completed results collapse the Analysis section; the stator-only run opens it for its card and restores it after.
+assert.match(workspaceSource, /if \(busy === 'field'\) \{\s*if \(analysisOpenBeforeFieldRef\.current !== null\) return;\s*analysisOpenBeforeFieldRef\.current = analysisDetailsOpen;\s*setAnalysisDetailsOpen\(true\);/);
+assert.match(workspaceSource, /if \(!error\) setAnalysisDetailsOpen\(analysisOpenBeforeFieldRef\.current\);/);
 assert.match(appSource, /const cancelArmatureField = async \(\) => \{[\s\S]*?armatureFieldController\.current\?\.abort\(\);[\s\S]*?await cancelPublicSolve\(\);/);
-assert.match(styleSource, /\.public-field-stream-status button \{ pointer-events: auto;/);
 assert.match(workspaceSource, /\{ id: 'report', label: 'Results', available: resultReady \}/);
 assert.match(workspaceSource, /Full results →/);
 assert.doesNotMatch(workspaceSource, /\{ id: 'report', label: 'Report'/);
@@ -368,6 +381,9 @@ assert.match(workspaceSource, /publicExampleOptions\(experimentalRotors, 'motor'
 // Hardware-validated motors get their own group, shown only when one is available to this launch.
 assert.match(workspaceSource, /publicExampleOptions\(experimentalRotors, 'benchmark'\)\.length > 0/);
 assert.match(workspaceSource, />Benchmarks</);
+// Benchmarks are experimental for now: every entry carries a yellow Experimental tag.
+assert.match(workspaceSource, /publicExampleOptions\(experimentalRotors, 'benchmark'\)\.map\(\(example\) => \([\s\S]*?<strong>\{example\.label\}<span className=\"public-example-experimental-tag\">Experimental<\/span><\/strong>/);
+assert.match(styleSource, /\.public-project-examples-menu \.public-example-experimental-tag \{[^}]*color: #fbbf24;/);
 assert.match(exampleDesignsSource, /Boolean\(option\.benchmark\) === \(group === 'benchmark'\)/);
 assert.match(exampleDesignsSource, /id: 'ornl-prius-2004-holem50',[\s\S]*?experimental: true,[\s\S]*?benchmark: true/);
 assert.match(workspaceSource, /public-project-submenu-trigger/);
@@ -628,6 +644,43 @@ assert.match(workspaceSource, /showPlayback && \(\s*<span className="vc-group pu
 // legend sits in the canvas corner like the field view's legends.
 assert.match(workspaceSource, /<button type="button" className="public-field-transport-play" aria-label=\{isAnimating \? 'Pause preview' : 'Play preview'\}/);
 assert.match(workspaceSource, /<RpmField\s+value=\{animationRpm\}\s+min=\{1\}\s+max=\{100\}\s+label="Speed"\s+ariaLabel="Preview speed \(RPM\)"/);
+// Phases only means something while the rotor turns, so it is a toggle beside the
+// preview speed (2D only), not one of the static overlays; it is the winding overlay
+// shaded by phase current, so Winding stays pressed under it.
+assert.match(workspaceSource, /\['windings', 'Winding'\],\s*\] as Array<\[PublicCanvasLayer, string\]>\)/);
+assert.doesNotMatch(workspaceSource, /\['phases', 'Phases'\]/);
+assert.match(workspaceSource, /const pressed = canvasLayer === layer \|\| \(layer === 'windings' && canvasLayer === 'phases'\);/);
+assert.match(workspaceSource, /onChange=\{setAnimationRpm\}\s*\/>[\s\S]{0,400}?\{viewportMode === '2d' && \(\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{canvasLayer === 'phases'\}/);
+assert.match(workspaceSource, /onClick=\{\(\) => setCanvasLayer\(\(current\) => \(current === 'phases' \? 'windings' : 'phases'\)\)\}\s*>\s*Phases\s*<\/button>/);
+// With Phases on, the motor shows only the phase colours changing: no slot labels.
+assert.match(motorCanvasSource, /\n  if \(layer === 'slots' \|\| layer === 'windings'\) \{\n    context\.textAlign = 'center';/);
+assert.doesNotMatch(motorCanvasSource, /layer === 'windings' \|\| layer === 'phases'\) \{\n    context\.textAlign/);
+// Phases: the motor moves right, smaller, beside A / B / C waveforms wired into it,
+// all driven by the solve's own terminal currents (phaseDrive.ts, test-phase-drive.mjs).
+assert.match(motorCanvasSource, /const driveFrame = layer === 'phases' && phaseDrive \? phaseDriveFrame\(width, height\) : null;/);
+assert.match(motorCanvasSource, /fitTransform\(points, width, height, viewportScale, pan, driveFrame\?\.motor\)/);
+assert.match(motorCanvasSource, /drawPhaseDrive\(context, driveFrame\.panel, phaseDrive, rotorElecDeg, currents, origin, outerRadiusPx, previewRpm\)/);
+assert.match(motorCanvasSource, /axisOffsetDeg: Number\.isFinite\(metadataAxis\) \? metadataAxis : 0,/);
+assert.doesNotMatch(motorCanvasSource, /Math\.sin\(\(rotorAngleDeg \+ phaseOffset\)/);
+// ...and each stator tooth shows the pole the slot currents make it, N red / S blue.
+assert.match(motorCanvasSource, /const poleByTooth = showToothPoles && currents && data\.winding_layout\?\.length && statorSlotCount > 0\s*\? toothPoles\(slotCurrents\(data\.winding_layout, statorSlotCount, currents\)\)/);
+// Tooth poles has its own toggle beside Phases (2D only), so it works with or without it.
+assert.match(motorCanvasSource, /const currents = \(layer === 'phases' \|\| showToothPoles\) && phaseDrive \? phaseCurrents\(phaseDrive, rotorElecDeg\) : null;/);
+assert.match(workspaceSource, /const \[showToothPoles, setShowToothPoles\] = useState\(false\);/);
+assert.match(workspaceSource, />\s*Phases\s*<\/button>\s*\)\}\s*\{viewportMode === '2d' && \(\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{showToothPoles\}[\s\S]*?>\s*Tooth poles\s*<\/button>/);
+assert.match(workspaceSource, /showToothPoles=\{viewportMode === '2d' && showToothPoles\}/);
+assert.match(motorCanvasSource, /strength > 0 \? PUBLIC_MOTOR_COLORS\.magnetNorth : PUBLIC_MOTOR_COLORS\.magnetSouth/);
+// Every magnet is lettered N / S by the pole facing the airgap; in the Split view each
+// half carries its own (placement: canvasLabels.ts, test-canvas-labels.mjs).
+assert.match(motorCanvasSource, /magnetPoleLabels\.push\(\{ points: canvasPoints, north: magnetAirgapPolarity\(region\.region_type\) === 'north', halves: splitHalves \}\);/);
+assert.match(motorCanvasSource, /const halvesFit = halfSpots\.length === 2/);
+// The Phases strips are a 1 s scope at the preview speed, frequency shown in the
+// heading and in each strip (test-phase-drive.mjs checks the cycle count).
+assert.match(workspaceSource, /previewRpm=\{animationRpm\}/);
+assert.match(motorCanvasSource, /const frequencyHz = electricalFrequencyHz\(previewRpm, drive\.poleCount\);/);
+assert.match(motorCanvasSource, /waveformTrace\(drive, index, rotorElecDeg, strip, windowElecDeg\)/);
+assert.match(motorCanvasSource, /context\.fillText\(formatHz\(frequencyHz\), right - STRIP_END, strip\.y \+ 4\);/);
+assert.match(motorCanvasSource, /const spot = polygonLabelSpot\(label\.points, origin\);/);
 assert.doesNotMatch(workspaceSource, /public-field-playback-rpm|playback-rpm-progress/);
 assert.match(workspaceSource, /<div className="public-winding-key public-canvas-legend" aria-label="Winding phase and current direction legend">/);
 assert.ok(workspaceSource.indexOf('public-canvas-legend') < workspaceSource.indexOf('className="viewport-dock-resize"'), 'the winding legend is on the canvas, not in the panel');
@@ -665,7 +718,8 @@ assert.match(styleSource, /\.public-material-assignment-grid \{[^}]*repeat\(4, m
 assert.match(styleSource, /\.public-material-behavior-view/);
 // The Layout view moved out of CoilEmWorkspace into its own component, so assert
 // the new wiring: the workspace mounts it, and the view still names itself and
-// draws the two things only it can show — the slot strip and the parallel paths.
+// draws the two things only it can show — the slot ring with its end turns and the
+// parallel paths.
 assert.match(workspaceSource, /<WindingLayoutView/);
 assert.match(workspaceSource, /public-viewport-expand/);
 assert.match(workspaceSource, /Expand motor view/);
@@ -675,11 +729,40 @@ assert.match(workspaceSource, /solveViewportExpanded/);
 assert.match(workspaceSource, /expandControl=/);
 assert.match(windingLayoutSource, /cond\.\/slot/);
 assert.match(windingLayoutSource, /turns\/path/);
-assert.match(windingLayoutSource, /className="wl-paths-info"/);
-assert.match(windingLayoutSource, /How the solver reads this/);
+// What the solver makes of the wiring is a question the reader opens, not a box
+// beside the wiring.
+assert.doesNotMatch(windingLayoutSource, /wl-paths-info/);
+assert.match(windingLayoutSource, /className="wl-paths-help-toggle"\s*aria-expanded=\{pathsHelpOpen\}\s*aria-controls=\{pathsHelpId\}/);
+assert.match(windingLayoutSource, /Does the solver use this wiring\?/);
+assert.match(windingLayoutSource, /\{pathsHelpOpen \? \(\s*<p className="wl-paths-help" id=\{pathsHelpId\}>/);
+assert.match(windingLayoutSource, /every coil the phase current divided by\s+the number of paths/);
 assert.match(windingLayoutSource, /Winding layout/);
-assert.match(windingLayoutSource, /wl-slots/);
+assert.match(windingLayoutSource, /className={`wl-ring public-viewport-navigation/);
+assert.match(windingLayoutSource, /endTurnPath\(coil\.slot_in, coil\.slot_out, slotCount, slotAngles\)/);
+// The ring marks direction as the cross-section does: an "in" side carries +J
+// (backend gmsh_solver), out of the x-y page, so it is ⊙. Drawn markers sized to
+// the slot (test-winding-ring.mjs checks the fit), not a typed glyph.
+assert.match(windingLayoutSource, /const outOfPage = side\.direction === 'in';/);
+assert.match(windingLayoutSource, /<CurrentMarker x=\{markerX\} y=\{markerY\} radius=\{markerRadius\} outOfPage=\{outOfPage\}/);
+assert.match(windingLayoutSource, /const markerRadius = slotMarkerRadius\(slotCount, ringLayers, layerSplit\);/);
+assert.doesNotMatch(windingLayoutSource, /side\.direction === 'out' \? '⊙'/);
+// The ring zooms and pans like the 2D view, with its controls in the same bottom-bar slot.
+assert.match(windingLayoutSource, /const navigation = useViewportNavigation\(\);/);
+assert.match(windingLayoutSource, /createPortal\(\s*<ViewportNavigationControls/);
+assert.match(workspaceSource, /<WindingLayoutView config=\{config\} geometry=\{geometry \?\? null\} navigationSlot=\{navigationSlot\} \/>/);
 assert.match(windingLayoutSource, /Parallel paths/);
+// A long chain wraps like a snake to the width the paths section has, measured
+// before paint and followed as the panel resizes; the layout itself is checked in
+// test-winding-wiring.mjs.
+assert.match(windingLayoutSource, /from '\.\/windingWiring'/);
+assert.match(windingLayoutSource, /const layout = layoutPhaseWiring\(branches\.map\(\(branch\) => branch\.length\), perRow\);/);
+assert.match(windingLayoutSource, /<section className="wl-paths" ref=\{pathsRef\}/);
+assert.match(windingLayoutSource, /useLayoutEffect\(\(\) => \{[\s\S]*?new ResizeObserver\(measure\)[\s\S]*?observer\.disconnect\(\)/);
+assert.match(windingLayoutSource, /coilsPerRow\(pathsWidth === null \? null : pathsWidth - PHASE_TAG_SPACE\)/);
+assert.match(windingLayoutSource, /d=\{placed\.joins\[coilIndex - 1\]\}/);
+assert.match(windingLayoutSource, /textAnchor=\{layout\.neutralLabel\.anchor\}>N</);
+assert.match(windingLayoutSource, /\{leftover \? 'left over' : `path \$\{branchIndex \+ 1\}`\}/);
+assert.match(windingLayoutSource, /\{slotLabel\(coil\.slot_in\)\}&ndash;\{slotLabel\(coil\.slot_out\)\}/);
 assert.match(workspaceSource, /public-component-detail-card/);
 assert.match(workspaceSource, /Selected component/);
 assert.match(workspaceSource, /public-component-canvas-label/);
@@ -1082,10 +1165,8 @@ assert.match(styleSource, /\.public-dock-strip-end \.public-viewport-nav-control
 assert.match(styleSource, /@container \(max-width: 720px\) \{[^@]*\.public-field-zoom-slot \.public-viewport-nav-controls > span \{ display: none; \}/);
 assert.match(solvedFieldSource, /className="public-field-physics-info"/);
 assert.match(solvedFieldSource, /Solving the zero-remanence rotor sweep locally/);
-assert.match(solvedFieldSource, /className="public-field-stream-status"/);
-assert.match(solvedFieldSource, /Live Magneto2D stator field/);
-assert.match(solvedFieldSource, /Previous resultant field · waiting for first stator frame/);
-assert.match(styleSource, /\.public-field-stream-status/);
+assert.doesNotMatch(solvedFieldSource, /public-field-stream-status|waiting for first stator frame/);
+assert.doesNotMatch(styleSource, /\.public-field-stream-status/);
 assert.doesNotMatch(solvedFieldSource, /className="public-field-loading-visual"/);
 assert.doesNotMatch(styleSource, /public-field-loading-spin/);
 assert.doesNotMatch(solvedFieldSource, /className="public-field-physics-note"/);
@@ -1151,6 +1232,18 @@ assert.doesNotMatch(fieldResultSource, /public-field-axes-caption/);
 assert.doesNotMatch(styleSource, /public-field-axes-caption/);
 assert.match(fieldResultSource, /strongestAirgapPolePairs\(statorPolarityProfile, axisPolePairs \* 4\)/);
 assert.match(styleSource, /\.public-field-axis\.is-stator \{ stroke: #ffb547;/);
+assert.match(styleSource, /\.public-field-axis \{ fill: none; stroke-width: \.8px;/);
+assert.match(styleSource, /\.public-field-axis-shaft \{ stroke-dasharray: 4 3; \}/);
+// Centre lines to the marked rotor arrow and the stator arrow ahead of it frame the lead angle.
+assert.match(fieldResultSource, /polar\(axisRotorRadius \* 0\.62, arcRotorDeg\)/);
+assert.match(fieldResultSource, /polar\(axisStatorRadius \* 1\.04, arcRotorDeg \+ arcSpanDeg\)/);
+assert.match(fieldResultSource, /className=\"public-field-axis-ray is-pm\" d=\{`M 0 0 L \$\{rayRotorX\} \$\{rayRotorY\}`\}/);
+assert.match(fieldResultSource, /className=\"public-field-axis-ray is-stator\" d=\{`M 0 0 L \$\{rayStatorX\} \$\{rayStatorY\}`\}/);
+// The lead label's \"?\" explains why 90° elec is not a right angle on screen.
+assert.match(fieldResultSource, /<g className=\"public-field-axis-help\">\s*<title>\{leadAngleExplanation\(leadElecDeg \?\? 0, axisPolePairs\)\}<\/title>/);
+assert.match(styleSource, /\.public-field-axis-help \{ pointer-events: auto; cursor: help; \}/);
+assert.match(fieldResultSource, /fieldAxisArrowPaths\(axisStatorRadius \* 1\.04, axisStatorRadius \* 1\.32, angle\)/);
+assert.match(fieldResultSource, /<path className=\"public-field-axis-shaft\" d=\{arrow\.shaft\} \/>/);
 assert.match(solvedFieldSource, /showPolarityLegend=\{source === 'armature' && showPoleLabels\}/);
 assert.match(solvedFieldSource, /showStatorPolarity=\{source === 'armature' && showPoleLabels\}/);
 assert.match(solvedFieldSource, /nearestAirgapProfile/);
@@ -1270,7 +1363,9 @@ assert.match(viewportNavigationSource, /const MIN_SCALE = 0\.5/);
 assert.match(viewportNavigationSource, /const DEFAULT_SCALE = 1/);
 assert.match(viewportNavigationSource, /useState\(DEFAULT_SCALE\)/);
 assert.match(viewportNavigationSource, /setScale\(DEFAULT_SCALE\)/);
-assert.match(viewportNavigationSource, /anchor\.x - \(anchor\.x - current\.x\) \* ratio/);
+assert.match(viewportNavigationSource, /anchoredZoomPan\(current, scale, nextScale, anchor\)/);
+assert.match(viewportNavigationSource, /viewportTransformOrigin\(rect\.width, rect\.height, frameForSize\?\.\(rect\.width, rect\.height\)/);
+assert.match(motorCanvasSource, /useViewportNavigation\(undefined, navigationFrame\)/);
 assert.match(viewportNavigationSource, /fitSubject = 'motor'/);
 assert.match(viewportNavigationSource, /Fit \$\{fitSubject\} to view/);
 assert.match(styleSource, /\.public-viewport-navigation\.is-pannable \{ cursor: grab; \}/);
@@ -1281,12 +1376,22 @@ assert.match(styleSource, /\.public-solve-workspace\.is-viewport-expanded \.publ
 assert.match(styleSource, /\.design-workspace\.is-viewport-expanded \.public-3d-part-toggles,[\s\S]*?\.public-solve-workspace\.is-viewport-expanded \.public-3d-part-toggles \{[\s\S]*?top: 16px;[\s\S]*?left: 112px;/);
 assert.match(styleSource, /\.public-viewport-expand \{/);
 assert.match(styleSource, /\.public-motor-viewport \.viewport-bottom-bar \{[^}]*bottom: 0;/);
-assert.match(styleSource, /\.public-winding-layout \.wl-scroll,[\s\S]*?width: min\(100%, 1180px\);[\s\S]*?margin-inline: auto;/);
-assert.match(styleSource, /\.public-winding-layout \.wl-strip \{[^}]*margin-inline: auto;/);
+assert.match(styleSource, /\.public-winding-layout > header,\s*\.public-winding-layout \.wl-body \{\s*width: min\(100%, 1180px\);\s*margin-inline: auto;/);
+// Narrow, the ring fits the top half and the paths take the bottom half and scroll.
+assert.match(styleSource, /\.public-winding-layout \.wl-ring \{ flex: 1 1 50%; min-height: 0; \}/);
+// Wide, the ring sits left and the paths right, both full height, laid out by the
+// view's own width.
+assert.match(windingLayoutSource, /<div className="wl-body">\s*\{\/\* The stator as a ring/);
+assert.match(styleSource, /\.public-winding-layout \{[^}]*container-type: inline-size;/);
+assert.match(styleSource, /@container \(min-width: 720px\) \{\s*\.public-winding-layout \.wl-body \{ flex-direction: row; \}[\s\S]*?\.public-winding-layout \.wl-paths \{[^}]*border-left: 1px solid var\(--border-subtle\);/);
+// The wiring column is as wide as its wiring; the solver note opens above it, never on it.
+assert.match(styleSource, /\.public-winding-layout \.wl-phase-list \{[^}]*flex: 0 1 auto;[^}]*overflow-x: auto;/);
 assert.match(styleSource, /\.public-winding-layout \.wl-chips \{[^}]*flex: 1 0 100%;[^}]*flex-wrap: nowrap;/);
 assert.match(styleSource, /\.public-winding-layout \.wl-paths-content \{[^}]*flex-wrap: wrap;/);
-assert.match(styleSource, /\.public-winding-layout \.wl-paths-info \{[^}]*max-width: 240px;/);
+assert.match(styleSource, /\.public-winding-layout \.wl-paths-help \{[^}]*justify-self: center;[^}]*max-width: 460px;/);
+assert.doesNotMatch(styleSource, /\.wl-paths-info/);
 assert.match(styleSource, /\.public-winding-layout \.wl-phase-row \{[^}]*justify-content: center;/);
+assert.match(styleSource, /\.public-winding-layout \.wl-wiring-wire \{ fill: none;/);
 assert.match(playbackRasterizerSource, /navigator\.hardwareConcurrency/);
 assert.match(playbackRasterizerSource, /new Worker\(new URL\('\.\/fieldPlaybackWorker\.ts'/);
 assert.match(playbackRasterizerSource, /\/solve\/playback-frame\//);
@@ -1778,6 +1883,12 @@ assert.match(workspaceSource, /disabled: !available/);
 assert.match(workspaceSource, /Coils per Phase/);
 assert.match(workspaceSource, /set\('winding', 'layers', 'winding'\)\(Number\(value\)\)/);
 assert.match(appSource, /parallelPathsDividing\(layerCoilsPerPhase, config\.winding\.parallel_paths\)/);
+// A type change drops the second layer a q >= 1 concentrated layout cannot wind and
+// says so; a file loaded with two keeps its Layers row so the user can fix it.
+assert.match(workspaceSource, /set\('winding', 'type', 'winding'\)/);
+assert.match(appSource, /section === 'winding' && field === 'type'\s*\? \{ \.\.\.config, winding: windingForType\(config, value as MotorConfig\['winding'\]\['type'\]\) \}/);
+assert.match(appSource, /consequence = `\$\{consequence\} · layers \$\{previous\.winding\.layers\} → \$\{next\.winding\.layers\}`/);
+assert.match(workspaceSource, /const showLayerRow = !\(layerWording\.hidden && layerCount === 1\);/);
 // Design errors keep their field so the parallel-paths check reads in plain words
 // and the section holding the field shows a warning instead of a green check.
 assert.match(appSource, /const error = errorDetails \? designErrorText\(errorDetails, config\) : null;/);

@@ -3,6 +3,7 @@ import { applyPublicSolverSettings, cloneDefaultConfig, HOLEM50_FIELDS, PUBLIC_M
 import type { MotorConfig } from './model';
 import { parseCustomSteels } from './customSteel';
 import type { WireSpec } from './performance';
+import { PYLEECAN_REFERENCE_NOTICE } from './pyleecanReferenceNotice';
 
 /**
  * Local `.coilem` design files, with legacy `.openem` import compatibility.
@@ -27,7 +28,7 @@ export const DESIGN_FILE_EXTENSION = '.coilem';
 export const DESIGN_FILE_ACCEPT = `${DESIGN_FILE_EXTENSION},.openem,.json,application/json`;
 export const DESIGN_FILE_SCHEMA_VERSION = COILEM_SCHEMA_VERSION;
 /** Application version stamped into saved designs; tests/test_public_candidate.py keeps it in sync. */
-export const COILEM_APP_VERSION = '0.3.1';
+export const COILEM_APP_VERSION = '0.4.0';
 
 export interface ParsedDesignFile {
   name: string | null;
@@ -144,6 +145,27 @@ export function parseDesignFile(text: string): ParsedDesignFile {
   // The wire is an object, which the section merge does not carry (#136).
   const wire = parseWire(isRecord(source.winding) ? source.winding.wire : undefined);
   if (wire) config.winding.wire = wire;
+  // A null rotor bore uses the backend's inferred shaft geometry. The starter
+  // has a numeric bore, so primitive-type merging would replace an explicit
+  // null with 30 mm (larger than some imported micro rotors).
+  if (isRecord(source.rotor) && source.rotor.ID_mm === null) config.rotor.ID_mm = null;
+  if (isRecord(source.winding) && typeof source.winding.coil_span === 'number' && Number.isInteger(source.winding.coil_span)) {
+    config.winding.coil_span = source.winding.coil_span;
+  }
+  if (source.geometry_reference !== undefined && source.geometry_reference !== null) {
+    if (source.geometry_reference !== 'pyleecan_prius_2004') throw new Error('Unknown published geometry reference.');
+    config.geometry_reference = source.geometry_reference;
+    const caseId = source.reference_case;
+    const temperature = caseId === 'prius-2004-tutorial-bemf-v1' ? 20 : caseId === 'prius-2004-loaded-torque-v1' ? 60 : null;
+    if (temperature === null || !isRecord(source.solve_params) || source.solve_params.magnet_temperature_C !== temperature) {
+      throw new Error('The published Pyleecan reference requires a registered case and its fixed magnet temperature.');
+    }
+    config.reference_case = caseId as MotorConfig['reference_case'];
+    config.solve_params.magnet_temperature_C = temperature;
+    if (typeof source.solve_params.magneto2d_workers === 'number') config.solve_params.magneto2d_workers = source.solve_params.magneto2d_workers;
+    if (typeof source.solve_params.motor_input_dc_bus_V === 'number') config.solve_params.motor_input_dc_bus_V = source.solve_params.motor_input_dc_bus_V;
+    config.solve_params.max_nonlinear_iterations = typeof source.solve_params.max_nonlinear_iterations === "number" ? source.solve_params.max_nonlinear_iterations : 200;
+  }
   const customSteels = parseCustomSteels(isRecord(source.materials) ? source.materials.custom_steels : undefined);
   if (Object.keys(customSteels).length) config.materials.custom_steels = customSteels;
   for (const id of [config.materials.stator_steel, config.materials.rotor_steel]) {
@@ -219,6 +241,8 @@ export function serializeDesignFile(config: MotorConfig, name: string): string {
       openem_schema_version: DESIGN_FILE_SCHEMA_VERSION,
       openem_version: COILEM_APP_VERSION,
       name: designFileBaseName(name),
+      ...(config.geometry_reference === 'pyleecan_prius_2004'
+        ? { reference_notice: PYLEECAN_REFERENCE_NOTICE } : {}),
       ...applyPublicSolverSettings(config),
     },
     null,

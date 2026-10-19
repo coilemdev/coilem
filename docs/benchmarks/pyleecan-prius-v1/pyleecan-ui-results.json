@@ -1,0 +1,1718 @@
+{
+  "schema": "coilem.pyleecan_prius_ui_validation/v1",
+  "date_utc": "2026-10-17",
+  "paper_geometry_identity_verified": false,
+  "source_machine_sha256": "a8922c4f712c38696e6dcf7e800ad5615a0b22dd45a802574f749a59945c8036",
+  "source_commit_at_run": "0047c235eea8cd7050c7ee714495657db8d4479e",
+  "source_dirty_at_run": true,
+  "magneto2d_binary_sha256": "9612b5f7b36078a15400b1e3c0264410dfb815101633053929ae2ece3aeec02d",
+  "settings": {
+    "phase_current_peak_A": 250,
+    "published_Phi0_deg": 140,
+    "speed_rpm": 2000,
+    "magnet_temperature_C": 60,
+    "Br_T": 1.1904,
+    "relative_permeability": 1.05,
+    "mesh_density": "normal",
+    "actual_positions": 32,
+    "electrical_step_deg": 11.25,
+    "torque_method": "weighted_stress"
+  },
+  "actual_request": {
+    "schema_version": "1.0",
+    "geometry_reference": "pyleecan_prius_2004",
+    "topology": "IPM",
+    "stator": {
+      "OD_mm": 269.24,
+      "ID_mm": 161.9,
+      "slot_count": 48,
+      "stack_length_mm": 83.82,
+      "slot_opening_mm": 1.93,
+      "tooth_width_mm": 7.086189721925985,
+      "yoke_thickness_mm": 19.37,
+      "tooth_shoe_enabled": false,
+      "tooth_shoe_height_mm": 1.0,
+      "tooth_shoe_overhang_mm": 0.5
+    },
+    "rotor": {
+      "OD_mm": 160.4,
+      "ID_mm": 110.64,
+      "magnet_thickness_mm": 6.5,
+      "magnet_width_mm": 18.9,
+      "pole_count": 8,
+      "magnet_embrace": 0.67,
+      "bridge_thickness_mm": 1.5,
+      "ipm_topology": "pyleecan_holem50",
+      "flat_buried_magnet_shape": "straight",
+      "side_bridge_thickness_mm": 1.5,
+      "pocket_clearance_mm": 0.0,
+      "magnet_angle_deg": 0.0,
+      "v_angle_deg": 60.0,
+      "v_depth_mm": 21.0,
+      "inner_web_thickness_mm": 7.0,
+      "outer_bridge_thickness_mm": 1.5,
+      "holem50_w0_mm": 42.0,
+      "holem50_w1_mm": 0.0,
+      "holem50_w2_mm": 0.0,
+      "holem50_w3_mm": 14.0,
+      "holem50_w4_mm": 18.9,
+      "holem50_h0_mm": 10.96,
+      "holem50_h1_mm": 1.5,
+      "holem50_h2_mm": 1.0,
+      "holem50_h3_mm": 6.5,
+      "holem50_h4_mm": 0.0,
+      "flux_barrier_count": null,
+      "barrier_widths_mm": null
+    },
+    "winding": {
+      "type": "distributed",
+      "turns_per_coil": 9,
+      "layers": 1,
+      "parallel_paths": 1,
+      "coil_span": 6
+    },
+    "materials": {
+      "stator_steel": "custom:1b06dcfa45eec99d88856ad3b26df6a890cea2b5c4e247abfd55367660db42ec",
+      "rotor_steel": "custom:1b06dcfa45eec99d88856ad3b26df6a890cea2b5c4e247abfd55367660db42ec",
+      "magnet_grade": "Prius_2004_NdFeB",
+      "conductor": "copper",
+      "custom_steels": {
+        "custom:1b06dcfa45eec99d88856ad3b26df6a890cea2b5c4e247abfd55367660db42ec": {
+          "id": "custom:1b06dcfa45eec99d88856ad3b26df6a890cea2b5c4e247abfd55367660db42ec",
+          "name": "Pyleecan M400-50A",
+          "source": "Published Pyleecan Toyota_Prius.json, exact FEMM B-H points",
+          "lamination_thickness_mm": null,
+          "bh_curve": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.5,
+              100.0
+            ],
+            [
+              0.7,
+              150.0
+            ],
+            [
+              0.8,
+              180.0
+            ],
+            [
+              0.9,
+              200.0
+            ],
+            [
+              1.0,
+              250.0
+            ],
+            [
+              1.05,
+              300.0
+            ],
+            [
+              1.1,
+              350.0
+            ],
+            [
+              1.15,
+              450.0
+            ],
+            [
+              1.2,
+              550.0
+            ],
+            [
+              1.225,
+              650.0
+            ],
+            [
+              1.25,
+              750.0
+            ],
+            [
+              1.275,
+              850.0
+            ],
+            [
+              1.3,
+              950.0
+            ],
+            [
+              1.325,
+              1100.0
+            ],
+            [
+              1.35,
+              1250.0
+            ],
+            [
+              1.375,
+              1400.0
+            ],
+            [
+              1.4,
+              1550.0
+            ],
+            [
+              1.425,
+              1700.0
+            ],
+            [
+              1.45,
+              1900.0
+            ],
+            [
+              1.475,
+              2150.0
+            ],
+            [
+              1.5,
+              2450.0
+            ],
+            [
+              1.525,
+              2750.0
+            ],
+            [
+              1.55,
+              3150.0
+            ],
+            [
+              1.575,
+              3600.0
+            ],
+            [
+              1.6,
+              4100.0
+            ],
+            [
+              1.625,
+              4700.0
+            ],
+            [
+              1.65,
+              5250.0
+            ],
+            [
+              1.675,
+              6000.0
+            ],
+            [
+              1.7,
+              6700.0
+            ],
+            [
+              1.725,
+              7500.0
+            ],
+            [
+              1.75,
+              8650.0
+            ],
+            [
+              1.775,
+              9500.0
+            ],
+            [
+              1.8,
+              10750.0
+            ],
+            [
+              1.85,
+              14500.0
+            ],
+            [
+              1.9,
+              19500.0
+            ],
+            [
+              1.95,
+              25000.0
+            ],
+            [
+              2.0,
+              33000.0
+            ],
+            [
+              2.05,
+              44000.0
+            ],
+            [
+              2.1,
+              57000.0
+            ],
+            [
+              2.15,
+              74000.0
+            ],
+            [
+              2.2,
+              96000.0
+            ],
+            [
+              2.25,
+              130000.0
+            ],
+            [
+              2.3,
+              170000.0
+            ]
+          ],
+          "curve_sha256": "a057ad7be7d38bd148b7ea67b8dbf64d0874c9226efb8c9cbea6dcd284566899"
+        }
+      }
+    },
+    "solve_params": {
+      "solve_quality": "custom",
+      "rotor_sweep_range_deg": 360.0,
+      "rotor_step_deg": 11.25,
+      "mesh_density": "normal",
+      "mesh_source": "native",
+      "mesher": "gmsh",
+      "corner_refinement": false,
+      "slot_sidewall_refinement": false,
+      "current_amplitude_A": 250.0,
+      "current_amplitude_convention": "peak",
+      "current_angle_deg": 140.0,
+      "excitation_mode": "sinusoidal",
+      "commutation_advance_deg": 0.0,
+      "phase_connection": "wye",
+      "rated_speed_rpm": 2000,
+      "magnet_temperature_C": 60,
+      "motor_input_dc_bus_V": 500.0,
+      "max_nonlinear_iterations": 200,
+      "nonlinear_solver": "newton",
+      "linear_solver_preconditioner": "direct",
+      "linear_steel_mu_rel": null,
+      "magneto2d_workers": 1,
+      "stream_noload_field_lines": false,
+      "field_composition_source": "resultant",
+      "rotor_rotation_model": "remesh_per_step",
+      "torque_method": "weighted_stress"
+    },
+    "solve_options": {
+      "torque_sweep": true,
+      "back_emf": false,
+      "flux_density": false,
+      "cogging_torque": false,
+      "torque_speed_envelope": false,
+      "thd_analysis": false
+    }
+  },
+  "geometry_asset_sha256": "3fd70d01f18a814661c055706ee18314a32670a413cec8a686665230b21c4f7e",
+  "batch_result_sha256": "0f8b0982a6b0c5db81c837bee8ad1f3d6b51b445450a90f7e2cb66e125232574",
+  "browser_result_sha256": "e1c6e8b2e27577180daad7e6e85619b329dbdef047ba99d5d4e93a45949c8acd",
+  "summary": {
+    "app_mean_torque_Nm": 353.9505302662849,
+    "browser_mean_torque_Nm": 353.9505302662849,
+    "femm_16_pose_mean_torque_Nm": 354.95311529674495,
+    "femm_waveform_sha256": "88ac93c4177e5be8a84b3073c3ba36bf8b5ab504f97a1ac7bd467e8ce95e8efe",
+    "difference_to_femm_pct": -0.2824556222367325,
+    "literature_transcription_Nm": 353,
+    "difference_to_literature_pct": 0.26927203010902456,
+    "torque_ripple_pct": 24.853521091727075,
+    "mesh_elements_pose_0": 77308,
+    "max_final_equation_residual": 6.515864125691542e-10,
+    "batch_solve_time_s": 199.826,
+    "browser_solve_time_s": 232.09
+  },
+  "torque_waveform": {
+    "electrical_angle_deg": [
+      0.0,
+      11.25,
+      22.5,
+      33.75,
+      45.0,
+      56.25,
+      67.5,
+      78.75,
+      90.0,
+      101.25,
+      112.5,
+      123.75,
+      135.0,
+      146.25,
+      157.5,
+      168.75,
+      180.0,
+      191.25,
+      202.5,
+      213.75,
+      225.0,
+      236.25,
+      247.5,
+      258.75,
+      270.0,
+      281.25,
+      292.5,
+      303.75,
+      315.0,
+      326.25,
+      337.5,
+      348.75
+    ],
+    "torque_Nm": [
+      398.9204890803182,
+      353.00908476061704,
+      322.37089659990494,
+      377.04046811656553,
+      324.93933207656266,
+      370.397007100998,
+      384.1844457877268,
+      316.2571027023737,
+      371.0446626444898,
+      340.3482218330415,
+      339.23863733261265,
+      404.2262723963846,
+      327.36706513597136,
+      346.5180489656485,
+      363.1204445510123,
+      324.09151897996645,
+      398.90330628033195,
+      353.0335048733374,
+      322.46680255320655,
+      377.19657040785,
+      325.07630058767916,
+      370.2693261119589,
+      384.1722303325331,
+      316.2953045679687,
+      371.08732248748487,
+      340.3290884375399,
+      339.10888545963036,
+      404.2095413228018,
+      327.533048934414,
+      346.573286383219,
+      363.0826748490726,
+      324.0060768678948
+    ],
+    "torque_energy_fd_Nm": [
+      -25.89010274150821,
+      -3.782394515573154,
+      11.671329319253738,
+      10.022298206488395,
+      11.839158932392278,
+      -21.010062033212183,
+      -16.420565130448068,
+      12.640715088988902,
+      9.501714216957756,
+      13.709977490652726,
+      -10.227321474931868,
+      -24.53529923636447,
+      7.728382043161722,
+      9.952197567439137,
+      11.79923820137251,
+      3.006276779447668,
+      -25.890669400617448,
+      -3.786665222504557,
+      11.672894276656555,
+      10.021253154547463,
+      11.83801386489203,
+      -21.007216751367597,
+      -16.42170177376376,
+      12.63732395787778,
+      9.502687340445416,
+      13.71707660033412,
+      -10.228262546078696,
+      -24.540005186718645,
+      7.7269658335584674,
+      9.95047972659797,
+      11.798239038657577,
+      3.004044373366442
+    ],
+    "torque_coenergy_fd_Nm": [
+      -25.89010274150821,
+      -3.782394515573154,
+      11.671329319253738,
+      10.022298206488395,
+      11.839158932392278,
+      -21.010062033212183,
+      -16.420565130448068,
+      12.640715088988902,
+      9.501714216957756,
+      13.709977490652726,
+      -10.227321474931868,
+      -24.53529923636447,
+      7.728382043161722,
+      9.952197567439137,
+      11.79923820137251,
+      3.006276779447668,
+      -25.890669400617448,
+      -3.786665222504557,
+      11.672894276656555,
+      10.021253154547463,
+      11.83801386489203,
+      -21.007216751367597,
+      -16.42170177376376,
+      12.63732395787778,
+      9.502687340445416,
+      13.71707660033412,
+      -10.228262546078696,
+      -24.540005186718645,
+      7.7269658335584674,
+      9.95047972659797,
+      11.798239038657577,
+      3.004044373366442
+    ],
+    "energy_potential_J": null,
+    "energy_coenergy_J": null
+  },
+  "phase_current_waveform": null,
+  "native_pose_artifacts": [
+    {
+      "pose": "sweep_pos000_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "f8d28595559e41d51476171a16965ae823f30809d4086900429ecdb36eb25e79",
+      "report_sha256": "f0ff92254c78006259eb2327ed6fc6e9dcf1179252e4c3962d6c22b562429416"
+    },
+    {
+      "pose": "sweep_pos001_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "d27cef345f8c239e4e88826baf25beddb1f8011a4932e20b0f9815cee0141669",
+      "report_sha256": "954528a01ade85945bef126365295596b2678afdf78d454fec183ba9c8bdd30a"
+    },
+    {
+      "pose": "sweep_pos002_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "902b2c10864d2270c0316fa82290ff5fd76c9497bf73b0b78b6711aa109d0c47",
+      "report_sha256": "2b2f6636eb2181ad4b4d381131cad3fa56f015b7ce0ebb15fbbc32c1196fa6b3"
+    },
+    {
+      "pose": "sweep_pos003_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "7ddcec957e82ccc93c43d8ecf991d6cc5108229fb10a8a7b35a5abb330f27e5d",
+      "report_sha256": "8461b7c66a305431f0f964071d5b0265bb41dc671d92f6ad5885f72976aa742b"
+    },
+    {
+      "pose": "sweep_pos004_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "843b0da6d6b9da2ce798d174769f0fc0eb3f8ac8a0053a425282824e27bc79cb",
+      "report_sha256": "6b0dc9e144cded450f34b11e64a76ec211dad905fe6be9631e1ecf6f5e8d3d86"
+    },
+    {
+      "pose": "sweep_pos005_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "5ae0485cd79d043f6ea00c9aec4cc210b0c360e9310b3218feafd8118a0b5836",
+      "report_sha256": "23538103acf5dc8a4dc3c8017b0242222a7d9d4e895ac0e2864f5707abe9a395"
+    },
+    {
+      "pose": "sweep_pos006_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "b637fe40014e58cddc47ad29b83cf3e4803205ad5bc323917307d4e40c0bbc1f",
+      "report_sha256": "4ca8c8bc9d834be70754ba2bbec6acd37ef57b929e3e5629796efc7b3cada505"
+    },
+    {
+      "pose": "sweep_pos007_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "f9d2ff7002a692841d098746e6426cdb2c162baf79d228e0474291b845e88595",
+      "report_sha256": "b633d0dd6fa850a0c8dd1aa66b16b2cb79eda9592d866b85fac5560e0d165cb4"
+    },
+    {
+      "pose": "sweep_pos008_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "4c3c3469df17f9e451d1de23eef94d56ac8c06389d4a6236d470e192b9db3b4b",
+      "report_sha256": "08f7e2cb9f4e915c2f0dfd4abec003e5fff21c3f91412c81b0afb52318c66890"
+    },
+    {
+      "pose": "sweep_pos009_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "e6a6608e94803a69c945f11ca3336a137796b4cfd8bb81491c4992e6d739eeee",
+      "report_sha256": "6b3edfa6e767fad3f2f8cc4031fb023244634dfe825386a4df0cf4bc5ec033b1"
+    },
+    {
+      "pose": "sweep_pos010_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "34c87501bb19165942ff3074df914b367a06e899c3b3a2917d6bec04bd257237",
+      "report_sha256": "f01b797aed1d8600fea098355644f80a80e6323e9c0f60de7be694682b0cd411"
+    },
+    {
+      "pose": "sweep_pos011_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "3f705a041a9874f488182b97114bf9b9cd6d81cf2396e77cf6ac4462360d70ba",
+      "report_sha256": "b1fe6868e8414962ab653720a6384cb3f0d81b15729260cd1a390f1f8efa7db0"
+    },
+    {
+      "pose": "sweep_pos012_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "02ba9e2b18910852176ad745838ed2a4723f4b14380ca03967fb563ed43645c8",
+      "report_sha256": "1e1cd9a4c3f140669a9614624eb3cd4e95b4ef277713013bba05f67762ca4f19"
+    },
+    {
+      "pose": "sweep_pos013_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "9aeb9b555c1ce7e3a1b27e7f42af06ccba7ddf36627c834d0061ec323d4dabab",
+      "report_sha256": "1568fdcdacdd3995eef40029da76c87640134959ebadf14d141f664ab16f6d42"
+    },
+    {
+      "pose": "sweep_pos014_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "6f86735a10a3a1e14f14617c99edef88f180e7b7046d92522c56aca0283e50fc",
+      "report_sha256": "5dcbe55fd03c5ba15e0da0312cf84a7b0005374087332f3b03ef84f083fb2793"
+    },
+    {
+      "pose": "sweep_pos015_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "a1f14087b816342eee5f3a48e8ea9818732adf1c096884e69db45b6b4dfe4d6a",
+      "report_sha256": "889d805a8306aed614a8bfe6e2bdc6cfadaa58838d8c4c026d88b1ec4cd0aa40"
+    },
+    {
+      "pose": "sweep_pos016_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "693846af0709ed7d4901f754707694c322067a9d9bf25cdfd7c97f230df6445b",
+      "report_sha256": "352bec17a25d578c88ca3eaa4107a66bda531e9ec2bb6019aed9fac543ae2494"
+    },
+    {
+      "pose": "sweep_pos017_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "a6f69715868b4784278b22a97e62e3f08a1d4b825c06d57c873ea6f4e57bfcde",
+      "report_sha256": "4b8ee9311224b6fbbaf3dd3b899beb0029ee2e8cbe68f807a3475bca3028bf0c"
+    },
+    {
+      "pose": "sweep_pos018_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "13b648432448de7f60b01511de1e9a3dfa7dbf2a269d67023bf878beea90809b",
+      "report_sha256": "88a4fd81ac293723fca2cf37f89b4b1cf40f0aa1e06ad3cbe1b0e0d28b94d0b7"
+    },
+    {
+      "pose": "sweep_pos019_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "8a8e22db5c4bdcf2936f75e3af51c407bad1643eb5a483e08b4b79aee2581a43",
+      "report_sha256": "940cec469bf738fde712975ad54e7ce6aa25d2af59d7c83773caa177dabd5d56"
+    },
+    {
+      "pose": "sweep_pos020_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "7acbcae5b01445213f6408f1c56eee5ca4dbc8a812e159b39e394f9374616ca7",
+      "report_sha256": "77b4c782198ff1624536e99e4dba06562dda96c66b27e7a72bbcf8f548fc0388"
+    },
+    {
+      "pose": "sweep_pos021_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "d7fba67f9cf38cd26faec4688bbcf8ceba9df3715cd0ae0863d3a85300ec0697",
+      "report_sha256": "f5a3c9ceb3dc3c6cfee655be455415005ee723d27e5a317d1aeaef5390c9977b"
+    },
+    {
+      "pose": "sweep_pos022_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "c87386ac7691fc66b1326bb10304c3a6d61ffc75c90001d8e3b0f7469d85f19d",
+      "report_sha256": "dfa38a4093b50a768ffb2b91c07b6f4ab285adab74388b03f883ddbb0316a965"
+    },
+    {
+      "pose": "sweep_pos023_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "6ab1ba3793de832f2fad67d70444b025f70a3706305aed63f9a4e13dc30cc8ee",
+      "report_sha256": "14b6838ef5dcd6ffdad0d252098c6ab5fb5be3dbdf8fa8d1c683d8cf0afba453"
+    },
+    {
+      "pose": "sweep_pos024_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "b6c99be0b3126303515695a7a6cbb3d467d8c1ca3af52b5aee5f1237f984cced",
+      "report_sha256": "eb364ef6fb669c8c116070aaed8c89c5db4dd981159d63a2b7c7b2b2bac85a5d"
+    },
+    {
+      "pose": "sweep_pos025_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "d1e6d1245b1b9bc29763501052be45b0d9482988697c38a2c50a0787753a74b1",
+      "report_sha256": "2e76309bca2266d858bb9a3e23f31f9e25b244bab972a218d00321d4d34aa17e"
+    },
+    {
+      "pose": "sweep_pos026_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "2f2f2d5c03a7d76b63a7367b77d3137b914a8839af3822d2f2134be40b6c2ea9",
+      "report_sha256": "396a44e240c6b24daa2eac28214ca81a0ed5c3d43ebf0b25d6f1f6d5f314d9e2"
+    },
+    {
+      "pose": "sweep_pos027_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "aa57f487af6125cf85f6ca3fb5bcfecbd79f5cc88745a91a11ac5aced44533dc",
+      "report_sha256": "0fb03f91b5dcccaac4664f6d7dc338ddab9265a33916efa375ea766418df582c"
+    },
+    {
+      "pose": "sweep_pos028_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "f6fc581740a0d1d6443039a32ae7d9f4d4af5c14328121dbfc83655adab7e01f",
+      "report_sha256": "33be39b0c758a177cad43eb67651844ea4c6bcc07ef985da4a02d22e7d4e298c"
+    },
+    {
+      "pose": "sweep_pos029_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "f1187884b5f03b08f17dc54a0aaf54ecc51867cba02edc8388f2739cc6bda942",
+      "report_sha256": "cbb56be508b54774ef329b981a4ac387c7a8b9855e66f00c2060d2781aa646b4"
+    },
+    {
+      "pose": "sweep_pos030_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "65fef53fabd8ab8ba78120e4017f897a8f91f052950e7507247c1b13d3d4c710",
+      "report_sha256": "5a2826899d53df7252693ce5623efd345713b41509f588f878e4341bf28c2272"
+    },
+    {
+      "pose": "sweep_pos031_loaded",
+      "input_sha256": "f1957fb89411c9b9662bde1c6058345cf881de4cc183c7c82c2e63b156cfdeb3",
+      "mesh_sha256": "3ee677d124e2627b77219208af360f83446c7cb51a2ba96ec4526337c6c6118b",
+      "report_sha256": "3046c1cb4c593f6fd67b0706862d0cf2dab63bf007022e7555d5385242a3ca55"
+    }
+  ],
+  "retention": "Native JSON artifacts retained locally as gzip, with original uncompressed SHA256 recorded above.",
+  "limits": [
+    "Independent Gmsh spatial discretization differs from the retained FEMM mesh.",
+    "One operating point; no full torque-angle curve or mesh-convergence qualification.",
+    "The Yang 2013 paper full text remains unavailable; attribution and test transcription alone are verified."
+  ],
+  "combined_torque_and_bemf": {
+    "source_commit_at_run": "53c7202d40b468e35ffb9865dad6039eb09429fc",
+    "source_dirty_at_run": true,
+    "request": {
+      "schema_version": "1.0",
+      "geometry_reference": "pyleecan_prius_2004",
+      "topology": "IPM",
+      "stator": {
+        "OD_mm": 269.24,
+        "ID_mm": 161.9,
+        "slot_count": 48,
+        "stack_length_mm": 83.82,
+        "slot_opening_mm": 1.93,
+        "tooth_width_mm": 7.086189721925985,
+        "yoke_thickness_mm": 19.37,
+        "tooth_shoe_enabled": false,
+        "tooth_shoe_height_mm": 1.0,
+        "tooth_shoe_overhang_mm": 0.5
+      },
+      "rotor": {
+        "OD_mm": 160.4,
+        "ID_mm": 110.64,
+        "magnet_thickness_mm": 6.5,
+        "magnet_width_mm": 18.9,
+        "pole_count": 8,
+        "magnet_embrace": 0.67,
+        "bridge_thickness_mm": 1.5,
+        "ipm_topology": "pyleecan_holem50",
+        "flat_buried_magnet_shape": "straight",
+        "side_bridge_thickness_mm": 1.5,
+        "pocket_clearance_mm": 0.0,
+        "magnet_angle_deg": 0.0,
+        "v_angle_deg": 60.0,
+        "v_depth_mm": 21.0,
+        "inner_web_thickness_mm": 7.0,
+        "outer_bridge_thickness_mm": 1.5,
+        "holem50_w0_mm": 42.0,
+        "holem50_w1_mm": 0.0,
+        "holem50_w2_mm": 0.0,
+        "holem50_w3_mm": 14.0,
+        "holem50_w4_mm": 18.9,
+        "holem50_h0_mm": 10.96,
+        "holem50_h1_mm": 1.5,
+        "holem50_h2_mm": 1.0,
+        "holem50_h3_mm": 6.5,
+        "holem50_h4_mm": 0.0,
+        "flux_barrier_count": null,
+        "barrier_widths_mm": null
+      },
+      "winding": {
+        "type": "distributed",
+        "turns_per_coil": 9,
+        "layers": 1,
+        "parallel_paths": 1,
+        "coil_span": 6
+      },
+      "materials": {
+        "stator_steel": "custom:1b06dcfa45eec99d88856ad3b26df6a890cea2b5c4e247abfd55367660db42ec",
+        "rotor_steel": "custom:1b06dcfa45eec99d88856ad3b26df6a890cea2b5c4e247abfd55367660db42ec",
+        "magnet_grade": "Prius_2004_NdFeB",
+        "conductor": "copper",
+        "custom_steels": {
+          "custom:1b06dcfa45eec99d88856ad3b26df6a890cea2b5c4e247abfd55367660db42ec": {
+            "id": "custom:1b06dcfa45eec99d88856ad3b26df6a890cea2b5c4e247abfd55367660db42ec",
+            "name": "Pyleecan M400-50A",
+            "source": "Published Pyleecan Toyota_Prius.json, exact FEMM B-H points",
+            "lamination_thickness_mm": null,
+            "bh_curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                0.5,
+                100.0
+              ],
+              [
+                0.7,
+                150.0
+              ],
+              [
+                0.8,
+                180.0
+              ],
+              [
+                0.9,
+                200.0
+              ],
+              [
+                1.0,
+                250.0
+              ],
+              [
+                1.05,
+                300.0
+              ],
+              [
+                1.1,
+                350.0
+              ],
+              [
+                1.15,
+                450.0
+              ],
+              [
+                1.2,
+                550.0
+              ],
+              [
+                1.225,
+                650.0
+              ],
+              [
+                1.25,
+                750.0
+              ],
+              [
+                1.275,
+                850.0
+              ],
+              [
+                1.3,
+                950.0
+              ],
+              [
+                1.325,
+                1100.0
+              ],
+              [
+                1.35,
+                1250.0
+              ],
+              [
+                1.375,
+                1400.0
+              ],
+              [
+                1.4,
+                1550.0
+              ],
+              [
+                1.425,
+                1700.0
+              ],
+              [
+                1.45,
+                1900.0
+              ],
+              [
+                1.475,
+                2150.0
+              ],
+              [
+                1.5,
+                2450.0
+              ],
+              [
+                1.525,
+                2750.0
+              ],
+              [
+                1.55,
+                3150.0
+              ],
+              [
+                1.575,
+                3600.0
+              ],
+              [
+                1.6,
+                4100.0
+              ],
+              [
+                1.625,
+                4700.0
+              ],
+              [
+                1.65,
+                5250.0
+              ],
+              [
+                1.675,
+                6000.0
+              ],
+              [
+                1.7,
+                6700.0
+              ],
+              [
+                1.725,
+                7500.0
+              ],
+              [
+                1.75,
+                8650.0
+              ],
+              [
+                1.775,
+                9500.0
+              ],
+              [
+                1.8,
+                10750.0
+              ],
+              [
+                1.85,
+                14500.0
+              ],
+              [
+                1.9,
+                19500.0
+              ],
+              [
+                1.95,
+                25000.0
+              ],
+              [
+                2.0,
+                33000.0
+              ],
+              [
+                2.05,
+                44000.0
+              ],
+              [
+                2.1,
+                57000.0
+              ],
+              [
+                2.15,
+                74000.0
+              ],
+              [
+                2.2,
+                96000.0
+              ],
+              [
+                2.25,
+                130000.0
+              ],
+              [
+                2.3,
+                170000.0
+              ]
+            ],
+            "curve_sha256": "a057ad7be7d38bd148b7ea67b8dbf64d0874c9226efb8c9cbea6dcd284566899"
+          }
+        }
+      },
+      "solve_params": {
+        "solve_quality": "custom",
+        "rotor_sweep_range_deg": 360.0,
+        "rotor_step_deg": 11.25,
+        "mesh_density": "normal",
+        "mesh_source": "native",
+        "mesher": "gmsh",
+        "corner_refinement": false,
+        "slot_sidewall_refinement": false,
+        "current_amplitude_A": 250.0,
+        "current_amplitude_convention": "peak",
+        "current_angle_deg": 140.0,
+        "excitation_mode": "sinusoidal",
+        "commutation_advance_deg": 0.0,
+        "phase_connection": "wye",
+        "rated_speed_rpm": 2000,
+        "magnet_temperature_C": 60,
+        "motor_input_dc_bus_V": 500.0,
+        "max_nonlinear_iterations": 200,
+        "nonlinear_solver": "newton",
+        "linear_solver_preconditioner": "direct",
+        "linear_steel_mu_rel": null,
+        "magneto2d_workers": 1,
+        "stream_noload_field_lines": false,
+        "field_composition_source": "resultant",
+        "rotor_rotation_model": "remesh_per_step",
+        "torque_method": "weighted_stress"
+      },
+      "solve_options": {
+        "torque_sweep": true,
+        "back_emf": true,
+        "flux_density": false,
+        "cogging_torque": false,
+        "torque_speed_envelope": false,
+        "thd_analysis": false
+      }
+    },
+    "original_result_sha256": "1eb50f716ba50b6671c5012e5b1559ee0932b2bc8463afd4e201d942309af157",
+    "postprocessed_result_sha256": "1a807767fdbcabe61af63d7c59efc8f94404d8a511088b752059a0404d6d6489",
+    "magneto2d_binary_sha256": "9612b5f7b36078a15400b1e3c0264410dfb815101633053929ae2ece3aeec02d",
+    "loaded_positions": 32,
+    "noload_positions": 32,
+    "zero_current_noload_meshes_checked": 32,
+    "loaded_native_results_identical_to_torque_only_run": 32,
+    "summary": {
+      "avg_torque_Nm": 353.9505302662849,
+      "fundamental_phase_neutral_rms_V": 117.66702983577007,
+      "sampled_line_ab_rms_V": 204.07881422100132,
+      "Ke_Vs_per_rad_mech": 0.7945316012616661,
+      "lambda_pm_Wb": 0.19863290031541653,
+      "solve_wall_time_s": 496.351,
+      "max_final_residual": 9.13712049786163e-10
+    },
+    "back_emf_waveform": {
+      "electrical_angle_deg": [
+        0.0,
+        11.25,
+        22.5,
+        33.75,
+        45.0,
+        56.25,
+        67.5,
+        78.75,
+        90.0,
+        101.25,
+        112.5,
+        123.75,
+        135.0,
+        146.25,
+        157.5,
+        168.75,
+        180.0,
+        191.25,
+        202.5,
+        213.75,
+        225.0,
+        236.25,
+        247.5,
+        258.75,
+        270.0,
+        281.25,
+        292.5,
+        303.75,
+        315.0,
+        326.25,
+        337.5,
+        348.75
+      ],
+      "phase_a_V": [
+        -81.5083486822156,
+        -108.30953614084001,
+        -144.43026515020966,
+        -156.76049268465673,
+        -152.07606481586805,
+        -157.44930118090312,
+        -154.78981770545462,
+        -153.16937331437236,
+        -157.0207195563134,
+        -132.71560922637838,
+        -97.58619941784208,
+        -75.15103901427213,
+        -44.31054218303049,
+        -9.85251439436041,
+        20.56380074185225,
+        56.58493316297009,
+        81.50559291993632,
+        108.32136728064225,
+        144.44650995795294,
+        156.73701305073706,
+        152.05923375347834,
+        157.4561059072913,
+        154.7899987156431,
+        153.18042516144627,
+        157.02299404395174,
+        132.7087533822978,
+        97.58290987686398,
+        75.14392165615557,
+        44.31557165177005,
+        9.858901561040176,
+        -20.564654150514745,
+        -56.58355520679734
+      ],
+      "phase_b_V": [
+        -81.51250057710502,
+        -56.58135344731055,
+        -20.56104507267828,
+        9.853848412367642,
+        44.31350440906664,
+        75.14538274764959,
+        97.5854971289639,
+        132.72392137752752,
+        157.0275766634439,
+        153.17011900568667,
+        154.79143500307094,
+        157.45696312788516,
+        152.05922567653448,
+        156.7433044936474,
+        144.44495570987283,
+        108.31954305661716,
+        81.5054621497205,
+        56.57785223641476,
+        20.558252853287406,
+        -9.84936701708404,
+        -44.308967053807415,
+        -75.15540361599597,
+        -97.58805370180858,
+        -132.72315732588115,
+        -157.02431183595297,
+        -153.15704132512545,
+        -154.792064976198,
+        -157.45801711541236,
+        -152.069415265839,
+        -156.753684421724,
+        -144.4295511105713,
+        -108.31291018926241
+      ],
+      "phase_c_V": [
+        159.0110384414245,
+        152.77022647659095,
+        154.9067347054563,
+        152.96088312304335,
+        120.04678085856241,
+        88.46634056135176,
+        67.20401207650498,
+        32.07786215807923,
+        -0.0016301503299231965,
+        -32.08393313863608,
+        -67.20723878990373,
+        -88.45870267042469,
+        -120.0408479242431,
+        -152.96195713141717,
+        -154.92417086355928,
+        -152.77450176028697,
+        -158.99192818415457,
+        -152.77807494652714,
+        -154.92653208918702,
+        -152.95502204428905,
+        -120.03442790104629,
+        -88.45763335736063,
+        -67.2009624971419,
+        -32.0810983551859,
+        -0.0034572824099872905,
+        32.07642442875294,
+        67.20990518427563,
+        88.46745305405233,
+        120.04602333525796,
+        152.96683107137792,
+        154.90670108049406,
+        152.76490253087914
+      ],
+      "line_ab_V": null,
+      "line_bc_V": null,
+      "line_ca_V": null
+    },
+    "native_pose_artifacts": [
+      {
+        "pose": "sweep_pos000_loaded",
+        "lane": "loaded",
+        "final_residual": 1.9727590551841694e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "f1a1a252dffaa3dfaa2aa733d3f99fdff484d77f39e23e1ef6695f48e01365da",
+        "report_sha256": "8943c41655e8c0e6906b292a78fcfd6c222bb1ffbdfbaa941624ec9573e3b513"
+      },
+      {
+        "pose": "sweep_pos000_noload",
+        "lane": "noload",
+        "final_residual": 6.016039594669713e-11,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "e5f98e48163f7e1257b301950fdd57deca014038483f3d0c2d781a72731ffc5e",
+        "report_sha256": "a8ff67340c417db1ed384387fed7b95e8ce89ab750a028cf7307f474cc808538"
+      },
+      {
+        "pose": "sweep_pos001_loaded",
+        "lane": "loaded",
+        "final_residual": 2.5487687416375725e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "1aff35a2b89def3aae6fc8aac66567235eb2c663c2254136ac6a2219fdba25d6",
+        "report_sha256": "dd88f0afe1da7312ded7badcb224dd1ab46297de9c7df42c8b5e93f935e20436"
+      },
+      {
+        "pose": "sweep_pos001_noload",
+        "lane": "noload",
+        "final_residual": 1.1498549931086547e-10,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "7342a891f7476b1007cc29c2a092208336bdb37344e8ebcde46f894310ebacea",
+        "report_sha256": "9330908aa34d707879288c6bc982ab2e7b01aa391d01d541cf80f9b4d55194df"
+      },
+      {
+        "pose": "sweep_pos002_loaded",
+        "lane": "loaded",
+        "final_residual": 3.288514836531391e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "4a3d5c8a275d62ccbacd2ad7c8afd8e7cc58483828331b69677f76d859ce7519",
+        "report_sha256": "80c66b3e055732666693b2906ed4804572969000234a03a5c0ff98c0115f7da7"
+      },
+      {
+        "pose": "sweep_pos002_noload",
+        "lane": "noload",
+        "final_residual": 3.7339291282455123e-10,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "f330e469814c4fb7a5022dfca2372f3a7d8126ae40d193ad77fd9b688febece1",
+        "report_sha256": "345c49a0d9f6fc7a5ce3388587c896aaed3d5d8e92e9c10724d034218c729580"
+      },
+      {
+        "pose": "sweep_pos003_loaded",
+        "lane": "loaded",
+        "final_residual": 1.6527968911012425e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "3eb6ce8e1e59a1bf86b6ba8506c31dc15564f8c5de66eef2cdf80b904a888db5",
+        "report_sha256": "0b72ea73208e82e6f03a4d4f5f13be7f93d9889155edb22550aed8cc1cfc84ea"
+      },
+      {
+        "pose": "sweep_pos003_noload",
+        "lane": "noload",
+        "final_residual": 5.351684859512382e-11,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "8ae8aa6cbdb82d16886bfa80b988f86053824bed4e92d650b346ab8bbc3f12c6",
+        "report_sha256": "892484ec50cde465c9b4696e3c6eb55ee045240f0b7db5b779617dee7711adb7"
+      },
+      {
+        "pose": "sweep_pos004_loaded",
+        "lane": "loaded",
+        "final_residual": 1.3657946363607642e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "afad581cf63d4a949f27e6bf7d5149c6e44f7fbf3e752d65e51b9e4764ca5d60",
+        "report_sha256": "92064c662e6c4d217508ed2bd60d646a9568c57cf85450566f34196a73f73d45"
+      },
+      {
+        "pose": "sweep_pos004_noload",
+        "lane": "noload",
+        "final_residual": 1.4336185674867726e-10,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "2d7dfd7ada27f111775ecb6fa40498826c5777da67b72df9a8b9a52b608ca468",
+        "report_sha256": "a037930d2503864ba3bfc1d12910de642227795f50a5983c18e31a27f4412fa8"
+      },
+      {
+        "pose": "sweep_pos005_loaded",
+        "lane": "loaded",
+        "final_residual": 1.1355197002407676e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "e3ec0668741de8624f1ebfbf3e326d1e50b0389ec5e018d215558cfd1388316f",
+        "report_sha256": "7605eacbce138c6d90069c83a975c381f2de267b5cf82f4a0f0ca79dbc6d79a1"
+      },
+      {
+        "pose": "sweep_pos005_noload",
+        "lane": "noload",
+        "final_residual": 9.162045452884879e-11,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "ade56ed3ab7fc9c514ee47f11bfbcddbe455f9886e4cb180f8d60f9c01df679d",
+        "report_sha256": "b6eee37403d275d69f72393a380934cb191ce62b16c811d3744e58f5e58f710c"
+      },
+      {
+        "pose": "sweep_pos006_loaded",
+        "lane": "loaded",
+        "final_residual": 1.1986105676928405e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "7390929859ce190838f126b1b0b135606e26c5183c64e3d4dc3e7d018ef20619",
+        "report_sha256": "ebd3600b86cc89fb11ad21ed5016a508bc3f20bd863c650d242fea1a2a02cb98"
+      },
+      {
+        "pose": "sweep_pos006_noload",
+        "lane": "noload",
+        "final_residual": 2.928627109809528e-10,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "5f253ddb657a9714cbc3674913626c6d2a78d72d5968eed4538e7c5dbf631676",
+        "report_sha256": "e79668a15e26c9927184308d5cd3f88a907349d2fa3e7cc18667ca3dc11cdf0c"
+      },
+      {
+        "pose": "sweep_pos007_loaded",
+        "lane": "loaded",
+        "final_residual": 1.880827343960138e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "b98423d962331ea76506070a145468c01cf4a03aec697b5d1692361df692c33b",
+        "report_sha256": "15f4620257ff70ad0631bd043fe15820a24faf338a70221fe4123e247fe7808c"
+      },
+      {
+        "pose": "sweep_pos007_noload",
+        "lane": "noload",
+        "final_residual": 6.842882050371934e-10,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "d241fece3004919fa4ec92c62537c193d61212d5bb134fa4ce5961787deb76a0",
+        "report_sha256": "d53b113d9a3474449ecd4e6beae01ebc8bf0ed1026bce7bfed7149f1a538c8a9"
+      },
+      {
+        "pose": "sweep_pos008_loaded",
+        "lane": "loaded",
+        "final_residual": 2.651341001787963e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "bba22fca5c9c0599e969fe3e3ae386e0124fb5b21efb8f1c661c1519b94a5095",
+        "report_sha256": "a7366e00056887513312004855914a249e2dff7bc7d8a957043e3bbd5047b7f2"
+      },
+      {
+        "pose": "sweep_pos008_noload",
+        "lane": "noload",
+        "final_residual": 4.988642244918298e-11,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "16f9046e0fa99fb744c2e2bee1bf442135b6c8ca3192c870481c00cc3abb86fd",
+        "report_sha256": "08862c4730de3563e88d24ebd72766bee2a19589944d42e09c73a020ffeb4abc"
+      },
+      {
+        "pose": "sweep_pos009_loaded",
+        "lane": "loaded",
+        "final_residual": 2.0888359072010516e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "8873f5922851a810dd557fb2756c2e4cc667007599e6f3d6387b04bdb5288cba",
+        "report_sha256": "4a7dac840682a730eb4932c36654f66dfb827fc1cfef5b7a9319a5541c42b5c9"
+      },
+      {
+        "pose": "sweep_pos009_noload",
+        "lane": "noload",
+        "final_residual": 9.13712049786163e-10,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "f950444256d417381e37c81cbd1ae9326fb1a5a31c7d4c63d84982c1341fc72b",
+        "report_sha256": "decb1161fbaa56a1be20cad52902960d78a659f9590de53aa1a676e0959f5ac9"
+      },
+      {
+        "pose": "sweep_pos010_loaded",
+        "lane": "loaded",
+        "final_residual": 3.1495667407888097e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "6c6b590d309e558f984dcd8ea65d3a77fb114deb776cc917a16cdb59d027c2e9",
+        "report_sha256": "86d5c94f4b708ef9fb1a203e43a31ecd6ea46ab00b1c9e061e66fb76961c17bc"
+      },
+      {
+        "pose": "sweep_pos010_noload",
+        "lane": "noload",
+        "final_residual": 8.345279895621761e-11,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "7cd7b40408c2d7c3765995d6d2f4f912b80d4e40e8704708bbbbcb2c1ff2e8da",
+        "report_sha256": "e9df8207d9bf83ad6f6befdc7e6b1193cb548340377c1c63166cfaff89bd7601"
+      },
+      {
+        "pose": "sweep_pos011_loaded",
+        "lane": "loaded",
+        "final_residual": 1.5492388833906347e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "2b43e7b79ed9f1f298f30d0be43bb85e948118da3a9df40e8b2141ac12435a13",
+        "report_sha256": "4120bfb205c3fbe57dda580c492007edb5da7fac2f45739c8d1a1a58648ff29b"
+      },
+      {
+        "pose": "sweep_pos011_noload",
+        "lane": "noload",
+        "final_residual": 5.549763509066032e-11,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "cb8dada825b4f7ed89121a37e32f7b97d152191db4560a4e93b93b06b46f9172",
+        "report_sha256": "5289a8c1305a89b153780eea621d0026dea76e59e4d77cc91b39d6bb21326263"
+      },
+      {
+        "pose": "sweep_pos012_loaded",
+        "lane": "loaded",
+        "final_residual": 3.955899788936543e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "5bcdd4d3513cdb89348a33a89b31c6fa0f325892329bc90a9527c005f04d5a98",
+        "report_sha256": "7e5a665c68800f5f59199944c7f50766a30f4ad8b2e21bed3ee934924240b016"
+      },
+      {
+        "pose": "sweep_pos012_noload",
+        "lane": "noload",
+        "final_residual": 1.4009444548026673e-10,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "3f3f0b5de4606e9726c28dfbda60fffa79b2c14dd2436befe65d93fdb5ff86ed",
+        "report_sha256": "d06eb80a698cca6d02512396dbc84005ecd207f4f79d24ae61a4c4d6339c2a4d"
+      },
+      {
+        "pose": "sweep_pos013_loaded",
+        "lane": "loaded",
+        "final_residual": 4.82203736470754e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "5df8980d328deec4b6aaa87e63361f98f0bd7fbc1fb5e73f28203c324b832d22",
+        "report_sha256": "4a81c5934299824267e29d54e62fc721195798c39ff75f2ad5bd7eeb864d96f8"
+      },
+      {
+        "pose": "sweep_pos013_noload",
+        "lane": "noload",
+        "final_residual": 1.930986995727732e-11,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "86b33c0ec8c2a199d4c20e22a0272ddfd541dfc2b14420b708ce60250bd1d2d2",
+        "report_sha256": "427b829015d14cb8fb255a68babb79fb272b3ffd6ec4419c3fa4d4924343f29f"
+      },
+      {
+        "pose": "sweep_pos014_loaded",
+        "lane": "loaded",
+        "final_residual": 2.2096139748753677e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "75b1156533b51a30ec885f6be291e37f4a30cae595dd4181fbc976f0c073bd6b",
+        "report_sha256": "976d1e862b8e4dc0917c768ea7dfcbe60fa9830e3c9d0c7419e913762ad6ae7d"
+      },
+      {
+        "pose": "sweep_pos014_noload",
+        "lane": "noload",
+        "final_residual": 2.2454615661066117e-10,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "d66e3da44107e718c48cefe43c0d571e529d3447c6875726cc73e322f1b0cfaa",
+        "report_sha256": "2ed8886377eb7494a398e3c5b9a59122f8f5e86e2fae8b803e013814d5bcb2f8"
+      },
+      {
+        "pose": "sweep_pos015_loaded",
+        "lane": "loaded",
+        "final_residual": 2.2749006445619894e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "43b9be75d8843e63431bfa5ba562d091c9299ed9209d642055b916535e74e3b5",
+        "report_sha256": "df1824311f30d5ef13417f2bb997fe753d97caf2498ac0f8130830bc2d3593f3"
+      },
+      {
+        "pose": "sweep_pos015_noload",
+        "lane": "noload",
+        "final_residual": 7.932928357337635e-10,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "338b4e3b3db2eb949a2fb6de04db5b6ee2db8a4e18887f14953aedd8442d7caf",
+        "report_sha256": "afee00e6c38dd5f45f3a53a48460a8306ba44970e21213963d53bccaa8c5865e"
+      },
+      {
+        "pose": "sweep_pos016_loaded",
+        "lane": "loaded",
+        "final_residual": 1.9933683073238054e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "f8566ab4d0c10d07039c25aa313438361c2a5cf8f4bc38d67366d69ed15b0ab1",
+        "report_sha256": "aa84824c02f48d6facd9aa29aaa2457439ed02fbcd3abb610125d705b743f75f"
+      },
+      {
+        "pose": "sweep_pos016_noload",
+        "lane": "noload",
+        "final_residual": 6.477495797523896e-11,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "cc7fec9494016e8ca065a000a324d3dcf6f540fc5c3a68fcfbed4699cf29f267",
+        "report_sha256": "953da5f247d8fc6865f0d996393cf462759e4d9e589901a726ea5cd74d7816df"
+      },
+      {
+        "pose": "sweep_pos017_loaded",
+        "lane": "loaded",
+        "final_residual": 2.3845900192114653e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "de42daab243615492b89db7642bfe5bfded7298fae796e08d3a8576b913fe0c1",
+        "report_sha256": "e247b130d1da0b1a2a44e9a581ab544d9d50061f93918471c2b1f5f8e6103fd5"
+      },
+      {
+        "pose": "sweep_pos017_noload",
+        "lane": "noload",
+        "final_residual": 8.884633804972406e-10,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "165bb2aa3785185584a4f990b132924757a1b7a0295d9ee5f1eb244eb3388a63",
+        "report_sha256": "4cbeb1b0db6a03c9015714a3667e0ee1cdd8f448f2b4849f8a7f423c8a595ba8"
+      },
+      {
+        "pose": "sweep_pos018_loaded",
+        "lane": "loaded",
+        "final_residual": 6.515864125691542e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "719cde4b384ef171885c3c8f801ca578a5780c2fe0f061a7bc741c04a6a19016",
+        "report_sha256": "cf2665ea6af3d1b31cea42980e84b16c165a28c239bf7f661b3402a68f12c54c"
+      },
+      {
+        "pose": "sweep_pos018_noload",
+        "lane": "noload",
+        "final_residual": 1.0341880738702948e-10,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "bdaa8934e627781ee43d5225b78fd0cc1715896c793655b2d37e62895e09ecaf",
+        "report_sha256": "ac5a54822e627df05c57964cd0c56c059503d9a71c24622ed4f4a66914a77258"
+      },
+      {
+        "pose": "sweep_pos019_loaded",
+        "lane": "loaded",
+        "final_residual": 1.9955065450601846e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "e2d694995df22108aed2d76aabb4cf39658d579654b0a80e9ad361d138109d88",
+        "report_sha256": "3ce2e8328c39acf60a234103e21970f74bce21930bf11e72e9ab28056c0e17fd"
+      },
+      {
+        "pose": "sweep_pos019_noload",
+        "lane": "noload",
+        "final_residual": 7.291529070030124e-11,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "4e9da82d3533954b10d1ae15a6adda3f88a1ff61ffe4f538d3e9029c19983684",
+        "report_sha256": "68c85acb19f358197573afe3384c3e2bfc88476d15c989fa3cdf4d295cea254f"
+      },
+      {
+        "pose": "sweep_pos020_loaded",
+        "lane": "loaded",
+        "final_residual": 1.2804084351513413e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "66d4a9b23b81e19b82818643ea5c9a3bf69b77dd14c1321560a297e76af9dd16",
+        "report_sha256": "12ce9e099e9956b2cffc202c34ba2a4431188d09e492d7cdf2de971742e89e80"
+      },
+      {
+        "pose": "sweep_pos020_noload",
+        "lane": "noload",
+        "final_residual": 1.4288677384564522e-10,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "d759b1739670e3515a71e687708210a16cc160adefe1ce93c501186c73b78379",
+        "report_sha256": "5dfd9b846a6cdb7a2a3e5676847f25a8d7adab0e20525b952acc3b3d4c2ec3a0"
+      },
+      {
+        "pose": "sweep_pos021_loaded",
+        "lane": "loaded",
+        "final_residual": 1.2201661688319862e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "9b93bdd348e1a4c2bd559415b64a78ff8ec9453ee7d730d10cee6660da02f74e",
+        "report_sha256": "ab9a338a1de6651248a63c4943686d95baa4ba2a8cdea7c2e7d26a38448eb401"
+      },
+      {
+        "pose": "sweep_pos021_noload",
+        "lane": "noload",
+        "final_residual": 1.28012714786963e-10,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "2c1b52f42753de9adeaca20f31fe498be6e104fc211fa6ab6bedbbdb6a876f7c",
+        "report_sha256": "6808d299c55457fd7aa4482ad7fc96debd1d20e1d1a6c66dbd0b126fa2808794"
+      },
+      {
+        "pose": "sweep_pos022_loaded",
+        "lane": "loaded",
+        "final_residual": 1.2844763052585435e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "3bdcec16ba9bf076c9452ab3f4d562a95ea134060390721a04ee7d07735edde9",
+        "report_sha256": "7c671366b19496c0afac96d7a56e749d07f6e32d42bf9d880d82c52438658761"
+      },
+      {
+        "pose": "sweep_pos022_noload",
+        "lane": "noload",
+        "final_residual": 2.7703197420309563e-10,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "d73ab3834e862535575071a70d7a431a5a4609f88698defb5085719df14537b6",
+        "report_sha256": "38334b14176836445c4f621c31fe6ad4626bf986b2afc18f01d2bcf38a291cf2"
+      },
+      {
+        "pose": "sweep_pos023_loaded",
+        "lane": "loaded",
+        "final_residual": 1.9417810577950562e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "14f43e8f94f5b0f08ffd6d346ecb193c61b67ee195cfb59b5632968b94994ea9",
+        "report_sha256": "b5698565cc5aa0062debe6125e75ee255220a13d5babce91850fb3c387dee7d8"
+      },
+      {
+        "pose": "sweep_pos023_noload",
+        "lane": "noload",
+        "final_residual": 7.657930519452236e-10,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "f603ca658e9d09665953dae351ab1f463457ce7fc1a724c050cddf943df4efca",
+        "report_sha256": "de8d0e190bfa63a1a96d175c067b05c34f576155c41a31e73e6b319f832d11b2"
+      },
+      {
+        "pose": "sweep_pos024_loaded",
+        "lane": "loaded",
+        "final_residual": 2.9806199800085177e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "d75eeda21a594ed5a2f3a2a4c700c4b6acbbc571cf68c396de2a4f519ad54263",
+        "report_sha256": "9e6df13d210ef81e7351582ee4f6112fc614aabf2f46e036fa1aa9662d020f7c"
+      },
+      {
+        "pose": "sweep_pos024_noload",
+        "lane": "noload",
+        "final_residual": 5.7145968199595764e-11,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "204a667111b6b8050aab5233cabab007be721da840ec60bfe1dec4e514d3b3da",
+        "report_sha256": "878e82a1b0dffb88d90352e4cb60d07287cef433c56045b9983f242fb0d0bfb1"
+      },
+      {
+        "pose": "sweep_pos025_loaded",
+        "lane": "loaded",
+        "final_residual": 2.226200604733358e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "45ff5fa3e759b891927d728f47f97bb815a26ceecd5e0ca8f677c299d1bfd55e",
+        "report_sha256": "4cd901eea87aa23f42f966aabe22bf9642020ee23f821c1e6f0119f37502be8d"
+      },
+      {
+        "pose": "sweep_pos025_noload",
+        "lane": "noload",
+        "final_residual": 9.906361317619462e-11,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "df16a0b59c205b4edd5a621bb76637d503e976b769ef0e4dc6682bc894858420",
+        "report_sha256": "0e2fb3fd00337b46b7a3187915189c27f9740b2a73820729882b3d9fc759bb92"
+      },
+      {
+        "pose": "sweep_pos026_loaded",
+        "lane": "loaded",
+        "final_residual": 3.1488732019025716e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "0832b99eee491c6bd421f1c8011886edc260740630d30eca8981c713606b1dc2",
+        "report_sha256": "ce4fb52ef4afe9e5bd139641aed1574f90119d22ee20eced9bb0cfb0037a9f47"
+      },
+      {
+        "pose": "sweep_pos026_noload",
+        "lane": "noload",
+        "final_residual": 1.2470648681672448e-10,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "ef474db87a60a31d229376e1a89c13206142e5bd837307e691fcba3b4520faa8",
+        "report_sha256": "56688fb7f39f7f785cd28e62648f7c1ba01d56db65cb8fe471412cbbda732fab"
+      },
+      {
+        "pose": "sweep_pos027_loaded",
+        "lane": "loaded",
+        "final_residual": 1.4501224505900692e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "06e08e16aa451343e99eb503a0ebac70ad9f2339f337fa114239db1501d12d99",
+        "report_sha256": "ab3f047cec6f7f62b6d9e5a9138d8d3eeeed58a1093b926b082528ac91efc818"
+      },
+      {
+        "pose": "sweep_pos027_noload",
+        "lane": "noload",
+        "final_residual": 5.353525848741872e-11,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "137f4e44c510d867779485db52cc36277a6cc1a216eea0c3e40f8f8623fd7c8e",
+        "report_sha256": "b2cc879bb15d46fca450ec80a500045618b6538de9ac8db334557b5392f06dbc"
+      },
+      {
+        "pose": "sweep_pos028_loaded",
+        "lane": "loaded",
+        "final_residual": 4.0963684124102707e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "e29cadc8d47c1fef976d9d04757e9cbb49a09b8b668317a9a2041e774e89fe2f",
+        "report_sha256": "12981a5f8afd12bf32f38957bb106cc64a493b4c694fbe1535bcd250a6c1a2b9"
+      },
+      {
+        "pose": "sweep_pos028_noload",
+        "lane": "noload",
+        "final_residual": 1.376527739612047e-10,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "cebeb30a17a27779c4e1d4aaef20fbbc3d7d518375eeb30decb3f86961a390cb",
+        "report_sha256": "07204a5bbdfd8ff63d176fa52ab46e5fd25c283f09fe73fa3641ea9b77ae25cc"
+      },
+      {
+        "pose": "sweep_pos029_loaded",
+        "lane": "loaded",
+        "final_residual": 4.376710284360702e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "01a8ecc92f2a95f1ea3dcb558b7bb95891232b89f17270d450a0b0e734e2720e",
+        "report_sha256": "bc4f2535d15ed990be65b4376e28901ff0dfa5f307506d5a755c528e874c42ef"
+      },
+      {
+        "pose": "sweep_pos029_noload",
+        "lane": "noload",
+        "final_residual": 2.5439059645140737e-11,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "158eed5676d6f001cb6fe9c49f5c661869046842fefc50e1f9d177ff9af44e73",
+        "report_sha256": "e32d15fd20b128bd3a23465b96b40e1051a57975d1e664c505d8db451bc66bdd"
+      },
+      {
+        "pose": "sweep_pos030_loaded",
+        "lane": "loaded",
+        "final_residual": 2.1740023276291912e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "dbf31cc711005944665c056066629ab79d4f2f8edf0a2ba01f3ec07e6c722892",
+        "report_sha256": "9dc199ad11dba007fb5d8cb4395ac5eea9321decc134d0c9d2cd90aace66e229"
+      },
+      {
+        "pose": "sweep_pos030_noload",
+        "lane": "noload",
+        "final_residual": 2.410538152756529e-10,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "2d0f1ac95adef262613f56a5c6c52471776319236d2f9bc87e7db7417c31f5d9",
+        "report_sha256": "ada13a5caf85eb49b426ed68acb52e1d8e92a1ed6cd1f0403e7d14b0569b52aa"
+      },
+      {
+        "pose": "sweep_pos031_loaded",
+        "lane": "loaded",
+        "final_residual": 1.864647742961092e-10,
+        "input_sha256": "32187e00402710b25d3707efe15a4fcfcdfea1861bc8b4c953d5057575825da6",
+        "mesh_sha256": "e8486f0c36fde584d92ed54d9eb6c6c7d1953e218f20cfc7adc1f338c3ab7063",
+        "report_sha256": "51c28fad6fb5328ffa29a432762912f14087336ebe12b85ba1a1cc220e556f23"
+      },
+      {
+        "pose": "sweep_pos031_noload",
+        "lane": "noload",
+        "final_residual": 1.255076895203808e-10,
+        "input_sha256": "c4c515918887cf2ff34d7c9d48a85a1bf4131ed216f64fffa4f65ca4afdfec30",
+        "mesh_sha256": "eb4d67cfbfde5eed21a9c7f66f5ad8aefbe89b770485a78742174d991b1ed801",
+        "report_sha256": "f1dcfd8ca7ceed09a4476866392aaae2cd05133155707fa2dae41ff78e481e23"
+      }
+    ],
+    "availability_checks": {
+      "computed_true": true,
+      "explicitly_skipped_false": true,
+      "legacy_request_fallback": true,
+      "computed_zero_remains_available": true
+    },
+    "polarity": {
+      "north_facing_magnets": 8,
+      "south_facing_magnets": 8,
+      "alternating_poles": 8,
+      "native_vectors_changed_by_display_fix": false
+    },
+    "browser_validation": "UI replay of retained numerical results checks the request toggle, skipped-result message, full report and computed waveform; separate native solve supplies numerical evidence.",
+    "ornl_comparison": {
+      "source": "target-back-emf.json: ORNL/TM-2006/423 Table 3.4, identical to ORNL/TM-2004/247 Table 3.4",
+      "source_sha256": "41db6bb847374c2ab6b8925f742c538bce12ce377fa00896d45f33c5d23c4aa6",
+      "method": "Linearly speed-scale this one magnetostatic no-load waveform to each measured shaft speed; no additional field solves. Compare sampled line-to-line RMS, not fundamental phase-neutral RMS.",
+      "model_magnet_temperature_C": 60,
+      "ornl_nominal_oil_temperature_C": 25,
+      "ornl_magnet_temperature_C": null,
+      "model_solver_dimension": "2D Magneto2D, exact published Pyleecan geometry",
+      "rows": [
+        {
+          "motor_shaft_rpm": 502,
+          "ornl_line_line_rms_V": 42.0,
+          "model_speed_scaled_line_ab_rms_V": 51.22378236947133,
+          "relative_difference_pct": 21.96138659397935
+        },
+        {
+          "motor_shaft_rpm": 1000,
+          "ornl_line_line_rms_V": 85.7,
+          "model_speed_scaled_line_ab_rms_V": 102.03940711050066,
+          "relative_difference_pct": 19.06581926546167
+        },
+        {
+          "motor_shaft_rpm": 1502,
+          "ornl_line_line_rms_V": 132.3,
+          "model_speed_scaled_line_ab_rms_V": 153.263189479972,
+          "relative_difference_pct": 15.84519235069688
+        },
+        {
+          "motor_shaft_rpm": 1999,
+          "ornl_line_line_rms_V": 181.6,
+          "model_speed_scaled_line_ab_rms_V": 203.97677481389084,
+          "relative_difference_pct": 12.322012562715233
+        },
+        {
+          "motor_shaft_rpm": 2501,
+          "ornl_line_line_rms_V": 221.8,
+          "model_speed_scaled_line_ab_rms_V": 255.20055718336218,
+          "relative_difference_pct": 15.058862571398635
+        },
+        {
+          "motor_shaft_rpm": 2999,
+          "ornl_line_line_rms_V": 269.3,
+          "model_speed_scaled_line_ab_rms_V": 306.0161819243915,
+          "relative_difference_pct": 13.633933131968611
+        },
+        {
+          "motor_shaft_rpm": 3501,
+          "ornl_line_line_rms_V": 315.7,
+          "model_speed_scaled_line_ab_rms_V": 357.2399642938628,
+          "relative_difference_pct": 13.158050140596389
+        },
+        {
+          "motor_shaft_rpm": 3999,
+          "ornl_line_line_rms_V": 354.6,
+          "model_speed_scaled_line_ab_rms_V": 408.05558903489214,
+          "relative_difference_pct": 15.074898204989307
+        },
+        {
+          "motor_shaft_rpm": 4501,
+          "ornl_line_line_rms_V": 405.5,
+          "model_speed_scaled_line_ab_rms_V": 459.2793714043635,
+          "relative_difference_pct": 13.262483700212947
+        },
+        {
+          "motor_shaft_rpm": 4999,
+          "ornl_line_line_rms_V": 440.4,
+          "model_speed_scaled_line_ab_rms_V": 510.0949961453928,
+          "relative_difference_pct": 15.82538513746432
+        },
+        {
+          "motor_shaft_rpm": 5500,
+          "ornl_line_line_rms_V": 503.4,
+          "model_speed_scaled_line_ab_rms_V": 561.2167391077536,
+          "relative_difference_pct": 11.485248134237903
+        },
+        {
+          "motor_shaft_rpm": 5998,
+          "ornl_line_line_rms_V": 539.8,
+          "model_speed_scaled_line_ab_rms_V": 612.032363848783,
+          "relative_difference_pct": 13.38131972004133
+        }
+      ],
+      "mean_relative_difference_pct": 15.006215959480214,
+      "limits": "Different temperature conditions and geometry/material inputs from the earlier ORNL-derived 2D and initial Elmer 3D studies. This comparison does not isolate a cause or establish OEM hardware accuracy."
+    }
+  }
+}
