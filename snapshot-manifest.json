@@ -5380,13 +5380,13 @@
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE_WINDOWS.json",
-      "bytes": 627736,
-      "sha256": "8bc349807bfc08e42cbc4dae3052b5de8c84ab3d5976c0f1128ce4139ea96277"
+      "bytes": 631878,
+      "sha256": "0c38010c78c0d5a975828dfc87de79580bfb4b35dc23b66db17e76584f16e315"
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE_WINDOWS.md",
-      "bytes": 6913,
-      "sha256": "517f87b81e17a6efee282b5c6177fe5364e33551484c8dd66f91b00755859a4b"
+      "bytes": 6899,
+      "sha256": "335c9a02459f73a41883f69fd376b2e4d2debaf56c32df6fbd617d72830f2785"
     },
     {
       "path": "docs/NUMERICAL_EVIDENCE.md",
@@ -12421,6 +12421,18 @@
       "path": "docs/NONLINEAR_CONVERGENCE_WINDOWS.md",
       "source_sha256": null,
       "reason": "Publish targeted Windows convergence measurements and explicit validation limits for the stopping fix (#11)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "docs/NONLINEAR_CONVERGENCE_WINDOWS.json",
+      "source_sha256": null,
+      "reason": "Record complete Windows validation with locked dependencies."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "docs/NONLINEAR_CONVERGENCE_WINDOWS.md",
+      "source_sha256": null,
+      "reason": "Record complete Windows validation with locked dependencies."
     }
   ]
 }

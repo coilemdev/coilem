@@ -51,25 +51,26 @@ Open owner decisions: accept or revise the candidate per-preset tolerances in [t
 
 - Rust: **263 passed**, using the requested locked Cargo test command, including
   serialization and stopping-policy regression tests.
+- Full `python -m pytest -q tests`: **1,212 passed, 3 skipped, 16 expected
+  qualification failures**, with no unexpected failures. This completed on
+  Python 3.13.9 with a fresh environment using `requirements.lock`. The skips
+  cover SIGPIPE, Windows whole-message pipe behavior, and POSIX process-group
+  cleanup. The exact expected failures and skip reasons are in the data file.
 - Focused backend convergence, preset and environment checks: **27 passed**.
-- Supplemental Python selection: **845 passed, 1 skipped, 16 expected failures**;
-  no unexpected failures. The skip is the POSIX-only process-group cleanup test.
-- Full `python -m pytest -q tests`: **not completed** in this Windows environment.
-  Default descriptor capture aborted while loading native Gmsh. Sys-capture
-  retries reached the HTTP tests but blocked in asyncio's internal socket-pair
-  creation before the application request could run; a timed stack dump locates
-  the wait in `socket.accept`, `_fallback_socketpair` and `_make_self_pipe`.
-  The supplemental run excludes 18 files that depend on HTTP, sockets or async
-  runtime support, and explicitly includes the physics-source qualification
-  guards. The exact selection is included in the data file. Test sources were
-  not changed to bypass the environment limitation. A full run outside this
-  environment remains necessary.
-- Frontend: `npm run build` passed, including public boundary/UI checks,
-  typechecking and bundle audit, using existing installed dependencies with an
-  identical lockfile. `npm ci` failed because `registry.npmjs.org` could not be
-  resolved; a fresh install remains unverified here.
+  The earlier supplemental selection had **845 passed, 1 skipped, 16 expected
+  failures**; the complete run above supersedes its restricted coverage.
+- Frontend: fresh `npm ci` and `npm run build` **passed**, including public
+  boundary/UI checks, typechecking and bundle audit, on Node 24.19.0 and npm
+  11.17.0 using the committed lockfile.
 
-The **16 expected failures** are separate from those environment limitations:
+Use a short temporary root on Windows. A first locked full run using the long
+workspace temporary path hit a 260-character filename limit in an export test
+and one access-denied temporary-file replacement in a benchmark artifact test.
+Both affected files then passed all 68 tests with the shorter temporary root;
+the entire suite was rerun there with the results above. Application and test
+sources were not changed to bypass those filesystem failures.
+
+The **16 expected failures** are:
 
 - 10 instances of
   `tests/test_qualification.py::test_report_measured_the_current_physics_sources`:
@@ -83,4 +84,5 @@ The **16 expected failures** are separate from those environment limitations:
 Their exact node IDs are in the data file. Archived evidence and qualification
 hashes remain unchanged. Clean `git archive` exports are checked separately
 with `python tools/verify_snapshot.py --publication`; publication contents do
-not establish numerical qualification or replace the full test run.
+not establish numerical qualification. The full release matrix remains deferred
+to the 0.5.0 freeze.

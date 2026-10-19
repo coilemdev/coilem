@@ -18224,12 +18224,53 @@
       "scope": "Convergence mapping, preset tolerances and native environment policy"
     },
     "python_full": {
-      "status": "blocked",
+      "status": "completed_with_expected_qualification_failures",
       "command": "python -m pytest -q tests",
-      "limitations": [
-        "Default file-descriptor capture aborted while loading the native Gmsh library.",
-        "Sys-capture reruns blocked in Windows asyncio's internal socketpair creation while TestClient started its event loop."
-      ]
+      "diagnostic_options": [
+        "-o",
+        "faulthandler_timeout=60",
+        "--junitxml=../lane-a-python-final.xml"
+      ],
+      "python_version": "3.13.9",
+      "runtime_dependencies": "requirements.lock",
+      "requirements_lock_sha256": "7931b933a9db88657aea494aaab7a7652d5cfb18e3d71dc255f9cecb2059277c",
+      "passed": 1212,
+      "expected_failures": 16,
+      "unexpected_failures": 0,
+      "skipped": 3,
+      "expected_failure_nodes": [
+        "tests/test_benchmark_command.py::test_records_are_rebuilt_exactly_from_the_committed_evidence[macos-arm64]",
+        "tests/test_benchmark_command.py::test_records_are_rebuilt_exactly_from_the_committed_evidence[windows-x86_64]",
+        "tests/test_benchmark_command.py::test_historical_macos_record_keeps_its_measured_physics_guard",
+        "tests/test_benchmark_command.py::test_physics_check_reads_this_checkout_and_names_a_change",
+        "tests/test_benchmark_command.py::test_installed_package_checks_the_solver_by_its_stamped_hashes",
+        "tests/test_pyleecan_reference_fixture.py::test_published_app_evidence_keeps_complete_actual_grids_and_its_measured_sources",
+        "tests/test_qualification.py::test_report_measured_the_current_physics_sources[backend/gmsh_mesh_rotation.py]",
+        "tests/test_qualification.py::test_report_measured_the_current_physics_sources[backend/magneto2d_adapter/__init__.py]",
+        "tests/test_qualification.py::test_report_measured_the_current_physics_sources[backend/magneto2d_adapter/_state.py]",
+        "tests/test_qualification.py::test_report_measured_the_current_physics_sources[backend/solver/__init__.py]",
+        "tests/test_qualification.py::test_report_measured_the_current_physics_sources[backend/solver/_helpers.py]",
+        "tests/test_qualification.py::test_report_measured_the_current_physics_sources[solvers/magneto2d/src/solve/mod.rs]",
+        "tests/test_qualification.py::test_report_measured_the_current_physics_sources[solvers/magneto2d/src/solve/newton.rs]",
+        "tests/test_qualification.py::test_report_measured_the_current_physics_sources[solvers/magneto2d/src/solve/nonlinear.rs]",
+        "tests/test_qualification.py::test_report_measured_the_current_physics_sources[solvers/magneto2d/src/solve/picard.rs]",
+        "tests/test_qualification.py::test_report_measured_the_current_physics_sources[solvers/magneto2d/src/solve/types.rs]"
+      ],
+      "skips": [
+        {
+          "node": "tests/test_gmsh_sigpipe.py::test_broken_pipe_after_meshing_raises_instead_of_killing_the_process",
+          "reason": "no SIGPIPE on this platform"
+        },
+        {
+          "node": "tests/test_launcher_shutdown.py::test_terminating_a_pool_frees_its_manager_from_a_partial_result",
+          "reason": "Windows pipes carry whole messages"
+        },
+        {
+          "node": "tests/test_reference_recovery.py::test_stop_cleans_children_after_group_leader_exits",
+          "reason": "POSIX process-group cleanup; Windows producer uses Job Objects"
+        }
+      ],
+      "temporary_root": "A short directory under the Windows local temporary directory"
     },
     "python_supplemental": {
       "passed": 845,
@@ -18331,12 +18372,41 @@
       }
     },
     "frontend": {
-      "npm_ci": "blocked by registry.npmjs.org DNS failure",
+      "npm_ci": "passed",
       "npm_run_build": "passed",
-      "dependency_source": "Existing installed dependencies with an identical package-lock.json",
-      "package_lock_sha256": "4f564e9bc63e57ed71ceee6c561924b96e469526692b6c8ee7cc397412cbef01"
+      "dependency_source": "Fresh npm ci using the committed package-lock.json",
+      "package_lock_sha256": "4f564e9bc63e57ed71ceee6c561924b96e469526692b6c8ee7cc397412cbef01",
+      "node_version": "24.19.0",
+      "npm_version": "11.17.0"
     },
     "qualification": "No archived evidence or qualification hashes were repinned. The complete matrix is deferred to the release freeze.",
-    "publication": "Clean git archive exports are checked separately with python tools/verify_snapshot.py --publication."
+    "publication": "Clean git archive exports are checked separately with python tools/verify_snapshot.py --publication.",
+    "python_validation_history": {
+      "earlier_environment_limits": {
+        "status": "blocked",
+        "command": "python -m pytest -q tests",
+        "limitations": [
+          "Default file-descriptor capture aborted while loading the native Gmsh library.",
+          "Sys-capture reruns blocked in Windows asyncio's internal socketpair creation while TestClient started its event loop."
+        ]
+      },
+      "first_locked_full_run": {
+        "passed": 1210,
+        "expected_failures": 16,
+        "unexpected_failures": 2,
+        "skipped": 3,
+        "failures": [
+          {
+            "node": "tests/test_prius_benchmark_collection.py::test_resume_refuses_changed_completed_artifacts[retained]",
+            "error": "Access denied during a temporary registration-file replacement"
+          },
+          {
+            "node": "tests/test_public_report_exports.py::test_missing_or_older_run_export_fails_with_migration_guidance",
+            "error": "Temporary file creation failed at a 260-character pathname"
+          }
+        ],
+        "followup": "Both affected files passed all 68 tests with a shorter temporary root, followed by the complete successful rerun recorded above."
+      }
+    }
   }
 }
