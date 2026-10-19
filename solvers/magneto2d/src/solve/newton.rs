@@ -469,6 +469,13 @@ fn line_search_step(
     ))
 }
 
+/// The RHS normalization cancels in this ratio because sources and constraints
+/// are fixed within a continuation stage. PM/Dirichlet magnitude therefore
+/// cannot make a large fraction of the initial nonlinear defect look small.
+pub(super) fn initial_scaled_residual(residual: f64, initial: f64) -> f64 {
+    residual / initial.max(1.0e-30)
+}
+
 fn convergence_record(history: &[f64], config: NonlinearSolveConfig) -> NonlinearConvergence {
     NonlinearConvergence {
         method: "newton".into(),
@@ -478,7 +485,7 @@ fn convergence_record(history: &[f64], config: NonlinearSolveConfig) -> Nonlinea
         stage_iteration_cap: config.max_iterations,
         raw_max_residual: None,
         scaled_residual: history.last().copied(),
-        residual_definition: "L2(f - K(A) A) / L2(f), after model constraints".into(),
+        residual_definition: "L2(f - K(A) A) / L2(f - K(A0) A0), initial nonlinear residual of each continuation stage, after model constraints".into(),
         tolerance: config.newton_convergence_threshold,
         stopping_test: "scaled_residual <= tolerance at every continuation stage".into(),
         solution_reused: false,
@@ -513,6 +520,7 @@ fn run_newton_stage(
     let mut residual_history = Vec::new();
     let mut diagnostics = Vec::new();
     let convergence_threshold = nonlinear_config.newton_convergence_threshold;
+    let mut initial_residual = None;
 
     eprintln!(
         "  newton_continuation: stage={}/{} current_scale={:.3}",
@@ -577,8 +585,10 @@ fn run_newton_stage(
         )?;
         total_assembly_ms += asm_ms;
         total_solve_ms += solve_ms;
-        if residual <= convergence_threshold {
-            residual_history.push(residual);
+        let reference = *initial_residual.get_or_insert(residual);
+        let scaled_residual = initial_scaled_residual(residual, reference);
+        if scaled_residual <= convergence_threshold {
+            residual_history.push(scaled_residual);
             return Ok(NonlinearLoopOutput {
                 convergence: convergence_record(&residual_history, nonlinear_config),
                 materials,
@@ -617,7 +627,8 @@ fn run_newton_stage(
             )
         })?;
 
-        residual_history.push(accepted.residual);
+        let accepted_scaled_residual = initial_scaled_residual(accepted.residual, reference);
+        residual_history.push(accepted_scaled_residual);
 
         if let Some(diagnostic) = nonlinear_iteration_diagnostic(
             solve_mesh,
@@ -625,7 +636,7 @@ fn run_newton_stage(
             &update,
             iteration_offset + iteration + 1,
             rotor_angle_rad.to_degrees(),
-            accepted.residual,
+            accepted_scaled_residual,
             convergence_threshold,
             accepted.damping,
             accepted.attempts,
@@ -639,7 +650,7 @@ fn run_newton_stage(
             nonlinear_config.max_iterations,
             asm_ms,
             solve_ms,
-            accepted.residual,
+            accepted_scaled_residual,
             convergence_threshold,
             update.worst_element,
         );
@@ -659,7 +670,7 @@ fn run_newton_stage(
         fields = accepted.fields;
         materials = accepted.materials;
 
-        if accepted.residual <= convergence_threshold {
+        if accepted_scaled_residual <= convergence_threshold {
             return Ok(NonlinearLoopOutput {
                 convergence: convergence_record(&residual_history, nonlinear_config),
                 materials,

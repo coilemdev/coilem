@@ -1311,11 +1311,11 @@ fn solve_problem_rejects_unknown_contract_material_key() {
 
 #[test]
 fn nonlinear_tolerance_tracks_solve_quality() {
-    assert_eq!(default_nonlinear_tol_for_quality(Some("quick")), 0.075);
-    assert_eq!(default_nonlinear_tol_for_quality(Some("standard")), 0.075);
-    assert_eq!(default_nonlinear_tol_for_quality(Some("fine")), 0.05);
-    assert_eq!(default_nonlinear_tol_for_quality(Some("custom")), 0.05);
-    assert_eq!(default_nonlinear_tol_for_quality(None), 0.05);
+    assert_eq!(default_nonlinear_tol_for_quality(Some("quick")), 0.05);
+    assert_eq!(default_nonlinear_tol_for_quality(Some("standard")), 0.01);
+    assert_eq!(default_nonlinear_tol_for_quality(Some("fine")), 0.001);
+    assert_eq!(default_nonlinear_tol_for_quality(Some("custom")), 0.001);
+    assert_eq!(default_nonlinear_tol_for_quality(None), 0.001);
 }
 
 #[test]
@@ -1341,7 +1341,9 @@ fn picard_relaxation_state_matches_legacy_update_policy() {
     let mut state = PicardRelaxationState::new(config);
 
     assert!((state.relaxation - 0.1).abs() < 1e-15);
-    assert!((config.convergence_residual(0.8) - 0.08).abs() < 1e-15);
+    // Relaxation affects the path to the solution, never acceptance.
+    assert!((config.convergence_residual(0.8) - 0.8).abs() < 1e-15);
+    assert!(config.convergence_residual(0.8) > config.convergence_threshold);
 
     state.update_after_residual(1.0, config);
     assert!((state.relaxation - 0.1).abs() < 1e-15);
@@ -2842,4 +2844,18 @@ fn nonlinear_convergence_json_keeps_raw_picard_and_scaled_newton_distinct() {
     assert_eq!(json["stage_iterations"], serde_json::json!([4, 5, 8]));
     assert!(newton.reused().solution_reused);
     assert!(!newton.solution_reused);
+}
+
+
+#[test]
+fn newton_stopping_requires_reduction_of_the_initial_nonlinear_defect() {
+    use super::newton::initial_scaled_residual;
+    // The legacy RHS-scaled 0.03 passes a 0.06 threshold while 30% of
+    // the initial nonlinear defect remains. The stage-relative test rejects it.
+    assert!(initial_scaled_residual(0.03, 0.1) > 1.0e-4);
+    assert!(initial_scaled_residual(1.0e-7, 0.1) < 1.0e-4);
+    // Scaling the unchanged stage RHS (e.g. PM terms) cancels in the ratio.
+    assert!((initial_scaled_residual(0.003, 0.01)
+        - initial_scaled_residual(0.03, 0.1)).abs() < 1.0e-14);
+    assert_eq!(initial_scaled_residual(0.0, 0.0), 0.0);
 }

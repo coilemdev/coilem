@@ -380,13 +380,13 @@
     },
     {
       "path": "backend/magneto2d_adapter/__init__.py",
-      "bytes": 73698,
-      "sha256": "a71df849483ec8cfa6ababf3a7a6f4487fe216ff04a7e77e39b1b59ff03e0421"
+      "bytes": 73740,
+      "sha256": "c48dfa8542f67bdf8b9c2a63dbee3fe5263da924b1cd40c7dfb430748542853f"
     },
     {
       "path": "backend/magneto2d_adapter/_state.py",
       "bytes": 2122,
-      "sha256": "6c6920a7ff2b28cbe368ad2de16df4cd9bf57ddc9626b26cd57dda3c4405e0e4"
+      "sha256": "71cba96ae3c9685381a77c76fcd736728d10da0d842a4e436c729d2b320c87f5"
     },
     {
       "path": "backend/magneto2d_adapter/streaming.py",
@@ -5375,8 +5375,8 @@
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE.md",
-      "bytes": 3988,
-      "sha256": "bed3767c9a4905358a5b08a1ad1b6800e1dd5d2a6ccfda19da19502d72a2f0aa"
+      "bytes": 5607,
+      "sha256": "8b804689b836a578fa3da3cb7ad317073fb8e8ae333c2174eaf2c330a16b67c4"
     },
     {
       "path": "docs/NUMERICAL_EVIDENCE.md",
@@ -7010,18 +7010,18 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/newton.rs",
-      "bytes": 27039,
-      "sha256": "7a3e68c833ea2d0431762a5a4f6fcd8911f7479c944c862496c806e05da6b896"
+      "bytes": 27769,
+      "sha256": "973a2644ab3e81aaa113f8861c037f7c6ac828ef8d00d858e5e1f122e927f345"
     },
     {
       "path": "solvers/magneto2d/src/solve/nonlinear.rs",
-      "bytes": 16776,
-      "sha256": "e10f2e2b5252330b246c1a9379968cc903c2a01280a73c980c52d2d2dc351997"
+      "bytes": 16578,
+      "sha256": "6f1da85708f5974ec96a8f16a058ffd3c68f4dc18835672b45e409266c6ef5ee"
     },
     {
       "path": "solvers/magneto2d/src/solve/picard.rs",
-      "bytes": 16212,
-      "sha256": "26fea4f0173f85930075bfe4e0bae4479d9c9ab1e4566d1d15b5e2a3609a4c62"
+      "bytes": 16217,
+      "sha256": "60d9512b5555cdfd05eec210d7fabd871d2bc104f4ed27108bf0f1c472863556"
     },
     {
       "path": "solvers/magneto2d/src/solve/problem.rs",
@@ -7030,8 +7030,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/tests.rs",
-      "bytes": 99120,
-      "sha256": "4e080254dd046ad18e221c40432aa9ef229ee7d1d65c449dd03a66c7d533cd57"
+      "bytes": 99919,
+      "sha256": "f2b8db8c54520c1f465dc196474af00f7664bd1de9d02f3dc50e06a5815dc97d"
     },
     {
       "path": "solvers/magneto2d/src/solve/types.rs",
@@ -7305,8 +7305,8 @@
     },
     {
       "path": "tests/test_nonlinear_convergence.py",
-      "bytes": 4638,
-      "sha256": "e623f859bd370070e42b01f2bff37e677084c4145849377a970b8d8b21f4da37"
+      "bytes": 5133,
+      "sha256": "855cade407b0b58f45692b9c16314b1ce28ed91f26ab46f06f1a1b3dadf9e7d6"
     },
     {
       "path": "tests/test_ornl_prius_comparison.py",
@@ -12345,6 +12345,54 @@
       "path": "tests/test_nonlinear_convergence.py",
       "source_sha256": null,
       "reason": "Keep nonlinear tolerance unavailable when retained reports lack convergence evidence (#12)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "backend/magneto2d_adapter/__init__.py",
+      "source_sha256": "a71df849483ec8cfa6ababf3a7a6f4487fe216ff04a7e77e39b1b59ff03e0421",
+      "reason": "Require unrelaxed Picard mismatch and stage-relative Newton residual reduction with recorded preset tolerances (#11)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "backend/magneto2d_adapter/_state.py",
+      "source_sha256": "6c6920a7ff2b28cbe368ad2de16df4cd9bf57ddc9626b26cd57dda3c4405e0e4",
+      "reason": "Require unrelaxed Picard mismatch and stage-relative Newton residual reduction with recorded preset tolerances (#11)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "docs/NONLINEAR_CONVERGENCE.md",
+      "source_sha256": null,
+      "reason": "Require unrelaxed Picard mismatch and stage-relative Newton residual reduction with recorded preset tolerances (#11)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "solvers/magneto2d/src/solve/newton.rs",
+      "source_sha256": "045ab39fcf590e2fc6817698eea063325d356591d27922e65fc9df467f39ef4d",
+      "reason": "Require unrelaxed Picard mismatch and stage-relative Newton residual reduction with recorded preset tolerances (#11)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "solvers/magneto2d/src/solve/nonlinear.rs",
+      "source_sha256": "f1c1880d9e330b427f077ec5f82b327db0532bc0eb64013c29316d3a2504f320",
+      "reason": "Require unrelaxed Picard mismatch and stage-relative Newton residual reduction with recorded preset tolerances (#11)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "solvers/magneto2d/src/solve/picard.rs",
+      "source_sha256": "2bcd58d6609db9f059263dfd429ea5f024e2bc94ee922cb18666229012e3d5fe",
+      "reason": "Require unrelaxed Picard mismatch and stage-relative Newton residual reduction with recorded preset tolerances (#11)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "solvers/magneto2d/src/solve/tests.rs",
+      "source_sha256": "0b1aec76d2fa138d274544350f0483bcd6631a1544fb81834dbef621deb7feb7",
+      "reason": "Require unrelaxed Picard mismatch and stage-relative Newton residual reduction with recorded preset tolerances (#11)."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "tests/test_nonlinear_convergence.py",
+      "source_sha256": null,
+      "reason": "Require unrelaxed Picard mismatch and stage-relative Newton residual reduction with recorded preset tolerances (#11)."
     }
   ]
 }

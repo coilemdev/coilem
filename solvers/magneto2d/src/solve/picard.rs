@@ -87,7 +87,8 @@ pub(super) fn run_picard_nonlinear_loop(
     let mut last_fields: Option<Vec<ElementField>> = None;
 
     // Adaptive inner tolerance: intermediate Picard solves only feed the
-    // secant mu update (outer tolerance 0.05-0.075), so they run at a loose
+    // secant mu update under the preset's unrelaxed mismatch tolerance,
+    // so they run at a loose
     // PCG tolerance; one tight, warm-started solve after convergence
     // restores full field accuracy for postprocessing. Linear-material
     // solves (nonlinear disabled) are final by definition and stay tight.
@@ -298,7 +299,7 @@ pub(super) fn run_picard_nonlinear_loop(
             scaled_residual: None,
             residual_definition: "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)".into(),
             tolerance: nonlinear_config.convergence_threshold,
-            stopping_test: "initial_relaxation * raw_max_residual <= tolerance".into(),
+            stopping_test: "raw_max_residual <= tolerance".into(),
             solution_reused: false,
             fallback_from: None,
         }

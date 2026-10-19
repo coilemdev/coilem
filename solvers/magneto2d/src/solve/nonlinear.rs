@@ -156,7 +156,7 @@ impl NonlinearSolveConfig {
     }
 
     pub(super) fn convergence_residual(self, raw_max_residual: f64) -> f64 {
-        raw_max_residual * self.initial_relaxation
+        raw_max_residual
     }
 }
 
@@ -320,9 +320,10 @@ pub(super) fn apply_nonlinear_warm_start(
 
 pub(super) fn default_nonlinear_tol_for_quality(solve_quality: Option<&str>) -> f64 {
     match solve_quality {
-        Some("quick") | Some("standard") => 0.075,
-        Some("fine") => 0.05,
-        _ => 0.05,
+        Some("quick") => 0.05,
+        Some("standard") => 0.01,
+        Some("fine") => 0.001,
+        _ => 0.001,
     }
 }
 
@@ -343,15 +344,12 @@ pub(super) fn resolve_nonlinear_solve_config(
         .solve_params
         .as_ref()
         .and_then(|params| params.max_nonlinear_iterations)
-        .unwrap_or(100)
+        .unwrap_or(200)
         .max(1);
     let max_iterations = if nonlinear_enabled {
-        // Default 100 (was 60, was 20). With RELAX=0.1 the real M-19 curve
-        // converges in ~30-50 Picard iterations on 4p12s tooth-tip elements
-        // (q=1 distributed), but higher-pole-count concentrated-winding
-        // geometries (8p12s, q=0.5) hit tighter local saturation patches
-        // and routinely need 60-90 iters. MAGNETO2D_NONLINEAR_MAX_ITER
-        // overrides for probe sweeps.
+        // The unrelaxed stopping test needs more iterations than the legacy
+        // relaxed-step test. Explicit request caps remain authoritative;
+        // diagnostic CLI runs can override them with the environment.
         let env_max = std::env::var("MAGNETO2D_NONLINEAR_MAX_ITER")
             .ok()
             .and_then(|v| v.parse::<usize>().ok())
@@ -427,7 +425,7 @@ pub(super) fn resolve_nonlinear_solve_config(
         .ok()
         .and_then(|value| value.parse::<f64>().ok())
         .filter(|tol| tol.is_finite() && *tol > 0.0 && *tol <= convergence_threshold)
-        .unwrap_or(convergence_threshold * 0.8);
+        .unwrap_or(convergence_threshold * 0.01);
 
     NonlinearSolveConfig {
         max_iterations,

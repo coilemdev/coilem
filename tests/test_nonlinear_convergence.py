@@ -93,3 +93,12 @@ def test_nonfinite_recorded_mismatch_is_rejected():
     bad["raw_max_residual"] = float("nan")
     with pytest.raises(ValueError):
         convergence_fields({"loaded_nonlinear_convergence": [bad]})
+
+
+@pytest.mark.parametrize("quality,tolerance", [("quick", 0.05), ("standard", 0.01), ("fine", 0.001), ("custom", 0.001)])
+def test_backend_preset_tolerance_matches_native_policy(quality, tolerance):
+    from backend.magneto2d_adapter import estimate_magneto2d_nonlinear_tolerance
+
+    cfg = MotorConfig.model_validate_json(Path("tests/fixtures/spm_4p12s_simple.json").read_text())
+    cfg.solve_params.solve_quality = quality
+    assert estimate_magneto2d_nonlinear_tolerance(cfg) == tolerance
