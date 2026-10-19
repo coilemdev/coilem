@@ -31,6 +31,12 @@ def audit_job(run, job, asset_sha):
             raise ValueError(f"Changed {job['job']}/{filename}")
     if read(folder / "request.json") != job["request"]:
         raise ValueError("Portable request does not describe the measured job")
+    result = read(folder / "result.json")
+    for key in ("torque_waveform", "back_emf_waveform", "solve_metadata"):
+        if result[key] != job[key]:
+            raise ValueError(f"Registered {key} differs from the retained result")
+    if result["summary"]["avg_torque_Nm"] != job["metrics"]["mean_torque_Nm"]:
+        raise ValueError("Registered torque mean differs from the retained result")
     config = job["request"]
     sp = config["solve_params"]
     tutorial_case = job["job"] == "tutorial-bemf-100"

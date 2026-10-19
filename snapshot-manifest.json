@@ -6390,8 +6390,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 19171,
-      "sha256": "5cde1fbb5bf14763aeb50224f316dd4ae54359dcb81ca0ab513a1b85da279f9b"
+      "bytes": 19201,
+      "sha256": "10d60272824b84729a900742740105211d1c32a950f9d80666968788c85c4efa"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -7255,8 +7255,8 @@
     },
     {
       "path": "tools/report_prius_benchmark.py",
-      "bytes": 18042,
-      "sha256": "a99f17d5423c4d3df4867a5708a76d0d3351b90f41d0f6ac4a352d9e5f867176"
+      "bytes": 18441,
+      "sha256": "3bf3801bb97cbd03614f7140df7ae0491bed0b662ebb0f680f3cc575719fcff2"
     },
     {
       "path": "tools/run_benchmarks.py",
@@ -10836,6 +10836,18 @@
       "path": "tests/test_benchmark_command.py",
       "source_sha256": "edd43ec1d6c1f6808c1b471333c8fdec44096a786a2ea71509868bba41f417c4",
       "reason": "Verify the one reviewed native report PDF against its original hash and publication provenance while retaining raw log/job exclusions."
+    },
+    {
+      "base_commit": "c0f184b4449e86b9886b7189f61ef00d054d480a",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "5cde1fbb5bf14763aeb50224f316dd4ae54359dcb81ca0ab513a1b85da279f9b",
+      "reason": "Verify both Prius Solve routes and bind report audits to retained results."
+    },
+    {
+      "base_commit": "c0f184b4449e86b9886b7189f61ef00d054d480a",
+      "path": "tools/report_prius_benchmark.py",
+      "source_sha256": "a99f17d5423c4d3df4867a5708a76d0d3351b90f41d0f6ac4a352d9e5f867176",
+      "reason": "Verify both Prius Solve routes and bind report audits to retained results."
     }
   ]
 }
