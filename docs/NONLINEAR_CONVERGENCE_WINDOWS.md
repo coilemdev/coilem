@@ -1,5 +1,9 @@
 # Targeted Windows nonlinear convergence measurements
 
+This is the original before/after measurement record. The [review follow-up](NONLINEAR_CONVERGENCE_REVIEW_WINDOWS.md)
+adds exact registered benchmark checks, High accuracy/Custom coverage, iteration-cap diagnostics,
+the Newton residual floor, and the latest validation results.
+
 These Standard/normal-mesh diagnostics are not a qualification rerun. All cases use 48 loaded and 48 no-load positions over one electrical cycle. Back-EMF is the phase-to-neutral RMS fundamental. Iteration max/median exclude reused positions.
 
 ## Original stopping policy and tighter diagnostic

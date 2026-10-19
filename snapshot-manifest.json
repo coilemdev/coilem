@@ -5375,8 +5375,18 @@
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE.md",
-      "bytes": 6747,
-      "sha256": "9934d35cd6a5ee3777d5e8df71eae86ac0325797ae017a358077804b0e2def62"
+      "bytes": 7117,
+      "sha256": "bf0c612f691c1c903ed6fc1907bd7878a4fbe27a78134c09507d9f6d40ebd68b"
+    },
+    {
+      "path": "docs/NONLINEAR_CONVERGENCE_REVIEW_WINDOWS.json",
+      "bytes": 4083614,
+      "sha256": "c716015d8f35cf5b34c00cfbb28c983858fc1f703e90dfc8e7cca52a5a14de76"
+    },
+    {
+      "path": "docs/NONLINEAR_CONVERGENCE_REVIEW_WINDOWS.md",
+      "bytes": 7079,
+      "sha256": "2dc74fff6c032228e02b4b2133d7545303d5994538770c73707ff2ab0c33b44d"
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE_WINDOWS.json",
@@ -5385,8 +5395,8 @@
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE_WINDOWS.md",
-      "bytes": 6899,
-      "sha256": "335c9a02459f73a41883f69fd376b2e4d2debaf56c32df6fbd617d72830f2785"
+      "bytes": 7178,
+      "sha256": "02974fe32651392c8dd5d4a863301b6a15d3af157e2129c34d8d3b2cbc9be27c"
     },
     {
       "path": "docs/NUMERICAL_EVIDENCE.md",
@@ -12499,6 +12509,30 @@
       "path": "tests/test_nonlinear_convergence.py",
       "source_sha256": null,
       "reason": "Retain absent no-load convergence for torque-only requests."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "docs/NONLINEAR_CONVERGENCE.md",
+      "source_sha256": null,
+      "reason": "Record registered convergence checks and measured iteration-cap headroom."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "docs/NONLINEAR_CONVERGENCE_REVIEW_WINDOWS.json",
+      "source_sha256": null,
+      "reason": "Record registered convergence checks and measured iteration-cap headroom."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "docs/NONLINEAR_CONVERGENCE_REVIEW_WINDOWS.md",
+      "source_sha256": null,
+      "reason": "Record registered convergence checks and measured iteration-cap headroom."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "docs/NONLINEAR_CONVERGENCE_WINDOWS.md",
+      "source_sha256": null,
+      "reason": "Record registered convergence checks and measured iteration-cap headroom."
     }
   ]
 }

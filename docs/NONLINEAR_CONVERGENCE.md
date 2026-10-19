@@ -109,3 +109,9 @@ Reporting does not claim qualification of a changed stopping policy. The
 [IPM diagnosis](IPM_BENCHMARK_DIAGNOSIS.md) explains the remaining spatial and
 reference sensitivity, especially for the deep-apex design. The complete release
 matrix is rerun at the 0.5.0 freeze.
+
+The [Windows review follow-up](NONLINEAR_CONVERGENCE_REVIEW_WINDOWS.md) records
+the registered cap-100 failures and cap-200 headroom, all six V-shape gates,
+the exact Prius loaded control, and the app's High accuracy and Custom checks.
+Frozen benchmark requests require explicit registration at the freeze; their
+historical hashes are not changed by these diagnostics.
