@@ -5890,8 +5890,8 @@
     },
     {
       "path": "frontend/scripts/test-tooth-coil-repair.mjs",
-      "bytes": 5435,
-      "sha256": "6808ab126570cab3b8f1988a239b4f4fb32411f42e505a6573524bd0a339b3f1"
+      "bytes": 6596,
+      "sha256": "70c83de7e1db7f7e19d8f32d39aa315a97b07fe383f9446c40ce68ccbf5565b2"
     },
     {
       "path": "frontend/scripts/test-viewport-transform.mjs",
@@ -6290,8 +6290,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 222244,
-      "sha256": "1200cc7326b4d891b198907a4649f5411914d797cd32ce29c56a36042cd836ff"
+      "bytes": 222488,
+      "sha256": "a7085978edcbaabf5d600845173eebfa65f3adcd211f7da4d82ebe9d3308bc83"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -6700,13 +6700,13 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 264768,
-      "sha256": "cb1d0b142d500dc21774c61f07a40b68e1abe2878a51e416aed1c857d22f4565"
+      "bytes": 264898,
+      "sha256": "dd8bf5753dff5d5d72dbbc9f0c0c8806fbd3fe1781dd5abad27eea904c8d874f"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
-      "bytes": 7892,
-      "sha256": "d876ce6bc3ad85a09dcfeb531645baae4b769f98299dbcafb5f003367ef35450"
+      "bytes": 9200,
+      "sha256": "6d99f0a1702dd3c089fa8ed8ef1e85a5dcb061d04b9e5f0e0d19a2f2afd2505e"
     },
     {
       "path": "frontend/src/public/tutorials/PublicTutorials.tsx",
@@ -12100,6 +12100,30 @@
       "path": "tests/test_public_candidate.py",
       "source_sha256": "4d284e07b09f17698671afa3f0502ff3250e9cbabb2ea0adab7610fd947485d4",
       "reason": "Prepare the 0.4.0 source version, release notes and frozen-candidate qualification workflow."
+    },
+    {
+      "base_commit": "816c50fcf22071d6627ce474bd9206881e09899d",
+      "path": "frontend/scripts/test-tooth-coil-repair.mjs",
+      "source_sha256": "6808ab126570cab3b8f1988a239b4f4fb32411f42e505a6573524bd0a339b3f1",
+      "reason": "Explain why Wound teeth is hidden for q >= 1 concentrated layouts such as 6p/36s with an info note."
+    },
+    {
+      "base_commit": "5ae948b08d0f5db588704165884d02a1b57e1c43",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "1200cc7326b4d891b198907a4649f5411914d797cd32ce29c56a36042cd836ff",
+      "reason": "Explain why Wound teeth is hidden for q >= 1 concentrated layouts such as 6p/36s with an info note."
+    },
+    {
+      "base_commit": "5ae948b08d0f5db588704165884d02a1b57e1c43",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "cb1d0b142d500dc21774c61f07a40b68e1abe2878a51e416aed1c857d22f4565",
+      "reason": "Explain why Wound teeth is hidden for q >= 1 concentrated layouts such as 6p/36s with an info note."
+    },
+    {
+      "base_commit": "816c50fcf22071d6627ce474bd9206881e09899d",
+      "path": "frontend/src/public/toothCoils.ts",
+      "source_sha256": "d876ce6bc3ad85a09dcfeb531645baae4b769f98299dbcafb5f003367ef35450",
+      "reason": "Explain why Wound teeth is hidden for q >= 1 concentrated layouts such as 6p/36s with an info note."
     }
   ]
 }

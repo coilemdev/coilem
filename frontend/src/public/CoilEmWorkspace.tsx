@@ -25,7 +25,7 @@ import {
   type PublicMeshElementSelection,
 } from './MotorCanvas';
 import { WindingLayoutView } from './WindingLayoutView';
-import { coilsPerPhase, windingLayerOptions, windingLayerWording } from './toothCoils';
+import { coilsPerPhase, wholeSlotConcentratedNote, windingLayerOptions, windingLayerWording } from './toothCoils';
 import {
   buildDimensionAnnotations,
   deriveStatorSectionWidths,
@@ -1172,6 +1172,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
   const unavailableLayerReasons = windingLayerOptions(config.stator.slot_count, config.rotor.pole_count, config.winding.type)
     .filter(({ available }) => !available)
     .map(({ layers, reason }) => `${layerWording.choice[layers]} is unavailable: ${reason}.`);
+  const wholeSlotNote = wholeSlotConcentratedNote(config.stator.slot_count, config.rotor.pole_count, config.winding.type);
   const matchesSearch = (section: PublicParameterSection | 'topology') => (
     !normalizedSearch || searchTerms[section].includes(normalizedSearch)
   );
@@ -1399,6 +1400,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
 
       {matchesSearch('winding') && <ParameterSectionBlock id="winding" attention={errorSection === 'winding'} label="Winding" active={Boolean(normalizedSearch) || activeSection === 'winding'} onToggle={toggle} summary={`${config.winding.type}${showLayerRow ? ` · ${layerWording.summary[layerCount]}` : ''} · ${config.winding.turns_per_coil} turns × ${config.winding.parallel_paths}p`} nextLabel={normalizedSearch ? undefined : 'Materials'} onNext={normalizedSearch ? undefined : setNext('materials')}>
         <SelectRow label="Type" value={config.winding.type} choices={[{ value: 'concentrated', label: 'Concentrated' }, { value: 'distributed', label: 'Distributed' }]} disabled={disabled} onChange={set('winding', 'type', 'winding')} />
+        {wholeSlotNote && <p className="public-winding-note" role="note">{wholeSlotNote}</p>}
         {showLayerRow && <SelectRow
           label={layerWording.label}
           value={String(config.winding.layers)}
