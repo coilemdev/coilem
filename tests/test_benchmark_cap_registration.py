@@ -54,6 +54,32 @@ def test_packaged_cap_bridge_loads_without_source_checkout(tmp_path, monkeypatch
     assert len(records) == 29
 
 
+def test_historical_replay_retains_cap_100_validation_identity():
+    from tools.build_benchmark_record import regrade
+
+    summary = read(ROOT / "benchmarks/windows-prius-requal-20261018/benchmark_summary.json")
+    graded, spec = regrade(summary)
+    assert spec["protocol_version"] == "1.3.0"
+    assert graded["run"]["selection"]["spec_sha256"] == sha(ROOT / "benchmarks/abcd-v1.3/benchmark_spec.json")
+    assert [r["status"] for r in graded["rows"]] == [r["status"] for r in summary["rows"]]
+    assert graded["run"]["identity"] == summary["run"]["identity"]
+    assert graded["rows"] == summary["rows"]
+
+
+@pytest.mark.parametrize("kind", ["old_requests_as_new", "changed_old_cap"])
+def test_replay_rejects_cap_or_protocol_relabelling(kind):
+    from tools.build_benchmark_record import regrade
+
+    summary = read(ROOT / "benchmarks/windows-prius-requal-20261018/benchmark_summary.json")
+    if kind == "old_requests_as_new":
+        summary["run"]["identity"]["protocol_version"] = "1.4.0"
+    else:
+        row = next(r for r in summary["rows"] if r["id"] == "spm_4p12s_small")
+        row["configurations"]["native-fine"]["solve_params"]["max_nonlinear_iterations"] = 201
+    with pytest.raises(ValueError, match="measured a different request"):
+        regrade(summary)
+
+
 @pytest.mark.parametrize("mutation", ["missing", "suite_hash", "gate", "cap", "physical", "tolerance", "input_hash", "fixture_hash"])
 def test_cap_bridge_rejects_unregistered_changes(monkeypatch, mutation):
     spec = load_suite(SPEC)

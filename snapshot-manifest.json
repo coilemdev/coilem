@@ -7230,8 +7230,8 @@
     },
     {
       "path": "tests/test_benchmark_cap_registration.py",
-      "bytes": 4202,
-      "sha256": "25a385f5d4467588d13e25fdb9d0ac72ff6de12b9a9d9b18596b0810b1b24669"
+      "bytes": 5485,
+      "sha256": "1e246ec4e17d4b24fc71447512ba221a2dc83e0376c10a04fe53eb2d0cec24d9"
     },
     {
       "path": "tests/test_benchmark_command.py",
@@ -7590,8 +7590,8 @@
     },
     {
       "path": "tools/build_benchmark_record.py",
-      "bytes": 5724,
-      "sha256": "94ccf8ed7a20b3efb50139456e6826c5de41636e58f7c1f1039e603a7cd0cb57"
+      "bytes": 6549,
+      "sha256": "90459cb10c02f20e13edbd0b689035148472d8cd2b89a5edf48aee14c1ab1aae"
     },
     {
       "path": "tools/compare_pyleecan_bemf.py",
@@ -12833,6 +12833,18 @@
       "path": "tools/analyze_benchmark_runtime.py",
       "source_sha256": "60a0cd92f1e11ed2d33ddd75433b37dd7f9598ed03eb4b74f69879e68b5b960c",
       "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "tests/test_benchmark_cap_registration.py",
+      "source_sha256": null,
+      "reason": "Preserve historical benchmark request identities when replaying cap-100 evidence."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "tools/build_benchmark_record.py",
+      "source_sha256": "94ccf8ed7a20b3efb50139456e6826c5de41636e58f7c1f1039e603a7cd0cb57",
+      "reason": "Preserve historical benchmark request identities when replaying cap-100 evidence."
     }
   ]
 }
