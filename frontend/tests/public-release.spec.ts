@@ -296,6 +296,12 @@ test('loads both exact Pyleecan Prius cases through the public Design and Solve 
     expect(data.regions.find((r: {region_type: string}) => r.region_type === 'rotor_core').loops).toHaveLength(10);
     await expect(page.getByText('Published Pyleecan geometry, winding and materials are fixed.', { exact: false })).toBeVisible();
     await expect(page.getByText('No affiliation with or endorsement by EOMYS, the Pyleecan project, or Toyota.', { exact: false })).toBeVisible();
+    await page.getByRole('button', { name: 'Show layout view', exact: true }).click();
+    await expect(page.locator('.wl-ring-slot')).toHaveCount(48);
+    await expect(page.locator('.wl-ring-end-turn')).toHaveCount(24);
+    const slot13 = page.locator('.wl-ring-number').filter({ hasText: /^13$/ });
+    expect(Number(await slot13.getAttribute('y'))).toBeGreaterThan(250);
+    await page.getByRole('button', { name: 'Show 2D motor view', exact: true }).click();
     await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeEnabled();
     const checked = await page.request.post(`${apiUrl}/solve/validate`, { data: request });
     expect(checked.status()).toBe(200);

@@ -19,6 +19,7 @@ import {
   WINDING_RING_EXTENT,
   endTurnPath,
   polar,
+  previewSlotAngles,
   slotAngle,
   slotMarkerRadius,
   slotSideCentre,
@@ -224,6 +225,7 @@ export function WindingLayoutView({ config, geometry, navigationSlot = null }: {
   }, [hasLayout]);
   const coils = geometry?.winding_coils ?? [];
   const slotCount = config.stator.slot_count;
+  const slotAngles = previewSlotAngles(geometry?.regions ?? [], slotCount);
   const pathCount = Math.max(1, config.winding.parallel_paths);
   const metadata = (geometry?.metadata ?? {}) as Record<string, unknown>;
   const windingFactor = typeof metadata.winding_factor === 'number' ? metadata.winding_factor : null;
@@ -302,7 +304,7 @@ export function WindingLayoutView({ config, geometry, navigationSlot = null }: {
               viewBox={`${-WINDING_RING_EXTENT} ${-WINDING_RING_EXTENT} ${2 * WINDING_RING_EXTENT} ${2 * WINDING_RING_EXTENT}`}
               preserveAspectRatio="xMidYMid meet"
               role="img"
-              aria-label={`${slotCount} slots around the bore, numbered counter-clockwise from slot 1 at three o'clock, with each coil's end turn`}
+              aria-label={`${slotCount} slots around the bore, numbered to match the cross-section, with each coil's end turn`}
             >
               <circle className="wl-ring-bore" r={WINDING_RING.inner} />
               <circle className="wl-ring-back" r={WINDING_RING.outer} />
@@ -310,7 +312,7 @@ export function WindingLayoutView({ config, geometry, navigationSlot = null }: {
                 <path
                   key={coil.coil_index}
                   className="wl-ring-end-turn"
-                  d={endTurnPath(coil.slot_in, coil.slot_out, slotCount)}
+                  d={endTurnPath(coil.slot_in, coil.slot_out, slotCount, slotAngles)}
                   stroke={PUBLIC_PHASE_COLORS[coil.phase]}
                 >
                   <title>{`Coil ${coil.coil_index + 1} · phase ${coil.phase} · slots ${slotLabel(coil.slot_in)}→${slotLabel(coil.slot_out)}`}</title>
@@ -319,17 +321,17 @@ export function WindingLayoutView({ config, geometry, navigationSlot = null }: {
               {Array.from({ length: slotCount }, (_, index) => index).map((slotIndex) => {
                 const sides = slots.filter((slot) => slot.slot_index === slotIndex);
                 const slotNumber = slotLabel(slotIndex);
-                const [numberX, numberY] = polar(WINDING_RING.numbers, slotAngle(slotIndex, slotCount));
+                const [numberX, numberY] = polar(WINDING_RING.numbers, slotAngle(slotIndex, slotCount, slotAngles));
                 return (
                   <g key={slotIndex}>
                     {sides.length === 0 ? (
-                      <path className="wl-ring-slot is-empty" d={slotSidePath(slotIndex, slotCount, 1, 1, null)}>
+                      <path className="wl-ring-slot is-empty" d={slotSidePath(slotIndex, slotCount, 1, 1, null, slotAngles)}>
                         <title>{`Slot ${slotNumber}: no winding`}</title>
                       </path>
                     ) : sides.map((side) => {
                       const colour = PUBLIC_PHASE_COLORS[side.phase];
                       const layer = layerSplit ? side.layer : 1;
-                      const [markerX, markerY] = slotSideCentre(slotIndex, slotCount, layer, ringLayers, layerSplit);
+                      const [markerX, markerY] = slotSideCentre(slotIndex, slotCount, layer, ringLayers, layerSplit, slotAngles);
                       // The solver drives an "in" side at +J, which in the x-y plane is
                       // out of the page; the cross-section marks it ⊙ too.
                       const outOfPage = side.direction === 'in';
@@ -337,7 +339,7 @@ export function WindingLayoutView({ config, geometry, navigationSlot = null }: {
                         <g key={`${side.layer}-${side.phase}-${side.direction}`}>
                           <path
                             className="wl-ring-slot"
-                            d={slotSidePath(slotIndex, slotCount, layer, ringLayers, layerSplit)}
+                            d={slotSidePath(slotIndex, slotCount, layer, ringLayers, layerSplit, slotAngles)}
                             fill={`${colour}3d`}
                             stroke={colour}
                           >

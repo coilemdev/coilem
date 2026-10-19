@@ -43,13 +43,11 @@ measured Precise. FEMM agreement is not a hardware-validation claim.
   The [fixed examples and complete development report](benchmarks/pyleecan-prius-v1/README.md)
   now supply this foundation, including Design/Solve and save/reopen checks.
   Keep this item open for the final-candidate rerun in section 3.
-- [ ] [#69: ORNL hardware correlation](https://github.com/coilemdev/coilem/issues/69)
-  and [#82: measured Prius benchmark](https://github.com/coilemdev/coilem/issues/82):
-  review the remaining issue criteria and their existing evidence. Keep the
-  hardware model, assumptions, measurements and verdict separate from the
-  Pyleecan software reference. Publish discrepancies or failures honestly;
-  do not tune a blind prediction into a match or silently replace the legacy
-  unsupported fixture with a different motor.
+- [x] Defer [#69: ORNL hardware correlation](https://github.com/coilemdev/coilem/issues/69)
+  and [#82: measured Prius benchmark](https://github.com/coilemdev/coilem/issues/82)
+  to **v0.5.0**, following the release scope decision. They are not v0.4.0
+  blockers. Preserve the existing hardware discrepancies and legacy unsupported
+  row; the Pyleecan software reference does not establish hardware accuracy.
 - [ ] Review the Honda Accord evidence already on main for the final release
   report; identify blind and fitted variants, model residuals and measured
   source pins. Its [input/source record](hardware-validation/honda-accord-2005/README.md)
@@ -100,7 +98,7 @@ not evidence that v0.4.0 has completed the release gates.
   compatibility. Identify any Linux or Python-runtime numerical coverage that
   is still unmeasured rather than treating hosted smoke tests as full parity.
 - [ ] Finish the release-candidate Prius/reference/refinement runs required by
-  #126 and the chosen #69/#82 scope. Give each physical model and reference
+  #126. Hardware correlation in #69/#82 is deferred to v0.5.0. Give each physical model and reference
   stable identifiers; retain the existing v3 suite/reference history.
 - [ ] Publish complete tables, waveforms, residuals, mesh and angular controls,
   fixture inputs, source/binary/dependency identities, hashes, timing context,

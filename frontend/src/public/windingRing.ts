@@ -2,9 +2,8 @@
  * Geometry for the Layout view's winding ring: the slots around the bore and each
  * coil's end turn, in SVG units centred on 0,0.
  *
- * Slot i sits at i slot pitches counter-clockwise from +x, as in the backend
- * geometry (geometry_drawer SlotPlacement.center_angle_rad), and y is flipped so
- * the ring has the cross-section's orientation: slot 1 at three o'clock.
+ * Slot positions come from the preview geometry, including imported references
+ * whose numbering runs clockwise. Y is flipped to match the cross-section.
  */
 
 /** Radii of the bore, the slot band and the end turns. */
@@ -23,8 +22,34 @@ const MAX_BULGE = 150;
 
 export type SlotLayerSplit = 'radial' | 'tangential' | null;
 
-export function slotAngle(slotIndex: number, slotCount: number): number {
+export function slotAngle(slotIndex: number, slotCount: number, angles?: readonly number[]): number {
+  if (angles && Number.isFinite(angles[slotIndex])) return angles[slotIndex];
   return (slotIndex * 2 * Math.PI) / Math.max(1, slotCount);
+}
+
+/** Area centroids of the actual slot polygons, combining both layers by area. */
+export function previewSlotAngles(
+  regions: ReadonlyArray<{ region_type: string; points: Array<[number, number]> }>,
+  slotCount: number,
+): number[] {
+  const slots = Array.from({ length: slotCount }, () => ({ x: 0, y: 0, area: 0 }));
+  for (const region of regions) {
+    const match = /^slot_(\d+)(?:_|$)/i.exec(region.region_type);
+    const index = match ? Number(match[1]) - 1 : -1;
+    if (index < 0 || index >= slotCount || region.points.length < 3) continue;
+    let area2 = 0; let x = 0; let y = 0;
+    region.points.forEach(([x0, y0], i) => {
+      const [x1, y1] = region.points[(i + 1) % region.points.length];
+      const cross = x0 * y1 - x1 * y0;
+      area2 += cross; x += (x0 + x1) * cross; y += (y0 + y1) * cross;
+    });
+    if (Math.abs(area2) < 1e-12) continue;
+    const weight = Math.abs(area2);
+    slots[index].x += weight * x / (3 * area2);
+    slots[index].y += weight * y / (3 * area2);
+    slots[index].area += weight;
+  }
+  return slots.map((slot, index) => slot.area > 0 ? Math.atan2(slot.y, slot.x) : slotAngle(index, slotCount));
 }
 
 export function polar(radius: number, angle: number): [number, number] {
@@ -55,8 +80,9 @@ export function slotSidePath(
   layer: number,
   layers: number,
   split: SlotLayerSplit,
+  angles?: readonly number[],
 ): string {
-  const centre = slotAngle(slotIndex, slotCount);
+  const centre = slotAngle(slotIndex, slotCount, angles);
   const half = (Math.PI / Math.max(1, slotCount)) * SLOT_FILL;
   const { inner, outer } = WINDING_RING;
   const count = Math.max(1, layers);
@@ -79,8 +105,9 @@ export function slotSideCentre(
   layer: number,
   layers: number,
   split: SlotLayerSplit,
+  angles?: readonly number[],
 ): [number, number] {
-  const centre = slotAngle(slotIndex, slotCount);
+  const centre = slotAngle(slotIndex, slotCount, angles);
   const half = (Math.PI / Math.max(1, slotCount)) * SLOT_FILL;
   const { inner, outer } = WINDING_RING;
   const count = Math.max(1, layers);
@@ -127,11 +154,11 @@ export function coilSpanSlots(slotIn: number, slotOut: number, slotCount: number
  * A coil's end turn: a curve outside the stator from one side's slot to the other,
  * the short way round, bulging further the wider the coil spans.
  */
-export function endTurnPath(slotIn: number, slotOut: number, slotCount: number): string {
+export function endTurnPath(slotIn: number, slotOut: number, slotCount: number, angles?: readonly number[]): string {
   const span = coilSpanSlots(slotIn, slotOut, slotCount);
-  const a0 = slotAngle(slotIn, slotCount);
-  const forward = (((slotOut - slotIn) % slotCount) + slotCount) % slotCount;
-  const a1 = a0 + (forward <= slotCount - forward ? 1 : -1) * span * ((2 * Math.PI) / slotCount);
+  const a0 = slotAngle(slotIn, slotCount, angles);
+  const target = slotAngle(slotOut, slotCount, angles);
+  const a1 = a0 + Math.atan2(Math.sin(target - a0), Math.cos(target - a0));
   const bulge = MIN_BULGE + (MAX_BULGE - MIN_BULGE) * Math.min(1, (2 * span) / Math.max(1, slotCount));
   const radius = WINDING_RING.endTurn;
   // Out from the slot, round at the bulge and back in, sampled so a span of

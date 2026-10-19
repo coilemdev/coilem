@@ -3570,8 +3570,8 @@
     },
     {
       "path": "benchmarks/v0.4.0/README.md",
-      "bytes": 8412,
-      "sha256": "5b77880520956a4508c0120de76d99245dbff43b36fc16ba92051711e9e0bcf0"
+      "bytes": 8496,
+      "sha256": "251a529e534ec8920b873a766436211ffb7aa8ce61e42c882620bafa4496d164"
     },
     {
       "path": "benchmarks/windows-flux-credit-20261014-1ea9e40/README.md",
@@ -5370,8 +5370,8 @@
     },
     {
       "path": "docs/RELEASE_0_4_0.md",
-      "bytes": 10904,
-      "sha256": "906aded59a3873b02df7c6ddd876702749bdaa206f1c0cfe29c38e612c74212d"
+      "bytes": 10819,
+      "sha256": "84af0a9dafdd4ff1c0e9fe42808c2bba8d101d8f2684ad3de8039211d7e95bbb"
     },
     {
       "path": "docs/RELEASING.md",
@@ -5735,8 +5735,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2118,
-      "sha256": "b6c9c006db041b31338fa978e4df68ea50c30c8600dc22455ea7813ff714d143"
+      "bytes": 2196,
+      "sha256": "fdbfa87339f99e0e11f5f17d84bed52d1f702b6ab01e97dc40fd1c4045b72576"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -5860,8 +5860,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 146561,
-      "sha256": "dc468867393bb8fbed38bf32f6a5a2962d75c4e9713b5942721ae3e6a0d53967"
+      "bytes": 150301,
+      "sha256": "96da0f503e2c07f33c7610fc6a01a4d04fdc98f1e29d84eecf4b65bf56d10f9b"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5877,6 +5877,16 @@
       "path": "frontend/scripts/test-tooth-coil-repair.mjs",
       "bytes": 5435,
       "sha256": "6808ab126570cab3b8f1988a239b4f4fb32411f42e505a6573524bd0a339b3f1"
+    },
+    {
+      "path": "frontend/scripts/test-winding-ring.mjs",
+      "bytes": 7556,
+      "sha256": "939e1eb9eed1cbb8d1ac8ea6f6f947f9e99d1e0432c7f6f18bf534fb2bf3de4a"
+    },
+    {
+      "path": "frontend/scripts/test-winding-wiring.mjs",
+      "bytes": 12851,
+      "sha256": "e6e6dad3a1329ffc4ac135318a15acb36d711f378a407698c584f04d273dc143"
     },
     {
       "path": "frontend/src/api/projectSchema.ts",
@@ -6260,8 +6270,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 218664,
-      "sha256": "3a45265ba7b3980dfb16db7d548709b9a518b353d97fbe4f36cc388235c6dce1"
+      "bytes": 218696,
+      "sha256": "d8233fe530f8fd667991d9f727f3202bc3aba4faf5641ebaa28ac99e551a805f"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -6345,8 +6355,8 @@
     },
     {
       "path": "frontend/src/public/WindingLayoutView.tsx",
-      "bytes": 17517,
-      "sha256": "2e3fc465fcebe43ea8a2f08690d2b5f15e07bae74ae8de381a776e12bdd7b3dd"
+      "bytes": 21457,
+      "sha256": "c5385089553aa17e0b0645b04ef5f7d246a6f13ef0052c8da393c450ca8346c9"
     },
     {
       "path": "frontend/src/public/api.ts",
@@ -6660,8 +6670,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 261603,
-      "sha256": "7b7728f295d63bf7a5a28c3857c3bad7450d4f01aeda62a90c7f12161e749ea4"
+      "bytes": 263216,
+      "sha256": "5e1867dbbcdd2b990099beacc9ae9d3a649649fd0484cfd1d09441913aee3184"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -6684,6 +6694,16 @@
       "sha256": "be5df38663db208ee5fd80576c4a9d46916247fe92be6cbeb72cc59212f2d9f3"
     },
     {
+      "path": "frontend/src/public/windingRing.ts",
+      "bytes": 7344,
+      "sha256": "969934496be982437cfbfd9658aa1e406397d839618e1b7714d1af0d5cf30059"
+    },
+    {
+      "path": "frontend/src/public/windingWiring.ts",
+      "bytes": 9560,
+      "sha256": "c73b4b3b5e7139b2f52eb0e6dfb46f4ea295465b53166c204d7e7149cb76e84e"
+    },
+    {
       "path": "frontend/src/styles/templateselector.css",
       "bytes": 35185,
       "sha256": "9df405c4bbcc5fb3fbe85f1418c85789d804aca87b155c8d22c6c31960530b0d"
@@ -6695,8 +6715,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 19988,
-      "sha256": "4cc4b8102643d10b3082e36cad8f14b4154d9411c5f66d7aa9cadec552e97b63"
+      "bytes": 20451,
+      "sha256": "2be4b92f4b527de768deade0a2c6c463d65cb1be305d424062997244dc9c55f8"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -7039,6 +7059,11 @@
       "sha256": "0914644d93f05fa5738534c518e2ecffeca2d129d8a38fbe8b8df2f65c695b86"
     },
     {
+      "path": "tests/fixtures/prius_winding_ring.json",
+      "bytes": 359446,
+      "sha256": "32e16063b7fbc67c80a83c6d9f76f5c71afc61cb6cb8df3946e95f78a7acaeaf"
+    },
+    {
       "path": "tests/fixtures/solve_time_calibration.json",
       "bytes": 10098,
       "sha256": "603f5d1a641b8d59277c9a604346cf692dcf29f12b9bb825c93a5a0d9d0cd1f2"
@@ -7352,6 +7377,11 @@
       "path": "tests/test_tooth_coil_windings.py",
       "bytes": 10401,
       "sha256": "183395ca3662f2ca15d3b038ab3badfc42d5faee85b7c086f7e36e59f5b47a35"
+    },
+    {
+      "path": "tests/test_winding_ring_geometry.py",
+      "bytes": 987,
+      "sha256": "2a69392a0a944d9ac0939d521268c45f2b6b623c39a60d0c49bee80d42761020"
     },
     {
       "path": "tests/test_windows_field_frame_pool.py",
@@ -11499,6 +11529,168 @@
       "path": "frontend/tests/public-release.spec.ts",
       "source_sha256": "aaf7c7b05771bf06bfc05867d62828cb8ac16a67f6cd85feb1d10ad725701452",
       "reason": "Name Prius examples by pole/slot count and case, and widen their design and examples menus."
+    },
+    {
+      "base_commit": "0bea2af37a5ecc5bf207c19cb5dd7e584887d83b",
+      "path": "frontend/src/public/WindingLayoutView.tsx",
+      "source_sha256": "2e3fc465fcebe43ea8a2f08690d2b5f15e07bae74ae8de381a776e12bdd7b3dd",
+      "reason": "Draw the Layout view's slots and coil end turns as a ring in the top half, zoomable like the 2D view."
+    },
+    {
+      "base_commit": "0bea2af37a5ecc5bf207c19cb5dd7e584887d83b",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "834726c8b800f9345ea4bd0813cb5d24299a17766a19cabaaf9438f6a903f54d",
+      "reason": "Pass the bottom bar's zoom slot to the Layout view."
+    },
+    {
+      "base_commit": "0bea2af37a5ecc5bf207c19cb5dd7e584887d83b",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "83aba621a3edf5a89ba1d9ae9e5ce23ebb1b0ffaa90144546d1750171c0c0fb0",
+      "reason": "Style the winding ring; size the wiring column to its wiring so the info box no longer covers it."
+    },
+    {
+      "base_commit": "0bea2af37a5ecc5bf207c19cb5dd7e584887d83b",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "dc468867393bb8fbed38bf32f6a5a2962d75c4e9713b5942721ae3e6a0d53967",
+      "reason": "Check the ring, its zoom wiring and the info box layout."
+    },
+    {
+      "base_commit": "0bea2af37a5ecc5bf207c19cb5dd7e584887d83b",
+      "path": "frontend/package.json",
+      "source_sha256": "b6c9c006db041b31338fa978e4df68ea50c30c8600dc22455ea7813ff714d143",
+      "reason": "Run the winding ring checks."
+    },
+    {
+      "base_commit": "0fe48f6650e99410f04ac22ed7edc4a360cb00e9",
+      "path": "frontend/package.json",
+      "source_sha256": "f532e411fdf549c30ed4ce4570ef43b349316ebc7b16a8ee3e777246151a95b7",
+      "reason": "Run the new winding wiring layout checks in the public UI test chain"
+    },
+    {
+      "base_commit": "0fe48f6650e99410f04ac22ed7edc4a360cb00e9",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "f76d48d7a5caed4e80e93459e493305fba5c2c3b453ebe9f4b9dde751f8634d2",
+      "reason": "Pin the Layout view's wrapped parallel-paths wiring and its width measurement"
+    },
+    {
+      "base_commit": "0fe48f6650e99410f04ac22ed7edc4a360cb00e9",
+      "path": "frontend/src/public/WindingLayoutView.tsx",
+      "source_sha256": "2de6bbed4e4331655c61550e027580b4761a4a9261aaa648ee33df88c3cdb6e6",
+      "reason": "Wrap long parallel-path chains like a snake to the measured panel width"
+    },
+    {
+      "base_commit": "0fe48f6650e99410f04ac22ed7edc4a360cb00e9",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "a8fa601dc872a387a09bdd4aec14bc7488ddcf9928dd4cc7954d22e432fbd7a0",
+      "reason": "Style the wiring's leads, jumpers and U-turns as unfilled wires"
+    },
+    {
+      "base_commit": "ba5cedbd7b82296a20f2a306a2031a1bc56cb564",
+      "path": "frontend/src/public/windingRing.ts",
+      "source_sha256": "54b91a63afb4b7397ac77c99a8963e07abfcad45e7bdf521708dad8f656817e5",
+      "reason": "Size the ring's current-direction markers to fill the narrowest coil side"
+    },
+    {
+      "base_commit": "ba5cedbd7b82296a20f2a306a2031a1bc56cb564",
+      "path": "frontend/src/public/WindingLayoutView.tsx",
+      "source_sha256": "43fee052542bd3e75f780039c7458f0b97aa9f41bb54e54a785fa15513780ac8",
+      "reason": "Draw the ring's direction markers as shapes, larger, with in sides out of the page as in the cross-section"
+    },
+    {
+      "base_commit": "ba5cedbd7b82296a20f2a306a2031a1bc56cb564",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "4a56ee53d1e6122c3342495262a568e4c9797dce280a2e2164e44ea51285a40a",
+      "reason": "Style the ring's drawn direction markers like the 2D view's"
+    },
+    {
+      "base_commit": "ba5cedbd7b82296a20f2a306a2031a1bc56cb564",
+      "path": "frontend/scripts/test-winding-ring.mjs",
+      "source_sha256": "79183d00ba368184d4cd762f0019958432dcd8e4f09cfe6242728fadcbf62cb3",
+      "reason": "Check the ring's direction markers fit their coil sides"
+    },
+    {
+      "base_commit": "ba5cedbd7b82296a20f2a306a2031a1bc56cb564",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "023656998bf0115ade6741a2cc433438730ae73340db4ac877b010984a73ecd1",
+      "reason": "Pin the ring's direction mapping and drawn markers"
+    },
+    {
+      "base_commit": "5b000f008c4c26327e43c6669992796df3ab5d53",
+      "path": "frontend/src/public/WindingLayoutView.tsx",
+      "source_sha256": "8a018442723c0fe2dafb284f3e6bb7fe09c7e52ed9039e651f35d20bd0283165",
+      "reason": "Turn the parallel-paths solver note into a question the reader opens, reworded"
+    },
+    {
+      "base_commit": "5b000f008c4c26327e43c6669992796df3ab5d53",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "c26d1a53d2a65a6a443f9d756b84423178219cb92ba3de254298372d96dc0b4c",
+      "reason": "Style the parallel-paths solver question and its answer"
+    },
+    {
+      "base_commit": "5b000f008c4c26327e43c6669992796df3ab5d53",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "95978d429171917a1de18ef013c68aa3c46b53f6f2644291760af8f7c2709f78",
+      "reason": "Pin the parallel-paths solver question in place of the info box"
+    },
+    {
+      "base_commit": "70ead979d57238846477868a4c1c4e07f4452389",
+      "path": "frontend/src/public/WindingLayoutView.tsx",
+      "source_sha256": "9a846fd083a6c6fd5dfed6a3850a4c94b2c327d3835ddbcbbb31f52d82c08fdb",
+      "reason": "Wrap the ring and the parallel paths in one body so they can sit side by side"
+    },
+    {
+      "base_commit": "70ead979d57238846477868a4c1c4e07f4452389",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "6ce89c5702877674101e4ae010939be5433bc85f44f65697d8df6a12aeb2b805",
+      "reason": "Put the ring left and the parallel paths right when the Layout view is wide"
+    },
+    {
+      "base_commit": "70ead979d57238846477868a4c1c4e07f4452389",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "5aa1dbe6b2b3ab2791030b08819d10b2903cb7ef897cf96d9d08edb72188f21d",
+      "reason": "Pin the Layout view's side-by-side body and its container query"
+    },
+    {
+      "base_commit": "5e4037c16523cadebb70e3ed69afe3def3c35fc8",
+      "path": "benchmarks/v0.4.0/README.md",
+      "source_sha256": "5b77880520956a4508c0120de76d99245dbff43b36fc16ba92051711e9e0bcf0",
+      "reason": "Align the winding ring with actual preview slot geometry, including the reflected Prius; defer hardware correlation to v0.5.0."
+    },
+    {
+      "base_commit": "5e4037c16523cadebb70e3ed69afe3def3c35fc8",
+      "path": "docs/RELEASE_0_4_0.md",
+      "source_sha256": "906aded59a3873b02df7c6ddd876702749bdaa206f1c0cfe29c38e612c74212d",
+      "reason": "Align the winding ring with actual preview slot geometry, including the reflected Prius; defer hardware correlation to v0.5.0."
+    },
+    {
+      "base_commit": "5e4037c16523cadebb70e3ed69afe3def3c35fc8",
+      "path": "frontend/scripts/test-winding-ring.mjs",
+      "source_sha256": "7e3d6006b32ef46b87103f541c5cb97e3112693601156d200f47e8b8509826a0",
+      "reason": "Align the winding ring with actual preview slot geometry, including the reflected Prius; defer hardware correlation to v0.5.0."
+    },
+    {
+      "base_commit": "5e4037c16523cadebb70e3ed69afe3def3c35fc8",
+      "path": "frontend/src/public/WindingLayoutView.tsx",
+      "source_sha256": "cb09dcc6ad0aa07d2e8e1b3ee38088f4f0710e2e0ee8d8b36de84f0f90055b90",
+      "reason": "Align the winding ring with actual preview slot geometry, including the reflected Prius; defer hardware correlation to v0.5.0."
+    },
+    {
+      "base_commit": "5e4037c16523cadebb70e3ed69afe3def3c35fc8",
+      "path": "frontend/src/public/windingRing.ts",
+      "source_sha256": "1d3c62d62fe996a2601bc115195e2c337edfb92fd47a9a54fc2474f3cc39a239",
+      "reason": "Align the winding ring with actual preview slot geometry, including the reflected Prius; defer hardware correlation to v0.5.0."
+    },
+    {
+      "base_commit": "5e4037c16523cadebb70e3ed69afe3def3c35fc8",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "0b651da1e6a0174d5250a3c0d5cfddcbd8b68b1b602775fff5435f6038944b07",
+      "reason": "Align the winding ring with actual preview slot geometry, including the reflected Prius; defer hardware correlation to v0.5.0."
+    },
+    {
+      "base_commit": "5e4037c16523cadebb70e3ed69afe3def3c35fc8",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "4cc4b8102643d10b3082e36cad8f14b4154d9411c5f66d7aa9cadec552e97b63",
+      "reason": "Align the winding ring with actual preview slot geometry, including the reflected Prius; defer hardware correlation to v0.5.0."
     }
   ]
 }

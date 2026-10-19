@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { importTypeScriptModule } from './import-typescript-module.mjs';
 
 // The Layout view's ring: slots in the cross-section's orientation, end turns
@@ -9,6 +10,7 @@ const {
   coilSpanSlots,
   endTurnPath,
   polar,
+  previewSlotAngles,
   slotAngle,
   slotMarkerRadius,
   slotSideCentre,
@@ -96,3 +98,28 @@ for (const slotCount of [6, 9, 12, 18, 24, 36, 48, 72]) {
 assert.ok(slotMarkerRadius(36, 1, null) > 14, '6p/36s marker');
 
 console.log('winding ring checks passed');
+
+// The imported Prius is reflected: all 48 slots and both ends of every coil
+// must follow its actual cross-section, including slot 13 at six o'clock.
+const prius = JSON.parse(await readFile(new URL('../../tests/fixtures/prius_winding_ring.json', import.meta.url), 'utf8'));
+const priusAngles = previewSlotAngles(prius.regions, 48);
+const angleClose = (actual, expected, label) => close(Math.atan2(Math.sin(actual - expected), Math.cos(actual - expected)), 0, label, 1e-4);
+for (let index = 0; index < 48; index += 1) {
+  angleClose(slotAngle(index, 48, priusAngles), -index * 2 * Math.PI / 48, `Prius slot ${index + 1}`);
+  angleClose(angleOf(slotSideCentre(index, 48, 1, 1, null, priusAngles)), priusAngles[index], `Prius marker ${index + 1}`);
+}
+for (const coil of prius.coils) {
+  const path = points(endTurnPath(coil.slot_in, coil.slot_out, 48, priusAngles));
+  angleClose(angleOf(path[0]), priusAngles[coil.slot_in], 'Prius end turn start');
+  angleClose(angleOf(path.at(-1)), priusAngles[coil.slot_out], 'Prius end turn end');
+  assert.ok(path.every(p => radius(p) >= WINDING_RING.endTurn - 0.02));
+}
+// Reversing polygon vertex order cannot change its centroid; neither can
+// splitting a slot into two layers. Missing geometry keeps the generic fallback.
+const box = (points) => ({region_type: 'slot_1_layer_1', points});
+const a = box([[2, 1], [4, 1], [4, 3], [2, 3]]);
+const b = box([[4, 1], [8, 1], [8, 3], [4, 3]]);
+close(previewSlotAngles([a, b], 1)[0], Math.atan2(2, 5), 'area-weighted layers');
+close(previewSlotAngles([{...a, points: [...a.points].reverse()}, b], 1)[0], Math.atan2(2, 5), 'vertex order');
+assert.deepEqual(previewSlotAngles([], 12), Array.from({length: 12}, (_, i) => slotAngle(i, 12)));
+console.log('actual Prius slot geometry checks passed');

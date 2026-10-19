@@ -685,7 +685,7 @@ assert.match(windingLayoutSource, /\{pathsHelpOpen \? \(\s*<p className="wl-path
 assert.match(windingLayoutSource, /every coil the phase current divided by\s+the number of paths/);
 assert.match(windingLayoutSource, /Winding layout/);
 assert.match(windingLayoutSource, /className={`wl-ring public-viewport-navigation/);
-assert.match(windingLayoutSource, /endTurnPath\(coil\.slot_in, coil\.slot_out, slotCount\)/);
+assert.match(windingLayoutSource, /endTurnPath\(coil\.slot_in, coil\.slot_out, slotCount, slotAngles\)/);
 // The ring marks direction as the cross-section does: an "in" side carries +J
 // (backend gmsh_solver), out of the x-y page, so it is ⊙. Drawn markers sized to
 // the slot (test-winding-ring.mjs checks the fit), not a typed glyph.
