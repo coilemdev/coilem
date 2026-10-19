@@ -57,8 +57,8 @@ In the normal workspace, use **Design file menu → Examples → Benchmarks**:
 
 | Case ID (version is part of the ID) | Example | Mechanical speed | Magnets | Phase current | Published angle |
 | --- | --- | ---: | ---: | ---: | ---: |
-| `prius-2004-tutorial-bemf-v1` | Pyleecan Prius · tutorial BEMF | 1000 rpm | 20°C | 0 A | Φ₀ = 140°, immaterial at zero current |
-| `prius-2004-loaded-torque-v1` | Pyleecan Prius · loaded torque | 2000 rpm | 60°C | 250 A peak = 176.776695 A RMS | Φ₀ = 140° from the d-axis |
+| `prius-2004-tutorial-bemf-v1` | Pyleecan Prius 8p48s · BEMF | 1000 rpm | 20°C | 0 A | Φ₀ = 140°, immaterial at zero current |
+| `prius-2004-loaded-torque-v1` | Pyleecan Prius 8p48s · Loaded torque | 2000 rpm | 60°C | 250 A peak = 176.776695 A RMS | Φ₀ = 140° from the d-axis |
 
 The [tutorial file](../../../frontend/src/public/examples/prius-2004-tutorial-bemf-v1.coilem)
 and [loaded file](../../../frontend/src/public/examples/prius-2004-loaded-torque-v1.coilem)

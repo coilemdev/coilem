@@ -5400,8 +5400,8 @@
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
-      "bytes": 24186,
-      "sha256": "c34c8195c746d3be60a56e876eb186350fb1556ea4df2204d1e3dfb1d34e961e"
+      "bytes": 24189,
+      "sha256": "34b3fa3dfebf8bbf0e8d2b8073b8038da4086a9f12c9839028d6de638b620ee9"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/app-design-3d.png",
@@ -5431,7 +5431,7 @@
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/artifact-manifest.json",
       "bytes": 1429,
-      "sha256": "91c9463191de0e4762187c386776309a3d0a11f48b12bbafb0ed53de4aa029f5"
+      "sha256": "5716e071d10d517e566217781352f3ee42ea89240167c049984e905fd944359c"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/installed-wheel-validation.json",
@@ -6405,8 +6405,8 @@
     },
     {
       "path": "frontend/src/public/exampleDesigns.ts",
-      "bytes": 4013,
-      "sha256": "fb04d423b8d483ccd2c042883b3759b300316602a2663a9afdc1c24c55201951"
+      "bytes": 4016,
+      "sha256": "ddf4fbcb0edfa38a1a1b3fea6d119e946b5001f891392b3a6f914cb518314313"
     },
     {
       "path": "frontend/src/public/examples/honda_accord_2005.coilem",
@@ -6420,13 +6420,13 @@
     },
     {
       "path": "frontend/src/public/examples/prius-2004-loaded-torque-v1.coilem",
-      "bytes": 19067,
-      "sha256": "8e3f15925030a79357da6f17f41f75f4ceee175d7460d3c8632c4a4852eee4a3"
+      "bytes": 19068,
+      "sha256": "ea56a0f774f21828218861a77743381ae231c6287fb30a561aca41a342eff0e7"
     },
     {
       "path": "frontend/src/public/examples/prius-2004-tutorial-bemf-v1.coilem",
-      "bytes": 19063,
-      "sha256": "ee06b79568cf89a1ba95acf2abfed1e36d165dc820e9bb0f741792ed3d1059b5"
+      "bytes": 19055,
+      "sha256": "dab733f5ce78d30954c6e94cc54fdac873b5cfa27f49c06509ea199df8d67305"
     },
     {
       "path": "frontend/src/public/examples/rotating_field_6p36s.coilem",
@@ -6660,8 +6660,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 261434,
-      "sha256": "c360a7d0b107ceebb76bc7a19f5442cc447121fddf0b0ffc7b5f781614752983"
+      "bytes": 261603,
+      "sha256": "7b7728f295d63bf7a5a28c3857c3bad7450d4f01aeda62a90c7f12161e749ea4"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -6695,8 +6695,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 19985,
-      "sha256": "aaf7c7b05771bf06bfc05867d62828cb8ac16a67f6cd85feb1d10ad725701452"
+      "bytes": 19988,
+      "sha256": "4cc4b8102643d10b3082e36cad8f14b4154d9411c5f66d7aa9cadec552e97b63"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -11457,6 +11457,48 @@
       "path": "frontend/tests/public-release.spec.ts",
       "source_sha256": "334b5ca1386b39bd0c9f6e6510c90604bbabe0d3473de40dd67620d49d31dd4c",
       "reason": "Carry Pyleecan attribution, conversion and affiliation notices with standalone and saved reference designs."
+    },
+    {
+      "base_commit": "7e3672294309c88d9152536441b4801a6403871d",
+      "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
+      "source_sha256": "c34c8195c746d3be60a56e876eb186350fb1556ea4df2204d1e3dfb1d34e961e",
+      "reason": "Name Prius examples by pole/slot count and case, and widen their design and examples menus."
+    },
+    {
+      "base_commit": "7e3672294309c88d9152536441b4801a6403871d",
+      "path": "docs/benchmarks/pyleecan-prius-v1/artifact-manifest.json",
+      "source_sha256": "91c9463191de0e4762187c386776309a3d0a11f48b12bbafb0ed53de4aa029f5",
+      "reason": "Name Prius examples by pole/slot count and case, and widen their design and examples menus."
+    },
+    {
+      "base_commit": "7e3672294309c88d9152536441b4801a6403871d",
+      "path": "frontend/src/public/exampleDesigns.ts",
+      "source_sha256": "fb04d423b8d483ccd2c042883b3759b300316602a2663a9afdc1c24c55201951",
+      "reason": "Name Prius examples by pole/slot count and case, and widen their design and examples menus."
+    },
+    {
+      "base_commit": "7e3672294309c88d9152536441b4801a6403871d",
+      "path": "frontend/src/public/examples/prius-2004-loaded-torque-v1.coilem",
+      "source_sha256": "8e3f15925030a79357da6f17f41f75f4ceee175d7460d3c8632c4a4852eee4a3",
+      "reason": "Name Prius examples by pole/slot count and case, and widen their design and examples menus."
+    },
+    {
+      "base_commit": "7e3672294309c88d9152536441b4801a6403871d",
+      "path": "frontend/src/public/examples/prius-2004-tutorial-bemf-v1.coilem",
+      "source_sha256": "ee06b79568cf89a1ba95acf2abfed1e36d165dc820e9bb0f741792ed3d1059b5",
+      "reason": "Name Prius examples by pole/slot count and case, and widen their design and examples menus."
+    },
+    {
+      "base_commit": "7e3672294309c88d9152536441b4801a6403871d",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "c360a7d0b107ceebb76bc7a19f5442cc447121fddf0b0ffc7b5f781614752983",
+      "reason": "Name Prius examples by pole/slot count and case, and widen their design and examples menus."
+    },
+    {
+      "base_commit": "7e3672294309c88d9152536441b4801a6403871d",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "aaf7c7b05771bf06bfc05867d62828cb8ac16a67f6cd85feb1d10ad725701452",
+      "reason": "Name Prius examples by pole/slot count and case, and widen their design and examples menus."
     }
   ]
 }

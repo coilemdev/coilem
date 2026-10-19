@@ -278,8 +278,8 @@ test('loads both exact Pyleecan Prius cases through the public Design and Solve 
   await expect(page.getByRole('status', { name: 'Local backend: ready', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
   for (const [label, caseId, temperature] of [
-    ['Pyleecan Prius · tutorial BEMF', 'prius-2004-tutorial-bemf-v1', 20],
-    ['Pyleecan Prius · loaded torque', 'prius-2004-loaded-torque-v1', 60],
+    ['Pyleecan Prius 8p48s · BEMF', 'prius-2004-tutorial-bemf-v1', 20],
+    ['Pyleecan Prius 8p48s · Loaded torque', 'prius-2004-loaded-torque-v1', 60],
   ] as const) {
     await page.getByRole('button', { name: 'Design file menu', exact: true }).click();
     await page.getByRole('menuitem', { name: 'Examples', exact: true }).hover();

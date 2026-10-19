@@ -36,8 +36,8 @@ export interface PublicExampleOption {
 }
 
 export const PUBLIC_EXAMPLE_OPTIONS: readonly PublicExampleOption[] = [
-  { id: 'prius-2004-tutorial-bemf-v1', label: 'Pyleecan Prius · tutorial BEMF', detail: '1000 rpm · 20°C · no load · software reference', benchmark: true },
-  { id: 'prius-2004-loaded-torque-v1', label: 'Pyleecan Prius · loaded torque', detail: '2000 rpm · 60°C · 250 A peak · software reference', benchmark: true },
+  { id: 'prius-2004-tutorial-bemf-v1', label: 'Pyleecan Prius 8p48s · BEMF', detail: '1000 rpm · 20°C · no load · software reference', benchmark: true },
+  { id: 'prius-2004-loaded-torque-v1', label: 'Pyleecan Prius 8p48s · Loaded torque', detail: '2000 rpm · 60°C · 250 A peak · software reference', benchmark: true },
   { id: 'spm-8p12s', label: 'SPM 8p/12s', detail: 'Starter motor' },
   { id: 'rotating-field-6p36s', label: 'SPM 6p/36s', detail: 'Three pole pairs · distributed winding' },
   { id: 'ipm-10p-v-shape-medium', label: 'IPM 10p V-shape', detail: 'Medium' },

@@ -1,7 +1,7 @@
 {
   "openem_schema_version": 4,
   "openem_version": "0.3.1",
-  "name": "Pyleecan 2004 Prius \u2014 tutorial BEMF",
+  "name": "Pyleecan Prius 8p48s \u00b7 BEMF",
   "description": "Exact pinned software reference: 1000 rpm, 20 C magnets, zero phase current. Full electrical cycle with 100 poses; upstream uses 50 half-cycle poses and anti-periodic reconstruction. Software reproduction, not hardware validation.",
   "reference_notice": {
     "license": "Apache-2.0",

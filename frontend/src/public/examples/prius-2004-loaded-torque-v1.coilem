@@ -1,7 +1,7 @@
 {
   "openem_schema_version": 4,
   "openem_version": "0.3.1",
-  "name": "Pyleecan 2004 Prius \u2014 loaded torque",
+  "name": "Pyleecan Prius 8p48s \u00b7 Loaded torque",
   "description": "Exact pinned software reference: 2000 rpm, 60 C magnets, 250 A peak, published d-axis Phi0=140 degrees. Geometry, winding and materials are fixed. Other operating points are experiments on this model, not ORNL hardware validation.",
   "reference_notice": {
     "license": "Apache-2.0",
