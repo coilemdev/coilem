@@ -402,6 +402,104 @@ def test_terminating_process_pools_ends_their_running_tasks(monkeypatch):
         solver.join(timeout=10)
 
 
+def _hold_worker_cancellation_lock(marker: str, release: str) -> None:
+    # A killed process cannot release a multiprocessing condition. Event.set()
+    # must never use it during/after forced shutdown, even while unwinding.
+    with _process_pool._worker_cancelled._cond:
+        Path(marker).write_text("locked", encoding="utf-8")
+        deadline = time.monotonic() + 30
+        while not Path(release).exists() and time.monotonic() < deadline:
+            time.sleep(0.01)
+
+
+def test_exit_does_not_wait_on_a_worker_cancellation_lock(tmp_path):
+    marker, release = tmp_path / "locked", tmp_path / "release"
+    unwound, stopped = threading.Event(), threading.Event()
+    outcomes: list[BaseException] = []
+
+    def solve() -> None:
+        try:
+            with _process_pool.cancellable_process_pool(1) as pool:
+                pool.submit(_hold_worker_cancellation_lock, str(marker), str(release)).result(timeout=40)
+        except BrokenProcessPool as exc:
+            outcomes.append(exc)
+        finally:
+            unwound.set()
+
+    def stop() -> None:
+        _process_pool.terminate_process_pools()
+        stopped.set()
+
+    solver = threading.Thread(target=solve, daemon=True)
+    stopper = threading.Thread(target=stop, daemon=True)
+    solver.start()
+    try:
+        deadline = time.monotonic() + 15
+        while not marker.exists() and time.monotonic() < deadline:
+            time.sleep(0.02)
+        assert marker.exists(), "the worker must own the real multiprocessing lock"
+        stopper.start()
+        assert stopped.wait(timeout=3), "exit waited for the worker's cancellation lock"
+        assert unwound.wait(timeout=3), "unwinding used the lock after its owner was killed"
+        assert len(outcomes) == 1
+        assert not _process_pool._LIVE_POOLS
+    finally:
+        # The original bug blocks before killing the worker. Release it so a
+        # failing regression cannot strand a worker or the test runner.
+        release.write_text("release", encoding="utf-8")
+        if stopper.ident is not None:
+            stopper.join(timeout=10)
+        solver.join(timeout=10)
+
+
+def test_exit_waits_for_an_in_flight_cooperative_cancellation(monkeypatch):
+    registered, request_cancel = threading.Event(), threading.Event()
+    setting, release_set = threading.Event(), threading.Event()
+    unwound = threading.Event()
+    cancelled_events: list = []
+
+    def solve() -> None:
+        try:
+            with _process_pool.cancellable_process_pool(1) as pool:
+                pool.submit(time.sleep, 120)
+                cancelled_events.append(_process_pool._LIVE_POOLS[pool])
+                registered.set()
+                assert request_cancel.wait(timeout=10)
+                raise SolveCancelledError("cancelled by the user")
+        except SolveCancelledError:
+            pass
+        finally:
+            unwound.set()
+
+    solver = threading.Thread(target=solve, daemon=True)
+    stopper = threading.Thread(target=_process_pool.terminate_process_pools, daemon=True)
+    solver.start()
+    try:
+        assert registered.wait(timeout=10)
+        original_set = cancelled_events[0].set
+
+        def held_set():
+            setting.set()
+            assert release_set.wait(timeout=10)
+            original_set()
+
+        monkeypatch.setattr(cancelled_events[0], "set", held_set)
+        request_cancel.set()
+        assert setting.wait(timeout=10)
+        stopper.start()
+        assert not _process_pool._EXITING.wait(timeout=0.3), "exit can kill workers before Event.set() finishes"
+        release_set.set()
+        assert unwound.wait(timeout=10)
+    finally:
+        release_set.set()
+        request_cancel.set()
+        if stopper.ident is not None:
+            stopper.join(timeout=10)
+        solver.join(timeout=10)
+    assert not solver.is_alive() and not stopper.is_alive()
+    assert not _process_pool._LIVE_POOLS
+
+
 def _die_while_sending_a_result(marker: str) -> None:
     """In a pool worker: send part of a result message, then hang until killed."""
     frame = sys._getframe(1)
