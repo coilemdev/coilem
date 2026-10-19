@@ -5,10 +5,15 @@ import ornlPrius2004HoleM50 from './examples/ornl_prius_2004_holem50.coilem?raw'
 import spm24pSmall from './examples/validation_spm_24p_small.openem?raw';
 import rotatingField6p36s from './examples/rotating_field_6p36s.coilem?raw';
 
+import priusTutorial from './examples/prius-2004-tutorial-bemf-v1.coilem?raw';
+import priusLoaded from './examples/prius-2004-loaded-torque-v1.coilem?raw';
+
 import { parseDesignFile } from './designFile';
 import { cloneDefaultConfig, type MotorConfig } from './model';
 
 export type PublicExampleId =
+  | 'prius-2004-tutorial-bemf-v1'
+  | 'prius-2004-loaded-torque-v1'
   | 'spm-8p12s'
   | 'rotating-field-6p36s'
   | 'ipm-10p-v-shape-medium'
@@ -24,14 +29,15 @@ export interface PublicExampleOption {
   /** Needs the local app started with COILEM_EXPERIMENTAL_ROTORS=1. */
   experimental?: boolean;
   /**
-   * A real motor that coilEM has been compared against published hardware
-   * measurements. Listed under Benchmarks. Its design file holds only public
+   * A motor compared against published hardware or a published software model. Listed under Benchmarks. Its design file holds only public
    * facts from the cited source, never licensed or proprietary data.
    */
   benchmark?: boolean;
 }
 
 export const PUBLIC_EXAMPLE_OPTIONS: readonly PublicExampleOption[] = [
+  { id: 'prius-2004-tutorial-bemf-v1', label: 'Pyleecan Prius 8p48s · BEMF', detail: '1000 rpm · 20°C · no load · software reference', benchmark: true },
+  { id: 'prius-2004-loaded-torque-v1', label: 'Pyleecan Prius 8p48s · Loaded torque', detail: '2000 rpm · 60°C · 250 A peak · software reference', benchmark: true },
   { id: 'spm-8p12s', label: 'SPM 8p/12s', detail: 'Starter motor' },
   { id: 'rotating-field-6p36s', label: 'SPM 6p/36s', detail: 'Three pole pairs · distributed winding' },
   { id: 'ipm-10p-v-shape-medium', label: 'IPM 10p V-shape', detail: 'Medium' },
@@ -65,6 +71,8 @@ export function publicExampleOptions(
 }
 
 const BUNDLED_EXAMPLE_FILES: Record<Exclude<PublicExampleId, 'spm-8p12s'>, string> = {
+  'prius-2004-tutorial-bemf-v1': priusTutorial,
+  'prius-2004-loaded-torque-v1': priusLoaded,
   'rotating-field-6p36s': rotatingField6p36s,
   'ipm-10p-v-shape-medium': ipm10pVShapeMedium,
   'ipm-14p-flat-buried-large': ipm14pFlatBuriedLarge,

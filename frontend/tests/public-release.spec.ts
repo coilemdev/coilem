@@ -271,3 +271,51 @@ test.describe('public developer preview release rehearsal', () => {
     expect(duplicateKeyWarnings).toEqual([]);
   });
 });
+
+
+test('loads both exact Pyleecan Prius cases through the public Design and Solve routes', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByRole('status', { name: 'Local backend: ready', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+  for (const [label, caseId, temperature] of [
+    ['Pyleecan Prius 8p48s · BEMF', 'prius-2004-tutorial-bemf-v1', 20],
+    ['Pyleecan Prius 8p48s · Loaded torque', 'prius-2004-loaded-torque-v1', 60],
+  ] as const) {
+    await page.getByRole('button', { name: 'Design file menu', exact: true }).click();
+    await page.getByRole('menuitem', { name: 'Examples', exact: true }).hover();
+    const previewed = page.waitForResponse(r => r.request().method() === 'POST' && new URL(r.url()).pathname === '/preview' && r.request().postDataJSON()?.reference_case === caseId);
+    await page.getByRole('menuitem', { name: new RegExp(`^${label}`) }).click();
+    const response = await previewed;
+    expect(response.status(), await response.text()).toBe(200);
+    const request = response.request().postDataJSON();
+    expect(request.solve_params.magnet_temperature_C).toBe(temperature);
+    expect(request.winding.coil_span).toBe(6);
+    expect(request.solve_params.max_nonlinear_iterations).toBe(200);
+    const data = await response.json();
+    expect(data.regions.filter((r: {loops?: unknown[]}) => r.loops?.length)).toHaveLength(91);
+    expect(data.regions.find((r: {region_type: string}) => r.region_type === 'rotor_core').loops).toHaveLength(10);
+    await expect(page.getByText('Published Pyleecan geometry, winding and materials are fixed.', { exact: false })).toBeVisible();
+    await expect(page.getByText('No affiliation with or endorsement by EOMYS, the Pyleecan project, or Toyota.', { exact: false })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeEnabled();
+    const checked = await page.request.post(`${apiUrl}/solve/validate`, { data: request });
+    expect(checked.status()).toBe(200);
+    expect((await checked.json()).valid).toBe(true);
+    const validated = page.waitForResponse(r => r.request().method() === 'POST' && new URL(r.url()).pathname === '/solve/validate');
+    await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+    const validation = await validated;
+    expect(validation.status()).toBe(200);
+    expect((await validation.json()).valid).toBe(true);
+    expect(validation.request().postDataJSON().solver).toBe('magneto2d');
+    await openSetupSection(page, 'operating');
+    await expect(page.getByText(`Pyleecan software reference · ${temperature}°C magnets`, { exact: false })).toBeVisible();
+    await expect(page.getByText('No affiliation with or endorsement by EOMYS, the Pyleecan project, or Toyota.', { exact: false })).toBeVisible();
+    await page.getByRole('button', { name: '← Back to Design', exact: true }).click();
+  }
+  await page.getByRole('button', { name: 'Show 2D motor view', exact: true }).click();
+  await page.screenshot({ path: fileURLToPath(new URL('../test-results/prius-reference.png', import.meta.url)), fullPage: true });
+  await page.getByRole('button', { name: 'Show 3D motor view', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Show 2D motor view', exact: true })).toBeVisible();
+  await expect(page.getByText('Loading reference geometry…', { exact: true })).toBeHidden();
+  await expect(page.locator('.public-viewport-message')).toHaveCount(0);
+  await page.screenshot({ path: fileURLToPath(new URL('../test-results/prius-reference-3d.png', import.meta.url)), fullPage: true });
+});

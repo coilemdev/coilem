@@ -9,6 +9,7 @@ const { LOADED_STATOR_FALLBACKS, parseDesignFile, serializeDesignFile } = await 
   new URL('../src/public/designFile.ts', import.meta.url),
 );
 const { cloneDefaultConfig } = await importTypeScriptModule(new URL('../src/public/model.ts', import.meta.url));
+const { PYLEECAN_REFERENCE_NOTICE } = await importTypeScriptModule(new URL('../src/public/pyleecanReferenceNotice.ts', import.meta.url));
 const SECTIONS = ['stator', 'rotor', 'winding', 'materials', 'solve_params', 'solve_options'];
 const SHOE_FIELDS = Object.keys(LOADED_STATOR_FALLBACKS);
 
@@ -91,3 +92,38 @@ const fastDesign = cloneDefaultConfig();
 fastDesign.solve_params.mesh_build = 'fast';
 assert.equal(parseDesignFile(serializeDesignFile(fastDesign, 'Fast mesh')).config.solve_params.mesh_build, 'fast');
 console.log('mesh build defaults passed');
+
+for (const caseId of ['prius-2004-tutorial-bemf-v1', 'prius-2004-loaded-torque-v1']) {
+  const file = JSON.parse(await readFile(new URL(`${caseId}.coilem`, examplesDir), 'utf8'));
+  const first = parseDesignFile(JSON.stringify(file)).config;
+  const saved = JSON.parse(serializeDesignFile(first, caseId));
+  const reopened = parseDesignFile(JSON.stringify(saved)).config;
+  assert.deepEqual(file.reference_notice, PYLEECAN_REFERENCE_NOTICE, `${caseId}: bundled attribution missing`);
+  assert.deepEqual(saved.reference_notice, file.reference_notice, `${caseId}: attribution lost on save`);
+  // Earlier files had no portable notice; save regenerates it from the fixed
+  // reference identity, including when the user changes an operating point.
+  const legacyReference = structuredClone(file);
+  delete legacyReference.reference_notice;
+  const experiment = parseDesignFile(JSON.stringify(legacyReference)).config;
+  experiment.solve_params.rated_speed_rpm += 100;
+  assert.deepEqual(JSON.parse(serializeDesignFile(experiment, caseId)).reference_notice, file.reference_notice);
+  assert.equal(first.geometry_reference, 'pyleecan_prius_2004');
+  assert.equal(first.reference_case, caseId);
+  assert.deepEqual(reopened, first);
+  for (const section of ['stator', 'rotor', 'winding', 'materials']) {
+    for (const [key, value] of Object.entries(file[section])) {
+      if (value === null && first[section][key] === undefined) continue; // backend null defaults
+      assert.deepEqual(first[section][key], value, `${caseId}: changed fixed ${section}.${key}`);
+    }
+  }
+  assert.equal(first.solve_params.magnet_temperature_C, file.solve_params.magnet_temperature_C);
+  assert.equal(first.solve_params.max_nonlinear_iterations, 200);
+  assert.equal(first.solve_params.current_angle_deg, 140);
+  const wrong = structuredClone(file); wrong.solve_params.magnet_temperature_C = 99;
+  assert.throws(() => parseDesignFile(JSON.stringify(wrong)), /magnet temperature/);
+}
+const upstreamNotice = (await readFile(new URL('../../THIRD_PARTY_NOTICES.md', import.meta.url), 'utf8'))
+  .split('## Pyleecan Prius reference data')[1].split('```')[1].trim();
+assert.equal(PYLEECAN_REFERENCE_NOTICE.license_text.trim(), upstreamNotice, 'standalone designs must carry the complete upstream license');
+assert.equal(JSON.parse(serializeDesignFile(cloneDefaultConfig(), 'Ordinary motor')).reference_notice, undefined);
+console.log('both Pyleecan reference cases preserve source identity and fixed model on save/reopen');

@@ -74,7 +74,18 @@ def main(argv=None):
     if identity.get("dirty"):
         raise SystemExit("The run measured uncommitted code; a record needs a clean commit")
     measured = identity["source_files"]
-    missing = [path for path in physics_sources(CHECKOUT) if path not in measured]
+    sources = list(physics_sources(CHECKOUT))
+    # Preserve a historical record's original source guard. These three files
+    # entered the registry together with the exact Prius cases; old runs cannot
+    # acquire their hashes retrospectively. check_physics names the missing files
+    # as changes, so the reconstructed legacy record cannot qualify this build.
+    reference_sources = {
+        "backend/reference_models/prius.py", "backend/reference_models/pyleecan_prius_2004.json",
+        "backend/reference_models/pyleecan_prius_2004_config.json",
+    }
+    if reference_sources.isdisjoint(measured):
+        sources = [path for path in sources if path not in reference_sources]
+    missing = [path for path in sources if path not in measured]
     if missing:
         raise SystemExit(f"The run did not record these physics sources: {', '.join(missing)}")
     graded, spec = regrade(summary)
@@ -86,7 +97,7 @@ def main(argv=None):
     record = build_record(
         graded,
         source=source,
-        physics_files={path: measured[path] for path in physics_sources(CHECKOUT)},
+        physics_files={path: measured[path] for path in sources},
         evaluation_note=note,
     )
     args.out.parent.mkdir(parents=True, exist_ok=True)
