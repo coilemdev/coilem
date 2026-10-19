@@ -665,7 +665,8 @@ assert.match(styleSource, /\.public-material-assignment-grid \{[^}]*repeat\(4, m
 assert.match(styleSource, /\.public-material-behavior-view/);
 // The Layout view moved out of CoilEmWorkspace into its own component, so assert
 // the new wiring: the workspace mounts it, and the view still names itself and
-// draws the two things only it can show — the slot strip and the parallel paths.
+// draws the two things only it can show — the slot ring with its end turns and the
+// parallel paths.
 assert.match(workspaceSource, /<WindingLayoutView/);
 assert.match(workspaceSource, /public-viewport-expand/);
 assert.match(workspaceSource, /Expand motor view/);
@@ -675,11 +676,40 @@ assert.match(workspaceSource, /solveViewportExpanded/);
 assert.match(workspaceSource, /expandControl=/);
 assert.match(windingLayoutSource, /cond\.\/slot/);
 assert.match(windingLayoutSource, /turns\/path/);
-assert.match(windingLayoutSource, /className="wl-paths-info"/);
-assert.match(windingLayoutSource, /How the solver reads this/);
+// What the solver makes of the wiring is a question the reader opens, not a box
+// beside the wiring.
+assert.doesNotMatch(windingLayoutSource, /wl-paths-info/);
+assert.match(windingLayoutSource, /className="wl-paths-help-toggle"\s*aria-expanded=\{pathsHelpOpen\}\s*aria-controls=\{pathsHelpId\}/);
+assert.match(windingLayoutSource, /Does the solver use this wiring\?/);
+assert.match(windingLayoutSource, /\{pathsHelpOpen \? \(\s*<p className="wl-paths-help" id=\{pathsHelpId\}>/);
+assert.match(windingLayoutSource, /every coil the phase current divided by\s+the number of paths/);
 assert.match(windingLayoutSource, /Winding layout/);
-assert.match(windingLayoutSource, /wl-slots/);
+assert.match(windingLayoutSource, /className={`wl-ring public-viewport-navigation/);
+assert.match(windingLayoutSource, /endTurnPath\(coil\.slot_in, coil\.slot_out, slotCount, slotAngles\)/);
+// The ring marks direction as the cross-section does: an "in" side carries +J
+// (backend gmsh_solver), out of the x-y page, so it is ⊙. Drawn markers sized to
+// the slot (test-winding-ring.mjs checks the fit), not a typed glyph.
+assert.match(windingLayoutSource, /const outOfPage = side\.direction === 'in';/);
+assert.match(windingLayoutSource, /<CurrentMarker x=\{markerX\} y=\{markerY\} radius=\{markerRadius\} outOfPage=\{outOfPage\}/);
+assert.match(windingLayoutSource, /const markerRadius = slotMarkerRadius\(slotCount, ringLayers, layerSplit\);/);
+assert.doesNotMatch(windingLayoutSource, /side\.direction === 'out' \? '⊙'/);
+// The ring zooms and pans like the 2D view, with its controls in the same bottom-bar slot.
+assert.match(windingLayoutSource, /const navigation = useViewportNavigation\(\);/);
+assert.match(windingLayoutSource, /createPortal\(\s*<ViewportNavigationControls/);
+assert.match(workspaceSource, /<WindingLayoutView config=\{config\} geometry=\{geometry \?\? null\} navigationSlot=\{navigationSlot\} \/>/);
 assert.match(windingLayoutSource, /Parallel paths/);
+// A long chain wraps like a snake to the width the paths section has, measured
+// before paint and followed as the panel resizes; the layout itself is checked in
+// test-winding-wiring.mjs.
+assert.match(windingLayoutSource, /from '\.\/windingWiring'/);
+assert.match(windingLayoutSource, /const layout = layoutPhaseWiring\(branches\.map\(\(branch\) => branch\.length\), perRow\);/);
+assert.match(windingLayoutSource, /<section className="wl-paths" ref=\{pathsRef\}/);
+assert.match(windingLayoutSource, /useLayoutEffect\(\(\) => \{[\s\S]*?new ResizeObserver\(measure\)[\s\S]*?observer\.disconnect\(\)/);
+assert.match(windingLayoutSource, /coilsPerRow\(pathsWidth === null \? null : pathsWidth - PHASE_TAG_SPACE\)/);
+assert.match(windingLayoutSource, /d=\{placed\.joins\[coilIndex - 1\]\}/);
+assert.match(windingLayoutSource, /textAnchor=\{layout\.neutralLabel\.anchor\}>N</);
+assert.match(windingLayoutSource, /\{leftover \? 'left over' : `path \$\{branchIndex \+ 1\}`\}/);
+assert.match(windingLayoutSource, /\{slotLabel\(coil\.slot_in\)\}&ndash;\{slotLabel\(coil\.slot_out\)\}/);
 assert.match(workspaceSource, /public-component-detail-card/);
 assert.match(workspaceSource, /Selected component/);
 assert.match(workspaceSource, /public-component-canvas-label/);
@@ -1281,12 +1311,22 @@ assert.match(styleSource, /\.public-solve-workspace\.is-viewport-expanded \.publ
 assert.match(styleSource, /\.design-workspace\.is-viewport-expanded \.public-3d-part-toggles,[\s\S]*?\.public-solve-workspace\.is-viewport-expanded \.public-3d-part-toggles \{[\s\S]*?top: 16px;[\s\S]*?left: 112px;/);
 assert.match(styleSource, /\.public-viewport-expand \{/);
 assert.match(styleSource, /\.public-motor-viewport \.viewport-bottom-bar \{[^}]*bottom: 0;/);
-assert.match(styleSource, /\.public-winding-layout \.wl-scroll,[\s\S]*?width: min\(100%, 1180px\);[\s\S]*?margin-inline: auto;/);
-assert.match(styleSource, /\.public-winding-layout \.wl-strip \{[^}]*margin-inline: auto;/);
+assert.match(styleSource, /\.public-winding-layout > header,\s*\.public-winding-layout \.wl-body \{\s*width: min\(100%, 1180px\);\s*margin-inline: auto;/);
+// Narrow, the ring fits the top half and the paths take the bottom half and scroll.
+assert.match(styleSource, /\.public-winding-layout \.wl-ring \{ flex: 1 1 50%; min-height: 0; \}/);
+// Wide, the ring sits left and the paths right, both full height, laid out by the
+// view's own width.
+assert.match(windingLayoutSource, /<div className="wl-body">\s*\{\/\* The stator as a ring/);
+assert.match(styleSource, /\.public-winding-layout \{[^}]*container-type: inline-size;/);
+assert.match(styleSource, /@container \(min-width: 720px\) \{\s*\.public-winding-layout \.wl-body \{ flex-direction: row; \}[\s\S]*?\.public-winding-layout \.wl-paths \{[^}]*border-left: 1px solid var\(--border-subtle\);/);
+// The wiring column is as wide as its wiring; the solver note opens above it, never on it.
+assert.match(styleSource, /\.public-winding-layout \.wl-phase-list \{[^}]*flex: 0 1 auto;[^}]*overflow-x: auto;/);
 assert.match(styleSource, /\.public-winding-layout \.wl-chips \{[^}]*flex: 1 0 100%;[^}]*flex-wrap: nowrap;/);
 assert.match(styleSource, /\.public-winding-layout \.wl-paths-content \{[^}]*flex-wrap: wrap;/);
-assert.match(styleSource, /\.public-winding-layout \.wl-paths-info \{[^}]*max-width: 240px;/);
+assert.match(styleSource, /\.public-winding-layout \.wl-paths-help \{[^}]*justify-self: center;[^}]*max-width: 460px;/);
+assert.doesNotMatch(styleSource, /\.wl-paths-info/);
 assert.match(styleSource, /\.public-winding-layout \.wl-phase-row \{[^}]*justify-content: center;/);
+assert.match(styleSource, /\.public-winding-layout \.wl-wiring-wire \{ fill: none;/);
 assert.match(playbackRasterizerSource, /navigator\.hardwareConcurrency/);
 assert.match(playbackRasterizerSource, /new Worker\(new URL\('\.\/fieldPlaybackWorker\.ts'/);
 assert.match(playbackRasterizerSource, /\/solve\/playback-frame\//);

@@ -10,7 +10,7 @@ application still identifies as 0.3.1; measured commits are retained below.
 The [complete versioned report](../../docs/benchmarks/pyleecan-prius-v1/README.md)
 adds the exact pinned software model in two normal-workspace examples. The clean
 Windows collection at `d993d76` completed **17 jobs and 568 field reports**, with
-**10/10 frozen software checks passing**. Both cases preserve their analytic
+**10/10 original software checks passing**. Both cases preserve their analytic
 geometry, winding, materials and source/case IDs through save and reopen.
 
 | Case | Fresh app | Retained matching software reference |
@@ -129,7 +129,9 @@ The legacy Prius row is still unsupported. Pyleecan Prius software reproduction
 hardware work [#69](https://github.com/coilemdev/coilem/issues/69) /
 [#82](https://github.com/coilemdev/coilem/issues/82) retain distinct model IDs and evidence. The Pyleecan development report above
 supplies its software cases, references, controls and full curve; final-candidate
-measurements and the separate hardware work remain outstanding. Their outcomes cannot be inferred from the 29 supported FEMM cases.
+measurements remain outstanding for v0.4.0. The separate hardware work in
+#69/#82 is explicitly deferred to v0.5.0 and does not block this release.
+Its outcomes cannot be inferred from the 29 supported FEMM cases.
 
 The macOS record predates the changed mesh and reference-dispatch sources and is currently
 NOT_COMPARABLE; Linux full numerical parity and Python 3.15 full numerical
