@@ -110,8 +110,8 @@
     },
     {
       "path": "backend/benchmark_suite/__init__.py",
-      "bytes": 335,
-      "sha256": "f38c0c09ec524419289ce39470429550340e2e6969a568a2315bbd9e14e30f97"
+      "bytes": 344,
+      "sha256": "747bd52aedce6ffb544fc0379fd5ccbd09cb8ede10743f6fc9a145a9484b685d"
     },
     {
       "path": "backend/benchmark_suite/abc_metrics.py",
@@ -126,7 +126,7 @@
     {
       "path": "backend/benchmark_suite/cli.py",
       "bytes": 20797,
-      "sha256": "e1e6106a664527f03af89bdb23b10ad19d83cf185e7fb2f246e2eec08b299fcb"
+      "sha256": "cfa160d834dbcc4a6c3d012154ffffa74539712409ab034ff69e42b7b026fe55"
     },
     {
       "path": "backend/benchmark_suite/command.py",
@@ -160,8 +160,8 @@
     },
     {
       "path": "backend/benchmark_suite/references.py",
-      "bytes": 3526,
-      "sha256": "563ab74ec26c7cfdf8ad1876e13e24d9e57a9534f2417f08f246710a1f72d9d2"
+      "bytes": 6168,
+      "sha256": "0e6a07513e7a80822ccfbee5f6a96364b7cde3ac6aebd855c01d28ef9d05c9a4"
     },
     {
       "path": "backend/benchmark_suite/report.py",
@@ -565,8 +565,8 @@
     },
     {
       "path": "backend/resources.py",
-      "bytes": 8404,
-      "sha256": "911f41b73cf5b08f4900330cf5af4590e0fdf825ae7f941735d8e4f5352e7a23"
+      "bytes": 8783,
+      "sha256": "305416e464cfa4ccbe9dbccc21b9d3d953ec02b18cab3d1d4f8e7c22a3d3d1b3"
     },
     {
       "path": "backend/solve_estimate.py",
@@ -697,6 +697,61 @@
       "path": "benchmarks/abcd-v1.3/protocols/spm_8p12s_reference.json",
       "bytes": 4051,
       "sha256": "56d8421901292e036197f7b7da17c131938746996241edacec46a457d821182e"
+    },
+    {
+      "path": "benchmarks/abcd-v1.4/README.md",
+      "bytes": 1448,
+      "sha256": "5010481c0549a86e47d75bded17cc52b8ea8a1e021ec7dba3df4434fc965e9cd"
+    },
+    {
+      "path": "benchmarks/abcd-v1.4/benchmark_spec.json",
+      "bytes": 20369,
+      "sha256": "6050fdcf3b51c8ba8ee7f5291adb5b8e0ee60339e7d1a4491b6d2d58af3fa8aa"
+    },
+    {
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_14p12s_high_pole_analytical.json",
+      "bytes": 1604,
+      "sha256": "c7eaaaf1081d62fc92fdbcf85bd4a741437dbf2f447bfacafa3d29f571f38045"
+    },
+    {
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_14p12s_high_pole_native-fine.json",
+      "bytes": 1607,
+      "sha256": "d50980ab4aac15eb065fb09632a0f56988cda12a01d4c5a225cf13f02377f12c"
+    },
+    {
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_14p12s_high_pole_native-standard.json",
+      "bytes": 1606,
+      "sha256": "3eb405359dbf6503ea6d29eaf41d595681ae5a7b4a70883aa202df1fd3df6388"
+    },
+    {
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_4p12s_small_analytical.json",
+      "bytes": 1594,
+      "sha256": "da8e001617723fbf8bc27ed803b695e6739e49efb6e191057826aff8316e6166"
+    },
+    {
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_4p12s_small_native-fine.json",
+      "bytes": 1596,
+      "sha256": "0cfcd598575534929f95f5e468efee92531b158d98e8db34aea82c548ef1efdc"
+    },
+    {
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_4p12s_small_native-standard.json",
+      "bytes": 1595,
+      "sha256": "cc111eda6bc19623de00e8a1da66ba396db3d6440126947715b06511c9510357"
+    },
+    {
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_8p12s_reference_analytical.json",
+      "bytes": 1640,
+      "sha256": "d25b5768678f37eca4aa1291dbd479f86cd19b0d4649a21d177ac86eab43e561"
+    },
+    {
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_8p12s_reference_native-fine.json",
+      "bytes": 1642,
+      "sha256": "14a40c1b8b65602bf051c3c71807f39efd516c734a151d3b209d8158aac7f178"
+    },
+    {
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_8p12s_reference_native-standard.json",
+      "bytes": 1641,
+      "sha256": "624b5b2faa387e4965da68cc337c9912da6137e1fc8712934b3f19d49cc7e457"
     },
     {
       "path": "benchmarks/abcd-v1/README.md",
@@ -7174,6 +7229,11 @@
       "sha256": "cc91ebe104dbaf92cc784868428ac2ceac456a6cee63ab92e817fa6e6160d40d"
     },
     {
+      "path": "tests/test_benchmark_cap_registration.py",
+      "bytes": 4202,
+      "sha256": "25a385f5d4467588d13e25fdb9d0ac72ff6de12b9a9d9b18596b0810b1b24669"
+    },
+    {
       "path": "tests/test_benchmark_command.py",
       "bytes": 15903,
       "sha256": "8b9fb97813c49fcb870d0ac14cbced80d8419afe676473971c3eac0300b3bc91"
@@ -7186,12 +7246,12 @@
     {
       "path": "tests/test_benchmark_suite.py",
       "bytes": 31242,
-      "sha256": "a73a1934f4d9f8bd0a2ae9ab2c048b68ff59c29a5852422c6d0d03375181bde9"
+      "sha256": "ef35aa66a1eef31e671c9d5bcdb19b1bdc62e4c1429680b786afc7139148f70b"
     },
     {
       "path": "tests/test_bldc_angle_contract.py",
-      "bytes": 6856,
-      "sha256": "247fa7d7bd0573187b08d519d2845eb8cf5f4aae908fba7466aa415279629626"
+      "bytes": 6902,
+      "sha256": "9dcc422aa11c0472f9a4363779e79d75649fe21e70a9c2320ebbc9f9bd73defa"
     },
     {
       "path": "tests/test_experimental_holem50.py",
@@ -7346,7 +7406,7 @@
     {
       "path": "tests/test_prius_benchmark_case.py",
       "bytes": 11200,
-      "sha256": "2b171036e0173e25db1aa809e5c8cd983df7d301fe3ffaf9d246e83b8c6243dd"
+      "sha256": "deecb9d56e7f42e81fea2cbf2610fab36a450bc8da85e9f568223903b13307b8"
     },
     {
       "path": "tests/test_prius_benchmark_collection.py",
@@ -7506,7 +7566,7 @@
     {
       "path": "tools/analyze_benchmark_runtime.py",
       "bytes": 8455,
-      "sha256": "60a0cd92f1e11ed2d33ddd75433b37dd7f9598ed03eb4b74f69879e68b5b960c"
+      "sha256": "e979dc2c76614895b430e65bea9cbd18995f239f678eece09e443af9d6aa41c5"
     },
     {
       "path": "tools/benchmark_prius.py",
@@ -12533,6 +12593,246 @@
       "path": "docs/NONLINEAR_CONVERGENCE_WINDOWS.md",
       "source_sha256": null,
       "reason": "Record registered convergence checks and measured iteration-cap headroom."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "backend/benchmark_suite/__init__.py",
+      "source_sha256": "f38c0c09ec524419289ce39470429550340e2e6969a568a2315bbd9e14e30f97",
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "backend/benchmark_suite/cli.py",
+      "source_sha256": "e1e6106a664527f03af89bdb23b10ad19d83cf185e7fb2f246e2eec08b299fcb",
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "backend/benchmark_suite/references.py",
+      "source_sha256": "563ab74ec26c7cfdf8ad1876e13e24d9e57a9534f2417f08f246710a1f72d9d2",
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "backend/resources.py",
+      "source_sha256": "911f41b73cf5b08f4900330cf5af4590e0fdf825ae7f941735d8e4f5352e7a23",
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/README.md",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/benchmark_spec.json",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_14p12s_high_pole_analytical.json",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_14p12s_high_pole_native-fine.json",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_14p12s_high_pole_native-standard.json",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_4p12s_small_analytical.json",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_4p12s_small_native-fine.json",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_4p12s_small_native-standard.json",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_8p12s_reference_analytical.json",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_8p12s_reference_native-fine.json",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_8p12s_reference_native-standard.json",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "tests/test_benchmark_cap_registration.py",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "tests/test_benchmark_suite.py",
+      "source_sha256": "a73a1934f4d9f8bd0a2ae9ab2c048b68ff59c29a5852422c6d0d03375181bde9",
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "tests/test_bldc_angle_contract.py",
+      "source_sha256": "247fa7d7bd0573187b08d519d2845eb8cf5f4aae908fba7466aa415279629626",
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "tests/test_prius_benchmark_case.py",
+      "source_sha256": "2b171036e0173e25db1aa809e5c8cd983df7d301fe3ffaf9d246e83b8c6243dd",
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "tools/analyze_benchmark_runtime.py",
+      "source_sha256": "60a0cd92f1e11ed2d33ddd75433b37dd7f9598ed03eb4b74f69879e68b5b960c",
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "backend/benchmark_suite/__init__.py",
+      "source_sha256": "f38c0c09ec524419289ce39470429550340e2e6969a568a2315bbd9e14e30f97",
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "backend/benchmark_suite/cli.py",
+      "source_sha256": "e1e6106a664527f03af89bdb23b10ad19d83cf185e7fb2f246e2eec08b299fcb",
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "backend/benchmark_suite/references.py",
+      "source_sha256": "563ab74ec26c7cfdf8ad1876e13e24d9e57a9534f2417f08f246710a1f72d9d2",
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "backend/resources.py",
+      "source_sha256": "911f41b73cf5b08f4900330cf5af4590e0fdf825ae7f941735d8e4f5352e7a23",
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/README.md",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/benchmark_spec.json",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_14p12s_high_pole_analytical.json",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_14p12s_high_pole_native-fine.json",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_14p12s_high_pole_native-standard.json",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_4p12s_small_analytical.json",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_4p12s_small_native-fine.json",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_4p12s_small_native-standard.json",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_8p12s_reference_analytical.json",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_8p12s_reference_native-fine.json",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_8p12s_reference_native-standard.json",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "tests/test_benchmark_cap_registration.py",
+      "source_sha256": null,
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "tests/test_benchmark_suite.py",
+      "source_sha256": "a73a1934f4d9f8bd0a2ae9ab2c048b68ff59c29a5852422c6d0d03375181bde9",
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "tests/test_bldc_angle_contract.py",
+      "source_sha256": "247fa7d7bd0573187b08d519d2845eb8cf5f4aae908fba7466aa415279629626",
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "tests/test_prius_benchmark_case.py",
+      "source_sha256": "2b171036e0173e25db1aa809e5c8cd983df7d301fe3ffaf9d246e83b8c6243dd",
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
+    },
+    {
+      "base_commit": "cf4b68c0c1f29a2aa634edd52c4d796ca9018489",
+      "path": "tools/analyze_benchmark_runtime.py",
+      "source_sha256": "60a0cd92f1e11ed2d33ddd75433b37dd7f9598ed03eb4b74f69879e68b5b960c",
+      "reason": "Register cap-200 benchmark requests with checked reuse of immutable reference fields."
     }
   ]
 }
