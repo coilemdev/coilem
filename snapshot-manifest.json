@@ -555,8 +555,8 @@
     },
     {
       "path": "backend/reference_models/pyleecan_prius_2004_config.json",
-      "bytes": 6353,
-      "sha256": "550a82fcb407c5cfdb68b57d894d8924cc9f54d2a743afab7ec7a952d6d11ade"
+      "bytes": 6068,
+      "sha256": "9709ff1b1b289eb2c1102da87b5a97596d4427e02aeda99320030832f698ed3a"
     },
     {
       "path": "backend/resources.py",
@@ -6055,13 +6055,13 @@
     },
     {
       "path": "frontend/src/public/examples/prius-2004-loaded-torque-v1.coilem",
-      "bytes": 6717,
-      "sha256": "bce41b796285f52505f7762df3027eb4b7eea0b5664336f487f66ccf6ae73673"
+      "bytes": 6428,
+      "sha256": "2d8377922b8060b5cf0dfca4f972be2dd4c6a51941b35fc913dd34589e6db255"
     },
     {
       "path": "frontend/src/public/examples/prius-2004-tutorial-bemf-v1.coilem",
-      "bytes": 6713,
-      "sha256": "e5bbd4861eeebf88aafeb09107fa3d1e43bbeef1f47ede2968736de391ef0db0"
+      "bytes": 6424,
+      "sha256": "0cc3f63a975dc759a6d2bc798feaea5a979460499d5e7e76572644622eab5e05"
     },
     {
       "path": "frontend/src/public/examples/rotating_field_6p36s.coilem",
