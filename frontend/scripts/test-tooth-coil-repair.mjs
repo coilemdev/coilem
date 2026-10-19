@@ -12,7 +12,7 @@ const {
   repairGuidedSection,
   windingForType,
 } = await importTypeScriptModule(new URL('../src/public/guidedConfigRepair.ts', import.meta.url));
-const { windingLayerOptions, windingLayerWording } = await importTypeScriptModule(new URL('../src/public/toothCoils.ts', import.meta.url));
+const { wholeSlotConcentratedNote, windingLayerOptions, windingLayerWording } = await importTypeScriptModule(new URL('../src/public/toothCoils.ts', import.meta.url));
 const { cloneDefaultConfig } = await importTypeScriptModule(new URL('../src/public/model.ts', import.meta.url));
 
 // Every layout the backend can wind, shared with tests/test_tooth_coil_windings.py and Magneto2D.
@@ -57,6 +57,21 @@ for (const [slots, poles, type] of [[12, 8, 'concentrated'], [24, 8, 'distribute
   // The select box truncates longer choices.
   assert.ok(Object.values(choice).every((text) => text.length <= 11), `${slots}s${poles}p ${type}`);
 }
+
+// Concentrated layouts with q >= 1 hide Wound teeth; an info note says why and
+// what to pick instead. Tooth-coil and distributed layouts get no note.
+assert.equal(
+  wholeSlotConcentratedNote(36, 6, 'concentrated'),
+  "For 6p/36s, coilEM's Concentrated option uses full-pitch coils with one phase per slot, "
+    + "so Wound teeth doesn't apply. For tooth coils in coilEM with 6 poles, use fewer than 18 slots, such as 9.",
+);
+assert.equal(
+  wholeSlotConcentratedNote(36, 8, 'concentrated'),
+  "For 8p/36s, coilEM's Concentrated option uses full-pitch coils with one phase per slot, "
+    + "so Wound teeth doesn't apply. For tooth coils in coilEM with 8 poles, use fewer than 24 slots, such as 12.",
+);
+assert.equal(wholeSlotConcentratedNote(12, 8, 'concentrated'), null);
+assert.equal(wholeSlotConcentratedNote(36, 6, 'distributed'), null);
 
 // Changing layers keeps the parallel paths a divisor of the coils per phase:
 // 8p/12s winds 4 coils per phase with two layers and 2 with one.

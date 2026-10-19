@@ -374,6 +374,9 @@ assert.match(workspaceSource, /publicExampleOptions\(experimentalRotors, 'motor'
 // Hardware-validated motors get their own group, shown only when one is available to this launch.
 assert.match(workspaceSource, /publicExampleOptions\(experimentalRotors, 'benchmark'\)\.length > 0/);
 assert.match(workspaceSource, />Benchmarks</);
+// Benchmarks are experimental for now: every entry carries a yellow Experimental tag.
+assert.match(workspaceSource, /publicExampleOptions\(experimentalRotors, 'benchmark'\)\.map\(\(example\) => \([\s\S]*?<strong>\{example\.label\}<span className=\"public-example-experimental-tag\">Experimental<\/span><\/strong>/);
+assert.match(styleSource, /\.public-project-examples-menu \.public-example-experimental-tag \{[^}]*color: #fbbf24;/);
 assert.match(exampleDesignsSource, /Boolean\(option\.benchmark\) === \(group === 'benchmark'\)/);
 assert.match(exampleDesignsSource, /id: 'ornl-prius-2004-holem50',[\s\S]*?experimental: true,[\s\S]*?benchmark: true/);
 assert.match(workspaceSource, /public-project-submenu-trigger/);

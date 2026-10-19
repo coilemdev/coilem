@@ -5875,8 +5875,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 156056,
-      "sha256": "61b5b629e0d225cf07c7c409e37dbf97e8633d4fe5b2260c631d1be3b63f5e91"
+      "bytes": 156491,
+      "sha256": "6e0f92e167787e642956dd7dbf3f46fb043dca1fbfc51a0313752ff3943a45c9"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -5890,8 +5890,8 @@
     },
     {
       "path": "frontend/scripts/test-tooth-coil-repair.mjs",
-      "bytes": 8373,
-      "sha256": "a1a965fb3ea640dd2497b46b6bd48624fb3081fb06bcc7768e746d0606373392"
+      "bytes": 9248,
+      "sha256": "e896db2b872e75cc944ac43a6ec27cf0401b06fad742b6cb71617c77e16098ef"
     },
     {
       "path": "frontend/scripts/test-viewport-transform.mjs",
@@ -6290,8 +6290,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 222244,
-      "sha256": "1200cc7326b4d891b198907a4649f5411914d797cd32ce29c56a36042cd836ff"
+      "bytes": 222788,
+      "sha256": "3f0732a86038a3d6e96160d4a525be41119cef5d0612cd04b8a5b9fbc5bddf1f"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -6700,13 +6700,13 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 264768,
-      "sha256": "cb1d0b142d500dc21774c61f07a40b68e1abe2878a51e416aed1c857d22f4565"
+      "bytes": 265242,
+      "sha256": "75ef57f1d76f3a85ee3ab60fb0ae4497ff22219747ddb595ca4fb62c787b8f9f"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
-      "bytes": 7892,
-      "sha256": "d876ce6bc3ad85a09dcfeb531645baae4b769f98299dbcafb5f003367ef35450"
+      "bytes": 8820,
+      "sha256": "6ffc1aec2725bdddf1a1342ca55c5418c80f1938d2331f9af8bb156ed008c9bf"
     },
     {
       "path": "frontend/src/public/tutorials/PublicTutorials.tsx",
@@ -12124,6 +12124,48 @@
       "path": "frontend/src/public/guidedConfigRepair.ts",
       "source_sha256": "1fbf251e9a7b3a53c05b921ddaab58d2ceaab23efdce8e79f9dabaa52fa710e7",
       "reason": "Reset Layers to 1 when Winding > Type switches to Concentrated on a q >= 1 layout such as 6p/36s, keeping parallel paths a divisor."
+    },
+    {
+      "base_commit": "816c50fcf22071d6627ce474bd9206881e09899d",
+      "path": "frontend/scripts/test-tooth-coil-repair.mjs",
+      "source_sha256": "6808ab126570cab3b8f1988a239b4f4fb32411f42e505a6573524bd0a339b3f1",
+      "reason": "Explain why Wound teeth is hidden for q >= 1 concentrated layouts such as 6p/36s with an info note."
+    },
+    {
+      "base_commit": "5ae948b08d0f5db588704165884d02a1b57e1c43",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "1200cc7326b4d891b198907a4649f5411914d797cd32ce29c56a36042cd836ff",
+      "reason": "Explain why Wound teeth is hidden for q >= 1 concentrated layouts such as 6p/36s with an info note."
+    },
+    {
+      "base_commit": "5ae948b08d0f5db588704165884d02a1b57e1c43",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "cb1d0b142d500dc21774c61f07a40b68e1abe2878a51e416aed1c857d22f4565",
+      "reason": "Explain why Wound teeth is hidden for q >= 1 concentrated layouts such as 6p/36s with an info note."
+    },
+    {
+      "base_commit": "816c50fcf22071d6627ce474bd9206881e09899d",
+      "path": "frontend/src/public/toothCoils.ts",
+      "source_sha256": "d876ce6bc3ad85a09dcfeb531645baae4b769f98299dbcafb5f003367ef35450",
+      "reason": "Explain why Wound teeth is hidden for q >= 1 concentrated layouts such as 6p/36s with an info note."
+    },
+    {
+      "base_commit": "5ae948b08d0f5db588704165884d02a1b57e1c43",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "fd17db867e643ab1c719554788cb3c0e7322256e0208f99f26d7bf741241d1be",
+      "reason": "Tag the benchmark examples Experimental in yellow in the Examples menu."
+    },
+    {
+      "base_commit": "3ae03c6d260e8a40f6e1bd227cda59f2e7f5b2e1",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "a7085978edcbaabf5d600845173eebfa65f3adcd211f7da4d82ebe9d3308bc83",
+      "reason": "Tag the benchmark examples Experimental in yellow in the Examples menu."
+    },
+    {
+      "base_commit": "3ae03c6d260e8a40f6e1bd227cda59f2e7f5b2e1",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "dd8bf5753dff5d5d72dbbc9f0c0c8806fbd3fe1781dd5abad27eea904c8d874f",
+      "reason": "Tag the benchmark examples Experimental in yellow in the Examples menu."
     }
   ]
 }
