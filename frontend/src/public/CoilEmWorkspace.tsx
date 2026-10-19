@@ -1939,7 +1939,7 @@ function ViewportChrome({
               onTargetChange={setMaterialTarget}
             />
           ) : showWindingLayout ? (
-            <WindingLayoutView config={config} geometry={geometry ?? null} />
+            <WindingLayoutView config={config} geometry={geometry ?? null} navigationSlot={navigationSlot} />
           ) : (
             <MotorCanvas
               geometry={geometry}
