@@ -381,6 +381,12 @@ class EfficiencyMap(BaseModel):
     efficiency_pct: list[list[Optional[float]]]
     copper_loss_W: list[list[Optional[float]]]
     iron_loss_W: list[list[Optional[float]]]
+    phase_current_rms_A: Optional[list[list[Optional[float]]]] = Field(
+        default=None, description="The least-loss phase current at each point, rms"
+    )
+    current_angle_deg: Optional[list[list[Optional[float]]]] = Field(
+        default=None, description="Its current angle γ: 0° all q-axis, positive toward field weakening"
+    )
     mechanical_loss_W: float = Field(default=0.0, ge=0)
     winding_temperature_C: float = Field(ge=-50.0, le=250.0)
     status: OutputStatus = "experimental"
@@ -392,8 +398,10 @@ class EfficiencyMap(BaseModel):
             if any(later <= earlier for earlier, later in zip(axis, axis[1:])):
                 raise ValueError(f"{name} must be strictly increasing")
         rows, columns = len(self.torque_Nm), len(self.speed_rpm)
-        for name in ("efficiency_pct", "copper_loss_W", "iron_loss_W"):
+        for name in ("efficiency_pct", "copper_loss_W", "iron_loss_W", "phase_current_rms_A", "current_angle_deg"):
             matrix = getattr(self, name)
+            if matrix is None:
+                continue
             if len(matrix) != rows or any(len(row) != columns for row in matrix):
                 raise ValueError(f"{name} must have {rows} rows of {columns} values")
         for row in self.efficiency_pct:

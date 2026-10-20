@@ -62,6 +62,8 @@ export function startMapJob(request: PublicSolveRequest, settings: MapSettings, 
 export interface PanelInputs {
   limits: DriveLimits;
   preset: MapSettings['preset'];
+  /** The DC bus was typed in, so it is no longer the back-EMF estimate. */
+  busEdited?: boolean;
 }
 
 const panelInputs = new Map<string, PanelInputs>();

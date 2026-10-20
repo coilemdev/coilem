@@ -4705,6 +4705,13 @@ body {
 .performance-limits label:last-child { grid-column: span 2; }
 .performance-limits select { grid-column: 1 / -1; font-family: var(--font-sans); }
 .performance-limits small { color: var(--text-muted); font-size: 10px; }
+.performance-limit-note { grid-column: 1 / -1; color: var(--text-muted); font-size: 9px; font-style: normal; line-height: 1.35; }
+.performance-limits label.is-estimated input { border-color: var(--warning); border-style: dashed; }
+.performance-limits label.is-estimated .performance-limit-note { color: var(--warning); }
+.performance-solved-ring { fill: rgba(10, 12, 16, .55); stroke: var(--text-primary); stroke-width: 2; }
+.performance-solved-dot { fill: var(--text-primary); }
+.performance-solved-label { fill: var(--text-primary); font: 600 10px var(--font-sans); paint-order: stroke; stroke: rgba(10, 12, 16, .85); stroke-width: 3px; }
+.performance-solved-swatch { width: 9px !important; height: 9px !important; border: 2px solid var(--text-primary); border-radius: 50%; background: transparent !important; }
 .performance-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .performance-actions button { padding: 6px 11px; border: 1px solid var(--border-default); border-radius: 6px; background: transparent; color: var(--text-secondary); font-size: 11px; cursor: pointer; }
 .performance-actions button.performance-primary { border-color: var(--border-accent); color: var(--text-accent); }

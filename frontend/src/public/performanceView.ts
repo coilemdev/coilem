@@ -22,6 +22,19 @@ function roundUp(value: number, step: number): number {
   return Math.ceil(value / step - 1e-9) * step;
 }
 
+/** Phase-current units the drive inputs are shown in; the API and the map work in peak amperes. */
+export interface CurrentUnits {
+  unit: 'A rms' | 'A peak';
+  fromPeak: (peakA: number) => number;
+  toPeak: (value: number) => number;
+}
+
+/** The Solve page's convention: peak when the design is set to peak, rms otherwise (six-step plateau included). */
+export function currentUnits(convention: string | null | undefined): CurrentUnits {
+  if (convention === 'peak') return { unit: 'A peak', fromPeak: (value) => value, toPeak: (value) => value };
+  return { unit: 'A rms', fromPeak: (value) => value / Math.SQRT2, toPeak: (value) => value * Math.SQRT2 };
+}
+
 export interface DriveDefaultsInput {
   ratedSpeedRpm: number;
   /** The solved operating point's rms phase current. */
@@ -29,24 +42,39 @@ export interface DriveDefaultsInput {
   /** Rms line-to-neutral back-EMF fundamental at the rated speed. */
   backEmfRmsV: number | null | undefined;
   dcBusV?: number | null;
+  /** Peak amperes per unit the inputs are shown in (√2 for rms), so defaults round in that unit. */
+  shownUnitPeakA?: number;
 }
 
 /**
- * Starting limits for a run: twice the solved current as the peak, the solved
- * current as the continuous limit, a bus that reaches the rated speed with
- * about 30% headroom over the back EMF, and three times the rated speed.
+ * Starting limits for a run: the solved current as the continuous limit, twice
+ * that as the peak, a bus that reaches the rated speed with about 30% headroom
+ * over the back EMF, and three times the rated speed. Currents are returned in
+ * peak amperes, rounded in the unit they are shown in.
  */
-export function defaultDriveLimits({ ratedSpeedRpm, phaseCurrentRmsA, backEmfRmsV, dcBusV }: DriveDefaultsInput): DriveLimits {
+export function defaultDriveLimits({ ratedSpeedRpm, phaseCurrentRmsA, backEmfRmsV, dcBusV, shownUnitPeakA = 1 }: DriveDefaultsInput): DriveLimits {
   const solvedPeak = finite(phaseCurrentRmsA) && phaseCurrentRmsA > 0 ? phaseCurrentRmsA * Math.SQRT2 : 10;
   const emfPeak = finite(backEmfRmsV) && backEmfRmsV > 0 ? backEmfRmsV * Math.SQRT2 : 10;
   const bus = finite(dcBusV) && dcBusV > 0 ? dcBusV : roundUp(Math.sqrt(3) * emfPeak * 1.3, 10);
+  const continuousShown = roundUp(solvedPeak / shownUnitPeakA, 0.5);
   return {
     dc_bus_V: bus,
     modulation_index_max: SVPWM_MODULATION,
-    peak_current_A: roundUp(2 * solvedPeak, 1),
-    continuous_current_A: roundUp(solvedPeak, 0.5),
+    peak_current_A: 2 * continuousShown * shownUnitPeakA,
+    continuous_current_A: continuousShown * shownUnitPeakA,
     max_speed_rpm: roundUp(3 * Math.max(ratedSpeedRpm, 100), 100),
   };
+}
+
+/** Efficiency of the map cell nearest a point, or null when the point is off the map or above the envelope. */
+export function efficiencyAt(map: EfficiencyMap, speedRpm: number, torqueNm: number): number | null {
+  const { speed_rpm: speeds, torque_Nm: torques } = map;
+  if (speeds.length < 2 || torques.length < 2) return null;
+  const column = Math.round((speedRpm - speeds[0]) / (speeds[1] - speeds[0]));
+  const row = Math.round((torqueNm - torques[0]) / (torques[1] - torques[0]));
+  if (row < 0 || row >= torques.length || column < 0 || column >= speeds.length) return null;
+  const value = map.efficiency_pct[row][column];
+  return finite(value) ? value : null;
 }
 
 /** Round tick values from 0 to the first at or above max: steps of 1, 2 or 5 × 10ⁿ. */
@@ -86,15 +114,44 @@ export function efficiencyColor(eta: number, bands: { floor: number; top: number
   return rampColor(EFFICIENCY_RAMP, (banded - bands.floor) / Math.max(bands.top - bands.floor, bands.step));
 }
 
+export interface CurvePoint {
+  torque: number;
+  power: number;
+  region: string;
+  /** Phase current magnitude, peak amperes, and its angle γ (0° all q-axis). */
+  currentPeakA: number;
+  gammaDeg: number;
+}
+
 /** Value of a curve at a speed by linear interpolation; null outside its speeds. */
-export function curveAt(curve: TorqueSpeedCurve, speedRpm: number): { torque: number; power: number; region: string } | null {
+export function curveAt(curve: TorqueSpeedCurve, speedRpm: number): CurvePoint | null {
   const speeds = curve.speed_rpm;
   if (!speeds.length || speedRpm < speeds[0] || speedRpm > speeds[speeds.length - 1]) return null;
   let index = speeds.findIndex((speed) => speed >= speedRpm);
   if (index <= 0) index = 1;
   const t = (speedRpm - speeds[index - 1]) / Math.max(speeds[index] - speeds[index - 1], 1e-12);
   const lerp = (values: number[]) => values[index - 1] + Math.min(Math.max(t, 0), 1) * (values[index] - values[index - 1]);
-  return { torque: lerp(curve.torque_Nm), power: lerp(curve.power_W), region: curve.region[t < 0.5 ? index - 1 : index] };
+  const iD = lerp(curve.i_d_A);
+  const iQ = lerp(curve.i_q_A);
+  return {
+    torque: lerp(curve.torque_Nm),
+    power: lerp(curve.power_W),
+    region: curve.region[t < 0.5 ? index - 1 : index],
+    currentPeakA: Math.hypot(iD, iQ),
+    gammaDeg: (Math.atan2(-iD, iQ) * 180) / Math.PI,
+  };
+}
+
+/** The least-loss current at the map cell nearest a point, rms and angle, or null. */
+export function currentAt(map: EfficiencyMap, speedRpm: number, torqueNm: number): { rmsA: number; gammaDeg: number | null } | null {
+  const { speed_rpm: speeds, torque_Nm: torques } = map;
+  if (!map.phase_current_rms_A || speeds.length < 2 || torques.length < 2) return null;
+  const column = Math.round((speedRpm - speeds[0]) / (speeds[1] - speeds[0]));
+  const row = Math.round((torqueNm - torques[0]) / (torques[1] - torques[0]));
+  if (row < 0 || row >= torques.length || column < 0 || column >= speeds.length) return null;
+  const rms = map.phase_current_rms_A[row]?.[column];
+  const gamma = map.current_angle_deg?.[row]?.[column];
+  return finite(rms) ? { rmsA: rms, gammaDeg: finite(gamma) ? gamma : null } : null;
 }
 
 export interface InductanceRow {

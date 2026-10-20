@@ -27,8 +27,11 @@ import type {
 } from './performance';
 import {
   axisTop,
+  currentAt,
+  currentUnits,
   curveAt,
   defaultDriveLimits,
+  efficiencyAt,
   efficiencyBands,
   efficiencyColor,
   estimateMapSeconds,
@@ -79,6 +82,24 @@ function Axes({ xMax, yMax, xLabel, yLabel, yFormat = (value: number) => signifi
   );
 }
 
+/** The run's own operating point: its speed and solved torque. */
+interface SolvedPoint {
+  speedRpm: number;
+  torqueNm: number;
+}
+
+function SolvedMarker({ cx, cy, label }: { cx: number; cy: number; label: string }) {
+  if (!Number.isFinite(cx) || !Number.isFinite(cy) || cx < MARGIN.left || cx > WIDTH - MARGIN.right || cy < MARGIN.top || cy > HEIGHT - MARGIN.bottom) return null;
+  const right = cx < WIDTH - MARGIN.right - 90;
+  return (
+    <g className="performance-solved-marker" aria-hidden="true">
+      <circle cx={cx} cy={cy} r={6} className="performance-solved-ring" />
+      <circle cx={cx} cy={cy} r={2} className="performance-solved-dot" />
+      <text x={right ? cx + 9 : cx - 9} y={cy - 8} textAnchor={right ? 'start' : 'end'} className="performance-solved-label">{label}</text>
+    </g>
+  );
+}
+
 function usePlotPointer(xMax: number) {
   const [speed, setSpeed] = useState<number | null>(null);
   const onMove = (event: React.PointerEvent<SVGSVGElement>) => {
@@ -90,7 +111,7 @@ function usePlotPointer(xMax: number) {
   return { speed, onMove, onLeave: () => setSpeed(null) };
 }
 
-function TorqueSpeedChart({ envelope }: { envelope: TorqueSpeedEnvelope }) {
+function TorqueSpeedChart({ envelope, formatCurrent, solved }: { envelope: TorqueSpeedEnvelope; formatCurrent: (peakA: number) => string; solved: SolvedPoint | null }) {
   const [quantity, setQuantity] = useState<'torque' | 'power'>('torque');
   const curves = envelope.curves;
   const xMax = axisTop(Math.max(...curves.map((curve) => curve.max_speed_rpm), 1), 6);
@@ -107,7 +128,7 @@ function TorqueSpeedChart({ envelope }: { envelope: TorqueSpeedEnvelope }) {
     const at = curveAt(curve, pointer.speed as number);
     if (!at) return `${curve.limit === 'peak' ? 'Peak' : 'Continuous'} —`;
     const value = quantity === 'torque' ? at.torque : at.power / 1000;
-    return `${curve.limit === 'peak' ? 'Peak' : 'Continuous'} ${significant(value)} ${unit} (${REGION_LABEL[at.region] ?? at.region})`;
+    return `${curve.limit === 'peak' ? 'Peak' : 'Continuous'} ${significant(value)} ${unit} at ${formatCurrent(at.currentPeakA)}, γ ${Math.round(at.gammaDeg)}° (${REGION_LABEL[at.region] ?? at.region})`;
   });
   return (
     <figure className="performance-chart">
@@ -122,9 +143,10 @@ function TorqueSpeedChart({ envelope }: { envelope: TorqueSpeedEnvelope }) {
         {curves.map((curve) => (
           <span key={curve.limit}>
             <i style={{ backgroundColor: CURVE_COLORS[curve.limit] }} />
-            {curve.limit === 'peak' ? 'Peak' : 'Continuous'}, {significant(curve.limit === 'peak' ? envelope.limits.peak_current_A : envelope.limits.continuous_current_A ?? 0)} A peak
+            {curve.limit === 'peak' ? 'Peak' : 'Continuous'}, {formatCurrent(curve.limit === 'peak' ? envelope.limits.peak_current_A : envelope.limits.continuous_current_A ?? 0)}
           </span>
         ))}
+        {solved && <span><i className="performance-solved-swatch" />Solved point, {significant(solved.torqueNm)} N·m at {significant(solved.speedRpm)} rpm</span>}
       </div>
       <p className="performance-readout" aria-live="polite">
         {pointer.speed === null ? `Base speed ${significant(peak.base_speed_rpm)} rpm · top speed ${significant(peak.max_speed_rpm)} rpm. Hover for values.` : `${significant(pointer.speed)} rpm · ${readout?.join(' · ')}`}
@@ -143,6 +165,13 @@ function TorqueSpeedChart({ envelope }: { envelope: TorqueSpeedEnvelope }) {
             strokeLinejoin="round"
           />
         ))}
+        {solved && (
+          <SolvedMarker
+            cx={x(solved.speedRpm)}
+            cy={y(quantity === 'torque' ? solved.torqueNm : (solved.torqueNm * solved.speedRpm * 2 * Math.PI) / 60 / 1000)}
+            label="solved"
+          />
+        )}
         {pointer.speed !== null && <line x1={x(pointer.speed)} x2={x(pointer.speed)} y1={MARGIN.top} y2={HEIGHT - MARGIN.bottom} className="performance-crosshair" />}
         {pointer.speed !== null && curves.map((curve) => {
           const at = curveAt(curve, pointer.speed as number);
@@ -155,7 +184,9 @@ function TorqueSpeedChart({ envelope }: { envelope: TorqueSpeedEnvelope }) {
   );
 }
 
-function EfficiencyMapChart({ map, envelope }: { map: EfficiencyMap; envelope: TorqueSpeedEnvelope }) {
+function EfficiencyMapChart({ map, envelope, solved, formatCurrent }: {
+  map: EfficiencyMap; envelope: TorqueSpeedEnvelope; solved: SolvedPoint | null; formatCurrent: (peakA: number) => string;
+}) {
   const bands = useMemo(() => efficiencyBands(map), [map]);
   const [hover, setHover] = useState<{ row: number; column: number } | null>(null);
   const speeds = map.speed_rpm;
@@ -181,16 +212,22 @@ function EfficiencyMapChart({ map, envelope }: { map: EfficiencyMap; envelope: T
     eta: map.efficiency_pct[hover.row][hover.column] as number,
     copper: map.copper_loss_W[hover.row][hover.column],
     iron: map.iron_loss_W[hover.row][hover.column],
+    current: currentAt(map, speeds[hover.column], torques[hover.row]),
   } : null;
+  const describeCurrent = (current: ReturnType<typeof currentAt>) => (current
+    ? `${formatCurrent(current.rmsA * Math.SQRT2)}${current.gammaDeg !== null ? `, γ ${Math.round(current.gammaDeg)}°` : ''}`
+    : '');
   const legendStops = [];
   for (let value = bands.floor; value < bands.top; value += bands.step) legendStops.push(value);
+  const solvedEta = solved ? efficiencyAt(map, solved.speedRpm, solved.torqueNm) : null;
+  const solvedCurrent = solved ? currentAt(map, solved.speedRpm, solved.torqueNm) : null;
   return (
     <figure className="performance-chart">
-      <div className="performance-chart-heading"><span>Efficiency map</span><span className="performance-chart-note">least-loss current at each point</span></div>
+      <div className="performance-chart-heading"><span>Efficiency map</span><span className="performance-chart-note">each point at its least-loss current; hover to see it</span></div>
       <p className="performance-readout" aria-live="polite">
         {cell && hover
-          ? `${significant(cell.eta, 3)}% at ${significant(speeds[hover.column])} rpm, ${significant(torques[hover.row])} N·m · copper ${significant(cell.copper ?? 0)} W · iron ${significant(cell.iron ?? 0)} W`
-          : 'Hover the map for efficiency and losses at a point. Blank above the peak envelope.'}
+          ? `${significant(cell.eta, 3)}% at ${significant(speeds[hover.column])} rpm, ${significant(torques[hover.row])} N·m · ${cell.current ? `${describeCurrent(cell.current)} · ` : ''}copper ${significant(cell.copper ?? 0)} W · iron ${significant(cell.iron ?? 0)} W`
+          : `${solvedEta !== null && solved ? `Solved point (${significant(solved.speedRpm)} rpm, ${significant(solved.torqueNm)} N·m): ${solvedEta.toFixed(1)}%${solvedCurrent ? ` at ${describeCurrent(solvedCurrent)}` : ''}. ` : ''}Hover the map for efficiency, current and losses at a point. Blank above the peak envelope.`}
       </p>
       <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} role="img" aria-label={`Efficiency over speed and torque, from ${bands.floor}% to ${bands.top}%`} onPointerMove={onMove} onPointerLeave={() => setHover(null)}>
         {map.efficiency_pct.map((row, rowIndex) => row.map((eta, columnIndex) => (eta === null ? null : (
@@ -206,6 +243,7 @@ function EfficiencyMapChart({ map, envelope }: { map: EfficiencyMap; envelope: T
         <Axes xMax={xMax} yMax={yMax} xLabel="Speed (rpm)" yLabel="Torque (N·m)" />
         <path d={peak.speed_rpm.map((speed, index) => `${index ? 'L' : 'M'} ${x(speed).toFixed(1)} ${y(peak.torque_Nm[index]).toFixed(1)}`).join(' ')} fill="none" className="performance-envelope-line" />
         {hover && <rect x={x(speeds[hover.column]) - cellW / 2} y={y(torques[hover.row]) - cellH / 2} width={cellW} height={cellH} className="performance-cell-focus" />}
+        {solved && <SolvedMarker cx={x(solved.speedRpm)} cy={y(solved.torqueNm)} label={solvedEta !== null ? `solved, ${solvedEta.toFixed(1)}%` : 'solved'} />}
       </svg>
       <div className="performance-band-legend" aria-label={`Efficiency bands of ${bands.step} points from ${bands.floor}% to ${bands.top}%`}>
         <div>{legendStops.map((value) => <span key={value} style={{ background: efficiencyColor(value, bands) }} title={`${value}–${value + bands.step}%`} />)}</div>
@@ -232,15 +270,29 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
     project_name: designName ?? `coilEM-${config.topology.toLowerCase()}-${config.rotor.pole_count}p${config.stator.slot_count}s`,
   }), [config, designName]);
   const designKey = useMemo(() => JSON.stringify(request), [request]);
+  // Currents are shown in the Solve page's units; limits stay in peak amperes for the API.
+  const units = useMemo(() => currentUnits(config.solve_params.current_amplitude_convention), [config.solve_params.current_amplitude_convention]);
+  const formatCurrent = useCallback((peakA: number) => `${significant(units.fromPeak(peakA))} ${units.unit}`, [units]);
+  const designBus = config.solve_params.motor_input_dc_bus_V;
+  const busFromDesign = typeof designBus === 'number' && designBus > 0;
   // Inputs survive the panel closing (another plot tab, or back to Solve).
   const [limits, setLimits] = useState<DriveLimits>(() => recallPanelInputs(designKey)?.limits ?? defaultDriveLimits({
     ratedSpeedRpm: config.solve_params.rated_speed_rpm,
     phaseCurrentRmsA: losses?.phase_current_rms_A,
     backEmfRmsV: summary.back_emf_fundamental_V,
-    dcBusV: config.solve_params.motor_input_dc_bus_V,
+    dcBusV: designBus,
+    shownUnitPeakA: units.toPeak(1),
   }));
   const [preset, setPreset] = useState<MapSettings['preset']>(() => recallPanelInputs(designKey)?.preset ?? 'preview');
-  useEffect(() => { rememberPanelInputs(designKey, { limits, preset }); }, [designKey, limits, preset]);
+  const [busEdited, setBusEdited] = useState<boolean>(() => recallPanelInputs(designKey)?.busEdited ?? false);
+  useEffect(() => { rememberPanelInputs(designKey, { limits, preset, busEdited }); }, [designKey, limits, preset, busEdited]);
+  const busEstimated = !busFromDesign && !busEdited;
+  const solvedRmsA = losses?.phase_current_rms_A ?? null;
+  const solvedShown = solvedRmsA !== null ? units.fromPeak(solvedRmsA * Math.SQRT2) : null;
+  const ratedSpeed = config.solve_params.rated_speed_rpm;
+  const solvedPoint: SolvedPoint | null = ratedSpeed > 0 && Number.isFinite(summary.avg_torque_Nm) && summary.avg_torque_Nm > 0
+    ? { speedRpm: ratedSpeed, torqueNm: summary.avg_torque_Nm }
+    : null;
   const [phase, setPhase] = useState<Phase>('checking');
   const [status, setStatus] = useState<PerformanceMapStatus | null>(null);
   const [mapPayload, setMapPayload] = useState<FluxLinkageMapPayload | null>(null);
@@ -333,10 +385,16 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
     }
   };
 
-  const setLimit = (key: keyof DriveLimits) => (event: React.ChangeEvent<HTMLInputElement>) => {
+  const setLimit = (key: keyof DriveLimits, current = false) => (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(event.target.value);
-    if (Number.isFinite(value) && value > 0) setLimits((previous) => ({ ...previous, [key]: value }));
+    if (!Number.isFinite(value) || value <= 0) return;
+    const next = current ? units.toPeak(value) : value;
+    if (key === 'dc_bus_V' && Math.abs(next - limits.dc_bus_V) > 1e-9) setBusEdited(true);
+    setLimits((previous) => ({ ...previous, [key]: next }));
   };
+  const shownCurrent = (peakA: number | null | undefined) => (typeof peakA === 'number' ? Number(units.fromPeak(peakA).toFixed(2)) : '');
+  const otherUnit = units.unit === 'A rms' ? 'A peak' : 'A rms';
+  const inOtherUnit = (peakA: number) => `${significant(units.unit === 'A rms' ? peakA : peakA / Math.SQRT2)} ${otherUnit}`;
 
   const downloadCsv = () => {
     if (!mapPayload) return;
@@ -373,12 +431,35 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
       </header>
       <p className="performance-intro">
         coilEM solves this design over currents up to the peak and current angles from 0° to 90° (a flux-linkage map), then finds the most torque at each speed within the drive limits.
+        Currents are phase currents in {units.unit}, as on the Solve page.
         Torque is electromagnetic; copper loss uses the winding at {significant(windingTemperature)} °C{resistance === null ? ' (no phase resistance recorded: copper loss and IR drop are left out)' : ''}.
       </p>
       <div className="performance-limits">
-        <label><span>Peak current</span><input type="number" min={0.1} step="any" defaultValue={limits.peak_current_A} onBlur={setLimit('peak_current_A')} /><small>A peak</small></label>
-        <label><span>Continuous current</span><input type="number" min={0.1} step="any" defaultValue={limits.continuous_current_A ?? ''} onBlur={setLimit('continuous_current_A')} /><small>A peak</small></label>
-        <label><span>DC bus</span><input type="number" min={1} step="any" defaultValue={limits.dc_bus_V} onBlur={setLimit('dc_bus_V')} /><small>V</small></label>
+        <label>
+          <span>Peak current</span>
+          <input type="number" min={0.1} step="any" defaultValue={shownCurrent(limits.peak_current_A)} onBlur={setLimit('peak_current_A', true)} />
+          <small>{units.unit}</small>
+          <em className="performance-limit-note">Short-term limit: inverter, demagnetisation, heating. {inOtherUnit(limits.peak_current_A)}.</em>
+        </label>
+        <label>
+          <span>Continuous current</span>
+          <input type="number" min={0.1} step="any" defaultValue={shownCurrent(limits.continuous_current_A)} onBlur={setLimit('continuous_current_A', true)} />
+          <small>{units.unit}</small>
+          <em className="performance-limit-note">
+            {solvedShown !== null && limits.continuous_current_A !== null && limits.continuous_current_A !== undefined
+              && Math.abs(units.fromPeak(limits.continuous_current_A) - solvedShown) < 0.26
+              ? `= your solved operating point (${significant(solvedShown)} ${units.unit}).`
+              : solvedShown !== null ? `Your solved operating point is ${significant(solvedShown)} ${units.unit}.` : 'What the cooling carries indefinitely.'}
+          </em>
+        </label>
+        <label className={busEstimated ? 'is-estimated' : undefined}>
+          <span>DC bus</span>
+          <input type="number" min={1} step="any" defaultValue={limits.dc_bus_V} onBlur={setLimit('dc_bus_V')} />
+          <small>V</small>
+          <em className="performance-limit-note">
+            {busFromDesign ? 'From the design.' : busEstimated ? 'Estimated from the back EMF: enter your supply voltage.' : 'As entered.'}
+          </em>
+        </label>
         <label><span>Top speed</span><input type="number" min={100} step="any" defaultValue={limits.max_speed_rpm} onBlur={setLimit('max_speed_rpm')} /><small>rpm</small></label>
         <label><span>Map grid</span>
           <select value={preset} onChange={(event) => setPreset(event.target.value as MapSettings['preset'])}>
@@ -394,9 +475,9 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
               <span style={{ width: `${progress.total ? (100 * progress.done) / progress.total : 0}%` }} />
             </div>
             <p>
-              {otherSolving ? `A map up to ${significant(runningJob.settings.peak_current_A)} A (${runningJob.settings.preset}) is solving: ` : ''}
+              {otherSolving ? `A map up to ${formatCurrent(runningJob.settings.peak_current_A)} (${runningJob.settings.preset}) is solving: ` : ''}
               Solved {progress.done} of {progress.total}
-              {progress.current_peak_A !== undefined ? ` · last ${significant(progress.current_peak_A)} A at ${significant(progress.gamma_deg ?? 0)}°` : ''}
+              {progress.current_peak_A !== undefined ? ` · last ${formatCurrent(progress.current_peak_A)} at ${significant(progress.gamma_deg ?? 0)}°` : ''}
               {progress.eta_s ? ` · ${formatDuration(progress.eta_s)} left` : ''}
             </p>
             <button type="button" onClick={() => { void cancelPublicSolve(); }}>Cancel</button>
@@ -420,7 +501,7 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
               {otherSolving ? 'Another map is solving (the solver runs one at a time). '
                 : phase === 'checking' ? 'Looking for a stored map…'
                   : phase === 'computing' ? 'Computing the curves…'
-                    : mapPayload ? `Map of ${mapPayload.map.points.length} points up to ${significant(mapPayload.map.current_peak_A[mapPayload.map.current_peak_A.length - 1])} A, ${mapPayload.map.rotor_positions} rotor positions each.`
+                    : mapPayload ? `Map of ${mapPayload.map.points.length} points up to ${formatCurrent(mapPayload.map.current_peak_A[mapPayload.map.current_peak_A.length - 1])}, ${mapPayload.map.rotor_positions} rotor positions each.`
                       : 'Each point is a solve of this design; the first also runs the no-load sweep. It keeps running if you switch tabs.'}
             </p>
           </>
@@ -436,8 +517,8 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
             <div><span>Top speed reached</span><strong>{significant(peak.max_speed_rpm)} <small>rpm</small></strong></div>
             <div><span>Best efficiency</span><strong>{bestEfficiency !== null && Number.isFinite(bestEfficiency) ? `${bestEfficiency.toFixed(1)}` : '—'} <small>%</small></strong></div>
           </div>
-          <TorqueSpeedChart envelope={drive.envelope} />
-          <EfficiencyMapChart map={drive.efficiency_map} envelope={drive.envelope} />
+          <TorqueSpeedChart envelope={drive.envelope} formatCurrent={formatCurrent} solved={solvedPoint} />
+          <EfficiencyMapChart map={drive.efficiency_map} envelope={drive.envelope} solved={solvedPoint} formatCurrent={formatCurrent} />
           <div className="performance-footer">
             {inductances.length > 0 && (
               <table className="performance-inductance">
@@ -446,7 +527,7 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
                 <tbody>
                   {inductances.map((row) => (
                     <tr key={row.currentA}>
-                      <th scope="row">{significant(row.currentA)} A</th>
+                      <th scope="row">{formatCurrent(row.currentA)}</th>
                       <td>{row.ldH === null ? '—' : `${significant(row.ldH * 1000)} mH`}</td>
                       <td>{row.lqH === null ? '—' : `${significant(row.lqH * 1000)} mH`}</td>
                     </tr>

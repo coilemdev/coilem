@@ -175,6 +175,9 @@ export interface EfficiencyMap {
   efficiency_pct: Array<Array<number | null>>;
   copper_loss_W: Array<Array<number | null>>;
   iron_loss_W: Array<Array<number | null>>;
+  /** The least-loss phase current at each point, rms, and its current angle γ. */
+  phase_current_rms_A?: Array<Array<number | null>> | null;
+  current_angle_deg?: Array<Array<number | null>> | null;
   mechanical_loss_W: number;
   winding_temperature_C: number;
   status: PerformanceOutputStatus;

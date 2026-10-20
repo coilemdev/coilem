@@ -137,6 +137,9 @@ def test_efficiency_map_reproduces_the_operating_point_bookkeeping():
         assert result.efficiency_pct[row][column] == pytest.approx(expected, abs=0.05)
         assert result.copper_loss_W[row][column] == pytest.approx(copper, rel=0.01)
         assert result.iron_loss_W[row][column] == pytest.approx(iron, rel=1e-6)
+        # The current the point runs at: all on the q-axis, as an rms value.
+        assert result.phase_current_rms_A[row][column] == pytest.approx(current / math.sqrt(2), rel=0.005)
+        assert result.current_angle_deg[row][column] == pytest.approx(0.0, abs=0.2)
     assert result.status == "experimental"
 
 

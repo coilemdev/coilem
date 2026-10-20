@@ -190,8 +190,8 @@
     },
     {
       "path": "backend/drive_performance.py",
-      "bytes": 21776,
-      "sha256": "8f86435639cfb22088169e438205df59ccd9d167aab4b73ec213af697d414d78"
+      "bytes": 22091,
+      "sha256": "8acd4f94e0453c78e0b0399731febdbc630e2358dd1d02fa45b95211ea462cc5"
     },
     {
       "path": "backend/elmer/__init__.py",
@@ -470,8 +470,8 @@
     },
     {
       "path": "backend/models/performance.py",
-      "bytes": 19860,
-      "sha256": "417870e6001d333b070b333dd83dd4ce11aff8b0eb9d5cc163a68062123c3a8f"
+      "bytes": 20304,
+      "sha256": "13cb34039356f1e66534d6b514193b6271df9e2028a9930a13c73fb56cf23fb5"
     },
     {
       "path": "backend/models/result.py",
@@ -6005,8 +6005,8 @@
     },
     {
       "path": "frontend/scripts/test-performance-view.mjs",
-      "bytes": 4436,
-      "sha256": "1754d156c530287370b1359432c6cdf49e2efc4df5e246a306d5129067527025"
+      "bytes": 6603,
+      "sha256": "858c7755fa06d754ea07873f11d27562a0787aa38c2fadadcf6ec12af76444c9"
     },
     {
       "path": "frontend/scripts/test-phase-drive.mjs",
@@ -6500,8 +6500,8 @@
     },
     {
       "path": "frontend/src/public/PerformancePanel.tsx",
-      "bytes": 26222,
-      "sha256": "a405df1e4605b27e63c1ac917280271b0f183035c122cb6ad94b0bca4a1613c1"
+      "bytes": 31579,
+      "sha256": "c5216dbb7082f9149f05250bf83068e082b1de397578fbd4931274a734c54527"
     },
     {
       "path": "frontend/src/public/PublicLanding.tsx",
@@ -6825,8 +6825,8 @@
     },
     {
       "path": "frontend/src/public/mapJob.ts",
-      "bytes": 2757,
-      "sha256": "eed8068dd2aaa4233b2fa80fc56976a9874300225437881c44ff6ea270b99dc2"
+      "bytes": 2856,
+      "sha256": "3f14eee62f094adfd725ee98bb4d6ad058f04ecbe4c2f3385e39fe5721ca8abf"
     },
     {
       "path": "frontend/src/public/meshQuality.ts",
@@ -6860,13 +6860,13 @@
     },
     {
       "path": "frontend/src/public/performance.ts",
-      "bytes": 6905,
-      "sha256": "328b4834a8a5d0839dcbf197431ceb5c7972c10c1386980fa00aa2f0ffb92a9c"
+      "bytes": 7107,
+      "sha256": "8dd57a01d2607a5a6106bf2a93be419113fd369b03a2cce364f26314bd8df70e"
     },
     {
       "path": "frontend/src/public/performanceView.ts",
-      "bytes": 9238,
-      "sha256": "96940196fa7b1d18746f2a998ad528becfe8e33aaa1d2754e138b5c482bb4348"
+      "bytes": 12036,
+      "sha256": "2a81dabb4e01d75e91816807d87604e5eb9e4bba7b89c342fbc21ca12199cfe0"
     },
     {
       "path": "frontend/src/public/phaseDrive.ts",
@@ -6910,8 +6910,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 273738,
-      "sha256": "e004bdd505c08514825a8fbfe51b14ec064b9f80b805c3607933fa7174264d49"
+      "bytes": 274552,
+      "sha256": "0673250dd413d68aa3082d54df8bdbd34861c89e0a86c475f677803711f53e46"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7380,8 +7380,8 @@
     },
     {
       "path": "tests/test_drive_performance.py",
-      "bytes": 9715,
-      "sha256": "a4cf615115e4fe6e98b1aedcb1f8a7f57ac27b65ceba5d594ac1ca0466530d72"
+      "bytes": 9983,
+      "sha256": "b928e06e092784298001448da70a13c5ad16dc8d5ef14cff4976af0560711a86"
     },
     {
       "path": "tests/test_experimental_holem50.py",
@@ -13599,6 +13599,60 @@
       "path": "frontend/src/public/mapJob.ts",
       "source_sha256": null,
       "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
+    },
+    {
+      "base_commit": "f338b33210851ec4da17bd4baa325d1a078ab2b8",
+      "path": "backend/drive_performance.py",
+      "source_sha256": "8f86435639cfb22088169e438205df59ccd9d167aab4b73ec213af697d414d78",
+      "reason": "Drive inputs in the Solve page's current units, solved-point markers, current at each map point (#140-#142)"
+    },
+    {
+      "base_commit": "f338b33210851ec4da17bd4baa325d1a078ab2b8",
+      "path": "backend/models/performance.py",
+      "source_sha256": "417870e6001d333b070b333dd83dd4ce11aff8b0eb9d5cc163a68062123c3a8f",
+      "reason": "Drive inputs in the Solve page's current units, solved-point markers, current at each map point (#140-#142)"
+    },
+    {
+      "base_commit": "f338b33210851ec4da17bd4baa325d1a078ab2b8",
+      "path": "frontend/scripts/test-performance-view.mjs",
+      "source_sha256": "1754d156c530287370b1359432c6cdf49e2efc4df5e246a306d5129067527025",
+      "reason": "Drive inputs in the Solve page's current units, solved-point markers, current at each map point (#140-#142)"
+    },
+    {
+      "base_commit": "f338b33210851ec4da17bd4baa325d1a078ab2b8",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "a405df1e4605b27e63c1ac917280271b0f183035c122cb6ad94b0bca4a1613c1",
+      "reason": "Drive inputs in the Solve page's current units, solved-point markers, current at each map point (#140-#142)"
+    },
+    {
+      "base_commit": "f338b33210851ec4da17bd4baa325d1a078ab2b8",
+      "path": "frontend/src/public/mapJob.ts",
+      "source_sha256": "eed8068dd2aaa4233b2fa80fc56976a9874300225437881c44ff6ea270b99dc2",
+      "reason": "Drive inputs in the Solve page's current units, solved-point markers, current at each map point (#140-#142)"
+    },
+    {
+      "base_commit": "f338b33210851ec4da17bd4baa325d1a078ab2b8",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "328b4834a8a5d0839dcbf197431ceb5c7972c10c1386980fa00aa2f0ffb92a9c",
+      "reason": "Drive inputs in the Solve page's current units, solved-point markers, current at each map point (#140-#142)"
+    },
+    {
+      "base_commit": "f338b33210851ec4da17bd4baa325d1a078ab2b8",
+      "path": "frontend/src/public/performanceView.ts",
+      "source_sha256": "96940196fa7b1d18746f2a998ad528becfe8e33aaa1d2754e138b5c482bb4348",
+      "reason": "Drive inputs in the Solve page's current units, solved-point markers, current at each map point (#140-#142)"
+    },
+    {
+      "base_commit": "f338b33210851ec4da17bd4baa325d1a078ab2b8",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "e004bdd505c08514825a8fbfe51b14ec064b9f80b805c3607933fa7174264d49",
+      "reason": "Drive inputs in the Solve page's current units, solved-point markers, current at each map point (#140-#142)"
+    },
+    {
+      "base_commit": "f338b33210851ec4da17bd4baa325d1a078ab2b8",
+      "path": "tests/test_drive_performance.py",
+      "source_sha256": "a4cf615115e4fe6e98b1aedcb1f8a7f57ac27b65ceba5d594ac1ca0466530d72",
+      "reason": "Drive inputs in the Solve page's current units, solved-point markers, current at each map point (#140-#142)"
     }
   ]
 }

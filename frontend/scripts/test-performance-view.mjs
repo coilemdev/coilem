@@ -27,8 +27,14 @@ assert.notEqual(efficiencyColor(83.0, bands), efficiencyColor(81.0, bands));
 assert.equal(efficiencyColor(70.1, bands), efficiencyColor(81.0, bands), 'lower values share the darkest band');
 assert.equal(efficiencyBands({ efficiency_pct: [[90, 92, 96]] }).floor, 86, 'a narrow map keeps ten points of range');
 
-const curve = { speed_rpm: [0, 1000, 2000], torque_Nm: [10, 10, 6], power_W: [0, 1047, 1257], region: ['mtpa', 'mtpa', 'field_weakening'] };
-assert.deepEqual(curveAt(curve, 1500), { torque: 8, power: 1152, region: 'field_weakening' });
+const curve = {
+  speed_rpm: [0, 1000, 2000], torque_Nm: [10, 10, 6], power_W: [0, 1047, 1257], region: ['mtpa', 'mtpa', 'field_weakening'],
+  i_d_A: [0, 0, -30], i_q_A: [40, 40, 30],
+};
+const at1500 = curveAt(curve, 1500);
+assert.deepEqual({ torque: at1500.torque, power: at1500.power, region: at1500.region }, { torque: 8, power: 1152, region: 'field_weakening' });
+assert.ok(Math.abs(at1500.currentPeakA - Math.hypot(-15, 35)) < 1e-9, 'current magnitude from the interpolated id and iq');
+assert.ok(Math.abs(at1500.gammaDeg - Math.atan2(15, 35) * 180 / Math.PI) < 1e-9);
 assert.equal(curveAt(curve, 2500), null);
 
 const point = (current, gamma, ld, lq) => {
@@ -67,3 +73,29 @@ assert.ok(Math.abs(resumed - perPoint * 10) < 1e-9);
 assert.equal(estimateMapSeconds({ runSolveSeconds: null, runPositions: 48, pointPositions: 12, solves: 29, zeroPointPending: true }), null);
 assert.equal(estimateMapSeconds({ runSolveSeconds: 25.5, runPositions: 48, pointPositions: 12, solves: 0, zeroPointPending: true }), null);
 console.log('performance view: map estimate ok');
+
+const { currentUnits, efficiencyAt } = await importTypeScriptModule(new URL('../src/public/performanceView.ts', import.meta.url));
+// The Solve page's units: rms unless the design is set to peak.
+const rms = currentUnits('rms');
+assert.equal(rms.unit, 'A rms');
+assert.ok(Math.abs(rms.toPeak(35) - 49.497) < 1e-3);
+assert.ok(Math.abs(rms.fromPeak(rms.toPeak(35)) - 35) < 1e-12);
+assert.equal(currentUnits('plateau').unit, 'A rms');
+assert.equal(currentUnits('peak').toPeak(40), 40);
+// Defaults round in the shown unit: 35 A rms solved → continuous 35 A rms, peak 70 A rms.
+const shown = defaultDriveLimits({ ratedSpeedRpm: 2400, phaseCurrentRmsA: 35, backEmfRmsV: 31.2, shownUnitPeakA: Math.SQRT2 });
+assert.ok(Math.abs(rms.fromPeak(shown.continuous_current_A) - 35) < 1e-9);
+assert.ok(Math.abs(rms.fromPeak(shown.peak_current_A) - 70) < 1e-9);
+// The solved point's cell, and nothing off the map or above the envelope.
+const grid = { speed_rpm: [1000, 2000, 3000], torque_Nm: [5, 10, 15], efficiency_pct: [[90, 92, 93], [91, 95, 94], [null, 94, null]] };
+assert.equal(efficiencyAt(grid, 2100, 10.4), 95);
+assert.equal(efficiencyAt(grid, 3000, 15), null);
+assert.equal(efficiencyAt(grid, 5000, 10), null);
+console.log('performance view: current units, defaults and solved point ok');
+
+const { currentAt } = await importTypeScriptModule(new URL('../src/public/performanceView.ts', import.meta.url));
+const currents = { ...grid, phase_current_rms_A: [[10, 9, 8], [20, 18, 17], [null, 27, null]], current_angle_deg: [[0, 0, 5], [0, 3, 12], [null, 20, null]] };
+assert.deepEqual(currentAt(currents, 2100, 10.4), { rmsA: 18, gammaDeg: 3 });
+assert.equal(currentAt(currents, 1000, 15), null);
+assert.equal(currentAt(grid, 2000, 10), null, 'maps without currents show none');
+console.log('performance view: current at a point ok');

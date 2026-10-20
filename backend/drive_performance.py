@@ -413,6 +413,8 @@ def efficiency_map(
     efficiency = np.full(shape, np.nan)
     copper = np.full(shape, np.nan)
     iron = np.full(shape, np.nan)
+    current_rms = np.full(shape, np.nan)
+    current_angle = np.full(shape, np.nan)
     # Per-ray current at each target torque does not depend on speed.
     crossings = np.stack(
         [_first_crossing(plane.currents, plane.values["torque"][:, column], torques) for column in range(plane.gammas.size)],
@@ -453,6 +455,8 @@ def efficiency_map(
         efficiency[ok, column] = eta[ok]
         copper[ok, column] = cu[ok]
         iron[ok, column] = fe[ok]
+        current_rms[ok, column] = amps[rows, choice][ok] / math.sqrt(2)
+        current_angle[ok, column] = gammas[rows, choice][ok]
 
     def matrix(values: np.ndarray) -> list[list[float | None]]:
         return [[None if math.isnan(value) else float(value) for value in row] for row in values]
@@ -470,6 +474,8 @@ def efficiency_map(
         efficiency_pct=matrix(efficiency),
         copper_loss_W=matrix(copper),
         iron_loss_W=matrix(iron),
+        phase_current_rms_A=matrix(current_rms),
+        current_angle_deg=matrix(current_angle),
         mechanical_loss_W=mechanical_loss_W,
         winding_temperature_C=winding_temperature_C,
         status="experimental",
