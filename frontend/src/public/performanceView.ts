@@ -8,7 +8,10 @@
  */
 
 import type { DriveLimits, EfficiencyMap, FluxLinkageMap, TorqueSpeedCurve } from './performance';
-import { densityColor } from './lossesView';
+import { rampColor } from './lossesView';
+
+// Efficiency bands: the validated sequential blue, dark (less efficient) to light.
+const EFFICIENCY_RAMP = ['#184f95', '#2a78d6', '#5598e7', '#9ec5f4', '#cde2fb'] as const;
 
 /** Linear limit of space-vector modulation: peak phase voltage = Vdc / √3. */
 export const SVPWM_MODULATION = 2 / Math.sqrt(3);
@@ -80,7 +83,7 @@ export function efficiencyBands(map: EfficiencyMap): { floor: number; top: numbe
 /** Band colour for an efficiency: the sequential blue ramp, lighter is more efficient. */
 export function efficiencyColor(eta: number, bands: { floor: number; top: number; step: number }): string {
   const banded = Math.floor((Math.max(eta, bands.floor) - bands.floor) / bands.step) * bands.step + bands.floor;
-  return densityColor((banded - bands.floor) / Math.max(bands.top - bands.floor, bands.step));
+  return rampColor(EFFICIENCY_RAMP, (banded - bands.floor) / Math.max(bands.top - bands.floor, bands.step));
 }
 
 /** Value of a curve at a speed by linear interpolation; null outside its speeds. */

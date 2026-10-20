@@ -95,6 +95,9 @@ def test_uniform_sinusoidal_field_matches_hand_calculation():
     assert estimate.total_w == pytest.approx(mass * M350_50A_LOSS.specific_loss_w_per_kg(frequency, peak))
     assert estimate.share_above_validated_frequency == 0.0
     assert estimate.share_above_validated_flux_density == 0.0
+    # Each element's W/kg splits into its hysteresis and eddy-current parts.
+    assert estimate.element_hysteresis_w_per_kg + estimate.element_eddy_w_per_kg == pytest.approx(estimate.element_w_per_kg)
+    assert estimate.element_eddy_w_per_kg[0] == pytest.approx(M350_50A_LOSS.kc * frequency**2 * peak**2)
 
 
 def test_each_harmonic_adds_its_own_loss():

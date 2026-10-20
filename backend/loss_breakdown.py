@@ -109,12 +109,16 @@ def iron_loss_density_on_plot(
     density: dict | None,
     triangles: list,
     regions: list,
+    key: str = "w_per_kg",
 ) -> tuple[list[float | None], float] | None:
-    """Spread the reference frame's W/kg over the field_line_plot mesh, or None when they do not match."""
+    """Spread the reference frame's W/kg over the field_line_plot mesh, or None when they do not match.
+
+    key picks the total ("w_per_kg"), "hysteresis_w_per_kg" or "eddy_w_per_kg".
+    """
 
     if not isinstance(density, dict):
         return None
-    indices, values = density.get("element_index"), density.get("w_per_kg")
+    indices, values = density.get("element_index"), density.get(key)
     if not isinstance(indices, list) or not isinstance(values, list) or len(indices) != len(values) or not indices:
         return None
     if len(regions) != len(triangles):

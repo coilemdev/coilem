@@ -8,6 +8,7 @@
  */
 
 import type { IronLoss, LossBreakdown, PerformanceOutputStatus } from './performance';
+import type { WindingResistance } from './windingResistance';
 
 export interface LossSegment {
   key: 'copper_stack' | 'copper_end' | 'iron_hysteresis' | 'iron_eddy' | 'mechanical';
@@ -113,17 +114,46 @@ export function lossesView(loss: LossBreakdown | null | undefined, iron: IronLos
   return { efficiency, rows, segments, totalW };
 }
 
-// Sequential blue ramp, dark to light, validated against a dark surface.
-const DENSITY_RAMP: Array<[number, number, number]> = [
-  [0x18, 0x4f, 0x95], [0x2a, 0x78, 0xd6], [0x55, 0x98, 0xe7], [0x9e, 0xc5, 0xf4], [0xcd, 0xe2, 0xfb],
-];
+type Rgb = [number, number, number];
 
-/** Color for a value as a fraction of the map's maximum: darker is less loss. */
-export function densityColor(fraction: number): string {
-  const t = Math.min(1, Math.max(0, finite(fraction) ? fraction : 0)) * (DENSITY_RAMP.length - 1);
-  const index = Math.min(DENSITY_RAMP.length - 2, Math.floor(t));
+const hexRgb = (hex: string): Rgb => [1, 3, 5].map((index) => parseInt(hex.slice(index, index + 2), 16)) as Rgb;
+
+/** Colour at a fraction of a ramp listed from the low end to the high end, interpolated between its steps. */
+export function rampColor(stops: readonly string[], fraction: number): string {
+  const ramp = stops.map(hexRgb);
+  const t = Math.min(1, Math.max(0, finite(fraction) ? fraction : 0)) * (ramp.length - 1);
+  const index = Math.min(ramp.length - 2, Math.floor(t));
   const local = t - index;
-  const [a, b] = [DENSITY_RAMP[index], DENSITY_RAMP[index + 1]];
+  const [a, b] = [ramp[index], ramp[index + 1]];
   const channel = (i: number) => Math.round(a[i] + (b[i] - a[i]) * local);
   return `rgb(${channel(0)}, ${channel(1)}, ${channel(2)})`;
+}
+
+// Iron-loss map: slate to pale steel, one hue, low to high, validated on the
+// dark surface (ordinal: monotone lightness, the low end clears 2:1).
+export const STEEL_RAMP = ['#415263', '#5d748b', '#7c99b2', '#a5c2d9', '#daebf7'] as const;
+/** Copper loss in the map: the light copper of the loss bar. */
+export const COPPER_FILL = '#c88335';
+/** Stator parts drawn for context only, behind the loss being shown. */
+export const CONTEXT_FILL = '#2a2e36';
+
+/** Steel colour for a value as a fraction of the map's scale: lighter is more loss. */
+export function densityColor(fraction: number): string {
+  return rampColor(STEEL_RAMP, fraction);
+}
+
+export type LossMapMode = 'iron' | 'hysteresis' | 'eddy' | 'copper';
+
+const CONDUCTOR_DENSITY_KG_M3: Record<WindingResistance['conductor'], number> = { copper: 8960, aluminum: 2700 };
+
+/**
+ * Copper loss per kilogram of the copper in the stack. The 2D model carries a
+ * uniform current density in every coil side, so this one value holds in all
+ * of them; the end turns' share lies outside the cross-section.
+ */
+export function stackCopperWPerKg(loss: LossBreakdown | null | undefined, winding: WindingResistance | null | undefined, slotCount: number): number | null {
+  if (!loss || !winding || !(slotCount > 0) || !finite(loss.copper_active_loss_W)) return null;
+  const copperM3 = slotCount * winding.copper_fill * winding.slot_area_mm2 * 1e-6 * winding.stack_length_mm * 1e-3;
+  const kg = copperM3 * CONDUCTOR_DENSITY_KG_M3[winding.conductor];
+  return kg > 0 ? loss.copper_active_loss_W / kg : null;
 }

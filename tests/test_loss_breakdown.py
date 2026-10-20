@@ -88,6 +88,9 @@ def test_density_spreads_onto_the_stored_mesh_only_when_it_matches():
     assert iron_loss_density_on_plot({"element_index": [1], "w_per_kg": [4.0]}, triangles, regions) is None
     assert iron_loss_density_on_plot({"element_index": [5], "w_per_kg": [4.0]}, triangles, regions) is None
     assert iron_loss_density_on_plot(None, triangles, regions) is None
+    parts = {"element_index": [0, 2], "w_per_kg": [4.0, 9.0], "eddy_w_per_kg": [1.0, 2.0]}
+    assert iron_loss_density_on_plot(parts, triangles, regions, key="eddy_w_per_kg") == ([1.0, None, 2.0], 2.0)
+    assert iron_loss_density_on_plot(parts, triangles, regions, key="hysteresis_w_per_kg") is None
 
 
 def _stored_result() -> dict:
@@ -129,7 +132,10 @@ def _stored_result() -> dict:
 def test_pdf_reports_winding_losses_breakdown_and_density():
     pdf = build_public_run_pdf(project=RAW, request={"resolved_config": RAW}, result=_stored_result(), material={}, manifest={})
     text = "\n".join(page.extract_text() or "" for page in pypdf.PdfReader(io.BytesIO(pdf)).pages)
-    for heading in ("d/q operating point", "Winding", "Losses and efficiency", "Loss breakdown", "Iron-loss density", "Iron loss (W/kg)"):
+    for heading in (
+        "d/q operating point", "Winding", "Losses and efficiency", "Loss breakdown",
+        "Where the iron loss is", "Iron-loss density", "Iron loss (W/kg)", "Cream: not modelled",
+    ):
         assert heading in text
     assert "0.0472 mH" in text and "100.3%" in text
     assert "2 x 0.8 mm" in text

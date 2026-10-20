@@ -69,6 +69,9 @@ export interface LossBreakdown {
 export interface IronLossDensity {
   mesh: 'field_line_plot';
   element_w_per_kg: Array<number | null>;
+  /** Hysteresis and eddy-current parts of element_w_per_kg; absent on runs saved before the split. */
+  element_hysteresis_w_per_kg?: Array<number | null> | null;
+  element_eddy_w_per_kg?: Array<number | null> | null;
   max_w_per_kg: number;
 }
 

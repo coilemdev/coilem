@@ -82,8 +82,13 @@ _RECORD_UNIT_SUFFIXES = (
     ("_rpm", "rpm"), ("_pct", "%"), ("_kg", "kg"), ("_Hz", "Hz"), ("_Wb", "Wb"), ("_W", "W"),
     ("_A", "A"), ("_C", "C"), ("_T", "T"), ("_H", "H"), ("_deg", "deg"),
 )
-# Categorical slots in their validated order; each bar segment is also named in the legend.
-_LOSS_SEGMENT_COLORS = ("#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4")
+# Copper losses in copper shades, iron losses in steel shades, mechanical in green: palette-checked on white.
+# Each bar segment is also named in the legend.
+_LOSS_SEGMENT_COLORS = ("#943b12", "#c07525", "#14598b", "#3b8cba", "#2f8f4e")
+# Iron-loss map on paper: pale steel (little loss) to dark slate (most), one hue, palette-checked on white.
+_STEEL_RAMP = ("#9eb8cc", "#7695ad", "#56728a", "#385169", "#203244")
+_NOT_MODELLED_FILL = "#eee7d9"
+_COIL_SIDE_FILL = "#eceef1"
 
 
 def _record_unit(name: str) -> str:
@@ -923,6 +928,7 @@ class _MotorMeshFigure(Flowable):
         legend_title: str = "Flux density |B| (T)",
         legend_note: str | None = "Yellow: stored field lines",
         value_format: str = "{:.3f}",
+        legend_colors: Sequence[str] = _HEAT_COLORS,
     ) -> None:
         super().__init__()
         self.width = 180 * mm
@@ -933,6 +939,7 @@ class _MotorMeshFigure(Flowable):
         self.legend_title = legend_title
         self.legend_note = legend_note
         self.value_format = value_format
+        self.legend_colors = tuple(legend_colors)
 
     def draw(self) -> None:
         pdf = self.canv
@@ -943,9 +950,10 @@ class _MotorMeshFigure(Flowable):
             low, high = self.field_range
             pdf.setFillColor(_NAVY)
             pdf.drawString(132 * mm, 92 * mm, self.legend_title)
-            for index, color in enumerate(_HEAT_COLORS):
+            step = 72 / len(self.legend_colors)
+            for index, color in enumerate(self.legend_colors):
                 pdf.setFillColor(colors.HexColor(color))
-                pdf.rect(133 * mm, (13 + index * 9) * mm, 6 * mm, 9 * mm,
+                pdf.rect(133 * mm, (13 + index * step) * mm, 6 * mm, step * mm,
                          fill=1, stroke=0)
             pdf.setFillColor(_SLATE)
             for fraction in (0.0, 0.5, 1.0):
@@ -953,7 +961,8 @@ class _MotorMeshFigure(Flowable):
                                self.value_format.format(low + fraction * (high - low)))
             if self.legend_note:
                 pdf.setFont("Helvetica", 7)
-                pdf.drawString(132 * mm, 6 * mm, self.legend_note)
+                for line_index, line in enumerate(self.legend_note.split("\n")):
+                    pdf.drawString(132 * mm, (6 - 3.2 * line_index) * mm, line)
         else:
             pdf.setFillColor(_NAVY)
             pdf.drawString(132 * mm, 92 * mm, "Material regions")
@@ -1181,12 +1190,14 @@ def _winding_and_loss_story(result: Mapping[str, Any], styles: Mapping[str, Para
     if density is not None:
         peak = _mapping(result.get("iron_loss_density")).get("max_w_per_kg")
         story.extend([
-            _section("Iron-loss density", styles),
+            _section("Where the iron loss is", styles),
             density,
             Paragraph(
-                "Iron loss per kilogram of each stator element over one electrical period, on the first stored rotor position's mesh. "
+                "Iron-loss density: iron loss per kilogram of each stator element (hysteresis and eddy current together) "
+                "over one electrical period, on the first stored rotor position's mesh. Darker is more loss. "
                 f"The color scale stops at the 98th percentile; the peak is {_number(peak)} W/kg. "
-                "Rotor and magnet losses are not modelled.",
+                "Rotor and magnet losses are not modelled. Copper loss is not mapped: the model carries the same "
+                "current density in every coil side.",
                 styles["small"],
             ),
         ])
@@ -1265,17 +1276,32 @@ def _iron_loss_density_figure(result: Mapping[str, Any]) -> _MotorMeshFigure | N
     draw = ImageDraw.Draw(image)
     for triangle, group, value in zip(triangles, groups, values):
         if isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value):
-            bucket = min(len(_HEAT_COLORS) - 1, int(min(value, high) / high * len(_HEAT_COLORS)))
-            fill = _HEAT_COLORS[bucket]
+            fill = _ramp_color(_STEEL_RAMP, min(value, high) / high)
+        elif group == "air":
+            fill = "#FFFFFF"
+        elif group == "winding":
+            fill = _COIL_SIDE_FILL
         else:
-            fill = "#E2E8F0" if group != "air" else "#FFFFFF"
+            fill = _NOT_MODELLED_FILL
         draw.polygon([pixels[i] for i in triangle], fill=fill)
     buffer = io.BytesIO()
     image.save(buffer, format="PNG")
     return _MotorMeshFigure(
-        buffer.getvalue(), field_range=(0.0, high), legend_title="Iron loss (W/kg)", legend_note="Grey: no iron-loss model",
-        value_format="{:.3g}",
+        buffer.getvalue(), field_range=(0.0, high), legend_title="Iron loss (W/kg)",
+        legend_note="Cream: not modelled (rotor, magnets)\nLight grey: coil sides (copper loss is uniform)",
+        value_format="{:.3g}", legend_colors=_STEEL_RAMP,
     )
+
+
+def _ramp_color(stops: Sequence[str], fraction: float) -> str:
+    """Hex colour at a fraction of a ramp listed from its low end, interpolated between steps."""
+
+    rgb = [tuple(int(stop[i:i + 2], 16) for i in (1, 3, 5)) for stop in stops]
+    t = min(1.0, max(0.0, fraction)) * (len(rgb) - 1)
+    index = min(len(rgb) - 2, int(t))
+    local = t - index
+    low, high = rgb[index], rgb[index + 1]
+    return "#" + "".join(f"{round(a + (b - a) * local):02x}" for a, b in zip(low, high))
 
 
 def _motor_figure_story(

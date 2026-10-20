@@ -1242,7 +1242,8 @@ body {
 .motor-constants-status.is-check { color: var(--warning); }
 .motor-constants-note { margin: 5px 0 0; color: var(--text-muted); font-size: 8px; line-height: 1.4; }
 /* Losses & efficiency (#138). Series colors are the validated dark-surface categorical slots, in order. */
-.losses-card { --loss-copper-stack: #3987e5; --loss-copper-end: #d95926; --loss-iron-hysteresis: #199e70; --loss-iron-eddy: #c98500; --loss-mechanical: #d55181; }
+/* Copper losses in copper shades, iron losses in steel shades (palette-checked on the dark surface). */
+.losses-card { --loss-copper-stack: #a34922; --loss-copper-end: #c88335; --loss-iron-hysteresis: #296b9f; --loss-iron-eddy: #4d9ecd; --loss-mechanical: #2fa35a; }
 .losses-headline { display: flex; align-items: baseline; gap: 8px; margin: 2px 0 6px; }
 .losses-headline-label { color: var(--text-secondary); font: 400 9px var(--font-sans); }
 .losses-headline strong { color: var(--text-primary); font: 800 16px/1.2 var(--font-mono); font-variant-numeric: tabular-nums; }
@@ -1261,12 +1262,26 @@ body {
 .losses-legend li { display: grid; grid-template-columns: 8px 1fr auto; gap: 6px; align-items: center; color: var(--text-secondary); font: 9px var(--font-sans); }
 .losses-swatch { width: 8px; height: 8px; border-radius: 2px; }
 .losses-legend-value { color: var(--text-primary); font: 9px var(--font-mono); font-variant-numeric: tabular-nums; }
-.losses-density { display: grid; justify-items: center; gap: 4px; margin: 10px 0 0; }
-.losses-density canvas { cursor: crosshair; }
-.losses-density figcaption { display: grid; gap: 2px; width: 240px; }
-.losses-density-scale { height: 6px; border-radius: 3px; background: linear-gradient(90deg, #184f95, #2a78d6, #5598e7, #9ec5f4, #cde2fb); }
-.losses-density-labels { display: flex; justify-content: space-between; color: var(--text-muted); font: 8px var(--font-mono); }
-.losses-density-readout { min-height: 22px; color: var(--text-secondary); font-size: 8px; line-height: 1.4; }
+.losses-map { display: grid; justify-items: center; gap: 6px; margin: 12px 0 0; padding-top: 10px; border-top: 1px solid var(--border-subtle); }
+.losses-map-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; width: 100%; }
+.losses-map-heading h4 { margin: 0; color: var(--text-primary); font-size: 11px; }
+.losses-map-modes { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--border-default); border-radius: 5px; overflow: hidden; }
+.losses-map-modes button { padding: 3px 8px; border: 0; border-right: 1px solid var(--border-subtle); background: transparent; color: var(--text-muted); font-size: 9px; cursor: pointer; }
+.losses-map-modes button:last-child { border-right: 0; }
+.losses-map-modes button[aria-pressed="true"] { background: var(--border-subtle); color: var(--text-primary); }
+.losses-map-stage { position: relative; max-width: 100%; }
+.losses-map-stage canvas { display: block; max-width: 100%; height: auto !important; aspect-ratio: 1; cursor: grab; touch-action: none; }
+.losses-map-stage canvas:active { cursor: grabbing; }
+.losses-map-zoom { position: absolute; top: 4px; right: 4px; display: grid; gap: 3px; }
+.losses-map-zoom button { min-width: 26px; padding: 2px 5px; border: 1px solid var(--border-default); border-radius: 4px; background: rgba(18,20,27,.85); color: var(--text-secondary); font: 10px var(--font-mono); cursor: pointer; }
+.losses-map-zoom button:disabled { opacity: .4; cursor: default; }
+.losses-map figcaption { display: grid; gap: 3px; width: min(360px, 100%); }
+.losses-map-scale { height: 6px; border-radius: 3px; }
+.losses-map-labels { display: flex; justify-content: space-between; color: var(--text-muted); font: 8px var(--font-mono); }
+.losses-map-readout { min-height: 14px; color: var(--text-secondary); font: 9px var(--font-mono); }
+.losses-map-key { color: var(--text-muted); font-size: 9px; line-height: 1.45; }
+.losses-map-swatch { display: inline-block; width: 9px; height: 9px; margin-right: 3px; border-radius: 2px; vertical-align: -1px; }
+.losses-map-swatch.is-hatched { background: repeating-linear-gradient(135deg, #1f2226 0 2px, #3d424d 2px 3px); outline: 1px solid var(--border-subtle); }
 .public-timing-note { margin: 10px 14px; color: var(--text-muted); font-size: 11px; line-height: 1.5; }
 .public-live-stage > .public-motor-viewport { width: 100%; height: 100%; }
 .public-inspect-mesh-btn { position: absolute; z-index: 9; top: 16px; left: 16px; min-height: 32px; padding: 0 11px; border: 1px solid var(--border-default); border-radius: 999px; color: var(--text-secondary); background: rgba(15,17,23,.9); font-size: 10px; box-shadow: var(--shadow-md); }

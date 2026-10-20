@@ -188,6 +188,8 @@ class IronLossEstimate:
     share_above_validated_frequency: float
     share_above_validated_flux_density: float
     element_w_per_kg: np.ndarray | None = None  # (elements,) of the reference frame
+    element_hysteresis_w_per_kg: np.ndarray | None = None
+    element_eddy_w_per_kg: np.ndarray | None = None
     teeth_w: float | None = None
     yoke_w: float | None = None
 
@@ -263,7 +265,11 @@ def harmonic_iron_loss(
     above_frequency = float(loss[frequency[:, 0] > VALIDATED_MAX_FREQUENCY_HZ].sum())
     above_flux_density = float(loss[amplitude > VALIDATED_MAX_FLUX_DENSITY_T].sum())
     element_w = loss.sum(axis=0)
-    element_w_per_kg = np.divide(element_w, mass_kg, out=np.zeros_like(element_w), where=mass_kg > 0)
+
+    def per_kg(watts: np.ndarray) -> np.ndarray:
+        return np.divide(watts, mass_kg, out=np.zeros_like(watts), where=mass_kg > 0)
+
+    element_w_per_kg = per_kg(element_w)
     teeth_w = yoke_w = None
     if history.in_teeth is not None and len(history.in_teeth) == len(element_w):
         teeth_w = float(element_w[history.in_teeth].sum())
@@ -275,6 +281,8 @@ def harmonic_iron_loss(
         share_above_validated_frequency=above_frequency / total if total > 0 else 0.0,
         share_above_validated_flux_density=above_flux_density / total if total > 0 else 0.0,
         element_w_per_kg=element_w_per_kg,
+        element_hysteresis_w_per_kg=per_kg(hysteresis.sum(axis=0)),
+        element_eddy_w_per_kg=per_kg(eddy.sum(axis=0)),
         teeth_w=teeth_w,
         yoke_w=yoke_w,
     )
@@ -343,6 +351,12 @@ def estimate_iron_loss_and_density(
             "element_index": [int(index) for index in reference.element_index],
             "w_per_kg": [float(value) for value in estimate.element_w_per_kg],
         }
+        for key, values in (
+            ("hysteresis_w_per_kg", estimate.element_hysteresis_w_per_kg),
+            ("eddy_w_per_kg", estimate.element_eddy_w_per_kg),
+        ):
+            if values is not None:
+                density[key] = [float(value) for value in values]
     record = IronLoss(
         status="experimental",
         status_reason=IRON_LOSS_STATUS_REASON,

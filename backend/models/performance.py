@@ -220,11 +220,19 @@ class IronLossDensity(BaseModel):
     mesh: Literal["field_line_plot"] = "field_line_plot"
     element_w_per_kg: list[Optional[float]] = Field(description="None outside the stator iron")
     max_w_per_kg: float = Field(ge=0)
+    element_hysteresis_w_per_kg: Optional[list[Optional[float]]] = Field(default=None, description="Hysteresis part of element_w_per_kg")
+    element_eddy_w_per_kg: Optional[list[Optional[float]]] = Field(default=None, description="Eddy-current part of element_w_per_kg")
 
     @model_validator(mode="after")
     def values_must_be_non_negative(self):
-        if any(value is not None and value < 0 for value in self.element_w_per_kg):
-            raise ValueError("element_w_per_kg values must be non-negative")
+        for name in ("element_w_per_kg", "element_hysteresis_w_per_kg", "element_eddy_w_per_kg"):
+            values = getattr(self, name)
+            if values is None:
+                continue
+            if any(value is not None and value < 0 for value in values):
+                raise ValueError(f"{name} values must be non-negative")
+            if len(values) != len(self.element_w_per_kg):
+                raise ValueError(f"{name} must have one value per element")
         return self
 
 

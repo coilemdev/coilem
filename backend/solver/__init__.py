@@ -940,7 +940,16 @@ def _iron_loss_density(density: Any, field_line_plot: Any) -> IronLossDensity | 
     if spread is None:
         return None
     values, maximum = spread
-    return IronLossDensity(element_w_per_kg=values, max_w_per_kg=maximum)
+    parts = {
+        key: iron_loss_density_on_plot(density, field_line_plot.triangles, field_line_plot.regions, key=key)
+        for key in ("hysteresis_w_per_kg", "eddy_w_per_kg")
+    }
+    return IronLossDensity(
+        element_w_per_kg=values,
+        max_w_per_kg=maximum,
+        element_hysteresis_w_per_kg=parts["hysteresis_w_per_kg"][0] if parts["hysteresis_w_per_kg"] else None,
+        element_eddy_w_per_kg=parts["eddy_w_per_kg"][0] if parts["eddy_w_per_kg"] else None,
+    )
 
 
 def _frame_angle_deg(frame: Any) -> float:

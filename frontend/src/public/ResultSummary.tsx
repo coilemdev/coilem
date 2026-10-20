@@ -163,6 +163,8 @@ export function ResultSummary({
           iron={summary.iron_loss}
           density={result.iron_loss_density}
           plot={result.field_line_plot}
+          winding={summary.winding_resistance}
+          slotCount={config.stator.slot_count}
           variant="report"
         />
         <section className="public-magnetic-loading" aria-labelledby={loadingHeadingId}>

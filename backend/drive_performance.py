@@ -459,7 +459,8 @@ def efficiency_map(
 
     notes = [
         "Minimum-loss current at each point, interpolated from the flux-linkage map; torque is electromagnetic.",
-        "Copper loss at the winding temperature; iron loss scaled from the map's reference speed, hysteresis with frequency and eddy current with its square."
+        "Copper loss at the winding temperature; iron loss scaled from the map's reference speed, "
+        "hysteresis with frequency and eddy current with its square."
         if model.iron_loss_available else "Iron loss is not included: the map has no iron loss.",
     ]
     return EfficiencyMap(

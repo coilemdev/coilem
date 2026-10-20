@@ -190,8 +190,8 @@
     },
     {
       "path": "backend/drive_performance.py",
-      "bytes": 21765,
-      "sha256": "911ae115535db97c93af89f9fba8e23fc1325d93783b417a18752ccd17c74a65"
+      "bytes": 21776,
+      "sha256": "8f86435639cfb22088169e438205df59ccd9d167aab4b73ec213af697d414d78"
     },
     {
       "path": "backend/elmer/__init__.py",
@@ -370,8 +370,8 @@
     },
     {
       "path": "backend/iron_loss.py",
-      "bytes": 18603,
-      "sha256": "24d3e9568803349281bfe5897d170b2484099a4c731fe920004663046466cfc4"
+      "bytes": 19192,
+      "sha256": "b74b9e84cccd0fb47ef7954d7e6eff253eb8a89502552e2c18268cff367e2efc"
     },
     {
       "path": "backend/launcher.py",
@@ -395,8 +395,8 @@
     },
     {
       "path": "backend/loss_breakdown.py",
-      "bytes": 5593,
-      "sha256": "7511951037179aa1dadaeffd4b33c85e8e8ef08965094daf8670003371b42a06"
+      "bytes": 5699,
+      "sha256": "10bd3fe20c07307762eba4e1dd2d7c0d457b42efd9f50ffd84a593e35316162a"
     },
     {
       "path": "backend/machine_constants.py",
@@ -470,8 +470,8 @@
     },
     {
       "path": "backend/models/performance.py",
-      "bytes": 19275,
-      "sha256": "3895139707a4215b33d3cd89ba8236471da41e9d589bb2e31177405d252a538b"
+      "bytes": 19860,
+      "sha256": "417870e6001d333b070b333dd83dd4ce11aff8b0eb9d5cc163a68062123c3a8f"
     },
     {
       "path": "backend/models/result.py",
@@ -525,8 +525,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 68132,
-      "sha256": "5bc9a96592d180c68ca910952b0b166d583e43931d175529f4f84e59d5e11a08"
+      "bytes": 69522,
+      "sha256": "eee2f2ccb5a9a2ea4c674bd49adf2806d3eec0ef41a8bb4533584e4015663e3e"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -615,8 +615,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 149100,
-      "sha256": "e02adf3fcf381252381ed481c92473f824c3e2a986357bd229db6cf2e1124c03"
+      "bytes": 149516,
+      "sha256": "997db315ed8fcaba117e9d30441d21bb256962a871adad144b4ca0573004cd45"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -5985,8 +5985,8 @@
     },
     {
       "path": "frontend/scripts/test-losses-view.mjs",
-      "bytes": 3968,
-      "sha256": "71f923422d8676cf3178b2f6944b63104c015b6fa903efa2674b73d19f900d7c"
+      "bytes": 4907,
+      "sha256": "dde4e9626da0140451e38ee5872c97b531ab1814761b6362eaec03418a3712c0"
     },
     {
       "path": "frontend/scripts/test-magnet-coverage.mjs",
@@ -6480,8 +6480,8 @@
     },
     {
       "path": "frontend/src/public/LossesCard.tsx",
-      "bytes": 9340,
-      "sha256": "80b036621eb35048de28c52f42d7a1a44e26716791c4a178ee95bc048123e3d2"
+      "bytes": 19391,
+      "sha256": "dbce3855d40638d49d705f6b9528d74c7730bb524455db8e6f4902f71509fd4a"
     },
     {
       "path": "frontend/src/public/MaterialWorkspace.tsx",
@@ -6525,8 +6525,8 @@
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
-      "bytes": 8552,
-      "sha256": "b6179424e1d5f4c9e184f72156155ba90473e07d491cc600419d8b25af6587af"
+      "bytes": 8646,
+      "sha256": "00f80c741b6761cdad1fb18a04ddd591cf75315fa27abbec0e503bb1bf5c97a9"
     },
     {
       "path": "frontend/src/public/RpmField.tsx",
@@ -6800,8 +6800,8 @@
     },
     {
       "path": "frontend/src/public/lossesView.ts",
-      "bytes": 6884,
-      "sha256": "aa22681a871e99a188ce02b3a3f2d0d13a23ed8f320c8053138d303f396d1d01"
+      "bytes": 8475,
+      "sha256": "6d36c2d4321c70501b1ca6f1d0b4c586cb19e1f5aff9b355c5bbe12c7d53a312"
     },
     {
       "path": "frontend/src/public/machineConstants.ts",
@@ -6855,13 +6855,13 @@
     },
     {
       "path": "frontend/src/public/performance.ts",
-      "bytes": 6579,
-      "sha256": "05c2a16e2f38bc70e03fa5ea9f51c085ead18426ff5fae81da2e1e10fa0e426b"
+      "bytes": 6798,
+      "sha256": "7b339698a423fd4aa731f85cf79c9e686b22ba9cb0b4ceb4568c03be5911f544"
     },
     {
       "path": "frontend/src/public/performanceView.ts",
-      "bytes": 7884,
-      "sha256": "6816dbf9892f72f3114f77fc974ada2df790f634ad2bc257c5f2865384295dc5"
+      "bytes": 8070,
+      "sha256": "ae9da13baaf5a0a2452aa3c368dc5352b49e67442c0c0f608fc906d6cff5d69a"
     },
     {
       "path": "frontend/src/public/phaseDrive.ts",
@@ -6905,8 +6905,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 271995,
-      "sha256": "da89c621568a988d019eb815d85017bd12a0c080bc2bf3dd589c48f6696760be"
+      "bytes": 273738,
+      "sha256": "e004bdd505c08514825a8fbfe51b14ec064b9f80b805c3607933fa7174264d49"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7450,8 +7450,8 @@
     },
     {
       "path": "tests/test_iron_loss.py",
-      "bytes": 11108,
-      "sha256": "22f28610186e80223c75c929322a7d6159ff8780e9e6b0cefd5b5f0650ede205"
+      "bytes": 11415,
+      "sha256": "3279b48c04466d5b6e0f584d37fd7cd06d43d2674cee3b17050835d99258cd29"
     },
     {
       "path": "tests/test_late_reference_comparison.py",
@@ -7495,8 +7495,8 @@
     },
     {
       "path": "tests/test_loss_breakdown.py",
-      "bytes": 7690,
-      "sha256": "3daf7331450104c6fa66bdc5b659e8bf0b8ebf57e725630ea1c83a68f26d4a0e"
+      "bytes": 8064,
+      "sha256": "8761bd820b989f685a4091021165fd80e519df29bc85ead0ed628d01b70d1c96"
     },
     {
       "path": "tests/test_magneto2d_cli_precision.py",
@@ -13438,6 +13438,96 @@
       "path": "tests/test_performance_routes.py",
       "source_sha256": null,
       "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "backend/drive_performance.py",
+      "source_sha256": "911ae115535db97c93af89f9fba8e23fc1325d93783b417a18752ccd17c74a65",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "backend/iron_loss.py",
+      "source_sha256": "24d3e9568803349281bfe5897d170b2484099a4c731fe920004663046466cfc4",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "backend/loss_breakdown.py",
+      "source_sha256": "7511951037179aa1dadaeffd4b33c85e8e8ef08965094daf8670003371b42a06",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "backend/models/performance.py",
+      "source_sha256": "3895139707a4215b33d3cd89ba8236471da41e9d589bb2e31177405d252a538b",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "backend/public_report.py",
+      "source_sha256": "5bc9a96592d180c68ca910952b0b166d583e43931d175529f4f84e59d5e11a08",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "e02adf3fcf381252381ed481c92473f824c3e2a986357bd229db6cf2e1124c03",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "frontend/scripts/test-losses-view.mjs",
+      "source_sha256": "71f923422d8676cf3178b2f6944b63104c015b6fa903efa2674b73d19f900d7c",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "frontend/src/public/LossesCard.tsx",
+      "source_sha256": "80b036621eb35048de28c52f42d7a1a44e26716791c4a178ee95bc048123e3d2",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "b6179424e1d5f4c9e184f72156155ba90473e07d491cc600419d8b25af6587af",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "frontend/src/public/lossesView.ts",
+      "source_sha256": "aa22681a871e99a188ce02b3a3f2d0d13a23ed8f320c8053138d303f396d1d01",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "05c2a16e2f38bc70e03fa5ea9f51c085ead18426ff5fae81da2e1e10fa0e426b",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "frontend/src/public/performanceView.ts",
+      "source_sha256": "6816dbf9892f72f3114f77fc974ada2df790f634ad2bc257c5f2865384295dc5",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "da89c621568a988d019eb815d85017bd12a0c080bc2bf3dd589c48f6696760be",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "tests/test_iron_loss.py",
+      "source_sha256": "22f28610186e80223c75c929322a7d6159ff8780e9e6b0cefd5b5f0650ede205",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": "3daf7331450104c6fa66bdc5b659e8bf0b8ebf57e725630ea1c83a68f26d4a0e",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
     }
   ]
 }
