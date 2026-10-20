@@ -270,8 +270,8 @@
     },
     {
       "path": "backend/flux_linkage_map.py",
-      "bytes": 13188,
-      "sha256": "37efca7666e468a6e36ec8a329eae1266f16c617899808c35e5370b6ae8c4b07"
+      "bytes": 15202,
+      "sha256": "47efb5093e8814818c51d22e89de8f68f22ff54cca86f6dec8f22c796f516ef8"
     },
     {
       "path": "backend/geometry.py",
@@ -370,8 +370,8 @@
     },
     {
       "path": "backend/iron_loss.py",
-      "bytes": 19192,
-      "sha256": "b74b9e84cccd0fb47ef7954d7e6eff253eb8a89502552e2c18268cff367e2efc"
+      "bytes": 20493,
+      "sha256": "ee04ae42120472395028a18efb633469cf66fde2f01f9d4f51ee6debe9980496"
     },
     {
       "path": "backend/launcher.py",
@@ -540,8 +540,8 @@
     },
     {
       "path": "backend/public_routes/performance.py",
-      "bytes": 8251,
-      "sha256": "ffe0abf51dc77f81720222f78799372b3c77492221a0ae178b3b14dc744baea3"
+      "bytes": 8295,
+      "sha256": "0561478fa08f4cd4fec53df07dfed278aeb0c91ad75100409fd366d50efdb5e9"
     },
     {
       "path": "backend/public_routes/preview.py",
@@ -6005,8 +6005,8 @@
     },
     {
       "path": "frontend/scripts/test-performance-view.mjs",
-      "bytes": 3410,
-      "sha256": "88c4f1ceceeb80f690c3af9293d610922f1c461fc637cc2b5834f1838ce24d99"
+      "bytes": 4436,
+      "sha256": "1754d156c530287370b1359432c6cdf49e2efc4df5e246a306d5129067527025"
     },
     {
       "path": "frontend/scripts/test-phase-drive.mjs",
@@ -6500,8 +6500,8 @@
     },
     {
       "path": "frontend/src/public/PerformancePanel.tsx",
-      "bytes": 24019,
-      "sha256": "a05f9e71dac8f45a5e01c6307614b00717192ba903bc531b1cd1e93a353377a8"
+      "bytes": 26222,
+      "sha256": "a405df1e4605b27e63c1ac917280271b0f183035c122cb6ad94b0bca4a1613c1"
     },
     {
       "path": "frontend/src/public/PublicLanding.tsx",
@@ -6824,6 +6824,11 @@
       "sha256": "f512ccf4db09afe8b87248f7d6c93482455db7de499e369e449e9a5998140984"
     },
     {
+      "path": "frontend/src/public/mapJob.ts",
+      "bytes": 2757,
+      "sha256": "eed8068dd2aaa4233b2fa80fc56976a9874300225437881c44ff6ea270b99dc2"
+    },
+    {
       "path": "frontend/src/public/meshQuality.ts",
       "bytes": 3018,
       "sha256": "19cc4ec849519eb4aa8a615a6d5b8773e52ccde85380060da361821bb3ebcc7d"
@@ -6855,13 +6860,13 @@
     },
     {
       "path": "frontend/src/public/performance.ts",
-      "bytes": 6798,
-      "sha256": "7b339698a423fd4aa731f85cf79c9e686b22ba9cb0b4ceb4568c03be5911f544"
+      "bytes": 6905,
+      "sha256": "328b4834a8a5d0839dcbf197431ceb5c7972c10c1386980fa00aa2f0ffb92a9c"
     },
     {
       "path": "frontend/src/public/performanceView.ts",
-      "bytes": 8070,
-      "sha256": "ae9da13baaf5a0a2452aa3c368dc5352b49e67442c0c0f608fc906d6cff5d69a"
+      "bytes": 9238,
+      "sha256": "96940196fa7b1d18746f2a998ad528becfe8e33aaa1d2754e138b5c482bb4348"
     },
     {
       "path": "frontend/src/public/phaseDrive.ts",
@@ -7405,8 +7410,8 @@
     },
     {
       "path": "tests/test_flux_linkage_map.py",
-      "bytes": 7574,
-      "sha256": "756d1207f166edf733918669e43435eb0e616be0c2cc37c4c2a92f0c13f22340"
+      "bytes": 8521,
+      "sha256": "b9cda540bd26f31ab1578629cbbe23d6531cb4514d09ac7330b11fbf7fbf25d5"
     },
     {
       "path": "tests/test_gmsh_sigpipe.py",
@@ -7450,8 +7455,8 @@
     },
     {
       "path": "tests/test_iron_loss.py",
-      "bytes": 11415,
-      "sha256": "3279b48c04466d5b6e0f584d37fd7cd06d43d2674cee3b17050835d99258cd29"
+      "bytes": 12503,
+      "sha256": "7ae1461f24b1780be55ab91a3c746c18c4870f79e21daa8ff1a5ee0f541532cf"
     },
     {
       "path": "tests/test_late_reference_comparison.py",
@@ -7545,8 +7550,8 @@
     },
     {
       "path": "tests/test_performance_routes.py",
-      "bytes": 3982,
-      "sha256": "317b0bdde9333ad5a6185270fe9dcbe8116aa7184c37af2ece9aaaeaa527c236"
+      "bytes": 4305,
+      "sha256": "a2ec62732ee7983effbcd6e28e84932260490ea8ab64719b569a00eca305b631"
     },
     {
       "path": "tests/test_postsolve_pipeline.py",
@@ -13528,6 +13533,72 @@
       "path": "tests/test_loss_breakdown.py",
       "source_sha256": "3daf7331450104c6fa66bdc5b659e8bf0b8ebf57e725630ea1c83a68f26d4a0e",
       "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "d89784b3255cbea9484af85d4e26055e1d403279",
+      "path": "backend/flux_linkage_map.py",
+      "source_sha256": "37efca7666e468a6e36ec8a329eae1266f16c617899808c35e5370b6ae8c4b07",
+      "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
+    },
+    {
+      "base_commit": "d89784b3255cbea9484af85d4e26055e1d403279",
+      "path": "backend/iron_loss.py",
+      "source_sha256": "b74b9e84cccd0fb47ef7954d7e6eff253eb8a89502552e2c18268cff367e2efc",
+      "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
+    },
+    {
+      "base_commit": "d89784b3255cbea9484af85d4e26055e1d403279",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": "ffe0abf51dc77f81720222f78799372b3c77492221a0ae178b3b14dc744baea3",
+      "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
+    },
+    {
+      "base_commit": "d89784b3255cbea9484af85d4e26055e1d403279",
+      "path": "frontend/scripts/test-performance-view.mjs",
+      "source_sha256": "88c4f1ceceeb80f690c3af9293d610922f1c461fc637cc2b5834f1838ce24d99",
+      "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
+    },
+    {
+      "base_commit": "d89784b3255cbea9484af85d4e26055e1d403279",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "a05f9e71dac8f45a5e01c6307614b00717192ba903bc531b1cd1e93a353377a8",
+      "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
+    },
+    {
+      "base_commit": "d89784b3255cbea9484af85d4e26055e1d403279",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "7b339698a423fd4aa731f85cf79c9e686b22ba9cb0b4ceb4568c03be5911f544",
+      "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
+    },
+    {
+      "base_commit": "d89784b3255cbea9484af85d4e26055e1d403279",
+      "path": "frontend/src/public/performanceView.ts",
+      "source_sha256": "ae9da13baaf5a0a2452aa3c368dc5352b49e67442c0c0f608fc906d6cff5d69a",
+      "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
+    },
+    {
+      "base_commit": "d89784b3255cbea9484af85d4e26055e1d403279",
+      "path": "tests/test_flux_linkage_map.py",
+      "source_sha256": "756d1207f166edf733918669e43435eb0e616be0c2cc37c4c2a92f0c13f22340",
+      "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
+    },
+    {
+      "base_commit": "d89784b3255cbea9484af85d4e26055e1d403279",
+      "path": "tests/test_iron_loss.py",
+      "source_sha256": "3279b48c04466d5b6e0f584d37fd7cd06d43d2674cee3b17050835d99258cd29",
+      "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
+    },
+    {
+      "base_commit": "d89784b3255cbea9484af85d4e26055e1d403279",
+      "path": "tests/test_performance_routes.py",
+      "source_sha256": "317b0bdde9333ad5a6185270fe9dcbe8116aa7184c37af2ece9aaaeaa527c236",
+      "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
+    },
+    {
+      "base_commit": "d89784b3255cbea9484af85d4e26055e1d403279",
+      "path": "frontend/src/public/mapJob.ts",
+      "source_sha256": null,
+      "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
     }
   ]
 }

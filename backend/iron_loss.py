@@ -29,7 +29,7 @@ from __future__ import annotations
 
 import hashlib
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any, Sequence, Union
 
 import numpy as np
@@ -237,14 +237,21 @@ def harmonic_iron_loss(
     stack_length_m: float,
     machine_scale: float,
     coefficients: SteinmetzCoefficients = M350_50A_LOSS,
+    half_wave: bool = False,
 ) -> IronLossEstimate:
     """Harmonic Steinmetz loss over one electrical period sampled uniformly.
 
     ``machine_scale`` converts the meshed sector to the whole machine
     (pole count / meshed pole pitches). The Nyquist bin is left out: a
-    uniformly sampled waveform cannot resolve its amplitude.
+    uniformly sampled waveform cannot resolve its amplitude. With
+    ``half_wave`` the history covers half a period and the second half is
+    its negative (see ``_is_uniform_half_cycle``).
     """
 
+    if half_wave:
+        history = replace(
+            history, bx_t=np.concatenate([history.bx_t, -history.bx_t]), by_t=np.concatenate([history.by_t, -history.by_t])
+        )
     positions = history.bx_t.shape[0]
     if positions < 2:
         raise ValueError("iron loss needs at least two rotor positions")
@@ -341,6 +348,7 @@ def estimate_iron_loss_and_density(
             stack_length_m=config.stator.stack_length_mm * 1e-3,
             machine_scale=pole_count / pole_pitches,
             coefficients=coefficients,
+            half_wave=not _is_full_uniform_cycle(angles_elec_deg),
         )
     except ValueError as exc:
         return unavailable(f"Iron loss could not be computed: {exc}."), None
@@ -384,8 +392,8 @@ def iron_loss_unavailable_reason(config: MotorConfig, angles_elec_deg: Sequence[
         return f"No cited loss data for {steel}; iron loss is available for {IRON_LOSS_STEEL} only."
     if config.solve_params is None or config.solve_params.rated_speed_rpm <= 0:
         return "Iron loss needs a nonzero speed."
-    if not _is_full_uniform_cycle(angles_elec_deg):
-        return "Iron loss needs the loaded sweep to cover one full electrical cycle in equal steps."
+    if not _is_full_uniform_cycle(angles_elec_deg) and not _is_uniform_half_cycle(angles_elec_deg):
+        return "Iron loss needs the loaded sweep to cover one full electrical cycle, or half of one, in equal steps."
     return None
 
 
@@ -393,12 +401,29 @@ def _stator_steel(config: MotorConfig) -> str:
     return config.materials.stator_steel if config.materials else IRON_LOSS_STEEL
 
 
-def _is_full_uniform_cycle(angles_elec_deg: Sequence[float]) -> bool:
+def _is_uniform_span(angles_elec_deg: Sequence[float], span_deg: float, minimum: int) -> bool:
     count = len(angles_elec_deg)
-    if count < _MIN_CYCLE_POSITIONS:
+    if count < minimum:
         return False
-    step = 360.0 / count
+    step = span_deg / count
     return all(abs(float(angle) - float(angles_elec_deg[0]) - index * step) <= _ANGLE_TOLERANCE_DEG for index, angle in enumerate(angles_elec_deg))
+
+
+def _is_full_uniform_cycle(angles_elec_deg: Sequence[float]) -> bool:
+    return _is_uniform_span(angles_elec_deg, 360.0, _MIN_CYCLE_POSITIONS)
+
+
+def _is_uniform_half_cycle(angles_elec_deg: Sequence[float]) -> bool:
+    """Half an electrical cycle in equal steps: completed by half-wave symmetry, B(θ + 180°) = −B(θ).
+
+    That holds for coilEM's rotors, whose poles are identical and alternate in
+    polarity, under phase currents that change sign every half cycle (sinusoidal
+    and ideal six-step both do): moving the rotor one pole pitch and negating
+    every current negates every source, and the steel's B-H curve is odd, so the
+    whole field changes sign. It holds for any slot and pole combination.
+    """
+
+    return _is_uniform_span(angles_elec_deg, 180.0, _MIN_CYCLE_POSITIONS // 2)
 
 
 def _stator_elements(regions: Sequence[str]) -> np.ndarray:

@@ -13,6 +13,7 @@ from backend.flux_linkage_map import (
     MapStore,
     map_agreement_pct,
     map_grid,
+    map_positions_per_point,
     map_scope_key,
     map_solve_count,
     point_config,
@@ -84,7 +85,9 @@ def test_point_config_sets_a_sinusoidal_peak_current_at_the_angle():
     config = point_config(_config(current_amplitude_convention="rms", excitation_mode="sinusoidal"), 12.5, 30.0, "preview")
     params = config.solve_params
     assert (params.current_amplitude_A, params.current_amplitude_convention, params.current_angle_deg) == (12.5, "peak", 30.0)
-    assert (params.solve_quality, params.rotor_sweep_range_deg, params.rotor_step_deg) == ("custom", 360.0, 15.0)
+    # Half a cycle, stopping one step short of 180° because a partial sweep includes its end.
+    assert (params.solve_quality, params.rotor_sweep_range_deg, params.rotor_step_deg) == ("custom", 165.0, 15.0)
+    assert map_positions_per_point("preview") == 12 and map_positions_per_point("standard") == 24
     assert params.stream_noload_field_lines is False
     assert config.solve_options.back_emf is False and config.solve_options.torque_sweep is True
     assert point_config(_config(), 0.0, 0.0).solve_options.back_emf is True  # the zero-current point keeps it
@@ -153,3 +156,15 @@ def test_agreement_skips_points_with_next_to_no_torque():
     agreement = dict(zip(((p.current_peak_A, p.gamma_deg) for p in flux_map.points), map_agreement_pct(flux_map)))
     assert agreement[(20.0, 0.0)] == pytest.approx(100.0)
     assert agreement[(20.0, 90.0)] is None and agreement[(0.0, 0.0)] is None
+
+
+def test_a_stored_map_is_reused_for_a_lower_peak_when_its_steps_are_fine_enough(tmp_path):
+    config = _config()
+    store = MapStore(tmp_path, map_scope_key(config))
+    run_flux_linkage_map(config, solve=FakeSolver(), peak_current_A=20.0, store=store)
+    run_flux_linkage_map(config, solve=FakeSolver(), peak_current_A=40.0, store=store)
+    assert store.covering_map(20.0).current_peak_A[-1] == 20.0  # the smallest that reaches it
+    assert store.covering_map(15.0).current_peak_A[-1] == 20.0
+    assert store.covering_map(30.0).current_peak_A[-1] == 40.0
+    assert store.covering_map(45.0) is None  # nothing reaches it
+    assert store.covering_map(9.0) is None  # 20 A in 5 A steps is too coarse for a 9 A drive

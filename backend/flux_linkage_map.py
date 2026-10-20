@@ -11,7 +11,8 @@ serves every point after the first.
 Points are written to a store as they finish, keyed by a hash of everything
 but the operating point, so a cancelled or failed map resumes without solving
 finished points again. The zero-current point is the same at every angle and
-is solved once.
+is solved once. Assembled maps are kept per largest current, and one that
+reaches a lower peak is reused for it.
 """
 
 from __future__ import annotations
@@ -42,14 +43,19 @@ _OPERATING_POINT_FIELDS = (
     "field_composition_source",
     "magneto2d_workers",
 )
-# Each point sweeps one full electrical cycle in equal steps: the iron loss needs a
-# whole period (#138), and the d/q averages then cover every ripple harmonic.
+# Each point sweeps half an electrical cycle in equal steps. Half-wave symmetry,
+# B(θ + 180°) = −B(θ) (backend.iron_loss), completes it to a full period for the
+# iron loss (#138), torque and the d/q averages repeat every 60°, so this gives the
+# full-cycle result of twice the positions at half the solve time.
 _PRESETS: dict[str, dict[str, Any]] = {
-    # Five currents to the peak and 15° angle steps, 24 rotor positions: 29 solves.
+    # Five currents to the peak and 15° angle steps, 12 rotor positions (24 per cycle): 29 solves.
     "preview": {"currents": 5, "gamma_step_deg": 15.0, "sweep_step_deg": 15.0},
-    # Seven currents and 10° angle steps, 48 rotor positions: 61 solves.
+    # Seven currents and 10° angle steps, 24 rotor positions (48 per cycle): 61 solves.
     "standard": {"currents": 7, "gamma_step_deg": 10.0, "sweep_step_deg": 7.5},
 }
+# A stored map is reused for a lower peak current while its largest current is at
+# most this many times the peak; beyond that its current steps are too coarse.
+_REUSE_HEADROOM = 2.0
 
 Solve = Callable[[MotorConfig], Any]
 Progress = Callable[[int, int, FluxLinkageMapPoint, float | None], None]
@@ -66,6 +72,12 @@ def map_grid(peak_current_A: float, preset: MapPreset = "preview") -> tuple[list
     step = settings["gamma_step_deg"]
     gammas = [round(step * index, 9) for index in range(int(round(90.0 / step)) + 1)]
     return currents, gammas
+
+
+def map_positions_per_point(preset: MapPreset = "preview") -> int:
+    """Rotor positions each map point solves: half an electrical cycle."""
+
+    return int(round(180.0 / _PRESETS[preset]["sweep_step_deg"]))
 
 
 def map_solve_count(currents: Sequence[float], gammas: Sequence[float]) -> int:
@@ -110,7 +122,9 @@ def point_config(
         "commutation_advance_deg": 0.0,
         "stream_noload_field_lines": False,
     }
-    update.update(solve_quality="custom", rotor_sweep_range_deg=360.0, rotor_step_deg=_PRESETS[preset]["sweep_step_deg"])
+    step = _PRESETS[preset]["sweep_step_deg"]
+    # A partial sweep includes its end angle, so stop one step short of 180°.
+    update.update(solve_quality="custom", rotor_sweep_range_deg=180.0 - step, rotor_step_deg=step)
     options = (config.solve_options or SolveOptionsConfig()).model_copy(
         update={
             "back_emf": current_peak_A == 0 if no_load_sweep is None else no_load_sweep,
@@ -180,16 +194,43 @@ class MapStore:
         temporary.replace(path)
 
     def save_map(self, flux_map: FluxLinkageMap) -> None:
+        """Keep one assembled map per largest current, so a later lower peak can reuse it."""
+
         self.directory.mkdir(parents=True, exist_ok=True)
-        temporary = self.directory / "map.tmp"
+        name = f"map_I{flux_map.current_peak_A[-1]:.9g}.json"
+        temporary = self.directory / f"{name}.tmp"
         temporary.write_text(flux_map.model_dump_json(), encoding="utf-8")
-        temporary.replace(self.directory / "map.json")
+        temporary.replace(self.directory / name)
+
+    def stored_maps(self) -> list[FluxLinkageMap]:
+        maps = []
+        for path in sorted(self.directory.glob("map*.json")):
+            try:
+                maps.append(FluxLinkageMap.model_validate_json(path.read_text(encoding="utf-8")))
+            except (OSError, ValueError):
+                continue
+        return maps
+
+    def covering_map(self, peak_current_A: float) -> FluxLinkageMap | None:
+        """The smallest stored map without failed points that reaches the peak, if its steps are fine enough."""
+
+        usable = [
+            flux_map for flux_map in self.stored_maps()
+            if all(point.status == "ok" for point in flux_map.points)
+            and peak_current_A * (1 - 1e-9) <= flux_map.current_peak_A[-1] <= _REUSE_HEADROOM * peak_current_A
+        ]
+        return min(usable, key=lambda flux_map: flux_map.current_peak_A[-1], default=None)
 
     def load_map(self) -> FluxLinkageMap | None:
-        try:
-            return FluxLinkageMap.model_validate_json((self.directory / "map.json").read_text(encoding="utf-8"))
-        except (OSError, ValueError):
-            return None
+        """The most recently assembled map, if any."""
+
+        paths = sorted(self.directory.glob("map*.json"), key=lambda path: path.stat().st_mtime)
+        for path in reversed(paths):
+            try:
+                return FluxLinkageMap.model_validate_json(path.read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                continue
+        return None
 
 
 def run_flux_linkage_map(

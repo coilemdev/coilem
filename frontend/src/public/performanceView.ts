@@ -154,6 +154,29 @@ export function mapCsv(map: FluxLinkageMap): string {
   return [...header, CSV_COLUMNS.map(([name]) => name).join(','), ...rows].join('\n') + '\n';
 }
 
+export interface MapEstimateInput {
+  /** The run's own solve time and loaded rotor positions. */
+  runSolveSeconds: number | null | undefined;
+  runPositions: number | null | undefined;
+  /** Rotor positions each map point solves. */
+  pointPositions: number;
+  solves: number;
+  /** The zero-current point is still to solve; it also runs the no-load sweep. */
+  zeroPointPending: boolean;
+}
+
+// A map point costs about this much of the run's per-position solve time, setup
+// included (measured 2026-10-20: 4p12s, 8p12s and 6p36s at 12 positions per point).
+const MAP_POINT_COST = 1.25;
+const ZERO_POINT_COST = 3;
+
+/** Rough seconds a map will take, scaled from the run's own solve time; null without one. */
+export function estimateMapSeconds({ runSolveSeconds, runPositions, pointPositions, solves, zeroPointPending }: MapEstimateInput): number | null {
+  if (!finite(runSolveSeconds) || !finite(runPositions) || runSolveSeconds <= 0 || runPositions <= 0 || solves <= 0) return null;
+  const perPoint = Math.max(2, MAP_POINT_COST * runSolveSeconds * (pointPositions / runPositions));
+  return perPoint * (solves + (zeroPointPending ? ZERO_POINT_COST - 1 : 0));
+}
+
 /** "about 6 min" style estimate for a number of seconds. */
 export function formatDuration(seconds: number | null | undefined): string {
   if (!finite(seconds)) return '';

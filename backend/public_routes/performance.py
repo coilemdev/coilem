@@ -21,6 +21,7 @@ from backend.flux_linkage_map import (
     MapStore,
     map_agreement_pct,
     map_grid,
+    map_positions_per_point,
     map_scope_key,
     map_solve_count,
     run_flux_linkage_map,
@@ -86,15 +87,15 @@ async def map_status(body: dict[str, Any]) -> dict[str, Any]:
     scope_key = map_scope_key(config, settings.preset)
     store = MapStore(_store_root(), scope_key)
     currents, gammas = map_grid(settings.peak_current_A, settings.preset)
-    stored = store.load_map()
+    covering = store.covering_map(settings.peak_current_A)
     finished = sum(1 for current in currents for gamma in gammas if current > 0 and store.load(current, gamma) is not None)
     finished += 1 if store.load(0.0, gammas[0]) is not None else 0
-    matches = stored is not None and stored.current_peak_A == currents and stored.gamma_deg == gammas
     return {
         "scope_key": scope_key,
         "solves_total": map_solve_count(currents, gammas),
         "solves_finished": finished,
-        **(_map_payload(stored) if matches else {"map": None}),
+        "positions_per_point": map_positions_per_point(settings.preset),
+        **(_map_payload(covering) if covering is not None else {"map": None}),
     }
 
 

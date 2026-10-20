@@ -56,3 +56,14 @@ assert.equal(formatDuration(400), 'about 7 min');
 assert.equal(formatDuration(null), '');
 
 console.log('performance view: ok');
+
+const { estimateMapSeconds } = await importTypeScriptModule(new URL('../src/public/performanceView.ts', import.meta.url));
+// The 8p12s example: a 25.5 s run of 48 positions; 12 positions per point cost about 1.25 × 6.4 s ≈ 8 s.
+const perPoint = 1.25 * 25.5 * 12 / 48;
+const fresh = estimateMapSeconds({ runSolveSeconds: 25.5, runPositions: 48, pointPositions: 12, solves: 29, zeroPointPending: true });
+assert.ok(Math.abs(fresh - perPoint * 31) < 1e-9, 'the zero-current point counts three times');
+const resumed = estimateMapSeconds({ runSolveSeconds: 25.5, runPositions: 48, pointPositions: 12, solves: 10, zeroPointPending: false });
+assert.ok(Math.abs(resumed - perPoint * 10) < 1e-9);
+assert.equal(estimateMapSeconds({ runSolveSeconds: null, runPositions: 48, pointPositions: 12, solves: 29, zeroPointPending: true }), null);
+assert.equal(estimateMapSeconds({ runSolveSeconds: 25.5, runPositions: 48, pointPositions: 12, solves: 0, zeroPointPending: true }), null);
+console.log('performance view: map estimate ok');

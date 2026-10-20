@@ -3,10 +3,18 @@ import {
   cancelPublicSolve,
   computeDrivePerformance,
   getPerformanceMapStatus,
-  streamPerformanceMap,
   type PublicApiError,
   type PublicSolveRequest,
 } from './api';
+import {
+  currentMapJob,
+  mapJobKey,
+  recallPanelInputs,
+  rememberPanelInputs,
+  startMapJob,
+  subscribeMapJob,
+  type MapJob,
+} from './mapJob';
 import type { MotorConfig, SolveResult } from './model';
 import type {
   DriveLimits,
@@ -14,7 +22,6 @@ import type {
   EfficiencyMap,
   FluxLinkageMapPayload,
   MapSettings,
-  PerformanceMapProgress,
   PerformanceMapStatus,
   TorqueSpeedEnvelope,
 } from './performance';
@@ -24,6 +31,7 @@ import {
   defaultDriveLimits,
   efficiencyBands,
   efficiencyColor,
+  estimateMapSeconds,
   formatDuration,
   inductanceTable,
   mapCsv,
@@ -218,26 +226,35 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
   const summary = result.summary;
   const winding = summary.winding_resistance;
   const losses = summary.loss_breakdown;
-  const [limits, setLimits] = useState<DriveLimits>(() => defaultDriveLimits({
-    ratedSpeedRpm: config.solve_params.rated_speed_rpm,
-    phaseCurrentRmsA: losses?.phase_current_rms_A,
-    backEmfRmsV: summary.back_emf_fundamental_V,
-    dcBusV: config.solve_params.motor_input_dc_bus_V,
-  }));
-  const [preset, setPreset] = useState<MapSettings['preset']>('preview');
-  const [phase, setPhase] = useState<Phase>('checking');
-  const [status, setStatus] = useState<PerformanceMapStatus | null>(null);
-  const [progress, setProgress] = useState<PerformanceMapProgress | null>(null);
-  const [mapPayload, setMapPayload] = useState<FluxLinkageMapPayload | null>(null);
-  const [drive, setDrive] = useState<DrivePerformance | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
-  const stream = useRef<AbortController | null>(null);
   const request: PublicSolveRequest = useMemo(() => ({
     config: asPublicConfig(config),
     solver: 'magneto2d',
     project_name: designName ?? `coilEM-${config.topology.toLowerCase()}-${config.rotor.pole_count}p${config.stator.slot_count}s`,
   }), [config, designName]);
+  const designKey = useMemo(() => JSON.stringify(request), [request]);
+  // Inputs survive the panel closing (another plot tab, or back to Solve).
+  const [limits, setLimits] = useState<DriveLimits>(() => recallPanelInputs(designKey)?.limits ?? defaultDriveLimits({
+    ratedSpeedRpm: config.solve_params.rated_speed_rpm,
+    phaseCurrentRmsA: losses?.phase_current_rms_A,
+    backEmfRmsV: summary.back_emf_fundamental_V,
+    dcBusV: config.solve_params.motor_input_dc_bus_V,
+  }));
+  const [preset, setPreset] = useState<MapSettings['preset']>(() => recallPanelInputs(designKey)?.preset ?? 'preview');
+  useEffect(() => { rememberPanelInputs(designKey, { limits, preset }); }, [designKey, limits, preset]);
+  const [phase, setPhase] = useState<Phase>('checking');
+  const [status, setStatus] = useState<PerformanceMapStatus | null>(null);
+  const [mapPayload, setMapPayload] = useState<FluxLinkageMapPayload | null>(null);
+  const [drive, setDrive] = useState<DrivePerformance | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+  const [job, setJob] = useState<MapJob | null>(() => currentMapJob());
+  useEffect(() => subscribeMapJob(setJob), []);
   const settings: MapSettings = useMemo(() => ({ preset, peak_current_A: limits.peak_current_A }), [preset, limits.peak_current_A]);
+  const jobKey = useMemo(() => mapJobKey(request, settings), [request, settings]);
+  // The map for this design and grid, if one has run since the app opened; it keeps
+  // running while this panel is closed.
+  const myJob = job?.key === jobKey ? job : null;
+  const solving = myJob?.phase === 'solving';
+  const otherSolving = job?.phase === 'solving' && !myJob;
   const resistance = winding?.phase_resistance_ohm ?? losses?.phase_resistance_ohm ?? null;
   const windingTemperature = winding?.winding_temperature_C ?? losses?.winding_temperature_C ?? 20;
 
@@ -264,6 +281,7 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
   // Look up a stored map whenever the grid changes; a finished one goes straight to the curves.
   useEffect(() => {
     let current = true;
+    if (solving) return () => { current = false; };
     setPhase('checking');
     const timer = window.setTimeout(() => {
       getPerformanceMapStatus(request, settings).then((next) => {
@@ -287,28 +305,32 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
     return () => { current = false; window.clearTimeout(timer); };
     // Limits other than the peak current only need the curves recomputed (Apply).
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [request, settings]);
+  }, [request, settings, solving]);
 
-  useEffect(() => () => stream.current?.abort(), []);
+  // A map that finished, failed or was cancelled while this panel was open or closed.
+  const handledJob = useRef<MapJob | null>(null);
+  useEffect(() => {
+    if (!myJob || myJob.phase === 'solving' || handledJob.current === myJob) return;
+    handledJob.current = myJob;
+    if (myJob.phase === 'done' && myJob.payload) {
+      setMapPayload(myJob.payload);
+      setStatus((previous) => (previous ? { ...previous, map: myJob.payload!.map, solves_finished: previous.solves_total } : previous));
+      void computeDrive(myJob.payload, limits);
+    } else if (myJob.phase === 'cancelled') {
+      setMessage('Map cancelled. Finished points are kept; solving the map again resumes from them.');
+      setPhase('idle');
+    } else if (myJob.phase === 'error') {
+      setMessage(myJob.error?.message ?? 'The map stopped with an error.');
+      setPhase('error');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [myJob]);
 
   const solveMap = () => {
-    setPhase('solving');
     setMessage(null);
-    setProgress({ done: status?.solves_finished ?? 0, total: status?.solves_total ?? 0, elapsed_s: 0 });
-    stream.current = streamPerformanceMap(request, settings, {
-      onProgress: (next) => { if (next.done) setProgress(next); },
-      onComplete: (payload) => {
-        setMapPayload(payload);
-        setStatus((previous) => (previous ? { ...previous, map: payload.map, solves_finished: previous.solves_total } : previous));
-        void computeDrive(payload, limits);
-      },
-      onError: (error) => {
-        setMessage(error.error_code === 'SOLVER_CANCELLED'
-          ? 'Map cancelled. Finished points are kept; solving the map again resumes from them.'
-          : error.message);
-        setPhase(error.error_code === 'SOLVER_CANCELLED' ? 'idle' : 'error');
-      },
-    });
+    if (!startMapJob(request, settings, { done: status?.solves_finished ?? 0, total: status?.solves_total ?? 0, elapsed_s: 0 })) {
+      setMessage('Another map is solving; cancel it or wait for it to finish.');
+    }
   };
 
   const setLimit = (key: keyof DriveLimits) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -332,6 +354,16 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
   const peak = drive?.envelope.curves.find((curve) => curve.limit === 'peak') ?? null;
   const bestEfficiency = drive ? Math.max(...drive.efficiency_map.efficiency_pct.flat().filter((value): value is number => value !== null)) : null;
   const remaining = status ? Math.max(status.solves_total - status.solves_finished, 0) : null;
+  const estimate = status && remaining ? estimateMapSeconds({
+    runSolveSeconds: summary.solve_time_s,
+    runPositions: result.solve_metadata.rotor_positions,
+    pointPositions: status.positions_per_point ?? 12,
+    solves: remaining,
+    zeroPointPending: status.solves_finished === 0,
+  }) : null;
+  // Show whichever map is solving, this one or another, with its progress and Cancel.
+  const runningJob = job?.phase === 'solving' ? job : null;
+  const progress = runningJob?.progress ?? null;
 
   return (
     <section className="performance-panel" aria-labelledby={headingId}>
@@ -350,18 +382,19 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
         <label><span>Top speed</span><input type="number" min={100} step="any" defaultValue={limits.max_speed_rpm} onBlur={setLimit('max_speed_rpm')} /><small>rpm</small></label>
         <label><span>Map grid</span>
           <select value={preset} onChange={(event) => setPreset(event.target.value as MapSettings['preset'])}>
-            <option value="preview">Preview: 5 currents × 7 angles, 24 positions each</option>
-            <option value="standard">Standard: 7 currents × 10 angles, 48 positions each</option>
+            <option value="preview">Preview: 5 currents × 7 angles, 12 positions each</option>
+            <option value="standard">Standard: 7 currents × 10 angles, 24 positions each</option>
           </select>
         </label>
       </div>
       <div className="performance-actions">
-        {phase === 'solving' && progress ? (
+        {runningJob && progress ? (
           <>
             <div className="performance-progress" role="progressbar" aria-valuemin={0} aria-valuemax={progress.total} aria-valuenow={progress.done}>
               <span style={{ width: `${progress.total ? (100 * progress.done) / progress.total : 0}%` }} />
             </div>
             <p>
+              {otherSolving ? `A map up to ${significant(runningJob.settings.peak_current_A)} A (${runningJob.settings.preset}) is solving: ` : ''}
               Solved {progress.done} of {progress.total}
               {progress.current_peak_A !== undefined ? ` · last ${significant(progress.current_peak_A)} A at ${significant(progress.gamma_deg ?? 0)}°` : ''}
               {progress.eta_s ? ` · ${formatDuration(progress.eta_s)} left` : ''}
@@ -371,8 +404,9 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
         ) : (
           <>
             {!mapPayload && phase !== 'checking' && (
-              <button type="button" className="performance-primary" onClick={solveMap}>
-                Solve map ({remaining ?? '…'} solve{remaining === 1 ? '' : 's'}{status && status.solves_finished > 0 ? `, ${status.solves_finished} kept` : ''})
+              <button type="button" className="performance-primary" onClick={solveMap} disabled={otherSolving}>
+                Solve map ({remaining ?? '…'} solve{remaining === 1 ? '' : 's'}{status && status.solves_finished > 0 ? `, ${status.solves_finished} kept` : ''}
+                {estimate ? `, ${formatDuration(estimate)}` : ''})
               </button>
             )}
             {mapPayload && (
@@ -382,7 +416,13 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
                 <button type="button" onClick={downloadCsv}>Download map CSV</button>
               </>
             )}
-            <p>{phase === 'checking' ? 'Looking for a stored map…' : phase === 'computing' ? 'Computing the curves…' : mapPayload ? `Map of ${mapPayload.map.points.length} points, ${mapPayload.map.rotor_positions} rotor positions each.` : 'Each point is a solve of this design; the first also runs the no-load sweep.'}</p>
+            <p>
+              {otherSolving ? 'Another map is solving (the solver runs one at a time). '
+                : phase === 'checking' ? 'Looking for a stored map…'
+                  : phase === 'computing' ? 'Computing the curves…'
+                    : mapPayload ? `Map of ${mapPayload.map.points.length} points up to ${significant(mapPayload.map.current_peak_A[mapPayload.map.current_peak_A.length - 1])} A, ${mapPayload.map.rotor_positions} rotor positions each.`
+                      : 'Each point is a solve of this design; the first also runs the no-load sweep. It keeps running if you switch tabs.'}
+            </p>
           </>
         )}
       </div>

@@ -63,8 +63,11 @@ def test_status_streamed_map_and_resume(client):
 
     status = client.post("/performance/map/status", json=_body()).json()
     assert status["solves_finished"] == 29 and status["map"]["scope_key"] == status["scope_key"]
-    # A different grid is a different map.
+    assert status["positions_per_point"] == 12
+    # A lower peak reuses the 20 A map; a higher one, or one much lower, needs its own.
+    assert client.post("/performance/map/status", json=_body(peak_current_A=15.0)).json()["map"]["current_peak_A"][-1] == 20.0
     assert client.post("/performance/map/status", json=_body(peak_current_A=30.0)).json()["map"] is None
+    assert client.post("/performance/map/status", json=_body(peak_current_A=8.0)).json()["map"] is None
 
 
 def test_the_map_waits_for_a_running_solve(client):

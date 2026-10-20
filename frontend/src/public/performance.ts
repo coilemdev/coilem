@@ -197,6 +197,8 @@ export interface PerformanceMapStatus {
   scope_key: string;
   solves_total: number;
   solves_finished: number;
+  /** Rotor positions each map point solves (half an electrical cycle). */
+  positions_per_point?: number;
   map: FluxLinkageMap | null;
   torque_agreement_pct?: Array<number | null>;
 }
