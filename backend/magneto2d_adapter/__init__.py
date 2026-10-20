@@ -683,7 +683,7 @@ def _magneto2d_env_overrides(config: MotorConfig) -> dict[str, str]:
         overrides["COILEM_MAGNET_BR_SCALE"] = "0"
 
     if solve_quality in {"quick", "standard"}:
-        overrides["MAGNETO2D_NONLINEAR_TOL"] = MAGNETO2D_INTERACTIVE_NONLINEAR_TOL
+        overrides["MAGNETO2D_NONLINEAR_TOL"] = ("0.05" if solve_quality == "quick" else MAGNETO2D_INTERACTIVE_NONLINEAR_TOL)
     elif solve_quality == "fine":
         overrides["MAGNETO2D_NONLINEAR_TOL"] = MAGNETO2D_FINE_NONLINEAR_TOL
 

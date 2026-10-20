@@ -71,7 +71,7 @@ def inputs(spec, selected):
             configs[case["id"], job["stage"]] = config
         if case["phase"] == "D":
             protocols[case["id"]] = checked_json(DATA_ROOT, case["protocol"], case["protocol_sha256"])
-            if spec["protocol_version"] == "1.3.0":
+            if spec["protocol_version"] in {"1.3.0", "1.4.0"}:
                 from backend.benchmark_suite.bldc_metrics import golden_sector
 
                 protocol = protocols[case["id"]]
@@ -369,7 +369,7 @@ def main():
     parser.add_argument("--case", action="append", help="Select a registered case id; repeat for multiple cases")
     parser.add_argument(
         "--suite", type=Path, default=SPEC,
-        help="Select a registered suite; default is A/B/C/D 1.3 with winding-relative BLDC validation",
+        help="Select a registered suite; default is A/B/C/D 1.4 with cap-200 BLDC requests",
     )
     parser.add_argument("--reference-bundle", type=Path, default=DEFAULT_BUNDLE)
     parser.add_argument("--out-dir", type=Path)
