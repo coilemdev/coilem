@@ -79,6 +79,20 @@ class DqFluxLinkage(BaseModel):
         default=None,
         description="Solver average torque as a percentage of torque_dq_Nm; about 100 for any machine",
     )
+    current_angle_deg: Optional[float] = Field(
+        default=None, description="Measured γ = atan2(−id, iq), from the currents the solve applied"
+    )
+    lambda_pm_Wb: Optional[float] = Field(default=None, ge=0, description="No-load (magnet) flux linkage amplitude")
+    apparent_L_d_H: Optional[float] = Field(default=None, description="(λd − λpm) / id at this point; None when id ≈ 0")
+    apparent_L_q_H: Optional[float] = Field(default=None, description="λq / iq at this point; None when iq ≈ 0")
+    positions: int = Field(default=0, ge=0, description="Loaded rotor positions averaged")
+    d_axis_source: Literal["no_load_flux_linkage", "applied_current_angle"] = Field(
+        default="no_load_flux_linkage",
+        description=(
+            "How the d-axis was placed: from the no-load flux linkage (an independent check of the current angle), "
+            "or from the applied currents and the commanded current angle when the run had no no-load sweep"
+        ),
+    )
 
 
 class WindingResistance(BaseModel):

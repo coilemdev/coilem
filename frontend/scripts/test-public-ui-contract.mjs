@@ -1451,10 +1451,13 @@ assert.match(workspaceSource, /Open design file/);
 assert.match(workspaceSource, /Save design file/);
 assert.match(workspaceSource, /public-project-menu/);
 assert.match(appSource, /parseDesignFile/);
-assert.match(appSource, /cogging_torque: false/);
-assert.match(appSource, /thd_analysis: thdAnalysis/);
-assert.match(appSource, /solve_quality === 'standard'/);
-assert.match(appSource, /solve_quality === 'fine'/);
+// The solve request's config serializer, shared by Solve and the Performance map (#142).
+const publicRequestSource = await readFile(path.join(frontendRoot, 'src/public/publicRequest.ts'), 'utf8');
+assert.match(appSource, /import \{ asPublicConfig \} from '\.\/publicRequest'/);
+assert.match(publicRequestSource, /cogging_torque: false/);
+assert.match(publicRequestSource, /thd_analysis: thdAnalysis/);
+assert.match(publicRequestSource, /solve_quality === 'standard'/);
+assert.match(publicRequestSource, /solve_quality === 'fine'/);
 assert.match(appSource, /saveDesignFileAs/);
 assert.match(styleSource, /\.public-project-menu/);
 assert.match(motorThreeSource, /OrbitControls/);

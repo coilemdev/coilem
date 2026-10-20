@@ -1,4 +1,4 @@
-"""Losses and efficiency at the operating point, and their report sections (#138)."""
+"""Losses and efficiency at the operating point, and their report sections (#138, #113)."""
 
 from __future__ import annotations
 
@@ -104,6 +104,12 @@ def _stored_result() -> dict:
             "winding_resistance": winding.model_dump(mode="json"),
             "loss_breakdown": loss.model_dump(mode="json"),
             "iron_loss": _iron(40.0).model_dump(mode="json"),
+            "dq_flux_linkage": {
+                "current_angle_convention": "q_axis_gamma_flux_weakening_positive", "transform": "amplitude_invariant_park",
+                "i_d_A": -5.0, "i_q_A": 8.66, "lambda_d_Wb": 0.01102, "lambda_q_Wb": 0.000416, "torque_dq_Nm": 0.2926,
+                "torque_agreement_pct": 100.3, "current_angle_deg": 30.0, "lambda_pm_Wb": 0.011257,
+                "apparent_L_d_H": 4.72e-5, "apparent_L_q_H": 4.80e-5, "positions": 48,
+            },
         },
         "field_line_plot": {
             "nodes_mm": [[-2, -1], [2, -1], [2, 1], [-2, 1], [0, 0]],
@@ -123,8 +129,9 @@ def _stored_result() -> dict:
 def test_pdf_reports_winding_losses_breakdown_and_density():
     pdf = build_public_run_pdf(project=RAW, request={"resolved_config": RAW}, result=_stored_result(), material={}, manifest={})
     text = "\n".join(page.extract_text() or "" for page in pypdf.PdfReader(io.BytesIO(pdf)).pages)
-    for heading in ("Winding", "Losses and efficiency", "Loss breakdown", "Iron-loss density", "Iron loss (W/kg)"):
+    for heading in ("d/q operating point", "Winding", "Losses and efficiency", "Loss breakdown", "Iron-loss density", "Iron loss (W/kg)"):
         assert heading in text
+    assert "0.0472 mH" in text and "100.3%" in text
     assert "2 x 0.8 mm" in text
     assert "Shaft torque" in text and "Efficiency" in text
     assert "Iron loss is experimental" in text
@@ -142,3 +149,7 @@ def test_csv_flattens_the_winding_and_loss_records_with_units():
     assert by_key[("losses", "efficiency_pct")][2] == "%"
     assert by_key[("iron_loss", "iron_teeth_loss_W")][2] == "W"
     assert ("summary", "loss_breakdown") not in by_key
+    assert by_key[("dq", "lambda_d_Wb")][2] == "Wb"
+    assert by_key[("dq", "apparent_L_q_H")][2] == "H"
+    assert by_key[("dq", "current_angle_deg")][2] == "deg"
+    assert by_key[("dq", "i_d_A")][2] == "A"

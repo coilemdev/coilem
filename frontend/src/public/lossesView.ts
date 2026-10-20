@@ -107,7 +107,7 @@ export function lossesView(loss: LossBreakdown | null | undefined, iron: IronLos
     ironAvailable
       ? powerRow('iron', 'Iron loss', loss.iron_loss_W as number, ironParts.join(' '), loss.iron_loss_status)
       : { key: 'iron', label: 'Iron loss', value: '—', unit: '', hint: ironParts.join(' '), status: 'unavailable' },
-    powerRow('mechanical', 'Mechanical loss', loss.mechanical_loss_W, 'Friction and windage, as entered; 0 when not set.'),
+    powerRow('mechanical', 'Mechanical loss', loss.mechanical_loss_W, 'Friction and windage as entered under Operating point; 0 when not set.'),
     powerRow('total', 'Total loss', loss.total_loss_W),
   ];
   return { efficiency, rows, segments, totalW };

@@ -16,6 +16,8 @@ export interface MotorConstantsSummary {
   Kt_Nm_per_A?: number | null;
   Ke_Vs_per_rad_mech?: number | null;
   lambda_pm_Wb?: number | null;
+  /** The loaded d/q record (#113); its torque agreement holds at any current angle. */
+  dq_flux_linkage?: { torque_agreement_pct?: number | null } | null;
 }
 
 export interface MotorConstantValue {

@@ -196,6 +196,10 @@ export function LossesCard({
       </table>
       {view.segments.length > 0 && <LossBar segments={view.segments} totalW={view.totalW} />}
       {density && plot && <DensityMap plot={plot} density={density} />}
+      <p className="losses-not-modelled">
+        Not modelled: magnet and rotor eddy-current loss, AC copper loss (skin and proximity effects), inverter loss
+        {loss && loss.mechanical_loss_W > 0 ? '.' : ', and mechanical loss unless entered under Operating point.'}
+      </p>
     </section>
   );
 }

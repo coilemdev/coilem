@@ -72,14 +72,15 @@ _HEAT_COLORS = (
 )
 # Records in the summary that get their own CSV section and PDF table (#136, #138).
 _SUMMARY_RECORD_SECTIONS = {
+    "dq_flux_linkage": "dq",
     "winding_resistance": "winding",
     "loss_breakdown": "losses",
     "iron_loss": "iron_loss",
 }
 _RECORD_UNIT_SUFFIXES = (
     ("_per_K", "1/K"), ("_mm2", "mm2"), ("_mm", "mm"), ("_ohm", "Ohm"), ("_Nm", "N m"),
-    ("_rpm", "rpm"), ("_pct", "%"), ("_kg", "kg"), ("_Hz", "Hz"), ("_W", "W"), ("_A", "A"),
-    ("_C", "C"), ("_T", "T"),
+    ("_rpm", "rpm"), ("_pct", "%"), ("_kg", "kg"), ("_Hz", "Hz"), ("_Wb", "Wb"), ("_W", "W"),
+    ("_A", "A"), ("_C", "C"), ("_T", "T"), ("_H", "H"), ("_deg", "deg"),
 )
 # Categorical slots in their validated order; each bar segment is also named in the legend.
 _LOSS_SEGMENT_COLORS = ("#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4")
@@ -1055,12 +1056,52 @@ def _resistance_text(ohm: Any) -> str:
     return f"{ohm * 1000:.3g} mOhm" if abs(ohm) < 1 else f"{ohm:.3g} Ohm"
 
 
+def _dq_story(summary: Mapping[str, Any], styles: Mapping[str, ParagraphStyle]) -> list[Any]:
+    dq = _mapping(summary.get("dq_flux_linkage"))
+    if not dq:
+        return []
+
+    def milli(value: Any, unit: str) -> str:
+        return f"{_number(value * 1000)} {unit}" if isinstance(value, (int, float)) and math.isfinite(value) else "Not recorded"
+
+    agreement = dq.get("torque_agreement_pct")
+    return [
+        _section("d/q operating point", styles),
+        _settings_grid(
+            [
+                ("Current angle", f"{_number(dq.get('current_angle_deg'))} deg"),
+                ("Positions averaged", _number(dq.get("positions"))),
+                ("d-axis current", f"{_number(dq.get('i_d_A'))} A"),
+                ("q-axis current", f"{_number(dq.get('i_q_A'))} A"),
+                ("d-axis flux linkage", milli(dq.get("lambda_d_Wb"), "mWb")),
+                ("q-axis flux linkage", milli(dq.get("lambda_q_Wb"), "mWb")),
+                ("Magnet flux linkage", milli(dq.get("lambda_pm_Wb"), "mWb")),
+                ("d/q torque", f"{_number(dq.get('torque_dq_Nm'), 4)} N m"),
+                ("Apparent Ld", milli(dq.get("apparent_L_d_H"), "mH") if dq.get("apparent_L_d_H") is not None else "No d-axis current"),
+                ("Apparent Lq", milli(dq.get("apparent_L_q_H"), "mH") if dq.get("apparent_L_q_H") is not None else "No q-axis current"),
+                ("Torque agreement", f"{_number(agreement, 4)}%" if agreement is not None else "Not recorded"),
+            ],
+            styles,
+            columns=2,
+            cell_widths=(40 * mm, 50 * mm),
+        ),
+        Paragraph(
+            "Amplitude-invariant Park transform of the loaded phase flux linkages and the applied phase currents, averaged over the "
+            "loaded rotor positions; the d-axis is placed from the no-load flux linkage. d/q torque is "
+            "1.5 x pole pairs x (lambda_d i_q - lambda_q i_d); "
+            "torque agreement is the solved average torque as a percentage of it. Apparent inductances are secant values at this "
+            "operating point, (lambda_d - lambda_pm) / i_d and lambda_q / i_q, and include saturation and cross-coupling.",
+            styles["small"],
+        ),
+    ]
+
+
 def _winding_and_loss_story(result: Mapping[str, Any], styles: Mapping[str, ParagraphStyle]) -> list[Any]:
     summary = _mapping(result.get("summary"))
     winding = _mapping(summary.get("winding_resistance"))
     losses = _mapping(summary.get("loss_breakdown"))
     iron = _mapping(summary.get("iron_loss"))
-    story: list[Any] = []
+    story: list[Any] = _dq_story(summary, styles)
     if winding:
         wire = (
             f"{winding.get('strands_in_hand')} x {_number(winding.get('strand_diameter_mm'))} mm"
@@ -1132,7 +1173,8 @@ def _winding_and_loss_story(result: Mapping[str, Any], styles: Mapping[str, Para
             status.append(f"Iron loss unavailable: {escape(str(iron.get('status_reason')))}")
         status.append(
             "Shaft torque is the solved torque less the iron and mechanical loss torque; the solved torque is unchanged. "
-            "Copper loss uses the phase resistance at the winding temperature."
+            "Copper loss uses the phase resistance at the winding temperature. "
+            "Not modelled: magnet and rotor eddy-current loss, AC copper loss (skin and proximity effects) and inverter loss."
         )
         story.extend(Paragraph(line, styles["small"]) for line in status)
     density = _iron_loss_density_figure(result)

@@ -1,0 +1,428 @@
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
+import {
+  cancelPublicSolve,
+  computeDrivePerformance,
+  getPerformanceMapStatus,
+  streamPerformanceMap,
+  type PublicApiError,
+  type PublicSolveRequest,
+} from './api';
+import type { MotorConfig, SolveResult } from './model';
+import type {
+  DriveLimits,
+  DrivePerformance,
+  EfficiencyMap,
+  FluxLinkageMapPayload,
+  MapSettings,
+  PerformanceMapProgress,
+  PerformanceMapStatus,
+  TorqueSpeedEnvelope,
+} from './performance';
+import {
+  axisTop,
+  curveAt,
+  defaultDriveLimits,
+  efficiencyBands,
+  efficiencyColor,
+  formatDuration,
+  inductanceTable,
+  mapCsv,
+  niceTicks,
+} from './performanceView';
+import { asPublicConfig } from './publicRequest';
+
+// Categorical slots 1 and 2 of the validated dark palette.
+const CURVE_COLORS = { peak: '#3987e5', continuous: '#d95926' } as const;
+const REGION_LABEL: Record<string, string> = { mtpa: 'MTPA', field_weakening: 'field weakening', mtpv: 'MTPV' };
+const WIDTH = 760;
+const HEIGHT = 260;
+const MARGIN = { top: 16, right: 20, bottom: 40, left: 58 };
+
+const significant = (value: number, digits = 3) => Number(value.toPrecision(digits)).toLocaleString();
+
+function errorText(error: unknown): string {
+  if (error && typeof error === 'object' && 'message' in error) return String((error as PublicApiError).message);
+  return 'The local API could not compute the performance map.';
+}
+
+function Axes({ xMax, yMax, xLabel, yLabel, yFormat = (value: number) => significant(value) }: {
+  xMax: number; yMax: number; xLabel: string; yLabel: string; yFormat?: (value: number) => string;
+}) {
+  const plotW = WIDTH - MARGIN.left - MARGIN.right;
+  const plotH = HEIGHT - MARGIN.top - MARGIN.bottom;
+  return (
+    <g className="performance-axes">
+      {niceTicks(yMax, 5).filter((tick) => tick <= yMax + 1e-9).map((tick) => {
+        const y = MARGIN.top + plotH * (1 - tick / yMax);
+        return (
+          <g key={`y${tick}`}>
+            <line x1={MARGIN.left} x2={WIDTH - MARGIN.right} y1={y} y2={y} className="chart-grid" />
+            <text x={MARGIN.left - 8} y={y + 4} textAnchor="end" className="chart-label">{yFormat(tick)}</text>
+          </g>
+        );
+      })}
+      {niceTicks(xMax, 6).filter((tick) => tick <= xMax + 1e-9).map((tick) => {
+        const x = MARGIN.left + plotW * (tick / xMax);
+        return <text key={`x${tick}`} x={x} y={HEIGHT - MARGIN.bottom + 16} textAnchor="middle" className="chart-label">{tick.toLocaleString()}</text>;
+      })}
+      <text x={MARGIN.left + plotW / 2} y={HEIGHT - 6} textAnchor="middle" className="chart-label">{xLabel}</text>
+      <text x={14} y={MARGIN.top + plotH / 2} textAnchor="middle" className="chart-label" transform={`rotate(-90 14 ${MARGIN.top + plotH / 2})`}>{yLabel}</text>
+    </g>
+  );
+}
+
+function usePlotPointer(xMax: number) {
+  const [speed, setSpeed] = useState<number | null>(null);
+  const onMove = (event: React.PointerEvent<SVGSVGElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const svgX = ((event.clientX - rect.left) / rect.width) * WIDTH;
+    const fraction = (svgX - MARGIN.left) / (WIDTH - MARGIN.left - MARGIN.right);
+    setSpeed(fraction >= 0 && fraction <= 1 ? fraction * xMax : null);
+  };
+  return { speed, onMove, onLeave: () => setSpeed(null) };
+}
+
+function TorqueSpeedChart({ envelope }: { envelope: TorqueSpeedEnvelope }) {
+  const [quantity, setQuantity] = useState<'torque' | 'power'>('torque');
+  const curves = envelope.curves;
+  const xMax = axisTop(Math.max(...curves.map((curve) => curve.max_speed_rpm), 1), 6);
+  const values = (curve: TorqueSpeedEnvelope['curves'][number]) => (quantity === 'torque' ? curve.torque_Nm : curve.power_W.map((watts) => watts / 1000));
+  const yMax = axisTop(Math.max(...curves.flatMap(values), 1e-6) * 1.05, 5);
+  const plotW = WIDTH - MARGIN.left - MARGIN.right;
+  const plotH = HEIGHT - MARGIN.top - MARGIN.bottom;
+  const x = (speed: number) => MARGIN.left + plotW * (speed / xMax);
+  const y = (value: number) => MARGIN.top + plotH * (1 - value / yMax);
+  const pointer = usePlotPointer(xMax);
+  const peak = curves.find((curve) => curve.limit === 'peak') ?? curves[0];
+  const unit = quantity === 'torque' ? 'N·m' : 'kW';
+  const readout = pointer.speed === null ? null : curves.map((curve) => {
+    const at = curveAt(curve, pointer.speed as number);
+    if (!at) return `${curve.limit === 'peak' ? 'Peak' : 'Continuous'} —`;
+    const value = quantity === 'torque' ? at.torque : at.power / 1000;
+    return `${curve.limit === 'peak' ? 'Peak' : 'Continuous'} ${significant(value)} ${unit} (${REGION_LABEL[at.region] ?? at.region})`;
+  });
+  return (
+    <figure className="performance-chart">
+      <div className="performance-chart-heading">
+        <span>{quantity === 'torque' ? 'Torque–speed' : 'Power–speed'} envelope</span>
+        <div className="performance-toggle" role="group" aria-label="Envelope quantity">
+          <button type="button" aria-pressed={quantity === 'torque'} onClick={() => setQuantity('torque')}>Torque</button>
+          <button type="button" aria-pressed={quantity === 'power'} onClick={() => setQuantity('power')}>Power</button>
+        </div>
+      </div>
+      <div className="public-waveform-legend" aria-label="Envelope curves">
+        {curves.map((curve) => (
+          <span key={curve.limit}>
+            <i style={{ backgroundColor: CURVE_COLORS[curve.limit] }} />
+            {curve.limit === 'peak' ? 'Peak' : 'Continuous'}, {significant(curve.limit === 'peak' ? envelope.limits.peak_current_A : envelope.limits.continuous_current_A ?? 0)} A peak
+          </span>
+        ))}
+      </div>
+      <p className="performance-readout" aria-live="polite">
+        {pointer.speed === null ? `Base speed ${significant(peak.base_speed_rpm)} rpm · top speed ${significant(peak.max_speed_rpm)} rpm. Hover for values.` : `${significant(pointer.speed)} rpm · ${readout?.join(' · ')}`}
+      </p>
+      <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} role="img" aria-label={`${quantity === 'torque' ? 'Torque' : 'Power'} against speed for the drive limits`} onPointerMove={pointer.onMove} onPointerLeave={pointer.onLeave}>
+        <Axes xMax={xMax} yMax={yMax} xLabel="Speed (rpm)" yLabel={quantity === 'torque' ? 'Torque (N·m)' : 'Power (kW)'} />
+        <line x1={x(peak.base_speed_rpm)} x2={x(peak.base_speed_rpm)} y1={MARGIN.top} y2={HEIGHT - MARGIN.bottom} className="performance-base-line" />
+        <text x={x(peak.base_speed_rpm) + 4} y={MARGIN.top + 10} className="chart-label">base</text>
+        {curves.map((curve) => (
+          <path
+            key={curve.limit}
+            d={curve.speed_rpm.map((speed, index) => `${index ? 'L' : 'M'} ${x(speed).toFixed(1)} ${y(values(curve)[index]).toFixed(1)}`).join(' ')}
+            fill="none"
+            stroke={CURVE_COLORS[curve.limit]}
+            strokeWidth={2}
+            strokeLinejoin="round"
+          />
+        ))}
+        {pointer.speed !== null && <line x1={x(pointer.speed)} x2={x(pointer.speed)} y1={MARGIN.top} y2={HEIGHT - MARGIN.bottom} className="performance-crosshair" />}
+        {pointer.speed !== null && curves.map((curve) => {
+          const at = curveAt(curve, pointer.speed as number);
+          if (!at) return null;
+          const value = quantity === 'torque' ? at.torque : at.power / 1000;
+          return <circle key={curve.limit} cx={x(pointer.speed as number)} cy={y(value)} r={4} fill={CURVE_COLORS[curve.limit]} className="performance-marker" />;
+        })}
+      </svg>
+    </figure>
+  );
+}
+
+function EfficiencyMapChart({ map, envelope }: { map: EfficiencyMap; envelope: TorqueSpeedEnvelope }) {
+  const bands = useMemo(() => efficiencyBands(map), [map]);
+  const [hover, setHover] = useState<{ row: number; column: number } | null>(null);
+  const speeds = map.speed_rpm;
+  const torques = map.torque_Nm;
+  const xMax = axisTop(speeds[speeds.length - 1], 6);
+  const yMax = axisTop(torques[torques.length - 1] * 1.05, 5);
+  const plotW = WIDTH - MARGIN.left - MARGIN.right;
+  const plotH = HEIGHT - MARGIN.top - MARGIN.bottom;
+  const x = (speed: number) => MARGIN.left + plotW * (speed / xMax);
+  const y = (torque: number) => MARGIN.top + plotH * (1 - torque / yMax);
+  const cellW = plotW * ((speeds[1] - speeds[0]) / xMax);
+  const cellH = plotH * ((torques[1] - torques[0]) / yMax);
+  const peak = envelope.curves.find((curve) => curve.limit === 'peak') ?? envelope.curves[0];
+  const onMove = (event: React.PointerEvent<SVGSVGElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const speed = (((event.clientX - rect.left) / rect.width) * WIDTH - MARGIN.left) / plotW * xMax;
+    const torque = (1 - (((event.clientY - rect.top) / rect.height) * HEIGHT - MARGIN.top) / plotH) * yMax;
+    const column = Math.round((speed - speeds[0]) / (speeds[1] - speeds[0]));
+    const row = Math.round((torque - torques[0]) / (torques[1] - torques[0]));
+    setHover(row >= 0 && row < torques.length && column >= 0 && column < speeds.length && map.efficiency_pct[row][column] !== null ? { row, column } : null);
+  };
+  const cell = hover ? {
+    eta: map.efficiency_pct[hover.row][hover.column] as number,
+    copper: map.copper_loss_W[hover.row][hover.column],
+    iron: map.iron_loss_W[hover.row][hover.column],
+  } : null;
+  const legendStops = [];
+  for (let value = bands.floor; value < bands.top; value += bands.step) legendStops.push(value);
+  return (
+    <figure className="performance-chart">
+      <div className="performance-chart-heading"><span>Efficiency map</span><span className="performance-chart-note">least-loss current at each point</span></div>
+      <p className="performance-readout" aria-live="polite">
+        {cell && hover
+          ? `${significant(cell.eta, 3)}% at ${significant(speeds[hover.column])} rpm, ${significant(torques[hover.row])} N·m · copper ${significant(cell.copper ?? 0)} W · iron ${significant(cell.iron ?? 0)} W`
+          : 'Hover the map for efficiency and losses at a point. Blank above the peak envelope.'}
+      </p>
+      <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} role="img" aria-label={`Efficiency over speed and torque, from ${bands.floor}% to ${bands.top}%`} onPointerMove={onMove} onPointerLeave={() => setHover(null)}>
+        {map.efficiency_pct.map((row, rowIndex) => row.map((eta, columnIndex) => (eta === null ? null : (
+          <rect
+            key={`${rowIndex}-${columnIndex}`}
+            x={x(speeds[columnIndex]) - cellW / 2}
+            y={y(torques[rowIndex]) - cellH / 2}
+            width={cellW + 0.6}
+            height={cellH + 0.6}
+            fill={efficiencyColor(eta, bands)}
+          />
+        ))))}
+        <Axes xMax={xMax} yMax={yMax} xLabel="Speed (rpm)" yLabel="Torque (N·m)" />
+        <path d={peak.speed_rpm.map((speed, index) => `${index ? 'L' : 'M'} ${x(speed).toFixed(1)} ${y(peak.torque_Nm[index]).toFixed(1)}`).join(' ')} fill="none" className="performance-envelope-line" />
+        {hover && <rect x={x(speeds[hover.column]) - cellW / 2} y={y(torques[hover.row]) - cellH / 2} width={cellW} height={cellH} className="performance-cell-focus" />}
+      </svg>
+      <div className="performance-band-legend" aria-label={`Efficiency bands of ${bands.step} points from ${bands.floor}% to ${bands.top}%`}>
+        <div>{legendStops.map((value) => <span key={value} style={{ background: efficiencyColor(value, bands) }} title={`${value}–${value + bands.step}%`} />)}</div>
+        <div><small>≤ {bands.floor}%</small><small>{bands.top}%</small></div>
+      </div>
+    </figure>
+  );
+}
+
+type Phase = 'checking' | 'idle' | 'solving' | 'computing' | 'ready' | 'error';
+
+/**
+ * Torque–speed, power–speed and efficiency over the operating range (#142),
+ * from a flux-linkage map of this design (#139) and the drive limits.
+ */
+export function PerformancePanel({ config, result, designName }: { config: MotorConfig; result: SolveResult; designName: string | null }) {
+  const headingId = useId();
+  const summary = result.summary;
+  const winding = summary.winding_resistance;
+  const losses = summary.loss_breakdown;
+  const [limits, setLimits] = useState<DriveLimits>(() => defaultDriveLimits({
+    ratedSpeedRpm: config.solve_params.rated_speed_rpm,
+    phaseCurrentRmsA: losses?.phase_current_rms_A,
+    backEmfRmsV: summary.back_emf_fundamental_V,
+    dcBusV: config.solve_params.motor_input_dc_bus_V,
+  }));
+  const [preset, setPreset] = useState<MapSettings['preset']>('preview');
+  const [phase, setPhase] = useState<Phase>('checking');
+  const [status, setStatus] = useState<PerformanceMapStatus | null>(null);
+  const [progress, setProgress] = useState<PerformanceMapProgress | null>(null);
+  const [mapPayload, setMapPayload] = useState<FluxLinkageMapPayload | null>(null);
+  const [drive, setDrive] = useState<DrivePerformance | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+  const stream = useRef<AbortController | null>(null);
+  const request: PublicSolveRequest = useMemo(() => ({
+    config: asPublicConfig(config),
+    solver: 'magneto2d',
+    project_name: designName ?? `coilEM-${config.topology.toLowerCase()}-${config.rotor.pole_count}p${config.stator.slot_count}s`,
+  }), [config, designName]);
+  const settings: MapSettings = useMemo(() => ({ preset, peak_current_A: limits.peak_current_A }), [preset, limits.peak_current_A]);
+  const resistance = winding?.phase_resistance_ohm ?? losses?.phase_resistance_ohm ?? null;
+  const windingTemperature = winding?.winding_temperature_C ?? losses?.winding_temperature_C ?? 20;
+
+  const computeDrive = useCallback(async (payload: FluxLinkageMapPayload, driveLimits: DriveLimits) => {
+    setPhase('computing');
+    setMessage(null);
+    try {
+      const next = await computeDrivePerformance({
+        map: payload.map,
+        limits: driveLimits,
+        phase_resistance_ohm: resistance ?? 0,
+        winding_temperature_C: windingTemperature,
+        mechanical_loss_W: losses?.mechanical_loss_W ?? 0,
+      });
+      setDrive(next);
+      setPhase('ready');
+    } catch (error) {
+      setDrive(null);
+      setMessage(errorText(error));
+      setPhase('error');
+    }
+  }, [resistance, windingTemperature, losses?.mechanical_loss_W]);
+
+  // Look up a stored map whenever the grid changes; a finished one goes straight to the curves.
+  useEffect(() => {
+    let current = true;
+    setPhase('checking');
+    const timer = window.setTimeout(() => {
+      getPerformanceMapStatus(request, settings).then((next) => {
+        if (!current) return;
+        setStatus(next);
+        if (next.map) {
+          const payload = { map: next.map, torque_agreement_pct: next.torque_agreement_pct ?? [] };
+          setMapPayload(payload);
+          void computeDrive(payload, limits);
+        } else {
+          setMapPayload(null);
+          setDrive(null);
+          setPhase('idle');
+        }
+      }).catch((error) => {
+        if (!current) return;
+        setMessage(errorText(error));
+        setPhase('error');
+      });
+    }, 300);
+    return () => { current = false; window.clearTimeout(timer); };
+    // Limits other than the peak current only need the curves recomputed (Apply).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [request, settings]);
+
+  useEffect(() => () => stream.current?.abort(), []);
+
+  const solveMap = () => {
+    setPhase('solving');
+    setMessage(null);
+    setProgress({ done: status?.solves_finished ?? 0, total: status?.solves_total ?? 0, elapsed_s: 0 });
+    stream.current = streamPerformanceMap(request, settings, {
+      onProgress: (next) => { if (next.done) setProgress(next); },
+      onComplete: (payload) => {
+        setMapPayload(payload);
+        setStatus((previous) => (previous ? { ...previous, map: payload.map, solves_finished: previous.solves_total } : previous));
+        void computeDrive(payload, limits);
+      },
+      onError: (error) => {
+        setMessage(error.error_code === 'SOLVER_CANCELLED'
+          ? 'Map cancelled. Finished points are kept; solving the map again resumes from them.'
+          : error.message);
+        setPhase(error.error_code === 'SOLVER_CANCELLED' ? 'idle' : 'error');
+      },
+    });
+  };
+
+  const setLimit = (key: keyof DriveLimits) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(event.target.value);
+    if (Number.isFinite(value) && value > 0) setLimits((previous) => ({ ...previous, [key]: value }));
+  };
+
+  const downloadCsv = () => {
+    if (!mapPayload) return;
+    const url = URL.createObjectURL(new Blob([mapCsv(mapPayload.map)], { type: 'text/csv' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${(designName ?? 'coilem-design').replace(/[^A-Za-z0-9._-]+/g, '-')}-flux-linkage-map.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const failed = mapPayload?.map.points.filter((point) => point.status === 'failed').length ?? 0;
+  const agreement = (mapPayload?.torque_agreement_pct ?? []).filter((value): value is number => typeof value === 'number' && Number.isFinite(value));
+  const inductances = mapPayload ? inductanceTable(mapPayload.map) : [];
+  const peak = drive?.envelope.curves.find((curve) => curve.limit === 'peak') ?? null;
+  const bestEfficiency = drive ? Math.max(...drive.efficiency_map.efficiency_pct.flat().filter((value): value is number => value !== null)) : null;
+  const remaining = status ? Math.max(status.solves_total - status.solves_finished, 0) : null;
+
+  return (
+    <section className="performance-panel" aria-labelledby={headingId}>
+      <header className="performance-header">
+        <h3 id={headingId}>Torque–speed and efficiency</h3>
+        <span className="losses-status is-experimental" title="Interpolated from a flux-linkage map; not yet compared with measured data.">Experimental</span>
+      </header>
+      <p className="performance-intro">
+        coilEM solves this design over currents up to the peak and current angles from 0° to 90° (a flux-linkage map), then finds the most torque at each speed within the drive limits.
+        Torque is electromagnetic; copper loss uses the winding at {significant(windingTemperature)} °C{resistance === null ? ' (no phase resistance recorded: copper loss and IR drop are left out)' : ''}.
+      </p>
+      <div className="performance-limits">
+        <label><span>Peak current</span><input type="number" min={0.1} step="any" defaultValue={limits.peak_current_A} onBlur={setLimit('peak_current_A')} /><small>A peak</small></label>
+        <label><span>Continuous current</span><input type="number" min={0.1} step="any" defaultValue={limits.continuous_current_A ?? ''} onBlur={setLimit('continuous_current_A')} /><small>A peak</small></label>
+        <label><span>DC bus</span><input type="number" min={1} step="any" defaultValue={limits.dc_bus_V} onBlur={setLimit('dc_bus_V')} /><small>V</small></label>
+        <label><span>Top speed</span><input type="number" min={100} step="any" defaultValue={limits.max_speed_rpm} onBlur={setLimit('max_speed_rpm')} /><small>rpm</small></label>
+        <label><span>Map grid</span>
+          <select value={preset} onChange={(event) => setPreset(event.target.value as MapSettings['preset'])}>
+            <option value="preview">Preview: 5 currents × 7 angles, 24 positions each</option>
+            <option value="standard">Standard: 7 currents × 10 angles, 48 positions each</option>
+          </select>
+        </label>
+      </div>
+      <div className="performance-actions">
+        {phase === 'solving' && progress ? (
+          <>
+            <div className="performance-progress" role="progressbar" aria-valuemin={0} aria-valuemax={progress.total} aria-valuenow={progress.done}>
+              <span style={{ width: `${progress.total ? (100 * progress.done) / progress.total : 0}%` }} />
+            </div>
+            <p>
+              Solved {progress.done} of {progress.total}
+              {progress.current_peak_A !== undefined ? ` · last ${significant(progress.current_peak_A)} A at ${significant(progress.gamma_deg ?? 0)}°` : ''}
+              {progress.eta_s ? ` · ${formatDuration(progress.eta_s)} left` : ''}
+            </p>
+            <button type="button" onClick={() => { void cancelPublicSolve(); }}>Cancel</button>
+          </>
+        ) : (
+          <>
+            {!mapPayload && phase !== 'checking' && (
+              <button type="button" className="performance-primary" onClick={solveMap}>
+                Solve map ({remaining ?? '…'} solve{remaining === 1 ? '' : 's'}{status && status.solves_finished > 0 ? `, ${status.solves_finished} kept` : ''})
+              </button>
+            )}
+            {mapPayload && (
+              <>
+                <button type="button" className="performance-primary" onClick={() => void computeDrive(mapPayload, limits)} disabled={phase === 'computing'}>Apply limits</button>
+                {failed > 0 && <button type="button" onClick={solveMap}>Retry {failed} failed point{failed === 1 ? '' : 's'}</button>}
+                <button type="button" onClick={downloadCsv}>Download map CSV</button>
+              </>
+            )}
+            <p>{phase === 'checking' ? 'Looking for a stored map…' : phase === 'computing' ? 'Computing the curves…' : mapPayload ? `Map of ${mapPayload.map.points.length} points, ${mapPayload.map.rotor_positions} rotor positions each.` : 'Each point is a solve of this design; the first also runs the no-load sweep.'}</p>
+          </>
+        )}
+      </div>
+      {message && <p className={`performance-message${phase === 'error' ? ' is-error' : ''}`} role={phase === 'error' ? 'alert' : 'status'}>{message}</p>}
+      {drive && peak && (
+        <>
+          <div className="performance-stats">
+            <div><span>Peak torque</span><strong>{significant(peak.torque_Nm[0])} <small>N·m</small></strong></div>
+            <div><span>Base speed</span><strong>{significant(peak.base_speed_rpm)} <small>rpm</small></strong></div>
+            <div><span>Peak power</span><strong>{significant(peak.peak_power_W / 1000)} <small>kW</small></strong></div>
+            <div><span>Top speed reached</span><strong>{significant(peak.max_speed_rpm)} <small>rpm</small></strong></div>
+            <div><span>Best efficiency</span><strong>{bestEfficiency !== null && Number.isFinite(bestEfficiency) ? `${bestEfficiency.toFixed(1)}` : '—'} <small>%</small></strong></div>
+          </div>
+          <TorqueSpeedChart envelope={drive.envelope} />
+          <EfficiencyMapChart map={drive.efficiency_map} envelope={drive.envelope} />
+          <div className="performance-footer">
+            {inductances.length > 0 && (
+              <table className="performance-inductance">
+                <caption>Apparent inductance against current</caption>
+                <thead><tr><th scope="col">Current</th><th scope="col">Ld</th><th scope="col">Lq</th></tr></thead>
+                <tbody>
+                  {inductances.map((row) => (
+                    <tr key={row.currentA}>
+                      <th scope="row">{significant(row.currentA)} A</th>
+                      <td>{row.ldH === null ? '—' : `${significant(row.ldH * 1000)} mH`}</td>
+                      <td>{row.lqH === null ? '—' : `${significant(row.lqH * 1000)} mH`}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+            <ul className="performance-notes">
+              {agreement.length > 0 && <li>FEM torque is {Math.min(...agreement).toFixed(1)}–{Math.max(...agreement).toFixed(1)}% of the d/q torque across {agreement.length} map points.</li>}
+              <li>Ld from the 90° points, (λd − λpm) / id; Lq from the 0° points, λq / iq. Both are secant values and include saturation.</li>
+              {drive.envelope.status_reason && <li>{drive.envelope.status_reason}</li>}
+              {drive.efficiency_map.status_reason && <li>{drive.efficiency_map.status_reason}</li>}
+            </ul>
+          </div>
+        </>
+      )}
+    </section>
+  );
+}

@@ -27,6 +27,7 @@ from backend.public_routes.halbach import (
 from backend.public_routes.halbach import (
     router as halbach_router,
 )
+from backend.public_routes.performance import router as performance_router
 from backend.public_routes.preview import router as preview_router
 from backend.public_routes.runs import router as runs_router
 from backend.public_routes.solve import router as solve_router
@@ -63,6 +64,9 @@ PUBLIC_API_PATHS = frozenset(
         "/materials",
         "/materials/import",
         "/openapi.json",
+        "/performance/drive",
+        "/performance/map/status",
+        "/performance/map/stream",
         "/preview",
         "/runs",
         "/runs/{project_slug}/{run_id}",
@@ -234,7 +238,7 @@ def create_app(*, bound_port: int | None = None, ui_bundle: Path | None = None) 
         allow_headers=["Content-Type"],
     )
     application.middleware("http")(guard_public_requests)
-    for router in (preview_router, halbach_router, runs_router, solve_router, tutorials_router, system_router):
+    for router in (preview_router, halbach_router, runs_router, solve_router, performance_router, tutorials_router, system_router):
         application.include_router(router)
     if ui_bundle is not None:
         install_ui_routes(application, ui_bundle, canonical_origin=canonical_origin)

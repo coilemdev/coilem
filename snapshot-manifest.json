@@ -184,6 +184,16 @@
       "sha256": "792f6f66531abab3c10108f8f2809a9525520b7eeb69601b31252ecdf2fec161"
     },
     {
+      "path": "backend/dq_flux_linkage.py",
+      "bytes": 8785,
+      "sha256": "da7d91c6076191c28fba4a34e4ef60858bf38c3f2498105e784299bfb748a6f8"
+    },
+    {
+      "path": "backend/drive_performance.py",
+      "bytes": 21765,
+      "sha256": "911ae115535db97c93af89f9fba8e23fc1325d93783b417a18752ccd17c74a65"
+    },
+    {
       "path": "backend/elmer/__init__.py",
       "bytes": 837,
       "sha256": "f0fd39fb911a0878c30cc907f91f27ffe17cb609ef77707e824b13cfb4100b4c"
@@ -257,6 +267,11 @@
       "path": "backend/field_lines.py",
       "bytes": 31236,
       "sha256": "3fbf0def71ecc1402b883b3692a07aac5083f30aeaac026747452ec257196a26"
+    },
+    {
+      "path": "backend/flux_linkage_map.py",
+      "bytes": 13188,
+      "sha256": "37efca7666e468a6e36ec8a329eae1266f16c617899808c35e5370b6ae8c4b07"
     },
     {
       "path": "backend/geometry.py",
@@ -455,8 +470,8 @@
     },
     {
       "path": "backend/models/performance.py",
-      "bytes": 18276,
-      "sha256": "a9e3f5b0e476b69f58f11be269895f66aa77b0aee7cdbe633fdef1b3853b7f57"
+      "bytes": 19275,
+      "sha256": "3895139707a4215b33d3cd89ba8236471da41e9d589bb2e31177405d252a538b"
     },
     {
       "path": "backend/models/result.py",
@@ -495,8 +510,8 @@
     },
     {
       "path": "backend/public_main.py",
-      "bytes": 9785,
-      "sha256": "869b960f7e5b0282f0151a5d18e5ea7af519526672e09a5ea7d79e3f6e628aa0"
+      "bytes": 9980,
+      "sha256": "8cd2a27c742876da08f95e505f2940262992b0588ab2b4d7d35c39220694dfe9"
     },
     {
       "path": "backend/public_material_catalog.py",
@@ -510,8 +525,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 65679,
-      "sha256": "54ca2ed83e2018dd5759153fa5c399c19b73fb1e015f838f54737a67b1bdf1e8"
+      "bytes": 68132,
+      "sha256": "5bc9a96592d180c68ca910952b0b166d583e43931d175529f4f84e59d5e11a08"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -522,6 +537,11 @@
       "path": "backend/public_routes/halbach.py",
       "bytes": 20336,
       "sha256": "b5af7c81488e4dacd69e266641fb4f29574934fd9a50d933263f5073d886b352"
+    },
+    {
+      "path": "backend/public_routes/performance.py",
+      "bytes": 8251,
+      "sha256": "ffe0abf51dc77f81720222f78799372b3c77492221a0ae178b3b14dc744baea3"
     },
     {
       "path": "backend/public_routes/preview.py",
@@ -595,8 +615,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 148477,
-      "sha256": "7ffb3ab5dd5762197ecc34ad5298b04c20f66eafb72784bd017cacf34d720a93"
+      "bytes": 149100,
+      "sha256": "e02adf3fcf381252381ed481c92473f824c3e2a986357bd229db6cf2e1124c03"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -5490,8 +5510,8 @@
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
-      "bytes": 10419,
-      "sha256": "884e0ac399db75a0b24ddae940cd788c0ecbcd213426faf45e0f6ec2bc205d50"
+      "bytes": 11084,
+      "sha256": "766acbe2630e714b63b52adc99777d31cf39e02ee88909d4d8ff8ece3aecbcda"
     },
     {
       "path": "docs/RELEASE_0_4_0.md",
@@ -5865,8 +5885,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2397,
-      "sha256": "657d0f7957347d0d4608bf490cfe81d4b7aa5e8ade49ceb5fdc1fb8d6e4451fb"
+      "bytes": 2472,
+      "sha256": "e12f19b7b819e131e0023c70abd9b35b0653af89f68905f895af136744fb202f"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -5917,6 +5937,11 @@
       "path": "frontend/scripts/test-design-file-defaults.mjs",
       "bytes": 9229,
       "sha256": "452b6ed4d772a65c3367364fe1db07d6e35c241de09ef71a94c75dd6769cfbd9"
+    },
+    {
+      "path": "frontend/scripts/test-dq-view.mjs",
+      "bytes": 2305,
+      "sha256": "8d8a6e03c7316822b765789e15acdb43c7af03455448265ad662493e5d771465"
     },
     {
       "path": "frontend/scripts/test-field-axes.mjs",
@@ -5979,6 +6004,11 @@
       "sha256": "f85457080dd26d1c90dc9a4084ab0bb533db3ff7aa5ae129dca8133ff5b08cd2"
     },
     {
+      "path": "frontend/scripts/test-performance-view.mjs",
+      "bytes": 3410,
+      "sha256": "88c4f1ceceeb80f690c3af9293d610922f1c461fc637cc2b5834f1838ce24d99"
+    },
+    {
       "path": "frontend/scripts/test-phase-drive.mjs",
       "bytes": 12240,
       "sha256": "10041ab3da2b7a4266305f31ee6ac8f773332f709edeee73eea0ee60d2b95837"
@@ -6005,8 +6035,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 158387,
-      "sha256": "4adeeb69fc52043cc92fc1549e16e8953003881846bc1153076a0b1a97840914"
+      "bytes": 158706,
+      "sha256": "127babdf314c48a8384e5995456dbfb09f17ddb39be504f0c6a1709ac29535e0"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6415,8 +6445,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 72254,
-      "sha256": "0b22bbec28293a86176b3226c530a68183d41c3fe0473a2e9e6a3c55a861f18c"
+      "bytes": 71991,
+      "sha256": "05d1f6d01576e69d3a485f37ecd3f75a6719c756ecd55bcd2a88b15c1c9ba92c"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -6425,13 +6455,18 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 226985,
-      "sha256": "7d1618650c72cfb75e1c4ab1003e981864c15dd7e31703cd1cc9dbb98cdf3831"
+      "bytes": 227773,
+      "sha256": "2fb9f1a9e9b5186bb587ea2f61f2b9f5a30ea95a27c5d3996d2a4d8c30aaa398"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
       "bytes": 5368,
       "sha256": "eeda67dc260b2b9cf81b079c4c54b23a5a37abf51b241236d5b35228c1126572"
+    },
+    {
+      "path": "frontend/src/public/DqCard.tsx",
+      "bytes": 1874,
+      "sha256": "b5c4a8fcf154ff4a9b64d7c99057aaa81f7d2d711390524c261c37196100374b"
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
@@ -6445,8 +6480,8 @@
     },
     {
       "path": "frontend/src/public/LossesCard.tsx",
-      "bytes": 9055,
-      "sha256": "31670bdb7f1062de27120d81d5578504fed263e19ebbfb4551464e0835254076"
+      "bytes": 9340,
+      "sha256": "80b036621eb35048de28c52f42d7a1a44e26716791c4a178ee95bc048123e3d2"
     },
     {
       "path": "frontend/src/public/MaterialWorkspace.tsx",
@@ -6460,8 +6495,13 @@
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
-      "bytes": 3102,
-      "sha256": "edb83771dbfb8c0ff1270dc3eab4c64b34782dc6f5d30785b355b2c84160af95"
+      "bytes": 3774,
+      "sha256": "0a2197f9f073435d775d9571a65c3345811f7a31806e9b88e0cebae82c741a7a"
+    },
+    {
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "bytes": 24019,
+      "sha256": "a05f9e71dac8f45a5e01c6307614b00717192ba903bc531b1cd1e93a353377a8"
     },
     {
       "path": "frontend/src/public/PublicLanding.tsx",
@@ -6485,8 +6525,8 @@
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
-      "bytes": 8452,
-      "sha256": "0f84800466c3e6a5de073c98f3d36a7e960e7be64a52901cdc6db8c9724cc33e"
+      "bytes": 8552,
+      "sha256": "b6179424e1d5f4c9e184f72156155ba90473e07d491cc600419d8b25af6587af"
     },
     {
       "path": "frontend/src/public/RpmField.tsx",
@@ -6520,8 +6560,8 @@
     },
     {
       "path": "frontend/src/public/api.ts",
-      "bytes": 10806,
-      "sha256": "be803acc6a3dc388c78fa8a9a46f7aedd10a40ceafb47e9f7ced8e5229e05d08"
+      "bytes": 12372,
+      "sha256": "50cf1de40adfa2f4cdc585bf7dca106cbc78616e839971aab5c801ed794c3f5f"
     },
     {
       "path": "frontend/src/public/backendMonitor.ts",
@@ -6577,6 +6617,11 @@
       "path": "frontend/src/public/dimensionAnnotations.ts",
       "bytes": 14117,
       "sha256": "e5d90d547e15be58f8bdd6653960aa3696f4a5ab4421430cfdb40b64aa06c536"
+    },
+    {
+      "path": "frontend/src/public/dqView.ts",
+      "bytes": 4460,
+      "sha256": "73e06adbec8967d61ec2a0dd03704a966aaac9c9a87f24df2d61898e7c56993a"
     },
     {
       "path": "frontend/src/public/exampleDesigns.ts",
@@ -6755,13 +6800,13 @@
     },
     {
       "path": "frontend/src/public/lossesView.ts",
-      "bytes": 6863,
-      "sha256": "4d089d84f5f5c583eb89cfc923935a9f45be3656a497c8f5d2bb8f4a18c64831"
+      "bytes": 6884,
+      "sha256": "aa22681a871e99a188ce02b3a3f2d0d13a23ed8f320c8053138d303f396d1d01"
     },
     {
       "path": "frontend/src/public/machineConstants.ts",
-      "bytes": 4143,
-      "sha256": "cf05c7bac517df048ac1410c8ee498b1d95e27c1d70fb8bc7f6b5981909f373b"
+      "bytes": 4300,
+      "sha256": "5df6b38f5830158266bfe159a5e612161eff5a2f615d855851f475a4ecd26f1b"
     },
     {
       "path": "frontend/src/public/magnetCoverage.ts",
@@ -6810,8 +6855,13 @@
     },
     {
       "path": "frontend/src/public/performance.ts",
-      "bytes": 5359,
-      "sha256": "890e64a8f7033342db3d5c14ed88c45940a456a618918fcf611fd78573f93513"
+      "bytes": 6579,
+      "sha256": "05c2a16e2f38bc70e03fa5ea9f51c085ead18426ff5fae81da2e1e10fa0e426b"
+    },
+    {
+      "path": "frontend/src/public/performanceView.ts",
+      "bytes": 7884,
+      "sha256": "6816dbf9892f72f3114f77fc974ada2df790f634ad2bc257c5f2865384295dc5"
     },
     {
       "path": "frontend/src/public/phaseDrive.ts",
@@ -6822,6 +6872,11 @@
       "path": "frontend/src/public/previewContours.ts",
       "bytes": 942,
       "sha256": "74faf4b483e3a1bd000272707fab8ca5deae0b875cafe6095b9a02c39e793e67"
+    },
+    {
+      "path": "frontend/src/public/publicRequest.ts",
+      "bytes": 631,
+      "sha256": "0ea05929993a5cdd38a981bd45d7684d97bf01c6aa6579d29e06cfec88f51caf"
     },
     {
       "path": "frontend/src/public/pyleecanReferenceNotice.ts",
@@ -6850,8 +6905,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 266871,
-      "sha256": "38e51a26d8b94398fa677258262b0a0bd409822cc18a8ff9dfe89c29eaf447c9"
+      "bytes": 271995,
+      "sha256": "da89c621568a988d019eb815d85017bd12a0c080bc2bf3dd589c48f6696760be"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7314,6 +7369,16 @@
       "sha256": "9dcc422aa11c0472f9a4363779e79d75649fe21e70a9c2320ebbc9f9bd73defa"
     },
     {
+      "path": "tests/test_dq_flux_linkage.py",
+      "bytes": 5265,
+      "sha256": "3c71d270f9899a4caac3c844379aded8b31dbd535a90f28aafd8835d31f8d699"
+    },
+    {
+      "path": "tests/test_drive_performance.py",
+      "bytes": 9715,
+      "sha256": "a4cf615115e4fe6e98b1aedcb1f8a7f57ac27b65ceba5d594ac1ca0466530d72"
+    },
+    {
       "path": "tests/test_experimental_holem50.py",
       "bytes": 9336,
       "sha256": "b4ba26815af6db48f8ddf34ddfaea27cc0c906e4ad595ec57909471e24fc8c14"
@@ -7337,6 +7402,11 @@
       "path": "tests/test_field_lines_numpy.py",
       "bytes": 9313,
       "sha256": "e2bfbb122cd018e381e1557d6cde58e99f04466af4df8cd8defa962899ea5637"
+    },
+    {
+      "path": "tests/test_flux_linkage_map.py",
+      "bytes": 7574,
+      "sha256": "756d1207f166edf733918669e43435eb0e616be0c2cc37c4c2a92f0c13f22340"
     },
     {
       "path": "tests/test_gmsh_sigpipe.py",
@@ -7425,8 +7495,8 @@
     },
     {
       "path": "tests/test_loss_breakdown.py",
-      "bytes": 6920,
-      "sha256": "494268bb62147cc5b1ec17db84fbd25d1f024230c91ef7a33f42a899093420f0"
+      "bytes": 7690,
+      "sha256": "3daf7331450104c6fa66bdc5b659e8bf0b8ebf57e725630ea1c83a68f26d4a0e"
     },
     {
       "path": "tests/test_magneto2d_cli_precision.py",
@@ -7472,6 +7542,11 @@
       "path": "tests/test_performance_contracts.py",
       "bytes": 11533,
       "sha256": "cbfe876be77f1e3a2fea64e25cffb528f1179fce3101a1f0c3143870c30cb2aa"
+    },
+    {
+      "path": "tests/test_performance_routes.py",
+      "bytes": 3982,
+      "sha256": "317b0bdde9333ad5a6185270fe9dcbe8116aa7184c37af2ece9aaaeaa527c236"
     },
     {
       "path": "tests/test_postsolve_pipeline.py",
@@ -13165,6 +13240,204 @@
       "path": "tests/test_loss_breakdown.py",
       "source_sha256": null,
       "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "backend/models/performance.py",
+      "source_sha256": "a9e3f5b0e476b69f58f11be269895f66aa77b0aee7cdbe633fdef1b3853b7f57",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "backend/public_main.py",
+      "source_sha256": "869b960f7e5b0282f0151a5d18e5ea7af519526672e09a5ea7d79e3f6e628aa0",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "backend/public_report.py",
+      "source_sha256": "54ca2ed83e2018dd5759153fa5c399c19b73fb1e015f838f54737a67b1bdf1e8",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "7ffb3ab5dd5762197ecc34ad5298b04c20f66eafb72784bd017cacf34d720a93",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "source_sha256": "884e0ac399db75a0b24ddae940cd788c0ecbcd213426faf45e0f6ec2bc205d50",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/package.json",
+      "source_sha256": "657d0f7957347d0d4608bf490cfe81d4b7aa5e8ade49ceb5fdc1fb8d6e4451fb",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "4adeeb69fc52043cc92fc1549e16e8953003881846bc1153076a0b1a97840914",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "0b22bbec28293a86176b3226c530a68183d41c3fe0473a2e9e6a3c55a861f18c",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "7d1618650c72cfb75e1c4ab1003e981864c15dd7e31703cd1cc9dbb98cdf3831",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/LossesCard.tsx",
+      "source_sha256": "31670bdb7f1062de27120d81d5578504fed263e19ebbfb4551464e0835254076",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/MotorConstants.tsx",
+      "source_sha256": "edb83771dbfb8c0ff1270dc3eab4c64b34782dc6f5d30785b355b2c84160af95",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "0f84800466c3e6a5de073c98f3d36a7e960e7be64a52901cdc6db8c9724cc33e",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "be803acc6a3dc388c78fa8a9a46f7aedd10a40ceafb47e9f7ced8e5229e05d08",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/lossesView.ts",
+      "source_sha256": "4d089d84f5f5c583eb89cfc923935a9f45be3656a497c8f5d2bb8f4a18c64831",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/machineConstants.ts",
+      "source_sha256": "cf05c7bac517df048ac1410c8ee498b1d95e27c1d70fb8bc7f6b5981909f373b",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "890e64a8f7033342db3d5c14ed88c45940a456a618918fcf611fd78573f93513",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "38e51a26d8b94398fa677258262b0a0bd409822cc18a8ff9dfe89c29eaf447c9",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": "494268bb62147cc5b1ec17db84fbd25d1f024230c91ef7a33f42a899093420f0",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "backend/dq_flux_linkage.py",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "backend/drive_performance.py",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "backend/flux_linkage_map.py",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/scripts/test-dq-view.mjs",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/scripts/test-performance-view.mjs",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/DqCard.tsx",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/dqView.ts",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/performanceView.ts",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/publicRequest.ts",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "tests/test_dq_flux_linkage.py",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "tests/test_drive_performance.py",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "tests/test_flux_linkage_map.py",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "tests/test_performance_routes.py",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
     }
   ]
 }
