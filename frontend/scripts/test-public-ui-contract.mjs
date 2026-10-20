@@ -1218,7 +1218,9 @@ assert.match(fieldResultSource, /<span className="public-field-lead-short" aria-
 assert.match(styleSource, /@container \(max-width: 440px\) \{\s*\.public-solved-field-canvas \.public-field-lines-legend \.public-field-lead-long \{ display: none; \}/);
 assert.doesNotMatch(styleSource, /\.public-field-toolbar-groups \{ grid-column: 1 \/ -1; grid-row: 2;/);
 // Field axes: each field's working-harmonic poles, the stator lead and the caption.
-assert.match(solvedFieldSource, /fieldAxes=\{overlayActive \? CLOCKWISE_FIELD_AXES : null\}/);
+assert.match(solvedFieldSource, /fieldAxes=\{overlayActive \? fieldAxes : null\}/);
+// The Stator + PM view notes the run's current angle: the stator field sits at 90° + γ.
+assert.match(solvedFieldSource, /\.\.\.CLOCKWISE_FIELD_AXES,\s*currentAngleDeg: config\.solve_params\.excitation_mode === 'sinusoidal'/);
 assert.match(solvedFieldSource, /setShowPoleLabels\(true\);\s*setFieldLineDensity\('low'\);/);
 assert.match(fieldResultSource, /airgapHarmonic\(statorPolarityProfile, axisPolePairs\)/);
 assert.match(fieldResultSource, /rotorNorthAxisDeg\(magnetOverlay, axisPolePairs\)/);

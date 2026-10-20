@@ -1724,6 +1724,10 @@ body {
 .public-field-axis-help-badge text { fill: #f8fafc; text-anchor: middle; dominant-baseline: central; font-family: var(--font-mono); font-weight: 700; }
 .public-field-axis.is-stator { stroke: #ffb547; filter: drop-shadow(0 0 1px rgba(0,0,0,.95)); }
 .public-field-axis.is-pm { stroke: #5ed3f3; filter: drop-shadow(0 0 1px rgba(0,0,0,.95)); }
+.public-field-axis-q { fill: none; stroke: rgba(241,245,249,.85); stroke-width: 1px; stroke-dasharray: 5 3; vector-effect: non-scaling-stroke; }
+.public-field-axis-label.is-dq { font-style: italic; }
+.public-field-axis-label.is-d { fill: #5ed3f3; }
+.public-field-axis-label.is-note { font-weight: 500; fill: rgba(241,245,249,.88); }
 .public-field-axis-arc { fill: none; stroke: rgba(241,245,249,.8); stroke-width: 1.4px; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
 .public-field-axis-label { fill: #f8fafc; stroke: rgba(3,7,18,.9); stroke-width: .12; paint-order: stroke; text-anchor: middle; dominant-baseline: central; font-family: var(--font-mono); font-weight: 700; pointer-events: none; }
 @keyframes public-field-direction-flow {

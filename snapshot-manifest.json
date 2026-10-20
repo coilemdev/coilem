@@ -5945,8 +5945,8 @@
     },
     {
       "path": "frontend/scripts/test-field-axes.mjs",
-      "bytes": 6115,
-      "sha256": "2259c0bf1a6566428674fd7e2340753e99fa00044cee49e5cb01522d9a447319"
+      "bytes": 7213,
+      "sha256": "5c0aba2e4f5f84c03d92e9ea071bdba8dd04e1293023049b352f797818c11276"
     },
     {
       "path": "frontend/scripts/test-field-legend-fit.mjs",
@@ -6035,8 +6035,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 158706,
-      "sha256": "127babdf314c48a8384e5995456dbfb09f17ddb39be504f0c6a1709ac29535e0"
+      "bytes": 158924,
+      "sha256": "c3af77a3b783efac82d8a6162ca596a679935267fa2c0a08d5cd6274e81030ba"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6470,8 +6470,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 56545,
-      "sha256": "6d35e09fff36f1dc32f1a4610bee30a556feb2421a8eae0aa483ee6fa4d93636"
+      "bytes": 57951,
+      "sha256": "f9468769b170e5df043aa199eab2f65c8f306efbf9061a5f5ba9a59b83684c5d"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -6535,8 +6535,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 54956,
-      "sha256": "3adf052069e3928915f0d4e2248f0cd917b041c061511817a4bb9d4b4f09e94e"
+      "bytes": 55218,
+      "sha256": "6997f4ae660f17bfdcbd526b85328ffb8cefe3405531726e18ba221950283124"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -6675,8 +6675,8 @@
     },
     {
       "path": "frontend/src/public/fieldAxes.ts",
-      "bytes": 4269,
-      "sha256": "5c19b3c9a6eeb7c6f03eace3eff325e0c75630f12907d3fab22db72a73ee27ab"
+      "bytes": 5464,
+      "sha256": "33d527cc92859c69b8bb46ae0c50de6f0974b04c6bcdc2e19e73144cf9007d3e"
     },
     {
       "path": "frontend/src/public/fieldLegendFit.ts",
@@ -6910,8 +6910,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 274792,
-      "sha256": "cf9556f070a5c470082cf5c7c73b0ae00aef16492b020aad493f9209ca25fc17"
+      "bytes": 275125,
+      "sha256": "84abbf45f906f01e9a9e5e93b5b3fc40081ca98a59dd453289fb933dfdbb374b"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -13737,6 +13737,42 @@
       "path": "tests/test_loss_breakdown.py",
       "source_sha256": "8761bd820b989f685a4091021165fd80e519df29bc85ead0ed628d01b70d1c96",
       "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "10e6a8596f40ff914a0fa9bc236152ac8e556558",
+      "path": "frontend/scripts/test-field-axes.mjs",
+      "source_sha256": "2259c0bf1a6566428674fd7e2340753e99fa00044cee49e5cb01522d9a447319",
+      "reason": "Label the d and q axes in the Stator + PM field view (#113)"
+    },
+    {
+      "base_commit": "10e6a8596f40ff914a0fa9bc236152ac8e556558",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "127babdf314c48a8384e5995456dbfb09f17ddb39be504f0c6a1709ac29535e0",
+      "reason": "Label the d and q axes in the Stator + PM field view (#113)"
+    },
+    {
+      "base_commit": "10e6a8596f40ff914a0fa9bc236152ac8e556558",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "6d35e09fff36f1dc32f1a4610bee30a556feb2421a8eae0aa483ee6fa4d93636",
+      "reason": "Label the d and q axes in the Stator + PM field view (#113)"
+    },
+    {
+      "base_commit": "10e6a8596f40ff914a0fa9bc236152ac8e556558",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "3adf052069e3928915f0d4e2248f0cd917b041c061511817a4bb9d4b4f09e94e",
+      "reason": "Label the d and q axes in the Stator + PM field view (#113)"
+    },
+    {
+      "base_commit": "10e6a8596f40ff914a0fa9bc236152ac8e556558",
+      "path": "frontend/src/public/fieldAxes.ts",
+      "source_sha256": "5c19b3c9a6eeb7c6f03eace3eff325e0c75630f12907d3fab22db72a73ee27ab",
+      "reason": "Label the d and q axes in the Stator + PM field view (#113)"
+    },
+    {
+      "base_commit": "10e6a8596f40ff914a0fa9bc236152ac8e556558",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "cf9556f070a5c470082cf5c7c73b0ae00aef16492b020aad493f9209ca25fc17",
+      "reason": "Label the d and q axes in the Stator + PM field view (#113)"
     }
   ]
 }
