@@ -6,7 +6,7 @@
  */
 
 import { streamPerformanceMap, type PublicApiError, type PublicSolveRequest } from './api';
-import type { DriveLimits, FluxLinkageMapPayload, MapSettings, PerformanceMapProgress } from './performance';
+import type { DriveControl, DriveLimits, FluxLinkageMapPayload, MapSettings, PerformanceMapProgress } from './performance';
 
 export interface MapJob {
   /** The design and grid the map is for; see mapJobKey. */
@@ -64,6 +64,7 @@ export interface PanelInputs {
   preset: MapSettings['preset'];
   /** The DC bus was typed in, so it is no longer the back-EMF estimate. */
   busEdited?: boolean;
+  control?: DriveControl;
 }
 
 const panelInputs = new Map<string, PanelInputs>();

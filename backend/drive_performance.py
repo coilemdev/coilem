@@ -32,6 +32,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from backend.models.performance import (
+    DriveControl,
     DriveLimits,
     EfficiencyMap,
     FluxLinkageMap,
@@ -387,12 +388,15 @@ def efficiency_map(
     speed_points: int = 41,
     torque_points: int = 41,
     envelope: TorqueSpeedEnvelope | None = None,
+    control: DriveControl = "mtpa",
 ) -> EfficiencyMap:
-    """Minimum-loss efficiency over the torque–speed plane inside the peak envelope.
+    """Efficiency over the torque–speed plane inside the peak envelope.
 
     At each (speed, torque) every current angle is tried at the current that
-    gives the torque; the one with the least copper plus iron loss that stays
-    inside the voltage limit is kept.
+    gives the torque, and among those inside the voltage limit one is kept:
+    with "mtpa" the smallest current (MTPA below base speed, then field
+    weakening and MTPV, as production drives run), with "least_loss" the
+    least copper plus iron loss (an efficiency-optimised drive).
     """
 
     model = MapModel.from_map(flux_map)
@@ -444,7 +448,9 @@ def efficiency_map(
         omega_e = omega_m * model.pole_pairs
         volts = np.hypot(phase_resistance_ohm * i_d - omega_e * lambda_q, phase_resistance_ohm * i_q + omega_e * lambda_d)
         iron_all = _iron_loss(model, iron_h, iron_e, rpm * model.pole_pairs / 60)
-        loss = np.where(valid & (volts <= v_max * _BOUNDARY), copper_all + iron_all, np.inf)
+        # Copper loss grows with the current squared, so the least copper loss is the smallest current.
+        objective = copper_all if control == "mtpa" else copper_all + iron_all
+        loss = np.where(valid & (volts <= v_max * _BOUNDARY), objective, np.inf)
         choice = np.argmin(loss, axis=1)
         rows = np.arange(torques.size)
         ok = np.isfinite(loss[rows, choice])
@@ -462,7 +468,10 @@ def efficiency_map(
         return [[None if math.isnan(value) else float(value) for value in row] for row in values]
 
     notes = [
-        "Minimum-loss current at each point, interpolated from the flux-linkage map; torque is electromagnetic.",
+        (
+            "MTPA control: the smallest current for each torque within the voltage limit"
+            if control == "mtpa" else "Least-loss control: the current with the least copper plus iron loss at each point"
+        ) + ", interpolated from the flux-linkage map; torque is electromagnetic.",
         "Copper loss at the winding temperature; iron loss scaled from the map's reference speed, "
         "hysteresis with frequency and eddy current with its square."
         if model.iron_loss_available else "Iron loss is not included: the map has no iron loss.",
@@ -478,6 +487,7 @@ def efficiency_map(
         current_angle_deg=matrix(current_angle),
         mechanical_loss_W=mechanical_loss_W,
         winding_temperature_C=winding_temperature_C,
+        control=control,
         status="experimental",
         status_reason=" ".join(notes),
     )

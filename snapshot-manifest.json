@@ -190,8 +190,8 @@
     },
     {
       "path": "backend/drive_performance.py",
-      "bytes": 22091,
-      "sha256": "8acd4f94e0453c78e0b0399731febdbc630e2358dd1d02fa45b95211ea462cc5"
+      "bytes": 22691,
+      "sha256": "f96ccca8274ffffe5440899a88d84bf00fb41125494cfca1b049d6a138964f21"
     },
     {
       "path": "backend/elmer/__init__.py",
@@ -470,8 +470,8 @@
     },
     {
       "path": "backend/models/performance.py",
-      "bytes": 20304,
-      "sha256": "13cb34039356f1e66534d6b514193b6271df9e2028a9930a13c73fb56cf23fb5"
+      "bytes": 20533,
+      "sha256": "7cb9b0a114e48970d8e6a26847fa28c453bfd9a89e158e7cc693288da3d4587f"
     },
     {
       "path": "backend/models/result.py",
@@ -525,8 +525,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 69522,
-      "sha256": "eee2f2ccb5a9a2ea4c674bd49adf2806d3eec0ef41a8bb4533584e4015663e3e"
+      "bytes": 70366,
+      "sha256": "8028ee4fa27e856a14ba8dff050a5319f6592784c52567f1edb7b7449c904879"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -540,8 +540,8 @@
     },
     {
       "path": "backend/public_routes/performance.py",
-      "bytes": 8295,
-      "sha256": "0561478fa08f4cd4fec53df07dfed278aeb0c91ad75100409fd366d50efdb5e9"
+      "bytes": 8381,
+      "sha256": "fb83d82074255701d18bffc1fee9219a09a42018b65b2660dc1d76997363a0f3"
     },
     {
       "path": "backend/public_routes/preview.py",
@@ -5940,8 +5940,8 @@
     },
     {
       "path": "frontend/scripts/test-dq-view.mjs",
-      "bytes": 2305,
-      "sha256": "8d8a6e03c7316822b765789e15acdb43c7af03455448265ad662493e5d771465"
+      "bytes": 3319,
+      "sha256": "874daf9df1d60ef9139bbe9dbe243053d7532fd0c1bd0a1100e9c8e607da5c8b"
     },
     {
       "path": "frontend/scripts/test-field-axes.mjs",
@@ -6465,8 +6465,8 @@
     },
     {
       "path": "frontend/src/public/DqCard.tsx",
-      "bytes": 1874,
-      "sha256": "b5c4a8fcf154ff4a9b64d7c99057aaa81f7d2d711390524c261c37196100374b"
+      "bytes": 2634,
+      "sha256": "f6dafea074274063a03854ac148714cf1c50564b1143ae50a0133a5c980f0404"
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
@@ -6500,8 +6500,8 @@
     },
     {
       "path": "frontend/src/public/PerformancePanel.tsx",
-      "bytes": 31579,
-      "sha256": "c5216dbb7082f9149f05250bf83068e082b1de397578fbd4931274a734c54527"
+      "bytes": 33045,
+      "sha256": "47bfe240d5836929b7b2856dd2bdfce8966f1de35df0aef12bc487891ce8de58"
     },
     {
       "path": "frontend/src/public/PublicLanding.tsx",
@@ -6525,8 +6525,8 @@
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
-      "bytes": 8646,
-      "sha256": "00f80c741b6761cdad1fb18a04ddd591cf75315fa27abbec0e503bb1bf5c97a9"
+      "bytes": 8779,
+      "sha256": "f352c2fc0739c8179844d5eaad1a000e426141733a4c9c2a0ba08ec4e57e27cb"
     },
     {
       "path": "frontend/src/public/RpmField.tsx",
@@ -6620,8 +6620,8 @@
     },
     {
       "path": "frontend/src/public/dqView.ts",
-      "bytes": 4460,
-      "sha256": "73e06adbec8967d61ec2a0dd03704a966aaac9c9a87f24df2d61898e7c56993a"
+      "bytes": 7090,
+      "sha256": "ea85a23ba12eacf951f7969af051d975bdb399398c40395d4d566cb5bbdc423b"
     },
     {
       "path": "frontend/src/public/exampleDesigns.ts",
@@ -6825,8 +6825,8 @@
     },
     {
       "path": "frontend/src/public/mapJob.ts",
-      "bytes": 2856,
-      "sha256": "3f14eee62f094adfd725ee98bb4d6ad058f04ecbe4c2f3385e39fe5721ca8abf"
+      "bytes": 2896,
+      "sha256": "e8bd2e48547eb34d91671383bb400ed5e4d1e2bd29f6da9167b3b68aaf8bf58f"
     },
     {
       "path": "frontend/src/public/meshQuality.ts",
@@ -6860,8 +6860,8 @@
     },
     {
       "path": "frontend/src/public/performance.ts",
-      "bytes": 7107,
-      "sha256": "8dd57a01d2607a5a6106bf2a93be419113fd369b03a2cce364f26314bd8df70e"
+      "bytes": 7304,
+      "sha256": "a70a9bbef72a115157d7e851f3affed2e20be911669b1155ef3aa5bac616d337"
     },
     {
       "path": "frontend/src/public/performanceView.ts",
@@ -6910,8 +6910,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 274552,
-      "sha256": "0673250dd413d68aa3082d54df8bdbd34861c89e0a86c475f677803711f53e46"
+      "bytes": 274792,
+      "sha256": "cf9556f070a5c470082cf5c7c73b0ae00aef16492b020aad493f9209ca25fc17"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7380,8 +7380,8 @@
     },
     {
       "path": "tests/test_drive_performance.py",
-      "bytes": 9983,
-      "sha256": "b928e06e092784298001448da70a13c5ad16dc8d5ef14cff4976af0560711a86"
+      "bytes": 11735,
+      "sha256": "162e9f7b545187ba5b11ea8556aae2dbce50edc759e5c3242c56568508c8c7aa"
     },
     {
       "path": "tests/test_experimental_holem50.py",
@@ -7500,8 +7500,8 @@
     },
     {
       "path": "tests/test_loss_breakdown.py",
-      "bytes": 8064,
-      "sha256": "8761bd820b989f685a4091021165fd80e519df29bc85ead0ed628d01b70d1c96"
+      "bytes": 8156,
+      "sha256": "da04016e03c59eafa69b665ad128f81d8a69be4bd5955da05d6226aa3abb90a7"
     },
     {
       "path": "tests/test_magneto2d_cli_precision.py",
@@ -13653,6 +13653,90 @@
       "path": "tests/test_drive_performance.py",
       "source_sha256": "a4cf615115e4fe6e98b1aedcb1f8a7f57ac27b65ceba5d594ac1ca0466530d72",
       "reason": "Drive inputs in the Solve page's current units, solved-point markers, current at each map point (#140-#142)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "backend/drive_performance.py",
+      "source_sha256": "8acd4f94e0453c78e0b0399731febdbc630e2358dd1d02fa45b95211ea462cc5",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "backend/models/performance.py",
+      "source_sha256": "13cb34039356f1e66534d6b514193b6271df9e2028a9930a13c73fb56cf23fb5",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "backend/public_report.py",
+      "source_sha256": "eee2f2ccb5a9a2ea4c674bd49adf2806d3eec0ef41a8bb4533584e4015663e3e",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": "0561478fa08f4cd4fec53df07dfed278aeb0c91ad75100409fd366d50efdb5e9",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "frontend/scripts/test-dq-view.mjs",
+      "source_sha256": "8d8a6e03c7316822b765789e15acdb43c7af03455448265ad662493e5d771465",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "frontend/src/public/DqCard.tsx",
+      "source_sha256": "b5c4a8fcf154ff4a9b64d7c99057aaa81f7d2d711390524c261c37196100374b",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "c5216dbb7082f9149f05250bf83068e082b1de397578fbd4931274a734c54527",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "00f80c741b6761cdad1fb18a04ddd591cf75315fa27abbec0e503bb1bf5c97a9",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "frontend/src/public/dqView.ts",
+      "source_sha256": "73e06adbec8967d61ec2a0dd03704a966aaac9c9a87f24df2d61898e7c56993a",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "frontend/src/public/mapJob.ts",
+      "source_sha256": "3f14eee62f094adfd725ee98bb4d6ad058f04ecbe4c2f3385e39fe5721ca8abf",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "8dd57a01d2607a5a6106bf2a93be419113fd369b03a2cce364f26314bd8df70e",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "0673250dd413d68aa3082d54df8bdbd34861c89e0a86c475f677803711f53e46",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "tests/test_drive_performance.py",
+      "source_sha256": "b928e06e092784298001448da70a13c5ad16dc8d5ef14cff4976af0560711a86",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": "8761bd820b989f685a4091021165fd80e519df29bc85ead0ed628d01b70d1c96",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
     }
   ]
 }

@@ -17,6 +17,7 @@ import {
 } from './mapJob';
 import type { MotorConfig, SolveResult } from './model';
 import type {
+  DriveControl,
   DriveLimits,
   DrivePerformance,
   EfficiencyMap,
@@ -82,11 +83,17 @@ function Axes({ xMax, yMax, xLabel, yLabel, yFormat = (value: number) => signifi
   );
 }
 
-/** The run's own operating point: its speed and solved torque. */
+/** The run's own operating point: its speed, solved torque and, for sinusoidal current, its current angle. */
 interface SolvedPoint {
   speedRpm: number;
   torqueNm: number;
+  gammaDeg: number | null;
 }
+
+const CONTROL_NOTE: Record<DriveControl, string> = {
+  mtpa: 'MTPA: the smallest current for each torque, as most drives run',
+  least_loss: 'Least loss: the current with the least copper plus iron loss',
+};
 
 function SolvedMarker({ cx, cy, label }: { cx: number; cy: number; label: string }) {
   if (!Number.isFinite(cx) || !Number.isFinite(cy) || cx < MARGIN.left || cx > WIDTH - MARGIN.right || cy < MARGIN.top || cy > HEIGHT - MARGIN.bottom) return null;
@@ -221,13 +228,16 @@ function EfficiencyMapChart({ map, envelope, solved, formatCurrent }: {
   for (let value = bands.floor; value < bands.top; value += bands.step) legendStops.push(value);
   const solvedEta = solved ? efficiencyAt(map, solved.speedRpm, solved.torqueNm) : null;
   const solvedCurrent = solved ? currentAt(map, solved.speedRpm, solved.torqueNm) : null;
+  const solvedAngleNote = solved?.gammaDeg != null && solvedCurrent?.gammaDeg != null && Math.abs(solved.gammaDeg - solvedCurrent.gammaDeg) > 3
+    ? ` (your solve used γ ${Math.round(solved.gammaDeg)}°, so its efficiency on the Losses card differs)`
+    : '';
   return (
     <figure className="performance-chart">
-      <div className="performance-chart-heading"><span>Efficiency map</span><span className="performance-chart-note">each point at its least-loss current; hover to see it</span></div>
+      <div className="performance-chart-heading"><span>Efficiency map</span><span className="performance-chart-note">{CONTROL_NOTE[map.control ?? 'mtpa']}; hover for the current</span></div>
       <p className="performance-readout" aria-live="polite">
         {cell && hover
           ? `${significant(cell.eta, 3)}% at ${significant(speeds[hover.column])} rpm, ${significant(torques[hover.row])} N·m · ${cell.current ? `${describeCurrent(cell.current)} · ` : ''}copper ${significant(cell.copper ?? 0)} W · iron ${significant(cell.iron ?? 0)} W`
-          : `${solvedEta !== null && solved ? `Solved point (${significant(solved.speedRpm)} rpm, ${significant(solved.torqueNm)} N·m): ${solvedEta.toFixed(1)}%${solvedCurrent ? ` at ${describeCurrent(solvedCurrent)}` : ''}. ` : ''}Hover the map for efficiency, current and losses at a point. Blank above the peak envelope.`}
+          : `${solvedEta !== null && solved ? `Solved point (${significant(solved.speedRpm)} rpm, ${significant(solved.torqueNm)} N·m): ${solvedEta.toFixed(1)}%${solvedCurrent ? ` at ${describeCurrent(solvedCurrent)}` : ''}${solvedAngleNote}. ` : ''}Hover the map for efficiency, current and losses at a point. Blank above the peak envelope.`}
       </p>
       <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} role="img" aria-label={`Efficiency over speed and torque, from ${bands.floor}% to ${bands.top}%`} onPointerMove={onMove} onPointerLeave={() => setHover(null)}>
         {map.efficiency_pct.map((row, rowIndex) => row.map((eta, columnIndex) => (eta === null ? null : (
@@ -285,13 +295,18 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
   }));
   const [preset, setPreset] = useState<MapSettings['preset']>(() => recallPanelInputs(designKey)?.preset ?? 'preview');
   const [busEdited, setBusEdited] = useState<boolean>(() => recallPanelInputs(designKey)?.busEdited ?? false);
-  useEffect(() => { rememberPanelInputs(designKey, { limits, preset, busEdited }); }, [designKey, limits, preset, busEdited]);
+  const [control, setControl] = useState<DriveControl>(() => recallPanelInputs(designKey)?.control ?? 'mtpa');
+  useEffect(() => { rememberPanelInputs(designKey, { limits, preset, busEdited, control }); }, [designKey, limits, preset, busEdited, control]);
   const busEstimated = !busFromDesign && !busEdited;
   const solvedRmsA = losses?.phase_current_rms_A ?? null;
   const solvedShown = solvedRmsA !== null ? units.fromPeak(solvedRmsA * Math.SQRT2) : null;
   const ratedSpeed = config.solve_params.rated_speed_rpm;
   const solvedPoint: SolvedPoint | null = ratedSpeed > 0 && Number.isFinite(summary.avg_torque_Nm) && summary.avg_torque_Nm > 0
-    ? { speedRpm: ratedSpeed, torqueNm: summary.avg_torque_Nm }
+    ? {
+      speedRpm: ratedSpeed,
+      torqueNm: summary.avg_torque_Nm,
+      gammaDeg: config.solve_params.excitation_mode === 'sinusoidal' ? config.solve_params.current_angle_deg : null,
+    }
     : null;
   const [phase, setPhase] = useState<Phase>('checking');
   const [status, setStatus] = useState<PerformanceMapStatus | null>(null);
@@ -310,7 +325,7 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
   const resistance = winding?.phase_resistance_ohm ?? losses?.phase_resistance_ohm ?? null;
   const windingTemperature = winding?.winding_temperature_C ?? losses?.winding_temperature_C ?? 20;
 
-  const computeDrive = useCallback(async (payload: FluxLinkageMapPayload, driveLimits: DriveLimits) => {
+  const computeDrive = useCallback(async (payload: FluxLinkageMapPayload, driveLimits: DriveLimits, driveControl: DriveControl = control) => {
     setPhase('computing');
     setMessage(null);
     try {
@@ -320,6 +335,7 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
         phase_resistance_ohm: resistance ?? 0,
         winding_temperature_C: windingTemperature,
         mechanical_loss_W: losses?.mechanical_loss_W ?? 0,
+        control: driveControl,
       });
       setDrive(next);
       setPhase('ready');
@@ -328,7 +344,7 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
       setMessage(errorText(error));
       setPhase('error');
     }
-  }, [resistance, windingTemperature, losses?.mechanical_loss_W]);
+  }, [resistance, windingTemperature, losses?.mechanical_loss_W, control]);
 
   // Look up a stored map whenever the grid changes; a finished one goes straight to the curves.
   useEffect(() => {
@@ -461,6 +477,20 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
           </em>
         </label>
         <label><span>Top speed</span><input type="number" min={100} step="any" defaultValue={limits.max_speed_rpm} onBlur={setLimit('max_speed_rpm')} /><small>rpm</small></label>
+        <label>
+          <span>Drive control</span>
+          <select
+            value={control}
+            onChange={(event) => {
+              const next = event.target.value as DriveControl;
+              setControl(next);
+              if (mapPayload) void computeDrive(mapPayload, limits, next);
+            }}
+          >
+            <option value="mtpa">MTPA, then field weakening (typical drive)</option>
+            <option value="least_loss">Least loss (efficiency-optimised drive)</option>
+          </select>
+        </label>
         <label><span>Map grid</span>
           <select value={preset} onChange={(event) => setPreset(event.target.value as MapSettings['preset'])}>
             <option value="preview">Preview: 5 currents × 7 angles, 12 positions each</option>

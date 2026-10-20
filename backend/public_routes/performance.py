@@ -26,7 +26,7 @@ from backend.flux_linkage_map import (
     map_solve_count,
     run_flux_linkage_map,
 )
-from backend.models.performance import DriveLimits, FluxLinkageMap
+from backend.models.performance import DriveControl, DriveLimits, FluxLinkageMap
 from backend.public_policy import PublicConfigError
 from backend.public_routes import solve as solve_routes
 from backend.solve_workspace import user_data_root
@@ -45,6 +45,7 @@ class DriveRequest(BaseModel):
     phase_resistance_ohm: float = Field(ge=0)
     winding_temperature_C: float = Field(ge=-50.0, le=250.0)
     mechanical_loss_W: float = Field(default=0.0, ge=0)
+    control: DriveControl = "mtpa"
 
 
 def _store_root():
@@ -192,6 +193,7 @@ async def drive_performance(body: dict[str, Any]) -> dict[str, Any]:
             winding_temperature_C=request.winding_temperature_C,
             mechanical_loss_W=request.mechanical_loss_W,
             envelope=envelope,
+            control=request.control,
         )
     except ValueError as exc:
         raise HTTPException(

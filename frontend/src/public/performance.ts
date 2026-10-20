@@ -139,6 +139,9 @@ export interface DriveLimits {
 
 export type TorqueSpeedRegion = 'mtpa' | 'field_weakening' | 'mtpv';
 
+/** How the drive picks the current for a torque: the smallest (MTPA, then field weakening) or the least total loss. */
+export type DriveControl = 'mtpa' | 'least_loss';
+
 export interface TorqueSpeedCurve {
   limit: 'peak' | 'continuous';
   speed_rpm: number[];
@@ -178,6 +181,7 @@ export interface EfficiencyMap {
   /** The least-loss phase current at each point, rms, and its current angle γ. */
   phase_current_rms_A?: Array<Array<number | null>> | null;
   current_angle_deg?: Array<Array<number | null>> | null;
+  control?: DriveControl;
   mechanical_loss_W: number;
   winding_temperature_C: number;
   status: PerformanceOutputStatus;

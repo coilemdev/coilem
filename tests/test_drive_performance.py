@@ -17,7 +17,10 @@ REFERENCE_RPM = 3000.0
 IRON_H, IRON_E = 20.0, 10.0  # W at the reference speed, the same at every map point
 
 
-def _map(l_d: float, l_q: float, *, max_current: float = 80.0, iron: bool = True, drop: tuple[float, float] | None = None) -> FluxLinkageMap:
+def _map(
+    l_d: float, l_q: float, *, max_current: float = 80.0, iron: bool = True, drop: tuple[float, float] | None = None,
+    iron_follows_flux: bool = False,
+) -> FluxLinkageMap:
     currents = [float(value) for value in np.linspace(0.0, max_current, 9)]
     gammas = [float(value) for value in range(-10, 95, 5)]
     points = []
@@ -27,12 +30,14 @@ def _map(l_d: float, l_q: float, *, max_current: float = 80.0, iron: bool = True
                 continue
             i_d, i_q = dq_currents(current, gamma)
             lambda_d, lambda_q = LAMBDA_PM + l_d * i_d, l_q * i_q
+            # Iron loss grows with the flux density squared, so weakening the magnet flux lowers it.
+            scale = (math.hypot(lambda_d, lambda_q) / LAMBDA_PM) ** 2 if iron_follows_flux else 1.0
             points.append(FluxLinkageMapPoint(
                 current_peak_A=current, gamma_deg=gamma, i_d_A=i_d, i_q_A=i_q, status="ok",
                 avg_torque_Nm=1.5 * POLE_PAIRS * (lambda_d * i_q - lambda_q * i_d),
                 lambda_d_Wb=lambda_d, lambda_q_Wb=lambda_q,
-                iron_hysteresis_loss_W=IRON_H if iron else None, iron_eddy_loss_W=IRON_E if iron else None,
-                iron_loss_W=IRON_H + IRON_E if iron else None,
+                iron_hysteresis_loss_W=IRON_H * scale if iron else None, iron_eddy_loss_W=IRON_E * scale if iron else None,
+                iron_loss_W=(IRON_H + IRON_E) * scale if iron else None,
             ))
     return FluxLinkageMap(
         scope_key="analytic-test-map-0001", pole_pairs=POLE_PAIRS, current_peak_A=currents, gamma_deg=gammas,
@@ -183,3 +188,24 @@ def test_a_current_limit_beyond_the_map_is_clamped_and_said_so():
     envelope = torque_speed_envelope(_map(0.5e-3, 0.5e-3), limits, phase_resistance_ohm=R, winding_temperature_C=80.0)
     assert envelope.curves[0].torque_Nm[0] == pytest.approx(1.5 * POLE_PAIRS * LAMBDA_PM * 80.0, rel=0.005)
     assert "clamped" in envelope.status_reason
+
+
+def test_mtpa_keeps_the_smallest_current_and_least_loss_trades_it_for_iron_loss():
+    flux_map = _map(0.5e-3, 0.5e-3, iron_follows_flux=True)
+    envelope = torque_speed_envelope(flux_map, LIMITS, phase_resistance_ohm=R, winding_temperature_C=80.0)
+    kwargs = dict(phase_resistance_ohm=R, winding_temperature_C=80.0, envelope=envelope)
+    mtpa = efficiency_map(flux_map, LIMITS, **kwargs)
+    least = efficiency_map(flux_map, LIMITS, control="least_loss", **kwargs)
+    assert (mtpa.control, least.control) == ("mtpa", "least_loss")
+    assert "MTPA control" in mtpa.status_reason and "Least-loss control" in least.status_reason
+    speeds, torques = np.array(mtpa.speed_rpm), np.array(mtpa.torque_Nm)
+    column, row = int(np.searchsorted(speeds, 2000.0)), int(np.searchsorted(torques, 6.0))
+    # Below base speed an SPM's MTPA current is all on the q-axis; least loss adds negative id to cut iron loss.
+    assert mtpa.current_angle_deg[row][column] == pytest.approx(0.0, abs=0.2)
+    assert least.current_angle_deg[row][column] > 5.0
+    assert least.phase_current_rms_A[row][column] > mtpa.phase_current_rms_A[row][column]
+    assert least.iron_loss_W[row][column] < mtpa.iron_loss_W[row][column]
+    # Least loss is never less efficient than MTPA, cell for cell.
+    for eta_mtpa, eta_least in zip(np.ravel(mtpa.efficiency_pct), np.ravel(least.efficiency_pct)):
+        if eta_mtpa is not None and eta_least is not None:
+            assert eta_least >= eta_mtpa - 1e-9

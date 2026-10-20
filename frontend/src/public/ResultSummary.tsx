@@ -157,7 +157,11 @@ export function ResultSummary({
       </div>
       <div className="public-result-detail">
         <MotorConstants summary={summary} variant="report" />
-        <DqCard dq={summary.dq_flux_linkage} variant="report" />
+        <DqCard
+          dq={summary.dq_flux_linkage}
+          currentUnit={config.solve_params.current_amplitude_convention === 'peak' ? 'A peak' : 'A rms'}
+          variant="report"
+        />
         <LossesCard
           loss={summary.loss_breakdown}
           iron={summary.iron_loss}

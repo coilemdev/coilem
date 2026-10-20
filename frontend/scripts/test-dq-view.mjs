@@ -24,25 +24,39 @@ const dq = {
 };
 
 const view = dqView(dq);
-const row = (key) => view.rows.find((item) => item.key === key);
+const row = (key) => [...view.main, ...view.detail].find((item) => item.key === key);
+// What a designer reads first: the inductances, the saliency and the characteristic current.
+assert.deepEqual(view.main.map((item) => item.key), ['ld', 'lq', 'saliency', 'characteristic']);
+assert.deepEqual(view.detail.map((item) => item.key), ['gamma', 'id', 'iq', 'lambda-d', 'lambda-q', 'lambda-pm', 'torque']);
+assert.equal(view.note, null);
+assert.equal(row('ld').value, '0.0472');
+assert.equal(row('ld').unit, 'mH');
+assert.equal(row('lq').value, '0.0480');
+assert.equal(row('saliency').value, '1.02', 'Lq/Ld of a surface-magnet rotor sits near 1');
+assert.equal(row('characteristic').value, '238', 'λpm/Ld = 11.26 mWb / 0.0472 mH, in A peak');
 assert.equal(row('gamma').value, '30.0');
 assert.equal(row('id').value, '−5.00', 'negative d-axis current keeps a true minus sign');
 assert.equal(row('iq').value, '8.66');
 assert.equal(row('lambda-d').value, '11.0');
-assert.equal(row('lambda-d').unit, 'mWb');
 assert.equal(row('lambda-q').value, '0.416');
 assert.equal(row('lambda-pm').value, '11.3');
-assert.equal(row('ld').value, '0.0472');
-assert.equal(row('ld').unit, 'mH');
-assert.equal(row('lq').value, '0.0480');
 assert.equal(row('torque').value, '0.2926');
 assert.match(row('lambda-d').hint, /over 48 rotor positions/);
 assert.deepEqual(view.agreement, { ...view.agreement, text: '100.3', status: 'ok' });
 
-// No d-axis current: Ld is not readable, and the hint says how to get it.
+// In the Solve page's rms units the currents scale by 1/√2; the inductances do not.
+const rmsView = dqView(dq, 'A rms');
+const rmsRow = (key) => [...rmsView.main, ...rmsView.detail].find((item) => item.key === key);
+assert.equal(rmsRow('characteristic').value, '169');
+assert.equal(rmsRow('characteristic').unit, 'A rms');
+assert.equal(rmsRow('id').value, '−3.54');
+assert.equal(rmsRow('ld').value, '0.0472');
+
+// No d-axis current: Ld and what depends on it are left out, and the note says how to get them.
 const onQAxis = dqView({ ...dq, i_d_A: 0, apparent_L_d_H: null, current_angle_deg: 0 });
-assert.equal(onQAxis.rows.find((item) => item.key === 'ld').value, '—');
-assert.match(onQAxis.rows.find((item) => item.key === 'ld').hint, /nonzero current angle/);
+assert.deepEqual(onQAxis.main.map((item) => item.key), ['lq', 'lambda-pm']);
+assert.ok(!onQAxis.detail.some((item) => ['ld', 'saliency', 'characteristic'].includes(item.key)));
+assert.match(onQAxis.note, /nonzero current angle/);
 
 // The agreement judges the value as shown, at the tolerance edge.
 assert.equal(DQ_AGREEMENT_TOLERANCE_PCT, 5);

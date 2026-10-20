@@ -37,6 +37,9 @@ CurrentAngleConvention = Literal["q_axis_gamma_flux_weakening_positive"]
 DqTransform = Literal["amplitude_invariant_park"]
 # Every performance output is either checked against a reference or says it is not.
 OutputStatus = Literal["qualified", "experimental", "unavailable"]
+# How a drive picks the current for a torque below the limits: the smallest
+# current (MTPA, then field weakening and MTPV) or the least total loss.
+DriveControl = Literal["mtpa", "least_loss"]
 
 
 def dq_currents(current_peak_A: float, gamma_deg: float) -> tuple[float, float]:
@@ -389,6 +392,7 @@ class EfficiencyMap(BaseModel):
     )
     mechanical_loss_W: float = Field(default=0.0, ge=0)
     winding_temperature_C: float = Field(ge=-50.0, le=250.0)
+    control: DriveControl = "mtpa"
     status: OutputStatus = "experimental"
     status_reason: Optional[str] = None
 

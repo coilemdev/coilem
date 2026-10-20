@@ -138,6 +138,7 @@ def test_pdf_reports_winding_losses_breakdown_and_density():
     ):
         assert heading in text
     assert "0.0472 mH" in text and "100.3%" in text
+    assert "Saliency Lq/Ld" in text and "1.02" in text and "Characteristic current" in text
     assert "2 x 0.8 mm" in text
     assert "Shaft torque" in text and "Efficiency" in text
     assert "Iron loss is experimental" in text

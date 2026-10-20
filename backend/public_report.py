@@ -1074,6 +1074,12 @@ def _dq_story(summary: Mapping[str, Any], styles: Mapping[str, ParagraphStyle]) 
         return f"{_number(value * 1000)} {unit}" if isinstance(value, (int, float)) and math.isfinite(value) else "Not recorded"
 
     agreement = dq.get("torque_agreement_pct")
+    l_d, l_q, lambda_pm = dq.get("apparent_L_d_H"), dq.get("apparent_L_q_H"), dq.get("lambda_pm_Wb")
+    numbers = all(isinstance(value, (int, float)) and math.isfinite(value) for value in (l_d, l_q, lambda_pm))
+    saliency = f"{_number(l_q / l_d)}" if numbers and l_d > 0 else "Needs d-axis current"
+    characteristic = (
+        f"{_number(lambda_pm / l_d)} A peak ({_number(lambda_pm / l_d / math.sqrt(2))} A rms)" if numbers and l_d > 0 else "Needs d-axis current"
+    )
     return [
         _section("d/q operating point", styles),
         _settings_grid(
@@ -1088,6 +1094,8 @@ def _dq_story(summary: Mapping[str, Any], styles: Mapping[str, ParagraphStyle]) 
                 ("d/q torque", f"{_number(dq.get('torque_dq_Nm'), 4)} N m"),
                 ("Apparent Ld", milli(dq.get("apparent_L_d_H"), "mH") if dq.get("apparent_L_d_H") is not None else "No d-axis current"),
                 ("Apparent Lq", milli(dq.get("apparent_L_q_H"), "mH") if dq.get("apparent_L_q_H") is not None else "No q-axis current"),
+                ("Saliency Lq/Ld", saliency),
+                ("Characteristic current", characteristic),
                 ("Torque agreement", f"{_number(agreement, 4)}%" if agreement is not None else "Not recorded"),
             ],
             styles,
@@ -1099,7 +1107,9 @@ def _dq_story(summary: Mapping[str, Any], styles: Mapping[str, ParagraphStyle]) 
             "loaded rotor positions; the d-axis is placed from the no-load flux linkage. d/q torque is "
             "1.5 x pole pairs x (lambda_d i_q - lambda_q i_d); "
             "torque agreement is the solved average torque as a percentage of it. Apparent inductances are secant values at this "
-            "operating point, (lambda_d - lambda_pm) / i_d and lambda_q / i_q, and include saturation and cross-coupling.",
+            "operating point, (lambda_d - lambda_pm) / i_d and lambda_q / i_q, and include saturation and cross-coupling. "
+            "Saliency near 1 means magnet torque only; well above 1 the rotor adds reluctance torque. The characteristic "
+            "current lambda_pm / Ld cancels the magnet flux: a drive whose peak current reaches it can field-weaken to very high speed.",
             styles["small"],
         ),
     ]
