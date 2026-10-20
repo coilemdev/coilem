@@ -73,8 +73,8 @@ def test_suite_1_2_changes_only_the_prius_request():
 def test_default_angle_revision_does_not_enable_experimental_prius():
     from backend.benchmark_suite import PROTOCOL_VERSION, SUPPORTED_PROTOCOL_VERSIONS
 
-    assert SPEC.relative_to(ROOT).as_posix() == "benchmarks/abcd-v1.3/benchmark_spec.json"
-    assert PROTOCOL_VERSION == "1.3.0" and "1.2.0" in SUPPORTED_PROTOCOL_VERSIONS
+    assert SPEC.relative_to(ROOT).as_posix() == "benchmarks/abcd-v1.4/benchmark_spec.json"
+    assert PROTOCOL_VERSION == "1.4.0" and "1.2.0" in SUPPORTED_PROTOCOL_VERSIONS
     old_prius = next(c for c in load_suite(HISTORICAL_SUITE)["cases"] if c["id"] == CASE_ID)
     default_prius = next(c for c in load_suite(SPEC)["cases"] if c["id"] == CASE_ID)
     assert default_prius == old_prius
