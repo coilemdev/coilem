@@ -551,7 +551,7 @@ def test_protocol_selection_is_recorded_and_unknown_protocols_rejected(tmp_path)
     from backend.benchmark_suite.contract import identity
 
     binary = ROOT / "solvers/magneto2d/Cargo.toml"
-    assert identity(binary)["protocol_version"] == "1.3.0"
+    assert identity(binary)["protocol_version"] == "1.4.0"
     assert identity(binary, protocol_version="1.0.0")["protocol_version"] == "1.0.0"
     with pytest.raises(ValueError, match="Unsupported suite protocol"):
         identity(binary, protocol_version="2.0.0")

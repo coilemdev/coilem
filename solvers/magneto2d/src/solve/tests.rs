@@ -1311,11 +1311,11 @@ fn solve_problem_rejects_unknown_contract_material_key() {
 
 #[test]
 fn nonlinear_tolerance_tracks_solve_quality() {
-    assert_eq!(default_nonlinear_tol_for_quality(Some("quick")), 0.075);
-    assert_eq!(default_nonlinear_tol_for_quality(Some("standard")), 0.075);
-    assert_eq!(default_nonlinear_tol_for_quality(Some("fine")), 0.05);
-    assert_eq!(default_nonlinear_tol_for_quality(Some("custom")), 0.05);
-    assert_eq!(default_nonlinear_tol_for_quality(None), 0.05);
+    assert_eq!(default_nonlinear_tol_for_quality(Some("quick")), 0.05);
+    assert_eq!(default_nonlinear_tol_for_quality(Some("standard")), 0.01);
+    assert_eq!(default_nonlinear_tol_for_quality(Some("fine")), 0.001);
+    assert_eq!(default_nonlinear_tol_for_quality(Some("custom")), 0.001);
+    assert_eq!(default_nonlinear_tol_for_quality(None), 0.001);
 }
 
 #[test]
@@ -1341,7 +1341,9 @@ fn picard_relaxation_state_matches_legacy_update_policy() {
     let mut state = PicardRelaxationState::new(config);
 
     assert!((state.relaxation - 0.1).abs() < 1e-15);
-    assert!((config.convergence_residual(0.8) - 0.08).abs() < 1e-15);
+    // Relaxation affects the path to the solution, never acceptance.
+    assert!((config.convergence_residual(0.8) - 0.8).abs() < 1e-15);
+    assert!(config.convergence_residual(0.8) > config.convergence_threshold);
 
     state.update_after_residual(1.0, config);
     assert!((state.relaxation - 0.1).abs() < 1e-15);
@@ -2809,4 +2811,79 @@ fn balanced_winding_detection() {
     // Slot counts not divisible by 3 can never carry a symmetric winding.
     assert!(!balanced_three_phase_winding(10, 8));
     assert!(!balanced_three_phase_winding(0, 8));
+}
+
+
+#[test]
+fn nonlinear_convergence_json_keeps_raw_picard_and_scaled_newton_distinct() {
+    use super::types::NonlinearConvergence;
+    let mut picard = NonlinearConvergence::linear();
+    picard.method = "picard".into();
+    picard.iterations = 17;
+    picard.max_iterations = 100;
+    picard.stage_iterations = vec![17];
+    picard.stage_iteration_cap = 100;
+    picard.raw_max_residual = Some(0.4);
+    picard.tolerance = 0.05;
+    picard.residual_definition = "unrelaxed permeability".into();
+    let json = serde_json::to_value(&picard).unwrap();
+    assert_eq!(json["raw_max_residual"], 0.4);
+    assert!(json["scaled_residual"].is_null());
+    let round_trip: NonlinearConvergence = serde_json::from_value(json).unwrap();
+    assert_eq!(round_trip, picard);
+    let mut newton = picard.clone();
+    newton.method = "newton".into();
+    newton.raw_max_residual = None;
+    newton.scaled_residual = Some(0.003);
+    newton.rhs_scaled_residual = Some(3.0e-6);
+    newton.initial_rhs_scaled_residual = Some(0.001);
+    newton.absolute_residual_floor = Some(super::LINEAR_SOLVE_TIGHT_TOL);
+    newton.stage_iterations = vec![4, 5, 8];
+    newton.max_iterations = 300;
+    newton.fallback_from = None;
+    let json = serde_json::to_value(&newton).unwrap();
+    assert!(json["raw_max_residual"].is_null());
+    assert_eq!(json["scaled_residual"], 0.003);
+    assert_eq!(json["rhs_scaled_residual"], 3.0e-6);
+    assert_eq!(json["initial_rhs_scaled_residual"], 0.001);
+    assert_eq!(json["absolute_residual_floor"], 1.0e-8);
+    assert_eq!(json["stage_iterations"], serde_json::json!([4, 5, 8]));
+    assert!(newton.reused().solution_reused);
+    assert!(!newton.solution_reused);
+    let mut old_json = json;
+    for key in ["rhs_scaled_residual", "initial_rhs_scaled_residual", "absolute_residual_floor"] {
+        old_json.as_object_mut().unwrap().remove(key);
+    }
+    let old: NonlinearConvergence = serde_json::from_value(old_json).unwrap();
+    assert_eq!(old.absolute_residual_floor, None);
+    assert_eq!(old.rhs_scaled_residual, None);
+}
+
+
+#[test]
+fn newton_stopping_requires_reduction_of_the_initial_nonlinear_defect() {
+    use super::newton::initial_scaled_residual;
+    // The legacy RHS-scaled 0.03 passes a 0.06 threshold while 30% of
+    // the initial nonlinear defect remains. The stage-relative test rejects it.
+    assert!(initial_scaled_residual(0.03, 0.1) > 1.0e-4);
+    assert!(initial_scaled_residual(1.0e-7, 0.1) < 1.0e-4);
+    // Scaling the unchanged stage RHS (e.g. PM terms) cancels in the ratio.
+    assert!((initial_scaled_residual(0.003, 0.01)
+        - initial_scaled_residual(0.03, 0.1)).abs() < 1.0e-14);
+    assert_eq!(initial_scaled_residual(0.0, 0.0), 0.0);
+}
+
+#[test]
+fn newton_accepts_a_tiny_initial_defect_without_demanding_sub_floor_reduction() {
+    use super::newton::{initial_scaled_residual, newton_has_converged, NEWTON_RHS_RESIDUAL_FLOOR};
+    let tiny = NEWTON_RHS_RESIDUAL_FLOOR * 0.5;
+    // Relative reduction alone is one at the start, so would reject this field
+    // and risk a failed line search even though the absolute defect is tiny.
+    assert_eq!(initial_scaled_residual(tiny, tiny), 1.0);
+    assert!(newton_has_converged(tiny, tiny, 1.0e-5));
+    assert!(!newton_has_converged(NEWTON_RHS_RESIDUAL_FLOOR * 2.0, NEWTON_RHS_RESIDUAL_FLOOR * 2.0, 1.0e-5));
+    assert!(!newton_has_converged(0.03, 0.1, 1.0e-5));
+    assert!(newton_has_converged(1.0e-7, 0.1, 1.0e-5));
+    assert!(!newton_has_converged(f64::NAN, tiny, 1.0e-5));
+    assert!(!newton_has_converged(f64::INFINITY, tiny, 1.0e-5));
 }

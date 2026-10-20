@@ -59,10 +59,10 @@ def terminate_process_pools() -> None:
 
     with _LIVE_POOLS_LOCK:
         _EXITING.set()
-        pools = list(_LIVE_POOLS.items())
-    for pool, cancelled in pools:
-        if cancelled is not None:
-            cancelled.set()
+        pools = list(_LIVE_POOLS)
+    # Force-stopped workers can own Event's multiprocessing condition. Neither
+    # this path nor the context's unwinding may acquire it after exit begins.
+    for pool in pools:
         _stop_pool_workers(pool)
 
 
@@ -133,9 +133,12 @@ def cancellable_process_pool(workers: int) -> Iterator[ProcessPoolExecutor]:
         try:
             yield pool
         except BaseException:
-            # Python 3.11-3.13 do not expose terminate_workers(). Let running tasks
-            # finish, then skip work already queued in the process pipe.
-            cancelled.set()
+            # User cancellation lets running tasks finish and skips queued work.
+            # Serialize that signal with exit's latch: a worker killed between
+            # checking the latch and Event.set() can leave its lock held forever.
+            with _LIVE_POOLS_LOCK:
+                if not _EXITING.is_set():
+                    cancelled.set()
             pool.shutdown(wait=True, cancel_futures=True)
             raise
         else:
