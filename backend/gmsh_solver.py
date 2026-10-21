@@ -15,10 +15,11 @@ from typing import Any
 from backend.custom_materials import is_custom_steel_id
 from backend.geometry_drawer import (
     MotorGeometry,
-    compute_3phase_current_density_for_rotor_elec,
+    compute_3phase_slot_ampere_turns_for_rotor_elec,
     compute_geometry,
 )
 from backend.geometry_ir import GeometryIR, GeometryIRLoop, GeometryIRRegion, build_geometry_ir
+from backend.gmsh_mesh_rotation import coil_side_current_density_a_per_m2, meshed_region_areas_mm2
 from backend.models import MotorConfig
 from backend.resources import package_resource
 from backend.solver_environment import ISOLATED_RUNTIME
@@ -843,7 +844,13 @@ def _build_ir_solve_mesh_artifact(
         )
         for region in ir.regions
     }
-    current_density_by_region = _current_density_by_ir_region(config, ir, rotor_angle_deg)
+    coil_side_area_mm2 = meshed_region_areas_mm2(
+        nodes_mm,
+        triangles,
+        element_region_ids,
+        (region.region_id for region in ir.regions if region.kind == "SlotWinding"),
+    )
+    current_density_by_region = _current_density_by_ir_region(config, ir, rotor_angle_deg, coil_side_area_mm2)
     element_magnetization = [
         magnetization_by_region.get(region_id)
         if region_by_id[region_id].kind == "Magnet"
@@ -886,6 +893,7 @@ def _build_ir_solve_mesh_artifact(
             region,
             current_density,
             geom,
+            coil_side_area_mm2.get(region.region_id),
         )
         if winding is not None:
             entry["winding"] = winding
@@ -992,10 +1000,12 @@ def _current_density_by_ir_region(
     config: MotorConfig,
     ir: GeometryIR,
     rotor_angle_mech_deg: float,
+    coil_side_area_mm2: dict[str, float],
 ) -> dict[str, float]:
+    """Each winding region's J: its turn share of the slot's ampere-turns over its meshed area."""
     pole_pairs = max(1, int(config.rotor.pole_count) // 2)
     rotor_angle_elec_deg = float(rotor_angle_mech_deg) * pole_pairs
-    phase_current_density_a_per_mm2 = compute_3phase_current_density_for_rotor_elec(
+    ampere_turns = compute_3phase_slot_ampere_turns_for_rotor_elec(
         config,
         rotor_angle_elec_deg,
     )
@@ -1006,13 +1016,22 @@ def _current_density_by_ir_region(
         parts = region.source_group.split(":")
         if len(parts) < 3:
             continue
-        phase = parts[1]
-        direction = parts[2]
-        density = phase_current_density_a_per_mm2.get(phase, 0.0)
-        if direction == "out":
-            density = -density
-        out[region.region_id] = density * 1.0e6
+        out[region.region_id] = coil_side_current_density_a_per_m2(
+            ampere_turns.get(parts[1], 0.0),
+            parts[2],
+            _coil_side_turn_fraction(config, region.source_group),
+            coil_side_area_mm2.get(region.region_id, 0.0),
+        )
     return out
+
+
+def _coil_side_turn_fraction(config: MotorConfig, source_group: str) -> float:
+    """A split slot's layer holds 1/layers of the slot's turns; a whole-slot winding all of them."""
+
+    parts = source_group.split(":")
+    if len(parts) >= 5 and parts[4].startswith("layer") and parts[4][5:].isdigit():
+        return 1.0 / max(1, int(config.winding.layers))
+    return 1.0
 
 
 def _winding_contract_metadata(
@@ -1020,6 +1039,7 @@ def _winding_contract_metadata(
     region: GeometryIRRegion,
     current_density_a_per_m2: float | None,
     geom: MotorGeometry,
+    area_mm2: float | None = None,
 ) -> dict[str, Any] | None:
     if region.kind != "SlotWinding":
         return None
@@ -1036,6 +1056,10 @@ def _winding_contract_metadata(
         metadata["coil_span"] = config.winding.coil_span
     if current_density_a_per_m2 is not None:
         metadata["current_density_a_per_m2"] = float(current_density_a_per_m2)
+    if area_mm2 is not None:
+        # The meshed area this coil side's ampere-turns are spread over;
+        # cache rotation and re-bake reuse it.
+        metadata["area_mm2"] = float(area_mm2)
 
     source_group = region.source_group or ""
     parts = source_group.split(":")
@@ -1053,7 +1077,7 @@ def _winding_contract_metadata(
             if layer_token.startswith("layer") and layer_token[5:].isdigit():
                 layer_index = int(layer_token[5:])
                 metadata["layer"] = layer_index
-                metadata["turn_fraction"] = 1.0 / max(1, int(config.winding.layers))
+                metadata["turn_fraction"] = _coil_side_turn_fraction(config, source_group)
 
     if slot_index is not None and layer_index is None:
         slot = next((slot for slot in geom.slots if slot.slot_index == slot_index), None)

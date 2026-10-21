@@ -58,6 +58,67 @@ _SLOT_REGION_RE = re.compile(r"^slot_winding_(?P<index>\d+)(?:_layer(?P<layer>\d
 _ANGLE_TOL_DEG = 1.0e-6
 
 
+def meshed_region_areas_mm2(
+    nodes_mm: list[list[float]],
+    triangles: list[list[int]],
+    element_region_ids: list[str],
+    region_ids: Iterable[str],
+) -> dict[str, float]:
+    """The meshed area of each listed region, mm²."""
+
+    areas = dict.fromkeys(region_ids, 0.0)
+    for tri, region_id in zip(triangles, element_region_ids):
+        if region_id not in areas:
+            continue
+        (x1, y1), (x2, y2), (x3, y3) = (nodes_mm[node][:2] for node in tri)
+        areas[region_id] += abs((x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1)) / 2.0
+    return areas
+
+
+def coil_side_current_density_a_per_m2(
+    ampere_turns_a: float, direction: str, turn_fraction: float, area_mm2: float
+) -> float:
+    """J of one coil side: its share of the slot's ampere-turns over its own meshed area.
+
+    A slot carries N·I/paths, each layer of a split slot its turn fraction of
+    that, so the solve injects exactly the commanded current whatever the
+    slot's shape. A nominal trapezoid slot area overstated shoed slots (the
+    shoe takes part of the slot) and ran those designs at about 95% of their
+    current. ``out`` sides carry the return current.
+    """
+
+    if area_mm2 <= 0.0:
+        return 0.0
+    density = ampere_turns_a * turn_fraction / area_mm2 * 1.0e6
+    return -density if direction == "out" else density
+
+
+def _contract_coil_sides(
+    artifact: dict[str, Any], contract_regions: list[dict[str, Any]]
+) -> dict[str, tuple[float, float]]:
+    """(turn fraction, meshed area mm²) of each winding region, as the producer recorded them.
+
+    Rigid rotation keeps every region's elements, so a recorded area stays
+    valid; an artifact without one is measured from its own mesh.
+    """
+
+    windings = {
+        str(entry.get("id") or ""): entry.get("winding") if isinstance(entry.get("winding"), dict) else {}
+        for entry in contract_regions
+        if isinstance(entry, dict) and entry.get("kind") == "SlotWinding"
+    }
+    if all(winding.get("area_mm2") is not None for winding in windings.values()):
+        areas = {region_id: float(winding["area_mm2"]) for region_id, winding in windings.items()}
+    else:
+        areas = meshed_region_areas_mm2(
+            artifact["mesh"]["nodes"], artifact["mesh"]["triangles"], artifact["element_region_ids"], windings
+        )
+    return {
+        region_id: (float(winding.get("turn_fraction") or 1.0), areas[region_id])
+        for region_id, winding in windings.items()
+    }
+
+
 def gmsh_mesh_reuse_enabled() -> bool:
     return solver_setting("COILEM_MAGNETO2D_GMSH_MESH_REUSE", "1") not in {
         "0",
@@ -218,18 +279,18 @@ def rotate_solve_mesh_artifact(
     *,
     slot_count: int,
     target_rotor_angle_mech_deg: float,
-    phase_density_a_per_mm2: Callable[[float], dict[str, float]],
+    phase_ampere_turns: Callable[[float], dict[str, float]],
     current_angle_elec_deg_for_mech: Callable[[float], float],
     tol_deg: float = _ANGLE_TOL_DEG,
 ) -> dict[str, Any]:
     """Derive the solve-mesh artifact for ``target_rotor_angle_mech_deg``
     from a congruent artifact at another angle by rigid rotation.
 
-    ``phase_density_a_per_mm2(elec_deg)`` returns per-phase current density
-    in A/mm² for a resolved electrical angle; ``current_angle_elec_deg_for_mech``
-    maps a mechanical rotor angle to that resolved electrical angle. Both are
-    supplied by the caller so this module stays import-light and unit-testable
-    without a MotorConfig.
+    ``phase_ampere_turns(elec_deg)`` returns each phase's slot ampere-turns
+    for a resolved electrical angle, spread over each coil side's meshed area;
+    ``current_angle_elec_deg_for_mech`` maps a mechanical rotor angle to that
+    resolved electrical angle. Both are supplied by the caller so this module
+    stays import-light and unit-testable without a MotorConfig.
     """
     base_angle = float(artifact.get("rotor_angle_mech_deg") or 0.0)
     delta_deg = target_rotor_angle_mech_deg - base_angle
@@ -277,7 +338,8 @@ def rotate_solve_mesh_artifact(
     index_shift = direction_sign * n_slots
 
     elec_deg = current_angle_elec_deg_for_mech(target_rotor_angle_mech_deg)
-    densities_a_per_mm2 = phase_density_a_per_mm2(elec_deg)
+    ampere_turns = phase_ampere_turns(elec_deg)
+    coil_sides = _contract_coil_sides(rotated, contract_regions) if slot_table else {}
 
     current_density_by_region: dict[str, float] = {}
     for entry in contract_regions:
@@ -300,10 +362,9 @@ def rotate_solve_mesh_artifact(
                     f"slot {mapped_idx} layer {region_layer}"
                 )
             phase, direction = mapped
-            density = densities_a_per_mm2.get(phase, 0.0)
-            if direction == "out":
-                density = -density
-            density_a_per_m2 = density * 1.0e6
+            density_a_per_m2 = coil_side_current_density_a_per_m2(
+                ampere_turns.get(phase, 0.0), direction, *coil_sides.get(entry_id, (1.0, 0.0))
+            )
             layer_suffix = f":layer{int(region_layer)}" if region_layer is not None else ""
             entry["source_group"] = f"winding:{phase}:{direction}:slot{slot_idx}{layer_suffix}"
             if "current_density_a_per_m2" in entry:
@@ -356,7 +417,7 @@ def rotate_solve_mesh_artifact(
 def rebake_solve_mesh_artifact_currents(
     artifact: dict[str, Any],
     *,
-    phase_density_a_per_mm2: Callable[[float], dict[str, float]],
+    phase_ampere_turns: Callable[[float], dict[str, float]],
     current_angle_elec_deg_for_mech: Callable[[float], float],
 ) -> dict[str, Any]:
     """Return a deep copy of ``artifact`` with slot currents re-baked for the
@@ -374,10 +435,11 @@ def rebake_solve_mesh_artifact_currents(
     rebaked = copy_json_like(artifact)
     rotor_angle_mech_deg = float(rebaked.get("rotor_angle_mech_deg") or 0.0)
     elec_deg = current_angle_elec_deg_for_mech(rotor_angle_mech_deg)
-    densities_a_per_mm2 = phase_density_a_per_mm2(elec_deg)
+    ampere_turns = phase_ampere_turns(elec_deg)
 
     physics_contract = rebaked.get("physics_contract") or {}
     contract_regions = physics_contract.get("regions") or []
+    coil_sides = _contract_coil_sides(rebaked, contract_regions)
     current_density_by_region: dict[str, float] = {}
     for entry in contract_regions:
         if not isinstance(entry, dict) or entry.get("kind") != "SlotWinding":
@@ -387,11 +449,10 @@ def rebake_solve_mesh_artifact_currents(
             continue
         phase = str(winding.get("phase") or "")
         direction = str(winding.get("direction") or "in")
-        density = densities_a_per_mm2.get(phase, 0.0)
-        if direction == "out":
-            density = -density
-        density_a_per_m2 = density * 1.0e6
         entry_id = str(entry.get("id") or "")
+        density_a_per_m2 = coil_side_current_density_a_per_m2(
+            ampere_turns.get(phase, 0.0), direction, *coil_sides.get(entry_id, (1.0, 0.0))
+        )
         if "current_density_a_per_m2" in entry:
             entry["current_density_a_per_m2"] = density_a_per_m2
         if "current_density_a_per_m2" in winding:

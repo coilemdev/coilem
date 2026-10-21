@@ -110,8 +110,8 @@
     },
     {
       "path": "backend/benchmark_suite/__init__.py",
-      "bytes": 344,
-      "sha256": "747bd52aedce6ffb544fc0379fd5ccbd09cb8ede10743f6fc9a145a9484b685d"
+      "bytes": 353,
+      "sha256": "a01b88271a489b6faf2058fb984e809485d307336688b0a570457b5fea4c50e7"
     },
     {
       "path": "backend/benchmark_suite/abc_metrics.py",
@@ -280,8 +280,8 @@
     },
     {
       "path": "backend/geometry_drawer.py",
-      "bytes": 53035,
-      "sha256": "df695284a5acc9b64ac800fd59fff1530a34f8de0b9f9e8b15b190df8a601584"
+      "bytes": 53112,
+      "sha256": "7f5a148f3e4da67577a58f5d9c573a630f9849aaa891c378b492c84b6927863b"
     },
     {
       "path": "backend/geometry_ir.py",
@@ -295,13 +295,13 @@
     },
     {
       "path": "backend/gmsh_mesh_rotation.py",
-      "bytes": 27750,
-      "sha256": "e0173b720173d30beddb761e3cc59fd690ad97ba749b321f4c61980d780d235f"
+      "bytes": 30370,
+      "sha256": "5567bf5b4c36ac94f5b84b7aa1d056792343c11b99eeb6b35faed0a590130167"
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 75391,
-      "sha256": "5cfd97444c6b8e365d9164efa8a73f549ab8b5be9e5903812c2b678f430bd959"
+      "bytes": 76548,
+      "sha256": "67ba682a959952200afde85f88139819969054ebc3fe4c2bbff73e80885f5ee7"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -620,8 +620,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 149642,
-      "sha256": "38e4e4a1006faff2bbb8211dc7ef57caa4d6f2997d49e8009009f9895b34f4e6"
+      "bytes": 149682,
+      "sha256": "0071585799c2233f1bbba6f13f5853acabdbf74ec5a6f453c3470b9c282867e5"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -690,8 +690,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 8768,
-      "sha256": "03d39e19a4d58fe589140e7c0696b13a97da6a7da34c3038d6782e7851c1e66f"
+      "bytes": 8972,
+      "sha256": "eede23ad19d149ca00f0d44ba498d6fad245f4d12598dfc11dec3a7d89588c32"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -797,6 +797,21 @@
       "path": "benchmarks/abcd-v1.4/fixtures/bldc_spm_8p12s_reference_native-standard.json",
       "bytes": 1641,
       "sha256": "624b5b2faa387e4965da68cc337c9912da6137e1fc8712934b3f19d49cc7e457"
+    },
+    {
+      "path": "benchmarks/abcd-v1.5/README.md",
+      "bytes": 2159,
+      "sha256": "5a398591780337575bcfdd76752026aaa1023db00184e62b82c4519a8d9e6ad9"
+    },
+    {
+      "path": "benchmarks/abcd-v1.5/benchmark_spec.json",
+      "bytes": 19486,
+      "sha256": "c15f82aa3b51c95611f4c54e1b79ae9061b714567594f601786a9a9c5f7e7864"
+    },
+    {
+      "path": "benchmarks/abcd-v1.5/fixtures/spm_8p12s_example_shoed.json",
+      "bytes": 2506,
+      "sha256": "dbe538187d5280d171c224b12dc25612fb25c35c9014b201564126715dc4b6c4"
     },
     {
       "path": "benchmarks/abcd-v1/README.md",
@@ -7185,8 +7200,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/context.rs",
-      "bytes": 8354,
-      "sha256": "358956e298d85d2ba6ff8c896f3d1a429d746b8d840c6ad2f715486629480bdc"
+      "bytes": 8403,
+      "sha256": "9580bdb35fcbae45f9118c2c9d3d6b647d813afc9b653e0db235a9d865c571f7"
     },
     {
       "path": "solvers/magneto2d/src/solve/mesh_metadata.rs",
@@ -7240,8 +7255,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/tests.rs",
-      "bytes": 101487,
-      "sha256": "626791c3bc67aa1cc3991fd6a8dce545b6014aacf2541ef408d1a5c1591b492a"
+      "bytes": 102366,
+      "sha256": "5c3b3e00cd8ebee535fec5bb808d4f60a2062a9dc4ebc4e58767c55fc1b30f96"
     },
     {
       "path": "solvers/magneto2d/src/solve/types.rs",
@@ -7682,6 +7697,16 @@
       "path": "tests/test_release_tools.py",
       "bytes": 30265,
       "sha256": "cd290b78012f57c567950ac9a499440df22445f6b3be004e4dca66218d9e3433"
+    },
+    {
+      "path": "tests/test_shoed_benchmark_case.py",
+      "bytes": 2738,
+      "sha256": "7546b97e3ad5f4ba48994736ea41d60f2a771c7810a2b1db733a6b058b29d491"
+    },
+    {
+      "path": "tests/test_slot_current_density.py",
+      "bytes": 6933,
+      "sha256": "12dda11e7a325b235d6c4ce127a1c0daa44f5951ee8ee1dc14b67e298ec2f618"
     },
     {
       "path": "tests/test_slot_layer_split.py",
@@ -13907,6 +13932,84 @@
       "path": "tests/test_magnet_temperature.py",
       "source_sha256": null,
       "reason": "Magnet temperature: Br and HcJ derated from cited coefficients (#137)"
+    },
+    {
+      "base_commit": "8dae84486a4f16ad5c18d58dd8ea10b4d9384997",
+      "path": "backend/benchmark_suite/__init__.py",
+      "source_sha256": "747bd52aedce6ffb544fc0379fd5ccbd09cb8ede10743f6fc9a145a9484b685d",
+      "reason": "Slot current density from each coil side's meshed area (shoed slots ran at 95.6% of their current); protocol 1.5.0 shoed benchmark case"
+    },
+    {
+      "base_commit": "8dae84486a4f16ad5c18d58dd8ea10b4d9384997",
+      "path": "backend/geometry_drawer.py",
+      "source_sha256": "df695284a5acc9b64ac800fd59fff1530a34f8de0b9f9e8b15b190df8a601584",
+      "reason": "Slot current density from each coil side's meshed area (shoed slots ran at 95.6% of their current); protocol 1.5.0 shoed benchmark case"
+    },
+    {
+      "base_commit": "8dae84486a4f16ad5c18d58dd8ea10b4d9384997",
+      "path": "backend/gmsh_mesh_rotation.py",
+      "source_sha256": "e0173b720173d30beddb761e3cc59fd690ad97ba749b321f4c61980d780d235f",
+      "reason": "Slot current density from each coil side's meshed area (shoed slots ran at 95.6% of their current); protocol 1.5.0 shoed benchmark case"
+    },
+    {
+      "base_commit": "8dae84486a4f16ad5c18d58dd8ea10b4d9384997",
+      "path": "backend/gmsh_solver.py",
+      "source_sha256": "5cfd97444c6b8e365d9164efa8a73f549ab8b5be9e5903812c2b678f430bd959",
+      "reason": "Slot current density from each coil side's meshed area (shoed slots ran at 95.6% of their current); protocol 1.5.0 shoed benchmark case"
+    },
+    {
+      "base_commit": "8dae84486a4f16ad5c18d58dd8ea10b4d9384997",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "38e4e4a1006faff2bbb8211dc7ef57caa4d6f2997d49e8009009f9895b34f4e6",
+      "reason": "Slot current density from each coil side's meshed area (shoed slots ran at 95.6% of their current); protocol 1.5.0 shoed benchmark case"
+    },
+    {
+      "base_commit": "8dae84486a4f16ad5c18d58dd8ea10b4d9384997",
+      "path": "benchmarks/README.md",
+      "source_sha256": "03d39e19a4d58fe589140e7c0696b13a97da6a7da34c3038d6782e7851c1e66f",
+      "reason": "Slot current density from each coil side's meshed area (shoed slots ran at 95.6% of their current); protocol 1.5.0 shoed benchmark case"
+    },
+    {
+      "base_commit": "8dae84486a4f16ad5c18d58dd8ea10b4d9384997",
+      "path": "solvers/magneto2d/src/solve/context.rs",
+      "source_sha256": "358956e298d85d2ba6ff8c896f3d1a429d746b8d840c6ad2f715486629480bdc",
+      "reason": "Slot current density from each coil side's meshed area (shoed slots ran at 95.6% of their current); protocol 1.5.0 shoed benchmark case"
+    },
+    {
+      "base_commit": "8dae84486a4f16ad5c18d58dd8ea10b4d9384997",
+      "path": "solvers/magneto2d/src/solve/tests.rs",
+      "source_sha256": "626791c3bc67aa1cc3991fd6a8dce545b6014aacf2541ef408d1a5c1591b492a",
+      "reason": "Slot current density from each coil side's meshed area (shoed slots ran at 95.6% of their current); protocol 1.5.0 shoed benchmark case"
+    },
+    {
+      "base_commit": "8dae84486a4f16ad5c18d58dd8ea10b4d9384997",
+      "path": "benchmarks/abcd-v1.5/README.md",
+      "source_sha256": null,
+      "reason": "Slot current density from each coil side's meshed area (shoed slots ran at 95.6% of their current); protocol 1.5.0 shoed benchmark case"
+    },
+    {
+      "base_commit": "8dae84486a4f16ad5c18d58dd8ea10b4d9384997",
+      "path": "benchmarks/abcd-v1.5/benchmark_spec.json",
+      "source_sha256": null,
+      "reason": "Slot current density from each coil side's meshed area (shoed slots ran at 95.6% of their current); protocol 1.5.0 shoed benchmark case"
+    },
+    {
+      "base_commit": "8dae84486a4f16ad5c18d58dd8ea10b4d9384997",
+      "path": "benchmarks/abcd-v1.5/fixtures/spm_8p12s_example_shoed.json",
+      "source_sha256": null,
+      "reason": "Slot current density from each coil side's meshed area (shoed slots ran at 95.6% of their current); protocol 1.5.0 shoed benchmark case"
+    },
+    {
+      "base_commit": "8dae84486a4f16ad5c18d58dd8ea10b4d9384997",
+      "path": "tests/test_shoed_benchmark_case.py",
+      "source_sha256": null,
+      "reason": "Slot current density from each coil side's meshed area (shoed slots ran at 95.6% of their current); protocol 1.5.0 shoed benchmark case"
+    },
+    {
+      "base_commit": "8dae84486a4f16ad5c18d58dd8ea10b4d9384997",
+      "path": "tests/test_slot_current_density.py",
+      "source_sha256": null,
+      "reason": "Slot current density from each coil side's meshed area (shoed slots ran at 95.6% of their current); protocol 1.5.0 shoed benchmark case"
     }
   ]
 }

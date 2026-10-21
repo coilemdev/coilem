@@ -1664,6 +1664,28 @@ fn ipm_gmsh_imported_mesh_context_uses_imported_slot_areas() {
 }
 
 #[test]
+fn every_mesh_normalizes_slot_current_by_its_meshed_slot_area() {
+    // The analytical trapezoid ignores tooth shoes, so a shoed slot ran at
+    // about 95% of its current; any mesh with every slot's winding elements
+    // spreads N*I/paths over its own meshed slot area instead.
+    let config = compact_4p12s_config("SPM");
+    let mut artifact =
+        full_slot_winding_import_artifact(config.stator.slot_count, config.rotor.pole_count);
+    artifact.mesh.info.mesh_source = Some(MeshSource::Native);
+
+    let ctx = setup_context(&config, Some(artifact)).expect("complete slot regions");
+    let meshed = crate::sources::mesh_slot_areas_mm2(
+        &ctx.mesh,
+        &ctx.centroids,
+        config.stator.slot_count,
+        config.rotor.pole_count,
+    );
+
+    assert!(ctx.slot_areas.iter().all(|area| *area > 0.0));
+    assert_eq!(ctx.slot_areas, meshed);
+}
+
+#[test]
 fn ipm_imported_mesh_context_still_rejects_incomplete_slot_areas() {
     let ipm_config = compact_4p12s_config("IPM");
     let mut imported_mesh = metadata_test_artifact(vec![Region::RotorCore], None);
