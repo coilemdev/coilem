@@ -858,7 +858,7 @@ export function App() {
   }, []);
 
   const updateSolveSetting = useCallback((
-    field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W',
+    field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W' | 'magnet_temperature_C',
     value: MotorConfig['solve_params']['nonlinear_solver'] | MotorConfig['solve_params']['current_amplitude_convention'] | MotorConfig['solve_params']['excitation_mode'] | number,
   ) => {
     validationRequestId.current += 1;
@@ -877,8 +877,8 @@ export function App() {
         ...current,
         solve_params: {
           ...current.solve_params,
-          // No mechanical loss is stored as unset, not 0 W.
-          [field]: field === 'mechanical_loss_W' && !(Number(value) > 0) ? null : value,
+          // No mechanical loss is stored as unset, not 0 W; a 20 °C magnet is the catalogue, also unset.
+          [field]: (field === 'mechanical_loss_W' && !(Number(value) > 0)) || (field === 'magnet_temperature_C' && Number(value) === 20) ? null : value,
         },
       };
     });

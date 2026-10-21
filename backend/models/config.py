@@ -726,8 +726,16 @@ class MotorConfig(BaseModel):
         if not self.geometry_reference and self.stator.slot_opening_mm < 2.0:
             raise ValueError("Editable designs require slot_opening_mm >= 2 mm")
         if self.solve_params is not None and self.solve_params.magnet_temperature_C is not None:
-            if self.geometry_reference != "pyleecan_prius_2004" or self.solve_params.magnet_temperature_C not in (20, 60):
-                raise ValueError("Magnet temperature is not supported by this preview.")
+            if self.geometry_reference:
+                # The pinned reference keeps its published cases.
+                if self.geometry_reference != "pyleecan_prius_2004" or self.solve_params.magnet_temperature_C not in (20, 60):
+                    raise ValueError("The Prius reference runs its magnets at 20 or 60 °C only.")
+            else:
+                from backend.magnet_temperature import magnet_temperature_unavailable_reason
+
+                reason = magnet_temperature_unavailable_reason(self.materials.magnet_grade, self.solve_params.magnet_temperature_C)
+                if reason is not None:
+                    raise ValueError(reason)
         if self.reference_case and not self.geometry_reference:
             raise ValueError("A reference case requires its pinned geometry reference")
         if self.geometry_reference:

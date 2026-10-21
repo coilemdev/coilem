@@ -1254,6 +1254,8 @@ body {
 .losses-card tr[title] th { cursor: help; }
 .dq-card-detail tr:first-child > * { padding-top: 6px; border-top: 1px solid var(--border-subtle); }
 .dq-card-toggle { margin-top: 4px; padding: 0; border: 0; background: none; color: var(--text-accent); font-size: 10px; cursor: pointer; }
+.public-magnet-temperature-note { margin: -2px 0 8px; color: var(--text-muted); font-size: 10px; line-height: 1.4; }
+.public-magnet-temperature-note.is-warning { color: var(--warning); }
 .losses-not-modelled { margin: 8px 0 0; color: var(--text-muted); font-size: 10px; line-height: 1.45; }
 .losses-bar-block { margin-top: 8px; }
 .losses-bar { display: flex; gap: 2px; height: 10px; overflow: hidden; border-radius: 4px; }

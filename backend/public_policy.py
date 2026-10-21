@@ -94,11 +94,17 @@ def parse_public_motor_config(body: dict[str, Any], *, allow_experimental_rotors
 
     solve_params = body.get("solve_params")
     if isinstance(solve_params, dict):
-        if solve_params.get("magnet_temperature_C") is not None and body.get("geometry_reference") != "pyleecan_prius_2004":
-            raise PublicConfigError(
-                "Manual magnet-temperature modeling is unavailable in this preview.",
-                field="solve_params.magnet_temperature_C",
-            )
+        magnet_temperature = solve_params.get("magnet_temperature_C")
+        if magnet_temperature is not None and not body.get("geometry_reference"):
+            from backend.magnet_temperature import magnet_temperature_unavailable_reason
+
+            materials = body.get("materials") if isinstance(body.get("materials"), dict) else {}
+            try:
+                reason = magnet_temperature_unavailable_reason(str(materials.get("magnet_grade") or "N42"), float(magnet_temperature))
+            except (TypeError, ValueError):
+                reason = "Magnet temperature must be a number in °C."
+            if reason is not None:
+                raise PublicConfigError(reason, field="solve_params.magnet_temperature_C")
         mesh_source = str(solve_params.get("mesh_source") or "native").strip().lower()
         if mesh_source != "native":
             raise PublicConfigError(

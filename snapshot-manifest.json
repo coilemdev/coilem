@@ -55,8 +55,8 @@
     },
     {
       "path": "MATERIALS.md",
-      "bytes": 10074,
-      "sha256": "86bc0ea9bcf2d7b6520add0c389f6bbdf52ccf47cfc4e1aecd521caeab28f219"
+      "bytes": 11796,
+      "sha256": "68913b7b3cf56617f44236a8f7c66c3d29a455856355d48084f9f0f4c0c3ef55"
     },
     {
       "path": "PUBLICATION_STATUS.md",
@@ -404,9 +404,14 @@
       "sha256": "c5bc059993b475228cf9d60a5fc51bee4f8814bc8b0412202aa39ff34a3f1437"
     },
     {
+      "path": "backend/magnet_temperature.py",
+      "bytes": 5678,
+      "sha256": "0b64fde78ca4f1dcf85c2d0e022f74f56cb2b441abb8b4f9e887b89258fc41b5"
+    },
+    {
       "path": "backend/magneto2d_adapter/__init__.py",
-      "bytes": 73740,
-      "sha256": "c48dfa8542f67bdf8b9c2a63dbee3fe5263da924b1cd40c7dfb430748542853f"
+      "bytes": 74335,
+      "sha256": "06a99698c2a9c386fe175312065f7c33d95a620b563040f657ff330e97ec55f8"
     },
     {
       "path": "backend/magneto2d_adapter/_state.py",
@@ -445,8 +450,8 @@
     },
     {
       "path": "backend/models/config.py",
-      "bytes": 29664,
-      "sha256": "61beda4bca3ce94286958b14c1a97505d822ed55545e732e3eaca7cfa9d02042"
+      "bytes": 30112,
+      "sha256": "a952b7de1d095d93f1ec460c14d4360aab19cd23df49857fbb3e28c90e14590c"
     },
     {
       "path": "backend/models/errors.py",
@@ -515,18 +520,18 @@
     },
     {
       "path": "backend/public_material_catalog.py",
-      "bytes": 9879,
-      "sha256": "eb648442968b26b9644a940247de27aa0e44c50cd682c59a0fae55d58fbed458"
+      "bytes": 10217,
+      "sha256": "1d9f1469c3ca6c26f6b8fea23fd29b1c607fac69c9febff1f65ff473a2d99680"
     },
     {
       "path": "backend/public_policy.py",
-      "bytes": 12152,
-      "sha256": "711d20c6a27287adde2a97209ca4d2e7148dfa6203d6631392f274ecbeacecbe"
+      "bytes": 12563,
+      "sha256": "973142eed90de1bea7b46d33fde3691028580098aa09663624b773f6d7b228d8"
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 70366,
-      "sha256": "8028ee4fa27e856a14ba8dff050a5319f6592784c52567f1edb7b7449c904879"
+      "bytes": 70941,
+      "sha256": "7b7b1f26a2683725178e3f81e324a14268c86af1a5563512027d466aac628c78"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -615,8 +620,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 149516,
-      "sha256": "997db315ed8fcaba117e9d30441d21bb256962a871adad144b4ca0573004cd45"
+      "bytes": 149642,
+      "sha256": "38e4e4a1006faff2bbb8211dc7ef57caa4d6f2997d49e8009009f9895b34f4e6"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -5885,8 +5890,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2472,
-      "sha256": "e12f19b7b819e131e0023c70abd9b35b0653af89f68905f895af136744fb202f"
+      "bytes": 2516,
+      "sha256": "0833528f1e98d7ed79f203d1df0b18dace7743247f045c6db8ed998e03ee15fa"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -5992,6 +5997,11 @@
       "path": "frontend/scripts/test-magnet-coverage.mjs",
       "bytes": 2089,
       "sha256": "f0637c36da3daaeccf73203d4abe7adf991514b6b34fd32888c6344b5e84a2da"
+    },
+    {
+      "path": "frontend/scripts/test-magnet-temperature.mjs",
+      "bytes": 1254,
+      "sha256": "8ae3f35696629ed40e0d503cf0b22c98bd9f694b3fd75ba0055d92483e538f6d"
     },
     {
       "path": "frontend/scripts/test-mesh-quality.mjs",
@@ -6445,8 +6455,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 71991,
-      "sha256": "05d1f6d01576e69d3a485f37ecd3f75a6719c756ecd55bcd2a88b15c1c9ba92c"
+      "bytes": 72126,
+      "sha256": "e35089fa583ddeac8650034cb01e3f5f95ed586ba5b8d42881dfd89e070b2060"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -6455,8 +6465,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 227773,
-      "sha256": "2fb9f1a9e9b5186bb587ea2f61f2b9f5a30ea95a27c5d3996d2a4d8c30aaa398"
+      "bytes": 229819,
+      "sha256": "da63c5419bd3a57655e4c04cdfb42a21c86303b46882ed913e0e714d43c4f41a"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -6819,6 +6829,11 @@
       "sha256": "fbd5c3f5569b29b6a7188d8a302b8938cced26ff348c0bbca76fb06308203642"
     },
     {
+      "path": "frontend/src/public/magnetTemperature.ts",
+      "bytes": 3334,
+      "sha256": "5d14631a9504b03fdf3b9001f7b88aadd3b652fb6ee751f30763f9b568c57a2b"
+    },
+    {
       "path": "frontend/src/public/main.tsx",
       "bytes": 425,
       "sha256": "f512ccf4db09afe8b87248f7d6c93482455db7de499e369e449e9a5998140984"
@@ -6835,8 +6850,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 20492,
-      "sha256": "ef05aeac76e720d4f782bb540a70ed3cf6e28bf56ac7d7730a57683ba074a559"
+      "bytes": 20722,
+      "sha256": "59702b4ed7853f94d53cc117761218ece407f929792b506112e2afb435b11943"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -6910,8 +6925,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 275125,
-      "sha256": "84abbf45f906f01e9a9e5e93b5b3fc40081ca98a59dd453289fb933dfdbb374b"
+      "bytes": 275312,
+      "sha256": "0f59e1a45d0879f4b6dc1f85c0eb2cf094e6822c9bc3ac1cc87ac63c0938e90d"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7504,6 +7519,11 @@
       "sha256": "da04016e03c59eafa69b665ad128f81d8a69be4bd5955da05d6226aa3abb90a7"
     },
     {
+      "path": "tests/test_magnet_temperature.py",
+      "bytes": 5809,
+      "sha256": "7f163759fff881a8ed46ef0f24b0c4e6ebda6c9679daa7e4a25dc0f017ce8e43"
+    },
+    {
       "path": "tests/test_magneto2d_cli_precision.py",
       "bytes": 1757,
       "sha256": "77051b351b4d60f6283ae32ef84cced3a0ed2fbd11e7a062f2ec128089f07edc"
@@ -7575,8 +7595,8 @@
     },
     {
       "path": "tests/test_public_candidate.py",
-      "bytes": 20134,
-      "sha256": "317da5057a8d4c8d1571b780424067a28e5c357aae830204af5ddd849baf9e42"
+      "bytes": 20447,
+      "sha256": "7d7e95fd4145e25cfe764021c82ef724c64be34d66a1b25c5d964bb6225a3917"
     },
     {
       "path": "tests/test_public_field_playback.py",
@@ -7600,8 +7620,8 @@
     },
     {
       "path": "tests/test_public_solver_environment.py",
-      "bytes": 10482,
-      "sha256": "d50605cc2853d954305848d5fecc6c1fe857a1442e7191af700b2f38e21157fe"
+      "bytes": 10648,
+      "sha256": "6e02992720417d4cff0e53d7900f7189b1514f9a7bbbc998a8df589b3b8da909"
     },
     {
       "path": "tests/test_public_ui.py",
@@ -7635,8 +7655,8 @@
     },
     {
       "path": "tests/test_pyleecan_reference_fixture.py",
-      "bytes": 17495,
-      "sha256": "1ce34bb97aece6042dbbcf7642db0a02b11c69c506749a4ad40f4af431a7b75b"
+      "bytes": 17525,
+      "sha256": "31470f7d2dd69d1db233db0953066bf14c7df183840b6dfefea75965c4ec0ead"
     },
     {
       "path": "tests/test_pyleecan_tutorial.py",
@@ -13773,6 +13793,120 @@
       "path": "frontend/src/public/styles.css",
       "source_sha256": "cf9556f070a5c470082cf5c7c73b0ae00aef16492b020aad493f9209ca25fc17",
       "reason": "Label the d and q axes in the Stator + PM field view (#113)"
+    },
+    {
+      "base_commit": "ec947102fc5089210fe54d5202be754f5d7c60d7",
+      "path": "MATERIALS.md",
+      "source_sha256": "86bc0ea9bcf2d7b6520add0c389f6bbdf52ccf47cfc4e1aecd521caeab28f219",
+      "reason": "Magnet temperature: Br and HcJ derated from cited coefficients (#137)"
+    },
+    {
+      "base_commit": "ec947102fc5089210fe54d5202be754f5d7c60d7",
+      "path": "backend/magneto2d_adapter/__init__.py",
+      "source_sha256": "c48dfa8542f67bdf8b9c2a63dbee3fe5263da924b1cd40c7dfb430748542853f",
+      "reason": "Magnet temperature: Br and HcJ derated from cited coefficients (#137)"
+    },
+    {
+      "base_commit": "ec947102fc5089210fe54d5202be754f5d7c60d7",
+      "path": "backend/models/config.py",
+      "source_sha256": "61beda4bca3ce94286958b14c1a97505d822ed55545e732e3eaca7cfa9d02042",
+      "reason": "Magnet temperature: Br and HcJ derated from cited coefficients (#137)"
+    },
+    {
+      "base_commit": "ec947102fc5089210fe54d5202be754f5d7c60d7",
+      "path": "backend/public_material_catalog.py",
+      "source_sha256": "eb648442968b26b9644a940247de27aa0e44c50cd682c59a0fae55d58fbed458",
+      "reason": "Magnet temperature: Br and HcJ derated from cited coefficients (#137)"
+    },
+    {
+      "base_commit": "ec947102fc5089210fe54d5202be754f5d7c60d7",
+      "path": "backend/public_policy.py",
+      "source_sha256": "711d20c6a27287adde2a97209ca4d2e7148dfa6203d6631392f274ecbeacecbe",
+      "reason": "Magnet temperature: Br and HcJ derated from cited coefficients (#137)"
+    },
+    {
+      "base_commit": "ec947102fc5089210fe54d5202be754f5d7c60d7",
+      "path": "backend/public_report.py",
+      "source_sha256": "8028ee4fa27e856a14ba8dff050a5319f6592784c52567f1edb7b7449c904879",
+      "reason": "Magnet temperature: Br and HcJ derated from cited coefficients (#137)"
+    },
+    {
+      "base_commit": "ec947102fc5089210fe54d5202be754f5d7c60d7",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "997db315ed8fcaba117e9d30441d21bb256962a871adad144b4ca0573004cd45",
+      "reason": "Magnet temperature: Br and HcJ derated from cited coefficients (#137)"
+    },
+    {
+      "base_commit": "ec947102fc5089210fe54d5202be754f5d7c60d7",
+      "path": "frontend/package.json",
+      "source_sha256": "e12f19b7b819e131e0023c70abd9b35b0653af89f68905f895af136744fb202f",
+      "reason": "Magnet temperature: Br and HcJ derated from cited coefficients (#137)"
+    },
+    {
+      "base_commit": "ec947102fc5089210fe54d5202be754f5d7c60d7",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "05d1f6d01576e69d3a485f37ecd3f75a6719c756ecd55bcd2a88b15c1c9ba92c",
+      "reason": "Magnet temperature: Br and HcJ derated from cited coefficients (#137)"
+    },
+    {
+      "base_commit": "ec947102fc5089210fe54d5202be754f5d7c60d7",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "2fb9f1a9e9b5186bb587ea2f61f2b9f5a30ea95a27c5d3996d2a4d8c30aaa398",
+      "reason": "Magnet temperature: Br and HcJ derated from cited coefficients (#137)"
+    },
+    {
+      "base_commit": "ec947102fc5089210fe54d5202be754f5d7c60d7",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "ef05aeac76e720d4f782bb540a70ed3cf6e28bf56ac7d7730a57683ba074a559",
+      "reason": "Magnet temperature: Br and HcJ derated from cited coefficients (#137)"
+    },
+    {
+      "base_commit": "ec947102fc5089210fe54d5202be754f5d7c60d7",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "84abbf45f906f01e9a9e5e93b5b3fc40081ca98a59dd453289fb933dfdbb374b",
+      "reason": "Magnet temperature: Br and HcJ derated from cited coefficients (#137)"
+    },
+    {
+      "base_commit": "ec947102fc5089210fe54d5202be754f5d7c60d7",
+      "path": "tests/test_public_candidate.py",
+      "source_sha256": "317da5057a8d4c8d1571b780424067a28e5c357aae830204af5ddd849baf9e42",
+      "reason": "Magnet temperature: Br and HcJ derated from cited coefficients (#137)"
+    },
+    {
+      "base_commit": "ec947102fc5089210fe54d5202be754f5d7c60d7",
+      "path": "tests/test_public_solver_environment.py",
+      "source_sha256": "d50605cc2853d954305848d5fecc6c1fe857a1442e7191af700b2f38e21157fe",
+      "reason": "Magnet temperature: Br and HcJ derated from cited coefficients (#137)"
+    },
+    {
+      "base_commit": "ec947102fc5089210fe54d5202be754f5d7c60d7",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "1ce34bb97aece6042dbbcf7642db0a02b11c69c506749a4ad40f4af431a7b75b",
+      "reason": "Magnet temperature: Br and HcJ derated from cited coefficients (#137)"
+    },
+    {
+      "base_commit": "ec947102fc5089210fe54d5202be754f5d7c60d7",
+      "path": "backend/magnet_temperature.py",
+      "source_sha256": null,
+      "reason": "Magnet temperature: Br and HcJ derated from cited coefficients (#137)"
+    },
+    {
+      "base_commit": "ec947102fc5089210fe54d5202be754f5d7c60d7",
+      "path": "frontend/scripts/test-magnet-temperature.mjs",
+      "source_sha256": null,
+      "reason": "Magnet temperature: Br and HcJ derated from cited coefficients (#137)"
+    },
+    {
+      "base_commit": "ec947102fc5089210fe54d5202be754f5d7c60d7",
+      "path": "frontend/src/public/magnetTemperature.ts",
+      "source_sha256": null,
+      "reason": "Magnet temperature: Br and HcJ derated from cited coefficients (#137)"
+    },
+    {
+      "base_commit": "ec947102fc5089210fe54d5202be754f5d7c60d7",
+      "path": "tests/test_magnet_temperature.py",
+      "source_sha256": null,
+      "reason": "Magnet temperature: Br and HcJ derated from cited coefficients (#137)"
     }
   ]
 }

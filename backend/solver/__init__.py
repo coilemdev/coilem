@@ -43,6 +43,7 @@ from backend.iron_loss import (
 )
 from backend.loss_breakdown import iron_loss_density_on_plot, operating_point_losses
 from backend.machine_constants import compute_machine_constants
+from backend.magnet_temperature import magnet_temperature_record
 from backend.magneto2d_adapter import (
     Magneto2DUnsupportedError,
     build_magneto2d_payload,
@@ -3085,6 +3086,7 @@ class Magneto2DSolver(Solver):
                 ),
                 rated_speed_rpm=sweep["rated_speed_rpm"],
                 motor_input_dc_bus_V=getattr(config.solve_params, "motor_input_dc_bus_V", None),
+                **(magnet_temperature_record(config) or {}),
                 solve_cache_dir=str(solve_cache_dir) if solve_cache_dir is not None else None,
                 pipeline_stage=pipeline_stage,
                 postprocess_source_cache_dir=postprocess_source_cache_dir,

@@ -58,6 +58,7 @@ import { BldcTorqueCurrentChart } from './BldcTorqueCurrentChart';
 import { PublicRunComparison } from './PublicRunComparison';
 import { MotorConstants } from './MotorConstants';
 import { PerformancePanel } from './PerformancePanel';
+import { GRADE_TEMPERATURE, magnetTemperatureView } from './magnetTemperature';
 import { hasMotorConstants, motorConstantsView } from './machineConstants';
 import type { WireSpec } from './performance';
 import { readWindingResistance, windingReadout } from './windingResistance';
@@ -178,7 +179,7 @@ interface CoilEmWorkspaceProps {
   onSolvePlanChange: (solvePlan: PublicSolvePreset) => void;
   onCustomSweepChange: (stepDeg: number) => void;
   onSolveSettingChange: (
-    field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W',
+    field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W' | 'magnet_temperature_C',
     value: MotorConfig['solve_params']['nonlinear_solver'] | MotorConfig['solve_params']['current_amplitude_convention'] | MotorConfig['solve_params']['excitation_mode'] | number,
   ) => void;
   onSolverChange: (solver: PublicSolverId) => void;
@@ -3675,6 +3676,29 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
           {sixStepSelected && <NumberRow label="Commutation advance" value={config.solve_params.commutation_advance_deg} unit="electrical degrees" min={-180} max={180} step={1} disabled={busy !== null} onChange={(value) => onSolveSettingChange('commutation_advance_deg', value)} />}
           <NumberRow label="Rated Speed" value={config.solve_params.rated_speed_rpm} unit="rpm" min={0} max={30000} step={50} disabled={busy !== null} onChange={(value) => onSolveSettingChange('rated_speed_rpm', value)} />
           <NumberRow label="Mechanical loss" value={config.solve_params.mechanical_loss_W ?? 0} unit="W" min={0} max={100000} step={1} hint="Friction and windage at the rated speed, if known. It lowers the shaft power and efficiency; the solved torque is unchanged." disabled={busy !== null} onChange={(value) => onSolveSettingChange('mechanical_loss_W', value)} />
+          {!config.geometry_reference && (() => {
+            const grade = config.materials.magnet_grade;
+            const temperature = config.solve_params.magnet_temperature_C ?? 20;
+            const remanence = materials.models?.[grade]?.properties?.remanence_T;
+            const view = magnetTemperatureView(grade, typeof remanence === 'number' ? remanence : null, temperature);
+            return (
+              <>
+                <NumberRow
+                  label="Magnet temp"
+                  value={temperature}
+                  unit="°C"
+                  min={view.range?.[0] ?? 20}
+                  max={view.range ? Math.floor(view.range[1]) : 20}
+                  step={5}
+                  hint="Magnet temperature for the solve. Br falls with temperature by the grade's cited coefficient, lowering back EMF and torque; 20 °C uses the catalogue values."
+                  disabled={busy !== null || !view.available}
+                  onChange={(value) => onSolveSettingChange('magnet_temperature_C', value)}
+                />
+                <p className="public-magnet-temperature-note">{view.note}</p>
+                {view.warning && <p className="public-magnet-temperature-note is-warning" role="note">{view.warning}</p>}
+              </>
+            );
+          })()}
           <div className="public-derived-operating-point" aria-label="Derived operating point">
             <span>{formatNumber(electricalFrequencyHz, 0)} Hz electrical</span>
             <span>{sixStepSelected ? `${config.solve_params.commutation_advance_deg.toFixed(0)}° commutation advance` : `${config.solve_params.current_angle_deg.toFixed(0)}° current angle`}</span>
@@ -4123,6 +4147,14 @@ function ReportStage({
       { label: 'Phase connection', value: 'Wye (MVP)' },
     ] : []),
     { label: 'Rated speed', value: `${formatNumber(config.solve_params.rated_speed_rpm, 0)} rpm` },
+    ...(typeof result.solve_metadata.magnet_temperature_C === 'number' ? [{
+      label: 'Magnet temperature',
+      value: `${formatNumber(result.solve_metadata.magnet_temperature_C, 0)} °C`
+        + (typeof result.solve_metadata.magnet_remanence_T === 'number' ? ` · Br ${result.solve_metadata.magnet_remanence_T.toFixed(3)} T` : '')
+        + ((GRADE_TEMPERATURE[config.materials.magnet_grade]?.maxOperating ?? Infinity) < result.solve_metadata.magnet_temperature_C
+          ? ` · above ${config.materials.magnet_grade}'s ${GRADE_TEMPERATURE[config.materials.magnet_grade].maxOperating} °C rating`
+          : ''),
+    }] : []),
     { label: 'Solver', value: result.solve_metadata.solver_name },
     { label: 'Torque method', value: torqueMethod },
     { label: 'Nonlinear solver', value: nonlinearSolver },
