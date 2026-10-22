@@ -489,6 +489,11 @@
       "sha256": "c1a0ed0f29043b8a4cf6c2d4a9667726c8c71f59bf75aab6b7ed9fbcab334b70"
     },
     {
+      "path": "backend/performance_report.py",
+      "bytes": 44031,
+      "sha256": "ca0880c7a1965853d4f4c935bbd3ccad3ceca3b8def51a7c7de9ac64ca59f033"
+    },
+    {
       "path": "backend/platform_info.py",
       "bytes": 1133,
       "sha256": "66e0561fb3bd6c4de9e5287a5546db5da5d7b0bcc9f2582fb8cbcb9c8f5bad01"
@@ -515,8 +520,8 @@
     },
     {
       "path": "backend/public_main.py",
-      "bytes": 9980,
-      "sha256": "8cd2a27c742876da08f95e505f2940262992b0588ab2b4d7d35c39220694dfe9"
+      "bytes": 10018,
+      "sha256": "c98e32467d98126ba2ccf7b8f2f63ba256d6e10ed08ce07b029dd641a95a7008"
     },
     {
       "path": "backend/public_material_catalog.py",
@@ -545,8 +550,8 @@
     },
     {
       "path": "backend/public_routes/performance.py",
-      "bytes": 8381,
-      "sha256": "fb83d82074255701d18bffc1fee9219a09a42018b65b2660dc1d76997363a0f3"
+      "bytes": 10834,
+      "sha256": "06ab35fd73443970d11fceb514ecda38e1f1f5eafffca1c0779dcf6e8feff410"
     },
     {
       "path": "backend/public_routes/preview.py",
@@ -5530,8 +5535,8 @@
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
-      "bytes": 11084,
-      "sha256": "766acbe2630e714b63b52adc99777d31cf39e02ee88909d4d8ff8ece3aecbcda"
+      "bytes": 11363,
+      "sha256": "6d91478217346b54ada343cc3db37851a6b3be22553cb50f7892b27a2df0f355"
     },
     {
       "path": "docs/RELEASE_0_4_0.md",
@@ -6525,8 +6530,8 @@
     },
     {
       "path": "frontend/src/public/PerformancePanel.tsx",
-      "bytes": 33045,
-      "sha256": "47bfe240d5836929b7b2856dd2bdfce8966f1de35df0aef12bc487891ce8de58"
+      "bytes": 35409,
+      "sha256": "5765825864eaba21a8f95e2613ea2f7e7a6da580b3a2a1a6ff0c5162691249de"
     },
     {
       "path": "frontend/src/public/PublicLanding.tsx",
@@ -6585,8 +6590,8 @@
     },
     {
       "path": "frontend/src/public/api.ts",
-      "bytes": 12372,
-      "sha256": "50cf1de40adfa2f4cdc585bf7dca106cbc78616e839971aab5c801ed794c3f5f"
+      "bytes": 13229,
+      "sha256": "8563459bba624dfc79d034944df705aaa1bd7b7973f0b6d6cf75f96b30c4e128"
     },
     {
       "path": "frontend/src/public/backendMonitor.ts",
@@ -6890,8 +6895,8 @@
     },
     {
       "path": "frontend/src/public/performance.ts",
-      "bytes": 7304,
-      "sha256": "a70a9bbef72a115157d7e851f3affed2e20be911669b1155ef3aa5bac616d337"
+      "bytes": 7861,
+      "sha256": "a99ac2e6b96cec84cafb484d3d3e1d213e99d0ae9dbc1346e6657fd1b445aae8"
     },
     {
       "path": "frontend/src/public/performanceView.ts",
@@ -6940,8 +6945,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 275312,
-      "sha256": "0f59e1a45d0879f4b6dc1f85c0eb2cf094e6822c9bc3ac1cc87ac63c0938e90d"
+      "bytes": 275388,
+      "sha256": "b3d05b9728166bbd3b3b126d5f7480afb63dcedf9ff4be7179468ff944e1d6f8"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7582,6 +7587,11 @@
       "path": "tests/test_performance_contracts.py",
       "bytes": 11533,
       "sha256": "cbfe876be77f1e3a2fea64e25cffb528f1179fce3101a1f0c3143870c30cb2aa"
+    },
+    {
+      "path": "tests/test_performance_report.py",
+      "bytes": 7736,
+      "sha256": "255e12810e57850ec624717c529d93b4c3b5c22784d193c86852342e49cc6e88"
     },
     {
       "path": "tests/test_performance_routes.py",
@@ -14010,6 +14020,60 @@
       "path": "tests/test_slot_current_density.py",
       "source_sha256": null,
       "reason": "Slot current density from each coil side's meshed area (shoed slots ran at 95.6% of their current); protocol 1.5.0 shoed benchmark case"
+    },
+    {
+      "base_commit": "e021e07c86b7208ffa0f9c6d1059d954d015a9df",
+      "path": "backend/public_main.py",
+      "source_sha256": "8cd2a27c742876da08f95e505f2940262992b0588ab2b4d7d35c39220694dfe9",
+      "reason": "Torque-speed tab exports: performance PDF, performance CSV and id/iq table (#142)"
+    },
+    {
+      "base_commit": "e021e07c86b7208ffa0f9c6d1059d954d015a9df",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": "fb83d82074255701d18bffc1fee9219a09a42018b65b2660dc1d76997363a0f3",
+      "reason": "Torque-speed tab exports: performance PDF, performance CSV and id/iq table (#142)"
+    },
+    {
+      "base_commit": "e021e07c86b7208ffa0f9c6d1059d954d015a9df",
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "source_sha256": "766acbe2630e714b63b52adc99777d31cf39e02ee88909d4d8ff8ece3aecbcda",
+      "reason": "Torque-speed tab exports: performance PDF, performance CSV and id/iq table (#142)"
+    },
+    {
+      "base_commit": "e021e07c86b7208ffa0f9c6d1059d954d015a9df",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "47bfe240d5836929b7b2856dd2bdfce8966f1de35df0aef12bc487891ce8de58",
+      "reason": "Torque-speed tab exports: performance PDF, performance CSV and id/iq table (#142)"
+    },
+    {
+      "base_commit": "e021e07c86b7208ffa0f9c6d1059d954d015a9df",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "50cf1de40adfa2f4cdc585bf7dca106cbc78616e839971aab5c801ed794c3f5f",
+      "reason": "Torque-speed tab exports: performance PDF, performance CSV and id/iq table (#142)"
+    },
+    {
+      "base_commit": "e021e07c86b7208ffa0f9c6d1059d954d015a9df",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "a70a9bbef72a115157d7e851f3affed2e20be911669b1155ef3aa5bac616d337",
+      "reason": "Torque-speed tab exports: performance PDF, performance CSV and id/iq table (#142)"
+    },
+    {
+      "base_commit": "e021e07c86b7208ffa0f9c6d1059d954d015a9df",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "0f59e1a45d0879f4b6dc1f85c0eb2cf094e6822c9bc3ac1cc87ac63c0938e90d",
+      "reason": "Torque-speed tab exports: performance PDF, performance CSV and id/iq table (#142)"
+    },
+    {
+      "base_commit": "e021e07c86b7208ffa0f9c6d1059d954d015a9df",
+      "path": "backend/performance_report.py",
+      "source_sha256": null,
+      "reason": "Torque-speed tab exports: performance PDF, performance CSV and id/iq table (#142)"
+    },
+    {
+      "base_commit": "e021e07c86b7208ffa0f9c6d1059d954d015a9df",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": null,
+      "reason": "Torque-speed tab exports: performance PDF, performance CSV and id/iq table (#142)"
     }
   ]
 }

@@ -4724,6 +4724,7 @@ body {
 .performance-actions button { padding: 6px 11px; border: 1px solid var(--border-default); border-radius: 6px; background: transparent; color: var(--text-secondary); font-size: 11px; cursor: pointer; }
 .performance-actions button.performance-primary { border-color: var(--border-accent); color: var(--text-accent); }
 .performance-actions button:disabled { opacity: .5; cursor: default; }
+.performance-downloads { display: inline-flex; flex-wrap: wrap; gap: 6px; }
 .performance-progress { flex: 1 1 200px; height: 6px; overflow: hidden; border-radius: 3px; background: var(--border-subtle); }
 .performance-progress span { display: block; height: 100%; border-radius: 3px; background: var(--accent-primary); transition: width .3s ease; }
 .performance-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; }

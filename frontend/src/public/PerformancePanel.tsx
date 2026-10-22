@@ -2,6 +2,7 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import {
   cancelPublicSolve,
   computeDrivePerformance,
+  downloadPerformanceReport,
   getPerformanceMapStatus,
   type PublicApiError,
   type PublicSolveRequest,
@@ -24,6 +25,8 @@ import type {
   FluxLinkageMapPayload,
   MapSettings,
   PerformanceMapStatus,
+  PerformanceReportContext,
+  PerformanceReportKind,
   TorqueSpeedEnvelope,
 } from './performance';
 import {
@@ -312,6 +315,9 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
   const [status, setStatus] = useState<PerformanceMapStatus | null>(null);
   const [mapPayload, setMapPayload] = useState<FluxLinkageMapPayload | null>(null);
   const [drive, setDrive] = useState<DrivePerformance | null>(null);
+  // The request behind the curves on screen; the downloads rebuild exactly these.
+  const [driveBody, setDriveBody] = useState<Record<string, unknown> | null>(null);
+  const [downloading, setDownloading] = useState<PerformanceReportKind | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [job, setJob] = useState<MapJob | null>(() => currentMapJob());
   useEffect(() => subscribeMapJob(setJob), []);
@@ -328,19 +334,22 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
   const computeDrive = useCallback(async (payload: FluxLinkageMapPayload, driveLimits: DriveLimits, driveControl: DriveControl = control) => {
     setPhase('computing');
     setMessage(null);
+    const body = {
+      map: payload.map,
+      limits: driveLimits,
+      phase_resistance_ohm: resistance ?? 0,
+      winding_temperature_C: windingTemperature,
+      mechanical_loss_W: losses?.mechanical_loss_W ?? 0,
+      control: driveControl,
+    };
     try {
-      const next = await computeDrivePerformance({
-        map: payload.map,
-        limits: driveLimits,
-        phase_resistance_ohm: resistance ?? 0,
-        winding_temperature_C: windingTemperature,
-        mechanical_loss_W: losses?.mechanical_loss_W ?? 0,
-        control: driveControl,
-      });
+      const next = await computeDrivePerformance(body);
       setDrive(next);
+      setDriveBody(body);
       setPhase('ready');
     } catch (error) {
       setDrive(null);
+      setDriveBody(null);
       setMessage(errorText(error));
       setPhase('error');
     }
@@ -420,6 +429,25 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
     link.download = `${(designName ?? 'coilem-design').replace(/[^A-Za-z0-9._-]+/g, '-')}-flux-linkage-map.csv`;
     link.click();
     URL.revokeObjectURL(url);
+  };
+
+  const downloadReport = async (kind: PerformanceReportKind) => {
+    if (!driveBody) return;
+    const context: PerformanceReportContext = {
+      design_name: designName ?? (typeof request.project_name === 'string' ? request.project_name : null),
+      current_unit: units.unit,
+      dc_bus_source: busFromDesign ? 'design' : busEstimated ? 'estimated' : 'entered',
+      map_preset: preset,
+      solved_point: solvedPoint ? { speed_rpm: solvedPoint.speedRpm, torque_Nm: solvedPoint.torqueNm, current_angle_deg: solvedPoint.gammaDeg } : null,
+    };
+    setDownloading(kind);
+    try {
+      await downloadPerformanceReport(kind, { ...driveBody, context });
+    } catch (error) {
+      setMessage(errorText(error));
+    } finally {
+      setDownloading(null);
+    }
   };
 
   const failed = mapPayload?.map.points.filter((point) => point.status === 'failed').length ?? 0;
@@ -524,7 +552,21 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
               <>
                 <button type="button" className="performance-primary" onClick={() => void computeDrive(mapPayload, limits)} disabled={phase === 'computing'}>Apply limits</button>
                 {failed > 0 && <button type="button" onClick={solveMap}>Retry {failed} failed point{failed === 1 ? '' : 's'}</button>}
-                <button type="button" onClick={downloadCsv}>Download map CSV</button>
+                <span className="performance-downloads" role="group" aria-label="Downloads">
+                  <button type="button" onClick={() => void downloadReport('pdf')} disabled={!driveBody || downloading !== null}
+                    title="Inputs, curves, efficiency map, MTPA trajectory and Ld/Lq as a PDF report">
+                    {downloading === 'pdf' ? 'Preparing PDF…' : 'PDF report'}
+                  </button>
+                  <button type="button" onClick={() => void downloadReport('csv')} disabled={!driveBody || downloading !== null}
+                    title="Every number and curve sample of the report, long-form like the run CSV">
+                    {downloading === 'csv' ? 'Preparing CSV…' : 'Performance CSV'}
+                  </button>
+                  <button type="button" onClick={() => void downloadReport('idiq')} disabled={!driveBody || downloading !== null}
+                    title="λd, λq and torque on a rectangular id × iq grid, for drive-control models">
+                    {downloading === 'idiq' ? 'Preparing table…' : 'id/iq table'}
+                  </button>
+                  <button type="button" onClick={downloadCsv} title="The map's solved points as they are">Map points CSV</button>
+                </span>
               </>
             )}
             <p>

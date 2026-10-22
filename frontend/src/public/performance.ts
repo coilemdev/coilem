@@ -221,6 +221,18 @@ export interface PerformanceMapProgress {
   eta_s?: number | null;
 }
 
+/** Downloads of the Torque–speed tab: the PDF, the performance CSV and the id/iq lookup table. */
+export type PerformanceReportKind = 'pdf' | 'csv' | 'idiq';
+
+/** What the report needs beyond the drive request (backend/performance_report.py ReportContext). */
+export interface PerformanceReportContext {
+  design_name: string | null;
+  current_unit: 'A rms' | 'A peak';
+  dc_bus_source: 'design' | 'entered' | 'estimated';
+  map_preset: string | null;
+  solved_point: { speed_rpm: number; torque_Nm: number; current_angle_deg: number | null } | null;
+}
+
 export interface DrivePerformance {
   envelope: TorqueSpeedEnvelope;
   efficiency_map: EfficiencyMap;
