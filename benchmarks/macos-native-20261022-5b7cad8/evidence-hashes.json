@@ -1,6 +1,6 @@
 {
  "schema": "coilem.native_evidence_hashes/v1",
- "note": "sha256 of the ORIGINAL native output files kept on the measuring Mac. benchmark_summary.json, the HTML report and the fixtures here replace that directory's absolute path with '<native-out>'; run_manifest.json, the PDF and the other copied files are byte-identical.",
+ "note": "sha256 of the ORIGINAL native output files kept on the measuring Mac. benchmark_summary.json, the HTML report and the fixtures here replace that directory's absolute path with '<native-out>'; run_manifest.json, the PDF and the other copied files are byte-identical. benchmark_results.csv is stored with LF line endings (the repository normalises text); the original used CRLF.",
  "files": {
   "run_manifest.json": "6649b9f8de9f49ce70a4a130a32e975344a67814bf8bdb7bd2287aa716117de6",
   "report/artifact_manifest.json": "8d31b2f89b9156e01508fd72bee7c7f3d4f544561590098883238474663bd1c6",

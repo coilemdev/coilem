@@ -1185,8 +1185,8 @@
     },
     {
       "path": "benchmarks/macos-native-20261022-5b7cad8/benchmark_results.csv",
-      "bytes": 17187,
-      "sha256": "adb08708c14abddd69e88e2171a4a58c7605a045163df7fcdcd5bb72d8f94cbc"
+      "bytes": 16987,
+      "sha256": "6968e4055fcf211b365c084cb740caf27b507f647684773ec1d383c17b186fa2"
     },
     {
       "path": "benchmarks/macos-native-20261022-5b7cad8/benchmark_summary.json",
@@ -1215,8 +1215,8 @@
     },
     {
       "path": "benchmarks/macos-native-20261022-5b7cad8/evidence-hashes.json",
-      "bytes": 15150,
-      "sha256": "15c8cfc72afc42cd689b3a824bc22bd5eec225ea2f776771f0152659d1529a3b"
+      "bytes": 15261,
+      "sha256": "68bd2c3750e06e443fae299126dabb678fdde5fc81d3fd04329d2b0fa22e3250"
     },
     {
       "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
