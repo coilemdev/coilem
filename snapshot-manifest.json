@@ -195,8 +195,8 @@
     },
     {
       "path": "backend/drive_performance.py",
-      "bytes": 22691,
-      "sha256": "f96ccca8274ffffe5440899a88d84bf00fb41125494cfca1b049d6a138964f21"
+      "bytes": 22811,
+      "sha256": "3f6bcab85d3a353a07f7d0714583d9d2269dd934fa26e58456323a1e52e51fd7"
     },
     {
       "path": "backend/elmer/__init__.py",
@@ -410,8 +410,8 @@
     },
     {
       "path": "backend/magnet_temperature.py",
-      "bytes": 5678,
-      "sha256": "0b64fde78ca4f1dcf85c2d0e022f74f56cb2b441abb8b4f9e887b89258fc41b5"
+      "bytes": 6396,
+      "sha256": "c03844516639014ccf80aa2500ca311cbffc8073e327d21a410cf6334fdcaf0e"
     },
     {
       "path": "backend/magneto2d_adapter/__init__.py",
@@ -480,13 +480,13 @@
     },
     {
       "path": "backend/models/performance.py",
-      "bytes": 20533,
-      "sha256": "7cb9b0a114e48970d8e6a26847fa28c453bfd9a89e158e7cc693288da3d4587f"
+      "bytes": 21582,
+      "sha256": "6eddd38f077648bce6ce7f9ed3e2e63802a300a6520016537a31cdbfd4411d50"
     },
     {
       "path": "backend/models/result.py",
-      "bytes": 7402,
-      "sha256": "00bab2fae3521cedc3ab5a17532ce9651f2c328b4dd4a94fc7d0cfe6e6d9728d"
+      "bytes": 7605,
+      "sha256": "44636f7526c5c3557dfb3ce88c406f2ce29387d49fcfe201c087215eb3121c88"
     },
     {
       "path": "backend/models/waveforms.py",
@@ -495,8 +495,8 @@
     },
     {
       "path": "backend/performance_report.py",
-      "bytes": 44031,
-      "sha256": "ca0880c7a1965853d4f4c935bbd3ccad3ceca3b8def51a7c7de9ac64ca59f033"
+      "bytes": 45813,
+      "sha256": "d7e8ac37a032a511be133409ead2b0b6deffd2e93574b46a4d0525f31e919e3b"
     },
     {
       "path": "backend/platform_info.py",
@@ -540,8 +540,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 70941,
-      "sha256": "7b7b1f26a2683725178e3f81e324a14268c86af1a5563512027d466aac628c78"
+      "bytes": 77723,
+      "sha256": "89d62fb916fb1460c581d325693650ff1455eef35d5a660632e35662cc81e726"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -6250,8 +6250,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2516,
-      "sha256": "0833528f1e98d7ed79f203d1df0b18dace7743247f045c6db8ed998e03ee15fa"
+      "bytes": 2567,
+      "sha256": "79b859c27417f09bec82cfa133ec4c98adde55ef55b4e395b70c28795bdd655f"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -6272,6 +6272,11 @@
       "path": "frontend/scripts/import-typescript-module.mjs",
       "bytes": 1636,
       "sha256": "0b0494fca09b8be2eaedddba5a61e1a61e9fc92fc26cac1dd9a676cd72ab1ea8"
+    },
+    {
+      "path": "frontend/scripts/test-advanced-geometry-display.mjs",
+      "bytes": 1531,
+      "sha256": "9cc5875a43404843dba7485dea793d11971af533ff5eec449ba09790c918be75"
     },
     {
       "path": "frontend/scripts/test-bldc-chart-paths.mjs",
@@ -6305,8 +6310,8 @@
     },
     {
       "path": "frontend/scripts/test-dq-view.mjs",
-      "bytes": 3319,
-      "sha256": "874daf9df1d60ef9139bbe9dbe243053d7532fd0c1bd0a1100e9c8e607da5c8b"
+      "bytes": 5025,
+      "sha256": "4e73a755c6fea6308badf63f553e9a30446ed34b03a831bba08d8e905273443f"
     },
     {
       "path": "frontend/scripts/test-field-axes.mjs",
@@ -6350,8 +6355,8 @@
     },
     {
       "path": "frontend/scripts/test-losses-view.mjs",
-      "bytes": 4907,
-      "sha256": "dde4e9626da0140451e38ee5872c97b531ab1814761b6362eaec03418a3712c0"
+      "bytes": 6103,
+      "sha256": "0e3993b1b29b7c5a795db0968a397d465a60c4479abb42e672716ed75e36272d"
     },
     {
       "path": "frontend/scripts/test-magnet-coverage.mjs",
@@ -6360,8 +6365,8 @@
     },
     {
       "path": "frontend/scripts/test-magnet-temperature.mjs",
-      "bytes": 1254,
-      "sha256": "8ae3f35696629ed40e0d503cf0b22c98bd9f694b3fd75ba0055d92483e538f6d"
+      "bytes": 2232,
+      "sha256": "5a36a045c8217b4c6f13552b16ee80c31ab3f7cdf84d0134f9510c2eb6003488"
     },
     {
       "path": "frontend/scripts/test-mesh-quality.mjs",
@@ -6370,13 +6375,13 @@
     },
     {
       "path": "frontend/scripts/test-motor-constants.mjs",
-      "bytes": 4204,
-      "sha256": "f85457080dd26d1c90dc9a4084ab0bb533db3ff7aa5ae129dca8133ff5b08cd2"
+      "bytes": 5937,
+      "sha256": "58e0360c33fe693f251ca80a79639f321d45b8c59d7d551c7510f73481463fb1"
     },
     {
       "path": "frontend/scripts/test-performance-view.mjs",
-      "bytes": 6603,
-      "sha256": "858c7755fa06d754ea07873f11d27562a0787aa38c2fadadcf6ec12af76444c9"
+      "bytes": 6739,
+      "sha256": "44a5bda3999942f91f17334ac9f7282fcf260ddda9b390964100d11cf91efd76"
     },
     {
       "path": "frontend/scripts/test-phase-drive.mjs",
@@ -6405,8 +6410,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 158924,
-      "sha256": "c3af77a3b783efac82d8a6162ca596a679935267fa2c0a08d5cd6274e81030ba"
+      "bytes": 160592,
+      "sha256": "dafe7c324fa005c3d1f19c9fdb2bb3ba8a7941f433d731a7e6be01828bf875b0"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6430,8 +6435,8 @@
     },
     {
       "path": "frontend/scripts/test-winding-resistance.mjs",
-      "bytes": 2353,
-      "sha256": "63509178593b8049a9466b976f3e57eb4ba4aaca0cc1fc6f4d01c1d50157e98c"
+      "bytes": 3019,
+      "sha256": "5a50ebf4943e16c9687bcfdeabedab9d7d3aa970e647c468df73767ad1510feb"
     },
     {
       "path": "frontend/scripts/test-winding-ring.mjs",
@@ -6825,8 +6830,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 229819,
-      "sha256": "da63c5419bd3a57655e4c04cdfb42a21c86303b46882ed913e0e714d43c4f41a"
+      "bytes": 230665,
+      "sha256": "170151b67b8bf8e712a880fa4bcd4d36dac68b87445173a0ec05c1b7b88df5ea"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -6835,8 +6840,8 @@
     },
     {
       "path": "frontend/src/public/DqCard.tsx",
-      "bytes": 2634,
-      "sha256": "f6dafea074274063a03854ac148714cf1c50564b1143ae50a0133a5c980f0404"
+      "bytes": 2955,
+      "sha256": "56da35e496c0a40783b6a0e15bdd623cd51147f983d392bea7997758af15646c"
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
@@ -6850,8 +6855,8 @@
     },
     {
       "path": "frontend/src/public/LossesCard.tsx",
-      "bytes": 19391,
-      "sha256": "dbce3855d40638d49d705f6b9528d74c7730bb524455db8e6f4902f71509fd4a"
+      "bytes": 19662,
+      "sha256": "f34d39f0e75c3b4836a9d1b39e232cf251539e10b55b25d610f3ae6be4aaeac0"
     },
     {
       "path": "frontend/src/public/MaterialWorkspace.tsx",
@@ -6865,13 +6870,18 @@
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
-      "bytes": 3774,
-      "sha256": "0a2197f9f073435d775d9571a65c3345811f7a31806e9b88e0cebae82c741a7a"
+      "bytes": 3900,
+      "sha256": "7230469ce44c2e7470878b90e40a6213f626d677474a461ffd537bf3c9d098a4"
+    },
+    {
+      "path": "frontend/src/public/OutputStatusBadge.tsx",
+      "bytes": 831,
+      "sha256": "cbe311f11ac068b319232e08590042cc6b34a015aadcd77d3d7593f0ef2ee691"
     },
     {
       "path": "frontend/src/public/PerformancePanel.tsx",
-      "bytes": 35409,
-      "sha256": "5765825864eaba21a8f95e2613ea2f7e7a6da580b3a2a1a6ff0c5162691249de"
+      "bytes": 36763,
+      "sha256": "5fa21a1b898ea8b858d78a70fb827bbacf87be2770934ef8a25d3534576edc75"
     },
     {
       "path": "frontend/src/public/PublicLanding.tsx",
@@ -6885,8 +6895,8 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 23042,
-      "sha256": "c99d00b86d1d63b318a4f1a296dc356263f8c16d7d76ae6c53f0fc7dc8b9e29b"
+      "bytes": 23202,
+      "sha256": "3f104bc8d676c1d658d97423ec67dd6a17bd4ccdebf49616f226e5abc9667bb9"
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
@@ -6985,13 +6995,13 @@
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
-      "bytes": 14117,
-      "sha256": "e5d90d547e15be58f8bdd6653960aa3696f4a5ab4421430cfdb40b64aa06c536"
+      "bytes": 15163,
+      "sha256": "348261c962a7aefa7d97665e64a848cea011537a92b1e0b5016ae846bc90d1bc"
     },
     {
       "path": "frontend/src/public/dqView.ts",
-      "bytes": 7090,
-      "sha256": "ea85a23ba12eacf951f7969af051d975bdb399398c40395d4d566cb5bbdc423b"
+      "bytes": 8652,
+      "sha256": "d3f22bf7ada0f5153fed338bb2da132e82ae1421190d8b2b5dfead71d6ec86a6"
     },
     {
       "path": "frontend/src/public/exampleDesigns.ts",
@@ -7170,13 +7180,13 @@
     },
     {
       "path": "frontend/src/public/lossesView.ts",
-      "bytes": 8475,
-      "sha256": "6d36c2d4321c70501b1ca6f1d0b4c586cb19e1f5aff9b355c5bbe12c7d53a312"
+      "bytes": 9366,
+      "sha256": "661e07c53021df69039f37168a58bec3776212a6ad9961a369be80c801f119ef"
     },
     {
       "path": "frontend/src/public/machineConstants.ts",
-      "bytes": 4300,
-      "sha256": "5df6b38f5830158266bfe159a5e612161eff5a2f615d855851f475a4ecd26f1b"
+      "bytes": 6163,
+      "sha256": "0fa2aa551872b1096ec19bd3eeb6fc7307ab990703ed2692e04d634840d22deb"
     },
     {
       "path": "frontend/src/public/magnetCoverage.ts",
@@ -7190,8 +7200,8 @@
     },
     {
       "path": "frontend/src/public/magnetTemperature.ts",
-      "bytes": 3334,
-      "sha256": "5d14631a9504b03fdf3b9001f7b88aadd3b652fb6ee751f30763f9b568c57a2b"
+      "bytes": 4105,
+      "sha256": "1bb51a52b0137971fe99696edd91a823e5a03a997e2b5d7a22ea78171ee1e79e"
     },
     {
       "path": "frontend/src/public/main.tsx",
@@ -7210,8 +7220,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 20722,
-      "sha256": "59702b4ed7853f94d53cc117761218ece407f929792b506112e2afb435b11943"
+      "bytes": 20865,
+      "sha256": "998f2b8b6dae06af5260a5369d947e57d24177ee212653a8316996d08636fd6f"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -7234,14 +7244,19 @@
       "sha256": "40d69d324708b41486ee891c31d9a43e2e4bef0b00d2cc10f3bf96a92e737072"
     },
     {
+      "path": "frontend/src/public/outputStatus.ts",
+      "bytes": 2079,
+      "sha256": "5f4b9fe1ad001e4d3793c614036a86bcef3a39c929c2b0a47e3dc43a961c8af5"
+    },
+    {
       "path": "frontend/src/public/performance.ts",
-      "bytes": 7861,
-      "sha256": "a99ac2e6b96cec84cafb484d3d3e1d213e99d0ae9dbc1346e6657fd1b445aae8"
+      "bytes": 8130,
+      "sha256": "f7d7e629dda69d2302b8a737d0f1d27a1c10347829353427835f4a4ccc1ec567"
     },
     {
       "path": "frontend/src/public/performanceView.ts",
-      "bytes": 12036,
-      "sha256": "2a81dabb4e01d75e91816807d87604e5eb9e4bba7b89c342fbc21ca12199cfe0"
+      "bytes": 12156,
+      "sha256": "50de5b23269351d6394034b2aca44094f6b8f4917b8ad95789eb8aca55084832"
     },
     {
       "path": "frontend/src/public/phaseDrive.ts",
@@ -7285,8 +7300,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 275388,
-      "sha256": "b3d05b9728166bbd3b3b126d5f7480afb63dcedf9ff4be7179468ff944e1d6f8"
+      "bytes": 275976,
+      "sha256": "65b7a3c7f703853de56212e735145a85efe9dfa989b081cf35005f81cd110be0"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7315,8 +7330,8 @@
     },
     {
       "path": "frontend/src/public/windingResistance.ts",
-      "bytes": 4470,
-      "sha256": "147dbee8b1e4ddb525cda2a83f21a0ebad0ed8ea628c592d30c6cc55132a1e59"
+      "bytes": 5061,
+      "sha256": "637cd0dd26e2cadfc5212deb92fa703c9012add22b07e850ec7ec8c747dbce8a"
     },
     {
       "path": "frontend/src/public/windingRing.ts",
@@ -7755,8 +7770,8 @@
     },
     {
       "path": "tests/test_dq_flux_linkage.py",
-      "bytes": 5265,
-      "sha256": "3c71d270f9899a4caac3c844379aded8b31dbd535a90f28aafd8835d31f8d699"
+      "bytes": 6500,
+      "sha256": "2191883eaafa37ca765a8287b9ba29d633c19cc7b7e16795612aecf9c24495e5"
     },
     {
       "path": "tests/test_drive_performance.py",
@@ -7924,6 +7939,11 @@
       "sha256": "7982aff96eb3c5a3714404080aacce322d7cc85e8238467b4e67b330c74953f8"
     },
     {
+      "path": "tests/test_output_status.py",
+      "bytes": 8079,
+      "sha256": "c4d5ba1d67dba0687de9ae8954b9b9979ee38300662a2efd124d5d2db235559a"
+    },
+    {
       "path": "tests/test_payload_reuse.py",
       "bytes": 2698,
       "sha256": "7e74e645c876a03e975593a2ddccaf8f9fee0628452b1c95e1ce398727443366"
@@ -7980,8 +8000,8 @@
     },
     {
       "path": "tests/test_public_report_exports.py",
-      "bytes": 30750,
-      "sha256": "ad5f0909966caad0a7fa96b9a25b83aa4f321d62526379f8c38b74c7898037bb"
+      "bytes": 31928,
+      "sha256": "61ff03503d0c4d0fdaf1b04c54740196bb3afda40edfa301044a116a7535fe87"
     },
     {
       "path": "tests/test_public_security.py",
@@ -14881,6 +14901,288 @@
       "path": "benchmarks/abcd-v1.6/FEMM-REQUEST.md",
       "source_sha256": "39ea4bb9288affa7a3bb5c7e8bb681fe53cf0c9836e391dda7896f20c168014c",
       "reason": "FEMM request: coilEM's native values for the new 1.6.0 cases"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "backend/drive_performance.py",
+      "source_sha256": "f96ccca8274ffffe5440899a88d84bf00fb41125494cfca1b049d6a138964f21",
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "backend/magnet_temperature.py",
+      "source_sha256": "0b64fde78ca4f1dcf85c2d0e022f74f56cb2b441abb8b4f9e887b89258fc41b5",
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "backend/models/performance.py",
+      "source_sha256": "7cb9b0a114e48970d8e6a26847fa28c453bfd9a89e158e7cc693288da3d4587f",
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "backend/models/result.py",
+      "source_sha256": "00bab2fae3521cedc3ab5a17532ce9651f2c328b4dd4a94fc7d0cfe6e6d9728d",
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "backend/performance_report.py",
+      "source_sha256": "ca0880c7a1965853d4f4c935bbd3ccad3ceca3b8def51a7c7de9ac64ca59f033",
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "backend/public_report.py",
+      "source_sha256": "7b7b1f26a2683725178e3f81e324a14268c86af1a5563512027d466aac628c78",
+      "reason": "Public issue 153: Kt per peak ampere labelled as such in the run PDF/CSV, with a per-rms row; Compare runs per rms ampere as Results; 0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/package.json",
+      "source_sha256": "0833528f1e98d7ed79f203d1df0b18dace7743247f045c6db8ed998e03ee15fa",
+      "reason": "Public issue 154: Advanced Geometry rounds stored stator widths for display only (pinned Prius tooth width)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/scripts/test-advanced-geometry-display.mjs",
+      "source_sha256": null,
+      "reason": "Public issue 154: Advanced Geometry rounds stored stator widths for display only (pinned Prius tooth width)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/scripts/test-dq-view.mjs",
+      "source_sha256": "874daf9df1d60ef9139bbe9dbe243053d7532fd0c1bd0a1100e9c8e607da5c8b",
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/scripts/test-losses-view.mjs",
+      "source_sha256": "dde4e9626da0140451e38ee5872c97b531ab1814761b6362eaec03418a3712c0",
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/scripts/test-magnet-temperature.mjs",
+      "source_sha256": "8ae3f35696629ed40e0d503cf0b22c98bd9f694b3fd75ba0055d92483e538f6d",
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/scripts/test-performance-view.mjs",
+      "source_sha256": "858c7755fa06d754ea07873f11d27562a0787aa38c2fadadcf6ec12af76444c9",
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "c3af77a3b783efac82d8a6162ca596a679935267fa2c0a08d5cd6274e81030ba",
+      "reason": "Public issue 153: Kt per peak ampere labelled as such in the run PDF/CSV, with a per-rms row; Compare runs per rms ampere as Results; Public issue 154: Advanced Geometry rounds stored stator widths for display only (pinned Prius tooth width); 0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/scripts/test-winding-resistance.mjs",
+      "source_sha256": "63509178593b8049a9466b976f3e57eb4ba4aaca0cc1fc6f4d01c1d50157e98c",
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "da63c5419bd3a57655e4c04cdfb42a21c86303b46882ed913e0e714d43c4f41a",
+      "reason": "Public issue 154: Advanced Geometry rounds stored stator widths for display only (pinned Prius tooth width); 0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/src/public/DqCard.tsx",
+      "source_sha256": "f6dafea074274063a03854ac148714cf1c50564b1143ae50a0133a5c980f0404",
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/src/public/LossesCard.tsx",
+      "source_sha256": "dbce3855d40638d49d705f6b9528d74c7730bb524455db8e6f4902f71509fd4a",
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/src/public/OutputStatusBadge.tsx",
+      "source_sha256": null,
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "5765825864eaba21a8f95e2613ea2f7e7a6da580b3a2a1a6ff0c5162691249de",
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "source_sha256": "c99d00b86d1d63b318a4f1a296dc356263f8c16d7d76ae6c53f0fc7dc8b9e29b",
+      "reason": "Public issue 153: Kt per peak ampere labelled as such in the run PDF/CSV, with a per-rms row; Compare runs per rms ampere as Results"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/src/public/dimensionAnnotations.ts",
+      "source_sha256": "e5d90d547e15be58f8bdd6653960aa3696f4a5ab4421430cfdb40b64aa06c536",
+      "reason": "Public issue 154: Advanced Geometry rounds stored stator widths for display only (pinned Prius tooth width)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/src/public/dqView.ts",
+      "source_sha256": "ea85a23ba12eacf951f7969af051d975bdb399398c40395d4d566cb5bbdc423b",
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/src/public/lossesView.ts",
+      "source_sha256": "6d36c2d4321c70501b1ca6f1d0b4c586cb19e1f5aff9b355c5bbe12c7d53a312",
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/src/public/magnetTemperature.ts",
+      "source_sha256": "5d14631a9504b03fdf3b9001f7b88aadd3b652fb6ee751f30763f9b568c57a2b",
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "59702b4ed7853f94d53cc117761218ece407f929792b506112e2afb435b11943",
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/src/public/outputStatus.ts",
+      "source_sha256": null,
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "a99ac2e6b96cec84cafb484d3d3e1d213e99d0ae9dbc1346e6657fd1b445aae8",
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/src/public/performanceView.ts",
+      "source_sha256": "2a81dabb4e01d75e91816807d87604e5eb9e4bba7b89c342fbc21ca12199cfe0",
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "b3d05b9728166bbd3b3b126d5f7480afb63dcedf9ff4be7179468ff944e1d6f8",
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "frontend/src/public/windingResistance.ts",
+      "source_sha256": "147dbee8b1e4ddb525cda2a83f21a0ebad0ed8ea628c592d30c6cc55132a1e59",
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "tests/test_output_status.py",
+      "source_sha256": null,
+      "reason": "0.5.0 outputs show qualified or experimental with the reason in the UI, the run PDF/CSV and the Torque-speed exports (public issue 143)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "ad5f0909966caad0a7fa96b9a25b83aa4f321d62526379f8c38b74c7898037bb",
+      "reason": "Public issue 153: Kt per peak ampere labelled as such in the run PDF/CSV, with a per-rms row; Compare runs per rms ampere as Results"
+    },
+    {
+      "base_commit": "d9a39658ec65583e1cd0c2f06ba04cd9c68d2b8e",
+      "path": "frontend/src/public/dqView.ts",
+      "source_sha256": "2e89f7bb3d1b6d431de3425aa2f3fc5b8ad30f4665e56f518bc8beabe3b7b288",
+      "reason": "d/q card and run PDF: report an open-circuit run as such"
+    },
+    {
+      "base_commit": "d9a39658ec65583e1cd0c2f06ba04cd9c68d2b8e",
+      "path": "frontend/src/public/DqCard.tsx",
+      "source_sha256": "ba027c9162184871a76ade600e0da0cb363380f86f78c03721e72db8800e0e89",
+      "reason": "d/q card and run PDF: report an open-circuit run as such"
+    },
+    {
+      "base_commit": "d9a39658ec65583e1cd0c2f06ba04cd9c68d2b8e",
+      "path": "frontend/scripts/test-dq-view.mjs",
+      "source_sha256": "97f9a786585a965228e6f05a0fa28449f42ee74842294982bd6303cec589fe27",
+      "reason": "d/q card and run PDF: report an open-circuit run as such"
+    },
+    {
+      "base_commit": "d9a39658ec65583e1cd0c2f06ba04cd9c68d2b8e",
+      "path": "backend/public_report.py",
+      "source_sha256": "25a93cfc39a019ad3c0df4ce67c31e40bcab110527db601de0baef341ccff1ba",
+      "reason": "d/q card and run PDF: report an open-circuit run as such"
+    },
+    {
+      "base_commit": "d9a39658ec65583e1cd0c2f06ba04cd9c68d2b8e",
+      "path": "tests/test_dq_flux_linkage.py",
+      "source_sha256": "3c71d270f9899a4caac3c844379aded8b31dbd535a90f28aafd8835d31f8d699",
+      "reason": "d/q card and run PDF: report an open-circuit run as such"
+    },
+    {
+      "base_commit": "cf114c2260e5a309f24b58af738a6ecc4400cacd",
+      "path": "frontend/src/public/machineConstants.ts",
+      "source_sha256": "5df6b38f5830158266bfe159a5e612161eff5a2f615d855851f475a4ecd26f1b",
+      "reason": "Motor constants: Torque-EMF consistency marked not applicable off the q-axis"
+    },
+    {
+      "base_commit": "cf114c2260e5a309f24b58af738a6ecc4400cacd",
+      "path": "frontend/src/public/MotorConstants.tsx",
+      "source_sha256": "0a2197f9f073435d775d9571a65c3345811f7a31806e9b88e0cebae82c741a7a",
+      "reason": "Motor constants: Torque-EMF consistency marked not applicable off the q-axis"
+    },
+    {
+      "base_commit": "cf114c2260e5a309f24b58af738a6ecc4400cacd",
+      "path": "frontend/scripts/test-motor-constants.mjs",
+      "source_sha256": "f85457080dd26d1c90dc9a4084ab0bb533db3ff7aa5ae129dca8133ff5b08cd2",
+      "reason": "Motor constants: Torque-EMF consistency marked not applicable off the q-axis"
+    },
+    {
+      "base_commit": "a3df2981abcd338484061ce62eb1cb21b3f83aa4",
+      "path": "backend/magnet_temperature.py",
+      "source_sha256": "f2173f1987fb96d476233916954a8109296403ab2066e0c66131646dc4de1d50",
+      "reason": "A run at the catalogue 20 C derates nothing, so it carries no derating status (PR #10 review); test line length"
+    },
+    {
+      "base_commit": "a3df2981abcd338484061ce62eb1cb21b3f83aa4",
+      "path": "backend/public_report.py",
+      "source_sha256": "25a93cfc39a019ad3c0df4ce67c31e40bcab110527db601de0baef341ccff1ba",
+      "reason": "A run at the catalogue 20 C derates nothing, so it carries no derating status (PR #10 review); test line length"
+    },
+    {
+      "base_commit": "a3df2981abcd338484061ce62eb1cb21b3f83aa4",
+      "path": "frontend/scripts/test-magnet-temperature.mjs",
+      "source_sha256": "c757f903c47f8a0c3b73cf716353da676c1f4af7403b70dac8b9e03baa1ad5ec",
+      "reason": "A run at the catalogue 20 C derates nothing, so it carries no derating status (PR #10 review); test line length"
+    },
+    {
+      "base_commit": "a3df2981abcd338484061ce62eb1cb21b3f83aa4",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "6f6d8a71fd0c37dbadc9275c684b77398b658b4dc42d0dced1e8cd488ba608fb",
+      "reason": "A run at the catalogue 20 C derates nothing, so it carries no derating status (PR #10 review); test line length"
+    },
+    {
+      "base_commit": "a3df2981abcd338484061ce62eb1cb21b3f83aa4",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "cb6b9611d1a357c59f81275048b696ea8a5e307eab3319024510eb4854787250",
+      "reason": "A run at the catalogue 20 C derates nothing, so it carries no derating status (PR #10 review); test line length"
+    },
+    {
+      "base_commit": "a3df2981abcd338484061ce62eb1cb21b3f83aa4",
+      "path": "frontend/src/public/magnetTemperature.ts",
+      "source_sha256": "75cbcfcecd51ee48aca68e44f1a2a91231f53536f8b575c253c0395d05f765d4",
+      "reason": "A run at the catalogue 20 C derates nothing, so it carries no derating status (PR #10 review); test line length"
+    },
+    {
+      "base_commit": "a3df2981abcd338484061ce62eb1cb21b3f83aa4",
+      "path": "tests/test_output_status.py",
+      "source_sha256": "d2bd45e9cff475a76903d7c4626618fdafa152301231686357e3180a596ff647",
+      "reason": "A run at the catalogue 20 C derates nothing, so it carries no derating status (PR #10 review); test line length"
     }
   ]
 }

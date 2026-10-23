@@ -2,6 +2,12 @@ import assert from 'node:assert/strict';
 
 import { importTypeScriptModule } from './import-typescript-module.mjs';
 
+const {
+  DQ_FLUX_LINKAGE_STATUS_REASON,
+  MAGNET_TEMPERATURE_STATUS_REASON,
+  PHASE_RESISTANCE_STATUS_REASON,
+} = await importTypeScriptModule(new URL('../src/public/outputStatus.ts', import.meta.url));
+
 const { STEEL_RAMP, densityColor, formatPower, lossesView, lossSegments, rampColor, stackCopperWPerKg } = await importTypeScriptModule(
   new URL('../src/public/lossesView.ts', import.meta.url),
 );
@@ -84,5 +90,16 @@ assert.ok(Math.abs(stackCopperWPerKg({ ...loss, copper_active_loss_W: 10 }, wind
 assert.ok(Math.abs(stackCopperWPerKg({ ...loss, copper_active_loss_W: 10 }, { ...winding, conductor: 'aluminum' }, 12) - 10 / (stackKg * 2700 / 8960)) < 1e-9);
 assert.equal(stackCopperWPerKg(loss, null, 12), null);
 assert.equal(stackCopperWPerKg(loss, winding, 0), null);
+
+
+// Public issue 143: efficiency, iron loss and copper loss each say whether they are qualified, and why.
+assert.deepEqual(view.statuses.map((item) => [item.key, item.status]), [['efficiency', 'experimental'], ['iron', 'experimental'], ['copper', 'experimental']]);
+assert.equal(view.statuses[0].reason, loss.efficiency_status_reason);
+assert.equal(view.statuses[1].reason, loss.iron_loss_status_reason, 'the loss record reason when the iron record has none');
+assert.equal(view.statuses[2].reason, PHASE_RESISTANCE_STATUS_REASON, 'a run stored before the winding carried a status');
+assert.equal(view.rows.find((row) => row.key === 'copper').status, 'experimental', 'the copper row carries the badge');
+const recorded = lossesView(loss, iron, { status: 'experimental', status_reason: 'As recorded.' });
+assert.equal(recorded.statuses[2].reason, 'As recorded.');
+assert.deepEqual(noIron.statuses.map((item) => item.key), ['copper'], 'no status for an unavailable efficiency or iron loss');
 
 console.log('losses view: rows, efficiency status, bar segments, density scale and copper per kilogram pass');

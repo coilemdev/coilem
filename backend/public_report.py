@@ -44,6 +44,12 @@ from reportlab.platypus import (
 
 from backend.export_safety import literal_csv_cell
 from backend.local_file_safety import require_contained_path
+from backend.magnet_temperature import is_derated_run
+from backend.models.performance import (
+    DQ_FLUX_LINKAGE_STATUS_REASON,
+    MAGNET_TEMPERATURE_STATUS_REASON,
+    PHASE_RESISTANCE_STATUS_REASON,
+)
 
 PUBLIC_REPORT_SCHEMA = "coilem.single_run_report.v1"
 PUBLIC_REPORT_LIMITATIONS = (
@@ -118,7 +124,10 @@ _SUMMARY_UNITS = {
     "back_emf_thd_h24_pct": "%",
     "back_emf_line_thd_h12_pct": "%",
     "back_emf_line_thd_h24_pct": "%",
-    "Kt_Nm_per_A": "N m/A",
+    # Stored per peak phase ampere (backend/machine_constants.py); the app's Results show it per rms ampere (#153).
+    "Kt_Nm_per_A": "N m/A peak",
+    "Ke_Vs_per_rad_mech": "V s/rad (phase peak per mech rad/s)",
+    "lambda_pm_Wb": "Wb peak",
     "peak_flux_density_teeth_T": "T",
     "peak_flux_density_yoke_T": "T",
     "solve_time_s": "s",
@@ -139,6 +148,16 @@ _SUMMARY_LABELS = {
     "solve_time_s": "Solve time",
 }
 _SUMMARY_ORDER = tuple(_SUMMARY_LABELS)
+_KT_RMS_FIELD, _KT_RMS_UNIT, _KT_LABEL = "Kt_Nm_per_A_rms", "N m/A rms", "Torque constant"
+
+
+def _kt_rms(summary: Mapping[str, Any]) -> float | None:
+    """Kt per rms phase ampere, as Results shows it: I_rms = I_peak / sqrt(2), so Kt_rms = sqrt(2) Kt_peak."""
+
+    kt = summary.get("Kt_Nm_per_A")
+    if isinstance(kt, bool) or not isinstance(kt, (int, float)) or not math.isfinite(kt):
+        return None
+    return kt * math.sqrt(2)
 
 
 def _plain(value: Any) -> str:
@@ -201,6 +220,42 @@ def _qualification_limitations(manifest: Mapping[str, Any]) -> list[str]:
 
 def _sequence(value: Any) -> Sequence[Any]:
     return value if isinstance(value, (list, tuple)) else ()
+
+
+def _status_text(status: str, reason: str) -> str:
+    return f"{status.capitalize()}: {reason}" if reason else status.capitalize()
+
+
+def _output_statuses(result: Mapping[str, Any]) -> list[tuple[str, str, str, str]]:
+    """(key, output, status, reason) of each 0.5.0 output the run recorded (public issue 143).
+
+    d/q and winding records stored before they carried a status, and derated
+    magnets recorded without one, were experimental for the reasons the
+    current records give.
+    """
+
+    summary = _mapping(result.get("summary"))
+    metadata = _mapping(result.get("solve_metadata"))
+    statuses: list[tuple[str, str, str, str]] = []
+
+    def recorded(key: str, output: str, record: Mapping[str, Any], fallback: str, prefix: str = "") -> None:
+        status = _plain(record.get(f"{prefix}status"))
+        reason = _plain(record.get(f"{prefix}status_reason"))
+        statuses.append((key, output, status or "experimental", reason if status else reason or fallback))
+
+    if summary.get("dq_flux_linkage"):
+        recorded("dq_flux_linkage", "d/q flux linkage and inductances", _mapping(summary["dq_flux_linkage"]), DQ_FLUX_LINKAGE_STATUS_REASON)
+    if summary.get("winding_resistance"):
+        recorded("phase_resistance", "Phase resistance and copper loss", _mapping(summary["winding_resistance"]), PHASE_RESISTANCE_STATUS_REASON)
+    iron = _mapping(summary.get("iron_loss"))
+    if iron.get("status") in ("qualified", "experimental"):
+        statuses.append(("iron_loss", "Iron loss and its density map", iron["status"], _plain(iron.get("status_reason"))))
+    losses = _mapping(summary.get("loss_breakdown"))
+    if losses.get("efficiency_status") in ("qualified", "experimental"):
+        statuses.append(("efficiency", "Efficiency", losses["efficiency_status"], _plain(losses.get("efficiency_status_reason"))))
+    if is_derated_run(metadata):
+        recorded("magnet_temperature", "Magnet temperature derating", metadata, MAGNET_TEMPERATURE_STATUS_REASON, "magnet_temperature_")
+    return statuses
 
 
 def _warnings(result: Mapping[str, Any]) -> tuple[str, ...]:
@@ -277,9 +332,14 @@ def build_public_run_csv(
     for field in (*_SUMMARY_ORDER, *sorted(set(summary) - known)):
         if field in summary and field not in _SUMMARY_RECORD_SECTIONS:
             row("summary", field, summary[field], _SUMMARY_UNITS.get(field, ""))
+            if field == "Kt_Nm_per_A" and _kt_rms(summary) is not None:
+                row("summary", _KT_RMS_FIELD, _kt_rms(summary), _KT_RMS_UNIT)
     for field, section in _SUMMARY_RECORD_SECTIONS.items():
         for name, value in _flatten(_mapping(summary.get(field))):
             row(section, name, value, _record_unit(name))
+    for key, _output, status, reason in _output_statuses(result):
+        row("status", key, status)
+        row("status", f"{key}_reason", reason)
     for field, value in _flatten(_mapping(result.get("solve_metadata"))):
         row("solve_metadata", field, value)
 
@@ -729,23 +789,28 @@ def _metric_table(
     summary: Mapping[str, Any],
     styles: Mapping[str, ParagraphStyle],
 ) -> Table:
+    # One tile per metric, its label over its value, four to a row.
     cells: list[list[Any]] = []
     metrics = [field for field in _SUMMARY_ORDER if field in summary]
     for offset in range(0, len(metrics), 4):
-        labels: list[Any] = []
-        values: list[Any] = []
+        tiles: list[Any] = []
         for field in metrics[offset : offset + 4]:
-            labels.append(_safe_paragraph(_SUMMARY_LABELS[field], styles["metric_label"]))
-            values.append(
-                _safe_paragraph(
-                    _metric_value(summary[field], _SUMMARY_UNITS[field]),
-                    styles["metric_value"],
-                )
-            )
-        while len(labels) < 4:
-            labels.append("")
-            values.append("")
-        cells.extend([labels, values])
+            value = _metric_value(summary[field], _SUMMARY_UNITS[field])
+            if field == "Kt_Nm_per_A" and _kt_rms(summary) is not None:
+                # Per rms ampere first, as Results shows it, over the stored per-peak value (#153).
+                tiles.append([
+                    _safe_paragraph(_KT_LABEL, styles["metric_label"]),
+                    _safe_paragraph(_metric_value(_kt_rms(summary), _KT_RMS_UNIT), styles["metric_value"]),
+                    _safe_paragraph(value, styles["metric_label"]),
+                ])
+            else:
+                tiles.append([
+                    _safe_paragraph(_SUMMARY_LABELS[field], styles["metric_label"]),
+                    _safe_paragraph(value, styles["metric_value"]),
+                ])
+        while len(tiles) < 4:
+            tiles.append("")
+        cells.append(tiles)
     table = Table(cells or [["No primary metrics recorded"]], colWidths=[45 * mm] * 4, hAlign="LEFT")
     table.setStyle(
         TableStyle(
@@ -753,7 +818,7 @@ def _metric_table(
                 ("BACKGROUND", (0, 0), (-1, -1), _LIGHT),
                 ("BOX", (0, 0), (-1, -1), 0.5, _BORDER),
                 ("INNERGRID", (0, 0), (-1, -1), 0.25, _BORDER),
-                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
                 ("LEFTPADDING", (0, 0), (-1, -1), 3 * mm),
                 ("RIGHTPADDING", (0, 0), (-1, -1), 3 * mm),
                 ("TOPPADDING", (0, 0), (-1, -1), 2 * mm),
@@ -1065,7 +1130,22 @@ def _resistance_text(ohm: Any) -> str:
     return f"{ohm * 1000:.3g} mOhm" if abs(ohm) < 1 else f"{ohm:.3g} Ohm"
 
 
-def _dq_story(summary: Mapping[str, Any], styles: Mapping[str, ParagraphStyle]) -> list[Any]:
+def _status_paragraphs(result: Mapping[str, Any], keys: Sequence[str], styles: Mapping[str, ParagraphStyle]) -> list[Paragraph]:
+    """Each named output's status and reason, as a line under its section."""
+
+    return [
+        Paragraph(f"<b>{escape(output)}: {escape(status)}.</b> {escape(reason)}", styles["small"])
+        for key, output, status, reason in _output_statuses(result)
+        if key in keys
+    ]
+
+
+# Below this phase current (A peak) a run is open-circuit, as backend/dq_flux_linkage.py treats it.
+_OPEN_CIRCUIT_CURRENT_A = 1e-6
+
+
+def _dq_story(result: Mapping[str, Any], styles: Mapping[str, ParagraphStyle]) -> list[Any]:
+    summary = _mapping(result.get("summary"))
     dq = _mapping(summary.get("dq_flux_linkage"))
     if not dq:
         return []
@@ -1073,6 +1153,29 @@ def _dq_story(summary: Mapping[str, Any], styles: Mapping[str, ParagraphStyle]) 
     def milli(value: Any, unit: str) -> str:
         return f"{_number(value * 1000)} {unit}" if isinstance(value, (int, float)) and math.isfinite(value) else "Not recorded"
 
+    i_d, i_q = dq.get("i_d_A"), dq.get("i_q_A")
+    if isinstance(i_d, (int, float)) and isinstance(i_q, (int, float)) and math.hypot(i_d, i_q) <= _OPEN_CIRCUIT_CURRENT_A:
+        # A back-EMF (no-load) run: no current, so no current angle, inductance or torque check.
+        return [
+            _section("d/q operating point", styles),
+            _settings_grid(
+                [
+                    ("Magnet flux linkage", milli(dq.get("lambda_pm_Wb"), "mWb")),
+                    ("Positions averaged", _number(dq.get("positions"))),
+                    ("d-axis flux linkage", milli(dq.get("lambda_d_Wb"), "mWb")),
+                    ("q-axis flux linkage", milli(dq.get("lambda_q_Wb"), "mWb")),
+                ],
+                styles,
+                columns=2,
+                cell_widths=(40 * mm, 50 * mm),
+            ),
+            Paragraph(
+                "Open-circuit run: no current flows, so there is no current angle, inductance or torque check. lambda_d is the "
+                "magnet flux linkage lambda_pm and lambda_q is about zero.",
+                styles["small"],
+            ),
+            *_status_paragraphs(result, ("dq_flux_linkage",), styles),
+        ]
     agreement = dq.get("torque_agreement_pct")
     l_d, l_q, lambda_pm = dq.get("apparent_L_d_H"), dq.get("apparent_L_q_H"), dq.get("lambda_pm_Wb")
     numbers = all(isinstance(value, (int, float)) and math.isfinite(value) for value in (l_d, l_q, lambda_pm))
@@ -1112,6 +1215,7 @@ def _dq_story(summary: Mapping[str, Any], styles: Mapping[str, ParagraphStyle]) 
             "current lambda_pm / Ld cancels the magnet flux: a drive whose peak current reaches it can field-weaken to very high speed.",
             styles["small"],
         ),
+        *_status_paragraphs(result, ("dq_flux_linkage",), styles),
     ]
 
 
@@ -1120,7 +1224,7 @@ def _winding_and_loss_story(result: Mapping[str, Any], styles: Mapping[str, Para
     winding = _mapping(summary.get("winding_resistance"))
     losses = _mapping(summary.get("loss_breakdown"))
     iron = _mapping(summary.get("iron_loss"))
-    story: list[Any] = _dq_story(summary, styles)
+    story: list[Any] = _dq_story(result, styles)
     if winding:
         wire = (
             f"{winding.get('strands_in_hand')} x {_number(winding.get('strand_diameter_mm'))} mm"
@@ -1146,6 +1250,7 @@ def _winding_and_loss_story(result: Mapping[str, Any], styles: Mapping[str, Para
                 cell_widths=(40 * mm, 50 * mm),
             ),
             *[Paragraph(escape(str(note)), styles["small"]) for note in _sequence(winding.get("notes"))],
+            *_status_paragraphs(result, ("phase_resistance",), styles),
         ])
     if losses:
         efficiency = losses.get("efficiency_pct")
@@ -1196,6 +1301,7 @@ def _winding_and_loss_story(result: Mapping[str, Any], styles: Mapping[str, Para
             "Not modelled: magnet and rotor eddy-current loss, AC copper loss (skin and proximity effects) and inverter loss."
         )
         story.extend(Paragraph(line, styles["small"]) for line in status)
+        story.extend(_status_paragraphs(result, ("efficiency",), styles))
     density = _iron_loss_density_figure(result)
     if density is not None:
         peak = _mapping(result.get("iron_loss_density")).get("max_w_per_kg")
@@ -1210,6 +1316,7 @@ def _winding_and_loss_story(result: Mapping[str, Any], styles: Mapping[str, Para
                 "current density in every coil side.",
                 styles["small"],
             ),
+            *_status_paragraphs(result, ("iron_loss",), styles),
         ])
     return story
 
@@ -1420,6 +1527,8 @@ def build_public_run_pdf(
     solve_metadata = _mapping(result.get("solve_metadata"))
     provenance = _mapping(manifest.get("provenance"))
     six_step = solve_params.get("excitation_mode") == "ideal_six_step_120"
+    output_statuses = _output_statuses(result)
+    magnet_status = next((status for key, _, status, _ in output_statuses if key == "magnet_temperature"), None)
     story.extend(
         [
             _section("Operating point and mesh", styles),
@@ -1441,7 +1550,11 @@ def build_public_run_pdf(
                     ("Rated speed", f"{_plain(solve_params.get('rated_speed_rpm'))} rpm"),
                     *(
                         [
-                            ("Magnet temperature", f"{_number(solve_metadata.get('magnet_temperature_C'))} C"),
+                            (
+                                "Magnet temperature",
+                                f"{_number(solve_metadata.get('magnet_temperature_C'))} C, "
+                                + (f"{magnet_status} derating" if magnet_status else "catalogue values"),
+                            ),
                             ("Magnet Br at temperature", f"{_number(solve_metadata.get('magnet_remanence_T'), 4)} T"),
                             ("Magnet HcJ at temperature", f"{_number(solve_metadata.get('magnet_intrinsic_coercivity_kA_m'))} kA/m"),
                         ]
@@ -1587,6 +1700,22 @@ def build_public_run_pdf(
                     styles["small"],
                 ),
             ]
+        )
+
+    if output_statuses:
+        story.append(
+            KeepTogether(
+                [
+                    _section("Status of the performance outputs", styles),
+                    Paragraph(
+                        "Qualified outputs pass a benchmark gate against a reference; experimental outputs have none yet. "
+                        "A design's qualification covers its torque and back EMF, not these outputs.",
+                        styles["small"],
+                    ),
+                    Spacer(1, 1.5 * mm),
+                    _key_value_table([(output, _status_text(status, reason)) for _, output, status, reason in output_statuses], styles),
+                ]
+            )
         )
 
     # Keep each closing heading on the page of its first line.

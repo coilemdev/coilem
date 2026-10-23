@@ -7,6 +7,7 @@
  * P_shaft = T·ω − P_iron − P_mech and the input is P_in = T·ω + P_copper.
  */
 
+import { PHASE_RESISTANCE_STATUS_REASON, recordStatus, type NamedOutputStatus } from './outputStatus';
 import type { IronLoss, LossBreakdown, PerformanceOutputStatus } from './performance';
 import type { WindingResistance } from './windingResistance';
 
@@ -31,6 +32,8 @@ export interface LossRow {
 export interface LossesView {
   efficiency: { text: string; status: PerformanceOutputStatus; reason: string };
   rows: LossRow[];
+  /** Efficiency, iron loss and copper loss, each with its status and reason in words. */
+  statuses: NamedOutputStatus[];
   segments: LossSegment[];
   totalW: number;
 }
@@ -69,7 +72,11 @@ function powerRow(key: string, label: string, watts: number, hint?: string, stat
 }
 
 /** The card's content, or null for a run without a loss breakdown. */
-export function lossesView(loss: LossBreakdown | null | undefined, iron: IronLoss | null | undefined): LossesView | null {
+export function lossesView(
+  loss: LossBreakdown | null | undefined,
+  iron: IronLoss | null | undefined,
+  winding: WindingResistance | null = null,
+): LossesView | null {
   if (!loss) return null;
   const efficiencyAvailable = finite(loss.efficiency_pct);
   const efficiency = {
@@ -97,6 +104,13 @@ export function lossesView(loss: LossBreakdown | null | undefined, iron: IronLos
   const resistance = loss.phase_resistance_ohm < 1
     ? `${significant(loss.phase_resistance_ohm * 1000)} mΩ`
     : `${significant(loss.phase_resistance_ohm)} Ω`;
+  const copperStatus = recordStatus(winding, PHASE_RESISTANCE_STATUS_REASON);
+  const statuses: NamedOutputStatus[] = [];
+  if (efficiency.status !== 'unavailable') statuses.push({ key: 'efficiency', label: 'Efficiency', ...efficiency });
+  if (ironAvailable && loss.iron_loss_status !== 'unavailable') {
+    statuses.push({ key: 'iron', label: 'Iron loss and its map', status: loss.iron_loss_status, reason: iron?.status_reason ?? loss.iron_loss_status_reason ?? '' });
+  }
+  statuses.push({ key: 'copper', label: 'Copper loss, from the phase resistance', ...copperStatus });
   const rows: LossRow[] = [
     powerRow('input', 'Input power', loss.input_power_W, 'Electrical input: the solved torque times speed, plus copper loss.'),
     powerRow('shaft', 'Shaft power', loss.shaft_power_W, 'Solved torque times speed, less iron and mechanical loss.'),
@@ -104,14 +118,15 @@ export function lossesView(loss: LossBreakdown | null | undefined, iron: IronLos
       hint: `The solved torque, ${significant(loss.electromagnetic_torque_Nm, 4)} N·m, less the iron and mechanical loss torque. The solved torque is unchanged.` },
     powerRow('copper', 'Copper loss', loss.copper_loss_W,
       `3 × (${significant(loss.phase_current_rms_A)} A rms)² × ${resistance} at ${significant(loss.winding_temperature_C)} °C. `
-      + `Stack ${formatPower(loss.copper_active_loss_W).value} W, end turns ${formatPower(loss.copper_end_winding_loss_W).value} W.`),
+      + `Stack ${formatPower(loss.copper_active_loss_W).value} W, end turns ${formatPower(loss.copper_end_winding_loss_W).value} W.`,
+      copperStatus.status),
     ironAvailable
       ? powerRow('iron', 'Iron loss', loss.iron_loss_W as number, ironParts.join(' '), loss.iron_loss_status)
       : { key: 'iron', label: 'Iron loss', value: '—', unit: '', hint: ironParts.join(' '), status: 'unavailable' },
     powerRow('mechanical', 'Mechanical loss', loss.mechanical_loss_W, 'Friction and windage as entered under Operating point; 0 when not set.'),
     powerRow('total', 'Total loss', loss.total_loss_W),
   ];
-  return { efficiency, rows, segments, totalW };
+  return { efficiency, rows, statuses, segments, totalW };
 }
 
 type Rgb = [number, number, number];

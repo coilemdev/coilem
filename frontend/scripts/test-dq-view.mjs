@@ -2,7 +2,13 @@ import assert from 'node:assert/strict';
 
 import { importTypeScriptModule } from './import-typescript-module.mjs';
 
-const { DQ_AGREEMENT_TOLERANCE_PCT, dqAgreement, dqView } = await importTypeScriptModule(
+const {
+  DQ_FLUX_LINKAGE_STATUS_REASON,
+  MAGNET_TEMPERATURE_STATUS_REASON,
+  PHASE_RESISTANCE_STATUS_REASON,
+} = await importTypeScriptModule(new URL('../src/public/outputStatus.ts', import.meta.url));
+
+const { DQ_AGREEMENT_TOLERANCE_PCT, dqAgreement, dqView, isOpenCircuit } = await importTypeScriptModule(
   new URL('../src/public/dqView.ts', import.meta.url),
 );
 
@@ -58,6 +64,25 @@ assert.deepEqual(onQAxis.main.map((item) => item.key), ['lq', 'lambda-pm']);
 assert.ok(!onQAxis.detail.some((item) => ['ld', 'saliency', 'characteristic'].includes(item.key)));
 assert.match(onQAxis.note, /nonzero current angle/);
 
+// An open-circuit (back-EMF) run, like the Pyleecan Prius tutorial case: no current, so
+// no current angle, inductance or torque check; the card says so instead of asking for a
+// nonzero current angle, and leaves out the empty rows and the agreement.
+const noCurrent = {
+  ...dq, i_d_A: 3.6e-14, i_q_A: -5.2e-14, lambda_d_Wb: 0.0112566, lambda_q_Wb: 2e-7, torque_dq_Nm: 6e-14,
+  torque_agreement_pct: null, current_angle_deg: null, apparent_L_d_H: null, apparent_L_q_H: null,
+};
+const openCircuit = dqView(noCurrent);
+assert.ok(isOpenCircuit(noCurrent));
+assert.deepEqual(openCircuit.main.map((item) => item.key), ['lambda-pm']);
+assert.deepEqual(openCircuit.detail.map((item) => item.key), ['lambda-d', 'lambda-q']);
+assert.equal(openCircuit.agreement, null);
+assert.match(openCircuit.note, /Open-circuit run/);
+assert.doesNotMatch(openCircuit.note, /nonzero current angle/);
+assert.match(openCircuit.detail[0].hint, /Open circuit/);
+// A small but real current is still a loaded run.
+assert.ok(!isOpenCircuit({ i_d_A: 0, i_q_A: 1e-3 }));
+assert.notEqual(dqView({ ...dq, i_d_A: 0, i_q_A: 1e-3 }).agreement, null);
+
 // The agreement judges the value as shown, at the tolerance edge.
 assert.equal(DQ_AGREEMENT_TOLERANCE_PCT, 5);
 assert.equal(dqAgreement({ torque_agreement_pct: 95.04 }).status, 'ok');
@@ -65,5 +90,10 @@ assert.equal(dqAgreement({ torque_agreement_pct: 94.94 }).status, 'check');
 assert.equal(dqAgreement({ torque_agreement_pct: null }).status, 'unavailable');
 assert.equal(dqAgreement(null).text, '—');
 assert.equal(dqView(null), null);
+
+
+// Public issue 143: the card says the d/q record is experimental, and why.
+assert.deepEqual(view.status, { status: 'experimental', reason: DQ_FLUX_LINKAGE_STATUS_REASON }, 'a record stored before it carried a status');
+assert.deepEqual(dqView({ ...dq, status: 'qualified', status_reason: 'Gate passed.' }).status, { status: 'qualified', reason: 'Gate passed.' });
 
 console.log('d/q view: ok');

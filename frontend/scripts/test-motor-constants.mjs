@@ -3,7 +3,9 @@ import assert from 'node:assert/strict';
 import { importTypeScriptModule } from './import-typescript-module.mjs';
 
 const {
+  CONSISTENCY_MAX_CURRENT_ANGLE_DEG,
   CONSISTENCY_TOLERANCE_PCT,
+  consistencyNotApplicable,
   formatSignificant,
   hasMotorConstants,
   motorConstantsView,
@@ -65,6 +67,28 @@ const generating = motorConstantsView({ Kt_Nm_per_A: -kt, Ke_Vs_per_rad_mech: ke
 assert.equal(shown(generating.kt), '−0.407');
 assert.equal(generating.kt.siHint, '−0.288 N·m/A per peak ampere (SI)');
 assert.equal(generating.consistencyStatus, 'check');
+
+// The check assumes q-axis current and magnet torque only. The Pyleecan Prius loaded case
+// runs at γ 50° with saliency 1.73: 118% there is reluctance torque, not an error, so it
+// shows without a badge and a note points to the Torque–λdq agreement.
+const priusKt = 353.95 / 250;
+const priusKe = 4 * 0.1995;
+const prius = motorConstantsView({
+  Kt_Nm_per_A: priusKt, Ke_Vs_per_rad_mech: priusKe,
+  dq_flux_linkage: { torque_agreement_pct: 99.96, current_angle_deg: 49.9997, apparent_L_d_H: 1.20e-3, apparent_L_q_H: 2.07e-3 },
+});
+assert.equal(shown(prius.consistency), '118.3');
+assert.equal(prius.consistencyStatus, 'not-applicable');
+assert.match(prius.consistencyNote, /current is at 50\.0°/);
+assert.match(prius.consistencyNote, /saliency Lq\/Ld 1\.72/, "2.07 / 1.20 mH");
+assert.match(prius.consistencyNote, /Torque–λdq agreement/);
+assert.doesNotMatch(consistencyNotApplicable({ current_angle_deg: 30, apparent_L_d_H: 4.7e-5, apparent_L_q_H: 4.8e-5 }), /saliency/,
+  'a surface-magnet rotor at 30° loses cos γ of its magnet torque but adds no reluctance torque');
+// On the q-axis even an IPM has no d-axis current and so no reluctance torque: the check applies.
+assert.equal(motorConstantsView({ Kt_Nm_per_A: kt, Ke_Vs_per_rad_mech: ke, dq_flux_linkage: { current_angle_deg: 0.0 } }).consistencyStatus, 'ok');
+assert.equal(motorConstantsView({ Kt_Nm_per_A: kt, Ke_Vs_per_rad_mech: ke, dq_flux_linkage: { current_angle_deg: 4.9 } }).consistencyStatus, 'ok');
+assert.equal(motorConstantsView({ Kt_Nm_per_A: kt, Ke_Vs_per_rad_mech: ke }).consistencyNote, null, 'no d/q record: the check stands');
+assert.equal(CONSISTENCY_MAX_CURRENT_ANGLE_DEG, 5);
 
 // Three significant figures, never an exponent; whole numbers keep every digit.
 assert.equal(formatSignificant(0.288), '0.288');

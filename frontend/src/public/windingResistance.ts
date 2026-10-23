@@ -7,6 +7,9 @@
  * R(T) = R20 · (1 + coefficient · (T − 20)).
  */
 
+import { PHASE_RESISTANCE_STATUS_REASON, STATUS_LABEL, recordStatus, type OutputStatus } from './outputStatus';
+import type { PerformanceOutputStatus } from './performance';
+
 export interface WindingResistance {
   wire_source: 'specified' | 'derived';
   conductor: 'copper' | 'aluminum';
@@ -30,6 +33,9 @@ export interface WindingResistance {
   winding_temperature_C: number;
   phase_resistance_ohm: number;
   notes: string[];
+  /** Absent on previews and runs from before the record carried it (outputStatus.ts). */
+  status?: PerformanceOutputStatus;
+  status_reason?: string | null;
 }
 
 export interface WindingReadoutRow {
@@ -40,6 +46,8 @@ export interface WindingReadoutRow {
   text: string;
   hint: string;
   warning: boolean;
+  /** The phase resistance's status (public issue 143); its reason ends the hint. */
+  status?: OutputStatus;
 }
 
 const REFERENCE_TEMPERATURE_C = 20;
@@ -84,6 +92,7 @@ const percent = (fraction: number) => `${Math.round(fraction * 100)}%`;
 export function windingReadout(record: WindingResistance, temperatureC: number): WindingReadoutRow[] {
   const atTemperature = resistanceAt(record, temperatureC);
   const showsHot = Math.abs(temperatureC - REFERENCE_TEMPERATURE_C) > 1e-9;
+  const status = recordStatus(record, PHASE_RESISTANCE_STATUS_REASON);
   const wire = record.wire_source === 'derived'
     ? `Derived ${record.strand_diameter_mm.toFixed(2)} mm wire.`
     : `${record.strands_in_hand} × ${record.strand_diameter_mm} mm wire.`;
@@ -102,8 +111,10 @@ export function windingReadout(record: WindingResistance, temperatureC: number):
       label: 'Phase R',
       tag: `${Math.round(showsHot ? temperatureC : REFERENCE_TEMPERATURE_C)} °C`,
       text: formatResistance(showsHot ? atTemperature : record.phase_resistance_20C_ohm),
-      hint: `${wire} ${formatResistance(record.phase_resistance_20C_ohm)} at 20 °C, ${record.series_turns_per_phase} turns per phase in ${record.parallel_paths} path${record.parallel_paths === 1 ? '' : 's'}.`,
+      hint: `${wire} ${formatResistance(record.phase_resistance_20C_ohm)} at 20 °C, ${record.series_turns_per_phase} turns per phase in ${record.parallel_paths} path${record.parallel_paths === 1 ? '' : 's'}. `
+        + `${STATUS_LABEL[status.status]}: ${status.reason}`,
       warning: false,
+      status,
     },
     {
       key: 'turn',

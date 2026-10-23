@@ -37,6 +37,21 @@ CurrentAngleConvention = Literal["q_axis_gamma_flux_weakening_positive"]
 DqTransform = Literal["amplitude_invariant_park"]
 # Every performance output is either checked against a reference or says it is not.
 OutputStatus = Literal["qualified", "experimental", "unavailable"]
+# Why each output without a run-dependent status is experimental: the 0.5.0
+# benchmark gates for them (public issue 143) are not measured yet. Reports
+# print these, so they stay ASCII.
+DQ_FLUX_LINKAGE_STATUS_REASON = (
+    "Not yet compared with a reference solution: the benchmark measures torque and back EMF, "
+    "so the design's qualification does not cover the d/q flux linkage or the inductances from it."
+)
+PHASE_RESISTANCE_STATUS_REASON = (
+    "Calculated from the wire, turns and mean turn length (half-circle end turns, IEC conductor data); "
+    "not yet checked against a hand calculation or a measured winding."
+)
+MAGNET_TEMPERATURE_STATUS_REASON = (
+    "Br and HcJ derated linearly with the grade's cited reversible coefficients; "
+    "back EMF and torque at temperature are not yet compared with a reference."
+)
 # How a drive picks the current for a torque below the limits: the smallest
 # current (MTPA, then field weakening and MTPV) or the least total loss.
 DriveControl = Literal["mtpa", "least_loss"]
@@ -96,6 +111,8 @@ class DqFluxLinkage(BaseModel):
             "or from the applied currents and the commanded current angle when the run had no no-load sweep"
         ),
     )
+    status: OutputStatus = "experimental"
+    status_reason: Optional[str] = DQ_FLUX_LINKAGE_STATUS_REASON
 
 
 class WindingResistance(BaseModel):
@@ -128,6 +145,8 @@ class WindingResistance(BaseModel):
     winding_temperature_C: float = Field(ge=-50.0, le=250.0)
     phase_resistance_ohm: float = Field(gt=0, description="At winding_temperature_C")
     notes: list[str] = Field(default_factory=list)
+    status: OutputStatus = "experimental"
+    status_reason: Optional[str] = PHASE_RESISTANCE_STATUS_REASON
 
 
 class LossBreakdown(BaseModel):

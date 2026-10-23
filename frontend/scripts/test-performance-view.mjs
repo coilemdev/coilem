@@ -53,8 +53,9 @@ assert.ok(Math.abs(row.lqH - 0.00005) < 1e-12);
 const csv = mapCsv({ ...fluxMap, points: [...fluxMap.points, { ...point(10, 45, 0.0108, 0.0004), status: 'failed', error: 'mesh, "bad"' }] });
 const lines = csv.trim().split('\n');
 assert.match(lines[0], /^# coilEM flux-linkage map, scope abc123/);
-assert.equal(lines[3].split(',')[0], 'current_peak_A');
-assert.equal(lines.length, 3 + 1 + 5);
+assert.match(lines[3], /^# experimental: Not yet compared with a reference solution/, 'the points say they are experimental, and why');
+assert.equal(lines[4].split(',')[0], 'current_peak_A');
+assert.equal(lines.length, 4 + 1 + 5);
 assert.match(lines[lines.length - 1], /,"mesh, ""bad"""$/);
 
 assert.equal(formatDuration(42), 'about 40 s');
