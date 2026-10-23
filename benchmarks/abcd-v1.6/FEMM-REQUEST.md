@@ -103,3 +103,27 @@ python -m tools.run_benchmarks --suite benchmarks/abcd-v1.6/benchmark_spec.json 
 - Every row should show its gates.
 - The d/q rows add `lambda_d`, `lambda_q` and `reference_dq_torque`, and the PDF lists them.
 - To check just the new cases first, add `--case <id>` for each.
+
+## coilEM's values for the new cases
+
+These are native results at `f6c9fbb` on macOS arm64, run with `--no-reference`. FEMM's results should land within the gates of these. If a d/q point is far off while FEMM's own d/q torque agrees with its solved torque, that is a real model difference worth a look. The γ column is the angle measured from the no-load d-axis, not the commanded one, and it matches the commanded angle in every case.
+
+| Case | Torque (N·m) | Back-EMF fundamental (V rms) | λd (mWb) | λq (mWb) | γ measured | Torque–λdq agreement |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `spm_8p12s_example_shoed` | 11.1833 | 31.0932 | 43.839 | 5.856 | 0.00° | 100.21% |
+| `spm_8p12s_concentrated__magnet_60C` | 2.1119 | 15.5609 | 17.546 | 2.844 | 0.00° | 100.31% |
+| `spm_8p12s_concentrated__magnet_100C` | 2.0118 | 14.8156 | 16.709 | 2.868 | 0.00° | 100.33% |
+| `spm_8p12s_concentrated__dq_I20_g0` | 2.2085 | 16.2802 | 18.352 | 2.816 | 0.00° | 100.29% |
+| `spm_8p12s_concentrated__dq_I20_g30` | 1.9208 | 16.2802 | 17.003 | 2.455 | 30.00° | 100.34% |
+| `spm_8p12s_concentrated__dq_I20_g60` | 1.1126 | 16.2802 | 15.975 | 1.423 | 60.00° | 100.56% |
+| `spm_8p12s_concentrated__dq_I40_g0` | 4.3936 | 16.2802 | 18.276 | 5.590 | 0.00° | 100.17% |
+| `spm_8p12s_concentrated__dq_I40_g30` | 3.8327 | 16.2802 | 15.568 | 4.911 | 30.00° | 100.20% |
+| `spm_8p12s_concentrated__dq_I40_g60` | 2.2154 | 16.2802 | 13.464 | 2.853 | 60.00° | 100.31% |
+| `ipm_flat_8p12s_fsae_contract__magnet_60C` | 2.3942 | 7.1350 | 8.059 | 3.936 | 0.00° | 99.02% |
+| `ipm_flat_8p12s_fsae_contract__magnet_100C` | 2.2217 | 6.6152 | 7.473 | 3.945 | 0.00° | 99.10% |
+| `ipm_flat_8p12s_fsae_contract__dq_I50_g0` | 2.5674 | 7.6581 | 8.650 | 3.927 | 0.00° | 98.94% |
+| `ipm_flat_8p12s_fsae_contract__dq_I50_g30` | 2.2763 | 7.6581 | 6.863 | 3.395 | 30.00° | 99.30% |
+| `ipm_flat_8p12s_fsae_contract__dq_I50_g60` | 1.3347 | 7.6581 | 5.556 | 1.952 | 60.00° | 99.57% |
+| `ipm_flat_8p12s_fsae_contract__dq_I100_g0` | 5.1615 | 7.6581 | 8.664 | 7.865 | 0.00° | 99.29% |
+| `ipm_flat_8p12s_fsae_contract__dq_I100_g30` | 4.6737 | 7.6581 | 5.092 | 6.794 | 30.00° | 99.77% |
+| `ipm_flat_8p12s_fsae_contract__dq_I100_g60` | 2.7912 | 7.6581 | 2.483 | 3.909 | 60.00° | 100.54% |

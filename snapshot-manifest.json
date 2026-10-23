@@ -825,8 +825,8 @@
     },
     {
       "path": "benchmarks/abcd-v1.6/FEMM-REQUEST.md",
-      "bytes": 6739,
-      "sha256": "39ea4bb9288affa7a3bb5c7e8bb681fe53cf0c9836e391dda7896f20c168014c"
+      "bytes": 9005,
+      "sha256": "8b22e1193bc2a4eca5f175cfaab38cd217fca6e8e31408603837d7729f9abab8"
     },
     {
       "path": "benchmarks/abcd-v1.6/README.md",
@@ -14875,6 +14875,12 @@
       "path": "tests/test_benchmark_v16_registration.py",
       "source_sha256": null,
       "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "f6c9fbb82017ee30e36fd403ce9617d2dad88f0b",
+      "path": "benchmarks/abcd-v1.6/FEMM-REQUEST.md",
+      "source_sha256": "39ea4bb9288affa7a3bb5c7e8bb681fe53cf0c9836e391dda7896f20c168014c",
+      "reason": "FEMM request: coilEM's native values for the new 1.6.0 cases"
     }
   ]
 }
