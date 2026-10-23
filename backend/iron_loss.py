@@ -1,4 +1,4 @@
-"""Stator iron loss from per-position field frames, with cited M350-50A coefficients.
+"""Stator iron loss from per-position field frames, with cited grade coefficients.
 
 Model (per kilogram, peak flux density B_h of each electrical harmonic h):
 
@@ -12,11 +12,13 @@ The coefficients come from public facts only, no fitted loss table:
     grade's guaranteed loss limits exactly at 50 Hz and reads high against
     typical sheet.
 
-Excess loss is not modelled separately. Against a published M400-50A loss
-table built the same way, the model was within a mean of ±8 % from 50 Hz to
-1 kHz (worst point about 22 %), and about +24 % at 2.5 kHz. Results report the
-share of loss that comes from harmonics above 1 kHz or flux densities above
-1.5 T, the range the two grade limits do not cover.
+Two steels have coefficients: coilEM's bundled M350-50A, and M400-50A for the
+pinned Pyleecan Prius, whose imported B-H curve is that grade. Excess loss is
+not modelled separately. Against the M400-50A loss table in Pyleecan's material
+library, the M400-50A model is within a mean of ±8 % from 50 Hz to 1 kHz
+(worst point about 22 %), and about +24 % at 2.5 kHz. Results report the share
+of loss that comes from harmonics above 1 kHz or flux densities above 1.5 T,
+the range the two grade limits do not cover.
 
 Field frames are per-angle Gmsh meshes. The stator triangulation is the same at
 every directly meshed angle, so those frames map element by element. Positions
@@ -38,10 +40,19 @@ from backend.models import IronLoss, MotorConfig
 from backend.steel_flux_metrics import _field_frame_from_artifact_ref, _steel_region_bucket
 
 IRON_LOSS_STEEL = "M350-50A"
-IRON_LOSS_STATUS_REASON = (
-    "Estimated from the M350-50A grade limits and the lamination eddy-current term; "
-    "not checked against a measured motor."
-)
+# The pinned Pyleecan Prius imports Pyleecan's M400-50A B-H curve as this
+# custom steel (backend/reference_models/pyleecan_prius_2004_config.json).
+PRIUS_PYLEECAN_STEEL = "custom:1b06dcfa45eec99d88856ad3b26df6a890cea2b5c4e247abfd55367660db42ec"
+
+
+def iron_loss_status_reason(grade: str) -> str:
+    return (
+        f"Estimated from the {grade} grade limits and the lamination eddy-current term; "
+        "not checked against a measured motor."
+    )
+
+
+IRON_LOSS_STATUS_REASON = iron_loss_status_reason(IRON_LOSS_STEEL)
 _MIN_CYCLE_POSITIONS = 8
 _ANGLE_TOLERANCE_DEG = 1e-6
 # The grade limits fix the model at 50 Hz between 1.0 T and 1.5 T; the
@@ -98,6 +109,34 @@ M350_50A_LOSS = grade_limit_coefficients(
     resistivity_ohm_m=42.2e-8,
     density_kg_m3=7650.0,
 )
+
+
+# M400-50A: DIN EN 10106 values P1.0 = 1.70 W/kg and P1.5 = 4.00 W/kg at 50 Hz and
+# the 7.70 kg/dm3 density for this grade (Waelzholz's DIN EN 10106 grade table;
+# the 1.0 T value is not obligatory under the standard), 0.50 mm nominal
+# thickness. Resistivity 33.4e-8 Ohm m is the typical value in SIJ Acroni's
+# SIWATT M400-50A HP technical data sheet (SIWATT M400-50A HP-1/7-2024-EN).
+M400_50A_LOSS = grade_limit_coefficients(
+    p10_w_per_kg=1.70,
+    p15_w_per_kg=4.00,
+    thickness_m=0.50e-3,
+    resistivity_ohm_m=33.4e-8,
+    density_kg_m3=7700.0,
+)
+
+
+@dataclass(frozen=True)
+class LossGrade:
+    """The grade whose cited coefficients a configured steel uses."""
+
+    grade: str
+    coefficients: SteinmetzCoefficients
+
+
+LOSS_GRADES = {
+    IRON_LOSS_STEEL: LossGrade(IRON_LOSS_STEEL, M350_50A_LOSS),
+    PRIUS_PYLEECAN_STEEL: LossGrade("M400-50A", M400_50A_LOSS),
+}
 
 
 @dataclass(frozen=True)
@@ -278,7 +317,8 @@ def harmonic_iron_loss(
 
     element_w_per_kg = per_kg(element_w)
     teeth_w = yoke_w = None
-    if history.in_teeth is not None and len(history.in_teeth) == len(element_w):
+    # A split needs tooth and yoke regions; a reference stator drawn as one region has no split.
+    if history.in_teeth is not None and len(history.in_teeth) == len(element_w) and 0 < history.in_teeth.sum() < len(element_w):
         teeth_w = float(element_w[history.in_teeth].sum())
         yoke_w = float(element_w[~history.in_teeth].sum())
     return IronLossEstimate(
@@ -300,7 +340,7 @@ def estimate_iron_loss(
     samples: Sequence[StatorFieldSample | None],
     angles_elec_deg: Sequence[float],
     *,
-    coefficients: SteinmetzCoefficients = M350_50A_LOSS,
+    coefficients: SteinmetzCoefficients | None = None,
 ) -> IronLoss:
     """Iron loss for a loaded sweep, or the reason it is unavailable. Never raises."""
 
@@ -312,12 +352,13 @@ def estimate_iron_loss_and_density(
     samples: Sequence[StatorFieldSample | None],
     angles_elec_deg: Sequence[float],
     *,
-    coefficients: SteinmetzCoefficients = M350_50A_LOSS,
+    coefficients: SteinmetzCoefficients | None = None,
 ) -> tuple[IronLoss, dict[str, list] | None]:
     """The iron-loss record, and W/kg per stator element of the first position's frame.
 
     The density is {"element_index": [...], "w_per_kg": [...]}, indices into
-    that frame's triangle list, or None when the loss is unavailable.
+    that frame's triangle list, or None when the loss is unavailable. The
+    coefficients default to those of the configured stator steel's grade.
     """
 
     steel = _stator_steel(config)
@@ -335,6 +376,9 @@ def estimate_iron_loss_and_density(
     reason = iron_loss_unavailable_reason(config, angles_elec_deg)
     if reason is not None:
         return unavailable(reason), None
+    grade = LOSS_GRADES[steel]
+    if coefficients is None:
+        coefficients = grade.coefficients
     if len(samples) != len(angles_elec_deg) or any(sample is None for sample in samples):
         return unavailable("A rotor position's stator field was not available."), None
     try:
@@ -367,7 +411,7 @@ def estimate_iron_loss_and_density(
                 density[key] = [float(value) for value in values]
     record = IronLoss(
         status="experimental",
-        status_reason=IRON_LOSS_STATUS_REASON,
+        status_reason=iron_loss_status_reason(grade.grade),
         steel=steel,
         electrical_frequency_Hz=frequency,
         iron_loss_W=estimate.total_w,
@@ -388,8 +432,11 @@ def iron_loss_unavailable_reason(config: MotorConfig, angles_elec_deg: Sequence[
     """Why a sweep cannot have iron loss, checked before any field is collected."""
 
     steel = _stator_steel(config)
-    if steel != IRON_LOSS_STEEL:
-        return f"No cited loss data for {steel}; iron loss is available for {IRON_LOSS_STEEL} only."
+    if steel not in LOSS_GRADES:
+        return (
+            f"No cited loss data for {steel}; iron loss is available for {IRON_LOSS_STEEL}, "
+            "and for M400-50A in the pinned Pyleecan Prius."
+        )
     if config.solve_params is None or config.solve_params.rated_speed_rpm <= 0:
         return "Iron loss needs a nonzero speed."
     if not _is_full_uniform_cycle(angles_elec_deg) and not _is_uniform_half_cycle(angles_elec_deg):

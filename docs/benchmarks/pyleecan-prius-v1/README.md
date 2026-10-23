@@ -132,6 +132,39 @@ conversion notice, affiliation statement and complete Apache-2.0 license in
 `reference_notice`. Older reference files gain this notice when saved again;
 operating-point experiments retain it.
 
+## Losses in the app
+
+The benchmark checks torque, back EMF and flux linkage only. The app's Losses
+card reports the Prius's losses as experimental estimates:
+
+- **Copper loss** uses the machine file's conductor, since the pinned design
+  sets no wire of its own: 13 strands of 0.912 mm round copper, 9 turns per
+  coil, one path, and the 19.366 mm straight overhang (`Lewout`). coilEM adds
+  its half-circle end turn to that overhang, giving 71.7 mOhm per phase at
+  20 °C. Pyleecan's own formula counts the straight overhang only and gives
+  35.95 mOhm; with the arcs removed, coilEM reproduces that value.
+- **Iron loss** uses the M400-50A grade-limit model described in
+  [MATERIALS.md](../../../MATERIALS.md#core-loss), because the imported B-H curve
+  is Pyleecan's M400-50A.
+
+Measured with the loaded case (250 A peak at Phi0 140°, 2,000 rpm, 32 positions
+over one electrical cycle; torque unchanged at 353.95 N·m):
+
+| Output | Value |
+| --- | ---: |
+| Phase resistance at 20 °C | 71.7 mOhm |
+| Copper loss | 6.72 kW |
+| Iron loss (hysteresis + eddy) | 612 W (274 W + 338 W) |
+| Share of iron loss above 1.5 T / above 1 kHz | 67 % / 4.6 % |
+| Efficiency, no mechanical loss | 90.9 % |
+
+Most of the iron loss comes from flux densities above 1.5 T, beyond the range
+the grade limits cover, so treat it as an order of magnitude. The reference
+draws its stator as one region, so the loss has no teeth and yoke split.
+Pyleecan's own Prius loss test (`test_FEMM_Loss_Prius`) is marked work in
+progress and skipped at this commit, so there is no Pyleecan loss value to
+compare against.
+
 ## Frozen numerical and output conventions
 
 The app uses full native Gmsh geometry, precise node placement, normal mesh

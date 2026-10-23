@@ -9,7 +9,9 @@ from pathlib import Path
 import pytest
 
 from backend.models import MotorConfig
+from backend.models.config import WireSpec
 from backend.preview import generate_preview
+from backend.reference_models import prius
 from backend.winding_resistance import CONDUCTORS, DEFAULT_COPPER_FILL_LIMIT, winding_resistance
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -126,6 +128,30 @@ def test_a_design_without_wire_gets_a_derived_wire_and_says_so():
     assert result.fits
     assert any("derived" in note for note in result.notes)
     assert result.winding_temperature_C == 20.0
+
+
+def test_the_pinned_prius_uses_its_published_conductor():
+    config = MotorConfig.model_validate(prius.fixture())
+    assert config.winding.wire is None
+    result = winding_resistance(config)
+    assert result.wire_source == "specified"
+    assert (result.strands_in_hand, result.strand_diameter_mm) == (13, 0.912)
+    assert any("published conductor" in note for note in result.notes)
+    assert result.fits
+
+    # Pyleecan's own formula (LamSlotWind.comp_resistance_wind at cbfe7be3) counts the
+    # straight overhang only: R = rho * Ntspc * 2 * (L1 + 2 * Lewout) / Sact. Without
+    # coilEM's half-circle arcs and at Pyleecan's resistivity, coilEM gives the same value.
+    rho, series_turns, stack_m, overhang_m = 1.73e-8, 72, 0.08382, 0.019366
+    area_m2 = 13 * math.pi * 0.912e-3**2 / 4
+    pyleecan_ohm = rho * series_turns * 2 * (stack_m + 2 * overhang_m) / area_m2
+    straight_mm = 2 * stack_m * 1e3 + 4 * overhang_m * 1e3
+    ratio = rho / CONDUCTORS["copper"].resistivity_20c_ohm_m
+    assert result.phase_resistance_20C_ohm * straight_mm / result.mean_turn_length_mm * ratio == pytest.approx(pyleecan_ohm, rel=1e-9)
+    assert result.mean_turn_length_mm > straight_mm
+
+    own = winding_resistance(config.model_copy(update={"winding": config.winding.model_copy(update={"wire": WireSpec(wire_bare_diameter_mm=1.0)})}))
+    assert own.strands_in_hand == 1 and not any("published conductor" in note for note in own.notes)
 
 
 def test_preview_reports_resistance_and_the_exact_fill():

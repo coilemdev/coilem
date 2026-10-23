@@ -55,8 +55,8 @@
     },
     {
       "path": "MATERIALS.md",
-      "bytes": 11796,
-      "sha256": "68913b7b3cf56617f44236a8f7c66c3d29a455856355d48084f9f0f4c0c3ef55"
+      "bytes": 12504,
+      "sha256": "3e241b12603443a836dd94e8dce2d84b8c394c64e2f4e942a2e19e0cef5405cb"
     },
     {
       "path": "PUBLICATION_STATUS.md",
@@ -375,8 +375,8 @@
     },
     {
       "path": "backend/iron_loss.py",
-      "bytes": 20493,
-      "sha256": "ee04ae42120472395028a18efb633469cf66fde2f01f9d4f51ee6debe9980496"
+      "bytes": 22299,
+      "sha256": "121f28213e7309148244520233847729f2720f39fdb855ea6b904fd04b7eea62"
     },
     {
       "path": "backend/launcher.py",
@@ -690,8 +690,8 @@
     },
     {
       "path": "backend/winding_resistance.py",
-      "bytes": 10025,
-      "sha256": "540b403dcbc406bbab7301bc49a1c579698f082b0ec46ee010bc2be6c99c4e7d"
+      "bytes": 11111,
+      "sha256": "8f80fcc2c0d55d1d61cfcba3bf62da5b4ad63b23e0ecf583fcd05e023874114d"
     },
     {
       "path": "backend/winding_utils.py",
@@ -5915,8 +5915,8 @@
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
-      "bytes": 24251,
-      "sha256": "c7452c402fb6beff8847929a56b64899feb50d431049cf03714d9441103bafa5"
+      "bytes": 25842,
+      "sha256": "ee4057a439b8489d7a410f9ad1e56f127c2d138959115e47f7dc1a9ee5473b64"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/app-design-3d.png",
@@ -7850,8 +7850,8 @@
     },
     {
       "path": "tests/test_iron_loss.py",
-      "bytes": 12503,
-      "sha256": "7ae1461f24b1780be55ab91a3c746c18c4870f79e21daa8ff1a5ee0f541532cf"
+      "bytes": 15233,
+      "sha256": "7c7c7f5ee2c24abb7b0137f0f255d019b09d19b0e3a28766214e2de050abecd2"
     },
     {
       "path": "tests/test_late_reference_comparison.py",
@@ -8120,8 +8120,8 @@
     },
     {
       "path": "tests/test_winding_resistance.py",
-      "bytes": 7326,
-      "sha256": "171c736dfec0fecd4cd14b9baecefb8f87ee7b3c542384cf720b2a93a5ad123c"
+      "bytes": 8851,
+      "sha256": "b4fd9f832d22f93d265ce9c7f2d0f77e640fecb5ed0f4be9fb7abb588a3f48af"
     },
     {
       "path": "tests/test_winding_ring_geometry.py",
@@ -15201,6 +15201,42 @@
       "path": "tests/test_benchmark_cap_registration.py",
       "source_sha256": "27dd52e0da2e62ef48eca42e6c823199cfbc101045b049514ee4f687c4a7b0df",
       "reason": "Replay test: 1e-9 relative float tolerance, since differences of nearly equal values magnify last-bit noise"
+    },
+    {
+      "base_commit": "fb1c42490e664d728706e5c2ccb16587fb240241",
+      "path": "MATERIALS.md",
+      "source_sha256": "68913b7b3cf56617f44236a8f7c66c3d29a455856355d48084f9f0f4c0c3ef55",
+      "reason": "Prius losses: M400-50A grade-limit iron loss for the Pyleecan steel and the published Pyleecan conductor"
+    },
+    {
+      "base_commit": "fb1c42490e664d728706e5c2ccb16587fb240241",
+      "path": "backend/iron_loss.py",
+      "source_sha256": "ee04ae42120472395028a18efb633469cf66fde2f01f9d4f51ee6debe9980496",
+      "reason": "Prius losses: M400-50A grade-limit iron loss for the Pyleecan steel and the published Pyleecan conductor"
+    },
+    {
+      "base_commit": "fb1c42490e664d728706e5c2ccb16587fb240241",
+      "path": "backend/winding_resistance.py",
+      "source_sha256": "540b403dcbc406bbab7301bc49a1c579698f082b0ec46ee010bc2be6c99c4e7d",
+      "reason": "Prius losses: M400-50A grade-limit iron loss for the Pyleecan steel and the published Pyleecan conductor"
+    },
+    {
+      "base_commit": "fb1c42490e664d728706e5c2ccb16587fb240241",
+      "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
+      "source_sha256": "c7452c402fb6beff8847929a56b64899feb50d431049cf03714d9441103bafa5",
+      "reason": "Prius losses: M400-50A grade-limit iron loss for the Pyleecan steel and the published Pyleecan conductor"
+    },
+    {
+      "base_commit": "fb1c42490e664d728706e5c2ccb16587fb240241",
+      "path": "tests/test_iron_loss.py",
+      "source_sha256": "7ae1461f24b1780be55ab91a3c746c18c4870f79e21daa8ff1a5ee0f541532cf",
+      "reason": "Prius losses: M400-50A grade-limit iron loss for the Pyleecan steel and the published Pyleecan conductor"
+    },
+    {
+      "base_commit": "fb1c42490e664d728706e5c2ccb16587fb240241",
+      "path": "tests/test_winding_resistance.py",
+      "source_sha256": "171c736dfec0fecd4cd14b9baecefb8f87ee7b3c542384cf720b2a93a5ad123c",
+      "reason": "Prius losses: M400-50A grade-limit iron loss for the Pyleecan steel and the published Pyleecan conductor"
     }
   ]
 }
