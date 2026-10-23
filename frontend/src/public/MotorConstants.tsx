@@ -64,7 +64,7 @@ export function MotorConstants({ summary, variant = 'panel' }: { summary: MotorC
           <tr className="motor-constants-consistency" title={CONSISTENCY_HELP}>
             <th scope="row"><Label symbol="Torque–EMF" name="consistency" /></th>
             <Value item={view.consistency}>
-              {view.consistencyStatus !== 'unavailable' && (
+              {(view.consistencyStatus === 'ok' || view.consistencyStatus === 'check') && (
                 <span className={`motor-constants-status is-${view.consistencyStatus}`}>
                   {view.consistencyStatus === 'ok' ? 'OK' : 'Check'}
                 </span>
@@ -86,6 +86,7 @@ export function MotorConstants({ summary, variant = 'panel' }: { summary: MotorC
       {view.kt.value === null && (
         <p className="motor-constants-note">Kt and the consistency check need a loaded run with sinusoidal current.</p>
       )}
+      {view.consistencyNote && <p className="motor-constants-note">{view.consistencyNote}</p>}
     </section>
   );
 }

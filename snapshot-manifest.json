@@ -6275,8 +6275,8 @@
     },
     {
       "path": "frontend/scripts/test-motor-constants.mjs",
-      "bytes": 4204,
-      "sha256": "f85457080dd26d1c90dc9a4084ab0bb533db3ff7aa5ae129dca8133ff5b08cd2"
+      "bytes": 5937,
+      "sha256": "58e0360c33fe693f251ca80a79639f321d45b8c59d7d551c7510f73481463fb1"
     },
     {
       "path": "frontend/scripts/test-performance-view.mjs",
@@ -6770,8 +6770,8 @@
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
-      "bytes": 3774,
-      "sha256": "0a2197f9f073435d775d9571a65c3345811f7a31806e9b88e0cebae82c741a7a"
+      "bytes": 3900,
+      "sha256": "7230469ce44c2e7470878b90e40a6213f626d677474a461ffd537bf3c9d098a4"
     },
     {
       "path": "frontend/src/public/OutputStatusBadge.tsx",
@@ -7085,8 +7085,8 @@
     },
     {
       "path": "frontend/src/public/machineConstants.ts",
-      "bytes": 4300,
-      "sha256": "5df6b38f5830158266bfe159a5e612161eff5a2f615d855851f475a4ecd26f1b"
+      "bytes": 6163,
+      "sha256": "0fa2aa551872b1096ec19bd3eeb6fc7307ab990703ed2692e04d634840d22deb"
     },
     {
       "path": "frontend/src/public/magnetCoverage.ts",
@@ -14856,6 +14856,24 @@
       "path": "tests/test_dq_flux_linkage.py",
       "source_sha256": "3c71d270f9899a4caac3c844379aded8b31dbd535a90f28aafd8835d31f8d699",
       "reason": "d/q card and run PDF: report an open-circuit run as such"
+    },
+    {
+      "base_commit": "cf114c2260e5a309f24b58af738a6ecc4400cacd",
+      "path": "frontend/src/public/machineConstants.ts",
+      "source_sha256": "5df6b38f5830158266bfe159a5e612161eff5a2f615d855851f475a4ecd26f1b",
+      "reason": "Motor constants: Torque-EMF consistency marked not applicable off the q-axis"
+    },
+    {
+      "base_commit": "cf114c2260e5a309f24b58af738a6ecc4400cacd",
+      "path": "frontend/src/public/MotorConstants.tsx",
+      "source_sha256": "0a2197f9f073435d775d9571a65c3345811f7a31806e9b88e0cebae82c741a7a",
+      "reason": "Motor constants: Torque-EMF consistency marked not applicable off the q-axis"
+    },
+    {
+      "base_commit": "cf114c2260e5a309f24b58af738a6ecc4400cacd",
+      "path": "frontend/scripts/test-motor-constants.mjs",
+      "source_sha256": "f85457080dd26d1c90dc9a4084ab0bb533db3ff7aa5ae129dca8133ff5b08cd2",
+      "reason": "Motor constants: Torque-EMF consistency marked not applicable off the q-axis"
     }
   ]
 }
