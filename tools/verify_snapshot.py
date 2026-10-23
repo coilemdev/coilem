@@ -57,6 +57,7 @@ ALLOWED_DATA_FILES = {
     "frontend/public/materials/sample-custom-steel.csv",
     "benchmarks/performance-112/native-20261016/benchmark_results.csv",
     "benchmarks/windows-native-20261018-f390b25/benchmark_results.csv",
+    "benchmarks/macos-native-20261022-5b7cad8/benchmark_results.csv",
 }
 # Single-digit sector/surface symbols (S1-S9) are engineering data. Story IDs
 # have multiple digits or a task suffix; explicit sprint/path references also fail.
@@ -88,6 +89,7 @@ ALLOWED_BINARY_SIGNATURES = {
     "benchmarks/windows-process-pools-20261012-02fa24b/coilem_benchmark_report.pdf": b"%PDF-",
     "benchmarks/macos-rc-20261013-04f87a5/coilem_benchmark_report.pdf": b"%PDF-",
     "benchmarks/macos-rc-20261013-1fac3a1/coilem_benchmark_report.pdf": b"%PDF-",
+    "benchmarks/macos-native-20261022-5b7cad8/coilem_benchmark_report.pdf": b"%PDF-",
 }
 
 
