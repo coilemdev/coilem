@@ -269,6 +269,9 @@ def test_exact_winding_linkage_is_dual_to_the_applied_mesh_current():
     currents = artifact["physics_contract"]["provenance"]["phase_current_A"]
     for row in report["results"]["slot_excitation_contributions"]:
         assert row["phase_current_a"] == pytest.approx(currents["ABC".index(row["phase"])], abs=1e-10)
+    # The position's phase currents are the published ones, so the d/q record sees the load.
+    assert report["results"]["phase_current_a"] == pytest.approx(currents)
+    assert abs(currents[0]) + abs(currents[1]) + abs(currents[2]) > 1.0
     # Gauge invariance follows from the signed, balanced turns of each phase.
     shifted = {"results": {}, "field_plot": {"az_nodal": (az + .3).tolist()}}
     prius.extract_winding_report(shifted, cfg, artifact)

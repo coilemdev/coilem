@@ -595,8 +595,8 @@
     },
     {
       "path": "backend/reference_models/prius.py",
-      "bytes": 16613,
-      "sha256": "a8fe330a05d5f0ee84b68950f726672808fb374b353a91f9d5b757f2d81afa3f"
+      "bytes": 17103,
+      "sha256": "f90ef88e3558edf867b766d651f815f68c95b93e03b910235e7272ef0581d645"
     },
     {
       "path": "backend/reference_models/pyleecan_prius_2004.json",
@@ -7920,8 +7920,8 @@
     },
     {
       "path": "tests/test_pyleecan_reference_fixture.py",
-      "bytes": 17525,
-      "sha256": "31470f7d2dd69d1db233db0953066bf14c7df183840b6dfefea75965c4ec0ead"
+      "bytes": 17765,
+      "sha256": "d69dbda72c908e233ee45e82b6ab81127a695ec59e6c5a7f46982050e671d87f"
     },
     {
       "path": "tests/test_pyleecan_tutorial.py",
@@ -14614,6 +14614,18 @@
       "path": "tools/verify_snapshot.py",
       "source_sha256": "fc11f61b433748f6829297f30c72738ea887481d11936087620c7a554385d9ab",
       "reason": "Allow the macOS 0.5.0 development evidence PDF and CSV (5b7cad8)"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "backend/reference_models/prius.py",
+      "source_sha256": "a8fe330a05d5f0ee84b68950f726672808fb374b353a91f9d5b757f2d81afa3f",
+      "reason": "Prius reference: record the published phase currents so the d/q record sees the load"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "31470f7d2dd69d1db233db0953066bf14c7df183840b6dfefea75965c4ec0ead",
+      "reason": "Prius reference: record the published phase currents so the d/q record sees the load"
     }
   ]
 }
