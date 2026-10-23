@@ -45,6 +45,7 @@ import {
   niceTicks,
 } from './performanceView';
 import { asPublicConfig } from './publicRequest';
+import { isDeratedRun } from './magnetTemperature';
 import { OutputStatusList, StatusBadge } from './OutputStatusBadge';
 import {
   DQ_FLUX_LINKAGE_STATUS_REASON,
@@ -337,7 +338,7 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
   const solving = myJob?.phase === 'solving';
   const otherSolving = job?.phase === 'solving' && !myJob;
   const resistance = winding?.phase_resistance_ohm ?? losses?.phase_resistance_ohm ?? null;
-  const magnetsDerated = typeof result.solve_metadata.magnet_remanence_T === 'number';
+  const magnetsDerated = isDeratedRun(result.solve_metadata);
   const windingTemperature = winding?.winding_temperature_C ?? losses?.winding_temperature_C ?? 20;
 
   const computeDrive = useCallback(async (payload: FluxLinkageMapPayload, driveLimits: DriveLimits, driveControl: DriveControl = control) => {

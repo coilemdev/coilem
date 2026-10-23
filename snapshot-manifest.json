@@ -405,8 +405,8 @@
     },
     {
       "path": "backend/magnet_temperature.py",
-      "bytes": 5882,
-      "sha256": "f2173f1987fb96d476233916954a8109296403ab2066e0c66131646dc4de1d50"
+      "bytes": 6396,
+      "sha256": "c03844516639014ccf80aa2500ca311cbffc8073e327d21a410cf6334fdcaf0e"
     },
     {
       "path": "backend/magneto2d_adapter/__init__.py",
@@ -535,8 +535,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 77525,
-      "sha256": "add1a1b583a84a99f80e336020d7095fea80d9048499b72cb7599e18f9c95951"
+      "bytes": 77723,
+      "sha256": "89d62fb916fb1460c581d325693650ff1455eef35d5a660632e35662cc81e726"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -6265,8 +6265,8 @@
     },
     {
       "path": "frontend/scripts/test-magnet-temperature.mjs",
-      "bytes": 1810,
-      "sha256": "c757f903c47f8a0c3b73cf716353da676c1f4af7403b70dac8b9e03baa1ad5ec"
+      "bytes": 2232,
+      "sha256": "5a36a045c8217b4c6f13552b16ee80c31ab3f7cdf84d0134f9510c2eb6003488"
     },
     {
       "path": "frontend/scripts/test-mesh-quality.mjs",
@@ -6730,8 +6730,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 230676,
-      "sha256": "6f6d8a71fd0c37dbadc9275c684b77398b658b4dc42d0dced1e8cd488ba608fb"
+      "bytes": 230665,
+      "sha256": "170151b67b8bf8e712a880fa4bcd4d36dac68b87445173a0ec05c1b7b88df5ea"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -6780,8 +6780,8 @@
     },
     {
       "path": "frontend/src/public/PerformancePanel.tsx",
-      "bytes": 36736,
-      "sha256": "cb6b9611d1a357c59f81275048b696ea8a5e307eab3319024510eb4854787250"
+      "bytes": 36763,
+      "sha256": "5fa21a1b898ea8b858d78a70fb827bbacf87be2770934ef8a25d3534576edc75"
     },
     {
       "path": "frontend/src/public/PublicLanding.tsx",
@@ -7100,8 +7100,8 @@
     },
     {
       "path": "frontend/src/public/magnetTemperature.ts",
-      "bytes": 3701,
-      "sha256": "75cbcfcecd51ee48aca68e44f1a2a91231f53536f8b575c253c0395d05f765d4"
+      "bytes": 4105,
+      "sha256": "1bb51a52b0137971fe99696edd91a823e5a03a997e2b5d7a22ea78171ee1e79e"
     },
     {
       "path": "frontend/src/public/main.tsx",
@@ -7835,8 +7835,8 @@
     },
     {
       "path": "tests/test_output_status.py",
-      "bytes": 7426,
-      "sha256": "d2bd45e9cff475a76903d7c4626618fdafa152301231686357e3180a596ff647"
+      "bytes": 8079,
+      "sha256": "c4d5ba1d67dba0687de9ae8954b9b9979ee38300662a2efd124d5d2db235559a"
     },
     {
       "path": "tests/test_payload_reuse.py",
@@ -14874,6 +14874,48 @@
       "path": "frontend/scripts/test-motor-constants.mjs",
       "source_sha256": "f85457080dd26d1c90dc9a4084ab0bb533db3ff7aa5ae129dca8133ff5b08cd2",
       "reason": "Motor constants: Torque-EMF consistency marked not applicable off the q-axis"
+    },
+    {
+      "base_commit": "a3df2981abcd338484061ce62eb1cb21b3f83aa4",
+      "path": "backend/magnet_temperature.py",
+      "source_sha256": "f2173f1987fb96d476233916954a8109296403ab2066e0c66131646dc4de1d50",
+      "reason": "A run at the catalogue 20 C derates nothing, so it carries no derating status (PR #10 review); test line length"
+    },
+    {
+      "base_commit": "a3df2981abcd338484061ce62eb1cb21b3f83aa4",
+      "path": "backend/public_report.py",
+      "source_sha256": "25a93cfc39a019ad3c0df4ce67c31e40bcab110527db601de0baef341ccff1ba",
+      "reason": "A run at the catalogue 20 C derates nothing, so it carries no derating status (PR #10 review); test line length"
+    },
+    {
+      "base_commit": "a3df2981abcd338484061ce62eb1cb21b3f83aa4",
+      "path": "frontend/scripts/test-magnet-temperature.mjs",
+      "source_sha256": "c757f903c47f8a0c3b73cf716353da676c1f4af7403b70dac8b9e03baa1ad5ec",
+      "reason": "A run at the catalogue 20 C derates nothing, so it carries no derating status (PR #10 review); test line length"
+    },
+    {
+      "base_commit": "a3df2981abcd338484061ce62eb1cb21b3f83aa4",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "6f6d8a71fd0c37dbadc9275c684b77398b658b4dc42d0dced1e8cd488ba608fb",
+      "reason": "A run at the catalogue 20 C derates nothing, so it carries no derating status (PR #10 review); test line length"
+    },
+    {
+      "base_commit": "a3df2981abcd338484061ce62eb1cb21b3f83aa4",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "cb6b9611d1a357c59f81275048b696ea8a5e307eab3319024510eb4854787250",
+      "reason": "A run at the catalogue 20 C derates nothing, so it carries no derating status (PR #10 review); test line length"
+    },
+    {
+      "base_commit": "a3df2981abcd338484061ce62eb1cb21b3f83aa4",
+      "path": "frontend/src/public/magnetTemperature.ts",
+      "source_sha256": "75cbcfcecd51ee48aca68e44f1a2a91231f53536f8b575c253c0395d05f765d4",
+      "reason": "A run at the catalogue 20 C derates nothing, so it carries no derating status (PR #10 review); test line length"
+    },
+    {
+      "base_commit": "a3df2981abcd338484061ce62eb1cb21b3f83aa4",
+      "path": "tests/test_output_status.py",
+      "source_sha256": "d2bd45e9cff475a76903d7c4626618fdafa152301231686357e3180a596ff647",
+      "reason": "A run at the catalogue 20 C derates nothing, so it carries no derating status (PR #10 review); test line length"
     }
   ]
 }
