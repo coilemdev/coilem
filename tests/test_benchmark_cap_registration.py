@@ -54,6 +54,22 @@ def test_packaged_cap_bridge_loads_without_source_checkout(tmp_path, monkeypatch
     assert len(records) == 29
 
 
+def _assert_same_rows(actual, expected, path="rows"):
+    """Equal, except that floats may differ in their last bits: libm differs across CI platforms."""
+    if isinstance(expected, float) and isinstance(actual, float):
+        assert actual == pytest.approx(expected, rel=1e-12, abs=1e-15, nan_ok=True), path
+    elif isinstance(expected, dict):
+        assert isinstance(actual, dict) and actual.keys() == expected.keys(), path
+        for key, value in expected.items():
+            _assert_same_rows(actual[key], value, f"{path}.{key}")
+    elif isinstance(expected, list):
+        assert isinstance(actual, list) and len(actual) == len(expected), path
+        for index, (item, value) in enumerate(zip(actual, expected)):
+            _assert_same_rows(item, value, f"{path}[{index}]")
+    else:
+        assert actual == expected, path
+
+
 def test_historical_replay_retains_cap_100_validation_identity():
     from tools.build_benchmark_record import regrade
 
@@ -63,7 +79,7 @@ def test_historical_replay_retains_cap_100_validation_identity():
     assert graded["run"]["selection"]["spec_sha256"] == sha(ROOT / "benchmarks/abcd-v1.3/benchmark_spec.json")
     assert [r["status"] for r in graded["rows"]] == [r["status"] for r in summary["rows"]]
     assert graded["run"]["identity"] == summary["run"]["identity"]
-    assert graded["rows"] == summary["rows"]
+    _assert_same_rows(graded["rows"], summary["rows"])
 
 
 @pytest.mark.parametrize("kind", ["old_requests_as_new", "changed_old_cap"])
