@@ -7740,8 +7740,8 @@
     },
     {
       "path": "tests/test_benchmark_cap_registration.py",
-      "bytes": 6338,
-      "sha256": "27dd52e0da2e62ef48eca42e6c823199cfbc101045b049514ee4f687c4a7b0df"
+      "bytes": 6498,
+      "sha256": "9824c2fd1046de1961bf4fd69f5e4ce101fefb1640984dca4c0b154d5fd32145"
     },
     {
       "path": "tests/test_benchmark_command.py",
@@ -15195,6 +15195,12 @@
       "path": "tests/test_benchmark_cap_registration.py",
       "source_sha256": "1e246ec4e17d4b24fc71447512ba221a2dc83e0376c10a04fe53eb2d0cec24d9",
       "reason": "Compare the replayed rows' floats within 1e-12 relative: libm differs in the last bits across CI platforms"
+    },
+    {
+      "base_commit": "0c39ab3eb523147d620fba88346436f94c7b459d",
+      "path": "tests/test_benchmark_cap_registration.py",
+      "source_sha256": "27dd52e0da2e62ef48eca42e6c823199cfbc101045b049514ee4f687c4a7b0df",
+      "reason": "Replay test: 1e-9 relative float tolerance, since differences of nearly equal values magnify last-bit noise"
     }
   ]
 }
