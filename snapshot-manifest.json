@@ -7380,8 +7380,8 @@
     },
     {
       "path": "tests/test_benchmark_cap_registration.py",
-      "bytes": 5485,
-      "sha256": "1e246ec4e17d4b24fc71447512ba221a2dc83e0376c10a04fe53eb2d0cec24d9"
+      "bytes": 6338,
+      "sha256": "27dd52e0da2e62ef48eca42e6c823199cfbc101045b049514ee4f687c4a7b0df"
     },
     {
       "path": "tests/test_benchmark_command.py",
@@ -14016,6 +14016,12 @@
       "path": "tools/build_benchmark_record.py",
       "source_sha256": "90459cb10c02f20e13edbd0b689035148472d8cd2b89a5edf48aee14c1ab1aae",
       "reason": "Sort imports so CI's ruff check passes (I001)"
+    },
+    {
+      "base_commit": "7ad58a270eb7fefd04278a88039f6be68f541465",
+      "path": "tests/test_benchmark_cap_registration.py",
+      "source_sha256": "1e246ec4e17d4b24fc71447512ba221a2dc83e0376c10a04fe53eb2d0cec24d9",
+      "reason": "Compare the replayed rows' floats within 1e-12 relative: libm differs in the last bits across CI platforms"
     }
   ]
 }
