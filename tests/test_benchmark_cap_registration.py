@@ -55,9 +55,13 @@ def test_packaged_cap_bridge_loads_without_source_checkout(tmp_path, monkeypatch
 
 
 def _assert_same_rows(actual, expected, path="rows"):
-    """Equal, except that floats may differ in their last bits: libm differs across CI platforms."""
+    """Equal, except that floats may differ in their last bits: libm differs across CI platforms.
+
+    Differences of nearly equal values, such as the 0.009 % mesh-to-mesh torque
+    delta, magnify that noise to about 1e-11 relative, so floats get 1e-9.
+    """
     if isinstance(expected, float) and isinstance(actual, float):
-        assert actual == pytest.approx(expected, rel=1e-12, abs=1e-15, nan_ok=True), path
+        assert actual == pytest.approx(expected, rel=1e-9, abs=1e-12, nan_ok=True), path
     elif isinstance(expected, dict):
         assert isinstance(actual, dict) and actual.keys() == expected.keys(), path
         for key, value in expected.items():
