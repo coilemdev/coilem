@@ -19,8 +19,8 @@ import json
 import sys
 from pathlib import Path
 
-from backend.benchmark_suite.cli import inputs
 from backend.benchmark_suite import SUPPORTED_PROTOCOL_VERSIONS
+from backend.benchmark_suite.cli import inputs
 from backend.benchmark_suite.contract import CHECKOUT, DATA_ROOT, DEFAULT_BUNDLE, SPEC, canonical, checked_json, read, sha
 from backend.benchmark_suite.metrics import evaluate_abc, evaluate_bldc
 from backend.benchmark_suite.physics import physics_sources
