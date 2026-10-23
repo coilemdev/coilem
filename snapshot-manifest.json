@@ -7671,7 +7671,7 @@
     {
       "path": "tools/build_benchmark_record.py",
       "bytes": 6549,
-      "sha256": "90459cb10c02f20e13edbd0b689035148472d8cd2b89a5edf48aee14c1ab1aae"
+      "sha256": "58fd6c4db29d0a43f08292409f5a8844366f03a0a128fd3dcea5928c276782e0"
     },
     {
       "path": "tools/compare_pyleecan_bemf.py",
@@ -13165,6 +13165,12 @@
       "path": "tests/test_loss_breakdown.py",
       "source_sha256": null,
       "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "57e3aeff8572a0bc201cd0024c647990861dd38d",
+      "path": "tools/build_benchmark_record.py",
+      "source_sha256": "90459cb10c02f20e13edbd0b689035148472d8cd2b89a5edf48aee14c1ab1aae",
+      "reason": "Sort imports so CI's ruff check passes (I001)"
     }
   ]
 }
