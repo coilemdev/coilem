@@ -50,6 +50,13 @@ export interface MagnetTemperatureView {
   status: OutputStatus | null;
 }
 
+/** Whether a run's magnets were derated: a temperature record away from the catalogue's 20 °C. */
+export function isDeratedRun(metadata: { magnet_temperature_C?: number | null; magnet_remanence_T?: number | null }): boolean {
+  return typeof metadata.magnet_remanence_T === 'number'
+    && typeof metadata.magnet_temperature_C === 'number'
+    && metadata.magnet_temperature_C !== REFERENCE_TEMP_C;
+}
+
 const signed = (value: number, digits = 1) => `${value < 0 ? '−' : '+'}${Math.abs(value).toFixed(digits)}`;
 
 /** The line under the Magnet temperature input for a grade, its 20 °C Br and the chosen temperature. */
