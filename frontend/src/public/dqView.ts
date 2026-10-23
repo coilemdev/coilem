@@ -10,6 +10,7 @@
  * angle.
  */
 
+import { DQ_FLUX_LINKAGE_STATUS_REASON, recordStatus, type OutputStatus } from './outputStatus';
 import type { DqFluxLinkage } from './performance';
 
 export interface DqRow {
@@ -30,6 +31,8 @@ export interface DqView {
   /** Why some main values are missing, when they are. */
   note: string | null;
   agreement: { text: string; status: DqAgreementStatus; hint: string };
+  /** Whether the record is qualified or experimental, and why (public issue 143). */
+  status: OutputStatus;
 }
 
 /** Within this many percentage points of 100%, the d/q agreement reads OK. */
@@ -110,5 +113,6 @@ export function dqView(dq: DqFluxLinkage | null | undefined, currentUnit: DqCurr
       ? 'Ld, the saliency and the characteristic current need d-axis current: solve at a nonzero current angle, such as 20°.'
       : null,
     agreement: dqAgreement(dq),
+    status: recordStatus(dq, DQ_FLUX_LINKAGE_STATUS_REASON),
   };
 }

@@ -2,6 +2,12 @@ import assert from 'node:assert/strict';
 
 import { importTypeScriptModule } from './import-typescript-module.mjs';
 
+const {
+  DQ_FLUX_LINKAGE_STATUS_REASON,
+  MAGNET_TEMPERATURE_STATUS_REASON,
+  PHASE_RESISTANCE_STATUS_REASON,
+} = await importTypeScriptModule(new URL('../src/public/outputStatus.ts', import.meta.url));
+
 const { DQ_AGREEMENT_TOLERANCE_PCT, dqAgreement, dqView } = await importTypeScriptModule(
   new URL('../src/public/dqView.ts', import.meta.url),
 );
@@ -65,5 +71,10 @@ assert.equal(dqAgreement({ torque_agreement_pct: 94.94 }).status, 'check');
 assert.equal(dqAgreement({ torque_agreement_pct: null }).status, 'unavailable');
 assert.equal(dqAgreement(null).text, '—');
 assert.equal(dqView(null), null);
+
+
+// Public issue 143: the card says the d/q record is experimental, and why.
+assert.deepEqual(view.status, { status: 'experimental', reason: DQ_FLUX_LINKAGE_STATUS_REASON }, 'a record stored before it carried a status');
+assert.deepEqual(dqView({ ...dq, status: 'qualified', status_reason: 'Gate passed.' }).status, { status: 'qualified', reason: 'Gate passed.' });
 
 console.log('d/q view: ok');

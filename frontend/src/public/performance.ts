@@ -37,6 +37,9 @@ export interface DqFluxLinkage {
   positions?: number;
   /** How the d-axis was placed; 'applied_current_angle' when the run had no no-load sweep. */
   d_axis_source?: 'no_load_flux_linkage' | 'applied_current_angle';
+  /** Absent on runs stored before the record carried it (outputStatus.ts). */
+  status?: PerformanceOutputStatus;
+  status_reason?: string | null;
 }
 
 /** Losses at the solved point (#138): P_shaft = T·ω − iron − mechanical, P_in = T·ω + copper. */
@@ -231,6 +234,8 @@ export interface PerformanceReportContext {
   dc_bus_source: 'design' | 'entered' | 'estimated';
   map_preset: string | null;
   solved_point: { speed_rpm: number; torque_Nm: number; current_angle_deg: number | null } | null;
+  /** The run derated its magnets for temperature, so every map point did too. */
+  magnet_temperature_derated: boolean;
 }
 
 export interface DrivePerformance {

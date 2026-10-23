@@ -27,8 +27,10 @@ import {
 import { WindingLayoutView } from './WindingLayoutView';
 import { coilsPerPhase, wholeSlotConcentratedNote, windingLayerOptions, windingLayerWording } from './toothCoils';
 import {
+  advancedGeometrySummary,
   buildDimensionAnnotations,
   deriveStatorSectionWidths,
+  shownWidthMm,
   type DimensionAnnotation,
   type DimensionId,
 } from './dimensionAnnotations';
@@ -62,6 +64,8 @@ import { GRADE_TEMPERATURE, magnetTemperatureView } from './magnetTemperature';
 import { hasMotorConstants, motorConstantsView } from './machineConstants';
 import type { WireSpec } from './performance';
 import { readWindingResistance, windingReadout } from './windingResistance';
+import { StatusBadge } from './OutputStatusBadge';
+import { MAGNET_TEMPERATURE_STATUS_REASON, STATUS_LABEL } from './outputStatus';
 import { ResultSummary } from './ResultSummary';
 import { publicExampleOptions, type PublicExampleId } from './exampleDesigns';
 import {
@@ -1354,10 +1358,10 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         <SelectRow label="Magnet Grade" value={config.materials.magnet_grade} choices={materials.magnet_grades.map((value) => ({ value, label: value }))} disabled={disabled} onChange={set('materials', 'magnet_grade', 'rotor')} />
       </ParameterSectionBlock>}
 
-      {matchesSearch('advanced') && <ParameterSectionBlock id="advanced" attention={errorSection === 'advanced'} label="Advanced Geometry" active={Boolean(normalizedSearch) || activeSection === 'advanced'} onToggle={toggle} summary={`bore tooth ${statorWidths.boreToothWidthMm.toFixed(1)} · yoke tooth ${config.stator.tooth_width_mm} · yoke ${config.stator.yoke_thickness_mm}`} nextLabel={normalizedSearch ? undefined : 'Winding'} onNext={normalizedSearch ? undefined : setNext('winding')}>
+      {matchesSearch('advanced') && <ParameterSectionBlock id="advanced" attention={errorSection === 'advanced'} label="Advanced Geometry" active={Boolean(normalizedSearch) || activeSection === 'advanced'} onToggle={toggle} summary={advancedGeometrySummary(config, statorWidths)} nextLabel={normalizedSearch ? undefined : 'Winding'} onNext={normalizedSearch ? undefined : setNext('winding')}>
         <NumberRow label="Bore Tooth Width" value={Number(statorWidths.boreToothWidthMm.toFixed(1))} unit="mm" hint="Tangential tooth width at the stator bore. Bore slot opening is calculated from the remaining pitch." min={minimumBoreToothWidthMm} max={maximumBoreToothWidthMm} step={0.1} disabled={disabled} onChange={setBoreToothWidth} />
-        <NumberRow label="Yoke Tooth Width" value={config.stator.tooth_width_mm} unit="mm" hint="Tangential tooth-body width where the slot terminates beside the yoke." min={2} step={0.1} disabled={disabled} onChange={set('stator', 'tooth_width_mm', 'advanced')} />
-        <NumberRow label="Yoke Thick." value={config.stator.yoke_thickness_mm} unit="mm" min={1} step={0.1} disabled={disabled} onChange={set('stator', 'yoke_thickness_mm', 'advanced')} />
+        <NumberRow label="Yoke Tooth Width" value={shownWidthMm(config.stator.tooth_width_mm)} unit="mm" hint="Tangential tooth-body width where the slot terminates beside the yoke." min={2} step={0.1} disabled={disabled} onChange={set('stator', 'tooth_width_mm', 'advanced')} />
+        <NumberRow label="Yoke Thick." value={shownWidthMm(config.stator.yoke_thickness_mm)} unit="mm" min={1} step={0.1} disabled={disabled} onChange={set('stator', 'yoke_thickness_mm', 'advanced')} />
         <ToggleRow
           label="Tooth Shoe"
           checked={Boolean(config.stator.tooth_shoe_enabled)}
@@ -1452,6 +1456,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
           <div key={row.key} className={`param-row public-param-row public-derived-row${row.warning ? ' is-warning' : ''}`} title={row.hint}>
             <span className="param-label">{row.label}<small>{row.tag}</small></span>
             <strong>{row.text}</strong>
+            {row.status && <StatusBadge status={row.status.status} title={row.status.reason} />}
           </div>
         ))}
         <NumberRow label="Phase Current" value={config.solve_params.current_amplitude_A} unit={`A ${config.solve_params.current_amplitude_convention}`} min={0} step={0.5} disabled={disabled} onChange={set('solve_params', 'current_amplitude_A', 'winding')} />
@@ -3695,6 +3700,11 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
                   onChange={(value) => onSolveSettingChange('magnet_temperature_C', value)}
                 />
                 <p className="public-magnet-temperature-note">{view.note}</p>
+                {view.status && (
+                  <p className="public-magnet-temperature-note">
+                    <StatusBadge status={view.status.status} /> Derating: {view.status.reason}
+                  </p>
+                )}
                 {view.warning && <p className="public-magnet-temperature-note is-warning" role="note">{view.warning}</p>}
               </>
             );
@@ -4154,6 +4164,12 @@ function ReportStage({
         + ((GRADE_TEMPERATURE[config.materials.magnet_grade]?.maxOperating ?? Infinity) < result.solve_metadata.magnet_temperature_C
           ? ` · above ${config.materials.magnet_grade}'s ${GRADE_TEMPERATURE[config.materials.magnet_grade].maxOperating} °C rating`
           : ''),
+    }] : []),
+    ...(typeof result.solve_metadata.magnet_remanence_T === 'number' ? [{
+      label: 'Magnet derating',
+      // Runs stored before the derating carried a status were experimental for the same reason.
+      value: `${STATUS_LABEL[result.solve_metadata.magnet_temperature_status ?? 'experimental']}: `
+        + (result.solve_metadata.magnet_temperature_status_reason ?? MAGNET_TEMPERATURE_STATUS_REASON),
     }] : []),
     { label: 'Solver', value: result.solve_metadata.solver_name },
     { label: 'Torque method', value: torqueMethod },

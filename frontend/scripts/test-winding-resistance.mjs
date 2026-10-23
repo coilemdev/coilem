@@ -3,6 +3,12 @@ import assert from 'node:assert/strict';
 import { importTypeScriptModule } from './import-typescript-module.mjs';
 
 const {
+  DQ_FLUX_LINKAGE_STATUS_REASON,
+  MAGNET_TEMPERATURE_STATUS_REASON,
+  PHASE_RESISTANCE_STATUS_REASON,
+} = await importTypeScriptModule(new URL('../src/public/outputStatus.ts', import.meta.url));
+
+const {
   formatResistance,
   readWindingResistance,
   resistanceAt,
@@ -60,5 +66,12 @@ const crowded = windingReadout({ ...record, fits: false, copper_fill: 0.6 }, 20)
 assert.equal(crowded[0].warning, true, 'an over-full slot is flagged');
 const derived = windingReadout({ ...record, wire_source: 'derived', strand_diameter_mm: 0.94 }, 20);
 assert.match(derived[1].hint, /^Derived 0\.94 mm wire\./);
+
+
+// Public issue 143: the phase resistance says it is experimental, and why, at the end of its hint.
+assert.equal(cold[1].status.status, 'experimental');
+assert.ok(cold[1].hint.endsWith(`Experimental: ${PHASE_RESISTANCE_STATUS_REASON}`));
+assert.equal(windingReadout({ ...record, status: 'experimental', status_reason: 'As recorded.' }, 20)[1].status.reason, 'As recorded.');
+assert.equal(cold[0].status, undefined, 'slot fill and mean turn carry no status');
 
 console.log('winding resistance: reading, temperature, formatting and fill warning pass');

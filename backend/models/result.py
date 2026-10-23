@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 
 from .field import FieldLineFrame, FieldLinePlot, FieldMovieManifest, SlotExcitationContribution, SlotExcitationFrame
 from .mesh import FluxDensityMap
-from .performance import DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, WindingResistance
+from .performance import DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, OutputStatus, WindingResistance
 from .waveforms import (
     BackEMFHarmonicAnalysis,
     BackEMFWaveform,
@@ -94,6 +94,8 @@ class SolveMetadata(BaseModel):
     magnet_intrinsic_coercivity_kA_m: float | None = Field(
         default=None, gt=0, description="Hcj used by the solve, after temperature derating"
     )
+    magnet_temperature_status: OutputStatus | None = Field(default=None, description="Status of the derating, when one was applied")
+    magnet_temperature_status_reason: str | None = None
     winding_temperature_C: float | None = Field(default=None, ge=-50, le=250)
     solve_cache_dir: str | None = None
     pipeline_stage: Literal["field_solve", "postprocess"] | None = None

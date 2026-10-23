@@ -2022,4 +2022,23 @@ assert.match(motorCanvasSource, /soft-light/);
 assert.match(motorCanvasSource, /ANNULAR_REGIONS/);
 assert.match(motorThreeSource, /shaftFrontOverhang/);
 
+
+// #153: Compare runs shows Kt per rms ampere, from the same view as Results.
+assert.match(runComparisonSource, /\{ label: 'Torque constant', unit: 'N·m\/A rms', value: \(run\) => motorConstantsView\(run\.summary\)\.kt\.value \}/);
+assert.doesNotMatch(runComparisonSource, /run\.summary\.Kt_Nm_per_A/);
+// #154: Advanced Geometry rounds the stored widths for display only.
+assert.match(workspaceSource, /summary=\{advancedGeometrySummary\(config, statorWidths\)\}/);
+assert.match(workspaceSource, /NumberRow label="Yoke Tooth Width" value=\{shownWidthMm\(config\.stator\.tooth_width_mm\)\}/);
+assert.match(workspaceSource, /onChange=\{set\('stator', 'tooth_width_mm', 'advanced'\)\}/);
+// Public issue 143: each 0.5.0 output shows its status with the reason in words.
+const statusSources = Object.fromEntries(await Promise.all(['DqCard', 'LossesCard', 'PerformancePanel'].map(async (name) => [
+  name, await readFile(path.join(frontendRoot, `src/public/${name}.tsx`), 'utf8'),
+])));
+assert.match(statusSources.DqCard, /<OutputStatusList statuses=\{\[\{ key: 'dq'/);
+assert.match(statusSources.LossesCard, /<OutputStatusList statuses=\{view\.statuses\} \/>/);
+assert.match(statusSources.LossesCard, /statuses=\{view\.statuses\}\n\s*\/>/, 'the loss map shows the status of the loss it maps');
+assert.match(statusSources.PerformancePanel, /<OutputStatusList statuses=\{statuses\} \/>/);
+assert.match(statusSources.PerformancePanel, /magnet_temperature_derated: magnetsDerated/);
+assert.match(workspaceSource, /label: 'Magnet derating'/);
+assert.match(workspaceSource, /\{row\.status && <StatusBadge status=\{row\.status\.status\} title=\{row\.status\.reason\} \/>\}/);
 console.log('public UI contract audit passed');

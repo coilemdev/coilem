@@ -8,6 +8,8 @@
  * is not evaluated yet.
  */
 
+import { MAGNET_TEMPERATURE_STATUS_REASON, type OutputStatus } from './outputStatus';
+
 export interface GradeTemperature {
   alphaBr: number;
   alphaHcj: number;
@@ -44,6 +46,8 @@ export interface MagnetTemperatureView {
   note: string;
   /** Above the grade's rated temperature. */
   warning: string | null;
+  /** The derating's status, when the temperature derates the magnet (public issue 143). */
+  status: OutputStatus | null;
 }
 
 const signed = (value: number, digits = 1) => `${value < 0 ? '−' : '+'}${Math.abs(value).toFixed(digits)}`;
@@ -58,6 +62,7 @@ export function magnetTemperatureView(grade: string, br20T: number | null | unde
       range: null,
       note: `No cited temperature coefficients for ${grade}: the solve uses its 20 °C values.`,
       warning: null,
+      status: null,
     };
   }
   const delta = temperatureC - REFERENCE_TEMP_C;
@@ -72,5 +77,6 @@ export function magnetTemperatureView(grade: string, br20T: number | null | unde
   const warning = temperatureC > row.maxOperating
     ? `${grade} is rated to ${row.maxOperating} °C: above it the magnet risks irreversible demagnetisation, which coilEM does not model.`
     : null;
-  return { available: true, range, note, warning };
+  const status: OutputStatus | null = delta === 0 ? null : { status: 'experimental', reason: MAGNET_TEMPERATURE_STATUS_REASON };
+  return { available: true, range, note, warning, status };
 }

@@ -45,6 +45,14 @@ import {
   niceTicks,
 } from './performanceView';
 import { asPublicConfig } from './publicRequest';
+import { OutputStatusList, StatusBadge } from './OutputStatusBadge';
+import {
+  DQ_FLUX_LINKAGE_STATUS_REASON,
+  MAGNET_TEMPERATURE_STATUS_REASON,
+  PHASE_RESISTANCE_STATUS_REASON,
+  recordStatus,
+  type NamedOutputStatus,
+} from './outputStatus';
 
 // Categorical slots 1 and 2 of the validated dark palette.
 const CURVE_COLORS = { peak: '#3987e5', continuous: '#d95926' } as const;
@@ -329,6 +337,7 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
   const solving = myJob?.phase === 'solving';
   const otherSolving = job?.phase === 'solving' && !myJob;
   const resistance = winding?.phase_resistance_ohm ?? losses?.phase_resistance_ohm ?? null;
+  const magnetsDerated = typeof result.solve_metadata.magnet_remanence_T === 'number';
   const windingTemperature = winding?.winding_temperature_C ?? losses?.winding_temperature_C ?? 20;
 
   const computeDrive = useCallback(async (payload: FluxLinkageMapPayload, driveLimits: DriveLimits, driveControl: DriveControl = control) => {
@@ -439,6 +448,7 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
       dc_bus_source: busFromDesign ? 'design' : busEstimated ? 'estimated' : 'entered',
       map_preset: preset,
       solved_point: solvedPoint ? { speed_rpm: solvedPoint.speedRpm, torque_Nm: solvedPoint.torqueNm, current_angle_deg: solvedPoint.gammaDeg } : null,
+      magnet_temperature_derated: magnetsDerated,
     };
     setDownloading(kind);
     try {
@@ -451,6 +461,21 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
   };
 
   const failed = mapPayload?.map.points.filter((point) => point.status === 'failed').length ?? 0;
+  // What each output on the tab rests on, as the performance report lists it (public issue 143).
+  const statuses: NamedOutputStatus[] = drive ? [
+    { key: 'envelope', label: 'Torque–speed envelope', status: drive.envelope.status, reason: drive.envelope.status_reason ?? '' },
+    { key: 'efficiency', label: 'Efficiency map', status: drive.efficiency_map.status, reason: drive.efficiency_map.status_reason ?? '' },
+    { key: 'dq', label: 'Map flux linkage, MTPA and Ld, Lq', status: 'experimental', reason: DQ_FLUX_LINKAGE_STATUS_REASON },
+    ...(resistance !== null && resistance > 0
+      ? [{ key: 'resistance', label: 'Phase resistance and copper loss', ...recordStatus(winding, PHASE_RESISTANCE_STATUS_REASON) }]
+      : []),
+    ...(magnetsDerated ? [{
+      key: 'magnets',
+      label: 'Magnet temperature derating',
+      status: result.solve_metadata.magnet_temperature_status ?? 'experimental',
+      reason: result.solve_metadata.magnet_temperature_status_reason ?? MAGNET_TEMPERATURE_STATUS_REASON,
+    }] : []),
+  ] : [];
   const agreement = (mapPayload?.torque_agreement_pct ?? []).filter((value): value is number => typeof value === 'number' && Number.isFinite(value));
   const inductances = mapPayload ? inductanceTable(mapPayload.map) : [];
   const peak = drive?.envelope.curves.find((curve) => curve.limit === 'peak') ?? null;
@@ -471,7 +496,7 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
     <section className="performance-panel" aria-labelledby={headingId}>
       <header className="performance-header">
         <h3 id={headingId}>Torque–speed and efficiency</h3>
-        <span className="losses-status is-experimental" title="Interpolated from a flux-linkage map; not yet compared with measured data.">Experimental</span>
+        <StatusBadge status={drive?.envelope.status ?? 'experimental'} title={drive?.envelope.status_reason ?? 'Interpolated from a flux-linkage map; not yet compared with measured data.'} />
       </header>
       <p className="performance-intro">
         coilEM solves this design over currents up to the peak and current angles from 0° to 90° (a flux-linkage map), then finds the most torque at each speed within the drive limits.
@@ -610,9 +635,8 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
             <ul className="performance-notes">
               {agreement.length > 0 && <li>FEM torque is {Math.min(...agreement).toFixed(1)}–{Math.max(...agreement).toFixed(1)}% of the d/q torque across {agreement.length} map points.</li>}
               <li>Ld from the 90° points, (λd − λpm) / id; Lq from the 0° points, λq / iq. Both are secant values and include saturation.</li>
-              {drive.envelope.status_reason && <li>{drive.envelope.status_reason}</li>}
-              {drive.efficiency_map.status_reason && <li>{drive.efficiency_map.status_reason}</li>}
             </ul>
+            <OutputStatusList statuses={statuses} />
           </div>
         </>
       )}

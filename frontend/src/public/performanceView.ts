@@ -9,6 +9,7 @@
 
 import type { DriveLimits, EfficiencyMap, FluxLinkageMap, TorqueSpeedCurve } from './performance';
 import { rampColor } from './lossesView';
+import { DQ_FLUX_LINKAGE_STATUS_REASON } from './outputStatus';
 
 // Efficiency bands: the validated sequential blue, dark (less efficient) to light.
 const EFFICIENCY_RAMP = ['#184f95', '#2a78d6', '#5598e7', '#9ec5f4', '#cde2fb'] as const;
@@ -206,6 +207,7 @@ export function mapCsv(map: FluxLinkageMap): string {
     `# coilEM flux-linkage map, scope ${map.scope_key}`,
     `# ${map.pole_pairs} pole pairs; currents are peak phase amperes; id = -I sin(gamma), iq = I cos(gamma); amplitude-invariant Park`,
     `# iron loss at ${map.reference_speed_rpm} rpm; ${map.rotor_positions} rotor positions per point; mesh ${map.mesh_density}`,
+    `# experimental: ${DQ_FLUX_LINKAGE_STATUS_REASON}`,
   ];
   const rows = map.points.map((point) => CSV_COLUMNS.map(([, read]) => csvCell(read(point))).join(','));
   return [...header, CSV_COLUMNS.map(([name]) => name).join(','), ...rows].join('\n') + '\n';
