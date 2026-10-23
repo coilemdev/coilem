@@ -114,3 +114,27 @@ def test_the_no_load_sweep_wins_over_the_commanded_angle():
     record = dq_flux_linkage(**inputs, commanded_current_angle_deg=0.0)
     assert record.d_axis_source == "no_load_flux_linkage"
     assert record.current_angle_deg == pytest.approx(30.0)  # measured, not the commanded 0°
+
+
+def test_the_run_pdf_reports_an_open_circuit_run_as_such():
+    """A back-EMF run has no current: the PDF gives the flux linkages, not empty current and inductance rows."""
+    import io
+
+    pypdf = pytest.importorskip("pypdf")
+    from backend.public_report import build_public_run_pdf
+    from tests.test_loss_breakdown import RAW, _stored_result
+
+    def text(result):
+        pdf = build_public_run_pdf(project=RAW, request={"resolved_config": RAW}, result=result, material={}, manifest={})
+        return " ".join(" ".join(page.extract_text() or "" for page in pypdf.PdfReader(io.BytesIO(pdf)).pages).split())
+
+    loaded = _stored_result()
+    assert "Characteristic current" in text(loaded) and "Open-circuit run" not in text(loaded)
+    open_circuit = _stored_result()
+    open_circuit["summary"]["dq_flux_linkage"].update(
+        i_d_A=3.6e-14, i_q_A=-5.2e-14, torque_dq_Nm=0.0, torque_agreement_pct=None, current_angle_deg=None,
+        apparent_L_d_H=None, apparent_L_q_H=None,
+    )
+    report = text(open_circuit)
+    assert "Open-circuit run" in report and "Magnet flux linkage" in report
+    assert "Characteristic current" not in report and "Needs d-axis current" not in report and "Torque agreement" not in report

@@ -1139,6 +1139,10 @@ def _status_paragraphs(result: Mapping[str, Any], keys: Sequence[str], styles: M
     ]
 
 
+# Below this phase current (A peak) a run is open-circuit, as backend/dq_flux_linkage.py treats it.
+_OPEN_CIRCUIT_CURRENT_A = 1e-6
+
+
 def _dq_story(result: Mapping[str, Any], styles: Mapping[str, ParagraphStyle]) -> list[Any]:
     summary = _mapping(result.get("summary"))
     dq = _mapping(summary.get("dq_flux_linkage"))
@@ -1148,6 +1152,29 @@ def _dq_story(result: Mapping[str, Any], styles: Mapping[str, ParagraphStyle]) -
     def milli(value: Any, unit: str) -> str:
         return f"{_number(value * 1000)} {unit}" if isinstance(value, (int, float)) and math.isfinite(value) else "Not recorded"
 
+    i_d, i_q = dq.get("i_d_A"), dq.get("i_q_A")
+    if isinstance(i_d, (int, float)) and isinstance(i_q, (int, float)) and math.hypot(i_d, i_q) <= _OPEN_CIRCUIT_CURRENT_A:
+        # A back-EMF (no-load) run: no current, so no current angle, inductance or torque check.
+        return [
+            _section("d/q operating point", styles),
+            _settings_grid(
+                [
+                    ("Magnet flux linkage", milli(dq.get("lambda_pm_Wb"), "mWb")),
+                    ("Positions averaged", _number(dq.get("positions"))),
+                    ("d-axis flux linkage", milli(dq.get("lambda_d_Wb"), "mWb")),
+                    ("q-axis flux linkage", milli(dq.get("lambda_q_Wb"), "mWb")),
+                ],
+                styles,
+                columns=2,
+                cell_widths=(40 * mm, 50 * mm),
+            ),
+            Paragraph(
+                "Open-circuit run: no current flows, so there is no current angle, inductance or torque check. lambda_d is the "
+                "magnet flux linkage lambda_pm and lambda_q is about zero.",
+                styles["small"],
+            ),
+            *_status_paragraphs(result, ("dq_flux_linkage",), styles),
+        ]
     agreement = dq.get("torque_agreement_pct")
     l_d, l_q, lambda_pm = dq.get("apparent_L_d_H"), dq.get("apparent_L_q_H"), dq.get("lambda_pm_Wb")
     numbers = all(isinstance(value, (int, float)) and math.isfinite(value) for value in (l_d, l_q, lambda_pm))
