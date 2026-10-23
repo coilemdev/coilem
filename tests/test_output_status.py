@@ -107,6 +107,17 @@ def test_the_run_pdf_and_csv_give_each_output_its_status_and_reason(with_statuse
         assert reason in text
 
 
+def test_a_run_at_the_catalogue_20C_has_no_derating_status() -> None:
+    # A 20 °C run records its magnet values but derates nothing, as the Solve page shows.
+    result = _stored_result()
+    result["solve_metadata"].update(magnet_temperature_record(_magnet_config(20.0)))
+    arguments = {"project": RAW, "request": {"resolved_config": RAW}, "result": result, "material": {}, "manifest": {}}
+
+    assert "magnet_temperature" not in _status_rows(build_public_run_csv(**arguments))
+    text = _pdf_text(build_public_run_pdf(**arguments))
+    assert "20 C, catalogue values" in text
+    assert "Magnet temperature derating" not in text
+
 def test_a_run_without_performance_outputs_has_no_status_section() -> None:
     result = _stored_result()
     for key in ("dq_flux_linkage", "winding_resistance", "loss_breakdown", "iron_loss"):
@@ -133,7 +144,9 @@ def test_the_performance_report_lists_every_output_with_its_status(derated: bool
     assert status == expected
 
     text = _pdf_text(build_performance_pdf(data, context))
-    for output in ("Torque-speed envelope", "Efficiency map", "Map flux linkage, MTPA trajectory and inductances", "Phase resistance and copper loss"):
+    for output in (
+        "Torque-speed envelope", "Efficiency map", "Map flux linkage, MTPA trajectory and inductances", "Phase resistance and copper loss",
+    ):
         assert output in text, output
     assert ("Magnet temperature derating" in text) is derated
     assert f"Experimental: {DQ_FLUX_LINKAGE_STATUS_REASON}" in text

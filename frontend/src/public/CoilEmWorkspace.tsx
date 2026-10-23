@@ -60,7 +60,7 @@ import { BldcTorqueCurrentChart } from './BldcTorqueCurrentChart';
 import { PublicRunComparison } from './PublicRunComparison';
 import { MotorConstants } from './MotorConstants';
 import { PerformancePanel } from './PerformancePanel';
-import { GRADE_TEMPERATURE, magnetTemperatureView } from './magnetTemperature';
+import { GRADE_TEMPERATURE, isDeratedRun, magnetTemperatureView } from './magnetTemperature';
 import { hasMotorConstants, motorConstantsView } from './machineConstants';
 import type { WireSpec } from './performance';
 import { readWindingResistance, windingReadout } from './windingResistance';
@@ -4165,7 +4165,7 @@ function ReportStage({
           ? ` · above ${config.materials.magnet_grade}'s ${GRADE_TEMPERATURE[config.materials.magnet_grade].maxOperating} °C rating`
           : ''),
     }] : []),
-    ...(typeof result.solve_metadata.magnet_remanence_T === 'number' ? [{
+    ...(isDeratedRun(result.solve_metadata) ? [{
       label: 'Magnet derating',
       // Runs stored before the derating carried a status were experimental for the same reason.
       value: `${STATUS_LABEL[result.solve_metadata.magnet_temperature_status ?? 'experimental']}: `

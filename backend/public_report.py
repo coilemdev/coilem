@@ -44,6 +44,7 @@ from reportlab.platypus import (
 
 from backend.export_safety import literal_csv_cell
 from backend.local_file_safety import require_contained_path
+from backend.magnet_temperature import is_derated_run
 from backend.models.performance import (
     DQ_FLUX_LINKAGE_STATUS_REASON,
     MAGNET_TEMPERATURE_STATUS_REASON,
@@ -252,7 +253,7 @@ def _output_statuses(result: Mapping[str, Any]) -> list[tuple[str, str, str, str
     losses = _mapping(summary.get("loss_breakdown"))
     if losses.get("efficiency_status") in ("qualified", "experimental"):
         statuses.append(("efficiency", "Efficiency", losses["efficiency_status"], _plain(losses.get("efficiency_status_reason"))))
-    if metadata.get("magnet_remanence_T") is not None:
+    if is_derated_run(metadata):
         recorded("magnet_temperature", "Magnet temperature derating", metadata, MAGNET_TEMPERATURE_STATUS_REASON, "magnet_temperature_")
     return statuses
 
@@ -1500,7 +1501,7 @@ def build_public_run_pdf(
     provenance = _mapping(manifest.get("provenance"))
     six_step = solve_params.get("excitation_mode") == "ideal_six_step_120"
     output_statuses = _output_statuses(result)
-    magnet_status = next((status for key, _, status, _ in output_statuses if key == "magnet_temperature"), "experimental")
+    magnet_status = next((status for key, _, status, _ in output_statuses if key == "magnet_temperature"), None)
     story.extend(
         [
             _section("Operating point and mesh", styles),
@@ -1522,7 +1523,11 @@ def build_public_run_pdf(
                     ("Rated speed", f"{_plain(solve_params.get('rated_speed_rpm'))} rpm"),
                     *(
                         [
-                            ("Magnet temperature", f"{_number(solve_metadata.get('magnet_temperature_C'))} C, {magnet_status} derating"),
+                            (
+                                "Magnet temperature",
+                                f"{_number(solve_metadata.get('magnet_temperature_C'))} C, "
+                                + (f"{magnet_status} derating" if magnet_status else "catalogue values"),
+                            ),
                             ("Magnet Br at temperature", f"{_number(solve_metadata.get('magnet_remanence_T'), 4)} T"),
                             ("Magnet HcJ at temperature", f"{_number(solve_metadata.get('magnet_intrinsic_coercivity_kA_m'))} kA/m"),
                         ]
