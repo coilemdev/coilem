@@ -39,11 +39,12 @@ from backend.flux_linkage_map import map_agreement_pct
 from backend.models.performance import (
     DQ_FLUX_LINKAGE_STATUS_REASON,
     MAGNET_TEMPERATURE_STATUS_REASON,
-    PHASE_RESISTANCE_STATUS_REASON,
+    PHASE_RESISTANCE_UNRECORDED_STATUS_REASON,
     DriveControl,
     DriveLimits,
     EfficiencyMap,
     FluxLinkageMap,
+    OutputStatus,
     TorqueSpeedCurve,
     TorqueSpeedEnvelope,
 )
@@ -93,8 +94,15 @@ class SolvedPoint(BaseModel):
     current_angle_deg: Optional[float] = None
 
 
+class StatedStatus(BaseModel):
+    """An output's status and reason as the tab shows them (frontend/src/public/outputStatus.ts)."""
+
+    status: OutputStatus
+    reason: str = Field(default="", max_length=1000)
+
+
 class ReportContext(BaseModel):
-    """What the tab knows beyond the drive request: names, units and the solved point."""
+    """What the tab knows beyond the drive request: names, units, the solved point and the winding's status."""
 
     design_name: Optional[str] = Field(default=None, max_length=200)
     current_unit: Literal["A rms", "A peak"] = "A rms"
@@ -104,6 +112,13 @@ class ReportContext(BaseModel):
     magnet_temperature_derated: bool = Field(
         default=False, description="The run derated its magnets for temperature, so every map point did too"
     )
+    phase_resistance: Optional[StatedStatus] = Field(
+        default=None, description="The status of the winding record the resistance comes from; experimental without one"
+    )
+
+    @property
+    def phase_resistance_status(self) -> StatedStatus:
+        return self.phase_resistance or StatedStatus(status="experimental", reason=PHASE_RESISTANCE_UNRECORDED_STATUS_REASON)
 
 
 @dataclass(frozen=True)
@@ -294,7 +309,8 @@ def output_statuses(data: PerformanceData, context: ReportContext) -> list[tuple
         ("dq_flux_linkage", "Map flux linkage, MTPA trajectory and inductances", "experimental", DQ_FLUX_LINKAGE_STATUS_REASON),
     ]
     if data.phase_resistance_ohm > 0:
-        statuses.append(("phase_resistance", "Phase resistance and copper loss", "experimental", PHASE_RESISTANCE_STATUS_REASON))
+        resistance = context.phase_resistance_status
+        statuses.append(("phase_resistance", "Phase resistance and copper loss", resistance.status, resistance.reason))
     if context.magnet_temperature_derated:
         statuses.append(("magnet_temperature", "Magnet temperature derating", "experimental", MAGNET_TEMPERATURE_STATUS_REASON))
     return statuses
@@ -871,7 +887,7 @@ def build_performance_pdf(data: PerformanceData, context: ReportContext) -> byte
                 ("Drive control", _CONTROL_LABEL[data.control]),
                 (
                     "Phase resistance",
-                    f"{_g(data.phase_resistance_ohm)} ohm at {_g(data.winding_temperature_C)} degC, experimental"
+                    f"{_g(data.phase_resistance_ohm)} ohm at {_g(data.winding_temperature_C)} degC, {context.phase_resistance_status.status}"
                     if data.phase_resistance_ohm > 0 else "Not recorded: copper loss and IR drop are left out",
                 ),
                 ("Mechanical loss", f"{_g(data.mechanical_loss_W)} W"),

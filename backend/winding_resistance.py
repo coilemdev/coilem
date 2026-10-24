@@ -24,6 +24,11 @@ its end-winding arc is not implemented; coilEM adds the half-circle end turn.
 Slot fill is bare copper over the gross slot polygon. Published fill factors
 often use a net slot area after liner and wedge, so they read higher.
 
+The phase-resistance gate of benchmark protocol 1.6.0 checks this calculation
+against independent hand calculations (benchmarks/abcd-v1.6/PHASE-RESISTANCE.md),
+so a record with a wire is qualified. A derived wire is an assumption rather
+than the design's winding, so its record stays experimental.
+
 Conductor data are the standard values for winding wire:
   * copper: IEC 60028 annealed copper, 1/58 Ohm·mm²/m and 0.00393 /K at 20 °C;
   * aluminium: IEC 60889 hard-drawn aluminium, 0.028264 Ohm·mm²/m and
@@ -41,7 +46,11 @@ from backend.geometry_ir import GeometryIR, build_geometry_ir
 from backend.geometry_ir_tessellation import polygon_centroid, tessellate_ir_region
 from backend.models import MotorConfig, WindingCoil
 from backend.models.config import WireSpec
-from backend.models.performance import WindingResistance
+from backend.models.performance import (
+    PHASE_RESISTANCE_DERIVED_WIRE_STATUS_REASON,
+    PHASE_RESISTANCE_STATUS_REASON,
+    WindingResistance,
+)
 
 REFERENCE_TEMPERATURE_C = 20.0
 # A common design guideline for random-wound round wire, not a standard;
@@ -140,6 +149,10 @@ def winding_resistance(
         else REFERENCE_TEMPERATURE_C
     )
     resistance = resistance_20c * (1.0 + conductor.temperature_coefficient_per_k * (temperature_c - REFERENCE_TEMPERATURE_C))
+    if wire_source == "derived":
+        status, status_reason = "experimental", PHASE_RESISTANCE_DERIVED_WIRE_STATUS_REASON
+    else:
+        status, status_reason = "qualified", PHASE_RESISTANCE_STATUS_REASON
 
     return WindingResistance(
         wire_source=wire_source,
@@ -164,6 +177,8 @@ def winding_resistance(
         winding_temperature_C=temperature_c,
         phase_resistance_ohm=resistance,
         notes=notes,
+        status=status,
+        status_reason=status_reason,
     )
 
 

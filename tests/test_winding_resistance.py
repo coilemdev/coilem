@@ -124,6 +124,7 @@ def test_slot_fill_and_its_limit():
 def test_a_design_without_wire_gets_a_derived_wire_and_says_so():
     result = winding_resistance(_distributed())
     assert result.wire_source == "derived"
+    assert result.status == "experimental"
     assert result.copper_fill == pytest.approx(DEFAULT_COPPER_FILL_LIMIT)
     assert result.fits
     assert any("derived" in note for note in result.notes)
@@ -138,6 +139,8 @@ def test_the_pinned_prius_uses_its_published_conductor():
     assert (result.strands_in_hand, result.strand_diameter_mm) == (13, 0.912)
     assert any("published conductor" in note for note in result.notes)
     assert result.fits
+    # The published conductor is the design's own wire, so the phase-resistance gate covers it.
+    assert result.status == "qualified"
 
     # Pyleecan's own formula (LamSlotWind.comp_resistance_wind at cbfe7be3) counts the
     # straight overhang only: R = rho * Ntspc * 2 * (L1 + 2 * Lewout) / Sact. Without

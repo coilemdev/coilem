@@ -6,6 +6,7 @@ const {
   DQ_FLUX_LINKAGE_STATUS_REASON,
   MAGNET_TEMPERATURE_STATUS_REASON,
   PHASE_RESISTANCE_STATUS_REASON,
+  PHASE_RESISTANCE_UNRECORDED_STATUS_REASON,
 } = await importTypeScriptModule(new URL('../src/public/outputStatus.ts', import.meta.url));
 
 const {
@@ -68,10 +69,14 @@ const derived = windingReadout({ ...record, wire_source: 'derived', strand_diame
 assert.match(derived[1].hint, /^Derived 0\.94 mm wire\./);
 
 
-// Public issue 143: the phase resistance says it is experimental, and why, at the end of its hint.
-assert.equal(cold[1].status.status, 'experimental');
-assert.ok(cold[1].hint.endsWith(`Experimental: ${PHASE_RESISTANCE_STATUS_REASON}`));
+// Public issue 143: the phase resistance says whether it is qualified, and why, at the end of its hint.
+const qualified = windingReadout({ ...record, status: 'qualified', status_reason: PHASE_RESISTANCE_STATUS_REASON }, 20);
+assert.equal(qualified[1].status.status, 'qualified');
+assert.ok(qualified[1].hint.endsWith(`Qualified: ${PHASE_RESISTANCE_STATUS_REASON}`));
 assert.equal(windingReadout({ ...record, status: 'experimental', status_reason: 'As recorded.' }, 20)[1].status.reason, 'As recorded.');
+// A record stored before it carried a status predates the phase-resistance gate.
+assert.equal(cold[1].status.status, 'experimental');
+assert.ok(cold[1].hint.endsWith(`Experimental: ${PHASE_RESISTANCE_UNRECORDED_STATUS_REASON}`));
 assert.equal(cold[0].status, undefined, 'slot fill and mean turn carry no status');
 
 console.log('winding resistance: reading, temperature, formatting and fill warning pass');

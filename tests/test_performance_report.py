@@ -168,3 +168,13 @@ def test_the_route_refuses_bad_requests(client):
     assert client.post("/performance/report/pdf", json=body).status_code == 422
     body = _body(current_unit="mA")
     assert client.post("/performance/report/pdf", json=body).status_code == 422
+    body = _body(phase_resistance={"status": "verified", "reason": ""})
+    assert client.post("/performance/report/pdf", json=body).status_code == 422
+
+
+def test_the_route_carries_the_tabs_resistance_status(client):
+    # The shape PerformancePanel.tsx sends: recordStatus() of the winding record.
+    body = _body(phase_resistance={"status": "qualified", "reason": "Passes the gate."})
+    rows = list(csv.reader(io.StringIO(client.post("/performance/report/csv", json=body).text)))
+    status = {row[1]: row[3] for row in rows if len(row) >= 4 and row[0] == "status"}
+    assert (status["phase_resistance"], status["phase_resistance_reason"]) == ("qualified", "Passes the gate.")

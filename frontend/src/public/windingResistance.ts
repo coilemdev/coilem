@@ -7,7 +7,7 @@
  * R(T) = R20 · (1 + coefficient · (T − 20)).
  */
 
-import { PHASE_RESISTANCE_STATUS_REASON, STATUS_LABEL, recordStatus, type OutputStatus } from './outputStatus';
+import { PHASE_RESISTANCE_UNRECORDED_STATUS_REASON, STATUS_LABEL, recordStatus, type OutputStatus } from './outputStatus';
 import type { PerformanceOutputStatus } from './performance';
 
 export interface WindingResistance {
@@ -92,7 +92,7 @@ const percent = (fraction: number) => `${Math.round(fraction * 100)}%`;
 export function windingReadout(record: WindingResistance, temperatureC: number): WindingReadoutRow[] {
   const atTemperature = resistanceAt(record, temperatureC);
   const showsHot = Math.abs(temperatureC - REFERENCE_TEMPERATURE_C) > 1e-9;
-  const status = recordStatus(record, PHASE_RESISTANCE_STATUS_REASON);
+  const status = recordStatus(record, PHASE_RESISTANCE_UNRECORDED_STATUS_REASON);
   const wire = record.wire_source === 'derived'
     ? `Derived ${record.strand_diameter_mm.toFixed(2)} mm wire.`
     : `${record.strands_in_hand} × ${record.strand_diameter_mm} mm wire.`;

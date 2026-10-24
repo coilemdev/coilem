@@ -37,16 +37,25 @@ CurrentAngleConvention = Literal["q_axis_gamma_flux_weakening_positive"]
 DqTransform = Literal["amplitude_invariant_park"]
 # Every performance output is either checked against a reference or says it is not.
 OutputStatus = Literal["qualified", "experimental", "unavailable"]
-# Why each output without a run-dependent status is experimental: the 0.5.0
-# benchmark gates for them (public issue 143) are not measured yet. Reports
-# print these, so they stay ASCII.
+# Why each output without a run-dependent status is qualified or experimental:
+# whether its 0.5.0 benchmark gate (public issue 143) passes, or is not measured
+# yet. Reports print these, so they stay ASCII.
 DQ_FLUX_LINKAGE_STATUS_REASON = (
     "Not yet compared with a reference solution: the benchmark measures torque and back EMF, "
     "so the design's qualification does not cover the d/q flux linkage or the inductances from it."
 )
 PHASE_RESISTANCE_STATUS_REASON = (
-    "Calculated from the wire, turns and mean turn length (half-circle end turns, IEC conductor data); "
-    "not yet checked against a hand calculation or a measured winding."
+    "Passes the phase-resistance gate of benchmark protocol 1.6.0: within 1% of independent hand calculations "
+    "(half-circle end turns, IEC conductor data) for a concentrated and a distributed winding. "
+    "Not compared with a measured winding."
+)
+PHASE_RESISTANCE_DERIVED_WIRE_STATUS_REASON = (
+    "No wire is set, so the wire is sized to fill the slot to its limit: an estimate, not the resistance of a real winding. "
+    "Set the wire for a resistance the phase-resistance gate covers."
+)
+# Winding records stored before they carried a status predate the gate.
+PHASE_RESISTANCE_UNRECORDED_STATUS_REASON = (
+    "Recorded without a status, before the phase-resistance gate; solve the design again to see whether the gate covers it."
 )
 MAGNET_TEMPERATURE_STATUS_REASON = (
     "Br and HcJ derated linearly with the grade's cited reversible coefficients; "
@@ -145,7 +154,7 @@ class WindingResistance(BaseModel):
     winding_temperature_C: float = Field(ge=-50.0, le=250.0)
     phase_resistance_ohm: float = Field(gt=0, description="At winding_temperature_C")
     notes: list[str] = Field(default_factory=list)
-    status: OutputStatus = "experimental"
+    status: OutputStatus = "qualified"
     status_reason: Optional[str] = PHASE_RESISTANCE_STATUS_REASON
 
 
