@@ -315,7 +315,7 @@ three.js carries this notice:
 
 ## Frontend build tooling
 
-Vite 6.4.3, `@vitejs/plugin-react` 4.7.0, and their resolved build graph are
+Vite 6.4.4, `@vitejs/plugin-react` 4.7.0, and their resolved build graph are
 MIT-licensed development tools locked in `frontend/package-lock.json`.
 TypeScript 5.6.3 is an Apache-2.0-licensed development tool. The build graph
 also records esbuild, Rollup, PostCSS, Babel packages, source maps, filesystem

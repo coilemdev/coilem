@@ -86,7 +86,7 @@
     {
       "path": "THIRD_PARTY_NOTICES.md",
       "bytes": 29152,
-      "sha256": "3f41db781fd096df31fac2511f7657eb128952ed132885440054ec55813b8735"
+      "sha256": "53e575582746e49f3a127ec0ec514d37417bdac46497534e00f866af6d5c4a6c"
     },
     {
       "path": "TRADEMARKS.md",
@@ -6265,13 +6265,13 @@
     },
     {
       "path": "frontend/package-lock.json",
-      "bytes": 63981,
-      "sha256": "4f564e9bc63e57ed71ceee6c561924b96e469526692b6c8ee7cc397412cbef01"
+      "bytes": 64005,
+      "sha256": "39e7c557ca5885eb8820d4b7c14d78bd608d33f12128c8f463a922b8797e65d6"
     },
     {
       "path": "frontend/package.json",
       "bytes": 2567,
-      "sha256": "79b859c27417f09bec82cfa133ec4c98adde55ef55b4e395b70c28795bdd655f"
+      "sha256": "fbc24cdadd65c228addd459a546957d4f7714b234dc54908768936947d0376d7"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -8401,7 +8401,7 @@
     {
       "path": "tools/verify_snapshot.py",
       "bytes": 21789,
-      "sha256": "73cf529cea2da2b376ffc46e2dc6341303d2cfd066466233c66d45679dfc623d"
+      "sha256": "ef6e757073a93445444c3123e9a8e73096a199b801e704054452e9ef59a2e52b"
     }
   ],
   "public_patches": [
@@ -15418,6 +15418,30 @@
       "path": "benchmarks/abcd-v1.6/PHASE-RESISTANCE.md",
       "source_sha256": "94b34f676345ec6d7e6aad192a9838eee2dba7c7025f69a1ab4e6e1fb4cb5499",
       "reason": "Refer to the published Prius conductor by its code, not a private PR number"
+    },
+    {
+      "base_commit": "b10cd5f753e0e94848cf403317e4c6069b418ae8",
+      "path": "frontend/package.json",
+      "source_sha256": "79b859c27417f09bec82cfa133ec4c98adde55ef55b4e395b70c28795bdd655f",
+      "reason": "Pin vite 6.4.4: npm audit flags vite <=6.4.3 (dev-server advisories GHSA-9jrq-w75r-8gcw, GHSA-rq7h-c2jc-7f22 and launch-editor)"
+    },
+    {
+      "base_commit": "b10cd5f753e0e94848cf403317e4c6069b418ae8",
+      "path": "frontend/package-lock.json",
+      "source_sha256": "4f564e9bc63e57ed71ceee6c561924b96e469526692b6c8ee7cc397412cbef01",
+      "reason": "Pin vite 6.4.4: npm audit flags vite <=6.4.3 (dev-server advisories GHSA-9jrq-w75r-8gcw, GHSA-rq7h-c2jc-7f22 and launch-editor)"
+    },
+    {
+      "base_commit": "b10cd5f753e0e94848cf403317e4c6069b418ae8",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "73cf529cea2da2b376ffc46e2dc6341303d2cfd066466233c66d45679dfc623d",
+      "reason": "Pin vite 6.4.4 in the snapshot gate and notices"
+    },
+    {
+      "base_commit": "b10cd5f753e0e94848cf403317e4c6069b418ae8",
+      "path": "THIRD_PARTY_NOTICES.md",
+      "source_sha256": "3f41db781fd096df31fac2511f7657eb128952ed132885440054ec55813b8735",
+      "reason": "Pin vite 6.4.4 in the snapshot gate and notices"
     }
   ]
 }
