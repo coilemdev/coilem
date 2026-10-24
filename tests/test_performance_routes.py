@@ -129,3 +129,27 @@ def test_map_routes_do_not_reuse_points_after_computation_changes(client, monkey
     # The new identity can still resume/reuse; invalidation is not a permanent miss.
     client.post("/performance/map/stream", json=_body())
     assert len(client.fake.solve.calls) == 58
+
+
+@pytest.mark.parametrize("path", ["status", "stream"])
+@pytest.mark.parametrize("failure", [
+    ValueError("Cannot identify map physics: solver build identity is missing"), FileNotFoundError("missing solver"),
+])
+def test_identity_failure_is_actionable_and_does_not_claim_solve(client, monkeypatch, path, failure):
+    from backend.public_routes import performance
+
+    original = performance.map_scope_key
+
+    def broken(*args):
+        raise failure
+
+    monkeypatch.setattr(performance, "map_scope_key", broken)
+    response = client.post(f"/performance/map/{path}", json=_body())
+    assert response.status_code == 409
+    assert response.json()["detail"]["error_code"] == "MAP_IDENTITY_UNAVAILABLE"
+    assert "Cannot identify map physics" in response.json()["detail"]["message"]
+    assert not solve_routes._ACTIVE_SOLVE["running"]
+    monkeypatch.setattr(performance, "map_scope_key", original)
+    complete = _events(client.post("/performance/map/stream", json=_body()).text)[-1]
+    assert complete[0] == "complete"
+    assert not solve_routes._ACTIVE_SOLVE["running"]

@@ -96,6 +96,16 @@ def _parse_map_request(body: dict[str, Any]):
     return config, settings
 
 
+def _map_store(config, preset: MapPreset) -> MapStore:
+    """Resolve fallible computation identity before claiming the solve lane."""
+
+    try:
+        return MapStore(_store_root(), map_scope_key(config, preset))
+    except (ValueError, OSError) as exc:
+        message = str(exc) if isinstance(exc, ValueError) else "Cannot identify map physics: a solver or source file could not be read."
+        raise HTTPException(status_code=409, detail={"error_code": "MAP_IDENTITY_UNAVAILABLE", "message": message}) from exc
+
+
 def _map_payload(flux_map: FluxLinkageMap) -> dict[str, Any]:
     return {"map": flux_map.model_dump(mode="json"), "torque_agreement_pct": map_agreement_pct(flux_map)}
 
@@ -105,8 +115,8 @@ async def map_status(body: dict[str, Any]) -> dict[str, Any]:
     """The design's stored map, if any, and how many solves a new one needs."""
 
     config, settings = _parse_map_request(body)
-    scope_key = map_scope_key(config, settings.preset)
-    store = MapStore(_store_root(), scope_key)
+    store = _map_store(config, settings.preset)
+    scope_key = store.scope_key
     currents, gammas = map_grid(settings.peak_current_A, settings.preset)
     covering = store.covering_map(settings.peak_current_A)
     finished = sum(1 for current in currents for gamma in gammas if current > 0 and store.load(current, gamma) is not None)
@@ -125,9 +135,9 @@ async def stream_map(body: dict[str, Any]) -> StreamingResponse:
     """Solve the map's points over SSE: progress per point, then the map."""
 
     config, settings = _parse_map_request(body)
+    store = _map_store(config, settings.preset)
     solver = solve_routes._create_public_solver("magneto2d")
     solve_routes._claim_solve(solver)
-    store = MapStore(_store_root(), map_scope_key(config, settings.preset))
 
     async def events():
         queue: asyncio.Queue[dict[str, Any]] = asyncio.Queue()

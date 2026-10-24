@@ -560,8 +560,8 @@
     },
     {
       "path": "backend/public_routes/performance.py",
-      "bytes": 10834,
-      "sha256": "06ab35fd73443970d11fceb514ecda38e1f1f5eafffca1c0779dcf6e8feff410"
+      "bytes": 11304,
+      "sha256": "9add05185e6b2098c3a6c2fd1363840c330cd451806b693a9bffce79b42c0359"
     },
     {
       "path": "backend/public_routes/preview.py",
@@ -7980,8 +7980,8 @@
     },
     {
       "path": "tests/test_performance_routes.py",
-      "bytes": 5744,
-      "sha256": "075dd359a3b35a86ffe6b55cb53515087d49e2141f6f58b45415865b788cdd7b"
+      "bytes": 6826,
+      "sha256": "ca9c03b73ff67764d849083d4da9eb622fb1afc7bdf3a217c7e75a594ba0a710"
     },
     {
       "path": "tests/test_phase_resistance_gate.py",
@@ -15466,6 +15466,18 @@
       "path": "tests/test_performance_routes.py",
       "source_sha256": "a2ec62732ee7983effbcd6e28e84932260490ea8ab64719b569a00eca305b631",
       "reason": "Issue 18: invalidate stored flux maps when computation identity changes"
+    },
+    {
+      "base_commit": "cb18e7cc4e5e570e478d2949e0983391899c4b4f",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": "06ab35fd73443970d11fceb514ecda38e1f1f5eafffca1c0779dcf6e8feff410",
+      "reason": "PR 27 review: resolve map identity before claiming the solve lane and return actionable errors"
+    },
+    {
+      "base_commit": "cb18e7cc4e5e570e478d2949e0983391899c4b4f",
+      "path": "tests/test_performance_routes.py",
+      "source_sha256": "075dd359a3b35a86ffe6b55cb53515087d49e2141f6f58b45415865b788cdd7b",
+      "reason": "PR 27 review: resolve map identity before claiming the solve lane and return actionable errors"
     }
   ]
 }
