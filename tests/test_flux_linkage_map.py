@@ -168,3 +168,57 @@ def test_a_stored_map_is_reused_for_a_lower_peak_when_its_steps_are_fine_enough(
     assert store.covering_map(30.0).current_peak_A[-1] == 40.0
     assert store.covering_map(45.0) is None  # nothing reaches it
     assert store.covering_map(9.0) is None  # 20 A in 5 A steps is too coarse for a 9 A drive
+
+
+def test_scope_key_tracks_physics_and_loss_coefficients(monkeypatch):
+    from dataclasses import replace
+
+    from backend import flux_linkage_map as maps
+
+    hashes = {"backend/geometry.py": "first"}
+    monkeypatch.setattr(maps, "installed_physics_hashes", lambda: (dict(hashes), {"solver.rs": "solver"}))
+    config = _config()
+    original = map_scope_key(config)
+    assert map_scope_key(config) == original
+    hashes["backend/geometry.py"] = "changed"
+    assert map_scope_key(config) != original
+    hashes["backend/geometry.py"] = "first"
+    grade = maps.LOSS_GRADES[config.materials.stator_steel]
+    monkeypatch.setitem(maps.LOSS_GRADES, config.materials.stator_steel,
+                        replace(grade, coefficients=replace(grade.coefficients, kh=grade.coefficients.kh * 1.1)))
+    assert map_scope_key(config) != original
+
+
+def test_scope_key_tracks_solver_identity_and_rejects_missing_identity(monkeypatch, tmp_path):
+    from backend import flux_linkage_map as maps
+
+    monkeypatch.delenv("COILEM_MAGNETO2D_BINARY", raising=False)
+    monkeypatch.setattr(maps, "installed_physics_hashes", lambda: ({"python": "hash"}, {"solver": "first"}))
+    first = map_scope_key(_config())
+    monkeypatch.setattr(maps, "installed_physics_hashes", lambda: ({"python": "hash"}, {"solver": "second"}))
+    assert map_scope_key(_config()) != first
+    monkeypatch.setattr(maps, "installed_physics_hashes", lambda: ({"python": "hash"}, {}))
+    with pytest.raises(ValueError, match="solver build identity"):
+        map_scope_key(_config())
+    binary = tmp_path / "solver"
+    binary.write_bytes(b"first executable")
+    monkeypatch.setenv("COILEM_MAGNETO2D_BINARY", str(binary))
+    first = map_scope_key(_config())
+    binary.write_bytes(b"second executable")
+    assert map_scope_key(_config()) != first
+    monkeypatch.setattr(maps, "installed_physics_hashes", lambda: ({"python": None}, {}))
+    with pytest.raises(ValueError, match="physics source"):
+        map_scope_key(_config())
+
+
+def test_installed_solver_stamp_has_the_same_map_identity_as_checkout(monkeypatch):
+    from backend.benchmark_suite import record
+    from backend.benchmark_suite.physics import BUILD_INFO_KEY
+
+    monkeypatch.delenv("COILEM_MAGNETO2D_BINARY", raising=False)
+    _, solver = record.installed_physics_hashes()
+    assert solver
+    original = map_scope_key(_config())
+    monkeypatch.setattr(record, "CHECKOUT", None)
+    monkeypatch.setattr(record, "stamped_build_info", lambda: {BUILD_INFO_KEY: solver})
+    assert map_scope_key(_config()) == original

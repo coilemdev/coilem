@@ -280,8 +280,8 @@
     },
     {
       "path": "backend/flux_linkage_map.py",
-      "bytes": 15202,
-      "sha256": "47efb5093e8814818c51d22e89de8f68f22ff54cca86f6dec8f22c796f516ef8"
+      "bytes": 16980,
+      "sha256": "620bffe0cfbaacc05c78d1e7589cc804b477f6b45fa2f97b8cd6910976a82f8a"
     },
     {
       "path": "backend/geometry.py",
@@ -5925,8 +5925,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 43775,
-      "sha256": "2111f52531cf2e83356134040d470ac19d09513fe5226cb234d4ce23d0621bd4"
+      "bytes": 44320,
+      "sha256": "7b0274ad36c34e5eeda76d57fb5416acd3eeb77d4be91ffaa57df1640efe59f3"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -7825,8 +7825,8 @@
     },
     {
       "path": "tests/test_flux_linkage_map.py",
-      "bytes": 8521,
-      "sha256": "b9cda540bd26f31ab1578629cbbe23d6531cb4514d09ac7330b11fbf7fbf25d5"
+      "bytes": 11076,
+      "sha256": "c45efd906a02f22b1e905996f75a0cfdcf54785ebb2499377e4805e2f2f7fb70"
     },
     {
       "path": "tests/test_gmsh_sigpipe.py",
@@ -7980,8 +7980,8 @@
     },
     {
       "path": "tests/test_performance_routes.py",
-      "bytes": 4305,
-      "sha256": "a2ec62732ee7983effbcd6e28e84932260490ea8ab64719b569a00eca305b631"
+      "bytes": 5744,
+      "sha256": "075dd359a3b35a86ffe6b55cb53515087d49e2141f6f58b45415865b788cdd7b"
     },
     {
       "path": "tests/test_phase_resistance_gate.py",
@@ -15442,6 +15442,30 @@
       "path": "THIRD_PARTY_NOTICES.md",
       "source_sha256": "3f41db781fd096df31fac2511f7657eb128952ed132885440054ec55813b8735",
       "reason": "Pin vite 6.4.4 in the snapshot gate and notices"
+    },
+    {
+      "base_commit": "80512844d53da6444678fc1299c05aface29e008",
+      "path": "backend/flux_linkage_map.py",
+      "source_sha256": "47efb5093e8814818c51d22e89de8f68f22ff54cca86f6dec8f22c796f516ef8",
+      "reason": "Issue 18: invalidate stored flux maps when computation identity changes"
+    },
+    {
+      "base_commit": "80512844d53da6444678fc1299c05aface29e008",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "2111f52531cf2e83356134040d470ac19d09513fe5226cb234d4ce23d0621bd4",
+      "reason": "Issue 18: invalidate stored flux maps when computation identity changes"
+    },
+    {
+      "base_commit": "80512844d53da6444678fc1299c05aface29e008",
+      "path": "tests/test_flux_linkage_map.py",
+      "source_sha256": "b9cda540bd26f31ab1578629cbbe23d6531cb4514d09ac7330b11fbf7fbf25d5",
+      "reason": "Issue 18: invalidate stored flux maps when computation identity changes"
+    },
+    {
+      "base_commit": "80512844d53da6444678fc1299c05aface29e008",
+      "path": "tests/test_performance_routes.py",
+      "source_sha256": "a2ec62732ee7983effbcd6e28e84932260490ea8ab64719b569a00eca305b631",
+      "reason": "Issue 18: invalidate stored flux maps when computation identity changes"
     }
   ]
 }

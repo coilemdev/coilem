@@ -412,6 +412,13 @@ design's rated speed.
   sweeps within 0.01% on torque and λd/λq and within 0.2% on iron loss
   (4p/12s and 8p/12s concentrated SPM).
 - **Experimental because:** it carries the d/q reason above.
+- **Cache identity:** stored points and assembled maps are keyed by the design,
+  map preset, installed physics-source hashes (including the solver's stamped
+  Rust identity in wheels), map-processing source hashes and the configured
+  steel's loss coefficients. An explicitly overridden solver is keyed by its
+  executable bytes. Missing physics/build identities refuse map caching rather
+  than reusing unverified values. A computation change makes older directories
+  unreachable; they are not deleted. Pre-identity maps are recomputed once.
 - **Not modelled:** values between grid points are interpolated, not solved.
   The map has one magnet temperature, and its largest current bounds every
   curve derived from it.
