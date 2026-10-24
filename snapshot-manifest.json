@@ -6425,8 +6425,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 160592,
-      "sha256": "dafe7c324fa005c3d1f19c9fdb2bb3ba8a7941f433d731a7e6be01828bf875b0"
+      "bytes": 160889,
+      "sha256": "6c3577b8066ad5669bd59f22b73bdd37262228d1b08091433304ba81aa89358e"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6845,8 +6845,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 230665,
-      "sha256": "170151b67b8bf8e712a880fa4bcd4d36dac68b87445173a0ec05c1b7b88df5ea"
+      "bytes": 231248,
+      "sha256": "c48757810046d05ad4ce4d839a7e71c103f05ef6ce1d6f3783b10491ae875626"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -15260,114 +15260,126 @@
     },
     {
       "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "170151b67b8bf8e712a880fa4bcd4d36dac68b87445173a0ec05c1b7b88df5ea",
+      "reason": "Show the pinned reference's published conductor in the Wire row"
+    },
+    {
+      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "dafe7c324fa005c3d1f19c9fdb2bb3ba8a7941f433d731a7e6be01828bf875b0",
+      "reason": "Show the pinned reference's published conductor in the Wire row"
+    },
+    {
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
       "path": "backend/benchmark_suite/resistance_metrics.py",
       "source_sha256": null,
       "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
     },
     {
-      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
       "path": "backend/models/performance.py",
       "source_sha256": "6eddd38f077648bce6ce7f9ed3e2e63802a300a6520016537a31cdbfd4411d50",
       "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
     },
     {
-      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
       "path": "backend/performance_report.py",
       "source_sha256": "d7e8ac37a032a511be133409ead2b0b6deffd2e93574b46a4d0525f31e919e3b",
       "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
     },
     {
-      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
       "path": "backend/public_report.py",
       "source_sha256": "89d62fb916fb1460c581d325693650ff1455eef35d5a660632e35662cc81e726",
       "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
     },
     {
-      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
       "path": "backend/winding_resistance.py",
       "source_sha256": "8f80fcc2c0d55d1d61cfcba3bf62da5b4ad63b23e0ecf583fcd05e023874114d",
       "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
     },
     {
-      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
       "path": "benchmarks/abcd-v1.6/PHASE-RESISTANCE.md",
       "source_sha256": null,
       "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
     },
     {
-      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
       "path": "benchmarks/abcd-v1.6/README.md",
       "source_sha256": "4d21d64b64a2e5931877941666c96e9b37232581c82bcb32ba927de7cc438517",
       "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
     },
     {
-      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
       "path": "benchmarks/abcd-v1.6/phase_resistance_gate.json",
       "source_sha256": null,
       "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
     },
     {
-      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
       "path": "frontend/scripts/test-losses-view.mjs",
       "source_sha256": "0e3993b1b29b7c5a795db0968a397d465a60c4479abb42e672716ed75e36272d",
       "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
     },
     {
-      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
       "path": "frontend/scripts/test-winding-resistance.mjs",
       "source_sha256": "5a50ebf4943e16c9687bcfdeabedab9d7d3aa970e647c468df73767ad1510feb",
       "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
     },
     {
-      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
       "path": "frontend/src/public/PerformancePanel.tsx",
       "source_sha256": "5fa21a1b898ea8b858d78a70fb827bbacf87be2770934ef8a25d3534576edc75",
       "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
     },
     {
-      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
       "path": "frontend/src/public/lossesView.ts",
       "source_sha256": "661e07c53021df69039f37168a58bec3776212a6ad9961a369be80c801f119ef",
       "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
     },
     {
-      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
       "path": "frontend/src/public/outputStatus.ts",
       "source_sha256": "5f4b9fe1ad001e4d3793c614036a86bcef3a39c929c2b0a47e3dc43a961c8af5",
       "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
     },
     {
-      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
       "path": "frontend/src/public/performance.ts",
       "source_sha256": "f7d7e629dda69d2302b8a737d0f1d27a1c10347829353427835f4a4ccc1ec567",
       "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
     },
     {
-      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
       "path": "frontend/src/public/windingResistance.ts",
       "source_sha256": "637cd0dd26e2cadfc5212deb92fa703c9012add22b07e850ec7ec8c747dbce8a",
       "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
     },
     {
-      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
       "path": "tests/test_output_status.py",
       "source_sha256": "c4d5ba1d67dba0687de9ae8954b9b9979ee38300662a2efd124d5d2db235559a",
       "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
     },
     {
-      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
       "path": "tests/test_performance_report.py",
       "source_sha256": "255e12810e57850ec624717c529d93b4c3b5c22784d193c86852342e49cc6e88",
       "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
     },
     {
-      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
       "path": "tests/test_phase_resistance_gate.py",
       "source_sha256": null,
       "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
     },
     {
-      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
       "path": "tests/test_winding_resistance.py",
       "source_sha256": "b4fd9f832d22f93d265ce9c7f2d0f77e640fecb5ed0f4be9fb7abb588a3f48af",
       "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
