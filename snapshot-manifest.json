@@ -835,8 +835,8 @@
     },
     {
       "path": "benchmarks/abcd-v1.6/PHASE-RESISTANCE.md",
-      "bytes": 14669,
-      "sha256": "94b34f676345ec6d7e6aad192a9838eee2dba7c7025f69a1ab4e6e1fb4cb5499"
+      "bytes": 14718,
+      "sha256": "4f691ba3b7ca3398fb519369b57bb93c9d2a5015f9cd6b4b5d6042ac1c5831f9"
     },
     {
       "path": "benchmarks/abcd-v1.6/README.md",
@@ -15383,6 +15383,12 @@
       "path": "tests/test_winding_resistance.py",
       "source_sha256": "b4fd9f832d22f93d265ce9c7f2d0f77e640fecb5ed0f4be9fb7abb588a3f48af",
       "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
+    },
+    {
+      "base_commit": "06733f4defc0281f57385b4c6c6119ba1903dbab",
+      "path": "benchmarks/abcd-v1.6/PHASE-RESISTANCE.md",
+      "source_sha256": "94b34f676345ec6d7e6aad192a9838eee2dba7c7025f69a1ab4e6e1fb4cb5499",
+      "reason": "Refer to the published Prius conductor by its code, not a private PR number"
     }
   ]
 }
