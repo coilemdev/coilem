@@ -212,7 +212,8 @@ from its own conductor ([details](benchmarks/pyleecan-prius-v1/README.md#losses-
   sets no wire: 13 strands of 0.912 mm copper, 9 turns per coil, one path and a
   19.366 mm straight overhang. coilEM adds its half-circle end turn to that
   overhang. Pyleecan's own formula counts the straight overhang only; with the
-  arcs removed coilEM reproduces its 35.95 mOhm.
+  arcs removed coilEM reproduces its 35.95 mOhm. The Design panel shows this
+  conductor as a read-only "published" Wire row.
 
 The loaded case (250 A peak at Φ0 140°, 2,000 rpm, 32 positions over one
 electrical cycle) on macOS arm64:

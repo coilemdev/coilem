@@ -2041,4 +2041,7 @@ assert.match(statusSources.PerformancePanel, /<OutputStatusList statuses=\{statu
 assert.match(statusSources.PerformancePanel, /magnet_temperature_derated: magnetsDerated/);
 assert.match(workspaceSource, /label: 'Magnet derating'/);
 assert.match(workspaceSource, /\{row\.status && <StatusBadge status=\{row\.status\.status\} title=\{row\.status\.reason\} \/>\}/);
+// A pinned reference without its own wire shows the published conductor its resistance uses, not 'Derived from slot'.
+assert.match(workspaceSource, /config\.geometry_reference && !wire \? \(/);
+assert.match(workspaceSource, /<span className="param-label">Wire<small>published<\/small><\/span>/);
 console.log('public UI contract audit passed');
