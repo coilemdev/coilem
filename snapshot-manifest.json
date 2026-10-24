@@ -65,8 +65,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 10334,
-      "sha256": "ccd3bcce3044c620ce866c77ce3907b8b78417cefb613a4da4153f63d5e7d186"
+      "bytes": 12885,
+      "sha256": "c0adbfdbd374c118ba5569fc9604da9cc8c1dae22b40288ecdb365fe16bf0fed"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -5889,6 +5889,11 @@
       "sha256": "faf12fd1056d005095dd4d06354e4991cbff7743dd27e4f62422ac5182c927ee"
     },
     {
+      "path": "docs/RELEASE_0_5_0.md",
+      "bytes": 17084,
+      "sha256": "d2a878b2e016ce6749630eebb875354f11a21e874a798e4de78acad7a390dabb"
+    },
+    {
       "path": "docs/RELEASING.md",
       "bytes": 11317,
       "sha256": "5157fdcfbfedec0acf625a014d06fd48a5a8ffd7ff6e98be758ceeceb6ca5d47"
@@ -5905,8 +5910,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 26646,
-      "sha256": "3c7041072737faf212d0829a09b632f68d238c085df4a541fc8b19f7b851cd56"
+      "bytes": 41938,
+      "sha256": "baa948f59bedc89b7aa13099f785084327f528a037df23753fe642538e14d7f3"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -15237,6 +15242,24 @@
       "path": "tests/test_winding_resistance.py",
       "source_sha256": "171c736dfec0fecd4cd14b9baecefb8f87ee7b3c542384cf720b2a93a5ad123c",
       "reason": "Prius losses: M400-50A grade-limit iron loss for the Pyleecan steel and the published Pyleecan conductor"
+    },
+    {
+      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "path": "README.md",
+      "source_sha256": "ccd3bcce3044c620ce866c77ce3907b8b78417cefb613a4da4153f63d5e7d186",
+      "reason": "0.5.0 release documentation: claim boundaries for the performance outputs, README limits and features, and draft release notes"
+    },
+    {
+      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "3c7041072737faf212d0829a09b632f68d238c085df4a541fc8b19f7b851cd56",
+      "reason": "0.5.0 release documentation: claim boundaries for the performance outputs, README limits and features, and draft release notes"
+    },
+    {
+      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "path": "docs/RELEASE_0_5_0.md",
+      "source_sha256": null,
+      "reason": "0.5.0 release documentation: claim boundaries for the performance outputs, README limits and features, and draft release notes"
     }
   ]
 }

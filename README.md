@@ -7,11 +7,13 @@ Everything runs on your computer.
 
 Website: [coilem.com](https://coilem.com)
 
-The source is being prepared as **coilEM 0.4.0 Developer Preview**, with
-**Magneto2D 0.3.3**. The [release notes](RELEASE_NOTES.md) and
-[release plan](docs/RELEASE_0_4_0.md) track the final candidate and wheel checks.
-The PyPI install commands below continue to select the published release until
-0.4.0 is published.
+The source is being prepared as **coilEM 0.5.0 Developer Preview**, with
+**Magneto2D 0.3.3**. Until the version bump at the 0.5.0 freeze it still
+identifies as coilEM 0.4.0, the published release. The
+[release notes](RELEASE_NOTES.md) describe 0.4.0; the
+[0.5.0 release notes](docs/RELEASE_0_5_0.md) list what 0.5.0 changes and what
+the freeze still has to measure. The PyPI install commands below select the
+published release until 0.5.0 is published.
 
 The [v0.4.0 evidence report](benchmarks/v0.4.0/README.md) retains the current
 Windows A/B/C/D development qualification: 35 supported jobs, 28 PASS,
@@ -21,6 +23,12 @@ at `d993d76`, with all 10 original software checks passing. These measured
 commits are the baseline for the final-candidate rerun, not measurements of
 a future tag. The [benchmark index](benchmarks/README.md) preserves the full
 reports, frozen FEMM references and earlier platform records.
+
+The 0.5.0 development run on macOS at `5b7cad8`
+([report](benchmarks/macos-native-20261022-5b7cad8/README.md)) records 29 PASS
+and the planned unsupported Prius. It is development evidence; the 0.5.0
+freeze reruns A/B/C/D on macOS and Windows. **TODO(freeze):** replace this
+paragraph with the 0.5.0 record.
 
 ![coilEM workspace](docs/images/coilem-landing-page.png)
 
@@ -33,8 +41,11 @@ current winding model:
 - flat-buried IPM with concentrated windings, under sinusoidal current.
 
 V-shape IPM and untested combinations, such as six-step with distributed
-windings, are experimental. See [Validation](docs/VALIDATION.md) for the
-qualified scope and its limits.
+windings, are experimental. The 0.5.0 performance outputs (d/q flux linkage,
+torque–speed and efficiency maps, losses, magnet temperature and phase
+resistance) are experimental too, and say so with a reason in the app, PDF and
+CSV. See [Validation](docs/VALIDATION.md) for the qualified scope and its
+limits.
 
 ## Install
 
@@ -136,9 +147,23 @@ serves the UI and API together and opens `http://127.0.0.1:2645`. See
   Gmsh meshes, sinusoidal current, and ideal wye-connected 120-degree six-step
   excitation for SPM.
 - Loaded torque, phase and line Back-EMF, field plots, and harmonic spectra.
+- Loaded d/q flux linkage, apparent Ld and Lq, and a torque cross-check from
+  them that includes reluctance torque.
+- A Torque–speed tab in Results. It solves a flux-linkage map over current and
+  current angle, then draws peak and continuous torque–speed and power–speed
+  curves (MTPA, field weakening and MTPV) for a DC bus and current limit, and
+  an efficiency map.
+- Wire size, strands in hand, end-turn extension and winding temperature in
+  Design, giving phase resistance and slot fill. Copper loss, stator iron loss
+  and efficiency at the solved point, with a map of where the iron loss is.
+  Iron loss is available for M350-50A and for the Pyleecan Prius's M400-50A.
+- A magnet temperature under Solve → Operating point. Br and HcJ are derated
+  from the grade's cited coefficients for N35, N42, N48, N52 and N48SH.
 - Preview, Standard and High accuracy mesh/solve presets. These names describe
   resolution and sampling; they do not certify accuracy.
 - Saved runs, comparison, project save/reopen, PDF, CSV and replay downloads.
+  Torque–speed results download as a performance PDF, a performance CSV, an
+  id/iq table CSV and the map points CSV.
 - Solver-backed electromagnetics lessons and cylindrical and linear
   [Halbach workspaces](docs/HALBACH_ARRAY.md).
 
@@ -156,6 +181,22 @@ and peak within 10%, plus fourteen six-step gates for BLDC. It covers only the
 tested combinations listed above, with M350-50A steel. One of six V-shape IPM
 fixtures is YELLOW against FEMM, so V-shape results are experimental. Cogging, THD, airgap harmonics, losses and
 thermal behavior are not covered. It is not a hardware measurement.
+
+The 0.5.0 performance outputs have no passing reference gate yet, so all of
+them are experimental:
+
+- Loaded λd/λq and magnet temperature have FEMM gates registered for the
+  freeze, and phase resistance is to be checked against a hand calculation.
+  Ld and Lq, the maps, iron loss and efficiency have no gate.
+- Losses leave out magnet and rotor eddy-current loss, AC copper loss (skin
+  and proximity effects) and inverter loss. Mechanical loss is a single
+  constant you enter, the same at every speed.
+- Iron loss comes from the steel grade's guaranteed loss limits, not from
+  measured motor data, and other steels show it as unavailable.
+- Magnet temperature derates Br linearly. It does not model demagnetisation,
+  and there is no thermal solver: magnet and winding temperatures are inputs.
+- The torque–speed envelope ignores inverter voltage drops and dead time. Its
+  continuous curve is a current limit, not a thermal rating.
 
 Motor sweeps use per-angle meshes, with symmetry-based reuse where applicable,
 without a sliding-band interface. Mesh changes can introduce numerical noise
