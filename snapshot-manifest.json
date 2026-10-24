@@ -835,8 +835,8 @@
     },
     {
       "path": "benchmarks/abcd-v1.6/PHASE-RESISTANCE.md",
-      "bytes": 14669,
-      "sha256": "94b34f676345ec6d7e6aad192a9838eee2dba7c7025f69a1ab4e6e1fb4cb5499"
+      "bytes": 14718,
+      "sha256": "4f691ba3b7ca3398fb519369b57bb93c9d2a5015f9cd6b4b5d6042ac1c5831f9"
     },
     {
       "path": "benchmarks/abcd-v1.6/README.md",
@@ -15412,6 +15412,12 @@
       "path": "MATERIALS.md",
       "source_sha256": "3e241b12603443a836dd94e8dce2d84b8c394c64e2f4e942a2e19e0cef5405cb",
       "reason": "Core loss: the loaded sweep may cover one electrical cycle or half of one, as iron_loss_unavailable_reason accepts"
+    },
+    {
+      "base_commit": "06733f4defc0281f57385b4c6c6119ba1903dbab",
+      "path": "benchmarks/abcd-v1.6/PHASE-RESISTANCE.md",
+      "source_sha256": "94b34f676345ec6d7e6aad192a9838eee2dba7c7025f69a1ab4e6e1fb4cb5499",
+      "reason": "Refer to the published Prius conductor by its code, not a private PR number"
     }
   ]
 }

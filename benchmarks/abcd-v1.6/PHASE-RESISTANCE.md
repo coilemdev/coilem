@@ -24,7 +24,7 @@ The phase resistance is a closed-form result of the winding's geometry, its wire
 | Resistivity and its temperature coefficient | IEC 60028 annealed copper or IEC 60889 hard-drawn aluminium, at 20 °C (below). |
 | Winding temperature | `solve_params.winding_temperature_C`; 20 °C when unset. R(T) = R20 · (1 + α·(T − 20)). |
 
-**The pinned Prius (#14).** A pinned reference design without a wire of its own uses its published conductor. The Pyleecan Toyota Prius has 13 strands in hand of 0.912 mm and a 19.366 mm straight overhang. This is the same calculation with a specified wire: strands in hand, the straight extension and the half-circle arc. Only the source of the wire differs.
+**The pinned Prius.** A pinned reference design without a wire of its own uses its published conductor. The Pyleecan Toyota Prius has 13 strands in hand of 0.912 mm and a 19.366 mm straight overhang. This is the same calculation with a specified wire: strands in hand, the straight extension and the half-circle arc. Only the source of the wire differs (`REFERENCE_WIRES` in `backend/winding_resistance.py`).
 
 `tests/test_winding_resistance.py` already checks the Prius's straight part against Pyleecan's own formula, which leaves the arc out.
 
