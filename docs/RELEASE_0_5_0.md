@@ -11,7 +11,8 @@ Every number marked **TODO(freeze)** comes from the freeze rerun, and every
 ([public issue 143](https://github.com/coilemdev/coilem/issues/143)). It answers
 "does this motor meet my spec across its operating range?" with torque–speed,
 losses and efficiency. Every new number either passes a reference gate or is
-labelled experimental with its reason. In this draft all of them are
+labelled experimental with its reason. In this draft phase resistance and
+copper loss are qualified for a design with a wire, and the rest are
 experimental; [Validation](VALIDATION.md#050-performance-outputs) gives each
 one's claim boundary.
 
@@ -25,7 +26,7 @@ one's claim boundary.
 | Protocol 1.6.0 native values | coilEM's values for the 17 new cases at `f6c9fbb`, run with `--no-reference` | Grade against the FEMM bundle at the freeze |
 | Physics hash guards | 21 tests fail by design: the stack changes hash-guarded physics sources | Re-pin the hashes at the freeze, after the rerun |
 | Pyleecan Prius collection | v0.4.0's record at `d993d76`. The loaded case was solved again with losses, torque unchanged at 353.95 N·m | Full collection at the frozen candidate. **TODO(freeze):** commit, outcome |
-| Phase-resistance gate | Planned against a hand calculation; being registered | **TODO(freeze):** gate name and outcome |
+| Phase-resistance gate | Protocol 1.6.0 `phase_resistance` ([hand calculations](../benchmarks/abcd-v1.6/PHASE-RESISTANCE.md)): all three cases PASS, within 0.001%. It runs in `tests/test_phase_resistance_gate.py` | None: it needs no solve or reference, so it runs at every test run |
 | Hardware correlation | ORNL Prius and Honda Accord torque–speed comparison planned in issue 143. [#69](https://github.com/coilemdev/coilem/issues/69) and [#82](https://github.com/coilemdev/coilem/issues/82) are in the 0.5.0 milestone and not in this stack | **TODO(owner):** ship in 0.5.0 or move |
 | Wheels and TestPyPI | v0.4.0's rehearsal passed | Rehearse the 0.5.0 candidate on all four wheel targets |
 
@@ -69,6 +70,9 @@ one's claim boundary.
   temperature. It shows the phase resistance, the mean turn length and the slot
   fill. A design without a wire gets one derived to fill 45% of the slot, and
   says so.
+- With a wire, the phase resistance and copper loss are **qualified** by the
+  protocol 1.6.0 hand-calculation gate. With a derived wire they stay
+  experimental.
 - A **Losses** card in Results gives copper loss (stack and end turns), stator
   iron loss (hysteresis and eddy current, teeth and yoke) and efficiency at the
   solved point.
@@ -98,8 +102,9 @@ one's claim boundary.
   shows.
 - The run PDF and CSV add the d/q record, losses, efficiency, winding and magnet
   temperature.
-- Every new output carries its status (experimental) and the reason in the UI,
-  the PDFs and the CSVs. The run PDF has a "Status of the performance outputs"
+- Every new output carries its status and the reason in the UI, the PDFs and
+  the CSVs: qualified for phase resistance and copper loss with a wire,
+  experimental for the rest. The run PDF has a "Status of the performance outputs"
   table, and the run CSV a `status` section.
 
 ### Smaller changes
@@ -189,6 +194,15 @@ registered requests:
   torque against its solved torque, within 2% (YELLOW 5%).
 - The harness computes FEMM's λd and λq from its raw waveforms with coilEM's
   own transform, so the two sides cannot differ by convention.
+- **The phase-resistance gate** needs no FEMM.
+  - `phase_resistance` compares coilEM's phase resistance with independent hand
+    calculations, written out in
+    [PHASE-RESISTANCE.md](../benchmarks/abcd-v1.6/PHASE-RESISTANCE.md): PASS
+    within 1%, YELLOW within 3%.
+  - Its three cases are the 8p/12s concentrated SPM in copper at 80 °C and the
+    8p/24s distributed SPM in copper and in aluminium at 120 °C.
+  - All three PASS, within 0.001%. It runs in
+    `tests/test_phase_resistance_gate.py` with every test run.
 
 There is no FEMM record yet for any new case, so protocol 1.4.0 stays the
 default. At the freeze the owner's protocol 1.6.0 bundle arrives and 1.6.0
@@ -202,8 +216,8 @@ becomes the default suite.
 
 ## 4. Pyleecan Prius losses
 
-The pinned Pyleecan Prius now has an experimental iron loss and a copper loss
-from its own conductor ([details](benchmarks/pyleecan-prius-v1/README.md#losses-in-the-app)).
+The pinned Pyleecan Prius now has an experimental iron loss and a qualified
+copper loss from its own conductor ([details](benchmarks/pyleecan-prius-v1/README.md#losses-in-the-app)).
 
 - **Iron loss** uses an M400-50A grade-limit model, because the imported B-H
   curve is Pyleecan's M400-50A. It is built like the M350-50A model; see
@@ -237,11 +251,13 @@ Prius collection.
 
 ## 5. Known limitations
 
-- **Every 0.5.0 output is experimental** until its gate passes at the freeze:
-  loaded λd/λq, Ld/Lq, the flux-linkage map, the torque–speed envelope, the
-  efficiency map, copper and iron loss, efficiency, magnet temperature derating
-  and phase resistance. Ld and Lq stay experimental even if λd/λq pass, because
-  the gate does not bound them tightly (**TODO(owner):** confirm).
+- **Only phase resistance and copper loss are qualified**, for a design with a
+  wire. The rest are experimental until a gate passes at the freeze: loaded
+  λd/λq, Ld/Lq, the flux-linkage map, the torque–speed envelope, the efficiency
+  map, iron loss, efficiency and magnet temperature derating. A derived wire
+  keeps phase resistance and copper loss experimental. Ld and Lq stay
+  experimental even if λd/λq pass, because the gate does not bound them
+  tightly (**TODO(owner):** confirm).
 - **Losses not modelled:** magnet and rotor eddy-current loss; AC copper loss
   (skin and proximity effects); inverter loss. Mechanical loss is a single
   constant the user enters, the same at every speed.
@@ -255,7 +271,8 @@ Prius collection.
   and magnet temperatures are inputs.
 - **Magnet temperature** derates Br linearly and records HcJ. It does not model
   irreversible demagnetisation.
-- **Phase resistance** uses half-circle end turns and DC resistance.
+- **Phase resistance** uses half-circle end turns and DC resistance. Its gate
+  checks the calculation against hand calculations, not a measured winding.
 - **V-shape IPM** stays experimental; its back-EMF margin to the 10% gate is now
   1.4–1.9 points.
 - **Convergence display** in Results, PDF and CSV (#12) is not in this stack.

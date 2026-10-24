@@ -206,9 +206,10 @@ within a mean of ±8 % at each frequency from 50 Hz to 1 kHz above 0.5 T, with a
 worst point near 22 %, and reads about 24 % high at 2.5 kHz. coilEM does not
 ship that table.
 
-The estimate needs a loaded sweep over one full electrical cycle at a nonzero
-speed. It follows each stator element's flux-density waveform over the
-cycle, and results report the share of the loss that comes from harmonics
+The estimate needs a nonzero speed and a loaded sweep over one full electrical
+cycle, or half of one, in equal steps. Half-wave symmetry, B(θ + 180°) = −B(θ),
+completes a half cycle. It follows each stator element's flux-density waveform
+over the cycle, and results report the share of the loss that comes from harmonics
 above 1 kHz or flux densities above 1.5 T, outside the range the two grade
 limits cover. Rotor, magnet and stray losses are not included, and cutting and
 pressing usually raise a real core's loss above sheet data. Other steels show

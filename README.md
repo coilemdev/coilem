@@ -41,10 +41,11 @@ current winding model:
 - flat-buried IPM with concentrated windings, under sinusoidal current.
 
 V-shape IPM and untested combinations, such as six-step with distributed
-windings, are experimental. The 0.5.0 performance outputs (d/q flux linkage,
-torque–speed and efficiency maps, losses, magnet temperature and phase
-resistance) are experimental too, and say so with a reason in the app, PDF and
-CSV. See [Validation](docs/VALIDATION.md) for the qualified scope and its
+windings, are experimental. Of the 0.5.0 performance outputs, phase
+resistance and copper loss are qualified for a design with a wire, against
+hand calculations. The others (d/q flux linkage, torque–speed and efficiency
+maps, iron loss, efficiency and magnet temperature) are experimental. Each
+says which, with a reason, in the app, PDF and CSV. See [Validation](docs/VALIDATION.md) for the qualified scope and its
 limits.
 
 ## Install
@@ -182,12 +183,16 @@ tested combinations listed above, with M350-50A steel. One of six V-shape IPM
 fixtures is YELLOW against FEMM, so V-shape results are experimental. Cogging, THD, airgap harmonics, losses and
 thermal behavior are not covered. It is not a hardware measurement.
 
-The 0.5.0 performance outputs have no passing reference gate yet, so all of
-them are experimental:
+Of the 0.5.0 performance outputs, only phase resistance and copper loss pass
+a gate so far:
 
+- Phase resistance passes a gate against independent hand calculations, for a
+  design with a wire. A design without one gets a wire sized to fill the slot,
+  and its resistance stays experimental. The gate checks the calculation, not
+  a measured winding.
 - Loaded λd/λq and magnet temperature have FEMM gates registered for the
-  freeze, and phase resistance is to be checked against a hand calculation.
-  Ld and Lq, the maps, iron loss and efficiency have no gate.
+  freeze, so they are experimental until then. Ld and Lq, the maps, iron loss
+  and efficiency have no gate.
 - Losses leave out magnet and rotor eddy-current loss, AC copper loss (skin
   and proximity effects) and inverter loss. Mechanical loss is a single
   constant you enter, the same at every speed.

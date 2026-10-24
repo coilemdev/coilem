@@ -50,7 +50,7 @@ import { OutputStatusList, StatusBadge } from './OutputStatusBadge';
 import {
   DQ_FLUX_LINKAGE_STATUS_REASON,
   MAGNET_TEMPERATURE_STATUS_REASON,
-  PHASE_RESISTANCE_STATUS_REASON,
+  PHASE_RESISTANCE_UNRECORDED_STATUS_REASON,
   recordStatus,
   type NamedOutputStatus,
 } from './outputStatus';
@@ -338,6 +338,8 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
   const solving = myJob?.phase === 'solving';
   const otherSolving = job?.phase === 'solving' && !myJob;
   const resistance = winding?.phase_resistance_ohm ?? losses?.phase_resistance_ohm ?? null;
+  // The tab and its report both show the winding record's own status.
+  const resistanceStatus = recordStatus(winding, PHASE_RESISTANCE_UNRECORDED_STATUS_REASON);
   const magnetsDerated = isDeratedRun(result.solve_metadata);
   const windingTemperature = winding?.winding_temperature_C ?? losses?.winding_temperature_C ?? 20;
 
@@ -450,6 +452,7 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
       map_preset: preset,
       solved_point: solvedPoint ? { speed_rpm: solvedPoint.speedRpm, torque_Nm: solvedPoint.torqueNm, current_angle_deg: solvedPoint.gammaDeg } : null,
       magnet_temperature_derated: magnetsDerated,
+      phase_resistance: resistance !== null && resistance > 0 ? resistanceStatus : null,
     };
     setDownloading(kind);
     try {
@@ -468,7 +471,7 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
     { key: 'efficiency', label: 'Efficiency map', status: drive.efficiency_map.status, reason: drive.efficiency_map.status_reason ?? '' },
     { key: 'dq', label: 'Map flux linkage, MTPA and Ld, Lq', status: 'experimental', reason: DQ_FLUX_LINKAGE_STATUS_REASON },
     ...(resistance !== null && resistance > 0
-      ? [{ key: 'resistance', label: 'Phase resistance and copper loss', ...recordStatus(winding, PHASE_RESISTANCE_STATUS_REASON) }]
+      ? [{ key: 'resistance', label: 'Phase resistance and copper loss', ...resistanceStatus }]
       : []),
     ...(magnetsDerated ? [{
       key: 'magnets',

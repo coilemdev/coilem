@@ -7,7 +7,7 @@
  * P_shaft = T·ω − P_iron − P_mech and the input is P_in = T·ω + P_copper.
  */
 
-import { PHASE_RESISTANCE_STATUS_REASON, recordStatus, type NamedOutputStatus } from './outputStatus';
+import { PHASE_RESISTANCE_UNRECORDED_STATUS_REASON, recordStatus, type NamedOutputStatus } from './outputStatus';
 import type { IronLoss, LossBreakdown, PerformanceOutputStatus } from './performance';
 import type { WindingResistance } from './windingResistance';
 
@@ -104,7 +104,7 @@ export function lossesView(
   const resistance = loss.phase_resistance_ohm < 1
     ? `${significant(loss.phase_resistance_ohm * 1000)} mΩ`
     : `${significant(loss.phase_resistance_ohm)} Ω`;
-  const copperStatus = recordStatus(winding, PHASE_RESISTANCE_STATUS_REASON);
+  const copperStatus = recordStatus(winding, PHASE_RESISTANCE_UNRECORDED_STATUS_REASON);
   const statuses: NamedOutputStatus[] = [];
   if (efficiency.status !== 'unavailable') statuses.push({ key: 'efficiency', label: 'Efficiency', ...efficiency });
   if (ironAvailable && loss.iron_loss_status !== 'unavailable') {

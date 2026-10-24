@@ -6,6 +6,7 @@ const {
   DQ_FLUX_LINKAGE_STATUS_REASON,
   MAGNET_TEMPERATURE_STATUS_REASON,
   PHASE_RESISTANCE_STATUS_REASON,
+  PHASE_RESISTANCE_UNRECORDED_STATUS_REASON,
 } = await importTypeScriptModule(new URL('../src/public/outputStatus.ts', import.meta.url));
 
 const { STEEL_RAMP, densityColor, formatPower, lossesView, lossSegments, rampColor, stackCopperWPerKg } = await importTypeScriptModule(
@@ -96,10 +97,13 @@ assert.equal(stackCopperWPerKg(loss, winding, 0), null);
 assert.deepEqual(view.statuses.map((item) => [item.key, item.status]), [['efficiency', 'experimental'], ['iron', 'experimental'], ['copper', 'experimental']]);
 assert.equal(view.statuses[0].reason, loss.efficiency_status_reason);
 assert.equal(view.statuses[1].reason, loss.iron_loss_status_reason, 'the loss record reason when the iron record has none');
-assert.equal(view.statuses[2].reason, PHASE_RESISTANCE_STATUS_REASON, 'a run stored before the winding carried a status');
+assert.equal(view.statuses[2].reason, PHASE_RESISTANCE_UNRECORDED_STATUS_REASON, 'a run stored before the winding carried a status');
 assert.equal(view.rows.find((row) => row.key === 'copper').status, 'experimental', 'the copper row carries the badge');
 const recorded = lossesView(loss, iron, { status: 'experimental', status_reason: 'As recorded.' });
 assert.equal(recorded.statuses[2].reason, 'As recorded.');
+const qualified = lossesView(loss, iron, { status: 'qualified', status_reason: PHASE_RESISTANCE_STATUS_REASON });
+assert.deepEqual(qualified.statuses[2], { key: 'copper', label: 'Copper loss, from the phase resistance', status: 'qualified', reason: PHASE_RESISTANCE_STATUS_REASON });
+assert.equal(qualified.rows.find((row) => row.key === 'copper').status, 'qualified', 'a qualified winding badges its copper loss');
 assert.deepEqual(noIron.statuses.map((item) => item.key), ['copper'], 'no status for an unavailable efficiency or iron loss');
 
 console.log('losses view: rows, efficiency status, bar segments, density scale and copper per kilogram pass');

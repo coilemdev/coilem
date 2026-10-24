@@ -320,18 +320,22 @@ point, magnet temperature derating and phase resistance
 section is the claim boundary for each of them: what is qualified and by which
 gate, what is experimental and why, and what is not modelled.
 
-**Every one of these outputs is experimental in the current source.** None has
-a measured reference gate yet. Each one shows its status and the reason in the
-UI, the run PDF and CSV, and the performance PDF and CSV. The reasons quoted
-below are the strings the app prints, from `backend/models/performance.py`,
+**Phase resistance and copper loss are qualified for a design with a wire.
+Every other output is experimental in the current source.** Phase resistance
+passes its hand-calculation gate; none of the others has a measured reference
+gate yet. Each output shows its status and the reason in the UI, the run PDF
+and CSV, and the performance PDF and CSV. The reasons quoted below are the
+strings the app prints, from `backend/models/performance.py`,
 `backend/iron_loss.py`, `backend/loss_breakdown.py` and
 `backend/drive_performance.py`. `frontend/src/public/outputStatus.ts` mirrors
-the three in `backend/models/performance.py`, and `tests/test_output_status.py`
-checks that they match.
+the d/q, phase-resistance and magnet-temperature reasons, and
+`tests/test_output_status.py` checks that they match.
 
 [Protocol 1.6.0](../benchmarks/abcd-v1.6/README.md) registers the reference
-gates for loaded λd/λq and magnet temperature. Their FEMM records arrive at the
-0.5.0 freeze ([request](../benchmarks/abcd-v1.6/FEMM-REQUEST.md)). An output
+gates for loaded λd/λq and magnet temperature, and the phase-resistance gate.
+The FEMM records for the first two arrive at the 0.5.0 freeze
+([request](../benchmarks/abcd-v1.6/FEMM-REQUEST.md)); the phase-resistance gate
+needs no solve or reference and already passes. An output
 becomes qualified only for the fixture combinations whose gates pass in the
 freeze report, and only once the app's status for it changes. Passing a gate
 does not qualify other topologies, currents or angles.
@@ -346,8 +350,9 @@ output that passes in the code and in this section together.
 | Flux-linkage map | Experimental | None beyond the 12 d/q points | — |
 | Torque–speed envelope | Experimental | None; hardware correlation planned | **TODO(freeze):** correlation done or deferred |
 | Efficiency map | Experimental | None; hardware correlation planned | **TODO(freeze):** correlation done or deferred |
-| Phase resistance | Experimental | Hand calculation, being registered | **TODO(freeze)** |
-| Copper loss | Experimental | Follows phase resistance | **TODO(freeze)** |
+| Phase resistance, with a wire | Qualified | Protocol 1.6.0 `phase_resistance`, three hand-calculated cases | PASS, all three within 0.001% |
+| Phase resistance, derived wire | Experimental | None: the wire is an estimate | — |
+| Copper loss | Same as phase resistance | Follows phase resistance | — |
 | Iron loss, M350-50A and M400-50A | Experimental | None planned for 0.5.0 | — |
 | Efficiency at the operating point | Experimental | None; it uses the iron loss | — |
 | Magnet temperature derating | Experimental | Protocol 1.6.0 temperature cases, four cases on two fixtures | **TODO(freeze)** |
@@ -461,23 +466,43 @@ copper or IEC 60889 aluminium data; see
 3 · I_rms² · R at the winding temperature, split into the stack and end-turn
 parts.
 
-- **Qualified:** nothing yet. Issue 143 plans a gate against a hand
-  calculation. **TODO(freeze):** name the registered gate and its outcome.
-- **Development checks, not gates:**
+- **Qualified, for a design with a wire:** the `phase_resistance` gate of
+  protocol 1.6.0 compares coilEM's phase resistance with independent hand
+  calculations ([PHASE-RESISTANCE.md](../benchmarks/abcd-v1.6/PHASE-RESISTANCE.md)).
+  - The cases ([`phase_resistance_gate.json`](../benchmarks/abcd-v1.6/phase_resistance_gate.json))
+    are the 8p/12s concentrated SPM in copper at 80 °C, and the 8p/24s
+    distributed SPM in copper and in aluminium at 120 °C. Each declares a wire
+    with several strands in hand and a straight end-turn extension.
+  - It passes within 1% (YELLOW within 3%). All three cases PASS, within
+    0.001%.
+  - The resistance is closed-form, so the gate needs no solve and no
+    reference bundle. `tests/test_phase_resistance_gate.py` runs it with every
+    test run.
+  - The pinned Pyleecan Prius uses its published conductor, the same
+    calculation with a specified wire, so it is qualified too.
+- **Qualified because:** "Passes the phase-resistance gate of benchmark
+  protocol 1.6.0: within 1% of independent hand calculations (half-circle end
+  turns, IEC conductor data) for a concentrated and a distributed winding. Not
+  compared with a measured winding." Copper loss carries the same status and
+  reason.
+- **Experimental, for a derived wire:** "No wire is set, so the wire is sized
+  to fill the slot to its limit: an estimate, not the resistance of a real
+  winding. Set the wire for a resistance the phase-resistance gate covers."
+- **Experimental, for a record stored before the gate:** "Recorded without a
+  status, before the phase-resistance gate; solve the design again to see
+  whether the gate covers it."
+- **What the gate does not show:** that the half-circle model matches a real
+  winding. It checks the calculation, not the end-winding shape. Two
+  development checks against other sources, not gates:
   - The 2005 Honda Accord's published winding gives 9.80 mOhm at 21 °C,
     against 9.7 mOhm measured (+1.0%; ORNL/TM-2006/535, Table 2.3).
   - For the Pyleecan Prius, coilEM reproduces Pyleecan's own 35.95 mOhm when
     its end-turn arcs are removed.
-- **Experimental because:** "Calculated from the wire, turns and mean turn
-  length (half-circle end turns, IEC conductor data); not yet checked against a
-  hand calculation or a measured winding." Copper loss carries the same status
-  and reason.
 - **Not modelled:**
   - AC copper loss: copper loss is DC I²R.
   - The winding temperature is an input, not computed.
   - End turns are half circles, not the real end-winding shape.
-  - A design without a wire gets one derived to fill the slot, and says so.
-    The Pyleecan Prius uses its machine file's published conductor instead.
+  - Lead and coil-to-coil connection lengths.
 
 ### Iron loss
 
@@ -709,9 +734,10 @@ commit, commands, and accepted limitations.
 - v1.1 does not gate cogging torque, THD, airgap field harmonics, spatial mesh
   convergence, losses or efficiency. Fine BLDC stages refine angular sampling
   on the same spatial mesh.
-- The 0.5.0 performance outputs (d/q flux linkage and inductances, the
-  flux-linkage map, torque–speed and efficiency maps, losses, magnet
-  temperature and phase resistance) are experimental unless
+- Phase resistance and copper loss are qualified for a design with a wire,
+  by the hand-calculation gate. The other 0.5.0 performance outputs (d/q flux
+  linkage and inductances, the flux-linkage map, torque–speed and efficiency
+  maps, iron loss, efficiency and magnet temperature) are experimental unless
   [their own section](#050-performance-outputs) records a passing gate. Losses
   leave out magnet and rotor eddy-current loss, AC copper loss and inverter
   loss, and mechanical loss is a single entered constant.
