@@ -6410,8 +6410,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 160592,
-      "sha256": "dafe7c324fa005c3d1f19c9fdb2bb3ba8a7941f433d731a7e6be01828bf875b0"
+      "bytes": 160889,
+      "sha256": "6c3577b8066ad5669bd59f22b73bdd37262228d1b08091433304ba81aa89358e"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6830,8 +6830,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 230665,
-      "sha256": "170151b67b8bf8e712a880fa4bcd4d36dac68b87445173a0ec05c1b7b88df5ea"
+      "bytes": 231248,
+      "sha256": "c48757810046d05ad4ce4d839a7e71c103f05ef6ce1d6f3783b10491ae875626"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -15237,6 +15237,18 @@
       "path": "tests/test_winding_resistance.py",
       "source_sha256": "171c736dfec0fecd4cd14b9baecefb8f87ee7b3c542384cf720b2a93a5ad123c",
       "reason": "Prius losses: M400-50A grade-limit iron loss for the Pyleecan steel and the published Pyleecan conductor"
+    },
+    {
+      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "170151b67b8bf8e712a880fa4bcd4d36dac68b87445173a0ec05c1b7b88df5ea",
+      "reason": "Show the pinned reference's published conductor in the Wire row"
+    },
+    {
+      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "dafe7c324fa005c3d1f19c9fdb2bb3ba8a7941f433d731a7e6be01828bf875b0",
+      "reason": "Show the pinned reference's published conductor in the Wire row"
     }
   ]
 }
