@@ -222,3 +222,26 @@ def test_installed_solver_stamp_has_the_same_map_identity_as_checkout(monkeypatc
     monkeypatch.setattr(record, "CHECKOUT", None)
     monkeypatch.setattr(record, "stamped_build_info", lambda: {BUILD_INFO_KEY: solver})
     assert map_scope_key(_config()) == original
+
+
+def test_imported_steel_is_embedded_in_scope_and_has_no_external_loss_coefficients():
+    from pydantic import ValidationError
+
+    from backend.custom_materials import CustomSteel, SteelImportRequest, import_steel
+    from backend.flux_linkage_map import map_computation_identity
+    from backend.iron_loss import iron_loss_unavailable_reason
+
+    steel = import_steel(SteelImportRequest(name="Test steel", source="Test curve",
+        csv_text="B_T,H_A_per_m\n0,0\n1,100\n2,1000\n"))
+    raw = _config().model_dump(mode="json")
+    raw["materials"].update(stator_steel=steel.id, custom_steels={steel.id: steel.model_dump(mode="json")})
+    config = MotorConfig.model_validate(raw)
+    assert map_computation_identity(config)["iron_loss"] is None
+    assert "No cited loss data" in iron_loss_unavailable_reason(config, [])
+    assert config.model_dump(mode="json")["materials"]["custom_steels"][steel.id] == steel.model_dump(mode="json")
+    with pytest.raises(ValidationError, match="Extra inputs"):
+        CustomSteel.model_validate(steel.model_dump() | {"loss_coefficients": {"kh": 1}})
+    changed = import_steel(SteelImportRequest(name="Test steel", source="Test curve",
+        csv_text="B_T,H_A_per_m\n0,0\n1,120\n2,1100\n"))
+    raw["materials"].update(stator_steel=changed.id, custom_steels={changed.id: changed.model_dump(mode="json")})
+    assert map_scope_key(MotorConfig.model_validate(raw)) != map_scope_key(config)

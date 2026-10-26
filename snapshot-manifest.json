@@ -5925,8 +5925,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 44320,
-      "sha256": "7b0274ad36c34e5eeda76d57fb5416acd3eeb77d4be91ffaa57df1640efe59f3"
+      "bytes": 44797,
+      "sha256": "01c77c9eaa8fd42e6583497fff8dffe2d313f6ff2b31fcc6d0b979c9ad6df844"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -7825,8 +7825,8 @@
     },
     {
       "path": "tests/test_flux_linkage_map.py",
-      "bytes": 11076,
-      "sha256": "c45efd906a02f22b1e905996f75a0cfdcf54785ebb2499377e4805e2f2f7fb70"
+      "bytes": 12510,
+      "sha256": "d0d74e21eed60a266758012b72b4574373efd0169de5b49a2cd0f96988a85fc0"
     },
     {
       "path": "tests/test_gmsh_sigpipe.py",
@@ -15478,6 +15478,18 @@
       "path": "tests/test_performance_routes.py",
       "source_sha256": "075dd359a3b35a86ffe6b55cb53515087d49e2141f6f58b45415865b788cdd7b",
       "reason": "PR 27 review: resolve map identity before claiming the solve lane and return actionable errors"
+    },
+    {
+      "base_commit": "22237d3dafc7a7d9bb91afc61d56b406d04631de",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "7b0274ad36c34e5eeda76d57fb5416acd3eeb77d4be91ffaa57df1640efe59f3",
+      "reason": "Document and guard imported-steel map identity after review"
+    },
+    {
+      "base_commit": "22237d3dafc7a7d9bb91afc61d56b406d04631de",
+      "path": "tests/test_flux_linkage_map.py",
+      "source_sha256": "c45efd906a02f22b1e905996f75a0cfdcf54785ebb2499377e4805e2f2f7fb70",
+      "reason": "Document and guard imported-steel map identity after review"
     }
   ]
 }

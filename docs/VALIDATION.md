@@ -419,6 +419,12 @@ design's rated speed.
   executable bytes. Missing physics/build identities refuse map caching rather
   than reusing unverified values. A computation change makes older directories
   unreachable; they are not deleted. Pre-identity maps are recomputed once.
+  Imported steels embed their B-H curve, thickness and provenance in the hashed
+  `materials.custom_steels` config. They do not accept user loss coefficients:
+  steels outside `LOSS_GRADES` have unavailable iron loss (`iron_loss: null` in
+  the computation identity). The pinned Prius custom steel is in `LOSS_GRADES`,
+  so its M400-50A coefficients are hashed explicitly. Hashing whole processing
+  files deliberately invalidates cached maps even after cosmetic source edits.
 - **Not modelled:** values between grid points are interpolated, not solved.
   The map has one magnet temperature, and its largest current bounds every
   curve derived from it.
