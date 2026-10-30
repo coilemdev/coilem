@@ -415,13 +415,13 @@
     },
     {
       "path": "backend/models/__init__.py",
-      "bytes": 1958,
-      "sha256": "e004067980b6a61c9811f74e5a1e337f827673c95128e986883d81a69b9f4128"
+      "bytes": 2365,
+      "sha256": "d20636d0c69095f501b72e1a6ec5930901ba7804c01bb4eea9f7153455271a7b"
     },
     {
       "path": "backend/models/config.py",
-      "bytes": 27989,
-      "sha256": "1e54d3c53dc32a1cab28f5dcaf8f36d505d0ca88b0d3a8bcebdc581594ec9e9c"
+      "bytes": 30368,
+      "sha256": "b97662868f28f6479be8063c76a6c821cd3bd247eaf91d346215df57b8b089cc"
     },
     {
       "path": "backend/models/errors.py",
@@ -444,9 +444,14 @@
       "sha256": "b739ab587d7db3b300994926eb59932c4e1992660bb7fe8950bf1940528b082e"
     },
     {
+      "path": "backend/models/performance.py",
+      "bytes": 13238,
+      "sha256": "5a6de4b16791aee7f65c6dc2ddc19132e3847cd0d86890fa607ecd9181d9d65c"
+    },
+    {
       "path": "backend/models/result.py",
-      "bytes": 6616,
-      "sha256": "d5076f389c5522ee2d9dfb665fbf7de7b1e1d2d73039c3dac9b6d953908aa4c5"
+      "bytes": 7209,
+      "sha256": "3271b8702cb34ef93a72f8a2b5db5e434d47a4ddae4917b9b3c1e1e7bd775407"
     },
     {
       "path": "backend/models/waveforms.py",
@@ -6745,8 +6750,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 19669,
-      "sha256": "e61647f7f4cf49929259ebb713cee22fd376e6fb30c97530129c3afc25619aac"
+      "bytes": 20151,
+      "sha256": "2f5059fc33ac60d3b35397d45658b17ed8960d84632af21cc98b40dc01110799"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -6767,6 +6772,11 @@
       "path": "frontend/src/public/motorPalette.ts",
       "bytes": 2646,
       "sha256": "40d69d324708b41486ee891c31d9a43e2e4bef0b00d2cc10f3bf96a92e737072"
+    },
+    {
+      "path": "frontend/src/public/performance.ts",
+      "bytes": 4082,
+      "sha256": "975be9119c22a8cfd7d4faaa97e530b558cbb7d6441c47fdb2e8fcea2703cc57"
     },
     {
       "path": "frontend/src/public/phaseDrive.ts",
@@ -7407,6 +7417,11 @@
       "path": "tests/test_payload_reuse.py",
       "bytes": 2698,
       "sha256": "7e74e645c876a03e975593a2ddccaf8f9fee0628452b1c95e1ce398727443366"
+    },
+    {
+      "path": "tests/test_performance_contracts.py",
+      "bytes": 11076,
+      "sha256": "5d60f819504a7f0ca3813aaf3adc5c3a204d4b777df3ba2669ec13e6041dd283"
     },
     {
       "path": "tests/test_postsolve_pipeline.py",
@@ -14262,6 +14277,216 @@
       "base_commit": "303c8d4fba69ec915449740440d58a377853c68f",
       "path": "tools/build_benchmark_record.py",
       "source_sha256": "73a1c48480716d816578a50dd3a5321a19b057db865ff8fa5df88037227e6006",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7764b6099c0e41eb4679c40c8383d088170646c3",
+      "path": "backend/models/__init__.py",
+      "source_sha256": "e004067980b6a61c9811f74e5a1e337f827673c95128e986883d81a69b9f4128",
+      "reason": "Fix the shared performance contracts for 0.5.0 (#143): d/q flux linkage, loss breakdown, flux-linkage map, torque-speed envelope, efficiency map, wire spec and operating temperatures. New inputs are refused until the features that use them ship; solve results are unchanged."
+    },
+    {
+      "base_commit": "7764b6099c0e41eb4679c40c8383d088170646c3",
+      "path": "backend/models/config.py",
+      "source_sha256": "d2a919a0cb673ed557a63564c28a0ff51adf5436dfc7ffb9b381d9d2322d41dc",
+      "reason": "Fix the shared performance contracts for 0.5.0 (#143): d/q flux linkage, loss breakdown, flux-linkage map, torque-speed envelope, efficiency map, wire spec and operating temperatures. New inputs are refused until the features that use them ship; solve results are unchanged."
+    },
+    {
+      "base_commit": "7764b6099c0e41eb4679c40c8383d088170646c3",
+      "path": "backend/models/result.py",
+      "source_sha256": "34d42f29fd8442e21d94a09cc0d3e72a4da556139c3842a9e91c4f5113790b0d",
+      "reason": "Fix the shared performance contracts for 0.5.0 (#143): d/q flux linkage, loss breakdown, flux-linkage map, torque-speed envelope, efficiency map, wire spec and operating temperatures. New inputs are refused until the features that use them ship; solve results are unchanged."
+    },
+    {
+      "base_commit": "7764b6099c0e41eb4679c40c8383d088170646c3",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "cca228338c8954c00b92ae3cd4231d0064e017d3821da55cd96512e4bf548564",
+      "reason": "Fix the shared performance contracts for 0.5.0 (#143): d/q flux linkage, loss breakdown, flux-linkage map, torque-speed envelope, efficiency map, wire spec and operating temperatures. New inputs are refused until the features that use them ship; solve results are unchanged."
+    },
+    {
+      "base_commit": "7764b6099c0e41eb4679c40c8383d088170646c3",
+      "path": "backend/models/performance.py",
+      "source_sha256": null,
+      "reason": "Fix the shared performance contracts for 0.5.0 (#143): d/q flux linkage, loss breakdown, flux-linkage map, torque-speed envelope, efficiency map, wire spec and operating temperatures. New inputs are refused until the features that use them ship; solve results are unchanged."
+    },
+    {
+      "base_commit": "7764b6099c0e41eb4679c40c8383d088170646c3",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": null,
+      "reason": "Fix the shared performance contracts for 0.5.0 (#143): d/q flux linkage, loss breakdown, flux-linkage map, torque-speed envelope, efficiency map, wire spec and operating temperatures. New inputs are refused until the features that use them ship; solve results are unchanged."
+    },
+    {
+      "base_commit": "7764b6099c0e41eb4679c40c8383d088170646c3",
+      "path": "tests/test_performance_contracts.py",
+      "source_sha256": null,
+      "reason": "Fix the shared performance contracts for 0.5.0 (#143): d/q flux linkage, loss breakdown, flux-linkage map, torque-speed envelope, efficiency map, wire spec and operating temperatures. New inputs are refused until the features that use them ship; solve results are unchanged."
+    },
+    {
+      "base_commit": "25d14960bbb2a2f88d5adf8aa501b432af1dfae4",
+      "path": "backend/models/__init__.py",
+      "source_sha256": "e004067980b6a61c9811f74e5a1e337f827673c95128e986883d81a69b9f4128",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "25d14960bbb2a2f88d5adf8aa501b432af1dfae4",
+      "path": "backend/models/config.py",
+      "source_sha256": "1e54d3c53dc32a1cab28f5dcaf8f36d505d0ca88b0d3a8bcebdc581594ec9e9c",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "25d14960bbb2a2f88d5adf8aa501b432af1dfae4",
+      "path": "backend/models/performance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "25d14960bbb2a2f88d5adf8aa501b432af1dfae4",
+      "path": "backend/models/result.py",
+      "source_sha256": "d5076f389c5522ee2d9dfb665fbf7de7b1e1d2d73039c3dac9b6d953908aa4c5",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "25d14960bbb2a2f88d5adf8aa501b432af1dfae4",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "e61647f7f4cf49929259ebb713cee22fd376e6fb30c97530129c3afc25619aac",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "25d14960bbb2a2f88d5adf8aa501b432af1dfae4",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "25d14960bbb2a2f88d5adf8aa501b432af1dfae4",
+      "path": "tests/test_performance_contracts.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "131c2463fe057e1be464b931319949a44f3c511d",
+      "path": "backend/models/__init__.py",
+      "source_sha256": "e004067980b6a61c9811f74e5a1e337f827673c95128e986883d81a69b9f4128",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "131c2463fe057e1be464b931319949a44f3c511d",
+      "path": "backend/models/config.py",
+      "source_sha256": "1e54d3c53dc32a1cab28f5dcaf8f36d505d0ca88b0d3a8bcebdc581594ec9e9c",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "131c2463fe057e1be464b931319949a44f3c511d",
+      "path": "backend/models/performance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "131c2463fe057e1be464b931319949a44f3c511d",
+      "path": "backend/models/result.py",
+      "source_sha256": "d5076f389c5522ee2d9dfb665fbf7de7b1e1d2d73039c3dac9b6d953908aa4c5",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "131c2463fe057e1be464b931319949a44f3c511d",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "e61647f7f4cf49929259ebb713cee22fd376e6fb30c97530129c3afc25619aac",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "131c2463fe057e1be464b931319949a44f3c511d",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "131c2463fe057e1be464b931319949a44f3c511d",
+      "path": "tests/test_performance_contracts.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "24d0e3a3f60fca4815a6c2174a6f9a47432bf34a",
+      "path": "backend/models/__init__.py",
+      "source_sha256": "e004067980b6a61c9811f74e5a1e337f827673c95128e986883d81a69b9f4128",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "24d0e3a3f60fca4815a6c2174a6f9a47432bf34a",
+      "path": "backend/models/config.py",
+      "source_sha256": "1e54d3c53dc32a1cab28f5dcaf8f36d505d0ca88b0d3a8bcebdc581594ec9e9c",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "24d0e3a3f60fca4815a6c2174a6f9a47432bf34a",
+      "path": "backend/models/performance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "24d0e3a3f60fca4815a6c2174a6f9a47432bf34a",
+      "path": "backend/models/result.py",
+      "source_sha256": "d5076f389c5522ee2d9dfb665fbf7de7b1e1d2d73039c3dac9b6d953908aa4c5",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "24d0e3a3f60fca4815a6c2174a6f9a47432bf34a",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "e61647f7f4cf49929259ebb713cee22fd376e6fb30c97530129c3afc25619aac",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "24d0e3a3f60fca4815a6c2174a6f9a47432bf34a",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "24d0e3a3f60fca4815a6c2174a6f9a47432bf34a",
+      "path": "tests/test_performance_contracts.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "33a25e1889b5bb472a922a504bba77dbb2fd5adf",
+      "path": "backend/models/__init__.py",
+      "source_sha256": "e004067980b6a61c9811f74e5a1e337f827673c95128e986883d81a69b9f4128",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "33a25e1889b5bb472a922a504bba77dbb2fd5adf",
+      "path": "backend/models/config.py",
+      "source_sha256": "1e54d3c53dc32a1cab28f5dcaf8f36d505d0ca88b0d3a8bcebdc581594ec9e9c",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "33a25e1889b5bb472a922a504bba77dbb2fd5adf",
+      "path": "backend/models/performance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "33a25e1889b5bb472a922a504bba77dbb2fd5adf",
+      "path": "backend/models/result.py",
+      "source_sha256": "d5076f389c5522ee2d9dfb665fbf7de7b1e1d2d73039c3dac9b6d953908aa4c5",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "33a25e1889b5bb472a922a504bba77dbb2fd5adf",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "e61647f7f4cf49929259ebb713cee22fd376e6fb30c97530129c3afc25619aac",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "33a25e1889b5bb472a922a504bba77dbb2fd5adf",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "33a25e1889b5bb472a922a504bba77dbb2fd5adf",
+      "path": "tests/test_performance_contracts.py",
+      "source_sha256": null,
       "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
     }
   ]

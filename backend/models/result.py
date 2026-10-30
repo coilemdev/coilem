@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 
 from .field import FieldLineFrame, FieldLinePlot, FieldMovieManifest, SlotExcitationContribution, SlotExcitationFrame
 from .mesh import FluxDensityMap
+from .performance import DqFluxLinkage, LossBreakdown
 from .waveforms import (
     BackEMFHarmonicAnalysis,
     BackEMFWaveform,
@@ -34,6 +35,8 @@ class SolveSummary(BaseModel):
     peak_flux_density_yoke_T: float = Field(ge=0)
     rms_flux_density_teeth_T: float | None = Field(default=None, ge=0)
     rms_flux_density_yoke_T: float | None = Field(default=None, ge=0)
+    dq_flux_linkage: DqFluxLinkage | None = None
+    loss_breakdown: LossBreakdown | None = None
     slot_excitation_contributions: list[SlotExcitationContribution] | None = None
     solve_time_s: float = Field(ge=0)
 
@@ -84,6 +87,12 @@ class SolveMetadata(BaseModel):
     back_emf_computed: bool | None = Field(default=None, description="Whether this run computed the no-load back-EMF sweep")
     rated_speed_rpm: int | None = Field(default=None, ge=0, le=30000)
     motor_input_dc_bus_V: float | None = Field(default=None, ge=1, le=2000)
+    magnet_temperature_C: float | None = Field(default=None, ge=-50, le=300)
+    magnet_remanence_T: float | None = Field(default=None, gt=0, description="Br used by the solve, after temperature derating")
+    magnet_intrinsic_coercivity_kA_m: float | None = Field(
+        default=None, gt=0, description="Hcj used by the solve, after temperature derating"
+    )
+    winding_temperature_C: float | None = Field(default=None, ge=-50, le=250)
     solve_cache_dir: str | None = None
     pipeline_stage: Literal["field_solve", "postprocess"] | None = None
     postprocess_source_cache_dir: str | None = None
