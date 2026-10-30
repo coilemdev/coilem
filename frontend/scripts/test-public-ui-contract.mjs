@@ -1018,7 +1018,12 @@ assert.match(styleSource, /\.public-motor-viewport \.viewport-bottom-bar \{ posi
 assert.match(styleSource, /\.viewport-dock-resize \{[^}]*bottom: calc\(var\(--viewport-dock-height\) - 5px\);[^}]*cursor: row-resize;/);
 assert.match(styleSource, /\.public-motor-viewport \.viewport-bottom-bar \.viewport-controls button,\s*\.public-motor-viewport \.viewport-bottom-bar \.public-polarity-view button \{ min-width: 40px; height: 36px;[^}]*font-size: 13px; \}/);
 // Percentages keep their unit apart from the number: its own column in the list.
-assert.match(workspaceSource, /formatNumber\(result\.summary\.torque_ripple_pct\), '%'\)/);
+assert.match(workspaceSource, /formatNumber\(ripple\.ripplePct\), ripple\.ripplePct === null \? '' : '%', false, ripple\.note \?\? undefined\)/);
+// No current: ripple % is left out and the cogging swing shown (resultMetrics torqueRippleView).
+assert.match(workspaceSource, /\{ripple\.ripplePct === null && resultRow\(ripple\.peakToPeakLabel, formatNumber\(ripple\.peakToPeakNm\), 'N·m'/);
+assert.doesNotMatch(workspaceSource, /result\.summary\.torque_ripple_pct/);
+assert.equal((workspaceSource.match(/\{rippleRows\}/g) ?? []).length, 2, 'Key results and Performance share the ripple rows');
+assert.match(resultSummarySource, /ripple\.ripplePct === null\s*\? `\$\{ripple\.peakToPeakLabel\} \$\{fixed\(ripple\.peakToPeakNm\)\} N·m`/);
 assert.match(workspaceSource, /formatNumber\(result\.summary\.back_emf_thd_pct\), '%'\)/);
 assert.doesNotMatch(workspaceSource, /(?:torque_ripple_pct|back_emf_thd_pct)\)\}%/);
 assert.doesNotMatch(workspaceSource, /Validate on run/i);
@@ -1218,7 +1223,9 @@ assert.match(fieldResultSource, /<span className="public-field-lead-short" aria-
 assert.match(styleSource, /@container \(max-width: 440px\) \{\s*\.public-solved-field-canvas \.public-field-lines-legend \.public-field-lead-long \{ display: none; \}/);
 assert.doesNotMatch(styleSource, /\.public-field-toolbar-groups \{ grid-column: 1 \/ -1; grid-row: 2;/);
 // Field axes: each field's working-harmonic poles, the stator lead and the caption.
-assert.match(solvedFieldSource, /fieldAxes=\{overlayActive \? CLOCKWISE_FIELD_AXES : null\}/);
+assert.match(solvedFieldSource, /fieldAxes=\{overlayActive \? fieldAxes : null\}/);
+// The Stator + PM view notes the run's current angle: the stator field sits at 90° + γ.
+assert.match(solvedFieldSource, /\.\.\.CLOCKWISE_FIELD_AXES,\s*currentAngleDeg: config\.solve_params\.excitation_mode === 'sinusoidal'/);
 assert.match(solvedFieldSource, /setShowPoleLabels\(true\);\s*setFieldLineDensity\('low'\);/);
 assert.match(fieldResultSource, /airgapHarmonic\(statorPolarityProfile, axisPolePairs\)/);
 assert.match(fieldResultSource, /rotorNorthAxisDeg\(magnetOverlay, axisPolePairs\)/);
@@ -1451,10 +1458,13 @@ assert.match(workspaceSource, /Open design file/);
 assert.match(workspaceSource, /Save design file/);
 assert.match(workspaceSource, /public-project-menu/);
 assert.match(appSource, /parseDesignFile/);
-assert.match(appSource, /cogging_torque: false/);
-assert.match(appSource, /thd_analysis: thdAnalysis/);
-assert.match(appSource, /solve_quality === 'standard'/);
-assert.match(appSource, /solve_quality === 'fine'/);
+// The solve request's config serializer, shared by Solve and the Performance map (#142).
+const publicRequestSource = await readFile(path.join(frontendRoot, 'src/public/publicRequest.ts'), 'utf8');
+assert.match(appSource, /import \{ asPublicConfig \} from '\.\/publicRequest'/);
+assert.match(publicRequestSource, /cogging_torque: false/);
+assert.match(publicRequestSource, /thd_analysis: thdAnalysis/);
+assert.match(publicRequestSource, /solve_quality === 'standard'/);
+assert.match(publicRequestSource, /solve_quality === 'fine'/);
 assert.match(appSource, /saveDesignFileAs/);
 assert.match(styleSource, /\.public-project-menu/);
 assert.match(motorThreeSource, /OrbitControls/);
@@ -2017,4 +2027,26 @@ assert.match(motorCanvasSource, /soft-light/);
 assert.match(motorCanvasSource, /ANNULAR_REGIONS/);
 assert.match(motorThreeSource, /shaftFrontOverhang/);
 
+
+// #153: Compare runs shows Kt per rms ampere, from the same view as Results.
+assert.match(runComparisonSource, /\{ label: 'Torque constant', unit: 'N·m\/A rms', value: \(run\) => motorConstantsView\(run\.summary\)\.kt\.value \}/);
+assert.doesNotMatch(runComparisonSource, /run\.summary\.Kt_Nm_per_A/);
+// #154: Advanced Geometry rounds the stored widths for display only.
+assert.match(workspaceSource, /summary=\{advancedGeometrySummary\(config, statorWidths\)\}/);
+assert.match(workspaceSource, /NumberRow label="Yoke Tooth Width" value=\{shownWidthMm\(config\.stator\.tooth_width_mm\)\}/);
+assert.match(workspaceSource, /onChange=\{set\('stator', 'tooth_width_mm', 'advanced'\)\}/);
+// Public issue 143: each 0.5.0 output shows its status with the reason in words.
+const statusSources = Object.fromEntries(await Promise.all(['DqCard', 'LossesCard', 'PerformancePanel'].map(async (name) => [
+  name, await readFile(path.join(frontendRoot, `src/public/${name}.tsx`), 'utf8'),
+])));
+assert.match(statusSources.DqCard, /<OutputStatusList statuses=\{\[\{ key: 'dq'/);
+assert.match(statusSources.LossesCard, /<OutputStatusList statuses=\{view\.statuses\} \/>/);
+assert.match(statusSources.LossesCard, /statuses=\{view\.statuses\}\n\s*\/>/, 'the loss map shows the status of the loss it maps');
+assert.match(statusSources.PerformancePanel, /<OutputStatusList statuses=\{statuses\} \/>/);
+assert.match(statusSources.PerformancePanel, /magnet_temperature_derated: magnetsDerated/);
+assert.match(workspaceSource, /label: 'Magnet derating'/);
+assert.match(workspaceSource, /\{row\.status && <StatusBadge status=\{row\.status\.status\} title=\{row\.status\.reason\} \/>\}/);
+// A pinned reference without its own wire shows the published conductor its resistance uses, not 'Derived from slot'.
+assert.match(workspaceSource, /config\.geometry_reference && !wire \? \(/);
+assert.match(workspaceSource, /<span className="param-label">Wire<small>published<\/small><\/span>/);
 console.log('public UI contract audit passed');

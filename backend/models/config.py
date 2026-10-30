@@ -250,6 +250,31 @@ class RotorConfig(BaseModel):
         return v
 
 
+class WireSpec(BaseModel):
+    """Conductor of each turn, used for slot fill and phase resistance."""
+
+    wire_bare_diameter_mm: float = Field(..., gt=0.05, le=10.0, description="Bare copper or aluminium diameter of one strand")
+    strands_in_hand: int = Field(default=1, ge=1, le=200, description="Parallel strands wound together as one turn")
+    insulation_build_mm: Optional[float] = Field(
+        default=None,
+        ge=0.0,
+        le=1.0,
+        description="Diametral increase from the enamel; omit to use the default for the wire size",
+    )
+    end_turn_extension_mm: Optional[float] = Field(
+        default=None,
+        ge=0.0,
+        le=200.0,
+        description="Axial overhang of each end turn beyond the stack; omit to derive it from the coil span",
+    )
+    slot_fill_limit: Optional[float] = Field(
+        default=None,
+        gt=0.0,
+        lt=1.0,
+        description="Largest copper fill of the slot area that is accepted; omit for the default",
+    )
+
+
 class WindingConfig(BaseModel):
     """Winding configuration."""
 
@@ -273,6 +298,10 @@ class WindingConfig(BaseModel):
             "Distributed-winding coil span in slots. Omit for full pitch (3q); "
             "short-pitch values are validated against the slot/pole combination."
         ),
+    )
+    wire: Optional[WireSpec] = Field(
+        default=None,
+        description="Conductor of each turn. Omit to keep the derived wire size of older designs.",
     )
 
 
@@ -432,6 +461,21 @@ class SolveParams(BaseModel):
             "derating. Omit to use the room-temperature catalog properties. "
             "This field is a manual input, not a solved thermal state."
         ),
+    )
+    winding_temperature_C: Optional[float] = Field(
+        default=None,
+        ge=-50.0,
+        le=250.0,
+        description=(
+            "Manual winding temperature [C] for phase resistance and copper loss. "
+            "Omit for 20 C. This field is a manual input, not a solved thermal state."
+        ),
+    )
+    mechanical_loss_W: Optional[float] = Field(
+        default=None,
+        ge=0.0,
+        le=1.0e6,
+        description="Friction and windage loss [W] included in efficiency. Omit for 0.",
     )
     motor_input_dc_bus_V: Optional[float] = Field(
         default=None,
@@ -682,11 +726,20 @@ class MotorConfig(BaseModel):
         if not self.geometry_reference and self.stator.slot_opening_mm < 2.0:
             raise ValueError("Editable designs require slot_opening_mm >= 2 mm")
         if self.solve_params is not None and self.solve_params.magnet_temperature_C is not None:
-            if self.geometry_reference != "pyleecan_prius_2004" or self.solve_params.magnet_temperature_C not in (20, 60):
-                raise ValueError("Magnet temperature is not supported by this preview.")
+            if self.geometry_reference:
+                # The pinned reference keeps its published cases.
+                if self.geometry_reference != "pyleecan_prius_2004" or self.solve_params.magnet_temperature_C not in (20, 60):
+                    raise ValueError("The Prius reference runs its magnets at 20 or 60 °C only.")
+            else:
+                from backend.magnet_temperature import magnet_temperature_unavailable_reason
+
+                reason = magnet_temperature_unavailable_reason(self.materials.magnet_grade, self.solve_params.magnet_temperature_C)
+                if reason is not None:
+                    raise ValueError(reason)
         if self.reference_case and not self.geometry_reference:
             raise ValueError("A reference case requires its pinned geometry reference")
         if self.geometry_reference:
             from backend.reference_models.prius import check_config
             check_config(self)
         return self
+

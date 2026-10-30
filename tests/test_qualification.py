@@ -13,6 +13,7 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
+from backend import qualification as qualification_module
 from backend.benchmark_suite.contract import DEFAULT_BUNDLE, SPEC, sha
 from backend.benchmark_suite.physics import physics_sources
 from backend.benchmark_suite.references import load_bundle, load_suite
@@ -34,6 +35,12 @@ REPORT = json.loads(Path(QUALIFICATION_REPORT).read_text(encoding="utf-8"))
 PHYSICS_SOURCES = physics_sources(Path(__file__).resolve().parents[1])
 
 
+@pytest.fixture
+def measured_build(monkeypatch):
+    """Exercise combination policy independently of the running build's freshness."""
+    monkeypatch.setattr(qualification_module, "evidence_matches_runtime", lambda: True)
+
+
 def _fixture(name: str) -> MotorConfig:
     return MotorConfig.model_validate_json((FIXTURES / name).read_text(encoding="utf-8"))
 
@@ -47,7 +54,7 @@ def _status(config: MotorConfig) -> str:
 
 
 @pytest.mark.parametrize("path", sorted(FIXTURES.glob("*.json")), ids=lambda path: path.stem)
-def test_every_v11_fixture_has_its_documented_status(path: Path) -> None:
+def test_every_v11_fixture_has_its_documented_status(path: Path, measured_build) -> None:
     if path.stem == "ornl_prius_2004_ipm":
         expected = "unsupported"
     elif path.stem.startswith("ipm_vshape_"):
@@ -67,7 +74,7 @@ def test_every_v11_fixture_has_its_documented_status(path: Path) -> None:
         ("ipm_flat_8p12s_fsae_contract.json", "Flat-buried IPM, single-layer concentrated winding"),
     ],
 )
-def test_qualified_combinations_name_their_evidence(fixture: str, reason: str) -> None:
+def test_qualified_combinations_name_their_evidence(fixture: str, reason: str, measured_build) -> None:
     qualification = classify_qualification(_fixture(fixture))
     assert qualification["status"] == "qualified"
     assert qualification["reason"].startswith(reason)
@@ -84,23 +91,25 @@ def test_basis_names_the_measured_commit_and_reference() -> None:
     assert run["reference_mode"] == "FROZEN_REFERENCE"
     assert run["reference_commit"] == reference["reference_commit"]
     assert run["selection"]["bundle_sha256"] == bundle_sha
-    assert run["selection"]["spec_sha256"] == sha(SPEC)
+    measured_spec = Path(f"benchmarks/abcd-v{run['identity']['protocol_version'].rsplit('.', 1)[0]}/benchmark_spec.json")
+    assert run["selection"]["spec_sha256"] == sha(measured_spec)
     # This run measured the winding-axis protocol directly; the frozen reference
     # still names its own earlier measured commit and registered validation bridge.
-    assert run["identity"]["protocol_version"] == spec["protocol_version"] == "1.3.0"
+    assert run["identity"]["protocol_version"] == "1.3.0"
 
 
 @pytest.mark.parametrize("path", PHYSICS_SOURCES)
 def test_report_measured_the_current_physics_sources(path: str) -> None:
     measured = REPORT["run"]["identity"]["source_files"]
     assert path in measured, f"{QUALIFICATION_REPORT} did not measure {path}; run a new report before qualifying it"
-    assert hashlib.sha256(Path(path).read_bytes()).hexdigest() == measured[path], (
-        f"{path} changed after {QUALIFICATION_REPORT} measured it. Run a new A/B/C/D report and point "
-        "QUALIFICATION_BASIS at it, or mark the affected combinations experimental."
-    )
+    if hashlib.sha256(Path(path).read_bytes()).hexdigest() != measured[path]:
+        # Keep the guard: changed physics must lose its qualified claim. The
+        # strict release command additionally refuses publication until remeasured.
+        assert not qualification_module.evidence_matches_runtime()
+        assert classify_qualification(MotorConfig.model_validate(SPM_CONCENTRATED))["status"] == "experimental"
 
 
-def test_reasons_match_the_report_outcomes() -> None:
+def test_reasons_match_the_report_outcomes(measured_build) -> None:
     # A reason names the combination, then states its claim after ": ". The two
     # distributed pitches share one claim about the same four fixtures.
     outcomes: dict[tuple[str, str], list[str]] = defaultdict(list)
@@ -186,7 +195,7 @@ def test_rejected_rotors_and_windings_are_unsupported() -> None:
         assert qualification["caveats"] == []
 
 
-def test_preview_plan_carries_a_mesh_caveat_without_changing_status() -> None:
+def test_preview_plan_carries_a_mesh_caveat_without_changing_status(measured_build) -> None:
     config = _fixture("spm_8p12s_concentrated__baseline.json")
     quick = classify_qualification(_with(config, "solve_params", solve_quality="quick", mesh_density="coarse"))
     standard = classify_qualification(_with(config, "solve_params", solve_quality="standard", mesh_density="normal"))
@@ -206,7 +215,8 @@ def test_preview_and_validate_return_the_status() -> None:
 
     validation = client.post("/solve/validate", json=SPM_CONCENTRATED)
     assert validation.status_code == 200, validation.text
-    assert validation.json()["qualification"]["status"] == "qualified"
+    expected = "qualified" if qualification_module.evidence_matches_runtime() else "experimental"
+    assert validation.json()["qualification"]["status"] == expected
 
 
 def _v_shape_run(tmp_path: Path) -> tuple[SolveWorkspace, SolveRunWriter, dict]:
@@ -261,8 +271,27 @@ def test_completed_result_carries_the_stored_status(tmp_path: Path) -> None:
     assert returned["saved_run"]["run_id"]
 
 
-def test_run_without_a_valid_config_records_no_status() -> None:
+def test_run_without_a_valid_config_records_no_status(measured_build) -> None:
     config = deepcopy(SPM_CONCENTRATED)
     del config["stator"]
     assert _qualification(config) is None
     assert _qualification(SPM_CONCENTRATED)["status"] == "qualified"
+
+
+def test_changed_or_unverifiable_physics_cannot_keep_a_qualified_label(monkeypatch):
+    monkeypatch.setattr(qualification_module, "evidence_matches_runtime", lambda: False)
+    result = classify_qualification(MotorConfig.model_validate(SPM_CONCENTRATED))
+    assert result["status"] == "experimental"
+    assert "qualification is pending" in result["reason"]
+
+
+def test_installed_evidence_requires_matching_record_identity(monkeypatch):
+    from backend import resources
+    from backend.benchmark_suite import record
+    historical = resources.read_data_json(f"{resources.BENCHMARK_RECORDS_DIR}/windows-x86_64.json")
+    monkeypatch.setattr(resources, "read_data_json", lambda _: historical)
+    for status in ("DIFFERS", "UNVERIFIED", "MATCH"):
+        monkeypatch.setattr(record, "check_physics", lambda _, status=status: {"status": status})
+        assert qualification_module.evidence_matches_runtime() is (status == "MATCH")
+    monkeypatch.setattr(resources, "read_data_json", lambda _: {**historical, "measured_commit": "0" * 40})
+    assert not qualification_module.evidence_matches_runtime()

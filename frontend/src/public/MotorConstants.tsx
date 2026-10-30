@@ -6,6 +6,7 @@ import {
   type MotorConstantsSummary,
   type MotorConstantValue,
 } from './machineConstants';
+import { dqAgreement } from './dqView';
 
 const CONSISTENCY_HELP = 'Average torque divided by the torque the back EMF predicts, Kt / (1.5·Ke). '
   + '100% is ideal for magnet torque with the current on the q-axis (0° current angle); a few percent low '
@@ -41,6 +42,8 @@ export function MotorConstants({ summary, variant = 'panel' }: { summary: MotorC
   const headingId = useId();
   if (!hasMotorConstants(summary)) return null;
   const view = motorConstantsView(summary);
+  // On the Results page the d/q card carries this row with the rest of the d/q record.
+  const dq = dqAgreement(summary.dq_flux_linkage);
   return (
     <section className={`motor-constants${variant === 'report' ? ' is-report' : ''}`} aria-labelledby={headingId}>
       <h3 id={headingId}>Motor constants</h3>
@@ -61,18 +64,29 @@ export function MotorConstants({ summary, variant = 'panel' }: { summary: MotorC
           <tr className="motor-constants-consistency" title={CONSISTENCY_HELP}>
             <th scope="row"><Label symbol="Torque–EMF" name="consistency" /></th>
             <Value item={view.consistency}>
-              {view.consistencyStatus !== 'unavailable' && (
+              {(view.consistencyStatus === 'ok' || view.consistencyStatus === 'check') && (
                 <span className={`motor-constants-status is-${view.consistencyStatus}`}>
                   {view.consistencyStatus === 'ok' ? 'OK' : 'Check'}
                 </span>
               )}
             </Value>
           </tr>
+          {variant === 'panel' && dq.status !== 'unavailable' && (
+            <tr title={dq.hint}>
+              <th scope="row"><Label symbol="Torque–λdq" name="agreement" /></th>
+              <td className="motor-constants-value">{dq.text}</td>
+              <td className="motor-constants-unit">
+                %
+                <span className={`motor-constants-status is-${dq.status}`}>{dq.status === 'ok' ? 'OK' : 'Check'}</span>
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
       {view.kt.value === null && (
         <p className="motor-constants-note">Kt and the consistency check need a loaded run with sinusoidal current.</p>
       )}
+      {view.consistencyNote && <p className="motor-constants-note">{view.consistencyNote}</p>}
     </section>
   );
 }

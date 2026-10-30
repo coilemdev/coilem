@@ -1,5 +1,15 @@
 # Benchmark reports and protocols
 
+The [Windows validation of the v0.5.0 stack](windows-v050-20261029-bb3d8af/README.md) measures `bb3d8af`: all 35 supported native jobs completed, **29 PASS and one planned unsupported row**, with **42/42 BLDC gates** against frozen FEMM v3 references. The separate reconstructed-reference diagnostic has **28 PASS, 1 YELLOW and 1 UNSUPPORTED**. Protocol 1.6 coverage and release qualification remain pending.
+
+The [macOS A/B/C/D at the 0.5.0 stack top](macos-native-20261022-5b7cad8/README.md) is development evidence at `5b7cad8`: 29 PASS and the planned unsupported Prius against the frozen FEMM v3 bundle, compared with the v0.4.0 Windows baseline.
+
+[Protocol 1.6.0](abcd-v1.6/README.md) registers the 0.5.0 reference gates. It is the 1.4.0 matrix plus the shoed example, magnet temperature at 60 °C and 100 °C, and loaded λd/λq points for one SPM and one flat IPM. It awaits the owner's FEMM bundle ([request](abcd-v1.6/FEMM-REQUEST.md)), and becomes the default at the freeze.
+
+[Protocol 1.5.0](abcd-v1.5/README.md) is a separate extension until the 0.5.0
+freeze. It adds the app's shoed 8p12s example to the 1.4.0 matrix, which has
+no tooth-shoe case, and awaits its FEMM record.
+
 The [v0.4.0 candidate baseline report](v0.4.0/README.md) brings together the full
 64-page Windows native PDF and the fresh October 18 FEMM repeat on main:
 **29/29 exact physical results and extraction audits**, collected in

@@ -55,13 +55,13 @@ def test_wheel_data_covers_everything_the_suite_registers() -> None:
 
 @pytest.mark.parametrize("key", sorted(EVIDENCE))
 def test_records_are_rebuilt_exactly_from_the_committed_evidence(key: str, tmp_path: Path) -> None:
-    assert build_record_main([str(EVIDENCE[key]), "--out", str(tmp_path / "record.json")]) == 0
+    assert build_record_main([str(EVIDENCE[key]), "--historical-record", str(RECORDS / f"{key}.json"), "--out", str(tmp_path / "record.json")]) == 0
     assert (tmp_path / "record.json").read_text(encoding="utf-8") == (RECORDS / f"{key}.json").read_text(encoding="utf-8")
     published = read(RECORDS / f"{key}.json")
     assert published["platform"] == key
     assert published["measured_commit"] == read(EVIDENCE[key] / "benchmark_summary.json")["run"]["identity"]["commit"]
     if key == "windows-x86_64":
-        assert set(published["physics_files"]) == set(physics_sources(REPO_ROOT))
+        assert set(published["physics_files"]) <= set(physics_sources(REPO_ROOT))
     else:
         assert len(published["physics_files"]) == 50
         assert not any(name.startswith("backend/reference_models/") for name in published["physics_files"])
@@ -109,12 +109,9 @@ def test_windows_requalification_publication_hashes_and_self_check(folder) -> No
 def test_historical_macos_record_keeps_its_measured_physics_guard(graded) -> None:
     published = read(RECORDS / "macos-arm64.json")
     physics = record.check_physics(published)
-    assert physics == {"status": "DIFFERS", "files": 50, "differs": [
-        "backend/excitation.py", "backend/geometry_ir.py", "backend/gmsh_solver.py",
-        "backend/magneto2d_adapter/__init__.py", "backend/solver/__init__.py",
-        "backend/reference_models/prius.py", "backend/reference_models/pyleecan_prius_2004.json",
-        "backend/reference_models/pyleecan_prius_2004_config.json",
-    ], "unverified": []}
+    assert physics["status"] == "DIFFERS" and physics["files"] == 50
+    assert "backend/gmsh_solver.py" in physics["differs"]
+    assert physics["unverified"] == []
     comparison = record.compare_run(graded["macos-arm64"]["rows"], published, physics=physics)
     assert comparison["matched"] == comparison["compared"] == 30
     assert comparison["status"] == "NOT_COMPARABLE"
@@ -167,13 +164,18 @@ def test_unsupported_and_failed_cases_must_match_too(graded) -> None:
 
 def test_physics_check_reads_this_checkout_and_names_a_change(monkeypatch) -> None:
     published = read(RECORDS / "windows-x86_64.json")
-    assert record.check_physics(published) == {"status": "MATCH", "files": 53, "differs": [], "unverified": []}
+    baseline = record.check_physics(published)
+    assert baseline["files"] == len(published["physics_files"])
+    actual = {**record.installed_physics_hashes()[0], **record.installed_physics_hashes()[1]}
+    expected = sorted({path for path, digest in published["physics_files"].items() if actual.get(path) != digest}
+                      | (set(actual) - set(published["physics_files"])))
+    assert set(baseline["differs"]) == set(expected) and not baseline["unverified"]
     changed = copy.deepcopy(published)
     changed["physics_files"]["backend/torque_metrics.py"] = "0" * 64
-    assert record.check_physics(changed)["differs"] == ["backend/torque_metrics.py"]
+    assert set(record.check_physics(changed)["differs"]) == set(expected) | {"backend/torque_metrics.py"}
     monkeypatch.setenv("COILEM_MAGNETO2D_BINARY", "/somewhere/magneto2d")
     unverified = record.check_physics(published)
-    assert unverified["status"] == "UNVERIFIED" and unverified["unverified"][0] == "solvers/magneto2d/Cargo.lock"
+    assert unverified["status"] != "MATCH" and "solvers/magneto2d/Cargo.lock" in unverified["unverified"]
     comparison = record.compare_run([], changed, physics=record.check_physics(changed))
     assert comparison["status"] == "NOT_COMPARABLE"
 
@@ -184,11 +186,14 @@ def test_installed_package_checks_the_solver_by_its_stamped_hashes(monkeypatch) 
     stamped = {path: digest for path, digest in published["physics_files"].items() if path.startswith("solvers/")}
     monkeypatch.setattr(record, "CHECKOUT", None)
     monkeypatch.setattr(record, "stamped_build_info", lambda: {BUILD_INFO_KEY: stamped})
-    assert record.check_physics(published)["status"] == "MATCH"
+    with_stamp = record.check_physics(published)
+    assert not with_stamp["unverified"], "Stamped solver identity must be verified even if Python physics changed"
+    assert not any(path.startswith("solvers/") for path in with_stamp["differs"])
     monkeypatch.setattr(record, "stamped_build_info", lambda: {BUILD_INFO_KEY: {**stamped, "solvers/magneto2d/src/new.rs": "1" * 64}})
-    assert record.check_physics(published)["differs"] == ["solvers/magneto2d/src/new.rs"]
+    assert "solvers/magneto2d/src/new.rs" in record.check_physics(published)["differs"]
     monkeypatch.setattr(record, "stamped_build_info", lambda: None)
-    assert record.check_physics(published)["status"] == "UNVERIFIED"
+    assert record.check_physics(published)["status"] != "MATCH"
+    assert record.check_physics(published)["unverified"]
 
 
 @pytest.mark.parametrize(

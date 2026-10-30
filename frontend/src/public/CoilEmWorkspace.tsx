@@ -27,8 +27,10 @@ import {
 import { WindingLayoutView } from './WindingLayoutView';
 import { coilsPerPhase, wholeSlotConcentratedNote, windingLayerOptions, windingLayerWording } from './toothCoils';
 import {
+  advancedGeometrySummary,
   buildDimensionAnnotations,
   deriveStatorSectionWidths,
+  shownWidthMm,
   type DimensionAnnotation,
   type DimensionId,
 } from './dimensionAnnotations';
@@ -57,7 +59,13 @@ import {
 import { BldcTorqueCurrentChart } from './BldcTorqueCurrentChart';
 import { PublicRunComparison } from './PublicRunComparison';
 import { MotorConstants } from './MotorConstants';
+import { PerformancePanel } from './PerformancePanel';
+import { GRADE_TEMPERATURE, isDeratedRun, magnetTemperatureView } from './magnetTemperature';
 import { hasMotorConstants, motorConstantsView } from './machineConstants';
+import type { WireSpec } from './performance';
+import { readWindingResistance, windingReadout } from './windingResistance';
+import { StatusBadge } from './OutputStatusBadge';
+import { MAGNET_TEMPERATURE_STATUS_REASON, STATUS_LABEL } from './outputStatus';
 import { ResultSummary } from './ResultSummary';
 import { publicExampleOptions, type PublicExampleId } from './exampleDesigns';
 import {
@@ -89,6 +97,7 @@ import { LessonProgressStepper } from '../components/tutorials/LessonProgressSte
 import { designErrorSection } from './designErrors';
 import { magnetPoleCoveragePct } from './magnetCoverage';
 import { RpmField } from './RpmField';
+import { torqueRippleView } from './resultMetrics';
 import type { LearningLessonHeaderProgress } from '../components/tutorials/lessonStage';
 import {
   publicMeshQualityBand,
@@ -175,7 +184,7 @@ interface CoilEmWorkspaceProps {
   onSolvePlanChange: (solvePlan: PublicSolvePreset) => void;
   onCustomSweepChange: (stepDeg: number) => void;
   onSolveSettingChange: (
-    field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg',
+    field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W' | 'magnet_temperature_C',
     value: MotorConfig['solve_params']['nonlinear_solver'] | MotorConfig['solve_params']['current_amplitude_convention'] | MotorConfig['solve_params']['excitation_mode'] | number,
   ) => void;
   onSolverChange: (solver: PublicSolverId) => void;
@@ -1081,6 +1090,13 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
   // leaves it held indefinitely — so an unsuppressed note would keep explaining a
   // shape the user has already changed.
   const geometryWarnings = currentGeometryWarnings(geometry, geometryStale);
+  // Resistance and fill come with the preview; while it is stale they would
+  // describe the previous wire, so they wait for the new one (#136).
+  const windingResistanceRecord = geometryStale ? null : readWindingResistance(geometry?.metadata?.winding_resistance);
+  const windingTemperatureC = config.solve_params.winding_temperature_C ?? 20;
+  const windingRows = windingResistanceRecord ? windingReadout(windingResistanceRecord, windingTemperatureC) : [];
+  const wire = config.winding.wire ?? null;
+  const setWire = (next: WireSpec | null) => set('winding', 'wire', 'winding')(next);
   // Every section header showed a green check, even beside "Winding needs
   // attention"; the one holding the faulty field now shows the warning instead.
   const errorSection = error ? designErrorSection(errorDetails) : null;
@@ -1343,10 +1359,10 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         <SelectRow label="Magnet Grade" value={config.materials.magnet_grade} choices={materials.magnet_grades.map((value) => ({ value, label: value }))} disabled={disabled} onChange={set('materials', 'magnet_grade', 'rotor')} />
       </ParameterSectionBlock>}
 
-      {matchesSearch('advanced') && <ParameterSectionBlock id="advanced" attention={errorSection === 'advanced'} label="Advanced Geometry" active={Boolean(normalizedSearch) || activeSection === 'advanced'} onToggle={toggle} summary={`bore tooth ${statorWidths.boreToothWidthMm.toFixed(1)} · yoke tooth ${config.stator.tooth_width_mm} · yoke ${config.stator.yoke_thickness_mm}`} nextLabel={normalizedSearch ? undefined : 'Winding'} onNext={normalizedSearch ? undefined : setNext('winding')}>
+      {matchesSearch('advanced') && <ParameterSectionBlock id="advanced" attention={errorSection === 'advanced'} label="Advanced Geometry" active={Boolean(normalizedSearch) || activeSection === 'advanced'} onToggle={toggle} summary={advancedGeometrySummary(config, statorWidths)} nextLabel={normalizedSearch ? undefined : 'Winding'} onNext={normalizedSearch ? undefined : setNext('winding')}>
         <NumberRow label="Bore Tooth Width" value={Number(statorWidths.boreToothWidthMm.toFixed(1))} unit="mm" hint="Tangential tooth width at the stator bore. Bore slot opening is calculated from the remaining pitch." min={minimumBoreToothWidthMm} max={maximumBoreToothWidthMm} step={0.1} disabled={disabled} onChange={setBoreToothWidth} />
-        <NumberRow label="Yoke Tooth Width" value={config.stator.tooth_width_mm} unit="mm" hint="Tangential tooth-body width where the slot terminates beside the yoke." min={2} step={0.1} disabled={disabled} onChange={set('stator', 'tooth_width_mm', 'advanced')} />
-        <NumberRow label="Yoke Thick." value={config.stator.yoke_thickness_mm} unit="mm" min={1} step={0.1} disabled={disabled} onChange={set('stator', 'yoke_thickness_mm', 'advanced')} />
+        <NumberRow label="Yoke Tooth Width" value={shownWidthMm(config.stator.tooth_width_mm)} unit="mm" hint="Tangential tooth-body width where the slot terminates beside the yoke." min={2} step={0.1} disabled={disabled} onChange={set('stator', 'tooth_width_mm', 'advanced')} />
+        <NumberRow label="Yoke Thick." value={shownWidthMm(config.stator.yoke_thickness_mm)} unit="mm" min={1} step={0.1} disabled={disabled} onChange={set('stator', 'yoke_thickness_mm', 'advanced')} />
         <ToggleRow
           label="Tooth Shoe"
           checked={Boolean(config.stator.tooth_shoe_enabled)}
@@ -1421,6 +1437,35 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         </div>
         <NumberRow label="Turns / Coil" value={config.winding.turns_per_coil} min={1} step={1} disabled={disabled} onChange={set('winding', 'turns_per_coil', 'winding')} />
         <NumberRow label="Parallel Paths" value={config.winding.parallel_paths} min={1} step={1} disabled={disabled} onChange={set('winding', 'parallel_paths', 'winding')} />
+        {config.geometry_reference && !wire ? (
+          // A pinned reference without its own wire uses its published conductor (backend/winding_resistance.py).
+          <div className="param-row public-param-row public-derived-row" title={windingResistanceRecord?.notes[0] ?? "The reference's published conductor."}>
+            <span className="param-label">Wire<small>published</small></span>
+            <strong>{windingResistanceRecord ? `${windingResistanceRecord.strands_in_hand} × ${windingResistanceRecord.strand_diameter_mm} mm` : '—'}</strong>
+          </div>
+        ) : <SelectRow
+          label="Wire"
+          value={wire ? 'specified' : 'derived'}
+          choices={[{ value: 'derived', label: 'Derived from slot' }, { value: 'specified', label: 'Specified' }]}
+          hint="Derived sizes the wire to fill 45% of the slot with copper. Specify the wire for the real phase resistance."
+          disabled={disabled}
+          onChange={(value) => setWire(value === 'specified'
+            ? { wire_bare_diameter_mm: Number((windingResistanceRecord?.strand_diameter_mm ?? 1).toFixed(2)), strands_in_hand: 1 }
+            : null)}
+        />}
+        {wire && <>
+          <NumberRow label="Wire Ø (bare)" value={wire.wire_bare_diameter_mm} unit="mm" min={0.06} max={10} step={0.01} disabled={disabled} onChange={(value) => setWire({ ...wire, wire_bare_diameter_mm: value })} />
+          <NumberRow label="Strands in Hand" value={wire.strands_in_hand ?? 1} min={1} max={200} step={1} disabled={disabled} onChange={(value) => setWire({ ...wire, strands_in_hand: Math.max(1, Math.round(value)) })} />
+          <NumberRow label="End-turn Extension" value={wire.end_turn_extension_mm ?? 0} unit="mm" min={0} max={200} step={1} hint="Straight length each coil side runs out of the stack before its end turn bends." disabled={disabled} onChange={(value) => setWire({ ...wire, end_turn_extension_mm: value > 0 ? value : null })} />
+        </>}
+        <NumberRow label="Winding Temp" value={windingTemperatureC} unit="°C" min={-50} max={250} step={5} hint="Winding temperature for the phase resistance." disabled={disabled} onChange={set('solve_params', 'winding_temperature_C', 'winding')} />
+        {windingRows.map((row) => (
+          <div key={row.key} className={`param-row public-param-row public-derived-row${row.warning ? ' is-warning' : ''}`} title={row.hint}>
+            <span className="param-label">{row.label}<small>{row.tag}</small></span>
+            <strong>{row.text}</strong>
+            {row.status && <StatusBadge status={row.status.status} title={row.status.reason} />}
+          </div>
+        ))}
         <NumberRow label="Phase Current" value={config.solve_params.current_amplitude_A} unit={`A ${config.solve_params.current_amplitude_convention}`} min={0} step={0.5} disabled={disabled} onChange={set('solve_params', 'current_amplitude_A', 'winding')} />
       </ParameterSectionBlock>}
 
@@ -2897,15 +2942,23 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
   // click away, and Full results has everything.
   const constants = hasMotorConstants(result.summary) ? motorConstantsView(result.summary) : null;
   const showKt = constants !== null && constants.kt.value !== null;
-  const allResultCount = 7 + (result.workflow_elapsed_s != null ? 1 : 0) + (constants ? 4 : 0);
+  // With no current (or a near-zero average) ripple % means nothing: show the swing.
+  const ripple = torqueRippleView(result);
+  const allResultCount = 7 + (ripple.ripplePct === null ? 1 : 0) + (result.workflow_elapsed_s != null ? 1 : 0) + (constants ? 4 : 0);
   // Read like the motor constants below: one row per value, numbers in one
   // right-aligned column, units beside them, a rule between groups.
-  const resultRow = (label: string, value: string, unit: string, groupStart = false) => (
-    <tr className={groupStart ? 'is-group-start' : undefined}>
+  const resultRow = (label: string, value: string, unit: string, groupStart = false, title?: string) => (
+    <tr className={groupStart ? 'is-group-start' : undefined} title={title}>
       <th scope="row">{label}</th>
       <td className="motor-constants-value">{value}</td>
       <td className="motor-constants-unit">{unit}</td>
     </tr>
+  );
+  const rippleRows = (
+    <>
+      {resultRow(`Torque ripple${preview}`, formatNumber(ripple.ripplePct), ripple.ripplePct === null ? '' : '%', false, ripple.note ?? undefined)}
+      {ripple.ripplePct === null && resultRow(ripple.peakToPeakLabel, formatNumber(ripple.peakToPeakNm), 'N·m', false, ripple.note ?? undefined)}
+    </>
   );
 
   return (
@@ -2921,7 +2974,7 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
             <table>
               <tbody>
                 {resultRow(`Average torque${preview}`, formatNumber(result.summary.avg_torque_Nm), 'N·m')}
-                {resultRow(`Torque ripple${preview}`, formatNumber(result.summary.torque_ripple_pct), '%')}
+                {rippleRows}
                 {resultRow('Back EMF', formatNumber(result.summary.back_emf_fundamental_V), 'V', true)}
                 {resultRow(thdLabel, formatNumber(result.summary.back_emf_thd_pct), '%')}
                 {resultRow('Peak tooth B', formatNumber(result.summary.peak_flux_density_teeth_T), 'T', true)}
@@ -2939,7 +2992,7 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
           <table>
             <tbody>
               {resultRow(`Average torque${preview}`, formatNumber(result.summary.avg_torque_Nm), 'N·m')}
-              {resultRow(`Torque ripple${preview}`, formatNumber(result.summary.torque_ripple_pct), '%')}
+              {rippleRows}
               {resultRow('Back EMF', formatNumber(result.summary.back_emf_fundamental_V), 'V')}
               {showKt && constants && resultRow('Kt torque constant', constants.kt.text, constants.kt.unit)}
             </tbody>
@@ -3642,6 +3695,35 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
           <NumberRow label={sixStepSelected ? 'Conducting phase current' : 'Phase Current'} value={config.solve_params.current_amplitude_A} unit={sixStepSelected ? 'A plateau' : `A ${config.solve_params.current_amplitude_convention}`} min={0} max={1000} step={0.5} disabled={busy !== null} onChange={(value) => onSolveSettingChange('current_amplitude_A', value)} />
           {sixStepSelected && <NumberRow label="Commutation advance" value={config.solve_params.commutation_advance_deg} unit="electrical degrees" min={-180} max={180} step={1} disabled={busy !== null} onChange={(value) => onSolveSettingChange('commutation_advance_deg', value)} />}
           <NumberRow label="Rated Speed" value={config.solve_params.rated_speed_rpm} unit="rpm" min={0} max={30000} step={50} disabled={busy !== null} onChange={(value) => onSolveSettingChange('rated_speed_rpm', value)} />
+          <NumberRow label="Mechanical loss" value={config.solve_params.mechanical_loss_W ?? 0} unit="W" min={0} max={100000} step={1} hint="Friction and windage at the rated speed, if known. It lowers the shaft power and efficiency; the solved torque is unchanged." disabled={busy !== null} onChange={(value) => onSolveSettingChange('mechanical_loss_W', value)} />
+          {!config.geometry_reference && (() => {
+            const grade = config.materials.magnet_grade;
+            const temperature = config.solve_params.magnet_temperature_C ?? 20;
+            const remanence = materials.models?.[grade]?.properties?.remanence_T;
+            const view = magnetTemperatureView(grade, typeof remanence === 'number' ? remanence : null, temperature);
+            return (
+              <>
+                <NumberRow
+                  label="Magnet temp"
+                  value={temperature}
+                  unit="°C"
+                  min={view.range?.[0] ?? 20}
+                  max={view.range ? Math.floor(view.range[1]) : 20}
+                  step={5}
+                  hint="Magnet temperature for the solve. Br falls with temperature by the grade's cited coefficient, lowering back EMF and torque; 20 °C uses the catalogue values."
+                  disabled={busy !== null || !view.available}
+                  onChange={(value) => onSolveSettingChange('magnet_temperature_C', value)}
+                />
+                <p className="public-magnet-temperature-note">{view.note}</p>
+                {view.status && (
+                  <p className="public-magnet-temperature-note">
+                    <StatusBadge status={view.status.status} /> Derating: {view.status.reason}
+                  </p>
+                )}
+                {view.warning && <p className="public-magnet-temperature-note is-warning" role="note">{view.warning}</p>}
+              </>
+            );
+          })()}
           <div className="public-derived-operating-point" aria-label="Derived operating point">
             <span>{formatNumber(electricalFrequencyHz, 0)} Hz electrical</span>
             <span>{sixStepSelected ? `${config.solve_params.commutation_advance_deg.toFixed(0)}° commutation advance` : `${config.solve_params.current_angle_deg.toFixed(0)}° current angle`}</span>
@@ -4011,7 +4093,7 @@ function ReportStage({
   onRerun: (savedRun: PublicSavedRun) => void;
 }) {
   const [reportMode, setReportMode] = useState<'single' | 'compare'>('single');
-  const [activePlot, setActivePlot] = useState<'torque' | 'back-emf' | 'field-map'>('torque');
+  const [activePlot, setActivePlot] = useState<'torque' | 'back-emf' | 'field-map' | 'performance'>('torque');
   const [backEmfView, setBackEmfView] = useState<'phase-neutral' | 'line-line'>('phase-neutral');
   const [exportState, setExportState] = useState<{
     action: string;
@@ -4090,6 +4172,20 @@ function ReportStage({
       { label: 'Phase connection', value: 'Wye (MVP)' },
     ] : []),
     { label: 'Rated speed', value: `${formatNumber(config.solve_params.rated_speed_rpm, 0)} rpm` },
+    ...(typeof result.solve_metadata.magnet_temperature_C === 'number' ? [{
+      label: 'Magnet temperature',
+      value: `${formatNumber(result.solve_metadata.magnet_temperature_C, 0)} °C`
+        + (typeof result.solve_metadata.magnet_remanence_T === 'number' ? ` · Br ${result.solve_metadata.magnet_remanence_T.toFixed(3)} T` : '')
+        + ((GRADE_TEMPERATURE[config.materials.magnet_grade]?.maxOperating ?? Infinity) < result.solve_metadata.magnet_temperature_C
+          ? ` · above ${config.materials.magnet_grade}'s ${GRADE_TEMPERATURE[config.materials.magnet_grade].maxOperating} °C rating`
+          : ''),
+    }] : []),
+    ...(isDeratedRun(result.solve_metadata) ? [{
+      label: 'Magnet derating',
+      // Runs stored before the derating carried a status were experimental for the same reason.
+      value: `${STATUS_LABEL[result.solve_metadata.magnet_temperature_status ?? 'experimental']}: `
+        + (result.solve_metadata.magnet_temperature_status_reason ?? MAGNET_TEMPERATURE_STATUS_REASON),
+    }] : []),
     { label: 'Solver', value: result.solve_metadata.solver_name },
     { label: 'Torque method', value: torqueMethod },
     { label: 'Nonlinear solver', value: nonlinearSolver },
@@ -4188,7 +4284,9 @@ function ReportStage({
         <button type="button" role="tab" aria-selected={activePlot === 'torque'} className={activePlot === 'torque' ? 'active' : ''} onClick={() => setActivePlot('torque')}>Torque</button>
         <button type="button" role="tab" aria-selected={activePlot === 'back-emf'} className={activePlot === 'back-emf' ? 'active' : ''} onClick={() => setActivePlot('back-emf')}>Back EMF</button>
         {fieldPlot && <button type="button" role="tab" aria-selected={activePlot === 'field-map'} className={activePlot === 'field-map' ? 'active' : ''} onClick={() => setActivePlot('field-map')}>Field map</button>}
+        <button type="button" role="tab" aria-selected={activePlot === 'performance'} className={activePlot === 'performance' ? 'active' : ''} onClick={() => setActivePlot('performance')}>Torque–speed</button>
       </div>
+      {activePlot === 'performance' && <PerformancePanel config={config} result={result} designName={designName} />}
       {activePlot === 'torque' && sixStep && result.phase_current_waveform
         ? <><BldcTorqueCurrentChart angles={result.torque_waveform.electrical_angle_deg} torqueNm={result.torque_waveform.torque_Nm} phaseA={result.phase_current_waveform.phase_a_A} phaseB={result.phase_current_waveform.phase_b_A} phaseC={result.phase_current_waveform.phase_c_A} commutationAdvanceDeg={result.solve_metadata.commutation_advance_deg ?? config.solve_params.commutation_advance_deg} cycleComplete={completeLoadedCycle} /><IdealSixStepCommand /></>
         : activePlot === 'torque' && <WaveformChart angles={result.torque_waveform.electrical_angle_deg} values={result.torque_waveform.torque_Nm} label="Torque waveform" unit="N·m" />}

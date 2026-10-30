@@ -19,7 +19,7 @@ AXES = {"spm_14p12s_high_pole":15.0, "spm_4p12s_small":0.0, "spm_8p12s_reference
 
 
 def test_default_uses_reconciled_contract_and_complete_v3_reference():
-    assert SPEC == NEW and DEFAULT_BUNDLE == BUNDLE
+    assert SPEC == ROOT / "benchmarks/abcd-v1.4/benchmark_spec.json" and DEFAULT_BUNDLE == BUNDLE
     manifest, records, _ = load_bundle(BUNDLE,load_suite(SPEC))
     assert len(records)==29 and manifest['validation_status']=='REVIEW_REQUIRED'
 

@@ -1,0 +1,246 @@
+/**
+ * Performance outputs as the backend stores them (backend/models/performance.py):
+ * d/q flux linkage, losses, the flux-linkage map, the torque-speed envelope
+ * and the efficiency map.
+ *
+ * Currents are peak phase amperes and flux linkages per-phase peak webers, in
+ * the amplitude-invariant d/q frame: T = 1.5·P·(λd·iq − λq·id). The current
+ * angle γ is measured from the q-axis, positive toward flux weakening, so
+ * id = −I·sin γ and iq = I·cos γ. Speeds are mechanical rpm.
+ */
+
+export type PerformanceOutputStatus = 'qualified' | 'experimental' | 'unavailable';
+export type CurrentAngleConvention = 'q_axis_gamma_flux_weakening_positive';
+export type DqTransform = 'amplitude_invariant_park';
+
+export interface WireSpec {
+  wire_bare_diameter_mm: number;
+  strands_in_hand?: number;
+  insulation_build_mm?: number | null;
+  end_turn_extension_mm?: number | null;
+  slot_fill_limit?: number | null;
+}
+
+export interface DqFluxLinkage {
+  current_angle_convention: CurrentAngleConvention;
+  transform: DqTransform;
+  i_d_A: number;
+  i_q_A: number;
+  lambda_d_Wb: number;
+  lambda_q_Wb: number;
+  torque_dq_Nm: number;
+  torque_agreement_pct?: number | null;
+  current_angle_deg?: number | null;
+  lambda_pm_Wb?: number | null;
+  apparent_L_d_H?: number | null;
+  apparent_L_q_H?: number | null;
+  positions?: number;
+  /** How the d-axis was placed; 'applied_current_angle' when the run had no no-load sweep. */
+  d_axis_source?: 'no_load_flux_linkage' | 'applied_current_angle';
+  /** Absent on runs stored before the record carried it (outputStatus.ts). */
+  status?: PerformanceOutputStatus;
+  status_reason?: string | null;
+}
+
+/** Losses at the solved point (#138): P_shaft = T·ω − iron − mechanical, P_in = T·ω + copper. */
+export interface LossBreakdown {
+  speed_rpm: number;
+  phase_current_rms_A: number;
+  electromagnetic_torque_Nm: number;
+  shaft_torque_Nm: number;
+  electromagnetic_power_W: number;
+  phase_resistance_ohm: number;
+  winding_temperature_C: number;
+  copper_loss_W: number;
+  copper_active_loss_W: number;
+  copper_end_winding_loss_W: number;
+  iron_loss_W?: number | null;
+  iron_hysteresis_loss_W?: number | null;
+  iron_eddy_loss_W?: number | null;
+  iron_loss_status: PerformanceOutputStatus;
+  iron_loss_status_reason?: string | null;
+  mechanical_loss_W: number;
+  total_loss_W: number;
+  shaft_power_W: number;
+  input_power_W: number;
+  efficiency_pct?: number | null;
+  efficiency_status: PerformanceOutputStatus;
+  efficiency_status_reason?: string | null;
+}
+
+/** Iron loss per kilogram of each element of the result's field_line_plot mesh; null outside the stator iron. */
+export interface IronLossDensity {
+  mesh: 'field_line_plot';
+  element_w_per_kg: Array<number | null>;
+  /** Hysteresis and eddy-current parts of element_w_per_kg; absent on runs saved before the split. */
+  element_hysteresis_w_per_kg?: Array<number | null> | null;
+  element_eddy_w_per_kg?: Array<number | null> | null;
+  max_w_per_kg: number;
+}
+
+/** Stator iron loss over one electrical period at the solved point (#138). */
+export interface IronLoss {
+  status: PerformanceOutputStatus;
+  status_reason?: string | null;
+  model: 'grade_limit_harmonic_steinmetz';
+  steel: string;
+  electrical_frequency_Hz?: number | null;
+  iron_loss_W?: number | null;
+  iron_hysteresis_loss_W?: number | null;
+  iron_eddy_loss_W?: number | null;
+  iron_teeth_loss_W?: number | null;
+  iron_yoke_loss_W?: number | null;
+  stator_iron_mass_kg?: number | null;
+  share_above_validated_frequency?: number | null;
+  share_above_validated_flux_density?: number | null;
+  validated_max_frequency_Hz: number;
+  validated_max_flux_density_T: number;
+}
+
+export interface FluxLinkageMapPoint {
+  current_peak_A: number;
+  gamma_deg: number;
+  i_d_A: number;
+  i_q_A: number;
+  status: 'ok' | 'failed' | 'pending';
+  avg_torque_Nm?: number | null;
+  torque_ripple_pct?: number | null;
+  lambda_d_Wb?: number | null;
+  lambda_q_Wb?: number | null;
+  iron_loss_W?: number | null;
+  iron_hysteresis_loss_W?: number | null;
+  iron_eddy_loss_W?: number | null;
+  nonlinear_iterations_max?: number | null;
+  nonlinear_residual_max?: number | null;
+  error?: string | null;
+}
+
+export interface FluxLinkageMap {
+  kind: 'flux_linkage_map';
+  schema_version: 1;
+  current_angle_convention: CurrentAngleConvention;
+  transform: DqTransform;
+  scope_key: string;
+  pole_pairs: number;
+  current_peak_A: number[];
+  gamma_deg: number[];
+  reference_speed_rpm: number;
+  magnet_temperature_C?: number | null;
+  rotor_positions: number;
+  mesh_density: string;
+  torque_method?: string | null;
+  points: FluxLinkageMapPoint[];
+}
+
+export interface DriveLimits {
+  dc_bus_V: number;
+  modulation_index_max: number;
+  peak_current_A: number;
+  continuous_current_A?: number | null;
+  max_speed_rpm: number;
+}
+
+export type TorqueSpeedRegion = 'mtpa' | 'field_weakening' | 'mtpv';
+
+/** How the drive picks the current for a torque: the smallest (MTPA, then field weakening) or the least total loss. */
+export type DriveControl = 'mtpa' | 'least_loss';
+
+export interface TorqueSpeedCurve {
+  limit: 'peak' | 'continuous';
+  speed_rpm: number[];
+  torque_Nm: number[];
+  power_W: number[];
+  i_d_A: number[];
+  i_q_A: number[];
+  phase_voltage_peak_V: number[];
+  region: TorqueSpeedRegion[];
+  base_speed_rpm: number;
+  max_speed_rpm: number;
+  peak_power_W: number;
+}
+
+export interface TorqueSpeedEnvelope {
+  kind: 'torque_speed_envelope';
+  schema_version: 1;
+  map_scope_key: string;
+  limits: DriveLimits;
+  phase_resistance_ohm: number;
+  winding_temperature_C: number;
+  curves: TorqueSpeedCurve[];
+  status: PerformanceOutputStatus;
+  status_reason?: string | null;
+}
+
+/** Matrices have one row per torque_Nm value and one column per speed_rpm value; null is outside the envelope. */
+export interface EfficiencyMap {
+  kind: 'efficiency_map';
+  schema_version: 1;
+  map_scope_key: string;
+  speed_rpm: number[];
+  torque_Nm: number[];
+  efficiency_pct: Array<Array<number | null>>;
+  copper_loss_W: Array<Array<number | null>>;
+  iron_loss_W: Array<Array<number | null>>;
+  /** The least-loss phase current at each point, rms, and its current angle γ. */
+  phase_current_rms_A?: Array<Array<number | null>> | null;
+  current_angle_deg?: Array<Array<number | null>> | null;
+  control?: DriveControl;
+  mechanical_loss_W: number;
+  winding_temperature_C: number;
+  status: PerformanceOutputStatus;
+  status_reason?: string | null;
+}
+
+/** Map grid choice for /performance/map/* (#139). */
+export interface MapSettings {
+  preset: 'preview' | 'standard';
+  peak_current_A: number;
+}
+
+export interface FluxLinkageMapPayload {
+  map: FluxLinkageMap;
+  /** Each point's FEM torque as a percentage of its d/q torque; null at zero current or failed points. */
+  torque_agreement_pct: Array<number | null>;
+}
+
+export interface PerformanceMapStatus {
+  scope_key: string;
+  solves_total: number;
+  solves_finished: number;
+  /** Rotor positions each map point solves (half an electrical cycle). */
+  positions_per_point?: number;
+  map: FluxLinkageMap | null;
+  torque_agreement_pct?: Array<number | null>;
+}
+
+export interface PerformanceMapProgress {
+  done: number;
+  total: number;
+  elapsed_s: number;
+  stage?: string;
+  current_peak_A?: number;
+  gamma_deg?: number;
+  status?: FluxLinkageMapPoint['status'];
+  eta_s?: number | null;
+}
+
+/** Downloads of the Torque–speed tab: the PDF, the performance CSV and the id/iq lookup table. */
+export type PerformanceReportKind = 'pdf' | 'csv' | 'idiq';
+
+/** What the report needs beyond the drive request (backend/performance_report.py ReportContext). */
+export interface PerformanceReportContext {
+  design_name: string | null;
+  current_unit: 'A rms' | 'A peak';
+  dc_bus_source: 'design' | 'entered' | 'estimated';
+  map_preset: string | null;
+  solved_point: { speed_rpm: number; torque_Nm: number; current_angle_deg: number | null } | null;
+  /** The run derated its magnets for temperature, so every map point did too. */
+  magnet_temperature_derated: boolean;
+  /** The status of the winding record the phase resistance comes from, as the tab shows it. */
+  phase_resistance: { status: PerformanceOutputStatus; reason: string } | null;
+}
+
+export interface DrivePerformance {
+  envelope: TorqueSpeedEnvelope;
+  efficiency_map: EfficiencyMap;
+}

@@ -94,6 +94,45 @@ def verify(output, job, expected):
     return data
 
 
+def exited_process_group(pgid):
+    """Confirm that a Darwin group is gone or contains only zombies."""
+    try:
+        result = subprocess.run(["ps", "-ax", "-o", "pgid=,stat="], capture_output=True, text=True, timeout=5, check=True)
+    except (OSError, subprocess.SubprocessError):
+        return False
+    for line in result.stdout.splitlines():
+        parts = line.split()
+        if not parts:
+            continue
+        if len(parts) != 2 or not parts[0].isdigit():
+            return False
+        if int(parts[0]) == pgid and not parts[1].startswith("Z"):
+            return False
+    return True
+
+
+def signal_worker_group(process, sig):
+    try:
+        os.killpg(process.pid, sig)
+    except ProcessLookupError:
+        pass
+    except PermissionError:
+        # Darwin can return EPERM for a group containing only the just-exited
+        # leader's zombie. Reap it, then retry: a live or inaccessible child
+        # must still surface its real permission error.
+        if process.poll() is None:
+            raise
+        try:
+            os.killpg(process.pid, sig)
+        except ProcessLookupError:
+            pass
+        except PermissionError:
+            # Orphaned zombie children can outlive the reaped leader until
+            # launchd reaps them. They cannot be signalled or do more work.
+            if sys.platform != "darwin" or not exited_process_group(process.pid):
+                raise
+
+
 def stop(process):
     alive = process.poll() is None
     if os.name == "nt":
@@ -101,10 +140,7 @@ def stop(process):
             subprocess.run(["taskkill", "/PID", str(process.pid), "/T", "/F"], capture_output=True, timeout=15, check=False)
     else:
         # A session can still contain owned children after its leader exits.
-        try:
-            os.killpg(process.pid, signal.SIGTERM)
-        except ProcessLookupError:
-            pass
+        signal_worker_group(process, signal.SIGTERM)
     try:
         if alive:
             try:
@@ -114,10 +150,7 @@ def stop(process):
                 process.wait(timeout=5)
     finally:
         if os.name != "nt":
-            try:
-                os.killpg(process.pid, signal.SIGKILL)
-            except ProcessLookupError:
-                pass
+            signal_worker_group(process, signal.SIGKILL)
 
 
 def worker(request_path, result_path, deadline_ns=None):

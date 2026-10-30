@@ -1,5 +1,7 @@
 import type { AirgapBrBtProfile } from '../components/tutorials/lessonSolveTypes';
 import type { CustomSteel } from './customSteel';
+import type { DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, PerformanceOutputStatus, WireSpec } from './performance';
+import type { WindingResistance } from './windingResistance';
 
 export type Topology = 'SPM' | 'IPM';
 export type IpMTopology = 'flat_buried' | 'v_shape' | 'pyleecan_holem50';
@@ -109,6 +111,8 @@ export interface MotorConfig {
     layers: number;
     parallel_paths: number;
     coil_span?: number | null;
+    /** Conductor of each turn (#136); the backend refuses it until phase resistance ships. */
+    wire?: WireSpec | null;
   };
   materials: {
     stator_steel: string;
@@ -137,7 +141,10 @@ export interface MotorConfig {
     commutation_advance_deg: number;
     phase_connection: 'wye';
     rated_speed_rpm: number;
-    magnet_temperature_C?: number;
+    magnet_temperature_C?: number | null;
+    /** Winding temperature and mechanical loss (#136, #138); refused by the backend until those ship. */
+    winding_temperature_C?: number | null;
+    mechanical_loss_W?: number | null;
     max_nonlinear_iterations?: number;
     magneto2d_workers?: number;
     motor_input_dc_bus_V?: number;
@@ -434,6 +441,10 @@ export interface SolveResult {
     lambda_pm_Wb?: number | null;
     peak_flux_density_teeth_T: number;
     peak_flux_density_yoke_T: number;
+    dq_flux_linkage?: DqFluxLinkage | null;
+    loss_breakdown?: LossBreakdown | null;
+    iron_loss?: IronLoss | null;
+    winding_resistance?: WindingResistance | null;
     solve_time_s: number;
   };
   torque_waveform: {
@@ -490,6 +501,12 @@ export interface SolveResult {
     solver_name: string;
     mesh_element_count: number;
     rotor_positions: number;
+    /** Hot-magnet runs (#137): the temperature and the derated Br and HcJ the solve used. */
+    magnet_temperature_C?: number | null;
+    magnet_remanence_T?: number | null;
+    magnet_temperature_status?: PerformanceOutputStatus | null;
+    magnet_temperature_status_reason?: string | null;
+    magnet_intrinsic_coercivity_kA_m?: number | null;
     topology?: string;
     current_amplitude_A?: number | null;
     current_angle_deg?: number | null;
@@ -512,6 +529,7 @@ export interface SolveResult {
     physics_contract_version?: string | null;
   };
   field_line_plot?: PublicFieldLinePlot | null;
+  iron_loss_density?: IronLossDensity | null;
   field_line_frames?: PublicFieldFrameDescriptor[] | null;
   field_playback?: PublicFieldPlaybackManifest | null;
   saved_run?: PublicSavedRun | null;
@@ -643,6 +661,8 @@ export const DEFAULT_CONFIG: MotorConfig = {
     commutation_advance_deg: 0,
     phase_connection: 'wye',
     rated_speed_rpm: 2400,
+    // Unset means 20 °C; kept in the defaults so a design file keeps the field (#136).
+    winding_temperature_C: null,
   },
   solve_options: {
     torque_sweep: true,

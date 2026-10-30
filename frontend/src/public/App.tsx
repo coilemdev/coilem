@@ -14,7 +14,6 @@ import {
   validatePublicSolve,
   type PublicApiError,
   type PublicJson,
-  type PublicMotorConfig,
   type PublicRunExportKind,
   type PublicSolveProgress,
   type PublicSolveRequest,
@@ -41,6 +40,7 @@ import {
 } from './motorAirgap';
 import { startPublicBackendMonitor } from './backendMonitor';
 import { createExcitationDrafts, switchExcitationMode } from './excitationDrafts';
+import type { WireSpec } from './performance';
 // Lazy: the tutorials area carries the shared catalog and learning.css, so a
 // static import puts ~15 kB gzip of lesson chrome on the landing page's critical
 // path for visitors who never open a lesson.
@@ -56,11 +56,11 @@ import type {
   LearningLessonStage,
 } from '../components/tutorials/lessonStage';
 import { designFileBaseName, parseDesignFile, saveDesignFileAs } from './designFile';
+import { asPublicConfig } from './publicRequest';
 import { projectMaterialCatalog, type CustomSteel, type SteelTarget } from './customSteel';
 import { createPublicExampleDesign, type PublicExampleId } from './exampleDesigns';
 import {
   cloneDefaultConfig,
-  applyPublicSolverSettings,
   type GeometryPreview,
   type MaterialCatalog,
   type MeshPreview,
@@ -349,6 +349,8 @@ const DESIGN_FIELD_LABELS: Record<string, string> = {
   layers: 'Winding layers',
   turns_per_coil: 'Turns per coil',
   parallel_paths: 'Parallel paths',
+  wire: 'Wire',
+  winding_temperature_C: 'Winding temperature',
   current_amplitude_A: 'Phase current',
   stator_steel: 'Stator steel',
   rotor_steel: 'Rotor steel',
@@ -370,6 +372,7 @@ const DESIGN_FIELD_UNITS: Record<string, string> = {
   v_angle_deg: '°',
   v_depth_mm: 'mm',
   current_amplitude_A: 'A rms',
+  winding_temperature_C: '°C',
 };
 
 interface DesignEditState extends PublicDesignEditFeedback {
@@ -393,6 +396,12 @@ function formatEditValue(field: string, value: unknown): string {
   if (field === 'magnet_embrace' && typeof value === 'number') {
     return `${Math.round(value * 100)}%`;
   }
+  if (field === 'wire') {
+    if (!value || typeof value !== 'object') return 'derived from the slot';
+    const wire = value as WireSpec;
+    return `${wire.strands_in_hand ?? 1} × ${wire.wire_bare_diameter_mm} mm`;
+  }
+  if (field === 'winding_temperature_C' && value == null) return '20 °C';
   if (typeof value === 'boolean') return value ? 'On' : 'Off';
   if (typeof value === 'number') {
     const formatted = Number.isInteger(value) ? String(value) : Number(value.toFixed(2)).toString();
@@ -492,19 +501,6 @@ const GUIDED_IPM_LAYOUT_PRESETS: Record<
     inner_web_thickness_mm: 6,
   },
 };
-
-function asPublicConfig(config: MotorConfig): PublicMotorConfig {
-  const thdAnalysis = config.solve_params.solve_quality === 'standard'
-    || config.solve_params.solve_quality === 'fine';
-  return {
-    ...applyPublicSolverSettings(config),
-    solve_options: {
-      ...config.solve_options,
-      cogging_torque: false,
-      thd_analysis: thdAnalysis,
-    },
-  } as unknown as PublicMotorConfig;
-}
 
 function errorMessage(error: unknown): string {
   if (error && typeof error === 'object') {
@@ -862,7 +858,7 @@ export function App() {
   }, []);
 
   const updateSolveSetting = useCallback((
-    field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg',
+    field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W' | 'magnet_temperature_C',
     value: MotorConfig['solve_params']['nonlinear_solver'] | MotorConfig['solve_params']['current_amplitude_convention'] | MotorConfig['solve_params']['excitation_mode'] | number,
   ) => {
     validationRequestId.current += 1;
@@ -881,7 +877,8 @@ export function App() {
         ...current,
         solve_params: {
           ...current.solve_params,
-          [field]: value,
+          // No mechanical loss is stored as unset, not 0 W; a 20 °C magnet is the catalogue, also unset.
+          [field]: (field === 'mechanical_loss_W' && !(Number(value) > 0)) || (field === 'magnet_temperature_C' && Number(value) === 20) ? null : value,
         },
       };
     });

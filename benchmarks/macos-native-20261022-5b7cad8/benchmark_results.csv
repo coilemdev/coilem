@@ -1,0 +1,200 @@
+phase,topology,fixture,status,coverage_label,gate,gate_status,value
+A,SPM,spm_4p12s_simple__baseline,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_4p12s_simple__baseline,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_4p12s_simple__baseline,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_4p12s_simple__baseline,PASS,PASS,torque_method,PASS,
+A,SPM,spm_4p12s_simple__baseline,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_4p12s_simple__baseline,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_4p12s_simple__high_current,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_4p12s_simple__high_current,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_4p12s_simple__high_current,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_4p12s_simple__high_current,PASS,PASS,torque_method,PASS,
+A,SPM,spm_4p12s_simple__high_current,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_4p12s_simple__high_current,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_4p12s_simple__tight_airgap,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_4p12s_simple__tight_airgap,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_4p12s_simple__tight_airgap,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_4p12s_simple__tight_airgap,PASS,PASS,torque_method,PASS,
+A,SPM,spm_4p12s_simple__tight_airgap,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_4p12s_simple__tight_airgap,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_4p12s_simple_noload__baseline,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_4p12s_simple_noload__baseline,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_4p12s_simple_noload__baseline,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_4p12s_simple_noload__baseline,PASS,PASS,torque_method,PASS,
+A,SPM,spm_4p12s_simple_noload__baseline,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_4p12s_simple_noload__baseline,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_4p12s_simple_noload__high_current,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_4p12s_simple_noload__high_current,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_4p12s_simple_noload__high_current,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_4p12s_simple_noload__high_current,PASS,PASS,torque_method,PASS,
+A,SPM,spm_4p12s_simple_noload__high_current,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_4p12s_simple_noload__high_current,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_4p12s_simple_noload__tight_airgap,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_4p12s_simple_noload__tight_airgap,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_4p12s_simple_noload__tight_airgap,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_4p12s_simple_noload__tight_airgap,PASS,PASS,torque_method,PASS,
+A,SPM,spm_4p12s_simple_noload__tight_airgap,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_4p12s_simple_noload__tight_airgap,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_8p12s_concentrated__baseline,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_8p12s_concentrated__baseline,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_8p12s_concentrated__baseline,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_8p12s_concentrated__baseline,PASS,PASS,torque_method,PASS,
+A,SPM,spm_8p12s_concentrated__baseline,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_8p12s_concentrated__baseline,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_8p12s_concentrated__high_current,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_8p12s_concentrated__high_current,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_8p12s_concentrated__high_current,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_8p12s_concentrated__high_current,PASS,PASS,torque_method,PASS,
+A,SPM,spm_8p12s_concentrated__high_current,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_8p12s_concentrated__high_current,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_8p12s_concentrated__tight_airgap,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_8p12s_concentrated__tight_airgap,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_8p12s_concentrated__tight_airgap,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_8p12s_concentrated__tight_airgap,PASS,PASS,torque_method,PASS,
+A,SPM,spm_8p12s_concentrated__tight_airgap,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_8p12s_concentrated__tight_airgap,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_8p12s_reference_angle30__baseline,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_8p12s_reference_angle30__baseline,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_8p12s_reference_angle30__baseline,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_8p12s_reference_angle30__baseline,PASS,PASS,torque_method,PASS,
+A,SPM,spm_8p12s_reference_angle30__baseline,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_8p12s_reference_angle30__baseline,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_flat_12s10p_fscw_contract,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_flat_12s10p_fscw_contract,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_flat_12s10p_fscw_contract,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_flat_12s10p_fscw_contract,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_flat_12s10p_fscw_contract,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_flat_12s10p_fscw_contract,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_flat_24s16p_industrial_contract,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_flat_24s16p_industrial_contract,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_flat_24s16p_industrial_contract,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_flat_24s16p_industrial_contract,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_flat_24s16p_industrial_contract,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_flat_24s16p_industrial_contract,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_flat_4p12s_micro_contract,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_flat_4p12s_micro_contract,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_flat_4p12s_micro_contract,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_flat_4p12s_micro_contract,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_flat_4p12s_micro_contract,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_flat_4p12s_micro_contract,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_flat_8p12s_fsae_angled_pocket_contract,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_flat_8p12s_fsae_angled_pocket_contract,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_flat_8p12s_fsae_angled_pocket_contract,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_flat_8p12s_fsae_angled_pocket_contract,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_flat_8p12s_fsae_angled_pocket_contract,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_flat_8p12s_fsae_angled_pocket_contract,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_flat_8p12s_fsae_thin_bridge_contract,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_flat_8p12s_fsae_thin_bridge_contract,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_flat_8p12s_fsae_thin_bridge_contract,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_flat_8p12s_fsae_thin_bridge_contract,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_flat_8p12s_fsae_thin_bridge_contract,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_flat_8p12s_fsae_thin_bridge_contract,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_vshape_8p12s_baseline_contract,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_vshape_8p12s_baseline_contract,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_vshape_8p12s_baseline_contract,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_vshape_8p12s_baseline_contract,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_vshape_8p12s_baseline_contract,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_vshape_8p12s_baseline_contract,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_vshape_8p12s_deep_apex_high_output_v1,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_vshape_8p12s_deep_apex_high_output_v1,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_vshape_8p12s_deep_apex_high_output_v1,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_vshape_8p12s_deep_apex_high_output_v1,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_vshape_8p12s_deep_apex_high_output_v1,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_vshape_8p12s_deep_apex_high_output_v1,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_vshape_8p12s_narrow_angle_contract,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_vshape_8p12s_narrow_angle_contract,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_vshape_8p12s_narrow_angle_contract,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_vshape_8p12s_narrow_angle_contract,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_vshape_8p12s_narrow_angle_contract,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_vshape_8p12s_narrow_angle_contract,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_vshape_8p12s_pocket_offset_contract,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_vshape_8p12s_pocket_offset_contract,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_vshape_8p12s_pocket_offset_contract,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_vshape_8p12s_pocket_offset_contract,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_vshape_8p12s_pocket_offset_contract,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_vshape_8p12s_pocket_offset_contract,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_vshape_8p12s_thin_bridge_contract,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_vshape_8p12s_thin_bridge_contract,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_vshape_8p12s_thin_bridge_contract,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_vshape_8p12s_thin_bridge_contract,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_vshape_8p12s_thin_bridge_contract,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_vshape_8p12s_thin_bridge_contract,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_vshape_8p12s_wide_angle_high_output_v1,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_vshape_8p12s_wide_angle_high_output_v1,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_vshape_8p12s_wide_angle_high_output_v1,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_vshape_8p12s_wide_angle_high_output_v1,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_vshape_8p12s_wide_angle_high_output_v1,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_vshape_8p12s_wide_angle_high_output_v1,PASS,PASS,angle_grids,PASS,
+C,Distributed Winding,ornl_prius_2004_ipm,UNSUPPORTED,Deferred hardware coverage (v0.5.0),,,
+C,Distributed Winding,spm_12p36s_distributed_femm_validation,PASS,PASS,mean_torque,PASS,
+C,Distributed Winding,spm_12p36s_distributed_femm_validation,PASS,PASS,bemf_fundamental,PASS,
+C,Distributed Winding,spm_12p36s_distributed_femm_validation,PASS,PASS,bemf_peak,PASS,
+C,Distributed Winding,spm_12p36s_distributed_femm_validation,PASS,PASS,torque_method,PASS,
+C,Distributed Winding,spm_12p36s_distributed_femm_validation,PASS,PASS,native_mesh,PASS,
+C,Distributed Winding,spm_12p36s_distributed_femm_validation,PASS,PASS,angle_grids,PASS,
+C,Distributed Winding,spm_8p24s_distributed_femm_validation,PASS,PASS,mean_torque,PASS,
+C,Distributed Winding,spm_8p24s_distributed_femm_validation,PASS,PASS,bemf_fundamental,PASS,
+C,Distributed Winding,spm_8p24s_distributed_femm_validation,PASS,PASS,bemf_peak,PASS,
+C,Distributed Winding,spm_8p24s_distributed_femm_validation,PASS,PASS,torque_method,PASS,
+C,Distributed Winding,spm_8p24s_distributed_femm_validation,PASS,PASS,native_mesh,PASS,
+C,Distributed Winding,spm_8p24s_distributed_femm_validation,PASS,PASS,angle_grids,PASS,
+C,Distributed Winding,spm_8p48s_chorded_5_6,PASS,PASS,mean_torque,PASS,
+C,Distributed Winding,spm_8p48s_chorded_5_6,PASS,PASS,bemf_fundamental,PASS,
+C,Distributed Winding,spm_8p48s_chorded_5_6,PASS,PASS,bemf_peak,PASS,
+C,Distributed Winding,spm_8p48s_chorded_5_6,PASS,PASS,torque_method,PASS,
+C,Distributed Winding,spm_8p48s_chorded_5_6,PASS,PASS,native_mesh,PASS,
+C,Distributed Winding,spm_8p48s_chorded_5_6,PASS,PASS,angle_grids,PASS,
+C,Distributed Winding,spm_8p48s_distributed_femm_validation,PASS,PASS,mean_torque,PASS,
+C,Distributed Winding,spm_8p48s_distributed_femm_validation,PASS,PASS,bemf_fundamental,PASS,
+C,Distributed Winding,spm_8p48s_distributed_femm_validation,PASS,PASS,bemf_peak,PASS,
+C,Distributed Winding,spm_8p48s_distributed_femm_validation,PASS,PASS,torque_method,PASS,
+C,Distributed Winding,spm_8p48s_distributed_femm_validation,PASS,PASS,native_mesh,PASS,
+C,Distributed Winding,spm_8p48s_distributed_femm_validation,PASS,PASS,angle_grids,PASS,
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,mean_torque_delta_pct,PASS,0.2844578065825819
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,torque_waveform_nrmse_pct,PASS,0.45188806989791197
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,commutation_transition_delta_samples,PASS,0
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,power_torque_delta_pct,PASS,0.21311503991875394
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,native_standard_to_fine_mean_torque_delta_pct,PASS,0.035497319049513615
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,native_standard_to_fine_ripple_delta_percentage_points,PASS,0.004887365454072423
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,native_standard_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,native_fine_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,femm_standard_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,analytical_low_current_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,native-standard_golden_current_sequence,PASS,matches frozen golden current table
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,native-fine_golden_current_sequence,PASS,matches frozen golden current table
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,analytical_golden_current_sequence,PASS,matches frozen golden current table
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,femm-standard_golden_current_sequence,PASS,matches frozen golden current table
+D,BLDC,spm_4p12s_small,PASS,PASS,mean_torque_delta_pct,PASS,0.08508336325402222
+D,BLDC,spm_4p12s_small,PASS,PASS,torque_waveform_nrmse_pct,PASS,0.30981294255406644
+D,BLDC,spm_4p12s_small,PASS,PASS,commutation_transition_delta_samples,PASS,0
+D,BLDC,spm_4p12s_small,PASS,PASS,power_torque_delta_pct,PASS,0.16470355973417794
+D,BLDC,spm_4p12s_small,PASS,PASS,native_standard_to_fine_mean_torque_delta_pct,PASS,0.18608221624914267
+D,BLDC,spm_4p12s_small,PASS,PASS,native_standard_to_fine_ripple_delta_percentage_points,PASS,0.39386015656608464
+D,BLDC,spm_4p12s_small,PASS,PASS,native_standard_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_4p12s_small,PASS,PASS,native_fine_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_4p12s_small,PASS,PASS,femm_standard_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_4p12s_small,PASS,PASS,analytical_low_current_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_4p12s_small,PASS,PASS,native-standard_golden_current_sequence,PASS,matches frozen golden current table
+D,BLDC,spm_4p12s_small,PASS,PASS,native-fine_golden_current_sequence,PASS,matches frozen golden current table
+D,BLDC,spm_4p12s_small,PASS,PASS,analytical_golden_current_sequence,PASS,matches frozen golden current table
+D,BLDC,spm_4p12s_small,PASS,PASS,femm-standard_golden_current_sequence,PASS,matches frozen golden current table
+D,BLDC,spm_8p12s_reference,PASS,PASS,mean_torque_delta_pct,PASS,0.5210163587864942
+D,BLDC,spm_8p12s_reference,PASS,PASS,torque_waveform_nrmse_pct,PASS,0.8842375079147995
+D,BLDC,spm_8p12s_reference,PASS,PASS,commutation_transition_delta_samples,PASS,0
+D,BLDC,spm_8p12s_reference,PASS,PASS,power_torque_delta_pct,PASS,0.28985939842270025
+D,BLDC,spm_8p12s_reference,PASS,PASS,native_standard_to_fine_mean_torque_delta_pct,PASS,0.011982453379472206
+D,BLDC,spm_8p12s_reference,PASS,PASS,native_standard_to_fine_ripple_delta_percentage_points,PASS,0.021320617527436525
+D,BLDC,spm_8p12s_reference,PASS,PASS,native_standard_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_8p12s_reference,PASS,PASS,native_fine_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_8p12s_reference,PASS,PASS,femm_standard_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_8p12s_reference,PASS,PASS,analytical_low_current_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_8p12s_reference,PASS,PASS,native-standard_golden_current_sequence,PASS,matches frozen golden current table
+D,BLDC,spm_8p12s_reference,PASS,PASS,native-fine_golden_current_sequence,PASS,matches frozen golden current table
+D,BLDC,spm_8p12s_reference,PASS,PASS,analytical_golden_current_sequence,PASS,matches frozen golden current table
+D,BLDC,spm_8p12s_reference,PASS,PASS,femm-standard_golden_current_sequence,PASS,matches frozen golden current table

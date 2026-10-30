@@ -8,6 +8,7 @@ from .config import (
     SolveParams,
     StatorConfig,
     WindingConfig,
+    WireSpec,
 )
 from .errors import ErrorResponse
 from .field import (
@@ -28,6 +29,19 @@ from .field import (
 )
 from .geometry import GeometryPreview, GeometryRegion, WindingCoil, WindingSlot
 from .mesh import FluxDensityMap, MeshConfigSummary, MeshPlotInfo, Node
+from .performance import (
+    DqFluxLinkage,
+    DriveLimits,
+    EfficiencyMap,
+    FluxLinkageMap,
+    FluxLinkageMapPoint,
+    IronLoss,
+    IronLossDensity,
+    LossBreakdown,
+    TorqueSpeedCurve,
+    TorqueSpeedEnvelope,
+    WindingResistance,
+)
 from .result import SolveMetadata, SolveResult, SolveSummary
 from .waveforms import (
     BackEMFHarmonicAnalysis,
@@ -47,6 +61,9 @@ __all__ = [
     "BackEMFHarmonicComponent",
     "BackEMFWaveform",
     "PhaseCurrentWaveform",
+    "DqFluxLinkage",
+    "DriveLimits",
+    "EfficiencyMap",
     "ErrorResponse",
     "FieldLineContourLevel",
     "FieldLineFrame",
@@ -58,8 +75,13 @@ __all__ = [
     "FieldMovieValueRange",
     "FieldMovieViewBounds",
     "FluxDensityMap",
+    "FluxLinkageMap",
+    "FluxLinkageMapPoint",
     "GeometryPreview",
     "GeometryRegion",
+    "IronLoss",
+    "IronLossDensity",
+    "LossBreakdown",
     "MaterialsConfig",
     "MeshConfigSummary",
     "MeshPlotInfo",
@@ -74,8 +96,12 @@ __all__ = [
     "SolveResult",
     "SolveSummary",
     "StatorConfig",
+    "TorqueSpeedCurve",
+    "TorqueSpeedEnvelope",
     "TorqueWaveform",
     "WindingCoil",
     "WindingConfig",
+    "WindingResistance",
     "WindingSlot",
+    "WireSpec",
 ]

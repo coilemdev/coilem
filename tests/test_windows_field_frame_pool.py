@@ -96,3 +96,21 @@ def test_cancelled_frame_wait_joins_workers_before_return(monkeypatch, tmp_path)
             list(completed_process_futures(futures, cancel))
     assert all(not worker.is_alive() for worker in workers)
     assert any(future.cancelled() for future in futures)
+
+
+def test_frame_worker_returns_the_stator_sample_through_the_pool(monkeypatch, tmp_path):
+    monkeypatch.setenv("COILEM_USER_DATA_ROOT", str(tmp_path))
+    args = (2, report(), 15.0, None)
+    skipped = solver._build_field_line_frame_in_subprocess(*args, str(tmp_path / "solve_cache/off"), False)
+    assert skipped[4] is None
+    expected = solver._build_field_line_frame_in_subprocess(*args, str(tmp_path / "solve_cache/serial"), False, True)
+    with cancellable_process_pool(2) as pool:
+        actual = pool.submit(
+            solver._build_field_line_frame_in_subprocess, *args, str(tmp_path / "solve_cache/parallel"), False, True
+        ).result(timeout=30)
+    for sample in (expected[4], actual[4]):
+        assert sample is not None
+        assert sample.corners_mm.shape == (2, 3, 2)
+        assert sample.pole_pitches == 4
+    assert actual[4].signature == expected[4].signature
+    assert (actual[4].bx_t == expected[4].bx_t).all() and (actual[4].by_t == expected[4].by_t).all()

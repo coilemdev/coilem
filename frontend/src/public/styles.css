@@ -948,6 +948,7 @@ body {
 .public-param-row input:focus,
 .public-param-row select:focus { border-color: var(--accent-primary); outline: 0; box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.1); }
 .public-derived-row strong { width: 78px; color: var(--text-primary); font: 10px var(--font-mono); text-align: right; }
+.public-derived-row.is-warning strong { color: var(--warning); }
 .public-stator-derived-measures { margin-top: 5px; padding-top: 4px; border-top: 1px solid var(--border-subtle); }
 .public-stator-derived-measures .public-derived-row { min-height: 30px; padding-block: 2px; }
 .public-material-compat-warning { display: grid; gap: 6px; margin: 7px 0 9px; padding: 9px; border: 1px solid rgba(248,113,113,.34); border-radius: 7px; color: #fecaca; background: rgba(127,29,29,.18); }
@@ -1240,6 +1241,58 @@ body {
 .motor-constants-status.is-ok { color: var(--success); }
 .motor-constants-status.is-check { color: var(--warning); }
 .motor-constants-note { margin: 5px 0 0; color: var(--text-muted); font-size: 8px; line-height: 1.4; }
+/* Losses & efficiency (#138). Series colors are the validated dark-surface categorical slots, in order. */
+/* Copper losses in copper shades, iron losses in steel shades (palette-checked on the dark surface). */
+.losses-card { --loss-copper-stack: #a34922; --loss-copper-end: #c88335; --loss-iron-hysteresis: #296b9f; --loss-iron-eddy: #4d9ecd; --loss-mechanical: #2fa35a; }
+.losses-headline { display: flex; align-items: baseline; gap: 8px; margin: 2px 0 6px; }
+.losses-headline-label { color: var(--text-secondary); font: 400 9px var(--font-sans); }
+.losses-headline strong { color: var(--text-primary); font: 800 16px/1.2 var(--font-mono); font-variant-numeric: tabular-nums; }
+/* --font-ui: --font-sans is not defined, which voided this shorthand and let the badge take its parent's size. */
+.losses-status { margin-left: 6px; padding: 0 5px; border: 1px solid currentColor; border-radius: 999px; font: 700 8px/1.6 var(--font-ui); letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+.losses-status.is-experimental { color: var(--warning); }
+.losses-status.is-unavailable { color: var(--text-muted); }
+.losses-status.is-qualified { color: var(--success); }
+/* Each output's status with its reason in words (public issue 143). */
+.output-status-list { margin: 8px 0 0; padding: 0; list-style: none; color: var(--text-muted); font-size: 10px; line-height: 1.45; }
+.output-status-list li { display: flex; align-items: baseline; gap: 6px; }
+.output-status-list li + li { margin-top: 3px; }
+.output-status-list .losses-status { flex: none; margin-left: 0; }
+.output-status-list strong { color: var(--text-secondary); font-weight: 600; }
+.losses-card tr[title] th { cursor: help; }
+.dq-card-detail tr:first-child > * { padding-top: 6px; border-top: 1px solid var(--border-subtle); }
+.dq-card-toggle { margin-top: 4px; padding: 0; border: 0; background: none; color: var(--text-accent); font-size: 10px; cursor: pointer; }
+.public-magnet-temperature-note { margin: -2px 0 8px; color: var(--text-muted); font-size: 10px; line-height: 1.4; }
+.public-magnet-temperature-note.is-warning { color: var(--warning); }
+.losses-not-modelled { margin: 8px 0 0; color: var(--text-muted); font-size: 10px; line-height: 1.45; }
+.losses-bar-block { margin-top: 8px; }
+.losses-bar { display: flex; gap: 2px; height: 10px; overflow: hidden; border-radius: 4px; }
+.losses-bar-segment { min-width: 2px; transition: opacity .12s; }
+.losses-bar-segment.is-dimmed { opacity: .35; }
+.losses-bar-readout { margin: 4px 0 3px; color: var(--text-secondary); font: 9px var(--font-mono); font-variant-numeric: tabular-nums; }
+.losses-legend { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.losses-legend li { display: grid; grid-template-columns: 8px 1fr auto; gap: 6px; align-items: center; color: var(--text-secondary); font: 9px var(--font-sans); }
+.losses-swatch { width: 8px; height: 8px; border-radius: 2px; }
+.losses-legend-value { color: var(--text-primary); font: 9px var(--font-mono); font-variant-numeric: tabular-nums; }
+.losses-map { display: grid; justify-items: center; gap: 6px; margin: 12px 0 0; padding-top: 10px; border-top: 1px solid var(--border-subtle); }
+.losses-map-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; width: 100%; }
+.losses-map-heading h4 { margin: 0; color: var(--text-primary); font-size: 11px; }
+.losses-map-modes { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--border-default); border-radius: 5px; overflow: hidden; }
+.losses-map-modes button { padding: 3px 8px; border: 0; border-right: 1px solid var(--border-subtle); background: transparent; color: var(--text-muted); font-size: 9px; cursor: pointer; }
+.losses-map-modes button:last-child { border-right: 0; }
+.losses-map-modes button[aria-pressed="true"] { background: var(--border-subtle); color: var(--text-primary); }
+.losses-map-stage { position: relative; max-width: 100%; }
+.losses-map-stage canvas { display: block; max-width: 100%; height: auto !important; aspect-ratio: 1; cursor: grab; touch-action: none; }
+.losses-map-stage canvas:active { cursor: grabbing; }
+.losses-map-zoom { position: absolute; top: 4px; right: 4px; display: grid; gap: 3px; }
+.losses-map-zoom button { min-width: 26px; padding: 2px 5px; border: 1px solid var(--border-default); border-radius: 4px; background: rgba(18,20,27,.85); color: var(--text-secondary); font: 10px var(--font-mono); cursor: pointer; }
+.losses-map-zoom button:disabled { opacity: .4; cursor: default; }
+.losses-map figcaption { display: grid; gap: 3px; width: min(360px, 100%); }
+.losses-map-scale { height: 6px; border-radius: 3px; }
+.losses-map-labels { display: flex; justify-content: space-between; color: var(--text-muted); font: 8px var(--font-mono); }
+.losses-map-readout { min-height: 14px; color: var(--text-secondary); font: 9px var(--font-mono); }
+.losses-map-key { color: var(--text-muted); font-size: 9px; line-height: 1.45; }
+.losses-map-swatch { display: inline-block; width: 9px; height: 9px; margin-right: 3px; border-radius: 2px; vertical-align: -1px; }
+.losses-map-swatch.is-hatched { background: repeating-linear-gradient(135deg, #1f2226 0 2px, #3d424d 2px 3px); outline: 1px solid var(--border-subtle); }
 .public-timing-note { margin: 10px 14px; color: var(--text-muted); font-size: 11px; line-height: 1.5; }
 .public-live-stage > .public-motor-viewport { width: 100%; height: 100%; }
 .public-inspect-mesh-btn { position: absolute; z-index: 9; top: 16px; left: 16px; min-height: 32px; padding: 0 11px; border: 1px solid var(--border-default); border-radius: 999px; color: var(--text-secondary); background: rgba(15,17,23,.9); font-size: 10px; box-shadow: var(--shadow-md); }
@@ -1680,6 +1733,10 @@ body {
 .public-field-axis-help-badge text { fill: #f8fafc; text-anchor: middle; dominant-baseline: central; font-family: var(--font-mono); font-weight: 700; }
 .public-field-axis.is-stator { stroke: #ffb547; filter: drop-shadow(0 0 1px rgba(0,0,0,.95)); }
 .public-field-axis.is-pm { stroke: #5ed3f3; filter: drop-shadow(0 0 1px rgba(0,0,0,.95)); }
+.public-field-axis-q { fill: none; stroke: rgba(241,245,249,.85); stroke-width: 1px; stroke-dasharray: 5 3; vector-effect: non-scaling-stroke; }
+.public-field-axis-label.is-dq { font-style: italic; }
+.public-field-axis-label.is-d { fill: #5ed3f3; }
+.public-field-axis-label.is-note { font-weight: 500; fill: rgba(241,245,249,.88); }
 .public-field-axis-arc { fill: none; stroke: rgba(241,245,249,.8); stroke-width: 1.4px; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
 .public-field-axis-label { fill: #f8fafc; stroke: rgba(3,7,18,.9); stroke-width: .12; paint-order: stroke; text-anchor: middle; dominant-baseline: central; font-family: var(--font-mono); font-weight: 700; pointer-events: none; }
 @keyframes public-field-direction-flow {
@@ -4649,3 +4706,63 @@ body {
 .public-solved-field-canvas .public-field-result-legend > .is-over b { width: 12px; height: 14px; border-radius: 3px; box-shadow: 0 0 0 1px rgba(148,163,184,.2); }
 .public-solved-field-canvas .public-field-legend-tick { top: auto; right: -4px; bottom: var(--tick-at); left: -4px; width: auto; height: 2px; margin: 0 0 -1px; }
 .public-solved-field-canvas .public-field-legend-tick em { top: 50%; right: calc(100% + 4px); left: auto; padding: 1px 4px; border-radius: 4px; background: rgba(7,9,14,.82); font-size: 10px; transform: translateY(-50%); }
+
+/* Torque–speed and efficiency (#142) */
+.performance-panel { display: grid; gap: 10px; max-width: 1080px; margin: 12px auto 14px; padding: 12px 14px; border: 1px solid var(--border-subtle); border-radius: 7px; background: rgba(18,20,27,.66); }
+.performance-header { display: flex; align-items: center; gap: 8px; }
+.performance-header h3 { margin: 0; color: var(--text-primary); font-size: 13px; }
+.performance-intro, .performance-actions p, .performance-message, .performance-notes { margin: 0; color: var(--text-muted); font-size: 11px; line-height: 1.5; }
+.performance-message.is-error { color: var(--error); }
+.performance-limits { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+.performance-limits label { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px 6px; color: var(--text-secondary); font-size: 10px; }
+.performance-limits label > span { grid-column: 1 / -1; }
+.performance-limits input, .performance-limits select { min-width: 0; padding: 5px 7px; border: 1px solid var(--border-default); border-radius: 5px; background: var(--bg-canvas); color: var(--text-primary); font: 11px var(--font-mono); }
+.performance-limits label:last-child { grid-column: span 2; }
+.performance-limits select { grid-column: 1 / -1; font-family: var(--font-sans); }
+.performance-limits small { color: var(--text-muted); font-size: 10px; }
+.performance-limit-note { grid-column: 1 / -1; color: var(--text-muted); font-size: 9px; font-style: normal; line-height: 1.35; }
+.performance-limits label.is-estimated input { border-color: var(--warning); border-style: dashed; }
+.performance-limits label.is-estimated .performance-limit-note { color: var(--warning); }
+.performance-solved-ring { fill: rgba(10, 12, 16, .55); stroke: var(--text-primary); stroke-width: 2; }
+.performance-solved-dot { fill: var(--text-primary); }
+.performance-solved-label { fill: var(--text-primary); font: 600 10px var(--font-sans); paint-order: stroke; stroke: rgba(10, 12, 16, .85); stroke-width: 3px; }
+.performance-solved-swatch { width: 9px !important; height: 9px !important; border: 2px solid var(--text-primary); border-radius: 50%; background: transparent !important; }
+.performance-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.performance-actions button { padding: 6px 11px; border: 1px solid var(--border-default); border-radius: 6px; background: transparent; color: var(--text-secondary); font-size: 11px; cursor: pointer; }
+.performance-actions button.performance-primary { border-color: var(--border-accent); color: var(--text-accent); }
+.performance-actions button:disabled { opacity: .5; cursor: default; }
+.performance-downloads { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.performance-progress { flex: 1 1 200px; height: 6px; overflow: hidden; border-radius: 3px; background: var(--border-subtle); }
+.performance-progress span { display: block; height: 100%; border-radius: 3px; background: var(--accent-primary); transition: width .3s ease; }
+.performance-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; }
+.performance-stats div { display: grid; gap: 2px; padding: 7px 9px; border: 1px solid var(--border-subtle); border-radius: 6px; }
+.performance-stats span { color: var(--text-muted); font-size: 10px; }
+.performance-stats strong { color: var(--text-primary); font: 600 15px var(--font-mono); }
+.performance-stats small { color: var(--text-muted); font-size: 10px; font-weight: 400; }
+.performance-chart { margin: 0; }
+.performance-chart svg { display: block; width: 100%; height: auto; touch-action: none; }
+.performance-chart-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--text-secondary); font-size: 11px; }
+.performance-chart-note { color: var(--text-muted); font-size: 10px; }
+.performance-toggle { display: inline-flex; border: 1px solid var(--border-default); border-radius: 5px; overflow: hidden; }
+.performance-toggle button { padding: 3px 9px; border: 0; background: transparent; color: var(--text-muted); font-size: 10px; cursor: pointer; }
+.performance-toggle button[aria-pressed="true"] { background: var(--border-subtle); color: var(--text-primary); }
+.performance-readout { min-height: 16px; margin: 4px 0 0; color: var(--text-secondary); font: 10px var(--font-mono); }
+.performance-base-line { stroke: var(--text-muted); stroke-width: 1; stroke-dasharray: 3 4; }
+.performance-crosshair { stroke: var(--text-secondary); stroke-width: 1; }
+.performance-marker { stroke: var(--bg-canvas); stroke-width: 2; }
+.performance-envelope-line { stroke: var(--text-primary); stroke-width: 1.5; }
+.performance-cell-focus { fill: none; stroke: var(--text-primary); stroke-width: 1.5; }
+.performance-band-legend { display: grid; gap: 3px; max-width: 320px; margin: 4px 0 0 58px; }
+.performance-band-legend > div { display: flex; justify-content: space-between; }
+.performance-band-legend span { flex: 1 1 0; height: 8px; min-width: 6px; }
+.performance-band-legend small { color: var(--text-muted); font: 10px var(--font-mono); }
+.performance-footer { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 14px; align-items: start; }
+.performance-inductance { border-collapse: collapse; font: 10px var(--font-mono); color: var(--text-secondary); }
+.performance-inductance caption { margin-bottom: 4px; color: var(--text-muted); font: 10px var(--font-sans); text-align: left; }
+.performance-inductance th, .performance-inductance td { padding: 3px 8px 3px 0; border-bottom: 1px solid var(--border-subtle); text-align: right; font-weight: 400; }
+.performance-inductance th:first-child { text-align: left; }
+.performance-notes { padding-left: 16px; }
+@media (max-width: 720px) {
+  .performance-footer { grid-template-columns: minmax(0, 1fr); }
+  .performance-band-legend { margin-left: 0; }
+}

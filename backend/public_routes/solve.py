@@ -63,7 +63,6 @@ _EXCLUDED_SUMMARY_FIELDS = frozenset(
     {
         "cogging_torque_Nm",
         "efficiency_pct",
-        "loss_breakdown",
         "weight_inertia",
         "torque_speed_envelope",
         "thermal_estimate",

@@ -128,13 +128,17 @@ def test_public_policy_rejects_femm_and_thermal() -> None:
     femm["solve_params"]["mesh_source"] = "femm"
     assert client.post("/solve/validate", json=femm).status_code == 400
 
+    # Magnet temperature (#137) derates Br with cited coefficients, inside each grade's range.
     thermal = deepcopy(VALID_CONFIG)
-    thermal["solve_params"]["magnet_temperature_C"] = 80
+    thermal["solve_params"]["magnet_temperature_C"] = 150
     before = set(sys.modules)
     response = client.post("/solve/validate", json=thermal)
     imported = set(sys.modules) - before
     assert response.status_code == 400
+    assert response.json()["detail"]["field"] == "solve_params.magnet_temperature_C"
     assert not any(name.startswith("backend.thermal") for name in imported)
+    thermal["solve_params"]["magnet_temperature_C"] = 80
+    assert client.post("/solve/validate", json=thermal).status_code == 200
 
     cogging = deepcopy(VALID_CONFIG)
     cogging["solve_options"] = {"cogging_torque": True}
@@ -361,7 +365,7 @@ def test_audited_dependency_notices_are_present() -> None:
         "meshio==5.3.5",
         "numpy==2.4.6",
         "numpy==2.5.4",
-        "pillow==12.3.0",
+        "pillow==13.0.0",
         "rich==15.0.0",
         "uvicorn==0.51.0",
     ]:

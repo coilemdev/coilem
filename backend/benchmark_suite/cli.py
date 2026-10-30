@@ -27,6 +27,7 @@ from backend.benchmark_suite.contract import (
     sha,
     write,
 )
+from backend.benchmark_suite.dq_metrics import with_dq_gates
 from backend.benchmark_suite.hardware import no_load_back_emf_line_to_line
 from backend.benchmark_suite.metrics import energy_balance_ratio, evaluate_abc, evaluate_bldc, validate_abc
 from backend.benchmark_suite.references import load_bundle, load_suite, verify_materials
@@ -71,7 +72,7 @@ def inputs(spec, selected):
             configs[case["id"], job["stage"]] = config
         if case["phase"] == "D":
             protocols[case["id"]] = checked_json(DATA_ROOT, case["protocol"], case["protocol_sha256"])
-            if spec["protocol_version"] == "1.3.0":
+            if spec["protocol_version"] in {"1.3.0", "1.4.0"}:
                 from backend.benchmark_suite.bldc_metrics import golden_sector
 
                 protocol = protocols[case["id"]]
@@ -137,6 +138,9 @@ def evaluate(output, manifest, selected, configs, protocols, golden, references,
         else:
             try:
                 evaluation = evaluate_abc(measurements["native"], reference, configs[case["id"], "native"])
+                # Registered λd/λq points (protocol 1.6.0) add their gates on top of the amplitude gates.
+                if case.get("dq_reference") and reference is not None and evaluation["status"] in ("PASS", "YELLOW", "FAIL"):
+                    evaluation = with_dq_gates(evaluation, measurements["native"], reference, configs[case["id"], "native"])
             except (ValueError, KeyError, TypeError, ZeroDivisionError) as exc:
                 evaluation = {"status": "INCOMPLETE", "gates": [], "reason": str(exc)}
         row = {
@@ -369,7 +373,7 @@ def main():
     parser.add_argument("--case", action="append", help="Select a registered case id; repeat for multiple cases")
     parser.add_argument(
         "--suite", type=Path, default=SPEC,
-        help="Select a registered suite; default is A/B/C/D 1.3 with winding-relative BLDC validation",
+        help="Select a registered suite; default is A/B/C/D 1.4 with cap-200 BLDC requests",
     )
     parser.add_argument("--reference-bundle", type=Path, default=DEFAULT_BUNDLE)
     parser.add_argument("--out-dir", type=Path)
