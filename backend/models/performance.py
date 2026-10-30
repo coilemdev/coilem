@@ -81,6 +81,38 @@ class DqFluxLinkage(BaseModel):
     )
 
 
+class WindingResistance(BaseModel):
+    """Phase resistance, mean turn length and slot fill of the stator winding.
+
+    Turns follow coilEM's convention: ``turns_per_coil`` is the conductor count
+    of one slot, so a phase has slot_count · turns_per_coil / 6 series turns,
+    divided among its parallel paths.
+    """
+
+    wire_source: Literal["specified", "derived"]
+    conductor: Literal["copper", "aluminum"]
+    strand_diameter_mm: float = Field(gt=0)
+    strands_in_hand: int = Field(ge=1)
+    turn_copper_area_mm2: float = Field(gt=0)
+    conductors_per_slot: int = Field(ge=1)
+    series_turns_per_phase: float = Field(gt=0, description="All turns of one phase, before division into paths")
+    parallel_paths: int = Field(ge=1)
+    slot_area_mm2: float = Field(gt=0, description="Gross slot polygon area of one slot")
+    copper_fill: float = Field(ge=0, description="Bare copper area over the gross slot area")
+    copper_fill_limit: float = Field(gt=0, lt=1)
+    wire_fill: Optional[float] = Field(default=None, ge=0, description="Insulated wire area over the slot area, when the build is known")
+    fits: bool
+    stack_length_mm: float = Field(gt=0)
+    end_turn_length_mm: float = Field(gt=0, description="Conductor length of one end turn, at one end of the stack")
+    mean_turn_length_mm: float = Field(gt=0)
+    active_fraction: float = Field(gt=0, le=1, description="Share of each turn inside the stack")
+    phase_resistance_20C_ohm: float = Field(gt=0)
+    temperature_coefficient_per_K: float = Field(gt=0, description="R(T) = R20 · (1 + coefficient · (T - 20))")
+    winding_temperature_C: float = Field(ge=-50.0, le=250.0)
+    phase_resistance_ohm: float = Field(gt=0, description="At winding_temperature_C")
+    notes: list[str] = Field(default_factory=list)
+
+
 class LossBreakdown(BaseModel):
     """Losses and efficiency at the solved operating point."""
 

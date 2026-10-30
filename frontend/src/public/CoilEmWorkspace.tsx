@@ -58,6 +58,8 @@ import { BldcTorqueCurrentChart } from './BldcTorqueCurrentChart';
 import { PublicRunComparison } from './PublicRunComparison';
 import { MotorConstants } from './MotorConstants';
 import { hasMotorConstants, motorConstantsView } from './machineConstants';
+import type { WireSpec } from './performance';
+import { readWindingResistance, windingReadout } from './windingResistance';
 import { ResultSummary } from './ResultSummary';
 import { publicExampleOptions, type PublicExampleId } from './exampleDesigns';
 import {
@@ -1081,6 +1083,13 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
   // leaves it held indefinitely — so an unsuppressed note would keep explaining a
   // shape the user has already changed.
   const geometryWarnings = currentGeometryWarnings(geometry, geometryStale);
+  // Resistance and fill come with the preview; while it is stale they would
+  // describe the previous wire, so they wait for the new one (#136).
+  const windingResistanceRecord = geometryStale ? null : readWindingResistance(geometry?.metadata?.winding_resistance);
+  const windingTemperatureC = config.solve_params.winding_temperature_C ?? 20;
+  const windingRows = windingResistanceRecord ? windingReadout(windingResistanceRecord, windingTemperatureC) : [];
+  const wire = config.winding.wire ?? null;
+  const setWire = (next: WireSpec | null) => set('winding', 'wire', 'winding')(next);
   // Every section header showed a green check, even beside "Winding needs
   // attention"; the one holding the faulty field now shows the warning instead.
   const errorSection = error ? designErrorSection(errorDetails) : null;
@@ -1421,6 +1430,28 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         </div>
         <NumberRow label="Turns / Coil" value={config.winding.turns_per_coil} min={1} step={1} disabled={disabled} onChange={set('winding', 'turns_per_coil', 'winding')} />
         <NumberRow label="Parallel Paths" value={config.winding.parallel_paths} min={1} step={1} disabled={disabled} onChange={set('winding', 'parallel_paths', 'winding')} />
+        <SelectRow
+          label="Wire"
+          value={wire ? 'specified' : 'derived'}
+          choices={[{ value: 'derived', label: 'Derived from slot' }, { value: 'specified', label: 'Specified' }]}
+          hint="Derived sizes the wire to fill 45% of the slot with copper. Specify the wire for the real phase resistance."
+          disabled={disabled}
+          onChange={(value) => setWire(value === 'specified'
+            ? { wire_bare_diameter_mm: Number((windingResistanceRecord?.strand_diameter_mm ?? 1).toFixed(2)), strands_in_hand: 1 }
+            : null)}
+        />
+        {wire && <>
+          <NumberRow label="Wire Ø (bare)" value={wire.wire_bare_diameter_mm} unit="mm" min={0.06} max={10} step={0.01} disabled={disabled} onChange={(value) => setWire({ ...wire, wire_bare_diameter_mm: value })} />
+          <NumberRow label="Strands in Hand" value={wire.strands_in_hand ?? 1} min={1} max={200} step={1} disabled={disabled} onChange={(value) => setWire({ ...wire, strands_in_hand: Math.max(1, Math.round(value)) })} />
+          <NumberRow label="End-turn Extension" value={wire.end_turn_extension_mm ?? 0} unit="mm" min={0} max={200} step={1} hint="Straight length each coil side runs out of the stack before its end turn bends." disabled={disabled} onChange={(value) => setWire({ ...wire, end_turn_extension_mm: value > 0 ? value : null })} />
+        </>}
+        <NumberRow label="Winding Temp" value={windingTemperatureC} unit="°C" min={-50} max={250} step={5} hint="Winding temperature for the phase resistance." disabled={disabled} onChange={set('solve_params', 'winding_temperature_C', 'winding')} />
+        {windingRows.map((row) => (
+          <div key={row.key} className={`param-row public-param-row public-derived-row${row.warning ? ' is-warning' : ''}`} title={row.hint}>
+            <span className="param-label">{row.label}<small>{row.tag}</small></span>
+            <strong>{row.text}</strong>
+          </div>
+        ))}
         <NumberRow label="Phase Current" value={config.solve_params.current_amplitude_A} unit={`A ${config.solve_params.current_amplitude_convention}`} min={0} step={0.5} disabled={disabled} onChange={set('solve_params', 'current_amplitude_A', 'winding')} />
       </ParameterSectionBlock>}
 

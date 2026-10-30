@@ -41,6 +41,7 @@ import {
 } from './motorAirgap';
 import { startPublicBackendMonitor } from './backendMonitor';
 import { createExcitationDrafts, switchExcitationMode } from './excitationDrafts';
+import type { WireSpec } from './performance';
 // Lazy: the tutorials area carries the shared catalog and learning.css, so a
 // static import puts ~15 kB gzip of lesson chrome on the landing page's critical
 // path for visitors who never open a lesson.
@@ -349,6 +350,8 @@ const DESIGN_FIELD_LABELS: Record<string, string> = {
   layers: 'Winding layers',
   turns_per_coil: 'Turns per coil',
   parallel_paths: 'Parallel paths',
+  wire: 'Wire',
+  winding_temperature_C: 'Winding temperature',
   current_amplitude_A: 'Phase current',
   stator_steel: 'Stator steel',
   rotor_steel: 'Rotor steel',
@@ -370,6 +373,7 @@ const DESIGN_FIELD_UNITS: Record<string, string> = {
   v_angle_deg: '°',
   v_depth_mm: 'mm',
   current_amplitude_A: 'A rms',
+  winding_temperature_C: '°C',
 };
 
 interface DesignEditState extends PublicDesignEditFeedback {
@@ -393,6 +397,12 @@ function formatEditValue(field: string, value: unknown): string {
   if (field === 'magnet_embrace' && typeof value === 'number') {
     return `${Math.round(value * 100)}%`;
   }
+  if (field === 'wire') {
+    if (!value || typeof value !== 'object') return 'derived from the slot';
+    const wire = value as WireSpec;
+    return `${wire.strands_in_hand ?? 1} × ${wire.wire_bare_diameter_mm} mm`;
+  }
+  if (field === 'winding_temperature_C' && value == null) return '20 °C';
   if (typeof value === 'boolean') return value ? 'On' : 'Off';
   if (typeof value === 'number') {
     const formatted = Number.isInteger(value) ? String(value) : Number(value.toFixed(2)).toString();

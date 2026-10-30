@@ -651,6 +651,8 @@ export const DEFAULT_CONFIG: MotorConfig = {
     commutation_advance_deg: 0,
     phase_connection: 'wye',
     rated_speed_rpm: 2400,
+    // Unset means 20 °C; kept in the defaults so a design file keeps the field (#136).
+    winding_temperature_C: null,
   },
   solve_options: {
     torque_sweep: true,

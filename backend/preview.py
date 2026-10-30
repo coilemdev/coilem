@@ -37,6 +37,7 @@ from backend.preview_from_ir import (
     preview_regions_from_geometry_ir,
 )
 from backend.qualification import classify_qualification
+from backend.winding_resistance import winding_resistance
 from backend.winding_utils import (
     concentrated_slot_layer_assignments,
     concentrated_uses_tooth_coils,
@@ -227,6 +228,15 @@ def generate_preview(config: MotorConfig) -> GeometryPreview:
             "relative_narrowing": width_advisory.relative_narrowing,
         }
     metadata["qualification"] = classify_qualification(config)
+    if geometry_ir is not None and winding_coils:
+        try:
+            resistance = winding_resistance(config, geometry_ir=geometry_ir, winding_coils=winding_coils)
+        except ValueError as exc:
+            metadata["winding_resistance_error"] = str(exc)
+        else:
+            metadata["winding_resistance"] = resistance.model_dump(mode="json")
+            # The exact slot polygon replaces the rectangular-slot estimate.
+            metadata["fill_factor"] = resistance.copper_fill
 
     elapsed_ms = (time.perf_counter() - start_time) * 1000
 

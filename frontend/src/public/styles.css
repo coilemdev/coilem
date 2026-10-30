@@ -948,6 +948,7 @@ body {
 .public-param-row input:focus,
 .public-param-row select:focus { border-color: var(--accent-primary); outline: 0; box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.1); }
 .public-derived-row strong { width: 78px; color: var(--text-primary); font: 10px var(--font-mono); text-align: right; }
+.public-derived-row.is-warning strong { color: var(--warning); }
 .public-stator-derived-measures { margin-top: 5px; padding-top: 4px; border-top: 1px solid var(--border-subtle); }
 .public-stator-derived-measures .public-derived-row { min-height: 30px; padding-block: 2px; }
 .public-material-compat-warning { display: grid; gap: 6px; margin: 7px 0 9px; padding: 9px; border: 1px solid rgba(248,113,113,.34); border-radius: 7px; color: #fecaca; background: rgba(127,29,29,.18); }

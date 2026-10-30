@@ -420,8 +420,8 @@
     },
     {
       "path": "backend/models/config.py",
-      "bytes": 30368,
-      "sha256": "b97662868f28f6479be8063c76a6c821cd3bd247eaf91d346215df57b8b089cc"
+      "bytes": 30065,
+      "sha256": "5c2291b09d2f452103e1004169dce8ffb75b9bd877f4c10dd0f62da295eb27c6"
     },
     {
       "path": "backend/models/errors.py",
@@ -445,8 +445,8 @@
     },
     {
       "path": "backend/models/performance.py",
-      "bytes": 13238,
-      "sha256": "5a6de4b16791aee7f65c6dc2ddc19132e3847cd0d86890fa607ecd9181d9d65c"
+      "bytes": 15029,
+      "sha256": "479de94fbc8fc6976dcdade082b6a1d24801894da19fd2310a2e3be5c38fcefa"
     },
     {
       "path": "backend/models/result.py",
@@ -465,8 +465,8 @@
     },
     {
       "path": "backend/preview.py",
-      "bytes": 40353,
-      "sha256": "657b1ba6f67f1d4d3d15988ea34dd5d28e3e248d4e59967c4d5f27854287ffb8"
+      "bytes": 40906,
+      "sha256": "42ffd7b0c62a5cc9cc75b22fde8eb9df4e95c18466b7bb28a29ea31f86ddeb13"
     },
     {
       "path": "backend/preview_from_ir.py",
@@ -642,6 +642,11 @@
       "path": "backend/tutorial_fields.py",
       "bytes": 133506,
       "sha256": "32d109b4e6e53ba078e9b7ee2ad4c7509e31881bf0ddd1cb0f35ec3f9f9b627c"
+    },
+    {
+      "path": "backend/winding_resistance.py",
+      "bytes": 10025,
+      "sha256": "540b403dcbc406bbab7301bc49a1c579698f082b0ec46ee010bc2be6c99c4e7d"
     },
     {
       "path": "backend/winding_utils.py",
@@ -5850,8 +5855,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2316,
-      "sha256": "102194fdf3c85660938b1cda76a127fc9bf1162d1382996f3354fa21ef641bc9"
+      "bytes": 2360,
+      "sha256": "a639368fa8c278f5d98d1ed50fc6e2fa49a066d79442bf530db745249b6abcf1"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -5900,8 +5905,8 @@
     },
     {
       "path": "frontend/scripts/test-design-file-defaults.mjs",
-      "bytes": 8140,
-      "sha256": "5819b471e1f34fc909b82439116fc349715c3105ab8f515c0c67486e7528839d"
+      "bytes": 9229,
+      "sha256": "452b6ed4d772a65c3367364fe1db07d6e35c241de09ef71a94c75dd6769cfbd9"
     },
     {
       "path": "frontend/scripts/test-field-axes.mjs",
@@ -6007,6 +6012,11 @@
       "path": "frontend/scripts/test-viewport-transform.mjs",
       "bytes": 1565,
       "sha256": "c81995eb6c0599cd4d3054a1d1493511e33840ceceddff659492bf056ffb6b90"
+    },
+    {
+      "path": "frontend/scripts/test-winding-resistance.mjs",
+      "bytes": 2353,
+      "sha256": "63509178593b8049a9466b976f3e57eb4ba4aaca0cc1fc6f4d01c1d50157e98c"
     },
     {
       "path": "frontend/scripts/test-winding-ring.mjs",
@@ -6390,8 +6400,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 71814,
-      "sha256": "0b9e1939d5952068f86cda6c2013c8c3f01a3ec61e9cfc1edf5a9b2dd985f826"
+      "bytes": 72254,
+      "sha256": "0b22bbec28293a86176b3226c530a68183d41c3fe0473a2e9e6a3c55a861f18c"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -6400,8 +6410,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 224304,
-      "sha256": "082e229c083da3871bfb95c7094c51ddc38acd7abde5048fce7d7ba0988c4216"
+      "bytes": 226985,
+      "sha256": "7d1618650c72cfb75e1c4ab1003e981864c15dd7e31703cd1cc9dbb98cdf3831"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -6540,8 +6550,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "bytes": 13424,
-      "sha256": "efb5a1b09f87a82927ef68c6a745233b86987b9cdabd6a18d191b4fdf7d62c97"
+      "bytes": 14494,
+      "sha256": "db40c973fb0cb355e6f02ef9f7fa8a84b321225bc0583074402ea101e50c5728"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -6750,8 +6760,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 20151,
-      "sha256": "2f5059fc33ac60d3b35397d45658b17ed8960d84632af21cc98b40dc01110799"
+      "bytes": 20273,
+      "sha256": "958d022445578073874ad579312af72da94e0321be8fd81006ae26a5789e322e"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -6815,8 +6825,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 264406,
-      "sha256": "747ab4d593d78e38d6986bf3f3b408bfa2af40d2089407dac7373f81ddb58b23"
+      "bytes": 264471,
+      "sha256": "da93a26d991ea4405df913d9edd419f6d2a3b77e47f8aa7064473e918009a8ad"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -6842,6 +6852,11 @@
       "path": "frontend/src/public/viewportTransform.ts",
       "bytes": 2177,
       "sha256": "f9c62cb7a0387e646974b3655842e21d127f0e11ef40131363931135daea6290"
+    },
+    {
+      "path": "frontend/src/public/windingResistance.ts",
+      "bytes": 4470,
+      "sha256": "147dbee8b1e4ddb525cda2a83f21a0ebad0ed8ea628c592d30c6cc55132a1e59"
     },
     {
       "path": "frontend/src/public/windingRing.ts",
@@ -7420,8 +7435,8 @@
     },
     {
       "path": "tests/test_performance_contracts.py",
-      "bytes": 11076,
-      "sha256": "5d60f819504a7f0ca3813aaf3adc5c3a204d4b777df3ba2669ec13e6041dd283"
+      "bytes": 11225,
+      "sha256": "0a20ebc73631c0371e587012999efabce1d0f7041f6e61d42e118b44d688efa5"
     },
     {
       "path": "tests/test_postsolve_pipeline.py",
@@ -7572,6 +7587,11 @@
       "path": "tests/test_tooth_coil_windings.py",
       "bytes": 10401,
       "sha256": "183395ca3662f2ca15d3b038ab3badfc42d5faee85b7c086f7e36e59f5b47a35"
+    },
+    {
+      "path": "tests/test_winding_resistance.py",
+      "bytes": 7326,
+      "sha256": "171c736dfec0fecd4cd14b9baecefb8f87ee7b3c542384cf720b2a93a5ad123c"
     },
     {
       "path": "tests/test_winding_ring_geometry.py",
@@ -14486,6 +14506,456 @@
     {
       "base_commit": "33a25e1889b5bb472a922a504bba77dbb2fd5adf",
       "path": "tests/test_performance_contracts.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "backend/models/config.py",
+      "source_sha256": "d1ccb891c14b3d28ccb8b6e9ee911628f994fcf06ea66b071b8faef9a20d4321",
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "backend/models/performance.py",
+      "source_sha256": "5a6de4b16791aee7f65c6dc2ddc19132e3847cd0d86890fa607ecd9181d9d65c",
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "backend/preview.py",
+      "source_sha256": "9d95bd235b3f2564b5c4fc6482adb549d01ac1ba25c6a9ce0da5c6e0cbf4eb28",
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "frontend/package.json",
+      "source_sha256": "b6c9c006db041b31338fa978e4df68ea50c30c8600dc22455ea7813ff714d143",
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "frontend/scripts/test-design-file-defaults.mjs",
+      "source_sha256": "f799b02c3a578d3ac1aa1be4de1dfeb27a8e822ea7d2234719d654c611f3fbf4",
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "fd416c60e77b18dce87f2e99613a58c0bbbbf133647a4691dbcc3d8037a85928",
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "705d2050876c798c3080ae2af734fdcd42ffd01b60f1508900a2aea772a157df",
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "e4fa94560257411f3a9a9eb4979dc28ba696d5def02df32e8089d664c9da67bc",
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "68d00de9ceb2b3dbca291bb98bce1869652d2ce642e7fd5f4bcd913f7eda986f",
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "c360a7d0b107ceebb76bc7a19f5442cc447121fddf0b0ffc7b5f781614752983",
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "tests/test_performance_contracts.py",
+      "source_sha256": "5d60f819504a7f0ca3813aaf3adc5c3a204d4b777df3ba2669ec13e6041dd283",
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "backend/winding_resistance.py",
+      "source_sha256": null,
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "frontend/scripts/test-winding-resistance.mjs",
+      "source_sha256": null,
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "frontend/src/public/windingResistance.ts",
+      "source_sha256": null,
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "tests/test_winding_resistance.py",
+      "source_sha256": null,
+      "reason": "Winding definition and phase resistance for #136: optional wire spec, winding temperature, IEC conductor data, mean turn length from coil-side centroids, slot fill on the exact slot polygon, and their readout in the Design panel. Checked against the 2005 Accord's measured phase resistance."
+    },
+    {
+      "base_commit": "e8e296c76fbc99f606bbfdbf176779004f51048a",
+      "path": "backend/models/config.py",
+      "source_sha256": "b97662868f28f6479be8063c76a6c821cd3bd247eaf91d346215df57b8b089cc",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "e8e296c76fbc99f606bbfdbf176779004f51048a",
+      "path": "backend/models/performance.py",
+      "source_sha256": "5a6de4b16791aee7f65c6dc2ddc19132e3847cd0d86890fa607ecd9181d9d65c",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "e8e296c76fbc99f606bbfdbf176779004f51048a",
+      "path": "backend/preview.py",
+      "source_sha256": "657b1ba6f67f1d4d3d15988ea34dd5d28e3e248d4e59967c4d5f27854287ffb8",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "e8e296c76fbc99f606bbfdbf176779004f51048a",
+      "path": "backend/winding_resistance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "e8e296c76fbc99f606bbfdbf176779004f51048a",
+      "path": "frontend/package.json",
+      "source_sha256": "102194fdf3c85660938b1cda76a127fc9bf1162d1382996f3354fa21ef641bc9",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "e8e296c76fbc99f606bbfdbf176779004f51048a",
+      "path": "frontend/scripts/test-design-file-defaults.mjs",
+      "source_sha256": "5819b471e1f34fc909b82439116fc349715c3105ab8f515c0c67486e7528839d",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "e8e296c76fbc99f606bbfdbf176779004f51048a",
+      "path": "frontend/scripts/test-winding-resistance.mjs",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "e8e296c76fbc99f606bbfdbf176779004f51048a",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "0b9e1939d5952068f86cda6c2013c8c3f01a3ec61e9cfc1edf5a9b2dd985f826",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "e8e296c76fbc99f606bbfdbf176779004f51048a",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "082e229c083da3871bfb95c7094c51ddc38acd7abde5048fce7d7ba0988c4216",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "e8e296c76fbc99f606bbfdbf176779004f51048a",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "efb5a1b09f87a82927ef68c6a745233b86987b9cdabd6a18d191b4fdf7d62c97",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "e8e296c76fbc99f606bbfdbf176779004f51048a",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "2f5059fc33ac60d3b35397d45658b17ed8960d84632af21cc98b40dc01110799",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "e8e296c76fbc99f606bbfdbf176779004f51048a",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "747ab4d593d78e38d6986bf3f3b408bfa2af40d2089407dac7373f81ddb58b23",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "e8e296c76fbc99f606bbfdbf176779004f51048a",
+      "path": "frontend/src/public/windingResistance.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "e8e296c76fbc99f606bbfdbf176779004f51048a",
+      "path": "tests/test_performance_contracts.py",
+      "source_sha256": "5d60f819504a7f0ca3813aaf3adc5c3a204d4b777df3ba2669ec13e6041dd283",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "e8e296c76fbc99f606bbfdbf176779004f51048a",
+      "path": "tests/test_winding_resistance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "3fd8ce7a0462582cea8f324f99a87daa588971c9",
+      "path": "backend/models/config.py",
+      "source_sha256": "b97662868f28f6479be8063c76a6c821cd3bd247eaf91d346215df57b8b089cc",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "3fd8ce7a0462582cea8f324f99a87daa588971c9",
+      "path": "backend/models/performance.py",
+      "source_sha256": "5a6de4b16791aee7f65c6dc2ddc19132e3847cd0d86890fa607ecd9181d9d65c",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "3fd8ce7a0462582cea8f324f99a87daa588971c9",
+      "path": "backend/preview.py",
+      "source_sha256": "657b1ba6f67f1d4d3d15988ea34dd5d28e3e248d4e59967c4d5f27854287ffb8",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "3fd8ce7a0462582cea8f324f99a87daa588971c9",
+      "path": "backend/winding_resistance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "3fd8ce7a0462582cea8f324f99a87daa588971c9",
+      "path": "frontend/package.json",
+      "source_sha256": "102194fdf3c85660938b1cda76a127fc9bf1162d1382996f3354fa21ef641bc9",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "3fd8ce7a0462582cea8f324f99a87daa588971c9",
+      "path": "frontend/scripts/test-design-file-defaults.mjs",
+      "source_sha256": "5819b471e1f34fc909b82439116fc349715c3105ab8f515c0c67486e7528839d",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "3fd8ce7a0462582cea8f324f99a87daa588971c9",
+      "path": "frontend/scripts/test-winding-resistance.mjs",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "3fd8ce7a0462582cea8f324f99a87daa588971c9",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "0b9e1939d5952068f86cda6c2013c8c3f01a3ec61e9cfc1edf5a9b2dd985f826",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "3fd8ce7a0462582cea8f324f99a87daa588971c9",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "082e229c083da3871bfb95c7094c51ddc38acd7abde5048fce7d7ba0988c4216",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "3fd8ce7a0462582cea8f324f99a87daa588971c9",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "efb5a1b09f87a82927ef68c6a745233b86987b9cdabd6a18d191b4fdf7d62c97",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "3fd8ce7a0462582cea8f324f99a87daa588971c9",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "2f5059fc33ac60d3b35397d45658b17ed8960d84632af21cc98b40dc01110799",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "3fd8ce7a0462582cea8f324f99a87daa588971c9",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "747ab4d593d78e38d6986bf3f3b408bfa2af40d2089407dac7373f81ddb58b23",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "3fd8ce7a0462582cea8f324f99a87daa588971c9",
+      "path": "frontend/src/public/windingResistance.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "3fd8ce7a0462582cea8f324f99a87daa588971c9",
+      "path": "tests/test_performance_contracts.py",
+      "source_sha256": "5d60f819504a7f0ca3813aaf3adc5c3a204d4b777df3ba2669ec13e6041dd283",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "3fd8ce7a0462582cea8f324f99a87daa588971c9",
+      "path": "tests/test_winding_resistance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a0ed791008b096ad074c0b8a81daad3149b98d16",
+      "path": "backend/models/config.py",
+      "source_sha256": "b97662868f28f6479be8063c76a6c821cd3bd247eaf91d346215df57b8b089cc",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a0ed791008b096ad074c0b8a81daad3149b98d16",
+      "path": "backend/models/performance.py",
+      "source_sha256": "5a6de4b16791aee7f65c6dc2ddc19132e3847cd0d86890fa607ecd9181d9d65c",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a0ed791008b096ad074c0b8a81daad3149b98d16",
+      "path": "backend/preview.py",
+      "source_sha256": "657b1ba6f67f1d4d3d15988ea34dd5d28e3e248d4e59967c4d5f27854287ffb8",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a0ed791008b096ad074c0b8a81daad3149b98d16",
+      "path": "backend/winding_resistance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a0ed791008b096ad074c0b8a81daad3149b98d16",
+      "path": "frontend/package.json",
+      "source_sha256": "102194fdf3c85660938b1cda76a127fc9bf1162d1382996f3354fa21ef641bc9",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a0ed791008b096ad074c0b8a81daad3149b98d16",
+      "path": "frontend/scripts/test-design-file-defaults.mjs",
+      "source_sha256": "5819b471e1f34fc909b82439116fc349715c3105ab8f515c0c67486e7528839d",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a0ed791008b096ad074c0b8a81daad3149b98d16",
+      "path": "frontend/scripts/test-winding-resistance.mjs",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a0ed791008b096ad074c0b8a81daad3149b98d16",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "0b9e1939d5952068f86cda6c2013c8c3f01a3ec61e9cfc1edf5a9b2dd985f826",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a0ed791008b096ad074c0b8a81daad3149b98d16",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "082e229c083da3871bfb95c7094c51ddc38acd7abde5048fce7d7ba0988c4216",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a0ed791008b096ad074c0b8a81daad3149b98d16",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "efb5a1b09f87a82927ef68c6a745233b86987b9cdabd6a18d191b4fdf7d62c97",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a0ed791008b096ad074c0b8a81daad3149b98d16",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "2f5059fc33ac60d3b35397d45658b17ed8960d84632af21cc98b40dc01110799",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a0ed791008b096ad074c0b8a81daad3149b98d16",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "747ab4d593d78e38d6986bf3f3b408bfa2af40d2089407dac7373f81ddb58b23",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a0ed791008b096ad074c0b8a81daad3149b98d16",
+      "path": "frontend/src/public/windingResistance.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a0ed791008b096ad074c0b8a81daad3149b98d16",
+      "path": "tests/test_performance_contracts.py",
+      "source_sha256": "5d60f819504a7f0ca3813aaf3adc5c3a204d4b777df3ba2669ec13e6041dd283",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a0ed791008b096ad074c0b8a81daad3149b98d16",
+      "path": "tests/test_winding_resistance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1062d836273f2bc633a8d0c406d6367757c7c8c0",
+      "path": "backend/models/config.py",
+      "source_sha256": "b97662868f28f6479be8063c76a6c821cd3bd247eaf91d346215df57b8b089cc",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1062d836273f2bc633a8d0c406d6367757c7c8c0",
+      "path": "backend/models/performance.py",
+      "source_sha256": "5a6de4b16791aee7f65c6dc2ddc19132e3847cd0d86890fa607ecd9181d9d65c",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1062d836273f2bc633a8d0c406d6367757c7c8c0",
+      "path": "backend/preview.py",
+      "source_sha256": "657b1ba6f67f1d4d3d15988ea34dd5d28e3e248d4e59967c4d5f27854287ffb8",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1062d836273f2bc633a8d0c406d6367757c7c8c0",
+      "path": "backend/winding_resistance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1062d836273f2bc633a8d0c406d6367757c7c8c0",
+      "path": "frontend/package.json",
+      "source_sha256": "102194fdf3c85660938b1cda76a127fc9bf1162d1382996f3354fa21ef641bc9",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1062d836273f2bc633a8d0c406d6367757c7c8c0",
+      "path": "frontend/scripts/test-design-file-defaults.mjs",
+      "source_sha256": "5819b471e1f34fc909b82439116fc349715c3105ab8f515c0c67486e7528839d",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1062d836273f2bc633a8d0c406d6367757c7c8c0",
+      "path": "frontend/scripts/test-winding-resistance.mjs",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1062d836273f2bc633a8d0c406d6367757c7c8c0",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "0b9e1939d5952068f86cda6c2013c8c3f01a3ec61e9cfc1edf5a9b2dd985f826",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1062d836273f2bc633a8d0c406d6367757c7c8c0",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "082e229c083da3871bfb95c7094c51ddc38acd7abde5048fce7d7ba0988c4216",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1062d836273f2bc633a8d0c406d6367757c7c8c0",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "efb5a1b09f87a82927ef68c6a745233b86987b9cdabd6a18d191b4fdf7d62c97",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1062d836273f2bc633a8d0c406d6367757c7c8c0",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "2f5059fc33ac60d3b35397d45658b17ed8960d84632af21cc98b40dc01110799",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1062d836273f2bc633a8d0c406d6367757c7c8c0",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "747ab4d593d78e38d6986bf3f3b408bfa2af40d2089407dac7373f81ddb58b23",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1062d836273f2bc633a8d0c406d6367757c7c8c0",
+      "path": "frontend/src/public/windingResistance.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1062d836273f2bc633a8d0c406d6367757c7c8c0",
+      "path": "tests/test_performance_contracts.py",
+      "source_sha256": "5d60f819504a7f0ca3813aaf3adc5c3a204d4b777df3ba2669ec13e6041dd283",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1062d836273f2bc633a8d0c406d6367757c7c8c0",
+      "path": "tests/test_winding_resistance.py",
       "source_sha256": null,
       "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
     }

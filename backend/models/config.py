@@ -738,12 +738,7 @@ class MotorConfig(BaseModel):
     @model_validator(mode="after")
     def performance_inputs_not_yet_available(self):
         """Refuse the performance inputs until a solve uses them, so none is silently ignored."""
-        if self.winding.wire is not None:
-            raise ValueError("winding.wire is not supported by this preview yet.")
         sp = self.solve_params
-        if sp is not None:
-            if sp.winding_temperature_C is not None:
-                raise ValueError("solve_params.winding_temperature_C is not supported by this preview yet.")
-            if sp.mechanical_loss_W is not None:
-                raise ValueError("solve_params.mechanical_loss_W is not supported by this preview yet.")
+        if sp is not None and sp.mechanical_loss_W is not None:
+            raise ValueError("solve_params.mechanical_loss_W is not supported by this preview yet.")
         return self
