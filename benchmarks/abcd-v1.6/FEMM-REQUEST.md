@@ -36,7 +36,9 @@ Re-run them as the v3 bundle did. The Phase D requests are the cap-200 ones, and
 - run `ipm_vshape_8p12s_baseline_contract` once more at a tighter precision (for example 1e-10) and a finer mesh in the bridges;
 - report how far its Back-EMF and torque move.
 
-That separates FEMM's own convergence from a model difference.
+These controls measure sensitivity to FEMM's linear precision and bridge
+resolution. They do not by themselves establish a converged reference or
+isolate every model difference.
 
 The [30 October diagnostic controls](../../docs/VSHAPE_EMF_AUDIT_20261030.md)
 completed this baseline precision/bridge screen with the retained private
