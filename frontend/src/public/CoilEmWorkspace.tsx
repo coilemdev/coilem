@@ -97,6 +97,7 @@ import { LessonProgressStepper } from '../components/tutorials/LessonProgressSte
 import { designErrorSection } from './designErrors';
 import { magnetPoleCoveragePct } from './magnetCoverage';
 import { RpmField } from './RpmField';
+import { torqueRippleView } from './resultMetrics';
 import type { LearningLessonHeaderProgress } from '../components/tutorials/lessonStage';
 import {
   publicMeshQualityBand,
@@ -2941,15 +2942,23 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
   // click away, and Full results has everything.
   const constants = hasMotorConstants(result.summary) ? motorConstantsView(result.summary) : null;
   const showKt = constants !== null && constants.kt.value !== null;
-  const allResultCount = 7 + (result.workflow_elapsed_s != null ? 1 : 0) + (constants ? 4 : 0);
+  // With no current (or a near-zero average) ripple % means nothing: show the swing.
+  const ripple = torqueRippleView(result);
+  const allResultCount = 7 + (ripple.ripplePct === null ? 1 : 0) + (result.workflow_elapsed_s != null ? 1 : 0) + (constants ? 4 : 0);
   // Read like the motor constants below: one row per value, numbers in one
   // right-aligned column, units beside them, a rule between groups.
-  const resultRow = (label: string, value: string, unit: string, groupStart = false) => (
-    <tr className={groupStart ? 'is-group-start' : undefined}>
+  const resultRow = (label: string, value: string, unit: string, groupStart = false, title?: string) => (
+    <tr className={groupStart ? 'is-group-start' : undefined} title={title}>
       <th scope="row">{label}</th>
       <td className="motor-constants-value">{value}</td>
       <td className="motor-constants-unit">{unit}</td>
     </tr>
+  );
+  const rippleRows = (
+    <>
+      {resultRow(`Torque ripple${preview}`, formatNumber(ripple.ripplePct), ripple.ripplePct === null ? '' : '%', false, ripple.note ?? undefined)}
+      {ripple.ripplePct === null && resultRow(ripple.peakToPeakLabel, formatNumber(ripple.peakToPeakNm), 'N·m', false, ripple.note ?? undefined)}
+    </>
   );
 
   return (
@@ -2965,7 +2974,7 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
             <table>
               <tbody>
                 {resultRow(`Average torque${preview}`, formatNumber(result.summary.avg_torque_Nm), 'N·m')}
-                {resultRow(`Torque ripple${preview}`, formatNumber(result.summary.torque_ripple_pct), '%')}
+                {rippleRows}
                 {resultRow('Back EMF', formatNumber(result.summary.back_emf_fundamental_V), 'V', true)}
                 {resultRow(thdLabel, formatNumber(result.summary.back_emf_thd_pct), '%')}
                 {resultRow('Peak tooth B', formatNumber(result.summary.peak_flux_density_teeth_T), 'T', true)}
@@ -2983,7 +2992,7 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
           <table>
             <tbody>
               {resultRow(`Average torque${preview}`, formatNumber(result.summary.avg_torque_Nm), 'N·m')}
-              {resultRow(`Torque ripple${preview}`, formatNumber(result.summary.torque_ripple_pct), '%')}
+              {rippleRows}
               {resultRow('Back EMF', formatNumber(result.summary.back_emf_fundamental_V), 'V')}
               {showKt && constants && resultRow('Kt torque constant', constants.kt.text, constants.kt.unit)}
             </tbody>

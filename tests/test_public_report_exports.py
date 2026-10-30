@@ -752,3 +752,18 @@ def test_torque_constant_states_its_current_convention_in_pdf_and_csv() -> None:
     assert "Torque constant" in text
     assert f"{_plain(0.425 * 2**0.5)} N m/A rms" in text
     assert "0.425 N m/A peak" in text
+
+
+@pytest.mark.parametrize(("current", "expected_label"), [(0.0, "Cogging torque p-p"), (10.0, "Torque p-p")])
+def test_pdf_does_not_normalize_cogging_by_near_zero_mean(current, expected_label):
+    result = _result()
+    result["summary"].update(avg_torque_Nm=0.005, torque_ripple_pct=329698.82)
+    result["solve_metadata"]["current_amplitude_A"] = current
+    result["torque_waveform"]["torque_Nm"] = [0.1, 8.3, -8.4, 2.0]
+    original = deepcopy(result)
+    pdf = build_public_run_pdf(project=CONFIG, request={"resolved_config": CONFIG}, result=result, material={}, manifest={})
+    text = "\n".join(page.extract_text() or "" for page in pypdf.PdfReader(io.BytesIO(pdf)).pages)
+    assert expected_label in text
+    assert "16.7 N m" in text
+    assert "329698" not in text and "329,698" not in text
+    assert result == original, "Presentation must not rewrite stored numerical evidence"

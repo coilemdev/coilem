@@ -787,9 +787,27 @@ def _settings_grid(
     return table
 
 
+def _torque_ripple_metric(result: Mapping[str, Any]) -> tuple[str, str, str | None]:
+    """Present the cogging swing when normalizing by mean torque is meaningless."""
+    summary = _mapping(result.get("summary"))
+    samples = _mapping(result.get("torque_waveform")).get("torque_Nm") or []
+    finite = [float(value) for value in samples if isinstance(value, (int, float)) and math.isfinite(value)]
+    swing = max(finite) - min(finite) if len(finite) >= 2 else None
+    current = _mapping(result.get("solve_metadata")).get("current_amplitude_A")
+    mean = summary.get("avg_torque_Nm")
+    near_zero = swing is not None and swing > 0 and isinstance(mean, (int, float)) and abs(mean) < 0.01 * swing
+    if current == 0 or near_zero:
+        label = "Cogging torque p-p" if current == 0 else "Torque p-p"
+        note = "Ripple percentage is unavailable at zero current or near-zero mean torque; the peak-to-peak swing is shown."
+        return label, _metric_value(swing, "N m"), note
+    return "Torque ripple", _metric_value(summary.get("torque_ripple_pct"), "%"), None
+
+
 def _metric_table(
     summary: Mapping[str, Any],
     styles: Mapping[str, ParagraphStyle],
+    *,
+    result: Mapping[str, Any] | None = None,
 ) -> Table:
     # One tile per metric, its label over its value, four to a row.
     cells: list[list[Any]] = []
@@ -798,7 +816,14 @@ def _metric_table(
         tiles: list[Any] = []
         for field in metrics[offset : offset + 4]:
             value = _metric_value(summary[field], _SUMMARY_UNITS[field])
-            if field == "Kt_Nm_per_A" and _kt_rms(summary) is not None:
+            if field == "torque_ripple_pct" and result is not None:
+                label, ripple_value, note = _torque_ripple_metric(result)
+                tiles.append([
+                    _safe_paragraph(label, styles["metric_label"]),
+                    _safe_paragraph(ripple_value, styles["metric_value"]),
+                    *([_safe_paragraph(note, styles["metric_label"])] if note else []),
+                ])
+            elif field == "Kt_Nm_per_A" and _kt_rms(summary) is not None:
                 # Per rms ampere first, as Results shows it, over the stored per-peak value (#153).
                 tiles.append([
                     _safe_paragraph(_KT_LABEL, styles["metric_label"]),
@@ -1524,7 +1549,7 @@ def build_public_run_pdf(
     ]
 
     summary = _mapping(result.get("summary"))
-    story.extend([_section("Primary metrics", styles), _metric_table(summary, styles)])
+    story.extend([_section("Primary metrics", styles), _metric_table(summary, styles, result=result)])
     solve_params = _mapping(_mapping(request.get("resolved_config")).get("solve_params"))
     solve_metadata = _mapping(result.get("solve_metadata"))
     provenance = _mapping(manifest.get("provenance"))

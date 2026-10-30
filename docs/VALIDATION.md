@@ -766,3 +766,28 @@ commit, commands, and accepted limitations.
 See [Release notes](../RELEASE_NOTES.md), [Materials](../MATERIALS.md), and
 [Getting started](GETTING_STARTED.md). Report reproducible defects through
 [Support](../SUPPORT.md), and vulnerabilities through [Security](../SECURITY.md).
+
+
+## Development candidates and release qualification
+
+A development build whose installed physics differ from the measured platform
+record reports affected combinations as **experimental**. Passing unit tests,
+historical report replay, or a dependency audit does not promote that build.
+Missing source or solver identity also fails closed. Existing immutable saved
+runs retain the qualification that was recorded when they were collected.
+
+Historical platform records are rebuilt with their original source registry
+using `tools.build_benchmark_record --historical-record`; no measured hash,
+number, or tolerance is rewritten to match a development checkout.
+
+Before publishing v0.5, run `python -m tools.release.qualification` on the
+frozen candidate. This strict publication gate requires protocol 1.6, complete
+registered coverage against the reviewed frozen bundle, matching measured
+physics, both platform records, and current Prius measured-source evidence.
+It exits nonzero while that work is pending and is required by the v0.5 tag
+publication workflow. `--candidate` additionally binds the measured report to
+an exact frozen commit. A green development PR is not release qualification.
+
+Freeze and qualify the exact candidate on `release/v0.5.0`; advance `main`
+after qualification passes. Record any evidence-only publication commit and
+preserve the measured candidate pin explicitly.

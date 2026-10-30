@@ -12,6 +12,7 @@ import {
   sharedSparklinePaths,
   sparklinePath,
   torqueRange,
+  torqueRippleView,
 } from './resultMetrics';
 
 const TIMING_HELP = 'Solver time is the wall-clock time for meshing, solving and building the result. '
@@ -74,6 +75,7 @@ export function ResultSummary({
   const rpm = config.solve_params.rated_speed_rpm;
   const preview = sixStep && !completeLoadedCycle ? ' · preview only' : '';
   const range = torqueRange(result.torque_waveform.torque_Nm);
+  const ripple = torqueRippleView(result);
   const sparkline = sparklinePath(result.torque_waveform.torque_Nm, SPARKLINE_WIDTH, SPARKLINE_HEIGHT);
   // Phases A, B and C on one scale, in the Back EMF chart's colours.
   const emfSparklines = sharedSparklinePaths(
@@ -132,8 +134,10 @@ export function ResultSummary({
               </svg>
             )}
           </div>
-          <p>
-            Ripple {fixed(summary.torque_ripple_pct, 1)}%{preview}
+          <p title={ripple.note ?? undefined}>
+            {ripple.ripplePct === null
+              ? `${ripple.peakToPeakLabel} ${fixed(ripple.peakToPeakNm)} N·m`
+              : `Ripple ${fixed(ripple.ripplePct, 1)}%`}{preview}
             {range ? ` · ${fixed(range.min)} – ${fixed(range.max)} N·m` : ''}
           </p>
         </article>

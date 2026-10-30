@@ -545,8 +545,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 77875,
-      "sha256": "fc54b1ef45c8978255e8d3c43792e8f37c30057ecf6ecea2aa1338db3947ff94"
+      "bytes": 79443,
+      "sha256": "ec5d0635f7164ce76ffd825303a5e92204e02647ca7ade93c60ce6710f005922"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -5955,8 +5955,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 44797,
-      "sha256": "01c77c9eaa8fd42e6583497fff8dffe2d313f6ff2b31fcc6d0b979c9ad6df844"
+      "bytes": 46193,
+      "sha256": "d37b5b79e4b88850ec81168db6f17c7adb78a7087cfe45ae5afb887e71815b58"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -6460,13 +6460,13 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 160889,
-      "sha256": "6c3577b8066ad5669bd59f22b73bdd37262228d1b08091433304ba81aa89358e"
+      "bytes": 161534,
+      "sha256": "ddef1cc5189fa0954401048a7829c350810b203dd1a7f2b1ea1b9002ed84585e"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
-      "bytes": 3084,
-      "sha256": "3fec1086f541be5038efc677a00adb4b7f88d27da5c8397ad52400f4f65844cf"
+      "bytes": 4732,
+      "sha256": "17f616ef46903af546d67cade9d6cdf16e85ea89e3f0f526b84649bcf97e669c"
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
@@ -6880,8 +6880,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 231248,
-      "sha256": "c48757810046d05ad4ce4d839a7e71c103f05ef6ce1d6f3783b10491ae875626"
+      "bytes": 231677,
+      "sha256": "3b8d28425059b773ca32e2bc075656de050b3aa439e2d336ae6a20de29d454fa"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -6945,8 +6945,8 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 23202,
-      "sha256": "3f104bc8d676c1d658d97423ec67dd6a17bd4ccdebf49616f226e5abc9667bb9"
+      "bytes": 23331,
+      "sha256": "297514b48d88e50c28071c384554826844c96262589e300089a8b0720f3001f3"
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
@@ -6955,8 +6955,8 @@
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
-      "bytes": 8779,
-      "sha256": "f352c2fc0739c8179844d5eaad1a000e426141733a4c9c2a0ba08ec4e57e27cb"
+      "bytes": 8992,
+      "sha256": "91bc6921d913b79071d165db03a4ac8d9a5132f139cb523d49fe0833455f0df2"
     },
     {
       "path": "frontend/src/public/RpmField.tsx",
@@ -7335,8 +7335,8 @@
     },
     {
       "path": "frontend/src/public/resultMetrics.ts",
-      "bytes": 3732,
-      "sha256": "9798d6ec71161433aa086cc56549419f33d585b962db66d422f697d096cf652f"
+      "bytes": 6020,
+      "sha256": "9d1ebe35d11099869e94fc3832620487adcf576a4e234c6499980cbd9820a361"
     },
     {
       "path": "frontend/src/public/solvePlan.ts",
@@ -7404,9 +7404,14 @@
       "sha256": "592e41d3331bcca73085d3bdffbc63e853740fe8f80c78dc0e7c35a5b077192f"
     },
     {
+      "path": "frontend/tests/performance-regressions.ts",
+      "bytes": 5202,
+      "sha256": "335d8a6eb1afcf10d1c8deacbaa974c5abe012ed7067a4222eaff7b6a5121dd5"
+    },
+    {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 23091,
-      "sha256": "5a994098c2ac81afca9ae7bdc5662b9122d0c5f97f2d589029d64a72198fa054"
+      "bytes": 25012,
+      "sha256": "0cbedc0c04bfa6bb877729494f18b010fdfc392b5387e2346cd702af880de014"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -8055,8 +8060,8 @@
     },
     {
       "path": "tests/test_public_report_exports.py",
-      "bytes": 31928,
-      "sha256": "61ff03503d0c4d0fdaf1b04c54740196bb3afda40edfa301044a116a7535fe87"
+      "bytes": 32821,
+      "sha256": "2be2634bdeba46cea357ae22892bf2a2a1e6c7eee381f8acfd07523dbc13b8f5"
     },
     {
       "path": "tests/test_public_security.py",
@@ -23983,6 +23988,378 @@
       "base_commit": "0cb1f393aedaac29975cc0a93e400a866729e84b",
       "path": "benchmarks/windows-v050-20261029-bb3d8af/provenance.json",
       "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "5ae948b08d0f5db588704165884d02a1b57e1c43",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "fd17db867e643ab1c719554788cb3c0e7322256e0208f99f26d7bf741241d1be",
+      "reason": "Show cogging peak-to-peak instead of a meaningless ripple percentage when the current is zero or the average torque is near zero."
+    },
+    {
+      "base_commit": "7c382685334ca0fc0883681dc4d171b31be934e0",
+      "path": "frontend/scripts/test-result-summary.mjs",
+      "source_sha256": "3fec1086f541be5038efc677a00adb4b7f88d27da5c8397ad52400f4f65844cf",
+      "reason": "Show cogging peak-to-peak instead of a meaningless ripple percentage when the current is zero or the average torque is near zero."
+    },
+    {
+      "base_commit": "5ae948b08d0f5db588704165884d02a1b57e1c43",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "1200cc7326b4d891b198907a4649f5411914d797cd32ce29c56a36042cd836ff",
+      "reason": "Show cogging peak-to-peak instead of a meaningless ripple percentage when the current is zero or the average torque is near zero."
+    },
+    {
+      "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "source_sha256": "c99d00b86d1d63b318a4f1a296dc356263f8c16d7d76ae6c53f0fc7dc8b9e29b",
+      "reason": "Show cogging peak-to-peak instead of a meaningless ripple percentage when the current is zero or the average torque is near zero."
+    },
+    {
+      "base_commit": "7c382685334ca0fc0883681dc4d171b31be934e0",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "f393e798527761bcf85de34a9c1a7c49881933093bcc5e149e961173ad25fb95",
+      "reason": "Show cogging peak-to-peak instead of a meaningless ripple percentage when the current is zero or the average torque is near zero."
+    },
+    {
+      "base_commit": "7c382685334ca0fc0883681dc4d171b31be934e0",
+      "path": "frontend/src/public/resultMetrics.ts",
+      "source_sha256": "9798d6ec71161433aa086cc56549419f33d585b962db66d422f697d096cf652f",
+      "reason": "Show cogging peak-to-peak instead of a meaningless ripple percentage when the current is zero or the average torque is near zero."
+    },
+    {
+      "base_commit": "9f62297ed9a55858940450e0d9987411138a9341",
+      "path": "backend/public_report.py",
+      "source_sha256": "fc54b1ef45c8978255e8d3c43792e8f37c30057ecf6ecea2aa1338db3947ff94",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f62297ed9a55858940450e0d9987411138a9341",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "01c77c9eaa8fd42e6583497fff8dffe2d313f6ff2b31fcc6d0b979c9ad6df844",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f62297ed9a55858940450e0d9987411138a9341",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "6c3577b8066ad5669bd59f22b73bdd37262228d1b08091433304ba81aa89358e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f62297ed9a55858940450e0d9987411138a9341",
+      "path": "frontend/scripts/test-result-summary.mjs",
+      "source_sha256": "3fec1086f541be5038efc677a00adb4b7f88d27da5c8397ad52400f4f65844cf",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f62297ed9a55858940450e0d9987411138a9341",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "c48757810046d05ad4ce4d839a7e71c103f05ef6ce1d6f3783b10491ae875626",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f62297ed9a55858940450e0d9987411138a9341",
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "source_sha256": "3f104bc8d676c1d658d97423ec67dd6a17bd4ccdebf49616f226e5abc9667bb9",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f62297ed9a55858940450e0d9987411138a9341",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "f352c2fc0739c8179844d5eaad1a000e426141733a4c9c2a0ba08ec4e57e27cb",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f62297ed9a55858940450e0d9987411138a9341",
+      "path": "frontend/src/public/resultMetrics.ts",
+      "source_sha256": "9798d6ec71161433aa086cc56549419f33d585b962db66d422f697d096cf652f",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f62297ed9a55858940450e0d9987411138a9341",
+      "path": "frontend/tests/performance-regressions.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f62297ed9a55858940450e0d9987411138a9341",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "5a994098c2ac81afca9ae7bdc5662b9122d0c5f97f2d589029d64a72198fa054",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f62297ed9a55858940450e0d9987411138a9341",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "61ff03503d0c4d0fdaf1b04c54740196bb3afda40edfa301044a116a7535fe87",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "018c26d967bbc56e5048929b5dad5c4f39eb22c1",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "87ad482735024be8d35623c67c69a0c52c49d97a042bd076caa8f87449a1ada7",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "50fd3d1d2088a6298b8d9ff69cb6dda84b9d3e4d",
+      "path": "backend/public_report.py",
+      "source_sha256": "fc54b1ef45c8978255e8d3c43792e8f37c30057ecf6ecea2aa1338db3947ff94",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "50fd3d1d2088a6298b8d9ff69cb6dda84b9d3e4d",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "01c77c9eaa8fd42e6583497fff8dffe2d313f6ff2b31fcc6d0b979c9ad6df844",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "50fd3d1d2088a6298b8d9ff69cb6dda84b9d3e4d",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "6c3577b8066ad5669bd59f22b73bdd37262228d1b08091433304ba81aa89358e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "50fd3d1d2088a6298b8d9ff69cb6dda84b9d3e4d",
+      "path": "frontend/scripts/test-result-summary.mjs",
+      "source_sha256": "3fec1086f541be5038efc677a00adb4b7f88d27da5c8397ad52400f4f65844cf",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "50fd3d1d2088a6298b8d9ff69cb6dda84b9d3e4d",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "c48757810046d05ad4ce4d839a7e71c103f05ef6ce1d6f3783b10491ae875626",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "50fd3d1d2088a6298b8d9ff69cb6dda84b9d3e4d",
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "source_sha256": "3f104bc8d676c1d658d97423ec67dd6a17bd4ccdebf49616f226e5abc9667bb9",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "50fd3d1d2088a6298b8d9ff69cb6dda84b9d3e4d",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "f352c2fc0739c8179844d5eaad1a000e426141733a4c9c2a0ba08ec4e57e27cb",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "50fd3d1d2088a6298b8d9ff69cb6dda84b9d3e4d",
+      "path": "frontend/src/public/resultMetrics.ts",
+      "source_sha256": "9798d6ec71161433aa086cc56549419f33d585b962db66d422f697d096cf652f",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "50fd3d1d2088a6298b8d9ff69cb6dda84b9d3e4d",
+      "path": "frontend/tests/performance-regressions.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "50fd3d1d2088a6298b8d9ff69cb6dda84b9d3e4d",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "5a994098c2ac81afca9ae7bdc5662b9122d0c5f97f2d589029d64a72198fa054",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "50fd3d1d2088a6298b8d9ff69cb6dda84b9d3e4d",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "61ff03503d0c4d0fdaf1b04c54740196bb3afda40edfa301044a116a7535fe87",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "834783a1a399fe45b758218475f670460d87511f",
+      "path": "backend/public_report.py",
+      "source_sha256": "fc54b1ef45c8978255e8d3c43792e8f37c30057ecf6ecea2aa1338db3947ff94",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "834783a1a399fe45b758218475f670460d87511f",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "01c77c9eaa8fd42e6583497fff8dffe2d313f6ff2b31fcc6d0b979c9ad6df844",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "834783a1a399fe45b758218475f670460d87511f",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "6c3577b8066ad5669bd59f22b73bdd37262228d1b08091433304ba81aa89358e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "834783a1a399fe45b758218475f670460d87511f",
+      "path": "frontend/scripts/test-result-summary.mjs",
+      "source_sha256": "3fec1086f541be5038efc677a00adb4b7f88d27da5c8397ad52400f4f65844cf",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "834783a1a399fe45b758218475f670460d87511f",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "c48757810046d05ad4ce4d839a7e71c103f05ef6ce1d6f3783b10491ae875626",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "834783a1a399fe45b758218475f670460d87511f",
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "source_sha256": "3f104bc8d676c1d658d97423ec67dd6a17bd4ccdebf49616f226e5abc9667bb9",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "834783a1a399fe45b758218475f670460d87511f",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "f352c2fc0739c8179844d5eaad1a000e426141733a4c9c2a0ba08ec4e57e27cb",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "834783a1a399fe45b758218475f670460d87511f",
+      "path": "frontend/src/public/resultMetrics.ts",
+      "source_sha256": "9798d6ec71161433aa086cc56549419f33d585b962db66d422f697d096cf652f",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "834783a1a399fe45b758218475f670460d87511f",
+      "path": "frontend/tests/performance-regressions.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "834783a1a399fe45b758218475f670460d87511f",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "5a994098c2ac81afca9ae7bdc5662b9122d0c5f97f2d589029d64a72198fa054",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "834783a1a399fe45b758218475f670460d87511f",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "61ff03503d0c4d0fdaf1b04c54740196bb3afda40edfa301044a116a7535fe87",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "6fbdf3b27102a0454d905445f373c1f43b0e1ec5",
+      "path": "backend/public_report.py",
+      "source_sha256": "fc54b1ef45c8978255e8d3c43792e8f37c30057ecf6ecea2aa1338db3947ff94",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "6fbdf3b27102a0454d905445f373c1f43b0e1ec5",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "01c77c9eaa8fd42e6583497fff8dffe2d313f6ff2b31fcc6d0b979c9ad6df844",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "6fbdf3b27102a0454d905445f373c1f43b0e1ec5",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "6c3577b8066ad5669bd59f22b73bdd37262228d1b08091433304ba81aa89358e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "6fbdf3b27102a0454d905445f373c1f43b0e1ec5",
+      "path": "frontend/scripts/test-result-summary.mjs",
+      "source_sha256": "3fec1086f541be5038efc677a00adb4b7f88d27da5c8397ad52400f4f65844cf",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "6fbdf3b27102a0454d905445f373c1f43b0e1ec5",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "c48757810046d05ad4ce4d839a7e71c103f05ef6ce1d6f3783b10491ae875626",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "6fbdf3b27102a0454d905445f373c1f43b0e1ec5",
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "source_sha256": "3f104bc8d676c1d658d97423ec67dd6a17bd4ccdebf49616f226e5abc9667bb9",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "6fbdf3b27102a0454d905445f373c1f43b0e1ec5",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "f352c2fc0739c8179844d5eaad1a000e426141733a4c9c2a0ba08ec4e57e27cb",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "6fbdf3b27102a0454d905445f373c1f43b0e1ec5",
+      "path": "frontend/src/public/resultMetrics.ts",
+      "source_sha256": "9798d6ec71161433aa086cc56549419f33d585b962db66d422f697d096cf652f",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "6fbdf3b27102a0454d905445f373c1f43b0e1ec5",
+      "path": "frontend/tests/performance-regressions.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "6fbdf3b27102a0454d905445f373c1f43b0e1ec5",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "5a994098c2ac81afca9ae7bdc5662b9122d0c5f97f2d589029d64a72198fa054",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "6fbdf3b27102a0454d905445f373c1f43b0e1ec5",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "61ff03503d0c4d0fdaf1b04c54740196bb3afda40edfa301044a116a7535fe87",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "201dff0b78ae792a1d8c720ee0c4d6b29a4463d8",
+      "path": "backend/public_report.py",
+      "source_sha256": "fc54b1ef45c8978255e8d3c43792e8f37c30057ecf6ecea2aa1338db3947ff94",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "201dff0b78ae792a1d8c720ee0c4d6b29a4463d8",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "01c77c9eaa8fd42e6583497fff8dffe2d313f6ff2b31fcc6d0b979c9ad6df844",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "201dff0b78ae792a1d8c720ee0c4d6b29a4463d8",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "6c3577b8066ad5669bd59f22b73bdd37262228d1b08091433304ba81aa89358e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "201dff0b78ae792a1d8c720ee0c4d6b29a4463d8",
+      "path": "frontend/scripts/test-result-summary.mjs",
+      "source_sha256": "3fec1086f541be5038efc677a00adb4b7f88d27da5c8397ad52400f4f65844cf",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "201dff0b78ae792a1d8c720ee0c4d6b29a4463d8",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "c48757810046d05ad4ce4d839a7e71c103f05ef6ce1d6f3783b10491ae875626",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "201dff0b78ae792a1d8c720ee0c4d6b29a4463d8",
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "source_sha256": "3f104bc8d676c1d658d97423ec67dd6a17bd4ccdebf49616f226e5abc9667bb9",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "201dff0b78ae792a1d8c720ee0c4d6b29a4463d8",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "f352c2fc0739c8179844d5eaad1a000e426141733a4c9c2a0ba08ec4e57e27cb",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "201dff0b78ae792a1d8c720ee0c4d6b29a4463d8",
+      "path": "frontend/src/public/resultMetrics.ts",
+      "source_sha256": "9798d6ec71161433aa086cc56549419f33d585b962db66d422f697d096cf652f",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "201dff0b78ae792a1d8c720ee0c4d6b29a4463d8",
+      "path": "frontend/tests/performance-regressions.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "201dff0b78ae792a1d8c720ee0c4d6b29a4463d8",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "5a994098c2ac81afca9ae7bdc5662b9122d0c5f97f2d589029d64a72198fa054",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "201dff0b78ae792a1d8c720ee0c4d6b29a4463d8",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "61ff03503d0c4d0fdaf1b04c54740196bb3afda40edfa301044a116a7535fe87",
       "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
     }
   ]
