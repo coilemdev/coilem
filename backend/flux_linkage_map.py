@@ -20,10 +20,14 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import os
 import time
+from dataclasses import asdict
 from pathlib import Path
 from typing import Any, Callable, Literal, Sequence
 
+from backend.benchmark_suite.record import installed_physics_hashes
+from backend.iron_loss import LOSS_GRADES
 from backend.models import MotorConfig, SolveOptionsConfig
 from backend.models.performance import FluxLinkageMap, FluxLinkageMapPoint, dq_currents
 from backend.solver_contract import SolveCancelledError
@@ -87,6 +91,41 @@ def map_solve_count(currents: Sequence[float], gammas: Sequence[float]) -> int:
     return nonzero * len(gammas) + (1 if any(current == 0 for current in currents) else 0)
 
 
+# These post-processing sources are not part of the benchmark's field-physics
+# identity, but determine the flux and loss values persisted in map points.
+_MAP_SOURCES = (
+    "flux_linkage_map.py", "dq_flux_linkage.py", "iron_loss.py",
+    "magnet_temperature.py", "models/performance.py",
+)
+
+
+def map_computation_identity(config: MotorConfig) -> dict[str, Any]:
+    """Identify installed physics and map processing, without Git or frozen guards.
+
+    Wheels use the benchmark's stamped Rust source hashes. A solver override
+    is identified by its actual bytes instead. Missing identities fail closed:
+    they must never make unrelated computations share a cache namespace.
+    """
+
+    physics, solver = installed_physics_hashes()
+    if any(value is None for value in physics.values()):
+        raise ValueError("Cannot identify map physics: an installed physics source is missing")
+    override = os.environ.get("COILEM_MAGNETO2D_BINARY")
+    if override:
+        solver = {"override_binary": hashlib.sha256(Path(override).expanduser().read_bytes()).hexdigest()}
+    if not solver:
+        raise ValueError("Cannot identify map physics: solver build identity is missing")
+    root = Path(__file__).resolve().parent
+    processing = {name: hashlib.sha256((root / name).read_bytes()).hexdigest() for name in _MAP_SOURCES}
+    grade = LOSS_GRADES.get(config.materials.stator_steel)
+    return {
+        "physics": physics,
+        "solver": solver,
+        "map_processing": processing,
+        "iron_loss": asdict(grade) if grade is not None else None,
+    }
+
+
 def map_scope_key(config: MotorConfig, preset: MapPreset = "preview") -> str:
     """Hash of everything that would invalidate the map's points."""
 
@@ -97,6 +136,7 @@ def map_scope_key(config: MotorConfig, preset: MapPreset = "preview") -> str:
     raw["solve_params"] = solve_params
     raw.pop("name", None)
     raw["__map_preset__"] = {"name": preset, **_PRESETS[preset]}
+    raw["__computation__"] = map_computation_identity(config)
     payload = json.dumps(raw, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
     return hashlib.sha256(payload.encode("ascii")).hexdigest()
 

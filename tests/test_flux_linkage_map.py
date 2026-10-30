@@ -168,3 +168,80 @@ def test_a_stored_map_is_reused_for_a_lower_peak_when_its_steps_are_fine_enough(
     assert store.covering_map(30.0).current_peak_A[-1] == 40.0
     assert store.covering_map(45.0) is None  # nothing reaches it
     assert store.covering_map(9.0) is None  # 20 A in 5 A steps is too coarse for a 9 A drive
+
+
+def test_scope_key_tracks_physics_and_loss_coefficients(monkeypatch):
+    from dataclasses import replace
+
+    from backend import flux_linkage_map as maps
+
+    hashes = {"backend/geometry.py": "first"}
+    monkeypatch.setattr(maps, "installed_physics_hashes", lambda: (dict(hashes), {"solver.rs": "solver"}))
+    config = _config()
+    original = map_scope_key(config)
+    assert map_scope_key(config) == original
+    hashes["backend/geometry.py"] = "changed"
+    assert map_scope_key(config) != original
+    hashes["backend/geometry.py"] = "first"
+    grade = maps.LOSS_GRADES[config.materials.stator_steel]
+    monkeypatch.setitem(maps.LOSS_GRADES, config.materials.stator_steel,
+                        replace(grade, coefficients=replace(grade.coefficients, kh=grade.coefficients.kh * 1.1)))
+    assert map_scope_key(config) != original
+
+
+def test_scope_key_tracks_solver_identity_and_rejects_missing_identity(monkeypatch, tmp_path):
+    from backend import flux_linkage_map as maps
+
+    monkeypatch.delenv("COILEM_MAGNETO2D_BINARY", raising=False)
+    monkeypatch.setattr(maps, "installed_physics_hashes", lambda: ({"python": "hash"}, {"solver": "first"}))
+    first = map_scope_key(_config())
+    monkeypatch.setattr(maps, "installed_physics_hashes", lambda: ({"python": "hash"}, {"solver": "second"}))
+    assert map_scope_key(_config()) != first
+    monkeypatch.setattr(maps, "installed_physics_hashes", lambda: ({"python": "hash"}, {}))
+    with pytest.raises(ValueError, match="solver build identity"):
+        map_scope_key(_config())
+    binary = tmp_path / "solver"
+    binary.write_bytes(b"first executable")
+    monkeypatch.setenv("COILEM_MAGNETO2D_BINARY", str(binary))
+    first = map_scope_key(_config())
+    binary.write_bytes(b"second executable")
+    assert map_scope_key(_config()) != first
+    monkeypatch.setattr(maps, "installed_physics_hashes", lambda: ({"python": None}, {}))
+    with pytest.raises(ValueError, match="physics source"):
+        map_scope_key(_config())
+
+
+def test_installed_solver_stamp_has_the_same_map_identity_as_checkout(monkeypatch):
+    from backend.benchmark_suite import record
+    from backend.benchmark_suite.physics import BUILD_INFO_KEY
+
+    monkeypatch.delenv("COILEM_MAGNETO2D_BINARY", raising=False)
+    _, solver = record.installed_physics_hashes()
+    assert solver
+    original = map_scope_key(_config())
+    monkeypatch.setattr(record, "CHECKOUT", None)
+    monkeypatch.setattr(record, "stamped_build_info", lambda: {BUILD_INFO_KEY: solver})
+    assert map_scope_key(_config()) == original
+
+
+def test_imported_steel_is_embedded_in_scope_and_has_no_external_loss_coefficients():
+    from pydantic import ValidationError
+
+    from backend.custom_materials import CustomSteel, SteelImportRequest, import_steel
+    from backend.flux_linkage_map import map_computation_identity
+    from backend.iron_loss import iron_loss_unavailable_reason
+
+    steel = import_steel(SteelImportRequest(name="Test steel", source="Test curve",
+        csv_text="B_T,H_A_per_m\n0,0\n1,100\n2,1000\n"))
+    raw = _config().model_dump(mode="json")
+    raw["materials"].update(stator_steel=steel.id, custom_steels={steel.id: steel.model_dump(mode="json")})
+    config = MotorConfig.model_validate(raw)
+    assert map_computation_identity(config)["iron_loss"] is None
+    assert "No cited loss data" in iron_loss_unavailable_reason(config, [])
+    assert config.model_dump(mode="json")["materials"]["custom_steels"][steel.id] == steel.model_dump(mode="json")
+    with pytest.raises(ValidationError, match="Extra inputs"):
+        CustomSteel.model_validate(steel.model_dump() | {"loss_coefficients": {"kh": 1}})
+    changed = import_steel(SteelImportRequest(name="Test steel", source="Test curve",
+        csv_text="B_T,H_A_per_m\n0,0\n1,120\n2,1100\n"))
+    raw["materials"].update(stator_steel=changed.id, custom_steels={changed.id: changed.model_dump(mode="json")})
+    assert map_scope_key(MotorConfig.model_validate(raw)) != map_scope_key(config)

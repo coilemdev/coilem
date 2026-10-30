@@ -280,8 +280,8 @@
     },
     {
       "path": "backend/flux_linkage_map.py",
-      "bytes": 15202,
-      "sha256": "47efb5093e8814818c51d22e89de8f68f22ff54cca86f6dec8f22c796f516ef8"
+      "bytes": 16980,
+      "sha256": "620bffe0cfbaacc05c78d1e7589cc804b477f6b45fa2f97b8cd6910976a82f8a"
     },
     {
       "path": "backend/geometry.py",
@@ -560,8 +560,8 @@
     },
     {
       "path": "backend/public_routes/performance.py",
-      "bytes": 10834,
-      "sha256": "06ab35fd73443970d11fceb514ecda38e1f1f5eafffca1c0779dcf6e8feff410"
+      "bytes": 11304,
+      "sha256": "9add05185e6b2098c3a6c2fd1363840c330cd451806b693a9bffce79b42c0359"
     },
     {
       "path": "backend/public_routes/preview.py",
@@ -5925,8 +5925,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 43775,
-      "sha256": "2111f52531cf2e83356134040d470ac19d09513fe5226cb234d4ce23d0621bd4"
+      "bytes": 44797,
+      "sha256": "01c77c9eaa8fd42e6583497fff8dffe2d313f6ff2b31fcc6d0b979c9ad6df844"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -7825,8 +7825,8 @@
     },
     {
       "path": "tests/test_flux_linkage_map.py",
-      "bytes": 8521,
-      "sha256": "b9cda540bd26f31ab1578629cbbe23d6531cb4514d09ac7330b11fbf7fbf25d5"
+      "bytes": 12510,
+      "sha256": "d0d74e21eed60a266758012b72b4574373efd0169de5b49a2cd0f96988a85fc0"
     },
     {
       "path": "tests/test_gmsh_sigpipe.py",
@@ -7980,8 +7980,8 @@
     },
     {
       "path": "tests/test_performance_routes.py",
-      "bytes": 4305,
-      "sha256": "a2ec62732ee7983effbcd6e28e84932260490ea8ab64719b569a00eca305b631"
+      "bytes": 6826,
+      "sha256": "ca9c03b73ff67764d849083d4da9eb622fb1afc7bdf3a217c7e75a594ba0a710"
     },
     {
       "path": "tests/test_phase_resistance_gate.py",
@@ -23479,6 +23479,228 @@
       "base_commit": "cbe776d4efa97bb2a5ec757df74ce05194e5a7dc",
       "path": "docs/VALIDATION.md",
       "source_sha256": "3c7041072737faf212d0829a09b632f68d238c085df4a541fc8b19f7b851cd56",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b10cd5f753e0e94848cf403317e4c6069b418ae8",
+      "path": "frontend/package.json",
+      "source_sha256": "79b859c27417f09bec82cfa133ec4c98adde55ef55b4e395b70c28795bdd655f",
+      "reason": "Pin vite 6.4.4: npm audit flags vite <=6.4.3 (dev-server advisories GHSA-9jrq-w75r-8gcw, GHSA-rq7h-c2jc-7f22 and launch-editor)"
+    },
+    {
+      "base_commit": "b10cd5f753e0e94848cf403317e4c6069b418ae8",
+      "path": "frontend/package-lock.json",
+      "source_sha256": "4f564e9bc63e57ed71ceee6c561924b96e469526692b6c8ee7cc397412cbef01",
+      "reason": "Pin vite 6.4.4: npm audit flags vite <=6.4.3 (dev-server advisories GHSA-9jrq-w75r-8gcw, GHSA-rq7h-c2jc-7f22 and launch-editor)"
+    },
+    {
+      "base_commit": "b10cd5f753e0e94848cf403317e4c6069b418ae8",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "73cf529cea2da2b376ffc46e2dc6341303d2cfd066466233c66d45679dfc623d",
+      "reason": "Pin vite 6.4.4 in the snapshot gate and notices"
+    },
+    {
+      "base_commit": "b10cd5f753e0e94848cf403317e4c6069b418ae8",
+      "path": "THIRD_PARTY_NOTICES.md",
+      "source_sha256": "3f41db781fd096df31fac2511f7657eb128952ed132885440054ec55813b8735",
+      "reason": "Pin vite 6.4.4 in the snapshot gate and notices"
+    },
+    {
+      "base_commit": "80512844d53da6444678fc1299c05aface29e008",
+      "path": "backend/flux_linkage_map.py",
+      "source_sha256": "47efb5093e8814818c51d22e89de8f68f22ff54cca86f6dec8f22c796f516ef8",
+      "reason": "Issue 18: invalidate stored flux maps when computation identity changes"
+    },
+    {
+      "base_commit": "80512844d53da6444678fc1299c05aface29e008",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "2111f52531cf2e83356134040d470ac19d09513fe5226cb234d4ce23d0621bd4",
+      "reason": "Issue 18: invalidate stored flux maps when computation identity changes"
+    },
+    {
+      "base_commit": "80512844d53da6444678fc1299c05aface29e008",
+      "path": "tests/test_flux_linkage_map.py",
+      "source_sha256": "b9cda540bd26f31ab1578629cbbe23d6531cb4514d09ac7330b11fbf7fbf25d5",
+      "reason": "Issue 18: invalidate stored flux maps when computation identity changes"
+    },
+    {
+      "base_commit": "80512844d53da6444678fc1299c05aface29e008",
+      "path": "tests/test_performance_routes.py",
+      "source_sha256": "a2ec62732ee7983effbcd6e28e84932260490ea8ab64719b569a00eca305b631",
+      "reason": "Issue 18: invalidate stored flux maps when computation identity changes"
+    },
+    {
+      "base_commit": "cb18e7cc4e5e570e478d2949e0983391899c4b4f",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": "06ab35fd73443970d11fceb514ecda38e1f1f5eafffca1c0779dcf6e8feff410",
+      "reason": "PR 27 review: resolve map identity before claiming the solve lane and return actionable errors"
+    },
+    {
+      "base_commit": "cb18e7cc4e5e570e478d2949e0983391899c4b4f",
+      "path": "tests/test_performance_routes.py",
+      "source_sha256": "075dd359a3b35a86ffe6b55cb53515087d49e2141f6f58b45415865b788cdd7b",
+      "reason": "PR 27 review: resolve map identity before claiming the solve lane and return actionable errors"
+    },
+    {
+      "base_commit": "22237d3dafc7a7d9bb91afc61d56b406d04631de",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "7b0274ad36c34e5eeda76d57fb5416acd3eeb77d4be91ffaa57df1640efe59f3",
+      "reason": "Document and guard imported-steel map identity after review"
+    },
+    {
+      "base_commit": "22237d3dafc7a7d9bb91afc61d56b406d04631de",
+      "path": "tests/test_flux_linkage_map.py",
+      "source_sha256": "c45efd906a02f22b1e905996f75a0cfdcf54785ebb2499377e4805e2f2f7fb70",
+      "reason": "Document and guard imported-steel map identity after review"
+    },
+    {
+      "base_commit": "2c24bfbbd17453b34237d06b26e71828ec18034f",
+      "path": "backend/flux_linkage_map.py",
+      "source_sha256": "47efb5093e8814818c51d22e89de8f68f22ff54cca86f6dec8f22c796f516ef8",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2c24bfbbd17453b34237d06b26e71828ec18034f",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": "06ab35fd73443970d11fceb514ecda38e1f1f5eafffca1c0779dcf6e8feff410",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2c24bfbbd17453b34237d06b26e71828ec18034f",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "2111f52531cf2e83356134040d470ac19d09513fe5226cb234d4ce23d0621bd4",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2c24bfbbd17453b34237d06b26e71828ec18034f",
+      "path": "tests/test_flux_linkage_map.py",
+      "source_sha256": "b9cda540bd26f31ab1578629cbbe23d6531cb4514d09ac7330b11fbf7fbf25d5",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2c24bfbbd17453b34237d06b26e71828ec18034f",
+      "path": "tests/test_performance_routes.py",
+      "source_sha256": "a2ec62732ee7983effbcd6e28e84932260490ea8ab64719b569a00eca305b631",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "60c58135ef025cf788b86541dba53dbe170afab4",
+      "path": "backend/flux_linkage_map.py",
+      "source_sha256": "47efb5093e8814818c51d22e89de8f68f22ff54cca86f6dec8f22c796f516ef8",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "60c58135ef025cf788b86541dba53dbe170afab4",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": "06ab35fd73443970d11fceb514ecda38e1f1f5eafffca1c0779dcf6e8feff410",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "60c58135ef025cf788b86541dba53dbe170afab4",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "2111f52531cf2e83356134040d470ac19d09513fe5226cb234d4ce23d0621bd4",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "60c58135ef025cf788b86541dba53dbe170afab4",
+      "path": "tests/test_flux_linkage_map.py",
+      "source_sha256": "b9cda540bd26f31ab1578629cbbe23d6531cb4514d09ac7330b11fbf7fbf25d5",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "60c58135ef025cf788b86541dba53dbe170afab4",
+      "path": "tests/test_performance_routes.py",
+      "source_sha256": "a2ec62732ee7983effbcd6e28e84932260490ea8ab64719b569a00eca305b631",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2cb62261c9a8e2559301c22dbce0d9b58d23a7ee",
+      "path": "backend/flux_linkage_map.py",
+      "source_sha256": "47efb5093e8814818c51d22e89de8f68f22ff54cca86f6dec8f22c796f516ef8",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2cb62261c9a8e2559301c22dbce0d9b58d23a7ee",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": "06ab35fd73443970d11fceb514ecda38e1f1f5eafffca1c0779dcf6e8feff410",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2cb62261c9a8e2559301c22dbce0d9b58d23a7ee",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "2111f52531cf2e83356134040d470ac19d09513fe5226cb234d4ce23d0621bd4",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2cb62261c9a8e2559301c22dbce0d9b58d23a7ee",
+      "path": "tests/test_flux_linkage_map.py",
+      "source_sha256": "b9cda540bd26f31ab1578629cbbe23d6531cb4514d09ac7330b11fbf7fbf25d5",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2cb62261c9a8e2559301c22dbce0d9b58d23a7ee",
+      "path": "tests/test_performance_routes.py",
+      "source_sha256": "a2ec62732ee7983effbcd6e28e84932260490ea8ab64719b569a00eca305b631",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "6bc1079b2a388e6a36ef02c29a5116c2e977dd03",
+      "path": "backend/flux_linkage_map.py",
+      "source_sha256": "47efb5093e8814818c51d22e89de8f68f22ff54cca86f6dec8f22c796f516ef8",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "6bc1079b2a388e6a36ef02c29a5116c2e977dd03",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": "06ab35fd73443970d11fceb514ecda38e1f1f5eafffca1c0779dcf6e8feff410",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "6bc1079b2a388e6a36ef02c29a5116c2e977dd03",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "2111f52531cf2e83356134040d470ac19d09513fe5226cb234d4ce23d0621bd4",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "6bc1079b2a388e6a36ef02c29a5116c2e977dd03",
+      "path": "tests/test_flux_linkage_map.py",
+      "source_sha256": "b9cda540bd26f31ab1578629cbbe23d6531cb4514d09ac7330b11fbf7fbf25d5",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "6bc1079b2a388e6a36ef02c29a5116c2e977dd03",
+      "path": "tests/test_performance_routes.py",
+      "source_sha256": "a2ec62732ee7983effbcd6e28e84932260490ea8ab64719b569a00eca305b631",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "57d8daa2b2641f8bd2db71c21ecc933e53a3829f",
+      "path": "backend/flux_linkage_map.py",
+      "source_sha256": "47efb5093e8814818c51d22e89de8f68f22ff54cca86f6dec8f22c796f516ef8",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "57d8daa2b2641f8bd2db71c21ecc933e53a3829f",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": "06ab35fd73443970d11fceb514ecda38e1f1f5eafffca1c0779dcf6e8feff410",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "57d8daa2b2641f8bd2db71c21ecc933e53a3829f",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "2111f52531cf2e83356134040d470ac19d09513fe5226cb234d4ce23d0621bd4",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "57d8daa2b2641f8bd2db71c21ecc933e53a3829f",
+      "path": "tests/test_flux_linkage_map.py",
+      "source_sha256": "b9cda540bd26f31ab1578629cbbe23d6531cb4514d09ac7330b11fbf7fbf25d5",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "57d8daa2b2641f8bd2db71c21ecc933e53a3829f",
+      "path": "tests/test_performance_routes.py",
+      "source_sha256": "a2ec62732ee7983effbcd6e28e84932260490ea8ab64719b569a00eca305b631",
       "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
     }
   ]

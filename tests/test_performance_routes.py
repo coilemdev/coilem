@@ -101,3 +101,55 @@ def test_drive_returns_the_envelope_and_efficiency_map(client):
     assert payload["efficiency_map"]["mechanical_loss_W"] == 1.0
     body["limits"]["dc_bus_V"] = -5
     assert client.post("/performance/drive", json=body).status_code == 422
+
+
+@pytest.mark.parametrize("change", ["physics", "loss"])
+def test_map_routes_do_not_reuse_points_after_computation_changes(client, monkeypatch, change):
+    from dataclasses import replace
+
+    from backend import flux_linkage_map as maps
+
+    hashes = {"physics.py": "old"}
+    monkeypatch.setattr(maps, "installed_physics_hashes", lambda: (dict(hashes), {"solver.rs": "hash"}))
+    original = _events(client.post("/performance/map/stream", json=_body()).text)[-1][1]["map"]
+    assert len(client.fake.solve.calls) == 29
+    if change == "physics":
+        hashes["physics.py"] = "new"
+    else:
+        steel = RAW["materials"]["stator_steel"]
+        grade = maps.LOSS_GRADES[steel]
+        monkeypatch.setitem(maps.LOSS_GRADES, steel,
+                            replace(grade, coefficients=replace(grade.coefficients, kc=grade.coefficients.kc * 1.1)))
+    status = client.post("/performance/map/status", json=_body()).json()
+    assert status["scope_key"] != original["scope_key"]
+    assert status["map"] is None and status["solves_finished"] == 0
+    updated = _events(client.post("/performance/map/stream", json=_body()).text)[-1][1]["map"]
+    assert updated["scope_key"] == status["scope_key"]
+    assert len(client.fake.solve.calls) == 58
+    # The new identity can still resume/reuse; invalidation is not a permanent miss.
+    client.post("/performance/map/stream", json=_body())
+    assert len(client.fake.solve.calls) == 58
+
+
+@pytest.mark.parametrize("path", ["status", "stream"])
+@pytest.mark.parametrize("failure", [
+    ValueError("Cannot identify map physics: solver build identity is missing"), FileNotFoundError("missing solver"),
+])
+def test_identity_failure_is_actionable_and_does_not_claim_solve(client, monkeypatch, path, failure):
+    from backend.public_routes import performance
+
+    original = performance.map_scope_key
+
+    def broken(*args):
+        raise failure
+
+    monkeypatch.setattr(performance, "map_scope_key", broken)
+    response = client.post(f"/performance/map/{path}", json=_body())
+    assert response.status_code == 409
+    assert response.json()["detail"]["error_code"] == "MAP_IDENTITY_UNAVAILABLE"
+    assert "Cannot identify map physics" in response.json()["detail"]["message"]
+    assert not solve_routes._ACTIVE_SOLVE["running"]
+    monkeypatch.setattr(performance, "map_scope_key", original)
+    complete = _events(client.post("/performance/map/stream", json=_body()).text)[-1]
+    assert complete[0] == "complete"
+    assert not solve_routes._ACTIVE_SOLVE["running"]
