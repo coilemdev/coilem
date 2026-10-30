@@ -1,5 +1,9 @@
 # Benchmark reports and protocols
 
+[Protocol 1.5.0](abcd-v1.5/README.md) is a separate extension until the 0.5.0
+freeze. It adds the app's shoed 8p12s example to the 1.4.0 matrix, which has
+no tooth-shoe case, and awaits its FEMM record.
+
 The [v0.4.0 candidate baseline report](v0.4.0/README.md) brings together the full
 64-page Windows native PDF and the fresh October 18 FEMM repeat on main:
 **29/29 exact physical results and extraction audits**, collected in

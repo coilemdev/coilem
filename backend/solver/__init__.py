@@ -21,7 +21,7 @@ from backend import field_artifacts
 from backend.dq_flux_linkage import dq_flux_linkage_from_sweep
 from backend.field_lines import build_field_line_plot
 from backend.geometry_drawer import (
-    compute_3phase_current_density_for_rotor_elec,
+    compute_3phase_slot_ampere_turns_for_rotor_elec,
 )
 from backend.gmsh_mesh_rotation import (
     copy_json_like,
@@ -559,13 +559,14 @@ def _rotate_gmsh_artifact_for_config(
 
     The electrical-angle mapping must match the producer exactly
     (see gmsh_solver._current_density_by_ir_region) so a rotated artifact's
-    slot current densities are bit-comparable to a freshly meshed one.
+    slots carry the same ampere-turns as a freshly meshed one, each coil side
+    spread over its own meshed area.
     """
     return rotate_solve_mesh_artifact(
         artifact,
         slot_count=config.stator.slot_count,
         target_rotor_angle_mech_deg=target_rotor_angle_mech_deg,
-        phase_density_a_per_mm2=lambda elec_deg: compute_3phase_current_density_for_rotor_elec(
+        phase_ampere_turns=lambda elec_deg: compute_3phase_slot_ampere_turns_for_rotor_elec(
             config, elec_deg
         ),
         current_angle_elec_deg_for_mech=lambda rotor_angle_mech_deg: (
@@ -587,7 +588,7 @@ def _rebake_gmsh_artifact_for_config(
     """
     rebaked = rebake_solve_mesh_artifact_currents(
         artifact,
-        phase_density_a_per_mm2=lambda elec_deg: compute_3phase_current_density_for_rotor_elec(
+        phase_ampere_turns=lambda elec_deg: compute_3phase_slot_ampere_turns_for_rotor_elec(
             config, elec_deg
         ),
         current_angle_elec_deg_for_mech=lambda rotor_angle_mech_deg: (
