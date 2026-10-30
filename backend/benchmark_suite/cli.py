@@ -27,6 +27,7 @@ from backend.benchmark_suite.contract import (
     sha,
     write,
 )
+from backend.benchmark_suite.dq_metrics import with_dq_gates
 from backend.benchmark_suite.hardware import no_load_back_emf_line_to_line
 from backend.benchmark_suite.metrics import energy_balance_ratio, evaluate_abc, evaluate_bldc, validate_abc
 from backend.benchmark_suite.references import load_bundle, load_suite, verify_materials
@@ -137,6 +138,9 @@ def evaluate(output, manifest, selected, configs, protocols, golden, references,
         else:
             try:
                 evaluation = evaluate_abc(measurements["native"], reference, configs[case["id"], "native"])
+                # Registered λd/λq points (protocol 1.6.0) add their gates on top of the amplitude gates.
+                if case.get("dq_reference") and reference is not None and evaluation["status"] in ("PASS", "YELLOW", "FAIL"):
+                    evaluation = with_dq_gates(evaluation, measurements["native"], reference, configs[case["id"], "native"])
             except (ValueError, KeyError, TypeError, ZeroDivisionError) as exc:
                 evaluation = {"status": "INCOMPLETE", "gates": [], "reason": str(exc)}
         row = {

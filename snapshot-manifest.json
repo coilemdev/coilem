@@ -110,8 +110,8 @@
     },
     {
       "path": "backend/benchmark_suite/__init__.py",
-      "bytes": 353,
-      "sha256": "a01b88271a489b6faf2058fb984e809485d307336688b0a570457b5fea4c50e7"
+      "bytes": 362,
+      "sha256": "4ee6cc1ed07fea2c0c2915fdbe0528febfcd8fa5515ee940f0e8d0c132ecfdf8"
     },
     {
       "path": "backend/benchmark_suite/abc_metrics.py",
@@ -125,8 +125,8 @@
     },
     {
       "path": "backend/benchmark_suite/cli.py",
-      "bytes": 20797,
-      "sha256": "cfa160d834dbcc4a6c3d012154ffffa74539712409ab034ff69e42b7b026fe55"
+      "bytes": 21217,
+      "sha256": "bba2f5ac4a8071d9d4f3c5f6143b0e185eb3516ab99dba849bcbdd334284791e"
     },
     {
       "path": "backend/benchmark_suite/command.py",
@@ -137,6 +137,11 @@
       "path": "backend/benchmark_suite/contract.py",
       "bytes": 6924,
       "sha256": "374371a1873e0798a8c9ba1a668f9454bafd7c4bcf17e8defae1d18514ad63c4"
+    },
+    {
+      "path": "backend/benchmark_suite/dq_metrics.py",
+      "bytes": 4638,
+      "sha256": "39953cba8897b819f1c1d72dbbbd3b251a43879ddb7406cc58ab95f453a8093b"
     },
     {
       "path": "backend/benchmark_suite/hardware.py",
@@ -595,8 +600,8 @@
     },
     {
       "path": "backend/reference_models/prius.py",
-      "bytes": 16613,
-      "sha256": "a8fe330a05d5f0ee84b68950f726672808fb374b353a91f9d5b757f2d81afa3f"
+      "bytes": 17103,
+      "sha256": "f90ef88e3558edf867b766d651f815f68c95b93e03b910235e7272ef0581d645"
     },
     {
       "path": "backend/reference_models/pyleecan_prius_2004.json",
@@ -695,8 +700,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 9215,
-      "sha256": "9e780062c8fe23a2c51e1502848b742c2d7ec83fdd2302a9c6eb0bd01fca7506"
+      "bytes": 9549,
+      "sha256": "49667fc8010d397c08139b145d98b51ecef6c9cecb02320c0afa61cde528da1e"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -817,6 +822,101 @@
       "path": "benchmarks/abcd-v1.5/fixtures/spm_8p12s_example_shoed.json",
       "bytes": 2506,
       "sha256": "dbe538187d5280d171c224b12dc25612fb25c35c9014b201564126715dc4b6c4"
+    },
+    {
+      "path": "benchmarks/abcd-v1.6/FEMM-REQUEST.md",
+      "bytes": 9005,
+      "sha256": "8b22e1193bc2a4eca5f175cfaab38cd217fca6e8e31408603837d7729f9abab8"
+    },
+    {
+      "path": "benchmarks/abcd-v1.6/README.md",
+      "bytes": 3205,
+      "sha256": "4d21d64b64a2e5931877941666c96e9b37232581c82bcb32ba927de7cc438517"
+    },
+    {
+      "path": "benchmarks/abcd-v1.6/benchmark_spec.json",
+      "bytes": 28154,
+      "sha256": "60fb1c5353c8678ef210c997cf39ddcf20ce4bf81ebd8e419c962fc6d5c6fb37"
+    },
+    {
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g0.json",
+      "bytes": 2547,
+      "sha256": "13946ec4812653453576460ffaaa556e1c0712dc60ea5bcf7527255ead98bea9"
+    },
+    {
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g30.json",
+      "bytes": 2548,
+      "sha256": "8fd935a4b81d5aa3bbe9196151a84c9d745c268ea90702a4b92e07a76db62f47"
+    },
+    {
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g60.json",
+      "bytes": 2548,
+      "sha256": "87b7306d1735934c0cb3c30c1fa0b970af2947efe1d2446538f41159371adbf0"
+    },
+    {
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g0.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g30.json",
+      "bytes": 2547,
+      "sha256": "5fed79cac72dd79b71355b60cd195a2f58d00470c36fdad314a236870c4abf2b"
+    },
+    {
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g60.json",
+      "bytes": 2547,
+      "sha256": "e2bc18964582355fa7c838029693339374bb45456d2e21da26b76279cbd717cb"
+    },
+    {
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__magnet_100C.json",
+      "bytes": 2547,
+      "sha256": "d6125a01411ade4faf0f12fea6dd53ab0938f4ff0c2efc6f5ebb7cb7c2dbf2a3"
+    },
+    {
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__magnet_60C.json",
+      "bytes": 2546,
+      "sha256": "afe7c558fc411f00408461add8a9b88b7eed38bff4338234e0188246abc6f9de"
+    },
+    {
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I20_g0.json",
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    {
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I20_g30.json",
+      "bytes": 2507,
+      "sha256": "040ea7d2cf367ab0fa9e8fdba9a83df22dd88e548597a15c939358c709cecd38"
+    },
+    {
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I20_g60.json",
+      "bytes": 2507,
+      "sha256": "22bfd644feb317039dadbf6e1736f6c0c28f8641689c9571dcea3a9aba62e027"
+    },
+    {
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I40_g0.json",
+      "bytes": 2506,
+      "sha256": "fec0ce01476183e4e5b237a0fb3bc66676f7ac2582ca83f7c4c50bd96fb3ebd6"
+    },
+    {
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I40_g30.json",
+      "bytes": 2507,
+      "sha256": "7de6f4d389d823ea026d1843f778add1f3c28a50d3652a200952286818b4e270"
+    },
+    {
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I40_g60.json",
+      "bytes": 2507,
+      "sha256": "816252bbfc56ca2b917e576a892a21a10ca7a25c2044f2e51af08270661b1287"
+    },
+    {
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__magnet_100C.json",
+      "bytes": 2507,
+      "sha256": "77732c1868c7743a8d8711aea09457d103e45301019b74e3a1495f6c36598d78"
+    },
+    {
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__magnet_60C.json",
+      "bytes": 2506,
+      "sha256": "5633ed8c7644bf4e71c557b03afce86193313bc1e20566bb61d503018669a263"
     },
     {
       "path": "benchmarks/abcd-v1/README.md",
@@ -7659,6 +7759,11 @@
       "sha256": "ef35aa66a1eef31e671c9d5bcdb19b1bdc62e4c1429680b786afc7139148f70b"
     },
     {
+      "path": "tests/test_benchmark_v16_registration.py",
+      "bytes": 8377,
+      "sha256": "d3e114d36c6f8156f05ebaf6a155ea18dbd47a0255f518dcbc69be22146da503"
+    },
+    {
       "path": "tests/test_bldc_angle_contract.py",
       "bytes": 6902,
       "sha256": "9dcc422aa11c0472f9a4363779e79d75649fe21e70a9c2320ebbc9f9bd73defa"
@@ -7940,8 +8045,8 @@
     },
     {
       "path": "tests/test_pyleecan_reference_fixture.py",
-      "bytes": 17880,
-      "sha256": "f031b89e01c5ed5dd87f42c8992b6a4b038efe700e5ce5e4dd72cc6aa74e111b"
+      "bytes": 18120,
+      "sha256": "b2b3091e1fe670989f91b29a1c4ad29519d4177def243937d711cdf6baf088de"
     },
     {
       "path": "tests/test_pyleecan_tutorial.py",
@@ -21615,6 +21720,792 @@
       "base_commit": "55471a7f73c77269cb8b58e0a03f125fb63ac865",
       "path": "frontend/src/public/machineConstants.ts",
       "source_sha256": "5df6b38f5830158266bfe159a5e612161eff5a2f615d855851f475a4ecd26f1b",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "backend/reference_models/prius.py",
+      "source_sha256": "a8fe330a05d5f0ee84b68950f726672808fb374b353a91f9d5b757f2d81afa3f",
+      "reason": "Prius reference: record the published phase currents so the d/q record sees the load"
+    },
+    {
+      "base_commit": "ae77ad9d6bdde439bea9c721e5582469b55d131f",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "31470f7d2dd69d1db233db0953066bf14c7df183840b6dfefea75965c4ec0ead",
+      "reason": "Prius reference: record the published phase currents so the d/q record sees the load"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "backend/benchmark_suite/__init__.py",
+      "source_sha256": "a01b88271a489b6faf2058fb984e809485d307336688b0a570457b5fea4c50e7",
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "backend/benchmark_suite/cli.py",
+      "source_sha256": "cfa160d834dbcc4a6c3d012154ffffa74539712409ab034ff69e42b7b026fe55",
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "backend/benchmark_suite/dq_metrics.py",
+      "source_sha256": null,
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "benchmarks/abcd-v1.6/FEMM-REQUEST.md",
+      "source_sha256": null,
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "benchmarks/abcd-v1.6/README.md",
+      "source_sha256": null,
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "benchmarks/abcd-v1.6/benchmark_spec.json",
+      "source_sha256": null,
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g0.json",
+      "source_sha256": null,
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g30.json",
+      "source_sha256": null,
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g60.json",
+      "source_sha256": null,
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g0.json",
+      "source_sha256": null,
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g30.json",
+      "source_sha256": null,
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g60.json",
+      "source_sha256": null,
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__magnet_100C.json",
+      "source_sha256": null,
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__magnet_60C.json",
+      "source_sha256": null,
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I20_g0.json",
+      "source_sha256": null,
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I20_g30.json",
+      "source_sha256": null,
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I20_g60.json",
+      "source_sha256": null,
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I40_g0.json",
+      "source_sha256": null,
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I40_g30.json",
+      "source_sha256": null,
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I40_g60.json",
+      "source_sha256": null,
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__magnet_100C.json",
+      "source_sha256": null,
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__magnet_60C.json",
+      "source_sha256": null,
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "benchmarks/README.md",
+      "source_sha256": "9e780062c8fe23a2c51e1502848b742c2d7ec83fdd2302a9c6eb0bd01fca7506",
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "c1e7b4d2f7764683aab678b951dee8235e252275",
+      "path": "tests/test_benchmark_v16_registration.py",
+      "source_sha256": null,
+      "reason": "Protocol 1.6.0: 0.5.0 reference gates (shoed slot, magnet temperature, lambda_d/lambda_q points) and the FEMM request"
+    },
+    {
+      "base_commit": "f6c9fbb82017ee30e36fd403ce9617d2dad88f0b",
+      "path": "benchmarks/abcd-v1.6/FEMM-REQUEST.md",
+      "source_sha256": "39ea4bb9288affa7a3bb5c7e8bb681fe53cf0c9836e391dda7896f20c168014c",
+      "reason": "FEMM request: coilEM's native values for the new 1.6.0 cases"
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "backend/benchmark_suite/__init__.py",
+      "source_sha256": "a01b88271a489b6faf2058fb984e809485d307336688b0a570457b5fea4c50e7",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "backend/benchmark_suite/cli.py",
+      "source_sha256": "cfa160d834dbcc4a6c3d012154ffffa74539712409ab034ff69e42b7b026fe55",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "backend/benchmark_suite/dq_metrics.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "backend/reference_models/prius.py",
+      "source_sha256": "a8fe330a05d5f0ee84b68950f726672808fb374b353a91f9d5b757f2d81afa3f",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "benchmarks/README.md",
+      "source_sha256": "9e780062c8fe23a2c51e1502848b742c2d7ec83fdd2302a9c6eb0bd01fca7506",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "benchmarks/abcd-v1.6/FEMM-REQUEST.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "benchmarks/abcd-v1.6/README.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "benchmarks/abcd-v1.6/benchmark_spec.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g0.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g30.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g60.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g0.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g30.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g60.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__magnet_100C.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__magnet_60C.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I20_g0.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I20_g30.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I20_g60.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I40_g0.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I40_g30.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I40_g60.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__magnet_100C.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__magnet_60C.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "tests/test_benchmark_v16_registration.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "4150630519f1a49a14f860b999872f4f959bc9f6",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "f031b89e01c5ed5dd87f42c8992b6a4b038efe700e5ce5e4dd72cc6aa74e111b",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "backend/benchmark_suite/__init__.py",
+      "source_sha256": "a01b88271a489b6faf2058fb984e809485d307336688b0a570457b5fea4c50e7",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "backend/benchmark_suite/cli.py",
+      "source_sha256": "cfa160d834dbcc4a6c3d012154ffffa74539712409ab034ff69e42b7b026fe55",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "backend/benchmark_suite/dq_metrics.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "backend/reference_models/prius.py",
+      "source_sha256": "a8fe330a05d5f0ee84b68950f726672808fb374b353a91f9d5b757f2d81afa3f",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "benchmarks/README.md",
+      "source_sha256": "9e780062c8fe23a2c51e1502848b742c2d7ec83fdd2302a9c6eb0bd01fca7506",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "benchmarks/abcd-v1.6/FEMM-REQUEST.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "benchmarks/abcd-v1.6/README.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "benchmarks/abcd-v1.6/benchmark_spec.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g0.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g30.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g60.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g0.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g30.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g60.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__magnet_100C.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__magnet_60C.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I20_g0.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I20_g30.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I20_g60.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I40_g0.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I40_g30.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I40_g60.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__magnet_100C.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__magnet_60C.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "tests/test_benchmark_v16_registration.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0b7f23bb189bfb90c42609cb63b7bd90273d9ae1",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "f031b89e01c5ed5dd87f42c8992b6a4b038efe700e5ce5e4dd72cc6aa74e111b",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "backend/benchmark_suite/__init__.py",
+      "source_sha256": "a01b88271a489b6faf2058fb984e809485d307336688b0a570457b5fea4c50e7",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "backend/benchmark_suite/cli.py",
+      "source_sha256": "cfa160d834dbcc4a6c3d012154ffffa74539712409ab034ff69e42b7b026fe55",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "backend/benchmark_suite/dq_metrics.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "backend/reference_models/prius.py",
+      "source_sha256": "a8fe330a05d5f0ee84b68950f726672808fb374b353a91f9d5b757f2d81afa3f",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "benchmarks/README.md",
+      "source_sha256": "9e780062c8fe23a2c51e1502848b742c2d7ec83fdd2302a9c6eb0bd01fca7506",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "benchmarks/abcd-v1.6/FEMM-REQUEST.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "benchmarks/abcd-v1.6/README.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "benchmarks/abcd-v1.6/benchmark_spec.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g0.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g30.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g60.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g0.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g30.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g60.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__magnet_100C.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__magnet_60C.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I20_g0.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I20_g30.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I20_g60.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I40_g0.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I40_g30.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I40_g60.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__magnet_100C.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__magnet_60C.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "tests/test_benchmark_v16_registration.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "64ea5cabe852038e9dabe9f29abf24b9de2d0508",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "f031b89e01c5ed5dd87f42c8992b6a4b038efe700e5ce5e4dd72cc6aa74e111b",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "backend/benchmark_suite/__init__.py",
+      "source_sha256": "a01b88271a489b6faf2058fb984e809485d307336688b0a570457b5fea4c50e7",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "backend/benchmark_suite/cli.py",
+      "source_sha256": "cfa160d834dbcc4a6c3d012154ffffa74539712409ab034ff69e42b7b026fe55",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "backend/benchmark_suite/dq_metrics.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "backend/reference_models/prius.py",
+      "source_sha256": "a8fe330a05d5f0ee84b68950f726672808fb374b353a91f9d5b757f2d81afa3f",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "benchmarks/README.md",
+      "source_sha256": "9e780062c8fe23a2c51e1502848b742c2d7ec83fdd2302a9c6eb0bd01fca7506",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "benchmarks/abcd-v1.6/FEMM-REQUEST.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "benchmarks/abcd-v1.6/README.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "benchmarks/abcd-v1.6/benchmark_spec.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g0.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g30.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g60.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g0.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g30.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g60.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__magnet_100C.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__magnet_60C.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I20_g0.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I20_g30.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I20_g60.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I40_g0.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I40_g30.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I40_g60.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__magnet_100C.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__magnet_60C.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "tests/test_benchmark_v16_registration.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "90f5c6b07864ddb39d0b9e69dc72ad71f85b6405",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "f031b89e01c5ed5dd87f42c8992b6a4b038efe700e5ce5e4dd72cc6aa74e111b",
       "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
     }
   ]
