@@ -24,19 +24,31 @@ export interface DqRow {
 
 export type DqAgreementStatus = 'ok' | 'check' | 'unavailable';
 
+export interface DqAgreement { text: string; status: DqAgreementStatus; hint: string }
+
 export interface DqView {
   /** What a designer reads first; the detail rows hold the rest of the record. */
   main: DqRow[];
   detail: DqRow[];
   /** Why some main values are missing, when they are. */
   note: string | null;
-  agreement: { text: string; status: DqAgreementStatus; hint: string };
+  /** The torque check; null for an open-circuit run, which has no current and no torque to compare. */
+  agreement: DqAgreement | null;
   /** Whether the record is qualified or experimental, and why (public issue 143). */
   status: OutputStatus;
 }
 
 /** Within this many percentage points of 100%, the d/q agreement reads OK. */
 export const DQ_AGREEMENT_TOLERANCE_PCT = 5;
+
+/** Below this phase current (A peak) a run is open-circuit, as backend/dq_flux_linkage.py treats it. */
+export const OPEN_CIRCUIT_CURRENT_A = 1e-6;
+
+/** No current flows: a back-EMF (no-load) run, such as the Pyleecan Prius tutorial case. */
+export function isOpenCircuit(dq: Pick<DqFluxLinkage, 'i_d_A' | 'i_q_A'>): boolean {
+  const current = Math.hypot(dq.i_d_A, dq.i_q_A);
+  return Number.isFinite(current) && current <= OPEN_CIRCUIT_CURRENT_A;
+}
 
 const finite = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value);
 
@@ -49,7 +61,7 @@ function significant(value: number, digits = 3): string {
 
 const show = (value: unknown, scale = 1, digits = 3) => (finite(value) ? significant(value * scale, digits) : '—');
 
-export function dqAgreement(dq: Pick<DqFluxLinkage, 'torque_agreement_pct'> | null | undefined): DqView['agreement'] {
+export function dqAgreement(dq: Pick<DqFluxLinkage, 'torque_agreement_pct'> | null | undefined): DqAgreement {
   const pct = dq?.torque_agreement_pct;
   const hint = 'Average torque divided by the torque the loaded flux linkage predicts, 1.5·P·(λd·iq − λq·id). '
     + 'It includes reluctance torque and saturation, so it holds at any current angle; 100% is ideal. '
@@ -105,6 +117,19 @@ export function dqView(dq: DqFluxLinkage | null | undefined, currentUnit: DqCurr
     torque: { key: 'torque', symbol: 'Tdq', name: 'd/q torque', value: show(dq.torque_dq_Nm, 1, 4), unit: 'N·m',
       hint: '1.5·P·(λd·iq − λq·id), magnet and reluctance torque together.' },
   };
+  if (isOpenCircuit(dq)) {
+    // No current: no current angle, inductance or torque to report. The flux
+    // linkages are the magnets' own, so λd is λpm and λq is about zero.
+    const noLoad = (row: DqRow): DqRow => ({ ...row, hint: `Open circuit, averaged${positions}: the magnets' flux alone.` });
+    return {
+      main: [all['lambda-pm']],
+      detail: [noLoad(all['lambda-d']), noLoad(all['lambda-q'])],
+      note: 'Open-circuit run: no current flows, so there is no current angle, inductance or torque check. '
+        + 'λd is the magnet flux linkage λpm and λq is about zero.',
+      agreement: null,
+      status: recordStatus(dq, DQ_FLUX_LINKAGE_STATUS_REASON),
+    };
+  }
   const mainKeys = ld !== null ? ['ld', 'lq', 'saliency', 'characteristic'] : ['lq', 'lambda-pm'];
   return {
     main: mainKeys.map((key) => all[key]),

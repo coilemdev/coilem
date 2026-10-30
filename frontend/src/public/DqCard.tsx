@@ -36,18 +36,20 @@ export function DqCard({ dq, currentUnit = 'A peak', variant = 'panel' }: {
       <table>
         <tbody>
           {view.main.map((row) => <Row key={row.key} row={row} />)}
-          <tr className="motor-constants-consistency" title={view.agreement.hint}>
-            <th scope="row">
-              <span className="motor-constants-symbol">Torque–λdq</span> <span className="motor-constants-name">agreement</span>
-            </th>
-            <td className="motor-constants-value">{view.agreement.text}</td>
-            <td className="motor-constants-unit">
-              %
-              {view.agreement.status !== 'unavailable' && (
-                <span className={`motor-constants-status is-${view.agreement.status}`}>{view.agreement.status === 'ok' ? 'OK' : 'Check'}</span>
-              )}
-            </td>
-          </tr>
+          {view.agreement && (
+            <tr className="motor-constants-consistency" title={view.agreement.hint}>
+              <th scope="row">
+                <span className="motor-constants-symbol">Torque–λdq</span> <span className="motor-constants-name">agreement</span>
+              </th>
+              <td className="motor-constants-value">{view.agreement.text}</td>
+              <td className="motor-constants-unit">
+                %
+                {view.agreement.status !== 'unavailable' && (
+                  <span className={`motor-constants-status is-${view.agreement.status}`}>{view.agreement.status === 'ok' ? 'OK' : 'Check'}</span>
+                )}
+              </td>
+            </tr>
+          )}
         </tbody>
         {expanded && (
           <tbody id={detailId} className="dq-card-detail">

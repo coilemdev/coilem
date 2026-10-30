@@ -535,8 +535,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 76393,
-      "sha256": "85ddf17d123cbf8d16e952e20232cc6d39e8e4c0bd15e4b6c1ccefe4e9ed9967"
+      "bytes": 77723,
+      "sha256": "89d62fb916fb1460c581d325693650ff1455eef35d5a660632e35662cc81e726"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -6210,8 +6210,8 @@
     },
     {
       "path": "frontend/scripts/test-dq-view.mjs",
-      "bytes": 3891,
-      "sha256": "97f9a786585a965228e6f05a0fa28449f42ee74842294982bd6303cec589fe27"
+      "bytes": 5025,
+      "sha256": "4e73a755c6fea6308badf63f553e9a30446ed34b03a831bba08d8e905273443f"
     },
     {
       "path": "frontend/scripts/test-field-axes.mjs",
@@ -6740,8 +6740,8 @@
     },
     {
       "path": "frontend/src/public/DqCard.tsx",
-      "bytes": 2887,
-      "sha256": "ba027c9162184871a76ade600e0da0cb363380f86f78c03721e72db8800e0e89"
+      "bytes": 2955,
+      "sha256": "56da35e496c0a40783b6a0e15bdd623cd51147f983d392bea7997758af15646c"
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
@@ -6900,8 +6900,8 @@
     },
     {
       "path": "frontend/src/public/dqView.ts",
-      "bytes": 7358,
-      "sha256": "2e89f7bb3d1b6d431de3425aa2f3fc5b8ad30f4665e56f518bc8beabe3b7b288"
+      "bytes": 8652,
+      "sha256": "d3f22bf7ada0f5153fed338bb2da132e82ae1421190d8b2b5dfead71d6ec86a6"
     },
     {
       "path": "frontend/src/public/exampleDesigns.ts",
@@ -7665,8 +7665,8 @@
     },
     {
       "path": "tests/test_dq_flux_linkage.py",
-      "bytes": 5265,
-      "sha256": "3c71d270f9899a4caac3c844379aded8b31dbd535a90f28aafd8835d31f8d699"
+      "bytes": 6500,
+      "sha256": "2191883eaafa37ca765a8287b9ba29d633c19cc7b7e16795612aecf9c24495e5"
     },
     {
       "path": "tests/test_drive_performance.py",
@@ -21375,6 +21375,156 @@
       "base_commit": "ab595a165acdae37e0c0f1dce69b4703f53e624b",
       "path": "tests/test_public_report_exports.py",
       "source_sha256": "ad5f0909966caad0a7fa96b9a25b83aa4f321d62526379f8c38b74c7898037bb",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d9a39658ec65583e1cd0c2f06ba04cd9c68d2b8e",
+      "path": "frontend/src/public/dqView.ts",
+      "source_sha256": "2e89f7bb3d1b6d431de3425aa2f3fc5b8ad30f4665e56f518bc8beabe3b7b288",
+      "reason": "d/q card and run PDF: report an open-circuit run as such"
+    },
+    {
+      "base_commit": "d9a39658ec65583e1cd0c2f06ba04cd9c68d2b8e",
+      "path": "frontend/src/public/DqCard.tsx",
+      "source_sha256": "ba027c9162184871a76ade600e0da0cb363380f86f78c03721e72db8800e0e89",
+      "reason": "d/q card and run PDF: report an open-circuit run as such"
+    },
+    {
+      "base_commit": "d9a39658ec65583e1cd0c2f06ba04cd9c68d2b8e",
+      "path": "frontend/scripts/test-dq-view.mjs",
+      "source_sha256": "97f9a786585a965228e6f05a0fa28449f42ee74842294982bd6303cec589fe27",
+      "reason": "d/q card and run PDF: report an open-circuit run as such"
+    },
+    {
+      "base_commit": "d9a39658ec65583e1cd0c2f06ba04cd9c68d2b8e",
+      "path": "backend/public_report.py",
+      "source_sha256": "25a93cfc39a019ad3c0df4ce67c31e40bcab110527db601de0baef341ccff1ba",
+      "reason": "d/q card and run PDF: report an open-circuit run as such"
+    },
+    {
+      "base_commit": "d9a39658ec65583e1cd0c2f06ba04cd9c68d2b8e",
+      "path": "tests/test_dq_flux_linkage.py",
+      "source_sha256": "3c71d270f9899a4caac3c844379aded8b31dbd535a90f28aafd8835d31f8d699",
+      "reason": "d/q card and run PDF: report an open-circuit run as such"
+    },
+    {
+      "base_commit": "2af815f7697630a43f2f0fd027bac2d9cdcd2471",
+      "path": "backend/public_report.py",
+      "source_sha256": "85ddf17d123cbf8d16e952e20232cc6d39e8e4c0bd15e4b6c1ccefe4e9ed9967",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2af815f7697630a43f2f0fd027bac2d9cdcd2471",
+      "path": "frontend/scripts/test-dq-view.mjs",
+      "source_sha256": "97f9a786585a965228e6f05a0fa28449f42ee74842294982bd6303cec589fe27",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2af815f7697630a43f2f0fd027bac2d9cdcd2471",
+      "path": "frontend/src/public/DqCard.tsx",
+      "source_sha256": "ba027c9162184871a76ade600e0da0cb363380f86f78c03721e72db8800e0e89",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2af815f7697630a43f2f0fd027bac2d9cdcd2471",
+      "path": "frontend/src/public/dqView.ts",
+      "source_sha256": "2e89f7bb3d1b6d431de3425aa2f3fc5b8ad30f4665e56f518bc8beabe3b7b288",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2af815f7697630a43f2f0fd027bac2d9cdcd2471",
+      "path": "tests/test_dq_flux_linkage.py",
+      "source_sha256": "3c71d270f9899a4caac3c844379aded8b31dbd535a90f28aafd8835d31f8d699",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "13fc8ffd3904380478d2566ea81484356ee8f567",
+      "path": "backend/public_report.py",
+      "source_sha256": "85ddf17d123cbf8d16e952e20232cc6d39e8e4c0bd15e4b6c1ccefe4e9ed9967",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "13fc8ffd3904380478d2566ea81484356ee8f567",
+      "path": "frontend/scripts/test-dq-view.mjs",
+      "source_sha256": "97f9a786585a965228e6f05a0fa28449f42ee74842294982bd6303cec589fe27",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "13fc8ffd3904380478d2566ea81484356ee8f567",
+      "path": "frontend/src/public/DqCard.tsx",
+      "source_sha256": "ba027c9162184871a76ade600e0da0cb363380f86f78c03721e72db8800e0e89",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "13fc8ffd3904380478d2566ea81484356ee8f567",
+      "path": "frontend/src/public/dqView.ts",
+      "source_sha256": "2e89f7bb3d1b6d431de3425aa2f3fc5b8ad30f4665e56f518bc8beabe3b7b288",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "13fc8ffd3904380478d2566ea81484356ee8f567",
+      "path": "tests/test_dq_flux_linkage.py",
+      "source_sha256": "3c71d270f9899a4caac3c844379aded8b31dbd535a90f28aafd8835d31f8d699",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "44a7e50566a3a0fcc81bc9a472de6e1a4b9de974",
+      "path": "backend/public_report.py",
+      "source_sha256": "85ddf17d123cbf8d16e952e20232cc6d39e8e4c0bd15e4b6c1ccefe4e9ed9967",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "44a7e50566a3a0fcc81bc9a472de6e1a4b9de974",
+      "path": "frontend/scripts/test-dq-view.mjs",
+      "source_sha256": "97f9a786585a965228e6f05a0fa28449f42ee74842294982bd6303cec589fe27",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "44a7e50566a3a0fcc81bc9a472de6e1a4b9de974",
+      "path": "frontend/src/public/DqCard.tsx",
+      "source_sha256": "ba027c9162184871a76ade600e0da0cb363380f86f78c03721e72db8800e0e89",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "44a7e50566a3a0fcc81bc9a472de6e1a4b9de974",
+      "path": "frontend/src/public/dqView.ts",
+      "source_sha256": "2e89f7bb3d1b6d431de3425aa2f3fc5b8ad30f4665e56f518bc8beabe3b7b288",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "44a7e50566a3a0fcc81bc9a472de6e1a4b9de974",
+      "path": "tests/test_dq_flux_linkage.py",
+      "source_sha256": "3c71d270f9899a4caac3c844379aded8b31dbd535a90f28aafd8835d31f8d699",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7609b00f1d00965341ae3d916c19adb37e863379",
+      "path": "backend/public_report.py",
+      "source_sha256": "85ddf17d123cbf8d16e952e20232cc6d39e8e4c0bd15e4b6c1ccefe4e9ed9967",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7609b00f1d00965341ae3d916c19adb37e863379",
+      "path": "frontend/scripts/test-dq-view.mjs",
+      "source_sha256": "97f9a786585a965228e6f05a0fa28449f42ee74842294982bd6303cec589fe27",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7609b00f1d00965341ae3d916c19adb37e863379",
+      "path": "frontend/src/public/DqCard.tsx",
+      "source_sha256": "ba027c9162184871a76ade600e0da0cb363380f86f78c03721e72db8800e0e89",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7609b00f1d00965341ae3d916c19adb37e863379",
+      "path": "frontend/src/public/dqView.ts",
+      "source_sha256": "2e89f7bb3d1b6d431de3425aa2f3fc5b8ad30f4665e56f518bc8beabe3b7b288",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7609b00f1d00965341ae3d916c19adb37e863379",
+      "path": "tests/test_dq_flux_linkage.py",
+      "source_sha256": "3c71d270f9899a4caac3c844379aded8b31dbd535a90f28aafd8835d31f8d699",
       "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
     }
   ]
