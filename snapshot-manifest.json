@@ -55,8 +55,8 @@
     },
     {
       "path": "MATERIALS.md",
-      "bytes": 12504,
-      "sha256": "3e241b12603443a836dd94e8dce2d84b8c394c64e2f4e942a2e19e0cef5405cb"
+      "bytes": 12607,
+      "sha256": "ea303e1541c5a1c26e694e933213a6ebcb1cf7aa6bcea72c8c1aabf64d4dac79"
     },
     {
       "path": "PUBLICATION_STATUS.md",
@@ -65,8 +65,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 10334,
-      "sha256": "ccd3bcce3044c620ce866c77ce3907b8b78417cefb613a4da4153f63d5e7d186"
+      "bytes": 13221,
+      "sha256": "b26abfcb2abaacbd1ac48bb104149c34030847ec5f517aa9f83dbe2cf6069555"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -5904,6 +5904,11 @@
       "sha256": "faf12fd1056d005095dd4d06354e4991cbff7743dd27e4f62422ac5182c927ee"
     },
     {
+      "path": "docs/RELEASE_0_5_0.md",
+      "bytes": 18365,
+      "sha256": "f37f3eff426b9faa59548f80b912b69f77044d2783093189f93ae8c94b8d4dc9"
+    },
+    {
       "path": "docs/RELEASING.md",
       "bytes": 11317,
       "sha256": "5157fdcfbfedec0acf625a014d06fd48a5a8ffd7ff6e98be758ceeceb6ca5d47"
@@ -5920,8 +5925,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 26646,
-      "sha256": "3c7041072737faf212d0829a09b632f68d238c085df4a541fc8b19f7b851cd56"
+      "bytes": 43775,
+      "sha256": "2111f52531cf2e83356134040d470ac19d09513fe5226cb234d4ce23d0621bd4"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -23342,6 +23347,138 @@
       "base_commit": "b4a475767be3ccbeab2fdc1137af3b910245ab4b",
       "path": "tests/test_winding_resistance.py",
       "source_sha256": "b4fd9f832d22f93d265ce9c7f2d0f77e640fecb5ed0f4be9fb7abb588a3f48af",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "path": "README.md",
+      "source_sha256": "ccd3bcce3044c620ce866c77ce3907b8b78417cefb613a4da4153f63d5e7d186",
+      "reason": "0.5.0 release documentation: claim boundaries for the performance outputs, README limits and features, and draft release notes"
+    },
+    {
+      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "3c7041072737faf212d0829a09b632f68d238c085df4a541fc8b19f7b851cd56",
+      "reason": "0.5.0 release documentation: claim boundaries for the performance outputs, README limits and features, and draft release notes"
+    },
+    {
+      "base_commit": "5d23b47d8364f1ee80b279480d0420484993673e",
+      "path": "docs/RELEASE_0_5_0.md",
+      "source_sha256": null,
+      "reason": "0.5.0 release documentation: claim boundaries for the performance outputs, README limits and features, and draft release notes"
+    },
+    {
+      "base_commit": "06733f4defc0281f57385b4c6c6119ba1903dbab",
+      "path": "MATERIALS.md",
+      "source_sha256": "3e241b12603443a836dd94e8dce2d84b8c394c64e2f4e942a2e19e0cef5405cb",
+      "reason": "Core loss: the loaded sweep may cover one electrical cycle or half of one, as iron_loss_unavailable_reason accepts"
+    },
+    {
+      "base_commit": "ab71efc0049578661192a9cb18deba18d73c8bde",
+      "path": "MATERIALS.md",
+      "source_sha256": "3e241b12603443a836dd94e8dce2d84b8c394c64e2f4e942a2e19e0cef5405cb",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ab71efc0049578661192a9cb18deba18d73c8bde",
+      "path": "README.md",
+      "source_sha256": "ccd3bcce3044c620ce866c77ce3907b8b78417cefb613a4da4153f63d5e7d186",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ab71efc0049578661192a9cb18deba18d73c8bde",
+      "path": "docs/RELEASE_0_5_0.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ab71efc0049578661192a9cb18deba18d73c8bde",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "3c7041072737faf212d0829a09b632f68d238c085df4a541fc8b19f7b851cd56",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0fdcadcaea9936f90916b9734651f49c1e8317ca",
+      "path": "MATERIALS.md",
+      "source_sha256": "3e241b12603443a836dd94e8dce2d84b8c394c64e2f4e942a2e19e0cef5405cb",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0fdcadcaea9936f90916b9734651f49c1e8317ca",
+      "path": "README.md",
+      "source_sha256": "ccd3bcce3044c620ce866c77ce3907b8b78417cefb613a4da4153f63d5e7d186",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0fdcadcaea9936f90916b9734651f49c1e8317ca",
+      "path": "docs/RELEASE_0_5_0.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0fdcadcaea9936f90916b9734651f49c1e8317ca",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "3c7041072737faf212d0829a09b632f68d238c085df4a541fc8b19f7b851cd56",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "60c58135ef025cf788b86541dba53dbe170afab4",
+      "path": "tests/test_reference_runner.py",
+      "source_sha256": "41d3017b9dbb1ed7622e04647c7df5a1bd4531774f84cbd11409844338a92cc7",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "01902666e0ec338f591c78ac897b9e71213e8e18",
+      "path": "MATERIALS.md",
+      "source_sha256": "3e241b12603443a836dd94e8dce2d84b8c394c64e2f4e942a2e19e0cef5405cb",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "01902666e0ec338f591c78ac897b9e71213e8e18",
+      "path": "README.md",
+      "source_sha256": "ccd3bcce3044c620ce866c77ce3907b8b78417cefb613a4da4153f63d5e7d186",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "01902666e0ec338f591c78ac897b9e71213e8e18",
+      "path": "docs/RELEASE_0_5_0.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "01902666e0ec338f591c78ac897b9e71213e8e18",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "3c7041072737faf212d0829a09b632f68d238c085df4a541fc8b19f7b851cd56",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "01902666e0ec338f591c78ac897b9e71213e8e18",
+      "path": "tests/test_reference_runner.py",
+      "source_sha256": "41d3017b9dbb1ed7622e04647c7df5a1bd4531774f84cbd11409844338a92cc7",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "cbe776d4efa97bb2a5ec757df74ce05194e5a7dc",
+      "path": "MATERIALS.md",
+      "source_sha256": "3e241b12603443a836dd94e8dce2d84b8c394c64e2f4e942a2e19e0cef5405cb",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "cbe776d4efa97bb2a5ec757df74ce05194e5a7dc",
+      "path": "README.md",
+      "source_sha256": "ccd3bcce3044c620ce866c77ce3907b8b78417cefb613a4da4153f63d5e7d186",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "cbe776d4efa97bb2a5ec757df74ce05194e5a7dc",
+      "path": "docs/RELEASE_0_5_0.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "cbe776d4efa97bb2a5ec757df74ce05194e5a7dc",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "3c7041072737faf212d0829a09b632f68d238c085df4a541fc8b19f7b851cd56",
       "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
     }
   ]
