@@ -248,7 +248,11 @@ def analysis_fixture(collection, monkeypatch):
                platform=identity["platform"], python=identity["python"], dependencies=identity["dependencies"])
     write(collection.output / "registration.json", reg)
     monkeypatch.setattr(reporter, "ROOT", collection.root)
-    monkeypatch.setattr(reporter, "audit_job", lambda run, job, asset: actual["audits"][job["job"]])
+    # These tests isolate frozen grading inputs; raw convergence is exercised
+    # independently in test_prius_convergence_audit.py.
+    for audit in actual["audits"].values():
+        audit["all_recorded_native_stopping_tests_pass"] = True
+    monkeypatch.setattr(reporter, "audit_job", lambda run, job, asset, **kwargs: actual["audits"][job["job"]])
     return collection
 
 
@@ -260,7 +264,24 @@ def test_analysis_uses_frozen_protocol_and_reference_bytes_when_checkout_changes
     after = reporter.analyze(fixture.output)
     assert before == after
     assert after["all_software_checks_pass"] and after["grading_provenance"]["frozen_before_fields"]
+    # The grading host is separate from the retained collection identity.
+    assert after["analysis_platform"] != after["platform"] == "test"
+    assert after["analysis_python"] != after["python"] == "test"
     assert "frozen-at-collection" in reporter.markdown(after)
+
+
+@pytest.mark.parametrize("residual,stopped,expected", [(1e-8, True, False), (9.9e-9, False, False),
+                                                       (9.9e-9, True, True)])
+def test_convergence_gate_keeps_strict_protocol_limit_and_native_stop(analysis_fixture, monkeypatch, residual, stopped, expected):
+    original = reporter.audit_job
+
+    def audit(*args, **kwargs):
+        value = copy.deepcopy(original(*args, **kwargs))
+        value.update(max_final_residual=residual, all_recorded_native_stopping_tests_pass=stopped)
+        return value
+
+    monkeypatch.setattr(reporter, "audit_job", audit)
+    assert reporter.analyze(analysis_fixture.output)["checks"]["all_fields_converged"] is expected
 
 
 @pytest.mark.parametrize("key", list(GRADING_INPUTS))

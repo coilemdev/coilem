@@ -25,7 +25,7 @@ one's claim boundary.
 | Protocol 1.6.0 FEMM records | [Requested](../benchmarks/abcd-v1.6/FEMM-REQUEST.md): one bundle of 46 records at one adapter commit. None recorded yet | Owner's Windows FEMM run. **TODO(freeze):** bundle commit and hash |
 | Protocol 1.6.0 native values | coilEM's values for the 17 new cases at `f6c9fbb`, run with `--no-reference` | Grade against the FEMM bundle at the freeze |
 | Physics hash guards | 21 tests fail by design: the stack changes hash-guarded physics sources | Re-pin the hashes at the freeze, after the rerun |
-| Pyleecan Prius collection | v0.4.0's record at `d993d76`. The loaded case was solved again with losses, torque unchanged at 353.95 N·m | Full collection at the frozen candidate. **TODO(freeze):** commit, outcome |
+| Pyleecan Prius collection | Full macOS and Windows collections at `40d8ab9`: 17 jobs / 568 field reports each. [Corrected residual audit](PRIUS_CONVERGENCE_AUDIT_20261030.md): 10/10 software checks each; original 9/10 reports retained | Review the explicitly post-collection audit correction. No hardware or release qualification is implied |
 | Phase-resistance gate | Protocol 1.6.0 `phase_resistance` ([hand calculations](../benchmarks/abcd-v1.6/PHASE-RESISTANCE.md)): all three cases PASS, within 0.001%. It runs in `tests/test_phase_resistance_gate.py` | None: it needs no solve or reference, so it runs at every test run |
 | Hardware correlation | ORNL Prius and Honda Accord torque–speed comparison planned in issue 143. [#69](https://github.com/coilemdev/coilem/issues/69) and [#82](https://github.com/coilemdev/coilem/issues/82) are in the 0.5.0 milestone and not in this stack | **TODO(owner):** ship in 0.5.0 or move |
 | Wheels and TestPyPI | v0.4.0's rehearsal passed | Rehearse the 0.5.0 candidate on all four wheel targets |
@@ -163,13 +163,24 @@ carries its share of N·I/paths over its own meshed area.
 **Corrected nonlinear stopping test (public issue 11).** The weak-flux V-shape
 IPMs converge further than before.
 
-- Their back-EMF rises 4.7–6.6% and their torque 0.2–1.1%, both away from FEMM.
-- Five V-shape cases now sit 8.1–8.6% from FEMM on the back-EMF fundamental and
-  9.0–9.6% on the peak, against 10% gates.
+- The retained Windows release comparison shows back-EMF rising 4.69–6.62%
+  on the baseline, deep-apex, pocket-offset and wide-angle cases. Narrow angle
+  rises 1.28% and thin bridge 0.35%. The mean absolute fundamental error across
+  all six rises from 2.39% to 6.50% against identical retained FEMM references.
+- Four cases now sit 8.11–8.61% from FEMM on the back-EMF fundamental;
+  narrow angle is 4.71% and thin bridge 1.11%. Passing the unchanged 10% gate
+  does not establish that agreement improved or that the candidate is regression-free.
 - `ipm_vshape_8p12s_baseline_contract` changes from YELLOW to PASS: its
   converged peak error falls from 14.8% to 9.0%.
 - V-shape IPM stays experimental. The FEMM request asks for a check of FEMM's
-  own convergence on these bridges. **TODO(freeze):** record that check.
+  precision and bridge meshes. The [30 October controls](VSHAPE_EMF_AUDIT_20261030.md)
+  retain the same physical model and unchanged gates: tighter native Newton
+  barely moves EMF, while the refined FEMM baseline puts the registered
+  normal-mesh candidate at **YELLOW**, with 10.0876% peak error on macOS and
+  10.0841% on Windows.
+  Its fundamental error is about 8.51%. The remaining field/spatial/model
+  discrepancy is unresolved; these diagnostic references remain REVIEW_REQUIRED
+  and do not replace the requested protocol 1.6 bundle.
 
 The Phase D BLDC gates are unchanged.
 

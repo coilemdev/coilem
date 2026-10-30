@@ -31,12 +31,21 @@ The harness binds each record to its request through `input_sha256` and refuses 
 
 Re-run them as the v3 bundle did. The Phase D requests are the cap-200 ones, and the Picard cap does not apply to FEMM.
 
-**One check, please, on the six V-shape IPM cases (`ipm_vshape_8p12s_*`).** Since the corrected nonlinear stopping test (public issue 11), coilEM's Back-EMF on five of them rose 4.7–6.6%. They now sit 8.1–8.6% above FEMM, against a 10% gate. For these six:
+**One check, please, on the six V-shape IPM cases (`ipm_vshape_8p12s_*`).** The retained Windows comparison with v0.4.0 shows four cases' Back-EMF rising 4.69–6.62% after the corrected nonlinear stopping test (public issue 11): baseline, deep apex, pocket offset and wide angle. Their fundamental errors are now 8.11–8.61%, against a 10% gate; narrow angle is 4.71% and thin bridge 1.11%. The six-case mean absolute error rises from 2.39% to 6.50%. Keep the full six-case scope:
 - record FEMM's solver precision, minimum angle and mesh size;
 - run `ipm_vshape_8p12s_baseline_contract` once more at a tighter precision (for example 1e-10) and a finer mesh in the bridges;
 - report how far its Back-EMF and torque move.
 
 That separates FEMM's own convergence from a model difference.
+
+The [30 October diagnostic controls](../../docs/VSHAPE_EMF_AUDIT_20261030.md)
+completed this baseline precision/bridge screen with the retained private
+producer. The refined baseline gives the current normal-mesh native candidate
+YELLOW on peak EMF (10.0876% on macOS / 10.0841% on Windows); no gate was widened
+or reference promoted.
+FEMM's precision setting controls its linear solver, so this is not an
+independent audit of its nonlinear stopping policy. The full 46-record bundle
+and its review, including all six V-shape cases, are still required.
 
 ## New: the shoed example (1 case)
 

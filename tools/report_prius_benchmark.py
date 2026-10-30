@@ -7,12 +7,14 @@ import gzip
 import hashlib
 import json
 import math
+import platform
 from pathlib import Path
 
 import numpy as np
 
 from tools.prius_benchmark_contract import (
     GRADING_INPUTS,
+    LEGACY_SCHEMA,
     SCHEMA,
     grading_inputs,
     job_folder,
@@ -31,7 +33,50 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def audit_job(run, job, asset_sha):
+def audit_newton_residual(info, *, legacy_rhs_history=False):
+    """Apply the Prius RHS-normalized limit, retaining the native stopping evidence.
+
+    Before the structured convergence record, Newton's history used L2(f).
+    Current history uses the initial nonlinear defect instead. These numbers
+    cannot be compared with the same limit without naming their denominator.
+    Only explicitly opted-in legacy v1 collections may use the old history.
+    """
+    def finite_nonnegative(value):
+        return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value) and value >= 0
+
+    history = info.get("nonlinear_residual_history")
+    if (not info.get("nonlinear_enabled") or not info.get("solver_method", "").endswith("+damped_newton")
+            or not isinstance(history, list) or not history or not all(map(finite_nonnegative, history))):
+        raise ValueError("Missing or invalid Newton convergence history")
+    record = info.get("nonlinear_convergence")
+    if record is None and legacy_rhs_history:
+        return {"rhs_scaled_residual": history[-1], "history_final_residual": history[-1],
+                "history_basis": "L2(f)", "native_stopping_test_pass": None,
+                "evidence": "legacy-v1 RHS-normalized history; no structured stopping evidence"}
+    if not isinstance(record, dict) or record.get("method") != "newton":
+        raise ValueError("Missing structured Newton convergence record")
+    definition = ("scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); "
+                  "rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage")
+    stopping = "scaled_residual <= tolerance OR rhs_scaled_residual <= absolute_residual_floor at every continuation stage"
+    if record.get("residual_definition") != definition or record.get("stopping_test") != stopping:
+        raise ValueError("Unknown Newton residual definition or stopping test")
+    scaled, rhs, initial, tolerance, floor = [record.get(key) for key in (
+        "scaled_residual", "rhs_scaled_residual", "initial_rhs_scaled_residual", "tolerance", "absolute_residual_floor")]
+    if not all(map(finite_nonnegative, (scaled, rhs, initial, tolerance, floor))) or tolerance == 0 or floor == 0:
+        raise ValueError("Invalid structured Newton residual values")
+    if (scaled != history[-1] or not math.isclose(scaled, rhs / max(initial, 1e-30), rel_tol=1e-12, abs_tol=0.)
+            or tolerance > 1e-9 or floor > 1e-8):
+        raise ValueError("Inconsistent or relaxed Newton convergence evidence")
+    # The record exposes the final continuation stage, not every stage's RHS
+    # residual. Report that scope explicitly rather than inventing stage data.
+    return {"rhs_scaled_residual": rhs, "history_final_residual": history[-1],
+            "history_basis": "L2(f - K(A0) A0)", "native_stopping_test_pass": scaled <= tolerance or rhs <= floor,
+            "evidence": "structured Newton final-stage residual and stopping criterion",
+            "scaled_residual": scaled, "initial_rhs_scaled_residual": initial,
+            "tolerance": tolerance, "absolute_residual_floor": floor}
+
+
+def audit_job(run, job, asset_sha, *, legacy_rhs_history=False):
     folder = job_folder(run, job)
     for filename, key in [("request.json", "request_sha256"), ("result.json", "result_sha256"),
                           ("artifact-index.json", "artifact_index_sha256")]:
@@ -100,13 +145,15 @@ def audit_job(run, job, asset_sha):
         if extraction["version"] != "published-region-winding/v1":
             raise ValueError("A generic polar-bin linkage result cannot qualify the reference")
         duality = abs(extraction["sum_phase_flux_current_J"] - extraction["integral_Az_Jz_L_J"])
-        residual = report["solve_info"]["nonlinear_residual_history"][-1]
+        convergence = audit_newton_residual(report["solve_info"], legacy_rhs_history=legacy_rhs_history)
+        residual = convergence["rhs_scaled_residual"]
         if not all(math.isfinite(v) for v in (duality, residual, current_error)):
             raise ValueError("Non-finite source/convergence audit")
         max_residual, max_duality, max_current_error = max(max_residual, residual), max(max_duality, duality), max(max_current_error, current_error)
         methods.add(report["solve_info"]["solver_method"])
         environments.add(json.dumps(report["solver_environment"], sort_keys=True))
         reports.append({"file": name, "sha256": entry["sha256"], "final_residual": residual,
+                        "convergence": convergence,
                         "duality_absolute_J": duality, "phase_current_max_error_A": current_error})
     count = round(360 / sp["rotor_step_deg"])
     if loaded != set(range(count)) or noload != (set(range(count)) if config["solve_options"]["back_emf"] else set()):
@@ -114,6 +161,8 @@ def audit_job(run, job, asset_sha):
     return {"actual_loaded_fields": len(loaded), "actual_noload_fields": len(noload), "actual_solver_methods": sorted(methods),
             "actual_solver_environments": [json.loads(value) for value in sorted(environments)],
             "max_final_residual": max_residual, "max_source_linkage_duality_absolute_J": max_duality,
+            "final_residual_basis": "L2(f - K(A) A) / L2(f), after model constraints",
+            "all_recorded_native_stopping_tests_pass": all(r["convergence"]["native_stopping_test_pass"] is not False for r in reports),
             "max_phase_current_error_A": max_current_error, "field_reports": reports,
             "artifact_index": read(folder / "artifact-index.json")}
 
@@ -136,7 +185,9 @@ def analyze(run, *, legacy_unpinned=False):
         raise ValueError("The full report requires both presets, all thirteen angles and both refinement controls")
     protocol = inputs["protocol"]
     limits = protocol["limits"]
-    audits = {name: audit_job(run, job, registration["geometry_asset_sha256"]) for name, job in jobs.items()}
+    legacy_history = registration["schema"] == LEGACY_SCHEMA and legacy_unpinned
+    audits = {name: audit_job(run, job, registration["geometry_asset_sha256"], legacy_rhs_history=legacy_history)
+              for name, job in jobs.items()}
     tutorial = inputs["tutorial"]
     loaded_reference = inputs["loaded"]
     native_wave = jobs["tutorial-bemf-100"]["back_emf_waveform"]
@@ -189,7 +240,8 @@ def analyze(run, *, legacy_unpinned=False):
               < limits["angular_mean_change_normalized_to_reference_peak"],
               "mesh_control": controls["mesh-fine-32"]["change_normalized_to_reference_peak"]
               < limits["mesh_mean_change_normalized_to_reference_peak"],
-              "all_fields_converged": max(a["max_final_residual"] for a in audits.values()) < limits["native_final_residual"],
+              "all_fields_converged": (max(a["max_final_residual"] for a in audits.values()) < limits["native_final_residual"]
+                                       and all(a["all_recorded_native_stopping_tests_pass"] for a in audits.values())),
               "all_phase_currents": max(a["max_phase_current_error_A"] for a in audits.values()) < 1e-8,
               "source_linkage_duality": max(a["max_source_linkage_duality_absolute_J"] for a in audits.values()) < 1e-9}
     hardware_row = next(row for row in inputs["hardware"]["rows"] if row["motor_shaft_rpm"] == 1000)
@@ -202,7 +254,7 @@ def analyze(run, *, legacy_unpinned=False):
         "status": "Context only; no hardware verdict. Software model uses 20 C magnets; ORNL recorded nominal 25 C oil, not magnet temperature.",
     }
     return {"schema": "coilem.pyleecan_prius_public_app_report/v1", "qualified": False,
-            "interpretation": ("Software reproduction; retain all upstream discrepancies. Final v0.4.0 candidate rerun remains required."
+            "interpretation": ("Software reproduction; retain all upstream discrepancies. No hardware or release qualification is implied."
                                + (" Post-hoc reanalysis: legacy inputs were not frozen during collection."
                                   if not grading["frozen_before_fields"] else "")),
             "grading_provenance": grading,
@@ -213,6 +265,13 @@ def analyze(run, *, legacy_unpinned=False):
             "registration_sha256": digest(run / "registration.json"), "protocol_sha256": grading["input_sha256"]["protocol"],
             "historical_evidence_sha256": {Path(GRADING_INPUTS[key]).name: grading["input_sha256"][key] for key in ("tutorial", "loaded", "ui")},
             "analysis_runner_sha256": digest(Path(__file__)), "analysis_numpy": np.__version__,
+            "analysis_platform": platform.platform(), "analysis_python": platform.python_version(),
+            "convergence_audit": {"version": 2, "protocol_residual_basis": "L2(f - K(A) A) / L2(f), after model constraints",
+                                  "limit": limits["native_final_residual"], "comparison": "strictly less than",
+                                  "policy": "RHS normalization compatibility correction; original report verdicts are not overwritten",
+                                  "analysis_policy_frozen_at_collection": False,
+                                  "native_record_scope": "final continuation stage; intermediate RHS residuals are not retained",
+                                  "history_normalization_is_not_the_protocol_residual": True},
             "checks": checks, "all_software_checks_pass": all(checks.values()), "tutorial": bemf, "hardware_context": hardware_context,
             "loaded": {"app_mean_Nm": baseline,
                        "first_pose_mesh_triangles": jobs["loaded-torque-32"]["solve_metadata"]["mesh_element_count"],
@@ -229,6 +288,9 @@ def markdown(data):
              + ("Inputs were frozen before fields." if data["grading_provenance"]["frozen_before_fields"]
                 else "Post-hoc reanalysis using inputs selected after collection; no frozen-protocol claim."), "",
              f"Software checks: **{sum(data['checks'].values())}/{len(data['checks'])} pass**. Hardware qualification is not claimed.", "",
+             "Convergence audit v2 applies the unchanged strict RHS-normalized residual limit and verifies the recorded native final-stage stopping test. "
+             "This analysis revision was not frozen with the collection; its runner hash identifies the interpretation separately from the measured field source. "
+             "Earlier reports and their verdicts remain historical evidence.", "",
              f"Tutorial: **{t['sampled_AB_rms_V']:.6f} V AB sampled RMS**, {100*t['tutorial_line_rms_relative']:+.4f}% from the retained tutorial; "
              f"{t['sampled_AB_peak_V']:.6f} V absolute peak, {100*t['tutorial_line_waveform_relative_L2']:.4f}% waveform relative L2.", "",
              f"Loaded preset: **{loaded['app_mean_Nm']:.6f} Nm**, "
@@ -260,7 +322,7 @@ def markdown(data):
               "32 loaded plus 32 no-load fields; 13 current angles × 16 full-cycle fields; 64 angular and 32 Fine mesh control fields.", "",
               "[JSON waveforms, identities and field hashes](app-results.json) · [Full protocol and interpretation](README.md)", "",
               "Runtime is recorded per job as informational wall time, not a controlled performance qualification. "
-              "These remain development-candidate software results; repeat on the frozen final v0.4.0 candidate.", ""]
+              "These remain software results requiring separate release and hardware qualification.", ""]
     return "\n".join(lines)
 
 

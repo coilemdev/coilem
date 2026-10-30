@@ -830,8 +830,8 @@
     },
     {
       "path": "benchmarks/abcd-v1.6/FEMM-REQUEST.md",
-      "bytes": 9005,
-      "sha256": "8b22e1193bc2a4eca5f175cfaab38cd217fca6e8e31408603837d7729f9abab8"
+      "bytes": 9781,
+      "sha256": "8555e3658c5cdc50574892ad2be50e371ea5ebd52c310167218e0955fd874e4d"
     },
     {
       "path": "benchmarks/abcd-v1.6/PHASE-RESISTANCE.md",
@@ -5919,6 +5919,16 @@
       "sha256": "8f1d1497db1cd9699ef183c5d8c9616fa0c1c413ca8eb241b8811a69bb8743a0"
     },
     {
+      "path": "docs/PRIUS_CONVERGENCE_AUDIT_20261030.json",
+      "bytes": 3294,
+      "sha256": "8ddd735494d77de7ccca21b9b98502f20fe630d8bc7a4308b108a90b1a1a7d9a"
+    },
+    {
+      "path": "docs/PRIUS_CONVERGENCE_AUDIT_20261030.md",
+      "bytes": 3565,
+      "sha256": "c7859774953bfa76a5b9073005b4ef2cf954eb8ab16970bda90fa77b882cfc18"
+    },
+    {
       "path": "docs/PUBLIC_BOUNDARY.md",
       "bytes": 11363,
       "sha256": "6d91478217346b54ada343cc3db37851a6b3be22553cb50f7892b27a2df0f355"
@@ -5935,8 +5945,8 @@
     },
     {
       "path": "docs/RELEASE_0_5_0.md",
-      "bytes": 18365,
-      "sha256": "f37f3eff426b9faa59548f80b912b69f77044d2783093189f93ae8c94b8d4dc9"
+      "bytes": 19308,
+      "sha256": "7dab48edc94a4cf52b38fa79908ec5347fe2321958cdc5be892fdcd2e8db6b46"
     },
     {
       "path": "docs/RELEASING.md",
@@ -5962,6 +5972,16 @@
       "path": "docs/VERIFICATION.md",
       "bytes": 6748,
       "sha256": "6bc2a602672fe8ae9558fe1b94f236517f8ccbe438fefaf0d2826a034703ce63"
+    },
+    {
+      "path": "docs/VSHAPE_EMF_AUDIT_20261030.json",
+      "bytes": 31789,
+      "sha256": "2b34dda05d481baf85d3c77f94ecf578db662f524c6442abfbce18cfa039307d"
+    },
+    {
+      "path": "docs/VSHAPE_EMF_AUDIT_20261030.md",
+      "bytes": 8871,
+      "sha256": "35b511f061ed03d6fe2f17d59ca07d9f312f67167ac4f653ccbff992aaecd0f7"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
@@ -8035,8 +8055,13 @@
     },
     {
       "path": "tests/test_prius_benchmark_collection.py",
-      "bytes": 14664,
-      "sha256": "a64335880cc0a083ee2b586660d49e8609ca9158b4110ee2c8788c27c636b825"
+      "bytes": 15833,
+      "sha256": "344ef653924fff2cbef0fdb5a10fce3a0595cc199cccd94b36df042934b08f4c"
+    },
+    {
+      "path": "tests/test_prius_convergence_audit.py",
+      "bytes": 3618,
+      "sha256": "56c14078b8e93af50f218bf3558542631982c112f0018bb5f1d161e48b629bce"
     },
     {
       "path": "tests/test_public_cancellation.py",
@@ -8415,8 +8440,8 @@
     },
     {
       "path": "tools/report_prius_benchmark.py",
-      "bytes": 21940,
-      "sha256": "7d3e05fdb5d00b53e76210ef0e97c790bf15ea6d0ceb7ccdb345454ec9c2c092"
+      "bytes": 26954,
+      "sha256": "c34de7d5e6694b082ddfde602299fdd7cdfcce235d09d686b58f45d59645a1c3"
     },
     {
       "path": "tools/run_benchmarks.py",
