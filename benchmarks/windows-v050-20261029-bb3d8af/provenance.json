@@ -1,0 +1,36 @@
+{
+  "schema": "coilem.windows_v050_publication/v1",
+  "measured_candidate": "bb3d8aff93dd2b2c2900ac1b9c65729a939874f6",
+  "measurement_commit_differs_from_publication_commit": true,
+  "complete_local_archive_sha256": "3bcf8edc0a4cca76d33fa6a182f8a1c64198574a7b0e05ead8c179b31d0d6878",
+  "complete_local_archive_verified_files": 202,
+  "publication_transform": "Only machine-local absolute path strings are replaced by <local path>. Numeric values, verdicts, gates, source identity and request/result hashes are unchanged.",
+  "redacted_path_values": 110,
+  "files": [
+    {
+      "file": "benchmark_summary.json",
+      "raw_sha256": "f79da1aef022ab09e0a5cba243e806976a294f867932ba8332daf3a8320929d2",
+      "published_sha256": "e3af99f9cf95fd731c1e03169f4b773602a1c24f0aa49ae04e3f0cedd73cc587",
+      "numerical_values_unchanged": true
+    },
+    {
+      "file": "completion-summary.json",
+      "raw_sha256": "9df696c388b924d2389fbe8ec0a908a2fc2d20c7eaa71fe88263134a6bfcd862",
+      "published_sha256": "9d0678a56f8065162916163d9e93bbce39b76154431be18104588c9739169ecb",
+      "numerical_values_unchanged": true
+    },
+    {
+      "file": "fresh-femm-diagnostic.json",
+      "raw_sha256": "9ebe57a10b46bd0f3243cd08d15d08cd29815f52f9c3d3a8ff8fe65ff256d528",
+      "published_sha256": "3c28250716722613dd1755063422d587047ae47bd9b7aec0184b81d6779272ab",
+      "numerical_values_unchanged": true
+    },
+    {
+      "file": "local-validation.json",
+      "raw_sha256": "202e54913c4d77a7b77da6cf56d9560409d905a254b5bfbf8cbc7b4185e255a2",
+      "published_sha256": "b47d4a71a50dcbc6f1d05747a2019aaa4c31c72653def046f0343dbc5ddfe73b",
+      "numerical_values_unchanged": true
+    }
+  ],
+  "publication_scope": "Development regression evidence; no qualification-basis or platform-record promotion."
+}

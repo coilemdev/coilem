@@ -705,8 +705,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 9549,
-      "sha256": "49667fc8010d397c08139b145d98b51ecef6c9cecb02320c0afa61cde528da1e"
+      "bytes": 9959,
+      "sha256": "417c31adb7b64573e8bb04e4645c231ca09da352407407f28f9e2e0555411a8a"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -5557,6 +5557,36 @@
       "path": "benchmarks/windows-rc-20261013-1fac3a1/publication.json",
       "bytes": 8676,
       "sha256": "4cae665f2884c849c175dce3006d089d4b4d611786309dab3055a75c6b1640c0"
+    },
+    {
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/README.md",
+      "bytes": 4276,
+      "sha256": "8566d92c456e382f20525ec644f3d9788b8287ced00fa86992b1418c757aabd8"
+    },
+    {
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/benchmark_summary.json",
+      "bytes": 2003604,
+      "sha256": "e3af99f9cf95fd731c1e03169f4b773602a1c24f0aa49ae04e3f0cedd73cc587"
+    },
+    {
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/completion-summary.json",
+      "bytes": 11142,
+      "sha256": "9d0678a56f8065162916163d9e93bbce39b76154431be18104588c9739169ecb"
+    },
+    {
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/fresh-femm-diagnostic.json",
+      "bytes": 158536,
+      "sha256": "3c28250716722613dd1755063422d587047ae47bd9b7aec0184b81d6779272ab"
+    },
+    {
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/local-validation.json",
+      "bytes": 4242,
+      "sha256": "b47d4a71a50dcbc6f1d05747a2019aaa4c31c72653def046f0343dbc5ddfe73b"
+    },
+    {
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/provenance.json",
+      "bytes": 1793,
+      "sha256": "1d110da5b75ffe728db774526fe6f2272bd1dec0be75509282b8534ab8006233"
     },
     {
       "path": "benchmarks/windows-v3-20261015-738d951/README.md",
@@ -23701,6 +23731,258 @@
       "base_commit": "57d8daa2b2641f8bd2db71c21ecc933e53a3829f",
       "path": "tests/test_performance_routes.py",
       "source_sha256": "a2ec62732ee7983effbcd6e28e84932260490ea8ab64719b569a00eca305b631",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "bb3d8aff93dd2b2c2900ac1b9c65729a939874f6",
+      "path": "benchmarks/README.md",
+      "source_sha256": "49667fc8010d397c08139b145d98b51ecef6c9cecb02320c0afa61cde528da1e",
+      "reason": "Publish Windows development validation of the v0.5.0 stack with unchanged numerical results and redacted machine paths."
+    },
+    {
+      "base_commit": "bb3d8aff93dd2b2c2900ac1b9c65729a939874f6",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/provenance.json",
+      "source_sha256": null,
+      "reason": "Publish Windows development validation of the v0.5.0 stack with unchanged numerical results and redacted machine paths."
+    },
+    {
+      "base_commit": "bb3d8aff93dd2b2c2900ac1b9c65729a939874f6",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/completion-summary.json",
+      "source_sha256": null,
+      "reason": "Publish Windows development validation of the v0.5.0 stack with unchanged numerical results and redacted machine paths."
+    },
+    {
+      "base_commit": "bb3d8aff93dd2b2c2900ac1b9c65729a939874f6",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/README.md",
+      "source_sha256": null,
+      "reason": "Publish Windows development validation of the v0.5.0 stack with unchanged numerical results and redacted machine paths."
+    },
+    {
+      "base_commit": "bb3d8aff93dd2b2c2900ac1b9c65729a939874f6",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/benchmark_summary.json",
+      "source_sha256": null,
+      "reason": "Publish Windows development validation of the v0.5.0 stack with unchanged numerical results and redacted machine paths."
+    },
+    {
+      "base_commit": "bb3d8aff93dd2b2c2900ac1b9c65729a939874f6",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/local-validation.json",
+      "source_sha256": null,
+      "reason": "Publish Windows development validation of the v0.5.0 stack with unchanged numerical results and redacted machine paths."
+    },
+    {
+      "base_commit": "bb3d8aff93dd2b2c2900ac1b9c65729a939874f6",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/fresh-femm-diagnostic.json",
+      "source_sha256": null,
+      "reason": "Publish Windows development validation of the v0.5.0 stack with unchanged numerical results and redacted machine paths."
+    },
+    {
+      "base_commit": "a4870ffd22f29b2db0769c09eecac6c93cb54131",
+      "path": "benchmarks/README.md",
+      "source_sha256": "49667fc8010d397c08139b145d98b51ecef6c9cecb02320c0afa61cde528da1e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4870ffd22f29b2db0769c09eecac6c93cb54131",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/README.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4870ffd22f29b2db0769c09eecac6c93cb54131",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/benchmark_summary.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4870ffd22f29b2db0769c09eecac6c93cb54131",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/completion-summary.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4870ffd22f29b2db0769c09eecac6c93cb54131",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/fresh-femm-diagnostic.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4870ffd22f29b2db0769c09eecac6c93cb54131",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/local-validation.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4870ffd22f29b2db0769c09eecac6c93cb54131",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/provenance.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2f03a1af78064ebd227b1f2d723a2b94de06f3c5",
+      "path": "benchmarks/README.md",
+      "source_sha256": "49667fc8010d397c08139b145d98b51ecef6c9cecb02320c0afa61cde528da1e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2f03a1af78064ebd227b1f2d723a2b94de06f3c5",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/README.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2f03a1af78064ebd227b1f2d723a2b94de06f3c5",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/benchmark_summary.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2f03a1af78064ebd227b1f2d723a2b94de06f3c5",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/completion-summary.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2f03a1af78064ebd227b1f2d723a2b94de06f3c5",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/fresh-femm-diagnostic.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2f03a1af78064ebd227b1f2d723a2b94de06f3c5",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/local-validation.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2f03a1af78064ebd227b1f2d723a2b94de06f3c5",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/provenance.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d0dc6f01cf715db6e7c253aadeda7413b0af5049",
+      "path": "benchmarks/README.md",
+      "source_sha256": "49667fc8010d397c08139b145d98b51ecef6c9cecb02320c0afa61cde528da1e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d0dc6f01cf715db6e7c253aadeda7413b0af5049",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/README.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d0dc6f01cf715db6e7c253aadeda7413b0af5049",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/benchmark_summary.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d0dc6f01cf715db6e7c253aadeda7413b0af5049",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/completion-summary.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d0dc6f01cf715db6e7c253aadeda7413b0af5049",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/fresh-femm-diagnostic.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d0dc6f01cf715db6e7c253aadeda7413b0af5049",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/local-validation.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d0dc6f01cf715db6e7c253aadeda7413b0af5049",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/provenance.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "eadfc0a0f92741c21445c541d84380ab3a47e20f",
+      "path": "benchmarks/README.md",
+      "source_sha256": "49667fc8010d397c08139b145d98b51ecef6c9cecb02320c0afa61cde528da1e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "eadfc0a0f92741c21445c541d84380ab3a47e20f",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/README.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "eadfc0a0f92741c21445c541d84380ab3a47e20f",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/benchmark_summary.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "eadfc0a0f92741c21445c541d84380ab3a47e20f",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/completion-summary.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "eadfc0a0f92741c21445c541d84380ab3a47e20f",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/fresh-femm-diagnostic.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "eadfc0a0f92741c21445c541d84380ab3a47e20f",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/local-validation.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "eadfc0a0f92741c21445c541d84380ab3a47e20f",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/provenance.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0cb1f393aedaac29975cc0a93e400a866729e84b",
+      "path": "benchmarks/README.md",
+      "source_sha256": "49667fc8010d397c08139b145d98b51ecef6c9cecb02320c0afa61cde528da1e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0cb1f393aedaac29975cc0a93e400a866729e84b",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/README.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0cb1f393aedaac29975cc0a93e400a866729e84b",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/benchmark_summary.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0cb1f393aedaac29975cc0a93e400a866729e84b",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/completion-summary.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0cb1f393aedaac29975cc0a93e400a866729e84b",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/fresh-femm-diagnostic.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0cb1f393aedaac29975cc0a93e400a866729e84b",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/local-validation.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "0cb1f393aedaac29975cc0a93e400a866729e84b",
+      "path": "benchmarks/windows-v050-20261029-bb3d8af/provenance.json",
+      "source_sha256": null,
       "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
     }
   ]
