@@ -8060,8 +8060,8 @@
     },
     {
       "path": "tests/test_prius_convergence_audit.py",
-      "bytes": 3618,
-      "sha256": "56c14078b8e93af50f218bf3558542631982c112f0018bb5f1d161e48b629bce"
+      "bytes": 3669,
+      "sha256": "a566932ee576a3a039a74512fda6bd2280e66d20c6650b9f45ef149e75763d51"
     },
     {
       "path": "tests/test_public_cancellation.py",
@@ -8440,8 +8440,8 @@
     },
     {
       "path": "tools/report_prius_benchmark.py",
-      "bytes": 26954,
-      "sha256": "c34de7d5e6694b082ddfde602299fdd7cdfcce235d09d686b58f45d59645a1c3"
+      "bytes": 26986,
+      "sha256": "ee5277136d93ecd506aeb802af331e3c3871927d1d4064eacdbce7b918efccba"
     },
     {
       "path": "tools/run_benchmarks.py",

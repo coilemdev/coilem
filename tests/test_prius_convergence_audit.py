@@ -15,7 +15,10 @@ def field(rhs=9.57800250145694e-9, initial=0.6774101252594844):
         "nonlinear_convergence": {
             "method": "newton", "scaled_residual": scaled, "rhs_scaled_residual": rhs,
             "initial_rhs_scaled_residual": initial, "tolerance": 1e-9, "absolute_residual_floor": 1e-8,
-            "residual_definition": "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage",
+            "residual_definition": (
+                "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); "
+                "rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage"
+            ),
             "stopping_test": "scaled_residual <= tolerance OR rhs_scaled_residual <= absolute_residual_floor at every continuation stage",
         },
     }

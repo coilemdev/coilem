@@ -288,8 +288,10 @@ def markdown(data):
              + ("Inputs were frozen before fields." if data["grading_provenance"]["frozen_before_fields"]
                 else "Post-hoc reanalysis using inputs selected after collection; no frozen-protocol claim."), "",
              f"Software checks: **{sum(data['checks'].values())}/{len(data['checks'])} pass**. Hardware qualification is not claimed.", "",
-             "Convergence audit v2 applies the unchanged strict RHS-normalized residual limit and verifies the recorded native final-stage stopping test. "
-             "This analysis revision was not frozen with the collection; its runner hash identifies the interpretation separately from the measured field source. "
+             "Convergence audit v2 applies the unchanged strict RHS-normalized residual limit "
+             "and verifies the recorded native final-stage stopping test. "
+             "This analysis revision was not frozen with the collection; its runner hash identifies "
+             "the interpretation separately from the measured field source. "
              "Earlier reports and their verdicts remain historical evidence.", "",
              f"Tutorial: **{t['sampled_AB_rms_V']:.6f} V AB sampled RMS**, {100*t['tutorial_line_rms_relative']:+.4f}% from the retained tutorial; "
              f"{t['sampled_AB_peak_V']:.6f} V absolute peak, {100*t['tutorial_line_waveform_relative_L2']:.4f}% waveform relative L2.", "",
