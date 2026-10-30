@@ -15,6 +15,12 @@ sides are the slot halves next to its tooth. A distributed coil runs from one
 layer to the other, so its sides are taken at the whole slots' centroids, a
 coil span apart.
 
+A pinned reference design without a wire of its own uses its published
+conductor. The Pyleecan Prius (Toyota_Prius.json at Pyleecan cbfe7be3) has 13
+strands in hand of 0.912 mm round copper and a 19.366 mm straight overhang
+(Lewout). Pyleecan's own resistance counts only that straight overhang, since
+its end-winding arc is not implemented; coilEM adds the half-circle end turn.
+
 Slot fill is bare copper over the gross slot polygon. Published fill factors
 often use a net slot area after liner and wedge, so they read higher.
 
@@ -34,6 +40,7 @@ from typing import Sequence
 from backend.geometry_ir import GeometryIR, build_geometry_ir
 from backend.geometry_ir_tessellation import polygon_centroid, tessellate_ir_region
 from backend.models import MotorConfig, WindingCoil
+from backend.models.config import WireSpec
 from backend.models.performance import WindingResistance
 
 REFERENCE_TEMPERATURE_C = 20.0
@@ -41,6 +48,10 @@ REFERENCE_TEMPERATURE_C = 20.0
 # set winding.wire.slot_fill_limit for needle-wound or hairpin coils.
 DEFAULT_COPPER_FILL_LIMIT = 0.45
 _SLOT_SIDE = re.compile(r":slot(\d+)(?::layer(\d+))?$")
+# Conductors published with a pinned reference design (see the module docstring).
+REFERENCE_WIRES = {
+    "pyleecan_prius_2004": WireSpec(wire_bare_diameter_mm=0.912, strands_in_hand=13, end_turn_extension_mm=19.366),
+}
 
 
 @dataclass(frozen=True)
@@ -79,6 +90,9 @@ def winding_resistance(
     paths = winding.parallel_paths
     series_turns = stator.slot_count * conductors_per_slot / 6.0
     wire = winding.wire
+    published = wire is None and config.geometry_reference in REFERENCE_WIRES
+    if published:
+        wire = REFERENCE_WIRES[config.geometry_reference]
     fill_limit = wire.slot_fill_limit if wire is not None and wire.slot_fill_limit is not None else DEFAULT_COPPER_FILL_LIMIT
     notes: list[str] = []
 
@@ -87,6 +101,11 @@ def winding_resistance(
         strand_diameter_mm = wire.wire_bare_diameter_mm
         strands = wire.strands_in_hand
         turn_area_mm2 = strands * math.pi * strand_diameter_mm**2 / 4.0
+        if published:
+            notes.append(
+                f"The reference's published conductor: {strands} strands of {strand_diameter_mm} mm wire, "
+                f"with a {wire.end_turn_extension_mm} mm straight overhang at each end (Pyleecan Toyota_Prius.json)."
+            )
     else:
         wire_source = "derived"
         strands = 1

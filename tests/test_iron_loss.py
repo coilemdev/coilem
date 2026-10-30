@@ -11,7 +11,10 @@ import pytest
 from pydantic import ValidationError
 
 from backend.iron_loss import (
+    LOSS_GRADES,
     M350_50A_LOSS,
+    M400_50A_LOSS,
+    PRIUS_PYLEECAN_STEEL,
     VALIDATED_MAX_FLUX_DENSITY_T,
     FieldFrame,
     SteinmetzCoefficients,
@@ -22,6 +25,7 @@ from backend.iron_loss import (
 )
 from backend.models import IronLoss, MotorConfig
 from backend.public_routes import solve as public_solve
+from backend.reference_models import prius
 
 CONFIG = MotorConfig.model_validate(
     json.loads((Path(__file__).resolve().parent / "fixtures" / "spm_4p12s_simple.json").read_text(encoding="utf-8"))
@@ -75,6 +79,54 @@ def test_m350_50a_coefficients_meet_the_grade_limits_at_50_hz():
     expected_kc = math.pi**2 * (0.50e-3) ** 2 / (6.0 * 42.2e-8 * 7650.0)
     assert M350_50A_LOSS.kc == pytest.approx(expected_kc)
     assert 1.6 < M350_50A_LOSS.alpha < 2.5
+
+
+def test_m400_50a_coefficients_meet_the_grade_limits_at_50_hz():
+    assert M400_50A_LOSS.specific_loss_w_per_kg(50.0, 1.0) == pytest.approx(1.70, abs=1e-12)
+    assert M400_50A_LOSS.specific_loss_w_per_kg(50.0, 1.5) == pytest.approx(4.00, abs=1e-12)
+    expected_kc = math.pi**2 * (0.50e-3) ** 2 / (6.0 * 33.4e-8 * 7700.0)
+    assert M400_50A_LOSS.kc == pytest.approx(expected_kc)
+    assert 1.6 < M400_50A_LOSS.alpha < 2.5
+
+
+def test_the_pinned_prius_steel_takes_the_m400_50a_coefficients():
+    # The Pyleecan Prius imports Pyleecan's M400-50A B-H curve as a custom steel.
+    materials = prius.fixture()["materials"]
+    assert materials["stator_steel"] == materials["rotor_steel"] == PRIUS_PYLEECAN_STEEL
+    assert LOSS_GRADES[PRIUS_PYLEECAN_STEEL].grade == "M400-50A"
+    assert LOSS_GRADES[PRIUS_PYLEECAN_STEEL].coefficients is M400_50A_LOSS
+
+    config = CONFIG.model_copy(update={"materials": CONFIG.materials.model_copy(update={"stator_steel": PRIUS_PYLEECAN_STEEL})})
+    estimate = estimate_iron_loss(config, _samples(1.0, pole_pitches=2), _cycle())
+    poles = config.rotor.pole_count
+    frequency = config.solve_params.rated_speed_rpm * (poles // 2) / 60.0
+    mass = (2e-3 * 2e-3) * config.stator.stack_length_mm * 1e-3 * 7700.0 * poles / 2
+    assert estimate.status == "experimental"
+    assert "M400-50A grade limits" in estimate.status_reason
+    assert estimate.steel == PRIUS_PYLEECAN_STEEL
+    assert estimate.stator_iron_mass_kg == pytest.approx(mass)
+    assert estimate.iron_loss_W == pytest.approx(mass * M400_50A_LOSS.specific_loss_w_per_kg(frequency, 1.0))
+
+
+def test_teeth_and_yoke_are_split_only_when_the_stator_has_both():
+    nodes, triangles, _ = _grid_mesh()
+    count = len(triangles)
+    regions = ["stator_tooth"] * (count // 2) + ["stator_yoke"] * (count - count // 2)
+
+    def history(region_tags):
+        frames = [
+            _frame(nodes, triangles, [math.cos(2 * math.pi * k / 8)] * count, [0.0] * count, region_tags)
+            for k in range(8)
+        ]
+        return stator_flux_history([frame.stator_sample() for frame in frames])
+
+    split = harmonic_iron_loss(history(regions), electrical_frequency_hz=50.0, stack_length_m=STACK_M, machine_scale=1.0)
+    assert split.teeth_w + split.yoke_w == pytest.approx(split.total_w)
+    assert split.teeth_w > 0 and split.yoke_w > 0
+    # The Pyleecan Prius draws its whole stator as one yoke region.
+    whole = harmonic_iron_loss(history(["stator_yoke"] * count), electrical_frequency_hz=50.0, stack_length_m=STACK_M, machine_scale=1.0)
+    assert whole.total_w > 0
+    assert whole.teeth_w is None and whole.yoke_w is None
 
 
 def test_grade_limits_without_positive_hysteresis_are_rejected():

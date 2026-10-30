@@ -1436,7 +1436,13 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         </div>
         <NumberRow label="Turns / Coil" value={config.winding.turns_per_coil} min={1} step={1} disabled={disabled} onChange={set('winding', 'turns_per_coil', 'winding')} />
         <NumberRow label="Parallel Paths" value={config.winding.parallel_paths} min={1} step={1} disabled={disabled} onChange={set('winding', 'parallel_paths', 'winding')} />
-        <SelectRow
+        {config.geometry_reference && !wire ? (
+          // A pinned reference without its own wire uses its published conductor (backend/winding_resistance.py).
+          <div className="param-row public-param-row public-derived-row" title={windingResistanceRecord?.notes[0] ?? "The reference's published conductor."}>
+            <span className="param-label">Wire<small>published</small></span>
+            <strong>{windingResistanceRecord ? `${windingResistanceRecord.strands_in_hand} × ${windingResistanceRecord.strand_diameter_mm} mm` : '—'}</strong>
+          </div>
+        ) : <SelectRow
           label="Wire"
           value={wire ? 'specified' : 'derived'}
           choices={[{ value: 'derived', label: 'Derived from slot' }, { value: 'specified', label: 'Specified' }]}
@@ -1445,7 +1451,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
           onChange={(value) => setWire(value === 'specified'
             ? { wire_bare_diameter_mm: Number((windingResistanceRecord?.strand_diameter_mm ?? 1).toFixed(2)), strands_in_hand: 1 }
             : null)}
-        />
+        />}
         {wire && <>
           <NumberRow label="Wire Ø (bare)" value={wire.wire_bare_diameter_mm} unit="mm" min={0.06} max={10} step={0.01} disabled={disabled} onChange={(value) => setWire({ ...wire, wire_bare_diameter_mm: value })} />
           <NumberRow label="Strands in Hand" value={wire.strands_in_hand ?? 1} min={1} max={200} step={1} disabled={disabled} onChange={(value) => setWire({ ...wire, strands_in_hand: Math.max(1, Math.round(value)) })} />

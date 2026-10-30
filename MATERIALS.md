@@ -173,8 +173,9 @@ not provided by this import. Optional Elmer execution rejects custom steels.
 
 ## Core loss
 
-Stator iron loss is an experimental estimate for M350-50A. Per kilogram, each
-electrical harmonic h of an element's flux density contributes
+Stator iron loss is an experimental estimate for M350-50A, and for M400-50A in
+the pinned Pyleecan Prius, whose imported B-H curve is that grade. Per kilogram,
+each electrical harmonic h of an element's flux density contributes
 
 ```text
 p_h = kh · f_h · B_h^alpha + kc · f_h^2 · B_h^2
@@ -190,9 +191,20 @@ The coefficients come from published facts, not from a fitted loss table:
   50 Hz, 1.50 W/kg at 1.0 T and 3.50 W/kg at 1.5 T, exactly. Real sheet is
   usually below these limits, so the estimate reads high at 50 Hz.
 
-Excess loss is not modelled separately. Built the same way for M400-50A, the
-model stayed within a mean of ±8 % of a published loss table from 50 Hz to
-1 kHz, with a worst point near 22 %, and read about 24 % high at 2.5 kHz.
+The Pyleecan Prius's M400-50A is built the same way:
+
+- `kh` and `alpha` meet 1.70 W/kg at 1.0 T and 4.00 W/kg at 1.5 T, 50 Hz, the
+  DIN EN 10106 values in Waelzholz's grade table, which also gives the
+  7700 kg/m^3 density. The standard does not make the 1.0 T value obligatory.
+- `kc` uses d = 0.50 mm and rho_el = 33.4e-8 Ohm·m, the typical value in SIJ
+  Acroni's SIWATT M400-50A HP technical data sheet (SIWATT M400-50A HP-1/7-2024-EN).
+
+Excess loss is not modelled separately. Against the M400-50A loss table in
+Pyleecan's material library (`M400-50A.json` at Pyleecan `cbfe7be3`, whose
+50 Hz values match a Tata Steel typical-data sheet), the M400-50A model stays
+within a mean of ±8 % at each frequency from 50 Hz to 1 kHz above 0.5 T, with a
+worst point near 22 %, and reads about 24 % high at 2.5 kHz. coilEM does not
+ship that table.
 
 The estimate needs a loaded sweep over one full electrical cycle at a nonzero
 speed. It follows each stator element's flux-density waveform over the
