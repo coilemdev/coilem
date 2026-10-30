@@ -57,6 +57,7 @@ import {
 import { BldcTorqueCurrentChart } from './BldcTorqueCurrentChart';
 import { PublicRunComparison } from './PublicRunComparison';
 import { MotorConstants } from './MotorConstants';
+import { PerformancePanel } from './PerformancePanel';
 import { hasMotorConstants, motorConstantsView } from './machineConstants';
 import type { WireSpec } from './performance';
 import { readWindingResistance, windingReadout } from './windingResistance';
@@ -177,7 +178,7 @@ interface CoilEmWorkspaceProps {
   onSolvePlanChange: (solvePlan: PublicSolvePreset) => void;
   onCustomSweepChange: (stepDeg: number) => void;
   onSolveSettingChange: (
-    field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg',
+    field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W',
     value: MotorConfig['solve_params']['nonlinear_solver'] | MotorConfig['solve_params']['current_amplitude_convention'] | MotorConfig['solve_params']['excitation_mode'] | number,
   ) => void;
   onSolverChange: (solver: PublicSolverId) => void;
@@ -3673,6 +3674,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
           <NumberRow label={sixStepSelected ? 'Conducting phase current' : 'Phase Current'} value={config.solve_params.current_amplitude_A} unit={sixStepSelected ? 'A plateau' : `A ${config.solve_params.current_amplitude_convention}`} min={0} max={1000} step={0.5} disabled={busy !== null} onChange={(value) => onSolveSettingChange('current_amplitude_A', value)} />
           {sixStepSelected && <NumberRow label="Commutation advance" value={config.solve_params.commutation_advance_deg} unit="electrical degrees" min={-180} max={180} step={1} disabled={busy !== null} onChange={(value) => onSolveSettingChange('commutation_advance_deg', value)} />}
           <NumberRow label="Rated Speed" value={config.solve_params.rated_speed_rpm} unit="rpm" min={0} max={30000} step={50} disabled={busy !== null} onChange={(value) => onSolveSettingChange('rated_speed_rpm', value)} />
+          <NumberRow label="Mechanical loss" value={config.solve_params.mechanical_loss_W ?? 0} unit="W" min={0} max={100000} step={1} hint="Friction and windage at the rated speed, if known. It lowers the shaft power and efficiency; the solved torque is unchanged." disabled={busy !== null} onChange={(value) => onSolveSettingChange('mechanical_loss_W', value)} />
           <div className="public-derived-operating-point" aria-label="Derived operating point">
             <span>{formatNumber(electricalFrequencyHz, 0)} Hz electrical</span>
             <span>{sixStepSelected ? `${config.solve_params.commutation_advance_deg.toFixed(0)}° commutation advance` : `${config.solve_params.current_angle_deg.toFixed(0)}° current angle`}</span>
@@ -4042,7 +4044,7 @@ function ReportStage({
   onRerun: (savedRun: PublicSavedRun) => void;
 }) {
   const [reportMode, setReportMode] = useState<'single' | 'compare'>('single');
-  const [activePlot, setActivePlot] = useState<'torque' | 'back-emf' | 'field-map'>('torque');
+  const [activePlot, setActivePlot] = useState<'torque' | 'back-emf' | 'field-map' | 'performance'>('torque');
   const [backEmfView, setBackEmfView] = useState<'phase-neutral' | 'line-line'>('phase-neutral');
   const [exportState, setExportState] = useState<{
     action: string;
@@ -4219,7 +4221,9 @@ function ReportStage({
         <button type="button" role="tab" aria-selected={activePlot === 'torque'} className={activePlot === 'torque' ? 'active' : ''} onClick={() => setActivePlot('torque')}>Torque</button>
         <button type="button" role="tab" aria-selected={activePlot === 'back-emf'} className={activePlot === 'back-emf' ? 'active' : ''} onClick={() => setActivePlot('back-emf')}>Back EMF</button>
         {fieldPlot && <button type="button" role="tab" aria-selected={activePlot === 'field-map'} className={activePlot === 'field-map' ? 'active' : ''} onClick={() => setActivePlot('field-map')}>Field map</button>}
+        <button type="button" role="tab" aria-selected={activePlot === 'performance'} className={activePlot === 'performance' ? 'active' : ''} onClick={() => setActivePlot('performance')}>Torque–speed</button>
       </div>
+      {activePlot === 'performance' && <PerformancePanel config={config} result={result} designName={designName} />}
       {activePlot === 'torque' && sixStep && result.phase_current_waveform
         ? <><BldcTorqueCurrentChart angles={result.torque_waveform.electrical_angle_deg} torqueNm={result.torque_waveform.torque_Nm} phaseA={result.phase_current_waveform.phase_a_A} phaseB={result.phase_current_waveform.phase_b_A} phaseC={result.phase_current_waveform.phase_c_A} commutationAdvanceDeg={result.solve_metadata.commutation_advance_deg ?? config.solve_params.commutation_advance_deg} cycleComplete={completeLoadedCycle} /><IdealSixStepCommand /></>
         : activePlot === 'torque' && <WaveformChart angles={result.torque_waveform.electrical_angle_deg} values={result.torque_waveform.torque_Nm} label="Torque waveform" unit="N·m" />}

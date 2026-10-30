@@ -1,5 +1,6 @@
 import type { SolveResult } from './model';
 import type { CustomSteel } from './customSteel';
+import type { DrivePerformance, FluxLinkageMapPayload, MapSettings, PerformanceMapProgress, PerformanceMapStatus } from './performance';
 
 export function importPublicSteel(body: { name: string; source: string; csv_text: string; lamination_thickness_mm: number | null }): Promise<{ material: CustomSteel; warnings: string[] }> {
   return requestJson('/materials/import', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }) as Promise<{ material: CustomSteel; warnings: string[] }>;
@@ -263,6 +264,33 @@ export function streamPublicSolve(
   );
 }
 
+/** The design's stored flux-linkage map, if any, and the solves a new one needs (#139). */
+export function getPerformanceMapStatus(request: PublicSolveRequest, map: MapSettings): Promise<PerformanceMapStatus> {
+  return postConfig('/performance/map/status', { request, map } as PublicMotorConfig) as unknown as Promise<PerformanceMapStatus>;
+}
+
+/** Solve the map on the local solve lane; /solve/cancel stops it and finished points are kept. */
+export function streamPerformanceMap(
+  request: PublicSolveRequest,
+  map: MapSettings,
+  handlers: {
+    onProgress: (progress: PerformanceMapProgress) => void;
+    onComplete: (payload: FluxLinkageMapPayload) => void;
+    onError: (error: PublicApiError) => void;
+  },
+): AbortController {
+  return streamPublicRequest('/performance/map/stream', 'The local API returned no map stream.', { request, map } as PublicMotorConfig, {
+    onProgress: (progress) => handlers.onProgress(progress as unknown as PerformanceMapProgress),
+    onComplete: (payload) => handlers.onComplete(payload as unknown as FluxLinkageMapPayload),
+    onError: handlers.onError,
+  });
+}
+
+/** Torque–speed envelope and efficiency map from a finished map under the drive limits (#140, #141). */
+export function computeDrivePerformance(body: Record<string, unknown>): Promise<DrivePerformance> {
+  return postConfig('/performance/drive', body as PublicMotorConfig) as unknown as Promise<DrivePerformance>;
+}
+
 function streamPublicRequest(
   path: string,
   unavailableMessage: string,
@@ -294,9 +322,16 @@ function streamPublicRequest(
     const decoder = new TextDecoder();
     let buffer = '';
     let eventType = '';
+    let terminalEvent = false;
     while (true) {
       const { done, value } = await reader.read();
-      if (done) break;
+      if (done) {
+        if (!terminalEvent) handlers.onError({
+          error_code: 'STREAM_INTERRUPTED',
+          message: 'The local solve stream ended before completion. Finished map points are kept; retry to resume.',
+        });
+        break;
+      }
 
       buffer += decoder.decode(value, { stream: true });
       const lines = buffer.split('\n');
@@ -313,11 +348,14 @@ function streamPublicRequest(
           if (eventType === 'progress') {
             handlers.onProgress(payload as unknown as PublicSolveProgress);
           } else if (eventType === 'complete') {
+            terminalEvent = true;
             handlers.onComplete(payload);
           } else if (eventType === 'error') {
+            terminalEvent = true;
             handlers.onError(payload as unknown as PublicApiError);
           }
         } catch {
+          terminalEvent = true;
           handlers.onError({
             error_code: 'STREAM_PARSE_FAILED',
             message: 'The local solve stream returned invalid JSON.',

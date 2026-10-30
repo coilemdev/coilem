@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any, Literal, Protocol, cast, overload
 
 from backend import field_artifacts
+from backend.dq_flux_linkage import dq_flux_linkage_from_sweep
 from backend.field_lines import build_field_line_plot
 from backend.geometry_drawer import (
     compute_3phase_current_density_for_rotor_elec,
@@ -939,7 +940,16 @@ def _iron_loss_density(density: Any, field_line_plot: Any) -> IronLossDensity | 
     if spread is None:
         return None
     values, maximum = spread
-    return IronLossDensity(element_w_per_kg=values, max_w_per_kg=maximum)
+    parts = {
+        key: iron_loss_density_on_plot(density, field_line_plot.triangles, field_line_plot.regions, key=key)
+        for key in ("hysteresis_w_per_kg", "eddy_w_per_kg")
+    }
+    return IronLossDensity(
+        element_w_per_kg=values,
+        max_w_per_kg=maximum,
+        element_hysteresis_w_per_kg=parts["hysteresis_w_per_kg"][0] if parts["hysteresis_w_per_kg"] else None,
+        element_eddy_w_per_kg=parts["eddy_w_per_kg"][0] if parts["eddy_w_per_kg"] else None,
+    )
 
 
 def _frame_angle_deg(frame: Any) -> float:
@@ -2824,6 +2834,18 @@ class Magneto2DSolver(Solver):
         if summary_slot_excitation is None and slot_excitation_frames:
             summary_slot_excitation = [contribution.model_dump(mode="json") for contribution in slot_excitation_frames[0].contributions]
         winding_record, loss_breakdown = operating_point_losses(config, avg_torque_nm, iron_loss)
+        try:
+            dq_record = dq_flux_linkage_from_sweep(
+                sweep,
+                slot_excitation_frames,
+                pole_count=config.rotor.pole_count,
+                solved_torque_nm=avg_torque_nm,
+                commanded_current_angle_deg=(
+                    solve_params.current_angle_deg if solve_params.excitation_mode == "sinusoidal" else None
+                ),
+            )
+        except Exception:  # a diagnostic; never fail the solve over it
+            dq_record = None
         iron_loss_density = _iron_loss_density(iron_loss_density_raw, field_line_plot)
         efficiency = None
         weight_inertia = None
@@ -2967,6 +2989,7 @@ class Magneto2DSolver(Solver):
                 winding_resistance=winding_record,
                 efficiency_pct=efficiency,
                 loss_breakdown=loss_breakdown,
+                dq_flux_linkage=dq_record,
                 weight_inertia=weight_inertia,
                 torque_speed_envelope=torque_speed_envelope,
                 thermal_estimate=thermal_estimate,

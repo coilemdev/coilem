@@ -37,6 +37,9 @@ CurrentAngleConvention = Literal["q_axis_gamma_flux_weakening_positive"]
 DqTransform = Literal["amplitude_invariant_park"]
 # Every performance output is either checked against a reference or says it is not.
 OutputStatus = Literal["qualified", "experimental", "unavailable"]
+# How a drive picks the current for a torque below the limits: the smallest
+# current (MTPA, then field weakening and MTPV) or the least total loss.
+DriveControl = Literal["mtpa", "least_loss"]
 
 
 def dq_currents(current_peak_A: float, gamma_deg: float) -> tuple[float, float]:
@@ -78,6 +81,20 @@ class DqFluxLinkage(BaseModel):
     torque_agreement_pct: Optional[float] = Field(
         default=None,
         description="Solver average torque as a percentage of torque_dq_Nm; about 100 for any machine",
+    )
+    current_angle_deg: Optional[float] = Field(
+        default=None, description="Measured γ = atan2(−id, iq), from the currents the solve applied"
+    )
+    lambda_pm_Wb: Optional[float] = Field(default=None, ge=0, description="No-load (magnet) flux linkage amplitude")
+    apparent_L_d_H: Optional[float] = Field(default=None, description="(λd − λpm) / id at this point; None when id ≈ 0")
+    apparent_L_q_H: Optional[float] = Field(default=None, description="λq / iq at this point; None when iq ≈ 0")
+    positions: int = Field(default=0, ge=0, description="Loaded rotor positions averaged")
+    d_axis_source: Literal["no_load_flux_linkage", "applied_current_angle"] = Field(
+        default="no_load_flux_linkage",
+        description=(
+            "How the d-axis was placed: from the no-load flux linkage (an independent check of the current angle), "
+            "or from the applied currents and the commanded current angle when the run had no no-load sweep"
+        ),
     )
 
 
@@ -206,11 +223,19 @@ class IronLossDensity(BaseModel):
     mesh: Literal["field_line_plot"] = "field_line_plot"
     element_w_per_kg: list[Optional[float]] = Field(description="None outside the stator iron")
     max_w_per_kg: float = Field(ge=0)
+    element_hysteresis_w_per_kg: Optional[list[Optional[float]]] = Field(default=None, description="Hysteresis part of element_w_per_kg")
+    element_eddy_w_per_kg: Optional[list[Optional[float]]] = Field(default=None, description="Eddy-current part of element_w_per_kg")
 
     @model_validator(mode="after")
     def values_must_be_non_negative(self):
-        if any(value is not None and value < 0 for value in self.element_w_per_kg):
-            raise ValueError("element_w_per_kg values must be non-negative")
+        for name in ("element_w_per_kg", "element_hysteresis_w_per_kg", "element_eddy_w_per_kg"):
+            values = getattr(self, name)
+            if values is None:
+                continue
+            if any(value is not None and value < 0 for value in values):
+                raise ValueError(f"{name} values must be non-negative")
+            if len(values) != len(self.element_w_per_kg):
+                raise ValueError(f"{name} must have one value per element")
         return self
 
 
@@ -359,8 +384,15 @@ class EfficiencyMap(BaseModel):
     efficiency_pct: list[list[Optional[float]]]
     copper_loss_W: list[list[Optional[float]]]
     iron_loss_W: list[list[Optional[float]]]
+    phase_current_rms_A: Optional[list[list[Optional[float]]]] = Field(
+        default=None, description="The least-loss phase current at each point, rms"
+    )
+    current_angle_deg: Optional[list[list[Optional[float]]]] = Field(
+        default=None, description="Its current angle γ: 0° all q-axis, positive toward field weakening"
+    )
     mechanical_loss_W: float = Field(default=0.0, ge=0)
     winding_temperature_C: float = Field(ge=-50.0, le=250.0)
+    control: DriveControl = "mtpa"
     status: OutputStatus = "experimental"
     status_reason: Optional[str] = None
 
@@ -370,8 +402,10 @@ class EfficiencyMap(BaseModel):
             if any(later <= earlier for earlier, later in zip(axis, axis[1:])):
                 raise ValueError(f"{name} must be strictly increasing")
         rows, columns = len(self.torque_Nm), len(self.speed_rpm)
-        for name in ("efficiency_pct", "copper_loss_W", "iron_loss_W"):
+        for name in ("efficiency_pct", "copper_loss_W", "iron_loss_W", "phase_current_rms_A", "current_angle_deg"):
             matrix = getattr(self, name)
+            if matrix is None:
+                continue
             if len(matrix) != rows or any(len(row) != columns for row in matrix):
                 raise ValueError(f"{name} must have {rows} rows of {columns} values")
         for row in self.efficiency_pct:

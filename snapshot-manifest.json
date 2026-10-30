@@ -184,6 +184,16 @@
       "sha256": "792f6f66531abab3c10108f8f2809a9525520b7eeb69601b31252ecdf2fec161"
     },
     {
+      "path": "backend/dq_flux_linkage.py",
+      "bytes": 8785,
+      "sha256": "da7d91c6076191c28fba4a34e4ef60858bf38c3f2498105e784299bfb748a6f8"
+    },
+    {
+      "path": "backend/drive_performance.py",
+      "bytes": 22691,
+      "sha256": "f96ccca8274ffffe5440899a88d84bf00fb41125494cfca1b049d6a138964f21"
+    },
+    {
       "path": "backend/elmer/__init__.py",
       "bytes": 837,
       "sha256": "f0fd39fb911a0878c30cc907f91f27ffe17cb609ef77707e824b13cfb4100b4c"
@@ -257,6 +267,11 @@
       "path": "backend/field_lines.py",
       "bytes": 31236,
       "sha256": "3fbf0def71ecc1402b883b3692a07aac5083f30aeaac026747452ec257196a26"
+    },
+    {
+      "path": "backend/flux_linkage_map.py",
+      "bytes": 15202,
+      "sha256": "47efb5093e8814818c51d22e89de8f68f22ff54cca86f6dec8f22c796f516ef8"
     },
     {
       "path": "backend/geometry.py",
@@ -355,8 +370,8 @@
     },
     {
       "path": "backend/iron_loss.py",
-      "bytes": 18603,
-      "sha256": "24d3e9568803349281bfe5897d170b2484099a4c731fe920004663046466cfc4"
+      "bytes": 20493,
+      "sha256": "ee04ae42120472395028a18efb633469cf66fde2f01f9d4f51ee6debe9980496"
     },
     {
       "path": "backend/launcher.py",
@@ -380,8 +395,8 @@
     },
     {
       "path": "backend/loss_breakdown.py",
-      "bytes": 5593,
-      "sha256": "7511951037179aa1dadaeffd4b33c85e8e8ef08965094daf8670003371b42a06"
+      "bytes": 5699,
+      "sha256": "10bd3fe20c07307762eba4e1dd2d7c0d457b42efd9f50ffd84a593e35316162a"
     },
     {
       "path": "backend/machine_constants.py",
@@ -455,8 +470,8 @@
     },
     {
       "path": "backend/models/performance.py",
-      "bytes": 18276,
-      "sha256": "a9e3f5b0e476b69f58f11be269895f66aa77b0aee7cdbe633fdef1b3853b7f57"
+      "bytes": 20533,
+      "sha256": "7cb9b0a114e48970d8e6a26847fa28c453bfd9a89e158e7cc693288da3d4587f"
     },
     {
       "path": "backend/models/result.py",
@@ -495,8 +510,8 @@
     },
     {
       "path": "backend/public_main.py",
-      "bytes": 9785,
-      "sha256": "869b960f7e5b0282f0151a5d18e5ea7af519526672e09a5ea7d79e3f6e628aa0"
+      "bytes": 9980,
+      "sha256": "8cd2a27c742876da08f95e505f2940262992b0588ab2b4d7d35c39220694dfe9"
     },
     {
       "path": "backend/public_material_catalog.py",
@@ -510,8 +525,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 65679,
-      "sha256": "54ca2ed83e2018dd5759153fa5c399c19b73fb1e015f838f54737a67b1bdf1e8"
+      "bytes": 70366,
+      "sha256": "8028ee4fa27e856a14ba8dff050a5319f6592784c52567f1edb7b7449c904879"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -522,6 +537,11 @@
       "path": "backend/public_routes/halbach.py",
       "bytes": 20336,
       "sha256": "b5af7c81488e4dacd69e266641fb4f29574934fd9a50d933263f5073d886b352"
+    },
+    {
+      "path": "backend/public_routes/performance.py",
+      "bytes": 8381,
+      "sha256": "fb83d82074255701d18bffc1fee9219a09a42018b65b2660dc1d76997363a0f3"
     },
     {
       "path": "backend/public_routes/preview.py",
@@ -595,8 +615,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 148477,
-      "sha256": "7ffb3ab5dd5762197ecc34ad5298b04c20f66eafb72784bd017cacf34d720a93"
+      "bytes": 149516,
+      "sha256": "997db315ed8fcaba117e9d30441d21bb256962a871adad144b4ca0573004cd45"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -5490,8 +5510,8 @@
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
-      "bytes": 10419,
-      "sha256": "884e0ac399db75a0b24ddae940cd788c0ecbcd213426faf45e0f6ec2bc205d50"
+      "bytes": 11084,
+      "sha256": "766acbe2630e714b63b52adc99777d31cf39e02ee88909d4d8ff8ece3aecbcda"
     },
     {
       "path": "docs/RELEASE_0_4_0.md",
@@ -5865,8 +5885,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2397,
-      "sha256": "aa556da17a69ed6ed10acb9c0cfefc7d146301fe6c0fc6ff5f7afcad9f5d7dfc"
+      "bytes": 2472,
+      "sha256": "3df1efbcf3841f1c1f6a128932138c7969e8f6320e038fba4c41293133fff906"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -5919,9 +5939,14 @@
       "sha256": "452b6ed4d772a65c3367364fe1db07d6e35c241de09ef71a94c75dd6769cfbd9"
     },
     {
+      "path": "frontend/scripts/test-dq-view.mjs",
+      "bytes": 3319,
+      "sha256": "874daf9df1d60ef9139bbe9dbe243053d7532fd0c1bd0a1100e9c8e607da5c8b"
+    },
+    {
       "path": "frontend/scripts/test-field-axes.mjs",
-      "bytes": 6115,
-      "sha256": "2259c0bf1a6566428674fd7e2340753e99fa00044cee49e5cb01522d9a447319"
+      "bytes": 7213,
+      "sha256": "5c0aba2e4f5f84c03d92e9ea071bdba8dd04e1293023049b352f797818c11276"
     },
     {
       "path": "frontend/scripts/test-field-legend-fit.mjs",
@@ -5960,8 +5985,8 @@
     },
     {
       "path": "frontend/scripts/test-losses-view.mjs",
-      "bytes": 3968,
-      "sha256": "71f923422d8676cf3178b2f6944b63104c015b6fa903efa2674b73d19f900d7c"
+      "bytes": 4907,
+      "sha256": "dde4e9626da0140451e38ee5872c97b531ab1814761b6362eaec03418a3712c0"
     },
     {
       "path": "frontend/scripts/test-magnet-coverage.mjs",
@@ -5977,6 +6002,11 @@
       "path": "frontend/scripts/test-motor-constants.mjs",
       "bytes": 4204,
       "sha256": "f85457080dd26d1c90dc9a4084ab0bb533db3ff7aa5ae129dca8133ff5b08cd2"
+    },
+    {
+      "path": "frontend/scripts/test-performance-view.mjs",
+      "bytes": 6603,
+      "sha256": "858c7755fa06d754ea07873f11d27562a0787aa38c2fadadcf6ec12af76444c9"
     },
     {
       "path": "frontend/scripts/test-phase-drive.mjs",
@@ -6005,8 +6035,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 158387,
-      "sha256": "4adeeb69fc52043cc92fc1549e16e8953003881846bc1153076a0b1a97840914"
+      "bytes": 158924,
+      "sha256": "c3af77a3b783efac82d8a6162ca596a679935267fa2c0a08d5cd6274e81030ba"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6415,8 +6445,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 72254,
-      "sha256": "0b22bbec28293a86176b3226c530a68183d41c3fe0473a2e9e6a3c55a861f18c"
+      "bytes": 71991,
+      "sha256": "05d1f6d01576e69d3a485f37ecd3f75a6719c756ecd55bcd2a88b15c1c9ba92c"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -6425,8 +6455,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 226985,
-      "sha256": "7d1618650c72cfb75e1c4ab1003e981864c15dd7e31703cd1cc9dbb98cdf3831"
+      "bytes": 227773,
+      "sha256": "2fb9f1a9e9b5186bb587ea2f61f2b9f5a30ea95a27c5d3996d2a4d8c30aaa398"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -6434,9 +6464,14 @@
       "sha256": "eeda67dc260b2b9cf81b079c4c54b23a5a37abf51b241236d5b35228c1126572"
     },
     {
+      "path": "frontend/src/public/DqCard.tsx",
+      "bytes": 2634,
+      "sha256": "f6dafea074274063a03854ac148714cf1c50564b1143ae50a0133a5c980f0404"
+    },
+    {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 56545,
-      "sha256": "6d35e09fff36f1dc32f1a4610bee30a556feb2421a8eae0aa483ee6fa4d93636"
+      "bytes": 57951,
+      "sha256": "f9468769b170e5df043aa199eab2f65c8f306efbf9061a5f5ba9a59b83684c5d"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -6445,8 +6480,8 @@
     },
     {
       "path": "frontend/src/public/LossesCard.tsx",
-      "bytes": 9055,
-      "sha256": "31670bdb7f1062de27120d81d5578504fed263e19ebbfb4551464e0835254076"
+      "bytes": 19391,
+      "sha256": "dbce3855d40638d49d705f6b9528d74c7730bb524455db8e6f4902f71509fd4a"
     },
     {
       "path": "frontend/src/public/MaterialWorkspace.tsx",
@@ -6460,8 +6495,13 @@
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
-      "bytes": 3102,
-      "sha256": "edb83771dbfb8c0ff1270dc3eab4c64b34782dc6f5d30785b355b2c84160af95"
+      "bytes": 3774,
+      "sha256": "0a2197f9f073435d775d9571a65c3345811f7a31806e9b88e0cebae82c741a7a"
+    },
+    {
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "bytes": 34222,
+      "sha256": "eacb353e40d8196c09b62ffa22ed42a560613abe197455c10ca2029cd8455060"
     },
     {
       "path": "frontend/src/public/PublicLanding.tsx",
@@ -6485,8 +6525,8 @@
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
-      "bytes": 8452,
-      "sha256": "0f84800466c3e6a5de073c98f3d36a7e960e7be64a52901cdc6db8c9724cc33e"
+      "bytes": 8779,
+      "sha256": "f352c2fc0739c8179844d5eaad1a000e426141733a4c9c2a0ba08ec4e57e27cb"
     },
     {
       "path": "frontend/src/public/RpmField.tsx",
@@ -6495,8 +6535,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 54956,
-      "sha256": "3adf052069e3928915f0d4e2248f0cd917b041c061511817a4bb9d4b4f09e94e"
+      "bytes": 55218,
+      "sha256": "6997f4ae660f17bfdcbd526b85328ffb8cefe3405531726e18ba221950283124"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -6520,8 +6560,8 @@
     },
     {
       "path": "frontend/src/public/api.ts",
-      "bytes": 10806,
-      "sha256": "be803acc6a3dc388c78fa8a9a46f7aedd10a40ceafb47e9f7ced8e5229e05d08"
+      "bytes": 12741,
+      "sha256": "049cdfe5eb16bd170a9f243020f760b0d77124c2c9906bbd18843dfac6fb54a0"
     },
     {
       "path": "frontend/src/public/backendMonitor.ts",
@@ -6579,6 +6619,11 @@
       "sha256": "e5d90d547e15be58f8bdd6653960aa3696f4a5ab4421430cfdb40b64aa06c536"
     },
     {
+      "path": "frontend/src/public/dqView.ts",
+      "bytes": 7090,
+      "sha256": "ea85a23ba12eacf951f7969af051d975bdb399398c40395d4d566cb5bbdc423b"
+    },
+    {
       "path": "frontend/src/public/exampleDesigns.ts",
       "bytes": 4016,
       "sha256": "ddf4fbcb0edfa38a1a1b3fea6d119e946b5001f891392b3a6f914cb518314313"
@@ -6630,8 +6675,8 @@
     },
     {
       "path": "frontend/src/public/fieldAxes.ts",
-      "bytes": 4269,
-      "sha256": "5c19b3c9a6eeb7c6f03eace3eff325e0c75630f12907d3fab22db72a73ee27ab"
+      "bytes": 5464,
+      "sha256": "33d527cc92859c69b8bb46ae0c50de6f0974b04c6bcdc2e19e73144cf9007d3e"
     },
     {
       "path": "frontend/src/public/fieldLegendFit.ts",
@@ -6755,13 +6800,13 @@
     },
     {
       "path": "frontend/src/public/lossesView.ts",
-      "bytes": 6863,
-      "sha256": "4d089d84f5f5c583eb89cfc923935a9f45be3656a497c8f5d2bb8f4a18c64831"
+      "bytes": 8475,
+      "sha256": "6d36c2d4321c70501b1ca6f1d0b4c586cb19e1f5aff9b355c5bbe12c7d53a312"
     },
     {
       "path": "frontend/src/public/machineConstants.ts",
-      "bytes": 4143,
-      "sha256": "cf05c7bac517df048ac1410c8ee498b1d95e27c1d70fb8bc7f6b5981909f373b"
+      "bytes": 4300,
+      "sha256": "5df6b38f5830158266bfe159a5e612161eff5a2f615d855851f475a4ecd26f1b"
     },
     {
       "path": "frontend/src/public/magnetCoverage.ts",
@@ -6777,6 +6822,11 @@
       "path": "frontend/src/public/main.tsx",
       "bytes": 425,
       "sha256": "f512ccf4db09afe8b87248f7d6c93482455db7de499e369e449e9a5998140984"
+    },
+    {
+      "path": "frontend/src/public/mapJob.ts",
+      "bytes": 2896,
+      "sha256": "e8bd2e48547eb34d91671383bb400ed5e4d1e2bd29f6da9167b3b68aaf8bf58f"
     },
     {
       "path": "frontend/src/public/meshQuality.ts",
@@ -6810,8 +6860,13 @@
     },
     {
       "path": "frontend/src/public/performance.ts",
-      "bytes": 5359,
-      "sha256": "890e64a8f7033342db3d5c14ed88c45940a456a618918fcf611fd78573f93513"
+      "bytes": 7304,
+      "sha256": "a70a9bbef72a115157d7e851f3affed2e20be911669b1155ef3aa5bac616d337"
+    },
+    {
+      "path": "frontend/src/public/performanceView.ts",
+      "bytes": 12036,
+      "sha256": "2a81dabb4e01d75e91816807d87604e5eb9e4bba7b89c342fbc21ca12199cfe0"
     },
     {
       "path": "frontend/src/public/phaseDrive.ts",
@@ -6822,6 +6877,11 @@
       "path": "frontend/src/public/previewContours.ts",
       "bytes": 942,
       "sha256": "74faf4b483e3a1bd000272707fab8ca5deae0b875cafe6095b9a02c39e793e67"
+    },
+    {
+      "path": "frontend/src/public/publicRequest.ts",
+      "bytes": 631,
+      "sha256": "0ea05929993a5cdd38a981bd45d7684d97bf01c6aa6579d29e06cfec88f51caf"
     },
     {
       "path": "frontend/src/public/pyleecanReferenceNotice.ts",
@@ -6850,8 +6910,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 266871,
-      "sha256": "38e51a26d8b94398fa677258262b0a0bd409822cc18a8ff9dfe89c29eaf447c9"
+      "bytes": 275125,
+      "sha256": "84abbf45f906f01e9a9e5e93b5b3fc40081ca98a59dd453289fb933dfdbb374b"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7314,6 +7374,16 @@
       "sha256": "9dcc422aa11c0472f9a4363779e79d75649fe21e70a9c2320ebbc9f9bd73defa"
     },
     {
+      "path": "tests/test_dq_flux_linkage.py",
+      "bytes": 5265,
+      "sha256": "3c71d270f9899a4caac3c844379aded8b31dbd535a90f28aafd8835d31f8d699"
+    },
+    {
+      "path": "tests/test_drive_performance.py",
+      "bytes": 11735,
+      "sha256": "162e9f7b545187ba5b11ea8556aae2dbce50edc759e5c3242c56568508c8c7aa"
+    },
+    {
       "path": "tests/test_experimental_holem50.py",
       "bytes": 9336,
       "sha256": "b4ba26815af6db48f8ddf34ddfaea27cc0c906e4ad595ec57909471e24fc8c14"
@@ -7337,6 +7407,11 @@
       "path": "tests/test_field_lines_numpy.py",
       "bytes": 9313,
       "sha256": "e2bfbb122cd018e381e1557d6cde58e99f04466af4df8cd8defa962899ea5637"
+    },
+    {
+      "path": "tests/test_flux_linkage_map.py",
+      "bytes": 8521,
+      "sha256": "b9cda540bd26f31ab1578629cbbe23d6531cb4514d09ac7330b11fbf7fbf25d5"
     },
     {
       "path": "tests/test_gmsh_sigpipe.py",
@@ -7380,8 +7455,8 @@
     },
     {
       "path": "tests/test_iron_loss.py",
-      "bytes": 11108,
-      "sha256": "22f28610186e80223c75c929322a7d6159ff8780e9e6b0cefd5b5f0650ede205"
+      "bytes": 12503,
+      "sha256": "7ae1461f24b1780be55ab91a3c746c18c4870f79e21daa8ff1a5ee0f541532cf"
     },
     {
       "path": "tests/test_late_reference_comparison.py",
@@ -7425,8 +7500,8 @@
     },
     {
       "path": "tests/test_loss_breakdown.py",
-      "bytes": 6920,
-      "sha256": "494268bb62147cc5b1ec17db84fbd25d1f024230c91ef7a33f42a899093420f0"
+      "bytes": 8156,
+      "sha256": "da04016e03c59eafa69b665ad128f81d8a69be4bd5955da05d6226aa3abb90a7"
     },
     {
       "path": "tests/test_magneto2d_cli_precision.py",
@@ -7472,6 +7547,11 @@
       "path": "tests/test_performance_contracts.py",
       "bytes": 11533,
       "sha256": "cbfe876be77f1e3a2fea64e25cffb528f1179fce3101a1f0c3143870c30cb2aa"
+    },
+    {
+      "path": "tests/test_performance_routes.py",
+      "bytes": 4305,
+      "sha256": "a2ec62732ee7983effbcd6e28e84932260490ea8ab64719b569a00eca305b631"
     },
     {
       "path": "tests/test_postsolve_pipeline.py",
@@ -15712,6 +15792,1542 @@
       "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
       "path": "tests/test_windows_field_frame_pool.py",
       "source_sha256": "caedc891aa678952edd9afd41b58c2bd9891d7bee8b5315f821faeb88a20cb73",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "backend/models/performance.py",
+      "source_sha256": "a9e3f5b0e476b69f58f11be269895f66aa77b0aee7cdbe633fdef1b3853b7f57",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "backend/public_main.py",
+      "source_sha256": "869b960f7e5b0282f0151a5d18e5ea7af519526672e09a5ea7d79e3f6e628aa0",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "backend/public_report.py",
+      "source_sha256": "54ca2ed83e2018dd5759153fa5c399c19b73fb1e015f838f54737a67b1bdf1e8",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "7ffb3ab5dd5762197ecc34ad5298b04c20f66eafb72784bd017cacf34d720a93",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "source_sha256": "884e0ac399db75a0b24ddae940cd788c0ecbcd213426faf45e0f6ec2bc205d50",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/package.json",
+      "source_sha256": "657d0f7957347d0d4608bf490cfe81d4b7aa5e8ade49ceb5fdc1fb8d6e4451fb",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "4adeeb69fc52043cc92fc1549e16e8953003881846bc1153076a0b1a97840914",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "0b22bbec28293a86176b3226c530a68183d41c3fe0473a2e9e6a3c55a861f18c",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "7d1618650c72cfb75e1c4ab1003e981864c15dd7e31703cd1cc9dbb98cdf3831",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/LossesCard.tsx",
+      "source_sha256": "31670bdb7f1062de27120d81d5578504fed263e19ebbfb4551464e0835254076",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/MotorConstants.tsx",
+      "source_sha256": "edb83771dbfb8c0ff1270dc3eab4c64b34782dc6f5d30785b355b2c84160af95",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "0f84800466c3e6a5de073c98f3d36a7e960e7be64a52901cdc6db8c9724cc33e",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "be803acc6a3dc388c78fa8a9a46f7aedd10a40ceafb47e9f7ced8e5229e05d08",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/lossesView.ts",
+      "source_sha256": "4d089d84f5f5c583eb89cfc923935a9f45be3656a497c8f5d2bb8f4a18c64831",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/machineConstants.ts",
+      "source_sha256": "cf05c7bac517df048ac1410c8ee498b1d95e27c1d70fb8bc7f6b5981909f373b",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "890e64a8f7033342db3d5c14ed88c45940a456a618918fcf611fd78573f93513",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "38e51a26d8b94398fa677258262b0a0bd409822cc18a8ff9dfe89c29eaf447c9",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": "494268bb62147cc5b1ec17db84fbd25d1f024230c91ef7a33f42a899093420f0",
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "backend/dq_flux_linkage.py",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "backend/drive_performance.py",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "backend/flux_linkage_map.py",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/scripts/test-dq-view.mjs",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/scripts/test-performance-view.mjs",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/DqCard.tsx",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/dqView.ts",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/performanceView.ts",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "frontend/src/public/publicRequest.ts",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "tests/test_dq_flux_linkage.py",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "tests/test_drive_performance.py",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "tests/test_flux_linkage_map.py",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "f59ce4846efdfbe1129ff9fee7a0f51c6c9b4fb5",
+      "path": "tests/test_performance_routes.py",
+      "source_sha256": null,
+      "reason": "0.5.0 performance: loaded d/q flux linkage (#113), flux-linkage map (#139), torque-speed envelope and efficiency map (#140, #141), Results performance view (#142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "backend/drive_performance.py",
+      "source_sha256": "911ae115535db97c93af89f9fba8e23fc1325d93783b417a18752ccd17c74a65",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "backend/iron_loss.py",
+      "source_sha256": "24d3e9568803349281bfe5897d170b2484099a4c731fe920004663046466cfc4",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "backend/loss_breakdown.py",
+      "source_sha256": "7511951037179aa1dadaeffd4b33c85e8e8ef08965094daf8670003371b42a06",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "backend/models/performance.py",
+      "source_sha256": "3895139707a4215b33d3cd89ba8236471da41e9d589bb2e31177405d252a538b",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "backend/public_report.py",
+      "source_sha256": "5bc9a96592d180c68ca910952b0b166d583e43931d175529f4f84e59d5e11a08",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "e02adf3fcf381252381ed481c92473f824c3e2a986357bd229db6cf2e1124c03",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "frontend/scripts/test-losses-view.mjs",
+      "source_sha256": "71f923422d8676cf3178b2f6944b63104c015b6fa903efa2674b73d19f900d7c",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "frontend/src/public/LossesCard.tsx",
+      "source_sha256": "80b036621eb35048de28c52f42d7a1a44e26716791c4a178ee95bc048123e3d2",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "b6179424e1d5f4c9e184f72156155ba90473e07d491cc600419d8b25af6587af",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "frontend/src/public/lossesView.ts",
+      "source_sha256": "aa22681a871e99a188ce02b3a3f2d0d13a23ed8f320c8053138d303f396d1d01",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "05c2a16e2f38bc70e03fa5ea9f51c085ead18426ff5fae81da2e1e10fa0e426b",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "frontend/src/public/performanceView.ts",
+      "source_sha256": "6816dbf9892f72f3114f77fc974ada2df790f634ad2bc257c5f2865384295dc5",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "da89c621568a988d019eb815d85017bd12a0c080bc2bf3dd589c48f6696760be",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "tests/test_iron_loss.py",
+      "source_sha256": "22f28610186e80223c75c929322a7d6159ff8780e9e6b0cefd5b5f0650ede205",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "8a3a2d2fca618c9be829f668643729f35ecf2848",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": "3daf7331450104c6fa66bdc5b659e8bf0b8ebf57e725630ea1c83a68f26d4a0e",
+      "reason": "Loss colours: copper and steel families, iron-loss map with a loss selector and zoom (#138, #142)"
+    },
+    {
+      "base_commit": "d89784b3255cbea9484af85d4e26055e1d403279",
+      "path": "backend/flux_linkage_map.py",
+      "source_sha256": "37efca7666e468a6e36ec8a329eae1266f16c617899808c35e5370b6ae8c4b07",
+      "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
+    },
+    {
+      "base_commit": "d89784b3255cbea9484af85d4e26055e1d403279",
+      "path": "backend/iron_loss.py",
+      "source_sha256": "b74b9e84cccd0fb47ef7954d7e6eff253eb8a89502552e2c18268cff367e2efc",
+      "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
+    },
+    {
+      "base_commit": "d89784b3255cbea9484af85d4e26055e1d403279",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": "ffe0abf51dc77f81720222f78799372b3c77492221a0ae178b3b14dc744baea3",
+      "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
+    },
+    {
+      "base_commit": "d89784b3255cbea9484af85d4e26055e1d403279",
+      "path": "frontend/scripts/test-performance-view.mjs",
+      "source_sha256": "88c4f1ceceeb80f690c3af9293d610922f1c461fc637cc2b5834f1838ce24d99",
+      "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
+    },
+    {
+      "base_commit": "d89784b3255cbea9484af85d4e26055e1d403279",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "a05f9e71dac8f45a5e01c6307614b00717192ba903bc531b1cd1e93a353377a8",
+      "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
+    },
+    {
+      "base_commit": "d89784b3255cbea9484af85d4e26055e1d403279",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "7b339698a423fd4aa731f85cf79c9e686b22ba9cb0b4ceb4568c03be5911f544",
+      "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
+    },
+    {
+      "base_commit": "d89784b3255cbea9484af85d4e26055e1d403279",
+      "path": "frontend/src/public/performanceView.ts",
+      "source_sha256": "ae9da13baaf5a0a2452aa3c368dc5352b49e67442c0c0f608fc906d6cff5d69a",
+      "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
+    },
+    {
+      "base_commit": "d89784b3255cbea9484af85d4e26055e1d403279",
+      "path": "tests/test_flux_linkage_map.py",
+      "source_sha256": "756d1207f166edf733918669e43435eb0e616be0c2cc37c4c2a92f0c13f22340",
+      "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
+    },
+    {
+      "base_commit": "d89784b3255cbea9484af85d4e26055e1d403279",
+      "path": "tests/test_iron_loss.py",
+      "source_sha256": "3279b48c04466d5b6e0f584d37fd7cd06d43d2674cee3b17050835d99258cd29",
+      "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
+    },
+    {
+      "base_commit": "d89784b3255cbea9484af85d4e26055e1d403279",
+      "path": "tests/test_performance_routes.py",
+      "source_sha256": "317b0bdde9333ad5a6185270fe9dcbe8116aa7184c37af2ece9aaaeaa527c236",
+      "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
+    },
+    {
+      "base_commit": "d89784b3255cbea9484af85d4e26055e1d403279",
+      "path": "frontend/src/public/mapJob.ts",
+      "source_sha256": null,
+      "reason": "Half-cycle map sweeps, map reuse across peaks, map runs that survive tab switches (#139, #142)"
+    },
+    {
+      "base_commit": "f338b33210851ec4da17bd4baa325d1a078ab2b8",
+      "path": "backend/drive_performance.py",
+      "source_sha256": "8f86435639cfb22088169e438205df59ccd9d167aab4b73ec213af697d414d78",
+      "reason": "Drive inputs in the Solve page's current units, solved-point markers, current at each map point (#140-#142)"
+    },
+    {
+      "base_commit": "f338b33210851ec4da17bd4baa325d1a078ab2b8",
+      "path": "backend/models/performance.py",
+      "source_sha256": "417870e6001d333b070b333dd83dd4ce11aff8b0eb9d5cc163a68062123c3a8f",
+      "reason": "Drive inputs in the Solve page's current units, solved-point markers, current at each map point (#140-#142)"
+    },
+    {
+      "base_commit": "f338b33210851ec4da17bd4baa325d1a078ab2b8",
+      "path": "frontend/scripts/test-performance-view.mjs",
+      "source_sha256": "1754d156c530287370b1359432c6cdf49e2efc4df5e246a306d5129067527025",
+      "reason": "Drive inputs in the Solve page's current units, solved-point markers, current at each map point (#140-#142)"
+    },
+    {
+      "base_commit": "f338b33210851ec4da17bd4baa325d1a078ab2b8",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "a405df1e4605b27e63c1ac917280271b0f183035c122cb6ad94b0bca4a1613c1",
+      "reason": "Drive inputs in the Solve page's current units, solved-point markers, current at each map point (#140-#142)"
+    },
+    {
+      "base_commit": "f338b33210851ec4da17bd4baa325d1a078ab2b8",
+      "path": "frontend/src/public/mapJob.ts",
+      "source_sha256": "eed8068dd2aaa4233b2fa80fc56976a9874300225437881c44ff6ea270b99dc2",
+      "reason": "Drive inputs in the Solve page's current units, solved-point markers, current at each map point (#140-#142)"
+    },
+    {
+      "base_commit": "f338b33210851ec4da17bd4baa325d1a078ab2b8",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "328b4834a8a5d0839dcbf197431ceb5c7972c10c1386980fa00aa2f0ffb92a9c",
+      "reason": "Drive inputs in the Solve page's current units, solved-point markers, current at each map point (#140-#142)"
+    },
+    {
+      "base_commit": "f338b33210851ec4da17bd4baa325d1a078ab2b8",
+      "path": "frontend/src/public/performanceView.ts",
+      "source_sha256": "96940196fa7b1d18746f2a998ad528becfe8e33aaa1d2754e138b5c482bb4348",
+      "reason": "Drive inputs in the Solve page's current units, solved-point markers, current at each map point (#140-#142)"
+    },
+    {
+      "base_commit": "f338b33210851ec4da17bd4baa325d1a078ab2b8",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "e004bdd505c08514825a8fbfe51b14ec064b9f80b805c3607933fa7174264d49",
+      "reason": "Drive inputs in the Solve page's current units, solved-point markers, current at each map point (#140-#142)"
+    },
+    {
+      "base_commit": "f338b33210851ec4da17bd4baa325d1a078ab2b8",
+      "path": "tests/test_drive_performance.py",
+      "source_sha256": "a4cf615115e4fe6e98b1aedcb1f8a7f57ac27b65ceba5d594ac1ca0466530d72",
+      "reason": "Drive inputs in the Solve page's current units, solved-point markers, current at each map point (#140-#142)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "backend/drive_performance.py",
+      "source_sha256": "8acd4f94e0453c78e0b0399731febdbc630e2358dd1d02fa45b95211ea462cc5",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "backend/models/performance.py",
+      "source_sha256": "13cb34039356f1e66534d6b514193b6271df9e2028a9930a13c73fb56cf23fb5",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "backend/public_report.py",
+      "source_sha256": "eee2f2ccb5a9a2ea4c674bd49adf2806d3eec0ef41a8bb4533584e4015663e3e",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": "0561478fa08f4cd4fec53df07dfed278aeb0c91ad75100409fd366d50efdb5e9",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "frontend/scripts/test-dq-view.mjs",
+      "source_sha256": "8d8a6e03c7316822b765789e15acdb43c7af03455448265ad662493e5d771465",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "frontend/src/public/DqCard.tsx",
+      "source_sha256": "b5c4a8fcf154ff4a9b64d7c99057aaa81f7d2d711390524c261c37196100374b",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "c5216dbb7082f9149f05250bf83068e082b1de397578fbd4931274a734c54527",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "00f80c741b6761cdad1fb18a04ddd591cf75315fa27abbec0e503bb1bf5c97a9",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "frontend/src/public/dqView.ts",
+      "source_sha256": "73e06adbec8967d61ec2a0dd03704a966aaac9c9a87f24df2d61898e7c56993a",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "frontend/src/public/mapJob.ts",
+      "source_sha256": "3f14eee62f094adfd725ee98bb4d6ad058f04ecbe4c2f3385e39fe5721ca8abf",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "8dd57a01d2607a5a6106bf2a93be419113fd369b03a2cce364f26314bd8df70e",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "0673250dd413d68aa3082d54df8bdbd34861c89e0a86c475f677803711f53e46",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "tests/test_drive_performance.py",
+      "source_sha256": "b928e06e092784298001448da70a13c5ad16dc8d5ef14cff4976af0560711a86",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "695296006a7ba6648eeef963011b32b0d8063e23",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": "8761bd820b989f685a4091021165fd80e519df29bc85ead0ed628d01b70d1c96",
+      "reason": "MTPA and least-loss drive control for the efficiency map; d/q card main values (#113, #141)"
+    },
+    {
+      "base_commit": "10e6a8596f40ff914a0fa9bc236152ac8e556558",
+      "path": "frontend/scripts/test-field-axes.mjs",
+      "source_sha256": "2259c0bf1a6566428674fd7e2340753e99fa00044cee49e5cb01522d9a447319",
+      "reason": "Label the d and q axes in the Stator + PM field view (#113)"
+    },
+    {
+      "base_commit": "10e6a8596f40ff914a0fa9bc236152ac8e556558",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "127babdf314c48a8384e5995456dbfb09f17ddb39be504f0c6a1709ac29535e0",
+      "reason": "Label the d and q axes in the Stator + PM field view (#113)"
+    },
+    {
+      "base_commit": "10e6a8596f40ff914a0fa9bc236152ac8e556558",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "6d35e09fff36f1dc32f1a4610bee30a556feb2421a8eae0aa483ee6fa4d93636",
+      "reason": "Label the d and q axes in the Stator + PM field view (#113)"
+    },
+    {
+      "base_commit": "10e6a8596f40ff914a0fa9bc236152ac8e556558",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "3adf052069e3928915f0d4e2248f0cd917b041c061511817a4bb9d4b4f09e94e",
+      "reason": "Label the d and q axes in the Stator + PM field view (#113)"
+    },
+    {
+      "base_commit": "10e6a8596f40ff914a0fa9bc236152ac8e556558",
+      "path": "frontend/src/public/fieldAxes.ts",
+      "source_sha256": "5c19b3c9a6eeb7c6f03eace3eff325e0c75630f12907d3fab22db72a73ee27ab",
+      "reason": "Label the d and q axes in the Stator + PM field view (#113)"
+    },
+    {
+      "base_commit": "10e6a8596f40ff914a0fa9bc236152ac8e556558",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "cf9556f070a5c470082cf5c7c73b0ae00aef16492b020aad493f9209ca25fc17",
+      "reason": "Label the d and q axes in the Stator + PM field view (#113)"
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "backend/dq_flux_linkage.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "backend/drive_performance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "backend/flux_linkage_map.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "backend/iron_loss.py",
+      "source_sha256": "24d3e9568803349281bfe5897d170b2484099a4c731fe920004663046466cfc4",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "backend/loss_breakdown.py",
+      "source_sha256": "7511951037179aa1dadaeffd4b33c85e8e8ef08965094daf8670003371b42a06",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "backend/models/performance.py",
+      "source_sha256": "a9e3f5b0e476b69f58f11be269895f66aa77b0aee7cdbe633fdef1b3853b7f57",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "backend/public_main.py",
+      "source_sha256": "869b960f7e5b0282f0151a5d18e5ea7af519526672e09a5ea7d79e3f6e628aa0",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "backend/public_report.py",
+      "source_sha256": "54ca2ed83e2018dd5759153fa5c399c19b73fb1e015f838f54737a67b1bdf1e8",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "7ffb3ab5dd5762197ecc34ad5298b04c20f66eafb72784bd017cacf34d720a93",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "source_sha256": "884e0ac399db75a0b24ddae940cd788c0ecbcd213426faf45e0f6ec2bc205d50",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/package.json",
+      "source_sha256": "aa556da17a69ed6ed10acb9c0cfefc7d146301fe6c0fc6ff5f7afcad9f5d7dfc",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/scripts/test-dq-view.mjs",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/scripts/test-field-axes.mjs",
+      "source_sha256": "2259c0bf1a6566428674fd7e2340753e99fa00044cee49e5cb01522d9a447319",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/scripts/test-losses-view.mjs",
+      "source_sha256": "71f923422d8676cf3178b2f6944b63104c015b6fa903efa2674b73d19f900d7c",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/scripts/test-performance-view.mjs",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "4adeeb69fc52043cc92fc1549e16e8953003881846bc1153076a0b1a97840914",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "0b22bbec28293a86176b3226c530a68183d41c3fe0473a2e9e6a3c55a861f18c",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "7d1618650c72cfb75e1c4ab1003e981864c15dd7e31703cd1cc9dbb98cdf3831",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/src/public/DqCard.tsx",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "6d35e09fff36f1dc32f1a4610bee30a556feb2421a8eae0aa483ee6fa4d93636",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/src/public/LossesCard.tsx",
+      "source_sha256": "31670bdb7f1062de27120d81d5578504fed263e19ebbfb4551464e0835254076",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/src/public/MotorConstants.tsx",
+      "source_sha256": "edb83771dbfb8c0ff1270dc3eab4c64b34782dc6f5d30785b355b2c84160af95",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "0f84800466c3e6a5de073c98f3d36a7e960e7be64a52901cdc6db8c9724cc33e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "3adf052069e3928915f0d4e2248f0cd917b041c061511817a4bb9d4b4f09e94e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "be803acc6a3dc388c78fa8a9a46f7aedd10a40ceafb47e9f7ced8e5229e05d08",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/src/public/dqView.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/src/public/fieldAxes.ts",
+      "source_sha256": "5c19b3c9a6eeb7c6f03eace3eff325e0c75630f12907d3fab22db72a73ee27ab",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/src/public/lossesView.ts",
+      "source_sha256": "4d089d84f5f5c583eb89cfc923935a9f45be3656a497c8f5d2bb8f4a18c64831",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/src/public/machineConstants.ts",
+      "source_sha256": "cf05c7bac517df048ac1410c8ee498b1d95e27c1d70fb8bc7f6b5981909f373b",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/src/public/mapJob.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "890e64a8f7033342db3d5c14ed88c45940a456a618918fcf611fd78573f93513",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/src/public/performanceView.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/src/public/publicRequest.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "38e51a26d8b94398fa677258262b0a0bd409822cc18a8ff9dfe89c29eaf447c9",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "tests/test_dq_flux_linkage.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "tests/test_drive_performance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "tests/test_flux_linkage_map.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "tests/test_iron_loss.py",
+      "source_sha256": "22f28610186e80223c75c929322a7d6159ff8780e9e6b0cefd5b5f0650ede205",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": "494268bb62147cc5b1ec17db84fbd25d1f024230c91ef7a33f42a899093420f0",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b03a0dade4d185154de781ff76a2b4f9235c1202",
+      "path": "tests/test_performance_routes.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "backend/dq_flux_linkage.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "backend/drive_performance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "backend/flux_linkage_map.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "backend/iron_loss.py",
+      "source_sha256": "24d3e9568803349281bfe5897d170b2484099a4c731fe920004663046466cfc4",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "backend/loss_breakdown.py",
+      "source_sha256": "7511951037179aa1dadaeffd4b33c85e8e8ef08965094daf8670003371b42a06",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "backend/models/performance.py",
+      "source_sha256": "a9e3f5b0e476b69f58f11be269895f66aa77b0aee7cdbe633fdef1b3853b7f57",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "backend/public_main.py",
+      "source_sha256": "869b960f7e5b0282f0151a5d18e5ea7af519526672e09a5ea7d79e3f6e628aa0",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "backend/public_report.py",
+      "source_sha256": "54ca2ed83e2018dd5759153fa5c399c19b73fb1e015f838f54737a67b1bdf1e8",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "7ffb3ab5dd5762197ecc34ad5298b04c20f66eafb72784bd017cacf34d720a93",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "source_sha256": "884e0ac399db75a0b24ddae940cd788c0ecbcd213426faf45e0f6ec2bc205d50",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/package.json",
+      "source_sha256": "aa556da17a69ed6ed10acb9c0cfefc7d146301fe6c0fc6ff5f7afcad9f5d7dfc",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/scripts/test-dq-view.mjs",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/scripts/test-field-axes.mjs",
+      "source_sha256": "2259c0bf1a6566428674fd7e2340753e99fa00044cee49e5cb01522d9a447319",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/scripts/test-losses-view.mjs",
+      "source_sha256": "71f923422d8676cf3178b2f6944b63104c015b6fa903efa2674b73d19f900d7c",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/scripts/test-performance-view.mjs",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "4adeeb69fc52043cc92fc1549e16e8953003881846bc1153076a0b1a97840914",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "0b22bbec28293a86176b3226c530a68183d41c3fe0473a2e9e6a3c55a861f18c",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "7d1618650c72cfb75e1c4ab1003e981864c15dd7e31703cd1cc9dbb98cdf3831",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/src/public/DqCard.tsx",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "6d35e09fff36f1dc32f1a4610bee30a556feb2421a8eae0aa483ee6fa4d93636",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/src/public/LossesCard.tsx",
+      "source_sha256": "31670bdb7f1062de27120d81d5578504fed263e19ebbfb4551464e0835254076",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/src/public/MotorConstants.tsx",
+      "source_sha256": "edb83771dbfb8c0ff1270dc3eab4c64b34782dc6f5d30785b355b2c84160af95",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "0f84800466c3e6a5de073c98f3d36a7e960e7be64a52901cdc6db8c9724cc33e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "3adf052069e3928915f0d4e2248f0cd917b041c061511817a4bb9d4b4f09e94e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "be803acc6a3dc388c78fa8a9a46f7aedd10a40ceafb47e9f7ced8e5229e05d08",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/src/public/dqView.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/src/public/fieldAxes.ts",
+      "source_sha256": "5c19b3c9a6eeb7c6f03eace3eff325e0c75630f12907d3fab22db72a73ee27ab",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/src/public/lossesView.ts",
+      "source_sha256": "4d089d84f5f5c583eb89cfc923935a9f45be3656a497c8f5d2bb8f4a18c64831",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/src/public/machineConstants.ts",
+      "source_sha256": "cf05c7bac517df048ac1410c8ee498b1d95e27c1d70fb8bc7f6b5981909f373b",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/src/public/mapJob.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "890e64a8f7033342db3d5c14ed88c45940a456a618918fcf611fd78573f93513",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/src/public/performanceView.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/src/public/publicRequest.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "38e51a26d8b94398fa677258262b0a0bd409822cc18a8ff9dfe89c29eaf447c9",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "tests/test_dq_flux_linkage.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "tests/test_drive_performance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "tests/test_flux_linkage_map.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "tests/test_iron_loss.py",
+      "source_sha256": "22f28610186e80223c75c929322a7d6159ff8780e9e6b0cefd5b5f0650ede205",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": "494268bb62147cc5b1ec17db84fbd25d1f024230c91ef7a33f42a899093420f0",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "56a6be0dd9c7c6e4ba5ff33c5f80517bef61eabe",
+      "path": "tests/test_performance_routes.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "backend/dq_flux_linkage.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "backend/drive_performance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "backend/flux_linkage_map.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "backend/iron_loss.py",
+      "source_sha256": "24d3e9568803349281bfe5897d170b2484099a4c731fe920004663046466cfc4",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "backend/loss_breakdown.py",
+      "source_sha256": "7511951037179aa1dadaeffd4b33c85e8e8ef08965094daf8670003371b42a06",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "backend/models/performance.py",
+      "source_sha256": "a9e3f5b0e476b69f58f11be269895f66aa77b0aee7cdbe633fdef1b3853b7f57",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "backend/public_main.py",
+      "source_sha256": "869b960f7e5b0282f0151a5d18e5ea7af519526672e09a5ea7d79e3f6e628aa0",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "backend/public_report.py",
+      "source_sha256": "54ca2ed83e2018dd5759153fa5c399c19b73fb1e015f838f54737a67b1bdf1e8",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "7ffb3ab5dd5762197ecc34ad5298b04c20f66eafb72784bd017cacf34d720a93",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "source_sha256": "884e0ac399db75a0b24ddae940cd788c0ecbcd213426faf45e0f6ec2bc205d50",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/package.json",
+      "source_sha256": "aa556da17a69ed6ed10acb9c0cfefc7d146301fe6c0fc6ff5f7afcad9f5d7dfc",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/scripts/test-dq-view.mjs",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/scripts/test-field-axes.mjs",
+      "source_sha256": "2259c0bf1a6566428674fd7e2340753e99fa00044cee49e5cb01522d9a447319",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/scripts/test-losses-view.mjs",
+      "source_sha256": "71f923422d8676cf3178b2f6944b63104c015b6fa903efa2674b73d19f900d7c",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/scripts/test-performance-view.mjs",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "4adeeb69fc52043cc92fc1549e16e8953003881846bc1153076a0b1a97840914",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "0b22bbec28293a86176b3226c530a68183d41c3fe0473a2e9e6a3c55a861f18c",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "7d1618650c72cfb75e1c4ab1003e981864c15dd7e31703cd1cc9dbb98cdf3831",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/src/public/DqCard.tsx",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "6d35e09fff36f1dc32f1a4610bee30a556feb2421a8eae0aa483ee6fa4d93636",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/src/public/LossesCard.tsx",
+      "source_sha256": "31670bdb7f1062de27120d81d5578504fed263e19ebbfb4551464e0835254076",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/src/public/MotorConstants.tsx",
+      "source_sha256": "edb83771dbfb8c0ff1270dc3eab4c64b34782dc6f5d30785b355b2c84160af95",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "0f84800466c3e6a5de073c98f3d36a7e960e7be64a52901cdc6db8c9724cc33e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "3adf052069e3928915f0d4e2248f0cd917b041c061511817a4bb9d4b4f09e94e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "be803acc6a3dc388c78fa8a9a46f7aedd10a40ceafb47e9f7ced8e5229e05d08",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/src/public/dqView.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/src/public/fieldAxes.ts",
+      "source_sha256": "5c19b3c9a6eeb7c6f03eace3eff325e0c75630f12907d3fab22db72a73ee27ab",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/src/public/lossesView.ts",
+      "source_sha256": "4d089d84f5f5c583eb89cfc923935a9f45be3656a497c8f5d2bb8f4a18c64831",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/src/public/machineConstants.ts",
+      "source_sha256": "cf05c7bac517df048ac1410c8ee498b1d95e27c1d70fb8bc7f6b5981909f373b",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/src/public/mapJob.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "890e64a8f7033342db3d5c14ed88c45940a456a618918fcf611fd78573f93513",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/src/public/performanceView.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/src/public/publicRequest.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "38e51a26d8b94398fa677258262b0a0bd409822cc18a8ff9dfe89c29eaf447c9",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "tests/test_dq_flux_linkage.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "tests/test_drive_performance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "tests/test_flux_linkage_map.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "tests/test_iron_loss.py",
+      "source_sha256": "22f28610186e80223c75c929322a7d6159ff8780e9e6b0cefd5b5f0650ede205",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": "494268bb62147cc5b1ec17db84fbd25d1f024230c91ef7a33f42a899093420f0",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "1fd8a06f30e978a9b5118ba5c809744223c92733",
+      "path": "tests/test_performance_routes.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "backend/dq_flux_linkage.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "backend/drive_performance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "backend/flux_linkage_map.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "backend/iron_loss.py",
+      "source_sha256": "24d3e9568803349281bfe5897d170b2484099a4c731fe920004663046466cfc4",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "backend/loss_breakdown.py",
+      "source_sha256": "7511951037179aa1dadaeffd4b33c85e8e8ef08965094daf8670003371b42a06",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "backend/models/performance.py",
+      "source_sha256": "a9e3f5b0e476b69f58f11be269895f66aa77b0aee7cdbe633fdef1b3853b7f57",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "backend/public_main.py",
+      "source_sha256": "869b960f7e5b0282f0151a5d18e5ea7af519526672e09a5ea7d79e3f6e628aa0",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "backend/public_report.py",
+      "source_sha256": "54ca2ed83e2018dd5759153fa5c399c19b73fb1e015f838f54737a67b1bdf1e8",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "7ffb3ab5dd5762197ecc34ad5298b04c20f66eafb72784bd017cacf34d720a93",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "source_sha256": "884e0ac399db75a0b24ddae940cd788c0ecbcd213426faf45e0f6ec2bc205d50",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/package.json",
+      "source_sha256": "aa556da17a69ed6ed10acb9c0cfefc7d146301fe6c0fc6ff5f7afcad9f5d7dfc",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/scripts/test-dq-view.mjs",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/scripts/test-field-axes.mjs",
+      "source_sha256": "2259c0bf1a6566428674fd7e2340753e99fa00044cee49e5cb01522d9a447319",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/scripts/test-losses-view.mjs",
+      "source_sha256": "71f923422d8676cf3178b2f6944b63104c015b6fa903efa2674b73d19f900d7c",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/scripts/test-performance-view.mjs",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "4adeeb69fc52043cc92fc1549e16e8953003881846bc1153076a0b1a97840914",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "0b22bbec28293a86176b3226c530a68183d41c3fe0473a2e9e6a3c55a861f18c",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "7d1618650c72cfb75e1c4ab1003e981864c15dd7e31703cd1cc9dbb98cdf3831",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/src/public/DqCard.tsx",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/src/public/FieldResultPlot.tsx",
+      "source_sha256": "6d35e09fff36f1dc32f1a4610bee30a556feb2421a8eae0aa483ee6fa4d93636",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/src/public/LossesCard.tsx",
+      "source_sha256": "31670bdb7f1062de27120d81d5578504fed263e19ebbfb4551464e0835254076",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/src/public/MotorConstants.tsx",
+      "source_sha256": "edb83771dbfb8c0ff1270dc3eab4c64b34782dc6f5d30785b355b2c84160af95",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "0f84800466c3e6a5de073c98f3d36a7e960e7be64a52901cdc6db8c9724cc33e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "3adf052069e3928915f0d4e2248f0cd917b041c061511817a4bb9d4b4f09e94e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "be803acc6a3dc388c78fa8a9a46f7aedd10a40ceafb47e9f7ced8e5229e05d08",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/src/public/dqView.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/src/public/fieldAxes.ts",
+      "source_sha256": "5c19b3c9a6eeb7c6f03eace3eff325e0c75630f12907d3fab22db72a73ee27ab",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/src/public/lossesView.ts",
+      "source_sha256": "4d089d84f5f5c583eb89cfc923935a9f45be3656a497c8f5d2bb8f4a18c64831",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/src/public/machineConstants.ts",
+      "source_sha256": "cf05c7bac517df048ac1410c8ee498b1d95e27c1d70fb8bc7f6b5981909f373b",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/src/public/mapJob.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "890e64a8f7033342db3d5c14ed88c45940a456a618918fcf611fd78573f93513",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/src/public/performanceView.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/src/public/publicRequest.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "38e51a26d8b94398fa677258262b0a0bd409822cc18a8ff9dfe89c29eaf447c9",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "tests/test_dq_flux_linkage.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "tests/test_drive_performance.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "tests/test_flux_linkage_map.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "tests/test_iron_loss.py",
+      "source_sha256": "22f28610186e80223c75c929322a7d6159ff8780e9e6b0cefd5b5f0650ede205",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": "494268bb62147cc5b1ec17db84fbd25d1f024230c91ef7a33f42a899093420f0",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "d262b1c5a506b9292487170827532d0f19761066",
+      "path": "tests/test_performance_routes.py",
+      "source_sha256": null,
       "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
     }
   ]

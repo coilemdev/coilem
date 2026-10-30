@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 
 import { importTypeScriptModule } from './import-typescript-module.mjs';
 
-const { densityColor, formatPower, lossesView, lossSegments } = await importTypeScriptModule(
+const { STEEL_RAMP, densityColor, formatPower, lossesView, lossSegments, rampColor, stackCopperWPerKg } = await importTypeScriptModule(
   new URL('../src/public/lossesView.ts', import.meta.url),
 );
 
@@ -70,8 +70,19 @@ assert.equal(lossesView(null, null), null);
 
 assert.deepEqual(formatPower(1234), { value: '1.23', unit: 'kW' });
 assert.deepEqual(formatPower(2.527), { value: '2.53', unit: 'W' });
-assert.equal(densityColor(0), 'rgb(24, 79, 149)');
-assert.equal(densityColor(1), 'rgb(205, 226, 251)');
+// The iron-loss map runs slate to pale steel: lighter is more loss.
+assert.equal(densityColor(0), 'rgb(65, 82, 99)');
+assert.equal(densityColor(1), 'rgb(218, 235, 247)');
 assert.equal(densityColor(5), densityColor(1), 'values clamp to the scale');
+assert.equal(rampColor(['#000000', '#ffffff'], 0.5), 'rgb(128, 128, 128)');
+assert.deepEqual([...STEEL_RAMP], ['#415263', '#5d748b', '#7c99b2', '#a5c2d9', '#daebf7']);
 
-console.log('losses view: rows, efficiency status, bar segments and density scale pass');
+// Copper loss per kilogram of stack copper: 12 slots × 40% of 100 mm² × 50 mm of copper = 0.215 kg.
+const winding = { conductor: 'copper', copper_fill: 0.4, slot_area_mm2: 100, stack_length_mm: 50 };
+const stackKg = 12 * 0.4 * 100e-6 * 0.05 * 8960;
+assert.ok(Math.abs(stackCopperWPerKg({ ...loss, copper_active_loss_W: 10 }, winding, 12) - 10 / stackKg) < 1e-9);
+assert.ok(Math.abs(stackCopperWPerKg({ ...loss, copper_active_loss_W: 10 }, { ...winding, conductor: 'aluminum' }, 12) - 10 / (stackKg * 2700 / 8960)) < 1e-9);
+assert.equal(stackCopperWPerKg(loss, null, 12), null);
+assert.equal(stackCopperWPerKg(loss, winding, 0), null);
+
+console.log('losses view: rows, efficiency status, bar segments, density scale and copper per kilogram pass');

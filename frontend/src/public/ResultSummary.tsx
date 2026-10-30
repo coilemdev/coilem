@@ -1,6 +1,7 @@
 import { useId, type ReactNode } from 'react';
 import { MotorConstants } from './MotorConstants';
 import { LossesCard } from './LossesCard';
+import { DqCard } from './DqCard';
 import type { MaterialCatalog, MotorConfig, SolveResult } from './model';
 import {
   electricalFrequencyHz,
@@ -156,11 +157,18 @@ export function ResultSummary({
       </div>
       <div className="public-result-detail">
         <MotorConstants summary={summary} variant="report" />
+        <DqCard
+          dq={summary.dq_flux_linkage}
+          currentUnit={config.solve_params.current_amplitude_convention === 'peak' ? 'A peak' : 'A rms'}
+          variant="report"
+        />
         <LossesCard
           loss={summary.loss_breakdown}
           iron={summary.iron_loss}
           density={result.iron_loss_density}
           plot={result.field_line_plot}
+          winding={summary.winding_resistance}
+          slotCount={config.stator.slot_count}
           variant="report"
         />
         <section className="public-magnetic-loading" aria-labelledby={loadingHeadingId}>

@@ -30,6 +30,13 @@ export interface DqFluxLinkage {
   lambda_q_Wb: number;
   torque_dq_Nm: number;
   torque_agreement_pct?: number | null;
+  current_angle_deg?: number | null;
+  lambda_pm_Wb?: number | null;
+  apparent_L_d_H?: number | null;
+  apparent_L_q_H?: number | null;
+  positions?: number;
+  /** How the d-axis was placed; 'applied_current_angle' when the run had no no-load sweep. */
+  d_axis_source?: 'no_load_flux_linkage' | 'applied_current_angle';
 }
 
 /** Losses at the solved point (#138): P_shaft = T·ω − iron − mechanical, P_in = T·ω + copper. */
@@ -62,6 +69,9 @@ export interface LossBreakdown {
 export interface IronLossDensity {
   mesh: 'field_line_plot';
   element_w_per_kg: Array<number | null>;
+  /** Hysteresis and eddy-current parts of element_w_per_kg; absent on runs saved before the split. */
+  element_hysteresis_w_per_kg?: Array<number | null> | null;
+  element_eddy_w_per_kg?: Array<number | null> | null;
   max_w_per_kg: number;
 }
 
@@ -129,6 +139,9 @@ export interface DriveLimits {
 
 export type TorqueSpeedRegion = 'mtpa' | 'field_weakening' | 'mtpv';
 
+/** How the drive picks the current for a torque: the smallest (MTPA, then field weakening) or the least total loss. */
+export type DriveControl = 'mtpa' | 'least_loss';
+
 export interface TorqueSpeedCurve {
   limit: 'peak' | 'continuous';
   speed_rpm: number[];
@@ -165,8 +178,50 @@ export interface EfficiencyMap {
   efficiency_pct: Array<Array<number | null>>;
   copper_loss_W: Array<Array<number | null>>;
   iron_loss_W: Array<Array<number | null>>;
+  /** The least-loss phase current at each point, rms, and its current angle γ. */
+  phase_current_rms_A?: Array<Array<number | null>> | null;
+  current_angle_deg?: Array<Array<number | null>> | null;
+  control?: DriveControl;
   mechanical_loss_W: number;
   winding_temperature_C: number;
   status: PerformanceOutputStatus;
   status_reason?: string | null;
+}
+
+/** Map grid choice for /performance/map/* (#139). */
+export interface MapSettings {
+  preset: 'preview' | 'standard';
+  peak_current_A: number;
+}
+
+export interface FluxLinkageMapPayload {
+  map: FluxLinkageMap;
+  /** Each point's FEM torque as a percentage of its d/q torque; null at zero current or failed points. */
+  torque_agreement_pct: Array<number | null>;
+}
+
+export interface PerformanceMapStatus {
+  scope_key: string;
+  solves_total: number;
+  solves_finished: number;
+  /** Rotor positions each map point solves (half an electrical cycle). */
+  positions_per_point?: number;
+  map: FluxLinkageMap | null;
+  torque_agreement_pct?: Array<number | null>;
+}
+
+export interface PerformanceMapProgress {
+  done: number;
+  total: number;
+  elapsed_s: number;
+  stage?: string;
+  current_peak_A?: number;
+  gamma_deg?: number;
+  status?: FluxLinkageMapPoint['status'];
+  eta_s?: number | null;
+}
+
+export interface DrivePerformance {
+  envelope: TorqueSpeedEnvelope;
+  efficiency_map: EfficiencyMap;
 }

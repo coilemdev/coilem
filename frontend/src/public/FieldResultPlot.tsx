@@ -25,7 +25,7 @@ import {
   useViewportNavigation,
   ViewportNavigationControls,
 } from './ViewportNavigation';
-import { fieldAxisArrowPaths, leadAngleExplanation, rotorNorthAxisDeg, statorLeadElecDeg } from './fieldAxes';
+import { currentAngleNote, fieldAxisArrowPaths, leadAngleExplanation, qAxisOffsetDeg, rotorNorthAxisDeg, statorLeadElecDeg } from './fieldAxes';
 import { motorFitWidthBesideLegend } from './fieldLegendFit';
 import {
   fieldRangeForViewport,
@@ -97,6 +97,8 @@ export interface FieldResultRaster {
 /** Draw each field's working-harmonic axes; playback turns in this direction. */
 export interface FieldAxesOptions {
   rotation: 'clockwise' | 'counterclockwise';
+  /** The run's current angle γ, for the "90° + γ" note; null when the excitation has none (six-step). */
+  currentAngleDeg?: number | null;
 }
 
 /** A second field drawn as lines over the first, as in the Stator + PM view (#120). */
@@ -1012,6 +1014,12 @@ export function FieldResultPlot({
   const [rayStatorX, rayStatorY] = polar(axisStatorRadius * 1.04, arcRotorDeg + arcSpanDeg);
   const axisFontSize = Math.max(1.2, axisRotorRadius * 0.07);
   const leadLabel = `${Math.round(Math.abs(leadElecDeg ?? 0))}° elec`;
+  const gammaNote = leadElecDeg !== null && leadElecDeg > 0 ? currentAngleNote(fieldAxes?.currentAngleDeg) : null;
+  // The marked pole's d-axis (its magnet arrow) and the q-axis 90° elec ahead of it.
+  const qAxisDeg = arcRotorDeg + qAxisOffsetDeg(axisPolePairs, fieldAxes?.rotation ?? 'clockwise');
+  const [qEndX, qEndY] = polar(axisRotorRadius * 0.96, qAxisDeg);
+  const [qLabelX, qLabelY] = polar(axisRotorRadius * 1.0 + axisFontSize * 0.9, qAxisDeg);
+  const [dLabelX, dLabelY] = polar(axisRotorRadius * 0.62 - axisFontSize * 0.9, arcRotorDeg);
   const visibleLayerLabel = [
     showHeatmap && hasHeatmap ? 'flux-density heatmap' : null,
     showMesh && hasMesh ? 'solver mesh edges' : null,
@@ -1022,7 +1030,7 @@ export function FieldResultPlot({
       : null,
     hasAirgapOverlay ? 'airgap boundary contour' : null,
     hasStatorPolarityCues ? 'current-induced stator pole labels' : null,
-    hasFieldAxes ? 'stator and magnet field-axis arrows' : null,
+    hasFieldAxes ? 'stator and magnet field-axis arrows with the d and q axes' : null,
   ].filter(Boolean).join(' and ') || 'magnetic field geometry';
   const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
     navigation.bind.onPointerMove(event);
@@ -1163,6 +1171,9 @@ export function FieldResultPlot({
               {hasFieldAxes && statorAxisDeg !== null && rotorAxisDeg !== null && (
                 <g className="public-field-axes">
                   <path className="public-field-axis-ray is-pm" d={`M 0 0 L ${rayRotorX} ${rayRotorY}`} />
+                  <path className="public-field-axis-q" d={`M 0 0 L ${qEndX} ${qEndY}`} />
+                  <text className="public-field-axis-label is-dq" x={qLabelX} y={qLabelY} style={{ fontSize: axisFontSize }}>q</text>
+                  <text className="public-field-axis-label is-dq is-d" x={dLabelX} y={dLabelY} style={{ fontSize: axisFontSize }}>d</text>
                   <path className="public-field-axis-ray is-stator" d={`M 0 0 L ${rayStatorX} ${rayStatorY}`} />
                   {axisAngles(rotorAxisDeg).map((angle) => {
                     const arrow = fieldAxisArrowPaths(axisRotorRadius * 0.62, axisRotorRadius * 0.96, angle);
@@ -1191,6 +1202,11 @@ export function FieldResultPlot({
                     <text className="public-field-axis-label" x={arcLabelX} y={arcLabelY} style={{ fontSize: axisFontSize }}>
                       {leadLabel}
                     </text>
+                    {gammaNote && (
+                      <text className="public-field-axis-label is-note" x={arcLabelX} y={arcLabelY + axisFontSize * 1.15} style={{ fontSize: axisFontSize * 0.72 }}>
+                        {gammaNote}
+                      </text>
+                    )}
                     <g className="public-field-axis-help-badge" transform={`translate(${arcLabelX + axisFontSize * (leadLabel.length * 0.3 + 0.9)} ${arcLabelY})`}>
                       <circle r={axisFontSize * 0.62} />
                       <text style={{ fontSize: axisFontSize * 0.85 }}>?</text>

@@ -95,6 +95,26 @@ def test_uniform_sinusoidal_field_matches_hand_calculation():
     assert estimate.total_w == pytest.approx(mass * M350_50A_LOSS.specific_loss_w_per_kg(frequency, peak))
     assert estimate.share_above_validated_frequency == 0.0
     assert estimate.share_above_validated_flux_density == 0.0
+    # Each element's W/kg splits into its hysteresis and eddy-current parts.
+    assert estimate.element_hysteresis_w_per_kg + estimate.element_eddy_w_per_kg == pytest.approx(estimate.element_w_per_kg)
+    assert estimate.element_eddy_w_per_kg[0] == pytest.approx(M350_50A_LOSS.kc * frequency**2 * peak**2)
+
+
+def test_half_a_cycle_with_half_wave_symmetry_gives_the_full_cycle_loss():
+    frequency = 80.0
+
+    def field(theta: float) -> float:  # odd harmonics only: B(θ + 180°) = −B(θ)
+        return 1.1 * math.cos(theta) + 0.15 * math.cos(5 * theta + 0.3) + 0.05 * math.cos(7 * theta - 0.4)
+
+    full = stator_flux_history(_uniform_frames(field, positions=32))
+    half_frames = _uniform_frames(field, positions=32)[:16]
+    half = stator_flux_history(half_frames)
+    kwargs = dict(electrical_frequency_hz=frequency, stack_length_m=STACK_M, machine_scale=1.0)
+    expected = harmonic_iron_loss(full, **kwargs)
+    got = harmonic_iron_loss(half, half_wave=True, **kwargs)
+    assert got.total_w == pytest.approx(expected.total_w)
+    assert got.eddy_w == pytest.approx(expected.eddy_w)
+    assert got.element_w_per_kg == pytest.approx(expected.element_w_per_kg)
 
 
 def test_each_harmonic_adds_its_own_loss():
@@ -198,6 +218,12 @@ def test_estimate_reports_an_experimental_loss_for_m350_50a():
     assert estimate.stator_iron_mass_kg == pytest.approx(mass)
     assert estimate.iron_loss_W == pytest.approx(mass * M350_50A_LOSS.specific_loss_w_per_kg(frequency, 1.0))
     assert estimate.iron_loss_W == pytest.approx(estimate.iron_hysteresis_loss_W + estimate.iron_eddy_loss_W)
+
+
+def test_a_uniform_half_cycle_sweep_has_iron_loss():
+    angles = [180.0 * k / 8 for k in range(8)]
+    estimate = estimate_iron_loss(CONFIG, _samples(1.0, positions=8), angles)
+    assert estimate.status == "experimental"
 
 
 @pytest.mark.parametrize(
