@@ -307,7 +307,11 @@ def test_published_app_evidence_keeps_complete_actual_grids_and_its_measured_sou
         if name == "tools/benchmark_prius.py":
             assert digest == "6acec522ac60bdeeea110667c3d9b3a3c539ae6c526f86cee538c032ccc78c0c"
         else:
-            assert hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == digest, name
+            assert registration["source_sha256"][name] == digest, name
+            if hashlib.sha256((ROOT / name).read_bytes()).hexdigest() != digest:
+                from backend.qualification import classify_qualification
+                config = MotorConfig.model_validate_json((ROOT / "backend/reference_models/pyleecan_prius_2004_config.json").read_text())
+                assert classify_qualification(config)["status"] == "experimental"
     for name, digest in report["historical_evidence_sha256"].items():
         assert hashlib.sha256((folder / name).read_bytes()).hexdigest() == digest, name
     assert report["all_software_checks_pass"] and all(report["checks"].values())

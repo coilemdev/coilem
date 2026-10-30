@@ -33,6 +33,18 @@ _QUALIFIED_IPM = "flat_buried"
 _EXPERIMENTAL_IPM = "v_shape"
 
 
+def evidence_matches_runtime() -> bool:
+    """A historical label cannot qualify changed or unverifiable installed physics."""
+    from backend.benchmark_suite.record import check_physics
+    from backend.resources import BENCHMARK_RECORDS_DIR, read_data_json
+
+    try:
+        record = read_data_json(f"{BENCHMARK_RECORDS_DIR}/windows-x86_64.json")
+        return record["measured_commit"][:7] in QUALIFICATION_BASIS and check_physics(record)["status"] == "MATCH"
+    except (OSError, ValueError, KeyError, TypeError):
+        return False
+
+
 class Qualification(TypedDict):
     status: QualificationStatus
     reason: str
@@ -133,4 +145,9 @@ def classify_qualification(config: MotorConfig) -> Qualification:
         status, reason = "experimental", f"Custom steel: the benchmark qualified only the bundled {_QUALIFIED_STEEL} curve."
     if status == "qualified" and config.solve_params is not None and config.solve_params.mesh_build == "fast":
         status, reason = "experimental", "Fast mesh build: the benchmark measured meshes built with Precise node placement."
+    if status == "qualified" and not evidence_matches_runtime():
+        status, reason = "experimental", (
+            "This build's physics do not match the measured benchmark basis. "
+            "Candidate qualification is pending; the historical report does not qualify this build."
+        )
     return _result(status, reason, _caveats(config) if status != "unsupported" else [])

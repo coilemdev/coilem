@@ -35,8 +35,8 @@
     },
     {
       "path": ".github/workflows/release-wheels.yml",
-      "bytes": 21716,
-      "sha256": "f3fcc1517c0a81bb834fe847de82a4b8ca08a80e2874bc50843f24086891ad41"
+      "bytes": 21889,
+      "sha256": "48aab3294fed7f508f39539e430410876f9d9650a2a88fc2ba0a0b11f2d69a2e"
     },
     {
       "path": ".gitignore",
@@ -86,7 +86,7 @@
     {
       "path": "THIRD_PARTY_NOTICES.md",
       "bytes": 29152,
-      "sha256": "3f41db781fd096df31fac2511f7657eb128952ed132885440054ec55813b8735"
+      "sha256": "84787e5d7ce0039892f2033e0f2e69f63bfba717037114ceb8d9c3dd01cb67cc"
     },
     {
       "path": "TRADEMARKS.md",
@@ -540,8 +540,8 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 6982,
-      "sha256": "af5558cdf6b048c568cf4598c227da4b60aef1707eb9c2dd702ac55305cef410"
+      "bytes": 7823,
+      "sha256": "2596f3961913c779e3c5eb7e45e6ab91e1602b338088cf5ae3471b2abe727ecb"
     },
     {
       "path": "backend/reference_models/__init__.py",
@@ -5745,13 +5745,13 @@
     },
     {
       "path": "frontend/package-lock.json",
-      "bytes": 63981,
-      "sha256": "4f564e9bc63e57ed71ceee6c561924b96e469526692b6c8ee7cc397412cbef01"
+      "bytes": 64005,
+      "sha256": "39e7c557ca5885eb8820d4b7c14d78bd608d33f12128c8f463a922b8797e65d6"
     },
     {
       "path": "frontend/package.json",
       "bytes": 2316,
-      "sha256": "f35719e531af14b32233764b15cfd725f9e90a3a930081f5d5d9a0d67ea79091"
+      "sha256": "102194fdf3c85660938b1cda76a127fc9bf1162d1382996f3354fa21ef641bc9"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -6760,8 +6760,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 23078,
-      "sha256": "bb148dd6aae4813218a58cdd9c17f7051b93a052bcddc51f430a24094259159b"
+      "bytes": 23091,
+      "sha256": "5a994098c2ac81afca9ae7bdc5662b9122d0c5f97f2d589029d64a72198fa054"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -6801,7 +6801,7 @@
     {
       "path": "requirements.lock",
       "bytes": 1328,
-      "sha256": "7931b933a9db88657aea494aaab7a7652d5cfb18e3d71dc255f9cecb2059277c"
+      "sha256": "84b109e9ef2ba89e3acd8c39304d42d5cda48d5d6247f48051012dd295d82a99"
     },
     {
       "path": "schemas/v1/examples/field_current_square.json",
@@ -7145,8 +7145,8 @@
     },
     {
       "path": "tests/test_benchmark_command.py",
-      "bytes": 15903,
-      "sha256": "8b9fb97813c49fcb870d0ac14cbced80d8419afe676473971c3eac0300b3bc91"
+      "bytes": 16306,
+      "sha256": "43da0d2ae8decad8218ceb8032faaec5205bce289ad497fd857c0a661a9d9148"
     },
     {
       "path": "tests/test_benchmark_runtime.py",
@@ -7275,8 +7275,8 @@
     },
     {
       "path": "tests/test_mesh_build.py",
-      "bytes": 3774,
-      "sha256": "e287d22d9af8ac66d94f9d80e884eb716e3cdb29d20f51e4ded4d8d08925b988"
+      "bytes": 3873,
+      "sha256": "8a358d109a4d6e553b2def6b435c70dbf6e395cba595708c3f7e927498aa96f2"
     },
     {
       "path": "tests/test_mesh_signature_tooth_shoe.py",
@@ -7326,7 +7326,7 @@
     {
       "path": "tests/test_public_candidate.py",
       "bytes": 20134,
-      "sha256": "317da5057a8d4c8d1571b780424067a28e5c357aae830204af5ddd849baf9e42"
+      "sha256": "c5b3c44a331755b0a54b1dccd36711e2b2034e3c921668d2461c878e5050cb95"
     },
     {
       "path": "tests/test_public_field_playback.py",
@@ -7385,8 +7385,8 @@
     },
     {
       "path": "tests/test_pyleecan_reference_fixture.py",
-      "bytes": 17495,
-      "sha256": "1ce34bb97aece6042dbbcf7642db0a02b11c69c506749a4ad40f4af431a7b75b"
+      "bytes": 17850,
+      "sha256": "a76e833d19844862edd4457090e26ae84d6d7a1f85f5bf4c566677b763a85beb"
     },
     {
       "path": "tests/test_pyleecan_tutorial.py",
@@ -7395,18 +7395,23 @@
     },
     {
       "path": "tests/test_qualification.py",
-      "bytes": 13975,
-      "sha256": "26bffefb9c2605fd44a1ca0169a59188bc2bbbac80c6fc6e07ea3782bdbd76e1"
+      "bytes": 15774,
+      "sha256": "c83c13954454c93f8691a9c42fda19d7ddd02a264c2fdc1d714778a317b573e3"
     },
     {
       "path": "tests/test_reference_recovery.py",
-      "bytes": 13029,
-      "sha256": "6e367bc4b58f4bede4e0804bea37899bb206b6656d7b3ecde3e3b7f0cf9ebeea"
+      "bytes": 15399,
+      "sha256": "36e213543a0705d97239aa57c5ea8f2e601048e2cda73a2aea80f7991a34b32a"
     },
     {
       "path": "tests/test_reference_runner.py",
-      "bytes": 11608,
-      "sha256": "41d3017b9dbb1ed7622e04647c7df5a1bd4531774f84cbd11409844338a92cc7"
+      "bytes": 11768,
+      "sha256": "5f6f2c81d2ea034cf814a7ab79beec60bccc51620b042b5a341c01f3afc46093"
+    },
+    {
+      "path": "tests/test_release_qualification.py",
+      "bytes": 3118,
+      "sha256": "f152b8c49005649a84bea01dd233080baf0853c5ee951224e3e8fc9714dceaf0"
     },
     {
       "path": "tests/test_release_tools.py",
@@ -7480,8 +7485,8 @@
     },
     {
       "path": "tools/benchmark_suite/external.py",
-      "bytes": 23421,
-      "sha256": "63e8a1dce6707443b7c6c29e0fe96f3491443ddc0ad35d9ff18c4566b218e074"
+      "bytes": 24709,
+      "sha256": "f4bbf7e3f37d5c7b6e9b3fd6c8149b773b257c9b25a9ffa69254715e0a05672b"
     },
     {
       "path": "tools/benchmark_suite/external_contract.py",
@@ -7495,8 +7500,8 @@
     },
     {
       "path": "tools/build_benchmark_record.py",
-      "bytes": 5724,
-      "sha256": "94ccf8ed7a20b3efb50139456e6826c5de41636e58f7c1f1039e603a7cd0cb57"
+      "bytes": 6523,
+      "sha256": "73a1c48480716d816578a50dd3a5321a19b057db865ff8fa5df88037227e6006"
     },
     {
       "path": "tools/compare_pyleecan_bemf.py",
@@ -7639,6 +7644,11 @@
       "sha256": "5b38a5f885bf83091823514f317aeafa54cd0570e94377a9dd4934e29df62e2a"
     },
     {
+      "path": "tools/release/qualification.py",
+      "bytes": 5966,
+      "sha256": "e6deffacc0335c6ba678bb57ec5b21cf15805f4b69355218200490e56347af70"
+    },
+    {
       "path": "tools/release/release_notes.py",
       "bytes": 1420,
       "sha256": "1df1bcfeeb75af8f8e6c14ea4d874d335aa9bd89212690231b4ca78248c14b7c"
@@ -7701,7 +7711,7 @@
     {
       "path": "tools/verify_snapshot.py",
       "bytes": 21633,
-      "sha256": "fc11f61b433748f6829297f30c72738ea887481d11936087620c7a554385d9ab"
+      "sha256": "6f0eb6dbdef093eca953e247bb780caaf61edb08de492b84f5a3c2d1d0c10c2e"
     }
   ],
   "public_patches": [
@@ -12240,6 +12250,132 @@
       "path": "frontend/src/public/styles.css",
       "source_sha256": "0588b77f07ab8f13ed52a24bd0001a609b766e1f6ccae22b9aa598465b45dfdb",
       "reason": "Report the stator-only field run in the Run plan's live card like a solve, without the progress overlay on the field."
+    },
+    {
+      "base_commit": "2ede4e802f30af45b57e3cc2bb0d9063e544a3bf",
+      "path": ".github/workflows/release-wheels.yml",
+      "source_sha256": "f3fcc1517c0a81bb834fe847de82a4b8ca08a80e2874bc50843f24086891ad41",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2ede4e802f30af45b57e3cc2bb0d9063e544a3bf",
+      "path": "THIRD_PARTY_NOTICES.md",
+      "source_sha256": "3f41db781fd096df31fac2511f7657eb128952ed132885440054ec55813b8735",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2ede4e802f30af45b57e3cc2bb0d9063e544a3bf",
+      "path": "backend/qualification.py",
+      "source_sha256": "af5558cdf6b048c568cf4598c227da4b60aef1707eb9c2dd702ac55305cef410",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2ede4e802f30af45b57e3cc2bb0d9063e544a3bf",
+      "path": "frontend/package-lock.json",
+      "source_sha256": "4f564e9bc63e57ed71ceee6c561924b96e469526692b6c8ee7cc397412cbef01",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2ede4e802f30af45b57e3cc2bb0d9063e544a3bf",
+      "path": "frontend/package.json",
+      "source_sha256": "f35719e531af14b32233764b15cfd725f9e90a3a930081f5d5d9a0d67ea79091",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2ede4e802f30af45b57e3cc2bb0d9063e544a3bf",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "bb148dd6aae4813218a58cdd9c17f7051b93a052bcddc51f430a24094259159b",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2ede4e802f30af45b57e3cc2bb0d9063e544a3bf",
+      "path": "requirements.lock",
+      "source_sha256": "7931b933a9db88657aea494aaab7a7652d5cfb18e3d71dc255f9cecb2059277c",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2ede4e802f30af45b57e3cc2bb0d9063e544a3bf",
+      "path": "tests/test_benchmark_command.py",
+      "source_sha256": "8b9fb97813c49fcb870d0ac14cbced80d8419afe676473971c3eac0300b3bc91",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2ede4e802f30af45b57e3cc2bb0d9063e544a3bf",
+      "path": "tests/test_mesh_build.py",
+      "source_sha256": "e287d22d9af8ac66d94f9d80e884eb716e3cdb29d20f51e4ded4d8d08925b988",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2ede4e802f30af45b57e3cc2bb0d9063e544a3bf",
+      "path": "tests/test_public_candidate.py",
+      "source_sha256": "317da5057a8d4c8d1571b780424067a28e5c357aae830204af5ddd849baf9e42",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2ede4e802f30af45b57e3cc2bb0d9063e544a3bf",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "1ce34bb97aece6042dbbcf7642db0a02b11c69c506749a4ad40f4af431a7b75b",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2ede4e802f30af45b57e3cc2bb0d9063e544a3bf",
+      "path": "tests/test_qualification.py",
+      "source_sha256": "26bffefb9c2605fd44a1ca0169a59188bc2bbbac80c6fc6e07ea3782bdbd76e1",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2ede4e802f30af45b57e3cc2bb0d9063e544a3bf",
+      "path": "tests/test_release_qualification.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2ede4e802f30af45b57e3cc2bb0d9063e544a3bf",
+      "path": "tools/build_benchmark_record.py",
+      "source_sha256": "94ccf8ed7a20b3efb50139456e6826c5de41636e58f7c1f1039e603a7cd0cb57",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2ede4e802f30af45b57e3cc2bb0d9063e544a3bf",
+      "path": "tools/release/qualification.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2ede4e802f30af45b57e3cc2bb0d9063e544a3bf",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "fc11f61b433748f6829297f30c72738ea887481d11936087620c7a554385d9ab",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "5c4e743e272d57ff7afda62a4f44502d35da23ed",
+      "path": "tests/test_reference_recovery.py",
+      "source_sha256": "6e367bc4b58f4bede4e0804bea37899bb206b6656d7b3ecde3e3b7f0cf9ebeea",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "5c4e743e272d57ff7afda62a4f44502d35da23ed",
+      "path": "tools/benchmark_suite/external.py",
+      "source_sha256": "63e8a1dce6707443b7c6c29e0fe96f3491443ddc0ad35d9ff18c4566b218e074",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2e77d653fe8d86678b3839eb058af6767d1c9f39",
+      "path": "tests/test_reference_recovery.py",
+      "source_sha256": "8e2d3b02417e3939e46975beccf327f0c35ab499cd33dd6033a09e9deb75d3ab",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2e77d653fe8d86678b3839eb058af6767d1c9f39",
+      "path": "tools/benchmark_suite/external.py",
+      "source_sha256": "53cc0f38af6c232f5243c9a53b0f79852f55ed7767c2d8b929e2ece1818d1004",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "f4375a1a54c667f394e958166b424b5300d19a4f",
+      "path": "tests/test_reference_runner.py",
+      "source_sha256": "41d3017b9dbb1ed7622e04647c7df5a1bd4531774f84cbd11409844338a92cc7",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
     }
   ]
 }

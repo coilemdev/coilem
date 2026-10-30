@@ -66,6 +66,8 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("evidence", type=Path, help="a published evidence folder, or a run's report folder, holding benchmark_summary.json")
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--historical-record", type=Path,
+                        help="Reproduce this published record's original source registry without extending its qualification")
     args = parser.parse_args(argv)
     if CHECKOUT is None:
         parser.error("build records from a source checkout")
@@ -75,6 +77,14 @@ def main(argv=None):
         raise SystemExit("The run measured uncommitted code; a record needs a clean commit")
     measured = identity["source_files"]
     sources = list(physics_sources(CHECKOUT))
+    if args.historical_record:
+        historical = read(args.historical_record)
+        source = args.evidence.resolve().relative_to(CHECKOUT).as_posix()
+        if historical["source"] != source or historical["measured_commit"] != identity["commit"]:
+            raise SystemExit("The historical record does not name this evidence and measured commit")
+        if any(measured.get(path) != digest for path, digest in historical["physics_files"].items()):
+            raise SystemExit("The historical record's source hashes do not match its measured evidence")
+        sources = list(historical["physics_files"])
     # Preserve a historical record's original source guard. These three files
     # entered the registry together with the exact Prius cases; old runs cannot
     # acquire their hashes retrospectively. check_physics names the missing files

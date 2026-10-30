@@ -307,7 +307,7 @@ def main() -> int:
         "@types/three": "0.183.1",
         "@vitejs/plugin-react": "4.7.0",
         "typescript": "5.6.3",
-        "vite": "6.4.3",
+        "vite": "6.4.4",
     }
     if package.get("devDependencies") != expected_frontend_dev:
         failures.append(f"unexpected frontend development dependencies: {package.get('devDependencies')}")
@@ -322,7 +322,7 @@ def main() -> int:
         "meshio==5.3.5",
         "numpy==2.4.6",
         "numpy==2.5.4",
-        "pillow==12.3.0",
+        "pillow==13.0.0",
         "pydantic==2.13.4",
         "pydantic==2.14.1",
         "pygments==2.20.0",

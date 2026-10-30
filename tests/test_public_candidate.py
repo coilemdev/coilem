@@ -361,7 +361,7 @@ def test_audited_dependency_notices_are_present() -> None:
         "meshio==5.3.5",
         "numpy==2.4.6",
         "numpy==2.5.4",
-        "pillow==12.3.0",
+        "pillow==13.0.0",
         "rich==15.0.0",
         "uvicorn==0.51.0",
     ]:

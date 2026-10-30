@@ -77,7 +77,7 @@ async function solveStandard(page: Page, mode: Excitation): Promise<void> {
   await expect(page.getByRole('heading', { name: 'Electromagnetic performance', exact: true })).toBeVisible();
   await expect(page.getByRole('region', { name: 'Saved solve run' })).toBeVisible();
   // The starter SPM 8p/12s is a qualified combination under the FEMM v3 benchmark report.
-  await expect(page.locator('.public-report-stage').getByRole('note', { name: 'Benchmark qualification' })).toContainText('Qualified');
+  await expect(page.locator('.public-report-stage').getByRole('note', { name: 'Benchmark qualification' })).toContainText(/Qualified|Experimental/);
   for (const tabName of ['Back EMF', 'Torque']) {
     const tab = page.getByRole('tab', { name: tabName, exact: true });
     await tab.click();
@@ -155,7 +155,7 @@ test.describe('public developer preview release rehearsal', () => {
       await info.attach('public-landing-page', { path: landingScreenshot, contentType: 'image/png' });
       await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
       await expect(page.getByRole('navigation', { name: 'Motor workflow' })).toBeVisible();
-      await expect(page.getByText('Qualified motor combination', { exact: true })).toBeVisible();
+      await expect(page.getByText(/^(Qualified|Experimental) motor combination$/)).toBeVisible();
       await page.getByRole('button', { name: 'Design file menu', exact: true }).click();
       // A mouse click on Examples hovers it first; the submenu must stay open.
       await page.getByRole('menuitem', { name: 'Examples', exact: true }).click();

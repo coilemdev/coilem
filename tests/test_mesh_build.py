@@ -64,7 +64,8 @@ def test_mesh_build_is_part_of_the_mesh_signature_and_provenance() -> None:
     assert build_magneto2d_mesh_signature(precise) != build_magneto2d_mesh_signature(fast)
 
 
-def test_fast_meshes_are_experimental() -> None:
+def test_fast_meshes_are_experimental(monkeypatch) -> None:
+    monkeypatch.setattr("backend.qualification.evidence_matches_runtime", lambda: True)
     assert classify_qualification(_config("precise"))["status"] == "qualified"
     fast = classify_qualification(_config("fast"))
     assert fast["status"] == "experimental"
