@@ -144,14 +144,45 @@ not provided by this import. Optional Elmer execution rejects custom steels.
 
 ## Core loss
 
-The 50 Hz description of the source magnetization curve does not provide a
-grade-specific core-loss model. The public result surface does not provide a usable steel
-core-loss prediction. Legacy Steinmetz coefficients remain in the source, and
-the material UI currently shows a generic loss-estimate badge; that badge does
-not establish a supported loss result. Schema fields retained for
-compatibility are zero-valued and mean "unavailable," not "lossless." Do not
-use them for efficiency, heat, or thermal calculations.
+Stator iron loss is an experimental estimate for M350-50A. Per kilogram, each
+electrical harmonic h of an element's flux density contributes
 
-Future core-loss support must introduce separately reviewed, cited coefficients
-or a reproducible fit to redistributable source data, together with a validated
-frequency and flux-density range.
+```text
+p_h = kh · f_h · B_h^alpha + kc · f_h^2 · B_h^2
+```
+
+The coefficients come from published facts, not from a fitted loss table:
+
+- `kc` is the classical lamination eddy-current term, pi^2 · d^2 / (6 · rho_el · rho_m),
+  with d = 0.50 mm, rho_m = 7650 kg/m^3 (the density coilEM uses for M350-50A)
+  and rho_el = 42.2e-8 Ohm·m, the typical value in SIJ Acroni's SIWATT M350-50A
+  technical data sheet (SIWATT M350-50A-1/1-2023-EN).
+- `kh` and `alpha` meet the EN 10106 maximum specific losses for M350-50A at
+  50 Hz, 1.50 W/kg at 1.0 T and 3.50 W/kg at 1.5 T, exactly. Real sheet is
+  usually below these limits, so the estimate reads high at 50 Hz.
+
+Excess loss is not modelled separately. Built the same way for M400-50A, the
+model stayed within a mean of ±8 % of a published loss table from 50 Hz to
+1 kHz, with a worst point near 22 %, and read about 24 % high at 2.5 kHz.
+
+The estimate needs a loaded sweep over one full electrical cycle at a nonzero
+speed. It follows each stator element's flux-density waveform over the
+cycle, and results report the share of the loss that comes from harmonics
+above 1 kHz or flux densities above 1.5 T, outside the range the two grade
+limits cover. Rotor, magnet and stray losses are not included, and cutting and
+pressing usually raise a real core's loss above sheet data. Other steels show
+iron loss as unavailable until cited loss data exist for them. The native
+solver's own core-loss fields stay zero; coilEM computes the estimate from the
+stored field frames.
+
+## Winding conductors
+
+Phase resistance uses IEC 60028 annealed copper (1/58 Ohm·mm^2/m and
+0.00393 /K at 20 °C) or IEC 60889 hard-drawn aluminium (0.028264 Ohm·mm^2/m and
+0.00403 /K). The mean turn length is two stack lengths plus two end turns,
+each a half circle across the arc between the coil's two sides, and copper
+fill is bare copper over the gross slot polygon. With the 2005 Honda Accord's
+published winding (1.55 mm wire, 52 turns per coil, 8 parallel circuits) the
+model gives 9.80 mOhm at 21 °C against 9.7 mOhm measured (ORNL/TM-2006/535,
+Table 2.3).
+

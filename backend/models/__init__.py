@@ -35,9 +35,12 @@ from .performance import (
     EfficiencyMap,
     FluxLinkageMap,
     FluxLinkageMapPoint,
+    IronLoss,
+    IronLossDensity,
     LossBreakdown,
     TorqueSpeedCurve,
     TorqueSpeedEnvelope,
+    WindingResistance,
 )
 from .result import SolveMetadata, SolveResult, SolveSummary
 from .waveforms import (
@@ -76,6 +79,8 @@ __all__ = [
     "FluxLinkageMapPoint",
     "GeometryPreview",
     "GeometryRegion",
+    "IronLoss",
+    "IronLossDensity",
     "LossBreakdown",
     "MaterialsConfig",
     "MeshConfigSummary",
@@ -96,6 +101,7 @@ __all__ = [
     "TorqueWaveform",
     "WindingCoil",
     "WindingConfig",
+    "WindingResistance",
     "WindingSlot",
     "WireSpec",
 ]

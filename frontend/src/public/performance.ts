@@ -32,7 +32,13 @@ export interface DqFluxLinkage {
   torque_agreement_pct?: number | null;
 }
 
+/** Losses at the solved point (#138): P_shaft = T·ω − iron − mechanical, P_in = T·ω + copper. */
 export interface LossBreakdown {
+  speed_rpm: number;
+  phase_current_rms_A: number;
+  electromagnetic_torque_Nm: number;
+  shaft_torque_Nm: number;
+  electromagnetic_power_W: number;
   phase_resistance_ohm: number;
   winding_temperature_C: number;
   copper_loss_W: number;
@@ -48,6 +54,34 @@ export interface LossBreakdown {
   shaft_power_W: number;
   input_power_W: number;
   efficiency_pct?: number | null;
+  efficiency_status: PerformanceOutputStatus;
+  efficiency_status_reason?: string | null;
+}
+
+/** Iron loss per kilogram of each element of the result's field_line_plot mesh; null outside the stator iron. */
+export interface IronLossDensity {
+  mesh: 'field_line_plot';
+  element_w_per_kg: Array<number | null>;
+  max_w_per_kg: number;
+}
+
+/** Stator iron loss over one electrical period at the solved point (#138). */
+export interface IronLoss {
+  status: PerformanceOutputStatus;
+  status_reason?: string | null;
+  model: 'grade_limit_harmonic_steinmetz';
+  steel: string;
+  electrical_frequency_Hz?: number | null;
+  iron_loss_W?: number | null;
+  iron_hysteresis_loss_W?: number | null;
+  iron_eddy_loss_W?: number | null;
+  iron_teeth_loss_W?: number | null;
+  iron_yoke_loss_W?: number | null;
+  stator_iron_mass_kg?: number | null;
+  share_above_validated_frequency?: number | null;
+  share_above_validated_flux_density?: number | null;
+  validated_max_frequency_Hz: number;
+  validated_max_flux_density_T: number;
 }
 
 export interface FluxLinkageMapPoint {

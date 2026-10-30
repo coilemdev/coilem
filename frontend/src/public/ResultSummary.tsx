@@ -1,5 +1,6 @@
 import { useId, type ReactNode } from 'react';
 import { MotorConstants } from './MotorConstants';
+import { LossesCard } from './LossesCard';
 import type { MaterialCatalog, MotorConfig, SolveResult } from './model';
 import {
   electricalFrequencyHz,
@@ -155,6 +156,13 @@ export function ResultSummary({
       </div>
       <div className="public-result-detail">
         <MotorConstants summary={summary} variant="report" />
+        <LossesCard
+          loss={summary.loss_breakdown}
+          iron={summary.iron_loss}
+          density={result.iron_loss_density}
+          plot={result.field_line_plot}
+          variant="report"
+        />
         <section className="public-magnetic-loading" aria-labelledby={loadingHeadingId}>
           <h3 id={loadingHeadingId}>Magnetic loading</h3>
           <LoadingBar label="Peak tooth B" valueT={summary.peak_flux_density_teeth_T} scaleMaxT={scaleMaxT} knee={knee} />

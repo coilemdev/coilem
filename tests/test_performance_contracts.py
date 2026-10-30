@@ -35,6 +35,11 @@ SCOPE_KEY = "0123456789abcdef0123456789abcdef"
 
 def _loss_breakdown(**overrides) -> dict:
     values = {
+        "speed_rpm": 3000.0,
+        "phase_current_rms_A": 10.0,
+        "electromagnetic_torque_Nm": 6.0,
+        "shaft_torque_Nm": 5.7,
+        "electromagnetic_power_W": 1850.0,
         "phase_resistance_ohm": 0.05,
         "winding_temperature_C": 20.0,
         "copper_loss_W": 150.0,
@@ -49,6 +54,7 @@ def _loss_breakdown(**overrides) -> dict:
         "shaft_power_W": 1800.0,
         "input_power_W": 2000.0,
         "efficiency_pct": 90.0,
+        "efficiency_status": "experimental",
     }
     values.update(overrides)
     return values
@@ -259,11 +265,10 @@ def test_existing_designs_and_results_load_unchanged():
         assert SolveMetadata.model_fields[name].default is None
 
 
-def test_performance_inputs_are_refused_until_a_solve_uses_them():
+def test_mechanical_loss_is_accepted_now_efficiency_uses_it():
     raw = deepcopy(VALID_CONFIG)
     raw["solve_params"]["mechanical_loss_W"] = 15.0
-    with pytest.raises(ValidationError, match="not supported by this preview yet"):
-        MotorConfig.model_validate(raw)
+    assert MotorConfig.model_validate(raw).solve_params.mechanical_loss_W == 15.0
 
 
 def test_wire_and_winding_temperature_are_accepted_now_resistance_uses_them():
@@ -275,6 +280,8 @@ def test_wire_and_winding_temperature_are_accepted_now_resistance_uses_them():
     assert config.solve_params.winding_temperature_C == 120.0
 
 
-def test_loss_breakdown_stays_out_of_public_results_until_losses_ship():
-    assert "loss_breakdown" in public_solve._EXCLUDED_SUMMARY_FIELDS
+def test_losses_reach_public_results_now_they_ship():
+    assert "loss_breakdown" not in public_solve._EXCLUDED_SUMMARY_FIELDS
+    assert "iron_loss" not in public_solve._EXCLUDED_SUMMARY_FIELDS
+    # The legacy top-level efficiency field is not part of the contract.
     assert "efficiency_pct" in public_solve._EXCLUDED_SUMMARY_FIELDS

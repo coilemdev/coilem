@@ -22,7 +22,7 @@ from xml.sax.saxutils import escape
 from PIL import Image as PILImage
 from PIL import ImageDraw
 from reportlab.graphics.charts.lineplots import LinePlot
-from reportlab.graphics.shapes import Drawing, String
+from reportlab.graphics.shapes import Drawing, Rect, String
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import A4
@@ -70,6 +70,28 @@ _HEAT_COLORS = (
     "#142a61", "#1855a7", "#1b8eb7", "#2ab673",
     "#a7c83a", "#f1c232", "#f58b24", "#dc3d3d",
 )
+# Records in the summary that get their own CSV section and PDF table (#136, #138).
+_SUMMARY_RECORD_SECTIONS = {
+    "winding_resistance": "winding",
+    "loss_breakdown": "losses",
+    "iron_loss": "iron_loss",
+}
+_RECORD_UNIT_SUFFIXES = (
+    ("_per_K", "1/K"), ("_mm2", "mm2"), ("_mm", "mm"), ("_ohm", "Ohm"), ("_Nm", "N m"),
+    ("_rpm", "rpm"), ("_pct", "%"), ("_kg", "kg"), ("_Hz", "Hz"), ("_W", "W"), ("_A", "A"),
+    ("_C", "C"), ("_T", "T"),
+)
+# Categorical slots in their validated order; each bar segment is also named in the legend.
+_LOSS_SEGMENT_COLORS = ("#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4")
+
+
+def _record_unit(name: str) -> str:
+    for suffix, unit in _RECORD_UNIT_SUFFIXES:
+        if name.endswith(suffix):
+            return unit
+    return ""
+
+
 _REGION_COLORS = {
     "stator": ("Stator steel", "#8A9BAD"),
     "rotor": ("Rotor steel", "#4A5568"),
@@ -247,8 +269,11 @@ def build_public_run_csv(
     summary = _mapping(result.get("summary"))
     known = set(_SUMMARY_ORDER)
     for field in (*_SUMMARY_ORDER, *sorted(set(summary) - known)):
-        if field in summary:
+        if field in summary and field not in _SUMMARY_RECORD_SECTIONS:
             row("summary", field, summary[field], _SUMMARY_UNITS.get(field, ""))
+    for field, section in _SUMMARY_RECORD_SECTIONS.items():
+        for name, value in _flatten(_mapping(summary.get(field))):
+            row(section, name, value, _record_unit(name))
     for field, value in _flatten(_mapping(result.get("solve_metadata"))):
         row("solve_metadata", field, value)
 
@@ -894,6 +919,9 @@ class _MotorMeshFigure(Flowable):
     def __init__(
         self, png: bytes, *, groups: Sequence[str] = (),
         field_range: tuple[float, float] | None = None,
+        legend_title: str = "Flux density |B| (T)",
+        legend_note: str | None = "Yellow: stored field lines",
+        value_format: str = "{:.3f}",
     ) -> None:
         super().__init__()
         self.width = 180 * mm
@@ -901,6 +929,9 @@ class _MotorMeshFigure(Flowable):
         self.png = png
         self.groups = groups
         self.field_range = field_range
+        self.legend_title = legend_title
+        self.legend_note = legend_note
+        self.value_format = value_format
 
     def draw(self) -> None:
         pdf = self.canv
@@ -910,7 +941,7 @@ class _MotorMeshFigure(Flowable):
         if self.field_range is not None:
             low, high = self.field_range
             pdf.setFillColor(_NAVY)
-            pdf.drawString(132 * mm, 92 * mm, "Flux density |B| (T)")
+            pdf.drawString(132 * mm, 92 * mm, self.legend_title)
             for index, color in enumerate(_HEAT_COLORS):
                 pdf.setFillColor(colors.HexColor(color))
                 pdf.rect(133 * mm, (13 + index * 9) * mm, 6 * mm, 9 * mm,
@@ -918,9 +949,10 @@ class _MotorMeshFigure(Flowable):
             pdf.setFillColor(_SLATE)
             for fraction in (0.0, 0.5, 1.0):
                 pdf.drawString(143 * mm, (13 + fraction * 72) * mm - 2,
-                               f"{low + fraction * (high - low):.3f}")
-            pdf.setFont("Helvetica", 7)
-            pdf.drawString(132 * mm, 6 * mm, "Yellow: stored field lines")
+                               self.value_format.format(low + fraction * (high - low)))
+            if self.legend_note:
+                pdf.setFont("Helvetica", 7)
+                pdf.drawString(132 * mm, 6 * mm, self.legend_note)
         else:
             pdf.setFillColor(_NAVY)
             pdf.drawString(132 * mm, 92 * mm, "Material regions")
@@ -1002,6 +1034,206 @@ def _motor_mesh_figures(
             if all(math.isfinite(value) for value in (x0, y0, x1, y1)):
                 heat_draw.line([point(x0, y0), point(x1, y1)], fill="#f1c232", width=2)
     return geometry_figure, _MotorMeshFigure(png(heatmap), field_range=(low, high))
+
+
+def _number(value: Any, digits: int = 3) -> str:
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+        return "Not recorded"
+    # Whole numbers too long for the significant digits print in full, never as 1e+03.
+    return f"{value:.0f}" if abs(value) >= 10**digits else f"{value:.{digits}g}"
+
+
+def _percent(fraction: Any, digits: int = 3) -> str:
+    if isinstance(fraction, bool) or not isinstance(fraction, (int, float)) or not math.isfinite(fraction):
+        return "Not recorded"
+    return f"{100 * fraction:.{digits}g}%"
+
+
+def _resistance_text(ohm: Any) -> str:
+    if isinstance(ohm, bool) or not isinstance(ohm, (int, float)) or not math.isfinite(ohm):
+        return "Not recorded"
+    return f"{ohm * 1000:.3g} mOhm" if abs(ohm) < 1 else f"{ohm:.3g} Ohm"
+
+
+def _winding_and_loss_story(result: Mapping[str, Any], styles: Mapping[str, ParagraphStyle]) -> list[Any]:
+    summary = _mapping(result.get("summary"))
+    winding = _mapping(summary.get("winding_resistance"))
+    losses = _mapping(summary.get("loss_breakdown"))
+    iron = _mapping(summary.get("iron_loss"))
+    story: list[Any] = []
+    if winding:
+        wire = (
+            f"{winding.get('strands_in_hand')} x {_number(winding.get('strand_diameter_mm'))} mm"
+            + (" (derived from the slot)" if winding.get("wire_source") == "derived" else "")
+        )
+        story.extend([
+            _section("Winding", styles),
+            _settings_grid(
+                [
+                    ("Wire", wire),
+                    ("Conductor", winding.get("conductor")),
+                    ("Series turns per phase", _number(winding.get("series_turns_per_phase"), 4)),
+                    ("Parallel paths", winding.get("parallel_paths")),
+                    ("Mean turn length", f"{_number(winding.get('mean_turn_length_mm'))} mm"),
+                    ("End turn, each end", f"{_number(winding.get('end_turn_length_mm'))} mm"),
+                    ("Copper slot fill", f"{_percent(winding.get('copper_fill'))} of {_number(winding.get('slot_area_mm2'))} mm2"),
+                    ("Fill limit", _percent(winding.get("copper_fill_limit"))),
+                    ("Phase resistance, 20 C", _resistance_text(winding.get("phase_resistance_20C_ohm"))),
+                    (f"Phase resistance, {_number(winding.get('winding_temperature_C'))} C", _resistance_text(winding.get("phase_resistance_ohm"))),
+                ],
+                styles,
+                columns=2,
+                cell_widths=(40 * mm, 50 * mm),
+            ),
+            *[Paragraph(escape(str(note)), styles["small"]) for note in _sequence(winding.get("notes"))],
+        ])
+    if losses:
+        efficiency = losses.get("efficiency_pct")
+        efficiency_text = (
+            f"{_number(efficiency, 4)}% ({losses.get('efficiency_status')})"
+            if isinstance(efficiency, (int, float)) else f"Unavailable: {losses.get('efficiency_status_reason') or 'not recorded'}"
+        )
+        story.extend([
+            _section("Losses and efficiency", styles),
+            _settings_grid(
+                [
+                    ("Speed", f"{_number(losses.get('speed_rpm'), 5)} rpm"),
+                    ("Phase current", f"{_number(losses.get('phase_current_rms_A'))} A rms"),
+                    ("Solved torque", f"{_number(losses.get('electromagnetic_torque_Nm'), 4)} N m"),
+                    ("Shaft torque", f"{_number(losses.get('shaft_torque_Nm'), 4)} N m"),
+                    ("Copper loss", f"{_number(losses.get('copper_loss_W'))} W"),
+                    ("Iron loss", f"{_number(losses.get('iron_loss_W'))} W" if losses.get("iron_loss_W") is not None else "Unavailable"),
+                    ("Mechanical loss", f"{_number(losses.get('mechanical_loss_W'))} W"),
+                    ("Total loss", f"{_number(losses.get('total_loss_W'))} W"),
+                    ("Input power", f"{_number(losses.get('input_power_W'), 4)} W"),
+                    ("Shaft power", f"{_number(losses.get('shaft_power_W'), 4)} W"),
+                    ("Efficiency", efficiency_text),
+                    ("Winding temperature", f"{_number(losses.get('winding_temperature_C'))} C"),
+                ],
+                styles,
+                columns=2,
+                cell_widths=(40 * mm, 50 * mm),
+            ),
+        ])
+        bar = _loss_breakdown_drawing(losses)
+        if bar is not None:
+            story.extend([Spacer(1, 2 * mm), bar])
+        status = []
+        if iron.get("status") == "experimental":
+            above_frequency = _percent(iron.get("share_above_validated_frequency"), 2)
+            above_flux = _percent(iron.get("share_above_validated_flux_density"), 2)
+            status.append(
+                f"Iron loss is experimental: {escape(str(iron.get('status_reason') or ''))} "
+                f"{above_frequency} of it comes from harmonics above {_number(iron.get('validated_max_frequency_Hz'))} Hz "
+                f"and {above_flux} from flux densities above {_number(iron.get('validated_max_flux_density_T'))} T, "
+                "outside the range the model was checked over."
+            )
+        elif iron.get("status_reason"):
+            status.append(f"Iron loss unavailable: {escape(str(iron.get('status_reason')))}")
+        status.append(
+            "Shaft torque is the solved torque less the iron and mechanical loss torque; the solved torque is unchanged. "
+            "Copper loss uses the phase resistance at the winding temperature."
+        )
+        story.extend(Paragraph(line, styles["small"]) for line in status)
+    density = _iron_loss_density_figure(result)
+    if density is not None:
+        peak = _mapping(result.get("iron_loss_density")).get("max_w_per_kg")
+        story.extend([
+            _section("Iron-loss density", styles),
+            density,
+            Paragraph(
+                "Iron loss per kilogram of each stator element over one electrical period, on the first stored rotor position's mesh. "
+                f"The color scale stops at the 98th percentile; the peak is {_number(peak)} W/kg. "
+                "Rotor and magnet losses are not modelled.",
+                styles["small"],
+            ),
+        ])
+    return story
+
+
+def _loss_breakdown_drawing(losses: Mapping[str, Any]) -> Drawing | None:
+    """One stacked bar of the loss components, each named with its value."""
+
+    hysteresis = losses.get("iron_hysteresis_loss_W")
+    eddy = losses.get("iron_eddy_loss_W")
+    segments = [
+        ("Copper, stack", losses.get("copper_active_loss_W")),
+        ("Copper, end turns", losses.get("copper_end_winding_loss_W")),
+        ("Iron, hysteresis", hysteresis),
+        ("Iron, eddy current", eddy),
+        ("Mechanical", losses.get("mechanical_loss_W")),
+    ]
+    segments = [
+        (label, float(value), color)
+        for (label, value), color in zip(segments, _LOSS_SEGMENT_COLORS)
+        if isinstance(value, (int, float)) and math.isfinite(value) and value > 0
+    ]
+    total = sum(value for _, value, _ in segments)
+    if total <= 0:
+        return None
+    width, bar_height = 170 * mm, 7 * mm
+    drawing = Drawing(width, 26 * mm)
+    x = 0.0
+    for label, value, color in segments:
+        span = width * value / total
+        drawing.add(Rect(x, 17 * mm, max(span - 0.7, 0.5), bar_height, fillColor=colors.HexColor(color), strokeColor=None))
+        x += span
+    drawing.add(String(0, 25.2 * mm, f"Loss breakdown, {total:.3g} W total", fontName="Helvetica-Bold", fontSize=8, fillColor=_NAVY))
+    for index, (label, value, color) in enumerate(segments):
+        column, line = index % 3, index // 3
+        lx, ly = column * 58 * mm, (11 - line * 6) * mm
+        drawing.add(Rect(lx, ly, 3 * mm, 3 * mm, fillColor=colors.HexColor(color), strokeColor=None))
+        drawing.add(String(lx + 4.5 * mm, ly + 0.6 * mm, f"{label}: {value:.3g} W ({100 * value / total:.0f}%)",
+                           fontName="Helvetica", fontSize=7.5, fillColor=_SLATE))
+    return drawing
+
+
+def _density_scale_max(values: Sequence[float]) -> float:
+    """98th percentile: a few tooth-tip elements would otherwise flatten the rest of the map."""
+
+    ordered = sorted(values)
+    return ordered[int(0.98 * (len(ordered) - 1))]
+
+
+def _iron_loss_density_figure(result: Mapping[str, Any]) -> _MotorMeshFigure | None:
+    density = _mapping(result.get("iron_loss_density"))
+    values = _sequence(density.get("element_w_per_kg"))
+    plot = _mapping(result.get("field_line_plot"))
+    mesh = _saved_motor_mesh(plot)
+    if mesh is None or not values:
+        return None
+    nodes, triangles, groups = mesh
+    if len(values) != len(triangles):
+        return None
+    numbers = [float(v) for v in values if isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v)]
+    if not numbers:
+        return None
+    high = _density_scale_max(numbers)
+    used = {index for triangle in triangles for index in triangle}
+    min_x, max_x = min(nodes[i][0] for i in used), max(nodes[i][0] for i in used)
+    min_y, max_y = min(nodes[i][1] for i in used), max(nodes[i][1] for i in used)
+    span = max(max_x - min_x, max_y - min_y)
+    if span <= 0 or high <= 0:
+        return None
+    size = 1200
+    scale = size * 0.94 / span
+    center_x, center_y = (min_x + max_x) / 2, (min_y + max_y) / 2
+    pixels = [(size / 2 + (x - center_x) * scale, size / 2 - (y - center_y) * scale) for x, y in nodes]
+    image = PILImage.new("RGB", (size, size), "white")
+    draw = ImageDraw.Draw(image)
+    for triangle, group, value in zip(triangles, groups, values):
+        if isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value):
+            bucket = min(len(_HEAT_COLORS) - 1, int(min(value, high) / high * len(_HEAT_COLORS)))
+            fill = _HEAT_COLORS[bucket]
+        else:
+            fill = "#E2E8F0" if group != "air" else "#FFFFFF"
+        draw.polygon([pixels[i] for i in triangle], fill=fill)
+    buffer = io.BytesIO()
+    image.save(buffer, format="PNG")
+    return _MotorMeshFigure(
+        buffer.getvalue(), field_range=(0.0, high), legend_title="Iron loss (W/kg)", legend_note="Grey: no iron-loss model",
+        value_format="{:.3g}",
+    )
 
 
 def _motor_figure_story(
@@ -1220,6 +1452,7 @@ def build_public_run_pdf(
             )
         ),
     )
+    story.extend(_winding_and_loss_story(result, styles))
     if torque_plot is not None or back_emf_plot is not None:
         story.append(_section("Stored result plots", styles))
         if torque_plot is not None:

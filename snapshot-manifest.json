@@ -55,8 +55,8 @@
     },
     {
       "path": "MATERIALS.md",
-      "bytes": 8554,
-      "sha256": "751a4ca113657aea0a0635c3cdcd4f57895811231562f927b533a8c1e290612a"
+      "bytes": 10074,
+      "sha256": "86bc0ea9bcf2d7b6520add0c389f6bbdf52ccf47cfc4e1aecd521caeab28f219"
     },
     {
       "path": "PUBLICATION_STATUS.md",
@@ -354,6 +354,11 @@
       "sha256": "74f7984e5c33d544fe3a1fd09078d08363d82f157e4f22f8f392e3089d442965"
     },
     {
+      "path": "backend/iron_loss.py",
+      "bytes": 18603,
+      "sha256": "24d3e9568803349281bfe5897d170b2484099a4c731fe920004663046466cfc4"
+    },
+    {
       "path": "backend/launcher.py",
       "bytes": 19883,
       "sha256": "b2da34a85cd8d80d8c20e954e81f01bb665abd2ecb4376e4851cbcfcb4277408"
@@ -372,6 +377,11 @@
       "path": "backend/logging_utils.py",
       "bytes": 776,
       "sha256": "a0f4f289c013d2697e56f2fd9a5ca21e1a119cfb2d93bb490d499319278a9ea6"
+    },
+    {
+      "path": "backend/loss_breakdown.py",
+      "bytes": 5593,
+      "sha256": "7511951037179aa1dadaeffd4b33c85e8e8ef08965094daf8670003371b42a06"
     },
     {
       "path": "backend/machine_constants.py",
@@ -415,13 +425,13 @@
     },
     {
       "path": "backend/models/__init__.py",
-      "bytes": 2365,
-      "sha256": "d20636d0c69095f501b72e1a6ec5930901ba7804c01bb4eea9f7153455271a7b"
+      "bytes": 2487,
+      "sha256": "2bb692a95ba2013d902511a4cb575dc751653b4746bb0a065c273b1381a26650"
     },
     {
       "path": "backend/models/config.py",
-      "bytes": 30065,
-      "sha256": "5c2291b09d2f452103e1004169dce8ffb75b9bd877f4c10dd0f62da295eb27c6"
+      "bytes": 29664,
+      "sha256": "61beda4bca3ce94286958b14c1a97505d822ed55545e732e3eaca7cfa9d02042"
     },
     {
       "path": "backend/models/errors.py",
@@ -445,13 +455,13 @@
     },
     {
       "path": "backend/models/performance.py",
-      "bytes": 15029,
-      "sha256": "479de94fbc8fc6976dcdade082b6a1d24801894da19fd2310a2e3be5c38fcefa"
+      "bytes": 18276,
+      "sha256": "a9e3f5b0e476b69f58f11be269895f66aa77b0aee7cdbe633fdef1b3853b7f57"
     },
     {
       "path": "backend/models/result.py",
-      "bytes": 7209,
-      "sha256": "3271b8702cb34ef93a72f8a2b5db5e434d47a4ddae4917b9b3c1e1e7bd775407"
+      "bytes": 7402,
+      "sha256": "00bab2fae3521cedc3ab5a17532ce9651f2c328b4dd4a94fc7d0cfe6e6d9728d"
     },
     {
       "path": "backend/models/waveforms.py",
@@ -500,8 +510,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 54086,
-      "sha256": "66f33e489f915240886da64a51b1e8b6913a102b7d2bde8ee6e150fde2d96ba9"
+      "bytes": 65679,
+      "sha256": "54ca2ed83e2018dd5759153fa5c399c19b73fb1e015f838f54737a67b1bdf1e8"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -525,8 +535,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 51560,
-      "sha256": "5d9c9bf19d6d47c9b206466e182121ced9d7aaae0e515d67bd98dcdaf605d4cd"
+      "bytes": 51534,
+      "sha256": "669e2ab56e10cb8d17d78f8beee4af84eabc294eed6aaa8aa85f36a346c11c30"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -585,8 +595,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 143494,
-      "sha256": "94e5c2e37425876a07424e42c21913c8137e0b57ee3698346b3d94181b18140b"
+      "bytes": 148477,
+      "sha256": "7ffb3ab5dd5762197ecc34ad5298b04c20f66eafb72784bd017cacf34d720a93"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -5855,8 +5865,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2360,
-      "sha256": "a639368fa8c278f5d98d1ed50fc6e2fa49a066d79442bf530db745249b6abcf1"
+      "bytes": 2397,
+      "sha256": "aa556da17a69ed6ed10acb9c0cfefc7d146301fe6c0fc6ff5f7afcad9f5d7dfc"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -5947,6 +5957,11 @@
       "path": "frontend/scripts/test-lesson-ten-bemf.mjs",
       "bytes": 3646,
       "sha256": "61e991f0823f2ca6aeeccf5f14950ef350d9d3d5e826ba552864f9bcd7e2651d"
+    },
+    {
+      "path": "frontend/scripts/test-losses-view.mjs",
+      "bytes": 3968,
+      "sha256": "71f923422d8676cf3178b2f6944b63104c015b6fa903efa2674b73d19f900d7c"
     },
     {
       "path": "frontend/scripts/test-magnet-coverage.mjs",
@@ -6429,6 +6444,11 @@
       "sha256": "42aa135f1f441f419ae1f61978db7be6a572e6b7a57d22baafe82d70421440d0"
     },
     {
+      "path": "frontend/src/public/LossesCard.tsx",
+      "bytes": 9055,
+      "sha256": "31670bdb7f1062de27120d81d5578504fed263e19ebbfb4551464e0835254076"
+    },
+    {
       "path": "frontend/src/public/MaterialWorkspace.tsx",
       "bytes": 28281,
       "sha256": "66a72b7c2b672bc5edeb2b66532838ad37c0a8b5a6f0284412995c7885074528"
@@ -6465,8 +6485,8 @@
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
-      "bytes": 8191,
-      "sha256": "f393e798527761bcf85de34a9c1a7c49881933093bcc5e149e961173ad25fb95"
+      "bytes": 8452,
+      "sha256": "0f84800466c3e6a5de073c98f3d36a7e960e7be64a52901cdc6db8c9724cc33e"
     },
     {
       "path": "frontend/src/public/RpmField.tsx",
@@ -6734,6 +6754,11 @@
       "sha256": "03789a09d067323780d331304e0add1e89ac655a0b9fd4e78fb82ed925b2d726"
     },
     {
+      "path": "frontend/src/public/lossesView.ts",
+      "bytes": 6863,
+      "sha256": "4d089d84f5f5c583eb89cfc923935a9f45be3656a497c8f5d2bb8f4a18c64831"
+    },
+    {
       "path": "frontend/src/public/machineConstants.ts",
       "bytes": 4143,
       "sha256": "cf05c7bac517df048ac1410c8ee498b1d95e27c1d70fb8bc7f6b5981909f373b"
@@ -6760,8 +6785,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 20273,
-      "sha256": "958d022445578073874ad579312af72da94e0321be8fd81006ae26a5789e322e"
+      "bytes": 20492,
+      "sha256": "ef05aeac76e720d4f782bb540a70ed3cf6e28bf56ac7d7730a57683ba074a559"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -6785,8 +6810,8 @@
     },
     {
       "path": "frontend/src/public/performance.ts",
-      "bytes": 4082,
-      "sha256": "975be9119c22a8cfd7d4faaa97e530b558cbb7d6441c47fdb2e8fcea2703cc57"
+      "bytes": 5359,
+      "sha256": "890e64a8f7033342db3d5c14ed88c45940a456a618918fcf611fd78573f93513"
     },
     {
       "path": "frontend/src/public/phaseDrive.ts",
@@ -6825,8 +6850,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 264471,
-      "sha256": "da93a26d991ea4405df913d9edd419f6d2a3b77e47f8aa7064473e918009a8ad"
+      "bytes": 266871,
+      "sha256": "38e51a26d8b94398fa677258262b0a0bd409822cc18a8ff9dfe89c29eaf447c9"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7354,6 +7379,11 @@
       "sha256": "8c93aa259316fc07c9a2a9a4a69d8cccb6936f33c2a5f97cd2a52cc2fc0fedc5"
     },
     {
+      "path": "tests/test_iron_loss.py",
+      "bytes": 11108,
+      "sha256": "22f28610186e80223c75c929322a7d6159ff8780e9e6b0cefd5b5f0650ede205"
+    },
+    {
       "path": "tests/test_late_reference_comparison.py",
       "bytes": 13782,
       "sha256": "cdf4098d1268f6d74e7ac4f44a0f0948bfc9ae875847fac4365ff4296d00a4a8"
@@ -7392,6 +7422,11 @@
       "path": "tests/test_linear_halbach_solver.py",
       "bytes": 3731,
       "sha256": "1898ba2de6e96a98de61e2924bb558290c78b7284be73f82de191331366b512f"
+    },
+    {
+      "path": "tests/test_loss_breakdown.py",
+      "bytes": 6920,
+      "sha256": "494268bb62147cc5b1ec17db84fbd25d1f024230c91ef7a33f42a899093420f0"
     },
     {
       "path": "tests/test_magneto2d_cli_precision.py",
@@ -7435,8 +7470,8 @@
     },
     {
       "path": "tests/test_performance_contracts.py",
-      "bytes": 11225,
-      "sha256": "0a20ebc73631c0371e587012999efabce1d0f7041f6e61d42e118b44d688efa5"
+      "bytes": 11533,
+      "sha256": "cbfe876be77f1e3a2fea64e25cffb528f1179fce3101a1f0c3143870c30cb2aa"
     },
     {
       "path": "tests/test_postsolve_pipeline.py",
@@ -7600,8 +7635,8 @@
     },
     {
       "path": "tests/test_windows_field_frame_pool.py",
-      "bytes": 4574,
-      "sha256": "caedc891aa678952edd9afd41b58c2bd9891d7bee8b5315f821faeb88a20cb73"
+      "bytes": 5570,
+      "sha256": "aca2c20e80585355cfb454d2662952bb9f1c9ac2567e141da8bb24e5c83f7460"
     },
     {
       "path": "tests/test_windows_mesh_pool.py",
@@ -14957,6 +14992,726 @@
       "base_commit": "1062d836273f2bc633a8d0c406d6367757c7c8c0",
       "path": "tests/test_winding_resistance.py",
       "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "backend/iron_loss.py",
+      "source_sha256": null,
+      "reason": "Add the M350-50A iron-loss model for #138: harmonic Steinmetz coefficients derived from the EN 10106 50 Hz loss limits, the classical lamination eddy-current term and a cited mill resistivity, and stator flux histories across per-angle and slot-pitch-rotated meshes. Not yet wired into solves or results."
+    },
+    {
+      "base_commit": "f70ff16a0d891fe3d567c0c957a9ceb37e1d0cdf",
+      "path": "tests/test_iron_loss.py",
+      "source_sha256": null,
+      "reason": "Add the M350-50A iron-loss model for #138: harmonic Steinmetz coefficients derived from the EN 10106 50 Hz loss limits, the classical lamination eddy-current term and a cited mill resistivity, and stator flux histories across per-angle and slot-pitch-rotated meshes. Not yet wired into solves or results."
+    },
+    {
+      "base_commit": "113507b739c9c07f24c9fb4dba449290e777638c",
+      "path": "backend/iron_loss.py",
+      "source_sha256": "c17ee6f08f7f8a2564e59f9b5f7f7fa0875fc72dead3232a546faced11b3ad00",
+      "reason": "Wire M350-50A iron loss into the live sweep for #138: frame workers keep each position's stator field when the sweep spans one electrical cycle, and the summary carries an experimental IronLoss record, or the reason it is unavailable. Kept out of public results until documented."
+    },
+    {
+      "base_commit": "113507b739c9c07f24c9fb4dba449290e777638c",
+      "path": "backend/models/__init__.py",
+      "source_sha256": "d20636d0c69095f501b72e1a6ec5930901ba7804c01bb4eea9f7153455271a7b",
+      "reason": "Wire M350-50A iron loss into the live sweep for #138: frame workers keep each position's stator field when the sweep spans one electrical cycle, and the summary carries an experimental IronLoss record, or the reason it is unavailable. Kept out of public results until documented."
+    },
+    {
+      "base_commit": "113507b739c9c07f24c9fb4dba449290e777638c",
+      "path": "backend/models/performance.py",
+      "source_sha256": "5a6de4b16791aee7f65c6dc2ddc19132e3847cd0d86890fa607ecd9181d9d65c",
+      "reason": "Wire M350-50A iron loss into the live sweep for #138: frame workers keep each position's stator field when the sweep spans one electrical cycle, and the summary carries an experimental IronLoss record, or the reason it is unavailable. Kept out of public results until documented."
+    },
+    {
+      "base_commit": "113507b739c9c07f24c9fb4dba449290e777638c",
+      "path": "backend/models/result.py",
+      "source_sha256": "75907a4cc8e7944f066592c4d050e8744f1ec831ac80f6250bb4fe4d9b56fbdf",
+      "reason": "Wire M350-50A iron loss into the live sweep for #138: frame workers keep each position's stator field when the sweep spans one electrical cycle, and the summary carries an experimental IronLoss record, or the reason it is unavailable. Kept out of public results until documented."
+    },
+    {
+      "base_commit": "113507b739c9c07f24c9fb4dba449290e777638c",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "5d9c9bf19d6d47c9b206466e182121ced9d7aaae0e515d67bd98dcdaf605d4cd",
+      "reason": "Wire M350-50A iron loss into the live sweep for #138: frame workers keep each position's stator field when the sweep spans one electrical cycle, and the summary carries an experimental IronLoss record, or the reason it is unavailable. Kept out of public results until documented."
+    },
+    {
+      "base_commit": "113507b739c9c07f24c9fb4dba449290e777638c",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "696af12acd2ab91099cecd024486f8678277c1050d0e6fdde259a6c7b4ce8f8a",
+      "reason": "Wire M350-50A iron loss into the live sweep for #138: frame workers keep each position's stator field when the sweep spans one electrical cycle, and the summary carries an experimental IronLoss record, or the reason it is unavailable. Kept out of public results until documented."
+    },
+    {
+      "base_commit": "113507b739c9c07f24c9fb4dba449290e777638c",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "975be9119c22a8cfd7d4faaa97e530b558cbb7d6441c47fdb2e8fcea2703cc57",
+      "reason": "Wire M350-50A iron loss into the live sweep for #138: frame workers keep each position's stator field when the sweep spans one electrical cycle, and the summary carries an experimental IronLoss record, or the reason it is unavailable. Kept out of public results until documented."
+    },
+    {
+      "base_commit": "113507b739c9c07f24c9fb4dba449290e777638c",
+      "path": "tests/test_iron_loss.py",
+      "source_sha256": "5a51f684328fff6fd8b61f63aad7cc0d339afc4d92eeb5d235b135fc4bc2216e",
+      "reason": "Wire M350-50A iron loss into the live sweep for #138: frame workers keep each position's stator field when the sweep spans one electrical cycle, and the summary carries an experimental IronLoss record, or the reason it is unavailable. Kept out of public results until documented."
+    },
+    {
+      "base_commit": "113507b739c9c07f24c9fb4dba449290e777638c",
+      "path": "tests/test_windows_field_frame_pool.py",
+      "source_sha256": "caedc891aa678952edd9afd41b58c2bd9891d7bee8b5315f821faeb88a20cb73",
+      "reason": "Wire M350-50A iron loss into the live sweep for #138: frame workers keep each position's stator field when the sweep spans one electrical cycle, and the summary carries an experimental IronLoss record, or the reason it is unavailable. Kept out of public results until documented."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "MATERIALS.md",
+      "source_sha256": "751a4ca113657aea0a0635c3cdcd4f57895811231562f927b533a8c1e290612a",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "backend/iron_loss.py",
+      "source_sha256": "7b7c9e64c5a2f621b4729c46e8f1996ce2a89ba6c46d971b6eda26c7ad1ce64f",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "backend/models/__init__.py",
+      "source_sha256": "2ea5fc34ce07de8eb179fe986b3e821c6beeaaa086f936cab2d1c3cb71694093",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "backend/models/config.py",
+      "source_sha256": "aa175744adf99da042452f38d5b97bd35f5b09203316b26ae423ec149c81afb4",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "backend/models/performance.py",
+      "source_sha256": "3d1a6d57025b6f2e5f69056140003cd7dec4df6c2f62ffe2289d1219a5aee78f",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "backend/models/result.py",
+      "source_sha256": "a6fa296e522d0e9f6fead73cd172e0899abbe0e8cf4d3dc13224e73ffa300a78",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "backend/public_report.py",
+      "source_sha256": "befde85f42682921b406c13730951388faa8d624fee26950b63af594e5456d06",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "c4ce1d6e83100c03e66278e89692f90b1842eaa6c9e9b5f3101646feaccbfbe2",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "8a69592dcae06f22377e8ef8c509ca3317568179cbc8676c85bed47590eba088",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "frontend/package.json",
+      "source_sha256": "2290ee1decbb6a33ae4fcf64e6a1d049c7c83f944dfc386c160d97dff781aa1c",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "f393e798527761bcf85de34a9c1a7c49881933093bcc5e149e961173ad25fb95",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "d9fef6b1c9436db9fe2614682ce35600803b4f6bffd8c2876bc0cd1ccad0ad7d",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "53eb367b1d6e96ecb38905a8723886570e6606fc4667c6b40b70ecafcd722d5e",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "79a1b673941d16dbce2ffdaa66768727cf144361f47798407b7b086667a6b340",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "tests/test_iron_loss.py",
+      "source_sha256": "b1ded8099b7d03ace2ba25af66a245a5b6ebb33f969ed19ce0544ba6d65727bb",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "tests/test_performance_contracts.py",
+      "source_sha256": "0a20ebc73631c0371e587012999efabce1d0f7041f6e61d42e118b44d688efa5",
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "backend/loss_breakdown.py",
+      "source_sha256": null,
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "frontend/scripts/test-losses-view.mjs",
+      "source_sha256": null,
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "frontend/src/public/LossesCard.tsx",
+      "source_sha256": null,
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "frontend/src/public/lossesView.ts",
+      "source_sha256": null,
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "93a3a2d80112ea42b2da1d3ca9192045307711af",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": null,
+      "reason": "Show losses and efficiency for #138: operating-point loss breakdown with shaft torque and efficiency, the iron-loss teeth/yoke split and per-element density, PDF/CSV winding and loss sections, the Results losses card with its breakdown bar and density map, and MATERIALS.md core-loss and conductor documentation."
+    },
+    {
+      "base_commit": "7301df91cbcb4864db12b86f5c6b18c6c147ada8",
+      "path": "MATERIALS.md",
+      "source_sha256": "751a4ca113657aea0a0635c3cdcd4f57895811231562f927b533a8c1e290612a",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7301df91cbcb4864db12b86f5c6b18c6c147ada8",
+      "path": "backend/iron_loss.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7301df91cbcb4864db12b86f5c6b18c6c147ada8",
+      "path": "backend/loss_breakdown.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7301df91cbcb4864db12b86f5c6b18c6c147ada8",
+      "path": "backend/models/__init__.py",
+      "source_sha256": "d20636d0c69095f501b72e1a6ec5930901ba7804c01bb4eea9f7153455271a7b",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7301df91cbcb4864db12b86f5c6b18c6c147ada8",
+      "path": "backend/models/config.py",
+      "source_sha256": "5c2291b09d2f452103e1004169dce8ffb75b9bd877f4c10dd0f62da295eb27c6",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7301df91cbcb4864db12b86f5c6b18c6c147ada8",
+      "path": "backend/models/performance.py",
+      "source_sha256": "479de94fbc8fc6976dcdade082b6a1d24801894da19fd2310a2e3be5c38fcefa",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7301df91cbcb4864db12b86f5c6b18c6c147ada8",
+      "path": "backend/models/result.py",
+      "source_sha256": "3271b8702cb34ef93a72f8a2b5db5e434d47a4ddae4917b9b3c1e1e7bd775407",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7301df91cbcb4864db12b86f5c6b18c6c147ada8",
+      "path": "backend/public_report.py",
+      "source_sha256": "66f33e489f915240886da64a51b1e8b6913a102b7d2bde8ee6e150fde2d96ba9",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7301df91cbcb4864db12b86f5c6b18c6c147ada8",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "5d9c9bf19d6d47c9b206466e182121ced9d7aaae0e515d67bd98dcdaf605d4cd",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7301df91cbcb4864db12b86f5c6b18c6c147ada8",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "94e5c2e37425876a07424e42c21913c8137e0b57ee3698346b3d94181b18140b",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7301df91cbcb4864db12b86f5c6b18c6c147ada8",
+      "path": "frontend/package.json",
+      "source_sha256": "a639368fa8c278f5d98d1ed50fc6e2fa49a066d79442bf530db745249b6abcf1",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7301df91cbcb4864db12b86f5c6b18c6c147ada8",
+      "path": "frontend/scripts/test-losses-view.mjs",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7301df91cbcb4864db12b86f5c6b18c6c147ada8",
+      "path": "frontend/src/public/LossesCard.tsx",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7301df91cbcb4864db12b86f5c6b18c6c147ada8",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "f393e798527761bcf85de34a9c1a7c49881933093bcc5e149e961173ad25fb95",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7301df91cbcb4864db12b86f5c6b18c6c147ada8",
+      "path": "frontend/src/public/lossesView.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7301df91cbcb4864db12b86f5c6b18c6c147ada8",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "958d022445578073874ad579312af72da94e0321be8fd81006ae26a5789e322e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7301df91cbcb4864db12b86f5c6b18c6c147ada8",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "975be9119c22a8cfd7d4faaa97e530b558cbb7d6441c47fdb2e8fcea2703cc57",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7301df91cbcb4864db12b86f5c6b18c6c147ada8",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "da93a26d991ea4405df913d9edd419f6d2a3b77e47f8aa7064473e918009a8ad",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7301df91cbcb4864db12b86f5c6b18c6c147ada8",
+      "path": "tests/test_iron_loss.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7301df91cbcb4864db12b86f5c6b18c6c147ada8",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7301df91cbcb4864db12b86f5c6b18c6c147ada8",
+      "path": "tests/test_performance_contracts.py",
+      "source_sha256": "0a20ebc73631c0371e587012999efabce1d0f7041f6e61d42e118b44d688efa5",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "7301df91cbcb4864db12b86f5c6b18c6c147ada8",
+      "path": "tests/test_windows_field_frame_pool.py",
+      "source_sha256": "caedc891aa678952edd9afd41b58c2bd9891d7bee8b5315f821faeb88a20cb73",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "12343369402e9f4591f83d4a9e10b2394851840c",
+      "path": "MATERIALS.md",
+      "source_sha256": "751a4ca113657aea0a0635c3cdcd4f57895811231562f927b533a8c1e290612a",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "12343369402e9f4591f83d4a9e10b2394851840c",
+      "path": "backend/iron_loss.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "12343369402e9f4591f83d4a9e10b2394851840c",
+      "path": "backend/loss_breakdown.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "12343369402e9f4591f83d4a9e10b2394851840c",
+      "path": "backend/models/__init__.py",
+      "source_sha256": "d20636d0c69095f501b72e1a6ec5930901ba7804c01bb4eea9f7153455271a7b",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "12343369402e9f4591f83d4a9e10b2394851840c",
+      "path": "backend/models/config.py",
+      "source_sha256": "5c2291b09d2f452103e1004169dce8ffb75b9bd877f4c10dd0f62da295eb27c6",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "12343369402e9f4591f83d4a9e10b2394851840c",
+      "path": "backend/models/performance.py",
+      "source_sha256": "479de94fbc8fc6976dcdade082b6a1d24801894da19fd2310a2e3be5c38fcefa",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "12343369402e9f4591f83d4a9e10b2394851840c",
+      "path": "backend/models/result.py",
+      "source_sha256": "3271b8702cb34ef93a72f8a2b5db5e434d47a4ddae4917b9b3c1e1e7bd775407",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "12343369402e9f4591f83d4a9e10b2394851840c",
+      "path": "backend/public_report.py",
+      "source_sha256": "66f33e489f915240886da64a51b1e8b6913a102b7d2bde8ee6e150fde2d96ba9",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "12343369402e9f4591f83d4a9e10b2394851840c",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "5d9c9bf19d6d47c9b206466e182121ced9d7aaae0e515d67bd98dcdaf605d4cd",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "12343369402e9f4591f83d4a9e10b2394851840c",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "94e5c2e37425876a07424e42c21913c8137e0b57ee3698346b3d94181b18140b",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "12343369402e9f4591f83d4a9e10b2394851840c",
+      "path": "frontend/package.json",
+      "source_sha256": "a639368fa8c278f5d98d1ed50fc6e2fa49a066d79442bf530db745249b6abcf1",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "12343369402e9f4591f83d4a9e10b2394851840c",
+      "path": "frontend/scripts/test-losses-view.mjs",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "12343369402e9f4591f83d4a9e10b2394851840c",
+      "path": "frontend/src/public/LossesCard.tsx",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "12343369402e9f4591f83d4a9e10b2394851840c",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "f393e798527761bcf85de34a9c1a7c49881933093bcc5e149e961173ad25fb95",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "12343369402e9f4591f83d4a9e10b2394851840c",
+      "path": "frontend/src/public/lossesView.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "12343369402e9f4591f83d4a9e10b2394851840c",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "958d022445578073874ad579312af72da94e0321be8fd81006ae26a5789e322e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "12343369402e9f4591f83d4a9e10b2394851840c",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "975be9119c22a8cfd7d4faaa97e530b558cbb7d6441c47fdb2e8fcea2703cc57",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "12343369402e9f4591f83d4a9e10b2394851840c",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "da93a26d991ea4405df913d9edd419f6d2a3b77e47f8aa7064473e918009a8ad",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "12343369402e9f4591f83d4a9e10b2394851840c",
+      "path": "tests/test_iron_loss.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "12343369402e9f4591f83d4a9e10b2394851840c",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "12343369402e9f4591f83d4a9e10b2394851840c",
+      "path": "tests/test_performance_contracts.py",
+      "source_sha256": "0a20ebc73631c0371e587012999efabce1d0f7041f6e61d42e118b44d688efa5",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "12343369402e9f4591f83d4a9e10b2394851840c",
+      "path": "tests/test_windows_field_frame_pool.py",
+      "source_sha256": "caedc891aa678952edd9afd41b58c2bd9891d7bee8b5315f821faeb88a20cb73",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f47fbb4033939d3685d3c205bf80d1562c93c83",
+      "path": "MATERIALS.md",
+      "source_sha256": "751a4ca113657aea0a0635c3cdcd4f57895811231562f927b533a8c1e290612a",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f47fbb4033939d3685d3c205bf80d1562c93c83",
+      "path": "backend/iron_loss.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f47fbb4033939d3685d3c205bf80d1562c93c83",
+      "path": "backend/loss_breakdown.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f47fbb4033939d3685d3c205bf80d1562c93c83",
+      "path": "backend/models/__init__.py",
+      "source_sha256": "d20636d0c69095f501b72e1a6ec5930901ba7804c01bb4eea9f7153455271a7b",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f47fbb4033939d3685d3c205bf80d1562c93c83",
+      "path": "backend/models/config.py",
+      "source_sha256": "5c2291b09d2f452103e1004169dce8ffb75b9bd877f4c10dd0f62da295eb27c6",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f47fbb4033939d3685d3c205bf80d1562c93c83",
+      "path": "backend/models/performance.py",
+      "source_sha256": "479de94fbc8fc6976dcdade082b6a1d24801894da19fd2310a2e3be5c38fcefa",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f47fbb4033939d3685d3c205bf80d1562c93c83",
+      "path": "backend/models/result.py",
+      "source_sha256": "3271b8702cb34ef93a72f8a2b5db5e434d47a4ddae4917b9b3c1e1e7bd775407",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f47fbb4033939d3685d3c205bf80d1562c93c83",
+      "path": "backend/public_report.py",
+      "source_sha256": "66f33e489f915240886da64a51b1e8b6913a102b7d2bde8ee6e150fde2d96ba9",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f47fbb4033939d3685d3c205bf80d1562c93c83",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "5d9c9bf19d6d47c9b206466e182121ced9d7aaae0e515d67bd98dcdaf605d4cd",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f47fbb4033939d3685d3c205bf80d1562c93c83",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "94e5c2e37425876a07424e42c21913c8137e0b57ee3698346b3d94181b18140b",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f47fbb4033939d3685d3c205bf80d1562c93c83",
+      "path": "frontend/package.json",
+      "source_sha256": "a639368fa8c278f5d98d1ed50fc6e2fa49a066d79442bf530db745249b6abcf1",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f47fbb4033939d3685d3c205bf80d1562c93c83",
+      "path": "frontend/scripts/test-losses-view.mjs",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f47fbb4033939d3685d3c205bf80d1562c93c83",
+      "path": "frontend/src/public/LossesCard.tsx",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f47fbb4033939d3685d3c205bf80d1562c93c83",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "f393e798527761bcf85de34a9c1a7c49881933093bcc5e149e961173ad25fb95",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f47fbb4033939d3685d3c205bf80d1562c93c83",
+      "path": "frontend/src/public/lossesView.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f47fbb4033939d3685d3c205bf80d1562c93c83",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "958d022445578073874ad579312af72da94e0321be8fd81006ae26a5789e322e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f47fbb4033939d3685d3c205bf80d1562c93c83",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "975be9119c22a8cfd7d4faaa97e530b558cbb7d6441c47fdb2e8fcea2703cc57",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f47fbb4033939d3685d3c205bf80d1562c93c83",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "da93a26d991ea4405df913d9edd419f6d2a3b77e47f8aa7064473e918009a8ad",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f47fbb4033939d3685d3c205bf80d1562c93c83",
+      "path": "tests/test_iron_loss.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f47fbb4033939d3685d3c205bf80d1562c93c83",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f47fbb4033939d3685d3c205bf80d1562c93c83",
+      "path": "tests/test_performance_contracts.py",
+      "source_sha256": "0a20ebc73631c0371e587012999efabce1d0f7041f6e61d42e118b44d688efa5",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "9f47fbb4033939d3685d3c205bf80d1562c93c83",
+      "path": "tests/test_windows_field_frame_pool.py",
+      "source_sha256": "caedc891aa678952edd9afd41b58c2bd9891d7bee8b5315f821faeb88a20cb73",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
+      "path": "MATERIALS.md",
+      "source_sha256": "751a4ca113657aea0a0635c3cdcd4f57895811231562f927b533a8c1e290612a",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
+      "path": "backend/iron_loss.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
+      "path": "backend/loss_breakdown.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
+      "path": "backend/models/__init__.py",
+      "source_sha256": "d20636d0c69095f501b72e1a6ec5930901ba7804c01bb4eea9f7153455271a7b",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
+      "path": "backend/models/config.py",
+      "source_sha256": "5c2291b09d2f452103e1004169dce8ffb75b9bd877f4c10dd0f62da295eb27c6",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
+      "path": "backend/models/performance.py",
+      "source_sha256": "479de94fbc8fc6976dcdade082b6a1d24801894da19fd2310a2e3be5c38fcefa",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
+      "path": "backend/models/result.py",
+      "source_sha256": "3271b8702cb34ef93a72f8a2b5db5e434d47a4ddae4917b9b3c1e1e7bd775407",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
+      "path": "backend/public_report.py",
+      "source_sha256": "66f33e489f915240886da64a51b1e8b6913a102b7d2bde8ee6e150fde2d96ba9",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "5d9c9bf19d6d47c9b206466e182121ced9d7aaae0e515d67bd98dcdaf605d4cd",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "94e5c2e37425876a07424e42c21913c8137e0b57ee3698346b3d94181b18140b",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
+      "path": "frontend/package.json",
+      "source_sha256": "a639368fa8c278f5d98d1ed50fc6e2fa49a066d79442bf530db745249b6abcf1",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
+      "path": "frontend/scripts/test-losses-view.mjs",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
+      "path": "frontend/src/public/LossesCard.tsx",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "f393e798527761bcf85de34a9c1a7c49881933093bcc5e149e961173ad25fb95",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
+      "path": "frontend/src/public/lossesView.ts",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "958d022445578073874ad579312af72da94e0321be8fd81006ae26a5789e322e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "975be9119c22a8cfd7d4faaa97e530b558cbb7d6441c47fdb2e8fcea2703cc57",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "da93a26d991ea4405df913d9edd419f6d2a3b77e47f8aa7064473e918009a8ad",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
+      "path": "tests/test_iron_loss.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
+      "path": "tests/test_performance_contracts.py",
+      "source_sha256": "0a20ebc73631c0371e587012999efabce1d0f7041f6e61d42e118b44d688efa5",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "ca5a41c68cd516ba7936035fa9680668ce2544d7",
+      "path": "tests/test_windows_field_frame_pool.py",
+      "source_sha256": "caedc891aa678952edd9afd41b58c2bd9891d7bee8b5315f821faeb88a20cb73",
       "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
     }
   ]
