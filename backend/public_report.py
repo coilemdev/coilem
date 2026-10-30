@@ -48,7 +48,7 @@ from backend.magnet_temperature import is_derated_run
 from backend.models.performance import (
     DQ_FLUX_LINKAGE_STATUS_REASON,
     MAGNET_TEMPERATURE_STATUS_REASON,
-    PHASE_RESISTANCE_STATUS_REASON,
+    PHASE_RESISTANCE_UNRECORDED_STATUS_REASON,
 )
 
 PUBLIC_REPORT_SCHEMA = "coilem.single_run_report.v1"
@@ -229,9 +229,10 @@ def _status_text(status: str, reason: str) -> str:
 def _output_statuses(result: Mapping[str, Any]) -> list[tuple[str, str, str, str]]:
     """(key, output, status, reason) of each 0.5.0 output the run recorded (public issue 143).
 
-    d/q and winding records stored before they carried a status, and derated
-    magnets recorded without one, were experimental for the reasons the
-    current records give.
+    d/q records stored before they carried a status, and derated magnets
+    recorded without one, were experimental for the reasons the current records
+    give. Winding records stored without one predate the phase-resistance gate,
+    so they are experimental too, and say so.
     """
 
     summary = _mapping(result.get("summary"))
@@ -246,7 +247,8 @@ def _output_statuses(result: Mapping[str, Any]) -> list[tuple[str, str, str, str
     if summary.get("dq_flux_linkage"):
         recorded("dq_flux_linkage", "d/q flux linkage and inductances", _mapping(summary["dq_flux_linkage"]), DQ_FLUX_LINKAGE_STATUS_REASON)
     if summary.get("winding_resistance"):
-        recorded("phase_resistance", "Phase resistance and copper loss", _mapping(summary["winding_resistance"]), PHASE_RESISTANCE_STATUS_REASON)
+        winding = _mapping(summary["winding_resistance"])
+        recorded("phase_resistance", "Phase resistance and copper loss", winding, PHASE_RESISTANCE_UNRECORDED_STATUS_REASON)
     iron = _mapping(summary.get("iron_loss"))
     if iron.get("status") in ("qualified", "experimental"):
         statuses.append(("iron_loss", "Iron loss and its density map", iron["status"], _plain(iron.get("status_reason"))))

@@ -174,6 +174,11 @@
       "sha256": "cb7fa762862b6e48c34904d01ad007634bb21c5a8320553c529ccc69748a807a"
     },
     {
+      "path": "backend/benchmark_suite/resistance_metrics.py",
+      "bytes": 3070,
+      "sha256": "984665c631649cc64e0d6f73a5df43dcdb710a9d537886e1eeb32672faf08513"
+    },
+    {
       "path": "backend/benchmark_suite/share.py",
       "bytes": 8997,
       "sha256": "c26023448d3169f7b2269b2053aec03a322d3b60cb4099e641a8381d3d73f720"
@@ -480,8 +485,8 @@
     },
     {
       "path": "backend/models/performance.py",
-      "bytes": 21582,
-      "sha256": "6eddd38f077648bce6ce7f9ed3e2e63802a300a6520016537a31cdbfd4411d50"
+      "bytes": 22167,
+      "sha256": "e486205d2a30f5d3bd1fb4d34290564dc8cfb1a99c853202c28aa0495a2a16c6"
     },
     {
       "path": "backend/models/result.py",
@@ -495,8 +500,8 @@
     },
     {
       "path": "backend/performance_report.py",
-      "bytes": 45813,
-      "sha256": "d7e8ac37a032a511be133409ead2b0b6deffd2e93574b46a4d0525f31e919e3b"
+      "bytes": 46525,
+      "sha256": "5d87a66bd937e997b492a8468f6775b0d6bf787aa0ee603b792483bb2e741c53"
     },
     {
       "path": "backend/platform_info.py",
@@ -540,8 +545,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 77723,
-      "sha256": "89d62fb916fb1460c581d325693650ff1455eef35d5a660632e35662cc81e726"
+      "bytes": 77875,
+      "sha256": "fc54b1ef45c8978255e8d3c43792e8f37c30057ecf6ecea2aa1338db3947ff94"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -690,8 +695,8 @@
     },
     {
       "path": "backend/winding_resistance.py",
-      "bytes": 11111,
-      "sha256": "8f80fcc2c0d55d1d61cfcba3bf62da5b4ad63b23e0ecf583fcd05e023874114d"
+      "bytes": 11775,
+      "sha256": "f9025679b019ae06981d208b662ba9133b8bf3c264b60c26aa8abe9ca248fbbf"
     },
     {
       "path": "backend/winding_utils.py",
@@ -829,9 +834,14 @@
       "sha256": "8b22e1193bc2a4eca5f175cfaab38cd217fca6e8e31408603837d7729f9abab8"
     },
     {
+      "path": "benchmarks/abcd-v1.6/PHASE-RESISTANCE.md",
+      "bytes": 14718,
+      "sha256": "4f691ba3b7ca3398fb519369b57bb93c9d2a5015f9cd6b4b5d6042ac1c5831f9"
+    },
+    {
       "path": "benchmarks/abcd-v1.6/README.md",
-      "bytes": 3205,
-      "sha256": "4d21d64b64a2e5931877941666c96e9b37232581c82bcb32ba927de7cc438517"
+      "bytes": 4396,
+      "sha256": "da734d7f1b2537f441b3f5dc9d0018dd37d569d0d807d66dabe296535577dcd5"
     },
     {
       "path": "benchmarks/abcd-v1.6/benchmark_spec.json",
@@ -917,6 +927,11 @@
       "path": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__magnet_60C.json",
       "bytes": 2506,
       "sha256": "5633ed8c7644bf4e71c557b03afce86193313bc1e20566bb61d503018669a263"
+    },
+    {
+      "path": "benchmarks/abcd-v1.6/phase_resistance_gate.json",
+      "bytes": 3309,
+      "sha256": "90b001cd0f32705f0f38b46f502369268d7b7cce56ac320033d3a6a804b58bd6"
     },
     {
       "path": "benchmarks/abcd-v1/README.md",
@@ -6355,8 +6370,8 @@
     },
     {
       "path": "frontend/scripts/test-losses-view.mjs",
-      "bytes": 6103,
-      "sha256": "0e3993b1b29b7c5a795db0968a397d465a60c4479abb42e672716ed75e36272d"
+      "bytes": 6575,
+      "sha256": "f96feb6fb498c44281d83ca94881a1bb7fe5736a7ec22ddcb220de50035a168f"
     },
     {
       "path": "frontend/scripts/test-magnet-coverage.mjs",
@@ -6435,8 +6450,8 @@
     },
     {
       "path": "frontend/scripts/test-winding-resistance.mjs",
-      "bytes": 3019,
-      "sha256": "5a50ebf4943e16c9687bcfdeabedab9d7d3aa970e647c468df73767ad1510feb"
+      "bytes": 3425,
+      "sha256": "1b1f917baa6d54922dfbedb89a5a55f1be0f8bcb7207f12eb75cff8d123d8687"
     },
     {
       "path": "frontend/scripts/test-winding-ring.mjs",
@@ -6880,8 +6895,8 @@
     },
     {
       "path": "frontend/src/public/PerformancePanel.tsx",
-      "bytes": 37964,
-      "sha256": "877bb10aeb90692718e6726c3a04cbb288d8c8aab86357655d52f1e8b043df4f"
+      "bytes": 38191,
+      "sha256": "b2e128af22d8de4036805c3d561753c30cd8dad6af9e53cdf9fafe33ddfc85e0"
     },
     {
       "path": "frontend/src/public/PublicLanding.tsx",
@@ -7180,8 +7195,8 @@
     },
     {
       "path": "frontend/src/public/lossesView.ts",
-      "bytes": 9366,
-      "sha256": "661e07c53021df69039f37168a58bec3776212a6ad9961a369be80c801f119ef"
+      "bytes": 9388,
+      "sha256": "4786f18a3596364f1f30e20a3ac21abb2be89d4d8e230a15c99c94c21791968e"
     },
     {
       "path": "frontend/src/public/machineConstants.ts",
@@ -7245,13 +7260,13 @@
     },
     {
       "path": "frontend/src/public/outputStatus.ts",
-      "bytes": 2079,
-      "sha256": "5f4b9fe1ad001e4d3793c614036a86bcef3a39c929c2b0a47e3dc43a961c8af5"
+      "bytes": 2426,
+      "sha256": "eaefe9db44cd6ffb2a3b76221db814a57b85f106e3ad4675217507267d004894"
     },
     {
       "path": "frontend/src/public/performance.ts",
-      "bytes": 8130,
-      "sha256": "f7d7e629dda69d2302b8a737d0f1d27a1c10347829353427835f4a4ccc1ec567"
+      "bytes": 8306,
+      "sha256": "b34956a666f651b34ec85e4bce85583896c9cdda06f24f771097be0da740a6ea"
     },
     {
       "path": "frontend/src/public/performanceView.ts",
@@ -7330,8 +7345,8 @@
     },
     {
       "path": "frontend/src/public/windingResistance.ts",
-      "bytes": 5061,
-      "sha256": "637cd0dd26e2cadfc5212deb92fa703c9012add22b07e850ec7ec8c747dbce8a"
+      "bytes": 5083,
+      "sha256": "c8aaf14376fd34f1aaffe3fcff590f8c781c07bfed42965f683e926c2e15a934"
     },
     {
       "path": "frontend/src/public/windingRing.ts",
@@ -7940,8 +7955,8 @@
     },
     {
       "path": "tests/test_output_status.py",
-      "bytes": 8079,
-      "sha256": "c4d5ba1d67dba0687de9ae8954b9b9979ee38300662a2efd124d5d2db235559a"
+      "bytes": 10355,
+      "sha256": "99cfae3d00627304f825d83ee929105fd556bcce5ce3636aee872678a5300a4d"
     },
     {
       "path": "tests/test_payload_reuse.py",
@@ -7955,13 +7970,18 @@
     },
     {
       "path": "tests/test_performance_report.py",
-      "bytes": 7736,
-      "sha256": "255e12810e57850ec624717c529d93b4c3b5c22784d193c86852342e49cc6e88"
+      "bytes": 8419,
+      "sha256": "d93b499e08b5850e47d7a8be9d9b2126bb3188186a1ea72ca121eccc82cb8537"
     },
     {
       "path": "tests/test_performance_routes.py",
       "bytes": 4305,
       "sha256": "a2ec62732ee7983effbcd6e28e84932260490ea8ab64719b569a00eca305b631"
+    },
+    {
+      "path": "tests/test_phase_resistance_gate.py",
+      "bytes": 8762,
+      "sha256": "a8d273bb21baed0f807939d7ee18ec12acc507c10d54b8d43db472494c47e526"
     },
     {
       "path": "tests/test_postsolve_pipeline.py",
@@ -8125,8 +8145,8 @@
     },
     {
       "path": "tests/test_winding_resistance.py",
-      "bytes": 8851,
-      "sha256": "b4fd9f832d22f93d265ce9c7f2d0f77e640fecb5ed0f4be9fb7abb588a3f48af"
+      "bytes": 9030,
+      "sha256": "112d7ceb4f1bf876aa36f46a24881f7d897625f1a82b1b4901784e688b8bde06"
     },
     {
       "path": "tests/test_winding_ring_geometry.py",
@@ -22746,6 +22766,582 @@
       "base_commit": "489bb8b67625c9deb206ee5729584c7b83aba0a7",
       "path": "tests/test_winding_resistance.py",
       "source_sha256": "171c736dfec0fecd4cd14b9baecefb8f87ee7b3c542384cf720b2a93a5ad123c",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
+      "path": "backend/benchmark_suite/resistance_metrics.py",
+      "source_sha256": null,
+      "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
+    },
+    {
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
+      "path": "backend/models/performance.py",
+      "source_sha256": "6eddd38f077648bce6ce7f9ed3e2e63802a300a6520016537a31cdbfd4411d50",
+      "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
+    },
+    {
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
+      "path": "backend/performance_report.py",
+      "source_sha256": "d7e8ac37a032a511be133409ead2b0b6deffd2e93574b46a4d0525f31e919e3b",
+      "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
+    },
+    {
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
+      "path": "backend/public_report.py",
+      "source_sha256": "89d62fb916fb1460c581d325693650ff1455eef35d5a660632e35662cc81e726",
+      "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
+    },
+    {
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
+      "path": "backend/winding_resistance.py",
+      "source_sha256": "8f80fcc2c0d55d1d61cfcba3bf62da5b4ad63b23e0ecf583fcd05e023874114d",
+      "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
+    },
+    {
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
+      "path": "benchmarks/abcd-v1.6/PHASE-RESISTANCE.md",
+      "source_sha256": null,
+      "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
+    },
+    {
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
+      "path": "benchmarks/abcd-v1.6/README.md",
+      "source_sha256": "4d21d64b64a2e5931877941666c96e9b37232581c82bcb32ba927de7cc438517",
+      "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
+    },
+    {
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
+      "path": "benchmarks/abcd-v1.6/phase_resistance_gate.json",
+      "source_sha256": null,
+      "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
+    },
+    {
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
+      "path": "frontend/scripts/test-losses-view.mjs",
+      "source_sha256": "0e3993b1b29b7c5a795db0968a397d465a60c4479abb42e672716ed75e36272d",
+      "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
+    },
+    {
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
+      "path": "frontend/scripts/test-winding-resistance.mjs",
+      "source_sha256": "5a50ebf4943e16c9687bcfdeabedab9d7d3aa970e647c468df73767ad1510feb",
+      "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
+    },
+    {
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "5fa21a1b898ea8b858d78a70fb827bbacf87be2770934ef8a25d3534576edc75",
+      "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
+    },
+    {
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
+      "path": "frontend/src/public/lossesView.ts",
+      "source_sha256": "661e07c53021df69039f37168a58bec3776212a6ad9961a369be80c801f119ef",
+      "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
+    },
+    {
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
+      "path": "frontend/src/public/outputStatus.ts",
+      "source_sha256": "5f4b9fe1ad001e4d3793c614036a86bcef3a39c929c2b0a47e3dc43a961c8af5",
+      "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
+    },
+    {
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "f7d7e629dda69d2302b8a737d0f1d27a1c10347829353427835f4a4ccc1ec567",
+      "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
+    },
+    {
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
+      "path": "frontend/src/public/windingResistance.ts",
+      "source_sha256": "637cd0dd26e2cadfc5212deb92fa703c9012add22b07e850ec7ec8c747dbce8a",
+      "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
+    },
+    {
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
+      "path": "tests/test_output_status.py",
+      "source_sha256": "c4d5ba1d67dba0687de9ae8954b9b9979ee38300662a2efd124d5d2db235559a",
+      "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
+    },
+    {
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": "255e12810e57850ec624717c529d93b4c3b5c22784d193c86852342e49cc6e88",
+      "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
+    },
+    {
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
+      "path": "tests/test_phase_resistance_gate.py",
+      "source_sha256": null,
+      "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
+    },
+    {
+      "base_commit": "8f12117a21344e17b7c7b22fe2815ed375121364",
+      "path": "tests/test_winding_resistance.py",
+      "source_sha256": "b4fd9f832d22f93d265ce9c7f2d0f77e640fecb5ed0f4be9fb7abb588a3f48af",
+      "reason": "Phase-resistance gate (protocol 1.6.0): hand calculations, the registered gate, and phase resistance qualified in the record, the app and both reports"
+    },
+    {
+      "base_commit": "06733f4defc0281f57385b4c6c6119ba1903dbab",
+      "path": "benchmarks/abcd-v1.6/PHASE-RESISTANCE.md",
+      "source_sha256": "94b34f676345ec6d7e6aad192a9838eee2dba7c7025f69a1ab4e6e1fb4cb5499",
+      "reason": "Refer to the published Prius conductor by its code, not a private PR number"
+    },
+    {
+      "base_commit": "2bf807a8eaf5619e54b7f1accfbf77f5b58965ad",
+      "path": "backend/benchmark_suite/resistance_metrics.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2bf807a8eaf5619e54b7f1accfbf77f5b58965ad",
+      "path": "backend/models/performance.py",
+      "source_sha256": "6eddd38f077648bce6ce7f9ed3e2e63802a300a6520016537a31cdbfd4411d50",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2bf807a8eaf5619e54b7f1accfbf77f5b58965ad",
+      "path": "backend/performance_report.py",
+      "source_sha256": "d7e8ac37a032a511be133409ead2b0b6deffd2e93574b46a4d0525f31e919e3b",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2bf807a8eaf5619e54b7f1accfbf77f5b58965ad",
+      "path": "backend/public_report.py",
+      "source_sha256": "89d62fb916fb1460c581d325693650ff1455eef35d5a660632e35662cc81e726",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2bf807a8eaf5619e54b7f1accfbf77f5b58965ad",
+      "path": "backend/winding_resistance.py",
+      "source_sha256": "8f80fcc2c0d55d1d61cfcba3bf62da5b4ad63b23e0ecf583fcd05e023874114d",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2bf807a8eaf5619e54b7f1accfbf77f5b58965ad",
+      "path": "benchmarks/abcd-v1.6/PHASE-RESISTANCE.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2bf807a8eaf5619e54b7f1accfbf77f5b58965ad",
+      "path": "benchmarks/abcd-v1.6/README.md",
+      "source_sha256": "4d21d64b64a2e5931877941666c96e9b37232581c82bcb32ba927de7cc438517",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2bf807a8eaf5619e54b7f1accfbf77f5b58965ad",
+      "path": "benchmarks/abcd-v1.6/phase_resistance_gate.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2bf807a8eaf5619e54b7f1accfbf77f5b58965ad",
+      "path": "frontend/scripts/test-losses-view.mjs",
+      "source_sha256": "0e3993b1b29b7c5a795db0968a397d465a60c4479abb42e672716ed75e36272d",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2bf807a8eaf5619e54b7f1accfbf77f5b58965ad",
+      "path": "frontend/scripts/test-winding-resistance.mjs",
+      "source_sha256": "5a50ebf4943e16c9687bcfdeabedab9d7d3aa970e647c468df73767ad1510feb",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2bf807a8eaf5619e54b7f1accfbf77f5b58965ad",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "877bb10aeb90692718e6726c3a04cbb288d8c8aab86357655d52f1e8b043df4f",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2bf807a8eaf5619e54b7f1accfbf77f5b58965ad",
+      "path": "frontend/src/public/lossesView.ts",
+      "source_sha256": "661e07c53021df69039f37168a58bec3776212a6ad9961a369be80c801f119ef",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2bf807a8eaf5619e54b7f1accfbf77f5b58965ad",
+      "path": "frontend/src/public/outputStatus.ts",
+      "source_sha256": "5f4b9fe1ad001e4d3793c614036a86bcef3a39c929c2b0a47e3dc43a961c8af5",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2bf807a8eaf5619e54b7f1accfbf77f5b58965ad",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "f7d7e629dda69d2302b8a737d0f1d27a1c10347829353427835f4a4ccc1ec567",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2bf807a8eaf5619e54b7f1accfbf77f5b58965ad",
+      "path": "frontend/src/public/windingResistance.ts",
+      "source_sha256": "637cd0dd26e2cadfc5212deb92fa703c9012add22b07e850ec7ec8c747dbce8a",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2bf807a8eaf5619e54b7f1accfbf77f5b58965ad",
+      "path": "tests/test_output_status.py",
+      "source_sha256": "c4d5ba1d67dba0687de9ae8954b9b9979ee38300662a2efd124d5d2db235559a",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2bf807a8eaf5619e54b7f1accfbf77f5b58965ad",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": "255e12810e57850ec624717c529d93b4c3b5c22784d193c86852342e49cc6e88",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2bf807a8eaf5619e54b7f1accfbf77f5b58965ad",
+      "path": "tests/test_phase_resistance_gate.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2bf807a8eaf5619e54b7f1accfbf77f5b58965ad",
+      "path": "tests/test_winding_resistance.py",
+      "source_sha256": "b4fd9f832d22f93d265ce9c7f2d0f77e640fecb5ed0f4be9fb7abb588a3f48af",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "308271ad13160c043df56380504d566cca460b9f",
+      "path": "backend/benchmark_suite/resistance_metrics.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "308271ad13160c043df56380504d566cca460b9f",
+      "path": "backend/models/performance.py",
+      "source_sha256": "6eddd38f077648bce6ce7f9ed3e2e63802a300a6520016537a31cdbfd4411d50",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "308271ad13160c043df56380504d566cca460b9f",
+      "path": "backend/performance_report.py",
+      "source_sha256": "d7e8ac37a032a511be133409ead2b0b6deffd2e93574b46a4d0525f31e919e3b",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "308271ad13160c043df56380504d566cca460b9f",
+      "path": "backend/public_report.py",
+      "source_sha256": "89d62fb916fb1460c581d325693650ff1455eef35d5a660632e35662cc81e726",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "308271ad13160c043df56380504d566cca460b9f",
+      "path": "backend/winding_resistance.py",
+      "source_sha256": "8f80fcc2c0d55d1d61cfcba3bf62da5b4ad63b23e0ecf583fcd05e023874114d",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "308271ad13160c043df56380504d566cca460b9f",
+      "path": "benchmarks/abcd-v1.6/PHASE-RESISTANCE.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "308271ad13160c043df56380504d566cca460b9f",
+      "path": "benchmarks/abcd-v1.6/README.md",
+      "source_sha256": "4d21d64b64a2e5931877941666c96e9b37232581c82bcb32ba927de7cc438517",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "308271ad13160c043df56380504d566cca460b9f",
+      "path": "benchmarks/abcd-v1.6/phase_resistance_gate.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "308271ad13160c043df56380504d566cca460b9f",
+      "path": "frontend/scripts/test-losses-view.mjs",
+      "source_sha256": "0e3993b1b29b7c5a795db0968a397d465a60c4479abb42e672716ed75e36272d",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "308271ad13160c043df56380504d566cca460b9f",
+      "path": "frontend/scripts/test-winding-resistance.mjs",
+      "source_sha256": "5a50ebf4943e16c9687bcfdeabedab9d7d3aa970e647c468df73767ad1510feb",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "308271ad13160c043df56380504d566cca460b9f",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "877bb10aeb90692718e6726c3a04cbb288d8c8aab86357655d52f1e8b043df4f",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "308271ad13160c043df56380504d566cca460b9f",
+      "path": "frontend/src/public/lossesView.ts",
+      "source_sha256": "661e07c53021df69039f37168a58bec3776212a6ad9961a369be80c801f119ef",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "308271ad13160c043df56380504d566cca460b9f",
+      "path": "frontend/src/public/outputStatus.ts",
+      "source_sha256": "5f4b9fe1ad001e4d3793c614036a86bcef3a39c929c2b0a47e3dc43a961c8af5",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "308271ad13160c043df56380504d566cca460b9f",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "f7d7e629dda69d2302b8a737d0f1d27a1c10347829353427835f4a4ccc1ec567",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "308271ad13160c043df56380504d566cca460b9f",
+      "path": "frontend/src/public/windingResistance.ts",
+      "source_sha256": "637cd0dd26e2cadfc5212deb92fa703c9012add22b07e850ec7ec8c747dbce8a",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "308271ad13160c043df56380504d566cca460b9f",
+      "path": "tests/test_output_status.py",
+      "source_sha256": "c4d5ba1d67dba0687de9ae8954b9b9979ee38300662a2efd124d5d2db235559a",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "308271ad13160c043df56380504d566cca460b9f",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": "255e12810e57850ec624717c529d93b4c3b5c22784d193c86852342e49cc6e88",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "308271ad13160c043df56380504d566cca460b9f",
+      "path": "tests/test_phase_resistance_gate.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "308271ad13160c043df56380504d566cca460b9f",
+      "path": "tests/test_winding_resistance.py",
+      "source_sha256": "b4fd9f832d22f93d265ce9c7f2d0f77e640fecb5ed0f4be9fb7abb588a3f48af",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a95c56d1d36cde3cbdf047193ad34d866789cfde",
+      "path": "backend/benchmark_suite/resistance_metrics.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a95c56d1d36cde3cbdf047193ad34d866789cfde",
+      "path": "backend/models/performance.py",
+      "source_sha256": "6eddd38f077648bce6ce7f9ed3e2e63802a300a6520016537a31cdbfd4411d50",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a95c56d1d36cde3cbdf047193ad34d866789cfde",
+      "path": "backend/performance_report.py",
+      "source_sha256": "d7e8ac37a032a511be133409ead2b0b6deffd2e93574b46a4d0525f31e919e3b",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a95c56d1d36cde3cbdf047193ad34d866789cfde",
+      "path": "backend/public_report.py",
+      "source_sha256": "89d62fb916fb1460c581d325693650ff1455eef35d5a660632e35662cc81e726",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a95c56d1d36cde3cbdf047193ad34d866789cfde",
+      "path": "backend/winding_resistance.py",
+      "source_sha256": "8f80fcc2c0d55d1d61cfcba3bf62da5b4ad63b23e0ecf583fcd05e023874114d",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a95c56d1d36cde3cbdf047193ad34d866789cfde",
+      "path": "benchmarks/abcd-v1.6/PHASE-RESISTANCE.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a95c56d1d36cde3cbdf047193ad34d866789cfde",
+      "path": "benchmarks/abcd-v1.6/README.md",
+      "source_sha256": "4d21d64b64a2e5931877941666c96e9b37232581c82bcb32ba927de7cc438517",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a95c56d1d36cde3cbdf047193ad34d866789cfde",
+      "path": "benchmarks/abcd-v1.6/phase_resistance_gate.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a95c56d1d36cde3cbdf047193ad34d866789cfde",
+      "path": "frontend/scripts/test-losses-view.mjs",
+      "source_sha256": "0e3993b1b29b7c5a795db0968a397d465a60c4479abb42e672716ed75e36272d",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a95c56d1d36cde3cbdf047193ad34d866789cfde",
+      "path": "frontend/scripts/test-winding-resistance.mjs",
+      "source_sha256": "5a50ebf4943e16c9687bcfdeabedab9d7d3aa970e647c468df73767ad1510feb",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a95c56d1d36cde3cbdf047193ad34d866789cfde",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "877bb10aeb90692718e6726c3a04cbb288d8c8aab86357655d52f1e8b043df4f",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a95c56d1d36cde3cbdf047193ad34d866789cfde",
+      "path": "frontend/src/public/lossesView.ts",
+      "source_sha256": "661e07c53021df69039f37168a58bec3776212a6ad9961a369be80c801f119ef",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a95c56d1d36cde3cbdf047193ad34d866789cfde",
+      "path": "frontend/src/public/outputStatus.ts",
+      "source_sha256": "5f4b9fe1ad001e4d3793c614036a86bcef3a39c929c2b0a47e3dc43a961c8af5",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a95c56d1d36cde3cbdf047193ad34d866789cfde",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "f7d7e629dda69d2302b8a737d0f1d27a1c10347829353427835f4a4ccc1ec567",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a95c56d1d36cde3cbdf047193ad34d866789cfde",
+      "path": "frontend/src/public/windingResistance.ts",
+      "source_sha256": "637cd0dd26e2cadfc5212deb92fa703c9012add22b07e850ec7ec8c747dbce8a",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a95c56d1d36cde3cbdf047193ad34d866789cfde",
+      "path": "tests/test_output_status.py",
+      "source_sha256": "c4d5ba1d67dba0687de9ae8954b9b9979ee38300662a2efd124d5d2db235559a",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a95c56d1d36cde3cbdf047193ad34d866789cfde",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": "255e12810e57850ec624717c529d93b4c3b5c22784d193c86852342e49cc6e88",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a95c56d1d36cde3cbdf047193ad34d866789cfde",
+      "path": "tests/test_phase_resistance_gate.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a95c56d1d36cde3cbdf047193ad34d866789cfde",
+      "path": "tests/test_winding_resistance.py",
+      "source_sha256": "b4fd9f832d22f93d265ce9c7f2d0f77e640fecb5ed0f4be9fb7abb588a3f48af",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b4a475767be3ccbeab2fdc1137af3b910245ab4b",
+      "path": "backend/benchmark_suite/resistance_metrics.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b4a475767be3ccbeab2fdc1137af3b910245ab4b",
+      "path": "backend/models/performance.py",
+      "source_sha256": "6eddd38f077648bce6ce7f9ed3e2e63802a300a6520016537a31cdbfd4411d50",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b4a475767be3ccbeab2fdc1137af3b910245ab4b",
+      "path": "backend/performance_report.py",
+      "source_sha256": "d7e8ac37a032a511be133409ead2b0b6deffd2e93574b46a4d0525f31e919e3b",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b4a475767be3ccbeab2fdc1137af3b910245ab4b",
+      "path": "backend/public_report.py",
+      "source_sha256": "89d62fb916fb1460c581d325693650ff1455eef35d5a660632e35662cc81e726",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b4a475767be3ccbeab2fdc1137af3b910245ab4b",
+      "path": "backend/winding_resistance.py",
+      "source_sha256": "8f80fcc2c0d55d1d61cfcba3bf62da5b4ad63b23e0ecf583fcd05e023874114d",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b4a475767be3ccbeab2fdc1137af3b910245ab4b",
+      "path": "benchmarks/abcd-v1.6/PHASE-RESISTANCE.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b4a475767be3ccbeab2fdc1137af3b910245ab4b",
+      "path": "benchmarks/abcd-v1.6/README.md",
+      "source_sha256": "4d21d64b64a2e5931877941666c96e9b37232581c82bcb32ba927de7cc438517",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b4a475767be3ccbeab2fdc1137af3b910245ab4b",
+      "path": "benchmarks/abcd-v1.6/phase_resistance_gate.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b4a475767be3ccbeab2fdc1137af3b910245ab4b",
+      "path": "frontend/scripts/test-losses-view.mjs",
+      "source_sha256": "0e3993b1b29b7c5a795db0968a397d465a60c4479abb42e672716ed75e36272d",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b4a475767be3ccbeab2fdc1137af3b910245ab4b",
+      "path": "frontend/scripts/test-winding-resistance.mjs",
+      "source_sha256": "5a50ebf4943e16c9687bcfdeabedab9d7d3aa970e647c468df73767ad1510feb",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b4a475767be3ccbeab2fdc1137af3b910245ab4b",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "877bb10aeb90692718e6726c3a04cbb288d8c8aab86357655d52f1e8b043df4f",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b4a475767be3ccbeab2fdc1137af3b910245ab4b",
+      "path": "frontend/src/public/lossesView.ts",
+      "source_sha256": "661e07c53021df69039f37168a58bec3776212a6ad9961a369be80c801f119ef",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b4a475767be3ccbeab2fdc1137af3b910245ab4b",
+      "path": "frontend/src/public/outputStatus.ts",
+      "source_sha256": "5f4b9fe1ad001e4d3793c614036a86bcef3a39c929c2b0a47e3dc43a961c8af5",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b4a475767be3ccbeab2fdc1137af3b910245ab4b",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "f7d7e629dda69d2302b8a737d0f1d27a1c10347829353427835f4a4ccc1ec567",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b4a475767be3ccbeab2fdc1137af3b910245ab4b",
+      "path": "frontend/src/public/windingResistance.ts",
+      "source_sha256": "637cd0dd26e2cadfc5212deb92fa703c9012add22b07e850ec7ec8c747dbce8a",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b4a475767be3ccbeab2fdc1137af3b910245ab4b",
+      "path": "tests/test_output_status.py",
+      "source_sha256": "c4d5ba1d67dba0687de9ae8954b9b9979ee38300662a2efd124d5d2db235559a",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b4a475767be3ccbeab2fdc1137af3b910245ab4b",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": "255e12810e57850ec624717c529d93b4c3b5c22784d193c86852342e49cc6e88",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b4a475767be3ccbeab2fdc1137af3b910245ab4b",
+      "path": "tests/test_phase_resistance_gate.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "b4a475767be3ccbeab2fdc1137af3b910245ab4b",
+      "path": "tests/test_winding_resistance.py",
+      "source_sha256": "b4fd9f832d22f93d265ce9c7f2d0f77e640fecb5ed0f4be9fb7abb588a3f48af",
       "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
     }
   ]

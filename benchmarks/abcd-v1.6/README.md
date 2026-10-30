@@ -27,6 +27,21 @@ Each temperature fixture differs from its base request only in `solve_params.mag
 
 A case's status is the worst of its gates, and missing data makes it INCOMPLETE.
 
+## Phase resistance: a gate with no FEMM
+
+The phase resistance is checked against independent hand calculations, written out step by step in [PHASE-RESISTANCE.md](PHASE-RESISTANCE.md).
+
+- **Cases.** [`phase_resistance_gate.json`](phase_resistance_gate.json) registers three cases on two suite fixtures, each pinned by SHA-256:
+  - `spm_8p12s_concentrated__baseline`, in copper;
+  - `spm_8p24s_distributed_femm_validation`, in copper and in aluminium.
+- **Declared inputs.** Each case adds a declared wire, conductor and winding temperature, since the fixtures carry none.
+- **The gate.** `phase_resistance` compares coilEM's `phase_resistance_ohm` with the hand value (`backend/benchmark_suite/resistance_metrics.py`): PASS ≤ 1%, YELLOW ≤ 3%.
+- **No solve.** The resistance is closed-form, so the gate needs neither a solve nor a reference bundle.
+- **Where it runs.** It is a pytest qualification test, `tests/test_phase_resistance_gate.py`, and runs with every test run.
+- **Result.** All three cases PASS, within 0.001%.
+
+A record with a wire is therefore qualified, for the reason that names this gate. A design without a wire gets a derived wire, so its record stays experimental.
+
 ## Reference
 
 There is no FEMM record yet for any new case. 1.6.0 needs its own bundle: protocol `1.6.0`, all 46 supported records at one adapter commit. See [FEMM-REQUEST.md](FEMM-REQUEST.md) for what to produce. Until then, run it with `--no-reference`. The new rows are NOT_COMPARED and the other 30 are not compared either.

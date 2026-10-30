@@ -236,6 +236,8 @@ export interface PerformanceReportContext {
   solved_point: { speed_rpm: number; torque_Nm: number; current_angle_deg: number | null } | null;
   /** The run derated its magnets for temperature, so every map point did too. */
   magnet_temperature_derated: boolean;
+  /** The status of the winding record the phase resistance comes from, as the tab shows it. */
+  phase_resistance: { status: PerformanceOutputStatus; reason: string } | null;
 }
 
 export interface DrivePerformance {
