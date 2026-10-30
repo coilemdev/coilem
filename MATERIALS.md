@@ -46,6 +46,35 @@ figure, extrapolated from points measured at H ≈ −7.2 to −4.7 kOe; ORNL st
 no test temperature and says only that the magnets appear sintered. The grade
 exists for the ORNL Prius benchmark case.
 
+### Magnet temperature
+
+A motor solve can set a magnet temperature (Solve → Operating point → Magnet
+temp). Br is scaled linearly from 20 °C by the grade's reversible temperature
+coefficient, which lowers the magnet flux, back EMF and torque. Intrinsic
+coercivity HcJ is derated and recorded with the run for a later
+demagnetisation check; the solve's straight recoil line does not use it.
+At 20 °C, or with no temperature set, nothing changes.
+
+The coefficients are the reversible temperature coefficients in the same
+Arnold grade table as the room-temperature Br values, read 2026-10-21:
+[Arnold Magnetic Technologies — Neodymium Iron Boron Magnets](https://www.arnoldmagnetics.com/products/neodymium-iron-boron-magnets/).
+
+| Grade | Br %/°C | HcJ %/°C | HcJ min at 20 °C (kA/m) | Max operating temperature | Accepted range |
+| --- | --- | --- | --- | --- | --- |
+| N35 | −0.12 | −0.618 | 955 | 80 °C | −40 to 141 °C |
+| N42 | −0.12 | −0.75 | 955 | 80 °C | −40 to 120 °C |
+| N48 | −0.12 | −0.75 | 955 | 80 °C | −40 to 120 °C |
+| N52 | −0.12 | −0.75 | 876 | 60 °C | −40 to 120 °C |
+| N48SH | −0.12 | −0.535 | 1512 | 150 °C | −40 to 160 °C |
+
+The accepted range ends where the linear model would take HcJ below a quarter
+of its 20 °C value; past that the coefficients no longer describe the magnet.
+Above a grade's maximum operating temperature the run carries a warning: the
+magnet risks irreversible demagnetisation, which coilEM does not model.
+Ferrite_Y30, Prius_2004_NdFeB and ORNL_Prius_2004_NdFeB have no cited
+coefficients, so a magnet temperature is refused for them. The pinned Prius
+reference keeps its published 20 and 60 °C cases and their own Br factor.
+
 ### Halbach coercivity and temperature policy
 
 Cylindrical and linear Halbach workspaces resolve magnets from the legacy

@@ -59,7 +59,7 @@ def test_operating_point_is_editable_and_only_exact_reference_bypasses_generic_o
     monkeypatch.setenv("COILEM_EXPERIMENTAL_ROTORS", "1")
     assert parse_public_motor_config(payload).solve_params.current_angle_deg == 60
     ordinary = json.loads((ROOT / "tests/fixtures/spm_4p12s_simple.json").read_text())
-    ordinary["solve_params"]["magnet_temperature_C"] = 60
+    ordinary["solve_params"]["magnet_temperature_C"] = 150  # beyond N42's linear range
     with pytest.raises(PublicConfigError, match="temperature"):
         parse_public_motor_config(ordinary)
     ordinary["solve_params"]["magnet_temperature_C"] = None

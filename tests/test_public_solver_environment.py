@@ -179,10 +179,12 @@ def test_request_derived_armature_switch_still_works():
     assert policy.solver_process_environment(overrides)["COILEM_MAGNET_BR_SCALE"] == "0"
 
 
-def test_direct_model_rejects_excluded_thermal_without_import_error():
+def test_direct_model_takes_a_magnet_temperature_only_with_cited_coefficients():
     raw = config().model_dump(mode="json")
     raw["solve_params"]["magnet_temperature_C"] = 80
-    with pytest.raises(ValidationError, match="not supported"):
+    assert MotorConfig.model_validate(raw).solve_params.magnet_temperature_C == 80
+    raw["materials"]["magnet_grade"] = "Ferrite_Y30"
+    with pytest.raises(ValidationError, match="No cited temperature coefficients"):
         MotorConfig.model_validate(raw)
 
 

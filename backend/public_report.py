@@ -1439,6 +1439,15 @@ def build_public_run_pdf(
                     ("Excitation", "Ideal six-step (120 deg)" if six_step else "Sinusoidal"),
                     ("Phase connection", solve_params.get("phase_connection") if six_step else "Not recorded"),
                     ("Rated speed", f"{_plain(solve_params.get('rated_speed_rpm'))} rpm"),
+                    *(
+                        [
+                            ("Magnet temperature", f"{_number(solve_metadata.get('magnet_temperature_C'))} C"),
+                            ("Magnet Br at temperature", f"{_number(solve_metadata.get('magnet_remanence_T'), 4)} T"),
+                            ("Magnet HcJ at temperature", f"{_number(solve_metadata.get('magnet_intrinsic_coercivity_kA_m'))} kA/m"),
+                        ]
+                        if solve_metadata.get("magnet_remanence_T") is not None
+                        else []
+                    ),
                     ("Solve quality", solve_params.get("solve_quality")),
                     ("Mesh density", solve_metadata.get("mesh_density") or solve_params.get("mesh_density")),
                     ("Mesh elements", solve_metadata.get("mesh_element_count")),

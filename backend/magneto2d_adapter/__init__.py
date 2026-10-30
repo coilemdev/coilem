@@ -676,6 +676,16 @@ def _magneto2d_env_overrides(config: MotorConfig) -> dict[str, str]:
         if solve_params is not None
         else False
     )
+    magnet_temperature = getattr(solve_params, "magnet_temperature_C", None) if solve_params is not None else None
+    if magnet_temperature is not None and not config.geometry_reference:
+        # Hot magnets (#137): Br derated by the grade's cited coefficient; at
+        # 20 °C, or with no temperature set, nothing is passed and the solve
+        # is unchanged.
+        from backend.magnet_temperature import br_scale
+
+        scale = br_scale(config.materials.magnet_grade, float(magnet_temperature))
+        if scale != 1.0:
+            overrides["COILEM_MAGNET_BR_SCALE"] = repr(scale)
     if armature_only_field:
         # Per-process, not process-global: run_magneto2d_report copies this
         # override into only the spawned Rust solver's environment. Magnet

@@ -501,6 +501,10 @@ export interface SolveResult {
     solver_name: string;
     mesh_element_count: number;
     rotor_positions: number;
+    /** Hot-magnet runs (#137): the temperature and the derated Br and HcJ the solve used. */
+    magnet_temperature_C?: number | null;
+    magnet_remanence_T?: number | null;
+    magnet_intrinsic_coercivity_kA_m?: number | null;
     topology?: string;
     current_amplitude_A?: number | null;
     current_angle_deg?: number | null;
