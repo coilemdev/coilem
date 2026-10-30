@@ -19,8 +19,9 @@ import json
 import sys
 from pathlib import Path
 
+from backend.benchmark_suite import SUPPORTED_PROTOCOL_VERSIONS
 from backend.benchmark_suite.cli import inputs
-from backend.benchmark_suite.contract import CHECKOUT, DEFAULT_BUNDLE, SPEC, canonical, read, sha
+from backend.benchmark_suite.contract import CHECKOUT, DATA_ROOT, DEFAULT_BUNDLE, SPEC, canonical, checked_json, read, sha
 from backend.benchmark_suite.metrics import evaluate_abc, evaluate_bldc
 from backend.benchmark_suite.physics import physics_sources
 from backend.benchmark_suite.record import build_record
@@ -30,7 +31,18 @@ from backend.benchmark_suite.references import load_bundle, load_suite
 def regrade(summary):
     """The run's rows, graded by this evaluator against the registered suite and frozen bundle."""
 
-    spec = load_suite(SPEC)
+    spec_path = SPEC
+    spec = load_suite(spec_path)
+    measured_protocol = summary["run"]["identity"]["protocol_version"]
+    if measured_protocol not in SUPPORTED_PROTOCOL_VERSIONS:
+        raise ValueError("Unsupported measured benchmark protocol")
+    cap_change = spec.get("reference_compatibility", {}).get("iteration_cap_change")
+    if cap_change and measured_protocol != spec["protocol_version"]:
+        # Historical fields retain their cap-100 requests. Reuse the exact
+        # registered validation suite; never relabel them as cap-200 evidence.
+        checked_json(DATA_ROOT, cap_change["measured_suite"], cap_change["measured_suite_sha256"])
+        spec_path = DATA_ROOT / cap_change["measured_suite"]
+        spec = load_suite(spec_path)
     cases = {case["id"]: case for case in spec["cases"]}
     configs, protocols, golden = inputs(spec, spec["cases"])
     _, references, bundle_sha = load_bundle(DEFAULT_BUNDLE, spec)
@@ -58,7 +70,7 @@ def regrade(summary):
         row.update(evaluation=evaluation, status=evaluation["status"],
                    reference_mode="FROZEN_REFERENCE" if reference is not None else "NOT_COMPARED")
         rows.append(row)
-    run = {**summary["run"], "selection": {**summary["run"]["selection"], "spec_sha256": sha(SPEC), "bundle_sha256": bundle_sha}}
+    run = {**summary["run"], "selection": {**summary["run"]["selection"], "spec_sha256": sha(spec_path), "bundle_sha256": bundle_sha}}
     return {**summary, "run": run, "rows": rows}, spec
 
 

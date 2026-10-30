@@ -28,6 +28,7 @@ PHYSICS_PYTHON_SOURCES = (
     "backend/gmsh_mesh_rotation.py",
     "backend/gmsh_solver.py",
     "backend/magneto2d_adapter/__init__.py",
+    "backend/magneto2d_adapter/_state.py",
     "backend/material_catalog.py",
     "backend/material_contract.py",
     "backend/reference_models/prius.py",

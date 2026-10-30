@@ -145,7 +145,7 @@ def markdown(report):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run", type=Path, required=True)
-    parser.add_argument("--suite", type=Path, default=Path(__file__).resolve().parents[1] / "benchmarks/abcd-v1.3/benchmark_spec.json")
+    parser.add_argument("--suite", type=Path, default=Path(__file__).resolve().parents[1] / "benchmarks/abcd-v1.4/benchmark_spec.json")
     parser.add_argument("--out-dir", type=Path, required=True)
     args = parser.parse_args()
     report = analyze(args.run.resolve(), read(args.suite))
