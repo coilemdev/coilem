@@ -8,11 +8,12 @@ data root by design, and a later run of the same design resumes from them.
 from __future__ import annotations
 
 import asyncio
+import re
 import time
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import APIRouter, HTTPException, status
-from fastapi.responses import StreamingResponse
+from fastapi.responses import Response, StreamingResponse
 from pydantic import BaseModel, Field, ValidationError
 
 from backend.drive_performance import efficiency_map, torque_speed_envelope
@@ -27,6 +28,13 @@ from backend.flux_linkage_map import (
     run_flux_linkage_map,
 )
 from backend.models.performance import DriveControl, DriveLimits, FluxLinkageMap
+from backend.performance_report import (
+    ReportContext,
+    build_idiq_table_csv,
+    build_performance_csv,
+    build_performance_pdf,
+    performance_data,
+)
 from backend.public_policy import PublicConfigError
 from backend.public_routes import solve as solve_routes
 from backend.solve_workspace import user_data_root
@@ -46,6 +54,18 @@ class DriveRequest(BaseModel):
     winding_temperature_C: float = Field(ge=-50.0, le=250.0)
     mechanical_loss_W: float = Field(default=0.0, ge=0)
     control: DriveControl = "mtpa"
+
+
+class ReportRequest(DriveRequest):
+    context: ReportContext = Field(default_factory=ReportContext)
+
+
+ReportKind = Literal["pdf", "csv", "idiq"]
+_REPORT_FILES: dict[str, tuple[str, str]] = {
+    "pdf": ("performance.pdf", "application/pdf"),
+    "csv": ("performance.csv", "text/csv; charset=utf-8"),
+    "idiq": ("idiq-table.csv", "text/csv; charset=utf-8"),
+}
 
 
 def _store_root():
@@ -201,3 +221,45 @@ async def drive_performance(body: dict[str, Any]) -> dict[str, Any]:
             detail={"error_code": "MAP_NOT_USABLE", "message": str(exc)},
         ) from exc
     return {"envelope": envelope.model_dump(mode="json"), "efficiency_map": efficiency.model_dump(mode="json")}
+
+
+@router.post("/performance/report/{kind}")
+async def performance_report(kind: ReportKind, body: dict[str, Any]) -> Response:
+    """The Torque-speed tab's results as a PDF, the performance CSV or the id/iq table.
+
+    Built on demand from the request the tab sends to /performance/drive, with
+    the same functions, so the files carry the values the tab shows; a run's
+    own report stays as written when its solve completed.
+    """
+
+    try:
+        request = ReportRequest.model_validate(body)
+    except ValidationError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={"error_code": "INVALID_REPORT_REQUEST", "message": exc.errors()[0].get("msg", "Invalid report request.")},
+        ) from exc
+    try:
+        data = await asyncio.to_thread(
+            performance_data,
+            request.map,
+            request.limits,
+            phase_resistance_ohm=request.phase_resistance_ohm,
+            winding_temperature_C=request.winding_temperature_C,
+            mechanical_loss_W=request.mechanical_loss_W,
+            control=request.control,
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={"error_code": "MAP_NOT_USABLE", "message": str(exc)},
+        ) from exc
+    builder = {"pdf": build_performance_pdf, "csv": build_performance_csv, "idiq": build_idiq_table_csv}[kind]
+    content = await asyncio.to_thread(builder, data, request.context)
+    suffix, media_type = _REPORT_FILES[kind]
+    stem = re.sub(r"[^A-Za-z0-9._-]+", "-", request.context.design_name or "coilem-design").strip("-") or "coilem-design"
+    return Response(
+        content=content,
+        media_type=media_type,
+        headers={"Content-Disposition": f'attachment; filename="{stem}-{suffix}"', "Cache-Control": "no-store"},
+    )

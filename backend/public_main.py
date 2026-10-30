@@ -67,6 +67,7 @@ PUBLIC_API_PATHS = frozenset(
         "/performance/drive",
         "/performance/map/status",
         "/performance/map/stream",
+        "/performance/report/{kind}",
         "/preview",
         "/runs",
         "/runs/{project_slug}/{run_id}",

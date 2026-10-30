@@ -1,6 +1,6 @@
 import type { SolveResult } from './model';
 import type { CustomSteel } from './customSteel';
-import type { DrivePerformance, FluxLinkageMapPayload, MapSettings, PerformanceMapProgress, PerformanceMapStatus } from './performance';
+import type { DrivePerformance, FluxLinkageMapPayload, MapSettings, PerformanceMapProgress, PerformanceMapStatus, PerformanceReportKind } from './performance';
 
 export function importPublicSteel(body: { name: string; source: string; csv_text: string; lamination_thickness_mm: number | null }): Promise<{ material: CustomSteel; warnings: string[] }> {
   return requestJson('/materials/import', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }) as Promise<{ material: CustomSteel; warnings: string[] }>;
@@ -209,9 +209,13 @@ export async function downloadPublicRunExport(
   if (!response.ok) {
     throw await parseApiError(response);
   }
-  const blob = await response.blob();
   const extension = exportKind === 'package' ? 'zip' : exportKind;
-  const defaultName = `coilem-${projectSlug}-${runId}.${extension}`;
+  await saveDownload(response, `coilem-${projectSlug}-${runId}.${extension}`);
+}
+
+/** Save a download response under the server's file name, else the default. */
+async function saveDownload(response: Response, defaultName: string): Promise<void> {
+  const blob = await response.blob();
   const disposition = response.headers.get('content-disposition') || '';
   const encodedName = disposition.match(/filename\*=UTF-8''([^;]+)/i)?.[1];
   const plainName = disposition.match(/filename="?([^";]+)"?/i)?.[1];
@@ -289,6 +293,19 @@ export function streamPerformanceMap(
 /** Torque–speed envelope and efficiency map from a finished map under the drive limits (#140, #141). */
 export function computeDrivePerformance(body: Record<string, unknown>): Promise<DrivePerformance> {
   return postConfig('/performance/drive', body as PublicMotorConfig) as unknown as Promise<DrivePerformance>;
+}
+
+/** The Torque–speed tab's results as a PDF, the performance CSV or the id/iq table (#142), built from the drive request. */
+export async function downloadPerformanceReport(kind: PerformanceReportKind, body: Record<string, unknown>): Promise<void> {
+  const response = await fetch(`${PUBLIC_API_BASE}/performance/report/${kind}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) {
+    throw await parseApiError(response);
+  }
+  await saveDownload(response, kind === 'pdf' ? 'coilem-performance.pdf' : `coilem-${kind === 'idiq' ? 'idiq-table' : 'performance'}.csv`);
 }
 
 function streamPublicRequest(

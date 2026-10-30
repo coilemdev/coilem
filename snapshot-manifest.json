@@ -489,6 +489,11 @@
       "sha256": "c1a0ed0f29043b8a4cf6c2d4a9667726c8c71f59bf75aab6b7ed9fbcab334b70"
     },
     {
+      "path": "backend/performance_report.py",
+      "bytes": 44031,
+      "sha256": "ca0880c7a1965853d4f4c935bbd3ccad3ceca3b8def51a7c7de9ac64ca59f033"
+    },
+    {
       "path": "backend/platform_info.py",
       "bytes": 1133,
       "sha256": "66e0561fb3bd6c4de9e5287a5546db5da5d7b0bcc9f2582fb8cbcb9c8f5bad01"
@@ -515,8 +520,8 @@
     },
     {
       "path": "backend/public_main.py",
-      "bytes": 9980,
-      "sha256": "8cd2a27c742876da08f95e505f2940262992b0588ab2b4d7d35c39220694dfe9"
+      "bytes": 10018,
+      "sha256": "c98e32467d98126ba2ccf7b8f2f63ba256d6e10ed08ce07b029dd641a95a7008"
     },
     {
       "path": "backend/public_material_catalog.py",
@@ -545,8 +550,8 @@
     },
     {
       "path": "backend/public_routes/performance.py",
-      "bytes": 8381,
-      "sha256": "fb83d82074255701d18bffc1fee9219a09a42018b65b2660dc1d76997363a0f3"
+      "bytes": 10834,
+      "sha256": "06ab35fd73443970d11fceb514ecda38e1f1f5eafffca1c0779dcf6e8feff410"
     },
     {
       "path": "backend/public_routes/preview.py",
@@ -690,8 +695,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 8972,
-      "sha256": "eede23ad19d149ca00f0d44ba498d6fad245f4d12598dfc11dec3a7d89588c32"
+      "bytes": 9215,
+      "sha256": "9e780062c8fe23a2c51e1502848b742c2d7ec83fdd2302a9c6eb0bd01fca7506"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -1162,6 +1167,246 @@
       "path": "benchmarks/macos-native-20261015-738d951/timings.json",
       "bytes": 6493,
       "sha256": "a053006d4f463d01cbbfcf37dafade75c5517536a946f6de64fff74f7cb8ae46"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/README.md",
+      "bytes": 3982,
+      "sha256": "b2bd306473bdf1af60c6cc81963100ecb4bb59359723d1ff5b6e97b09abb471f"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/artifact_manifest.json",
+      "bytes": 5082,
+      "sha256": "8d31b2f89b9156e01508fd72bee7c7f3d4f544561590098883238474663bd1c6"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/benchmark_report.md",
+      "bytes": 6324,
+      "sha256": "d55756d858d4767fa7d5b927adfe1b063e56dcd262d4002de53c3c0e638f78b3"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/benchmark_results.csv",
+      "bytes": 16987,
+      "sha256": "6968e4055fcf211b365c084cb740caf27b507f647684773ec1d383c17b186fa2"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/benchmark_summary.json",
+      "bytes": 1994883,
+      "sha256": "6b26dc4963a30030bf15ebcce850bbf7f7aee75134bbf9d06d18a90c19c54e7a"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/coilem_benchmark_report.html",
+      "bytes": 430164,
+      "sha256": "3fead861ed5137d3c3200055120429f017e0eb98410a1b97f2058faaa65f70aa"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/coilem_benchmark_report.pdf",
+      "bytes": 139751,
+      "sha256": "1973b06d4d0bf58eee3dfb3bad2c2484fde4fb9375f94149aa48b99c8a215a8b"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/comparison-vs-v0.4.0-windows-5b6cb61.md",
+      "bytes": 3904,
+      "sha256": "d854bd4c34746776c4b4f6259794dcf9674bbe9ce1efc77ded35d4fd29e29235"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/environment.json",
+      "bytes": 1075,
+      "sha256": "30c8b345241785f56886b13e0026c0f8bf9aba69c9c0f77c442ed2fb18239508"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/evidence-hashes.json",
+      "bytes": 15261,
+      "sha256": "68bd2c3750e06e443fae299126dabb678fdde5fc81d3fd04329d2b0fa22e3250"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1604,
+      "sha256": "c7eaaaf1081d62fc92fdbcf85bd4a741437dbf2f447bfacafa3d29f571f38045"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1607,
+      "sha256": "d50980ab4aac15eb065fb09632a0f56988cda12a01d4c5a225cf13f02377f12c"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1606,
+      "sha256": "3eb405359dbf6503ea6d29eaf41d595681ae5a7b4a70883aa202df1fd3df6388"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2503,
+      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2503,
+      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2503,
+      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2502,
+      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2502,
+      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2502,
+      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1594,
+      "sha256": "da8e001617723fbf8bc27ed803b695e6739e49efb6e191057826aff8316e6166"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1596,
+      "sha256": "0cfcd598575534929f95f5e468efee92531b158d98e8db34aea82c548ef1efdc"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1595,
+      "sha256": "cc111eda6bc19623de00e8a1da66ba396db3d6440126947715b06511c9510357"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2506,
+      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2506,
+      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1640,
+      "sha256": "d25b5768678f37eca4aa1291dbd479f86cd19b0d4649a21d177ac86eab43e561"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1642,
+      "sha256": "14a40c1b8b65602bf051c3c71807f39efd516c734a151d3b209d8158aac7f178"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1641,
+      "sha256": "624b5b2faa387e4965da68cc337c9912da6137e1fc8712934b3f19d49cc7e457"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2550,
+      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/run_manifest.json",
+      "bytes": 47070,
+      "sha256": "6649b9f8de9f49ce70a4a130a32e975344a67814bf8bdb7bd2287aa716117de6"
+    },
+    {
+      "path": "benchmarks/macos-native-20261022-5b7cad8/timings.json",
+      "bytes": 5342,
+      "sha256": "a188544af7b874d38d1f3e190d3ae81f1e9b77165a2d767f623a4f2097a1e7fb"
     },
     {
       "path": "benchmarks/macos-rc-20261013-04f87a5/README.md",
@@ -5530,8 +5775,8 @@
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
-      "bytes": 11084,
-      "sha256": "766acbe2630e714b63b52adc99777d31cf39e02ee88909d4d8ff8ece3aecbcda"
+      "bytes": 11363,
+      "sha256": "6d91478217346b54ada343cc3db37851a6b3be22553cb50f7892b27a2df0f355"
     },
     {
       "path": "docs/RELEASE_0_4_0.md",
@@ -6525,8 +6770,8 @@
     },
     {
       "path": "frontend/src/public/PerformancePanel.tsx",
-      "bytes": 34222,
-      "sha256": "eacb353e40d8196c09b62ffa22ed42a560613abe197455c10ca2029cd8455060"
+      "bytes": 36610,
+      "sha256": "67cbd313eb01b7a676763c67b132bc5ef3c4523a84e3baf35f9e9cefc93ea7a2"
     },
     {
       "path": "frontend/src/public/PublicLanding.tsx",
@@ -6585,8 +6830,8 @@
     },
     {
       "path": "frontend/src/public/api.ts",
-      "bytes": 12741,
-      "sha256": "049cdfe5eb16bd170a9f243020f760b0d77124c2c9906bbd18843dfac6fb54a0"
+      "bytes": 13598,
+      "sha256": "2e8150dac73003888daddc1bebee08a80ca740e6b28e2437a9ed5226f5917fbc"
     },
     {
       "path": "frontend/src/public/backendMonitor.ts",
@@ -6890,8 +7135,8 @@
     },
     {
       "path": "frontend/src/public/performance.ts",
-      "bytes": 7304,
-      "sha256": "a70a9bbef72a115157d7e851f3affed2e20be911669b1155ef3aa5bac616d337"
+      "bytes": 7861,
+      "sha256": "a99ac2e6b96cec84cafb484d3d3e1d213e99d0ae9dbc1346e6657fd1b445aae8"
     },
     {
       "path": "frontend/src/public/performanceView.ts",
@@ -6940,8 +7185,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 275312,
-      "sha256": "0f59e1a45d0879f4b6dc1f85c0eb2cf094e6822c9bc3ac1cc87ac63c0938e90d"
+      "bytes": 275388,
+      "sha256": "b3d05b9728166bbd3b3b126d5f7480afb63dcedf9ff4be7179468ff944e1d6f8"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7584,6 +7829,11 @@
       "sha256": "cbfe876be77f1e3a2fea64e25cffb528f1179fce3101a1f0c3143870c30cb2aa"
     },
     {
+      "path": "tests/test_performance_report.py",
+      "bytes": 7736,
+      "sha256": "255e12810e57850ec624717c529d93b4c3b5c22784d193c86852342e49cc6e88"
+    },
+    {
       "path": "tests/test_performance_routes.py",
       "bytes": 4305,
       "sha256": "a2ec62732ee7983effbcd6e28e84932260490ea8ab64719b569a00eca305b631"
@@ -8010,8 +8260,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 21633,
-      "sha256": "6f0eb6dbdef093eca953e247bb780caaf61edb08de492b84f5a3c2d1d0c10c2e"
+      "bytes": 21789,
+      "sha256": "a804136e92a91a4b6dbfd70438c7cb8d7d763f6c892cd470655c3d05c004bd74"
     }
   ],
   "public_patches": [
@@ -18333,6 +18583,1776 @@
       "base_commit": "7dabe1ea0c02722b319487992c7bc4fb30c54f37",
       "path": "tests/test_slot_current_density.py",
       "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "e021e07c86b7208ffa0f9c6d1059d954d015a9df",
+      "path": "backend/public_main.py",
+      "source_sha256": "8cd2a27c742876da08f95e505f2940262992b0588ab2b4d7d35c39220694dfe9",
+      "reason": "Torque-speed tab exports: performance PDF, performance CSV and id/iq table (#142)"
+    },
+    {
+      "base_commit": "e021e07c86b7208ffa0f9c6d1059d954d015a9df",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": "fb83d82074255701d18bffc1fee9219a09a42018b65b2660dc1d76997363a0f3",
+      "reason": "Torque-speed tab exports: performance PDF, performance CSV and id/iq table (#142)"
+    },
+    {
+      "base_commit": "e021e07c86b7208ffa0f9c6d1059d954d015a9df",
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "source_sha256": "766acbe2630e714b63b52adc99777d31cf39e02ee88909d4d8ff8ece3aecbcda",
+      "reason": "Torque-speed tab exports: performance PDF, performance CSV and id/iq table (#142)"
+    },
+    {
+      "base_commit": "e021e07c86b7208ffa0f9c6d1059d954d015a9df",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "47bfe240d5836929b7b2856dd2bdfce8966f1de35df0aef12bc487891ce8de58",
+      "reason": "Torque-speed tab exports: performance PDF, performance CSV and id/iq table (#142)"
+    },
+    {
+      "base_commit": "e021e07c86b7208ffa0f9c6d1059d954d015a9df",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "50cf1de40adfa2f4cdc585bf7dca106cbc78616e839971aab5c801ed794c3f5f",
+      "reason": "Torque-speed tab exports: performance PDF, performance CSV and id/iq table (#142)"
+    },
+    {
+      "base_commit": "e021e07c86b7208ffa0f9c6d1059d954d015a9df",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "a70a9bbef72a115157d7e851f3affed2e20be911669b1155ef3aa5bac616d337",
+      "reason": "Torque-speed tab exports: performance PDF, performance CSV and id/iq table (#142)"
+    },
+    {
+      "base_commit": "e021e07c86b7208ffa0f9c6d1059d954d015a9df",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "0f59e1a45d0879f4b6dc1f85c0eb2cf094e6822c9bc3ac1cc87ac63c0938e90d",
+      "reason": "Torque-speed tab exports: performance PDF, performance CSV and id/iq table (#142)"
+    },
+    {
+      "base_commit": "e021e07c86b7208ffa0f9c6d1059d954d015a9df",
+      "path": "backend/performance_report.py",
+      "source_sha256": null,
+      "reason": "Torque-speed tab exports: performance PDF, performance CSV and id/iq table (#142)"
+    },
+    {
+      "base_commit": "e021e07c86b7208ffa0f9c6d1059d954d015a9df",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": null,
+      "reason": "Torque-speed tab exports: performance PDF, performance CSV and id/iq table (#142)"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/README.md",
+      "source_sha256": "eede23ad19d149ca00f0d44ba498d6fad245f4d12598dfc11dec3a7d89588c32",
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/README.md",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/artifact_manifest.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/benchmark_report.md",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/benchmark_results.csv",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/benchmark_summary.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/coilem_benchmark_report.html",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/coilem_benchmark_report.pdf",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/comparison-vs-v0.4.0-windows-5b6cb61.md",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/environment.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/evidence-hashes.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ornl_prius_2004_ipm__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_14p12s_high_pole__analytical.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple__baseline__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple__high_current__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_small__analytical.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_small__native-fine.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_small__native-standard.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference__analytical.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference__native-fine.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference__native-standard.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/run_manifest.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/timings.json",
+      "source_sha256": null,
+      "reason": "macOS A/B/C/D development evidence at the 0.5.0 stack top 5b7cad8, compared with v0.4.0"
+    },
+    {
+      "base_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "fc11f61b433748f6829297f30c72738ea887481d11936087620c7a554385d9ab",
+      "reason": "Allow the macOS 0.5.0 development evidence PDF and CSV (5b7cad8)"
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "backend/performance_report.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "backend/public_main.py",
+      "source_sha256": "8cd2a27c742876da08f95e505f2940262992b0588ab2b4d7d35c39220694dfe9",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": "fb83d82074255701d18bffc1fee9219a09a42018b65b2660dc1d76997363a0f3",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/README.md",
+      "source_sha256": "eede23ad19d149ca00f0d44ba498d6fad245f4d12598dfc11dec3a7d89588c32",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/README.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/artifact_manifest.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/benchmark_report.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/benchmark_results.csv",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/benchmark_summary.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/coilem_benchmark_report.html",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/coilem_benchmark_report.pdf",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/comparison-vs-v0.4.0-windows-5b6cb61.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/environment.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/evidence-hashes.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ornl_prius_2004_ipm__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_14p12s_high_pole__analytical.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple__baseline__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple__high_current__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_small__analytical.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_small__native-fine.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_small__native-standard.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference__analytical.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference__native-fine.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference__native-standard.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/run_manifest.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/timings.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "source_sha256": "766acbe2630e714b63b52adc99777d31cf39e02ee88909d4d8ff8ece3aecbcda",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "eacb353e40d8196c09b62ffa22ed42a560613abe197455c10ca2029cd8455060",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "049cdfe5eb16bd170a9f243020f760b0d77124c2c9906bbd18843dfac6fb54a0",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "a70a9bbef72a115157d7e851f3affed2e20be911669b1155ef3aa5bac616d337",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "0f59e1a45d0879f4b6dc1f85c0eb2cf094e6822c9bc3ac1cc87ac63c0938e90d",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "2d00dc6aa4d197db51e8cd09e5a50bcc4f723839",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "6f0eb6dbdef093eca953e247bb780caaf61edb08de492b84f5a3c2d1d0c10c2e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "backend/performance_report.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "backend/public_main.py",
+      "source_sha256": "8cd2a27c742876da08f95e505f2940262992b0588ab2b4d7d35c39220694dfe9",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": "fb83d82074255701d18bffc1fee9219a09a42018b65b2660dc1d76997363a0f3",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/README.md",
+      "source_sha256": "eede23ad19d149ca00f0d44ba498d6fad245f4d12598dfc11dec3a7d89588c32",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/README.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/artifact_manifest.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/benchmark_report.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/benchmark_results.csv",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/benchmark_summary.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/coilem_benchmark_report.html",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/coilem_benchmark_report.pdf",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/comparison-vs-v0.4.0-windows-5b6cb61.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/environment.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/evidence-hashes.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ornl_prius_2004_ipm__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_14p12s_high_pole__analytical.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple__baseline__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple__high_current__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_small__analytical.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_small__native-fine.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_small__native-standard.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference__analytical.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference__native-fine.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference__native-standard.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/run_manifest.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/timings.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "source_sha256": "766acbe2630e714b63b52adc99777d31cf39e02ee88909d4d8ff8ece3aecbcda",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "eacb353e40d8196c09b62ffa22ed42a560613abe197455c10ca2029cd8455060",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "049cdfe5eb16bd170a9f243020f760b0d77124c2c9906bbd18843dfac6fb54a0",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "a70a9bbef72a115157d7e851f3affed2e20be911669b1155ef3aa5bac616d337",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "0f59e1a45d0879f4b6dc1f85c0eb2cf094e6822c9bc3ac1cc87ac63c0938e90d",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "efa6df6ff13ced4d60ca21fb906b6c782a60e0fb",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "6f0eb6dbdef093eca953e247bb780caaf61edb08de492b84f5a3c2d1d0c10c2e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "backend/performance_report.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "backend/public_main.py",
+      "source_sha256": "8cd2a27c742876da08f95e505f2940262992b0588ab2b4d7d35c39220694dfe9",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": "fb83d82074255701d18bffc1fee9219a09a42018b65b2660dc1d76997363a0f3",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/README.md",
+      "source_sha256": "eede23ad19d149ca00f0d44ba498d6fad245f4d12598dfc11dec3a7d89588c32",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/README.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/artifact_manifest.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/benchmark_report.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/benchmark_results.csv",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/benchmark_summary.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/coilem_benchmark_report.html",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/coilem_benchmark_report.pdf",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/comparison-vs-v0.4.0-windows-5b6cb61.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/environment.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/evidence-hashes.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ornl_prius_2004_ipm__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_14p12s_high_pole__analytical.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple__baseline__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple__high_current__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_small__analytical.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_small__native-fine.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_small__native-standard.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference__analytical.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference__native-fine.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference__native-standard.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/run_manifest.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/timings.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "source_sha256": "766acbe2630e714b63b52adc99777d31cf39e02ee88909d4d8ff8ece3aecbcda",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "eacb353e40d8196c09b62ffa22ed42a560613abe197455c10ca2029cd8455060",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "049cdfe5eb16bd170a9f243020f760b0d77124c2c9906bbd18843dfac6fb54a0",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "a70a9bbef72a115157d7e851f3affed2e20be911669b1155ef3aa5bac616d337",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "0f59e1a45d0879f4b6dc1f85c0eb2cf094e6822c9bc3ac1cc87ac63c0938e90d",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "a4afd08e91d05330a07a9ae8e4fc23a45c1a28a5",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "6f0eb6dbdef093eca953e247bb780caaf61edb08de492b84f5a3c2d1d0c10c2e",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "backend/performance_report.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "backend/public_main.py",
+      "source_sha256": "8cd2a27c742876da08f95e505f2940262992b0588ab2b4d7d35c39220694dfe9",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "backend/public_routes/performance.py",
+      "source_sha256": "fb83d82074255701d18bffc1fee9219a09a42018b65b2660dc1d76997363a0f3",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/README.md",
+      "source_sha256": "eede23ad19d149ca00f0d44ba498d6fad245f4d12598dfc11dec3a7d89588c32",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/README.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/artifact_manifest.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/benchmark_report.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/benchmark_results.csv",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/benchmark_summary.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/coilem_benchmark_report.html",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/coilem_benchmark_report.pdf",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/comparison-vs-v0.4.0-windows-5b6cb61.md",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/environment.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/evidence-hashes.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/ornl_prius_2004_ipm__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_14p12s_high_pole__analytical.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple__baseline__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple__high_current__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_small__analytical.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_small__native-fine.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_4p12s_small__native-standard.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference__analytical.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference__native-fine.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference__native-standard.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/run_manifest.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "benchmarks/macos-native-20261022-5b7cad8/timings.json",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "source_sha256": "766acbe2630e714b63b52adc99777d31cf39e02ee88909d4d8ff8ece3aecbcda",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "eacb353e40d8196c09b62ffa22ed42a560613abe197455c10ca2029cd8455060",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "049cdfe5eb16bd170a9f243020f760b0d77124c2c9906bbd18843dfac6fb54a0",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "a70a9bbef72a115157d7e851f3affed2e20be911669b1155ef3aa5bac616d337",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "0f59e1a45d0879f4b6dc1f85c0eb2cf094e6822c9bc3ac1cc87ac63c0938e90d",
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": null,
+      "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
+    },
+    {
+      "base_commit": "30feb96dde9018841ee8117f6d617b3cca768c2b",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "6f0eb6dbdef093eca953e247bb780caaf61edb08de492b84f5a3c2d1d0c10c2e",
       "reason": "Fix v0.5 review regressions, security dependencies and fail-closed development qualification; preserve frozen evidence."
     }
   ]

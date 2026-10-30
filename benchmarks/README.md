@@ -1,5 +1,7 @@
 # Benchmark reports and protocols
 
+The [macOS A/B/C/D at the 0.5.0 stack top](macos-native-20261022-5b7cad8/README.md) is development evidence at `5b7cad8`: 29 PASS and the planned unsupported Prius against the frozen FEMM v3 bundle, compared with the v0.4.0 Windows baseline.
+
 [Protocol 1.5.0](abcd-v1.5/README.md) is a separate extension until the 0.5.0
 freeze. It adds the app's shoed 8p12s example to the 1.4.0 matrix, which has
 no tooth-shoe case, and awaits its FEMM record.

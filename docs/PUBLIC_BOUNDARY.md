@@ -48,6 +48,7 @@ The coilEM launch service is local-only and exposes exactly these paths:
 - `POST /performance/drive`
 - `POST /performance/map/status`
 - `POST /performance/map/stream`
+- `POST /performance/report/{kind}`
 - `POST /preview`
 - `POST /halbach/preview`
 - `POST /halbach/mesh-preview`
@@ -117,7 +118,10 @@ single-solve claim, so `POST /solve/cancel` stops it; finished points are kept
 under the user data folder and a later map of the same design resumes from them.
 `POST /performance/map/status` reports a stored map, and `POST
 /performance/drive` derives the envelope and efficiency map from a map and the
-drive limits without solving.
+drive limits without solving. `POST /performance/report/{kind}` takes the same
+request and returns those results as a PDF (`pdf`), the performance CSV (`csv`)
+or an id/iq lookup table (`idiq`), built on demand; a run's own exports stay as
+written when its solve completed.
 
 The release request policy accepts Magneto2D with native Gmsh meshes. With
 `COILEM_ENABLE_ELMER` unset, it skips Elmer discovery, hides Elmer in the UI,
