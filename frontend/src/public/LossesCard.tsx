@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { PublicFieldLinePlot } from './model';
-import type { IronLoss, IronLossDensity, LossBreakdown, PerformanceOutputStatus } from './performance';
+import { OutputStatusList, StatusBadge } from './OutputStatusBadge';
+import type { NamedOutputStatus } from './outputStatus';
+import type { IronLoss, IronLossDensity, LossBreakdown } from './performance';
 import type { WindingResistance } from './windingResistance';
 import {
   CONTEXT_FILL,
@@ -13,16 +15,6 @@ import {
   type LossMapMode,
   type LossSegment,
 } from './lossesView';
-
-const STATUS_LABEL: Record<PerformanceOutputStatus, string> = {
-  qualified: 'Qualified',
-  experimental: 'Experimental',
-  unavailable: 'Unavailable',
-};
-
-function StatusBadge({ status, title }: { status: PerformanceOutputStatus; title?: string }) {
-  return <span className={`losses-status is-${status}`} title={title}>{STATUS_LABEL[status]}</span>;
-}
 
 function LossBar({ segments, totalW }: { segments: LossSegment[]; totalW: number }) {
   const [hovered, setHovered] = useState<LossSegment['key'] | null>(null);
@@ -141,12 +133,14 @@ function hatchPattern(context: CanvasRenderingContext2D): CanvasPattern | string
  * hysteresis or eddy current) or the copper loss in the coil sides. Scroll or
  * use the buttons to zoom, drag to pan, double-click to zoom in.
  */
-function LossMap({ plot, density, copperWPerKg, copperStackW, copperEndW }: {
+function LossMap({ plot, density, copperWPerKg, copperStackW, copperEndW, statuses }: {
   plot: PublicFieldLinePlot;
   density: IronLossDensity | null | undefined;
   copperWPerKg: number | null;
   copperStackW: number | null;
   copperEndW: number | null;
+  /** The iron and copper losses' statuses: the map is only as checked as the loss it shows. */
+  statuses: NamedOutputStatus[];
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mesh = useMemo(() => prepareMesh(plot), [plot]);
@@ -287,6 +281,7 @@ function LossMap({ plot, density, copperWPerKg, copperStackW, copperEndW }: {
     drag.current = null;
   };
 
+  const shownStatus = statuses.find((item) => item.key === (shownMode === 'copper' ? 'copper' : 'iron'));
   const legendTop = scale ? Number(scale.top.toPrecision(3)) : null;
   const peak = scale ? Number(scale.peak.toPrecision(3)) : null;
   const copperText = copperWPerKg !== null ? Number(copperWPerKg.toPrecision(3)) : null;
@@ -344,6 +339,11 @@ function LossMap({ plot, density, copperWPerKg, copperStackW, copperEndW }: {
             </span>
           </>
         )}
+        {shownStatus && (
+          <span className="losses-map-key">
+            <StatusBadge status={shownStatus.status} /> {shownStatus.reason}
+          </span>
+        )}
         <span className="losses-map-key">
           <span className="losses-map-swatch is-hatched" aria-hidden="true" /> Not modelled: rotor and magnets.
           {shownMode !== 'copper' && <> <span className="losses-map-swatch" style={{ background: CONTEXT_FILL }} aria-hidden="true" /> Coil sides: choose Copper.</>}
@@ -375,7 +375,7 @@ export function LossesCard({
   variant?: 'panel' | 'report';
 }) {
   const headingId = useId();
-  const view = lossesView(loss, iron);
+  const view = lossesView(loss, iron, winding ?? null);
   if (!view) return null;
   const copperWPerKg = stackCopperWPerKg(loss, winding, slotCount ?? 0);
   return (
@@ -400,6 +400,7 @@ export function LossesCard({
           ))}
         </tbody>
       </table>
+      <OutputStatusList statuses={view.statuses} />
       {view.segments.length > 0 && <LossBar segments={view.segments} totalW={view.totalW} />}
       {plot && (density || copperWPerKg !== null) && (
         <LossMap
@@ -408,6 +409,7 @@ export function LossesCard({
           copperWPerKg={copperWPerKg}
           copperStackW={loss?.copper_active_loss_W ?? null}
           copperEndW={loss?.copper_end_winding_loss_W ?? null}
+          statuses={view.statuses}
         />
       )}
       <p className="losses-not-modelled">

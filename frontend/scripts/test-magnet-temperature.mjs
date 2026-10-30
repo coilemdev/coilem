@@ -2,7 +2,13 @@ import assert from 'node:assert/strict';
 
 import { importTypeScriptModule } from './import-typescript-module.mjs';
 
-const { magnetTemperatureRange, magnetTemperatureView } = await importTypeScriptModule(
+const {
+  DQ_FLUX_LINKAGE_STATUS_REASON,
+  MAGNET_TEMPERATURE_STATUS_REASON,
+  PHASE_RESISTANCE_STATUS_REASON,
+} = await importTypeScriptModule(new URL('../src/public/outputStatus.ts', import.meta.url));
+
+const { isDeratedRun, magnetTemperatureRange, magnetTemperatureView } = await importTypeScriptModule(
   new URL('../src/public/magnetTemperature.ts', import.meta.url),
 );
 
@@ -24,5 +30,17 @@ assert.equal(magnetTemperatureView('N48SH', 1.39, 120).warning, null, 'SH grades
 const ferrite = magnetTemperatureView('Ferrite_Y30', 0.4, 20);
 assert.equal(ferrite.available, false);
 assert.match(ferrite.note, /No cited temperature coefficients for Ferrite_Y30/);
+
+
+// Public issue 143: a derating temperature says the derating is experimental, and why; 20 °C derates nothing.
+assert.deepEqual(magnetTemperatureView('N42', 1.3, 100).status, { status: 'experimental', reason: MAGNET_TEMPERATURE_STATUS_REASON });
+assert.equal(magnetTemperatureView('N42', 1.3, 20).status, null);
+assert.equal(ferrite.status, null);
+
+// Results and the Torque-speed tab label a run's derating only when it derated something.
+assert.equal(isDeratedRun({ magnet_temperature_C: 100, magnet_remanence_T: 1.189 }), true);
+assert.equal(isDeratedRun({ magnet_temperature_C: 20, magnet_remanence_T: 1.315 }), false);
+assert.equal(isDeratedRun({ magnet_temperature_C: null, magnet_remanence_T: null }), false);
+assert.equal(isDeratedRun({}), false);
 
 console.log('magnet temperature: range, derated Br and HcJ, rating warning pass');

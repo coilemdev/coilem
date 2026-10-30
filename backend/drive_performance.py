@@ -329,6 +329,7 @@ def _curve(model: MapModel, limits: DriveLimits, resistance_ohm: float, current_
 
 def _status(model: MapModel, current_limit_A: float) -> tuple[str, str]:
     notes = [
+        "Not yet compared with measured torque-speed data. "
         "Interpolated from the flux-linkage map with sinusoidal current; inverter drops and dead time are ignored."
     ]
     if current_limit_A > model.currents_A[-1] * (1 + 1e-9):
@@ -468,6 +469,7 @@ def efficiency_map(
         return [[None if math.isnan(value) else float(value) for value in row] for row in values]
 
     notes = [
+        "Not yet compared with measured efficiency data.",
         (
             "MTPA control: the smallest current for each torque within the voltage limit"
             if control == "mtpa" else "Least-loss control: the current with the least copper plus iron loss at each point"

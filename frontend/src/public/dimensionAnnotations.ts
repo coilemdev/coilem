@@ -204,6 +204,25 @@ const metadataWidth = (
 };
 
 /**
+ * A stored stator width as Advanced Geometry shows it (#154). Widths derived
+ * from a reference geometry, such as the pinned Pyleecan Prius tooth from its
+ * SlotW11 slot, keep full float precision; only the display rounds them, and
+ * the design and the solve request keep the exact value. Inputs keep two
+ * decimals so a width typed to 0.05 mm still reads as typed.
+ */
+export const SHOWN_WIDTH_INPUT_DECIMALS = 2;
+
+export function shownWidthMm(valueMm: number, decimals = SHOWN_WIDTH_INPUT_DECIMALS): number {
+  return Number.isFinite(valueMm) ? Number(valueMm.toFixed(decimals)) : valueMm;
+}
+
+/** The collapsed Advanced Geometry summary: every width to one decimal, as the bore tooth. */
+export function advancedGeometrySummary(config: MotorConfig, widths: Pick<StatorSectionWidths, 'boreToothWidthMm'>): string {
+  const mm = (value: number) => shownWidthMm(value, 1).toFixed(1);
+  return `bore tooth ${mm(widths.boreToothWidthMm)} · yoke tooth ${mm(config.stator.tooth_width_mm)} · yoke ${mm(config.stator.yoke_thickness_mm)}`;
+}
+
+/**
  * The two stator sections users reason about, derived from the existing schema.
  *
  * No derived value here is persisted: the UI converts its bore-tooth control to

@@ -20,8 +20,11 @@ not model, so results there carry a warning.
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Any
+
+from backend.models.performance import MAGNET_TEMPERATURE_STATUS_REASON
 
 REFERENCE_TEMP_C = 20.0
 MIN_TEMP_C = -40.0
@@ -111,7 +114,23 @@ def magnet_temperature_record(config: Any) -> dict[str, Any] | None:
         "magnet_temperature_C": float(temperature),
         "magnet_remanence_T": br_20 * br_scale(grade, temperature),
         "magnet_intrinsic_coercivity_kA_m": coefficients.hcj_20C_kA_m * (1.0 + coefficients.alpha_hcj_pct_per_K / 100.0 * delta),
+        "magnet_temperature_status": "experimental",
+        "magnet_temperature_status_reason": MAGNET_TEMPERATURE_STATUS_REASON,
     }
+
+
+def is_derated_run(metadata: Mapping[str, Any]) -> bool:
+    """Whether a run's magnets were derated: a temperature record away from the catalogue's 20 °C.
+
+    A run set to exactly 20 °C still records its magnet values, but derates nothing.
+    """
+
+    temperature = metadata.get("magnet_temperature_C")
+    return (
+        metadata.get("magnet_remanence_T") is not None
+        and isinstance(temperature, (int, float))
+        and temperature != REFERENCE_TEMP_C
+    )
 
 
 def magnet_temperature_warning(config: Any) -> str | None:

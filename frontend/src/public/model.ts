@@ -1,6 +1,6 @@
 import type { AirgapBrBtProfile } from '../components/tutorials/lessonSolveTypes';
 import type { CustomSteel } from './customSteel';
-import type { DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, WireSpec } from './performance';
+import type { DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, PerformanceOutputStatus, WireSpec } from './performance';
 import type { WindingResistance } from './windingResistance';
 
 export type Topology = 'SPM' | 'IPM';
@@ -504,6 +504,8 @@ export interface SolveResult {
     /** Hot-magnet runs (#137): the temperature and the derated Br and HcJ the solve used. */
     magnet_temperature_C?: number | null;
     magnet_remanence_T?: number | null;
+    magnet_temperature_status?: PerformanceOutputStatus | null;
+    magnet_temperature_status_reason?: string | null;
     magnet_intrinsic_coercivity_kA_m?: number | null;
     topology?: string;
     current_amplitude_A?: number | null;

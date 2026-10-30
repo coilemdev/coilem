@@ -1247,10 +1247,17 @@ body {
 .losses-headline { display: flex; align-items: baseline; gap: 8px; margin: 2px 0 6px; }
 .losses-headline-label { color: var(--text-secondary); font: 400 9px var(--font-sans); }
 .losses-headline strong { color: var(--text-primary); font: 800 16px/1.2 var(--font-mono); font-variant-numeric: tabular-nums; }
-.losses-status { margin-left: 6px; padding: 0 5px; border: 1px solid currentColor; border-radius: 999px; font: 700 7px/1.6 var(--font-sans); letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+/* --font-ui: --font-sans is not defined, which voided this shorthand and let the badge take its parent's size. */
+.losses-status { margin-left: 6px; padding: 0 5px; border: 1px solid currentColor; border-radius: 999px; font: 700 8px/1.6 var(--font-ui); letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
 .losses-status.is-experimental { color: var(--warning); }
 .losses-status.is-unavailable { color: var(--text-muted); }
 .losses-status.is-qualified { color: var(--success); }
+/* Each output's status with its reason in words (public issue 143). */
+.output-status-list { margin: 8px 0 0; padding: 0; list-style: none; color: var(--text-muted); font-size: 10px; line-height: 1.45; }
+.output-status-list li { display: flex; align-items: baseline; gap: 6px; }
+.output-status-list li + li { margin-top: 3px; }
+.output-status-list .losses-status { flex: none; margin-left: 0; }
+.output-status-list strong { color: var(--text-secondary); font-weight: 600; }
 .losses-card tr[title] th { cursor: help; }
 .dq-card-detail tr:first-child > * { padding-top: 6px; border-top: 1px solid var(--border-subtle); }
 .dq-card-toggle { margin-top: 4px; padding: 0; border: 0; background: none; color: var(--text-accent); font-size: 10px; cursor: pointer; }
