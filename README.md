@@ -7,9 +7,9 @@ Everything runs on your computer.
 
 Website: [coilem.com](https://coilem.com)
 
-The source is being prepared as **coilEM 0.5.0 Developer Preview**, with
-**Magneto2D 0.3.3**. Until the version bump at the 0.5.0 freeze it still
-identifies as coilEM 0.4.0, the published release. The
+The source identifies as **coilEM 0.5.0 Developer Preview**, with
+**Magneto2D 0.4.0**. Version 0.5.0 has not been frozen or released;
+coilEM 0.4.0 remains the published release. The
 [release notes](RELEASE_NOTES.md) describe 0.4.0; the
 [0.5.0 release notes](docs/RELEASE_0_5_0.md) list what 0.5.0 changes and what
 the freeze still has to measure. The PyPI install commands below select the
@@ -211,7 +211,7 @@ Six-step excitation models ideal commanded currents, without PWM, switching,
 ESC dynamics or thermal behavior. See [Release notes](RELEASE_NOTES.md) and
 [Materials](MATERIALS.md).
 
-The source application is **coilEM 0.4.0** and the solver is **Magneto2D 0.3.3**.
+The source application is **coilEM 0.5.0** and the solver is **Magneto2D 0.4.0**.
 There are no accounts, hosted services or telemetry in this distribution.
 Elmer is an optional development-only lane; see [its setup](docs/ELMER.md).
 

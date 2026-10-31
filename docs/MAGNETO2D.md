@@ -1,8 +1,9 @@
 # Magneto2D
 
-Magneto2D 0.3.3 is coilEM's native Rust 2D magnetostatic finite-element solver
-and postprocessor. It is bundled by the coilEM 0.3.1 application; the solver
-and application have separate version numbers. The public application uses
+Magneto2D 0.4.0 is coilEM's native Rust 2D magnetostatic finite-element solver
+and postprocessor. It is bundled by the coilEM 0.5.0 source application; the solver
+and application have separate version numbers. Version 0.5.0 has not been
+frozen or released. The public application uses
 Python and Gmsh to build tagged solve meshes, then invokes Magneto2D for field
 solving and electromagnetic postprocessing.
 

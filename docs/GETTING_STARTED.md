@@ -6,8 +6,9 @@ report export. If you installed coilEM with `uv tool install coilem`, run
 `coilem` and start at [6. Load the example motor](#6-load-the-example-motor);
 sections 1 to 5 build it from source.
 
-The application in this guide is coilEM 0.3.1 and the bundled solver is
-Magneto2D 0.3.3. coilEM requires Python 3.11 to 3.15, Node.js 24 with npm, a Rust
+The source application in this guide is coilEM 0.5.0 and the bundled solver is
+Magneto2D 0.4.0. Version 0.5.0 has not been frozen or released.
+coilEM requires Python 3.11 to 3.15, Node.js 24 with npm, a Rust
 toolchain with Cargo (the locked `faer` dependency requires Rust 1.84+), and Git. The platform-specific commands below are setup
 guidance, not a broad operating-system support guarantee. Record the exact
 system used for the final release-candidate walkthrough with its evidence.

@@ -184,7 +184,7 @@ def main(argv=None):
                 "binary_sha256": expected["binary_sha256"], "platform": expected["platform"],
                 "python": expected["python"], "dependencies": expected["dependencies"],
                 "source_machine_sha256": prius.source()["source_machine_sha256"], "geometry_asset_sha256": prius.geometry_asset_sha256(),
-                "scope": "Development-candidate software reproduction; final v0.4.0 candidate rerun remains required",
+                "scope": "Development-candidate software reproduction; final v0.5.0 candidate rerun remains required",
                 "qualified": False, "selection": selection, "frozen_inputs": frozen, "jobs": [],
                 "job_states": {name: {"status": "PENDING", "attempts": []} for name, _ in selected},
                 "status": "RUNNING", "complete": False,
