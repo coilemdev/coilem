@@ -9,7 +9,7 @@ const {
   PHASE_RESISTANCE_UNRECORDED_STATUS_REASON,
 } = await importTypeScriptModule(new URL('../src/public/outputStatus.ts', import.meta.url));
 
-const { STEEL_RAMP, densityColor, formatPower, lossesView, lossSegments, rampColor, stackCopperWPerKg } = await importTypeScriptModule(
+const { STEEL_RAMP, densityColor, formatPower, lossesView, lossSegments, notModelledText, rampColor, stackCopperWPerKg } = await importTypeScriptModule(
   new URL('../src/public/lossesView.ts', import.meta.url),
 );
 
@@ -49,14 +49,20 @@ const iron = {
 
 const view = lossesView(loss, iron);
 assert.equal(view.efficiency.text, '96.6%'); // 3,091.6 W shaft of 3,201.6 W input
+assert.equal(view.efficiency.value, '96.6', 'the table cell takes the number; % sits in the unit column');
 assert.equal(view.efficiency.status, 'experimental');
 assert.deepEqual(view.rows.map((row) => row.key), ['input', 'shaft', 'torque', 'copper', 'iron', 'mechanical', 'total']);
-assert.equal(view.rows.find((row) => row.key === 'copper').value, '60');
+assert.equal(view.rows.find((row) => row.key === 'copper').value, '60.0', 'three significant figures keep their trailing zero');
 assert.match(view.rows.find((row) => row.key === 'copper').hint, /3 × \(20 A rms\)² × 50 mΩ at 80 °C/);
 assert.equal(view.rows.find((row) => row.key === 'iron').status, 'experimental');
-assert.match(view.rows.find((row) => row.key === 'iron').hint, /Teeth 25 W, yoke 15 W\./);
+assert.match(view.rows.find((row) => row.key === 'iron').hint, /Teeth 25\.0 W, yoke 15\.0 W\./);
 assert.match(view.rows.find((row) => row.key === 'iron').hint, /69% comes from flux densities above 1\.5 T/);
 assert.match(view.rows.find((row) => row.key === 'torque').hint, /The solved torque, 10 N·m/);
+assert.equal(view.rows.find((row) => row.key === 'torque').value, '9.84', 'shaft torque to three significant figures like the other rows');
+// What the breakdown leaves out sits on the Total loss row, not in a paragraph under the card.
+assert.equal(view.rows.find((row) => row.key === 'total').hint, notModelledText(loss));
+assert.match(notModelledText(loss), /inverter loss\.$/, 'mechanical loss is modelled once entered');
+assert.match(notModelledText({ ...loss, mechanical_loss_W: 0 }), /mechanical loss unless entered under Operating point\.$/);
 
 // Segments follow the five components in order and their shares add to one.
 const { segments, totalW } = lossSegments(loss);
@@ -77,6 +83,8 @@ assert.equal(lossesView(null, null), null);
 
 assert.deepEqual(formatPower(1234), { value: '1.23', unit: 'kW' });
 assert.deepEqual(formatPower(2.527), { value: '2.53', unit: 'W' });
+assert.deepEqual(formatPower(1400), { value: '1.40', unit: 'kW' });
+assert.deepEqual(formatPower(0), { value: '0', unit: 'W' });
 // The iron-loss map runs slate to pale steel: lighter is more loss.
 assert.equal(densityColor(0), 'rgb(65, 82, 99)');
 assert.equal(densityColor(1), 'rgb(218, 235, 247)');

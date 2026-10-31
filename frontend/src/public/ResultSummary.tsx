@@ -56,8 +56,9 @@ function LoadingBar({ label, valueT, scaleMaxT, knee }: { label: string; valueT:
 
 /**
  * The Results summary (#99 part B): the run settings and model assumptions as
- * one collapsed line (#110), the headline numbers with their conventions, motor constants beside
- * magnetic loading, and the run timings demoted to one footer line.
+ * one collapsed line (#110), the headline numbers with their conventions, motor constants, the
+ * d/q point and magnetic loading side by side, the losses below them, and the run timings
+ * demoted to one footer line.
  */
 export function ResultSummary({
   result,
@@ -166,15 +167,6 @@ export function ResultSummary({
           currentUnit={config.solve_params.current_amplitude_convention === 'peak' ? 'A peak' : 'A rms'}
           variant="report"
         />
-        <LossesCard
-          loss={summary.loss_breakdown}
-          iron={summary.iron_loss}
-          density={result.iron_loss_density}
-          plot={result.field_line_plot}
-          winding={summary.winding_resistance}
-          slotCount={config.stator.slot_count}
-          variant="report"
-        />
         <section className="public-magnetic-loading" aria-labelledby={loadingHeadingId}>
           <h3 id={loadingHeadingId}>Magnetic loading</h3>
           <LoadingBar label="Peak tooth B" valueT={summary.peak_flux_density_teeth_T} scaleMaxT={scaleMaxT} knee={knee} />
@@ -185,6 +177,16 @@ export function ResultSummary({
           </p>
           <p>{thd != null && Number.isFinite(thd) ? `${thdLabel} ${fixed(thd, 1)}%` : 'Back-EMF THD: not computed for this run'}</p>
         </section>
+        {/* Full width below the three compact cards: the breakdown and its map side by side. */}
+        <LossesCard
+          loss={summary.loss_breakdown}
+          iron={summary.iron_loss}
+          density={result.iron_loss_density}
+          plot={result.field_line_plot}
+          winding={summary.winding_resistance}
+          slotCount={config.stator.slot_count}
+          variant="report"
+        />
       </div>
       <p className="public-result-timings" title={TIMING_HELP}>{timings.join(' · ')}</p>
     </div>

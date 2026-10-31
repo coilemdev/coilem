@@ -99,4 +99,17 @@ const currents = { ...grid, phase_current_rms_A: [[10, 9, 8], [20, 18, 17], [nul
 assert.deepEqual(currentAt(currents, 2100, 10.4), { rmsA: 18, gammaDeg: 3 });
 assert.equal(currentAt(currents, 1000, 15), null);
 assert.equal(currentAt(grid, 2000, 10), null, 'maps without currents show none');
+
+// Tiles, tables and readouts keep three significant figures, trailing zeros included.
+const { formatSignificant } = await importTypeScriptModule(new URL('../src/public/numberFormat.ts', import.meta.url));
+assert.equal(formatSignificant(1.4), '1.40');
+assert.equal(formatSignificant(0.14), '0.140');
+assert.equal(formatSignificant(0.1394), '0.139');
+assert.equal(formatSignificant(2153), '2,150');
+assert.equal(formatSignificant(14.94), '14.9');
+assert.equal(formatSignificant(0), '0');
+assert.equal(formatSignificant(-3.4), '-3.40');
+assert.equal(formatSignificant(Number.NaN), '—');
+assert.equal(formatSignificant(null), '—');
+
 console.log('performance view: current at a point ok');

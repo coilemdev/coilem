@@ -74,6 +74,8 @@ export async function checkPerformanceRegressions(page: Page): Promise<void> {
       await old;
       const submitted = page.waitForRequest((request) => request.url().endsWith('/performance/report/csv'));
       const downloaded = page.waitForEvent('download');
+      // The downloads sit behind one Export menu.
+      await page.getByRole('button', { name: 'Export', exact: true }).click();
       await page.getByRole('button', { name: 'Performance CSV', exact: true }).click();
       expect((await submitted).postDataJSON().control).toBe('least_loss');
       expect(await (await downloaded).failure()).toBeNull();

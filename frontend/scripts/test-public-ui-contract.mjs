@@ -2035,14 +2035,19 @@ assert.doesNotMatch(runComparisonSource, /run\.summary\.Kt_Nm_per_A/);
 assert.match(workspaceSource, /summary=\{advancedGeometrySummary\(config, statorWidths\)\}/);
 assert.match(workspaceSource, /NumberRow label="Yoke Tooth Width" value=\{shownWidthMm\(config\.stator\.tooth_width_mm\)\}/);
 assert.match(workspaceSource, /onChange=\{set\('stator', 'tooth_width_mm', 'advanced'\)\}/);
-// Public issue 143: each 0.5.0 output shows its status with the reason in words.
-const statusSources = Object.fromEntries(await Promise.all(['DqCard', 'LossesCard', 'PerformancePanel'].map(async (name) => [
+// Public issue 143: each 0.5.0 output shows its status with the reason in words. The card's
+// status pill opens the list (keyboard and touch too), so the reasons stay one step away.
+const statusSources = Object.fromEntries(await Promise.all(['DqCard', 'LossesCard', 'PerformancePanel', 'OutputStatusBadge', 'Popover'].map(async (name) => [
   name, await readFile(path.join(frontendRoot, `src/public/${name}.tsx`), 'utf8'),
 ])));
-assert.match(statusSources.DqCard, /<OutputStatusList statuses=\{\[\{ key: 'dq'/);
-assert.match(statusSources.LossesCard, /<OutputStatusList statuses=\{view\.statuses\} \/>/);
+assert.match(statusSources.DqCard, /<StatusSummary statuses=\{\[\{ key: 'dq'/);
+assert.match(statusSources.LossesCard, /<StatusSummary statuses=\{view\.statuses\}>/);
 assert.match(statusSources.LossesCard, /statuses=\{view\.statuses\}\n\s*\/>/, 'the loss map shows the status of the loss it maps');
-assert.match(statusSources.PerformancePanel, /<OutputStatusList statuses=\{statuses\} \/>/);
+assert.match(statusSources.LossesCard, /<StatusDot status=\{shownStatus\.status\}/, 'the map heading carries the mapped loss status');
+assert.match(statusSources.PerformancePanel, /<StatusSummary statuses=\{headerStatuses\} \/>/);
+assert.match(statusSources.OutputStatusBadge, /<OutputStatusList statuses=\{statuses\} \/>/, 'the pill opens every status with its reason');
+assert.match(statusSources.Popover, /onFocus=\{\(\) => setFocused\(true\)\}/, 'explanations open on keyboard focus, not only on hover');
+assert.match(statusSources.Popover, /event\.key === 'Escape'/);
 assert.match(statusSources.PerformancePanel, /magnet_temperature_derated: magnetsDerated/);
 assert.match(workspaceSource, /label: 'Magnet derating'/);
 assert.match(workspaceSource, /\{row\.status && <StatusBadge status=\{row\.status\.status\} title=\{row\.status\.reason\} \/>\}/);

@@ -6425,8 +6425,8 @@
     },
     {
       "path": "frontend/scripts/test-losses-view.mjs",
-      "bytes": 6575,
-      "sha256": "f96feb6fb498c44281d83ca94881a1bb7fe5736a7ec22ddcb220de50035a168f"
+      "bytes": 7440,
+      "sha256": "4d0fa3608acc5a369c66aedae06636d793cc1b3097158bbc4c7f6283e7cbf9ed"
     },
     {
       "path": "frontend/scripts/test-magnet-coverage.mjs",
@@ -6450,8 +6450,8 @@
     },
     {
       "path": "frontend/scripts/test-performance-view.mjs",
-      "bytes": 6739,
-      "sha256": "44a5bda3999942f91f17334ac9f7282fcf260ddda9b390964100d11cf91efd76"
+      "bytes": 7374,
+      "sha256": "99b2a98ac6c5c239068e8d54228f9314294688530bc107f14e9eae3b46812ab5"
     },
     {
       "path": "frontend/scripts/test-phase-drive.mjs",
@@ -6480,8 +6480,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 161534,
-      "sha256": "ddef1cc5189fa0954401048a7829c350810b203dd1a7f2b1ea1b9002ed84585e"
+      "bytes": 162139,
+      "sha256": "5a39c95745d246baa25fd15f683b5efb6416abb46510483684d418cc90e3a589"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6910,8 +6910,8 @@
     },
     {
       "path": "frontend/src/public/DqCard.tsx",
-      "bytes": 2955,
-      "sha256": "56da35e496c0a40783b6a0e15bdd623cd51147f983d392bea7997758af15646c"
+      "bytes": 2927,
+      "sha256": "ea3c1f8493344cc9bdebe7f3b9d9a6cd8f875d6c6b58dbedc4f812e66fbf161c"
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
@@ -6925,8 +6925,8 @@
     },
     {
       "path": "frontend/src/public/LossesCard.tsx",
-      "bytes": 19662,
-      "sha256": "f34d39f0e75c3b4836a9d1b39e232cf251539e10b55b25d610f3ae6be4aaeac0"
+      "bytes": 21228,
+      "sha256": "62747afa4798530f8126dc14a5d361a7ea90cd76a356c1972bc9327d47a11724"
     },
     {
       "path": "frontend/src/public/MaterialWorkspace.tsx",
@@ -6945,13 +6945,18 @@
     },
     {
       "path": "frontend/src/public/OutputStatusBadge.tsx",
-      "bytes": 831,
-      "sha256": "cbe311f11ac068b319232e08590042cc6b34a015aadcd77d3d7593f0ef2ee691"
+      "bytes": 3096,
+      "sha256": "f4e32bf4234cd430e46ccff0e65452a0ee06da058fadcad2a307e74350467f4a"
     },
     {
       "path": "frontend/src/public/PerformancePanel.tsx",
-      "bytes": 38191,
-      "sha256": "b2e128af22d8de4036805c3d561753c30cd8dad6af9e53cdf9fafe33ddfc85e0"
+      "bytes": 46536,
+      "sha256": "5f438d07943956a540ead18b955bb7af2e58fddde6ff020c32a33be7c9ce5ff1"
+    },
+    {
+      "path": "frontend/src/public/Popover.tsx",
+      "bytes": 4670,
+      "sha256": "c132cd81574ae0136808eb0fdc2af81340f06a0bbc6c3770223b5270dc1b135b"
     },
     {
       "path": "frontend/src/public/PublicLanding.tsx",
@@ -6975,8 +6980,8 @@
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
-      "bytes": 8992,
-      "sha256": "91bc6921d913b79071d165db03a4ac8d9a5132f139cb523d49fe0833455f0df2"
+      "bytes": 9141,
+      "sha256": "b53742e5de586869eca20c0800863014bfea1c8b072ab20511e7c1cc47b1389f"
     },
     {
       "path": "frontend/src/public/RpmField.tsx",
@@ -7250,8 +7255,8 @@
     },
     {
       "path": "frontend/src/public/lossesView.ts",
-      "bytes": 9388,
-      "sha256": "4786f18a3596364f1f30e20a3ac21abb2be89d4d8e230a15c99c94c21791968e"
+      "bytes": 10107,
+      "sha256": "fe1a9ee6c1214a68205ffe52acc63312de0e4eb60d175f01b30c5c7ba4f2ae20"
     },
     {
       "path": "frontend/src/public/machineConstants.ts",
@@ -7314,6 +7319,11 @@
       "sha256": "40d69d324708b41486ee891c31d9a43e2e4bef0b00d2cc10f3bf96a92e737072"
     },
     {
+      "path": "frontend/src/public/numberFormat.ts",
+      "bytes": 850,
+      "sha256": "3276beb9b06685ff8d74a6cf9f98bba25e457ea696b1c090110c84ed3e375e21"
+    },
+    {
       "path": "frontend/src/public/outputStatus.ts",
       "bytes": 2426,
       "sha256": "eaefe9db44cd6ffb2a3b76221db814a57b85f106e3ad4675217507267d004894"
@@ -7370,8 +7380,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 276043,
-      "sha256": "c932a58864c5baec535cc843e52ffce969a9ae78779ddb35dd74c2042cd1f415"
+      "bytes": 283027,
+      "sha256": "6e37377129da21ba3478b8e53287555e03416379e2f696eb3f3e1f03e2ba4852"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7425,8 +7435,8 @@
     },
     {
       "path": "frontend/tests/performance-regressions.ts",
-      "bytes": 5202,
-      "sha256": "335d8a6eb1afcf10d1c8deacbaa974c5abe012ed7067a4222eaff7b6a5121dd5"
+      "bytes": 5332,
+      "sha256": "79e4b89c034b0159fe9b43d28b339254facb49dd8bd4a4bd82070f991b6d112a"
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
