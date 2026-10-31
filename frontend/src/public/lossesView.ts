@@ -7,6 +7,7 @@
  * P_shaft = T·ω − P_iron − P_mech and the input is P_in = T·ω + P_copper.
  */
 
+import { formatSignificant } from './numberFormat';
 import { PHASE_RESISTANCE_UNRECORDED_STATUS_REASON, recordStatus, type NamedOutputStatus } from './outputStatus';
 import type { IronLoss, LossBreakdown, PerformanceOutputStatus } from './performance';
 import type { WindingResistance } from './windingResistance';
@@ -30,7 +31,8 @@ export interface LossRow {
 }
 
 export interface LossesView {
-  efficiency: { text: string; status: PerformanceOutputStatus; reason: string };
+  /** `text` with its % sign, `value` without it for a table cell. */
+  efficiency: { text: string; value: string; status: PerformanceOutputStatus; reason: string };
   rows: LossRow[];
   /** Efficiency, iron loss and copper loss, each with its status and reason in words. */
   statuses: NamedOutputStatus[];
@@ -49,10 +51,17 @@ const SEGMENTS: Array<{ key: LossSegment['key']; label: string; field: keyof Los
 const finite = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value);
 const significant = (value: number, digits = 3) => Number(value.toPrecision(digits)).toString().replace('-', '−');
 
-/** Watts with three significant figures, in kW from 1 kW. */
+/** Watts with three significant figures, trailing zeros kept, in kW from 1 kW. */
 export function formatPower(watts: number): { value: string; unit: string } {
   if (!finite(watts)) return { value: '—', unit: '' };
-  return Math.abs(watts) >= 1000 ? { value: significant(watts / 1000), unit: 'kW' } : { value: significant(watts), unit: 'W' };
+  const shown = (value: number) => formatSignificant(value).replace('-', '−');
+  return Math.abs(watts) >= 1000 ? { value: shown(watts / 1000), unit: 'kW' } : { value: shown(watts), unit: 'W' };
+}
+
+/** What the loss breakdown leaves out, in words. */
+export function notModelledText(loss: LossBreakdown): string {
+  return 'Not modelled: magnet and rotor eddy-current loss, AC copper loss (skin and proximity effects), inverter loss'
+    + (loss.mechanical_loss_W > 0 ? '.' : ', and mechanical loss unless entered under Operating point.');
 }
 
 export function lossSegments(loss: LossBreakdown): { segments: LossSegment[]; totalW: number } {
@@ -79,8 +88,10 @@ export function lossesView(
 ): LossesView | null {
   if (!loss) return null;
   const efficiencyAvailable = finite(loss.efficiency_pct);
+  const efficiencyValue = efficiencyAvailable ? (loss.efficiency_pct as number).toFixed(1) : '—';
   const efficiency = {
-    text: efficiencyAvailable ? `${(loss.efficiency_pct as number).toFixed(1)}%` : '—',
+    text: efficiencyAvailable ? `${efficiencyValue}%` : '—',
+    value: efficiencyValue,
     status: efficiencyAvailable ? loss.efficiency_status : 'unavailable' as PerformanceOutputStatus,
     reason: loss.efficiency_status_reason ?? '',
   };
@@ -114,7 +125,7 @@ export function lossesView(
   const rows: LossRow[] = [
     powerRow('input', 'Input power', loss.input_power_W, 'Electrical input: the solved torque times speed, plus copper loss.'),
     powerRow('shaft', 'Shaft power', loss.shaft_power_W, 'Solved torque times speed, less iron and mechanical loss.'),
-    { key: 'torque', label: 'Shaft torque', value: significant(loss.shaft_torque_Nm, 4), unit: 'N·m',
+    { key: 'torque', label: 'Shaft torque', value: formatSignificant(loss.shaft_torque_Nm).replace('-', '−'), unit: 'N·m',
       hint: `The solved torque, ${significant(loss.electromagnetic_torque_Nm, 4)} N·m, less the iron and mechanical loss torque. The solved torque is unchanged.` },
     powerRow('copper', 'Copper loss', loss.copper_loss_W,
       `3 × (${significant(loss.phase_current_rms_A)} A rms)² × ${resistance} at ${significant(loss.winding_temperature_C)} °C. `
@@ -124,7 +135,7 @@ export function lossesView(
       ? powerRow('iron', 'Iron loss', loss.iron_loss_W as number, ironParts.join(' '), loss.iron_loss_status)
       : { key: 'iron', label: 'Iron loss', value: '—', unit: '', hint: ironParts.join(' '), status: 'unavailable' },
     powerRow('mechanical', 'Mechanical loss', loss.mechanical_loss_W, 'Friction and windage as entered under Operating point; 0 when not set.'),
-    powerRow('total', 'Total loss', loss.total_loss_W),
+    powerRow('total', 'Total loss', loss.total_loss_W, notModelledText(loss)),
   ];
   return { efficiency, rows, statuses, segments, totalW };
 }

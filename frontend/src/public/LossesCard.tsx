@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { PublicFieldLinePlot } from './model';
-import { OutputStatusList, StatusBadge } from './OutputStatusBadge';
+import { StatusDot, StatusSummary } from './OutputStatusBadge';
 import type { NamedOutputStatus } from './outputStatus';
 import type { IronLoss, IronLossDensity, LossBreakdown } from './performance';
+import { InfoTip } from './Popover';
 import type { WindingResistance } from './windingResistance';
 import {
   CONTEXT_FILL,
@@ -11,10 +12,12 @@ import {
   densityColor,
   formatPower,
   lossesView,
+  notModelledText,
   stackCopperWPerKg,
   type LossMapMode,
   type LossSegment,
 } from './lossesView';
+import { formatSignificant } from './numberFormat';
 
 function LossBar({ segments, totalW }: { segments: LossSegment[]; totalW: number }) {
   const [hovered, setHovered] = useState<LossSegment['key'] | null>(null);
@@ -37,14 +40,15 @@ function LossBar({ segments, totalW }: { segments: LossSegment[]; totalW: number
           ? `${active.label}: ${formatPower(active.watts).value} ${formatPower(active.watts).unit} (${Math.round(active.share * 100)}%)`
           : `${total.value} ${total.unit} total loss`}
       </p>
+      {/* Shares here: the table above already gives the watts, and each item's tooltip repeats them. */}
       <ul className="losses-legend">
         {segments.map((segment) => {
           const power = formatPower(segment.watts);
           return (
-            <li key={segment.key} onMouseEnter={() => setHovered(segment.key)} onMouseLeave={() => setHovered(null)}>
+            <li key={segment.key} title={`${power.value} ${power.unit}`} onMouseEnter={() => setHovered(segment.key)} onMouseLeave={() => setHovered(null)}>
               <span className="losses-swatch" style={{ background: segment.color }} aria-hidden="true" />
               <span className="losses-legend-label">{segment.label}</span>
-              <span className="losses-legend-value">{power.value} {power.unit}</span>
+              <span className="losses-legend-value">{Math.round(segment.share * 100)}%</span>
             </li>
           );
         })}
@@ -105,6 +109,7 @@ const MODE_LABEL: Record<LossMapMode, string> = {
   eddy: 'Iron, eddy current',
   copper: 'Copper',
 };
+const MODE_SHORT: Record<LossMapMode, string> = { iron: 'Iron', hysteresis: 'Hyst.', eddy: 'Eddy', copper: 'Copper' };
 const PART_LABEL: Record<Exclude<Part, 'air'>, string> = { iron: 'Stator iron', copper: 'Coil side', unmodelled: 'Rotor or magnet' };
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 16;
@@ -282,18 +287,38 @@ function LossMap({ plot, density, copperWPerKg, copperStackW, copperEndW, status
   };
 
   const shownStatus = statuses.find((item) => item.key === (shownMode === 'copper' ? 'copper' : 'iron'));
-  const legendTop = scale ? Number(scale.top.toPrecision(3)) : null;
-  const peak = scale ? Number(scale.peak.toPrecision(3)) : null;
-  const copperText = copperWPerKg !== null ? Number(copperWPerKg.toPrecision(3)) : null;
+  const legendTop = scale ? formatSignificant(scale.top) : null;
+  const peak = scale ? formatSignificant(scale.peak) : null;
+  const copperText = copperWPerKg !== null ? formatSignificant(copperWPerKg) : null;
   const stackPower = copperStackW !== null ? formatPower(copperStackW) : null;
   const endPower = copperEndW !== null ? formatPower(copperEndW) : null;
   return (
     <figure className="losses-map">
       <div className="losses-map-heading">
         <h4>Where the loss is</h4>
+        {shownStatus && <StatusDot status={shownStatus.status} label={shownStatus.label} reason={shownStatus.reason} />}
+        <InfoTip label="About the loss map">
+          {shownMode === 'copper' ? (
+            <p>
+              Copper loss in the stack: {copperText} W/kg of copper in every coil side{stackPower ? `, ${stackPower.value} ${stackPower.unit} in all` : ''}.
+              {endPower ? ` The end turns' ${endPower.value} ${endPower.unit} lie outside this cross-section.` : ''}
+              {' '}The model carries the same current density in every coil side, so it is one value.
+            </p>
+          ) : (
+            <p>
+              {MODE_LABEL[shownMode]} loss per kilogram of steel over one electrical period; lighter is more loss.
+              The scale stops at the 98th percentile; the peak is {peak} W/kg.
+            </p>
+          )}
+          <p>
+            <span className="losses-map-swatch is-hatched" aria-hidden="true" /> Not modelled: rotor and magnets.
+            {shownMode !== 'copper' && <> <span className="losses-map-swatch" style={{ background: CONTEXT_FILL }} aria-hidden="true" /> Coil sides: choose Copper.</>}
+          </p>
+          <p>Scroll, double-click or use + and − to zoom; drag to move.</p>
+        </InfoTip>
         <div className="losses-map-modes" role="group" aria-label="Loss shown on the map">
           {modes.map((item) => (
-            <button key={item} type="button" aria-pressed={item === shownMode} onClick={() => setMode(item)}>{MODE_LABEL[item]}</button>
+            <button key={item} type="button" aria-pressed={item === shownMode} aria-label={MODE_LABEL[item]} title={MODE_LABEL[item]} onClick={() => setMode(item)}>{MODE_SHORT[item]}</button>
           ))}
         </div>
       </div>
@@ -319,34 +344,20 @@ function LossMap({ plot, density, copperWPerKg, copperStackW, copperEndW, status
         </div>
       </div>
       <figcaption>
-        <span className="losses-map-readout" aria-live="polite">
-          {readout ?? `Scroll, double-click or use + and − to zoom; drag to move${view.zoom > 1 ? ` (${view.zoom.toFixed(1)}×)` : ''}.`}
-        </span>
         {shownMode === 'copper' ? (
           <span className="losses-map-key">
             <span className="losses-map-swatch" style={{ background: COPPER_FILL }} aria-hidden="true" />
-            Copper loss in the stack: {copperText} W/kg of copper in every coil side{stackPower ? `, ${stackPower.value} ${stackPower.unit} in all` : ''}.
-            {endPower ? ` The end turns' ${endPower.value} ${endPower.unit} lie outside this cross-section.` : ''}
-            {' '}The model carries the same current density in every coil side, so it is one value.
+            {copperText} W/kg of copper in every coil side
           </span>
         ) : (
-          <>
+          <span className="losses-map-scale-row">
+            <span>0</span>
             <span className="losses-map-scale" style={{ background: `linear-gradient(90deg, ${STEEL_RAMP.join(', ')})` }} aria-hidden="true" />
-            <span className="losses-map-labels"><span>0</span><span>≥ {legendTop} W/kg</span></span>
-            <span className="losses-map-key">
-              {MODE_LABEL[shownMode]} loss per kilogram of steel over one electrical period; lighter is more loss.
-              The scale stops at the 98th percentile; the peak is {peak} W/kg.
-            </span>
-          </>
-        )}
-        {shownStatus && (
-          <span className="losses-map-key">
-            <StatusBadge status={shownStatus.status} /> {shownStatus.reason}
+            <span>≥ {legendTop} W/kg</span>
           </span>
         )}
-        <span className="losses-map-key">
-          <span className="losses-map-swatch is-hatched" aria-hidden="true" /> Not modelled: rotor and magnets.
-          {shownMode !== 'copper' && <> <span className="losses-map-swatch" style={{ background: CONTEXT_FILL }} aria-hidden="true" /> Coil sides: choose Copper.</>}
+        <span className="losses-map-readout" aria-live="polite">
+          {readout ?? (view.zoom > 1 ? `${view.zoom.toFixed(1)}×` : '')}
         </span>
       </figcaption>
     </figure>
@@ -376,46 +387,59 @@ export function LossesCard({
 }) {
   const headingId = useId();
   const view = lossesView(loss, iron, winding ?? null);
-  if (!view) return null;
+  if (!view || !loss) return null;
   const copperWPerKg = stackCopperWPerKg(loss, winding, slotCount ?? 0);
+  const rowStatus = (key: string) => view.statuses.find((item) => item.key === key) ?? null;
+  const efficiencyStatus = rowStatus('efficiency');
+  const showMap = Boolean(plot && (density || copperWPerKg !== null));
   return (
-    <section className={`motor-constants losses-card${variant === 'report' ? ' is-report' : ''}`} aria-labelledby={headingId}>
-      <h3 id={headingId}>Losses &amp; efficiency</h3>
-      <div className="losses-headline" title={view.efficiency.reason}>
-        <span className="losses-headline-label">Efficiency</span>
-        <strong>{view.efficiency.text}</strong>
-        <StatusBadge status={view.efficiency.status} title={view.efficiency.reason} />
+    <section className={`motor-constants losses-card${variant === 'report' ? ' is-report' : ''}${showMap ? ' has-map' : ''}`} aria-labelledby={headingId}>
+      <div className="results-card-heading">
+        <h3 id={headingId}>Losses &amp; efficiency</h3>
+        <StatusSummary statuses={view.statuses}>
+          <p className="popover-note">{notModelledText(loss)}</p>
+        </StatusSummary>
       </div>
-      <table>
-        <tbody>
-          {view.rows.map((row) => (
-            <tr key={row.key} title={row.hint}>
-              <th scope="row">{row.label}</th>
-              <td className="motor-constants-value">{row.value}</td>
-              <td className="motor-constants-unit">
-                {row.unit}
-                {row.status && row.status !== 'qualified' && <StatusBadge status={row.status} title={row.hint} />}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <OutputStatusList statuses={view.statuses} />
-      {view.segments.length > 0 && <LossBar segments={view.segments} totalW={view.totalW} />}
-      {plot && (density || copperWPerKg !== null) && (
-        <LossMap
-          plot={plot}
-          density={density}
-          copperWPerKg={copperWPerKg}
-          copperStackW={loss?.copper_active_loss_W ?? null}
-          copperEndW={loss?.copper_end_winding_loss_W ?? null}
-          statuses={view.statuses}
-        />
-      )}
-      <p className="losses-not-modelled">
-        Not modelled: magnet and rotor eddy-current loss, AC copper loss (skin and proximity effects), inverter loss
-        {loss && loss.mechanical_loss_W > 0 ? '.' : ', and mechanical loss unless entered under Operating point.'}
-      </p>
+      <div className="losses-card-body">
+        <div className="losses-card-numbers">
+          <table>
+            <tbody>
+              <tr className="losses-efficiency" title="Shaft power ÷ input power at the solved operating point.">
+                <th scope="row"><span className="losses-hint">Efficiency</span></th>
+                <td className="motor-constants-value">{view.efficiency.value}</td>
+                <td className="motor-constants-unit">{view.efficiency.value === '—' ? '' : '%'}</td>
+                <td className="losses-status-cell">
+                  {efficiencyStatus && <StatusDot status={efficiencyStatus.status} label={efficiencyStatus.label} reason={efficiencyStatus.reason} />}
+                </td>
+              </tr>
+              {view.rows.map((row) => {
+                const status = row.status ? rowStatus(row.key) : null;
+                return (
+                  <tr key={row.key} title={row.hint} className={row.key === 'input' || row.key === 'copper' ? 'is-group-start' : row.key === 'total' ? 'is-total' : undefined}>
+                    <th scope="row"><span className={row.hint ? 'losses-hint' : undefined}>{row.label}</span></th>
+                    <td className="motor-constants-value">{row.value}</td>
+                    <td className="motor-constants-unit">{row.unit}</td>
+                    <td className="losses-status-cell">
+                      {row.status && <StatusDot status={row.status} label={status?.label ?? row.label} reason={status?.reason ?? row.hint ?? ''} />}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          {view.segments.length > 0 && <LossBar segments={view.segments} totalW={view.totalW} />}
+        </div>
+        {showMap && plot && (
+          <LossMap
+            plot={plot}
+            density={density}
+            copperWPerKg={copperWPerKg}
+            copperStackW={loss.copper_active_loss_W ?? null}
+            copperEndW={loss.copper_end_winding_loss_W ?? null}
+            statuses={view.statuses}
+          />
+        )}
+      </div>
     </section>
   );
 }

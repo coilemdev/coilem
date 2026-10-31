@@ -1,7 +1,7 @@
 import { useId, useState } from 'react';
 import type { DqFluxLinkage } from './performance';
 import { dqView, type DqCurrentUnit, type DqRow } from './dqView';
-import { OutputStatusList, StatusBadge } from './OutputStatusBadge';
+import { StatusSummary } from './OutputStatusBadge';
 
 function Row({ row }: { row: DqRow }) {
   return (
@@ -32,7 +32,10 @@ export function DqCard({ dq, currentUnit = 'A peak', variant = 'panel' }: {
   if (!view) return null;
   return (
     <section className={`motor-constants dq-card${variant === 'report' ? ' is-report' : ''}`} aria-labelledby={headingId}>
-      <h3 id={headingId}>d/q operating point <StatusBadge status={view.status.status} title={view.status.reason} /></h3>
+      <div className="results-card-heading">
+        <h3 id={headingId}>d/q operating point</h3>
+        <StatusSummary statuses={[{ key: 'dq', label: 'd/q flux linkage and inductances', ...view.status }]} />
+      </div>
       <table>
         <tbody>
           {view.main.map((row) => <Row key={row.key} row={row} />)}
@@ -58,7 +61,6 @@ export function DqCard({ dq, currentUnit = 'A peak', variant = 'panel' }: {
         )}
       </table>
       {view.note && <p className="motor-constants-note">{view.note}</p>}
-      <OutputStatusList statuses={[{ key: 'dq', label: 'd/q flux linkage and inductances', ...view.status }]} />
       <button type="button" className="dq-card-toggle" aria-expanded={expanded} aria-controls={detailId} onClick={() => setExpanded((open) => !open)}>
         {expanded ? 'Show fewer' : `Show all d/q values (${view.detail.length} more)`}
       </button>
