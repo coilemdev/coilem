@@ -4757,6 +4757,7 @@ body {
 .performance-band-legend span { flex: 1 1 0; height: 8px; min-width: 6px; }
 .performance-band-legend small { color: var(--text-muted); font: 10px var(--font-mono); }
 .performance-footer { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 14px; align-items: start; }
+.performance-footer > .output-status-list { grid-column: 1 / -1; }
 .performance-inductance { border-collapse: collapse; font: 10px var(--font-mono); color: var(--text-secondary); }
 .performance-inductance caption { margin-bottom: 4px; color: var(--text-muted); font: 10px var(--font-sans); text-align: left; }
 .performance-inductance th, .performance-inductance td { padding: 3px 8px 3px 0; border-bottom: 1px solid var(--border-subtle); text-align: right; font-weight: 400; }
