@@ -9,7 +9,7 @@ continues to select the published coilEM 0.4.0 release until 0.5.0 is published.
 The [release notes](RELEASE_NOTES.md) describe the winding/flux corrections,
 mesh controls, exact Prius examples, Layout ring, Phases preview, field/results
 changes and migration limits. Layout #133 and Phases #134 are merged on main.
-New hardware correlation #69/#82 is deferred to v0.5.0. CREATOR #90 and named
+New hardware correlation #69/#82 is deferred until after v0.5.0. CREATOR #90 and named
 presets #127 are outside the current milestone.
 
 ## Evidence retained before the final freeze

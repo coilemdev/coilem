@@ -1,9 +1,11 @@
 # coilEM v0.5.0 release notes and plan
 
 Draft of October 23, 2026, written at the top of the 0.5.0 development stack
-(`5d23b47`), which builds on the published v0.4.0 (`2ede4e8`). The source still
-identifies as coilEM 0.4.0 with Magneto2D 0.3.3; the version bump happens at
-the freeze. This draft does not mark v0.5.0 as frozen, measured or released.
+(`5d23b47`), which builds on the published v0.4.0 (`2ede4e8`). Updated with the
+owner's decisions of October 30, 2026. The source identifies as coilEM 0.5.0
+with Magneto2D 0.4.0; both versions were bumped before the freeze so the freeze
+measures the build that ships. This draft does not mark v0.5.0 as frozen,
+measured or released.
 Every number marked **TODO(freeze)** comes from the freeze rerun, and every
 **TODO(owner)** is a decision for the owner.
 
@@ -27,7 +29,7 @@ one's claim boundary.
 | Physics hash guards | 21 tests fail by design: the stack changes hash-guarded physics sources | Re-pin the hashes at the freeze, after the rerun |
 | Pyleecan Prius collection | Full macOS and Windows collections at `40d8ab9`: 17 jobs / 568 field reports each. [Corrected residual audit](PRIUS_CONVERGENCE_AUDIT_20261030.md): 10/10 software checks each; original 9/10 reports retained | Review the explicitly post-collection audit correction. No hardware or release qualification is implied |
 | Phase-resistance gate | Protocol 1.6.0 `phase_resistance` ([hand calculations](../benchmarks/abcd-v1.6/PHASE-RESISTANCE.md)): all three cases PASS, within 0.001%. It runs in `tests/test_phase_resistance_gate.py` | None: it needs no solve or reference, so it runs at every test run |
-| Hardware correlation | ORNL Prius and Honda Accord torque–speed comparison planned in issue 143. [#69](https://github.com/coilemdev/coilem/issues/69) and [#82](https://github.com/coilemdev/coilem/issues/82) are in the 0.5.0 milestone and not in this stack | **TODO(owner):** ship in 0.5.0 or move |
+| Hardware correlation | ORNL Prius ([#69](https://github.com/coilemdev/coilem/issues/69), [#82](https://github.com/coilemdev/coilem/issues/82)) and Honda Accord torque–speed comparison planned in issue 143; it is not qualification | Deferred until after 0.5.0 by the owner on October 30, 2026; no new milestone chosen |
 | Wheels and TestPyPI | v0.4.0's rehearsal passed | Rehearse the 0.5.0 candidate on all four wheel targets |
 
 ## 1. What changes for users
@@ -128,8 +130,8 @@ one's claim boundary.
   ([Nonlinear convergence](NONLINEAR_CONVERGENCE.md)).
 - The BLDC benchmark requests raise their iteration cap from 100 to 200
   ([protocol 1.4](../benchmarks/abcd-v1.4/README.md)); no gate changes.
-- **TODO(owner):** showing convergence in Results, PDF and CSV (#12) is not in
-  this stack. Ship it, or keep #12 open for a later release.
+- Showing convergence in Results, PDF and CSV (#12) is deferred to 0.5.1 by
+  the owner on October 30, 2026. The convergence fix (#11) stays in 0.5.0.
 
 ## 2. Changes to qualified numbers
 
@@ -286,9 +288,10 @@ Prius collection.
   checks the calculation against hand calculations, not a measured winding.
 - **V-shape IPM** stays experimental; its back-EMF margin to the 10% gate is now
   1.4–1.9 points.
-- **Convergence display** in Results, PDF and CSV (#12) is not in this stack.
+- **Convergence display** in Results, PDF and CSV (#12) is deferred to 0.5.1;
+  the convergence fix (#11) stays in 0.5.0.
 - **Hardware correlation** (ORNL Prius, Honda Accord) is not a qualification.
-  It is not done in this stack (**TODO(owner)**).
+  The owner deferred it until after 0.5.0 on October 30, 2026.
 - The 0.4.0 limits still apply: qualification is agreement with FEMM on the
   measured fixtures, not a hardware measurement; six-step is an ideal
   current-commanded model; motor results are 2D estimates. See the
@@ -308,10 +311,10 @@ Prius collection.
 - [ ] Change the status of each output whose gate passed, in the code and in
   [Validation](VALIDATION.md#050-performance-outputs) together. Do not relax a
   gate or relabel an output to get a green report.
-- [ ] Bump `backend/__init__.py`, `frontend/package.json`, both versions in
-  `frontend/package-lock.json` and the design-file writer to **0.5.0**.
-  **TODO(owner):** decide whether Magneto2D moves from 0.3.3, since the
-  convergence fix changes its sources.
+- [x] Bump `backend/__init__.py`, `frontend/package.json`, both versions in
+  `frontend/package-lock.json` and the design-file writer to **0.5.0**, and
+  Magneto2D from **0.3.3 to 0.4.0**, as decided by the owner on October 30,
+  2026. Done before the freeze so the freeze measures the build that ships.
 - [ ] Rewrite `RELEASE_NOTES.md` from this draft, and fill every TODO here, in
   the README and in Validation.
 - [ ] Pass the snapshot and publication checks, tests, lint, audits, the

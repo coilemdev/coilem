@@ -60,8 +60,8 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 3551,
-      "sha256": "33f66b00040af6ccc688d9311d40d6f7c45fb5a0f52bd2b70904769195bdfc29"
+      "bytes": 3560,
+      "sha256": "899ad73c3b9012691ecdcf315fad62bed3959be968073140a43758fc283ed7ea"
     },
     {
       "path": "README.md",
@@ -5945,8 +5945,8 @@
     },
     {
       "path": "docs/RELEASE_0_5_0.md",
-      "bytes": 19308,
-      "sha256": "7dab48edc94a4cf52b38fa79908ec5347fe2321958cdc5be892fdcd2e8db6b46"
+      "bytes": 19540,
+      "sha256": "598d217db0a3d71228f54ea162a83646abc10ad5995496a0f2aac040d88a29a7"
     },
     {
       "path": "docs/RELEASING.md",
@@ -5965,8 +5965,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 46193,
-      "sha256": "d37b5b79e4b88850ec81168db6f17c7adb78a7087cfe45ae5afb887e71815b58"
+      "bytes": 46229,
+      "sha256": "7f585d4387c1410cd9b9bc8a11606fb07e134fc5c8ddb60ddf5ae338c188b040"
     },
     {
       "path": "docs/VERIFICATION.md",
