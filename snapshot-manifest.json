@@ -7830,8 +7830,8 @@
     },
     {
       "path": "tests/test_benchmark_command.py",
-      "bytes": 18246,
-      "sha256": "bcbce3264f9eb20b6afb106dff8488780bdb074a58a59db5d4ded4cff8fac483"
+      "bytes": 18777,
+      "sha256": "1940df4dd44152d2e72cd7d280430826397be1345dcaaf879151f7eb8daf2161"
     },
     {
       "path": "tests/test_benchmark_runtime.py",

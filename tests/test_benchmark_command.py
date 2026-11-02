@@ -82,10 +82,18 @@ def test_protocol16_record_rebuild_keeps_all_registered_gates_and_original_ident
     graded, spec = regrade(summary, suite=suite, bundle=bundle)
     assert spec["protocol_version"] == "1.6.0"
     assert graded["run"]["identity"] == summary["run"]["identity"]
-    assert [row["evaluation"] for row in graded["rows"]] == [row["evaluation"] for row in summary["rows"]]
+    assert [record.case_record(row) for row in graded["rows"]] == [record.case_record(row) for row in summary["rows"]]
     dq_rows = [row for row in graded["rows"] if "__dq_" in row["id"]]
     assert len(dq_rows) == 12
     assert all({"lambda_d", "lambda_q", "reference_dq_torque"} <= row["evaluation"]["gates"].keys() for row in dq_rows)
+    expected = {row["id"]: row for row in summary["rows"]}
+    for row in dq_rows:
+        for metric in ("lambda_d_error_pct", "lambda_q_error_pct", "reference_dq_torque_error_pct"):
+            # Trigonometric reductions may differ by a few ulps across platforms.
+            # Verdicts, gate statuses and recorded native values stay exact above.
+            assert row["evaluation"]["dq"][metric] == pytest.approx(
+                expected[row["id"]]["evaluation"]["dq"][metric], rel=1e-12, abs=1e-12,
+            )
     assert build_record_main([
         str(evidence / "comparison/report"), "--suite", str(suite),
         "--reference-bundle", str(bundle), "--out", str(tmp_path / "record.json"),
