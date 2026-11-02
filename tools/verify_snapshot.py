@@ -52,6 +52,7 @@ FORBIDDEN_PARTS = {
 }
 FORBIDDEN_SUFFIXES = {".ans", ".fem", ".log", ".pem", ".key"}
 ALLOWED_DATA_FILES = {
+    "benchmarks/windows-v050-20261102-88aae101/comparison/report/benchmark_results.csv",
     "benchmarks/windows-prius-requal-20261018/benchmark_results.csv",
     "materials/electrical-steel/M350-50A.csv",
     "frontend/public/materials/sample-custom-steel.csv",

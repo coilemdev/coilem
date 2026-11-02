@@ -2,10 +2,12 @@
 
 Draft of October 23, 2026, written at the top of the 0.5.0 development stack
 (`5d23b47`), which builds on the published v0.4.0 (`2ede4e8`). Updated with the
-owner's decisions of October 30, 2026. The source identifies as coilEM 0.5.0
+owner's decisions of October 30, 2026 and Windows evidence of November 2.
+The source identifies as coilEM 0.5.0
 with Magneto2D 0.4.0; both versions were bumped before the freeze so the freeze
-measures the build that ships. This draft does not mark v0.5.0 as frozen,
-measured or released.
+measures the build that ships. The clean Windows candidate `88aae101` has now
+been measured under protocol 1.6.0. This draft does not mark cross-platform
+release qualification complete or v0.5.0 released.
 Every number marked **TODO(freeze)** comes from the freeze rerun, and every
 **TODO(owner)** is a decision for the owner.
 
@@ -22,15 +24,21 @@ one's claim boundary.
 
 | Item | Recorded result | Remaining work |
 | --- | --- | --- |
-| macOS native A/B/C/D, protocol 1.4.0 | [29 PASS and the planned unsupported Prius](../benchmarks/macos-native-20261022-5b7cad8/README.md) at `5b7cad8`, against the frozen FEMM v3 bundle | Development evidence. Rerun at the frozen candidate. **TODO(freeze):** commit, outcome |
-| Windows native A/B/C/D | Last full record is v0.4.0's, [28 PASS, 1 YELLOW](../benchmarks/windows-prius-requal-20261018/README.md) at `5b6cb61`. The convergence fix has [targeted Windows checks](NONLINEAR_CONVERGENCE_CAP200_WINDOWS.md), not a full rerun | Full rerun at the frozen candidate. **TODO(freeze):** commit, outcome |
-| Protocol 1.6.0 FEMM records | [Requested](../benchmarks/abcd-v1.6/FEMM-REQUEST.md): one bundle of 46 records at one adapter commit. None recorded yet | Owner's Windows FEMM run. **TODO(freeze):** bundle commit and hash |
-| Protocol 1.6.0 native values | coilEM's values for the 17 new cases at `f6c9fbb`, run with `--no-reference` | Grade against the FEMM bundle at the freeze |
-| Physics hash guards | 21 tests fail by design: the stack changes hash-guarded physics sources | Re-pin the hashes at the freeze, after the rerun |
+| Published macOS native A/B/C/D | [Full older report](../benchmarks/macos-native-20261022-5b7cad8/README.md) at `5b7cad8`, plus rounded protocol 1.6 additions at `f6c9fbb`; [52 paired Windows/Mac job comparisons](../benchmarks/windows-v050-20261102-88aae101/macos-comparison.txt), no available torque/EMF metric outside registered platform tolerances | Retain as historical evidence. Full raw results for the 17 additions are unavailable here; no same-candidate Mac qualification is claimed |
+| Physical Windows native A/B/C/D, protocol 1.6.0 | [Clean candidate `88aae101`](../benchmarks/windows-v050-20261102-88aae101/README.md): 52 supported jobs, 46 PASS, one planned unsupported, 336/336 gates PASS | Collection complete. Review references and register qualification only when its requirements are met |
+| Protocol 1.6.0 FEMM records | [46 fresh records](../benchmarks/windows-v050-20261102-88aae101/reference-bundle/manifest.json) at sealed adapter `faced858937e93740ddf7f6f3583a3ad5ec35646`; canonical bundle SHA-256 `c96b5e7948aea74bcf7943d584db85b874a2d4e887e0637c84e59e98c8dfd31a` | REVIEW_REQUIRED; [source-method and V-shape review inventory](../benchmarks/windows-v050-20261102-88aae101/REFERENCE_REVIEW.md). Active historical bundle unchanged |
+| Protocol 1.6.0 additions | All 17 new Windows cases PASS against fresh references; all 12 d/q reference self-checks PASS | Comparison complete; output qualification remains pending review and registration |
+| Physics hash guards | New Windows manifest measures all 54 current physics sources; active runtime qualification still uses historical evidence and fails closed | Preserve original hashes; no retrospective repinning or output promotion in this evidence publication |
 | Pyleecan Prius collection | Full macOS and Windows collections at `40d8ab9`: 17 jobs / 568 field reports each. [Corrected residual audit](PRIUS_CONVERGENCE_AUDIT_20261030.md): 10/10 software checks each; original 9/10 reports retained | Review the explicitly post-collection audit correction. No hardware or release qualification is implied |
 | Phase-resistance gate | Protocol 1.6.0 `phase_resistance` ([hand calculations](../benchmarks/abcd-v1.6/PHASE-RESISTANCE.md)): all three cases PASS, within 0.001%. It runs in `tests/test_phase_resistance_gate.py` | None: it needs no solve or reference, so it runs at every test run |
 | Hardware correlation | ORNL Prius ([#69](https://github.com/coilemdev/coilem/issues/69), [#82](https://github.com/coilemdev/coilem/issues/82)) and Honda Accord torque–speed comparison planned in issue 143; it is not qualification | Deferred until after 0.5.0 by the owner on October 30, 2026; no new milestone chosen |
 | Wheels and TestPyPI | v0.4.0's rehearsal passed | Rehearse the 0.5.0 candidate on all four wheel targets |
+
+The [evidence index](../benchmarks/v0.5.0/README.md) links the complete package
+and [current BLOCKED release assessment](../benchmarks/v0.5.0/release-qualification.json).
+The Windows compact record is retained beside its report, rather than replacing
+an active historical platform record before reference review. No VM replay is
+required. Published Mac evidence keeps its measured source pins and precision.
 
 ## 1. What changes for users
 
@@ -217,15 +225,20 @@ registered requests:
   - All three PASS, within 0.001%. It runs in
     `tests/test_phase_resistance_gate.py` with every test run.
 
-There is no FEMM record yet for any new case, so protocol 1.4.0 stays the
-default. At the freeze the owner's protocol 1.6.0 bundle arrives and 1.6.0
-becomes the default suite.
+All 46 supported FEMM records and the complete Windows native collection are
+now [published](../benchmarks/windows-v050-20261102-88aae101/README.md).
+Protocol 1.4.0 remains the runtime default until the new reference review and
+qualification registration are complete. The numerical gates are unchanged.
 
 **TODO(freeze):**
 
-- the FEMM bundle's reference commit and manifest hash;
-- the 17 new cases' outcomes on macOS and Windows;
-- the published platform records that `coilem benchmark` matches under 1.6.0.
+- complete review of the received FEMM bundle; its original manifest-file
+  SHA-256 is `71afbb5d50551c1ac22f9e502e61f96e2f726bb3331286fc53edec012e416da1`
+  (distinct from the canonical loader identity above);
+- reconcile same-candidate Mac qualification without relabeling the published
+  historical values; all 17 Windows additions already PASS;
+- activate protocol 1.6 and matching platform records only from the accepted
+  qualification evidence.
 
 ## 4. Pyleecan Prius losses
 
@@ -286,8 +299,12 @@ Prius collection.
   irreversible demagnetisation.
 - **Phase resistance** uses half-circle end turns and DC resistance. Its gate
   checks the calculation against hand calculations, not a measured winding.
-- **V-shape IPM** stays experimental; its back-EMF margin to the 10% gate is now
-  1.4–1.9 points.
+- **V-shape IPM** stays experimental. On the new Windows baseline, peak-EMF
+  error is 9.0128% and fundamental error 8.2864%, against the unchanged 10%
+  green limit. Across six common fixtures, mean fundamental error grows from
+  2.3866% in v0.4.0 to 6.5029% here. The separate refined-reference control
+  passes, but does not establish spatial convergence or resolve the mixed
+  version change.
 - **Convergence display** in Results, PDF and CSV (#12) is deferred to 0.5.1;
   the convergence fix (#11) stays in 0.5.0.
 - **Hardware correlation** (ORNL Prius, Honda Accord) is not a qualification.
@@ -301,11 +318,16 @@ Prius collection.
 
 - [ ] Merge the whole 0.5.0 stack. All results-changing work must be in before
   the freeze.
-- [ ] Receive the protocol 1.6.0 FEMM bundle, with the V-shape convergence
-  check.
-- [ ] Freeze one clean candidate commit and record it before collection.
-- [ ] Rerun A/B/C/D on macOS and Windows with protocol 1.6.0, and the full
-  Pyleecan Prius collection. Publish the reports and records.
+- [x] Receive the protocol 1.6.0 FEMM bundle and separate V-shape refinement
+  control; preserve the original REVIEW_REQUIRED status and adapter identity.
+- [x] Record clean candidate `88aae101fd487795e7fe5300737679f4133790fd`
+  before the full Windows collection; preserve its source and binary hashes.
+- [x] Collect and publish Windows protocol 1.6 A/B/C/D, all 46 references,
+  the compact Windows record, adapter provenance and published Mac comparison.
+- [ ] Complete reference/discrepancy review; reconcile the active qualification
+  registration, both platform records and full Pyleecan Prius candidate evidence.
+  Historical Mac data remains labeled with its original commits; it is not a
+  substitute for same-candidate qualification under the current release policy.
 - [ ] Re-pin the physics hashes from that report, so the hash-guard tests pass
   again.
 - [ ] Change the status of each output whose gate passed, in the code and in

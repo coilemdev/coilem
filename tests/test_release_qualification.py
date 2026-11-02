@@ -19,7 +19,11 @@ def _measured(root):
     _write(root, "backend/resources.py", 'BENCHMARK_SUITE_FILE = "suite.json"\nBENCHMARK_REFERENCE_BUNDLE_DIR = "references"\n')
     _write(root, "backend/benchmark_suite/physics.py", 'def physics_sources(root):\n    return ("backend/motor.py",)\n')
     suite = _write(root, "suite.json", {"protocol_version": "1.6.0", "cases": [{"id": "motor"}]})
-    bundle = _write(root, "references/manifest.json", {"records": {"motor": {}}})
+    reference = {"records": {"motor": {}}}
+    manifest_sha = _write(root, "references/manifest.json", reference)
+    bundle = hashlib.sha256(json.dumps({
+        "manifest": manifest_sha, "records": reference["records"],
+    }, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
     _write(root, "report.json", {
         "run": {"status": "COMPLETE", "reference_mode": "FROZEN_REFERENCE",
                 "identity": {"dirty": False, "commit": "a" * 40, "protocol_version": "1.6.0", "source_files": {"backend/motor.py": digest}},
@@ -48,6 +52,24 @@ def test_release_gate_rejects_a_different_candidate_or_protocol(tmp_path):
     _measured(tmp_path)
     assert "qualification report did not measure the frozen candidate" in check(tmp_path, candidate="b" * 40)
     assert "registered suite and measured report must both use protocol 1.5.0" in check(tmp_path, protocol="1.5.0")
+
+
+def test_release_gate_requires_the_loader_bundle_digest_not_the_manifest_digest(tmp_path):
+    _measured(tmp_path)
+    report = json.loads((tmp_path / "report.json").read_text())
+    report["run"]["selection"]["bundle_sha256"] = hashlib.sha256(
+        (tmp_path / "references/manifest.json").read_bytes()
+    ).hexdigest()
+    _write(tmp_path, "report.json", report)
+    assert "qualification report does not use the registered frozen reference bundle" in check(tmp_path)
+
+
+def test_release_gate_does_not_waive_reference_review(tmp_path):
+    _measured(tmp_path)
+    _write(tmp_path, "references/manifest.json", {
+        "records": {"motor": {}}, "validation_status": "REVIEW_REQUIRED",
+    })
+    assert "registered reference bundle still requires review" in check(tmp_path)
 
 
 def test_missing_evidence_fails_closed(tmp_path):

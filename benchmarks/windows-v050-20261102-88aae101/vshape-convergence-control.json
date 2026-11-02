@@ -1,0 +1,212 @@
+{
+  "schema": "coilem.protocol16_vshape_refinement_diagnostic/v1",
+  "registered_matrix_changed": false,
+  "qualification": "Separate diagnostic; the original 46 reference records, native fields and all acceptance limits are preserved.",
+  "normal_result_sha256": "c7a856f593cf49df2e38afece93a5f25c766878e7d440d5a70109f9bcf182124",
+  "control_result_sha256": "2c1bd1f5e9a4626c4141056406d92cf0bba5e595a63dffd5eac53e899c8715ef",
+  "normal_source_commit": "faced858937e93740ddf7f6f3583a3ad5ec35646",
+  "control_source_commit": "22bfbaa0affc2d9ef53472c58da74cc52c54eccc",
+  "normal_settings": {
+    "Br_T": 1.315,
+    "mu_r": 1.05,
+    "precision": 1e-08,
+    "minimum_angle_deg": 30,
+    "mesh_density": "normal"
+  },
+  "refined_settings": {
+    "Br_T": 1.315,
+    "mu_r": 1.05,
+    "precision": 1e-10,
+    "minimum_angle_deg": 30,
+    "mesh_density": "normal"
+  },
+  "control_request": {
+    "request": {
+      "schema": "coilem.vshape_refinement_control_request/v1",
+      "public_candidate_commit": "88aae101fd487795e7fe5300737679f4133790fd",
+      "baseline_case": {
+        "id": "ipm_vshape_8p12s_baseline_contract",
+        "phase": "B",
+        "jobs": [
+          {
+            "stage": "native",
+            "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_vshape_8p12s_baseline_contract.json",
+            "fixture_sha256": "0b74642e6e9cccd3b6cc4db05e934a4fccce8b0929cbf646d91d97b16d51a96f",
+            "input_sha256": "29ecdb6f3f070930fc3e8ae71642950bd2852513ca6795d9f7eebcb4d848dce1"
+          }
+        ]
+      },
+      "controls": {
+        "solver_precision": 1e-10,
+        "minimum_angle_deg": 30,
+        "rotor_straight_edge_max_length_mm": 0.2,
+        "rotor_arc_max_angle_deg": 0.5
+      },
+      "scope": "Additional requested precision/bridge-mesh diagnostic; excluded from the registered 46-case bundle."
+    },
+    "applied_counts": {
+      "precision_definitions": 96,
+      "rotor_mesh_refinements": 96
+    },
+    "scope": "Diagnostic only; no registered fixture, measurement or numerical gate was changed."
+  },
+  "metric_deltas": {
+    "mean_torque_Nm": {
+      "normal": 0.838088155810624,
+      "refined": 0.8484372652791972,
+      "absolute_delta": 0.010349109468573148,
+      "relative_delta_pct": 1.234847360247345
+    },
+    "back_emf_fundamental_V": {
+      "normal": 2.174460279758134,
+      "refined": 2.214949349989712,
+      "absolute_delta": 0.04048907023157833,
+      "relative_delta_pct": 1.862028504658726
+    },
+    "back_emf_peak_V": {
+      "normal": 3.2748579576837638,
+      "refined": 3.3268273216613347,
+      "absolute_delta": 0.051969363977570904,
+      "relative_delta_pct": 1.5869196358772066
+    }
+  },
+  "saved_model_audit_sha256": "5612f036a5320e026a87deb97780fa04fc80f4b7ace7e932c4db319eadc6c6d3",
+  "superseded_attempt": {
+    "directory": "C:\\bench\\abcd-v16-20261102\\reference-control",
+    "manifest_sha256": "cccc3b015a0b8494ccbe045e0d0e1e7114b53baf8d6ab59221190f5e68d55850",
+    "control_source_commit": "cf42e737d7d3ff72f15bb9a8a924ba07835520d0",
+    "controls": {
+      "solver_precision": 1e-10,
+      "minimum_angle_deg": 30,
+      "rotor_straight_edge_max_length_mm": 0.1,
+      "rotor_arc_max_angle_deg": 0.25
+    },
+    "status": "INTENTIONALLY_INTERRUPTED",
+    "used_in_any_numerical_comparison": false,
+    "reason": "Initial 0.1 mm / 0.25 degree mesh produced 172388 elements. Stopped after observing mesh and runtime cost, before any complete cycle; all partial evidence is preserved. The replacement 0.2 mm / 0.5 degree settings were sealed before its collection."
+  },
+  "normal_mesh_elements": 68572,
+  "refined_mesh_elements": 88218,
+  "native_against_refined_reference": {
+    "status": "PASS",
+    "gates": {
+      "mean_torque": "PASS",
+      "bemf_fundamental": "PASS",
+      "bemf_peak": "PASS",
+      "torque_method": "PASS",
+      "native_mesh": "PASS",
+      "angle_grids": "PASS"
+    },
+    "candidate_average_Nm": 0.8969422740363934,
+    "reference_average_Nm": 0.8484372652791972,
+    "average_delta_pct": 5.716982355935834,
+    "average_absolute_delta_Nm": 0.04850500875719621,
+    "near_zero_reference": false,
+    "bemf_fundamental_delta_pct": 6.306972493170729,
+    "bemf_peak_delta_pct": 7.309834852502404,
+    "torque_waveform": {
+      "grid_match": true,
+      "candidate_positions": 13,
+      "reference_positions": 13,
+      "nrmse_pct": 5.929229155065971,
+      "correlation": 0.998032389426437
+    },
+    "bemf_waveform": {
+      "grid_match": true,
+      "candidate_positions": 48,
+      "reference_positions": 48,
+      "nrmse_pct": 7.023450546873641,
+      "correlation": 0.9996296940057524
+    },
+    "diagnostic_findings": [],
+    "actual_torque_method": "weighted_stress",
+    "actual_mesh_source": "native",
+    "environment": {
+      "policy": "request-only-v1",
+      "options": {
+        "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+        "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+        "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+        "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+        "COILEM_MAGNETO2D_WORKERS": "1",
+        "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+        "MAGNETO2D_LINEAR_SOLVER": "direct",
+        "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+      }
+    },
+    "solve_metadata": {
+      "solver_environment": {
+        "policy": "request-only-v1",
+        "options": {
+          "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+          "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+          "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+          "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+          "COILEM_MAGNETO2D_WORKERS": "1",
+          "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+          "MAGNETO2D_LINEAR_SOLVER": "direct",
+          "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+        }
+      },
+      "reference_model": null,
+      "solver_name": "magneto2d-rust-0.4.0",
+      "mesh_element_count": 94684,
+      "rotor_positions": 13,
+      "timestamp": "2026-11-02T16:02:55.737862Z",
+      "current_amplitude_A": 50.0,
+      "excitation_mode": null,
+      "current_amplitude_convention": null,
+      "commutation_advance_deg": null,
+      "phase_connection": null,
+      "excitation_convention_version": null,
+      "loaded_cycle_complete": null,
+      "back_emf_computed": true,
+      "rated_speed_rpm": 3000,
+      "motor_input_dc_bus_V": null,
+      "magnet_temperature_C": null,
+      "magnet_remanence_T": null,
+      "magnet_intrinsic_coercivity_kA_m": null,
+      "magnet_temperature_status": null,
+      "magnet_temperature_status_reason": null,
+      "winding_temperature_C": null,
+      "solve_cache_dir": "\\\\?\\C:\\bench\\abcd-v16-20261102\\native\\jobs\\ipm_vshape_8p12s_baseline_contract\\native\\native-runtime\\solve_cache\\magneto2d-2026-11-02T16-00-05-302610Z",
+      "pipeline_stage": "field_solve",
+      "postprocess_source_cache_dir": null,
+      "postprocess_time_s": null,
+      "solve_time_s": 170.627,
+      "solver_cpu_time_s": 1170.105,
+      "mesher": "gmsh",
+      "mesh_density": "normal",
+      "mesh_source": "native",
+      "mesh_source_detail": null,
+      "geometry_ir_version": null,
+      "rotor_rotation_model": "remesh_per_step",
+      "torque_method": "weighted_stress",
+      "nonlinear_tolerance": 1e-05,
+      "nonlinear_tolerance_method": "newton",
+      "nonlinear_tolerance_settings": [
+        {
+          "method": "newton",
+          "residual_definition": "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage",
+          "tolerance": 1e-05,
+          "absolute_residual_floor": 1e-08
+        }
+      ],
+      "solve_quality": "custom",
+      "nonlinear_max_iterations_used": 33,
+      "nonlinear_median_iterations": 12.0,
+      "nonlinear_worst_final_mismatch": 8.440386337067325e-06,
+      "nonlinear_worst_tolerance_ratio": 0.8440386337067325,
+      "nonlinear_residual_definitions": [
+        "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage"
+      ],
+      "topology": "IPM",
+      "physics_contract_version": "magneto2d_imported_physics/v0",
+      "region_source": "geometry_ir",
+      "current_source": "geometry_ir_winding_table",
+      "magnetization_source": "geometry_ir",
+      "material_source": "geometry_ir",
+      "solver_lane_reason": null
+    }
+  }
+}

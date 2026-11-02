@@ -1,0 +1,61 @@
+Windows / macOS protocol 1.6 numerical comparison
+
+Historical numerical comparison across documented pins; not a same-candidate platform qualification. New-case Mac values are rounded; their full raw results are not present on this host.
+
+Windows pin: 88aae101fd487795e7fe5300737679f4133790fd
+Compared completed jobs: 52; pending: 0.
+Metrics outside the existing platform tolerances: 0.
+
+Case | stage | torque delta % | back-EMF H1 delta % | Mac basis
+spm_4p12s_simple__baseline | native | +0.002404 | +0.000667 | full published numerical report at 5b7cad8
+spm_4p12s_simple__high_current | native | +0.001759 | +0.000667 | full published numerical report at 5b7cad8
+spm_4p12s_simple__tight_airgap | native | -0.013567 | +0.005510 | full published numerical report at 5b7cad8
+spm_4p12s_simple_noload__baseline | native | +1058.275440 | +0.000667 | full published numerical report at 5b7cad8
+spm_4p12s_simple_noload__high_current | native | +0.004294 | +0.000667 | full published numerical report at 5b7cad8
+spm_4p12s_simple_noload__tight_airgap | native | -37.910446 | +0.005510 | full published numerical report at 5b7cad8
+spm_8p12s_concentrated__baseline | native | -0.000187 | -0.000005 | full published numerical report at 5b7cad8
+spm_8p12s_concentrated__high_current | native | -0.000184 | -0.000005 | full published numerical report at 5b7cad8
+spm_8p12s_concentrated__tight_airgap | native | +0.000376 | +0.000027 | full published numerical report at 5b7cad8
+spm_8p12s_reference_angle30__baseline | native | +0.000004 | +0.000013 | full published numerical report at 5b7cad8
+ipm_flat_12s10p_fscw_contract | native | -0.000908 | +0.000345 | full published numerical report at 5b7cad8
+ipm_flat_24s16p_industrial_contract | native | -0.000173 | -0.000101 | full published numerical report at 5b7cad8
+ipm_flat_4p12s_micro_contract | native | +0.000577 | +0.000510 | full published numerical report at 5b7cad8
+ipm_flat_8p12s_fsae_angled_pocket_contract | native | -0.000196 | -0.000118 | full published numerical report at 5b7cad8
+ipm_flat_8p12s_fsae_contract | native | +0.000088 | -0.000060 | full published numerical report at 5b7cad8
+ipm_flat_8p12s_fsae_thin_bridge_contract | native | +0.000068 | -0.000045 | full published numerical report at 5b7cad8
+ipm_vshape_8p12s_baseline_contract | native | -0.021905 | -0.001713 | full published numerical report at 5b7cad8
+ipm_vshape_8p12s_deep_apex_high_output_v1 | native | -0.000162 | -0.000810 | full published numerical report at 5b7cad8
+ipm_vshape_8p12s_narrow_angle_contract | native | -0.000665 | +0.000021 | full published numerical report at 5b7cad8
+ipm_vshape_8p12s_pocket_offset_contract | native | +0.007330 | -0.000992 | full published numerical report at 5b7cad8
+ipm_vshape_8p12s_thin_bridge_contract | native | -0.000169 | -0.000035 | full published numerical report at 5b7cad8
+ipm_vshape_8p12s_wide_angle_high_output_v1 | native | -0.003969 | -0.001017 | full published numerical report at 5b7cad8
+spm_12p36s_distributed_femm_validation | native | +0.046557 | -0.000250 | full published numerical report at 5b7cad8
+spm_8p24s_distributed_femm_validation | native | -0.005689 | +0.000098 | full published numerical report at 5b7cad8
+spm_8p48s_chorded_5_6 | native | +0.007167 | +0.000566 | full published numerical report at 5b7cad8
+spm_8p48s_distributed_femm_validation | native | +0.006804 | +0.000570 | full published numerical report at 5b7cad8
+spm_14p12s_high_pole | native-standard | -0.000034 | n/a | full published numerical report at 5b7cad8
+spm_14p12s_high_pole | native-fine | +0.003459 | n/a | full published numerical report at 5b7cad8
+spm_14p12s_high_pole | analytical | -0.000484 | n/a | full published numerical report at 5b7cad8
+spm_4p12s_small | native-standard | -0.001232 | n/a | full published numerical report at 5b7cad8
+spm_4p12s_small | native-fine | +0.000893 | n/a | full published numerical report at 5b7cad8
+spm_4p12s_small | analytical | +0.003068 | n/a | full published numerical report at 5b7cad8
+spm_8p12s_reference | native-standard | -0.020429 | n/a | full published numerical report at 5b7cad8
+spm_8p12s_reference | native-fine | -0.016688 | n/a | full published numerical report at 5b7cad8
+spm_8p12s_reference | analytical | -0.177997 | n/a | full published numerical report at 5b7cad8
+spm_8p12s_example_shoed | native | +0.002078 | +0.001171 | rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here
+spm_8p12s_concentrated__magnet_60C | native | +0.000713 | +0.000090 | rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here
+spm_8p12s_concentrated__magnet_100C | native | -0.001970 | +0.000290 | rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here
+spm_8p12s_concentrated__dq_I20_g0 | native | +0.000028 | -0.000122 | rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here
+spm_8p12s_concentrated__dq_I20_g30 | native | +0.000441 | -0.000122 | rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here
+spm_8p12s_concentrated__dq_I20_g60 | native | +0.000664 | -0.000122 | rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here
+spm_8p12s_concentrated__dq_I40_g0 | native | +0.000719 | -0.000122 | rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here
+spm_8p12s_concentrated__dq_I40_g30 | native | -0.001189 | -0.000122 | rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here
+spm_8p12s_concentrated__dq_I40_g60 | native | +0.001749 | -0.000122 | rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here
+ipm_flat_8p12s_fsae_contract__magnet_60C | native | +0.000652 | +0.000541 | rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here
+ipm_flat_8p12s_fsae_contract__magnet_100C | native | +0.002090 | -0.000091 | rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here
+ipm_flat_8p12s_fsae_contract__dq_I50_g0 | native | +0.001180 | +0.000517 | rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here
+ipm_flat_8p12s_fsae_contract__dq_I50_g30 | native | +0.000446 | +0.000517 | rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here
+ipm_flat_8p12s_fsae_contract__dq_I50_g60 | native | -0.001810 | +0.000517 | rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here
+ipm_flat_8p12s_fsae_contract__dq_I100_g0 | native | -0.000078 | +0.000517 | rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here
+ipm_flat_8p12s_fsae_contract__dq_I100_g30 | native | -0.000531 | +0.000517 | rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here
+ipm_flat_8p12s_fsae_contract__dq_I100_g60 | native | -0.000807 | +0.000517 | rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here

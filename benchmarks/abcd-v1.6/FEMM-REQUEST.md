@@ -1,5 +1,13 @@
 # FEMM reference request for protocol 1.6.0 (0.5.0 freeze)
 
+**Collection update, November 2:** the
+[Windows evidence package](../windows-v050-20261102-88aae101/README.md)
+now retains all 46 supported records at sealed adapter `faced858`, the 52
+completed native jobs at `88aae101`, and a separate V-shape refinement control.
+All 46 cases PASS their registered comparisons; the legacy Prius remains
+planned unsupported. Reference status is still **REVIEW_REQUIRED**. The
+request and published Mac table below retain their original inputs and pins.
+
 This is what the owner's Windows FEMM run must produce for [protocol 1.6.0](README.md):
 - the 30 registered 1.4.0 requests;
 - 17 new requests, for the shoed slot, magnet temperature and loaded λd/λq.

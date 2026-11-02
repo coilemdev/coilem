@@ -1,0 +1,66 @@
+{
+  "schema": "coilem.reference_source_method_review/v1",
+  "validation_status": "REVIEW_REQUIRED",
+  "same_input_pairs": [
+    {
+      "input_sha256": "0fad5d88fdbc263496008238a1ac95bf9644cafa212164364ac400a880bfb189",
+      "observations": [
+        {
+          "case_id": "spm_8p12s_concentrated__baseline",
+          "methods": {
+            "winding_source": "retained_v3_current_density",
+            "flux_linkage": "retained_v3_slot_reduction",
+            "policy": "Declared before collection in the sealed private bridge; legacy cases preserve the v3 method, new d/q and shoed cases use circuits."
+          },
+          "mean_torque_Nm": 2.213722975816425,
+          "back_emf_fundamental_V": 16.28295203252614,
+          "max_abs_integrated_source_deviation_from_ideal_NI_pct": 0.40324176133703815
+        },
+        {
+          "case_id": "spm_8p12s_concentrated__dq_I20_g0",
+          "methods": {
+            "winding_source": "explicit_series_circuits",
+            "flux_linkage": "phase_circuit_flux_divided_by_parallel_paths",
+            "policy": "Declared before collection in the sealed private bridge; legacy cases preserve the v3 method, new d/q and shoed cases use circuits."
+          },
+          "mean_torque_Nm": 2.204925809101148,
+          "back_emf_fundamental_V": 16.273738707066734,
+          "max_abs_integrated_source_deviation_from_ideal_NI_pct": 4.863308664536528e-13
+        }
+      ],
+      "second_minus_first_torque_pct": -0.39739239332928145,
+      "second_minus_first_back_emf_pct": -0.056582648164791347,
+      "scope": "Same registered physical request, distinct predeclared legacy-density and circuit measurement roles. Independent source-formulation review is required; both measured observations and all original verdicts are retained."
+    },
+    {
+      "input_sha256": "131abdcb3b9e19371b7f1b53e2b6e462c31a876a8b7540b2566d772a20aaa74b",
+      "observations": [
+        {
+          "case_id": "ipm_flat_8p12s_fsae_contract",
+          "methods": {
+            "winding_source": "retained_v3_current_density",
+            "flux_linkage": "retained_v3_slot_reduction",
+            "policy": "Declared before collection in the sealed private bridge; legacy cases preserve the v3 method, new d/q and shoed cases use circuits."
+          },
+          "mean_torque_Nm": 2.575709705414214,
+          "back_emf_fundamental_V": 7.677819979606976,
+          "max_abs_integrated_source_deviation_from_ideal_NI_pct": 0.18761454051319773
+        },
+        {
+          "case_id": "ipm_flat_8p12s_fsae_contract__dq_I50_g0",
+          "methods": {
+            "winding_source": "explicit_series_circuits",
+            "flux_linkage": "phase_circuit_flux_divided_by_parallel_paths",
+            "policy": "Declared before collection in the sealed private bridge; legacy cases preserve the v3 method, new d/q and shoed cases use circuits."
+          },
+          "mean_torque_Nm": 2.570788442248538,
+          "back_emf_fundamental_V": 7.67641387256939,
+          "max_abs_integrated_source_deviation_from_ideal_NI_pct": 2.9707802352194876e-13
+        }
+      ],
+      "second_minus_first_torque_pct": -0.19106435617846368,
+      "second_minus_first_back_emf_pct": -0.018313883906120498,
+      "scope": "Same registered physical request, distinct predeclared legacy-density and circuit measurement roles. Independent source-formulation review is required; both measured observations and all original verdicts are retained."
+    }
+  ]
+}

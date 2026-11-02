@@ -12,7 +12,10 @@ The source identifies as **coilEM 0.5.0 Developer Preview**, with
 coilEM 0.4.0 remains the published release. The
 [release notes](RELEASE_NOTES.md) describe 0.4.0; the
 [0.5.0 release notes](docs/RELEASE_0_5_0.md) list what 0.5.0 changes and what
-the freeze still has to measure. The PyPI install commands below select the
+qualification still has to establish. The [v0.5.0 evidence index](benchmarks/v0.5.0/README.md)
+includes the completed physical Windows protocol 1.6 run at `88aae101` and the
+published Mac comparison with its original pins. Reference review and release
+qualification remain pending. The PyPI install commands below select the
 published release until 0.5.0 is published.
 
 The [v0.4.0 evidence report](benchmarks/v0.4.0/README.md) retains the current
