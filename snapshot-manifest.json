@@ -30,8 +30,8 @@
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
-      "bytes": 2880,
-      "sha256": "02efc7d45d69da755f7b4e8139f54aace13eee1ed1de8523363aaf8a1c453675"
+      "bytes": 5215,
+      "sha256": "06ffe983e40114ca1a213a25106e28774e540c4c793c7a73a8f3dffbe3d19005"
     },
     {
       "path": ".github/workflows/release-wheels.yml",
@@ -27081,6 +27081,12 @@
       "path": ".gitattributes",
       "source_sha256": "4c2489a1b5edf72241ce9ae004f17ae7ee4892160c3681ef453c90bd7c71c35b",
       "reason": "Publish protocol 1.6 Windows evidence and adapter provenance; preserve historical Mac scope and pending qualification; correct record replay and bundle identity."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": ".github/workflows/release-benchmarks.yml",
+      "source_sha256": "02efc7d45d69da755f7b4e8139f54aace13eee1ed1de8523363aaf8a1c453675",
+      "reason": "Collect protocol 1.6 native fields on an immutable candidate independently of the workflow revision; retain both identities."
     }
   ]
 }
