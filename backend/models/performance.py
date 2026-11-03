@@ -41,8 +41,20 @@ OutputStatus = Literal["qualified", "experimental", "unavailable"]
 # the scope covered by its 0.5.0 reference checks (public issue 143) and the
 # limitations that keep a general output experimental. Reports use ASCII.
 DQ_FLUX_LINKAGE_STATUS_REASON = (
-    "Reference checks pass at 12 registered SPM and flat-IPM points. "
-    "The general d/q output remains experimental, including inductances, maps and unmeasured operating points."
+    "Outside the loaded d/q gates of benchmark protocol 1.6.0, which cover qualified SPM and flat-buried IPM designs "
+    "with a single-layer concentrated winding under sinusoidal current, at current angles from 0 to 60 degrees."
+)
+DQ_FLUX_LINKAGE_QUALIFIED_REASON = (
+    "Passes the loaded d/q gates of benchmark protocol 1.6.0: the d- and q-axis flux linkage within 3% of the reference "
+    "at 12 operating points on two such designs, current angles 0 to 60 degrees, up to twice the benchmark's current."
+)
+DQ_INDUCTANCE_STATUS_REASON = (
+    "The d/q gates bound each flux linkage within 3% of its magnitude, which can leave the apparent Ld and Lq, "
+    "and the saliency and characteristic current from them, tens of percent uncertain."
+)
+FLUX_LINKAGE_MAP_STATUS_REASON = (
+    "The d/q gates cover 12 operating points, not a map's full range of currents and angles, "
+    "and do not bound the inductances."
 )
 PHASE_RESISTANCE_STATUS_REASON = (
     "Passes the phase-resistance gate of benchmark protocol 1.6.0: within 1% of independent hand calculations "
@@ -58,8 +70,13 @@ PHASE_RESISTANCE_UNRECORDED_STATUS_REASON = (
     "Recorded without a status, before the phase-resistance gate; solve the design again to see whether the gate covers it."
 )
 MAGNET_TEMPERATURE_STATUS_REASON = (
-    "Br and HcJ use cited reversible coefficients. Reference checks pass for four declared-Br N42 cases at 60 C and 100 C; "
-    "general temperature behavior and material coefficients remain experimental."
+    "Br and HcJ derated linearly with the grade's cited reversible coefficients; the temperature gates of "
+    "benchmark protocol 1.6.0 cover qualified designs from 20 to 100 deg C only."
+)
+MAGNET_TEMPERATURE_QUALIFIED_REASON = (
+    "Br and HcJ derated linearly with the grade's cited reversible coefficients; passes the temperature gates of "
+    "benchmark protocol 1.6.0 (back EMF and torque at the derated Br, N42 at 60 and 100 deg C on two qualified designs). "
+    "The coefficients are catalogue values, and irreversible demagnetisation is not modelled."
 )
 # How a drive picks the current for a torque below the limits: the smallest
 # current (MTPA, then field weakening and MTPV) or the least total loss.
@@ -120,8 +137,12 @@ class DqFluxLinkage(BaseModel):
             "or from the applied currents and the commanded current angle when the run had no no-load sweep"
         ),
     )
-    status: OutputStatus = "experimental"
+    status: OutputStatus = Field(default="experimental", description="Status of the d- and q-axis flux linkage")
     status_reason: Optional[str] = DQ_FLUX_LINKAGE_STATUS_REASON
+    inductance_status: OutputStatus = Field(
+        default="experimental", description="Status of the apparent Ld and Lq and the quantities from them"
+    )
+    inductance_status_reason: Optional[str] = DQ_INDUCTANCE_STATUS_REASON
 
 
 class WindingResistance(BaseModel):

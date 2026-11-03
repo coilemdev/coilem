@@ -18,6 +18,11 @@ from backend.benchmark_suite.contract import DEFAULT_BUNDLE, SPEC, sha
 from backend.benchmark_suite.physics import physics_sources
 from backend.benchmark_suite.references import load_bundle, load_suite
 from backend.models import MotorConfig
+from backend.models.performance import (
+    DQ_FLUX_LINKAGE_QUALIFIED_REASON,
+    DQ_FLUX_LINKAGE_STATUS_REASON,
+    MAGNET_TEMPERATURE_STATUS_REASON,
+)
 from backend.public_main import app
 from backend.public_routes.solve import _store_public_result
 from backend.qualification import QUALIFICATION_BASIS, QUALIFICATION_REPORT, classify_qualification
@@ -299,3 +304,46 @@ def test_installed_evidence_requires_matching_record_identity(monkeypatch):
         assert qualification_module.evidence_matches_runtime() is (status == "MATCH")
     monkeypatch.setattr(resources, "read_data_json", lambda _: {**historical, "measured_commit": "0" * 40})
     assert not qualification_module.evidence_matches_runtime()
+
+
+@pytest.mark.parametrize(
+    ("fixture", "changes", "expected"),
+    [
+        ("spm_8p12s_concentrated__baseline.json", {"current_angle_deg": 0.0}, "qualified"),
+        ("spm_8p12s_concentrated__baseline.json", {"current_angle_deg": 60.0}, "qualified"),
+        ("ipm_flat_8p12s_fsae_contract.json", {"current_angle_deg": 30.0}, "qualified"),
+        ("spm_8p12s_concentrated__baseline.json", {"current_angle_deg": 61.0}, "experimental"),
+        ("spm_8p12s_concentrated__baseline.json", {"current_angle_deg": -5.0}, "experimental"),
+        ("spm_8p24s_distributed_femm_validation.json", {"current_angle_deg": 0.0}, "experimental"),
+        ("ipm_vshape_8p12s_baseline_contract.json", {"current_angle_deg": 30.0}, "experimental"),
+        ("bldc_spm_8p12s_reference.json", {}, "experimental"),
+    ],
+)
+def test_dq_flux_linkage_is_qualified_only_inside_its_gates(fixture, changes, expected, measured_build) -> None:
+    # Protocol 1.6.0 measured lambda_d and lambda_q on qualified single-layer concentrated
+    # SPM and flat-buried IPM fixtures under sinusoidal current at gamma 0, 30 and 60 degrees.
+    config = _with(_fixture(fixture), "solve_params", **changes) if changes else _fixture(fixture)
+    status, reason = qualification_module.dq_flux_linkage_status(config)
+    assert status == expected
+    assert reason == (DQ_FLUX_LINKAGE_QUALIFIED_REASON if expected == "qualified" else DQ_FLUX_LINKAGE_STATUS_REASON)
+
+
+@pytest.mark.parametrize(("temperature", "expected"), [(20.0, "qualified"), (60.0, "qualified"), (100.0, "qualified"),
+                                                      (110.0, "experimental"), (0.0, "experimental")])
+def test_magnet_derating_is_qualified_from_20_to_100C_on_a_qualified_design(temperature, expected, measured_build) -> None:
+    config = _with(_fixture("spm_8p12s_concentrated__baseline.json"), "solve_params", magnet_temperature_C=temperature)
+    assert qualification_module.magnet_temperature_status(config)[0] == expected
+    v_shape = _with(_fixture("ipm_vshape_8p12s_baseline_contract.json"), "solve_params", magnet_temperature_C=temperature)
+    assert qualification_module.magnet_temperature_status(v_shape) == ("experimental", MAGNET_TEMPERATURE_STATUS_REASON)
+
+
+def test_stored_run_sets_the_dq_status_from_its_design(measured_build) -> None:
+    from backend.solve_workspace import _apply_output_statuses
+
+    config = _fixture("spm_8p12s_concentrated__baseline.json").model_dump(mode="json")
+    result = {"summary": {"dq_flux_linkage": {"status": "experimental", "status_reason": DQ_FLUX_LINKAGE_STATUS_REASON}}}
+    _apply_output_statuses(result, config)
+    assert result["summary"]["dq_flux_linkage"] == {"status": "qualified", "status_reason": DQ_FLUX_LINKAGE_QUALIFIED_REASON}
+    empty = {"summary": {"dq_flux_linkage": None}}
+    _apply_output_statuses(empty, config)
+    assert empty == {"summary": {"dq_flux_linkage": None}}

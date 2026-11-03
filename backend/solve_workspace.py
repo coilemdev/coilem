@@ -34,7 +34,7 @@ from backend.public_report import (
     build_public_run_pdf,
     write_replayable_run_package,
 )
-from backend.qualification import classify_qualification
+from backend.qualification import classify_qualification, dq_flux_linkage_status, magnet_temperature_status
 from backend.resources import application_commit as _application_commit
 from backend.resources import build_identity
 
@@ -292,6 +292,29 @@ class RunLocation:
         }
 
 
+def _apply_output_statuses(result: dict[str, Any], config: Mapping[str, Any]) -> None:
+    """Qualify the loaded d/q record and the magnet derating inside their gates (backend/qualification.py).
+
+    The solver records both as experimental; only the stored run knows the
+    design. Setting them here leaves the measured physics sources unchanged.
+    """
+
+    summary = result.get("summary")
+    dq = summary.get("dq_flux_linkage") if isinstance(summary, dict) else None
+    metadata = result.get("solve_metadata")
+    derating = isinstance(metadata, dict) and metadata.get("magnet_temperature_status") is not None
+    if not isinstance(dq, dict) and not derating:
+        return
+    try:
+        motor = MotorConfig.model_validate(config)
+    except ValueError:
+        return
+    if isinstance(dq, dict):
+        dq["status"], dq["status_reason"] = dq_flux_linkage_status(motor)
+    if derating:
+        metadata["magnet_temperature_status"], metadata["magnet_temperature_status_reason"] = magnet_temperature_status(motor)
+
+
 def _qualification(config: Mapping[str, Any]) -> dict[str, Any] | None:
     """The run's qualification status (backend/qualification.py), or None
     for a configuration that no longer validates."""
@@ -512,6 +535,7 @@ class SolveRunWriter:
         if self._closed:
             raise SolveWorkspaceError("solve run writer is already closed")
         stored_result = deepcopy(dict(result))
+        _apply_output_statuses(stored_result, self.config)
         self._retain_artifacts(stored_result)
         materials = _material_records(self.config)
         project = _project_payload(self.config, self.project_name)

@@ -34,7 +34,12 @@ export function DqCard({ dq, currentUnit = 'A peak', variant = 'panel' }: {
     <section className={`motor-constants dq-card${variant === 'report' ? ' is-report' : ''}`} aria-labelledby={headingId}>
       <div className="results-card-heading">
         <h3 id={headingId}>d/q operating point</h3>
-        <StatusSummary statuses={[{ key: 'dq', label: 'd/q flux linkage and inductances', ...view.status }]} />
+        <StatusSummary
+          statuses={[
+            { key: 'dq', label: 'd/q flux linkage', ...view.status },
+            ...(view.inductanceStatus ? [{ key: 'inductance', label: 'Ld, Lq, saliency and characteristic current', ...view.inductanceStatus }] : []),
+          ]}
+        />
       </div>
       <table>
         <tbody>

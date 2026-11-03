@@ -2,9 +2,9 @@
 
 `coilem benchmark` matches a run against these records. Each JSON file is
 the compact outcome of one complete A/B/C/D run on one platform, as the
-current evaluator grades it against [protocol 1.3.0](../abcd-v1.3/README.md)
-and the frozen [`ipm-high-output-v3`](../reference-baselines/ipm-high-output-v3/manifest.json)
-FEMM reference. For each case it holds:
+current evaluator grades it against [protocol 1.6.0](../abcd-v1.6/README.md)
+and the reviewed [`protocol16-reviewed-20261103`](../reference-baselines/protocol16-reviewed-20261103/manifest.json)
+FEMM references. For each case it holds:
 
 - the verdict;
 - every gate's status;
@@ -17,18 +17,15 @@ for its estimates.
 
 | Record | Measured at | Evidence | Outcome |
 | --- | --- | --- | --- |
-| [`macos-arm64.json`](macos-arm64.json) | `738d951` | [Historical macOS native run](../macos-native-20261015-738d951/README.md) | 28 PASS, 1 YELLOW, 1 unsupported |
-| [`windows-x86_64.json`](windows-x86_64.json) | `5b6cb61` | [Windows Precise mesh requalification](../windows-prius-requal-20261018/README.md) | 28 PASS, 1 YELLOW, 1 unsupported |
+| [`macos-arm64.json`](macos-arm64.json) | `88aae101` | [Exact-candidate macOS comparison](../candidate-qualification-20261103/macos/report/benchmark_report.md) | 46 PASS, 1 unsupported |
+| [`windows-x86_64.json`](windows-x86_64.json) | `88aae101` | [Exact-candidate Windows comparison](../candidate-qualification-20261103/windows/report/benchmark_report.md) | 46 PASS, 1 unsupported |
 
-The Windows run measured the current Precise mesh source and reproduces every
-verdict, gate and recorded value of the previous Windows record exactly. Its
-record was rebuilt from those measurements, including the new source hashes
-and case times. Fast mesh remains experimental.
-
-The macOS record retains its original measurements and source hashes. It has
-not been remeasured for the mesh and conditional reference-dispatch changes, so a current
-macOS run reports **NOT_COMPARABLE** against it until new macOS evidence is
-collected. Numerical agreement alone does not bypass the source guard.
+Both records were built from their platform's native fields graded against the
+reviewed references with zero field solves, and both measure the current 63
+guarded physics sources. They match each other within 0.36 of the registered
+tolerances in every case. The v0.4.0 records are kept byte-for-byte in
+[`records-historical/v040`](../records-historical/v040/). Fast mesh remains
+experimental.
 
 There is no Linux record yet. On Linux x86_64, `coilem benchmark` matches
 against the Windows x86_64 record and says so. The tolerances below come from

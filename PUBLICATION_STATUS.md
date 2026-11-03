@@ -1,9 +1,10 @@
 # Release status
 
-Updated November 2, 2026: the source candidate is **coilEM 0.5.0 Developer
-Preview**, with **Magneto2D 0.4.0**. Windows protocol 1.6 measurements are
-complete at clean candidate `88aae101`. Version 0.5.0 has not been released;
-final numerical qualification, wheel acceptance and publication remain pending.
+Updated November 3, 2026: the source candidate is **coilEM 0.5.0 Developer
+Preview**, with **Magneto2D 0.4.0**. Windows and macOS protocol 1.6
+measurements are complete at clean candidate `88aae101`, and the release
+qualification gate passes. Version 0.5.0 has not been released; wheel
+acceptance and publication remain pending.
 The [release plan](docs/RELEASE_0_5_0.md) tracks those gates. PyPI installation
 continues to select the published coilEM 0.4.0 release until 0.5.0 is published.
 
@@ -58,11 +59,10 @@ Reference review and the registered Windows comparison are complete in the
 [candidate qualification update](benchmarks/candidate-qualification-20261103/README.md).
 The [exact-candidate Windows Prius audit](benchmarks/candidate-qualification-20261103/prius/README.md)
 passes all 10 software checks across 17 jobs and 568 field reports, with its
-frozen inputs and complete raw archive retained. Finish the exact-candidate
-Mac collection and final registered qualification checks. The release assessment remains
-[BLOCKED](benchmarks/v0.5.0/release-qualification.json).
-The current macOS record remains NOT_COMPARABLE to the changed physics sources;
-a fresh full macOS run is required before claiming current numerical parity.
+frozen inputs and complete raw archive retained. The
+[exact-candidate macOS comparison](benchmarks/candidate-qualification-20261103/macos/report/benchmark_report.md)
+records 46 PASS and 336/336 gates, and its record replaces the historical one.
+The release assessment [passes](benchmarks/v0.5.0/release-qualification.json).
 Linux/Python 3.15 smoke coverage does not establish full numerical parity.
 
 Run the release-wheel workflow with `publish=none` on the exact candidate.

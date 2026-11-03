@@ -11,12 +11,15 @@ follow-up. Evidence publication does not change the measured commit.
 | [Windows report](windows/report/coilem_benchmark_report.html), [numerical report](windows/report/benchmark_summary.json) | 46 PASS, one planned UNSUPPORTED; 336/336 gates PASS |
 | [Saved FEMM material audit](reference-material-audit.json) | All 4,409 nonempty saved models match registered units, depth, solver settings, magnet inputs and the complete M350-50A curve |
 | [Declared-current audit](reference-current-audit.json) | All 46 cases match their declared current magnitude and convention; maximum error below 4.3e-14 A |
-| Exact-candidate Mac A–D | Collection pending; the older published Mac comparison keeps its historical pins |
+| [macOS report](macos/report/coilem_benchmark_report.html), [numerical report](macos/report/benchmark_summary.json), [native fields](../macos-v050-20261103-88aae101/native/run_manifest.json) | 46 PASS, one planned UNSUPPORTED; 336/336 gates PASS. Two clean collections agree bit for bit |
+| [Owner decisions](../v0.5.0/owner-decisions.json) | The owner accepted the reviewed references on November 3, 2026, and set the output scopes below |
 | Exact-candidate Windows Prius | [Complete Windows report](prius/README.md): 17 jobs, 568 field reports, 10/10 software checks PASS |
 
-The reference reviewer is **Codex assistant**, which also prepared the earlier
+The technical reviewer is **Codex assistant**, which also prepared the earlier
 evidence. This is a documented code and data review, not an independent human
-or laboratory sign-off. Its scope and exclusions are in the hash-bound
+or laboratory sign-off. The owner accepted the reviewed references on
+November 3, 2026; [that decision](../v0.5.0/owner-decisions.json) binds this
+bundle's manifest, review receipt and identity. Its scope and exclusions are in the hash-bound
 [review receipt](../reference-baselines/protocol16-reviewed-20261103/review.json).
 Private adapter sources, FEMM model files and field files remain in the retained
 local archive; public records contain data and provenance only.
@@ -35,7 +38,9 @@ all request and result hashes, exact registered inputs, the measured source
 and the reviewed reference receipt before evaluating any row. It executes
 **zero field solves** and leaves the original manifest and artifacts unchanged.
 The [Windows comparison manifest](windows/comparison_manifest.json) binds the
-original native artifact hashes and the reviewed reference identity.
+original native artifact hashes and the reviewed reference identity; the
+[macOS comparison manifest](macos/comparison_manifest.json) does the same for
+the macOS fields.
 
 The active physics guard now covers **63 sources**. Nine previously omitted
 d/q, temperature, configuration, policy, material and resistance/loss sources
@@ -45,8 +50,14 @@ and all historical reports remain intact; no changed physics is repinned.
 
 The historical v0.4 records are retained byte-for-byte in
 [`records-historical/v040`](../records-historical/v040/).
-The active Windows compact record is rebuilt from the reviewed comparison.
-The Mac record will change only after a complete matching collection exists.
+Both active compact records are rebuilt from the reviewed comparisons. The
+two platforms' records match each other within 0.36 of their registered
+tolerances in every case.
+
+The macOS fields were collected on November 3, 2026, at the clean candidate
+with Python 3.12.13, Rust 1.94.0 and the locked requirements, from a neutral
+output folder so the published files hold no home-directory path. A second
+collection gave bit-identical results in all 36,676 numeric fields.
 
 ## Scope and remaining gates
 
@@ -58,16 +69,18 @@ single reference-mesh sensitivity control does not establish spatial convergence
 The legacy ORNL Prius case is planned unsupported; it is separate from the
 Pyleecan Prius software benchmark.
 
-Loaded d/q and temperature comparisons pass at the registered points. The
-application still labels its new performance outputs experimental, except
-phase resistance and copper loss with a declared wire. This review does not
-qualify apparent inductances, maps, losses, hardware correlation, catalogue
-temperature coefficients or arbitrary operating ranges.
+Loaded d/q and temperature comparisons pass at the registered points. By the
+owner's decision of November 3, 2026, the application qualifies λd and λq for a
+qualified single-layer concentrated SPM or flat-buried IPM design under
+sinusoidal current at γ 0°–60°, and the magnet derating for a qualified design
+from 20 °C to 100 °C, besides phase resistance and copper loss with a declared
+wire. This does not qualify apparent inductances, maps, losses, hardware
+correlation, catalogue temperature coefficients or other operating ranges.
 
 The Windows Prius evidence is complete and registered. Its analysis code is
 bound to the snapshot captured before fields; original report bytes and legacy
-metadata are preserved. The release gate remains blocked until complete
-same-candidate Mac evidence is registered. Check it with:
+metadata are preserved. With the same-candidate macOS evidence registered,
+the release gate passes. Check it with:
 
 ```sh
 python -m tools.release.qualification --candidate 88aae101fd487795e7fe5300737679f4133790fd

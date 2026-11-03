@@ -37,9 +37,12 @@ export interface DqFluxLinkage {
   positions?: number;
   /** How the d-axis was placed; 'applied_current_angle' when the run had no no-load sweep. */
   d_axis_source?: 'no_load_flux_linkage' | 'applied_current_angle';
-  /** Absent on runs stored before the record carried it (outputStatus.ts). */
+  /** Of λd and λq. Absent on runs stored before the record carried it (outputStatus.ts). */
   status?: PerformanceOutputStatus;
   status_reason?: string | null;
+  /** Of the apparent Ld and Lq and the quantities from them; absent on runs stored before 0.5.0's freeze. */
+  inductance_status?: PerformanceOutputStatus;
+  inductance_status_reason?: string | null;
 }
 
 /** Losses at the solved point (#138): P_shaft = T·ω − iron − mechanical, P_in = T·ω + copper. */
@@ -238,6 +241,8 @@ export interface PerformanceReportContext {
   magnet_temperature_derated: boolean;
   /** The status of the winding record the phase resistance comes from, as the tab shows it. */
   phase_resistance: { status: PerformanceOutputStatus; reason: string } | null;
+  /** The run's magnet derating status, when it derated its magnets. */
+  magnet_temperature: { status: PerformanceOutputStatus; reason: string } | null;
 }
 
 export interface DrivePerformance {

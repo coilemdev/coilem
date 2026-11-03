@@ -317,11 +317,12 @@ section is the claim boundary for each of them: what is qualified and by which
 gate, what is experimental and why, and what is not modelled.
 
 **Phase resistance and copper loss are qualified for a design with a wire.
-Every other output is experimental in the current source.** Phase resistance
-passes its hand-calculation gate. Loaded d/q and magnet-temperature comparisons
-now pass against reviewed Windows references. New performance-output statuses
-remain experimental pending completion of their candidate qualification and
-explicit matching code/status updates. Each output shows
+Loaded λd and λq and the magnet temperature derating are qualified inside the
+scope their protocol 1.6.0 gates measured, by the owner's decision of
+November 3, 2026 ([owner decisions](../benchmarks/v0.5.0/owner-decisions.json)).
+Every other output is experimental, including Ld and Lq.** Phase resistance
+passes its hand-calculation gate; the d/q and temperature gates pass on Windows
+and macOS at `88aae101` against the reviewed references. Each output shows
 its status and the reason in the UI, the run PDF
 and CSV, and the performance PDF and CSV. The reasons quoted below are the
 strings the app prints, from `backend/models/performance.py`,
@@ -340,14 +341,15 @@ becomes qualified only for the fixture combinations whose gates pass in the
 freeze report, and only once the app's status for it changes. Passing a gate
 does not qualify other topologies, currents or angles.
 
-The table records the measured comparisons without changing application
-qualification. **TODO(freeze):** complete candidate qualification registration;
-change an output's status in code and this section together only when qualified.
+The app sets the qualified status only inside each scope below, when it stores
+a run (`backend/solve_workspace.py`, from `backend/qualification.py`); the
+solver records both outputs as experimental, so the measured physics sources
+are unchanged. `tests/test_qualification.py` checks each scope boundary.
 
 | Output | Status now | Gate that could qualify it | Gate result |
 | --- | --- | --- | --- |
-| Loaded λd and λq | Experimental | Protocol 1.6.0 `lambda_d`, `lambda_q` and `reference_dq_torque`, 12 points on two fixtures | All 36 added gates PASS on Windows `88aae101`; references reviewed, candidate qualification pending |
-| Apparent Ld and Lq | Experimental | None; see below | — |
+| Loaded λd and λq | Qualified in scope: a qualified single-layer concentrated SPM or flat-buried IPM design, sinusoidal current, γ 0°–60°; experimental elsewhere | Protocol 1.6.0 `lambda_d`, `lambda_q` and `reference_dq_torque`, 12 points on two fixtures | All 36 added gates PASS on Windows and macOS `88aae101` |
+| Apparent Ld and Lq, saliency, characteristic current | Experimental | None; see below | — |
 | Flux-linkage map | Experimental | None beyond the 12 d/q points | — |
 | Torque–speed envelope | Experimental | None; hardware correlation deferred until after 0.5.0 | Deferred by the owner on October 30, 2026 |
 | Efficiency map | Experimental | None; hardware correlation deferred until after 0.5.0 | Deferred by the owner on October 30, 2026 |
@@ -356,7 +358,7 @@ change an output's status in code and this section together only when qualified.
 | Copper loss | Same as phase resistance | Follows phase resistance | — |
 | Iron loss, M350-50A and M400-50A | Experimental | None planned for 0.5.0 | — |
 | Efficiency at the operating point | Experimental | None; it uses the iron loss | — |
-| Magnet temperature derating | Experimental | Protocol 1.6.0 temperature cases, four cases on two fixtures | All four cases PASS on Windows `88aae101`; reference review and qualification pending |
+| Magnet temperature derating | Qualified in scope: a qualified design from 20 °C to 100 °C; experimental elsewhere | Protocol 1.6.0 temperature cases, four cases on two fixtures | All four cases PASS on Windows and macOS `88aae101` |
 
 ### Loaded d/q flux linkage, Ld and Lq
 
@@ -367,7 +369,9 @@ current angle independently. A run without a no-load sweep places it from the
 commanded angle instead, and the record says so in `d_axis_source`. Apparent
 Ld = (λd − λpm) / id and Lq = λq / iq are secant values at the solved point.
 
-- **Qualified:** nothing yet. Protocol 1.6.0 compares λd and λq with FEMM at
+- **Qualified:** λd and λq for a design that is itself qualified, with a
+  single-layer concentrated winding on an SPM or flat-buried IPM rotor, under
+  sinusoidal current at γ from 0° to 60°. Protocol 1.6.0 compares λd and λq with FEMM at
   12 points: the 8p/12s concentrated SPM at 20 and 40 A peak and the FSAE flat
   IPM at 50 and 100 A peak (1× and 2× each fixture's baseline current), each at
   γ 0°, 30° and 60°.
@@ -377,18 +381,26 @@ Ld = (λd − λpm) / id and Lq = λq / iq are secant values at the solved point
     torque, within 2% (YELLOW 5%).
   - The harness applies coilEM's transform to FEMM's raw waveforms, so the two
     cannot differ by convention.
-  - If the gates pass, the qualified scope is λd and λq for SPM and flat-buried
-    IPM with single-layer concentrated windings under sinusoidal current, up to
-    2× the fixture current and from γ 0° to 60°. **TODO(freeze):** confirm.
+  - All 36 gates pass on Windows and macOS at `88aae101`. The qualified status
+    says that the benchmark measured up to 2× its fixtures' current.
+  - The reason the app prints: "Passes the loaded d/q gates of benchmark
+    protocol 1.6.0: the d- and q-axis flux linkage within 3% of the reference at
+    12 operating points on two such designs, current angles 0 to 60 degrees, up
+    to twice the benchmark's current."
 - **Ld and Lq stay experimental even if the λd/λq gates pass.** The gate bounds
   λd and λq as a share of |λdq|. Ld depends on λd − λpm, and on an SPM Lq
   depends on a small λq, so a passing point can leave them tens of percent
   uncertain. At `spm_8p12s_concentrated__dq_I20_g30`, coilEM's λd is
   1.35 mWb below its γ 0° value and λq is 2.46 mWb, while the 3% band is
-  0.52 mWb. **TODO(owner):** confirm this boundary.
-- **Experimental because:** "Reference checks pass at 12 registered SPM and
-  flat-IPM points. The general d/q output remains experimental, including
-  inductances, maps and unmeasured operating points."
+  0.52 mWb. The owner confirmed this boundary on November 3, 2026. Ld, Lq,
+  the saliency and the characteristic current carry their own status in the d/q
+  card and the run PDF and CSV: "The d/q gates bound each flux linkage within 3%
+  of its magnitude, which can leave the apparent Ld and Lq, and the saliency and
+  characteristic current from them, tens of percent uncertain."
+- **Experimental elsewhere because:** "Outside the loaded d/q gates of benchmark
+  protocol 1.6.0, which cover qualified SPM and flat-buried IPM designs with a
+  single-layer concentrated winding under sinusoidal current, at current angles
+  from 0 to 60 degrees."
 - **Consistency check, not a reference:** Torque–λdq agreement compares the
   solved torque with 1.5·P·(λd·iq − λq·id) from the same solve. In every loaded
   benchmark case at `5b7cad8` it reads 99.86–100.29%. It catches a bookkeeping
@@ -412,7 +424,8 @@ design's rated speed.
 - **Development check, not a gate:** half-cycle points agree with full-cycle
   sweeps within 0.01% on torque and λd/λq and within 0.2% on iron loss
   (4p/12s and 8p/12s concentrated SPM).
-- **Experimental because:** it carries the d/q reason above.
+- **Experimental because:** "The d/q gates cover 12 operating points, not a
+  map's full range of currents and angles, and do not bound the inductances."
 - **Cache identity:** stored points and assembled maps are keyed by the design,
   map preset, installed physics-source hashes (including the solver's stamped
   Rust identity in wheels), map-processing source hashes and the configured
@@ -440,8 +453,7 @@ only when a smaller current gives more torque than the current-limit circle.
 
 - **Qualified:** nothing. Issue 143 plans a comparison with the ORNL Prius and
   Honda Accord torque–speed test data, as hardware correlation and not
-  qualification. **TODO(freeze):** record that comparison, or say it is
-  deferred.
+  qualification. The owner deferred it until after 0.5.0 on October 30, 2026.
 - **Development checks, not gates:** against an analytic SPM with resistance,
   the curve is within 1% and the base speed matches the closed form. An
   analytic IPM reaches its MTPA torque within 0.5%.
@@ -564,18 +576,23 @@ is derated and recorded, but the solve's straight recoil line does not use it.
 Above a grade's maximum operating temperature the run carries a warning. A
 temperature is refused for magnets without cited coefficients.
 
-- **Qualified:** nothing yet. Protocol 1.6.0 adds the 8p/12s concentrated SPM
+- **Qualified:** the derating for a design that is itself qualified, from the
+  catalogue's 20 °C to 100 °C. Protocol 1.6.0 adds the 8p/12s concentrated SPM
   and the FSAE flat IPM with N42 magnets at 60 °C and 100 °C (Br 1.25188 T and
   1.18876 T). They carry the usual A/B gates: mean torque within 8% (YELLOW
   15%), and Back-EMF fundamental and peak within 10% (YELLOW 15%).
-  All four Windows cases PASS at `88aae101`; references remain REVIEW_REQUIRED,
-  so this output stays experimental pending qualification.
+  All four cases PASS on Windows and macOS at `88aae101`.
   - FEMM models the same derated Br. The gate therefore checks the solve at a
     derated Br, not the coefficient. The coefficient is the catalogue's, and no
     reference measures it.
-- **Experimental because:** "Br and HcJ use cited reversible coefficients.
-  Reference checks pass for four declared-Br N42 cases at 60 C and 100 C;
-  general temperature behavior and material coefficients remain experimental."
+- **The reason the app prints:** "Br and HcJ derated linearly with the grade's
+  cited reversible coefficients; passes the temperature gates of benchmark
+  protocol 1.6.0 (back EMF and torque at the derated Br, N42 at 60 and 100 deg C
+  on two qualified designs). The coefficients are catalogue values, and
+  irreversible demagnetisation is not modelled."
+- **Experimental elsewhere because:** "Br and HcJ derated linearly with the
+  grade's cited reversible coefficients; the temperature gates of benchmark
+  protocol 1.6.0 cover qualified designs from 20 to 100 deg C only."
 - **Not modelled:** irreversible demagnetisation, temperature dependence beyond
   the linear coefficient, a temperature that varies within a magnet, and magnet
   heating. The steel and winding temperatures are set separately.

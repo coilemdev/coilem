@@ -5,8 +5,8 @@
   "files": [
     {
       "path": ".gitattributes",
-      "bytes": 949,
-      "sha256": "01b023e65f06616d34e0bd80de2979e1413b6d73b5d2fbc2dd5855c3c5c3a4df"
+      "bytes": 1024,
+      "sha256": "74e5f603227eaf828ad4f031271e2e20fc50b172a84a62af1de9bdcff7c4051e"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -60,18 +60,18 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 5501,
-      "sha256": "f5c5f248732ea671dfb5eb86330d3a97558b547a06839d9b753ed38e00a4e994"
+      "bytes": 5468,
+      "sha256": "005e347d6e27ea11ec9ebe733870224642df12abaef672bb0b6f01dedd40285d"
     },
     {
       "path": "README.md",
-      "bytes": 13599,
-      "sha256": "cc21c5fcf594f5bff74cf7aa17e836ad20f4df7311b1213ef9bf7829ce7b5ac6"
+      "bytes": 13815,
+      "sha256": "5004aece9fc710ff483d57790e42f790883d89b9826f6aef635d91a5e2389190"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 8707,
-      "sha256": "fa66e2a6094aee5d9aff953ad8792b8045d1a216e51fe175d6bf755eb98a3066"
+      "bytes": 8617,
+      "sha256": "981420a333581824c694f0997a2b68574694f814f309e5b92c600a0ca2abcaf0"
     },
     {
       "path": "SECURITY.md",
@@ -485,8 +485,8 @@
     },
     {
       "path": "backend/models/performance.py",
-      "bytes": 22221,
-      "sha256": "e6641c5652c48a3dfff3ebde2dd18e0f45a8cf66a1fedec186115601a4d59ccc"
+      "bytes": 23619,
+      "sha256": "916db2d0dbf04150ff5e3d4e1409a6308eea622487f68eddb79c3b6b62325a37"
     },
     {
       "path": "backend/models/result.py",
@@ -500,8 +500,8 @@
     },
     {
       "path": "backend/performance_report.py",
-      "bytes": 46526,
-      "sha256": "8effbb67eb82578be33a3b217f8971a0955eb322028698fa46d0076758ab2a4e"
+      "bytes": 46933,
+      "sha256": "5443edc461047feff671b872c20f11b8560276ae67c6dc3de259d37a64a729fd"
     },
     {
       "path": "backend/platform_info.py",
@@ -545,8 +545,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 79443,
-      "sha256": "ec5d0635f7164ce76ffd825303a5e92204e02647ca7ade93c60ce6710f005922"
+      "bytes": 79794,
+      "sha256": "566e4f0c512fe9defaf5cdabc797a2db136b458af367963743ce28ab56fe0dcd"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -595,8 +595,8 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 7981,
-      "sha256": "2d9e125c382ccf4e33da728eb1ffaeff6509c0b16663328b75c364ce79213388"
+      "bytes": 9843,
+      "sha256": "c9ec5e5975b4a29c997e41008fde110d99910abed077054a87e89d656118b390"
     },
     {
       "path": "backend/reference_models/__init__.py",
@@ -630,8 +630,8 @@
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 44873,
-      "sha256": "48cc7721d9ad8e8bbb258fe66fc254d989c3717b32c6246a9bb941aabf509cd0"
+      "bytes": 46011,
+      "sha256": "c7b5c3dcc7ab992117a0c136179982ec4dcad1cdd4bb1b2adfc04b3fbd4e3689"
     },
     {
       "path": "backend/solver/__init__.py",
@@ -3420,13 +3420,13 @@
     },
     {
       "path": "benchmarks/records/README.md",
-      "bytes": 5302,
-      "sha256": "b1ba6e2bd36832347f6ee7d3e9cb9f74cc1e6a820a3b559ba65832df33f5aaac"
+      "bytes": 5163,
+      "sha256": "ea2443f4d566b5c0e3b03f19ed90761a4d93886aa6c19cd4812cd0c523b17a49"
     },
     {
       "path": "benchmarks/records/macos-arm64.json",
-      "bytes": 23581,
-      "sha256": "95253701638c05e901662c532a7e97bb939a796a9fc03c89c4fc327b6d74a82f"
+      "bytes": 35228,
+      "sha256": "112b1f1333772c4f77817dd581607ffa1cd6ff39a955e046a00cb39e2dcddfc1"
     },
     {
       "path": "benchmarks/records/windows-x86_64.json",
@@ -5945,8 +5945,8 @@
     },
     {
       "path": "docs/RELEASE_0_5_0.md",
-      "bytes": 23011,
-      "sha256": "865cfea79dbe40f7c591fe751c188864991eb2f3db5f62dc21e4e14adf822e8b"
+      "bytes": 23361,
+      "sha256": "6dec1f09294845fe86479830ecabc0442f82a346c63f5a354610b9cb1c1ca85c"
     },
     {
       "path": "docs/RELEASING.md",
@@ -5965,8 +5965,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 46685,
-      "sha256": "6edd754166ddbced13bac500cc4009f14e58612d910b73857134ac60409f8c47"
+      "bytes": 48187,
+      "sha256": "f59898bd40762676197ea4ded12b494a15603b75bcd40f7741e375ac8a48daf6"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -6380,8 +6380,8 @@
     },
     {
       "path": "frontend/scripts/test-dq-view.mjs",
-      "bytes": 5025,
-      "sha256": "4e73a755c6fea6308badf63f553e9a30446ed34b03a831bba08d8e905273443f"
+      "bytes": 5680,
+      "sha256": "da8a5d8c1f9d68cf36cdfa23c062d1db58a9c069d8be77a8d3656b9b807b39d0"
     },
     {
       "path": "frontend/scripts/test-field-axes.mjs",
@@ -6435,8 +6435,8 @@
     },
     {
       "path": "frontend/scripts/test-magnet-temperature.mjs",
-      "bytes": 2232,
-      "sha256": "5a36a045c8217b4c6f13552b16ee80c31ab3f7cdf84d0134f9510c2eb6003488"
+      "bytes": 2782,
+      "sha256": "3835da6e80e39877303aada8c3c89c8ddd6f26d7afb3d842eab02428fc283fa9"
     },
     {
       "path": "frontend/scripts/test-mesh-quality.mjs",
@@ -6451,7 +6451,7 @@
     {
       "path": "frontend/scripts/test-performance-view.mjs",
       "bytes": 7396,
-      "sha256": "ec879e4df22c57c01bdee0661adad717a09375c62b3cb50a0a13fd3b012f85d8"
+      "sha256": "e5329347ce4c05bd493e094093fd7cbc2de4c4e1e8ea4683c792007fc83cd2cf"
     },
     {
       "path": "frontend/scripts/test-phase-drive.mjs",
@@ -6480,8 +6480,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 162139,
-      "sha256": "5a39c95745d246baa25fd15f683b5efb6416abb46510483684d418cc90e3a589"
+      "bytes": 162323,
+      "sha256": "013d95f5f87f5ad3e05f75a31f067498eddcdc0e2b3ade716f0eb0adfa91896c"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6900,8 +6900,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 231677,
-      "sha256": "3b8d28425059b773ca32e2bc075656de050b3aa439e2d336ae6a20de29d454fa"
+      "bytes": 231726,
+      "sha256": "00894e348c77072e36661ffd7ad0e9a4674d00d454af35bebacb4673f791d68a"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -6910,8 +6910,8 @@
     },
     {
       "path": "frontend/src/public/DqCard.tsx",
-      "bytes": 2927,
-      "sha256": "ea3c1f8493344cc9bdebe7f3b9d9a6cd8f875d6c6b58dbedc4f812e66fbf161c"
+      "bytes": 3105,
+      "sha256": "1bdc25fca23c5b8d76bf552757462ed61f3ed014d406d9764c913592402afd6d"
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
@@ -6950,8 +6950,8 @@
     },
     {
       "path": "frontend/src/public/PerformancePanel.tsx",
-      "bytes": 46536,
-      "sha256": "5f438d07943956a540ead18b955bb7af2e58fddde6ff020c32a33be7c9ce5ff1"
+      "bytes": 46628,
+      "sha256": "bd31d9304400f7e65563cdf17a1b44c883ecac308dbd780177473209610ecce4"
     },
     {
       "path": "frontend/src/public/Popover.tsx",
@@ -7075,8 +7075,8 @@
     },
     {
       "path": "frontend/src/public/dqView.ts",
-      "bytes": 8652,
-      "sha256": "d3f22bf7ada0f5153fed338bb2da132e82ae1421190d8b2b5dfead71d6ec86a6"
+      "bytes": 9060,
+      "sha256": "85b8a717af0ec368b51c2f830e2e8a79796cffb5fdc67376c223dbb47d7172ea"
     },
     {
       "path": "frontend/src/public/exampleDesigns.ts",
@@ -7275,8 +7275,8 @@
     },
     {
       "path": "frontend/src/public/magnetTemperature.ts",
-      "bytes": 4105,
-      "sha256": "1bb51a52b0137971fe99696edd91a823e5a03a997e2b5d7a22ea78171ee1e79e"
+      "bytes": 4761,
+      "sha256": "193acca04a52ab60224764d1a927decc9c89bd84cffe1ff5dac04f25be2082d1"
     },
     {
       "path": "frontend/src/public/main.tsx",
@@ -7325,18 +7325,18 @@
     },
     {
       "path": "frontend/src/public/outputStatus.ts",
-      "bytes": 2525,
-      "sha256": "84631dfef7fe0078dcf4085c1200ec44c1a03ba69cbbff5f709293e562876d34"
+      "bytes": 3357,
+      "sha256": "f5c589ff62270f7fbfa860dc2d05de600fdc8f265987585495a15eebeefe46c0"
     },
     {
       "path": "frontend/src/public/performance.ts",
-      "bytes": 8306,
-      "sha256": "b34956a666f651b34ec85e4bce85583896c9cdda06f24f771097be0da740a6ea"
+      "bytes": 8677,
+      "sha256": "48f367775b69d81a7095672676c391755f00016f8b8e31ec61cb57ec6f582fe6"
     },
     {
       "path": "frontend/src/public/performanceView.ts",
-      "bytes": 12156,
-      "sha256": "50de5b23269351d6394034b2aca44094f6b8f4917b8ad95789eb8aca55084832"
+      "bytes": 12158,
+      "sha256": "69452958e25d618da86a1790343cdfdd535d4078583d0262412bfadd1fe77c4b"
     },
     {
       "path": "frontend/src/public/phaseDrive.ts",
@@ -8025,8 +8025,8 @@
     },
     {
       "path": "tests/test_output_status.py",
-      "bytes": 10355,
-      "sha256": "99cfae3d00627304f825d83ee929105fd556bcce5ce3636aee872678a5300a4d"
+      "bytes": 12475,
+      "sha256": "d5211ac4829ad265bd0bdd6f2d6cc22bdc16b33b9fb83c10bf25142871790bd4"
     },
     {
       "path": "tests/test_payload_reuse.py",
@@ -8150,8 +8150,8 @@
     },
     {
       "path": "tests/test_qualification.py",
-      "bytes": 16070,
-      "sha256": "53ceb158979e7f15b9acfce621ccb06e513e646adb150f5b3bdd43e9bf7c6e46"
+      "bytes": 19122,
+      "sha256": "28a5860e98119f0061f116c3f3df3fcdba308c2b69daea5d2c950a6a41c4bf2b"
     },
     {
       "path": "tests/test_reference_recovery.py",
@@ -8505,18 +8505,18 @@
     },
     {
       "path": "benchmarks/v0.5.0/README.md",
-      "bytes": 3415,
-      "sha256": "4c637e72905335be42bc7533dfc39380a362bb122f260a9330be416c5277061f"
+      "bytes": 3538,
+      "sha256": "1c489fdcd9aa805f1453c91ee3e3f5b5f51e6958d2d6ed2a96a425d9937f57b4"
     },
     {
       "path": "benchmarks/v0.5.0/evidence.json",
-      "bytes": 3412,
-      "sha256": "9d1a65e6f1b88068f5bf9a01e0e7bd6aad7b38e69669f5e20a34bd6799d00667"
+      "bytes": 4269,
+      "sha256": "515bcf5362c376301133d8cca9e42ea8f2584abfee165e5b94e81d73aa59a703"
     },
     {
       "path": "benchmarks/v0.5.0/release-qualification.json",
-      "bytes": 952,
-      "sha256": "f43e781c2f5ba28afab8feda8a1e86c9339e24e011f7908f8b17d6c0b877b7e0"
+      "bytes": 872,
+      "sha256": "4a1e88431e48498f4053ab95f045e227c4620929f478ab7d6f668ac57d79065e"
     },
     {
       "path": "benchmarks/windows-v050-20261102-88aae101/README.md",
@@ -9675,18 +9675,18 @@
     },
     {
       "path": "benchmarks/candidate-qualification-20261103/README.md",
-      "bytes": 4731,
-      "sha256": "576ba3622f7ec0aee9f9668840ad0983420b83cd6cc1133f52afc700593b97c6"
+      "bytes": 5822,
+      "sha256": "8e9f919f1c21cfc99602974694f9ac8cb56045ce96c7105818ca60c00b593d81"
     },
     {
       "path": "benchmarks/candidate-qualification-20261103/artifact_manifest.json",
-      "bytes": 22679,
-      "sha256": "1277cfa9a7f039d8b16366c086ac56283b3699c10235cf4cb5cc912545e25288"
+      "bytes": 33787,
+      "sha256": "1422605fe8a40cb3c27339b74c93d0b1afb8060e7629464fb8761922a764bfb2"
     },
     {
       "path": "benchmarks/candidate-qualification-20261103/prius/README.md",
-      "bytes": 3532,
-      "sha256": "ee357bb83c106b852668ecad4e822eb88a88822a8a8450ec79d5a50243d32ce6"
+      "bytes": 3519,
+      "sha256": "34812c22be88756493dd1f66d52e31dd9b47c461189366a3f2fb37f8a5e92ed7"
     },
     {
       "path": "benchmarks/candidate-qualification-20261103/prius/analysis-provenance.json",
@@ -10587,6 +10587,846 @@
       "path": "tools/review_protocol16_references.py",
       "bytes": 13882,
       "sha256": "1a7167b82a7392773a8fd1fc9f61a95346c30eed1e07f4cb5581c2a20875633a"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/comparison_manifest.json",
+      "bytes": 75909,
+      "sha256": "7853c3cdf2c2e149432b5bca7da409b0ea8113d688859f55c124c74fc4d2902f"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/platform-record.json",
+      "bytes": 35228,
+      "sha256": "112b1f1333772c4f77817dd581607ffa1cd6ff39a955e046a00cb39e2dcddfc1"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/artifact_manifest.json",
+      "bytes": 7229,
+      "sha256": "348d3c72ea7d9ec13356278705a0cdc57b5a050f738641ccfb96abc1dfe3ec50"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/benchmark_report.md",
+      "bytes": 9596,
+      "sha256": "144d690524d818f453e3d6cdc617dd379a0888eb00d8cabb79dd6cf47f534880"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/benchmark_results.csv",
+      "bytes": 27289,
+      "sha256": "512739299859f3bfbce323db201b3dcbf7167ee66575fa9ca1e69bbdc38b67b6"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/benchmark_summary.json",
+      "bytes": 3168301,
+      "sha256": "8a2b3f750819528dbe9a0f18c438aa583600ee1959fbdefd34184d8596f0fd63"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/coilem_benchmark_report.html",
+      "bytes": 702788,
+      "sha256": "8e0b936f18eadd2b537cbd3639ec5ec747f72c102100491d4a78353a48347fd1"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g0__native.json",
+      "bytes": 2547,
+      "sha256": "13946ec4812653453576460ffaaa556e1c0712dc60ea5bcf7527255ead98bea9"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g30__native.json",
+      "bytes": 2548,
+      "sha256": "8fd935a4b81d5aa3bbe9196151a84c9d745c268ea90702a4b92e07a76db62f47"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g60__native.json",
+      "bytes": 2548,
+      "sha256": "87b7306d1735934c0cb3c30c1fa0b970af2947efe1d2446538f41159371adbf0"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g0__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g30__native.json",
+      "bytes": 2547,
+      "sha256": "5fed79cac72dd79b71355b60cd195a2f58d00470c36fdad314a236870c4abf2b"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g60__native.json",
+      "bytes": 2547,
+      "sha256": "e2bc18964582355fa7c838029693339374bb45456d2e21da26b76279cbd717cb"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/ipm_flat_8p12s_fsae_contract__magnet_100C__native.json",
+      "bytes": 2547,
+      "sha256": "d6125a01411ade4faf0f12fea6dd53ab0938f4ff0c2efc6f5ebb7cb7c2dbf2a3"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/ipm_flat_8p12s_fsae_contract__magnet_60C__native.json",
+      "bytes": 2546,
+      "sha256": "afe7c558fc411f00408461add8a9b88b7eed38bff4338234e0188246abc6f9de"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1604,
+      "sha256": "c7eaaaf1081d62fc92fdbcf85bd4a741437dbf2f447bfacafa3d29f571f38045"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1607,
+      "sha256": "d50980ab4aac15eb065fb09632a0f56988cda12a01d4c5a225cf13f02377f12c"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1606,
+      "sha256": "3eb405359dbf6503ea6d29eaf41d595681ae5a7b4a70883aa202df1fd3df6388"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2503,
+      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2503,
+      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2503,
+      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2502,
+      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2502,
+      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2502,
+      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1594,
+      "sha256": "da8e001617723fbf8bc27ed803b695e6739e49efb6e191057826aff8316e6166"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1596,
+      "sha256": "0cfcd598575534929f95f5e468efee92531b158d98e8db34aea82c548ef1efdc"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1595,
+      "sha256": "cc111eda6bc19623de00e8a1da66ba396db3d6440126947715b06511c9510357"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_8p12s_concentrated__dq_I20_g0__native.json",
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_8p12s_concentrated__dq_I20_g30__native.json",
+      "bytes": 2507,
+      "sha256": "040ea7d2cf367ab0fa9e8fdba9a83df22dd88e548597a15c939358c709cecd38"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_8p12s_concentrated__dq_I20_g60__native.json",
+      "bytes": 2507,
+      "sha256": "22bfd644feb317039dadbf6e1736f6c0c28f8641689c9571dcea3a9aba62e027"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_8p12s_concentrated__dq_I40_g0__native.json",
+      "bytes": 2506,
+      "sha256": "fec0ce01476183e4e5b237a0fb3bc66676f7ac2582ca83f7c4c50bd96fb3ebd6"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_8p12s_concentrated__dq_I40_g30__native.json",
+      "bytes": 2507,
+      "sha256": "7de6f4d389d823ea026d1843f778add1f3c28a50d3652a200952286818b4e270"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_8p12s_concentrated__dq_I40_g60__native.json",
+      "bytes": 2507,
+      "sha256": "816252bbfc56ca2b917e576a892a21a10ca7a25c2044f2e51af08270661b1287"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2506,
+      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_8p12s_concentrated__magnet_100C__native.json",
+      "bytes": 2507,
+      "sha256": "77732c1868c7743a8d8711aea09457d103e45301019b74e3a1495f6c36598d78"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_8p12s_concentrated__magnet_60C__native.json",
+      "bytes": 2506,
+      "sha256": "5633ed8c7644bf4e71c557b03afce86193313bc1e20566bb61d503018669a263"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2506,
+      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_8p12s_example_shoed__native.json",
+      "bytes": 2506,
+      "sha256": "dbe538187d5280d171c224b12dc25612fb25c35c9014b201564126715dc4b6c4"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1640,
+      "sha256": "d25b5768678f37eca4aa1291dbd479f86cd19b0d4649a21d177ac86eab43e561"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1642,
+      "sha256": "14a40c1b8b65602bf051c3c71807f39efd516c734a151d3b209d8158aac7f178"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1641,
+      "sha256": "624b5b2faa387e4965da68cc337c9912da6137e1fc8712934b3f19d49cc7e457"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2550,
+      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/macos/report/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_12s10p_fscw_contract/native/request.json",
+      "bytes": 21757,
+      "sha256": "2901809c0212a3dae1e1ccaf509accbf85abd671a6ab9768605ddeda8e2b6bac"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_12s10p_fscw_contract/native/result.json",
+      "bytes": 71679,
+      "sha256": "686d86149fca2cef063f26ce21256d10d963e8b94ef7864250356ddbe1eb1770"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_24s16p_industrial_contract/native/request.json",
+      "bytes": 21798,
+      "sha256": "d2b3e55a7d04322dbeec7c9d4f8b6a8d13abae9c467a30b9f2a692e9b887a1fc"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_24s16p_industrial_contract/native/result.json",
+      "bytes": 77681,
+      "sha256": "a5cb57cd1c9ed6e41825e48478dbe0b4b5fc355809a9979ab203bdf4e033b94a"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_4p12s_micro_contract/native/request.json",
+      "bytes": 21750,
+      "sha256": "6722dbdbe4f45a39cabe1fa7db89447efb5827ab7f64d8aab41633b972414142"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_4p12s_micro_contract/native/result.json",
+      "bytes": 71878,
+      "sha256": "7dc89369dfdffbd5e03122a85c01084f7e08c08222beb81e74e99e4ae7f87d4a"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_8p12s_fsae_angled_pocket_contract/native/request.json",
+      "bytes": 21784,
+      "sha256": "99f51da2041556a11eaea6844a397ca2e62442dab08d44872d9a6f45eb4b1e8e"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_8p12s_fsae_angled_pocket_contract/native/result.json",
+      "bytes": 71724,
+      "sha256": "ce8212ad281dd963f0dcb363becbbd02d4cdc9a034dc57a4e3381b7ba065f41c"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_8p12s_fsae_contract/native/request.json",
+      "bytes": 21797,
+      "sha256": "d370484ff8f0157e962caf2c7afac15dcca458ef301b82bfd630553e08375b71"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_8p12s_fsae_contract/native/result.json",
+      "bytes": 71711,
+      "sha256": "30a7ce54fb5776af1582f70429616262af5a3c10d90f8675c453e97f69d2747e"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_8p12s_fsae_contract__dq_I100_g0/native/request.json",
+      "bytes": 21798,
+      "sha256": "5eefd04b0232f20a22637f90afa52b996548502cd349ea193912c3e085c9fa71"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_8p12s_fsae_contract__dq_I100_g0/native/result.json",
+      "bytes": 71712,
+      "sha256": "90292d8c838dae02d37a71fe8fbc7f6635fbad769ba2b8bf6c8cab4899b5752c"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_8p12s_fsae_contract__dq_I100_g30/native/request.json",
+      "bytes": 21799,
+      "sha256": "9d7a0a9c77f73bc4aabfacb89f512a683a596a68eb02c9e09f39e7b6696ae9ab"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_8p12s_fsae_contract__dq_I100_g30/native/result.json",
+      "bytes": 71627,
+      "sha256": "03be857fd40ddbc82a7826d62a3f61f28d0b119b4b85d1eb29c988997e9c0168"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_8p12s_fsae_contract__dq_I100_g60/native/request.json",
+      "bytes": 21799,
+      "sha256": "346a6e88f61c9a9e4cdfe54296c61f71c61c1357826a2b9c224303f10d1e5068"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_8p12s_fsae_contract__dq_I100_g60/native/result.json",
+      "bytes": 71464,
+      "sha256": "6415db171b2a40a43e01a49133b29ec4824b9c901031774a480e7ff9ae66c0dc"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_8p12s_fsae_contract__dq_I50_g0/native/request.json",
+      "bytes": 21797,
+      "sha256": "d370484ff8f0157e962caf2c7afac15dcca458ef301b82bfd630553e08375b71"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_8p12s_fsae_contract__dq_I50_g0/native/result.json",
+      "bytes": 71724,
+      "sha256": "1071ef404fe628cb591754b7e7dcf5ff0af5684c3d980d0807df6b963d32b099"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_8p12s_fsae_contract__dq_I50_g30/native/request.json",
+      "bytes": 21798,
+      "sha256": "6710deba147210c11915de2a73c12ca4f6176eda2838007e72a3e0e2be4b513e"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_8p12s_fsae_contract__dq_I50_g30/native/result.json",
+      "bytes": 71645,
+      "sha256": "22ebc001e8a30cc75caa993a4071bfd449abfce1c356596f13732b27c214b7b2"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_8p12s_fsae_contract__dq_I50_g60/native/request.json",
+      "bytes": 21798,
+      "sha256": "ef04bb26093ea82a706a1ea06269d91fc8dd4e19eacd233fa1f5a38ac1dbf69a"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_8p12s_fsae_contract__dq_I50_g60/native/result.json",
+      "bytes": 71472,
+      "sha256": "61a14fc13358a3f599543cf643600eca2cc970f3b9c6a1cb69b59985f02e4bf0"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_8p12s_fsae_contract__magnet_100C/native/request.json",
+      "bytes": 21798,
+      "sha256": "4590f35a48b86751377621b6f85765fddcc22f5d01c691a908702fcc070d41f1"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_8p12s_fsae_contract__magnet_100C/native/result.json",
+      "bytes": 72119,
+      "sha256": "61f7813cefd97dab2213d47681c996ec5d6b002358ac89b50bbcfb2e5894fc29"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_8p12s_fsae_contract__magnet_60C/native/request.json",
+      "bytes": 21797,
+      "sha256": "1390f1b86da36f062f4847281ba9dc354f361c810c33f559ca3603940f2637fd"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_8p12s_fsae_contract__magnet_60C/native/result.json",
+      "bytes": 72119,
+      "sha256": "2a39a952b7d2a47d45f2dd975ca6f4ab0ef96b655ba051d87cfca368e490eb69"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_8p12s_fsae_thin_bridge_contract/native/request.json",
+      "bytes": 21796,
+      "sha256": "368d649d2554af2f8641527708f01eee9a34349b11c4de3ecf36059f9bf53c5a"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_flat_8p12s_fsae_thin_bridge_contract/native/result.json",
+      "bytes": 71742,
+      "sha256": "755ca87c3400ca37ced2bab3eb8d2ceadcac279232ac28d6421701079dffc63a"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_vshape_8p12s_baseline_contract/native/request.json",
+      "bytes": 21778,
+      "sha256": "55cc19e56c769357c96b882376fb4a27eb83b2a2ef7e824cea56320e8b4f39b1"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_vshape_8p12s_baseline_contract/native/result.json",
+      "bytes": 71763,
+      "sha256": "d012a46294f4c9f2b44185866be479046b03aa8a1b0f4b4412addd471d16a2fc"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_vshape_8p12s_deep_apex_high_output_v1/native/request.json",
+      "bytes": 21778,
+      "sha256": "580f0a07adf97abc70158690ccf36021d99f41eaab7a9a283028ca068c95ec97"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_vshape_8p12s_deep_apex_high_output_v1/native/result.json",
+      "bytes": 71788,
+      "sha256": "40e6ded35a1d6a5663e4a6e108f2e00fe0efed880ab4ac88b5639798ca069976"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_vshape_8p12s_narrow_angle_contract/native/request.json",
+      "bytes": 21778,
+      "sha256": "b0835007afc1c1e25370db2caacf489e7269859cbb71d7de82b20b9b303e22da"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_vshape_8p12s_narrow_angle_contract/native/result.json",
+      "bytes": 71772,
+      "sha256": "ec343ad1bbdee9f0e6bf7d87deb309a32a70a336ebe10ed94bd736b584c20131"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_vshape_8p12s_pocket_offset_contract/native/request.json",
+      "bytes": 21778,
+      "sha256": "07cca16f7f9e87f55a7018374caf1c8daadc93687a38b758ee0e4c6fc2c169b2"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_vshape_8p12s_pocket_offset_contract/native/result.json",
+      "bytes": 71793,
+      "sha256": "e6908b0e58490381e98e147b757b08e57c2427f008f93fa4ed182eaacec07518"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_vshape_8p12s_thin_bridge_contract/native/request.json",
+      "bytes": 21778,
+      "sha256": "0e3b6d3e6b2817a23bd91a77a876c4196790a27c0b363ce562d909b5269a0895"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_vshape_8p12s_thin_bridge_contract/native/result.json",
+      "bytes": 71721,
+      "sha256": "db9f50f43fe1e42d61f18c0a56b455ed854fe92ed1d49b799f3e8ed08132282f"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_vshape_8p12s_wide_angle_high_output_v1/native/request.json",
+      "bytes": 21778,
+      "sha256": "3e0138ab4504ef9ca2e3211e3f3cb80f425c2724345bc2eea83c4fb78176243d"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ipm_vshape_8p12s_wide_angle_high_output_v1/native/result.json",
+      "bytes": 71762,
+      "sha256": "94ee982eb8a07f6d064bd7ce5d0047c6e54dbf4502de0cc39d69338b088b923b"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/ornl_prius_2004_ipm/native/request.json",
+      "bytes": 21781,
+      "sha256": "98d1ab99348617ed789096a68fbd16db8e1ecae0bbb1cd7529a18f613708f5ad"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_12p36s_distributed_femm_validation/native/request.json",
+      "bytes": 21756,
+      "sha256": "c8a90ae80734be89e35ef39a94a7ced2c92b55f6ac9a8557c4276c4a45515fbe"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_12p36s_distributed_femm_validation/native/result.json",
+      "bytes": 83031,
+      "sha256": "c3cb944b460f0489264b4254f09a0ac49004219271b22ad445eaeeefdd200039"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_14p12s_high_pole/analytical/request.json",
+      "bytes": 20795,
+      "sha256": "304b774b5377ba2bebb609cf30925940aa61a1f365bba472af34ed5859055678"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_14p12s_high_pole/analytical/result.json",
+      "bytes": 98088,
+      "sha256": "d279f3c358ee6b1a1e47af1a40e21bac277f62b6381001c756949058d89f0167"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_14p12s_high_pole/native-fine/request.json",
+      "bytes": 20798,
+      "sha256": "c17a1620ebe42b25a894e6b9d3a6a363b477b1fff5ba69c762ded1c91c5a4b6f"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_14p12s_high_pole/native-fine/result.json",
+      "bytes": 112876,
+      "sha256": "1e74d5ada134d4b9aba96457604ac2c7fc2fe4eed5137719415257cbf4e028e3"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_14p12s_high_pole/native-standard/request.json",
+      "bytes": 20797,
+      "sha256": "6a81b29547bd107d043d940b7761701aadcdc73a1b5b36dbff66c849779ef7fe"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_14p12s_high_pole/native-standard/result.json",
+      "bytes": 88465,
+      "sha256": "28183cd99800e50a42815c737a62279b6c9217a1905dbcc51148813bd343bb3d"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_4p12s_simple__baseline/native/request.json",
+      "bytes": 21754,
+      "sha256": "588216100393f7d5d429cda290cea514e55da14c4ea0a366da4c251f2c79e6e1"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_4p12s_simple__baseline/native/result.json",
+      "bytes": 75198,
+      "sha256": "5061789dbc6a3be6675cb1abc1cf89147cf1799c1570abe782788c612ecd7640"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_4p12s_simple__high_current/native/request.json",
+      "bytes": 21754,
+      "sha256": "32722c7dd7baf62b16fa2e1c1f43c93b0dccfe02285650df88b55e81ef88c0a0"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_4p12s_simple__high_current/native/result.json",
+      "bytes": 75219,
+      "sha256": "c344942a4f70b58b32e6cebb5988202ce46ddca575b856fdb093d3a061dc46b2"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_4p12s_simple__tight_airgap/native/request.json",
+      "bytes": 21754,
+      "sha256": "44681036966f1bcb047c0fbf09677a98aa2d224e69fdbaca7a39c03b4c0f6a56"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_4p12s_simple__tight_airgap/native/result.json",
+      "bytes": 75067,
+      "sha256": "cb6856149c06bb8d5de8840c06a8dd0e7c2a0b125a1c20bcaec7ae03376dc7d8"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_4p12s_simple_noload__baseline/native/request.json",
+      "bytes": 21753,
+      "sha256": "d01969a09bf98f42dfa388f09bd07812d64ceaf8509df060443219e949f6b0a5"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_4p12s_simple_noload__baseline/native/result.json",
+      "bytes": 74438,
+      "sha256": "26babe1bf5531daf2490afc3e754a34fe36707c0f08cdd5a29b6dd652b90103a"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_4p12s_simple_noload__high_current/native/request.json",
+      "bytes": 21753,
+      "sha256": "8fcb14f7727ad7c2c52564f31785698d342535ea26e2a9755c113353fd801a9a"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_4p12s_simple_noload__high_current/native/result.json",
+      "bytes": 75195,
+      "sha256": "0652e635983e0da4680cabd4ded69e141f3256a08991ac627d1aca17221a4334"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_4p12s_simple_noload__tight_airgap/native/request.json",
+      "bytes": 21753,
+      "sha256": "0b5c8bffc5be9e141ddbc969e64ef256a6d87c2b5710ada23866165a13364e4a"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_4p12s_simple_noload__tight_airgap/native/result.json",
+      "bytes": 74419,
+      "sha256": "59514059c66c9dd4aef02dea95cbf6cf13f31ecb7f13122d3bbdffaeb62b5d56"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_4p12s_small/analytical/request.json",
+      "bytes": 20785,
+      "sha256": "522dd26356c1d2a62659fbd998a2d53ae7046f33c78599ebfda21af6d16a4984"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_4p12s_small/analytical/result.json",
+      "bytes": 98215,
+      "sha256": "5fa13505acf293587a86b47f6d6cecc1e978f60e7c3a5968fcf277ef510ea57e"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_4p12s_small/native-fine/request.json",
+      "bytes": 20787,
+      "sha256": "33b9bdb3b3233ea65a16a78320ad82a0d63a71957e854474b38b947cd06e117f"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_4p12s_small/native-fine/result.json",
+      "bytes": 88487,
+      "sha256": "56a33843ebc7080b1ca54ba557acf624495137200d17d12f30251c95f1252101"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_4p12s_small/native-standard/request.json",
+      "bytes": 20786,
+      "sha256": "9c9f952df3d614f0ade25e04415a873a7baee86aa2b52867276dc77cdedec6fb"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_4p12s_small/native-standard/result.json",
+      "bytes": 76350,
+      "sha256": "2be52bd9e89bb875ef0312d16903fbadf3e5604998659e4b9b3b3bcb5f4a7265"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_concentrated__baseline/native/request.json",
+      "bytes": 21757,
+      "sha256": "bdd3ca21aed95c8f89b3b7b77fe5a67fa6a14406ab09a1956870542f17f3c969"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_concentrated__baseline/native/result.json",
+      "bytes": 75213,
+      "sha256": "80803b66967a1ab1f564cab85d47e580e4840773f5cc15ebe7ebb084f890eed5"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_concentrated__dq_I20_g0/native/request.json",
+      "bytes": 21757,
+      "sha256": "bdd3ca21aed95c8f89b3b7b77fe5a67fa6a14406ab09a1956870542f17f3c969"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_concentrated__dq_I20_g0/native/result.json",
+      "bytes": 75214,
+      "sha256": "e2dcabf06831568c4d1f89d2e06358eeb2ae9a9fc2e4432934bd07d3f28543bb"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_concentrated__dq_I20_g30/native/request.json",
+      "bytes": 21758,
+      "sha256": "25e598608dc34dbc494aec9892938cad6ddf7bd96ac6ea65699068a0a0092509"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_concentrated__dq_I20_g30/native/result.json",
+      "bytes": 75155,
+      "sha256": "08072ffdacd8affe8e1e769c4c2bf49e3ce5d86057cd11d40a8d148033eab324"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_concentrated__dq_I20_g60/native/request.json",
+      "bytes": 21758,
+      "sha256": "da832447065e36ce51b7c9e83287f4e3bff4d13a9eebd6798aaab98be73d697c"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_concentrated__dq_I20_g60/native/result.json",
+      "bytes": 75146,
+      "sha256": "7e978eb8239efacfc7e2efc4b8c27282aa52ab0b9345dad41d862f4a788f4e82"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_concentrated__dq_I40_g0/native/request.json",
+      "bytes": 21757,
+      "sha256": "c2c689aec39f47c40b5a6b6e6c82bcd974163ebbf0e1a888145224dc4b3b6837"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_concentrated__dq_I40_g0/native/result.json",
+      "bytes": 75207,
+      "sha256": "e75d163fa52b53f63d6503e3b9f6d4c1918562e58ab4109716b23662c315b1c6"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_concentrated__dq_I40_g30/native/request.json",
+      "bytes": 21758,
+      "sha256": "8ca2778252397518fbb982266d087c639f1fcc0fcd1a6a8a23b3607211a2888e"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_concentrated__dq_I40_g30/native/result.json",
+      "bytes": 75114,
+      "sha256": "399bfe20f0cc22271cff17bb24d92e0563d0b4568c63dbdc08afd33a33b87a2e"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_concentrated__dq_I40_g60/native/request.json",
+      "bytes": 21758,
+      "sha256": "e0d51e054d44b0f30188548f0bce1a26e86968ef5bd98aa366d9e231309971ad"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_concentrated__dq_I40_g60/native/result.json",
+      "bytes": 75066,
+      "sha256": "805c929a9820f97bad605e27af7592df56f7f6e1a66ebf79be353d6adeb9382b"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_concentrated__high_current/native/request.json",
+      "bytes": 21757,
+      "sha256": "5c2198f7daf1d4ba103dd49ae5d2fe7ed682fea284c9ee73464383d5585e62de"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_concentrated__high_current/native/result.json",
+      "bytes": 75215,
+      "sha256": "73daa8fa0d50a3f90ae80a5ab3566b9e01cf9bd3489b0d56e719cae0b42d4baf"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_concentrated__magnet_100C/native/request.json",
+      "bytes": 21758,
+      "sha256": "c3e1adff06d561d224204919c1cbd9002f0e29067f009dcdf3c28b5b82d61498"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_concentrated__magnet_100C/native/result.json",
+      "bytes": 75644,
+      "sha256": "eefd2f6d2cf2f61c9207652477b5b3f2639847c8a3c6742cc633a21ada14244c"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_concentrated__magnet_60C/native/request.json",
+      "bytes": 21757,
+      "sha256": "8e64481928b792eb468517e5192bb3a55a47988087a2b2ee172b6e7fd2a5a21b"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_concentrated__magnet_60C/native/result.json",
+      "bytes": 75612,
+      "sha256": "b17631b8a33fdebee882ef964175d5c95d4833be9872096b81817eaa98e27655"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_concentrated__tight_airgap/native/request.json",
+      "bytes": 21757,
+      "sha256": "f522d61d28c61c1e48c9fd5672581a29d2ddc5be4bcded1b57ff1b9800792e36"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_concentrated__tight_airgap/native/result.json",
+      "bytes": 75140,
+      "sha256": "8b67db3d22cdcecdb1a1f96185b44b94eddbfc8dd6831013e2f64881284511e8"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_example_shoed/native/request.json",
+      "bytes": 21757,
+      "sha256": "8a7397a45ffee2295068a5d4e5bc03075c3118d900b827203ef41e85309d420f"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_example_shoed/native/result.json",
+      "bytes": 75142,
+      "sha256": "3756323836e912365534f75b3f83dbc8c592f2ad3d55c3e16173da2394e755e2"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_reference/analytical/request.json",
+      "bytes": 20831,
+      "sha256": "91f70b6d154e745998bc0efe24f24dfe4c3b7f16a40725f2268293e04d790f86"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_reference/analytical/result.json",
+      "bytes": 97546,
+      "sha256": "95a6821368daa87bed099372286410bd059867bd8b9a648ec33bd903695f103b"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_reference/native-fine/request.json",
+      "bytes": 20833,
+      "sha256": "7a99e65043c0868df7ba37959d2e0b16792c9c1ccb05764589dc973d5f9198f1"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_reference/native-fine/result.json",
+      "bytes": 88335,
+      "sha256": "18ad1ef901efacc7a5c593407c36ca4313f911dae7e4d2588a0248fce486776f"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_reference/native-standard/request.json",
+      "bytes": 20832,
+      "sha256": "ef5e5ba5d3d6d3d3d84301fc38e93f3746f5e17619fd53f71f94e1999568ab0c"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_reference/native-standard/result.json",
+      "bytes": 76271,
+      "sha256": "7471f4723c57472b539dd345c09410726dc49ed6ee267d7fde7738da16bb5ac5"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_reference_angle30__baseline/native/request.json",
+      "bytes": 21801,
+      "sha256": "ae604f9fce6602f04de694f541445e468b805b59510eefe8f955de322a7525d7"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p12s_reference_angle30__baseline/native/result.json",
+      "bytes": 74996,
+      "sha256": "785e002c3a0022e3743252c1a879f6cf29c41ca583e26fdb1093a8a5c929cfd0"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p24s_distributed_femm_validation/native/request.json",
+      "bytes": 21757,
+      "sha256": "5c622dc15d29d9770931c0eee6a26ff2a347c862c6e69ca527544ea9c93639d4"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p24s_distributed_femm_validation/native/result.json",
+      "bytes": 77443,
+      "sha256": "da146463da3d4e21c90122ad862b550550b72a7b35964be2d6694a8547d12e95"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p48s_chorded_5_6/native/request.json",
+      "bytes": 21752,
+      "sha256": "591337adc5d80ade296766df2e3406af8c3cedbfab1d98a7142c91002f7b22a1"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p48s_chorded_5_6/native/result.json",
+      "bytes": 89241,
+      "sha256": "b00b907213f01eeb9629b0f992b0170b906596a09f6f2ccede50e459b5ec3abc"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p48s_distributed_femm_validation/native/request.json",
+      "bytes": 21755,
+      "sha256": "d68f634964984d481611edf624c8b8dcfc63144b984e7541da8f6aa20f6181d7"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/jobs/spm_8p48s_distributed_femm_validation/native/result.json",
+      "bytes": 89428,
+      "sha256": "c5a2e0919cf54d40c650d61a3fd21269da123bf9bbd6542b07c3dfc40d58a1fe"
+    },
+    {
+      "path": "benchmarks/macos-v050-20261103-88aae101/native/run_manifest.json",
+      "bytes": 60853,
+      "sha256": "07908763d51afae3181c23c65572485f4e8c90254a9dc3db344e675ffcab5cc3"
+    },
+    {
+      "path": "benchmarks/v0.5.0/owner-decisions.json",
+      "bytes": 2755,
+      "sha256": "eaeaa1818502a6fe14fee109ae7d059ccd41d7ebccbbf642497acccdcb1f4874"
+    },
+    {
+      "path": "tests/test_owner_decisions.py",
+      "bytes": 1498,
+      "sha256": "40d7ef497d7e6cc12a814495cfe74daf88af323475559f37ed47d279b7db1d71"
     }
   ],
   "public_patches": [

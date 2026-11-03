@@ -3700,7 +3700,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
             const grade = config.materials.magnet_grade;
             const temperature = config.solve_params.magnet_temperature_C ?? 20;
             const remanence = materials.models?.[grade]?.properties?.remanence_T;
-            const view = magnetTemperatureView(grade, typeof remanence === 'number' ? remanence : null, temperature);
+            const view = magnetTemperatureView(grade, typeof remanence === 'number' ? remanence : null, temperature, validationQualification?.status === 'qualified');
             return (
               <>
                 <NumberRow
