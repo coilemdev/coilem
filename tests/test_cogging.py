@@ -151,6 +151,21 @@ def test_the_estimate_counts_the_cogging_solves() -> None:
     assert with_cogging["mesh_jobs"] > without["mesh_jobs"]
 
 
+def _assert_close(actual, expected) -> None:
+    if isinstance(expected, dict):
+        assert actual.keys() == expected.keys()
+        for key in expected:
+            _assert_close(actual[key], expected[key])
+    elif isinstance(expected, list):
+        assert len(actual) == len(expected)
+        for item, other in zip(actual, expected):
+            _assert_close(item, other)
+    elif isinstance(expected, float):
+        assert actual == pytest.approx(expected, rel=1e-9, abs=1e-12)
+    else:
+        assert actual == expected
+
+
 def _stored_result() -> dict:
     sweep = _example_sweep()
     record = cogging_record(
@@ -164,7 +179,8 @@ def _stored_result() -> dict:
     )
     assert record is not None
     # The Results test (frontend/scripts/test-cogging-view.mjs) reads this stored record.
-    assert record.model_dump(mode="json") == sweep["record"]
+    # Platforms round the DFT differently in the last bits, so floats match to 1e-9.
+    _assert_close(record.model_dump(mode="json"), sweep["record"])
     angles = sweep["electrical_angle_deg"]
     return {
         "summary": {

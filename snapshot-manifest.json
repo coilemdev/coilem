@@ -7975,8 +7975,8 @@
     },
     {
       "path": "tests/test_cogging.py",
-      "bytes": 14144,
-      "sha256": "e62539957ec21a6ec400cfc9b80b78241956a1b5b5316df8ee0b950dd27ed8c1"
+      "bytes": 14770,
+      "sha256": "f1d1d1bc8d30fbe292410db3a148d43ad480bfd77bc014c08b741906c8f32d67"
     },
     {
       "path": "tests/test_cogging_phase_e.py",
@@ -30795,6 +30795,12 @@
       "path": "tests/test_cogging_phase_e.py",
       "source_sha256": "61d1420687b1f4eea39b25741955c656c6ffdc7efbb0761e451d90b7602bd193",
       "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "6bc935d",
+      "path": "tests/test_cogging.py",
+      "source_sha256": "f1d1d1bc8d30fbe292410db3a148d43ad480bfd77bc014c08b741906c8f32d67",
+      "reason": "Compare the stored cogging record to 1e-9, as platforms round the DFT differently (#185)."
     }
   ]
 }
