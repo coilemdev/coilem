@@ -62,5 +62,8 @@ assert.equal(
     + 'Experimental: no cogging benchmark gate yet.',
 );
 assert.doesNotMatch(coggingPlanNote(12, 8), /positions/);
+// Without corner refinement the note says to turn it on.
+assert.match(coggingPlanNote(12, 8, 24, false), /Corner refinement is off, which makes cogging much noisier; turn it on under Advanced options\.$/);
+assert.doesNotMatch(coggingPlanNote(12, 8, 24, true), /Corner refinement/);
 
 console.log('cogging view: record values, harmonics, angle units, status and plan note pass');

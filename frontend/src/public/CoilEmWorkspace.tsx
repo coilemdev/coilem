@@ -3811,7 +3811,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
                 <input type="checkbox" checked={config.solve_options.cogging_torque} disabled={busy !== null} onChange={(event) => onCoggingTorqueChange(event.target.checked)} />
                 {' '}Cogging torque
               </label>
-              <p className="public-plan-advisory">{coggingPlanNote(config.stator.slot_count, config.rotor.pole_count, validation?.cogging_positions_per_period)}</p>
+              <p className="public-plan-advisory">{coggingPlanNote(config.stator.slot_count, config.rotor.pole_count, validation?.cogging_positions_per_period, config.solve_params.corner_refinement)}</p>
             </div>
           )}
         </ParameterSectionBlock>

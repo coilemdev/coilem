@@ -806,7 +806,7 @@ assert.match(workspaceSource, /Three-phase back EMF/);
 assert.doesNotMatch(workspaceSource, /Include cogging torque sweep/);
 // Cogging torque (#185): an option on the Accuracy plan, a Results tab only for a run with a cogging sweep.
 assert.match(workspaceSource, /onCoggingTorqueChange\(event\.target\.checked\)/);
-assert.match(workspaceSource, /coggingPlanNote\(config\.stator\.slot_count, config\.rotor\.pole_count, validation\?\.cogging_positions_per_period\)/);
+assert.match(workspaceSource, /coggingPlanNote\(config\.stator\.slot_count, config\.rotor\.pole_count, validation\?\.cogging_positions_per_period, config\.solve_params\.corner_refinement\)/);
 assert.match(workspaceSource, /const coggingWaveform = result\.summary\.cogging \? result\.cogging_torque_waveform : null;/);
 assert.match(workspaceSource, /\{coggingWaveform && <button type="button" role="tab"[^\n]*>Cogging<\/button>\}/);
 assert.doesNotMatch(workspaceSource, /<SelectRow[^>]*label="Torque method"/);

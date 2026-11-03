@@ -68,13 +68,24 @@ export function coggingPeriod(slotCount: number, poleCount: number): { elecDeg: 
   return { elecDeg: (mechDeg * poleCount) / 2, mechDeg, order };
 }
 
-/** What the Solve page says the Cogging torque option adds. */
-export function coggingPlanNote(slotCount: number, poleCount: number, positionsPerPeriod?: number | null): string {
+/**
+ * What the Solve page says the Cogging torque option adds. Without corner
+ * refinement the magnet and slot corners are meshed coarsely, and on the
+ * 8p/12s example the cogging noise rose from 0.4% to 10% of the peak-to-peak
+ * (docs/COGGING_CONVERGENCE.md).
+ */
+export function coggingPlanNote(
+  slotCount: number,
+  poleCount: number,
+  positionsPerPeriod?: number | null,
+  cornerRefinement = true,
+): string {
   const period = coggingPeriod(slotCount, poleCount);
   const positions = finite(positionsPerPeriod) && positionsPerPeriod > 0 ? positionsPerPeriod : null;
   const span = period ? ` (${degrees(period.elecDeg)} electrical, ${degrees(period.mechDeg)} mechanical)` : '';
   const sampling = positions !== null ? `, at ${positions} positions plus the repeated end` : '';
-  return `Adds a no-current sweep over one cogging period${span}${sampling}. Experimental: no cogging benchmark gate yet.`;
+  const corners = cornerRefinement ? '' : ' Corner refinement is off, which makes cogging much noisier; turn it on under Advanced options.';
+  return `Adds a no-current sweep over one cogging period${span}${sampling}. Experimental: no cogging benchmark gate yet.${corners}`;
 }
 
 /** The card's content, or null for a run without a cogging sweep. */
