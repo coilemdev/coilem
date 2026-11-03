@@ -15,8 +15,8 @@ software checks pass** with the original frozen inputs and unchanged limits.
   reports retain their exact bytes; no numerical value was changed
 
 The loaded mean is **353.950530 Nm**, compared with the retained FEMM software
-control's **354.953115 Nm** (âˆ’0.28246%). The angular control changes mean
-torque by **+0.001441 Nm**, and the fine-mesh control by **âˆ’0.016741 Nm**.
+control's **354.953115 Nm** (−0.28246%). The angular control changes mean
+torque by **+0.001441 Nm**, and the fine-mesh control by **−0.016741 Nm**.
 The complete tutorial waveform and all 13 torque-curve points are retained,
 including discrepancies with the upstream software model. These are software
 model checks, not hardware correlation or a general spatial-convergence proof.
@@ -54,5 +54,5 @@ attempts remain in the original collection folder and contribute no qualified
 job or field count. Both one-time Windows collection/audit tasks have finished
 and their registrations were removed.
 
-Historical Prius reports are unchanged. Exact-candidate Mac Aâ€“D evidence is
+Historical Prius reports are unchanged. Exact-candidate Mac A–D evidence is
 still required before the complete v0.5.0 release qualification gate can pass.
