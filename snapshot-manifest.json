@@ -65,8 +65,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 13815,
-      "sha256": "5004aece9fc710ff483d57790e42f790883d89b9826f6aef635d91a5e2389190"
+      "bytes": 14422,
+      "sha256": "bb5666ba13c55af8192000fe772a947e675e3a749f5a7192bec9cd458e8711a2"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -187,6 +187,11 @@
       "path": "backend/benchmark_suite/worker.py",
       "bytes": 4246,
       "sha256": "53447bd76e3c88afbee3ba14fcb90958642b9eb6dea038a7819cc26146f4dd93"
+    },
+    {
+      "path": "backend/cogging.py",
+      "bytes": 5048,
+      "sha256": "01cbd596251aaa022226a4607730febc10cb77d5c8230841246dd03fec4e217a"
     },
     {
       "path": "backend/custom_materials.py",
@@ -455,8 +460,8 @@
     },
     {
       "path": "backend/models/__init__.py",
-      "bytes": 2487,
-      "sha256": "2bb692a95ba2013d902511a4cb575dc751653b4746bb0a065c273b1381a26650"
+      "bytes": 2571,
+      "sha256": "666c7c95fa74a1774b4df1cf4ffb5e8c91ba8856bafebd1c4af9ee6894197907"
     },
     {
       "path": "backend/models/config.py",
@@ -485,13 +490,13 @@
     },
     {
       "path": "backend/models/performance.py",
-      "bytes": 23619,
-      "sha256": "916db2d0dbf04150ff5e3d4e1409a6308eea622487f68eddb79c3b6b62325a37"
+      "bytes": 26152,
+      "sha256": "0074bf50d3f7d19679bc3cbae1846332513d3801a49be57c0101990e4f32a15f"
     },
     {
       "path": "backend/models/result.py",
-      "bytes": 7605,
-      "sha256": "44636f7526c5c3557dfb3ce88c406f2ce29387d49fcfe201c087215eb3121c88"
+      "bytes": 7751,
+      "sha256": "64622dc3817f40afb00e8c060b67fdc9350fed5b47e896281087e2f4eb51af77"
     },
     {
       "path": "backend/models/waveforms.py",
@@ -540,13 +545,13 @@
     },
     {
       "path": "backend/public_policy.py",
-      "bytes": 12563,
-      "sha256": "973142eed90de1bea7b46d33fde3691028580098aa09663624b773f6d7b228d8"
+      "bytes": 12565,
+      "sha256": "2a08f237f22ac4537676b577ca15a9243ad5c4c4bc3ef3768f4228f61d30955d"
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 79794,
-      "sha256": "566e4f0c512fe9defaf5cdabc797a2db136b458af367963743ce28ab56fe0dcd"
+      "bytes": 85068,
+      "sha256": "93315a2b0d0e0da9740a5534295e381a060871c9287d55334d09e7691e890253"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -575,8 +580,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 51534,
-      "sha256": "669e2ab56e10cb8d17d78f8beee4af84eabc294eed6aaa8aa85f36a346c11c30"
+      "bytes": 51578,
+      "sha256": "caa4ff56502a4e3d21eb1b723a1dad7d3bfe6bf253365447ef9241b3da38b900"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -625,8 +630,8 @@
     },
     {
       "path": "backend/solve_estimate.py",
-      "bytes": 6473,
-      "sha256": "ab5b446b5036548e9d9093f7129e3060391b2cfd2ae6fcb2387d6f099eb49010"
+      "bytes": 6844,
+      "sha256": "ae66f8ae4280013c0f42b8158050844b2483e7569e01fe8f377c63b8dba4a5f4"
     },
     {
       "path": "backend/solve_workspace.py",
@@ -635,13 +640,13 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 149682,
-      "sha256": "f5378d1d99b4a4c7d3972d16fd73f998ffb224bca86e1b68052a16ea6453b6c2"
+      "bytes": 152134,
+      "sha256": "2bd2890324023dd635553fa38640475140e740560d3f4cc2008ab03406c17f56"
     },
     {
       "path": "backend/solver/_helpers.py",
-      "bytes": 61167,
-      "sha256": "501da88b80e60061d96fe46e69868a319916605a1f68e6c7f94cda3b42cc6a51"
+      "bytes": 63389,
+      "sha256": "540bad44c3bc7b292b5c746780c79b24ee63a363bfbd2693ef82935d135a645d"
     },
     {
       "path": "backend/solver/_mesh_pool.py",
@@ -675,8 +680,8 @@
     },
     {
       "path": "backend/sweep_planning.py",
-      "bytes": 5684,
-      "sha256": "1a36902ae5e1eb460228200c5ea9f93e463cd56c14c7a21db2a154fe848d8d14"
+      "bytes": 6538,
+      "sha256": "8a8173b35a32688ae86aa073537d23ba7c23781dbe9b4ecdd4aacba01213ae97"
     },
     {
       "path": "backend/topology_provenance.py",
@@ -5844,6 +5849,26 @@
       "sha256": "33c7875e199d7e07165dc9b46a99033662ec753dbae9892a6e01db3c4865f387"
     },
     {
+      "path": "docs/COGGING_BENCHMARK_PROPOSAL.md",
+      "bytes": 6242,
+      "sha256": "6b443501c9306d580f120e6021e520624393e0e4a7b4311615a2405900f53035"
+    },
+    {
+      "path": "docs/COGGING_CONVERGENCE.json",
+      "bytes": 30639,
+      "sha256": "d69e3499e270c5d197e1353e6ca4775404c33653042bfb3e16d159176ef10efc"
+    },
+    {
+      "path": "docs/COGGING_CONVERGENCE.md",
+      "bytes": 7813,
+      "sha256": "4e444804520e77e33bcb1b53b9d49aae8038529c0f8acac9ed421597f580a197"
+    },
+    {
+      "path": "docs/COGGING_FEMM_REQUEST.md",
+      "bytes": 5817,
+      "sha256": "dc1551f08672a18a4d315e619d54dee8be57a8525d1d87acdffac238dc0f4b2f"
+    },
+    {
       "path": "docs/ELMER.md",
       "bytes": 6064,
       "sha256": "1068d2db3c4e7a8b6113aaa1ca0ab93a38067944d7e42beeafa01a97baed69d0"
@@ -5860,8 +5885,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 13753,
-      "sha256": "b9497a18237f3fe9171ef288d11ec2c427dda582f8915f89a4c5cca4a57fdd44"
+      "bytes": 14407,
+      "sha256": "b3e7e8e623e115e8da9f01fca6b521ae5c650e9ecf05f2ee01991361780e6fe7"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -5875,8 +5900,8 @@
     },
     {
       "path": "docs/MAGNETO2D.md",
-      "bytes": 47164,
-      "sha256": "b968cdf42ca53dd76c24624a827b1918239e234a8aa9570423aebdf41c6f6f26"
+      "bytes": 47592,
+      "sha256": "6499d05f6dbc623d7894c3e9b657f91866aa0065b872885fff2719b43f95aa6e"
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE.md",
@@ -5965,8 +5990,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 48187,
-      "sha256": "f59898bd40762676197ea4ded12b494a15603b75bcd40f7741e375ac8a48daf6"
+      "bytes": 51084,
+      "sha256": "7dc788aa4e2b00ccdbaae062013e159830be6ce585317f2a638dd7166faa6cf3"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -6320,8 +6345,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2567,
-      "sha256": "a0fd876ae9e4710a16f6d76d287b06936732ff6a1f860f59cf47c88f4b944757"
+      "bytes": 2605,
+      "sha256": "7452d8c72f9783396811f1b308cc91fdbc6a8303d2367ae3351e178d2a010f4d"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -6362,6 +6387,11 @@
       "path": "frontend/scripts/test-chart-readout.mjs",
       "bytes": 6820,
       "sha256": "cfc5fb93f2888eda0f48b103b88b3b3f443564e2bad0fa1d0a8a4fc72e3c8bf2"
+    },
+    {
+      "path": "frontend/scripts/test-cogging-view.mjs",
+      "bytes": 4141,
+      "sha256": "fcee2145d3326b0c9562e9f7e9d2738c74be966b8a7b30f6b1825a9fd75c15ca"
     },
     {
       "path": "frontend/scripts/test-custom-steel.mjs",
@@ -6480,13 +6510,13 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 162323,
-      "sha256": "013d95f5f87f5ad3e05f75a31f067498eddcdc0e2b3ade716f0eb0adfa91896c"
+      "bytes": 162938,
+      "sha256": "06e746ae2b909362f4d48904aa04806f87526643c6e17b6ede568c6c6c1efbe0"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
-      "bytes": 4732,
-      "sha256": "17f616ef46903af546d67cade9d6cdf16e85ea89e3f0f526b84649bcf97e669c"
+      "bytes": 5329,
+      "sha256": "f068727fa89ba1a925f194b53a9cdd51b52b8b2c7141446d620278bab3e89c93"
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
@@ -6890,8 +6920,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 72126,
-      "sha256": "e35089fa583ddeac8650034cb01e3f5f95ed586ba5b8d42881dfd89e070b2060"
+      "bytes": 72656,
+      "sha256": "2ea06204cbec765ef2c98f1fa0e8d2d905197446766abc01437062937ca336c9"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -6899,9 +6929,14 @@
       "sha256": "004b91fbcb617265355f6d6c43196bd3e3b81e552a9dabc8bc8c8f3b240239c9"
     },
     {
+      "path": "frontend/src/public/CoggingCard.tsx",
+      "bytes": 5159,
+      "sha256": "6f6b3964e5367564b684f864c746c5ed3ba884ae248d9eccc2e4605ae85087a1"
+    },
+    {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 231726,
-      "sha256": "00894e348c77072e36661ffd7ad0e9a4674d00d454af35bebacb4673f791d68a"
+      "bytes": 233392,
+      "sha256": "ee30caf6e63d89ef4ef67868e72733ce72afa4ed2a7e2306a1dfab4d5ca75bad"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -6970,8 +7005,8 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 23331,
-      "sha256": "297514b48d88e50c28071c384554826844c96262589e300089a8b0720f3001f3"
+      "bytes": 23814,
+      "sha256": "92bd00f85d6005bfccdd5e0d7cc7bc1fb9b4a26c7377e6d450179bdef1a95200"
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
@@ -6980,8 +7015,8 @@
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
-      "bytes": 9141,
-      "sha256": "b53742e5de586869eca20c0800863014bfea1c8b072ab20511e7c1cc47b1389f"
+      "bytes": 9323,
+      "sha256": "6c1fc8beaf96bb508c8b0d0fd01369accbbf99df88f739f575679107db1c39ea"
     },
     {
       "path": "frontend/src/public/RpmField.tsx",
@@ -7044,6 +7079,11 @@
       "sha256": "b64be454f36cd11cd6d1cc8508ae239ff0c2cd621908ac21fa99eef25cdf998e"
     },
     {
+      "path": "frontend/src/public/coggingView.ts",
+      "bytes": 7152,
+      "sha256": "65b8f9260c82a46b6ddf477500f2b8d690fffc867f31f95e85d95f3cc9d9b1ea"
+    },
+    {
       "path": "frontend/src/public/coil3d.ts",
       "bytes": 16694,
       "sha256": "a3b43d36585905c43d9915eded59e94120c9f3a32ef6d919ac0d7ca26d41be86"
@@ -7065,8 +7105,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "bytes": 14494,
-      "sha256": "63276f7513fd2c2177cc8b5399f16577b92b4058ce2fe6accd3c047c19664e47"
+      "bytes": 14533,
+      "sha256": "c24e519431b400bb10834863ab2f25afb164944d68720c1e1a95cd6e8cada711"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -7295,8 +7335,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 20865,
-      "sha256": "998f2b8b6dae06af5260a5369d947e57d24177ee212653a8316996d08636fd6f"
+      "bytes": 21972,
+      "sha256": "e78e0a79f389bde8ff40005586c4a9f10a957a230a8dc8bd15222c8d685a837f"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -7325,8 +7365,8 @@
     },
     {
       "path": "frontend/src/public/outputStatus.ts",
-      "bytes": 3357,
-      "sha256": "f5c589ff62270f7fbfa860dc2d05de600fdc8f265987585495a15eebeefe46c0"
+      "bytes": 3613,
+      "sha256": "33124bfe6248d37eaf361f920cf6bbbbbcc6419f5325be14fc3a756fced432a6"
     },
     {
       "path": "frontend/src/public/performance.ts",
@@ -7350,8 +7390,8 @@
     },
     {
       "path": "frontend/src/public/publicRequest.ts",
-      "bytes": 631,
-      "sha256": "0ea05929993a5cdd38a981bd45d7684d97bf01c6aa6579d29e06cfec88f51caf"
+      "bytes": 661,
+      "sha256": "a963e7d496f605a17ebdcdc62d10f879dc13234e4cc238a27a2b076f2390e4db"
     },
     {
       "path": "frontend/src/public/pyleecanReferenceNotice.ts",
@@ -7365,8 +7405,8 @@
     },
     {
       "path": "frontend/src/public/resultMetrics.ts",
-      "bytes": 6020,
-      "sha256": "9d1ebe35d11099869e94fc3832620487adcf576a4e234c6499980cbd9820a361"
+      "bytes": 6738,
+      "sha256": "f9809afcc87c6ef775e355278c7daff0dd83da4730d25a384ba1449079f393e7"
     },
     {
       "path": "frontend/src/public/solvePlan.ts",
@@ -7380,8 +7420,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 283027,
-      "sha256": "6e37377129da21ba3478b8e53287555e03416379e2f696eb3f3e1f03e2ba4852"
+      "bytes": 284676,
+      "sha256": "19a8a1a5d266cbc83447829888a1f1db2f7b2744b83340c206de0da1fe24ecb9"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7784,6 +7824,11 @@
       "sha256": "0914644d93f05fa5738534c518e2ecffeca2d129d8a38fbe8b8df2f65c695b86"
     },
     {
+      "path": "tests/fixtures/cogging_example_8p12s.json",
+      "bytes": 3221,
+      "sha256": "066320d9c9b05718051f0088904d5684d700a8cbb5577367f4af4adfd8ef264e"
+    },
+    {
       "path": "tests/fixtures/phase_drive_winding_layouts.json",
       "bytes": 15760,
       "sha256": "f9b0985ee0f82803a8953408d74ea24b844e1f3efcf95796645a5c03c8d27a0c"
@@ -7854,6 +7899,11 @@
       "sha256": "4651ca1a467685c81205ab3fd49e482d0a07e61fd34e437ea3b210fcc6cc81e5"
     },
     {
+      "path": "tests/test_cogging.py",
+      "bytes": 14144,
+      "sha256": "e62539957ec21a6ec400cfc9b80b78241956a1b5b5316df8ee0b950dd27ed8c1"
+    },
+    {
       "path": "tests/test_dq_flux_linkage.py",
       "bytes": 6500,
       "sha256": "2191883eaafa37ca765a8287b9ba29d633c19cc7b7e16795612aecf9c24495e5"
@@ -7865,8 +7915,8 @@
     },
     {
       "path": "tests/test_experimental_holem50.py",
-      "bytes": 9336,
-      "sha256": "b4ba26815af6db48f8ddf34ddfaea27cc0c906e4ad595ec57909471e24fc8c14"
+      "bytes": 9315,
+      "sha256": "70d6a99d99fa8a41439115e0a7231cb25eaece32f35df77f4daef5d041dc842c"
     },
     {
       "path": "tests/test_experimental_rotor_switch.py",
@@ -8025,8 +8075,8 @@
     },
     {
       "path": "tests/test_output_status.py",
-      "bytes": 12475,
-      "sha256": "d5211ac4829ad265bd0bdd6f2d6cc22bdc16b33b9fb83c10bf25142871790bd4"
+      "bytes": 12575,
+      "sha256": "402c8cb57f7a81f9449f0582fa638ae66e10b2d6e2b235b3c74f6a9523716237"
     },
     {
       "path": "tests/test_payload_reuse.py",
@@ -8080,8 +8130,8 @@
     },
     {
       "path": "tests/test_public_candidate.py",
-      "bytes": 20447,
-      "sha256": "e964ef9dda5700b13e36dc2d717a110f81a4993724bffb3bfa3e83a5117648f1"
+      "bytes": 20410,
+      "sha256": "bf6d19e482656c861f24125f72bbe175c5db121ec719d3c47069df8f0d22a0b4"
     },
     {
       "path": "tests/test_public_field_playback.py",
@@ -8205,8 +8255,8 @@
     },
     {
       "path": "tests/test_solve_workspace.py",
-      "bytes": 22787,
-      "sha256": "21be4b7252659f59d09e1f6be898f6b279a3acd2d14ec79ad75ef77711304419"
+      "bytes": 22911,
+      "sha256": "ae009ae0c15e2e201db0566f98452939ec0564cbb26ef417c943beba42b2b85f"
     },
     {
       "path": "tests/test_sweep_planning.py",
@@ -30245,6 +30295,252 @@
       "path": "frontend/src/public/outputStatus.ts",
       "source_sha256": "eaefe9db44cd6ffb2a3b76221db814a57b85f106e3ad4675217507267d004894",
       "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "README.md",
+      "source_sha256": "bb5666ba13c55af8192000fe772a947e675e3a749f5a7192bec9cd458e8711a2",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/cogging.py",
+      "source_sha256": "01cbd596251aaa022226a4607730febc10cb77d5c8230841246dd03fec4e217a",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/models/__init__.py",
+      "source_sha256": "666c7c95fa74a1774b4df1cf4ffb5e8c91ba8856bafebd1c4af9ee6894197907",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/models/performance.py",
+      "source_sha256": "0074bf50d3f7d19679bc3cbae1846332513d3801a49be57c0101990e4f32a15f",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/models/result.py",
+      "source_sha256": "64622dc3817f40afb00e8c060b67fdc9350fed5b47e896281087e2f4eb51af77",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/public_policy.py",
+      "source_sha256": "2a08f237f22ac4537676b577ca15a9243ad5c4c4bc3ef3768f4228f61d30955d",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/public_report.py",
+      "source_sha256": "93315a2b0d0e0da9740a5534295e381a060871c9287d55334d09e7691e890253",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "caa4ff56502a4e3d21eb1b723a1dad7d3bfe6bf253365447ef9241b3da38b900",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/solve_estimate.py",
+      "source_sha256": "ae66f8ae4280013c0f42b8158050844b2483e7569e01fe8f377c63b8dba4a5f4",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "2bd2890324023dd635553fa38640475140e740560d3f4cc2008ab03406c17f56",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/solver/_helpers.py",
+      "source_sha256": "540bad44c3bc7b292b5c746780c79b24ee63a363bfbd2693ef82935d135a645d",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/sweep_planning.py",
+      "source_sha256": "8a8173b35a32688ae86aa073537d23ba7c23781dbe9b4ecdd4aacba01213ae97",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "docs/COGGING_BENCHMARK_PROPOSAL.md",
+      "source_sha256": "6b443501c9306d580f120e6021e520624393e0e4a7b4311615a2405900f53035",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "docs/COGGING_CONVERGENCE.json",
+      "source_sha256": "d69e3499e270c5d197e1353e6ca4775404c33653042bfb3e16d159176ef10efc",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "docs/COGGING_CONVERGENCE.md",
+      "source_sha256": "4e444804520e77e33bcb1b53b9d49aae8038529c0f8acac9ed421597f580a197",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "docs/COGGING_FEMM_REQUEST.md",
+      "source_sha256": "dc1551f08672a18a4d315e619d54dee8be57a8525d1d87acdffac238dc0f4b2f",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "docs/GETTING_STARTED.md",
+      "source_sha256": "b3e7e8e623e115e8da9f01fca6b521ae5c650e9ecf05f2ee01991361780e6fe7",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "docs/MAGNETO2D.md",
+      "source_sha256": "6499d05f6dbc623d7894c3e9b657f91866aa0065b872885fff2719b43f95aa6e",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "7dc788aa4e2b00ccdbaae062013e159830be6ce585317f2a638dd7166faa6cf3",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/package.json",
+      "source_sha256": "7452d8c72f9783396811f1b308cc91fdbc6a8303d2367ae3351e178d2a010f4d",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/scripts/test-cogging-view.mjs",
+      "source_sha256": "fcee2145d3326b0c9562e9f7e9d2738c74be966b8a7b30f6b1825a9fd75c15ca",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "06e746ae2b909362f4d48904aa04806f87526643c6e17b6ede568c6c6c1efbe0",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/scripts/test-result-summary.mjs",
+      "source_sha256": "f068727fa89ba1a925f194b53a9cdd51b52b8b2c7141446d620278bab3e89c93",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "2ea06204cbec765ef2c98f1fa0e8d2d905197446766abc01437062937ca336c9",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/CoggingCard.tsx",
+      "source_sha256": "6f6b3964e5367564b684f864c746c5ed3ba884ae248d9eccc2e4605ae85087a1",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "ee30caf6e63d89ef4ef67868e72733ce72afa4ed2a7e2306a1dfab4d5ca75bad",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "source_sha256": "92bd00f85d6005bfccdd5e0d7cc7bc1fb9b4a26c7377e6d450179bdef1a95200",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "6c1fc8beaf96bb508c8b0d0fd01369accbbf99df88f739f575679107db1c39ea",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/coggingView.ts",
+      "source_sha256": "65b8f9260c82a46b6ddf477500f2b8d690fffc867f31f95e85d95f3cc9d9b1ea",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "c24e519431b400bb10834863ab2f25afb164944d68720c1e1a95cd6e8cada711",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "e78e0a79f389bde8ff40005586c4a9f10a957a230a8dc8bd15222c8d685a837f",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/outputStatus.ts",
+      "source_sha256": "33124bfe6248d37eaf361f920cf6bbbbbcc6419f5325be14fc3a756fced432a6",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/publicRequest.ts",
+      "source_sha256": "a963e7d496f605a17ebdcdc62d10f879dc13234e4cc238a27a2b076f2390e4db",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/resultMetrics.ts",
+      "source_sha256": "f9809afcc87c6ef775e355278c7daff0dd83da4730d25a384ba1449079f393e7",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "19a8a1a5d266cbc83447829888a1f1db2f7b2744b83340c206de0da1fe24ecb9",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "tests/fixtures/cogging_example_8p12s.json",
+      "source_sha256": "066320d9c9b05718051f0088904d5684d700a8cbb5577367f4af4adfd8ef264e",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "tests/test_cogging.py",
+      "source_sha256": "e62539957ec21a6ec400cfc9b80b78241956a1b5b5316df8ee0b950dd27ed8c1",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "tests/test_experimental_holem50.py",
+      "source_sha256": "70d6a99d99fa8a41439115e0a7231cb25eaece32f35df77f4daef5d041dc842c",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "tests/test_output_status.py",
+      "source_sha256": "402c8cb57f7a81f9449f0582fa638ae66e10b2d6e2b235b3c74f6a9523716237",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "tests/test_public_candidate.py",
+      "source_sha256": "bf6d19e482656c861f24125f72bbe175c5db121ec719d3c47069df8f0d22a0b4",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "tests/test_solve_workspace.py",
+      "source_sha256": "ae009ae0c15e2e201db0566f98452939ec0564cbb26ef417c943beba42b2b85f",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
     }
   ]
 }
