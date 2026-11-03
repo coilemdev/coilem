@@ -150,6 +150,16 @@ def check(root: Path = ROOT, *, protocol: str = "1.6.0", candidate: str | None =
         prius_path = _optional_constant(root / "backend/qualification.py", "PRIUS_QUALIFICATION_REPORT",
                                        "docs/benchmarks/pyleecan-prius-v1/app-results.json")
         prius = _data(root, prius_path)
+        # Bind the actual grader to the snapshot captured before fields. The
+        # original analyzer's legacy policy flag is retained in the report;
+        # the snapshot proves which analysis code was already registered.
+        snapshot_path = _file(root, Path(prius_path).with_name("source-snapshot.json"))
+        snapshot_sha = hashlib.sha256(snapshot_path.read_bytes()).hexdigest()
+        snapshot = json.loads(snapshot_path.read_text())
+        analysis_sources = {entry["path"]: entry["sha256"] for entry in snapshot["files"]}
+        if (snapshot_sha != prius["source_sha256"].get("snapshot-manifest.json")
+                or prius.get("analysis_runner_sha256") != analysis_sources.get("tools/report_prius_benchmark.py")):
+            errors.append("Prius analysis code is not bound to its before-field source snapshot")
         # Full v2 registrations also hash reporting/packaging sources and the
         # snapshot itself. Those immutable historical identities are retained,
         # but an evidence-publication commit cannot reproduce its own future

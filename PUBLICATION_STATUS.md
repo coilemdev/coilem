@@ -56,8 +56,10 @@ The Windows A/B/C/D collection retains the clean versioned candidate,
 source/binary/dependency hashes, requests, results and complete comparison.
 Reference review and the registered Windows comparison are complete in the
 [candidate qualification update](benchmarks/candidate-qualification-20261103/README.md).
-Finish the exact-candidate Mac collection, full Prius audit and final
-registered qualification checks. The release assessment remains
+The [exact-candidate Windows Prius audit](benchmarks/candidate-qualification-20261103/prius/README.md)
+passes all 10 software checks across 17 jobs and 568 field reports, with its
+frozen inputs and complete raw archive retained. Finish the exact-candidate
+Mac collection and final registered qualification checks. The release assessment remains
 [BLOCKED](benchmarks/v0.5.0/release-qualification.json).
 The current macOS record remains NOT_COMPARABLE to the changed physics sources;
 a fresh full macOS run is required before claiming current numerical parity.

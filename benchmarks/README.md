@@ -8,13 +8,15 @@ row, and 336/336 gates PASS** against 46 fresh reference records. The exact
 and v0.4.0 comparison are retained. The [subsequent review and candidate qualification](candidate-qualification-20261103/README.md)
 accepts the unchanged references for registered parity and registers the Windows
 comparison. The published Mac comparison retains its historical pins; fresh
-same-candidate Mac and Prius evidence remain pending before release.
+same-candidate Mac evidence remains pending before release. The complete
+[Windows Prius candidate audit](candidate-qualification-20261103/prius/README.md)
+passes all 10 software checks across 17 jobs and 568 field reports.
 
 The earlier [Windows validation of the v0.5.0 stack](windows-v050-20261029-bb3d8af/README.md) measures `bb3d8af`: all 35 supported native jobs completed, **29 PASS and one planned unsupported row**, with **42/42 BLDC gates** against frozen FEMM v3 references. The separate reconstructed-reference diagnostic has **28 PASS, 1 YELLOW and 1 UNSUPPORTED**. This remains historical evidence with its original reference identity.
 
 The [macOS A/B/C/D at the 0.5.0 stack top](macos-native-20261022-5b7cad8/README.md) is development evidence at `5b7cad8`: 29 PASS and the planned unsupported Prius against the frozen FEMM v3 bundle, compared with the v0.4.0 Windows baseline.
 
-[Protocol 1.6.0](abcd-v1.6/README.md) registers the 0.5.0 reference gates. It is the 1.4.0 matrix plus the shoed example, magnet temperature at 60 °C and 100 °C, and loaded λd/λq points for one SPM and one flat IPM. Its reviewed 46-record bundle is now the runtime default; final cross-platform and Prius candidate qualification remain pending.
+[Protocol 1.6.0](abcd-v1.6/README.md) registers the 0.5.0 reference gates. It is the 1.4.0 matrix plus the shoed example, magnet temperature at 60 °C and 100 °C, and loaded λd/λq points for one SPM and one flat IPM. Its reviewed 46-record bundle is now the runtime default; final Mac candidate qualification remains pending.
 
 [Protocol 1.5.0](abcd-v1.5/README.md) is a separate extension until the 0.5.0
 freeze. It adds the app's shoed 8p12s example to the 1.4.0 matrix, which has

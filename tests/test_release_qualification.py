@@ -48,9 +48,14 @@ def _measured(root):
     sources = {"backend/motor.py": digest}
     for name in PRIUS_EXTRA_PHYSICS:
         sources[name] = _write(root, name, "value = 1\n")
+    analysis_sha = hashlib.sha256(b"frozen analysis code").hexdigest()
+    sources["snapshot-manifest.json"] = _write(root, "docs/benchmarks/pyleecan-prius-v1/source-snapshot.json", {
+        "files": [{"path": "tools/report_prius_benchmark.py", "sha256": analysis_sha}],
+    })
     _write(root, "docs/benchmarks/pyleecan-prius-v1/app-results.json", {
         "source_sha256": sources, "field_source_commit": "a" * 40, "field_source_dirty": False,
         "all_software_checks_pass": True, "checks": {"software": True},
+        "analysis_runner_sha256": analysis_sha,
         "grading_provenance": {"frozen_before_fields": True}, "jobs": [{}] * 17,
         "audits": {"collection": {"field_reports": [{}] * 568}},
     })
@@ -126,12 +131,20 @@ def test_prius_evidence_publication_can_change_metadata_but_not_field_physics(tm
     _measured(tmp_path)
     path = "docs/benchmarks/pyleecan-prius-v1/app-results.json"
     prius = json.loads((tmp_path/path).read_text())
-    prius["source_sha256"]["snapshot-manifest.json"] = "original measured snapshot"
     prius["source_sha256"]["backend/qualification.py"] = "original measured qualification metadata"
     _write(tmp_path, path, prius)
     assert check(tmp_path) == []
     _write(tmp_path, "backend/public_policy.py", "value = 2\n")
     assert "Prius measured-source mismatch: backend/public_policy.py" in check(tmp_path)
+
+
+def test_prius_grader_must_match_the_before_field_snapshot(tmp_path):
+    _measured(tmp_path)
+    path = "docs/benchmarks/pyleecan-prius-v1/app-results.json"
+    prius = json.loads((tmp_path / path).read_text())
+    prius["analysis_runner_sha256"] = "post-collection grader"
+    _write(tmp_path, path, prius)
+    assert "Prius analysis code is not bound to its before-field source snapshot" in check(tmp_path)
 
 
 def test_missing_evidence_fails_closed(tmp_path):

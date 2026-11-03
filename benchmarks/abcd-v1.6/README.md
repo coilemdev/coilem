@@ -1,6 +1,6 @@
 # A/B/C/D benchmark protocol 1.6.0: the 0.5.0 reference gates
 
-Harness **1.8.0** uses protocol **1.6.0** by default. The [candidate qualification update](../candidate-qualification-20261103/README.md) registers the reviewed 46-record bundle and the complete Windows comparison at `88aae101`: 46 PASS, one planned unsupported row and 336/336 gates PASS. Exact-candidate Mac and Prius qualification remain pending. The original unreviewed collection and historical protocol registrations are preserved.
+Harness **1.8.0** uses protocol **1.6.0** by default. The [candidate qualification update](../candidate-qualification-20261103/README.md) registers the reviewed 46-record bundle and the complete Windows comparison at `88aae101`: 46 PASS, one planned unsupported row and 336/336 gates PASS. Exact-candidate Windows Prius qualification is complete (17 jobs, 568 field reports, 10/10 software checks); Mac qualification remains pending. The original unreviewed collection and historical protocol registrations are preserved.
 
 Protocol 1.6.0 keeps every 1.4.0 request, golden vector and gate unchanged. It adds 17 cases, all derived from registered requests:
 

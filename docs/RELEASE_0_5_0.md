@@ -13,7 +13,7 @@ Every number marked **TODO(freeze)** comes from the freeze rerun, and every
 
 0.5.0 is the performance release
 ([public issue 143](https://github.com/coilemdev/coilem/issues/143)). It answers
-"does this motor meet my spec across its operating range?" with torque–speed,
+"does this motor meet my spec across its operating range?" with torqueâ€“speed,
 losses and efficiency. Every new number either passes a reference gate or is
 labelled experimental with its reason. In this draft phase resistance and
 copper loss are qualified for a design with a wire, and the rest are
@@ -29,9 +29,9 @@ one's claim boundary.
 | Protocol 1.6.0 FEMM records | [46 fresh records](../benchmarks/windows-v050-20261102-88aae101/reference-bundle/manifest.json) at sealed adapter `faced858937e93740ddf7f6f3583a3ad5ec35646`; canonical bundle SHA-256 `c96b5e7948aea74bcf7943d584db85b874a2d4e887e0637c84e59e98c8dfd31a` | Original manifest preserved; [hash-bound reviewed successor](../benchmarks/reference-baselines/protocol16-reviewed-20261103/README.md) accepted for registered parity, with unchanged record bytes |
 | Protocol 1.6.0 additions | All 17 new Windows cases PASS against fresh references; all 12 d/q reference self-checks PASS | Reference review complete; performance-output statuses remain experimental pending candidate qualification and matching status updates |
 | Physics hash guards | The current guard covers 63 physical sources, all matching original before-collection hashes at `88aae101`; the original 54-source record is preserved | Registry expanded to cover nine already-captured sources; no physical source or measured value changed |
-| Pyleecan Prius collection | Full macOS and Windows collections at `40d8ab9`: 17 jobs / 568 field reports each. [Corrected residual audit](PRIUS_CONVERGENCE_AUDIT_20261030.md): 10/10 software checks each; original 9/10 reports retained | Review the explicitly post-collection audit correction. No hardware or release qualification is implied |
+| Pyleecan Prius collection | [Fresh physical Windows candidate `88aae101`](../benchmarks/candidate-qualification-20261103/prius/README.md): 17 jobs / 568 field reports, 10/10 software checks PASS; frozen inputs and complete raw archive retained | Windows software audit complete; analysis code bound to its before-field snapshot. Historical reports remain unchanged; no hardware qualification |
 | Phase-resistance gate | Protocol 1.6.0 `phase_resistance` ([hand calculations](../benchmarks/abcd-v1.6/PHASE-RESISTANCE.md)): all three cases PASS, within 0.001%. It runs in `tests/test_phase_resistance_gate.py` | None: it needs no solve or reference, so it runs at every test run |
-| Hardware correlation | ORNL Prius ([#69](https://github.com/coilemdev/coilem/issues/69), [#82](https://github.com/coilemdev/coilem/issues/82)) and Honda Accord torque–speed comparison planned in issue 143; it is not qualification | Deferred until after 0.5.0 by the owner on October 30, 2026; no new milestone chosen |
+| Hardware correlation | ORNL Prius ([#69](https://github.com/coilemdev/coilem/issues/69), [#82](https://github.com/coilemdev/coilem/issues/82)) and Honda Accord torqueâ€“speed comparison planned in issue 143; it is not qualification | Deferred until after 0.5.0 by the owner on October 30, 2026; no new milestone chosen |
 | Wheels and TestPyPI | v0.4.0's rehearsal passed | Rehearse the 0.5.0 candidate on all four wheel targets |
 
 The [evidence index](../benchmarks/v0.5.0/README.md) links the complete package
@@ -44,19 +44,19 @@ required. Published Mac evidence keeps its measured source pins and precision.
 
 ## 1. What changes for users
 
-### Torque–speed and efficiency (public issues 139–142)
+### Torqueâ€“speed and efficiency (public issues 139â€“142)
 
-- Results has a **Torque–speed** tab. It solves a flux-linkage map over current
-  magnitude and current angle (0° to 90°): 5 × 7 points on Preview, 7 × 10 on
+- Results has a **Torqueâ€“speed** tab. It solves a flux-linkage map over current
+  magnitude and current angle (0Â° to 90Â°): 5 Ã— 7 points on Preview, 7 Ã— 10 on
   Standard. Each point is a loaded solve over half an electrical cycle.
   - The map shows its progress and time left, and Cancel stops it.
   - Finished points are kept per design, so a cancelled map resumes, and a map
     is reused for a lower peak current.
-- From the map, the tab draws peak and continuous **torque–speed and
-  power–speed curves** for the entered DC bus, peak and continuous current and
+- From the map, the tab draws peak and continuous **torqueâ€“speed and
+  powerâ€“speed curves** for the entered DC bus, peak and continuous current and
   top speed. Each sample is labelled MTPA, field weakening or MTPV, and the
   solved operating point is marked.
-- An **efficiency map** over the torque–speed plane. MTPA control is the
+- An **efficiency map** over the torqueâ€“speed plane. MTPA control is the
   default and least-loss control is the option. Hovering shows the current and
   angle at each point.
 - Apparent Ld and Lq against current, and the MTPA trajectory.
@@ -64,16 +64,16 @@ required. Published Mac evidence keeps its measured source pins and precision.
 ### Loaded d/q flux linkage (public issue 113)
 
 - A d/q card in Results gives Ld, Lq, the saliency Lq/Ld and the
-  characteristic current λpm/Ld, then the torque cross-check. The other values
+  characteristic current Î»pm/Ld, then the torque cross-check. The other values
   are under "Show all".
-- **Torque–λdq agreement** compares the solved torque with
-  1.5·P·(λd·iq − λq·id), which includes reluctance torque. The Solve page shows
+- **Torqueâ€“Î»dq agreement** compares the solved torque with
+  1.5Â·PÂ·(Î»dÂ·iq âˆ’ Î»qÂ·id), which includes reluctance torque. The Solve page shows
   it too.
-- An open-circuit run shows λpm and says there is no current angle, inductance
+- An open-circuit run shows Î»pm and says there is no current angle, inductance
   or torque check for it.
-- The Motor constants card's Torque–EMF consistency now reads "not applicable"
-  more than 5° off the q-axis, where it would wrongly flag reluctance torque. It
-  points to Torque–λdq agreement instead.
+- The Motor constants card's Torqueâ€“EMF consistency now reads "not applicable"
+  more than 5Â° off the q-axis, where it would wrongly flag reluctance torque. It
+  points to Torqueâ€“Î»dq agreement instead.
 - The Stator + PM field view labels the magnet axis d and draws the q axis.
 
 ### Winding, losses and efficiency (public issues 136 and 138)
@@ -93,24 +93,24 @@ required. Published Mac evidence keeps its measured source pins and precision.
   - "Where the loss is" maps iron loss (total, hysteresis or eddy current) or
     copper loss over the motor. Rotor and magnets are hatched and labelled
     not modelled.
-- Solve → Operating point takes a **mechanical loss** in watts. It lowers the
+- Solve â†’ Operating point takes a **mechanical loss** in watts. It lowers the
   shaft power and efficiency; the solved torque is unchanged.
 
 ### Magnet temperature (public issue 137)
 
-- Solve → Operating point takes a **magnet temperature**. Br and HcJ are derated
-  linearly from 20 °C with the grade's cited coefficients, for N35, N42, N48,
+- Solve â†’ Operating point takes a **magnet temperature**. Br and HcJ are derated
+  linearly from 20 Â°C with the grade's cited coefficients, for N35, N42, N48,
   N52 and N48SH.
 - Above a grade's maximum operating temperature the run carries a warning.
-  Magnets without cited coefficients refuse a temperature. At 20 °C, or with no
+  Magnets without cited coefficients refuse a temperature. At 20 Â°C, or with no
   temperature set, results are unchanged.
 
 ### Exports
 
-- The Torque–speed tab downloads a **performance PDF** (curves, the peak curve at
+- The Torqueâ€“speed tab downloads a **performance PDF** (curves, the peak curve at
   12 speeds, the efficiency map, MTPA and Ld/Lq, and notes), a **performance
-  CSV** with every number and sample, an **id/iq table CSV** (λd, λq and torque
-  on a 21 × 21 grid) and the **map points CSV**. They carry the values the tab
+  CSV** with every number and sample, an **id/iq table CSV** (Î»d, Î»q and torque
+  on a 21 Ã— 21 grid) and the **map points CSV**. They carry the values the tab
   shows.
 - The run PDF and CSV add the d/q record, losses, efficiency, winding and magnet
   temperature.
@@ -122,13 +122,13 @@ required. Published Mac evidence keeps its measured source pins and precision.
 ### Smaller changes
 
 - Kt is labelled per peak or per rms ampere everywhere: the run CSV gives both,
-  the run PDF shows N·m/A rms, and Compare runs uses Results' value
+  the run PDF shows NÂ·m/A rms, and Compare runs uses Results' value
   ([#153](https://github.com/coilemdev/coilem/issues/153)).
 - The Pyleecan Prius's tooth and yoke widths display rounded; the stored values
   are unchanged ([#154](https://github.com/coilemdev/coilem/issues/154)).
 - The Pyleecan Prius loaded case now records the currents its explicit source
-  applies, so its d/q record has a current angle (50.0°) and a Torque–λdq
-  agreement (99.96%). Its torque, λd and λq are unchanged.
+  applies, so its d/q record has a current angle (50.0Â°) and a Torqueâ€“Î»dq
+  agreement (99.96%). Its torque, Î»d and Î»q are unchanged.
 
 ### Solver convergence (public issues 11 and 12)
 
@@ -154,32 +154,32 @@ freeze report's macOS and Windows numbers.
 
 | Group | Cases | Mean torque error vs FEMM | Worst torque error | Mean back-EMF error |
 | --- | ---: | --- | --- | --- |
-| A, SPM | 8 | 0.27% → 0.33% | 0.48% → 0.63% | 0.07% → 0.08% |
-| B, flat IPM | 6 | 0.34% → 0.31% | 0.64% → 0.66% | 0.33% → 0.30% |
-| B, V-shape IPM | 6 | 4.55% → 5.13% | 5.90% → 7.05% | 2.39% → 6.50% |
-| C, distributed | 4 | 2.67% → 2.87% | 4.90% → 5.20% | 0.18% → 0.23% |
+| A, SPM | 8 | 0.27% â†’ 0.33% | 0.48% â†’ 0.63% | 0.07% â†’ 0.08% |
+| B, flat IPM | 6 | 0.34% â†’ 0.31% | 0.64% â†’ 0.66% | 0.33% â†’ 0.30% |
+| B, V-shape IPM | 6 | 4.55% â†’ 5.13% | 5.90% â†’ 7.05% | 2.39% â†’ 6.50% |
+| C, distributed | 4 | 2.67% â†’ 2.87% | 4.90% â†’ 5.20% | 0.18% â†’ 0.23% |
 
 **Slot current from each coil side's meshed area.** Slot current density used
 to be each slot's ampere-turns over a nominal trapezoid. Now each coil side
-carries its share of N·I/paths over its own meshed area.
+carries its share of NÂ·I/paths over its own meshed area.
 
-- **Plain slots** used to receive slightly more than N·I/paths. Their loaded
-  torque falls by 0.02% to 0.65%. The two 8p/48s cases move −0.01% and +0.14%,
+- **Plain slots** used to receive slightly more than NÂ·I/paths. Their loaded
+  torque falls by 0.02% to 0.65%. The two 8p/48s cases move âˆ’0.01% and +0.14%,
   within the platform difference. Back-EMF is unchanged.
-- Torque–λdq agreement now reads 99.86–100.29% in every loaded case.
+- Torqueâ€“Î»dq agreement now reads 99.86â€“100.29% in every loaded case.
 - **Shoed slots** were under-driven, and no registered case had them. The app's
-  example 8p/12s SPM at 30 A rms and γ 30° rises from 9.233 to 9.660 N·m
-  (+4.62%), and the Honda Accord 24s/16p at 30 A rms from 24.052 to 24.632 N·m
+  example 8p/12s SPM at 30 A rms and Î³ 30Â° rises from 9.233 to 9.660 NÂ·m
+  (+4.62%), and the Honda Accord 24s/16p at 30 A rms from 24.052 to 24.632 NÂ·m
   (+2.41%). Protocol 1.6.0 adds the shoed example as a case.
 
 **Corrected nonlinear stopping test (public issue 11).** The weak-flux V-shape
 IPMs converge further than before.
 
-- The retained Windows release comparison shows back-EMF rising 4.69–6.62%
+- The retained Windows release comparison shows back-EMF rising 4.69â€“6.62%
   on the baseline, deep-apex, pocket-offset and wide-angle cases. Narrow angle
   rises 1.28% and thin bridge 0.35%. The mean absolute fundamental error across
   all six rises from 2.39% to 6.50% against identical retained FEMM references.
-- Four cases now sit 8.11–8.61% from FEMM on the back-EMF fundamental;
+- Four cases now sit 8.11â€“8.61% from FEMM on the back-EMF fundamental;
   narrow angle is 4.71% and thin bridge 1.11%. Passing the unchanged 10% gate
   does not establish that agreement improved or that the candidate is regression-free.
 - `ipm_vshape_8p12s_baseline_contract` changes from YELLOW to PASS: its
@@ -205,25 +205,25 @@ registered requests:
 | Cases | Phase | What it checks |
 | --- | --- | --- |
 | `spm_8p12s_example_shoed` | A | The slot-current fix, on the app's shoed example |
-| `spm_8p12s_concentrated__magnet_{60,100}C` | A | Br derating, N42 at 60 °C and 100 °C |
+| `spm_8p12s_concentrated__magnet_{60,100}C` | A | Br derating, N42 at 60 Â°C and 100 Â°C |
 | `ipm_flat_8p12s_fsae_contract__magnet_{60,100}C` | B | The same, on the FSAE flat IPM |
-| `spm_8p12s_concentrated__dq_I{20,40}_g{0,30,60}` | A | Loaded λd and λq at 1× and 2× current, γ 0°, 30° and 60° |
+| `spm_8p12s_concentrated__dq_I{20,40}_g{0,30,60}` | A | Loaded Î»d and Î»q at 1Ã— and 2Ã— current, Î³ 0Â°, 30Â° and 60Â° |
 | `ipm_flat_8p12s_fsae_contract__dq_I{50,100}_g{0,30,60}` | B | The same, on the FSAE flat IPM |
 
 - Every new case has the usual A/B gates: mean torque within 8%, and Back-EMF
   fundamental and peak within 10%.
 - The 12 d/q points add `lambda_d` and `lambda_q`, within 3% of the
-  reference's |λdq| (YELLOW 6%), and `reference_dq_torque`, FEMM's own d/q
+  reference's |Î»dq| (YELLOW 6%), and `reference_dq_torque`, FEMM's own d/q
   torque against its solved torque, within 2% (YELLOW 5%).
-- The harness computes FEMM's λd and λq from its raw waveforms with coilEM's
+- The harness computes FEMM's Î»d and Î»q from its raw waveforms with coilEM's
   own transform, so the two sides cannot differ by convention.
 - **The phase-resistance gate** needs no FEMM.
   - `phase_resistance` compares coilEM's phase resistance with independent hand
     calculations, written out in
     [PHASE-RESISTANCE.md](../benchmarks/abcd-v1.6/PHASE-RESISTANCE.md): PASS
     within 1%, YELLOW within 3%.
-  - Its three cases are the 8p/12s concentrated SPM in copper at 80 °C and the
-    8p/24s distributed SPM in copper and in aluminium at 120 °C.
+  - Its three cases are the 8p/12s concentrated SPM in copper at 80 Â°C and the
+    8p/24s distributed SPM in copper and in aluminium at 120 Â°C.
   - All three PASS, within 0.001%. It runs in
     `tests/test_phase_resistance_gate.py` with every test run.
 
@@ -257,13 +257,14 @@ copper loss from its own conductor ([details](benchmarks/pyleecan-prius-v1/READM
   arcs removed coilEM reproduces its 35.95 mOhm. The Design panel shows this
   conductor as a read-only "published" Wire row.
 
-The loaded case (250 A peak at Φ0 140°, 2,000 rpm, 32 positions over one
-electrical cycle) on macOS arm64:
+The loaded case (250 A peak at Î¦0 140Â°, 2,000 rpm, 32 positions over one
+electrical cycle) has the following rounded outputs in the historical macOS
+report and the fresh physical Windows run at `88aae101`:
 
 | Output | Value |
 | --- | ---: |
-| Torque | 353.95 N·m, unchanged |
-| Phase resistance at 20 °C | 71.7 mOhm (was 47.6 mOhm with a derived wire) |
+| Torque | 353.95 NÂ·m, unchanged |
+| Phase resistance at 20 Â°C | 71.7 mOhm (was 47.6 mOhm with a derived wire) |
 | Copper loss | 6.72 kW (was 4.46 kW) |
 | Iron loss, hysteresis + eddy | 612 W (274 W + 338 W), at 133 Hz |
 | Share of iron loss above 1.5 T / above 1 kHz | 67% / 4.6% |
@@ -274,17 +275,19 @@ the grade limits cover, so treat it as an order of magnitude. The reference
 draws its stator as one region, so there is no teeth and yoke split. Pyleecan's
 own Prius loss test is skipped at the pinned commit, so there is no Pyleecan
 loss value to compare with. The benchmark itself still checks torque, back-EMF
-and flux linkage only. **TODO(freeze):** confirm these values in the freeze's
-Prius collection.
+and flux linkage only. These rounded values are confirmed in the new Windows
+[loaded result](../benchmarks/candidate-qualification-20261103/prius/loaded-performance-observation.json).
+Iron loss and efficiency remain experimental; observing them in this run adds
+no independent loss or hardware validation.
 
 ## 5. Known limitations
 
 - **Only phase resistance and copper loss are qualified**, for a design with a
   wire. The rest are experimental until a gate passes at the freeze: loaded
-  λd/λq, Ld/Lq, the flux-linkage map, the torque–speed envelope, the efficiency
+  Î»d/Î»q, Ld/Lq, the flux-linkage map, the torqueâ€“speed envelope, the efficiency
   map, iron loss, efficiency and magnet temperature derating. A derived wire
   keeps phase resistance and copper loss experimental. Ld and Lq stay
-  experimental even if λd/λq pass, because the gate does not bound them
+  experimental even if Î»d/Î»q pass, because the gate does not bound them
   tightly (**TODO(owner):** confirm).
 - **Losses not modelled:** magnet and rotor eddy-current loss; AC copper loss
   (skin and proximity effects); inverter loss. Mechanical loss is a single
@@ -293,7 +296,7 @@ Prius collection.
   term. It is not fitted to measured sheet or checked against a measured motor.
   It covers the stator only, does not model excess loss separately or the
   effect of cutting and pressing, and is unavailable for other steels.
-- **Torque–speed** assumes sinusoidal steady-state current. It ignores inverter
+- **Torqueâ€“speed** assumes sinusoidal steady-state current. It ignores inverter
   drops, dead time, PWM ripple and overmodulation. The continuous curve is a
   current limit, not a thermal rating, and there is no thermal model: winding
   and magnet temperatures are inputs.
@@ -326,8 +329,11 @@ Prius collection.
   before the full Windows collection; preserve its source and binary hashes.
 - [x] Collect and publish Windows protocol 1.6 A/B/C/D, all 46 references,
   the compact Windows record, adapter provenance and published Mac comparison.
-- [ ] Complete reference/discrepancy review; reconcile the active qualification
-  registration, both platform records and full Pyleecan Prius candidate evidence.
+- [x] Complete reference/discrepancy review, register the Windows comparison
+  and retain the full candidate Prius collection/audit (17 jobs / 568 fields,
+  10/10 software checks). Preserve V-shape limitations and original reports.
+- [ ] Register the complete exact-candidate Mac platform evidence and pass the
+  final cross-platform qualification gate.
   Historical Mac data remains labeled with its original commits; it is not a
   substitute for same-candidate qualification under the current release policy.
 - [ ] Re-pin the physics hashes from that report, so the hash-guard tests pass

@@ -6,7 +6,7 @@ at `88aae101` supplies the current registered field-parity basis under protocol
 1.6.0; see [Qualification status](#qualification-status). The
 [v0.4.0 evidence report](../benchmarks/v0.4.0/README.md) retains the historical
 Windows/FEMM and Pyleecan collections with their original measured commits.
-Same-candidate Mac/Prius qualification and final installed-wheel acceptance
+Same-candidate Mac qualification and final installed-wheel acceptance
 remain open in the [release plan](RELEASE_0_5_0.md).
 
 0.5.0 is in development. It adds performance outputs, each labelled
@@ -229,7 +229,9 @@ all 46 cases. Its scope and exclusions remain explicit in the review receipt.
 A combination is qualified when all its registered fixtures pass, the current
 physics hashes match the measured source, and the scope below applies. V-shape
 remains experimental despite passing its gates. Release qualification also
-requires matching complete Mac and Prius candidate evidence and remains pending.
+requires complete Mac candidate evidence and remains pending. The
+[exact-candidate Windows Prius audit](../benchmarks/candidate-qualification-20261103/prius/README.md)
+passes all 10 software checks across 17 jobs and 568 field reports.
 The historical v0.4 reports and platform records retain their original identities.
 
 | Rotor | Winding | Excitation | Registered coverage | Outcome | Status |
@@ -296,8 +298,8 @@ failed fixtures and diagnostic reports remain intact in their historical folders
 The [published Mac comparison](../benchmarks/windows-v050-20261102-88aae101/macos-comparison.txt)
 uses the full earlier report at `5b7cad8` and rounded new-case values at
 `f6c9fbb`. It preserves those pins and does not qualify the exact `88aae101`
-Mac build. A complete fresh Mac collection and the full candidate Prius audit
-are still required by the release gate.
+Mac build. The complete Windows Prius candidate audit now passes; a complete
+fresh Mac A–D collection is still required by the release gate.
 
 The active physics guard covers 63 files, including d/q, temperature,
 resistance/loss and configuration/policy sources. All 63 current file hashes
@@ -384,9 +386,9 @@ Ld = (λd − λpm) / id and Lq = λq / iq are secant values at the solved point
   uncertain. At `spm_8p12s_concentrated__dq_I20_g30`, coilEM's λd is
   1.35 mWb below its γ 0° value and λq is 2.46 mWb, while the 3% band is
   0.52 mWb. **TODO(owner):** confirm this boundary.
-- **Experimental because:** "Not yet compared with a reference solution: the
-  benchmark measures torque and back EMF, so the design's qualification does
-  not cover the d/q flux linkage or the inductances from it."
+- **Experimental because:** "Reference checks pass at 12 registered SPM and
+  flat-IPM points. The general d/q output remains experimental, including
+  inductances, maps and unmeasured operating points."
 - **Consistency check, not a reference:** Torque–λdq agreement compares the
   solved torque with 1.5·P·(λd·iq − λq·id) from the same solve. In every loaded
   benchmark case at `5b7cad8` it reads 99.86–100.29%. It catches a bookkeeping
@@ -571,9 +573,9 @@ temperature is refused for magnets without cited coefficients.
   - FEMM models the same derated Br. The gate therefore checks the solve at a
     derated Br, not the coefficient. The coefficient is the catalogue's, and no
     reference measures it.
-- **Experimental because:** "Br and HcJ derated linearly with the grade's cited
-  reversible coefficients; back EMF and torque at temperature are not yet
-  compared with a reference."
+- **Experimental because:** "Br and HcJ use cited reversible coefficients.
+  Reference checks pass for four declared-Br N42 cases at 60 C and 100 C;
+  general temperature behavior and material coefficients remain experimental."
 - **Not modelled:** irreversible demagnetisation, temperature dependence beyond
   the linear coefficient, a temperature that varies within a magnet, and magnet
   heating. The steel and winding temperatures are set separately.

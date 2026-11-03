@@ -3,14 +3,13 @@
   "status": "BLOCKED",
   "candidate": "88aae101fd487795e7fe5300737679f4133790fd",
   "command": "python -m tools.release.qualification --candidate 88aae101fd487795e7fe5300737679f4133790fd",
-  "scope": "Reviewed references and the Windows candidate comparison are registered. Exact-candidate Mac and full Prius collection remain pending; no release is approved.",
+  "scope": "Reviewed references, Windows A-D and the complete Windows Prius candidate audit are registered. Exact-candidate Mac qualification remains pending; no release is approved.",
   "registered_report": "benchmarks/candidate-qualification-20261103/windows/report/benchmark_summary.json",
   "registered_suite": "benchmarks/abcd-v1.6/benchmark_spec.json",
   "registered_reference_bundle": "benchmarks/reference-baselines/protocol16-reviewed-20261103",
   "errors": [
     "macos-arm64 platform record does not match current physics",
     "macos-arm64 platform record has a different suite or reference basis",
-    "macos-arm64 platform record lacks matching complete measured candidate evidence",
-    "qualification evidence unavailable or invalid: [Errno 2] No such file or directory: 'C:\\\\bench\\\\coilem-v050-qualification-20261103\\\\benchmarks\\\\candidate-qualification-20261103\\\\prius\\\\app-results.json'"
+    "macos-arm64 platform record lacks matching complete measured candidate evidence"
   ]
 }

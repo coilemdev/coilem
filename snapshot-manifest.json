@@ -60,13 +60,13 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 5290,
-      "sha256": "b26f7b7477ebdff13360c6477b0f22a2d55e9e880c3a6fd448928178b79d0664"
+      "bytes": 5501,
+      "sha256": "f5c5f248732ea671dfb5eb86330d3a97558b547a06839d9b753ed38e00a4e994"
     },
     {
       "path": "README.md",
-      "bytes": 13542,
-      "sha256": "cbe9c1965936745064f4cd5ce12bf1925175f29ac990417c1c4c40554002bddd"
+      "bytes": 13599,
+      "sha256": "cc21c5fcf594f5bff74cf7aa17e836ad20f4df7311b1213ef9bf7829ce7b5ac6"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -485,8 +485,8 @@
     },
     {
       "path": "backend/models/performance.py",
-      "bytes": 22167,
-      "sha256": "e486205d2a30f5d3bd1fb4d34290564dc8cfb1a99c853202c28aa0495a2a16c6"
+      "bytes": 22221,
+      "sha256": "e6641c5652c48a3dfff3ebde2dd18e0f45a8cf66a1fedec186115601a4d59ccc"
     },
     {
       "path": "backend/models/result.py",
@@ -500,8 +500,8 @@
     },
     {
       "path": "backend/performance_report.py",
-      "bytes": 46525,
-      "sha256": "5d87a66bd937e997b492a8468f6775b0d6bf787aa0ee603b792483bb2e741c53"
+      "bytes": 46526,
+      "sha256": "8effbb67eb82578be33a3b217f8971a0955eb322028698fa46d0076758ab2a4e"
     },
     {
       "path": "backend/platform_info.py",
@@ -705,8 +705,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 10729,
-      "sha256": "d593d21920b37c8e497503fa47943b85ff78c36951a272a08a47e1a2b1423a4a"
+      "bytes": 10863,
+      "sha256": "8ea9358f3a208ec69c418db8ef01c200314f8cccfe97c6c1eab5f81756ddff78"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -840,8 +840,8 @@
     },
     {
       "path": "benchmarks/abcd-v1.6/README.md",
-      "bytes": 4733,
-      "sha256": "574d1432570141cf2840ac9902fdf8a59cf8220c44d0134e48bf00ff9b152e85"
+      "bytes": 4817,
+      "sha256": "1afede69438beedb9c092a8e592b43f4a26d7c42a74aef51fe5479f9376356ef"
     },
     {
       "path": "benchmarks/abcd-v1.6/benchmark_spec.json",
@@ -5945,8 +5945,8 @@
     },
     {
       "path": "docs/RELEASE_0_5_0.md",
-      "bytes": 22171,
-      "sha256": "20552083fdbafe2edd019b7466c504a4835db0c6ea715ba4400ddb9de0fd08f3"
+      "bytes": 23011,
+      "sha256": "865cfea79dbe40f7c591fe751c188864991eb2f3db5f62dc21e4e14adf822e8b"
     },
     {
       "path": "docs/RELEASING.md",
@@ -5965,8 +5965,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 46479,
-      "sha256": "602ba363cf04b1d5ff407b84b970f190e9f4013b5dadb1f4dcf700e1b977f90f"
+      "bytes": 46685,
+      "sha256": "6edd754166ddbced13bac500cc4009f14e58612d910b73857134ac60409f8c47"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -7325,8 +7325,8 @@
     },
     {
       "path": "frontend/src/public/outputStatus.ts",
-      "bytes": 2426,
-      "sha256": "eaefe9db44cd6ffb2a3b76221db814a57b85f106e3ad4675217507267d004894"
+      "bytes": 2525,
+      "sha256": "84631dfef7fe0078dcf4085c1200ec44c1a03ba69cbbff5f709293e562876d34"
     },
     {
       "path": "frontend/src/public/performance.ts",
@@ -8165,8 +8165,8 @@
     },
     {
       "path": "tests/test_release_qualification.py",
-      "bytes": 8244,
-      "sha256": "1f893d636d60ce145352a29959cefc6a85675c9d4b51199a6f04ccbf372a9d60"
+      "bytes": 8899,
+      "sha256": "98d206fd08ef68821d9f1e4fdad514303c43c4ff0ca13c2cd46fed9b52012e94"
     },
     {
       "path": "tests/test_release_tools.py",
@@ -8415,8 +8415,8 @@
     },
     {
       "path": "tools/release/qualification.py",
-      "bytes": 11300,
-      "sha256": "7eaee0ce5d253a11b1ff5257253161220beda219f0b05b5b33ac67fedae49be1"
+      "bytes": 12136,
+      "sha256": "ee23f74ab423e766ad07283158bb233735ac4dbf175880e00ccc59ea915651bf"
     },
     {
       "path": "tools/release/release_notes.py",
@@ -8505,18 +8505,18 @@
     },
     {
       "path": "benchmarks/v0.5.0/README.md",
-      "bytes": 3347,
-      "sha256": "fb01d4781993d4972591ea8db8d4e50a292b0f3ae2364c42cb5070e004dfd2ba"
+      "bytes": 3415,
+      "sha256": "4c637e72905335be42bc7533dfc39380a362bb122f260a9330be416c5277061f"
     },
     {
       "path": "benchmarks/v0.5.0/evidence.json",
-      "bytes": 3012,
-      "sha256": "fbaeffe4ba990541112eebd832fe713b4ef86a5cf6f6a0bf1f0959f6ffe4c279"
+      "bytes": 3412,
+      "sha256": "9d1a65e6f1b88068f5bf9a01e0e7bd6aad7b38e69669f5e20a34bd6799d00667"
     },
     {
       "path": "benchmarks/v0.5.0/release-qualification.json",
-      "bytes": 1162,
-      "sha256": "aeda7c1367541f6811c7cb365993d4ebecc6e3e7f3e4b3d3599e7803e7544630"
+      "bytes": 952,
+      "sha256": "f43e781c2f5ba28afab8feda8a1e86c9339e24e011f7908f8b17d6c0b877b7e0"
     },
     {
       "path": "benchmarks/windows-v050-20261102-88aae101/README.md",
@@ -9675,13 +9675,338 @@
     },
     {
       "path": "benchmarks/candidate-qualification-20261103/README.md",
-      "bytes": 4546,
-      "sha256": "73f5b4fdd15b7c3941ede902f98e1b46cc31ee4696e3d5551418f2692ec42337"
+      "bytes": 4731,
+      "sha256": "576ba3622f7ec0aee9f9668840ad0983420b83cd6cc1133f52afc700593b97c6"
     },
     {
       "path": "benchmarks/candidate-qualification-20261103/artifact_manifest.json",
-      "bytes": 11870,
-      "sha256": "de810391dc70509085686ebb223f70f22a16e1b6dccec3e4a444e8bb46c3b8b4"
+      "bytes": 22679,
+      "sha256": "1277cfa9a7f039d8b16366c086ac56283b3699c10235cf4cb5cc912545e25288"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/README.md",
+      "bytes": 3532,
+      "sha256": "ee357bb83c106b852668ecad4e822eb88a88822a8a8450ec79d5a50243d32ce6"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/analysis-provenance.json",
+      "bytes": 7929,
+      "sha256": "569c1b390051aba7ff456bc83cfa77f18a2ea7e6b438acda2ff19c88a227c313"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/app-results.json",
+      "bytes": 2196953,
+      "sha256": "8299764f272ed57c778a1416d21c628a795bdfe0f9b4b0d2d2f4363e51678eac"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/app-results.md",
+      "bytes": 3538,
+      "sha256": "e7f3b9192b33e05e6b3dea8f9e40a45dc6a9c80b071dad49db021ccb1c4cd1c4"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/frozen-inputs/hardware.json",
+      "bytes": 2804,
+      "sha256": "41db6bb847374c2ab6b8925f742c538bce12ce377fa00896d45f33c5d23c4aa6"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/frozen-inputs/loaded.json",
+      "bytes": 471705,
+      "sha256": "0f012e15daf5a5bd03f378bddb781097b8938e6f1c7db8444b03ffa4381ec43a"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/frozen-inputs/protocol.json",
+      "bytes": 1662,
+      "sha256": "42adbb9b7803b11eae7d05e4bd347ef1c3f672b81cb8fee858064db97e407a77"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/frozen-inputs/tutorial.json",
+      "bytes": 241408,
+      "sha256": "dea27a8970ed8b1bf3162819acd0471136b63be047cfe77646999c6a1b05ba3b"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/frozen-inputs/ui.json",
+      "bytes": 63705,
+      "sha256": "0bbb694bf2f09913f96787f2261a8045c766690532810860f509e8f94385eb2c"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/angular-64/attempt-1/artifact-index.json",
+      "bytes": 63520,
+      "sha256": "14f12dcb3c76d606504c1bb04d1fae67d20af7b2d207268054da54fc6037a833"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/angular-64/attempt-1/environment.json",
+      "bytes": 527,
+      "sha256": "224e8bfab2b35a81ddd152db62c4944bb4cc11b91058bcbdc0be3ab515678386"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/angular-64/attempt-1/request.json",
+      "bytes": 6155,
+      "sha256": "24e2c8ed71c98f7eebe1980c09ff2e13989cb25d4357273108e812b3d74f6a9c"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-100-16/attempt-1/artifact-index.json",
+      "bytes": 16206,
+      "sha256": "b0473c80335b06a8da81d2b02b48ac3a7e5ebe5fd8740e8a5ed050dd7e3a17d5"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-100-16/attempt-1/environment.json",
+      "bytes": 527,
+      "sha256": "224e8bfab2b35a81ddd152db62c4944bb4cc11b91058bcbdc0be3ab515678386"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-100-16/attempt-1/request.json",
+      "bytes": 6154,
+      "sha256": "816ba8ed4ea45d143617a81bcaa025b13b4e2b2d5884d8b47218e5329166b97c"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-110-16/attempt-1/artifact-index.json",
+      "bytes": 16206,
+      "sha256": "9d461ba4bfb0ab20e4bd6879bedbb61c0bcbf8588ef1d7661374938e8d996f1c"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-110-16/attempt-1/environment.json",
+      "bytes": 527,
+      "sha256": "224e8bfab2b35a81ddd152db62c4944bb4cc11b91058bcbdc0be3ab515678386"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-110-16/attempt-1/request.json",
+      "bytes": 6154,
+      "sha256": "40139f122b7e46506f95f0738d2a846683d3c308cb32ce1f0868d78c0a7dc661"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-120-16/attempt-2/artifact-index.json",
+      "bytes": 16206,
+      "sha256": "8b1f3bf46d4582adf6bbe07931ae12b80aedab106cbce30205da69819a97e032"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-120-16/attempt-2/environment.json",
+      "bytes": 527,
+      "sha256": "224e8bfab2b35a81ddd152db62c4944bb4cc11b91058bcbdc0be3ab515678386"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-120-16/attempt-2/request.json",
+      "bytes": 6154,
+      "sha256": "eafbdc54818af0a9eeb1ef9e876900a4e05be3b6fb28af7803ba8c0317dd9442"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-130-16/attempt-1/artifact-index.json",
+      "bytes": 16206,
+      "sha256": "4d01681a843f3c7495098b060e2aef9030af8378e2b539034d95abf1d983394f"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-130-16/attempt-1/environment.json",
+      "bytes": 527,
+      "sha256": "224e8bfab2b35a81ddd152db62c4944bb4cc11b91058bcbdc0be3ab515678386"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-130-16/attempt-1/request.json",
+      "bytes": 6154,
+      "sha256": "5dc4a0484aac200e049a4af030085aab773c8f1bf32345ae2abacff1d6aa0640"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-140-16/attempt-1/artifact-index.json",
+      "bytes": 16206,
+      "sha256": "e25afcdfb11efd8cfcf713ae306359d5a1119248d17f51a87333264520f5dede"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-140-16/attempt-1/environment.json",
+      "bytes": 527,
+      "sha256": "224e8bfab2b35a81ddd152db62c4944bb4cc11b91058bcbdc0be3ab515678386"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-140-16/attempt-1/request.json",
+      "bytes": 6154,
+      "sha256": "debbc8b198d879ab5d6a92b6ab53f9600cd58d06bcc38803e13a30f9df4522f6"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-150-16/attempt-1/artifact-index.json",
+      "bytes": 16206,
+      "sha256": "d872ae68f333fbcf05615fc4830062e17fc8d3d2b17e5156d642ad5aca9ae59d"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-150-16/attempt-1/environment.json",
+      "bytes": 527,
+      "sha256": "224e8bfab2b35a81ddd152db62c4944bb4cc11b91058bcbdc0be3ab515678386"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-150-16/attempt-1/request.json",
+      "bytes": 6154,
+      "sha256": "a0eacd2441a8d436853f77c3bfaadee75c8296e2604af7a550f33eaaaa5fafa5"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-160-16/attempt-1/artifact-index.json",
+      "bytes": 16206,
+      "sha256": "e414390ea2ce9b6841494b5a45b4256a2466b7aa4eabd890891353c9b0dc30f0"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-160-16/attempt-1/environment.json",
+      "bytes": 527,
+      "sha256": "224e8bfab2b35a81ddd152db62c4944bb4cc11b91058bcbdc0be3ab515678386"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-160-16/attempt-1/request.json",
+      "bytes": 6154,
+      "sha256": "1b7f65e35483cf12757c210988470ef5f86030970a9ab0417378e1cdeef45dc4"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-170-16/attempt-1/artifact-index.json",
+      "bytes": 16206,
+      "sha256": "bcb0ae8c7f2d909729f574836601f8614b841529302b790727f1c7c0bdb6244b"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-170-16/attempt-1/environment.json",
+      "bytes": 527,
+      "sha256": "224e8bfab2b35a81ddd152db62c4944bb4cc11b91058bcbdc0be3ab515678386"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-170-16/attempt-1/request.json",
+      "bytes": 6154,
+      "sha256": "e4f4c091a23bc9fbd2d0c2b50311458e8c288a4abeb43eb018a6192cf2fb989d"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-180-16/attempt-1/artifact-index.json",
+      "bytes": 16206,
+      "sha256": "682e0efd2a4d99d37935832ee72c0f27d298ff490b08c928dc790641e4e67bee"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-180-16/attempt-1/environment.json",
+      "bytes": 527,
+      "sha256": "224e8bfab2b35a81ddd152db62c4944bb4cc11b91058bcbdc0be3ab515678386"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-180-16/attempt-1/request.json",
+      "bytes": 6154,
+      "sha256": "c7e38d0abe7766792d49330b26c7d82f921fb77414b5a900a8515a27c70af491"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-60-16/attempt-1/artifact-index.json",
+      "bytes": 16206,
+      "sha256": "efec82d2cf26b2e05046a545eea2919498dac52e6023ff16cc1c80675c447b46"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-60-16/attempt-1/environment.json",
+      "bytes": 527,
+      "sha256": "224e8bfab2b35a81ddd152db62c4944bb4cc11b91058bcbdc0be3ab515678386"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-60-16/attempt-1/request.json",
+      "bytes": 6153,
+      "sha256": "cca818f25d637b345893cad5012fd5718dcc8d86c6fb6b77ddbada7cf21ee46a"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-70-16/attempt-1/artifact-index.json",
+      "bytes": 16206,
+      "sha256": "4c6082d0bf61f25a1a2ec2a4382c2733bcd895e5ffd2c8e12998b3061dfa3827"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-70-16/attempt-1/environment.json",
+      "bytes": 527,
+      "sha256": "224e8bfab2b35a81ddd152db62c4944bb4cc11b91058bcbdc0be3ab515678386"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-70-16/attempt-1/request.json",
+      "bytes": 6153,
+      "sha256": "dd5ff0fd62e9ff9e743b8685df926e5f3d88705821f72f73cc985e1614f109cb"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-80-16/attempt-1/artifact-index.json",
+      "bytes": 16206,
+      "sha256": "57a3a390f9443ecef0292472f27ddd53203aedaa607b938dfc52a8b6245b93c8"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-80-16/attempt-1/environment.json",
+      "bytes": 527,
+      "sha256": "224e8bfab2b35a81ddd152db62c4944bb4cc11b91058bcbdc0be3ab515678386"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-80-16/attempt-1/request.json",
+      "bytes": 6153,
+      "sha256": "fce12e1ed45608fbca6df072ea6bdeb3ca54e01229c90f42be816d2b09ddc051"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-90-16/attempt-1/artifact-index.json",
+      "bytes": 16206,
+      "sha256": "a3b72fd1e5be8c13d9d5c1b00830b0dd219ed3846991cadb1b2d18dcf0f6820b"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-90-16/attempt-1/environment.json",
+      "bytes": 527,
+      "sha256": "224e8bfab2b35a81ddd152db62c4944bb4cc11b91058bcbdc0be3ab515678386"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-90-16/attempt-1/request.json",
+      "bytes": 6153,
+      "sha256": "53be17fbc59a5a5250dc6a77b5c7fb136700bf74cbda911bcf7e0706d23fff86"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/loaded-torque-32/attempt-1/artifact-index.json",
+      "bytes": 57674,
+      "sha256": "fccc17f599dfa4f6d97693f270f3d2314bf27d01d81e4c5ae8bef209d7182ac8"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/loaded-torque-32/attempt-1/environment.json",
+      "bytes": 527,
+      "sha256": "224e8bfab2b35a81ddd152db62c4944bb4cc11b91058bcbdc0be3ab515678386"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/loaded-torque-32/attempt-1/request.json",
+      "bytes": 6154,
+      "sha256": "16f45c869296088f0131d0b0a561f23061c26ba404c4a16236f54717ac06eb15"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/mesh-fine-32/attempt-1/artifact-index.json",
+      "bytes": 31978,
+      "sha256": "f36889086617a98819a91ae81268af022101a3abe39c62e689867f41d881c234"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/mesh-fine-32/attempt-1/environment.json",
+      "bytes": 527,
+      "sha256": "224e8bfab2b35a81ddd152db62c4944bb4cc11b91058bcbdc0be3ab515678386"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/mesh-fine-32/attempt-1/request.json",
+      "bytes": 6153,
+      "sha256": "e280250d5884b1fa6d79b351a227a3c0341ddead757f3b6120877792c36e7b95"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/tutorial-bemf-100/attempt-2/artifact-index.json",
+      "bytes": 179305,
+      "sha256": "5cecf0362f8c8f5c08e7c5096c433134560cc7d5b4a6b64a26cfbae5491d3969"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/tutorial-bemf-100/attempt-2/environment.json",
+      "bytes": 526,
+      "sha256": "2efa92617bc54eee1aa832784cbc8d2cb434505187e131b5f6fa7db1ff469c0c"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/tutorial-bemf-100/attempt-2/request.json",
+      "bytes": 6150,
+      "sha256": "9b360b06b5bdc3b6a1b1bb5596bbb1b0af97306446c5feb303cadc41e1821aef"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/loaded-performance-observation.json",
+      "bytes": 3552,
+      "sha256": "546b5d75250870d8e28537a60f8a133967fb68031be750f01002464fcee65ace"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/publication.json",
+      "bytes": 962,
+      "sha256": "404ef7f39eff43e7953673ae18181713a948df18330e312f9f4d0c0b30d3b681"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/raw-archive-receipt.json",
+      "bytes": 696727,
+      "sha256": "0ebea3a60127bf2d8ff6b85e7d2d81d9880d145b51cf7fc22ed8a5800897096f"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/registration.json",
+      "bytes": 1180234,
+      "sha256": "6424d7eec1398eef6c10e2bf53918e88dd565d87c1b3628e4d158dbecb503998"
+    },
+    {
+      "path": "benchmarks/candidate-qualification-20261103/prius/source-snapshot.json",
+      "bytes": 1249402,
+      "sha256": "030e04373a88fcf1dd6d02bd6d536e927846b26cd55901c44d3420441258057b"
     },
     {
       "path": "benchmarks/candidate-qualification-20261103/reference-current-audit.json",
@@ -28569,6 +28894,516 @@
       "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
       "path": "benchmarks/v0.5.0/release-qualification.json",
       "source_sha256": "3644a076e51383bf1932ba0db5edb24114c8a7e64fd974578e2fda37dba46fd7",
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/README.md",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/analysis-provenance.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/app-results.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/app-results.md",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/frozen-inputs/hardware.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/frozen-inputs/loaded.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/frozen-inputs/protocol.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/frozen-inputs/tutorial.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/frozen-inputs/ui.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/angular-64/attempt-1/artifact-index.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/angular-64/attempt-1/environment.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/angular-64/attempt-1/request.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/angular-64/attempt-1/result.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-100-16/attempt-1/artifact-index.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-100-16/attempt-1/environment.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-100-16/attempt-1/request.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-100-16/attempt-1/result.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-110-16/attempt-1/artifact-index.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-110-16/attempt-1/environment.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-110-16/attempt-1/request.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-110-16/attempt-1/result.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-120-16/attempt-2/artifact-index.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-120-16/attempt-2/environment.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-120-16/attempt-2/request.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-120-16/attempt-2/result.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-130-16/attempt-1/artifact-index.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-130-16/attempt-1/environment.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-130-16/attempt-1/request.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-130-16/attempt-1/result.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-140-16/attempt-1/artifact-index.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-140-16/attempt-1/environment.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-140-16/attempt-1/request.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-140-16/attempt-1/result.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-150-16/attempt-1/artifact-index.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-150-16/attempt-1/environment.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-150-16/attempt-1/request.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-150-16/attempt-1/result.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-160-16/attempt-1/artifact-index.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-160-16/attempt-1/environment.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-160-16/attempt-1/request.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-160-16/attempt-1/result.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-170-16/attempt-1/artifact-index.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-170-16/attempt-1/environment.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-170-16/attempt-1/request.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-170-16/attempt-1/result.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-180-16/attempt-1/artifact-index.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-180-16/attempt-1/environment.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-180-16/attempt-1/request.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-180-16/attempt-1/result.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-60-16/attempt-1/artifact-index.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-60-16/attempt-1/environment.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-60-16/attempt-1/request.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-60-16/attempt-1/result.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-70-16/attempt-1/artifact-index.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-70-16/attempt-1/environment.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-70-16/attempt-1/request.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-70-16/attempt-1/result.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-80-16/attempt-1/artifact-index.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-80-16/attempt-1/environment.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-80-16/attempt-1/request.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-80-16/attempt-1/result.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-90-16/attempt-1/artifact-index.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-90-16/attempt-1/environment.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-90-16/attempt-1/request.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/curve-90-16/attempt-1/result.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/loaded-torque-32/attempt-1/artifact-index.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/loaded-torque-32/attempt-1/environment.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/loaded-torque-32/attempt-1/request.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/loaded-torque-32/attempt-1/result.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/mesh-fine-32/attempt-1/artifact-index.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/mesh-fine-32/attempt-1/environment.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/mesh-fine-32/attempt-1/request.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/mesh-fine-32/attempt-1/result.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/tutorial-bemf-100/attempt-2/artifact-index.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/tutorial-bemf-100/attempt-2/environment.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/tutorial-bemf-100/attempt-2/request.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/jobs/tutorial-bemf-100/attempt-2/result.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/publication.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/raw-archive-receipt.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/registration.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/source-snapshot.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "backend/models/performance.py",
+      "source_sha256": "e486205d2a30f5d3bd1fb4d34290564dc8cfb1a99c853202c28aa0495a2a16c6",
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "backend/performance_report.py",
+      "source_sha256": "5d87a66bd937e997b492a8468f6775b0d6bf787aa0ee603b792483bb2e741c53",
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "benchmarks/candidate-qualification-20261103/prius/loaded-performance-observation.json",
+      "source_sha256": null,
+      "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "7c8aaeed0f9878150a7a215aab39c2dbdb3467ec",
+      "path": "frontend/src/public/outputStatus.ts",
+      "source_sha256": "eaefe9db44cd6ffb2a3b76221db814a57b85f106e3ad4675217507267d004894",
       "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
     }
   ]

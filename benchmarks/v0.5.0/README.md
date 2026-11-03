@@ -12,7 +12,7 @@ does not change that measured pin. [Machine-readable index](evidence.json).
 | [Adapter provenance](../reference-adapters/windows-femm42-v3-20261102/README.md) | Actual recovered adapter, dependencies, FEMM executables and source identities archived with verification | Integrity established; registered-parity review and saved-model audits complete |
 | [Published Mac comparison](../windows-v050-20261102-88aae101/macos-comparison.txt) | 52 job comparisons; zero available torque/EMF metrics outside registered platform tolerances | Historical pins `5b7cad8` and `f6c9fbb`; no same-candidate raw Mac qualification |
 | [v0.4.0 to v0.5.0](../reference-adapters/windows-femm42-v3-20261102/version-comparison.txt) | Shared reference data unchanged; baseline V-shape peak improves, fundamental error grows | V-shape remains experimental; no controlled speed claim |
-| [Pyleecan Prius](../../docs/benchmarks/pyleecan-prius-v1/README.md), [residual audit](../../docs/PRIUS_CONVERGENCE_AUDIT_20261030.md) | Historical software collections and corrected convergence audit retained | Candidate source identities still need reconciliation or a candidate collection |
+| [Pyleecan Prius](../../docs/benchmarks/pyleecan-prius-v1/README.md), [residual audit](../../docs/PRIUS_CONVERGENCE_AUDIT_20261030.md) | Historical software collections and corrected convergence audit retained | [Exact-candidate Windows report](../candidate-qualification-20261103/prius/README.md): 17 jobs / 568 field reports, 10/10 software checks PASS |
 
 The [review and candidate qualification update](../candidate-qualification-20261103/README.md)
 records the hash-bound reference review and the report-only Windows comparison.
@@ -23,13 +23,13 @@ assistant; no independent human or laboratory sign-off is claimed.
 
 The [release qualification assessment](release-qualification.json) remains
 **BLOCKED**. It records the active registration's outstanding candidate,
-platform and Prius source requirements. Updating
+Mac platform requirements. Updating
 this index does not waive them. The release checker now uses the same canonical
 bundle digest as the loader; no acceptance threshold is changed.
 
-Before tagging, complete the exact-candidate Mac and Prius collections and
-finish the registered qualification checks. Reference review and Windows
-registration are complete; the fresh Mac record changes only after collection.
+Before tagging, complete the exact-candidate Mac collection and finish the
+registered qualification checks. Reference review, Windows A–D and the complete
+Windows Prius audit are registered; the fresh Mac record changes only after collection.
 The published Mac data remains useful historical evidence with its original
 pins and precision; it is not restamped as a measurement of `88aae101`.
 Then complete wheel/TestPyPI installation acceptance and the owner release

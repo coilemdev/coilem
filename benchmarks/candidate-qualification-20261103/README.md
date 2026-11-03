@@ -12,7 +12,7 @@ follow-up. Evidence publication does not change the measured commit.
 | [Saved FEMM material audit](reference-material-audit.json) | All 4,409 nonempty saved models match registered units, depth, solver settings, magnet inputs and the complete M350-50A curve |
 | [Declared-current audit](reference-current-audit.json) | All 46 cases match their declared current magnitude and convention; maximum error below 4.3e-14 A |
 | Exact-candidate Mac A–D | Collection pending; the older published Mac comparison keeps its historical pins |
-| Exact-candidate Windows Prius | Full 17-job / 568-field-report collection in progress; no partial run is qualified |
+| Exact-candidate Windows Prius | [Complete Windows report](prius/README.md): 17 jobs, 568 field reports, 10/10 software checks PASS |
 
 The reference reviewer is **Codex assistant**, which also prepared the earlier
 evidence. This is a documented code and data review, not an independent human
@@ -64,8 +64,10 @@ phase resistance and copper loss with a declared wire. This review does not
 qualify apparent inductances, maps, losses, hardware correlation, catalogue
 temperature coefficients or arbitrary operating ranges.
 
-The release gate remains blocked until complete same-candidate Mac and Prius
-evidence is registered. Check it with:
+The Windows Prius evidence is complete and registered. Its analysis code is
+bound to the snapshot captured before fields; original report bytes and legacy
+metadata are preserved. The release gate remains blocked until complete
+same-candidate Mac evidence is registered. Check it with:
 
 ```sh
 python -m tools.release.qualification --candidate 88aae101fd487795e7fe5300737679f4133790fd

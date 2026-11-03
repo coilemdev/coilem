@@ -49,11 +49,21 @@
     "active_record_replaced": false
   },
   "prius": {
-    "status": "CANDIDATE_COLLECTION_IN_PROGRESS",
-    "candidate_source_reconciliation": "FULL_RECOLLECTION",
-    "evidence": "docs/benchmarks/pyleecan-prius-v1/README.md",
-    "audit": "docs/PRIUS_CONVERGENCE_AUDIT_20261030.md",
-    "candidate": "88aae101fd487795e7fe5300737679f4133790fd"
+    "status": "COMPLETE",
+    "candidate_source_reconciliation": "EXACT_CANDIDATE_COLLECTION",
+    "evidence": "benchmarks/candidate-qualification-20261103/prius/README.md",
+    "audit": "benchmarks/candidate-qualification-20261103/prius/analysis-provenance.json",
+    "candidate": "88aae101fd487795e7fe5300737679f4133790fd",
+    "report": "benchmarks/candidate-qualification-20261103/prius/app-results.json",
+    "jobs": 17,
+    "field_reports": 568,
+    "software_checks": {
+      "PASS": 10
+    },
+    "hardware_qualification": false,
+    "analysis_code_bound_to_before_field_snapshot": true,
+    "report_sha256": "8299764f272ed57c778a1416d21c628a795bdfe0f9b4b0d2d2f4363e51678eac",
+    "historical_audit": "docs/PRIUS_CONVERGENCE_AUDIT_20261030.md"
   },
   "vshape": {
     "qualification_status": "experimental",
@@ -63,7 +73,6 @@
   },
   "remaining": [
     "same-candidate Mac qualification and active platform record",
-    "complete Prius candidate collection and software audit",
     "final candidate qualification checks",
     "final wheel and TestPyPI install acceptance",
     "owner release decision"
