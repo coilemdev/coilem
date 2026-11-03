@@ -6450,8 +6450,8 @@
     },
     {
       "path": "frontend/scripts/test-performance-view.mjs",
-      "bytes": 7374,
-      "sha256": "99b2a98ac6c5c239068e8d54228f9314294688530bc107f14e9eae3b46812ab5"
+      "bytes": 7396,
+      "sha256": "ec879e4df22c57c01bdee0661adad717a09375c62b3cb50a0a13fd3b012f85d8"
     },
     {
       "path": "frontend/scripts/test-phase-drive.mjs",
