@@ -5985,8 +5985,8 @@
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/README.md",
-      "bytes": 25842,
-      "sha256": "ee4057a439b8489d7a410f9ad1e56f127c2d138959115e47f7dc1a9ee5473b64"
+      "bytes": 29980,
+      "sha256": "8cd31277cb3d8032864ebf822a46999d45db967fc4c91703ea759ffa7abbb421"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/app-design-3d.png",
@@ -5995,28 +5995,28 @@
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/app-registration.json",
-      "bytes": 304814,
-      "sha256": "577a8d4585a79d328b406b1ee26f2d12e7124d28dbf1dacdf27e9c6ee00d7360"
+      "bytes": 1180234,
+      "sha256": "6424d7eec1398eef6c10e2bf53918e88dd565d87c1b3628e4d158dbecb503998"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/app-results.json",
-      "bytes": 1172838,
-      "sha256": "697ccfbf9c8f85387e3df08534e56debc9fb225aeea519d80d301f21e34d4191"
+      "bytes": 2196953,
+      "sha256": "8299764f272ed57c778a1416d21c628a795bdfe0f9b4b0d2d2f4363e51678eac"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/app-results.md",
-      "bytes": 3129,
-      "sha256": "eb6f10957163b2c2aa690334e115eb1ba039942ff4eb15bdaf2f59675eb77cdf"
+      "bytes": 3538,
+      "sha256": "e7f3b9192b33e05e6b3dea8f9e40a45dc6a9c80b071dad49db021ccb1c4cd1c4"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/app-results.svg",
-      "bytes": 76909,
-      "sha256": "c91311a7700d5929a99efe4da781781c12e91bbffcc773e989ab7092067e0ebe"
+      "bytes": 77704,
+      "sha256": "f225d1fa7705867b38b648f8eace6e84dce2e7c303d4ccbe10222ecfcb83f9fc"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/artifact-manifest.json",
       "bytes": 1429,
-      "sha256": "5716e071d10d517e566217781352f3ee42ea89240167c049984e905fd944359c"
+      "sha256": "1ffe219ddd5b4415ed477f02848d789b227e68924f937e893ba6ce70a984c831"
     },
     {
       "path": "docs/benchmarks/pyleecan-prius-v1/installed-wheel-validation.json",
@@ -8065,8 +8065,8 @@
     },
     {
       "path": "tests/test_prius_benchmark_collection.py",
-      "bytes": 15833,
-      "sha256": "344ef653924fff2cbef0fdb5a10fce3a0595cc199cccd94b36df042934b08f4c"
+      "bytes": 15849,
+      "sha256": "fc9bb2e82de96828dfa30983f9ec5463cecd7d822624caca1971c73dae45d85c"
     },
     {
       "path": "tests/test_prius_convergence_audit.py",
@@ -8140,8 +8140,8 @@
     },
     {
       "path": "tests/test_pyleecan_reference_fixture.py",
-      "bytes": 18120,
-      "sha256": "b2b3091e1fe670989f91b29a1c4ad29519d4177def243937d711cdf6baf088de"
+      "bytes": 18853,
+      "sha256": "07e7d8c2b4e4534c5aeadc2f458cd1ee65226c417436d9c642d12fda7091d8ea"
     },
     {
       "path": "tests/test_pyleecan_tutorial.py",
@@ -12118,7 +12118,7 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B \u00c3\u00a2\u00cb\u2020\u00e2\u20ac\u2122 Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B Ã¢Ë†â€™ Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
@@ -12148,13 +12148,13 @@
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45\u00c3\u201a\u00c2\u00b0 (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45Ã‚Â° (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45\u00c3\u201a\u00c2\u00b0 over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45Ã‚Â° over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "a482ff6e2bd9616d2ece2a68f8fa2f2c49aae45c",
@@ -12172,7 +12172,7 @@
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00c3\u201a\u00c2\u00b0 (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45Ã‚Â° (#52 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
@@ -14086,25 +14086,25 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B \u00c3\u0192\u00c2\u00a2\u00c3\u2039\u00e2\u20ac\u00a0\u00c3\u00a2\u00e2\u201a\u00ac\u00e2\u201e\u00a2 Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B ÃƒÂ¢Ã‹â€ Ã¢â‚¬â„¢ Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45Ãƒâ€šÃ‚Â° (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45Ãƒâ€šÃ‚Â° over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45Ãƒâ€šÃ‚Â° (#52 follow-up)."
     },
     {
       "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
