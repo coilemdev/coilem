@@ -2,14 +2,14 @@
 
 Draft of October 23, 2026, written at the top of the 0.5.0 development stack
 (`5d23b47`), which builds on the published v0.4.0 (`2ede4e8`). Updated with the
-owner's decisions of October 30, 2026 and Windows evidence of November 2.
-The source identifies as coilEM 0.5.0
-with Magneto2D 0.4.0; both versions were bumped before the freeze so the freeze
-measures the build that ships. The clean Windows candidate `88aae101` has now
-been measured under protocol 1.6.0. This draft does not mark cross-platform
-release qualification complete or v0.5.0 released.
-Every number marked **TODO(freeze)** comes from the freeze rerun, and every
-**TODO(owner)** is a decision for the owner.
+owner's decisions of October 30 and November 3, 2026
+([owner decisions](../benchmarks/v0.5.0/owner-decisions.json)) and the freeze
+evidence of November 2 and 3. The source identifies as coilEM 0.5.0 with
+Magneto2D 0.4.0; both versions were bumped before the freeze so the freeze
+measures the build that ships. The clean candidate `88aae101` is measured under
+protocol 1.6.0 on Windows and macOS, and the
+[release qualification gate](../benchmarks/v0.5.0/release-qualification.json)
+passes. v0.5.0 is not released until it is tagged and published.
 
 0.5.0 is the performance release
 ([public issue 143](https://github.com/coilemdev/coilem/issues/143)). It answers
@@ -145,12 +145,14 @@ required. Published Mac evidence keeps its measured source pins and precision.
 
 ## 2. Changes to qualified numbers
 
-Two fixes change numbers that 0.4.0 qualified. The figures are from the macOS
-development run at `5b7cad8` against the v0.4.0 Windows record at `5b6cb61`
-([full comparison](../benchmarks/macos-native-20261022-5b7cad8/comparison-vs-v0.4.0-windows-5b6cb61.md)).
-The macOS record at `738d951` in the same comparison shows that platform
-differences are at most about 0.1%. **TODO(freeze):** replace these with the
-freeze report's macOS and Windows numbers.
+Two fixes change numbers that 0.4.0 qualified. The figures compare the freeze
+measurements at `88aae101` with the v0.4.0 Windows record at `5b6cb61`, on the
+24 loaded A/B/C cases both measured. They are the
+[macOS report](../benchmarks/candidate-qualification-20261103/macos/report/benchmark_report.md)'s;
+the [Windows report](../benchmarks/candidate-qualification-20261103/windows/report/benchmark_report.md)
+differs by at most 0.04 points (V-shape worst torque 7.02%, distributed mean
+and worst torque 2.86% and 5.16%). The two platforms' records match each
+other within 0.36 of their registered tolerances in every case.
 
 | Group | Cases | Mean torque error vs FEMM | Worst torque error | Mean back-EMF error |
 | --- | ---: | --- | --- | --- |
@@ -331,12 +333,12 @@ no independent loss or hardware validation.
 - [x] Complete reference/discrepancy review, register the Windows comparison
   and retain the full candidate Prius collection/audit (17 jobs / 568 fields,
   10/10 software checks). Preserve V-shape limitations and original reports.
-- [ ] Register the complete exact-candidate Mac platform evidence and pass the
-  final cross-platform qualification gate.
-  Historical Mac data remains labeled with its original commits; it is not a
-  substitute for same-candidate qualification under the current release policy.
-- [ ] Re-pin the physics hashes from that report, so the hash-guard tests pass
-  again.
+- [x] Register the complete exact-candidate Mac platform evidence and pass the
+  final cross-platform qualification gate: macOS at `88aae101` records 46 PASS,
+  the planned unsupported ORNL Prius and 336/336 gates, and two clean
+  collections agree bit for bit. Historical Mac data keeps its original commits.
+- [x] Re-pin the physics hashes from that report: both platform records and the
+  qualification report measure the current 63 guarded physics sources.
 - [x] Change the status of each output whose gate passed, in the code and in
   [Validation](VALIDATION.md#050-performance-outputs) together: λd/λq and the
   magnet derating, each in the scope its gate measured, by the owner's decision

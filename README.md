@@ -28,11 +28,13 @@ commits are the baseline for the final-candidate rerun, not measurements of
 a future tag. The [benchmark index](benchmarks/README.md) preserves the full
 reports, frozen FEMM references and earlier platform records.
 
-The 0.5.0 development run on macOS at `5b7cad8`
-([report](benchmarks/macos-native-20261022-5b7cad8/README.md)) records 29 PASS
-and the planned unsupported Prius. It is development evidence; the 0.5.0
-freeze reruns A/B/C/D on macOS and Windows. **TODO(freeze):** replace this
-paragraph with the 0.5.0 record.
+The 0.5.0 freeze measures clean candidate `88aae101` under protocol 1.6.0 on
+both platforms ([qualification update](benchmarks/candidate-qualification-20261103/README.md)):
+Windows and macOS each record 46 PASS, the planned unsupported legacy ORNL
+Prius and 336/336 gates against the reviewed FEMM references, and the
+exact-candidate Pyleecan Prius passes all 10 software checks. The
+[release qualification gate](benchmarks/v0.5.0/release-qualification.json)
+passes; v0.5.0 is not released until it is tagged and published.
 
 ![coilEM workspace](docs/images/coilem-landing-page.png)
 
