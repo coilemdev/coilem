@@ -1,6 +1,7 @@
 """Data-only reference bundles, already normalized to public clockwise coordinates."""
 
 import copy
+import math
 
 from backend.benchmark_suite import CONVENTION, SUPPORTED_PROTOCOL_VERSIONS
 from backend.benchmark_suite.contract import DATA_ROOT, canonical, checked_json, read, sha
@@ -12,6 +13,11 @@ def load_suite(path):
         raise ValueError("Unsupported suite protocol")
     if spec["convention"] != CONVENTION:
         raise ValueError("Suite coordinate convention mismatch")
+    for case in spec["cases"]:
+        # A Phase E case is graded against its own registered absolute floor (protocol 1.7.0).
+        floor = case.get("cogging_floor_Nm")
+        if case["phase"] == "E" and not (isinstance(floor, (int, float)) and not isinstance(floor, bool) and math.isfinite(floor) and floor > 0):
+            raise ValueError(f"Cogging case without a registered floor: {case['id']}")
     return spec
 
 

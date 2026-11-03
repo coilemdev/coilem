@@ -1,10 +1,11 @@
-# Cogging torque benchmark proposal (#185)
+# Cogging torque benchmark proposal: Phase E (#185)
 
-A proposal for the cases and gates that would qualify coilEM's cogging torque
-against FEMM 4.2, in the next A/B/C/D protocol (1.7.0). **Nothing here is
-registered.** The gates are fixed now, before any comparison solve, as
-[public issue 185](https://github.com/coilemdev/coilem/issues/185) asks. The
-owner decides whether they go into the protocol; the FEMM references come from
+Phase E is a cogging benchmark of 12 motors against FEMM 4.2, as its own suite
+in [protocol 1.7.0](../benchmarks/abcd-v1.7/README.md). **It is proposed, not
+registered.** The requests, floors and gates are fixed now, before any
+comparison solve, as [public issue 185](https://github.com/coilemdev/coilem/issues/185)
+asks, and harness 1.9.0 can already run and grade them. The owner decides
+whether it is registered; the FEMM references come from
 [the FEMM request](COGGING_FEMM_REQUEST.md).
 
 ## What is compared
@@ -31,21 +32,24 @@ Both sides' numbers come from `backend/cogging.py`, so they use one definition:
 
 ## Cases
 
-| Case | Phase | Base fixture | S / P | Cycles per rev | Floor | Why |
-| --- | --- | --- | --- | --- | ---: | --- |
-| `spm_8p12s_example_shoed__cogging` | A | `spm_8p12s_example_shoed` (protocol 1.5.0) | 12 / 8 | 24 | 0.0557 N·m | The app's default SPM. Large cogging (about 12% of its loaded torque), shoed slots |
-| `ipm_flat_8p12s_fsae_contract__cogging` | B | `ipm_flat_8p12s_fsae_contract` | 12 / 8 | 24 | 0.0129 N·m | Flat-buried IPM: bridges and pockets set the cogging, not the magnet edge alone |
-| `spm_8p48s_distributed_femm_validation__cogging` | C | `spm_8p48s_distributed_femm_validation` | 48 / 8 | 48 | 0.0315 N·m | Distributed winding stator: many narrow slots, low cogging, so the floor matters |
-| `ipm_flat_12s10p_fscw_contract__cogging` (optional) | B | `ipm_flat_12s10p_fscw_contract` | 12 / 10 | 60 | 0.0240 N·m | Fractional-slot, very low cogging: tests the floor alone |
+Twelve motors, one per geometry: the full table, with each case's floor, is
+in the [protocol 1.7.0 README](../benchmarks/abcd-v1.7/README.md#cases).
 
-Each floor is 0.5% of the base case's FEMM mean loaded torque in the reviewed
-protocol 1.6.0 bundle (11.140, 2.576, 6.304 and 4.803 N·m).
+- **SPM, concentrated (5):** 4p/12s and 8p/12s, each with its tight-air-gap
+  variant, and the app's shoed 8p/12s example (large cogging, about 12% of its
+  loaded torque).
+- **Flat-buried IPM (4):** the FSAE rotor and its angled-pocket variant, where
+  bridges and pockets shape the cogging, a fractional-slot 12s/10p with very
+  little cogging, and a 24s/16p.
+- **SPM, distributed winding stators (3):** 8p/24s, 8p/48s and 12p/36s, with
+  many narrow slots.
 
+They span 12 to 60 cogging cycles per revolution and 50 to 270 mm stators.
 Cogging carries no current, so the winding type itself does not enter the
-waveform; the distributed-winding case is there for its stator, whose slot
-count and openings the 8p/12s cases do not cover.
+waveform; the distributed cases are there for their stators. V-shape IPM
+(experimental in 0.5.0) and the six-step BLDC fixtures are left out for now.
 
-coilEM's native values for these requests are in
+coilEM's values on this Mac so far are in
 [the convergence study](COGGING_CONVERGENCE.md#native-values-for-the-proposed-cases).
 
 ## Gates
@@ -56,14 +60,15 @@ Per case, with *r* the reference value and *c* coilEM's:
 | --- | --- | --- | --- |
 | `cogging_peak_to_peak` | \|c − r\| of the peak-to-peak | ≤ max(10% of *r*, floor) | ≤ max(20% of *r*, 2 × floor) |
 | `cogging_first_harmonic` | \|c − r\| of the first cogging harmonic | ≤ max(10% of *r*, floor) | ≤ max(20% of *r*, 2 × floor) |
+| `cogging_method` | coilEM's torque method | WST | — |
+| `cogging_angle_grid` | the two waveforms' rotor positions | identical | — |
 
 Anything above YELLOW is FAIL; missing data is INCOMPLETE. A case's status is
 the worst of its gates, as in protocol 1.6.0.
 
 **The absolute floor** is 0.5% of the case's registered FEMM mean loaded
-torque, from its base case in the protocol 1.6.0 reference bundle (the table
-above). A
-low-cogging design can have a peak-to-peak of a few hundredths of a
+torque, from its base case in the protocol 1.6.0 reference bundle: 0.0024 to
+0.098 N·m across the 12 cases. A low-cogging design can have a peak-to-peak of a few hundredths of a
 newton-metre, where a 10% relative error is below both solvers' mesh noise
 and says nothing about a design decision. Half a percent of the motor's own
 torque is where cogging stops mattering for most drives, and on the 8p/12s
@@ -98,20 +103,37 @@ for review; none decides a status.
 
 ## Measurement and publication
 
-- Native runs on Windows and macOS at the freeze candidate, with
-  `coilem benchmark` including the new cases, graded against the reviewed
-  reference bundle. The records go into the release record, as for protocol
-  1.6.0.
+- Native runs on Windows and macOS at the freeze candidate, graded against
+  the reviewed reference bundle. The records go into the release record, as
+  for protocol 1.6.0. `coilem benchmark` would gain Phase E once the owner
+  registers it.
 - Cogging becomes **qualified** only for the fixture combinations whose gates
   pass in the freeze report, and only once the app's status for it changes
   (in `backend/qualification.py`, applied when a run is stored).
 - **Hardware correlation (optional):** the CREATOR PMSM's measured cogging,
   through #90, labelled hardware correlation, not qualification.
 
-## What implementing it needs (a later PR)
+## What is in place, and what is left
 
-- A `cogging_metrics.py` next to `backend/benchmark_suite/dq_metrics.py`, with
-  the two gates and two self-checks above.
-- A `"cogging_reference": true` flag on the four cases in the new
-  `benchmark_spec.json`, and their derived fixtures.
-- The reviewed FEMM bundle, and new native records on both platforms.
+In place, on this branch:
+
+- `benchmarks/abcd-v1.7/`: the 12 requests, each a registered protocol 1.6.0
+  request with the two changes above, and `benchmark_spec.json` with their
+  hashes and floors. Protocol 1.6.0 stays the default, and `coilem benchmark`
+  runs phases A–D only.
+- `backend/benchmark_suite/cogging_metrics.py`: the gates and self-checks,
+  graded by `tools.run_benchmarks --suite benchmarks/abcd-v1.7/benchmark_spec.json`.
+- `tests/test_cogging_phase_e.py` checks the following:
+  - every request derives from its base by exactly the two changes;
+  - every floor follows from its reference record;
+  - the 12 geometries are distinct;
+  - each gate bands as stated.
+
+Left:
+
+1. The FEMM 4.2 bundle for the 12 cases, collected at one adapter commit and
+   reviewed.
+2. Native runs on Windows and macOS at the freeze candidate, graded against
+   it, and published in the release record.
+3. The owner's decision to register Phase E, and the app's cogging status
+   qualified for the combinations whose gates pass.

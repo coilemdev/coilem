@@ -135,6 +135,15 @@ def evaluate(output, manifest, selected, configs, protocols, golden, references,
                 evaluation = evaluate_bldc(protocols[case["id"]], raw, golden)
             except (ValueError, KeyError, TypeError, ZeroDivisionError) as exc:
                 evaluation = {"status": "INCOMPLETE", "gates": [], "reason": str(exc)}
+        elif case["phase"] == "E":
+            # Cogging (protocol 1.7.0): its own gates, with the case's registered floor.
+            # Imported here, so --help and listing stay free of the solver models.
+            from backend.benchmark_suite.cogging_metrics import evaluate_cogging
+
+            try:
+                evaluation = evaluate_cogging(measurements["native"], reference, configs[case["id"], "native"], case["cogging_floor_Nm"])
+            except (ValueError, KeyError, TypeError, ZeroDivisionError) as exc:
+                evaluation = {"status": "INCOMPLETE", "gates": [], "reason": str(exc)}
         else:
             try:
                 evaluation = evaluate_abc(measurements["native"], reference, configs[case["id"], "native"])
@@ -156,6 +165,8 @@ def evaluate(output, manifest, selected, configs, protocols, golden, references,
         }
         if case["phase"] == "D":
             row["protocol"] = protocols[case["id"]]
+        elif case["phase"] == "E":
+            row["base_case"] = case["base_case"]
         else:
             # Diagnostic only, outside the recorded evaluation: torque over the
             # torque its own back-EMF and current imply (#80).
@@ -210,7 +221,8 @@ def execute(args):
                 continue
             if case["phase"] == "D":
                 validate_lane_result("femm-standard", reference, protocols[case["id"]], golden=golden)
-            else:
+            elif case["phase"] != "E":
+                # A cogging reference carries only its period's waveform; evaluate_cogging checks it.
                 validate_abc(reference, configs[case["id"], "native"], native=False)
     selection = {
         "case_ids": [c["id"] for c in selected],

@@ -646,11 +646,13 @@ experimental everywhere: no benchmark protocol has a cogging gate yet.**
   without a sliding band, so mesh noise sets a floor under small cogging
   values." `frontend/src/public/outputStatus.ts` mirrors it and
   `tests/test_output_status.py` checks the two match.
-- **What would qualify it.** The [benchmark proposal](COGGING_BENCHMARK_PROPOSAL.md):
-  an SPM, a flat-buried IPM and a distributed-winding case against FEMM 4.2
-  waveforms, gated on peak-to-peak and the first cogging harmonic with an
-  absolute floor. The [FEMM request](COGGING_FEMM_REQUEST.md) is written; no
-  reference exists yet, and nothing is registered.
+- **What would qualify it.** Phase E, the cogging benchmark proposed as
+  [protocol 1.7.0](../benchmarks/abcd-v1.7/README.md): 12 SPM, flat-buried IPM
+  and distributed-winding motors against FEMM 4.2 waveforms. It is gated on
+  peak-to-peak and the first cogging harmonic, with an absolute floor
+  ([proposal](COGGING_BENCHMARK_PROPOSAL.md)). The harness can grade it, and
+  the [FEMM request](COGGING_FEMM_REQUEST.md) is written. No reference exists
+  yet, and Phase E is not registered.
 - **Not modelled.** Skew, end effects and other 3D effects, manufacturing
   tolerances (magnet and slot variation, eccentricity), and the load-dependent
   part of torque ripple: cogging is the zero-current torque only.

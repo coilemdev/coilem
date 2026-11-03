@@ -110,8 +110,8 @@
     },
     {
       "path": "backend/benchmark_suite/__init__.py",
-      "bytes": 362,
-      "sha256": "e82e13a64a3477c1b1611c5c65720c612402919044d5d1e4aabb7e57c9ef836a"
+      "bytes": 538,
+      "sha256": "0484342a3d688352e63934267361b5427074e1d932dd16fcafc1ee01817a495a"
     },
     {
       "path": "backend/benchmark_suite/abc_metrics.py",
@@ -125,13 +125,18 @@
     },
     {
       "path": "backend/benchmark_suite/cli.py",
-      "bytes": 21217,
-      "sha256": "bba2f5ac4a8071d9d4f3c5f6143b0e185eb3516ab99dba849bcbdd334284791e"
+      "bytes": 22035,
+      "sha256": "2c13c449677ce559c5646376e266da3aa976e6c0d473acafc43023c9733c5c4f"
+    },
+    {
+      "path": "backend/benchmark_suite/cogging_metrics.py",
+      "bytes": 5340,
+      "sha256": "92055d2c827028c5aa62e95a30f8717a80f8e93778892b2c6c2602a4eb4b1e9d"
     },
     {
       "path": "backend/benchmark_suite/command.py",
-      "bytes": 7688,
-      "sha256": "70048689414f727e7d9ce9c297b9662e6d64080fd518b0597cf8570be47dfbfe"
+      "bytes": 7710,
+      "sha256": "a38377d817eacf2977d4e4ee89788a3905c0be0017e215a9e25469432a232e7c"
     },
     {
       "path": "backend/benchmark_suite/contract.py",
@@ -165,13 +170,13 @@
     },
     {
       "path": "backend/benchmark_suite/references.py",
-      "bytes": 7582,
-      "sha256": "56c4248b839b9223f45b9413f846a730ad7ef648cf0025aef77b4fb470a59176"
+      "bytes": 7998,
+      "sha256": "4ef724b633076777561790ab1d004bd19bc4465f9dcb0015053e8a54579c1155"
     },
     {
       "path": "backend/benchmark_suite/report.py",
-      "bytes": 30549,
-      "sha256": "cb7fa762862b6e48c34904d01ad007634bb21c5a8320553c529ccc69748a807a"
+      "bytes": 30826,
+      "sha256": "7a21402f3633fdc6b6ec90855736c2434c00496b97c2b0d1b985ed049b38420d"
     },
     {
       "path": "backend/benchmark_suite/resistance_metrics.py",
@@ -180,13 +185,13 @@
     },
     {
       "path": "backend/benchmark_suite/share.py",
-      "bytes": 8997,
-      "sha256": "c26023448d3169f7b2269b2053aec03a322d3b60cb4099e641a8381d3d73f720"
+      "bytes": 9015,
+      "sha256": "57fc6e6da6546472e1c8b94cadc95cfaf8f93f61ac98fa1b8bb17860f37eaf5e"
     },
     {
       "path": "backend/benchmark_suite/worker.py",
-      "bytes": 4246,
-      "sha256": "53447bd76e3c88afbee3ba14fcb90958642b9eb6dea038a7819cc26146f4dd93"
+      "bytes": 4499,
+      "sha256": "82bb836000973b718be6f3ed3e01e5e734792c7f637e0b721ca10ddcda694e6f"
     },
     {
       "path": "backend/cogging.py",
@@ -937,6 +942,76 @@
       "path": "benchmarks/abcd-v1.6/phase_resistance_gate.json",
       "bytes": 3309,
       "sha256": "90b001cd0f32705f0f38b46f502369268d7b7cce56ac320033d3a6a804b58bd6"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/README.md",
+      "bytes": 5252,
+      "sha256": "b6e872024b14d2319ce1050ac97b6b217e8eb8375f33fa1568696b8f38008715"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/benchmark_spec.json",
+      "bytes": 12333,
+      "sha256": "9b14051cef6bf7298456691661d38ad95fd78738d9df6c41165f55ce3a509843"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_12s10p_fscw_contract__cogging.json",
+      "bytes": 2504,
+      "sha256": "b8ec65a0f26330a9f1e9e9829e6ec34752771678fc8dcdcf0789b9074a623fda"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_24s16p_industrial_contract__cogging.json",
+      "bytes": 2545,
+      "sha256": "9db76e873718646ce320302b39c25301ef3915375cf91ed6489b07f68d53ea5f"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__cogging.json",
+      "bytes": 2531,
+      "sha256": "9ea0820bfe9507ed339415a49b66f207f994392d7172c9cc9f68793197e8af3c"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_8p12s_fsae_contract__cogging.json",
+      "bytes": 2544,
+      "sha256": "ec1ca45e0258ca76d072503a3160260377a57a1402b8161bd0952d8fad46bc0a"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_12p36s_distributed_femm_validation__cogging.json",
+      "bytes": 2503,
+      "sha256": "4e27491c2d31ea3119a3034bbcda330c016db340aab51d9f3044686ef0bfdfd8"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_4p12s_simple__baseline__cogging.json",
+      "bytes": 2501,
+      "sha256": "0133baad78c3025ad988889004d0bfadd44afa0c184daf2a5a0ed8e0ca7b87c1"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_4p12s_simple__tight_airgap__cogging.json",
+      "bytes": 2501,
+      "sha256": "7b8df6177db2310fc8747da7afe5ab1dd568a6bbfe86f6011fb1c15b97f0d045"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_concentrated__baseline__cogging.json",
+      "bytes": 2504,
+      "sha256": "228bfe80718719ef811ca8d9e22e78e03f87cd23eabe9c6af8648b25dde6fc61"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_concentrated__tight_airgap__cogging.json",
+      "bytes": 2504,
+      "sha256": "4fea72c749da4156d9eed4e3548759f3420c23d4ad1fe5dce09f0f8d288b0701"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_example_shoed__cogging.json",
+      "bytes": 2504,
+      "sha256": "183a686cdbdcfcac623f5a9877fb43c9cb9e273657e947c14b097f8de9d52c9c"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p24s_distributed_femm_validation__cogging.json",
+      "bytes": 2504,
+      "sha256": "7e1329e2eece8c1c7b23b0b7e862c82a3c659fced4b99b795238c4679ea3e15c"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p48s_distributed_femm_validation__cogging.json",
+      "bytes": 2502,
+      "sha256": "851e55cebd81733996d8549f9153d2e9998b55094cc4e6332ae76cf1f76ebac1"
     },
     {
       "path": "benchmarks/abcd-v1/README.md",
@@ -5850,8 +5925,8 @@
     },
     {
       "path": "docs/COGGING_BENCHMARK_PROPOSAL.md",
-      "bytes": 6242,
-      "sha256": "6b443501c9306d580f120e6021e520624393e0e4a7b4311615a2405900f53035"
+      "bytes": 6874,
+      "sha256": "1c7e7fe64751dc1f530479f307439d537bcff304d3fc7341d9e8581e03e2dba4"
     },
     {
       "path": "docs/COGGING_CONVERGENCE.json",
@@ -5860,13 +5935,13 @@
     },
     {
       "path": "docs/COGGING_CONVERGENCE.md",
-      "bytes": 7813,
-      "sha256": "4e444804520e77e33bcb1b53b9d49aae8038529c0f8acac9ed421597f580a197"
+      "bytes": 7662,
+      "sha256": "07518c22c282f9311e19039a6d653f4031b02452751b7b58ae371b567bf9c68b"
     },
     {
       "path": "docs/COGGING_FEMM_REQUEST.md",
-      "bytes": 7637,
-      "sha256": "505ae74c4b9eee10344edc5dae454e10fabcd550d5d8fa8d782b2a57c2ce7828"
+      "bytes": 9920,
+      "sha256": "248919ee5865f404fa2fa176edd6c525171cbcdc41576d7fdfb333dc85165fc7"
     },
     {
       "path": "docs/ELMER.md",
@@ -5990,8 +6065,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 51084,
-      "sha256": "7dc788aa4e2b00ccdbaae062013e159830be6ce585317f2a638dd7166faa6cf3"
+      "bytes": 51210,
+      "sha256": "91956a59411ab3463981d56e0dca6a28b06d74d2b5feb6bfa85977aaff891524"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -7902,6 +7977,11 @@
       "path": "tests/test_cogging.py",
       "bytes": 14144,
       "sha256": "e62539957ec21a6ec400cfc9b80b78241956a1b5b5316df8ee0b950dd27ed8c1"
+    },
+    {
+      "path": "tests/test_cogging_phase_e.py",
+      "bytes": 7573,
+      "sha256": "61d1420687b1f4eea39b25741955c656c6ffdc7efbb0761e451d90b7602bd193"
     },
     {
       "path": "tests/test_dq_flux_linkage.py",
@@ -30553,6 +30633,168 @@
       "path": "docs/COGGING_FEMM_REQUEST.md",
       "source_sha256": "505ae74c4b9eee10344edc5dae454e10fabcd550d5d8fa8d782b2a57c2ce7828",
       "reason": "State the cogging requests' input hashes in the FEMM brief (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/__init__.py",
+      "source_sha256": "0484342a3d688352e63934267361b5427074e1d932dd16fcafc1ee01817a495a",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/cli.py",
+      "source_sha256": "2c13c449677ce559c5646376e266da3aa976e6c0d473acafc43023c9733c5c4f",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/cogging_metrics.py",
+      "source_sha256": "92055d2c827028c5aa62e95a30f8717a80f8e93778892b2c6c2602a4eb4b1e9d",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/command.py",
+      "source_sha256": "a38377d817eacf2977d4e4ee89788a3905c0be0017e215a9e25469432a232e7c",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/references.py",
+      "source_sha256": "4ef724b633076777561790ab1d004bd19bc4465f9dcb0015053e8a54579c1155",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/report.py",
+      "source_sha256": "7a21402f3633fdc6b6ec90855736c2434c00496b97c2b0d1b985ed049b38420d",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/share.py",
+      "source_sha256": "57fc6e6da6546472e1c8b94cadc95cfaf8f93f61ac98fa1b8bb17860f37eaf5e",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/worker.py",
+      "source_sha256": "82bb836000973b718be6f3ed3e01e5e734792c7f637e0b721ca10ddcda694e6f",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/README.md",
+      "source_sha256": "b6e872024b14d2319ce1050ac97b6b217e8eb8375f33fa1568696b8f38008715",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/benchmark_spec.json",
+      "source_sha256": "9b14051cef6bf7298456691661d38ad95fd78738d9df6c41165f55ce3a509843",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_12s10p_fscw_contract__cogging.json",
+      "source_sha256": "b8ec65a0f26330a9f1e9e9829e6ec34752771678fc8dcdcf0789b9074a623fda",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_24s16p_industrial_contract__cogging.json",
+      "source_sha256": "9db76e873718646ce320302b39c25301ef3915375cf91ed6489b07f68d53ea5f",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__cogging.json",
+      "source_sha256": "9ea0820bfe9507ed339415a49b66f207f994392d7172c9cc9f68793197e8af3c",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_8p12s_fsae_contract__cogging.json",
+      "source_sha256": "ec1ca45e0258ca76d072503a3160260377a57a1402b8161bd0952d8fad46bc0a",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_12p36s_distributed_femm_validation__cogging.json",
+      "source_sha256": "4e27491c2d31ea3119a3034bbcda330c016db340aab51d9f3044686ef0bfdfd8",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_4p12s_simple__baseline__cogging.json",
+      "source_sha256": "0133baad78c3025ad988889004d0bfadd44afa0c184daf2a5a0ed8e0ca7b87c1",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_4p12s_simple__tight_airgap__cogging.json",
+      "source_sha256": "7b8df6177db2310fc8747da7afe5ab1dd568a6bbfe86f6011fb1c15b97f0d045",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_concentrated__baseline__cogging.json",
+      "source_sha256": "228bfe80718719ef811ca8d9e22e78e03f87cd23eabe9c6af8648b25dde6fc61",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_concentrated__tight_airgap__cogging.json",
+      "source_sha256": "4fea72c749da4156d9eed4e3548759f3420c23d4ad1fe5dce09f0f8d288b0701",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_example_shoed__cogging.json",
+      "source_sha256": "183a686cdbdcfcac623f5a9877fb43c9cb9e273657e947c14b097f8de9d52c9c",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p24s_distributed_femm_validation__cogging.json",
+      "source_sha256": "7e1329e2eece8c1c7b23b0b7e862c82a3c659fced4b99b795238c4679ea3e15c",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p48s_distributed_femm_validation__cogging.json",
+      "source_sha256": "851e55cebd81733996d8549f9153d2e9998b55094cc4e6332ae76cf1f76ebac1",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "docs/COGGING_BENCHMARK_PROPOSAL.md",
+      "source_sha256": "1c7e7fe64751dc1f530479f307439d537bcff304d3fc7341d9e8581e03e2dba4",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "docs/COGGING_CONVERGENCE.md",
+      "source_sha256": "07518c22c282f9311e19039a6d653f4031b02452751b7b58ae371b567bf9c68b",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "docs/COGGING_FEMM_REQUEST.md",
+      "source_sha256": "248919ee5865f404fa2fa176edd6c525171cbcdc41576d7fdfb333dc85165fc7",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "91956a59411ab3463981d56e0dca6a28b06d74d2b5feb6bfa85977aaff891524",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "tests/test_cogging_phase_e.py",
+      "source_sha256": "61d1420687b1f4eea39b25741955c656c6ffdc7efbb0761e451d90b7602bd193",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
     }
   ]
 }

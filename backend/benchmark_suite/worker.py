@@ -51,8 +51,11 @@ def measure(args):
         if solver != "magneto2d":
             raise ValueError("This suite measures only public Magneto2D")
         measured = Magneto2DSolver(launch_surface=True).solve(config, on_progress=lambda *a, **k: print(*a[:4], flush=True))
+        # A cogging request (Phase E) keeps its waveform; other requests' results are unchanged.
+        cogging = {"cogging_torque_waveform"} if config.solve_options is not None and config.solve_options.cogging_torque else set()
         data["result"] = measured.model_dump(
-            mode="json", include={"summary", "torque_waveform", "back_emf_waveform", "phase_current_waveform", "solve_metadata"}
+            mode="json",
+            include={"summary", "torque_waveform", "back_emf_waveform", "phase_current_waveform", "solve_metadata", *cogging},
         )
         data["resolved_config"] = config.model_dump(mode="json")
         data["identity_before"] = before

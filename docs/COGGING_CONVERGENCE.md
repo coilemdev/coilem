@@ -133,9 +133,7 @@ memory down on a nearly full disk.
 | --- | ---: | ---: | --- |
 | `spm_8p12s_example_shoed__cogging`, corner refinement on | 1.3341 | 0.3422 | The Standard run above |
 | The same, as registered (corner refinement off) | 1.2567 | 0.3415 | End mismatch 9.8% |
-| `ipm_flat_8p12s_fsae_contract__cogging` | — | — | Stopped at 4.5 GB free; still to run |
-| `spm_8p48s_distributed_femm_validation__cogging` | — | — | Still to run |
-| `ipm_flat_12s10p_fscw_contract__cogging` | — | — | Still to run |
+| The other 11 Phase E cases | — | — | Still to run: the first was stopped at 4.5 GB free |
 
 ## Not covered
 
