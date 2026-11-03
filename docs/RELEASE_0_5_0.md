@@ -228,19 +228,13 @@ registered requests:
     `tests/test_phase_resistance_gate.py` with every test run.
 
 All 46 supported FEMM records and the complete Windows native collection are
-now [published](../benchmarks/windows-v050-20261102-88aae101/README.md).
-Protocol 1.4.0 remains the runtime default until the new reference review and
-qualification registration are complete. The numerical gates are unchanged.
-
-**TODO(freeze):**
-
-- complete review of the received FEMM bundle; its original manifest-file
-  SHA-256 is `71afbb5d50551c1ac22f9e502e61f96e2f726bb3331286fc53edec012e416da1`
-  (distinct from the canonical loader identity above);
-- reconcile same-candidate Mac qualification without relabeling the published
-  historical values; all 17 Windows additions already PASS;
-- activate protocol 1.6 and matching platform records only from the accepted
-  qualification evidence.
+[published](../benchmarks/windows-v050-20261102-88aae101/README.md). The owner
+accepted the [reviewed references](../benchmarks/reference-baselines/protocol16-reviewed-20261103/README.md)
+on November 3, 2026 ([owner decisions](../benchmarks/v0.5.0/owner-decisions.json)).
+Protocol 1.6.0 is the runtime default, graded against that bundle, and both
+platform records measure candidate `88aae101`: Windows and macOS each record
+46 PASS, the planned unsupported ORNL Prius and 336/336 gates. The numerical
+gates are unchanged.
 
 ## 4. Pyleecan Prius losses
 
@@ -282,13 +276,18 @@ no independent loss or hardware validation.
 
 ## 5. Known limitations
 
-- **Only phase resistance and copper loss are qualified**, for a design with a
-  wire. The rest are experimental until a gate passes at the freeze: loaded
-  λd/λq, Ld/Lq, the flux-linkage map, the torque–speed envelope, the efficiency
-  map, iron loss, efficiency and magnet temperature derating. A derived wire
-  keeps phase resistance and copper loss experimental. Ld and Lq stay
-  experimental even if λd/λq pass, because the gate does not bound them
-  tightly (**TODO(owner):** confirm).
+- **Qualified:** phase resistance and copper loss for a design with a wire;
+  loaded λd and λq for a qualified single-layer concentrated SPM or
+  flat-buried IPM design under sinusoidal current at γ 0°–60°; and the magnet
+  temperature derating for a qualified design from 20 °C to 100 °C. The d/q and
+  temperature gates measured up to 2× their fixtures' current, at the derated
+  Br; the grade coefficients are catalogue values.
+- **Experimental:** everything else, including Ld, Lq and the quantities from
+  them, the flux-linkage map, the torque–speed envelope, the efficiency map,
+  iron loss and efficiency. A derived wire keeps phase resistance and copper
+  loss experimental. Ld and Lq stay experimental even where λd and λq are
+  qualified, because the gate does not bound them tightly; the owner confirmed
+  this on November 3, 2026.
 - **Losses not modelled:** magnet and rotor eddy-current loss; AC copper loss
   (skin and proximity effects); inverter loss. Mechanical loss is a single
   constant the user enters, the same at every speed.
@@ -338,9 +337,10 @@ no independent loss or hardware validation.
   substitute for same-candidate qualification under the current release policy.
 - [ ] Re-pin the physics hashes from that report, so the hash-guard tests pass
   again.
-- [ ] Change the status of each output whose gate passed, in the code and in
-  [Validation](VALIDATION.md#050-performance-outputs) together. Do not relax a
-  gate or relabel an output to get a green report.
+- [x] Change the status of each output whose gate passed, in the code and in
+  [Validation](VALIDATION.md#050-performance-outputs) together: λd/λq and the
+  magnet derating, each in the scope its gate measured, by the owner's decision
+  of November 3, 2026. No gate was relaxed.
 - [x] Bump `backend/__init__.py`, `frontend/package.json`, both versions in
   `frontend/package-lock.json` and the design-file writer to **0.5.0**, and
   Magneto2D from **0.3.3 to 0.4.0**, as decided by the owner on October 30,
