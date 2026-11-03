@@ -1,15 +1,15 @@
 # Release status
 
-Prepared October 19, 2026: the source candidate is **coilEM 0.4.0 Developer
-Preview**, with **Magneto2D 0.3.3**. Version preparation is complete in source;
+Updated October 30, 2026: the source candidate is **coilEM 0.5.0 Developer
+Preview**, with **Magneto2D 0.4.0**. Version 0.5.0 has not been frozen or released;
 final numerical qualification, wheel acceptance and publication remain pending.
-The [release plan](docs/RELEASE_0_4_0.md) tracks those gates. PyPI installation
-continues to select the published release until 0.4.0 is published.
+The [release plan](docs/RELEASE_0_5_0.md) tracks those gates. PyPI installation
+continues to select the published coilEM 0.4.0 release until 0.5.0 is published.
 
 The [release notes](RELEASE_NOTES.md) describe the winding/flux corrections,
 mesh controls, exact Prius examples, Layout ring, Phases preview, field/results
 changes and migration limits. Layout #133 and Phases #134 are merged on main.
-New hardware correlation #69/#82 is deferred to v0.5.0. CREATOR #90 and named
+New hardware correlation #69/#82 is deferred until after v0.5.0. CREATOR #90 and named
 presets #127 are outside the current milestone.
 
 ## Evidence retained before the final freeze

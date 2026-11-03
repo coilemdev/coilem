@@ -348,8 +348,8 @@ output that passes in the code and in this section together.
 | Loaded λd and λq | Experimental | Protocol 1.6.0 `lambda_d`, `lambda_q` and `reference_dq_torque`, 12 points on two fixtures | **TODO(freeze)** |
 | Apparent Ld and Lq | Experimental | None; see below | — |
 | Flux-linkage map | Experimental | None beyond the 12 d/q points | — |
-| Torque–speed envelope | Experimental | None; hardware correlation planned | **TODO(freeze):** correlation done or deferred |
-| Efficiency map | Experimental | None; hardware correlation planned | **TODO(freeze):** correlation done or deferred |
+| Torque–speed envelope | Experimental | None; hardware correlation deferred until after 0.5.0 | **TODO(freeze):** record correlation deferred |
+| Efficiency map | Experimental | None; hardware correlation deferred until after 0.5.0 | **TODO(freeze):** record correlation deferred |
 | Phase resistance, with a wire | Qualified | Protocol 1.6.0 `phase_resistance`, three hand-calculated cases | PASS, all three within 0.001% |
 | Phase resistance, derived wire | Experimental | None: the wire is an estimate | — |
 | Copper loss | Same as phase resistance | Follows phase resistance | — |

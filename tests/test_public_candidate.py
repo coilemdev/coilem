@@ -203,7 +203,7 @@ def test_release_versions_align() -> None:
     pyproject = (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8")
     package = json.loads((REPO_ROOT / "frontend" / "package.json").read_text(encoding="utf-8"))
     lock = json.loads((REPO_ROOT / "frontend" / "package-lock.json").read_text(encoding="utf-8"))
-    assert __version__ == "0.4.0"
+    assert __version__ == "0.5.0"
     assert 'dynamic = ["version", "dependencies"]' in pyproject
     assert "release_version.package_version()" in (REPO_ROOT / "setup.py").read_text(encoding="utf-8")
     assert package["version"] == __version__
@@ -214,7 +214,7 @@ def test_release_versions_align() -> None:
     magneto2d = (REPO_ROOT / "solvers" / "magneto2d" / "Cargo.toml").read_text(
         encoding="utf-8"
     )
-    assert 'version = "0.3.3"' in magneto2d
+    assert 'version = "0.4.0"' in magneto2d
 
 
 def test_public_docs_match_reduced_release_contract() -> None:
@@ -239,8 +239,8 @@ def test_public_docs_match_reduced_release_contract() -> None:
     documents = {name: path.read_text(encoding="utf-8") for name, path in paths.items()}
     combined = "\n".join(documents.values())
 
-    assert "coilEM 0.4.0" in documents["README.md"]
-    assert "Magneto2D 0.3.3" in documents["README.md"]
+    assert "coilEM 0.5.0" in documents["README.md"]
+    assert "Magneto2D 0.4.0" in documents["README.md"]
     assert "COILEM_ENABLE_ELMER=1" in documents["docs/ELMER.md"]
     assert "hidden, and not probed" in combined
     assert "H1-H12" in documents["docs/GETTING_STARTED.md"]
