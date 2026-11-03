@@ -59,10 +59,15 @@ def check(root: Path = ROOT, *, protocol: str = "1.6.0", candidate: str | None =
                 errors.append(f"qualification physics mismatch: {name}")
         bundle_path = _constant(root / "backend/resources.py", "BENCHMARK_REFERENCE_BUNDLE_DIR")
         bundle = root / bundle_path / "manifest.json"
-        bundle_sha = hashlib.sha256(bundle.read_bytes()).hexdigest()
+        reference = json.loads(bundle.read_text())
+        # Match load_bundle() and build_record(): this identifies both the
+        # manifest bytes and its record index, rather than the manifest alone.
+        bundle_sha = hashlib.sha256(json.dumps({
+            "manifest": hashlib.sha256(bundle.read_bytes()).hexdigest(),
+            "records": reference["records"],
+        }, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
         if run["reference_mode"] != "FROZEN_REFERENCE" or run["selection"]["bundle_sha256"] != bundle_sha:
             errors.append("qualification report does not use the registered frozen reference bundle")
-        reference = json.loads(bundle.read_text())
         planned_unsupported = {"ornl_prius_2004_ipm"}
         unsupported = {row["id"] for row in report["rows"] if row["status"] == "UNSUPPORTED"}
         if not unsupported <= planned_unsupported:

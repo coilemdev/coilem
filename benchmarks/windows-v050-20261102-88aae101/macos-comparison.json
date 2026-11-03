@@ -1,0 +1,3524 @@
+{
+  "schema": "coilem.windows_macos_historical_comparison/v1",
+  "windows_commit": "88aae101fd487795e7fe5300737679f4133790fd",
+  "native_run_status": "COMPLETE",
+  "completed_compared_jobs": 52,
+  "pending_jobs": [],
+  "historical_mac_sources": {
+    "report": {
+      "commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+      "sha256": "6b26dc4963a30030bf15ebcce850bbf7f7aee75134bbf9d06d18a90c19c54e7a"
+    },
+    "protocol16_table": {
+      "commit": "f6c9fbb82017ee30e36fd403ce9617d2dad88f0b",
+      "sha256": "b79c6218fd21f2236d96acfa8c979a23d95639867d4fdd351d05ba1c41e855c3"
+    }
+  },
+  "existing_platform_tolerances": {
+    "mean_torque_Nm": [
+      0.005,
+      0.001
+    ],
+    "back_emf_fundamental_V": [
+      0.0005,
+      0.001
+    ],
+    "back_emf_peak_V": [
+      0.015,
+      0.001
+    ]
+  },
+  "out_of_tolerance": [],
+  "qualification": "Historical numerical comparison across documented pins; not a same-candidate platform qualification. New-case Mac values are rounded; their full raw results are not present on this host.",
+  "timing": "No controlled platform speed comparison: different hardware and overlapping native/FEMM collection.",
+  "jobs": [
+    {
+      "case_id": "spm_4p12s_simple__baseline",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 0.4774745769412223,
+          "macos": 0.4774631010877044,
+          "absolute_delta": 1.1475853517906032e-05,
+          "relative_delta_pct": 0.0024035058398780957,
+          "tolerance": 0.002387315505438522,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 4.986622752106025,
+          "macos": 4.986589475460005,
+          "absolute_delta": 3.327664602004177e-05,
+          "relative_delta_pct": 0.0006673227500238938,
+          "tolerance": 0.0024932947377300026,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 6.678821421709572,
+          "macos": 6.6788478981542845,
+          "absolute_delta": -2.6476444712209002e-05,
+          "relative_delta_pct": -0.0003964223338508103,
+          "tolerance": 0.10018271847231426,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.011253940705409202,
+          "macos": 0.01125386262777045,
+          "absolute_delta": 7.807763875190832e-08,
+          "relative_delta_pct": 0.0006937852480910957
+        },
+        "lambda_q_Wb": {
+          "windows": 0.0006766984591050678,
+          "macos": 0.0006766952800222568,
+          "absolute_delta": 3.179082810910762e-09,
+          "relative_delta_pct": 0.0004697953280841859
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "torque_Nm": {
+            "max_abs_delta": 4.1316396684754064e-05,
+            "rms_delta": 1.9212991760725927e-05,
+            "relative_rms_delta_pct": 0.00399924230824662
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.0002950328815964909,
+            "rms_delta": 0.00013260153328937765,
+            "relative_rms_delta_pct": 0.0026430409294680188
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.0002950328815964909,
+            "rms_delta": 0.00013260153328884276,
+            "relative_rms_delta_pct": 0.0026430409294573576
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.0002950328815964909,
+            "rms_delta": 0.00013260153328925912,
+            "relative_rms_delta_pct": 0.0026430409294656565
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.011274189130342492,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.0006925344062374838,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 2.8197884337019156e-05,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.0006931082343355821,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "spm_4p12s_simple__high_current",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 0.7160472005403289,
+          "macos": 0.7160346060906025,
+          "absolute_delta": 1.2594449726344159e-05,
+          "relative_delta_pct": 0.0017589163455530717,
+          "tolerance": 0.003580173030453013,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 4.986622752106025,
+          "macos": 4.986589475460005,
+          "absolute_delta": 3.327664602004177e-05,
+          "relative_delta_pct": 0.0006673227500238938,
+          "tolerance": 0.0024932947377300026,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 6.678821421709572,
+          "macos": 6.6788478981542845,
+          "absolute_delta": -2.6476444712209002e-05,
+          "relative_delta_pct": -0.0003964223338508103,
+          "tolerance": 0.10018271847231426,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.011251398608925855,
+          "macos": 0.011251318739800764,
+          "absolute_delta": 7.986912509139188e-08,
+          "relative_delta_pct": 0.000709864567331653
+        },
+        "lambda_q_Wb": {
+          "windows": 0.0010146051409932017,
+          "macos": 0.0010146002097102837,
+          "absolute_delta": 4.931282918032437e-09,
+          "relative_delta_pct": 0.00048603212091199457
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "torque_Nm": {
+            "max_abs_delta": 4.56152591723491e-05,
+            "rms_delta": 2.0977170350511257e-05,
+            "relative_rms_delta_pct": 0.002919819200187853
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.0002950328815964909,
+            "rms_delta": 0.00013260153328937765,
+            "relative_rms_delta_pct": 0.0026430409294680188
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.0002950328815964909,
+            "rms_delta": 0.00013260153328884276,
+            "relative_rms_delta_pct": 0.0026430409294573576
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.0002950328815964909,
+            "rms_delta": 0.00013260153328925912,
+            "relative_rms_delta_pct": 0.0026430409294656565
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.011296972469212093,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.0007069958372392347,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 4.3651367049639e-05,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.0007083421177078974,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "spm_4p12s_simple__tight_airgap",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 0.5817731168900918,
+          "macos": 0.5818520591459225,
+          "absolute_delta": -7.894225583071623e-05,
+          "relative_delta_pct": -0.01356741023596143,
+          "tolerance": 0.0029092602957296126,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 6.0794581828577146,
+          "macos": 6.079123200802524,
+          "absolute_delta": 0.000334982055190558,
+          "relative_delta_pct": 0.005510367928492319,
+          "tolerance": 0.003039561600401262,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 8.687547338679403,
+          "macos": 8.687346578995376,
+          "absolute_delta": 0.00020075968402721855,
+          "relative_delta_pct": 0.002310943648922947,
+          "tolerance": 0.13031019868493063,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.013713200131505917,
+          "macos": 0.013712484994978803,
+          "absolute_delta": 7.151365271143573e-07,
+          "relative_delta_pct": 0.005215221948291822
+        },
+        "lambda_q_Wb": {
+          "windows": 0.000723933282416282,
+          "macos": 0.0007239703450883333,
+          "absolute_delta": -3.7062672051291386e-08,
+          "relative_delta_pct": -0.005119363286457442
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "torque_Nm": {
+            "max_abs_delta": 0.0004082051023108213,
+            "rms_delta": 0.0001902174828306017,
+            "relative_rms_delta_pct": 0.03152408367550209
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.004285849944526632,
+            "rms_delta": 0.0016950639548675242,
+            "relative_rms_delta_pct": 0.02722399695991115
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.004285849944526632,
+            "rms_delta": 0.0016950639548674012,
+            "relative_rms_delta_pct": 0.02722399695990918
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.004285849944526632,
+            "rms_delta": 0.0016950639548675025,
+            "relative_rms_delta_pct": 0.027223996959910804
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.013731583222559813,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.005207968487853967,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 0.0002699082214380101,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.005214957930652918,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__baseline",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 9.843871784426006e-06,
+          "macos": 8.498731338370461e-07,
+          "absolute_delta": 8.99399865058896e-06,
+          "relative_delta_pct": 1058.2754404745617,
+          "tolerance": 0.001,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 4.986622752106025,
+          "macos": 4.986589475460005,
+          "absolute_delta": 3.327664602004177e-05,
+          "relative_delta_pct": 0.0006673227500238938,
+          "tolerance": 0.0024932947377300026,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 6.678821421709572,
+          "macos": 6.6788478981542845,
+          "absolute_delta": -2.6476444712209002e-05,
+          "relative_delta_pct": -0.0003964223338508103,
+          "tolerance": 0.10018271847231426,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.01125596168113887,
+          "macos": 0.011255886568047081,
+          "absolute_delta": 7.511309178809267e-08,
+          "relative_delta_pct": 0.0006673227500472665
+        },
+        "lambda_q_Wb": {
+          "windows": 9.41929448319803e-10,
+          "macos": 1.0009971207310506e-09,
+          "absolute_delta": -5.906767241124766e-11,
+          "relative_delta_pct": -5.900883348006957
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "torque_Nm": {
+            "max_abs_delta": 3.282815782664622e-05,
+            "rms_delta": 1.6048605972274342e-05,
+            "relative_rms_delta_pct": 0.033228211560121505
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.0002950328815964909,
+            "rms_delta": 0.00013260153328937765,
+            "relative_rms_delta_pct": 0.0026430409294680188
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.0002950328815964909,
+            "rms_delta": 0.00013260153328884276,
+            "relative_rms_delta_pct": 0.0026430409294573576
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.0002950328815964909,
+            "rms_delta": 0.00013260153328925912,
+            "relative_rms_delta_pct": 0.0026430409294656565
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.011255886568047126,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.0006673227500472638,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 5.24771390100245e-07,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.0006673229563829307,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__high_current",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 0.23877171774923556,
+          "macos": 0.23876146503532703,
+          "absolute_delta": 1.0252713908531774e-05,
+          "relative_delta_pct": 0.004294124224365431,
+          "tolerance": 0.0011938073251766353,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 4.986622752106025,
+          "macos": 4.986589475460005,
+          "absolute_delta": 3.327664602004177e-05,
+          "relative_delta_pct": 0.0006673227500238938,
+          "tolerance": 0.0024932947377300026,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 6.678821421709572,
+          "macos": 6.6788478981542845,
+          "absolute_delta": -2.6476444712209002e-05,
+          "relative_delta_pct": -0.0003964223338508103,
+          "tolerance": 0.10018271847231426,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.011255453417996998,
+          "macos": 0.011255376854345365,
+          "absolute_delta": 7.656365163394296e-08,
+          "relative_delta_pct": 0.000680240676298493
+        },
+        "lambda_q_Wb": {
+          "windows": 0.00033843526320228207,
+          "macos": 0.00033843382157153164,
+          "absolute_delta": 1.4416307504315148e-09,
+          "relative_delta_pct": 0.00042597124121260754
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "torque_Nm": {
+            "max_abs_delta": 3.700698303629735e-05,
+            "rms_delta": 1.753032183796734e-05,
+            "relative_rms_delta_pct": 0.007188923985889276
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.0002950328815964909,
+            "rms_delta": 0.00013260153328937765,
+            "relative_rms_delta_pct": 0.0026430409294680188
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.0002950328815964909,
+            "rms_delta": 0.00013260153328884276,
+            "relative_rms_delta_pct": 0.0026430409294573576
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.0002950328815964909,
+            "rms_delta": 0.00013260153328925912,
+            "relative_rms_delta_pct": 0.0026430409294656565
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.011260463826366873,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.0006799333741001485,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 1.2802587643466984e-05,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.0006800538945301182,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__tight_airgap",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": -0.00023532000380391922,
+          "macos": -0.00017063247238919548,
+          "absolute_delta": -6.468753141472373e-05,
+          "relative_delta_pct": -37.910446065141684,
+          "tolerance": 0.001,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 6.0794581828577146,
+          "macos": 6.079123200802524,
+          "absolute_delta": 0.000334982055190558,
+          "relative_delta_pct": 0.005510367928492319,
+          "tolerance": 0.003039561600401262,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 8.687547338679403,
+          "macos": 8.687346578995376,
+          "absolute_delta": 0.00020075968402721855,
+          "relative_delta_pct": 0.002310943648922947,
+          "tolerance": 0.13031019868493063,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.013722744179801958,
+          "macos": 0.013721988047771708,
+          "absolute_delta": 7.561320302506419e-07,
+          "relative_delta_pct": 0.005510367940988179
+        },
+        "lambda_q_Wb": {
+          "windows": 3.2350951298167267e-09,
+          "macos": 7.565639103496538e-09,
+          "absolute_delta": -4.3305439736798105e-09,
+          "relative_delta_pct": -57.23963189941753
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "torque_Nm": {
+            "max_abs_delta": 0.0005057787088534479,
+            "rms_delta": 0.000256281294363725,
+            "relative_rms_delta_pct": 0.18037050722543801
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.004285849944526632,
+            "rms_delta": 0.0016950639548675242,
+            "relative_rms_delta_pct": 0.02722399695991115
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.004285849944526632,
+            "rms_delta": 0.0016950639548674012,
+            "relative_rms_delta_pct": 0.02722399695990918
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.004285849944526632,
+            "rms_delta": 0.0016950639548675025,
+            "relative_rms_delta_pct": 0.027223996959910804
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.013721988047773793,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.005510367940987341,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 3.155915861901937e-05,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.005510458313566469,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__baseline",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 2.208500629166024,
+          "macos": 2.2085047656954266,
+          "absolute_delta": -4.136529402565259e-06,
+          "relative_delta_pct": -0.00018729999893220628,
+          "tolerance": 0.011042523828477133,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 16.280180118992227,
+          "macos": 16.280180975322864,
+          "absolute_delta": -8.563306366227152e-07,
+          "relative_delta_pct": -5.259957723570286e-06,
+          "tolerance": 0.008140090487661433,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 23.652471201617185,
+          "macos": 23.65250151013847,
+          "absolute_delta": -3.0308521285604684e-05,
+          "relative_delta_pct": -0.00012814087031180678,
+          "tolerance": 0.354787522652077,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.018351510406270383,
+          "macos": 0.01835151383468528,
+          "absolute_delta": -3.4284148957286487e-09,
+          "relative_delta_pct": -1.868191870497775e-05
+        },
+        "lambda_q_Wb": {
+          "windows": 0.0028155291879286195,
+          "macos": 0.002815529304555531,
+          "absolute_delta": -1.16626911687151e-10,
+          "relative_delta_pct": -4.142273053185718e-06
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "torque_Nm": {
+            "max_abs_delta": 0.0001903492810526597,
+            "rms_delta": 8.375948866647074e-05,
+            "relative_rms_delta_pct": 0.003778091431137067
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.00021193760843907228,
+            "rms_delta": 0.00010329843043978775,
+            "relative_rms_delta_pct": 0.0006313245767167248
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.0004649086935692992,
+            "rms_delta": 0.00013508856318928688,
+            "relative_rms_delta_pct": 0.0008256169250260459
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.0004821990310297508,
+            "rms_delta": 0.00012880779906671613,
+            "relative_rms_delta_pct": 0.0007872295575261912
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.018566239934070014,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 1.8465854733662734e-05,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 6.281665652350779e-07,
+        "vector_delta_as_share_of_flux_magnitude_pct": 1.8476536046521645e-05,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__high_current",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 3.3048242253049267,
+          "macos": 3.3048303142058426,
+          "absolute_delta": -6.088900915912632e-06,
+          "relative_delta_pct": -0.0001842424674495219,
+          "tolerance": 0.016524151571029214,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 16.280180118992227,
+          "macos": 16.280180975322864,
+          "absolute_delta": -8.563306366227152e-07,
+          "relative_delta_pct": -5.259957723570286e-06,
+          "tolerance": 0.008140090487661433,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 23.652471201617185,
+          "macos": 23.65250151013847,
+          "absolute_delta": -3.0308521285604684e-05,
+          "relative_delta_pct": -0.00012814087031180678,
+          "tolerance": 0.354787522652077,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.018321442169885713,
+          "macos": 0.01832144726374073,
+          "absolute_delta": -5.093855014876025e-09,
+          "relative_delta_pct": -2.7802689064619243e-05
+        },
+        "lambda_q_Wb": {
+          "windows": 0.004210785759975793,
+          "macos": 0.004210786815609157,
+          "absolute_delta": -1.055633363708508e-09,
+          "relative_delta_pct": -2.5069741355590188e-05
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "torque_Nm": {
+            "max_abs_delta": 0.0001866345160381755,
+            "rms_delta": 7.993772566007979e-05,
+            "relative_rms_delta_pct": 0.0024146668744180707
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.00021193760843907228,
+            "rms_delta": 0.00010329843043978775,
+            "relative_rms_delta_pct": 0.0006313245767167248
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.0004649086935692992,
+            "rms_delta": 0.00013508856318928688,
+            "relative_rms_delta_pct": 0.0008256169250260459
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.0004821990310297508,
+            "rms_delta": 0.00012880779906671613,
+            "relative_rms_delta_pct": 0.0007872295575261912
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.018799099857294777,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 2.7096270850965306e-05,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 5.615339945645757e-06,
+        "vector_delta_as_share_of_flux_magnitude_pct": 2.7672006373482155e-05,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__tight_airgap",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 2.342153530731049,
+          "macos": 2.3421447220089764,
+          "absolute_delta": 8.80872207265071e-06,
+          "relative_delta_pct": 0.0003760964038590673,
+          "tolerance": 0.011710723610044882,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 17.350044022966323,
+          "macos": 17.350039362182212,
+          "absolute_delta": 4.6607841106549586e-06,
+          "relative_delta_pct": 2.6863248050111315e-05,
+          "tolerance": 0.008675019681091106,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 25.20189807182737,
+          "macos": 25.202061137697488,
+          "absolute_delta": -0.00016306587011882812,
+          "relative_delta_pct": -0.0006470338645235353,
+          "tolerance": 0.3780309170654623,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.01954548731589614,
+          "macos": 0.019545498865795305,
+          "absolute_delta": -1.1549899165547162e-08,
+          "relative_delta_pct": -5.909237336356519e-05
+        },
+        "lambda_q_Wb": {
+          "windows": 0.0028708177076731396,
+          "macos": 0.002870818336257717,
+          "absolute_delta": -6.285845771843157e-10,
+          "relative_delta_pct": -2.1895658434581176e-05
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "torque_Nm": {
+            "max_abs_delta": 0.0004293062675726489,
+            "rms_delta": 0.00011004698189691048,
+            "relative_rms_delta_pct": 0.004657216163426233
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.00030015828333063155,
+            "rms_delta": 0.0001370536724085617,
+            "relative_rms_delta_pct": 0.0007866509719615454
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.0006797334143051614,
+            "rms_delta": 0.00021260754033832207,
+            "relative_rms_delta_pct": 0.0012203138584208956
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.0006797334143051614,
+            "rms_delta": 0.00019667336381357683,
+            "relative_rms_delta_pct": 0.0011288521272665613
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.019755204980779092,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 5.8465094018435564e-05,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 3.181868159788267e-06,
+        "vector_delta_as_share_of_flux_magnitude_pct": 5.8551614013371e-05,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "spm_8p12s_reference_angle30__baseline",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 16.588842291643378,
+          "macos": 16.588841638702544,
+          "absolute_delta": 6.529408338451503e-07,
+          "relative_delta_pct": 3.936024275027189e-06,
+          "tolerance": 0.08294420819351273,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 39.91718920960732,
+          "macos": 39.91718400045081,
+          "absolute_delta": 5.209156512364643e-06,
+          "relative_delta_pct": 1.3049909814043528e-05,
+          "tolerance": 0.019958592000225404,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 63.08307241817651,
+          "macos": 63.08323201436563,
+          "absolute_delta": -0.00015959618911409734,
+          "relative_delta_pct": -0.00025299304429702224,
+          "tolerance": 0.9462484802154844,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.04163550172942694,
+          "macos": 0.04163549817310526,
+          "absolute_delta": 3.5563216815859278e-09,
+          "relative_delta_pct": 8.541561498315778e-06
+        },
+        "lambda_q_Wb": {
+          "windows": 0.006096782245759667,
+          "macos": 0.006096780262799791,
+          "absolute_delta": 1.9829598761622602e-09,
+          "relative_delta_pct": 3.252470633166032e-05
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "torque_Nm": {
+            "max_abs_delta": 0.0002339775610860073,
+            "rms_delta": 4.552995928147572e-05,
+            "relative_rms_delta_pct": 0.0002487057521034981
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.0003964107446563503,
+            "rms_delta": 0.00014729644941265132,
+            "relative_rms_delta_pct": 0.0003670970413469079
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.0004641554866608999,
+            "rms_delta": 0.00014921362914311164,
+            "relative_rms_delta_pct": 0.00037186452753588874
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.0004641554866324782,
+            "rms_delta": 0.00016418923547086465,
+            "relative_rms_delta_pct": 0.0004091869693893428
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.042079513277787764,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 8.451432548919667e-06,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 4.712411626702423e-06,
+        "vector_delta_as_share_of_flux_magnitude_pct": 9.67644229396419e-06,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "ipm_flat_12s10p_fscw_contract",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 4.807063512797066,
+          "macos": 4.807107162666622,
+          "absolute_delta": -4.3649869556183774e-05,
+          "relative_delta_pct": -0.0009080278029826594,
+          "tolerance": 0.02403553581333311,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 23.60314504814901,
+          "macos": 23.603063597351,
+          "absolute_delta": 8.14507980102519e-05,
+          "relative_delta_pct": 0.00034508570327876093,
+          "tolerance": 0.0118015317986755,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 38.74287487788408,
+          "macos": 38.74288434241624,
+          "absolute_delta": -9.46453216243981e-06,
+          "relative_delta_pct": -2.442908503866324e-05,
+          "tolerance": 0.5811432651362436,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.021351690750218796,
+          "macos": 0.02135166937618418,
+          "absolute_delta": 2.1374034615134763e-08,
+          "relative_delta_pct": 0.0001001047470273005
+        },
+        "lambda_q_Wb": {
+          "windows": 0.011768736160907147,
+          "macos": 0.011768529325680956,
+          "absolute_delta": 2.0683522619115158e-07,
+          "relative_delta_pct": 0.0017575282388072187
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 13,
+          "macos_samples": 13,
+          "torque_Nm": {
+            "max_abs_delta": 0.0008802275724608677,
+            "rms_delta": 0.00025981136407305283,
+            "relative_rms_delta_pct": 0.005390398862370282
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.024545374146228482,
+            "rms_delta": 0.006464715050962464,
+            "relative_rms_delta_pct": 0.026957210280333554
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.047036010280062435,
+            "rms_delta": 0.010979597511417855,
+            "relative_rms_delta_pct": 0.045786586995192675
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.04247694086973608,
+            "rms_delta": 0.011919043498813404,
+            "relative_rms_delta_pct": 0.04969712433091658
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.0243801572521445,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 8.766979800039922e-05,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 0.0008483752752372349,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.0008528930771880405,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "ipm_flat_24s16p_industrial_contract",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 19.39733626709846,
+          "macos": 19.39736986686341,
+          "absolute_delta": -3.3599764950764666e-05,
+          "relative_delta_pct": -0.00017321814854993951,
+          "tolerance": 0.09698684933431706,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 28.885581248359955,
+          "macos": 28.88561048628384,
+          "absolute_delta": -2.9237923886427097e-05,
+          "relative_delta_pct": -0.0001012196847988051,
+          "tolerance": 0.014442805243141921,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 42.19594876271312,
+          "macos": 42.196072865613935,
+          "absolute_delta": -0.00012410290081277253,
+          "relative_delta_pct": -0.0002941100732478482,
+          "tolerance": 0.632941092984209,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.016343200877762306,
+          "macos": 0.01634322073379936,
+          "absolute_delta": -1.9856037054150066e-08,
+          "relative_delta_pct": -0.00012149402726407446
+        },
+        "lambda_q_Wb": {
+          "windows": 0.017487476414925995,
+          "macos": 0.01748748895846048,
+          "absolute_delta": -1.2543534485404129e-08,
+          "relative_delta_pct": -7.172861990191875e-05
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 13,
+          "macos_samples": 13,
+          "torque_Nm": {
+            "max_abs_delta": 9.172558001679931e-05,
+            "rms_delta": 5.34987900580729e-05,
+            "relative_rms_delta_pct": 0.000275546557909377
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.0015698509149117967,
+            "rms_delta": 0.0004527841364488933,
+            "relative_rms_delta_pct": 0.0015666733746297905
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.0011665859998259975,
+            "rms_delta": 0.00038137727326721096,
+            "relative_rms_delta_pct": 0.0013195572744194898
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.0005684664297973541,
+            "rms_delta": 0.00022630994510183962,
+            "relative_rms_delta_pct": 0.0007831306755953722
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.023935603899337205,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 8.295607304355456e-05,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 5.24053395024283e-05,
+        "vector_delta_as_share_of_flux_magnitude_pct": 9.812252373014226e-05,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "ipm_flat_4p12s_micro_contract",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 0.021415527613176336,
+          "macos": 0.02141540396996676,
+          "absolute_delta": 1.2364320957705677e-07,
+          "relative_delta_pct": 0.000577356419474765,
+          "tolerance": 0.001,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 0.45007886745153386,
+          "macos": 0.4500765717931826,
+          "absolute_delta": 2.295658351247898e-06,
+          "relative_delta_pct": 0.000510059508785716,
+          "tolerance": 0.001,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 0.635080659953603,
+          "macos": 0.6350220943066288,
+          "absolute_delta": 5.856564697415134e-05,
+          "relative_delta_pct": 0.009222615637980014,
+          "tolerance": 0.009525331414599433,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.0010162183627552492,
+          "macos": 0.0010162114717234614,
+          "absolute_delta": 6.891031787727153e-09,
+          "relative_delta_pct": 0.0006781100174002355
+        },
+        "lambda_q_Wb": {
+          "windows": 0.00033704612134108483,
+          "macos": 0.00033704604567066145,
+          "absolute_delta": 7.567042337782576e-11,
+          "relative_delta_pct": 2.2451063986600146e-05
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 13,
+          "macos_samples": 13,
+          "torque_Nm": {
+            "max_abs_delta": 5.146493373374417e-07,
+            "rms_delta": 2.756574832954027e-07,
+            "relative_rms_delta_pct": 0.0012856345141922033
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 5.858796202734551e-05,
+            "rms_delta": 3.2560741372287264e-05,
+            "relative_rms_delta_pct": 0.007211890548434666
+          },
+          "phase_b_V": {
+            "max_abs_delta": 5.858796202734551e-05,
+            "rms_delta": 3.256074137226271e-05,
+            "relative_rms_delta_pct": 0.007211890548429226
+          },
+          "phase_c_V": {
+            "max_abs_delta": 5.858796202734551e-05,
+            "rms_delta": 3.2560741372280305e-05,
+            "relative_rms_delta_pct": 0.007211890548433124
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.001070647370596217,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.0006436322525024937,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 7.067726074523191e-06,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.000643671056684467,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 2.155195354141338,
+          "macos": 2.1551995887509174,
+          "absolute_delta": -4.234609579434334e-06,
+          "relative_delta_pct": -0.00019648340699102368,
+          "tolerance": 0.010775997943754587,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 7.030945669195054,
+          "macos": 7.030953997363156,
+          "absolute_delta": -8.328168101812139e-06,
+          "relative_delta_pct": -0.00011845004397604482,
+          "tolerance": 0.003515476998681578,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 10.488233363667941,
+          "macos": 10.488334913647211,
+          "absolute_delta": -0.00010154997927003251,
+          "relative_delta_pct": -0.0009682183121164228,
+          "tolerance": 0.15732502370470816,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.006137210642305999,
+          "macos": 0.006137216316520205,
+          "absolute_delta": -5.674214206136119e-09,
+          "relative_delta_pct": -9.245582872583823e-05
+        },
+        "lambda_q_Wb": {
+          "windows": 0.00346349954753646,
+          "macos": 0.0034634971644421086,
+          "absolute_delta": 2.3830943511951586e-09,
+          "relative_delta_pct": 6.880601421191061e-05
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 13,
+          "macos_samples": 13,
+          "torque_Nm": {
+            "max_abs_delta": 2.598009154275438e-05,
+            "rms_delta": 9.184547228232863e-06,
+            "relative_rms_delta_pct": 0.00042473676944025586
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.00033434130380904925,
+            "rms_delta": 0.0001403732867281522,
+            "relative_rms_delta_pct": 0.001993954993434956
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.0003947684604552748,
+            "rms_delta": 0.0001415210220102268,
+            "relative_rms_delta_pct": 0.002010258696421995
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.0003947684604588275,
+            "rms_delta": 0.0001417531185327933,
+            "relative_rms_delta_pct": 0.0020135553939463658
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.0070470729188692495,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 8.051873836785251e-05,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 3.3816797110388664e-05,
+        "vector_delta_as_share_of_flux_magnitude_pct": 8.73317983048321e-05,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 2.5674302906005693,
+          "macos": 2.56742802147706,
+          "absolute_delta": 2.269123509091031e-06,
+          "relative_delta_pct": 8.838119277772733e-05,
+          "tolerance": 0.0128371401073853,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 7.658139593821787,
+          "macos": 7.658144182482818,
+          "absolute_delta": -4.588661031590391e-06,
+          "relative_delta_pct": -5.991870774758276e-05,
+          "tolerance": 0.003829072091241409,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 11.210011500983112,
+          "macos": 11.210167803920173,
+          "absolute_delta": -0.00015630293706081488,
+          "relative_delta_pct": -0.0013942961407424788,
+          "tolerance": 0.1681525170588026,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.008649807359653103,
+          "macos": 0.00864981280608432,
+          "absolute_delta": -5.44643121748456e-09,
+          "relative_delta_pct": -6.296588538486651e-05
+        },
+        "lambda_q_Wb": {
+          "windows": 0.0039268254029031745,
+          "macos": 0.003926825359597346,
+          "absolute_delta": 4.330582854122911e-11,
+          "relative_delta_pct": 1.1028203338706578e-06
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 13,
+          "macos_samples": 13,
+          "torque_Nm": {
+            "max_abs_delta": 2.840016209493257e-05,
+            "rms_delta": 8.774986754146055e-06,
+            "relative_rms_delta_pct": 0.0003414095394009588
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.000278517311855353,
+            "rms_delta": 7.317633488630325e-05,
+            "relative_rms_delta_pct": 0.0009550060998823162
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.00044140536102865724,
+            "rms_delta": 0.00011215245314064165,
+            "relative_rms_delta_pct": 0.0014636736461011725
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.00038914070448914373,
+            "rms_delta": 9.123570760984282e-05,
+            "relative_rms_delta_pct": 0.001190694709134081
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.009499432561215281,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 5.733427952024734e-05,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 4.558780565277144e-07,
+        "vector_delta_as_share_of_flux_magnitude_pct": 5.733609188729449e-05,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 3.170678186632334,
+          "macos": 3.170676017352533,
+          "absolute_delta": 2.169279801123025e-06,
+          "relative_delta_pct": 6.841694923262268e-05,
+          "tolerance": 0.015853380086762667,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 9.55069432130816,
+          "macos": 9.550698650739596,
+          "absolute_delta": -4.3294314355790675e-06,
+          "relative_delta_pct": -4.533104429217648e-05,
+          "tolerance": 0.004775349325369798,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 14.103525972816392,
+          "macos": 14.103449037647009,
+          "absolute_delta": 7.693516938367395e-05,
+          "relative_delta_pct": 0.0005455060615194711,
+          "tolerance": 0.2115517355647051,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.01078544259346694,
+          "macos": 0.010785448091201704,
+          "absolute_delta": -5.49773476396509e-09,
+          "relative_delta_pct": -5.0973633338886504e-05
+        },
+        "lambda_q_Wb": {
+          "windows": 0.003940144709675904,
+          "macos": 0.003940147515958969,
+          "absolute_delta": -2.806283065301396e-09,
+          "relative_delta_pct": -7.122279188621676e-05
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 13,
+          "macos_samples": 13,
+          "torque_Nm": {
+            "max_abs_delta": 4.841623545637219e-06,
+            "rms_delta": 2.9846270425091047e-06,
+            "relative_rms_delta_pct": 9.382514412460039e-05
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.00012768668045382014,
+            "rms_delta": 5.200872508082071e-05,
+            "relative_rms_delta_pct": 0.0005440886068507102
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.0001666536015605402,
+            "rms_delta": 6.994451266179291e-05,
+            "relative_rms_delta_pct": 0.0007317237764991623
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.0001577480849181967,
+            "rms_delta": 6.423325076937703e-05,
+            "relative_rms_delta_pct": 0.0006719753015422772
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.011482623958639597,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 4.7878732106597986e-05,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 2.443938837855899e-05,
+        "vector_delta_as_share_of_flux_magnitude_pct": 5.375552708748581e-05,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_baseline_contract",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 0.8969422740363934,
+          "macos": 0.8971387882082845,
+          "absolute_delta": -0.00019651417189114895,
+          "relative_delta_pct": -0.021904545258110628,
+          "tolerance": 0.0044856939410414225,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 2.354645596231227,
+          "macos": 2.3546859333505625,
+          "absolute_delta": -4.0337119335376315e-05,
+          "relative_delta_pct": -0.0017130573026348044,
+          "tolerance": 0.0011773429666752813,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 3.570012904702707,
+          "macos": 3.57012596574217,
+          "absolute_delta": -0.00011306103946262525,
+          "relative_delta_pct": -0.003166864154024933,
+          "tolerance": 0.05355188948613254,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.0030336380764813655,
+          "macos": 0.0030338208026183464,
+          "absolute_delta": -1.8272613698088608e-07,
+          "relative_delta_pct": -0.00602297066534661
+        },
+        "lambda_q_Wb": {
+          "windows": 0.015025738887394002,
+          "macos": 0.015025745255078375,
+          "absolute_delta": -6.367684372843296e-09,
+          "relative_delta_pct": -4.237849281180351e-05
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 13,
+          "macos_samples": 13,
+          "torque_Nm": {
+            "max_abs_delta": 0.0016586105991693856,
+            "rms_delta": 0.0005259866886393003,
+            "relative_rms_delta_pct": 0.05786305370119327
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.004392279385261766,
+            "rms_delta": 0.0011678738963821402,
+            "relative_rms_delta_pct": 0.04895886305015683
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.00433678568488105,
+            "rms_delta": 0.001201842905993291,
+            "relative_rms_delta_pct": 0.050382967377870146
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.004336785684880162,
+            "rms_delta": 0.0011831504570156556,
+            "relative_rms_delta_pct": 0.04959848962830374
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.015328962428452558,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.0011920319971671567,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 4.1540217758144164e-05,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.0011927555793043744,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 0.6571472115443525,
+          "macos": 0.6571482777618531,
+          "absolute_delta": -1.0662175006226349e-06,
+          "relative_delta_pct": -0.00016224915086957378,
+          "tolerance": 0.0032857413888092656,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 1.5588307515242763,
+          "macos": 1.5588433829552244,
+          "absolute_delta": -1.2631430948095712e-05,
+          "relative_delta_pct": -0.0008103078914925562,
+          "tolerance": 0.001,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 2.2303752596346156,
+          "macos": 2.2307641629063024,
+          "absolute_delta": -0.0003889032716868357,
+          "relative_delta_pct": -0.017433634543427556,
+          "tolerance": 0.033461462443594533,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.002265975495733311,
+          "macos": 0.002265995925056758,
+          "absolute_delta": -2.04293234469001e-08,
+          "relative_delta_pct": -0.000901560467121687
+        },
+        "lambda_q_Wb": {
+          "windows": 0.01490322070233957,
+          "macos": 0.014903214650616467,
+          "absolute_delta": 6.051723103542295e-09,
+          "relative_delta_pct": 4.060683044172599e-05
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 13,
+          "macos_samples": 13,
+          "torque_Nm": {
+            "max_abs_delta": 7.39138453488275e-05,
+            "rms_delta": 2.900662486903127e-05,
+            "relative_rms_delta_pct": 0.004403204341641056
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.0007455710141830441,
+            "rms_delta": 0.0002937233119529095,
+            "relative_rms_delta_pct": 0.01881682397928757
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.0008698398963362663,
+            "rms_delta": 0.00040670623835251834,
+            "relative_rms_delta_pct": 0.02605491748331277
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.0008698398963384868,
+            "rms_delta": 0.0002833792639454417,
+            "relative_rms_delta_pct": 0.01815377991821928
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.015074499807778802,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.00013552239681185362,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 4.014543222468623e-05,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.0001413434673627911,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_narrow_angle_contract",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 0.8930743514442151,
+          "macos": 0.8930802870572406,
+          "absolute_delta": -5.935613025531694e-06,
+          "relative_delta_pct": -0.0006646225553908414,
+          "tolerance": 0.004465401435286203,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 2.283919494783282,
+          "macos": 2.2839190248675245,
+          "absolute_delta": 4.69915757417283e-07,
+          "relative_delta_pct": 2.0574974519709155e-05,
+          "tolerance": 0.0011419595124337622,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 3.764882170175371,
+          "macos": 3.764971777339119,
+          "absolute_delta": -8.960716374772915e-05,
+          "relative_delta_pct": -0.0023800221899952386,
+          "tolerance": 0.05647457666008678,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.002944243806629823,
+          "macos": 0.002944266859033486,
+          "absolute_delta": -2.3052403663043064e-08,
+          "relative_delta_pct": -0.0007829590443649688
+        },
+        "lambda_q_Wb": {
+          "windows": 0.01513271238368271,
+          "macos": 0.015132710410946585,
+          "absolute_delta": 1.9727361254967546e-09,
+          "relative_delta_pct": 1.3036237870974732e-05
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 13,
+          "macos_samples": 13,
+          "torque_Nm": {
+            "max_abs_delta": 2.3158656771382624e-05,
+            "rms_delta": 8.845345027269053e-06,
+            "relative_rms_delta_pct": 0.0009660881197521116
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.00028637945547055343,
+            "rms_delta": 9.988895465905453e-05,
+            "relative_rms_delta_pct": 0.0042638635107233895
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.0006411953890298194,
+            "rms_delta": 0.00022339457506140097,
+            "relative_rms_delta_pct": 0.009535770153052608
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.0006009007543467115,
+            "rms_delta": 0.00018505736658107732,
+            "relative_rms_delta_pct": 0.007899263772682047
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.015416472739208993,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.00014953098580334443,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 1.2796287184937312e-05,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.0001500775155745836,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 1.1113829514356401,
+          "macos": 1.111301487922339,
+          "absolute_delta": 8.146351330107215e-05,
+          "relative_delta_pct": 0.007330460202422141,
+          "tolerance": 0.005556507439611696,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 2.350591665806868,
+          "macos": 2.3506149789486774,
+          "absolute_delta": -2.3313141809477855e-05,
+          "relative_delta_pct": -0.0009917890432190114,
+          "tolerance": 0.0011753074894743387,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 3.5894794688026694,
+          "macos": 3.5895574398352226,
+          "absolute_delta": -7.797103255313687e-05,
+          "relative_delta_pct": -0.0021721628323272102,
+          "tolerance": 0.05384336159752834,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": -0.0011964519498938063,
+          "macos": -0.0011966856028909644,
+          "absolute_delta": 2.3365299715817286e-07,
+          "relative_delta_pct": 0.019525011130217637
+        },
+        "lambda_q_Wb": {
+          "windows": 0.013889914096793306,
+          "macos": 0.013889806181420482,
+          "absolute_delta": 1.0791537282360542e-07,
+          "relative_delta_pct": 0.0007769393713207963
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 13,
+          "macos_samples": 13,
+          "torque_Nm": {
+            "max_abs_delta": 0.0006079968032417504,
+            "rms_delta": 0.0002037271299905728,
+            "relative_rms_delta_pct": 0.01827901262414802
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.003997650975633427,
+            "rms_delta": 0.001225126292430927,
+            "relative_rms_delta_pct": 0.05145978505452411
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.003998728380246952,
+            "rms_delta": 0.0012248718597667892,
+            "relative_rms_delta_pct": 0.05144934645853198
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.004004435999328315,
+            "rms_delta": 0.0012334158042398024,
+            "relative_rms_delta_pct": 0.05180805753110729
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.01394126149921854,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.0016759817407576063,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 0.0007740717927832749,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.0018461045300132953,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_thin_bridge_contract",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 2.6861872526633546,
+          "macos": 2.6861917936785957,
+          "absolute_delta": -4.541015241166235e-06,
+          "relative_delta_pct": -0.00016905029833880767,
+          "tolerance": 0.013430958968392978,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 7.440944583440702,
+          "macos": 7.440947177307732,
+          "absolute_delta": -2.593867029609953e-06,
+          "relative_delta_pct": -3.485936625810669e-05,
+          "tolerance": 0.003720473588653866,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 12.137787714993486,
+          "macos": 12.137839948000833,
+          "absolute_delta": -5.2233007346913496e-05,
+          "relative_delta_pct": -0.00043033198304379155,
+          "tolerance": 0.18206759922001248,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.008670188309669223,
+          "macos": 0.008670186284237697,
+          "absolute_delta": 2.025431525623511e-09,
+          "relative_delta_pct": 2.3360876678113862e-05
+        },
+        "lambda_q_Wb": {
+          "windows": 0.014725083932644266,
+          "macos": 0.014725075680251375,
+          "absolute_delta": 8.252392890567561e-09,
+          "relative_delta_pct": 5.604312717818699e-05
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 13,
+          "macos_samples": 13,
+          "torque_Nm": {
+            "max_abs_delta": 8.749915598826874e-05,
+            "rms_delta": 4.8930686150512304e-05,
+            "relative_rms_delta_pct": 0.0017584743157867632
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.0006157502526296099,
+            "rms_delta": 0.00021890880232413765,
+            "relative_rms_delta_pct": 0.0028628679642538806
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.0021300676299298438,
+            "rms_delta": 0.0005595026823771691,
+            "relative_rms_delta_pct": 0.007317119069518653
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.0012071247081495429,
+            "rms_delta": 0.0003875744473251545,
+            "relative_rms_delta_pct": 0.005068662780367241
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.017088007022251425,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 1.1852941791199305e-05,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 4.829347787498902e-05,
+        "vector_delta_as_share_of_flux_magnitude_pct": 4.972677582920103e-05,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 0.7859892185821379,
+          "macos": 0.7860204154860768,
+          "absolute_delta": -3.119690393893482e-05,
+          "relative_delta_pct": -0.00396896865835763,
+          "tolerance": 0.003930102077430385,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 2.046636274161942,
+          "macos": 2.0466570875886987,
+          "absolute_delta": -2.0813426756749465e-05,
+          "relative_delta_pct": -0.0010169474350620765,
+          "tolerance": 0.0010233285437943494,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 2.9894563654270185,
+          "macos": 2.9891031450270265,
+          "absolute_delta": 0.00035322039999208243,
+          "relative_delta_pct": 0.011816935811657605,
+          "tolerance": 0.044836547175405396,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.0027227124124714276,
+          "macos": 0.002722666096005912,
+          "absolute_delta": 4.631646551575899e-08,
+          "relative_delta_pct": 0.0017011438010597103
+        },
+        "lambda_q_Wb": {
+          "windows": 0.014925457004289119,
+          "macos": 0.014925442603043546,
+          "absolute_delta": 1.4401245572795429e-08,
+          "relative_delta_pct": 9.648789624408708e-05
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 13,
+          "macos_samples": 13,
+          "torque_Nm": {
+            "max_abs_delta": 0.00029231199921475604,
+            "rms_delta": 9.477292312247112e-05,
+            "relative_rms_delta_pct": 0.012001859556014184
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.0012785946846380902,
+            "rms_delta": 0.000563776549581081,
+            "relative_rms_delta_pct": 0.027473201769429585
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.004449715792144371,
+            "rms_delta": 0.0011840324055269536,
+            "relative_rms_delta_pct": 0.05769955069482484
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.003393812784915351,
+            "rms_delta": 0.0010390624328041119,
+            "relative_rms_delta_pct": 0.05063388670101989
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.015171741744674122,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.00030528113578006224,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 9.492150482887592e-05,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.0003196977696859068,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "spm_12p36s_distributed_femm_validation",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 4.945766287178629,
+          "macos": 4.943464746543001,
+          "absolute_delta": 0.00230154063562793,
+          "relative_delta_pct": 0.04655723775996204,
+          "tolerance": 0.024717323732715006,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 120.0926609952915,
+          "macos": 120.09296158751917,
+          "absolute_delta": -0.00030059222767420124,
+          "relative_delta_pct": -0.0002502996209774884,
+          "tolerance": 0.060046480793759585,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 166.45509945792037,
+          "macos": 166.454803427116,
+          "absolute_delta": 0.00029603080437823337,
+          "relative_delta_pct": 0.00017784455496825215,
+          "tolerance": 2.4968220514067396,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.09038749164647614,
+          "macos": 0.09038774681768147,
+          "absolute_delta": -2.551712053322497e-07,
+          "relative_delta_pct": -0.00028230729752224955
+        },
+        "lambda_q_Wb": {
+          "windows": 0.0011981430124018756,
+          "macos": 0.0011981802347450267,
+          "absolute_delta": -3.722234315109256e-08,
+          "relative_delta_pct": -0.0031065729571990055
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 13,
+          "macos_samples": 13,
+          "torque_Nm": {
+            "max_abs_delta": 0.005214558414121662,
+            "rms_delta": 0.003714389762575367,
+            "relative_rms_delta_pct": 0.04503486233717479
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.007826138646862546,
+            "rms_delta": 0.0027549235160485835,
+            "relative_rms_delta_pct": 0.00223765392494847
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.007826138646862546,
+            "rms_delta": 0.0027549235160559946,
+            "relative_rms_delta_pct": 0.0022376539249544893
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.007826138646862546,
+            "rms_delta": 0.0027549235160467278,
+            "relative_rms_delta_pct": 0.002237653924946963
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.09039568800917563,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.00028228249704382853,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 4.117712246110047e-05,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.0002852699836146024,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "spm_8p24s_distributed_femm_validation",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 5.488932167062564,
+          "macos": 5.489244440966967,
+          "absolute_delta": -0.00031227390440324854,
+          "relative_delta_pct": -0.005688832183764792,
+          "tolerance": 0.027446222204834836,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 120.77583204612735,
+          "macos": 120.77571364276564,
+          "absolute_delta": 0.0001184033617107616,
+          "relative_delta_pct": 9.803573759951354e-05,
+          "tolerance": 0.06038785682138282,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 167.3633768859765,
+          "macos": 167.36342536456064,
+          "absolute_delta": -4.847858414791517e-05,
+          "relative_delta_pct": -2.8966056378397092e-05,
+          "tolerance": 2.5104513804684094,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.1363790365184819,
+          "macos": 0.13637890469331457,
+          "absolute_delta": 1.3182516733767358e-07,
+          "relative_delta_pct": 9.666096646993806e-05
+        },
+        "lambda_q_Wb": {
+          "windows": 0.0016662019318554376,
+          "macos": 0.0016662112317858825,
+          "absolute_delta": -9.299930444879936e-09,
+          "relative_delta_pct": -0.0005581483468282747
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 13,
+          "macos_samples": 13,
+          "torque_Nm": {
+            "max_abs_delta": 0.0024757374630013373,
+            "rms_delta": 0.0011155239475543238,
+            "relative_rms_delta_pct": 0.01470347300023049
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.00564754800711853,
+            "rms_delta": 0.002328319627605477,
+            "relative_rms_delta_pct": 0.001868779830499039
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.00564754800711853,
+            "rms_delta": 0.002328319627602419,
+            "relative_rms_delta_pct": 0.0018687798304965846
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.00564754800711853,
+            "rms_delta": 0.0023283196276015143,
+            "relative_rms_delta_pct": 0.0018687798304958586
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.13638908279337136,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 9.665375309942357e-05,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 6.818676579099278e-06,
+        "vector_delta_as_share_of_flux_magnitude_pct": 9.689397472750662e-05,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "spm_8p48s_chorded_5_6",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 5.895311030365539,
+          "macos": 5.894888561163735,
+          "absolute_delta": 0.00042246920180399883,
+          "relative_delta_pct": 0.007166703787876143,
+          "tolerance": 0.029474442805818676,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 112.03081188233499,
+          "macos": 112.03017761208429,
+          "absolute_delta": 0.0006342702506998421,
+          "relative_delta_pct": 0.0005661601759626467,
+          "tolerance": 0.05601508880604215,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 163.12020755737245,
+          "macos": 163.12042552108454,
+          "absolute_delta": -0.00021796371208893106,
+          "relative_delta_pct": -0.00013362134839499767,
+          "tolerance": 2.446806382816268,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.12654058298790638,
+          "macos": 0.12653988538322802,
+          "absolute_delta": 6.97604678356889e-07,
+          "relative_delta_pct": 0.0005512923267191071
+        },
+        "lambda_q_Wb": {
+          "windows": 0.0019304809509367604,
+          "macos": 0.0019304870837294117,
+          "absolute_delta": -6.132792651318553e-09,
+          "relative_delta_pct": -0.00031768110250553536
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 13,
+          "macos_samples": 13,
+          "torque_Nm": {
+            "max_abs_delta": 0.00244743357075361,
+            "rms_delta": 0.0012879159880066144,
+            "relative_rms_delta_pct": 0.01730807084781307
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.005640644166163611,
+            "rms_delta": 0.0019300641015651053,
+            "relative_rms_delta_pct": 0.0017166261303189437
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.005640644172984821,
+            "rms_delta": 0.001930064103488967,
+            "relative_rms_delta_pct": 0.0017166261320300433
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.005640644162838271,
+            "rms_delta": 0.001930064101290964,
+            "relative_rms_delta_pct": 0.0017166261300751084
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.1265546102407215,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.0005512281828611097,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 4.845965421293836e-06,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.0005512494834113002,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "spm_8p48s_distributed_femm_validation",
+      "stage": "native",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 6.205143763466015,
+          "macos": 6.204721602039498,
+          "absolute_delta": 0.00042216142651696487,
+          "relative_delta_pct": 0.006803873785057495,
+          "tolerance": 0.031023608010197493,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 115.98285834987114,
+          "macos": 115.98219750319964,
+          "absolute_delta": 0.0006608466714936867,
+          "relative_delta_pct": 0.0005697828509202507,
+          "tolerance": 0.05799109875159982,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 164.8747584326018,
+          "macos": 164.87454802320838,
+          "absolute_delta": 0.00021040939341787634,
+          "relative_delta_pct": 0.00012761787428115242,
+          "tolerance": 2.4731182203481255,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.13080580774605666,
+          "macos": 0.1308051506052973,
+          "absolute_delta": 6.57140759363628e-07,
+          "relative_delta_pct": 0.0005023814095413881
+        },
+        "lambda_q_Wb": {
+          "windows": 0.0021764560015629414,
+          "macos": 0.0021763957253263634,
+          "absolute_delta": 6.027623657796008e-08,
+          "relative_delta_pct": 0.002769543970176715
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 13,
+          "macos_samples": 13,
+          "torque_Nm": {
+            "max_abs_delta": 0.0024461310038343953,
+            "rms_delta": 0.001288200445138275,
+            "relative_rms_delta_pct": 0.016735219140087295
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.006079904965304195,
+            "rms_delta": 0.0029572941559530344,
+            "relative_rms_delta_pct": 0.002534271665279696
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.006079904965304195,
+            "rms_delta": 0.0029572941559492132,
+            "relative_rms_delta_pct": 0.002534271665276422
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.006079904965304195,
+            "rms_delta": 0.002957294155949175,
+            "relative_rms_delta_pct": 0.0025342716652763894
+          }
+        }
+      },
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.1308232552844781,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.0005023118847904073,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 4.6074557957519135e-05,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.0005044205532020599,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "stage": "native-standard",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 3.348750592936017,
+          "macos": 3.348751740600296,
+          "absolute_delta": -1.1476642787222602e-06,
+          "relative_delta_pct": -3.427140521669517e-05,
+          "tolerance": 0.01674375870300148,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 0.0,
+          "macos": 0.0,
+          "absolute_delta": 0.0,
+          "relative_delta_pct": null,
+          "tolerance": 0.001,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 96,
+          "macos_samples": 96,
+          "torque_Nm": {
+            "max_abs_delta": 0.0033872316452550066,
+            "rms_delta": 0.0007854820475265525,
+            "relative_rms_delta_pct": 0.02343804348939952
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 96,
+          "macos_samples": 96,
+          "phase_a_V": {
+            "max_abs_delta": 0.0,
+            "rms_delta": 0.0,
+            "relative_rms_delta_pct": null
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.0,
+            "rms_delta": 0.0,
+            "relative_rms_delta_pct": null
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.0,
+            "rms_delta": 0.0,
+            "relative_rms_delta_pct": null
+          }
+        }
+      }
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "stage": "native-fine",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 3.3500567468989986,
+          "macos": 3.3499408798023693,
+          "absolute_delta": 0.00011586709662925188,
+          "relative_delta_pct": 0.0034587803422992795,
+          "tolerance": 0.01674970439901185,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 0.0,
+          "macos": 0.0,
+          "absolute_delta": 0.0,
+          "relative_delta_pct": null,
+          "tolerance": 0.001,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 192,
+          "macos_samples": 192,
+          "torque_Nm": {
+            "max_abs_delta": 0.0033872316452550066,
+            "rms_delta": 0.0007792014718369394,
+            "relative_rms_delta_pct": 0.023242974626229082
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 192,
+          "macos_samples": 192,
+          "phase_a_V": {
+            "max_abs_delta": 0.0,
+            "rms_delta": 0.0,
+            "relative_rms_delta_pct": null
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.0,
+            "rms_delta": 0.0,
+            "relative_rms_delta_pct": null
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.0,
+            "rms_delta": 0.0,
+            "relative_rms_delta_pct": null
+          }
+        }
+      }
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "stage": "analytical",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 0.3353221688110956,
+          "macos": 0.33532379262142814,
+          "absolute_delta": -1.6238103325294517e-06,
+          "relative_delta_pct": -0.0004842514513614283,
+          "tolerance": 0.0016766189631071406,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 19.11854119680297,
+          "macos": 19.108937451164255,
+          "absolute_delta": 0.00960374563871369,
+          "relative_delta_pct": 0.05025787364293539,
+          "tolerance": 0.2866340617674638,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 96,
+          "macos_samples": 96,
+          "torque_Nm": {
+            "max_abs_delta": 0.0023015318346292224,
+            "rms_delta": 0.0006369593900600806,
+            "relative_rms_delta_pct": 0.18945466541313968
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 96,
+          "macos_samples": 96,
+          "phase_a_V": {
+            "max_abs_delta": 0.0248479622360378,
+            "rms_delta": 0.005090527745630129,
+            "relative_rms_delta_pct": 0.03378165149842394
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.02278538385707307,
+            "rms_delta": 0.0060839535809897455,
+            "relative_rms_delta_pct": 0.04037530676315545
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.021750804289119685,
+            "rms_delta": 0.0074934725398728775,
+            "relative_rms_delta_pct": 0.04972848635857419
+          }
+        }
+      }
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "stage": "native-standard",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 0.5733808425174238,
+          "macos": 0.573387906333372,
+          "absolute_delta": -7.063815948171737e-06,
+          "relative_delta_pct": -0.001231943658062572,
+          "tolerance": 0.00286693953166686,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 0.0,
+          "macos": 0.0,
+          "absolute_delta": 0.0,
+          "relative_delta_pct": null,
+          "tolerance": 0.001,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "torque_Nm": {
+            "max_abs_delta": 6.360805629268551e-05,
+            "rms_delta": 2.2857186713989764e-05,
+            "relative_rms_delta_pct": 0.003958367002534857
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.0,
+            "rms_delta": 0.0,
+            "relative_rms_delta_pct": null
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.0,
+            "rms_delta": 0.0,
+            "relative_rms_delta_pct": null
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.0,
+            "rms_delta": 0.0,
+            "relative_rms_delta_pct": null
+          }
+        }
+      }
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "stage": "native-fine",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 0.5744619979308184,
+          "macos": 0.5744568684054964,
+          "absolute_delta": 5.129525322056239e-06,
+          "relative_delta_pct": 0.0008929348057573264,
+          "tolerance": 0.002872284342027482,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 0.0,
+          "macos": 0.0,
+          "absolute_delta": 0.0,
+          "relative_delta_pct": null,
+          "tolerance": 0.001,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 96,
+          "macos_samples": 96,
+          "torque_Nm": {
+            "max_abs_delta": 0.00010913187107586264,
+            "rms_delta": 3.331825307762205e-05,
+            "relative_rms_delta_pct": 0.005761367202282146
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 96,
+          "macos_samples": 96,
+          "phase_a_V": {
+            "max_abs_delta": 0.0,
+            "rms_delta": 0.0,
+            "relative_rms_delta_pct": null
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.0,
+            "rms_delta": 0.0,
+            "relative_rms_delta_pct": null
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.0,
+            "rms_delta": 0.0,
+            "relative_rms_delta_pct": null
+          }
+        }
+      }
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "stage": "analytical",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 0.05748659740628511,
+          "macos": 0.05748483363284215,
+          "absolute_delta": 1.7637734429573615e-06,
+          "relative_delta_pct": 0.003068241362970015,
+          "tolerance": 0.001,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 13.399260851331286,
+          "macos": 13.399053181733944,
+          "absolute_delta": 0.0002076695973425302,
+          "relative_delta_pct": 0.0015498826262264013,
+          "tolerance": 0.20098579772600914,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 96,
+          "macos_samples": 96,
+          "torque_Nm": {
+            "max_abs_delta": 9.34907171936672e-05,
+            "rms_delta": 2.987608229578635e-05,
+            "relative_rms_delta_pct": 0.03950827308340168
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 96,
+          "macos_samples": 96,
+          "phase_a_V": {
+            "max_abs_delta": 0.0009474320378561885,
+            "rms_delta": 0.00026240208469481004,
+            "relative_rms_delta_pct": 0.0026058973372326223
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.000947432038655549,
+            "rms_delta": 0.0002624020847271473,
+            "relative_rms_delta_pct": 0.002605897337553758
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.0009474320387710122,
+            "rms_delta": 0.0002624020846630543,
+            "relative_rms_delta_pct": 0.0026058973369172617
+          }
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "stage": "native-standard",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 14.54711295453471,
+          "macos": 14.55008540668738,
+          "absolute_delta": -0.0029724521526706127,
+          "relative_delta_pct": -0.02042910450068177,
+          "tolerance": 0.0727504270334369,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 0.0,
+          "macos": 0.0,
+          "absolute_delta": 0.0,
+          "relative_delta_pct": null,
+          "tolerance": 0.001,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "torque_Nm": {
+            "max_abs_delta": 0.024393462875137217,
+            "rms_delta": 0.008717606851925535,
+            "relative_rms_delta_pct": 0.05196566512147331
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 48,
+          "macos_samples": 48,
+          "phase_a_V": {
+            "max_abs_delta": 0.0,
+            "rms_delta": 0.0,
+            "relative_rms_delta_pct": null
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.0,
+            "rms_delta": 0.0,
+            "relative_rms_delta_pct": null
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.0,
+            "rms_delta": 0.0,
+            "relative_rms_delta_pct": null
+          }
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "stage": "native-fine",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 14.54591430475749,
+          "macos": 14.548342158370767,
+          "absolute_delta": -0.002427853613276909,
+          "relative_delta_pct": -0.016688180597127216,
+          "tolerance": 0.07274171079185383,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 0.0,
+          "macos": 0.0,
+          "absolute_delta": 0.0,
+          "relative_delta_pct": null,
+          "tolerance": 0.001,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 96,
+          "macos_samples": 96,
+          "torque_Nm": {
+            "max_abs_delta": 0.024393462875137217,
+            "rms_delta": 0.007054131061254186,
+            "relative_rms_delta_pct": 0.04211289489956151
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 96,
+          "macos_samples": 96,
+          "phase_a_V": {
+            "max_abs_delta": 0.0,
+            "rms_delta": 0.0,
+            "relative_rms_delta_pct": null
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.0,
+            "rms_delta": 0.0,
+            "relative_rms_delta_pct": null
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.0,
+            "rms_delta": 0.0,
+            "relative_rms_delta_pct": null
+          }
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "stage": "analytical",
+      "macos_basis": "full published numerical report at 5b7cad8",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 1.4572384374585852,
+          "macos": 1.4598368996135234,
+          "absolute_delta": -0.002598462154938197,
+          "relative_delta_pct": -0.17799674440522176,
+          "tolerance": 0.007299184498067617,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_peak_V": {
+          "windows": 63.594032549842055,
+          "macos": 63.593003144760594,
+          "absolute_delta": 0.0010294050814607658,
+          "relative_delta_pct": 0.0016187395319536475,
+          "tolerance": 0.9538950471714088,
+          "macos_rounding_allowance": 0.0,
+          "within_existing_platform_tolerance": true
+        }
+      },
+      "waveforms": {
+        "torque_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 96,
+          "macos_samples": 96,
+          "torque_Nm": {
+            "max_abs_delta": 0.02424338553159222,
+            "rms_delta": 0.007161716560300524,
+            "relative_rms_delta_pct": 0.08541475254804622
+          }
+        },
+        "back_emf_waveform": {
+          "same_registered_angle_grid": true,
+          "windows_samples": 96,
+          "macos_samples": 96,
+          "phase_a_V": {
+            "max_abs_delta": 0.010696499751272626,
+            "rms_delta": 0.0030343396975733004,
+            "relative_rms_delta_pct": 0.007548745643843438
+          },
+          "phase_b_V": {
+            "max_abs_delta": 0.008307743520653332,
+            "rms_delta": 0.0025758203921827016,
+            "relative_rms_delta_pct": 0.006408049805673302
+          },
+          "phase_c_V": {
+            "max_abs_delta": 0.008609132645108986,
+            "rms_delta": 0.002822622493313435,
+            "relative_rms_delta_pct": 0.007022042261831222
+          }
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p12s_example_shoed",
+      "stage": "native",
+      "macos_basis": "rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 11.183532372035264,
+          "macos": 11.1833,
+          "absolute_delta": 0.0002323720352652714,
+          "relative_delta_pct": 0.002077848535452607,
+          "tolerance": 0.055916499999999994,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 31.093564085632874,
+          "macos": 31.0932,
+          "absolute_delta": 0.000364085632874378,
+          "relative_delta_pct": 0.0011709493808111679,
+          "tolerance": 0.0155466,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.0438398969337313,
+          "macos": 0.043839,
+          "absolute_delta": 8.96933731293903e-07,
+          "relative_delta_pct": 0.002045972151038808
+        },
+        "lambda_q_Wb": {
+          "windows": 0.005856405996657731,
+          "macos": 0.005856,
+          "absolute_delta": 4.0599665773050075e-07,
+          "relative_delta_pct": 0.006933003035015381
+        }
+      },
+      "waveforms": {},
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.04422839197845656,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.002027959170956962,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 0.00091795482396977,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.0022260412075965305,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__magnet_60C",
+      "stage": "native",
+      "macos_basis": "rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 2.111915058380246,
+          "macos": 2.1119,
+          "absolute_delta": 1.5058380246291136e-05,
+          "relative_delta_pct": 0.0007130252495994667,
+          "tolerance": 0.0105595,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 15.5609140416964,
+          "macos": 15.5609,
+          "absolute_delta": 1.4041696399402781e-05,
+          "relative_delta_pct": 9.0237045411273e-05,
+          "tolerance": 0.00778045,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.017545523746064096,
+          "macos": 0.017546,
+          "absolute_delta": -4.762539359028095e-07,
+          "relative_delta_pct": -0.002714316288058871
+        },
+        "lambda_q_Wb": {
+          "windows": 0.0028440618256091402,
+          "macos": 0.0028439999999999997,
+          "absolute_delta": 6.182560914049992e-08,
+          "relative_delta_pct": 0.002173896242633612
+        }
+      },
+      "waveforms": {},
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.01777499513361396,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.002679347770971676,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 0.000347823494047448,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.0027018300577242578,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__magnet_100C",
+      "stage": "native",
+      "macos_basis": "rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 2.0117603743242447,
+          "macos": 2.0118,
+          "absolute_delta": -3.962567575532816e-05,
+          "relative_delta_pct": -0.0019696627773798667,
+          "tolerance": 0.010059,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 14.815642897700169,
+          "macos": 14.8156,
+          "absolute_delta": 4.289770016896455e-05,
+          "relative_delta_pct": 0.0002895441303016047,
+          "tolerance": 0.0074078,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.016709023643421285,
+          "macos": 0.016709,
+          "absolute_delta": 2.3643421283303656e-08,
+          "relative_delta_pct": 0.00014150111486805705
+        },
+        "lambda_q_Wb": {
+          "windows": 0.002867610644207002,
+          "macos": 0.002868,
+          "absolute_delta": -3.893557929978732e-07,
+          "relative_delta_pct": -0.01357586446993979
+        }
+      },
+      "waveforms": {},
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.016953350848726043,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.00013946164091260067,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 0.0022966303031894796,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.002300860773452891,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__dq_I20_g0",
+      "stage": "native",
+      "macos_basis": "rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 2.208500629166024,
+          "macos": 2.2085,
+          "absolute_delta": 6.291660241686259e-07,
+          "relative_delta_pct": 2.8488386876550868e-05,
+          "tolerance": 0.0110425,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 16.280180118992227,
+          "macos": 16.2802,
+          "absolute_delta": -1.9881007773392412e-05,
+          "relative_delta_pct": -0.00012211771214968128,
+          "tolerance": 0.0081401,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.018351510406270383,
+          "macos": 0.018352,
+          "absolute_delta": -4.895937296169051e-07,
+          "relative_delta_pct": -0.002667794952140939
+        },
+        "lambda_q_Wb": {
+          "windows": 0.0028155291879286195,
+          "macos": 0.002816,
+          "absolute_delta": -4.708120713804373e-07,
+          "relative_delta_pct": -0.0167191786711803
+        }
+      },
+      "waveforms": {},
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.018566791860738893,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.002636932289052014,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 0.002535775027327207,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.003658355762670081,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__dq_I20_g30",
+      "stage": "native",
+      "macos_basis": "rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 1.9208084752943593,
+          "macos": 1.9208,
+          "absolute_delta": 8.47529435921146e-06,
+          "relative_delta_pct": 0.0004412377321538661,
+          "tolerance": 0.009604,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 16.280180118992227,
+          "macos": 16.2802,
+          "absolute_delta": -1.9881007773392412e-05,
+          "relative_delta_pct": -0.00012211771214968128,
+          "tolerance": 0.0081401,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.01700292993005324,
+          "macos": 0.017003,
+          "absolute_delta": -7.006994676150846e-08,
+          "relative_delta_pct": -0.00041210343328535235
+        },
+        "lambda_q_Wb": {
+          "windows": 0.0024552753325509545,
+          "macos": 0.002455,
+          "absolute_delta": 2.753325509543235e-07,
+          "relative_delta_pct": 0.011215175191622137
+        }
+      },
+      "waveforms": {},
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.017179319951616246,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.0004078738096668152,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 0.001602697613932151,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.001653783748352828,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__dq_I20_g60",
+      "stage": "native",
+      "macos_basis": "rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 1.112607382486669,
+          "macos": 1.1126,
+          "absolute_delta": 7.38248666887209e-06,
+          "relative_delta_pct": 0.0006635346637490643,
+          "tolerance": 0.005563,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 16.280180118992227,
+          "macos": 16.2802,
+          "absolute_delta": -1.9881007773392412e-05,
+          "relative_delta_pct": -0.00012211771214968128,
+          "tolerance": 0.0081401,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.015975251798232035,
+          "macos": 0.015975,
+          "absolute_delta": 2.5179823203574925e-07,
+          "relative_delta_pct": 0.0015762017654819985
+        },
+        "lambda_q_Wb": {
+          "windows": 0.0014228970906444173,
+          "macos": 0.001423,
+          "absolute_delta": -1.0290935558267614e-07,
+          "relative_delta_pct": -0.007231859141438942
+        }
+      },
+      "waveforms": {},
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.016038252835019157,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.00156998542563161,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 0.0006416494155646177,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.0016960448723987473,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__dq_I40_g0",
+      "stage": "native",
+      "macos_basis": "rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 4.393631592150807,
+          "macos": 4.3936,
+          "absolute_delta": 3.159215080650313e-05,
+          "relative_delta_pct": 0.0007190493173366516,
+          "tolerance": 0.021968,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 16.280180118992227,
+          "macos": 16.2802,
+          "absolute_delta": -1.9881007773392412e-05,
+          "relative_delta_pct": -0.00012211771214968128,
+          "tolerance": 0.0081401,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.018275560934977435,
+          "macos": 0.018276,
+          "absolute_delta": -4.3906502256510493e-07,
+          "relative_delta_pct": -0.002402413124125109
+        },
+        "lambda_q_Wb": {
+          "windows": 0.005589993232677046,
+          "macos": 0.00559,
+          "absolute_delta": -6.7673229546191815e-09,
+          "relative_delta_pct": -0.00012106123353522685
+        }
+      },
+      "waveforms": {},
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.019111783694883113,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.002297352406110885,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 3.5409164642393e-05,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.002297625271188525,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__dq_I40_g30",
+      "stage": "native",
+      "macos_basis": "rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 3.8326544353271355,
+          "macos": 3.8327,
+          "absolute_delta": -4.55646728645398e-05,
+          "relative_delta_pct": -0.0011888400569974118,
+          "tolerance": 0.0191635,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 16.280180118992227,
+          "macos": 16.2802,
+          "absolute_delta": -1.9881007773392412e-05,
+          "relative_delta_pct": -0.00012211771214968128,
+          "tolerance": 0.0081401,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.015567927493218413,
+          "macos": 0.015568,
+          "absolute_delta": -7.25067815874475e-08,
+          "relative_delta_pct": -0.00046574243054629686
+        },
+        "lambda_q_Wb": {
+          "windows": 0.004910981103859718,
+          "macos": 0.004911,
+          "absolute_delta": -1.8896140281839113e-08,
+          "relative_delta_pct": -0.0003847717426560602
+        }
+      },
+      "waveforms": {},
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.016324231834913397,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.00044416657592655516,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 0.00011575515756536277,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.0004590024005093026,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__dq_I40_g60",
+      "stage": "native",
+      "macos_basis": "rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 2.2154387563666567,
+          "macos": 2.2154,
+          "absolute_delta": 3.8756366656844676e-05,
+          "relative_delta_pct": 0.0017494071795993809,
+          "tolerance": 0.011077,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 16.280180118992227,
+          "macos": 16.2802,
+          "absolute_delta": -1.9881007773392412e-05,
+          "relative_delta_pct": -0.00012211771214968128,
+          "tolerance": 0.0081401,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.013464314108646546,
+          "macos": 0.013464,
+          "absolute_delta": 3.1410864654614346e-07,
+          "relative_delta_pct": 0.002332951920277358
+        },
+        "lambda_q_Wb": {
+          "windows": 0.0028529442643690697,
+          "macos": 0.002853,
+          "absolute_delta": -5.573563093040981e-08,
+          "relative_delta_pct": -0.001953579773235535
+        }
+      },
+      "waveforms": {},
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.013762954079702511,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.0022822763538053814,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 0.00040496851626213196,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.0023179268440360105,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract__magnet_60C",
+      "stage": "native",
+      "macos_basis": "rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 2.3942156097046716,
+          "macos": 2.3942,
+          "absolute_delta": 1.5609704671515345e-05,
+          "relative_delta_pct": 0.0006519799795971659,
+          "tolerance": 0.011971,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 7.135038601562108,
+          "macos": 7.135,
+          "absolute_delta": 3.860156210855337e-05,
+          "relative_delta_pct": 0.0005410169882067746,
+          "tolerance": 0.0035675,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.00805947389270874,
+          "macos": 0.008059,
+          "absolute_delta": 4.738927087393624e-07,
+          "relative_delta_pct": 0.005880291707896295
+        },
+        "lambda_q_Wb": {
+          "windows": 0.003936054833090106,
+          "macos": 0.003936,
+          "absolute_delta": 5.4833090105781135e-08,
+          "relative_delta_pct": 0.0013931171266712687
+        }
+      },
+      "waveforms": {},
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.008968811348222238,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.005283785000487222,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 0.0006113752199353589,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.005319037844471946,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract__magnet_100C",
+      "stage": "native",
+      "macos_basis": "rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 2.221746431042538,
+          "macos": 2.2217,
+          "absolute_delta": 4.6431042538319645e-05,
+          "relative_delta_pct": 0.002089888037913294,
+          "tolerance": 0.011108499999999999,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 6.615193985693765,
+          "macos": 6.6152,
+          "absolute_delta": -6.014306234369826e-06,
+          "relative_delta_pct": -9.091646865355282e-05,
+          "tolerance": 0.0033076,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.007472821786709897,
+          "macos": 0.007473,
+          "absolute_delta": -1.7821329010257736e-07,
+          "relative_delta_pct": -0.0023847623458126237
+        },
+        "lambda_q_Wb": {
+          "windows": 0.003945247295779045,
+          "macos": 0.003945,
+          "absolute_delta": 2.4729577904544775e-07,
+          "relative_delta_pct": 0.006268587555017687
+        }
+      },
+      "waveforms": {},
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.00845037005106877,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.0021089406620723983,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 0.0029264491087484476,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.003607178274252182,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract__dq_I50_g0",
+      "stage": "native",
+      "macos_basis": "rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 2.5674302906005693,
+          "macos": 2.5674,
+          "absolute_delta": 3.029060056913835e-05,
+          "relative_delta_pct": 0.001179816178590728,
+          "tolerance": 0.012837000000000001,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 7.658139593821787,
+          "macos": 7.6581,
+          "absolute_delta": 3.9593821786532146e-05,
+          "relative_delta_pct": 0.0005170188661225649,
+          "tolerance": 0.00382905,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.008649807359653103,
+          "macos": 0.00865,
+          "absolute_delta": -1.926403468965887e-07,
+          "relative_delta_pct": -0.002227056033486575
+        },
+        "lambda_q_Wb": {
+          "windows": 0.0039268254029031745,
+          "macos": 0.003927,
+          "absolute_delta": -1.7459709682546287e-07,
+          "relative_delta_pct": -0.0044460681646412755
+        }
+      },
+      "waveforms": {},
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.009499675204974115,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.002027862455715544,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 0.0018379270139050887,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.0027368233132123733,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract__dq_I50_g30",
+      "stage": "native",
+      "macos_basis": "rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 2.276310151458617,
+          "macos": 2.2763,
+          "absolute_delta": 1.0151458616824982e-05,
+          "relative_delta_pct": 0.00044596312510763005,
+          "tolerance": 0.011381500000000001,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 7.658139593821787,
+          "macos": 7.6581,
+          "absolute_delta": 3.9593821786532146e-05,
+          "relative_delta_pct": 0.0005170188661225649,
+          "tolerance": 0.00382905,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.006863063552767968,
+          "macos": 0.006863,
+          "absolute_delta": 6.355276796748272e-08,
+          "relative_delta_pct": 0.0009260202239178598
+        },
+        "lambda_q_Wb": {
+          "windows": 0.0033945325084012,
+          "macos": 0.003395,
+          "absolute_delta": -4.6749159879995103e-07,
+          "relative_delta_pct": -0.013770002910160561
+        }
+      },
+      "waveforms": {},
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.00765681356701337,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.0008300158729380193,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 0.006105563296120603,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.006161722933747033,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract__dq_I50_g60",
+      "stage": "native",
+      "macos_basis": "rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 1.3346758382729431,
+          "macos": 1.3347,
+          "absolute_delta": -2.4161727056881688e-05,
+          "relative_delta_pct": -0.0018102739984177483,
+          "tolerance": 0.0066735,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 7.658139593821787,
+          "macos": 7.6581,
+          "absolute_delta": 3.9593821786532146e-05,
+          "relative_delta_pct": 0.0005170188661225649,
+          "tolerance": 0.00382905,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.00555582185412583,
+          "macos": 0.005556,
+          "absolute_delta": -1.7814587417036565e-07,
+          "relative_delta_pct": -0.003206369225528539
+        },
+        "lambda_q_Wb": {
+          "windows": 0.001951733338347431,
+          "macos": 0.001952,
+          "absolute_delta": -2.6666165256895684e-07,
+          "relative_delta_pct": -0.013660945316032626
+        }
+      },
+      "waveforms": {},
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.005888925199049484,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.003025099965595075,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 0.004528188821484742,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.005445706915071973,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract__dq_I100_g0",
+      "stage": "native",
+      "macos_basis": "rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 5.161495991384185,
+          "macos": 5.1615,
+          "absolute_delta": -4.008615815287442e-06,
+          "relative_delta_pct": -7.766377633028077e-05,
+          "tolerance": 0.0258075,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 7.658139593821787,
+          "macos": 7.6581,
+          "absolute_delta": 3.9593821786532146e-05,
+          "relative_delta_pct": 0.0005170188661225649,
+          "tolerance": 0.00382905,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.008663818266878929,
+          "macos": 0.008664,
+          "absolute_delta": -1.8173312107093442e-07,
+          "relative_delta_pct": -0.002097566032674682
+        },
+        "lambda_q_Wb": {
+          "windows": 0.007864651299223566,
+          "macos": 0.007865,
+          "absolute_delta": -3.487007764341188e-07,
+          "relative_delta_pct": -0.004433576305583201
+        }
+      },
+      "waveforms": {},
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.011701415341743921,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.0015530866631373653,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 0.002979988029227156,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.0033604176582014782,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract__dq_I100_g30",
+      "stage": "native",
+      "macos_basis": "rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 4.6736752017755725,
+          "macos": 4.6737,
+          "absolute_delta": -2.4798224427691196e-05,
+          "relative_delta_pct": -0.0005305908472450348,
+          "tolerance": 0.0233685,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 7.658139593821787,
+          "macos": 7.6581,
+          "absolute_delta": 3.9593821786532146e-05,
+          "relative_delta_pct": 0.0005170188661225649,
+          "tolerance": 0.00382905,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.005092400514978384,
+          "macos": 0.005092,
+          "absolute_delta": 4.005149783839479e-07,
+          "relative_delta_pct": 0.007865573024036683
+        },
+        "lambda_q_Wb": {
+          "windows": 0.0067939845859924415,
+          "macos": 0.006794,
+          "absolute_delta": -1.5414007558181564e-08,
+          "relative_delta_pct": -0.00022687676712071774
+        }
+      },
+      "waveforms": {},
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.008490400461697904,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.004717268404367504,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 0.00018154629605184822,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.004720760559110584,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract__dq_I100_g60",
+      "stage": "native",
+      "macos_basis": "rounded published 1.6 table at f6c9fbb; full raw waveforms unavailable here",
+      "metrics": {
+        "mean_torque_Nm": {
+          "windows": 2.791177462334562,
+          "macos": 2.7912,
+          "absolute_delta": -2.2537665437916132e-05,
+          "relative_delta_pct": -0.0008074543364114407,
+          "tolerance": 0.013956,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "back_emf_fundamental_V": {
+          "windows": 7.658139593821787,
+          "macos": 7.6581,
+          "absolute_delta": 3.9593821786532146e-05,
+          "relative_delta_pct": 0.0005170188661225649,
+          "tolerance": 0.00382905,
+          "macos_rounding_allowance": 5e-05,
+          "within_existing_platform_tolerance": true
+        },
+        "lambda_d_Wb": {
+          "windows": 0.002483091582120394,
+          "macos": 0.002483,
+          "absolute_delta": 9.158212039422908e-08,
+          "relative_delta_pct": 0.0036883657025464796
+        },
+        "lambda_q_Wb": {
+          "windows": 0.003909106051656759,
+          "macos": 0.003909,
+          "absolute_delta": 1.0605165675844908e-07,
+          "relative_delta_pct": 0.0027130124522499123
+        }
+      },
+      "waveforms": {},
+      "dq_flux_linkage_difference": {
+        "macos_flux_magnitude_Wb": 0.004630936190447889,
+        "lambda_d_delta_as_share_of_flux_magnitude_pct": 0.0019776156834795766,
+        "lambda_q_delta_as_share_of_flux_magnitude_pct": 0.0022900694891283334,
+        "vector_delta_as_share_of_flux_magnitude_pct": 0.003025786188180007,
+        "acceptance_policy": "Diagnostic only: no per-platform d/q tolerance is registered. A component-relative percentage can be large when that component is nearly zero."
+      }
+    }
+  ]
+}

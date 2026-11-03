@@ -1,0 +1,784 @@
+{
+  "schema": "coilem.femm_saved_control_model_audit/v1",
+  "field_solves_executed": 0,
+  "complete": true,
+  "control_manifest_sha256": "c2cd10ddc83730f795baac77d060fcb2dd03483635b368dbc5463a6d60b98592",
+  "controls": {
+    "solver_precision": 1e-10,
+    "minimum_angle_deg": 30,
+    "rotor_straight_edge_max_length_mm": 0.2,
+    "rotor_arc_max_angle_deg": 0.5
+  },
+  "torque_models_verified": 48,
+  "noload_models_verified": 48,
+  "models": [
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos0_0.0deg.fem",
+      "sha256": "5907366b2290ebfe3ec776e3e4bdbbc302f2fac6e29c0680fc1016e43eb763d1",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos10_75.0deg.fem",
+      "sha256": "80ebdcea5f13377dad132a5c3e6c31fca9a916db54f1363df4c0503b2739cfeb",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos11_82.5deg.fem",
+      "sha256": "36fefe91c6337314b4ff0cfaf37be21260bcecfa565eb0722a9cad7152624a94",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos12_90.0deg.fem",
+      "sha256": "56034067f917a069cbde1038c4b8ac159842bec0f575c3eb24f96df62b7880bb",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos13_97.5deg.fem",
+      "sha256": "c212405b025ce85feb4a1f66ba2b6489a9a2182690be59ced30d1c727139cd49",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos14_105.0deg.fem",
+      "sha256": "54176ec05e4c9d13a62b3b3e2d032623890ec6ebf90ca09ef6601ccf2e227aaf",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos15_112.5deg.fem",
+      "sha256": "53cca85adf907488ba715e4f013b038e38df7dfa35d717e42babf6adfb348971",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos16_120.0deg.fem",
+      "sha256": "d2594f8813477048f094f6c238f49579f343ea8711393a4c3d14050ef65ce4ea",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos17_127.5deg.fem",
+      "sha256": "8dcedcff4ed47540861c527308f68f62323075e3d0903243e2523bb0dbeaa08b",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos18_135.0deg.fem",
+      "sha256": "daef3a1196ef2b987d5d18ae33fefb4eba8786628e7440f6d2246d89ebda3e42",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos19_142.5deg.fem",
+      "sha256": "e958b64a536150da1a4c35f858dbf1c2b02f8e352d1e123b5160d57d3510cab9",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos1_7.5deg.fem",
+      "sha256": "0adfdba538ef8a2ae50f4d773a4074bcaa4d5ed78c8c4396bc2987c19fd275f3",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos20_150.0deg.fem",
+      "sha256": "ba152935664658c78f9d667d18f0226d616d93858fc70d7e27313295d6cee336",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos21_157.5deg.fem",
+      "sha256": "71991961a1042f0b24737d3f470c836adf2d3dd6b977e7eafabde9e0a845a6d8",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos22_165.0deg.fem",
+      "sha256": "bf303868c3235f07af8df0043db3c329a3f788b59e31ae3c17edb3d662fd0487",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos23_172.5deg.fem",
+      "sha256": "d134b62167f828add2af78b17a610eaa6dc605637309544a0eea9fba58475d41",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos24_180.0deg.fem",
+      "sha256": "575c86be43dbca3868c87731f66327acec443f2560f7e73ac18b6b9ba59cc049",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos25_187.5deg.fem",
+      "sha256": "af20b8fc01ac65b6f5a873e54b65287a69daba16cc83070c38c5e44b953a0a1a",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos26_195.0deg.fem",
+      "sha256": "80ae1bbae6eaae75a2be2f5f13495f095de5a631b44eea7791ce2525e1f238e6",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos27_202.5deg.fem",
+      "sha256": "51f460162449d80cab1489f29e9e7c40b8bb03749fad71077f13fd5db6b0bee2",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos28_210.0deg.fem",
+      "sha256": "cbccf1aba3ca35077269fb1ef396af9fd060107d1bdcb07aa4f9bf90e6039a23",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos29_217.5deg.fem",
+      "sha256": "c71d8a164b742dbfbe9ce7f30b8454310bb6aadb8f32eb2af030e8f1cd69a7a5",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos2_15.0deg.fem",
+      "sha256": "430bdc765ce5fb10a4d996b4dcb511810a651901bcd25437fbfb04d3daa0d428",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos30_225.0deg.fem",
+      "sha256": "2a537490640b437f6f4b46de53db8cf5c3c2b2da2a0fb50b8dad344dc06ec660",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos31_232.5deg.fem",
+      "sha256": "9a2782bd13ac137a414761a4da0fdffcaddcc3003d8ff303b22b1d7b498d413a",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos32_240.0deg.fem",
+      "sha256": "950e719881489747223435e5b9d27b45c6ccad3b4526a32bf16c2f541ace6ab6",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos33_247.5deg.fem",
+      "sha256": "e91c5d9c231f4c4af993f8b60506ca6ff1b1a291e8bf59e4be4af9386207b2ed",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos34_255.0deg.fem",
+      "sha256": "ec93020e1d766a75cdf6db7c1a438b3cd0e7ecb39ba30f6cc718aa9afc225288",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos35_262.5deg.fem",
+      "sha256": "97ca8989db69a9fe89d278b4aafa6ccd38c0ef0ce20174da4f989d0b04e6a77f",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos36_270.0deg.fem",
+      "sha256": "1ecae08215cde89756ca8135ef92557dfe4e2721756dd3b1119568d0dd9c811c",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos37_277.5deg.fem",
+      "sha256": "aa5379912c017c1ab0d206ec16f88a13a082ebc8f271cd868270c2d8f86c7b9b",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos38_285.0deg.fem",
+      "sha256": "9ffe20b34ee03e567cf86e6a38025b65cafeac983350d436c7e2f55a771c048a",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos39_292.5deg.fem",
+      "sha256": "2e2d1dc84a1622551e806db23d80eb37c894f87d578e3dd64f8b72576f67234a",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos3_22.5deg.fem",
+      "sha256": "0513ed99f5e046f9839ec953d94931e8fddb07e3f0483b505fe3a5151feb70d7",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos40_300.0deg.fem",
+      "sha256": "b03e16d501f4dd550cbfb0d0a91d8ccedb93b3562207978c8946b839863c41a5",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos41_307.5deg.fem",
+      "sha256": "e0270a4e4682909f5cc55d089f0f8ab301683a0222ae8080261894a0d05103f6",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos42_315.0deg.fem",
+      "sha256": "352f09245bcb3e52e7babffe493323efc68c785705faf13b5a7b5707f44c27b1",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos43_322.5deg.fem",
+      "sha256": "9b222ecd12b2bba5cd711d24a59b57a1a671b1fbef504530029be9a8b712ad5e",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos44_330.0deg.fem",
+      "sha256": "74c683aef0230fb9f8a683e0aec0b773ca0ad6f38d05ced2070a7d5e68d3f13f",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos45_337.5deg.fem",
+      "sha256": "5a4a093a06afbbdfb1b065b18cc3cec40b2091e930c3f8ab26345f20978a7e64",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos46_345.0deg.fem",
+      "sha256": "82368e46ddfa80c297d2b3333908075dc24f09f5986f40dae286a43478b397ef",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos47_352.5deg.fem",
+      "sha256": "c4ba66c783fde501328cc1ce7cb7392f4f82455f85a1c0f2601b4bb77d521472",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos4_30.0deg.fem",
+      "sha256": "d02221517b61cccdff676a635ba9ef8a10736c15868a0ad02ea612e34fbe6e3c",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos5_37.5deg.fem",
+      "sha256": "20dd3c47272afdbcffc0e7b972ed99779b8135a724c20c2d4c62fcc98b146326",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos6_45.0deg.fem",
+      "sha256": "af030003c6f5f80947b1415fd50272e9678af1756a3b23cfa956fea430de9e9f",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos7_52.5deg.fem",
+      "sha256": "e340025dc36ef1c01b11d508b0f6578c19a483bcb3a4c9751fbd847d75557461",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos8_60.0deg.fem",
+      "sha256": "efb5227ba930695f44c595a26f40d2f6040a90e8d84ebd75cf3c7567f850f534",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\noload_seed_pos9_67.5deg.fem",
+      "sha256": "24810dce75bc1304500392d1eaf04c394bc909b47b9d7ad87f1802fe31ec5c81",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos0_0.0deg.fem",
+      "sha256": "65d898f42c7999372417a8c7b180a8d85cc82f1bdba766734c38de3650aa4731",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos10_18.8deg.fem",
+      "sha256": "962a5bf2786817fb57804b18540284bd6a54bcf025169eadc67d1d6c7b4d9335",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos11_20.6deg.fem",
+      "sha256": "1c3930e28adb2e24e47e593717fb3bc8075bfad9ead7166bde55b4cba0b59cbd",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos12_22.5deg.fem",
+      "sha256": "d36b471ac7aea0f596efc9c726575dda6e86ca4c2e7ae13147af17e1eabb5c9a",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos13_24.4deg.fem",
+      "sha256": "b7af03fe4182d2176fbd63eeca5875ed1e06230f510417725a6d63cfb437481f",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos14_26.2deg.fem",
+      "sha256": "5ae1b4d42a0f1a9a4305a585e6ab3310db7eb682350946e10bbfffac70b6190e",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos15_28.1deg.fem",
+      "sha256": "6fe2339b4c7efb245482c3b39f5d1caf9d03a51bec0fa3ccc5cd615217db466a",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos16_30.0deg.fem",
+      "sha256": "4be0bb3aede2f09392e4f507a2e61e5e140dfe8834842cdb851bbe67b84d586e",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos17_31.9deg.fem",
+      "sha256": "a9209cb58dc98438c93e412b286d35824f8238ee47581deea56191b77f339576",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos18_33.8deg.fem",
+      "sha256": "89fa10807dd3936c1053e683d087fcf5684dddeec8382a8b58c1e1ccee0035e3",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos19_35.6deg.fem",
+      "sha256": "9f709c19afbd79bf411ef44f78dad2d2bcdce46eb9d7c21559fb02580a2daf80",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos1_1.9deg.fem",
+      "sha256": "07704328496e88022c9e9f3d65ca411cf24bc30eba7e7c190d4902099f3d7456",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos20_37.5deg.fem",
+      "sha256": "edd84d91f8feb7ad13fcd308477fc9db75221448eb6cd778446b558b88fa0fef",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos21_39.4deg.fem",
+      "sha256": "d0101028820910c5573998fff25464a72f5dd7bc147a34d809f21e57ebfdcd27",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos22_41.2deg.fem",
+      "sha256": "fedce6a3b4c3d530e75522f5a1716db8acbbe4737a759d315638480e983d7524",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos23_43.1deg.fem",
+      "sha256": "645d9e63356ac4c978928c2ece3804de0e0ce57666659d674874f51eec554748",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos24_45.0deg.fem",
+      "sha256": "a3c92baae18dc5574c32f2fa01d7224df5448cd5870389fe791565c3f934c630",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos25_46.9deg.fem",
+      "sha256": "f90450c6d35ea8243003d3489c61a3063337500dc8b4bd2825fbfba42c14de5b",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos26_48.8deg.fem",
+      "sha256": "ea73f8f47310a1fb401b1d70592a0f50d5d0c480ce4d502a4ecf5ef6dff80994",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos27_50.6deg.fem",
+      "sha256": "c59ca82983882548ae40f2d048faa5ef0c64463cc4a93915748b60533db95a17",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos28_52.5deg.fem",
+      "sha256": "32f9aa781f0723846dad0c74c7ac3f1fa63f71778856094220f58f73bb25f03e",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos29_54.4deg.fem",
+      "sha256": "344b29463f07eef83ac8eca6b227d3c7fc575a2cf73dcf1c4e4446f57e717f2b",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos2_3.8deg.fem",
+      "sha256": "a8cc9207eb6ec329a94e10137d7c166cfbccf983c05d7a724e744b5543f4ae9a",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos30_56.2deg.fem",
+      "sha256": "734fb554fd0c8294b656700f7e338e37516a5475342c1bcfa4b90250ae128e49",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos31_58.1deg.fem",
+      "sha256": "c41ad1f20420b2dc3560862f87116b5e619e39519abca7269808ebe21b6a584e",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos32_60.0deg.fem",
+      "sha256": "05caf8250b16819a69922889887deda399f2e32f71099e81154cd02c24296b10",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos33_61.9deg.fem",
+      "sha256": "3131f0eccf6fc4cf1e963b804114bf180d05cb94ae64adb2abb054e0412097b6",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos34_63.8deg.fem",
+      "sha256": "565da70b564971cdd4cc2853ebc66bdefaa9d126d46da58395ed002f6cf2261d",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos35_65.6deg.fem",
+      "sha256": "8adfa590b3e03de11a10f6140eb8b3d6c1945893031a08c5ea6f2f2c7f8b2933",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos36_67.5deg.fem",
+      "sha256": "f0779c3ff6d7226d5e0a2e4d765829976da819fcee6879c78b496f6c423593f0",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos37_69.4deg.fem",
+      "sha256": "232ddc81c002dcdc8ec6e7fab9c01daa31680024b70a31e8da8cd38c74d090c4",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos38_71.2deg.fem",
+      "sha256": "95063357f94fdc4f4fe192223acc5caf06ed08ed50c76095cf487325c325b6da",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos39_73.1deg.fem",
+      "sha256": "1e307263f272cb9685aefe42e3e344574bbd9b961b8f12ac8a1e3633157fecd3",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos3_5.6deg.fem",
+      "sha256": "357a8d38940656bc4ec581289e3e5c5519f825f3706ec2d7439b357a7fc62dbb",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos40_75.0deg.fem",
+      "sha256": "f0f8dc9c987c996f9d4804fb3d5184f3aad4b196d40dbc0b8becff13ce944648",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos41_76.9deg.fem",
+      "sha256": "725ea66235a1a62f94e4a6b008305258ad210ac5e356e9a4b50a6121b47f7661",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos42_78.8deg.fem",
+      "sha256": "2692590bf179e2d545aed50423fd29be545f22faf56ffdda11754de632d4c1a1",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos43_80.6deg.fem",
+      "sha256": "d4313651d6b47f67a2fb3e06be522c06a929092600a84c4167229cca4535e61a",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos44_82.5deg.fem",
+      "sha256": "0b60cc5884d3f547fa98cf41c1453c7022594092808df0087203f7bb8a308290",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos45_84.4deg.fem",
+      "sha256": "1fe2fcf082a503108762748f2cbefbba0e45d0c72a73021bc240cde84483c521",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos46_86.2deg.fem",
+      "sha256": "c68ec4f8334e93cbd59c04b1b8c7568a6371d1ce397f04f5cc576872b03b1fb0",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos47_88.1deg.fem",
+      "sha256": "7dcd9efd097461555cf0de3225a8cc6866dce7f23213f0fa70ba182bd7b9ac0f",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos4_7.5deg.fem",
+      "sha256": "e7fe7bcb57b74947b1f2ad8623afc0e680cb67296e5abff811fc4192784a476e",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos5_9.4deg.fem",
+      "sha256": "aca739cd3c597f2fb83cbff01befb7040923db112ba54725ca095e74594a21d1",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos6_11.2deg.fem",
+      "sha256": "5b68d47a3eca92831e52fe361b504858777cc90bdd97f7d694da12502233a01a",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos7_13.1deg.fem",
+      "sha256": "cfd4629d6fffd4a33bf643be28b35080c82d836283275b206b1cd268eec79c55",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos8_15.0deg.fem",
+      "sha256": "3880227f49bda1b06b291405433ceaca9cee9bb07bebb64a7eda17c7a6a9d767",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    },
+    {
+      "file": "jobs\\vshape_baseline_refined\\attempts\\561a4805de2b\\measurements\\vshape_baseline_refined\\runtime\\.openem\\solve_cache\\2026-11-02T17-38-18\\torque_pos9_16.9deg.fem",
+      "sha256": "2a030043ff8b99ee750a7e252d7fc79cf23187f3f5e81f3c5df70b2097b963a1",
+      "precision": 1e-10,
+      "min_angle_deg": 30.0,
+      "straight_segments_with_requested_limit": 128,
+      "arcs_with_requested_limit": 8
+    }
+  ]
+}

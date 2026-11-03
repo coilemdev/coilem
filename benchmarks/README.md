@@ -1,10 +1,19 @@
 # Benchmark reports and protocols
 
-The [Windows validation of the v0.5.0 stack](windows-v050-20261029-bb3d8af/README.md) measures `bb3d8af`: all 35 supported native jobs completed, **29 PASS and one planned unsupported row**, with **42/42 BLDC gates** against frozen FEMM v3 references. The separate reconstructed-reference diagnostic has **28 PASS, 1 YELLOW and 1 UNSUPPORTED**. Protocol 1.6 coverage and release qualification remain pending.
+The [v0.5.0 evidence index](v0.5.0/README.md) now includes the
+[physical Windows protocol 1.6 collection](windows-v050-20261102-88aae101/README.md)
+at `88aae101`: **52 supported jobs complete, 46 PASS, one planned unsupported
+row, and 336/336 gates PASS** against 46 fresh reference records. The exact
+[adapter provenance](reference-adapters/windows-femm42-v3-20261102/README.md)
+and v0.4.0 comparison are retained. References remain REVIEW_REQUIRED; the
+published Mac comparison retains its historical pins. No active qualification
+basis or platform record is promoted by this evidence publication.
+
+The earlier [Windows validation of the v0.5.0 stack](windows-v050-20261029-bb3d8af/README.md) measures `bb3d8af`: all 35 supported native jobs completed, **29 PASS and one planned unsupported row**, with **42/42 BLDC gates** against frozen FEMM v3 references. The separate reconstructed-reference diagnostic has **28 PASS, 1 YELLOW and 1 UNSUPPORTED**. This remains historical evidence with its original reference identity.
 
 The [macOS A/B/C/D at the 0.5.0 stack top](macos-native-20261022-5b7cad8/README.md) is development evidence at `5b7cad8`: 29 PASS and the planned unsupported Prius against the frozen FEMM v3 bundle, compared with the v0.4.0 Windows baseline.
 
-[Protocol 1.6.0](abcd-v1.6/README.md) registers the 0.5.0 reference gates. It is the 1.4.0 matrix plus the shoed example, magnet temperature at 60 °C and 100 °C, and loaded λd/λq points for one SPM and one flat IPM. It awaits the owner's FEMM bundle ([request](abcd-v1.6/FEMM-REQUEST.md)), and becomes the default at the freeze.
+[Protocol 1.6.0](abcd-v1.6/README.md) registers the 0.5.0 reference gates. It is the 1.4.0 matrix plus the shoed example, magnet temperature at 60 °C and 100 °C, and loaded λd/λq points for one SPM and one flat IPM. Its new 46-record bundle is published with the Windows evidence; reference review and final qualification remain pending before changing the runtime default.
 
 [Protocol 1.5.0](abcd-v1.5/README.md) is a separate extension until the 0.5.0
 freeze. It adds the app's shoed 8p12s example to the 1.4.0 matrix, which has

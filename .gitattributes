@@ -6,3 +6,7 @@ benchmarks/ipm-high-output-20261011-af56962/fixtures/*.json -text -eol whitespac
 
 # Retain the complete benchmark registration byte-for-byte for its recorded SHA-256.
 docs/benchmarks/pyleecan-prius-v1/app-registration.json -text -eol whitespace=cr-at-eol
+
+# Evidence receipts bind exact bytes, including original CSV/JSON line endings.
+benchmarks/windows-v050-20261102-88aae101/** -text -eol whitespace=cr-at-eol
+benchmarks/reference-adapters/windows-femm42-v3-20261102/** -text -eol whitespace=cr-at-eol

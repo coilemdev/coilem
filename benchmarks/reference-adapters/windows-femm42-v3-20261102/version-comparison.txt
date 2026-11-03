@@ -1,0 +1,50 @@
+Windows v0.4.0 versus v0.5.0
+
+Retained development evidence; versions and protocols are distinct; this is not a final-tag qualification.
+v0.4 evidence: 5b6cb61e65a219ab92a742ac49c37433f53418fb; protocol 1.3.0; {'PASS': 28, 'YELLOW': 1, 'UNSUPPORTED': 1}
+v0.5 evidence: 88aae101fd487795e7fe5300737679f4133790fd; protocol 1.6.0; {'PASS': 46, 'UNSUPPORTED': 1}
+Common coverage: 29 supported cases / 35 native jobs. New v0.5 cases: 17.
+Common FEMM numerical fields exact: True
+A/B/C amplitude evaluator semantically unchanged: True
+Green limits: torque 8%, EMF fundamental/peak 10%; unchanged near-zero absolute rules.
+
+Case | v0.4 -> v0.5 | torque error old/new % | H1 error old/new % | peak error old/new %
+spm_4p12s_simple__baseline | PASS -> PASS | 0.251967/0.083098 | 0.011909/0.024832 | 0.033431/0.015197
+spm_4p12s_simple__high_current | PASS -> PASS | 0.171519/0.005258 | 0.011909/0.024832 | 0.033431/0.015197
+spm_4p12s_simple__tight_airgap | PASS -> PASS | 0.408396/0.553672 | 0.344134/0.345434 | 0.038942/0.050354
+spm_4p12s_simple_noload__baseline | PASS -> PASS | 100.851469/101.534157 | 0.011909/0.024832 | 0.033431/0.015197
+spm_4p12s_simple_noload__high_current | PASS -> PASS | 0.483676/0.312280 | 0.011909/0.024832 | 0.033431/0.015197
+spm_4p12s_simple_noload__tight_airgap | PASS -> PASS | 110.057328/113.221187 | 0.344134/0.345434 | 0.038942/0.050354
+spm_8p12s_concentrated__baseline | PASS -> PASS | 0.194067/0.235908 | 0.000898/0.017023 | 0.047333/0.050473
+spm_8p12s_concentrated__high_current | PASS -> PASS | 0.107037/0.306683 | 0.000898/0.017023 | 0.047333/0.050473
+spm_8p12s_concentrated__tight_airgap | PASS -> PASS | 0.254232/0.632629 | 0.054218/0.062227 | 0.194634/0.192577
+spm_8p12s_reference_angle30__baseline | PASS -> PASS | 0.323007/0.493485 | 0.112759/0.101701 | 0.075022/0.034990
+ipm_flat_12s10p_fscw_contract | PASS -> PASS | 0.569371/0.091236 | 0.494246/0.568071 | 0.719701/0.504512
+ipm_flat_24s16p_industrial_contract | PASS -> PASS | 0.636411/0.655907 | 0.182281/0.143821 | 0.336248/0.220032
+ipm_flat_4p12s_micro_contract | PASS -> PASS | 0.466655/0.601300 | 0.564718/0.363596 | 0.796405/0.515238
+ipm_flat_8p12s_fsae_angled_pocket_contract | PASS -> PASS | 0.200768/0.017421 | 0.265172/0.257300 | 0.357235/0.361503
+ipm_flat_8p12s_fsae_contract | PASS -> PASS | 0.137100/0.321442 | 0.258247/0.256328 | 0.164833/0.216586
+ipm_flat_8p12s_fsae_thin_bridge_contract | PASS -> PASS | 0.013250/0.183486 | 0.231548/0.229031 | 0.170779/0.243182
+ipm_vshape_8p12s_baseline_contract | YELLOW -> PASS | 5.845430/7.022426 | 2.056293/8.286439 | 14.778701/9.012756
+ipm_vshape_8p12s_deep_apex_high_output_v1 | PASS -> PASS | 4.315059/5.083195 | 3.350812/8.195725 | 5.755210/8.596214
+ipm_vshape_8p12s_narrow_angle_contract | PASS -> PASS | 4.173110/4.402201 | 3.386134/4.709616 | 3.524814/4.792567
+ipm_vshape_8p12s_pocket_offset_contract | PASS -> PASS | 4.548714/5.082312 | 1.402123/8.114101 | 2.250380/9.806930
+ipm_vshape_8p12s_thin_bridge_contract | PASS -> PASS | 2.503733/2.579768 | 0.756459/1.105385 | 0.720026/0.606539
+ipm_vshape_8p12s_wide_angle_high_output_v1 | PASS -> PASS | 5.904005/6.594031 | 3.367533/8.606234 | 4.075304/9.626964
+ornl_prius_2004_ipm | UNSUPPORTED -> UNSUPPORTED | n/a | n/a | n/a
+spm_12p36s_distributed_femm_validation | PASS -> PASS | 4.897284/5.159664 | 0.231330/0.305714 | 0.417789/0.038873
+spm_8p24s_distributed_femm_validation | PASS -> PASS | 2.417383/3.056839 | 0.152518/0.222586 | 0.164132/0.022097
+spm_8p48s_chorded_5_6 | PASS -> PASS | 1.641304/1.642829 | 0.192242/0.226544 | 0.625610/0.627204
+spm_8p48s_distributed_femm_validation | PASS -> PASS | 1.704363/1.564016 | 0.145385/0.179706 | 0.031962/0.037906
+spm_14p12s_high_pole | PASS -> PASS | n/a | n/a | n/a
+spm_4p12s_small | PASS -> PASS | n/a | n/a | n/a
+spm_8p12s_reference | PASS -> PASS | n/a | n/a | n/a
+
+Six V-shape mean H1 error: {"v040": 2.3865592417998487, "v050": 6.5029166074488725}
+
+VM: same native fields evaluated against frozen vs reconstructed FEMM. Counts: {'PASS': 29, 'UNSUPPORTED': 1} -> {'PASS': 28, 'YELLOW': 1, 'UNSUPPORTED': 1}
+Only changed verdict: pocket-offset peak EMF PASS -> YELLOW. Frozen 9.806929874448405%; reconstructed 10.383485630337862%.
+This identifies the reference substitution as the cause of that verdict change. The published package does not identify which reconstructed adapter detail caused the numerical change.
+The recovered original adapter reproduces all 29 retained legacy records on this machine. Raw VM private adapter bytes would be needed for a source-level cause.
+
+Fresh references remain REVIEW_REQUIRED. Timings are not a controlled version-speed comparison.

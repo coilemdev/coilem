@@ -1,6 +1,6 @@
 # A/B/C/D benchmark protocol 1.6.0: the 0.5.0 reference gates
 
-Harness **1.8.0** supports protocol **1.6.0**. The default stays [protocol 1.4.0](../abcd-v1.4/README.md) until the 0.5.0 freeze. At the freeze, the owner's FEMM bundle for 1.6.0 arrives and this suite becomes the default.
+Harness **1.8.0** supports protocol **1.6.0**. The default stays [protocol 1.4.0](../abcd-v1.4/README.md) while reference review and release qualification are pending. The [November 2 Windows collection](../windows-v050-20261102-88aae101/README.md) publishes all 46 supported reference records and all 52 native jobs at `88aae101`, with 46 PASS and one planned unsupported row. The new references remain REVIEW_REQUIRED.
 
 Protocol 1.6.0 keeps every 1.4.0 request, golden vector and gate unchanged. It adds 17 cases, all derived from registered requests:
 
@@ -44,7 +44,13 @@ A record with a wire is therefore qualified, for the reason that names this gate
 
 ## Reference
 
-There is no FEMM record yet for any new case. 1.6.0 needs its own bundle: protocol `1.6.0`, all 46 supported records at one adapter commit. See [FEMM-REQUEST.md](FEMM-REQUEST.md) for what to produce. Until then, run it with `--no-reference`. The new rows are NOT_COMPARED and the other 30 are not compared either.
+The [new bundle](../windows-v050-20261102-88aae101/reference-bundle/manifest.json)
+contains all 46 supported protocol `1.6.0` records at adapter `faced858`.
+The [collection request](FEMM-REQUEST.md) remains the original measurement
+contract; the [review inventory](../windows-v050-20261102-88aae101/REFERENCE_REVIEW.md)
+records completed checks and pending review. The default bundle is unchanged.
+Select the new bundle explicitly for development comparisons, or use
+`--no-reference` for native-only collection:
 
 ```sh
 python -m tools.run_benchmarks --suite benchmarks/abcd-v1.6/benchmark_spec.json --no-reference --out-dir ../benchmark-output/v1.6

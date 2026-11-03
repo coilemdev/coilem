@@ -308,8 +308,21 @@ The 0.5.0 development run on macOS at `5b7cad8`
 but V-shape IPM stays experimental: the corrected nonlinear stopping test
 (public issue 11) moved five V-shape Back-EMF fundamentals 4.7–6.6% away from
 FEMM, to 8.1–8.6% against the 10% gate. That run is development evidence, not
-release qualification. **TODO(freeze):** replace the table above with the
-0.5.0 freeze report's outcomes on macOS and Windows.
+release qualification.
+
+The [November 2 physical Windows collection](../benchmarks/windows-v050-20261102-88aae101/README.md)
+measures clean versioned candidate `88aae101` with protocol 1.6.0: all 52
+supported jobs complete, 46 PASS, one planned unsupported row and 336/336
+gates PASS against 46 fresh reference records. Its
+[published Mac comparison](../benchmarks/windows-v050-20261102-88aae101/macos-comparison.txt)
+uses the full earlier report at `5b7cad8` and rounded new-case values at
+`f6c9fbb`; it preserves those pins and does not qualify this exact Mac build.
+All checked legacy reference data reproduce exactly. The V-shape baseline's
+peak error improves to 9.0128%, while its fundamental error rises to 8.2864%;
+six-case mean fundamental error rises from 2.3866% to 6.5029%. V-shape remains
+experimental. Reference status is REVIEW_REQUIRED and the historical table and
+runtime qualification basis above are unchanged. **TODO(freeze):** complete
+review and register accepted candidate qualification evidence.
 
 ## 0.5.0 performance outputs
 
@@ -322,8 +335,10 @@ gate, what is experimental and why, and what is not modelled.
 
 **Phase resistance and copper loss are qualified for a design with a wire.
 Every other output is experimental in the current source.** Phase resistance
-passes its hand-calculation gate; none of the others has a measured reference
-gate yet. Each output shows its status and the reason in the UI, the run PDF
+passes its hand-calculation gate. Loaded d/q and magnet-temperature comparisons
+now pass against the fresh Windows references, but those references still
+require review and no new output qualification is promoted. Each output shows
+its status and the reason in the UI, the run PDF
 and CSV, and the performance PDF and CSV. The reasons quoted below are the
 strings the app prints, from `backend/models/performance.py`,
 `backend/iron_loss.py`, `backend/loss_breakdown.py` and
@@ -333,29 +348,31 @@ the d/q, phase-resistance and magnet-temperature reasons, and
 
 [Protocol 1.6.0](../benchmarks/abcd-v1.6/README.md) registers the reference
 gates for loaded λd/λq and magnet temperature, and the phase-resistance gate.
-The FEMM records for the first two arrive at the 0.5.0 freeze
-([request](../benchmarks/abcd-v1.6/FEMM-REQUEST.md)); the phase-resistance gate
+The FEMM records for the first two are now
+[published with review pending](../benchmarks/windows-v050-20261102-88aae101/REFERENCE_REVIEW.md);
+the phase-resistance gate
 needs no solve or reference and already passes. An output
 becomes qualified only for the fixture combinations whose gates pass in the
 freeze report, and only once the app's status for it changes. Passing a gate
 does not qualify other topologies, currents or angles.
 
-**TODO(freeze):** record each gate's outcome below. Change the status of any
-output that passes in the code and in this section together.
+The table records the measured comparisons without changing application
+qualification. **TODO(freeze):** complete review and qualification registration;
+change an output's status in code and this section together only when qualified.
 
 | Output | Status now | Gate that could qualify it | Gate result |
 | --- | --- | --- | --- |
-| Loaded λd and λq | Experimental | Protocol 1.6.0 `lambda_d`, `lambda_q` and `reference_dq_torque`, 12 points on two fixtures | **TODO(freeze)** |
+| Loaded λd and λq | Experimental | Protocol 1.6.0 `lambda_d`, `lambda_q` and `reference_dq_torque`, 12 points on two fixtures | All 36 added gates PASS on Windows `88aae101`; reference review and qualification pending |
 | Apparent Ld and Lq | Experimental | None; see below | — |
 | Flux-linkage map | Experimental | None beyond the 12 d/q points | — |
-| Torque–speed envelope | Experimental | None; hardware correlation deferred until after 0.5.0 | **TODO(freeze):** record correlation deferred |
-| Efficiency map | Experimental | None; hardware correlation deferred until after 0.5.0 | **TODO(freeze):** record correlation deferred |
+| Torque–speed envelope | Experimental | None; hardware correlation deferred until after 0.5.0 | Deferred by the owner on October 30, 2026 |
+| Efficiency map | Experimental | None; hardware correlation deferred until after 0.5.0 | Deferred by the owner on October 30, 2026 |
 | Phase resistance, with a wire | Qualified | Protocol 1.6.0 `phase_resistance`, three hand-calculated cases | PASS, all three within 0.001% |
 | Phase resistance, derived wire | Experimental | None: the wire is an estimate | — |
 | Copper loss | Same as phase resistance | Follows phase resistance | — |
 | Iron loss, M350-50A and M400-50A | Experimental | None planned for 0.5.0 | — |
 | Efficiency at the operating point | Experimental | None; it uses the iron loss | — |
-| Magnet temperature derating | Experimental | Protocol 1.6.0 temperature cases, four cases on two fixtures | **TODO(freeze)** |
+| Magnet temperature derating | Experimental | Protocol 1.6.0 temperature cases, four cases on two fixtures | All four cases PASS on Windows `88aae101`; reference review and qualification pending |
 
 ### Loaded d/q flux linkage, Ld and Lq
 
@@ -567,7 +584,8 @@ temperature is refused for magnets without cited coefficients.
   and the FSAE flat IPM with N42 magnets at 60 °C and 100 °C (Br 1.25188 T and
   1.18876 T). They carry the usual A/B gates: mean torque within 8% (YELLOW
   15%), and Back-EMF fundamental and peak within 10% (YELLOW 15%).
-  **TODO(freeze):** record the outcome.
+  All four Windows cases PASS at `88aae101`; references remain REVIEW_REQUIRED,
+  so this output stays experimental pending qualification.
   - FEMM models the same derated Br. The gate therefore checks the solve at a
     derated Br, not the coefficient. The coefficient is the catalogue's, and no
     reference measures it.

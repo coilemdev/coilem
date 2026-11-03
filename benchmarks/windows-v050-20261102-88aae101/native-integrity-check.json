@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "verified_supported_jobs": 52,
+  "verified_source_files": 167,
+  "current_identity_matches": true,
+  "source_clean": true,
+  "protocol_version": "1.6.0",
+  "commit": "88aae101fd487795e7fe5300737679f4133790fd",
+  "native_manifest_sha256": "22b6b58b66906d9f11f4d4014b1e713b1cb9b8cc465f1271fc1bd3eef04ef1f5",
+  "native_binary_sha256": "01218ee2422510660d7afad37bcb8d97605e4c54ecdbd87ed94b7e17c00a090f"
+}

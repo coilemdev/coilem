@@ -74,6 +74,48 @@ def test_regrading_reproduces_the_published_windows_comparison(graded) -> None:
         assert record.gate_statuses(row["evaluation"]) == record.gate_statuses(published[row["id"]]["evaluation"])
 
 
+def test_protocol16_record_rebuild_keeps_all_registered_gates_and_original_identity(tmp_path):
+    evidence = REPO_ROOT / "benchmarks/windows-v050-20261102-88aae101"
+    suite = REPO_ROOT / "benchmarks/abcd-v1.6/benchmark_spec.json"
+    bundle = evidence / "reference-bundle"
+    summary = read(evidence / "comparison/report/benchmark_summary.json")
+    graded, spec = regrade(summary, suite=suite, bundle=bundle)
+    assert spec["protocol_version"] == "1.6.0"
+    assert graded["run"]["identity"] == summary["run"]["identity"]
+    assert [record.case_record(row) for row in graded["rows"]] == [record.case_record(row) for row in summary["rows"]]
+    dq_rows = [row for row in graded["rows"] if "__dq_" in row["id"]]
+    assert len(dq_rows) == 12
+    assert all({"lambda_d", "lambda_q", "reference_dq_torque"} <= row["evaluation"]["gates"].keys() for row in dq_rows)
+    expected = {row["id"]: row for row in summary["rows"]}
+    for row in dq_rows:
+        for metric in ("lambda_d_error_pct", "lambda_q_error_pct", "reference_dq_torque_error_pct"):
+            # Trigonometric reductions may differ by a few ulps across platforms.
+            # Verdicts, gate statuses and recorded native values stay exact above.
+            assert row["evaluation"]["dq"][metric] == pytest.approx(
+                expected[row["id"]]["evaluation"]["dq"][metric], rel=1e-12, abs=1e-12,
+            )
+    assert build_record_main([
+        str(evidence / "comparison/report"), "--suite", str(suite),
+        "--reference-bundle", str(bundle), "--out", str(tmp_path / "record.json"),
+    ]) == 0
+    assert (tmp_path / "record.json").read_bytes() == (evidence / "windows-x86_64.json").read_bytes()
+    assert read(bundle / "manifest.json")["validation_status"] == "REVIEW_REQUIRED"
+
+
+def test_protocol16_regrade_cannot_drop_a_missing_dq_gate():
+    evidence = REPO_ROOT / "benchmarks/windows-v050-20261102-88aae101"
+    summary = read(evidence / "comparison/report/benchmark_summary.json")
+    row = next(row for row in summary["rows"] if "__dq_" in row["id"])
+    row["measurements"]["native"]["summary"]["dq_flux_linkage"] = None
+    graded, _ = regrade(
+        summary, suite=REPO_ROOT / "benchmarks/abcd-v1.6/benchmark_spec.json",
+        bundle=evidence / "reference-bundle",
+    )
+    changed = next(result for result in graded["rows"] if result["id"] == row["id"])
+    assert changed["status"] == "INCOMPLETE"
+    assert changed["evaluation"]["gates"]["lambda_d"] == "MISSING"
+
+
 def test_windows_requalification_preserves_previous_verdicts_gates_and_values() -> None:
     previous, _ = regrade(read(REPO_ROOT / "benchmarks/windows-v3-20261015-738d951/benchmark_summary.json"))
     assert read(RECORDS / "windows-x86_64.json")["cases"] == {

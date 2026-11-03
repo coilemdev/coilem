@@ -22,16 +22,17 @@ from pathlib import Path
 from backend.benchmark_suite import SUPPORTED_PROTOCOL_VERSIONS
 from backend.benchmark_suite.cli import inputs
 from backend.benchmark_suite.contract import CHECKOUT, DATA_ROOT, DEFAULT_BUNDLE, SPEC, canonical, checked_json, read, sha
+from backend.benchmark_suite.dq_metrics import with_dq_gates
 from backend.benchmark_suite.metrics import evaluate_abc, evaluate_bldc
 from backend.benchmark_suite.physics import physics_sources
 from backend.benchmark_suite.record import build_record
 from backend.benchmark_suite.references import load_bundle, load_suite
 
 
-def regrade(summary):
+def regrade(summary, *, suite=SPEC, bundle=DEFAULT_BUNDLE):
     """The run's rows, graded by this evaluator against the registered suite and frozen bundle."""
 
-    spec_path = SPEC
+    spec_path = suite
     spec = load_suite(spec_path)
     measured_protocol = summary["run"]["identity"]["protocol_version"]
     if measured_protocol not in SUPPORTED_PROTOCOL_VERSIONS:
@@ -45,7 +46,7 @@ def regrade(summary):
         spec = load_suite(spec_path)
     cases = {case["id"]: case for case in spec["cases"]}
     configs, protocols, golden = inputs(spec, spec["cases"])
-    _, references, bundle_sha = load_bundle(DEFAULT_BUNDLE, spec)
+    _, references, bundle_sha = load_bundle(bundle, spec)
     rows = []
     if {row["id"] for row in summary["rows"]} != set(cases):
         raise ValueError("The run did not measure exactly the registered cases")
@@ -67,6 +68,8 @@ def regrade(summary):
             evaluation = evaluate_bldc(protocols[row["id"]], raw, golden)
         else:
             evaluation = evaluate_abc(row["measurements"]["native"], reference, configs[row["id"], "native"])
+            if case.get("dq_reference") and reference is not None and evaluation["status"] in ("PASS", "YELLOW", "FAIL"):
+                evaluation = with_dq_gates(evaluation, row["measurements"]["native"], reference, configs[row["id"], "native"])
         row.update(evaluation=evaluation, status=evaluation["status"],
                    reference_mode="FROZEN_REFERENCE" if reference is not None else "NOT_COMPARED")
         rows.append(row)
@@ -78,6 +81,10 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("evidence", type=Path, help="a published evidence folder, or a run's report folder, holding benchmark_summary.json")
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--suite", type=Path, default=SPEC,
+                        help="Explicit registered suite; does not change the runtime default")
+    parser.add_argument("--reference-bundle", type=Path, default=DEFAULT_BUNDLE,
+                        help="Explicit frozen reference bundle; does not promote its review status")
     parser.add_argument("--historical-record", type=Path,
                         help="Reproduce this published record's original source registry without extending its qualification")
     args = parser.parse_args(argv)
@@ -110,7 +117,7 @@ def main(argv=None):
     missing = [path for path in sources if path not in measured]
     if missing:
         raise SystemExit(f"The run did not record these physics sources: {', '.join(missing)}")
-    graded, spec = regrade(summary)
+    graded, spec = regrade(summary, suite=args.suite, bundle=args.reference_bundle)
     source = args.evidence.resolve().relative_to(CHECKOUT).as_posix() if args.evidence.resolve().is_relative_to(CHECKOUT) else args.evidence.name
     note = (
         f"Graded from the recorded measurements (harness {identity['harness_version']}, protocol {identity['protocol_version']}) "
