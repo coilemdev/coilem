@@ -5,6 +5,254 @@
       "bytes": 1959,
       "sha256": "fb828feb3221da6d104ae6c5f257ee84d8538436998ba5fd1632fbb40ef2c80a"
     },
+    "README.md": {
+      "bytes": 4731,
+      "sha256": "576ba3622f7ec0aee9f9668840ad0983420b83cd6cc1133f52afc700593b97c6"
+    },
+    "macos/comparison_manifest.json": {
+      "bytes": 75909,
+      "sha256": "7853c3cdf2c2e149432b5bca7da409b0ea8113d688859f55c124c74fc4d2902f"
+    },
+    "macos/platform-record.json": {
+      "bytes": 35228,
+      "sha256": "112b1f1333772c4f77817dd581607ffa1cd6ff39a955e046a00cb39e2dcddfc1"
+    },
+    "macos/report/artifact_manifest.json": {
+      "bytes": 7229,
+      "sha256": "348d3c72ea7d9ec13356278705a0cdc57b5a050f738641ccfb96abc1dfe3ec50"
+    },
+    "macos/report/benchmark_report.md": {
+      "bytes": 9596,
+      "sha256": "144d690524d818f453e3d6cdc617dd379a0888eb00d8cabb79dd6cf47f534880"
+    },
+    "macos/report/benchmark_results.csv": {
+      "bytes": 27289,
+      "sha256": "512739299859f3bfbce323db201b3dcbf7167ee66575fa9ca1e69bbdc38b67b6"
+    },
+    "macos/report/benchmark_summary.json": {
+      "bytes": 3168301,
+      "sha256": "8a2b3f750819528dbe9a0f18c438aa583600ee1959fbdefd34184d8596f0fd63"
+    },
+    "macos/report/coilem_benchmark_report.html": {
+      "bytes": 702788,
+      "sha256": "8e0b936f18eadd2b537cbd3639ec5ec747f72c102100491d4a78353a48347fd1"
+    },
+    "macos/report/fixtures/ipm_flat_12s10p_fscw_contract__native.json": {
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    "macos/report/fixtures/ipm_flat_24s16p_industrial_contract__native.json": {
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    "macos/report/fixtures/ipm_flat_4p12s_micro_contract__native.json": {
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    "macos/report/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json": {
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    "macos/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g0__native.json": {
+      "bytes": 2547,
+      "sha256": "13946ec4812653453576460ffaaa556e1c0712dc60ea5bcf7527255ead98bea9"
+    },
+    "macos/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g30__native.json": {
+      "bytes": 2548,
+      "sha256": "8fd935a4b81d5aa3bbe9196151a84c9d745c268ea90702a4b92e07a76db62f47"
+    },
+    "macos/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g60__native.json": {
+      "bytes": 2548,
+      "sha256": "87b7306d1735934c0cb3c30c1fa0b970af2947efe1d2446538f41159371adbf0"
+    },
+    "macos/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g0__native.json": {
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    "macos/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g30__native.json": {
+      "bytes": 2547,
+      "sha256": "5fed79cac72dd79b71355b60cd195a2f58d00470c36fdad314a236870c4abf2b"
+    },
+    "macos/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g60__native.json": {
+      "bytes": 2547,
+      "sha256": "e2bc18964582355fa7c838029693339374bb45456d2e21da26b76279cbd717cb"
+    },
+    "macos/report/fixtures/ipm_flat_8p12s_fsae_contract__magnet_100C__native.json": {
+      "bytes": 2547,
+      "sha256": "d6125a01411ade4faf0f12fea6dd53ab0938f4ff0c2efc6f5ebb7cb7c2dbf2a3"
+    },
+    "macos/report/fixtures/ipm_flat_8p12s_fsae_contract__magnet_60C__native.json": {
+      "bytes": 2546,
+      "sha256": "afe7c558fc411f00408461add8a9b88b7eed38bff4338234e0188246abc6f9de"
+    },
+    "macos/report/fixtures/ipm_flat_8p12s_fsae_contract__native.json": {
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    "macos/report/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json": {
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    "macos/report/fixtures/ipm_vshape_8p12s_baseline_contract__native.json": {
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    "macos/report/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json": {
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
+    },
+    "macos/report/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json": {
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    "macos/report/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json": {
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    "macos/report/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json": {
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    "macos/report/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json": {
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
+    },
+    "macos/report/fixtures/ornl_prius_2004_ipm__native.json": {
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    "macos/report/fixtures/spm_12p36s_distributed_femm_validation__native.json": {
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    "macos/report/fixtures/spm_14p12s_high_pole__analytical.json": {
+      "bytes": 1604,
+      "sha256": "c7eaaaf1081d62fc92fdbcf85bd4a741437dbf2f447bfacafa3d29f571f38045"
+    },
+    "macos/report/fixtures/spm_14p12s_high_pole__native-fine.json": {
+      "bytes": 1607,
+      "sha256": "d50980ab4aac15eb065fb09632a0f56988cda12a01d4c5a225cf13f02377f12c"
+    },
+    "macos/report/fixtures/spm_14p12s_high_pole__native-standard.json": {
+      "bytes": 1606,
+      "sha256": "3eb405359dbf6503ea6d29eaf41d595681ae5a7b4a70883aa202df1fd3df6388"
+    },
+    "macos/report/fixtures/spm_4p12s_simple__baseline__native.json": {
+      "bytes": 2503,
+      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e"
+    },
+    "macos/report/fixtures/spm_4p12s_simple__high_current__native.json": {
+      "bytes": 2503,
+      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4"
+    },
+    "macos/report/fixtures/spm_4p12s_simple__tight_airgap__native.json": {
+      "bytes": 2503,
+      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf"
+    },
+    "macos/report/fixtures/spm_4p12s_simple_noload__baseline__native.json": {
+      "bytes": 2502,
+      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2"
+    },
+    "macos/report/fixtures/spm_4p12s_simple_noload__high_current__native.json": {
+      "bytes": 2502,
+      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c"
+    },
+    "macos/report/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json": {
+      "bytes": 2502,
+      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0"
+    },
+    "macos/report/fixtures/spm_4p12s_small__analytical.json": {
+      "bytes": 1594,
+      "sha256": "da8e001617723fbf8bc27ed803b695e6739e49efb6e191057826aff8316e6166"
+    },
+    "macos/report/fixtures/spm_4p12s_small__native-fine.json": {
+      "bytes": 1596,
+      "sha256": "0cfcd598575534929f95f5e468efee92531b158d98e8db34aea82c548ef1efdc"
+    },
+    "macos/report/fixtures/spm_4p12s_small__native-standard.json": {
+      "bytes": 1595,
+      "sha256": "cc111eda6bc19623de00e8a1da66ba396db3d6440126947715b06511c9510357"
+    },
+    "macos/report/fixtures/spm_8p12s_concentrated__baseline__native.json": {
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    "macos/report/fixtures/spm_8p12s_concentrated__dq_I20_g0__native.json": {
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    "macos/report/fixtures/spm_8p12s_concentrated__dq_I20_g30__native.json": {
+      "bytes": 2507,
+      "sha256": "040ea7d2cf367ab0fa9e8fdba9a83df22dd88e548597a15c939358c709cecd38"
+    },
+    "macos/report/fixtures/spm_8p12s_concentrated__dq_I20_g60__native.json": {
+      "bytes": 2507,
+      "sha256": "22bfd644feb317039dadbf6e1736f6c0c28f8641689c9571dcea3a9aba62e027"
+    },
+    "macos/report/fixtures/spm_8p12s_concentrated__dq_I40_g0__native.json": {
+      "bytes": 2506,
+      "sha256": "fec0ce01476183e4e5b237a0fb3bc66676f7ac2582ca83f7c4c50bd96fb3ebd6"
+    },
+    "macos/report/fixtures/spm_8p12s_concentrated__dq_I40_g30__native.json": {
+      "bytes": 2507,
+      "sha256": "7de6f4d389d823ea026d1843f778add1f3c28a50d3652a200952286818b4e270"
+    },
+    "macos/report/fixtures/spm_8p12s_concentrated__dq_I40_g60__native.json": {
+      "bytes": 2507,
+      "sha256": "816252bbfc56ca2b917e576a892a21a10ca7a25c2044f2e51af08270661b1287"
+    },
+    "macos/report/fixtures/spm_8p12s_concentrated__high_current__native.json": {
+      "bytes": 2506,
+      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85"
+    },
+    "macos/report/fixtures/spm_8p12s_concentrated__magnet_100C__native.json": {
+      "bytes": 2507,
+      "sha256": "77732c1868c7743a8d8711aea09457d103e45301019b74e3a1495f6c36598d78"
+    },
+    "macos/report/fixtures/spm_8p12s_concentrated__magnet_60C__native.json": {
+      "bytes": 2506,
+      "sha256": "5633ed8c7644bf4e71c557b03afce86193313bc1e20566bb61d503018669a263"
+    },
+    "macos/report/fixtures/spm_8p12s_concentrated__tight_airgap__native.json": {
+      "bytes": 2506,
+      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e"
+    },
+    "macos/report/fixtures/spm_8p12s_example_shoed__native.json": {
+      "bytes": 2506,
+      "sha256": "dbe538187d5280d171c224b12dc25612fb25c35c9014b201564126715dc4b6c4"
+    },
+    "macos/report/fixtures/spm_8p12s_reference__analytical.json": {
+      "bytes": 1640,
+      "sha256": "d25b5768678f37eca4aa1291dbd479f86cd19b0d4649a21d177ac86eab43e561"
+    },
+    "macos/report/fixtures/spm_8p12s_reference__native-fine.json": {
+      "bytes": 1642,
+      "sha256": "14a40c1b8b65602bf051c3c71807f39efd516c734a151d3b209d8158aac7f178"
+    },
+    "macos/report/fixtures/spm_8p12s_reference__native-standard.json": {
+      "bytes": 1641,
+      "sha256": "624b5b2faa387e4965da68cc337c9912da6137e1fc8712934b3f19d49cc7e457"
+    },
+    "macos/report/fixtures/spm_8p12s_reference_angle30__baseline__native.json": {
+      "bytes": 2550,
+      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c"
+    },
+    "macos/report/fixtures/spm_8p24s_distributed_femm_validation__native.json": {
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    "macos/report/fixtures/spm_8p48s_chorded_5_6__native.json": {
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    "macos/report/fixtures/spm_8p48s_distributed_femm_validation__native.json": {
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    "prius/README.md": {
+      "bytes": 3519,
+      "sha256": "34812c22be88756493dd1f66d52e31dd9b47c461189366a3f2fb37f8a5e92ed7"
+    },
     "prius/analysis-provenance.json": {
       "bytes": 7929,
       "sha256": "569c1b390051aba7ff456bc83cfa77f18a2ea7e6b438acda2ff19c88a227c313"
@@ -253,10 +501,6 @@
       "bytes": 696727,
       "sha256": "0ebea3a60127bf2d8ff6b85e7d2d81d9880d145b51cf7fc22ed8a5800897096f"
     },
-    "prius/README.md": {
-      "bytes": 3519,
-      "sha256": "34812c22be88756493dd1f66d52e31dd9b47c461189366a3f2fb37f8a5e92ed7"
-    },
     "prius/registration.json": {
       "bytes": 1180234,
       "sha256": "6424d7eec1398eef6c10e2bf53918e88dd565d87c1b3628e4d158dbecb503998"
@@ -264,10 +508,6 @@
     "prius/source-snapshot.json": {
       "bytes": 1249402,
       "sha256": "030e04373a88fcf1dd6d02bd6d536e927846b26cd55901c44d3420441258057b"
-    },
-    "README.md": {
-      "bytes": 4731,
-      "sha256": "576ba3622f7ec0aee9f9668840ad0983420b83cd6cc1133f52afc700593b97c6"
     },
     "reference-current-audit.json": {
       "bytes": 24005,
