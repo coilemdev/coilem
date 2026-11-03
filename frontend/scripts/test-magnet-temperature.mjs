@@ -4,6 +4,7 @@ import { importTypeScriptModule } from './import-typescript-module.mjs';
 
 const {
   DQ_FLUX_LINKAGE_STATUS_REASON,
+  MAGNET_TEMPERATURE_QUALIFIED_REASON,
   MAGNET_TEMPERATURE_STATUS_REASON,
   PHASE_RESISTANCE_STATUS_REASON,
 } = await importTypeScriptModule(new URL('../src/public/outputStatus.ts', import.meta.url));
@@ -32,8 +33,12 @@ assert.equal(ferrite.available, false);
 assert.match(ferrite.note, /No cited temperature coefficients for Ferrite_Y30/);
 
 
-// Public issue 143: a derating temperature says the derating is experimental, and why; 20 °C derates nothing.
+// Public issue 143: a derating temperature says whether the derating is qualified, and why; 20 °C derates nothing.
+// The protocol 1.6.0 temperature gates cover a qualified design from 20 to 100 °C.
 assert.deepEqual(magnetTemperatureView('N42', 1.3, 100).status, { status: 'experimental', reason: MAGNET_TEMPERATURE_STATUS_REASON });
+assert.deepEqual(magnetTemperatureView('N42', 1.3, 100, true).status, { status: 'qualified', reason: MAGNET_TEMPERATURE_QUALIFIED_REASON });
+assert.deepEqual(magnetTemperatureView('N42', 1.3, 110, true).status, { status: 'experimental', reason: MAGNET_TEMPERATURE_STATUS_REASON });
+assert.deepEqual(magnetTemperatureView('N42', 1.3, 0, true).status, { status: 'experimental', reason: MAGNET_TEMPERATURE_STATUS_REASON });
 assert.equal(magnetTemperatureView('N42', 1.3, 20).status, null);
 assert.equal(ferrite.status, null);
 

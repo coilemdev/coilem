@@ -47,6 +47,7 @@ from backend.local_file_safety import require_contained_path
 from backend.magnet_temperature import is_derated_run
 from backend.models.performance import (
     DQ_FLUX_LINKAGE_STATUS_REASON,
+    DQ_INDUCTANCE_STATUS_REASON,
     MAGNET_TEMPERATURE_STATUS_REASON,
     PHASE_RESISTANCE_UNRECORDED_STATUS_REASON,
 )
@@ -245,7 +246,11 @@ def _output_statuses(result: Mapping[str, Any]) -> list[tuple[str, str, str, str
         statuses.append((key, output, status or "experimental", reason if status else reason or fallback))
 
     if summary.get("dq_flux_linkage"):
-        recorded("dq_flux_linkage", "d/q flux linkage and inductances", _mapping(summary["dq_flux_linkage"]), DQ_FLUX_LINKAGE_STATUS_REASON)
+        dq = _mapping(summary["dq_flux_linkage"])
+        recorded("dq_flux_linkage", "d/q flux linkage", dq, DQ_FLUX_LINKAGE_STATUS_REASON)
+        # Ld and Lq stay experimental even where the flux linkage is qualified.
+        if dq.get("apparent_L_d_H") is not None or dq.get("apparent_L_q_H") is not None:
+            recorded("dq_inductance", "Ld, Lq, saliency and characteristic current", dq, DQ_INDUCTANCE_STATUS_REASON, "inductance_")
     if summary.get("winding_resistance"):
         winding = _mapping(summary["winding_resistance"])
         recorded("phase_resistance", "Phase resistance and copper loss", winding, PHASE_RESISTANCE_UNRECORDED_STATUS_REASON)
@@ -1242,7 +1247,7 @@ def _dq_story(result: Mapping[str, Any], styles: Mapping[str, ParagraphStyle]) -
             "current lambda_pm / Ld cancels the magnet flux: a drive whose peak current reaches it can field-weaken to very high speed.",
             styles["small"],
         ),
-        *_status_paragraphs(result, ("dq_flux_linkage",), styles),
+        *_status_paragraphs(result, ("dq_flux_linkage", "dq_inductance"), styles),
     ]
 
 

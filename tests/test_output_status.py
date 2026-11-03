@@ -18,7 +18,11 @@ import pytest
 from backend.loss_breakdown import operating_point_losses
 from backend.magnet_temperature import magnet_temperature_record
 from backend.models.performance import (
+    DQ_FLUX_LINKAGE_QUALIFIED_REASON,
     DQ_FLUX_LINKAGE_STATUS_REASON,
+    DQ_INDUCTANCE_STATUS_REASON,
+    FLUX_LINKAGE_MAP_STATUS_REASON,
+    MAGNET_TEMPERATURE_QUALIFIED_REASON,
     MAGNET_TEMPERATURE_STATUS_REASON,
     PHASE_RESISTANCE_DERIVED_WIRE_STATUS_REASON,
     PHASE_RESISTANCE_STATUS_REASON,
@@ -28,6 +32,8 @@ from backend.models.performance import (
 from backend.models.result import SolveMetadata
 from backend.performance_report import ReportContext, StatedStatus, build_performance_csv, build_performance_pdf, performance_data
 from backend.public_report import build_public_run_csv, build_public_run_pdf
+from backend.qualification import magnet_temperature_status
+from backend.solve_workspace import _apply_output_statuses
 from tests.test_drive_performance import LIMITS, _map
 from tests.test_loss_breakdown import RAW, _config, _iron, _stored_result
 from tests.test_magnet_temperature import _config as _magnet_config
@@ -37,11 +43,18 @@ pypdf = pytest.importorskip("pypdf")
 # The reasons the app mirrors, for records stored without a status and for the Solve page before a run.
 MIRRORED = {
     "DQ_FLUX_LINKAGE_STATUS_REASON": DQ_FLUX_LINKAGE_STATUS_REASON,
+    "DQ_INDUCTANCE_STATUS_REASON": DQ_INDUCTANCE_STATUS_REASON,
+    "FLUX_LINKAGE_MAP_STATUS_REASON": FLUX_LINKAGE_MAP_STATUS_REASON,
+    "MAGNET_TEMPERATURE_QUALIFIED_REASON": MAGNET_TEMPERATURE_QUALIFIED_REASON,
     "PHASE_RESISTANCE_STATUS_REASON": PHASE_RESISTANCE_STATUS_REASON,
     "PHASE_RESISTANCE_UNRECORDED_STATUS_REASON": PHASE_RESISTANCE_UNRECORDED_STATUS_REASON,
     "MAGNET_TEMPERATURE_STATUS_REASON": MAGNET_TEMPERATURE_STATUS_REASON,
 }
-REASONS = {**MIRRORED, "PHASE_RESISTANCE_DERIVED_WIRE_STATUS_REASON": PHASE_RESISTANCE_DERIVED_WIRE_STATUS_REASON}
+REASONS = {
+    **MIRRORED,
+    "PHASE_RESISTANCE_DERIVED_WIRE_STATUS_REASON": PHASE_RESISTANCE_DERIVED_WIRE_STATUS_REASON,
+    "DQ_FLUX_LINKAGE_QUALIFIED_REASON": DQ_FLUX_LINKAGE_QUALIFIED_REASON,
+}
 
 
 def _pdf_text(pdf: bytes) -> str:
@@ -65,12 +78,23 @@ def test_each_record_says_whether_a_benchmark_gate_covers_it() -> None:
     assert (winding.status, winding.status_reason) == ("qualified", PHASE_RESISTANCE_STATUS_REASON)
     derived, _ = operating_point_losses(config.model_copy(update={"winding": config.winding.model_copy(update={"wire": None})}), 2.0, _iron())
     assert (derived.status, derived.status_reason) == ("experimental", PHASE_RESISTANCE_DERIVED_WIRE_STATUS_REASON)
+    # The solver's d/q record starts experimental; the stored run qualifies it
+    # inside its gates (tests/test_qualification.py). Ld and Lq never are.
     dq = DqFluxLinkage(i_d_A=0.0, i_q_A=10.0, lambda_d_Wb=0.01, lambda_q_Wb=0.001, torque_dq_Nm=0.3)
     assert (dq.status, dq.status_reason) == ("experimental", DQ_FLUX_LINKAGE_STATUS_REASON)
+    assert (dq.inductance_status, dq.inductance_status_reason) == ("experimental", DQ_INDUCTANCE_STATUS_REASON)
 
+    # The solver records the derating as experimental; the stored run qualifies
+    # it for a qualified design inside the temperature gates, and only there.
     record = magnet_temperature_record(_magnet_config(100.0))
-    assert record["magnet_temperature_status"] == "experimental"
-    assert record["magnet_temperature_status_reason"] == MAGNET_TEMPERATURE_STATUS_REASON
+    assert (record["magnet_temperature_status"], record["magnet_temperature_status_reason"]) == ("experimental", MAGNET_TEMPERATURE_STATUS_REASON)
+    for temperature, expected in (
+        (100.0, ("qualified", MAGNET_TEMPERATURE_QUALIFIED_REASON)),
+        (110.0, ("experimental", MAGNET_TEMPERATURE_STATUS_REASON)),
+    ):
+        stored = {"solve_metadata": magnet_temperature_record(_magnet_config(temperature))}
+        _apply_output_statuses(stored, _magnet_config(temperature).model_dump(mode="json"))
+        assert (stored["solve_metadata"]["magnet_temperature_status"], stored["solve_metadata"]["magnet_temperature_status_reason"]) == expected
     metadata = SolveMetadata(solver_name="magneto2d", mesh_element_count=100, rotor_positions=2, timestamp="2026-10-22T00:00:00Z", **record)
     assert metadata.magnet_temperature_status == "experimental"
 
@@ -84,6 +108,9 @@ def _derated_result(*, with_statuses: bool) -> dict:
             result["summary"]["winding_resistance"].pop(key)
     result["solve_metadata"].update(record)
     if with_statuses:
+        # As the stored run records it (backend/solve_workspace.py).
+        status, reason = magnet_temperature_status(_magnet_config(100.0))
+        result["solve_metadata"].update(magnet_temperature_status=status, magnet_temperature_status_reason=reason)
         result["summary"]["dq_flux_linkage"].update(status="experimental", status_reason=DQ_FLUX_LINKAGE_STATUS_REASON)
     return result
 
@@ -99,25 +126,31 @@ def test_the_run_pdf_and_csv_give_each_output_its_status_and_reason(with_statuse
     resistance, resistance_reason = (
         ("qualified", PHASE_RESISTANCE_STATUS_REASON) if with_statuses else ("experimental", PHASE_RESISTANCE_UNRECORDED_STATUS_REASON)
     )
+    # Derated magnets recorded without a status were experimental.
+    magnets, magnets_reason = (
+        ("qualified", MAGNET_TEMPERATURE_QUALIFIED_REASON) if with_statuses else ("experimental", MAGNET_TEMPERATURE_STATUS_REASON)
+    )
     assert status == {
         "dq_flux_linkage": "experimental", "dq_flux_linkage_reason": DQ_FLUX_LINKAGE_STATUS_REASON,
+        "dq_inductance": "experimental", "dq_inductance_reason": DQ_INDUCTANCE_STATUS_REASON,
         "phase_resistance": resistance, "phase_resistance_reason": resistance_reason,
         "iron_loss": "experimental", "iron_loss_reason": "Grade limits.",
         "efficiency": "experimental", "efficiency_reason": loss["efficiency_status_reason"],
-        "magnet_temperature": "experimental", "magnet_temperature_reason": MAGNET_TEMPERATURE_STATUS_REASON,
+        "magnet_temperature": magnets, "magnet_temperature_reason": magnets_reason,
     }
 
     text = _pdf_text(build_public_run_pdf(**arguments))
     assert "Status of the performance outputs" in text
     for output in (
-        "d/q flux linkage and inductances: experimental.",
+        "d/q flux linkage: experimental.",
+        "Ld, Lq, saliency and characteristic current: experimental.",
         f"Phase resistance and copper loss: {resistance}.",
         "Iron loss and its density map: experimental.",
         "Efficiency: experimental.",
     ):
         assert output in text, output
-    assert "100 C, experimental derating" in text
-    for reason in (DQ_FLUX_LINKAGE_STATUS_REASON, resistance_reason, MAGNET_TEMPERATURE_STATUS_REASON):
+    assert f"100 C, {magnets} derating" in text
+    for reason in (DQ_FLUX_LINKAGE_STATUS_REASON, DQ_INDUCTANCE_STATUS_REASON, resistance_reason, magnets_reason):
         assert reason in text
 
 
@@ -150,7 +183,7 @@ def test_the_performance_report_lists_every_output_with_its_status(derated: bool
     expected = {
         "torque_speed": data.envelope.status, "torque_speed_reason": data.envelope.status_reason,
         "efficiency_map": data.efficiency.status, "efficiency_map_reason": data.efficiency.status_reason,
-        "dq_flux_linkage": "experimental", "dq_flux_linkage_reason": DQ_FLUX_LINKAGE_STATUS_REASON,
+        "dq_flux_linkage": "experimental", "dq_flux_linkage_reason": FLUX_LINKAGE_MAP_STATUS_REASON,
         "phase_resistance": "experimental", "phase_resistance_reason": PHASE_RESISTANCE_UNRECORDED_STATUS_REASON,
     }
     if derated:
@@ -163,7 +196,7 @@ def test_the_performance_report_lists_every_output_with_its_status(derated: bool
     ):
         assert output in text, output
     assert ("Magnet temperature derating" in text) is derated
-    assert f"Experimental: {DQ_FLUX_LINKAGE_STATUS_REASON}" in text
+    assert f"Experimental: {FLUX_LINKAGE_MAP_STATUS_REASON}" in text
     assert "0.05 ohm at 80 degC, experimental" in text, "a request without the winding's status"
 
 

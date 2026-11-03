@@ -15,6 +15,13 @@ from fractions import Fraction
 from typing import Literal, TypedDict
 
 from backend.models import MotorConfig
+from backend.models.performance import (
+    DQ_FLUX_LINKAGE_QUALIFIED_REASON,
+    DQ_FLUX_LINKAGE_STATUS_REASON,
+    MAGNET_TEMPERATURE_QUALIFIED_REASON,
+    MAGNET_TEMPERATURE_STATUS_REASON,
+    OutputStatus,
+)
 from backend.public_policy import EXPERIMENTAL_IPM_TOPOLOGIES, experimental_rotors_enabled
 from backend.winding_utils import concentrated_uses_tooth_coils
 
@@ -153,3 +160,36 @@ def classify_qualification(config: MotorConfig) -> Qualification:
             "Candidate qualification is pending; the historical report does not qualify this build."
         )
     return _result(status, reason, _caveats(config) if status != "unsupported" else [])
+
+
+# Protocol 1.6.0 adds reference gates for two outputs of a qualified design
+# (docs/VALIDATION.md#050-performance-outputs). Each is qualified only inside
+# what those gates measured; Ld and Lq stay experimental everywhere.
+_DQ_CURRENT_ANGLE_RANGE_DEG = (0.0, 60.0)
+_MAGNET_TEMPERATURE_RANGE_C = (20.0, 100.0)
+
+
+def dq_flux_linkage_status(config: MotorConfig) -> tuple[OutputStatus, str]:
+    """Loaded λd and λq: qualified for a qualified single-layer concentrated design under sinusoidal current at γ 0–60°."""
+
+    solve_params = config.solve_params
+    low, high = _DQ_CURRENT_ANGLE_RANGE_DEG
+    if (
+        classify_qualification(config)["status"] == "qualified"
+        and config.winding.type == "concentrated"
+        and config.winding.layers == 1
+        and (solve_params is None or solve_params.excitation_mode == "sinusoidal")
+        and low <= (solve_params.current_angle_deg if solve_params is not None else 0.0) <= high
+    ):
+        return "qualified", DQ_FLUX_LINKAGE_QUALIFIED_REASON
+    return "experimental", DQ_FLUX_LINKAGE_STATUS_REASON
+
+
+def magnet_temperature_status(config: MotorConfig) -> tuple[OutputStatus, str]:
+    """Magnet derating: qualified for a qualified design from the catalogue's 20 °C to 100 °C."""
+
+    temperature = config.solve_params.magnet_temperature_C if config.solve_params is not None else None
+    low, high = _MAGNET_TEMPERATURE_RANGE_C
+    if classify_qualification(config)["status"] == "qualified" and temperature is not None and low <= temperature <= high:
+        return "qualified", MAGNET_TEMPERATURE_QUALIFIED_REASON
+    return "experimental", MAGNET_TEMPERATURE_STATUS_REASON

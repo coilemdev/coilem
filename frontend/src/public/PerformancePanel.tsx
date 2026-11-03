@@ -50,7 +50,7 @@ import { formatSignificant } from './numberFormat';
 import { StatusSummary } from './OutputStatusBadge';
 import { InfoTip, Popover } from './Popover';
 import {
-  DQ_FLUX_LINKAGE_STATUS_REASON,
+  FLUX_LINKAGE_MAP_STATUS_REASON,
   MAGNET_TEMPERATURE_STATUS_REASON,
   PHASE_RESISTANCE_UNRECORDED_STATUS_REASON,
   recordStatus,
@@ -500,6 +500,10 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
   // The tab and its report both show the winding record's own status.
   const resistanceStatus = recordStatus(winding, PHASE_RESISTANCE_UNRECORDED_STATUS_REASON);
   const magnetsDerated = isDeratedRun(result.solve_metadata);
+  const magnetStatus = {
+    status: result.solve_metadata.magnet_temperature_status ?? 'experimental',
+    reason: result.solve_metadata.magnet_temperature_status_reason ?? MAGNET_TEMPERATURE_STATUS_REASON,
+  };
   const windingTemperature = winding?.winding_temperature_C ?? losses?.winding_temperature_C ?? 20;
   const driveRequestId = useRef(0);
   useEffect(() => () => { driveRequestId.current += 1; }, []);
@@ -638,6 +642,7 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
       solved_point: solvedPoint ? { speed_rpm: solvedPoint.speedRpm, torque_Nm: solvedPoint.torqueNm, current_angle_deg: solvedPoint.gammaDeg } : null,
       magnet_temperature_derated: magnetsDerated,
       phase_resistance: resistance !== null && resistance > 0 ? resistanceStatus : null,
+      magnet_temperature: magnetsDerated ? magnetStatus : null,
     };
     setDownloading(kind);
     try {
@@ -654,16 +659,11 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
   const statuses: NamedOutputStatus[] = drive ? [
     { key: 'envelope', label: 'Torque–speed envelope', status: drive.envelope.status, reason: drive.envelope.status_reason ?? '' },
     { key: 'efficiency', label: 'Efficiency map', status: drive.efficiency_map.status, reason: drive.efficiency_map.status_reason ?? '' },
-    { key: 'dq', label: 'Map flux linkage, MTPA and Ld, Lq', status: 'experimental', reason: DQ_FLUX_LINKAGE_STATUS_REASON },
+    { key: 'dq', label: 'Map flux linkage, MTPA and Ld, Lq', status: 'experimental', reason: FLUX_LINKAGE_MAP_STATUS_REASON },
     ...(resistance !== null && resistance > 0
       ? [{ key: 'resistance', label: 'Phase resistance and copper loss', ...resistanceStatus }]
       : []),
-    ...(magnetsDerated ? [{
-      key: 'magnets',
-      label: 'Magnet temperature derating',
-      status: result.solve_metadata.magnet_temperature_status ?? 'experimental',
-      reason: result.solve_metadata.magnet_temperature_status_reason ?? MAGNET_TEMPERATURE_STATUS_REASON,
-    }] : []),
+    ...(magnetsDerated ? [{ key: 'magnets', label: 'Magnet temperature derating', ...magnetStatus }] : []),
   ] : [];
   // Before the curves exist the tab still says what they will be.
   const headerStatuses: NamedOutputStatus[] = statuses.length

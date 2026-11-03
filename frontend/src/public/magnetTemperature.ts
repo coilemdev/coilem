@@ -8,7 +8,7 @@
  * is not evaluated yet.
  */
 
-import { MAGNET_TEMPERATURE_STATUS_REASON, type OutputStatus } from './outputStatus';
+import { MAGNET_TEMPERATURE_QUALIFIED_REASON, MAGNET_TEMPERATURE_STATUS_REASON, type OutputStatus } from './outputStatus';
 
 export interface GradeTemperature {
   alphaBr: number;
@@ -27,6 +27,8 @@ export const GRADE_TEMPERATURE: Record<string, GradeTemperature> = {
 };
 
 export const REFERENCE_TEMP_C = 20;
+/** What the protocol 1.6.0 temperature gates measured, for a qualified design. */
+const QUALIFIED_RANGE_C: [number, number] = [20, 100];
 const MIN_TEMP_C = -40;
 const MAX_TEMP_C = 200;
 const MIN_HCJ_SHARE = 0.25;
@@ -60,7 +62,17 @@ export function isDeratedRun(metadata: { magnet_temperature_C?: number | null; m
 const signed = (value: number, digits = 1) => `${value < 0 ? '−' : '+'}${Math.abs(value).toFixed(digits)}`;
 
 /** The line under the Magnet temperature input for a grade, its 20 °C Br and the chosen temperature. */
-export function magnetTemperatureView(grade: string, br20T: number | null | undefined, temperatureC: number): MagnetTemperatureView {
+/**
+ * designQualified: the design's own benchmark qualification. The derating is
+ * qualified only for a qualified design from 20 to 100 °C, as
+ * backend/qualification.py magnet_temperature_status decides for the run.
+ */
+export function magnetTemperatureView(
+  grade: string,
+  br20T: number | null | undefined,
+  temperatureC: number,
+  designQualified = false,
+): MagnetTemperatureView {
   const row = GRADE_TEMPERATURE[grade];
   const range = magnetTemperatureRange(grade);
   if (!row || !range) {
@@ -84,6 +96,11 @@ export function magnetTemperatureView(grade: string, br20T: number | null | unde
   const warning = temperatureC > row.maxOperating
     ? `${grade} is rated to ${row.maxOperating} °C: above it the magnet risks irreversible demagnetisation, which coilEM does not model.`
     : null;
-  const status: OutputStatus | null = delta === 0 ? null : { status: 'experimental', reason: MAGNET_TEMPERATURE_STATUS_REASON };
+  const qualified = designQualified && temperatureC >= QUALIFIED_RANGE_C[0] && temperatureC <= QUALIFIED_RANGE_C[1];
+  const status: OutputStatus | null = delta === 0
+    ? null
+    : qualified
+      ? { status: 'qualified', reason: MAGNET_TEMPERATURE_QUALIFIED_REASON }
+      : { status: 'experimental', reason: MAGNET_TEMPERATURE_STATUS_REASON };
   return { available: true, range, note, warning, status };
 }

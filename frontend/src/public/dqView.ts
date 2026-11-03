@@ -10,7 +10,7 @@
  * angle.
  */
 
-import { DQ_FLUX_LINKAGE_STATUS_REASON, recordStatus, type OutputStatus } from './outputStatus';
+import { DQ_FLUX_LINKAGE_STATUS_REASON, DQ_INDUCTANCE_STATUS_REASON, recordStatus, type OutputStatus } from './outputStatus';
 import type { DqFluxLinkage } from './performance';
 
 export interface DqRow {
@@ -34,8 +34,10 @@ export interface DqView {
   note: string | null;
   /** The torque check; null for an open-circuit run, which has no current and no torque to compare. */
   agreement: DqAgreement | null;
-  /** Whether the record is qualified or experimental, and why (public issue 143). */
+  /** Whether λd and λq are qualified or experimental, and why (public issue 143). */
   status: OutputStatus;
+  /** The same for Ld, Lq and the quantities from them; null when the record has none. */
+  inductanceStatus: OutputStatus | null;
 }
 
 /** Within this many percentage points of 100%, the d/q agreement reads OK. */
@@ -128,6 +130,7 @@ export function dqView(dq: DqFluxLinkage | null | undefined, currentUnit: DqCurr
         + 'λd is the magnet flux linkage λpm and λq is about zero.',
       agreement: null,
       status: recordStatus(dq, DQ_FLUX_LINKAGE_STATUS_REASON),
+      inductanceStatus: null,
     };
   }
   const mainKeys = ld !== null ? ['ld', 'lq', 'saliency', 'characteristic'] : ['lq', 'lambda-pm'];
@@ -139,5 +142,7 @@ export function dqView(dq: DqFluxLinkage | null | undefined, currentUnit: DqCurr
       : null,
     agreement: dqAgreement(dq),
     status: recordStatus(dq, DQ_FLUX_LINKAGE_STATUS_REASON),
+    // Ld and Lq stay experimental even where λd and λq are qualified.
+    inductanceStatus: recordStatus({ status: dq.inductance_status, status_reason: dq.inductance_status_reason }, DQ_INDUCTANCE_STATUS_REASON),
   };
 }

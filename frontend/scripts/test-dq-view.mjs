@@ -4,6 +4,7 @@ import { importTypeScriptModule } from './import-typescript-module.mjs';
 
 const {
   DQ_FLUX_LINKAGE_STATUS_REASON,
+  DQ_INDUCTANCE_STATUS_REASON,
   MAGNET_TEMPERATURE_STATUS_REASON,
   PHASE_RESISTANCE_STATUS_REASON,
 } = await importTypeScriptModule(new URL('../src/public/outputStatus.ts', import.meta.url));
@@ -92,8 +93,17 @@ assert.equal(dqAgreement(null).text, '—');
 assert.equal(dqView(null), null);
 
 
-// Public issue 143: the card says the d/q record is experimental, and why.
+// Public issue 143: the card says whether λd and λq are qualified, and why. Ld, Lq
+// and the quantities from them stay experimental even where λd and λq pass.
 assert.deepEqual(view.status, { status: 'experimental', reason: DQ_FLUX_LINKAGE_STATUS_REASON }, 'a record stored before it carried a status');
-assert.deepEqual(dqView({ ...dq, status: 'qualified', status_reason: 'Gate passed.' }).status, { status: 'qualified', reason: 'Gate passed.' });
+assert.deepEqual(view.inductanceStatus, { status: 'experimental', reason: DQ_INDUCTANCE_STATUS_REASON });
+const qualified = dqView({ ...dq, status: 'qualified', status_reason: 'Gate passed.' });
+assert.deepEqual(qualified.status, { status: 'qualified', reason: 'Gate passed.' });
+assert.deepEqual(qualified.inductanceStatus, { status: 'experimental', reason: DQ_INDUCTANCE_STATUS_REASON });
+assert.deepEqual(
+  dqView({ ...dq, inductance_status: 'experimental', inductance_status_reason: 'Stored reason.' }).inductanceStatus,
+  { status: 'experimental', reason: 'Stored reason.' },
+);
+assert.equal(openCircuit.inductanceStatus, null, 'an open-circuit run reports no inductance');
 
 console.log('d/q view: ok');

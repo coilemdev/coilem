@@ -2040,7 +2040,8 @@ assert.match(workspaceSource, /onChange=\{set\('stator', 'tooth_width_mm', 'adva
 const statusSources = Object.fromEntries(await Promise.all(['DqCard', 'LossesCard', 'PerformancePanel', 'OutputStatusBadge', 'Popover'].map(async (name) => [
   name, await readFile(path.join(frontendRoot, `src/public/${name}.tsx`), 'utf8'),
 ])));
-assert.match(statusSources.DqCard, /<StatusSummary statuses=\{\[\{ key: 'dq'/);
+assert.match(statusSources.DqCard, /<StatusSummary\n\s*statuses=\{\[\n\s*\{ key: 'dq', label: 'd\/q flux linkage'/);
+assert.match(statusSources.DqCard, /key: 'inductance', label: 'Ld, Lq, saliency and characteristic current'/, 'Ld and Lq carry their own status');
 assert.match(statusSources.LossesCard, /<StatusSummary statuses=\{view\.statuses\}>/);
 assert.match(statusSources.LossesCard, /statuses=\{view\.statuses\}\n\s*\/>/, 'the loss map shows the status of the loss it maps');
 assert.match(statusSources.LossesCard, /<StatusDot status=\{shownStatus\.status\}/, 'the map heading carries the mapped loss status');
