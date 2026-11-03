@@ -10,3 +10,6 @@ docs/benchmarks/pyleecan-prius-v1/app-registration.json -text -eol whitespace=cr
 # Evidence receipts bind exact bytes, including original CSV/JSON line endings.
 benchmarks/windows-v050-20261102-88aae101/** -text -eol whitespace=cr-at-eol
 benchmarks/reference-adapters/windows-femm42-v3-20261102/** -text -eol whitespace=cr-at-eol
+benchmarks/reference-baselines/protocol16-reviewed-20261103/** -text -eol whitespace=cr-at-eol
+benchmarks/candidate-qualification-20261103/** -text -eol whitespace=cr-at-eol
+benchmarks/records-historical/v040/** -text -eol whitespace=cr-at-eol

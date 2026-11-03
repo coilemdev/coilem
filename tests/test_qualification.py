@@ -78,7 +78,7 @@ def test_qualified_combinations_name_their_evidence(fixture: str, reason: str, m
     qualification = classify_qualification(_fixture(fixture))
     assert qualification["status"] == "qualified"
     assert qualification["reason"].startswith(reason)
-    assert qualification["basis"] == "coilEM benchmark report, measured at 5b6cb61"
+    assert qualification["basis"] == "coilEM benchmark report, measured at 88aae101"
     assert qualification["reference"].endswith("docs/VALIDATION.md#qualification-status")
 
 
@@ -95,7 +95,7 @@ def test_basis_names_the_measured_commit_and_reference() -> None:
     assert run["selection"]["spec_sha256"] == sha(measured_spec)
     # This run measured the winding-axis protocol directly; the frozen reference
     # still names its own earlier measured commit and registered validation bridge.
-    assert run["identity"]["protocol_version"] == "1.3.0"
+    assert run["identity"]["protocol_version"] == "1.6.0"
 
 
 @pytest.mark.parametrize("path", PHYSICS_SOURCES)
@@ -127,8 +127,12 @@ def test_reasons_match_the_report_outcomes(measured_build) -> None:
             assert set(statuses) == {"PASS"}, claim
             assert claim.startswith(f"all {len(statuses)} benchmark "), claim
         elif status == "experimental":
-            assert set(statuses) != {"PASS"}, claim
-            assert claim.startswith(f"{statuses.count('PASS')} of {len(statuses)} benchmark fixtures pass"), claim
+            if set(statuses) == {"PASS"}:
+                # Passing fixture gates does not remove the declared V-shape
+                # accuracy limitation from the version and refinement review.
+                assert len(statuses) == 6 and claim.startswith("all 6 benchmark fixtures pass, but the version comparison"), claim
+            else:
+                assert claim.startswith(f"{statuses.count('PASS')} of {len(statuses)} benchmark fixtures pass"), claim
         else:
             assert set(statuses) == {"UNSUPPORTED"}, claim
     for key, statuses in gates.items():
@@ -169,7 +173,7 @@ def test_unmeasured_and_failing_combinations_are_experimental() -> None:
     six_step = _with(distributed, "solve_params", excitation_mode="ideal_six_step_120", current_amplitude_convention="plateau")
     flat_ipm = _fixture("ipm_flat_8p12s_fsae_contract.json")
     cases = {
-        "V-shape IPM: 5 of 6": _fixture("ipm_vshape_8p12s_baseline_contract.json"),
+        "V-shape IPM: all 6": _fixture("ipm_vshape_8p12s_baseline_contract.json"),
         "SPM with distributed windings under ideal six-step": six_step,
         "Single-layer distributed": _with(distributed, "winding", layers=1),
         "Only full-pitch and 5/6": _with(_fixture("spm_8p48s_distributed_femm_validation.json"), "winding", coil_span=4),
@@ -249,7 +253,7 @@ def test_saved_run_records_status_in_provenance_and_exports(tmp_path: Path) -> N
     loaded = workspace.load_run(location.project_slug, location.run_id)
     qualification = loaded["manifest"]["provenance"]["qualification"]
     assert qualification["status"] == "experimental"
-    assert qualification["reason"].startswith("V-shape IPM: 5 of 6")
+    assert qualification["reason"].startswith("V-shape IPM: all 6")
 
     rows = list(csv.reader(io.StringIO((location.path / "report" / "report.csv").read_text(encoding="utf-8"))))
     assert ["provenance", "qualification.status", "", "experimental", ""] in rows
@@ -260,7 +264,7 @@ def test_saved_run_records_status_in_provenance_and_exports(tmp_path: Path) -> N
         (page.extract_text() or "") for page in pypdf.PdfReader(location.path / "report" / "report.pdf").pages
     )
     pdf_text = " ".join(pdf_text.split())
-    assert "Qualification Experimental: V-shape IPM: 5 of 6" in pdf_text
+    assert "Qualification Experimental: V-shape IPM: all 6" in pdf_text
     assert "Experimental combination: V-shape IPM" in pdf_text
 
 

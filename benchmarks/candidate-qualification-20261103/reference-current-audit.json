@@ -1,0 +1,467 @@
+{
+  "schema": "coilem.protocol16_current_contract_audit/v1",
+  "status": "PASS",
+  "scope": "Independent declared-current magnitude/zero-sum check and measured circuit-current magnitude; legacy area/NI approximations remain separately documented. No fields or tolerances changed.",
+  "cases": [
+    {
+      "case_id": "spm_8p12s_example_shoed",
+      "raw_result_sha256": "388bbf3709f6ccea6ea63de4a317544015e07c9eb891dfe1738303552cb1b566",
+      "registered_fixture_sha256": "dbe538187d5280d171c224b12dc25612fb25c35c9014b201564126715dc4b6c4",
+      "declared_peak_current_A": 42.42640687119285,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 1.4210854715202004e-14,
+      "femm_loaded_circuit_frames_checked": 48,
+      "max_measured_circuit_peak_current_error_A": 2.1316282072803006e-14
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__dq_I20_g30",
+      "raw_result_sha256": "4dc7231934e15518b80501fd21f842101fa7b9659f170fbb50326714b71fe1f9",
+      "registered_fixture_sha256": "040ea7d2cf367ab0fa9e8fdba9a83df22dd88e548597a15c939358c709cecd38",
+      "declared_peak_current_A": 20.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 7.105427357601002e-15,
+      "femm_loaded_circuit_frames_checked": 48,
+      "max_measured_circuit_peak_current_error_A": 7.105427357601002e-15
+    },
+    {
+      "case_id": "spm_4p12s_simple__baseline",
+      "raw_result_sha256": "280a1481cca86246e313063f79ad43f31387099730a87e29531b0092824b93f4",
+      "registered_fixture_sha256": "8683cfb2785aab77e2627428e1d85e9d339656b832cc1d28f0f9c71b2376ba44",
+      "declared_peak_current_A": 14.142135623730951,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 5.329070518200751e-15,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "spm_4p12s_simple__high_current",
+      "raw_result_sha256": "b70364d37869fc0e14a1d038c90d3084098910037e4684b19ca642c870e57602",
+      "registered_fixture_sha256": "0aa890a7f91080d325531249fe35db5e83a1188f7c4d2a924e8dd7aca58255c2",
+      "declared_peak_current_A": 21.213203435596427,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 7.105427357601002e-15,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "spm_4p12s_simple__tight_airgap",
+      "raw_result_sha256": "ea82613572d49688a1a2065d38371afce7c2e35b7d80019069cb917feb3706bc",
+      "registered_fixture_sha256": "8ac45848dd6e64b1056d6126dd8cc581e662b4a944fd2c505382b1c8feeedcda",
+      "declared_peak_current_A": 14.142135623730951,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 5.329070518200751e-15,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__baseline",
+      "raw_result_sha256": "fb39a45b85d497bc786863accc4c65b964cf460abba95454ecf560f36f0bbd07",
+      "registered_fixture_sha256": "a2ea56eb54efd8121ba18bd56cf2aebb8cdee00fc45a34bf3b6a9279fe9d6441",
+      "declared_peak_current_A": 0.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 0.0,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__high_current",
+      "raw_result_sha256": "24392ac872d79ffd0f4bad5fb8e535bc633c553ed99c01ca9c86b70292729822",
+      "registered_fixture_sha256": "eb6ac4ab542644145605bc75689c5f59ff2a11bb44d48010fd2e469414cc5c38",
+      "declared_peak_current_A": 7.0710678118654755,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 2.6645352591003757e-15,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__tight_airgap",
+      "raw_result_sha256": "803edc9e8d8f8d77fbf80a73d01bbf26475b282c492acd34473ea8f47d088f23",
+      "registered_fixture_sha256": "e0ab8c2b89bd7f562c9c797763c6155f2c27f122fe6c177f5c69e8e4db021697",
+      "declared_peak_current_A": 0.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 0.0,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__baseline",
+      "raw_result_sha256": "ac25471c1351e8dbb3f0a6e2db13fd1a23ad033dec0edc26456b946229d557a1",
+      "registered_fixture_sha256": "e63edcc854d01e6c7ddb0c9ef83e6c6212bbb5ee10cf60de2e8f395219c342c7",
+      "declared_peak_current_A": 20.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 7.105427357601002e-15,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__high_current",
+      "raw_result_sha256": "19502cd19c93896345251727bd65dceaa5bf3cbe499f90b2a8ee70e47bf1cb17",
+      "registered_fixture_sha256": "09f98ac8d479dfb1d5df1d44123ce498d37a7b43a769c4bdfa5c765044669dd9",
+      "declared_peak_current_A": 30.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 1.0658141036401503e-14,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__tight_airgap",
+      "raw_result_sha256": "de6645431a52a29d17633d189cc1df996ba5dee0bdefe2ea74a0d13f9bede424",
+      "registered_fixture_sha256": "d0a534dfba20d13a3a0ea96ac7a0e4640a9261dcb68dd095f86233a74c2a2969",
+      "declared_peak_current_A": 20.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 7.105427357601002e-15,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "spm_8p12s_reference_angle30__baseline",
+      "raw_result_sha256": "238a042425fec9c58b4380ca9baf617d8409f8a029171f0ae29f6bd4e49b5223",
+      "registered_fixture_sha256": "e9188508875a6b9b900229cec0dce6f8bfff862433bcd48eae666b1d26deeefd",
+      "declared_peak_current_A": 70.71067811865476,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 2.842170943040401e-14,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "ipm_flat_12s10p_fscw_contract",
+      "raw_result_sha256": "3a84f7f36c9d6d0af44500b991098002ecc7de9c7f3c37fb0ac201320b1e04fb",
+      "registered_fixture_sha256": "74358dbc72618a8d79432bbd8420a5ff5ad1936c8419ca3ceacfaa42642fa680",
+      "declared_peak_current_A": 30.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 1.0658141036401503e-14,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "ipm_flat_24s16p_industrial_contract",
+      "raw_result_sha256": "38d26cf9d9f72e6b57d6f910cddf533ac71d8cc2bd80f059e3d21e116894633b",
+      "registered_fixture_sha256": "e7b4bf9b187c57976de7ef7851e62db63dbb0ff90196060f1d927cac32203402",
+      "declared_peak_current_A": 100.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 4.263256414560601e-14,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "ipm_flat_4p12s_micro_contract",
+      "raw_result_sha256": "e0804b22b64105ffca9b66592e801b4b6255ed681613c0f03eda182493157ca9",
+      "registered_fixture_sha256": "907592fae67a43464976f9c8153a0a82f7abbac51cb5fd5e4d489dbe79a70119",
+      "declared_peak_current_A": 7.0710678118654755,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 2.6645352591003757e-15,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "raw_result_sha256": "0be808765a2ce720b770a8ee2dd014eb45da31f2d5dba5f8c2570f29a2e62ee2",
+      "registered_fixture_sha256": "b1b664d37b65facde4941cd362b2fe1a3fbcbba94677a2e15ab2b6a6e85e874b",
+      "declared_peak_current_A": 50.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 2.1316282072803006e-14,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract",
+      "raw_result_sha256": "cc246188f55598f949ca67b1b48588ded09acb4c2cd03a231885caf7c42c8bcc",
+      "registered_fixture_sha256": "8070cb6d1281f900beed45ca729211327534b263db6ca28e4d9d2b58d2c15904",
+      "declared_peak_current_A": 50.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 2.1316282072803006e-14,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "raw_result_sha256": "7438d49fdba4428312772433f72545c3676b5bd2cd11b799f75fe3f0b8cd43f1",
+      "registered_fixture_sha256": "3d02199dc695dd6fd6d985ae9be5f66b10015ff1c45ecdf21015ba92ee30bef5",
+      "declared_peak_current_A": 50.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 2.1316282072803006e-14,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_baseline_contract",
+      "raw_result_sha256": "c7a856f593cf49df2e38afece93a5f25c766878e7d440d5a70109f9bcf182124",
+      "registered_fixture_sha256": "0b74642e6e9cccd3b6cc4db05e934a4fccce8b0929cbf646d91d97b16d51a96f",
+      "declared_peak_current_A": 50.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 2.1316282072803006e-14,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "raw_result_sha256": "b1966935b3b09983c01800a7132f36966de2a6f1bcfa4e4a08402d7127c87c29",
+      "registered_fixture_sha256": "5c0ce6a13157f4b509278fd7ce6497ae50f813419f0469303d01b468053ad579",
+      "declared_peak_current_A": 50.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 2.1316282072803006e-14,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_narrow_angle_contract",
+      "raw_result_sha256": "4255f5e994ef72fca9b493d7b0ac7b04479b160ef05050ac85c70d7a70c47ced",
+      "registered_fixture_sha256": "ba4e05a68783179e905416912dfcf1be03c757bd7ff13ea7f413b37617534441",
+      "declared_peak_current_A": 50.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 2.1316282072803006e-14,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "raw_result_sha256": "4f436abd4ca3e9977c2600d5a24455eb7e7ffd6be4a662ae6551b30b5928f08d",
+      "registered_fixture_sha256": "63de352f24f9a62eeb4de789758217e66f37ce09743373e45028865fb0dc559f",
+      "declared_peak_current_A": 50.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 2.1316282072803006e-14,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_thin_bridge_contract",
+      "raw_result_sha256": "75c4c28231f2abdbc5419d3f932744cf05d34ab908b5e43bd5edf8892ad751de",
+      "registered_fixture_sha256": "69366d5331fbd7f54c8f5c718ec3fb582609908be3a56f622d041cb70fd0bd5e",
+      "declared_peak_current_A": 50.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 2.1316282072803006e-14,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "raw_result_sha256": "472bb969a1cfd9d8599be90b01279bc32628866dc84bd7534c281c94dfefe062",
+      "registered_fixture_sha256": "4b64ba12009d85110f08bb03804b96d17f6e79a751c088298ac17123680f77c4",
+      "declared_peak_current_A": 50.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 2.1316282072803006e-14,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "spm_12p36s_distributed_femm_validation",
+      "raw_result_sha256": "303ca9337be907a4ceafcd1a754955b371639189a9e6843e7a52bde4bccd9014",
+      "registered_fixture_sha256": "75f68857d14aba7bb1d92d3388185ac91a692ae4d0adf6d3dc5b5fccfb5b0fea",
+      "declared_peak_current_A": 8.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 2.6645352591003757e-15,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "spm_8p24s_distributed_femm_validation",
+      "raw_result_sha256": "358cbff417ebb11d5e842496df785f2f39d0048e99561bccc3aba9a03ae27dd2",
+      "registered_fixture_sha256": "394869d4f25cad92342e5d29c438ae742728ff459934f1dddb5e63f479fc2125",
+      "declared_peak_current_A": 8.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 2.6645352591003757e-15,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "spm_8p48s_chorded_5_6",
+      "raw_result_sha256": "0b15a8d0f0a2f51f4bfee06d2e97a28c6a9cb61679fbba37dea583785934efa8",
+      "registered_fixture_sha256": "06a5da2f2fdf8368daf988fa8d9311f3526ac3adc6c0e29e2882f31e9dc56e8f",
+      "declared_peak_current_A": 8.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 2.6645352591003757e-15,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "spm_8p48s_distributed_femm_validation",
+      "raw_result_sha256": "8383eb6a4abfd57e692fbd44912375cc983be6724eb91b41430d81214bea2b9a",
+      "registered_fixture_sha256": "0020b4a8084c251f6b17cbc6fb1f4d3293bbc057502b846da0f10481689e5090",
+      "declared_peak_current_A": 8.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 2.6645352591003757e-15,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "raw_result_sha256": "6d339802c45205b1c93eb4169c69a2f2d3ea108848b26fa13ee6539c8186701e",
+      "registered_fixture_sha256": "3eb405359dbf6503ea6d29eaf41d595681ae5a7b4a70883aa202df1fd3df6388",
+      "declared_peak_current_A": 20.0,
+      "source_frames_checked": 96,
+      "max_commanded_peak_current_error_A": 0.0,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "raw_result_sha256": "9a83a52c5efd586480970316625e4575442cd281e8ccbd19bf8911e3d6a3b00f",
+      "registered_fixture_sha256": "cc111eda6bc19623de00e8a1da66ba396db3d6440126947715b06511c9510357",
+      "declared_peak_current_A": 15.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 0.0,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "raw_result_sha256": "b61f42bf412543759b700cdabdfa719c83bf75d32dbfc1e5c5a6e7a3cafe95a8",
+      "registered_fixture_sha256": "624b5b2faa387e4965da68cc337c9912da6137e1fc8712934b3f19d49cc7e457",
+      "declared_peak_current_A": 50.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 0.0,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__magnet_60C",
+      "raw_result_sha256": "3de12b8ed2c59464eeae5a86370d568573fed56b9b11650228a1d01222c05784",
+      "registered_fixture_sha256": "5633ed8c7644bf4e71c557b03afce86193313bc1e20566bb61d503018669a263",
+      "declared_peak_current_A": 20.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 7.105427357601002e-15,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__magnet_100C",
+      "raw_result_sha256": "cc9e0eeaf2bde45ddb88acc3859c41f92d1f6e74a5300589f4a3173c4c779efe",
+      "registered_fixture_sha256": "77732c1868c7743a8d8711aea09457d103e45301019b74e3a1495f6c36598d78",
+      "declared_peak_current_A": 20.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 7.105427357601002e-15,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__dq_I20_g0",
+      "raw_result_sha256": "b2b92469442ea689a55f761f6a53ce25624813312f3985e8fa92c0347727b734",
+      "registered_fixture_sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a",
+      "declared_peak_current_A": 20.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 7.105427357601002e-15,
+      "femm_loaded_circuit_frames_checked": 48,
+      "max_measured_circuit_peak_current_error_A": 7.105427357601002e-15
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__dq_I20_g60",
+      "raw_result_sha256": "55e8071238853e2737895159fa8debdad83ceff053b5171bc8be0708899f84a2",
+      "registered_fixture_sha256": "22bfd644feb317039dadbf6e1736f6c0c28f8641689c9571dcea3a9aba62e027",
+      "declared_peak_current_A": 20.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 3.552713678800501e-15,
+      "femm_loaded_circuit_frames_checked": 48,
+      "max_measured_circuit_peak_current_error_A": 7.105427357601002e-15
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__dq_I40_g0",
+      "raw_result_sha256": "8b00fbba25df122414e3b7daed44e559b4d8b2eef0f7c69e5469db49f1a13e8b",
+      "registered_fixture_sha256": "fec0ce01476183e4e5b237a0fb3bc66676f7ac2582ca83f7c4c50bd96fb3ebd6",
+      "declared_peak_current_A": 40.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 1.4210854715202004e-14,
+      "femm_loaded_circuit_frames_checked": 48,
+      "max_measured_circuit_peak_current_error_A": 1.4210854715202004e-14
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__dq_I40_g30",
+      "raw_result_sha256": "36011cc263f70c42a5cec2677c1676c53183533a0c0fdc416055d7b42d473fce",
+      "registered_fixture_sha256": "7de6f4d389d823ea026d1843f778add1f3c28a50d3652a200952286818b4e270",
+      "declared_peak_current_A": 40.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 1.4210854715202004e-14,
+      "femm_loaded_circuit_frames_checked": 48,
+      "max_measured_circuit_peak_current_error_A": 1.4210854715202004e-14
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__dq_I40_g60",
+      "raw_result_sha256": "bf41eeef6d2d80d8c1b8bd03d9d73a9fcfb3af78025f003cd749ef7bfacdc102",
+      "registered_fixture_sha256": "816252bbfc56ca2b917e576a892a21a10ca7a25c2044f2e51af08270661b1287",
+      "declared_peak_current_A": 40.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 7.105427357601002e-15,
+      "femm_loaded_circuit_frames_checked": 48,
+      "max_measured_circuit_peak_current_error_A": 1.4210854715202004e-14
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract__magnet_60C",
+      "raw_result_sha256": "5c31f1aff55653924c451b8ff157a5424e4e67eeb06824f765f07ba337364043",
+      "registered_fixture_sha256": "afe7c558fc411f00408461add8a9b88b7eed38bff4338234e0188246abc6f9de",
+      "declared_peak_current_A": 50.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 2.1316282072803006e-14,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract__magnet_100C",
+      "raw_result_sha256": "f06891e234eb460551a1e1bf5b11f49b6ff7b35aed6e16fe3f35fbfdf6783ab3",
+      "registered_fixture_sha256": "d6125a01411ade4faf0f12fea6dd53ab0938f4ff0c2efc6f5ebb7cb7c2dbf2a3",
+      "declared_peak_current_A": 50.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 2.1316282072803006e-14,
+      "femm_loaded_circuit_frames_checked": 0,
+      "max_measured_circuit_peak_current_error_A": 0.0
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract__dq_I50_g0",
+      "raw_result_sha256": "ae8a4eb051b8ee75ca4ac38ec72a49d2f22724b9e8ad9ce03a030c7ff14acc4e",
+      "registered_fixture_sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf",
+      "declared_peak_current_A": 50.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 2.1316282072803006e-14,
+      "femm_loaded_circuit_frames_checked": 48,
+      "max_measured_circuit_peak_current_error_A": 2.1316282072803006e-14
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract__dq_I50_g30",
+      "raw_result_sha256": "8e001391053616404f25e8add3866f4e5197a9287830b1d9c73966552b276609",
+      "registered_fixture_sha256": "5fed79cac72dd79b71355b60cd195a2f58d00470c36fdad314a236870c4abf2b",
+      "declared_peak_current_A": 50.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 7.105427357601002e-15,
+      "femm_loaded_circuit_frames_checked": 48,
+      "max_measured_circuit_peak_current_error_A": 2.1316282072803006e-14
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract__dq_I50_g60",
+      "raw_result_sha256": "0c1ed729655acef02af7b57453c780be9bbaa80cab3a36fd7d96a31a247734eb",
+      "registered_fixture_sha256": "e2bc18964582355fa7c838029693339374bb45456d2e21da26b76279cbd717cb",
+      "declared_peak_current_A": 50.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 1.4210854715202004e-14,
+      "femm_loaded_circuit_frames_checked": 48,
+      "max_measured_circuit_peak_current_error_A": 2.1316282072803006e-14
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract__dq_I100_g0",
+      "raw_result_sha256": "31f5ce09f576da87867166bead663538c037a31ac011c1684f8c9f0120bad050",
+      "registered_fixture_sha256": "13946ec4812653453576460ffaaa556e1c0712dc60ea5bcf7527255ead98bea9",
+      "declared_peak_current_A": 100.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 4.263256414560601e-14,
+      "femm_loaded_circuit_frames_checked": 48,
+      "max_measured_circuit_peak_current_error_A": 4.263256414560601e-14
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract__dq_I100_g30",
+      "raw_result_sha256": "e3dfeb3580948c97f9382d1bb16ed9631d53b82a86165565290d820ddd6b477f",
+      "registered_fixture_sha256": "8fd935a4b81d5aa3bbe9196151a84c9d745c268ea90702a4b92e07a76db62f47",
+      "declared_peak_current_A": 100.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 1.4210854715202004e-14,
+      "femm_loaded_circuit_frames_checked": 48,
+      "max_measured_circuit_peak_current_error_A": 1.4210854715202004e-14
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract__dq_I100_g60",
+      "raw_result_sha256": "73288597077bd0620a3d752c3a61cd428c6b00a71637fca78f3f5d2dacbdd99c",
+      "registered_fixture_sha256": "87b7306d1735934c0cb3c30c1fa0b970af2947efe1d2446538f41159371adbf0",
+      "declared_peak_current_A": 100.0,
+      "source_frames_checked": 48,
+      "max_commanded_peak_current_error_A": 2.842170943040401e-14,
+      "femm_loaded_circuit_frames_checked": 48,
+      "max_measured_circuit_peak_current_error_A": 2.842170943040401e-14
+    }
+  ]
+}

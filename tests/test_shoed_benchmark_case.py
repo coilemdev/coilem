@@ -19,15 +19,16 @@ def _case():
     return next(case for case in load_suite(SUITE)["cases"] if case["id"] == CASE_ID)
 
 
-def test_the_extension_adds_one_shoed_case_and_keeps_the_default():
+def test_the_historical_extension_adds_one_shoed_case_retained_in_the_default():
     spec, previous = load_suite(SUITE), load_suite(PREVIOUS)
     assert spec["protocol_version"] == "1.5.0" and "1.5.0" in SUPPORTED_PROTOCOL_VERSIONS
-    assert PROTOCOL_VERSION == "1.4.0" and SPEC == PREVIOUS
+    assert PROTOCOL_VERSION == "1.6.0" and SPEC == ROOT / "benchmarks/abcd-v1.6/benchmark_spec.json"
+    assert _case() in load_suite(SPEC)["cases"]
     assert spec["cases"][:-1] == previous["cases"] and spec["cases"][-1]["id"] == CASE_ID
     assert spec["extension"]["archived_suite_sha256"] == sha(PREVIOUS)
     for key in ("material_contract", "convention", "golden", "golden_sha256"):
         assert spec[key] == previous[key]
-    # No FEMM record exists for the new case, so no bridge to the 1.1 bundle is claimed.
+    # The historical extension claimed no bridge to the older 1.1 bundle.
     assert "reference_compatibility" not in spec
 
 

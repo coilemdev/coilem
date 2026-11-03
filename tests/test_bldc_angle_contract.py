@@ -18,10 +18,15 @@ BUNDLE = ROOT / "benchmarks/reference-baselines/ipm-high-output-v3"
 AXES = {"spm_14p12s_high_pole":15.0, "spm_4p12s_small":0.0, "spm_8p12s_reference":30.0}
 
 
-def test_default_uses_reconciled_contract_and_complete_v3_reference():
-    assert SPEC == ROOT / "benchmarks/abcd-v1.4/benchmark_spec.json" and DEFAULT_BUNDLE == BUNDLE
-    manifest, records, _ = load_bundle(BUNDLE,load_suite(SPEC))
-    assert len(records)==29 and manifest['validation_status']=='REVIEW_REQUIRED'
+def test_default_retains_reconciled_contract_in_the_reviewed_protocol16_bundle():
+    assert SPEC == ROOT / "benchmarks/abcd-v1.6/benchmark_spec.json"
+    assert DEFAULT_BUNDLE == ROOT / "benchmarks/reference-baselines/protocol16-reviewed-20261103"
+    current, previous = load_suite(SPEC), load_suite(NEW)
+    _, current_protocols, _ = inputs(current, current["cases"])
+    _, previous_protocols, _ = inputs(previous, previous["cases"])
+    assert current_protocols == previous_protocols
+    manifest, records, _ = load_bundle(DEFAULT_BUNDLE, current)
+    assert len(records) == 46 and manifest["validation_status"] == "REVIEWED_FOR_REGISTERED_PARITY"
 
 
 def test_angle_revision_changes_only_validation_and_keeps_historical_bytes():

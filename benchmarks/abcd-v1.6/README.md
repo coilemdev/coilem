@@ -1,6 +1,6 @@
 # A/B/C/D benchmark protocol 1.6.0: the 0.5.0 reference gates
 
-Harness **1.8.0** supports protocol **1.6.0**. The default stays [protocol 1.4.0](../abcd-v1.4/README.md) while reference review and release qualification are pending. The [November 2 Windows collection](../windows-v050-20261102-88aae101/README.md) publishes all 46 supported reference records and all 52 native jobs at `88aae101`, with 46 PASS and one planned unsupported row. The new references remain REVIEW_REQUIRED.
+Harness **1.8.0** uses protocol **1.6.0** by default. The [candidate qualification update](../candidate-qualification-20261103/README.md) registers the reviewed 46-record bundle and the complete Windows comparison at `88aae101`: 46 PASS, one planned unsupported row and 336/336 gates PASS. Exact-candidate Mac and Prius qualification remain pending. The original unreviewed collection and historical protocol registrations are preserved.
 
 Protocol 1.6.0 keeps every 1.4.0 request, golden vector and gate unchanged. It adds 17 cases, all derived from registered requests:
 
@@ -44,13 +44,12 @@ A record with a wire is therefore qualified, for the reason that names this gate
 
 ## Reference
 
-The [new bundle](../windows-v050-20261102-88aae101/reference-bundle/manifest.json)
+The [reviewed bundle](../reference-baselines/protocol16-reviewed-20261103/README.md)
 contains all 46 supported protocol `1.6.0` records at adapter `faced858`.
-The [collection request](FEMM-REQUEST.md) remains the original measurement
-contract; the [review inventory](../windows-v050-20261102-88aae101/REFERENCE_REVIEW.md)
-records completed checks and pending review. The default bundle is unchanged.
-Select the new bundle explicitly for development comparisons, or use
-`--no-reference` for native-only collection:
+Their bytes are unchanged from the original collection. The default loader
+checks the hash-bound review receipt as well as each record's original hash.
+The [collection request](FEMM-REQUEST.md) remains the measurement contract.
+Use `--no-reference` for native-only collection:
 
 ```sh
 python -m tools.run_benchmarks --suite benchmarks/abcd-v1.6/benchmark_spec.json --no-reference --out-dir ../benchmark-output/v1.6

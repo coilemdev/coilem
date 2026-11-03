@@ -77,13 +77,32 @@ def regrade(summary, *, suite=SPEC, bundle=DEFAULT_BUNDLE):
     return {**summary, "run": run, "rows": rows}, spec
 
 
+def historical_basis(record, *, suite=None, bundle=None):
+    """Find the exact registered bytes the historical record names; never repin it."""
+    if suite is None:
+        suite = next((path for path in sorted((DATA_ROOT / "benchmarks").glob("abcd-v*/benchmark_spec.json"))
+                      if sha(path) == record["suite_sha256"]), None)
+    if suite is None or sha(suite) != record["suite_sha256"]:
+        raise ValueError("The historical record's registered suite is unavailable or changed")
+    if bundle is None:
+        for path in sorted((DATA_ROOT / "benchmarks").rglob("manifest.json")):
+            manifest = read(path)
+            if (manifest.get("schema") == "coilem.frozen_reference_bundle/v1"
+                    and canonical({"manifest": sha(path), "records": manifest["records"]}) == record["reference_bundle_sha256"]):
+                bundle = path.parent
+                break
+    if bundle is None or load_bundle(bundle, load_suite(suite))[2] != record["reference_bundle_sha256"]:
+        raise ValueError("The historical record's frozen bundle is unavailable or changed")
+    return suite, bundle
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("evidence", type=Path, help="a published evidence folder, or a run's report folder, holding benchmark_summary.json")
     parser.add_argument("--out", type=Path, required=True)
-    parser.add_argument("--suite", type=Path, default=SPEC,
+    parser.add_argument("--suite", type=Path,
                         help="Explicit registered suite; does not change the runtime default")
-    parser.add_argument("--reference-bundle", type=Path, default=DEFAULT_BUNDLE,
+    parser.add_argument("--reference-bundle", type=Path,
                         help="Explicit frozen reference bundle; does not promote its review status")
     parser.add_argument("--historical-record", type=Path,
                         help="Reproduce this published record's original source registry without extending its qualification")
@@ -98,6 +117,7 @@ def main(argv=None):
     sources = list(physics_sources(CHECKOUT))
     if args.historical_record:
         historical = read(args.historical_record)
+        args.suite, args.reference_bundle = historical_basis(historical, suite=args.suite, bundle=args.reference_bundle)
         source = args.evidence.resolve().relative_to(CHECKOUT).as_posix()
         if historical["source"] != source or historical["measured_commit"] != identity["commit"]:
             raise SystemExit("The historical record does not name this evidence and measured commit")
@@ -117,7 +137,7 @@ def main(argv=None):
     missing = [path for path in sources if path not in measured]
     if missing:
         raise SystemExit(f"The run did not record these physics sources: {', '.join(missing)}")
-    graded, spec = regrade(summary, suite=args.suite, bundle=args.reference_bundle)
+    graded, spec = regrade(summary, suite=args.suite or SPEC, bundle=args.reference_bundle or DEFAULT_BUNDLE)
     source = args.evidence.resolve().relative_to(CHECKOUT).as_posix() if args.evidence.resolve().is_relative_to(CHECKOUT) else args.evidence.name
     note = (
         f"Graded from the recorded measurements (harness {identity['harness_version']}, protocol {identity['protocol_version']}) "

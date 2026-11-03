@@ -96,7 +96,29 @@ def load_bundle(directory, spec):
         ):
             raise ValueError(f"Reference input or identity mismatch: {case['id']}; register a new bundle")
         records[case["id"]] = record["result"]
+    if manifest.get("validation_status") == "REVIEWED_FOR_REGISTERED_PARITY":
+        require_reviewed_bundle(directory, manifest, spec)
     return manifest, records, canonical({"manifest": sha(directory / "manifest.json"), "records": manifest["records"]})
+
+
+def require_reviewed_bundle(directory, manifest, spec):
+    """An accepted reference status must bind the actual scoped review receipt."""
+    if manifest.get("validation_status") != "REVIEWED_FOR_REGISTERED_PARITY":
+        raise ValueError("Reference bundle still requires review")
+    entry = manifest.get("review") or {}
+    review = checked_json(directory, entry["file"], entry["sha256"])
+    required = {case["id"] for case in spec["cases"]} - {"ornl_prius_2004_ipm"}
+    registered = DATA_ROOT / "benchmarks/abcd-v1.6/benchmark_spec.json"
+    if (review.get("schema") != "coilem.protocol16_reference_review/v1"
+            or review.get("decision") != "ACCEPTED_FOR_REGISTERED_PARITY"
+            or review.get("suite_sha256") != manifest.get("suite_sha256")
+            or sha(registered) != review.get("suite_sha256") or read(registered) != spec
+            or review.get("reference_commit") != manifest["reference_commit"]
+            or review.get("parent_manifest_sha256") != manifest.get("parent_manifest_sha256")
+            or review.get("parent_bundle_sha256") != manifest.get("parent_bundle_sha256")
+            or set(review.get("cases", {})) != required):
+        raise ValueError("Reference review does not cover this bundle and suite")
+    return review
 
 
 def verify_materials(expected):

@@ -18,7 +18,9 @@ presets #127 are outside the current milestone.
 - [Windows protocol 1.6](benchmarks/windows-v050-20261102-88aae101/README.md)
   at `88aae101`: 52 supported native jobs, 46 PASS, one planned unsupported
   row and 336/336 gates PASS. All 46 fresh reference records are retained at
-  sealed adapter `faced858`; their status remains REVIEW_REQUIRED.
+  sealed adapter `faced858`. The original manifest remains REVIEW_REQUIRED;
+  the [subsequent reviewed bundle](benchmarks/reference-baselines/protocol16-reviewed-20261103/README.md)
+  accepts the unchanged records for registered parity with a hash-bound review.
 - [Adapter archive and version comparison](benchmarks/reference-adapters/windows-femm42-v3-20261102/README.md)
   identify the recovered implementation and FEMM executables used on this
   physical Windows host. The 29 legacy reference cases reproduce exactly.
@@ -52,8 +54,10 @@ application version does not relabel them as final 0.4.0 measurements.
 
 The Windows A/B/C/D collection retains the clean versioned candidate,
 source/binary/dependency hashes, requests, results and complete comparison.
-Finish reference/discrepancy review, candidate Prius evidence and the
-registered qualification update. The release assessment remains
+Reference review and the registered Windows comparison are complete in the
+[candidate qualification update](benchmarks/candidate-qualification-20261103/README.md).
+Finish the exact-candidate Mac collection, full Prius audit and final
+registered qualification checks. The release assessment remains
 [BLOCKED](benchmarks/v0.5.0/release-qualification.json).
 The current macOS record remains NOT_COMPARABLE to the changed physics sources;
 a fresh full macOS run is required before claiming current numerical parity.

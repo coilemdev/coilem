@@ -25,10 +25,10 @@ one's claim boundary.
 | Item | Recorded result | Remaining work |
 | --- | --- | --- |
 | Published macOS native A/B/C/D | [Full older report](../benchmarks/macos-native-20261022-5b7cad8/README.md) at `5b7cad8`, plus rounded protocol 1.6 additions at `f6c9fbb`; [52 paired Windows/Mac job comparisons](../benchmarks/windows-v050-20261102-88aae101/macos-comparison.txt), no available torque/EMF metric outside registered platform tolerances | Retain as historical evidence. Full raw results for the 17 additions are unavailable here; no same-candidate Mac qualification is claimed |
-| Physical Windows native A/B/C/D, protocol 1.6.0 | [Clean candidate `88aae101`](../benchmarks/windows-v050-20261102-88aae101/README.md): 52 supported jobs, 46 PASS, one planned unsupported, 336/336 gates PASS | Collection complete. Review references and register qualification only when its requirements are met |
-| Protocol 1.6.0 FEMM records | [46 fresh records](../benchmarks/windows-v050-20261102-88aae101/reference-bundle/manifest.json) at sealed adapter `faced858937e93740ddf7f6f3583a3ad5ec35646`; canonical bundle SHA-256 `c96b5e7948aea74bcf7943d584db85b874a2d4e887e0637c84e59e98c8dfd31a` | REVIEW_REQUIRED; [source-method and V-shape review inventory](../benchmarks/windows-v050-20261102-88aae101/REFERENCE_REVIEW.md). Active historical bundle unchanged |
-| Protocol 1.6.0 additions | All 17 new Windows cases PASS against fresh references; all 12 d/q reference self-checks PASS | Comparison complete; output qualification remains pending review and registration |
-| Physics hash guards | New Windows manifest measures all 54 current physics sources; active runtime qualification still uses historical evidence and fails closed | Preserve original hashes; no retrospective repinning or output promotion in this evidence publication |
+| Physical Windows native A/B/C/D, protocol 1.6.0 | [Clean candidate `88aae101`](../benchmarks/windows-v050-20261102-88aae101/README.md): 52 supported jobs, 46 PASS, one planned unsupported, 336/336 gates PASS | Collection and reference review complete; reviewed Windows comparison registered. Same-candidate Mac/Prius gate remains pending |
+| Protocol 1.6.0 FEMM records | [46 fresh records](../benchmarks/windows-v050-20261102-88aae101/reference-bundle/manifest.json) at sealed adapter `faced858937e93740ddf7f6f3583a3ad5ec35646`; canonical bundle SHA-256 `c96b5e7948aea74bcf7943d584db85b874a2d4e887e0637c84e59e98c8dfd31a` | Original manifest preserved; [hash-bound reviewed successor](../benchmarks/reference-baselines/protocol16-reviewed-20261103/README.md) accepted for registered parity, with unchanged record bytes |
+| Protocol 1.6.0 additions | All 17 new Windows cases PASS against fresh references; all 12 d/q reference self-checks PASS | Reference review complete; performance-output statuses remain experimental pending candidate qualification and matching status updates |
+| Physics hash guards | The current guard covers 63 physical sources, all matching original before-collection hashes at `88aae101`; the original 54-source record is preserved | Registry expanded to cover nine already-captured sources; no physical source or measured value changed |
 | Pyleecan Prius collection | Full macOS and Windows collections at `40d8ab9`: 17 jobs / 568 field reports each. [Corrected residual audit](PRIUS_CONVERGENCE_AUDIT_20261030.md): 10/10 software checks each; original 9/10 reports retained | Review the explicitly post-collection audit correction. No hardware or release qualification is implied |
 | Phase-resistance gate | Protocol 1.6.0 `phase_resistance` ([hand calculations](../benchmarks/abcd-v1.6/PHASE-RESISTANCE.md)): all three cases PASS, within 0.001%. It runs in `tests/test_phase_resistance_gate.py` | None: it needs no solve or reference, so it runs at every test run |
 | Hardware correlation | ORNL Prius ([#69](https://github.com/coilemdev/coilem/issues/69), [#82](https://github.com/coilemdev/coilem/issues/82)) and Honda Accord torque–speed comparison planned in issue 143; it is not qualification | Deferred until after 0.5.0 by the owner on October 30, 2026; no new milestone chosen |
@@ -36,8 +36,10 @@ one's claim boundary.
 
 The [evidence index](../benchmarks/v0.5.0/README.md) links the complete package
 and [current BLOCKED release assessment](../benchmarks/v0.5.0/release-qualification.json).
-The Windows compact record is retained beside its report, rather than replacing
-an active historical platform record before reference review. No VM replay is
+The reviewed Windows compact record is now active. Historical v0.4 platform
+records remain byte-preserved in `benchmarks/records-historical/v040`. The
+[review and candidate qualification update](../benchmarks/candidate-qualification-20261103/README.md)
+records the reviewer, scope, audits and remaining exact-candidate runs. No VM replay is
 required. Published Mac evidence keeps its measured source pins and precision.
 
 ## 1. What changes for users
