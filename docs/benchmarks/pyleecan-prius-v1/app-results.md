@@ -1,8 +1,12 @@
 # Public app Prius benchmark
 
-Measured clean candidate `d993d7674354cc723ad107e7a5452477c5f660ea`.
+Measured clean candidate `88aae101fd487795e7fe5300737679f4133790fd`.
+
+Grading: **frozen-at-collection**. Inputs were frozen before fields.
 
 Software checks: **10/10 pass**. Hardware qualification is not claimed.
+
+Convergence audit v2 applies the unchanged strict RHS-normalized residual limit and verifies the recorded native final-stage stopping test. This analysis revision was not frozen with the collection; its runner hash identifies the interpretation separately from the measured field source. Earlier reports and their verdicts remain historical evidence.
 
 Tutorial: **107.513838 V AB sampled RMS**, -0.0412% from the retained tutorial; 171.833919 V absolute peak, 0.3983% waveform relative L2.
 
@@ -54,4 +58,4 @@ Actual app solves: 100 tutorial zero-current fields plus 100 separate no-load fi
 
 [JSON waveforms, identities and field hashes](app-results.json) · [Full protocol and interpretation](README.md)
 
-Runtime is recorded per job as informational wall time, not a controlled performance qualification. These remain development-candidate software results; repeat on the frozen final v0.4.0 candidate.
+Runtime is recorded per job as informational wall time, not a controlled performance qualification. These remain software results requiring separate release and hardware qualification.

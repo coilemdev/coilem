@@ -1,0 +1,69 @@
+{
+  "schema": "coilem.private_reference_archive_index/v1",
+  "archive_id": "femm42-pr100-v3-and-protocol16-20261102",
+  "private_local_location": "%USERPROFILE%/Documents/coilem-benchmark-archives/femm42-pr100-v3-and-protocol16-20261102",
+  "private_archive_manifest_sha256": "b232e45f912dd4969a71973f263c5d54304b04129645e84c65f10936fa32ed65",
+  "scientific_status": "REVIEW_REQUIRED",
+  "adapter_base_commit": "8b95decda27d475ddbb75e99d92744ebc8e53b28",
+  "pr100_public_pin": "738d9516e8500c5996c772bd96470472cbb9a0f9",
+  "protocol16_bridge_commit": "faced858937e93740ddf7f6f3583a3ad5ec35646",
+  "femm_core_binary_sha256": {
+    "femm.exe": "5e83cf0899cabae2017868ddcce338e3ba4ac25d1bf8e511eac77eda2bc92a21",
+    "fkn.exe": "2330a02b08b846fc6090c05f7fd5edbc1c910582bfd36721ecc0287c787b4eb0",
+    "triangle.exe": "6222b2a5cc9d68121e73f2d3f07b1715ffcb3f253dcbe799da20bf7878d863b8"
+  },
+  "python": "3.11.0b4 (main, Jul 11 2022, 15:47:56) [MSC v.1932 64 bit (AMD64)]",
+  "required_measured_versions": {
+    "pyfemm": "0.1.3",
+    "pywin32": "311",
+    "numpy": "2.4.4",
+    "pydantic": "2.13.3"
+  },
+  "archives": {
+    "adapter-and-evidence.zip": {
+      "sha256": "ba116718c33ebf06fb525d6eee070503273d0c37a9af26076653c2a2bc6fc7c4",
+      "bytes": 7542298
+    },
+    "pr100-738d951.zip": {
+      "sha256": "f94e920a0db960ca8d28cd91b71f8515c05644d46f261c35461a0d38dca50c4f",
+      "bytes": 13509396,
+      "git_commit": "738d9516e8500c5996c772bd96470472cbb9a0f9"
+    },
+    "v040-evidence-source-5b6cb61.zip": {
+      "sha256": "6ac135b68d0b96bf745cd3e708de2d96524bfd745eb8ca3e44dec925ed62f0ca",
+      "bytes": 17233167,
+      "git_commit": "5b6cb61e65a219ab92a742ac49c37433f53418fb"
+    },
+    "v050-candidate-88aae10.zip": {
+      "sha256": "4be7d0b0559fd6c34fb1279df46a34115573dd570de1fb0223605036d999e73c",
+      "bytes": 19708989,
+      "git_commit": "88aae101fd487795e7fe5300737679f4133790fd"
+    },
+    "reference-producer.bundle": {
+      "sha256": "2e2f53efdc7751e2fa398b3fcbfc9ce9774c812e7d0eb809ee605ae77f5dc143",
+      "bytes": 7053,
+      "git_commit": "faced858937e93740ddf7f6f3583a3ad5ec35646"
+    },
+    "control-producer.bundle": {
+      "sha256": "02267376795ed551ff5516484e81a7b971af34c7d6102125737ff4c012c2544a",
+      "bytes": 4167,
+      "git_commit": "22bfbaa0affc2d9ef53472c58da74cc52c54eccc"
+    }
+  },
+  "verification": {
+    "status": "PASS",
+    "field_solves_executed": 0,
+    "archive_manifest_sha256": "b232e45f912dd4969a71973f263c5d54304b04129645e84c65f10936fa32ed65",
+    "verified_archive_count": 6,
+    "verified_zip_entries": 5623,
+    "verified_original_files": 1025,
+    "vm_replay_validated": false
+  },
+  "version_comparison_sha256": "8416ebae2e143b6f8eae2ebc3a939e43bde5234b053a66855704c5ef15120d0b",
+  "historical_sealed_private_source_material_runtime_files": 172,
+  "private_source_reconstructed": false,
+  "public_source_recovery_count": 14,
+  "vm_replay_validated": false,
+  "remote_upload_performed": false,
+  "storage_scope": "One private local archival copy; private adapter code/binaries are outside the public repository."
+}

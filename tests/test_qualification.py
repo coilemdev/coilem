@@ -13,10 +13,16 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
+from backend import qualification as qualification_module
 from backend.benchmark_suite.contract import DEFAULT_BUNDLE, SPEC, sha
 from backend.benchmark_suite.physics import physics_sources
 from backend.benchmark_suite.references import load_bundle, load_suite
 from backend.models import MotorConfig
+from backend.models.performance import (
+    DQ_FLUX_LINKAGE_QUALIFIED_REASON,
+    DQ_FLUX_LINKAGE_STATUS_REASON,
+    MAGNET_TEMPERATURE_STATUS_REASON,
+)
 from backend.public_main import app
 from backend.public_routes.solve import _store_public_result
 from backend.qualification import QUALIFICATION_BASIS, QUALIFICATION_REPORT, classify_qualification
@@ -34,6 +40,12 @@ REPORT = json.loads(Path(QUALIFICATION_REPORT).read_text(encoding="utf-8"))
 PHYSICS_SOURCES = physics_sources(Path(__file__).resolve().parents[1])
 
 
+@pytest.fixture
+def measured_build(monkeypatch):
+    """Exercise combination policy independently of the running build's freshness."""
+    monkeypatch.setattr(qualification_module, "evidence_matches_runtime", lambda: True)
+
+
 def _fixture(name: str) -> MotorConfig:
     return MotorConfig.model_validate_json((FIXTURES / name).read_text(encoding="utf-8"))
 
@@ -47,7 +59,7 @@ def _status(config: MotorConfig) -> str:
 
 
 @pytest.mark.parametrize("path", sorted(FIXTURES.glob("*.json")), ids=lambda path: path.stem)
-def test_every_v11_fixture_has_its_documented_status(path: Path) -> None:
+def test_every_v11_fixture_has_its_documented_status(path: Path, measured_build) -> None:
     if path.stem == "ornl_prius_2004_ipm":
         expected = "unsupported"
     elif path.stem.startswith("ipm_vshape_"):
@@ -67,11 +79,11 @@ def test_every_v11_fixture_has_its_documented_status(path: Path) -> None:
         ("ipm_flat_8p12s_fsae_contract.json", "Flat-buried IPM, single-layer concentrated winding"),
     ],
 )
-def test_qualified_combinations_name_their_evidence(fixture: str, reason: str) -> None:
+def test_qualified_combinations_name_their_evidence(fixture: str, reason: str, measured_build) -> None:
     qualification = classify_qualification(_fixture(fixture))
     assert qualification["status"] == "qualified"
     assert qualification["reason"].startswith(reason)
-    assert qualification["basis"] == "coilEM benchmark report, measured at 5b6cb61"
+    assert qualification["basis"] == "coilEM benchmark report, measured at 88aae101"
     assert qualification["reference"].endswith("docs/VALIDATION.md#qualification-status")
 
 
@@ -84,23 +96,25 @@ def test_basis_names_the_measured_commit_and_reference() -> None:
     assert run["reference_mode"] == "FROZEN_REFERENCE"
     assert run["reference_commit"] == reference["reference_commit"]
     assert run["selection"]["bundle_sha256"] == bundle_sha
-    assert run["selection"]["spec_sha256"] == sha(SPEC)
+    measured_spec = Path(f"benchmarks/abcd-v{run['identity']['protocol_version'].rsplit('.', 1)[0]}/benchmark_spec.json")
+    assert run["selection"]["spec_sha256"] == sha(measured_spec)
     # This run measured the winding-axis protocol directly; the frozen reference
     # still names its own earlier measured commit and registered validation bridge.
-    assert run["identity"]["protocol_version"] == spec["protocol_version"] == "1.3.0"
+    assert run["identity"]["protocol_version"] == "1.6.0"
 
 
 @pytest.mark.parametrize("path", PHYSICS_SOURCES)
 def test_report_measured_the_current_physics_sources(path: str) -> None:
     measured = REPORT["run"]["identity"]["source_files"]
     assert path in measured, f"{QUALIFICATION_REPORT} did not measure {path}; run a new report before qualifying it"
-    assert hashlib.sha256(Path(path).read_bytes()).hexdigest() == measured[path], (
-        f"{path} changed after {QUALIFICATION_REPORT} measured it. Run a new A/B/C/D report and point "
-        "QUALIFICATION_BASIS at it, or mark the affected combinations experimental."
-    )
+    if hashlib.sha256(Path(path).read_bytes()).hexdigest() != measured[path]:
+        # Keep the guard: changed physics must lose its qualified claim. The
+        # strict release command additionally refuses publication until remeasured.
+        assert not qualification_module.evidence_matches_runtime()
+        assert classify_qualification(MotorConfig.model_validate(SPM_CONCENTRATED))["status"] == "experimental"
 
 
-def test_reasons_match_the_report_outcomes() -> None:
+def test_reasons_match_the_report_outcomes(measured_build) -> None:
     # A reason names the combination, then states its claim after ": ". The two
     # distributed pitches share one claim about the same four fixtures.
     outcomes: dict[tuple[str, str], list[str]] = defaultdict(list)
@@ -118,8 +132,12 @@ def test_reasons_match_the_report_outcomes() -> None:
             assert set(statuses) == {"PASS"}, claim
             assert claim.startswith(f"all {len(statuses)} benchmark "), claim
         elif status == "experimental":
-            assert set(statuses) != {"PASS"}, claim
-            assert claim.startswith(f"{statuses.count('PASS')} of {len(statuses)} benchmark fixtures pass"), claim
+            if set(statuses) == {"PASS"}:
+                # Passing fixture gates does not remove the declared V-shape
+                # accuracy limitation from the version and refinement review.
+                assert len(statuses) == 6 and claim.startswith("all 6 benchmark fixtures pass, but the version comparison"), claim
+            else:
+                assert claim.startswith(f"{statuses.count('PASS')} of {len(statuses)} benchmark fixtures pass"), claim
         else:
             assert set(statuses) == {"UNSUPPORTED"}, claim
     for key, statuses in gates.items():
@@ -160,7 +178,7 @@ def test_unmeasured_and_failing_combinations_are_experimental() -> None:
     six_step = _with(distributed, "solve_params", excitation_mode="ideal_six_step_120", current_amplitude_convention="plateau")
     flat_ipm = _fixture("ipm_flat_8p12s_fsae_contract.json")
     cases = {
-        "V-shape IPM: 5 of 6": _fixture("ipm_vshape_8p12s_baseline_contract.json"),
+        "V-shape IPM: all 6": _fixture("ipm_vshape_8p12s_baseline_contract.json"),
         "SPM with distributed windings under ideal six-step": six_step,
         "Single-layer distributed": _with(distributed, "winding", layers=1),
         "Only full-pitch and 5/6": _with(_fixture("spm_8p48s_distributed_femm_validation.json"), "winding", coil_span=4),
@@ -186,7 +204,7 @@ def test_rejected_rotors_and_windings_are_unsupported() -> None:
         assert qualification["caveats"] == []
 
 
-def test_preview_plan_carries_a_mesh_caveat_without_changing_status() -> None:
+def test_preview_plan_carries_a_mesh_caveat_without_changing_status(measured_build) -> None:
     config = _fixture("spm_8p12s_concentrated__baseline.json")
     quick = classify_qualification(_with(config, "solve_params", solve_quality="quick", mesh_density="coarse"))
     standard = classify_qualification(_with(config, "solve_params", solve_quality="standard", mesh_density="normal"))
@@ -206,7 +224,8 @@ def test_preview_and_validate_return_the_status() -> None:
 
     validation = client.post("/solve/validate", json=SPM_CONCENTRATED)
     assert validation.status_code == 200, validation.text
-    assert validation.json()["qualification"]["status"] == "qualified"
+    expected = "qualified" if qualification_module.evidence_matches_runtime() else "experimental"
+    assert validation.json()["qualification"]["status"] == expected
 
 
 def _v_shape_run(tmp_path: Path) -> tuple[SolveWorkspace, SolveRunWriter, dict]:
@@ -239,7 +258,7 @@ def test_saved_run_records_status_in_provenance_and_exports(tmp_path: Path) -> N
     loaded = workspace.load_run(location.project_slug, location.run_id)
     qualification = loaded["manifest"]["provenance"]["qualification"]
     assert qualification["status"] == "experimental"
-    assert qualification["reason"].startswith("V-shape IPM: 5 of 6")
+    assert qualification["reason"].startswith("V-shape IPM: all 6")
 
     rows = list(csv.reader(io.StringIO((location.path / "report" / "report.csv").read_text(encoding="utf-8"))))
     assert ["provenance", "qualification.status", "", "experimental", ""] in rows
@@ -250,7 +269,7 @@ def test_saved_run_records_status_in_provenance_and_exports(tmp_path: Path) -> N
         (page.extract_text() or "") for page in pypdf.PdfReader(location.path / "report" / "report.pdf").pages
     )
     pdf_text = " ".join(pdf_text.split())
-    assert "Qualification Experimental: V-shape IPM: 5 of 6" in pdf_text
+    assert "Qualification Experimental: V-shape IPM: all 6" in pdf_text
     assert "Experimental combination: V-shape IPM" in pdf_text
 
 
@@ -261,8 +280,70 @@ def test_completed_result_carries_the_stored_status(tmp_path: Path) -> None:
     assert returned["saved_run"]["run_id"]
 
 
-def test_run_without_a_valid_config_records_no_status() -> None:
+def test_run_without_a_valid_config_records_no_status(measured_build) -> None:
     config = deepcopy(SPM_CONCENTRATED)
     del config["stator"]
     assert _qualification(config) is None
     assert _qualification(SPM_CONCENTRATED)["status"] == "qualified"
+
+
+def test_changed_or_unverifiable_physics_cannot_keep_a_qualified_label(monkeypatch):
+    monkeypatch.setattr(qualification_module, "evidence_matches_runtime", lambda: False)
+    result = classify_qualification(MotorConfig.model_validate(SPM_CONCENTRATED))
+    assert result["status"] == "experimental"
+    assert "qualification is pending" in result["reason"]
+
+
+def test_installed_evidence_requires_matching_record_identity(monkeypatch):
+    from backend import resources
+    from backend.benchmark_suite import record
+    historical = resources.read_data_json(f"{resources.BENCHMARK_RECORDS_DIR}/windows-x86_64.json")
+    monkeypatch.setattr(resources, "read_data_json", lambda _: historical)
+    for status in ("DIFFERS", "UNVERIFIED", "MATCH"):
+        monkeypatch.setattr(record, "check_physics", lambda _, status=status: {"status": status})
+        assert qualification_module.evidence_matches_runtime() is (status == "MATCH")
+    monkeypatch.setattr(resources, "read_data_json", lambda _: {**historical, "measured_commit": "0" * 40})
+    assert not qualification_module.evidence_matches_runtime()
+
+
+@pytest.mark.parametrize(
+    ("fixture", "changes", "expected"),
+    [
+        ("spm_8p12s_concentrated__baseline.json", {"current_angle_deg": 0.0}, "qualified"),
+        ("spm_8p12s_concentrated__baseline.json", {"current_angle_deg": 60.0}, "qualified"),
+        ("ipm_flat_8p12s_fsae_contract.json", {"current_angle_deg": 30.0}, "qualified"),
+        ("spm_8p12s_concentrated__baseline.json", {"current_angle_deg": 61.0}, "experimental"),
+        ("spm_8p12s_concentrated__baseline.json", {"current_angle_deg": -5.0}, "experimental"),
+        ("spm_8p24s_distributed_femm_validation.json", {"current_angle_deg": 0.0}, "experimental"),
+        ("ipm_vshape_8p12s_baseline_contract.json", {"current_angle_deg": 30.0}, "experimental"),
+        ("bldc_spm_8p12s_reference.json", {}, "experimental"),
+    ],
+)
+def test_dq_flux_linkage_is_qualified_only_inside_its_gates(fixture, changes, expected, measured_build) -> None:
+    # Protocol 1.6.0 measured lambda_d and lambda_q on qualified single-layer concentrated
+    # SPM and flat-buried IPM fixtures under sinusoidal current at gamma 0, 30 and 60 degrees.
+    config = _with(_fixture(fixture), "solve_params", **changes) if changes else _fixture(fixture)
+    status, reason = qualification_module.dq_flux_linkage_status(config)
+    assert status == expected
+    assert reason == (DQ_FLUX_LINKAGE_QUALIFIED_REASON if expected == "qualified" else DQ_FLUX_LINKAGE_STATUS_REASON)
+
+
+@pytest.mark.parametrize(("temperature", "expected"), [(20.0, "qualified"), (60.0, "qualified"), (100.0, "qualified"),
+                                                      (110.0, "experimental"), (0.0, "experimental")])
+def test_magnet_derating_is_qualified_from_20_to_100C_on_a_qualified_design(temperature, expected, measured_build) -> None:
+    config = _with(_fixture("spm_8p12s_concentrated__baseline.json"), "solve_params", magnet_temperature_C=temperature)
+    assert qualification_module.magnet_temperature_status(config)[0] == expected
+    v_shape = _with(_fixture("ipm_vshape_8p12s_baseline_contract.json"), "solve_params", magnet_temperature_C=temperature)
+    assert qualification_module.magnet_temperature_status(v_shape) == ("experimental", MAGNET_TEMPERATURE_STATUS_REASON)
+
+
+def test_stored_run_sets_the_dq_status_from_its_design(measured_build) -> None:
+    from backend.solve_workspace import _apply_output_statuses
+
+    config = _fixture("spm_8p12s_concentrated__baseline.json").model_dump(mode="json")
+    result = {"summary": {"dq_flux_linkage": {"status": "experimental", "status_reason": DQ_FLUX_LINKAGE_STATUS_REASON}}}
+    _apply_output_statuses(result, config)
+    assert result["summary"]["dq_flux_linkage"] == {"status": "qualified", "status_reason": DQ_FLUX_LINKAGE_QUALIFIED_REASON}
+    empty = {"summary": {"dq_flux_linkage": None}}
+    _apply_output_statuses(empty, config)
+    assert empty == {"summary": {"dq_flux_linkage": None}}

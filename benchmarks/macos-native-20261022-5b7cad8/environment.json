@@ -1,0 +1,19 @@
+{
+ "schema": "coilem.native_environment/v1",
+ "measured_commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+ "checkout_clean": false,
+ "checkout_note": "Registered with --allow-dirty because of two untracked files outside the source (.claude/ and an image); all 165 registered source files hash-match 5b7cad8.",
+ "os": "macOS 15.7.3 (24G419)",
+ "kernel": "Darwin 24.6.0 arm64",
+ "cpu": "Apple M4, 10 cores",
+ "memory_gib": 16,
+ "python": "3.12.13",
+ "requirements_lock_sha256": "7931b933a9db88657aea494aaab7a7652d5cfb18e3d71dc255f9cecb2059277c",
+ "rustc": "rustc 1.94.0 (4a4ef493e 2026-03-02)",
+ "cargo": "cargo 1.94.0 (85eff7c80 2026-01-15)",
+ "magneto2d_release_binary_sha256": "1d23ea8fd66c4bceea28dc7efc9154cd0fffd96a852b23a06d2775c8bb67fe7c",
+ "process_pool_overrides": "none set",
+ "harness": "1.7.0, default protocol 1.4.0 with the frozen ipm-high-output-v3 FEMM bundle",
+ "command": "python -m tools.run_benchmarks --pdf --allow-dirty --out-dir <native-out>",
+ "environment": "COILEM_SOLVE_CACHE_MAX_BYTES=400000000; COILEM_USER_DATA_ROOT set to a scratch folder"
+}

@@ -5,6 +5,7 @@ import subprocess
 import sys
 import time
 from argparse import Namespace
+from types import SimpleNamespace
 
 import pytest
 
@@ -268,10 +269,67 @@ def test_stop_cleans_children_after_group_leader_exits(tmp_path):
             assert time.monotonic() < deadline, "Owned child survived stop()"
             time.sleep(.02)
     finally:
-        try:
-            os.killpg(process.pid, signal.SIGKILL)
-        except ProcessLookupError:
-            pass
+        external.stop(process)
+
+
+def test_group_signal_reaps_exited_leader_before_retrying(monkeypatch):
+    calls = []
+
+    def killpg(pid, sig):
+        calls.append((pid, sig))
+        if len(calls) == 1:
+            raise PermissionError("Zombie leader")
+        raise ProcessLookupError("Reaped group")
+
+    monkeypatch.setattr(external.os, "killpg", killpg, raising=False)
+    external.signal_worker_group(SimpleNamespace(pid=123, poll=lambda: 0), signal.SIGTERM)
+    assert calls == [(123, signal.SIGTERM), (123, signal.SIGTERM)]
+
+
+@pytest.mark.parametrize("exit_code", [None, 0])
+def test_group_signal_keeps_real_permission_failures(monkeypatch, exit_code):
+    def killpg(pid, sig):
+        raise PermissionError("Inaccessible group")
+
+    monkeypatch.setattr(external.os, "killpg", killpg, raising=False)
+    monkeypatch.setattr(external, "exited_process_group", lambda pid: False)
+    with pytest.raises(PermissionError, match="Inaccessible group"):
+        external.signal_worker_group(SimpleNamespace(pid=123, poll=lambda: exit_code), signal.SIGTERM)
+
+
+@pytest.mark.parametrize("listing,exited", [
+    ("123 Z\n123 Z+\n456 S\n", True),
+    ("456 S\n", True),
+    ("123 Z\n123 S\n", False),
+    ("123 T\n", False),
+    ("unexpected ps output\n", False),
+])
+def test_exited_process_group_requires_no_live_members(monkeypatch, listing, exited):
+    def inspect(*args, **kwargs):
+        assert args[0] == ["ps", "-ax", "-o", "pgid=,stat="]
+        assert kwargs["check"] and kwargs["timeout"] == 5
+        return SimpleNamespace(stdout=listing)
+
+    monkeypatch.setattr(external.subprocess, "run", inspect)
+    assert external.exited_process_group(123) is exited
+
+
+def test_exited_process_group_fails_closed_when_inspection_fails(monkeypatch):
+    def inspect(*args, **kwargs):
+        raise subprocess.TimeoutExpired(args[0], 5)
+
+    monkeypatch.setattr(external.subprocess, "run", inspect)
+    assert not external.exited_process_group(123)
+
+
+def test_group_signal_accepts_confirmed_zombie_descendants_on_darwin(monkeypatch):
+    def killpg(pid, sig):
+        raise PermissionError("Zombie group")
+
+    monkeypatch.setattr(external.os, "killpg", killpg, raising=False)
+    monkeypatch.setattr(external.sys, "platform", "darwin")
+    monkeypatch.setattr(external, "exited_process_group", lambda pid: pid == 123)
+    external.signal_worker_group(SimpleNamespace(pid=123, poll=lambda: 0), signal.SIGKILL if os.name != "nt" else signal.SIGTERM)
 
 
 def test_producer_import_error_restores_callers_search_path(tmp_path):

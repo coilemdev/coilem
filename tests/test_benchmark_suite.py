@@ -11,7 +11,7 @@ from pathlib import Path
 import pytest
 
 from backend.benchmark_suite.cli import inputs, verify_artifact
-from backend.benchmark_suite.contract import ROOT, SPEC, canonical, read, run_lock, sha, write
+from backend.benchmark_suite.contract import ROOT, canonical, read, run_lock, sha, write
 from backend.benchmark_suite.metrics import energy_balance_ratio, evaluate_abc, evaluate_bldc
 from backend.benchmark_suite.references import load_bundle, load_suite
 from backend.benchmark_suite.report import build, phase_display_status
@@ -551,7 +551,7 @@ def test_protocol_selection_is_recorded_and_unknown_protocols_rejected(tmp_path)
     from backend.benchmark_suite.contract import identity
 
     binary = ROOT / "solvers/magneto2d/Cargo.toml"
-    assert identity(binary)["protocol_version"] == "1.3.0"
+    assert identity(binary)["protocol_version"] == "1.6.0"
     assert identity(binary, protocol_version="1.0.0")["protocol_version"] == "1.0.0"
     with pytest.raises(ValueError, match="Unsupported suite protocol"):
         identity(binary, protocol_version="2.0.0")
@@ -567,7 +567,7 @@ def test_release_baseline_retains_actual_measured_candidates_and_unaffected_evid
     baseline = read(package / "benchmark_summary.json")
     prior_package = ROOT / "benchmarks/main-20261010-45e0a5c-rerun"
     prior = read(prior_package / "benchmark_summary.json")
-    current = load_suite(SPEC)
+    current = load_suite(ROOT / "benchmarks/abcd-v1.1/benchmark_spec.json")
     original_rows = {row["id"]: row for row in prior["rows"]}
     replacements = set(current["extension"]["replacements"].values())
     assert [row["id"] for row in baseline["rows"]] == [case["id"] for case in current["cases"]]

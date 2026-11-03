@@ -128,13 +128,17 @@ def test_public_policy_rejects_femm_and_thermal() -> None:
     femm["solve_params"]["mesh_source"] = "femm"
     assert client.post("/solve/validate", json=femm).status_code == 400
 
+    # Magnet temperature (#137) derates Br with cited coefficients, inside each grade's range.
     thermal = deepcopy(VALID_CONFIG)
-    thermal["solve_params"]["magnet_temperature_C"] = 80
+    thermal["solve_params"]["magnet_temperature_C"] = 150
     before = set(sys.modules)
     response = client.post("/solve/validate", json=thermal)
     imported = set(sys.modules) - before
     assert response.status_code == 400
+    assert response.json()["detail"]["field"] == "solve_params.magnet_temperature_C"
     assert not any(name.startswith("backend.thermal") for name in imported)
+    thermal["solve_params"]["magnet_temperature_C"] = 80
+    assert client.post("/solve/validate", json=thermal).status_code == 200
 
     cogging = deepcopy(VALID_CONFIG)
     cogging["solve_options"] = {"cogging_torque": True}
@@ -199,7 +203,7 @@ def test_release_versions_align() -> None:
     pyproject = (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8")
     package = json.loads((REPO_ROOT / "frontend" / "package.json").read_text(encoding="utf-8"))
     lock = json.loads((REPO_ROOT / "frontend" / "package-lock.json").read_text(encoding="utf-8"))
-    assert __version__ == "0.4.0"
+    assert __version__ == "0.5.0"
     assert 'dynamic = ["version", "dependencies"]' in pyproject
     assert "release_version.package_version()" in (REPO_ROOT / "setup.py").read_text(encoding="utf-8")
     assert package["version"] == __version__
@@ -210,7 +214,7 @@ def test_release_versions_align() -> None:
     magneto2d = (REPO_ROOT / "solvers" / "magneto2d" / "Cargo.toml").read_text(
         encoding="utf-8"
     )
-    assert 'version = "0.3.3"' in magneto2d
+    assert 'version = "0.4.0"' in magneto2d
 
 
 def test_public_docs_match_reduced_release_contract() -> None:
@@ -235,8 +239,8 @@ def test_public_docs_match_reduced_release_contract() -> None:
     documents = {name: path.read_text(encoding="utf-8") for name, path in paths.items()}
     combined = "\n".join(documents.values())
 
-    assert "coilEM 0.4.0" in documents["README.md"]
-    assert "Magneto2D 0.3.3" in documents["README.md"]
+    assert "coilEM 0.5.0" in documents["README.md"]
+    assert "Magneto2D 0.4.0" in documents["README.md"]
     assert "COILEM_ENABLE_ELMER=1" in documents["docs/ELMER.md"]
     assert "hidden, and not probed" in combined
     assert "H1-H12" in documents["docs/GETTING_STARTED.md"]
@@ -361,7 +365,7 @@ def test_audited_dependency_notices_are_present() -> None:
         "meshio==5.3.5",
         "numpy==2.4.6",
         "numpy==2.5.4",
-        "pillow==12.3.0",
+        "pillow==13.0.0",
         "rich==15.0.0",
         "uvicorn==0.51.0",
     ]:

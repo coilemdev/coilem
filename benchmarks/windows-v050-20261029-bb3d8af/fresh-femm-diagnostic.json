@@ -1,0 +1,4025 @@
+{
+  "scope": "Fresh Windows native fields on the v0.5.0 stack, evaluated first against original frozen v3 references and then against reconstructed FEMM candidates. The latter remains diagnostic; no bundle promotion or gate changes.",
+  "native_commit": "bb3d8aff93dd2b2c2900ac1b9c65729a939874f6",
+  "femm_public_commit": "2ede4e802f30af45b57e3cc2bb0d9063e544a3bf",
+  "prior_counts": {
+    "PASS": 29,
+    "UNSUPPORTED": 1
+  },
+  "new_counts": {
+    "PASS": 28,
+    "YELLOW": 1,
+    "UNSUPPORTED": 1
+  },
+  "changed_statuses": [
+    {
+      "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "frozen": "PASS",
+      "fresh": "YELLOW"
+    }
+  ],
+  "changed_gates": [
+    {
+      "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "gates": {
+        "bemf_peak": {
+          "frozen": "PASS",
+          "fresh": "YELLOW"
+        }
+      }
+    }
+  ],
+  "rows": [
+    {
+      "case_id": "spm_4p12s_simple__baseline",
+      "phase": "A",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 0.4774745780381546,
+        "reference_average_Nm": 0.47750607265555156,
+        "average_delta_pct": 0.006595647511211082,
+        "average_absolute_delta_Nm": 3.149461739698767e-05,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 0.019756361584892208,
+        "bemf_peak_delta_pct": 0.02281795705507487,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 0.4339874000568502,
+          "correlation": 0.9993461157059311
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 0.16113639676608685,
+          "correlation": 0.9999987299870012
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 59110,
+          "rotor_positions": 48,
+          "timestamp": "2026-10-29T19:01:38.994004Z",
+          "current_amplitude_A": 14.142135623730951,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 190.403,
+          "solver_cpu_time_s": 326.893,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 0.001,
+          "nonlinear_tolerance_method": "picard",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "picard",
+              "residual_definition": "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)",
+              "tolerance": 0.001,
+              "absolute_residual_floor": null
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 96,
+          "nonlinear_median_iterations": 95.0,
+          "nonlinear_worst_final_mismatch": 0.0009959738780097325,
+          "nonlinear_worst_tolerance_ratio": 0.9959738780097325,
+          "nonlinear_residual_definitions": [
+            "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)"
+          ],
+          "topology": "SPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "spm_4p12s_simple__high_current",
+      "phase": "A",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 0.7160472018616945,
+        "reference_average_Nm": 0.7163868307997568,
+        "average_delta_pct": 0.047408595951328805,
+        "average_absolute_delta_Nm": 0.00033962893806238625,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 0.019756361584892208,
+        "bemf_peak_delta_pct": 0.02281795705507487,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 0.3030425897673843,
+          "correlation": 0.9993874840293491
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 0.16113639676608685,
+          "correlation": 0.9999987299870012
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 59110,
+          "rotor_positions": 48,
+          "timestamp": "2026-10-29T19:04:57.004183Z",
+          "current_amplitude_A": 21.213203435596427,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 189.891,
+          "solver_cpu_time_s": 321.319,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 0.001,
+          "nonlinear_tolerance_method": "picard",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "picard",
+              "residual_definition": "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)",
+              "tolerance": 0.001,
+              "absolute_residual_floor": null
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 96,
+          "nonlinear_median_iterations": 96.0,
+          "nonlinear_worst_final_mismatch": 0.0009959738780097325,
+          "nonlinear_worst_tolerance_ratio": 0.9959738780097325,
+          "nonlinear_residual_definitions": [
+            "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)"
+          ],
+          "topology": "SPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "spm_4p12s_simple__tight_airgap",
+      "phase": "A",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 0.5817731168900918,
+        "reference_average_Nm": 0.5831695360986019,
+        "average_delta_pct": 0.23945338740636388,
+        "average_absolute_delta_Nm": 0.0013964192085100802,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 0.34297412964468077,
+        "bemf_peak_delta_pct": 0.0604893259816317,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 0.7399452062246537,
+          "correlation": 0.9997413972096582
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 0.9984735050747175,
+          "correlation": 0.9999557686463222
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 45700,
+          "rotor_positions": 48,
+          "timestamp": "2026-10-29T19:07:25.237397Z",
+          "current_amplitude_A": 14.142135623730951,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 140.06,
+          "solver_cpu_time_s": 259.859,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 0.001,
+          "nonlinear_tolerance_method": "picard",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "picard",
+              "residual_definition": "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)",
+              "tolerance": 0.001,
+              "absolute_residual_floor": null
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 107,
+          "nonlinear_median_iterations": 103.5,
+          "nonlinear_worst_final_mismatch": 0.0009900143704240898,
+          "nonlinear_worst_tolerance_ratio": 0.9900143704240898,
+          "nonlinear_residual_definitions": [
+            "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)"
+          ],
+          "topology": "SPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__baseline",
+      "phase": "A",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 9.844675790505018e-06,
+        "reference_average_Nm": -0.00206759458304454,
+        "average_delta_pct": 100.47614149656015,
+        "average_absolute_delta_Nm": 0.002077439258835045,
+        "near_zero_reference": true,
+        "bemf_fundamental_delta_pct": 0.019756361584892208,
+        "bemf_peak_delta_pct": 0.02281795705507487,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 5.8870407135175995,
+          "correlation": 0.9995446881058032
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 0.16113639676608685,
+          "correlation": 0.9999987299870012
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 59110,
+          "rotor_positions": 48,
+          "timestamp": "2026-10-29T19:10:53.880180Z",
+          "current_amplitude_A": 0.0,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 201.714,
+          "solver_cpu_time_s": 316.092,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 0.001,
+          "nonlinear_tolerance_method": "picard",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "picard",
+              "residual_definition": "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)",
+              "tolerance": 0.001,
+              "absolute_residual_floor": null
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 96,
+          "nonlinear_median_iterations": 95.0,
+          "nonlinear_worst_final_mismatch": 0.0009959738780097325,
+          "nonlinear_worst_tolerance_ratio": 0.9959738780097325,
+          "nonlinear_residual_definitions": [
+            "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)"
+          ],
+          "topology": "SPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__high_current",
+      "phase": "A",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 0.2387717186737883,
+        "reference_average_Nm": 0.2385084817316748,
+        "average_delta_pct": 0.11036795849031626,
+        "average_absolute_delta_Nm": 0.00026323694211349835,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 0.019756361584892208,
+        "bemf_peak_delta_pct": 0.02281795705507487,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 0.8381435767139878,
+          "correlation": 0.9993519086322006
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 0.16113639676608685,
+          "correlation": 0.9999987299870012
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 59110,
+          "rotor_positions": 48,
+          "timestamp": "2026-10-29T19:14:09.772280Z",
+          "current_amplitude_A": 7.0710678118654755,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 188.035,
+          "solver_cpu_time_s": 320.72,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 0.001,
+          "nonlinear_tolerance_method": "picard",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "picard",
+              "residual_definition": "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)",
+              "tolerance": 0.001,
+              "absolute_residual_floor": null
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 96,
+          "nonlinear_median_iterations": 95.0,
+          "nonlinear_worst_final_mismatch": 0.0009959738780097325,
+          "nonlinear_worst_tolerance_ratio": 0.9959738780097325,
+          "nonlinear_residual_definitions": [
+            "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)"
+          ],
+          "topology": "SPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "spm_4p12s_simple_noload__tight_airgap",
+      "phase": "A",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": -0.00023532000380391922,
+        "reference_average_Nm": -1.5476149758423634e-05,
+        "average_delta_pct": 1420.5332558625253,
+        "average_absolute_delta_Nm": 0.0002198438540454956,
+        "near_zero_reference": true,
+        "bemf_fundamental_delta_pct": 0.34297412964468077,
+        "bemf_peak_delta_pct": 0.0604893259816317,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 3.17566732002252,
+          "correlation": 0.9998816390080318
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 0.9984735050747175,
+          "correlation": 0.9999557686463222
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 45700,
+          "rotor_positions": 48,
+          "timestamp": "2026-10-29T19:16:46.005807Z",
+          "current_amplitude_A": 0.0,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 148.412,
+          "solver_cpu_time_s": 237.996,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 0.001,
+          "nonlinear_tolerance_method": "picard",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "picard",
+              "residual_definition": "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)",
+              "tolerance": 0.001,
+              "absolute_residual_floor": null
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 104,
+          "nonlinear_median_iterations": 104.0,
+          "nonlinear_worst_final_mismatch": 0.0009673232873606826,
+          "nonlinear_worst_tolerance_ratio": 0.9673232873606826,
+          "nonlinear_residual_definitions": [
+            "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)"
+          ],
+          "topology": "SPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__baseline",
+      "phase": "A",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 2.2085006291659917,
+        "reference_average_Nm": 2.2137072865617813,
+        "average_delta_pct": 0.23520080669185242,
+        "average_absolute_delta_Nm": 0.005206657395789627,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 0.045984053178529986,
+        "bemf_peak_delta_pct": 0.0534777512078478,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 0.5789345070198822,
+          "correlation": 0.9988015345489262
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 1.3414462880094205,
+          "correlation": 0.999910466058256
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 82940,
+          "rotor_positions": 48,
+          "timestamp": "2026-10-29T19:21:58.008161Z",
+          "current_amplitude_A": 20.0,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 305.375,
+          "solver_cpu_time_s": 1636.709,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 0.001,
+          "nonlinear_tolerance_method": "picard",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "picard",
+              "residual_definition": "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)",
+              "tolerance": 0.001,
+              "absolute_residual_floor": null
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 101,
+          "nonlinear_median_iterations": 97.0,
+          "nonlinear_worst_final_mismatch": 0.0009968474628228529,
+          "nonlinear_worst_tolerance_ratio": 0.9968474628228529,
+          "nonlinear_residual_definitions": [
+            "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)"
+          ],
+          "topology": "SPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__high_current",
+      "phase": "A",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 3.304824225304909,
+        "reference_average_Nm": 3.314990832971057,
+        "average_delta_pct": 0.3066858455543949,
+        "average_absolute_delta_Nm": 0.010166607666147964,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 0.045984053178529986,
+        "bemf_peak_delta_pct": 0.0534777512078478,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 0.4540929022545443,
+          "correlation": 0.9988530376468077
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 1.3414462880094205,
+          "correlation": 0.999910466058256
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 82940,
+          "rotor_positions": 48,
+          "timestamp": "2026-10-29T19:27:18.113643Z",
+          "current_amplitude_A": 30.0,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 310.345,
+          "solver_cpu_time_s": 1668.905,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 0.001,
+          "nonlinear_tolerance_method": "picard",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "picard",
+              "residual_definition": "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)",
+              "tolerance": 0.001,
+              "absolute_residual_floor": null
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 101,
+          "nonlinear_median_iterations": 98.0,
+          "nonlinear_worst_final_mismatch": 0.000998353754510664,
+          "nonlinear_worst_tolerance_ratio": 0.998353754510664,
+          "nonlinear_residual_definitions": [
+            "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)"
+          ],
+          "topology": "SPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p12s_concentrated__tight_airgap",
+      "phase": "A",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 2.3421535715120503,
+        "reference_average_Nm": 2.3579399893720168,
+        "average_delta_pct": 0.6695004084548748,
+        "average_absolute_delta_Nm": 0.015786417859966484,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 0.008447880950123764,
+        "bemf_peak_delta_pct": 0.19839617669459197,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 0.9040454072331162,
+          "correlation": 0.9993548469637473
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 1.321382216486418,
+          "correlation": 0.9999132228341994
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 87040,
+          "rotor_positions": 48,
+          "timestamp": "2026-10-29T19:32:54.743789Z",
+          "current_amplitude_A": 20.0,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 326.693,
+          "solver_cpu_time_s": 1857.602,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 0.001,
+          "nonlinear_tolerance_method": "picard",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "picard",
+              "residual_definition": "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)",
+              "tolerance": 0.001,
+              "absolute_residual_floor": null
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 108,
+          "nonlinear_median_iterations": 101.0,
+          "nonlinear_worst_final_mismatch": 0.0009991719426707417,
+          "nonlinear_worst_tolerance_ratio": 0.9991719426707416,
+          "nonlinear_residual_definitions": [
+            "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)"
+          ],
+          "topology": "SPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p12s_reference_angle30__baseline",
+      "phase": "A",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 16.588842291643378,
+        "reference_average_Nm": 16.68098954894246,
+        "average_delta_pct": 0.5524088186058733,
+        "average_absolute_delta_Nm": 0.09214725729908224,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 0.14199432953714564,
+        "bemf_peak_delta_pct": 0.06413733590285267,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 0.6846726463283926,
+          "correlation": 0.9999452274858482
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 1.4174905104725775,
+          "correlation": 0.9999010520321838
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 77218,
+          "rotor_positions": 48,
+          "timestamp": "2026-10-29T19:37:58.543948Z",
+          "current_amplitude_A": 70.71067811865476,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 293.798,
+          "solver_cpu_time_s": 1644.896,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 0.001,
+          "nonlinear_tolerance_method": "picard",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "picard",
+              "residual_definition": "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)",
+              "tolerance": 0.001,
+              "absolute_residual_floor": null
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 105,
+          "nonlinear_median_iterations": 103.0,
+          "nonlinear_worst_final_mismatch": 0.0009976908861160675,
+          "nonlinear_worst_tolerance_ratio": 0.9976908861160675,
+          "nonlinear_residual_definitions": [
+            "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)"
+          ],
+          "topology": "SPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "ipm_flat_12s10p_fscw_contract",
+      "phase": "B",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 4.807063512797066,
+        "reference_average_Nm": 4.802072461551644,
+        "average_delta_pct": 0.10393535885564179,
+        "average_absolute_delta_Nm": 0.004991051245421652,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 0.5475163835219727,
+        "bemf_peak_delta_pct": 0.5083281340181625,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 13,
+          "reference_positions": 13,
+          "nrmse_pct": 0.7319854192332127,
+          "correlation": 0.9973950947012433
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 1.8714612263989336,
+          "correlation": 0.9998361228573249
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 87318,
+          "rotor_positions": 13,
+          "timestamp": "2026-10-29T19:43:48.669892Z",
+          "current_amplitude_A": 30.0,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 341.24,
+          "solver_cpu_time_s": 2376.201,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 1e-05,
+          "nonlinear_tolerance_method": "newton",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "newton",
+              "residual_definition": "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage",
+              "tolerance": 1e-05,
+              "absolute_residual_floor": 1e-08
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 28,
+          "nonlinear_median_iterations": 13.0,
+          "nonlinear_worst_final_mismatch": 9.069855617033566e-06,
+          "nonlinear_worst_tolerance_ratio": 0.9069855617033565,
+          "nonlinear_residual_definitions": [
+            "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage"
+          ],
+          "topology": "IPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "ipm_flat_24s16p_industrial_contract",
+      "phase": "B",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 19.39733626709846,
+        "reference_average_Nm": 19.531554686812058,
+        "average_delta_pct": 0.6871875888314396,
+        "average_absolute_delta_Nm": 0.13421841971359783,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 0.13883281383867124,
+        "bemf_peak_delta_pct": 0.20391463830985251,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 13,
+          "reference_positions": 13,
+          "nrmse_pct": 0.7237681180485521,
+          "correlation": 0.998753708402453
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 0.9848851433079552,
+          "correlation": 0.999952571008734
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 97578,
+          "rotor_positions": 13,
+          "timestamp": "2026-10-29T19:49:40.718653Z",
+          "current_amplitude_A": 100.0,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 342.542,
+          "solver_cpu_time_s": 2248.231,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 1e-05,
+          "nonlinear_tolerance_method": "newton",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "newton",
+              "residual_definition": "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage",
+              "tolerance": 1e-05,
+              "absolute_residual_floor": 1e-08
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 25,
+          "nonlinear_median_iterations": 14.0,
+          "nonlinear_worst_final_mismatch": 9.465656981774813e-06,
+          "nonlinear_worst_tolerance_ratio": 0.9465656981774812,
+          "nonlinear_residual_definitions": [
+            "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage"
+          ],
+          "topology": "IPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "ipm_flat_4p12s_micro_contract",
+      "phase": "B",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 0.02141552769303626,
+        "reference_average_Nm": 0.021517638905221365,
+        "average_delta_pct": 0.47454654590530826,
+        "average_absolute_delta_Nm": 0.00010211121218510477,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 0.3679616889746533,
+        "bemf_peak_delta_pct": 0.5602946961758117,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 13,
+          "reference_positions": 13,
+          "nrmse_pct": 0.5630722547781706,
+          "correlation": 0.9982558409480221
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 0.39933697930681,
+          "correlation": 0.9999986792898419
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 109792,
+          "rotor_positions": 13,
+          "timestamp": "2026-10-29T19:53:55.805003Z",
+          "current_amplitude_A": 7.0710678118654755,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 244.741,
+          "solver_cpu_time_s": 1318.556,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 1e-05,
+          "nonlinear_tolerance_method": "newton",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "newton",
+              "residual_definition": "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage",
+              "tolerance": 1e-05,
+              "absolute_residual_floor": 1e-08
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 19,
+          "nonlinear_median_iterations": 18.0,
+          "nonlinear_worst_final_mismatch": 5.910592385770158e-06,
+          "nonlinear_worst_tolerance_ratio": 0.5910592385770158,
+          "nonlinear_residual_definitions": [
+            "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage"
+          ],
+          "topology": "IPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "phase": "B",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 2.1551953541413384,
+        "reference_average_Nm": 2.162069898850521,
+        "average_delta_pct": 0.31796126077317716,
+        "average_absolute_delta_Nm": 0.006874544709182473,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 0.25913597636355323,
+        "bemf_peak_delta_pct": 0.3240155347979221,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 13,
+          "reference_positions": 13,
+          "nrmse_pct": 0.5111907381699312,
+          "correlation": 0.9989206615191523
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 0.5309076125759732,
+          "correlation": 0.9999893144215445
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 122806,
+          "rotor_positions": 13,
+          "timestamp": "2026-10-29T20:02:51.114291Z",
+          "current_amplitude_A": 50.0,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 523.939,
+          "solver_cpu_time_s": 3680.073,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 1e-05,
+          "nonlinear_tolerance_method": "newton",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "newton",
+              "residual_definition": "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage",
+              "tolerance": 1e-05,
+              "absolute_residual_floor": 1e-08
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 24,
+          "nonlinear_median_iterations": 15.0,
+          "nonlinear_worst_final_mismatch": 8.811306615798646e-06,
+          "nonlinear_worst_tolerance_ratio": 0.8811306615798645,
+          "nonlinear_residual_definitions": [
+            "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage"
+          ],
+          "topology": "IPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_contract",
+      "phase": "B",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 2.5674302906005693,
+        "reference_average_Nm": 2.575825017342999,
+        "average_delta_pct": 0.3259043873674729,
+        "average_absolute_delta_Nm": 0.008394726742429803,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 0.26261625613853196,
+        "bemf_peak_delta_pct": 0.22242217888314986,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 13,
+          "reference_positions": 13,
+          "nrmse_pct": 0.9395350082142533,
+          "correlation": 0.9831397244423626
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 1.105011949936135,
+          "correlation": 0.9999424448081667
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 122708,
+          "rotor_positions": 13,
+          "timestamp": "2026-10-29T20:11:06.386443Z",
+          "current_amplitude_A": 50.0,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 482.52,
+          "solver_cpu_time_s": 3359.375,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 1e-05,
+          "nonlinear_tolerance_method": "newton",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "newton",
+              "residual_definition": "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage",
+              "tolerance": 1e-05,
+              "absolute_residual_floor": 1e-08
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 24,
+          "nonlinear_median_iterations": 14.0,
+          "nonlinear_worst_final_mismatch": 8.489479738897235e-06,
+          "nonlinear_worst_tolerance_ratio": 0.8489479738897234,
+          "nonlinear_residual_definitions": [
+            "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage"
+          ],
+          "topology": "IPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "phase": "B",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 3.170678186632334,
+        "reference_average_Nm": 3.172422215179083,
+        "average_delta_pct": 0.05497466694074584,
+        "average_absolute_delta_Nm": 0.0017440285467489325,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 0.19591410257453315,
+        "bemf_peak_delta_pct": 0.2096181686515183,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 13,
+          "reference_positions": 13,
+          "nrmse_pct": 1.4463536853477745,
+          "correlation": 0.987177949550189
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 1.1052790972221358,
+          "correlation": 0.9999409103483542
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 122338,
+          "rotor_positions": 13,
+          "timestamp": "2026-10-29T20:19:54.724360Z",
+          "current_amplitude_A": 50.0,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 516.017,
+          "solver_cpu_time_s": 3586.363,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 1e-05,
+          "nonlinear_tolerance_method": "newton",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "newton",
+              "residual_definition": "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage",
+              "tolerance": 1e-05,
+              "absolute_residual_floor": 1e-08
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 23,
+          "nonlinear_median_iterations": 14.0,
+          "nonlinear_worst_final_mismatch": 9.09228735395252e-06,
+          "nonlinear_worst_tolerance_ratio": 0.9092287353952518,
+          "nonlinear_residual_definitions": [
+            "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage"
+          ],
+          "topology": "IPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_baseline_contract",
+      "phase": "B",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 0.8969422740363934,
+        "reference_average_Nm": 0.8421681777976496,
+        "average_delta_pct": 6.503938011761884,
+        "average_absolute_delta_Nm": 0.05477409623874374,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 8.366446793282032,
+        "bemf_peak_delta_pct": 9.345375576769143,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 13,
+          "reference_positions": 13,
+          "nrmse_pct": 6.7824656357775295,
+          "correlation": 0.996612478829084
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 8.925639041957547,
+          "correlation": 0.9997062731427262
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 94684,
+          "rotor_positions": 13,
+          "timestamp": "2026-10-29T20:27:03.126329Z",
+          "current_amplitude_A": 50.0,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 415.014,
+          "solver_cpu_time_s": 2848.243,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 1e-05,
+          "nonlinear_tolerance_method": "newton",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "newton",
+              "residual_definition": "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage",
+              "tolerance": 1e-05,
+              "absolute_residual_floor": 1e-08
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 33,
+          "nonlinear_median_iterations": 12.0,
+          "nonlinear_worst_final_mismatch": 8.440386337067325e-06,
+          "nonlinear_worst_tolerance_ratio": 0.8440386337067325,
+          "nonlinear_residual_definitions": [
+            "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage"
+          ],
+          "topology": "IPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "phase": "B",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 0.6571472115443525,
+        "reference_average_Nm": 0.6193016126026237,
+        "average_delta_pct": 6.111012497235737,
+        "average_absolute_delta_Nm": 0.037845598941728786,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 8.217855143193901,
+        "bemf_peak_delta_pct": 8.436761561353014,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 13,
+          "reference_positions": 13,
+          "nrmse_pct": 6.147280999397867,
+          "correlation": 0.9967250732720427
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 8.482342652333871,
+          "correlation": 0.9997625751364021
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 97338,
+          "rotor_positions": 13,
+          "timestamp": "2026-10-29T20:34:32.485588Z",
+          "current_amplitude_A": 50.0,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 438.771,
+          "solver_cpu_time_s": 2958.292,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 1e-05,
+          "nonlinear_tolerance_method": "newton",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "newton",
+              "residual_definition": "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage",
+              "tolerance": 1e-05,
+              "absolute_residual_floor": 1e-08
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 30,
+          "nonlinear_median_iterations": 13.0,
+          "nonlinear_worst_final_mismatch": 9.929181396726783e-06,
+          "nonlinear_worst_tolerance_ratio": 0.9929181396726782,
+          "nonlinear_residual_definitions": [
+            "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage"
+          ],
+          "topology": "IPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_narrow_angle_contract",
+      "phase": "B",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 0.8930743514442151,
+        "reference_average_Nm": 0.8592488137668423,
+        "average_delta_pct": 3.936640602282103,
+        "average_absolute_delta_Nm": 0.03382553767737284,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 4.69467963395568,
+        "bemf_peak_delta_pct": 5.3642603829540265,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 13,
+          "reference_positions": 13,
+          "nrmse_pct": 4.302681408443971,
+          "correlation": 0.9983079597630645
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 5.142260655771351,
+          "correlation": 0.9998443881747201
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 94304,
+          "rotor_positions": 13,
+          "timestamp": "2026-10-29T20:42:21.743923Z",
+          "current_amplitude_A": 50.0,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 458.086,
+          "solver_cpu_time_s": 3174.878,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 1e-05,
+          "nonlinear_tolerance_method": "newton",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "newton",
+              "residual_definition": "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage",
+              "tolerance": 1e-05,
+              "absolute_residual_floor": 1e-08
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 34,
+          "nonlinear_median_iterations": 14.0,
+          "nonlinear_worst_final_mismatch": 7.546486499684328e-06,
+          "nonlinear_worst_tolerance_ratio": 0.7546486499684327,
+          "nonlinear_residual_definitions": [
+            "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage"
+          ],
+          "topology": "IPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "phase": "B",
+      "frozen_status": "PASS",
+      "fresh_status": "YELLOW",
+      "changed_gates": {
+        "bemf_peak": {
+          "frozen": "PASS",
+          "fresh": "YELLOW"
+        }
+      },
+      "fresh_evaluation": {
+        "status": "YELLOW",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "YELLOW",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 1.1113829514356401,
+        "reference_average_Nm": 1.0610856288495947,
+        "average_delta_pct": 4.740175648272298,
+        "average_absolute_delta_Nm": 0.05029732258604547,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 7.737296715855104,
+        "bemf_peak_delta_pct": 10.383485630337862,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 13,
+          "reference_positions": 13,
+          "nrmse_pct": 5.046842611993561,
+          "correlation": 0.9795083402211567
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 8.343371850741788,
+          "correlation": 0.9996546290222831
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 94770,
+          "rotor_positions": 13,
+          "timestamp": "2026-10-29T20:49:04.481322Z",
+          "current_amplitude_A": 50.0,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 391.943,
+          "solver_cpu_time_s": 2757.404,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 1e-05,
+          "nonlinear_tolerance_method": "newton",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "newton",
+              "residual_definition": "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage",
+              "tolerance": 1e-05,
+              "absolute_residual_floor": 1e-08
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 32,
+          "nonlinear_median_iterations": 12.0,
+          "nonlinear_worst_final_mismatch": 9.114395666795271e-06,
+          "nonlinear_worst_tolerance_ratio": 0.9114395666795271,
+          "nonlinear_residual_definitions": [
+            "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage"
+          ],
+          "topology": "IPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_thin_bridge_contract",
+      "phase": "B",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 2.6861872526633546,
+        "reference_average_Nm": 2.635074056956403,
+        "average_delta_pct": 1.93972520703987,
+        "average_absolute_delta_Nm": 0.0511131957069515,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 1.0591947740372885,
+        "bemf_peak_delta_pct": 1.6669476833880723,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 13,
+          "reference_positions": 13,
+          "nrmse_pct": 2.5129688439140407,
+          "correlation": 0.9984180955641468
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 1.7078437020688941,
+          "correlation": 0.999922950890563
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 91026,
+          "rotor_positions": 13,
+          "timestamp": "2026-10-29T20:54:16.228510Z",
+          "current_amplitude_A": 50.0,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 301.012,
+          "solver_cpu_time_s": 1973.361,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 1e-05,
+          "nonlinear_tolerance_method": "newton",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "newton",
+              "residual_definition": "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage",
+              "tolerance": 1e-05,
+              "absolute_residual_floor": 1e-08
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 29,
+          "nonlinear_median_iterations": 11.0,
+          "nonlinear_worst_final_mismatch": 9.397030579370712e-06,
+          "nonlinear_worst_tolerance_ratio": 0.9397030579370712,
+          "nonlinear_residual_definitions": [
+            "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage"
+          ],
+          "topology": "IPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "phase": "B",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 0.7859892185821379,
+        "reference_average_Nm": 0.7411853696461889,
+        "average_delta_pct": 6.04489116634028,
+        "average_absolute_delta_Nm": 0.04480384893594902,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 8.79900065176938,
+        "bemf_peak_delta_pct": 9.794587073711437,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 13,
+          "reference_positions": 13,
+          "nrmse_pct": 6.112313881463818,
+          "correlation": 0.997857236790165
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 9.280535299974071,
+          "correlation": 0.9996591049326817
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 94154,
+          "rotor_positions": 13,
+          "timestamp": "2026-10-29T20:59:42.089060Z",
+          "current_amplitude_A": 50.0,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 315.64,
+          "solver_cpu_time_s": 2056.979,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 1e-05,
+          "nonlinear_tolerance_method": "newton",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "newton",
+              "residual_definition": "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage",
+              "tolerance": 1e-05,
+              "absolute_residual_floor": 1e-08
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 27,
+          "nonlinear_median_iterations": 8.0,
+          "nonlinear_worst_final_mismatch": 6.420890578375949e-06,
+          "nonlinear_worst_tolerance_ratio": 0.6420890578375948,
+          "nonlinear_residual_definitions": [
+            "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage"
+          ],
+          "topology": "IPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "ornl_prius_2004_ipm",
+      "phase": "C",
+      "frozen_status": "UNSUPPORTED",
+      "fresh_status": "UNSUPPORTED",
+      "changed_gates": {}
+    },
+    {
+      "case_id": "spm_12p36s_distributed_femm_validation",
+      "phase": "C",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 4.945766287171292,
+        "reference_average_Nm": 5.199535063234663,
+        "average_delta_pct": 4.880605149828527,
+        "average_absolute_delta_Nm": 0.2537687760633709,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 0.40175643082778323,
+        "bemf_peak_delta_pct": 0.028278859349675313,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 13,
+          "reference_positions": 13,
+          "nrmse_pct": 10.465506300593951,
+          "correlation": 0.9992179192773346
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 1.1312147695188866,
+          "correlation": 0.999943097848333
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 77612,
+          "rotor_positions": 13,
+          "timestamp": "2026-10-29T21:02:31.175346Z",
+          "current_amplitude_A": 8.0,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 158.362,
+          "solver_cpu_time_s": 670.002,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 1e-05,
+          "nonlinear_tolerance_method": "newton",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "newton",
+              "residual_definition": "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage",
+              "tolerance": 1e-05,
+              "absolute_residual_floor": 1e-08
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 17,
+          "nonlinear_median_iterations": 13.0,
+          "nonlinear_worst_final_mismatch": 6.291774170871087e-05,
+          "nonlinear_worst_tolerance_ratio": 0.9575154737195185,
+          "nonlinear_residual_definitions": [
+            "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage"
+          ],
+          "topology": "SPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p24s_distributed_femm_validation",
+      "phase": "C",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 5.488932167062564,
+        "reference_average_Nm": 5.631321550040112,
+        "average_delta_pct": 2.528525173216823,
+        "average_absolute_delta_Nm": 0.142389382977548,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 0.2575647900945261,
+        "bemf_peak_delta_pct": 0.010790021400271455,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 13,
+          "reference_positions": 13,
+          "nrmse_pct": 5.809187425177959,
+          "correlation": 0.9996189950965022
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 0.829360560408559,
+          "correlation": 0.9999686640344858
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 75722,
+          "rotor_positions": 13,
+          "timestamp": "2026-10-29T21:05:24.201452Z",
+          "current_amplitude_A": 8.0,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 163.784,
+          "solver_cpu_time_s": 752.905,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 1e-05,
+          "nonlinear_tolerance_method": "newton",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "newton",
+              "residual_definition": "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage",
+              "tolerance": 1e-05,
+              "absolute_residual_floor": 1e-08
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 18,
+          "nonlinear_median_iterations": 16.0,
+          "nonlinear_worst_final_mismatch": 2.228557389156734e-05,
+          "nonlinear_worst_tolerance_ratio": 0.9636811441455446,
+          "nonlinear_residual_definitions": [
+            "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage"
+          ],
+          "topology": "SPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p48s_chorded_5_6",
+      "phase": "C",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 5.895311030365188,
+        "reference_average_Nm": 5.978796609984746,
+        "average_delta_pct": 1.39636092454015,
+        "average_absolute_delta_Nm": 0.08348557961955816,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 0.2692470187546097,
+        "bemf_peak_delta_pct": 0.9296335645797891,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 13,
+          "reference_positions": 13,
+          "nrmse_pct": 7.538140932800613,
+          "correlation": 0.9993015744455156
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 0.4813573772433122,
+          "correlation": 0.9999919856619361
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 74340,
+          "rotor_positions": 13,
+          "timestamp": "2026-10-29T21:16:30.781645Z",
+          "current_amplitude_A": 8.0,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 657.114,
+          "solver_cpu_time_s": 1088.853,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 1e-05,
+          "nonlinear_tolerance_method": "newton",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "newton",
+              "residual_definition": "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage",
+              "tolerance": 1e-05,
+              "absolute_residual_floor": 1e-08
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 17,
+          "nonlinear_median_iterations": 8.0,
+          "nonlinear_worst_final_mismatch": 5.281426817277465e-05,
+          "nonlinear_worst_tolerance_ratio": 0.7457013615694134,
+          "nonlinear_residual_definitions": [
+            "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage"
+          ],
+          "topology": "SPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p48s_distributed_femm_validation",
+      "phase": "C",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "gates": {
+          "mean_torque": "PASS",
+          "bemf_fundamental": "PASS",
+          "bemf_peak": "PASS",
+          "torque_method": "PASS",
+          "native_mesh": "PASS",
+          "angle_grids": "PASS"
+        },
+        "candidate_average_Nm": 6.2051437634666975,
+        "reference_average_Nm": 6.3145370304967035,
+        "average_delta_pct": 1.7324036030144405,
+        "average_absolute_delta_Nm": 0.10939326703000596,
+        "near_zero_reference": false,
+        "bemf_fundamental_delta_pct": 0.28793946084599187,
+        "bemf_peak_delta_pct": 0.045857987595371234,
+        "torque_waveform": {
+          "grid_match": true,
+          "candidate_positions": 13,
+          "reference_positions": 13,
+          "nrmse_pct": 6.707423571899418,
+          "correlation": 0.9995390929562518
+        },
+        "bemf_waveform": {
+          "grid_match": true,
+          "candidate_positions": 48,
+          "reference_positions": 48,
+          "nrmse_pct": 0.5516237222826706,
+          "correlation": 0.99998898282128
+        },
+        "diagnostic_findings": [],
+        "actual_torque_method": "weighted_stress",
+        "actual_mesh_source": "native",
+        "environment": {
+          "policy": "request-only-v1",
+          "options": {
+            "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+            "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+            "COILEM_MAGNETO2D_WORKERS": "1",
+            "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+            "MAGNETO2D_LINEAR_SOLVER": "direct",
+            "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+          }
+        },
+        "solve_metadata": {
+          "solver_environment": {
+            "policy": "request-only-v1",
+            "options": {
+              "COILEM_MAGNETO2D_STREAM_NOLOAD_FIELD": "0",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_AIRGAP_ONLY": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_ELEMENT_B": "1",
+              "COILEM_MAGNETO2D_WEIGHTED_STRESS_TORQUE": "1",
+              "COILEM_MAGNETO2D_WORKERS": "1",
+              "MAGNETO2D_COGGING_TORQUE_METHOD": "weighted_stress",
+              "MAGNETO2D_LINEAR_SOLVER": "direct",
+              "MAGNETO2D_PCG_PRECONDITIONER": "ic0"
+            }
+          },
+          "reference_model": null,
+          "solver_name": "magneto2d-rust-0.3.3",
+          "mesh_element_count": 74340,
+          "rotor_positions": 13,
+          "timestamp": "2026-10-29T21:19:06.615928Z",
+          "current_amplitude_A": 8.0,
+          "excitation_mode": null,
+          "current_amplitude_convention": null,
+          "commutation_advance_deg": null,
+          "phase_connection": null,
+          "excitation_convention_version": null,
+          "loaded_cycle_complete": null,
+          "back_emf_computed": true,
+          "rated_speed_rpm": 3000,
+          "motor_input_dc_bus_V": null,
+          "magnet_temperature_C": null,
+          "magnet_remanence_T": null,
+          "magnet_intrinsic_coercivity_kA_m": null,
+          "magnet_temperature_status": null,
+          "magnet_temperature_status_reason": null,
+          "winding_temperature_C": null,
+          "solve_cache_dir": "<local path>",
+          "pipeline_stage": "field_solve",
+          "postprocess_source_cache_dir": null,
+          "postprocess_time_s": null,
+          "solve_time_s": 146.233,
+          "solver_cpu_time_s": 581.399,
+          "mesher": "gmsh",
+          "mesh_density": "normal",
+          "mesh_source": "native",
+          "mesh_source_detail": null,
+          "geometry_ir_version": null,
+          "rotor_rotation_model": "remesh_per_step",
+          "torque_method": "weighted_stress",
+          "nonlinear_tolerance": 1e-05,
+          "nonlinear_tolerance_method": "newton",
+          "nonlinear_tolerance_settings": [
+            {
+              "method": "newton",
+              "residual_definition": "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage",
+              "tolerance": 1e-05,
+              "absolute_residual_floor": 1e-08
+            }
+          ],
+          "solve_quality": "custom",
+          "nonlinear_max_iterations_used": 17,
+          "nonlinear_median_iterations": 17.0,
+          "nonlinear_worst_final_mismatch": 4.700085423557171e-06,
+          "nonlinear_worst_tolerance_ratio": 0.47000854235571704,
+          "nonlinear_residual_definitions": [
+            "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage"
+          ],
+          "topology": "SPM",
+          "physics_contract_version": "magneto2d_imported_physics/v0",
+          "region_source": "geometry_ir",
+          "current_source": "geometry_ir_winding_table",
+          "magnetization_source": "geometry_ir",
+          "material_source": "geometry_ir",
+          "solver_lane_reason": null
+        }
+      }
+    },
+    {
+      "case_id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "results": {
+          "native_standard_mean_torque_Nm": 3.3487506027396314,
+          "native_standard_torque_ripple_pct": 13.799028910411307,
+          "native_fine_mean_torque_Nm": 3.3500567474226965,
+          "native_fine_torque_ripple_pct": 13.793648843862686,
+          "femm_standard_mean_torque_Nm": 3.3591079535019985,
+          "femm_standard_torque_ripple_pct": 13.893208275363609,
+          "mean_torque_delta_pct": 0.30833634720102304,
+          "torque_waveform_nrmse_pct": 0.5297718318412716,
+          "transition_alignment": {
+            "candidate_indices": [
+              12,
+              28,
+              44,
+              60,
+              76,
+              92
+            ],
+            "reference_indices": [
+              12,
+              28,
+              44,
+              60,
+              76,
+              92
+            ],
+            "delta_samples": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "max_delta_samples": 0
+          },
+          "power_torque_discriminator": {
+            "mean_electromagnetic_power_W": 70.0800276541128,
+            "omega_mechanical_rad_s": 209.43951023931953,
+            "torque_from_power_Nm": 0.3346074843950632,
+            "mean_solved_torque_Nm": 0.33532217830592925,
+            "delta_pct": 0.21313648696806176,
+            "positive_motoring_sign": true
+          },
+          "current_properties": {
+            "native_standard": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            },
+            "native_fine": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            },
+            "femm_standard": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            },
+            "analytical_low_current": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            }
+          }
+        },
+        "gates": [
+          {
+            "id": "mean_torque_delta_pct",
+            "value": 0.30833634720102304,
+            "maximum": 5.0,
+            "status": "PASS"
+          },
+          {
+            "id": "torque_waveform_nrmse_pct",
+            "value": 0.5297718318412716,
+            "maximum": 10.0,
+            "status": "PASS"
+          },
+          {
+            "id": "commutation_transition_delta_samples",
+            "value": 0,
+            "maximum": 1,
+            "status": "PASS"
+          },
+          {
+            "id": "power_torque_delta_pct",
+            "value": 0.21313648696806176,
+            "maximum": 10.0,
+            "status": "PASS"
+          },
+          {
+            "id": "native_standard_to_fine_mean_torque_delta_pct",
+            "value": 0.038988733073550816,
+            "maximum": 2.0,
+            "status": "PASS"
+          },
+          {
+            "id": "native_standard_to_fine_ripple_delta_percentage_points",
+            "value": 0.005380066548621443,
+            "maximum": 5.0,
+            "status": "PASS"
+          },
+          {
+            "id": "native_standard_current_properties",
+            "value": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            },
+            "maximum": {
+              "zero_sum_abs_A": 1e-09,
+              "current_abs_A": 1e-09,
+              "invalid_samples": 0
+            },
+            "status": "PASS"
+          },
+          {
+            "id": "native_fine_current_properties",
+            "value": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            },
+            "maximum": {
+              "zero_sum_abs_A": 1e-09,
+              "current_abs_A": 1e-09,
+              "invalid_samples": 0
+            },
+            "status": "PASS"
+          },
+          {
+            "id": "femm_standard_current_properties",
+            "value": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            },
+            "maximum": {
+              "zero_sum_abs_A": 1e-09,
+              "current_abs_A": 1e-09,
+              "invalid_samples": 0
+            },
+            "status": "PASS"
+          },
+          {
+            "id": "analytical_low_current_current_properties",
+            "value": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            },
+            "maximum": {
+              "zero_sum_abs_A": 1e-09,
+              "current_abs_A": 1e-09,
+              "invalid_samples": 0
+            },
+            "status": "PASS"
+          },
+          {
+            "id": "native-standard_golden_current_sequence",
+            "value": "matches frozen golden current table",
+            "maximum": "exact phase sequence within frozen current tolerance",
+            "status": "PASS"
+          },
+          {
+            "id": "native-fine_golden_current_sequence",
+            "value": "matches frozen golden current table",
+            "maximum": "exact phase sequence within frozen current tolerance",
+            "status": "PASS"
+          },
+          {
+            "id": "analytical_golden_current_sequence",
+            "value": "matches frozen golden current table",
+            "maximum": "exact phase sequence within frozen current tolerance",
+            "status": "PASS"
+          },
+          {
+            "id": "femm-standard_golden_current_sequence",
+            "value": "matches frozen golden current table",
+            "maximum": "exact phase sequence within frozen current tolerance",
+            "status": "PASS"
+          }
+        ],
+        "limitations": [
+          "ideal current-commanded 120-degree six-step only",
+          "guided wye-connected inner-rotor radial-flux SPM only",
+          "no PWM, current ripple, commutation overlap, dead time, Hall electronics, dynamic bus, startup, delta winding, IPM, or outrunner claim"
+        ]
+      }
+    },
+    {
+      "case_id": "spm_4p12s_small",
+      "phase": "D",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "results": {
+          "native_standard_mean_torque_Nm": 0.5733808423849763,
+          "native_standard_torque_ripple_pct": 32.596685737106746,
+          "native_fine_mean_torque_Nm": 0.5744619977243758,
+          "native_fine_torque_ripple_pct": 32.989062184318065,
+          "femm_standard_mean_torque_Nm": 0.5733275387623878,
+          "femm_standard_torque_ripple_pct": 32.4106870665898,
+          "mean_torque_delta_pct": 0.009297237440146176,
+          "torque_waveform_nrmse_pct": 0.26340809079523975,
+          "transition_alignment": {
+            "candidate_indices": [
+              0,
+              8,
+              16,
+              24,
+              32,
+              40
+            ],
+            "reference_indices": [
+              0,
+              8,
+              16,
+              24,
+              32,
+              40
+            ],
+            "delta_samples": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "max_delta_samples": 0
+          },
+          "power_torque_discriminator": {
+            "mean_electromagnetic_power_W": 36.05923752437162,
+            "omega_mechanical_rad_s": 628.3185307179587,
+            "torque_from_power_Nm": 0.05739005896128502,
+            "mean_solved_torque_Nm": 0.05748659670471528,
+            "delta_pct": 0.16793087252344527,
+            "positive_motoring_sign": true
+          },
+          "current_properties": {
+            "native_standard": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            },
+            "native_fine": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            },
+            "femm_standard": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            },
+            "analytical_low_current": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            }
+          }
+        },
+        "gates": [
+          {
+            "id": "mean_torque_delta_pct",
+            "value": 0.009297237440146176,
+            "maximum": 5.0,
+            "status": "PASS"
+          },
+          {
+            "id": "torque_waveform_nrmse_pct",
+            "value": 0.26340809079523975,
+            "maximum": 10.0,
+            "status": "PASS"
+          },
+          {
+            "id": "commutation_transition_delta_samples",
+            "value": 0,
+            "maximum": 1,
+            "status": "PASS"
+          },
+          {
+            "id": "power_torque_delta_pct",
+            "value": 0.16793087252344527,
+            "maximum": 10.0,
+            "status": "PASS"
+          },
+          {
+            "id": "native_standard_to_fine_mean_torque_delta_pct",
+            "value": 0.18820310894058248,
+            "maximum": 2.0,
+            "status": "PASS"
+          },
+          {
+            "id": "native_standard_to_fine_ripple_delta_percentage_points",
+            "value": 0.39237644721131915,
+            "maximum": 5.0,
+            "status": "PASS"
+          },
+          {
+            "id": "native_standard_current_properties",
+            "value": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            },
+            "maximum": {
+              "zero_sum_abs_A": 1e-09,
+              "current_abs_A": 1e-09,
+              "invalid_samples": 0
+            },
+            "status": "PASS"
+          },
+          {
+            "id": "native_fine_current_properties",
+            "value": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            },
+            "maximum": {
+              "zero_sum_abs_A": 1e-09,
+              "current_abs_A": 1e-09,
+              "invalid_samples": 0
+            },
+            "status": "PASS"
+          },
+          {
+            "id": "femm_standard_current_properties",
+            "value": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            },
+            "maximum": {
+              "zero_sum_abs_A": 1e-09,
+              "current_abs_A": 1e-09,
+              "invalid_samples": 0
+            },
+            "status": "PASS"
+          },
+          {
+            "id": "analytical_low_current_current_properties",
+            "value": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            },
+            "maximum": {
+              "zero_sum_abs_A": 1e-09,
+              "current_abs_A": 1e-09,
+              "invalid_samples": 0
+            },
+            "status": "PASS"
+          },
+          {
+            "id": "native-standard_golden_current_sequence",
+            "value": "matches frozen golden current table",
+            "maximum": "exact phase sequence within frozen current tolerance",
+            "status": "PASS"
+          },
+          {
+            "id": "native-fine_golden_current_sequence",
+            "value": "matches frozen golden current table",
+            "maximum": "exact phase sequence within frozen current tolerance",
+            "status": "PASS"
+          },
+          {
+            "id": "analytical_golden_current_sequence",
+            "value": "matches frozen golden current table",
+            "maximum": "exact phase sequence within frozen current tolerance",
+            "status": "PASS"
+          },
+          {
+            "id": "femm-standard_golden_current_sequence",
+            "value": "matches frozen golden current table",
+            "maximum": "exact phase sequence within frozen current tolerance",
+            "status": "PASS"
+          }
+        ],
+        "limitations": [
+          "ideal current-commanded 120-degree six-step only",
+          "guided wye-connected inner-rotor radial-flux SPM only",
+          "no PWM, current ripple, commutation overlap, dead time, Hall electronics, dynamic bus, startup, delta winding, IPM, or outrunner claim"
+        ]
+      }
+    },
+    {
+      "case_id": "spm_8p12s_reference",
+      "phase": "D",
+      "frozen_status": "PASS",
+      "fresh_status": "PASS",
+      "changed_gates": {},
+      "fresh_evaluation": {
+        "status": "PASS",
+        "results": {
+          "native_standard_mean_torque_Nm": 14.547114130277022,
+          "native_standard_torque_ripple_pct": 178.03011287140566,
+          "native_fine_mean_torque_Nm": 14.545915431722312,
+          "native_fine_torque_ripple_pct": 178.04478396171933,
+          "femm_standard_mean_torque_Nm": 14.633506585100468,
+          "femm_standard_torque_ripple_pct": 176.10238423319853,
+          "mean_torque_delta_pct": 0.5903742504985748,
+          "torque_waveform_nrmse_pct": 1.0151984618481718,
+          "transition_alignment": {
+            "candidate_indices": [
+              4,
+              12,
+              20,
+              28,
+              36,
+              44
+            ],
+            "reference_indices": [
+              4,
+              12,
+              20,
+              28,
+              36,
+              44
+            ],
+            "delta_samples": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "max_delta_samples": 0
+          },
+          "power_torque_discriminator": {
+            "mean_electromagnetic_power_W": 457.2916785665004,
+            "omega_mechanical_rad_s": 314.1592653589793,
+            "torque_from_power_Nm": 1.4556046215729734,
+            "mean_solved_torque_Nm": 1.457239348987704,
+            "delta_pct": 0.11217974698982543,
+            "positive_motoring_sign": true
+          },
+          "current_properties": {
+            "native_standard": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            },
+            "native_fine": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            },
+            "femm_standard": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            },
+            "analytical_low_current": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            }
+          }
+        },
+        "gates": [
+          {
+            "id": "mean_torque_delta_pct",
+            "value": 0.5903742504985748,
+            "maximum": 5.0,
+            "status": "PASS"
+          },
+          {
+            "id": "torque_waveform_nrmse_pct",
+            "value": 1.0151984618481718,
+            "maximum": 10.0,
+            "status": "PASS"
+          },
+          {
+            "id": "commutation_transition_delta_samples",
+            "value": 0,
+            "maximum": 1,
+            "status": "PASS"
+          },
+          {
+            "id": "power_torque_delta_pct",
+            "value": 0.11217974698982543,
+            "maximum": 10.0,
+            "status": "PASS"
+          },
+          {
+            "id": "native_standard_to_fine_mean_torque_delta_pct",
+            "value": 0.008240791446480539,
+            "maximum": 2.0,
+            "status": "PASS"
+          },
+          {
+            "id": "native_standard_to_fine_ripple_delta_percentage_points",
+            "value": 0.01467109031366931,
+            "maximum": 5.0,
+            "status": "PASS"
+          },
+          {
+            "id": "native_standard_current_properties",
+            "value": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            },
+            "maximum": {
+              "zero_sum_abs_A": 1e-09,
+              "current_abs_A": 1e-09,
+              "invalid_samples": 0
+            },
+            "status": "PASS"
+          },
+          {
+            "id": "native_fine_current_properties",
+            "value": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            },
+            "maximum": {
+              "zero_sum_abs_A": 1e-09,
+              "current_abs_A": 1e-09,
+              "invalid_samples": 0
+            },
+            "status": "PASS"
+          },
+          {
+            "id": "femm_standard_current_properties",
+            "value": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            },
+            "maximum": {
+              "zero_sum_abs_A": 1e-09,
+              "current_abs_A": 1e-09,
+              "invalid_samples": 0
+            },
+            "status": "PASS"
+          },
+          {
+            "id": "analytical_low_current_current_properties",
+            "value": {
+              "max_zero_sum_abs_A": 0.0,
+              "max_plateau_error_abs_A": 0.0,
+              "max_zero_phase_abs_A": 0.0,
+              "invalid_conduction_samples": 0
+            },
+            "maximum": {
+              "zero_sum_abs_A": 1e-09,
+              "current_abs_A": 1e-09,
+              "invalid_samples": 0
+            },
+            "status": "PASS"
+          },
+          {
+            "id": "native-standard_golden_current_sequence",
+            "value": "matches frozen golden current table",
+            "maximum": "exact phase sequence within frozen current tolerance",
+            "status": "PASS"
+          },
+          {
+            "id": "native-fine_golden_current_sequence",
+            "value": "matches frozen golden current table",
+            "maximum": "exact phase sequence within frozen current tolerance",
+            "status": "PASS"
+          },
+          {
+            "id": "analytical_golden_current_sequence",
+            "value": "matches frozen golden current table",
+            "maximum": "exact phase sequence within frozen current tolerance",
+            "status": "PASS"
+          },
+          {
+            "id": "femm-standard_golden_current_sequence",
+            "value": "matches frozen golden current table",
+            "maximum": "exact phase sequence within frozen current tolerance",
+            "status": "PASS"
+          }
+        ],
+        "limitations": [
+          "ideal current-commanded 120-degree six-step only",
+          "guided wye-connected inner-rotor radial-flux SPM only",
+          "no PWM, current ripple, commutation overlap, dead time, Hall electronics, dynamic bus, startup, delta winding, IPM, or outrunner claim"
+        ]
+      }
+    }
+  ],
+  "additional_field_solves": 0
+}

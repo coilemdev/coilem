@@ -79,8 +79,8 @@ use self::picard::{backtracked_relaxation, cap_mu_rel_step, PicardRelaxationStat
 use self::problem::SolveProblem;
 pub use self::types::{
     AirgapBrBtBin, AirgapBrBtProfile, ConfigSummary, FieldPlotData, ImportedMeshBatchInput,
-    ImportedMeshBatchReport, MeshPreviewReport, OperatingPointSummary, SlotExcitationFrame,
-    SolveInfo, SolveMeshArtifact, SolveProfile, SolveReport, SweepData, SweepReport,
+    ImportedMeshBatchReport, MeshPreviewReport, NonlinearConvergence, OperatingPointSummary,
+    SlotExcitationFrame, SolveInfo, SolveMeshArtifact, SolveProfile, SolveReport, SweepData, SweepReport,
 };
 
 #[derive(Debug, Clone)]
@@ -91,6 +91,7 @@ struct AngleSolveDiagnostics {
     nonlinear_enabled: bool,
     nonlinear_iterations: usize,
     nonlinear_residual_history: Vec<f64>,
+    nonlinear_convergence: NonlinearConvergence,
     profile: Option<SolveProfile>,
 }
 
@@ -1752,6 +1753,8 @@ fn solve_at_angle(
         nonlinear_material_labels,
     } = problem;
 
+    let mut nonlinear_convergence = NonlinearConvergence::linear();
+    let mut newton_fallback = false;
     if nonlinear_enabled && nonlinear_config.solver_kind == NonlinearSolverKind::Newton {
         eprintln!("  nonlinear_solver: newton requested");
         let newton_current_scales = resolve_newton_current_scales(&j_z);
@@ -1777,6 +1780,7 @@ fn solve_at_angle(
             Ok(output) => {
                 total_assembly_ms += output.assembly_time_ms;
                 total_solve_ms += output.solve_time_ms;
+                nonlinear_convergence = output.convergence;
                 residual_history = output.residual_history;
                 nonlinear_iteration_diagnostics = output.diagnostics;
                 materials = output.materials;
@@ -1785,6 +1789,7 @@ fn solve_at_angle(
                 solved_with_newton = true;
             }
             Err(err) => {
+                newton_fallback = true;
                 eprintln!("  nonlinear_solver: newton failed; falling back to picard ({err})");
                 materials = base_materials.clone();
                 apply_nonlinear_warm_start(
@@ -1842,6 +1847,10 @@ fn solve_at_angle(
         };
         total_assembly_ms += output.assembly_time_ms;
         total_solve_ms += output.solve_time_ms;
+        nonlinear_convergence = output.convergence;
+        if newton_fallback {
+            nonlinear_convergence.fallback_from = Some("newton".into());
+        }
         residual_history = output.residual_history;
         nonlinear_iteration_diagnostics = output.diagnostics;
         materials = output.materials;
@@ -1870,11 +1879,7 @@ fn solve_at_angle(
     // serde_json writes NaN/Inf as null, so a broken solve must stop here
     // rather than surface as a report with silently missing values.
     ensure_finite_solution(&last_az, &fields, rotor_angle_rad)?;
-    let nonlinear_iterations = if nonlinear_enabled {
-        residual_history.len().max(1)
-    } else {
-        1
-    };
+    let nonlinear_iterations = nonlinear_convergence.iterations;
     let solver_method = if nonlinear_enabled {
         if solved_with_newton {
             "sparse_pcg_jacobi+damped_newton"
@@ -2010,6 +2015,7 @@ fn solve_at_angle(
             nonlinear_enabled,
             nonlinear_iterations,
             nonlinear_residual_history: residual_history,
+            nonlinear_convergence,
             profile: solve_profile,
         },
         build_nonlinear_warm_start(&materials),
@@ -2395,6 +2401,7 @@ pub fn run_magnetostatic_solve_at_angle_with_mesh(
             nonlinear_enabled: diagnostics.nonlinear_enabled,
             nonlinear_iterations: diagnostics.nonlinear_iterations,
             nonlinear_residual_history: diagnostics.nonlinear_residual_history,
+            nonlinear_convergence: diagnostics.nonlinear_convergence,
             profile: diagnostics.profile,
         },
         results: summary,
@@ -2673,6 +2680,8 @@ fn run_rotor_sweep_inner(
         loaded_fields: Vec<ElementField>,
         loaded_nonlinear_iters: usize,
         noload_nonlinear_iters: usize,
+        loaded_convergence: Option<NonlinearConvergence>,
+        noload_convergence: Option<NonlinearConvergence>,
     }
 
     // Gamma is measured from the q-axis; positive gamma is flux-weakening advance.
@@ -2805,7 +2814,7 @@ fn run_rotor_sweep_inner(
                     Some(&loaded_progress),
                 )?;
 
-            let (noload_summary, noload_az, noload_solve_ms, noload_nonlinear_iters) =
+            let (noload_summary, noload_az, noload_solve_ms, noload_nonlinear_iters, noload_convergence) =
                 if run_main_no_load {
                     let noload_progress = AngleProgressContext {
                         parent_stage: "magneto2d_sweep",
@@ -2837,6 +2846,7 @@ fn run_rotor_sweep_inner(
                         noload_az,
                         noload_diagnostics.solve_time_ms,
                         noload_diagnostics.nonlinear_iterations,
+                        Some(noload_diagnostics.nonlinear_convergence),
                     )
                 } else {
                     let mut skipped_summary = loaded_summary.clone();
@@ -2844,7 +2854,7 @@ fn run_rotor_sweep_inner(
                     skipped_summary.flux_linkage_b_wb = 0.0;
                     skipped_summary.flux_linkage_c_wb = 0.0;
                     skipped_summary.slot_flux_linkage_contributions.clear();
-                    (skipped_summary, loaded_az.clone(), 0, 0)
+                    (skipped_summary, loaded_az.clone(), 0, 0, None)
                 };
 
             // Live progress tick — backend regex matches this line.
@@ -2949,6 +2959,8 @@ fn run_rotor_sweep_inner(
                 loaded_fields,
                 loaded_nonlinear_iters: loaded_diagnostics.nonlinear_iterations,
                 noload_nonlinear_iters,
+                loaded_convergence: Some(loaded_diagnostics.nonlinear_convergence),
+                noload_convergence,
             })
         }
     };
@@ -3103,6 +3115,8 @@ fn run_rotor_sweep_inner(
                         loaded_fields: src.loaded_fields.clone(),
                         loaded_nonlinear_iters: src.loaded_nonlinear_iters,
                         noload_nonlinear_iters: src.noload_nonlinear_iters,
+                        loaded_convergence: src.loaded_convergence.clone(),
+                        noload_convergence: src.noload_convergence.clone(),
                     };
                 }
                 let src = &window[i % window_len];
@@ -3188,6 +3202,8 @@ fn run_rotor_sweep_inner(
                     loaded_fields: Vec::new(),
                     loaded_nonlinear_iters: src.loaded_nonlinear_iters,
                     noload_nonlinear_iters: src.noload_nonlinear_iters,
+                    loaded_convergence: src.loaded_convergence.as_ref().map(NonlinearConvergence::reused),
+                    noload_convergence: src.noload_convergence.as_ref().map(NonlinearConvergence::reused),
                 }
             })
             .collect()
@@ -3222,6 +3238,8 @@ fn run_rotor_sweep_inner(
     let mut noload_psi_c = Vec::with_capacity(n_positions);
     let mut loaded_nonlinear_iterations = Vec::with_capacity(n_positions);
     let mut no_load_nonlinear_iterations = Vec::with_capacity(n_positions);
+    let mut loaded_nonlinear_convergence = Vec::with_capacity(n_positions);
+    let mut no_load_nonlinear_convergence = Vec::with_capacity(n_positions);
     let mut loaded_field_history = Vec::with_capacity(n_positions);
     let mut slot_excitation_frames = Vec::with_capacity(n_positions);
     let mut phase_current_a_a = Vec::with_capacity(n_positions);
@@ -3313,6 +3331,8 @@ fn run_rotor_sweep_inner(
         loaded_field_history.push(outcome.loaded_fields);
         loaded_nonlinear_iterations.push(outcome.loaded_nonlinear_iters);
         no_load_nonlinear_iterations.push(outcome.noload_nonlinear_iters);
+        loaded_nonlinear_convergence.push(outcome.loaded_convergence);
+        no_load_nonlinear_convergence.push(outcome.noload_convergence);
     }
 
     // Compute back-EMF from the flux-linkage waveform sampled over electrical angle.
@@ -3721,6 +3741,8 @@ fn run_rotor_sweep_inner(
             slot_excitation_frames,
             loaded_nonlinear_iterations,
             no_load_nonlinear_iterations,
+            loaded_nonlinear_convergence,
+            no_load_nonlinear_convergence,
             core_loss_w: core_loss.core_loss_w,
             hysteresis_loss_w: core_loss.hysteresis_loss_w,
             eddy_current_loss_w: core_loss.eddy_current_loss_w,

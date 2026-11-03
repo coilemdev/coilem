@@ -11,6 +11,7 @@ const {
   sparklinePath,
   sharedSparklinePaths,
   torqueRange,
+  torqueRippleView,
 } = await importTypeScriptModule(new URL('../src/public/resultMetrics.ts', import.meta.url));
 
 // The default example: 8 poles at 2,400 rpm is 160 Hz electrical.
@@ -60,4 +61,30 @@ assert.equal(saturationKneeRangeT(catalog, 'custom:abc'), null);
 assert.equal(saturationKneeRangeT(catalog, 'broken'), null, 'an inverted range is ignored');
 assert.equal(saturationKneeRangeT({ steels: [], magnet_grades: [], conductors: [] }, 'M350-50A'), null);
 
-console.log('result summary: frequency, power, torque range, sparkline, loading scale and knee pass');
+// Ripple % only where it means something. No current: the torque is cogging,
+// averaging about zero, so the swing replaces a 329,698 % ripple (the 2005
+// Honda Accord at 0 A, Preview).
+const run = (avg, ripple, torque, current) => ({
+  summary: { avg_torque_Nm: avg, torque_ripple_pct: ripple },
+  torque_waveform: { electrical_angle_deg: torque.map((_, index) => index * 3.75), torque_Nm: torque },
+  solve_metadata: { current_amplitude_A: current },
+});
+const noLoad = torqueRippleView(run(0.005, 329698.82, [0.1, 6.2, 8.3, 2.0, -8.4, -3.1], 0));
+assert.equal(noLoad.ripplePct, null);
+assert.ok(Math.abs(noLoad.peakToPeakNm - 16.7) < 1e-9);
+assert.equal(noLoad.peakToPeakLabel, 'Cogging torque p-p');
+assert.match(noLoad.note, /^No current, so this torque is cogging/);
+// A loaded run keeps the solver's percentage and shows no swing row.
+assert.deepEqual(torqueRippleView(run(10.66, 14.27, [11.66, 10.4, 9.24, 10.9], 42.4)),
+  { ripplePct: 14.27, peakToPeakNm: null, peakToPeakLabel: 'Torque p-p', note: null });
+// Current but a near-zero average (all d-axis): the swing, not cogging.
+const dAxis = torqueRippleView(run(0.01, 40000, [-2, 0, 2], 10));
+assert.equal(dAxis.ripplePct, null);
+assert.equal(dAxis.peakToPeakNm, 4);
+assert.equal(dAxis.peakToPeakLabel, 'Torque p-p');
+assert.match(dAxis.note, /^The average torque is close to zero/);
+// Without the requested current the average alone decides.
+assert.equal(torqueRippleView({ ...run(0.002, 1e5, [-1, 1], 0), solve_metadata: {} }).ripplePct, null);
+assert.equal(torqueRippleView({ ...run(5, 12, [4.7, 5.3], 0), solve_metadata: {} }).ripplePct, 12);
+
+console.log('result summary: frequency, power, torque range, ripple view, sparkline, loading scale and knee pass');

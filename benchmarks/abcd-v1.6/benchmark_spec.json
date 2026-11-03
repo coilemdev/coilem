@@ -1,0 +1,734 @@
+{
+  "schema": "coilem.benchmark_spec/v1",
+  "protocol_version": "1.6.0",
+  "convention": "public-clockwise-v2",
+  "material_contract": {
+    "steel_grade": "M350-50A",
+    "curve_sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+    "magnets": {
+      "N42": {
+        "Br_T": 1.315,
+        "mu_r": 1.05
+      },
+      "N35": {
+        "Br_T": 1.23,
+        "mu_r": 1.05
+      }
+    }
+  },
+  "golden": "benchmarks/main-20261009-bad71d9/protocols/golden_commutation_vectors.json",
+  "golden_sha256": "0914644d93f05fa5738534c518e2ecffeca2d129d8a38fbe8b8df2f65c695b86",
+  "cases": [
+    {
+      "id": "spm_4p12s_simple__baseline",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple__baseline.json",
+          "fixture_sha256": "8683cfb2785aab77e2627428e1d85e9d339656b832cc1d28f0f9c71b2376ba44",
+          "input_sha256": "8ac64a2b2f44e6c535bac1a67d900047a4c9f6ec6fea5f7d9ee26e429f4dd27b"
+        }
+      ]
+    },
+    {
+      "id": "spm_4p12s_simple__high_current",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple__high_current.json",
+          "fixture_sha256": "0aa890a7f91080d325531249fe35db5e83a1188f7c4d2a924e8dd7aca58255c2",
+          "input_sha256": "cd897180782c144ca2796abef4e94f46591f3f619dfcdb0bad20f95624ff9cd9"
+        }
+      ]
+    },
+    {
+      "id": "spm_4p12s_simple__tight_airgap",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple__tight_airgap.json",
+          "fixture_sha256": "8ac45848dd6e64b1056d6126dd8cc581e662b4a944fd2c505382b1c8feeedcda",
+          "input_sha256": "42dd5d5a40a226a5cf1c9692e8d6b41b5865ceefc5fa2b8d0798866a6aeec5d1"
+        }
+      ]
+    },
+    {
+      "id": "spm_4p12s_simple_noload__baseline",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple_noload__baseline.json",
+          "fixture_sha256": "a2ea56eb54efd8121ba18bd56cf2aebb8cdee00fc45a34bf3b6a9279fe9d6441",
+          "input_sha256": "f7a1e9d89d541798352fa7ef6e5b7191559b2f41cd9b000be3b87201c367e03f"
+        }
+      ]
+    },
+    {
+      "id": "spm_4p12s_simple_noload__high_current",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple_noload__high_current.json",
+          "fixture_sha256": "eb6ac4ab542644145605bc75689c5f59ff2a11bb44d48010fd2e469414cc5c38",
+          "input_sha256": "7031ccabb86b8072fd7df2cc0adcd25ea792c62d1d08320d8c9feb3742382b0a"
+        }
+      ]
+    },
+    {
+      "id": "spm_4p12s_simple_noload__tight_airgap",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_4p12s_simple_noload__tight_airgap.json",
+          "fixture_sha256": "e0ab8c2b89bd7f562c9c797763c6155f2c27f122fe6c177f5c69e8e4db021697",
+          "input_sha256": "68986a13cb1beaceff8634f205838b60b30a97e0c8768de5e02ea3d027c79d7b"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__baseline",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p12s_concentrated__baseline.json",
+          "fixture_sha256": "e63edcc854d01e6c7ddb0c9ef83e6c6212bbb5ee10cf60de2e8f395219c342c7",
+          "input_sha256": "0fad5d88fdbc263496008238a1ac95bf9644cafa212164364ac400a880bfb189"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__high_current",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p12s_concentrated__high_current.json",
+          "fixture_sha256": "09f98ac8d479dfb1d5df1d44123ce498d37a7b43a769c4bdfa5c765044669dd9",
+          "input_sha256": "ae9364321c17f4dbeaffa73b919ea34329f1ebbe0d60e671a095c3e3489e8d66"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__tight_airgap",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p12s_concentrated__tight_airgap.json",
+          "fixture_sha256": "d0a534dfba20d13a3a0ea96ac7a0e4640a9261dcb68dd095f86233a74c2a2969",
+          "input_sha256": "8c71b0116931037a5f0c04b041e70d2bf18dc58d582e9da2ac841fc4a2c534ae"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_reference_angle30__baseline",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p12s_reference_angle30__baseline.json",
+          "fixture_sha256": "e9188508875a6b9b900229cec0dce6f8bfff862433bcd48eae666b1d26deeefd",
+          "input_sha256": "640c03a944a039ab5770d7fa44b1ae4b5458fa3fe7f005c51a3c30343cfb6c95"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_12s10p_fscw_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_flat_12s10p_fscw_contract.json",
+          "fixture_sha256": "74358dbc72618a8d79432bbd8420a5ff5ad1936c8419ca3ceacfaa42642fa680",
+          "input_sha256": "86f59356d594916ae7f774e1be77f16821c48c1c29e13ba241d308efe3bc655c"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_24s16p_industrial_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_flat_24s16p_industrial_contract.json",
+          "fixture_sha256": "e7b4bf9b187c57976de7ef7851e62db63dbb0ff90196060f1d927cac32203402",
+          "input_sha256": "7a935a36d5c17e76bbfd97dc74de720a10c40190d5e77eecce75122da3ab46c3"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_4p12s_micro_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_flat_4p12s_micro_contract.json",
+          "fixture_sha256": "907592fae67a43464976f9c8153a0a82f7abbac51cb5fd5e4d489dbe79a70119",
+          "input_sha256": "3dfc832ffcce6cb300967c83dd611e27d10dac8bb3004ccdb7ffd1e8c259194b"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract.json",
+          "fixture_sha256": "b1b664d37b65facde4941cd362b2fe1a3fbcbba94677a2e15ab2b6a6e85e874b",
+          "input_sha256": "b6bff40deb14d9f1587e971bea08f0408ff77059dc3f86668793da87fe4f027b"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_flat_8p12s_fsae_contract.json",
+          "fixture_sha256": "8070cb6d1281f900beed45ca729211327534b263db6ca28e4d9d2b58d2c15904",
+          "input_sha256": "131abdcb3b9e19371b7f1b53e2b6e462c31a876a8b7540b2566d772a20aaa74b"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract.json",
+          "fixture_sha256": "3d02199dc695dd6fd6d985ae9be5f66b10015ff1c45ecdf21015ba92ee30bef5",
+          "input_sha256": "1d6748db16adfad0e56329248de6fb30fea79875a0ed002f0ce0f283cb20ca63"
+        }
+      ]
+    },
+    {
+      "id": "ipm_vshape_8p12s_baseline_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_vshape_8p12s_baseline_contract.json",
+          "fixture_sha256": "0b74642e6e9cccd3b6cc4db05e934a4fccce8b0929cbf646d91d97b16d51a96f",
+          "input_sha256": "29ecdb6f3f070930fc3e8ae71642950bd2852513ca6795d9f7eebcb4d848dce1"
+        }
+      ]
+    },
+    {
+      "id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/ipm-high-output-20261011-af56962/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1.json",
+          "fixture_sha256": "5c0ce6a13157f4b509278fd7ce6497ae50f813419f0469303d01b468053ad579",
+          "input_sha256": "65ba62cff333a4bff4149e5b3040717ef780caf8576cb0a0e0b2d3e1754ebf8e"
+        }
+      ],
+      "coverage": "higher-output replacement of ipm_vshape_8p12s_deep_apex_contract; original retained in archived protocol 1.0.0"
+    },
+    {
+      "id": "ipm_vshape_8p12s_narrow_angle_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_vshape_8p12s_narrow_angle_contract.json",
+          "fixture_sha256": "ba4e05a68783179e905416912dfcf1be03c757bd7ff13ea7f413b37617534441",
+          "input_sha256": "921ccc975000bd3c6bcb07626ae5ce6cc899173c026ed97071f64492248c20fa"
+        }
+      ]
+    },
+    {
+      "id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_vshape_8p12s_pocket_offset_contract.json",
+          "fixture_sha256": "63de352f24f9a62eeb4de789758217e66f37ce09743373e45028865fb0dc559f",
+          "input_sha256": "8e294a68dc235fa1f930db1f614f1c75107f1f7653a02ec4505d6aa7e0948ea9"
+        }
+      ]
+    },
+    {
+      "id": "ipm_vshape_8p12s_thin_bridge_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ipm_vshape_8p12s_thin_bridge_contract.json",
+          "fixture_sha256": "69366d5331fbd7f54c8f5c718ec3fb582609908be3a56f622d041cb70fd0bd5e",
+          "input_sha256": "7f6e11619eb08fc65478147423811b9046dd4ef5ce2447258fe8f38270f001a6"
+        }
+      ]
+    },
+    {
+      "id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/ipm-high-output-20261011-af56962/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1.json",
+          "fixture_sha256": "4b64ba12009d85110f08bb03804b96d17f6e79a751c088298ac17123680f77c4",
+          "input_sha256": "28e134698c83fd6ef7f0f898ef84306f73139a3fd46102617501f0bc7d24adfb"
+        }
+      ],
+      "coverage": "higher-output replacement of ipm_vshape_8p12s_wide_angle_contract; original retained in archived protocol 1.0.0"
+    },
+    {
+      "id": "ornl_prius_2004_ipm",
+      "phase": "C",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/ornl_prius_2004_ipm.json",
+          "fixture_sha256": "d5d666befcf699b6e6a9515d6fc6926f8a10b2db5a912513e0b6f7f69c2a3337",
+          "input_sha256": "3194f514ad150be4e8b23ecd693a00276d8b61237de044fc23516c55ddf1ae1b"
+        }
+      ]
+    },
+    {
+      "id": "spm_12p36s_distributed_femm_validation",
+      "phase": "C",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_12p36s_distributed_femm_validation.json",
+          "fixture_sha256": "75f68857d14aba7bb1d92d3388185ac91a692ae4d0adf6d3dc5b5fccfb5b0fea",
+          "input_sha256": "3610eb62a7a9398d7247e8723e804216bcdeab41fe7f86dda782cf5da5524796"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p24s_distributed_femm_validation",
+      "phase": "C",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p24s_distributed_femm_validation.json",
+          "fixture_sha256": "394869d4f25cad92342e5d29c438ae742728ff459934f1dddb5e63f479fc2125",
+          "input_sha256": "393f55527b8bd46528a703b3d4e20b28b5df635904c3a8a4037a5eb1f4c8754c"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p48s_chorded_5_6",
+      "phase": "C",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p48s_chorded_5_6.json",
+          "fixture_sha256": "06a5da2f2fdf8368daf988fa8d9311f3526ac3adc6c0e29e2882f31e9dc56e8f",
+          "input_sha256": "51ae710cb7722870b32b7b87c58fceeb24ef9b716c2bd34e27f7afe5c4cb44a1"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p48s_distributed_femm_validation",
+      "phase": "C",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p48s_distributed_femm_validation.json",
+          "fixture_sha256": "0020b4a8084c251f6b17cbc6fb1f4d3293bbc057502b846da0f10481689e5090",
+          "input_sha256": "24a803fcea4ef95c95411b33863d6abe0af7e328786f8d6cc6c26560bf870c34"
+        }
+      ]
+    },
+    {
+      "id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "jobs": [
+        {
+          "stage": "native-standard",
+          "fixture": "benchmarks/abcd-v1.4/fixtures/bldc_spm_14p12s_high_pole_native-standard.json",
+          "fixture_sha256": "3eb405359dbf6503ea6d29eaf41d595681ae5a7b4a70883aa202df1fd3df6388",
+          "input_sha256": "df75639f85c3a4680f5d69c873b3863f60d805716d93f1a9964d8d7c6df82174"
+        },
+        {
+          "stage": "native-fine",
+          "fixture": "benchmarks/abcd-v1.4/fixtures/bldc_spm_14p12s_high_pole_native-fine.json",
+          "fixture_sha256": "d50980ab4aac15eb065fb09632a0f56988cda12a01d4c5a225cf13f02377f12c",
+          "input_sha256": "5ef1e12aa37b5c4abf82eb24d63107276d5e88efd92de1a3f8de9271842d8267"
+        },
+        {
+          "stage": "analytical",
+          "fixture": "benchmarks/abcd-v1.4/fixtures/bldc_spm_14p12s_high_pole_analytical.json",
+          "fixture_sha256": "c7eaaaf1081d62fc92fdbcf85bd4a741437dbf2f447bfacafa3d29f571f38045",
+          "input_sha256": "435728f4540260fdf56d1caea25358e229c98588c4b7c7076e009637382d51cc"
+        }
+      ],
+      "protocol": "benchmarks/abcd-v1.3/protocols/spm_14p12s_high_pole.json",
+      "protocol_sha256": "d47aca42dc38c7d921ed88bf355163ab5a894920780058875f6b0d139cc1982b"
+    },
+    {
+      "id": "spm_4p12s_small",
+      "phase": "D",
+      "jobs": [
+        {
+          "stage": "native-standard",
+          "fixture": "benchmarks/abcd-v1.4/fixtures/bldc_spm_4p12s_small_native-standard.json",
+          "fixture_sha256": "cc111eda6bc19623de00e8a1da66ba396db3d6440126947715b06511c9510357",
+          "input_sha256": "9a68760e853aa00d0659a8a0dd636f0ec91804facc66cb18275b10e29388d65a"
+        },
+        {
+          "stage": "native-fine",
+          "fixture": "benchmarks/abcd-v1.4/fixtures/bldc_spm_4p12s_small_native-fine.json",
+          "fixture_sha256": "0cfcd598575534929f95f5e468efee92531b158d98e8db34aea82c548ef1efdc",
+          "input_sha256": "c455097f01f062669fba3efe1161edd1574278ba6366e4e1f3fa8e8120ef065f"
+        },
+        {
+          "stage": "analytical",
+          "fixture": "benchmarks/abcd-v1.4/fixtures/bldc_spm_4p12s_small_analytical.json",
+          "fixture_sha256": "da8e001617723fbf8bc27ed803b695e6739e49efb6e191057826aff8316e6166",
+          "input_sha256": "44418c973bcf0476b004e88088cf110484ce96d0f101d5b2551b0681aa92ebb1"
+        }
+      ],
+      "protocol": "benchmarks/abcd-v1.3/protocols/spm_4p12s_small.json",
+      "protocol_sha256": "30c164bfb9fac53ffce1eef07f6c68147f1935f8ab59d2f74c004edd79a0bef4"
+    },
+    {
+      "id": "spm_8p12s_reference",
+      "phase": "D",
+      "jobs": [
+        {
+          "stage": "native-standard",
+          "fixture": "benchmarks/abcd-v1.4/fixtures/bldc_spm_8p12s_reference_native-standard.json",
+          "fixture_sha256": "624b5b2faa387e4965da68cc337c9912da6137e1fc8712934b3f19d49cc7e457",
+          "input_sha256": "0e44493ad60cc9f68c51fc3b272b41e0250d4aaeb13e37e6f90f47e926b560a8"
+        },
+        {
+          "stage": "native-fine",
+          "fixture": "benchmarks/abcd-v1.4/fixtures/bldc_spm_8p12s_reference_native-fine.json",
+          "fixture_sha256": "14a40c1b8b65602bf051c3c71807f39efd516c734a151d3b209d8158aac7f178",
+          "input_sha256": "630601690ea52575c0af8494f938c25554e073246243a0b3d85a4740127cdd42"
+        },
+        {
+          "stage": "analytical",
+          "fixture": "benchmarks/abcd-v1.4/fixtures/bldc_spm_8p12s_reference_analytical.json",
+          "fixture_sha256": "d25b5768678f37eca4aa1291dbd479f86cd19b0d4649a21d177ac86eab43e561",
+          "input_sha256": "04ca2f8dd8750747a7c9b2f83709d1e4cb290782239de04da8b37533081ec47a"
+        }
+      ],
+      "protocol": "benchmarks/abcd-v1.3/protocols/spm_8p12s_reference.json",
+      "protocol_sha256": "56d8421901292e036197f7b7da17c131938746996241edacec46a457d821182e"
+    },
+    {
+      "id": "spm_8p12s_example_shoed",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.5/fixtures/spm_8p12s_example_shoed.json",
+          "fixture_sha256": "dbe538187d5280d171c224b12dc25612fb25c35c9014b201564126715dc4b6c4",
+          "input_sha256": "b8a5e625d85b05709ff0645fb2ec138468ef5d3062acf9dfdbdb3b4d28ff48d0"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__magnet_60C",
+      "phase": "A",
+      "magnet_temperature_C": 60.0,
+      "magnet_remanence_T": 1.25188,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__magnet_60C.json",
+          "fixture_sha256": "5633ed8c7644bf4e71c557b03afce86193313bc1e20566bb61d503018669a263",
+          "input_sha256": "677a4fff043c127b76626f3570549c8a37515d349711217dd4bed411b52b2e40"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__magnet_100C",
+      "phase": "A",
+      "magnet_temperature_C": 100.0,
+      "magnet_remanence_T": 1.18876,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__magnet_100C.json",
+          "fixture_sha256": "77732c1868c7743a8d8711aea09457d103e45301019b74e3a1495f6c36598d78",
+          "input_sha256": "8f772ea96701a77be5adf062c6e327e96831ffe749c4aebaf497b28ebdb3c1d3"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__dq_I20_g0",
+      "phase": "A",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I20_g0.json",
+          "fixture_sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a",
+          "input_sha256": "0fad5d88fdbc263496008238a1ac95bf9644cafa212164364ac400a880bfb189"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__dq_I20_g30",
+      "phase": "A",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I20_g30.json",
+          "fixture_sha256": "040ea7d2cf367ab0fa9e8fdba9a83df22dd88e548597a15c939358c709cecd38",
+          "input_sha256": "48568366c51d57602cef241ec9072147e6b49ff8cf539584fb19e7d74db778e9"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__dq_I20_g60",
+      "phase": "A",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I20_g60.json",
+          "fixture_sha256": "22bfd644feb317039dadbf6e1736f6c0c28f8641689c9571dcea3a9aba62e027",
+          "input_sha256": "769439f95dc2d26f1e78734ae540b655bb25e2fb0d4a9db85ff68c295fbba274"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__dq_I40_g0",
+      "phase": "A",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I40_g0.json",
+          "fixture_sha256": "fec0ce01476183e4e5b237a0fb3bc66676f7ac2582ca83f7c4c50bd96fb3ebd6",
+          "input_sha256": "64ab57a140764695bef6e7129ad9489bd26e794ef06362f14edcc62b594152eb"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__dq_I40_g30",
+      "phase": "A",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I40_g30.json",
+          "fixture_sha256": "7de6f4d389d823ea026d1843f778add1f3c28a50d3652a200952286818b4e270",
+          "input_sha256": "83f391212f97244853aa3165d1f29e69832d925331c02b106541e1929b53a0ba"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__dq_I40_g60",
+      "phase": "A",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.6/fixtures/spm_8p12s_concentrated__dq_I40_g60.json",
+          "fixture_sha256": "816252bbfc56ca2b917e576a892a21a10ca7a25c2044f2e51af08270661b1287",
+          "input_sha256": "0a463144acd13e9e18861e898bbc0b82430c5ca36f865e9fe9b1ebf39f69c9d2"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__magnet_60C",
+      "phase": "B",
+      "magnet_temperature_C": 60.0,
+      "magnet_remanence_T": 1.25188,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__magnet_60C.json",
+          "fixture_sha256": "afe7c558fc411f00408461add8a9b88b7eed38bff4338234e0188246abc6f9de",
+          "input_sha256": "3d0183495afaa3319a722e2248f85026373c7dec25af8a01adaee018c1a55eb0"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__magnet_100C",
+      "phase": "B",
+      "magnet_temperature_C": 100.0,
+      "magnet_remanence_T": 1.18876,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__magnet_100C.json",
+          "fixture_sha256": "d6125a01411ade4faf0f12fea6dd53ab0938f4ff0c2efc6f5ebb7cb7c2dbf2a3",
+          "input_sha256": "6ea9226ad5f4ee3abf9e2780d8d505d25346cf2a960b2f0313b22041ebd66495"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__dq_I50_g0",
+      "phase": "B",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g0.json",
+          "fixture_sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf",
+          "input_sha256": "131abdcb3b9e19371b7f1b53e2b6e462c31a876a8b7540b2566d772a20aaa74b"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__dq_I50_g30",
+      "phase": "B",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g30.json",
+          "fixture_sha256": "5fed79cac72dd79b71355b60cd195a2f58d00470c36fdad314a236870c4abf2b",
+          "input_sha256": "21ab87a94aa33e1b8c517badaab2f873f0816374124e5df18970e10d1fb41295"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__dq_I50_g60",
+      "phase": "B",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g60.json",
+          "fixture_sha256": "e2bc18964582355fa7c838029693339374bb45456d2e21da26b76279cbd717cb",
+          "input_sha256": "6d7e1a9bf9771551e5046a51f8eb0f4ae7e00a0cf661b6e2950b836f2638cc80"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__dq_I100_g0",
+      "phase": "B",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g0.json",
+          "fixture_sha256": "13946ec4812653453576460ffaaa556e1c0712dc60ea5bcf7527255ead98bea9",
+          "input_sha256": "c93f4ad0da4e41777f98e18613125567897959b3fa583a6e5261c8c57555993e"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__dq_I100_g30",
+      "phase": "B",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g30.json",
+          "fixture_sha256": "8fd935a4b81d5aa3bbe9196151a84c9d745c268ea90702a4b92e07a76db62f47",
+          "input_sha256": "1cbcb52c78d77d953388b9c251b73d8a72a82eeb569eb7e1a2b588c376fe0835"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__dq_I100_g60",
+      "phase": "B",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.6/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g60.json",
+          "fixture_sha256": "87b7306d1735934c0cb3c30c1fa0b970af2947efe1d2446538f41159371adbf0",
+          "input_sha256": "1bdf2876d8b912f97453635385ad65ce5796b804f3054682a103679def3faa52"
+        }
+      ]
+    }
+  ],
+  "extension": {
+    "prior_protocol": "1.4.0",
+    "archived_suite": "benchmarks/abcd-v1.4/benchmark_spec.json",
+    "archived_suite_sha256": "6050fdcf3b51c8ba8ee7f5291adb5b8e0ee60339e7d1a4491b6d2d58af3fa8aa",
+    "added_cases": [
+      "spm_8p12s_example_shoed",
+      "spm_8p12s_concentrated__magnet_60C",
+      "spm_8p12s_concentrated__magnet_100C",
+      "spm_8p12s_concentrated__dq_I20_g0",
+      "spm_8p12s_concentrated__dq_I20_g30",
+      "spm_8p12s_concentrated__dq_I20_g60",
+      "spm_8p12s_concentrated__dq_I40_g0",
+      "spm_8p12s_concentrated__dq_I40_g30",
+      "spm_8p12s_concentrated__dq_I40_g60",
+      "ipm_flat_8p12s_fsae_contract__magnet_60C",
+      "ipm_flat_8p12s_fsae_contract__magnet_100C",
+      "ipm_flat_8p12s_fsae_contract__dq_I50_g0",
+      "ipm_flat_8p12s_fsae_contract__dq_I50_g30",
+      "ipm_flat_8p12s_fsae_contract__dq_I50_g60",
+      "ipm_flat_8p12s_fsae_contract__dq_I100_g0",
+      "ipm_flat_8p12s_fsae_contract__dq_I100_g30",
+      "ipm_flat_8p12s_fsae_contract__dq_I100_g60"
+    ],
+    "unaffected_requests_references_and_gates": "unchanged",
+    "reason": "0.5.0 reference gates: the shoed example (from protocol 1.5.0), back-EMF and torque at two magnet temperatures, and loaded lambda_d/lambda_q at map points for one SPM and one flat IPM.",
+    "reference_bundle": "Needs a protocol-1.6.0 FEMM bundle with all cases at one adapter commit; see benchmarks/abcd-v1.6/FEMM-REQUEST.md."
+  },
+  "validation_change": {
+    "current_angle_convention": "winding-phase-a-v1",
+    "post_hoc_registration": true,
+    "physical_requests_changed": false,
+    "grids_changed": false,
+    "numerical_limits_changed": false,
+    "historical_reports_changed": false,
+    "basis_protocol_version": "1.1.0",
+    "note": "Protocol 1.2 remains the separate experimental Prius extension; 1.3 keeps the measured 1.1 matrix."
+  },
+  "request_change": {
+    "max_nonlinear_iterations": {
+      "before": 100,
+      "after": 200
+    },
+    "requests": [
+      {
+        "case_id": "spm_14p12s_high_pole",
+        "stage": "native-standard"
+      },
+      {
+        "case_id": "spm_14p12s_high_pole",
+        "stage": "native-fine"
+      },
+      {
+        "case_id": "spm_14p12s_high_pole",
+        "stage": "analytical"
+      },
+      {
+        "case_id": "spm_4p12s_small",
+        "stage": "native-standard"
+      },
+      {
+        "case_id": "spm_4p12s_small",
+        "stage": "native-fine"
+      },
+      {
+        "case_id": "spm_4p12s_small",
+        "stage": "analytical"
+      },
+      {
+        "case_id": "spm_8p12s_reference",
+        "stage": "native-standard"
+      },
+      {
+        "case_id": "spm_8p12s_reference",
+        "stage": "native-fine"
+      },
+      {
+        "case_id": "spm_8p12s_reference",
+        "stage": "analytical"
+      }
+    ],
+    "basis": "Measured stricter Custom/Picard convergence needs 100-109 iterations. Cap 200 provides headroom while retaining the 0.001 raw mismatch tolerance.",
+    "qualification_status": "Targeted checks only; full 0.5.0 freeze qualification remains required."
+  }
+}

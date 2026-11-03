@@ -1,0 +1,104 @@
+{
+  "schema": "coilem.v050_evidence_index/v1",
+  "candidate": "88aae101fd487795e7fe5300737679f4133790fd",
+  "release_status": "NOT_RELEASED",
+  "release_qualification": "PASS",
+  "windows": {
+    "status": "COMPLETE",
+    "protocol_version": "1.6.0",
+    "evidence": "benchmarks/windows-v050-20261102-88aae101/README.md",
+    "native_jobs": 52,
+    "case_counts": {
+      "PASS": 46,
+      "UNSUPPORTED": 1
+    },
+    "gate_counts": {
+      "PASS": 336
+    },
+    "record": "benchmarks/records/windows-x86_64.json",
+    "active_record_replaced": true,
+    "artifact_manifest_sha256": "8f26bbbbbd62f7bf3cd26ba647b5f53674b8078dac4b67a4dea466fe191ded3a",
+    "reviewed_comparison": "benchmarks/candidate-qualification-20261103/windows/report/benchmark_summary.json"
+  },
+  "reference": {
+    "status": "REVIEWED_FOR_REGISTERED_PARITY",
+    "records": 46,
+    "adapter_commit": "faced858937e93740ddf7f6f3583a3ad5ec35646",
+    "bundle_sha256": "756ddf1e23417e502c6720e11010199bbf25692bc348b019b1b78c620ec1d4d8",
+    "manifest_sha256": "f3e1e525ea622285778becb126f4e909e72f3830a14292a23a26e0a081fc8c2e",
+    "active_bundle_replaced": true,
+    "review": "benchmarks/reference-baselines/protocol16-reviewed-20261103/review.json",
+    "original_bundle_sha256": "c96b5e7948aea74bcf7943d584db85b874a2d4e887e0637c84e59e98c8dfd31a"
+  },
+  "macos": {
+    "status": "COMPLETE",
+    "protocol_version": "1.6.0",
+    "evidence": "benchmarks/candidate-qualification-20261103/macos/report/benchmark_summary.json",
+    "native_fields": "benchmarks/macos-v050-20261103-88aae101/native/run_manifest.json",
+    "native_jobs": 52,
+    "case_counts": {
+      "PASS": 46,
+      "UNSUPPORTED": 1
+    },
+    "gate_counts": {
+      "PASS": 336
+    },
+    "record": "benchmarks/records/macos-arm64.json",
+    "active_record_replaced": true,
+    "repeat_collection": "Two clean collections at the candidate; all 36,676 numeric result fields identical.",
+    "same_candidate_qualification": true,
+    "historical_comparison": {
+      "status": "CANDIDATE_COLLECTION_PENDING",
+      "compared_jobs": 52,
+      "historical_sources": {
+        "report": {
+          "commit": "5b7cad88c43c0ac7ade9265988f71b6f2ba2884f",
+          "sha256": "6b26dc4963a30030bf15ebcce850bbf7f7aee75134bbf9d06d18a90c19c54e7a"
+        },
+        "protocol16_table": {
+          "commit": "f6c9fbb82017ee30e36fd403ce9617d2dad88f0b",
+          "sha256": "b79c6218fd21f2236d96acfa8c979a23d95639867d4fdd351d05ba1c41e855c3"
+        }
+      },
+      "out_of_tolerance": [],
+      "qualification": "Historical numerical comparison across documented pins; not a same-candidate platform qualification. New-case Mac values are rounded; their full raw results are not present on this host.",
+      "same_candidate_qualification": false,
+      "active_record_replaced": false
+    }
+  },
+  "prius": {
+    "status": "COMPLETE",
+    "candidate_source_reconciliation": "EXACT_CANDIDATE_COLLECTION",
+    "evidence": "benchmarks/candidate-qualification-20261103/prius/README.md",
+    "audit": "benchmarks/candidate-qualification-20261103/prius/analysis-provenance.json",
+    "candidate": "88aae101fd487795e7fe5300737679f4133790fd",
+    "report": "benchmarks/candidate-qualification-20261103/prius/app-results.json",
+    "jobs": 17,
+    "field_reports": 568,
+    "software_checks": {
+      "PASS": 10
+    },
+    "hardware_qualification": false,
+    "analysis_code_bound_to_before_field_snapshot": true,
+    "report_sha256": "8299764f272ed57c778a1416d21c628a795bdfe0f9b4b0d2d2f4363e51678eac",
+    "historical_audit": "docs/PRIUS_CONVERGENCE_AUDIT_20261030.md"
+  },
+  "vshape": {
+    "qualification_status": "experimental",
+    "mixed_version_change_documented": true,
+    "refinement_control": "PASS",
+    "spatial_convergence_claimed": false
+  },
+  "remaining": [
+    "same-candidate Mac qualification and active platform record",
+    "final candidate qualification checks",
+    "final wheel and TestPyPI install acceptance",
+    "owner release decision"
+  ],
+  "vm_replay_required": false,
+  "review_and_qualification": "benchmarks/candidate-qualification-20261103/README.md",
+  "owner_decisions": {
+    "file": "benchmarks/v0.5.0/owner-decisions.json",
+    "sha256": "eaeaa1818502a6fe14fee109ae7d059ccd41d7ebccbbf642497acccdcb1f4874"
+  }
+}

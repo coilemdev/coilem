@@ -1,9 +1,9 @@
-"""Qualification status of a motor configuration under the FEMM v3 benchmark report.
+"""Qualification status under the reviewed protocol 1.6 parity report.
 
 docs/VALIDATION.md#qualification-status is the source: a combination of
 rotor, winding and excitation is qualified when every registered fixture for
 it passes its FEMM parity gates in QUALIFICATION_REPORT, which measured the
-current winding, current-angle, slot-layer and Precise mesh models at 5b6cb61.
+current winding, current-angle, slot-layer and Precise mesh models at 88aae101.
 Combinations the benchmark did not measure, or measured with failures, are
 experimental. The result travels with previews, solve validation and saved
 runs, so the app and its exports say what the docs say.
@@ -15,6 +15,13 @@ from fractions import Fraction
 from typing import Literal, TypedDict
 
 from backend.models import MotorConfig
+from backend.models.performance import (
+    DQ_FLUX_LINKAGE_QUALIFIED_REASON,
+    DQ_FLUX_LINKAGE_STATUS_REASON,
+    MAGNET_TEMPERATURE_QUALIFIED_REASON,
+    MAGNET_TEMPERATURE_STATUS_REASON,
+    OutputStatus,
+)
 from backend.public_policy import EXPERIMENTAL_IPM_TOPOLOGIES, experimental_rotors_enabled
 from backend.winding_utils import concentrated_uses_tooth_coils
 
@@ -23,14 +30,27 @@ QualificationStatus = Literal["qualified", "experimental", "unsupported"]
 # The basis, reasons and caveats travel in public preview, solve and saved-run
 # payloads, which must not name the reference solver or thermal analysis
 # (tools/smoke_public_runtime.py); docs/VALIDATION.md names the report in full.
-QUALIFICATION_BASIS = "coilEM benchmark report, measured at 5b6cb61"
+QUALIFICATION_BASIS = "coilEM benchmark report, measured at 88aae101"
 # Repository path of the report behind every reason below. tests/test_qualification.py
 # checks the reasons against its outcomes and its sources against the current code.
-QUALIFICATION_REPORT = "benchmarks/windows-prius-requal-20261018/benchmark_summary.json"
+QUALIFICATION_REPORT = "benchmarks/candidate-qualification-20261103/windows/report/benchmark_summary.json"
+PRIUS_QUALIFICATION_REPORT = "benchmarks/candidate-qualification-20261103/prius/app-results.json"
 QUALIFICATION_REFERENCE = "https://github.com/coilemdev/coilem/blob/main/docs/VALIDATION.md#qualification-status"
 _QUALIFIED_STEEL = "M350-50A"
 _QUALIFIED_IPM = "flat_buried"
 _EXPERIMENTAL_IPM = "v_shape"
+
+
+def evidence_matches_runtime() -> bool:
+    """A historical label cannot qualify changed or unverifiable installed physics."""
+    from backend.benchmark_suite.record import check_physics
+    from backend.resources import BENCHMARK_RECORDS_DIR, read_data_json
+
+    try:
+        record = read_data_json(f"{BENCHMARK_RECORDS_DIR}/windows-x86_64.json")
+        return record["measured_commit"][:7] in QUALIFICATION_BASIS and check_physics(record)["status"] == "MATCH"
+    except (OSError, ValueError, KeyError, TypeError):
+        return False
 
 
 class Qualification(TypedDict):
@@ -94,14 +114,15 @@ def _combination(config: MotorConfig) -> tuple[QualificationStatus, str]:
         if rotor.ipm_topology == _EXPERIMENTAL_IPM:
             return (
                 "experimental",
-                "V-shape IPM: 5 of 6 benchmark fixtures pass; the baseline's peak Back-EMF is YELLOW (14.8% from the reference).",
+                "V-shape IPM: all 6 benchmark fixtures pass, but the version comparison shows increased "
+                "fundamental Back-EMF error; accuracy remains experimental.",
             )
-        return "qualified", "Flat-buried IPM, single-layer concentrated winding, sinusoidal current: all 6 benchmark fixtures pass."
+        return "qualified", "Flat-buried IPM, single-layer concentrated winding, sinusoidal current: all 14 benchmark fixtures pass."
 
     if winding.type == "concentrated":
         if six_step:
             return "qualified", "SPM, single-layer concentrated winding, ideal six-step: all 3 benchmark fixtures pass (42 of 42 gates)."
-        return "qualified", "SPM, single-layer concentrated winding, sinusoidal current: all 10 benchmark operating points pass."
+        return "qualified", "SPM, single-layer concentrated winding, sinusoidal current: all 19 benchmark operating points pass."
     if six_step:
         return "experimental", "SPM with distributed windings under ideal six-step excitation was not measured by the benchmark."
     if winding.layers == 1:
@@ -133,4 +154,42 @@ def classify_qualification(config: MotorConfig) -> Qualification:
         status, reason = "experimental", f"Custom steel: the benchmark qualified only the bundled {_QUALIFIED_STEEL} curve."
     if status == "qualified" and config.solve_params is not None and config.solve_params.mesh_build == "fast":
         status, reason = "experimental", "Fast mesh build: the benchmark measured meshes built with Precise node placement."
+    if status == "qualified" and not evidence_matches_runtime():
+        status, reason = "experimental", (
+            "This build's physics do not match the measured benchmark basis. "
+            "Candidate qualification is pending; the historical report does not qualify this build."
+        )
     return _result(status, reason, _caveats(config) if status != "unsupported" else [])
+
+
+# Protocol 1.6.0 adds reference gates for two outputs of a qualified design
+# (docs/VALIDATION.md#050-performance-outputs). Each is qualified only inside
+# what those gates measured; Ld and Lq stay experimental everywhere.
+_DQ_CURRENT_ANGLE_RANGE_DEG = (0.0, 60.0)
+_MAGNET_TEMPERATURE_RANGE_C = (20.0, 100.0)
+
+
+def dq_flux_linkage_status(config: MotorConfig) -> tuple[OutputStatus, str]:
+    """Loaded λd and λq: qualified for a qualified single-layer concentrated design under sinusoidal current at γ 0–60°."""
+
+    solve_params = config.solve_params
+    low, high = _DQ_CURRENT_ANGLE_RANGE_DEG
+    if (
+        classify_qualification(config)["status"] == "qualified"
+        and config.winding.type == "concentrated"
+        and config.winding.layers == 1
+        and (solve_params is None or solve_params.excitation_mode == "sinusoidal")
+        and low <= (solve_params.current_angle_deg if solve_params is not None else 0.0) <= high
+    ):
+        return "qualified", DQ_FLUX_LINKAGE_QUALIFIED_REASON
+    return "experimental", DQ_FLUX_LINKAGE_STATUS_REASON
+
+
+def magnet_temperature_status(config: MotorConfig) -> tuple[OutputStatus, str]:
+    """Magnet derating: qualified for a qualified design from the catalogue's 20 °C to 100 °C."""
+
+    temperature = config.solve_params.magnet_temperature_C if config.solve_params is not None else None
+    low, high = _MAGNET_TEMPERATURE_RANGE_C
+    if classify_qualification(config)["status"] == "qualified" and temperature is not None and low <= temperature <= high:
+        return "qualified", MAGNET_TEMPERATURE_QUALIFIED_REASON
+    return "experimental", MAGNET_TEMPERATURE_STATUS_REASON

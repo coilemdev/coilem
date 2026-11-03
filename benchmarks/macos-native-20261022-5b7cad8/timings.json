@@ -1,0 +1,258 @@
+{
+ "schema": "coilem.native_timings/v1",
+ "note": "Job wall time from the run manifest. ipm_vshape_8p12s_deep_apex_high_output_v1 includes about 3.5 h of system sleep (the Mac slept with its lid closed on battery); its solver recorded 350.9 s.",
+ "jobs": [
+  {
+   "case_id": "spm_4p12s_simple__baseline",
+   "phase": "A",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 46.2
+  },
+  {
+   "case_id": "spm_4p12s_simple__high_current",
+   "phase": "A",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 38.9
+  },
+  {
+   "case_id": "spm_4p12s_simple__tight_airgap",
+   "phase": "A",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 28.7
+  },
+  {
+   "case_id": "spm_4p12s_simple_noload__baseline",
+   "phase": "A",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 47.2
+  },
+  {
+   "case_id": "spm_4p12s_simple_noload__high_current",
+   "phase": "A",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 46.5
+  },
+  {
+   "case_id": "spm_4p12s_simple_noload__tight_airgap",
+   "phase": "A",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 33.9
+  },
+  {
+   "case_id": "spm_8p12s_concentrated__baseline",
+   "phase": "A",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 85.2
+  },
+  {
+   "case_id": "spm_8p12s_concentrated__high_current",
+   "phase": "A",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 77.9
+  },
+  {
+   "case_id": "spm_8p12s_concentrated__tight_airgap",
+   "phase": "A",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 87.4
+  },
+  {
+   "case_id": "spm_8p12s_reference_angle30__baseline",
+   "phase": "A",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 78.5
+  },
+  {
+   "case_id": "ipm_flat_12s10p_fscw_contract",
+   "phase": "B",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 151.8
+  },
+  {
+   "case_id": "ipm_flat_24s16p_industrial_contract",
+   "phase": "B",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 151.1
+  },
+  {
+   "case_id": "ipm_flat_4p12s_micro_contract",
+   "phase": "B",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 109.6
+  },
+  {
+   "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+   "phase": "B",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 240.8
+  },
+  {
+   "case_id": "ipm_flat_8p12s_fsae_contract",
+   "phase": "B",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 221.3
+  },
+  {
+   "case_id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+   "phase": "B",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 234.8
+  },
+  {
+   "case_id": "ipm_vshape_8p12s_baseline_contract",
+   "phase": "B",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 260.0
+  },
+  {
+   "case_id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+   "phase": "B",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 13222.6
+  },
+  {
+   "case_id": "ipm_vshape_8p12s_narrow_angle_contract",
+   "phase": "B",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 179.4
+  },
+  {
+   "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+   "phase": "B",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 184.5
+  },
+  {
+   "case_id": "ipm_vshape_8p12s_thin_bridge_contract",
+   "phase": "B",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 166.7
+  },
+  {
+   "case_id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+   "phase": "B",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 185.3
+  },
+  {
+   "case_id": "ornl_prius_2004_ipm",
+   "phase": "C",
+   "stage": "native",
+   "status": "UNSUPPORTED",
+   "wall_s": null
+  },
+  {
+   "case_id": "spm_12p36s_distributed_femm_validation",
+   "phase": "C",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 91.9
+  },
+  {
+   "case_id": "spm_8p24s_distributed_femm_validation",
+   "phase": "C",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 93.2
+  },
+  {
+   "case_id": "spm_8p48s_chorded_5_6",
+   "phase": "C",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 256.6
+  },
+  {
+   "case_id": "spm_8p48s_distributed_femm_validation",
+   "phase": "C",
+   "stage": "native",
+   "status": "COMPLETE",
+   "wall_s": 94.3
+  },
+  {
+   "case_id": "spm_14p12s_high_pole",
+   "phase": "D",
+   "stage": "native-standard",
+   "status": "COMPLETE",
+   "wall_s": 76.9
+  },
+  {
+   "case_id": "spm_14p12s_high_pole",
+   "phase": "D",
+   "stage": "native-fine",
+   "status": "COMPLETE",
+   "wall_s": 158.1
+  },
+  {
+   "case_id": "spm_14p12s_high_pole",
+   "phase": "D",
+   "stage": "analytical",
+   "status": "COMPLETE",
+   "wall_s": 121.9
+  },
+  {
+   "case_id": "spm_4p12s_small",
+   "phase": "D",
+   "stage": "native-standard",
+   "status": "COMPLETE",
+   "wall_s": 30.4
+  },
+  {
+   "case_id": "spm_4p12s_small",
+   "phase": "D",
+   "stage": "native-fine",
+   "status": "COMPLETE",
+   "wall_s": 60.0
+  },
+  {
+   "case_id": "spm_4p12s_small",
+   "phase": "D",
+   "stage": "analytical",
+   "status": "COMPLETE",
+   "wall_s": 91.8
+  },
+  {
+   "case_id": "spm_8p12s_reference",
+   "phase": "D",
+   "stage": "native-standard",
+   "status": "COMPLETE",
+   "wall_s": 37.9
+  },
+  {
+   "case_id": "spm_8p12s_reference",
+   "phase": "D",
+   "stage": "native-fine",
+   "status": "COMPLETE",
+   "wall_s": 74.5
+  },
+  {
+   "case_id": "spm_8p12s_reference",
+   "phase": "D",
+   "stage": "analytical",
+   "status": "COMPLETE",
+   "wall_s": 111.5
+  }
+ ]
+}

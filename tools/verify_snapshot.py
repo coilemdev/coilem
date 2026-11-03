@@ -52,11 +52,15 @@ FORBIDDEN_PARTS = {
 }
 FORBIDDEN_SUFFIXES = {".ans", ".fem", ".log", ".pem", ".key"}
 ALLOWED_DATA_FILES = {
+    "benchmarks/candidate-qualification-20261103/windows/report/benchmark_results.csv",
+    "benchmarks/candidate-qualification-20261103/macos/report/benchmark_results.csv",
+    "benchmarks/windows-v050-20261102-88aae101/comparison/report/benchmark_results.csv",
     "benchmarks/windows-prius-requal-20261018/benchmark_results.csv",
     "materials/electrical-steel/M350-50A.csv",
     "frontend/public/materials/sample-custom-steel.csv",
     "benchmarks/performance-112/native-20261016/benchmark_results.csv",
     "benchmarks/windows-native-20261018-f390b25/benchmark_results.csv",
+    "benchmarks/macos-native-20261022-5b7cad8/benchmark_results.csv",
 }
 # Single-digit sector/surface symbols (S1-S9) are engineering data. Story IDs
 # have multiple digits or a task suffix; explicit sprint/path references also fail.
@@ -88,6 +92,7 @@ ALLOWED_BINARY_SIGNATURES = {
     "benchmarks/windows-process-pools-20261012-02fa24b/coilem_benchmark_report.pdf": b"%PDF-",
     "benchmarks/macos-rc-20261013-04f87a5/coilem_benchmark_report.pdf": b"%PDF-",
     "benchmarks/macos-rc-20261013-1fac3a1/coilem_benchmark_report.pdf": b"%PDF-",
+    "benchmarks/macos-native-20261022-5b7cad8/coilem_benchmark_report.pdf": b"%PDF-",
 }
 
 
@@ -307,7 +312,7 @@ def main() -> int:
         "@types/three": "0.183.1",
         "@vitejs/plugin-react": "4.7.0",
         "typescript": "5.6.3",
-        "vite": "6.4.3",
+        "vite": "6.4.4",
     }
     if package.get("devDependencies") != expected_frontend_dev:
         failures.append(f"unexpected frontend development dependencies: {package.get('devDependencies')}")
@@ -322,7 +327,7 @@ def main() -> int:
         "meshio==5.3.5",
         "numpy==2.4.6",
         "numpy==2.5.4",
-        "pillow==12.3.0",
+        "pillow==13.0.0",
         "pydantic==2.13.4",
         "pydantic==2.14.1",
         "pygments==2.20.0",

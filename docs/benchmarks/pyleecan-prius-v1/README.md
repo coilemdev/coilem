@@ -11,13 +11,70 @@ The measured development application was 0.3.1 with Magneto2D 0.3.3. The source
 is now being prepared as 0.4.0; the measurements below keep their original identities. The final v0.4.0 candidate must rerun the selected
 benchmark after its code and numerical settings are frozen.
 
-## Fresh public-app results
+## v0.5.0 Windows candidate publication
+
+The published [registration](app-registration.json), [report](app-results.md),
+[numerical results](app-results.json) and [plot](app-results.svg) now contain the
+complete clean Windows run at **`88aae101fd487795e7fe5300737679f4133790fd`**:
+**17 jobs, 568 audited field reports, 10/10 software checks passing**.
+The v0.4.0 development publication remains unchanged at
+[`8f04d20`](https://github.com/coilemdev/coilem/tree/8f04d20620d8c20e2673b8d1e86834df38862994/docs/benchmarks/pyleecan-prius-v1).
+This publication preserves **`qualified: false`**; software reproduction and
+release/hardware qualification remain separate.
+
+Pins: **Python 3.12.15** with the locked runtime; **rustc 1.95.0
+(59807616e 2026-04-14)**; **cargo 1.95.0 (f2d3ce0bd 2026-03-21)**;
+**Windows 11 Home 64-bit, 10.0.26200, build 26200** on a physical AMD Ryzen 7
+7700 (8 cores / 16 logical processors, approximately 64 GB RAM).
+The solver binary SHA-256 remains
+`01218ee2422510660d7afad37bcb8d97605e4c54ecdbd87ed94b7e17c00a090f`.
+Rust/cargo version commands were captured at handoff; the measured binary is
+unchanged and the cached compiler version agrees. Cargo's version was not
+separately logged during collection. The measurement venv was unchanged;
+plots were generated in a separate venv.
+
+Collection: **2026-11-03 02:04:04.003519–03:33:20.670045 UTC**
+(November 2, **21:04:04–22:33:20 EST**), **89m16.667s** including interruptions.
+The initial invocation began at 02:04:00.537136 UTC. Tutorial attempt 1 was
+interrupted; resume began at 02:26:28.160892 UTC and detected that interruption
+at 02:26:28.946516 UTC. Tutorial attempt 2 completed. Curve-120-16 attempt 1,
+started at 02:57:46.427006 UTC, was also interrupted. The final resume began
+at 03:03:10.741187 UTC, detected the interruption at 03:03:47.026236 UTC and
+completed curve attempt 2 and the remaining jobs (exit 0; supervisor finalized
+at 03:33:25.414194 UTC). No solver exception or traceback was captured for
+either interruption; causes and exact process-end times are unknown.
+Interruption timestamps in registration are detection times on resume.
+Every attempt remains locally retained. The supervisor verified this HEAD
+and empty `git status --porcelain` before every invocation and after final
+completion; original stdout transcripts were not separately saved.
+
+The report retains **`analysis_policy_frozen_at_collection: false`** and its
+original analysis-revision sentence exactly. Separately, registration binds
+the before-field `snapshot-manifest.json` SHA-256
+`030e04373a88fcf1dd6d02bd6d536e927846b26cd55901c44d3420441258057b`;
+its reporter entry equals the actual analysis runner SHA-256
+`ee5277136d93ecd506aeb802af331e3c3871927d1d4064eacdbce7b918efccba`.
+This supplemental hash equality does not change the original provenance flag,
+report or verdict. Frozen grading inputs remain identified in registration.
+The strict RHS-normalized residual limit stays **<1e-8** for the recorded final
+continuation stage; intermediate RHS residuals are not retained.
+
+Loaded mean is **353.950530 Nm** (−0.2825% versus retained FEMM); tutorial AB
+sampled RMS is **107.513838 V** (−0.0412% versus retained tutorial).
+All thirteen curve points and discrepancies remain visible. The report JSON
+is byte-identical to the reviewed handoff. Raw fields and the **5,155,795,435-byte
+(5.16 GB)** archive are excluded from Git and retained on this Windows machine
+**until v0.5.0 is tagged**. The archive contains all 4,179 files, including
+interrupted attempts; its verified ZIP64 SHA-256 is
+`b053375bccf672968404ba93a060fdb4fd7ac245c3a8e77e95e04c35383bbcd6`.
+
+## Historical development results (v0.4.0 publication)
 
 The complete Windows run measured clean commit
 `d993d7674354cc723ad107e7a5452477c5f660ea`: **17 jobs, 568 actual field reports,
-10/10 software checks passing**. [Full results and all thirteen torque points](app-results.md),
-[waveforms, source identities and artifact hashes](app-results.json), and the
-[original complete registration](app-registration.json) retain the measured conditions.
+10/10 software checks passing**. [Historical results and all thirteen torque points](https://github.com/coilemdev/coilem/blob/8f04d20620d8c20e2673b8d1e86834df38862994/docs/benchmarks/pyleecan-prius-v1/app-results.md),
+[waveforms, source identities and artifact hashes](https://github.com/coilemdev/coilem/blob/8f04d20620d8c20e2673b8d1e86834df38862994/docs/benchmarks/pyleecan-prius-v1/app-results.json), and the
+[original complete registration](https://github.com/coilemdev/coilem/blob/8f04d20620d8c20e2673b8d1e86834df38862994/docs/benchmarks/pyleecan-prius-v1/app-registration.json) retain the measured conditions.
 
 | Measurement | Fresh app | Retained reference | Difference |
 | --- | ---: | ---: | ---: |
@@ -28,7 +85,7 @@ The complete Windows run measured clean commit
 | Maximum mean difference across all thirteen current angles | 2.228438 Nm | FEMM, same physical model | 0.6282% of FEMM peak |
 | Entire curve RMS difference from upstream transcription | 11.445109 Nm | All thirteen upstream values retained | No hardware verdict |
 
-![Complete tutorial waveform and loaded torque-angle comparison](app-results.svg)
+![Historical tutorial waveform and loaded torque-angle comparison](https://github.com/coilemdev/coilem/blob/8f04d20620d8c20e2673b8d1e86834df38862994/docs/benchmarks/pyleecan-prius-v1/app-results.svg)
 
 The independent 64-position control gives **353.951971 Nm** (+0.001441 Nm
 from Normal/32). Fine/32 gives **353.933789 Nm** (−0.016741 Nm), with **82,872**
@@ -131,6 +188,39 @@ designs saved from either reference case carry the source, copyright,
 conversion notice, affiliation statement and complete Apache-2.0 license in
 `reference_notice`. Older reference files gain this notice when saved again;
 operating-point experiments retain it.
+
+## Losses in the app
+
+The benchmark checks torque, back EMF and flux linkage only. The app's Losses
+card reports the Prius's losses as experimental estimates:
+
+- **Copper loss** uses the machine file's conductor, since the pinned design
+  sets no wire of its own: 13 strands of 0.912 mm round copper, 9 turns per
+  coil, one path, and the 19.366 mm straight overhang (`Lewout`). coilEM adds
+  its half-circle end turn to that overhang, giving 71.7 mOhm per phase at
+  20 °C. Pyleecan's own formula counts the straight overhang only and gives
+  35.95 mOhm; with the arcs removed, coilEM reproduces that value.
+- **Iron loss** uses the M400-50A grade-limit model described in
+  [MATERIALS.md](../../../MATERIALS.md#core-loss), because the imported B-H curve
+  is Pyleecan's M400-50A.
+
+Measured with the loaded case (250 A peak at Phi0 140°, 2,000 rpm, 32 positions
+over one electrical cycle; torque unchanged at 353.95 N·m):
+
+| Output | Value |
+| --- | ---: |
+| Phase resistance at 20 °C | 71.7 mOhm |
+| Copper loss | 6.72 kW |
+| Iron loss (hysteresis + eddy) | 612 W (274 W + 338 W) |
+| Share of iron loss above 1.5 T / above 1 kHz | 67 % / 4.6 % |
+| Efficiency, no mechanical loss | 90.9 % |
+
+Most of the iron loss comes from flux densities above 1.5 T, beyond the range
+the grade limits cover, so treat it as an order of magnitude. The reference
+draws its stator as one region, so the loss has no teeth and yoke split.
+Pyleecan's own Prius loss test (`test_FEMM_Loss_Prius`) is marked work in
+progress and skipped at this commit, so there is no Pyleecan loss value to
+compare against.
 
 ## Frozen numerical and output conventions
 

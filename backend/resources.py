@@ -55,8 +55,8 @@ PACKAGE_DATA_FILES = (
 # registers, the frozen reference bundle and the published per-platform
 # records. ``benchmark_data_files`` lists them; the build copies them into
 # ``backend/_data`` like the files above.
-BENCHMARK_SUITE_FILE = "benchmarks/abcd-v1.3/benchmark_spec.json"
-BENCHMARK_REFERENCE_BUNDLE_DIR = "benchmarks/reference-baselines/ipm-high-output-v3"
+BENCHMARK_SUITE_FILE = "benchmarks/abcd-v1.6/benchmark_spec.json"
+BENCHMARK_REFERENCE_BUNDLE_DIR = "benchmarks/reference-baselines/protocol16-reviewed-20261103"
 BENCHMARK_RECORDS_DIR = "benchmarks/records"
 
 
@@ -95,6 +95,13 @@ def benchmark_data_files(root: Path) -> tuple[str, ...]:
 
     spec = json.loads((root / BENCHMARK_SUITE_FILE).read_text(encoding="utf-8"))
     files = {BENCHMARK_SUITE_FILE, spec["golden"]}
+    cap_change = spec.get("reference_compatibility", {}).get("iteration_cap_change")
+    if cap_change:
+        measured_suite = cap_change["measured_suite"]
+        files.add(measured_suite)
+        measured = json.loads((root / measured_suite).read_text(encoding="utf-8"))
+        for case in measured["cases"]:
+            files.update(job["fixture"] for job in case["jobs"])
     for case in spec["cases"]:
         files.update(job["fixture"] for job in case["jobs"])
         if case.get("protocol"):
@@ -104,6 +111,7 @@ def benchmark_data_files(root: Path) -> tuple[str, ...]:
     bundle = json.loads((root / BENCHMARK_REFERENCE_BUNDLE_DIR / "manifest.json").read_text(encoding="utf-8"))
     files.add(f"{BENCHMARK_REFERENCE_BUNDLE_DIR}/manifest.json")
     files.update(f"{BENCHMARK_REFERENCE_BUNDLE_DIR}/{entry['file']}" for entry in bundle["records"].values())
+    files.update(f"{BENCHMARK_REFERENCE_BUNDLE_DIR}/{entry['file']}" for entry in bundle.get("review_artifacts", []))
     files.update(path.relative_to(root).as_posix() for path in (root / BENCHMARK_RECORDS_DIR).glob("*.json"))
     return tuple(sorted(files))
 

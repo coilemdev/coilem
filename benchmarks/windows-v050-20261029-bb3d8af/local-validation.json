@@ -1,0 +1,90 @@
+{
+  "schema": "coilem.local_release_import_validation/v1",
+  "candidate_commit": "bb3d8aff93dd2b2c2900ac1b9c65729a939874f6",
+  "local_branch": "codex/v050-public-stack",
+  "local_pr_branches": 17,
+  "publication": {
+    "status": "PASS",
+    "manifest_files": 1680
+  },
+  "python_lint": "PASS",
+  "dependency_integrity": "PASS",
+  "native_build": "PASS",
+  "native_tests": {
+    "passed": 265,
+    "failed": 0
+  },
+  "frontend_build": "PASS",
+  "frontend_dependency_audit": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "python_tests": {
+    "passed": 1421,
+    "failed": 21,
+    "failures": [
+      "tests.test_benchmark_command::test_records_are_rebuilt_exactly_from_the_committed_evidence[macos-arm64]",
+      "tests.test_benchmark_command::test_records_are_rebuilt_exactly_from_the_committed_evidence[windows-x86_64]",
+      "tests.test_benchmark_command::test_historical_macos_record_keeps_its_measured_physics_guard",
+      "tests.test_benchmark_command::test_physics_check_reads_this_checkout_and_names_a_change",
+      "tests.test_benchmark_command::test_installed_package_checks_the_solver_by_its_stamped_hashes",
+      "tests.test_pyleecan_reference_fixture::test_published_app_evidence_keeps_complete_actual_grids_and_its_measured_sources",
+      "tests.test_qualification::test_basis_names_the_measured_commit_and_reference",
+      "tests.test_qualification::test_report_measured_the_current_physics_sources[backend/geometry_drawer.py]",
+      "tests.test_qualification::test_report_measured_the_current_physics_sources[backend/gmsh_mesh_rotation.py]",
+      "tests.test_qualification::test_report_measured_the_current_physics_sources[backend/gmsh_solver.py]",
+      "tests.test_qualification::test_report_measured_the_current_physics_sources[backend/magneto2d_adapter/__init__.py]",
+      "tests.test_qualification::test_report_measured_the_current_physics_sources[backend/magneto2d_adapter/_state.py]",
+      "tests.test_qualification::test_report_measured_the_current_physics_sources[backend/reference_models/prius.py]",
+      "tests.test_qualification::test_report_measured_the_current_physics_sources[backend/solver/__init__.py]",
+      "tests.test_qualification::test_report_measured_the_current_physics_sources[backend/solver/_helpers.py]",
+      "tests.test_qualification::test_report_measured_the_current_physics_sources[solvers/magneto2d/src/solve/context.rs]",
+      "tests.test_qualification::test_report_measured_the_current_physics_sources[solvers/magneto2d/src/solve/mod.rs]",
+      "tests.test_qualification::test_report_measured_the_current_physics_sources[solvers/magneto2d/src/solve/newton.rs]",
+      "tests.test_qualification::test_report_measured_the_current_physics_sources[solvers/magneto2d/src/solve/nonlinear.rs]",
+      "tests.test_qualification::test_report_measured_the_current_physics_sources[solvers/magneto2d/src/solve/picard.rs]",
+      "tests.test_qualification::test_report_measured_the_current_physics_sources[solvers/magneto2d/src/solve/types.rs]"
+    ],
+    "classification": "21 documented pre-freeze evidence and physics-source identity guards; full benchmark rerun required"
+  },
+  "smoke": [
+    {
+      "directory": "<local path>",
+      "status": "COMPLETE",
+      "jobs": 6,
+      "scope": "NON_GATING_SMOKE",
+      "identity_matches_candidate": true,
+      "html_report": "<local path>"
+    },
+    {
+      "directory": "<local path>",
+      "status": "COMPLETE",
+      "jobs": 3,
+      "scope": "NON_GATING_SMOKE",
+      "identity_matches_candidate": true,
+      "html_report": "<local path>"
+    }
+  ],
+  "qualification": "PENDING_ACTUAL_CANDIDATE_BENCHMARKS",
+  "status": "READY_FOR_FULL_NATIVE_BENCHMARK_COLLECTION",
+  "updated_hawaii": "2026-10-28T21:29:01.610601-10:00",
+  "full_benchmark_started": true,
+  "full_benchmark_location": "Windows VM coilem-win-main",
+  "full_benchmark_state": "COMPLETE_REVIEW_REQUIRED",
+  "full_benchmark_launch_notes": "<local path>",
+  "full_benchmark_completed_jobs": 35,
+  "full_benchmark_counts": {
+    "PASS": 29,
+    "UNSUPPORTED": 1
+  },
+  "full_benchmark_new_femm_counts": {
+    "PASS": 28,
+    "YELLOW": 1,
+    "UNSUPPORTED": 1
+  },
+  "full_benchmark_reports": "<local path>"
+}

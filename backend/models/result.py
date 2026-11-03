@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 
 from .field import FieldLineFrame, FieldLinePlot, FieldMovieManifest, SlotExcitationContribution, SlotExcitationFrame
 from .mesh import FluxDensityMap
+from .performance import DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, OutputStatus, WindingResistance
 from .waveforms import (
     BackEMFHarmonicAnalysis,
     BackEMFWaveform,
@@ -34,8 +35,41 @@ class SolveSummary(BaseModel):
     peak_flux_density_yoke_T: float = Field(ge=0)
     rms_flux_density_teeth_T: float | None = Field(default=None, ge=0)
     rms_flux_density_yoke_T: float | None = Field(default=None, ge=0)
+    dq_flux_linkage: DqFluxLinkage | None = None
+    loss_breakdown: LossBreakdown | None = None
+    iron_loss: IronLoss | None = None
+    winding_resistance: WindingResistance | None = None
     slot_excitation_contributions: list[SlotExcitationContribution] | None = None
     solve_time_s: float = Field(ge=0)
+
+
+class NonlinearConvergence(BaseModel):
+    """One position's accepted field solve; reused records describe its source."""
+
+    method: Literal["picard", "newton", "linear"]
+    iterations: int = Field(ge=1)
+    max_iterations: int = Field(ge=1)
+    stage_iterations: list[int]
+    stage_iteration_cap: int = Field(ge=1)
+    raw_max_residual: float | None = Field(default=None, ge=0, allow_inf_nan=False)
+    scaled_residual: float | None = Field(default=None, ge=0, allow_inf_nan=False)
+    rhs_scaled_residual: float | None = Field(default=None, ge=0, allow_inf_nan=False)
+    initial_rhs_scaled_residual: float | None = Field(default=None, ge=0, allow_inf_nan=False)
+    absolute_residual_floor: float | None = Field(default=None, gt=0, lt=1, allow_inf_nan=False)
+    residual_definition: str
+    tolerance: float = Field(ge=0, lt=1, allow_inf_nan=False)
+    stopping_test: str
+    solution_reused: bool = False
+    fallback_from: str | None = None
+
+
+class NonlinearToleranceSetting(BaseModel):
+    """A recorded threshold, labelled by method and residual definition."""
+
+    method: Literal["picard", "newton"]
+    residual_definition: str
+    tolerance: float = Field(gt=0, lt=1, allow_inf_nan=False)
+    absolute_residual_floor: float | None = Field(default=None, gt=0, lt=1, allow_inf_nan=False)
 
 
 class SolveMetadata(BaseModel):
@@ -55,6 +89,14 @@ class SolveMetadata(BaseModel):
     back_emf_computed: bool | None = Field(default=None, description="Whether this run computed the no-load back-EMF sweep")
     rated_speed_rpm: int | None = Field(default=None, ge=0, le=30000)
     motor_input_dc_bus_V: float | None = Field(default=None, ge=1, le=2000)
+    magnet_temperature_C: float | None = Field(default=None, ge=-50, le=300)
+    magnet_remanence_T: float | None = Field(default=None, gt=0, description="Br used by the solve, after temperature derating")
+    magnet_intrinsic_coercivity_kA_m: float | None = Field(
+        default=None, gt=0, description="Hcj used by the solve, after temperature derating"
+    )
+    magnet_temperature_status: OutputStatus | None = Field(default=None, description="Status of the derating, when one was applied")
+    magnet_temperature_status_reason: str | None = None
+    winding_temperature_C: float | None = Field(default=None, ge=-50, le=250)
     solve_cache_dir: str | None = None
     pipeline_stage: Literal["field_solve", "postprocess"] | None = None
     postprocess_source_cache_dir: str | None = None
@@ -81,6 +123,14 @@ class SolveMetadata(BaseModel):
         "weighted_stress_centered",
     ] | None = None
     nonlinear_tolerance: float | None = Field(default=None, gt=0, lt=1)
+    nonlinear_tolerance_method: Literal["picard", "newton"] | None = None
+    nonlinear_tolerance_settings: list[NonlinearToleranceSetting] | None = None
+    solve_quality: Literal["quick", "standard", "fine", "custom"] | None = None
+    nonlinear_max_iterations_used: int | None = Field(default=None, ge=1)
+    nonlinear_median_iterations: float | None = Field(default=None, ge=1)
+    nonlinear_worst_final_mismatch: float | None = Field(default=None, ge=0)
+    nonlinear_worst_tolerance_ratio: float | None = Field(default=None, ge=0)
+    nonlinear_residual_definitions: list[str] | None = None
     topology: str | None = None
     physics_contract_version: str | None = None
     region_source: str | None = None
@@ -103,4 +153,9 @@ class SolveResult(BaseModel):
     field_movie: FieldMovieManifest | None = None
     field_line_movie: FieldMovieManifest | None = None
     slot_excitation_frames: list[SlotExcitationFrame] | None = None
+    iron_loss_density: IronLossDensity | None = None
+    loaded_nonlinear_iterations: list[int] | None = None
+    no_load_nonlinear_iterations: list[int] | None = None
+    loaded_nonlinear_convergence: list[NonlinearConvergence | None] | None = None
+    no_load_nonlinear_convergence: list[NonlinearConvergence | None] | None = None
     solve_metadata: SolveMetadata

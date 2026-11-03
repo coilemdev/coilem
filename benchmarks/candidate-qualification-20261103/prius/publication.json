@@ -1,0 +1,22 @@
+{
+  "schema": "coilem.portable_derived_evidence_publication/v1",
+  "field_solves_executed": 0,
+  "raw_source_mutated": false,
+  "scope": "Derived reports only; original raw artifacts retained separately.",
+  "numerical_values_changed": false,
+  "files": {
+    "app-results.json": {
+      "original_sha256": "8299764f272ed57c778a1416d21c628a795bdfe0f9b4b0d2d2f4363e51678eac",
+      "published_sha256": "8299764f272ed57c778a1416d21c628a795bdfe0f9b4b0d2d2f4363e51678eac",
+      "path_redacted": false,
+      "json_numerical_values_unchanged": true
+    },
+    "app-results.md": {
+      "original_sha256": "e7f3b9192b33e05e6b3dea8f9e40a45dc6a9c80b071dad49db021ccb1c4cd1c4",
+      "published_sha256": "e7f3b9192b33e05e6b3dea8f9e40a45dc6a9c80b071dad49db021ccb1c4cd1c4",
+      "path_redacted": false,
+      "json_numerical_values_unchanged": false
+    }
+  },
+  "report_checksums": "Presentation hashes recomputed after redaction; original checksum manifest retained."
+}

@@ -1380,34 +1380,29 @@ def compute_3phase_current_density(
     return {"A": J_a, "B": J_b, "C": J_c}
 
 
-def compute_3phase_current_density_for_rotor_elec(
+def compute_3phase_slot_ampere_turns_for_rotor_elec(
     config: MotorConfig,
     rotor_angle_elec_deg: float,
 ) -> dict[str, float]:
-    """Resolve the configured excitation and return per-phase slot J.
+    """Resolve the configured excitation and return each phase's slot ampere-turns.
 
-    Unlike ``compute_3phase_current_density`` (the frozen sine/source-angle
-    helper), this function accepts rotor electrical angle and preserves an
-    explicit six-step current triple.
+    A slot carrying phase X holds turns_per_coil conductors, each with its
+    parallel path's share of the terminal current: N·I·scale/paths. The Gmsh
+    solve spreads each coil side's share over its own meshed area (see
+    gmsh_mesh_rotation.coil_side_current_density_a_per_m2), so the injected
+    current is exact whatever the slot shape. Unlike ``compute_3phase_current_density``
+    (the frozen sine/source-angle helper), this accepts the rotor electrical
+    angle and preserves an explicit six-step current triple.
     """
     if config.solve_params is None:
         return {"A": 0.0, "B": 0.0, "C": 0.0}
 
     sample = resolve_phase_current_sample(config, rotor_angle_elec_deg)
     phase_current = phase_current_sample_dict(sample)
-    slot_depth_mm = _slot_radial_depth_mm(config)
-    slot_area_mm2 = (
-        0.5
-        * (_slot_mouth_width_mm(config) + _slot_body_width_mm(config))
-        * slot_depth_mm
-    )
-    if slot_area_mm2 <= 0.0:
-        return {"A": 0.0, "B": 0.0, "C": 0.0}
-
     turns = config.winding.turns_per_coil
     parallel = max(1, config.winding.parallel_paths)
     source_scale = terminal_to_slot_current_scale(config)
     return {
-        phase: turns * current_a * source_scale / parallel / slot_area_mm2
+        phase: turns * current_a * source_scale / parallel
         for phase, current_a in phase_current.items()
     }

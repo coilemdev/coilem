@@ -1,0 +1,93 @@
+{
+  "schema": "coilem.phase_resistance_gate/v1",
+  "protocol_version": "1.6.0",
+  "hand_calculation": "benchmarks/abcd-v1.6/PHASE-RESISTANCE.md",
+  "gate": {
+    "quantity": "phase_resistance_ohm",
+    "pass_pct": 1.0,
+    "yellow_pct": 3.0
+  },
+  "cases": [
+    {
+      "id": "spm_8p12s_concentrated__copper_80C",
+      "suite_case": "spm_8p12s_concentrated__baseline",
+      "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p12s_concentrated__baseline.json",
+      "fixture_sha256": "e63edcc854d01e6c7ddb0c9ef83e6c6212bbb5ee10cf60de2e8f395219c342c7",
+      "conductor": "copper",
+      "wire": {
+        "wire_bare_diameter_mm": 1.25,
+        "strands_in_hand": 2,
+        "end_turn_extension_mm": 5.0
+      },
+      "winding_temperature_C": 80.0,
+      "hand": {
+        "slot_area_mm2": 90.32163,
+        "coil_side_radius_mm": 37.36646,
+        "coil_side_angle_deg": 30.0,
+        "end_turn_half_circle_mm": 30.73268,
+        "end_turn_length_mm": 40.73268,
+        "mean_turn_length_mm": 181.4654,
+        "turn_copper_area_mm2": 2.454369,
+        "series_turns_per_phase": 24,
+        "parallel_paths": 1,
+        "phase_resistance_20C_ohm": 0.03059406,
+        "temperature_factor": 1.2358,
+        "phase_resistance_ohm": 0.03780814
+      }
+    },
+    {
+      "id": "spm_8p24s_distributed__copper_120C",
+      "suite_case": "spm_8p24s_distributed_femm_validation",
+      "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p24s_distributed_femm_validation.json",
+      "fixture_sha256": "394869d4f25cad92342e5d29c438ae742728ff459934f1dddb5e63f479fc2125",
+      "conductor": "copper",
+      "wire": {
+        "wire_bare_diameter_mm": 1.6,
+        "strands_in_hand": 4,
+        "end_turn_extension_mm": 15.0
+      },
+      "winding_temperature_C": 120.0,
+      "hand": {
+        "slot_area_mm2": 285.741,
+        "coil_side_radius_mm": 99.125,
+        "coil_side_angle_deg": 45.0,
+        "end_turn_half_circle_mm": 122.2906,
+        "end_turn_length_mm": 152.2906,
+        "mean_turn_length_mm": 574.5811,
+        "turn_copper_area_mm2": 8.042477,
+        "series_turns_per_phase": 48,
+        "parallel_paths": 2,
+        "phase_resistance_20C_ohm": 0.01478137,
+        "temperature_factor": 1.393,
+        "phase_resistance_ohm": 0.02059045
+      }
+    },
+    {
+      "id": "spm_8p24s_distributed__aluminum_120C",
+      "suite_case": "spm_8p24s_distributed_femm_validation",
+      "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p24s_distributed_femm_validation.json",
+      "fixture_sha256": "394869d4f25cad92342e5d29c438ae742728ff459934f1dddb5e63f479fc2125",
+      "conductor": "aluminum",
+      "wire": {
+        "wire_bare_diameter_mm": 1.6,
+        "strands_in_hand": 4,
+        "end_turn_extension_mm": 15.0
+      },
+      "winding_temperature_C": 120.0,
+      "hand": {
+        "slot_area_mm2": 285.741,
+        "coil_side_radius_mm": 99.125,
+        "coil_side_angle_deg": 45.0,
+        "end_turn_half_circle_mm": 122.2906,
+        "end_turn_length_mm": 152.2906,
+        "mean_turn_length_mm": 574.5811,
+        "turn_copper_area_mm2": 8.042477,
+        "series_turns_per_phase": 48,
+        "parallel_paths": 2,
+        "phase_resistance_20C_ohm": 0.02423128,
+        "temperature_factor": 1.403,
+        "phase_resistance_ohm": 0.03399649
+      }
+    }
+  ]
+}

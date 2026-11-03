@@ -11,11 +11,15 @@ use crate::sparse::{
 
 use super::nonlinear::{nonlinear_iteration_diagnostic, NonlinearLoopOutput, NonlinearSolveConfig};
 use super::picard::update_nonlinear_materials;
-use super::types::SolveProfile;
+use super::types::{NonlinearConvergence, SolveProfile};
 use super::{
     apply_model_constraints, elapsed_ms, emit_angle_iteration_progress, emit_angle_solve_context,
     solve_linear_system, AngleProgressContext, MotorLinearSolvePolicy, SolveMatrixPattern,
 };
+
+/// The correction solve cannot justify demanding unlimited relative reduction
+/// from an initial defect already at the tight linear solver's accuracy.
+pub(super) const NEWTON_RHS_RESIDUAL_FLOOR: f64 = super::LINEAR_SOLVE_TIGHT_TOL;
 
 struct NewtonAcceptedStep {
     az: Vec<f64>,
@@ -261,6 +265,12 @@ fn solve_newton_correction(
         profile.residual_eval_ms += elapsed_ms(residual_eval_start);
     }
 
+    // Avoid an unnecessary correction (or failed line search) for a field
+    // already at the linear solve's accuracy, including a near-exact warm start.
+    if residual_norm <= NEWTON_RHS_RESIDUAL_FLOOR {
+        return Ok((vec![0.0; az.len()], residual_norm, elapsed_ms(asm_start), 0));
+    }
+
     let mut tangent_rhs = rhs;
     let mut tangent = if let Some(matrix_pattern) = matrix_pattern {
         let tangent_start = Instant::now();
@@ -334,7 +344,7 @@ fn solve_newton_correction(
             &tangent,
             &tangent_rhs,
             5000,
-            1.0e-8,
+            super::LINEAR_SOLVE_TIGHT_TOL,
             None,
             linear_policy.pcg,
         )?;
@@ -345,7 +355,7 @@ fn solve_newton_correction(
             &tangent,
             &tangent_rhs,
             5000,
-            1.0e-8,
+            super::LINEAR_SOLVE_TIGHT_TOL,
             None,
             linear_policy.pcg,
         )?
@@ -434,7 +444,7 @@ fn line_search_step(
         }
         if candidate_residual.is_finite() {
             best_residual = best_residual.min(candidate_residual);
-            if candidate_residual <= accept_below {
+            if candidate_residual <= accept_below || candidate_residual <= NEWTON_RHS_RESIDUAL_FLOOR {
                 if let Some(profile) = profile.as_deref_mut() {
                     profile.line_search_total_ms += elapsed_ms(line_search_start);
                 }
@@ -469,6 +479,44 @@ fn line_search_step(
     ))
 }
 
+/// The RHS normalization cancels in this ratio because sources and constraints
+/// are fixed within a continuation stage. PM/Dirichlet magnitude therefore
+/// cannot make a large fraction of the initial nonlinear defect look small.
+pub(super) fn initial_scaled_residual(residual: f64, initial: f64) -> f64 {
+    residual / initial.max(1.0e-30)
+}
+
+pub(super) fn newton_has_converged(residual: f64, initial: f64, tolerance: f64) -> bool {
+    residual.is_finite()
+        && (initial_scaled_residual(residual, initial) <= tolerance
+            || residual <= NEWTON_RHS_RESIDUAL_FLOOR)
+}
+
+fn convergence_record(
+    history: &[f64],
+    rhs_residual: f64,
+    initial: f64,
+    config: NonlinearSolveConfig,
+) -> NonlinearConvergence {
+    NonlinearConvergence {
+        method: "newton".into(),
+        iterations: history.len(),
+        max_iterations: config.max_iterations,
+        stage_iterations: vec![history.len()],
+        stage_iteration_cap: config.max_iterations,
+        raw_max_residual: None,
+        scaled_residual: history.last().copied(),
+        rhs_scaled_residual: Some(rhs_residual),
+        initial_rhs_scaled_residual: Some(initial),
+        absolute_residual_floor: Some(NEWTON_RHS_RESIDUAL_FLOOR),
+        residual_definition: "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage".into(),
+        tolerance: config.newton_convergence_threshold,
+        stopping_test: "scaled_residual <= tolerance OR rhs_scaled_residual <= absolute_residual_floor at every continuation stage".into(),
+        solution_reused: false,
+        fallback_from: None,
+    }
+}
+
 fn run_newton_stage(
     solve_mesh: &crate::mesh::TriMesh,
     n_pole_pitches: u32,
@@ -496,6 +544,7 @@ fn run_newton_stage(
     let mut residual_history = Vec::new();
     let mut diagnostics = Vec::new();
     let convergence_threshold = nonlinear_config.newton_convergence_threshold;
+    let mut initial_residual = None;
 
     eprintln!(
         "  newton_continuation: stage={}/{} current_scale={:.3}",
@@ -560,9 +609,12 @@ fn run_newton_stage(
         )?;
         total_assembly_ms += asm_ms;
         total_solve_ms += solve_ms;
-        if residual <= convergence_threshold {
-            residual_history.push(residual);
+        let reference = *initial_residual.get_or_insert(residual);
+        let scaled_residual = initial_scaled_residual(residual, reference);
+        if newton_has_converged(residual, reference, convergence_threshold) {
+            residual_history.push(scaled_residual);
             return Ok(NonlinearLoopOutput {
+                convergence: convergence_record(&residual_history, residual, reference, nonlinear_config),
                 materials,
                 az,
                 fields,
@@ -599,7 +651,8 @@ fn run_newton_stage(
             )
         })?;
 
-        residual_history.push(accepted.residual);
+        let accepted_scaled_residual = initial_scaled_residual(accepted.residual, reference);
+        residual_history.push(accepted_scaled_residual);
 
         if let Some(diagnostic) = nonlinear_iteration_diagnostic(
             solve_mesh,
@@ -607,7 +660,7 @@ fn run_newton_stage(
             &update,
             iteration_offset + iteration + 1,
             rotor_angle_rad.to_degrees(),
-            accepted.residual,
+            accepted_scaled_residual,
             convergence_threshold,
             accepted.damping,
             accepted.attempts,
@@ -621,7 +674,7 @@ fn run_newton_stage(
             nonlinear_config.max_iterations,
             asm_ms,
             solve_ms,
-            accepted.residual,
+            accepted_scaled_residual,
             convergence_threshold,
             update.worst_element,
         );
@@ -641,8 +694,9 @@ fn run_newton_stage(
         fields = accepted.fields;
         materials = accepted.materials;
 
-        if accepted.residual <= convergence_threshold {
+        if newton_has_converged(accepted.residual, reference, convergence_threshold) {
             return Ok(NonlinearLoopOutput {
+                convergence: convergence_record(&residual_history, accepted.residual, reference, nonlinear_config),
                 materials,
                 az,
                 fields,
@@ -685,6 +739,8 @@ pub(super) fn run_newton_nonlinear_loop(
     mut profile: Option<&mut SolveProfile>,
 ) -> Result<NonlinearLoopOutput, String> {
     let stage_count = current_scales.len();
+    let mut stage_iterations = Vec::new();
+    let mut convergence = None;
     let mut total_assembly_ms = 0;
     let mut total_solve_ms = 0;
     let mut residual_history = Vec::new();
@@ -716,6 +772,8 @@ pub(super) fn run_newton_nonlinear_loop(
             matrix_pattern,
             profile.as_deref_mut(),
         )?;
+        stage_iterations.push(stage_output.convergence.iterations);
+        convergence = Some(stage_output.convergence);
         total_assembly_ms += stage_output.assembly_time_ms;
         total_solve_ms += stage_output.solve_time_ms;
         residual_history.extend(stage_output.residual_history);
@@ -728,7 +786,12 @@ pub(super) fn run_newton_nonlinear_loop(
     let az = az.ok_or_else(|| "newton continuation did not produce an A_z solution".to_string())?;
     let fields =
         fields.ok_or_else(|| "newton continuation did not produce element fields".to_string())?;
+    let mut convergence = convergence.ok_or("newton continuation has no stages")?;
+    convergence.iterations = stage_iterations.iter().sum();
+    convergence.max_iterations = nonlinear_config.max_iterations * stage_count;
+    convergence.stage_iterations = stage_iterations;
     Ok(NonlinearLoopOutput {
+        convergence,
         materials,
         az,
         fields,

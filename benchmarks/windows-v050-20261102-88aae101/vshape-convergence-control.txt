@@ -1,0 +1,15 @@
+Protocol 1.6 V-shape precision and bridge-mesh control
+
+Separate diagnostic; the original 46 reference records, native fields and all acceptance limits are preserved.
+Refined settings: {"minimum_angle_deg": 30, "rotor_arc_max_angle_deg": 0.5, "rotor_straight_edge_max_length_mm": 0.2, "solver_precision": 1e-10}
+Mesh elements, normal / refined: 68572 / 88218
+
+mean_torque_Nm: 0.838088155811 -> 0.848437265279; delta +1.234847%
+back_emf_fundamental_V: 2.17446027976 -> 2.21494934999; delta +1.862029%
+back_emf_peak_V: 3.27485795768 -> 3.32682732166; delta +1.586920%
+
+Native comparison against refined reference (diagnostic): PASS
+{"angle_grids": "PASS", "bemf_fundamental": "PASS", "bemf_peak": "PASS", "mean_torque": "PASS", "native_mesh": "PASS", "torque_method": "PASS"}
+
+Initial 0.1 mm / 0.25 degree mesh produced 172388 elements. Stopped after observing mesh and runtime cost, before any complete cycle; all partial evidence is preserved. The replacement 0.2 mm / 0.5 degree settings were sealed before its collection.
+Preserved initial attempt: C:\bench\abcd-v16-20261102\reference-control

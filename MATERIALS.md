@@ -46,6 +46,35 @@ figure, extrapolated from points measured at H ≈ −7.2 to −4.7 kOe; ORNL st
 no test temperature and says only that the magnets appear sintered. The grade
 exists for the ORNL Prius benchmark case.
 
+### Magnet temperature
+
+A motor solve can set a magnet temperature (Solve → Operating point → Magnet
+temp). Br is scaled linearly from 20 °C by the grade's reversible temperature
+coefficient, which lowers the magnet flux, back EMF and torque. Intrinsic
+coercivity HcJ is derated and recorded with the run for a later
+demagnetisation check; the solve's straight recoil line does not use it.
+At 20 °C, or with no temperature set, nothing changes.
+
+The coefficients are the reversible temperature coefficients in the same
+Arnold grade table as the room-temperature Br values, read 2026-10-21:
+[Arnold Magnetic Technologies — Neodymium Iron Boron Magnets](https://www.arnoldmagnetics.com/products/neodymium-iron-boron-magnets/).
+
+| Grade | Br %/°C | HcJ %/°C | HcJ min at 20 °C (kA/m) | Max operating temperature | Accepted range |
+| --- | --- | --- | --- | --- | --- |
+| N35 | −0.12 | −0.618 | 955 | 80 °C | −40 to 141 °C |
+| N42 | −0.12 | −0.75 | 955 | 80 °C | −40 to 120 °C |
+| N48 | −0.12 | −0.75 | 955 | 80 °C | −40 to 120 °C |
+| N52 | −0.12 | −0.75 | 876 | 60 °C | −40 to 120 °C |
+| N48SH | −0.12 | −0.535 | 1512 | 150 °C | −40 to 160 °C |
+
+The accepted range ends where the linear model would take HcJ below a quarter
+of its 20 °C value; past that the coefficients no longer describe the magnet.
+Above a grade's maximum operating temperature the run carries a warning: the
+magnet risks irreversible demagnetisation, which coilEM does not model.
+Ferrite_Y30, Prius_2004_NdFeB and ORNL_Prius_2004_NdFeB have no cited
+coefficients, so a magnet temperature is refused for them. The pinned Prius
+reference keeps its published 20 and 60 °C cases and their own Br factor.
+
 ### Halbach coercivity and temperature policy
 
 Cylindrical and linear Halbach workspaces resolve magnets from the legacy
@@ -144,14 +173,58 @@ not provided by this import. Optional Elmer execution rejects custom steels.
 
 ## Core loss
 
-The 50 Hz description of the source magnetization curve does not provide a
-grade-specific core-loss model. The public result surface does not provide a usable steel
-core-loss prediction. Legacy Steinmetz coefficients remain in the source, and
-the material UI currently shows a generic loss-estimate badge; that badge does
-not establish a supported loss result. Schema fields retained for
-compatibility are zero-valued and mean "unavailable," not "lossless." Do not
-use them for efficiency, heat, or thermal calculations.
+Stator iron loss is an experimental estimate for M350-50A, and for M400-50A in
+the pinned Pyleecan Prius, whose imported B-H curve is that grade. Per kilogram,
+each electrical harmonic h of an element's flux density contributes
 
-Future core-loss support must introduce separately reviewed, cited coefficients
-or a reproducible fit to redistributable source data, together with a validated
-frequency and flux-density range.
+```text
+p_h = kh · f_h · B_h^alpha + kc · f_h^2 · B_h^2
+```
+
+The coefficients come from published facts, not from a fitted loss table:
+
+- `kc` is the classical lamination eddy-current term, pi^2 · d^2 / (6 · rho_el · rho_m),
+  with d = 0.50 mm, rho_m = 7650 kg/m^3 (the density coilEM uses for M350-50A)
+  and rho_el = 42.2e-8 Ohm·m, the typical value in SIJ Acroni's SIWATT M350-50A
+  technical data sheet (SIWATT M350-50A-1/1-2023-EN).
+- `kh` and `alpha` meet the EN 10106 maximum specific losses for M350-50A at
+  50 Hz, 1.50 W/kg at 1.0 T and 3.50 W/kg at 1.5 T, exactly. Real sheet is
+  usually below these limits, so the estimate reads high at 50 Hz.
+
+The Pyleecan Prius's M400-50A is built the same way:
+
+- `kh` and `alpha` meet 1.70 W/kg at 1.0 T and 4.00 W/kg at 1.5 T, 50 Hz, the
+  DIN EN 10106 values in Waelzholz's grade table, which also gives the
+  7700 kg/m^3 density. The standard does not make the 1.0 T value obligatory.
+- `kc` uses d = 0.50 mm and rho_el = 33.4e-8 Ohm·m, the typical value in SIJ
+  Acroni's SIWATT M400-50A HP technical data sheet (SIWATT M400-50A HP-1/7-2024-EN).
+
+Excess loss is not modelled separately. Against the M400-50A loss table in
+Pyleecan's material library (`M400-50A.json` at Pyleecan `cbfe7be3`, whose
+50 Hz values match a Tata Steel typical-data sheet), the M400-50A model stays
+within a mean of ±8 % at each frequency from 50 Hz to 1 kHz above 0.5 T, with a
+worst point near 22 %, and reads about 24 % high at 2.5 kHz. coilEM does not
+ship that table.
+
+The estimate needs a nonzero speed and a loaded sweep over one full electrical
+cycle, or half of one, in equal steps. Half-wave symmetry, B(θ + 180°) = −B(θ),
+completes a half cycle. It follows each stator element's flux-density waveform
+over the cycle, and results report the share of the loss that comes from harmonics
+above 1 kHz or flux densities above 1.5 T, outside the range the two grade
+limits cover. Rotor, magnet and stray losses are not included, and cutting and
+pressing usually raise a real core's loss above sheet data. Other steels show
+iron loss as unavailable until cited loss data exist for them. The native
+solver's own core-loss fields stay zero; coilEM computes the estimate from the
+stored field frames.
+
+## Winding conductors
+
+Phase resistance uses IEC 60028 annealed copper (1/58 Ohm·mm^2/m and
+0.00393 /K at 20 °C) or IEC 60889 hard-drawn aluminium (0.028264 Ohm·mm^2/m and
+0.00403 /K). The mean turn length is two stack lengths plus two end turns,
+each a half circle across the arc between the coil's two sides, and copper
+fill is bare copper over the gross slot polygon. With the 2005 Honda Accord's
+published winding (1.55 mm wire, 52 turns per coil, 8 parallel circuits) the
+model gives 9.80 mOhm at 21 °C against 9.7 mOhm measured (ORNL/TM-2006/535,
+Table 2.3).
+

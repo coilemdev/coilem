@@ -1,0 +1,1149 @@
+{
+  "schema": "coilem.windows_protocol16_evidence_publication/v1",
+  "measured_commit": "88aae101fd487795e7fe5300737679f4133790fd",
+  "protocol_version": "1.6.0",
+  "suite_sha256": "60fb1c5353c8678ef210c997cf39ddcf20ce4bf81ebd8e419c962fc6d5c6fb37",
+  "reference_adapter_commit": "faced858937e93740ddf7f6f3583a3ad5ec35646",
+  "reference_manifest_sha256": "71afbb5d50551c1ac22f9e502e61f96e2f726bb3331286fc53edec012e416da1",
+  "reference_bundle_sha256": "c96b5e7948aea74bcf7943d584db85b874a2d4e887e0637c84e59e98c8dfd31a",
+  "reference_validation_status": "REVIEW_REQUIRED",
+  "scope": "Evidence publication only. No collection is restamped, reference review waived, or qualification promoted.",
+  "native_completed_jobs": 52,
+  "native_planned_unsupported_jobs": 1,
+  "native_source_files_match": 54,
+  "copied_artifacts": {
+    "comparison/comparison_manifest.json": {
+      "original": "comparison/comparison_manifest.json",
+      "sha256": "c5e84ed981c938d129f84779ab806210e4260ef93d802c6856e6088c031f768b",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/benchmark_report.md": {
+      "original": "comparison/report/benchmark_report.md",
+      "sha256": "4e6395ab96aee0ef552c6a9ad5d1b216ff2f534bad047f0eb0b1830f9b6551fd",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/benchmark_results.csv": {
+      "original": "comparison/report/benchmark_results.csv",
+      "sha256": "59ee4cf9e76fe1d80c73bde6069c30004f4bec0fe4c98d4ccb1efdb3fa66dd4d",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/benchmark_summary.json": {
+      "original": "comparison/report/benchmark_summary.json",
+      "sha256": "e5bf43e47b7439b7bad0f01f69a1d34a4db8cd0a8dc79e059bb56c7db8c56340",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/coilem_benchmark_report.html": {
+      "original": "comparison/report/coilem_benchmark_report.html",
+      "sha256": "e906ecd4713f93904672b99e022819856c4d11f67dbc38a4115b554cbbb41411",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/ipm_flat_12s10p_fscw_contract__native.json": {
+      "original": "comparison/report/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/ipm_flat_24s16p_industrial_contract__native.json": {
+      "original": "comparison/report/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/ipm_flat_4p12s_micro_contract__native.json": {
+      "original": "comparison/report/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json": {
+      "original": "comparison/report/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g0__native.json": {
+      "original": "comparison/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g0__native.json",
+      "sha256": "13946ec4812653453576460ffaaa556e1c0712dc60ea5bcf7527255ead98bea9",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g30__native.json": {
+      "original": "comparison/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g30__native.json",
+      "sha256": "8fd935a4b81d5aa3bbe9196151a84c9d745c268ea90702a4b92e07a76db62f47",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g60__native.json": {
+      "original": "comparison/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g60__native.json",
+      "sha256": "87b7306d1735934c0cb3c30c1fa0b970af2947efe1d2446538f41159371adbf0",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g0__native.json": {
+      "original": "comparison/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g0__native.json",
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g30__native.json": {
+      "original": "comparison/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g30__native.json",
+      "sha256": "5fed79cac72dd79b71355b60cd195a2f58d00470c36fdad314a236870c4abf2b",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g60__native.json": {
+      "original": "comparison/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g60__native.json",
+      "sha256": "e2bc18964582355fa7c838029693339374bb45456d2e21da26b76279cbd717cb",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/ipm_flat_8p12s_fsae_contract__magnet_100C__native.json": {
+      "original": "comparison/report/fixtures/ipm_flat_8p12s_fsae_contract__magnet_100C__native.json",
+      "sha256": "d6125a01411ade4faf0f12fea6dd53ab0938f4ff0c2efc6f5ebb7cb7c2dbf2a3",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/ipm_flat_8p12s_fsae_contract__magnet_60C__native.json": {
+      "original": "comparison/report/fixtures/ipm_flat_8p12s_fsae_contract__magnet_60C__native.json",
+      "sha256": "afe7c558fc411f00408461add8a9b88b7eed38bff4338234e0188246abc6f9de",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/ipm_flat_8p12s_fsae_contract__native.json": {
+      "original": "comparison/report/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json": {
+      "original": "comparison/report/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/ipm_vshape_8p12s_baseline_contract__native.json": {
+      "original": "comparison/report/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json": {
+      "original": "comparison/report/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json": {
+      "original": "comparison/report/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json": {
+      "original": "comparison/report/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json": {
+      "original": "comparison/report/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json": {
+      "original": "comparison/report/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/ornl_prius_2004_ipm__native.json": {
+      "original": "comparison/report/fixtures/ornl_prius_2004_ipm__native.json",
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_12p36s_distributed_femm_validation__native.json": {
+      "original": "comparison/report/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_14p12s_high_pole__analytical.json": {
+      "original": "comparison/report/fixtures/spm_14p12s_high_pole__analytical.json",
+      "sha256": "c7eaaaf1081d62fc92fdbcf85bd4a741437dbf2f447bfacafa3d29f571f38045",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_14p12s_high_pole__native-fine.json": {
+      "original": "comparison/report/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "sha256": "d50980ab4aac15eb065fb09632a0f56988cda12a01d4c5a225cf13f02377f12c",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_14p12s_high_pole__native-standard.json": {
+      "original": "comparison/report/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "sha256": "3eb405359dbf6503ea6d29eaf41d595681ae5a7b4a70883aa202df1fd3df6388",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_4p12s_simple__baseline__native.json": {
+      "original": "comparison/report/fixtures/spm_4p12s_simple__baseline__native.json",
+      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_4p12s_simple__high_current__native.json": {
+      "original": "comparison/report/fixtures/spm_4p12s_simple__high_current__native.json",
+      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_4p12s_simple__tight_airgap__native.json": {
+      "original": "comparison/report/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_4p12s_simple_noload__baseline__native.json": {
+      "original": "comparison/report/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_4p12s_simple_noload__high_current__native.json": {
+      "original": "comparison/report/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json": {
+      "original": "comparison/report/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_4p12s_small__analytical.json": {
+      "original": "comparison/report/fixtures/spm_4p12s_small__analytical.json",
+      "sha256": "da8e001617723fbf8bc27ed803b695e6739e49efb6e191057826aff8316e6166",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_4p12s_small__native-fine.json": {
+      "original": "comparison/report/fixtures/spm_4p12s_small__native-fine.json",
+      "sha256": "0cfcd598575534929f95f5e468efee92531b158d98e8db34aea82c548ef1efdc",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_4p12s_small__native-standard.json": {
+      "original": "comparison/report/fixtures/spm_4p12s_small__native-standard.json",
+      "sha256": "cc111eda6bc19623de00e8a1da66ba396db3d6440126947715b06511c9510357",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_8p12s_concentrated__baseline__native.json": {
+      "original": "comparison/report/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_8p12s_concentrated__dq_I20_g0__native.json": {
+      "original": "comparison/report/fixtures/spm_8p12s_concentrated__dq_I20_g0__native.json",
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_8p12s_concentrated__dq_I20_g30__native.json": {
+      "original": "comparison/report/fixtures/spm_8p12s_concentrated__dq_I20_g30__native.json",
+      "sha256": "040ea7d2cf367ab0fa9e8fdba9a83df22dd88e548597a15c939358c709cecd38",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_8p12s_concentrated__dq_I20_g60__native.json": {
+      "original": "comparison/report/fixtures/spm_8p12s_concentrated__dq_I20_g60__native.json",
+      "sha256": "22bfd644feb317039dadbf6e1736f6c0c28f8641689c9571dcea3a9aba62e027",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_8p12s_concentrated__dq_I40_g0__native.json": {
+      "original": "comparison/report/fixtures/spm_8p12s_concentrated__dq_I40_g0__native.json",
+      "sha256": "fec0ce01476183e4e5b237a0fb3bc66676f7ac2582ca83f7c4c50bd96fb3ebd6",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_8p12s_concentrated__dq_I40_g30__native.json": {
+      "original": "comparison/report/fixtures/spm_8p12s_concentrated__dq_I40_g30__native.json",
+      "sha256": "7de6f4d389d823ea026d1843f778add1f3c28a50d3652a200952286818b4e270",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_8p12s_concentrated__dq_I40_g60__native.json": {
+      "original": "comparison/report/fixtures/spm_8p12s_concentrated__dq_I40_g60__native.json",
+      "sha256": "816252bbfc56ca2b917e576a892a21a10ca7a25c2044f2e51af08270661b1287",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_8p12s_concentrated__high_current__native.json": {
+      "original": "comparison/report/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_8p12s_concentrated__magnet_100C__native.json": {
+      "original": "comparison/report/fixtures/spm_8p12s_concentrated__magnet_100C__native.json",
+      "sha256": "77732c1868c7743a8d8711aea09457d103e45301019b74e3a1495f6c36598d78",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_8p12s_concentrated__magnet_60C__native.json": {
+      "original": "comparison/report/fixtures/spm_8p12s_concentrated__magnet_60C__native.json",
+      "sha256": "5633ed8c7644bf4e71c557b03afce86193313bc1e20566bb61d503018669a263",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_8p12s_concentrated__tight_airgap__native.json": {
+      "original": "comparison/report/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_8p12s_example_shoed__native.json": {
+      "original": "comparison/report/fixtures/spm_8p12s_example_shoed__native.json",
+      "sha256": "dbe538187d5280d171c224b12dc25612fb25c35c9014b201564126715dc4b6c4",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_8p12s_reference__analytical.json": {
+      "original": "comparison/report/fixtures/spm_8p12s_reference__analytical.json",
+      "sha256": "d25b5768678f37eca4aa1291dbd479f86cd19b0d4649a21d177ac86eab43e561",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_8p12s_reference__native-fine.json": {
+      "original": "comparison/report/fixtures/spm_8p12s_reference__native-fine.json",
+      "sha256": "14a40c1b8b65602bf051c3c71807f39efd516c734a151d3b209d8158aac7f178",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_8p12s_reference__native-standard.json": {
+      "original": "comparison/report/fixtures/spm_8p12s_reference__native-standard.json",
+      "sha256": "624b5b2faa387e4965da68cc337c9912da6137e1fc8712934b3f19d49cc7e457",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_8p12s_reference_angle30__baseline__native.json": {
+      "original": "comparison/report/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_8p24s_distributed_femm_validation__native.json": {
+      "original": "comparison/report/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_8p48s_chorded_5_6__native.json": {
+      "original": "comparison/report/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/fixtures/spm_8p48s_distributed_femm_validation__native.json": {
+      "original": "comparison/report/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357",
+      "byte_for_byte_unchanged": true
+    },
+    "final-integrity-check.json": {
+      "original": "final-integrity-check.json",
+      "sha256": "dbcfe70af876b2fa77db19b257cd53a1dbe45ecadeeefde94543e31db3e77fcc",
+      "byte_for_byte_unchanged": true
+    },
+    "legacy-reference-reproduction-check.json": {
+      "original": "legacy-reference-reproduction-check.json",
+      "sha256": "2f93cf7dfee29ed8cc615a5d1312ace059c1576828b5213c0d57ee8bf2dca0b2",
+      "byte_for_byte_unchanged": true
+    },
+    "macos-comparison.json": {
+      "original": "macos-comparison.json",
+      "sha256": "e18a35d10867e82fb6dcc2ac8f523dc372eb1b18fd56aeb241a52fa03c2df865",
+      "byte_for_byte_unchanged": true
+    },
+    "macos-comparison.txt": {
+      "original": "macos-comparison.txt",
+      "sha256": "0596099095e52974317820a04119523b0601960a32c0846e038ca7ff9732380b",
+      "byte_for_byte_unchanged": true
+    },
+    "native-integrity-check.json": {
+      "original": "native-integrity-check.json",
+      "sha256": "9b0617669788feb0f1379135d6766143a26688559861665c1d0608af9844d39f",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_12s10p_fscw_contract/native/request.json": {
+      "original": "native/jobs/ipm_flat_12s10p_fscw_contract/native/request.json",
+      "sha256": "3aa963c8d913790a8fcd75c3a09da89a6f6565c22bb4cd0548988548c6ac79df",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_12s10p_fscw_contract/native/result.json": {
+      "original": "native/jobs/ipm_flat_12s10p_fscw_contract/native/result.json",
+      "sha256": "25b29c2c3bc9bb8d082c5dce65634b840384b2513e493e293b8e9185d4d9ede8",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_24s16p_industrial_contract/native/request.json": {
+      "original": "native/jobs/ipm_flat_24s16p_industrial_contract/native/request.json",
+      "sha256": "b9a6e61b4f8ecda3178bf988e1baeefad363a2af87ece374147b973bcab464df",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_24s16p_industrial_contract/native/result.json": {
+      "original": "native/jobs/ipm_flat_24s16p_industrial_contract/native/result.json",
+      "sha256": "67f0309b30e4635dc08eba008651ba8fce5410b80ab6d4a29eaec7cdedc6b5d3",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_4p12s_micro_contract/native/request.json": {
+      "original": "native/jobs/ipm_flat_4p12s_micro_contract/native/request.json",
+      "sha256": "dc577d032032ad23e94cd6998972b943ca91e7d0c0a7cf8083d739bdb56663f9",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_4p12s_micro_contract/native/result.json": {
+      "original": "native/jobs/ipm_flat_4p12s_micro_contract/native/result.json",
+      "sha256": "46642f819c6829afa13e78918cd840367a68ca202f162af9e9156887c5e57d43",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_8p12s_fsae_angled_pocket_contract/native/request.json": {
+      "original": "native/jobs/ipm_flat_8p12s_fsae_angled_pocket_contract/native/request.json",
+      "sha256": "61b62c2a97469fee30f6dd6a15afaf0655fb71f710e73cfc204db807eb64086d",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_8p12s_fsae_angled_pocket_contract/native/result.json": {
+      "original": "native/jobs/ipm_flat_8p12s_fsae_angled_pocket_contract/native/result.json",
+      "sha256": "704c8590557cdf76c1667fcf03ceebf68b47f0a07740b3ebc9cfdc06ebdf0bb2",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_8p12s_fsae_contract/native/request.json": {
+      "original": "native/jobs/ipm_flat_8p12s_fsae_contract/native/request.json",
+      "sha256": "d10c132168f63ef0845b1b5ca995dc5de52d405ecfca84ab1cb9179a71cd34ac",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_8p12s_fsae_contract/native/result.json": {
+      "original": "native/jobs/ipm_flat_8p12s_fsae_contract/native/result.json",
+      "sha256": "5b486949f27d6e07fee6f8e003188361e1bd2ee9f76e9e940ae3e2dcde53f5e7",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I100_g0/native/request.json": {
+      "original": "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I100_g0/native/request.json",
+      "sha256": "f0ec0f54a793fa991d853fb61e4951087b867897be57eb1be9a70238e7b540a0",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I100_g0/native/result.json": {
+      "original": "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I100_g0/native/result.json",
+      "sha256": "296dfc34e0475a42d4c9eedd05dfeadca2d605cfd1753061c8291f231de78534",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I100_g30/native/request.json": {
+      "original": "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I100_g30/native/request.json",
+      "sha256": "3a0653d4d0e5e5a4e39e82989b777017b1926cd6d565af0bb32a86f6f8531e88",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I100_g30/native/result.json": {
+      "original": "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I100_g30/native/result.json",
+      "sha256": "39c2b440a133d3f3df3b07c62efa7236e66d852cd422856bdce57c4985e26d05",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I100_g60/native/request.json": {
+      "original": "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I100_g60/native/request.json",
+      "sha256": "3e2e56a27e588b1d152e9dd90da100fe16bcf13d672abdd3d9d08f1b049195b3",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I100_g60/native/result.json": {
+      "original": "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I100_g60/native/result.json",
+      "sha256": "d2159e8ba259a1017aafd04772faacce3d342a434f76c6f259af9b3e6f336fbd",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I50_g0/native/request.json": {
+      "original": "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I50_g0/native/request.json",
+      "sha256": "d10c132168f63ef0845b1b5ca995dc5de52d405ecfca84ab1cb9179a71cd34ac",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I50_g0/native/result.json": {
+      "original": "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I50_g0/native/result.json",
+      "sha256": "e197d9ca0f1aaece67b24a530da545005aa17f74fa4d94dc5e17dce34747b6fe",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I50_g30/native/request.json": {
+      "original": "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I50_g30/native/request.json",
+      "sha256": "090a30ee2aadc75217bff0d8b320c27dc08dd651ef61c9e9cf8a84b89ab59bec",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I50_g30/native/result.json": {
+      "original": "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I50_g30/native/result.json",
+      "sha256": "7c91037589a8e9aae20d06cdf8090f844ace51b3dbc66c57b2af91055e6708e7",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I50_g60/native/request.json": {
+      "original": "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I50_g60/native/request.json",
+      "sha256": "634b2fa086473290ae8b5b702faf43cdfd2e6209c955c0f60e67b29420e33da5",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I50_g60/native/result.json": {
+      "original": "native/jobs/ipm_flat_8p12s_fsae_contract__dq_I50_g60/native/result.json",
+      "sha256": "055d56d89c2c0a6324d5784489a4067e29c1c2e4476f4670f4b732b46b0cabe3",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_8p12s_fsae_contract__magnet_100C/native/request.json": {
+      "original": "native/jobs/ipm_flat_8p12s_fsae_contract__magnet_100C/native/request.json",
+      "sha256": "1d74840b8a3c10840db4e9c53cd386447681574caa419bdd813a94490660afff",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_8p12s_fsae_contract__magnet_100C/native/result.json": {
+      "original": "native/jobs/ipm_flat_8p12s_fsae_contract__magnet_100C/native/result.json",
+      "sha256": "2fa6b9bc8d22681e0442a799f91fc55e9d3f168d40d09cc1c798b01c27ad88e5",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_8p12s_fsae_contract__magnet_60C/native/request.json": {
+      "original": "native/jobs/ipm_flat_8p12s_fsae_contract__magnet_60C/native/request.json",
+      "sha256": "3df50f0d7359fbd64ffe4bf0d92471917de8593bfe1070fe2651ea6da61ab883",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_8p12s_fsae_contract__magnet_60C/native/result.json": {
+      "original": "native/jobs/ipm_flat_8p12s_fsae_contract__magnet_60C/native/result.json",
+      "sha256": "fd46a2b6af7547d809c035209e5bb58f43365bcecfd76a8607946439accd80d4",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_8p12s_fsae_thin_bridge_contract/native/request.json": {
+      "original": "native/jobs/ipm_flat_8p12s_fsae_thin_bridge_contract/native/request.json",
+      "sha256": "a7ff64cb2ccab2eec4450c230d71bf3975424dfb4b0514193a48b2a24d745c6d",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_flat_8p12s_fsae_thin_bridge_contract/native/result.json": {
+      "original": "native/jobs/ipm_flat_8p12s_fsae_thin_bridge_contract/native/result.json",
+      "sha256": "0725d147d28ed918f75f185988e737660f1227cf94e674d2290899f29630696d",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_vshape_8p12s_baseline_contract/native/request.json": {
+      "original": "native/jobs/ipm_vshape_8p12s_baseline_contract/native/request.json",
+      "sha256": "e6d552118637807ece42b7d2f567004154c5d8ac5c5f7627b92968de55546028",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_vshape_8p12s_baseline_contract/native/result.json": {
+      "original": "native/jobs/ipm_vshape_8p12s_baseline_contract/native/result.json",
+      "sha256": "465d435469600a504230985b0527e5dc7a391629bca299bd0674241ac1e831cc",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_vshape_8p12s_deep_apex_high_output_v1/native/request.json": {
+      "original": "native/jobs/ipm_vshape_8p12s_deep_apex_high_output_v1/native/request.json",
+      "sha256": "dcb6b0455ca4af6ae70e89977d29d4be93f464cb318f8b63b94b4a6daccd17cd",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_vshape_8p12s_deep_apex_high_output_v1/native/result.json": {
+      "original": "native/jobs/ipm_vshape_8p12s_deep_apex_high_output_v1/native/result.json",
+      "sha256": "f93af1b4bff5b96345be16bc6b9674cbc100172aa0eb394e2eca88d5be16d562",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_vshape_8p12s_narrow_angle_contract/native/request.json": {
+      "original": "native/jobs/ipm_vshape_8p12s_narrow_angle_contract/native/request.json",
+      "sha256": "8fe7cfa203b177aaba3235bde6b1eac5c52398ea21b174a375d034ea209caeb9",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_vshape_8p12s_narrow_angle_contract/native/result.json": {
+      "original": "native/jobs/ipm_vshape_8p12s_narrow_angle_contract/native/result.json",
+      "sha256": "dcfc583968c96f6d9773899f63962e848cced4d3b40b858ce6f20fb7df44ad9b",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_vshape_8p12s_pocket_offset_contract/native/request.json": {
+      "original": "native/jobs/ipm_vshape_8p12s_pocket_offset_contract/native/request.json",
+      "sha256": "36f4dd739454344a9e5f794c6a658aef3fad3ca85f9585212ee6c5b24d86cda6",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_vshape_8p12s_pocket_offset_contract/native/result.json": {
+      "original": "native/jobs/ipm_vshape_8p12s_pocket_offset_contract/native/result.json",
+      "sha256": "0f1e478fae35916e8e8a6c68340f9a1c5c4da8b4156dc2a437f8abeb6f69733a",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_vshape_8p12s_thin_bridge_contract/native/request.json": {
+      "original": "native/jobs/ipm_vshape_8p12s_thin_bridge_contract/native/request.json",
+      "sha256": "e867681d810901c860fa5f0cb286ac920abf51354eab2a6fe1a8d31ca67e89da",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_vshape_8p12s_thin_bridge_contract/native/result.json": {
+      "original": "native/jobs/ipm_vshape_8p12s_thin_bridge_contract/native/result.json",
+      "sha256": "1cdc8461c08463d9aa9d747e03c2a23f3f0c7d60cca7f585f8f39bc7b2bcef2d",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_vshape_8p12s_wide_angle_high_output_v1/native/request.json": {
+      "original": "native/jobs/ipm_vshape_8p12s_wide_angle_high_output_v1/native/request.json",
+      "sha256": "2495f7217abffce898ebd240cc9e13c936b49e80fca29c6dd2132889c2237726",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ipm_vshape_8p12s_wide_angle_high_output_v1/native/result.json": {
+      "original": "native/jobs/ipm_vshape_8p12s_wide_angle_high_output_v1/native/result.json",
+      "sha256": "9128ddfcfbd693c3930b03fdd83bc04b5f70db275378424db26999eeca29bb6a",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/ornl_prius_2004_ipm/native/request.json": {
+      "original": "native/jobs/ornl_prius_2004_ipm/native/request.json",
+      "sha256": "1fcfb5ae021f59c8c09d3e3f82931ecc5d93a254a533190cced99b4840d81a96",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_12p36s_distributed_femm_validation/native/request.json": {
+      "original": "native/jobs/spm_12p36s_distributed_femm_validation/native/request.json",
+      "sha256": "cb80f518b242a10980c558005557dd9bc1aeff0ae90fe83ddfbe41bf20d69bc3",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_12p36s_distributed_femm_validation/native/result.json": {
+      "original": "native/jobs/spm_12p36s_distributed_femm_validation/native/result.json",
+      "sha256": "ae90ba0832fad1bc1d911dc985835222e693eb1679beb33c16cea8e580962574",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_14p12s_high_pole/analytical/request.json": {
+      "original": "native/jobs/spm_14p12s_high_pole/analytical/request.json",
+      "sha256": "ae83a41a07951bae37b77898e40a45c381348f0434453751c5f5f1cd2e7177ff",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_14p12s_high_pole/analytical/result.json": {
+      "original": "native/jobs/spm_14p12s_high_pole/analytical/result.json",
+      "sha256": "78870b5ae8a381d114f2fa84f7e7a296390977424e24a573351453c64c713deb",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_14p12s_high_pole/native-fine/request.json": {
+      "original": "native/jobs/spm_14p12s_high_pole/native-fine/request.json",
+      "sha256": "e6a3768ecafed4053edde211d19789503792ea51f96acb41d1969c0b9d1b3620",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_14p12s_high_pole/native-fine/result.json": {
+      "original": "native/jobs/spm_14p12s_high_pole/native-fine/result.json",
+      "sha256": "a181a051f2b2c261d84465ee042b19ba89d4e3f6d375ecd506a9720489dab2cc",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_14p12s_high_pole/native-standard/request.json": {
+      "original": "native/jobs/spm_14p12s_high_pole/native-standard/request.json",
+      "sha256": "035e296d3d98dc77c790c4e2b5ac9d064a905fa166e8d888bc3bfc96840c1d2b",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_14p12s_high_pole/native-standard/result.json": {
+      "original": "native/jobs/spm_14p12s_high_pole/native-standard/result.json",
+      "sha256": "7a560277a1c8354772a1c1376a444f4df39cae2b27cffeb3142bcfb8d00c8035",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_4p12s_simple__baseline/native/request.json": {
+      "original": "native/jobs/spm_4p12s_simple__baseline/native/request.json",
+      "sha256": "098de53a96e5c7be31f3a935729500ca26115d196d4804b7fdaaa0e35b728755",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_4p12s_simple__baseline/native/result.json": {
+      "original": "native/jobs/spm_4p12s_simple__baseline/native/result.json",
+      "sha256": "5211db7515d1ace053ab91c2ff0d18a99b4b8e40cd96c16f6a7f2d542ee6c01e",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_4p12s_simple__high_current/native/request.json": {
+      "original": "native/jobs/spm_4p12s_simple__high_current/native/request.json",
+      "sha256": "69ad858afa73d7da24ca0c8bc3d0babd1ecbc2cd973122203312bee7d4a67421",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_4p12s_simple__high_current/native/result.json": {
+      "original": "native/jobs/spm_4p12s_simple__high_current/native/result.json",
+      "sha256": "a2e401f698f1f2f8bcbde15cbde354f31e84c5c874e5cb0bba6f1ee7e181fc44",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_4p12s_simple__tight_airgap/native/request.json": {
+      "original": "native/jobs/spm_4p12s_simple__tight_airgap/native/request.json",
+      "sha256": "a6fbf1bdee857406501164dc92f935616000315fffc577a515be10f82db1e130",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_4p12s_simple__tight_airgap/native/result.json": {
+      "original": "native/jobs/spm_4p12s_simple__tight_airgap/native/result.json",
+      "sha256": "13ff927d67c7ac1b5b595e1055cc4cd18df3cfd7070c350500e9f6a8df4a55e1",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_4p12s_simple_noload__baseline/native/request.json": {
+      "original": "native/jobs/spm_4p12s_simple_noload__baseline/native/request.json",
+      "sha256": "622968d6e23ce90d92653bd82ad65bb9cc981274b5d33cecd4d319e902c28df6",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_4p12s_simple_noload__baseline/native/result.json": {
+      "original": "native/jobs/spm_4p12s_simple_noload__baseline/native/result.json",
+      "sha256": "0da089aaf0a7030c3135955d53673a68301f43bd6b8cdc40bb410dfca7624b2e",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_4p12s_simple_noload__high_current/native/request.json": {
+      "original": "native/jobs/spm_4p12s_simple_noload__high_current/native/request.json",
+      "sha256": "1a60ee37550ab98420972cf15c8dd4de9df5c9261b8b035011eb34fed1d83f38",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_4p12s_simple_noload__high_current/native/result.json": {
+      "original": "native/jobs/spm_4p12s_simple_noload__high_current/native/result.json",
+      "sha256": "b6c64ccb790e7a8e27e3f47d2bab3a772a494d452a98ad2e33de27569872c73c",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_4p12s_simple_noload__tight_airgap/native/request.json": {
+      "original": "native/jobs/spm_4p12s_simple_noload__tight_airgap/native/request.json",
+      "sha256": "7f223fcabe524da8914a1fe6f525dfd53d513b1132dddb17f7ef08c6cef7dd01",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_4p12s_simple_noload__tight_airgap/native/result.json": {
+      "original": "native/jobs/spm_4p12s_simple_noload__tight_airgap/native/result.json",
+      "sha256": "2f55928382496e752cbe8ccc410c3c6321ef01a28920153846479228cf133e3a",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_4p12s_small/analytical/request.json": {
+      "original": "native/jobs/spm_4p12s_small/analytical/request.json",
+      "sha256": "a74831240adafe5df9e4a1f01ce4073c9df1c94fe92ac4199b9136e7d0311b02",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_4p12s_small/analytical/result.json": {
+      "original": "native/jobs/spm_4p12s_small/analytical/result.json",
+      "sha256": "97155c2b6be8eafab754326893395408ddf263f7df4a5b7bf34fe64546b1face",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_4p12s_small/native-fine/request.json": {
+      "original": "native/jobs/spm_4p12s_small/native-fine/request.json",
+      "sha256": "8bf681baca05491a32b8c50fc7c56f799851e8b613e19256978b5a2b8ab00bc0",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_4p12s_small/native-fine/result.json": {
+      "original": "native/jobs/spm_4p12s_small/native-fine/result.json",
+      "sha256": "88311513a8e044644a101e4f159a709a9800f483349053dfdf3ce7d8f7ab9d57",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_4p12s_small/native-standard/request.json": {
+      "original": "native/jobs/spm_4p12s_small/native-standard/request.json",
+      "sha256": "4659135b44f11fc3fd968ab3787ddbba3f93703974316566604be3c67250c83e",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_4p12s_small/native-standard/result.json": {
+      "original": "native/jobs/spm_4p12s_small/native-standard/result.json",
+      "sha256": "d30c6ad330adf4e75b2da853713620e6249d0124c010bef938d638ac2981ff9e",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_concentrated__baseline/native/request.json": {
+      "original": "native/jobs/spm_8p12s_concentrated__baseline/native/request.json",
+      "sha256": "cd365ff1003a6b39c649f42363951daabd5e668348e5b3bb678fda98d74056e1",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_concentrated__baseline/native/result.json": {
+      "original": "native/jobs/spm_8p12s_concentrated__baseline/native/result.json",
+      "sha256": "921301c9b08e6351614c2f2c1f30571c373ca3cccb860dd3e2a54af9285e0ff2",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_concentrated__dq_I20_g0/native/request.json": {
+      "original": "native/jobs/spm_8p12s_concentrated__dq_I20_g0/native/request.json",
+      "sha256": "cd365ff1003a6b39c649f42363951daabd5e668348e5b3bb678fda98d74056e1",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_concentrated__dq_I20_g0/native/result.json": {
+      "original": "native/jobs/spm_8p12s_concentrated__dq_I20_g0/native/result.json",
+      "sha256": "8fc49e8e47146c537087f74a5644aa67c65ac7ce32cd5bf900a5a36308575fb5",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_concentrated__dq_I20_g30/native/request.json": {
+      "original": "native/jobs/spm_8p12s_concentrated__dq_I20_g30/native/request.json",
+      "sha256": "2f3605a445c1d08f8e6de7a8dbfd3d3a1a9b915ac88816cd3911e85067e33e4e",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_concentrated__dq_I20_g30/native/result.json": {
+      "original": "native/jobs/spm_8p12s_concentrated__dq_I20_g30/native/result.json",
+      "sha256": "450871592d832345f1abe60f6733f7f3dd4931c24f16be1b41e4e22be3c1b26d",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_concentrated__dq_I20_g60/native/request.json": {
+      "original": "native/jobs/spm_8p12s_concentrated__dq_I20_g60/native/request.json",
+      "sha256": "1c00eb77528927fd5615147e4e07fafd042f054384acf009ec2f1c54e94afca8",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_concentrated__dq_I20_g60/native/result.json": {
+      "original": "native/jobs/spm_8p12s_concentrated__dq_I20_g60/native/result.json",
+      "sha256": "d4744d09e25f7fbb4e20b82f50345a55624d0304913a9a76cb94ba2b1fd79ec2",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_concentrated__dq_I40_g0/native/request.json": {
+      "original": "native/jobs/spm_8p12s_concentrated__dq_I40_g0/native/request.json",
+      "sha256": "1d7894b628ac8f938141d7877fc5751d20d64177cc9b52a263b9a08221e49f85",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_concentrated__dq_I40_g0/native/result.json": {
+      "original": "native/jobs/spm_8p12s_concentrated__dq_I40_g0/native/result.json",
+      "sha256": "9d11dbeeac51fa1393d3280286be397b00bd4eed8bc1ab25d8babe59e2145a80",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_concentrated__dq_I40_g30/native/request.json": {
+      "original": "native/jobs/spm_8p12s_concentrated__dq_I40_g30/native/request.json",
+      "sha256": "eb3a810a4fc6bc291957d8ab8358572c2530afafc07fc5351213dd93ba3fdd5e",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_concentrated__dq_I40_g30/native/result.json": {
+      "original": "native/jobs/spm_8p12s_concentrated__dq_I40_g30/native/result.json",
+      "sha256": "27a8bc38f987ab91637ed810bcb50cfdb8049c16cb0fc4c1a2b27faefde85c3b",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_concentrated__dq_I40_g60/native/request.json": {
+      "original": "native/jobs/spm_8p12s_concentrated__dq_I40_g60/native/request.json",
+      "sha256": "d4623d4e842bb95b8323800b6d91c37ba17ee437efca17e600963493044b89e5",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_concentrated__dq_I40_g60/native/result.json": {
+      "original": "native/jobs/spm_8p12s_concentrated__dq_I40_g60/native/result.json",
+      "sha256": "8b915998d5f055e8edf51ce9238df088b6a496b73f5e03b74a8aa2be8597242b",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_concentrated__high_current/native/request.json": {
+      "original": "native/jobs/spm_8p12s_concentrated__high_current/native/request.json",
+      "sha256": "69da1a84b3b464032619f72187f467b4f8f6dc25d05f6f76aa224f436d5d3ee9",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_concentrated__high_current/native/result.json": {
+      "original": "native/jobs/spm_8p12s_concentrated__high_current/native/result.json",
+      "sha256": "961e63c2bdce3f9312b4d39d2c64e012b2fd515109eccbcfb1d7b255b748351c",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_concentrated__magnet_100C/native/request.json": {
+      "original": "native/jobs/spm_8p12s_concentrated__magnet_100C/native/request.json",
+      "sha256": "7bd6f63ac9c19e5656c9762fa9f972783e48d3214e51555d2221a630399cfac1",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_concentrated__magnet_100C/native/result.json": {
+      "original": "native/jobs/spm_8p12s_concentrated__magnet_100C/native/result.json",
+      "sha256": "b0e6c1bbb561f883ffc66375c3936e7fdc39173c790b6a58677ffaa9e14bc493",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_concentrated__magnet_60C/native/request.json": {
+      "original": "native/jobs/spm_8p12s_concentrated__magnet_60C/native/request.json",
+      "sha256": "7727fa3b173a2cbdfcf3fe055ab4c0b74909bdc0900be90c232dc4c9aa263dad",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_concentrated__magnet_60C/native/result.json": {
+      "original": "native/jobs/spm_8p12s_concentrated__magnet_60C/native/result.json",
+      "sha256": "29e2dd8243ae92e2ac4772115b6b58680a37778f9718358cc3471fb1c633fd34",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_concentrated__tight_airgap/native/request.json": {
+      "original": "native/jobs/spm_8p12s_concentrated__tight_airgap/native/request.json",
+      "sha256": "ddd2d748a28639fc5ddf7b678a88d0c3dad72e8218ead2650215e69ce31f1424",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_concentrated__tight_airgap/native/result.json": {
+      "original": "native/jobs/spm_8p12s_concentrated__tight_airgap/native/result.json",
+      "sha256": "93ec218b045ce7c5b48dfdedd005b1e26d5dc387c3261f4667ee8b7ce0e3ec11",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_example_shoed/native/request.json": {
+      "original": "native/jobs/spm_8p12s_example_shoed/native/request.json",
+      "sha256": "2ca0b77ea4ac2a50e6beb054cdb2f2442c16b08fa0df5cde86fcbd55a42824ff",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_example_shoed/native/result.json": {
+      "original": "native/jobs/spm_8p12s_example_shoed/native/result.json",
+      "sha256": "ecaac83d4c7bcb8789037eccf50ca4b42f323cd0699128c5083683c1cbdd254e",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_reference/analytical/request.json": {
+      "original": "native/jobs/spm_8p12s_reference/analytical/request.json",
+      "sha256": "880bce44f0e74cb4e5de09796b049c6442bb1423fa398903cd612b879270fc67",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_reference/analytical/result.json": {
+      "original": "native/jobs/spm_8p12s_reference/analytical/result.json",
+      "sha256": "f665a03cb737ecb2e4a0b274018d2bd48a810edc8b77e4f53a06a94885aaed0e",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_reference/native-fine/request.json": {
+      "original": "native/jobs/spm_8p12s_reference/native-fine/request.json",
+      "sha256": "3f2554b61b91db1f175e20225a6afb8a74356909a728334504a80a85a52ed993",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_reference/native-fine/result.json": {
+      "original": "native/jobs/spm_8p12s_reference/native-fine/result.json",
+      "sha256": "9caf94ce2f4d2647cd375654c060db4bb17b6c6eee47d882852cef20761c23a7",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_reference/native-standard/request.json": {
+      "original": "native/jobs/spm_8p12s_reference/native-standard/request.json",
+      "sha256": "b47ff22c9202724d8b8335bd89b0f95fb687a9507a4b8d8daca5cb34d93a637c",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_reference/native-standard/result.json": {
+      "original": "native/jobs/spm_8p12s_reference/native-standard/result.json",
+      "sha256": "99830acbe8baecfb7d54997ad07bf9ae2344fe9c844d8cb7a2d103004e1c48e1",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_reference_angle30__baseline/native/request.json": {
+      "original": "native/jobs/spm_8p12s_reference_angle30__baseline/native/request.json",
+      "sha256": "858f53ee36dbb32a2a38b30d9357b351b78332694e1eaa932be1281b71cfa748",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p12s_reference_angle30__baseline/native/result.json": {
+      "original": "native/jobs/spm_8p12s_reference_angle30__baseline/native/result.json",
+      "sha256": "e6a2b413b7fdc3f87e010eb3989e4bb257ed15cae0efc268a37f287978526e2f",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p24s_distributed_femm_validation/native/request.json": {
+      "original": "native/jobs/spm_8p24s_distributed_femm_validation/native/request.json",
+      "sha256": "c72507a9753a002383e6dd0bb8b3a39a4a834bb4b9fd6570fcbefceeccd9f3e5",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p24s_distributed_femm_validation/native/result.json": {
+      "original": "native/jobs/spm_8p24s_distributed_femm_validation/native/result.json",
+      "sha256": "ce134ce060033d43c697b053cc37705de2be34c197d6cc4838809808b2883640",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p48s_chorded_5_6/native/request.json": {
+      "original": "native/jobs/spm_8p48s_chorded_5_6/native/request.json",
+      "sha256": "81d29e6df970723c8be119bc678411cda4c5c8e488484a148a377357e9ee7159",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p48s_chorded_5_6/native/result.json": {
+      "original": "native/jobs/spm_8p48s_chorded_5_6/native/result.json",
+      "sha256": "78ef156bdc5935a3f3fcbdea77fc1e896b5a80ab3b8c67c2983a4ac8c3dee077",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p48s_distributed_femm_validation/native/request.json": {
+      "original": "native/jobs/spm_8p48s_distributed_femm_validation/native/request.json",
+      "sha256": "72e7c95b2e7bcce1f0a9b2da17111357db67770a2ca00a830acbf6654f8da8eb",
+      "byte_for_byte_unchanged": true
+    },
+    "native/jobs/spm_8p48s_distributed_femm_validation/native/result.json": {
+      "original": "native/jobs/spm_8p48s_distributed_femm_validation/native/result.json",
+      "sha256": "585c28058f08c3215958cdabd4b3b44ab36aabf51036151cd6bae89753ff19c9",
+      "byte_for_byte_unchanged": true
+    },
+    "native/run_manifest.json": {
+      "original": "native/run_manifest.json",
+      "sha256": "22b6b58b66906d9f11f4d4014b1e713b1cb9b8cc465f1271fc1bd3eef04ef1f5",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/ipm_flat_12s10p_fscw_contract.json": {
+      "original": "reference-bundle/ipm_flat_12s10p_fscw_contract.json",
+      "sha256": "73d368667a63a23f737127765c5c29c32c751153436c59e5a1a91bef6f61b4c6",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/ipm_flat_24s16p_industrial_contract.json": {
+      "original": "reference-bundle/ipm_flat_24s16p_industrial_contract.json",
+      "sha256": "70d8fdaf1262da6eaa1c1abb1baf2fe92a0ae1c7942f51edbe5560e28a552586",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/ipm_flat_4p12s_micro_contract.json": {
+      "original": "reference-bundle/ipm_flat_4p12s_micro_contract.json",
+      "sha256": "470085450fd9561ebcf40d5363a61cd5fefc0082cc09e3a500a3feed60b7ff56",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/ipm_flat_8p12s_fsae_angled_pocket_contract.json": {
+      "original": "reference-bundle/ipm_flat_8p12s_fsae_angled_pocket_contract.json",
+      "sha256": "146753eeafc00d85652cb85720d4af8c917980b556ac303359061fb0bf25e991",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/ipm_flat_8p12s_fsae_contract.json": {
+      "original": "reference-bundle/ipm_flat_8p12s_fsae_contract.json",
+      "sha256": "a1cbd131a0139d1ba9061c9a72c086d3e37530b8d2f303b7e1f43ea8dfbd032b",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/ipm_flat_8p12s_fsae_contract__dq_I100_g0.json": {
+      "original": "reference-bundle/ipm_flat_8p12s_fsae_contract__dq_I100_g0.json",
+      "sha256": "edcad34c5e9f8f9fe472eaa580ef8a580c1ce68fbb4662f0adeb02cdf345d770",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/ipm_flat_8p12s_fsae_contract__dq_I100_g30.json": {
+      "original": "reference-bundle/ipm_flat_8p12s_fsae_contract__dq_I100_g30.json",
+      "sha256": "5f7273e6fc507ffd1028be4f5b935a4fef7599c6e9d21d92ecbbe81922991b6e",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/ipm_flat_8p12s_fsae_contract__dq_I100_g60.json": {
+      "original": "reference-bundle/ipm_flat_8p12s_fsae_contract__dq_I100_g60.json",
+      "sha256": "82a75964478271d9e2cabf2234f98c424e9a444d092e1be96d1823e1c3772604",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/ipm_flat_8p12s_fsae_contract__dq_I50_g0.json": {
+      "original": "reference-bundle/ipm_flat_8p12s_fsae_contract__dq_I50_g0.json",
+      "sha256": "9a40e0be45b11cfce4fff2bf9e54c4e15fff3027a1aea36d832d1980c5e78d08",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/ipm_flat_8p12s_fsae_contract__dq_I50_g30.json": {
+      "original": "reference-bundle/ipm_flat_8p12s_fsae_contract__dq_I50_g30.json",
+      "sha256": "ab5cf6b3554ef4afd7359741e6d4c3c178e63039a7aae90fffae6cab6c4f8b5b",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/ipm_flat_8p12s_fsae_contract__dq_I50_g60.json": {
+      "original": "reference-bundle/ipm_flat_8p12s_fsae_contract__dq_I50_g60.json",
+      "sha256": "4de27b938ec9339b20214a27f45220e581e6469210b4861d122cc3439e89d289",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/ipm_flat_8p12s_fsae_contract__magnet_100C.json": {
+      "original": "reference-bundle/ipm_flat_8p12s_fsae_contract__magnet_100C.json",
+      "sha256": "9bebae46fca20e5c9c1aed4075b3b13e0726e2ca6ee70ad70e3ffac11d9c0540",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/ipm_flat_8p12s_fsae_contract__magnet_60C.json": {
+      "original": "reference-bundle/ipm_flat_8p12s_fsae_contract__magnet_60C.json",
+      "sha256": "7bac7612cdabceff00a774ffc8d569bf18cf626dbcac308a8cbe2e5855d51333",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/ipm_flat_8p12s_fsae_thin_bridge_contract.json": {
+      "original": "reference-bundle/ipm_flat_8p12s_fsae_thin_bridge_contract.json",
+      "sha256": "26c124e6a39c58c949972b5d2b4109185465b2a305931eb8fb854bb2964eec70",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/ipm_vshape_8p12s_baseline_contract.json": {
+      "original": "reference-bundle/ipm_vshape_8p12s_baseline_contract.json",
+      "sha256": "28bc986248a1a859124ecdf233296d12411b71d52b9070c379f97e5d09e40e59",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/ipm_vshape_8p12s_deep_apex_high_output_v1.json": {
+      "original": "reference-bundle/ipm_vshape_8p12s_deep_apex_high_output_v1.json",
+      "sha256": "b05526f250895e8c6c92f156eb8c108309b3667558d2d69f1eb8b89c2ccf114a",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/ipm_vshape_8p12s_narrow_angle_contract.json": {
+      "original": "reference-bundle/ipm_vshape_8p12s_narrow_angle_contract.json",
+      "sha256": "23d26c252133530a5efa639c72e2b105d596249282360b41abfa706283f5bb22",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/ipm_vshape_8p12s_pocket_offset_contract.json": {
+      "original": "reference-bundle/ipm_vshape_8p12s_pocket_offset_contract.json",
+      "sha256": "941c88583c57d19a5bd3c7e21436995de045351b353261aa7e16d7122b980b97",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/ipm_vshape_8p12s_thin_bridge_contract.json": {
+      "original": "reference-bundle/ipm_vshape_8p12s_thin_bridge_contract.json",
+      "sha256": "9935114d268fe563be62007faf199bd53b437055ca71d1067b8c18c0a10622a6",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/ipm_vshape_8p12s_wide_angle_high_output_v1.json": {
+      "original": "reference-bundle/ipm_vshape_8p12s_wide_angle_high_output_v1.json",
+      "sha256": "4cb9941addc109e369e54bc2c377a1d83e36a92527ed1b71487bd0420bca12a5",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/manifest.json": {
+      "original": "reference-bundle/manifest.json",
+      "sha256": "71afbb5d50551c1ac22f9e502e61f96e2f726bb3331286fc53edec012e416da1",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/source-method-review.json": {
+      "original": "reference-bundle/source-method-review.json",
+      "sha256": "c4c25a1f8b1d765c2bb941679ee3370115b2ba38ccdfbeae443e67ced9d8ce92",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_12p36s_distributed_femm_validation.json": {
+      "original": "reference-bundle/spm_12p36s_distributed_femm_validation.json",
+      "sha256": "b0ad15aecaf2d5acb1e45d6e375d197ce9f23a0822cf81176391402e112dd755",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_14p12s_high_pole.json": {
+      "original": "reference-bundle/spm_14p12s_high_pole.json",
+      "sha256": "4a30144fff62dc7b1ef5afffb2e8de8815c1f3adb049e6a0fd986d4682dcd70b",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_4p12s_simple__baseline.json": {
+      "original": "reference-bundle/spm_4p12s_simple__baseline.json",
+      "sha256": "75ca54975377025bbeb90698d4b9e2c0ba5bab589a8b68344a4aeb4e2d59033b",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_4p12s_simple__high_current.json": {
+      "original": "reference-bundle/spm_4p12s_simple__high_current.json",
+      "sha256": "ca3483c13e42f19653aa9b344243b12c48d9d19810346000760910c5f0ccdfd0",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_4p12s_simple__tight_airgap.json": {
+      "original": "reference-bundle/spm_4p12s_simple__tight_airgap.json",
+      "sha256": "4415df7952d94543300e64e2cad1c3eacd1448752046cddcd88c8b0bbb17d91c",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_4p12s_simple_noload__baseline.json": {
+      "original": "reference-bundle/spm_4p12s_simple_noload__baseline.json",
+      "sha256": "02e3cdcefca967ecaa8dc1d22b9292fead48d9fcea9c1cc3bd9e407e756005c9",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_4p12s_simple_noload__high_current.json": {
+      "original": "reference-bundle/spm_4p12s_simple_noload__high_current.json",
+      "sha256": "fdf464d3f24864002c2cb1e6c6b41b7e32db665bd0c95978f008a20c3ce219f8",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_4p12s_simple_noload__tight_airgap.json": {
+      "original": "reference-bundle/spm_4p12s_simple_noload__tight_airgap.json",
+      "sha256": "8b9685c288db752538c6cd093479f96cf6308ce5872e6a5b1921d2c5bd673824",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_4p12s_small.json": {
+      "original": "reference-bundle/spm_4p12s_small.json",
+      "sha256": "3696f00d7b12ec534eaebc4d23724faaca8fc3945e750e71d56a72e34b594943",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_8p12s_concentrated__baseline.json": {
+      "original": "reference-bundle/spm_8p12s_concentrated__baseline.json",
+      "sha256": "e8989bf000dbedb608a7752da1cb7279c28f12391279f7939447e51964aea027",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_8p12s_concentrated__dq_I20_g0.json": {
+      "original": "reference-bundle/spm_8p12s_concentrated__dq_I20_g0.json",
+      "sha256": "2af651ee94b45027140d0359b44fb1d2f607867333dead522714fdf9f9280bbf",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_8p12s_concentrated__dq_I20_g30.json": {
+      "original": "reference-bundle/spm_8p12s_concentrated__dq_I20_g30.json",
+      "sha256": "48cf5d421b87eae63e9a4b12c3145bdf72a55962ae864a5660c3c9e4a4db9f0a",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_8p12s_concentrated__dq_I20_g60.json": {
+      "original": "reference-bundle/spm_8p12s_concentrated__dq_I20_g60.json",
+      "sha256": "091254ac7ff825d72ef2dcc9bbb6ce75378241cb35cee9ea46ed6399713bfb06",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_8p12s_concentrated__dq_I40_g0.json": {
+      "original": "reference-bundle/spm_8p12s_concentrated__dq_I40_g0.json",
+      "sha256": "23e35372434c92b59f11e855248492d84b291b87ad6f4fa5748fce62e6d11ee9",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_8p12s_concentrated__dq_I40_g30.json": {
+      "original": "reference-bundle/spm_8p12s_concentrated__dq_I40_g30.json",
+      "sha256": "0845842225d5b499912fdd747a5037a3ac2bd8aad102a97b9637d9e35fad7e54",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_8p12s_concentrated__dq_I40_g60.json": {
+      "original": "reference-bundle/spm_8p12s_concentrated__dq_I40_g60.json",
+      "sha256": "c26df74a2867ba4de22cd2749fb8b3a3c5a9514153bc2f2d190527456526c9ee",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_8p12s_concentrated__high_current.json": {
+      "original": "reference-bundle/spm_8p12s_concentrated__high_current.json",
+      "sha256": "26949fe9237b746a4d74feee612dacef75231067645d29c93012de28efc44a13",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_8p12s_concentrated__magnet_100C.json": {
+      "original": "reference-bundle/spm_8p12s_concentrated__magnet_100C.json",
+      "sha256": "1eb2b48837ae864e3fc0299257d1160ae8d5e1f03b39aea26cb0dfce10dacd8b",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_8p12s_concentrated__magnet_60C.json": {
+      "original": "reference-bundle/spm_8p12s_concentrated__magnet_60C.json",
+      "sha256": "3fe1799d76681313f560620b5ec02f0d9e5428ee9d782c8c00d90202ae574679",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_8p12s_concentrated__tight_airgap.json": {
+      "original": "reference-bundle/spm_8p12s_concentrated__tight_airgap.json",
+      "sha256": "89552f1d6aec70098f5a8351f92f51dc9ba1f8fb0116a50ddbcb75c4868d6161",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_8p12s_example_shoed.json": {
+      "original": "reference-bundle/spm_8p12s_example_shoed.json",
+      "sha256": "6fbd21aafbafb98a03db6cc0f6fc18fa36546aa7f6bb53bd96b14a6340006fdd",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_8p12s_reference.json": {
+      "original": "reference-bundle/spm_8p12s_reference.json",
+      "sha256": "42ca2f18af8ed208fd81bf9eda9934a031cb9caf4a229f24f6732ff43c0d5224",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_8p12s_reference_angle30__baseline.json": {
+      "original": "reference-bundle/spm_8p12s_reference_angle30__baseline.json",
+      "sha256": "3703bebdc721a42595bd0657f531b6bd56b2813140b5fc5622a8706bf2756fec",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_8p24s_distributed_femm_validation.json": {
+      "original": "reference-bundle/spm_8p24s_distributed_femm_validation.json",
+      "sha256": "8f72fe694e1bc5c343221cc187dd7f468a8557a69b6e5bddbdb020a3adce1ce4",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_8p48s_chorded_5_6.json": {
+      "original": "reference-bundle/spm_8p48s_chorded_5_6.json",
+      "sha256": "9677caa0854a395f09699145b1379d0fa2e55ee78bd4ffdb1861512d0a9f9d17",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-bundle/spm_8p48s_distributed_femm_validation.json": {
+      "original": "reference-bundle/spm_8p48s_distributed_femm_validation.json",
+      "sha256": "154c51ce1852cb3f88c424fbd6e4878e3c35b91e85efe0b6933ff83520205321",
+      "byte_for_byte_unchanged": true
+    },
+    "reference-dq-self-checks.json": {
+      "original": "reference-dq-self-checks.json",
+      "sha256": "447caa5a999644f05842e501db63198cf8aa5d10fa78ca28a4fab235138f7ea1",
+      "byte_for_byte_unchanged": true
+    },
+    "retained-adapter-source-audit.json": {
+      "original": "retained-adapter-source-audit.json",
+      "sha256": "a37becf442fe9e7342a9b1efbee1a2c898c997fdd9d9d99bced0d43728790fb1",
+      "byte_for_byte_unchanged": true
+    },
+    "vshape-control-model-audit.json": {
+      "original": "vshape-control-model-audit.json",
+      "sha256": "5612f036a5320e026a87deb97780fa04fc80f4b7ace7e932c4db319eadc6c6d3",
+      "byte_for_byte_unchanged": true
+    },
+    "vshape-convergence-control.json": {
+      "original": "vshape-convergence-control.json",
+      "sha256": "0e92e4b0dc319d205486f60ba5b5db36e06f93b1c7a7abc5f1c3f33086aa2cf0",
+      "byte_for_byte_unchanged": true
+    },
+    "vshape-convergence-control.txt": {
+      "original": "vshape-convergence-control.txt",
+      "sha256": "cf1d08f0f4f7f4cd5cef3bad8d71f214a1e137ff3c3e27d2b081a36dacd7e660",
+      "byte_for_byte_unchanged": true
+    },
+    "comparison/report/artifact_manifest.original.json": {
+      "original": "comparison/report/artifact_manifest.json",
+      "sha256": "6b16d559682ebeceaac21673acd92bb1985a7e5e8ea2a1fe0ada30dc181cf497",
+      "byte_for_byte_unchanged": true
+    }
+  },
+  "omitted": [
+    "private adapter source and executables",
+    "FEMM model/field files",
+    "console logs and process locks"
+  ],
+  "local_archive_provenance": "../reference-adapters/windows-femm42-v3-20261102/provenance.json",
+  "historical_mac_scope": "Historical numerical comparison across documented pins; not a same-candidate platform qualification. New-case Mac values are rounded; their full raw results are not present on this host.",
+  "presentation_manifest_update": {
+    "file": "comparison/report/artifact_manifest.json",
+    "original_file": "comparison/report/artifact_manifest.original.json",
+    "original_sha256": "6b16d559682ebeceaac21673acd92bb1985a7e5e8ea2a1fe0ada30dc181cf497",
+    "published_sha256": "91da3b066c7b31cfad768db5d83b18a5b87ade57acb04c60143330bcc461cbb7",
+    "changed_entries": [
+      "benchmark_report.md",
+      "coilem_benchmark_report.html"
+    ],
+    "reason": "The original renderer manifest predates the development-scope banners in these two presentation files. Recompute their presentation hashes; preserve the original manifest, all copied measurements and the banners."
+  }
+}

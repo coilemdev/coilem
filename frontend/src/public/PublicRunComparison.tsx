@@ -7,7 +7,9 @@ import {
   type PublicRunListRecord,
   type PublicRunStoragePolicy,
 } from './api';
+import { motorConstantsView } from './machineConstants';
 import type { SolveResult } from './model';
+import { torqueRippleView } from './resultMetrics';
 import { WaveformChart } from './WaveformChart';
 
 interface LoadedRun {
@@ -28,11 +30,13 @@ const METRICS: Array<{
   value: (result: SolveResult) => number | null | undefined;
 }> = [
   { label: 'Average torque', unit: 'N·m', value: (run) => run.summary.avg_torque_Nm },
-  { label: 'Torque ripple', unit: '%', deltaUnit: 'pp', value: (run) => run.summary.torque_ripple_pct },
+  // No percentage where it means nothing (no current, near-zero average).
+  { label: 'Torque ripple', unit: '%', deltaUnit: 'pp', value: (run) => torqueRippleView(run).ripplePct },
   { label: 'Back EMF', unit: 'V', value: (run) => run.summary.back_emf_fundamental_V },
   { label: 'Peak tooth B', unit: 'T', value: (run) => run.summary.peak_flux_density_teeth_T },
   { label: 'Peak yoke B', unit: 'T', value: (run) => run.summary.peak_flux_density_yoke_T },
-  { label: 'Torque constant', unit: 'N·m/A', value: (run) => run.summary.Kt_Nm_per_A },
+  // Per rms ampere, as in Results: the summary stores Kt per peak ampere (#153).
+  { label: 'Torque constant', unit: 'N·m/A rms', value: (run) => motorConstantsView(run.summary).kt.value },
   { label: 'Back EMF THD (headline)', unit: '%', deltaUnit: 'pp', value: (run) => run.summary.back_emf_thd_pct },
   { label: 'Solve time', unit: 's', digits: 1, value: (run) => run.summary.solve_time_s },
 ];

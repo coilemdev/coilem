@@ -97,11 +97,17 @@ def extract_winding_report(report, config, artifact):
     results = report["results"]
     report["native_generic_winding_extraction"] = {
         key: results.get(key) for key in ("flux_linkage_a_wb", "flux_linkage_b_wb", "flux_linkage_c_wb",
-                                         "slot_flux_linkage_contributions", "slot_excitation_contributions")
+                                         "slot_flux_linkage_contributions", "slot_excitation_contributions",
+                                         "phase_current_a")
     }
     results.update({f"flux_linkage_{phase}_wb": float(value) for phase, value in zip("abc", flux)})
     results["slot_flux_linkage_contributions"] = flux_rows
     results["slot_excitation_contributions"] = current_rows
+    # The phase currents this position actually carries: the published ones the
+    # explicit source applied. The solver's own triple follows its generic
+    # excitation, which the reference's imported densities replace, so the d/q
+    # record and Torque–λdq agreement would otherwise see no current.
+    results["phase_current_a"] = [float(value) for value in artifact["physics_contract"]["provenance"]["phase_current_A"]]
     report["reference_winding_extraction"] = {
         "version": "published-region-winding/v1", "geometry_asset_sha256": geometry_asset_sha256(),
         "flux_rule": "signed turns * physical stack length * area-weighted nodal Az in each exact winding region",

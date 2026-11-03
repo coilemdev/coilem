@@ -3,7 +3,7 @@ import { importTypeScriptModule } from './import-typescript-module.mjs';
 
 // Stator + PM axes (#120): where each field's working harmonic carries flux
 // outward across the gap, and how far the stator field leads the magnets.
-const { fieldAxisArrowPaths, leadAngleExplanation, rotorNorthAxisDeg, statorLeadElecDeg } = await importTypeScriptModule(
+const { fieldAxisArrowPaths, leadAngleExplanation, currentAngleNote, qAxisOffsetDeg, rotorNorthAxisDeg, statorLeadElecDeg } = await importTypeScriptModule(
   new URL('../src/public/fieldAxes.ts', import.meta.url),
 );
 const { airgapHarmonic, deriveMagneticPolarityCues, strongestAirgapPolePairs } = await importTypeScriptModule(
@@ -100,11 +100,24 @@ assert.equal(
   'Why 90° elec when the lines are only 7.5° apart? With 12 pole pairs the field pattern repeats every 30° '
     + 'around the motor, so 360° elec is 30° of rotation and 7.5° × 12 = 90° elec. Electrical degrees measure '
     + 'position within one N–S pole pair: at 90° elec the stator field sits halfway between magnet poles, where '
-    + 'the magnet torque per amp is largest.',
+    + 'the magnet torque per amp is largest. The magnets\' axis is the d-axis and the q-axis is 90° elec ahead of it. '
+    + 'The stator field sits at 90° + γ: on the q-axis at a current angle γ of 0°, and turned further toward field '
+    + 'weakening as γ grows. The drawn stator axis is measured from the air-gap field at this rotor position, so with '
+    + 'slots it steps a few degrees either side of 90° + γ as the rotor turns.',
 );
 assert.match(leadAngleExplanation(89.6, 4), /only 22\.5° apart\? With 4 pole pairs the field pattern repeats every 90° /);
 assert.match(leadAngleExplanation(89, 4), /22\.3° × 4 ≈ 89° elec/);
-assert.match(leadAngleExplanation(-60, 4), /holds them back\.$/);
+assert.match(leadAngleExplanation(-60, 4), /holds them back\. The magnets' axis is the d-axis/);
 assert.match(leadAngleExplanation(90, 1), /^On a 2-pole motor one turn is 360° elec, so the two lines are 90° apart\./);
 
-console.log('field axes: magnet north axis, stator lead, working harmonic and strongest pattern, axis arrow shape pass');
+// The q-axis sits 90° elec ahead of the d-axis in the direction of rotation.
+assert.equal(qAxisOffsetDeg(4, 'clockwise'), -22.5);
+assert.equal(qAxisOffsetDeg(4, 'counterclockwise'), 22.5);
+assert.equal(qAxisOffsetDeg(1, 'clockwise'), -90);
+// Under the lead angle: the run's current angle, not the frame's measured lead, which steps with slotting.
+assert.equal(currentAngleNote(0), '90° + γ, γ = 0° set');
+assert.equal(currentAngleNote(30), '90° + γ, γ = 30° set');
+assert.equal(currentAngleNote(-20.4), '90° + γ, γ = −20° set');
+assert.equal(currentAngleNote(null), null, 'six-step has no current angle');
+
+console.log('field axes: magnet north axis, stator lead, working harmonic and strongest pattern, axis arrow shape, d/q axes pass');

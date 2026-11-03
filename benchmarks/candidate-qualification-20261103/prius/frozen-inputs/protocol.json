@@ -1,0 +1,58 @@
+{
+  "schema": "coilem.pyleecan_prius_protocol/v1",
+  "case_ids": [
+    "prius-2004-tutorial-bemf-v1",
+    "prius-2004-loaded-torque-v1"
+  ],
+  "limits": {
+    "tutorial_line_rms_relative": 0.02,
+    "tutorial_line_peak_relative": 0.03,
+    "tutorial_line_waveform_relative_L2": 0.05,
+    "loaded_mean_relative_to_femm": 0.02,
+    "curve_max_mean_difference_normalized_to_femm_peak": 0.02,
+    "angular_mean_change_normalized_to_reference_peak": 0.01,
+    "mesh_mean_change_normalized_to_reference_peak": 0.01,
+    "native_final_residual": 1e-08
+  },
+  "waveform_mapping": {
+    "reference_flux_index": "(-app_index) modulo cycle length",
+    "reference_voltage": "-E_reference[(-app_index) modulo cycle length]",
+    "reason": "Exact drawing reflection reverses source-frame angular direction; no fitted phase, polarity or amplitude"
+  },
+  "interpretation": "Limits use retained software studies; they are not blind hardware acceptance. Every upstream torque-vector discrepancy remains reported.",
+  "preset_sampling": {
+    "tutorial": {
+      "electrical_span_deg": 360,
+      "loaded_actual_fields": 100,
+      "noload_actual_fields": 100
+    },
+    "loaded": {
+      "electrical_span_deg": 360,
+      "loaded_actual_fields": 32,
+      "noload_actual_fields": 32
+    },
+    "curve": {
+      "angles_deg": [
+        60,
+        70,
+        80,
+        90,
+        100,
+        110,
+        120,
+        130,
+        140,
+        150,
+        160,
+        170,
+        180
+      ],
+      "actual_fields_per_angle": 16,
+      "electrical_span_deg": 360
+    },
+    "controls": {
+      "angular_actual_fields": 64,
+      "mesh_fine_actual_fields": 32
+    }
+  }
+}

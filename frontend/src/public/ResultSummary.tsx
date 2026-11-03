@@ -1,5 +1,7 @@
 import { useId, type ReactNode } from 'react';
 import { MotorConstants } from './MotorConstants';
+import { LossesCard } from './LossesCard';
+import { DqCard } from './DqCard';
 import type { MaterialCatalog, MotorConfig, SolveResult } from './model';
 import {
   electricalFrequencyHz,
@@ -10,6 +12,7 @@ import {
   sharedSparklinePaths,
   sparklinePath,
   torqueRange,
+  torqueRippleView,
 } from './resultMetrics';
 
 const TIMING_HELP = 'Solver time is the wall-clock time for meshing, solving and building the result. '
@@ -53,8 +56,9 @@ function LoadingBar({ label, valueT, scaleMaxT, knee }: { label: string; valueT:
 
 /**
  * The Results summary (#99 part B): the run settings and model assumptions as
- * one collapsed line (#110), the headline numbers with their conventions, motor constants beside
- * magnetic loading, and the run timings demoted to one footer line.
+ * one collapsed line (#110), the headline numbers with their conventions, motor constants, the
+ * d/q point and magnetic loading side by side, the losses below them, and the run timings
+ * demoted to one footer line.
  */
 export function ResultSummary({
   result,
@@ -72,6 +76,7 @@ export function ResultSummary({
   const rpm = config.solve_params.rated_speed_rpm;
   const preview = sixStep && !completeLoadedCycle ? ' · preview only' : '';
   const range = torqueRange(result.torque_waveform.torque_Nm);
+  const ripple = torqueRippleView(result);
   const sparkline = sparklinePath(result.torque_waveform.torque_Nm, SPARKLINE_WIDTH, SPARKLINE_HEIGHT);
   // Phases A, B and C on one scale, in the Back EMF chart's colours.
   const emfSparklines = sharedSparklinePaths(
@@ -130,8 +135,10 @@ export function ResultSummary({
               </svg>
             )}
           </div>
-          <p>
-            Ripple {fixed(summary.torque_ripple_pct, 1)}%{preview}
+          <p title={ripple.note ?? undefined}>
+            {ripple.ripplePct === null
+              ? `${ripple.peakToPeakLabel} ${fixed(ripple.peakToPeakNm)} N·m`
+              : `Ripple ${fixed(ripple.ripplePct, 1)}%`}{preview}
             {range ? ` · ${fixed(range.min)} – ${fixed(range.max)} N·m` : ''}
           </p>
         </article>
@@ -155,6 +162,11 @@ export function ResultSummary({
       </div>
       <div className="public-result-detail">
         <MotorConstants summary={summary} variant="report" />
+        <DqCard
+          dq={summary.dq_flux_linkage}
+          currentUnit={config.solve_params.current_amplitude_convention === 'peak' ? 'A peak' : 'A rms'}
+          variant="report"
+        />
         <section className="public-magnetic-loading" aria-labelledby={loadingHeadingId}>
           <h3 id={loadingHeadingId}>Magnetic loading</h3>
           <LoadingBar label="Peak tooth B" valueT={summary.peak_flux_density_teeth_T} scaleMaxT={scaleMaxT} knee={knee} />
@@ -165,6 +177,16 @@ export function ResultSummary({
           </p>
           <p>{thd != null && Number.isFinite(thd) ? `${thdLabel} ${fixed(thd, 1)}%` : 'Back-EMF THD: not computed for this run'}</p>
         </section>
+        {/* Full width below the three compact cards: the breakdown and its map side by side. */}
+        <LossesCard
+          loss={summary.loss_breakdown}
+          iron={summary.iron_loss}
+          density={result.iron_loss_density}
+          plot={result.field_line_plot}
+          winding={summary.winding_resistance}
+          slotCount={config.stator.slot_count}
+          variant="report"
+        />
       </div>
       <p className="public-result-timings" title={TIMING_HELP}>{timings.join(' · ')}</p>
     </div>

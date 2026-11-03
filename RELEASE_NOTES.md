@@ -1,96 +1,109 @@
-# coilEM 0.4.0 Developer Preview
+# coilEM 0.5.0 Developer Preview
 
-Prepared October 19, 2026. The source identifies as coilEM 0.4.0 and bundles
-Magneto2D 0.3.3. Final-candidate qualification, installed-wheel acceptance and
-publication are tracked in the [release plan](docs/RELEASE_0_4_0.md).
-The measurements below retain their original source commits; they are the
-baseline for the final candidate, not measurements of an untested tag.
+Prepared November 3, 2026. coilEM 0.5.0 is the performance release
+([public issue 143](https://github.com/coilemdev/coilem/issues/143)): it answers
+"does this motor meet my spec across its operating range?" with torque–speed,
+losses and efficiency. It bundles Magneto2D 0.4.0.
 
-## Motor model and solve changes
+The release is measured at clean candidate
+`88aae101fd487795e7fe5300737679f4133790fd` on Windows and macOS under
+[benchmark protocol 1.6.0](benchmarks/abcd-v1.6/README.md), and the
+[release qualification gate](benchmarks/v0.5.0/release-qualification.json)
+passes. Every new number either passes a reference gate or is labelled
+experimental with its reason. The [release plan](docs/RELEASE_0_5_0.md) has the
+full detail and the [evidence index](benchmarks/v0.5.0/README.md) every report.
 
-- Flux linkage credits the full slot-side turns. Fractional-slot concentrated
-  windings use a coil on each tooth, with the correct two-layer slot map and
-  parallel-path current. Sinusoidal current angle is measured from phase A's
-  own winding axis; ideal six-step uses the corresponding public sector table.
-  These corrections change affected results from 0.3.x. Recheck old comparisons
-  against the current winding model rather than expecting identical values.
-- Design exposes the supported winding layers and parallel paths and explains
-  invalid combinations. Distributed two-layer slots follow the physical
-  geometry in both meshing and visualization.
-- Precise is the qualified mesh-build default. Fast is a separate experimental
-  mesh-build control, independent of the Preview/Standard/High accuracy solve
-  plans; its lower construction cost does not establish numerical accuracy.
-- The motor-constants panel explains current and voltage conventions. Results
-  present Kt and Ke in datasheet units with SI values available, alongside the
-  stored operating point and model assumptions.
+## Torque–speed, efficiency and d/q
 
-## Exact Pyleecan Prius examples
+- Results has a **Torque–speed** tab. It solves a flux-linkage map over current
+  magnitude and angle (0° to 90°): 5 × 7 points on Preview, 7 × 10 on Standard.
+  The map shows its progress, can be cancelled, resumes from its finished
+  points and is reused for a lower peak current.
+- From the map it draws peak and continuous **torque–speed and power–speed
+  curves** for the entered DC bus, currents and top speed, each sample labelled
+  MTPA, field weakening or MTPV, with the solved point marked.
+- An **efficiency map** over the torque–speed plane, under MTPA or least-loss
+  control, and apparent Ld and Lq against current with the MTPA trajectory.
+- A **d/q card** in Results gives Ld, Lq, the saliency and the characteristic
+  current, then **Torque–λdq agreement**: the solved torque against
+  1.5·P·(λd·iq − λq·id), which includes reluctance torque.
 
-**Examples → Benchmarks** contains **Pyleecan Prius 8p48s · BEMF** and
-**Pyleecan Prius 8p48s · Loaded torque**. They load the pinned analytic geometry,
-explicit winding, magnet directions and embedded M400-50A curve:
+## Winding, losses and magnet temperature
 
-| Case | Reference operating point |
+- Design takes a wire, strands in hand, an end-turn extension and a winding
+  temperature, and shows the phase resistance, mean turn length and slot fill.
+  Without a wire, one is derived to fill 45% of the slot, and the app says so.
+- A **Losses** card gives copper loss, stator iron loss (hysteresis and eddy
+  current, teeth and yoke) and efficiency at the solved point, with a map of
+  where the loss is. Iron loss is available for M350-50A, and for M400-50A in
+  the pinned Pyleecan Prius. Solve takes a constant **mechanical loss**.
+- Solve takes a **magnet temperature**: Br and HcJ are derated linearly from
+  20 °C with the grade's cited coefficients for N35, N42, N48, N52 and N48SH.
+  Above a grade's rating the run carries a warning.
+- The Pyleecan Prius gains an iron loss and a copper loss from its published
+  conductor: 612 W iron, 6.72 kW copper and 90.9% efficiency at its loaded
+  point, with torque unchanged at 353.95 N·m.
+
+## Exports and smaller changes
+
+- The Torque–speed tab downloads a performance PDF and CSV, an id/iq table and
+  the map points. The run PDF and CSV add the d/q record, losses, efficiency,
+  winding and magnet temperature.
+- Every new output carries its status and reason in the UI, the PDFs and the
+  CSVs.
+- Kt is labelled per peak or per rms ampere everywhere
+  ([#153](https://github.com/coilemdev/coilem/issues/153)), and the Pyleecan
+  Prius's tooth and yoke widths display rounded
+  ([#154](https://github.com/coilemdev/coilem/issues/154)).
+- The nonlinear stopping test now measures the actual permeability mismatch
+  ([#11](https://github.com/coilemdev/coilem/issues/11)), and each result
+  records its convergence per position
+  ([Nonlinear convergence](docs/NONLINEAR_CONVERGENCE.md)). Showing it in
+  Results (#12) is planned for 0.5.1.
+
+## What is qualified
+
+| Output | Status |
 | --- | --- |
-| Tutorial BEMF | 1000 rpm, 20°C magnets, zero phase current |
-| Loaded torque | 2000 rpm, 60°C magnets, 250 A peak, Pyleecan d-axis Phi0 = 140° |
+| Torque and back EMF of the tested combinations | Qualified, as in 0.4.0, against the [reviewed protocol 1.6.0 references](benchmarks/reference-baselines/protocol16-reviewed-20261103/README.md) |
+| Phase resistance and copper loss, with a wire | Qualified by the hand-calculation gate |
+| Loaded λd and λq | Qualified for a qualified single-layer concentrated SPM or flat-buried IPM design under sinusoidal current at γ 0°–60° |
+| Magnet temperature derating | Qualified for a qualified design from 20 °C to 100 °C |
+| Ld, Lq, saliency, characteristic current | Experimental: the d/q gates do not bound them tightly |
+| Flux-linkage map, torque–speed, efficiency map, iron loss, efficiency | Experimental |
 
-The model identity, case ID, temperature and current conventions survive
-save/reopen and saved-run replay. The model geometry, winding and material
-are fixed; operating-point and accuracy experiments retain their actual
-requests. The 2D and 3D previews use the same analytic contours, including holes.
-The 3D preview is an extrusion of the 2D model, not a 3D field solve.
+The d/q and temperature gates measured up to twice their fixtures' current, at
+the derated Br; the grade coefficients are catalogue values. The owner set
+these scopes on November 3, 2026 ([decisions](benchmarks/v0.5.0/owner-decisions.json)).
+[Validation](docs/VALIDATION.md#050-performance-outputs) gives each output's
+claim boundary.
 
-The [conversion notice](THIRD_PARTY_NOTICES.md#pyleecan-prius-reference-data)
-records source attribution and modifications. Attribution travels with saved
-reference designs. There is no affiliation with or endorsement by EOMYS,
-the Pyleecan project, or Toyota. Software-model reproduction does not establish
-identity with the original paper or measured hardware accuracy.
+## Benchmark evidence
 
-## Layout, preview and results
+- **A/B/C/D, protocol 1.6.0:** 52 supported jobs on each platform. Windows and
+  macOS each record 46 PASS, the planned unsupported legacy ORNL Prius and
+  336/336 gates ([Windows](benchmarks/candidate-qualification-20261103/windows/report/benchmark_report.md),
+  [macOS](benchmarks/candidate-qualification-20261103/macos/report/benchmark_report.md)).
+  The two platform records match each other within 0.36 of their tolerances.
+- **References:** 46 FEMM 4.2 records; the 29 legacy cases reproduce the
+  0.4.0 references exactly. The owner accepted the reviewed bundle on
+  November 3, 2026.
+- **Pyleecan Prius:** the exact-candidate Windows collection passes all 10
+  software checks across 17 jobs and 568 field reports
+  ([report](benchmarks/candidate-qualification-20261103/prius/README.md)).
 
-- Layout shows the winding as a ring with coil-side direction markers and end
-  turns. Slot positions come from the actual preview polygons, including the
-  reflected Prius clockwise numbering. Long parallel branches wrap within the
-  panel, and the solver explanation opens without covering the wiring.
-- Phases shows a one-second A/B/C current scope connected to the motor. Generic
-  sinusoidal, six-step and Pyleecan d-axis conventions follow the selected
-  solve. Zero-current examples show flat traces and no energized tooth tint.
-- Tooth poles is an independent 2D toggle, and rotor magnets carry readable N/S
-  labels. Wheel zoom uses the same motor origin as the shifted Phases drawing.
-- Design health and Solve setup collapse to leave more room for the motor.
-  Completed results lead with key values and a three-phase back-EMF sparkline;
-  the detailed run settings remain available.
-- The field view uses a fixed 0–2.0 T flux-density scale, supports combined
-  stator/PM field lines and axes, and links field position to result curves.
-  These displays do not extend the numerical qualification scope.
-- Stored field images use lossless WebP layers, shared PM mesh data is stored
-  once, and replay archives are generated on download. Deleting a run also
-  removes its raw solver cache. Existing saved designs and runs remain readable.
-- Release hardening improves process interruption and native Gmsh handling.
-  Minimal Linux installations get an actionable missing-library diagnostic.
+Two fixes change numbers that 0.4.0 qualified: the slot current now comes from
+each coil side's meshed area, and the nonlinear stopping test is corrected.
+On the 24 loaded cases both releases measured:
 
-## Retained benchmark evidence
+| Group | Cases | Mean torque error vs FEMM | Worst torque error | Mean back-EMF error |
+| --- | ---: | --- | --- | --- |
+| A, SPM | 8 | 0.27% → 0.33% | 0.48% → 0.63% | 0.07% → 0.08% |
+| B, flat IPM | 6 | 0.34% → 0.31% | 0.64% → 0.66% | 0.33% → 0.30% |
+| B, V-shape IPM | 6 | 4.55% → 5.13% | 5.90% → 7.05% | 2.39% → 6.50% |
+| C, distributed | 4 | 2.67% → 2.87% | 4.90% → 5.20% | 0.18% → 0.23% |
 
-The [v0.4.0 evidence report](benchmarks/v0.4.0/README.md) links the full PDFs,
-HTML, JSON/CSV, fixtures, reference identities and reproduction commands.
-
-| Collection | Measured source | Retained outcome |
-| --- | --- | --- |
-| Windows native A/B/C/D, Precise | `5b6cb61` | 35 supported jobs; 28 PASS, 1 YELLOW, one planned unsupported legacy Prius row; every gate and value matches the preceding Windows report |
-| Fresh FEMM 4.2 repeat | `0417736` | 29/29 physical payloads and extraction audits exactly match the retained reference; 1h49m05s |
-| Pyleecan Prius software benchmark | `d993d76` | 17 jobs, 568 field reports, 10 original software checks pass; complete thirteen-angle curve and separate angular/Fine controls |
-
-Tutorial line RMS is 107.513838 V versus 107.558193 V in the retained software
-reference (−0.0412%). Loaded mean torque is 353.950530 Nm versus 354.953115 Nm
-in the matched FEMM control (−0.2825%). The largest mean difference across the
-thirteen tested angles is 0.6282% of FEMM peak. The full report preserves the
-upstream discrepancies and limits of the refinement controls.
-
-The historical [Honda Accord correlation](docs/hardware-validation/honda-accord-2005/real-winding-comparison/README.md)
-uses the blind N35 assumption and simplified rotor, with no pass/fail verdict.
-Its existing results are not a new 0.4.0 hardware qualification. Separate Prius
-hardware correlation (#69/#82) is deferred to v0.5.0.
+These are the macOS figures; Windows differs by at most 0.04 points.
 
 ## Installation and compatibility
 
@@ -101,46 +114,41 @@ uv tool install coilem
 coilem
 ```
 
-Use `uv tool upgrade coilem` to upgrade after publication. Until 0.4.0 is
-published, these commands continue to resolve the published release; source
-and rehearsal wheels identify their own build commit and version.
-See [Install](README.md#install) for platform requirements and source setup.
+Use `uv tool upgrade coilem` to upgrade. Until 0.5.0 is published, these
+commands resolve the published 0.4.0; source and rehearsal wheels identify
+their own build commit and version. See [Install](README.md#install) for
+platform requirements and source setup.
 
 Wheels bundle the UI and Magneto2D, with Python 3.11–3.15 support on Windows
-x64, macOS Apple silicon/Intel and Linux x86_64. The release rehearsal must
-validate this candidate on all four wheel targets before publication.
-The launcher normally serves at `http://127.0.0.1:2645`; browser-local state
-stays with its original origin/port, and saved motor runs stay in the OS
-user-data folder. New `.coilem` and existing `.openem` design files are supported.
-New saves record application version 0.4.0; immutable historical results and
-bundled example creation versions retain their original identities.
+x64, macOS Apple silicon/Intel and Linux x86_64. The launcher normally serves
+at `http://127.0.0.1:2645`; saved motor runs stay in the OS user-data folder.
+New `.coilem` and existing `.openem` design files are supported, and new saves
+record application version 0.5.0.
+
+`coilem benchmark` now runs protocol 1.6.0: about 6 minutes with `--quick`,
+about 2 hours in full.
 
 ## Qualification and remaining limits
 
-- Qualification covers the tested SPM and flat-buried IPM combinations in
-  [Validation](docs/VALIDATION.md#qualification-status), against matched FEMM
-  gates with M350-50A steel and Precise meshes. It is a fixture-based software
-  comparison, not a hardware certification.
-- V-shape IPM remains experimental. Its baseline peak back-EMF discrepancy is
-  14.778701% (YELLOW). Fast mesh, the fixed Prius references and unmeasured
-  combinations remain experimental. The legacy ORNL Prius matrix row remains
-  unsupported, distinct from the two exact Pyleecan examples.
-- The historical macOS record does not match the current physics-source guard.
-  Current macOS numerical parity needs a new full run. Linux and Python 3.15
-  full numerical parity are not established by hosted smoke/installation tests.
-- The frozen reference retains REVIEW_REQUIRED limitations, including steel
-  loss estimates, the Kt current base and peak-B sampling. Cogging, THD, losses,
-  thermal behavior and airgap harmonics are outside the qualification gates.
-- Six-step is an ideal wye current-commanded model without PWM, switching
-  ripple, dead time, startup or ESC dynamics. Motor results are 2D estimates.
-- Elmer is disabled, hidden, and not probed in the release environment;
-  `COILEM_ENABLE_ELMER=1` enables the separately installed development adapter.
-  FEMM is a data-only reference and is not bundled as a solver.
-- Halbach/tutorial workflows remain experimental. There is no dedicated
-  cogging results view, desktop installer, automatic update, hosted service,
-  account, telemetry or motor thermal solver in this release.
-
-The remaining release work is to freeze one clean versioned candidate, rerun
-A/B/C/D and the full Prius collection, validate the installed wheels, and retain
-that exact candidate identity with the reports and release assets. Tagging and
-publication follow review of those results.
+- Qualification is agreement with FEMM on the measured fixtures, with M350-50A
+  steel and Precise meshes; it is a software comparison, not a hardware
+  certification. Motor results are 2D estimates.
+- **V-shape IPM** stays experimental although all six fixtures pass: its mean
+  fundamental back-EMF error grew from 2.4% in 0.4.0 to 6.5%, and the
+  refined-reference control does not establish spatial convergence.
+- **Losses not modelled:** magnet and rotor eddy-current loss, AC copper loss
+  and inverter loss. Iron loss comes from guaranteed grade limits and covers
+  the stator only. Mechanical loss is one constant at every speed.
+- **Torque–speed** assumes sinusoidal steady-state current without inverter
+  drops, dead time, PWM ripple or overmodulation. The continuous curve is a
+  current limit, not a thermal rating; winding and magnet temperatures are
+  inputs, and irreversible demagnetisation is not modelled.
+- **Hardware correlation** with the ORNL Prius and Honda Accord is planned after
+  0.5.0. The legacy ORNL Prius benchmark row remains unsupported, distinct from
+  the exact Pyleecan Prius.
+- Six-step is an ideal current-commanded model. Fast mesh, the fixed Prius
+  references and unmeasured combinations remain experimental. Linux and
+  Python 3.15 full numerical parity are not established by the hosted tests.
+- Elmer is disabled and not probed in the release environment; FEMM is a
+  data-only reference and is not bundled. There is no thermal solver, desktop
+  installer, automatic update, hosted service, account or telemetry.

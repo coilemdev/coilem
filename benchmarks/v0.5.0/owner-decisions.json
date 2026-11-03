@@ -1,0 +1,53 @@
+{
+  "schema": "coilem.release_owner_decisions/v1",
+  "release": "0.5.0",
+  "decided_by": "coilEM project owner",
+  "decisions": [
+    {
+      "date": "2026-10-30",
+      "id": "hardware_correlation",
+      "decision": "Hardware correlation (ORNL Prius issues 69 and 82, Honda Accord) moves to after 0.5.0. It is not a qualification."
+    },
+    {
+      "date": "2026-10-30",
+      "id": "convergence_display",
+      "decision": "Showing nonlinear convergence in Results, PDF and CSV (issue 12) moves to 0.5.1. The convergence fix (issue 11) stays in 0.5.0."
+    },
+    {
+      "date": "2026-10-30",
+      "id": "solver_version",
+      "decision": "Magneto2D moves from 0.3.3 to 0.4.0, before the freeze, so the freeze measures the build that ships."
+    },
+    {
+      "date": "2026-11-03",
+      "id": "protocol16_references",
+      "decision": "The owner accepts the reviewed protocol 1.6.0 references for the registered gates, with the limitations their review records: legacy current-density and new series-circuit sources in their declared roles, and V-shape kept experimental.",
+      "reviewed_bundle": {
+        "path": "benchmarks/reference-baselines/protocol16-reviewed-20261103",
+        "manifest_sha256": "f3e1e525ea622285778becb126f4e909e72f3830a14292a23a26e0a081fc8c2e",
+        "review_sha256": "7e362e9cf2d031de149781f9b6e9066ed8bbc4cee19872d72e8418880d802661",
+        "bundle_sha256": "756ddf1e23417e502c6720e11010199bbf25692bc348b019b1b78c620ec1d4d8"
+      }
+    },
+    {
+      "date": "2026-11-03",
+      "id": "v_shape",
+      "decision": "V-shape IPM ships experimental although all six fixtures pass: its mean fundamental back-EMF error rose from 2.39% to 6.50%."
+    },
+    {
+      "date": "2026-11-03",
+      "id": "dq_and_magnet_temperature",
+      "decision": "Loaded lambda_d and lambda_q are qualified only for a qualified single-layer concentrated SPM or flat-buried IPM design under sinusoidal current at current angles from 0 to 60 degrees. Magnet derating is qualified only for a qualified design from 20 to 100 deg C. Both state that the benchmark measured up to twice its fixtures' current."
+    },
+    {
+      "date": "2026-11-03",
+      "id": "inductances",
+      "decision": "Apparent Ld and Lq, and the saliency and characteristic current from them, stay experimental even where lambda_d and lambda_q are qualified. The gate bounds each flux linkage within 3% of |lambda_dq|; at spm_8p12s_concentrated__dq_I20_g30 that band is 0.52 mWb against a 1.35 mWb change in lambda_d and a 2.46 mWb lambda_q."
+    },
+    {
+      "date": "2026-11-03",
+      "id": "loss_benchmark",
+      "decision": "The separate loss and efficiency benchmark moves to 0.5.1. Iron loss and efficiency ship experimental in 0.5.0."
+    }
+  ]
+}

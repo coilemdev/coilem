@@ -14,6 +14,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from backend.magnet_temperature import GRADE_TEMPERATURE
 from backend.material_contract import (
     ElectricalSteelCurveError,
     load_electrical_steel_curve,
@@ -202,7 +203,7 @@ def _magnet_model(
         model_revision=PUBLIC_MATERIAL_MODEL_REVISION,
         model_hash=_canonical_model_hash("linear_recoil", properties),
         properties=properties,
-        capabilities=PublicMaterialCapabilities(material_curve=True),
+        capabilities=PublicMaterialCapabilities(material_curve=True, temperature_dependence=material_id in GRADE_TEMPERATURE),
         curve=PublicMaterialCurve(
             x_quantity="field_strength",
             x_unit="A/m",
@@ -213,7 +214,11 @@ def _magnet_model(
         ),
         limitations=[
             "Straight recoil-line approximation used by the current local solver.",
-            "Demagnetization safety and temperature dependence are not evaluated.",
+            (
+                "A magnet temperature scales Br by the grade's cited reversible coefficient; demagnetization safety is not evaluated."
+                if material_id in GRADE_TEMPERATURE
+                else "Demagnetization safety and temperature dependence are not evaluated."
+            ),
         ],
         source=source,
     )

@@ -73,7 +73,10 @@ def test_real_workers_overlap_and_resume_preserves_results(tmp_path):
 @pytest.mark.parametrize("change", ["producer", "request", "result", "selection"])
 def test_resume_rejects_changed_sources_selection_and_evidence(tmp_path, change):
     args = arguments(producer(tmp_path, duration=0), tmp_path / "run")
-    assert execute(args) == 0
+    assert execute(args) == 0, [
+        {key: job.get(key) for key in ("case_id", "status", "error", "exit_code")}
+        for job in read(args.out_dir / "run_manifest.json")["jobs"]
+    ]
     manifest_path = args.out_dir / "run_manifest.json"
     manifest_sha = sha(manifest_path)
     first = read(manifest_path)["jobs"][0]

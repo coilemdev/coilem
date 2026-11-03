@@ -114,42 +114,45 @@ pub(super) fn setup_context(
     eprintln!("magneto2d: {}", operating_point.resolution_rule);
 
     let has_imported_current_density = has_imported_current_density_metadata(&solve_mesh_artifact);
-    let imported_mesh_input = is_imported_mesh_input(&mesh.info);
-    let slot_areas = if imported_mesh_input {
-        let imported_slot_areas = mesh_slot_areas_mm2(
-            &mesh,
-            &centroids,
-            config.stator.slot_count,
-            config.rotor.pole_count,
-        );
-        let populated_slots = imported_slot_areas
-            .iter()
-            .filter(|area_mm2| **area_mm2 > 1.0e-9)
-            .count();
-        if populated_slots == imported_slot_areas.len() && !imported_slot_areas.is_empty() {
-            eprintln!(
-                "magneto2d: imported mesh current normalization uses mesh slot areas ({} slots)",
-                imported_slot_areas.len(),
-            );
-            imported_slot_areas
-        } else {
-            if has_imported_current_density {
-                eprintln!(
-                    "magneto2d: imported mesh slot areas incomplete ({}/{} populated); imported current densities bypass analytical slot areas",
-                    populated_slots,
-                    imported_slot_areas.len(),
-                );
-                imported_slot_areas
-            } else {
-                eprintln!(
-                    "magneto2d: imported mesh slot areas incomplete ({}/{} populated); using analytical slot areas",
-                    populated_slots,
-                    imported_slot_areas.len(),
-                );
-                machine.slot_areas().map_err(|err| err.to_string())?
-            }
-        }
+    let mesh_label = if is_imported_mesh_input(&mesh.info) {
+        "imported"
     } else {
+        "native"
+    };
+    // Every mesh normalizes slot current by its own meshed slot area, so a slot
+    // carries exactly N*I/paths whatever its shape. The analytical trapezoid
+    // ignores tooth shoes (it overstated a shoed 8p12s slot by 4.6%) and is
+    // only the fallback for a mesh that lacks some slots' winding elements.
+    let meshed_slot_areas = mesh_slot_areas_mm2(
+        &mesh,
+        &centroids,
+        config.stator.slot_count,
+        config.rotor.pole_count,
+    );
+    let populated_slots = meshed_slot_areas
+        .iter()
+        .filter(|area_mm2| **area_mm2 > 1.0e-9)
+        .count();
+    let slot_areas = if populated_slots == meshed_slot_areas.len() && !meshed_slot_areas.is_empty()
+    {
+        eprintln!(
+            "magneto2d: {mesh_label} mesh current normalization uses mesh slot areas ({} slots)",
+            meshed_slot_areas.len(),
+        );
+        meshed_slot_areas
+    } else if has_imported_current_density {
+        eprintln!(
+            "magneto2d: {mesh_label} mesh slot areas incomplete ({}/{} populated); imported current densities bypass analytical slot areas",
+            populated_slots,
+            meshed_slot_areas.len(),
+        );
+        meshed_slot_areas
+    } else {
+        eprintln!(
+            "magneto2d: {mesh_label} mesh slot areas incomplete ({}/{} populated); using analytical slot areas",
+            populated_slots,
+            meshed_slot_areas.len(),
+        );
         machine.slot_areas().map_err(|err| err.to_string())?
     };
 

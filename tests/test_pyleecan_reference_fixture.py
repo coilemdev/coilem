@@ -12,6 +12,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+from backend.benchmark_suite.physics import physics_sources
 from backend.excitation import resolve_phase_current_sample
 from backend.geometry_drawer import compute_geometry
 from backend.geometry_ir import build_geometry_ir
@@ -59,7 +60,7 @@ def test_operating_point_is_editable_and_only_exact_reference_bypasses_generic_o
     monkeypatch.setenv("COILEM_EXPERIMENTAL_ROTORS", "1")
     assert parse_public_motor_config(payload).solve_params.current_angle_deg == 60
     ordinary = json.loads((ROOT / "tests/fixtures/spm_4p12s_simple.json").read_text())
-    ordinary["solve_params"]["magnet_temperature_C"] = 60
+    ordinary["solve_params"]["magnet_temperature_C"] = 150  # beyond N42's linear range
     with pytest.raises(PublicConfigError, match="temperature"):
         parse_public_motor_config(ordinary)
     ordinary["solve_params"]["magnet_temperature_C"] = None
@@ -269,6 +270,9 @@ def test_exact_winding_linkage_is_dual_to_the_applied_mesh_current():
     currents = artifact["physics_contract"]["provenance"]["phase_current_A"]
     for row in report["results"]["slot_excitation_contributions"]:
         assert row["phase_current_a"] == pytest.approx(currents["ABC".index(row["phase"])], abs=1e-10)
+    # The position's phase currents are the published ones, so the d/q record sees the load.
+    assert report["results"]["phase_current_a"] == pytest.approx(currents)
+    assert abs(currents[0]) + abs(currents[1]) + abs(currents[2]) > 1.0
     # Gauge invariance follows from the signed, balanced turns of each phase.
     shifted = {"results": {}, "field_plot": {"az_nodal": (az + .3).tolist()}}
     prius.extract_winding_report(shifted, cfg, artifact)
@@ -294,22 +298,34 @@ def test_published_app_evidence_keeps_complete_actual_grids_and_its_measured_sou
     report = json.loads((folder / "app-results.json").read_text(encoding="utf-8"))
     registration = json.loads((folder / "app-registration.json").read_text(encoding="utf-8"))
     assert registration["complete"] is True and registration["source_dirty"] is False
-    assert report["field_source_commit"] == registration["source_commit"]
+    assert registration["schema"] == "coilem.pyleecan_prius_app_benchmark/v2"
+    assert report["field_source_commit"] == registration["source_commit"] == "88aae101fd487795e7fe5300737679f4133790fd"
+    assert report["field_source_dirty"] is False
     assert report["registration_sha256"] == hashlib.sha256((folder / "app-registration.json").read_bytes()).hexdigest()
     assert report["protocol_sha256"] == hashlib.sha256((folder / "protocol.json").read_bytes()).hexdigest()
-    # The original v1 collector/analyzer versions remain accessible at
-    # 377ea0ccb1e2d3b02cd17012c1e04ec424e43df1 before tooling hardening.
-    # Preserve those historical tool identities; current numerical sources
-    # below must still match. Collection-only fixes do not restamp old fields.
-    assert report["analysis_runner_sha256"] == "97ba2c2c2921161f868ca05b9eeab903c66bbbb40e88b5555b006db95984a274"
+    assert report["analysis_runner_sha256"] == hashlib.sha256((ROOT / "tools/report_prius_benchmark.py").read_bytes()).hexdigest()
     assert report["source_sha256"] == registration["source_sha256"]
-    for name, digest in report["source_sha256"].items():
-        if name == "tools/benchmark_prius.py":
-            assert digest == "6acec522ac60bdeeea110667c3d9b3a3c539ae6c526f86cee538c032ccc78c0c"
-        else:
-            assert hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == digest, name
+    # Publication necessarily updates the snapshot. Keep the original
+    # before-field snapshot identity, rather than restamping the run.
+    assert report["source_sha256"]["snapshot-manifest.json"] == "030e04373a88fcf1dd6d02bd6d536e927846b26cd55901c44d3420441258057b"
+    # The full identity stays recorded; the field-affecting sources the release
+    # gate guards (tools/release/qualification.py) must still match it exactly.
+    from tools.release.qualification import PRIUS_EXTRA_PHYSICS
+
+    guarded = set(physics_sources(ROOT)) | set(PRIUS_EXTRA_PHYSICS)
+    assert guarded <= set(report["source_sha256"])
+    for name in sorted(guarded):
+        assert hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == report["source_sha256"][name], name
     for name, digest in report["historical_evidence_sha256"].items():
         assert hashlib.sha256((folder / name).read_bytes()).hexdigest() == digest, name
+    assert report["grading_provenance"]["frozen_before_fields"] is True
+    assert report["convergence_audit"]["analysis_policy_frozen_at_collection"] is False
+    assert report["convergence_audit"]["limit"] == 1e-8
+    assert all(a["max_final_residual"] < 1e-8 and a["all_recorded_native_stopping_tests_pass"] for a in report["audits"].values())
+    interrupted = [name for name, state in registration["job_states"].items()
+                   for attempt in state["attempts"] if attempt["status"] == "INTERRUPTED"]
+    assert sorted(interrupted) == ["curve-120-16", "tutorial-bemf-100"]
+    assert all(state["status"] == "COMPLETE" for state in registration["job_states"].values())
     assert report["all_software_checks_pass"] and all(report["checks"].values())
     assert len(report["checks"]) == 10 and len(report["jobs"]) == 17
     assert sum(a["actual_loaded_fields"] for a in report["audits"].values()) == 436

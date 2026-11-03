@@ -228,6 +228,10 @@ export function SolvedFieldViewer({
   );
   const [view, setView] = useState<FieldView>('resultant');
   const overlayActive = view === 'stator_pm';
+  const fieldAxes = useMemo(() => ({
+    ...CLOCKWISE_FIELD_AXES,
+    currentAngleDeg: config.solve_params.excitation_mode === 'sinusoidal' ? config.solve_params.current_angle_deg : null,
+  }), [config.solve_params.excitation_mode, config.solve_params.current_angle_deg]);
   // Stator + PM loads, caches and plays the stator field as Stator only does;
   // the PM frame at the same position loads beside it.
   const source: FieldSource = overlayActive ? 'armature' : view;
@@ -1170,7 +1174,7 @@ export function SolvedFieldViewer({
               onViewportScaleSettled={setFieldViewportScale}
               overlay={fieldLineOverlay}
               pmLines={source === 'pm'}
-              fieldAxes={overlayActive ? CLOCKWISE_FIELD_AXES : null}
+              fieldAxes={overlayActive ? fieldAxes : null}
               navigationSlot={zoomSlot}
             />
           </>

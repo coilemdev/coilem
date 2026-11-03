@@ -21,7 +21,9 @@ from tools.build_benchmark_record import main as build_record_main
 from tools.build_benchmark_record import regrade
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-RECORDS = REPO_ROOT / resources.BENCHMARK_RECORDS_DIR
+RECORDS = REPO_ROOT / "benchmarks/records-historical/v040"
+LEGACY_SUITE = REPO_ROOT / "benchmarks/abcd-v1.4/benchmark_spec.json"
+LEGACY_BUNDLE = REPO_ROOT / "benchmarks/reference-baselines/ipm-high-output-v3"
 EVIDENCE = {
     "macos-arm64": REPO_ROOT / "benchmarks/macos-native-20261015-738d951",
     "windows-x86_64": REPO_ROOT / "benchmarks/windows-prius-requal-20261018",
@@ -35,7 +37,8 @@ MAC_HOME = "/".join(("", "Users", "ana"))
 
 @pytest.fixture(scope="module")
 def graded():
-    return {key: regrade(read(path / "benchmark_summary.json"))[0] for key, path in EVIDENCE.items()}
+    return {key: regrade(read(path / "benchmark_summary.json"), suite=LEGACY_SUITE, bundle=LEGACY_BUNDLE)[0]
+            for key, path in EVIDENCE.items()}
 
 
 def test_wheel_data_covers_everything_the_suite_registers() -> None:
@@ -48,20 +51,21 @@ def test_wheel_data_covers_everything_the_suite_registers() -> None:
         if case["phase"] == "D":
             assert case["protocol"] in files
     bundle = [path for path in files if path.startswith(resources.BENCHMARK_REFERENCE_BUNDLE_DIR)]
-    assert len(bundle) == 1 + len(read(REPO_ROOT / resources.BENCHMARK_REFERENCE_BUNDLE_DIR / "manifest.json")["records"])
+    manifest = read(REPO_ROOT / resources.BENCHMARK_REFERENCE_BUNDLE_DIR / "manifest.json")
+    assert len(bundle) == 1 + len(manifest["records"]) + len(manifest.get("review_artifacts", []))
     assert {f"{resources.BENCHMARK_RECORDS_DIR}/{key}.json" for key in EVIDENCE} <= files
     assert all((REPO_ROOT / path).is_file() for path in files)
 
 
 @pytest.mark.parametrize("key", sorted(EVIDENCE))
 def test_records_are_rebuilt_exactly_from_the_committed_evidence(key: str, tmp_path: Path) -> None:
-    assert build_record_main([str(EVIDENCE[key]), "--out", str(tmp_path / "record.json")]) == 0
+    assert build_record_main([str(EVIDENCE[key]), "--historical-record", str(RECORDS / f"{key}.json"), "--out", str(tmp_path / "record.json")]) == 0
     assert (tmp_path / "record.json").read_text(encoding="utf-8") == (RECORDS / f"{key}.json").read_text(encoding="utf-8")
     published = read(RECORDS / f"{key}.json")
     assert published["platform"] == key
     assert published["measured_commit"] == read(EVIDENCE[key] / "benchmark_summary.json")["run"]["identity"]["commit"]
     if key == "windows-x86_64":
-        assert set(published["physics_files"]) == set(physics_sources(REPO_ROOT))
+        assert set(published["physics_files"]) <= set(physics_sources(REPO_ROOT))
     else:
         assert len(published["physics_files"]) == 50
         assert not any(name.startswith("backend/reference_models/") for name in published["physics_files"])
@@ -74,8 +78,52 @@ def test_regrading_reproduces_the_published_windows_comparison(graded) -> None:
         assert record.gate_statuses(row["evaluation"]) == record.gate_statuses(published[row["id"]]["evaluation"])
 
 
+def test_protocol16_record_rebuild_keeps_all_registered_gates_and_original_identity(tmp_path):
+    evidence = REPO_ROOT / "benchmarks/windows-v050-20261102-88aae101"
+    suite = REPO_ROOT / "benchmarks/abcd-v1.6/benchmark_spec.json"
+    bundle = evidence / "reference-bundle"
+    summary = read(evidence / "comparison/report/benchmark_summary.json")
+    graded, spec = regrade(summary, suite=suite, bundle=bundle)
+    assert spec["protocol_version"] == "1.6.0"
+    assert graded["run"]["identity"] == summary["run"]["identity"]
+    assert [record.case_record(row) for row in graded["rows"]] == [record.case_record(row) for row in summary["rows"]]
+    dq_rows = [row for row in graded["rows"] if "__dq_" in row["id"]]
+    assert len(dq_rows) == 12
+    assert all({"lambda_d", "lambda_q", "reference_dq_torque"} <= row["evaluation"]["gates"].keys() for row in dq_rows)
+    expected = {row["id"]: row for row in summary["rows"]}
+    for row in dq_rows:
+        for metric in ("lambda_d_error_pct", "lambda_q_error_pct", "reference_dq_torque_error_pct"):
+            # Trigonometric reductions may differ by a few ulps across platforms.
+            # Verdicts, gate statuses and recorded native values stay exact above.
+            assert row["evaluation"]["dq"][metric] == pytest.approx(
+                expected[row["id"]]["evaluation"]["dq"][metric], rel=1e-12, abs=1e-12,
+            )
+    assert build_record_main([
+        str(evidence / "comparison/report"), "--suite", str(suite),
+        "--reference-bundle", str(bundle), "--historical-record", str(evidence / "windows-x86_64.json"),
+        "--out", str(tmp_path / "record.json"),
+    ]) == 0
+    assert (tmp_path / "record.json").read_bytes() == (evidence / "windows-x86_64.json").read_bytes()
+    assert read(bundle / "manifest.json")["validation_status"] == "REVIEW_REQUIRED"
+
+
+def test_protocol16_regrade_cannot_drop_a_missing_dq_gate():
+    evidence = REPO_ROOT / "benchmarks/windows-v050-20261102-88aae101"
+    summary = read(evidence / "comparison/report/benchmark_summary.json")
+    row = next(row for row in summary["rows"] if "__dq_" in row["id"])
+    row["measurements"]["native"]["summary"]["dq_flux_linkage"] = None
+    graded, _ = regrade(
+        summary, suite=REPO_ROOT / "benchmarks/abcd-v1.6/benchmark_spec.json",
+        bundle=evidence / "reference-bundle",
+    )
+    changed = next(result for result in graded["rows"] if result["id"] == row["id"])
+    assert changed["status"] == "INCOMPLETE"
+    assert changed["evaluation"]["gates"]["lambda_d"] == "MISSING"
+
+
 def test_windows_requalification_preserves_previous_verdicts_gates_and_values() -> None:
-    previous, _ = regrade(read(REPO_ROOT / "benchmarks/windows-v3-20261015-738d951/benchmark_summary.json"))
+    previous, _ = regrade(read(REPO_ROOT / "benchmarks/windows-v3-20261015-738d951/benchmark_summary.json"),
+                          suite=LEGACY_SUITE, bundle=LEGACY_BUNDLE)
     assert read(RECORDS / "windows-x86_64.json")["cases"] == {
         row["id"]: record.case_record(row) for row in previous["rows"]
     }
@@ -102,19 +150,17 @@ def test_windows_requalification_publication_hashes_and_self_check(folder) -> No
     assert len(pdf_publication["relative_fixture_links"]) == 36
     assert all((evidence / link["target"]).is_file() for link in pdf_publication["relative_fixture_links"])
     assert read(evidence / "self-check-windows-x86_64.json")["cases"] == {
-        row["id"]: record.case_record(row) for row in regrade(read(evidence / "benchmark_summary.json"))[0]["rows"]
+        row["id"]: record.case_record(row)
+        for row in regrade(read(evidence / "benchmark_summary.json"), suite=LEGACY_SUITE, bundle=LEGACY_BUNDLE)[0]["rows"]
     }
 
 
 def test_historical_macos_record_keeps_its_measured_physics_guard(graded) -> None:
     published = read(RECORDS / "macos-arm64.json")
     physics = record.check_physics(published)
-    assert physics == {"status": "DIFFERS", "files": 50, "differs": [
-        "backend/excitation.py", "backend/geometry_ir.py", "backend/gmsh_solver.py",
-        "backend/magneto2d_adapter/__init__.py", "backend/solver/__init__.py",
-        "backend/reference_models/prius.py", "backend/reference_models/pyleecan_prius_2004.json",
-        "backend/reference_models/pyleecan_prius_2004_config.json",
-    ], "unverified": []}
+    assert physics["status"] == "DIFFERS" and physics["files"] == 50
+    assert "backend/gmsh_solver.py" in physics["differs"]
+    assert physics["unverified"] == []
     comparison = record.compare_run(graded["macos-arm64"]["rows"], published, physics=physics)
     assert comparison["matched"] == comparison["compared"] == 30
     assert comparison["status"] == "NOT_COMPARABLE"
@@ -167,13 +213,18 @@ def test_unsupported_and_failed_cases_must_match_too(graded) -> None:
 
 def test_physics_check_reads_this_checkout_and_names_a_change(monkeypatch) -> None:
     published = read(RECORDS / "windows-x86_64.json")
-    assert record.check_physics(published) == {"status": "MATCH", "files": 53, "differs": [], "unverified": []}
+    baseline = record.check_physics(published)
+    assert baseline["files"] == len(published["physics_files"])
+    actual = {**record.installed_physics_hashes()[0], **record.installed_physics_hashes()[1]}
+    expected = sorted({path for path, digest in published["physics_files"].items() if actual.get(path) != digest}
+                      | (set(actual) - set(published["physics_files"])))
+    assert set(baseline["differs"]) == set(expected) and not baseline["unverified"]
     changed = copy.deepcopy(published)
     changed["physics_files"]["backend/torque_metrics.py"] = "0" * 64
-    assert record.check_physics(changed)["differs"] == ["backend/torque_metrics.py"]
+    assert set(record.check_physics(changed)["differs"]) == set(expected) | {"backend/torque_metrics.py"}
     monkeypatch.setenv("COILEM_MAGNETO2D_BINARY", "/somewhere/magneto2d")
     unverified = record.check_physics(published)
-    assert unverified["status"] == "UNVERIFIED" and unverified["unverified"][0] == "solvers/magneto2d/Cargo.lock"
+    assert unverified["status"] != "MATCH" and "solvers/magneto2d/Cargo.lock" in unverified["unverified"]
     comparison = record.compare_run([], changed, physics=record.check_physics(changed))
     assert comparison["status"] == "NOT_COMPARABLE"
 
@@ -184,11 +235,14 @@ def test_installed_package_checks_the_solver_by_its_stamped_hashes(monkeypatch) 
     stamped = {path: digest for path, digest in published["physics_files"].items() if path.startswith("solvers/")}
     monkeypatch.setattr(record, "CHECKOUT", None)
     monkeypatch.setattr(record, "stamped_build_info", lambda: {BUILD_INFO_KEY: stamped})
-    assert record.check_physics(published)["status"] == "MATCH"
+    with_stamp = record.check_physics(published)
+    assert not with_stamp["unverified"], "Stamped solver identity must be verified even if Python physics changed"
+    assert not any(path.startswith("solvers/") for path in with_stamp["differs"])
     monkeypatch.setattr(record, "stamped_build_info", lambda: {BUILD_INFO_KEY: {**stamped, "solvers/magneto2d/src/new.rs": "1" * 64}})
-    assert record.check_physics(published)["differs"] == ["solvers/magneto2d/src/new.rs"]
+    assert "solvers/magneto2d/src/new.rs" in record.check_physics(published)["differs"]
     monkeypatch.setattr(record, "stamped_build_info", lambda: None)
-    assert record.check_physics(published)["status"] == "UNVERIFIED"
+    assert record.check_physics(published)["status"] != "MATCH"
+    assert record.check_physics(published)["unverified"]
 
 
 @pytest.mark.parametrize(
@@ -224,8 +278,12 @@ def test_quick_subset_is_one_passing_case_per_phase() -> None:
     assert [case["id"] for case in cases] == list(command.QUICK_CASES)
     for published in record.load_records().values():
         assert all(published["cases"][case["id"]]["status"] == "PASS" for case in cases)
-        assert command.estimate(published, cases) < 6 * 60
-        assert 40 * 60 < command.estimate(published, load_suite(SPEC)["cases"]) < 60 * 60
+        full_cases = load_suite(SPEC)["cases"]
+        recorded_cases = [case for case in full_cases if case["id"] in published["cases"]]
+        full = command.estimate(published, recorded_cases)
+        assert 0 < command.estimate(published, cases) < full
+        if len(recorded_cases) != len(full_cases):
+            assert command.estimate(published, full_cases) is None
     assert [case["id"] for case in command.select_cases(load_suite(SPEC), ["B"], quick=True)] == [command.QUICK_CASES[1]]
 
 

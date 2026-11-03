@@ -1,0 +1,39 @@
+{
+  "scope": "Artifact integrity and completed-report checks; numerical verdicts are preserved.",
+  "status": "PASS",
+  "observed_at": "2026-11-02T19:41:46.377676+00:00",
+  "candidate_commit": "88aae101fd487795e7fe5300737679f4133790fd",
+  "native_jobs": {
+    "COMPLETE": 52,
+    "UNSUPPORTED": 1
+  },
+  "reference_records": 46,
+  "reference_validation_status": "REVIEW_REQUIRED",
+  "bundle_sha256": "c96b5e7948aea74bcf7943d584db85b874a2d4e887e0637c84e59e98c8dfd31a",
+  "numerical_status": "PASS_WITH_UNSUPPORTED",
+  "case_counts": {
+    "PASS": 46,
+    "UNSUPPORTED": 1
+  },
+  "gate_counts": {
+    "PASS": 336
+  },
+  "dq_reference_self_check_counts": {
+    "PASS": 12
+  },
+  "mac_compared_jobs": 52,
+  "mac_metrics_outside_platform_tolerances": 0,
+  "current_native_identity_matches": true,
+  "verified_local_html_links": 103,
+  "valid_svg_charts": 189,
+  "artifact_sha256": {
+    "native/run_manifest.json": "22b6b58b66906d9f11f4d4014b1e713b1cb9b8cc465f1271fc1bd3eef04ef1f5",
+    "reference-bundle/manifest.json": "71afbb5d50551c1ac22f9e502e61f96e2f726bb3331286fc53edec012e416da1",
+    "comparison/comparison_manifest.json": "c5e84ed981c938d129f84779ab806210e4260ef93d802c6856e6088c031f768b",
+    "comparison/report/benchmark_summary.json": "e5bf43e47b7439b7bad0f01f69a1d34a4db8cd0a8dc79e059bb56c7db8c56340",
+    "comparison/report/coilem_benchmark_report.html": "e906ecd4713f93904672b99e022819856c4d11f67dbc38a4115b554cbbb41411",
+    "comparison/report/benchmark_results.csv": "59ee4cf9e76fe1d80c73bde6069c30004f4bec0fe4c98d4ccb1efdb3fa66dd4d",
+    "macos-comparison.json": "e18a35d10867e82fb6dcc2ac8f523dc372eb1b18fd56aeb241a52fa03c2df865",
+    "vshape-convergence-control.json": "0e92e4b0dc319d205486f60ba5b5db36e06f93b1c7a7abc5f1c3f33086aa2cf0"
+  }
+}

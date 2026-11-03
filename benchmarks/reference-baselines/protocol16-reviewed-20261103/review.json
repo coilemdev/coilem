@@ -1,0 +1,855 @@
+{
+  "schema": "coilem.protocol16_reference_review/v1",
+  "decision": "ACCEPTED_FOR_REGISTERED_PARITY",
+  "reviewer": {
+    "name": "Codex assistant",
+    "method": "code and raw-data review requested by the owner",
+    "independence": "Same assistant that prepared the earlier evidence; no independent human or laboratory approval is implied."
+  },
+  "parent_manifest_sha256": "71afbb5d50551c1ac22f9e502e61f96e2f726bb3331286fc53edec012e416da1",
+  "parent_bundle_sha256": "c96b5e7948aea74bcf7943d584db85b874a2d4e887e0637c84e59e98c8dfd31a",
+  "reference_commit": "faced858937e93740ddf7f6f3583a3ad5ec35646",
+  "suite_sha256": "60fb1c5353c8678ef210c997cf39ddcf20ce4bf81ebd8e419c962fc6d5c6fb37",
+  "accepted_scope": "Data-only references for the registered protocol 1.6 torque/EMF comparisons, 12 loaded flux-vector points and four declared-Br temperature cases.",
+  "limits": [
+    "Legacy density sources preserve their measured area/NI approximation; no fitted correction is applied.",
+    "V-shape accuracy remains experimental and its mixed version change is retained.",
+    "A single refined control does not establish spatial convergence.",
+    "No qualification of inductances, maps, losses, thermal behavior, catalogue coefficients or hardware performance."
+  ],
+  "primary_documentation": [
+    {
+      "url": "https://www.femm.info/Archives/doc/manual.pdf",
+      "sections": [
+        "2.2.7 circuit properties and signed turns",
+        "3.3.4 circuit construction",
+        "3.4.1 block integrals and circuit flux"
+      ]
+    }
+  ],
+  "source_normalization": "Series circuits use signed block turns and branch current I/a. Circuit linkage is divided by a for terminal linkage. This is a declared balanced-parallel-path model, not fitted scaling.",
+  "collections": [
+    {
+      "manifest_sha256": "71344bc01ab2d771000d673f304b5dd3fe32419713be3cb72328e46848039d4b",
+      "identity_sha256": "0af7a09de62f79f7c2638644707ff8147d5da897210df9f397d681b6d262fd20"
+    },
+    {
+      "manifest_sha256": "8dffdd993b95e6f1e21521580ef978cb61ce97eebbc2c465a6883aafda14bc9b",
+      "identity_sha256": "0af7a09de62f79f7c2638644707ff8147d5da897210df9f397d681b6d262fd20"
+    }
+  ],
+  "supported_records": 46,
+  "legacy_exact_records": 29,
+  "circuit_records": 13,
+  "max_legacy_ideal_NI_deviation_pct": 0.5252921938469853,
+  "max_circuit_ideal_NI_deviation_pct": 4.86330866453653e-13,
+  "max_reference_dq_torque_error_pct": 1.1424706928243467,
+  "cases": {
+    "spm_8p12s_example_shoed": {
+      "case_id": "spm_8p12s_example_shoed",
+      "raw_result_sha256": "388bbf3709f6ccea6ea63de4a317544015e07c9eb891dfe1738303552cb1b566",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 2,
+      "method": "explicit_series_circuits",
+      "max_ideal_NI_deviation_pct": 4.623585631336718e-13
+    },
+    "spm_8p12s_concentrated__dq_I20_g30": {
+      "case_id": "spm_8p12s_concentrated__dq_I20_g30",
+      "raw_result_sha256": "4dc7231934e15518b80501fd21f842101fa7b9659f170fbb50326714b71fe1f9",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "explicit_series_circuits",
+      "max_ideal_NI_deviation_pct": 4.5363994489972505e-13,
+      "reference_dq_torque_error_pct": 0.10925595303376667
+    },
+    "spm_4p12s_simple__baseline": {
+      "case_id": "spm_4p12s_simple__baseline",
+      "raw_result_sha256": "280a1481cca86246e313063f79ad43f31387099730a87e29531b0092824b93f4",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.17017419559257935,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "ffa09ebcefd21b3ce7c10deabe940c0e72147184442f09cdcb7c82db1760c2b8"
+    },
+    "spm_4p12s_simple__high_current": {
+      "case_id": "spm_4p12s_simple__high_current",
+      "raw_result_sha256": "b70364d37869fc0e14a1d038c90d3084098910037e4684b19ca642c870e57602",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.17017419559256566,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "8b6ea3d8ac0fd23e2f7ee40093e9ebaccda40026d645a68f965ca481226ef6b6"
+    },
+    "spm_4p12s_simple__tight_airgap": {
+      "case_id": "spm_4p12s_simple__tight_airgap",
+      "raw_result_sha256": "ea82613572d49688a1a2065d38371afce7c2e35b7d80019069cb917feb3706bc",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.1701741955925841,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "5ed3c06c8f79e5dfa0ac8a3021fbbb9eba00281f5dda8e3be0b29446c0d12d81"
+    },
+    "spm_4p12s_simple_noload__baseline": {
+      "case_id": "spm_4p12s_simple_noload__baseline",
+      "raw_result_sha256": "fb39a45b85d497bc786863accc4c65b964cf460abba95454ecf560f36f0bbd07",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.0,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "493e1e05204f2de8819a7a6e02edfa06162b5cf524bbe3c332ba00a7ff414b50"
+    },
+    "spm_4p12s_simple_noload__high_current": {
+      "case_id": "spm_4p12s_simple_noload__high_current",
+      "raw_result_sha256": "24392ac872d79ffd0f4bad5fb8e535bc633c553ed99c01ca9c86b70292729822",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.17017419559257285,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "7c6d6e8b0fbdb5b4ab0173316db368f420876b8ed2fb42085239c006f6a02fc1"
+    },
+    "spm_4p12s_simple_noload__tight_airgap": {
+      "case_id": "spm_4p12s_simple_noload__tight_airgap",
+      "raw_result_sha256": "803edc9e8d8f8d77fbf80a73d01bbf26475b282c492acd34473ea8f47d088f23",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.0,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "d8298d33da30f706829ddb8db03c8fd0f37a92b17e62ae076511d5a88080d9f6"
+    },
+    "spm_8p12s_concentrated__baseline": {
+      "case_id": "spm_8p12s_concentrated__baseline",
+      "raw_result_sha256": "ac25471c1351e8dbb3f0a6e2db13fd1a23ad033dec0edc26456b946229d557a1",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.40324176133703815,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "c208cb17e7580b0e944aede1382a5c063ecdfcf4fa189e5d94763d8ea9606238"
+    },
+    "spm_8p12s_concentrated__high_current": {
+      "case_id": "spm_8p12s_concentrated__high_current",
+      "raw_result_sha256": "19502cd19c93896345251727bd65dceaa5bf3cbe499f90b2a8ee70e47bf1cb17",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.40324176133703016,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "01409ee2d67b7aab4f58877bb9b395305814b8887fd254ebf5e1f38e1c70912f"
+    },
+    "spm_8p12s_concentrated__tight_airgap": {
+      "case_id": "spm_8p12s_concentrated__tight_airgap",
+      "raw_result_sha256": "de6645431a52a29d17633d189cc1df996ba5dee0bdefe2ea74a0d13f9bede424",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.40324176133703815,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "b6d8b9d20961a1ff88d6c79906d3e1fde389cb35baec7d3fd2eb2f6ddf74ee7c"
+    },
+    "spm_8p12s_reference_angle30__baseline": {
+      "case_id": "spm_8p12s_reference_angle30__baseline",
+      "raw_result_sha256": "238a042425fec9c58b4380ca9baf617d8409f8a029171f0ae29f6bd4e49b5223",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.22772940587376195,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "4988a526cc3359609ac94eff1340fc760864845d59b77766012884d8bbf5b6c9"
+    },
+    "ipm_flat_12s10p_fscw_contract": {
+      "case_id": "ipm_flat_12s10p_fscw_contract",
+      "raw_result_sha256": "3a84f7f36c9d6d0af44500b991098002ecc7de9c7f3c37fb0ac201320b1e04fb",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.5252921938469853,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "95941452576eb6acfc519862987f22e831cbe61617c5edbcac590b41b3a5c220"
+    },
+    "ipm_flat_24s16p_industrial_contract": {
+      "case_id": "ipm_flat_24s16p_industrial_contract",
+      "raw_result_sha256": "38d26cf9d9f72e6b57d6f910cddf533ac71d8cc2bd80f059e3d21e116894633b",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 1152,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.03741165531790002,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "aa10e43af32b4570eb8c0c83846bfd4125663c12fd31b0d5a2a38ddf2c92a7fe"
+    },
+    "ipm_flat_4p12s_micro_contract": {
+      "case_id": "ipm_flat_4p12s_micro_contract",
+      "raw_result_sha256": "e0804b22b64105ffca9b66592e801b4b6255ed681613c0f03eda182493157ca9",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.1701741955926107,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "7e0566fe5d70ad64b32a8b81b3cc29c1d7b2b49369f95bec93433156e7c856fe"
+    },
+    "ipm_flat_8p12s_fsae_angled_pocket_contract": {
+      "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "raw_result_sha256": "0be808765a2ce720b770a8ee2dd014eb45da31f2d5dba5f8c2570f29a2e62ee2",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.18761454051316645,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "410050a50dff68d7f42653be8502b4647e34260402a50efe39a3abd1a84a3524"
+    },
+    "ipm_flat_8p12s_fsae_contract": {
+      "case_id": "ipm_flat_8p12s_fsae_contract",
+      "raw_result_sha256": "cc246188f55598f949ca67b1b48588ded09acb4c2cd03a231885caf7c42c8bcc",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.18761454051319773,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "d8cac3979fb1be5e826205a35b7ab3b1592bc7f525199b4b21408ccfa6b96c58"
+    },
+    "ipm_flat_8p12s_fsae_thin_bridge_contract": {
+      "case_id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "raw_result_sha256": "7438d49fdba4428312772433f72545c3676b5bd2cd11b799f75fe3f0b8cd43f1",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.1876145405132841,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "74630240647eadc8a9b6171fe19787158d63ba1680dddb28f72b9e2d380f6915"
+    },
+    "ipm_vshape_8p12s_baseline_contract": {
+      "case_id": "ipm_vshape_8p12s_baseline_contract",
+      "raw_result_sha256": "c7a856f593cf49df2e38afece93a5f25c766878e7d440d5a70109f9bcf182124",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.18761454051319598,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "99c1341ea66fd4f26d1ffb272b42ba203f0e03182c2fcafde0679635c6e7555e"
+    },
+    "ipm_vshape_8p12s_deep_apex_high_output_v1": {
+      "case_id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "raw_result_sha256": "b1966935b3b09983c01800a7132f36966de2a6f1bcfa4e4a08402d7127c87c29",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.18761454051320936,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "300ba0e6c74f24fc947c79b46174ed3119fff19a2cd2bec3b5cb2194fb1030eb"
+    },
+    "ipm_vshape_8p12s_narrow_angle_contract": {
+      "case_id": "ipm_vshape_8p12s_narrow_angle_contract",
+      "raw_result_sha256": "4255f5e994ef72fca9b493d7b0ac7b04479b160ef05050ac85c70d7a70c47ced",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.18761454051319598,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "c019670887d0e8a13179c0feb34af20dd1c4ceee4e5dd052ee9bcb11696beef0"
+    },
+    "ipm_vshape_8p12s_pocket_offset_contract": {
+      "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "raw_result_sha256": "4f436abd4ca3e9977c2600d5a24455eb7e7ffd6be4a662ae6551b30b5928f08d",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.18761454051319598,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "8fcf9c65517baae6b86f69f0b938197c7673bc206e73bd75821926ca9bf0b4f5"
+    },
+    "ipm_vshape_8p12s_thin_bridge_contract": {
+      "case_id": "ipm_vshape_8p12s_thin_bridge_contract",
+      "raw_result_sha256": "75c4c28231f2abdbc5419d3f932744cf05d34ab908b5e43bd5edf8892ad751de",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.18761454051320908,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "88240ff835f01b9656a5ed4dc341a1e2b3f15b701ea882cb74fc9cb47e7625cd"
+    },
+    "ipm_vshape_8p12s_wide_angle_high_output_v1": {
+      "case_id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "raw_result_sha256": "472bb969a1cfd9d8599be90b01279bc32628866dc84bd7534c281c94dfefe062",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.18761454051319598,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "01ae3a675ec3a8d07c7729cc68df5357f9973d0e84053d50734c38eb9ee6eff3"
+    },
+    "spm_12p36s_distributed_femm_validation": {
+      "case_id": "spm_12p36s_distributed_femm_validation",
+      "raw_result_sha256": "303ca9337be907a4ceafcd1a754955b371639189a9e6843e7a52bde4bccd9014",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 3456,
+      "flux_frames_checked": 96,
+      "parallel_paths": 2,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.03404430286077611,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "a74eb04b165252b3b4a34997dc7bba2f9052685191cbccaaa2663c16760fcec9"
+    },
+    "spm_8p24s_distributed_femm_validation": {
+      "case_id": "spm_8p24s_distributed_femm_validation",
+      "raw_result_sha256": "358cbff417ebb11d5e842496df785f2f39d0048e99561bccc3aba9a03ae27dd2",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 2304,
+      "flux_frames_checked": 96,
+      "parallel_paths": 2,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.09827544058710838,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "8cddddaa2ab80a2cdf565b1b762766a08a3bd97afb53aa7e3dc7a5bf5077a913"
+    },
+    "spm_8p48s_chorded_5_6": {
+      "case_id": "spm_8p48s_chorded_5_6",
+      "raw_result_sha256": "0b15a8d0f0a2f51f4bfee06d2e97a28c6a9cb61679fbba37dea583785934efa8",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 4608,
+      "flux_frames_checked": 96,
+      "parallel_paths": 2,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.007631166140178029,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "d0b4e6a5e90051b4b3671ff21f7c80b7b6852db9a7a5f5652e8d9acc215eaa21"
+    },
+    "spm_8p48s_distributed_femm_validation": {
+      "case_id": "spm_8p48s_distributed_femm_validation",
+      "raw_result_sha256": "8383eb6a4abfd57e692fbd44912375cc983be6724eb91b41430d81214bea2b9a",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 4608,
+      "flux_frames_checked": 96,
+      "parallel_paths": 2,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.007631166140178029,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "a94e1c5b9fa581a430b15272895dde6fc7aa131a827289d71c0df2bf2018fe65"
+    },
+    "spm_14p12s_high_pole": {
+      "case_id": "spm_14p12s_high_pole",
+      "raw_result_sha256": "6d339802c45205b1c93eb4169c69a2f2d3ea108848b26fa13ee6539c8186701e",
+      "material_settings": {
+        "Br_T": 1.23,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 1152,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.3757823028614619,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "1b6890b9bb8f399b14c9a0d41b9889509016d955b4bf47a4a0a544d72ea1eb6e"
+    },
+    "spm_4p12s_small": {
+      "case_id": "spm_4p12s_small",
+      "raw_result_sha256": "9a83a52c5efd586480970316625e4575442cd281e8ccbd19bf8911e3d6a3b00f",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 48,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.17017419559260816,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "0161d994d10cee653f6a8d37c6d21ea4bfec7404e55f29a0b6232b571eada8f2"
+    },
+    "spm_8p12s_reference": {
+      "case_id": "spm_8p12s_reference",
+      "raw_result_sha256": "b61f42bf412543759b700cdabdfa719c83bf75d32dbfc1e5c5a6e7a3cafe95a8",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 48,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.22772940587360324,
+      "legacy_exact": true,
+      "legacy_measurement_sha256": "181d9bd7151b2866c5a12a78a7d992a356b194b60ef08b90099f3e2e24df91d1"
+    },
+    "spm_8p12s_concentrated__magnet_60C": {
+      "case_id": "spm_8p12s_concentrated__magnet_60C",
+      "raw_result_sha256": "3de12b8ed2c59464eeae5a86370d568573fed56b9b11650228a1d01222c05784",
+      "material_settings": {
+        "Br_T": 1.25188,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.40324176133703815
+    },
+    "spm_8p12s_concentrated__magnet_100C": {
+      "case_id": "spm_8p12s_concentrated__magnet_100C",
+      "raw_result_sha256": "cc9e0eeaf2bde45ddb88acc3859c41f92d1f6e74a5300589f4a3173c4c779efe",
+      "material_settings": {
+        "Br_T": 1.18876,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.40324176133703815
+    },
+    "spm_8p12s_concentrated__dq_I20_g0": {
+      "case_id": "spm_8p12s_concentrated__dq_I20_g0",
+      "raw_result_sha256": "b2b92469442ea689a55f761f6a53ce25624813312f3985e8fa92c0347727b734",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "explicit_series_circuits",
+      "max_ideal_NI_deviation_pct": 4.863308664536528e-13,
+      "reference_dq_torque_error_pct": 0.1159280045199722
+    },
+    "spm_8p12s_concentrated__dq_I20_g60": {
+      "case_id": "spm_8p12s_concentrated__dq_I20_g60",
+      "raw_result_sha256": "55e8071238853e2737895159fa8debdad83ceff053b5171bc8be0708899f84a2",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "explicit_series_circuits",
+      "max_ideal_NI_deviation_pct": 4.763219421447105e-13,
+      "reference_dq_torque_error_pct": 0.1126435047098795
+    },
+    "spm_8p12s_concentrated__dq_I40_g0": {
+      "case_id": "spm_8p12s_concentrated__dq_I40_g0",
+      "raw_result_sha256": "8b00fbba25df122414e3b7daed44e559b4d8b2eef0f7c69e5469db49f1a13e8b",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "explicit_series_circuits",
+      "max_ideal_NI_deviation_pct": 4.86330866453653e-13,
+      "reference_dq_torque_error_pct": 0.09774793488847422
+    },
+    "spm_8p12s_concentrated__dq_I40_g30": {
+      "case_id": "spm_8p12s_concentrated__dq_I40_g30",
+      "raw_result_sha256": "36011cc263f70c42a5cec2677c1676c53183533a0c0fdc416055d7b42d473fce",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "explicit_series_circuits",
+      "max_ideal_NI_deviation_pct": 4.5363994489972505e-13,
+      "reference_dq_torque_error_pct": 0.09014395046833101
+    },
+    "spm_8p12s_concentrated__dq_I40_g60": {
+      "case_id": "spm_8p12s_concentrated__dq_I40_g60",
+      "raw_result_sha256": "bf41eeef6d2d80d8c1b8bd03d9d73a9fcfb3af78025f003cd749ef7bfacdc102",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "explicit_series_circuits",
+      "max_ideal_NI_deviation_pct": 4.763219421447105e-13,
+      "reference_dq_torque_error_pct": 0.08616092466623115
+    },
+    "ipm_flat_8p12s_fsae_contract__magnet_60C": {
+      "case_id": "ipm_flat_8p12s_fsae_contract__magnet_60C",
+      "raw_result_sha256": "5c31f1aff55653924c451b8ff157a5424e4e67eeb06824f765f07ba337364043",
+      "material_settings": {
+        "Br_T": 1.25188,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.18761454051319773
+    },
+    "ipm_flat_8p12s_fsae_contract__magnet_100C": {
+      "case_id": "ipm_flat_8p12s_fsae_contract__magnet_100C",
+      "raw_result_sha256": "f06891e234eb460551a1e1bf5b11f49b6ff7b35aed6e16fe3f35fbfdf6783ab3",
+      "material_settings": {
+        "Br_T": 1.18876,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "retained_v3_density_and_slot_flux",
+      "max_ideal_NI_deviation_pct": 0.18761454051319773
+    },
+    "ipm_flat_8p12s_fsae_contract__dq_I50_g0": {
+      "case_id": "ipm_flat_8p12s_fsae_contract__dq_I50_g0",
+      "raw_result_sha256": "ae8a4eb051b8ee75ca4ac38ec72a49d2f22724b9e8ad9ce03a030c7ff14acc4e",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "explicit_series_circuits",
+      "max_ideal_NI_deviation_pct": 2.9707802352194876e-13,
+      "reference_dq_torque_error_pct": 1.1424706928243467
+    },
+    "ipm_flat_8p12s_fsae_contract__dq_I50_g30": {
+      "case_id": "ipm_flat_8p12s_fsae_contract__dq_I50_g30",
+      "raw_result_sha256": "8e001391053616404f25e8add3866f4e5197a9287830b1d9c73966552b276609",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "explicit_series_circuits",
+      "max_ideal_NI_deviation_pct": 2.789577870380423e-13,
+      "reference_dq_torque_error_pct": 0.7779938363224517
+    },
+    "ipm_flat_8p12s_fsae_contract__dq_I50_g60": {
+      "case_id": "ipm_flat_8p12s_fsae_contract__dq_I50_g60",
+      "raw_result_sha256": "0c1ed729655acef02af7b57453c780be9bbaa80cab3a36fd7d96a31a247734eb",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "explicit_series_circuits",
+      "max_ideal_NI_deviation_pct": 2.7895778703804234e-13,
+      "reference_dq_torque_error_pct": 0.527021280742332
+    },
+    "ipm_flat_8p12s_fsae_contract__dq_I100_g0": {
+      "case_id": "ipm_flat_8p12s_fsae_contract__dq_I100_g0",
+      "raw_result_sha256": "31f5ce09f576da87867166bead663538c037a31ac011c1684f8c9f0120bad050",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "explicit_series_circuits",
+      "max_ideal_NI_deviation_pct": 2.953670686285153e-13,
+      "reference_dq_torque_error_pct": 0.7674618819787185
+    },
+    "ipm_flat_8p12s_fsae_contract__dq_I100_g30": {
+      "case_id": "ipm_flat_8p12s_fsae_contract__dq_I100_g30",
+      "raw_result_sha256": "e3dfeb3580948c97f9382d1bb16ed9631d53b82a86165565290d820ddd6b477f",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "explicit_series_circuits",
+      "max_ideal_NI_deviation_pct": 2.953670686285154e-13,
+      "reference_dq_torque_error_pct": 0.28434605441510996
+    },
+    "ipm_flat_8p12s_fsae_contract__dq_I100_g60": {
+      "case_id": "ipm_flat_8p12s_fsae_contract__dq_I100_g60",
+      "raw_result_sha256": "73288597077bd0620a3d752c3a61cd428c6b00a71637fca78f3f5d2dacbdd99c",
+      "material_settings": {
+        "Br_T": 1.315,
+        "mu_r": 1.05,
+        "precision": 1e-08,
+        "minimum_angle_deg": 30,
+        "mesh_density": "normal"
+      },
+      "source_rows_checked": 576,
+      "flux_frames_checked": 96,
+      "parallel_paths": 1,
+      "method": "explicit_series_circuits",
+      "max_ideal_NI_deviation_pct": 2.953670686285154e-13,
+      "reference_dq_torque_error_pct": 0.48389933648336125
+    }
+  }
+}

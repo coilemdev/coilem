@@ -7,13 +7,19 @@ Everything runs on your computer.
 
 Website: [coilem.com](https://coilem.com)
 
-The source is being prepared as **coilEM 0.4.0 Developer Preview**, with
-**Magneto2D 0.3.3**. The [release notes](RELEASE_NOTES.md) and
-[release plan](docs/RELEASE_0_4_0.md) track the final candidate and wheel checks.
-The PyPI install commands below continue to select the published release until
-0.4.0 is published.
+The source identifies as **coilEM 0.5.0 Developer Preview**, with
+**Magneto2D 0.4.0**. Version 0.5.0 has not been frozen or released;
+coilEM 0.4.0 remains the published release. The
+[release notes](RELEASE_NOTES.md) describe 0.4.0; the
+[0.5.0 release notes](docs/RELEASE_0_5_0.md) list what 0.5.0 changes and what
+qualification still has to establish. The [v0.5.0 evidence index](benchmarks/v0.5.0/README.md)
+includes the completed physical Windows protocol 1.6 run at `88aae101` and the
+published Mac comparison with its original pins. The [reference review](benchmarks/candidate-qualification-20261103/README.md)
+is complete, and the new Windows Prius audit passes all 10 software checks.
+Same-candidate Mac qualification remains pending. The PyPI install commands below select the
+published release until 0.5.0 is published.
 
-The [v0.4.0 evidence report](benchmarks/v0.4.0/README.md) retains the current
+The [v0.4.0 evidence report](benchmarks/v0.4.0/README.md) retains the historical
 Windows A/B/C/D development qualification: 35 supported jobs, 28 PASS,
 1 YELLOW and one planned unsupported legacy Prius row at `5b6cb61`.
 The separate exact Pyleecan Prius collection records 17 jobs and 568 fields
@@ -21,6 +27,14 @@ at `d993d76`, with all 10 original software checks passing. These measured
 commits are the baseline for the final-candidate rerun, not measurements of
 a future tag. The [benchmark index](benchmarks/README.md) preserves the full
 reports, frozen FEMM references and earlier platform records.
+
+The 0.5.0 freeze measures clean candidate `88aae101` under protocol 1.6.0 on
+both platforms ([qualification update](benchmarks/candidate-qualification-20261103/README.md)):
+Windows and macOS each record 46 PASS, the planned unsupported legacy ORNL
+Prius and 336/336 gates against the reviewed FEMM references, and the
+exact-candidate Pyleecan Prius passes all 10 software checks. The
+[release qualification gate](benchmarks/v0.5.0/release-qualification.json)
+passes; v0.5.0 is not released until it is tagged and published.
 
 ![coilEM workspace](docs/images/coilem-landing-page.png)
 
@@ -33,8 +47,12 @@ current winding model:
 - flat-buried IPM with concentrated windings, under sinusoidal current.
 
 V-shape IPM and untested combinations, such as six-step with distributed
-windings, are experimental. See [Validation](docs/VALIDATION.md) for the
-qualified scope and its limits.
+windings, are experimental. Of the 0.5.0 performance outputs, phase
+resistance and copper loss are qualified for a design with a wire, against
+hand calculations. The others (d/q flux linkage, torque–speed and efficiency
+maps, iron loss, efficiency and magnet temperature) are experimental. Each
+says which, with a reason, in the app, PDF and CSV. See [Validation](docs/VALIDATION.md) for the qualified scope and its
+limits.
 
 ## Install
 
@@ -136,9 +154,23 @@ serves the UI and API together and opens `http://127.0.0.1:2645`. See
   Gmsh meshes, sinusoidal current, and ideal wye-connected 120-degree six-step
   excitation for SPM.
 - Loaded torque, phase and line Back-EMF, field plots, and harmonic spectra.
+- Loaded d/q flux linkage, apparent Ld and Lq, and a torque cross-check from
+  them that includes reluctance torque.
+- A Torque–speed tab in Results. It solves a flux-linkage map over current and
+  current angle, then draws peak and continuous torque–speed and power–speed
+  curves (MTPA, field weakening and MTPV) for a DC bus and current limit, and
+  an efficiency map.
+- Wire size, strands in hand, end-turn extension and winding temperature in
+  Design, giving phase resistance and slot fill. Copper loss, stator iron loss
+  and efficiency at the solved point, with a map of where the iron loss is.
+  Iron loss is available for M350-50A and for the Pyleecan Prius's M400-50A.
+- A magnet temperature under Solve → Operating point. Br and HcJ are derated
+  from the grade's cited coefficients for N35, N42, N48, N52 and N48SH.
 - Preview, Standard and High accuracy mesh/solve presets. These names describe
   resolution and sampling; they do not certify accuracy.
 - Saved runs, comparison, project save/reopen, PDF, CSV and replay downloads.
+  Torque–speed results download as a performance PDF, a performance CSV, an
+  id/iq table CSV and the map points CSV.
 - Solver-backed electromagnetics lessons and cylindrical and linear
   [Halbach workspaces](docs/HALBACH_ARRAY.md).
 
@@ -157,6 +189,26 @@ tested combinations listed above, with M350-50A steel. One of six V-shape IPM
 fixtures is YELLOW against FEMM, so V-shape results are experimental. Cogging, THD, airgap harmonics, losses and
 thermal behavior are not covered. It is not a hardware measurement.
 
+Of the 0.5.0 performance outputs, only phase resistance and copper loss pass
+a gate so far:
+
+- Phase resistance passes a gate against independent hand calculations, for a
+  design with a wire. A design without one gets a wire sized to fill the slot,
+  and its resistance stays experimental. The gate checks the calculation, not
+  a measured winding.
+- Loaded λd/λq and magnet temperature have FEMM gates registered for the
+  freeze, so they are experimental until then. Ld and Lq, the maps, iron loss
+  and efficiency have no gate.
+- Losses leave out magnet and rotor eddy-current loss, AC copper loss (skin
+  and proximity effects) and inverter loss. Mechanical loss is a single
+  constant you enter, the same at every speed.
+- Iron loss comes from the steel grade's guaranteed loss limits, not from
+  measured motor data, and other steels show it as unavailable.
+- Magnet temperature derates Br linearly. It does not model demagnetisation,
+  and there is no thermal solver: magnet and winding temperatures are inputs.
+- The torque–speed envelope ignores inverter voltage drops and dead time. Its
+  continuous curve is a current limit, not a thermal rating.
+
 Motor sweeps use per-angle meshes, with symmetry-based reuse where applicable,
 without a sliding-band interface. Mesh changes can introduce numerical noise
 into torque ripple and cogging. Check mesh and angular convergence before
@@ -165,7 +217,7 @@ Six-step excitation models ideal commanded currents, without PWM, switching,
 ESC dynamics or thermal behavior. See [Release notes](RELEASE_NOTES.md) and
 [Materials](MATERIALS.md).
 
-The source application is **coilEM 0.4.0** and the solver is **Magneto2D 0.3.3**.
+The source application is **coilEM 0.5.0** and the solver is **Magneto2D 0.4.0**.
 There are no accounts, hosted services or telemetry in this distribution.
 Elmer is an optional development-only lane; see [its setup](docs/ELMER.md).
 

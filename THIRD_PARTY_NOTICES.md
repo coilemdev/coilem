@@ -74,7 +74,7 @@ parameters. The relevant upstream source is distributed under this notice:
 | meshio | 5.3.5 | MIT |
 | numpy (Python 3.11 to 3.14) | 2.4.6 | BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 |
 | numpy (Python 3.15) | 2.5.4 | BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 |
-| pillow | 12.3.0 | MIT-CMU |
+| pillow | 13.0.0 | MIT-CMU |
 | pydantic (Python 3.11 to 3.14) | 2.13.4 | MIT |
 | pydantic (Python 3.15) | 2.14.1 | MIT |
 | pydantic-core (Python 3.11 to 3.14) | 2.46.4 | MIT |
@@ -315,7 +315,7 @@ three.js carries this notice:
 
 ## Frontend build tooling
 
-Vite 6.4.3, `@vitejs/plugin-react` 4.7.0, and their resolved build graph are
+Vite 6.4.4, `@vitejs/plugin-react` 4.7.0, and their resolved build graph are
 MIT-licensed development tools locked in `frontend/package-lock.json`.
 TypeScript 5.6.3 is an Apache-2.0-licensed development tool. The build graph
 also records esbuild, Rollup, PostCSS, Babel packages, source maps, filesystem

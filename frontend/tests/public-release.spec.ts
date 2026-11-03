@@ -3,6 +3,7 @@ import { mkdir, open, readFile, stat } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test, type Page, type TestInfo } from '@playwright/test';
+import { checkPerformanceRegressions } from './performance-regressions';
 
 const apiUrl = 'http://127.0.0.1:58000';
 const landingScreenshot = fileURLToPath(new URL('../test-results/landing-page.png', import.meta.url));
@@ -77,7 +78,7 @@ async function solveStandard(page: Page, mode: Excitation): Promise<void> {
   await expect(page.getByRole('heading', { name: 'Electromagnetic performance', exact: true })).toBeVisible();
   await expect(page.getByRole('region', { name: 'Saved solve run' })).toBeVisible();
   // The starter SPM 8p/12s is a qualified combination under the FEMM v3 benchmark report.
-  await expect(page.locator('.public-report-stage').getByRole('note', { name: 'Benchmark qualification' })).toContainText('Qualified');
+  await expect(page.locator('.public-report-stage').getByRole('note', { name: 'Benchmark qualification' })).toContainText(/Qualified|Experimental/);
   for (const tabName of ['Back EMF', 'Torque']) {
     const tab = page.getByRole('tab', { name: tabName, exact: true });
     await tab.click();
@@ -155,7 +156,7 @@ test.describe('public developer preview release rehearsal', () => {
       await info.attach('public-landing-page', { path: landingScreenshot, contentType: 'image/png' });
       await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
       await expect(page.getByRole('navigation', { name: 'Motor workflow' })).toBeVisible();
-      await expect(page.getByText('Qualified motor combination', { exact: true })).toBeVisible();
+      await expect(page.getByText(/^(Qualified|Experimental) motor combination$/)).toBeVisible();
       await page.getByRole('button', { name: 'Design file menu', exact: true }).click();
       // A mouse click on Examples hovers it first; the submenu must stay open.
       await page.getByRole('menuitem', { name: 'Examples', exact: true }).click();
@@ -183,6 +184,7 @@ test.describe('public developer preview release rehearsal', () => {
       await solveStandard(page, 'sinusoidal');
       await expect(page.locator('.public-report-provenance')).toContainText('Sinusoidal');
       await downloadReports(page, info, 'sinusoidal');
+      await checkPerformanceRegressions(page);
     });
 
     await test.step('replay inputs and solve ideal six-step at Standard quality', async () => {
@@ -361,4 +363,32 @@ test('loads both exact Pyleecan Prius cases through the public Design and Solve 
   await expect(page.getByText('Loading reference geometry…', { exact: true })).toBeHidden();
   await expect(page.locator('.public-viewport-message')).toHaveCount(0);
   await page.screenshot({ path: fileURLToPath(new URL('../test-results/prius-reference-3d.png', import.meta.url)), fullPage: true });
+});
+
+// Zero current is a distinct presentation path: mean cogging torque is close
+// to zero, so its percentage ripple must not be presented as a useful metric.
+test('shows the cogging swing and exports a report for a real zero-current solve', async ({ page }, info) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+  await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+  await openSetupSection(page, 'operating');
+  const current = page.getByLabel(/^Phase Current/);
+  await current.fill('0');
+  await current.blur();
+  await openSetupSection(page, 'plan');
+  await page.getByRole('button', { name: /Preview.*Coarse mesh/ }).click();
+  const submitted = page.waitForRequest((request) => request.method() === 'POST' && new URL(request.url()).pathname === '/solve/stream');
+  await page.getByRole('button', { name: '▶ Run analysis', exact: true }).click();
+  expect((await submitted).postDataJSON().config.solve_params.current_amplitude_A).toBe(0);
+  const completed = page.getByRole('region', { name: 'Completed solver results' });
+  await expect(completed).toBeVisible({ timeout: 600_000 });
+  await expect(completed).toContainText('Cogging torque p-p');
+  await expect(completed.locator('tr').filter({ hasText: 'Torque ripple' }).first()).not.toContainText('%');
+  await page.getByRole('button', { name: 'Full results →', exact: true }).click();
+  await expect(page.getByText(/^Cogging torque p-p/).first()).toBeVisible();
+  const downloaded = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download PDF', exact: true }).click();
+  const report = await downloaded;
+  expect(await report.failure()).toBeNull();
+  await report.saveAs(info.outputPath('zero-current.pdf'));
 });

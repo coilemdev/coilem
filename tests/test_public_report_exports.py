@@ -730,3 +730,40 @@ def test_reference_export_keeps_case_temperature_and_angle_convention(case_id, t
     assert reference["Case ID"] == case_id
     assert reference["Current angle convention"] == "Pyleecan d-axis Phi0"
     assert reference["Magnet temperature"] == f"{temperature} C"
+
+
+def test_torque_constant_states_its_current_convention_in_pdf_and_csv() -> None:
+    """#153: the summary stores Kt per peak ampere; Results shows it per rms ampere."""
+
+    result = _result()
+    result["summary"]["Ke_Vs_per_rad_mech"] = 0.2
+    result["summary"]["lambda_pm_Wb"] = 0.05
+    arguments = {"project": {}, "request": {}, "result": result, "material": {}, "manifest": {}}
+    rows = list(csv.reader(io.StringIO(build_public_run_csv(**arguments).decode("utf-8"))))
+    summary = {row[1]: row for row in rows if row[0] == "summary"}
+    assert summary["Kt_Nm_per_A"][2:4] == ["N m/A peak", "0.425"]
+    assert summary["Kt_Nm_per_A_rms"][2] == "N m/A rms"
+    assert float(summary["Kt_Nm_per_A_rms"][3]) == pytest.approx(0.425 * 2**0.5)
+    assert summary["Ke_Vs_per_rad_mech"][2] == "V s/rad (phase peak per mech rad/s)"
+    assert summary["lambda_pm_Wb"][2] == "Wb peak"
+
+    pdf = build_public_run_pdf(**arguments)
+    text = " ".join(" ".join(page.extract_text() or "" for page in pypdf.PdfReader(io.BytesIO(pdf)).pages).split())
+    assert "Torque constant" in text
+    assert f"{_plain(0.425 * 2**0.5)} N m/A rms" in text
+    assert "0.425 N m/A peak" in text
+
+
+@pytest.mark.parametrize(("current", "expected_label"), [(0.0, "Cogging torque p-p"), (10.0, "Torque p-p")])
+def test_pdf_does_not_normalize_cogging_by_near_zero_mean(current, expected_label):
+    result = _result()
+    result["summary"].update(avg_torque_Nm=0.005, torque_ripple_pct=329698.82)
+    result["solve_metadata"]["current_amplitude_A"] = current
+    result["torque_waveform"]["torque_Nm"] = [0.1, 8.3, -8.4, 2.0]
+    original = deepcopy(result)
+    pdf = build_public_run_pdf(project=CONFIG, request={"resolved_config": CONFIG}, result=result, material={}, manifest={})
+    text = "\n".join(page.extract_text() or "" for page in pypdf.PdfReader(io.BytesIO(pdf)).pages)
+    assert expected_label in text
+    assert "16.7 N m" in text
+    assert "329698" not in text and "329,698" not in text
+    assert result == original, "Presentation must not rewrite stored numerical evidence"

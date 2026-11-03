@@ -88,13 +88,32 @@ export function leadAngleExplanation(leadElecDeg: number, polePairs: number): st
   const meaning = 'Electrical degrees measure position within one N–S pole pair: at 90° elec the stator field sits '
     + 'halfway between magnet poles, where the magnet torque per amp is largest.';
   const lag = leadElecDeg < 0 ? ' Here the stator field is behind the magnets, so it holds them back.' : '';
+  const dq = ' The magnets\' axis is the d-axis and the q-axis is 90° elec ahead of it. The stator field sits at 90° + γ: '
+    + 'on the q-axis at a current angle γ of 0°, and turned further toward field weakening as γ grows. The drawn stator '
+    + 'axis is measured from the air-gap field at this rotor position, so with slots it steps a few degrees either side '
+    + 'of 90° + γ as the rotor turns.';
   if (polePairs <= 1) {
-    return `On a 2-pole motor one turn is 360° elec, so the two lines are ${elec}° apart. ${meaning}${lag}`;
+    return `On a 2-pole motor one turn is 360° elec, so the two lines are ${elec}° apart. ${meaning}${lag}${dq}`;
   }
   const mech = formatDegrees(elec / polePairs);
   const pitch = formatDegrees(360 / polePairs);
   const product = Math.abs(Number(mech) * polePairs - elec) < 1e-9 ? '=' : '≈';
   return `Why ${elec}° elec when the lines are only ${mech}° apart? With ${polePairs} pole pairs the field pattern `
     + `repeats every ${pitch}° around the motor, so 360° elec is ${pitch}° of rotation and `
-    + `${mech}° × ${polePairs} ${product} ${elec}° elec. ${meaning}${lag}`;
+    + `${mech}° × ${polePairs} ${product} ${elec}° elec. ${meaning}${lag}${dq}`;
+}
+
+/** Mechanical degrees from the d-axis to the q-axis: 90° elec ahead in the direction of rotation. */
+export function qAxisOffsetDeg(polePairs: number, rotation: 'clockwise' | 'counterclockwise'): number {
+  return ((rotation === 'clockwise' ? -1 : 1) * 90) / Math.max(1, polePairs);
+}
+
+/**
+ * The second line under the lead angle: the run's current angle γ, which the
+ * stator field leads the d-axis by on top of 90°. None without one (six-step).
+ */
+export function currentAngleNote(currentAngleDeg: number | null | undefined): string | null {
+  if (typeof currentAngleDeg !== 'number' || !Number.isFinite(currentAngleDeg)) return null;
+  const gamma = Math.round(currentAngleDeg);
+  return `90° + γ, γ = ${gamma < 0 ? '−' : ''}${Math.abs(gamma)}° set`;
 }

@@ -1,0 +1,66 @@
+{
+  "schema": "coilem.prius_convergence_reanalysis/v1",
+  "at": "2026-10-30T21:49:11.054202+00:00",
+  "status": "CORRECTED_AUDIT_PASS_NOT_RELEASE_QUALIFICATION",
+  "limit": 1e-08,
+  "comparison": "strictly less than",
+  "basis": "L2(f-K(A)A)/L2(f), after model constraints",
+  "original_reports_retained": true,
+  "platforms": {
+    "macos": {
+      "measured_commit": "40d8ab9a0a1cadf5cf60023852229f4af010abad",
+      "field_platform": "macOS-15.7.3-arm64-arm-64bit",
+      "analysis_platform": "macOS-15.7.3-arm64-arm-64bit",
+      "analysis_python": "3.12.13",
+      "original_report_sha256": "8adf55f0a791145496e48a203f37109a52acf4f33c71777a96e8d7e3a08d961c",
+      "corrected_analysis_sha256": "13cf292b423818d55fa7a67f4d132c0b9e83f75bcb3dda9442c584916b8760f1",
+      "analysis_runner_sha256": "c34de7d5e6694b082ddfde602299fdd7cdfcce235d09d686b58f45d59645a1c3",
+      "registration_sha256": "38083b328b604724c8782a5b5000b8252d32ef7b6e87299d70509317dfe50f78",
+      "protocol_sha256": "42adbb9b7803b11eae7d05e4bd347ef1c3f672b81cb8fee858064db97e407a77",
+      "checks_before": 9,
+      "checks_after": 10,
+      "fields_verified": 568,
+      "max_rhs_residual": 9.78378603084948e-09,
+      "max_initial_defect_scaled_residual": 1.4139148714064543e-08,
+      "native_final_stage_stopping_passes": 568,
+      "registered_raw_results_requests_and_waves_identical": true,
+      "derived_norm_reduction_roundoff": {},
+      "qualified": false
+    },
+    "windows": {
+      "measured_commit": "40d8ab9a0a1cadf5cf60023852229f4af010abad",
+      "field_platform": "Windows-2022Server-10.0.20348-SP0",
+      "analysis_platform": "macOS-15.7.3-arm64-arm-64bit",
+      "analysis_python": "3.12.13",
+      "original_report_sha256": "ab7d2c3cce8821eff5c119192bcf6be525e4aa910477d24b0a6b512299c9cc68",
+      "corrected_analysis_sha256": "fba0829842c145e115769390ebfd66928ab85f03d35040714128ab66511d62c7",
+      "analysis_runner_sha256": "c34de7d5e6694b082ddfde602299fdd7cdfcce235d09d686b58f45d59645a1c3",
+      "registration_sha256": "32d562132395b7d83770504fd0fc7f90b424a4914df30ca0175402581567c53c",
+      "protocol_sha256": "42adbb9b7803b11eae7d05e4bd347ef1c3f672b81cb8fee858064db97e407a77",
+      "checks_before": 9,
+      "checks_after": 10,
+      "fields_verified": 568,
+      "max_rhs_residual": 9.996407075669981e-09,
+      "max_initial_defect_scaled_residual": 1.4734258959383776e-08,
+      "native_final_stage_stopping_passes": 568,
+      "registered_raw_results_requests_and_waves_identical": true,
+      "derived_norm_reduction_roundoff": {
+        "tutorial_line_waveform_relative_L2": {
+          "original": 0.003983389505516851,
+          "recomputed_on_macos": 0.00398338950551685,
+          "absolute_delta": 8.673617379884035e-19
+        },
+        "full_FEMM_phase_waveform_relative_L2": {
+          "original": 0.008381317931284202,
+          "recomputed_on_macos": 0.008381317931284205,
+          "absolute_delta": 3.469446951953614e-18
+        }
+      },
+      "qualified": false
+    }
+  },
+  "protected_artifacts": {
+    "qualification-completion-record.json": "65591b882a6862c89fd571f444a1c80c27790915cee73cbbbb91d8b91693ba73",
+    "combined-report/output/pdf/coilem-v050-macos-windows-femm-comparison.pdf": "16eb24fffa2c1fc4c95e349435146c1ba5746a1196b63a2f237b6c01e3a0641a"
+  }
+}

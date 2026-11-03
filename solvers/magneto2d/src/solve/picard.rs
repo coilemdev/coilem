@@ -9,7 +9,7 @@ use super::nonlinear::{
     nonlinear_iteration_diagnostic, NonlinearIterationDiagnostic, NonlinearLoopOutput,
     NonlinearSolveConfig, NonlinearUpdate, NonlinearWorstUpdate,
 };
-use super::types::SolveProfile;
+use super::types::{NonlinearConvergence, SolveProfile};
 use super::{
     elapsed_ms, emit_angle_iteration_progress, emit_angle_solve_context, solve_linear_system,
     AngleProgressContext, MotorLinearSolvePolicy, SolveMatrixPattern, LINEAR_SOLVE_TIGHT_TOL,
@@ -87,15 +87,18 @@ pub(super) fn run_picard_nonlinear_loop(
     let mut last_fields: Option<Vec<ElementField>> = None;
 
     // Adaptive inner tolerance: intermediate Picard solves only feed the
-    // secant mu update (outer tolerance 0.05-0.075), so they run at a loose
+    // secant mu update under the preset's unrelaxed mismatch tolerance,
+    // so they run at a loose
     // PCG tolerance; one tight, warm-started solve after convergence
     // restores full field accuracy for postprocessing. Linear-material
     // solves (nonlinear disabled) are final by definition and stay tight.
     let loose_inner_tol = nonlinear_enabled && linear_policy.adaptive_inner_tolerance;
     let loose_tol_value = linear_policy.loose_tolerance;
     let mut converged = false;
+    let mut iterations_used = 0;
 
     for iteration in 0..nonlinear_config.max_iterations {
+        iterations_used = iteration + 1;
         emit_angle_solve_context(progress, iteration + 1, nonlinear_config.max_iterations);
         let inner_tol = if loose_inner_tol {
             loose_tol_value
@@ -272,7 +275,42 @@ pub(super) fn run_picard_nonlinear_loop(
 
     let az = last_az.ok_or_else(|| "solver did not produce an A_z solution".to_string())?;
     let fields = last_fields.ok_or_else(|| "solver did not produce element fields".to_string())?;
+    // Evaluate the actual returned field against the materials used to solve it,
+    // including the tight linear polish. This probe never changes the solution.
+    let convergence = if nonlinear_enabled {
+        let mut probe = material_checkpoint;
+        let mismatch = update_nonlinear_materials(
+            &mut probe,
+            &fields,
+            &solve_mesh.regions,
+            nonlinear_curve_ids_by_element,
+            nonlinear_curves,
+            nonlinear_material_labels,
+            1.0,
+            f64::MAX,
+        ).raw_max_residual;
+        NonlinearConvergence {
+            method: "picard".into(),
+            iterations: iterations_used,
+            max_iterations: nonlinear_config.max_iterations,
+            stage_iterations: vec![iterations_used],
+            stage_iteration_cap: nonlinear_config.max_iterations,
+            raw_max_residual: Some(mismatch),
+            scaled_residual: None,
+            rhs_scaled_residual: None,
+            initial_rhs_scaled_residual: None,
+            absolute_residual_floor: None,
+            residual_definition: "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)".into(),
+            tolerance: nonlinear_config.convergence_threshold,
+            stopping_test: "raw_max_residual <= tolerance".into(),
+            solution_reused: false,
+            fallback_from: None,
+        }
+    } else {
+        NonlinearConvergence::linear()
+    };
     Ok(NonlinearLoopOutput {
+        convergence,
         materials,
         az,
         fields,
