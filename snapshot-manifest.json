@@ -8140,8 +8140,8 @@
     },
     {
       "path": "tests/test_pyleecan_reference_fixture.py",
-      "bytes": 18494,
-      "sha256": "703d02e18e1512d05bdbe540e30486deccc2deca61fc08892896260b24270250"
+      "bytes": 18853,
+      "sha256": "07e7d8c2b4e4534c5aeadc2f458cd1ee65226c417436d9c642d12fda7091d8ea"
     },
     {
       "path": "tests/test_pyleecan_tutorial.py",

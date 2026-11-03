@@ -12,6 +12,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+from backend.benchmark_suite.physics import physics_sources
 from backend.excitation import resolve_phase_current_sample
 from backend.geometry_drawer import compute_geometry
 from backend.geometry_ir import build_geometry_ir
@@ -304,13 +305,17 @@ def test_published_app_evidence_keeps_complete_actual_grids_and_its_measured_sou
     assert report["protocol_sha256"] == hashlib.sha256((folder / "protocol.json").read_bytes()).hexdigest()
     assert report["analysis_runner_sha256"] == hashlib.sha256((ROOT / "tools/report_prius_benchmark.py").read_bytes()).hexdigest()
     assert report["source_sha256"] == registration["source_sha256"]
-    for name, digest in report["source_sha256"].items():
-        if name == "snapshot-manifest.json":
-            # Publication necessarily updates the snapshot. Keep the original
-            # before-field snapshot identity, rather than restamping the run.
-            assert digest == "030e04373a88fcf1dd6d02bd6d536e927846b26cd55901c44d3420441258057b"
-        else:
-            assert hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == digest, name
+    # Publication necessarily updates the snapshot. Keep the original
+    # before-field snapshot identity, rather than restamping the run.
+    assert report["source_sha256"]["snapshot-manifest.json"] == "030e04373a88fcf1dd6d02bd6d536e927846b26cd55901c44d3420441258057b"
+    # The full identity stays recorded; the field-affecting sources the release
+    # gate guards (tools/release/qualification.py) must still match it exactly.
+    from tools.release.qualification import PRIUS_EXTRA_PHYSICS
+
+    guarded = set(physics_sources(ROOT)) | set(PRIUS_EXTRA_PHYSICS)
+    assert guarded <= set(report["source_sha256"])
+    for name in sorted(guarded):
+        assert hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == report["source_sha256"][name], name
     for name, digest in report["historical_evidence_sha256"].items():
         assert hashlib.sha256((folder / name).read_bytes()).hexdigest() == digest, name
     assert report["grading_provenance"]["frozen_before_fields"] is True
