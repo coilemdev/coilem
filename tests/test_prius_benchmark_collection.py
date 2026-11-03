@@ -231,8 +231,8 @@ def analysis_fixture(collection, monkeypatch):
     frozen = freeze_inputs(collection.root, collection.output)
     identity = collection.identity()
     for job in reg["jobs"]:
-        folder = collection.output / job["job"]
-        folder.mkdir()
+        folder = job_folder(collection.output, job)
+        folder.mkdir(parents=True)
         result = {"summary": {"avg_torque_Nm": job["metrics"]["mean_torque_Nm"]},
                   **{key: job[key] for key in ("torque_waveform", "back_emf_waveform", "solve_metadata")}}
         for name, value in [("request.json", job["request"]), ("environment.json", job["environment"]),

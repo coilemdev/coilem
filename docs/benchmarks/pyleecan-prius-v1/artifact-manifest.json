@@ -1,9 +1,9 @@
 {
   "app-design-3d.png": "4b75b03b5d9c61df42700e8d22bc15627d65a95409ec685a84f7093913b396bc",
-  "app-registration.json": "577a8d4585a79d328b406b1ee26f2d12e7124d28dbf1dacdf27e9c6ee00d7360",
-  "app-results.json": "697ccfbf9c8f85387e3df08534e56debc9fb225aeea519d80d301f21e34d4191",
-  "app-results.md": "eb6f10957163b2c2aa690334e115eb1ba039942ff4eb15bdaf2f59675eb77cdf",
-  "app-results.svg": "c91311a7700d5929a99efe4da781781c12e91bbffcc773e989ab7092067e0ebe",
+  "app-registration.json": "6424d7eec1398eef6c10e2bf53918e88dd565d87c1b3628e4d158dbecb503998",
+  "app-results.json": "8299764f272ed57c778a1416d21c628a795bdfe0f9b4b0d2d2f4363e51678eac",
+  "app-results.md": "e7f3b9192b33e05e6b3dea8f9e40a45dc6a9c80b071dad49db021ccb1c4cd1c4",
+  "app-results.svg": "f225d1fa7705867b38b648f8eace6e84dce2e7c303d4ccbe10222ecfcb83f9fc",
   "installed-wheel-validation.json": "e2af08c951b03a8cdd26d0d7948c2cf3a11a4ce2929c0961c112fc0ffb62a75b",
   "protocol.json": "42adbb9b7803b11eae7d05e4bd347ef1c3f672b81cb8fee858064db97e407a77",
   "pyleecan-loaded-results.json": "0f012e15daf5a5bd03f378bddb781097b8938e6f1c7db8444b03ffa4381ec43a",
@@ -12,6 +12,6 @@
   "pyleecan-tutorial-bemf.svg": "09632c78a1e45b62f595dde0e79ea98a69e8f7c80f0d710764452e0170a8136b",
   "pyleecan-tutorial-results.json": "dea27a8970ed8b1bf3162819acd0471136b63be047cfe77646999c6a1b05ba3b",
   "pyleecan-ui-results.json": "0bbb694bf2f09913f96787f2261a8045c766690532810860f509e8f94385eb2c",
-  "README.md": "34b3fa3dfebf8bbf0e8d2b8073b8038da4086a9f12c9839028d6de638b620ee9",
+  "README.md": "8cd31277cb3d8032864ebf822a46999d45db967fc4c91703ea759ffa7abbb421",
   "workflow-validation.json": "c738a1fbb0d2b0874d8f667d9110d276c24c2e23e8a07d6a224a2c43acd7af5c"
 }
