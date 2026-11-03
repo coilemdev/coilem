@@ -72,7 +72,7 @@ _EFFICIENCY_RAMP = ("#cde2fb", "#9ec5f4", "#5598e7", "#2a78d6", "#184f95")
 _LAMBDA_COLORS = {"d": colors.HexColor("#3987e5"), "q": colors.HexColor("#d95926")}
 
 MTPA_SAMPLES = 21
-# The map's d/q values have no benchmark gate yet (DQ_FLUX_LINKAGE_STATUS_REASON).
+# General maps extend beyond the registered reference points and stay experimental.
 _DQ_STATUS = "experimental"
 IDIQ_STEPS = 21
 _MTPA_ANGLE_STEP_DEG = 0.1

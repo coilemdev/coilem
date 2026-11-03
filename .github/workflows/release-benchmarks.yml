@@ -15,12 +15,21 @@ on:
         type: choice
         options: ['3.12', '3.15']
         default: '3.12'
+      candidate:
+        description: Optional full candidate SHA to measure instead of the workflow ref
+        type: string
+        default: ''
+      collection:
+        description: Registered comparison, or the full protocol 1.6 native fields for a later verified reference join
+        type: choice
+        options: [registered, protocol16-native-only]
+        default: registered
 
 permissions:
   contents: read
 
 concurrency:
-  group: release-benchmark-${{ github.ref }}-${{ inputs.runner }}-${{ inputs.python }}
+  group: release-benchmark-${{ github.ref }}-${{ inputs.candidate }}-${{ inputs.collection }}-${{ inputs.runner }}-${{ inputs.python }}
   cancel-in-progress: false
 
 jobs:
@@ -32,18 +41,32 @@ jobs:
       run:
         shell: bash
     env:
-      COILEM_BUILD_COMMIT: ${{ github.sha }}
+      COILEM_BUILD_COMMIT: ${{ inputs.candidate || github.sha }}
       RUST_TOOLCHAIN: '1.94.0'
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ inputs.candidate || github.sha }}
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: ${{ inputs.python }}
       - name: Install the documented Linux mesh libraries
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6 libxfixes3 libxft2 libxinerama1 libxrender1 libfontconfig1 libgomp1
+      - name: Verify the exact measured candidate
+        env:
+          REQUESTED_CANDIDATE: ${{ inputs.candidate || github.sha }}
+        run: |
+          python - <<'PY'
+          import os, re, subprocess
+          expected = os.environ['REQUESTED_CANDIDATE']
+          if not re.fullmatch(r'[0-9a-fA-F]{40}', expected):
+              raise SystemExit('candidate must be a full immutable commit SHA')
+          actual = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+          if actual.lower() != expected.lower():
+              raise SystemExit('checkout did not resolve to the requested candidate')
+          print('Measured candidate:', actual)
+          PY
       - name: Install the locked backend environment
         run: |
           python -m pip install -r requirements.lock
@@ -56,17 +79,37 @@ jobs:
           rustup toolchain install "$RUST_TOOLCHAIN" --profile minimal
           rustup default "$RUST_TOOLCHAIN"
           cargo build --release --locked --manifest-path solvers/magneto2d/Cargo.toml
-      - name: Collect the complete registered suite against the frozen reference
+      - name: Collect the complete requested suite
         env:
           COILEM_USER_DATA_ROOT: ${{ runner.temp }}/coilem-release-benchmark-user-data
-        run: >-
-          python -m tools.run_benchmarks --phases A B C D --pdf
-          --out-dir "$RUNNER_TEMP/coilem-release-benchmark"
+          COLLECTION: ${{ inputs.collection }}
+        run: |
+          args=(--phases A B C D --pdf --out-dir "$RUNNER_TEMP/coilem-release-benchmark")
+          if [[ "$COLLECTION" == protocol16-native-only ]]; then
+            args+=(--suite benchmarks/abcd-v1.6/benchmark_spec.json --no-reference)
+          fi
+          python -m tools.run_benchmarks "${args[@]}"
+      - name: Record workflow and field source separately
+        if: always()
+        env:
+          WORKFLOW_COMMIT: ${{ github.sha }}
+          COLLECTION: ${{ inputs.collection }}
+          WORKFLOW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json, os, pathlib, subprocess
+          output = pathlib.Path(os.environ['RUNNER_TEMP']) / 'coilem-release-benchmark'
+          if output.is_dir():
+              measured = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+              receipt = {'workflow_commit': os.environ['WORKFLOW_COMMIT'], 'measured_commit': measured,
+                         'collection': os.environ['COLLECTION'], 'workflow_run_url': os.environ['WORKFLOW_RUN_URL']}
+              (output / 'workflow_receipt.json').write_text(json.dumps(receipt, indent=2) + '\n', encoding='utf-8')
+          PY
       - name: Retain complete reports, fixtures and registered measurements
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
-          name: native-${{ inputs.runner }}-py${{ inputs.python }}-${{ github.sha }}
+          name: native-${{ inputs.runner }}-py${{ inputs.python }}-${{ inputs.candidate || github.sha }}
           path: ${{ runner.temp }}/coilem-release-benchmark
           if-no-files-found: warn
           retention-days: 90

@@ -14,11 +14,12 @@ coilEM 0.4.0 remains the published release. The
 [0.5.0 release notes](docs/RELEASE_0_5_0.md) list what 0.5.0 changes and what
 qualification still has to establish. The [v0.5.0 evidence index](benchmarks/v0.5.0/README.md)
 includes the completed physical Windows protocol 1.6 run at `88aae101` and the
-published Mac comparison with its original pins. Reference review and release
-qualification remain pending. The PyPI install commands below select the
+published Mac comparison with its original pins. The [reference review](benchmarks/candidate-qualification-20261103/README.md)
+is complete, and the new Windows Prius audit passes all 10 software checks.
+Same-candidate Mac qualification remains pending. The PyPI install commands below select the
 published release until 0.5.0 is published.
 
-The [v0.4.0 evidence report](benchmarks/v0.4.0/README.md) retains the current
+The [v0.4.0 evidence report](benchmarks/v0.4.0/README.md) retains the historical
 Windows A/B/C/D development qualification: 35 supported jobs, 28 PASS,
 1 YELLOW and one planned unsupported legacy Prius row at `5b6cb61`.
 The separate exact Pyleecan Prius collection records 17 jobs and 568 fields

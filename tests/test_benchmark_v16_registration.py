@@ -37,7 +37,7 @@ def _diff(a, b, path=()):
 def test_the_suite_is_the_14_matrix_plus_the_reference_gate_cases():
     spec, previous = load_suite(SUITE), load_suite(PREVIOUS)
     assert spec["protocol_version"] == "1.6.0" and "1.6.0" in SUPPORTED_PROTOCOL_VERSIONS
-    assert PROTOCOL_VERSION == "1.4.0" and SPEC == PREVIOUS  # the default moves at the freeze, with its bundle
+    assert PROTOCOL_VERSION == "1.6.0" and SPEC == SUITE
     assert spec["cases"][: len(previous["cases"])] == previous["cases"]
     added = spec["cases"][len(previous["cases"]) :]
     assert [case["id"] for case in added] == spec["extension"]["added_cases"] and len(added) == 17

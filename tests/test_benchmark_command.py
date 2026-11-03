@@ -21,7 +21,9 @@ from tools.build_benchmark_record import main as build_record_main
 from tools.build_benchmark_record import regrade
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-RECORDS = REPO_ROOT / resources.BENCHMARK_RECORDS_DIR
+RECORDS = REPO_ROOT / "benchmarks/records-historical/v040"
+LEGACY_SUITE = REPO_ROOT / "benchmarks/abcd-v1.4/benchmark_spec.json"
+LEGACY_BUNDLE = REPO_ROOT / "benchmarks/reference-baselines/ipm-high-output-v3"
 EVIDENCE = {
     "macos-arm64": REPO_ROOT / "benchmarks/macos-native-20261015-738d951",
     "windows-x86_64": REPO_ROOT / "benchmarks/windows-prius-requal-20261018",
@@ -35,7 +37,8 @@ MAC_HOME = "/".join(("", "Users", "ana"))
 
 @pytest.fixture(scope="module")
 def graded():
-    return {key: regrade(read(path / "benchmark_summary.json"))[0] for key, path in EVIDENCE.items()}
+    return {key: regrade(read(path / "benchmark_summary.json"), suite=LEGACY_SUITE, bundle=LEGACY_BUNDLE)[0]
+            for key, path in EVIDENCE.items()}
 
 
 def test_wheel_data_covers_everything_the_suite_registers() -> None:
@@ -48,7 +51,8 @@ def test_wheel_data_covers_everything_the_suite_registers() -> None:
         if case["phase"] == "D":
             assert case["protocol"] in files
     bundle = [path for path in files if path.startswith(resources.BENCHMARK_REFERENCE_BUNDLE_DIR)]
-    assert len(bundle) == 1 + len(read(REPO_ROOT / resources.BENCHMARK_REFERENCE_BUNDLE_DIR / "manifest.json")["records"])
+    manifest = read(REPO_ROOT / resources.BENCHMARK_REFERENCE_BUNDLE_DIR / "manifest.json")
+    assert len(bundle) == 1 + len(manifest["records"]) + len(manifest.get("review_artifacts", []))
     assert {f"{resources.BENCHMARK_RECORDS_DIR}/{key}.json" for key in EVIDENCE} <= files
     assert all((REPO_ROOT / path).is_file() for path in files)
 
@@ -96,7 +100,8 @@ def test_protocol16_record_rebuild_keeps_all_registered_gates_and_original_ident
             )
     assert build_record_main([
         str(evidence / "comparison/report"), "--suite", str(suite),
-        "--reference-bundle", str(bundle), "--out", str(tmp_path / "record.json"),
+        "--reference-bundle", str(bundle), "--historical-record", str(evidence / "windows-x86_64.json"),
+        "--out", str(tmp_path / "record.json"),
     ]) == 0
     assert (tmp_path / "record.json").read_bytes() == (evidence / "windows-x86_64.json").read_bytes()
     assert read(bundle / "manifest.json")["validation_status"] == "REVIEW_REQUIRED"
@@ -117,7 +122,8 @@ def test_protocol16_regrade_cannot_drop_a_missing_dq_gate():
 
 
 def test_windows_requalification_preserves_previous_verdicts_gates_and_values() -> None:
-    previous, _ = regrade(read(REPO_ROOT / "benchmarks/windows-v3-20261015-738d951/benchmark_summary.json"))
+    previous, _ = regrade(read(REPO_ROOT / "benchmarks/windows-v3-20261015-738d951/benchmark_summary.json"),
+                          suite=LEGACY_SUITE, bundle=LEGACY_BUNDLE)
     assert read(RECORDS / "windows-x86_64.json")["cases"] == {
         row["id"]: record.case_record(row) for row in previous["rows"]
     }
@@ -144,7 +150,8 @@ def test_windows_requalification_publication_hashes_and_self_check(folder) -> No
     assert len(pdf_publication["relative_fixture_links"]) == 36
     assert all((evidence / link["target"]).is_file() for link in pdf_publication["relative_fixture_links"])
     assert read(evidence / "self-check-windows-x86_64.json")["cases"] == {
-        row["id"]: record.case_record(row) for row in regrade(read(evidence / "benchmark_summary.json"))[0]["rows"]
+        row["id"]: record.case_record(row)
+        for row in regrade(read(evidence / "benchmark_summary.json"), suite=LEGACY_SUITE, bundle=LEGACY_BUNDLE)[0]["rows"]
     }
 
 
@@ -271,8 +278,12 @@ def test_quick_subset_is_one_passing_case_per_phase() -> None:
     assert [case["id"] for case in cases] == list(command.QUICK_CASES)
     for published in record.load_records().values():
         assert all(published["cases"][case["id"]]["status"] == "PASS" for case in cases)
-        assert command.estimate(published, cases) < 6 * 60
-        assert 40 * 60 < command.estimate(published, load_suite(SPEC)["cases"]) < 60 * 60
+        full_cases = load_suite(SPEC)["cases"]
+        recorded_cases = [case for case in full_cases if case["id"] in published["cases"]]
+        full = command.estimate(published, recorded_cases)
+        assert 0 < command.estimate(published, cases) < full
+        if len(recorded_cases) != len(full_cases):
+            assert command.estimate(published, full_cases) is None
     assert [case["id"] for case in command.select_cases(load_suite(SPEC), ["B"], quick=True)] == [command.QUICK_CASES[1]]
 
 

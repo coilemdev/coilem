@@ -7,8 +7,18 @@ import pytest
 from backend import resources
 from backend.benchmark_suite import references
 from backend.benchmark_suite.cli import inputs
-from backend.benchmark_suite.contract import DEFAULT_BUNDLE, ROOT, SPEC, canonical, read, sha
+from backend.benchmark_suite.contract import ROOT, canonical, read, sha
 from backend.benchmark_suite.references import load_bundle, load_suite
+
+SPEC = ROOT / "benchmarks/abcd-v1.4/benchmark_spec.json"
+DEFAULT_BUNDLE = ROOT / "benchmarks/reference-baselines/ipm-high-output-v3"
+
+
+@pytest.fixture(autouse=True)
+def historical_cap_context(monkeypatch):
+    """Exercise the original cap bridge independently of the active release suite."""
+    monkeypatch.setattr(resources, "BENCHMARK_SUITE_FILE", "benchmarks/abcd-v1.4/benchmark_spec.json")
+    monkeypatch.setattr(resources, "BENCHMARK_REFERENCE_BUNDLE_DIR", "benchmarks/reference-baselines/ipm-high-output-v3")
 
 
 def test_cap_registration_changes_only_nine_caps_and_keeps_frozen_references():
@@ -78,7 +88,7 @@ def test_historical_replay_retains_cap_100_validation_identity():
     from tools.build_benchmark_record import regrade
 
     summary = read(ROOT / "benchmarks/windows-prius-requal-20261018/benchmark_summary.json")
-    graded, spec = regrade(summary)
+    graded, spec = regrade(summary, suite=SPEC, bundle=DEFAULT_BUNDLE)
     assert spec["protocol_version"] == "1.3.0"
     assert graded["run"]["selection"]["spec_sha256"] == sha(ROOT / "benchmarks/abcd-v1.3/benchmark_spec.json")
     assert [r["status"] for r in graded["rows"]] == [r["status"] for r in summary["rows"]]
@@ -97,7 +107,7 @@ def test_replay_rejects_cap_or_protocol_relabelling(kind):
         row = next(r for r in summary["rows"] if r["id"] == "spm_4p12s_small")
         row["configurations"]["native-fine"]["solve_params"]["max_nonlinear_iterations"] = 201
     with pytest.raises(ValueError, match="measured a different request"):
-        regrade(summary)
+        regrade(summary, suite=SPEC, bundle=DEFAULT_BUNDLE)
 
 
 @pytest.mark.parametrize("mutation", ["missing", "suite_hash", "gate", "cap", "physical", "tolerance", "input_hash", "fixture_hash"])

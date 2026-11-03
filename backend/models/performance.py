@@ -38,11 +38,11 @@ DqTransform = Literal["amplitude_invariant_park"]
 # Every performance output is either checked against a reference or says it is not.
 OutputStatus = Literal["qualified", "experimental", "unavailable"]
 # Why each output without a run-dependent status is qualified or experimental:
-# whether its 0.5.0 benchmark gate (public issue 143) passes, or is not measured
-# yet. Reports print these, so they stay ASCII.
+# the scope covered by its 0.5.0 reference checks (public issue 143) and the
+# limitations that keep a general output experimental. Reports use ASCII.
 DQ_FLUX_LINKAGE_STATUS_REASON = (
-    "Not yet compared with a reference solution: the benchmark measures torque and back EMF, "
-    "so the design's qualification does not cover the d/q flux linkage or the inductances from it."
+    "Reference checks pass at 12 registered SPM and flat-IPM points. "
+    "The general d/q output remains experimental, including inductances, maps and unmeasured operating points."
 )
 PHASE_RESISTANCE_STATUS_REASON = (
     "Passes the phase-resistance gate of benchmark protocol 1.6.0: within 1% of independent hand calculations "
@@ -58,8 +58,8 @@ PHASE_RESISTANCE_UNRECORDED_STATUS_REASON = (
     "Recorded without a status, before the phase-resistance gate; solve the design again to see whether the gate covers it."
 )
 MAGNET_TEMPERATURE_STATUS_REASON = (
-    "Br and HcJ derated linearly with the grade's cited reversible coefficients; "
-    "back EMF and torque at temperature are not yet compared with a reference."
+    "Br and HcJ use cited reversible coefficients. Reference checks pass for four declared-Br N42 cases at 60 C and 100 C; "
+    "general temperature behavior and material coefficients remain experimental."
 )
 # How a drive picks the current for a torque below the limits: the smallest
 # current (MTPA, then field weakening and MTPV) or the least total loss.

@@ -1,21 +1,20 @@
 # Developer-preview validation
 
-The source candidate is coilEM 0.4.0 with Magneto2D 0.3.3. The
-[Windows requalification report](../benchmarks/windows-prius-requal-20261018/README.md)
-at `5b6cb61` supplies development qualification for the current winding model;
-see [Qualification status](#qualification-status). The
-[v0.4.0 evidence report](../benchmarks/v0.4.0/README.md) retains the complete
-Windows/FEMM and Pyleecan collections, their measured commits and limitations.
-Final-candidate benchmarks and installed-wheel acceptance remain open in the
-[release plan](RELEASE_0_4_0.md).
+The source candidate is coilEM 0.5.0 with Magneto2D 0.4.0. The
+[reviewed Windows comparison](../benchmarks/candidate-qualification-20261103/README.md)
+at `88aae101` supplies the current registered field-parity basis under protocol
+1.6.0; see [Qualification status](#qualification-status). The
+[v0.4.0 evidence report](../benchmarks/v0.4.0/README.md) retains the historical
+Windows/FEMM and Pyleecan collections with their original measured commits.
+Same-candidate Mac qualification and final installed-wheel acceptance
+remain open in the [release plan](RELEASE_0_5_0.md).
 
 0.5.0 is in development. It adds performance outputs, each labelled
 experimental until a reference gate passes; see
 [0.5.0 performance outputs](#050-performance-outputs) for their claim
 boundaries and the [0.5.0 release notes](RELEASE_0_5_0.md) for what changes.
-The 0.5.0 freeze reruns A/B/C/D on macOS and Windows against protocol 1.6.0.
-**TODO(freeze):** update this paragraph and the one above with the 0.5.0
-record.
+The 0.5.0 freeze uses protocol 1.6.0 on macOS and Windows. Windows collection
+and reference review are complete; the fresh same-candidate Mac run is pending.
 
 Historical reports v1.1 and v1.7/v1.8 measure the 0.3.x winding model and keep
 their original identities. They do not measure the changed 0.4.0 application.
@@ -212,44 +211,37 @@ no local paths and passes the publication path check.
 
 ## Qualification status
 
-The maintainers accept the [Windows requalification report](../benchmarks/windows-prius-requal-20261018/README.md)
-as the numerical qualification record for the application on `main`. It
-measured commit `5b6cb61` on Windows with the Precise mesh default against the matched
-[FEMM v3 references](../benchmarks/reference-baselines/ipm-high-output-v3/manifest.json),
-so it covers the 0.4.0 winding model: full slot-side turns in flux linkage
-(#80), tooth coils for fractional-slot concentrated windings, the current angle
-measured from phase A's own axis and conformal two-layer slots (#91, #85).
-Earlier reports measured the previous winding model, so their PASS results no
-longer qualify these combinations; report v1.1 remains the record for coilEM
-0.3.x. A combination is qualified when every registered fixture for it passes
-its FEMM parity gates in the report. Failed, YELLOW and unsupported outcomes
-remain visible and are not waived by the aggregate pass count.
+The registered basis is the [reviewed Windows comparison](../benchmarks/candidate-qualification-20261103/windows/report/benchmark_summary.json)
+at clean measured commit `88aae101`, using Magneto2D 0.4.0, Precise meshes,
+protocol 1.6.0 and the [reviewed FEMM bundle](../benchmarks/reference-baselines/protocol16-reviewed-20261103/README.md).
+All 52 supported native jobs completed: 46 PASS, one planned unsupported case
+and 336/336 gates PASS. The subsequent report-only join executes zero field
+solves and preserves the original native and reference measurements.
 
-The new run measured protocol 1.3.0 directly, including the six-step checks of
-commanded currents against phase A's winding axis. Every verdict, gate and
-recorded numerical value equals the [October 15 Windows v3 comparison](../benchmarks/windows-v3-20261015-738d951/README.md).
-That historical comparison retains its post hoc evaluation and fixed-axis
-protocol 1.1.0 golden-sequence FAILs for the 8-pole and 14-pole 12-slot fixtures.
-The macOS record remains at `738d951`; its source guard reports NOT_COMPARABLE
-until a new macOS run measures the changed mesh and reference-dispatch sources. Fast mesh remains
-experimental. The FEMM v3 bundle keeps `REVIEW_REQUIRED` for limitations
-outside these gates, such as steel-loss estimates, the Kt current base and
-peak flux-density sampling. Release qualification remains a separate step.
+The reviewer is Codex assistant, which also prepared the earlier evidence;
+no independent human or laboratory sign-off is claimed. The hash-bound review
+accepts the 46 unchanged records for registered parity. It checks current and
+flux conventions, request/result identities, material inputs, 29 exact legacy
+reproductions and all 12 d/q self-checks. Supplementary audits check the actual
+materials in all 4,409 nonempty saved FEMM models and declared currents in
+all 46 cases. Its scope and exclusions remain explicit in the review receipt.
 
-| Rotor | Winding | Excitation | Fixtures | v3 outcome | Status |
+A combination is qualified when all its registered fixtures pass, the current
+physics hashes match the measured source, and the scope below applies. V-shape
+remains experimental despite passing its gates. Release qualification also
+requires complete Mac candidate evidence and remains pending. The
+[exact-candidate Windows Prius audit](../benchmarks/candidate-qualification-20261103/prius/README.md)
+passes all 10 software checks across 17 jobs and 568 field reports.
+The historical v0.4 reports and platform records retain their original identities.
+
+| Rotor | Winding | Excitation | Registered coverage | Outcome | Status |
 | --- | --- | --- | --- | --- | --- |
-| SPM | Single-layer concentrated | Sinusoidal | Phase A: ten operating points on 4-pole/12-slot and 8-pole/12-slot designs | 10 PASS | Qualified |
-| SPM | Single-layer concentrated | Ideal six-step 120-degree wye (BLDC) | Phase D: 4-pole, 8-pole and 14-pole 12-slot designs | 3 PASS; 42/42 gates (protocol 1.3.0) | Qualified |
+| SPM | Single-layer concentrated | Sinusoidal | Phase A: 19 points, including the shoed example, temperature and d/q points | 19 PASS | Qualified |
+| SPM | Single-layer concentrated | Ideal six-step 120-degree wye (BLDC) | Phase D: 4-pole, 8-pole and 14-pole 12-slot designs | 3 PASS; 42/42 gates | Qualified |
 | SPM | Two-layer distributed, full pitch or 5/6 short pitch | Sinusoidal | Phase C: 8p/24s, 8p/48s, 8p/48s 5/6-chorded, 12p/36s | 4 PASS | Qualified |
-| Flat-buried IPM | Single-layer concentrated | Sinusoidal | Phase B: six fixtures | 6 PASS | Qualified |
-| V-shape IPM | Single-layer concentrated | Sinusoidal | Phase B: six fixtures | 5 PASS, 1 YELLOW | Experimental |
-| Multi-layer IPM (Prius 2004 fixture) | - | - | Phase C | Rejected by the public policy | Unsupported |
-
-The 4-pole/12-slot fixtures keep their winding layout; only their flux-linkage
-credit changed. The 8-pole/12-slot, 12-slot/10-pole, 24-slot/16-pole and
-14-pole/12-slot fixtures are now wound as tooth coils. The Phase C fixtures keep
-their turn credit and use the conformal two-layer slots and phase-A current
-angle. The v3 report re-measured every row on the changed code.
+| Flat-buried IPM | Single-layer concentrated | Sinusoidal | Phase B: 14 cases, including temperature and d/q points | 14 PASS | Qualified |
+| V-shape IPM | Single-layer concentrated | Sinusoidal | Phase B: six fixtures | 6 PASS; increased fundamental-EMF discrepancy | Experimental |
+| Multi-layer IPM (legacy ORNL Prius fixture) | - | - | Phase C | Rejected by public policy | Unsupported |
 
 The application also accepts combinations that the benchmark did not measure.
 They are experimental:
@@ -271,13 +263,13 @@ the Solve page and the Results page show it, and each saved run records it in
 its provenance, PDF and CSV. A qualified combination using custom steel is
 experimental, because qualification used the bundled M350-50A curve. A
 Preview run notes that its coarse mesh was not part of qualification. Tests
-check each reason against the v3 report's outcomes, and fail when a winding,
+check each reason against the reviewed protocol 1.6 report's outcomes, and fail when a winding,
 current-angle, geometry, mesh, material or native-solver source differs from
 the one the report measured; a changed physics source needs a new report
 before it can keep a qualified status.
 
 Qualified means agreement with FEMM within the registered gates for the
-measured fixtures, under these conditions: Magneto2D 0.3.3, native Gmsh meshes
+measured fixtures, under these conditions: Magneto2D 0.4.0, native Gmsh meshes
 at the normal density used by the Standard plan, weighted-stress torque, the
 bundled M350-50A curve, the public magnet grades and angular grids matched to
 the reference.
@@ -288,41 +280,32 @@ commutation sequence, angular refinement and low-current power balance.
 
 The bundled **Example SPM 8p/12s** design uses a qualified combination
 (SPM with a single-layer concentrated winding, under sinusoidal or six-step
-excitation); it is not itself a registered fixture. Designs in a qualified
+excitation). Its shoed sinusoidal configuration is now a registered protocol
+1.6 fixture. Designs in a qualified
 combination but outside the measured geometry range use the same solver path,
 but their accuracy has not been measured individually. Check
 mesh and angular convergence before relying on small differences.
 
-The V-shape baseline's peak Back-EMF differs from FEMM by 14.78% (YELLOW;
-PASS is within 10%, FAIL beyond 15%); its fundamental differs by 2.06% and its
-mean torque by 5.85%. The other five V-shape fixtures pass, with mean-torque
-differences of 2.5-5.9%, against 0.01-0.64% for flat-buried IPM. Treat V-shape
-results as experimental until a solver change passes all six fixtures. Report
-v1.1's original low-output deep-apex and wide-angle fixtures failed (36.02%
-mean torque; 36.03% and 25.16% Back-EMF H1 and peak) and remain in its
-archived record.
+The V-shape baseline's peak-EMF error improves from 14.7787% in the v0.4
+report to 9.0128%, while its fundamental error rises from 2.0563% to 8.2864%.
+Across all six V-shape cases, mean fundamental error rises from 2.3866% to
+6.5029% against unchanged retained reference data. Passing the 10% gate does
+not establish improved accuracy. A tighter-precision/finer-bridge baseline
+reference control passes its registered comparisons but is only a sensitivity
+screen, not proof of spatial convergence. V-shape stays experimental. Earlier
+failed fixtures and diagnostic reports remain intact in their historical folders.
 
-The 0.5.0 development run on macOS at `5b7cad8`
-([report](../benchmarks/macos-native-20261022-5b7cad8/README.md)) records
-29 PASS and the planned unsupported Prius. The V-shape baseline is PASS there,
-but V-shape IPM stays experimental: the corrected nonlinear stopping test
-(public issue 11) moved five V-shape Back-EMF fundamentals 4.7–6.6% away from
-FEMM, to 8.1–8.6% against the 10% gate. That run is development evidence, not
-release qualification.
-
-The [November 2 physical Windows collection](../benchmarks/windows-v050-20261102-88aae101/README.md)
-measures clean versioned candidate `88aae101` with protocol 1.6.0: all 52
-supported jobs complete, 46 PASS, one planned unsupported row and 336/336
-gates PASS against 46 fresh reference records. Its
-[published Mac comparison](../benchmarks/windows-v050-20261102-88aae101/macos-comparison.txt)
+The [published Mac comparison](../benchmarks/windows-v050-20261102-88aae101/macos-comparison.txt)
 uses the full earlier report at `5b7cad8` and rounded new-case values at
-`f6c9fbb`; it preserves those pins and does not qualify this exact Mac build.
-All checked legacy reference data reproduce exactly. The V-shape baseline's
-peak error improves to 9.0128%, while its fundamental error rises to 8.2864%;
-six-case mean fundamental error rises from 2.3866% to 6.5029%. V-shape remains
-experimental. Reference status is REVIEW_REQUIRED and the historical table and
-runtime qualification basis above are unchanged. **TODO(freeze):** complete
-review and register accepted candidate qualification evidence.
+`f6c9fbb`. It preserves those pins and does not qualify the exact `88aae101`
+Mac build. The complete Windows Prius candidate audit now passes; a complete
+fresh Mac A–D collection is still required by the release gate.
+
+The active physics guard covers 63 files, including d/q, temperature,
+resistance/loss and configuration/policy sources. All 63 current file hashes
+match hashes captured in the native identity before collection. Expanding the
+registry does not change any physical source or measured value. A changed
+field-affecting source requires new measured evidence.
 
 ## 0.5.0 performance outputs
 
@@ -336,8 +319,9 @@ gate, what is experimental and why, and what is not modelled.
 **Phase resistance and copper loss are qualified for a design with a wire.
 Every other output is experimental in the current source.** Phase resistance
 passes its hand-calculation gate. Loaded d/q and magnet-temperature comparisons
-now pass against the fresh Windows references, but those references still
-require review and no new output qualification is promoted. Each output shows
+now pass against reviewed Windows references. New performance-output statuses
+remain experimental pending completion of their candidate qualification and
+explicit matching code/status updates. Each output shows
 its status and the reason in the UI, the run PDF
 and CSV, and the performance PDF and CSV. The reasons quoted below are the
 strings the app prints, from `backend/models/performance.py`,
@@ -349,7 +333,7 @@ the d/q, phase-resistance and magnet-temperature reasons, and
 [Protocol 1.6.0](../benchmarks/abcd-v1.6/README.md) registers the reference
 gates for loaded λd/λq and magnet temperature, and the phase-resistance gate.
 The FEMM records for the first two are now
-[published with review pending](../benchmarks/windows-v050-20261102-88aae101/REFERENCE_REVIEW.md);
+[reviewed for registered parity](../benchmarks/reference-baselines/protocol16-reviewed-20261103/README.md);
 the phase-resistance gate
 needs no solve or reference and already passes. An output
 becomes qualified only for the fixture combinations whose gates pass in the
@@ -357,12 +341,12 @@ freeze report, and only once the app's status for it changes. Passing a gate
 does not qualify other topologies, currents or angles.
 
 The table records the measured comparisons without changing application
-qualification. **TODO(freeze):** complete review and qualification registration;
+qualification. **TODO(freeze):** complete candidate qualification registration;
 change an output's status in code and this section together only when qualified.
 
 | Output | Status now | Gate that could qualify it | Gate result |
 | --- | --- | --- | --- |
-| Loaded λd and λq | Experimental | Protocol 1.6.0 `lambda_d`, `lambda_q` and `reference_dq_torque`, 12 points on two fixtures | All 36 added gates PASS on Windows `88aae101`; reference review and qualification pending |
+| Loaded λd and λq | Experimental | Protocol 1.6.0 `lambda_d`, `lambda_q` and `reference_dq_torque`, 12 points on two fixtures | All 36 added gates PASS on Windows `88aae101`; references reviewed, candidate qualification pending |
 | Apparent Ld and Lq | Experimental | None; see below | — |
 | Flux-linkage map | Experimental | None beyond the 12 d/q points | — |
 | Torque–speed envelope | Experimental | None; hardware correlation deferred until after 0.5.0 | Deferred by the owner on October 30, 2026 |
@@ -402,9 +386,9 @@ Ld = (λd − λpm) / id and Lq = λq / iq are secant values at the solved point
   uncertain. At `spm_8p12s_concentrated__dq_I20_g30`, coilEM's λd is
   1.35 mWb below its γ 0° value and λq is 2.46 mWb, while the 3% band is
   0.52 mWb. **TODO(owner):** confirm this boundary.
-- **Experimental because:** "Not yet compared with a reference solution: the
-  benchmark measures torque and back EMF, so the design's qualification does
-  not cover the d/q flux linkage or the inductances from it."
+- **Experimental because:** "Reference checks pass at 12 registered SPM and
+  flat-IPM points. The general d/q output remains experimental, including
+  inductances, maps and unmeasured operating points."
 - **Consistency check, not a reference:** Torque–λdq agreement compares the
   solved torque with 1.5·P·(λd·iq − λq·id) from the same solve. In every loaded
   benchmark case at `5b7cad8` it reads 99.86–100.29%. It catches a bookkeeping
@@ -589,9 +573,9 @@ temperature is refused for magnets without cited coefficients.
   - FEMM models the same derated Br. The gate therefore checks the solve at a
     derated Br, not the coefficient. The coefficient is the catalogue's, and no
     reference measures it.
-- **Experimental because:** "Br and HcJ derated linearly with the grade's cited
-  reversible coefficients; back EMF and torque at temperature are not yet
-  compared with a reference."
+- **Experimental because:** "Br and HcJ use cited reversible coefficients.
+  Reference checks pass for four declared-Br N42 cases at 60 C and 100 C;
+  general temperature behavior and material coefficients remain experimental."
 - **Not modelled:** irreversible demagnetisation, temperature dependence beyond
   the linear coefficient, a temperature that varies within a magnet, and magnet
   heating. The steel and winding temperatures are set separately.

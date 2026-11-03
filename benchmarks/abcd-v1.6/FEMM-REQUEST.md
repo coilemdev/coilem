@@ -5,8 +5,10 @@
 now retains all 46 supported records at sealed adapter `faced858`, the 52
 completed native jobs at `88aae101`, and a separate V-shape refinement control.
 All 46 cases PASS their registered comparisons; the legacy Prius remains
-planned unsupported. Reference status is still **REVIEW_REQUIRED**. The
-request and published Mac table below retain their original inputs and pins.
+planned unsupported. The [subsequent review](../reference-baselines/protocol16-reviewed-20261103/README.md)
+accepts the unchanged records for registered parity, with explicit scope and
+reviewer identity. The original collection keeps its REVIEW_REQUIRED manifest.
+The request and published Mac table below retain their original inputs and pins.
 
 This is what the owner's Windows FEMM run must produce for [protocol 1.6.0](README.md):
 - the 30 registered 1.4.0 requests;
@@ -55,7 +57,9 @@ YELLOW on peak EMF (10.0876% on macOS / 10.0841% on Windows); no gate was widene
 or reference promoted.
 FEMM's precision setting controls its linear solver, so this is not an
 independent audit of its nonlinear stopping policy. The full 46-record bundle
-and its review, including all six V-shape cases, are still required.
+and its review, including all six V-shape cases, are now retained in the
+November 2 collection and the subsequent review linked above. V-shape remains
+experimental; the diagnostic control is not a spatial convergence proof.
 
 ## New: the shoed example (1 case)
 
