@@ -31,6 +31,30 @@ enter the cogging waveform; model every winding region with zero current.
 | `spm_8p48s_distributed_femm_validation__cogging` | `benchmarks/main-20261009-bad71d9/fixtures/spm_8p48s_distributed_femm_validation.json` | 48 / 8 | 30° / 7.5° | 48 |
 | `ipm_flat_12s10p_fscw_contract__cogging` (optional, low cogging) | `benchmarks/main-20261009-bad71d9/fixtures/ipm_flat_12s10p_fscw_contract.json` | 12 / 10 | 30° / 6° | 60 |
 
+### Request hashes
+
+Each record's `input_sha256` binds it to its derived request: the SHA-256 of
+the fixture with the two changes above, as canonical JSON
+(`backend.benchmark_suite.contract.canonical`). Check the fixture's own
+SHA-256 first; if either differs, stop and report.
+
+| Case | Fixture SHA-256 | Request `input_sha256` |
+| --- | --- | --- |
+| `spm_8p12s_example_shoed__cogging` | `dbe538187d5280d171c224b12dc25612fb25c35c9014b201564126715dc4b6c4` | `9d468051d18b1ca9936d11057924e365b81aedadf14892c21aaed9a203bc619d` |
+| `ipm_flat_8p12s_fsae_contract__cogging` | `8070cb6d1281f900beed45ca729211327534b263db6ca28e4d9d2b58d2c15904` | `bc4148dc2f8a60bf0fab4033d050883a4bc5718662ad1fb93ef3bd567c5efac4` |
+| `spm_8p48s_distributed_femm_validation__cogging` | `0020b4a8084c251f6b17cbc6fb1f4d3293bbc057502b846da0f10481689e5090` | `0e3e1ac40c748c83d1c996daf90ab6ae0ea4fdedb832331faeb1d35f5aa72f23` |
+| `ipm_flat_12s10p_fscw_contract__cogging` | `74358dbc72618a8d79432bbd8420a5ff5ad1936c8419ca3ceacfaa42642fa680` | `727e2f8a47115811f9a96a63ddd3fea44439af4ed134d4588c28657b0f6c5ebb` |
+
+```python
+import json
+from backend.benchmark_suite.contract import canonical
+
+config = json.load(open(fixture_path, encoding="utf-8"))
+config["solve_options"]["cogging_torque"] = True
+config["solve_params"]["corner_refinement"] = True
+print(canonical(config))
+```
+
 Build each geometry from coilEM's regions, as for the registered cases.
 Keep the registered material contract: M350-50A from the suite's B-H curve,
 N42 magnets as linear recoil with Br 1.315 T and μr 1.05, the stack length
@@ -105,6 +129,15 @@ These check the reference itself, before any comparison with coilEM:
 
 A failure in 1 or 2 points to a mesh or rotation-bookkeeping problem in the
 model, not a difference from coilEM. Fix it before hand-off.
+
+## coilEM's side (optional, if the VM has time)
+
+coilEM's own values for these requests are still missing for three of the
+four cases (the measuring Mac ran out of disk). On the VM, at this branch's
+head, solve each derived request natively. That is the fixture with the two
+changes, through `backend.solver.Magneto2DSolver(launch_surface=True)`. For
+each case, report `summary.cogging` and `cogging_torque_waveform` from the
+result. These are native values for review, not a benchmark record.
 
 ## Hand back
 

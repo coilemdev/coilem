@@ -5865,8 +5865,8 @@
     },
     {
       "path": "docs/COGGING_FEMM_REQUEST.md",
-      "bytes": 5792,
-      "sha256": "30c93efb0be87161740aa7c6861662f5c0301784071267bdd3d687445330f093"
+      "bytes": 7637,
+      "sha256": "505ae74c4b9eee10344edc5dae454e10fabcd550d5d8fa8d782b2a57c2ce7828"
     },
     {
       "path": "docs/ELMER.md",
@@ -30547,6 +30547,12 @@
       "path": "docs/COGGING_FEMM_REQUEST.md",
       "source_sha256": "30c93efb0be87161740aa7c6861662f5c0301784071267bdd3d687445330f093",
       "reason": "Hand FEMM results to the owner without naming a private folder (#185)."
+    },
+    {
+      "base_commit": "480ff26",
+      "path": "docs/COGGING_FEMM_REQUEST.md",
+      "source_sha256": "505ae74c4b9eee10344edc5dae454e10fabcd550d5d8fa8d782b2a57c2ce7828",
+      "reason": "State the cogging requests' input hashes in the FEMM brief (#185)."
     }
   ]
 }
