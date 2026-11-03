@@ -115,8 +115,9 @@ required. Published Mac evidence keeps its measured source pins and precision.
 - The run PDF and CSV add the d/q record, losses, efficiency, winding and magnet
   temperature.
 - Every new output carries its status and the reason in the UI, the PDFs and
-  the CSVs: qualified for phase resistance and copper loss with a wire,
-  experimental for the rest. The run PDF has a "Status of the performance outputs"
+  the CSVs: qualified for phase resistance and copper loss with a wire, and for
+  λd/λq and the magnet derating inside their gates' scope; experimental for the
+  rest, including Ld and Lq. The run PDF has a "Status of the performance outputs"
   table, and the run CSV a `status` section.
 
 ### Smaller changes
@@ -318,7 +319,7 @@ no independent loss or hardware validation.
 - The 0.4.0 limits still apply: qualification is agreement with FEMM on the
   measured fixtures, not a hardware measurement; six-step is an ideal
   current-commanded model; motor results are 2D estimates. See the
-  [0.4.0 release notes](../RELEASE_NOTES.md#qualification-and-remaining-limits).
+  [release notes](../RELEASE_NOTES.md#qualification-and-remaining-limits).
 
 ## 6. Freeze and release
 
@@ -347,7 +348,7 @@ no independent loss or hardware validation.
   `frontend/package-lock.json` and the design-file writer to **0.5.0**, and
   Magneto2D from **0.3.3 to 0.4.0**, as decided by the owner on October 30,
   2026. Done before the freeze so the freeze measures the build that ships.
-- [ ] Rewrite `RELEASE_NOTES.md` from this draft, and fill every TODO here, in
+- [x] Rewrite `RELEASE_NOTES.md` from this draft, and fill every TODO here, in
   the README and in Validation.
 - [ ] Pass the snapshot and publication checks, tests, lint, audits, the
   frontend build and the browser workflows on the candidate.
