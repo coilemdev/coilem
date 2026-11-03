@@ -108,7 +108,7 @@ model, not a difference from coilEM. Fix it before hand-off.
 
 ## Hand back
 
-Copy everything to the Mac, in a new folder under `~/coilem-experiments-notes/`:
+Hand these to the owner, outside the public repository:
 
 - the bundle as a zip, with its SHA-256;
 - the self-check results and the mesh control;

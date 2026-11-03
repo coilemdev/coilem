@@ -5865,8 +5865,8 @@
     },
     {
       "path": "docs/COGGING_FEMM_REQUEST.md",
-      "bytes": 5817,
-      "sha256": "dc1551f08672a18a4d315e619d54dee8be57a8525d1d87acdffac238dc0f4b2f"
+      "bytes": 5792,
+      "sha256": "30c93efb0be87161740aa7c6861662f5c0301784071267bdd3d687445330f093"
     },
     {
       "path": "docs/ELMER.md",
@@ -30541,6 +30541,12 @@
       "path": "tests/test_solve_workspace.py",
       "source_sha256": "ae009ae0c15e2e201db0566f98452939ec0564cbb26ef417c943beba42b2b85f",
       "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "e5958ed",
+      "path": "docs/COGGING_FEMM_REQUEST.md",
+      "source_sha256": "30c93efb0be87161740aa7c6861662f5c0301784071267bdd3d687445330f093",
+      "reason": "Hand FEMM results to the owner without naming a private folder (#185)."
     }
   ]
 }
