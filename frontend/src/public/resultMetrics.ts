@@ -51,6 +51,9 @@ const RIPPLE_MIN_AVERAGE_FRACTION = 0.01;
  * the torque is cogging, which averages to zero, so a 16.7 N·m swing over a
  * 0.005 N·m residual read as 330,000 %. Then, and whenever the average is under
  * 1% of the swing, the percentage is left out and the swing shown instead.
+ *
+ * With no current and a cogging sweep (#185), the row is the sweep's
+ * peak-to-peak, so Results never shows two cogging numbers.
  */
 export function torqueRippleView(result: Pick<SolveResult, 'summary' | 'torque_waveform' | 'solve_metadata'>): TorqueRippleView {
   const range = torqueRange(result.torque_waveform?.torque_Nm ?? []);
@@ -63,12 +66,22 @@ export function torqueRippleView(result: Pick<SolveResult, 'summary' | 'torque_w
   if (!noLoad && !averageTooSmall) {
     return { ripplePct: result.summary.torque_ripple_pct, peakToPeakNm: null, peakToPeakLabel: 'Torque p-p', note: null };
   }
+  const cogging = noLoad ? result.summary.cogging : null;
+  if (cogging && Number.isFinite(cogging.peak_to_peak_Nm)) {
+    return {
+      ripplePct: null,
+      peakToPeakNm: cogging.peak_to_peak_Nm,
+      peakToPeakLabel: 'Cogging torque p-p',
+      note: `No current, so this torque is cogging. The value is the cogging sweep's: one cogging period at ${cogging.positions_per_period} positions, shown under Cogging torque.`,
+    };
+  }
   return {
     ripplePct: null,
     peakToPeakNm: peakToPeak,
     peakToPeakLabel: noLoad ? 'Cogging torque p-p' : 'Torque p-p',
     note: noLoad
-      ? 'No current, so this torque is cogging: it averages to zero, and ripple as a percentage of the average has no meaning. The peak-to-peak swing is shown instead.'
+      ? 'No current, so this torque is cogging: it averages to zero, and ripple as a percentage of the average has no meaning. The peak-to-peak swing is shown instead. '
+        + "It comes from this sweep's positions, which are not sized to the cogging period; turn on Cogging torque on Solve for a cogging sweep."
       : 'The average torque is close to zero, so ripple as a percentage of it has no meaning. The peak-to-peak swing is shown instead.',
   };
 }

@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 
 from .field import FieldLineFrame, FieldLinePlot, FieldMovieManifest, SlotExcitationContribution, SlotExcitationFrame
 from .mesh import FluxDensityMap
-from .performance import DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, OutputStatus, WindingResistance
+from .performance import CoggingTorque, DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, OutputStatus, WindingResistance
 from .waveforms import (
     BackEMFHarmonicAnalysis,
     BackEMFWaveform,
@@ -25,7 +25,8 @@ class SolveSummary(BaseModel):
     avg_torque_current_source_work_fd_Nm: float | None = None
     torque_q_axis_Nm: float | None = None
     torque_ripple_pct: float = Field(ge=0)
-    cogging_torque_Nm: float | None = None
+    cogging_torque_Nm: float | None = Field(default=None, ge=0, description="Peak-to-peak cogging torque of the zero-current sweep")
+    cogging: CoggingTorque | None = None
     back_emf_fundamental_V: float = Field(ge=0)
     back_emf_thd_pct: float | None = Field(default=None, ge=0)
     Kt_Nm_per_A: float | None = None

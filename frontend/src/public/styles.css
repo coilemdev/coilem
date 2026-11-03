@@ -1636,6 +1636,25 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-result-detail { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 /* Losses run full width under the three compact cards. */
 .public-result-detail > .losses-card { grid-column: 1 / -1; }
+/* Cogging torque (#185): the values on the left, the period and its harmonics on the right. */
+.public-result-detail > .cogging-card { grid-column: 1 / -1; }
+.cogging-card-body { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 380px); justify-content: space-between; gap: 28px; align-items: start; }
+.cogging-card tr[title] th { cursor: help; }
+.cogging-card-noise tr:first-child > * { padding-top: 6px; border-top: 1px solid var(--border-subtle); }
+.cogging-card-figures { display: grid; gap: 10px; }
+.cogging-plot { width: 100%; height: auto; }
+.cogging-plot path { fill: none; stroke: var(--accent-primary); stroke-width: 1.6; stroke-linejoin: round; }
+.cogging-plot-zero { stroke: var(--border-default); stroke-dasharray: 3 3; }
+.cogging-plot text { fill: var(--text-muted); font: 8px var(--font-mono); }
+.cogging-plot .cogging-plot-axis { fill: var(--text-secondary); font: 8px var(--font-ui); }
+.cogging-harmonics { display: grid; gap: 3px; margin: 0; padding: 0; list-style: none; }
+.cogging-harmonics li { display: grid; grid-template-columns: 56px minmax(0, 1fr) 78px; gap: 8px; align-items: center; color: var(--text-muted); font: 9px var(--font-mono); font-variant-numeric: tabular-nums; cursor: help; }
+.cogging-harmonic-bar { height: 6px; overflow: hidden; border-radius: 3px; background: var(--bg-surface-3); }
+.cogging-harmonic-bar > span { display: block; height: 100%; background: color-mix(in srgb, var(--accent-primary) 80%, transparent); }
+.cogging-harmonic-value { color: var(--text-secondary); text-align: right; }
+@media (max-width: 900px) {
+  .cogging-card-body { grid-template-columns: minmax(0, 1fr); }
+}
 @media (max-width: 1180px) {
   .public-result-detail { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .public-result-detail > .public-magnetic-loading { grid-column: 1 / -1; }

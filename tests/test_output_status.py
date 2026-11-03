@@ -18,6 +18,7 @@ import pytest
 from backend.loss_breakdown import operating_point_losses
 from backend.magnet_temperature import magnet_temperature_record
 from backend.models.performance import (
+    COGGING_TORQUE_STATUS_REASON,
     DQ_FLUX_LINKAGE_QUALIFIED_REASON,
     DQ_FLUX_LINKAGE_STATUS_REASON,
     DQ_INDUCTANCE_STATUS_REASON,
@@ -42,6 +43,7 @@ pypdf = pytest.importorskip("pypdf")
 
 # The reasons the app mirrors, for records stored without a status and for the Solve page before a run.
 MIRRORED = {
+    "COGGING_TORQUE_STATUS_REASON": COGGING_TORQUE_STATUS_REASON,
     "DQ_FLUX_LINKAGE_STATUS_REASON": DQ_FLUX_LINKAGE_STATUS_REASON,
     "DQ_INDUCTANCE_STATUS_REASON": DQ_INDUCTANCE_STATUS_REASON,
     "FLUX_LINKAGE_MAP_STATUS_REASON": FLUX_LINKAGE_MAP_STATUS_REASON,

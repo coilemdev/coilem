@@ -78,6 +78,10 @@ MAGNET_TEMPERATURE_QUALIFIED_REASON = (
     "benchmark protocol 1.6.0 (back EMF and torque at the derated Br, N42 at 60 and 100 deg C on two qualified designs). "
     "The coefficients are catalogue values, and irreversible demagnetisation is not modelled."
 )
+COGGING_TORQUE_STATUS_REASON = (
+    "No cogging gate yet: benchmark protocol 1.6.0 has no reference cogging waveform. Each rotor position is meshed "
+    "on its own, without a sliding band, so mesh noise sets a floor under small cogging values."
+)
 # How a drive picks the current for a torque below the limits: the smallest
 # current (MTPA, then field weakening and MTPV) or the least total loss.
 DriveControl = Literal["mtpa", "least_loss"]
@@ -143,6 +147,43 @@ class DqFluxLinkage(BaseModel):
         default="experimental", description="Status of the apparent Ld and Lq and the quantities from them"
     )
     inductance_status_reason: Optional[str] = DQ_INDUCTANCE_STATUS_REASON
+
+
+class CoggingHarmonic(BaseModel):
+    """One harmonic of the cogging waveform, in cycles per mechanical revolution."""
+
+    order: int = Field(ge=1, description="Cycles per mechanical revolution: a multiple of LCM(slots, poles)")
+    multiple: int = Field(ge=1, description="order / fundamental_order")
+    amplitude_Nm: float = Field(ge=0, description="Peak amplitude of this harmonic")
+
+
+class CoggingTorque(BaseModel):
+    """The zero-current cogging sweep over one cogging period (#185).
+
+    The waveform itself is ``SolveResult.cogging_torque_waveform``; this record
+    holds what Results, the PDF and the CSV show from it, so all three read the
+    same numbers.
+    """
+
+    method: str = Field(description="Torque extraction method of the cogging waveform")
+    positions_per_period: int = Field(ge=2, description="Solved positions per cogging period, not counting the repeated endpoint")
+    period_elec_deg: float = Field(gt=0, description="One cogging period: 180·gcd(S, P)/S electrical degrees")
+    period_mech_deg: float = Field(gt=0, description="One cogging period: 360/LCM(S, P) mechanical degrees")
+    fundamental_order: int = Field(ge=1, description="Cogging cycles per mechanical revolution, LCM(S, P)")
+    peak_to_peak_Nm: float = Field(ge=0)
+    peak_Nm: float = Field(ge=0, description="Largest |cogging torque| over the period")
+    first_harmonic_Nm: float = Field(ge=0, description="Peak amplitude at the fundamental cogging order")
+    mean_Nm: float = Field(description="Mean over one period; zero for an exact solve, so its size is a noise measure")
+    endpoint_mismatch_Nm: float = Field(
+        ge=0, description="|T(period) − T(0)|: the two ends are meshed separately, so this is a mesh-noise measure"
+    )
+    harmonics: list[CoggingHarmonic] = Field(default_factory=list, description="Up to the sampling limit, fundamental first")
+    loaded_mean_torque_Nm: Optional[float] = Field(default=None, description="Mean loaded torque of the same run, when it had current")
+    peak_to_peak_of_loaded_pct: Optional[float] = Field(
+        default=None, ge=0, description="peak_to_peak_Nm as a percentage of |loaded_mean_torque_Nm|"
+    )
+    status: OutputStatus = "experimental"
+    status_reason: Optional[str] = COGGING_TORQUE_STATUS_REASON
 
 
 class WindingResistance(BaseModel):

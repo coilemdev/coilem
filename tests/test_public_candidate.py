@@ -140,11 +140,10 @@ def test_public_policy_rejects_femm_and_thermal() -> None:
     thermal["solve_params"]["magnet_temperature_C"] = 80
     assert client.post("/solve/validate", json=thermal).status_code == 200
 
+    # Cogging torque is a public Magneto2D output (#185).
     cogging = deepcopy(VALID_CONFIG)
     cogging["solve_options"] = {"cogging_torque": True}
-    response = client.post("/solve/validate", json=cogging)
-    assert response.status_code == 400
-    assert response.json()["detail"]["field"] == "solve_options.cogging_torque"
+    assert client.post("/solve/validate", json=cogging).status_code == 200
 
 
 def test_public_policy_accepts_only_the_guided_six_step_contract() -> None:
@@ -247,7 +246,7 @@ def test_public_docs_match_reduced_release_contract() -> None:
     assert "H24" in documents["docs/GETTING_STARTED.md"]
     guide_text = " ".join(documents["docs/GETTING_STARTED.md"].split())
     assert "Preview does not report an under-sampled THD value" in guide_text
-    assert "dedicated cogging-torque result view is not part" in documents[
+    assert "Cogging torque is experimental: it\nhas no FEMM gate yet." in documents[
         "docs/GETTING_STARTED.md"
     ]
     assert "Ideal six-step (120°)" in documents["docs/GETTING_STARTED.md"]

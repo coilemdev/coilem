@@ -225,7 +225,35 @@ export interface SolveValidation {
   estimated_solve_time_range_s?: [number, number];
   estimated_mesh_elements: number;
   sweep_positions: number;
+  /** Cogging positions per period for the selected preset (#185), solved when Cogging torque is on. */
+  cogging_positions_per_period?: number;
   qualification?: PublicQualification;
+}
+
+/** One harmonic of the cogging waveform, in cycles per mechanical revolution (backend/models/performance.py). */
+export interface CoggingHarmonic {
+  order: number;
+  multiple: number;
+  amplitude_Nm: number;
+}
+
+/** The zero-current cogging sweep over one cogging period (#185), as backend/cogging.py records it. */
+export interface CoggingTorqueRecord {
+  method: string;
+  positions_per_period: number;
+  period_elec_deg: number;
+  period_mech_deg: number;
+  fundamental_order: number;
+  peak_to_peak_Nm: number;
+  peak_Nm: number;
+  first_harmonic_Nm: number;
+  mean_Nm: number;
+  endpoint_mismatch_Nm: number;
+  harmonics: CoggingHarmonic[];
+  loaded_mean_torque_Nm?: number | null;
+  peak_to_peak_of_loaded_pct?: number | null;
+  status?: PerformanceOutputStatus | null;
+  status_reason?: string | null;
 }
 
 export interface FieldLineContourLevel {
@@ -441,6 +469,9 @@ export interface SolveResult {
     lambda_pm_Wb?: number | null;
     peak_flux_density_teeth_T: number;
     peak_flux_density_yoke_T: number;
+    /** Peak-to-peak of the cogging sweep, when the run had one. */
+    cogging_torque_Nm?: number | null;
+    cogging?: CoggingTorqueRecord | null;
     dq_flux_linkage?: DqFluxLinkage | null;
     loss_breakdown?: LossBreakdown | null;
     iron_loss?: IronLoss | null;

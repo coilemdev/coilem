@@ -27,6 +27,8 @@ const METRICS: Array<{
   unit: string;
   deltaUnit?: string;
   digits?: number;
+  /** Shown only when either run has the value. */
+  optional?: boolean;
   value: (result: SolveResult) => number | null | undefined;
 }> = [
   { label: 'Average torque', unit: 'N·m', value: (run) => run.summary.avg_torque_Nm },
@@ -38,6 +40,9 @@ const METRICS: Array<{
   // Per rms ampere, as in Results: the summary stores Kt per peak ampere (#153).
   { label: 'Torque constant', unit: 'N·m/A rms', value: (run) => motorConstantsView(run.summary).kt.value },
   { label: 'Back EMF THD (headline)', unit: '%', deltaUnit: 'pp', value: (run) => run.summary.back_emf_thd_pct },
+  // The cogging sweep (#185), for runs that solved one.
+  { label: 'Cogging torque p-p', unit: 'N·m', optional: true, value: (run) => run.summary.cogging?.peak_to_peak_Nm },
+  { label: 'Cogging fundamental', unit: 'N·m', optional: true, value: (run) => run.summary.cogging?.first_harmonic_Nm },
   { label: 'Solve time', unit: 's', digits: 1, value: (run) => run.summary.solve_time_s },
 ];
 
@@ -445,7 +450,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false }: Publi
           <p>Deltas may come from the motor design, materials, operating point, or numerical setup. They describe change and are not a solver-validation verdict.</p>
         </section>
         <div className="public-run-compare-metrics" aria-label="Run comparison metric differences">
-          {METRICS.map((metric) => {
+          {METRICS.filter((metric) => !metric.optional || metric.value(left.result) != null || metric.value(right.result) != null).map((metric) => {
             const leftValue = metric.value(left.result);
             const rightValue = metric.value(right.result);
             return <article key={metric.label}><span>{metric.label}</span><div><strong>{number(leftValue, metric.digits)} <small>{metric.unit}</small></strong><strong>{number(rightValue, metric.digits)} <small>{metric.unit}</small></strong></div><em><span>{delta(leftValue, rightValue, metric.digits)} {metric.deltaUnit || metric.unit}</span><span>{percentDelta(leftValue, rightValue)} vs A</span></em></article>;
