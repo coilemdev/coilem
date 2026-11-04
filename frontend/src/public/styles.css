@@ -4864,10 +4864,11 @@ button.performance-tag { cursor: help; }
 /* The analysis list chooses work independently of numerical accuracy. */
 .public-analysis-options { display: grid; gap: 14px; padding: 4px 0; }
 .public-analysis-option + .public-analysis-option { border-top: 1px solid var(--border-subtle); padding-top: 14px; }
-.public-analysis-option .public-check-row { display: flex; align-items: center; gap: 10px; }
-.public-analysis-hint { margin: 5px 0 0 28px; color: var(--text-muted); font-size: 12px; line-height: 1.5; }
-.public-analysis-hint-trigger { padding: 0; border: 0; border-bottom: 1px dotted currentColor; border-radius: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: help; }
-.public-analysis-hint-trigger:focus-visible { outline: 2px solid var(--text-accent); outline-offset: 3px; }
+.public-analysis-heading { display: flex; align-items: center; gap: 8px; }
+.public-analysis-heading .public-check-row { display: flex; align-items: center; gap: 10px; min-width: 0; margin: 0; }
+.public-analysis-heading .losses-status { flex: none; margin-left: 0; }
+.public-analysis-heading > .popover { flex: none; margin-left: auto; }
+.public-analysis-help { display: grid; gap: 8px; }
 .public-map-settings { display: grid; gap: 12px; margin: 14px 0 0 28px; }
 .public-map-setting { display: grid; grid-template-columns: 1fr auto; gap: 5px; align-items: center; color: var(--text-secondary); font-size: 11px; }
 .public-map-setting-input { grid-column: 1 / -1; display: flex; align-items: center; gap: 6px; padding: 0 8px; border: 1px solid var(--border-default); border-radius: 6px; }

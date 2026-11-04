@@ -7495,8 +7495,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 287205,
-      "sha256": "9d59b4b986f102efb59a58dca98a5faffbbc78ecf82ef7b8514d62d5682ecfae"
+      "bytes": 287087,
+      "sha256": "29afb23f55909a2e02a30aaf8d2fdcff7205239add70687ce68357481865db37"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -11595,8 +11595,8 @@
     },
     {
       "path": "frontend/src/public/AnalysisSelector.tsx",
-      "bytes": 2974,
-      "sha256": "6db757b923f54649834d780809768f030a8f911f20ff72a7665967a150f9074f"
+      "bytes": 3635,
+      "sha256": "d3ab31cdf1bd30002f84abed8cd587c409702a300ad5d849ed46be30654bb2d0"
     },
     {
       "path": "frontend/src/public/analysisOptions.ts",
@@ -31529,6 +31529,18 @@
       "path": "frontend/src/public/styles.css",
       "source_sha256": "4aa5c75753442e7988871983ad3484e3cd451bb743962d849024b65e0bc9c5ee",
       "reason": "Show the running application version from backend health beside the shared header logo on the landing page, workspace and tutorials."
+    },
+    {
+      "base_commit": "e16664b0dee18d6f98c0425b03cbc72d63834382",
+      "path": "frontend/src/public/AnalysisSelector.tsx",
+      "source_sha256": "6db757b923f54649834d780809768f030a8f911f20ff72a7665967a150f9074f",
+      "reason": "Compact analysis choices with accessible info tooltips and yellow Experimental flags for cogging, losses and efficiency, and torque-speed maps."
+    },
+    {
+      "base_commit": "e16664b0dee18d6f98c0425b03cbc72d63834382",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "9d59b4b986f102efb59a58dca98a5faffbbc78ecf82ef7b8514d62d5682ecfae",
+      "reason": "Compact analysis choices with accessible info tooltips and yellow Experimental flags for cogging, losses and efficiency, and torque-speed maps."
     }
   ]
 }
