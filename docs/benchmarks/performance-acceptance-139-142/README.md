@@ -25,11 +25,24 @@ On PowerShell set `$env:COILEM_ACCEPTANCE_CASES` before running Playwright.
 before measuring; the harness rejects a dirty tracked source tree.
 For a setup-only preflight, set `COILEM_ACCEPTANCE_SETUP_ONLY=1`; it runs no
 solve and produces no passing browser/export acceptance record.
+Cold rehearsals require at least 3.5 GiB free, or 6 GiB for the large flat IPM,
+before starting. The native sweep's temporary field files can exceed the
+between-solve cache limit.
 
 The existing `ci.yml` workflow also accepts the boolean dispatch input
 `performance_acceptance_only`. When true, it runs the five regular bundled
 motor examples in separate Windows jobs and uploads their evidence. Routine
 push/PR checks keep their existing behavior.
+
+To recheck charts and downloads after a harness correction, set
+`COILEM_ACCEPTANCE_RECHECK_DIR` to a prior evidence directory. Only a complete
+70-point native map is accepted. It is loaded through the app's normal map
+store; the returned map must equal it and the browser must observe no new
+grid solves. The original environment, request, progress and timing files are
+copied unchanged, with a separate recheck source identity and map checksum.
+Rechecks do not count as fresh timing samples. In Windows CI the optional
+`performance_recheck_run` dispatch input downloads the per-example artifacts
+of that cold run and performs these UI/export checks in new Windows jobs.
 
 ## Measurement and checks
 

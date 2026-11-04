@@ -10,12 +10,16 @@ on:
         description: 'Run only the Windows Standard-map and Performance export acceptance (#139/#142)'
         type: boolean
         default: false
+      performance_recheck_run:
+        description: 'Optional prior cold-run ID: reuse its native maps for Windows UI/export checks'
+        type: string
+        default: ''
 
 permissions:
   contents: read
 
 concurrency:
-  group: public-candidate-${{ github.workflow }}-${{ github.ref }}
+  group: public-candidate-${{ github.workflow }}-${{ github.ref }}${{ inputs.performance_recheck_run && '-performance-recheck' || '' }}
   cancel-in-progress: true
 
 jobs:
@@ -177,6 +181,9 @@ jobs:
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_acceptance_only }}
     runs-on: windows-latest
     timeout-minutes: 110
+    permissions:
+      contents: read
+      actions: read
     strategy:
       fail-fast: false
       matrix:
@@ -206,10 +213,25 @@ jobs:
           npm run build
           npx playwright install chromium
       - name: Run a cold Standard map and inspect the Performance view
+        if: ${{ !inputs.performance_recheck_run }}
         working-directory: frontend
         run: npx playwright test --config playwright.performance.config.ts
+      - name: Download the measured native map for a UI/export recheck
+        if: ${{ inputs.performance_recheck_run }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COLD_RUN_ID: ${{ inputs.performance_recheck_run }}
+        run: gh run download "$env:COLD_RUN_ID" --repo "$env:GITHUB_REPOSITORY" --name "performance-windows-${{ matrix.example }}" --dir frontend/test-results/cold-evidence
+      - name: Recheck the UI and downloads with the measured map
+        if: ${{ inputs.performance_recheck_run }}
+        working-directory: frontend
+        env:
+          COILEM_ACCEPTANCE_RECHECK_DIR: test-results/cold-evidence/performance-evidence
+        run: npx playwright test --config playwright.performance.config.ts
       - name: Verify downloaded PDF and CSV values
-        run: python -m tools.check_performance_acceptance frontend/test-results/performance-evidence/${{ matrix.example }}
+        env:
+          EVIDENCE_FOLDER: ${{ inputs.performance_recheck_run && 'performance-recheck-evidence' || 'performance-evidence' }}
+        run: python -m tools.check_performance_acceptance frontend/test-results/$env:EVIDENCE_FOLDER/${{ matrix.example }}
       - name: Keep timings, screenshots, exports and failure diagnostics
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
@@ -218,5 +240,6 @@ jobs:
           retention-days: 30
           path: |
             frontend/test-results/performance-evidence/
+            frontend/test-results/performance-recheck-evidence/
             frontend/test-results/performance-acceptance/
             frontend/test-results/performance-acceptance.json

@@ -25,8 +25,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 8939,
-      "sha256": "39fe3789055af48c5e5b36e95f5d059b2163e1456d0f6087556722e487010204"
+      "bytes": 10229,
+      "sha256": "fd3bc8f5ba2dcaeab9df4b15e48c58600061a70fa7abff5bca1ab8f8f4ce2f83"
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
@@ -11650,8 +11650,8 @@
     },
     {
       "path": "frontend/tests/performance-acceptance.spec.ts",
-      "bytes": 11976,
-      "sha256": "88a58e0f592c4ce74abbf0ceecde02b47e92c7951c7580087da1b7938d57b4c2"
+      "bytes": 14076,
+      "sha256": "77e02cc8669d60244cc6cf3c00214e1b4c837d5768385f64ad05f98954a72a90"
     },
     {
       "path": "tools/check_performance_acceptance.py",
@@ -11660,8 +11660,8 @@
     },
     {
       "path": "docs/benchmarks/performance-acceptance-139-142/README.md",
-      "bytes": 3767,
-      "sha256": "6391f6df82b4f24957e484b7d8dcf9814fa0d4b6d5312caa4138a934346d93fa"
+      "bytes": 4619,
+      "sha256": "5f3cfb27e6d61b1f11bd4b68b3224c7df267d7c9355a3a820c0f82ea17efd1ff"
     }
   ],
   "public_patches": [

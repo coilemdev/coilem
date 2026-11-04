@@ -1,7 +1,7 @@
 /** #139/#142: actual native solves and browser downloads; no intercepted API responses. */
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, readdir, statfs, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import { resolve, join } from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
@@ -19,7 +19,8 @@ if (requested.some((id) => !examples.some((item) => item.id === id))) throw new 
 const sha256 = (data: string | Buffer) => createHash('sha256').update(data).digest('hex');
 const git = (...args: string[]) => execFileSync('git', args, { encoding: 'utf8' }).trim();
 const root = resolve('..');
-const evidenceRoot = resolve('test-results/performance-evidence');
+const recheckDirectory = process.env.COILEM_ACCEPTANCE_RECHECK_DIR;
+const evidenceRoot = resolve(recheckDirectory ? 'test-results/performance-recheck-evidence' : 'test-results/performance-evidence');
 const setupOnly = process.env.COILEM_ACCEPTANCE_SETUP_ONLY === '1';
 
 async function section(page: Page, key: string) {
@@ -32,6 +33,20 @@ for (const example of examples.filter((item) => requested.includes(item.id))) {
     const output = join(evidenceRoot, example.id);
     await mkdir(output, { recursive: true });
     const save = async (name: string, value: unknown) => writeFile(join(output, name), `${JSON.stringify(value, null, 2)}\n`);
+    const measured = recheckDirectory
+      ? JSON.parse(await readFile(resolve(recheckDirectory, example.id, 'analysis.json'), 'utf8')) : null;
+    if (measured) {
+      expect(measured.map.points).toHaveLength(70);
+      expect(measured.map.points.every((point: { status: string }) => point.status === 'ok')).toBe(true);
+      // Reuse only the actual measured native map, through the app's normal
+      // persisted-map path. The API and browser responses remain real.
+      const directory = join(process.env.COILEM_ACCEPTANCE_RUNTIME!, 'user-data/performance_maps', measured.map.scope_key);
+      await mkdir(directory, { recursive: true });
+      await writeFile(join(directory, 'map_measured.json'), JSON.stringify(measured.map));
+      for (const name of ['environment.json', 'timing.json', 'request.json', 'map-progress.json']) {
+        await copyFile(resolve(recheckDirectory!, example.id, name), join(output, name));
+      }
+    }
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
     const source = git('rev-parse', 'HEAD');
@@ -41,7 +56,12 @@ for (const example of examples.filter((item) => requested.includes(item.id))) {
     expect(healthResponse.ok()).toBe(true);
     const health = await healthResponse.json();
     const binary = join(root, 'solvers/magneto2d/target/release', process.platform === 'win32' ? 'magneto2d.exe' : 'magneto2d');
-    await save('environment.json', {
+    const disk = await statfs(root);
+    if (!setupOnly && !measured) {
+      const minimum = example.id === 'ipm-14p-flat' ? 6 : 3.5;
+      expect(disk.bavail * disk.bsize, `need ${minimum} GiB free before a cold Standard map`).toBeGreaterThanOrEqual(minimum * 2 ** 30);
+    }
+    await save(measured ? 'recheck-environment.json' : 'environment.json', {
       source_commit: source, tracked_tree_clean: !trackedChanges, setup_only: setupOnly, application_version: health.version,
       platform: process.platform, os_release: os.release(), architecture: os.arch(),
       cpu_model: os.cpus()[0]?.model, logical_cpus: os.cpus().length, memory_bytes: os.totalmem(),
@@ -49,7 +69,8 @@ for (const example of examples.filter((item) => requested.includes(item.id))) {
       python: execFileSync(process.env.COILEM_TEST_PYTHON || 'python', ['--version'], { encoding: 'utf8' }).trim(),
       native_binary_sha256: sha256(await readFile(binary)),
       github_run_url: process.env.GITHUB_RUN_ID ? `https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}` : null,
-      sample_count: 1, cache_policy: 'fresh isolated runtime; no existing map for this design',
+      sample_count: measured ? 0 : 1, cache_policy: measured ? 'reuse the previously measured native map for UI/export checks' : 'fresh isolated runtime; no existing map for this design',
+      free_disk_bytes_before: disk.bavail * disk.bsize,
       worker_policy: { gmsh_producers: 1, parallel_angle_solves: 2, native_workers_per_angle: 1, field_preview_workers: 1 },
     });
     // Headless Chromium cannot operate the native Save As dialog. Exercise the
@@ -90,7 +111,7 @@ for (const example of examples.filter((item) => requested.includes(item.id))) {
     const started = performance.now();
     await run.click();
     const request = (await submitted).postDataJSON();
-    await save('request.json', request);
+    await save(measured ? 'recheck-request.json' : 'request.json', request);
     expect(request.config.solve_params.mesh_density).toBe('normal');
     expect(request.config.torque_speed_analysis.preset).toBe('standard');
     const response = await finished;
@@ -112,8 +133,9 @@ for (const example of examples.filter((item) => requested.includes(item.id))) {
     expect(analysis).toBeTruthy();
     await save('analysis.json', analysis);
     const progress = events.filter((event) => event.kind === 'progress' && event.data.stage === 'torque_speed_map').map((event) => event.data);
-    await save('map-progress.json', progress);
-    await save('timing.json', {
+    if (!measured) {
+      await save('map-progress.json', progress);
+      await save('timing.json', {
       example: example.id, started_utc: startedUtc, completed_utc: new Date().toISOString(),
       browser_request_wall_s: wallSeconds, backend_analysis_s: result.solve_metadata.solve_time_s,
       map_phase_s: progress.at(-1).elapsed_s - progress[0].elapsed_s,
@@ -121,12 +143,21 @@ for (const example of examples.filter((item) => requested.includes(item.id))) {
       timing_resolution_s: 0.1, points: analysis.map.points.length, distinct_solves: 61,
       rotor_positions_per_point: analysis.map.rotor_positions, mesh_density: analysis.map.mesh_density,
       request_sha256: sha256(JSON.stringify(request)), map_scope_key: analysis.map.scope_key,
-    });
-    expect(existingScopes).not.toContain(analysis.map.scope_key);
+      });
+      expect(existingScopes).not.toContain(analysis.map.scope_key);
+      expect(progress.map((item) => item.position)).toEqual(Array.from({ length: 62 }, (_, i) => i));
+    } else {
+      expect(existingScopes).toContain(analysis.map.scope_key);
+      expect(analysis.map).toEqual(measured.map);
+      expect(progress).toEqual([]);
+      await save('recheck.json', {
+        source_commit: source, measured_map_sha256: sha256(JSON.stringify(measured.map)),
+        returned_map_sha256: sha256(JSON.stringify(analysis.map)), grid_resolved_again: false,
+      });
+    }
     expect(analysis.map.points).toHaveLength(70);
     expect(analysis.map.points.every((point: { status: string }) => point.status === 'ok')).toBe(true);
     expect(analysis.map.rotor_positions).toBe(24);
-    expect(progress.map((item) => item.position)).toEqual(Array.from({ length: 62 }, (_, i) => i));
     await expect(page.getByRole('region', { name: 'Completed solver results', exact: true })).toBeVisible({ timeout: 120_000 });
     await page.getByRole('button', { name: 'Full results →', exact: true }).click();
     const panel = page.locator('.performance-panel');
@@ -156,7 +187,7 @@ for (const example of examples.filter((item) => requested.includes(item.id))) {
     await expect(panel.locator('.performance-inductance tbody tr')).toHaveCount(6);
     await panel.screenshot({ path: join(output, 'map-details.png'), animations: 'disabled' });
     for (const [label, filename] of [['PDF report', 'performance.pdf'], ['Performance CSV', 'performance.csv'], ['id/iq table', 'idiq.csv'], ['Map points CSV', 'map.csv']]) {
-      await panel.getByRole('button', { name: 'Export ▾', exact: true }).click();
+      await panel.getByRole('button', { name: 'Export', exact: true }).click();
       const pending = page.waitForEvent('download');
       await panel.getByRole('group', { name: 'Downloads', exact: true }).getByRole('button', { name: label, exact: true }).click();
       await (await pending).saveAs(join(output, filename));
@@ -166,6 +197,7 @@ for (const example of examples.filter((item) => requested.includes(item.id))) {
     expect(git('status', '--porcelain', '--untracked-files=no')).toBe('');
     await save('browser-check.json', { passed: true, page_errors: errors, headline_text: stats, torque_paths: curves, efficiency_cells: efficiency.length,
       checked: ['torque curves', 'power curves', 'efficiency cells', 'experimental status', 'Ld/Lq table', 'PDF download', 'performance CSV download', 'id/iq CSV download', 'map CSV download'] });
-    console.log(`${example.id}: ${wallSeconds.toFixed(1)} s total; Standard map ${(progress.at(-1).elapsed_s - progress[0].elapsed_s).toFixed(1)} s`);
+    console.log(measured ? `${example.id}: saved native map UI/export recheck passed`
+      : `${example.id}: ${wallSeconds.toFixed(1)} s total; Standard map ${(progress.at(-1).elapsed_s - progress[0].elapsed_s).toFixed(1)} s`);
   });
 }
