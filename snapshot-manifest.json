@@ -25,8 +25,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 6383,
-      "sha256": "c0b81a9e0e6a68b2015becaf3a29091b96196a8ef119b0d4e31f6d9eb1a1ebf0"
+      "bytes": 8939,
+      "sha256": "39fe3789055af48c5e5b36e95f5d059b2163e1456d0f6087556722e487010204"
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
@@ -11642,6 +11642,26 @@
       "path": "backend/report_numbers.py",
       "bytes": 916,
       "sha256": "05b3f7913ac0afcee4f5d415ce5ee977873595d132e3cfd49f7b789d8d535ce0"
+    },
+    {
+      "path": "frontend/playwright.performance.config.ts",
+      "bytes": 1819,
+      "sha256": "0227d8ad9c49c0993575b2beb76bef6dd6d16ff74ff0218960024dd91e28e60c"
+    },
+    {
+      "path": "frontend/tests/performance-acceptance.spec.ts",
+      "bytes": 12156,
+      "sha256": "61f04076b9a6555962a694fc3f5d757dc820bf16233caf0366915dc6ff4ee270"
+    },
+    {
+      "path": "tools/check_performance_acceptance.py",
+      "bytes": 4470,
+      "sha256": "81fa47e431e516b7119688b7250ba3beb59cb630d7e53afd4de3be680c67c5a2"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/README.md",
+      "bytes": 3187,
+      "sha256": "4ba101cd125ce59042cdc1554040047ae8f2180ffeac60682025f02187f49aec"
     }
   ],
   "public_patches": [
