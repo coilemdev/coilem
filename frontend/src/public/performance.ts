@@ -249,3 +249,15 @@ export interface DrivePerformance {
   envelope: TorqueSpeedEnvelope;
   efficiency_map: EfficiencyMap;
 }
+
+export interface TorqueSpeedAnalysisSettings {
+  preset: MapSettings['preset'];
+  limits: DriveLimits;
+  control: DriveControl;
+}
+
+export interface TorqueSpeedAnalysisResult extends DrivePerformance, FluxLinkageMapPayload {
+  settings: TorqueSpeedAnalysisSettings;
+  winding_resistance?: import('./windingResistance').WindingResistance | null;
+  mechanical_loss_W: number;
+}

@@ -8,12 +8,39 @@ import json
 import math
 import os
 import re
+import threading
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
 AIRGAP_RECORD_ARTIFACT_SCHEMA = "openem.airgap_field_records.v1"
 FIELD_LINE_FRAME_ARTIFACT_SCHEMA = "openem.field_line_frame.v1"
 DISPLAY_AIRGAP_RECORD_LIMIT = 720
+_CACHE_LEASE_LOCK = threading.Lock()
+_CACHE_LEASES: dict[Path, int] = {}
+
+
+@contextmanager
+def protect_result_cache(result: Any):
+    """Keep an unfinished run's field artifacts through its later map solves."""
+    folders = solve_cache_folders(result.model_dump(mode="json"))
+    with _CACHE_LEASE_LOCK:
+        for folder in folders:
+            _CACHE_LEASES[folder] = _CACHE_LEASES.get(folder, 0) + 1
+    try:
+        yield
+    finally:
+        with _CACHE_LEASE_LOCK:
+            for folder in folders:
+                if _CACHE_LEASES[folder] == 1:
+                    del _CACHE_LEASES[folder]
+                else:
+                    _CACHE_LEASES[folder] -= 1
+
+
+def solve_cache_is_protected(path: Path) -> bool:
+    with _CACHE_LEASE_LOCK:
+        return _CACHE_LEASES.get(path.resolve(), 0) > 0
 
 
 def solve_cache_root() -> Path:

@@ -5,9 +5,21 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from .config import TorqueSpeedAnalysisConfig
 from .field import FieldLineFrame, FieldLinePlot, FieldMovieManifest, SlotExcitationContribution, SlotExcitationFrame
 from .mesh import FluxDensityMap
-from .performance import CoggingTorque, DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, OutputStatus, WindingResistance
+from .performance import (
+    CoggingTorque,
+    DqFluxLinkage,
+    EfficiencyMap,
+    FluxLinkageMap,
+    IronLoss,
+    IronLossDensity,
+    LossBreakdown,
+    OutputStatus,
+    TorqueSpeedEnvelope,
+    WindingResistance,
+)
 from .waveforms import (
     BackEMFHarmonicAnalysis,
     BackEMFWaveform,
@@ -142,6 +154,16 @@ class SolveMetadata(BaseModel):
     solver_lane_reason: str | None = None
 
 
+class TorqueSpeedAnalysisResult(BaseModel):
+    settings: TorqueSpeedAnalysisConfig
+    map: FluxLinkageMap
+    torque_agreement_pct: list[float | None]
+    envelope: TorqueSpeedEnvelope
+    efficiency_map: EfficiencyMap
+    winding_resistance: WindingResistance | None = None
+    mechanical_loss_W: float = 0
+
+
 class SolveResult(BaseModel):
     summary: SolveSummary
     torque_waveform: TorqueWaveform
@@ -161,3 +183,4 @@ class SolveResult(BaseModel):
     loaded_nonlinear_convergence: list[NonlinearConvergence | None] | None = None
     no_load_nonlinear_convergence: list[NonlinearConvergence | None] | None = None
     solve_metadata: SolveMetadata
+    torque_speed_analysis: TorqueSpeedAnalysisResult | None = None

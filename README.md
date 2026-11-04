@@ -156,7 +156,7 @@ serves the UI and API together and opens `http://127.0.0.1:2645`. See
 - Loaded torque, phase and line Back-EMF, field plots, and harmonic spectra.
 - Loaded d/q flux linkage, apparent Ld and Lq, and a torque cross-check from
   them that includes reluctance torque.
-- A Torque–speed tab in Results. It solves a flux-linkage map over current and
+- An optional Torque–speed map under Solve → Analysis. It solves a flux-linkage map over current and
   current angle, then draws peak and continuous torque–speed and power–speed
   curves (MTPA, field weakening and MTPV) for a DC bus and current limit, and
   an efficiency map.

@@ -5,6 +5,7 @@ from typing import Literal, Optional
 from pydantic import BaseModel, Field, field_validator, model_validator
 
 from backend.custom_materials import CustomSteel, is_custom_steel_id
+from backend.models.performance import DriveControl, DriveLimits
 
 MIN_IPM_MAGNET_WIDTH_MM = 0.1
 MIN_SPM_MAGNET_WIDTH_MM = 5.0
@@ -650,6 +651,12 @@ class SolveOptionsConfig(BaseModel):
 
 
 
+class TorqueSpeedAnalysisConfig(BaseModel):
+    preset: Literal["preview", "standard"] = "preview"
+    limits: DriveLimits
+    control: DriveControl = "mtpa"
+
+
 class MotorConfig(BaseModel):
     """Complete motor configuration."""
 
@@ -669,6 +676,7 @@ class MotorConfig(BaseModel):
     solve_options: Optional[SolveOptionsConfig] = Field(
         default=None, description="Selective solve phase flags (default: all enabled except cogging)"
     )
+    torque_speed_analysis: TorqueSpeedAnalysisConfig | None = None
 
     @field_validator("schema_version")
     @classmethod

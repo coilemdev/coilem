@@ -11,6 +11,7 @@ let config = cloneDefaultConfig();
 assert.equal(analysisSummary(config), 'Torque · Back EMF');
 assert.equal(config.solve_options.cogging_torque, false);
 assert.equal(config.solve_options.losses_efficiency, false);
+assert.equal(config.solve_options.torque_speed_envelope, false);
 config = setAnalysisOption(config, 'torque_sweep', false);
 assert.equal(analysisSummary(config), 'Back EMF');
 config = setAnalysisOption(config, 'back_emf', false);
@@ -33,4 +34,20 @@ assert.equal(hasTorqueResult(result), false);
 assert.equal(hasBackEmfResult(result), true);
 assert.equal(defaultResultPlot(result), 'back-emf');
 assert.equal(defaultResultPlot({ ...result, summary: { ...result.summary, back_emf_fundamental_V: null, cogging: {} }, cogging_torque_waveform: {} }), 'cogging');
+const mapOnly = setAnalysisOption({ ...cloneDefaultConfig(), solve_options: { ...cloneDefaultConfig().solve_options,
+  torque_sweep: false, back_emf: false, thd_analysis: false } }, 'torque_speed_envelope', true);
+assert.equal(analysisSummary(mapOnly), 'Torque–speed map');
+assert.equal(mapOnly.torque_speed_analysis.preset, 'preview');
+assert.equal(mapOnly.torque_speed_analysis.limits.peak_current_A, 60 * Math.SQRT2);
+assert.equal(asPublicConfig(mapOnly).solve_options.torque_sweep, false);
+assert.equal(asPublicConfig(mapOnly).solve_options.back_emf, false);
+assert.equal(asPublicConfig(mapOnly, 'elmer').solve_options.torque_speed_envelope, false);
+assert.equal(analysisSummary(mapOnly, 'elmer'), 'Select analyses');
+const reopenedMap = parseDesignFile(JSON.stringify(mapOnly)).config;
+assert.equal(reopenedMap.solve_options.torque_speed_envelope, true);
+assert.deepEqual(reopenedMap.torque_speed_analysis, mapOnly.torque_speed_analysis);
+assert.equal(defaultResultPlot({ ...result, summary: { ...result.summary, back_emf_fundamental_V: null }, torque_speed_analysis: {} }), 'performance');
+assert.throws(() => parseDesignFile(JSON.stringify({ ...mapOnly, torque_speed_analysis: {
+  ...mapOnly.torque_speed_analysis, limits: { ...mapOnly.torque_speed_analysis.limits, dc_bus_V: -5 },
+} })), /Invalid torque–speed map settings/);
 console.log('Analysis defaults, selection, standalone requests, roundtrip and result availability pass.');

@@ -1,4 +1,5 @@
 import { migrateProjectFile, COILEM_SCHEMA_VERSION } from '../api/projectSchema';
+import { parseTorqueSpeedSettings, torqueSpeedSettings } from './torqueSpeedAnalysis';
 import { applyPublicSolverSettings, cloneDefaultConfig, HOLEM50_FIELDS, PUBLIC_MAGNETO2D_SETTINGS } from './model';
 import type { MotorConfig } from './model';
 import { parseCustomSteels } from './customSteel';
@@ -216,7 +217,9 @@ export function parseDesignFile(text: string): ParsedDesignFile {
   solve.mesh_source = 'native';
   solve.mesher = 'gmsh';
   solve.rotor_rotation_model = 'remesh_per_step';
-  config.solve_options.torque_speed_envelope = false;
+  config.solve_options.torque_speed_envelope = config.solve_options.torque_speed_envelope === true;
+  if (source.torque_speed_analysis != null) config.torque_speed_analysis = parseTorqueSpeedSettings(source.torque_speed_analysis);
+  if (config.solve_options.torque_speed_envelope && !config.torque_speed_analysis) config.torque_speed_analysis = torqueSpeedSettings(config);
   config.solve_options.cogging_torque = config.solve_options.cogging_torque === true;
   config.solve_options.losses_efficiency = config.solve_options.losses_efficiency === true;
   config.solve_options.torque_sweep = config.solve_options.torque_sweep !== false;

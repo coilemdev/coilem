@@ -1,6 +1,6 @@
 import type { AirgapBrBtProfile } from '../components/tutorials/lessonSolveTypes';
 import type { CustomSteel } from './customSteel';
-import type { DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, PerformanceOutputStatus, WireSpec } from './performance';
+import type { DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, PerformanceOutputStatus, TorqueSpeedAnalysisResult, TorqueSpeedAnalysisSettings, WireSpec } from './performance';
 import type { WindingResistance } from './windingResistance';
 
 export type Topology = 'SPM' | 'IPM';
@@ -155,9 +155,10 @@ export interface MotorConfig {
     flux_density: boolean;
     cogging_torque: boolean;
     losses_efficiency: boolean;
-    torque_speed_envelope: false;
+    torque_speed_envelope: boolean;
     thd_analysis: boolean;
   };
+  torque_speed_analysis?: TorqueSpeedAnalysisSettings | null;
 }
 
 export interface PreviewRegion {
@@ -218,6 +219,7 @@ export interface PublicQualification {
 }
 
 export interface SolveValidation {
+  torque_speed_map?: { solves: number; positions_per_point: number } | null;
   valid: boolean;
   errors: Array<{ code?: string; message: string; suggestion?: string }>;
   warnings: Array<{ code?: string; message: string; suggestion?: string }>;
@@ -456,6 +458,7 @@ export interface PublicArmatureFieldComposition {
 }
 
 export interface SolveResult {
+  torque_speed_analysis?: TorqueSpeedAnalysisResult | null;
   summary: {
     avg_torque_Nm: number | null;
     torque_ripple_pct: number | null;

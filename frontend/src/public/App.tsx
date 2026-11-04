@@ -40,7 +40,7 @@ import {
 } from './motorAirgap';
 import { startPublicBackendMonitor } from './backendMonitor';
 import { createExcitationDrafts, switchExcitationMode } from './excitationDrafts';
-import type { WireSpec } from './performance';
+import type { TorqueSpeedAnalysisSettings, WireSpec } from './performance';
 // Lazy: the tutorials area carries the shared catalog and learning.css, so a
 // static import puts ~15 kB gzip of lesson chrome on the landing page's critical
 // path for visitors who never open a lesson.
@@ -904,6 +904,19 @@ export function App() {
     setLiveSamples([]);
     setError(null);
     setNotice('Analysis settings changed. Updating the run estimate.');
+  }, []);
+
+  const updateTorqueSpeed = useCallback((settings: TorqueSpeedAnalysisSettings) => {
+    validationRequestId.current += 1;
+    setConfig((current) => ({ ...current, torque_speed_analysis: settings }));
+    setValidation(null);
+    setValidationChecking(false);
+    setValidationError(null);
+    setResult(null);
+    setProgress(null);
+    setLiveSamples([]);
+    setError(null);
+    setNotice('Map settings changed. Updating the run estimate.');
   }, []);
 
   const selectSolver = useCallback((solver: PublicSolverId) => {
@@ -1814,6 +1827,7 @@ export function App() {
       onCustomSweepChange={updateCustomSweep}
       onSolveSettingChange={updateSolveSetting}
       onAnalysisChange={updateAnalysis}
+      onTorqueSpeedChange={updateTorqueSpeed}
       onSolverChange={selectSolver}
       onReset={reset}
       onRefreshGeometry={() => void refreshGeometry(config)}

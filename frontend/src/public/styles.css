@@ -4864,3 +4864,15 @@ button.performance-tag { cursor: help; }
 .public-analysis-hint { margin: 5px 0 0 28px; color: var(--text-muted); font-size: 12px; line-height: 1.5; }
 .public-analysis-hint-trigger { padding: 0; border: 0; border-bottom: 1px dotted currentColor; border-radius: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: help; }
 .public-analysis-hint-trigger:focus-visible { outline: 2px solid var(--text-accent); outline-offset: 3px; }
+.public-map-settings { display: grid; gap: 12px; margin: 14px 0 0 28px; }
+.public-map-setting { display: grid; grid-template-columns: 1fr auto; gap: 5px; align-items: center; color: var(--text-secondary); font-size: 11px; }
+.public-map-setting-input { grid-column: 1 / -1; display: flex; align-items: center; gap: 6px; padding: 0 8px; border: 1px solid var(--border-default); border-radius: 6px; }
+.public-map-setting-input input { width: 100%; min-width: 0; padding: 7px 0; border: 0; background: none; color: var(--text-primary); }
+.public-map-setting-input span { flex: none; color: var(--text-muted); font-size: 10px; }
+.public-map-setting-select { display: grid; gap: 5px; color: var(--text-secondary); font-size: 11px; }
+.public-map-setting-select select { width: 100%; min-width: 0; padding: 7px; border: 1px solid var(--border-default); border-radius: 6px; background: var(--bg-canvas); color: var(--text-primary); }
+.public-map-settings-note { margin: 0; color: var(--text-muted); font-size: 10px; line-height: 1.5; }
+.performance-settings-summary { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 12px 0 18px; color: var(--text-secondary); font-size: 11px; }
+.performance-settings-summary div { display: flex; gap: 6px; }
+.performance-settings-summary dt { color: var(--text-muted); }
+.performance-settings-summary dd { margin: 0; }

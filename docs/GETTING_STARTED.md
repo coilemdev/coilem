@@ -157,11 +157,22 @@ You can also open **Advanced options → Mesh preparation** and select
 **Prepare mesh** explicitly.
 
 Under **Analysis**, Torque and Back EMF start on. Cogging torque and
-Losses & efficiency are optional. Each analysis can run on its own: Back EMF
+Losses & efficiency and Torque–speed map are optional. Each analysis can run on its own: Back EMF
 and cogging use zero current and do not run a loaded torque sweep. Losses &
 efficiency includes the loaded fields it needs even when Torque is off.
 Selecting an accuracy preset keeps your analysis choices. Unrequested results
 are left out of Results and exports rather than reported as zero.
+
+Selecting **Torque–speed map** reveals its peak and continuous phase-current
+limits, DC bus, top speed, drive control and map grid. Enter your supply
+voltage; when the design has none, the initial value is 48 V. **Run analysis**
+computes the selected operating-point outputs and the map in one saved run.
+The map includes its own torque, flux-linkage and loss solves, so it can run
+with all other analyses off. Preview uses 29 solves; Standard uses 61.
+The Accuracy plan still controls mesh density. Cancel keeps completed map
+points for resume, and changing drive limits reuses a covering map when possible.
+Results shows the Torque–speed tab when the run contains a requested or
+reused map; its curves, settings and map data are stored with the run.
 
 For the first run, keep **Accuracy plan → Standard**:
 

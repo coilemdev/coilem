@@ -74,4 +74,17 @@ const done = { percent: 100, meshStage: true };
 assert.deepEqual(nextPublicSolveProgressBar(done, event('Validating', 0, 1)), EMPTY_PUBLIC_SOLVE_PROGRESS_BAR);
 assert.deepEqual(nextPublicSolveProgressBar(done, null), EMPTY_PUBLIC_SOLVE_PROGRESS_BAR);
 
+// Completing the preview must leave room for the selected map and final save.
+const mapped = replay([
+  event('Validating', 0, 1),
+  event('magneto2d_complete', 1, 1, { analysis_fraction: 0.05 }),
+  event('torque_speed_map', 1, 29, { analysis_fraction: 0.08 }),
+  event('torque_speed_map', 29, 29, { analysis_fraction: 0.95 }),
+  event('saving_run', 29, 29),
+]);
+assertMonotonic(mapped, 'operating point followed by a map');
+assert.equal(mapped[1], 5);
+assert.equal(mapped[3], 95);
+assert.equal(mapped.at(-1), 100);
+
 console.log('solve progress checks passed (monotonic bar across meshing, solving and finalizing)');

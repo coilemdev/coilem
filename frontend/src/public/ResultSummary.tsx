@@ -99,7 +99,7 @@ export function ResultSummary({
   ].join(' · ');
   const chips = [
     !hasTorque && !summary.loss_breakdown
-      ? 'No-current analyses'
+      ? result.torque_speed_analysis ? 'Torque–speed map' : 'No-current analyses'
       : sixStep
       ? `${fixed(config.solve_params.current_amplitude_A)} A plateau`
       : `${fixed(config.solve_params.current_amplitude_A)} A ${config.solve_params.current_amplitude_convention}`,
@@ -108,7 +108,7 @@ export function ResultSummary({
       ? `${fixed(metadata.commutation_advance_deg ?? config.solve_params.commutation_advance_deg, 0)}° advance`
       : `${fixed(config.solve_params.current_angle_deg, 0)}° current angle`,
     sixStep ? 'Ideal six-step (120°)' : 'Sinusoidal',
-    `${positionCounts} positions · ${metadata.mesh_density || 'native'} mesh`,
+    `${positionCounts ? `${positionCounts} positions` : result.torque_speed_analysis ? `${result.torque_speed_analysis.map.points.length} map points` : `${metadata.rotor_positions} preview position`} · ${metadata.mesh_density || 'native'} mesh`,
   ];
   // Solver, torque method and positions are in Run settings, so the footer
   // keeps only the timings.

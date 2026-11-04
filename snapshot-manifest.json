@@ -65,8 +65,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 14417,
-      "sha256": "acba1190e5c8ae80ea6f5d7580eac4dc3412757cff38c4e2785a4a4cef4604ce"
+      "bytes": 14441,
+      "sha256": "f660be8eaa17cf6711dda82372824a3957efb2b117e758d37c5ac18c8fb3cdf2"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -275,8 +275,8 @@
     },
     {
       "path": "backend/field_artifacts.py",
-      "bytes": 16475,
-      "sha256": "bc6833736c881c441f260aa2d3c9e3aaa71f42930d34e855fa5172da53683559"
+      "bytes": 17336,
+      "sha256": "57ec4bd523b76bbb5c75813ecd8c37e933bc48344350e43cdb21f96ce1f5d6e3"
     },
     {
       "path": "backend/field_composition.py",
@@ -290,8 +290,8 @@
     },
     {
       "path": "backend/flux_linkage_map.py",
-      "bytes": 17053,
-      "sha256": "bca2c73c048aea6bd3a386e65a9c7f02ae2e046789cd1718cd709f9fdcfe780f"
+      "bytes": 17509,
+      "sha256": "196032e980d64e8cd4a60ca98e934360983a91e49cae7506eabf6f0f5c1c2a8d"
     },
     {
       "path": "backend/geometry.py",
@@ -470,8 +470,8 @@
     },
     {
       "path": "backend/models/config.py",
-      "bytes": 30254,
-      "sha256": "70787e0effbc13a383ede3638f0b614ed398162107f95642a87b2c1e506f6698"
+      "bytes": 30546,
+      "sha256": "66a6ccf5b1ce562ba2c5bf5c578dcb7099056e54bb642dec21dbbcd9a35c4515"
     },
     {
       "path": "backend/models/errors.py",
@@ -500,8 +500,8 @@
     },
     {
       "path": "backend/models/result.py",
-      "bytes": 7893,
-      "sha256": "97bb0bb371f319b82f5836ec5352d59ed69d4519502e2db1c20ee87b297d16b3"
+      "bytes": 8415,
+      "sha256": "1f5e7e60b554264c391119cbf6a8440c18798dcefbb4edf0a880481dad1814ac"
     },
     {
       "path": "backend/models/waveforms.py",
@@ -550,13 +550,13 @@
     },
     {
       "path": "backend/public_policy.py",
-      "bytes": 12878,
-      "sha256": "b2b1c656b55d92ff28fb2db479eccb1d57cec21cffb8e102161679435e986a38"
+      "bytes": 13546,
+      "sha256": "f3831f5bad3e29efc30e71956b0ee6576dfe365b9ca62527897c7cdfefbf273a"
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 85953,
-      "sha256": "1f69112fbb5bc37e831d227f9a2b02e0355a4b7e44ef4516e1cfc0ca1dc5ad84"
+      "bytes": 87933,
+      "sha256": "65245a05f88ed2918568e9a0492190a2b1c6a9bdb3f40cdb1d632a5a9bb453f0"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -585,8 +585,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 52163,
-      "sha256": "5b01a5f3005b05eae22ddab1600ec2831c62bcf2e2eecc9a78cde583a381a593"
+      "bytes": 53683,
+      "sha256": "1dcf86d597b8938d5d8562f0f500deff8f7d7147ff3ac4b48669b2b49a8f8ab3"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -645,8 +645,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 154317,
-      "sha256": "2b75e01f885054ff5d88a7fef12901c1bbcb61220e3757795e8e9238ff6ae7a4"
+      "bytes": 154394,
+      "sha256": "8e810a648f9a00ef16adc3cb6d75f83fd411211e135b2d8ad3175dd31c99af98"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -5960,8 +5960,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 14841,
-      "sha256": "22d0607001488654a982064c77e622aac5c10434f6835533b096445444250a96"
+      "bytes": 15621,
+      "sha256": "5c5440e121a32ccffeeffda80ecb8af3c0ae9cc15a5d487528a03c118abbb430"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 162774,
-      "sha256": "c603e9ce29c97ba12a1a1dc5f7f9cf9b9613907198c6bf51fb2f205ba2384cc8"
+      "bytes": 162794,
+      "sha256": "6860225aa9f4cf82faa755d8b01dcd70908fb5bd596756f59a425629843bb465"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6595,8 +6595,8 @@
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
-      "bytes": 4019,
-      "sha256": "82b7dd8a6c043530ed24f15b6688760176c82ecf621e6d73597efbed22b10350"
+      "bytes": 4537,
+      "sha256": "b04e3090e7b18ebaca1cd60080a8ed031c52c2bad01a19263d27340ced0f79b6"
     },
     {
       "path": "frontend/scripts/test-tooth-coil-repair.mjs",
@@ -6995,8 +6995,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 72718,
-      "sha256": "9d7074578af58ab63ada3aff6d230d9b30abed00ca8f3bb2b561c88d41090d4e"
+      "bytes": 73250,
+      "sha256": "c5f998e381912369b22cf8ed85c447f92b963268fa255d6553625dc49fffc99e"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 236535,
-      "sha256": "20445cec453ede9e430a7749a07a2ab38cd64fa71737eff9fc07f339155d787c"
+      "bytes": 237745,
+      "sha256": "48d8976467a0cd8c7d754c428c5dc2c39e18298e62cabfc1d898967d674ee29d"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7060,8 +7060,8 @@
     },
     {
       "path": "frontend/src/public/PerformancePanel.tsx",
-      "bytes": 46673,
-      "sha256": "4a83463af2c2705b278775ea410e2a5c88bb61b9682e36261d35eee5be80bb10"
+      "bytes": 28613,
+      "sha256": "62b98e93c92a6690c6bc8bfeccd0cc21ce17cd275c7c10284bf3ec584cf9cf83"
     },
     {
       "path": "frontend/src/public/Popover.tsx",
@@ -7090,8 +7090,8 @@
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
-      "bytes": 10084,
-      "sha256": "5f2bf1c18b21f088b1eb66d65c5288e559129f4a3a174826418b3a3deb94e4d2"
+      "bytes": 10305,
+      "sha256": "389b87b5a7609039295451c8294a4e8c6482723c3fffc8d8e6b900238a42c1bf"
     },
     {
       "path": "frontend/src/public/RpmField.tsx",
@@ -7180,8 +7180,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "bytes": 14818,
-      "sha256": "1c5c5b5a5be7765f1bd0c7e52ccf3017633f0ae6e395af4e543bce4c00e590f2"
+      "bytes": 15225,
+      "sha256": "93f7146e03e4be7710e38c01dd05e602f0c508b93db7df9c101b8b00f62312bb"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -7410,8 +7410,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 22224,
-      "sha256": "36f9fa696d6f94911c733e0429f710767512f798a841ec263db68a4dd3b054ee"
+      "bytes": 22481,
+      "sha256": "0b02e29aa3917255b3689aff6b4cacc4114dc6ec986ab9ae8ef8d44e8777f7d4"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -7445,8 +7445,8 @@
     },
     {
       "path": "frontend/src/public/performance.ts",
-      "bytes": 8677,
-      "sha256": "48f367775b69d81a7095672676c391755f00016f8b8e31ec61cb57ec6f582fe6"
+      "bytes": 9053,
+      "sha256": "c22c1c9339bae5c2168fb5445b5bfff17b0ce037136da79049219707ae38797e"
     },
     {
       "path": "frontend/src/public/performanceView.ts",
@@ -7465,8 +7465,8 @@
     },
     {
       "path": "frontend/src/public/publicRequest.ts",
-      "bytes": 1035,
-      "sha256": "1bbe200dbab7d44da512874959652e336472c72077486dc5b90b1e217d8693b8"
+      "bytes": 1376,
+      "sha256": "ff2e954c4dd8db61bc1a381fefbd1ca207043bf7e6ebfe2e86735eaa6aa68df7"
     },
     {
       "path": "frontend/src/public/pyleecanReferenceNotice.ts",
@@ -7490,13 +7490,13 @@
     },
     {
       "path": "frontend/src/public/solveProgress.ts",
-      "bytes": 3720,
-      "sha256": "31d1a0334bea94877f5fc341895d847b4688b09f318a4f5a7eebe7e6d5c98847"
+      "bytes": 3938,
+      "sha256": "ad194cfb088b70ca940f3127b0f4dbcb92e3ebe06114f173de6365f0be9b5fee"
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 285445,
-      "sha256": "22563eb136c087a973c77bd54af2d2ae6035c1142d4e7fa5c9688f8538255abd"
+      "bytes": 286795,
+      "sha256": "afb16c9950b76c41d9c415eb5fcbaeeb293ce6dc80ab6fa1c08a12ba2a84f57d"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7550,13 +7550,13 @@
     },
     {
       "path": "frontend/tests/performance-regressions.ts",
-      "bytes": 5332,
-      "sha256": "79e4b89c034b0159fe9b43d28b339254facb49dd8bd4a4bd82070f991b6d112a"
+      "bytes": 587,
+      "sha256": "a2f87411ca8e3e8f089063204e63d8ed924fba5bfc50400b5cfdda8bb0d8d96d"
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 33104,
-      "sha256": "05ca02d6516c8856cf7f23b0b16b5edd769dd1400497585ae5b460d463460488"
+      "bytes": 37370,
+      "sha256": "a83107020eef2f0435fe2b9d9edc91a7c30257023a89b7f7809b8cb5b2029aec"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -11590,23 +11590,43 @@
     },
     {
       "path": "frontend/scripts/test-analysis-options.mjs",
-      "bytes": 2674,
-      "sha256": "86c498af140874656150c2dc854615445c82685f805ab9657e57afb090f55a00"
+      "bytes": 4077,
+      "sha256": "be4c8931fed34850de12b62237df9172f1af492f536e2cf5486991f0d10967b5"
     },
     {
       "path": "frontend/src/public/AnalysisSelector.tsx",
-      "bytes": 2343,
-      "sha256": "97762fe126da9040cf6d72deef5927e5db995d53758feeb68769fa63d7f95d29"
+      "bytes": 2974,
+      "sha256": "6db757b923f54649834d780809768f030a8f911f20ff72a7665967a150f9074f"
     },
     {
       "path": "frontend/src/public/analysisOptions.ts",
-      "bytes": 2438,
-      "sha256": "813cf73998945f6ea02cad3c3fb069f0d777df14983bb0d796495a987936d1f5"
+      "bytes": 2803,
+      "sha256": "a02984fc068ddc982e016e6fef6eab809b3953c8f2018d95a0b0d110e613e36b"
     },
     {
       "path": "tests/test_analysis_options.py",
       "bytes": 9331,
       "sha256": "9fcf7dcbfca7690dbf2aafd0eb2ecb4f3e1b9856328a6d99f1c2f0c0dff8087a"
+    },
+    {
+      "path": "backend/selected_analyses.py",
+      "bytes": 5405,
+      "sha256": "d4a6aa5a156f2e109583882bed98b46e0a548f5b38c8637eef13a1df27c5c849"
+    },
+    {
+      "path": "frontend/src/public/TorqueSpeedSettings.tsx",
+      "bytes": 4676,
+      "sha256": "360eae6005c18e22625ba7e5e8b8202062d6130b27c50004db626b1e1abf1d42"
+    },
+    {
+      "path": "frontend/src/public/torqueSpeedAnalysis.ts",
+      "bytes": 1964,
+      "sha256": "05688f59d7b4fcc1b309e20e70b3750467d50d0d1a5531fa8c903622bb2001fa"
+    },
+    {
+      "path": "tests/test_torque_speed_analysis.py",
+      "bytes": 7591,
+      "sha256": "c1a6c15a39be2af9d8b76e52b8951100d9426399b694168ed52a7db6cd3a8bdc"
     }
   ],
   "public_patches": [
@@ -31211,6 +31231,192 @@
       "path": "frontend/src/public/styles.css",
       "source_sha256": "22563eb136c087a973c77bd54af2d2ae6035c1142d4e7fa5c9688f8538255abd",
       "reason": "Move the detailed cogging sweep note into a hover, keyboard-focus and tap tooltip on its short description."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "README.md",
+      "source_sha256": "f660be8eaa17cf6711dda82372824a3957efb2b117e758d37c5ac18c8fb3cdf2",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "backend/field_artifacts.py",
+      "source_sha256": "57ec4bd523b76bbb5c75813ecd8c37e933bc48344350e43cdb21f96ce1f5d6e3",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "backend/flux_linkage_map.py",
+      "source_sha256": "196032e980d64e8cd4a60ca98e934360983a91e49cae7506eabf6f0f5c1c2a8d",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "backend/models/config.py",
+      "source_sha256": "66a6ccf5b1ce562ba2c5bf5c578dcb7099056e54bb642dec21dbbcd9a35c4515",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "backend/models/result.py",
+      "source_sha256": "1f5e7e60b554264c391119cbf6a8440c18798dcefbb4edf0a880481dad1814ac",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "backend/public_policy.py",
+      "source_sha256": "f3831f5bad3e29efc30e71956b0ee6576dfe365b9ca62527897c7cdfefbf273a",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "backend/public_report.py",
+      "source_sha256": "65245a05f88ed2918568e9a0492190a2b1c6a9bdb3f40cdb1d632a5a9bb453f0",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "1dcf86d597b8938d5d8562f0f500deff8f7d7147ff3ac4b48669b2b49a8f8ab3",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "backend/selected_analyses.py",
+      "source_sha256": "d4a6aa5a156f2e109583882bed98b46e0a548f5b38c8637eef13a1df27c5c849",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "8e810a648f9a00ef16adc3cb6d75f83fd411211e135b2d8ad3175dd31c99af98",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "docs/GETTING_STARTED.md",
+      "source_sha256": "5c5440e121a32ccffeeffda80ecb8af3c0ae9cc15a5d487528a03c118abbb430",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/scripts/test-analysis-options.mjs",
+      "source_sha256": "be4c8931fed34850de12b62237df9172f1af492f536e2cf5486991f0d10967b5",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "6860225aa9f4cf82faa755d8b01dcd70908fb5bd596756f59a425629843bb465",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/scripts/test-solve-progress.mjs",
+      "source_sha256": "b04e3090e7b18ebaca1cd60080a8ed031c52c2bad01a19263d27340ced0f79b6",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/AnalysisSelector.tsx",
+      "source_sha256": "6db757b923f54649834d780809768f030a8f911f20ff72a7665967a150f9074f",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "c5f998e381912369b22cf8ed85c447f92b963268fa255d6553625dc49fffc99e",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "48d8976467a0cd8c7d754c428c5dc2c39e18298e62cabfc1d898967d674ee29d",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "62b98e93c92a6690c6bc8bfeccd0cc21ce17cd275c7c10284bf3ec584cf9cf83",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "389b87b5a7609039295451c8294a4e8c6482723c3fffc8d8e6b900238a42c1bf",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/TorqueSpeedSettings.tsx",
+      "source_sha256": "360eae6005c18e22625ba7e5e8b8202062d6130b27c50004db626b1e1abf1d42",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/analysisOptions.ts",
+      "source_sha256": "a02984fc068ddc982e016e6fef6eab809b3953c8f2018d95a0b0d110e613e36b",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "93f7146e03e4be7710e38c01dd05e602f0c508b93db7df9c101b8b00f62312bb",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "0b02e29aa3917255b3689aff6b4cacc4114dc6ec986ab9ae8ef8d44e8777f7d4",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "c22c1c9339bae5c2168fb5445b5bfff17b0ce037136da79049219707ae38797e",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/publicRequest.ts",
+      "source_sha256": "ff2e954c4dd8db61bc1a381fefbd1ca207043bf7e6ebfe2e86735eaa6aa68df7",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/solveProgress.ts",
+      "source_sha256": "ad194cfb088b70ca940f3127b0f4dbcb92e3ebe06114f173de6365f0be9b5fee",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "afb16c9950b76c41d9c415eb5fcbaeeb293ce6dc80ab6fa1c08a12ba2a84f57d",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/torqueSpeedAnalysis.ts",
+      "source_sha256": "05688f59d7b4fcc1b309e20e70b3750467d50d0d1a5531fa8c903622bb2001fa",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/tests/performance-regressions.ts",
+      "source_sha256": "a2f87411ca8e3e8f089063204e63d8ed924fba5bfc50400b5cfdda8bb0d8d96d",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "a83107020eef2f0435fe2b9d9edc91a7c30257023a89b7f7809b8cb5b2029aec",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "tests/test_torque_speed_analysis.py",
+      "source_sha256": "c1a6c15a39be2af9d8b76e52b8951100d9426399b694168ed52a7db6cd3a8bdc",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
     }
   ]
 }

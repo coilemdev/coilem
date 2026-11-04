@@ -263,7 +263,9 @@ def _prune_solve_cache(cache_root: Path) -> None:
     retained_bytes = 0
     for index, cache_dir in enumerate(caches):
         size = _cache_dir_size_bytes(cache_dir)
-        if index == 0 or (index < SOLVE_CACHE_KEEP_LATEST and retained_bytes + size <= budget):
+        if index == 0 or field_artifacts.solve_cache_is_protected(cache_dir) or (
+            index < SOLVE_CACHE_KEEP_LATEST and retained_bytes + size <= budget
+        ):
             retained_bytes += size
             continue
         shutil.rmtree(cache_dir, ignore_errors=True)

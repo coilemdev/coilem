@@ -272,7 +272,7 @@ assert.match(workspaceSource, /className="public-solve-footer"/);
 assert.match(workspaceSource, /function ExcitationRunPlanPreview/);
 assert.match(workspaceSource, /runPlanSinePath/);
 assert.match(workspaceSource, /runPlanSixStepPath/);
-assert.match(workspaceSource, /<ExcitationRunPlanPreview config=\{config\} currentEnabled=\{currentEnabled\} \/>/);
+assert.match(workspaceSource, /<ExcitationRunPlanPreview config=\{config\} currentEnabled=\{currentEnabled\} mapEnabled=\{mapEnabled\} \/>/);
 assert.match(workspaceSource, /Six-step BLDC/);
 assert.match(workspaceSource, /Two phases on · one phase floating · wye/);
 assert.match(styleSource, /\.public-excitation-preview-plot \.phase-a/);
@@ -2048,7 +2048,7 @@ assert.match(statusSources.DqCard, /key: 'inductance', label: 'Ld, Lq, saliency 
 assert.match(statusSources.LossesCard, /<StatusSummary statuses=\{view\.statuses\}>/);
 assert.match(statusSources.LossesCard, /statuses=\{view\.statuses\}\n\s*\/>/, 'the loss map shows the status of the loss it maps');
 assert.match(statusSources.LossesCard, /<StatusDot status=\{shownStatus\.status\}/, 'the map heading carries the mapped loss status');
-assert.match(statusSources.PerformancePanel, /<StatusSummary statuses=\{headerStatuses\} \/>/);
+assert.match(statusSources.PerformancePanel, /<StatusSummary statuses=\{statuses\} \/>/);
 assert.match(statusSources.OutputStatusBadge, /<OutputStatusList statuses=\{statuses\} \/>/, 'the pill opens every status with its reason');
 assert.match(statusSources.Popover, /onFocus=\{\(\) => setFocused\(true\)\}/, 'explanations open on keyboard focus, not only on hover');
 assert.match(statusSources.Popover, /event\.key === 'Escape'/);
