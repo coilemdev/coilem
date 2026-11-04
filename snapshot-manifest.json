@@ -7980,8 +7980,8 @@
     },
     {
       "path": "tests/test_loss_breakdown.py",
-      "bytes": 8156,
-      "sha256": "da04016e03c59eafa69b665ad128f81d8a69be4bd5955da05d6226aa3abb90a7"
+      "bytes": 8155,
+      "sha256": "8972a53d8c32790b80a877f991d3ca320c5b84f73328a9645fd91ef87d9fd212"
     },
     {
       "path": "tests/test_magnet_temperature.py",
@@ -30371,6 +30371,12 @@
       "path": "tests/test_public_report_exports.py",
       "source_sha256": "2be2634bdeba46cea357ae22892bf2a2a1e6c7eee381f8acfd07523dbc13b8f5",
       "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "15f5f9f9b73cad07cc2b1be9ad98de15f130ad84",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": "da04016e03c59eafa69b665ad128f81d8a69be4bd5955da05d6226aa3abb90a7",
+      "reason": "Align the existing loss-report PDF assertion with the requested maximum of three displayed decimal places."
     }
   ]
 }
