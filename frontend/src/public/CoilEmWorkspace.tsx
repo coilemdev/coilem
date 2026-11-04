@@ -2428,6 +2428,16 @@ const QUALIFICATION_LABELS: Record<PublicQualification['status'], string> = {
   unsupported: 'Unsupported',
 };
 
+function qualificationLabel(qualification: PublicQualification, suffix = ''): string {
+  // The existing reason is also stored in older runs, so recognize it without
+  // changing their qualification status or requiring a saved-run migration.
+  if (qualification.status === 'experimental'
+    && qualification.reason.startsWith("This build's physics do not match the measured benchmark basis.")) {
+    return 'Benchmark Qualification Pending';
+  }
+  return `${QUALIFICATION_LABELS[qualification.status]}${suffix}`;
+}
+
 /** The backend's qualification of a design (backend/qualification.py), read
  * defensively because previews, validations and old saved runs may lack it. */
 function readQualification(value: unknown): PublicQualification | null {
@@ -2443,7 +2453,7 @@ function readQualification(value: unknown): PublicQualification | null {
 function QualificationNote({ qualification }: { qualification: PublicQualification }) {
   return (
     <div className={`public-qualification-note is-${qualification.status}`} role="note" aria-label="Benchmark qualification">
-      <span className="public-qualification-badge">{QUALIFICATION_LABELS[qualification.status]}</span>
+      <span className="public-qualification-badge">{qualificationLabel(qualification)}</span>
       <div>
         <span>{qualification.reason}</span>
         {qualification.caveats.map((caveat) => <span key={caveat}>{caveat}</span>)}
@@ -2459,7 +2469,7 @@ function QualificationTag({ qualification }: { qualification: PublicQualificatio
   return (
     <StatusTag
       tone={qualification.status === 'qualified' ? 'good' : 'warning'}
-      label={QUALIFICATION_LABELS[qualification.status]}
+      label={qualificationLabel(qualification)}
       align="end"
       role="note"
       ariaLabel="Benchmark qualification"
@@ -2563,7 +2573,7 @@ function HealthPanel({
     { severity: geometry && !geometryStale ? 'positive' : 'info', title: geometry && !geometryStale ? 'Geometry preview is current' : 'Updating geometry preview', copy: geometry && !geometryStale ? `${geometry.regions.length} regions returned by the local backend.` : 'The preview will refresh after the local backend responds.' },
     ...(qualification ? [{
       severity: qualification.status === 'qualified' ? 'positive' as const : 'warning' as const,
-      title: `${QUALIFICATION_LABELS[qualification.status]} motor combination`,
+      title: qualificationLabel(qualification, ' motor combination'),
       copy: [qualification.reason, ...qualification.caveats].join(' '),
     }] : []),
     ...(mesh ? [{ severity: 'positive' as const, title: 'Mesh quality gate passed', copy: `${mesh.triangles.length.toLocaleString()} generated triangles.` }] : []),
@@ -4047,7 +4057,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               <div><dt>Corner refinement</dt><dd className={mesh && appliedRefinement ? 'pass' : ''}>{mesh ? (appliedRefinement ? 'Applied' : 'Off') : 'Pending'}</dd></div>
               <div><dt>Positions</dt><dd>{positionsText}</dd></div>
               <div><dt>Run-time estimate</dt><dd>{estimatedTimeText}</dd></div>
-              <div><dt>Qualification</dt><dd>{validationQualification ? QUALIFICATION_LABELS[validationQualification.status] : validationChecking ? 'Calculating…' : 'Unavailable'}</dd></div>
+              <div><dt>Qualification</dt><dd>{validationQualification ? qualificationLabel(validationQualification) : validationChecking ? 'Calculating…' : 'Unavailable'}</dd></div>
             </dl>
           </div>
         </details>
@@ -4217,7 +4227,7 @@ function ReportStage({
       value: `${formatNumber(config.solve_params.current_amplitude_A)} A ${sixStep ? 'plateau' : config.solve_params.current_amplitude_convention}`,
     },
     { label: 'Excitation', value: sixStep ? 'Ideal six-step (120°)' : 'Sinusoidal' },
-    ...(reportQualification ? [{ label: 'Qualification', value: QUALIFICATION_LABELS[reportQualification.status] }] : []),
+    ...(reportQualification ? [{ label: 'Qualification', value: qualificationLabel(reportQualification) }] : []),
     ...(sixStep ? [
       { label: 'Commutation advance', value: `${formatNumber(result.solve_metadata.commutation_advance_deg ?? config.solve_params.commutation_advance_deg)}° electrical` },
       { label: 'Phase connection', value: 'Wye (MVP)' },
@@ -4281,7 +4291,7 @@ function ReportStage({
         {qualificationChip && (
           <span role="note" aria-label="Benchmark qualification">
             <a className="public-qualification-chip" href={QUALIFICATION_DOCS_URL} target="_blank" rel="noreferrer" title={reportQualification.reason}>
-              {QUALIFICATION_LABELS[reportQualification.status]}
+              {qualificationLabel(reportQualification)}
             </a>
             <span className="public-visually-hidden">{reportQualification.reason}</span>
           </span>

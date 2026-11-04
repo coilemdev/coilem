@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 238457,
-      "sha256": "6e0dfc28a62c954148eff1d31163e5a75a905ecd42fbceb2a38ca13fd92950ad"
+      "bytes": 238920,
+      "sha256": "94f65ff2e3d30cca33409412234bf961bbb71b9c39d90a107685f3735c99f126"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7555,8 +7555,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 41496,
-      "sha256": "a178c328fea4089dc583b7feacde0ea995f027b0eaf9e4d88c15e83f8f585840"
+      "bytes": 41528,
+      "sha256": "3d6b86b528fc7f794d7e98a73fa487a6794b84fc289ef905f40e3ecec2013769"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -31493,6 +31493,18 @@
       "path": "tests/test_solve_workspace.py",
       "source_sha256": "e415aef5f58ea4a342d69bd8a7df673008a0b19d8d77ea059d9462338ddca0be",
       "reason": "Fix Previous runs crashes for missing standalone-analysis waveforms, normalize legacy responses and cover comparison availability with regression tests."
+    },
+    {
+      "base_commit": "b546e004e2651daf0a57901a6a4a4690f7520d91",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "6e0dfc28a62c954148eff1d31163e5a75a905ecd42fbceb2a38ca13fd92950ad",
+      "reason": "Label pending build benchmark evidence as Benchmark Qualification Pending while preserving motor-combination qualification and warning status."
+    },
+    {
+      "base_commit": "b546e004e2651daf0a57901a6a4a4690f7520d91",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "a178c328fea4089dc583b7feacde0ea995f027b0eaf9e4d88c15e83f8f585840",
+      "reason": "Label pending build benchmark evidence as Benchmark Qualification Pending while preserving motor-combination qualification and warning status."
     }
   ]
 }
