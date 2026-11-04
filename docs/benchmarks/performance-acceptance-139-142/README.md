@@ -3,19 +3,31 @@
 ## Recorded results (2026-11-04)
 
 Measured application source: `064993b52af6a7aaab99d5826eb3c9b2aba9d4a7`.
-The timed source tree was clean. The later UI/export recheck uses
-`42cb14b` and the exact measured map; its before/after map hashes match and
-the browser observed no new grid solves. Only rehearsal/workflow/documentation
-files changed between those sources.
+The timed source tree was clean. Later UI/export rechecks use `42cb14b` on
+macOS and `3ce46ed` on Windows, with the exact measured maps. Their before/after
+map hashes match and the browser observed no new grid solves. Only
+rehearsal/workflow/documentation files changed between those sources.
 
 | Platform and example | Map phase | Request through save | Point status | UI and exports |
 | --- | ---: | ---: | --- | --- |
 | macOS, starter SPM 8p/12s | 1149.0 s (19m 9s) | 1155.3 s | 70/70 successful | Passed; 5246 CSV comparisons; 4 PDF pages |
+| Windows, starter SPM 8p/12s | 2667.8 s (44m 28s) | 2684.9 s | 70/70 successful | Passed; 5246 CSV comparisons; 4 PDF pages |
+| Windows, SPM 6p/36s | 2482.0 s (41m 22s) | 2504.9 s | 70/70 successful | Passed; 3263 CSV comparisons; 4 PDF pages |
+| Windows, IPM 10p V-shape | 3650.4 s (60m 50s) | 3670.6 s | 70/70 successful | Passed; 4697 CSV comparisons; 4 PDF pages |
+| Windows, IPM 14p flat buried | 3743.2 s (62m 23s) | 3767.3 s | 70/70 successful | Passed; 4208 CSV comparisons; 5 PDF pages |
+| Windows, SPM 24p | 4431.7 s (73m 52s) | 4457.5 s | 70/70 successful | Passed; 5396 CSV comparisons; 4 PDF pages |
 
 Mac hardware: Apple M4, 10 logical CPUs, 16 GiB RAM; Darwin 24.6.0/arm64,
 Python 3.12.13, Node 25.2.1, Chromium 148.0.7778.96. This is one observation
 on an interactive desktop with the explicit worker budget below, rather than
 a statistical comparison or an automatic-worker estimate.
+
+Windows runners expose four logical CPUs and about 16 GiB RAM, OS release
+10.0.26100/x64, Python 3.11.9, Node 24.22.2 and the same Chromium version.
+Starter SPM, SPM 24p and flat IPM ran on AMD EPYC 7763 hosts; distributed SPM and
+V-shape IPM ran on Intel Xeon Platinum 8573C hosts. Each environment receipt
+records its own CPU and native binary hash; these are different machines,
+not a controlled macOS-versus-Windows speed comparison.
 
 The archived JSON retains the request, full map/derived analysis, machine
 details, all 62 progress events, timings, browser assertions and export hashes.
@@ -28,8 +40,26 @@ starter SPM map had one unsolved point, and the flat IPM attempt was stopped
 after the same early missing-point pattern was found. The successful SPM run
 started with 3.53 GiB free in a fresh runtime and completed without gaps.
 
-Windows evidence is still being collected by the five-example Actions run.
-This document does not yet record a Windows acceptance pass.
+Windows native measurements came from [Actions run 41855229814](https://github.com/coilemdev/coilem/actions/runs/41855229814).
+The initial browser tests passed their map, curve, efficiency-cell and Ld/Lq
+assertions, then failed on an incorrect accessible name for the Export button
+in the harness. The button is named `Export`; its arrow is hidden from assistive
+technology. Corrected UI/export rechecks use the exact completed native maps.
+All five Windows Standard maps completed with 70 successful points, and all
+five corrected Windows UI/export rechecks passed. Together with macOS, the
+export checker performed 28056 CSV value comparisons. Every retained PDF was
+rendered and all 25 pages visually inspected. This completes the remaining
+recorded acceptance for #139 and #142; it does not qualify the physics for a
+release or replace the independent benchmark gates.
+
+During collection, GitHub reported delayed rechecks and job states during its
+[Actions incident](https://www.githubstatus.com/incidents/xr3myzj7ms51), reported
+from 16:05 UTC. The successful rechecks are
+[41866681070](https://github.com/coilemdev/coilem/actions/runs/41866681070)
+(starter SPM, distributed SPM and V-shape IPM) and
+[41867162698](https://github.com/coilemdev/coilem/actions/runs/41867162698)
+(flat IPM). The successful SPM 24p recheck is
+[41869040523](https://github.com/coilemdev/coilem/actions/runs/41869040523).
 
 This opt-in rehearsal records the remaining acceptance evidence for #139 and
 #142. It exercises the built production UI with Chromium, the local API, Gmsh
@@ -112,3 +142,5 @@ The acceptance work also corrects the performance CSV's swapped `unit`/`value`
 header labels. Its data columns retain their existing order and precision.
 A regression reads the export by column name, the way external CSV consumers
 do, and checks both units and numeric samples.
+The loss-report PDF assertion also follows the requested three-decimal cap
+(`0.047 mH`, instead of the former four-decimal display).

@@ -1,0 +1,17 @@
+{
+  "example": "spm-6p36s",
+  "started_utc": "2026-11-04T15:19:58.251Z",
+  "completed_utc": "2026-11-04T16:01:43.286Z",
+  "browser_request_wall_s": 2504.898519,
+  "backend_analysis_s": 2499.977143,
+  "map_phase_s": 2482,
+  "map_start_elapsed_s": 8.7,
+  "map_end_elapsed_s": 2490.7,
+  "timing_resolution_s": 0.1,
+  "points": 70,
+  "distinct_solves": 61,
+  "rotor_positions_per_point": 24,
+  "mesh_density": "normal",
+  "request_sha256": "42bf1e6f61670b897c27975d3961914c196cabbd28126e4a6aa0d69f2b42ad06",
+  "map_scope_key": "5d72950c694464e1a587c353a579e8c572cbc0aabeb4b8d27bd1e25b220ec40a"
+}

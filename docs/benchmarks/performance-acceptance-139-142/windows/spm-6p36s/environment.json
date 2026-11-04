@@ -1,0 +1,25 @@
+{
+  "source_commit": "064993b52af6a7aaab99d5826eb3c9b2aba9d4a7",
+  "tracked_tree_clean": true,
+  "setup_only": false,
+  "application_version": "0.5.0",
+  "platform": "win32",
+  "os_release": "10.0.26100",
+  "architecture": "x64",
+  "cpu_model": "INTEL(R) XEON(R) PLATINUM 8573C",
+  "logical_cpus": 4,
+  "memory_bytes": 17174360064,
+  "node": "v24.22.2",
+  "chromium": "148.0.7778.96",
+  "python": "Python 3.11.9",
+  "native_binary_sha256": "d561331bc517b2feb97deb33280d8563e1bfdafcb29b025ca897cb7244c39a7a",
+  "github_run_url": "https://github.com/coilemdev/coilem/actions/runs/41855229814",
+  "sample_count": 1,
+  "cache_policy": "fresh isolated runtime; no existing map for this design",
+  "worker_policy": {
+    "gmsh_producers": 1,
+    "parallel_angle_solves": 2,
+    "native_workers_per_angle": 1,
+    "field_preview_workers": 1
+  }
+}
