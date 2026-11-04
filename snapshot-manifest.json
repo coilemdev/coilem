@@ -11645,8 +11645,8 @@
     },
     {
       "path": "frontend/playwright.performance.config.ts",
-      "bytes": 2207,
-      "sha256": "51e17823228d2a6077e777dbb5296c0fceda6be8338409fd260eea96da2e6fd4"
+      "bytes": 2384,
+      "sha256": "9a80831312e0dbfec1c477ed6d57f206f62bb74563265e4cc74869e88333cd6c"
     },
     {
       "path": "frontend/tests/performance-acceptance.spec.ts",

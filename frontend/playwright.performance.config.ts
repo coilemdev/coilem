@@ -1,5 +1,6 @@
 /** Opt-in, real Standard-map acceptance; deliberately outside the routine suite. */
 import { mkdirSync, mkdtempSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, devices } from '@playwright/test';
@@ -31,6 +32,7 @@ export default defineConfig({
     reuseExistingServer: false, timeout: 120_000,
     env: {
       COILEM_USER_DATA_ROOT: join(runtime, 'user-data'), COILEM_ENABLE_ELMER: '0',
+      COILEM_BUILD_COMMIT: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: resolve(root, '..'), encoding: 'utf8' }).trim(),
       COILEM_SOLVE_CACHE_MAX_BYTES: '200000000', PYTHONUNBUFFERED: '1',
       COILEM_MAGNETO2D_GMSH_PRODUCER_WORKERS: '1',
       COILEM_MAGNETO2D_GMSH_SOLVE_WORKERS: '2',
