@@ -1,0 +1,17 @@
+{
+  "example": "ipm-10p-v",
+  "started_utc": "2026-11-04T15:19:04.354Z",
+  "completed_utc": "2026-11-04T16:20:15.087Z",
+  "browser_request_wall_s": 3670.6020504999997,
+  "backend_analysis_s": 3665.1520137,
+  "map_phase_s": 3650.4,
+  "map_start_elapsed_s": 7.7,
+  "map_end_elapsed_s": 3658.1,
+  "timing_resolution_s": 0.1,
+  "points": 70,
+  "distinct_solves": 61,
+  "rotor_positions_per_point": 24,
+  "mesh_density": "normal",
+  "request_sha256": "2cb73529ef4f8359ec5429c71899acd33877bcea066b2acf2ae6f966842ff9d1",
+  "map_scope_key": "539ef3f9dd6a98ed7528614c6f59c53363c82be2792eb949b9b9d3fa2bf69e91"
+}

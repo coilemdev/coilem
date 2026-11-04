@@ -1,0 +1,93 @@
+{
+  "config": {
+    "schema_version": "1.0",
+    "topology": "SPM",
+    "stator": {
+      "OD_mm": 90,
+      "ID_mm": 56,
+      "slot_count": 27,
+      "stack_length_mm": 35,
+      "slot_opening_mm": 2.1,
+      "tooth_width_mm": 4.6,
+      "yoke_thickness_mm": 5,
+      "tooth_shoe_enabled": false,
+      "tooth_shoe_height_mm": 1.5,
+      "tooth_shoe_overhang_mm": 1.5
+    },
+    "rotor": {
+      "OD_mm": 48,
+      "ID_mm": 12,
+      "magnet_thickness_mm": 3,
+      "magnet_width_mm": 5.2,
+      "pole_count": 24,
+      "magnet_embrace": 0.78,
+      "bridge_thickness_mm": 1,
+      "ipm_topology": "flat_buried",
+      "flat_buried_magnet_shape": "straight",
+      "side_bridge_thickness_mm": 1,
+      "pocket_clearance_mm": 0.2,
+      "magnet_angle_deg": 0,
+      "v_angle_deg": 60,
+      "v_depth_mm": 6,
+      "inner_web_thickness_mm": 2,
+      "outer_bridge_thickness_mm": 1
+    },
+    "winding": {
+      "type": "concentrated",
+      "turns_per_coil": 18,
+      "layers": 2,
+      "parallel_paths": 3
+    },
+    "materials": {
+      "stator_steel": "M350-50A",
+      "rotor_steel": "M350-50A",
+      "magnet_grade": "N42",
+      "conductor": "copper"
+    },
+    "solve_params": {
+      "solve_quality": "standard",
+      "rotor_sweep_range_deg": 30,
+      "rotor_step_deg": 7.5,
+      "mesh_density": "normal",
+      "mesh_source": "native",
+      "mesher": "gmsh",
+      "corner_refinement": true,
+      "mesh_build": "precise",
+      "rotor_rotation_model": "remesh_per_step",
+      "torque_method": "weighted_stress",
+      "nonlinear_solver": "picard",
+      "linear_solver_preconditioner": "direct",
+      "current_amplitude_A": 8,
+      "current_amplitude_convention": "rms",
+      "current_angle_deg": 0,
+      "excitation_mode": "sinusoidal",
+      "commutation_advance_deg": 0,
+      "phase_connection": "wye",
+      "rated_speed_rpm": 6000,
+      "winding_temperature_C": null
+    },
+    "solve_options": {
+      "torque_sweep": false,
+      "back_emf": false,
+      "flux_density": true,
+      "cogging_torque": false,
+      "losses_efficiency": false,
+      "torque_speed_envelope": true,
+      "thd_analysis": false
+    },
+    "torque_speed_analysis": {
+      "preset": "standard",
+      "control": "mtpa",
+      "limits": {
+        "dc_bus_V": 48,
+        "modulation_index_max": 1.1547005383792517,
+        "peak_current_A": 22.627416997969522,
+        "continuous_current_A": 11.313708498984761,
+        "max_speed_rpm": 18000
+      }
+    }
+  },
+  "solver": "magneto2d",
+  "project_name": "Validation SPM 24p — Small",
+  "solve_mesh_key": "47f0d8af00473fc9fd56075a"
+}

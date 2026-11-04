@@ -5,8 +5,8 @@
   "files": [
     {
       "path": ".gitattributes",
-      "bytes": 1024,
-      "sha256": "74e5f603227eaf828ad4f031271e2e20fc50b172a84a62af1de9bdcff7c4051e"
+      "bytes": 1194,
+      "sha256": "f5fd8f0d909ce8c14f4d7b2317ac673dfb42215da6f60a029484086d0eeda854"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -25,8 +25,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 6383,
-      "sha256": "c0b81a9e0e6a68b2015becaf3a29091b96196a8ef119b0d4e31f6d9eb1a1ebf0"
+      "bytes": 10498,
+      "sha256": "4dab52b7aa214242693ceb1f03c572c6aed9f7df7466c30a18c324cd659d7a82"
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
@@ -510,8 +510,8 @@
     },
     {
       "path": "backend/performance_report.py",
-      "bytes": 46917,
-      "sha256": "8d629d7a9608f8e1930fb7afbea2a4b2e3aba4c6eba6d7e623d2b3238c56c8ad"
+      "bytes": 46906,
+      "sha256": "affad22641d1e90ccb54d404498598d413ec58271fcb359cf44bcdbfb6947eff"
     },
     {
       "path": "backend/platform_info.py",
@@ -8170,8 +8170,8 @@
     },
     {
       "path": "tests/test_performance_report.py",
-      "bytes": 8477,
-      "sha256": "395dd0668745894b6c11e891fb57d5aaf62feea462236282c9128482461e7d80"
+      "bytes": 9398,
+      "sha256": "bd94c9037168d3787e8f093c7c6f4b131d4df48fe04aa4bb1469dbfffbbf5406"
     },
     {
       "path": "tests/test_performance_routes.py",
@@ -8610,8 +8610,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 22226,
-      "sha256": "33591a1cb15d656287969c48082483902af3932ae27274ba6385807408132be3"
+      "bytes": 23508,
+      "sha256": "ab48e96e50d892f68158f3e467cd0621bf039430c14e3e04217632e11ff8f646"
     },
     {
       "path": "benchmarks/reference-adapters/windows-femm42-v3-20261102/README.md",
@@ -11642,6 +11642,416 @@
       "path": "backend/report_numbers.py",
       "bytes": 916,
       "sha256": "05b3f7913ac0afcee4f5d415ce5ee977873595d132e3cfd49f7b789d8d535ce0"
+    },
+    {
+      "path": "frontend/playwright.performance.config.ts",
+      "bytes": 2384,
+      "sha256": "9a80831312e0dbfec1c477ed6d57f206f62bb74563265e4cc74869e88333cd6c"
+    },
+    {
+      "path": "frontend/tests/performance-acceptance.spec.ts",
+      "bytes": 14076,
+      "sha256": "77e02cc8669d60244cc6cf3c00214e1b4c837d5768385f64ad05f98954a72a90"
+    },
+    {
+      "path": "tools/check_performance_acceptance.py",
+      "bytes": 4470,
+      "sha256": "81fa47e431e516b7119688b7250ba3beb59cb630d7e53afd4de3be680c67c5a2"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/README.md",
+      "bytes": 8795,
+      "sha256": "a1026740c2b1a7b1221142a822cfcc19345c67c09a744bedc5c351d98906a209"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/request.json",
+      "bytes": 2586,
+      "sha256": "8f2e21ad46e5089bfc0356401c2e54973ad98bee8c1a8cdbc0612d1c318369a7"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/export-check.json",
+      "bytes": 2614,
+      "sha256": "fd1d87162c2a651fa49438b1a576d165dd18bdba9f1f4ac71a51ec12e18c109e"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/recheck-environment.json",
+      "bytes": 805,
+      "sha256": "f182c84b7a6d4c1cc55cd7814464703622700c566ad5170483b7463c4bab3969"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/timing.json",
+      "bytes": 606,
+      "sha256": "8f8f0997082f52620641eeb178d750e4a55996cd2b3f967074197374cda53fd6"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/torque-efficiency.png",
+      "bytes": 68201,
+      "sha256": "e484826cdcb6cae6699bedfaca6c36584d0d7fc34f90cedefc732413e56ab0dd"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/map-progress.json",
+      "bytes": 18741,
+      "sha256": "03fd96a8beb0b9601fda7c41ada65c9b359b32dcad6abbe68a2fc6c653530902"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/stream-errors.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/browser-check.json",
+      "bytes": 2137,
+      "sha256": "60fb2e6e2221ec3feba4c896a6fde19ab4ee553feadc1a6eeb31bda802725043"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/recheck.json",
+      "bytes": 284,
+      "sha256": "38a2040becb619c98a140f03cf262a27b7ea752961ba825f7f0a9523d61bc07c"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/analysis.json",
+      "bytes": 272359,
+      "sha256": "360ec53ffe9d785bbde8b22dfa72724899971ed861dc05c8fbbb84f2ba985233"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/performance.pdf",
+      "bytes": 26819,
+      "sha256": "5f775b1b4b53f8655bbb54ebe60e2d8ca97c8e4bc80394fe083491553959dde5"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/environment.json",
+      "bytes": 759,
+      "sha256": "31b516a404738537b42c5bf8091912bef4e6ed07b6650289bb0498173b16e904"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/recheck-request.json",
+      "bytes": 2586,
+      "sha256": "8f2e21ad46e5089bfc0356401c2e54973ad98bee8c1a8cdbc0612d1c318369a7"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/request.json",
+      "bytes": 2606,
+      "sha256": "1195b52b5ca6cb6a3138091e400a95868b455f2ce6e9224b587ebd7d116feed9"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/timing.json",
+      "bytes": 602,
+      "sha256": "b9109241360a90ace1ad653c69cb5b8d51cd9fa6ca0c5b17fbc51cf433daaf3a"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/torque-efficiency.png",
+      "bytes": 67602,
+      "sha256": "3ebf077d36083cdd8a3ea34c3789fcdc964833999f0e5b14082664476bc025c8"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/map-progress.json",
+      "bytes": 18804,
+      "sha256": "9c33cece30ec66abc451c953c5639b180240d8564c356c434b2872c46a78bfa6"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/stream-errors.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/analysis.json",
+      "bytes": 268782,
+      "sha256": "cb5dc993c2851ffdd1cad26f92f7307f67d40014e43757096d9cf45538b161b2"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/environment.json",
+      "bytes": 840,
+      "sha256": "084e6975485f4139a4e3d44d99af6e14da1cbac5b753efc073cae48ec74eea5d"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/request.json",
+      "bytes": 2610,
+      "sha256": "e0b7058a1bde588e0aa3d68783d9fc56f85a32d98395a871bd589686947947df"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/timing.json",
+      "bytes": 618,
+      "sha256": "d38ae43e0cf9a3599593648d22064bf572cb6db02fea0e67b0524683ed4cce0d"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/torque-efficiency.png",
+      "bytes": 72403,
+      "sha256": "864e4e8e873f339cd2a815d1895b8d23d8a708fbd2e0d5bda6222514a40abea5"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/map-progress.json",
+      "bytes": 18805,
+      "sha256": "e153507f85ab395e601ba3563b77c8078d2e868d6b33f9adb2e546341f2dda1d"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/stream-errors.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/analysis.json",
+      "bytes": 263092,
+      "sha256": "47b69e40e8d3c7bb7b519bcee3b7487cdd32675b3c5ee47457fa32c00537cd7e"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/environment.json",
+      "bytes": 856,
+      "sha256": "e3875837a33e14521c64ba5164e658408a1a50748681734c8f346b400dbf4de8"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/request.json",
+      "bytes": 2586,
+      "sha256": "4d29a397cd5d2983770d7aac23ca094b72fc6a52194491118f3623003ce6da28"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/timing.json",
+      "bytes": 594,
+      "sha256": "110c5ce45b7bae0ff3d5c9c702ae0b22d3bcee4d4d6bf41b106673c2a0e97825"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/torque-efficiency.png",
+      "bytes": 70918,
+      "sha256": "f3dc291ce4f0c1cc88c0c2a4016db52f5e42a192390bfcb447d54ca769c61f03"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/map-progress.json",
+      "bytes": 18784,
+      "sha256": "5a28b3699bbfcb1310ae6e56a740a2c43df88206025463d0efa99fdaa8107b0f"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/stream-errors.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/analysis.json",
+      "bytes": 272333,
+      "sha256": "667cc86c781e62024110a8bdad9ef0bcc037e16f5bba7337fb46ab4a6ed1c3d2"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/environment.json",
+      "bytes": 856,
+      "sha256": "bb73bd69b102763b0aecf215c2522c261b80cbcdffbe50925657f72493066158"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/request.json",
+      "bytes": 2542,
+      "sha256": "bcf5040b18c1ec28285e15b4465b4c7235b8654235d9562075efe415c6d6bbad"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/timing.json",
+      "bytes": 592,
+      "sha256": "99c11e2a87317e2188d879f0dc53a051b96348c2883910d061e8eb9f9df1cf03"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/torque-efficiency.png",
+      "bytes": 75785,
+      "sha256": "f306644f288f89a154f3ec6eae7da24a937830aa07bddd1b8c07a07fc3048fa8"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/map-progress.json",
+      "bytes": 18597,
+      "sha256": "6e72b79e895b0bad74383b821a4280be6fba6d57d534fe3a2712d4e3be377ef1"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/stream-errors.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/analysis.json",
+      "bytes": 238476,
+      "sha256": "fb2f8a5684df2eabb02cb903f96d8e56e94a6d7a95bc7bd9dc0769a03b5c04dd"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/environment.json",
+      "bytes": 840,
+      "sha256": "b1a73ffcd149cd89f70902765333991d71df97a8177c8e77bc2f8ad23df7acc2"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/export-check.json",
+      "bytes": 2614,
+      "sha256": "d87c039da436e3a233f9022fc419079a024342cdbe1e0334f031f95478edfbf5"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/recheck-environment.json",
+      "bytes": 904,
+      "sha256": "8e3345fde3f1a547fd8fd46e817f80046e073611c1073b397fca6aeecfdf5760"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/browser-check.json",
+      "bytes": 2155,
+      "sha256": "4e60addaea231b209346339e8b853c7eb7939b38c4d18ae548eb07de1c2246ba"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/recheck.json",
+      "bytes": 284,
+      "sha256": "4f168640a87a90d89b4aa45cec2d5b13f8f25aa1ee82cb9408d57fbc346c60f8"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/performance.pdf",
+      "bytes": 26357,
+      "sha256": "1b0144192460ab9401a9d54af441b9db2d913890271f1e0c3213c4a1bda42202"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/recheck-request.json",
+      "bytes": 2606,
+      "sha256": "94f1804b0165fda574e7d7440f7ab8760c00eb2d706507841b3eb651134b1fa4"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/export-check.json",
+      "bytes": 2614,
+      "sha256": "a38460d8462b24d489eb794c213cba8d861a6def513c780310f39d9c2cc7527f"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/recheck-environment.json",
+      "bytes": 904,
+      "sha256": "af2b3c86c8e04856ac1fbe90275a3158eacfc5552daf7682cf2338cad9716886"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/browser-check.json",
+      "bytes": 2155,
+      "sha256": "6c89306e5ce9c3e6dc59b6bc275d3f5b0e01d2dea267af6ab6c640af68dee7f8"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/recheck.json",
+      "bytes": 284,
+      "sha256": "68c66b8e01c874e7e85fda2b9381fab60458332237ac31ba3aee1d8cce40c780"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/performance.pdf",
+      "bytes": 26280,
+      "sha256": "ebf2e8edc1c897181959d4c278ac65d662431b93ccfffa520f7e490cf5c3cc7a"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/recheck-request.json",
+      "bytes": 2610,
+      "sha256": "e0b7058a1bde588e0aa3d68783d9fc56f85a32d98395a871bd589686947947df"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/export-check.json",
+      "bytes": 2614,
+      "sha256": "a9d36d8815e405dc527a378be527b5d81782b34453caec5f24c9a740ef16f948"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/recheck-environment.json",
+      "bytes": 904,
+      "sha256": "1b9bbb991b3fa753c8b423a3d3800d38ac425fe223c82568996891d2ef5e3a45"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/browser-check.json",
+      "bytes": 2137,
+      "sha256": "b5b7ab7e4140297ffe9dafe7d48c0674ea8e494927fb809b989ffe705e599cbf"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/recheck.json",
+      "bytes": 284,
+      "sha256": "6be803115645bc5883269ea247b5cbc03af0cc79764138cea9c5ceefa72b7f10"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/performance.pdf",
+      "bytes": 26843,
+      "sha256": "2553e12f63c9a1b17e585ba1f4cb87fb7c54131df17d0bf87bb51c762ef07bd4"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/recheck-request.json",
+      "bytes": 2586,
+      "sha256": "4d29a397cd5d2983770d7aac23ca094b72fc6a52194491118f3623003ce6da28"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/export-check.json",
+      "bytes": 2613,
+      "sha256": "6ba9c7eecbe86a0fea436c7525b16bf5e2a7b9237c50905cfbe91cb1d051796c"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/recheck-environment.json",
+      "bytes": 904,
+      "sha256": "39ee512b21eca30052e649f40253a46458f828f31ed9805edeec819df2e55641"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/browser-check.json",
+      "bytes": 2167,
+      "sha256": "97921a41e7f0fa903a81d1537ec7aa195afe6e52519bc918f8f24e3b2d09746f"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/recheck.json",
+      "bytes": 284,
+      "sha256": "bbdbeece746f5944052cef132abe99269e62bd5521ad417ac76f4f5d61f3a57a"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/performance.pdf",
+      "bytes": 23772,
+      "sha256": "fb16f5b4283358c153791f31327f6b45319282cad37e9b0f62da681f8ce68d61"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/recheck-request.json",
+      "bytes": 2542,
+      "sha256": "98c79e1483a723392cd31d1cd15e7485931fdadb3d6f688eee78878e94b6a3b4"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/request.json",
+      "bytes": 2593,
+      "sha256": "88d5ab27cecc3520d78e93c4751114a6c79ab80d22ae3cd7fd6daa3a92e5055c"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/export-check.json",
+      "bytes": 2614,
+      "sha256": "46c4b4a99872275ab0ca458121bcec2bcaaa55d8416666827ca7b82803364933"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/recheck-environment.json",
+      "bytes": 904,
+      "sha256": "718bcf3eaba4b0e565c90714168f16a23b79d2f468ab260800458f0d77fe22cd"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/timing.json",
+      "bytes": 595,
+      "sha256": "eb65a2a440d9ee2ef216d376aea3b42a5da8a6484cdcbf6d2cd31d8cb403d842"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/torque-efficiency.png",
+      "bytes": 68732,
+      "sha256": "15a6ce0d6782dd6f3db161caa8c4b2ad7156f910085f04e305f3907925ff13e8"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/map-progress.json",
+      "bytes": 18779,
+      "sha256": "dc39f546d90072faa2b401c7897d3d83d8984a0d746821fda5b8961b59ad9fa1"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/stream-errors.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/browser-check.json",
+      "bytes": 2140,
+      "sha256": "007d12881ce4ac0123167283cda1ee1382fc5179e062391909e0d4470fce15d8"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/recheck.json",
+      "bytes": 284,
+      "sha256": "bd97ae990b8b93acae786e191dc1ab2c4db806ba20059b7444f2cc42b1dfb5b7"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/analysis.json",
+      "bytes": 273497,
+      "sha256": "eeadda079de0711eae2ad77615dc60e69a791c68b31b8aee2554f3af2e40999b"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/performance.pdf",
+      "bytes": 26954,
+      "sha256": "a096936e81da8fadac03640f1f71dd4bb92fc0229f28d288a75743c2a8b86185"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/environment.json",
+      "bytes": 856,
+      "sha256": "9923ac352634c8566ef74e7a7a9ff46ea52a2b688d1c76f1c915201fd52d3a8f"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/recheck-request.json",
+      "bytes": 2593,
+      "sha256": "88d5ab27cecc3520d78e93c4751114a6c79ab80d22ae3cd7fd6daa3a92e5055c"
     },
     {
       "path": "backend/convergence_reporting.py",
@@ -31603,6 +32013,24 @@
       "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
     },
     {
+      "base_commit": "9749e6f051965c527a01c24c46e869fa79046486",
+      "path": "backend/performance_report.py",
+      "source_sha256": "8d629d7a9608f8e1930fb7afbea2a4b2e3aba4c6eba6d7e623d2b3238c56c8ad",
+      "reason": "Correct swapped unit/value CSV header labels and verify numeric values through named columns during Performance acceptance."
+    },
+    {
+      "base_commit": "9749e6f051965c527a01c24c46e869fa79046486",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": "395dd0668745894b6c11e891fb57d5aaf62feea462236282c9128482461e7d80",
+      "reason": "Correct swapped unit/value CSV header labels and verify numeric values through named columns during Performance acceptance."
+    },
+    {
+      "base_commit": "3ce46ed1ba1bcf19b422e504248917843dcf22cf",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": "da04016e03c59eafa69b665ad128f81d8a69be4bd5955da05d6226aa3abb90a7",
+      "reason": "Align the existing loss-report PDF assertion with the requested maximum of three displayed decimal places."
+    },
+    {
       "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
       "path": "README.md",
       "source_sha256": "5004aece9fc710ff483d57790e42f790883d89b9826f6aef635d91a5e2389190",
@@ -31877,6 +32305,78 @@
       "path": "tests/test_pyleecan_reference_fixture.py",
       "source_sha256": "07e7d8c2b4e4534c5aeadc2f458cd1ee65226c417436d9c642d12fda7091d8ea",
       "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "README.md",
+      "source_sha256": "f660be8eaa17cf6711dda82372824a3957efb2b117e758d37c5ac18c8fb3cdf2",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "backend/public_report.py",
+      "source_sha256": "ce383e9cf2b12c6b2217a3e19d075ce8cbe8fe404822f016aef59a6ed54429c8",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "backend/public_routes/runs.py",
+      "source_sha256": "186e44cf0512ed3a8fa42b058097e1a81d12041f8319d5f30824828df07b35aa",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "1dcf86d597b8938d5d8562f0f500deff8f7d7147ff3ac4b48669b2b49a8f8ab3",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "2cf1a4721416463ca586c01a0063c6ebe9dac216463b4fd5591a170561eb98e7",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "0b02e29aa3917255b3689aff6b4cacc4114dc6ec986ab9ae8ef8d44e8777f7d4",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "29afb23f55909a2e02a30aaf8d2fdcff7205239add70687ce68357481865db37",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "881574e06255fd4d7cf764372d3e14d4536dd28d660402a3109c7fca81830a10",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "tests/test_candidate_reference_review.py",
+      "source_sha256": "ead64e8f6ce091c2f671cef5e4232fc8ff95f82d5760f07dc573da794df7f66a",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "tests/test_cogging.py",
+      "source_sha256": "93fc27e8899551e55852f22a184a2152e0bf1409dc48fd906a6b99d4d0c1f8ed",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "tests/test_output_status.py",
+      "source_sha256": "402c8cb57f7a81f9449f0582fa638ae66e10b2d6e2b235b3c74f6a9523716237",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "07e7d8c2b4e4534c5aeadc2f458cd1ee65226c417436d9c642d12fda7091d8ea",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
     }
   ]
 }

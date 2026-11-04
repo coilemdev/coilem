@@ -5,16 +5,30 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+    inputs:
+      performance_acceptance_only:
+        description: 'Run only the Windows Standard-map and Performance export acceptance (#139/#142)'
+        type: boolean
+        default: false
+      performance_recheck_run:
+        description: 'Optional prior cold-run ID: reuse its native maps for Windows UI/export checks'
+        type: string
+        default: ''
+      performance_examples_json:
+        description: 'Optional JSON array of regular example IDs; blank runs all five'
+        type: string
+        default: ''
 
 permissions:
   contents: read
 
 concurrency:
-  group: public-candidate-${{ github.workflow }}-${{ github.ref }}
+  group: public-candidate-${{ github.workflow }}-${{ github.ref }}${{ inputs.performance_recheck_run && format('-performance-recheck-{0}', github.run_id) || '' }}
   cancel-in-progress: true
 
 jobs:
   runtime:
+    if: ${{ !inputs.performance_acceptance_only }}
     strategy:
       fail-fast: false
       matrix:
@@ -71,6 +85,7 @@ jobs:
           --out-dir "${{ runner.temp }}/coilem-abcd-smoke" --pdf
 
   frontend:
+    if: ${{ !inputs.performance_acceptance_only }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
@@ -91,6 +106,7 @@ jobs:
         run: npm audit --audit-level=high
 
   public-browser:
+    if: ${{ !inputs.performance_acceptance_only }}
     runs-on: ubuntu-24.04
     timeout-minutes: 40
     steps:
@@ -131,6 +147,7 @@ jobs:
             frontend/test-results/public-release.json
 
   dependency-audit:
+    if: ${{ !inputs.performance_acceptance_only }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -155,6 +172,7 @@ jobs:
           cargo audit --file solvers/magneto2d/Cargo.lock
 
   native-tests:
+    if: ${{ !inputs.performance_acceptance_only }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -162,3 +180,70 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - name: Test the exported native solver
         run: cargo test --locked --manifest-path solvers/magneto2d/Cargo.toml
+
+  performance-acceptance:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_acceptance_only }}
+    runs-on: windows-latest
+    timeout-minutes: 110
+    permissions:
+      contents: read
+      actions: read
+    strategy:
+      fail-fast: false
+      matrix:
+        example: ${{ fromJSON(inputs.performance_examples_json || '["spm-8p12s", "ipm-14p-flat", "ipm-10p-v", "spm-24p", "spm-6p36s"]') }}
+    env:
+      COILEM_BUILD_COMMIT: ${{ github.sha }}
+      COILEM_ACCEPTANCE_CASES: ${{ matrix.example }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: '24'
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install the public backend
+        run: |
+          python -m pip install -r requirements.lock
+          python -m pip install -e ".[dev]"
+      - name: Build the native solver
+        run: cargo build --release --locked --manifest-path solvers/magneto2d/Cargo.toml
+      - name: Build the production UI and install Chromium
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build
+          npx playwright install chromium
+      - name: Run a cold Standard map and inspect the Performance view
+        if: ${{ !inputs.performance_recheck_run }}
+        working-directory: frontend
+        run: npx playwright test --config playwright.performance.config.ts
+      - name: Download the measured native map for a UI/export recheck
+        if: ${{ inputs.performance_recheck_run }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COLD_RUN_ID: ${{ inputs.performance_recheck_run }}
+        run: gh run download "$env:COLD_RUN_ID" --repo "$env:GITHUB_REPOSITORY" --name "performance-windows-$env:COILEM_ACCEPTANCE_CASES" --dir frontend/test-results/cold-evidence
+      - name: Recheck the UI and downloads with the measured map
+        if: ${{ inputs.performance_recheck_run }}
+        working-directory: frontend
+        env:
+          COILEM_ACCEPTANCE_RECHECK_DIR: test-results/cold-evidence/performance-evidence
+        run: npx playwright test --config playwright.performance.config.ts
+      - name: Verify downloaded PDF and CSV values
+        env:
+          EVIDENCE_FOLDER: ${{ inputs.performance_recheck_run && 'performance-recheck-evidence' || 'performance-evidence' }}
+        run: python -m tools.check_performance_acceptance "frontend/test-results/$env:EVIDENCE_FOLDER/$env:COILEM_ACCEPTANCE_CASES"
+      - name: Keep timings, screenshots, exports and failure diagnostics
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: performance-windows-${{ matrix.example }}
+          retention-days: 30
+          path: |
+            frontend/test-results/performance-evidence/
+            frontend/test-results/performance-recheck-evidence/
+            frontend/test-results/performance-acceptance/
+            frontend/test-results/performance-acceptance.json

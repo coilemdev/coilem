@@ -1,0 +1,17 @@
+{
+  "example": "ipm-14p-flat",
+  "started_utc": "2026-11-04T15:19:29.612Z",
+  "completed_utc": "2026-11-04T16:22:17.075Z",
+  "browser_request_wall_s": 3767.3456507,
+  "backend_analysis_s": 3762.8824883000007,
+  "map_phase_s": 3743.2000000000003,
+  "map_start_elapsed_s": 12.2,
+  "map_end_elapsed_s": 3755.4,
+  "timing_resolution_s": 0.1,
+  "points": 70,
+  "distinct_solves": 61,
+  "rotor_positions_per_point": 24,
+  "mesh_density": "normal",
+  "request_sha256": "22f5253b4707d5262a01b344e82ac718bcc7272dc068273986178a796ffa740e",
+  "map_scope_key": "f6596cd700479cfb18320ef25cf8bf6c52f734e5121049c4d32964feb7be5603"
+}
