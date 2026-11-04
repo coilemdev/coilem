@@ -17,7 +17,7 @@ from backend.cogging import cogging_period, cogging_record
 from backend.models import MotorConfig, SolveResult
 from backend.models.performance import COGGING_TORQUE_STATUS_REASON
 from backend.public_policy import public_config_support_error
-from backend.public_report import _number, _plain, build_public_run_csv, build_public_run_pdf
+from backend.public_report import _number, build_public_run_csv, build_public_run_pdf
 from backend.public_routes.solve import _public_result_payload
 from backend.solve_estimate import planned_work
 from backend.solver._helpers import COGGING_TORQUE_METHOD, _cogging_sweep_series
@@ -352,7 +352,7 @@ def test_a_zero_current_run_reports_the_cogging_sweep_not_its_loaded_swing() -> 
     pdf = build_public_run_pdf(project=config, request={"resolved_config": config}, result=result, material={}, manifest={})
     text = " ".join(" ".join(page.extract_text() or "" for page in pypdf.PdfReader(io.BytesIO(pdf)).pages).split())
     record = result["summary"]["cogging"]
-    assert f"Cogging torque p-p {_plain(record['peak_to_peak_Nm'])} N m" in text
+    assert f"Cogging torque p-p {_number(record['peak_to_peak_Nm'])} N m" in text
     assert "From the cogging sweep" in text
 
 

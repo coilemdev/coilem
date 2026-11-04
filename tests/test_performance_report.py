@@ -124,8 +124,8 @@ def test_the_pdf_shows_the_results_with_their_status(data):
     reader = pypdf.PdfReader(io.BytesIO(build_performance_pdf(data, CONTEXT)))
     text = "\n".join(page.extract_text() or "" for page in reader.pages)
     peak = data.curve("peak")
-    assert f"{peak.torque_Nm[0]:.4g} N m" in text
-    assert f"{data.best_efficiency_pct:.1f}%" in text
+    assert f"{peak.torque_Nm[0]:.3f}".rstrip("0").rstrip(".") + " N m" in text
+    assert f"{data.best_efficiency_pct:.3f}".rstrip("0").rstrip(".") + "%" in text
     assert "IPM <test> & co" in text and "estimated from the back EMF" in text
     assert text.count("Experimental") >= 5  # every chart carries its status
     assert "Solved point" in text and "e+0" not in text

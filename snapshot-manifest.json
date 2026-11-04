@@ -510,8 +510,8 @@
     },
     {
       "path": "backend/performance_report.py",
-      "bytes": 46933,
-      "sha256": "5443edc461047feff671b872c20f11b8560276ae67c6dc3de259d37a64a729fd"
+      "bytes": 46917,
+      "sha256": "8d629d7a9608f8e1930fb7afbea2a4b2e3aba4c6eba6d7e623d2b3238c56c8ad"
     },
     {
       "path": "backend/platform_info.py",
@@ -555,8 +555,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 87933,
-      "sha256": "65245a05f88ed2918568e9a0492190a2b1c6a9bdb3f40cdb1d632a5a9bb453f0"
+      "bytes": 88186,
+      "sha256": "ce383e9cf2b12c6b2217a3e19d075ce8cbe8fe404822f016aef59a6ed54429c8"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -7975,8 +7975,8 @@
     },
     {
       "path": "tests/test_cogging.py",
-      "bytes": 20816,
-      "sha256": "dfa5f9266aeddf0b32034ab47865bdc1d0191640e6b50b1614baa290e3fc07cb"
+      "bytes": 20809,
+      "sha256": "93fc27e8899551e55852f22a184a2152e0bf1409dc48fd906a6b99d4d0c1f8ed"
     },
     {
       "path": "tests/test_cogging_phase_e.py",
@@ -8170,8 +8170,8 @@
     },
     {
       "path": "tests/test_performance_report.py",
-      "bytes": 8419,
-      "sha256": "d93b499e08b5850e47d7a8be9d9b2126bb3188186a1ea72ca121eccc82cb8537"
+      "bytes": 8477,
+      "sha256": "395dd0668745894b6c11e891fb57d5aaf62feea462236282c9128482461e7d80"
     },
     {
       "path": "tests/test_performance_routes.py",
@@ -8225,8 +8225,8 @@
     },
     {
       "path": "tests/test_public_report_exports.py",
-      "bytes": 32821,
-      "sha256": "2be2634bdeba46cea357ae22892bf2a2a1e6c7eee381f8acfd07523dbc13b8f5"
+      "bytes": 32847,
+      "sha256": "5b509c42418deffd3e93463b16a214b550056be114dd1e4a292e8db7c1b8393a"
     },
     {
       "path": "tests/test_public_security.py",
@@ -11637,6 +11637,11 @@
       "path": "frontend/src/public/runComparison.ts",
       "bytes": 1070,
       "sha256": "bc2a4d28e54aa0e8a70a330611cf5231f063e6dd090a2f31bcb2f8a5a76e9768"
+    },
+    {
+      "path": "backend/report_numbers.py",
+      "bytes": 916,
+      "sha256": "05b3f7913ac0afcee4f5d415ce5ee977873595d132e3cfd49f7b789d8d535ce0"
     }
   ],
   "public_patches": [
@@ -31541,6 +31546,36 @@
       "path": "frontend/src/public/styles.css",
       "source_sha256": "9d59b4b986f102efb59a58dca98a5faffbbc78ecf82ef7b8514d62d5682ecfae",
       "reason": "Compact analysis choices with accessible info tooltips and yellow Experimental flags for cogging, losses and efficiency, and torque-speed maps."
+    },
+    {
+      "base_commit": "d1a919d62916f659a19c179444eebfff8f64bad3",
+      "path": "backend/performance_report.py",
+      "source_sha256": "5443edc461047feff671b872c20f11b8560276ae67c6dc3de259d37a64a729fd",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "d1a919d62916f659a19c179444eebfff8f64bad3",
+      "path": "backend/public_report.py",
+      "source_sha256": "65245a05f88ed2918568e9a0492190a2b1c6a9bdb3f40cdb1d632a5a9bb453f0",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "d1a919d62916f659a19c179444eebfff8f64bad3",
+      "path": "tests/test_cogging.py",
+      "source_sha256": "dfa5f9266aeddf0b32034ab47865bdc1d0191640e6b50b1614baa290e3fc07cb",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "d1a919d62916f659a19c179444eebfff8f64bad3",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": "d93b499e08b5850e47d7a8be9d9b2126bb3188186a1ea72ca121eccc82cb8537",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "d1a919d62916f659a19c179444eebfff8f64bad3",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "2be2634bdeba46cea357ae22892bf2a2a1e6c7eee381f8acfd07523dbc13b8f5",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
     }
   ]
 }
