@@ -14,12 +14,16 @@ on:
         description: 'Optional prior cold-run ID: reuse its native maps for Windows UI/export checks'
         type: string
         default: ''
+      performance_examples_json:
+        description: 'Optional JSON array of regular example IDs; blank runs all five'
+        type: string
+        default: ''
 
 permissions:
   contents: read
 
 concurrency:
-  group: public-candidate-${{ github.workflow }}-${{ github.ref }}${{ inputs.performance_recheck_run && '-performance-recheck' || '' }}
+  group: public-candidate-${{ github.workflow }}-${{ github.ref }}${{ inputs.performance_recheck_run && format('-performance-recheck-{0}', github.run_id) || '' }}
   cancel-in-progress: true
 
 jobs:
@@ -187,7 +191,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        example: [spm-8p12s, ipm-14p-flat, ipm-10p-v, spm-24p, spm-6p36s]
+        example: ${{ fromJSON(inputs.performance_examples_json || '["spm-8p12s", "ipm-14p-flat", "ipm-10p-v", "spm-24p", "spm-6p36s"]') }}
     env:
       COILEM_BUILD_COMMIT: ${{ github.sha }}
       COILEM_ACCEPTANCE_CASES: ${{ matrix.example }}
@@ -221,7 +225,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           COLD_RUN_ID: ${{ inputs.performance_recheck_run }}
-        run: gh run download "$env:COLD_RUN_ID" --repo "$env:GITHUB_REPOSITORY" --name "performance-windows-${{ matrix.example }}" --dir frontend/test-results/cold-evidence
+        run: gh run download "$env:COLD_RUN_ID" --repo "$env:GITHUB_REPOSITORY" --name "performance-windows-$env:COILEM_ACCEPTANCE_CASES" --dir frontend/test-results/cold-evidence
       - name: Recheck the UI and downloads with the measured map
         if: ${{ inputs.performance_recheck_run }}
         working-directory: frontend
@@ -231,7 +235,7 @@ jobs:
       - name: Verify downloaded PDF and CSV values
         env:
           EVIDENCE_FOLDER: ${{ inputs.performance_recheck_run && 'performance-recheck-evidence' || 'performance-evidence' }}
-        run: python -m tools.check_performance_acceptance frontend/test-results/$env:EVIDENCE_FOLDER/${{ matrix.example }}
+        run: python -m tools.check_performance_acceptance "frontend/test-results/$env:EVIDENCE_FOLDER/$env:COILEM_ACCEPTANCE_CASES"
       - name: Keep timings, screenshots, exports and failure diagnostics
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0

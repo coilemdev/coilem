@@ -1,5 +1,36 @@
 # Standard-map timing and Performance view acceptance
 
+## Recorded results (2026-11-04)
+
+Measured application source: `064993b52af6a7aaab99d5826eb3c9b2aba9d4a7`.
+The timed source tree was clean. The later UI/export recheck uses
+`42cb14b` and the exact measured map; its before/after map hashes match and
+the browser observed no new grid solves. Only rehearsal/workflow/documentation
+files changed between those sources.
+
+| Platform and example | Map phase | Request through save | Point status | UI and exports |
+| --- | ---: | ---: | --- | --- |
+| macOS, starter SPM 8p/12s | 1149.0 s (19m 9s) | 1155.3 s | 70/70 successful | Passed; 5246 CSV comparisons; 4 PDF pages |
+
+Mac hardware: Apple M4, 10 logical CPUs, 16 GiB RAM; Darwin 24.6.0/arm64,
+Python 3.12.13, Node 25.2.1, Chromium 148.0.7778.96. This is one observation
+on an interactive desktop with the explicit worker budget below, rather than
+a statistical comparison or an automatic-worker estimate.
+
+The archived JSON retains the request, full map/derived analysis, machine
+details, all 62 progress events, timings, browser assertions and export hashes.
+The PDF and torque/efficiency screenshot are retained alongside it. The CSV
+checker verified all curve and efficiency samples, and all four PDF pages were
+rendered and visually inspected.
+
+Two earlier local attempts encountered low disk space and are excluded: a
+starter SPM map had one unsolved point, and the flat IPM attempt was stopped
+after the same early missing-point pattern was found. The successful SPM run
+started with 3.53 GiB free in a fresh runtime and completed without gaps.
+
+Windows evidence is still being collected by the five-example Actions run.
+This document does not yet record a Windows acceptance pass.
+
 This opt-in rehearsal records the remaining acceptance evidence for #139 and
 #142. It exercises the built production UI with Chromium, the local API, Gmsh
 and the bundled Magneto2D binary. It does not intercept solve responses.

@@ -76,6 +76,8 @@ FORBIDDEN_RUST_RUNTIME_MARKERS = {
     "struct DebugConfig",
 }
 ALLOWED_BINARY_SIGNATURES = {
+    "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/performance.pdf": b"%PDF-",
+    "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/torque-efficiency.png": b"\x89PNG\r\n\x1a\n",
     "docs/benchmarks/cogging-windows-20261103/cogging-femm-vs-magneto2d.pdf": b"%PDF-",
     "docs/benchmarks/cogging-windows-20261103/native-mesh-convergence.pdf": b"%PDF-",
     "benchmarks/windows-prius-requal-20261018/coilem_benchmark_report.pdf": b"%PDF-",
