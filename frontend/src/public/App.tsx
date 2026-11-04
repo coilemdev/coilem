@@ -558,6 +558,7 @@ export function App() {
   const [guidedDesignSection, setGuidedDesignSection] = useState<PublicParameterSection | null>(null);
   const [busy, setBusy] = useState<PublicBusyAction>(null);
   const [connectionStatus, setConnectionStatus] = useState<PublicConnectionStatus>('checking');
+  const [appVersion, setAppVersion] = useState<string | null>(null);
   const [selectedSolver, setSelectedSolver] = useState<PublicSolverId>('magneto2d');
   const [elmerCapability, setElmerCapability] = useState<PublicElmerCapability>(ELMER_CHECKING);
   const [experimentalRotors, setExperimentalRotors] = useState<PublicExperimentalRotorCapability>(EXPERIMENTAL_ROTORS_OFF);
@@ -1074,6 +1075,7 @@ export function App() {
       onOnline: (health) => {
         const nextElmerCapability = elmerCapabilityFromHealth(health);
         setConnectionStatus('online');
+        setAppVersion(typeof health.version === 'string' && health.version.trim() ? health.version.trim() : null);
         setElmerCapability((current) => (
           sameElmerCapability(current, nextElmerCapability) ? current : nextElmerCapability
         ));
@@ -1643,6 +1645,7 @@ export function App() {
     return (
       <div className="public-coilem-shell is-tutorials">
         <CoilEmTopBar
+          appVersion={appVersion}
           config={config}
           activeStep="design"
           solveAvailable={false}
@@ -1741,6 +1744,7 @@ export function App() {
     return (
       <div className="public-coilem-shell">
         <CoilEmTopBar
+          appVersion={appVersion}
           config={config}
           activeStep="design"
           solveAvailable={false}
@@ -1775,6 +1779,7 @@ export function App() {
   return (
     <>
     <CoilEmWorkspace
+      appVersion={appVersion}
       config={config}
       materials={projectMaterialCatalog(materials, config)}
       geometry={geometry}

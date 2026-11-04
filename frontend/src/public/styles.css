@@ -602,6 +602,7 @@ body {
 .public-coilem-shell .logo-word { position: relative; font-size: 17px; font-weight: 700; color: var(--text-muted); white-space: nowrap; }
 .public-coilem-shell .logo-em { color: var(--text-primary); }
 .public-coilem-shell .logo-stage { position: relative; top: -0.5em; margin-left: 3px; color: var(--accent-primary); font: 800 9px/1 var(--font-mono); }
+.public-coilem-shell .logo-version { flex: 0 0 auto; color: var(--text-secondary); font: 500 10px/1 var(--font-mono); white-space: nowrap; }
 
 .public-coilem-shell .project-chip {
   display: inline-flex;

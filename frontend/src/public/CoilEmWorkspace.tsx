@@ -148,6 +148,7 @@ interface CoilEmWorkspaceProps {
   guidedDesignSection?: PublicParameterSection | null;
   busy: PublicBusyAction;
   connectionStatus: PublicConnectionStatus;
+  appVersion?: string | null;
   selectedSolver: PublicSolverId;
   elmerCapability: PublicElmerCapability;
   experimentalRotors?: PublicExperimentalRotorCapability;
@@ -487,6 +488,7 @@ export function CoilEmTopBar({
   resultReady,
   solveRunning,
   connectionStatus,
+  appVersion = null,
   designName = null,
   onHome,
   onStepChange,
@@ -503,7 +505,7 @@ export function CoilEmTopBar({
   onTutorialCatalog,
   runHistoryOpen: controlledRunHistoryOpen,
   onRunHistoryOpenChange,
-}: Pick<CoilEmWorkspaceProps, 'config' | 'activeStep' | 'connectionStatus' | 'onHome' | 'onStepChange'> & {
+}: Pick<CoilEmWorkspaceProps, 'config' | 'activeStep' | 'connectionStatus' | 'appVersion' | 'onHome' | 'onStepChange'> & {
   solveAvailable: boolean;
   resultReady: boolean;
   solveRunning: boolean;
@@ -573,6 +575,7 @@ export function CoilEmTopBar({
           <img className="logo-mark" src="/brand/coilem-mark.svg" alt="" aria-hidden="true" />
           <span className="logo-word">coil<span className="logo-em">EM</span><sup className="logo-stage">Beta</sup></span>
         </button>
+        {appVersion && <span className="logo-version" title={`coilEM version ${appVersion}`}>v{appVersion}</span>}
         {tutorialProgress ? (
           <button
             type="button"
@@ -4416,6 +4419,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
         resultReady={reportAvailable}
         solveRunning={props.busy === 'solve'}
         connectionStatus={props.connectionStatus}
+        appVersion={props.appVersion}
         designName={props.designName ?? null}
         onHome={props.onHome}
         onStepChange={props.onStepChange}

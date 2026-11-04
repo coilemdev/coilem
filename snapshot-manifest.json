@@ -6995,8 +6995,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 73250,
-      "sha256": "c5f998e381912369b22cf8ed85c447f92b963268fa255d6553625dc49fffc99e"
+      "bytes": 73532,
+      "sha256": "6fb5e224f83e203609edc2a88e1a638ef1f645b5d0b3588a24c619b29e5298c4"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 238920,
-      "sha256": "94f65ff2e3d30cca33409412234bf961bbb71b9c39d90a107685f3735c99f126"
+      "bytes": 239139,
+      "sha256": "2cf1a4721416463ca586c01a0063c6ebe9dac216463b4fd5591a170561eb98e7"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7495,8 +7495,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 287064,
-      "sha256": "4aa5c75753442e7988871983ad3484e3cd451bb743962d849024b65e0bc9c5ee"
+      "bytes": 287205,
+      "sha256": "9d59b4b986f102efb59a58dca98a5faffbbc78ecf82ef7b8514d62d5682ecfae"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -31511,6 +31511,24 @@
       "path": "frontend/tests/public-release.spec.ts",
       "source_sha256": "3d6b86b528fc7f794d7e98a73fa487a6794b84fc289ef905f40e3ecec2013769",
       "reason": "Accept pending benchmark qualification in the release rehearsal Design health assertion."
+    },
+    {
+      "base_commit": "66905e4791aa1d9fc180e38a5075b0402cc0d6eb",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "c5f998e381912369b22cf8ed85c447f92b963268fa255d6553625dc49fffc99e",
+      "reason": "Show the running application version from backend health beside the shared header logo on the landing page, workspace and tutorials."
+    },
+    {
+      "base_commit": "66905e4791aa1d9fc180e38a5075b0402cc0d6eb",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "94f65ff2e3d30cca33409412234bf961bbb71b9c39d90a107685f3735c99f126",
+      "reason": "Show the running application version from backend health beside the shared header logo on the landing page, workspace and tutorials."
+    },
+    {
+      "base_commit": "66905e4791aa1d9fc180e38a5075b0402cc0d6eb",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "4aa5c75753442e7988871983ad3484e3cd451bb743962d849024b65e0bc9c5ee",
+      "reason": "Show the running application version from backend health beside the shared header logo on the landing page, workspace and tutorials."
     }
   ]
 }
