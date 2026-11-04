@@ -11645,13 +11645,13 @@
     },
     {
       "path": "frontend/playwright.performance.config.ts",
-      "bytes": 1819,
-      "sha256": "0227d8ad9c49c0993575b2beb76bef6dd6d16ff74ff0218960024dd91e28e60c"
+      "bytes": 2023,
+      "sha256": "5919131eea55710639369cc2ed516781c165908abedb19745899ff0983f0882e"
     },
     {
       "path": "frontend/tests/performance-acceptance.spec.ts",
-      "bytes": 12709,
-      "sha256": "50a631c521fb14374bff7aa26d2f6eb5b3cd923aa7a5886cf42c6820905ff812"
+      "bytes": 11976,
+      "sha256": "88a58e0f592c4ce74abbf0ceecde02b47e92c7951c7580087da1b7938d57b4c2"
     },
     {
       "path": "tools/check_performance_acceptance.py",
@@ -11660,8 +11660,8 @@
     },
     {
       "path": "docs/benchmarks/performance-acceptance-139-142/README.md",
-      "bytes": 3607,
-      "sha256": "93fad825ef8aa4303c62d8e7c671653112108ddf75e1719ee2bc4c5def6f82ca"
+      "bytes": 3767,
+      "sha256": "6391f6df82b4f24957e484b7d8dcf9814fa0d4b6d5312caa4138a934346d93fa"
     }
   ],
   "public_patches": [

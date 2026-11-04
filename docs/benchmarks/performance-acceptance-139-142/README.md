@@ -36,7 +36,9 @@ push/PR checks keep their existing behavior.
 - Standard map: 7 currents × 10 current angles, 70 recorded points and 61
   distinct solves, with 24 rotor positions over half an electrical cycle at
   each point. The zero-current solution supplies all ten zero-current rows.
-- Standard accuracy plan: normal (Medium) mesh, two native workers per point.
+- Standard accuracy plan: normal (Medium) mesh. The server environment pins one
+  Gmsh producer, two concurrent angle solves (one native worker each), and one
+  field-preview worker; no design-file override of the worker count is needed.
   Geometry, materials, winding and operating-point values come from the
   bundled designs. Map drive limits use the UI defaults and MTPA control.
 - A fresh isolated user-data root starts each invocation. The harness confirms

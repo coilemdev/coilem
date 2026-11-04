@@ -50,7 +50,7 @@ for (const example of examples.filter((item) => requested.includes(item.id))) {
       native_binary_sha256: sha256(await readFile(binary)),
       github_run_url: process.env.GITHUB_RUN_ID ? `https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}` : null,
       sample_count: 1, cache_policy: 'fresh isolated runtime; no existing map for this design',
-      workers_per_point: 2,
+      worker_policy: { gmsh_producers: 1, parallel_angle_solves: 2, native_workers_per_angle: 1, field_preview_workers: 1 },
     });
     // Headless Chromium cannot operate the native Save As dialog. Exercise the
     // browser-download fallback, as the regular public release rehearsal does.
@@ -62,17 +62,6 @@ for (const example of examples.filter((item) => requested.includes(item.id))) {
     await page.getByRole('button', { name: 'Design file menu', exact: true }).click();
     await page.getByRole('menuitem', { name: 'Examples', exact: true }).click();
     await page.getByRole('menuitem', { name: new RegExp(example.menu.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) }).click();
-    // Export/reimport the bundled design to pin only the runtime worker budget.
-    // Geometry, winding, materials and operating-point current remain the example's.
-    await page.getByRole('button', { name: 'Design file menu', exact: true }).click();
-    const saved = page.waitForEvent('download');
-    await page.getByRole('menuitem', { name: 'Save design file (.coilem)', exact: true }).click();
-    const download = await saved;
-    const design = JSON.parse(await readFile((await download.path())!, 'utf8'));
-    design.solve_params.magneto2d_workers = 2;
-    await page.locator('input[type="file"][accept*=".coilem"]').setInputFiles({
-      name: `${example.id}.coilem`, mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(design)),
-    });
     await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
     await section(page, 'plan');
     const standard = page.getByRole('button', { name: /Standard.*Medium mesh/ });
@@ -103,7 +92,6 @@ for (const example of examples.filter((item) => requested.includes(item.id))) {
     const request = (await submitted).postDataJSON();
     await save('request.json', request);
     expect(request.config.solve_params.mesh_density).toBe('normal');
-    expect(request.config.solve_params.magneto2d_workers).toBe(2);
     expect(request.config.torque_speed_analysis.preset).toBe('standard');
     const response = await finished;
     expect(response.ok()).toBe(true);
