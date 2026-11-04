@@ -27,6 +27,9 @@ total iteration limit or any continuation stage's limit, or its final stopping
 ratio is **greater than 1**. Picard and Newton residuals have different definitions
 and are never combined into one worst residual.
 
+Displayed values use at most three decimal places, with scientific notation
+for very small values. Warning decisions use the unrounded records.
+
 Iteration maximum and median exclude reused fields and linear-material solves.
 Reused fields retain their source's convergence evidence and warning checks.
 Linear-material records are labelled **Linear solves**, without a nonlinear

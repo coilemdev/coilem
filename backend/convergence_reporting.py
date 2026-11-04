@@ -15,11 +15,12 @@ from typing import Any
 from pydantic import ValidationError
 
 from backend.models.result import NonlinearConvergence
+from backend.report_numbers import format_report_number
 
 ITERATION_WARNING_FRACTION = 0.8
 CONVERGENCE_REPORT_SCHEMA = "coilem.solver_convergence.v1"
 CONVERGENCE_NOTES = (
-    "Review convergence at 80% of any total or per-stage iteration limit, or when the final stopping ratio exceeds 1.",
+    "Review convergence at 80% of any total or per-stage iteration limit, or when the final stopping ratio exceeds 1. Checks use unrounded values.",
     "Picard uses the final unrelaxed permeability mismatch. Newton uses its recorded relative equation residual "
     "or absolute RHS-scaled floor; either passing test satisfies its stopping rule.",
     "Iteration statistics exclude reused fields and linear solves. Convergence does not establish mesh accuracy or benchmark qualification.",
@@ -39,7 +40,7 @@ def _finite(value: Any) -> bool:
 
 
 def _number(value: Any) -> str:
-    return f"{value:.4g}" if _finite(value) else "Not recorded"
+    return format_report_number(value)
 
 
 def _row(key: str, label: str, value: Any) -> dict:

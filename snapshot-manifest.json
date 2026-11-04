@@ -500,8 +500,8 @@
     },
     {
       "path": "backend/performance_report.py",
-      "bytes": 46933,
-      "sha256": "5443edc461047feff671b872c20f11b8560276ae67c6dc3de259d37a64a729fd"
+      "bytes": 46917,
+      "sha256": "8d629d7a9608f8e1930fb7afbea2a4b2e3aba4c6eba6d7e623d2b3238c56c8ad"
     },
     {
       "path": "backend/platform_info.py",
@@ -545,8 +545,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 82339,
-      "sha256": "e9536aeef276e74c3f94692377d1fb108e087d00229ce79e1933b65f5339570d"
+      "bytes": 82592,
+      "sha256": "0dd5c8bc9719f5c395b496795736c6cdd359154641cba4527bc0f9a238c30f11"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -8040,8 +8040,8 @@
     },
     {
       "path": "tests/test_performance_report.py",
-      "bytes": 8419,
-      "sha256": "d93b499e08b5850e47d7a8be9d9b2126bb3188186a1ea72ca121eccc82cb8537"
+      "bytes": 8477,
+      "sha256": "395dd0668745894b6c11e891fb57d5aaf62feea462236282c9128482461e7d80"
     },
     {
       "path": "tests/test_performance_routes.py",
@@ -8095,8 +8095,8 @@
     },
     {
       "path": "tests/test_public_report_exports.py",
-      "bytes": 32821,
-      "sha256": "2be2634bdeba46cea357ae22892bf2a2a1e6c7eee381f8acfd07523dbc13b8f5"
+      "bytes": 32847,
+      "sha256": "5b509c42418deffd3e93463b16a214b550056be114dd1e4a292e8db7c1b8393a"
     },
     {
       "path": "tests/test_public_security.py",
@@ -11430,13 +11430,13 @@
     },
     {
       "path": "backend/convergence_reporting.py",
-      "bytes": 9744,
-      "sha256": "39c938d6360a77fb35bd6c1290e6e61e48154c5514d96b90f9bd2c2b438e1866"
+      "bytes": 9804,
+      "sha256": "9529f71230ea82b1e801d5bf391d0eff97c89d18dbab7efe1c8dd58d61ac723d"
     },
     {
       "path": "docs/SOLVER_CONVERGENCE.md",
-      "bytes": 2540,
-      "sha256": "2a6a89420e03e609fb3a1ec74b42f181ebdc2b1c39b82f0f8573f220c1bc30f7"
+      "bytes": 2685,
+      "sha256": "54e01e94266ae78363cc3ee25b911f4f9492beebd3894f44d34d85993e78e50c"
     },
     {
       "path": "frontend/src/public/SolverConvergenceCard.tsx",
@@ -11445,13 +11445,18 @@
     },
     {
       "path": "tests/test_convergence_reporting.py",
-      "bytes": 10621,
-      "sha256": "b93e692d390e34d90e9454295aa25b3adeb5f92f85d897612ca1969d7898b5e3"
+      "bytes": 10620,
+      "sha256": "347bbd9f61a5f561b0b07e21eecc567ad92d7f315db1c747f662dfac13752323"
     },
     {
       "path": "tests/fixtures/convergence_report_snapshot.txt",
-      "bytes": 1322,
-      "sha256": "8609e2d752b863fc6be21b13c8eff2f3538bd4ac0cd6919129e7cf408fa779ba"
+      "bytes": 1351,
+      "sha256": "0c54e83310827473e8f56afddf9612787a1dd6b4d5733075e7c852a4a608610c"
+    },
+    {
+      "path": "backend/report_numbers.py",
+      "bytes": 916,
+      "sha256": "05b3f7913ac0afcee4f5d415ce5ee977873595d132e3cfd49f7b789d8d535ce0"
     }
   ],
   "public_patches": [
@@ -30318,6 +30323,54 @@
       "path": "frontend/tests/public-release.spec.ts",
       "source_sha256": "0cbedc0c04bfa6bb877729494f18b010fdfc392b5387e2346cd702af880de014",
       "reason": "Report recorded nonlinear convergence consistently in Results, PDF and CSV, preserving missing evidence and method-specific stopping rules (#12)."
+    },
+    {
+      "base_commit": "84c9d4d9d592f69a760c7af2a5eda5e800cba5bb",
+      "path": "backend/convergence_reporting.py",
+      "source_sha256": "39c938d6360a77fb35bd6c1290e6e61e48154c5514d96b90f9bd2c2b438e1866",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "84c9d4d9d592f69a760c7af2a5eda5e800cba5bb",
+      "path": "backend/performance_report.py",
+      "source_sha256": "5443edc461047feff671b872c20f11b8560276ae67c6dc3de259d37a64a729fd",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "84c9d4d9d592f69a760c7af2a5eda5e800cba5bb",
+      "path": "backend/public_report.py",
+      "source_sha256": "e9536aeef276e74c3f94692377d1fb108e087d00229ce79e1933b65f5339570d",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "84c9d4d9d592f69a760c7af2a5eda5e800cba5bb",
+      "path": "docs/SOLVER_CONVERGENCE.md",
+      "source_sha256": "2a6a89420e03e609fb3a1ec74b42f181ebdc2b1c39b82f0f8573f220c1bc30f7",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "84c9d4d9d592f69a760c7af2a5eda5e800cba5bb",
+      "path": "tests/fixtures/convergence_report_snapshot.txt",
+      "source_sha256": "8609e2d752b863fc6be21b13c8eff2f3538bd4ac0cd6919129e7cf408fa779ba",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "84c9d4d9d592f69a760c7af2a5eda5e800cba5bb",
+      "path": "tests/test_convergence_reporting.py",
+      "source_sha256": "b93e692d390e34d90e9454295aa25b3adeb5f92f85d897612ca1969d7898b5e3",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "84c9d4d9d592f69a760c7af2a5eda5e800cba5bb",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": "d93b499e08b5850e47d7a8be9d9b2126bb3188186a1ea72ca121eccc82cb8537",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "84c9d4d9d592f69a760c7af2a5eda5e800cba5bb",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "2be2634bdeba46cea357ae22892bf2a2a1e6c7eee381f8acfd07523dbc13b8f5",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
     }
   ]
 }

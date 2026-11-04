@@ -13,7 +13,7 @@ import json
 import math
 import shutil
 import zipfile
-from collections.abc import Iterable, Mapping, Sequence
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -52,6 +52,7 @@ from backend.models.performance import (
     MAGNET_TEMPERATURE_STATUS_REASON,
     PHASE_RESISTANCE_UNRECORDED_STATUS_REASON,
 )
+from backend.report_numbers import format_report_number
 
 PUBLIC_REPORT_SCHEMA = "coilem.single_run_report.v1"
 PUBLIC_REPORT_LIMITATIONS = (
@@ -282,12 +283,20 @@ def _warnings(result: Mapping[str, Any]) -> tuple[str, ...]:
     return ()
 
 
+def _pdf_text(value: Any) -> str:
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        return format_report_number(value)
+    if isinstance(value, (list, tuple)):
+        return "[" + ", ".join(_pdf_text(item) for item in value) + "]"
+    return _plain(value)
+
+
 def _safe_paragraph(value: Any, style: ParagraphStyle) -> Paragraph:
-    return Paragraph(escape(_plain(value)), style)
+    return Paragraph(escape(_pdf_text(value)), style)
 
 
 def _metric_value(value: Any, unit: str) -> str:
-    text = _plain(value)
+    text = _pdf_text(value)
     return f"{text} {unit}".strip() if text else "Not recorded"
 
 
@@ -694,7 +703,7 @@ def _setting_entry(name: str, value: Any) -> tuple[str, str]:
         else:
             words = base.replace("_", " ")
             label = words[:1].upper() + words[1:]
-    return label, f"{_plain(value)} {unit}".strip()
+    return label, f"{_pdf_text(value)} {unit}".strip()
 
 
 def _setting_group(
@@ -781,7 +790,7 @@ def _design_setting_groups(config: Mapping[str, Any]) -> list[tuple[str, list[tu
             ("Case ID", _plain(config.get("reference_case"))),
             ("Geometry reference", "pyleecan_prius_2004"),
             ("Current angle convention", "Pyleecan d-axis Phi0"),
-            ("Magnet temperature", f"{_plain(solve_params.get('magnet_temperature_C'))} C"),
+            ("Magnet temperature", f"{_pdf_text(solve_params.get('magnet_temperature_C'))} C"),
         ]))
     return [(title, entries) for title, entries in groups if entries]
 
@@ -959,7 +968,8 @@ def _line_plot(
     plot.xValueAxis.valueMin = min(angles)
     plot.xValueAxis.valueMax = max(max(angles), _angle_axis_end(angles))
     plot.xValueAxis.valueSteps = _electrical_angle_ticks(plot.xValueAxis.valueMin, plot.xValueAxis.valueMax)
-    plot.xValueAxis.labelTextFormat = lambda value: f"{value:g}"
+    plot.xValueAxis.labelTextFormat = format_report_number
+    plot.yValueAxis.labelTextFormat = format_report_number
     y_values = [point[1] for _n, points, _c in valid for point in points]
     y_min, y_max = min(y_values), max(y_values)
     if math.isclose(y_min, y_max):
@@ -1050,7 +1060,7 @@ class _MotorMeshFigure(Flowable):
         field_range: tuple[float, float] | None = None,
         legend_title: str = "Flux density |B| (T)",
         legend_note: str | None = "Yellow: stored field lines",
-        value_format: str = "{:.3f}",
+        value_format: Callable[[float], str] = format_report_number,
         legend_colors: Sequence[str] = _HEAT_COLORS,
     ) -> None:
         super().__init__()
@@ -1081,7 +1091,7 @@ class _MotorMeshFigure(Flowable):
             pdf.setFillColor(_SLATE)
             for fraction in (0.0, 0.5, 1.0):
                 pdf.drawString(143 * mm, (13 + fraction * 72) * mm - 2,
-                               self.value_format.format(low + fraction * (high - low)))
+                               self.value_format(low + fraction * (high - low)))
             if self.legend_note:
                 pdf.setFont("Helvetica", 7)
                 for line_index, line in enumerate(self.legend_note.split("\n")):
@@ -1170,22 +1180,19 @@ def _motor_mesh_figures(
 
 
 def _number(value: Any, digits: int = 3) -> str:
-    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
-        return "Not recorded"
-    # Whole numbers too long for the significant digits print in full, never as 1e+03.
-    return f"{value:.0f}" if abs(value) >= 10**digits else f"{value:.{digits}g}"
+    return format_report_number(value, decimal_places=digits)
 
 
 def _percent(fraction: Any, digits: int = 3) -> str:
     if isinstance(fraction, bool) or not isinstance(fraction, (int, float)) or not math.isfinite(fraction):
         return "Not recorded"
-    return f"{100 * fraction:.{digits}g}%"
+    return f"{_number(100 * fraction, digits)}%"
 
 
 def _resistance_text(ohm: Any) -> str:
     if isinstance(ohm, bool) or not isinstance(ohm, (int, float)) or not math.isfinite(ohm):
         return "Not recorded"
-    return f"{ohm * 1000:.3g} mOhm" if abs(ohm) < 1 else f"{ohm:.3g} Ohm"
+    return f"{_number(ohm * 1000)} mOhm" if abs(ohm) < 1 else f"{_number(ohm)} Ohm"
 
 
 def _status_paragraphs(result: Mapping[str, Any], keys: Sequence[str], styles: Mapping[str, ParagraphStyle]) -> list[Paragraph]:
@@ -1406,12 +1413,12 @@ def _loss_breakdown_drawing(losses: Mapping[str, Any]) -> Drawing | None:
         span = width * value / total
         drawing.add(Rect(x, 17 * mm, max(span - 0.7, 0.5), bar_height, fillColor=colors.HexColor(color), strokeColor=None))
         x += span
-    drawing.add(String(0, 25.2 * mm, f"Loss breakdown, {total:.3g} W total", fontName="Helvetica-Bold", fontSize=8, fillColor=_NAVY))
+    drawing.add(String(0, 25.2 * mm, f"Loss breakdown, {_number(total)} W total", fontName="Helvetica-Bold", fontSize=8, fillColor=_NAVY))
     for index, (label, value, color) in enumerate(segments):
         column, line = index % 3, index // 3
         lx, ly = column * 58 * mm, (11 - line * 6) * mm
         drawing.add(Rect(lx, ly, 3 * mm, 3 * mm, fillColor=colors.HexColor(color), strokeColor=None))
-        drawing.add(String(lx + 4.5 * mm, ly + 0.6 * mm, f"{label}: {value:.3g} W ({100 * value / total:.0f}%)",
+        drawing.add(String(lx + 4.5 * mm, ly + 0.6 * mm, f"{label}: {_number(value)} W ({100 * value / total:.0f}%)",
                            fontName="Helvetica", fontSize=7.5, fillColor=_SLATE))
     return drawing
 
@@ -1464,7 +1471,7 @@ def _iron_loss_density_figure(result: Mapping[str, Any]) -> _MotorMeshFigure | N
     return _MotorMeshFigure(
         buffer.getvalue(), field_range=(0.0, high), legend_title="Iron loss (W/kg)",
         legend_note="Cream: not modelled (rotor, magnets)\nLight grey: coil sides (copper loss is uniform)",
-        value_format="{:.3g}", legend_colors=_STEEL_RAMP,
+        legend_colors=_STEEL_RAMP,
     )
 
 
@@ -1595,17 +1602,18 @@ def build_public_run_pdf(
                 [
                     (
                         "Conducting phase current" if six_step else "Phase current",
-                        (f"{_plain(solve_params.get('current_amplitude_A'))} A {_plain(solve_params.get('current_amplitude_convention'))}").strip(),
+                        (f"{_pdf_text(solve_params.get('current_amplitude_A'))} A "
+                         f"{_plain(solve_params.get('current_amplitude_convention'))}").strip(),
                     ),
                     (
                         "Commutation advance" if six_step else (
                             "Pyleecan d-axis Phi0" if _mapping(request.get("resolved_config")).get("geometry_reference") else "Current angle"
                         ),
-                        f"{_plain(solve_params.get('commutation_advance_deg') if six_step else solve_params.get('current_angle_deg'))} deg",
+                        f"{_pdf_text(solve_params.get('commutation_advance_deg') if six_step else solve_params.get('current_angle_deg'))} deg",
                     ),
                     ("Excitation", "Ideal six-step (120 deg)" if six_step else "Sinusoidal"),
                     ("Phase connection", solve_params.get("phase_connection") if six_step else "Not recorded"),
-                    ("Rated speed", f"{_plain(solve_params.get('rated_speed_rpm'))} rpm"),
+                    ("Rated speed", f"{_pdf_text(solve_params.get('rated_speed_rpm'))} rpm"),
                     *(
                         [
                             (
@@ -1671,7 +1679,7 @@ def build_public_run_pdf(
                             ("B-H curve", record.get("curve_path")),
                             ("Curve SHA-256", record.get("curve_sha256")),
                             ("Curve points", record.get("point_count")),
-                            ("B range", f"{_plain(record.get('b_range_T'))} T"),
+                            ("B range", f"{_pdf_text(record.get('b_range_T'))} T"),
                             (
                                 "Source",
                                 _mapping(record.get("source")).get("description")

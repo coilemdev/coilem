@@ -89,7 +89,7 @@ def test_newton_absolute_floor_can_pass_even_with_a_large_relative_residual():
     assert report["status"] == "ok"
     assert report["positions"][0]["stopping_ratio"] == 0.5
     assert method_rows(report, "newton")["final_residual_max"] == "2"
-    assert method_rows(report, "newton")["absolute_floors"] == "1e-08"
+    assert method_rows(report, "newton")["absolute_floors"] == "1e-8"
 
 
 def test_extreme_finite_historical_tolerance_cannot_break_json_serialization():
