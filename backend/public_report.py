@@ -43,6 +43,7 @@ from reportlab.platypus import (
 )
 
 from backend.cogging import COGGING_METHOD_LABELS
+from backend.convergence_reporting import convergence_report
 from backend.export_safety import literal_csv_cell
 from backend.local_file_safety import require_contained_path
 from backend.magnet_temperature import is_derated_run
@@ -370,6 +371,31 @@ def build_public_run_csv(
         row("solve_metadata", field, value)
     for field, value in _flatten(_mapping(result.get("torque_speed_analysis"))):
         row("torque_speed_analysis", field, value)
+
+    convergence = convergence_report(result)
+    row("convergence", "schema_version", convergence["schema_version"])
+    row("convergence", "status", convergence["status"])
+    row("convergence", "status_label", convergence["status_label"])
+    for entry in convergence["summary"]:
+        row("convergence", entry["key"], entry["value"])
+    for method in convergence["methods"]:
+        for entry in (*method["summary"], *method["details"]):
+            row("convergence", f"{method['method']}.{entry['key']}", entry["value"])
+    for index, warning in enumerate(convergence["warnings"]):
+        row("convergence_warning", "message", warning, sample_index=index)
+    for index, note in enumerate(convergence["notes"]):
+        row("convergence_policy", "note", note, sample_index=index)
+    for position in convergence["positions"]:
+        section = f"convergence_{position['sweep']}"
+        index = position["index"]
+        row(section, "recorded", position["record"] is not None, sample_index=index)
+        if position["electrical_angle_deg"] is not None:
+            row(section, "electrical_angle_deg", position["electrical_angle_deg"], "deg", index)
+        for field, value in _flatten(position["record"] or {}):
+            row(section, field, value, sample_index=index)
+        row(section, "stopping_ratio", position["stopping_ratio"], sample_index=index)
+        row(section, "iteration_fraction", position["iteration_fraction"], sample_index=index)
+        row(section, "review", position["review"], sample_index=index)
 
     torque = _mapping(result.get("torque_waveform"))
     torque_angles = _sequence(torque.get("electrical_angle_deg"))
@@ -1847,6 +1873,27 @@ def build_public_run_pdf(
             story.extend([torque_plot, Spacer(1, 3 * mm)])
         if back_emf_plot is not None:
             story.append(back_emf_plot)
+
+    convergence = convergence_report(result)
+    story.extend([
+        KeepTogether([
+            _section("Solver convergence", styles),
+            _safe_paragraph(convergence["status_label"], styles["body"]),
+            Spacer(1, 2 * mm),
+            _key_value_table([(r["label"], r["value"]) for r in convergence["summary"]], styles),
+        ]),
+    ])
+    for method in convergence["methods"]:
+        story.extend([
+            KeepTogether([
+                Paragraph(method["label"], styles["group"]),
+                _key_value_table([(r["label"], r["value"]) for r in (*method["summary"], *method["details"])], styles),
+            ]),
+        ])
+    for warning in convergence["warnings"]:
+        story.append(_safe_paragraph(f"Review: {warning}", styles["body"]))
+    for note in (*convergence["notes"], "Per-position convergence records are included in the CSV."):
+        story.append(_safe_paragraph(note, styles["small"]))
 
     setting_groups = _design_setting_groups(_mapping(request.get("resolved_config")))
     if setting_groups:

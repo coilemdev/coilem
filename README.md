@@ -154,6 +154,8 @@ serves the UI and API together and opens `http://127.0.0.1:2645`. See
   Gmsh meshes, sinusoidal current, and ideal wye-connected 120-degree six-step
   excitation for SPM.
 - Loaded torque, phase and line Back-EMF, field plots, and harmonic spectra.
+- [Solver convergence](docs/SOLVER_CONVERGENCE.md) in Results, PDF and CSV,
+  including recorded residuals, iteration limits and warnings.
 - Loaded d/q flux linkage, apparent Ld and Lq, and a torque cross-check from
   them that includes reluctance torque.
 - An optional Torque–speed map under Solve → Analysis. It solves a flux-linkage map over current and

@@ -570,10 +570,49 @@ export interface SolveResult {
   field_line_frames?: PublicFieldFrameDescriptor[] | null;
   field_playback?: PublicFieldPlaybackManifest | null;
   saved_run?: PublicSavedRun | null;
+  /** Read-only presentation of recorded solver evidence; absent in older responses. */
+  solver_convergence?: SolverConvergenceReport | null;
   /** Absent for runs saved before qualification was recorded. */
   qualification?: PublicQualification | null;
   /** Browser wall time from Run through receipt of the saved result; absent on older/reloaded runs. */
   workflow_elapsed_s?: number;
+}
+
+export interface ConvergenceRow {
+  key: string;
+  label: string;
+  value: string;
+}
+
+export interface SolverConvergenceReport {
+  schema_version: 'coilem.solver_convergence.v1';
+  status: 'ok' | 'review' | 'partial' | 'not_recorded';
+  status_label: string;
+  summary: ConvergenceRow[];
+  methods: Array<{ method: string; label: string; summary: ConvergenceRow[]; details: ConvergenceRow[] }>;
+  warnings: string[];
+  notes: string[];
+  positions: Array<{
+    sweep: 'loaded' | 'no_load';
+    index: number;
+    electrical_angle_deg: number | null;
+    review: boolean;
+    stopping_ratio: number | null;
+    iteration_fraction: number | null;
+    record: {
+      method: 'picard' | 'newton' | 'linear';
+      iterations: number;
+      max_iterations: number;
+      stage_iterations: number[];
+      stage_iteration_cap: number;
+      solution_reused: boolean;
+      raw_max_residual: number | null;
+      scaled_residual: number | null;
+      tolerance: number;
+      residual_definition: string;
+      stopping_test: string;
+    } | null;
+  }>;
 }
 
 export interface PublicSavedRun {

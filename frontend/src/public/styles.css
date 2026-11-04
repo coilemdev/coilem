@@ -1603,6 +1603,28 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-report-stage .chart-shell { margin-top: 18px; }
 /* Results summary (#99 part B): operating point, headline row, constants beside loading, timings footer. */
 .public-result-summary { display: grid; gap: 12px; max-width: 1080px; margin: 0 auto; }
+.public-solver-convergence { max-width: 1080px; margin: 18px auto; padding: 18px; border: 1px solid var(--border-subtle); border-radius: 12px; background: var(--bg-surface-1); }
+.public-solver-convergence > header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.public-solver-convergence h2 { margin: 0; font-size: 15px; }
+.public-solver-convergence h3 { margin: 14px 0 8px; font-size: 12px; color: var(--text-secondary); }
+.public-convergence-status { padding: 4px 9px; border: 1px solid var(--border-subtle); border-radius: 20px; font-size: 11px; color: var(--text-muted); }
+.public-convergence-status.is-ok { color: var(--success); }
+.public-convergence-status.is-warning, .public-convergence-warnings, .public-convergence-table-scroll .is-warning { color: var(--warning); }
+.public-convergence-rows { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px 20px; margin: 16px 0 0; }
+.public-convergence-rows > div { min-width: 0; }
+.public-convergence-rows dt { font-size: 11px; color: var(--text-muted); }
+.public-convergence-rows dd { margin: 5px 0 0; font: 12px var(--font-mono); overflow-wrap: anywhere; }
+.public-convergence-methods { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px 24px; }
+.public-convergence-methods .public-convergence-rows { margin-top: 8px; }
+.public-convergence-warnings { margin: 14px 0; padding-left: 18px; font-size: 12px; line-height: 1.6; }
+.public-convergence-details { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border-subtle); }
+.public-convergence-details > summary { cursor: pointer; font-size: 12px; color: var(--text-secondary); }
+.public-convergence-details > summary:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 4px; }
+.public-convergence-note { color: var(--text-muted); font-size: 11px; line-height: 1.6; }
+.public-convergence-table-scroll { overflow: auto; max-height: 380px; margin-top: 14px; }
+.public-convergence-table-scroll table { width: 100%; min-width: 720px; border-collapse: collapse; font-size: 11px; }
+.public-convergence-table-scroll th, .public-convergence-table-scroll td { padding: 8px; border-bottom: 1px solid var(--border-subtle); text-align: left; font-weight: 400; }
+.public-convergence-table-scroll thead th { position: sticky; top: 0; background: var(--bg-surface-1); color: var(--text-muted); }
 .public-operating-point { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
 /* Run settings (#110): the operating point as one collapsed line above the
    results; expanding it shows every setting. */
