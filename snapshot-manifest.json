@@ -640,8 +640,8 @@
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 46011,
-      "sha256": "c7b5c3dcc7ab992117a0c136179982ec4dcad1cdd4bb1b2adfc04b3fbd4e3689"
+      "bytes": 46626,
+      "sha256": "2c877064d6fea1a53467afcdb2a024ee625bd1b32a64f53b39626be3bd5b2a6d"
     },
     {
       "path": "backend/solver/__init__.py",
@@ -6420,8 +6420,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2647,
-      "sha256": "91ee9422f8289c63cda39e024500a8771738fb856c460388966f0688e6f879e4"
+      "bytes": 2687,
+      "sha256": "e0e373cc1cf26656eb12ee28a860fea99bfd5b38f5bf46e82bdd0bcf3700faf5"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -7080,8 +7080,8 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 23814,
-      "sha256": "92bd00f85d6005bfccdd5e0d7cc7bc1fb9b4a26c7377e6d450179bdef1a95200"
+      "bytes": 24919,
+      "sha256": "72ad3eace275fb12786a28aa2d14909e8d57a9804d3310ade03ac149edb420e2"
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
@@ -7125,8 +7125,8 @@
     },
     {
       "path": "frontend/src/public/api.ts",
-      "bytes": 13598,
-      "sha256": "2e8150dac73003888daddc1bebee08a80ca740e6b28e2437a9ed5226f5917fbc"
+      "bytes": 13775,
+      "sha256": "59ed4057eaf491bfec34953306457d0de426a5696f92e2a92f9af817a6cebaa8"
     },
     {
       "path": "frontend/src/public/backendMonitor.ts",
@@ -7555,8 +7555,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 37370,
-      "sha256": "a83107020eef2f0435fe2b9d9edc91a7c30257023a89b7f7809b8cb5b2029aec"
+      "bytes": 41496,
+      "sha256": "a178c328fea4089dc583b7feacde0ea995f027b0eaf9e4d88c15e83f8f585840"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -8335,8 +8335,8 @@
     },
     {
       "path": "tests/test_solve_workspace.py",
-      "bytes": 22911,
-      "sha256": "ae009ae0c15e2e201db0566f98452939ec0564cbb26ef417c943beba42b2b85f"
+      "bytes": 24253,
+      "sha256": "e415aef5f58ea4a342d69bd8a7df673008a0b19d8d77ea059d9462338ddca0be"
     },
     {
       "path": "tests/test_sweep_planning.py",
@@ -11627,6 +11627,16 @@
       "path": "tests/test_torque_speed_analysis.py",
       "bytes": 7591,
       "sha256": "c1a6c15a39be2af9d8b76e52b8951100d9426399b694168ed52a7db6cd3a8bdc"
+    },
+    {
+      "path": "frontend/scripts/test-run-comparison.mjs",
+      "bytes": 1573,
+      "sha256": "34e6997c11ec47dd452e2a331716624cf1b5534ca11a509b86028dd676703f64"
+    },
+    {
+      "path": "frontend/src/public/runComparison.ts",
+      "bytes": 1070,
+      "sha256": "bc2a4d28e54aa0e8a70a330611cf5231f063e6dd090a2f31bcb2f8a5a76e9768"
     }
   ],
   "public_patches": [
@@ -31435,6 +31445,54 @@
       "path": "frontend/src/public/styles.css",
       "source_sha256": "4aa5c75753442e7988871983ad3484e3cd451bb743962d849024b65e0bc9c5ee",
       "reason": "Show the saved torque-speed envelope in the Solve stage completed-result plots, including map-only runs and responsive tabs."
+    },
+    {
+      "base_commit": "e40390daa8487d31e1ceacbd85be2731b2b96f59",
+      "path": "backend/solve_workspace.py",
+      "source_sha256": "2c877064d6fea1a53467afcdb2a024ee625bd1b32a64f53b39626be3bd5b2a6d",
+      "reason": "Fix Previous runs crashes for missing standalone-analysis waveforms, normalize legacy responses and cover comparison availability with regression tests."
+    },
+    {
+      "base_commit": "e40390daa8487d31e1ceacbd85be2731b2b96f59",
+      "path": "frontend/package.json",
+      "source_sha256": "e0e373cc1cf26656eb12ee28a860fea99bfd5b38f5bf46e82bdd0bcf3700faf5",
+      "reason": "Fix Previous runs crashes for missing standalone-analysis waveforms, normalize legacy responses and cover comparison availability with regression tests."
+    },
+    {
+      "base_commit": "e40390daa8487d31e1ceacbd85be2731b2b96f59",
+      "path": "frontend/scripts/test-run-comparison.mjs",
+      "source_sha256": "34e6997c11ec47dd452e2a331716624cf1b5534ca11a509b86028dd676703f64",
+      "reason": "Fix Previous runs crashes for missing standalone-analysis waveforms, normalize legacy responses and cover comparison availability with regression tests."
+    },
+    {
+      "base_commit": "e40390daa8487d31e1ceacbd85be2731b2b96f59",
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "source_sha256": "72ad3eace275fb12786a28aa2d14909e8d57a9804d3310ade03ac149edb420e2",
+      "reason": "Fix Previous runs crashes for missing standalone-analysis waveforms, normalize legacy responses and cover comparison availability with regression tests."
+    },
+    {
+      "base_commit": "e40390daa8487d31e1ceacbd85be2731b2b96f59",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "59ed4057eaf491bfec34953306457d0de426a5696f92e2a92f9af817a6cebaa8",
+      "reason": "Fix Previous runs crashes for missing standalone-analysis waveforms, normalize legacy responses and cover comparison availability with regression tests."
+    },
+    {
+      "base_commit": "e40390daa8487d31e1ceacbd85be2731b2b96f59",
+      "path": "frontend/src/public/runComparison.ts",
+      "source_sha256": "bc2a4d28e54aa0e8a70a330611cf5231f063e6dd090a2f31bcb2f8a5a76e9768",
+      "reason": "Fix Previous runs crashes for missing standalone-analysis waveforms, normalize legacy responses and cover comparison availability with regression tests."
+    },
+    {
+      "base_commit": "e40390daa8487d31e1ceacbd85be2731b2b96f59",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "a178c328fea4089dc583b7feacde0ea995f027b0eaf9e4d88c15e83f8f585840",
+      "reason": "Fix Previous runs crashes for missing standalone-analysis waveforms, normalize legacy responses and cover comparison availability with regression tests."
+    },
+    {
+      "base_commit": "e40390daa8487d31e1ceacbd85be2731b2b96f59",
+      "path": "tests/test_solve_workspace.py",
+      "source_sha256": "e415aef5f58ea4a342d69bd8a7df673008a0b19d8d77ea059d9462338ddca0be",
+      "reason": "Fix Previous runs crashes for missing standalone-analysis waveforms, normalize legacy responses and cover comparison availability with regression tests."
     }
   ]
 }

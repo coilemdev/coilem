@@ -629,6 +629,26 @@ def test_load_reports_tampered_bound_file(tmp_path: Path) -> None:
         workspace.load_run_comparison(location.project_slug, location.run_id)
 
 
+@pytest.mark.parametrize("analysis", ["torque", "back-emf", "losses"])
+def test_comparison_keeps_required_arrays_for_unrequested_analyses(tmp_path: Path, analysis: str) -> None:
+    config = json.loads(json.dumps(VALID_CONFIG))
+    config["solve_options"] = {"torque_sweep": analysis == "torque", "back_emf": analysis == "back-emf", "losses_efficiency": analysis == "losses"}
+    result = _result()
+    if analysis != "torque":
+        result["torque_waveform"] = {"electrical_angle_deg": [], "torque_Nm": []}
+        result["summary"].update(avg_torque_Nm=None, torque_ripple_pct=None)
+    if analysis != "back-emf":
+        result["back_emf_waveform"] = {"electrical_angle_deg": [], "phase_a_V": [], "phase_b_V": [], "phase_c_V": []}
+    workspace = SolveWorkspace(tmp_path / "data")
+    location = workspace.begin_run(project_name=analysis, config=config, submitted_request={"config": config}).complete(result)
+    saved_before = (location.path / "result.json").read_bytes()
+    compared = workspace.load_run_comparison(location.project_slug, location.run_id)["result"]
+    assert compared["torque_waveform"] == result["torque_waveform"]
+    assert compared["back_emf_waveform"] == result["back_emf_waveform"]
+    assert compared["cogging_torque_waveform"] is None
+    assert (location.path / "result.json").read_bytes() == saved_before
+
+
 def test_workspace_quota_refuses_to_publish_oversized_run(tmp_path: Path) -> None:
     workspace = SolveWorkspace(tmp_path / "data", max_bytes=1)
     writer = workspace.begin_run(

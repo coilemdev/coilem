@@ -1,4 +1,5 @@
 import type { SolveResult } from './model';
+import { normalizeComparisonResult, type ComparisonResult } from './runComparison';
 import type { CustomSteel } from './customSteel';
 import type { DrivePerformance, FluxLinkageMapPayload, MapSettings, PerformanceMapProgress, PerformanceMapStatus, PerformanceReportKind } from './performance';
 
@@ -79,7 +80,7 @@ export interface PublicRunDeletionPayload extends PublicJson {
 }
 
 export interface PublicRunComparisonPayload extends PublicJson {
-  result: SolveResult;
+  result: ComparisonResult;
 }
 
 const LOCAL_API_HOSTS = new Set(['127.0.0.1', 'localhost', '::1']);
@@ -169,10 +170,11 @@ export function loadPublicRun(projectSlug: string, runId: string): Promise<Publi
   );
 }
 
-export function loadPublicRunComparison(projectSlug: string, runId: string): Promise<PublicRunComparisonPayload> {
-  return requestJson(
+export async function loadPublicRunComparison(projectSlug: string, runId: string): Promise<PublicRunComparisonPayload> {
+  const payload = await requestJson(
     `/runs/${encodeURIComponent(projectSlug)}/${encodeURIComponent(runId)}/comparison`,
-  ) as Promise<PublicRunComparisonPayload>;
+  ) as PublicRunComparisonPayload;
+  return { ...payload, result: normalizeComparisonResult(payload.result) };
 }
 
 export function listPublicRuns(): Promise<PublicRunListPayload> {

@@ -935,17 +935,28 @@ class SolveWorkspace:
                     continue
                 waveforms[section].setdefault(field, {})[sample_index] = value
 
-        compact_waveforms: dict[str, dict[str, list[float]]] = {}
+        compact_waveforms: dict[str, dict[str, list[float]] | None] = {}
+        required_fields = {
+            "torque_waveform": ("electrical_angle_deg", "torque_Nm"),
+            "back_emf_waveform": ("electrical_angle_deg", "phase_a_V", "phase_b_V", "phase_c_V"),
+        }
         for section, fields in waveforms.items():
             result_field = (
                 "cogging_torque_waveform"
                 if section == "cogging_waveform"
                 else section
             )
-            compact_waveforms[result_field] = {
+            # Unrequested analyses have no CSV rows. Keep their required
+            # arrays empty, matching the full saved-result contract.
+            if section == "cogging_waveform" and not fields:
+                compact_waveforms[result_field] = None
+                continue
+            waveform = {field: [] for field in required_fields.get(section, ())}
+            waveform.update({
                 field: [values[index] for index in sorted(values)]
                 for field, values in fields.items()
-            }
+            })
+            compact_waveforms[result_field] = waveform
 
         return {
             "schema_version": RUN_MANIFEST_SCHEMA,

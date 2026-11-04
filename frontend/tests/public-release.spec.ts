@@ -584,3 +584,57 @@ test('runs a standalone torque–speed map from Analysis and reopens its saved s
   await expect(settings.getByLabel('Drive control', { exact: true })).toHaveValue('least_loss');
   await expect(settings.getByLabel('DC bus', { exact: true })).toHaveValue('48');
 });
+
+test('Previous runs handles standalone analyses and missing legacy waveform arrays', async ({ page }) => {
+  const errors: string[] = [];
+  const solveRequests: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  page.on('request', (request) => {
+    const path = new URL(request.url()).pathname;
+    if (['/solve', '/solve/stream', '/performance/map/stream'].includes(path)) solveRequests.push(path);
+  });
+  const summary = { avg_torque_Nm: null, torque_ripple_pct: null, back_emf_fundamental_V: null,
+    peak_flux_density_teeth_T: 1.2, peak_flux_density_yoke_T: 1, solve_time_s: 2 };
+  const metadata = { solver_name: 'magneto2d-test', current_amplitude_A: 0, rotor_positions: 1 };
+  const emptyTorque = { electrical_angle_deg: [], torque_Nm: [] };
+  const emptyEmf = { electrical_angle_deg: [], phase_a_V: [], phase_b_V: [], phase_c_V: [] };
+  const results = {
+    map: { summary, solve_metadata: metadata, torque_waveform: {}, back_emf_waveform: {} },
+    cogging: { summary: { ...summary, cogging: { peak_to_peak_Nm: 0.2, first_harmonic_Nm: 0.1 } },
+      solve_metadata: metadata, torque_waveform: emptyTorque, back_emf_waveform: emptyEmf },
+    emf: { summary: { ...summary, back_emf_fundamental_V: 2 }, solve_metadata: metadata, torque_waveform: {},
+      back_emf_waveform: { electrical_angle_deg: [0, 90, 180, 270], phase_a_V: [0, 2, 0, -2], phase_b_V: [-1, 1, 1, -1], phase_c_V: [1, -1, -1, 1] } },
+    torque: { summary: { ...summary, avg_torque_Nm: 4, torque_ripple_pct: 2 }, solve_metadata: { ...metadata, current_amplitude_A: 10 },
+      torque_waveform: { electrical_angle_deg: [0, 30], torque_Nm: [3.9, 4.1] }, back_emf_waveform: {} },
+  };
+  await page.route('**/runs', (route) => route.fulfill({ json: {
+    storage: { used_bytes: 1000, max_bytes: 10000, available_bytes: 9000, accepting_new_runs: true },
+    runs: Object.keys(results).map((key) => ({ project_slug: 'regression', run_id: key, project_name: key,
+      status: 'complete', solver_name: 'magneto2d-test', completed_at: '2026-11-04T02:00:00Z' })),
+  } }));
+  await page.route('**/runs/regression/*/comparison', (route) => {
+    const key = new URL(route.request().url()).pathname.split('/').at(-2) as keyof typeof results;
+    return route.fulfill({ json: { result: results[key] } });
+  });
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+  await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
+  const dialog = page.getByRole('dialog', { name: 'Previous runs', exact: true });
+  await expect(dialog.getByText('Neither run has torque or Back EMF waveforms to overlay.', { exact: false })).toBeVisible();
+  await expect(dialog.getByRole('tablist', { name: 'Comparison plots', exact: true })).toHaveCount(0);
+  await expect(dialog.getByText('Peak tooth B', { exact: true })).toBeVisible();
+  await dialog.getByLabel('Run B · candidate').selectOption('regression/emf');
+  await expect(dialog.getByRole('tab', { name: 'Back EMF overlay', exact: true })).toHaveAttribute('aria-selected', 'true');
+  await expect(dialog.getByRole('tab', { name: 'Torque overlay', exact: true })).toHaveCount(0);
+  await expect(dialog.getByText('Run A not computed · Run B 4 positions', { exact: true })).toBeVisible();
+  await dialog.getByLabel('Run A · baseline').selectOption('regression/torque');
+  await dialog.getByRole('tab', { name: 'Torque overlay', exact: true }).click();
+  await expect(dialog.getByText('Torque comparison', { exact: true })).toBeVisible();
+  await expect(dialog.getByText('Run A 2 positions · Run B not computed', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Close previous runs', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
+  await expect(dialog.getByText('Neither run has torque or Back EMF waveforms to overlay.', { exact: false })).toBeVisible();
+  expect(errors).toEqual([]);
+  expect(solveRequests).toEqual([]);
+});
