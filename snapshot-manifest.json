@@ -8610,8 +8610,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 22052,
-      "sha256": "9a212fc9682100b1f5fd402f1d4369d507cf3abb51084afe682b6122287f3a66"
+      "bytes": 22226,
+      "sha256": "33591a1cb15d656287969c48082483902af3932ae27274ba6385807408132be3"
     },
     {
       "path": "benchmarks/reference-adapters/windows-femm42-v3-20261102/README.md",
@@ -11557,6 +11557,36 @@
       "path": "tests/test_owner_decisions.py",
       "bytes": 1498,
       "sha256": "40d7ef497d7e6cc12a814495cfe74daf88af323475559f37ed47d279b7db1d71"
+    },
+    {
+      "path": "docs/benchmarks/cogging-windows-20261103/README.md",
+      "bytes": 7029,
+      "sha256": "478b3444b974a85b96f7323f111d4191a02a7b4ec92476125bdbf0dc8ed4d66b"
+    },
+    {
+      "path": "docs/benchmarks/cogging-windows-20261103/cogging-femm-vs-magneto2d.pdf",
+      "bytes": 278160,
+      "sha256": "4e671709ed1afff21c56116c89cf9aef7b6af085ae42e9c81fa9863327bf677d"
+    },
+    {
+      "path": "docs/benchmarks/cogging-windows-20261103/native-mesh-convergence.pdf",
+      "bytes": 142077,
+      "sha256": "f91d57677b8454c0b340123364c1941ec86ff11a3109dd47cf8a100222f04eff"
+    },
+    {
+      "path": "docs/benchmarks/cogging-windows-20261103/results.json",
+      "bytes": 41230,
+      "sha256": "938845c8316b1fd7421e26ef13801d44f6b5530ad55cc01985e43e003575e737"
+    },
+    {
+      "path": "docs/benchmarks/cogging-windows-20261103/sha256.json",
+      "bytes": 464,
+      "sha256": "04906e8b022830bbe76ae0068bf40ecd209df575f417492f9ba817c12f767d25"
+    },
+    {
+      "path": "docs/benchmarks/cogging-windows-20261103/waveforms.json",
+      "bytes": 32600,
+      "sha256": "41710e456e92dec3d6e3da847b8aaca021299c7bb58a95386abd1fc03f205354"
     }
   ],
   "public_patches": [
@@ -30801,6 +30831,48 @@
       "path": "tests/test_cogging.py",
       "source_sha256": "f1d1d1bc8d30fbe292410db3a148d43ad480bfd77bc014c08b741906c8f32d67",
       "reason": "Compare the stored cogging record to 1e-9, as platforms round the DFT differently (#185)."
+    },
+    {
+      "base_commit": "6845aaa7a0a16934991b43b713c776b78d9971fe",
+      "path": "docs/benchmarks/cogging-windows-20261103/README.md",
+      "source_sha256": "478b3444b974a85b96f7323f111d4191a02a7b4ec92476125bdbf0dc8ed4d66b",
+      "reason": "Publish Windows cogging numerical reports and the normal mesh default decision for PR #186."
+    },
+    {
+      "base_commit": "6845aaa7a0a16934991b43b713c776b78d9971fe",
+      "path": "docs/benchmarks/cogging-windows-20261103/cogging-femm-vs-magneto2d.pdf",
+      "source_sha256": "4e671709ed1afff21c56116c89cf9aef7b6af085ae42e9c81fa9863327bf677d",
+      "reason": "Publish Windows cogging numerical reports and the normal mesh default decision for PR #186."
+    },
+    {
+      "base_commit": "6845aaa7a0a16934991b43b713c776b78d9971fe",
+      "path": "docs/benchmarks/cogging-windows-20261103/native-mesh-convergence.pdf",
+      "source_sha256": "f91d57677b8454c0b340123364c1941ec86ff11a3109dd47cf8a100222f04eff",
+      "reason": "Publish Windows cogging numerical reports and the normal mesh default decision for PR #186."
+    },
+    {
+      "base_commit": "6845aaa7a0a16934991b43b713c776b78d9971fe",
+      "path": "docs/benchmarks/cogging-windows-20261103/results.json",
+      "source_sha256": "938845c8316b1fd7421e26ef13801d44f6b5530ad55cc01985e43e003575e737",
+      "reason": "Publish Windows cogging numerical reports and the normal mesh default decision for PR #186."
+    },
+    {
+      "base_commit": "6845aaa7a0a16934991b43b713c776b78d9971fe",
+      "path": "docs/benchmarks/cogging-windows-20261103/sha256.json",
+      "source_sha256": "04906e8b022830bbe76ae0068bf40ecd209df575f417492f9ba817c12f767d25",
+      "reason": "Publish Windows cogging numerical reports and the normal mesh default decision for PR #186."
+    },
+    {
+      "base_commit": "6845aaa7a0a16934991b43b713c776b78d9971fe",
+      "path": "docs/benchmarks/cogging-windows-20261103/waveforms.json",
+      "source_sha256": "41710e456e92dec3d6e3da847b8aaca021299c7bb58a95386abd1fc03f205354",
+      "reason": "Publish Windows cogging numerical reports and the normal mesh default decision for PR #186."
+    },
+    {
+      "base_commit": "6845aaa7a0a16934991b43b713c776b78d9971fe",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "33591a1cb15d656287969c48082483902af3932ae27274ba6385807408132be3",
+      "reason": "Publish Windows cogging numerical reports and the normal mesh default decision for PR #186."
     }
   ]
 }
