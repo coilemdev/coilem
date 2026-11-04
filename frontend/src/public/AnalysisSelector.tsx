@@ -2,6 +2,7 @@ import { useId } from 'react';
 import { coggingPlanNote } from './coggingView';
 import type { AnalysisKey } from './analysisOptions';
 import type { MotorConfig, PublicSolverId } from './model';
+import { Popover } from './Popover';
 
 export function AnalysisOptions({ config, solver, busy, coggingPositions, onChange }: {
   config: MotorConfig;
@@ -28,10 +29,13 @@ export function AnalysisOptions({ config, solver, busy, coggingPositions, onChan
               aria-describedby={`${id}-${row.key}`} onChange={(event) => onChange(row.key, event.target.checked)} />
             <span>{row.label}</span>
           </label>
-          <p id={`${id}-${row.key}`} className="public-analysis-hint">{row.hint}</p>
-          {row.key === 'cogging_torque' && !elmer && options.cogging_torque && (
-            <p className="public-plan-advisory">{coggingPlanNote(config.stator.slot_count, config.rotor.pole_count, coggingPositions, config.solve_params.corner_refinement)}</p>
-          )}
+          <div id={`${id}-${row.key}`} className="public-analysis-hint">
+            {row.key === 'cogging_torque' && !elmer ? (
+              <Popover trigger={(props) => <button type="button" className="public-analysis-hint-trigger" {...props}>{row.hint}</button>}>
+                {coggingPlanNote(config.stator.slot_count, config.rotor.pole_count, coggingPositions, config.solve_params.corner_refinement)}
+              </Popover>
+            ) : row.hint}
+          </div>
         </div>
       ))}
     </div>

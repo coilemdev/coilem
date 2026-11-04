@@ -4862,4 +4862,5 @@ button.performance-tag { cursor: help; }
 .public-analysis-option + .public-analysis-option { border-top: 1px solid var(--border-subtle); padding-top: 14px; }
 .public-analysis-option .public-check-row { display: flex; align-items: center; gap: 10px; }
 .public-analysis-hint { margin: 5px 0 0 28px; color: var(--text-muted); font-size: 12px; line-height: 1.5; }
-.public-analysis-option .public-plan-advisory { margin-top: 10px; }
+.public-analysis-hint-trigger { padding: 0; border: 0; border-bottom: 1px dotted currentColor; border-radius: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: help; }
+.public-analysis-hint-trigger:focus-visible { outline: 2px solid var(--text-accent); outline-offset: 3px; }

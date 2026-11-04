@@ -7495,8 +7495,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 285209,
-      "sha256": "c0d7219dc6f18b921b85191a1591810a5d3ea651403ef67865d184ceb2d70908"
+      "bytes": 285445,
+      "sha256": "22563eb136c087a973c77bd54af2d2ae6035c1142d4e7fa5c9688f8538255abd"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -11595,8 +11595,8 @@
     },
     {
       "path": "frontend/src/public/AnalysisSelector.tsx",
-      "bytes": 2185,
-      "sha256": "afa4c8b528201f7ec24af50f989bec401ddd1412729bccde3d8d5f192a0f8f31"
+      "bytes": 2343,
+      "sha256": "97762fe126da9040cf6d72deef5927e5db995d53758feeb68769fa63d7f95d29"
     },
     {
       "path": "frontend/src/public/analysisOptions.ts",
@@ -31199,6 +31199,18 @@
       "path": "tests/test_analysis_options.py",
       "source_sha256": "9fcf7dcbfca7690dbf2aafd0eb2ecb4f3e1b9856328a6d99f1c2f0c0dff8087a",
       "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "360f5fe9c0da5140828e3650153df3711c99139b",
+      "path": "frontend/src/public/AnalysisSelector.tsx",
+      "source_sha256": "97762fe126da9040cf6d72deef5927e5db995d53758feeb68769fa63d7f95d29",
+      "reason": "Move the detailed cogging sweep note into a hover, keyboard-focus and tap tooltip on its short description."
+    },
+    {
+      "base_commit": "360f5fe9c0da5140828e3650153df3711c99139b",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "22563eb136c087a973c77bd54af2d2ae6035c1142d4e7fa5c9688f8538255abd",
+      "reason": "Move the detailed cogging sweep note into a hover, keyboard-focus and tap tooltip on its short description."
     }
   ]
 }
