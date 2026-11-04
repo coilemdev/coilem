@@ -238,11 +238,33 @@ function TorqueSpeedChart({ envelope, formatCurrent, solved, compact = false }: 
   );
 }
 
+function PartialMapNotice({ analysis }: { analysis: TorqueSpeedAnalysisResult }) {
+  const failed = analysis.map.points.filter((point) => point.status !== 'ok');
+  const download = () => {
+    const url = URL.createObjectURL(new Blob([mapCsv(analysis.map)], { type: 'text/csv' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'coilem-partial-flux-linkage-map.csv';
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+  return <section className="performance-panel is-partial" aria-label="Incomplete torque–speed map">
+    <h3>Torque–speed map incomplete</h3>
+    <p className="performance-message">{analysis.status_reason ?? 'Some map points have no solved result.'}</p>
+    <p className="performance-message">Completed analyses and map points are saved. Curves need every point to succeed. Run the same analysis again to retry failed points.</p>
+    <ul className="performance-partial-points">{failed.map((point) => <li key={`${point.current_peak_A}-${point.gamma_deg}`}>
+      {point.current_peak_A} A peak, {point.gamma_deg}°: {point.error ?? point.status}
+    </li>)}</ul>
+    <div className="performance-actions"><button type="button" onClick={download}>Export partial map CSV</button></div>
+  </section>;
+}
+
 export function CompactTorqueSpeedChart({ analysis, currentConvention }: {
   analysis: TorqueSpeedAnalysisResult;
   currentConvention?: string | null;
 }) {
   const units = currentUnits(currentConvention);
+  if (!analysis.envelope) return <PartialMapNotice analysis={analysis} />;
   return <TorqueSpeedChart envelope={analysis.envelope} solved={null} compact
     formatCurrent={(peakA) => `${compact(units.fromPeak(peakA))} ${units.unit}`} />;
 }
@@ -405,6 +427,7 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
   const analysis = result.torque_speed_analysis;
   if (!analysis) return null;
   const { settings, map, envelope, efficiency_map: efficiency, winding_resistance: winding } = analysis;
+  if (!envelope || !efficiency) return <PartialMapNotice analysis={analysis} />;
   const drive = { envelope, efficiency_map: efficiency };
   const units = currentUnits(config.solve_params.current_amplitude_convention);
   const formatCurrent = (peakA: number) => `${compact(units.fromPeak(peakA))} ${units.unit}`;

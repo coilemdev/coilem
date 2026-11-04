@@ -3,7 +3,7 @@
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from .config import TorqueSpeedAnalysisConfig
 from .field import FieldLineFrame, FieldLinePlot, FieldMovieManifest, SlotExcitationContribution, SlotExcitationFrame
@@ -158,10 +158,21 @@ class TorqueSpeedAnalysisResult(BaseModel):
     settings: TorqueSpeedAnalysisConfig
     map: FluxLinkageMap
     torque_agreement_pct: list[float | None]
-    envelope: TorqueSpeedEnvelope
-    efficiency_map: EfficiencyMap
+    status: Literal["complete", "partial"] = "complete"
+    status_reason: str | None = None
+    envelope: TorqueSpeedEnvelope | None = None
+    efficiency_map: EfficiencyMap | None = None
     winding_resistance: WindingResistance | None = None
     mechanical_loss_W: float = 0
+
+    @model_validator(mode="after")
+    def curves_follow_completion(self):
+        if self.status == "partial":
+            if not self.status_reason or self.envelope is not None or self.efficiency_map is not None:
+                raise ValueError("a partial map needs a reason and must not contain interpolated curves")
+        elif self.envelope is None or self.efficiency_map is None:
+            raise ValueError("a complete map needs its envelope and efficiency map")
+        return self
 
 
 class SolveResult(BaseModel):

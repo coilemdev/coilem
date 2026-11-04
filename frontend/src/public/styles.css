@@ -4800,6 +4800,10 @@ button.performance-map-chip { cursor: help; }
 button.performance-tag { cursor: help; }
 .performance-actions p, .performance-message { margin: 0; color: var(--text-muted); font-size: 11px; line-height: 1.5; }
 .performance-message.is-error { color: var(--error); }
+.performance-message.is-warning { color: var(--warning); }
+.performance-panel.is-partial { border-color: var(--warning); }
+.performance-panel.is-partial h3 { margin: 0; color: var(--warning); font-size: 13px; }
+.performance-partial-points { margin: 0; padding-left: 18px; color: var(--text-secondary); font-size: 11px; line-height: 1.5; }
 /* Drive limits: one row, units inside the fields, explanations behind an "i". */
 .performance-limits { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.15fr) minmax(0, 1.15fr) auto; gap: 8px 10px; align-items: end; }
 /* One shrinkable track, so a long label never widens the field past its column. */

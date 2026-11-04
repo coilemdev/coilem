@@ -98,6 +98,7 @@ from backend.sweep_planning import (
 from backend.sweep_planning import is_uniform_full_cycle_grid, no_load_field_frame_angles
 from backend.topology_provenance import build_mesh_signature_payload, build_topology_geometry_provenance
 from backend.torque_metrics import torque_at_q_axis_nm as _torque_at_q_axis_nm
+from backend.winding_resistance import winding_resistance
 
 # The solver interface is core-owned; private implementations share it.
 
@@ -2822,7 +2823,8 @@ class Magneto2DSolver(Solver):
                     if cogging_torque_metric == "selected"
                     else cogging_torque_metric
                 ),
-                loaded_mean_torque_Nm=avg_torque_nm if loaded_sweep_needed else None,
+                loaded_mean_torque_Nm=avg_torque_nm if torque_requested else None,
+                loaded_torque_requested=torque_requested,
                 loaded_current_A=operating_point.get("resolved_phase_current_peak_a"),
                 independent_endpoints=sweep.get("cogging_endpoints_independent") is True,
             )
@@ -2908,7 +2910,15 @@ class Magneto2DSolver(Solver):
         summary_slot_excitation = single_results.get("slot_excitation_contributions")
         if summary_slot_excitation is None and slot_excitation_frames:
             summary_slot_excitation = [contribution.model_dump(mode="json") for contribution in slot_excitation_frames[0].contributions]
-        winding_record, loss_breakdown = operating_point_losses(config, avg_torque_nm, iron_loss) if losses_requested else (None, None)
+        if losses_requested:
+            winding_record, loss_breakdown = operating_point_losses(config, avg_torque_nm, iron_loss)
+        else:
+            # Resistance is a winding property, independent of the loss analysis.
+            try:
+                winding_record = winding_resistance(config)
+            except (ValueError, KeyError):
+                winding_record = None
+            loss_breakdown = None
         try:
             dq_record = dq_flux_linkage_from_sweep(
                 sweep,

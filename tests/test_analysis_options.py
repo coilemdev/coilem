@@ -114,6 +114,38 @@ def test_disabling_losses_skips_both_estimators(monkeypatch):
     assert result_for(cfg).summary.loss_breakdown is None
 
 
+def test_default_torque_and_bemf_keep_resistance_without_running_losses():
+    result = result_for(config(torque_sweep=True, back_emf=True))
+    assert result.summary.winding_resistance.phase_resistance_ohm > 0
+    from backend.winding_resistance import winding_resistance
+
+    assert result.summary.winding_resistance == winding_resistance(config(torque_sweep=True, back_emf=True))
+    assert result.summary.loss_breakdown is None
+
+
+def test_legacy_omitted_loss_option_retains_loss_builder_default():
+    raw = config(torque_sweep=True, back_emf=True).model_dump(mode="json")
+    del raw["solve_options"]["losses_efficiency"]
+    cfg = MotorConfig.model_validate(raw)
+    assert cfg.solve_options.losses_efficiency
+    assert result_for(cfg).summary.loss_breakdown is not None
+
+
+def test_losses_and_cogging_do_not_expose_unrequested_loaded_torque():
+    cfg = config(losses_efficiency=True, cogging_torque=True)
+    result = result_for(cfg)
+    assert result.summary.avg_torque_Nm is None
+    assert result.summary.cogging.loaded_mean_torque_Nm is None
+    assert result.summary.cogging.peak_to_peak_of_loaded_pct is None
+    assert result.summary.cogging.loaded_comparison_reason == "Loaded torque was not requested."
+    args = dict(project=cfg.model_dump(mode="json"), request={"resolved_config": cfg.model_dump(mode="json")},
+                result=result.model_dump(mode="json"), material={}, manifest={})
+    pypdf = pytest.importorskip("pypdf")
+    text = " ".join(page.extract_text() or "" for page in pypdf.PdfReader(io.BytesIO(build_public_run_pdf(**args))).pages)
+    assert "Loaded torque was not requested" in text
+    assert "0 A run" not in text
+
+
 def test_validate_reports_each_selected_grid_and_rejects_an_empty_selection():
     client = TestClient(app, base_url="http://127.0.0.1")
     response = client.post("/solve/validate", json=config(back_emf=True).model_dump(mode="json"))
@@ -146,6 +178,11 @@ def test_standalone_exports_leave_unrequested_metrics_blank_and_omit_their_plots
     assert "Torque waveform" not in text
     assert "Average torque" not in text
     assert "Three-phase back EMF" in text
+    assert result["solve_metadata"]["current_amplitude_A"] == 0
+    normalized = " ".join(text.split())
+    assert "Phase current 0 A rms" in normalized
+    assert "Requested phase current 30 A rms" in normalized
+    assert "Phase resistance" in text
 
 
 def test_elmer_standalone_back_emf_uses_zero_current_and_an_independent_grid(monkeypatch, tmp_path):
