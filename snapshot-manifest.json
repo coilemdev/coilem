@@ -65,8 +65,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 14441,
-      "sha256": "f660be8eaa17cf6711dda82372824a3957efb2b117e758d37c5ac18c8fb3cdf2"
+      "bytes": 14580,
+      "sha256": "572eb93861ce734b3ea3d3489936296f2738e39a45382b15dd54ec27a5351423"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -555,8 +555,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 88186,
-      "sha256": "ce383e9cf2b12c6b2217a3e19d075ce8cbe8fe404822f016aef59a6ed54429c8"
+      "bytes": 90731,
+      "sha256": "55e35d23ef37133ccb5954f5cfbd03213a272320a62f0d7d35be1bf0600922ce"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -580,13 +580,13 @@
     },
     {
       "path": "backend/public_routes/runs.py",
-      "bytes": 6031,
-      "sha256": "186e44cf0512ed3a8fa42b058097e1a81d12041f8319d5f30824828df07b35aa"
+      "bytes": 6445,
+      "sha256": "7af7c5201876a7768c35c08f7324e203e6e5f4f83a4de1ebeb302a8e9cba9329"
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 53683,
-      "sha256": "1dcf86d597b8938d5d8562f0f500deff8f7d7147ff3ac4b48669b2b49a8f8ab3"
+      "bytes": 53808,
+      "sha256": "cd21c9684b1c918267c7622eab17349d080c2806b4e94e9c8f2929ef4f7e2cef"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 239139,
-      "sha256": "2cf1a4721416463ca586c01a0063c6ebe9dac216463b4fd5591a170561eb98e7"
+      "bytes": 239271,
+      "sha256": "cbd479e216e1e225562699fd7b35d45b4d3b37a5bf757bc79f249f547e4ed48c"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7410,8 +7410,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 22481,
-      "sha256": "0b02e29aa3917255b3689aff6b4cacc4114dc6ec986ab9ae8ef8d44e8777f7d4"
+      "bytes": 23675,
+      "sha256": "d757a572c6cdcdc84bd55d58d3e7aceee4714e6485f5a2b68255b57cd9d95a13"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -7495,8 +7495,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 287087,
-      "sha256": "29afb23f55909a2e02a30aaf8d2fdcff7205239add70687ce68357481865db37"
+      "bytes": 289527,
+      "sha256": "5341219916534e65930fe24f3f3c6cc3faf64981f85adb605f8c978313e8cc9b"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7555,8 +7555,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 41562,
-      "sha256": "881574e06255fd4d7cf764372d3e14d4536dd28d660402a3109c7fca81830a10"
+      "bytes": 44897,
+      "sha256": "c664eea9912876f6afb4f1a7498adc5736a0c42f2bdaad1b123dd06aa65b1a2d"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -7975,8 +7975,8 @@
     },
     {
       "path": "tests/test_cogging.py",
-      "bytes": 20809,
-      "sha256": "93fc27e8899551e55852f22a184a2152e0bf1409dc48fd906a6b99d4d0c1f8ed"
+      "bytes": 20831,
+      "sha256": "9e39651841b9e5fe9c3212b9a750c7cd42c2655c5ddf471ef4a1beca6a508561"
     },
     {
       "path": "tests/test_cogging_phase_e.py",
@@ -8110,8 +8110,8 @@
     },
     {
       "path": "tests/test_loss_breakdown.py",
-      "bytes": 8156,
-      "sha256": "da04016e03c59eafa69b665ad128f81d8a69be4bd5955da05d6226aa3abb90a7"
+      "bytes": 8155,
+      "sha256": "8972a53d8c32790b80a877f991d3ca320c5b84f73328a9645fd91ef87d9fd212"
     },
     {
       "path": "tests/test_magnet_temperature.py",
@@ -8155,8 +8155,8 @@
     },
     {
       "path": "tests/test_output_status.py",
-      "bytes": 12575,
-      "sha256": "402c8cb57f7a81f9449f0582fa638ae66e10b2d6e2b235b3c74f6a9523716237"
+      "bytes": 13122,
+      "sha256": "1177cbfbd745675bebf94e5d9da21da43c40198cf3584cc73e273133adbbed7c"
     },
     {
       "path": "tests/test_payload_reuse.py",
@@ -8270,8 +8270,8 @@
     },
     {
       "path": "tests/test_pyleecan_reference_fixture.py",
-      "bytes": 18853,
-      "sha256": "07e7d8c2b4e4534c5aeadc2f458cd1ee65226c417436d9c642d12fda7091d8ea"
+      "bytes": 19246,
+      "sha256": "0e6bd89312cc7bb104dcc7ada15b7630d3fd502dc62f4e33ec002e1f3b69a4a9"
     },
     {
       "path": "tests/test_pyleecan_tutorial.py",
@@ -10705,8 +10705,8 @@
     },
     {
       "path": "tests/test_candidate_reference_review.py",
-      "bytes": 6290,
-      "sha256": "ead64e8f6ce091c2f671cef5e4232fc8ff95f82d5760f07dc573da794df7f66a"
+      "bytes": 7857,
+      "sha256": "0b53f8095ab2f386f5dcc9a325d43f1c675e5dcb110fa4981a4188ef7ad72dcd"
     },
     {
       "path": "tools/qualify_benchmark_candidate.py",
@@ -11642,6 +11642,31 @@
       "path": "backend/report_numbers.py",
       "bytes": 916,
       "sha256": "05b3f7913ac0afcee4f5d415ce5ee977873595d132e3cfd49f7b789d8d535ce0"
+    },
+    {
+      "path": "backend/convergence_reporting.py",
+      "bytes": 9804,
+      "sha256": "9529f71230ea82b1e801d5bf391d0eff97c89d18dbab7efe1c8dd58d61ac723d"
+    },
+    {
+      "path": "docs/SOLVER_CONVERGENCE.md",
+      "bytes": 2685,
+      "sha256": "54e01e94266ae78363cc3ee25b911f4f9492beebd3894f44d34d85993e78e50c"
+    },
+    {
+      "path": "frontend/src/public/SolverConvergenceCard.tsx",
+      "bytes": 3944,
+      "sha256": "8fae14435a4190dc1ed99935d55fdd189242f3f5d54ead595da49639ee24f418"
+    },
+    {
+      "path": "tests/test_convergence_reporting.py",
+      "bytes": 10620,
+      "sha256": "347bbd9f61a5f561b0b07e21eecc567ad92d7f315db1c747f662dfac13752323"
+    },
+    {
+      "path": "tests/fixtures/convergence_report_snapshot.txt",
+      "bytes": 1351,
+      "sha256": "0c54e83310827473e8f56afddf9612787a1dd6b4d5733075e7c852a4a608610c"
     }
   ],
   "public_patches": [
@@ -31576,6 +31601,282 @@
       "path": "tests/test_public_report_exports.py",
       "source_sha256": "2be2634bdeba46cea357ae22892bf2a2a1e6c7eee381f8acfd07523dbc13b8f5",
       "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "README.md",
+      "source_sha256": "5004aece9fc710ff483d57790e42f790883d89b9826f6aef635d91a5e2389190",
+      "reason": "Report recorded nonlinear convergence consistently in Results, PDF and CSV, preserving missing evidence and method-specific stopping rules (#12)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/public_report.py",
+      "source_sha256": "566e4f0c512fe9defaf5cdabc797a2db136b458af367963743ce28ab56fe0dcd",
+      "reason": "Report recorded nonlinear convergence consistently in Results, PDF and CSV, preserving missing evidence and method-specific stopping rules (#12)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/public_routes/runs.py",
+      "source_sha256": "186e44cf0512ed3a8fa42b058097e1a81d12041f8319d5f30824828df07b35aa",
+      "reason": "Report recorded nonlinear convergence consistently in Results, PDF and CSV, preserving missing evidence and method-specific stopping rules (#12)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "669e2ab56e10cb8d17d78f8beee4af84eabc294eed6aaa8aa85f36a346c11c30",
+      "reason": "Report recorded nonlinear convergence consistently in Results, PDF and CSV, preserving missing evidence and method-specific stopping rules (#12)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "00894e348c77072e36661ffd7ad0e9a4674d00d454af35bebacb4673f791d68a",
+      "reason": "Report recorded nonlinear convergence consistently in Results, PDF and CSV, preserving missing evidence and method-specific stopping rules (#12)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "998f2b8b6dae06af5260a5369d947e57d24177ee212653a8316996d08636fd6f",
+      "reason": "Report recorded nonlinear convergence consistently in Results, PDF and CSV, preserving missing evidence and method-specific stopping rules (#12)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "6e37377129da21ba3478b8e53287555e03416379e2f696eb3f3e1f03e2ba4852",
+      "reason": "Report recorded nonlinear convergence consistently in Results, PDF and CSV, preserving missing evidence and method-specific stopping rules (#12)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "0cbedc0c04bfa6bb877729494f18b010fdfc392b5387e2346cd702af880de014",
+      "reason": "Report recorded nonlinear convergence consistently in Results, PDF and CSV, preserving missing evidence and method-specific stopping rules (#12)."
+    },
+    {
+      "base_commit": "84c9d4d9d592f69a760c7af2a5eda5e800cba5bb",
+      "path": "backend/convergence_reporting.py",
+      "source_sha256": "39c938d6360a77fb35bd6c1290e6e61e48154c5514d96b90f9bd2c2b438e1866",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "84c9d4d9d592f69a760c7af2a5eda5e800cba5bb",
+      "path": "backend/performance_report.py",
+      "source_sha256": "5443edc461047feff671b872c20f11b8560276ae67c6dc3de259d37a64a729fd",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "84c9d4d9d592f69a760c7af2a5eda5e800cba5bb",
+      "path": "backend/public_report.py",
+      "source_sha256": "e9536aeef276e74c3f94692377d1fb108e087d00229ce79e1933b65f5339570d",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "84c9d4d9d592f69a760c7af2a5eda5e800cba5bb",
+      "path": "docs/SOLVER_CONVERGENCE.md",
+      "source_sha256": "2a6a89420e03e609fb3a1ec74b42f181ebdc2b1c39b82f0f8573f220c1bc30f7",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "84c9d4d9d592f69a760c7af2a5eda5e800cba5bb",
+      "path": "tests/fixtures/convergence_report_snapshot.txt",
+      "source_sha256": "8609e2d752b863fc6be21b13c8eff2f3538bd4ac0cd6919129e7cf408fa779ba",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "84c9d4d9d592f69a760c7af2a5eda5e800cba5bb",
+      "path": "tests/test_convergence_reporting.py",
+      "source_sha256": "b93e692d390e34d90e9454295aa25b3adeb5f92f85d897612ca1969d7898b5e3",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "84c9d4d9d592f69a760c7af2a5eda5e800cba5bb",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": "d93b499e08b5850e47d7a8be9d9b2126bb3188186a1ea72ca121eccc82cb8537",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "84c9d4d9d592f69a760c7af2a5eda5e800cba5bb",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "2be2634bdeba46cea357ae22892bf2a2a1e6c7eee381f8acfd07523dbc13b8f5",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "15f5f9f9b73cad07cc2b1be9ad98de15f130ad84",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": "da04016e03c59eafa69b665ad128f81d8a69be4bd5955da05d6226aa3abb90a7",
+      "reason": "Align the existing loss-report PDF assertion with the requested maximum of three displayed decimal places."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "README.md",
+      "source_sha256": "bb5666ba13c55af8192000fe772a947e675e3a749f5a7192bec9cd458e8711a2",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/performance_report.py",
+      "source_sha256": "5443edc461047feff671b872c20f11b8560276ae67c6dc3de259d37a64a729fd",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/public_report.py",
+      "source_sha256": "63f6129907ad19372b07a901de60703935db09aaaa8dd4d1ecf345ecbd0391a4",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/public_routes/runs.py",
+      "source_sha256": "186e44cf0512ed3a8fa42b058097e1a81d12041f8319d5f30824828df07b35aa",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "caa4ff56502a4e3d21eb1b723a1dad7d3bfe6bf253365447ef9241b3da38b900",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "ee30caf6e63d89ef4ef67868e72733ce72afa4ed2a7e2306a1dfab4d5ca75bad",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "ead64ab55c25e8ce2e6eebd9fd746c65d13157ba2d6ddc0790b185f90e91076c",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "19a8a1a5d266cbc83447829888a1f1db2f7b2744b83340c206de0da1fe24ecb9",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "e4f0ff535303f0cb60f5ef5c93932c385eb1e0a9b0f22ff4126cb13e8c9fee46",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_candidate_reference_review.py",
+      "source_sha256": "ead64e8f6ce091c2f671cef5e4232fc8ff95f82d5760f07dc573da794df7f66a",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_cogging.py",
+      "source_sha256": "dfa5f9266aeddf0b32034ab47865bdc1d0191640e6b50b1614baa290e3fc07cb",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": "da04016e03c59eafa69b665ad128f81d8a69be4bd5955da05d6226aa3abb90a7",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_output_status.py",
+      "source_sha256": "402c8cb57f7a81f9449f0582fa638ae66e10b2d6e2b235b3c74f6a9523716237",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": "d93b499e08b5850e47d7a8be9d9b2126bb3188186a1ea72ca121eccc82cb8537",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "2be2634bdeba46cea357ae22892bf2a2a1e6c7eee381f8acfd07523dbc13b8f5",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "07e7d8c2b4e4534c5aeadc2f458cd1ee65226c417436d9c642d12fda7091d8ea",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "README.md",
+      "source_sha256": "f660be8eaa17cf6711dda82372824a3957efb2b117e758d37c5ac18c8fb3cdf2",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "backend/public_report.py",
+      "source_sha256": "ce383e9cf2b12c6b2217a3e19d075ce8cbe8fe404822f016aef59a6ed54429c8",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "backend/public_routes/runs.py",
+      "source_sha256": "186e44cf0512ed3a8fa42b058097e1a81d12041f8319d5f30824828df07b35aa",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "1dcf86d597b8938d5d8562f0f500deff8f7d7147ff3ac4b48669b2b49a8f8ab3",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "2cf1a4721416463ca586c01a0063c6ebe9dac216463b4fd5591a170561eb98e7",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "0b02e29aa3917255b3689aff6b4cacc4114dc6ec986ab9ae8ef8d44e8777f7d4",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "29afb23f55909a2e02a30aaf8d2fdcff7205239add70687ce68357481865db37",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "881574e06255fd4d7cf764372d3e14d4536dd28d660402a3109c7fca81830a10",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "tests/test_candidate_reference_review.py",
+      "source_sha256": "ead64e8f6ce091c2f671cef5e4232fc8ff95f82d5760f07dc573da794df7f66a",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "tests/test_cogging.py",
+      "source_sha256": "93fc27e8899551e55852f22a184a2152e0bf1409dc48fd906a6b99d4d0c1f8ed",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": "da04016e03c59eafa69b665ad128f81d8a69be4bd5955da05d6226aa3abb90a7",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "tests/test_output_status.py",
+      "source_sha256": "402c8cb57f7a81f9449f0582fa638ae66e10b2d6e2b235b3c74f6a9523716237",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "07e7d8c2b4e4534c5aeadc2f458cd1ee65226c417436d9c642d12fda7091d8ea",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
     }
   ]
 }
