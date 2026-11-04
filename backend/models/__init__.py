@@ -30,6 +30,8 @@ from .field import (
 from .geometry import GeometryPreview, GeometryRegion, WindingCoil, WindingSlot
 from .mesh import FluxDensityMap, MeshConfigSummary, MeshPlotInfo, Node
 from .performance import (
+    CoggingHarmonic,
+    CoggingTorque,
     DqFluxLinkage,
     DriveLimits,
     EfficiencyMap,
@@ -61,6 +63,8 @@ __all__ = [
     "BackEMFHarmonicComponent",
     "BackEMFWaveform",
     "PhaseCurrentWaveform",
+    "CoggingHarmonic",
+    "CoggingTorque",
     "DqFluxLinkage",
     "DriveLimits",
     "EfficiencyMap",

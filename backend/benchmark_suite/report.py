@@ -182,7 +182,13 @@ def charts(row):
         if not native:
             return ""
         out = []
-        for key, field, title in (("torque_waveform", "torque_Nm", "Torque (N m)"), ("back_emf_waveform", "phase_a_V", "Phase A Back-EMF (V)")):
+        # Phase E plots its cogging period; the other phases their loaded torque and back-EMF.
+        waves = (
+            (("cogging_torque_waveform", "torque_Nm", "Cogging torque over one period (N m)"),)
+            if row["phase"] == "E"
+            else (("torque_waveform", "torque_Nm", "Torque (N m)"), ("back_emf_waveform", "phase_a_V", "Phase A Back-EMF (V)"))
+        )
+        for key, field, title in waves:
             wave = native.get(key) or {}
             x, y = wave.get("electrical_angle_deg", []), wave.get(field, [])
             series = [("Coilem", y, "#d66a00", False)]

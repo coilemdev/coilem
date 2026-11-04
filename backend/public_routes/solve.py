@@ -56,13 +56,12 @@ from backend.solve_workspace import (
 )
 from backend.solver import Magneto2DSolver
 from backend.solver_contract import SolveCancelledError, Solver
-from backend.sweep_planning import loaded_sweep_plan
+from backend.sweep_planning import cogging_positions_per_period, loaded_sweep_plan
 
 router = APIRouter()
 
 _EXCLUDED_SUMMARY_FIELDS = frozenset(
     {
-        "cogging_torque_Nm",
         "efficiency_pct",
         "weight_inertia",
         "torque_speed_envelope",
@@ -74,7 +73,6 @@ _EXCLUDED_SUMMARY_FIELDS = frozenset(
 
 _EXCLUDED_RESULT_FIELDS = frozenset(
     {
-        "cogging_torque_waveform",
         "femm_mesh",
         "slotless_noload_diagnostic",
         "loaded_field_diagnostic",
@@ -1196,6 +1194,7 @@ async def validate_solve(body: dict[str, Any]) -> dict[str, Any]:
         "solve_quality": solve_params.solve_quality,
         "step_deg": solve_params.effective_step_deg(),
         "sweep_positions": sweep_positions,
+        "cogging_positions_per_period": cogging_positions_per_period(config),
         "qualification": classify_qualification(config),
         "solver_lane": {
             "native_supported": True,

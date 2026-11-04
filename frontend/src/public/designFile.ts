@@ -217,7 +217,7 @@ export function parseDesignFile(text: string): ParsedDesignFile {
   solve.mesher = 'gmsh';
   solve.rotor_rotation_model = 'remesh_per_step';
   config.solve_options.torque_speed_envelope = false;
-  config.solve_options.cogging_torque = false;
+  config.solve_options.cogging_torque = config.solve_options.cogging_torque === true;
   // Public presets own the spectrum bandwidth: Standard reports H1-H12 and
   // Fine reports H1-H24. Quick and Custom remain waveform-only.
   config.solve_options.thd_analysis = solve.solve_quality === 'standard'

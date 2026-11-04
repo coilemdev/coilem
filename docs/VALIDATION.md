@@ -612,6 +612,54 @@ operating point and the efficiency map:
 The Losses card names all four, and the run PDF the first three. Every
 efficiency leaves these losses out, so none is a measured efficiency.
 
+## Cogging torque
+
+Cogging torque is on `main` for 0.5.1
+([public issue 185](https://github.com/coilemdev/coilem/issues/185)). **It is
+experimental everywhere: no benchmark protocol has a cogging gate yet.**
+
+- **What is solved.** With **Cogging torque** on, the backend solves one
+  cogging period, 180·gcd(S, P)/S electrical degrees (360/LCM(S, P)
+  mechanical), with no current. The preset sets the positions per period:
+  12 for Preview, 24 for Standard and High accuracy's 48, plus the repeated
+  end. The sweep uses per-position meshes with slot-pitch reuse, without a
+  sliding band; angles the Back-EMF grid shares are solved once. A derated
+  magnet temperature applies to the cogging sweep too.
+- **Torque method.** Weighted stress tensor (WST), whatever the loaded sweep
+  uses. The [convergence study](COGGING_CONVERGENCE.md) chose it: on the 8p/12s
+  example its peak-to-peak does not move between 12 and 96 positions per
+  period, and its mean and end mismatch stay under 0.5% of the peak-to-peak.
+  Contour MST and Arkkio carry remesh noise of 15–25% of the peak-to-peak,
+  and the area MST series reads about 1/60 of the others. Normal and fine
+  meshes agree within 0.7%; Preview's coarse mesh reads about 13% high, and
+  without corner refinement the noise rises to 10% of the peak-to-peak, so the
+  Solve page warns when it is off.
+- **What is reported.** The waveform in electrical and mechanical degrees,
+  peak-to-peak, peak, the harmonics per mechanical revolution with the
+  fundamental at LCM(S, P), the peak-to-peak as a share of the loaded mean
+  torque, the method, and two noise measures: the mean over the period and
+  the mismatch between its two ends, which an exact solve makes zero. Results,
+  the run PDF and the CSV carry the same record (`backend/cogging.py`), and a
+  0 A run's "Cogging torque p-p" is the sweep's own when it has one.
+  End mismatch is unavailable when the endpoints share a mesh or solution,
+  the closing endpoint is missing, or cached reports do not record endpoint
+  independence. A zero copied by reuse cannot measure remesh noise.
+- **The reason the app prints:** "No cogging gate yet: benchmark protocol 1.6.0
+  has no reference cogging waveform. The sweep uses per-position meshes
+  with slot-pitch reuse, without a sliding band, so mesh noise sets a floor under small cogging
+  values." `frontend/src/public/outputStatus.ts` mirrors it and
+  `tests/test_output_status.py` checks the two match.
+- **What would qualify it.** Phase E, the cogging benchmark proposed as
+  [protocol 1.7.0](../benchmarks/abcd-v1.7/README.md): 12 SPM, flat-buried IPM
+  and distributed-winding motors against FEMM 4.2 waveforms. It is gated on
+  peak-to-peak and the first cogging harmonic, with an absolute floor
+  ([proposal](COGGING_BENCHMARK_PROPOSAL.md)). The harness can grade it, and
+  the [FEMM request](COGGING_FEMM_REQUEST.md) is written. No reference exists
+  yet, and Phase E is not registered.
+- **Not modelled.** Skew, end effects and other 3D effects, manufacturing
+  tolerances (magnet and slot variation, eccentricity), and the load-dependent
+  part of torque ripple: cogging is the zero-current torque only.
+
 ## Benchmark report v1.1
 
 The completed v1.1 report measures public Coilem commit
@@ -765,7 +813,8 @@ commit, commands, and accepted limitations.
   establish arbitrary-motor accuracy.
 - v1.1 does not gate cogging torque, THD, airgap field harmonics, spatial mesh
   convergence, losses or efficiency. Fine BLDC stages refine angular sampling
-  on the same spatial mesh.
+  on the same spatial mesh. Cogging torque is reported as experimental; see
+  [Cogging torque](#cogging-torque).
 - Phase resistance and copper loss are qualified for a design with a wire,
   by the hand-calculation gate. The other 0.5.0 performance outputs (d/q flux
   linkage and inductances, the flux-linkage map, torque–speed and efficiency

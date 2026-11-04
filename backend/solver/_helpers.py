@@ -569,6 +569,56 @@ def _optional_result_series(
     return values
 
 
+# The cogging waveform's torque extraction method, whatever the loaded sweep
+# uses (#185). docs/COGGING_CONVERGENCE.md compares the methods.
+COGGING_TORQUE_METHOD = "weighted_stress"
+
+
+def _cogging_sweep_series(
+    reports: list[dict[str, Any]], angles_elec_deg: list[float], *, independent_endpoints: bool = True,
+) -> dict[str, Any]:
+    """Every method's torque over one inclusive cogging period, in the solver's direction.
+
+    The mean-removed series subtract the mean over the period, without its
+    repeated endpoint. The selected series, and its peak-to-peak as
+    ``cogging_torque_nm``, use ``COGGING_TORQUE_METHOD``.
+    Endpoint independence is recorded for postprocessing, including cached reports.
+    """
+
+    def mean_removed(values: list[float] | None) -> list[float] | None:
+        if not values or len(values) < 3:
+            return None
+        mean = _waveform_mean(values[:-1])
+        return [value - mean for value in values]
+
+    contour = [_result_float(report, "torque_contour_nm", _result_float(report, "torque_nm")) for report in reports]
+    weighted_stress = _optional_result_series(reports, "torque_weighted_stress_nm")
+    series = {
+        "contour": contour,
+        "arkkio": [_result_float(report, "torque_arkkio_nm") for report in reports],
+        "mst": [_result_float(report, "torque_area_mst_nm") for report in reports],
+        "weighted_stress": weighted_stress,
+        "weighted_stress_centered": mean_removed(weighted_stress),
+    }
+    selected = series[COGGING_TORQUE_METHOD]
+    method = COGGING_TORQUE_METHOD
+    if not selected:
+        selected, method = series["arkkio"], "arkkio"
+    return {
+        "cogging_rotor_positions_elec_deg": [float(angle) for angle in angles_elec_deg],
+        "cogging_endpoints_independent": independent_endpoints,
+        "cogging_torque_contour_waveform_nm": contour,
+        "cogging_torque_contour_centered_waveform_nm": mean_removed(contour),
+        "cogging_torque_arkkio_waveform_nm": series["arkkio"],
+        "cogging_torque_area_mst_waveform_nm": series["mst"],
+        "cogging_torque_weighted_stress_waveform_nm": weighted_stress,
+        "cogging_torque_weighted_stress_centered_waveform_nm": series["weighted_stress_centered"],
+        "cogging_torque_waveform_nm": selected,
+        "cogging_torque_method": method,
+        "cogging_torque_nm": (max(selected) - min(selected)) if selected else None,
+    }
+
+
 def _config_with_phase_current(config: MotorConfig, current_a: float) -> MotorConfig:
     clone = config.model_copy(deep=True)
     if clone.solve_params is None:

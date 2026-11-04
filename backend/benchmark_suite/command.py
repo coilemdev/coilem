@@ -14,7 +14,7 @@ from datetime import datetime
 from pathlib import Path
 
 from backend import __version__
-from backend.benchmark_suite import PHASE_LABELS
+from backend.benchmark_suite import COMMAND_PHASES, PHASE_LABELS
 from backend.benchmark_suite.cli import DEFAULT_MIN_FREE_GB, DiskFloorError, execute
 from backend.benchmark_suite.contract import DEFAULT_BUNDLE, SPEC, read, write
 from backend.benchmark_suite.record import check_physics, compare_run, load_records, platform_key, select_record
@@ -40,7 +40,7 @@ def build_parser():
         epilog="A full run takes about 50 minutes and needs about 3 GB of free disk space; each case's solver files "
         "are deleted when it finishes.",
     )
-    parser.add_argument("--phase", action="append", choices=list(PHASE_LABELS), help="run only this phase (A SPM, B IPM, "
+    parser.add_argument("--phase", action="append", choices=list(COMMAND_PHASES), help="run only this phase (A SPM, B IPM, "
                         "C distributed winding, D BLDC); repeat for several")
     parser.add_argument("--quick", action="store_true", help="run one short case per phase, about 5 minutes")
     parser.add_argument("--out", type=Path, help="output folder (default: a new coilem-benchmark-<date>-<time> folder here)")
@@ -82,7 +82,7 @@ def main(argv=None):
     if args.resume and options_path.is_file():
         options = read(options_path)
     else:
-        options = {"phases": [p for p in PHASE_LABELS if p in (args.phase or PHASE_LABELS)], "quick": args.quick}
+        options = {"phases": [p for p in COMMAND_PHASES if p in (args.phase or COMMAND_PHASES)], "quick": args.quick}
     phases, quick = options["phases"], options["quick"]
     spec = load_suite(SPEC)
     cases = select_cases(spec, phases, quick)

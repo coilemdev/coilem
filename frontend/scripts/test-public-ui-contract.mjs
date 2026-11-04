@@ -804,7 +804,11 @@ assert.doesNotMatch(workspaceSource, /<span>Solver<\/span><strong>Magneto2D<\/st
 assert.match(workspaceSource, /public-output-chips/);
 assert.match(workspaceSource, /Three-phase back EMF/);
 assert.doesNotMatch(workspaceSource, /Include cogging torque sweep/);
-assert.doesNotMatch(workspaceSource, />Cogging</);
+// Cogging torque (#185): an option on the Accuracy plan, a Results tab only for a run with a cogging sweep.
+assert.match(workspaceSource, /onCoggingTorqueChange\(event\.target\.checked\)/);
+assert.match(workspaceSource, /coggingPlanNote\(config\.stator\.slot_count, config\.rotor\.pole_count, validation\?\.cogging_positions_per_period, config\.solve_params\.corner_refinement\)/);
+assert.match(workspaceSource, /const coggingWaveform = result\.summary\.cogging \? result\.cogging_torque_waveform : null;/);
+assert.match(workspaceSource, /\{coggingWaveform && <button type="button" role="tab"[^\n]*>Cogging<\/button>\}/);
 assert.doesNotMatch(workspaceSource, /<SelectRow[^>]*label="Torque method"/);
 assert.match(workspaceSource, /<dt>Torque method<\/dt><dd>WST<\/dd>/);
 assert.match(workspaceSource, /onSolveSettingChange\('nonlinear_solver'/);
@@ -1461,7 +1465,7 @@ assert.match(appSource, /parseDesignFile/);
 // The solve request's config serializer, shared by Solve and the Performance map (#142).
 const publicRequestSource = await readFile(path.join(frontendRoot, 'src/public/publicRequest.ts'), 'utf8');
 assert.match(appSource, /import \{ asPublicConfig \} from '\.\/publicRequest'/);
-assert.match(publicRequestSource, /cogging_torque: false/);
+// Cogging serialization for both solvers is exercised by test-cogging-view.mjs.
 assert.match(publicRequestSource, /thd_analysis: thdAnalysis/);
 assert.match(publicRequestSource, /solve_quality === 'standard'/);
 assert.match(publicRequestSource, /solve_quality === 'fine'/);

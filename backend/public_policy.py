@@ -267,9 +267,9 @@ def public_config_support_error(
             field="solve_params",
         )
 
-    if config.solve_options is not None and config.solve_options.cogging_torque:
+    if solver_id == "elmer" and config.solve_options is not None and config.solve_options.cogging_torque:
         return PublicConfigError(
-            "Cogging-torque analysis is not included in this developer preview.",
+            "Cogging torque is solved by Magneto2D only.",
             field="solve_options.cogging_torque",
         )
 

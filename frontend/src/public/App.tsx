@@ -892,6 +892,19 @@ export function App() {
     setNotice('Analysis settings changed. Updating the run estimate.');
   }, []);
 
+  const updateCoggingTorque = useCallback((enabled: boolean) => {
+    validationRequestId.current += 1;
+    setConfig((current) => ({ ...current, solve_options: { ...current.solve_options, cogging_torque: enabled } }));
+    setValidation(null);
+    setValidationChecking(false);
+    setValidationError(null);
+    setResult(null);
+    setProgress(null);
+    setLiveSamples([]);
+    setError(null);
+    setNotice('Analysis settings changed. Updating the run estimate.');
+  }, []);
+
   const selectSolver = useCallback((solver: PublicSolverId) => {
     if (solver === 'elmer' && !elmerCapabilityIsReady(elmerCapability)) {
       setNotice(elmerCapability.reason || 'Install the qualified Elmer 26.2 runtime to enable this solver.');
@@ -1000,7 +1013,7 @@ export function App() {
     setValidationError(null);
     try {
       const request: PublicSolveRequest = {
-        config: asPublicConfig(nextConfig),
+        config: asPublicConfig(nextConfig, selectedSolver),
         solver: selectedSolver,
         project_name: designName
           ?? `coilEM-${nextConfig.topology.toLowerCase()}-${nextConfig.rotor.pole_count}p${nextConfig.stator.slot_count}s`,
@@ -1144,7 +1157,7 @@ export function App() {
     setValidationError(null);
     try {
       const solveRequest: PublicSolveRequest = {
-        config: asPublicConfig(config),
+        config: asPublicConfig(config, selectedSolver),
         solver: selectedSolver,
         project_name: designName
           ?? `coilEM-${config.topology.toLowerCase()}-${config.rotor.pole_count}p${config.stator.slot_count}s`,
@@ -1799,6 +1812,7 @@ export function App() {
       onSolvePlanChange={updateSolvePlan}
       onCustomSweepChange={updateCustomSweep}
       onSolveSettingChange={updateSolveSetting}
+      onCoggingTorqueChange={updateCoggingTorque}
       onSolverChange={selectSolver}
       onReset={reset}
       onRefreshGeometry={() => void refreshGeometry(config)}

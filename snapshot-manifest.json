@@ -65,8 +65,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 13954,
-      "sha256": "180f427978b3c363eb880050108dc1b2b14166dd2eac2ed16063857031ffe7bd"
+      "bytes": 14561,
+      "sha256": "742f377bcaddb18122febe626483318ff0f83be83beb76e89e454849ee2d22f2"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -110,8 +110,8 @@
     },
     {
       "path": "backend/benchmark_suite/__init__.py",
-      "bytes": 362,
-      "sha256": "e82e13a64a3477c1b1611c5c65720c612402919044d5d1e4aabb7e57c9ef836a"
+      "bytes": 538,
+      "sha256": "0484342a3d688352e63934267361b5427074e1d932dd16fcafc1ee01817a495a"
     },
     {
       "path": "backend/benchmark_suite/abc_metrics.py",
@@ -125,13 +125,18 @@
     },
     {
       "path": "backend/benchmark_suite/cli.py",
-      "bytes": 21217,
-      "sha256": "bba2f5ac4a8071d9d4f3c5f6143b0e185eb3516ab99dba849bcbdd334284791e"
+      "bytes": 22035,
+      "sha256": "2c13c449677ce559c5646376e266da3aa976e6c0d473acafc43023c9733c5c4f"
+    },
+    {
+      "path": "backend/benchmark_suite/cogging_metrics.py",
+      "bytes": 6346,
+      "sha256": "e1e78a0e7f87a9c9d3dbe729b1d0f8bc77c8ac25828e54c6468e2590d21cacff"
     },
     {
       "path": "backend/benchmark_suite/command.py",
-      "bytes": 7688,
-      "sha256": "70048689414f727e7d9ce9c297b9662e6d64080fd518b0597cf8570be47dfbfe"
+      "bytes": 7710,
+      "sha256": "a38377d817eacf2977d4e4ee89788a3905c0be0017e215a9e25469432a232e7c"
     },
     {
       "path": "backend/benchmark_suite/contract.py",
@@ -165,13 +170,13 @@
     },
     {
       "path": "backend/benchmark_suite/references.py",
-      "bytes": 7582,
-      "sha256": "56c4248b839b9223f45b9413f846a730ad7ef648cf0025aef77b4fb470a59176"
+      "bytes": 7998,
+      "sha256": "4ef724b633076777561790ab1d004bd19bc4465f9dcb0015053e8a54579c1155"
     },
     {
       "path": "backend/benchmark_suite/report.py",
-      "bytes": 30549,
-      "sha256": "cb7fa762862b6e48c34904d01ad007634bb21c5a8320553c529ccc69748a807a"
+      "bytes": 30826,
+      "sha256": "7a21402f3633fdc6b6ec90855736c2434c00496b97c2b0d1b985ed049b38420d"
     },
     {
       "path": "backend/benchmark_suite/resistance_metrics.py",
@@ -180,13 +185,18 @@
     },
     {
       "path": "backend/benchmark_suite/share.py",
-      "bytes": 8997,
-      "sha256": "c26023448d3169f7b2269b2053aec03a322d3b60cb4099e641a8381d3d73f720"
+      "bytes": 9015,
+      "sha256": "57fc6e6da6546472e1c8b94cadc95cfaf8f93f61ac98fa1b8bb17860f37eaf5e"
     },
     {
       "path": "backend/benchmark_suite/worker.py",
-      "bytes": 4246,
-      "sha256": "53447bd76e3c88afbee3ba14fcb90958642b9eb6dea038a7819cc26146f4dd93"
+      "bytes": 4499,
+      "sha256": "82bb836000973b718be6f3ed3e01e5e734792c7f637e0b721ca10ddcda694e6f"
+    },
+    {
+      "path": "backend/cogging.py",
+      "bytes": 5353,
+      "sha256": "6390a269a6c10f27090fda28c875a7293ea3cc3eb06c08a155634dd6a716e471"
     },
     {
       "path": "backend/custom_materials.py",
@@ -455,8 +465,8 @@
     },
     {
       "path": "backend/models/__init__.py",
-      "bytes": 2487,
-      "sha256": "2bb692a95ba2013d902511a4cb575dc751653b4746bb0a065c273b1381a26650"
+      "bytes": 2571,
+      "sha256": "666c7c95fa74a1774b4df1cf4ffb5e8c91ba8856bafebd1c4af9ee6894197907"
     },
     {
       "path": "backend/models/config.py",
@@ -485,13 +495,13 @@
     },
     {
       "path": "backend/models/performance.py",
-      "bytes": 23619,
-      "sha256": "916db2d0dbf04150ff5e3d4e1409a6308eea622487f68eddb79c3b6b62325a37"
+      "bytes": 26220,
+      "sha256": "3c1d372db1184dc56ef4fac2370514edd7cbdbcc85df80fd9eac6b2130f1db41"
     },
     {
       "path": "backend/models/result.py",
-      "bytes": 7605,
-      "sha256": "44636f7526c5c3557dfb3ce88c406f2ce29387d49fcfe201c087215eb3121c88"
+      "bytes": 7751,
+      "sha256": "64622dc3817f40afb00e8c060b67fdc9350fed5b47e896281087e2f4eb51af77"
     },
     {
       "path": "backend/models/waveforms.py",
@@ -540,13 +550,13 @@
     },
     {
       "path": "backend/public_policy.py",
-      "bytes": 12563,
-      "sha256": "973142eed90de1bea7b46d33fde3691028580098aa09663624b773f6d7b228d8"
+      "bytes": 12565,
+      "sha256": "2a08f237f22ac4537676b577ca15a9243ad5c4c4bc3ef3768f4228f61d30955d"
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 82592,
-      "sha256": "0dd5c8bc9719f5c395b496795736c6cdd359154641cba4527bc0f9a238c30f11"
+      "bytes": 88326,
+      "sha256": "77abde221a5fae17e0d5dd7f13894905d74fb49c5a98ad7ff97c715fe7598a54"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -575,8 +585,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 51659,
-      "sha256": "5619e89da4de01b1527de712c88d4407563e0acdbab7df3c8f6841e34379ac54"
+      "bytes": 51703,
+      "sha256": "ad316e20423f19773a218e304b29137c4f0ba3cd54823724295958a5ec77cc85"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -625,8 +635,8 @@
     },
     {
       "path": "backend/solve_estimate.py",
-      "bytes": 6473,
-      "sha256": "ab5b446b5036548e9d9093f7129e3060391b2cfd2ae6fcb2387d6f099eb49010"
+      "bytes": 6844,
+      "sha256": "ae66f8ae4280013c0f42b8158050844b2483e7569e01fe8f377c63b8dba4a5f4"
     },
     {
       "path": "backend/solve_workspace.py",
@@ -635,13 +645,13 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 149682,
-      "sha256": "f5378d1d99b4a4c7d3972d16fd73f998ffb224bca86e1b68052a16ea6453b6c2"
+      "bytes": 152969,
+      "sha256": "7a929faf5640e92e33984a2e386dc0ee3415a7dac668a0e85f668b7a6aa3cec8"
     },
     {
       "path": "backend/solver/_helpers.py",
-      "bytes": 61167,
-      "sha256": "501da88b80e60061d96fe46e69868a319916605a1f68e6c7f94cda3b42cc6a51"
+      "bytes": 63583,
+      "sha256": "9cd8ffa05eb0acab7f7b6c94b386ad2da591097e69cd08d414aa518d4c790096"
     },
     {
       "path": "backend/solver/_mesh_pool.py",
@@ -675,8 +685,8 @@
     },
     {
       "path": "backend/sweep_planning.py",
-      "bytes": 5684,
-      "sha256": "1a36902ae5e1eb460228200c5ea9f93e463cd56c14c7a21db2a154fe848d8d14"
+      "bytes": 6538,
+      "sha256": "8a8173b35a32688ae86aa073537d23ba7c23781dbe9b4ecdd4aacba01213ae97"
     },
     {
       "path": "backend/topology_provenance.py",
@@ -932,6 +942,76 @@
       "path": "benchmarks/abcd-v1.6/phase_resistance_gate.json",
       "bytes": 3309,
       "sha256": "90b001cd0f32705f0f38b46f502369268d7b7cce56ac320033d3a6a804b58bd6"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/README.md",
+      "bytes": 5252,
+      "sha256": "b6e872024b14d2319ce1050ac97b6b217e8eb8375f33fa1568696b8f38008715"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/benchmark_spec.json",
+      "bytes": 12333,
+      "sha256": "9b14051cef6bf7298456691661d38ad95fd78738d9df6c41165f55ce3a509843"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_12s10p_fscw_contract__cogging.json",
+      "bytes": 2504,
+      "sha256": "b8ec65a0f26330a9f1e9e9829e6ec34752771678fc8dcdcf0789b9074a623fda"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_24s16p_industrial_contract__cogging.json",
+      "bytes": 2545,
+      "sha256": "9db76e873718646ce320302b39c25301ef3915375cf91ed6489b07f68d53ea5f"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__cogging.json",
+      "bytes": 2531,
+      "sha256": "9ea0820bfe9507ed339415a49b66f207f994392d7172c9cc9f68793197e8af3c"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_8p12s_fsae_contract__cogging.json",
+      "bytes": 2544,
+      "sha256": "ec1ca45e0258ca76d072503a3160260377a57a1402b8161bd0952d8fad46bc0a"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_12p36s_distributed_femm_validation__cogging.json",
+      "bytes": 2503,
+      "sha256": "4e27491c2d31ea3119a3034bbcda330c016db340aab51d9f3044686ef0bfdfd8"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_4p12s_simple__baseline__cogging.json",
+      "bytes": 2501,
+      "sha256": "0133baad78c3025ad988889004d0bfadd44afa0c184daf2a5a0ed8e0ca7b87c1"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_4p12s_simple__tight_airgap__cogging.json",
+      "bytes": 2501,
+      "sha256": "7b8df6177db2310fc8747da7afe5ab1dd568a6bbfe86f6011fb1c15b97f0d045"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_concentrated__baseline__cogging.json",
+      "bytes": 2504,
+      "sha256": "228bfe80718719ef811ca8d9e22e78e03f87cd23eabe9c6af8648b25dde6fc61"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_concentrated__tight_airgap__cogging.json",
+      "bytes": 2504,
+      "sha256": "4fea72c749da4156d9eed4e3548759f3420c23d4ad1fe5dce09f0f8d288b0701"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_example_shoed__cogging.json",
+      "bytes": 2504,
+      "sha256": "183a686cdbdcfcac623f5a9877fb43c9cb9e273657e947c14b097f8de9d52c9c"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p24s_distributed_femm_validation__cogging.json",
+      "bytes": 2504,
+      "sha256": "7e1329e2eece8c1c7b23b0b7e862c82a3c659fced4b99b795238c4679ea3e15c"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p48s_distributed_femm_validation__cogging.json",
+      "bytes": 2502,
+      "sha256": "851e55cebd81733996d8549f9153d2e9998b55094cc4e6332ae76cf1f76ebac1"
     },
     {
       "path": "benchmarks/abcd-v1/README.md",
@@ -5844,6 +5924,26 @@
       "sha256": "33c7875e199d7e07165dc9b46a99033662ec753dbae9892a6e01db3c4865f387"
     },
     {
+      "path": "docs/COGGING_BENCHMARK_PROPOSAL.md",
+      "bytes": 7145,
+      "sha256": "45646c63f9c2df0c56cae4c45646055fe44cd4dec4ca9c6cd6df5514fa9d8301"
+    },
+    {
+      "path": "docs/COGGING_CONVERGENCE.json",
+      "bytes": 30639,
+      "sha256": "d69e3499e270c5d197e1353e6ca4775404c33653042bfb3e16d159176ef10efc"
+    },
+    {
+      "path": "docs/COGGING_CONVERGENCE.md",
+      "bytes": 7961,
+      "sha256": "08863be83ea4d3c7779e680463a51c801e9412186710f5119bd81f9c7a359fb8"
+    },
+    {
+      "path": "docs/COGGING_FEMM_REQUEST.md",
+      "bytes": 9920,
+      "sha256": "248919ee5865f404fa2fa176edd6c525171cbcdc41576d7fdfb333dc85165fc7"
+    },
+    {
       "path": "docs/ELMER.md",
       "bytes": 6064,
       "sha256": "1068d2db3c4e7a8b6113aaa1ca0ab93a38067944d7e42beeafa01a97baed69d0"
@@ -5860,8 +5960,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 13753,
-      "sha256": "b9497a18237f3fe9171ef288d11ec2c427dda582f8915f89a4c5cca4a57fdd44"
+      "bytes": 14407,
+      "sha256": "b3e7e8e623e115e8da9f01fca6b521ae5c650e9ecf05f2ee01991361780e6fe7"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -5875,8 +5975,8 @@
     },
     {
       "path": "docs/MAGNETO2D.md",
-      "bytes": 47164,
-      "sha256": "b968cdf42ca53dd76c24624a827b1918239e234a8aa9570423aebdf41c6f6f26"
+      "bytes": 47592,
+      "sha256": "6499d05f6dbc623d7894c3e9b657f91866aa0065b872885fff2719b43f95aa6e"
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE.md",
@@ -5965,8 +6065,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 48187,
-      "sha256": "f59898bd40762676197ea4ded12b494a15603b75bcd40f7741e375ac8a48daf6"
+      "bytes": 51443,
+      "sha256": "fc0f1eb2ad03fe18880aa52d6b918b74793c221cc0418461a3a0086ea3f29f84"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -6320,8 +6420,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2567,
-      "sha256": "a0fd876ae9e4710a16f6d76d287b06936732ff6a1f860f59cf47c88f4b944757"
+      "bytes": 2605,
+      "sha256": "7452d8c72f9783396811f1b308cc91fdbc6a8303d2367ae3351e178d2a010f4d"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -6362,6 +6462,11 @@
       "path": "frontend/scripts/test-chart-readout.mjs",
       "bytes": 6820,
       "sha256": "cfc5fb93f2888eda0f48b103b88b3b3f443564e2bad0fa1d0a8a4fc72e3c8bf2"
+    },
+    {
+      "path": "frontend/scripts/test-cogging-view.mjs",
+      "bytes": 5125,
+      "sha256": "aca173cc4cd2df77b76248ca98ed642ebc25158921ce0e765388cc91b24c7256"
     },
     {
       "path": "frontend/scripts/test-custom-steel.mjs",
@@ -6480,13 +6585,13 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 162323,
-      "sha256": "013d95f5f87f5ad3e05f75a31f067498eddcdc0e2b3ade716f0eb0adfa91896c"
+      "bytes": 162916,
+      "sha256": "4f9573378f5acadc313e4aa64e68ab12b432aae124af29b428954205bd309ac6"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
-      "bytes": 4732,
-      "sha256": "17f616ef46903af546d67cade9d6cdf16e85ea89e3f0f526b84649bcf97e669c"
+      "bytes": 5329,
+      "sha256": "f068727fa89ba1a925f194b53a9cdd51b52b8b2c7141446d620278bab3e89c93"
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
@@ -6890,8 +6995,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 72126,
-      "sha256": "e35089fa583ddeac8650034cb01e3f5f95ed586ba5b8d42881dfd89e070b2060"
+      "bytes": 72688,
+      "sha256": "9b78bee9acb29459162cb04a3446a1cdb8bfb662aa51a3f092a230b61e75212a"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -6899,9 +7004,14 @@
       "sha256": "004b91fbcb617265355f6d6c43196bd3e3b81e552a9dabc8bc8c8f3b240239c9"
     },
     {
+      "path": "frontend/src/public/CoggingCard.tsx",
+      "bytes": 5159,
+      "sha256": "6f6b3964e5367564b684f864c746c5ed3ba884ae248d9eccc2e4605ae85087a1"
+    },
+    {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 231858,
-      "sha256": "730ba0b5502f1d57416b66c2ea933728b0fd076c3e064a04bc7a99251b736669"
+      "bytes": 233524,
+      "sha256": "daf941a57c696adff75816ad82d2afb71ca0d6a3c8043a533dd0f8bf96f3d41d"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -6970,8 +7080,8 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 23331,
-      "sha256": "297514b48d88e50c28071c384554826844c96262589e300089a8b0720f3001f3"
+      "bytes": 23814,
+      "sha256": "92bd00f85d6005bfccdd5e0d7cc7bc1fb9b4a26c7377e6d450179bdef1a95200"
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
@@ -6980,8 +7090,8 @@
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
-      "bytes": 9141,
-      "sha256": "b53742e5de586869eca20c0800863014bfea1c8b072ab20511e7c1cc47b1389f"
+      "bytes": 9323,
+      "sha256": "6c1fc8beaf96bb508c8b0d0fd01369accbbf99df88f739f575679107db1c39ea"
     },
     {
       "path": "frontend/src/public/RpmField.tsx",
@@ -7044,6 +7154,11 @@
       "sha256": "b64be454f36cd11cd6d1cc8508ae239ff0c2cd621908ac21fa99eef25cdf998e"
     },
     {
+      "path": "frontend/src/public/coggingView.ts",
+      "bytes": 7333,
+      "sha256": "167fa38b4f81581451498d406ce1a886d35928f72f7d137d58929ac767b8fc40"
+    },
+    {
       "path": "frontend/src/public/coil3d.ts",
       "bytes": 16694,
       "sha256": "a3b43d36585905c43d9915eded59e94120c9f3a32ef6d919ac0d7ca26d41be86"
@@ -7065,8 +7180,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "bytes": 14494,
-      "sha256": "63276f7513fd2c2177cc8b5399f16577b92b4058ce2fe6accd3c047c19664e47"
+      "bytes": 14533,
+      "sha256": "c24e519431b400bb10834863ab2f25afb164944d68720c1e1a95cd6e8cada711"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -7295,8 +7410,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 22059,
-      "sha256": "2a3ec80af5d80878687f4aa7365365c238eb19a64f4216421a637e31006971b6"
+      "bytes": 23173,
+      "sha256": "7be79e61cd7cff583343eecca4f7d4838c2161c6d7694d021a3c66f57810f7af"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -7325,8 +7440,8 @@
     },
     {
       "path": "frontend/src/public/outputStatus.ts",
-      "bytes": 3357,
-      "sha256": "f5c589ff62270f7fbfa860dc2d05de600fdc8f265987585495a15eebeefe46c0"
+      "bytes": 3629,
+      "sha256": "8027882f9a5bd34e0bd2bf40f94cf82a5e9d700b001f5543a3e12ab0c2af6899"
     },
     {
       "path": "frontend/src/public/performance.ts",
@@ -7350,8 +7465,8 @@
     },
     {
       "path": "frontend/src/public/publicRequest.ts",
-      "bytes": 631,
-      "sha256": "0ea05929993a5cdd38a981bd45d7684d97bf01c6aa6579d29e06cfec88f51caf"
+      "bytes": 904,
+      "sha256": "40602c74d4ae6d0c3779544c8bcb287d8265491b2232390eb4bc45ce204ba43b"
     },
     {
       "path": "frontend/src/public/pyleecanReferenceNotice.ts",
@@ -7365,8 +7480,8 @@
     },
     {
       "path": "frontend/src/public/resultMetrics.ts",
-      "bytes": 6020,
-      "sha256": "9d1ebe35d11099869e94fc3832620487adcf576a4e234c6499980cbd9820a361"
+      "bytes": 6738,
+      "sha256": "f9809afcc87c6ef775e355278c7daff0dd83da4730d25a384ba1449079f393e7"
     },
     {
       "path": "frontend/src/public/solvePlan.ts",
@@ -7380,8 +7495,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 285467,
-      "sha256": "638c428bb820019c9bedb9f7e10e7b196fafe3d42fddd36e33eca659113fba0c"
+      "bytes": 287116,
+      "sha256": "1758348a1a80c5b7b120707af8a64c785ac21153b8abf35e6d6af9dff8973a5d"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7440,8 +7555,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 28347,
-      "sha256": "9647590bef1f52248bc1aef16a69955fcdceb3da5433be759f87e6e1da2f62af"
+      "bytes": 31459,
+      "sha256": "37dce6e8f722209e31515ce53e5a32e26810d005b1c586d32ee15e6394a0be0f"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -7784,6 +7899,11 @@
       "sha256": "0914644d93f05fa5738534c518e2ecffeca2d129d8a38fbe8b8df2f65c695b86"
     },
     {
+      "path": "tests/fixtures/cogging_example_8p12s.json",
+      "bytes": 3237,
+      "sha256": "a9512a378158e5f5d0303298542c3c3189b2ad04b894a04be5752d87de37165a"
+    },
+    {
       "path": "tests/fixtures/phase_drive_winding_layouts.json",
       "bytes": 15760,
       "sha256": "f9b0985ee0f82803a8953408d74ea24b844e1f3efcf95796645a5c03c8d27a0c"
@@ -7854,6 +7974,16 @@
       "sha256": "4651ca1a467685c81205ab3fd49e482d0a07e61fd34e437ea3b210fcc6cc81e5"
     },
     {
+      "path": "tests/test_cogging.py",
+      "bytes": 20831,
+      "sha256": "9e39651841b9e5fe9c3212b9a750c7cd42c2655c5ddf471ef4a1beca6a508561"
+    },
+    {
+      "path": "tests/test_cogging_phase_e.py",
+      "bytes": 8520,
+      "sha256": "0bf22ef5cf27ee550877af34b80d0456437c254550044ec5f0827d7ea8651db0"
+    },
+    {
       "path": "tests/test_dq_flux_linkage.py",
       "bytes": 6500,
       "sha256": "2191883eaafa37ca765a8287b9ba29d633c19cc7b7e16795612aecf9c24495e5"
@@ -7865,8 +7995,8 @@
     },
     {
       "path": "tests/test_experimental_holem50.py",
-      "bytes": 9336,
-      "sha256": "b4ba26815af6db48f8ddf34ddfaea27cc0c906e4ad595ec57909471e24fc8c14"
+      "bytes": 9315,
+      "sha256": "70d6a99d99fa8a41439115e0a7231cb25eaece32f35df77f4daef5d041dc842c"
     },
     {
       "path": "tests/test_experimental_rotor_switch.py",
@@ -8025,8 +8155,8 @@
     },
     {
       "path": "tests/test_output_status.py",
-      "bytes": 12475,
-      "sha256": "d5211ac4829ad265bd0bdd6f2d6cc22bdc16b33b9fb83c10bf25142871790bd4"
+      "bytes": 13122,
+      "sha256": "1177cbfbd745675bebf94e5d9da21da43c40198cf3584cc73e273133adbbed7c"
     },
     {
       "path": "tests/test_payload_reuse.py",
@@ -8080,8 +8210,8 @@
     },
     {
       "path": "tests/test_public_candidate.py",
-      "bytes": 20447,
-      "sha256": "e964ef9dda5700b13e36dc2d717a110f81a4993724bffb3bfa3e83a5117648f1"
+      "bytes": 20410,
+      "sha256": "bf6d19e482656c861f24125f72bbe175c5db121ec719d3c47069df8f0d22a0b4"
     },
     {
       "path": "tests/test_public_field_playback.py",
@@ -8140,8 +8270,8 @@
     },
     {
       "path": "tests/test_pyleecan_reference_fixture.py",
-      "bytes": 18853,
-      "sha256": "07e7d8c2b4e4534c5aeadc2f458cd1ee65226c417436d9c642d12fda7091d8ea"
+      "bytes": 19246,
+      "sha256": "0e6bd89312cc7bb104dcc7ada15b7630d3fd502dc62f4e33ec002e1f3b69a4a9"
     },
     {
       "path": "tests/test_pyleecan_tutorial.py",
@@ -8205,8 +8335,8 @@
     },
     {
       "path": "tests/test_solve_workspace.py",
-      "bytes": 22787,
-      "sha256": "21be4b7252659f59d09e1f6be898f6b279a3acd2d14ec79ad75ef77711304419"
+      "bytes": 22911,
+      "sha256": "ae009ae0c15e2e201db0566f98452939ec0564cbb26ef417c943beba42b2b85f"
     },
     {
       "path": "tests/test_sweep_planning.py",
@@ -8480,8 +8610,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 22052,
-      "sha256": "9a212fc9682100b1f5fd402f1d4369d507cf3abb51084afe682b6122287f3a66"
+      "bytes": 22226,
+      "sha256": "33591a1cb15d656287969c48082483902af3932ae27274ba6385807408132be3"
     },
     {
       "path": "benchmarks/reference-adapters/windows-femm42-v3-20261102/README.md",
@@ -10575,8 +10705,8 @@
     },
     {
       "path": "tests/test_candidate_reference_review.py",
-      "bytes": 6290,
-      "sha256": "ead64e8f6ce091c2f671cef5e4232fc8ff95f82d5760f07dc573da794df7f66a"
+      "bytes": 7857,
+      "sha256": "0b53f8095ab2f386f5dcc9a325d43f1c675e5dcb110fa4981a4188ef7ad72dcd"
     },
     {
       "path": "tools/qualify_benchmark_candidate.py",
@@ -11427,6 +11557,36 @@
       "path": "tests/test_owner_decisions.py",
       "bytes": 1498,
       "sha256": "40d7ef497d7e6cc12a814495cfe74daf88af323475559f37ed47d279b7db1d71"
+    },
+    {
+      "path": "docs/benchmarks/cogging-windows-20261103/README.md",
+      "bytes": 7439,
+      "sha256": "1ca64db12d51009697fe10276368344e4dfb0ddebdc125bd5c50f0b66471fb9d"
+    },
+    {
+      "path": "docs/benchmarks/cogging-windows-20261103/cogging-femm-vs-magneto2d.pdf",
+      "bytes": 278160,
+      "sha256": "4e671709ed1afff21c56116c89cf9aef7b6af085ae42e9c81fa9863327bf677d"
+    },
+    {
+      "path": "docs/benchmarks/cogging-windows-20261103/native-mesh-convergence.pdf",
+      "bytes": 142077,
+      "sha256": "f91d57677b8454c0b340123364c1941ec86ff11a3109dd47cf8a100222f04eff"
+    },
+    {
+      "path": "docs/benchmarks/cogging-windows-20261103/results.json",
+      "bytes": 41230,
+      "sha256": "938845c8316b1fd7421e26ef13801d44f6b5530ad55cc01985e43e003575e737"
+    },
+    {
+      "path": "docs/benchmarks/cogging-windows-20261103/sha256.json",
+      "bytes": 464,
+      "sha256": "04906e8b022830bbe76ae0068bf40ecd209df575f417492f9ba817c12f767d25"
+    },
+    {
+      "path": "docs/benchmarks/cogging-windows-20261103/waveforms.json",
+      "bytes": 32600,
+      "sha256": "41710e456e92dec3d6e3da847b8aaca021299c7bb58a95386abd1fc03f205354"
     },
     {
       "path": "backend/convergence_reporting.py",
@@ -30279,6 +30439,600 @@
     {
       "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
       "path": "README.md",
+      "source_sha256": "bb5666ba13c55af8192000fe772a947e675e3a749f5a7192bec9cd458e8711a2",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/cogging.py",
+      "source_sha256": "01cbd596251aaa022226a4607730febc10cb77d5c8230841246dd03fec4e217a",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/models/__init__.py",
+      "source_sha256": "666c7c95fa74a1774b4df1cf4ffb5e8c91ba8856bafebd1c4af9ee6894197907",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/models/performance.py",
+      "source_sha256": "0074bf50d3f7d19679bc3cbae1846332513d3801a49be57c0101990e4f32a15f",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/models/result.py",
+      "source_sha256": "64622dc3817f40afb00e8c060b67fdc9350fed5b47e896281087e2f4eb51af77",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/public_policy.py",
+      "source_sha256": "2a08f237f22ac4537676b577ca15a9243ad5c4c4bc3ef3768f4228f61d30955d",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/public_report.py",
+      "source_sha256": "93315a2b0d0e0da9740a5534295e381a060871c9287d55334d09e7691e890253",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "caa4ff56502a4e3d21eb1b723a1dad7d3bfe6bf253365447ef9241b3da38b900",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/solve_estimate.py",
+      "source_sha256": "ae66f8ae4280013c0f42b8158050844b2483e7569e01fe8f377c63b8dba4a5f4",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "2bd2890324023dd635553fa38640475140e740560d3f4cc2008ab03406c17f56",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/solver/_helpers.py",
+      "source_sha256": "540bad44c3bc7b292b5c746780c79b24ee63a363bfbd2693ef82935d135a645d",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/sweep_planning.py",
+      "source_sha256": "8a8173b35a32688ae86aa073537d23ba7c23781dbe9b4ecdd4aacba01213ae97",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "docs/COGGING_BENCHMARK_PROPOSAL.md",
+      "source_sha256": "6b443501c9306d580f120e6021e520624393e0e4a7b4311615a2405900f53035",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "docs/COGGING_CONVERGENCE.json",
+      "source_sha256": "d69e3499e270c5d197e1353e6ca4775404c33653042bfb3e16d159176ef10efc",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "docs/COGGING_CONVERGENCE.md",
+      "source_sha256": "4e444804520e77e33bcb1b53b9d49aae8038529c0f8acac9ed421597f580a197",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "docs/COGGING_FEMM_REQUEST.md",
+      "source_sha256": "dc1551f08672a18a4d315e619d54dee8be57a8525d1d87acdffac238dc0f4b2f",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "docs/GETTING_STARTED.md",
+      "source_sha256": "b3e7e8e623e115e8da9f01fca6b521ae5c650e9ecf05f2ee01991361780e6fe7",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "docs/MAGNETO2D.md",
+      "source_sha256": "6499d05f6dbc623d7894c3e9b657f91866aa0065b872885fff2719b43f95aa6e",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "7dc788aa4e2b00ccdbaae062013e159830be6ce585317f2a638dd7166faa6cf3",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/package.json",
+      "source_sha256": "7452d8c72f9783396811f1b308cc91fdbc6a8303d2367ae3351e178d2a010f4d",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/scripts/test-cogging-view.mjs",
+      "source_sha256": "fcee2145d3326b0c9562e9f7e9d2738c74be966b8a7b30f6b1825a9fd75c15ca",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "06e746ae2b909362f4d48904aa04806f87526643c6e17b6ede568c6c6c1efbe0",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/scripts/test-result-summary.mjs",
+      "source_sha256": "f068727fa89ba1a925f194b53a9cdd51b52b8b2c7141446d620278bab3e89c93",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "2ea06204cbec765ef2c98f1fa0e8d2d905197446766abc01437062937ca336c9",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/CoggingCard.tsx",
+      "source_sha256": "6f6b3964e5367564b684f864c746c5ed3ba884ae248d9eccc2e4605ae85087a1",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "ee30caf6e63d89ef4ef67868e72733ce72afa4ed2a7e2306a1dfab4d5ca75bad",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "source_sha256": "92bd00f85d6005bfccdd5e0d7cc7bc1fb9b4a26c7377e6d450179bdef1a95200",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "6c1fc8beaf96bb508c8b0d0fd01369accbbf99df88f739f575679107db1c39ea",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/coggingView.ts",
+      "source_sha256": "65b8f9260c82a46b6ddf477500f2b8d690fffc867f31f95e85d95f3cc9d9b1ea",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "c24e519431b400bb10834863ab2f25afb164944d68720c1e1a95cd6e8cada711",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "e78e0a79f389bde8ff40005586c4a9f10a957a230a8dc8bd15222c8d685a837f",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/outputStatus.ts",
+      "source_sha256": "33124bfe6248d37eaf361f920cf6bbbbbcc6419f5325be14fc3a756fced432a6",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/publicRequest.ts",
+      "source_sha256": "a963e7d496f605a17ebdcdc62d10f879dc13234e4cc238a27a2b076f2390e4db",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/resultMetrics.ts",
+      "source_sha256": "f9809afcc87c6ef775e355278c7daff0dd83da4730d25a384ba1449079f393e7",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "19a8a1a5d266cbc83447829888a1f1db2f7b2744b83340c206de0da1fe24ecb9",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "tests/fixtures/cogging_example_8p12s.json",
+      "source_sha256": "066320d9c9b05718051f0088904d5684d700a8cbb5577367f4af4adfd8ef264e",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "tests/test_cogging.py",
+      "source_sha256": "e62539957ec21a6ec400cfc9b80b78241956a1b5b5316df8ee0b950dd27ed8c1",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "tests/test_experimental_holem50.py",
+      "source_sha256": "70d6a99d99fa8a41439115e0a7231cb25eaece32f35df77f4daef5d041dc842c",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "tests/test_output_status.py",
+      "source_sha256": "402c8cb57f7a81f9449f0582fa638ae66e10b2d6e2b235b3c74f6a9523716237",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "tests/test_public_candidate.py",
+      "source_sha256": "bf6d19e482656c861f24125f72bbe175c5db121ec719d3c47069df8f0d22a0b4",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "tests/test_solve_workspace.py",
+      "source_sha256": "ae009ae0c15e2e201db0566f98452939ec0564cbb26ef417c943beba42b2b85f",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "e5958ed",
+      "path": "docs/COGGING_FEMM_REQUEST.md",
+      "source_sha256": "30c93efb0be87161740aa7c6861662f5c0301784071267bdd3d687445330f093",
+      "reason": "Hand FEMM results to the owner without naming a private folder (#185)."
+    },
+    {
+      "base_commit": "480ff26",
+      "path": "docs/COGGING_FEMM_REQUEST.md",
+      "source_sha256": "505ae74c4b9eee10344edc5dae454e10fabcd550d5d8fa8d782b2a57c2ce7828",
+      "reason": "State the cogging requests' input hashes in the FEMM brief (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/__init__.py",
+      "source_sha256": "0484342a3d688352e63934267361b5427074e1d932dd16fcafc1ee01817a495a",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/cli.py",
+      "source_sha256": "2c13c449677ce559c5646376e266da3aa976e6c0d473acafc43023c9733c5c4f",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/cogging_metrics.py",
+      "source_sha256": "92055d2c827028c5aa62e95a30f8717a80f8e93778892b2c6c2602a4eb4b1e9d",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/command.py",
+      "source_sha256": "a38377d817eacf2977d4e4ee89788a3905c0be0017e215a9e25469432a232e7c",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/references.py",
+      "source_sha256": "4ef724b633076777561790ab1d004bd19bc4465f9dcb0015053e8a54579c1155",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/report.py",
+      "source_sha256": "7a21402f3633fdc6b6ec90855736c2434c00496b97c2b0d1b985ed049b38420d",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/share.py",
+      "source_sha256": "57fc6e6da6546472e1c8b94cadc95cfaf8f93f61ac98fa1b8bb17860f37eaf5e",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/worker.py",
+      "source_sha256": "82bb836000973b718be6f3ed3e01e5e734792c7f637e0b721ca10ddcda694e6f",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/README.md",
+      "source_sha256": "b6e872024b14d2319ce1050ac97b6b217e8eb8375f33fa1568696b8f38008715",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/benchmark_spec.json",
+      "source_sha256": "9b14051cef6bf7298456691661d38ad95fd78738d9df6c41165f55ce3a509843",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_12s10p_fscw_contract__cogging.json",
+      "source_sha256": "b8ec65a0f26330a9f1e9e9829e6ec34752771678fc8dcdcf0789b9074a623fda",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_24s16p_industrial_contract__cogging.json",
+      "source_sha256": "9db76e873718646ce320302b39c25301ef3915375cf91ed6489b07f68d53ea5f",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__cogging.json",
+      "source_sha256": "9ea0820bfe9507ed339415a49b66f207f994392d7172c9cc9f68793197e8af3c",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_8p12s_fsae_contract__cogging.json",
+      "source_sha256": "ec1ca45e0258ca76d072503a3160260377a57a1402b8161bd0952d8fad46bc0a",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_12p36s_distributed_femm_validation__cogging.json",
+      "source_sha256": "4e27491c2d31ea3119a3034bbcda330c016db340aab51d9f3044686ef0bfdfd8",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_4p12s_simple__baseline__cogging.json",
+      "source_sha256": "0133baad78c3025ad988889004d0bfadd44afa0c184daf2a5a0ed8e0ca7b87c1",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_4p12s_simple__tight_airgap__cogging.json",
+      "source_sha256": "7b8df6177db2310fc8747da7afe5ab1dd568a6bbfe86f6011fb1c15b97f0d045",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_concentrated__baseline__cogging.json",
+      "source_sha256": "228bfe80718719ef811ca8d9e22e78e03f87cd23eabe9c6af8648b25dde6fc61",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_concentrated__tight_airgap__cogging.json",
+      "source_sha256": "4fea72c749da4156d9eed4e3548759f3420c23d4ad1fe5dce09f0f8d288b0701",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_example_shoed__cogging.json",
+      "source_sha256": "183a686cdbdcfcac623f5a9877fb43c9cb9e273657e947c14b097f8de9d52c9c",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p24s_distributed_femm_validation__cogging.json",
+      "source_sha256": "7e1329e2eece8c1c7b23b0b7e862c82a3c659fced4b99b795238c4679ea3e15c",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p48s_distributed_femm_validation__cogging.json",
+      "source_sha256": "851e55cebd81733996d8549f9153d2e9998b55094cc4e6332ae76cf1f76ebac1",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "docs/COGGING_BENCHMARK_PROPOSAL.md",
+      "source_sha256": "1c7e7fe64751dc1f530479f307439d537bcff304d3fc7341d9e8581e03e2dba4",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "docs/COGGING_CONVERGENCE.md",
+      "source_sha256": "07518c22c282f9311e19039a6d653f4031b02452751b7b58ae371b567bf9c68b",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "docs/COGGING_FEMM_REQUEST.md",
+      "source_sha256": "248919ee5865f404fa2fa176edd6c525171cbcdc41576d7fdfb333dc85165fc7",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "91956a59411ab3463981d56e0dca6a28b06d74d2b5feb6bfa85977aaff891524",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "tests/test_cogging_phase_e.py",
+      "source_sha256": "61d1420687b1f4eea39b25741955c656c6ffdc7efbb0761e451d90b7602bd193",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "6bc935d",
+      "path": "tests/test_cogging.py",
+      "source_sha256": "f1d1d1bc8d30fbe292410db3a148d43ad480bfd77bc014c08b741906c8f32d67",
+      "reason": "Compare the stored cogging record to 1e-9, as platforms round the DFT differently (#185)."
+    },
+    {
+      "base_commit": "6845aaa7a0a16934991b43b713c776b78d9971fe",
+      "path": "docs/benchmarks/cogging-windows-20261103/README.md",
+      "source_sha256": "478b3444b974a85b96f7323f111d4191a02a7b4ec92476125bdbf0dc8ed4d66b",
+      "reason": "Publish Windows cogging numerical reports and the normal mesh default decision for PR #186."
+    },
+    {
+      "base_commit": "6845aaa7a0a16934991b43b713c776b78d9971fe",
+      "path": "docs/benchmarks/cogging-windows-20261103/cogging-femm-vs-magneto2d.pdf",
+      "source_sha256": "4e671709ed1afff21c56116c89cf9aef7b6af085ae42e9c81fa9863327bf677d",
+      "reason": "Publish Windows cogging numerical reports and the normal mesh default decision for PR #186."
+    },
+    {
+      "base_commit": "6845aaa7a0a16934991b43b713c776b78d9971fe",
+      "path": "docs/benchmarks/cogging-windows-20261103/native-mesh-convergence.pdf",
+      "source_sha256": "f91d57677b8454c0b340123364c1941ec86ff11a3109dd47cf8a100222f04eff",
+      "reason": "Publish Windows cogging numerical reports and the normal mesh default decision for PR #186."
+    },
+    {
+      "base_commit": "6845aaa7a0a16934991b43b713c776b78d9971fe",
+      "path": "docs/benchmarks/cogging-windows-20261103/results.json",
+      "source_sha256": "938845c8316b1fd7421e26ef13801d44f6b5530ad55cc01985e43e003575e737",
+      "reason": "Publish Windows cogging numerical reports and the normal mesh default decision for PR #186."
+    },
+    {
+      "base_commit": "6845aaa7a0a16934991b43b713c776b78d9971fe",
+      "path": "docs/benchmarks/cogging-windows-20261103/sha256.json",
+      "source_sha256": "04906e8b022830bbe76ae0068bf40ecd209df575f417492f9ba817c12f767d25",
+      "reason": "Publish Windows cogging numerical reports and the normal mesh default decision for PR #186."
+    },
+    {
+      "base_commit": "6845aaa7a0a16934991b43b713c776b78d9971fe",
+      "path": "docs/benchmarks/cogging-windows-20261103/waveforms.json",
+      "source_sha256": "41710e456e92dec3d6e3da847b8aaca021299c7bb58a95386abd1fc03f205354",
+      "reason": "Publish Windows cogging numerical reports and the normal mesh default decision for PR #186."
+    },
+    {
+      "base_commit": "6845aaa7a0a16934991b43b713c776b78d9971fe",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "33591a1cb15d656287969c48082483902af3932ae27274ba6385807408132be3",
+      "reason": "Publish Windows cogging numerical reports and the normal mesh default decision for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "backend/benchmark_suite/cogging_metrics.py",
+      "source_sha256": "e1e78a0e7f87a9c9d3dbe729b1d0f8bc77c8ac25828e54c6468e2590d21cacff",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "backend/cogging.py",
+      "source_sha256": "6390a269a6c10f27090fda28c875a7293ea3cc3eb06c08a155634dd6a716e471",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "backend/models/performance.py",
+      "source_sha256": "3c1d372db1184dc56ef4fac2370514edd7cbdbcc85df80fd9eac6b2130f1db41",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "backend/public_report.py",
+      "source_sha256": "63f6129907ad19372b07a901de60703935db09aaaa8dd4d1ecf345ecbd0391a4",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "7a929faf5640e92e33984a2e386dc0ee3415a7dac668a0e85f668b7a6aa3cec8",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "backend/solver/_helpers.py",
+      "source_sha256": "9cd8ffa05eb0acab7f7b6c94b386ad2da591097e69cd08d414aa518d4c790096",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "docs/COGGING_BENCHMARK_PROPOSAL.md",
+      "source_sha256": "45646c63f9c2df0c56cae4c45646055fe44cd4dec4ca9c6cd6df5514fa9d8301",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "docs/COGGING_CONVERGENCE.md",
+      "source_sha256": "08863be83ea4d3c7779e680463a51c801e9412186710f5119bd81f9c7a359fb8",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "fc0f1eb2ad03fe18880aa52d6b918b74793c221cc0418461a3a0086ea3f29f84",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "docs/benchmarks/cogging-windows-20261103/README.md",
+      "source_sha256": "1ca64db12d51009697fe10276368344e4dfb0ddebdc125bd5c50f0b66471fb9d",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/scripts/test-cogging-view.mjs",
+      "source_sha256": "aca173cc4cd2df77b76248ca98ed642ebc25158921ce0e765388cc91b24c7256",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "4f9573378f5acadc313e4aa64e68ab12b432aae124af29b428954205bd309ac6",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "9b78bee9acb29459162cb04a3446a1cdb8bfb662aa51a3f092a230b61e75212a",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/src/public/coggingView.ts",
+      "source_sha256": "167fa38b4f81581451498d406ce1a886d35928f72f7d137d58929ac767b8fc40",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "ead64ab55c25e8ce2e6eebd9fd746c65d13157ba2d6ddc0790b185f90e91076c",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/src/public/outputStatus.ts",
+      "source_sha256": "8027882f9a5bd34e0bd2bf40f94cf82a5e9d700b001f5543a3e12ab0c2af6899",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/src/public/publicRequest.ts",
+      "source_sha256": "40602c74d4ae6d0c3779544c8bcb287d8265491b2232390eb4bc45ce204ba43b",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "e4f0ff535303f0cb60f5ef5c93932c385eb1e0a9b0f22ff4126cb13e8c9fee46",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "tests/fixtures/cogging_example_8p12s.json",
+      "source_sha256": "a9512a378158e5f5d0303298542c3c3189b2ad04b894a04be5752d87de37165a",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "tests/test_cogging.py",
+      "source_sha256": "dfa5f9266aeddf0b32034ab47865bdc1d0191640e6b50b1614baa290e3fc07cb",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "tests/test_cogging_phase_e.py",
+      "source_sha256": "0bf22ef5cf27ee550877af34b80d0456437c254550044ec5f0827d7ea8651db0",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "README.md",
       "source_sha256": "5004aece9fc710ff483d57790e42f790883d89b9826f6aef635d91a5e2389190",
       "reason": "Report recorded nonlinear convergence consistently in Results, PDF and CSV, preserving missing evidence and method-specific stopping rules (#12)."
     },
@@ -30377,6 +31131,102 @@
       "path": "tests/test_loss_breakdown.py",
       "source_sha256": "da04016e03c59eafa69b665ad128f81d8a69be4bd5955da05d6226aa3abb90a7",
       "reason": "Align the existing loss-report PDF assertion with the requested maximum of three displayed decimal places."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "README.md",
+      "source_sha256": "bb5666ba13c55af8192000fe772a947e675e3a749f5a7192bec9cd458e8711a2",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/performance_report.py",
+      "source_sha256": "5443edc461047feff671b872c20f11b8560276ae67c6dc3de259d37a64a729fd",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/public_report.py",
+      "source_sha256": "63f6129907ad19372b07a901de60703935db09aaaa8dd4d1ecf345ecbd0391a4",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/public_routes/runs.py",
+      "source_sha256": "186e44cf0512ed3a8fa42b058097e1a81d12041f8319d5f30824828df07b35aa",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "caa4ff56502a4e3d21eb1b723a1dad7d3bfe6bf253365447ef9241b3da38b900",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "ee30caf6e63d89ef4ef67868e72733ce72afa4ed2a7e2306a1dfab4d5ca75bad",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "ead64ab55c25e8ce2e6eebd9fd746c65d13157ba2d6ddc0790b185f90e91076c",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "19a8a1a5d266cbc83447829888a1f1db2f7b2744b83340c206de0da1fe24ecb9",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "e4f0ff535303f0cb60f5ef5c93932c385eb1e0a9b0f22ff4126cb13e8c9fee46",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_candidate_reference_review.py",
+      "source_sha256": "ead64e8f6ce091c2f671cef5e4232fc8ff95f82d5760f07dc573da794df7f66a",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_cogging.py",
+      "source_sha256": "dfa5f9266aeddf0b32034ab47865bdc1d0191640e6b50b1614baa290e3fc07cb",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": "da04016e03c59eafa69b665ad128f81d8a69be4bd5955da05d6226aa3abb90a7",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_output_status.py",
+      "source_sha256": "402c8cb57f7a81f9449f0582fa638ae66e10b2d6e2b235b3c74f6a9523716237",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": "d93b499e08b5850e47d7a8be9d9b2126bb3188186a1ea72ca121eccc82cb8537",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "2be2634bdeba46cea357ae22892bf2a2a1e6c7eee381f8acfd07523dbc13b8f5",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "07e7d8c2b4e4534c5aeadc2f458cd1ee65226c417436d9c642d12fda7091d8ea",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
     }
   ]
 }

@@ -168,6 +168,11 @@ serves the UI and API together and opens `http://127.0.0.1:2645`. See
   Iron loss is available for M350-50A and for the Pyleecan Prius's M400-50A.
 - A magnet temperature under Solve → Operating point. Br and HcJ are derated
   from the grade's cited coefficients for N35, N42, N48, N52 and N48SH.
+- Cogging torque, under Solve → Accuracy plan (on `main`, for 0.5.1). It
+  solves one cogging period with no current; Results, the run PDF and the CSV
+  give the waveform, peak-to-peak and peak, the harmonics per mechanical
+  revolution and the share of the loaded torque. Experimental until it has a
+  FEMM gate.
 - Preview, Standard and High accuracy mesh/solve presets. These names describe
   resolution and sampling; they do not certify accuracy.
 - Saved runs, comparison, project save/reopen, PDF, CSV and replay downloads.
@@ -188,8 +193,10 @@ Qualification means agreement with FEMM, a reference 2D finite-element solver,
 on the measured benchmark fixtures: mean torque within 8%, Back-EMF fundamental
 and peak within 10%, plus fourteen six-step gates for BLDC. It covers only the
 tested combinations listed above, with M350-50A steel. One of six V-shape IPM
-fixtures is YELLOW against FEMM, so V-shape results are experimental. Cogging, THD, airgap harmonics, losses and
-thermal behavior are not covered. It is not a hardware measurement.
+fixtures is YELLOW against FEMM, so V-shape results are experimental. THD, airgap harmonics, losses and
+thermal behavior are not covered. Cogging torque is reported but not covered:
+it has no FEMM gate yet ([its claim boundary](docs/VALIDATION.md#cogging-torque)).
+It is not a hardware measurement.
 
 Of the 0.5.0 performance outputs, only phase resistance and copper loss pass
 a gate so far:
@@ -214,7 +221,10 @@ a gate so far:
 Motor sweeps use per-angle meshes, with symmetry-based reuse where applicable,
 without a sliding-band interface. Mesh changes can introduce numerical noise
 into torque ripple and cogging. Check mesh and angular convergence before
-interpreting small variations. A dedicated cogging result view is not included.
+interpreting small variations. A cogging sweep reports two noise measures, its
+mean over the period and the mismatch between its two ends; on the example
+design both are under 0.5% of its peak-to-peak
+([convergence study](docs/COGGING_CONVERGENCE.md)).
 Six-step excitation models ideal commanded currents, without PWM, switching,
 ESC dynamics or thermal behavior. See [Release notes](RELEASE_NOTES.md) and
 [Materials](MATERIALS.md).

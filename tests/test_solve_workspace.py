@@ -307,8 +307,10 @@ def test_complete_run_is_atomic_replayable_and_integrity_bound(
         "torque_Nm": [4.2, 4.3],
     }
     assert comparison["result"]["back_emf_waveform"]["phase_a_V"] == [0.0, 1.0]
+    # The CSV adds the mechanical angle for the design's two pole pairs (#185).
     assert comparison["result"]["cogging_torque_waveform"] == {
         "electrical_angle_deg": [0.0, 15.0],
+        "mechanical_angle_deg": [0.0, 7.5],
         "torque_Nm": [-0.1, 0.1],
     }
     assert "field_line_frames" not in comparison["result"]

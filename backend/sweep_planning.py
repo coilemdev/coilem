@@ -10,6 +10,9 @@ from backend.models import MotorConfig, SolveOptionsConfig
 # uses the Standard step. 48 samples meet the THD minimum, and at 3.75 deg the
 # grid needed 96 meshes, so Preview took longer than Standard on IPM 14p (#58).
 PREVIEW_BACK_EMF_STEP_DEG = 7.5
+# Cogging positions per period, with the repeated endpoint solved as well.
+# docs/COGGING_CONVERGENCE.md measured the steps on the 8p/12s example.
+COGGING_POSITIONS_PER_PERIOD = {"quick": 12, "standard": 24, "fine": 48, "custom": 24}
 
 
 def loaded_sweep_plan(config: MotorConfig) -> tuple[int, float]:
@@ -121,17 +124,32 @@ def no_load_field_frame_angles(
     ]
 
 
-def cogging_angle_grid(config: MotorConfig, *, step_deg: float = 1.0) -> list[float]:
-    """Return one inclusive electrical cogging period, or an empty grid."""
+def cogging_positions_per_period(config: MotorConfig) -> int:
+    """Solved positions per cogging period for the run's preset (#185)."""
+
+    quality = config.solve_params.solve_quality if config.solve_params is not None else "standard"
+    return COGGING_POSITIONS_PER_PERIOD.get(quality, COGGING_POSITIONS_PER_PERIOD["standard"])
+
+
+def cogging_angle_grid(config: MotorConfig, *, step_deg: float | None = None) -> list[float]:
+    """Return one inclusive electrical cogging period, or an empty grid.
+
+    The preset sets the positions per period, so every slot/pole combination
+    resolves the same cogging harmonics; ``step_deg`` overrides it.
+    """
 
     options = config.solve_options or SolveOptionsConfig()
     if not options.cogging_torque:
         return []
     slots = int(config.stator.slot_count)
     poles = int(config.rotor.pole_count)
-    if slots <= 0 or poles <= 0 or not math.isfinite(step_deg) or step_deg <= 0.0:
+    if slots <= 0 or poles <= 0 or (step_deg is not None and (not math.isfinite(step_deg) or step_deg <= 0.0)):
         return []
     period_deg = 180.0 * math.gcd(slots, poles) / slots
-    count = max(2, math.ceil(period_deg / step_deg) + 1)
+    count = (
+        cogging_positions_per_period(config) + 1
+        if step_deg is None
+        else max(2, math.ceil(period_deg / step_deg) + 1)
+    )
     actual_step = period_deg / (count - 1)
     return [index * actual_step for index in range(count)]

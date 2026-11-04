@@ -195,6 +195,13 @@ Keep both terminals open until the solve finishes. **Cancel solve** requests a
 clean stop and records the attempt as cancelled rather than publishing it as a
 completed run.
 
+Tick **Cogging torque** under **Accuracy plan** to add a no-current sweep over
+one cogging period, 180·gcd(slots, poles)/slots electrical degrees, at 12, 24
+or 48 positions per period for Preview, Standard and High accuracy, plus the
+repeated end. The run estimate includes it. Cogging torque is experimental: it
+has no FEMM gate yet. Keep **Corner refinement** on: without it, cogging on the
+example design is about twenty times noisier.
+
 If you only want a fast pipeline check, choose **Preview**. Preview does not
 report an under-sampled THD value. Use **Standard** for the release walkthrough; it
 reports Back-EMF THD and the H1-H12 spectrum. **High accuracy** is the UI name
@@ -221,8 +228,11 @@ performance page summarizes:
   position provenance.
 
 Use the plot tabs to inspect loaded torque, Back-EMF and the field map.
-The harmonic spectrum, when available, is inside the **Back EMF** tab. A dedicated cogging-torque result view is not part of this
-preview. A plausible-looking plot is not by itself a validation result: check
+The harmonic spectrum, when available, is inside the **Back EMF** tab. A run
+with Cogging torque adds a **Cogging torque** card and a **Cogging** tab: the
+waveform over one period in electrical and mechanical degrees, the
+peak-to-peak and peak torque, the harmonics per mechanical revolution, the
+share of the loaded torque, the method and the status. A plausible-looking plot is not by itself a validation result: check
 units, operating point, mesh quality, angular sampling, and material assumptions
 before using a result in a design decision.
 

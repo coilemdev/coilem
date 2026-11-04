@@ -15,9 +15,11 @@ from pathlib import Path
 
 import pytest
 
+from backend import qualification
 from backend.loss_breakdown import operating_point_losses
 from backend.magnet_temperature import magnet_temperature_record
 from backend.models.performance import (
+    COGGING_TORQUE_STATUS_REASON,
     DQ_FLUX_LINKAGE_QUALIFIED_REASON,
     DQ_FLUX_LINKAGE_STATUS_REASON,
     DQ_INDUCTANCE_STATUS_REASON,
@@ -42,6 +44,7 @@ pypdf = pytest.importorskip("pypdf")
 
 # The reasons the app mirrors, for records stored without a status and for the Solve page before a run.
 MIRRORED = {
+    "COGGING_TORQUE_STATUS_REASON": COGGING_TORQUE_STATUS_REASON,
     "DQ_FLUX_LINKAGE_STATUS_REASON": DQ_FLUX_LINKAGE_STATUS_REASON,
     "DQ_INDUCTANCE_STATUS_REASON": DQ_INDUCTANCE_STATUS_REASON,
     "FLUX_LINKAGE_MAP_STATUS_REASON": FLUX_LINKAGE_MAP_STATUS_REASON,
@@ -72,7 +75,9 @@ def test_reasons_print_in_a_report_and_stay_inside_the_public_boundary(reason: s
     assert "femm" not in reason.lower() and "thermal" not in reason.lower()
 
 
-def test_each_record_says_whether_a_benchmark_gate_covers_it() -> None:
+@pytest.mark.parametrize("measured", [True, False], ids=["measured-physics", "qualification-pending"])
+def test_each_record_says_whether_a_benchmark_gate_covers_it(monkeypatch, measured: bool) -> None:
+    monkeypatch.setattr(qualification, "evidence_matches_runtime", lambda: measured)
     config = _config(current_amplitude_A=10.0, rated_speed_rpm=3000)
     winding, _ = operating_point_losses(config, 2.0, _iron())
     assert (winding.status, winding.status_reason) == ("qualified", PHASE_RESISTANCE_STATUS_REASON)
@@ -89,7 +94,7 @@ def test_each_record_says_whether_a_benchmark_gate_covers_it() -> None:
     record = magnet_temperature_record(_magnet_config(100.0))
     assert (record["magnet_temperature_status"], record["magnet_temperature_status_reason"]) == ("experimental", MAGNET_TEMPERATURE_STATUS_REASON)
     for temperature, expected in (
-        (100.0, ("qualified", MAGNET_TEMPERATURE_QUALIFIED_REASON)),
+        (100.0, ("qualified", MAGNET_TEMPERATURE_QUALIFIED_REASON) if measured else ("experimental", MAGNET_TEMPERATURE_STATUS_REASON)),
         (110.0, ("experimental", MAGNET_TEMPERATURE_STATUS_REASON)),
     ):
         stored = {"solve_metadata": magnet_temperature_record(_magnet_config(temperature))}
@@ -116,7 +121,9 @@ def _derated_result(*, with_statuses: bool) -> dict:
 
 
 @pytest.mark.parametrize("with_statuses", [True, False], ids=["recorded", "stored-before-statuses"])
-def test_the_run_pdf_and_csv_give_each_output_its_status_and_reason(with_statuses: bool) -> None:
+@pytest.mark.parametrize("measured", [True, False], ids=["measured-physics", "qualification-pending"])
+def test_the_run_pdf_and_csv_give_each_output_its_status_and_reason(monkeypatch, with_statuses: bool, measured: bool) -> None:
+    monkeypatch.setattr(qualification, "evidence_matches_runtime", lambda: measured)
     result = _derated_result(with_statuses=with_statuses)
     arguments = {"project": RAW, "request": {"resolved_config": RAW}, "result": result, "material": {}, "manifest": {}}
 
@@ -128,7 +135,7 @@ def test_the_run_pdf_and_csv_give_each_output_its_status_and_reason(with_statuse
     )
     # Derated magnets recorded without a status were experimental.
     magnets, magnets_reason = (
-        ("qualified", MAGNET_TEMPERATURE_QUALIFIED_REASON) if with_statuses else ("experimental", MAGNET_TEMPERATURE_STATUS_REASON)
+        ("qualified", MAGNET_TEMPERATURE_QUALIFIED_REASON) if with_statuses and measured else ("experimental", MAGNET_TEMPERATURE_STATUS_REASON)
     )
     assert status == {
         "dq_flux_linkage": "experimental", "dq_flux_linkage_reason": DQ_FLUX_LINKAGE_STATUS_REASON,

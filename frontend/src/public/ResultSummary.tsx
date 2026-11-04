@@ -2,6 +2,7 @@ import { useId, type ReactNode } from 'react';
 import { MotorConstants } from './MotorConstants';
 import { LossesCard } from './LossesCard';
 import { DqCard } from './DqCard';
+import { CoggingCard } from './CoggingCard';
 import type { MaterialCatalog, MotorConfig, SolveResult } from './model';
 import {
   electricalFrequencyHz,
@@ -57,8 +58,8 @@ function LoadingBar({ label, valueT, scaleMaxT, knee }: { label: string; valueT:
 /**
  * The Results summary (#99 part B): the run settings and model assumptions as
  * one collapsed line (#110), the headline numbers with their conventions, motor constants, the
- * d/q point and magnetic loading side by side, the losses below them, and the run timings
- * demoted to one footer line.
+ * d/q point and magnetic loading side by side, the cogging sweep and the losses below them,
+ * and the run timings demoted to one footer line.
  */
 export function ResultSummary({
   result,
@@ -177,7 +178,8 @@ export function ResultSummary({
           </p>
           <p>{thd != null && Number.isFinite(thd) ? `${thdLabel} ${fixed(thd, 1)}%` : 'Back-EMF THD: not computed for this run'}</p>
         </section>
-        {/* Full width below the three compact cards: the breakdown and its map side by side. */}
+        {/* Full width below the three compact cards: the cogging period and its harmonics (#185), then the losses. */}
+        <CoggingCard result={result} poleCount={config.rotor.pole_count} variant="report" />
         <LossesCard
           loss={summary.loss_breakdown}
           iron={summary.iron_loss}

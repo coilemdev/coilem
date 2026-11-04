@@ -1,10 +1,11 @@
 """Wall-clock estimate for a local Magneto2D solve.
 
 The estimate follows the work the solver plans instead of a flat cost per
-rotor position. Gmsh meshes every distinct angle of the loaded grid and the
-full-cycle Back-EMF grid, except that angles a whole slot pitch apart share
-one mesh; the field solves overlap that meshing; and packaging builds field
-playback for every loaded position. Each term scales with the mesh size.
+rotor position. Gmsh meshes every distinct angle of the loaded grid, the
+full-cycle Back-EMF grid and the cogging period, except that angles a whole
+slot pitch apart share one mesh; the field solves overlap that meshing; and
+packaging builds field playback for every loaded position. Each term scales
+with the mesh size.
 
 The coefficients come from timed runs of the bundled examples (Preview,
 Standard and High accuracy) on a 10-core Apple-silicon laptop with coilEM
@@ -19,7 +20,7 @@ from typing import Any, Literal
 from backend.gmsh_mesh_rotation import full_cycle_congruent_bases, gmsh_mesh_reuse_enabled, slot_congruence_groups
 from backend.magneto2d_adapter import get_cached_solve_mesh_artifact
 from backend.models import MotorConfig
-from backend.solver import _gmsh_pipeline_worker_count
+from backend.solver import _cogging_angle_grid, _gmsh_pipeline_worker_count
 from backend.sweep_planning import full_cycle_back_emf_angle_grid, loaded_angle_grid, no_load_field_frame_angles
 
 _FIXED_S = 8.4
@@ -82,6 +83,9 @@ def planned_work(config: MotorConfig) -> dict[str, int]:
         if no_load and config.solve_params is not None and config.solve_params.stream_noload_field_lines
         else []
     )
+    # The cogging period (#185), less the angles the Back-EMF grid already solves.
+    no_load_keys = {int(round(float(angle) * 1_000_000.0)) for angle in (*no_load, *frame_only)}
+    cogging = [angle for angle in _cogging_angle_grid(config) if int(round(float(angle) * 1_000_000.0)) not in no_load_keys]
     pole_pairs = max(1, config.rotor.pole_count // 2)
 
     def rotor_angle_mech_deg(angle: float) -> float:
@@ -101,7 +105,7 @@ def planned_work(config: MotorConfig) -> dict[str, int]:
         else []
     )
     jobs: dict[int, dict[str, Any]] = {}
-    for angle in (*loaded, *no_load, *anchors):
+    for angle in (*loaded, *no_load, *cogging, *anchors):
         key = int(round(float(angle) * 1_000_000.0))
         jobs.setdefault(key, {"angle_key": key, "rotor_angle_mech_deg": rotor_angle_mech_deg(angle)})
     mesh_jobs = list(jobs.values())
@@ -110,7 +114,7 @@ def planned_work(config: MotorConfig) -> dict[str, int]:
         base_meshes = len(slot_congruence_groups(mesh_jobs, config.stator.slot_count))
     return {
         "loaded": len(loaded),
-        "no_load": len(no_load) + len(frame_only),
+        "no_load": len(no_load) + len(frame_only) + len(cogging),
         "mesh_jobs": len(mesh_jobs),
         "base_meshes": base_meshes,
     }
