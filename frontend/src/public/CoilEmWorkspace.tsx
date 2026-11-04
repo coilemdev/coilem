@@ -60,6 +60,7 @@ import { BldcTorqueCurrentChart } from './BldcTorqueCurrentChart';
 import { PublicRunComparison } from './PublicRunComparison';
 import { MotorConstants } from './MotorConstants';
 import { PerformancePanel } from './PerformancePanel';
+import { SolverConvergenceCard } from './SolverConvergenceCard';
 import { GRADE_TEMPERATURE, isDeratedRun, magnetTemperatureView } from './magnetTemperature';
 import { hasMotorConstants, motorConstantsView } from './machineConstants';
 import type { WireSpec } from './performance';
@@ -4294,6 +4295,7 @@ function ReportStage({
           </>
         )}
       />
+      <SolverConvergenceCard report={result.solver_convergence} />
       <div className="public-report-plot-tabs" role="tablist" aria-label="Result plots">
         <button type="button" role="tab" aria-selected={activePlot === 'torque'} className={activePlot === 'torque' ? 'active' : ''} onClick={() => setActivePlot('torque')}>Torque</button>
         <button type="button" role="tab" aria-selected={activePlot === 'back-emf'} className={activePlot === 'back-emf' ? 'active' : ''} onClick={() => setActivePlot('back-emf')}>Back EMF</button>

@@ -9,6 +9,7 @@ from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import FileResponse
 from starlette.background import BackgroundTask
 
+from backend.convergence_reporting import convergence_report
 from backend.solve_workspace import (
     RUN_MANIFEST_SCHEMA,
     SolveWorkspace,
@@ -94,7 +95,12 @@ async def load_run(project_slug: str, run_id: str) -> dict[str, Any]:
     """Load an immutable run for inspection or input-only replay."""
 
     try:
-        return SolveWorkspace().load_run(project_slug, run_id)
+        payload = SolveWorkspace().load_run(project_slug, run_id)
+        # Derive a view from stored evidence, including older runs. Never rewrite
+        # the immutable result or its already generated exports.
+        if isinstance(payload.get("result"), dict):
+            payload = {**payload, "result": {**payload["result"], "solver_convergence": convergence_report(payload["result"])}}
+        return payload
     except FileNotFoundError as exc:
         raise _not_found(exc) from exc
     except (OSError, SolveWorkspaceError, ValueError) as exc:

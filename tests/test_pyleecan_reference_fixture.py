@@ -308,14 +308,18 @@ def test_published_app_evidence_keeps_complete_actual_grids_and_its_measured_sou
     # Publication necessarily updates the snapshot. Keep the original
     # before-field snapshot identity, rather than restamping the run.
     assert report["source_sha256"]["snapshot-manifest.json"] == "030e04373a88fcf1dd6d02bd6d536e927846b26cd55901c44d3420441258057b"
-    # The full identity stays recorded; the field-affecting sources the release
-    # gate guards (tools/release/qualification.py) must still match it exactly.
+    # Historical fields bind to their immutable before-field source snapshot.
+    # Current-source freshness is enforced separately by the release gate;
+    # development code must not restamp old measurements to claim qualification.
     from tools.release.qualification import PRIUS_EXTRA_PHYSICS
 
+    snapshot_path = ROOT / "benchmarks/candidate-qualification-20261103/prius/source-snapshot.json"
+    assert hashlib.sha256(snapshot_path.read_bytes()).hexdigest() == report["source_sha256"]["snapshot-manifest.json"]
+    measured_sources = {entry["path"]: entry["sha256"] for entry in json.loads(snapshot_path.read_text(encoding="utf-8"))["files"]}
     guarded = set(physics_sources(ROOT)) | set(PRIUS_EXTRA_PHYSICS)
     assert guarded <= set(report["source_sha256"])
     for name in sorted(guarded):
-        assert hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == report["source_sha256"][name], name
+        assert measured_sources[name] == report["source_sha256"][name], name
     for name, digest in report["historical_evidence_sha256"].items():
         assert hashlib.sha256((folder / name).read_bytes()).hexdigest() == digest, name
     assert report["grading_provenance"]["frozen_before_fields"] is True

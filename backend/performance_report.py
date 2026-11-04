@@ -60,6 +60,7 @@ from backend.public_report import (
     _safe_paragraph,
     _section,
 )
+from backend.report_numbers import format_report_number
 from backend.resources import application_commit
 
 PERFORMANCE_REPORT_SCHEMA = "coilem.performance_report.v1"
@@ -285,15 +286,13 @@ _REGION_LABEL = {"mtpa": "MTPA", "field_weakening": "Field weakening", "mtpv": "
 
 
 def _g(value: float | None, digits: int = 4) -> str:
-    """Four significant figures without exponents for the report's quantities; round-off below 1e-9 reads 0."""
+    """At most three decimals; numerical round-off below 1e-9 reads 0."""
 
     if value is None or not math.isfinite(value):
         return "-"
     if abs(value) < 1e-9:
         return "0"
-    if abs(value) >= 10**digits:
-        return f"{value:.0f}"
-    return f"{value:.{digits}g}"
+    return format_report_number(value, decimal_places=digits)
 
 
 def _shown(peak_A: float, context: ReportContext) -> float:
@@ -861,7 +860,7 @@ def build_performance_pdf(data: PerformanceData, context: ReportContext) -> byte
                 ("Base speed", f"{_g(peak.base_speed_rpm)} rpm" if peak else "-"),
                 ("Peak power", f"{_g(peak.peak_power_W / 1000)} kW" if peak else "-"),
                 ("Top speed reached", f"{_g(peak.max_speed_rpm)} rpm" if peak else "-"),
-                ("Best efficiency", f"{best:.1f}%" if best is not None else "-"),
+                ("Best efficiency", f"{_g(best)}%" if best is not None else "-"),
                 *(
                     [("Solved point", f"{_g(context.solved_point.torque_Nm)} N m at {_g(context.solved_point.speed_rpm)} rpm")]
                     if context.solved_point

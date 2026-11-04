@@ -210,7 +210,7 @@ def test_pdf_embeds_stored_motor_and_field_with_correct_orientation_and_range():
     assert "Solved flux-density heatmap" in text
     assert "45 deg electrical / 22.5 deg mechanical" in text
     assert "Flux density |B| (T)" in text
-    assert "0.000" in text and "3.000" in text
+    assert "\n0\n" in text and "\n3\n" in text
     images = [image.image.convert("RGB") for image in figure_page.images]
     assert len(images) == 2
     geometry = next(image for image in images if image.getpixel((600, 800)) == (138, 155, 173))
@@ -750,7 +750,8 @@ def test_torque_constant_states_its_current_convention_in_pdf_and_csv() -> None:
     pdf = build_public_run_pdf(**arguments)
     text = " ".join(" ".join(page.extract_text() or "" for page in pypdf.PdfReader(io.BytesIO(pdf)).pages).split())
     assert "Torque constant" in text
-    assert f"{_plain(0.425 * 2**0.5)} N m/A rms" in text
+    assert "0.601 N m/A rms" in text
+    assert _plain(0.425 * 2**0.5) not in text
     assert "0.425 N m/A peak" in text
 
 
