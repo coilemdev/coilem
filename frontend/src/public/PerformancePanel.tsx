@@ -9,6 +9,7 @@ import type {
   EfficiencyMap,
   PerformanceReportContext,
   PerformanceReportKind,
+  TorqueSpeedAnalysisResult,
   TorqueSpeedEnvelope,
 } from './performance';
 import {
@@ -155,7 +156,12 @@ function usePlotPointer(width: number, xMax: number) {
   return { speed, onMove, onLeave: () => setSpeed(null) };
 }
 
-function TorqueSpeedChart({ envelope, formatCurrent, solved }: { envelope: TorqueSpeedEnvelope; formatCurrent: (peakA: number) => string; solved: SolvedPoint | null }) {
+function TorqueSpeedChart({ envelope, formatCurrent, solved, compact = false }: {
+  envelope: TorqueSpeedEnvelope;
+  formatCurrent: (peakA: number) => string;
+  solved: SolvedPoint | null;
+  compact?: boolean;
+}) {
   const { ref, width } = useChartWidth();
   const [quantity, setQuantity] = useState<'torque' | 'power'>('torque');
   const curves = envelope.curves;
@@ -181,7 +187,7 @@ function TorqueSpeedChart({ envelope, formatCurrent, solved }: { envelope: Torqu
     return `${curve.limit === 'peak' ? 'Peak' : 'Continuous'} ${significant(value)} ${unit} at ${formatCurrent(at.currentPeakA)}, γ ${Math.round(at.gammaDeg)}° (${REGION_LABEL[at.region] ?? at.region})`;
   });
   return (
-    <figure ref={ref} className="chart-shell performance-chart">
+    <figure ref={ref} className={`chart-shell performance-chart${compact ? ' public-compact-torque-speed' : ''}`}>
       <div className="chart-heading performance-chart-heading">
         <span>{quantity === 'torque' ? 'Torque–speed' : 'Power–speed'} envelope</span>
         <span className="public-waveform-legend" aria-label="Envelope curves">
@@ -193,10 +199,10 @@ function TorqueSpeedChart({ envelope, formatCurrent, solved }: { envelope: Torqu
           ))}
           {solved && <SolvedLegend solved={solved} drawn={solvedDrawn} />}
         </span>
-        <span className="performance-toggle" role="group" aria-label="Envelope quantity">
+        {!compact && <span className="performance-toggle" role="group" aria-label="Envelope quantity">
           <button type="button" aria-pressed={quantity === 'torque'} onClick={() => setQuantity('torque')}>Torque</button>
           <button type="button" aria-pressed={quantity === 'power'} onClick={() => setQuantity('power')}>Power</button>
-        </span>
+        </span>}
       </div>
       <p className="performance-readout" aria-live="polite">
         {pointer.speed === null ? '' : `${significant(pointer.speed)} rpm · ${readout?.join(' · ')}`}
@@ -230,6 +236,15 @@ function TorqueSpeedChart({ envelope, formatCurrent, solved }: { envelope: Torqu
       </svg>
     </figure>
   );
+}
+
+export function CompactTorqueSpeedChart({ analysis, currentConvention }: {
+  analysis: TorqueSpeedAnalysisResult;
+  currentConvention?: string | null;
+}) {
+  const units = currentUnits(currentConvention);
+  return <TorqueSpeedChart envelope={analysis.envelope} solved={null} compact
+    formatCurrent={(peakA) => `${compact(units.fromPeak(peakA))} ${units.unit}`} />;
 }
 
 function EfficiencyMapChart({ map, envelope, solved, formatCurrent }: {

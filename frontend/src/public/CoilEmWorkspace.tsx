@@ -59,7 +59,7 @@ import {
 import { BldcTorqueCurrentChart } from './BldcTorqueCurrentChart';
 import { PublicRunComparison } from './PublicRunComparison';
 import { MotorConstants } from './MotorConstants';
-import { PerformancePanel } from './PerformancePanel';
+import { CompactTorqueSpeedChart, PerformancePanel } from './PerformancePanel';
 import { GRADE_TEMPERATURE, isDeratedRun, magnetTemperatureView } from './magnetTemperature';
 import { hasMotorConstants, motorConstantsView } from './machineConstants';
 import type { TorqueSpeedAnalysisSettings, WireSpec } from './performance';
@@ -2949,8 +2949,9 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
   const hasBackEmf = hasBackEmfResult(result);
   const cogging = result.summary.cogging;
   const losses = result.summary.loss_breakdown;
-  const firstPlot = hasTorque ? 'torque' : hasBackEmf ? 'back-emf' : 'cogging';
-  const [activePlot, setActivePlot] = useState<'torque' | 'back-emf' | 'cogging'>(firstPlot);
+  const torqueSpeed = result.torque_speed_analysis;
+  const firstPlot = hasTorque ? 'torque' : hasBackEmf ? 'back-emf' : result.cogging_torque_waveform ? 'cogging' : 'torque-speed';
+  const [activePlot, setActivePlot] = useState<'torque' | 'back-emf' | 'cogging' | 'torque-speed'>(firstPlot);
   useEffect(() => { setActivePlot(firstPlot); }, [result, firstPlot]);
   const sixStep = resultUsesSixStep(result);
   const completeCycle = result.solve_metadata.loaded_cycle_complete === true;
@@ -3043,12 +3044,13 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
       </button>
       {/* The waveform heading labels the plots below it, not the metrics and
           constants above (#110). */}
-      {(hasTorque || hasBackEmf || result.cogging_torque_waveform) && <>
+      {(hasTorque || hasBackEmf || result.cogging_torque_waveform || torqueSpeed) && <>
       <strong className="public-completed-waveforms-heading">Solver waveforms</strong>
-      <div className="public-compact-result-tabs" role="tablist" aria-label="Completed result plots">
+      <div className="public-compact-result-tabs" data-has-map={Boolean(torqueSpeed)} role="tablist" aria-label="Completed result plots">
         {hasTorque && <button type="button" role="tab" aria-selected={activePlot === 'torque'} className={activePlot === 'torque' ? 'active' : ''} onClick={() => setActivePlot('torque')}>Torque</button>}
         {hasBackEmf && <button type="button" role="tab" aria-selected={activePlot === 'back-emf'} className={activePlot === 'back-emf' ? 'active' : ''} onClick={() => setActivePlot('back-emf')}>Back EMF</button>}
         {result.cogging_torque_waveform && <button type="button" role="tab" aria-selected={activePlot === 'cogging'} onClick={() => setActivePlot('cogging')}>Cogging</button>}
+        {torqueSpeed && <button type="button" role="tab" aria-selected={activePlot === 'torque-speed'} className={activePlot === 'torque-speed' ? 'active' : ''} onClick={() => setActivePlot('torque-speed')}>Torque–speed</button>}
       </div>
       {activePlot === 'torque' && sixStep && result.phase_current_waveform
         ? <BldcTorqueCurrentChart angles={result.torque_waveform.electrical_angle_deg} torqueNm={result.torque_waveform.torque_Nm} phaseA={result.phase_current_waveform.phase_a_A} phaseB={result.phase_current_waveform.phase_b_A} phaseC={result.phase_current_waveform.phase_c_A} commutationAdvanceDeg={result.solve_metadata.commutation_advance_deg ?? 0} cycleComplete={completeCycle} />
@@ -3058,7 +3060,8 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
         {result.back_emf_harmonic_analysis && <BackEMFHarmonicSpectrum analysis={result.back_emf_harmonic_analysis} compact />}
       </>}
       {activePlot === 'cogging' && result.cogging_torque_waveform && <CompactLiveChart state="complete" label="Cogging torque" unit="N·m" angles={result.cogging_torque_waveform.electrical_angle_deg} series={[{ label: 'Cogging', values: result.cogging_torque_waveform.torque_Nm, color: '#f59e0b' }]} />}
-      <p>Move along a curve to show that position in the field view; click to keep it.</p>
+      {activePlot === 'torque-speed' && torqueSpeed && <CompactTorqueSpeedChart analysis={torqueSpeed} currentConvention={result.solve_metadata.current_amplitude_convention} />}
+      <p>{activePlot === 'torque-speed' ? 'Open Full results for power–speed curves and the efficiency map.' : 'Move along a curve to show that position in the field view; click to keep it.'}</p>
       </>}
     </section>
   );
