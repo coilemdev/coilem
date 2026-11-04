@@ -26,6 +26,7 @@ import {
   type PublicDesignEditFeedback,
   type PublicEditableSection,
   type PublicParameterSection,
+  type SolveSetupSection,
   type PublicWorkflowStep,
 } from './CoilEmWorkspace';
 import { PublicGuidedSetup } from './GuidedSetup';
@@ -556,6 +557,7 @@ export function App() {
   const [view, setView] = useState<PublicWorkflowStep>('design');
   const [guidedActive, setGuidedActive] = useState(false);
   const [guidedDesignSection, setGuidedDesignSection] = useState<PublicParameterSection | null>(null);
+  const [guidedSolveSection, setGuidedSolveSection] = useState<SolveSetupSection | null>(null);
   const [busy, setBusy] = useState<PublicBusyAction>(null);
   const [connectionStatus, setConnectionStatus] = useState<PublicConnectionStatus>('checking');
   const [appVersion, setAppVersion] = useState<string | null>(null);
@@ -1385,6 +1387,7 @@ export function App() {
     resetComputedState();
     setGuidedActive(false);
     setGuidedDesignSection(null);
+    setGuidedSolveSection(null);
     setShowLanding(false);
     setTutorialsView(null);
     setView('design');
@@ -1430,6 +1433,7 @@ export function App() {
     resetComputedState();
     setGuidedActive(false);
     setGuidedDesignSection(null);
+    setGuidedSolveSection(null);
     setShowLanding(false);
     setTutorialsView(null);
     setView('design');
@@ -1551,6 +1555,7 @@ export function App() {
     setView('design');
     guidedVisitedSectionsRef.current = new Set();
     setGuidedDesignSection(null);
+    setGuidedSolveSection(null);
     setGuidedActive(guided);
     setNotice(null);
   };
@@ -1795,6 +1800,7 @@ export function App() {
       activeStep={view}
       guidedActive={guidedActive}
       guidedDesignSection={guidedDesignSection}
+      guidedSolveSection={guidedSolveSection}
       busy={busy}
       connectionStatus={connectionStatus}
       selectedSolver={selectedSolver}
@@ -1819,6 +1825,7 @@ export function App() {
       onHome={() => {
         setGuidedActive(false);
         setGuidedDesignSection(null);
+        setGuidedSolveSection(null);
         setShowLanding(true);
       }}
       onStepChange={changeWorkflowStep}
@@ -1856,10 +1863,12 @@ export function App() {
         busy={busy !== null}
         onWorkflowStepChange={changeWorkflowStep}
         onDesignSectionChange={revealGuidedDesignSection}
+        onSolveSectionChange={setGuidedSolveSection}
         onStartSolve={() => void startSolve()}
         onExit={() => {
           setGuidedActive(false);
           setGuidedDesignSection(null);
+          setGuidedSolveSection(null);
         }}
       />
     )}

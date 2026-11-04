@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 162794,
-      "sha256": "6860225aa9f4cf82faa755d8b01dcd70908fb5bd596756f59a425629843bb465"
+      "bytes": 162874,
+      "sha256": "5d666f562ac358eabb64ad25aeeb3082bb51eebf9b527d85f69a0ce8e9c7da48"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6995,8 +6995,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 73532,
-      "sha256": "6fb5e224f83e203609edc2a88e1a638ef1f645b5d0b3588a24c619b29e5298c4"
+      "bytes": 73928,
+      "sha256": "61c934f3fb8eb702d3770f7727f6da56a2fb2df08adffca3245acc8c3bbf0547"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 239271,
-      "sha256": "cbd479e216e1e225562699fd7b35d45b4d3b37a5bf757bc79f249f547e4ed48c"
+      "bytes": 239550,
+      "sha256": "394f7c8ec300c1f8ee7693dcf9107d132ab62b6b1c4f3edbff6428bae011469d"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7030,8 +7030,8 @@
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
-      "bytes": 14887,
-      "sha256": "42aa135f1f441f419ae1f61978db7be6a572e6b7a57d22baafe82d70421440d0"
+      "bytes": 15876,
+      "sha256": "92dd7d1b6263f4ca160838cc3db26d634f0da0e04a7e82a52f431aca746f4e38"
     },
     {
       "path": "frontend/src/public/LossesCard.tsx",
@@ -7555,8 +7555,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 44897,
-      "sha256": "c664eea9912876f6afb4f1a7498adc5736a0c42f2bdaad1b123dd06aa65b1a2d"
+      "bytes": 48838,
+      "sha256": "b8e89181c7b4cd44b5f8be27179c2ced4d9c5fc77f2929845389d832605c35c0"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -32377,6 +32377,36 @@
       "path": "tests/test_pyleecan_reference_fixture.py",
       "source_sha256": "07e7d8c2b4e4534c5aeadc2f458cd1ee65226c417436d9c642d12fda7091d8ea",
       "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "6860225aa9f4cf82faa755d8b01dcd70908fb5bd596756f59a425629843bb465",
+      "reason": "Guide first-time users through Analysis before the accuracy plan and Run, preserving selections and supporting direct Solve navigation."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "6fb5e224f83e203609edc2a88e1a638ef1f645b5d0b3588a24c619b29e5298c4",
+      "reason": "Guide first-time users through Analysis before the accuracy plan and Run, preserving selections and supporting direct Solve navigation."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "cbd479e216e1e225562699fd7b35d45b4d3b37a5bf757bc79f249f547e4ed48c",
+      "reason": "Guide first-time users through Analysis before the accuracy plan and Run, preserving selections and supporting direct Solve navigation."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/GuidedSetup.tsx",
+      "source_sha256": "42aa135f1f441f419ae1f61978db7be6a572e6b7a57d22baafe82d70421440d0",
+      "reason": "Guide first-time users through Analysis before the accuracy plan and Run, preserving selections and supporting direct Solve navigation."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "c664eea9912876f6afb4f1a7498adc5736a0c42f2bdaad1b123dd06aa65b1a2d",
+      "reason": "Guide first-time users through Analysis before the accuracy plan and Run, preserving selections and supporting direct Solve navigation."
     }
   ]
 }

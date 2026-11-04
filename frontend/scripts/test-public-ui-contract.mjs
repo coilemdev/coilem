@@ -893,7 +893,7 @@ assert.match(workspaceSource, /function ParameterSectionBlock<Id extends string 
 assert.match(workspaceSource, /<ParameterSectionBlock id="operating" label="Operating point" summary=\{operatingSummary\} active=\{openSetupSection === 'operating'\} onToggle=\{toggleSetupSection\}>/);
 assert.match(workspaceSource, /<ParameterSectionBlock id="plan" label="Accuracy plan" summary=\{planSummary\} active=\{openSetupSection === 'plan'\} onToggle=\{toggleSetupSection\} guide="solve-plan">/);
 assert.match(workspaceSource, /<ParameterSectionBlock id="advanced" label="Advanced options" summary=\{advancedSummary\} active=\{advancedOpen\} attention=\{convergenceFailed\}/);
-assert.match(workspaceSource, /useState<SolveSetupSection \| null>\('plan'\)/);
+assert.match(workspaceSource, /useState<SolveSetupSection \| null>\(guidedSolveSection \?\? 'plan'\)/);
 assert.match(workspaceSource, /const setAdvancedOpen = \(open: boolean\) => setOpenSetupSection/);
 assert.doesNotMatch(workspaceSource, /public-setup-section|<details ref=\{advancedOptionsRef\}/);
 assert.match(styleSource, /\.public-parameter-panel \.param-group-header\.collapsed \.chevron,\s*\.public-solve-setup \.param-group-header\.collapsed \.chevron \{ transform: rotate\(-90deg\); \}/);
@@ -2005,6 +2005,7 @@ assert.match(guidedSource, /target: 'ipm-layout-selector'/);
 assert.match(guidedSource, /stop\.id !== 'ipm-layout'/);
 assert.match(guidedSource, /stop\.id === 'topology' && topology === 'IPM'/);
 assert.match(guidedSource, /'section-stator'/);
+assert.match(guidedSource, /target: 'solve-analysis'/);
 assert.match(guidedSource, /'solve-plan'/);
 assert.match(guidedSource, /'solve-run'/);
 assert.match(guidedSource, /'open-report'/);

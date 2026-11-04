@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { MotorConfig } from './model';
-import type { PublicParameterSection } from './CoilEmWorkspace';
+import type { PublicParameterSection, SolveSetupSection } from './CoilEmWorkspace';
 
 /**
  * Guided setup coach for the public workspace: coach-marks over the real app,
@@ -93,6 +93,14 @@ export const PUBLIC_GUIDED_STOPS: GuidedStop[] = [
     advance: 'stage',
   },
   {
+    id: 'solve-analysis',
+    step: 'solve',
+    target: 'solve-analysis',
+    title: 'Choose your analyses',
+    body: 'Choose which analyses to run. Torque and Back EMF are selected by default. Add Cogging torque, Losses & efficiency, or a Torque–speed map as needed; yellow Experimental badges identify analyses awaiting qualification.',
+    advance: 'next',
+  },
+  {
     id: 'solve-plan',
     step: 'solve',
     target: 'solve-plan',
@@ -105,7 +113,7 @@ export const PUBLIC_GUIDED_STOPS: GuidedStop[] = [
     step: 'solve',
     target: 'solve-run',
     title: 'Run the analysis',
-    body: 'Select Next to start the local solver. It steps the rotor through a sweep of positions while live torque and back-EMF samples stream into the right panel, then advances when the run completes.',
+    body: 'Select Next to run your selected analyses locally. Progress and available waveforms appear on the right. The guide advances when the run completes.',
     advance: 'result',
   },
   {
@@ -113,7 +121,7 @@ export const PUBLIC_GUIDED_STOPS: GuidedStop[] = [
     step: 'solve',
     target: 'open-report',
     title: 'Solved — open the report',
-    body: 'Summary metrics are in and the solved field is painted on the motor. Select Next to open the full report for torque, back-EMF, and flux-density plots. That is the whole loop: design, solve, report — change one value and run it again.',
+    body: 'Select Next to open Results and review the outputs you selected, together with the solved field. That is the whole loop: design, solve, report — change an analysis or operating point and run it again.',
     advance: 'stage',
   },
 ];
@@ -124,6 +132,11 @@ const GUIDED_DESIGN_SECTIONS: Record<string, PublicParameterSection> = {
   'section-advanced': 'advanced',
   'section-winding': 'winding',
   'section-materials': 'materials',
+};
+
+const GUIDED_SOLVE_SECTIONS: Record<string, SolveSetupSection> = {
+  'solve-analysis': 'analysis',
+  'solve-plan': 'plan',
 };
 
 function designSectionForStop(stop: GuidedStop): PublicParameterSection | null {
@@ -144,6 +157,7 @@ interface PublicGuidedSetupProps {
   busy: boolean;
   onWorkflowStepChange: (step: GuidedWorkflowStep) => void;
   onDesignSectionChange: (section: PublicParameterSection | null) => string | null;
+  onSolveSectionChange: (section: SolveSetupSection | null) => void;
   onStartSolve: () => void;
   onExit: (completed: boolean) => void;
 }
@@ -170,6 +184,7 @@ export function PublicGuidedSetup({
   busy,
   onWorkflowStepChange,
   onDesignSectionChange,
+  onSolveSectionChange,
   onStartSolve,
   onExit,
 }: PublicGuidedSetupProps) {
@@ -198,8 +213,9 @@ export function PublicGuidedSetup({
     if (!nextStop) return;
     setIndex(nextIndex);
     setAdjustmentMessage(onDesignSectionChange(designSectionForStop(nextStop)));
+    onSolveSectionChange(nextStop.target ? GUIDED_SOLVE_SECTIONS[nextStop.target] ?? null : null);
     if (nextStop.step !== activeStep) onWorkflowStepChange(nextStop.step);
-  }, [activeStep, onDesignSectionChange, onWorkflowStepChange, stops]);
+  }, [activeStep, onDesignSectionChange, onSolveSectionChange, onWorkflowStepChange, stops]);
 
   const next = useCallback(() => {
     showStop(Math.min(currentIndex + 1, stops.length - 1));
@@ -239,6 +255,12 @@ export function PublicGuidedSetup({
     if (activeStep !== 'design') onDesignSectionChange(null);
     if (stop.step !== activeStep) setIndex(firstStopIndexForStep(activeStep, stops));
   }, [activeStep, finish, onDesignSectionChange, stop.step, stops]);
+
+  // Stage buttons can enter Solve without going through showStop. Keep the
+  // first Solve stop and its accordion in sync on that path as well.
+  useEffect(() => {
+    onSolveSectionChange(activeStep === stop.step && stop.target ? GUIDED_SOLVE_SECTIONS[stop.target] ?? null : null);
+  }, [activeStep, onSolveSectionChange, stop]);
 
   // Track the highlighted element. Poll cheaply — panels mount, sections
   // expand, and layout shifts; a short cadence follows along closely enough.
