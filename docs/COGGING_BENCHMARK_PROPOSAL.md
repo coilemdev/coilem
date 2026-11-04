@@ -29,6 +29,10 @@ Both sides' numbers come from `backend/cogging.py`, so they use one definition:
   mechanical revolution, from the DFT of the 24 positions without the repeated
   end.
 - **Mean** and **end mismatch** |T(period) − T(0)|: zero for an exact solve.
+  Native end mismatch is available only for independently meshed endpoints;
+  slot-pitch reuse can otherwise force it to zero. The reference closure
+  gate requires a measured closing endpoint, and either waveform missing
+  that endpoint makes the comparison INCOMPLETE.
 
 ## Cases
 

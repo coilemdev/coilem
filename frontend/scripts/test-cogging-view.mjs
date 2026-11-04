@@ -4,6 +4,8 @@ import { readFile } from 'node:fs/promises';
 import { importTypeScriptModule } from './import-typescript-module.mjs';
 
 const { COGGING_TORQUE_STATUS_REASON } = await importTypeScriptModule(new URL('../src/public/outputStatus.ts', import.meta.url));
+const { asPublicConfig } = await importTypeScriptModule(new URL('../src/public/publicRequest.ts', import.meta.url));
+const { cloneDefaultConfig } = await importTypeScriptModule(new URL('../src/public/model.ts', import.meta.url));
 const { COGGING_HARMONIC_BARS, coggingPeriod, coggingPlanNote, coggingView } = await importTypeScriptModule(
   new URL('../src/public/coggingView.ts', import.meta.url),
 );
@@ -52,6 +54,19 @@ assert.equal(open.rows.find((item) => item.key === 'loaded-share').value, '—')
 assert.match(open.rows.find((item) => item.key === 'loaded-share').hint, /no current/);
 assert.equal(open.waveform, null);
 assert.equal(coggingView({ summary: { cogging: null } }, 8), null);
+
+const reused = coggingView({ summary: { cogging: { ...record, endpoint_mismatch_Nm: null } } }, 8);
+const mismatch = reused.noise.find((item) => item.key === 'end-mismatch');
+assert.equal(mismatch.value, '—');
+assert.match(mismatch.hint, /Unavailable.*share a mesh or solution/);
+
+// An imported design may carry cogging while Elmer is selected. Both request
+// paths must omit it, without losing the user's choice when returning to Magneto2D.
+const config = cloneDefaultConfig();
+config.solve_options.cogging_torque = true;
+assert.equal(asPublicConfig(config, 'magneto2d').solve_options.cogging_torque, true);
+assert.equal(asPublicConfig(config, 'elmer').solve_options.cogging_torque, false);
+assert.equal(config.solve_options.cogging_torque, true);
 
 assert.deepEqual(coggingPeriod(12, 8), { elecDeg: 60, mechDeg: 15, order: 24 });
 assert.deepEqual(coggingPeriod(48, 8), { elecDeg: 30, mechDeg: 7.5, order: 48 });

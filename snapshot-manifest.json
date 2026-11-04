@@ -130,8 +130,8 @@
     },
     {
       "path": "backend/benchmark_suite/cogging_metrics.py",
-      "bytes": 5340,
-      "sha256": "92055d2c827028c5aa62e95a30f8717a80f8e93778892b2c6c2602a4eb4b1e9d"
+      "bytes": 6346,
+      "sha256": "e1e78a0e7f87a9c9d3dbe729b1d0f8bc77c8ac25828e54c6468e2590d21cacff"
     },
     {
       "path": "backend/benchmark_suite/command.py",
@@ -195,8 +195,8 @@
     },
     {
       "path": "backend/cogging.py",
-      "bytes": 5048,
-      "sha256": "01cbd596251aaa022226a4607730febc10cb77d5c8230841246dd03fec4e217a"
+      "bytes": 5353,
+      "sha256": "6390a269a6c10f27090fda28c875a7293ea3cc3eb06c08a155634dd6a716e471"
     },
     {
       "path": "backend/custom_materials.py",
@@ -495,8 +495,8 @@
     },
     {
       "path": "backend/models/performance.py",
-      "bytes": 26152,
-      "sha256": "0074bf50d3f7d19679bc3cbae1846332513d3801a49be57c0101990e4f32a15f"
+      "bytes": 26220,
+      "sha256": "3c1d372db1184dc56ef4fac2370514edd7cbdbcc85df80fd9eac6b2130f1db41"
     },
     {
       "path": "backend/models/result.py",
@@ -555,8 +555,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 85068,
-      "sha256": "93315a2b0d0e0da9740a5534295e381a060871c9287d55334d09e7691e890253"
+      "bytes": 85528,
+      "sha256": "63f6129907ad19372b07a901de60703935db09aaaa8dd4d1ecf345ecbd0391a4"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -645,13 +645,13 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 152134,
-      "sha256": "2bd2890324023dd635553fa38640475140e740560d3f4cc2008ab03406c17f56"
+      "bytes": 152969,
+      "sha256": "7a929faf5640e92e33984a2e386dc0ee3415a7dac668a0e85f668b7a6aa3cec8"
     },
     {
       "path": "backend/solver/_helpers.py",
-      "bytes": 63389,
-      "sha256": "540bad44c3bc7b292b5c746780c79b24ee63a363bfbd2693ef82935d135a645d"
+      "bytes": 63583,
+      "sha256": "9cd8ffa05eb0acab7f7b6c94b386ad2da591097e69cd08d414aa518d4c790096"
     },
     {
       "path": "backend/solver/_mesh_pool.py",
@@ -5925,8 +5925,8 @@
     },
     {
       "path": "docs/COGGING_BENCHMARK_PROPOSAL.md",
-      "bytes": 6874,
-      "sha256": "1c7e7fe64751dc1f530479f307439d537bcff304d3fc7341d9e8581e03e2dba4"
+      "bytes": 7145,
+      "sha256": "45646c63f9c2df0c56cae4c45646055fe44cd4dec4ca9c6cd6df5514fa9d8301"
     },
     {
       "path": "docs/COGGING_CONVERGENCE.json",
@@ -5935,8 +5935,8 @@
     },
     {
       "path": "docs/COGGING_CONVERGENCE.md",
-      "bytes": 7662,
-      "sha256": "07518c22c282f9311e19039a6d653f4031b02452751b7b58ae371b567bf9c68b"
+      "bytes": 7961,
+      "sha256": "08863be83ea4d3c7779e680463a51c801e9412186710f5119bd81f9c7a359fb8"
     },
     {
       "path": "docs/COGGING_FEMM_REQUEST.md",
@@ -6065,8 +6065,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 51210,
-      "sha256": "91956a59411ab3463981d56e0dca6a28b06d74d2b5feb6bfa85977aaff891524"
+      "bytes": 51443,
+      "sha256": "fc0f1eb2ad03fe18880aa52d6b918b74793c221cc0418461a3a0086ea3f29f84"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -6465,8 +6465,8 @@
     },
     {
       "path": "frontend/scripts/test-cogging-view.mjs",
-      "bytes": 4141,
-      "sha256": "fcee2145d3326b0c9562e9f7e9d2738c74be966b8a7b30f6b1825a9fd75c15ca"
+      "bytes": 5125,
+      "sha256": "aca173cc4cd2df77b76248ca98ed642ebc25158921ce0e765388cc91b24c7256"
     },
     {
       "path": "frontend/scripts/test-custom-steel.mjs",
@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 162938,
-      "sha256": "06e746ae2b909362f4d48904aa04806f87526643c6e17b6ede568c6c6c1efbe0"
+      "bytes": 162916,
+      "sha256": "4f9573378f5acadc313e4aa64e68ab12b432aae124af29b428954205bd309ac6"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6995,8 +6995,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 72656,
-      "sha256": "2ea06204cbec765ef2c98f1fa0e8d2d905197446766abc01437062937ca336c9"
+      "bytes": 72688,
+      "sha256": "9b78bee9acb29459162cb04a3446a1cdb8bfb662aa51a3f092a230b61e75212a"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7155,8 +7155,8 @@
     },
     {
       "path": "frontend/src/public/coggingView.ts",
-      "bytes": 7152,
-      "sha256": "65b8f9260c82a46b6ddf477500f2b8d690fffc867f31f95e85d95f3cc9d9b1ea"
+      "bytes": 7333,
+      "sha256": "167fa38b4f81581451498d406ce1a886d35928f72f7d137d58929ac767b8fc40"
     },
     {
       "path": "frontend/src/public/coil3d.ts",
@@ -7410,8 +7410,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 21972,
-      "sha256": "e78e0a79f389bde8ff40005586c4a9f10a957a230a8dc8bd15222c8d685a837f"
+      "bytes": 21979,
+      "sha256": "ead64ab55c25e8ce2e6eebd9fd746c65d13157ba2d6ddc0790b185f90e91076c"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -7440,8 +7440,8 @@
     },
     {
       "path": "frontend/src/public/outputStatus.ts",
-      "bytes": 3613,
-      "sha256": "33124bfe6248d37eaf361f920cf6bbbbbcc6419f5325be14fc3a756fced432a6"
+      "bytes": 3629,
+      "sha256": "8027882f9a5bd34e0bd2bf40f94cf82a5e9d700b001f5543a3e12ab0c2af6899"
     },
     {
       "path": "frontend/src/public/performance.ts",
@@ -7465,8 +7465,8 @@
     },
     {
       "path": "frontend/src/public/publicRequest.ts",
-      "bytes": 661,
-      "sha256": "a963e7d496f605a17ebdcdc62d10f879dc13234e4cc238a27a2b076f2390e4db"
+      "bytes": 904,
+      "sha256": "40602c74d4ae6d0c3779544c8bcb287d8265491b2232390eb4bc45ce204ba43b"
     },
     {
       "path": "frontend/src/public/pyleecanReferenceNotice.ts",
@@ -7555,8 +7555,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 25012,
-      "sha256": "0cbedc0c04bfa6bb877729494f18b010fdfc392b5387e2346cd702af880de014"
+      "bytes": 28124,
+      "sha256": "e4f0ff535303f0cb60f5ef5c93932c385eb1e0a9b0f22ff4126cb13e8c9fee46"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -7900,8 +7900,8 @@
     },
     {
       "path": "tests/fixtures/cogging_example_8p12s.json",
-      "bytes": 3221,
-      "sha256": "066320d9c9b05718051f0088904d5684d700a8cbb5577367f4af4adfd8ef264e"
+      "bytes": 3237,
+      "sha256": "a9512a378158e5f5d0303298542c3c3189b2ad04b894a04be5752d87de37165a"
     },
     {
       "path": "tests/fixtures/phase_drive_winding_layouts.json",
@@ -7975,13 +7975,13 @@
     },
     {
       "path": "tests/test_cogging.py",
-      "bytes": 14770,
-      "sha256": "f1d1d1bc8d30fbe292410db3a148d43ad480bfd77bc014c08b741906c8f32d67"
+      "bytes": 20816,
+      "sha256": "dfa5f9266aeddf0b32034ab47865bdc1d0191640e6b50b1614baa290e3fc07cb"
     },
     {
       "path": "tests/test_cogging_phase_e.py",
-      "bytes": 7573,
-      "sha256": "61d1420687b1f4eea39b25741955c656c6ffdc7efbb0761e451d90b7602bd193"
+      "bytes": 8520,
+      "sha256": "0bf22ef5cf27ee550877af34b80d0456437c254550044ec5f0827d7ea8651db0"
     },
     {
       "path": "tests/test_dq_flux_linkage.py",
@@ -11560,8 +11560,8 @@
     },
     {
       "path": "docs/benchmarks/cogging-windows-20261103/README.md",
-      "bytes": 7029,
-      "sha256": "478b3444b974a85b96f7323f111d4191a02a7b4ec92476125bdbf0dc8ed4d66b"
+      "bytes": 7439,
+      "sha256": "1ca64db12d51009697fe10276368344e4dfb0ddebdc125bd5c50f0b66471fb9d"
     },
     {
       "path": "docs/benchmarks/cogging-windows-20261103/cogging-femm-vs-magneto2d.pdf",
@@ -13118,7 +13118,7 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B Ã¢Ë†â€™ Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B \u00c3\u00a2\u00cb\u2020\u00e2\u20ac\u2122 Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
@@ -13148,13 +13148,13 @@
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45Ã‚Â° (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45\u00c3\u201a\u00c2\u00b0 (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45Ã‚Â° over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45\u00c3\u201a\u00c2\u00b0 over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "a482ff6e2bd9616d2ece2a68f8fa2f2c49aae45c",
@@ -13172,7 +13172,7 @@
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45Ã‚Â° (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00c3\u201a\u00c2\u00b0 (#52 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
@@ -15086,25 +15086,25 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B ÃƒÂ¢Ã‹â€ Ã¢â‚¬â„¢ Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B \u00c3\u0192\u00c2\u00a2\u00c3\u2039\u00e2\u20ac\u00a0\u00c3\u00a2\u00e2\u201a\u00ac\u00e2\u201e\u00a2 Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45Ãƒâ€šÃ‚Â° (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45Ãƒâ€šÃ‚Â° over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45Ãƒâ€šÃ‚Â° (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 (#52 follow-up)."
     },
     {
       "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
@@ -30873,6 +30873,132 @@
       "path": "tools/verify_snapshot.py",
       "source_sha256": "33591a1cb15d656287969c48082483902af3932ae27274ba6385807408132be3",
       "reason": "Publish Windows cogging numerical reports and the normal mesh default decision for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "backend/benchmark_suite/cogging_metrics.py",
+      "source_sha256": "e1e78a0e7f87a9c9d3dbe729b1d0f8bc77c8ac25828e54c6468e2590d21cacff",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "backend/cogging.py",
+      "source_sha256": "6390a269a6c10f27090fda28c875a7293ea3cc3eb06c08a155634dd6a716e471",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "backend/models/performance.py",
+      "source_sha256": "3c1d372db1184dc56ef4fac2370514edd7cbdbcc85df80fd9eac6b2130f1db41",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "backend/public_report.py",
+      "source_sha256": "63f6129907ad19372b07a901de60703935db09aaaa8dd4d1ecf345ecbd0391a4",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "7a929faf5640e92e33984a2e386dc0ee3415a7dac668a0e85f668b7a6aa3cec8",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "backend/solver/_helpers.py",
+      "source_sha256": "9cd8ffa05eb0acab7f7b6c94b386ad2da591097e69cd08d414aa518d4c790096",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "docs/COGGING_BENCHMARK_PROPOSAL.md",
+      "source_sha256": "45646c63f9c2df0c56cae4c45646055fe44cd4dec4ca9c6cd6df5514fa9d8301",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "docs/COGGING_CONVERGENCE.md",
+      "source_sha256": "08863be83ea4d3c7779e680463a51c801e9412186710f5119bd81f9c7a359fb8",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "fc0f1eb2ad03fe18880aa52d6b918b74793c221cc0418461a3a0086ea3f29f84",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "docs/benchmarks/cogging-windows-20261103/README.md",
+      "source_sha256": "1ca64db12d51009697fe10276368344e4dfb0ddebdc125bd5c50f0b66471fb9d",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/scripts/test-cogging-view.mjs",
+      "source_sha256": "aca173cc4cd2df77b76248ca98ed642ebc25158921ce0e765388cc91b24c7256",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "4f9573378f5acadc313e4aa64e68ab12b432aae124af29b428954205bd309ac6",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "9b78bee9acb29459162cb04a3446a1cdb8bfb662aa51a3f092a230b61e75212a",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/src/public/coggingView.ts",
+      "source_sha256": "167fa38b4f81581451498d406ce1a886d35928f72f7d137d58929ac767b8fc40",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "ead64ab55c25e8ce2e6eebd9fd746c65d13157ba2d6ddc0790b185f90e91076c",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/src/public/outputStatus.ts",
+      "source_sha256": "8027882f9a5bd34e0bd2bf40f94cf82a5e9d700b001f5543a3e12ab0c2af6899",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/src/public/publicRequest.ts",
+      "source_sha256": "40602c74d4ae6d0c3779544c8bcb287d8265491b2232390eb4bc45ce204ba43b",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "e4f0ff535303f0cb60f5ef5c93932c385eb1e0a9b0f22ff4126cb13e8c9fee46",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "tests/fixtures/cogging_example_8p12s.json",
+      "source_sha256": "a9512a378158e5f5d0303298542c3c3189b2ad04b894a04be5752d87de37165a",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "tests/test_cogging.py",
+      "source_sha256": "dfa5f9266aeddf0b32034ab47865bdc1d0191640e6b50b1614baa290e3fc07cb",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "tests/test_cogging_phase_e.py",
+      "source_sha256": "0bf22ef5cf27ee550877af34b80d0456437c254550044ec5f0827d7ea8651db0",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
     }
   ]
 }

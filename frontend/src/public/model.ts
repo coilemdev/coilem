@@ -248,7 +248,7 @@ export interface CoggingTorqueRecord {
   peak_Nm: number;
   first_harmonic_Nm: number;
   mean_Nm: number;
-  endpoint_mismatch_Nm: number;
+  endpoint_mismatch_Nm: number | null;
   harmonics: CoggingHarmonic[];
   loaded_mean_torque_Nm?: number | null;
   peak_to_peak_of_loaded_pct?: number | null;

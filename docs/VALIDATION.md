@@ -622,7 +622,7 @@ experimental everywhere: no benchmark protocol has a cogging gate yet.**
   cogging period, 180·gcd(S, P)/S electrical degrees (360/LCM(S, P)
   mechanical), with no current. The preset sets the positions per period:
   12 for Preview, 24 for Standard and High accuracy's 48, plus the repeated
-  end. Each position is meshed on its own, as in the loaded sweep, without a
+  end. The sweep uses per-position meshes with slot-pitch reuse, without a
   sliding band; angles the Back-EMF grid shares are solved once. A derated
   magnet temperature applies to the cogging sweep too.
 - **Torque method.** Weighted stress tensor (WST), whatever the loaded sweep
@@ -641,9 +641,12 @@ experimental everywhere: no benchmark protocol has a cogging gate yet.**
   the mismatch between its two ends, which an exact solve makes zero. Results,
   the run PDF and the CSV carry the same record (`backend/cogging.py`), and a
   0 A run's "Cogging torque p-p" is the sweep's own when it has one.
+  End mismatch is unavailable when the endpoints share a mesh or solution,
+  the closing endpoint is missing, or cached reports do not record endpoint
+  independence. A zero copied by reuse cannot measure remesh noise.
 - **The reason the app prints:** "No cogging gate yet: benchmark protocol 1.6.0
-  has no reference cogging waveform. Each rotor position is meshed on its own,
-  without a sliding band, so mesh noise sets a floor under small cogging
+  has no reference cogging waveform. The sweep uses per-position meshes
+  with slot-pitch reuse, without a sliding band, so mesh noise sets a floor under small cogging
   values." `frontend/src/public/outputStatus.ts` mirrors it and
   `tests/test_output_status.py` checks the two match.
 - **What would qualify it.** Phase E, the cogging benchmark proposed as

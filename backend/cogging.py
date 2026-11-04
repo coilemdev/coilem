@@ -4,8 +4,9 @@ The solver samples one cogging period with no current, both ends included
 (``backend.sweep_planning.cogging_angle_grid``). This module turns that
 waveform into one record, so the three outputs read the same numbers: the
 peak-to-peak and peak torque, the harmonic spectrum in cycles per mechanical
-revolution, and two noise measures. An exact solve averages to zero over the
-period and repeats at its end; per-position meshes do neither exactly.
+revolution, and noise measures. An exact solve averages to zero over the
+period and repeats at its end. The endpoint mismatch measures remesh noise
+only when the endpoints were independently meshed and solved.
 
 It does not decide what is measured, only how a measured waveform is
 summarised, so it is not a physics source (backend/benchmark_suite/physics.py).
@@ -83,6 +84,7 @@ def cogging_record(
     slot_count: int,
     pole_count: int,
     method: str,
+    independent_endpoints: bool = True,
     loaded_mean_torque_Nm: float | None = None,
     loaded_current_A: float | None = None,
 ) -> CoggingTorque | None:
@@ -90,6 +92,8 @@ def cogging_record(
 
     ``loaded_current_A`` is the loaded sweep's peak phase current; with none,
     the run has no load to compare the cogging with.
+    ``independent_endpoints`` must be false when the endpoints share a mesh
+    or solution; a missing closing endpoint also leaves the mismatch unset.
     """
 
     angles = [float(value) for value in angles_elec_deg]
@@ -123,7 +127,9 @@ def cogging_record(
         peak_Nm=max(abs(value) for value in values),
         first_harmonic_Nm=harmonics[0].amplitude_Nm if harmonics else 0.0,
         mean_Nm=sum(period) / len(period),
-        endpoint_mismatch_Nm=abs(values[-1] - values[0]) if len(values) > len(period) else 0.0,
+        endpoint_mismatch_Nm=(
+            abs(values[-1] - values[0]) if independent_endpoints and len(values) > len(period) else None
+        ),
         harmonics=harmonics,
         loaded_mean_torque_Nm=loaded_mean_torque_Nm if loaded else None,
         peak_to_peak_of_loaded_pct=ratio,

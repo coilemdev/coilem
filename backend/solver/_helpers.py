@@ -574,12 +574,15 @@ def _optional_result_series(
 COGGING_TORQUE_METHOD = "weighted_stress"
 
 
-def _cogging_sweep_series(reports: list[dict[str, Any]], angles_elec_deg: list[float]) -> dict[str, Any]:
+def _cogging_sweep_series(
+    reports: list[dict[str, Any]], angles_elec_deg: list[float], *, independent_endpoints: bool = True,
+) -> dict[str, Any]:
     """Every method's torque over one inclusive cogging period, in the solver's direction.
 
     The mean-removed series subtract the mean over the period, without its
     repeated endpoint. The selected series, and its peak-to-peak as
     ``cogging_torque_nm``, use ``COGGING_TORQUE_METHOD``.
+    Endpoint independence is recorded for postprocessing, including cached reports.
     """
 
     def mean_removed(values: list[float] | None) -> list[float] | None:
@@ -603,6 +606,7 @@ def _cogging_sweep_series(reports: list[dict[str, Any]], angles_elec_deg: list[f
         selected, method = series["arkkio"], "arkkio"
     return {
         "cogging_rotor_positions_elec_deg": [float(angle) for angle in angles_elec_deg],
+        "cogging_endpoints_independent": independent_endpoints,
         "cogging_torque_contour_waveform_nm": contour,
         "cogging_torque_contour_centered_waveform_nm": mean_removed(contour),
         "cogging_torque_arkkio_waveform_nm": series["arkkio"],

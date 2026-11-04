@@ -1321,7 +1321,12 @@ def _cogging_story(result: Mapping[str, Any], request: Mapping[str, Any], styles
                     + (f" ({pole_pairs} pole pairs)" if pole_pairs else ""),
                 ),
                 ("Mean over the period", f"{_number(cogging.get('mean_Nm'))} N m"),
-                ("End mismatch", f"{_number(cogging.get('endpoint_mismatch_Nm'))} N m"),
+                (
+                    "End mismatch",
+                    f"{_number(cogging['endpoint_mismatch_Nm'])} N m"
+                    if isinstance(cogging.get("endpoint_mismatch_Nm"), (int, float))
+                    else "Unavailable (endpoints not independently meshed)",
+                ),
             ],
             styles,
             columns=2,
@@ -1348,7 +1353,9 @@ def _cogging_story(result: Mapping[str, Any], request: Mapping[str, Any], styles
         Paragraph(
             "One cogging period solved with no current, both ends included. Harmonics are peak amplitudes in cycles per "
             "mechanical revolution, from the period without its repeated end. An exact solve averages to zero over the "
-            "period and repeats at its end: the mean and the end mismatch measure the mesh noise.",
+            "period and repeats at its end. The mean measures numerical bias; the end mismatch measures remesh noise only "
+            "when both endpoints were independently meshed and solved. It is unavailable when a closing endpoint is missing, "
+            "its independence was not recorded, or the endpoints share a mesh or solution.",
             styles["small"],
         ),
         *_status_paragraphs(result, ("cogging_torque",), styles),

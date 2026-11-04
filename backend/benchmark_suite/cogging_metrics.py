@@ -16,8 +16,10 @@ repeats at the end of the period and averages to zero over it.
 
 from __future__ import annotations
 
+import math
+
 from backend.benchmark_suite.abc_metrics import waveform_metrics
-from backend.cogging import cogging_record
+from backend.cogging import cogging_period, cogging_record
 
 # Percent of the reference value: pass, then yellow. The floor widens both.
 COGGING_RELATIVE_PCT = (10.0, 20.0)
@@ -45,7 +47,8 @@ def _waveform(record: dict, key: str = "cogging_torque_waveform") -> tuple[list[
     if not isinstance(angles, list) or not isinstance(torque, list) or len(angles) != len(torque) or len(angles) < 3:
         return None
     try:
-        return [float(value) for value in angles], [float(value) for value in torque]
+        converted = [float(value) for value in angles], [float(value) for value in torque]
+        return converted if all(math.isfinite(value) for series in converted for value in series) else None
     except (TypeError, ValueError):
         return None
 
@@ -62,6 +65,19 @@ def evaluate_cogging(result: dict, reference: dict | None, config: dict, floor_n
     if not candidate or candidate_wave is None:
         return {"status": "INCOMPLETE", "gates": {"cogging_sweep": "MISSING"}, "reason": "The candidate has no cogging sweep"}
     method_gate = "PASS" if candidate.get("method") == COGGING_METHOD else "FAIL"
+    period_deg, _, _ = cogging_period(slots, poles)
+
+    def has_closing_endpoint(wave: tuple[list[float], list[float]] | None) -> bool:
+        return wave is not None and abs(wave[0][-1] - wave[0][0] - period_deg) <= _ANGLE_TOLERANCE_DEG
+
+    # A half-open period still has a valid DFT, but no measured closure.
+    # Matching two truncated grids must never count as complete evidence.
+    if not has_closing_endpoint(candidate_wave):
+        return {
+            "status": "INCOMPLETE",
+            "gates": {"cogging_method": method_gate, "cogging_angle_grid": "MISSING"},
+            "reason": "The candidate is missing its closing cogging endpoint",
+        }
     if reference is None:
         return {
             "status": "NOT_COMPARED",
@@ -75,10 +91,11 @@ def evaluate_cogging(result: dict, reference: dict | None, config: dict, floor_n
         else None
     )
     details = {"candidate": candidate, "reference": None if expected is None else expected.model_dump(mode="json"), "floor_Nm": floor_nm}
-    if expected is None:
+    if expected is None or not has_closing_endpoint(reference_wave):
         return {
             "status": "INCOMPLETE",
-            "gates": {"cogging_method": method_gate, "reference_cogging_waveform": "MISSING"},
+            "gates": {"cogging_method": method_gate, "reference_cogging_period": "MISSING"},
+            "reason": "The reference must contain one uniform cogging period including its closing endpoint",
             "cogging": details,
         }
     angles_match = len(candidate_wave[0]) == len(reference_wave[0]) and all(
@@ -91,7 +108,7 @@ def evaluate_cogging(result: dict, reference: dict | None, config: dict, floor_n
         "cogging_angle_grid": "PASS" if angles_match else "FAIL",
         "cogging_peak_to_peak": peak_status,
         "cogging_first_harmonic": first_status,
-        "reference_cogging_period": "PASS" if expected.endpoint_mismatch_Nm <= floor_nm else "FAIL",
+        "reference_cogging_period": "PASS" if expected.endpoint_mismatch_Nm is not None and expected.endpoint_mismatch_Nm <= floor_nm else "FAIL",
         "reference_cogging_mean": "PASS" if abs(expected.mean_Nm) <= floor_nm else "FAIL",
     }
     details.update(

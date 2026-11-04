@@ -86,6 +86,63 @@ async function solveStandard(page: Page, mode: Excitation): Promise<void> {
   }
 }
 
+test('switches to Elmer with cogging enabled without submitting the unsupported option', async ({ page }) => {
+  // Exercise the browser's selection, validation and solve paths without an
+  // external Elmer installation or a field solve. Geometry and mesh use the real API.
+  await page.route('**/health', async (route) => {
+    const response = await route.fetch();
+    const health = await response.json();
+    health.capabilities.elmer = {
+      feature_enabled: true, available: true, qualified: true, adapter_ready: true,
+      solver_version: '26.2', grid_version: '26.2',
+    };
+    await route.fulfill({ response, json: health });
+  });
+  await page.route('**/solve/validate', async (route) => {
+    const body = route.request().postDataJSON();
+    if (body.solver !== 'elmer') return route.continue();
+    if (body.config.solve_options.cogging_torque) {
+      return route.fulfill({ status: 400, json: { detail: { message: 'Cogging torque is solved by Magneto2D only.' } } });
+    }
+    // Use real input validation for the normalized request; only the runtime
+    // capability is simulated in this browser regression.
+    const response = await route.fetch({ postData: { ...body, solver: 'magneto2d' } });
+    await route.fulfill({ response });
+  });
+  await page.route('**/solve/stream', (route) => route.fulfill({
+    contentType: 'text/event-stream',
+    body: 'event: error\ndata: {"message":"Cogging regression finished before solving."}\n\n',
+  }));
+  await page.goto('/');
+  await expect(page.getByRole('status', { name: 'Local backend: ready', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+  await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+  await openSetupSection(page, 'plan');
+  const cogging = page.getByRole('checkbox', { name: 'Cogging torque', exact: true });
+  await cogging.check();
+  await expect(cogging).toBeChecked();
+  await page.locator('button[aria-controls="param-group-content-solver"]').click();
+  const validated = page.waitForResponse((response) => (
+    response.url().endsWith('/solve/validate') && response.request().postDataJSON()?.solver === 'elmer'
+  ));
+  await page.getByRole('radio', { name: /Elmer FEM/ }).click();
+  const response = await validated;
+  expect(response.request().postDataJSON().config.solve_options.cogging_torque).toBe(false);
+  expect(response.ok()).toBe(true);
+  await expect(cogging).toHaveCount(0);
+  const run = page.getByRole('button', { name: '▶ Run analysis', exact: true });
+  await expect(run).toBeEnabled();
+  const submitted = page.waitForRequest((request) => request.url().endsWith('/solve/stream'));
+  await run.click();
+  const body = (await submitted).postDataJSON();
+  expect(body.solver).toBe('elmer');
+  expect(body.config.solve_options.cogging_torque).toBe(false);
+  await expect(page.getByRole('alert')).toContainText('Cogging regression finished before solving.');
+  await page.getByRole('radio', { name: /Magneto2D/ }).click();
+  await openSetupSection(page, 'plan');
+  await expect(cogging).toBeChecked();
+});
+
 test.describe('public developer preview release rehearsal', () => {
   test.describe.configure({ mode: 'serial' });
 

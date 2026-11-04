@@ -146,3 +146,18 @@ def test_grid_method_and_missing_data_are_explicit() -> None:
     foreign["solve_metadata"]["solver_name"] = "elmer"
     with pytest.raises(ValueError, match="public native solver"):
         evaluate_cogging(foreign, _reference(_waveform()), CONFIG, FLOOR)
+
+
+@pytest.mark.parametrize("missing", ["candidate", "reference", "both"])
+def test_a_missing_closing_endpoint_cannot_pass_the_benchmark(missing) -> None:
+    candidate_wave, reference_wave = _waveform(), _waveform(end_shift=0.1)
+    # Complete reference evidence fails closure; truncation must not hide that failure.
+    complete = evaluate_cogging(_candidate(candidate_wave), _reference(reference_wave), CONFIG, FLOOR)
+    assert complete["gates"]["reference_cogging_period"] == "FAIL"
+    if missing in ("candidate", "both"):
+        candidate_wave = {key: values[:-1] for key, values in candidate_wave.items()}
+    if missing in ("reference", "both"):
+        reference_wave = {key: values[:-1] for key, values in reference_wave.items()}
+    evaluation = evaluate_cogging(_candidate(candidate_wave), _reference(reference_wave), CONFIG, FLOOR)
+    assert evaluation["status"] == "INCOMPLETE"
+    assert "MISSING" in evaluation["gates"].values()

@@ -1068,6 +1068,7 @@ def _solve_with_per_angle_producer_meshes(
     # Cogging gets its own grid, one cogging period (#185): the Back-EMF grid
     # is too coarse for it. Positions both grids share are solved once.
     cogging_angles_elec_deg = _cogging_angle_grid(config) if opts.cogging_torque else []
+    cogging_endpoints_independent = True
     run_no_load = bool(no_load_angles_elec_deg)
     no_load_stage = "noload_sweep" if run_no_load else "magneto2d_cogging"
     no_load_timing_label = "No-load field solve" if run_no_load else "Cogging field solve"
@@ -1151,6 +1152,7 @@ def _solve_with_per_angle_producer_meshes(
             _cogging_sweep_series(
                 [no_load_reports_by_key[_per_angle_grid_key(angle)] for angle in cogging_angles_elec_deg],
                 cogging_angles_elec_deg,
+                independent_endpoints=cogging_endpoints_independent,
             )
         )
         sweep_report["comparison_mesh_evidence"]["cogging"] = [
@@ -1379,6 +1381,17 @@ def _solve_with_per_angle_producer_meshes(
             congruence_groups = slot_congruence_groups(
                 mesh_jobs, config.stator.slot_count
             )
+            if cogging_angles_elec_deg:
+                endpoint_keys = {
+                    _per_angle_grid_key(cogging_angles_elec_deg[0]),
+                    _per_angle_grid_key(cogging_angles_elec_deg[-1]),
+                }
+                # A rigidly rotated mesh (and possibly its copied solution)
+                # cannot provide an independent remesh-noise measurement.
+                cogging_endpoints_independent = not any(
+                    endpoint_keys <= {int(group["base"]["angle_key"]), *(int(job["angle_key"]) for job, _ in group["derived"])}
+                    for group in congruence_groups
+                )
             if any(group["derived"] for group in congruence_groups):
                 producer_jobs = [group["base"] for group in congruence_groups]
                 derived_jobs_by_base_key = {
@@ -2802,6 +2815,7 @@ class Magneto2DSolver(Solver):
                 ),
                 loaded_mean_torque_Nm=avg_torque_nm,
                 loaded_current_A=operating_point.get("resolved_phase_current_peak_a"),
+                independent_endpoints=sweep.get("cogging_endpoints_independent") is True,
             )
             if cogging_requested and cogging_torque_waveform_nm
             else None

@@ -109,13 +109,15 @@ export function coggingView(
         : 'This run has no current, so there is no loaded torque to compare with.' },
     { key: 'method', label: 'Method', value: method, unit: '', hint: 'Torque extraction method of the cogging waveform.' },
     { key: 'positions', label: 'Positions', value: String(record.positions_per_period), unit: 'per period',
-      hint: 'Solved positions per cogging period, plus the repeated end, each meshed on its own.' },
+      hint: 'Sampled positions per cogging period, plus the repeated end. Congruent positions may share a mesh and solution.' },
   ];
   const noise: CoggingRow[] = [
     { key: 'mean', label: 'Mean', value: show(record.mean_Nm), unit: 'N·m',
       hint: 'Cogging averages to zero over a period; what is left is numerical noise. Compare it with the peak to peak.' },
     { key: 'end-mismatch', label: 'End mismatch', value: show(record.endpoint_mismatch_Nm), unit: 'N·m',
-      hint: 'The torque at the end of the period minus the start: the same rotor position meshed twice, so zero for an exact solve.' },
+      hint: finite(record.endpoint_mismatch_Nm)
+        ? 'The torque at the end of the period minus the start, from independently meshed endpoints.'
+        : 'Unavailable: the closing endpoint is missing, its independence was not recorded, or the endpoints share a mesh or solution.' },
   ];
   const shown = record.harmonics.slice(0, COGGING_HARMONIC_BARS);
   const largest = Math.max(0, ...shown.map((harmonic) => harmonic.amplitude_Nm).filter(finite));

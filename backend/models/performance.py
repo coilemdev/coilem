@@ -79,8 +79,8 @@ MAGNET_TEMPERATURE_QUALIFIED_REASON = (
     "The coefficients are catalogue values, and irreversible demagnetisation is not modelled."
 )
 COGGING_TORQUE_STATUS_REASON = (
-    "No cogging gate yet: benchmark protocol 1.6.0 has no reference cogging waveform. Each rotor position is meshed "
-    "on its own, without a sliding band, so mesh noise sets a floor under small cogging values."
+    "No cogging gate yet: benchmark protocol 1.6.0 has no reference cogging waveform. The sweep uses per-position meshes "
+    "with slot-pitch reuse, without a sliding band, so mesh noise sets a floor under small cogging values."
 )
 # How a drive picks the current for a torque below the limits: the smallest
 # current (MTPA, then field weakening and MTPV) or the least total loss.
@@ -174,8 +174,9 @@ class CoggingTorque(BaseModel):
     peak_Nm: float = Field(ge=0, description="Largest |cogging torque| over the period")
     first_harmonic_Nm: float = Field(ge=0, description="Peak amplitude at the fundamental cogging order")
     mean_Nm: float = Field(description="Mean over one period; zero for an exact solve, so its size is a noise measure")
-    endpoint_mismatch_Nm: float = Field(
-        ge=0, description="|T(period) − T(0)|: the two ends are meshed separately, so this is a mesh-noise measure"
+    endpoint_mismatch_Nm: Optional[float] = Field(
+        default=None, ge=0,
+        description="|T(period) − T(0)| for independently meshed endpoints; unavailable when missing or sharing a mesh/solution",
     )
     harmonics: list[CoggingHarmonic] = Field(default_factory=list, description="Up to the sampling limit, fundamental first")
     loaded_mean_torque_Nm: Optional[float] = Field(default=None, description="Mean loaded torque of the same run, when it had current")

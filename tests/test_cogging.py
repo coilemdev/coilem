@@ -102,7 +102,97 @@ def test_a_grid_that_is_not_one_period_has_no_record() -> None:
     assert cogging_record(angles, torque, slot_count=12, pole_count=10, method="contour") is None
     # A half-open period is one period too.
     half_open = cogging_record(angles[:-1], torque[:-1], slot_count=12, pole_count=8, method="contour")
-    assert half_open is not None and half_open.positions_per_period == 24 and half_open.endpoint_mismatch_Nm == 0.0
+    assert half_open is not None and half_open.positions_per_period == 24
+    assert half_open.endpoint_mismatch_Nm is None
+
+
+def test_reused_endpoints_have_no_remesh_noise_measurement() -> None:
+    angles, torque = _analytic(24)
+    independent = cogging_record(angles, torque, slot_count=12, pole_count=8, method="weighted_stress")
+    reused = cogging_record(angles, torque, slot_count=12, pole_count=8, method="weighted_stress", independent_endpoints=False)
+    assert independent is not None and reused is not None
+    assert independent.endpoint_mismatch_Nm == pytest.approx(0.0, abs=1e-12)
+    assert reused.endpoint_mismatch_Nm is None
+    # Only the diagnostic is suppressed; the physical waveform metrics are preserved.
+    assert reused.model_dump(exclude={"endpoint_mismatch_Nm"}) == independent.model_dump(exclude={"endpoint_mismatch_Nm"})
+
+
+@pytest.mark.parametrize(("poles", "mesh_reuse", "solve_reuse", "back_emf", "independent"), [
+    (4, True, True, False, False),
+    (4, True, False, False, False),
+    (4, False, False, False, True),
+    (8, True, True, False, True),
+    (4, True, True, True, False),
+])
+def test_pipeline_records_whether_cogging_endpoints_share_a_mesh(monkeypatch, poles, mesh_reuse, solve_reuse, back_emf, independent) -> None:
+    """Exercise actual slot grouping and attachment without allocating real FEM fields."""
+    from backend import solver
+
+    config = _config(back_emf=back_emf, thd_analysis=False)
+    config.rotor.pole_count = poles
+
+    class Producer:
+        source = "gmsh"
+        display_name = "Gmsh"
+
+        @staticmethod
+        def build(config, angle):
+            return {"angle": angle}, 0
+
+    def report(config, **kwargs):
+        angle = kwargs["rotor_angle_deg"]
+        return {"results": {"torque_nm": angle, "torque_weighted_stress_nm": angle}}
+
+    monkeypatch.setattr(solver, "estimate_magneto2d_sweep_angle_grid", lambda _: [0.0, 60.0])
+    monkeypatch.setattr(solver, "_gmsh_imported_mesh_pipeline_enabled", lambda *args: True)
+    monkeypatch.setattr(solver, "_gmsh_pipeline_worker_count", lambda *args, **kwargs: 1)
+    monkeypatch.setattr(solver, "_angle_mesh_cache_enabled", lambda: False)
+    monkeypatch.setattr(solver, "gmsh_mesh_reuse_enabled", lambda: mesh_reuse)
+    monkeypatch.setattr(solver, "gmsh_solve_reuse_enabled", lambda: solve_reuse)
+    monkeypatch.setattr(solver, "_rotate_gmsh_artifact_for_config", lambda artifact, config, angle: {"angle": angle})
+    monkeypatch.setattr(solver, "_zero_current_solve_mesh_artifact", lambda artifact: artifact)
+    monkeypatch.setattr(solver, "slot_current_pattern_matches", lambda *args: False)
+    monkeypatch.setattr(solver, "derive_congruent_solve_report", lambda base, **kwargs: deepcopy(base))
+    monkeypatch.setattr(solver, "build_solve_mesh_evidence", lambda *args, **kwargs: {"geometry_sha256": "test"})
+    monkeypatch.setattr(solver, "run_magneto2d_report", report)
+    monkeypatch.setattr(solver, "_assert_imported_mesh_consumed_by_rust", lambda *args, **kwargs: None)
+    monkeypatch.setattr(solver, "_aggregate_per_angle_mesh_sweep", lambda *args, **kwargs: {"sweep": {}})
+    monkeypatch.setattr(solver, "solver_setting", lambda name, default=None: "1" if name == "COILEM_MAGNETO2D_COMPACT_QA_REPORT" else default)
+    sweep, _ = solver._solve_with_per_angle_producer_meshes(config, Producer(), solve_cache_dir=None, clockwise_positive=True)
+    raw = sweep["sweep"]
+    assert raw["cogging_endpoints_independent"] is independent
+    record = cogging_record(
+        raw["cogging_rotor_positions_elec_deg"], raw["cogging_torque_waveform_nm"],
+        slot_count=12, pole_count=poles, method=raw["cogging_torque_method"],
+        independent_endpoints=raw["cogging_endpoints_independent"],
+    )
+    assert record is not None
+    assert (record.endpoint_mismatch_Nm is not None) is independent
+
+
+@pytest.mark.parametrize("independent", [True, False, None], ids=["independent", "reused", "historical-cache"])
+def test_postprocessing_preserves_endpoint_independence(independent) -> None:
+    from backend.solver import Magneto2DSolver
+    from backend.solver._helpers import _aggregate_per_angle_mesh_sweep
+
+    config = _config(back_emf=False, thd_analysis=False, flux_density=False)
+    native = {
+        "config_summary": {}, "mesh_info": {"num_triangles": 1000},
+        "operating_point": {"resolved_phase_current_peak_a": 5.0},
+        "solve_info": {"total_time_ms": 10},
+        "results": {"torque_nm": 1.0, "torque_arkkio_nm": 1.0, "peak_b_tooth_t": 1.0, "peak_b_yoke_t": 1.0},
+    }
+    report = _aggregate_per_angle_mesh_sweep(config, [native, native], None, [0.0, 180.0],
+                                             mesh_generation_time_ms=0, include_visual_frames=False)
+    angles, torque = _analytic(24)
+    report["sweep"].update(_cogging_sweep_series([
+        {"results": {"torque_nm": value, "torque_weighted_stress_nm": value}} for value in torque
+    ], angles, independent_endpoints=independent is True))
+    if independent is None:
+        del report["sweep"]["cogging_endpoints_independent"]
+    result = Magneto2DSolver.build_result_from_reports(config, report, native)
+    assert result.summary.cogging is not None
+    assert (result.summary.cogging.endpoint_mismatch_Nm is not None) is (independent is True)
 
 
 def test_the_sweep_series_select_the_cogging_method_and_remove_only_the_period_mean() -> None:
@@ -264,6 +354,20 @@ def test_a_zero_current_run_reports_the_cogging_sweep_not_its_loaded_swing() -> 
     record = result["summary"]["cogging"]
     assert f"Cogging torque p-p {_plain(record['peak_to_peak_Nm'])} N m" in text
     assert "From the cogging sweep" in text
+
+
+def test_pdf_and_csv_do_not_turn_an_unavailable_end_mismatch_into_zero() -> None:
+    result = _stored_result()
+    result["summary"]["cogging"]["endpoint_mismatch_Nm"] = None
+    config = deepcopy(EXAMPLE)
+    arguments = {"project": config, "request": {"resolved_config": config}, "result": result, "material": {}, "manifest": {}}
+    payload = _public_result_payload(SolveResult.model_validate(result))
+    assert payload["summary"]["cogging"]["endpoint_mismatch_Nm"] is None
+    rows = list(csv.reader(io.StringIO(build_public_run_csv(**arguments).decode("utf-8"))))
+    assert ["cogging", "endpoint_mismatch_Nm", "N m", "", ""] in rows
+    pdf = build_public_run_pdf(**arguments)
+    text = " ".join(" ".join(page.extract_text() or "" for page in pypdf.PdfReader(io.BytesIO(pdf)).pages).split())
+    assert "Unavailable (endpoints not independently meshed)" in text
 
 
 @pytest.mark.weekly

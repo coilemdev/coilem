@@ -1465,7 +1465,7 @@ assert.match(appSource, /parseDesignFile/);
 // The solve request's config serializer, shared by Solve and the Performance map (#142).
 const publicRequestSource = await readFile(path.join(frontendRoot, 'src/public/publicRequest.ts'), 'utf8');
 assert.match(appSource, /import \{ asPublicConfig \} from '\.\/publicRequest'/);
-assert.match(publicRequestSource, /cogging_torque: Boolean\(config\.solve_options\.cogging_torque\)/);
+// Cogging serialization for both solvers is exercised by test-cogging-view.mjs.
 assert.match(publicRequestSource, /thd_analysis: thdAnalysis/);
 assert.match(publicRequestSource, /solve_quality === 'standard'/);
 assert.match(publicRequestSource, /solve_quality === 'fine'/);

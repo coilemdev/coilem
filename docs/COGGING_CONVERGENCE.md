@@ -3,7 +3,7 @@
 [Public issue 185](https://github.com/coilemdev/coilem/issues/185) asks for the
 cogging torque method and angular step to be chosen from evidence, not by
 default. Cogging is a small difference of large stress contributions, and
-coilEM meshes every rotor position on its own, without a sliding band, so
+coilEM uses per-position meshes with slot-pitch reuse, without a sliding band, so
 remesh noise is the main risk. This study measures it on the 8p/12s example
 and fixes the defaults:
 
@@ -32,6 +32,10 @@ run's per-method numbers and its WST and contour waveforms.
   repeats at its end. The mean over the period, and the end mismatch
   |T(60°) − T(0°)| between two separately meshed copies of the same position,
   measure how far the per-position meshes are from that.
+  These endpoints are independent on this 8p/12s example. On motors whose
+  cogging period is one slot pitch, slot-pitch reuse can give both endpoints
+  the same mesh or solution. The app leaves end mismatch unavailable in
+  that case; a copied zero is not an independent noise measurement.
 
 ## Angular step
 

@@ -1013,7 +1013,7 @@ export function App() {
     setValidationError(null);
     try {
       const request: PublicSolveRequest = {
-        config: asPublicConfig(nextConfig),
+        config: asPublicConfig(nextConfig, selectedSolver),
         solver: selectedSolver,
         project_name: designName
           ?? `coilEM-${nextConfig.topology.toLowerCase()}-${nextConfig.rotor.pole_count}p${nextConfig.stator.slot_count}s`,
@@ -1157,7 +1157,7 @@ export function App() {
     setValidationError(null);
     try {
       const solveRequest: PublicSolveRequest = {
-        config: asPublicConfig(config),
+        config: asPublicConfig(config, selectedSolver),
         solver: selectedSolver,
         project_name: designName
           ?? `coilEM-${config.topology.toLowerCase()}-${config.rotor.pole_count}p${config.stator.slot_count}s`,
