@@ -6,7 +6,9 @@ import { defineConfig, devices } from '@playwright/test';
 
 const root = dirname(fileURLToPath(import.meta.url));
 mkdirSync(join(root, 'test-results'), { recursive: true });
-const runtime = mkdtempSync(join(root, 'test-results', 'performance-runtime-'));
+// Playwright also loads this config in workers; they must share the server's
+// chosen directory instead of creating another, unused runtime.
+const runtime = process.env.COILEM_ACCEPTANCE_RUNTIME || mkdtempSync(join(root, 'test-results', 'performance-runtime-'));
 process.env.COILEM_ACCEPTANCE_RUNTIME = runtime;
 const quote = (value: string) => process.platform === 'win32'
   ? `"${value.replaceAll('"', '""')}"` : `'${value.replaceAll("'", "'\\''")}'`;
