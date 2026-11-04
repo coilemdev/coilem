@@ -17,17 +17,17 @@ from .waveforms import (
 
 
 class SolveSummary(BaseModel):
-    avg_torque_Nm: float
+    avg_torque_Nm: float | None
     avg_torque_energy_fd_Nm: float | None = None
     avg_torque_coenergy_fd_Nm: float | None = None
     avg_torque_field_fd_Nm: float | None = None
     avg_torque_pm_source_work_fd_Nm: float | None = None
     avg_torque_current_source_work_fd_Nm: float | None = None
     torque_q_axis_Nm: float | None = None
-    torque_ripple_pct: float = Field(ge=0)
+    torque_ripple_pct: float | None = Field(ge=0)
     cogging_torque_Nm: float | None = Field(default=None, ge=0, description="Peak-to-peak cogging torque of the zero-current sweep")
     cogging: CoggingTorque | None = None
-    back_emf_fundamental_V: float = Field(ge=0)
+    back_emf_fundamental_V: float | None = Field(ge=0)
     back_emf_thd_pct: float | None = Field(default=None, ge=0)
     Kt_Nm_per_A: float | None = None
     Ke_Vs_per_rad_mech: float | None = Field(default=None, ge=0)
@@ -78,7 +78,7 @@ class SolveMetadata(BaseModel):
     reference_model: dict | None = None
     solver_name: str
     mesh_element_count: int = Field(ge=100)
-    rotor_positions: int = Field(ge=2)
+    rotor_positions: int = Field(ge=1)
     timestamp: datetime
     current_amplitude_A: float | None = Field(default=None, ge=0, le=1000)
     excitation_mode: str | None = None
@@ -88,6 +88,7 @@ class SolveMetadata(BaseModel):
     excitation_convention_version: str | None = None
     loaded_cycle_complete: bool | None = None
     back_emf_computed: bool | None = Field(default=None, description="Whether this run computed the no-load back-EMF sweep")
+    torque_sweep_computed: bool | None = Field(default=None, description="Whether loaded torque results were requested")
     rated_speed_rpm: int | None = Field(default=None, ge=0, le=30000)
     motor_input_dc_bus_V: float | None = Field(default=None, ge=1, le=2000)
     magnet_temperature_C: float | None = Field(default=None, ge=-50, le=300)

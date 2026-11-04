@@ -74,6 +74,8 @@ export function ResultSummary({
   const loadingHeadingId = useId();
   const assumptionsHeadingId = useId();
   const { summary, solve_metadata: metadata } = result;
+  const hasTorque = metadata.torque_sweep_computed !== false && summary.avg_torque_Nm !== null;
+  const hasBackEmf = metadata.back_emf_computed !== false && summary.back_emf_fundamental_V !== null;
   const rpm = config.solve_params.rated_speed_rpm;
   const preview = sixStep && !completeLoadedCycle ? ' · preview only' : '';
   const range = torqueRange(result.torque_waveform.torque_Nm);
@@ -89,8 +91,16 @@ export function ResultSummary({
   const scaleMaxT = loadingScaleMaxT([summary.peak_flux_density_teeth_T, summary.peak_flux_density_yoke_T]);
   const knee = saturationKneeRangeT(materials, config.materials.stator_steel);
   const thd = summary.back_emf_thd_pct;
+  const positionCounts = [
+    ...(hasTorque ? [`Torque ${result.torque_waveform.electrical_angle_deg.length}`] : []),
+    ...(hasBackEmf ? [`Back EMF ${result.back_emf_waveform.electrical_angle_deg.length}`] : []),
+    ...(result.cogging_torque_waveform ? [`Cogging ${result.cogging_torque_waveform.electrical_angle_deg.length}`] : []),
+    ...(summary.loss_breakdown ? [`Losses ${metadata.rotor_positions}`] : []),
+  ].join(' · ');
   const chips = [
-    sixStep
+    !hasTorque && !summary.loss_breakdown
+      ? 'No-current analyses'
+      : sixStep
       ? `${fixed(config.solve_params.current_amplitude_A)} A plateau`
       : `${fixed(config.solve_params.current_amplitude_A)} A ${config.solve_params.current_amplitude_convention}`,
     `${rpm.toLocaleString()} rpm · ${formatFrequencyHz(electricalFrequencyHz(rpm, config.rotor.pole_count))} Hz`,
@@ -98,7 +108,7 @@ export function ResultSummary({
       ? `${fixed(metadata.commutation_advance_deg ?? config.solve_params.commutation_advance_deg, 0)}° advance`
       : `${fixed(config.solve_params.current_angle_deg, 0)}° current angle`,
     sixStep ? 'Ideal six-step (120°)' : 'Sinusoidal',
-    `${metadata.rotor_positions} positions · ${metadata.mesh_density || 'native'} mesh`,
+    `${positionCounts} positions · ${metadata.mesh_density || 'native'} mesh`,
   ];
   // Solver, torque method and positions are in Run settings, so the footer
   // keeps only the timings.
@@ -126,7 +136,7 @@ export function ResultSummary({
         </section>
       </details>
       <div className="public-result-headline">
-        <article className="public-result-hero">
+        {hasTorque && <article className="public-result-hero">
           <span>Average torque{preview}</span>
           <div>
             <strong>{fixed(summary.avg_torque_Nm)} <small>N·m</small></strong>
@@ -142,8 +152,8 @@ export function ResultSummary({
               : `Ripple ${fixed(ripple.ripplePct, 1)}%`}{preview}
             {range ? ` · ${fixed(range.min)} – ${fixed(range.max)} N·m` : ''}
           </p>
-        </article>
-        <article className="public-result-emf">
+        </article>}
+        {hasBackEmf && <article className="public-result-emf">
           <span>Back EMF</span>
           <div>
             <strong>{fixed(summary.back_emf_fundamental_V)} <small>V</small></strong>
@@ -154,12 +164,12 @@ export function ResultSummary({
             )}
           </div>
           <p>Fundamental, rms line-to-neutral at {rpm.toLocaleString()} rpm</p>
-        </article>
-        <article>
+        </article>}
+        {hasTorque && <article>
           <span>Electromagnetic power{preview}</span>
           <strong>{power ? power.text : '—'} <small>{power?.unit ?? ''}</small></strong>
           <p>Torque × speed, before losses</p>
-        </article>
+        </article>}
       </div>
       <div className="public-result-detail">
         <MotorConstants summary={summary} variant="report" />
@@ -176,7 +186,7 @@ export function ResultSummary({
             Scale 0–{scaleMaxT} T.
             {knee ? ` Shaded: the stator steel's saturation knee, ${knee[0]}–${knee[1]} T.` : ' This steel declares no saturation knee.'}
           </p>
-          <p>{thd != null && Number.isFinite(thd) ? `${thdLabel} ${fixed(thd, 1)}%` : 'Back-EMF THD: not computed for this run'}</p>
+          {hasBackEmf && <p>{thd != null && Number.isFinite(thd) ? `${thdLabel} ${fixed(thd, 1)}%` : 'Back-EMF THD: not computed for this run'}</p>}
         </section>
         {/* Full width below the three compact cards: the cogging period and its harmonics (#185), then the losses. */}
         <CoggingCard result={result} poleCount={config.rotor.pole_count} variant="report" />

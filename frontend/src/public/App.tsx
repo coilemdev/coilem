@@ -57,6 +57,7 @@ import type {
 } from '../components/tutorials/lessonStage';
 import { designFileBaseName, parseDesignFile, saveDesignFileAs } from './designFile';
 import { asPublicConfig } from './publicRequest';
+import { setAnalysisOption, type AnalysisKey } from './analysisOptions';
 import { projectMaterialCatalog, type CustomSteel, type SteelTarget } from './customSteel';
 import { createPublicExampleDesign, type PublicExampleId } from './exampleDesigns';
 import {
@@ -892,9 +893,9 @@ export function App() {
     setNotice('Analysis settings changed. Updating the run estimate.');
   }, []);
 
-  const updateCoggingTorque = useCallback((enabled: boolean) => {
+  const updateAnalysis = useCallback((key: AnalysisKey, enabled: boolean) => {
     validationRequestId.current += 1;
-    setConfig((current) => ({ ...current, solve_options: { ...current.solve_options, cogging_torque: enabled } }));
+    setConfig((current) => setAnalysisOption(current, key, enabled));
     setValidation(null);
     setValidationChecking(false);
     setValidationError(null);
@@ -1812,7 +1813,7 @@ export function App() {
       onSolvePlanChange={updateSolvePlan}
       onCustomSweepChange={updateCustomSweep}
       onSolveSettingChange={updateSolveSetting}
-      onCoggingTorqueChange={updateCoggingTorque}
+      onAnalysisChange={updateAnalysis}
       onSolverChange={selectSolver}
       onReset={reset}
       onRefreshGeometry={() => void refreshGeometry(config)}

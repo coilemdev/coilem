@@ -9,9 +9,9 @@ class TorqueWaveform(BaseModel):
     """Torque as a function of rotor position."""
 
     electrical_angle_deg: list[float] = Field(
-        ..., min_length=2, description="Rotor electrical angles in degrees"
+        ..., description="Rotor electrical angles in degrees; empty when this analysis was not requested"
     )
-    torque_Nm: list[float] = Field(..., min_length=2, description="Torque values in N·m")
+    torque_Nm: list[float] = Field(..., description="Torque values in N·m; empty when this analysis was not requested")
     torque_energy_fd_Nm: Optional[list[float]] = Field(
         default=None,
         description=(
@@ -30,6 +30,13 @@ class TorqueWaveform(BaseModel):
         default=None,
         description="Magnetic co-energy samples used for finite-difference torque.",
     )
+
+    @field_validator("electrical_angle_deg")
+    @classmethod
+    def complete_or_unrequested(cls, value):
+        if len(value) == 1:
+            raise ValueError("a waveform needs at least two samples, or none when unrequested")
+        return value
 
     @field_validator(
         "torque_Nm",
@@ -76,11 +83,11 @@ class BackEMFWaveform(BaseModel):
     """Back-EMF waveform for all phases."""
 
     electrical_angle_deg: list[float] = Field(
-        ..., min_length=2, description="Rotor electrical angles in degrees"
+        ..., description="Rotor electrical angles in degrees; empty when this analysis was not requested"
     )
-    phase_a_V: list[float] = Field(..., min_length=2, description="Phase A back-EMF in V")
-    phase_b_V: list[float] = Field(..., min_length=2, description="Phase B back-EMF in V")
-    phase_c_V: list[float] = Field(..., min_length=2, description="Phase C back-EMF in V")
+    phase_a_V: list[float] = Field(..., description="Phase A back-EMF in V")
+    phase_b_V: list[float] = Field(..., description="Phase B back-EMF in V")
+    phase_c_V: list[float] = Field(..., description="Phase C back-EMF in V")
     line_ab_V: Optional[list[float]] = Field(
         default=None,
         description="Line-to-line back-EMF Vab = Va - Vb in V",
@@ -94,7 +101,14 @@ class BackEMFWaveform(BaseModel):
         description="Line-to-line back-EMF Vca = Vc - Va in V",
     )
 
-    @field_validator("phase_b_V", "phase_c_V", "line_ab_V", "line_bc_V", "line_ca_V")
+    @field_validator("electrical_angle_deg")
+    @classmethod
+    def complete_or_unrequested(cls, value):
+        if len(value) == 1:
+            raise ValueError("a waveform needs at least two samples, or none when unrequested")
+        return value
+
+    @field_validator("phase_a_V", "phase_b_V", "phase_c_V", "line_ab_V", "line_bc_V", "line_ca_V")
     @classmethod
     def phase_length_matches_angle(cls, v, info):
         """Phase voltage arrays must match angle array length."""

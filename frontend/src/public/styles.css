@@ -4856,3 +4856,10 @@ button.performance-tag { cursor: help; }
   .performance-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .chart-shell.performance-chart { padding: 10px 8px 4px; }
 }
+
+/* The analysis list chooses work independently of numerical accuracy. */
+.public-analysis-options { display: grid; gap: 14px; padding: 4px 0; }
+.public-analysis-option + .public-analysis-option { border-top: 1px solid var(--border-subtle); padding-top: 14px; }
+.public-analysis-option .public-check-row { display: flex; align-items: center; gap: 10px; }
+.public-analysis-hint { margin: 5px 0 0 28px; color: var(--text-muted); font-size: 12px; line-height: 1.5; }
+.public-analysis-option .public-plan-advisory { margin-top: 10px; }

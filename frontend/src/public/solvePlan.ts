@@ -59,7 +59,7 @@ export function applyPublicSolvePreset(
     ...config,
     solve_options: {
       ...config.solve_options,
-      thd_analysis: solvePlan === 'standard' || solvePlan === 'fine',
+      thd_analysis: config.solve_options.back_emf && (solvePlan === 'standard' || solvePlan === 'fine'),
     },
     solve_params: {
       ...config.solve_params,

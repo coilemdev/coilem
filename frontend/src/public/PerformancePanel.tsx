@@ -472,7 +472,7 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
   const solvedRmsA = losses?.phase_current_rms_A ?? null;
   const solvedShown = solvedRmsA !== null ? units.fromPeak(solvedRmsA * Math.SQRT2) : null;
   const ratedSpeed = config.solve_params.rated_speed_rpm;
-  const solvedPoint: SolvedPoint | null = ratedSpeed > 0 && Number.isFinite(summary.avg_torque_Nm) && summary.avg_torque_Nm > 0
+  const solvedPoint: SolvedPoint | null = ratedSpeed > 0 && typeof summary.avg_torque_Nm === 'number' && Number.isFinite(summary.avg_torque_Nm) && summary.avg_torque_Nm > 0
     ? {
       speedRpm: ratedSpeed,
       torqueNm: summary.avg_torque_Nm,

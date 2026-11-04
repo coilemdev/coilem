@@ -169,6 +169,8 @@ def point_config(
         update={
             "back_emf": current_peak_A == 0 if no_load_sweep is None else no_load_sweep,
             "cogging_torque": False,
+            "torque_sweep": True,
+            "losses_efficiency": True,
             "thd_analysis": False,
             "torque_speed_envelope": False,
         }

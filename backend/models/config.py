@@ -637,6 +637,7 @@ class SolveOptionsConfig(BaseModel):
     back_emf: bool = Field(default=True, description="Run no-load back-EMF sweep")
     flux_density: bool = Field(default=True, description="Extract flux density map")
     cogging_torque: bool = Field(default=False, description="Run zero-current cogging torque sweep")
+    losses_efficiency: bool = Field(default=True, description="Compute operating-point losses and efficiency; requires a loaded field sweep")
     torque_speed_envelope: bool = Field(default=False, description="Run solver-derived torque-speed sweep")
     thd_analysis: bool = Field(
         default=False,

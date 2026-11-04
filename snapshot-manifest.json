@@ -65,8 +65,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 14422,
-      "sha256": "bb5666ba13c55af8192000fe772a947e675e3a749f5a7192bec9cd458e8711a2"
+      "bytes": 14417,
+      "sha256": "acba1190e5c8ae80ea6f5d7580eac4dc3412757cff38c4e2785a4a4cef4604ce"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -220,8 +220,8 @@
     },
     {
       "path": "backend/elmer/adapter.py",
-      "bytes": 41266,
-      "sha256": "181236b39846057c46892ac4ee698e30846683b35ad323f063d6fc61f7c24808"
+      "bytes": 41877,
+      "sha256": "847f6bf138af2d668c3a510db615be909e48206f37351d3ff2ac54ca029f87a9"
     },
     {
       "path": "backend/elmer/capabilities.py",
@@ -290,8 +290,8 @@
     },
     {
       "path": "backend/flux_linkage_map.py",
-      "bytes": 16980,
-      "sha256": "620bffe0cfbaacc05c78d1e7589cc804b477f6b45fa2f97b8cd6910976a82f8a"
+      "bytes": 17053,
+      "sha256": "bca2c73c048aea6bd3a386e65a9c7f02ae2e046789cd1718cd709f9fdcfe780f"
     },
     {
       "path": "backend/geometry.py",
@@ -470,8 +470,8 @@
     },
     {
       "path": "backend/models/config.py",
-      "bytes": 30112,
-      "sha256": "a952b7de1d095d93f1ec460c14d4360aab19cd23df49857fbb3e28c90e14590c"
+      "bytes": 30254,
+      "sha256": "70787e0effbc13a383ede3638f0b614ed398162107f95642a87b2c1e506f6698"
     },
     {
       "path": "backend/models/errors.py",
@@ -500,13 +500,13 @@
     },
     {
       "path": "backend/models/result.py",
-      "bytes": 7751,
-      "sha256": "64622dc3817f40afb00e8c060b67fdc9350fed5b47e896281087e2f4eb51af77"
+      "bytes": 7893,
+      "sha256": "97bb0bb371f319b82f5836ec5352d59ed69d4519502e2db1c20ee87b297d16b3"
     },
     {
       "path": "backend/models/waveforms.py",
-      "bytes": 5817,
-      "sha256": "c1a0ed0f29043b8a4cf6c2d4a9667726c8c71f59bf75aab6b7ed9fbcab334b70"
+      "bytes": 6384,
+      "sha256": "797a83fc318429cda57b8119367282323d1be3676780c28820aecce897389876"
     },
     {
       "path": "backend/performance_report.py",
@@ -550,13 +550,13 @@
     },
     {
       "path": "backend/public_policy.py",
-      "bytes": 12565,
-      "sha256": "2a08f237f22ac4537676b577ca15a9243ad5c4c4bc3ef3768f4228f61d30955d"
+      "bytes": 12878,
+      "sha256": "b2b1c656b55d92ff28fb2db479eccb1d57cec21cffb8e102161679435e986a38"
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 85528,
-      "sha256": "63f6129907ad19372b07a901de60703935db09aaaa8dd4d1ecf345ecbd0391a4"
+      "bytes": 85953,
+      "sha256": "1f69112fbb5bc37e831d227f9a2b02e0355a4b7e44ef4516e1cfc0ca1dc5ad84"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -585,8 +585,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 51578,
-      "sha256": "caa4ff56502a4e3d21eb1b723a1dad7d3bfe6bf253365447ef9241b3da38b900"
+      "bytes": 52163,
+      "sha256": "5b01a5f3005b05eae22ddab1600ec2831c62bcf2e2eecc9a78cde583a381a593"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -645,13 +645,13 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 152969,
-      "sha256": "7a929faf5640e92e33984a2e386dc0ee3415a7dac668a0e85f668b7a6aa3cec8"
+      "bytes": 154317,
+      "sha256": "2b75e01f885054ff5d88a7fef12901c1bbcb61220e3757795e8e9238ff6ae7a4"
     },
     {
       "path": "backend/solver/_helpers.py",
-      "bytes": 63583,
-      "sha256": "9cd8ffa05eb0acab7f7b6c94b386ad2da591097e69cd08d414aa518d4c790096"
+      "bytes": 63728,
+      "sha256": "b3acff8a6f0c7d5a8253a06a9e1175866defe117e85d6f564ea9e2766f3ce8b1"
     },
     {
       "path": "backend/solver/_mesh_pool.py",
@@ -685,8 +685,8 @@
     },
     {
       "path": "backend/sweep_planning.py",
-      "bytes": 6538,
-      "sha256": "8a8173b35a32688ae86aa073537d23ba7c23781dbe9b4ecdd4aacba01213ae97"
+      "bytes": 6818,
+      "sha256": "26211c44bb637a8472b468a612737e4847040c189b5aba2ced56e24025afe77c"
     },
     {
       "path": "backend/topology_provenance.py",
@@ -5960,8 +5960,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 14407,
-      "sha256": "b3e7e8e623e115e8da9f01fca6b521ae5c650e9ecf05f2ee01991361780e6fe7"
+      "bytes": 14841,
+      "sha256": "22d0607001488654a982064c77e622aac5c10434f6835533b096445444250a96"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -6420,8 +6420,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2605,
-      "sha256": "7452d8c72f9783396811f1b308cc91fdbc6a8303d2367ae3351e178d2a010f4d"
+      "bytes": 2647,
+      "sha256": "91ee9422f8289c63cda39e024500a8771738fb856c460388966f0688e6f879e4"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 162916,
-      "sha256": "4f9573378f5acadc313e4aa64e68ab12b432aae124af29b428954205bd309ac6"
+      "bytes": 162774,
+      "sha256": "c603e9ce29c97ba12a1a1dc5f7f9cf9b9613907198c6bf51fb2f205ba2384cc8"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6995,8 +6995,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 72688,
-      "sha256": "9b78bee9acb29459162cb04a3446a1cdb8bfb662aa51a3f092a230b61e75212a"
+      "bytes": 72718,
+      "sha256": "9d7074578af58ab63ada3aff6d230d9b30abed00ca8f3bb2b561c88d41090d4e"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 233392,
-      "sha256": "ee30caf6e63d89ef4ef67868e72733ce72afa4ed2a7e2306a1dfab4d5ca75bad"
+      "bytes": 236535,
+      "sha256": "20445cec453ede9e430a7749a07a2ab38cd64fa71737eff9fc07f339155d787c"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7060,8 +7060,8 @@
     },
     {
       "path": "frontend/src/public/PerformancePanel.tsx",
-      "bytes": 46628,
-      "sha256": "bd31d9304400f7e65563cdf17a1b44c883ecac308dbd780177473209610ecce4"
+      "bytes": 46673,
+      "sha256": "4a83463af2c2705b278775ea410e2a5c88bb61b9682e36261d35eee5be80bb10"
     },
     {
       "path": "frontend/src/public/Popover.tsx",
@@ -7090,8 +7090,8 @@
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
-      "bytes": 9323,
-      "sha256": "6c1fc8beaf96bb508c8b0d0fd01369accbbf99df88f739f575679107db1c39ea"
+      "bytes": 10084,
+      "sha256": "5f2bf1c18b21f088b1eb66d65c5288e559129f4a3a174826418b3a3deb94e4d2"
     },
     {
       "path": "frontend/src/public/RpmField.tsx",
@@ -7180,8 +7180,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "bytes": 14533,
-      "sha256": "c24e519431b400bb10834863ab2f25afb164944d68720c1e1a95cd6e8cada711"
+      "bytes": 14818,
+      "sha256": "1c5c5b5a5be7765f1bd0c7e52ccf3017633f0ae6e395af4e543bce4c00e590f2"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -7410,8 +7410,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 21979,
-      "sha256": "ead64ab55c25e8ce2e6eebd9fd746c65d13157ba2d6ddc0790b185f90e91076c"
+      "bytes": 22224,
+      "sha256": "36f9fa696d6f94911c733e0429f710767512f798a841ec263db68a4dd3b054ee"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -7465,8 +7465,8 @@
     },
     {
       "path": "frontend/src/public/publicRequest.ts",
-      "bytes": 904,
-      "sha256": "40602c74d4ae6d0c3779544c8bcb287d8265491b2232390eb4bc45ce204ba43b"
+      "bytes": 1035,
+      "sha256": "1bbe200dbab7d44da512874959652e336472c72077486dc5b90b1e217d8693b8"
     },
     {
       "path": "frontend/src/public/pyleecanReferenceNotice.ts",
@@ -7480,13 +7480,13 @@
     },
     {
       "path": "frontend/src/public/resultMetrics.ts",
-      "bytes": 6738,
-      "sha256": "f9809afcc87c6ef775e355278c7daff0dd83da4730d25a384ba1449079f393e7"
+      "bytes": 6811,
+      "sha256": "8de831f462409f13f25a0b104f75db69a771e533c6a4ba28355ff1c3f028a6f3"
     },
     {
       "path": "frontend/src/public/solvePlan.ts",
-      "bytes": 2018,
-      "sha256": "86b49e2085d08edd7c34fdb2eeef5a22ddb96573d4732ed4141df635e1b2c211"
+      "bytes": 2053,
+      "sha256": "c0a2a482e97f1c0320f779aa8c19509e09211318f805dfdfd4f1766726c7aa5e"
     },
     {
       "path": "frontend/src/public/solveProgress.ts",
@@ -7495,8 +7495,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 284676,
-      "sha256": "19a8a1a5d266cbc83447829888a1f1db2f7b2744b83340c206de0da1fe24ecb9"
+      "bytes": 285209,
+      "sha256": "c0d7219dc6f18b921b85191a1591810a5d3ea651403ef67865d184ceb2d70908"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7555,8 +7555,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 28124,
-      "sha256": "e4f0ff535303f0cb60f5ef5c93932c385eb1e0a9b0f22ff4126cb13e8c9fee46"
+      "bytes": 33104,
+      "sha256": "05ca02d6516c8856cf7f23b0b16b5edd769dd1400497585ae5b460d463460488"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -11587,6 +11587,26 @@
       "path": "docs/benchmarks/cogging-windows-20261103/waveforms.json",
       "bytes": 32600,
       "sha256": "41710e456e92dec3d6e3da847b8aaca021299c7bb58a95386abd1fc03f205354"
+    },
+    {
+      "path": "frontend/scripts/test-analysis-options.mjs",
+      "bytes": 2674,
+      "sha256": "86c498af140874656150c2dc854615445c82685f805ab9657e57afb090f55a00"
+    },
+    {
+      "path": "frontend/src/public/AnalysisSelector.tsx",
+      "bytes": 2185,
+      "sha256": "afa4c8b528201f7ec24af50f989bec401ddd1412729bccde3d8d5f192a0f8f31"
+    },
+    {
+      "path": "frontend/src/public/analysisOptions.ts",
+      "bytes": 2438,
+      "sha256": "813cf73998945f6ea02cad3c3fb069f0d777df14983bb0d796495a987936d1f5"
+    },
+    {
+      "path": "tests/test_analysis_options.py",
+      "bytes": 9331,
+      "sha256": "9fcf7dcbfca7690dbf2aafd0eb2ecb4f3e1b9856328a6d99f1c2f0c0dff8087a"
     }
   ],
   "public_patches": [
@@ -30999,6 +31019,186 @@
       "path": "tests/test_cogging_phase_e.py",
       "source_sha256": "0bf22ef5cf27ee550877af34b80d0456437c254550044ec5f0827d7ea8651db0",
       "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "README.md",
+      "source_sha256": "acba1190e5c8ae80ea6f5d7580eac4dc3412757cff38c4e2785a4a4cef4604ce",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/elmer/adapter.py",
+      "source_sha256": "847f6bf138af2d668c3a510db615be909e48206f37351d3ff2ac54ca029f87a9",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/flux_linkage_map.py",
+      "source_sha256": "bca2c73c048aea6bd3a386e65a9c7f02ae2e046789cd1718cd709f9fdcfe780f",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/models/config.py",
+      "source_sha256": "70787e0effbc13a383ede3638f0b614ed398162107f95642a87b2c1e506f6698",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/models/result.py",
+      "source_sha256": "97bb0bb371f319b82f5836ec5352d59ed69d4519502e2db1c20ee87b297d16b3",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/models/waveforms.py",
+      "source_sha256": "797a83fc318429cda57b8119367282323d1be3676780c28820aecce897389876",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/public_policy.py",
+      "source_sha256": "b2b1c656b55d92ff28fb2db479eccb1d57cec21cffb8e102161679435e986a38",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/public_report.py",
+      "source_sha256": "1f69112fbb5bc37e831d227f9a2b02e0355a4b7e44ef4516e1cfc0ca1dc5ad84",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "5b01a5f3005b05eae22ddab1600ec2831c62bcf2e2eecc9a78cde583a381a593",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "2b75e01f885054ff5d88a7fef12901c1bbcb61220e3757795e8e9238ff6ae7a4",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/solver/_helpers.py",
+      "source_sha256": "b3acff8a6f0c7d5a8253a06a9e1175866defe117e85d6f564ea9e2766f3ce8b1",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/sweep_planning.py",
+      "source_sha256": "26211c44bb637a8472b468a612737e4847040c189b5aba2ced56e24025afe77c",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "docs/GETTING_STARTED.md",
+      "source_sha256": "22d0607001488654a982064c77e622aac5c10434f6835533b096445444250a96",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/package.json",
+      "source_sha256": "91ee9422f8289c63cda39e024500a8771738fb856c460388966f0688e6f879e4",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/scripts/test-analysis-options.mjs",
+      "source_sha256": "86c498af140874656150c2dc854615445c82685f805ab9657e57afb090f55a00",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "c603e9ce29c97ba12a1a1dc5f7f9cf9b9613907198c6bf51fb2f205ba2384cc8",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/AnalysisSelector.tsx",
+      "source_sha256": "afa4c8b528201f7ec24af50f989bec401ddd1412729bccde3d8d5f192a0f8f31",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "9d7074578af58ab63ada3aff6d230d9b30abed00ca8f3bb2b561c88d41090d4e",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "20445cec453ede9e430a7749a07a2ab38cd64fa71737eff9fc07f339155d787c",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "4a83463af2c2705b278775ea410e2a5c88bb61b9682e36261d35eee5be80bb10",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "5f2bf1c18b21f088b1eb66d65c5288e559129f4a3a174826418b3a3deb94e4d2",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/analysisOptions.ts",
+      "source_sha256": "813cf73998945f6ea02cad3c3fb069f0d777df14983bb0d796495a987936d1f5",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "1c5c5b5a5be7765f1bd0c7e52ccf3017633f0ae6e395af4e543bce4c00e590f2",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "36f9fa696d6f94911c733e0429f710767512f798a841ec263db68a4dd3b054ee",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/publicRequest.ts",
+      "source_sha256": "1bbe200dbab7d44da512874959652e336472c72077486dc5b90b1e217d8693b8",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/resultMetrics.ts",
+      "source_sha256": "8de831f462409f13f25a0b104f75db69a771e533c6a4ba28355ff1c3f028a6f3",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/solvePlan.ts",
+      "source_sha256": "c0a2a482e97f1c0320f779aa8c19509e09211318f805dfdfd4f1766726c7aa5e",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "c0d7219dc6f18b921b85191a1591810a5d3ea651403ef67865d184ceb2d70908",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "05ca02d6516c8856cf7f23b0b16b5edd769dd1400497585ae5b460d463460488",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_analysis_options.py",
+      "source_sha256": "9fcf7dcbfca7690dbf2aafd0eb2ecb4f3e1b9856328a6d99f1c2f0c0dff8087a",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
     }
   ]
 }

@@ -166,7 +166,7 @@ serves the UI and API together and opens `http://127.0.0.1:2645`. See
   Iron loss is available for M350-50A and for the Pyleecan Prius's M400-50A.
 - A magnet temperature under Solve → Operating point. Br and HcJ are derated
   from the grade's cited coefficients for N35, N42, N48, N52 and N48SH.
-- Cogging torque, under Solve → Accuracy plan (on `main`, for 0.5.1). It
+- Cogging torque, under Solve → Analysis (on `main`, for 0.5.1). It
   solves one cogging period with no current; Results, the run PDF and the CSV
   give the waveform, peak-to-peak and peak, the harmonics per mechanical
   revolution and the share of the loaded torque. Experimental until it has a

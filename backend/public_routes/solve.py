@@ -55,7 +55,7 @@ from backend.solve_workspace import (
 )
 from backend.solver import Magneto2DSolver
 from backend.solver_contract import SolveCancelledError, Solver
-from backend.sweep_planning import cogging_positions_per_period, loaded_sweep_plan
+from backend.sweep_planning import cogging_angle_grid, cogging_positions_per_period, full_cycle_back_emf_angle_grid, loaded_sweep_plan
 
 router = APIRouter()
 
@@ -1193,6 +1193,13 @@ async def validate_solve(body: dict[str, Any]) -> dict[str, Any]:
         "step_deg": solve_params.effective_step_deg(),
         "sweep_positions": sweep_positions,
         "cogging_positions_per_period": cogging_positions_per_period(config),
+        "analysis_positions": {
+            "torque_sweep": sweep_positions if config.solve_options and config.solve_options.torque_sweep else 0,
+            "back_emf": len(full_cycle_back_emf_angle_grid(config, []))
+            if config.solve_options and (config.solve_options.back_emf or config.solve_options.thd_analysis) else 0,
+            "cogging_torque": len(cogging_angle_grid(config)),
+            "losses_efficiency": sweep_positions if config.solve_options and config.solve_options.losses_efficiency else 0,
+        },
         "qualification": classify_qualification(config),
         "solver_lane": {
             "native_supported": True,

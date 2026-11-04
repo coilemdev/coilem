@@ -156,6 +156,13 @@ The Solve stage begins preparing a mesh when it does not already have one.
 You can also open **Advanced options → Mesh preparation** and select
 **Prepare mesh** explicitly.
 
+Under **Analysis**, Torque and Back EMF start on. Cogging torque and
+Losses & efficiency are optional. Each analysis can run on its own: Back EMF
+and cogging use zero current and do not run a loaded torque sweep. Losses &
+efficiency includes the loaded fields it needs even when Torque is off.
+Selecting an accuracy preset keeps your analysis choices. Unrequested results
+are left out of Results and exports rather than reported as zero.
+
 For the first run, keep **Accuracy plan → Standard**:
 
 - **Medium** mesh density (the `normal` configuration value);
@@ -195,7 +202,7 @@ Keep both terminals open until the solve finishes. **Cancel solve** requests a
 clean stop and records the attempt as cancelled rather than publishing it as a
 completed run.
 
-Tick **Cogging torque** under **Accuracy plan** to add a no-current sweep over
+Tick **Cogging torque** under **Analysis** to add a no-current sweep over
 one cogging period, 180·gcd(slots, poles)/slots electrical degrees, at 12, 24
 or 48 positions per period for Preview, Standard and High accuracy, plus the
 repeated end. The run estimate includes it. Cogging torque is experimental: it

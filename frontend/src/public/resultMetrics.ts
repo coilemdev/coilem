@@ -17,8 +17,8 @@ export function formatFrequencyHz(hz: number): string {
 }
 
 /** Air-gap power before losses, T · ω, as a value and unit (W below 1 kW). */
-export function electromagneticPower(avgTorqueNm: number, rpm: number): { text: string; unit: 'W' | 'kW' } | null {
-  if (!Number.isFinite(avgTorqueNm) || !Number.isFinite(rpm)) return null;
+export function electromagneticPower(avgTorqueNm: number | null, rpm: number): { text: string; unit: 'W' | 'kW' } | null {
+  if (typeof avgTorqueNm !== 'number' || !Number.isFinite(avgTorqueNm) || !Number.isFinite(rpm)) return null;
   const watts = avgTorqueNm * rpm * 2 * Math.PI / 60;
   return Math.abs(watts) >= 1000
     ? { text: formatSignificant(watts / 1000).replace(/^-/, '−'), unit: 'kW' }
@@ -61,7 +61,7 @@ export function torqueRippleView(result: Pick<SolveResult, 'summary' | 'torque_w
   const current = result.solve_metadata?.current_amplitude_A;
   const noLoad = typeof current === 'number' && Number.isFinite(current) && Math.abs(current) < 1e-9;
   const average = result.summary.avg_torque_Nm;
-  const averageTooSmall = peakToPeak !== null && peakToPeak > 0 && Number.isFinite(average)
+  const averageTooSmall = peakToPeak !== null && peakToPeak > 0 && typeof average === 'number' && Number.isFinite(average)
     && Math.abs(average) < RIPPLE_MIN_AVERAGE_FRACTION * peakToPeak;
   if (!noLoad && !averageTooSmall) {
     return { ripplePct: result.summary.torque_ripple_pct, peakToPeakNm: null, peakToPeakLabel: 'Torque p-p', note: null };

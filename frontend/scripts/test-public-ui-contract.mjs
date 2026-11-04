@@ -272,7 +272,7 @@ assert.match(workspaceSource, /className="public-solve-footer"/);
 assert.match(workspaceSource, /function ExcitationRunPlanPreview/);
 assert.match(workspaceSource, /runPlanSinePath/);
 assert.match(workspaceSource, /runPlanSixStepPath/);
-assert.match(workspaceSource, /<ExcitationRunPlanPreview config=\{config\} \/>/);
+assert.match(workspaceSource, /<ExcitationRunPlanPreview config=\{config\} currentEnabled=\{currentEnabled\} \/>/);
 assert.match(workspaceSource, /Six-step BLDC/);
 assert.match(workspaceSource, /Two phases on · one phase floating · wye/);
 assert.match(styleSource, /\.public-excitation-preview-plot \.phase-a/);
@@ -293,7 +293,7 @@ assert.doesNotMatch(solvedFieldSource, /onCancelArmature|armatureProgress/);
 assert.match(workspaceSource, /\(busy === 'mesh' \|\| busy === 'solve' \|\| busy === 'field'\) && <LiveSolveMonitor/);
 assert.match(workspaceSource, /\{statorField \? 'Stator field extraction' : 'Live solve'\}/);
 assert.match(workspaceSource, /Magnets off \(Br = 0\), solved at each rotor position for the Stator view\./);
-assert.match(workspaceSource, /\{!statorField && <>\s*<CompactLiveChart/);
+assert.match(workspaceSource, /\{!statorField && <>[\s\S]*?label="Torque"/);
 // Completed results collapse the Analysis section; the stator-only run opens it for its card and restores it after.
 assert.match(workspaceSource, /if \(busy === 'field'\) \{\s*if \(analysisOpenBeforeFieldRef\.current !== null\) return;\s*analysisOpenBeforeFieldRef\.current = analysisDetailsOpen;\s*setAnalysisDetailsOpen\(true\);/);
 assert.match(workspaceSource, /if \(!error\) setAnalysisDetailsOpen\(analysisOpenBeforeFieldRef\.current\);/);
@@ -778,7 +778,7 @@ assert.match(workspaceSource, /onSolvePlanChange\(plan\.value\)/);
 assert.match(workspaceSource, />Custom\.\.\.<\/span>/);
 assert.match(workspaceSource, /label="Step Size \(° elec\)"/);
 assert.match(workspaceSource, /PUBLIC_CUSTOM_SWEEP_DEFAULT_STEP_DEG/);
-assert.match(workspaceSource, /360° electrical sweep/);
+assert.match(workspaceSource, /No-current electrical sweep/);
 assert.doesNotMatch(workspaceSource, /EMF \+ THD/);
 assert.match(workspaceSource, /className="public-custom-sweep-estimate" aria-live="polite"/);
 assert.match(styleSource, /\.public-custom-sweep-body \{[\s\S]*?grid-template-columns: minmax\(0, 1fr\) minmax\(118px, \.95fr\)/);
@@ -804,9 +804,8 @@ assert.doesNotMatch(workspaceSource, /<span>Solver<\/span><strong>Magneto2D<\/st
 assert.match(workspaceSource, /public-output-chips/);
 assert.match(workspaceSource, /Three-phase back EMF/);
 assert.doesNotMatch(workspaceSource, /Include cogging torque sweep/);
-// Cogging torque (#185): an option on the Accuracy plan, a Results tab only for a run with a cogging sweep.
-assert.match(workspaceSource, /onCoggingTorqueChange\(event\.target\.checked\)/);
-assert.match(workspaceSource, /coggingPlanNote\(config\.stator\.slot_count, config\.rotor\.pole_count, validation\?\.cogging_positions_per_period, config\.solve_params\.corner_refinement\)/);
+// Analysis selection is separate from the Accuracy plan; behavior is covered by the analysis and browser tests.
+assert.match(workspaceSource, /<ParameterSectionBlock id="analysis" label="Analysis"/);
 assert.match(workspaceSource, /const coggingWaveform = result\.summary\.cogging \? result\.cogging_torque_waveform : null;/);
 assert.match(workspaceSource, /\{coggingWaveform && <button type="button" role="tab"[^\n]*>Cogging<\/button>\}/);
 assert.doesNotMatch(workspaceSource, /<SelectRow[^>]*label="Torque method"/);
@@ -1026,7 +1025,7 @@ assert.match(workspaceSource, /formatNumber\(ripple\.ripplePct\), ripple\.ripple
 // No current: ripple % is left out and the cogging swing shown (resultMetrics torqueRippleView).
 assert.match(workspaceSource, /\{ripple\.ripplePct === null && resultRow\(ripple\.peakToPeakLabel, formatNumber\(ripple\.peakToPeakNm\), 'N·m'/);
 assert.doesNotMatch(workspaceSource, /result\.summary\.torque_ripple_pct/);
-assert.equal((workspaceSource.match(/\{rippleRows\}/g) ?? []).length, 2, 'Key results and Performance share the ripple rows');
+assert.equal((workspaceSource.match(/\{(?:hasTorque && )?rippleRows\}/g) ?? []).length, 2, 'Key results and Performance share the ripple rows');
 assert.match(resultSummarySource, /ripple\.ripplePct === null\s*\? `\$\{ripple\.peakToPeakLabel\} \$\{fixed\(ripple\.peakToPeakNm\)\} N·m`/);
 assert.match(workspaceSource, /formatNumber\(result\.summary\.back_emf_thd_pct\), '%'\)/);
 assert.doesNotMatch(workspaceSource, /(?:torque_ripple_pct|back_emf_thd_pct)\)\}%/);
@@ -1484,7 +1483,7 @@ assert.match(workspaceSource, /progressPercent/);
 assert.match(workspaceSource, /Live solve status/);
 assert.match(workspaceSource, /Waiting for samples/);
 assert.match(workspaceSource, /Analysis is still running/);
-assert.match(workspaceSource, /Building torque, Back-EMF, field plots/);
+assert.match(workspaceSource, /Building selected results, field plots/);
 assert.match(workspaceSource, /Building waveform from solved fields/);
 assert.match(workspaceSource, /BackEMFHarmonicSpectrum/);
 // The Back EMF spectrum is a vertical column chart like an FFT plot, with
@@ -1518,14 +1517,14 @@ assert.match(workspaceSource, /Completed solver results/);
 assert.match(workspaceSource, /Completed result plots/);
 assert.match(workspaceSource, /state="complete" positionLink=\{positionLink\} label="Torque"/);
 assert.match(workspaceSource, /state="complete" positionLink=\{positionLink\} label="Three-phase back EMF"/);
-assert.doesNotMatch(workspaceSource, /state="complete" label="Cogging torque"/);
+assert.match(workspaceSource, /state="complete" label="Cogging torque"/);
 assert.match(workspaceSource, /Resize completed results panel/);
 assert.match(workspaceSource, /role="separator"/);
 assert.match(workspaceSource, /window\.addEventListener\('pointermove', handlePointerMove\)/);
 assert.match(workspaceSource, /onKeyDown=\{handleRunPlanResizeKey\}/);
 // "Solver waveforms" heads the plots, after the metrics and Motor constants (#110).
 assert.match(workspaceSource, /<span className="public-section-kicker">Completed results<\/span>\s*<button/);
-assert.match(workspaceSource, /<MotorConstants summary=\{result\.summary\} \/>[\s\S]{0,900}?className="public-result-list-toggle"[\s\S]{0,600}?<strong className="public-completed-waveforms-heading">Solver waveforms<\/strong>\s*<div className="public-compact-result-tabs"/);
+assert.match(workspaceSource, /<MotorConstants summary=\{result\.summary\} \/>[\s\S]*?className="public-result-list-toggle"[\s\S]*?<strong className="public-completed-waveforms-heading">Solver waveforms<\/strong>\s*<div className="public-compact-result-tabs"/);
 // Completed results open on four key numbers (average torque, ripple, back EMF,
 // Kt); one toggle shows the full performance and motor-constant tables.
 assert.match(workspaceSource, /const \[showAllResults, setShowAllResults\] = useState\(false\);/);

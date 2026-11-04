@@ -359,10 +359,6 @@ class ElmerSolver(Solver):
         if config.materials.stator_steel != "M350-50A" or config.materials.rotor_steel != "M350-50A":
             raise ElmerUnsupportedError("Elmer v1 requires M350-50A stator and rotor steel")
         solve_options = config.solve_options or SolveOptionsConfig()
-        if not solve_options.torque_sweep:
-            raise ElmerUnsupportedError(
-                "Elmer v1 requires torque_sweep=true; a no-load-only result contract is not implemented"
-            )
         if solve_options.torque_speed_envelope:
             raise ElmerUnsupportedError(
                 "Elmer v1 does not implement torque_speed_envelope"
@@ -671,6 +667,11 @@ class ElmerSolver(Solver):
             if self._launch_surface
             else config
         )
+        if not solve_options.torque_sweep and not solve_options.losses_efficiency:
+            assert loaded_config.solve_params is not None
+            loaded_config = loaded_config.model_copy(update={
+                "solve_params": loaded_config.solve_params.model_copy(update={"current_amplitude_A": 0.0})
+            })
         loaded_angles = loaded_angle_grid(config)
         loaded_workers = resolve_elmer_angle_workers(len(loaded_angles))
         pool_workers = resolve_elmer_angle_workers(MAX_ELMER_ANGLE_WORKERS)
@@ -801,7 +802,7 @@ class ElmerSolver(Solver):
             voltage_a = [0.0] * len(no_load_angles)
             voltage_b = [0.0] * len(no_load_angles)
             voltage_c = [0.0] * len(no_load_angles)
-            fundamental_rms = 0.0
+            fundamental_rms = None
             back_emf_thd = None
             harmonic_analysis = None
 
@@ -833,9 +834,9 @@ class ElmerSolver(Solver):
         rms_teeth, rms_yoke = _area_weighted_steel_rms(loaded_results)
         peak_teeth = max(result.peak_b_tooth_t for result in loaded_results)
         peak_yoke = max(result.peak_b_yoke_t for result in loaded_results)
-        assert config.solve_params is not None
-        current_peak = float(config.solve_params.current_amplitude_A)
-        if config.solve_params.current_amplitude_convention == "rms":
+        assert loaded_config.solve_params is not None
+        current_peak = float(loaded_config.solve_params.current_amplitude_A)
+        if loaded_config.solve_params.current_amplitude_convention == "rms":
             current_peak *= math.sqrt(2.0)
         kt, ke, lambda_pm = compute_machine_constants(
             avg_torque_Nm=average_torque,
@@ -848,9 +849,9 @@ class ElmerSolver(Solver):
         solver_version = self.capabilities.solver_version or "unknown"
         result = SolveResult(
             summary=SolveSummary(
-                avg_torque_Nm=average_torque,
-                torque_q_axis_Nm=torque_at_q_axis_nm(loaded_angles, torques),
-                torque_ripple_pct=_ripple(torques, average_torque),
+                avg_torque_Nm=average_torque if solve_options.torque_sweep else None,
+                torque_q_axis_Nm=torque_at_q_axis_nm(loaded_angles, torques) if solve_options.torque_sweep else None,
+                torque_ripple_pct=_ripple(torques, average_torque) if solve_options.torque_sweep else None,
                 cogging_torque_Nm=max(
                     (abs(value) for value in cogging_torques), default=0.0
                 )
@@ -873,7 +874,7 @@ class ElmerSolver(Solver):
                 back_emf_line_thd_h24_pct=(
                     harmonic_analysis.line_ab_thd_h24_pct if harmonic_analysis else None
                 ),
-                Kt_Nm_per_A=kt,
+                Kt_Nm_per_A=kt if solve_options.torque_sweep else None,
                 Ke_Vs_per_rad_mech=ke,
                 lambda_pm_Wb=lambda_pm,
                 peak_flux_density_teeth_T=peak_teeth,
@@ -884,8 +885,8 @@ class ElmerSolver(Solver):
                 solve_time_s=elapsed,
             ),
             torque_waveform=TorqueWaveform(
-                electrical_angle_deg=loaded_angles,
-                torque_Nm=torques,
+                electrical_angle_deg=loaded_angles if solve_options.torque_sweep else [],
+                torque_Nm=torques if solve_options.torque_sweep else [],
             ),
             cogging_torque_waveform=TorqueWaveform(
                 electrical_angle_deg=cogging_angles,
@@ -894,10 +895,10 @@ class ElmerSolver(Solver):
             if len(cogging_results) >= 2
             else None,
             back_emf_waveform=BackEMFWaveform(
-                electrical_angle_deg=no_load_angles,
-                phase_a_V=voltage_a,
-                phase_b_V=voltage_b,
-                phase_c_V=voltage_c,
+                electrical_angle_deg=no_load_angles if no_load_results else [],
+                phase_a_V=voltage_a if no_load_results else [],
+                phase_b_V=voltage_b if no_load_results else [],
+                phase_c_V=voltage_c if no_load_results else [],
             ),
             back_emf_harmonic_analysis=harmonic_analysis,
             flux_density_map=FluxDensityMap(
@@ -909,6 +910,8 @@ class ElmerSolver(Solver):
             field_line_plot=field_plot if solve_options.flux_density else None,
             solve_metadata=SolveMetadata(
                 solver_name=f"elmerfem-{solver_version}",
+                torque_sweep_computed=solve_options.torque_sweep,
+                back_emf_computed=bool(no_load_results),
                 mesh_element_count=len(first.triangles),
                 rotor_positions=len(loaded_angles),
                 timestamp=datetime.now(timezone.utc),

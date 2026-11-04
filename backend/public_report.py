@@ -836,6 +836,11 @@ def _metric_table(
     # One tile per metric, its label over its value, four to a row.
     cells: list[list[Any]] = []
     metrics = [field for field in _SUMMARY_ORDER if field in summary]
+    metadata = _mapping((result or {}).get("solve_metadata"))
+    if metadata.get("torque_sweep_computed") is False:
+        metrics = [field for field in metrics if field not in {"avg_torque_Nm", "torque_ripple_pct", "Kt_Nm_per_A"}]
+    if metadata.get("back_emf_computed") is False:
+        metrics = [field for field in metrics if not field.startswith("back_emf_") and field not in {"Ke_Vs_per_rad_mech", "lambda_pm_Wb"}]
     for offset in range(0, len(metrics), 4):
         tiles: list[Any] = []
         for field in metrics[offset : offset + 4]:

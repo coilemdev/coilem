@@ -218,10 +218,13 @@ export function parseDesignFile(text: string): ParsedDesignFile {
   solve.rotor_rotation_model = 'remesh_per_step';
   config.solve_options.torque_speed_envelope = false;
   config.solve_options.cogging_torque = config.solve_options.cogging_torque === true;
+  config.solve_options.losses_efficiency = config.solve_options.losses_efficiency === true;
+  config.solve_options.torque_sweep = config.solve_options.torque_sweep !== false;
+  config.solve_options.back_emf = config.solve_options.back_emf !== false;
   // Public presets own the spectrum bandwidth: Standard reports H1-H12 and
   // Fine reports H1-H24. Quick and Custom remain waveform-only.
-  config.solve_options.thd_analysis = solve.solve_quality === 'standard'
-    || solve.solve_quality === 'fine';
+  config.solve_options.thd_analysis = config.solve_options.back_emf && (solve.solve_quality === 'standard'
+    || solve.solve_quality === 'fine');
   const name = typeof raw.name === 'string' && raw.name.trim() ? raw.name.trim() : null;
   return {
     name, config, declaredSchemaVersion: declared, fromFuture: migrated.fromFuture,

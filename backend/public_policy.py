@@ -210,8 +210,14 @@ def parse_public_solve_request(
             "The requested electromagnetic solver is unavailable in the public application.",
             field="solver",
         )
+    config = parse_public_motor_config(config_body, allow_experimental_rotors=allow_experimental_rotors)
+    options = config.solve_options
+    if options is not None and not any((
+        options.torque_sweep, options.back_emf, options.thd_analysis, options.cogging_torque, options.losses_efficiency,
+    )):
+        raise PublicConfigError("Select at least one analysis.", field="solve_options")
     return (
-        parse_public_motor_config(config_body, allow_experimental_rotors=allow_experimental_rotors),
+        config,
         solve_mesh_key,
         cast(PublicSolverId, requested_solver),
     )
