@@ -293,6 +293,15 @@ def test_preview_symbols_and_winding_layout_use_the_same_published_labels_as_the
         assert actual[coil.slot_in][1] != actual[coil.slot_out][1]
 
 
+def test_new_cogging_source_keeps_historical_motor_and_prius_evidence_unqualified():
+    from tools.release.qualification import check
+
+    assert "backend/cogging.py" in physics_sources(ROOT)
+    errors = check(ROOT)
+    assert "qualification physics mismatch: backend/cogging.py" in errors
+    assert "Prius measured-source mismatch: backend/cogging.py" in errors
+
+
 def test_published_app_evidence_keeps_complete_actual_grids_and_its_measured_sources():
     folder = ROOT / "docs/benchmarks/pyleecan-prius-v1"
     report = json.loads((folder / "app-results.json").read_text(encoding="utf-8"))
@@ -316,7 +325,11 @@ def test_published_app_evidence_keeps_complete_actual_grids_and_its_measured_sou
     snapshot_path = ROOT / "benchmarks/candidate-qualification-20261103/prius/source-snapshot.json"
     assert hashlib.sha256(snapshot_path.read_bytes()).hexdigest() == report["source_sha256"]["snapshot-manifest.json"]
     measured_sources = {entry["path"]: entry["sha256"] for entry in json.loads(snapshot_path.read_text(encoding="utf-8"))["files"]}
-    guarded = set(physics_sources(ROOT)) | set(PRIUS_EXTRA_PHYSICS)
+    # Use the original qualification registry for this historical audit. A
+    # later source addition cannot be present in an earlier field snapshot.
+    # The live release gate still checks every source in today's registry.
+    historical_record = json.loads((ROOT / "benchmarks/candidate-qualification-20261103/windows/platform-record.json").read_text())
+    guarded = set(historical_record["physics_files"]) | set(PRIUS_EXTRA_PHYSICS)
     assert guarded <= set(report["source_sha256"])
     for name in sorted(guarded):
         assert measured_sources[name] == report["source_sha256"][name], name

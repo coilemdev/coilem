@@ -24,15 +24,41 @@ NATIVE = ROOT / "benchmarks/windows-v050-20261102-88aae101/native"
 
 @pytest.fixture
 def measured_source_hashes(monkeypatch):
-    """Model the measured build for replay; leave every evidence-file hash real."""
+    """Replay the historical harness's source registry; keep evidence hashes real.
+
+    This fixture models the recorded 0.5.0 context, never today's expanded
+    qualification registry. New sources cannot be retroactively measured.
+    """
     recorded = read(NATIVE / "run_manifest.json")["identity"]["source_files"]
-    sources = {ROOT / name: recorded[name] for name in physics_sources(ROOT)}
+    historical = read(ROOT / "benchmarks/candidate-qualification-20261103/windows/platform-record.json")["physics_files"]
+    assert all(recorded[name] == digest for name, digest in historical.items())
+    sources = {ROOT / name: recorded[name] for name in historical}
+    monkeypatch.setattr(candidate_join, "physics_sources", lambda root: tuple(historical))
 
     def source_sha(path):
         return sources[path] if path in sources else sha(path)
 
     monkeypatch.setattr(candidate_join, "sha", source_sha)
     return sources
+
+
+def test_current_registry_rejects_a_historical_collection_without_the_new_cogging_source(tmp_path, monkeypatch):
+    original = sha(NATIVE / "run_manifest.json")
+    recorded = read(NATIVE / "run_manifest.json")["identity"]["source_files"]
+    assert "backend/cogging.py" in physics_sources(ROOT) and "backend/cogging.py" not in recorded
+
+    def measured_or_actual(path):
+        name = path.relative_to(ROOT).as_posix()
+        return recorded.get(name, sha(path))
+
+    # Isolate the newly missing source: all other guarded files appear to be
+    # the measured versions, but the registry remains the real current one.
+    monkeypatch.setattr(candidate_join, "sha", measured_or_actual)
+    output = tmp_path / "derived"
+    with pytest.raises(ValueError, match="Candidate physics differ from the measured collection"):
+        derive(NATIVE, suite=SUITE, bundle=BUNDLE, output=output, source="published/report")
+    assert not output.exists()
+    assert sha(NATIVE / "run_manifest.json") == original
 
 
 def circuit_data():

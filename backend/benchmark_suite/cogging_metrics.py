@@ -27,6 +27,46 @@ COGGING_RELATIVE_PCT = (10.0, 20.0)
 COGGING_METHOD = "weighted_stress"
 _ANGLE_TOLERANCE_DEG = 1e-6
 _STATUS_ORDER = ("MISSING", "FAIL", "YELLOW", "PASS")
+# Serialization/platform rounding only, not a numerical comparison gate band.
+_SUMMARY_REL_TOLERANCE = 1e-9
+_SUMMARY_ABS_TOLERANCE = 1e-12
+
+
+def _summary_mismatches(stored: dict, recomputed: dict) -> list[str]:
+    """Waveform-derived fields only; loaded comparisons have separate inputs.
+
+    A null end mismatch stays unavailable: its arithmetic can be checked when
+    recorded, but the waveform alone cannot prove independent mesh provenance.
+    """
+
+    def matches(actual, expected):
+        if expected is None:
+            return actual is None
+        if isinstance(expected, int):
+            return type(actual) is int and actual == expected
+        if not isinstance(actual, (int, float)) or isinstance(actual, bool):
+            return False
+        try:
+            return math.isfinite(actual) and math.isclose(
+                actual, expected, rel_tol=_SUMMARY_REL_TOLERANCE, abs_tol=_SUMMARY_ABS_TOLERANCE,
+            )
+        except OverflowError:
+            return False
+
+    mismatches = [
+        field for field in (
+            "positions_per_period", "period_elec_deg", "period_mech_deg", "fundamental_order",
+            "peak_to_peak_Nm", "peak_Nm", "first_harmonic_Nm", "mean_Nm", "endpoint_mismatch_Nm",
+        ) if not matches(stored.get(field), recomputed[field])
+    ]
+    harmonics = stored.get("harmonics")
+    if not isinstance(harmonics, list) or len(harmonics) != len(recomputed["harmonics"]):
+        mismatches.append("harmonics")
+    else:
+        for index, (actual, expected) in enumerate(zip(harmonics, recomputed["harmonics"])):
+            if not isinstance(actual, dict) or any(not matches(actual.get(key), value) for key, value in expected.items()):
+                mismatches.append(f"harmonics[{index}]")
+    return mismatches
 
 
 def _relative_band(candidate: float, reference: float, floor: float) -> tuple[str, float, float | None]:
@@ -43,13 +83,15 @@ def _relative_band(candidate: float, reference: float, floor: float) -> tuple[st
 
 def _waveform(record: dict, key: str = "cogging_torque_waveform") -> tuple[list[float], list[float]] | None:
     wave = record.get(key) or {}
+    if not isinstance(wave, dict):
+        return None
     angles, torque = wave.get("electrical_angle_deg"), wave.get("torque_Nm")
     if not isinstance(angles, list) or not isinstance(torque, list) or len(angles) != len(torque) or len(angles) < 3:
         return None
     try:
         converted = [float(value) for value in angles], [float(value) for value in torque]
         return converted if all(math.isfinite(value) for series in converted for value in series) else None
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         return None
 
 
@@ -62,7 +104,7 @@ def evaluate_cogging(result: dict, reference: dict | None, config: dict, floor_n
         raise ValueError("Candidate did not use the public native solver")
     candidate = (result.get("summary") or {}).get("cogging")
     candidate_wave = _waveform(result)
-    if not candidate or candidate_wave is None:
+    if not isinstance(candidate, dict) or not candidate or candidate_wave is None:
         return {"status": "INCOMPLETE", "gates": {"cogging_sweep": "MISSING"}, "reason": "The candidate has no cogging sweep"}
     method_gate = "PASS" if candidate.get("method") == COGGING_METHOD else "FAIL"
     period_deg, _, _ = cogging_period(slots, poles)
@@ -77,6 +119,23 @@ def evaluate_cogging(result: dict, reference: dict | None, config: dict, floor_n
             "status": "INCOMPLETE",
             "gates": {"cogging_method": method_gate, "cogging_angle_grid": "MISSING"},
             "reason": "The candidate is missing its closing cogging endpoint",
+        }
+    # Never grade a stored number detached from the measured waveform. Use the
+    # same guarded definition on both sides, without changing the saved record.
+    actual = cogging_record(
+        *candidate_wave, slot_count=slots, pole_count=poles, method=COGGING_METHOD,
+        independent_endpoints=candidate.get("endpoint_mismatch_Nm") is not None,
+    )
+    if actual is None:
+        return {
+            "status": "INCOMPLETE", "gates": {"cogging_method": method_gate, "cogging_angle_grid": "MISSING"},
+            "reason": "The candidate must contain one uniform cogging period including its closing endpoint",
+        }
+    mismatches = _summary_mismatches(candidate, actual.model_dump(mode="json"))
+    if mismatches:
+        return {
+            "status": "INCOMPLETE", "gates": {"cogging_method": method_gate, "candidate_cogging_summary": "FAIL"},
+            "reason": "Stored candidate cogging summary disagrees with its waveform: " + ", ".join(mismatches),
         }
     if reference is None:
         return {
@@ -101,8 +160,8 @@ def evaluate_cogging(result: dict, reference: dict | None, config: dict, floor_n
     angles_match = len(candidate_wave[0]) == len(reference_wave[0]) and all(
         abs(a - b) <= _ANGLE_TOLERANCE_DEG for a, b in zip(candidate_wave[0], reference_wave[0])
     )
-    peak_status, peak_error, peak_pct = _relative_band(candidate["peak_to_peak_Nm"], expected.peak_to_peak_Nm, floor_nm)
-    first_status, first_error, first_pct = _relative_band(candidate["first_harmonic_Nm"], expected.first_harmonic_Nm, floor_nm)
+    peak_status, peak_error, peak_pct = _relative_band(actual.peak_to_peak_Nm, expected.peak_to_peak_Nm, floor_nm)
+    first_status, first_error, first_pct = _relative_band(actual.first_harmonic_Nm, expected.first_harmonic_Nm, floor_nm)
     gates = {
         "cogging_method": method_gate,
         "cogging_angle_grid": "PASS" if angles_match else "FAIL",

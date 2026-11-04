@@ -130,8 +130,8 @@
     },
     {
       "path": "backend/benchmark_suite/cogging_metrics.py",
-      "bytes": 6346,
-      "sha256": "e1e78a0e7f87a9c9d3dbe729b1d0f8bc77c8ac25828e54c6468e2590d21cacff"
+      "bytes": 9203,
+      "sha256": "354affe9cf9957724303a8420bf1d510577d192822a321bede64e0c4f40d695e"
     },
     {
       "path": "backend/benchmark_suite/command.py",
@@ -160,8 +160,8 @@
     },
     {
       "path": "backend/benchmark_suite/physics.py",
-      "bytes": 3272,
-      "sha256": "62c925c0c2fb3f9c8d14a829948ffc83366bd74c424f8971cb17175c9a15f89b"
+      "bytes": 3298,
+      "sha256": "694a863aa9a69e3a3038629c5b4c68884b292431d0938abaf12af9b2dd4496cc"
     },
     {
       "path": "backend/benchmark_suite/record.py",
@@ -195,8 +195,8 @@
     },
     {
       "path": "backend/cogging.py",
-      "bytes": 5353,
-      "sha256": "6390a269a6c10f27090fda28c875a7293ea3cc3eb06c08a155634dd6a716e471"
+      "bytes": 5414,
+      "sha256": "47721561bb7adbf08491d5dfd2f79dfbf991caa5e5381a4f7c6b19e3ff711b98"
     },
     {
       "path": "backend/custom_materials.py",
@@ -5925,8 +5925,8 @@
     },
     {
       "path": "docs/COGGING_BENCHMARK_PROPOSAL.md",
-      "bytes": 7145,
-      "sha256": "45646c63f9c2df0c56cae4c45646055fe44cd4dec4ca9c6cd6df5514fa9d8301"
+      "bytes": 8339,
+      "sha256": "c2e75d9ddc8ec9f010485f169c7ce954df1b8476d280d4323bc2b44887e3f0b3"
     },
     {
       "path": "docs/COGGING_CONVERGENCE.json",
@@ -7950,8 +7950,8 @@
     },
     {
       "path": "tests/test_benchmark_command.py",
-      "bytes": 19469,
-      "sha256": "dda36c384790900459b675fa2a8cba023ec86cb71b0b80e3a0498eb190ab8853"
+      "bytes": 20436,
+      "sha256": "89d749111133f686f0f218959a62cdca612f9988e997566c7c69d5f1298bf04a"
     },
     {
       "path": "tests/test_benchmark_runtime.py",
@@ -7980,8 +7980,8 @@
     },
     {
       "path": "tests/test_cogging_phase_e.py",
-      "bytes": 8520,
-      "sha256": "0bf22ef5cf27ee550877af34b80d0456437c254550044ec5f0827d7ea8651db0"
+      "bytes": 16055,
+      "sha256": "26baddd1dcac8198082a169cd036ac12a41d0e1b24b4f6acdf41871525f2f268"
     },
     {
       "path": "tests/test_dq_flux_linkage.py",
@@ -8270,8 +8270,8 @@
     },
     {
       "path": "tests/test_pyleecan_reference_fixture.py",
-      "bytes": 19246,
-      "sha256": "0e6bd89312cc7bb104dcc7ada15b7630d3fd502dc62f4e33ec002e1f3b69a4a9"
+      "bytes": 19985,
+      "sha256": "39ba0317b2fa0ee04031848d81261c03c0e04c672a3fcca5868a6288b0bf503f"
     },
     {
       "path": "tests/test_pyleecan_tutorial.py",
@@ -8280,8 +8280,8 @@
     },
     {
       "path": "tests/test_qualification.py",
-      "bytes": 19122,
-      "sha256": "28a5860e98119f0061f116c3f3df3fcdba308c2b69daea5d2c950a6a41c4bf2b"
+      "bytes": 19032,
+      "sha256": "d6320009aeb0a145653023c3529b0eeb20794d93a6e2558bc442a908715906b1"
     },
     {
       "path": "tests/test_reference_recovery.py",
@@ -10705,8 +10705,8 @@
     },
     {
       "path": "tests/test_candidate_reference_review.py",
-      "bytes": 7857,
-      "sha256": "0b53f8095ab2f386f5dcc9a325d43f1c675e5dcb110fa4981a4188ef7ad72dcd"
+      "bytes": 9300,
+      "sha256": "a9fff868f0579831764c1647707e2b00d6dd730a70c66b443deb18d72edf8f60"
     },
     {
       "path": "tools/qualify_benchmark_candidate.py",
@@ -32377,6 +32377,60 @@
       "path": "tests/test_pyleecan_reference_fixture.py",
       "source_sha256": "07e7d8c2b4e4534c5aeadc2f458cd1ee65226c417436d9c642d12fda7091d8ea",
       "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "backend/benchmark_suite/cogging_metrics.py",
+      "source_sha256": "e1e78a0e7f87a9c9d3dbe729b1d0f8bc77c8ac25828e54c6468e2590d21cacff",
+      "reason": "Guard cogging metric source identity and reject summaries inconsistent with retained waveforms; preserve historical replay under its measured source registry."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "backend/benchmark_suite/physics.py",
+      "source_sha256": "62c925c0c2fb3f9c8d14a829948ffc83366bd74c424f8971cb17175c9a15f89b",
+      "reason": "Guard cogging metric source identity and reject summaries inconsistent with retained waveforms; preserve historical replay under its measured source registry."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "backend/cogging.py",
+      "source_sha256": "6390a269a6c10f27090fda28c875a7293ea3cc3eb06c08a155634dd6a716e471",
+      "reason": "Guard cogging metric source identity and reject summaries inconsistent with retained waveforms; preserve historical replay under its measured source registry."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "docs/COGGING_BENCHMARK_PROPOSAL.md",
+      "source_sha256": "45646c63f9c2df0c56cae4c45646055fe44cd4dec4ca9c6cd6df5514fa9d8301",
+      "reason": "Guard cogging metric source identity and reject summaries inconsistent with retained waveforms; preserve historical replay under its measured source registry."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "tests/test_benchmark_command.py",
+      "source_sha256": "dda36c384790900459b675fa2a8cba023ec86cb71b0b80e3a0498eb190ab8853",
+      "reason": "Guard cogging metric source identity and reject summaries inconsistent with retained waveforms; preserve historical replay under its measured source registry."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "tests/test_candidate_reference_review.py",
+      "source_sha256": "0b53f8095ab2f386f5dcc9a325d43f1c675e5dcb110fa4981a4188ef7ad72dcd",
+      "reason": "Guard cogging metric source identity and reject summaries inconsistent with retained waveforms; preserve historical replay under its measured source registry."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "tests/test_cogging_phase_e.py",
+      "source_sha256": "0bf22ef5cf27ee550877af34b80d0456437c254550044ec5f0827d7ea8651db0",
+      "reason": "Guard cogging metric source identity and reject summaries inconsistent with retained waveforms; preserve historical replay under its measured source registry."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "0e6bd89312cc7bb104dcc7ada15b7630d3fd502dc62f4e33ec002e1f3b69a4a9",
+      "reason": "Guard cogging metric source identity and reject summaries inconsistent with retained waveforms; preserve historical replay under its measured source registry."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "tests/test_qualification.py",
+      "source_sha256": "28a5860e98119f0061f116c3f3df3fcdba308c2b69daea5d2c950a6a41c4bf2b",
+      "reason": "Guard cogging metric source identity and reject summaries inconsistent with retained waveforms; preserve historical replay under its measured source registry."
     }
   ]
 }
