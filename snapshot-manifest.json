@@ -510,8 +510,8 @@
     },
     {
       "path": "backend/performance_report.py",
-      "bytes": 46917,
-      "sha256": "8d629d7a9608f8e1930fb7afbea2a4b2e3aba4c6eba6d7e623d2b3238c56c8ad"
+      "bytes": 46906,
+      "sha256": "affad22641d1e90ccb54d404498598d413ec58271fcb359cf44bcdbfb6947eff"
     },
     {
       "path": "backend/platform_info.py",
@@ -8170,8 +8170,8 @@
     },
     {
       "path": "tests/test_performance_report.py",
-      "bytes": 8477,
-      "sha256": "395dd0668745894b6c11e891fb57d5aaf62feea462236282c9128482461e7d80"
+      "bytes": 9398,
+      "sha256": "bd94c9037168d3787e8f093c7c6f4b131d4df48fe04aa4bb1469dbfffbbf5406"
     },
     {
       "path": "tests/test_performance_routes.py",
@@ -11650,8 +11650,8 @@
     },
     {
       "path": "frontend/tests/performance-acceptance.spec.ts",
-      "bytes": 12156,
-      "sha256": "61f04076b9a6555962a694fc3f5d757dc820bf16233caf0366915dc6ff4ee270"
+      "bytes": 12709,
+      "sha256": "50a631c521fb14374bff7aa26d2f6eb5b3cd923aa7a5886cf42c6820905ff812"
     },
     {
       "path": "tools/check_performance_acceptance.py",
@@ -11660,8 +11660,8 @@
     },
     {
       "path": "docs/benchmarks/performance-acceptance-139-142/README.md",
-      "bytes": 3187,
-      "sha256": "4ba101cd125ce59042cdc1554040047ae8f2180ffeac60682025f02187f49aec"
+      "bytes": 3607,
+      "sha256": "93fad825ef8aa4303c62d8e7c671653112108ddf75e1719ee2bc4c5def6f82ca"
     }
   ],
   "public_patches": [
@@ -31596,6 +31596,18 @@
       "path": "tests/test_public_report_exports.py",
       "source_sha256": "2be2634bdeba46cea357ae22892bf2a2a1e6c7eee381f8acfd07523dbc13b8f5",
       "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "9749e6f051965c527a01c24c46e869fa79046486",
+      "path": "backend/performance_report.py",
+      "source_sha256": "8d629d7a9608f8e1930fb7afbea2a4b2e3aba4c6eba6d7e623d2b3238c56c8ad",
+      "reason": "Correct swapped unit/value CSV header labels and verify numeric values through named columns during Performance acceptance."
+    },
+    {
+      "base_commit": "9749e6f051965c527a01c24c46e869fa79046486",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": "395dd0668745894b6c11e891fb57d5aaf62feea462236282c9128482461e7d80",
+      "reason": "Correct swapped unit/value CSV header labels and verify numeric values through named columns during Performance acceptance."
     }
   ]
 }

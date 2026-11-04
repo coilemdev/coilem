@@ -361,7 +361,7 @@ def build_performance_csv(data: PerformanceData, context: ReportContext) -> byte
 
     output, row = _csv_writer()
     output.write(f"report_schema,{PERFORMANCE_REPORT_SCHEMA}\r\n")
-    row("section", "field", "unit", "value", "sample_index")  # header, written through the same escaping
+    row("section", "field", "value", "unit", "sample_index")  # row() writes unit before value
     flux_map, limits = data.flux_map, data.limits
 
     row("identity", "design_name", context.design_name)

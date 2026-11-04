@@ -23,6 +23,8 @@ python -m tools.check_performance_acceptance frontend/test-results/performance-e
 On PowerShell set `$env:COILEM_ACCEPTANCE_CASES` before running Playwright.
 `COILEM_TEST_PYTHON` may name the Python executable. Commit tracked changes
 before measuring; the harness rejects a dirty tracked source tree.
+For a setup-only preflight, set `COILEM_ACCEPTANCE_SETUP_ONLY=1`; it runs no
+solve and produces no passing browser/export acceptance record.
 
 The existing `ci.yml` workflow also accepts the boolean dispatch input
 `performance_acceptance_only`. When true, it runs the five regular bundled
@@ -59,3 +61,8 @@ are excluded from the uploaded artifact.
 These are individual timing observations and platform/UI acceptance checks,
 not a release numerical qualification or a general performance guarantee.
 The analysis keeps its existing experimental status.
+
+The acceptance work also corrects the performance CSV's swapped `unit`/`value`
+header labels. Its data columns retain their existing order and precision.
+A regression reads the export by column name, the way external CSV consumers
+do, and checks both units and numeric samples.

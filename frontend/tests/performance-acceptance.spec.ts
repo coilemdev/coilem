@@ -20,6 +20,7 @@ const sha256 = (data: string | Buffer) => createHash('sha256').update(data).dige
 const git = (...args: string[]) => execFileSync('git', args, { encoding: 'utf8' }).trim();
 const root = resolve('..');
 const evidenceRoot = resolve('test-results/performance-evidence');
+const setupOnly = process.env.COILEM_ACCEPTANCE_SETUP_ONLY === '1';
 
 async function section(page: Page, key: string) {
   const header = page.locator(`button[aria-controls="param-group-content-${key}"]`);
@@ -35,13 +36,13 @@ for (const example of examples.filter((item) => requested.includes(item.id))) {
     page.on('pageerror', (error) => errors.push(error.message));
     const source = git('rev-parse', 'HEAD');
     const trackedChanges = git('status', '--porcelain', '--untracked-files=no');
-    expect(trackedChanges, 'measure a committed source tree').toBe('');
+    if (!setupOnly) expect(trackedChanges, 'measure a committed source tree').toBe('');
     const healthResponse = await page.request.get('/health');
     expect(healthResponse.ok()).toBe(true);
     const health = await healthResponse.json();
     const binary = join(root, 'solvers/magneto2d/target/release', process.platform === 'win32' ? 'magneto2d.exe' : 'magneto2d');
     await save('environment.json', {
-      source_commit: source, tracked_tree_clean: true, application_version: health.version,
+      source_commit: source, tracked_tree_clean: !trackedChanges, setup_only: setupOnly, application_version: health.version,
       platform: process.platform, os_release: os.release(), architecture: os.arch(),
       cpu_model: os.cpus()[0]?.model, logical_cpus: os.cpus().length, memory_bytes: os.totalmem(),
       node: process.version, chromium: browser.version(),
@@ -50,6 +51,11 @@ for (const example of examples.filter((item) => requested.includes(item.id))) {
       github_run_url: process.env.GITHUB_RUN_ID ? `https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}` : null,
       sample_count: 1, cache_policy: 'fresh isolated runtime; no existing map for this design',
       workers_per_point: 2,
+    });
+    // Headless Chromium cannot operate the native Save As dialog. Exercise the
+    // browser-download fallback, as the regular public release rehearsal does.
+    await page.addInitScript(() => {
+      Object.defineProperty(window, 'showSaveFilePicker', { configurable: true, value: undefined });
     });
     await page.goto('/');
     await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
@@ -85,6 +91,10 @@ for (const example of examples.filter((item) => requested.includes(item.id))) {
     const existingScopes = await readdir(mapDirectory).catch(() => []);
     const run = page.getByRole('button', { name: '▶ Run analysis', exact: true });
     await expect(run).toBeEnabled({ timeout: 120_000 });
+    if (setupOnly) {
+      console.log(`${example.id}: setup only; no solve or acceptance result recorded`);
+      return;
+    }
     const submitted = page.waitForRequest((request) => new URL(request.url()).pathname === '/solve/stream');
     const finished = page.waitForResponse((response) => new URL(response.url()).pathname === '/solve/stream', { timeout: 85 * 60_000 });
     const startedUtc = new Date().toISOString();
