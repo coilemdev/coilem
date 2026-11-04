@@ -40,7 +40,7 @@ import {
 } from './motorAirgap';
 import { startPublicBackendMonitor } from './backendMonitor';
 import { createExcitationDrafts, switchExcitationMode } from './excitationDrafts';
-import type { WireSpec } from './performance';
+import type { TorqueSpeedAnalysisSettings, WireSpec } from './performance';
 // Lazy: the tutorials area carries the shared catalog and learning.css, so a
 // static import puts ~15 kB gzip of lesson chrome on the landing page's critical
 // path for visitors who never open a lesson.
@@ -57,6 +57,7 @@ import type {
 } from '../components/tutorials/lessonStage';
 import { designFileBaseName, parseDesignFile, saveDesignFileAs } from './designFile';
 import { asPublicConfig } from './publicRequest';
+import { setAnalysisOption, type AnalysisKey } from './analysisOptions';
 import { projectMaterialCatalog, type CustomSteel, type SteelTarget } from './customSteel';
 import { createPublicExampleDesign, type PublicExampleId } from './exampleDesigns';
 import {
@@ -557,6 +558,7 @@ export function App() {
   const [guidedDesignSection, setGuidedDesignSection] = useState<PublicParameterSection | null>(null);
   const [busy, setBusy] = useState<PublicBusyAction>(null);
   const [connectionStatus, setConnectionStatus] = useState<PublicConnectionStatus>('checking');
+  const [appVersion, setAppVersion] = useState<string | null>(null);
   const [selectedSolver, setSelectedSolver] = useState<PublicSolverId>('magneto2d');
   const [elmerCapability, setElmerCapability] = useState<PublicElmerCapability>(ELMER_CHECKING);
   const [experimentalRotors, setExperimentalRotors] = useState<PublicExperimentalRotorCapability>(EXPERIMENTAL_ROTORS_OFF);
@@ -892,9 +894,9 @@ export function App() {
     setNotice('Analysis settings changed. Updating the run estimate.');
   }, []);
 
-  const updateCoggingTorque = useCallback((enabled: boolean) => {
+  const updateAnalysis = useCallback((key: AnalysisKey, enabled: boolean) => {
     validationRequestId.current += 1;
-    setConfig((current) => ({ ...current, solve_options: { ...current.solve_options, cogging_torque: enabled } }));
+    setConfig((current) => setAnalysisOption(current, key, enabled));
     setValidation(null);
     setValidationChecking(false);
     setValidationError(null);
@@ -903,6 +905,19 @@ export function App() {
     setLiveSamples([]);
     setError(null);
     setNotice('Analysis settings changed. Updating the run estimate.');
+  }, []);
+
+  const updateTorqueSpeed = useCallback((settings: TorqueSpeedAnalysisSettings) => {
+    validationRequestId.current += 1;
+    setConfig((current) => ({ ...current, torque_speed_analysis: settings }));
+    setValidation(null);
+    setValidationChecking(false);
+    setValidationError(null);
+    setResult(null);
+    setProgress(null);
+    setLiveSamples([]);
+    setError(null);
+    setNotice('Map settings changed. Updating the run estimate.');
   }, []);
 
   const selectSolver = useCallback((solver: PublicSolverId) => {
@@ -1060,6 +1075,7 @@ export function App() {
       onOnline: (health) => {
         const nextElmerCapability = elmerCapabilityFromHealth(health);
         setConnectionStatus('online');
+        setAppVersion(typeof health.version === 'string' && health.version.trim() ? health.version.trim() : null);
         setElmerCapability((current) => (
           sameElmerCapability(current, nextElmerCapability) ? current : nextElmerCapability
         ));
@@ -1629,6 +1645,7 @@ export function App() {
     return (
       <div className="public-coilem-shell is-tutorials">
         <CoilEmTopBar
+          appVersion={appVersion}
           config={config}
           activeStep="design"
           solveAvailable={false}
@@ -1727,6 +1744,7 @@ export function App() {
     return (
       <div className="public-coilem-shell">
         <CoilEmTopBar
+          appVersion={appVersion}
           config={config}
           activeStep="design"
           solveAvailable={false}
@@ -1761,6 +1779,7 @@ export function App() {
   return (
     <>
     <CoilEmWorkspace
+      appVersion={appVersion}
       config={config}
       materials={projectMaterialCatalog(materials, config)}
       geometry={geometry}
@@ -1812,7 +1831,8 @@ export function App() {
       onSolvePlanChange={updateSolvePlan}
       onCustomSweepChange={updateCustomSweep}
       onSolveSettingChange={updateSolveSetting}
-      onCoggingTorqueChange={updateCoggingTorque}
+      onAnalysisChange={updateAnalysis}
+      onTorqueSpeedChange={updateTorqueSpeed}
       onSolverChange={selectSolver}
       onReset={reset}
       onRefreshGeometry={() => void refreshGeometry(config)}

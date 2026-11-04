@@ -1,6 +1,6 @@
 import type { AirgapBrBtProfile } from '../components/tutorials/lessonSolveTypes';
 import type { CustomSteel } from './customSteel';
-import type { DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, PerformanceOutputStatus, WireSpec } from './performance';
+import type { DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, PerformanceOutputStatus, TorqueSpeedAnalysisResult, TorqueSpeedAnalysisSettings, WireSpec } from './performance';
 import type { WindingResistance } from './windingResistance';
 
 export type Topology = 'SPM' | 'IPM';
@@ -154,9 +154,11 @@ export interface MotorConfig {
     back_emf: boolean;
     flux_density: boolean;
     cogging_torque: boolean;
-    torque_speed_envelope: false;
+    losses_efficiency: boolean;
+    torque_speed_envelope: boolean;
     thd_analysis: boolean;
   };
+  torque_speed_analysis?: TorqueSpeedAnalysisSettings | null;
 }
 
 export interface PreviewRegion {
@@ -217,6 +219,7 @@ export interface PublicQualification {
 }
 
 export interface SolveValidation {
+  torque_speed_map?: { solves: number; positions_per_point: number } | null;
   valid: boolean;
   errors: Array<{ code?: string; message: string; suggestion?: string }>;
   warnings: Array<{ code?: string; message: string; suggestion?: string }>;
@@ -227,6 +230,7 @@ export interface SolveValidation {
   sweep_positions: number;
   /** Cogging positions per period for the selected preset (#185), solved when Cogging torque is on. */
   cogging_positions_per_period?: number;
+  analysis_positions?: Partial<Record<'torque_sweep' | 'back_emf' | 'cogging_torque' | 'losses_efficiency', number>>;
   qualification?: PublicQualification;
 }
 
@@ -454,10 +458,11 @@ export interface PublicArmatureFieldComposition {
 }
 
 export interface SolveResult {
+  torque_speed_analysis?: TorqueSpeedAnalysisResult | null;
   summary: {
-    avg_torque_Nm: number;
-    torque_ripple_pct: number;
-    back_emf_fundamental_V: number;
+    avg_torque_Nm: number | null;
+    torque_ripple_pct: number | null;
+    back_emf_fundamental_V: number | null;
     back_emf_thd_pct?: number | null;
     back_emf_thd_h6_pct?: number | null;
     back_emf_thd_h12_pct?: number | null;
@@ -548,6 +553,7 @@ export interface SolveResult {
     excitation_convention_version?: string | null;
     loaded_cycle_complete?: boolean | null;
     back_emf_computed?: boolean | null;
+    torque_sweep_computed?: boolean | null;
     rated_speed_rpm?: number | null;
     mesher?: string | null;
     mesh_density?: string;
@@ -739,6 +745,7 @@ export const DEFAULT_CONFIG: MotorConfig = {
     back_emf: true,
     flux_density: true,
     cogging_torque: false,
+    losses_efficiency: false,
     torque_speed_envelope: false,
     thd_analysis: true,
   },

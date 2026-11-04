@@ -253,6 +253,10 @@ def _output_statuses(result: Mapping[str, Any]) -> list[tuple[str, str, str, str
 
     if summary.get("cogging"):
         recorded("cogging_torque", "Cogging torque", _mapping(summary["cogging"]), COGGING_TORQUE_STATUS_REASON)
+    analysis = _mapping(result.get("torque_speed_analysis"))
+    if analysis:
+        recorded("torque_speed_map", "Torque–speed envelope", _mapping(analysis.get("envelope")), "Interpolated from solved map points.")
+        recorded("map_efficiency", "Efficiency map", _mapping(analysis.get("efficiency_map")), "Interpolated from solved map points.")
     if summary.get("dq_flux_linkage"):
         dq = _mapping(summary["dq_flux_linkage"])
         recorded("dq_flux_linkage", "d/q flux linkage", dq, DQ_FLUX_LINKAGE_STATUS_REASON)
@@ -365,6 +369,8 @@ def build_public_run_csv(
         row("status", f"{key}_reason", reason)
     for field, value in _flatten(_mapping(result.get("solve_metadata"))):
         row("solve_metadata", field, value)
+    for field, value in _flatten(_mapping(result.get("torque_speed_analysis"))):
+        row("torque_speed_analysis", field, value)
 
     convergence = convergence_report(result)
     row("convergence", "schema_version", convergence["schema_version"])
@@ -871,6 +877,11 @@ def _metric_table(
     # One tile per metric, its label over its value, four to a row.
     cells: list[list[Any]] = []
     metrics = [field for field in _SUMMARY_ORDER if field in summary]
+    metadata = _mapping((result or {}).get("solve_metadata"))
+    if metadata.get("torque_sweep_computed") is False:
+        metrics = [field for field in metrics if field not in {"avg_torque_Nm", "torque_ripple_pct", "Kt_Nm_per_A"}]
+    if metadata.get("back_emf_computed") is False:
+        metrics = [field for field in metrics if not field.startswith("back_emf_") and field not in {"Ke_Vs_per_rad_mech", "lambda_pm_Wb"}]
     for offset in range(0, len(metrics), 4):
         tiles: list[Any] = []
         for field in metrics[offset : offset + 4]:
@@ -1395,6 +1406,30 @@ def _cogging_story(result: Mapping[str, Any], request: Mapping[str, Any], styles
     ]
 
 
+def _torque_speed_story(result: Mapping[str, Any], styles: Mapping[str, ParagraphStyle]) -> list[Any]:
+    analysis = _mapping(result.get("torque_speed_analysis"))
+    if not analysis:
+        return []
+    settings = _mapping(analysis.get("settings"))
+    limits = _mapping(settings.get("limits"))
+    story: list[Any] = [_section("Torque-speed map", styles), _key_value_table([
+        ("Map grid", settings.get("preset")), ("Drive control", settings.get("control")),
+        ("DC bus (V)", limits.get("dc_bus_V")), ("Peak phase current (A peak)", limits.get("peak_current_A")),
+        ("Continuous phase current (A peak)", limits.get("continuous_current_A")),
+        ("Top speed (rpm)", limits.get("max_speed_rpm")),
+    ], styles)]
+    story.extend(_status_paragraphs(result, ("torque_speed_map", "map_efficiency"), styles))
+    curves = _sequence(_mapping(analysis.get("envelope")).get("curves"))
+    for field, title, unit in (("torque_Nm", "Torque-speed envelope", "Torque (N m)"), ("power_W", "Power-speed envelope", "Power (W)")):
+        plot = _line_plot(title=title, x_label="Speed (rpm)", y_label=unit, series=tuple(
+            (_plain(_mapping(curve).get("limit")), _numeric_points(_mapping(curve).get("speed_rpm"), _mapping(curve).get(field)), color)
+            for curve, color in zip(curves, (_BLUE, _GREEN))
+        ))
+        if plot is not None:
+            story.extend([plot, Spacer(1, 3 * mm)])
+    return story
+
+
 def _winding_and_loss_story(result: Mapping[str, Any], styles: Mapping[str, ParagraphStyle]) -> list[Any]:
     summary = _mapping(result.get("summary"))
     winding = _mapping(summary.get("winding_resistance"))
@@ -1831,6 +1866,7 @@ def build_public_run_pdf(
     )
     story.extend(_winding_and_loss_story(result, styles))
     story.extend(_cogging_story(result, request, styles))
+    story.extend(_torque_speed_story(result, styles))
     if torque_plot is not None or back_emf_plot is not None:
         story.append(_section("Stored result plots", styles))
         if torque_plot is not None:

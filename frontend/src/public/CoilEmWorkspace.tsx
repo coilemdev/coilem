@@ -59,16 +59,17 @@ import {
 import { BldcTorqueCurrentChart } from './BldcTorqueCurrentChart';
 import { PublicRunComparison } from './PublicRunComparison';
 import { MotorConstants } from './MotorConstants';
-import { PerformancePanel } from './PerformancePanel';
+import { CompactTorqueSpeedChart, PerformancePanel } from './PerformancePanel';
 import { SolverConvergenceCard } from './SolverConvergenceCard';
 import { GRADE_TEMPERATURE, isDeratedRun, magnetTemperatureView } from './magnetTemperature';
 import { hasMotorConstants, motorConstantsView } from './machineConstants';
-import type { WireSpec } from './performance';
+import type { TorqueSpeedAnalysisSettings, WireSpec } from './performance';
 import { readWindingResistance, windingReadout } from './windingResistance';
 import { StatusBadge } from './OutputStatusBadge';
 import { MAGNET_TEMPERATURE_STATUS_REASON, STATUS_LABEL } from './outputStatus';
 import { ResultSummary } from './ResultSummary';
-import { coggingPlanNote } from './coggingView';
+import { AnalysisOptions } from './AnalysisSelector';
+import { analysisSummary, analysisPositions, selectedAnalyses, hasTorqueResult, hasBackEmfResult, defaultResultPlot, type AnalysisKey } from './analysisOptions';
 import { publicExampleOptions, type PublicExampleId } from './exampleDesigns';
 import {
   magneticAirgapMm,
@@ -148,6 +149,7 @@ interface CoilEmWorkspaceProps {
   guidedDesignSection?: PublicParameterSection | null;
   busy: PublicBusyAction;
   connectionStatus: PublicConnectionStatus;
+  appVersion?: string | null;
   selectedSolver: PublicSolverId;
   elmerCapability: PublicElmerCapability;
   experimentalRotors?: PublicExperimentalRotorCapability;
@@ -189,8 +191,9 @@ interface CoilEmWorkspaceProps {
     field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W' | 'magnet_temperature_C',
     value: MotorConfig['solve_params']['nonlinear_solver'] | MotorConfig['solve_params']['current_amplitude_convention'] | MotorConfig['solve_params']['excitation_mode'] | number,
   ) => void;
-  /** Turns the zero-current cogging sweep on or off (#185). */
-  onCoggingTorqueChange: (enabled: boolean) => void;
+  /** Changes which analyses are included in the next run. */
+  onAnalysisChange: (key: AnalysisKey, enabled: boolean) => void;
+  onTorqueSpeedChange: (settings: TorqueSpeedAnalysisSettings) => void;
   onSolverChange: (solver: PublicSolverId) => void;
   onReset: () => void;
   onRefreshGeometry: () => void;
@@ -252,7 +255,18 @@ function runPlanSixStepPath(phaseIndex: 0 | 1 | 2): string {
   return path;
 }
 
-function ExcitationRunPlanPreview({ config }: { config: MotorConfig }) {
+function ExcitationRunPlanPreview({ config, currentEnabled, mapEnabled }: { config: MotorConfig; currentEnabled: boolean; mapEnabled: boolean }) {
+  if (!currentEnabled) {
+    return (
+      <section className="public-excitation-preview" aria-label={mapEnabled ? 'Excitation: map current sweep' : 'Excitation: no current'}>
+        <div className="public-excitation-preview-heading">
+          <div><span>Excitation</span><strong>{mapEnabled ? 'Map current sweep' : 'No current'}</strong></div>
+          {!mapEnabled && <small>0 A</small>}
+        </div>
+        <p>{mapEnabled ? 'Torque–speed uses its own sinusoidal current and angle grid.' : 'Back EMF and cogging use independent no-current sweeps.'}</p>
+      </section>
+    );
+  }
   const sixStep = config.solve_params.excitation_mode === 'ideal_six_step_120';
   const currentConvention = sixStep
     ? 'plateau'
@@ -475,6 +489,7 @@ export function CoilEmTopBar({
   resultReady,
   solveRunning,
   connectionStatus,
+  appVersion = null,
   designName = null,
   onHome,
   onStepChange,
@@ -491,7 +506,7 @@ export function CoilEmTopBar({
   onTutorialCatalog,
   runHistoryOpen: controlledRunHistoryOpen,
   onRunHistoryOpenChange,
-}: Pick<CoilEmWorkspaceProps, 'config' | 'activeStep' | 'connectionStatus' | 'onHome' | 'onStepChange'> & {
+}: Pick<CoilEmWorkspaceProps, 'config' | 'activeStep' | 'connectionStatus' | 'appVersion' | 'onHome' | 'onStepChange'> & {
   solveAvailable: boolean;
   resultReady: boolean;
   solveRunning: boolean;
@@ -561,6 +576,7 @@ export function CoilEmTopBar({
           <img className="logo-mark" src="/brand/coilem-mark.svg" alt="" aria-hidden="true" />
           <span className="logo-word">coil<span className="logo-em">EM</span><sup className="logo-stage">Beta</sup></span>
         </button>
+        {appVersion && <span className="logo-version" title={`coilEM version ${appVersion}`}>v{appVersion}</span>}
         {tutorialProgress ? (
           <button
             type="button"
@@ -2416,6 +2432,16 @@ const QUALIFICATION_LABELS: Record<PublicQualification['status'], string> = {
   unsupported: 'Unsupported',
 };
 
+function qualificationLabel(qualification: PublicQualification, suffix = ''): string {
+  // The existing reason is also stored in older runs, so recognize it without
+  // changing their qualification status or requiring a saved-run migration.
+  if (qualification.status === 'experimental'
+    && qualification.reason.startsWith("This build's physics do not match the measured benchmark basis.")) {
+    return 'Benchmark Qualification Pending';
+  }
+  return `${QUALIFICATION_LABELS[qualification.status]}${suffix}`;
+}
+
 /** The backend's qualification of a design (backend/qualification.py), read
  * defensively because previews, validations and old saved runs may lack it. */
 function readQualification(value: unknown): PublicQualification | null {
@@ -2431,7 +2457,7 @@ function readQualification(value: unknown): PublicQualification | null {
 function QualificationNote({ qualification }: { qualification: PublicQualification }) {
   return (
     <div className={`public-qualification-note is-${qualification.status}`} role="note" aria-label="Benchmark qualification">
-      <span className="public-qualification-badge">{QUALIFICATION_LABELS[qualification.status]}</span>
+      <span className="public-qualification-badge">{qualificationLabel(qualification)}</span>
       <div>
         <span>{qualification.reason}</span>
         {qualification.caveats.map((caveat) => <span key={caveat}>{caveat}</span>)}
@@ -2447,7 +2473,7 @@ function QualificationTag({ qualification }: { qualification: PublicQualificatio
   return (
     <StatusTag
       tone={qualification.status === 'qualified' ? 'good' : 'warning'}
-      label={QUALIFICATION_LABELS[qualification.status]}
+      label={qualificationLabel(qualification)}
       align="end"
       role="note"
       ariaLabel="Benchmark qualification"
@@ -2551,7 +2577,7 @@ function HealthPanel({
     { severity: geometry && !geometryStale ? 'positive' : 'info', title: geometry && !geometryStale ? 'Geometry preview is current' : 'Updating geometry preview', copy: geometry && !geometryStale ? `${geometry.regions.length} regions returned by the local backend.` : 'The preview will refresh after the local backend responds.' },
     ...(qualification ? [{
       severity: qualification.status === 'qualified' ? 'positive' as const : 'warning' as const,
-      title: `${QUALIFICATION_LABELS[qualification.status]} motor combination`,
+      title: qualificationLabel(qualification, ' motor combination'),
       copy: [qualification.reason, ...qualification.caveats].join(' '),
     }] : []),
     ...(mesh ? [{ severity: 'positive' as const, title: 'Mesh quality gate passed', copy: `${mesh.triangles.length.toLocaleString()} generated triangles.` }] : []),
@@ -2668,6 +2694,7 @@ function solveStageLabel(progress: PublicSolveProgress | null, busy: PublicBusyA
     magneto2d_single: 'Final field solve',
     magneto2d_complete: 'Finalizing results',
     magneto2d_cogging: 'Solving cogging sweep',
+    torque_speed_map: 'Solving torque–speed map',
     // Both solvers emit these stages; the Run plan already names the solver.
     torque_sweep: 'Loaded-torque sweep',
     noload_sweep: 'Back-EMF sweep',
@@ -2837,7 +2864,7 @@ function CompactLiveChart({
   );
 }
 
-function LiveSolveMonitor({ busy, progress, liveSamples, progressPercent }: Pick<CoilEmWorkspaceProps, 'busy' | 'progress' | 'liveSamples' | 'progressPercent'>) {
+function LiveSolveMonitor({ config, busy, progress, liveSamples, progressPercent }: Pick<CoilEmWorkspaceProps, 'config' | 'busy' | 'progress' | 'liveSamples' | 'progressPercent'>) {
   const [displayElapsedSeconds, setDisplayElapsedSeconds] = useState(progress?.elapsed_s ?? 0);
   const torqueSamples = liveSamples.filter((sample) => typeof sample.angle_deg === 'number' && typeof sample.torque_Nm === 'number');
   const backEmfSamples = liveSamples.filter((sample) => typeof sample.angle_deg === 'number'
@@ -2889,7 +2916,7 @@ function LiveSolveMonitor({ busy, progress, liveSamples, progressPercent }: Pick
           <i aria-hidden="true" />
           <div>
             <strong>Analysis is still running</strong>
-            <span>The field sweep is complete. Building torque, Back-EMF, field plots, and the local run package.</span>
+            <span>The field sweep is complete. Building selected results, field plots, and the local run package.</span>
           </div>
         </div>
       )}
@@ -2904,16 +2931,16 @@ function LiveSolveMonitor({ busy, progress, liveSamples, progressPercent }: Pick
       )}
       <dl className="public-live-stats">
         <div><dt>Total elapsed</dt><dd>{formatNumber(displayElapsedSeconds, 1)} s</dd></div>
-        <div><dt>{finalizing ? 'Sweep' : 'Positions'}</dt><dd>{sweepComplete ? 'Complete' : `${currentPosition} / ${totalPositions > 0 ? totalPositions : '—'}`}</dd></div>
+        <div><dt>{progress?.stage === 'torque_speed_map' ? 'Map points' : finalizing ? 'Sweep' : 'Positions'}</dt><dd>{sweepComplete ? 'Complete' : `${currentPosition} / ${totalPositions > 0 ? totalPositions : '—'}`}</dd></div>
       </dl>
       {!statorField && <>
-      <CompactLiveChart
+      {config.solve_options.torque_sweep && <CompactLiveChart
         label="Torque"
         unit="N·m"
         angles={torqueSamples.map((sample) => sample.angle_deg as number)}
         series={[{ label: 'Torque', values: torqueSamples.map((sample) => sample.torque_Nm as number), color: '#f59e0b' }]}
-      />
-      <CompactLiveChart
+      />}
+      {config.solve_options.back_emf && <CompactLiveChart
         label="Three-phase back EMF"
         unit="V"
         angles={backEmfSamples.map((sample) => sample.angle_deg as number)}
@@ -2925,14 +2952,21 @@ function LiveSolveMonitor({ busy, progress, liveSamples, progressPercent }: Pick
         emptyStatus={finalizing ? 'Post-processing' : '0 samples'}
         emptyMessage={finalizing ? 'Building waveform from solved fields' : 'Waiting for samples'}
         emptyWorking={finalizing}
-      />
+      />}
       </>}
     </section>
   );
 }
 
 function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result: SolveResult; onOpenReport: () => void; positionLink?: FieldPositionLink }) {
-  const [activePlot, setActivePlot] = useState<'torque' | 'back-emf'>('torque');
+  const hasTorque = hasTorqueResult(result);
+  const hasBackEmf = hasBackEmfResult(result);
+  const cogging = result.summary.cogging;
+  const losses = result.summary.loss_breakdown;
+  const torqueSpeed = result.torque_speed_analysis;
+  const firstPlot = hasTorque ? 'torque' : hasBackEmf ? 'back-emf' : result.cogging_torque_waveform ? 'cogging' : 'torque-speed';
+  const [activePlot, setActivePlot] = useState<'torque' | 'back-emf' | 'cogging' | 'torque-speed'>(firstPlot);
+  useEffect(() => { setActivePlot(firstPlot); }, [result, firstPlot]);
   const sixStep = resultUsesSixStep(result);
   const completeCycle = result.solve_metadata.loaded_cycle_complete === true;
   const thdLabel = result.back_emf_harmonic_analysis
@@ -2948,7 +2982,8 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
   const showKt = constants !== null && constants.kt.value !== null;
   // With no current (or a near-zero average) ripple % means nothing: show the swing.
   const ripple = torqueRippleView(result);
-  const allResultCount = 7 + (ripple.ripplePct === null ? 1 : 0) + (result.workflow_elapsed_s != null ? 1 : 0) + (constants ? 4 : 0);
+  const allResultCount = 3 + (hasTorque ? 2 + (ripple.ripplePct === null ? 1 : 0) : 0) + (hasBackEmf ? 2 : 0)
+    + (cogging ? 1 : 0) + (result.torque_speed_analysis ? 1 : 0) + (losses ? 2 : 0) + (result.workflow_elapsed_s != null ? 1 : 0) + (constants ? 4 : 0);
   // Read like the motor constants below: one row per value, numbers in one
   // right-aligned column, units beside them, a rule between groups.
   const resultRow = (label: string, value: string, unit: string, groupStart = false, title?: string) => (
@@ -2977,10 +3012,14 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
             <h3 id={resultsHeadingId}>Performance</h3>
             <table>
               <tbody>
-                {resultRow(`Average torque${preview}`, formatNumber(result.summary.avg_torque_Nm), 'N·m')}
-                {rippleRows}
-                {resultRow('Back EMF', formatNumber(result.summary.back_emf_fundamental_V), 'V', true)}
-                {resultRow(thdLabel, formatNumber(result.summary.back_emf_thd_pct), '%')}
+                {result.torque_speed_analysis && resultRow('Torque–speed map', String(result.torque_speed_analysis.map.points.length), 'points')}
+                {cogging && resultRow('Cogging torque p-p', formatNumber(cogging.peak_to_peak_Nm), 'N·m')}
+                {losses && resultRow('Total loss', formatNumber(losses.total_loss_W), 'W')}
+                {losses && resultRow('Efficiency', formatNumber(losses.efficiency_pct), '%')}
+                {hasTorque && resultRow(`Average torque${preview}`, formatNumber(result.summary.avg_torque_Nm), 'N·m')}
+                {hasTorque && rippleRows}
+                {hasBackEmf && resultRow('Back EMF', formatNumber(result.summary.back_emf_fundamental_V), 'V', true)}
+                {hasBackEmf && resultRow(thdLabel, formatNumber(result.summary.back_emf_thd_pct), '%')}
                 {resultRow('Peak tooth B', formatNumber(result.summary.peak_flux_density_teeth_T), 'T', true)}
                 {resultRow('Peak yoke B', formatNumber(result.summary.peak_flux_density_yoke_T), 'T')}
                 {resultRow('Solver time', formatNumber(result.summary.solve_time_s, 1), 's', true)}
@@ -2995,9 +3034,13 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
           <h3 id={resultsHeadingId}>Key results</h3>
           <table>
             <tbody>
-              {resultRow(`Average torque${preview}`, formatNumber(result.summary.avg_torque_Nm), 'N·m')}
-              {rippleRows}
-              {resultRow('Back EMF', formatNumber(result.summary.back_emf_fundamental_V), 'V')}
+                {result.torque_speed_analysis && resultRow('Torque–speed map', String(result.torque_speed_analysis.map.points.length), 'points')}
+                {cogging && resultRow('Cogging torque p-p', formatNumber(cogging.peak_to_peak_Nm), 'N·m')}
+                {losses && resultRow('Total loss', formatNumber(losses.total_loss_W), 'W')}
+                {losses && resultRow('Efficiency', formatNumber(losses.efficiency_pct), '%')}
+              {hasTorque && resultRow(`Average torque${preview}`, formatNumber(result.summary.avg_torque_Nm), 'N·m')}
+              {hasTorque && rippleRows}
+              {hasBackEmf && resultRow('Back EMF', formatNumber(result.summary.back_emf_fundamental_V), 'V')}
               {showKt && constants && resultRow('Kt torque constant', constants.kt.text, constants.kt.unit)}
             </tbody>
           </table>
@@ -3015,10 +3058,13 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
       </button>
       {/* The waveform heading labels the plots below it, not the metrics and
           constants above (#110). */}
+      {(hasTorque || hasBackEmf || result.cogging_torque_waveform || torqueSpeed) && <>
       <strong className="public-completed-waveforms-heading">Solver waveforms</strong>
-      <div className="public-compact-result-tabs" role="tablist" aria-label="Completed result plots">
-        <button type="button" role="tab" aria-selected={activePlot === 'torque'} className={activePlot === 'torque' ? 'active' : ''} onClick={() => setActivePlot('torque')}>Torque</button>
-        <button type="button" role="tab" aria-selected={activePlot === 'back-emf'} className={activePlot === 'back-emf' ? 'active' : ''} onClick={() => setActivePlot('back-emf')}>Back EMF</button>
+      <div className="public-compact-result-tabs" data-has-map={Boolean(torqueSpeed)} role="tablist" aria-label="Completed result plots">
+        {hasTorque && <button type="button" role="tab" aria-selected={activePlot === 'torque'} className={activePlot === 'torque' ? 'active' : ''} onClick={() => setActivePlot('torque')}>Torque</button>}
+        {hasBackEmf && <button type="button" role="tab" aria-selected={activePlot === 'back-emf'} className={activePlot === 'back-emf' ? 'active' : ''} onClick={() => setActivePlot('back-emf')}>Back EMF</button>}
+        {result.cogging_torque_waveform && <button type="button" role="tab" aria-selected={activePlot === 'cogging'} onClick={() => setActivePlot('cogging')}>Cogging</button>}
+        {torqueSpeed && <button type="button" role="tab" aria-selected={activePlot === 'torque-speed'} className={activePlot === 'torque-speed' ? 'active' : ''} onClick={() => setActivePlot('torque-speed')}>Torque–speed</button>}
       </div>
       {activePlot === 'torque' && sixStep && result.phase_current_waveform
         ? <BldcTorqueCurrentChart angles={result.torque_waveform.electrical_angle_deg} torqueNm={result.torque_waveform.torque_Nm} phaseA={result.phase_current_waveform.phase_a_A} phaseB={result.phase_current_waveform.phase_b_A} phaseC={result.phase_current_waveform.phase_c_A} commutationAdvanceDeg={result.solve_metadata.commutation_advance_deg ?? 0} cycleComplete={completeCycle} />
@@ -3027,7 +3073,10 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
         <CompactLiveChart state="complete" positionLink={positionLink} label="Three-phase back EMF" unit="V" angles={result.back_emf_waveform.electrical_angle_deg} series={[{ label: 'A', values: result.back_emf_waveform.phase_a_V, color: '#f87171' }, { label: 'B', values: result.back_emf_waveform.phase_b_V, color: '#4ade80' }, { label: 'C', values: result.back_emf_waveform.phase_c_V, color: '#60a5fa' }]} />
         {result.back_emf_harmonic_analysis && <BackEMFHarmonicSpectrum analysis={result.back_emf_harmonic_analysis} compact />}
       </>}
-      <p>Move along a curve to show that position in the field view; click to keep it.</p>
+      {activePlot === 'cogging' && result.cogging_torque_waveform && <CompactLiveChart state="complete" label="Cogging torque" unit="N·m" angles={result.cogging_torque_waveform.electrical_angle_deg} series={[{ label: 'Cogging', values: result.cogging_torque_waveform.torque_Nm, color: '#f59e0b' }]} />}
+      {activePlot === 'torque-speed' && torqueSpeed && <CompactTorqueSpeedChart analysis={torqueSpeed} currentConvention={result.solve_metadata.current_amplitude_convention} />}
+      <p>{activePlot === 'torque-speed' ? 'Open Full results for power–speed curves and the efficiency map.' : 'Move along a curve to show that position in the field view; click to keep it.'}</p>
+      </>}
     </section>
   );
 }
@@ -3168,10 +3217,10 @@ function BackEMFHarmonicSpectrum({
   );
 }
 
-type SolveSetupSection = 'solver' | 'operating' | 'plan' | 'advanced';
+type SolveSetupSection = 'solver' | 'operating' | 'analysis' | 'plan' | 'advanced';
 
-function SolveStage({ config, materials, geometry, mesh, validation, validationChecking, validationError, result, armatureField, armatureFieldError, progress, liveSamples, busy, error, errorDetails, notice, progressPercent, meshElements, meshQuality, selectedSolver, elmerCapability, onBack, onOpenReport, onGenerateMesh, onStartSolve, onCancelSolve, onRequestArmatureField, onCancelArmatureField, onMeshSettingChange, onSolvePlanChange, onCustomSweepChange, onSolveSettingChange, onCoggingTorqueChange, onSolverChange, onManageRuns }: Pick<CoilEmWorkspaceProps,
-  'config' | 'materials' | 'geometry' | 'mesh' | 'validation' | 'validationChecking' | 'validationError' | 'result' | 'armatureField' | 'armatureFieldError' | 'progress' | 'liveSamples' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'progressPercent' | 'meshElements' | 'meshQuality' | 'selectedSolver' | 'elmerCapability' | 'onGenerateMesh' | 'onStartSolve' | 'onCancelSolve' | 'onRequestArmatureField' | 'onCancelArmatureField' | 'onMeshSettingChange' | 'onSolvePlanChange' | 'onCustomSweepChange' | 'onSolveSettingChange' | 'onCoggingTorqueChange' | 'onSolverChange'
+function SolveStage({ config, materials, geometry, mesh, validation, validationChecking, validationError, result, armatureField, armatureFieldError, progress, liveSamples, busy, error, errorDetails, notice, progressPercent, meshElements, meshQuality, selectedSolver, elmerCapability, onBack, onOpenReport, onGenerateMesh, onStartSolve, onCancelSolve, onRequestArmatureField, onCancelArmatureField, onMeshSettingChange, onSolvePlanChange, onCustomSweepChange, onSolveSettingChange, onAnalysisChange, onTorqueSpeedChange, onSolverChange, onManageRuns }: Pick<CoilEmWorkspaceProps,
+  'config' | 'materials' | 'geometry' | 'mesh' | 'validation' | 'validationChecking' | 'validationError' | 'result' | 'armatureField' | 'armatureFieldError' | 'progress' | 'liveSamples' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'progressPercent' | 'meshElements' | 'meshQuality' | 'selectedSolver' | 'elmerCapability' | 'onGenerateMesh' | 'onStartSolve' | 'onCancelSolve' | 'onRequestArmatureField' | 'onCancelArmatureField' | 'onMeshSettingChange' | 'onSolvePlanChange' | 'onCustomSweepChange' | 'onSolveSettingChange' | 'onAnalysisChange' | 'onTorqueSpeedChange' | 'onSolverChange'
 > & { onBack: () => void; onOpenReport: () => void; onManageRuns?: () => void }) {
   // The setup sections open one at a time, as Design's do. The accuracy plan
   // starts open: it is the choice made on every run, and the guided tour's
@@ -3250,16 +3299,18 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
       : 'Estimate unavailable';
   const validationQualification = readQualification(validation?.qualification);
   const positionsText = validation
-    ? `${validation.sweep_positions} rotor positions`
+    ? analysisPositions(config, validation, selectedSolver)
     : validationChecking
       ? 'Calculating positions…'
       : 'Positions unavailable';
   const electricalFrequencyHz = config.solve_params.rated_speed_rpm * config.rotor.pole_count / 120;
   const outputLabels = [
-    'Torque sweep',
-    'Three-phase back EMF',
+    ...(config.solve_options.torque_sweep ? ['Torque sweep'] : []),
+    ...(config.solve_options.back_emf ? ['Three-phase back EMF'] : []),
     'Flux-density field map',
     ...(config.solve_options.cogging_torque && selectedSolver !== 'elmer' ? ['Cogging torque'] : []),
+    ...(config.solve_options.losses_efficiency && selectedSolver !== 'elmer' ? ['Losses & efficiency'] : []),
+    ...(config.solve_options.torque_speed_envelope && selectedSolver !== 'elmer' ? ['Torque–speed map'] : []),
   ];
   const torqueMethodLabel = selectedSolver === 'elmer'
     ? 'Arkkio'
@@ -3281,14 +3332,16 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
   const meshDensityLabel = config.solve_params.mesh_density === 'normal'
     ? 'Medium'
     : config.solve_params.mesh_density.replace('_', ' ');
-  const operatingSummary = [
+  const currentEnabled = selectedAnalyses(config, selectedSolver).some((key) => key === 'torque_sweep' || key === 'losses_efficiency');
+  const mapEnabled = selectedSolver !== 'elmer' && config.solve_options.torque_speed_envelope;
+  const operatingSummary = currentEnabled ? [
     sixStepSelected ? 'Six-step 120°' : 'Sinusoidal',
     `${Number(config.solve_params.current_amplitude_A.toFixed(2))} A ${sixStepSelected ? 'plateau' : config.solve_params.current_amplitude_convention}`,
     `${config.solve_params.rated_speed_rpm} rpm`,
-  ].join(' · ');
+  ].join(' · ') : `${mapEnabled ? 'Map current limits' : 'No current'} · ${config.solve_params.rated_speed_rpm} rpm`;
   const planMeshLabel = solvePlans.find((plan) => plan.value === config.solve_params.solve_quality)?.meshLabel;
   const planSummary = [planLabel, planMeshLabel, estimatedTimeText].filter(Boolean).join(' · ');
-  const advancedSummary = `${torqueMethodLabel} · ${nonlinearSolverLabel} · ${linearSolverLabel} · ${validation ? `${validation.sweep_positions}p` : '…'} · ${meshDensityLabel}${meshBuild === 'fast' ? ' · Fast mesh' : ''}`;
+  const advancedSummary = `${torqueMethodLabel} · ${nonlinearSolverLabel} · ${linearSolverLabel} · ${meshDensityLabel}${meshBuild === 'fast' ? ' · Fast mesh' : ''}`;
   const runReady = Boolean(mesh)
     && Boolean(validation?.valid)
     && selectedSolverAvailable
@@ -3697,7 +3750,8 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               <small>Two phases conduct per sector</small>
             </button>
           </div>
-          <NumberRow label={sixStepSelected ? 'Conducting phase current' : 'Phase Current'} value={config.solve_params.current_amplitude_A} unit={sixStepSelected ? 'A plateau' : `A ${config.solve_params.current_amplitude_convention}`} min={0} max={1000} step={0.5} disabled={busy !== null} onChange={(value) => onSolveSettingChange('current_amplitude_A', value)} />
+          {!currentEnabled && <p className="public-design-notice">The selected analyses use zero current. Select Torque or Losses & efficiency to use the phase-current settings.</p>}
+          <NumberRow label={sixStepSelected ? 'Conducting phase current' : 'Phase Current'} value={config.solve_params.current_amplitude_A} unit={sixStepSelected ? 'A plateau' : `A ${config.solve_params.current_amplitude_convention}`} min={0} max={1000} step={0.5} disabled={busy !== null || !currentEnabled} onChange={(value) => onSolveSettingChange('current_amplitude_A', value)} />
           {sixStepSelected && <NumberRow label="Commutation advance" value={config.solve_params.commutation_advance_deg} unit="electrical degrees" min={-180} max={180} step={1} disabled={busy !== null} onChange={(value) => onSolveSettingChange('commutation_advance_deg', value)} />}
           <NumberRow label="Rated Speed" value={config.solve_params.rated_speed_rpm} unit="rpm" min={0} max={30000} step={50} disabled={busy !== null} onChange={(value) => onSolveSettingChange('rated_speed_rpm', value)} />
           <NumberRow label="Mechanical loss" value={config.solve_params.mechanical_loss_W ?? 0} unit="W" min={0} max={100000} step={1} hint="Friction and windage at the rated speed, if known. It lowers the shaft power and efficiency; the solved torque is unchanged." disabled={busy !== null} onChange={(value) => onSolveSettingChange('mechanical_loss_W', value)} />
@@ -3735,6 +3789,9 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
             <span>{sixStepSelected ? 'Wye · plateau current' : `${config.solve_params.current_amplitude_convention.toUpperCase()} phase current`}</span>
           </div>
           {sixStepSelected && <div className="public-six-step-limitation" role="note"><strong>Phase connection: Wye (MVP)</strong><span>Ideal current excitation only — no PWM, switching ripple, Hall timing, dead time, or ESC dynamics.</span></div>}
+        </ParameterSectionBlock>
+        <ParameterSectionBlock id="analysis" label="Analysis" summary={analysisSummary(config, selectedSolver)} active={openSetupSection === 'analysis'} attention={selectedAnalyses(config, selectedSolver).length === 0} onToggle={toggleSetupSection}>
+          <AnalysisOptions config={config} solver={selectedSolver} busy={busy !== null} coggingPositions={validation?.cogging_positions_per_period} onChange={onAnalysisChange} onTorqueSpeedChange={onTorqueSpeedChange} />
         </ParameterSectionBlock>
         <ParameterSectionBlock id="plan" label="Accuracy plan" summary={planSummary} active={openSetupSection === 'plan'} onToggle={toggleSetupSection} guide="solve-plan">
           <div className="public-choice-row public-solve-plan-choices">
@@ -3793,12 +3850,12 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
                 />
                 <div className="public-custom-sweep-estimate" aria-live="polite">
                   <strong>{validation
-                    ? `${validation.sweep_positions} positions`
+                    ? analysisPositions(config, validation, selectedSolver)
                     : validationChecking
                       ? 'Calculating…'
                       : 'Unavailable'}</strong>
                   <span>{estimatedTimeText}</span>
-                  <small>360° electrical sweep</small>
+                  <small>{config.solve_options.torque_sweep || config.solve_options.losses_efficiency ? 'Loaded electrical sweep' : config.solve_options.back_emf ? 'No-current electrical sweep' : 'One cogging period'}</small>
                 </div>
               </div>
             )}
@@ -3806,15 +3863,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
           {config.solve_params.solve_quality === 'quick' && (
             <p className="public-plan-advisory">Preview is intended for iteration, not final result sign-off.</p>
           )}
-          {selectedSolver !== 'elmer' && (
-            <div className="public-cogging-option">
-              <label className="public-check-row">
-                <input type="checkbox" checked={config.solve_options.cogging_torque} disabled={busy !== null} onChange={(event) => onCoggingTorqueChange(event.target.checked)} />
-                {' '}Cogging torque
-              </label>
-              <p className="public-plan-advisory">{coggingPlanNote(config.stator.slot_count, config.rotor.pole_count, validation?.cogging_positions_per_period, config.solve_params.corner_refinement)}</p>
-            </div>
-          )}
+
         </ParameterSectionBlock>
         <ParameterSectionBlock id="advanced" label="Advanced options" summary={advancedSummary} active={advancedOpen} attention={convergenceFailed} onToggle={toggleSetupSection} sectionRef={advancedOptionsRef} className="public-advanced-options">
           <div className="public-advanced-body">
@@ -3984,8 +4033,8 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
               </>}
               {onManageRuns && <button type="button" onClick={onManageRuns}>Manage previous runs</button>}
             </div>}
-            <ExcitationRunPlanPreview config={config} />
-            {(busy === 'mesh' || busy === 'solve' || busy === 'field') && <LiveSolveMonitor busy={busy} progress={progress} liveSamples={liveSamples} progressPercent={progressPercent} />}
+            <ExcitationRunPlanPreview config={config} currentEnabled={currentEnabled} mapEnabled={mapEnabled} />
+            {(busy === 'mesh' || busy === 'solve' || busy === 'field') && <LiveSolveMonitor config={config} busy={busy} progress={progress} liveSamples={liveSamples} progressPercent={progressPercent} />}
             <dl className="public-quality-list">
               <div><dt>Solver</dt><dd>{solverLabel}</dd></div>
               <div><dt>Accuracy plan</dt><dd>{planLabel}</dd></div>
@@ -4010,9 +4059,9 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
                 </dd>
               </div>
               <div><dt>Corner refinement</dt><dd className={mesh && appliedRefinement ? 'pass' : ''}>{mesh ? (appliedRefinement ? 'Applied' : 'Off') : 'Pending'}</dd></div>
-              <div><dt>Positions</dt><dd>{validationChecking ? 'Calculating…' : validation?.sweep_positions ?? 'Unavailable'}</dd></div>
+              <div><dt>Positions</dt><dd>{positionsText}</dd></div>
               <div><dt>Run-time estimate</dt><dd>{estimatedTimeText}</dd></div>
-              <div><dt>Qualification</dt><dd>{validationQualification ? QUALIFICATION_LABELS[validationQualification.status] : validationChecking ? 'Calculating…' : 'Unavailable'}</dd></div>
+              <div><dt>Qualification</dt><dd>{validationQualification ? qualificationLabel(validationQualification) : validationChecking ? 'Calculating…' : 'Unavailable'}</dd></div>
             </dl>
           </div>
         </details>
@@ -4107,7 +4156,8 @@ function ReportStage({
   onRerun: (savedRun: PublicSavedRun) => void;
 }) {
   const [reportMode, setReportMode] = useState<'single' | 'compare'>('single');
-  const [activePlot, setActivePlot] = useState<'torque' | 'back-emf' | 'cogging' | 'field-map' | 'performance'>('torque');
+  const [activePlot, setActivePlot] = useState<'torque' | 'back-emf' | 'cogging' | 'field-map' | 'performance'>(() => defaultResultPlot(result));
+  useEffect(() => { setActivePlot(defaultResultPlot(result)); }, [result]);
   const [backEmfView, setBackEmfView] = useState<'phase-neutral' | 'line-line'>('phase-neutral');
   const [exportState, setExportState] = useState<{
     action: string;
@@ -4181,7 +4231,7 @@ function ReportStage({
       value: `${formatNumber(config.solve_params.current_amplitude_A)} A ${sixStep ? 'plateau' : config.solve_params.current_amplitude_convention}`,
     },
     { label: 'Excitation', value: sixStep ? 'Ideal six-step (120°)' : 'Sinusoidal' },
-    ...(reportQualification ? [{ label: 'Qualification', value: QUALIFICATION_LABELS[reportQualification.status] }] : []),
+    ...(reportQualification ? [{ label: 'Qualification', value: qualificationLabel(reportQualification) }] : []),
     ...(sixStep ? [
       { label: 'Commutation advance', value: `${formatNumber(result.solve_metadata.commutation_advance_deg ?? config.solve_params.commutation_advance_deg)}° electrical` },
       { label: 'Phase connection', value: 'Wye (MVP)' },
@@ -4245,7 +4295,7 @@ function ReportStage({
         {qualificationChip && (
           <span role="note" aria-label="Benchmark qualification">
             <a className="public-qualification-chip" href={QUALIFICATION_DOCS_URL} target="_blank" rel="noreferrer" title={reportQualification.reason}>
-              {QUALIFICATION_LABELS[reportQualification.status]}
+              {qualificationLabel(reportQualification)}
             </a>
             <span className="public-visually-hidden">{reportQualification.reason}</span>
           </span>
@@ -4297,11 +4347,11 @@ function ReportStage({
       />
       <SolverConvergenceCard report={result.solver_convergence} />
       <div className="public-report-plot-tabs" role="tablist" aria-label="Result plots">
-        <button type="button" role="tab" aria-selected={activePlot === 'torque'} className={activePlot === 'torque' ? 'active' : ''} onClick={() => setActivePlot('torque')}>Torque</button>
-        <button type="button" role="tab" aria-selected={activePlot === 'back-emf'} className={activePlot === 'back-emf' ? 'active' : ''} onClick={() => setActivePlot('back-emf')}>Back EMF</button>
+        {hasTorqueResult(result) && <button type="button" role="tab" aria-selected={activePlot === 'torque'} className={activePlot === 'torque' ? 'active' : ''} onClick={() => setActivePlot('torque')}>Torque</button>}
+        {hasBackEmfResult(result) && <button type="button" role="tab" aria-selected={activePlot === 'back-emf'} className={activePlot === 'back-emf' ? 'active' : ''} onClick={() => setActivePlot('back-emf')}>Back EMF</button>}
         {coggingWaveform && <button type="button" role="tab" aria-selected={activePlot === 'cogging'} className={activePlot === 'cogging' ? 'active' : ''} onClick={() => setActivePlot('cogging')}>Cogging</button>}
         {fieldPlot && <button type="button" role="tab" aria-selected={activePlot === 'field-map'} className={activePlot === 'field-map' ? 'active' : ''} onClick={() => setActivePlot('field-map')}>Field map</button>}
-        <button type="button" role="tab" aria-selected={activePlot === 'performance'} className={activePlot === 'performance' ? 'active' : ''} onClick={() => setActivePlot('performance')}>Torque–speed</button>
+        {result.torque_speed_analysis && <button type="button" role="tab" aria-selected={activePlot === 'performance'} className={activePlot === 'performance' ? 'active' : ''} onClick={() => setActivePlot('performance')}>Torque–speed</button>}
       </div>
       {activePlot === 'performance' && <PerformancePanel config={config} result={result} designName={designName} />}
       {activePlot === 'torque' && sixStep && result.phase_current_waveform
@@ -4371,6 +4421,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
         resultReady={reportAvailable}
         solveRunning={props.busy === 'solve'}
         connectionStatus={props.connectionStatus}
+        appVersion={props.appVersion}
         designName={props.designName ?? null}
         onHome={props.onHome}
         onStepChange={props.onStepChange}
@@ -4455,7 +4506,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
               )}
             </div>
           )}
-          {props.activeStep === 'solve' && <SolveStage config={props.config} materials={props.materials} geometry={props.geometry} mesh={props.mesh} validation={props.validation} validationChecking={props.validationChecking} validationError={props.validationError} result={props.result} armatureField={props.armatureField} armatureFieldError={props.armatureFieldError} progress={props.progress} liveSamples={props.liveSamples} busy={props.busy} error={props.error} errorDetails={props.errorDetails} notice={props.notice} progressPercent={props.progressPercent} meshElements={props.meshElements} meshQuality={props.meshQuality} selectedSolver={props.selectedSolver} elmerCapability={props.elmerCapability} onBack={() => props.onStepChange('design')} onOpenReport={() => props.onStepChange('report')} onGenerateMesh={props.onGenerateMesh} onStartSolve={props.onStartSolve} onCancelSolve={props.onCancelSolve} onRequestArmatureField={props.onRequestArmatureField} onCancelArmatureField={props.onCancelArmatureField} onMeshSettingChange={props.onMeshSettingChange} onSolvePlanChange={props.onSolvePlanChange} onCustomSweepChange={props.onCustomSweepChange} onSolveSettingChange={props.onSolveSettingChange} onCoggingTorqueChange={props.onCoggingTorqueChange} onSolverChange={props.onSolverChange} onManageRuns={needsRunStorageRecovery(props.error) ? () => setRunHistoryOpen(true) : undefined} />}
+          {props.activeStep === 'solve' && <SolveStage config={props.config} materials={props.materials} geometry={props.geometry} mesh={props.mesh} validation={props.validation} validationChecking={props.validationChecking} validationError={props.validationError} result={props.result} armatureField={props.armatureField} armatureFieldError={props.armatureFieldError} progress={props.progress} liveSamples={props.liveSamples} busy={props.busy} error={props.error} errorDetails={props.errorDetails} notice={props.notice} progressPercent={props.progressPercent} meshElements={props.meshElements} meshQuality={props.meshQuality} selectedSolver={props.selectedSolver} elmerCapability={props.elmerCapability} onBack={() => props.onStepChange('design')} onOpenReport={() => props.onStepChange('report')} onGenerateMesh={props.onGenerateMesh} onStartSolve={props.onStartSolve} onCancelSolve={props.onCancelSolve} onRequestArmatureField={props.onRequestArmatureField} onCancelArmatureField={props.onCancelArmatureField} onMeshSettingChange={props.onMeshSettingChange} onSolvePlanChange={props.onSolvePlanChange} onCustomSweepChange={props.onCustomSweepChange} onSolveSettingChange={props.onSolveSettingChange} onAnalysisChange={props.onAnalysisChange} onTorqueSpeedChange={props.onTorqueSpeedChange} onSolverChange={props.onSolverChange} onManageRuns={needsRunStorageRecovery(props.error) ? () => setRunHistoryOpen(true) : undefined} />}
           {props.activeStep === 'report' && props.result && <ReportStage result={props.result} config={props.config} materials={props.materials} designName={props.designName ?? null} onBack={() => props.onStepChange('solve')} onOpenRunFolder={props.onOpenRunFolder} onDownloadRunExport={props.onDownloadRunExport} onOpenRunProject={props.onOpenRunProject} onRerun={props.onRerun} />}
         </div>
       </main>

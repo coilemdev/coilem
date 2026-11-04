@@ -130,6 +130,14 @@ def map_scope_key(config: MotorConfig, preset: MapPreset = "preview") -> str:
     """Hash of everything that would invalidate the map's points."""
 
     raw = config.model_dump(mode="json")
+    raw.pop("torque_speed_analysis", None)
+    # Analysis selections and drive limits do not change a map point's fields.
+    # Use the same dependency flags for map-only and combined requests.
+    raw["solve_options"] = {
+        "torque_sweep": True, "back_emf": True, "flux_density": True,
+        "cogging_torque": False, "losses_efficiency": True,
+        "thd_analysis": False, "torque_speed_envelope": False,
+    }
     solve_params = dict(raw.get("solve_params") or {})
     for name in _OPERATING_POINT_FIELDS:
         solve_params.pop(name, None)
@@ -169,6 +177,9 @@ def point_config(
         update={
             "back_emf": current_peak_A == 0 if no_load_sweep is None else no_load_sweep,
             "cogging_torque": False,
+            "torque_sweep": True,
+            "losses_efficiency": True,
+            "flux_density": True,
             "thd_analysis": False,
             "torque_speed_envelope": False,
         }

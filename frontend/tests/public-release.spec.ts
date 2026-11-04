@@ -79,7 +79,7 @@ async function openMoreRunActions(page: Page): Promise<void> {
 }
 
 // The Solve setup shows one section at a time; open the one whose controls come next.
-async function openSetupSection(page: Page, section: 'operating' | 'plan'): Promise<void> {
+async function openSetupSection(page: Page, section: 'operating' | 'analysis' | 'plan'): Promise<void> {
   const header = page.locator(`button[aria-controls="param-group-content-${section}"]`);
   if ((await header.getAttribute('aria-expanded')) !== 'true') await header.click();
   await expect(header).toHaveAttribute('aria-expanded', 'true');
@@ -132,7 +132,7 @@ async function solveStandard(page: Page, mode: Excitation): Promise<void> {
   await expect(page.getByRole('heading', { name: 'Electromagnetic performance', exact: true })).toBeVisible();
   await expect(page.getByRole('region', { name: 'Saved solve run' })).toBeVisible();
   // The starter SPM 8p/12s is a qualified combination under the FEMM v3 benchmark report.
-  await expect(page.locator('.public-report-stage').getByRole('note', { name: 'Benchmark qualification' })).toContainText(/Qualified|Experimental/);
+  await expect(page.locator('.public-report-stage').getByRole('note', { name: 'Benchmark qualification' })).toContainText(/Qualified|Experimental|Benchmark Qualification Pending/);
   for (const tabName of ['Back EMF', 'Torque']) {
     const tab = page.getByRole('tab', { name: tabName, exact: true });
     await tab.click();
@@ -171,7 +171,7 @@ test('switches to Elmer with cogging enabled without submitting the unsupported 
   await expect(page.getByRole('status', { name: 'Local backend: ready', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
   await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
-  await openSetupSection(page, 'plan');
+  await openSetupSection(page, 'analysis');
   const cogging = page.getByRole('checkbox', { name: 'Cogging torque', exact: true });
   await cogging.check();
   await expect(cogging).toBeChecked();
@@ -183,7 +183,9 @@ test('switches to Elmer with cogging enabled without submitting the unsupported 
   const response = await validated;
   expect(response.request().postDataJSON().config.solve_options.cogging_torque).toBe(false);
   expect(response.ok()).toBe(true);
-  await expect(cogging).toHaveCount(0);
+  await openSetupSection(page, 'analysis');
+  await expect(cogging).toBeDisabled();
+  await expect(cogging).not.toBeChecked();
   const run = page.getByRole('button', { name: '▶ Run analysis', exact: true });
   await expect(run).toBeEnabled();
   const submitted = page.waitForRequest((request) => request.url().endsWith('/solve/stream'));
@@ -192,8 +194,9 @@ test('switches to Elmer with cogging enabled without submitting the unsupported 
   expect(body.solver).toBe('elmer');
   expect(body.config.solve_options.cogging_torque).toBe(false);
   await expect(page.getByRole('alert')).toContainText('Cogging regression finished before solving.');
+  await page.locator('button[aria-controls="param-group-content-solver"]').click();
   await page.getByRole('radio', { name: /Magneto2D/ }).click();
-  await openSetupSection(page, 'plan');
+  await openSetupSection(page, 'analysis');
   await expect(cogging).toBeChecked();
 });
 
@@ -267,7 +270,7 @@ test.describe('public developer preview release rehearsal', () => {
       await info.attach('public-landing-page', { path: landingScreenshot, contentType: 'image/png' });
       await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
       await expect(page.getByRole('navigation', { name: 'Motor workflow' })).toBeVisible();
-      await expect(page.getByText(/^(Qualified|Experimental) motor combination$/)).toBeVisible();
+      await expect(page.getByText(/^((Qualified|Experimental) motor combination|Benchmark Qualification Pending)$/)).toBeVisible();
       await page.getByRole('button', { name: 'Design file menu', exact: true }).click();
       // A mouse click on Examples hovers it first; the submenu must stay open.
       await page.getByRole('menuitem', { name: 'Examples', exact: true }).click();
@@ -502,4 +505,190 @@ test('shows the cogging swing and exports a report for a real zero-current solve
   const report = await downloaded;
   expect(await report.failure()).toBeNull();
   await report.saveAs(info.outputPath('zero-current.pdf'));
+});
+
+for (const analysis of ['Back EMF', 'Cogging torque'] as const) {
+  test(`runs standalone ${analysis} from the Analysis section`, async ({ page }, info) => {
+    test.setTimeout(180_000);
+    await page.goto('/');
+    await expect(page.getByRole('status', { name: 'Local backend: ready', exact: true })).toBeVisible();
+    await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+    await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+    await openSetupSection(page, 'analysis');
+    const torque = page.getByRole('checkbox', { name: 'Torque', exact: true });
+    const backEmf = page.getByRole('checkbox', { name: 'Back EMF', exact: true });
+    const cogging = page.getByRole('checkbox', { name: 'Cogging torque', exact: true });
+    const losses = page.getByRole('checkbox', { name: 'Losses & efficiency', exact: true });
+    await expect(torque).toBeChecked();
+    await expect(backEmf).toBeChecked();
+    await expect(cogging).not.toBeChecked();
+    await expect(losses).not.toBeChecked();
+    if (analysis === 'Cogging torque') await cogging.check();
+    await torque.uncheck();
+    if (analysis === 'Cogging torque') await backEmf.uncheck();
+    await openSetupSection(page, 'plan');
+    await page.getByRole('button', { name: /Preview.*Coarse mesh/ }).click();
+    const run = page.getByRole('button', { name: '▶ Run analysis', exact: true });
+    await expect(run).toBeEnabled({ timeout: 120_000 });
+    if (analysis === 'Back EMF') {
+      await page.getByRole('button', { name: /Custom.*Choose the electrical-angle step/ }).click();
+      const step = page.getByLabel('Step Size (° elec)', { exact: true });
+      await step.fill('30');
+      await step.blur();
+    }
+    await expect(run).toBeEnabled();
+    await expect(page.getByRole('region', { name: 'Excitation: no current', exact: true })).toContainText('0 A');
+    await expect(page.locator('.public-quality-list').getByText(analysis === 'Back EMF' ? 'Back EMF 12' : 'Cogging 13', { exact: true })).toBeVisible();
+    // Switching presets keeps the selected work. The collapsed section lists it.
+    await expect(page.locator('button[aria-controls="param-group-content-analysis"]')).toContainText(analysis === 'Back EMF' ? 'Back EMF' : 'Cogging');
+    await openSetupSection(page, 'analysis');
+    await page.screenshot({ path: info.outputPath('analysis-options.png'), animations: 'disabled' });
+    const submitted = page.waitForRequest((request) => request.url().endsWith('/solve/stream'));
+    const finished = page.waitForResponse((response) => response.url().endsWith('/solve/stream'));
+    await run.click();
+    const request = (await submitted).postDataJSON();
+    expect(request.config.solve_options.torque_sweep).toBe(false);
+    expect(request.config.solve_options.losses_efficiency).toBe(false);
+    expect(request.config.solve_options.back_emf).toBe(analysis === 'Back EMF');
+    expect(request.config.solve_options.thd_analysis).toBe(false);
+    expect((await finished).ok()).toBe(true);
+    await expect(page.getByRole('region', { name: 'Completed solver results' })).toBeVisible({ timeout: 120_000 });
+    const stream = await (await finished).text();
+    const complete = stream.split('\n\n').find((event) => event.startsWith('event: complete'));
+    expect(complete).toBeTruthy();
+    const payload = JSON.parse(complete!.split('\n').find((line) => line.startsWith('data: '))!.slice(6));
+    expect(payload.summary.avg_torque_Nm).toBeNull();
+    expect(payload.torque_waveform.torque_Nm).toEqual([]);
+    expect(payload.solve_metadata.rotor_positions).toBe(1);
+    expect(payload.solve_metadata.current_amplitude_A).toBe(0);
+    expect(payload.summary.loss_breakdown).toBeNull();
+    await page.getByRole('button', { name: 'Full results →', exact: true }).click();
+    const report = page.locator('.public-report-stage');
+    await expect(report.getByRole('tab', { name: 'Torque', exact: true })).toHaveCount(0);
+    await expect(report.getByRole('tab', { name: 'Torque–speed', exact: true })).toHaveCount(0);
+    await expect(report.locator('.public-result-hero')).toHaveCount(0);
+    await expect(report.getByRole('heading', { name: 'Losses & efficiency', exact: true })).toHaveCount(0);
+    if (analysis === 'Back EMF') {
+      await expect(report.getByRole('tab', { name: 'Back EMF', exact: true })).toHaveAttribute('aria-selected', 'true');
+      await expect(report.locator('.public-result-emf')).toBeVisible();
+    } else {
+      await expect(report.getByRole('tab', { name: 'Cogging', exact: true })).toHaveAttribute('aria-selected', 'true');
+      await expect(report.getByRole('tab', { name: 'Back EMF', exact: true })).toHaveCount(0);
+      await expect(report.locator('.cogging-card')).toBeVisible();
+    }
+    await page.screenshot({ path: info.outputPath('standalone-results.png'), animations: 'disabled' });
+  });
+}
+
+test('runs a standalone torque–speed map from Analysis and reopens its saved settings', async ({ page }, info) => {
+  test.setTimeout(900_000);
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+  await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+  await openSetupSection(page, 'analysis');
+  const selectedMap = page.getByRole('checkbox', { name: 'Torque–speed map', exact: true });
+  await expect(selectedMap).not.toBeChecked();
+  await selectedMap.check();
+  await page.getByRole('checkbox', { name: 'Torque', exact: true }).uncheck();
+  await page.getByRole('checkbox', { name: 'Back EMF', exact: true }).uncheck();
+  const settings = page.getByRole('region', { name: 'Torque–speed map settings', exact: true });
+  await expect(settings.getByLabel('Peak current', { exact: true })).toHaveValue('60');
+  await expect(settings.getByLabel('DC bus', { exact: true })).toHaveValue('48');
+  await settings.getByLabel('Drive control', { exact: true }).selectOption('least_loss');
+  await openSetupSection(page, 'plan');
+  await page.getByRole('button', { name: /Preview.*Coarse mesh/ }).click();
+  const run = page.getByRole('button', { name: '▶ Run analysis', exact: true });
+  await expect(run).toBeEnabled({ timeout: 120_000 });
+  await openSetupSection(page, 'analysis');
+  await expect(selectedMap).toBeChecked();
+  await expect(settings.getByLabel('Drive control', { exact: true })).toHaveValue('least_loss');
+  await page.screenshot({ path: info.outputPath('torque-speed-setup.png'), animations: 'disabled' });
+  const submitted = page.waitForRequest((request) => request.url().endsWith('/solve/stream'));
+  const finished = page.waitForResponse((response) => response.url().endsWith('/solve/stream'));
+  await run.click();
+  const request = (await submitted).postDataJSON().config;
+  expect(request.solve_options.torque_speed_envelope).toBe(true);
+  expect(request.solve_options.torque_sweep).toBe(false);
+  expect(request.solve_options.back_emf).toBe(false);
+  expect(request.solve_options.losses_efficiency).toBe(false);
+  expect(request.torque_speed_analysis.control).toBe('least_loss');
+  await expect(page.getByRole('region', { name: 'Completed solver results', exact: true })).toBeVisible({ timeout: 780_000 });
+  const stream = await (await finished).text();
+  expect(stream).toContain('torque_speed_map');
+  const complete = stream.split('\n\n').find((event) => event.startsWith('event: complete'));
+  expect(complete).toBeTruthy();
+  const payload = JSON.parse(complete!.split('\n').find((line) => line.startsWith('data: '))!.slice(6));
+  expect(payload.torque_waveform.torque_Nm).toEqual([]);
+  expect(payload.solve_metadata.rotor_positions).toBe(1);
+  expect(payload.torque_speed_analysis.map.points).toHaveLength(35);
+  expect(payload.torque_speed_analysis.map.points.every((point) => point.status === 'ok')).toBe(true);
+  await page.getByRole('button', { name: 'Full results →', exact: true }).click();
+  await expect(page.getByRole('tab', { name: 'Torque–speed', exact: true })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('tab', { name: 'Torque', exact: true })).toHaveCount(0);
+  await expect(page.getByRole('tab', { name: 'Back EMF', exact: true })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Torque–speed and efficiency', exact: true })).toBeVisible();
+  await expect(page.getByRole('group', { name: 'Envelope quantity', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: /^Solve map/ })).toHaveCount(0);
+  await expect(page.getByRole('spinbutton')).toHaveCount(0);
+  await page.screenshot({ path: info.outputPath('torque-speed-results.png'), animations: 'disabled' });
+  await openMoreRunActions(page);
+  await page.getByRole('button', { name: 'Rerun settings', exact: true }).click();
+  await openSetupSection(page, 'analysis');
+  await expect(selectedMap).toBeChecked();
+  await expect(settings.getByLabel('Drive control', { exact: true })).toHaveValue('least_loss');
+  await expect(settings.getByLabel('DC bus', { exact: true })).toHaveValue('48');
+});
+
+test('Previous runs handles standalone analyses and missing legacy waveform arrays', async ({ page }) => {
+  const errors: string[] = [];
+  const solveRequests: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  page.on('request', (request) => {
+    const path = new URL(request.url()).pathname;
+    if (['/solve', '/solve/stream', '/performance/map/stream'].includes(path)) solveRequests.push(path);
+  });
+  const summary = { avg_torque_Nm: null, torque_ripple_pct: null, back_emf_fundamental_V: null,
+    peak_flux_density_teeth_T: 1.2, peak_flux_density_yoke_T: 1, solve_time_s: 2 };
+  const metadata = { solver_name: 'magneto2d-test', current_amplitude_A: 0, rotor_positions: 1 };
+  const emptyTorque = { electrical_angle_deg: [], torque_Nm: [] };
+  const emptyEmf = { electrical_angle_deg: [], phase_a_V: [], phase_b_V: [], phase_c_V: [] };
+  const results = {
+    map: { summary, solve_metadata: metadata, torque_waveform: {}, back_emf_waveform: {} },
+    cogging: { summary: { ...summary, cogging: { peak_to_peak_Nm: 0.2, first_harmonic_Nm: 0.1 } },
+      solve_metadata: metadata, torque_waveform: emptyTorque, back_emf_waveform: emptyEmf },
+    emf: { summary: { ...summary, back_emf_fundamental_V: 2 }, solve_metadata: metadata, torque_waveform: {},
+      back_emf_waveform: { electrical_angle_deg: [0, 90, 180, 270], phase_a_V: [0, 2, 0, -2], phase_b_V: [-1, 1, 1, -1], phase_c_V: [1, -1, -1, 1] } },
+    torque: { summary: { ...summary, avg_torque_Nm: 4, torque_ripple_pct: 2 }, solve_metadata: { ...metadata, current_amplitude_A: 10 },
+      torque_waveform: { electrical_angle_deg: [0, 30], torque_Nm: [3.9, 4.1] }, back_emf_waveform: {} },
+  };
+  await page.route('**/runs', (route) => route.fulfill({ json: {
+    storage: { used_bytes: 1000, max_bytes: 10000, available_bytes: 9000, accepting_new_runs: true },
+    runs: Object.keys(results).map((key) => ({ project_slug: 'regression', run_id: key, project_name: key,
+      status: 'complete', solver_name: 'magneto2d-test', completed_at: '2026-11-04T02:00:00Z' })),
+  } }));
+  await page.route('**/runs/regression/*/comparison', (route) => {
+    const key = new URL(route.request().url()).pathname.split('/').at(-2) as keyof typeof results;
+    return route.fulfill({ json: { result: results[key] } });
+  });
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+  await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
+  const dialog = page.getByRole('dialog', { name: 'Previous runs', exact: true });
+  await expect(dialog.getByText('Neither run has torque or Back EMF waveforms to overlay.', { exact: false })).toBeVisible();
+  await expect(dialog.getByRole('tablist', { name: 'Comparison plots', exact: true })).toHaveCount(0);
+  await expect(dialog.getByText('Peak tooth B', { exact: true })).toBeVisible();
+  await dialog.getByLabel('Run B · candidate').selectOption('regression/emf');
+  await expect(dialog.getByRole('tab', { name: 'Back EMF overlay', exact: true })).toHaveAttribute('aria-selected', 'true');
+  await expect(dialog.getByRole('tab', { name: 'Torque overlay', exact: true })).toHaveCount(0);
+  await expect(dialog.getByText('Run A not computed · Run B 4 positions', { exact: true })).toBeVisible();
+  await dialog.getByLabel('Run A · baseline').selectOption('regression/torque');
+  await dialog.getByRole('tab', { name: 'Torque overlay', exact: true }).click();
+  await expect(dialog.getByText('Torque comparison', { exact: true })).toBeVisible();
+  await expect(dialog.getByText('Run A 2 positions · Run B not computed', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Close previous runs', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
+  await expect(dialog.getByText('Neither run has torque or Back EMF waveforms to overlay.', { exact: false })).toBeVisible();
+  expect(errors).toEqual([]);
+  expect(solveRequests).toEqual([]);
 });

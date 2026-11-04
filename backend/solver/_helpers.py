@@ -198,6 +198,9 @@ def _close_enough(a: float, b: float, *, rel_tol: float = 1e-6, abs_tol: float =
 
 
 def _requested_phase_current_peak_a(config: MotorConfig) -> float:
+    options = config.solve_options
+    if options is not None and not options.torque_sweep and not options.losses_efficiency:
+        return 0.0
     solve_params = config.solve_params
     if solve_params is None:
         return 0.0

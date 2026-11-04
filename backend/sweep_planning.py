@@ -29,6 +29,10 @@ def loaded_sweep_plan(config: MotorConfig) -> tuple[int, float]:
     step_deg = float(solve_params.effective_step_deg())
     span_deg = float(solve_params.effective_native_loaded_sweep_range_deg())
     options = config.solve_options or SolveOptionsConfig()
+    if not options.torque_sweep and not options.losses_efficiency:
+        # One static, zero-current field supplies the geometry/field preview.
+        # Back EMF and cogging plan their own no-load angle grids below.
+        return 1, 0.0
     if (
         solve_params.excitation_mode == "ideal_six_step_120"
         and solve_params.solve_quality in ("standard", "fine")
@@ -70,6 +74,8 @@ def loaded_angle_grid(config: MotorConfig) -> list[float]:
     """Return the requested loaded electrical-angle grid."""
 
     count, span_deg = loaded_sweep_plan(config)
+    if count == 1:
+        return [0.0]
     step_deg = span_deg / count if span_deg >= 360.0 - 1.0e-6 else span_deg / (count - 1)
     return [index * step_deg for index in range(count)]
 
