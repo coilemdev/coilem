@@ -7555,8 +7555,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 41528,
-      "sha256": "3d6b86b528fc7f794d7e98a73fa487a6794b84fc289ef905f40e3ecec2013769"
+      "bytes": 41562,
+      "sha256": "881574e06255fd4d7cf764372d3e14d4536dd28d660402a3109c7fca81830a10"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -31505,6 +31505,12 @@
       "path": "frontend/tests/public-release.spec.ts",
       "source_sha256": "a178c328fea4089dc583b7feacde0ea995f027b0eaf9e4d88c15e83f8f585840",
       "reason": "Label pending build benchmark evidence as Benchmark Qualification Pending while preserving motor-combination qualification and warning status."
+    },
+    {
+      "base_commit": "22988458e74d7836b6a3adba2709131bb4a502b1",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "3d6b86b528fc7f794d7e98a73fa487a6794b84fc289ef905f40e3ecec2013769",
+      "reason": "Accept pending benchmark qualification in the release rehearsal Design health assertion."
     }
   ]
 }
