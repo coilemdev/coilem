@@ -1,6 +1,7 @@
 /** Real local release rehearsal. Requires the documented Python and Rust setup. */
 import { mkdir, open, readFile, stat } from 'node:fs/promises';
 import { dirname } from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { expect, test, type Page, type TestInfo } from '@playwright/test';
 import { checkPerformanceRegressions } from './performance-regressions';
@@ -9,6 +10,59 @@ const apiUrl = 'http://127.0.0.1:58000';
 const landingScreenshot = fileURLToPath(new URL('../test-results/landing-page.png', import.meta.url));
 type Excitation = 'sinusoidal' | 'ideal_six_step_120';
 type RunRecord = { project_slug: string; run_id: string; status: string };
+
+test('Results reports recorded convergence, warnings and missing historical evidence', async ({ page }, info) => {
+  // Use the canonical Python report consumed by PDF/CSV, with no native solve.
+  const fixture = JSON.parse(execFileSync(process.env.COILEM_TEST_PYTHON || 'python', ['-c', `
+import json
+from backend.convergence_reporting import convergence_report
+from tests.test_convergence_reporting import mixed_result
+r = mixed_result()
+r['solver_convergence'] = convergence_report(r)
+print(json.dumps(r))
+`], { cwd: fileURLToPath(new URL('../..', import.meta.url)), encoding: 'utf8' }));
+  let result = fixture;
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.route('**/solve/stream', route => route.fulfill({
+    contentType: 'text/event-stream', body: `event: complete\ndata: ${JSON.stringify(result)}\n\n`,
+  }));
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+  await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+  const run = page.getByRole('button', { name: '▶ Run analysis', exact: true });
+  await expect(run).toBeEnabled({ timeout: 120_000 });
+  await run.click();
+  await page.getByRole('button', { name: 'Full results →', exact: true }).click();
+  const card = page.getByRole('region', { name: 'Solver convergence', exact: true });
+  await expect(card.getByText('Review convergence', { exact: true })).toBeVisible();
+  await expect(card.getByText('24 / 8', { exact: true })).toBeVisible();
+  await expect(card.locator('dd').filter({ hasText: /^0\.02$/ })).toBeVisible();
+  await expect(card.locator('dd').filter({ hasText: /^0\.003$/ })).toBeVisible();
+  await card.getByText('Thresholds and per-position records', { exact: true }).click();
+  await expect(card.getByRole('table', { name: 'Per-position solver convergence' })).toBeVisible();
+  await expect(card.getByText('Reused · Review', { exact: true })).toBeVisible();
+  await expect(card.getByText('0.05', { exact: true })).toBeVisible();
+  const screenshot = info.outputPath('solver-convergence.png');
+  await card.screenshot({ path: screenshot });
+  await info.attach('solver-convergence', { path: screenshot, contentType: 'image/png' });
+  await page.setViewportSize({ width: 820, height: 1050 });
+  expect(await card.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+
+  // An old result with counts but no residual records must not acquire a green
+  // badge or recover evidence from today's configured tolerance.
+  result = { ...fixture, solver_convergence: undefined, loaded_nonlinear_convergence: undefined,
+    no_load_nonlinear_convergence: undefined };
+  await page.setViewportSize({ width: 1753, height: 980 });
+  await page.reload();
+  await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+  await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+  await run.click();
+  await page.getByRole('button', { name: 'Full results →', exact: true }).click();
+  await expect(card.getByText('Not recorded', { exact: true })).toBeVisible();
+  await expect(card.getByText(/cannot be recovered from iteration counts/)).toBeVisible();
+  expect(errors).toEqual([]);
+});
 
 async function runList(page: Page): Promise<RunRecord[]> {
   // Long solves can leave an idle keep-alive socket closed by the server.

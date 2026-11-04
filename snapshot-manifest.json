@@ -65,8 +65,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 13815,
-      "sha256": "5004aece9fc710ff483d57790e42f790883d89b9826f6aef635d91a5e2389190"
+      "bytes": 13954,
+      "sha256": "180f427978b3c363eb880050108dc1b2b14166dd2eac2ed16063857031ffe7bd"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -545,8 +545,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 79794,
-      "sha256": "566e4f0c512fe9defaf5cdabc797a2db136b458af367963743ce28ab56fe0dcd"
+      "bytes": 82339,
+      "sha256": "e9536aeef276e74c3f94692377d1fb108e087d00229ce79e1933b65f5339570d"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -570,13 +570,13 @@
     },
     {
       "path": "backend/public_routes/runs.py",
-      "bytes": 6031,
-      "sha256": "186e44cf0512ed3a8fa42b058097e1a81d12041f8319d5f30824828df07b35aa"
+      "bytes": 6445,
+      "sha256": "7af7c5201876a7768c35c08f7324e203e6e5f4f83a4de1ebeb302a8e9cba9329"
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 51534,
-      "sha256": "669e2ab56e10cb8d17d78f8beee4af84eabc294eed6aaa8aa85f36a346c11c30"
+      "bytes": 51659,
+      "sha256": "5619e89da4de01b1527de712c88d4407563e0acdbab7df3c8f6841e34379ac54"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -6900,8 +6900,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 231726,
-      "sha256": "00894e348c77072e36661ffd7ad0e9a4674d00d454af35bebacb4673f791d68a"
+      "bytes": 231858,
+      "sha256": "730ba0b5502f1d57416b66c2ea933728b0fd076c3e064a04bc7a99251b736669"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7295,8 +7295,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 20865,
-      "sha256": "998f2b8b6dae06af5260a5369d947e57d24177ee212653a8316996d08636fd6f"
+      "bytes": 22059,
+      "sha256": "2a3ec80af5d80878687f4aa7365365c238eb19a64f4216421a637e31006971b6"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -7380,8 +7380,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 283027,
-      "sha256": "6e37377129da21ba3478b8e53287555e03416379e2f696eb3f3e1f03e2ba4852"
+      "bytes": 285467,
+      "sha256": "638c428bb820019c9bedb9f7e10e7b196fafe3d42fddd36e33eca659113fba0c"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7440,8 +7440,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 25012,
-      "sha256": "0cbedc0c04bfa6bb877729494f18b010fdfc392b5387e2346cd702af880de014"
+      "bytes": 28347,
+      "sha256": "9647590bef1f52248bc1aef16a69955fcdceb3da5433be759f87e6e1da2f62af"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -11427,6 +11427,31 @@
       "path": "tests/test_owner_decisions.py",
       "bytes": 1498,
       "sha256": "40d7ef497d7e6cc12a814495cfe74daf88af323475559f37ed47d279b7db1d71"
+    },
+    {
+      "path": "backend/convergence_reporting.py",
+      "bytes": 9744,
+      "sha256": "39c938d6360a77fb35bd6c1290e6e61e48154c5514d96b90f9bd2c2b438e1866"
+    },
+    {
+      "path": "docs/SOLVER_CONVERGENCE.md",
+      "bytes": 2540,
+      "sha256": "2a6a89420e03e609fb3a1ec74b42f181ebdc2b1c39b82f0f8573f220c1bc30f7"
+    },
+    {
+      "path": "frontend/src/public/SolverConvergenceCard.tsx",
+      "bytes": 3944,
+      "sha256": "8fae14435a4190dc1ed99935d55fdd189242f3f5d54ead595da49639ee24f418"
+    },
+    {
+      "path": "tests/test_convergence_reporting.py",
+      "bytes": 10621,
+      "sha256": "b93e692d390e34d90e9454295aa25b3adeb5f92f85d897612ca1969d7898b5e3"
+    },
+    {
+      "path": "tests/fixtures/convergence_report_snapshot.txt",
+      "bytes": 1322,
+      "sha256": "8609e2d752b863fc6be21b13c8eff2f3538bd4ac0cd6919129e7cf408fa779ba"
     }
   ],
   "public_patches": [
@@ -12958,7 +12983,7 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B Ã¢Ë†â€™ Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B \u00c3\u00a2\u00cb\u2020\u00e2\u20ac\u2122 Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
@@ -12988,13 +13013,13 @@
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45Ã‚Â° (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45\u00c3\u201a\u00c2\u00b0 (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45Ã‚Â° over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45\u00c3\u201a\u00c2\u00b0 over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "a482ff6e2bd9616d2ece2a68f8fa2f2c49aae45c",
@@ -13012,7 +13037,7 @@
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45Ã‚Â° (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00c3\u201a\u00c2\u00b0 (#52 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
@@ -14926,25 +14951,25 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B ÃƒÂ¢Ã‹â€ Ã¢â‚¬â„¢ Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B \u00c3\u0192\u00c2\u00a2\u00c3\u2039\u00e2\u20ac\u00a0\u00c3\u00a2\u00e2\u201a\u00ac\u00e2\u201e\u00a2 Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45Ãƒâ€šÃ‚Â° (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45Ãƒâ€šÃ‚Â° over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45Ãƒâ€šÃ‚Â° (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 (#52 follow-up)."
     },
     {
       "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
@@ -30245,6 +30270,54 @@
       "path": "frontend/src/public/outputStatus.ts",
       "source_sha256": "eaefe9db44cd6ffb2a3b76221db814a57b85f106e3ad4675217507267d004894",
       "reason": "Review protocol 1.6 references, bind candidate qualification to immutable measured fields, strengthen source freshness and retain historical evidence."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "README.md",
+      "source_sha256": "5004aece9fc710ff483d57790e42f790883d89b9826f6aef635d91a5e2389190",
+      "reason": "Report recorded nonlinear convergence consistently in Results, PDF and CSV, preserving missing evidence and method-specific stopping rules (#12)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/public_report.py",
+      "source_sha256": "566e4f0c512fe9defaf5cdabc797a2db136b458af367963743ce28ab56fe0dcd",
+      "reason": "Report recorded nonlinear convergence consistently in Results, PDF and CSV, preserving missing evidence and method-specific stopping rules (#12)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/public_routes/runs.py",
+      "source_sha256": "186e44cf0512ed3a8fa42b058097e1a81d12041f8319d5f30824828df07b35aa",
+      "reason": "Report recorded nonlinear convergence consistently in Results, PDF and CSV, preserving missing evidence and method-specific stopping rules (#12)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "669e2ab56e10cb8d17d78f8beee4af84eabc294eed6aaa8aa85f36a346c11c30",
+      "reason": "Report recorded nonlinear convergence consistently in Results, PDF and CSV, preserving missing evidence and method-specific stopping rules (#12)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "00894e348c77072e36661ffd7ad0e9a4674d00d454af35bebacb4673f791d68a",
+      "reason": "Report recorded nonlinear convergence consistently in Results, PDF and CSV, preserving missing evidence and method-specific stopping rules (#12)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "998f2b8b6dae06af5260a5369d947e57d24177ee212653a8316996d08636fd6f",
+      "reason": "Report recorded nonlinear convergence consistently in Results, PDF and CSV, preserving missing evidence and method-specific stopping rules (#12)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "6e37377129da21ba3478b8e53287555e03416379e2f696eb3f3e1f03e2ba4852",
+      "reason": "Report recorded nonlinear convergence consistently in Results, PDF and CSV, preserving missing evidence and method-specific stopping rules (#12)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "0cbedc0c04bfa6bb877729494f18b010fdfc392b5387e2346cd702af880de014",
+      "reason": "Report recorded nonlinear convergence consistently in Results, PDF and CSV, preserving missing evidence and method-specific stopping rules (#12)."
     }
   ]
 }

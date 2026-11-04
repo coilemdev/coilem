@@ -14,6 +14,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import FileResponse, StreamingResponse
 
+from backend.convergence_reporting import convergence_report
 from backend.elmer.capabilities import ElmerCapabilities, discover_elmer
 from backend.elmer.errors import (
     ElmerError,
@@ -227,6 +228,7 @@ def _public_result_payload(
         ]
         payload["field_playback"] = field_playback
     payload["field_line_frames"] = field_frame_descriptors
+    payload["solver_convergence"] = convergence_report(payload)
     return payload
 
 
