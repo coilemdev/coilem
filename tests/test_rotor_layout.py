@@ -9,6 +9,7 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
+from backend import qualification as qualification_module
 from backend.benchmark_suite.physics import physics_sources
 from backend.geometry_ir import build_geometry_ir
 from backend.magneto2d_adapter import build_magneto2d_payload, get_magneto2d_support_error
@@ -92,6 +93,14 @@ def test_layout_and_reference_registry_are_hashed_physics() -> None:
     # to either must lose a qualified label (review on #200).
     sources = set(physics_sources(Path(".")))
     assert {"backend/rotor_layout.py", "backend/reference_models/__init__.py"} <= sources
+
+
+def test_outer_rotor_is_experimental_where_the_inner_combination_is_qualified(monkeypatch):
+    # Single-layer concentrated SPM under sinusoidal current on M350-50A is qualified for inner rotors only.
+    monkeypatch.setattr(qualification_module, "evidence_matches_runtime", lambda: True)
+    assert qualification_module.classify_qualification(MotorConfig.model_validate(INNER))["status"] == "qualified"
+    outer = qualification_module.classify_qualification(MotorConfig.model_validate(outer_config()))
+    assert (outer["status"], outer["reason"]) == ("experimental", "Outer-rotor SPM: no benchmark fixture measures an outer rotor yet.")
 
 
 def test_rotor_torque_sign_rules():

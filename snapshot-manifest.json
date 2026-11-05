@@ -605,8 +605,8 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 10729,
-      "sha256": "ffe41716ab455ee3d6d60159b02da0d80b3f4b6e8b6385d7226b03ba9dcf2600"
+      "bytes": 11017,
+      "sha256": "30af09aef728d3441dff31a4066f747a9596f0d96c92ba26c62ddf143cd870ad"
     },
     {
       "path": "backend/reference_models/__init__.py",
@@ -13000,8 +13000,8 @@
     },
     {
       "path": "tests/test_rotor_layout.py",
-      "bytes": 7148,
-      "sha256": "008df67c97c175b3e78fed81541e5a293211833d1b79fd017716549790e3500b"
+      "bytes": 7848,
+      "sha256": "54f4ffaad86fd4607acb2f2976f00e1706e21b49cce69b9c734d13e123b3f3c2"
     },
     {
       "path": "tools/export_lrk_reference.py",
