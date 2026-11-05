@@ -23,6 +23,12 @@ class OutrunnerAnalysis(BaseModel):
     bulk_size_mm: Literal[0.5, 0.25, 0.125] = 0.25
     speed_rpm: float = Field(default=1000, gt=0, le=100000)
     loaded_currents_A: list[float] = Field(default_factory=lambda: [0, 4, -4], min_length=3, max_length=3)
+    # Missing fields in a legacy reference always retain its fixed-current test.
+    excitation_mode: Literal["fixed_phase_currents", "sinusoidal", "ideal_six_step_120"] = "fixed_phase_currents"
+    current_amplitude_A: float = Field(default=4, ge=0, le=20)
+    current_amplitude_convention: Literal["rms", "peak", "plateau"] = "peak"
+    current_angle_deg: float = Field(default=0, ge=-180, le=180)
+    commutation_advance_deg: float = Field(default=0, ge=-180, le=180)
     nonlinear_tolerance: Literal[1e-5, 1e-6] = 1e-5
     material_law: Literal["source_points_piecewise_linear_in_plane_fill/v1"] = "source_points_piecewise_linear_in_plane_fill/v1"
     mesh_policy: Literal["outrunner_source_gap_interfaces/v2"] = "outrunner_source_gap_interfaces/v2"
@@ -42,6 +48,14 @@ class OutrunnerAnalysis(BaseModel):
     def balanced(self):
         if not all(math.isfinite(x) and abs(x) <= 20 for x in self.loaded_currents_A) or abs(sum(self.loaded_currents_A)) > 1e-10:
             raise ValueError("Three finite balanced currents, each within +/-20 A, are required")
+        if self.excitation_mode == "ideal_six_step_120" and self.current_amplitude_convention != "plateau":
+            raise ValueError("Six-step current requires plateau units")
+        if self.excitation_mode == "sinusoidal":
+            if self.current_amplitude_convention == "plateau":
+                raise ValueError("Sinusoidal current requires RMS or peak units")
+            peak = self.current_amplitude_A*(math.sqrt(2) if self.current_amplitude_convention == "rms" else 1)
+            if peak > 20+1e-10:
+                raise ValueError("Sinusoidal phase-current peak must not exceed 20 A")
         if self.accuracy_plan != "custom":
             preset = QUALITY_PRESETS[self.accuracy_plan]
             if any(getattr(self, key) != value for key, value in preset.items() if key != "label"):

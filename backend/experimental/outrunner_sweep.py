@@ -77,10 +77,11 @@ def periodic_derivative(values: np.ndarray, period_rad: float, method: str = "sp
 
 
 def bemf(values: np.ndarray, rpm: float = 1000, method: str = "spectral") -> np.ndarray:
-    """Induced EMF e=-d(lambda)/dt for positive CCW shaft velocity.
+    """Induced EMF e=-d(lambda)/dt along the ordered rotation coordinate.
 
     Values are phase flux linkages over one electrical period, with no repeated
-    endpoint. The derivative is with respect to MECHANICAL radians.
+    endpoint. The derivative is with respect to MECHANICAL radians. Original
+    comparison samples advance CCW; running-mode samples advance clockwise.
     """
     if not math.isfinite(rpm) or rpm <= 0:
         raise ValueError("Positive normalization speed required")

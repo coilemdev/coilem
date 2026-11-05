@@ -11,6 +11,7 @@ import type { MeshPreview } from '../model';
 import { referenceGeometry, type ReferencePreview } from './geometry';
 import { downloadReferenceFile, type OutrunnerProject } from './project';
 import type { Analysis, RunEstimate, RunState } from './types';
+import { directionLabel, excitationLabel, isRunning } from './excitation';
 
 interface Props {
   project: OutrunnerProject; geometry: ReferencePreview | null; analysis: Analysis; run: RunState | null; busy: boolean; error: string;
@@ -35,6 +36,7 @@ function Group({ title, subtitle, children, open = false }: { title: string; sub
 
 export function OutrunnerWorkflow(props: Props) {
   const { project, geometry, run, busy, analysis } = props;
+  const running = isRunning(project.analysis), direction = directionLabel(project.analysis);
   const [step, setStep] = useState<PublicWorkflowStep>('design');
   const [resultTab, setResultTab] = useState<'torque' | 'bemf' | 'linkage' | 'field'>('torque');
   const previousStatus = useRef(run?.status);
@@ -70,7 +72,7 @@ export function OutrunnerWorkflow(props: Props) {
     onOpenDesignFile={props.onOpenFile} onSaveDesign={() => downloadReferenceFile('lrk-12s14p.coilem', project)} onResetDesign={props.onReset}
     showRunHistory={false} />}>
     {step === 'design' && <div className="design-workspace workflow-stage-content outrunner-standard-workspace"><div className="design-workspace-main">
-      <aside className="public-parameter-panel"><div className="panel-header"><span className="panel-header-title">Design</span><span className="public-setting-pill">Fixed source</span></div>
+      <aside className="public-parameter-panel"><div className="panel-header"><span className="panel-header-title">Design</span><span className="public-setting-pill">Reference geometry</span></div>
         <div className="panel-left-scroll"><div className="public-design-notice">Published reference · exact geometry, winding and source materials.</div>
           <RotorArrangement value="outrunner" disabled={busy} onInrunner={props.onHome} />
           <div className="param-section"><div className="param-section-label">Topology</div><div className="topology-cards">
@@ -90,8 +92,8 @@ export function OutrunnerWorkflow(props: Props) {
 
     {step === 'report' && <section className="outrunner-results-standard"><header className="outrunner-results-heading"><div><span className="eyebrow">Results · local experiment</span><h1>{project.name}</h1><p>{run?.status} · {run?.completed || 0} solved points · Magneto2D</p></div>
       <button className="public-run-again-btn" onClick={() => downloadReferenceFile(`lrk-${run?.run_id}-results.json`, { project, run })}>Export results and design</button></header>
-      {run?.rows?.length === 1 && analysis === 'source_point' && <div className="outrunner-result-card"><h2>Original operating point</h2>
-        <strong className="outrunner-result-number">{(run.rows[0].outer_rotor_torque_Nm*1000).toFixed(4)} <small>mN·m</small></strong><p>Outer-rotor torque · CCW positive</p>
+      {run?.rows?.length === 1 && analysis === 'source_point' && <div className="outrunner-result-card"><h2>{running ? 'Operating point' : 'Original operating point'}</h2>
+        <strong className="outrunner-result-number">{(run.rows[0].outer_rotor_torque_Nm*1000*(running ? -1 : 1)).toFixed(4)} <small>mN·m</small></strong><p>Outer-rotor torque · {direction} positive</p>
         <p>Phase linkages A/B/C: {run.rows[0].phase_linkage_Wb.map((value) => (value*1000).toFixed(6)).join(' / ')} mWb</p></div>}
       <nav className="outrunner-result-tabs" aria-label="Completed result plots" role="tablist">{[
         { id: 'torque', label: 'Torque', available: Boolean(loaded?.torque_Nm.length) },
@@ -101,16 +103,17 @@ export function OutrunnerWorkflow(props: Props) {
       ].filter((tab) => tab.available).map((tab) => <button key={tab.id} role="tab" aria-selected={resultTab === tab.id}
         className={resultTab === tab.id ? 'active' : ''} onClick={() => setResultTab(tab.id as typeof resultTab)}>{tab.label}</button>)}</nav>
       {resultTab === 'field' && run && <div className="outrunner-result-field"><OutrunnerFieldViewer runId={run.run_id} geometry={fieldGeometry} completed={run.completed} /></div>}
-      {resultTab === 'torque' && loaded && loaded.torque_Nm.length > 1 && <div className="outrunner-result-card"><h2>Fixed-current torque versus rotor angle</h2>
-        <WaveformChart angles={loaded.angles_electrical_deg} values={loaded.torque_Nm.map((value) => value*1000)} label="Outer-rotor torque" unit="mN·m" samplingLabel="Actual solved points · electrical angle" />
-        <p>Phase currents [A,B,C] = [{project.analysis.loaded_currents_A.join(', ')}] A stay fixed as the outer body rotates.</p></div>}
+      {resultTab === 'torque' && loaded && loaded.torque_Nm.length > 1 && <div className="outrunner-result-card"><h2>{running ? 'Commutated torque versus rotor angle' : 'Fixed-current torque versus rotor angle'}</h2>
+        <WaveformChart angles={loaded.angles_electrical_deg} values={loaded.torque_Nm.map((value) => value*1000)} label="Outer-rotor torque" unit="mN·m" samplingLabel={`Actual solved points · ${direction} electrical angle`} />
+        <p>{running ? `${excitationLabel(project.analysis)} · ${project.analysis.current_amplitude_A} A ${project.analysis.current_amplitude_convention} · clockwise rotation` : `Phase currents [A,B,C] = [${project.analysis.loaded_currents_A.join(', ')}] A stay fixed as the outer body rotates.`}</p>
+        {loaded.mean_torque_Nm !== undefined && <p>Mean torque: {(loaded.mean_torque_Nm*1000).toFixed(3)} mN·m · {direction} positive.</p>}</div>}
       {resultTab === 'linkage' && noload && <div className="outrunner-result-card"><h2>No-load phase flux linkage</h2>
         <WaveformChart angles={noload.angles_electrical_deg} series={series(noload.phase_linkage_Wb.map((row) => row.map((value) => value*1000)))} label="Phase flux linkage" unit="mWb" /></div>}
       {(resultTab === 'bemf' || (resultTab === 'torque' && !loaded)) && noload?.bemf_phase_V && <div className="outrunner-result-card"><h2>Back EMF · {project.analysis.speed_rpm} rpm</h2>
         <WaveformChart angles={noload.angles_electrical_deg.slice(0,-1)} series={series(noload.bemf_phase_V)} label="No-load phase EMF" unit="V" />
         <p>Phase fundamental peaks: {noload.bemf_phase_fundamental?.peak.map((value) => value.toFixed(4)).join(' / ')} V.</p>
         {noload.bemf_line_to_line_V && <WaveformChart angles={noload.angles_electrical_deg.slice(0,-1)} series={series(noload.bemf_line_to_line_V).map((item, i) => ({ ...item, label: ['A − B', 'B − C', 'C − A'][i] }))} label="Line-to-line EMF" unit="V" />}
-        <p>Induced e = −ω dλ/dθ, using mechanical radians and positive CCW speed. The terminal winding connection is unspecified by the source.</p></div>}
+        <p>Induced e = −ω dλ/dθ, using mechanical radians and positive {direction} speed. The terminal winding connection is unspecified by the source.</p></div>}
       <p className="outrunner-muted">Frozen software reference. Numerical qualification is in progress.</p><button className="public-back-link" onClick={() => setStep('solve')}>← Back to Solve</button>
     </section>}
   </MotorWorkflowShell>;

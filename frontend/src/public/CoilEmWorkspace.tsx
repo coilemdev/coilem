@@ -172,7 +172,7 @@ interface CoilEmWorkspaceProps {
   onResetDesign?: () => void;
   onLoadExample?: (exampleId: PublicExampleId) => void;
   onOpenHalbach?: () => void;
-  onOpenOutrunner?: () => void;
+  onOpenOutrunner?: (profile?: 'benchmark') => void;
   onHome: () => void;
   onStepChange: (step: PublicWorkflowStep) => void;
   onTopologyChange: (topology: MotorConfig['topology']) => void;
@@ -523,7 +523,7 @@ export function CoilEmTopBar({
   onResetDesign?: () => void;
   onLoadExample?: (exampleId: PublicExampleId) => void;
   onOpenHalbach?: () => void;
-  onOpenOutrunner?: () => void;
+  onOpenOutrunner?: (profile?: 'benchmark') => void;
   onNewDesign?: () => void;
   experimentalRotors?: boolean;
   workflowDisabled?: boolean;
@@ -683,7 +683,11 @@ export function CoilEmTopBar({
                     )}
                     {onOpenOutrunner && <button type="button" role="menuitem" onClick={closeMenuThen(onOpenOutrunner)}>
                       <strong>LRK outrunner 14p / 12s <span className="public-example-experimental-tag">Local experiment</span></strong>
-                      <small>Frozen reference · torque and back-EMF</small>
+                      <small>Six-step drive · torque and back-EMF</small>
+                    </button>}
+                    {onOpenOutrunner && <button type="button" role="menuitem" onClick={closeMenuThen(() => onOpenOutrunner('benchmark'))}>
+                      <strong>LRK fixed-current benchmark <span className="public-example-experimental-tag">Local experiment</span></strong>
+                      <small>Published comparison · fixed 0 / +4 / −4 A</small>
                     </button>}
                     {onOpenHalbach && (
                       <>
@@ -1092,7 +1096,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
   selectedComponent: PublicMotorComponentSelection | null;
   onNext: () => void;
   onClearComponent: () => void;
-  onOpenOutrunner?: () => void;
+  onOpenOutrunner?: (profile?: 'benchmark') => void;
 }) {
   // null = every section collapsed. Clicking the open section's header used to be
   // a no-op: the toggle tested `current === section` and then returned `section`

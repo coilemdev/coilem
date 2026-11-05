@@ -3553,6 +3553,11 @@
       4.0,
       -4.0
     ],
+    "excitation_mode": "fixed_phase_currents",
+    "current_amplitude_A": 4.0,
+    "current_amplitude_convention": "peak",
+    "current_angle_deg": 0.0,
+    "commutation_advance_deg": 0.0,
     "nonlinear_tolerance": 0.00001,
     "material_law": "source_points_piecewise_linear_in_plane_fill/v1",
     "mesh_policy": "outrunner_source_gap_interfaces/v2"

@@ -16,11 +16,12 @@ from pathlib import Path
 import numpy as np
 
 from backend.experimental.femm_outrunner import build_field_problem, phase_linkage, source
+from backend.experimental.outrunner_excitation import running, sweep_cases
 from backend.experimental.outrunner_geometry import build_ir
 from backend.experimental.outrunner_project import QUALITY_PRESETS, OutrunnerProject, OutrunnerRunRequest
 from backend.experimental.outrunner_storage import read_json, write_json
 from backend.experimental.outrunner_stress import weighted_stress_torque
-from backend.experimental.outrunner_sweep import PERIOD_DEG, SweepCase, bemf, fundamental
+from backend.experimental.outrunner_sweep import SweepCase, bemf, fundamental
 from backend.experimental.outrunner_visuals import native_mesh, prepare_playback
 from backend.magneto2d_adapter import ensure_magneto2d_binary, start_native_process, track_native_process
 from backend.resources import source_checkout_root
@@ -136,14 +137,20 @@ def _solve_case(case: SweepCase, project: OutrunnerProject, binary: Path, folder
 
 def _curves(rows: list[dict], project: OutrunnerProject) -> dict:
     result = {}
+    sign = -1 if running(project.analysis) else 1
     for family in ("loaded", "noload"):
         selected = [r for r in rows if r["case"]["family"] == family]
         if not selected:
             continue
         flux = np.asarray([r["phase_linkage_Wb"] for r in selected])
         curve = {"angles_mechanical_ccw_deg": [r["case"]["angle_ccw_deg"] for r in selected],
-                 "angles_electrical_deg": [r["case"]["angle_ccw_deg"]*7 for r in selected],
-                 "torque_Nm": [r["outer_rotor_torque_Nm"] for r in selected], "phase_linkage_Wb": flux.tolist()}
+                 "angles_electrical_deg": [sign*r["case"]["angle_ccw_deg"]*7 for r in selected],
+                 "torque_Nm": [sign*r["outer_rotor_torque_Nm"] for r in selected], "phase_linkage_Wb": flux.tolist(),
+                 "phase_currents_A": [r["case"]["currents_A"] for r in selected],
+                 "positive_direction": "clockwise" if sign < 0 else "counterclockwise",
+                 "excitation_mode": project.analysis.excitation_mode}
+        torque_samples = curve["torque_Nm"][:-1] if len(selected) == project.analysis.unique_samples+1 else curve["torque_Nm"]
+        curve["mean_torque_Nm"] = float(np.mean(torque_samples))
         if family == "noload" and len(selected) == project.analysis.unique_samples+1:
             e = bemf(flux[:-1], project.analysis.speed_rpm)
             curve["bemf_phase_V"] = e.tolist()
@@ -158,15 +165,7 @@ def _curves(rows: list[dict], project: OutrunnerProject) -> dict:
 def _worker(run_id: str, request: OutrunnerRunRequest, cancel: threading.Event) -> None:
     folder = _folder(run_id)
     rows: list[dict] = []
-    cases = []
-    count = request.project.analysis.unique_samples
-    if request.analysis == "source_point":
-        cases.append(SweepCase("source_point", 0, tuple(request.project.analysis.loaded_currents_A), "source_point", "full"))
-    for family in ("loaded", "noload"):
-        if request.analysis not in ("both", "loaded_torque" if family == "loaded" else "noload_bemf"):
-            continue
-        currents = tuple(request.project.analysis.loaded_currents_A) if family == "loaded" else (0, 0, 0)
-        cases.extend(SweepCase(f"{family}_{i:04d}", PERIOD_DEG*i/count, currents, family) for i in range(count+1))
+    cases = sweep_cases(request.project.analysis, request.analysis)
     started = time.monotonic()
     state = {"run_id": run_id, "status": "RUNNING", "stage": "Preparing", "completed": 0, "total": len(cases),
              "qualification": "DIAGNOSTIC_ONLY", "elapsed_s": 0}

@@ -7,7 +7,7 @@ import { referenceGeometry, type ReferencePreview } from './geometry';
 import type { OutrunnerProject } from './project';
 import { OutrunnerFieldViewer } from './OutrunnerFieldViewer';
 import type { RunState } from './types';
-import type { PhaseDrive } from '../phaseDrive';
+import { outrunnerDrive } from './excitation';
 
 export function OutrunnerViewport({ preview, project, mesh = null, meshBusy = false, meshError = '', context = 'design', run = null, inspection }: {
   preview: ReferencePreview | null; project: OutrunnerProject; mesh?: MeshPreview | null; meshBusy?: boolean; meshError?: string;
@@ -20,11 +20,8 @@ export function OutrunnerViewport({ preview, project, mesh = null, meshBusy = fa
   const [playing, setPlaying] = useState(false);
   const [rpm, setRpm] = useState(18);
   const [toothPoles, setToothPoles] = useState(false);
-  const drive = useMemo<PhaseDrive>(() => ({ mode: 'fixed_phase_currents',
-    fixedCurrentsA: project.analysis.loaded_currents_A as [number, number, number],
-    currentAmplitudeA: Math.max(...project.analysis.loaded_currents_A.map(Math.abs)),
-    currentAngleDeg: 0, currentAngleReference: 'q_axis', commutationAdvanceDeg: 0, axisOffsetDeg: 0, poleCount: 14,
-  }), [project.analysis.loaded_currents_A]);
+  const drive = useMemo(() => outrunnerDrive(project.analysis), [project.analysis]);
+  const [exploded, setExploded] = useState(0);
   const [meshMode, setMeshMode] = useState<PublicMeshDisplayMode>('geometry');
   const [edges, setEdges] = useState(true);
   const [hoveredMesh, setHoveredMesh] = useState<PublicMeshElementSelection | null>(null);
@@ -60,7 +57,7 @@ export function OutrunnerViewport({ preview, project, mesh = null, meshBusy = fa
         <span><i className="phase-a" />A</span><span><i className="phase-b" />B</span><span><i className="phase-c" />C</span><span>⊙ out · ⊗ in</span>
       </div></>}
     {view === '3d' && <div className="public-viewport-stage public-viewport-stage-3d"><ReferenceMotor3D geometry={geometry}
-      resetSignal={reset} rotorAngleDeg={angle} explodedAmount={0} onComponentSelect={setSelected} /></div>}
+      resetSignal={reset} rotorAngleDeg={angle} explodedAmount={exploded} onComponentSelect={setSelected} /></div>}
     {view === 'mesh' && <div className="public-viewport-stage public-viewport-stage-2d"><MotorCanvas geometry={geometry} mesh={mesh} mode="mesh"
       layer="none" meshDisplayMode={meshMode} showMeshEdges={edges} meshQualities={quality.qualities} meshQualityThreshold={quality.threshold}
       navigationSlot={navigationSlot} onMeshElementHover={setHoveredMesh} />
@@ -89,6 +86,11 @@ export function OutrunnerViewport({ preview, project, mesh = null, meshBusy = fa
           {view === '3d' && <button className="public-dock-reset-view" onClick={() => setReset((value) => value+1)}>Reset view</button>}</div>
       </div>
       <div className="viewport-controls viewport-controls-cad">
+        {view === '3d' && <span className="vc-group public-explode-controls" role="group" aria-label="Exploded view">
+          <span className="public-dock-group-label">Explode</span>
+          <button className="public-dock-toggle" aria-pressed={exploded > .04} onClick={() => setExploded(value => value > .04 ? 0 : 1)}>Exploded</button>
+          <input type="range" min="0" max="100" step="1" value={Math.round(exploded*100)} aria-label="Exploded view amount"
+            onChange={event => setExploded(Number(event.target.value)/100)} /><output>{Math.round(exploded*100)}%</output></span>}
         {view === 'mesh' && <><span className="public-dock-group-label">Color by</span><span className="public-dock-segmented">
           {(['geometry', 'quality', 'problems'] as const).map((mode) => <button key={mode} aria-pressed={meshMode === mode} onClick={() => setMeshMode(mode)}>{mode === 'geometry' ? 'Regions' : mode === 'quality' ? 'Quality' : `Weak elements ${quality.weakElementIndices.length}`}</button>)}</span>
           <span className="public-dock-group-label">Show</span><button className="public-dock-toggle" aria-pressed={edges} onClick={() => setEdges((value) => !value)}>Element edges</button></>}

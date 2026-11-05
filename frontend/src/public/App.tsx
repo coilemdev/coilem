@@ -1666,8 +1666,8 @@ export function App() {
   const meshElements = Number(mesh?.mesh_info.num_triangles || mesh?.triangles.length || 0);
   const meshQuality = Number(mesh?.mesh_qa.min_triangle_quality || 0);
 
-  const openOutrunner = OUTRUNNER_BUILD_ENABLED && outrunnerEnabled && busy !== 'solve' ? () => {
-    void import('./outrunner/project').then(({ DEFAULT_OUTRUNNER_PROJECT }) => setOutrunnerProject(DEFAULT_OUTRUNNER_PROJECT));
+  const openOutrunner = OUTRUNNER_BUILD_ENABLED && outrunnerEnabled && busy !== 'solve' ? (profile?: 'benchmark') => {
+    void import('./outrunner/project').then(({ DEFAULT_OUTRUNNER_PROJECT, BENCHMARK_OUTRUNNER_PROJECT }) => setOutrunnerProject(profile === 'benchmark' ? BENCHMARK_OUTRUNNER_PROJECT : DEFAULT_OUTRUNNER_PROJECT));
   } : undefined;
   if (outrunnerProject && OutrunnerWorkspace) return <Suspense fallback={<p>Opening local experiment…</p>}>
     <OutrunnerWorkspace initialProject={outrunnerProject} appVersion={appVersion} connectionStatus={connectionStatus}

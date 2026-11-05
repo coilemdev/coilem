@@ -1,5 +1,7 @@
 # FEMM LRK outrunner: architecture review and comparison plan
 
+Current target: **v0.5.5**, with the implementation prepared for developer review on current `main`. See [V055-REVIEW.md](V055-REVIEW.md) for delivered scope, operating defaults, conventions, validation receipts and open release gates. The original architecture review and measurement provenance below remain historical.
+
 Status: local experimental workstream; source review and fresh FEMM source-point reproduction complete. Native outrunner support and qualification are in progress.
 
 Reviewed on 2026-11-05. Base: `release/v0.5.1` at `cf6e8a90e4a33c34dc7ff81886e353b9950961d5` (PR #196). Local branch: `codex/femm-outrunner-v051`. Worktree: `C:/bench/coilem-outrunner-v051-20261105`. The existing dirty `coilem-launch` checkout was not switched or modified. No push, PR, merge, release edit, or benchmark registration is part of this workstream.

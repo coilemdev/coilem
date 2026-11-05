@@ -72,7 +72,16 @@ export function ReferenceMotor3D(props: Props) {
     controls.enablePan = true;
     controls.minDistance = radius * 1.2;
     controls.maxDistance = radius * 12;
-    const reset = () => { camera.position.copy(assembled); controls.target.set(0, 0, 0); controls.update(); };
+    const outerRotor = preview.metadata.radial_layout === 'outer_rotor';
+    const explodeFrame = (amount: number) => ({ centerZ: outerRotor ? .325*depth*amount : 0,
+      scale: outerRotor ? Math.hypot(radius, depth*(.5+1.575*amount))/Math.hypot(radius, depth*.5) : 1 });
+    let framedExplode = THREE.MathUtils.clamp(latest.current.explodedAmount, 0, 1);
+    const reset = () => {
+      framedExplode = THREE.MathUtils.clamp(latest.current.explodedAmount, 0, 1);
+      const frame = explodeFrame(framedExplode);
+      camera.position.copy(assembled).multiplyScalar(frame.scale); camera.position.z += frame.centerZ;
+      controls.target.set(0, 0, frame.centerZ); controls.update();
+    };
     reset();
     resetRef.current = reset;
     const disposeStudio = addMotorStudioLighting(renderer, scene, radius);
@@ -129,6 +138,12 @@ export function ReferenceMotor3D(props: Props) {
       const state = latest.current;
       rotor.rotation.z = -state.rotorAngleDeg * Math.PI / 180;
       const explode = THREE.MathUtils.clamp(state.explodedAmount, 0, 1);
+      if (outerRotor && explode !== framedExplode) {
+        const before = explodeFrame(framedExplode), after = explodeFrame(explode);
+        const offset = camera.position.clone().sub(controls.target).multiplyScalar(after.scale/before.scale);
+        controls.target.z += after.centerZ-before.centerZ;
+        camera.position.copy(controls.target).add(offset); framedExplode = explode; controls.update();
+      }
       groups.stator.position.z = -depth * 1.25 * explode;
       groups.windings.position.z = -depth * .2 * explode;
       groups.magnets.position.z = depth * .85 * explode;
@@ -180,7 +195,7 @@ export function ReferenceMotor3D(props: Props) {
         title={`${hidden.has(id) ? 'Show' : 'Hide'} ${label.toLowerCase()}`}
         onClick={() => setHidden((current) => { const next = new Set(current); if (!next.delete(id)) next.add(id); return next; })}>{label}</button>)}
     </div>}
-    <div className="public-3d-hint">Reference cross-section · click a part · drag to orbit · wheel to zoom</div>
+    <div className="public-3d-hint">{props.explodedAmount > .04 ? 'Exploded reference assembly' : 'Reference cross-section'} · click a part · drag to orbit · wheel to zoom</div>
     {(error || !preview) && <div className="public-viewport-message">{error || 'Loading reference geometry…'}</div>}
   </div>;
 }

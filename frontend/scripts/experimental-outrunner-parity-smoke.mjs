@@ -18,7 +18,7 @@ const shot = name => page.screenshot({ path: fileURLToPath(new URL(name+'.png', 
 const openFixture = async () => {
   await page.getByRole('button', { name: 'Design file menu' }).click();
   await page.getByRole('menuitem', { name: 'Examples', exact: true }).hover();
-  await page.getByRole('menuitem', { name: /LRK outrunner 14p/ }).click();
+  await page.getByRole('menuitem', { name: /LRK fixed-current benchmark/ }).click();
   await page.getByRole('region', { name: 'Outrunner motor viewport' }).waitFor();
   await page.waitForFunction(() => ![...document.querySelectorAll('button')].find(button => button.textContent === 'Continue to Solve')?.disabled);
   await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));

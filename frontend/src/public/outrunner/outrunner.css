@@ -56,7 +56,8 @@
 .outrunner-result-tabs button.active { border-color:var(--border-accent); color:var(--text-accent); background:rgba(245,158,11,.09); }
 .outrunner-standard-workspace [role=alert] { color:#fca5a5; font-size:12px; line-height:1.5; }
 .outrunner-standard-workspace :disabled { cursor:not-allowed; }
-.outrunner-standard-workspace .public-excitation-selector { grid-template-columns:1fr; }
+.outrunner-standard-workspace .public-excitation-selector { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.outrunner-standard-workspace .outrunner-benchmark-mode { grid-column:1/-1; }
 .outrunner-standard-workspace .public-excitation-preview-heading { display:grid; justify-content:start; gap:5px; }
 .outrunner-standard-workspace .public-excitation-preview > small { color:var(--text-muted); font:10px var(--font-mono); }
 .outrunner-standard-workspace .public-excitation-preview > svg { width:100%; height:65px; }

@@ -2,6 +2,9 @@ export interface Curve {
   angles_electrical_deg: number[];
   torque_Nm: number[];
   phase_linkage_Wb: number[][];
+  phase_currents_A?: number[][];
+  positive_direction?: 'clockwise' | 'counterclockwise';
+  mean_torque_Nm?: number;
   bemf_phase_V?: number[][];
   bemf_line_to_line_V?: number[][];
   bemf_phase_fundamental?: { peak: number[] };

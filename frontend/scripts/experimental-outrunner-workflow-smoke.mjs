@@ -15,7 +15,7 @@ const screenshot = async name => page.screenshot({ path: fileURLToPath(new URL(n
 const openFixture = async () => {
   await page.getByRole('button', { name: 'Design file menu' }).click();
   await page.getByRole('menuitem', { name: 'Examples', exact: true }).hover();
-  await page.getByRole('menuitem', { name: /LRK outrunner 14p/ }).click();
+  await page.getByRole('menuitem', { name: /LRK fixed-current benchmark/ }).click();
   await page.getByRole('region', { name: 'Outrunner motor viewport' }).waitFor();
   await page.waitForFunction(() => ![...document.querySelectorAll('button')].find(x => x.textContent === 'Continue to Solve')?.disabled);
 };
@@ -34,6 +34,8 @@ try {
   await arrangement.getByRole('button', { name: /^Inrunner/ }).click();
   await page.getByRole('group', { name: 'Rotor arrangement', exact: true }).getByRole('button', { name: /^Outrunner/ }).click();
   await page.getByRole('region', { name: 'Outrunner motor viewport' }).waitFor();
+  await page.getByRole('group', { name: 'Rotor arrangement', exact: true }).getByRole('button', { name: /^Inrunner/ }).click();
+  await openFixture();
   await page.getByRole('button', { name: 'Design file menu' }).click();
   const downloading = page.waitForEvent('download');
   await page.getByRole('menuitem', { name: 'Save design file (.coilem)', exact: true }).click();

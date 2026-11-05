@@ -33,7 +33,7 @@ try {
   await page.goto(base);
   await page.getByRole('button', { name: 'Design file menu' }).click();
   await page.getByRole('menuitem', { name: 'Examples', exact: true }).hover();
-  await page.getByRole('menuitem', { name: /LRK outrunner 14p/ }).click();
+  await page.getByRole('menuitem', { name: /LRK fixed-current benchmark/ }).click();
   await page.getByRole('button', { name: 'Phases', exact: true }).click();
   await page.waitForFunction(() => window.__phaseTexts.includes('FIXED PHASE CURRENTS') && window.__phaseTexts.includes('-4.0 A'));
   await page.getByRole('button', { name: 'Tooth poles', exact: true }).click();

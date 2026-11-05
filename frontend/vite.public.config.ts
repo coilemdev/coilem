@@ -25,7 +25,7 @@ export default defineConfig({
     },
     load(id: string) {
       if (id !== disabledOutrunnerModule) return null;
-      return 'export const DEFAULT_OUTRUNNER_PROJECT=null; export const OutrunnerWorkspace=null; export function parseOutrunnerProject(){throw new Error("Local experiment excluded from this build")}';
+      return 'export const DEFAULT_OUTRUNNER_PROJECT=null; export const BENCHMARK_OUTRUNNER_PROJECT=null; export const OutrunnerWorkspace=null; export function parseOutrunnerProject(){throw new Error("Local experiment excluded from this build")}';
     },
   }] : [])],
   server: {

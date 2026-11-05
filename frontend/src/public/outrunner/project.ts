@@ -16,16 +16,30 @@ export interface OutrunnerProject {
     bulk_size_mm: 0.5 | 0.25 | 0.125;
     speed_rpm: number;
     loaded_currents_A: number[];
+    excitation_mode: 'fixed_phase_currents' | 'sinusoidal' | 'ideal_six_step_120';
+    current_amplitude_A: number;
+    current_amplitude_convention: 'rms' | 'peak' | 'plateau';
+    current_angle_deg: number;
+    commutation_advance_deg: number;
     nonlinear_tolerance: 0.00001 | 0.000001;
     material_law: string;
     mesh_policy: string;
   };
 }
 
-export const DEFAULT_OUTRUNNER_PROJECT = JSON.parse(bundledProject) as OutrunnerProject;
+export const BENCHMARK_OUTRUNNER_PROJECT = normalizeOutrunnerProject(JSON.parse(bundledProject) as OutrunnerProject);
+export const DEFAULT_OUTRUNNER_PROJECT: OutrunnerProject = {
+  ...BENCHMARK_OUTRUNNER_PROJECT, name: 'LRK outrunner 12s/14p',
+  analysis: { ...BENCHMARK_OUTRUNNER_PROJECT.analysis, excitation_mode: 'ideal_six_step_120', current_amplitude_convention: 'plateau' },
+};
 
 export function normalizeOutrunnerProject(project: OutrunnerProject): OutrunnerProject {
   const analysis = { ...project.analysis };
+  analysis.excitation_mode ??= 'fixed_phase_currents';
+  analysis.current_amplitude_A ??= 4;
+  analysis.current_amplitude_convention ??= 'peak';
+  analysis.current_angle_deg ??= 0;
+  analysis.commutation_advance_deg ??= 0;
   if (analysis.bulk_size_mm === undefined) analysis.bulk_size_mm = 0.25;
   if (!analysis.accuracy_plan) {
     analysis.accuracy_plan = analysis.unique_samples === 48 && analysis.gap_size_mm === .05 && analysis.bulk_size_mm === .25
@@ -64,6 +78,14 @@ export function parseOutrunnerProject(text: string): OutrunnerProject | null {
     || !analysis.loaded_currents_A.every((value) => Number.isFinite(value) && Math.abs(value) <= 20)
     || Math.abs(analysis.loaded_currents_A.reduce((sum, value) => sum + value, 0)) > 1e-10
     || ![1e-5, 1e-6].includes(analysis.nonlinear_tolerance)
+    || !['fixed_phase_currents', 'sinusoidal', 'ideal_six_step_120'].includes(analysis.excitation_mode)
+    || !Number.isFinite(analysis.current_amplitude_A) || analysis.current_amplitude_A < 0 || analysis.current_amplitude_A > 20
+    || !['rms', 'peak', 'plateau'].includes(analysis.current_amplitude_convention)
+    || !Number.isFinite(analysis.current_angle_deg) || Math.abs(analysis.current_angle_deg) > 180
+    || !Number.isFinite(analysis.commutation_advance_deg) || Math.abs(analysis.commutation_advance_deg) > 180
+    || (analysis.excitation_mode === 'ideal_six_step_120' && analysis.current_amplitude_convention !== 'plateau')
+    || (analysis.excitation_mode === 'sinusoidal' && (analysis.current_amplitude_convention === 'plateau'
+      || analysis.current_amplitude_A*(analysis.current_amplitude_convention === 'rms' ? Math.SQRT2 : 1) > 20+1e-10))
     || analysis.material_law !== pinned.analysis.material_law || analysis.mesh_policy !== pinned.analysis.mesh_policy) {
     throw new Error('The reference analysis settings are invalid or unsupported.');
   }

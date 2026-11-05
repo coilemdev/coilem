@@ -8,6 +8,8 @@ import { OutrunnerViewport } from './OutrunnerViewport';
 import type { ReferencePreview } from './geometry';
 import type { OutrunnerProject } from './project';
 import type { Analysis, RunEstimate, RunState } from './types';
+import { currentsAtCW, directionLabel, excitationLabel, isRunning, outrunnerDrive } from './excitation';
+import { waveformTrace } from '../phaseDrive';
 
 export function timingText(range?: [number, number]): string {
   if (!range) return 'Calculating…';
@@ -52,25 +54,49 @@ export function OutrunnerSolveStage(props: Props) {
     const { label: _label, ...values } = plans[name];
     props.onUpdateAnalysis(values); setCustomOpen(false); inspect();
   };
-  const current = settings.loaded_currents_A;
+  const fixed = !isRunning(settings), sixStep = settings.excitation_mode === 'ideal_six_step_120';
+  const drive = outrunnerDrive(settings), current = currentsAtCW(settings, 0);
+  const modeLabel = excitationLabel(settings);
+  const currentLimit = settings.current_amplitude_convention === 'rms' ? 20/Math.SQRT2 : 20;
   return <div className="public-solve-workspace outrunner-standard-workspace">
     <aside className="public-solve-setup"><div className="public-solve-setup-frame"><div className="mesh-panel-header"><span className="mesh-panel-header-title">Analysis setup</span></div>
       <div className="public-solve-setup-scroll">
-        <ParameterSectionBlock id="operating" label="Operating point" summary={`Fixed phase currents · ${settings.speed_rpm} rpm`} active={section === 'operating'} onToggle={toggle}>
-          <div className="public-excitation-selector" role="group" aria-label="Stator excitation"><button className="active" type="button" aria-pressed="true"><strong>Fixed phase currents</strong><small>Source A / B / C circuit convention</small></button></div>
-          <NumberRow label="Conducting current" unit="A" value={current[1]} min={-20} max={20} step={.5} disabled={busy}
-            onChange={(value) => props.onUpdateAnalysis({ loaded_currents_A: [0, value, -value] })} />
-          <p className="public-solver-help">Phase A = 0 A; B and C carry equal opposite currents. The angle sweep keeps these currents fixed.</p>
+        <ParameterSectionBlock id="operating" label="Operating point" summary={`${modeLabel} · ${settings.speed_rpm} rpm`} active={section === 'operating'} onToggle={toggle}>
+          <div className="public-excitation-selector" role="radiogroup" aria-label="Stator excitation">{([
+            ['sinusoidal', 'Sinusoidal', 'Three-phase rotating field'],
+            ['ideal_six_step_120', 'Ideal six-step (120°)', 'Two phases conduct per sector'],
+            ['fixed_phase_currents', 'Fixed-current benchmark', 'Published comparison · fixed A / B / C'],
+          ] as const).map(([mode, label, detail]) => <button key={mode} type="button" role="radio" aria-checked={settings.excitation_mode === mode}
+            className={`${settings.excitation_mode === mode ? 'active' : ''} ${mode === 'fixed_phase_currents' ? 'outrunner-benchmark-mode' : ''}`}
+            disabled={busy} onClick={() => props.onUpdateAnalysis({ excitation_mode: mode,
+              current_amplitude_convention: mode === 'ideal_six_step_120' ? 'plateau' : mode === 'sinusoidal' ? 'rms' : 'peak',
+              current_amplitude_A: mode === 'sinusoidal' ? Math.min(settings.current_amplitude_A, 20/Math.SQRT2) : settings.current_amplitude_A })}>
+            <strong>{label}</strong><small>{detail}</small></button>)}</div>
+          {fixed ? <><NumberRow label="Conducting current" unit="A" value={settings.loaded_currents_A[1]} min={-20} max={20} step={.5} disabled={busy}
+            onChange={value => props.onUpdateAnalysis({ loaded_currents_A: [0, value, -value] })} />
+            <p className="public-solver-help">Phase A = 0 A; B and C carry equal opposite currents. The angle sweep keeps these currents fixed.</p></>
+            : <><NumberRow label={sixStep ? 'Conducting phase current' : 'Phase Current'} unit={`A ${settings.current_amplitude_convention}`}
+              value={settings.current_amplitude_A} min={0} max={currentLimit} step={.5} disabled={busy}
+              onChange={value => props.onUpdateAnalysis({ current_amplitude_A: value })} />
+              {sixStep ? <NumberRow label="Commutation advance" unit="electrical degrees" value={settings.commutation_advance_deg} min={-180} max={180} disabled={busy}
+                onChange={value => props.onUpdateAnalysis({ commutation_advance_deg: value })} />
+                : <><label className="outrunner-setting">Current convention<select aria-label="Current convention" value={settings.current_amplitude_convention} disabled={busy}
+                  onChange={event => props.onUpdateAnalysis({ current_amplitude_convention: event.target.value as 'rms' | 'peak',
+                    current_amplitude_A: Math.min(settings.current_amplitude_A, event.target.value === 'rms' ? 20/Math.SQRT2 : 20) })}>
+                  <option value="rms">RMS</option><option value="peak">Peak</option></select></label>
+                  <NumberRow label="Current angle" unit="electrical degrees" value={settings.current_angle_deg} min={-180} max={180} disabled={busy}
+                    onChange={value => props.onUpdateAnalysis({ current_angle_deg: value })} /></>}
+              <p className="public-solver-help">Clockwise rotation · ideal phase-current excitation. PWM, switching ripple and ESC dynamics are outside this model.</p></>}
           <NumberRow label="Speed" unit="rpm" value={settings.speed_rpm} min={1} max={100000} disabled={busy}
             onChange={(value) => { if (value > 0 && value <= 100000) props.onUpdateAnalysis({ speed_rpm: value }); }} />
-          <p className="public-solver-help">Speed normalizes no-load back-EMF. Rotor angle and torque are positive CCW.</p>
+          <p className="public-solver-help">Speed normalizes no-load back-EMF. Curves use {directionLabel(settings)}-positive angle and torque.</p>
         </ParameterSectionBlock>
         <ParameterSectionBlock id="analysis" label="Analysis" summary={analysisLabel} active={section === 'analysis'} onToggle={toggle}>
           <label className="public-check-row"><input type="checkbox" disabled={busy} checked={analysis === 'both' || analysis === 'loaded_torque'}
             onChange={(event) => props.onAnalysisChange(event.target.checked ? analysis === 'noload_bemf' ? 'both' : 'loaded_torque' : analysis === 'both' ? 'noload_bemf' : 'source_point')} />Torque</label>
           <label className="public-check-row"><input type="checkbox" disabled={busy} checked={analysis === 'both' || analysis === 'noload_bemf'}
             onChange={(event) => props.onAnalysisChange(event.target.checked ? analysis === 'loaded_torque' ? 'both' : 'noload_bemf' : analysis === 'both' ? 'loaded_torque' : 'source_point')} />Back EMF</label>
-          <label className="public-check-row"><input type="radio" name="source-point" disabled={busy} checked={analysis === 'source_point'} onChange={() => props.onAnalysisChange('source_point')} />Original operating point only</label>
+          <label className="public-check-row"><input type="radio" name="source-point" disabled={busy} checked={analysis === 'source_point'} onChange={() => props.onAnalysisChange('source_point')} />{fixed ? 'Original operating point only' : 'Single operating point (0°)'}</label>
           <p className="public-solver-help">Back-EMF uses a separate zero-current sweep. Every completed angle retains its field solution for inspection and playback.</p>
         </ParameterSectionBlock>
         <ParameterSectionBlock id="plan" label="Accuracy plan" summary={`${planLabel} · ${settings.unique_samples} angles`} active={section === 'plan'} onToggle={toggle}>
@@ -124,9 +150,11 @@ export function OutrunnerSolveStage(props: Props) {
       <div className="public-run-plan-tags"><StatusTag tone={busy ? 'warning' : 'good'} label={status} align="end" /><StatusTag tone="warning" label="Experimental" heading="Numerical qualification in progress" /></div></div>
       <details className="public-run-plan-section public-run-analysis" open><summary className="public-run-copy"><span className="eyebrow">Analysis</span><strong className="public-run-plan-title">Magneto2D</strong>
         <small className="public-run-plan-caption">Built-in field solver using the prepared native Gmsh mesh.</small></summary><div className="public-run-analysis-body">
-        <section className="public-excitation-preview"><div className="public-excitation-preview-heading"><span className="eyebrow">Excitation</span><strong>Fixed phase currents</strong></div>
-          <svg viewBox="0 0 280 62" aria-label="Fixed phase current preview">{current.map((value, i) => <path key={i} d={`M 8 ${31-value/Math.max(1,...current.map(Math.abs))*22} H 272`} fill="none" stroke={PUBLIC_PHASE_COLORS[(['A','B','C'] as const)[i]]} strokeWidth="2" />)}</svg>
-          <small>A / B / C: {current.join(' / ')} A</small></section>
+        <section className="public-excitation-preview"><div className="public-excitation-preview-heading"><span className="eyebrow">Excitation</span><strong>{modeLabel}</strong></div>
+          <svg viewBox="0 0 280 62" aria-label="Phase current preview">{current.map((_, i) => <path key={i}
+            d={waveformTrace(drive, i, 0, { x: 8, y: 0, width: 264, height: 62 }, 360).map(([x,y], index) => `${index ? 'L' : 'M'} ${x} ${y}`).join(' ')}
+            fill="none" stroke={PUBLIC_PHASE_COLORS[(['A','B','C'] as const)[i]]} strokeWidth="2" />)}</svg>
+          <small>{fixed ? `A / B / C: ${current.join(' / ')} A` : `${settings.current_amplitude_A} A ${settings.current_amplitude_convention} · clockwise`}</small></section>
         {run && <div className="outrunner-run-monitor"><strong>{run.stage || run.status}</strong><progress max={run.total || 1} value={run.completed || 0} />
           <span role="status">{run.status}: {run.completed || 0} / {run.total || pointCount} points</span>
           {busy && <span>Elapsed {Math.floor(elapsedNow/60)}m {Math.floor(elapsedNow % 60)}s · remaining {timingText(run.estimated_remaining_range_s || estimate?.total_range_s)}</span>}</div>}

@@ -4,7 +4,7 @@ import type { GeometryPreview, PublicFieldLinePlot } from '../model';
 import { OUTRUNNER_API, outrunnerRequest as api } from './api';
 
 interface Frame { index: number; case_id: string; family: string; angle_ccw_deg: number; currents_A: number[]; torque_Nm: number; raster_ready: boolean }
-interface Descriptor extends Omit<FieldResultRaster, 'base' | 'heat' | 'mesh' | 'lines'> { case: { angle_ccw_deg: number } }
+interface Descriptor extends Omit<FieldResultRaster, 'base' | 'heat' | 'mesh' | 'lines'> { case: { angle_ccw_deg: number; currents_A: number[] } }
 interface Loaded { raster: FieldResultRaster; descriptor: Descriptor }
 function close(value: Loaded) { value.raster.base.close(); value.raster.heat.close(); value.raster.mesh?.close(); value.raster.lines.close(); }
 
@@ -98,12 +98,14 @@ export function OutrunnerFieldViewer({ runId, geometry, completed, viewControls 
   useEffect(() => {
     if (!playing || selected.length < 2) return;
     let stopped = false, timer = 0;
-    const hasEndpoint = selected.length > 2 && Math.abs(selected[selected.length-1].angle_ccw_deg-selected[0].angle_ccw_deg-360/7) < 1e-7;
+    const span = selected[selected.length-1].angle_ccw_deg-selected[0].angle_ccw_deg;
+    const hasEndpoint = selected.length > 2 && Math.abs(Math.abs(span)-360/7) < 1e-7;
     const count = selected.length-(hasEndpoint ? 1 : 0);
     const advance = async () => {
       // Stored solver angles are positive CCW. Reverse the actual frames for
       // the same clockwise playback default as the regular motor workspace.
-      const next = (cursor.current+(direction === 'clockwise' ? -1 : 1)+count) % count;
+      const sourceStep = Math.sign(span) || 1;
+      const next = (cursor.current+(direction === 'clockwise' ? -sourceStep : sourceStep)+count) % count;
       try {
         await load(selected[next].index);
         if (stopped) return;
@@ -140,11 +142,11 @@ export function OutrunnerFieldViewer({ runId, geometry, completed, viewControls 
           onChange={(event) => setDirection(event.target.value as typeof direction)}>
           <option value="clockwise">Clockwise</option><option value="counterclockwise">Counterclockwise</option></select>
         <select aria-label="Solved field family" value={family} onChange={(event) => setFamily(event.target.value)}>
-          {[...new Set(frames.map((item) => item.family))].map((value) => <option key={value} value={value}>{value === 'loaded' ? 'Loaded torque' : value === 'noload' ? 'No-load BEMF' : 'Original point'}</option>)}</select>
+          {[...new Set(frames.map((item) => item.family))].map((value) => <option key={value} value={value}>{value === 'loaded' ? 'Loaded torque' : value === 'noload' ? 'No-load BEMF' : 'Single point'}</option>)}</select>
       </div>
       <div className="outrunner-field-toggles">{[['Heatmap', heat, setHeat], ['Element edges', mesh, setMesh], ['Field lines', lines, setLines]].map(([label, checked, setter]) =>
         <label key={String(label)}><input type="checkbox" checked={Boolean(checked)} onChange={(event) => (setter as (value: boolean) => void)(event.target.checked)} />{String(label)}</label>)}
-        <span>{position+1} / {selected.length} frames · {ready} images ready</span></div>
+        <span>{current && `A / B / C: ${current.descriptor.case.currents_A.map(value => value.toFixed(2)).join(' / ')} A · `}{position+1} / {selected.length} frames · {ready} images ready</span></div>
       {selected.length === 1 && <p className="outrunner-panel-note">Run an angle sweep to play the changing solved field.</p>}
       {error && <p role="alert">{error}</p>}
     </div>
