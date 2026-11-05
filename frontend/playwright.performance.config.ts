@@ -1,5 +1,5 @@
 /** Opt-in, real Standard-map acceptance; deliberately outside the routine suite. */
-import { mkdirSync, mkdtempSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -9,7 +9,13 @@ const root = dirname(fileURLToPath(import.meta.url));
 mkdirSync(join(root, 'test-results'), { recursive: true });
 // Playwright also loads this config in workers; they must share the server's
 // chosen directory instead of creating another, unused runtime.
-const runtime = process.env.COILEM_ACCEPTANCE_RUNTIME || mkdtempSync(join(root, 'test-results', 'performance-runtime-'));
+if (!process.env.COILEM_ACCEPTANCE_RUNTIME) {
+  const owned = mkdtempSync(join(root, 'test-results', 'performance-runtime-'));
+  process.env.COILEM_ACCEPTANCE_RUNTIME = owned;
+  process.env.COILEM_ACCEPTANCE_OWNED_RUNTIME = owned;
+  writeFileSync(join(owned, '.acceptance-owned'), owned);
+}
+const runtime = process.env.COILEM_ACCEPTANCE_RUNTIME;
 process.env.COILEM_ACCEPTANCE_RUNTIME = runtime;
 const quote = (value: string) => process.platform === 'win32'
   ? `"${value.replaceAll('"', '""')}"` : `'${value.replaceAll("'", "'\\''")}'`;
@@ -17,9 +23,9 @@ const quote = (value: string) => process.platform === 'win32'
 export default defineConfig({
   testDir: './tests', testMatch: 'performance-acceptance.spec.ts',
   outputDir: './test-results/performance-acceptance',
-  timeout: 90 * 60_000, expect: { timeout: 30_000 },
+  timeout: 120 * 60_000, expect: { timeout: 30_000 },
   workers: 1, retries: 0, fullyParallel: false,
-  reporter: [['list'], ['json', { outputFile: 'test-results/performance-acceptance.json' }]],
+  reporter: [['list'], ['json', { outputFile: 'test-results/performance-acceptance.json' }], ['./tests/performance-reporter.ts']],
   use: {
     baseURL: 'http://127.0.0.1:58010', actionTimeout: 60_000,
     navigationTimeout: 60_000, screenshot: 'only-on-failure',

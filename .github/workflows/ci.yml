@@ -28,7 +28,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: public-candidate-${{ github.workflow }}-${{ github.ref }}-${{ github.event.pull_request.head.sha || github.sha }}${{ inputs.performance_recheck_run && format('-performance-recheck-{0}', github.run_id) || '' }}
+  # Every manual acceptance dispatch is independent, including cold runs.
+  group: public-candidate-${{ github.workflow }}-${{ github.ref }}-${{ github.event.pull_request.head.sha || github.sha }}${{ inputs.performance_acceptance_only && format('-performance-{0}', github.run_id) || '' }}
   cancel-in-progress: true
 
 jobs:
@@ -189,7 +190,8 @@ jobs:
   performance-acceptance:
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_acceptance_only }}
     runs-on: windows-latest
-    timeout-minutes: 110
+    # 120 min per test, with setup/build/upload headroom outside Playwright.
+    timeout-minutes: 180
     permissions:
       contents: read
       actions: read
@@ -252,6 +254,7 @@ jobs:
             frontend/test-results/performance-recheck-evidence/
             frontend/test-results/performance-acceptance/
             frontend/test-results/performance-acceptance.json
+            frontend/test-results/performance-run.json
 
   qualification-impact:
     permissions:

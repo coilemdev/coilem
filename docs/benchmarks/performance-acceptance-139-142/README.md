@@ -37,8 +37,9 @@ rendered and visually inspected.
 
 Two earlier local attempts encountered low disk space and are excluded: a
 starter SPM map had one unsolved point, and the flat IPM attempt was stopped
-after the same early missing-point pattern was found. The successful SPM run
-started with 3.53 GiB free in a fresh runtime and completed without gaps.
+after the same early missing-point pattern was found. The successful SPM run completed without gaps. Its archived environment
+receipt predates the free-disk field; the exact starting free space is not
+retained and cannot be verified from this bundle.
 
 Windows native measurements came from [Actions run 41855229814](https://github.com/coilemdev/coilem/actions/runs/41855229814).
 The initial browser tests passed their map, curve, efficiency-cell and Ld/Lq
@@ -104,6 +105,10 @@ copied unchanged, with a separate recheck source identity and map checksum.
 Rechecks do not count as fresh timing samples. In Windows CI the optional
 `performance_recheck_run` dispatch input downloads the per-example artifacts
 of that cold run and performs these UI/export checks in new Windows jobs.
+The hardened harness checks map identity before submission and checks the UI's
+actual request before forwarding it. A mismatch stops before a solve starts.
+After physics changes, collect a new cold map at the frozen candidate; use the
+pinned recovery procedure below to inspect historical exports without solving.
 
 ## Measurement and checks
 
@@ -124,9 +129,12 @@ of that cold run and performs these UI/export checks in new Windows jobs.
   nonempty efficiency cells, matching headline values, experimental status,
   apparent Ld/Lq rows and four actual downloads: PDF, performance CSV, id/iq
   CSV and raw map CSV. Browser errors fail the check.
-- The export checker compares all torque/power curve samples and efficiency
-  cells in the performance CSV against the saved analysis, then checks PDF
-  headings and rounded headline values. Screenshots and PDF visual review
+- The hardened export checker compares all performance CSV rows and units,
+  raw map cells, and interpolated id/iq table cells, then checks PDF headings
+  and rounded headline values. It also verifies receipt hashes, grid coverage,
+  progress counts, request hashes, and recheck map/no-regrid claims. Its report
+  adapter uses the saved curves/cells and shared auxiliary interpolation; this
+  is export validation, not an independent physics oracle. Screenshots and PDF visual review
   supplement those numeric checks.
 
 `frontend/test-results/performance-evidence/<example>/` contains the request,
@@ -142,5 +150,69 @@ The acceptance work also corrects the performance CSV's swapped `unit`/`value`
 header labels. Its data columns retain their existing order and precision.
 A regression reads the export by column name, the way external CSV consumers
 do, and checks both units and numeric samples.
-The loss-report PDF assertion also follows the requested three-decimal cap
-(`0.047 mH`, instead of the former four-decimal display).
+The loss-report PDF assertion changed separately in #188 to follow the
+three-decimal cap (`0.047 mH`, instead of the former four-decimal display).
+
+
+## Tooling hardening after the recorded measurements
+
+These changes do not update the timing table, numerical gates or historical
+receipts. Routine CI now tests corrupted exports and checks the opt-in
+Playwright TypeScript. Manual cold and recheck dispatches have distinct
+concurrency groups, so neither cancels regular CI or another acceptance run.
+The test budget is 120 minutes (110 minutes for the response), inside a
+180-minute hosted job budget for install/build and artifact upload headroom.
+
+Each attempt writes its phase before waiting for the solve. A reporter writes
+status, elapsed time, errors and a 30-second heartbeat, including failed and
+timed-out attempts. Abrupt runner termination can prevent finalization; the
+last heartbeat and request-start receipt remain diagnostics, not a passing
+timing result. Artifacts include these receipts. Screenshots expand clipping
+containers only during capture so the whole panel, including axes, is visible.
+
+Automatically created runtimes are removed after a successful browser run,
+once its server stops; exported evidence stays in `test-results`. Failed runs
+retain their runtimes for diagnosis. A supplied `COILEM_ACCEPTANCE_RUNTIME`
+is never removed automatically. Evidence directories must be new for each
+attempt: move previous evidence elsewhere before rerunning the same example,
+rather than combining stale downloads with a new attempt.
+
+The checker runs identically under `python -O`. New evidence captures the
+actual report request and recheck progress. Existing `export-check.json`
+receipts are compared, never overwritten. Missing hashed files are errors;
+the checker needs the complete artifact bundle to verify every original file.
+
+## Recover omitted CSVs with zero solves
+
+The repository retains analysis JSON, PDFs, one screenshot per case, and the
+original receipts. Three CSVs and the setup/power/map-details screenshots were
+omitted from Git. Hosted artifacts expire; the CSVs remain reproducible from
+the saved maps at each **export/recheck** source, without rerunning Gmsh or
+Magneto2D. Do not regenerate at the timed source or current HEAD and restamp
+its hashes.
+
+Read the full `source_commit` from the case's `recheck-environment.json`.
+Create a separate clean worktree at that exact SHA and install its locked
+frontend dependencies (Node 24; use the documented Python environment):
+
+```sh
+git worktree add --detach ../coilem-export-pin <full-source-commit>
+npm ci --prefix ../coilem-export-pin/frontend
+python -m tools.regenerate_performance_csvs --source ../coilem-export-pin \
+  --evidence docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s \
+  --output /tmp/coilem-recovered-spm-8p12s
+```
+
+Run the command from this checkout, with a fresh output path outside the
+archive. Repeat with the source SHA and path of each case. It copies the
+retained files unchanged, runs the pinned backend CSV writers and frontend
+`mapCsv`, then compares **all three CSV byte counts and SHA-256 hashes** with
+the original receipt. Any difference fails and retains the output for diagnosis.
+No native executable is required. This recovers CSV bytes only; omitted PNGs
+cannot be reconstructed with their original hashes. Full artifact validation
+requires those original files; newly captured images are separate evidence.
+
+The recovery command was exercised against all six archived cases during
+tooling hardening: all 18 CSV byte counts and SHA-256 hashes matched. That
+check recomputes derived report tables at the pinned export source and runs
+zero native field solves; it does not add a cold timing sample.

@@ -329,6 +329,7 @@ def main() -> int:
         failures.append(f"unexpected frontend runtime dependencies: {package.get('dependencies')}")
     expected_frontend_dev = {
         "@playwright/test": "1.60.0",
+        "@types/node": "24.19.2",
         "@types/react": "18.3.28",
         "@types/react-dom": "18.3.7",
         "@types/three": "0.183.1",
