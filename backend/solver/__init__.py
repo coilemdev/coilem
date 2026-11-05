@@ -70,6 +70,7 @@ from backend.models import (
     SolveSummary,
     TorqueWaveform,
 )
+from backend.reference_models import reference_model
 from backend.solver._mesh_pool import (
     check_mesh_worker_cancelled,
     completed_mesh_futures,
@@ -451,7 +452,8 @@ def _clockwise_excitation_config(config: MotorConfig) -> MotorConfig:
     mirrored = config.model_copy(deep=True)
     if mirrored.solve_params is None:
         raise ValueError("magneto2d solve requires solve_params")
-    if config.geometry_reference == "pyleecan_prius_2004":
+    reference = reference_model(config)
+    if reference is not None and reference.excitation_sample is not None:
         return mirrored
     if mirrored.solve_params.excitation_mode == "ideal_six_step_120":
         # Six-step source synthesis is rotor-position based; gamma is not an
@@ -604,9 +606,9 @@ def _rebake_gmsh_artifact_for_config(
             float(rotor_angle_mech_deg) * max(1, int(config.rotor.pole_count) // 2)
         ),
     )
-    if config.geometry_reference == "pyleecan_prius_2004":
-        from backend.reference_models.prius import exact_currents
-        exact_currents(rebaked, config, float(rebaked["rotor_angle_mech_deg"]))
+    reference = reference_model(config)
+    if reference is not None and reference.exact_currents is not None:
+        reference.exact_currents(rebaked, config, float(rebaked["rotor_angle_mech_deg"]))
     return rebaked
 
 
@@ -3135,7 +3137,7 @@ class Magneto2DSolver(Solver):
                     {"geometry_reference": config.geometry_reference, "case_id": config.reference_case,
                      "geometry_asset_sha256": build_topology_geometry_provenance(config)["geometry_asset_sha256"],
                      "magnet_temperature_C": solve_params.magnet_temperature_C,
-                     "current_angle_convention": "Pyleecan d-axis Phi0", "qualified": False}
+                     "current_angle_convention": reference_model(config).current_angle_convention, "qualified": False}
                     if config.geometry_reference else None
                 ),
                 back_emf_computed=back_emf_requested,

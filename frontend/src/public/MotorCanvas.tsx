@@ -39,6 +39,7 @@ import {
   type Rect,
 } from './phaseDrive';
 import { pointInContours, previewContours, type Contour } from './previewContours';
+import { publishedReference } from './publishedReferences';
 import {
   useViewportNavigation,
   ViewportNavigationControls,
@@ -1330,7 +1331,7 @@ export function MotorCanvas({
       mode: solveParams.excitation_mode,
       currentAngleDeg: solveParams.current_angle_deg,
       currentAngleReference: geometry?.metadata.phase_current_convention === 'pyleecan_d_axis'
-        || config?.geometry_reference === 'pyleecan_prius_2004' ? 'pyleecan_d_axis' : 'q_axis',
+        || publishedReference(config)?.phaseCurrentConvention === 'pyleecan_d_axis' ? 'pyleecan_d_axis' : 'q_axis',
       currentAmplitudeA: solveParams.current_amplitude_A,
       commutationAdvanceDeg: solveParams.commutation_advance_deg,
       axisOffsetDeg: Number.isFinite(metadataAxis) ? metadataAxis : 0,

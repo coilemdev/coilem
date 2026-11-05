@@ -34,6 +34,7 @@ from backend.models import (
     SolveSummary,
     TorqueWaveform,
 )
+from backend.rotor_layout import is_outer_rotor
 from backend.solver_contract import ProgressCallback, Solver
 from backend.sweep_planning import (
     cogging_angle_grid,
@@ -281,6 +282,9 @@ class ElmerSolver(Solver):
             )
         if config.solve_params is None:
             raise ElmerUnsupportedError("Elmer requires solve_params")
+        if is_outer_rotor(config):
+            # Elmer builds its own air-gap layering around an inner rotor.
+            raise ElmerUnsupportedError("Outer-rotor designs use the built-in Magneto2D solver")
         if config.solve_params.excitation_mode == "ideal_six_step_120":
             raise ElmerUnsupportedError(
                 "Ideal six-step excitation uses the built-in Magneto2D solver in the MVP"

@@ -3,11 +3,22 @@
 use serde::Deserialize;
 use std::collections::HashMap;
 
+/// Which body sits outside: the backend sends `rotor_layout` only for outer rotors.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum RotorLayout {
+    #[default]
+    Inner,
+    Outer,
+}
+
 #[derive(Debug, Deserialize)]
 pub struct MotorConfig {
     #[allow(dead_code)]
     pub schema_version: String,
     pub topology: String,
+    #[serde(default)]
+    pub rotor_layout: RotorLayout,
     pub stator: Stator,
     pub rotor: Rotor,
     pub winding: Winding,
@@ -164,6 +175,10 @@ pub struct SolveOptions {
 }
 
 impl MotorConfig {
+    pub fn is_outer_rotor(&self) -> bool {
+        self.rotor_layout == RotorLayout::Outer
+    }
+
     /// Reject values that would panic or silently produce a meaningless solve.
     ///
     /// The backend applies tighter engineering ranges; this is the native
@@ -330,6 +345,16 @@ mod tests {
     #[test]
     fn motor_config_validation_accepts_a_valid_design() {
         assert_eq!(validate(valid_config()), Ok(()));
+    }
+
+    #[test]
+    fn rotor_layout_defaults_to_inner_and_reads_outer() {
+        let inner: MotorConfig = serde_json::from_value(valid_config()).unwrap();
+        assert!(!inner.is_outer_rotor());
+        let mut value = valid_config();
+        value["rotor_layout"] = json!("outer");
+        let outer: MotorConfig = serde_json::from_value(value).unwrap();
+        assert!(outer.is_outer_rotor());
     }
 
     #[test]

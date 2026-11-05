@@ -21,6 +21,7 @@ from backend.geometry_drawer import (
 from backend.geometry_ir import GeometryIR, GeometryIRLoop, GeometryIRRegion, build_geometry_ir
 from backend.gmsh_mesh_rotation import coil_side_current_density_a_per_m2, meshed_region_areas_mm2
 from backend.models import MotorConfig
+from backend.reference_models import reference_model
 from backend.resources import package_resource
 from backend.solver_environment import ISOLATED_RUNTIME
 from backend.topology_provenance import build_topology_provenance
@@ -990,9 +991,9 @@ def _build_ir_solve_mesh_artifact(
             },
         },
     }
-    if config.geometry_reference == "pyleecan_prius_2004":
-        from backend.reference_models.prius import exact_currents
-        exact_currents(artifact, config, rotor_angle_deg)
+    reference = reference_model(config)
+    if reference is not None and reference.exact_currents is not None:
+        reference.exact_currents(artifact, config, rotor_angle_deg)
     return artifact
 
 

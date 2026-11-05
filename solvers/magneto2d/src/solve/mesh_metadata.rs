@@ -483,7 +483,9 @@ pub(super) fn resolve_step_element_magnetization_rad(
             continue;
         }
 
-        if !is_spm {
+        // The radial SPM fallback assumes magnets outside an inner rotor; an
+        // outer rotor's magnets face inward, so they must arrive explicit.
+        if !is_spm || config.is_outer_rotor() {
             return Err(MeshMetadataError::MissingMagnetization {
                 topology: config.topology.clone(),
                 element_index: idx,

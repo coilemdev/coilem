@@ -15,7 +15,7 @@ import {
 } from 'react';
 import type { PublicApiError } from './api';
 import { DESIGN_FILE_ACCEPT, DESIGN_FILE_EXTENSION } from './designFile';
-import { PYLEECAN_REFERENCE_NOTICE } from './pyleecanReferenceNotice';
+import { publishedReference } from './publishedReferences';
 
 import {
   MotorCanvas,
@@ -1098,6 +1098,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
     return next;
   });
   const disabled = busy !== null || Boolean(config.geometry_reference);
+  const reference = publishedReference(config);
   const set = (
     section: PublicEditableSection,
     field: string,
@@ -1257,8 +1258,8 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         />
       )}
       <div className="panel-left-scroll">
-        {config.geometry_reference && <div className="public-design-notice">Published Pyleecan geometry, winding and materials are fixed. Change operating conditions and accuracy in Solve.</div>}
-        {config.geometry_reference && <p className="public-design-notice">{PYLEECAN_REFERENCE_NOTICE.affiliation_notice}</p>}
+        {reference && <div className="public-design-notice">{reference.designNotice}</div>}
+        {reference?.affiliationNotice && <p className="public-design-notice">{reference.affiliationNotice}</p>}
         <div className="param-search-section" role="search">
           <label className="param-search-input-wrap">
             <span className="param-search-icon" aria-hidden="true">⌕</span>
@@ -2508,6 +2509,7 @@ function HealthPanel({
   collapsed?: boolean;
   onCollapsedChange?: (collapsed: boolean) => void;
 }) {
+  const reference = publishedReference(config);
   const collapseButton = onCollapsedChange ? (
     <button
       type="button"
@@ -2573,7 +2575,7 @@ function HealthPanel({
     ...(burialHealth ? [burialHealth] : []),
     { severity: config.geometry_reference || coverage >= 55 && coverage <= 90 ? 'positive' : 'warning',
       title: config.geometry_reference ? 'Pinned published geometry' : coverage >= 55 && coverage <= 90 ? 'Magnet coverage is in a practical range' : 'Magnet coverage needs review',
-      copy: config.geometry_reference ? 'Analytic SlotW11 and HoleM50 curves; geometry is fixed for this software reference.' : `${coverage}% pole coverage for the current rotor.` },
+      copy: reference ? reference.healthCopy : `${coverage}% pole coverage for the current rotor.` },
     { severity: config.stator.slot_count % 3 === 0 ? 'positive' : 'warning', title: config.stator.slot_count % 3 === 0 ? 'Slot count supports three phases' : 'Slot count does not divide across three phases', copy: `${config.stator.slot_count} stator slots across three phases.` },
     { severity: geometry && !geometryStale ? 'positive' : 'info', title: geometry && !geometryStale ? 'Geometry preview is current' : 'Updating geometry preview', copy: geometry && !geometryStale ? `${geometry.regions.length} regions returned by the local backend.` : 'The preview will refresh after the local backend responds.' },
     ...(qualification ? [{
@@ -2622,7 +2624,7 @@ function HealthPanel({
       </div>
       <div className="design-health-metrics">
         <div className="design-health-metric"><span>Airgap</span><strong>{airgap.toFixed(2)} mm</strong></div>
-        <div className="design-health-metric"><span>{config.geometry_reference ? 'Reference' : 'Coverage'}</span><strong>{config.geometry_reference ? 'Pyleecan' : `${coverage}%`}</strong></div>
+        <div className="design-health-metric"><span>{config.geometry_reference ? 'Reference' : 'Coverage'}</span><strong>{reference ? reference.shortName : `${coverage}%`}</strong></div>
         <div className="design-health-metric"><span>Q</span><strong>{config.stator.slot_count / Math.max(1, config.rotor.pole_count * 3)} </strong></div>
       </div>
       <div className="public-check-heading"><span>Pre-solve checks</span><strong>{positiveCount} ✓{infoCount > 0 ? ` · ${infoCount} i` : ''}{warningCount > 0 ? ` · ${warningCount} △` : ''}</strong></div>
@@ -3232,6 +3234,7 @@ export type SolveSetupSection = 'solver' | 'operating' | 'analysis' | 'plan' | '
 function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, validation, validationChecking, validationError, result, armatureField, armatureFieldError, progress, liveSamples, busy, error, errorDetails, notice, progressPercent, meshElements, meshQuality, selectedSolver, elmerCapability, onBack, onOpenReport, onGenerateMesh, onStartSolve, onCancelSolve, onRequestArmatureField, onCancelArmatureField, onMeshSettingChange, onSolvePlanChange, onCustomSweepChange, onSolveSettingChange, onAnalysisChange, onTorqueSpeedChange, onSolverChange, onManageRuns }: Pick<CoilEmWorkspaceProps,
   'config' | 'guidedSolveSection' | 'materials' | 'geometry' | 'mesh' | 'validation' | 'validationChecking' | 'validationError' | 'result' | 'armatureField' | 'armatureFieldError' | 'progress' | 'liveSamples' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'progressPercent' | 'meshElements' | 'meshQuality' | 'selectedSolver' | 'elmerCapability' | 'onGenerateMesh' | 'onStartSolve' | 'onCancelSolve' | 'onRequestArmatureField' | 'onCancelArmatureField' | 'onMeshSettingChange' | 'onSolvePlanChange' | 'onCustomSweepChange' | 'onSolveSettingChange' | 'onAnalysisChange' | 'onTorqueSpeedChange' | 'onSolverChange'
 > & { onBack: () => void; onOpenReport: () => void; onManageRuns?: () => void }) {
+  const reference = publishedReference(config);
   // The setup sections open one at a time, as Design's do. The accuracy plan
   // starts open for ordinary runs. The guide opens the section for its stop.
   const [openSetupSection, setOpenSetupSection] = useState<SolveSetupSection | null>(guidedSolveSection ?? 'plan');
@@ -3734,8 +3737,8 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
           {!elmerAvailable && <p className="public-solver-diagnostic">{elmerCapability.reason || 'Qualified Elmer 26.2 runtime not detected.'}</p>}
         </ParameterSectionBlock>}
         <ParameterSectionBlock id="operating" label="Operating point" summary={operatingSummary} active={openSetupSection === 'operating'} onToggle={toggleSetupSection}>
-          {config.geometry_reference && <p className="public-design-notice">Pyleecan software reference · {config.solve_params.magnet_temperature_C}°C magnets · sinusoidal phase current. Φ₀ uses the published d-axis convention. This case does not validate ORNL hardware.</p>}
-          {config.geometry_reference && <p className="public-design-notice">{PYLEECAN_REFERENCE_NOTICE.affiliation_notice}</p>}
+          {reference && <p className="public-design-notice">{reference.solveNotice(config)}</p>}
+          {reference?.affiliationNotice && <p className="public-design-notice">{reference.affiliationNotice}</p>}
           <div className="public-excitation-selector" role="radiogroup" aria-label="Stator excitation">
             <button
               type="button"
@@ -3907,7 +3910,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
                 <p className="public-solver-help">Picard is the default. Try Newton if a run fails to converge.</p>
               </>}
               {!sixStepSelected && <SelectRow label="Current convention" value={config.solve_params.current_amplitude_convention} disabled={busy !== null} choices={[{ value: 'rms', label: 'RMS' }, { value: 'peak', label: 'Peak' }]} onChange={(value) => onSolveSettingChange('current_amplitude_convention', value as MotorConfig['solve_params']['current_amplitude_convention'])} />}
-              {!sixStepSelected && <NumberRow label={config.geometry_reference ? "Pyleecan Φ₀ (d-axis)" : "Current angle"} value={config.solve_params.current_angle_deg} unit="deg" min={-180} max={180} step={1} disabled={busy !== null} onChange={(value) => onSolveSettingChange('current_angle_deg', value)} />}
+              {!sixStepSelected && <NumberRow label={reference?.currentAngleLabel ?? "Current angle"} value={config.solve_params.current_angle_deg} unit="deg" min={-180} max={180} step={1} disabled={busy !== null} onChange={(value) => onSolveSettingChange('current_angle_deg', value)} />}
             </section>
             <section className="public-advanced-section public-advanced-output-section" aria-labelledby="public-generated-outputs-heading">
               <span className="public-section-kicker" id="public-generated-outputs-heading">Generated outputs</span>
@@ -4167,6 +4170,7 @@ function ReportStage({
   onOpenRunProject: (savedRun: PublicSavedRun) => void;
   onRerun: (savedRun: PublicSavedRun) => void;
 }) {
+  const reference = publishedReference(config);
   const [reportMode, setReportMode] = useState<'single' | 'compare'>('single');
   const [activePlot, setActivePlot] = useState<'torque' | 'back-emf' | 'cogging' | 'field-map' | 'performance'>(() => defaultResultPlot(result));
   useEffect(() => { setActivePlot(defaultResultPlot(result)); }, [result]);
@@ -4233,10 +4237,11 @@ function ReportStage({
   const reportSettings: Array<{ label: string; value: string }> = [
     { label: 'Project', value: projectName },
     { label: 'Material', value: materialName },
-    ...(config.geometry_reference ? [
+    ...(reference ? [
       { label: 'Reference case', value: config.reference_case ?? 'Not recorded' },
-      { label: 'Magnet temperature', value: `${config.solve_params.magnet_temperature_C}°C` },
-      { label: 'Pyleecan Φ₀ (d-axis)', value: `${config.solve_params.current_angle_deg}° electrical` },
+      ...(config.solve_params.magnet_temperature_C != null
+        ? [{ label: 'Magnet temperature', value: `${config.solve_params.magnet_temperature_C}°C` }] : []),
+      { label: reference.currentAngleLabel, value: `${config.solve_params.current_angle_deg}° electrical` },
     ] : []),
     {
       label: sixStep ? 'Conducting phase current' : 'Phase current',

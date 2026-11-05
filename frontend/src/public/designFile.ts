@@ -4,7 +4,7 @@ import { applyPublicSolverSettings, cloneDefaultConfig, HOLEM50_FIELDS, PUBLIC_M
 import type { MotorConfig } from './model';
 import { parseCustomSteels } from './customSteel';
 import type { WireSpec } from './performance';
-import { PYLEECAN_REFERENCE_NOTICE } from './pyleecanReferenceNotice';
+import { PUBLISHED_REFERENCES, publishedReference, type PublishedReferenceId } from './publishedReferences';
 
 /**
  * Local `.coilem` design files, with legacy `.openem` import compatibility.
@@ -143,6 +143,8 @@ export function parseDesignFile(text: string): ParsedDesignFile {
     solve_options: mergeSection(defaults.solve_options, source.solve_options),
   };
   config.schema_version = '1.0';
+  // A missing layout is an inner rotor, so only an outer rotor is carried.
+  if (source.rotor_layout === 'outer') config.rotor_layout = 'outer';
   // The wire is an object, which the section merge does not carry (#136).
   const wire = parseWire(isRecord(source.winding) ? source.winding.wire : undefined);
   if (wire) config.winding.wire = wire;
@@ -154,12 +156,15 @@ export function parseDesignFile(text: string): ParsedDesignFile {
     config.winding.coil_span = source.winding.coil_span;
   }
   if (source.geometry_reference !== undefined && source.geometry_reference !== null) {
-    if (source.geometry_reference !== 'pyleecan_prius_2004') throw new Error('Unknown published geometry reference.');
-    config.geometry_reference = source.geometry_reference;
+    const reference = typeof source.geometry_reference === 'string' && Object.prototype.hasOwnProperty.call(PUBLISHED_REFERENCES, source.geometry_reference)
+      ? PUBLISHED_REFERENCES[source.geometry_reference as PublishedReferenceId] : null;
+    if (!reference) throw new Error('Unknown published geometry reference.');
+    config.geometry_reference = source.geometry_reference as PublishedReferenceId;
     const caseId = source.reference_case;
-    const temperature = caseId === 'prius-2004-tutorial-bemf-v1' ? 20 : caseId === 'prius-2004-loaded-torque-v1' ? 60 : null;
-    if (temperature === null || !isRecord(source.solve_params) || source.solve_params.magnet_temperature_C !== temperature) {
-      throw new Error('The published Pyleecan reference requires a registered case and its fixed magnet temperature.');
+    const registered = typeof caseId === 'string' && Object.prototype.hasOwnProperty.call(reference.cases, caseId) ? reference.cases[caseId] : null;
+    const temperature = registered?.magnetTemperatureC ?? null;
+    if (!registered || !isRecord(source.solve_params) || (source.solve_params.magnet_temperature_C ?? null) !== temperature) {
+      throw new Error('The published reference requires a registered case and its fixed magnet temperature.');
     }
     config.reference_case = caseId as MotorConfig['reference_case'];
     config.solve_params.magnet_temperature_C = temperature;
@@ -247,8 +252,8 @@ export function serializeDesignFile(config: MotorConfig, name: string): string {
       openem_schema_version: DESIGN_FILE_SCHEMA_VERSION,
       openem_version: COILEM_APP_VERSION,
       name: designFileBaseName(name),
-      ...(config.geometry_reference === 'pyleecan_prius_2004'
-        ? { reference_notice: PYLEECAN_REFERENCE_NOTICE } : {}),
+      ...(publishedReference(config)?.fileNotice
+        ? { reference_notice: publishedReference(config)?.fileNotice } : {}),
       ...applyPublicSolverSettings(config),
     },
     null,
