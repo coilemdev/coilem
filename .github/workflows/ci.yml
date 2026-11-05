@@ -2,19 +2,39 @@ name: coilEM public candidate
 
 on:
   push:
-    branches: [main]
+    branches: [main, release/v0.5.1]
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
+    inputs:
+      qualification_base:
+        description: 'Trusted base SHA for CI after an evidence publication commit'
+        type: string
+        default: ''
+      performance_acceptance_only:
+        description: 'Run only the Windows Standard-map and Performance export acceptance (#139/#142)'
+        type: boolean
+        default: false
+      performance_recheck_run:
+        description: 'Optional prior cold-run ID: reuse its native maps for Windows UI/export checks'
+        type: string
+        default: ''
+      performance_examples_json:
+        description: 'Optional JSON array of regular example IDs; blank runs all five'
+        type: string
+        default: ''
 
 permissions:
   contents: read
 
 concurrency:
-  group: public-candidate-${{ github.workflow }}-${{ github.ref }}
+  # Every manual acceptance dispatch is independent, including cold runs.
+  group: public-candidate-${{ github.workflow }}-${{ github.ref }}-${{ github.event.pull_request.head.sha || github.sha }}${{ inputs.performance_acceptance_only && format('-performance-{0}', github.run_id) || '' }}
   cancel-in-progress: true
 
 jobs:
   runtime:
+    if: ${{ !inputs.performance_acceptance_only }}
     strategy:
       fail-fast: false
       matrix:
@@ -71,6 +91,7 @@ jobs:
           --out-dir "${{ runner.temp }}/coilem-abcd-smoke" --pdf
 
   frontend:
+    if: ${{ !inputs.performance_acceptance_only }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
@@ -91,6 +112,7 @@ jobs:
         run: npm audit --audit-level=high
 
   public-browser:
+    if: ${{ !inputs.performance_acceptance_only }}
     runs-on: ubuntu-24.04
     timeout-minutes: 40
     steps:
@@ -131,6 +153,7 @@ jobs:
             frontend/test-results/public-release.json
 
   dependency-audit:
+    if: ${{ !inputs.performance_acceptance_only }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -155,6 +178,7 @@ jobs:
           cargo audit --file solvers/magneto2d/Cargo.lock
 
   native-tests:
+    if: ${{ !inputs.performance_acceptance_only }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -162,3 +186,212 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - name: Test the exported native solver
         run: cargo test --locked --manifest-path solvers/magneto2d/Cargo.toml
+
+  performance-acceptance:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_acceptance_only }}
+    runs-on: windows-latest
+    # 120 min per test, with setup/build/upload headroom outside Playwright.
+    timeout-minutes: 180
+    permissions:
+      contents: read
+      actions: read
+    strategy:
+      fail-fast: false
+      matrix:
+        example: ${{ fromJSON(inputs.performance_examples_json || '["spm-8p12s", "ipm-14p-flat", "ipm-10p-v", "spm-24p", "spm-6p36s"]') }}
+    env:
+      COILEM_BUILD_COMMIT: ${{ github.sha }}
+      COILEM_ACCEPTANCE_CASES: ${{ matrix.example }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: '24'
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install the public backend
+        run: |
+          python -m pip install -r requirements.lock
+          python -m pip install -e ".[dev]"
+      - name: Build the native solver
+        run: cargo build --release --locked --manifest-path solvers/magneto2d/Cargo.toml
+      - name: Build the production UI and install Chromium
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build
+          npx playwright install chromium
+      - name: Run a cold Standard map and inspect the Performance view
+        if: ${{ !inputs.performance_recheck_run }}
+        working-directory: frontend
+        run: npx playwright test --config playwright.performance.config.ts
+      - name: Download the measured native map for a UI/export recheck
+        if: ${{ inputs.performance_recheck_run }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COLD_RUN_ID: ${{ inputs.performance_recheck_run }}
+        run: gh run download "$env:COLD_RUN_ID" --repo "$env:GITHUB_REPOSITORY" --name "performance-windows-$env:COILEM_ACCEPTANCE_CASES" --dir frontend/test-results/cold-evidence
+      - name: Recheck the UI and downloads with the measured map
+        if: ${{ inputs.performance_recheck_run }}
+        working-directory: frontend
+        env:
+          COILEM_ACCEPTANCE_RECHECK_DIR: test-results/cold-evidence/performance-evidence
+        run: npx playwright test --config playwright.performance.config.ts
+      - name: Verify downloaded PDF and CSV values
+        env:
+          EVIDENCE_FOLDER: ${{ inputs.performance_recheck_run && 'performance-recheck-evidence' || 'performance-evidence' }}
+        run: python -m tools.check_performance_acceptance "frontend/test-results/$env:EVIDENCE_FOLDER/$env:COILEM_ACCEPTANCE_CASES"
+      - name: Keep timings, screenshots, exports and failure diagnostics
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: performance-windows-${{ matrix.example }}
+          retention-days: 30
+          path: |
+            frontend/test-results/performance-evidence/
+            frontend/test-results/performance-recheck-evidence/
+            frontend/test-results/performance-acceptance/
+            frontend/test-results/performance-acceptance.json
+            frontend/test-results/performance-run.json
+
+  qualification-impact:
+    permissions:
+      contents: read
+      actions: read
+    if: ${{ github.event_name == 'pull_request' || inputs.qualification_base }}
+    runs-on: ubuntu-24.04
+    outputs:
+      physics_change: ${{ steps.impact.outputs.physics_change }}
+      measurement_required: ${{ steps.impact.outputs.measurement_required }}
+      reuse_run_id: ${{ steps.impact.outputs.reuse_run_id }}
+      collection_state: ${{ steps.impact.outputs.collection_state }}
+      measurement_candidate: ${{ steps.impact.outputs.measurement_candidate }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.12'
+      - id: impact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          QUALIFICATION_PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || inputs.qualification_base }}
+        run: python -m tools.physics_impact --base "$BASE_SHA" --plan
+
+  qualification-evidence:
+    name: qualification evidence required
+    # One-time owner-approved integration exception: #190 is benchmarked from
+    # its exact main merge commit. Runtime and release qualification stay intact.
+    if: ${{ (github.event_name == 'pull_request' && github.event.pull_request.number != 190) || inputs.qualification_base }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.12'
+      - env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || inputs.qualification_base }}
+        run: python -m tools.physics_impact --base "$BASE_SHA"
+
+  qualification-measure:
+    permissions:
+      contents: read
+      actions: read
+    needs: qualification-impact
+    if: ${{ needs.qualification-impact.outputs.measurement_required == 'true' && !github.event.pull_request.draft && github.event.pull_request.number != 190 }}
+    uses: ./.github/workflows/release-benchmarks.yml
+    with:
+      candidate: ${{ github.event.pull_request.head.sha }}
+
+  qualification-label:
+    needs: qualification-impact
+    if: ${{ needs.qualification-impact.outputs.physics_change == 'true' && github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-24.04
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Identify physics changes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          gh label create physics-change --color D93F0B --description "Requires measured qualification evidence" --force
+          gh pr edit "$PR_NUMBER" --add-label physics-change
+
+  qualification-publication:
+    needs: [qualification-impact, qualification-measure]
+    if: ${{ always() && github.event.pull_request.number != 190 && needs.qualification-impact.outputs.physics_change == 'true' && github.event.pull_request.head.repo.full_name == github.repository && (needs.qualification-measure.result == 'success' || needs.qualification-impact.outputs.collection_state == 'complete') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      actions: write
+    steps:
+      # Execute tooling from the trusted PR base. Candidate Python code never
+      # runs in this job; credentials are only provided to the final push step.
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: automation
+          persist-credentials: false
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+          path: candidate
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r automation/requirements.lock
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          pattern: benchmark-joined-*
+          run-id: ${{ needs.qualification-impact.outputs.reuse_run_id || github.run_id }}
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/measured
+      - name: Compare both platforms against previous and owner-approved evidence
+        working-directory: automation
+        run: >-
+          python -m tools.qualification_carry --root ../candidate --baseline .
+          --windows "$RUNNER_TEMP/measured/benchmark-joined-windows-2022"
+          --macos "$RUNNER_TEMP/measured/benchmark-joined-macos-15"
+          --out "$RUNNER_TEMP/prepared"
+      - name: Apply verified compact evidence and recheck qualification
+        working-directory: automation
+        env:
+          CANDIDATE_SHA: ${{ needs.qualification-impact.outputs.measurement_candidate || github.event.pull_request.head.sha }}
+        run: >-
+          python -m tools.qualification_publish --root ../candidate
+          --publication "$RUNNER_TEMP/prepared/publication" --candidate "$CANDIDATE_SHA"
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        if: always()
+        with:
+          name: qualification-publication-review
+          path: ${{ runner.temp }}/prepared
+          retention-days: 90
+      - name: Commit matching measured records and run CI on the publication commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          gh auth setup-git
+          git -C candidate config user.name 'github-actions[bot]'
+          git -C candidate config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C candidate config core.hooksPath /dev/null
+          git -C candidate add benchmarks snapshot-manifest.json
+          git -C candidate commit -m 'Publish matching measured qualification evidence'
+          git -C candidate push origin "HEAD:$PR_BRANCH"
+          gh workflow run ci.yml --ref "$PR_BRANCH" -f qualification_base="$BASE_SHA"

@@ -28,7 +28,7 @@ limitations.
 | Concentrated windings | Fractional-slot layouts (`q < 1`) are tooth coils: one layer winds every other tooth, two layers every tooth (experimental). The Design panel calls this **Wound teeth**: Alternate or All. Other concentrated layouts wind one phase per slot in one layer |
 | Distributed windings | Balanced one- or two-layer star-of-slots layouts with `q >= 1`; explicit short pitch is limited to supported integer-`q` layouts. The Design panel calls the layer count **Coil sides / slot** |
 | Electrical steel | Bundled M350-50A nonlinear reference model or project-local imported B-H curves (Magneto2D only) |
-| Preview result surface | Loaded torque, torque ripple, flux linkage, Back-EMF, field values/plots, and solver/mesh provenance |
+| Preview result surface | Loaded torque, torque ripple, flux linkage, Back-EMF, field values/plots, and solver/mesh provenance; cogging torque over one cogging period (experimental) |
 | Harmonic tiers | Preview: waveform only; Standard: THD and H1-H12; High accuracy (`fine`): THD and H1-H24 |
 | Saved-run comparison | Descriptive comparison of two Magneto2D runs; no parity or certification claim |
 | Outside launch scope | FEMM, thermal analysis, supplier-specific loss prediction, demagnetization safety, and internal debug workflows |
@@ -37,11 +37,16 @@ This table describes the coilEM motor workflow, not every problem that the
 generic field interface can represent. The backend is the authoritative motor
 support gate: a motor configuration can satisfy the JSON schema and still be
 rejected when its topology, winding, mesh source, or material lies outside
-this boundary. A dedicated cogging-torque results view is not included in the
-0.3.1 preview. Field mode has its own versioned, solve-ready contract and does
+this boundary. Field mode has its own versioned, solve-ready contract and does
 not imply public support for a new motor topology.
 See [Validation](VALIDATION.md#qualification-status) for the qualified scope and its limits.
-The public API rejects requests with `solve_options.cogging_torque = true`.
+The public API accepts `solve_options.cogging_torque = true` for Magneto2D.
+The backend then solves one cogging period, 180·gcd(S, P)/S electrical
+degrees, with no current, on its own per-angle meshes beside the Back-EMF
+grid; angles the two share are solved once. The preset sets the positions per
+period (12, 24, 48) and the waveform uses weighted-stress (WST) torque,
+whatever the loaded sweep uses ([convergence study](COGGING_CONVERGENCE.md)).
+The result is experimental ([claim boundary](VALIDATION.md#cogging-torque)).
 
 ## Solver pipeline
 

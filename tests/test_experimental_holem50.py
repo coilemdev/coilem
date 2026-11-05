@@ -134,11 +134,11 @@ def test_experimental_opt_in_accepts_only_experimental_rotors():
         with pytest.raises(PublicConfigError, match="flat-buried and V-shape IPM only"):
             parse_public_motor_config(body, allow_experimental_rotors=True)
     # Every other public check still applies.
-    cogging = ornl_design()
-    cogging["solve_options"]["cogging_torque"] = True
+    odd_poles = ornl_design()
+    odd_poles["rotor"]["pole_count"] = 7
     with pytest.raises(PublicConfigError) as caught:
-        parse_public_motor_config(cogging, allow_experimental_rotors=True)
-    assert caught.value.field == "solve_options.cogging_torque"
+        parse_public_motor_config(odd_poles, allow_experimental_rotors=True)
+    assert caught.value.field == "rotor.pole_count"
 
 
 @pytest.mark.parametrize("family", [None, "flat_buried", "v_shape"])

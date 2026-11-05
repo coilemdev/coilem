@@ -293,6 +293,26 @@ def test_preview_symbols_and_winding_layout_use_the_same_published_labels_as_the
         assert actual[coil.slot_in][1] != actual[coil.slot_out][1]
 
 
+def test_new_cogging_source_keeps_historical_motor_and_prius_evidence_unqualified(monkeypatch):
+    from tools.release import qualification as gate
+
+    assert "backend/cogging.py" in physics_sources(ROOT)
+    historical = json.loads((ROOT / "benchmarks/records-historical/v050/windows-x86_64.json").read_text())
+    original_data = gate._data
+
+    def historical_primary(root, name):
+        if name == "benchmarks/records/windows-x86_64.json":
+            return {**historical, "prius_report": "benchmarks/candidate-qualification-20261103/prius/app-results.json"}
+        return original_data(root, name)
+
+    # Select the immutable old cohort explicitly. A later accepted live record
+    # must not make this historical-rejection test fail or need restamping.
+    monkeypatch.setattr(gate, "_data", historical_primary)
+    errors = gate.check(ROOT)
+    assert "qualification physics mismatch: backend/cogging.py" in errors
+    assert "Prius measured-source mismatch: backend/cogging.py" in errors
+
+
 def test_published_app_evidence_keeps_complete_actual_grids_and_its_measured_sources():
     folder = ROOT / "docs/benchmarks/pyleecan-prius-v1"
     report = json.loads((folder / "app-results.json").read_text(encoding="utf-8"))
@@ -303,19 +323,27 @@ def test_published_app_evidence_keeps_complete_actual_grids_and_its_measured_sou
     assert report["field_source_dirty"] is False
     assert report["registration_sha256"] == hashlib.sha256((folder / "app-registration.json").read_bytes()).hexdigest()
     assert report["protocol_sha256"] == hashlib.sha256((folder / "protocol.json").read_bytes()).hexdigest()
-    assert report["analysis_runner_sha256"] == hashlib.sha256((ROOT / "tools/report_prius_benchmark.py").read_bytes()).hexdigest()
     assert report["source_sha256"] == registration["source_sha256"]
     # Publication necessarily updates the snapshot. Keep the original
     # before-field snapshot identity, rather than restamping the run.
     assert report["source_sha256"]["snapshot-manifest.json"] == "030e04373a88fcf1dd6d02bd6d536e927846b26cd55901c44d3420441258057b"
-    # The full identity stays recorded; the field-affecting sources the release
-    # gate guards (tools/release/qualification.py) must still match it exactly.
+    # Historical fields bind to their immutable before-field source snapshot.
+    # Current-source freshness is enforced separately by the release gate;
+    # development code must not restamp old measurements to claim qualification.
     from tools.release.qualification import PRIUS_EXTRA_PHYSICS
 
-    guarded = set(physics_sources(ROOT)) | set(PRIUS_EXTRA_PHYSICS)
+    snapshot_path = ROOT / "benchmarks/candidate-qualification-20261103/prius/source-snapshot.json"
+    assert hashlib.sha256(snapshot_path.read_bytes()).hexdigest() == report["source_sha256"]["snapshot-manifest.json"]
+    measured_sources = {entry["path"]: entry["sha256"] for entry in json.loads(snapshot_path.read_text(encoding="utf-8"))["files"]}
+    # Use the original qualification registry for this historical audit. A
+    # later source addition cannot be present in an earlier field snapshot.
+    # The live release gate still checks every source in today's registry.
+    historical = json.loads((ROOT / "benchmarks/records-historical/v050/windows-x86_64.json").read_text())["physics_files"]
+    guarded = set(historical) | set(PRIUS_EXTRA_PHYSICS)
+    assert report["analysis_runner_sha256"] == measured_sources["tools/report_prius_benchmark.py"]
     assert guarded <= set(report["source_sha256"])
     for name in sorted(guarded):
-        assert hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == report["source_sha256"][name], name
+        assert measured_sources[name] == report["source_sha256"][name], name
     for name, digest in report["historical_evidence_sha256"].items():
         assert hashlib.sha256((folder / name).read_bytes()).hexdigest() == digest, name
     assert report["grading_provenance"]["frozen_before_fields"] is True

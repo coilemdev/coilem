@@ -64,6 +64,8 @@ export function nextPublicSolveProgressBar(
   progress: PublicSolveProgress | null,
 ): PublicSolveProgressBar {
   if (!progress || progress.stage === 'Validating') return EMPTY_PUBLIC_SOLVE_PROGRESS_BAR;
+  const analysisFraction = finiteNumber(progress.solver_detail?.analysis_fraction);
+  if (analysisFraction !== null) return { percent: Math.max(previous.percent, clampUnit(analysisFraction) * 100), meshStage: false };
   if (isPublicSolveFinalizing(progress)) return { ...previous, percent: 100 };
   const meshFraction = publicSolveMeshFraction(progress);
   if (meshFraction !== null) {

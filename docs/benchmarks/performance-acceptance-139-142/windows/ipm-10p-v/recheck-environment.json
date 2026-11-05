@@ -1,0 +1,26 @@
+{
+  "source_commit": "3ce46ed1ba1bcf19b422e504248917843dcf22cf",
+  "tracked_tree_clean": true,
+  "setup_only": false,
+  "application_version": "0.5.0",
+  "platform": "win32",
+  "os_release": "10.0.26100",
+  "architecture": "x64",
+  "cpu_model": "AMD EPYC 7763 64-Core Processor                ",
+  "logical_cpus": 4,
+  "memory_bytes": 17178693632,
+  "node": "v24.22.2",
+  "chromium": "148.0.7778.96",
+  "python": "Python 3.11.9",
+  "native_binary_sha256": "b29e1a0a004b72c0fc1c686dd15966f239097a286248db9320fc093a0770e3ba",
+  "github_run_url": "https://github.com/coilemdev/coilem/actions/runs/41866681070",
+  "sample_count": 0,
+  "cache_policy": "reuse the previously measured native map for UI/export checks",
+  "free_disk_bytes_before": 157210836992,
+  "worker_policy": {
+    "gmsh_producers": 1,
+    "parallel_angle_solves": 2,
+    "native_workers_per_angle": 1,
+    "field_preview_workers": 1
+  }
+}

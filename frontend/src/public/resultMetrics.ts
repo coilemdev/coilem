@@ -5,7 +5,15 @@
  */
 
 import { formatSignificant } from './machineConstants';
-import type { MaterialCatalog, SolveResult } from './model';
+import type { MaterialCatalog, MotorConfig, SolveResult } from './model';
+
+/** Actual field current; native sinusoidal metadata is in peak A. */
+export function solvedPhaseCurrent(config: MotorConfig, result: SolveResult): number {
+  const actual = result.solve_metadata.current_amplitude_A;
+  if (typeof actual !== 'number' || !Number.isFinite(actual)) return config.solve_params.current_amplitude_A;
+  return config.solve_params.current_amplitude_convention === 'rms' && result.solve_metadata.current_amplitude_convention !== 'rms'
+    ? actual / Math.SQRT2 : actual;
+}
 
 /** Electrical frequency in Hz: f = rpm · poles / 120. */
 export function electricalFrequencyHz(rpm: number, poleCount: number): number {
@@ -17,8 +25,8 @@ export function formatFrequencyHz(hz: number): string {
 }
 
 /** Air-gap power before losses, T · ω, as a value and unit (W below 1 kW). */
-export function electromagneticPower(avgTorqueNm: number, rpm: number): { text: string; unit: 'W' | 'kW' } | null {
-  if (!Number.isFinite(avgTorqueNm) || !Number.isFinite(rpm)) return null;
+export function electromagneticPower(avgTorqueNm: number | null, rpm: number): { text: string; unit: 'W' | 'kW' } | null {
+  if (typeof avgTorqueNm !== 'number' || !Number.isFinite(avgTorqueNm) || !Number.isFinite(rpm)) return null;
   const watts = avgTorqueNm * rpm * 2 * Math.PI / 60;
   return Math.abs(watts) >= 1000
     ? { text: formatSignificant(watts / 1000).replace(/^-/, '−'), unit: 'kW' }
@@ -51,24 +59,37 @@ const RIPPLE_MIN_AVERAGE_FRACTION = 0.01;
  * the torque is cogging, which averages to zero, so a 16.7 N·m swing over a
  * 0.005 N·m residual read as 330,000 %. Then, and whenever the average is under
  * 1% of the swing, the percentage is left out and the swing shown instead.
+ *
+ * With no current and a cogging sweep (#185), the row is the sweep's
+ * peak-to-peak, so Results never shows two cogging numbers.
  */
 export function torqueRippleView(result: Pick<SolveResult, 'summary' | 'torque_waveform' | 'solve_metadata'>): TorqueRippleView {
   const range = torqueRange(result.torque_waveform?.torque_Nm ?? []);
   const peakToPeak = range ? range.max - range.min : null;
   const current = result.solve_metadata?.current_amplitude_A;
-  const noLoad = typeof current === 'number' && Number.isFinite(current) && Math.abs(current) < 1e-9;
+  const noLoad = typeof current === 'number' && Number.isFinite(current) && Math.abs(current) <= 1e-6;
   const average = result.summary.avg_torque_Nm;
-  const averageTooSmall = peakToPeak !== null && peakToPeak > 0 && Number.isFinite(average)
+  const averageTooSmall = peakToPeak !== null && peakToPeak > 0 && typeof average === 'number' && Number.isFinite(average)
     && Math.abs(average) < RIPPLE_MIN_AVERAGE_FRACTION * peakToPeak;
   if (!noLoad && !averageTooSmall) {
     return { ripplePct: result.summary.torque_ripple_pct, peakToPeakNm: null, peakToPeakLabel: 'Torque p-p', note: null };
+  }
+  const cogging = noLoad ? result.summary.cogging : null;
+  if (cogging && Number.isFinite(cogging.peak_to_peak_Nm)) {
+    return {
+      ripplePct: null,
+      peakToPeakNm: cogging.peak_to_peak_Nm,
+      peakToPeakLabel: 'Cogging torque p-p',
+      note: `No current, so this torque is cogging. The value is the cogging sweep's: one cogging period at ${cogging.positions_per_period} positions, shown under Cogging torque.`,
+    };
   }
   return {
     ripplePct: null,
     peakToPeakNm: peakToPeak,
     peakToPeakLabel: noLoad ? 'Cogging torque p-p' : 'Torque p-p',
     note: noLoad
-      ? 'No current, so this torque is cogging: it averages to zero, and ripple as a percentage of the average has no meaning. The peak-to-peak swing is shown instead.'
+      ? 'No current, so this torque is cogging: it averages to zero, and ripple as a percentage of the average has no meaning. The peak-to-peak swing is shown instead. '
+        + "It comes from this sweep's positions, which are not sized to the cogging period; turn on Cogging torque on Solve for a cogging sweep."
       : 'The average torque is close to zero, so ripple as a percentage of it has no meaning. The peak-to-peak swing is shown instead.',
   };
 }

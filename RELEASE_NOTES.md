@@ -1,3 +1,12 @@
+# coilEM 0.5.1 — unreleased fixes
+
+- Correct the performance CSV header to `section,field,unit,value,sample_index`.
+  coilEM 0.5.0 accidentally labelled its third and fourth columns `value,unit`,
+  although the data already contained unit then value. Data order, precision
+  and the `coilem.performance_report.v1` identifier are unchanged. Consumers
+  that worked around the 0.5.0 header should remove that swap for new exports;
+  retain the workaround when reading an original 0.5.0 file.
+
 # coilEM 0.5.0 Developer Preview
 
 Prepared November 3, 2026. coilEM 0.5.0 is the performance release

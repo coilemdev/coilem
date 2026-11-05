@@ -45,6 +45,7 @@ from backend.public_policy import (
     public_config_support_error,
 )
 from backend.qualification import classify_qualification
+from backend.selected_analyses import solve_selected_analyses
 from backend.solve_estimate import estimate_solve, prepared_mesh_elements
 from backend.solve_workspace import (
     RUN_ARTIFACT_PREFIX,
@@ -56,13 +57,12 @@ from backend.solve_workspace import (
 )
 from backend.solver import Magneto2DSolver
 from backend.solver_contract import SolveCancelledError, Solver
-from backend.sweep_planning import loaded_sweep_plan
+from backend.sweep_planning import cogging_angle_grid, cogging_positions_per_period, full_cycle_back_emf_angle_grid, loaded_sweep_plan
 
 router = APIRouter()
 
 _EXCLUDED_SUMMARY_FIELDS = frozenset(
     {
-        "cogging_torque_Nm",
         "efficiency_pct",
         "weight_inertia",
         "torque_speed_envelope",
@@ -74,7 +74,6 @@ _EXCLUDED_SUMMARY_FIELDS = frozenset(
 
 _EXCLUDED_RESULT_FIELDS = frozenset(
     {
-        "cogging_torque_waveform",
         "femm_mesh",
         "slotless_noload_diagnostic",
         "loaded_field_diagnostic",
@@ -1008,7 +1007,11 @@ async def solve(body: dict[str, Any]) -> dict[str, Any]:
 
     solver = _create_public_solver(solver_id, elmer_capabilities)
     solver_label = "Elmer" if solver_id == "elmer" else "Magneto2D"
-    timeout_seconds = 1800.0 if solver_id == "elmer" else 1200.0
+    # A map is a resumable batch, not a single operating-point solve. Match
+    # the stream route's unbounded batch deadline; /solve/cancel and shutdown
+    # still stop the worker and retain its completed points.
+    map_requested = solver_id == "magneto2d" and config.solve_options and config.solve_options.torque_speed_envelope
+    timeout_seconds = None if map_requested else (1800.0 if solver_id == "elmer" else 1200.0)
     try:
         workspace, run_writer = _claim_durable_solve(solver, body, config)
     except Exception as exc:
@@ -1023,7 +1026,11 @@ async def solve(body: dict[str, Any]) -> dict[str, Any]:
                 detail=_stream_error_payload(exc),
             ) from exc
         raise
-    future = _run_solver_thread(solver.solve, config, solve_mesh_key=solve_mesh_key)
+    future = _run_solver_thread(
+        solve_selected_analyses, solver, config, solve_mesh_key=solve_mesh_key,
+        should_stop=lambda: bool(_ACTIVE_SOLVE["cancelled"]),
+        map_supported=solver_id == "magneto2d",
+    )
     try:
         result = await _wait_for_worker(future, timeout=timeout_seconds)
         public_result = await _finish_off_loop(_package_public_result, result)
@@ -1045,15 +1052,19 @@ async def solve(body: dict[str, Any]) -> dict[str, Any]:
         raise HTTPException(status_code=409, detail=_stream_error_payload(exc)) from exc
     except (asyncio.TimeoutError, TimeoutError) as exc:
         solver.cancel_active_solve()
+        message = (
+            f"{solver_label} solve timed out after {timeout_seconds:.0f} seconds."
+            if timeout_seconds is not None else "Map worker reported a timeout. Completed map points are retained for retry."
+        )
         run_writer.fail(
             error_code="SOLVE_TIMEOUT",
-            message=f"{solver_label} solve timed out after {timeout_seconds:.0f} seconds.",
+            message=message,
         )
         raise HTTPException(
             status_code=status.HTTP_504_GATEWAY_TIMEOUT,
             detail={
                 "error_code": "SOLVE_TIMEOUT",
-                "message": f"{solver_label} solve timed out after {timeout_seconds:.0f} seconds.",
+                "message": message,
             },
         ) from exc
     except (Magneto2DUnsupportedError, ElmerUnsupportedError) as exc:
@@ -1177,6 +1188,20 @@ async def validate_solve(body: dict[str, Any]) -> dict[str, Any]:
         mesh_elements=prepared_mesh_elements(solve_mesh_key, config),
         solver_id=solver_id,
     )
+    map_work = None
+    map_seconds = map_low = map_high = 0.0
+    if config.solve_options and config.solve_options.torque_speed_envelope and config.torque_speed_analysis:
+        from backend.flux_linkage_map import map_grid, map_positions_per_point, map_solve_count, point_config
+
+        settings = config.torque_speed_analysis
+        solves = map_solve_count(*map_grid(settings.limits.peak_current_A, settings.preset))
+        point_estimate = estimate_solve(point_config(config, settings.limits.peak_current_A, 0, settings.preset),
+                                        mesh_elements=estimate.mesh_elements)
+        zero_estimate = estimate_solve(point_config(config, 0, 0, settings.preset), mesh_elements=estimate.mesh_elements)
+        map_seconds = zero_estimate.seconds + (solves - 1) * point_estimate.seconds
+        map_low = zero_estimate.low_s + (solves - 1) * point_estimate.low_s
+        map_high = zero_estimate.high_s + (solves - 1) * point_estimate.high_s
+        map_work = {"solves": solves, "positions_per_point": map_positions_per_point(settings.preset)}
     warnings = winding_feasibility_warnings(config)
     if estimate.seconds > 120 and solve_params.solve_quality != "quick":
         warnings.append(
@@ -1189,13 +1214,22 @@ async def validate_solve(body: dict[str, Any]) -> dict[str, Any]:
         "valid": not error_list,
         "errors": error_list,
         "warnings": warnings,
-        "estimated_solve_time_s": round(estimate.seconds, 1),
-        "estimated_solve_time_range_s": [round(estimate.low_s), round(estimate.high_s)],
+        "estimated_solve_time_s": round(estimate.seconds + map_seconds, 1),
+        "estimated_solve_time_range_s": [round(estimate.low_s + map_low), round(estimate.high_s + map_high)],
         "estimated_mesh_elements": estimate.mesh_elements,
         "estimated_mesh_elements_source": estimate.mesh_elements_source,
         "solve_quality": solve_params.solve_quality,
         "step_deg": solve_params.effective_step_deg(),
         "sweep_positions": sweep_positions,
+        "cogging_positions_per_period": cogging_positions_per_period(config),
+        "analysis_positions": {
+            "torque_sweep": sweep_positions if config.solve_options and config.solve_options.torque_sweep else 0,
+            "back_emf": len(full_cycle_back_emf_angle_grid(config, []))
+            if config.solve_options and (config.solve_options.back_emf or config.solve_options.thd_analysis) else 0,
+            "cogging_torque": len(cogging_angle_grid(config)),
+            "losses_efficiency": sweep_positions if config.solve_options and config.solve_options.losses_efficiency else 0,
+        },
+        "torque_speed_map": map_work,
         "qualification": classify_qualification(config),
         "solver_lane": {
             "native_supported": True,
@@ -1323,10 +1357,13 @@ async def solve_stream(body: dict[str, Any]) -> StreamingResponse:
                 },
             )
             future = _run_solver_thread(
-                solver.solve,
+                solve_selected_analyses,
+                solver,
                 config,
                 on_progress=on_progress,
                 solve_mesh_key=solve_mesh_key,
+                should_stop=lambda: bool(_ACTIVE_SOLVE["cancelled"]),
+                map_supported=solver_id == "magneto2d",
             )
             while not future.done():
                 _raise_if_server_stopping()

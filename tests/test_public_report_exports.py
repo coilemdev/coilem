@@ -602,7 +602,7 @@ def test_pdf_settings_list_only_the_settings_of_the_designs_topology(name: str) 
         assert "IPM rotor type" not in groups["Rotor"] and "Pocket clearance" not in groups["Rotor"]
     assert ("Tooth shoe height" in groups["Stator"]) == bool(config["stator"]["tooth_shoe_enabled"])
     assert ("Coil span" in groups["Winding"]) == (config["winding"]["coil_span"] is not None)
-    assert groups["Operating point"]["Phase current"] == (
+    assert groups["Operating point"]["Requested phase current"] == (
         f"{_plain(config['solve_params']['current_amplitude_A'])} A "
         f"{config['solve_params']['current_amplitude_convention']}"
     )
@@ -656,7 +656,7 @@ def test_pdf_settings_follow_the_excitation() -> None:
     six_step = _setting_labels(_resolved(raw))["Operating point"]
     assert {"Commutation advance", "Phase connection"} <= set(six_step)
     assert "Current angle" not in six_step
-    assert six_step["Phase current"].endswith(" A plateau")
+    assert six_step["Requested phase current"].endswith(" A plateau")
 
 
 def test_pdf_settings_keep_fields_this_report_does_not_know_yet() -> None:

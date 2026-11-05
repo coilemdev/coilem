@@ -20,6 +20,7 @@ from pathlib import Path
 PHYSICS_PYTHON_SOURCES = (
     "backend/airgap_sampling.py",
     "backend/back_emf_harmonics.py",
+    "backend/cogging.py",
     "backend/dq_flux_linkage.py",
     "backend/excitation.py",
     "backend/geometry.py",

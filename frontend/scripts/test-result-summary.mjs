@@ -12,7 +12,15 @@ const {
   sharedSparklinePaths,
   torqueRange,
   torqueRippleView,
+  solvedPhaseCurrent,
 } = await importTypeScriptModule(new URL('../src/public/resultMetrics.ts', import.meta.url));
+
+const currentConfig = { solve_params: { current_amplitude_A: 30, current_amplitude_convention: 'rms' } };
+assert.equal(solvedPhaseCurrent(currentConfig, { solve_metadata: { current_amplitude_A: 0 } }), 0);
+assert.equal(solvedPhaseCurrent(currentConfig, { solve_metadata: { current_amplitude_A: 30 * Math.SQRT2 } }), 30);
+assert.equal(solvedPhaseCurrent(currentConfig, { solve_metadata: {} }), 30, 'old results retain their recorded requested current');
+assert.equal(solvedPhaseCurrent(currentConfig, { solve_metadata: { current_amplitude_A: 20, current_amplitude_convention: 'rms' } }), 20);
+assert.equal(solvedPhaseCurrent({ solve_params: { current_amplitude_A: 30, current_amplitude_convention: 'plateau' } }, { solve_metadata: { current_amplitude_A: 18 } }), 18);
 
 // The default example: 8 poles at 2,400 rpm is 160 Hz electrical.
 assert.equal(electricalFrequencyHz(2400, 8), 160);
@@ -74,6 +82,14 @@ assert.equal(noLoad.ripplePct, null);
 assert.ok(Math.abs(noLoad.peakToPeakNm - 16.7) < 1e-9);
 assert.equal(noLoad.peakToPeakLabel, 'Cogging torque p-p');
 assert.match(noLoad.note, /^No current, so this torque is cogging/);
+// With a cogging sweep (#185) the 0 A row is the sweep's own peak-to-peak, so two cogging numbers never disagree.
+const withSweep = run(0.005, 329698.82, [0.1, 6.2, 8.3, 2.0, -8.4, -3.1], 0);
+withSweep.summary.cogging = { peak_to_peak_Nm: 0.412, positions_per_period: 24 };
+const sweepRow = torqueRippleView(withSweep);
+assert.equal(sweepRow.peakToPeakNm, 0.412);
+assert.equal(sweepRow.peakToPeakLabel, 'Cogging torque p-p');
+assert.match(sweepRow.note, /cogging sweep's: one cogging period at 24 positions/);
+assert.match(noLoad.note, /not sized to the cogging period; turn on Cogging torque/);
 // A loaded run keeps the solver's percentage and shows no swing row.
 assert.deepEqual(torqueRippleView(run(10.66, 14.27, [11.66, 10.4, 9.24, 10.9], 42.4)),
   { ripplePct: 14.27, peakToPeakNm: null, peakToPeakLabel: 'Torque p-p', note: null });

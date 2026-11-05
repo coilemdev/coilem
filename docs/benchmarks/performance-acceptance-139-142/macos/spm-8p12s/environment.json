@@ -1,0 +1,25 @@
+{
+  "source_commit": "064993b52af6a7aaab99d5826eb3c9b2aba9d4a7",
+  "tracked_tree_clean": true,
+  "setup_only": false,
+  "application_version": "0.5.0",
+  "platform": "darwin",
+  "os_release": "24.6.0",
+  "architecture": "arm64",
+  "cpu_model": "Apple M4",
+  "logical_cpus": 10,
+  "memory_bytes": 17179869184,
+  "node": "v25.2.1",
+  "chromium": "148.0.7778.96",
+  "python": "Python 3.12.13",
+  "native_binary_sha256": "d4e31d9f3653e9f13f3a639266c45c442ed80ec8764a30fe9557b5ec3e084e39",
+  "github_run_url": null,
+  "sample_count": 1,
+  "cache_policy": "fresh isolated runtime; no existing map for this design",
+  "worker_policy": {
+    "gmsh_producers": 1,
+    "parallel_angle_solves": 2,
+    "native_workers_per_angle": 1,
+    "field_preview_workers": 1
+  }
+}

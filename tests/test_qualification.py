@@ -83,7 +83,7 @@ def test_qualified_combinations_name_their_evidence(fixture: str, reason: str, m
     qualification = classify_qualification(_fixture(fixture))
     assert qualification["status"] == "qualified"
     assert qualification["reason"].startswith(reason)
-    assert qualification["basis"] == "coilEM benchmark report, measured at 88aae101"
+    assert qualification["basis"] == QUALIFICATION_BASIS
     assert qualification["reference"].endswith("docs/VALIDATION.md#qualification-status")
 
 
@@ -103,11 +103,18 @@ def test_basis_names_the_measured_commit_and_reference() -> None:
     assert run["identity"]["protocol_version"] == "1.6.0"
 
 
-@pytest.mark.parametrize("path", PHYSICS_SOURCES)
-def test_report_measured_the_current_physics_sources(path: str) -> None:
+def test_report_preserves_its_registered_measured_physics_sources() -> None:
+    # Freshness belongs to tools.physics_impact and the release gate. This
+    # replay test validates the immutable historical record on its own basis.
+    record = json.loads(Path("benchmarks/records/windows-x86_64.json").read_text())
     measured = REPORT["run"]["identity"]["source_files"]
-    assert path in measured, f"{QUALIFICATION_REPORT} did not measure {path}; run a new report before qualifying it"
-    if hashlib.sha256(Path(path).read_bytes()).hexdigest() != measured[path]:
+    assert all(measured[path] == digest for path, digest in record["physics_files"].items())
+
+
+@pytest.mark.parametrize("path", PHYSICS_SOURCES)
+def test_changed_or_unmeasured_physics_cannot_keep_historical_qualification(path: str) -> None:
+    measured = REPORT["run"]["identity"]["source_files"]
+    if hashlib.sha256(Path(path).read_bytes()).hexdigest() != measured.get(path):
         # Keep the guard: changed physics must lose its qualified claim. The
         # strict release command additionally refuses publication until remeasured.
         assert not qualification_module.evidence_matches_runtime()

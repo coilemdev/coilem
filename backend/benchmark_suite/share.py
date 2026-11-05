@@ -15,7 +15,7 @@ from datetime import datetime
 from pathlib import Path
 
 from backend import __version__
-from backend.benchmark_suite import PHASE_LABELS
+from backend.benchmark_suite import COMMAND_PHASES, PHASE_LABELS
 from backend.benchmark_suite.contract import CHECKOUT, ROOT
 from backend.benchmark_suite.record import TOLERANCES, VALUE_LABELS, gate_statuses, gated_values
 from backend.local_paths import contains_local_path, redact_local_paths
@@ -155,7 +155,7 @@ def markdown(payload):
         f"- Dependencies: {', '.join(f'{name} {version}' for name, version in sorted(platform['dependencies'].items()))}.",
         "",
         "Reproduce with `coilem benchmark" + (" --quick" if selection.get("quick") else "")
-        + "".join(f" --phase {phase}" for phase in selection["phases"] if len(selection["phases"]) < len(PHASE_LABELS))
+        + "".join(f" --phase {phase}" for phase in selection["phases"] if len(selection["phases"]) < len(COMMAND_PHASES))
         + "`. The full JSON is beside this file.",
     ]
     return "\n".join(lines) + "\n"

@@ -245,6 +245,24 @@ def test_installed_package_checks_the_solver_by_its_stamped_hashes(monkeypatch) 
     assert record.check_physics(published)["unverified"]
 
 
+def test_cogging_is_guarded_and_missing_or_changed_hashes_are_not_comparable(monkeypatch):
+    monkeypatch.delenv("COILEM_MAGNETO2D_BINARY", raising=False)
+    hashes, solver = record.installed_physics_hashes()
+    name = "backend/cogging.py"
+    assert name in physics_sources(REPO_ROOT)
+    assert hashes[name] == hashlib.sha256((REPO_ROOT / name).read_bytes()).hexdigest()
+    synthetic = {"physics_files": {**hashes, **solver}}
+    assert record.check_physics(synthetic)["status"] == "MATCH"
+    missing = copy.deepcopy(synthetic)
+    del missing["physics_files"][name]
+    assert record.check_physics(missing)["differs"] == [name]
+    changed = copy.deepcopy(synthetic)
+    changed["physics_files"][name] = "0" * 64
+    assert record.check_physics(changed)["differs"] == [name]
+    # Do not patch a published record to make a source addition match.
+    assert name in record.check_physics(read(REPO_ROOT / "benchmarks/records/windows-x86_64.json"))["differs"]
+
+
 @pytest.mark.parametrize(
     ("system", "machine", "key", "cross"),
     [

@@ -1,15 +1,22 @@
 import type { PublicMotorConfig } from './api';
-import { applyPublicSolverSettings, type MotorConfig } from './model';
+import { applyPublicSolverSettings, type MotorConfig, type PublicSolverId } from './model';
+import { torqueSpeedSettings } from './torqueSpeedAnalysis';
 
-/** The design as the local API's solve routes take it: public solver settings, no cogging sweep. */
-export function asPublicConfig(config: MotorConfig): PublicMotorConfig {
-  const thdAnalysis = config.solve_params.solve_quality === 'standard'
-    || config.solve_params.solve_quality === 'fine';
+/** The design as the local API's solve routes take it, with the public solver settings. */
+export function asPublicConfig(config: MotorConfig, solver: PublicSolverId = 'magneto2d'): PublicMotorConfig {
+  const thdAnalysis = config.solve_options.back_emf && (config.solve_params.solve_quality === 'standard'
+    || config.solve_params.solve_quality === 'fine');
   return {
     ...applyPublicSolverSettings(config),
+    torque_speed_analysis: solver !== 'elmer' && config.solve_options.torque_speed_envelope
+      ? torqueSpeedSettings(config) : null,
     solve_options: {
       ...config.solve_options,
-      cogging_torque: false,
+      // Keep the project's Magneto2D choice while omitting the unsupported
+      // option from Elmer validation and solve requests, including imported designs.
+      cogging_torque: solver !== 'elmer' && Boolean(config.solve_options.cogging_torque),
+      losses_efficiency: solver !== 'elmer' && Boolean(config.solve_options.losses_efficiency),
+      torque_speed_envelope: solver !== 'elmer' && Boolean(config.solve_options.torque_speed_envelope),
       thd_analysis: thdAnalysis,
     },
   } as unknown as PublicMotorConfig;

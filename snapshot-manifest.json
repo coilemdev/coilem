@@ -5,8 +5,8 @@
   "files": [
     {
       "path": ".gitattributes",
-      "bytes": 1024,
-      "sha256": "74e5f603227eaf828ad4f031271e2e20fc50b172a84a62af1de9bdcff7c4051e"
+      "bytes": 1194,
+      "sha256": "f5fd8f0d909ce8c14f4d7b2317ac673dfb42215da6f60a029484086d0eeda854"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -25,13 +25,13 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 6383,
-      "sha256": "c0b81a9e0e6a68b2015becaf3a29091b96196a8ef119b0d4e31f6d9eb1a1ebf0"
+      "bytes": 17755,
+      "sha256": "0a6b363284ee70e017566c3712ea4d8248124490c6a9f32f67aecc06c8f6b17f"
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
-      "bytes": 5215,
-      "sha256": "06ffe983e40114ca1a213a25106e28774e540c4c793c7a73a8f3dffbe3d19005"
+      "bytes": 12862,
+      "sha256": "7b9d22573d4a0a30b99412fc5d6bc75a2b4a4afd6a7b5f8d16356a4a961ce5b6"
     },
     {
       "path": ".github/workflows/release-wheels.yml",
@@ -65,13 +65,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 13954,
-      "sha256": "180f427978b3c363eb880050108dc1b2b14166dd2eac2ed16063857031ffe7bd"
+      "bytes": 14580,
+      "sha256": "572eb93861ce734b3ea3d3489936296f2738e39a45382b15dd54ec27a5351423"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 8617,
-      "sha256": "981420a333581824c694f0997a2b68574694f814f309e5b92c600a0ca2abcaf0"
+      "bytes": 9110,
+      "sha256": "2e033db76f11dc266691041e30fcdc9a766971ecb6f69c2f65e6f65f57b7778c"
     },
     {
       "path": "SECURITY.md",
@@ -110,8 +110,8 @@
     },
     {
       "path": "backend/benchmark_suite/__init__.py",
-      "bytes": 362,
-      "sha256": "e82e13a64a3477c1b1611c5c65720c612402919044d5d1e4aabb7e57c9ef836a"
+      "bytes": 538,
+      "sha256": "0484342a3d688352e63934267361b5427074e1d932dd16fcafc1ee01817a495a"
     },
     {
       "path": "backend/benchmark_suite/abc_metrics.py",
@@ -125,13 +125,18 @@
     },
     {
       "path": "backend/benchmark_suite/cli.py",
-      "bytes": 21217,
-      "sha256": "bba2f5ac4a8071d9d4f3c5f6143b0e185eb3516ab99dba849bcbdd334284791e"
+      "bytes": 22578,
+      "sha256": "a990898368922b95030f76a47681dbdad273a4886e439c0c4117968fe5e8cb80"
+    },
+    {
+      "path": "backend/benchmark_suite/cogging_metrics.py",
+      "bytes": 9203,
+      "sha256": "354affe9cf9957724303a8420bf1d510577d192822a321bede64e0c4f40d695e"
     },
     {
       "path": "backend/benchmark_suite/command.py",
-      "bytes": 7688,
-      "sha256": "70048689414f727e7d9ce9c297b9662e6d64080fd518b0597cf8570be47dfbfe"
+      "bytes": 7710,
+      "sha256": "a38377d817eacf2977d4e4ee89788a3905c0be0017e215a9e25469432a232e7c"
     },
     {
       "path": "backend/benchmark_suite/contract.py",
@@ -155,23 +160,23 @@
     },
     {
       "path": "backend/benchmark_suite/physics.py",
-      "bytes": 3272,
-      "sha256": "62c925c0c2fb3f9c8d14a829948ffc83366bd74c424f8971cb17175c9a15f89b"
+      "bytes": 3298,
+      "sha256": "694a863aa9a69e3a3038629c5b4c68884b292431d0938abaf12af9b2dd4496cc"
     },
     {
       "path": "backend/benchmark_suite/record.py",
-      "bytes": 10789,
-      "sha256": "3e84cd2419b395ffac51a95b96643bd0a51f54fd956a95329639f3233322d2c0"
+      "bytes": 11258,
+      "sha256": "6ee344236e0f87d30e0b32e371e92d314c5c0b7bdd8f792fccbc9ddc5e38669b"
     },
     {
       "path": "backend/benchmark_suite/references.py",
-      "bytes": 7582,
-      "sha256": "56c4248b839b9223f45b9413f846a730ad7ef648cf0025aef77b4fb470a59176"
+      "bytes": 7998,
+      "sha256": "4ef724b633076777561790ab1d004bd19bc4465f9dcb0015053e8a54579c1155"
     },
     {
       "path": "backend/benchmark_suite/report.py",
-      "bytes": 30549,
-      "sha256": "cb7fa762862b6e48c34904d01ad007634bb21c5a8320553c529ccc69748a807a"
+      "bytes": 30826,
+      "sha256": "7a21402f3633fdc6b6ec90855736c2434c00496b97c2b0d1b985ed049b38420d"
     },
     {
       "path": "backend/benchmark_suite/resistance_metrics.py",
@@ -180,13 +185,18 @@
     },
     {
       "path": "backend/benchmark_suite/share.py",
-      "bytes": 8997,
-      "sha256": "c26023448d3169f7b2269b2053aec03a322d3b60cb4099e641a8381d3d73f720"
+      "bytes": 9015,
+      "sha256": "57fc6e6da6546472e1c8b94cadc95cfaf8f93f61ac98fa1b8bb17860f37eaf5e"
     },
     {
       "path": "backend/benchmark_suite/worker.py",
-      "bytes": 4246,
-      "sha256": "53447bd76e3c88afbee3ba14fcb90958642b9eb6dea038a7819cc26146f4dd93"
+      "bytes": 4499,
+      "sha256": "82bb836000973b718be6f3ed3e01e5e734792c7f637e0b721ca10ddcda694e6f"
+    },
+    {
+      "path": "backend/cogging.py",
+      "bytes": 6151,
+      "sha256": "523cab95d8260a557794c4e965afa979168f0a7008559e37c88e302c6bb0e7ff"
     },
     {
       "path": "backend/custom_materials.py",
@@ -210,8 +220,8 @@
     },
     {
       "path": "backend/elmer/adapter.py",
-      "bytes": 41266,
-      "sha256": "181236b39846057c46892ac4ee698e30846683b35ad323f063d6fc61f7c24808"
+      "bytes": 41877,
+      "sha256": "847f6bf138af2d668c3a510db615be909e48206f37351d3ff2ac54ca029f87a9"
     },
     {
       "path": "backend/elmer/capabilities.py",
@@ -265,8 +275,8 @@
     },
     {
       "path": "backend/field_artifacts.py",
-      "bytes": 16475,
-      "sha256": "bc6833736c881c441f260aa2d3c9e3aaa71f42930d34e855fa5172da53683559"
+      "bytes": 17336,
+      "sha256": "57ec4bd523b76bbb5c75813ecd8c37e933bc48344350e43cdb21f96ce1f5d6e3"
     },
     {
       "path": "backend/field_composition.py",
@@ -280,8 +290,8 @@
     },
     {
       "path": "backend/flux_linkage_map.py",
-      "bytes": 16980,
-      "sha256": "620bffe0cfbaacc05c78d1e7589cc804b477f6b45fa2f97b8cd6910976a82f8a"
+      "bytes": 17509,
+      "sha256": "196032e980d64e8cd4a60ca98e934360983a91e49cae7506eabf6f0f5c1c2a8d"
     },
     {
       "path": "backend/geometry.py",
@@ -455,13 +465,13 @@
     },
     {
       "path": "backend/models/__init__.py",
-      "bytes": 2487,
-      "sha256": "2bb692a95ba2013d902511a4cb575dc751653b4746bb0a065c273b1381a26650"
+      "bytes": 2571,
+      "sha256": "666c7c95fa74a1774b4df1cf4ffb5e8c91ba8856bafebd1c4af9ee6894197907"
     },
     {
       "path": "backend/models/config.py",
-      "bytes": 30112,
-      "sha256": "a952b7de1d095d93f1ec460c14d4360aab19cd23df49857fbb3e28c90e14590c"
+      "bytes": 30546,
+      "sha256": "66a6ccf5b1ce562ba2c5bf5c578dcb7099056e54bb642dec21dbbcd9a35c4515"
     },
     {
       "path": "backend/models/errors.py",
@@ -485,23 +495,23 @@
     },
     {
       "path": "backend/models/performance.py",
-      "bytes": 23619,
-      "sha256": "916db2d0dbf04150ff5e3d4e1409a6308eea622487f68eddb79c3b6b62325a37"
+      "bytes": 26271,
+      "sha256": "001932b621bd27b154a45b57f91cf294d7c34a27138f64f625bc26d18e4eb92b"
     },
     {
       "path": "backend/models/result.py",
-      "bytes": 7605,
-      "sha256": "44636f7526c5c3557dfb3ce88c406f2ce29387d49fcfe201c087215eb3121c88"
+      "bytes": 9047,
+      "sha256": "a6f0f2932df4afa32f6e1e51525767edd6df4dcee7317eb66bebb3fee45cbd34"
     },
     {
       "path": "backend/models/waveforms.py",
-      "bytes": 5817,
-      "sha256": "c1a0ed0f29043b8a4cf6c2d4a9667726c8c71f59bf75aab6b7ed9fbcab334b70"
+      "bytes": 6384,
+      "sha256": "797a83fc318429cda57b8119367282323d1be3676780c28820aecce897389876"
     },
     {
       "path": "backend/performance_report.py",
-      "bytes": 46917,
-      "sha256": "8d629d7a9608f8e1930fb7afbea2a4b2e3aba4c6eba6d7e623d2b3238c56c8ad"
+      "bytes": 46885,
+      "sha256": "81405571d9faa31ba6df6a265158a977bad90dcb1f64eb3c07b4121ba5c27d8f"
     },
     {
       "path": "backend/platform_info.py",
@@ -540,13 +550,13 @@
     },
     {
       "path": "backend/public_policy.py",
-      "bytes": 12563,
-      "sha256": "973142eed90de1bea7b46d33fde3691028580098aa09663624b773f6d7b228d8"
+      "bytes": 13546,
+      "sha256": "f3831f5bad3e29efc30e71956b0ee6576dfe365b9ca62527897c7cdfefbf273a"
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 82592,
-      "sha256": "0dd5c8bc9719f5c395b496795736c6cdd359154641cba4527bc0f9a238c30f11"
+      "bytes": 92238,
+      "sha256": "23df8c12e0f2ec616ab2fa867b6cd6181fd136cc7f1eaffa465e6cafd1dcbabd"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -575,8 +585,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 51659,
-      "sha256": "5619e89da4de01b1527de712c88d4407563e0acdbab7df3c8f6841e34379ac54"
+      "bytes": 54282,
+      "sha256": "0cd5395ba39c80d9f9dbaaaf18cfda0eac63f5e7f4297dc4409213a00a7d9387"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -595,8 +605,8 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 9843,
-      "sha256": "c9ec5e5975b4a29c997e41008fde110d99910abed077054a87e89d656118b390"
+      "bytes": 10791,
+      "sha256": "7cbe477f2567c7fdc45f36a39a05067d2e0af8aac64675be47678fbf8a60408f"
     },
     {
       "path": "backend/reference_models/__init__.py",
@@ -625,23 +635,23 @@
     },
     {
       "path": "backend/solve_estimate.py",
-      "bytes": 6473,
-      "sha256": "ab5b446b5036548e9d9093f7129e3060391b2cfd2ae6fcb2387d6f099eb49010"
+      "bytes": 6844,
+      "sha256": "ae66f8ae4280013c0f42b8158050844b2483e7569e01fe8f377c63b8dba4a5f4"
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 46011,
-      "sha256": "c7b5c3dcc7ab992117a0c136179982ec4dcad1cdd4bb1b2adfc04b3fbd4e3689"
+      "bytes": 46626,
+      "sha256": "2c877064d6fea1a53467afcdb2a024ee625bd1b32a64f53b39626be3bd5b2a6d"
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 149682,
-      "sha256": "f5378d1d99b4a4c7d3972d16fd73f998ffb224bca86e1b68052a16ea6453b6c2"
+      "bytes": 154989,
+      "sha256": "da860577bd583caa43786b58e8660e241acebdc505dc179efbdad27854fcaa8b"
     },
     {
       "path": "backend/solver/_helpers.py",
-      "bytes": 61167,
-      "sha256": "501da88b80e60061d96fe46e69868a319916605a1f68e6c7f94cda3b42cc6a51"
+      "bytes": 63728,
+      "sha256": "b3acff8a6f0c7d5a8253a06a9e1175866defe117e85d6f564ea9e2766f3ce8b1"
     },
     {
       "path": "backend/solver/_mesh_pool.py",
@@ -675,8 +685,8 @@
     },
     {
       "path": "backend/sweep_planning.py",
-      "bytes": 5684,
-      "sha256": "1a36902ae5e1eb460228200c5ea9f93e463cd56c14c7a21db2a154fe848d8d14"
+      "bytes": 6818,
+      "sha256": "26211c44bb637a8472b468a612737e4847040c189b5aba2ced56e24025afe77c"
     },
     {
       "path": "backend/topology_provenance.py",
@@ -932,6 +942,76 @@
       "path": "benchmarks/abcd-v1.6/phase_resistance_gate.json",
       "bytes": 3309,
       "sha256": "90b001cd0f32705f0f38b46f502369268d7b7cce56ac320033d3a6a804b58bd6"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/README.md",
+      "bytes": 5252,
+      "sha256": "b6e872024b14d2319ce1050ac97b6b217e8eb8375f33fa1568696b8f38008715"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/benchmark_spec.json",
+      "bytes": 12333,
+      "sha256": "9b14051cef6bf7298456691661d38ad95fd78738d9df6c41165f55ce3a509843"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_12s10p_fscw_contract__cogging.json",
+      "bytes": 2504,
+      "sha256": "b8ec65a0f26330a9f1e9e9829e6ec34752771678fc8dcdcf0789b9074a623fda"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_24s16p_industrial_contract__cogging.json",
+      "bytes": 2545,
+      "sha256": "9db76e873718646ce320302b39c25301ef3915375cf91ed6489b07f68d53ea5f"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__cogging.json",
+      "bytes": 2531,
+      "sha256": "9ea0820bfe9507ed339415a49b66f207f994392d7172c9cc9f68793197e8af3c"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_8p12s_fsae_contract__cogging.json",
+      "bytes": 2544,
+      "sha256": "ec1ca45e0258ca76d072503a3160260377a57a1402b8161bd0952d8fad46bc0a"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_12p36s_distributed_femm_validation__cogging.json",
+      "bytes": 2503,
+      "sha256": "4e27491c2d31ea3119a3034bbcda330c016db340aab51d9f3044686ef0bfdfd8"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_4p12s_simple__baseline__cogging.json",
+      "bytes": 2501,
+      "sha256": "0133baad78c3025ad988889004d0bfadd44afa0c184daf2a5a0ed8e0ca7b87c1"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_4p12s_simple__tight_airgap__cogging.json",
+      "bytes": 2501,
+      "sha256": "7b8df6177db2310fc8747da7afe5ab1dd568a6bbfe86f6011fb1c15b97f0d045"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_concentrated__baseline__cogging.json",
+      "bytes": 2504,
+      "sha256": "228bfe80718719ef811ca8d9e22e78e03f87cd23eabe9c6af8648b25dde6fc61"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_concentrated__tight_airgap__cogging.json",
+      "bytes": 2504,
+      "sha256": "4fea72c749da4156d9eed4e3548759f3420c23d4ad1fe5dce09f0f8d288b0701"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_example_shoed__cogging.json",
+      "bytes": 2504,
+      "sha256": "183a686cdbdcfcac623f5a9877fb43c9cb9e273657e947c14b097f8de9d52c9c"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p24s_distributed_femm_validation__cogging.json",
+      "bytes": 2504,
+      "sha256": "7e1329e2eece8c1c7b23b0b7e862c82a3c659fced4b99b795238c4679ea3e15c"
+    },
+    {
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p48s_distributed_femm_validation__cogging.json",
+      "bytes": 2502,
+      "sha256": "851e55cebd81733996d8549f9153d2e9998b55094cc4e6332ae76cf1f76ebac1"
     },
     {
       "path": "benchmarks/abcd-v1/README.md",
@@ -5844,6 +5924,26 @@
       "sha256": "33c7875e199d7e07165dc9b46a99033662ec753dbae9892a6e01db3c4865f387"
     },
     {
+      "path": "docs/COGGING_BENCHMARK_PROPOSAL.md",
+      "bytes": 8339,
+      "sha256": "c2e75d9ddc8ec9f010485f169c7ce954df1b8476d280d4323bc2b44887e3f0b3"
+    },
+    {
+      "path": "docs/COGGING_CONVERGENCE.json",
+      "bytes": 30639,
+      "sha256": "d69e3499e270c5d197e1353e6ca4775404c33653042bfb3e16d159176ef10efc"
+    },
+    {
+      "path": "docs/COGGING_CONVERGENCE.md",
+      "bytes": 8851,
+      "sha256": "9cadb6f9b0135692903fa5e497fad5bef63658fccb1ba505baf84d020bbf7ee6"
+    },
+    {
+      "path": "docs/COGGING_FEMM_REQUEST.md",
+      "bytes": 9920,
+      "sha256": "248919ee5865f404fa2fa176edd6c525171cbcdc41576d7fdfb333dc85165fc7"
+    },
+    {
       "path": "docs/ELMER.md",
       "bytes": 6064,
       "sha256": "1068d2db3c4e7a8b6113aaa1ca0ab93a38067944d7e42beeafa01a97baed69d0"
@@ -5860,8 +5960,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 13753,
-      "sha256": "b9497a18237f3fe9171ef288d11ec2c427dda582f8915f89a4c5cca4a57fdd44"
+      "bytes": 16168,
+      "sha256": "afa5304bef56bc74da5ce0bccef04e988dcae4ee3d491a9f279be941a0f63478"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -5875,8 +5975,8 @@
     },
     {
       "path": "docs/MAGNETO2D.md",
-      "bytes": 47164,
-      "sha256": "b968cdf42ca53dd76c24624a827b1918239e234a8aa9570423aebdf41c6f6f26"
+      "bytes": 47592,
+      "sha256": "6499d05f6dbc623d7894c3e9b657f91866aa0065b872885fff2719b43f95aa6e"
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE.md",
@@ -5930,8 +6030,8 @@
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
-      "bytes": 11363,
-      "sha256": "6d91478217346b54ada343cc3db37851a6b3be22553cb50f7892b27a2df0f355"
+      "bytes": 12560,
+      "sha256": "837e708036fe44232afbbd1a4bcb0d48d869453607b871c82fe377c585f9c48b"
     },
     {
       "path": "docs/RELEASE_0_4_0.md",
@@ -5965,8 +6065,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 48187,
-      "sha256": "f59898bd40762676197ea4ded12b494a15603b75bcd40f7741e375ac8a48daf6"
+      "bytes": 51443,
+      "sha256": "fc0f1eb2ad03fe18880aa52d6b918b74793c221cc0418461a3a0086ea3f29f84"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -6315,13 +6415,13 @@
     },
     {
       "path": "frontend/package-lock.json",
-      "bytes": 64005,
-      "sha256": "1d6a19d5865d27923023a3cce865bcc0d05e99e33ad4bce152cb246c72a847c3"
+      "bytes": 64759,
+      "sha256": "faae05ff692a80a1964a2c5c63c76699e9a28913a8c0f5dc668f463cbf263a51"
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2567,
-      "sha256": "a0fd876ae9e4710a16f6d76d287b06936732ff6a1f860f59cf47c88f4b944757"
+      "bytes": 2876,
+      "sha256": "57268451c729cda2d56b330883bcf316efac8722caaba46a3c01a3782d6bb6dc"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -6362,6 +6462,11 @@
       "path": "frontend/scripts/test-chart-readout.mjs",
       "bytes": 6820,
       "sha256": "cfc5fb93f2888eda0f48b103b88b3b3f443564e2bad0fa1d0a8a4fc72e3c8bf2"
+    },
+    {
+      "path": "frontend/scripts/test-cogging-view.mjs",
+      "bytes": 5760,
+      "sha256": "34a6129d2ae785e210b41756f9e6f513f72739e5550b544732fdee6c0b2074da"
     },
     {
       "path": "frontend/scripts/test-custom-steel.mjs",
@@ -6480,18 +6585,18 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 162323,
-      "sha256": "013d95f5f87f5ad3e05f75a31f067498eddcdc0e2b3ade716f0eb0adfa91896c"
+      "bytes": 162874,
+      "sha256": "5d666f562ac358eabb64ad25aeeb3082bb51eebf9b527d85f69a0ce8e9c7da48"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
-      "bytes": 4732,
-      "sha256": "17f616ef46903af546d67cade9d6cdf16e85ea89e3f0f526b84649bcf97e669c"
+      "bytes": 6119,
+      "sha256": "3be2fd8ad488bafda2a21f00bff1406d7e03bdde2d4c448c21f40f6ce1a6bad2"
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
-      "bytes": 4019,
-      "sha256": "82b7dd8a6c043530ed24f15b6688760176c82ecf621e6d73597efbed22b10350"
+      "bytes": 4537,
+      "sha256": "b04e3090e7b18ebaca1cd60080a8ed031c52c2bad01a19263d27340ced0f79b6"
     },
     {
       "path": "frontend/scripts/test-tooth-coil-repair.mjs",
@@ -6890,8 +6995,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 72126,
-      "sha256": "e35089fa583ddeac8650034cb01e3f5f95ed586ba5b8d42881dfd89e070b2060"
+      "bytes": 73928,
+      "sha256": "61c934f3fb8eb702d3770f7727f6da56a2fb2df08adffca3245acc8c3bbf0547"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -6899,9 +7004,14 @@
       "sha256": "004b91fbcb617265355f6d6c43196bd3e3b81e552a9dabc8bc8c8f3b240239c9"
     },
     {
+      "path": "frontend/src/public/CoggingCard.tsx",
+      "bytes": 5159,
+      "sha256": "6f6b3964e5367564b684f864c746c5ed3ba884ae248d9eccc2e4605ae85087a1"
+    },
+    {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 231858,
-      "sha256": "730ba0b5502f1d57416b66c2ea933728b0fd076c3e064a04bc7a99251b736669"
+      "bytes": 240349,
+      "sha256": "a3917e013c6b0aa7a0ecff25d08260b4daea5049988212ac34d1570da3b55691"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -6920,13 +7030,13 @@
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
-      "bytes": 14887,
-      "sha256": "42aa135f1f441f419ae1f61978db7be6a572e6b7a57d22baafe82d70421440d0"
+      "bytes": 15876,
+      "sha256": "92dd7d1b6263f4ca160838cc3db26d634f0da0e04a7e82a52f431aca746f4e38"
     },
     {
       "path": "frontend/src/public/LossesCard.tsx",
-      "bytes": 21228,
-      "sha256": "62747afa4798530f8126dc14a5d361a7ea90cd76a356c1972bc9327d47a11724"
+      "bytes": 22151,
+      "sha256": "4431bbbc2059a1cc74508525679e3bcd1e36c42989a92a5dcb84be0e9c2b273a"
     },
     {
       "path": "frontend/src/public/MaterialWorkspace.tsx",
@@ -6950,8 +7060,8 @@
     },
     {
       "path": "frontend/src/public/PerformancePanel.tsx",
-      "bytes": 46628,
-      "sha256": "bd31d9304400f7e65563cdf17a1b44c883ecac308dbd780177473209610ecce4"
+      "bytes": 30541,
+      "sha256": "7db8ac9f05457b49408af13668c0d7a9b49489df743c5c2a2ee22b178fd822f9"
     },
     {
       "path": "frontend/src/public/Popover.tsx",
@@ -6970,8 +7080,8 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 23331,
-      "sha256": "297514b48d88e50c28071c384554826844c96262589e300089a8b0720f3001f3"
+      "bytes": 24919,
+      "sha256": "72ad3eace275fb12786a28aa2d14909e8d57a9804d3310ade03ac149edb420e2"
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
@@ -6980,8 +7090,8 @@
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
-      "bytes": 9141,
-      "sha256": "b53742e5de586869eca20c0800863014bfea1c8b072ab20511e7c1cc47b1389f"
+      "bytes": 10597,
+      "sha256": "2bcb1dfcd914cbf24aaf94e7870e2c098ebc22ec8a686f29ab0de3858e5e40d0"
     },
     {
       "path": "frontend/src/public/RpmField.tsx",
@@ -7015,8 +7125,8 @@
     },
     {
       "path": "frontend/src/public/api.ts",
-      "bytes": 13598,
-      "sha256": "2e8150dac73003888daddc1bebee08a80ca740e6b28e2437a9ed5226f5917fbc"
+      "bytes": 13775,
+      "sha256": "59ed4057eaf491bfec34953306457d0de426a5696f92e2a92f9af817a6cebaa8"
     },
     {
       "path": "frontend/src/public/backendMonitor.ts",
@@ -7044,6 +7154,11 @@
       "sha256": "b64be454f36cd11cd6d1cc8508ae239ff0c2cd621908ac21fa99eef25cdf998e"
     },
     {
+      "path": "frontend/src/public/coggingView.ts",
+      "bytes": 7521,
+      "sha256": "654dd103b86f02d17572c3f006b183ca6ac17e0363c43d7c09319fe57c532b16"
+    },
+    {
       "path": "frontend/src/public/coil3d.ts",
       "bytes": 16694,
       "sha256": "a3b43d36585905c43d9915eded59e94120c9f3a32ef6d919ac0d7ca26d41be86"
@@ -7065,8 +7180,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "bytes": 14494,
-      "sha256": "63276f7513fd2c2177cc8b5399f16577b92b4058ce2fe6accd3c047c19664e47"
+      "bytes": 15225,
+      "sha256": "93f7146e03e4be7710e38c01dd05e602f0c508b93db7df9c101b8b00f62312bb"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -7295,8 +7410,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 22059,
-      "sha256": "2a3ec80af5d80878687f4aa7365365c238eb19a64f4216421a637e31006971b6"
+      "bytes": 23719,
+      "sha256": "0024f25b19c0b0289c2d2a139c52fba555912003afe257f9ada051d4738d4837"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -7325,13 +7440,13 @@
     },
     {
       "path": "frontend/src/public/outputStatus.ts",
-      "bytes": 3357,
-      "sha256": "f5c589ff62270f7fbfa860dc2d05de600fdc8f265987585495a15eebeefe46c0"
+      "bytes": 3629,
+      "sha256": "8027882f9a5bd34e0bd2bf40f94cf82a5e9d700b001f5543a3e12ab0c2af6899"
     },
     {
       "path": "frontend/src/public/performance.ts",
-      "bytes": 8677,
-      "sha256": "48f367775b69d81a7095672676c391755f00016f8b8e31ec61cb57ec6f582fe6"
+      "bytes": 9183,
+      "sha256": "f7606ecfbbd50c1aa43eed0acc126aa3cda9574e88ecec70a8cbf2c27f35d544"
     },
     {
       "path": "frontend/src/public/performanceView.ts",
@@ -7350,8 +7465,8 @@
     },
     {
       "path": "frontend/src/public/publicRequest.ts",
-      "bytes": 631,
-      "sha256": "0ea05929993a5cdd38a981bd45d7684d97bf01c6aa6579d29e06cfec88f51caf"
+      "bytes": 1336,
+      "sha256": "a97820d23dc70952293b181fad9cc77e61be8f8e5f53645f7c187df0bcb92f4f"
     },
     {
       "path": "frontend/src/public/pyleecanReferenceNotice.ts",
@@ -7365,23 +7480,23 @@
     },
     {
       "path": "frontend/src/public/resultMetrics.ts",
-      "bytes": 6020,
-      "sha256": "9d1ebe35d11099869e94fc3832620487adcf576a4e234c6499980cbd9820a361"
+      "bytes": 7323,
+      "sha256": "1801ba7639820b750d0d7b461ce64912ae6fddda1b0ad09e1b1d787e88e6c452"
     },
     {
       "path": "frontend/src/public/solvePlan.ts",
-      "bytes": 2018,
-      "sha256": "86b49e2085d08edd7c34fdb2eeef5a22ddb96573d4732ed4141df635e1b2c211"
+      "bytes": 2053,
+      "sha256": "c0a2a482e97f1c0320f779aa8c19509e09211318f805dfdfd4f1766726c7aa5e"
     },
     {
       "path": "frontend/src/public/solveProgress.ts",
-      "bytes": 3720,
-      "sha256": "31d1a0334bea94877f5fc341895d847b4688b09f318a4f5a7eebe7e6d5c98847"
+      "bytes": 3938,
+      "sha256": "ad194cfb088b70ca940f3127b0f4dbcb92e3ebe06114f173de6365f0be9b5fee"
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 285467,
-      "sha256": "638c428bb820019c9bedb9f7e10e7b196fafe3d42fddd36e33eca659113fba0c"
+      "bytes": 289866,
+      "sha256": "5e42a8719ace552b27a0167e5151e0d3590d061cd62e17534a30ebc20b3ed49a"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7435,13 +7550,13 @@
     },
     {
       "path": "frontend/tests/performance-regressions.ts",
-      "bytes": 5332,
-      "sha256": "79e4b89c034b0159fe9b43d28b339254facb49dd8bd4a4bd82070f991b6d112a"
+      "bytes": 587,
+      "sha256": "a2f87411ca8e3e8f089063204e63d8ed924fba5bfc50400b5cfdda8bb0d8d96d"
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 28347,
-      "sha256": "9647590bef1f52248bc1aef16a69955fcdceb3da5433be759f87e6e1da2f62af"
+      "bytes": 55379,
+      "sha256": "9983d7a39995f79cc8a877eac45c8b9d5eaa22b67808d4d6e35d634e1fc6bcfe"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -7784,6 +7899,11 @@
       "sha256": "0914644d93f05fa5738534c518e2ecffeca2d129d8a38fbe8b8df2f65c695b86"
     },
     {
+      "path": "tests/fixtures/cogging_example_8p12s.json",
+      "bytes": 3237,
+      "sha256": "a9512a378158e5f5d0303298542c3c3189b2ad04b894a04be5752d87de37165a"
+    },
+    {
       "path": "tests/fixtures/phase_drive_winding_layouts.json",
       "bytes": 15760,
       "sha256": "f9b0985ee0f82803a8953408d74ea24b844e1f3efcf95796645a5c03c8d27a0c"
@@ -7830,8 +7950,8 @@
     },
     {
       "path": "tests/test_benchmark_command.py",
-      "bytes": 19469,
-      "sha256": "dda36c384790900459b675fa2a8cba023ec86cb71b0b80e3a0498eb190ab8853"
+      "bytes": 20436,
+      "sha256": "89d749111133f686f0f218959a62cdca612f9988e997566c7c69d5f1298bf04a"
     },
     {
       "path": "tests/test_benchmark_runtime.py",
@@ -7854,6 +7974,16 @@
       "sha256": "4651ca1a467685c81205ab3fd49e482d0a07e61fd34e437ea3b210fcc6cc81e5"
     },
     {
+      "path": "tests/test_cogging.py",
+      "bytes": 27342,
+      "sha256": "7b4b00a36e043cc721e96c4a0f9031415d6bcba5d61116f673f9d5e4eb1aa42b"
+    },
+    {
+      "path": "tests/test_cogging_phase_e.py",
+      "bytes": 16055,
+      "sha256": "26baddd1dcac8198082a169cd036ac12a41d0e1b24b4f6acdf41871525f2f268"
+    },
+    {
       "path": "tests/test_dq_flux_linkage.py",
       "bytes": 6500,
       "sha256": "2191883eaafa37ca765a8287b9ba29d633c19cc7b7e16795612aecf9c24495e5"
@@ -7865,8 +7995,8 @@
     },
     {
       "path": "tests/test_experimental_holem50.py",
-      "bytes": 9336,
-      "sha256": "b4ba26815af6db48f8ddf34ddfaea27cc0c906e4ad595ec57909471e24fc8c14"
+      "bytes": 9315,
+      "sha256": "70d6a99d99fa8a41439115e0a7231cb25eaece32f35df77f4daef5d041dc842c"
     },
     {
       "path": "tests/test_experimental_rotor_switch.py",
@@ -8025,8 +8155,8 @@
     },
     {
       "path": "tests/test_output_status.py",
-      "bytes": 12475,
-      "sha256": "d5211ac4829ad265bd0bdd6f2d6cc22bdc16b33b9fb83c10bf25142871790bd4"
+      "bytes": 13122,
+      "sha256": "1177cbfbd745675bebf94e5d9da21da43c40198cf3584cc73e273133adbbed7c"
     },
     {
       "path": "tests/test_payload_reuse.py",
@@ -8040,8 +8170,8 @@
     },
     {
       "path": "tests/test_performance_report.py",
-      "bytes": 8477,
-      "sha256": "395dd0668745894b6c11e891fb57d5aaf62feea462236282c9128482461e7d80"
+      "bytes": 9398,
+      "sha256": "bd94c9037168d3787e8f093c7c6f4b131d4df48fe04aa4bb1469dbfffbbf5406"
     },
     {
       "path": "tests/test_performance_routes.py",
@@ -8065,8 +8195,8 @@
     },
     {
       "path": "tests/test_prius_benchmark_collection.py",
-      "bytes": 15849,
-      "sha256": "fc9bb2e82de96828dfa30983f9ec5463cecd7d822624caca1971c73dae45d85c"
+      "bytes": 16600,
+      "sha256": "5cd9c96a96722d2417bb9e455502a92337956b24cd3fc327724dea3a6547c13d"
     },
     {
       "path": "tests/test_prius_convergence_audit.py",
@@ -8080,8 +8210,8 @@
     },
     {
       "path": "tests/test_public_candidate.py",
-      "bytes": 20447,
-      "sha256": "e964ef9dda5700b13e36dc2d717a110f81a4993724bffb3bfa3e83a5117648f1"
+      "bytes": 20410,
+      "sha256": "bf6d19e482656c861f24125f72bbe175c5db121ec719d3c47069df8f0d22a0b4"
     },
     {
       "path": "tests/test_public_field_playback.py",
@@ -8095,8 +8225,8 @@
     },
     {
       "path": "tests/test_public_report_exports.py",
-      "bytes": 32847,
-      "sha256": "5b509c42418deffd3e93463b16a214b550056be114dd1e4a292e8db7c1b8393a"
+      "bytes": 32867,
+      "sha256": "4c11aa55c6b3a36d7ed70e369150c76fc607209259386e9d18a28446d4e183ab"
     },
     {
       "path": "tests/test_public_security.py",
@@ -8140,8 +8270,8 @@
     },
     {
       "path": "tests/test_pyleecan_reference_fixture.py",
-      "bytes": 18853,
-      "sha256": "07e7d8c2b4e4534c5aeadc2f458cd1ee65226c417436d9c642d12fda7091d8ea"
+      "bytes": 20555,
+      "sha256": "56e287124967014fefa05c0688b62e7ccc2019906c4b378536140f9b9b49422c"
     },
     {
       "path": "tests/test_pyleecan_tutorial.py",
@@ -8150,8 +8280,8 @@
     },
     {
       "path": "tests/test_qualification.py",
-      "bytes": 19122,
-      "sha256": "28a5860e98119f0061f116c3f3df3fcdba308c2b69daea5d2c950a6a41c4bf2b"
+      "bytes": 19470,
+      "sha256": "fade215ce6a69ea417a104539619e00dcd0a0abc6262addb4a5c1912953eb852"
     },
     {
       "path": "tests/test_reference_recovery.py",
@@ -8165,8 +8295,8 @@
     },
     {
       "path": "tests/test_release_qualification.py",
-      "bytes": 8899,
-      "sha256": "98d206fd08ef68821d9f1e4fdad514303c43c4ff0ca13c2cd46fed9b52012e94"
+      "bytes": 10572,
+      "sha256": "ecc7f190e4a7289b4df72f9488b9043c554d8cfcbbcd5553f443b0140ebf4825"
     },
     {
       "path": "tests/test_release_tools.py",
@@ -8205,8 +8335,8 @@
     },
     {
       "path": "tests/test_solve_workspace.py",
-      "bytes": 22787,
-      "sha256": "21be4b7252659f59d09e1f6be898f6b279a3acd2d14ec79ad75ef77711304419"
+      "bytes": 24253,
+      "sha256": "e415aef5f58ea4a342d69bd8a7df673008a0b19d8d77ea059d9462338ddca0be"
     },
     {
       "path": "tests/test_sweep_planning.py",
@@ -8250,8 +8380,8 @@
     },
     {
       "path": "tools/benchmark_prius.py",
-      "bytes": 13019,
-      "sha256": "ead3ec38f13ef09e380a545a904efb9f38354d55d85735bf4c25726c40bc76cc"
+      "bytes": 13926,
+      "sha256": "1345c63f4868e05da249d7f0a6d6d27d0f368a7eca7a0a125af7f74ffb644d20"
     },
     {
       "path": "tools/benchmark_suite/external.py",
@@ -8270,8 +8400,8 @@
     },
     {
       "path": "tools/build_benchmark_record.py",
-      "bytes": 9313,
-      "sha256": "bb5afa136f6bd542d862429630731ffbe9b20c57f044861e2b782a3bbac298c5"
+      "bytes": 9918,
+      "sha256": "5b9366e38b4ddd5c3473fe2491964c257954947d1ee1c081c308747bff07d6ab"
     },
     {
       "path": "tools/compare_pyleecan_bemf.py",
@@ -8415,8 +8545,8 @@
     },
     {
       "path": "tools/release/qualification.py",
-      "bytes": 12136,
-      "sha256": "ee23f74ab423e766ad07283158bb233735ac4dbf175880e00ccc59ea915651bf"
+      "bytes": 12245,
+      "sha256": "8a441224262935bd9985bacfb66ae8575f6759a743e8565348485bd13595f929"
     },
     {
       "path": "tools/release/release_notes.py",
@@ -8480,8 +8610,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 22052,
-      "sha256": "9a212fc9682100b1f5fd402f1d4369d507cf3abb51084afe682b6122287f3a66"
+      "bytes": 24083,
+      "sha256": "0151bd392f6a6d3221f45158b64a57e464cc25172b6c132462a08c0bdc63364f"
     },
     {
       "path": "benchmarks/reference-adapters/windows-femm42-v3-20261102/README.md",
@@ -10575,13 +10705,13 @@
     },
     {
       "path": "tests/test_candidate_reference_review.py",
-      "bytes": 6290,
-      "sha256": "ead64e8f6ce091c2f671cef5e4232fc8ff95f82d5760f07dc573da794df7f66a"
+      "bytes": 9282,
+      "sha256": "9b5f2769cb5bd71bf83fd3c951e917c0fbb6f97697453a11a1373c624358caa4"
     },
     {
       "path": "tools/qualify_benchmark_candidate.py",
-      "bytes": 5356,
-      "sha256": "4799c9ab299e064d94e1ac943ec4d1d27e1a00550431c2be4db79a097da0f12c"
+      "bytes": 6326,
+      "sha256": "54da9cfad3d4733478179db325b3766207a307a712089c75aa16ae8cf367a861"
     },
     {
       "path": "tools/review_protocol16_references.py",
@@ -11429,6 +11559,501 @@
       "sha256": "40d7ef497d7e6cc12a814495cfe74daf88af323475559f37ed47d279b7db1d71"
     },
     {
+      "path": "docs/benchmarks/cogging-windows-20261103/README.md",
+      "bytes": 8209,
+      "sha256": "cd920cdf19f8826bdaf58facdb3c7eeb9fd69979c36b4d06501d010b850baa71"
+    },
+    {
+      "path": "docs/benchmarks/cogging-windows-20261103/cogging-femm-vs-magneto2d.pdf",
+      "bytes": 278160,
+      "sha256": "4e671709ed1afff21c56116c89cf9aef7b6af085ae42e9c81fa9863327bf677d"
+    },
+    {
+      "path": "docs/benchmarks/cogging-windows-20261103/native-mesh-convergence.pdf",
+      "bytes": 142077,
+      "sha256": "f91d57677b8454c0b340123364c1941ec86ff11a3109dd47cf8a100222f04eff"
+    },
+    {
+      "path": "docs/benchmarks/cogging-windows-20261103/results.json",
+      "bytes": 41230,
+      "sha256": "938845c8316b1fd7421e26ef13801d44f6b5530ad55cc01985e43e003575e737"
+    },
+    {
+      "path": "docs/benchmarks/cogging-windows-20261103/sha256.json",
+      "bytes": 464,
+      "sha256": "928d04cbfbe9f9d2dc5ac2295837294d7121e01819f5d1d7fa72da0b52fa1416"
+    },
+    {
+      "path": "docs/benchmarks/cogging-windows-20261103/waveforms.json",
+      "bytes": 32600,
+      "sha256": "41710e456e92dec3d6e3da847b8aaca021299c7bb58a95386abd1fc03f205354"
+    },
+    {
+      "path": "frontend/scripts/test-analysis-options.mjs",
+      "bytes": 4577,
+      "sha256": "810026835bf38824b57de8eb5c1114e9bf0e2a1410ac77a8ad0bccd66c6850be"
+    },
+    {
+      "path": "frontend/src/public/AnalysisSelector.tsx",
+      "bytes": 3635,
+      "sha256": "d3ab31cdf1bd30002f84abed8cd587c409702a300ad5d849ed46be30654bb2d0"
+    },
+    {
+      "path": "frontend/src/public/analysisOptions.ts",
+      "bytes": 2803,
+      "sha256": "a02984fc068ddc982e016e6fef6eab809b3953c8f2018d95a0b0d110e613e36b"
+    },
+    {
+      "path": "tests/test_analysis_options.py",
+      "bytes": 11246,
+      "sha256": "bd37a808c180b44ae2635fa20d59b2f139f8765a6d9e8ea0562ae99d6cd5f0a9"
+    },
+    {
+      "path": "backend/selected_analyses.py",
+      "bytes": 5399,
+      "sha256": "da1867335ffd642f2d136c25243687e2e64ded0b6d5b3b548862760c74e0ebb0"
+    },
+    {
+      "path": "frontend/src/public/TorqueSpeedSettings.tsx",
+      "bytes": 4676,
+      "sha256": "360eae6005c18e22625ba7e5e8b8202062d6130b27c50004db626b1e1abf1d42"
+    },
+    {
+      "path": "frontend/src/public/torqueSpeedAnalysis.ts",
+      "bytes": 1964,
+      "sha256": "05688f59d7b4fcc1b309e20e70b3750467d50d0d1a5531fa8c903622bb2001fa"
+    },
+    {
+      "path": "tests/test_torque_speed_analysis.py",
+      "bytes": 14332,
+      "sha256": "356a89d420b4c85bc290e7faa8c6eeb56dd14e850a8836ebc80e5b94e133283f"
+    },
+    {
+      "path": "frontend/scripts/test-run-comparison.mjs",
+      "bytes": 1573,
+      "sha256": "34e6997c11ec47dd452e2a331716624cf1b5534ca11a509b86028dd676703f64"
+    },
+    {
+      "path": "frontend/src/public/runComparison.ts",
+      "bytes": 1070,
+      "sha256": "bc2a4d28e54aa0e8a70a330611cf5231f063e6dd090a2f31bcb2f8a5a76e9768"
+    },
+    {
+      "path": "backend/report_numbers.py",
+      "bytes": 916,
+      "sha256": "05b3f7913ac0afcee4f5d415ce5ee977873595d132e3cfd49f7b789d8d535ce0"
+    },
+    {
+      "path": "frontend/playwright.performance.config.ts",
+      "bytes": 2661,
+      "sha256": "e10e23f29663b51604ff76cacafdd2993f4af5e5722764b220c28b0aaf94f3dc"
+    },
+    {
+      "path": "frontend/tests/performance-acceptance.spec.ts",
+      "bytes": 16687,
+      "sha256": "ff22f123733e1688fc5297c9248d4475d1363da6e0b8ac81da8ce9a4943bae8e"
+    },
+    {
+      "path": "tools/check_performance_acceptance.py",
+      "bytes": 20497,
+      "sha256": "595330c53eac5723906ff9b50270fb0c814158cd838dc36869529b0d359f3761"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/README.md",
+      "bytes": 13072,
+      "sha256": "d0dd36ff5dbb2e94b5c151a5c49d368305122cdabe2f22b8b6863f8abe9a0ac3"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/request.json",
+      "bytes": 2586,
+      "sha256": "8f2e21ad46e5089bfc0356401c2e54973ad98bee8c1a8cdbc0612d1c318369a7"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/export-check.json",
+      "bytes": 2614,
+      "sha256": "fd1d87162c2a651fa49438b1a576d165dd18bdba9f1f4ac71a51ec12e18c109e"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/recheck-environment.json",
+      "bytes": 805,
+      "sha256": "f182c84b7a6d4c1cc55cd7814464703622700c566ad5170483b7463c4bab3969"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/timing.json",
+      "bytes": 606,
+      "sha256": "8f8f0997082f52620641eeb178d750e4a55996cd2b3f967074197374cda53fd6"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/torque-efficiency.png",
+      "bytes": 68201,
+      "sha256": "e484826cdcb6cae6699bedfaca6c36584d0d7fc34f90cedefc732413e56ab0dd"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/map-progress.json",
+      "bytes": 18741,
+      "sha256": "03fd96a8beb0b9601fda7c41ada65c9b359b32dcad6abbe68a2fc6c653530902"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/stream-errors.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/browser-check.json",
+      "bytes": 2137,
+      "sha256": "60fb2e6e2221ec3feba4c896a6fde19ab4ee553feadc1a6eeb31bda802725043"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/recheck.json",
+      "bytes": 284,
+      "sha256": "38a2040becb619c98a140f03cf262a27b7ea752961ba825f7f0a9523d61bc07c"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/analysis.json",
+      "bytes": 272359,
+      "sha256": "360ec53ffe9d785bbde8b22dfa72724899971ed861dc05c8fbbb84f2ba985233"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/performance.pdf",
+      "bytes": 26819,
+      "sha256": "5f775b1b4b53f8655bbb54ebe60e2d8ca97c8e4bc80394fe083491553959dde5"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/environment.json",
+      "bytes": 759,
+      "sha256": "31b516a404738537b42c5bf8091912bef4e6ed07b6650289bb0498173b16e904"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/recheck-request.json",
+      "bytes": 2586,
+      "sha256": "8f2e21ad46e5089bfc0356401c2e54973ad98bee8c1a8cdbc0612d1c318369a7"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/request.json",
+      "bytes": 2606,
+      "sha256": "1195b52b5ca6cb6a3138091e400a95868b455f2ce6e9224b587ebd7d116feed9"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/timing.json",
+      "bytes": 602,
+      "sha256": "b9109241360a90ace1ad653c69cb5b8d51cd9fa6ca0c5b17fbc51cf433daaf3a"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/torque-efficiency.png",
+      "bytes": 67602,
+      "sha256": "3ebf077d36083cdd8a3ea34c3789fcdc964833999f0e5b14082664476bc025c8"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/map-progress.json",
+      "bytes": 18804,
+      "sha256": "9c33cece30ec66abc451c953c5639b180240d8564c356c434b2872c46a78bfa6"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/stream-errors.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/analysis.json",
+      "bytes": 268782,
+      "sha256": "cb5dc993c2851ffdd1cad26f92f7307f67d40014e43757096d9cf45538b161b2"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/environment.json",
+      "bytes": 840,
+      "sha256": "084e6975485f4139a4e3d44d99af6e14da1cbac5b753efc073cae48ec74eea5d"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/request.json",
+      "bytes": 2610,
+      "sha256": "e0b7058a1bde588e0aa3d68783d9fc56f85a32d98395a871bd589686947947df"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/timing.json",
+      "bytes": 618,
+      "sha256": "d38ae43e0cf9a3599593648d22064bf572cb6db02fea0e67b0524683ed4cce0d"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/torque-efficiency.png",
+      "bytes": 72403,
+      "sha256": "864e4e8e873f339cd2a815d1895b8d23d8a708fbd2e0d5bda6222514a40abea5"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/map-progress.json",
+      "bytes": 18805,
+      "sha256": "e153507f85ab395e601ba3563b77c8078d2e868d6b33f9adb2e546341f2dda1d"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/stream-errors.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/analysis.json",
+      "bytes": 263092,
+      "sha256": "47b69e40e8d3c7bb7b519bcee3b7487cdd32675b3c5ee47457fa32c00537cd7e"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/environment.json",
+      "bytes": 856,
+      "sha256": "e3875837a33e14521c64ba5164e658408a1a50748681734c8f346b400dbf4de8"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/request.json",
+      "bytes": 2586,
+      "sha256": "4d29a397cd5d2983770d7aac23ca094b72fc6a52194491118f3623003ce6da28"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/timing.json",
+      "bytes": 594,
+      "sha256": "110c5ce45b7bae0ff3d5c9c702ae0b22d3bcee4d4d6bf41b106673c2a0e97825"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/torque-efficiency.png",
+      "bytes": 70918,
+      "sha256": "f3dc291ce4f0c1cc88c0c2a4016db52f5e42a192390bfcb447d54ca769c61f03"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/map-progress.json",
+      "bytes": 18784,
+      "sha256": "5a28b3699bbfcb1310ae6e56a740a2c43df88206025463d0efa99fdaa8107b0f"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/stream-errors.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/analysis.json",
+      "bytes": 272333,
+      "sha256": "667cc86c781e62024110a8bdad9ef0bcc037e16f5bba7337fb46ab4a6ed1c3d2"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/environment.json",
+      "bytes": 856,
+      "sha256": "bb73bd69b102763b0aecf215c2522c261b80cbcdffbe50925657f72493066158"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/request.json",
+      "bytes": 2542,
+      "sha256": "bcf5040b18c1ec28285e15b4465b4c7235b8654235d9562075efe415c6d6bbad"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/timing.json",
+      "bytes": 592,
+      "sha256": "99c11e2a87317e2188d879f0dc53a051b96348c2883910d061e8eb9f9df1cf03"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/torque-efficiency.png",
+      "bytes": 75785,
+      "sha256": "f306644f288f89a154f3ec6eae7da24a937830aa07bddd1b8c07a07fc3048fa8"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/map-progress.json",
+      "bytes": 18597,
+      "sha256": "6e72b79e895b0bad74383b821a4280be6fba6d57d534fe3a2712d4e3be377ef1"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/stream-errors.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/analysis.json",
+      "bytes": 238476,
+      "sha256": "fb2f8a5684df2eabb02cb903f96d8e56e94a6d7a95bc7bd9dc0769a03b5c04dd"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/environment.json",
+      "bytes": 840,
+      "sha256": "b1a73ffcd149cd89f70902765333991d71df97a8177c8e77bc2f8ad23df7acc2"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/export-check.json",
+      "bytes": 2614,
+      "sha256": "d87c039da436e3a233f9022fc419079a024342cdbe1e0334f031f95478edfbf5"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/recheck-environment.json",
+      "bytes": 904,
+      "sha256": "8e3345fde3f1a547fd8fd46e817f80046e073611c1073b397fca6aeecfdf5760"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/browser-check.json",
+      "bytes": 2155,
+      "sha256": "4e60addaea231b209346339e8b853c7eb7939b38c4d18ae548eb07de1c2246ba"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/recheck.json",
+      "bytes": 284,
+      "sha256": "4f168640a87a90d89b4aa45cec2d5b13f8f25aa1ee82cb9408d57fbc346c60f8"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/performance.pdf",
+      "bytes": 26357,
+      "sha256": "1b0144192460ab9401a9d54af441b9db2d913890271f1e0c3213c4a1bda42202"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/recheck-request.json",
+      "bytes": 2606,
+      "sha256": "94f1804b0165fda574e7d7440f7ab8760c00eb2d706507841b3eb651134b1fa4"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/export-check.json",
+      "bytes": 2614,
+      "sha256": "a38460d8462b24d489eb794c213cba8d861a6def513c780310f39d9c2cc7527f"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/recheck-environment.json",
+      "bytes": 904,
+      "sha256": "af2b3c86c8e04856ac1fbe90275a3158eacfc5552daf7682cf2338cad9716886"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/browser-check.json",
+      "bytes": 2155,
+      "sha256": "6c89306e5ce9c3e6dc59b6bc275d3f5b0e01d2dea267af6ab6c640af68dee7f8"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/recheck.json",
+      "bytes": 284,
+      "sha256": "68c66b8e01c874e7e85fda2b9381fab60458332237ac31ba3aee1d8cce40c780"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/performance.pdf",
+      "bytes": 26280,
+      "sha256": "ebf2e8edc1c897181959d4c278ac65d662431b93ccfffa520f7e490cf5c3cc7a"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/recheck-request.json",
+      "bytes": 2610,
+      "sha256": "e0b7058a1bde588e0aa3d68783d9fc56f85a32d98395a871bd589686947947df"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/export-check.json",
+      "bytes": 2614,
+      "sha256": "a9d36d8815e405dc527a378be527b5d81782b34453caec5f24c9a740ef16f948"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/recheck-environment.json",
+      "bytes": 904,
+      "sha256": "1b9bbb991b3fa753c8b423a3d3800d38ac425fe223c82568996891d2ef5e3a45"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/browser-check.json",
+      "bytes": 2137,
+      "sha256": "b5b7ab7e4140297ffe9dafe7d48c0674ea8e494927fb809b989ffe705e599cbf"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/recheck.json",
+      "bytes": 284,
+      "sha256": "6be803115645bc5883269ea247b5cbc03af0cc79764138cea9c5ceefa72b7f10"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/performance.pdf",
+      "bytes": 26843,
+      "sha256": "2553e12f63c9a1b17e585ba1f4cb87fb7c54131df17d0bf87bb51c762ef07bd4"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/recheck-request.json",
+      "bytes": 2586,
+      "sha256": "4d29a397cd5d2983770d7aac23ca094b72fc6a52194491118f3623003ce6da28"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/export-check.json",
+      "bytes": 2613,
+      "sha256": "6ba9c7eecbe86a0fea436c7525b16bf5e2a7b9237c50905cfbe91cb1d051796c"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/recheck-environment.json",
+      "bytes": 904,
+      "sha256": "39ee512b21eca30052e649f40253a46458f828f31ed9805edeec819df2e55641"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/browser-check.json",
+      "bytes": 2167,
+      "sha256": "97921a41e7f0fa903a81d1537ec7aa195afe6e52519bc918f8f24e3b2d09746f"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/recheck.json",
+      "bytes": 284,
+      "sha256": "bbdbeece746f5944052cef132abe99269e62bd5521ad417ac76f4f5d61f3a57a"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/performance.pdf",
+      "bytes": 23772,
+      "sha256": "fb16f5b4283358c153791f31327f6b45319282cad37e9b0f62da681f8ce68d61"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/recheck-request.json",
+      "bytes": 2542,
+      "sha256": "98c79e1483a723392cd31d1cd15e7485931fdadb3d6f688eee78878e94b6a3b4"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/request.json",
+      "bytes": 2593,
+      "sha256": "88d5ab27cecc3520d78e93c4751114a6c79ab80d22ae3cd7fd6daa3a92e5055c"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/export-check.json",
+      "bytes": 2614,
+      "sha256": "46c4b4a99872275ab0ca458121bcec2bcaaa55d8416666827ca7b82803364933"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/recheck-environment.json",
+      "bytes": 904,
+      "sha256": "718bcf3eaba4b0e565c90714168f16a23b79d2f468ab260800458f0d77fe22cd"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/timing.json",
+      "bytes": 595,
+      "sha256": "eb65a2a440d9ee2ef216d376aea3b42a5da8a6484cdcbf6d2cd31d8cb403d842"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/torque-efficiency.png",
+      "bytes": 68732,
+      "sha256": "15a6ce0d6782dd6f3db161caa8c4b2ad7156f910085f04e305f3907925ff13e8"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/map-progress.json",
+      "bytes": 18779,
+      "sha256": "dc39f546d90072faa2b401c7897d3d83d8984a0d746821fda5b8961b59ad9fa1"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/stream-errors.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/browser-check.json",
+      "bytes": 2140,
+      "sha256": "007d12881ce4ac0123167283cda1ee1382fc5179e062391909e0d4470fce15d8"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/recheck.json",
+      "bytes": 284,
+      "sha256": "bd97ae990b8b93acae786e191dc1ab2c4db806ba20059b7444f2cc42b1dfb5b7"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/analysis.json",
+      "bytes": 273497,
+      "sha256": "eeadda079de0711eae2ad77615dc60e69a791c68b31b8aee2554f3af2e40999b"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/performance.pdf",
+      "bytes": 26954,
+      "sha256": "a096936e81da8fadac03640f1f71dd4bb92fc0229f28d288a75743c2a8b86185"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/environment.json",
+      "bytes": 856,
+      "sha256": "9923ac352634c8566ef74e7a7a9ff46ea52a2b688d1c76f1c915201fd52d3a8f"
+    },
+    {
+      "path": "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/recheck-request.json",
+      "bytes": 2593,
+      "sha256": "88d5ab27cecc3520d78e93c4751114a6c79ab80d22ae3cd7fd6daa3a92e5055c"
+    },
+    {
       "path": "backend/convergence_reporting.py",
       "bytes": 9804,
       "sha256": "9529f71230ea82b1e801d5bf391d0eff97c89d18dbab7efe1c8dd58d61ac723d"
@@ -11454,9 +12079,164 @@
       "sha256": "0c54e83310827473e8f56afddf9612787a1dd6b4d5733075e7c852a4a608610c"
     },
     {
-      "path": "backend/report_numbers.py",
-      "bytes": 916,
-      "sha256": "05b3f7913ac0afcee4f5d415ce5ee977873595d132e3cfd49f7b789d8d535ce0"
+      "path": ".github/CODEOWNERS",
+      "bytes": 1090,
+      "sha256": "911c39c01eb173cef9f9d5d4945abdefcbf3f0dd93cb3d0edb516825b65fe95d"
+    },
+    {
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "bytes": 8218,
+      "sha256": "93a995c61b2eb94ab05db1a7f711f2e51ff7378902045f4e721d23d2b88dd2fd"
+    },
+    {
+      "path": "tests/test_benchmark_shards.py",
+      "bytes": 4799,
+      "sha256": "29eb6a6bcfac2bc6d0bc105e11143b5906c1df437115ac3f00580ed17fb738dc"
+    },
+    {
+      "path": "tests/test_physics_impact.py",
+      "bytes": 5129,
+      "sha256": "57b86729a9c31e4377c7a5a3c9116c4f737c71b49c83ba5fac5c08b4f4bbb7b5"
+    },
+    {
+      "path": "tools/benchmark_archive.py",
+      "bytes": 2051,
+      "sha256": "fef8b8224cf259de6a148877a9fd712e166492582ce134ddd0e161926009f443"
+    },
+    {
+      "path": "tools/benchmark_ci.py",
+      "bytes": 4996,
+      "sha256": "a4761eafab716f3c28dc5c040925189addadd5a83b74d1555fc4fdeb9c8388c9"
+    },
+    {
+      "path": "tools/benchmark_shards.py",
+      "bytes": 2398,
+      "sha256": "a8d38b0eaa4bd2bd5cbb09ee3b4c7bf85eaccdbaabe6343375f035f2ec0ea6a9"
+    },
+    {
+      "path": "tools/join_benchmark_runs.py",
+      "bytes": 9064,
+      "sha256": "23fb056ec0c6a8bb7fb4c79bb47e0294ed8bcf865f5d924b3bc3eb418e3159f0"
+    },
+    {
+      "path": "tools/physics_impact.py",
+      "bytes": 7705,
+      "sha256": "9c178cf30c8cc49b10845d7dc9d3fff2bd8fee9d9803e54c223a50c381a8c87a"
+    },
+    {
+      "path": ".github/workflows/qualification-weekly.yml",
+      "bytes": 2205,
+      "sha256": "1b6bca141c836a6920f97f50533e30f82989aaa4a8d325daa8b9610c6015f087"
+    },
+    {
+      "path": "benchmarks/qualification-policy.json",
+      "bytes": 1074,
+      "sha256": "9b6a2e0828160590e59e43c0e87101735ad239d938af9e901e4627b57322e02b"
+    },
+    {
+      "path": "tests/test_qualification_carry.py",
+      "bytes": 7213,
+      "sha256": "dfcf5dcd43e0d73a64d96919fe567640708309156ff45e45fa2e59074c60d4de"
+    },
+    {
+      "path": "tests/test_qualification_publish.py",
+      "bytes": 3029,
+      "sha256": "eda57a6c02cf8951c20bb8f2f62f4f2ed9f02015f2824baf598700904c668fc1"
+    },
+    {
+      "path": "tools/qualification_carry.py",
+      "bytes": 15145,
+      "sha256": "c2650bbaa95656b554290b26cb62107101a0effa0f2527bbe0c5ef986aa9747d"
+    },
+    {
+      "path": "tools/qualification_publish.py",
+      "bytes": 4453,
+      "sha256": "b02a11ef080906cdf87762f1114fd458455b0ed4abb8ce654bf2b11b49cfc3cf"
+    },
+    {
+      "path": "benchmarks/records-historical/v050/macos-arm64.json",
+      "bytes": 35228,
+      "sha256": "112b1f1333772c4f77817dd581607ffa1cd6ff39a955e046a00cb39e2dcddfc1"
+    },
+    {
+      "path": "benchmarks/records-historical/v050/windows-x86_64.json",
+      "bytes": 35231,
+      "sha256": "5631fe3068de56b00a1ef4b8861964c1b09aa93b5a9afb7fd5449410e5278b0d"
+    },
+    {
+      "path": "tests/test_benchmark_download.py",
+      "bytes": 1104,
+      "sha256": "bd7bee128b38b47ecadf41fa1b0191a94926e0df535086791abb9c9c451a0331"
+    },
+    {
+      "path": "tools/download_benchmark_shards.py",
+      "bytes": 3636,
+      "sha256": "0a2c68610f175cd77f2de444a46f96e0df0ea8df3dc734c764076d088ae13a56"
+    },
+    {
+      "path": "tests/test_benchmark_repair.py",
+      "bytes": 5361,
+      "sha256": "5681ff1dfaf0a5a2e9e11de5cdba85b0e73a4395faf1c71f58e2b05dfa235389"
+    },
+    {
+      "path": "tools/repair_benchmark_shard.py",
+      "bytes": 8765,
+      "sha256": "0b5579d1270a5785728897ce31870ef0481c38e0ef8a67f1cb08d6c9642d40d4"
+    },
+    {
+      "path": "frontend/playwright.performance-harness.config.ts",
+      "bytes": 357,
+      "sha256": "97cc02ed9dc12995e2444de1a6741fc53d1626275a86a53873dfb04b296b45b1"
+    },
+    {
+      "path": "frontend/scripts/test-performance-lifecycle.mjs",
+      "bytes": 4120,
+      "sha256": "8d5a72b94e1a000fb88a9837ae21e0ac51cdb8776481b461365a886dadb34f03"
+    },
+    {
+      "path": "frontend/tests/performance-capture.ts",
+      "bytes": 1987,
+      "sha256": "8d4475b4ba343b81c9abe2dc83087f55a37936135d44e268b55bc9847c30ef58"
+    },
+    {
+      "path": "frontend/tests/performance-harness.spec.ts",
+      "bytes": 1376,
+      "sha256": "e6c104dfea109bded1fcba0a7ecc6b3f8da31547f703416e90b151bc52cd2e32"
+    },
+    {
+      "path": "frontend/tests/performance-lifecycle.ts",
+      "bytes": 741,
+      "sha256": "5af91393e38ff21a0326227a89e822942e59bd727b0c1a378a96ba0c9569a11c"
+    },
+    {
+      "path": "frontend/tests/performance-reporter.ts",
+      "bytes": 2295,
+      "sha256": "8e2a37fcbe0d7c36d54880fab0341eb0f73277a2f7cf7d05678773976801f2ab"
+    },
+    {
+      "path": "frontend/tsconfig.performance.json",
+      "bytes": 302,
+      "sha256": "50d76469fdd1d55fdaae303787618aa618a068dd77803e24fac5460feeb4ed19"
+    },
+    {
+      "path": "tests/test_performance_acceptance.py",
+      "bytes": 9340,
+      "sha256": "85ed68592fda1a1b1c1833c61c39ee12aad00143cfb34f85e057f3318319a3fd"
+    },
+    {
+      "path": "tools/regenerate_performance_csvs.py",
+      "bytes": 5202,
+      "sha256": "454cd7ae92aa020718623b1ffb09b67132e96cb8c98db68f953aeea9fd52bda3"
+    },
+    {
+      "path": "tests/test_benchmark_evidence_checksums.py",
+      "bytes": 1529,
+      "sha256": "74e87db9d4df2f446966c8c46d7ea7964ad1496ad1edbb75301e42005465c7b7"
+    },
+    {
+      "path": "tests/test_cogging_pipeline.py",
+      "bytes": 9168,
+      "sha256": "d8cc8e172b2ac9016dacde3216b32b0a75a6fedc6d21fcaaece03e74f09d5125"
     }
   ],
   "public_patches": [
@@ -30279,6 +31059,1140 @@
     {
       "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
       "path": "README.md",
+      "source_sha256": "bb5666ba13c55af8192000fe772a947e675e3a749f5a7192bec9cd458e8711a2",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/cogging.py",
+      "source_sha256": "01cbd596251aaa022226a4607730febc10cb77d5c8230841246dd03fec4e217a",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/models/__init__.py",
+      "source_sha256": "666c7c95fa74a1774b4df1cf4ffb5e8c91ba8856bafebd1c4af9ee6894197907",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/models/performance.py",
+      "source_sha256": "0074bf50d3f7d19679bc3cbae1846332513d3801a49be57c0101990e4f32a15f",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/models/result.py",
+      "source_sha256": "64622dc3817f40afb00e8c060b67fdc9350fed5b47e896281087e2f4eb51af77",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/public_policy.py",
+      "source_sha256": "2a08f237f22ac4537676b577ca15a9243ad5c4c4bc3ef3768f4228f61d30955d",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/public_report.py",
+      "source_sha256": "93315a2b0d0e0da9740a5534295e381a060871c9287d55334d09e7691e890253",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "caa4ff56502a4e3d21eb1b723a1dad7d3bfe6bf253365447ef9241b3da38b900",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/solve_estimate.py",
+      "source_sha256": "ae66f8ae4280013c0f42b8158050844b2483e7569e01fe8f377c63b8dba4a5f4",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "2bd2890324023dd635553fa38640475140e740560d3f4cc2008ab03406c17f56",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/solver/_helpers.py",
+      "source_sha256": "540bad44c3bc7b292b5c746780c79b24ee63a363bfbd2693ef82935d135a645d",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "backend/sweep_planning.py",
+      "source_sha256": "8a8173b35a32688ae86aa073537d23ba7c23781dbe9b4ecdd4aacba01213ae97",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "docs/COGGING_BENCHMARK_PROPOSAL.md",
+      "source_sha256": "6b443501c9306d580f120e6021e520624393e0e4a7b4311615a2405900f53035",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "docs/COGGING_CONVERGENCE.json",
+      "source_sha256": "d69e3499e270c5d197e1353e6ca4775404c33653042bfb3e16d159176ef10efc",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "docs/COGGING_CONVERGENCE.md",
+      "source_sha256": "4e444804520e77e33bcb1b53b9d49aae8038529c0f8acac9ed421597f580a197",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "docs/COGGING_FEMM_REQUEST.md",
+      "source_sha256": "dc1551f08672a18a4d315e619d54dee8be57a8525d1d87acdffac238dc0f4b2f",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "docs/GETTING_STARTED.md",
+      "source_sha256": "b3e7e8e623e115e8da9f01fca6b521ae5c650e9ecf05f2ee01991361780e6fe7",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "docs/MAGNETO2D.md",
+      "source_sha256": "6499d05f6dbc623d7894c3e9b657f91866aa0065b872885fff2719b43f95aa6e",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "7dc788aa4e2b00ccdbaae062013e159830be6ce585317f2a638dd7166faa6cf3",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/package.json",
+      "source_sha256": "7452d8c72f9783396811f1b308cc91fdbc6a8303d2367ae3351e178d2a010f4d",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/scripts/test-cogging-view.mjs",
+      "source_sha256": "fcee2145d3326b0c9562e9f7e9d2738c74be966b8a7b30f6b1825a9fd75c15ca",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "06e746ae2b909362f4d48904aa04806f87526643c6e17b6ede568c6c6c1efbe0",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/scripts/test-result-summary.mjs",
+      "source_sha256": "f068727fa89ba1a925f194b53a9cdd51b52b8b2c7141446d620278bab3e89c93",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "2ea06204cbec765ef2c98f1fa0e8d2d905197446766abc01437062937ca336c9",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/CoggingCard.tsx",
+      "source_sha256": "6f6b3964e5367564b684f864c746c5ed3ba884ae248d9eccc2e4605ae85087a1",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "ee30caf6e63d89ef4ef67868e72733ce72afa4ed2a7e2306a1dfab4d5ca75bad",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "source_sha256": "92bd00f85d6005bfccdd5e0d7cc7bc1fb9b4a26c7377e6d450179bdef1a95200",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "6c1fc8beaf96bb508c8b0d0fd01369accbbf99df88f739f575679107db1c39ea",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/coggingView.ts",
+      "source_sha256": "65b8f9260c82a46b6ddf477500f2b8d690fffc867f31f95e85d95f3cc9d9b1ea",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "c24e519431b400bb10834863ab2f25afb164944d68720c1e1a95cd6e8cada711",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "e78e0a79f389bde8ff40005586c4a9f10a957a230a8dc8bd15222c8d685a837f",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/outputStatus.ts",
+      "source_sha256": "33124bfe6248d37eaf361f920cf6bbbbbcc6419f5325be14fc3a756fced432a6",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/publicRequest.ts",
+      "source_sha256": "a963e7d496f605a17ebdcdc62d10f879dc13234e4cc238a27a2b076f2390e4db",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/resultMetrics.ts",
+      "source_sha256": "f9809afcc87c6ef775e355278c7daff0dd83da4730d25a384ba1449079f393e7",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "19a8a1a5d266cbc83447829888a1f1db2f7b2744b83340c206de0da1fe24ecb9",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "tests/fixtures/cogging_example_8p12s.json",
+      "source_sha256": "066320d9c9b05718051f0088904d5684d700a8cbb5577367f4af4adfd8ef264e",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "tests/test_cogging.py",
+      "source_sha256": "e62539957ec21a6ec400cfc9b80b78241956a1b5b5316df8ee0b950dd27ed8c1",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "tests/test_experimental_holem50.py",
+      "source_sha256": "70d6a99d99fa8a41439115e0a7231cb25eaece32f35df77f4daef5d041dc842c",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "tests/test_output_status.py",
+      "source_sha256": "402c8cb57f7a81f9449f0582fa638ae66e10b2d6e2b235b3c74f6a9523716237",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "tests/test_public_candidate.py",
+      "source_sha256": "bf6d19e482656c861f24125f72bbe175c5db121ec719d3c47069df8f0d22a0b4",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "tests/test_solve_workspace.py",
+      "source_sha256": "ae009ae0c15e2e201db0566f98452939ec0564cbb26ef417c943beba42b2b85f",
+      "reason": "Solve and show cogging torque in the public app, with its convergence study and benchmark proposal (#185)."
+    },
+    {
+      "base_commit": "e5958ed",
+      "path": "docs/COGGING_FEMM_REQUEST.md",
+      "source_sha256": "30c93efb0be87161740aa7c6861662f5c0301784071267bdd3d687445330f093",
+      "reason": "Hand FEMM results to the owner without naming a private folder (#185)."
+    },
+    {
+      "base_commit": "480ff26",
+      "path": "docs/COGGING_FEMM_REQUEST.md",
+      "source_sha256": "505ae74c4b9eee10344edc5dae454e10fabcd550d5d8fa8d782b2a57c2ce7828",
+      "reason": "State the cogging requests' input hashes in the FEMM brief (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/__init__.py",
+      "source_sha256": "0484342a3d688352e63934267361b5427074e1d932dd16fcafc1ee01817a495a",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/cli.py",
+      "source_sha256": "2c13c449677ce559c5646376e266da3aa976e6c0d473acafc43023c9733c5c4f",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/cogging_metrics.py",
+      "source_sha256": "92055d2c827028c5aa62e95a30f8717a80f8e93778892b2c6c2602a4eb4b1e9d",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/command.py",
+      "source_sha256": "a38377d817eacf2977d4e4ee89788a3905c0be0017e215a9e25469432a232e7c",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/references.py",
+      "source_sha256": "4ef724b633076777561790ab1d004bd19bc4465f9dcb0015053e8a54579c1155",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/report.py",
+      "source_sha256": "7a21402f3633fdc6b6ec90855736c2434c00496b97c2b0d1b985ed049b38420d",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/share.py",
+      "source_sha256": "57fc6e6da6546472e1c8b94cadc95cfaf8f93f61ac98fa1b8bb17860f37eaf5e",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "backend/benchmark_suite/worker.py",
+      "source_sha256": "82bb836000973b718be6f3ed3e01e5e734792c7f637e0b721ca10ddcda694e6f",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/README.md",
+      "source_sha256": "b6e872024b14d2319ce1050ac97b6b217e8eb8375f33fa1568696b8f38008715",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/benchmark_spec.json",
+      "source_sha256": "9b14051cef6bf7298456691661d38ad95fd78738d9df6c41165f55ce3a509843",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_12s10p_fscw_contract__cogging.json",
+      "source_sha256": "b8ec65a0f26330a9f1e9e9829e6ec34752771678fc8dcdcf0789b9074a623fda",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_24s16p_industrial_contract__cogging.json",
+      "source_sha256": "9db76e873718646ce320302b39c25301ef3915375cf91ed6489b07f68d53ea5f",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__cogging.json",
+      "source_sha256": "9ea0820bfe9507ed339415a49b66f207f994392d7172c9cc9f68793197e8af3c",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_8p12s_fsae_contract__cogging.json",
+      "source_sha256": "ec1ca45e0258ca76d072503a3160260377a57a1402b8161bd0952d8fad46bc0a",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_12p36s_distributed_femm_validation__cogging.json",
+      "source_sha256": "4e27491c2d31ea3119a3034bbcda330c016db340aab51d9f3044686ef0bfdfd8",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_4p12s_simple__baseline__cogging.json",
+      "source_sha256": "0133baad78c3025ad988889004d0bfadd44afa0c184daf2a5a0ed8e0ca7b87c1",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_4p12s_simple__tight_airgap__cogging.json",
+      "source_sha256": "7b8df6177db2310fc8747da7afe5ab1dd568a6bbfe86f6011fb1c15b97f0d045",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_concentrated__baseline__cogging.json",
+      "source_sha256": "228bfe80718719ef811ca8d9e22e78e03f87cd23eabe9c6af8648b25dde6fc61",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_concentrated__tight_airgap__cogging.json",
+      "source_sha256": "4fea72c749da4156d9eed4e3548759f3420c23d4ad1fe5dce09f0f8d288b0701",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_example_shoed__cogging.json",
+      "source_sha256": "183a686cdbdcfcac623f5a9877fb43c9cb9e273657e947c14b097f8de9d52c9c",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p24s_distributed_femm_validation__cogging.json",
+      "source_sha256": "7e1329e2eece8c1c7b23b0b7e862c82a3c659fced4b99b795238c4679ea3e15c",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "benchmarks/abcd-v1.7/fixtures/spm_8p48s_distributed_femm_validation__cogging.json",
+      "source_sha256": "851e55cebd81733996d8549f9153d2e9998b55094cc4e6332ae76cf1f76ebac1",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "docs/COGGING_BENCHMARK_PROPOSAL.md",
+      "source_sha256": "1c7e7fe64751dc1f530479f307439d537bcff304d3fc7341d9e8581e03e2dba4",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "docs/COGGING_CONVERGENCE.md",
+      "source_sha256": "07518c22c282f9311e19039a6d653f4031b02452751b7b58ae371b567bf9c68b",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "docs/COGGING_FEMM_REQUEST.md",
+      "source_sha256": "248919ee5865f404fa2fa176edd6c525171cbcdc41576d7fdfb333dc85165fc7",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "91956a59411ab3463981d56e0dca6a28b06d74d2b5feb6bfa85977aaff891524",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "1167c64",
+      "path": "tests/test_cogging_phase_e.py",
+      "source_sha256": "61d1420687b1f4eea39b25741955c656c6ffdc7efbb0761e451d90b7602bd193",
+      "reason": "Propose Phase E, the cogging benchmark, as protocol 1.7.0 with harness support (#185)."
+    },
+    {
+      "base_commit": "6bc935d",
+      "path": "tests/test_cogging.py",
+      "source_sha256": "f1d1d1bc8d30fbe292410db3a148d43ad480bfd77bc014c08b741906c8f32d67",
+      "reason": "Compare the stored cogging record to 1e-9, as platforms round the DFT differently (#185)."
+    },
+    {
+      "base_commit": "6845aaa7a0a16934991b43b713c776b78d9971fe",
+      "path": "docs/benchmarks/cogging-windows-20261103/README.md",
+      "source_sha256": "478b3444b974a85b96f7323f111d4191a02a7b4ec92476125bdbf0dc8ed4d66b",
+      "reason": "Publish Windows cogging numerical reports and the normal mesh default decision for PR #186."
+    },
+    {
+      "base_commit": "6845aaa7a0a16934991b43b713c776b78d9971fe",
+      "path": "docs/benchmarks/cogging-windows-20261103/cogging-femm-vs-magneto2d.pdf",
+      "source_sha256": "4e671709ed1afff21c56116c89cf9aef7b6af085ae42e9c81fa9863327bf677d",
+      "reason": "Publish Windows cogging numerical reports and the normal mesh default decision for PR #186."
+    },
+    {
+      "base_commit": "6845aaa7a0a16934991b43b713c776b78d9971fe",
+      "path": "docs/benchmarks/cogging-windows-20261103/native-mesh-convergence.pdf",
+      "source_sha256": "f91d57677b8454c0b340123364c1941ec86ff11a3109dd47cf8a100222f04eff",
+      "reason": "Publish Windows cogging numerical reports and the normal mesh default decision for PR #186."
+    },
+    {
+      "base_commit": "6845aaa7a0a16934991b43b713c776b78d9971fe",
+      "path": "docs/benchmarks/cogging-windows-20261103/results.json",
+      "source_sha256": "938845c8316b1fd7421e26ef13801d44f6b5530ad55cc01985e43e003575e737",
+      "reason": "Publish Windows cogging numerical reports and the normal mesh default decision for PR #186."
+    },
+    {
+      "base_commit": "6845aaa7a0a16934991b43b713c776b78d9971fe",
+      "path": "docs/benchmarks/cogging-windows-20261103/sha256.json",
+      "source_sha256": "04906e8b022830bbe76ae0068bf40ecd209df575f417492f9ba817c12f767d25",
+      "reason": "Publish Windows cogging numerical reports and the normal mesh default decision for PR #186."
+    },
+    {
+      "base_commit": "6845aaa7a0a16934991b43b713c776b78d9971fe",
+      "path": "docs/benchmarks/cogging-windows-20261103/waveforms.json",
+      "source_sha256": "41710e456e92dec3d6e3da847b8aaca021299c7bb58a95386abd1fc03f205354",
+      "reason": "Publish Windows cogging numerical reports and the normal mesh default decision for PR #186."
+    },
+    {
+      "base_commit": "6845aaa7a0a16934991b43b713c776b78d9971fe",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "33591a1cb15d656287969c48082483902af3932ae27274ba6385807408132be3",
+      "reason": "Publish Windows cogging numerical reports and the normal mesh default decision for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "backend/benchmark_suite/cogging_metrics.py",
+      "source_sha256": "e1e78a0e7f87a9c9d3dbe729b1d0f8bc77c8ac25828e54c6468e2590d21cacff",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "backend/cogging.py",
+      "source_sha256": "6390a269a6c10f27090fda28c875a7293ea3cc3eb06c08a155634dd6a716e471",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "backend/models/performance.py",
+      "source_sha256": "3c1d372db1184dc56ef4fac2370514edd7cbdbcc85df80fd9eac6b2130f1db41",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "backend/public_report.py",
+      "source_sha256": "63f6129907ad19372b07a901de60703935db09aaaa8dd4d1ecf345ecbd0391a4",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "7a929faf5640e92e33984a2e386dc0ee3415a7dac668a0e85f668b7a6aa3cec8",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "backend/solver/_helpers.py",
+      "source_sha256": "9cd8ffa05eb0acab7f7b6c94b386ad2da591097e69cd08d414aa518d4c790096",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "docs/COGGING_BENCHMARK_PROPOSAL.md",
+      "source_sha256": "45646c63f9c2df0c56cae4c45646055fe44cd4dec4ca9c6cd6df5514fa9d8301",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "docs/COGGING_CONVERGENCE.md",
+      "source_sha256": "08863be83ea4d3c7779e680463a51c801e9412186710f5119bd81f9c7a359fb8",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "fc0f1eb2ad03fe18880aa52d6b918b74793c221cc0418461a3a0086ea3f29f84",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "docs/benchmarks/cogging-windows-20261103/README.md",
+      "source_sha256": "1ca64db12d51009697fe10276368344e4dfb0ddebdc125bd5c50f0b66471fb9d",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/scripts/test-cogging-view.mjs",
+      "source_sha256": "aca173cc4cd2df77b76248ca98ed642ebc25158921ce0e765388cc91b24c7256",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "4f9573378f5acadc313e4aa64e68ab12b432aae124af29b428954205bd309ac6",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "9b78bee9acb29459162cb04a3446a1cdb8bfb662aa51a3f092a230b61e75212a",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/src/public/coggingView.ts",
+      "source_sha256": "167fa38b4f81581451498d406ce1a886d35928f72f7d137d58929ac767b8fc40",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "ead64ab55c25e8ce2e6eebd9fd746c65d13157ba2d6ddc0790b185f90e91076c",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/src/public/outputStatus.ts",
+      "source_sha256": "8027882f9a5bd34e0bd2bf40f94cf82a5e9d700b001f5543a3e12ab0c2af6899",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/src/public/publicRequest.ts",
+      "source_sha256": "40602c74d4ae6d0c3779544c8bcb287d8265491b2232390eb4bc45ce204ba43b",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "e4f0ff535303f0cb60f5ef5c93932c385eb1e0a9b0f22ff4126cb13e8c9fee46",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "tests/fixtures/cogging_example_8p12s.json",
+      "source_sha256": "a9512a378158e5f5d0303298542c3c3189b2ad04b894a04be5752d87de37165a",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "tests/test_cogging.py",
+      "source_sha256": "dfa5f9266aeddf0b32034ab47865bdc1d0191640e6b50b1614baa290e3fc07cb",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "c42f7d309a0ca174cc5df7647f453cd972a92a42",
+      "path": "tests/test_cogging_phase_e.py",
+      "source_sha256": "0bf22ef5cf27ee550877af34b80d0456437c254550044ec5f0827d7ea8651db0",
+      "reason": "Fix cogging endpoint diagnostics, Elmer request switching and incomplete-period gates; add regression coverage for PR #186."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "README.md",
+      "source_sha256": "acba1190e5c8ae80ea6f5d7580eac4dc3412757cff38c4e2785a4a4cef4604ce",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/elmer/adapter.py",
+      "source_sha256": "847f6bf138af2d668c3a510db615be909e48206f37351d3ff2ac54ca029f87a9",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/flux_linkage_map.py",
+      "source_sha256": "bca2c73c048aea6bd3a386e65a9c7f02ae2e046789cd1718cd709f9fdcfe780f",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/models/config.py",
+      "source_sha256": "70787e0effbc13a383ede3638f0b614ed398162107f95642a87b2c1e506f6698",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/models/result.py",
+      "source_sha256": "97bb0bb371f319b82f5836ec5352d59ed69d4519502e2db1c20ee87b297d16b3",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/models/waveforms.py",
+      "source_sha256": "797a83fc318429cda57b8119367282323d1be3676780c28820aecce897389876",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/public_policy.py",
+      "source_sha256": "b2b1c656b55d92ff28fb2db479eccb1d57cec21cffb8e102161679435e986a38",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/public_report.py",
+      "source_sha256": "1f69112fbb5bc37e831d227f9a2b02e0355a4b7e44ef4516e1cfc0ca1dc5ad84",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "5b01a5f3005b05eae22ddab1600ec2831c62bcf2e2eecc9a78cde583a381a593",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "2b75e01f885054ff5d88a7fef12901c1bbcb61220e3757795e8e9238ff6ae7a4",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/solver/_helpers.py",
+      "source_sha256": "b3acff8a6f0c7d5a8253a06a9e1175866defe117e85d6f564ea9e2766f3ce8b1",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/sweep_planning.py",
+      "source_sha256": "26211c44bb637a8472b468a612737e4847040c189b5aba2ced56e24025afe77c",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "docs/GETTING_STARTED.md",
+      "source_sha256": "22d0607001488654a982064c77e622aac5c10434f6835533b096445444250a96",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/package.json",
+      "source_sha256": "91ee9422f8289c63cda39e024500a8771738fb856c460388966f0688e6f879e4",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/scripts/test-analysis-options.mjs",
+      "source_sha256": "86c498af140874656150c2dc854615445c82685f805ab9657e57afb090f55a00",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "c603e9ce29c97ba12a1a1dc5f7f9cf9b9613907198c6bf51fb2f205ba2384cc8",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/AnalysisSelector.tsx",
+      "source_sha256": "afa4c8b528201f7ec24af50f989bec401ddd1412729bccde3d8d5f192a0f8f31",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "9d7074578af58ab63ada3aff6d230d9b30abed00ca8f3bb2b561c88d41090d4e",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "20445cec453ede9e430a7749a07a2ab38cd64fa71737eff9fc07f339155d787c",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "4a83463af2c2705b278775ea410e2a5c88bb61b9682e36261d35eee5be80bb10",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "5f2bf1c18b21f088b1eb66d65c5288e559129f4a3a174826418b3a3deb94e4d2",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/analysisOptions.ts",
+      "source_sha256": "813cf73998945f6ea02cad3c3fb069f0d777df14983bb0d796495a987936d1f5",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "1c5c5b5a5be7765f1bd0c7e52ccf3017633f0ae6e395af4e543bce4c00e590f2",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "36f9fa696d6f94911c733e0429f710767512f798a841ec263db68a4dd3b054ee",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/publicRequest.ts",
+      "source_sha256": "1bbe200dbab7d44da512874959652e336472c72077486dc5b90b1e217d8693b8",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/resultMetrics.ts",
+      "source_sha256": "8de831f462409f13f25a0b104f75db69a771e533c6a4ba28355ff1c3f028a6f3",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/solvePlan.ts",
+      "source_sha256": "c0a2a482e97f1c0320f779aa8c19509e09211318f805dfdfd4f1766726c7aa5e",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "c0d7219dc6f18b921b85191a1591810a5d3ea651403ef67865d184ceb2d70908",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "05ca02d6516c8856cf7f23b0b16b5edd769dd1400497585ae5b460d463460488",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_analysis_options.py",
+      "source_sha256": "9fcf7dcbfca7690dbf2aafd0eb2ecb4f3e1b9856328a6d99f1c2f0c0dff8087a",
+      "reason": "Add selectable analyses in Solve, standalone no-current Back EMF and cogging, opt-in loss computation and regression coverage."
+    },
+    {
+      "base_commit": "360f5fe9c0da5140828e3650153df3711c99139b",
+      "path": "frontend/src/public/AnalysisSelector.tsx",
+      "source_sha256": "97762fe126da9040cf6d72deef5927e5db995d53758feeb68769fa63d7f95d29",
+      "reason": "Move the detailed cogging sweep note into a hover, keyboard-focus and tap tooltip on its short description."
+    },
+    {
+      "base_commit": "360f5fe9c0da5140828e3650153df3711c99139b",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "22563eb136c087a973c77bd54af2d2ae6035c1142d4e7fa5c9688f8538255abd",
+      "reason": "Move the detailed cogging sweep note into a hover, keyboard-focus and tap tooltip on its short description."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "README.md",
+      "source_sha256": "f660be8eaa17cf6711dda82372824a3957efb2b117e758d37c5ac18c8fb3cdf2",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "backend/field_artifacts.py",
+      "source_sha256": "57ec4bd523b76bbb5c75813ecd8c37e933bc48344350e43cdb21f96ce1f5d6e3",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "backend/flux_linkage_map.py",
+      "source_sha256": "196032e980d64e8cd4a60ca98e934360983a91e49cae7506eabf6f0f5c1c2a8d",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "backend/models/config.py",
+      "source_sha256": "66a6ccf5b1ce562ba2c5bf5c578dcb7099056e54bb642dec21dbbcd9a35c4515",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "backend/models/result.py",
+      "source_sha256": "1f5e7e60b554264c391119cbf6a8440c18798dcefbb4edf0a880481dad1814ac",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "backend/public_policy.py",
+      "source_sha256": "f3831f5bad3e29efc30e71956b0ee6576dfe365b9ca62527897c7cdfefbf273a",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "backend/public_report.py",
+      "source_sha256": "65245a05f88ed2918568e9a0492190a2b1c6a9bdb3f40cdb1d632a5a9bb453f0",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "1dcf86d597b8938d5d8562f0f500deff8f7d7147ff3ac4b48669b2b49a8f8ab3",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "backend/selected_analyses.py",
+      "source_sha256": "d4a6aa5a156f2e109583882bed98b46e0a548f5b38c8637eef13a1df27c5c849",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "8e810a648f9a00ef16adc3cb6d75f83fd411211e135b2d8ad3175dd31c99af98",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "docs/GETTING_STARTED.md",
+      "source_sha256": "5c5440e121a32ccffeeffda80ecb8af3c0ae9cc15a5d487528a03c118abbb430",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/scripts/test-analysis-options.mjs",
+      "source_sha256": "be4c8931fed34850de12b62237df9172f1af492f536e2cf5486991f0d10967b5",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "6860225aa9f4cf82faa755d8b01dcd70908fb5bd596756f59a425629843bb465",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/scripts/test-solve-progress.mjs",
+      "source_sha256": "b04e3090e7b18ebaca1cd60080a8ed031c52c2bad01a19263d27340ced0f79b6",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/AnalysisSelector.tsx",
+      "source_sha256": "6db757b923f54649834d780809768f030a8f911f20ff72a7665967a150f9074f",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "c5f998e381912369b22cf8ed85c447f92b963268fa255d6553625dc49fffc99e",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "48d8976467a0cd8c7d754c428c5dc2c39e18298e62cabfc1d898967d674ee29d",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "62b98e93c92a6690c6bc8bfeccd0cc21ce17cd275c7c10284bf3ec584cf9cf83",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "389b87b5a7609039295451c8294a4e8c6482723c3fffc8d8e6b900238a42c1bf",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/TorqueSpeedSettings.tsx",
+      "source_sha256": "360eae6005c18e22625ba7e5e8b8202062d6130b27c50004db626b1e1abf1d42",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/analysisOptions.ts",
+      "source_sha256": "a02984fc068ddc982e016e6fef6eab809b3953c8f2018d95a0b0d110e613e36b",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "93f7146e03e4be7710e38c01dd05e602f0c508b93db7df9c101b8b00f62312bb",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "0b02e29aa3917255b3689aff6b4cacc4114dc6ec986ab9ae8ef8d44e8777f7d4",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "c22c1c9339bae5c2168fb5445b5bfff17b0ce037136da79049219707ae38797e",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/publicRequest.ts",
+      "source_sha256": "ff2e954c4dd8db61bc1a381fefbd1ca207043bf7e6ebfe2e86735eaa6aa68df7",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/solveProgress.ts",
+      "source_sha256": "ad194cfb088b70ca940f3127b0f4dbcb92e3ebe06114f173de6365f0be9b5fee",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "afb16c9950b76c41d9c415eb5fcbaeeb293ce6dc80ab6fa1c08a12ba2a84f57d",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/src/public/torqueSpeedAnalysis.ts",
+      "source_sha256": "05688f59d7b4fcc1b309e20e70b3750467d50d0d1a5531fa8c903622bb2001fa",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/tests/performance-regressions.ts",
+      "source_sha256": "a2f87411ca8e3e8f089063204e63d8ed924fba5bfc50400b5cfdda8bb0d8d96d",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "a83107020eef2f0435fe2b9d9edc91a7c30257023a89b7f7809b8cb5b2029aec",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "6e454e00cddc24458ba1aa28347137d45b85d6a4",
+      "path": "tests/test_torque_speed_analysis.py",
+      "source_sha256": "c1a6c15a39be2af9d8b76e52b8951100d9426399b694168ed52a7db6cd3a8bdc",
+      "reason": "Make torque-speed maps an opt-in Analysis with standalone execution, saved limits and curves, cache retention, resume and regression coverage."
+    },
+    {
+      "base_commit": "40a2133e32da7a2706741f40737f0f736edffbc7",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "6e0dfc28a62c954148eff1d31163e5a75a905ecd42fbceb2a38ca13fd92950ad",
+      "reason": "Show the saved torque-speed envelope in the Solve stage completed-result plots, including map-only runs and responsive tabs."
+    },
+    {
+      "base_commit": "40a2133e32da7a2706741f40737f0f736edffbc7",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "5017b4ffde00c5a596f48c51cf9b61a86365a6c94cb65de601e5b56a54b25b80",
+      "reason": "Show the saved torque-speed envelope in the Solve stage completed-result plots, including map-only runs and responsive tabs."
+    },
+    {
+      "base_commit": "40a2133e32da7a2706741f40737f0f736edffbc7",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "4aa5c75753442e7988871983ad3484e3cd451bb743962d849024b65e0bc9c5ee",
+      "reason": "Show the saved torque-speed envelope in the Solve stage completed-result plots, including map-only runs and responsive tabs."
+    },
+    {
+      "base_commit": "e40390daa8487d31e1ceacbd85be2731b2b96f59",
+      "path": "backend/solve_workspace.py",
+      "source_sha256": "2c877064d6fea1a53467afcdb2a024ee625bd1b32a64f53b39626be3bd5b2a6d",
+      "reason": "Fix Previous runs crashes for missing standalone-analysis waveforms, normalize legacy responses and cover comparison availability with regression tests."
+    },
+    {
+      "base_commit": "e40390daa8487d31e1ceacbd85be2731b2b96f59",
+      "path": "frontend/package.json",
+      "source_sha256": "e0e373cc1cf26656eb12ee28a860fea99bfd5b38f5bf46e82bdd0bcf3700faf5",
+      "reason": "Fix Previous runs crashes for missing standalone-analysis waveforms, normalize legacy responses and cover comparison availability with regression tests."
+    },
+    {
+      "base_commit": "e40390daa8487d31e1ceacbd85be2731b2b96f59",
+      "path": "frontend/scripts/test-run-comparison.mjs",
+      "source_sha256": "34e6997c11ec47dd452e2a331716624cf1b5534ca11a509b86028dd676703f64",
+      "reason": "Fix Previous runs crashes for missing standalone-analysis waveforms, normalize legacy responses and cover comparison availability with regression tests."
+    },
+    {
+      "base_commit": "e40390daa8487d31e1ceacbd85be2731b2b96f59",
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "source_sha256": "72ad3eace275fb12786a28aa2d14909e8d57a9804d3310ade03ac149edb420e2",
+      "reason": "Fix Previous runs crashes for missing standalone-analysis waveforms, normalize legacy responses and cover comparison availability with regression tests."
+    },
+    {
+      "base_commit": "e40390daa8487d31e1ceacbd85be2731b2b96f59",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "59ed4057eaf491bfec34953306457d0de426a5696f92e2a92f9af817a6cebaa8",
+      "reason": "Fix Previous runs crashes for missing standalone-analysis waveforms, normalize legacy responses and cover comparison availability with regression tests."
+    },
+    {
+      "base_commit": "e40390daa8487d31e1ceacbd85be2731b2b96f59",
+      "path": "frontend/src/public/runComparison.ts",
+      "source_sha256": "bc2a4d28e54aa0e8a70a330611cf5231f063e6dd090a2f31bcb2f8a5a76e9768",
+      "reason": "Fix Previous runs crashes for missing standalone-analysis waveforms, normalize legacy responses and cover comparison availability with regression tests."
+    },
+    {
+      "base_commit": "e40390daa8487d31e1ceacbd85be2731b2b96f59",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "a178c328fea4089dc583b7feacde0ea995f027b0eaf9e4d88c15e83f8f585840",
+      "reason": "Fix Previous runs crashes for missing standalone-analysis waveforms, normalize legacy responses and cover comparison availability with regression tests."
+    },
+    {
+      "base_commit": "e40390daa8487d31e1ceacbd85be2731b2b96f59",
+      "path": "tests/test_solve_workspace.py",
+      "source_sha256": "e415aef5f58ea4a342d69bd8a7df673008a0b19d8d77ea059d9462338ddca0be",
+      "reason": "Fix Previous runs crashes for missing standalone-analysis waveforms, normalize legacy responses and cover comparison availability with regression tests."
+    },
+    {
+      "base_commit": "b546e004e2651daf0a57901a6a4a4690f7520d91",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "6e0dfc28a62c954148eff1d31163e5a75a905ecd42fbceb2a38ca13fd92950ad",
+      "reason": "Label pending build benchmark evidence as Benchmark Qualification Pending while preserving motor-combination qualification and warning status."
+    },
+    {
+      "base_commit": "b546e004e2651daf0a57901a6a4a4690f7520d91",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "a178c328fea4089dc583b7feacde0ea995f027b0eaf9e4d88c15e83f8f585840",
+      "reason": "Label pending build benchmark evidence as Benchmark Qualification Pending while preserving motor-combination qualification and warning status."
+    },
+    {
+      "base_commit": "22988458e74d7836b6a3adba2709131bb4a502b1",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "3d6b86b528fc7f794d7e98a73fa487a6794b84fc289ef905f40e3ecec2013769",
+      "reason": "Accept pending benchmark qualification in the release rehearsal Design health assertion."
+    },
+    {
+      "base_commit": "66905e4791aa1d9fc180e38a5075b0402cc0d6eb",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "c5f998e381912369b22cf8ed85c447f92b963268fa255d6553625dc49fffc99e",
+      "reason": "Show the running application version from backend health beside the shared header logo on the landing page, workspace and tutorials."
+    },
+    {
+      "base_commit": "66905e4791aa1d9fc180e38a5075b0402cc0d6eb",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "94f65ff2e3d30cca33409412234bf961bbb71b9c39d90a107685f3735c99f126",
+      "reason": "Show the running application version from backend health beside the shared header logo on the landing page, workspace and tutorials."
+    },
+    {
+      "base_commit": "66905e4791aa1d9fc180e38a5075b0402cc0d6eb",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "4aa5c75753442e7988871983ad3484e3cd451bb743962d849024b65e0bc9c5ee",
+      "reason": "Show the running application version from backend health beside the shared header logo on the landing page, workspace and tutorials."
+    },
+    {
+      "base_commit": "e16664b0dee18d6f98c0425b03cbc72d63834382",
+      "path": "frontend/src/public/AnalysisSelector.tsx",
+      "source_sha256": "6db757b923f54649834d780809768f030a8f911f20ff72a7665967a150f9074f",
+      "reason": "Compact analysis choices with accessible info tooltips and yellow Experimental flags for cogging, losses and efficiency, and torque-speed maps."
+    },
+    {
+      "base_commit": "e16664b0dee18d6f98c0425b03cbc72d63834382",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "9d59b4b986f102efb59a58dca98a5faffbbc78ecf82ef7b8514d62d5682ecfae",
+      "reason": "Compact analysis choices with accessible info tooltips and yellow Experimental flags for cogging, losses and efficiency, and torque-speed maps."
+    },
+    {
+      "base_commit": "d1a919d62916f659a19c179444eebfff8f64bad3",
+      "path": "backend/performance_report.py",
+      "source_sha256": "5443edc461047feff671b872c20f11b8560276ae67c6dc3de259d37a64a729fd",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "d1a919d62916f659a19c179444eebfff8f64bad3",
+      "path": "backend/public_report.py",
+      "source_sha256": "65245a05f88ed2918568e9a0492190a2b1c6a9bdb3f40cdb1d632a5a9bb453f0",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "d1a919d62916f659a19c179444eebfff8f64bad3",
+      "path": "tests/test_cogging.py",
+      "source_sha256": "dfa5f9266aeddf0b32034ab47865bdc1d0191640e6b50b1614baa290e3fc07cb",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "d1a919d62916f659a19c179444eebfff8f64bad3",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": "d93b499e08b5850e47d7a8be9d9b2126bb3188186a1ea72ca121eccc82cb8537",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "d1a919d62916f659a19c179444eebfff8f64bad3",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "2be2634bdeba46cea357ae22892bf2a2a1e6c7eee381f8acfd07523dbc13b8f5",
+      "reason": "Limit displayed PDF quantities to three decimal places with readable scientific notation, while retaining recorded and numeric CSV precision."
+    },
+    {
+      "base_commit": "9749e6f051965c527a01c24c46e869fa79046486",
+      "path": "backend/performance_report.py",
+      "source_sha256": "8d629d7a9608f8e1930fb7afbea2a4b2e3aba4c6eba6d7e623d2b3238c56c8ad",
+      "reason": "Correct swapped unit/value CSV header labels and verify numeric values through named columns during Performance acceptance."
+    },
+    {
+      "base_commit": "9749e6f051965c527a01c24c46e869fa79046486",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": "395dd0668745894b6c11e891fb57d5aaf62feea462236282c9128482461e7d80",
+      "reason": "Correct swapped unit/value CSV header labels and verify numeric values through named columns during Performance acceptance."
+    },
+    {
+      "base_commit": "3ce46ed1ba1bcf19b422e504248917843dcf22cf",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": "da04016e03c59eafa69b665ad128f81d8a69be4bd5955da05d6226aa3abb90a7",
+      "reason": "Align the existing loss-report PDF assertion with the requested maximum of three displayed decimal places."
+    },
+    {
+      "base_commit": "a25aa4bcc00828f19997747790f5df248d938d80",
+      "path": "README.md",
       "source_sha256": "5004aece9fc710ff483d57790e42f790883d89b9826f6aef635d91a5e2389190",
       "reason": "Report recorded nonlinear convergence consistently in Results, PDF and CSV, preserving missing evidence and method-specific stopping rules (#12)."
     },
@@ -30377,6 +32291,966 @@
       "path": "tests/test_loss_breakdown.py",
       "source_sha256": "da04016e03c59eafa69b665ad128f81d8a69be4bd5955da05d6226aa3abb90a7",
       "reason": "Align the existing loss-report PDF assertion with the requested maximum of three displayed decimal places."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "README.md",
+      "source_sha256": "bb5666ba13c55af8192000fe772a947e675e3a749f5a7192bec9cd458e8711a2",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/performance_report.py",
+      "source_sha256": "5443edc461047feff671b872c20f11b8560276ae67c6dc3de259d37a64a729fd",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/public_report.py",
+      "source_sha256": "63f6129907ad19372b07a901de60703935db09aaaa8dd4d1ecf345ecbd0391a4",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/public_routes/runs.py",
+      "source_sha256": "186e44cf0512ed3a8fa42b058097e1a81d12041f8319d5f30824828df07b35aa",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "caa4ff56502a4e3d21eb1b723a1dad7d3bfe6bf253365447ef9241b3da38b900",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "ee30caf6e63d89ef4ef67868e72733ce72afa4ed2a7e2306a1dfab4d5ca75bad",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "ead64ab55c25e8ce2e6eebd9fd746c65d13157ba2d6ddc0790b185f90e91076c",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "19a8a1a5d266cbc83447829888a1f1db2f7b2744b83340c206de0da1fe24ecb9",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "e4f0ff535303f0cb60f5ef5c93932c385eb1e0a9b0f22ff4126cb13e8c9fee46",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_candidate_reference_review.py",
+      "source_sha256": "ead64e8f6ce091c2f671cef5e4232fc8ff95f82d5760f07dc573da794df7f66a",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_cogging.py",
+      "source_sha256": "dfa5f9266aeddf0b32034ab47865bdc1d0191640e6b50b1614baa290e3fc07cb",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": "da04016e03c59eafa69b665ad128f81d8a69be4bd5955da05d6226aa3abb90a7",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_output_status.py",
+      "source_sha256": "402c8cb57f7a81f9449f0582fa638ae66e10b2d6e2b235b3c74f6a9523716237",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": "d93b499e08b5850e47d7a8be9d9b2126bb3188186a1ea72ca121eccc82cb8537",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "2be2634bdeba46cea357ae22892bf2a2a1e6c7eee381f8acfd07523dbc13b8f5",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "e30f31bd2336eacb3736404ba97aff4086396878",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "07e7d8c2b4e4534c5aeadc2f458cd1ee65226c417436d9c642d12fda7091d8ea",
+      "reason": "Integrate convergence reporting from main and test historical replay, changed-physics rejection, pending output status and three-decimal cogging reports without changing qualification evidence or release gates."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "README.md",
+      "source_sha256": "f660be8eaa17cf6711dda82372824a3957efb2b117e758d37c5ac18c8fb3cdf2",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "backend/public_report.py",
+      "source_sha256": "ce383e9cf2b12c6b2217a3e19d075ce8cbe8fe404822f016aef59a6ed54429c8",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "backend/public_routes/runs.py",
+      "source_sha256": "186e44cf0512ed3a8fa42b058097e1a81d12041f8319d5f30824828df07b35aa",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "1dcf86d597b8938d5d8562f0f500deff8f7d7147ff3ac4b48669b2b49a8f8ab3",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "2cf1a4721416463ca586c01a0063c6ebe9dac216463b4fd5591a170561eb98e7",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "0b02e29aa3917255b3689aff6b4cacc4114dc6ec986ab9ae8ef8d44e8777f7d4",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "29afb23f55909a2e02a30aaf8d2fdcff7205239add70687ce68357481865db37",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "881574e06255fd4d7cf764372d3e14d4536dd28d660402a3109c7fca81830a10",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "tests/test_candidate_reference_review.py",
+      "source_sha256": "ead64e8f6ce091c2f671cef5e4232fc8ff95f82d5760f07dc573da794df7f66a",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "tests/test_cogging.py",
+      "source_sha256": "93fc27e8899551e55852f22a184a2152e0bf1409dc48fd906a6b99d4d0c1f8ed",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "tests/test_loss_breakdown.py",
+      "source_sha256": "da04016e03c59eafa69b665ad128f81d8a69be4bd5955da05d6226aa3abb90a7",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "tests/test_output_status.py",
+      "source_sha256": "402c8cb57f7a81f9449f0582fa638ae66e10b2d6e2b235b3c74f6a9523716237",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "b8f29dd713393d1a59114ef042c084618ebd1c4e",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "07e7d8c2b4e4534c5aeadc2f458cd1ee65226c417436d9c642d12fda7091d8ea",
+      "reason": "Restack analysis selection on the updated cogging PR and preserve convergence reporting, torque-speed previews and pending-qualification regression coverage."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "README.md",
+      "source_sha256": "f660be8eaa17cf6711dda82372824a3957efb2b117e758d37c5ac18c8fb3cdf2",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "backend/public_report.py",
+      "source_sha256": "ce383e9cf2b12c6b2217a3e19d075ce8cbe8fe404822f016aef59a6ed54429c8",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "backend/public_routes/runs.py",
+      "source_sha256": "186e44cf0512ed3a8fa42b058097e1a81d12041f8319d5f30824828df07b35aa",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "1dcf86d597b8938d5d8562f0f500deff8f7d7147ff3ac4b48669b2b49a8f8ab3",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "2cf1a4721416463ca586c01a0063c6ebe9dac216463b4fd5591a170561eb98e7",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "0b02e29aa3917255b3689aff6b4cacc4114dc6ec986ab9ae8ef8d44e8777f7d4",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "29afb23f55909a2e02a30aaf8d2fdcff7205239add70687ce68357481865db37",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "881574e06255fd4d7cf764372d3e14d4536dd28d660402a3109c7fca81830a10",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "tests/test_candidate_reference_review.py",
+      "source_sha256": "ead64e8f6ce091c2f671cef5e4232fc8ff95f82d5760f07dc573da794df7f66a",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "tests/test_cogging.py",
+      "source_sha256": "93fc27e8899551e55852f22a184a2152e0bf1409dc48fd906a6b99d4d0c1f8ed",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "tests/test_output_status.py",
+      "source_sha256": "402c8cb57f7a81f9449f0582fa638ae66e10b2d6e2b235b3c74f6a9523716237",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "624df7d63bfbd61c3f94a7d48a77e9d73040e501",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "07e7d8c2b4e4534c5aeadc2f458cd1ee65226c417436d9c642d12fda7091d8ea",
+      "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": ".github/workflows/release-benchmarks.yml",
+      "source_sha256": "06ffe983e40114ca1a213a25106e28774e540c4c793c7a73a8f3dffbe3d19005",
+      "reason": "Parallel qualification collection and verified runtime retention (#194 items 1 and 5)."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "backend/benchmark_suite/cli.py",
+      "source_sha256": "2c13c449677ce559c5646376e266da3aa976e6c0d473acafc43023c9733c5c4f",
+      "reason": "Parallel qualification collection and verified runtime retention (#194 items 1 and 5)."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "tools/benchmark_prius.py",
+      "source_sha256": "ead3ec38f13ef09e380a545a904efb9f38354d55d85735bf4c25726c40bc76cc",
+      "reason": "Parallel qualification collection and verified runtime retention (#194 items 1 and 5)."
+    },
+    {
+      "base_commit": "27524d89a6a2bb055105425250aeaa0c07878242",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "4dab52b7aa214242693ceb1f03c572c6aed9f7df7466c30a18c324cd659d7a82",
+      "reason": "Centralize physics PR evidence freshness and preserve immutable historical replay (#194 item 2)."
+    },
+    {
+      "base_commit": "27524d89a6a2bb055105425250aeaa0c07878242",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "2528d96e3e0b08cd0a692c0a4e31055be14f56f721e0e47b6cc40270e90264b3",
+      "reason": "Centralize physics PR evidence freshness and preserve immutable historical replay (#194 item 2)."
+    },
+    {
+      "base_commit": "27524d89a6a2bb055105425250aeaa0c07878242",
+      "path": "tests/test_candidate_reference_review.py",
+      "source_sha256": "0b53f8095ab2f386f5dcc9a325d43f1c675e5dcb110fa4981a4188ef7ad72dcd",
+      "reason": "Centralize physics PR evidence freshness and preserve immutable historical replay (#194 item 2)."
+    },
+    {
+      "base_commit": "27524d89a6a2bb055105425250aeaa0c07878242",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "0e6bd89312cc7bb104dcc7ada15b7630d3fd502dc62f4e33ec002e1f3b69a4a9",
+      "reason": "Centralize physics PR evidence freshness and preserve immutable historical replay (#194 item 2)."
+    },
+    {
+      "base_commit": "27524d89a6a2bb055105425250aeaa0c07878242",
+      "path": "tests/test_qualification.py",
+      "source_sha256": "28a5860e98119f0061f116c3f3df3fcdba308c2b69daea5d2c950a6a41c4bf2b",
+      "reason": "Centralize physics PR evidence freshness and preserve immutable historical replay (#194 item 2)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "bf173e6beae957be9a21100292da7f4d7eff722805fd8d10b916def4faa44c2f",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "backend/benchmark_suite/cli.py",
+      "source_sha256": "efa1902f6f5354cc6405f8b5f75f6725b4c2aaf6991d447fc201dbafe29a44e7",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "backend/benchmark_suite/record.py",
+      "source_sha256": "3e84cd2419b395ffac51a95b96643bd0a51f54fd956a95329639f3233322d2c0",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "backend/qualification.py",
+      "source_sha256": "c9ec5e5975b4a29c997e41008fde110d99910abed077054a87e89d656118b390",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "e18ccaade38bf85b4e2def3d9218275ba40f3578e538e20cec9226c28411ad07",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tests/test_benchmark_shards.py",
+      "source_sha256": "a33d2340440c5d46f821b55d9df084c9e3070d2ef704493bcdbffbd5458784c2",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tests/test_prius_benchmark_collection.py",
+      "source_sha256": "fc9bb2e82de96828dfa30983f9ec5463cecd7d822624caca1971c73dae45d85c",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tests/test_release_qualification.py",
+      "source_sha256": "98d206fd08ef68821d9f1e4fdad514303c43c4ff0ca13c2cd46fed9b52012e94",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tools/benchmark_prius.py",
+      "source_sha256": "0c7241396f0d31c819506895cf8221e19581ac379005e2fe41d56274f00d4ac4",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tools/build_benchmark_record.py",
+      "source_sha256": "bb5afa136f6bd542d862429630731ffbe9b20c57f044861e2b782a3bbac298c5",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tools/join_benchmark_runs.py",
+      "source_sha256": "7d651ad3be2e1e9953a986d055f050757d7265037cb2bccbc57dbc3ad1ba6b2a",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tools/qualify_benchmark_candidate.py",
+      "source_sha256": "4799c9ab299e064d94e1ac943ec4d1d27e1a00550431c2be4db79a097da0f12c",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tools/release/qualification.py",
+      "source_sha256": "ee23f74ab423e766ad07283158bb233735ac4dbf175880e00ccc59ea915651bf",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "ab48e96e50d892f68158f3e467cd0621bf039430c14e3e04217632e11ff8f646",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "6788d61b0a8ee83b6b90e4fc85059067c8971cdd",
+      "path": "tools/benchmark_ci.py",
+      "source_sha256": "bb07cc5fe901b95cbebdff8808353feef7bbed4503929f297cdc8a5b5c4c9fbe",
+      "reason": "Reject abbreviated or mismatched measurement candidate identities."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "d49e09e2745f6511265a2531cc4b4afd927d66032b93f21725b0f129cc267218",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "42c80ed89719ab97ca17bbad012db614e0a928a0f8544da908cfe6f7a7af0bbd",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "tests/test_candidate_reference_review.py",
+      "source_sha256": "c2f8726f707f8748e2762c69bcf4b2068746eedaa8e7b1fca0608cac33295100",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "tests/test_physics_impact.py",
+      "source_sha256": "fc8447ec4ba570d0e59c3d8203bcc70efbbf4ea028720f7b18518d8a814e275e",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "2a5495f23cd732566024108da9420bbe7cb4f41ef3b90fa40b222582f3d535a0",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "tests/test_qualification.py",
+      "source_sha256": "afc0619a6c8b6aefb47f82ce24874fd06e8d02b059faeade3b7e6b8514927ca9",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "tools/physics_impact.py",
+      "source_sha256": "05935a71af85e9fe1b0a0c23bc4ea571f56a3ed1c2402734a7ab3ef57bc6f300",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "tools/qualification_publish.py",
+      "source_sha256": "d5f888d12385d25928eeb9a614c168c352c7c30caaaacdd5fdfd8f834fe4b493",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "tools/benchmark_shards.py",
+      "source_sha256": "4ecaddedf2984b9683a9cc6628caea374d8d5b6eebb3e7967babf719f261c47d",
+      "reason": "Reuse compatible measurements across metadata pushes and balance Prius by measured runtimes."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": ".github/CODEOWNERS",
+      "source_sha256": "13f8e0cf55de82cf33195453888c50d1495523e45647deefe3f406d4d5bca331",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "784a6acb2d762e74946ad61a3bee6dd9f27dde192a6ca1f0ace0a02fb6297dea",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": ".github/workflows/qualification-weekly.yml",
+      "source_sha256": "0510c5c5daac60059ae4d891254f8df2c0eb7c376ac99d04291a694f56bb3e74",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": ".github/workflows/release-benchmarks.yml",
+      "source_sha256": "acfb0bff3c0d2653b63e6f125ddf15e7b83fedbb943bb069570dd2dc4d5d630b",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "ff3b7d3f7199fd8f12b0eb2c30785110d68ffe6af4bf92ed7f18f6df6c1c1a9a",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": "tests/test_physics_impact.py",
+      "source_sha256": "1a6ffe39a89be20001a88fc12b593877a3479d66089bade339466a86c34a5076",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": "tools/build_benchmark_record.py",
+      "source_sha256": "6d72518515a8a299a31d481727291d415cb985b4a838c749a5d7fee43d3ff42b",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": "tools/join_benchmark_runs.py",
+      "source_sha256": "009ed33799387a986aa2aee34bc31218d378486c5fae72b08b1d841d36574dde",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "e7040d1d918d33592439b8a0013a78a62838e4f2",
+      "path": ".github/CODEOWNERS",
+      "source_sha256": "1893dc7983ae690522302eeed62d1465dd23b717eb522da7671e15d6b8493f4e",
+      "reason": "Recover failed shards without changing the measured candidate or recomputing completed cases."
+    },
+    {
+      "base_commit": "e7040d1d918d33592439b8a0013a78a62838e4f2",
+      "path": ".github/workflows/release-benchmarks.yml",
+      "source_sha256": "b911e37b41213fbe1426cee8f6e92a399d7b2c0eb285d08e8ffdd6fc390cb648",
+      "reason": "Recover failed shards without changing the measured candidate or recomputing completed cases."
+    },
+    {
+      "base_commit": "e7040d1d918d33592439b8a0013a78a62838e4f2",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "a8111303f7c060596f0785139207a68b432d3298e79327f115f0dc0d05bff74b",
+      "reason": "Recover failed shards without changing the measured candidate or recomputing completed cases."
+    },
+    {
+      "base_commit": "e7040d1d918d33592439b8a0013a78a62838e4f2",
+      "path": "tools/download_benchmark_shards.py",
+      "source_sha256": "e5e51df465e6ef9f841a678ca2c81181e87e43b78beae41014513d297b21e97e",
+      "reason": "Recover failed shards without changing the measured candidate or recomputing completed cases."
+    },
+    {
+      "base_commit": "cf3074921e5875ed6fe357219e1505578d89e9bf",
+      "path": ".github/workflows/release-benchmarks.yml",
+      "source_sha256": "53e5157f87d2b2b380290ca1ac4f09041afa774dc4de12f6e4da89a23ad8d063",
+      "reason": "Relay unchanged binaries without consuming Mac build capacity and retain repair provenance."
+    },
+    {
+      "base_commit": "cf3074921e5875ed6fe357219e1505578d89e9bf",
+      "path": "tools/repair_benchmark_shard.py",
+      "source_sha256": "6dd429f41c8ff2874cdc7fb01446963bf14048a28d4d1dd8f390e7835b5c9243",
+      "reason": "Relay unchanged binaries without consuming Mac build capacity and retain repair provenance."
+    },
+    {
+      "base_commit": "256cdf53af0e1ac7cc86acc998ebd197ab179fdb",
+      "path": "backend/qualification.py",
+      "source_sha256": "35dc7e72aa4e2cf6cadb2a79b40bb4a08c208eec47c964d2dfc72943e5af87aa",
+      "reason": "Preserve legacy Prius evidence discovery in the qualification gate (#194)."
+    },
+    {
+      "base_commit": "256cdf53af0e1ac7cc86acc998ebd197ab179fdb",
+      "path": "tests/test_release_qualification.py",
+      "source_sha256": "a15e175fd0d04e2631e56ca4b948d1afedab2e8ab2069d21f91ed6cf38b43399",
+      "reason": "Preserve legacy Prius evidence discovery in the qualification gate (#194)."
+    },
+    {
+      "base_commit": "256cdf53af0e1ac7cc86acc998ebd197ab179fdb",
+      "path": "tools/release/qualification.py",
+      "source_sha256": "1279cb6292e8e89dae68f3ad0fa5b02c2ec2a89359eb0884ccd09df2bccf7aae",
+      "reason": "Preserve legacy Prius evidence discovery in the qualification gate (#194)."
+    },
+    {
+      "base_commit": "c7f51b57d0632a2eb59fa4d498e614d516a51335",
+      "path": ".github/workflows/release-benchmarks.yml",
+      "source_sha256": "591393587ee3ab8e10b62d9793b65a9f796890a8755e2e8f4669c2737e5975b3",
+      "reason": "Allow independent platform rejoins and headroom for legacy artifact transfers (#194)."
+    },
+    {
+      "base_commit": "c7f51b57d0632a2eb59fa4d498e614d516a51335",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "875f940330ed5a1f8cf819b660cd0ad017bccdb27bbfd42aa46f833ad9634d89",
+      "reason": "Allow independent platform rejoins and headroom for legacy artifact transfers (#194)."
+    },
+    {
+      "base_commit": "6ad8f3d6eef8855042e349bb954e1d6793bc6c0d",
+      "path": "tests/test_qualification_carry.py",
+      "source_sha256": "e0a77dc54f12feb6cf0cd9017b94d2ba7b9ba8c2e84bdd507fd69c4e741962ff",
+      "reason": "Report reference-review reasons separately from numerical movement (#194)."
+    },
+    {
+      "base_commit": "6ad8f3d6eef8855042e349bb954e1d6793bc6c0d",
+      "path": "tools/qualification_carry.py",
+      "source_sha256": "2bd1ca7c85568d58c26ce9061fbe571596a521afc944b973036e445704e7ee58",
+      "reason": "Report reference-review reasons separately from numerical movement (#194)."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "6860225aa9f4cf82faa755d8b01dcd70908fb5bd596756f59a425629843bb465",
+      "reason": "Guide first-time users through Analysis before the accuracy plan and Run, preserving selections and supporting direct Solve navigation."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "6fb5e224f83e203609edc2a88e1a638ef1f645b5d0b3588a24c619b29e5298c4",
+      "reason": "Guide first-time users through Analysis before the accuracy plan and Run, preserving selections and supporting direct Solve navigation."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "cbd479e216e1e225562699fd7b35d45b4d3b37a5bf757bc79f249f547e4ed48c",
+      "reason": "Guide first-time users through Analysis before the accuracy plan and Run, preserving selections and supporting direct Solve navigation."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/GuidedSetup.tsx",
+      "source_sha256": "42aa135f1f441f419ae1f61978db7be6a572e6b7a57d22baafe82d70421440d0",
+      "reason": "Guide first-time users through Analysis before the accuracy plan and Run, preserving selections and supporting direct Solve navigation."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "c664eea9912876f6afb4f1a7498adc5736a0c42f2bdaad1b123dd06aa65b1a2d",
+      "reason": "Guide first-time users through Analysis before the accuracy plan and Run, preserving selections and supporting direct Solve navigation."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "backend/cogging.py",
+      "source_sha256": "6390a269a6c10f27090fda28c875a7293ea3cc3eb06c08a155634dd6a716e471",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "backend/models/performance.py",
+      "source_sha256": "3c1d372db1184dc56ef4fac2370514edd7cbdbcc85df80fd9eac6b2130f1db41",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "backend/models/result.py",
+      "source_sha256": "1f5e7e60b554264c391119cbf6a8440c18798dcefbb4edf0a880481dad1814ac",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "backend/public_report.py",
+      "source_sha256": "55e35d23ef37133ccb5954f5cfbd03213a272320a62f0d7d35be1bf0600922ce",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "cd21c9684b1c918267c7622eab17349d080c2806b4e94e9c8f2929ef4f7e2cef",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "backend/selected_analyses.py",
+      "source_sha256": "d4a6aa5a156f2e109583882bed98b46e0a548f5b38c8637eef13a1df27c5c849",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "8e810a648f9a00ef16adc3cb6d75f83fd411211e135b2d8ad3175dd31c99af98",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "docs/GETTING_STARTED.md",
+      "source_sha256": "5c5440e121a32ccffeeffda80ecb8af3c0ae9cc15a5d487528a03c118abbb430",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "source_sha256": "6d91478217346b54ada343cc3db37851a6b3be22553cb50f7892b27a2df0f355",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/scripts/test-analysis-options.mjs",
+      "source_sha256": "be4c8931fed34850de12b62237df9172f1af492f536e2cf5486991f0d10967b5",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/scripts/test-cogging-view.mjs",
+      "source_sha256": "aca173cc4cd2df77b76248ca98ed642ebc25158921ce0e765388cc91b24c7256",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/scripts/test-result-summary.mjs",
+      "source_sha256": "f068727fa89ba1a925f194b53a9cdd51b52b8b2c7141446d620278bab3e89c93",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "cbd479e216e1e225562699fd7b35d45b4d3b37a5bf757bc79f249f547e4ed48c",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/LossesCard.tsx",
+      "source_sha256": "62747afa4798530f8126dc14a5d361a7ea90cd76a356c1972bc9327d47a11724",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "5017b4ffde00c5a596f48c51cf9b61a86365a6c94cb65de601e5b56a54b25b80",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "389b87b5a7609039295451c8294a4e8c6482723c3fffc8d8e6b900238a42c1bf",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/coggingView.ts",
+      "source_sha256": "167fa38b4f81581451498d406ce1a886d35928f72f7d137d58929ac767b8fc40",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "d757a572c6cdcdc84bd55d58d3e7aceee4714e6485f5a2b68255b57cd9d95a13",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "c22c1c9339bae5c2168fb5445b5bfff17b0ce037136da79049219707ae38797e",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/publicRequest.ts",
+      "source_sha256": "ff2e954c4dd8db61bc1a381fefbd1ca207043bf7e6ebfe2e86735eaa6aa68df7",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/resultMetrics.ts",
+      "source_sha256": "8de831f462409f13f25a0b104f75db69a771e533c6a4ba28355ff1c3f028a6f3",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "c664eea9912876f6afb4f1a7498adc5736a0c42f2bdaad1b123dd06aa65b1a2d",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "tests/test_analysis_options.py",
+      "source_sha256": "9fcf7dcbfca7690dbf2aafd0eb2ecb4f3e1b9856328a6d99f1c2f0c0dff8087a",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "tests/test_cogging.py",
+      "source_sha256": "9e39651841b9e5fe9c3212b9a750c7cd42c2655c5ddf471ef4a1beca6a508561",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "tests/test_torque_speed_analysis.py",
+      "source_sha256": "c1a6c15a39be2af9d8b76e52b8951100d9426399b694168ed52a7db6cd3a8bdc",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "5341219916534e65930fe24f3f3c6cc3faf64981f85adb605f8c978313e8cc9b",
+      "reason": "Preserve partial analyses and truthful selected-output reporting, with regression tests and partial-map warnings."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "5b509c42418deffd3e93463b16a214b550056be114dd1e4a292e8db7c1b8393a",
+      "reason": "Preserve partial analyses and truthful selected-output reporting, with regression tests and partial-map warnings."
+    },
+    {
+      "base_commit": "6a10da09902a46d2f24929fdb4a6ac1ce0209399",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "6b5a90a869c440963ff68753af701aa7a84269136ba2a9dd70d6faed48f3918e",
+      "reason": "Integrate historical replay fixtures with qualification automation without rewriting measured evidence."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "backend/benchmark_suite/cogging_metrics.py",
+      "source_sha256": "e1e78a0e7f87a9c9d3dbe729b1d0f8bc77c8ac25828e54c6468e2590d21cacff",
+      "reason": "Guard cogging metric source identity and reject summaries inconsistent with retained waveforms; preserve historical replay under its measured source registry."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "backend/benchmark_suite/physics.py",
+      "source_sha256": "62c925c0c2fb3f9c8d14a829948ffc83366bd74c424f8971cb17175c9a15f89b",
+      "reason": "Guard cogging metric source identity and reject summaries inconsistent with retained waveforms; preserve historical replay under its measured source registry."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "backend/cogging.py",
+      "source_sha256": "6390a269a6c10f27090fda28c875a7293ea3cc3eb06c08a155634dd6a716e471",
+      "reason": "Guard cogging metric source identity and reject summaries inconsistent with retained waveforms; preserve historical replay under its measured source registry."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "docs/COGGING_BENCHMARK_PROPOSAL.md",
+      "source_sha256": "45646c63f9c2df0c56cae4c45646055fe44cd4dec4ca9c6cd6df5514fa9d8301",
+      "reason": "Guard cogging metric source identity and reject summaries inconsistent with retained waveforms; preserve historical replay under its measured source registry."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "tests/test_benchmark_command.py",
+      "source_sha256": "dda36c384790900459b675fa2a8cba023ec86cb71b0b80e3a0498eb190ab8853",
+      "reason": "Guard cogging metric source identity and reject summaries inconsistent with retained waveforms; preserve historical replay under its measured source registry."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "tests/test_candidate_reference_review.py",
+      "source_sha256": "0b53f8095ab2f386f5dcc9a325d43f1c675e5dcb110fa4981a4188ef7ad72dcd",
+      "reason": "Guard cogging metric source identity and reject summaries inconsistent with retained waveforms; preserve historical replay under its measured source registry."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "tests/test_cogging_phase_e.py",
+      "source_sha256": "0bf22ef5cf27ee550877af34b80d0456437c254550044ec5f0827d7ea8651db0",
+      "reason": "Guard cogging metric source identity and reject summaries inconsistent with retained waveforms; preserve historical replay under its measured source registry."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "0e6bd89312cc7bb104dcc7ada15b7630d3fd502dc62f4e33ec002e1f3b69a4a9",
+      "reason": "Guard cogging metric source identity and reject summaries inconsistent with retained waveforms; preserve historical replay under its measured source registry."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "tests/test_qualification.py",
+      "source_sha256": "28a5860e98119f0061f116c3f3df3fcdba308c2b69daea5d2c950a6a41c4bf2b",
+      "reason": "Guard cogging metric source identity and reject summaries inconsistent with retained waveforms; preserve historical replay under its measured source registry."
+    },
+    {
+      "base_commit": "8c93c1e3b700d74f713b44cd2b0c28db4743a371",
+      "path": "tests/test_candidate_reference_review.py",
+      "source_sha256": "a9fff868f0579831764c1647707e2b00d6dd730a70c66b443deb18d72edf8f60",
+      "reason": "Integrate historical replay fixtures with qualification automation without rewriting measured evidence."
+    },
+    {
+      "base_commit": "8c93c1e3b700d74f713b44cd2b0c28db4743a371",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "39ba0317b2fa0ee04031848d81261c03c0e04c672a3fcca5868a6288b0bf503f",
+      "reason": "Integrate historical replay fixtures with qualification automation without rewriting measured evidence."
+    },
+    {
+      "base_commit": "8c93c1e3b700d74f713b44cd2b0c28db4743a371",
+      "path": "tests/test_qualification.py",
+      "source_sha256": "d6320009aeb0a145653023c3529b0eeb20794d93a6e2558bc442a908715906b1",
+      "reason": "Integrate historical replay fixtures with qualification automation without rewriting measured evidence."
+    },
+    {
+      "base_commit": "92f1600642a0ad6630274bbecba5650399b9270f",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "9a3cda1f70f308a49e872b8e0577bbb8583bf66508ace0c183537856017c4d36",
+      "reason": "Bind historical cogging rejection to immutable evidence independently of refreshed live records."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "f31548ecf1bcfcb06a7c24a5fe8252c107b3be2edd8162f8a74501a22acd7e9a",
+      "reason": "Harden acceptance isolation, export validation and evidence retention without changing measured physics."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "981420a333581824c694f0997a2b68574694f814f309e5b92c600a0ca2abcaf0",
+      "reason": "Harden acceptance isolation, export validation and evidence retention without changing measured physics."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "backend/performance_report.py",
+      "source_sha256": "affad22641d1e90ccb54d404498598d413ec58271fcb359cf44bcdbfb6947eff",
+      "reason": "Harden acceptance isolation, export validation and evidence retention without changing measured physics."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "docs/benchmarks/performance-acceptance-139-142/README.md",
+      "source_sha256": "a1026740c2b1a7b1221142a822cfcc19345c67c09a744bedc5c351d98906a209",
+      "reason": "Harden acceptance isolation, export validation and evidence retention without changing measured physics."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "frontend/package-lock.json",
+      "source_sha256": "1d6a19d5865d27923023a3cce865bcc0d05e99e33ad4bce152cb246c72a847c3",
+      "reason": "Harden acceptance isolation, export validation and evidence retention without changing measured physics."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "frontend/package.json",
+      "source_sha256": "e0e373cc1cf26656eb12ee28a860fea99bfd5b38f5bf46e82bdd0bcf3700faf5",
+      "reason": "Harden acceptance isolation, export validation and evidence retention without changing measured physics."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "frontend/playwright.performance.config.ts",
+      "source_sha256": "9a80831312e0dbfec1c477ed6d57f206f62bb74563265e4cc74869e88333cd6c",
+      "reason": "Harden acceptance isolation, export validation and evidence retention without changing measured physics."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "frontend/tests/performance-acceptance.spec.ts",
+      "source_sha256": "77e02cc8669d60244cc6cf3c00214e1b4c837d5768385f64ad05f98954a72a90",
+      "reason": "Harden acceptance isolation, export validation and evidence retention without changing measured physics."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "tools/check_performance_acceptance.py",
+      "source_sha256": "81fa47e431e516b7119688b7250ba3beb59cb630d7e53afd4de3be680c67c5a2",
+      "reason": "Harden acceptance isolation, export validation and evidence retention without changing measured physics."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "79670a1f78cd2fe09adca5b908641f4c2fbf4bb5d0f289b1d228ae322ab05f7c",
+      "reason": "Harden acceptance isolation, export validation and evidence retention without changing measured physics."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "afcf0eff8af7fdbae866691182dc0da06600c865da7e8e442f478d677984035e",
+      "reason": "Preserve cogging evidence chronology and checksums, isolate rotated mesh caches, and cover public cogging regression contracts."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "docs/COGGING_CONVERGENCE.md",
+      "source_sha256": "08863be83ea4d3c7779e680463a51c801e9412186710f5119bd81f9c7a359fb8",
+      "reason": "Preserve cogging evidence chronology and checksums, isolate rotated mesh caches, and cover public cogging regression contracts."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "docs/benchmarks/cogging-windows-20261103/README.md",
+      "source_sha256": "1ca64db12d51009697fe10276368344e4dfb0ddebdc125bd5c50f0b66471fb9d",
+      "reason": "Preserve cogging evidence chronology and checksums, isolate rotated mesh caches, and cover public cogging regression contracts."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "docs/benchmarks/cogging-windows-20261103/sha256.json",
+      "source_sha256": "04906e8b022830bbe76ae0068bf40ecd209df575f417492f9ba817c12f767d25",
+      "reason": "Preserve cogging evidence chronology and checksums, isolate rotated mesh caches, and cover public cogging regression contracts."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "frontend/scripts/test-cogging-view.mjs",
+      "source_sha256": "0e67e322ba663cdad48b43d516461dcfcdc2195f5235084d2e8a4b7a1d9e522c",
+      "reason": "Preserve cogging evidence chronology and checksums, isolate rotated mesh caches, and cover public cogging regression contracts."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "frontend/src/public/coggingView.ts",
+      "source_sha256": "41a34a396f269b512c306e0a54fe90ee03baecb2b98f46421d97ed9f60ccb78a",
+      "reason": "Preserve cogging evidence chronology and checksums, isolate rotated mesh caches, and cover public cogging regression contracts."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "5dd04c6e6845a5910605b7630236d000fe2246b77ec31069b3f5ccf6b1a9a7aa",
+      "reason": "Preserve cogging evidence chronology and checksums, isolate rotated mesh caches, and cover public cogging regression contracts."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "tests/test_cogging.py",
+      "source_sha256": "e0df19f89a86c1b41e36df8ba3f84481ef58d7731cbfccdaa59938720eab9913",
+      "reason": "Preserve cogging evidence chronology and checksums, isolate rotated mesh caches, and cover public cogging regression contracts."
+    },
+    {
+      "base_commit": "9369b776ed6f29b9920ce65f77ae2e868db5e9cc",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "d5f187e4c49a3fc4e895f95c6d74629473ca66f204a1296b1dca6ce1df552ba7",
+      "reason": "Record the owner-approved one-time PR 190 integration deferral: run qualification from the exact main merge commit while retaining all other evidence, runtime and release gates."
+    },
+    {
+      "base_commit": "9369b776ed6f29b9920ce65f77ae2e868db5e9cc",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "ee6d4bdc84108675371507edf16aeaf4ca52f6df9deba8acc83e01c15dbb91d0",
+      "reason": "Record the owner-approved one-time PR 190 integration deferral: run qualification from the exact main merge commit while retaining all other evidence, runtime and release gates."
     }
   ]
 }

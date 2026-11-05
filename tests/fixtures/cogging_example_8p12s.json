@@ -1,0 +1,143 @@
+{
+ "description": "Cogging sweep of the 8p/12s example (benchmarks/abcd-v1.5/fixtures/spm_8p12s_example_shoed.json) at the Standard preset: normal mesh, corner refinement, Precise mesh build, 24 positions per cogging period plus the repeated end, WST torque, public clockwise direction. Magneto2D sources identical to a25aa4b, macOS arm64, 2026-11-03 (docs/COGGING_CONVERGENCE.md).",
+ "method": "weighted_stress",
+ "electrical_angle_deg": [
+  0.0,
+  2.5,
+  5.0,
+  7.5,
+  10.0,
+  12.5,
+  15.0,
+  17.5,
+  20.0,
+  22.5,
+  25.0,
+  27.5,
+  30.0,
+  32.5,
+  35.0,
+  37.5,
+  40.0,
+  42.5,
+  45.0,
+  47.5,
+  50.0,
+  52.5,
+  55.0,
+  57.5,
+  60.0
+ ],
+ "torque_Nm": [
+  -0.003960042026578422,
+  0.42730364374471885,
+  0.25897623929190833,
+  -0.30560338776997864,
+  -0.6784280675697206,
+  -0.5708993367427744,
+  -0.4461336148267184,
+  -0.23296748501542636,
+  -0.17443496934501077,
+  -0.09411582827230902,
+  -0.08627260215441074,
+  -0.04741746314313389,
+  0.006812431788771972,
+  0.03399665786754977,
+  0.07395539591127795,
+  0.10695996147884565,
+  0.21046350238708425,
+  0.25546595252266074,
+  0.4258291223452272,
+  0.56140763785598,
+  0.6556642489812833,
+  0.2982026529520633,
+  -0.26030455039649086,
+  -0.46447406655969486,
+  -0.009610858555671516
+ ],
+ "loaded_mean_torque_Nm": 11.149711407719815,
+ "loaded_current_A": 42.42640687119285,
+ "mesh_elements": 29088,
+ "limits": {
+  "endpoint_mismatch_fraction": 0.02,
+  "mean_fraction": 0.02
+ },
+ "record": {
+  "method": "weighted_stress",
+  "positions_per_period": 24,
+  "period_elec_deg": 60.0,
+  "period_mech_deg": 15.0,
+  "fundamental_order": 24,
+  "peak_to_peak_Nm": 1.334092316551004,
+  "peak_Nm": 0.6784280675697206,
+  "first_harmonic_Nm": 0.3422289740776552,
+  "mean_Nm": -0.002082248612286488,
+  "endpoint_mismatch_Nm": 0.0056508165290930935,
+  "harmonics": [
+   {
+    "order": 24,
+    "multiple": 1,
+    "amplitude_Nm": 0.3422289740776552
+   },
+   {
+    "order": 48,
+    "multiple": 2,
+    "amplitude_Nm": 0.03948358468754954
+   },
+   {
+    "order": 72,
+    "multiple": 3,
+    "amplitude_Nm": 0.19849197825071083
+   },
+   {
+    "order": 96,
+    "multiple": 4,
+    "amplitude_Nm": 0.23426865313694556
+   },
+   {
+    "order": 120,
+    "multiple": 5,
+    "amplitude_Nm": 0.1441816302331313
+   },
+   {
+    "order": 144,
+    "multiple": 6,
+    "amplitude_Nm": 0.061146555985241234
+   },
+   {
+    "order": 168,
+    "multiple": 7,
+    "amplitude_Nm": 0.011566576581353698
+   },
+   {
+    "order": 192,
+    "multiple": 8,
+    "amplitude_Nm": 0.00102131823254398
+   },
+   {
+    "order": 216,
+    "multiple": 9,
+    "amplitude_Nm": 0.007146691145416932
+   },
+   {
+    "order": 240,
+    "multiple": 10,
+    "amplitude_Nm": 0.005411378243672698
+   },
+   {
+    "order": 264,
+    "multiple": 11,
+    "amplitude_Nm": 0.021386922001338682
+   },
+   {
+    "order": 288,
+    "multiple": 12,
+    "amplitude_Nm": 0.00059617314450508
+   }
+  ],
+  "loaded_mean_torque_Nm": 11.149711407719815,
+  "peak_to_peak_of_loaded_pct": 11.965263205174152,
+  "status": "experimental",
+  "status_reason": "No cogging gate yet: benchmark protocol 1.6.0 has no reference cogging waveform. The sweep uses per-position meshes with slot-pitch reuse, without a sliding band, so mesh noise sets a floor under small cogging values."
+ }
+}

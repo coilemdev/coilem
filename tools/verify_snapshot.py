@@ -76,6 +76,20 @@ FORBIDDEN_RUST_RUNTIME_MARKERS = {
     "struct DebugConfig",
 }
 ALLOWED_BINARY_SIGNATURES = {
+    "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/performance.pdf": b"%PDF-",
+    "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/torque-efficiency.png": b"\x89PNG\r\n\x1a\n",
+    "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/torque-efficiency.png": b"\x89PNG\r\n\x1a\n",
+    "docs/benchmarks/performance-acceptance-139-142/windows/spm-8p12s/performance.pdf": b"%PDF-",
+    "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/torque-efficiency.png": b"\x89PNG\r\n\x1a\n",
+    "docs/benchmarks/performance-acceptance-139-142/windows/ipm-10p-v/performance.pdf": b"%PDF-",
+    "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/torque-efficiency.png": b"\x89PNG\r\n\x1a\n",
+    "docs/benchmarks/performance-acceptance-139-142/windows/ipm-14p-flat/performance.pdf": b"%PDF-",
+    "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/torque-efficiency.png": b"\x89PNG\r\n\x1a\n",
+    "docs/benchmarks/performance-acceptance-139-142/windows/spm-24p/performance.pdf": b"%PDF-",
+    "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/torque-efficiency.png": b"\x89PNG\r\n\x1a\n",
+    "docs/benchmarks/performance-acceptance-139-142/windows/spm-6p36s/performance.pdf": b"%PDF-",
+    "docs/benchmarks/cogging-windows-20261103/cogging-femm-vs-magneto2d.pdf": b"%PDF-",
+    "docs/benchmarks/cogging-windows-20261103/native-mesh-convergence.pdf": b"%PDF-",
     "benchmarks/windows-prius-requal-20261018/coilem_benchmark_report.pdf": b"%PDF-",
     "docs/benchmarks/pyleecan-prius-v1/app-design-3d.png": b"\x89PNG\r\n\x1a\n",
     "benchmarks/windows-native-20261018-f390b25/coilem_benchmark_report.pdf": b"%PDF-",
@@ -189,6 +203,14 @@ def main() -> int:
     manifest = json.loads((root / "snapshot-manifest.json").read_text(encoding="utf-8"))
 
     expected = {entry["path"]: entry for entry in manifest["files"]}
+    # Newly registered compact reports are publication data, not new material
+    # curves. Only the exact report CSV named by a platform record is allowed.
+    registered_csv = set()
+    for record_path in (root / "benchmarks/records").glob("*.json"):
+        record = json.loads(record_path.read_text(encoding="utf-8"))
+        source = record.get("source", "")
+        if source.startswith("benchmarks/qualification-") and ".." not in Path(source).parts:
+            registered_csv.add(source + "/benchmark_results.csv")
     actual = {
         path.relative_to(root).as_posix(): path
         for path in root.rglob("*")
@@ -236,7 +258,7 @@ def main() -> int:
             failures.append(f"forbidden sprint path: {relative}")
         if path.suffix.lower() in FORBIDDEN_SUFFIXES:
             failures.append(f"forbidden file type: {relative}")
-        if path.suffix.lower() == ".csv" and relative not in ALLOWED_DATA_FILES:
+        if path.suffix.lower() == ".csv" and relative not in ALLOWED_DATA_FILES | registered_csv:
             failures.append(f"unreviewed material or fixture CSV: {relative}")
         allowed_signature = ALLOWED_BINARY_SIGNATURES.get(relative)
         if allowed_signature is not None:
@@ -307,6 +329,7 @@ def main() -> int:
         failures.append(f"unexpected frontend runtime dependencies: {package.get('dependencies')}")
     expected_frontend_dev = {
         "@playwright/test": "1.60.0",
+        "@types/node": "24.19.2",
         "@types/react": "18.3.28",
         "@types/react-dom": "18.3.7",
         "@types/three": "0.183.1",

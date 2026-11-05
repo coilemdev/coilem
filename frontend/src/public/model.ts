@@ -1,6 +1,6 @@
 import type { AirgapBrBtProfile } from '../components/tutorials/lessonSolveTypes';
 import type { CustomSteel } from './customSteel';
-import type { DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, PerformanceOutputStatus, WireSpec } from './performance';
+import type { DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, PerformanceOutputStatus, TorqueSpeedAnalysisResult, TorqueSpeedAnalysisSettings, WireSpec } from './performance';
 import type { WindingResistance } from './windingResistance';
 
 export type Topology = 'SPM' | 'IPM';
@@ -154,9 +154,11 @@ export interface MotorConfig {
     back_emf: boolean;
     flux_density: boolean;
     cogging_torque: boolean;
-    torque_speed_envelope: false;
+    losses_efficiency: boolean;
+    torque_speed_envelope: boolean;
     thd_analysis: boolean;
   };
+  torque_speed_analysis?: TorqueSpeedAnalysisSettings | null;
 }
 
 export interface PreviewRegion {
@@ -217,6 +219,7 @@ export interface PublicQualification {
 }
 
 export interface SolveValidation {
+  torque_speed_map?: { solves: number; positions_per_point: number } | null;
   valid: boolean;
   errors: Array<{ code?: string; message: string; suggestion?: string }>;
   warnings: Array<{ code?: string; message: string; suggestion?: string }>;
@@ -225,7 +228,37 @@ export interface SolveValidation {
   estimated_solve_time_range_s?: [number, number];
   estimated_mesh_elements: number;
   sweep_positions: number;
+  /** Cogging positions per period for the selected preset (#185), solved when Cogging torque is on. */
+  cogging_positions_per_period?: number;
+  analysis_positions?: Partial<Record<'torque_sweep' | 'back_emf' | 'cogging_torque' | 'losses_efficiency', number>>;
   qualification?: PublicQualification;
+}
+
+/** One harmonic of the cogging waveform, in cycles per mechanical revolution (backend/models/performance.py). */
+export interface CoggingHarmonic {
+  order: number;
+  multiple: number;
+  amplitude_Nm: number;
+}
+
+/** The zero-current cogging sweep over one cogging period (#185), as backend/cogging.py records it. */
+export interface CoggingTorqueRecord {
+  method: string;
+  positions_per_period: number;
+  period_elec_deg: number;
+  period_mech_deg: number;
+  fundamental_order: number;
+  peak_to_peak_Nm: number;
+  peak_Nm: number;
+  first_harmonic_Nm: number;
+  mean_Nm: number;
+  endpoint_mismatch_Nm: number | null;
+  harmonics: CoggingHarmonic[];
+  loaded_mean_torque_Nm?: number | null;
+  loaded_comparison_reason?: string | null;
+  peak_to_peak_of_loaded_pct?: number | null;
+  status?: PerformanceOutputStatus | null;
+  status_reason?: string | null;
 }
 
 export interface FieldLineContourLevel {
@@ -426,10 +459,11 @@ export interface PublicArmatureFieldComposition {
 }
 
 export interface SolveResult {
+  torque_speed_analysis?: TorqueSpeedAnalysisResult | null;
   summary: {
-    avg_torque_Nm: number;
-    torque_ripple_pct: number;
-    back_emf_fundamental_V: number;
+    avg_torque_Nm: number | null;
+    torque_ripple_pct: number | null;
+    back_emf_fundamental_V: number | null;
     back_emf_thd_pct?: number | null;
     back_emf_thd_h6_pct?: number | null;
     back_emf_thd_h12_pct?: number | null;
@@ -441,6 +475,9 @@ export interface SolveResult {
     lambda_pm_Wb?: number | null;
     peak_flux_density_teeth_T: number;
     peak_flux_density_yoke_T: number;
+    /** Peak-to-peak of the cogging sweep, when the run had one. */
+    cogging_torque_Nm?: number | null;
+    cogging?: CoggingTorqueRecord | null;
     dq_flux_linkage?: DqFluxLinkage | null;
     loss_breakdown?: LossBreakdown | null;
     iron_loss?: IronLoss | null;
@@ -517,6 +554,7 @@ export interface SolveResult {
     excitation_convention_version?: string | null;
     loaded_cycle_complete?: boolean | null;
     back_emf_computed?: boolean | null;
+    torque_sweep_computed?: boolean | null;
     rated_speed_rpm?: number | null;
     mesher?: string | null;
     mesh_density?: string;
@@ -708,6 +746,7 @@ export const DEFAULT_CONFIG: MotorConfig = {
     back_emf: true,
     flux_density: true,
     cogging_torque: false,
+    losses_efficiency: false,
     torque_speed_envelope: false,
     thd_analysis: true,
   },

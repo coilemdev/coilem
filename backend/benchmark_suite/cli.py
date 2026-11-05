@@ -135,6 +135,15 @@ def evaluate(output, manifest, selected, configs, protocols, golden, references,
                 evaluation = evaluate_bldc(protocols[case["id"]], raw, golden)
             except (ValueError, KeyError, TypeError, ZeroDivisionError) as exc:
                 evaluation = {"status": "INCOMPLETE", "gates": [], "reason": str(exc)}
+        elif case["phase"] == "E":
+            # Cogging (protocol 1.7.0): its own gates, with the case's registered floor.
+            # Imported here, so --help and listing stay free of the solver models.
+            from backend.benchmark_suite.cogging_metrics import evaluate_cogging
+
+            try:
+                evaluation = evaluate_cogging(measurements["native"], reference, configs[case["id"], "native"], case["cogging_floor_Nm"])
+            except (ValueError, KeyError, TypeError, ZeroDivisionError) as exc:
+                evaluation = {"status": "INCOMPLETE", "gates": [], "reason": str(exc)}
         else:
             try:
                 evaluation = evaluate_abc(measurements["native"], reference, configs[case["id"], "native"])
@@ -156,6 +165,8 @@ def evaluate(output, manifest, selected, configs, protocols, golden, references,
         }
         if case["phase"] == "D":
             row["protocol"] = protocols[case["id"]]
+        elif case["phase"] == "E":
+            row["base_case"] = case["base_case"]
         else:
             # Diagnostic only, outside the recorded evaluation: torque over the
             # torque its own back-EMF and current imply (#80).
@@ -210,7 +221,8 @@ def execute(args):
                 continue
             if case["phase"] == "D":
                 validate_lane_result("femm-standard", reference, protocols[case["id"]], golden=golden)
-            else:
+            elif case["phase"] != "E":
+                # A cogging reference carries only its period's waveform; evaluate_cogging checks it.
                 validate_abc(reference, configs[case["id"], "native"], native=False)
     selection = {
         "case_ids": [c["id"] for c in selected],
@@ -340,7 +352,13 @@ def execute(args):
                 job.update(status="ERROR", error="Worker exited without a measurement artifact")
             if not keep_runtime:
                 # The measurement is in result.json; the runtime only fed it.
-                shutil.rmtree(native_runtime_root(directory), ignore_errors=True)
+                runtime_directory = Path(native_runtime_root(directory))
+                if getattr(args, "archive_runtime", False) and runtime_directory.is_dir():
+                    from tools.benchmark_archive import archive_runtime
+
+                    archive_runtime(runtime_directory, directory / "native-runtime.tar.gz")
+                else:
+                    shutil.rmtree(runtime_directory, ignore_errors=True)
             write(path, manifest)
             print(f"{job['case_id']} / {job['stage']}: {job['status']}", flush=True)
             # Check again before registering or launching the next solve.
@@ -388,7 +406,9 @@ def main():
         "--min-free-gb", type=float, default=DEFAULT_MIN_FREE_GB,
         help=f"Stop before a job when the output drive has less free space (default {DEFAULT_MIN_FREE_GB:g} GB)",
     )
-    parser.add_argument("--keep-runtime", action="store_true", help="Keep each job's native runtime and solve cache")
+    retention = parser.add_mutually_exclusive_group()
+    retention.add_argument("--keep-runtime", action="store_true", help="Keep each job's native runtime and solve cache")
+    retention.add_argument("--archive-runtime", action="store_true", help="Verify and archive each runtime before cleanup (CI artifacts only)")
     args = parser.parse_args()
     if args.resume and args.report_only:
         parser.error("--resume and --report-only are mutually exclusive")

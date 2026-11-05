@@ -42,11 +42,13 @@ from reportlab.platypus import (
     TableStyle,
 )
 
+from backend.cogging import COGGING_METHOD_LABELS
 from backend.convergence_reporting import convergence_report
 from backend.export_safety import literal_csv_cell
 from backend.local_file_safety import require_contained_path
 from backend.magnet_temperature import is_derated_run
 from backend.models.performance import (
+    COGGING_TORQUE_STATUS_REASON,
     DQ_FLUX_LINKAGE_STATUS_REASON,
     DQ_INDUCTANCE_STATUS_REASON,
     MAGNET_TEMPERATURE_STATUS_REASON,
@@ -79,8 +81,9 @@ _HEAT_COLORS = (
     "#142a61", "#1855a7", "#1b8eb7", "#2ab673",
     "#a7c83a", "#f1c232", "#f58b24", "#dc3d3d",
 )
-# Records in the summary that get their own CSV section and PDF table (#136, #138).
+# Records in the summary that get their own CSV section and PDF table (#136, #138, #185).
 _SUMMARY_RECORD_SECTIONS = {
+    "cogging": "cogging",
     "dq_flux_linkage": "dq",
     "winding_resistance": "winding",
     "loss_breakdown": "losses",
@@ -128,6 +131,7 @@ _SUMMARY_UNITS = {
     "back_emf_line_thd_h12_pct": "%",
     "back_emf_line_thd_h24_pct": "%",
     # Stored per peak phase ampere (backend/machine_constants.py); the app's Results show it per rms ampere (#153).
+    "cogging_torque_Nm": "N m",
     "Kt_Nm_per_A": "N m/A peak",
     "Ke_Vs_per_rad_mech": "V s/rad (phase peak per mech rad/s)",
     "lambda_pm_Wb": "Wb peak",
@@ -247,6 +251,15 @@ def _output_statuses(result: Mapping[str, Any]) -> list[tuple[str, str, str, str
         reason = _plain(record.get(f"{prefix}status_reason"))
         statuses.append((key, output, status or "experimental", reason if status else reason or fallback))
 
+    if summary.get("cogging"):
+        recorded("cogging_torque", "Cogging torque", _mapping(summary["cogging"]), COGGING_TORQUE_STATUS_REASON)
+    analysis = _mapping(result.get("torque_speed_analysis"))
+    if analysis:
+        if analysis.get("status") == "partial":
+            statuses.append(("torque_speed_map", "Torque–speed map", "unavailable", _plain(analysis.get("status_reason"))))
+        else:
+            recorded("torque_speed_map", "Torque–speed envelope", _mapping(analysis.get("envelope")), "Interpolated from solved map points.")
+            recorded("map_efficiency", "Efficiency map", _mapping(analysis.get("efficiency_map")), "Interpolated from solved map points.")
     if summary.get("dq_flux_linkage"):
         dq = _mapping(summary["dq_flux_linkage"])
         recorded("dq_flux_linkage", "d/q flux linkage", dq, DQ_FLUX_LINKAGE_STATUS_REASON)
@@ -359,6 +372,8 @@ def build_public_run_csv(
         row("status", f"{key}_reason", reason)
     for field, value in _flatten(_mapping(result.get("solve_metadata"))):
         row("solve_metadata", field, value)
+    for field, value in _flatten(_mapping(result.get("torque_speed_analysis"))):
+        row("torque_speed_analysis", field, value)
 
     convergence = convergence_report(result)
     row("convergence", "schema_version", convergence["schema_version"])
@@ -434,9 +449,12 @@ def build_public_run_csv(
     cogging = _mapping(result.get("cogging_torque_waveform"))
     cogging_angles = _sequence(cogging.get("electrical_angle_deg"))
     cogging_values = _sequence(cogging.get("torque_Nm"))
+    pole_pairs = _pole_pairs(resolved_config)
     for index in range(max(len(cogging_angles), len(cogging_values))):
         if index < len(cogging_angles):
             row("cogging_waveform", "electrical_angle_deg", cogging_angles[index], "deg", index)
+            if pole_pairs and isinstance(cogging_angles[index], (int, float)):
+                row("cogging_waveform", "mechanical_angle_deg", cogging_angles[index] / pole_pairs, "deg", index)
         if index < len(cogging_values):
             row("cogging_waveform", "torque_Nm", cogging_values[index], "N m", index)
 
@@ -591,7 +609,7 @@ _SETTING_LABELS = {
     "ID_mm": "Inner diameter",
     "magnet_embrace": "Magnet coverage",
     "ipm_topology": "IPM rotor type",
-    "current_amplitude_A": "Phase current",
+    "current_amplitude_A": "Requested phase current",
     "motor_input_dc_bus_V": "DC bus voltage",
     "linear_steel_mu_rel": "Linear steel relative permeability",
     "mesh_build": "Mesh build",
@@ -834,11 +852,22 @@ def _torque_ripple_metric(result: Mapping[str, Any]) -> tuple[str, str, str | No
     finite = [float(value) for value in samples if isinstance(value, (int, float)) and math.isfinite(value)]
     swing = max(finite) - min(finite) if len(finite) >= 2 else None
     current = _mapping(result.get("solve_metadata")).get("current_amplitude_A")
+    no_current = isinstance(current, (int, float)) and abs(current) <= _OPEN_CIRCUIT_CURRENT_A
     mean = summary.get("avg_torque_Nm")
     near_zero = swing is not None and swing > 0 and isinstance(mean, (int, float)) and abs(mean) < 0.01 * swing
-    if current == 0 or near_zero:
-        label = "Cogging torque p-p" if current == 0 else "Torque p-p"
+    cogging = _mapping(summary.get("cogging"))
+    if no_current and isinstance(cogging.get("peak_to_peak_Nm"), (int, float)):
+        # The cogging sweep's own number, so the report never shows two (#185).
+        note = (
+            f"From the cogging sweep: one cogging period at {_plain(cogging.get('positions_per_period'))} positions, "
+            "under Cogging torque."
+        )
+        return "Cogging torque p-p", _metric_value(cogging["peak_to_peak_Nm"], "N m"), note
+    if no_current or near_zero:
+        label = "Cogging torque p-p" if no_current else "Torque p-p"
         note = "Ripple percentage is unavailable at zero current or near-zero mean torque; the peak-to-peak swing is shown."
+        if no_current:
+            note += " These positions are not sized to the cogging period; solve with Cogging torque on for a cogging sweep."
         return label, _metric_value(swing, "N m"), note
     return "Torque ripple", _metric_value(summary.get("torque_ripple_pct"), "%"), None
 
@@ -852,6 +881,11 @@ def _metric_table(
     # One tile per metric, its label over its value, four to a row.
     cells: list[list[Any]] = []
     metrics = [field for field in _SUMMARY_ORDER if field in summary]
+    metadata = _mapping((result or {}).get("solve_metadata"))
+    if metadata.get("torque_sweep_computed") is False:
+        metrics = [field for field in metrics if field not in {"avg_torque_Nm", "torque_ripple_pct", "Kt_Nm_per_A"}]
+    if metadata.get("back_emf_computed") is False:
+        metrics = [field for field in metrics if not field.startswith("back_emf_") and field not in {"Ke_Vs_per_rad_mech", "lambda_pm_Wb"}]
     for offset in range(0, len(metrics), 4):
         tiles: list[Any] = []
         for field in metrics[offset : offset + 4]:
@@ -1284,6 +1318,132 @@ def _dq_story(result: Mapping[str, Any], styles: Mapping[str, ParagraphStyle]) -
     ]
 
 
+def _pole_pairs(config: Mapping[str, Any]) -> int | None:
+    poles = _mapping(config.get("rotor")).get("pole_count")
+    return poles // 2 if isinstance(poles, int) and not isinstance(poles, bool) and poles >= 2 else None
+
+
+# Harmonics the cogging section lists: the fundamental and its next multiples, as Results draws them.
+_COGGING_HARMONIC_ROWS = 8
+
+
+def _cogging_story(result: Mapping[str, Any], request: Mapping[str, Any], styles: Mapping[str, ParagraphStyle]) -> list[Any]:
+    """The cogging sweep (#185): its values, one period of waveform and its harmonics."""
+
+    cogging = _mapping(_mapping(result.get("summary")).get("cogging"))
+    if not cogging:
+        return []
+    waveform = _mapping(result.get("cogging_torque_waveform"))
+    pole_pairs = _pole_pairs(_mapping(request.get("resolved_config")))
+    ratio = cogging.get("peak_to_peak_of_loaded_pct")
+    method = _plain(cogging.get("method"))
+    plot = _line_plot(
+        title="Cogging torque over one cogging period",
+        x_label=(
+            f"Electrical angle (deg); {_number(cogging.get('period_elec_deg'))} deg electrical = "
+            f"{_number(cogging.get('period_mech_deg'))} deg mechanical"
+        ),
+        y_label="Torque (N m)",
+        series=(("Cogging torque", _numeric_points(waveform.get("electrical_angle_deg"), waveform.get("torque_Nm")), _BLUE),),
+    )
+    harmonics = [_mapping(item) for item in _sequence(cogging.get("harmonics"))[:_COGGING_HARMONIC_ROWS]]
+    return [
+        _section("Cogging torque", styles),
+        _settings_grid(
+            [
+                ("Peak to peak", f"{_number(cogging.get('peak_to_peak_Nm'))} N m"),
+                ("Peak", f"{_number(cogging.get('peak_Nm'))} N m"),
+                ("Fundamental order", f"{_plain(cogging.get('fundamental_order'))} per mechanical revolution"),
+                ("Fundamental amplitude", f"{_number(cogging.get('first_harmonic_Nm'))} N m"),
+                (
+                    "Of loaded torque",
+                    f"{_number(ratio)}% of {_number(cogging.get('loaded_mean_torque_Nm'))} N m"
+                    if isinstance(ratio, (int, float))
+                    else cogging.get("loaded_comparison_reason") or "Loaded torque comparison unavailable",
+                ),
+                ("Method", COGGING_METHOD_LABELS.get(method, method) or "Not recorded"),
+                ("Positions per period", f"{_plain(cogging.get('positions_per_period'))}, plus the repeated end"),
+                (
+                    "Cogging period",
+                    f"{_number(cogging.get('period_elec_deg'))} deg elec, {_number(cogging.get('period_mech_deg'))} deg mech"
+                    + (f" ({pole_pairs} pole pairs)" if pole_pairs else ""),
+                ),
+                ("Mean over the period", f"{_number(cogging.get('mean_Nm'))} N m"),
+                (
+                    "End mismatch",
+                    f"{_number(cogging['endpoint_mismatch_Nm'])} N m"
+                    if isinstance(cogging.get("endpoint_mismatch_Nm"), (int, float))
+                    else "Unavailable (endpoints not independently meshed)",
+                ),
+            ],
+            styles,
+            columns=2,
+            cell_widths=(40 * mm, 50 * mm),
+        ),
+        *([Spacer(1, 2 * mm), plot] if plot is not None else []),
+        *(
+            [
+                Spacer(1, 2 * mm),
+                _key_value_table(
+                    [
+                        (
+                            f"{_plain(item.get('order'))} per rev ({_plain(item.get('multiple'))} x fundamental)",
+                            f"{_number(item.get('amplitude_Nm'))} N m",
+                        )
+                        for item in harmonics
+                    ],
+                    styles,
+                ),
+            ]
+            if harmonics
+            else []
+        ),
+        Paragraph(
+            "One cogging period solved with no current, both ends included. Harmonics are peak amplitudes in cycles per "
+            "mechanical revolution, from the period without its repeated end. An exact solve averages to zero over the "
+            "period and repeats at its end. The mean measures numerical bias; the end mismatch measures remesh noise only "
+            "when both endpoints were independently meshed and solved. It is unavailable when a closing endpoint is missing, "
+            "its independence was not recorded, or the endpoints share a mesh or solution.",
+            styles["small"],
+        ),
+        *_status_paragraphs(result, ("cogging_torque",), styles),
+    ]
+
+
+def _torque_speed_story(result: Mapping[str, Any], styles: Mapping[str, ParagraphStyle]) -> list[Any]:
+    analysis = _mapping(result.get("torque_speed_analysis"))
+    if not analysis:
+        return []
+    settings = _mapping(analysis.get("settings"))
+    limits = _mapping(settings.get("limits"))
+    story: list[Any] = [_section("Torque-speed map", styles), _key_value_table([
+        ("Map grid", settings.get("preset")), ("Drive control", settings.get("control")),
+        ("DC bus (V)", limits.get("dc_bus_V")), ("Peak phase current (A peak)", limits.get("peak_current_A")),
+        ("Continuous phase current (A peak)", limits.get("continuous_current_A")),
+        ("Top speed (rpm)", limits.get("max_speed_rpm")),
+    ], styles)]
+    story.extend(_status_paragraphs(result, ("torque_speed_map", "map_efficiency"), styles))
+    if analysis.get("status") == "partial":
+        points = [_mapping(point) for point in _sequence(_mapping(analysis.get("map")).get("points"))]
+        story.append(Paragraph(
+            "<b>Incomplete map.</b> Completed analyses and map points are retained. "
+            "Curves are unavailable until all points succeed.", styles["body"],
+        ))
+        story.append(_key_value_table([
+            (f"{_number(point.get('current_peak_A'))} A peak, {_number(point.get('gamma_deg'))} deg", point.get("error") or point.get("status"))
+            for point in points if point.get("status") != "ok"
+        ], styles))
+    curves = _sequence(_mapping(analysis.get("envelope")).get("curves"))
+    for field, title, unit in (("torque_Nm", "Torque-speed envelope", "Torque (N m)"), ("power_W", "Power-speed envelope", "Power (W)")):
+        plot = _line_plot(title=title, x_label="Speed (rpm)", y_label=unit, series=tuple(
+            (_plain(_mapping(curve).get("limit")), _numeric_points(_mapping(curve).get("speed_rpm"), _mapping(curve).get(field)), color)
+            for curve, color in zip(curves, (_BLUE, _GREEN))
+        ))
+        if plot is not None:
+            story.extend([plot, Spacer(1, 3 * mm)])
+    return story
+
+
 def _winding_and_loss_story(result: Mapping[str, Any], styles: Mapping[str, ParagraphStyle]) -> list[Any]:
     summary = _mapping(result.get("summary"))
     winding = _mapping(summary.get("winding_resistance"))
@@ -1590,6 +1750,15 @@ def build_public_run_pdf(
     story.extend([_section("Primary metrics", styles), _metric_table(summary, styles, result=result)])
     solve_params = _mapping(_mapping(request.get("resolved_config")).get("solve_params"))
     solve_metadata = _mapping(result.get("solve_metadata"))
+    # Metadata stores the actual field current in peak A (plateau for six-step).
+    # The requested operating point remains intact in the replayable request.
+    field_current = solve_metadata.get("current_amplitude_A")
+    current_convention = solve_params.get("current_amplitude_convention")
+    if isinstance(field_current, (int, float)):
+        if current_convention == "rms" and solve_metadata.get("current_amplitude_convention") != "rms":
+            field_current /= math.sqrt(2)
+    else:
+        field_current = solve_params.get("current_amplitude_A")
     provenance = _mapping(manifest.get("provenance"))
     six_step = solve_params.get("excitation_mode") == "ideal_six_step_120"
     output_statuses = _output_statuses(result)
@@ -1602,7 +1771,7 @@ def build_public_run_pdf(
                 [
                     (
                         "Conducting phase current" if six_step else "Phase current",
-                        (f"{_pdf_text(solve_params.get('current_amplitude_A'))} A "
+                        (f"{_pdf_text(field_current)} A "
                          f"{_plain(solve_params.get('current_amplitude_convention'))}").strip(),
                     ),
                     (
@@ -1719,6 +1888,8 @@ def build_public_run_pdf(
         ),
     )
     story.extend(_winding_and_loss_story(result, styles))
+    story.extend(_cogging_story(result, request, styles))
+    story.extend(_torque_speed_story(result, styles))
     if torque_plot is not None or back_emf_plot is not None:
         story.append(_section("Stored result plots", styles))
         if torque_plot is not None:

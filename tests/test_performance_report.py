@@ -70,6 +70,21 @@ def test_the_csv_holds_the_same_numbers(data):
     assert sum(row[0] == "map_point" and row[1] == "status" for row in rows) == len(data.flux_map.points)
 
 
+def test_csv_column_names_identify_numbers_and_units(data):
+    # Consumers use the header, rather than knowing the columns' positions.
+    # A swapped header silently interpreted "N m" as the torque's value.
+    body = build_performance_csv(data, CONTEXT).decode("utf-8").split("\n", 1)[1]
+    reader = csv.DictReader(io.StringIO(body))
+    assert reader.fieldnames == ["section", "field", "unit", "value", "sample_index"]
+    rows = list(reader)
+    torque = next(row for row in rows if row["section"] == "result" and row["field"] == "peak_torque")
+    assert torque["unit"] == "N m"
+    assert float(torque["value"]) == pytest.approx(data.curve("peak").torque_Nm[0], rel=1e-11)
+    sample = next(row for row in rows if row["section"] == "torque_speed_peak" and row["field"] == "speed")
+    assert sample["unit"] == "rpm"
+    assert float(sample["value"]) == data.curve("peak").speed_rpm[int(sample["sample_index"])]
+
+
 def test_mtpa_follows_the_analytic_trajectory(data):
     saliency = L_Q - L_D
 

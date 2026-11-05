@@ -349,6 +349,8 @@ def _notes(data: PerformanceData) -> list[str]:
 def _csv_writer() -> tuple[io.StringIO, Callable[..., None]]:
     output = io.StringIO(newline="")
     writer = csv.writer(output, lineterminator="\r\n")
+    writer.writerow(["report_schema", PERFORMANCE_REPORT_SCHEMA])
+    writer.writerow(["section", "field", "unit", "value", "sample_index"])
 
     def row(section: str, field: str, value: Any, unit: str = "", sample_index: int | str = "") -> None:
         writer.writerow([_plain(literal_csv_cell(item)) for item in (section, field, unit, value, sample_index)])
@@ -360,8 +362,6 @@ def build_performance_csv(data: PerformanceData, context: ReportContext) -> byte
     """Every number of the performance report, long-form: section, field, unit, value, sample_index."""
 
     output, row = _csv_writer()
-    output.write(f"report_schema,{PERFORMANCE_REPORT_SCHEMA}\r\n")
-    row("section", "field", "unit", "value", "sample_index")  # header, written through the same escaping
     flux_map, limits = data.flux_map, data.limits
 
     row("identity", "design_name", context.design_name)

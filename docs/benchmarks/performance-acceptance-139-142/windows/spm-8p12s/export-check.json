@@ -1,0 +1,81 @@
+{
+  "passed": true,
+  "csv_numeric_comparisons": 5246,
+  "efficiency_cells": 1498,
+  "pdf_pages": 4,
+  "pdf_headlines_match_analysis": true,
+  "files": {
+    "analysis.json": {
+      "bytes": 272333,
+      "sha256": "667cc86c781e62024110a8bdad9ef0bcc037e16f5bba7337fb46ab4a6ed1c3d2"
+    },
+    "browser-check.json": {
+      "bytes": 2137,
+      "sha256": "b5b7ab7e4140297ffe9dafe7d48c0674ea8e494927fb809b989ffe705e599cbf"
+    },
+    "environment.json": {
+      "bytes": 856,
+      "sha256": "bb73bd69b102763b0aecf215c2522c261b80cbcdffbe50925657f72493066158"
+    },
+    "idiq.csv": {
+      "bytes": 33553,
+      "sha256": "71b7c23e2a11c5b8e689d781c6aaa0d27fe54e746a289f733fdbe3ea46fac6aa"
+    },
+    "map-details.png": {
+      "bytes": 81533,
+      "sha256": "f65da4650b92d6d916cd8e0b07d7f1a1d1a2ee2b7ed4a3df7f4182b4e5c96016"
+    },
+    "map-progress.json": {
+      "bytes": 18784,
+      "sha256": "5a28b3699bbfcb1310ae6e56a740a2c43df88206025463d0efa99fdaa8107b0f"
+    },
+    "map.csv": {
+      "bytes": 13771,
+      "sha256": "d2bd9f4864da4d3ab267a708e2b74f29933e158c265beb28a817c46cce4f5221"
+    },
+    "performance.csv": {
+      "bytes": 670642,
+      "sha256": "07de2a9a2e64bad8011bd3cadd3453fe8e6339aa86947cf550a70e52a653a8d3"
+    },
+    "performance.pdf": {
+      "bytes": 26843,
+      "sha256": "2553e12f63c9a1b17e585ba1f4cb87fb7c54131df17d0bf87bb51c762ef07bd4"
+    },
+    "power-efficiency.png": {
+      "bytes": 79408,
+      "sha256": "17b43c971f12e0a57f1bf034d0f0a5576cb575a2f976a9637d0a760fd1cc639a"
+    },
+    "recheck-environment.json": {
+      "bytes": 904,
+      "sha256": "1b9bbb991b3fa753c8b423a3d3800d38ac425fe223c82568996891d2ef5e3a45"
+    },
+    "recheck-request.json": {
+      "bytes": 2586,
+      "sha256": "4d29a397cd5d2983770d7aac23ca094b72fc6a52194491118f3623003ce6da28"
+    },
+    "recheck.json": {
+      "bytes": 284,
+      "sha256": "6be803115645bc5883269ea247b5cbc03af0cc79764138cea9c5ceefa72b7f10"
+    },
+    "request.json": {
+      "bytes": 2586,
+      "sha256": "4d29a397cd5d2983770d7aac23ca094b72fc6a52194491118f3623003ce6da28"
+    },
+    "setup.png": {
+      "bytes": 943914,
+      "sha256": "65c98fbf1bd4b80431002b1332554ab78c408bf7535c0e220388bc45caedaac2"
+    },
+    "stream-errors.json": {
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    "timing.json": {
+      "bytes": 594,
+      "sha256": "110c5ce45b7bae0ff3d5c9c702ae0b22d3bcee4d4d6bf41b106673c2a0e97825"
+    },
+    "torque-efficiency.png": {
+      "bytes": 70918,
+      "sha256": "f3dc291ce4f0c1cc88c0c2a4016db52f5e42a192390bfcb447d54ca769c61f03"
+    }
+  }
+}

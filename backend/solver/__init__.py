@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any, Literal, Protocol, cast, overload
 
 from backend import field_artifacts
+from backend.cogging import cogging_record
 from backend.dq_flux_linkage import dq_flux_linkage_from_sweep
 from backend.field_lines import build_field_line_plot
 from backend.geometry_drawer import (
@@ -97,6 +98,7 @@ from backend.sweep_planning import (
 from backend.sweep_planning import is_uniform_full_cycle_grid, no_load_field_frame_angles
 from backend.topology_provenance import build_mesh_signature_payload, build_topology_geometry_provenance
 from backend.torque_metrics import torque_at_q_axis_nm as _torque_at_q_axis_nm
+from backend.winding_resistance import winding_resistance
 
 # The solver interface is core-owned; private implementations share it.
 
@@ -122,12 +124,16 @@ def _full_cycle_back_emf_angle_grid(
 
 
 def _cogging_angle_grid(config: MotorConfig) -> list[float]:
-    """One electrical cogging period for per-angle no-load torque extraction."""
+    """One electrical cogging period for per-angle no-load torque extraction.
+
+    The preset's positions per period, unless MAGNETO2D_COGGING_STEP_DEG sets a
+    diagnostic step.
+    """
     raw_step = solver_setting("MAGNETO2D_COGGING_STEP_DEG")
     try:
-        step_deg = float(raw_step) if raw_step is not None else 1.0
+        step_deg = float(raw_step) if raw_step is not None else None
     except ValueError:
-        step_deg = 1.0
+        step_deg = None
     return shared_cogging_angle_grid(config, step_deg=step_deg)
 
 
@@ -258,7 +264,9 @@ def _prune_solve_cache(cache_root: Path) -> None:
     retained_bytes = 0
     for index, cache_dir in enumerate(caches):
         size = _cache_dir_size_bytes(cache_dir)
-        if index == 0 or (index < SOLVE_CACHE_KEEP_LATEST and retained_bytes + size <= budget):
+        if index == 0 or field_artifacts.solve_cache_is_protected(cache_dir) or (
+            index < SOLVE_CACHE_KEEP_LATEST and retained_bytes + size <= budget
+        ):
             retained_bytes += size
             continue
         shutil.rmtree(cache_dir, ignore_errors=True)
@@ -336,6 +344,7 @@ from backend.solver._helpers import (  # noqa: E402, F401  (re-exports for tests
     _attach_field_frame_artifacts,
     _back_emf_from_flux_linkage,
     _close_enough,
+    _cogging_sweep_series,
     _config_with_phase_current,
     _energy_series,
     _estimate_live_back_emf_at_angle,
@@ -654,6 +663,9 @@ def _angle_mesh_cache_scope_key(
             if clockwise_positive
             else "counterclockwise_positive_solver"
         ),
+        # A rotated artifact cached with reuse on is not an independently
+        # meshed position when a developer later disables reuse.
+        "slot_pitch_mesh_reuse": gmsh_mesh_reuse_enabled(),
     }
     return hashlib.sha256(
         json.dumps(payload, sort_keys=True, default=str).encode("utf-8")
@@ -914,12 +926,14 @@ def _iron_loss_record(
     config: MotorConfig,
     samples: list[StatorFieldSample | None],
     angles_elec_deg: list[float],
-) -> tuple[dict[str, Any], dict[str, Any] | None]:
+) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
     """Iron loss for the sweep report, and its density on the first frame.
 
     It is an extra result, so it never fails a solve.
     """
 
+    if config.solve_options is not None and not config.solve_options.losses_efficiency:
+        return None, None
     try:
         record, density = estimate_iron_loss_and_density(config, samples, angles_elec_deg)
         return record.model_dump(mode="json"), density
@@ -1037,6 +1051,8 @@ def _solve_with_per_angle_producer_meshes(
         else config
     )
     opts = config.solve_options or SolveOptionsConfig()
+    if not opts.torque_sweep and not opts.losses_efficiency:
+        excitation_config = _config_with_phase_current(excitation_config, 0.0)
     angles_elec_deg = estimate_magneto2d_sweep_angle_grid(config)
     pole_pairs = max(1, config.rotor.pole_count // 2)
 
@@ -1057,12 +1073,16 @@ def _solve_with_per_angle_producer_meshes(
     no_load_angles_elec_deg = (
         _full_cycle_back_emf_angle_grid(config, angles_elec_deg)
         if opts.back_emf or opts.thd_analysis
-        else _cogging_angle_grid(config) if opts.cogging_torque else []
+        else []
     )
+    # Cogging gets its own grid, one cogging period (#185): the Back-EMF grid
+    # is too coarse for it. Positions both grids share are solved once.
+    cogging_angles_elec_deg = _cogging_angle_grid(config) if opts.cogging_torque else []
+    cogging_endpoints_independent = True
     run_no_load = bool(no_load_angles_elec_deg)
-    no_load_stage = "noload_sweep" if opts.back_emf or opts.thd_analysis else "magneto2d_cogging"
-    no_load_timing_label = "No-load field solve" if opts.back_emf or opts.thd_analysis else "Cogging field solve"
-    no_load_solve_kind = "no_load" if opts.back_emf or opts.thd_analysis else "cogging"
+    no_load_stage = "noload_sweep" if run_no_load else "magneto2d_cogging"
+    no_load_timing_label = "No-load field solve" if run_no_load else "Cogging field solve"
+    no_load_solve_kind = "no_load" if run_no_load else "cogging"
     include_no_load_field_frames = bool(
         getattr(solve_params, "stream_noload_field_lines", False)
     )
@@ -1077,10 +1097,17 @@ def _solve_with_per_angle_producer_meshes(
             else []
         ),
     ]
+    back_emf_solve_keys = {_per_angle_grid_key(angle) for angle in no_load_solve_angles}
+    cogging_only_angles = [
+        angle for angle in cogging_angles_elec_deg
+        if _per_angle_grid_key(angle) not in back_emf_solve_keys
+    ]
+    no_load_solve_angles.extend(cogging_only_angles)
+    run_no_load_solves = bool(no_load_solve_angles)
     no_load_angle_keys = {_per_angle_grid_key(angle) for angle in no_load_solve_angles}
     loaded_angle_keys = {_per_angle_grid_key(angle) for angle in angles_elec_deg}
     no_load_only_angles = [
-        angle for angle in no_load_angles_elec_deg
+        angle for angle in (*no_load_angles_elec_deg, *cogging_only_angles)
         if _per_angle_grid_key(angle) not in loaded_angle_keys
     ]
     loaded_mesh_evidence_by_key: dict[int, dict[str, Any]] = {}
@@ -1126,6 +1153,23 @@ def _solve_with_per_angle_producer_meshes(
                 for angle in no_load_angles_elec_deg
             ],
         }
+    def attach_cogging_sweep(sweep_report: dict[str, Any]) -> None:
+        # The aggregate's cogging series come from the Back-EMF grid; a
+        # cogging run replaces them with its own period.
+        if not cogging_angles_elec_deg:
+            return
+        sweep_report["sweep"].update(
+            _cogging_sweep_series(
+                [no_load_reports_by_key[_per_angle_grid_key(angle)] for angle in cogging_angles_elec_deg],
+                cogging_angles_elec_deg,
+                independent_endpoints=cogging_endpoints_independent,
+            )
+        )
+        sweep_report["comparison_mesh_evidence"]["cogging"] = [
+            noload_mesh_evidence_by_key[_per_angle_grid_key(angle)]
+            for angle in cogging_angles_elec_deg
+        ]
+
     loaded_reports: list[dict[str, Any]] = []
     no_load_reports_by_key: dict[int, dict[str, Any]] = {}
     mesh_generation_time_ms = 0
@@ -1133,11 +1177,11 @@ def _solve_with_per_angle_producer_meshes(
     # outside the loaded grid. On a full-cycle sweep the no-load grid equals
     # the loaded grid, so the old accounting (len(no_load_only_angles) == 0)
     # froze the UI at N/N+1 for the entire back-EMF phase.
-    progress_no_load_count = len(no_load_solve_angles) if run_no_load else 0
+    progress_no_load_count = len(no_load_solve_angles) if run_no_load_solves else 0
     total_progress = len(angles_elec_deg) + progress_no_load_count + 1
     no_load_config = (
         _config_with_phase_current(excitation_config, 0.0)
-        if run_no_load
+        if run_no_load_solves
         else None
     )
     compact_qa_report = solver_setting("COILEM_MAGNETO2D_COMPACT_QA_REPORT") == "1"
@@ -1347,6 +1391,17 @@ def _solve_with_per_angle_producer_meshes(
             congruence_groups = slot_congruence_groups(
                 mesh_jobs, config.stator.slot_count
             )
+            if cogging_angles_elec_deg:
+                endpoint_keys = {
+                    _per_angle_grid_key(cogging_angles_elec_deg[0]),
+                    _per_angle_grid_key(cogging_angles_elec_deg[-1]),
+                }
+                # A rigidly rotated mesh (and possibly its copied solution)
+                # cannot provide an independent remesh-noise measurement.
+                cogging_endpoints_independent = not any(
+                    endpoint_keys <= {int(group["base"]["angle_key"]), *(int(job["angle_key"]) for job, _ in group["derived"])}
+                    for group in congruence_groups
+                )
             if any(group["derived"] for group in congruence_groups):
                 producer_jobs = [group["base"] for group in congruence_groups]
                 derived_jobs_by_base_key = {
@@ -1758,7 +1813,7 @@ def _solve_with_per_angle_producer_meshes(
             live_field_frames_ordered: list[dict[str, Any] | None] = [None] * len(loaded_reports)
             steel_accumulators_ordered: list[dict[str, Any] | None] = [None] * len(loaded_reports)
             stator_samples_ordered: list[StatorFieldSample | None] = [None] * len(loaded_reports)
-            capture_stator_field = iron_loss_unavailable_reason(config, angles_elec_deg) is None
+            capture_stator_field = opts.losses_efficiency and iron_loss_unavailable_reason(config, angles_elec_deg) is None
             field_frame_jobs: list[
                 tuple[int, dict[str, Any], float, dict[str, Any] | None, str | None, bool, bool]
             ] = [
@@ -1888,6 +1943,7 @@ def _solve_with_per_angle_producer_meshes(
             None,
         )
         attach_solve_mesh_evidence(sweep_report)
+        attach_cogging_sweep(sweep_report)
         single_report = loaded_reports[0]
 
         if summary_cache_dir is not None:
@@ -2112,6 +2168,7 @@ def _solve_with_per_angle_producer_meshes(
             None,
         )
         attach_solve_mesh_evidence(sweep_report)
+        attach_cogging_sweep(sweep_report)
         single_report = loaded_reports[0]
 
         if summary_cache_dir is not None:
@@ -2389,6 +2446,7 @@ def _solve_with_per_angle_producer_meshes(
             None,
         )
         attach_solve_mesh_evidence(sweep_report)
+        attach_cogging_sweep(sweep_report)
         single_report = loaded_reports[0]
 
         if summary_cache_dir is not None:
@@ -2613,6 +2671,7 @@ def _solve_with_per_angle_producer_meshes(
         None,
     )
     attach_solve_mesh_evidence(sweep_report)
+    attach_cogging_sweep(sweep_report)
     single_report = loaded_reports[0]
 
     if summary_cache_dir is not None:
@@ -2677,6 +2736,10 @@ class Magneto2DSolver(Solver):
             raise ValueError("magneto2d postprocess requires solve_params")
 
         sweep = sweep_report["sweep"]
+        result_solve_options = config.solve_options or SolveOptionsConfig()
+        torque_requested = result_solve_options.torque_sweep
+        losses_requested = result_solve_options.losses_efficiency
+        loaded_sweep_needed = torque_requested or losses_requested
         torque_method = solve_params.torque_method
         torque_waveform_nm, avg_torque_nm, torque_metric = _select_magneto2d_torque_series(
             sweep,
@@ -2692,7 +2755,7 @@ class Magneto2DSolver(Solver):
         torque_q_axis_nm = _torque_at_q_axis_nm(rotor_positions_elec_deg, torque_waveform_nm)
         expected_torque_len = len(rotor_positions_elec_deg)
         phase_current_waveform = None
-        if solve_params.excitation_mode == "ideal_six_step_120":
+        if solve_params.excitation_mode == "ideal_six_step_120" and torque_requested:
             phase_current_a = _aligned_number_list(
                 sweep.get("phase_current_a_A"), expected_torque_len
             )
@@ -2734,7 +2797,7 @@ class Magneto2DSolver(Solver):
             ]
         cogging_torque_waveform_nm, cogging_torque_metric = _select_magneto2d_cogging_series(
             sweep,
-            torque_method,
+            str(sweep.get("cogging_torque_method") or torque_method),
         )
         if launch_surface and cogging_torque_metric in _NATIVE_DIRECTION_TORQUE_METRICS:
             cogging_torque_waveform_nm = [
@@ -2749,9 +2812,28 @@ class Magneto2DSolver(Solver):
         single_results = single_report["results"]
         mesh_info = sweep_report["mesh_info"]
         operating_point = sweep_report["operating_point"]
-        result_solve_options = config.solve_options or SolveOptionsConfig()
         back_emf_requested = bool(result_solve_options.back_emf or result_solve_options.thd_analysis)
         cogging_requested = bool(result_solve_options.cogging_torque)
+        cogging_summary = (
+            cogging_record(
+                sweep.get("cogging_rotor_positions_elec_deg") or [],
+                cogging_torque_waveform_nm,
+                slot_count=config.stator.slot_count,
+                pole_count=config.rotor.pole_count,
+                # "selected" is the solver's own pick, which it names.
+                method=str(
+                    sweep.get("cogging_torque_method") or torque_method
+                    if cogging_torque_metric == "selected"
+                    else cogging_torque_metric
+                ),
+                loaded_mean_torque_Nm=avg_torque_nm if torque_requested else None,
+                loaded_torque_requested=torque_requested,
+                loaded_current_A=operating_point.get("resolved_phase_current_peak_a"),
+                independent_endpoints=sweep.get("cogging_endpoints_independent") is True,
+            )
+            if cogging_requested and cogging_torque_waveform_nm
+            else None
+        )
         if back_emf_requested:
             no_load_waveform_a = sweep.get("no_load_back_emf_a_physical_v", sweep["back_emf_a_v"])
             no_load_waveform_b = sweep.get("no_load_back_emf_b_physical_v", sweep["back_emf_b_v"])
@@ -2776,15 +2858,11 @@ class Magneto2DSolver(Solver):
             back_emf_thd_pct = sweep.get("back_emf_thd_pct")
             back_emf_harmonic_analysis = sweep.get("back_emf_harmonic_analysis")
         else:
-            back_emf_angles_elec_deg = (
-                rotor_positions_elec_deg
-                if len(rotor_positions_elec_deg) >= 2
-                else [0.0, 360.0]
-            )
+            back_emf_angles_elec_deg = []
             no_load_waveform_a = [0.0 for _ in back_emf_angles_elec_deg]
             no_load_waveform_b = [0.0 for _ in back_emf_angles_elec_deg]
             no_load_waveform_c = [0.0 for _ in back_emf_angles_elec_deg]
-            emf_fundamental = 0.0
+            emf_fundamental = None
             back_emf_thd_pct = None
             back_emf_harmonic_analysis = None
 
@@ -2805,9 +2883,9 @@ class Magneto2DSolver(Solver):
         steel_b_rms = _validated_steel_flux_density_rms(
             sweep_report.get("steel_flux_density_rms"),
         ) or steel_flux_density_rms_from_frames(field_line_frames or [])
-        iron_loss = _validated_iron_loss(sweep_report.get("iron_loss"))
-        iron_loss_density_raw = sweep_report.get("iron_loss_density")
-        if iron_loss is None and field_line_frames:
+        iron_loss = _validated_iron_loss(sweep_report.get("iron_loss")) if losses_requested else None
+        iron_loss_density_raw = sweep_report.get("iron_loss_density") if losses_requested else None
+        if losses_requested and iron_loss is None and field_line_frames:
             # Sweeps without per-position stator samples (the batch path, or a
             # report cached before iron loss existed) read the frame artifacts,
             # but only when the sweep can have iron loss at all.
@@ -2835,7 +2913,15 @@ class Magneto2DSolver(Solver):
         summary_slot_excitation = single_results.get("slot_excitation_contributions")
         if summary_slot_excitation is None and slot_excitation_frames:
             summary_slot_excitation = [contribution.model_dump(mode="json") for contribution in slot_excitation_frames[0].contributions]
-        winding_record, loss_breakdown = operating_point_losses(config, avg_torque_nm, iron_loss)
+        if losses_requested:
+            winding_record, loss_breakdown = operating_point_losses(config, avg_torque_nm, iron_loss)
+        else:
+            # Resistance is a winding property, independent of the loss analysis.
+            try:
+                winding_record = winding_resistance(config)
+            except (ValueError, KeyError):
+                winding_record = None
+            loss_breakdown = None
         try:
             dq_record = dq_flux_linkage_from_sweep(
                 sweep,
@@ -2847,6 +2933,8 @@ class Magneto2DSolver(Solver):
                 ),
             )
         except Exception:  # a diagnostic; never fail the solve over it
+            dq_record = None
+        if not loaded_sweep_needed:
             dq_record = None
         iron_loss_density = _iron_loss_density(iron_loss_density_raw, field_line_plot)
         efficiency = None
@@ -2865,7 +2953,7 @@ class Magneto2DSolver(Solver):
         thermal_loss_map = None
 
         kt_const, ke_const, lambda_pm_const = compute_machine_constants(
-            avg_torque_Nm=avg_torque_nm,
+            avg_torque_Nm=avg_torque_nm if torque_requested else None,
             current_amplitude_A=operating_point["resolved_phase_current_peak_a"],
             back_emf_fundamental_V_rms_LN=emf_fundamental,
             rated_speed_rpm=sweep["rated_speed_rpm"],
@@ -2944,10 +3032,10 @@ class Magneto2DSolver(Solver):
         from backend.solver.convergence import convergence_fields
 
         convergence_result, convergence_metadata = convergence_fields(sweep)
-        return SolveResult(
+        result = SolveResult(
             **convergence_result,
             summary=SolveSummary(
-                avg_torque_Nm=avg_torque_nm,
+                avg_torque_Nm=avg_torque_nm if torque_requested else None,
                 avg_torque_energy_fd_Nm=_torque_in_ui_direction(
                     _finite_number(sweep.get("avg_torque_energy_fd_nm")),
                     clockwise_positive=launch_surface,
@@ -2970,9 +3058,10 @@ class Magneto2DSolver(Solver):
                     _finite_number(sweep.get("avg_torque_current_source_work_fd_nm")),
                     clockwise_positive=launch_surface,
                 ),
-                torque_q_axis_Nm=torque_q_axis_nm,
-                torque_ripple_pct=torque_ripple_pct,
-                cogging_torque_Nm=sweep.get("cogging_torque_nm") if cogging_requested else None,
+                torque_q_axis_Nm=torque_q_axis_nm if torque_requested else None,
+                torque_ripple_pct=torque_ripple_pct if torque_requested else None,
+                cogging_torque_Nm=cogging_summary.peak_to_peak_Nm if cogging_summary is not None else None,
+                cogging=cogging_summary,
                 back_emf_fundamental_V=emf_fundamental,
                 back_emf_thd_pct=back_emf_thd_pct,
                 back_emf_thd_h6_pct=sweep.get("back_emf_thd_h6_pct"),
@@ -3001,10 +3090,10 @@ class Magneto2DSolver(Solver):
                 solve_time_s=total_time_s,
             ),
             torque_waveform=TorqueWaveform(
-                electrical_angle_deg=rotor_positions_elec_deg,
-                torque_Nm=torque_waveform_nm,
-                torque_energy_fd_Nm=torque_energy_fd_nm or None,
-                torque_coenergy_fd_Nm=torque_coenergy_fd_nm or None,
+                electrical_angle_deg=rotor_positions_elec_deg if torque_requested else [],
+                torque_Nm=torque_waveform_nm if torque_requested else [],
+                torque_energy_fd_Nm=(torque_energy_fd_nm or None) if torque_requested else None,
+                torque_coenergy_fd_Nm=(torque_coenergy_fd_nm or None) if torque_requested else None,
             ),
             phase_current_waveform=phase_current_waveform,
             cogging_torque_waveform=(
@@ -3050,6 +3139,7 @@ class Magneto2DSolver(Solver):
                     if config.geometry_reference else None
                 ),
                 back_emf_computed=back_emf_requested,
+                torque_sweep_computed=torque_requested,
                 solver_environment=single_report.get("solver_environment"),
                 mesh_element_count=mesh_info["num_triangles"],
                 rotor_positions=len(sweep["rotor_positions_elec_deg"]),
@@ -3121,6 +3211,15 @@ class Magneto2DSolver(Solver):
             thermal_loss_map=thermal_loss_map,
             core_loss_density_w_per_m3=core_loss_density,
         )
+        if not torque_requested:
+            # A static field, or the loaded fields required by losses, must
+            # not masquerade as a requested torque analysis in saved results.
+            for name in type(result.summary).model_fields:
+                if name.startswith("avg_torque_"):
+                    setattr(result.summary, name, None)
+            result.summary.dq_flux_linkage = None
+            result.summary.Kt_Nm_per_A = None
+        return result
 
     @staticmethod
     def attach_cached_field_line_frames(result: SolveResult) -> SolveResult:

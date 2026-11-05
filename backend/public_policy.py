@@ -210,8 +210,15 @@ def parse_public_solve_request(
             "The requested electromagnetic solver is unavailable in the public application.",
             field="solver",
         )
+    config = parse_public_motor_config(config_body, allow_experimental_rotors=allow_experimental_rotors)
+    options = config.solve_options
+    if options is not None and not any((
+        options.torque_sweep, options.back_emf, options.thd_analysis, options.cogging_torque, options.losses_efficiency,
+        options.torque_speed_envelope,
+    )):
+        raise PublicConfigError("Select at least one analysis.", field="solve_options")
     return (
-        parse_public_motor_config(config_body, allow_experimental_rotors=allow_experimental_rotors),
+        config,
         solve_mesh_key,
         cast(PublicSolverId, requested_solver),
     )
@@ -267,11 +274,19 @@ def public_config_support_error(
             field="solve_params",
         )
 
-    if config.solve_options is not None and config.solve_options.cogging_torque:
+    if solver_id == "elmer" and config.solve_options is not None and config.solve_options.cogging_torque:
         return PublicConfigError(
-            "Cogging-torque analysis is not included in this developer preview.",
+            "Cogging torque is solved by Magneto2D only.",
             field="solve_options.cogging_torque",
         )
+
+    if config.solve_options is not None and config.solve_options.torque_speed_envelope:
+        if solver_id == "elmer":
+            return PublicConfigError("Torque–speed maps use Magneto2D.", field="solve_options.torque_speed_envelope")
+        if config.torque_speed_analysis is None:
+            return PublicConfigError("Set the torque–speed map limits and grid.", field="torque_speed_analysis")
+        if config.solve_params is not None and config.solve_params.rated_speed_rpm <= 0:
+            return PublicConfigError("Torque–speed maps need a reference speed above 0 rpm.", field="solve_params.rated_speed_rpm")
 
     winding_error = get_magneto2d_winding_support_error(config)
     if winding_error is not None:
