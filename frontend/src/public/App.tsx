@@ -1423,11 +1423,11 @@ export function App() {
 
   // The arrangement switch swaps designs rather than reinterpreting inrunner
   // dimensions as an outer rotor's; the last inrunner comes back on return.
-  const lastInrunnerRef = useRef<{ name: string; config: MotorConfig } | null>(null);
+  const lastInrunnerRef = useRef<{ name: string | null; config: MotorConfig } | null>(null);
   const updateRotorLayout = (layout: RotorLayout) => {
     if (layout === (config.rotor_layout ?? 'inner')) return;
     if (layout === 'outer') {
-      lastInrunnerRef.current = { name: designName ?? 'Inrunner design', config };
+      lastInrunnerRef.current = { name: designName, config };
       loadExampleDesign('spm-outrunner-14p12s');
       return;
     }
@@ -1435,7 +1435,7 @@ export function App() {
     loadExampleDesign('spm-8p12s', previous ?? undefined);
   };
 
-  const loadExampleDesign = (exampleId: PublicExampleId, restored?: { name: string; config: MotorConfig }) => {
+  const loadExampleDesign = (exampleId: PublicExampleId, restored?: { name: string | null; config: MotorConfig }) => {
     const example = restored ?? createPublicExampleDesign(exampleId);
     rememberPresetSweep(example.config);
     setConfig(example.config);
@@ -1452,7 +1452,7 @@ export function App() {
     setShowLanding(false);
     setTutorialsView(null);
     setView('design');
-    setNotice(`Loaded ${example.name}.`);
+    setNotice(`Loaded ${example.name ?? 'the previous inrunner'}.`);
     if (typeof window !== 'undefined' && window.location.pathname !== '/') {
       window.history.pushState({}, '', '/');
     }

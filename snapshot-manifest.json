@@ -6995,8 +6995,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 74706,
-      "sha256": "deac82db481f521828d02dd0bd94568aa627f5b23adb6579cfda8aa720ef9a6a"
+      "bytes": 74726,
+      "sha256": "23bfc5eae3f531ae508a3c4f85db0b7c243aa0b8f104444de94cd4562637da7c"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
