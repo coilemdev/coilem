@@ -100,7 +100,7 @@ import { LessonProgressStepper } from '../components/tutorials/LessonProgressSte
 import { designErrorSection } from './designErrors';
 import { magnetPoleCoveragePct } from './magnetCoverage';
 import { RpmField } from './RpmField';
-import { torqueRippleView } from './resultMetrics';
+import { solvedPhaseCurrent, torqueRippleView } from './resultMetrics';
 import type { LearningLessonHeaderProgress } from '../components/tutorials/lessonStage';
 import {
   publicMeshQualityBand,
@@ -147,6 +147,7 @@ interface CoilEmWorkspaceProps {
   activeStep: PublicWorkflowStep;
   guidedActive?: boolean;
   guidedDesignSection?: PublicParameterSection | null;
+  guidedSolveSection?: SolveSetupSection | null;
   busy: PublicBusyAction;
   connectionStatus: PublicConnectionStatus;
   appVersion?: string | null;
@@ -3006,13 +3007,18 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
         <span className="public-section-kicker">Completed results</span>
         <button type="button" data-guide="open-report" onClick={onOpenReport}>Full results →</button>
       </div>
+      {torqueSpeed?.status === 'partial' && <p className="performance-message is-warning" role="status">
+        Torque–speed map incomplete: completed analyses and points are saved. Review failed points under Torque–speed and run again to retry.
+      </p>}
       {showAllResults ? (
         <div id={allResultsId}>
           <section className="motor-constants public-result-list" aria-labelledby={resultsHeadingId}>
             <h3 id={resultsHeadingId}>Performance</h3>
             <table>
               <tbody>
-                {result.torque_speed_analysis && resultRow('Torque–speed map', String(result.torque_speed_analysis.map.points.length), 'points')}
+                {torqueSpeed && resultRow('Torque–speed map', torqueSpeed.status === 'partial'
+                  ? `${torqueSpeed.map.points.filter((point) => point.status === 'ok').length} / ${torqueSpeed.map.points.length}`
+                  : String(torqueSpeed.map.points.length), torqueSpeed.status === 'partial' ? 'solved · incomplete' : 'points')}
                 {cogging && resultRow('Cogging torque p-p', formatNumber(cogging.peak_to_peak_Nm), 'N·m')}
                 {losses && resultRow('Total loss', formatNumber(losses.total_loss_W), 'W')}
                 {losses && resultRow('Efficiency', formatNumber(losses.efficiency_pct), '%')}
@@ -3034,7 +3040,9 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
           <h3 id={resultsHeadingId}>Key results</h3>
           <table>
             <tbody>
-                {result.torque_speed_analysis && resultRow('Torque–speed map', String(result.torque_speed_analysis.map.points.length), 'points')}
+                {torqueSpeed && resultRow('Torque–speed map', torqueSpeed.status === 'partial'
+                  ? `${torqueSpeed.map.points.filter((point) => point.status === 'ok').length} / ${torqueSpeed.map.points.length}`
+                  : String(torqueSpeed.map.points.length), torqueSpeed.status === 'partial' ? 'solved · incomplete' : 'points')}
                 {cogging && resultRow('Cogging torque p-p', formatNumber(cogging.peak_to_peak_Nm), 'N·m')}
                 {losses && resultRow('Total loss', formatNumber(losses.total_loss_W), 'W')}
                 {losses && resultRow('Efficiency', formatNumber(losses.efficiency_pct), '%')}
@@ -3075,7 +3083,9 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
       </>}
       {activePlot === 'cogging' && result.cogging_torque_waveform && <CompactLiveChart state="complete" label="Cogging torque" unit="N·m" angles={result.cogging_torque_waveform.electrical_angle_deg} series={[{ label: 'Cogging', values: result.cogging_torque_waveform.torque_Nm, color: '#f59e0b' }]} />}
       {activePlot === 'torque-speed' && torqueSpeed && <CompactTorqueSpeedChart analysis={torqueSpeed} currentConvention={result.solve_metadata.current_amplitude_convention} />}
-      <p>{activePlot === 'torque-speed' ? 'Open Full results for power–speed curves and the efficiency map.' : 'Move along a curve to show that position in the field view; click to keep it.'}</p>
+      <p>{activePlot === 'torque-speed'
+        ? torqueSpeed?.status === 'partial' ? 'Completed map points are retained for retry.' : 'Open Full results for power–speed curves and the efficiency map.'
+        : 'Move along a curve to show that position in the field view; click to keep it.'}</p>
       </>}
     </section>
   );
@@ -3217,15 +3227,17 @@ function BackEMFHarmonicSpectrum({
   );
 }
 
-type SolveSetupSection = 'solver' | 'operating' | 'analysis' | 'plan' | 'advanced';
+export type SolveSetupSection = 'solver' | 'operating' | 'analysis' | 'plan' | 'advanced';
 
-function SolveStage({ config, materials, geometry, mesh, validation, validationChecking, validationError, result, armatureField, armatureFieldError, progress, liveSamples, busy, error, errorDetails, notice, progressPercent, meshElements, meshQuality, selectedSolver, elmerCapability, onBack, onOpenReport, onGenerateMesh, onStartSolve, onCancelSolve, onRequestArmatureField, onCancelArmatureField, onMeshSettingChange, onSolvePlanChange, onCustomSweepChange, onSolveSettingChange, onAnalysisChange, onTorqueSpeedChange, onSolverChange, onManageRuns }: Pick<CoilEmWorkspaceProps,
-  'config' | 'materials' | 'geometry' | 'mesh' | 'validation' | 'validationChecking' | 'validationError' | 'result' | 'armatureField' | 'armatureFieldError' | 'progress' | 'liveSamples' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'progressPercent' | 'meshElements' | 'meshQuality' | 'selectedSolver' | 'elmerCapability' | 'onGenerateMesh' | 'onStartSolve' | 'onCancelSolve' | 'onRequestArmatureField' | 'onCancelArmatureField' | 'onMeshSettingChange' | 'onSolvePlanChange' | 'onCustomSweepChange' | 'onSolveSettingChange' | 'onAnalysisChange' | 'onTorqueSpeedChange' | 'onSolverChange'
+function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, validation, validationChecking, validationError, result, armatureField, armatureFieldError, progress, liveSamples, busy, error, errorDetails, notice, progressPercent, meshElements, meshQuality, selectedSolver, elmerCapability, onBack, onOpenReport, onGenerateMesh, onStartSolve, onCancelSolve, onRequestArmatureField, onCancelArmatureField, onMeshSettingChange, onSolvePlanChange, onCustomSweepChange, onSolveSettingChange, onAnalysisChange, onTorqueSpeedChange, onSolverChange, onManageRuns }: Pick<CoilEmWorkspaceProps,
+  'config' | 'guidedSolveSection' | 'materials' | 'geometry' | 'mesh' | 'validation' | 'validationChecking' | 'validationError' | 'result' | 'armatureField' | 'armatureFieldError' | 'progress' | 'liveSamples' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'progressPercent' | 'meshElements' | 'meshQuality' | 'selectedSolver' | 'elmerCapability' | 'onGenerateMesh' | 'onStartSolve' | 'onCancelSolve' | 'onRequestArmatureField' | 'onCancelArmatureField' | 'onMeshSettingChange' | 'onSolvePlanChange' | 'onCustomSweepChange' | 'onSolveSettingChange' | 'onAnalysisChange' | 'onTorqueSpeedChange' | 'onSolverChange'
 > & { onBack: () => void; onOpenReport: () => void; onManageRuns?: () => void }) {
   // The setup sections open one at a time, as Design's do. The accuracy plan
-  // starts open: it is the choice made on every run, and the guided tour's
-  // solve step points at it.
-  const [openSetupSection, setOpenSetupSection] = useState<SolveSetupSection | null>('plan');
+  // starts open for ordinary runs. The guide opens the section for its stop.
+  const [openSetupSection, setOpenSetupSection] = useState<SolveSetupSection | null>(guidedSolveSection ?? 'plan');
+  useEffect(() => {
+    if (guidedSolveSection) setOpenSetupSection(guidedSolveSection);
+  }, [guidedSolveSection]);
   // The result plots set the field view's position, and show it.
   const fieldPositionLink = useMemo(createFieldPositionLink, []);
   const toggleSetupSection = (section: SolveSetupSection) => setOpenSetupSection((current) => current === section ? null : section);
@@ -3790,7 +3802,7 @@ function SolveStage({ config, materials, geometry, mesh, validation, validationC
           </div>
           {sixStepSelected && <div className="public-six-step-limitation" role="note"><strong>Phase connection: Wye (MVP)</strong><span>Ideal current excitation only — no PWM, switching ripple, Hall timing, dead time, or ESC dynamics.</span></div>}
         </ParameterSectionBlock>
-        <ParameterSectionBlock id="analysis" label="Analysis" summary={analysisSummary(config, selectedSolver)} active={openSetupSection === 'analysis'} attention={selectedAnalyses(config, selectedSolver).length === 0} onToggle={toggleSetupSection}>
+        <ParameterSectionBlock id="analysis" label="Analysis" summary={analysisSummary(config, selectedSolver)} active={openSetupSection === 'analysis'} attention={selectedAnalyses(config, selectedSolver).length === 0} onToggle={toggleSetupSection} guide="solve-analysis">
           <AnalysisOptions config={config} solver={selectedSolver} busy={busy !== null} coggingPositions={validation?.cogging_positions_per_period} onChange={onAnalysisChange} onTorqueSpeedChange={onTorqueSpeedChange} />
         </ParameterSectionBlock>
         <ParameterSectionBlock id="plan" label="Accuracy plan" summary={planSummary} active={openSetupSection === 'plan'} onToggle={toggleSetupSection} guide="solve-plan">
@@ -4228,7 +4240,7 @@ function ReportStage({
     ] : []),
     {
       label: sixStep ? 'Conducting phase current' : 'Phase current',
-      value: `${formatNumber(config.solve_params.current_amplitude_A)} A ${sixStep ? 'plateau' : config.solve_params.current_amplitude_convention}`,
+      value: `${formatNumber(solvedPhaseCurrent(config, result))} A ${sixStep ? 'plateau' : config.solve_params.current_amplitude_convention}`,
     },
     { label: 'Excitation', value: sixStep ? 'Ideal six-step (120°)' : 'Sinusoidal' },
     ...(reportQualification ? [{ label: 'Qualification', value: qualificationLabel(reportQualification) }] : []),
@@ -4506,7 +4518,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
               )}
             </div>
           )}
-          {props.activeStep === 'solve' && <SolveStage config={props.config} materials={props.materials} geometry={props.geometry} mesh={props.mesh} validation={props.validation} validationChecking={props.validationChecking} validationError={props.validationError} result={props.result} armatureField={props.armatureField} armatureFieldError={props.armatureFieldError} progress={props.progress} liveSamples={props.liveSamples} busy={props.busy} error={props.error} errorDetails={props.errorDetails} notice={props.notice} progressPercent={props.progressPercent} meshElements={props.meshElements} meshQuality={props.meshQuality} selectedSolver={props.selectedSolver} elmerCapability={props.elmerCapability} onBack={() => props.onStepChange('design')} onOpenReport={() => props.onStepChange('report')} onGenerateMesh={props.onGenerateMesh} onStartSolve={props.onStartSolve} onCancelSolve={props.onCancelSolve} onRequestArmatureField={props.onRequestArmatureField} onCancelArmatureField={props.onCancelArmatureField} onMeshSettingChange={props.onMeshSettingChange} onSolvePlanChange={props.onSolvePlanChange} onCustomSweepChange={props.onCustomSweepChange} onSolveSettingChange={props.onSolveSettingChange} onAnalysisChange={props.onAnalysisChange} onTorqueSpeedChange={props.onTorqueSpeedChange} onSolverChange={props.onSolverChange} onManageRuns={needsRunStorageRecovery(props.error) ? () => setRunHistoryOpen(true) : undefined} />}
+          {props.activeStep === 'solve' && <SolveStage config={props.config} guidedSolveSection={props.guidedSolveSection} materials={props.materials} geometry={props.geometry} mesh={props.mesh} validation={props.validation} validationChecking={props.validationChecking} validationError={props.validationError} result={props.result} armatureField={props.armatureField} armatureFieldError={props.armatureFieldError} progress={props.progress} liveSamples={props.liveSamples} busy={props.busy} error={props.error} errorDetails={props.errorDetails} notice={props.notice} progressPercent={props.progressPercent} meshElements={props.meshElements} meshQuality={props.meshQuality} selectedSolver={props.selectedSolver} elmerCapability={props.elmerCapability} onBack={() => props.onStepChange('design')} onOpenReport={() => props.onStepChange('report')} onGenerateMesh={props.onGenerateMesh} onStartSolve={props.onStartSolve} onCancelSolve={props.onCancelSolve} onRequestArmatureField={props.onRequestArmatureField} onCancelArmatureField={props.onCancelArmatureField} onMeshSettingChange={props.onMeshSettingChange} onSolvePlanChange={props.onSolvePlanChange} onCustomSweepChange={props.onCustomSweepChange} onSolveSettingChange={props.onSolveSettingChange} onAnalysisChange={props.onAnalysisChange} onTorqueSpeedChange={props.onTorqueSpeedChange} onSolverChange={props.onSolverChange} onManageRuns={needsRunStorageRecovery(props.error) ? () => setRunHistoryOpen(true) : undefined} />}
           {props.activeStep === 'report' && props.result && <ReportStage result={props.result} config={props.config} materials={props.materials} designName={props.designName ?? null} onBack={() => props.onStepChange('solve')} onOpenRunFolder={props.onOpenRunFolder} onDownloadRunExport={props.onDownloadRunExport} onOpenRunProject={props.onOpenRunProject} onRerun={props.onRerun} />}
         </div>
       </main>

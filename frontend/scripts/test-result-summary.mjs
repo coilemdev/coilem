@@ -12,7 +12,15 @@ const {
   sharedSparklinePaths,
   torqueRange,
   torqueRippleView,
+  solvedPhaseCurrent,
 } = await importTypeScriptModule(new URL('../src/public/resultMetrics.ts', import.meta.url));
+
+const currentConfig = { solve_params: { current_amplitude_A: 30, current_amplitude_convention: 'rms' } };
+assert.equal(solvedPhaseCurrent(currentConfig, { solve_metadata: { current_amplitude_A: 0 } }), 0);
+assert.equal(solvedPhaseCurrent(currentConfig, { solve_metadata: { current_amplitude_A: 30 * Math.SQRT2 } }), 30);
+assert.equal(solvedPhaseCurrent(currentConfig, { solve_metadata: {} }), 30, 'old results retain their recorded requested current');
+assert.equal(solvedPhaseCurrent(currentConfig, { solve_metadata: { current_amplitude_A: 20, current_amplitude_convention: 'rms' } }), 20);
+assert.equal(solvedPhaseCurrent({ solve_params: { current_amplitude_A: 30, current_amplitude_convention: 'plateau' } }, { solve_metadata: { current_amplitude_A: 18 } }), 18);
 
 // The default example: 8 poles at 2,400 rpm is 160 Hz electrical.
 assert.equal(electricalFrequencyHz(2400, 8), 160);

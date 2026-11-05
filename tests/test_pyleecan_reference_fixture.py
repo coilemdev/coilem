@@ -312,7 +312,6 @@ def test_published_app_evidence_keeps_complete_actual_grids_and_its_measured_sou
     assert report["field_source_dirty"] is False
     assert report["registration_sha256"] == hashlib.sha256((folder / "app-registration.json").read_bytes()).hexdigest()
     assert report["protocol_sha256"] == hashlib.sha256((folder / "protocol.json").read_bytes()).hexdigest()
-    assert report["analysis_runner_sha256"] == hashlib.sha256((ROOT / "tools/report_prius_benchmark.py").read_bytes()).hexdigest()
     assert report["source_sha256"] == registration["source_sha256"]
     # Publication necessarily updates the snapshot. Keep the original
     # before-field snapshot identity, rather than restamping the run.
@@ -328,8 +327,9 @@ def test_published_app_evidence_keeps_complete_actual_grids_and_its_measured_sou
     # Use the original qualification registry for this historical audit. A
     # later source addition cannot be present in an earlier field snapshot.
     # The live release gate still checks every source in today's registry.
-    historical_record = json.loads((ROOT / "benchmarks/candidate-qualification-20261103/windows/platform-record.json").read_text())
-    guarded = set(historical_record["physics_files"]) | set(PRIUS_EXTRA_PHYSICS)
+    historical = json.loads((ROOT / "benchmarks/records-historical/v050/windows-x86_64.json").read_text())["physics_files"]
+    guarded = set(historical) | set(PRIUS_EXTRA_PHYSICS)
+    assert report["analysis_runner_sha256"] == measured_sources["tools/report_prius_benchmark.py"]
     assert guarded <= set(report["source_sha256"])
     for name in sorted(guarded):
         assert measured_sources[name] == report["source_sha256"][name], name

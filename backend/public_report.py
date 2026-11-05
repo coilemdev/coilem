@@ -255,8 +255,11 @@ def _output_statuses(result: Mapping[str, Any]) -> list[tuple[str, str, str, str
         recorded("cogging_torque", "Cogging torque", _mapping(summary["cogging"]), COGGING_TORQUE_STATUS_REASON)
     analysis = _mapping(result.get("torque_speed_analysis"))
     if analysis:
-        recorded("torque_speed_map", "Torque–speed envelope", _mapping(analysis.get("envelope")), "Interpolated from solved map points.")
-        recorded("map_efficiency", "Efficiency map", _mapping(analysis.get("efficiency_map")), "Interpolated from solved map points.")
+        if analysis.get("status") == "partial":
+            statuses.append(("torque_speed_map", "Torque–speed map", "unavailable", _plain(analysis.get("status_reason"))))
+        else:
+            recorded("torque_speed_map", "Torque–speed envelope", _mapping(analysis.get("envelope")), "Interpolated from solved map points.")
+            recorded("map_efficiency", "Efficiency map", _mapping(analysis.get("efficiency_map")), "Interpolated from solved map points.")
     if summary.get("dq_flux_linkage"):
         dq = _mapping(summary["dq_flux_linkage"])
         recorded("dq_flux_linkage", "d/q flux linkage", dq, DQ_FLUX_LINKAGE_STATUS_REASON)
@@ -606,7 +609,7 @@ _SETTING_LABELS = {
     "ID_mm": "Inner diameter",
     "magnet_embrace": "Magnet coverage",
     "ipm_topology": "IPM rotor type",
-    "current_amplitude_A": "Phase current",
+    "current_amplitude_A": "Requested phase current",
     "motor_input_dc_bus_V": "DC bus voltage",
     "linear_steel_mu_rel": "Linear steel relative permeability",
     "mesh_build": "Mesh build",
@@ -849,20 +852,21 @@ def _torque_ripple_metric(result: Mapping[str, Any]) -> tuple[str, str, str | No
     finite = [float(value) for value in samples if isinstance(value, (int, float)) and math.isfinite(value)]
     swing = max(finite) - min(finite) if len(finite) >= 2 else None
     current = _mapping(result.get("solve_metadata")).get("current_amplitude_A")
+    no_current = isinstance(current, (int, float)) and abs(current) <= _OPEN_CIRCUIT_CURRENT_A
     mean = summary.get("avg_torque_Nm")
     near_zero = swing is not None and swing > 0 and isinstance(mean, (int, float)) and abs(mean) < 0.01 * swing
     cogging = _mapping(summary.get("cogging"))
-    if current == 0 and isinstance(cogging.get("peak_to_peak_Nm"), (int, float)):
+    if no_current and isinstance(cogging.get("peak_to_peak_Nm"), (int, float)):
         # The cogging sweep's own number, so the report never shows two (#185).
         note = (
             f"From the cogging sweep: one cogging period at {_plain(cogging.get('positions_per_period'))} positions, "
             "under Cogging torque."
         )
         return "Cogging torque p-p", _metric_value(cogging["peak_to_peak_Nm"], "N m"), note
-    if current == 0 or near_zero:
-        label = "Cogging torque p-p" if current == 0 else "Torque p-p"
+    if no_current or near_zero:
+        label = "Cogging torque p-p" if no_current else "Torque p-p"
         note = "Ripple percentage is unavailable at zero current or near-zero mean torque; the peak-to-peak swing is shown."
-        if current == 0:
+        if no_current:
             note += " These positions are not sized to the cogging period; solve with Cogging torque on for a cogging sweep."
         return label, _metric_value(swing, "N m"), note
     return "Torque ripple", _metric_value(summary.get("torque_ripple_pct"), "%"), None
@@ -1355,7 +1359,7 @@ def _cogging_story(result: Mapping[str, Any], request: Mapping[str, Any], styles
                     "Of loaded torque",
                     f"{_number(ratio)}% of {_number(cogging.get('loaded_mean_torque_Nm'))} N m"
                     if isinstance(ratio, (int, float))
-                    else "No loaded torque (0 A run)",
+                    else cogging.get("loaded_comparison_reason") or "Loaded torque comparison unavailable",
                 ),
                 ("Method", COGGING_METHOD_LABELS.get(method, method) or "Not recorded"),
                 ("Positions per period", f"{_plain(cogging.get('positions_per_period'))}, plus the repeated end"),
@@ -1419,6 +1423,16 @@ def _torque_speed_story(result: Mapping[str, Any], styles: Mapping[str, Paragrap
         ("Top speed (rpm)", limits.get("max_speed_rpm")),
     ], styles)]
     story.extend(_status_paragraphs(result, ("torque_speed_map", "map_efficiency"), styles))
+    if analysis.get("status") == "partial":
+        points = [_mapping(point) for point in _sequence(_mapping(analysis.get("map")).get("points"))]
+        story.append(Paragraph(
+            "<b>Incomplete map.</b> Completed analyses and map points are retained. "
+            "Curves are unavailable until all points succeed.", styles["body"],
+        ))
+        story.append(_key_value_table([
+            (f"{_number(point.get('current_peak_A'))} A peak, {_number(point.get('gamma_deg'))} deg", point.get("error") or point.get("status"))
+            for point in points if point.get("status") != "ok"
+        ], styles))
     curves = _sequence(_mapping(analysis.get("envelope")).get("curves"))
     for field, title, unit in (("torque_Nm", "Torque-speed envelope", "Torque (N m)"), ("power_W", "Power-speed envelope", "Power (W)")):
         plot = _line_plot(title=title, x_label="Speed (rpm)", y_label=unit, series=tuple(
@@ -1736,6 +1750,15 @@ def build_public_run_pdf(
     story.extend([_section("Primary metrics", styles), _metric_table(summary, styles, result=result)])
     solve_params = _mapping(_mapping(request.get("resolved_config")).get("solve_params"))
     solve_metadata = _mapping(result.get("solve_metadata"))
+    # Metadata stores the actual field current in peak A (plateau for six-step).
+    # The requested operating point remains intact in the replayable request.
+    field_current = solve_metadata.get("current_amplitude_A")
+    current_convention = solve_params.get("current_amplitude_convention")
+    if isinstance(field_current, (int, float)):
+        if current_convention == "rms" and solve_metadata.get("current_amplitude_convention") != "rms":
+            field_current /= math.sqrt(2)
+    else:
+        field_current = solve_params.get("current_amplitude_A")
     provenance = _mapping(manifest.get("provenance"))
     six_step = solve_params.get("excitation_mode") == "ideal_six_step_120"
     output_statuses = _output_statuses(result)
@@ -1748,7 +1771,7 @@ def build_public_run_pdf(
                 [
                     (
                         "Conducting phase current" if six_step else "Phase current",
-                        (f"{_pdf_text(solve_params.get('current_amplitude_A'))} A "
+                        (f"{_pdf_text(field_current)} A "
                          f"{_plain(solve_params.get('current_amplitude_convention'))}").strip(),
                     ),
                     (

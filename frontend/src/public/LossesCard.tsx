@@ -2,9 +2,11 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { PublicFieldLinePlot } from './model';
 import { StatusDot, StatusSummary } from './OutputStatusBadge';
 import type { NamedOutputStatus } from './outputStatus';
+import { PHASE_RESISTANCE_UNRECORDED_STATUS_REASON, recordStatus } from './outputStatus';
 import type { IronLoss, IronLossDensity, LossBreakdown } from './performance';
 import { InfoTip } from './Popover';
 import type { WindingResistance } from './windingResistance';
+import { formatResistance } from './windingResistance';
 import {
   CONTEXT_FILL,
   COPPER_FILL,
@@ -387,7 +389,20 @@ export function LossesCard({
 }) {
   const headingId = useId();
   const view = lossesView(loss, iron, winding ?? null);
-  if (!view || !loss) return null;
+  if (!view || !loss) {
+    if (!winding) return null;
+    const status = recordStatus(winding, PHASE_RESISTANCE_UNRECORDED_STATUS_REASON);
+    return <section className={`motor-constants losses-card${variant === 'report' ? ' is-report' : ''}`} aria-labelledby={headingId}>
+      <div className="results-card-heading">
+        <h3 id={headingId}>Winding</h3>
+        <StatusSummary statuses={[{ key: 'resistance', label: 'Phase resistance', ...status }]} />
+      </div>
+      <table><tbody>
+        <tr><th scope="row">Phase resistance</th><td>{formatResistance(winding.phase_resistance_ohm)} at {winding.winding_temperature_C} °C</td></tr>
+        <tr><th scope="row">Phase resistance at 20 °C</th><td>{formatResistance(winding.phase_resistance_20C_ohm)}</td></tr>
+      </tbody></table>
+    </section>;
+  }
   const copperWPerKg = stackCopperWPerKg(loss, winding, slotCount ?? 0);
   const rowStatus = (key: string) => view.statuses.find((item) => item.key === key) ?? null;
   const efficiencyStatus = rowStatus('efficiency');

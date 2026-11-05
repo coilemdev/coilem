@@ -88,6 +88,7 @@ def cogging_record(
     independent_endpoints: bool = True,
     loaded_mean_torque_Nm: float | None = None,
     loaded_current_A: float | None = None,
+    loaded_torque_requested: bool = True,
 ) -> CoggingTorque | None:
     """The record for a cogging waveform over one period, or None when it is not one.
 
@@ -107,17 +108,26 @@ def cogging_record(
         return None
     harmonics = _harmonics(period, fundamental_order)
     peak_to_peak = max(values) - min(values)
-    loaded = (
+    loaded = loaded_torque_requested and (
         loaded_mean_torque_Nm is not None
         and math.isfinite(loaded_mean_torque_Nm)
         and loaded_current_A is not None
         and abs(loaded_current_A) > _NO_LOAD_CURRENT_A
     )
-    ratio = (
-        100.0 * peak_to_peak / abs(loaded_mean_torque_Nm)
-        if loaded and loaded_mean_torque_Nm
-        else None
-    )
+    # Match the ripple readout's 1% swing floor: a percentage of a numerical
+    # residual is misleading. This is a presentation floor, not a gate band.
+    mean_floor = max(1e-6, 0.01 * peak_to_peak)
+    if not loaded_torque_requested:
+        reason = "Loaded torque was not requested."
+    elif loaded_current_A is None or abs(loaded_current_A) <= _NO_LOAD_CURRENT_A:
+        reason = "No loaded torque (0 A run)."
+    elif not loaded:
+        reason = "Loaded mean torque is unavailable."
+    elif abs(loaded_mean_torque_Nm) < mean_floor:
+        reason = "Loaded mean torque is near zero (below 1% of the cogging swing or 0.000001 N m)."
+    else:
+        reason = None
+    ratio = 100.0 * peak_to_peak / abs(loaded_mean_torque_Nm) if reason is None else None
     return CoggingTorque(
         method=method,
         positions_per_period=len(period),
@@ -133,5 +143,6 @@ def cogging_record(
         ),
         harmonics=harmonics,
         loaded_mean_torque_Nm=loaded_mean_torque_Nm if loaded else None,
+        loaded_comparison_reason=reason,
         peak_to_peak_of_loaded_pct=ratio,
     )

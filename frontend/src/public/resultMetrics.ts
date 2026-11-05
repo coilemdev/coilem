@@ -5,7 +5,15 @@
  */
 
 import { formatSignificant } from './machineConstants';
-import type { MaterialCatalog, SolveResult } from './model';
+import type { MaterialCatalog, MotorConfig, SolveResult } from './model';
+
+/** Actual field current; native sinusoidal metadata is in peak A. */
+export function solvedPhaseCurrent(config: MotorConfig, result: SolveResult): number {
+  const actual = result.solve_metadata.current_amplitude_A;
+  if (typeof actual !== 'number' || !Number.isFinite(actual)) return config.solve_params.current_amplitude_A;
+  return config.solve_params.current_amplitude_convention === 'rms' && result.solve_metadata.current_amplitude_convention !== 'rms'
+    ? actual / Math.SQRT2 : actual;
+}
 
 /** Electrical frequency in Hz: f = rpm · poles / 120. */
 export function electricalFrequencyHz(rpm: number, poleCount: number): number {
@@ -59,7 +67,7 @@ export function torqueRippleView(result: Pick<SolveResult, 'summary' | 'torque_w
   const range = torqueRange(result.torque_waveform?.torque_Nm ?? []);
   const peakToPeak = range ? range.max - range.min : null;
   const current = result.solve_metadata?.current_amplitude_A;
-  const noLoad = typeof current === 'number' && Number.isFinite(current) && Math.abs(current) < 1e-9;
+  const noLoad = typeof current === 'number' && Number.isFinite(current) && Math.abs(current) <= 1e-6;
   const average = result.summary.avg_torque_Nm;
   const averageTooSmall = peakToPeak !== null && peakToPeak > 0 && typeof average === 'number' && Number.isFinite(average)
     && Math.abs(average) < RIPPLE_MIN_AVERAGE_FRACTION * peakToPeak;

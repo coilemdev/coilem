@@ -111,6 +111,24 @@ permanent magnets (rotor-only, with phase current disabled). They share the
 single-solve claim and the same artifact sanitization as the public solve
 surface. `POST /solve/cancel` stops the streamed loaded sweep.
 
+In v0.5.1, selected motor analyses also run through `POST /solve` and
+`POST /solve/stream`. An incomplete requested map returns a saved result with
+`torque_speed_analysis.status="partial"`, a `status_reason`, point-level errors
+in `map.points`, and null `envelope` and `efficiency_map`. Other completed
+analyses remain available. A successful map has `status="complete"` (the
+default for older map records). Consumers must check availability before
+reading curves. Retrying the same map reuses successful points. Unselected
+maps are absent even when their points are cached.
+
+Synchronous Magneto2D map batches have no overall server deadline, matching
+the stream route. Clients must allow long requests or use streaming, and
+`POST /solve/cancel` and server shutdown still stop them. Ordinary synchronous
+motor solves retain their 1,200-second Magneto2D / 1,800-second Elmer deadlines.
+Unrequested operating-point metrics are nullable and their waveforms empty;
+consumers must not interpret missing analyses as zero. Older 0.5.0 clients are
+not guaranteed to read these new standalone/partial records; retain the new
+version for replay. Winding resistance remains independent of selecting losses.
+
 The `/performance/*` routes build the torque–speed envelope and efficiency map.
 `POST /performance/map/stream` solves the design over a grid of currents and
 current angles (a flux-linkage map) with the same local Magneto2D core and the

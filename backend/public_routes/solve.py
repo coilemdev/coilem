@@ -1007,7 +1007,11 @@ async def solve(body: dict[str, Any]) -> dict[str, Any]:
 
     solver = _create_public_solver(solver_id, elmer_capabilities)
     solver_label = "Elmer" if solver_id == "elmer" else "Magneto2D"
-    timeout_seconds = 1800.0 if solver_id == "elmer" else 1200.0
+    # A map is a resumable batch, not a single operating-point solve. Match
+    # the stream route's unbounded batch deadline; /solve/cancel and shutdown
+    # still stop the worker and retain its completed points.
+    map_requested = solver_id == "magneto2d" and config.solve_options and config.solve_options.torque_speed_envelope
+    timeout_seconds = None if map_requested else (1800.0 if solver_id == "elmer" else 1200.0)
     try:
         workspace, run_writer = _claim_durable_solve(solver, body, config)
     except Exception as exc:
@@ -1048,15 +1052,19 @@ async def solve(body: dict[str, Any]) -> dict[str, Any]:
         raise HTTPException(status_code=409, detail=_stream_error_payload(exc)) from exc
     except (asyncio.TimeoutError, TimeoutError) as exc:
         solver.cancel_active_solve()
+        message = (
+            f"{solver_label} solve timed out after {timeout_seconds:.0f} seconds."
+            if timeout_seconds is not None else "Map worker reported a timeout. Completed map points are retained for retry."
+        )
         run_writer.fail(
             error_code="SOLVE_TIMEOUT",
-            message=f"{solver_label} solve timed out after {timeout_seconds:.0f} seconds.",
+            message=message,
         )
         raise HTTPException(
             status_code=status.HTTP_504_GATEWAY_TIMEOUT,
             detail={
                 "error_code": "SOLVE_TIMEOUT",
-                "message": f"{solver_label} solve timed out after {timeout_seconds:.0f} seconds.",
+                "message": message,
             },
         ) from exc
     except (Magneto2DUnsupportedError, ElmerUnsupportedError) as exc:

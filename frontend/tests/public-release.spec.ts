@@ -11,6 +11,149 @@ const landingScreenshot = fileURLToPath(new URL('../test-results/landing-page.pn
 type Excitation = 'sinusoidal' | 'ideal_six_step_120';
 type RunRecord = { project_slug: string; run_id: string; status: string };
 
+for (const combined of [false, true]) {
+  test(`partial ${combined ? 'combined' : 'map-only'} analysis retains outputs and shows point errors`, async ({ page }, info) => {
+    const fixture = JSON.parse(execFileSync(process.env.COILEM_TEST_PYTHON || 'python', ['-c', `
+import json, os, tempfile
+from tests.test_torque_speed_analysis import map_config, SelectedSolver
+from backend.selected_analyses import solve_selected_analyses
+with tempfile.TemporaryDirectory() as root:
+    os.environ['COILEM_USER_DATA_ROOT'] = root
+    cfg = map_config()
+    cfg.solve_options.torque_sweep = ${combined ? 'True' : 'False'}
+    cfg.solve_options.back_emf = ${combined ? 'True' : 'False'}
+    result = solve_selected_analyses(SelectedSolver(fail_at=(10, 45)), cfg)
+    print(result.model_dump_json())
+`], { cwd: fileURLToPath(new URL('../..', import.meta.url)), encoding: 'utf8' }));
+    const errors: string[] = [];
+    page.on('pageerror', error => errors.push(error.message));
+    await page.route('**/solve/stream', route => route.fulfill({
+      contentType: 'text/event-stream', body: `event: complete\ndata: ${JSON.stringify(fixture)}\n\n`,
+    }));
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+    await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+    await openSetupSection(page, 'analysis');
+    await page.getByRole('checkbox', { name: 'Torque', exact: true }).setChecked(combined);
+    await page.getByRole('checkbox', { name: 'Back EMF', exact: true }).setChecked(combined);
+    await page.getByRole('checkbox', { name: 'Torque–speed map', exact: true }).check();
+    const run = page.getByRole('button', { name: '▶ Run analysis', exact: true });
+    await expect(run).toBeEnabled({ timeout: 120_000 });
+    await run.click();
+    await expect(page.getByRole('status').filter({ hasText: /^Torque–speed map incomplete:/ })).toBeVisible();
+    const plots = page.getByRole('tablist', { name: 'Completed result plots' });
+    await expect(plots.getByRole('tab', { name: 'Back EMF', exact: true })).toHaveCount(combined ? 1 : 0);
+    await plots.getByRole('tab', { name: 'Torque–speed', exact: true }).click();
+    const notice = page.getByRole('region', { name: 'Incomplete torque–speed map' });
+    await expect(notice).toContainText('10 A peak, 45°: mesh failed');
+    await expect(notice).toContainText('Completed analyses and map points are saved');
+    const download = page.waitForEvent('download');
+    await notice.getByRole('button', { name: 'Export partial map CSV' }).click();
+    const csv = await download;
+    const path = await csv.path();
+    expect(await readFile(path!, 'utf8')).toContain('mesh failed');
+    await page.getByRole('button', { name: 'Full results →', exact: true }).click();
+    await expect(page.getByRole('status').filter({ hasText: /^Torque–speed map incomplete:/ })).toBeVisible();
+    await page.getByRole('tab', { name: 'Torque–speed', exact: true }).click();
+    await expect(notice).toContainText('10 A peak, 45°: mesh failed');
+    const capture = info.outputPath('partial-map.png');
+    await notice.screenshot({ path: capture });
+    await info.attach('partial-map', { path: capture, contentType: 'image/png' });
+    expect(errors).toEqual([]);
+  });
+}
+
+test('no-current Results settings report actual field current and retain winding resistance', async ({ page }) => {
+  const fixture = JSON.parse(execFileSync(process.env.COILEM_TEST_PYTHON || 'python', ['-c', `
+from tests.test_analysis_options import config, result_for
+print(result_for(config(back_emf=True)).model_dump_json())
+`], { cwd: fileURLToPath(new URL('../..', import.meta.url)), encoding: 'utf8' }));
+  await page.route('**/solve/stream', route => route.fulfill({
+    contentType: 'text/event-stream', body: `event: complete\ndata: ${JSON.stringify(fixture)}\n\n`,
+  }));
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+  await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+  await openSetupSection(page, 'analysis');
+  await page.getByRole('checkbox', { name: 'Torque', exact: true }).uncheck();
+  const run = page.getByRole('button', { name: '▶ Run analysis', exact: true });
+  await expect(run).toBeEnabled({ timeout: 120_000 });
+  await run.click();
+  await page.getByRole('button', { name: 'Full results →', exact: true }).click();
+  await page.getByText('Run settings', { exact: true }).click();
+  const settings = page.locator('.public-report-provenance');
+  await expect(settings.locator('dt').filter({ hasText: /^Phase current$/ }).locator('+ dd')).toHaveText('0.00 A rms');
+  await expect(page.getByRole('tab', { name: 'Torque–speed', exact: true })).toHaveCount(0);
+  await expect(page.getByText('Phase resistance', { exact: true }).first()).toBeVisible();
+});
+
+for (const topology of ['SPM', 'IPM'] as const) {
+  test(`guided ${topology} setup reviews Analysis before the accuracy plan and Run`, async ({ page }, info) => {
+    const errors: string[] = [];
+    let solveRequests = 0;
+    page.on('pageerror', error => errors.push(error.message));
+    page.on('request', request => {
+      if (['/solve', '/solve/stream'].includes(new URL(request.url()).pathname)) solveRequests += 1;
+    });
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Start a design', exact: true }).click();
+    const coach = page.getByRole('dialog', { name: 'Guided motor setup' });
+    const title = coach.locator('h3');
+    if (topology === 'IPM') {
+      await page.locator('[data-guide="topology-selector"]').getByRole('button', { name: /IPM/ }).click();
+      await expect(title).toHaveText('Choose the IPM rotor layout');
+    }
+    for (let count = 0; count < 10; count += 1) {
+      const before = await title.innerText();
+      if (before === 'Choose your analyses') break;
+      await coach.getByRole('button', { name: 'Next', exact: true }).click();
+      await expect(title).not.toHaveText(before);
+    }
+    await expect(title).toHaveText('Choose your analyses');
+    const analysis = page.locator('[data-guide="solve-analysis"]');
+    const plan = page.locator('[data-guide="solve-plan"]');
+    await expect(analysis).toHaveAttribute('data-guide-active', 'true');
+    await expect(plan).toHaveAttribute('data-guide-active', 'false');
+    for (const name of ['Torque', 'Back EMF']) {
+      await expect(analysis.getByRole('checkbox', { name, exact: true })).toBeChecked();
+    }
+    for (const name of ['Cogging torque', 'Losses & efficiency', 'Torque–speed map']) {
+      await expect(analysis.getByRole('checkbox', { name, exact: true })).toBeVisible();
+      await expect(analysis.getByRole('checkbox', { name, exact: true })).not.toBeChecked();
+    }
+    await analysis.getByRole('checkbox', { name: 'Cogging torque', exact: true }).check();
+    await page.screenshot({ path: info.outputPath('guided-analysis.png'), animations: 'disabled' });
+    await coach.getByRole('button', { name: 'Next', exact: true }).click();
+    await expect(title).toHaveText('Pick a solve plan');
+    await expect(plan).toHaveAttribute('data-guide-active', 'true');
+    await coach.getByRole('button', { name: 'Back', exact: true }).click();
+    await expect(title).toHaveText('Choose your analyses');
+    await expect(analysis).toHaveAttribute('data-guide-active', 'true');
+    await expect(analysis.getByRole('checkbox', { name: 'Cogging torque', exact: true })).toBeChecked();
+    await coach.getByRole('button', { name: 'Next', exact: true }).click();
+    await coach.getByRole('button', { name: 'Next', exact: true }).click();
+    await expect(title).toHaveText('Run the analysis');
+    expect(solveRequests).toBe(0);
+    await coach.getByRole('button', { name: 'Exit guided setup', exact: true }).click();
+    await expect(coach).not.toBeVisible();
+    expect(errors).toEqual([]);
+  });
+}
+
+test('jumping into Solve during guided setup opens Analysis, while ordinary setup opens the plan', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Start a design', exact: true }).click();
+  await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+  const coach = page.getByRole('dialog', { name: 'Guided motor setup' });
+  await expect(coach.locator('h3')).toHaveText('Choose your analyses');
+  await expect(page.locator('[data-guide="solve-analysis"]')).toHaveAttribute('data-guide-active', 'true');
+  await page.reload();
+  await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+  await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+  await expect(coach).not.toBeVisible();
+  await expect(page.locator('[data-guide="solve-plan"]')).toHaveAttribute('data-guide-active', 'true');
+});
+
 test('Results reports recorded convergence, warnings and missing historical evidence', async ({ page }, info) => {
   // Use the canonical Python report consumed by PDF/CSV, with no native solve.
   const fixture = JSON.parse(execFileSync(process.env.COILEM_TEST_PYTHON || 'python', ['-c', `

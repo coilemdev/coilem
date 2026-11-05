@@ -256,7 +256,11 @@ export interface TorqueSpeedAnalysisSettings {
   control: DriveControl;
 }
 
-export interface TorqueSpeedAnalysisResult extends DrivePerformance, FluxLinkageMapPayload {
+export interface TorqueSpeedAnalysisResult extends FluxLinkageMapPayload {
+  status?: 'complete' | 'partial';
+  status_reason?: string | null;
+  envelope: TorqueSpeedEnvelope | null;
+  efficiency_map: EfficiencyMap | null;
   settings: TorqueSpeedAnalysisSettings;
   winding_resistance?: import('./windingResistance').WindingResistance | null;
   mechanical_loss_W: number;

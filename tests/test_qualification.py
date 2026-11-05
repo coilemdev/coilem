@@ -83,7 +83,7 @@ def test_qualified_combinations_name_their_evidence(fixture: str, reason: str, m
     qualification = classify_qualification(_fixture(fixture))
     assert qualification["status"] == "qualified"
     assert qualification["reason"].startswith(reason)
-    assert qualification["basis"] == "coilEM benchmark report, measured at 88aae101"
+    assert qualification["basis"] == QUALIFICATION_BASIS
     assert qualification["reference"].endswith("docs/VALIDATION.md#qualification-status")
 
 
@@ -101,6 +101,14 @@ def test_basis_names_the_measured_commit_and_reference() -> None:
     # This run measured the winding-axis protocol directly; the frozen reference
     # still names its own earlier measured commit and registered validation bridge.
     assert run["identity"]["protocol_version"] == "1.6.0"
+
+
+def test_report_preserves_its_registered_measured_physics_sources() -> None:
+    # Freshness belongs to tools.physics_impact and the release gate. This
+    # replay test validates the immutable historical record on its own basis.
+    record = json.loads(Path("benchmarks/records/windows-x86_64.json").read_text())
+    measured = REPORT["run"]["identity"]["source_files"]
+    assert all(measured[path] == digest for path, digest in record["physics_files"].items())
 
 
 @pytest.mark.parametrize("path", PHYSICS_SOURCES)

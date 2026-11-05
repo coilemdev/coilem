@@ -30,7 +30,7 @@ def measured_source_hashes(monkeypatch):
     qualification registry. New sources cannot be retroactively measured.
     """
     recorded = read(NATIVE / "run_manifest.json")["identity"]["source_files"]
-    historical = read(ROOT / "benchmarks/candidate-qualification-20261103/windows/platform-record.json")["physics_files"]
+    historical = read(ROOT / "benchmarks/records-historical/v050/windows-x86_64.json")["physics_files"]
     assert all(recorded[name] == digest for name, digest in historical.items())
     sources = {ROOT / name: recorded[name] for name in historical}
     monkeypatch.setattr(candidate_join, "physics_sources", lambda root: tuple(historical))

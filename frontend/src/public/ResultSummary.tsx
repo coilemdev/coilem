@@ -12,6 +12,7 @@ import {
   saturationKneeRangeT,
   sharedSparklinePaths,
   sparklinePath,
+  solvedPhaseCurrent,
   torqueRange,
   torqueRippleView,
 } from './resultMetrics';
@@ -101,8 +102,8 @@ export function ResultSummary({
     !hasTorque && !summary.loss_breakdown
       ? result.torque_speed_analysis ? 'Torque–speed map' : 'No-current analyses'
       : sixStep
-      ? `${fixed(config.solve_params.current_amplitude_A)} A plateau`
-      : `${fixed(config.solve_params.current_amplitude_A)} A ${config.solve_params.current_amplitude_convention}`,
+      ? `${fixed(solvedPhaseCurrent(config, result))} A plateau`
+      : `${fixed(solvedPhaseCurrent(config, result))} A ${config.solve_params.current_amplitude_convention}`,
     `${rpm.toLocaleString()} rpm · ${formatFrequencyHz(electricalFrequencyHz(rpm, config.rotor.pole_count))} Hz`,
     sixStep
       ? `${fixed(metadata.commutation_advance_deg ?? config.solve_params.commutation_advance_deg, 0)}° advance`
@@ -119,6 +120,9 @@ export function ResultSummary({
 
   return (
     <div className="public-result-summary">
+      {result.torque_speed_analysis?.status === 'partial' && <p className="performance-message is-warning" role="status">
+        Torque–speed map incomplete: completed analyses and points are saved. Review failed points under Torque–speed and run again to retry.
+      </p>}
       <details className="public-run-settings">
         <summary>
           <span className="public-run-settings-label">Run settings</span>
