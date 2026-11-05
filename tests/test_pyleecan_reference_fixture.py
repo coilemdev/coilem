@@ -293,11 +293,22 @@ def test_preview_symbols_and_winding_layout_use_the_same_published_labels_as_the
         assert actual[coil.slot_in][1] != actual[coil.slot_out][1]
 
 
-def test_new_cogging_source_keeps_historical_motor_and_prius_evidence_unqualified():
-    from tools.release.qualification import check
+def test_new_cogging_source_keeps_historical_motor_and_prius_evidence_unqualified(monkeypatch):
+    from tools.release import qualification as gate
 
     assert "backend/cogging.py" in physics_sources(ROOT)
-    errors = check(ROOT)
+    historical = json.loads((ROOT / "benchmarks/records-historical/v050/windows-x86_64.json").read_text())
+    original_data = gate._data
+
+    def historical_primary(root, name):
+        if name == "benchmarks/records/windows-x86_64.json":
+            return {**historical, "prius_report": "benchmarks/candidate-qualification-20261103/prius/app-results.json"}
+        return original_data(root, name)
+
+    # Select the immutable old cohort explicitly. A later accepted live record
+    # must not make this historical-rejection test fail or need restamping.
+    monkeypatch.setattr(gate, "_data", historical_primary)
+    errors = gate.check(ROOT)
     assert "qualification physics mismatch: backend/cogging.py" in errors
     assert "Prius measured-source mismatch: backend/cogging.py" in errors
 
