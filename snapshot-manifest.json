@@ -25,8 +25,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 17464,
-      "sha256": "d5f187e4c49a3fc4e895f95c6d74629473ca66f204a1296b1dca6ce1df552ba7"
+      "bytes": 17755,
+      "sha256": "0a6b363284ee70e017566c3712ea4d8248124490c6a9f32f67aecc06c8f6b17f"
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
@@ -12085,8 +12085,8 @@
     },
     {
       "path": "docs/BENCHMARK_AUTOMATION.md",
-      "bytes": 7822,
-      "sha256": "ee6d4bdc84108675371507edf16aeaf4ca52f6df9deba8acc83e01c15dbb91d0"
+      "bytes": 8218,
+      "sha256": "93a995c61b2eb94ab05db1a7f711f2e51ff7378902045f4e721d23d2b88dd2fd"
     },
     {
       "path": "tests/test_benchmark_shards.py",
@@ -33239,6 +33239,18 @@
       "path": "tests/test_cogging.py",
       "source_sha256": "e0df19f89a86c1b41e36df8ba3f84481ef58d7731cbfccdaa59938720eab9913",
       "reason": "Preserve cogging evidence chronology and checksums, isolate rotated mesh caches, and cover public cogging regression contracts."
+    },
+    {
+      "base_commit": "9369b776ed6f29b9920ce65f77ae2e868db5e9cc",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "d5f187e4c49a3fc4e895f95c6d74629473ca66f204a1296b1dca6ce1df552ba7",
+      "reason": "Record the owner-approved one-time PR 190 integration deferral: run qualification from the exact main merge commit while retaining all other evidence, runtime and release gates."
+    },
+    {
+      "base_commit": "9369b776ed6f29b9920ce65f77ae2e868db5e9cc",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "ee6d4bdc84108675371507edf16aeaf4ca52f6df9deba8acc83e01c15dbb91d0",
+      "reason": "Record the owner-approved one-time PR 190 integration deferral: run qualification from the exact main merge commit while retaining all other evidence, runtime and release gates."
     }
   ]
 }

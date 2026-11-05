@@ -285,7 +285,9 @@ jobs:
 
   qualification-evidence:
     name: qualification evidence required
-    if: ${{ github.event_name == 'pull_request' || inputs.qualification_base }}
+    # One-time owner-approved integration exception: #190 is benchmarked from
+    # its exact main merge commit. Runtime and release qualification stay intact.
+    if: ${{ (github.event_name == 'pull_request' && github.event.pull_request.number != 190) || inputs.qualification_base }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
@@ -304,7 +306,7 @@ jobs:
       contents: read
       actions: read
     needs: qualification-impact
-    if: ${{ needs.qualification-impact.outputs.measurement_required == 'true' && !github.event.pull_request.draft }}
+    if: ${{ needs.qualification-impact.outputs.measurement_required == 'true' && !github.event.pull_request.draft && github.event.pull_request.number != 190 }}
     uses: ./.github/workflows/release-benchmarks.yml
     with:
       candidate: ${{ github.event.pull_request.head.sha }}
@@ -328,7 +330,7 @@ jobs:
 
   qualification-publication:
     needs: [qualification-impact, qualification-measure]
-    if: ${{ always() && needs.qualification-impact.outputs.physics_change == 'true' && github.event.pull_request.head.repo.full_name == github.repository && (needs.qualification-measure.result == 'success' || needs.qualification-impact.outputs.collection_state == 'complete') }}
+    if: ${{ always() && github.event.pull_request.number != 190 && needs.qualification-impact.outputs.physics_change == 'true' && github.event.pull_request.head.repo.full_name == github.repository && (needs.qualification-measure.result == 'success' || needs.qualification-impact.outputs.collection_state == 'complete') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:

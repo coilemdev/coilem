@@ -77,6 +77,12 @@ a workflow or CODEOWNERS file cannot enable those repository settings.
 The release integration branch stays open for pending physics PRs and their
 eventual frozen candidate qualification; its checks are informational.
 
+PR #190 is a one-time, owner-approved integration exception: its evidence check,
+automatic PR collection and publication are skipped. Run the full Windows/macOS
+A–D and Prius collection from its exact `main` merge commit instead. Qualification
+remains pending until matching evidence is accepted. This exception does not
+apply to other PRs, runtime source guards or release/publication gates.
+
 Later metadata-only pushes reuse compatible in-progress or completed PR
 collections. The cache key includes guarded sources, registered contracts,
 collector/grader code and the locked collection environment. It does not
