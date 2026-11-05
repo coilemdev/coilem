@@ -30,8 +30,8 @@
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
-      "bytes": 12626,
-      "sha256": "591393587ee3ab8e10b62d9793b65a9f796890a8755e2e8f4669c2737e5975b3"
+      "bytes": 12862,
+      "sha256": "7b9d22573d4a0a30b99412fc5d6bc75a2b4a4afd6a7b5f8d16356a4a961ce5b6"
     },
     {
       "path": ".github/workflows/release-wheels.yml",
@@ -12085,8 +12085,8 @@
     },
     {
       "path": "docs/BENCHMARK_AUTOMATION.md",
-      "bytes": 7584,
-      "sha256": "875f940330ed5a1f8cf819b660cd0ad017bccdb27bbfd42aa46f833ad9634d89"
+      "bytes": 7822,
+      "sha256": "ee6d4bdc84108675371507edf16aeaf4ca52f6df9deba8acc83e01c15dbb91d0"
     },
     {
       "path": "tests/test_benchmark_shards.py",
@@ -32776,6 +32776,18 @@
       "path": "tools/release/qualification.py",
       "source_sha256": "1279cb6292e8e89dae68f3ad0fa5b02c2ec2a89359eb0884ccd09df2bccf7aae",
       "reason": "Preserve legacy Prius evidence discovery in the qualification gate (#194)."
+    },
+    {
+      "base_commit": "c7f51b57d0632a2eb59fa4d498e614d516a51335",
+      "path": ".github/workflows/release-benchmarks.yml",
+      "source_sha256": "591393587ee3ab8e10b62d9793b65a9f796890a8755e2e8f4669c2737e5975b3",
+      "reason": "Allow independent platform rejoins and headroom for legacy artifact transfers (#194)."
+    },
+    {
+      "base_commit": "c7f51b57d0632a2eb59fa4d498e614d516a51335",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "875f940330ed5a1f8cf819b660cd0ad017bccdb27bbfd42aa46f833ad9634d89",
+      "reason": "Allow independent platform rejoins and headroom for legacy artifact transfers (#194)."
     }
   ]
 }

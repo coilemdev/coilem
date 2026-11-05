@@ -256,9 +256,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runner: ${{ fromJSON(needs.plan.outputs.platforms || '["windows-2022", "macos-15"]') }}
+        runner: ${{ fromJSON(needs.plan.outputs.platforms || (inputs.runner && inputs.runner != 'both' && format('["{0}"]', inputs.runner) || '["windows-2022", "macos-15"]')) }}
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 20
+    # Legacy artifacts can include tens of GB of raw archives. Transfer time
+    # must not truncate a zero-solve verification of completed measurements.
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:

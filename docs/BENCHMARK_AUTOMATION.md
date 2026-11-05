@@ -24,6 +24,9 @@ raw archives with compact inputs. Downloads are staged one shard at a time;
 redundant temporary archive copies are removed before the next download, while
 the originals remain on the server. Prius retained inputs are verified and linked
 into the join without a second physical copy.
+Join jobs allow 45 minutes for legacy artifact transfers and verification. The
+runner input also selects a single platform in join-only mode, so a successful
+platform's existing joined artifact can be retained without repeating its join.
 
 If a shard times out, dispatch with `source_run` and a `retry_shards` JSON array
 of `platform/shard` IDs. Repairs download the original binary and require the
