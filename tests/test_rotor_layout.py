@@ -9,6 +9,7 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
+from backend import qualification as qualification_module
 from backend.geometry_ir import build_geometry_ir
 from backend.magneto2d_adapter import build_magneto2d_payload, get_magneto2d_support_error
 from backend.models import MotorConfig
@@ -83,6 +84,14 @@ def test_paths_that_assume_an_inner_rotor_refuse_outer_rotors():
     assert public_config_support_error(config, require_solve_params=True) is None
     fixed_mesh = config.model_copy(update={"solve_params": config.solve_params.model_copy(update={"rotor_rotation_model": "fixed_mesh"})})
     assert "remesh_per_step" in get_magneto2d_support_error(fixed_mesh)
+
+
+def test_outer_rotor_is_experimental_where_the_inner_combination_is_qualified(monkeypatch):
+    # Single-layer concentrated SPM under sinusoidal current on M350-50A is qualified for inner rotors only.
+    monkeypatch.setattr(qualification_module, "evidence_matches_runtime", lambda: True)
+    assert qualification_module.classify_qualification(MotorConfig.model_validate(INNER))["status"] == "qualified"
+    outer = qualification_module.classify_qualification(MotorConfig.model_validate(outer_config()))
+    assert (outer["status"], outer["reason"]) == ("experimental", "Outer-rotor SPM: no benchmark fixture measures an outer rotor yet.")
 
 
 def test_rotor_torque_sign_rules():
