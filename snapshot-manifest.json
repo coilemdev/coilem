@@ -645,8 +645,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 154790,
-      "sha256": "afcf0eff8af7fdbae866691182dc0da06600c865da7e8e442f478d677984035e"
+      "bytes": 154989,
+      "sha256": "da860577bd583caa43786b58e8660e241acebdc505dc179efbdad27854fcaa8b"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -5935,8 +5935,8 @@
     },
     {
       "path": "docs/COGGING_CONVERGENCE.md",
-      "bytes": 7961,
-      "sha256": "08863be83ea4d3c7779e680463a51c801e9412186710f5119bd81f9c7a359fb8"
+      "bytes": 8851,
+      "sha256": "9cadb6f9b0135692903fa5e497fad5bef63658fccb1ba505baf84d020bbf7ee6"
     },
     {
       "path": "docs/COGGING_FEMM_REQUEST.md",
@@ -6465,8 +6465,8 @@
     },
     {
       "path": "frontend/scripts/test-cogging-view.mjs",
-      "bytes": 5505,
-      "sha256": "0e67e322ba663cdad48b43d516461dcfcdc2195f5235084d2e8a4b7a1d9e522c"
+      "bytes": 5760,
+      "sha256": "34a6129d2ae785e210b41756f9e6f513f72739e5550b544732fdee6c0b2074da"
     },
     {
       "path": "frontend/scripts/test-custom-steel.mjs",
@@ -7155,8 +7155,8 @@
     },
     {
       "path": "frontend/src/public/coggingView.ts",
-      "bytes": 7335,
-      "sha256": "41a34a396f269b512c306e0a54fe90ee03baecb2b98f46421d97ed9f60ccb78a"
+      "bytes": 7521,
+      "sha256": "654dd103b86f02d17572c3f006b183ca6ac17e0363c43d7c09319fe57c532b16"
     },
     {
       "path": "frontend/src/public/coil3d.ts",
@@ -7555,8 +7555,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 53737,
-      "sha256": "5dd04c6e6845a5910605b7630236d000fe2246b77ec31069b3f5ccf6b1a9a7aa"
+      "bytes": 55379,
+      "sha256": "9983d7a39995f79cc8a877eac45c8b9d5eaa22b67808d4d6e35d634e1fc6bcfe"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -7975,8 +7975,8 @@
     },
     {
       "path": "tests/test_cogging.py",
-      "bytes": 21764,
-      "sha256": "e0df19f89a86c1b41e36df8ba3f84481ef58d7731cbfccdaa59938720eab9913"
+      "bytes": 27342,
+      "sha256": "7b4b00a36e043cc721e96c4a0f9031415d6bcba5d61116f673f9d5e4eb1aa42b"
     },
     {
       "path": "tests/test_cogging_phase_e.py",
@@ -11560,8 +11560,8 @@
     },
     {
       "path": "docs/benchmarks/cogging-windows-20261103/README.md",
-      "bytes": 7439,
-      "sha256": "1ca64db12d51009697fe10276368344e4dfb0ddebdc125bd5c50f0b66471fb9d"
+      "bytes": 8209,
+      "sha256": "cd920cdf19f8826bdaf58facdb3c7eeb9fd69979c36b4d06501d010b850baa71"
     },
     {
       "path": "docs/benchmarks/cogging-windows-20261103/cogging-femm-vs-magneto2d.pdf",
@@ -11581,7 +11581,7 @@
     {
       "path": "docs/benchmarks/cogging-windows-20261103/sha256.json",
       "bytes": 464,
-      "sha256": "04906e8b022830bbe76ae0068bf40ecd209df575f417492f9ba817c12f767d25"
+      "sha256": "928d04cbfbe9f9d2dc5ac2295837294d7121e01819f5d1d7fa72da0b52fa1416"
     },
     {
       "path": "docs/benchmarks/cogging-windows-20261103/waveforms.json",
@@ -12182,6 +12182,16 @@
       "path": "tools/repair_benchmark_shard.py",
       "bytes": 8765,
       "sha256": "0b5579d1270a5785728897ce31870ef0481c38e0ef8a67f1cb08d6c9642d40d4"
+    },
+    {
+      "path": "tests/test_benchmark_evidence_checksums.py",
+      "bytes": 1529,
+      "sha256": "74e87db9d4df2f446966c8c46d7ea7964ad1496ad1edbb75301e42005465c7b7"
+    },
+    {
+      "path": "tests/test_cogging_pipeline.py",
+      "bytes": 9168,
+      "sha256": "d8cc8e172b2ac9016dacde3216b32b0a75a6fedc6d21fcaaece03e74f09d5125"
     }
   ],
   "public_patches": [
@@ -33076,6 +33086,54 @@
       "path": "tests/test_pyleecan_reference_fixture.py",
       "source_sha256": "9a3cda1f70f308a49e872b8e0577bbb8583bf66508ace0c183537856017c4d36",
       "reason": "Bind historical cogging rejection to immutable evidence independently of refreshed live records."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "afcf0eff8af7fdbae866691182dc0da06600c865da7e8e442f478d677984035e",
+      "reason": "Preserve cogging evidence chronology and checksums, isolate rotated mesh caches, and cover public cogging regression contracts."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "docs/COGGING_CONVERGENCE.md",
+      "source_sha256": "08863be83ea4d3c7779e680463a51c801e9412186710f5119bd81f9c7a359fb8",
+      "reason": "Preserve cogging evidence chronology and checksums, isolate rotated mesh caches, and cover public cogging regression contracts."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "docs/benchmarks/cogging-windows-20261103/README.md",
+      "source_sha256": "1ca64db12d51009697fe10276368344e4dfb0ddebdc125bd5c50f0b66471fb9d",
+      "reason": "Preserve cogging evidence chronology and checksums, isolate rotated mesh caches, and cover public cogging regression contracts."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "docs/benchmarks/cogging-windows-20261103/sha256.json",
+      "source_sha256": "04906e8b022830bbe76ae0068bf40ecd209df575f417492f9ba817c12f767d25",
+      "reason": "Preserve cogging evidence chronology and checksums, isolate rotated mesh caches, and cover public cogging regression contracts."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "frontend/scripts/test-cogging-view.mjs",
+      "source_sha256": "0e67e322ba663cdad48b43d516461dcfcdc2195f5235084d2e8a4b7a1d9e522c",
+      "reason": "Preserve cogging evidence chronology and checksums, isolate rotated mesh caches, and cover public cogging regression contracts."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "frontend/src/public/coggingView.ts",
+      "source_sha256": "41a34a396f269b512c306e0a54fe90ee03baecb2b98f46421d97ed9f60ccb78a",
+      "reason": "Preserve cogging evidence chronology and checksums, isolate rotated mesh caches, and cover public cogging regression contracts."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "5dd04c6e6845a5910605b7630236d000fe2246b77ec31069b3f5ccf6b1a9a7aa",
+      "reason": "Preserve cogging evidence chronology and checksums, isolate rotated mesh caches, and cover public cogging regression contracts."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "tests/test_cogging.py",
+      "source_sha256": "e0df19f89a86c1b41e36df8ba3f84481ef58d7731cbfccdaa59938720eab9913",
+      "reason": "Preserve cogging evidence chronology and checksums, isolate rotated mesh caches, and cover public cogging regression contracts."
     }
   ]
 }

@@ -85,4 +85,8 @@ assert.doesNotMatch(coggingPlanNote(12, 8), /positions/);
 assert.match(coggingPlanNote(12, 8, 24, false), /Corner refinement is off, which makes cogging much noisier; turn it on under Advanced options\.$/);
 assert.doesNotMatch(coggingPlanNote(12, 8, 24, true), /Corner refinement/);
 
+assert.match(coggingPlanNote(12, 8, 12), /Preview is for iteration: 12 positions can miss peaks and higher harmonics/);
+assert.doesNotMatch(coggingPlanNote(12, 8, 24), /can miss peaks/);
+assert.doesNotMatch(coggingPlanNote(12, 8, 48), /can miss peaks/);
+
 console.log('cogging view: record values, harmonics, angle units, status and plan note pass');

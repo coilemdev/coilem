@@ -799,6 +799,10 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
     map: { summary, solve_metadata: metadata, torque_waveform: {}, back_emf_waveform: {} },
     cogging: { summary: { ...summary, cogging: { peak_to_peak_Nm: 0.2, first_harmonic_Nm: 0.1 } },
       solve_metadata: metadata, torque_waveform: emptyTorque, back_emf_waveform: emptyEmf },
+    cogging2: { summary: { ...summary, cogging: { peak_to_peak_Nm: 0.3, first_harmonic_Nm: 0.25 } },
+      solve_metadata: metadata, torque_waveform: emptyTorque, back_emf_waveform: emptyEmf },
+    zero: { summary: { ...summary, cogging: { peak_to_peak_Nm: 0, first_harmonic_Nm: 0 } },
+      solve_metadata: metadata, torque_waveform: emptyTorque, back_emf_waveform: emptyEmf },
     emf: { summary: { ...summary, back_emf_fundamental_V: 2 }, solve_metadata: metadata, torque_waveform: {},
       back_emf_waveform: { electrical_angle_deg: [0, 90, 180, 270], phase_a_V: [0, 2, 0, -2], phase_b_V: [-1, 1, 1, -1], phase_c_V: [1, -1, -1, 1] } },
     torque: { summary: { ...summary, avg_torque_Nm: 4, torque_ripple_pct: 2 }, solve_metadata: { ...metadata, current_amplitude_A: 10 },
@@ -820,7 +824,14 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
   await expect(dialog.getByText('Neither run has torque or Back EMF waveforms to overlay.', { exact: false })).toBeVisible();
   await expect(dialog.getByRole('tablist', { name: 'Comparison plots', exact: true })).toHaveCount(0);
   await expect(dialog.getByText('Peak tooth B', { exact: true })).toBeVisible();
+  const coggingRow = (label: string) => dialog.locator('.public-run-compare-metrics article').filter({
+    has: page.getByText(label, { exact: true }),
+  });
+  await expect(coggingRow('Cogging torque p-p').locator('strong')).toHaveText(['— N·m', '0.20 N·m']);
+  await expect(coggingRow('Cogging fundamental').locator('strong')).toHaveText(['— N·m', '0.10 N·m']);
   await dialog.getByLabel('Run B · candidate').selectOption('regression/emf');
+  await expect(coggingRow('Cogging torque p-p')).toHaveCount(0);
+  await expect(coggingRow('Cogging fundamental')).toHaveCount(0);
   await expect(dialog.getByRole('tab', { name: 'Back EMF overlay', exact: true })).toHaveAttribute('aria-selected', 'true');
   await expect(dialog.getByRole('tab', { name: 'Torque overlay', exact: true })).toHaveCount(0);
   await expect(dialog.getByText('Run A not computed · Run B 4 positions', { exact: true })).toBeVisible();
@@ -828,6 +839,14 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
   await dialog.getByRole('tab', { name: 'Torque overlay', exact: true }).click();
   await expect(dialog.getByText('Torque comparison', { exact: true })).toBeVisible();
   await expect(dialog.getByText('Run A 2 positions · Run B not computed', { exact: true })).toBeVisible();
+  await dialog.getByLabel('Run A · baseline').selectOption('regression/cogging');
+  await dialog.getByLabel('Run B · candidate').selectOption('regression/cogging2');
+  await expect(coggingRow('Cogging torque p-p').locator('strong')).toHaveText(['0.20 N·m', '0.30 N·m']);
+  await expect(coggingRow('Cogging torque p-p').locator('em')).toHaveText('+0.10 N·m+50.0% vs A');
+  await expect(coggingRow('Cogging fundamental').locator('em')).toHaveText('+0.15 N·m+150.0% vs A');
+  await dialog.getByLabel('Run A · baseline').selectOption('regression/zero');
+  await expect(coggingRow('Cogging torque p-p').locator('strong')).toHaveText(['0.00 N·m', '0.30 N·m']);
+  await expect(coggingRow('Cogging torque p-p').locator('em')).toHaveText('+0.30 N·m— vs A');
   await page.getByRole('button', { name: 'Close previous runs', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
