@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -33,6 +34,10 @@ def main():
     parser.add_argument('--directory', type=Path, required=True)
     parser.add_argument('--collection', default='registered', choices=['registered', 'protocol16-native-only'])
     args = parser.parse_args()
+    if requested := os.environ.get('COILEM_BUILD_COMMIT'):
+        actual = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()
+        if not re.fullmatch('[0-9a-f]{40}', requested) or requested != actual:
+            raise ValueError('candidate must be the exact full immutable checkout SHA')
     spec = plan()
     directory = args.directory.resolve()
     if args.stage == 'plan':

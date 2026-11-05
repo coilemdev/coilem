@@ -12105,8 +12105,8 @@
     },
     {
       "path": "tools/benchmark_ci.py",
-      "bytes": 4653,
-      "sha256": "bb07cc5fe901b95cbebdff8808353feef7bbed4503929f297cdc8a5b5c4c9fbe"
+      "bytes": 4996,
+      "sha256": "a4761eafab716f3c28dc5c040925189addadd5a83b74d1555fc4fdeb9c8388c9"
     },
     {
       "path": "tools/benchmark_shards.py",
@@ -32584,6 +32584,12 @@
       "path": "tools/verify_snapshot.py",
       "source_sha256": "ab48e96e50d892f68158f3e467cd0621bf039430c14e3e04217632e11ff8f646",
       "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "6788d61b0a8ee83b6b90e4fc85059067c8971cdd",
+      "path": "tools/benchmark_ci.py",
+      "source_sha256": "bb07cc5fe901b95cbebdff8808353feef7bbed4503929f297cdc8a5b5c4c9fbe",
+      "reason": "Reject abbreviated or mismatched measurement candidate identities."
     }
   ]
 }
