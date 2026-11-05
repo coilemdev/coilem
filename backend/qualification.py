@@ -49,8 +49,11 @@ _QUALIFICATION_RECORD = _registered_qualification()
 QUALIFICATION_BASIS = "coilEM benchmark report, measured at " + (_QUALIFICATION_RECORD["measured_commit"][:8]
                                                               if _QUALIFICATION_RECORD else "unavailable")
 QUALIFICATION_REPORT = _QUALIFICATION_RECORD.get("source", "unavailable") + "/benchmark_summary.json"
+# Original v0.5.0 records predate the per-record Prius report field. Keep their
+# immutable report discoverable by the release gate without importing this module.
+LEGACY_PRIUS_QUALIFICATION_REPORT = "benchmarks/candidate-qualification-20261103/prius/app-results.json"
 PRIUS_QUALIFICATION_REPORT = _QUALIFICATION_RECORD.get(
-    "prius_report", "benchmarks/candidate-qualification-20261103/prius/app-results.json")
+    "prius_report", LEGACY_PRIUS_QUALIFICATION_REPORT)
 QUALIFICATION_REFERENCE = "https://github.com/coilemdev/coilem/blob/main/docs/VALIDATION.md#qualification-status"
 _QUALIFIED_STEEL = "M350-50A"
 _QUALIFIED_IPM = "flat_buried"

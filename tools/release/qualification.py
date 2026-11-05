@@ -148,7 +148,9 @@ def check(root: Path = ROOT, *, protocol: str = "1.6.0", candidate: str | None =
                     or any(measured_run["identity"]["source_files"].get(name) != digest for name, digest in actual.items())):
                 errors.append(f"{key} platform record lacks matching complete measured candidate evidence")
         prius_path = primary.get("prius_report") or _optional_constant(
-            root / "backend/qualification.py", "PRIUS_QUALIFICATION_REPORT", "docs/benchmarks/pyleecan-prius-v1/app-results.json")
+            root / "backend/qualification.py", "PRIUS_QUALIFICATION_REPORT", _optional_constant(
+                root / "backend/qualification.py", "LEGACY_PRIUS_QUALIFICATION_REPORT",
+                "docs/benchmarks/pyleecan-prius-v1/app-results.json"))
         prius = _data(root, prius_path)
         # Bind the actual grader to the snapshot captured before fields. The
         # original analyzer's legacy policy flag is retained in the report;

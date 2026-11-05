@@ -605,8 +605,8 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 10558,
-      "sha256": "35dc7e72aa4e2cf6cadb2a79b40bb4a08c208eec47c964d2dfc72943e5af87aa"
+      "bytes": 10791,
+      "sha256": "7cbe477f2567c7fdc45f36a39a05067d2e0af8aac64675be47678fbf8a60408f"
     },
     {
       "path": "backend/reference_models/__init__.py",
@@ -8295,8 +8295,8 @@
     },
     {
       "path": "tests/test_release_qualification.py",
-      "bytes": 9158,
-      "sha256": "a15e175fd0d04e2631e56ca4b948d1afedab2e8ab2069d21f91ed6cf38b43399"
+      "bytes": 10572,
+      "sha256": "ecc7f190e4a7289b4df72f9488b9043c554d8cfcbbcd5553f443b0140ebf4825"
     },
     {
       "path": "tests/test_release_tools.py",
@@ -8545,8 +8545,8 @@
     },
     {
       "path": "tools/release/qualification.py",
-      "bytes": 12120,
-      "sha256": "1279cb6292e8e89dae68f3ad0fa5b02c2ec2a89359eb0884ccd09df2bccf7aae"
+      "bytes": 12245,
+      "sha256": "8a441224262935bd9985bacfb66ae8575f6759a743e8565348485bd13595f929"
     },
     {
       "path": "tools/release/release_notes.py",
@@ -32758,6 +32758,24 @@
       "path": "tools/repair_benchmark_shard.py",
       "source_sha256": "6dd429f41c8ff2874cdc7fb01446963bf14048a28d4d1dd8f390e7835b5c9243",
       "reason": "Relay unchanged binaries without consuming Mac build capacity and retain repair provenance."
+    },
+    {
+      "base_commit": "256cdf53af0e1ac7cc86acc998ebd197ab179fdb",
+      "path": "backend/qualification.py",
+      "source_sha256": "35dc7e72aa4e2cf6cadb2a79b40bb4a08c208eec47c964d2dfc72943e5af87aa",
+      "reason": "Preserve legacy Prius evidence discovery in the qualification gate (#194)."
+    },
+    {
+      "base_commit": "256cdf53af0e1ac7cc86acc998ebd197ab179fdb",
+      "path": "tests/test_release_qualification.py",
+      "source_sha256": "a15e175fd0d04e2631e56ca4b948d1afedab2e8ab2069d21f91ed6cf38b43399",
+      "reason": "Preserve legacy Prius evidence discovery in the qualification gate (#194)."
+    },
+    {
+      "base_commit": "256cdf53af0e1ac7cc86acc998ebd197ab179fdb",
+      "path": "tools/release/qualification.py",
+      "source_sha256": "1279cb6292e8e89dae68f3ad0fa5b02c2ec2a89359eb0884ccd09df2bccf7aae",
+      "reason": "Preserve legacy Prius evidence discovery in the qualification gate (#194)."
     }
   ]
 }

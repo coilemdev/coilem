@@ -148,6 +148,33 @@ def test_prius_grader_must_match_the_before_field_snapshot(tmp_path):
     assert "Prius analysis code is not bound to its before-field source snapshot" in check(tmp_path)
 
 
+def test_release_gate_finds_legacy_prius_report_without_importing_candidate_code(tmp_path):
+    _measured(tmp_path)
+    destination = tmp_path / "legacy/prius"
+    destination.parent.mkdir(parents=True)
+    (tmp_path / "docs/benchmarks/pyleecan-prius-v1").rename(destination)
+    _write(tmp_path, "backend/qualification.py", (
+        'LEGACY_PRIUS_QUALIFICATION_REPORT = "legacy/prius/app-results.json"\n'
+        'PRIUS_QUALIFICATION_REPORT = record.get("prius_report", LEGACY_PRIUS_QUALIFICATION_REPORT)\n'
+        'raise AssertionError("Candidate code must not execute")\n'))
+    assert check(tmp_path) == []
+    _write(tmp_path, "backend/public_policy.py", "value = 2\n")
+    assert "Prius measured-source mismatch: backend/public_policy.py" in check(tmp_path)
+
+
+def test_registered_prius_report_takes_precedence_over_legacy_default(tmp_path):
+    _measured(tmp_path)
+    record_path = "benchmarks/records/windows-x86_64.json"
+    record = json.loads((tmp_path / record_path).read_text())
+    record["prius_report"] = "published/prius/app-results.json"
+    _write(tmp_path, record_path, record)
+    destination = tmp_path / "published/prius"
+    destination.parent.mkdir(parents=True)
+    (tmp_path / "docs/benchmarks/pyleecan-prius-v1").rename(destination)
+    _write(tmp_path, "backend/qualification.py", 'LEGACY_PRIUS_QUALIFICATION_REPORT = "absent/app-results.json"\n')
+    assert check(tmp_path) == []
+
+
 def test_missing_evidence_fails_closed(tmp_path):
     assert check(tmp_path)
 
