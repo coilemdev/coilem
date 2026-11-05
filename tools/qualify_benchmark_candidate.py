@@ -20,7 +20,7 @@ from backend.benchmark_suite.report import build
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def derive(native, *, suite, bundle, output, source):
+def derive(native, *, suite, bundle, output, source, reuse_reviewed_reference=False):
     spec = load_suite(suite)
     original = read(native / "run_manifest.json")
     identity = original["identity"]
@@ -49,17 +49,29 @@ def derive(native, *, suite, bundle, output, source):
             raise ValueError("A supported candidate job did not complete")
     manifest, references, digest = load_bundle(bundle, spec)
     review = require_reviewed_bundle(bundle, manifest, spec)
-    if manifest["public_candidate_commit"] != identity["commit"]:
+    if manifest["public_candidate_commit"] != identity["commit"] and not reuse_reviewed_reference:
         raise ValueError("Reference request registration names a different candidate")
     derived = copy.deepcopy(original)
     derived.update(reference_mode="FROZEN_REFERENCE", reference_commit=manifest["reference_commit"])
     derived["selection"].update(no_reference=False, bundle_sha256=digest)
+    reuse = None
+    if manifest["public_candidate_commit"] != identity["commit"]:
+        from backend.benchmark_suite.record import identity_platform_key
+        from tools.qualification_carry import POLICY, policy_report, reference_compatibility
+
+        policy = read(ROOT / POLICY)
+        anchor = policy_report(ROOT, policy["approved_reports"][identity_platform_key(identity)])
+        frame = {"run": derived, "rows": [
+            {"id": case["id"], "configurations": {j["stage"]: configs[case["id"], j["stage"]] for j in case["jobs"]}}
+            for case in spec["cases"]]}
+        reuse = reference_compatibility(frame, anchor, suite, bundle)
     derived["comparison"] = {
         "schema": "coilem.reviewed_candidate_reference_join/v1", "native_manifest_sha256": sha(native/"run_manifest.json"),
         "native_artifact_sha256": hashes, "reference_manifest_sha256": sha(bundle/"manifest.json"),
         "reference_review_sha256": manifest["review"]["sha256"], "reference_review_decision": review["decision"],
         "measured_candidate": identity["commit"], "reference_adapter_commit": manifest["reference_commit"],
         "field_solves_executed": 0, "native_manifest_mutated": False,
+        "reference_reuse": reuse,
     }
     rows = cli.evaluate(native, derived, spec["cases"], configs, protocols, golden, references, cli.hardware_targets(spec["cases"]))
     if any(row["status"] in {"ERROR", "INCOMPLETE", "NOT_COMPARED"} for row in rows):
@@ -82,8 +94,10 @@ def main():
     parser.add_argument("--reference-bundle", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--record-source", required=True, help="Published repository folder containing benchmark_summary.json")
+    parser.add_argument("--reuse-reviewed-reference", action="store_true", help="Verify reuse against the owner-approved reference contract")
     args = parser.parse_args()
-    print(derive(args.native, suite=args.suite, bundle=args.reference_bundle, output=args.out, source=args.record_source))
+    print(derive(args.native, suite=args.suite, bundle=args.reference_bundle, output=args.out, source=args.record_source,
+                 reuse_reviewed_reference=args.reuse_reviewed_reference))
 
 
 if __name__ == "__main__":

@@ -203,6 +203,14 @@ def main() -> int:
     manifest = json.loads((root / "snapshot-manifest.json").read_text(encoding="utf-8"))
 
     expected = {entry["path"]: entry for entry in manifest["files"]}
+    # Newly registered compact reports are publication data, not new material
+    # curves. Only the exact report CSV named by a platform record is allowed.
+    registered_csv = set()
+    for record_path in (root / "benchmarks/records").glob("*.json"):
+        record = json.loads(record_path.read_text(encoding="utf-8"))
+        source = record.get("source", "")
+        if source.startswith("benchmarks/qualification-") and ".." not in Path(source).parts:
+            registered_csv.add(source + "/benchmark_results.csv")
     actual = {
         path.relative_to(root).as_posix(): path
         for path in root.rglob("*")
@@ -250,7 +258,7 @@ def main() -> int:
             failures.append(f"forbidden sprint path: {relative}")
         if path.suffix.lower() in FORBIDDEN_SUFFIXES:
             failures.append(f"forbidden file type: {relative}")
-        if path.suffix.lower() == ".csv" and relative not in ALLOWED_DATA_FILES:
+        if path.suffix.lower() == ".csv" and relative not in ALLOWED_DATA_FILES | registered_csv:
             failures.append(f"unreviewed material or fixture CSV: {relative}")
         allowed_signature = ALLOWED_BINARY_SIGNATURES.get(relative)
         if allowed_signature is not None:
