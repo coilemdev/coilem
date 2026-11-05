@@ -352,7 +352,13 @@ def execute(args):
                 job.update(status="ERROR", error="Worker exited without a measurement artifact")
             if not keep_runtime:
                 # The measurement is in result.json; the runtime only fed it.
-                shutil.rmtree(native_runtime_root(directory), ignore_errors=True)
+                runtime_directory = Path(native_runtime_root(directory))
+                if getattr(args, "archive_runtime", False) and runtime_directory.is_dir():
+                    from tools.benchmark_archive import archive_runtime
+
+                    archive_runtime(runtime_directory, directory / "native-runtime.tar.gz")
+                else:
+                    shutil.rmtree(runtime_directory, ignore_errors=True)
             write(path, manifest)
             print(f"{job['case_id']} / {job['stage']}: {job['status']}", flush=True)
             # Check again before registering or launching the next solve.
@@ -400,7 +406,9 @@ def main():
         "--min-free-gb", type=float, default=DEFAULT_MIN_FREE_GB,
         help=f"Stop before a job when the output drive has less free space (default {DEFAULT_MIN_FREE_GB:g} GB)",
     )
-    parser.add_argument("--keep-runtime", action="store_true", help="Keep each job's native runtime and solve cache")
+    retention = parser.add_mutually_exclusive_group()
+    retention.add_argument("--keep-runtime", action="store_true", help="Keep each job's native runtime and solve cache")
+    retention.add_argument("--archive-runtime", action="store_true", help="Verify and archive each runtime before cleanup (CI artifacts only)")
     args = parser.parse_args()
     if args.resume and args.report_only:
         parser.error("--resume and --report-only are mutually exclusive")

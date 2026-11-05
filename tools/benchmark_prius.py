@@ -145,6 +145,7 @@ def main(argv=None):
     ap.add_argument("--curve", action="store_true", default=None, help="All thirteen current angles, sixteen actual full-cycle positions each")
     ap.add_argument("--refinement", action="store_true", default=None, help="Separate angular and mesh controls at Phi0=140 degrees")
     ap.add_argument("--only", help="Run one named job (useful for sequential reproduction)")
+    ap.add_argument("--job", action="append", help="Select jobs for a shard; repeat for each job")
     ap.add_argument("--resume", action="store_true", help="Verify and resume the saved selection in --out")
     args = ap.parse_args(argv)
     destination = args.out.resolve()
@@ -159,6 +160,10 @@ def main(argv=None):
         if registration is not None and registration["schema"] != SCHEMA:
             raise ValueError("Legacy registrations cannot resume: their executable and grading inputs were not frozen")
         options = {"curve": bool(args.curve), "refinement": bool(args.refinement), "only": args.only}
+        if args.job or (registration is not None and "job" in registration["selection"]):
+            if args.only:
+                ap.error("--job cannot be combined with --only")
+            options["job"] = args.job
         if registration is not None:
             for key in options:
                 supplied = getattr(args, key)
@@ -167,7 +172,9 @@ def main(argv=None):
                     raise ValueError("Resume selection differs from the registered jobs")
                 options[key] = saved
         selected = [(name, parse_public_motor_config(body)) for name, body in jobs(options["curve"], options["refinement"])
-                    if not options["only"] or name == options["only"]]
+                    if (not options["only"] or name == options["only"]) and (not options.get("job") or name in options["job"])]
+        if options.get("job") and (len(options["job"]) != len(set(options["job"])) or set(options["job"]) != {n for n, _ in selected}):
+            ap.error("--job contains duplicate or unknown jobs")
         if not selected:
             ap.error("--only does not match a selected job")
         selection = {**options, "jobs": [{"job": name, "request": cfg.model_dump(mode="json")} for name, cfg in selected]}
@@ -184,7 +191,7 @@ def main(argv=None):
                 "binary_sha256": expected["binary_sha256"], "platform": expected["platform"],
                 "python": expected["python"], "dependencies": expected["dependencies"],
                 "source_machine_sha256": prius.source()["source_machine_sha256"], "geometry_asset_sha256": prius.geometry_asset_sha256(),
-                "scope": "Development-candidate software reproduction; final v0.5.0 candidate rerun remains required",
+                "scope": "Development-candidate software reproduction; release qualification remains separate",
                 "qualified": False, "selection": selection, "frozen_inputs": frozen, "jobs": [],
                 "job_states": {name: {"status": "PENDING", "attempts": []} for name, _ in selected},
                 "status": "RUNNING", "complete": False,
@@ -224,6 +231,12 @@ def main(argv=None):
                 folder = destination / relative
                 folder.mkdir(parents=True, exist_ok=False)
                 entry = collect_job(name, cfg, folder, expected)
+                # Retained, hashed copies already exist; never accumulate live caches across jobs.
+                runtime = destination / "runtime"
+                if runtime.is_dir():
+                    from tools.benchmark_archive import archive_runtime
+
+                    archive_runtime(runtime, folder / "native-runtime.tar.gz")
                 after = current_identity()
                 verify_identity(expected, after)
                 grading_inputs(destination, registration)

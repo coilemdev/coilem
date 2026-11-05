@@ -70,8 +70,8 @@ def _review_errors(root, bundle_path, reference, suite, suite_sha):
 def check(root: Path = ROOT, *, protocol: str = "1.6.0", candidate: str | None = None) -> list[str]:
     errors: list[str] = []
     try:
-        report_path = _constant(root / "backend/qualification.py", "QUALIFICATION_REPORT")
-        basis = _constant(root / "backend/qualification.py", "QUALIFICATION_BASIS")
+        primary = _data(root, "benchmarks/records/windows-x86_64.json")
+        report_path = primary["source"] + "/benchmark_summary.json"
         report = json.loads((root / report_path).read_text())
         run = report["run"]
         identity = run["identity"]
@@ -81,8 +81,8 @@ def check(root: Path = ROOT, *, protocol: str = "1.6.0", candidate: str | None =
         candidate = candidate or identity["commit"]
         if run["status"] != "COMPLETE" or run.get("smoke") or identity.get("dirty"):
             errors.append("qualification report must be a complete, clean, non-smoke collection")
-        if identity["commit"][:7] not in basis:
-            errors.append("qualification basis does not name the measured commit")
+        if identity["commit"] != primary["measured_commit"]:
+            errors.append("qualification record does not name the measured commit")
         if candidate is not None and identity["commit"] != candidate:
             errors.append("qualification report did not measure the frozen candidate")
         suite_path = _constant(root / "backend/resources.py", "BENCHMARK_SUITE_FILE")
@@ -147,8 +147,10 @@ def check(root: Path = ROOT, *, protocol: str = "1.6.0", candidate: str | None =
                     or any(row["status"] != "PASS" for row in measured["rows"] if row["id"] in required)
                     or any(measured_run["identity"]["source_files"].get(name) != digest for name, digest in actual.items())):
                 errors.append(f"{key} platform record lacks matching complete measured candidate evidence")
-        prius_path = _optional_constant(root / "backend/qualification.py", "PRIUS_QUALIFICATION_REPORT",
-                                       "docs/benchmarks/pyleecan-prius-v1/app-results.json")
+        prius_path = primary.get("prius_report") or _optional_constant(
+            root / "backend/qualification.py", "PRIUS_QUALIFICATION_REPORT", _optional_constant(
+                root / "backend/qualification.py", "LEGACY_PRIUS_QUALIFICATION_REPORT",
+                "docs/benchmarks/pyleecan-prius-v1/app-results.json"))
         prius = _data(root, prius_path)
         # Bind the actual grader to the snapshot captured before fields. The
         # original analyzer's legacy policy flag is retained in the report;
