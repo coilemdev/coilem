@@ -1,6 +1,12 @@
 # Local workstream checkpoint
 
-Updated 2026-11-05. Branch `codex/femm-outrunner-v051`, worktree `C:/bench/coilem-outrunner-v051-20261105`, exact release base `cf6e8a90e4a33c34dc7ff81886e353b9950961d5`. User authorized independent work and as many useful **local** commits as needed. Do not push, open a PR, merge, publish, change a release, or modify the original dirty checkout.
+Updated 2026-11-05. Branch `codex/femm-outrunner-v051`, worktree `C:/bench/coilem-outrunner-v051-20261105`, current release base `9369b776ed6f29b9920ce65f77ae2e868db5e9cc`. Original numerical measurements used `cf6e8a90e4a33c34dc7ff81886e353b9950961d5`; preserve that historical provenance in the comparison report. User authorized independent work and as many useful **local** commits as needed. Do not push, open a PR, merge, publish, change a release, or modify the original dirty checkout.
+
+## Rebase onto current release/v0.5.1
+
+On 2026-11-05, explicitly fetched `origin/release/v0.5.1` and rebased all ten outrunner commits onto tip **9369b77** (five upstream commits newer than the original base). Rebase completed without conflicts. `git range-diff` confirms every replayed patch is identical; the rebased implementation tip is **ff2b0f6**. Backup branch **codex/femm-outrunner-before-v051-rebase-20261105** preserves original tip **3227e3d** and all original hashes cited below. The native solver and experimental implementation are unchanged by this rebase.
+
+Validation: full `npm run build` passes, including public UI checks, both public/performance TypeScript projects, source boundary and emitted-bundle audit. The opt-in UI also builds at `output/femm-outrunner-review/ui-rebased-bundle`. Combined Python verification covered 202 targeted outrunner, public-boundary, cogging, performance-evidence and checksum tests: 175 passed initially; the performance checker needed `C:/nvm4w/nodejs` in the Python subprocess PATH, after which its complete 35-test module passed (including all 27 initial environment failures). No test or audit was weakened to complete the rebase. The original dirty main checkout, retained numerical output and currently served immutable UI bundle were left intact. No remote branch was changed.
 
 ## Latest handoff: Solve parity, native mesh and actual field playback
 
