@@ -27,6 +27,7 @@ import {
 } from './ViewportNavigation';
 import { currentAngleNote, fieldAxisArrowPaths, leadAngleExplanation, qAxisOffsetDeg, rotorNorthAxisDeg, statorLeadElecDeg } from './fieldAxes';
 import { motorFitWidthBesideLegend } from './fieldLegendFit';
+import { fieldStrokeScale } from './fieldStrokeWidth';
 import {
   fieldRangeForViewport,
   type FieldViewportRange,
@@ -121,6 +122,8 @@ interface PreparedFieldPlot {
   }>;
   contourPaths: Path2D[];
   viewBox: string;
+  /** Stroke-width factor for this view's size (fieldStrokeWidth). */
+  strokeScale: number;
   minB: number;
   maxB: number;
   triangleCount: number;
@@ -323,6 +326,7 @@ function prepareFieldPlot(plot: PublicFieldLinePlot): PreparedFieldPlot | null {
     triangleRecords,
     contourPaths,
     viewBox: `${minX - padding} ${-maxY - padding} ${width + padding * 2} ${height + padding * 2}`,
+    strokeScale: fieldStrokeScale(width + padding * 2, height + padding * 2),
     minB,
     maxB,
     triangleCount,
@@ -393,7 +397,7 @@ function drawMeshEdges(
 ): void {
   context.save();
   context.strokeStyle = 'rgba(203,213,225,.42)';
-  context.lineWidth = 0.11 / Math.max(viewportScale, Number.EPSILON);
+  context.lineWidth = (0.11 * prepared.strokeScale) / Math.max(viewportScale, Number.EPSILON);
   context.lineJoin = 'round';
   context.stroke(prepared.basePath);
   context.restore();
@@ -406,7 +410,7 @@ function drawFieldLines(
   overlay = false,
 ): void {
   context.strokeStyle = overlay ? OVERLAY_LINE_COLOR : '#ffd166';
-  context.lineWidth = 0.28;
+  context.lineWidth = 0.28 * prepared.strokeScale;
   context.lineCap = 'round';
   context.shadowColor = overlay ? OVERLAY_HALO_COLOR : 'rgba(255,145,0,.9)';
   context.shadowBlur = overlay ? 2 : 0.45;

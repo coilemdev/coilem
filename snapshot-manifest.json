@@ -6420,8 +6420,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2876,
-      "sha256": "95f77636ad7140bf8dca88a5da202f9c678d62eb62be96732580c7fb81d05b54"
+      "bytes": 2920,
+      "sha256": "dc2ef16e8926940a590006743b8e1c1617e16c07cbb7b34a3478253b15fa7ef2"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -7025,8 +7025,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 57951,
-      "sha256": "f9468769b170e5df043aa199eab2f65c8f306efbf9061a5f5ba9a59b83684c5d"
+      "bytes": 58225,
+      "sha256": "cb83f4ac6d81e0687dbfc6ca95d9d89b5c3f3a5ef689a89da2facfca55a926e0"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -7270,8 +7270,8 @@
     },
     {
       "path": "frontend/src/public/fieldPlaybackWorker.ts",
-      "bytes": 8317,
-      "sha256": "96c1e25999a9bb81d0c6dd584a6ccb743c3431c330813d7e69ecac44600050de"
+      "bytes": 8478,
+      "sha256": "eba7765b98f3d0bc01c24fe80f0f770fb9923fd6d414bd2ca69a2f69259b9c2d"
     },
     {
       "path": "frontend/src/public/fieldPositionLink.ts",
@@ -12959,6 +12959,11 @@
       "sha256": "2b32224ddc39d6128a086ba667fd588840a136d5220de50602a3c9579cd14b29"
     },
     {
+      "path": "frontend/scripts/test-field-stroke-width.mjs",
+      "bytes": 1333,
+      "sha256": "fcf5bc4ac3d7cfc36aa6f488bbd3e3196bb2905443f91267f8b27b2435d89a98"
+    },
+    {
       "path": "frontend/src/public/RotorArrangement.tsx",
       "bytes": 1201,
       "sha256": "75c60a42663f59d6b3ee6ce93f9d672474d75eb2447de774cd8eeb4f322c8f82"
@@ -12977,6 +12982,11 @@
       "path": "frontend/src/public/examples/spm_outrunner_14p12s.coilem",
       "bytes": 3055,
       "sha256": "4a9602f6aeeaf38940e07c08f15d229746523da7df8eec32ef853cf6d941dd9f"
+    },
+    {
+      "path": "frontend/src/public/fieldStrokeWidth.ts",
+      "bytes": 804,
+      "sha256": "736031fed811c6c95136dcfe40fef3de0aa8221744133c2e9950902836560b18"
     },
     {
       "path": "frontend/src/public/publishedReferences.ts",
