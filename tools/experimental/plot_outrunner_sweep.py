@@ -23,7 +23,7 @@ def main():
             raise ValueError("Only complete diagnostic sweeps may be plotted as full curves")
     loaded = np.genfromtxt(args.analysis/"loaded.csv", delimiter=",", names=True)
     noload = np.genfromtxt(args.analysis/"noload.csv", delimiter=",", names=True)
-    plt.rcParams.update({"font.size": 10, "axes.spines.top": False, "axes.spines.right": False})
+    plt.rcParams.update({"font.size": 10, "axes.spines.top": False, "axes.spines.right": False, "svg.fonttype": "none"})
     fig, panels = plt.subplots(2, 2, figsize=(13, 8.5), constrained_layout=True)
     colors = ["#b84928", "#218268", "#386ab0"]
     for axis in panels.flat:
@@ -49,7 +49,9 @@ def main():
                  "Unfiltered spectral EMF derivative. Material-law parity and finer-grid qualification remain pending.", fontsize=13)
     args.out.mkdir(parents=True, exist_ok=True)
     fig.savefig(args.out/"torque-linkage-bemf.png", dpi=170)
-    fig.savefig(args.out/"torque-linkage-bemf.svg")
+    svg_path = args.out/"torque-linkage-bemf.svg"
+    fig.savefig(svg_path)
+    svg_path.write_text("\n".join(line.rstrip() for line in svg_path.read_text(encoding="utf-8").splitlines())+"\n", encoding="utf-8")
     plt.close(fig)
 
 

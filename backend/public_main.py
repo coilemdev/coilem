@@ -42,6 +42,11 @@ from backend.public_ui import install_ui_routes
 from backend.resources import build_identity
 from backend.solve_workspace import user_data_root_id
 
+
+def _outrunner_enabled() -> bool:
+    from backend.resources import source_checkout_root
+    return os.environ.get("COILEM_EXPERIMENTAL_OUTRUNNER") == "1" and source_checkout_root() is not None
+
 # Route templates, not request URLs: the allowlist test compares this set against
 # every ``route.path`` the app serves, so entries carry path parameters
 # (``{artifact_id}``) but never a query string. Query parameters are validated by
@@ -178,6 +183,7 @@ async def health_check() -> dict[str, Any]:
         "user_data_root_id": user_data_root_id(),
         "build": build_identity(),
         "capabilities": {
+            "experimental_outrunner": {"enabled": _outrunner_enabled()},
             "elmer": elmer,
             "halbach_array_2d": halbach_capability_payload(),
             "experimental_rotors": {
@@ -241,6 +247,9 @@ def create_app(*, bound_port: int | None = None, ui_bundle: Path | None = None) 
     application.middleware("http")(guard_public_requests)
     for router in (preview_router, halbach_router, runs_router, solve_router, performance_router, tutorials_router, system_router):
         application.include_router(router)
+    if _outrunner_enabled():
+        from backend.experimental.outrunner_routes import router as outrunner_router
+        application.include_router(outrunner_router)
     if ui_bundle is not None:
         install_ui_routes(application, ui_bundle, canonical_origin=canonical_origin)
     return application

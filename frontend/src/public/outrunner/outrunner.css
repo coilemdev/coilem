@@ -1,0 +1,18 @@
+.outrunner-workspace { min-height:100vh; background:#101822; color:#e8edf4; padding:24px; font:15px/1.55 system-ui,sans-serif; }
+.outrunner-workspace header { display:flex; align-items:center; gap:18px; flex-wrap:wrap; margin-bottom:20px; }
+.outrunner-workspace header div { flex:1; }
+.outrunner-workspace h1 { font-size:24px; margin:0; }
+.outrunner-workspace h2 { font-size:19px; margin-top:0; }
+.outrunner-workspace button,.outrunner-workspace select,.outrunner-workspace input { background:#223348; color:#f0f4fa; border:1px solid #52657d; border-radius:6px; padding:9px 12px; font:inherit; }
+.outrunner-workspace button { cursor:pointer; }
+.outrunner-workspace :disabled { opacity:.5; cursor:default; }
+.outrunner-tag { color:#f4c271; font-size:12px; }
+.outrunner-notice { max-width:1000px; color:#bdcad9; }
+.outrunner-layout { display:grid; grid-template-columns:minmax(300px,1fr) minmax(320px,1fr); gap:22px; }
+.outrunner-card { background:#192535; border:1px solid #34465c; border-radius:10px; padding:24px; margin:18px 0; overflow:hidden; }
+.outrunner-card > svg { display:block; width:100%; max-width:550px; margin:auto; }
+.outrunner-settings label { display:grid; grid-template-columns:1fr 1fr; gap:15px; align-items:center; margin-bottom:15px; }
+.outrunner-settings progress { display:block; width:100%; margin-top:20px; }
+.outrunner-workspace [role=alert] { color:#ffb7a6; }
+.outrunner-workspace .waveform-chart { color:#e8edf4; }
+@media(max-width:800px) { .outrunner-layout { grid-template-columns:1fr; } .outrunner-workspace { padding:12px; } }
