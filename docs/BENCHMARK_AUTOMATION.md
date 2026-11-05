@@ -34,3 +34,20 @@ accumulation, rather than reducing mesh size or numerical coverage.
 Phase E remains a separately registered analysis. Refreshing A–D or the Prius
 software reference does not qualify cogging, torque–speed maps or other
 unmeasured outputs. No source guard, numerical gate or tolerance is removed.
+
+## PR evidence gate
+
+`python -m tools.physics_impact --base <base-sha>` compares the union of the old
+and new source registries, including the Prius-specific sources. Removing a
+registry entry cannot hide a changed source. Changes to registered suite or
+reference contracts also require evidence. A physics PR passes only when the
+strict release check accepts its current-tree Windows, macOS and Prius reports.
+The check binds measurements to source identities, not subsequent metadata-only
+publication commits. Historical unit tests replay their original records;
+they never promote those records to qualify a changed build.
+
+Ready physics PRs start the parallel workflow automatically. Draft PRs can use
+workflow dispatch. Make `qualification evidence required` a required status
+check on `main` and `release/v0.5.1`, enable required code-owner review, and
+protect the qualification rules listed in `.github/CODEOWNERS`. Merely committing
+a workflow or CODEOWNERS file cannot enable those repository settings.

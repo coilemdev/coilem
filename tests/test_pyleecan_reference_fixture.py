@@ -12,7 +12,6 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from backend.benchmark_suite.physics import physics_sources
 from backend.excitation import resolve_phase_current_sample
 from backend.geometry_drawer import compute_geometry
 from backend.geometry_ir import build_geometry_ir
@@ -303,7 +302,6 @@ def test_published_app_evidence_keeps_complete_actual_grids_and_its_measured_sou
     assert report["field_source_dirty"] is False
     assert report["registration_sha256"] == hashlib.sha256((folder / "app-registration.json").read_bytes()).hexdigest()
     assert report["protocol_sha256"] == hashlib.sha256((folder / "protocol.json").read_bytes()).hexdigest()
-    assert report["analysis_runner_sha256"] == hashlib.sha256((ROOT / "tools/report_prius_benchmark.py").read_bytes()).hexdigest()
     assert report["source_sha256"] == registration["source_sha256"]
     # Publication necessarily updates the snapshot. Keep the original
     # before-field snapshot identity, rather than restamping the run.
@@ -316,7 +314,9 @@ def test_published_app_evidence_keeps_complete_actual_grids_and_its_measured_sou
     snapshot_path = ROOT / "benchmarks/candidate-qualification-20261103/prius/source-snapshot.json"
     assert hashlib.sha256(snapshot_path.read_bytes()).hexdigest() == report["source_sha256"]["snapshot-manifest.json"]
     measured_sources = {entry["path"]: entry["sha256"] for entry in json.loads(snapshot_path.read_text(encoding="utf-8"))["files"]}
-    guarded = set(physics_sources(ROOT)) | set(PRIUS_EXTRA_PHYSICS)
+    historical = json.loads((ROOT / "benchmarks/records/windows-x86_64.json").read_text())["physics_files"]
+    guarded = set(historical) | set(PRIUS_EXTRA_PHYSICS)
+    assert report["analysis_runner_sha256"] == measured_sources["tools/report_prius_benchmark.py"]
     assert guarded <= set(report["source_sha256"])
     for name in sorted(guarded):
         assert measured_sources[name] == report["source_sha256"][name], name

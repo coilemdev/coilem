@@ -9,7 +9,6 @@ from pathlib import Path
 import pytest
 
 from backend.benchmark_suite.contract import read, sha
-from backend.benchmark_suite.physics import physics_sources
 from backend.benchmark_suite.references import load_suite, require_reviewed_bundle
 from backend.winding_utils import flux_linkage_slot_side_turn_factor
 from tools import qualify_benchmark_candidate as candidate_join
@@ -26,7 +25,9 @@ NATIVE = ROOT / "benchmarks/windows-v050-20261102-88aae101/native"
 def measured_source_hashes(monkeypatch):
     """Model the measured build for replay; leave every evidence-file hash real."""
     recorded = read(NATIVE / "run_manifest.json")["identity"]["source_files"]
-    sources = {ROOT / name: recorded[name] for name in physics_sources(ROOT)}
+    historical = read(ROOT / "benchmarks/records/windows-x86_64.json")["physics_files"]
+    sources = {ROOT / name: recorded[name] for name in historical}
+    monkeypatch.setattr(candidate_join, "physics_sources", lambda _: tuple(historical))
 
     def source_sha(path):
         return sources[path] if path in sources else sha(path)
